@@ -1,0 +1,279 @@
+SCI-FRUIT v0.1 r0.4 — FINAL STAGE A
+ADDITIVE-SPACE, RESPONSE-CATALOG, AND PACKET-PARITY AMENDMENT
+
+The SCI-FRUIT r0.4 architecture is accepted.
+
+Do not perform another broad Stage A derivation.
+
+Preserve:
+
+- the A/B/C separation among program-order authority, conditional-composition
+  authority, and numerical-method authority;
+- no numerical method selection;
+- no Stage B launch before exact packet approval;
+- distinct candidate, accepted, and applied models;
+- use of the applied model in removal and rejoin;
+- the corrected fixed-linear expansion;
+- D_k only under complete linearity of A_k, Pi_k, and B_k;
+- method identity distinct from state, coefficient, model, and application
+  generation;
+- route-conditional parent quantity and unit;
+- no default recurrence;
+- immutable original-parent ancestry;
+- universal core completion gates;
+- grouping as method identity;
+- path-specific support and information origin;
+- model-only content as model/prior-supported and not acquired exposure;
+- FRUIT-FEEDBACK-METHOD as a family with method-specific identities;
+- every existing nonclaim.
+
+======================================================================
+1. BIND THE ADDITIVE STRUCTURE, REFERENCE, GAUGE, AND NULL SPACE
+======================================================================
+
+The generic remove-process-rejoin equations use subtraction in Y_k and addition
+in Z_k. State the exact premises that make those operations meaningful.
+
+Require:
+
+    Pi_k(m_k^applied)
+
+to be subtractable from:
+
+    y_k^in
+
+only under exact compatibility of:
+
+- scientific quantity;
+- unit and numerical scale;
+- coordinate frame and domain;
+- grid/sampling;
+- support;
+- additive origin/reference or gauge;
+- null-space state;
+- calibration convention;
+- response convention.
+
+Require:
+
+    F_k(rho_k)
+
+and:
+
+    B_k(m_k^applied)
+
+to be addable in one exact compatible Z_k quantity space under the same classes
+of facts.
+
+Declare Y_k and Z_k as exact additive quantity spaces, or as explicitly
+identified affine/quotient spaces with one declared reference and gauge.
+
+If an upstream operation leaves an absolute or other additive mode unavailable,
+FRUIT shall not silently manufacture observational authority for that mode.
+
+A model rejoined in such a mode remains:
+
+    model_or_prior_supported
+
+and does not become:
+
+    observationally_measured
+    recovered_from_data
+    acquired_exposure
+    unit_response_truth.
+
+Bind the additive-reference and null-space consequences in the method record,
+iteration bundle, response family, uncertainty family, support/origin table,
+and predictions.
+
+======================================================================
+2. RECONCILE RF-03 AND RF-07
+======================================================================
+
+The r0.4 scope presently lists:
+
+    RF-03 one-step FRUIT full-procedure response
+
+and:
+
+    RF-07 FRUIT full-procedure response with upstream parent held fixed.
+
+Do not retain overlapping response identities.
+
+Preferred seven-role interpretation:
+
+    RF-01
+      fixed one-step response to the measured iteration input, with model and
+      all state fixed;
+
+    RF-02
+      fixed one-step response to the applied model, with measured input and
+      all state fixed;
+
+    RF-03
+      one-iteration FRUIT full-procedure response, rerunning model construction,
+      selection, state resolution, support, coefficient realization, and
+      application for that one iteration, while prior FRUIT state and the
+      upstream producer procedure remain fixed;
+
+    RF-04
+      recursive response through a predeclared fixed iteration sequence or
+      fixed absolute iteration index;
+
+    RF-05
+      selected-terminal response including convergence, stopping, resource
+      limit, and terminal-selection behavior;
+
+    RF-06
+      whole-chain response, rerunning every included data-dependent upstream
+      producer and the declared FRUIT procedure;
+
+    RF-07
+      complete FRUIT-only procedure response to a declared perturbation of the
+      realized parent-domain payload, including recurrence and terminal
+      selection as applicable, while the upstream producer operation, learned
+      state, and generation are held fixed.
+
+RF-07 is a composed full-FRUIT procedure role. Its relation to RF-03, RF-04,
+and RF-05 shall be explicit.
+
+Do not say that the numerical upstream parent is “held fixed” when its payload
+is perturbed. Say that the upstream producer procedure and state are fixed.
+
+If RF-03 already has the complete RF-07 meaning, merge them and retain six
+roles. Return an exact supersession/crosswalk rather than two aliases.
+
+For every response role bind:
+
+- perturbation source and domain;
+- fixed versus rerun state;
+- recurrence and terminal-selection scope;
+- baseline and perturbed comparability;
+- branch/support/state changes;
+- codomain;
+- derivative or finite-difference convention;
+- unavailable and discontinuity behavior.
+
+Replace “the first six required roles” with:
+
+    all response-role identities and typed statuses required by the applicable
+    method and claim.
+
+A required status may truthfully be unavailable. Do not imply universal
+numerical response availability.
+
+======================================================================
+3. MAKE ALL THREE MODEL SPACES EXPLICIT
+======================================================================
+
+Bind:
+
+    M_k^candidate
+    M_k^accepted
+    M_k^applied
+
+and the exact transformations, if any, among them.
+
+Do not assume equal:
+
+- domain;
+- support;
+- unit;
+- normalization;
+- sign;
+- representation;
+- response;
+- uncertainty;
+- parentage.
+
+Equality among any two is an exact method/state fact.
+
+======================================================================
+4. REMOVE ITERATION-COUNT AMBIGUITY
+======================================================================
+
+Use:
+
+    After completion of the iteration with absolute zero-based index N,
+    continuation begins at absolute index N+1 from S_(N+1).
+
+Do not use “after completed N” in a way that can mean either a count or an
+index.
+
+======================================================================
+5. VERIFY TERMINAL-SELECTION STATE
+======================================================================
+
+The terminal-selection record shall contain or type unavailable:
+
+- selected completed-iteration identity;
+- complete candidate iteration population considered;
+- exact selection rule and generation;
+- convergence, stopping, and resource-limit facts;
+- selection causes;
+- selected-terminal response;
+- selected-terminal uncertainty;
+- continuation or terminality state;
+- downstream named-use status references.
+
+It shall not mutate, relabel, or replace the selected iteration bundle.
+
+======================================================================
+6. EXACT PACKET-PARITY CHECK
+======================================================================
+
+Return the exact bytes of:
+
+- revised Scope Brief;
+- SCIENTIFIC_OWNER_DECISION_LEDGER.md;
+- RESPONSE_AND_UNCERTAINTY_FAMILIES.md;
+- ITERATION_STATE_LIFECYCLE.md;
+- SUPPORT_INFORMATION_ORIGIN.md;
+- REQUIRED_CONDITIONAL_PREDICTIONS.md;
+- FRUIT_FEEDBACK_METHOD_REQUIRED_RECORD.md;
+- NOTATION_AND_ROLE_TAXONOMY.md;
+- BOUNDARIES_AND_CONVENTIONS.md;
+- frozen PTC fragment and cover;
+- PROGRAM_REFERENCE.md;
+- Stage A semantic-change report;
+- AUTHOR_INPUT_MANIFEST.md;
+- manifest sidecar;
+- compressed packet and archive sidecar.
+
+Verify:
+
+- distinct candidate, accepted, and applied model spaces and roles;
+- additive-reference/gauge/null-space compatibility;
+- complete linearity premises for D_k;
+- method identity versus realized-state identity;
+- route-conditional quantity;
+- exact nonoverlapping response catalog;
+- seven operation-state categories;
+- eight support/information-origin roles;
+- complete covariance including parent-model cross terms;
+- all twenty predictions;
+- universal completion gates;
+- method-family and method-instance identities;
+- exact A/B/C authority separation;
+- zero unresolved bundle-local links;
+- reproducible byte counts and SHA-256 values.
+
+======================================================================
+7. STAGE B DISPOSITION
+======================================================================
+
+After Grant Wilson approves the exact amended packet bytes, launch Stage B in a
+fresh implementation-blind thread.
+
+Stage B may author and later seek conditional freeze of the generic
+SCI-FRUIT core while every numerical parent, model, recurrence, stopping,
+response, covariance, and downstream-use route remains unavailable.
+
+It shall not infer a familiar FRUIT algorithm, existing implementation
+behavior, or numerical default.
+
+No Stage A approval or Stage B draft establishes numerical availability,
+implementation conformity, recovered sky modes, response/covariance fidelity,
+uncertainty coverage, convergence adequacy, Pointing/OOF/catalogue fitness,
+observational validation, performance, readiness, production suitability,
+production authorization, or Unity activity.
