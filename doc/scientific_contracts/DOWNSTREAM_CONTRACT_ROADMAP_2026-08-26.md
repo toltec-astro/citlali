@@ -18,8 +18,9 @@ The owner authorized [contract reconciliation](studies/SCI_MAP_POST_FREEZE_RECON
 The recovered August 28 decisions resolve the eight MAP-local questions and
 PTC coefficient-Registry architecture; the September 6 uniform admission
 already completes the uniform-first authority subgate. The next contract step
-is the bounded MAP successor Scope Brief and exact input review, followed by
-separately approved implementation-blind authorship and successor binding.
+is implementation-blind successor authorship under the now
+[owner-approved Scope Brief and exact references](studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/SCOPE_APPROVAL_2026-09-07.md),
+followed by candidate review and separately approved successor freeze/binding.
 These scientific decisions do not need to be asked again. Historical pending
 entries below retain their date-specific meaning.
 

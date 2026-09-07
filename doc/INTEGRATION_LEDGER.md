@@ -1,5 +1,21 @@
 # Citlali Integration Ledger
 
+## 2026-09-07 MAP Successor Authoring Scope Approved
+
+Grant Wilson approved the exact Scope Brief and 56-reference list at reviewed
+candidate `ba1187fe1e30525d4bd1f6f782a22b7103e83e9d`. The
+[scope approval](scientific_contracts/studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/SCOPE_APPROVAL_2026-09-07.md)
+closes that gate and preserves the approved input bytes. A fresh
+implementation-blind author is commissioned from an isolated packet to prepare
+SCI-MAP v0.2/r0.1 on the existing contract lane. All settled MAP decisions and
+admitted uniform science remain inputs; no new scientific choice is made.
+
+The resulting contract candidate still requires owner scientific disposition,
+independent consistency review and exact successor freeze/binding gates.
+Application work and NOI engineering remain outside this approval; FRUIT
+continues independently. No canonical integration, push or activation follows.
+Earlier scope-preparation entries below are historical checkpoints.
+
 ## 2026-09-07 MAP Post-Freeze Contract Reconciliation Candidate
 
 The owner directed contract reconciliation after clarifying that “repair”

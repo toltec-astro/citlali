@@ -1,7 +1,10 @@
 # MAP contract reconciliation
 
-Date: 2026-09-07. Status: documentation reconciliation and successor Scope
-Brief candidate; no successor scientific freeze or canonical integration.
+Date: 2026-09-07. Status: reconciliation independently reviewed; exact
+successor Scope Brief and 56 references [owner-approved](SCOPE_APPROVAL_2026-09-07.md).
+Implementation-blind authoring is underway; no successor scientific freeze or
+canonical integration. Historical scope-preparation statements below are
+superseded by the approval record, without altering approved input bytes.
 
 ## Program adherence and prior-work recovery
 
