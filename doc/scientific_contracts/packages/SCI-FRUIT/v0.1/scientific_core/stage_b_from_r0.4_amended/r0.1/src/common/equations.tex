@@ -1,0 +1,216 @@
+% Canonical authority: composition, responses, covariance and frozen quotation.
+\newcommand{\CompositionPage}{%
+\pageunit{Removal and rejoin determine the conditional result}{sec:composition}{%
+Bind $\Pi_k:M_k\to Y_k$, $F_k:Y_k\to Z_k$ and $B_k:M_k\to Z_k$.
+$\Pi_k(\ma)$ is the declared removal contribution; $B_k(\ma)$ is the
+declared contribution at rejoin. Only when the two operand pairs have the
+compatibility in Section~\ref{sec:types} does the ordinary relation apply:
+\begin{equation}\begin{aligned}
+\rho_k&=\yin-\Pi_k(\ma),\\
+z_k&=F_k(\rho_k)+B_k(\ma).
+\end{aligned}\label{eq:composition}\end{equation}
+The model path bypasses the exactly named residual operation. The operation
+graph binds order, removal/rejoin locations, all path application counts and
+consequential state. It does not imply bypass of every upstream operation.
+There is no assumed $\Pi_k=B_k$, inverse relation, equal domain/support,
+linear $F_k$, true model or unit response. Missing path contributions are not
+zero and undefined partial-domain maps are not silently extended.
+
+\subsection*{What follows when only the residual operation is linear}
+If the complete $F_k=A_k$ is exact fixed linear on the declared spaces,
+support, state and conditioning, distributivity gives
+\begin{equation}
+z_k=A_k\yin-A_k[\Pi_k(\ma)]+B_k(\ma).
+\label{eq:mapvalued}\end{equation}
+This remains a map-valued expression. Nonlinear $\Pi_k$ or $B_k$ prevents a
+linear applied-model operator from being inferred. A fixed loading basis
+alone is insufficient; coefficient recomputation alone neither proves nor
+disproves complete linearity. Centering, support and every material state
+belong to the claim. An affine offset cannot be discarded to obtain this form.
+Other procedures retain Equation~\ref{eq:composition} and their full state graph.
+
+\subsection*{The stronger, completely fixed linear specialization}
+Only if $A_k,\Pi_k,B_k$ are \emph{all} exact fixed linear maps on the stated
+spaces, units, support, state and conditioning may one define
+\begin{equation}
+D_k:=B_k-A_k\circ\Pi_k:M_k\to Z_k,\qquad
+z_k=A_k\yin+D_k\ma.
+\label{eq:linear}\end{equation}
+The difference operator is well typed because both terms map the applied-model
+space into one compatible result space. It describes the conditional net
+influence of applied feedback, not all sky bias. Holding the same input and
+operators and changing $\ma=m_{\rm ref}^{\ap}+\delta_m^{\ap}$ gives
+\begin{equation}
+z_k(\ma)-z_k(m_{\rm ref}^{\ap})=D_k\delta_m^{\ap}.
+\label{eq:modelerror}\end{equation}
+Its conditional mean is the corresponding model-induced bias component.
+Accepted-model error requires its declared transformation first. Zero/identity
+limiting cases in the predictions are deductions under premises, not defaults
+or admitted run plans. None restores an upstream unavailable measured mode.
+\src{RESPONSE\_AND\_UNCERTAINTY\_FAMILIES; SCOPE\_BRIEF \S2; REQUIRED\_CONDITIONAL\_PREDICTIONS.}
+}}
+\newcommand{\ResponseLocalPage}{%
+\pageunit{Response depends on what is perturbed and what is held fixed}{sec:response-local}{%
+A response is an exact query about a procedure. Bind perturbation source/domain,
+direction/basis, units, limit or finite step and normalization when relevant;
+fixed versus rerun state; recurrence and terminal scope; baseline/perturbed
+comparability; branch/support/state changes; codomain; derivative or
+finite-difference convention; application counts, generations, conditioning;
+and unavailable/discontinuity behavior. Reference/gauge/null-space comparisons
+must be compatible. A changed reference is not silently a signal perturbation.
+No numerical query or step is selected here.
+
+\begin{description}[style=nextline,leftmargin=0pt,labelwidth=0pt,labelsep=0pt]
+\item[RF-01: fixed one-step measured-input response]
+Perturb $\yin$ in $Y_k$, holding the applied model and declared maps, state
+and support fixed. Evaluate the unchanged one-step composition; no learning,
+recurrence, stopping or terminal selection. Codomain: $Z_k$ differences.
+Measured-input names this path, not necessarily the original parent or an
+independent observation.
+\item[RF-02: fixed one-step applied-model response]
+Perturb $\ma$ in $M_k^{\ap}$, holding the measured iteration input and
+declared maps, state and support fixed. Evaluate the unchanged one-step
+composition; no acceptance/model learning, recurrence or selection.
+Codomain: $Z_k$ differences. Candidate or accepted perturbations require their
+transformations in the corresponding full procedure.
+\item[RF-03: one-iteration FRUIT full-procedure response]
+Perturb the declared one-iteration input on its exact domain. Hold prior $S_k$
+and upstream producer procedure/state fixed. Rerun construction, selection,
+state resolution, support, coefficient realization and application for
+iteration $k$ only. Codomain: its $Z_k$ response. No earlier recurrence or
+terminal selector belongs to this local role.
+\item[RF-04: fixed-sequence recursive response]
+Perturb the declared recursion input. Hold method rules, initial state,
+upstream producer procedure/state and the predeclared fixed sequence or
+absolute endpoint index fixed. Propagate input/model/state dependence through
+that extent, binding exact input and result/sequence codomains. Data-dependent
+sequence length and terminal selection are outside this role.
+\end{description}
+All roles retain branch/support/state changes and typed unavailability or
+transitions when comparisons/results/derivatives do not exist. Under complete
+fixed linearity in Equation~\ref{eq:linear}, the separate one-step responses are
+\begin{equation}
+R_{z\leftarrow y,k}^{\mathrm{FRUIT,fixed}}=A_k,\qquad
+R_{z\leftarrow m^{\ap},k}^{\mathrm{FRUIT,fixed}}=D_k.
+\label{eq:responses}\end{equation}
+If only $F_k=A_k$ is linear, the fixed input response may still be $A_k$;
+the model response needs the derivative of the complete map-valued expression
+where it exists, not an inferred $D_k$.
+\src{RESPONSE\_AND\_UNCERTAINTY\_FAMILIES; NOTATION\_AND\_ROLE\_TAXONOMY.}
+}}
+\newcommand{\ResponseOuterPage}{%
+\pageunit{Terminal, FRUIT-only and whole-chain queries have different reach}{sec:response-outer}{%
+\begin{description}[style=nextline,leftmargin=0pt,labelwidth=0pt,labelsep=0pt]
+\item[RF-05: selected-terminal response]
+Perturb the declared selection/procedure input and name all fixed initial and
+upstream facts. Include consequential iterations, convergence, stopping,
+resource limits and terminal selection, with complete candidate population and
+causes. Bind input and selected-result codomain, query convention and terminal
+record. Include branch/support/state/selection transitions and reference/gauge/
+null-space comparison. Unavailable dependencies or nonexistent derivatives
+remain unavailable or typed transitions.
+\item[RF-06: whole-chain response]
+Perturb the exact upstream/source query on its domain, naming fixed external
+facts. Rerun every included data-dependent upstream producer and the declared
+FRUIT procedure, including its recurrence/terminal scope. Bind source and
+final domains and convention; each included producer and comparison must be
+available. Otherwise retain exact unavailability/discontinuity.
+\item[RF-07: complete FRUIT-only parent-domain response]
+Perturb the realized parent-domain payload while holding the upstream producer
+operation, learned state and generation fixed. Compose the parent-domain
+entry with the complete FRUIT procedure, including recurrence and terminal
+selection as applicable. Bind parent-query/final-response domains, initial
+FRUIT conditions, query convention and RF-03/RF-04/RF-05 component references.
+Include branch/support/state/selection and reference/gauge/null-space
+consequences. No upstream producer is rerun.
+\end{description}
+RF-03 supplies local iteration relations. RF-04 propagates fixed extent;
+RF-05 includes the selector and data-dependent stopping extent. RF-07 binds
+the outer realized-parent query to those components: it is not an independent
+alias of RF-03, RF-04 or RF-05. When a one-iteration special case reduces to a
+component, record that exact specialization and reuse its bound response/status.
+Equal values do not erase query identity. RF-06 additionally reruns included
+upstream producers. The previous RF-07 held-numerical-parent meaning is retired.
+
+Perturbed parent payloads are separately identified response-query objects
+with immutable baseline-parent ancestry. A fixed producer generation does
+not mutate the measured parent or claim a new upstream realization.
+A rule-changing control perturbation requires a new method identity and
+explicit comparison of methods, not a state perturbation disguised as one rule.
+
+For RF-01/RF-02, ``fixed'' means the conditioned map and unchanged application
+rule. Coefficients recomputed by that rule from a perturbed operand must still
+be recomputed, with new coefficient/application states. Freezing their numerical
+values instead changes the procedure. Missing baseline/perturbed codomain
+compatibility makes the response unavailable. Threshold, branch, support,
+state or selector changes may defeat derivative existence; a finite difference
+needs its own convention, never a substituted fixed-branch derivative.
+
+Use all response identities/statuses required by the applicable method and
+claim. The seven-role catalog does not make any numerical response universally
+available. No online adaptive estimator is introduced by these names.
+\src{RESPONSE\_AND\_UNCERTAINTY\_FAMILIES; SCIENTIFIC\_OWNER\_DECISION\_LEDGER (response crosswalk).}
+}}
+\newcommand{\UncertaintyPage}{%
+\pageunit{Shared input and model information must remain in uncertainty}{sec:uncertainty}{%
+Assume complete fixed linearity, compatible real vector representations,
+finite joint second moments and exact conditioning $\Om$ fixing relevant
+operators/state, reference/gauge/null-space coordinates and support. Define
+$C_{yy}^{\mathrm{FRUIT}},C_{mm}^{\mathrm{FRUIT}},C_{ym}^{\mathrm{FRUIT}},
+C_{my}^{\mathrm{FRUIT}}$ as the joint conditional covariance blocks of
+$(\yin,\ma)$, with exact quantity axes, units, domains and conditioning.
+The $m$ axis denotes only the applied model. Equation~\ref{eq:linear} then gives
+\begin{equation}\begin{aligned}
+C_z^{\mathrm{FRUIT}}={}&A_k C_{yy}^{\mathrm{FRUIT}} A_k^{\mathsf T}
+ +D_k C_{mm}^{\mathrm{FRUIT}}D_k^{\mathsf T}\\
+ &+A_k C_{ym}^{\mathrm{FRUIT}}D_k^{\mathsf T}
+ +D_k C_{my}^{\mathrm{FRUIT}}A_k^{\mathsf T}.
+\end{aligned}\label{eq:covariance}\end{equation}
+This follows by expanding the conditional covariance of the sum; the two
+mixed products are the two cross terms. In a valid real joint covariance,
+$C_{my}^{\mathrm{FRUIT}}=(C_{ym}^{\mathrm{FRUIT}})^{\mathsf T}$.
+Do not drop either term without exact independence/conditioning authority
+establishing its absence. A model learned from the parent is not independent
+by implication. Candidate/accepted covariance needs the exact transformation
+and its dependence before it can supply applied covariance.
+
+If the applied model is deterministic under the conditioning, its variance
+and cross blocks vanish there, leaving $A_k C_{yy}^{\mathrm{FRUIT}}A_k^{\mathsf T}$.
+This conditional target omits model-learning variation; it is not unconditional
+independence or covariance completeness and cannot erase unknown sources from
+another target. Random-operator/nonlinear procedures need their own uncertainty
+method. A Jacobian approximation is separately typed, not this exact identity.
+
+Keep nine uncertainty roles distinct: measured-parent covariance;
+candidate/accepted/applied model/prior covariance; parent-model cross
+covariance; operator/state uncertainty; support/threshold selection;
+stopping/terminal selection; model mismatch/bias; empirical repeatability;
+and NOI uncertainty. Bias is not covariance by identity. Each binds reference/
+gauge, unavailable modes, model/prior support, omitted mode/reference variation
+and exact conditioning. A fixed gauge or singular covariance does not mean an
+unavailable absolute mode was measured with zero uncertainty. Selected-terminal
+uncertainty additionally binds the full candidate population, stop/resource
+facts, selection record and causes. Reused parents imply no independent
+observations or $1/\sqrt{\text{iteration count}}$ uncertainty law.
+
+Fixed-state NOI applies identical fixed FRUIT state/operator graph with exact
+application parity to every compatible admitted realization; absent parity
+makes the numerical route unavailable. It omits unmodeled learning, support,
+selection, convergence, restart and leakage variation. NOI-informed later
+learning is a dependent immutable successor science/ensemble/uncertainty
+generation, not independent validation or a retroactive edit. Changing to
+per-realization relearning of model, support, cleaner, coefficients, stopping
+or selector requires a separate method/ensemble and complete member-state graph.
+Members under unchanged rules get new state/application generations, not a
+method each. Fixed/relearned members cannot share one ensemble or be pooled here.
+\src{RESPONSE\_AND\_UNCERTAINTY\_FAMILIES; BOUNDARIES\_AND\_CONVENTIONS B4.}
+}}
+\newcommand{\PTCAppendix}{%
+\pageunit{Frozen PTC application quotation}{app:ptc}{%
+This is the byte-exact permitted SCI-PTC v0.1/r0.5 application fragment,
+under the source-local notation cover in Appendix~\ref{app:notation}.
+It supplies no numerical FRUIT cleaning, rank, metric, model or parent route.
+FRUIT imports the distinction and restrictions, not a fresh PTC derivation.
+\begin{quote}\small\input{PTC_APPLICATION_REFERENCE.tex}\end{quote}
+\src{PTC\_APPLICATION\_REFERENCE.tex, exactly preserved; BOUNDARIES\_AND\_CONVENTIONS B2.}
+}}
