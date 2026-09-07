@@ -1,0 +1,342 @@
+{
+  "identity": "SCI-MAP post-freeze successor proposed author references r0.1/2026-09-07",
+  "status": "proposed; owner scope/reference approval and packet release pending",
+  "scientific_base": "8eccf8990027b8f65febb5f20d9a415829152322",
+  "scope_brief": {
+    "path": "doc/scientific_contracts/studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/SCOPE_BRIEF.md",
+    "sha256": "62984705f67db37641d1f85041c720869f2080d8776d1aa573a44a84fb11e3b9"
+  },
+  "policy": "Only the approved Scope Brief and these exact files may enter the future author packet. Links are locators, not permission to open unlisted files. No implementation, audit/review report, validation result, manager dossier or full prior-work inventory is allowed. Missing needed scientific reference returns to the manager and owner.",
+  "references": [
+    {
+      "path": "doc/scientific_contracts/README.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "351e9b7775b0bf78cba01bf4cd2fafd9591c4b43931b0dc23d82d97f0dfe82d2",
+      "role": "governing process; no scientific derivation"
+    },
+    {
+      "path": "doc/scientific_contracts/PILOT_PROCESS_REVIEW_2026-08-16.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "c4c29c13d5829773cfa2e061571101edec059313a4bd1a096d13fd9878d85b07",
+      "role": "governing process; no scientific derivation"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/POST_FREEZE_SCIENTIFIC_OWNER_DECISIONS_2026-08-28.md",
+      "source_commit": "54475956f6aefb839d43b2f0fb019a142cb64310",
+      "sha256": "4d2b857b7ec9efe489fe065f464df4ecd23b57a4c1320cda6a10a56592825d1c",
+      "role": "approved successor owner decisions"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCIENTIFIC_OWNER_FREEZE_R0.7.1.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "91801005ba2f2bce6471a9f6f4ed0b79806c893f498b4f3cca9e81e26df39ce1",
+      "role": "frozen MAP science or exact authority/boundary reference; historical statuses qualified by later approved decisions"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCIENTIFIC_OWNER_DECISION_LEDGER.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "bfcc18eced116309356d9d597a4423881ef67df058df07be30ec80532452dd9b",
+      "role": "frozen MAP science or exact authority/boundary reference; historical statuses qualified by later approved decisions"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SOURCE_MANIFEST_R0.7.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "bd3f172f8bb1e17bf95fde034ad76632439c766ef89b0a992361b9e6d79ada0a",
+      "role": "frozen MAP science or exact authority/boundary reference; historical statuses qualified by later approved decisions"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SOURCE_MANIFEST_R0.7.sha256",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "18f4ca464f9bf8892ba9223cbe6bf1367785b4cf4edfc2fc00a7c2622b059482",
+      "role": "frozen MAP science or exact authority/boundary reference; historical statuses qualified by later approved decisions"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/SCI-MAP-v0.1_SHARED_AUTHORITY_r0.7.1.tex",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "08fcc9782cfba806d33dc07652a2363c8bd6540084f54e752e1fa91a5336b6bb",
+      "role": "frozen MAP science or exact authority/boundary reference; historical statuses qualified by later approved decisions"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/CROSSWALK.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "2840b2d74f182117b13b896021b4f5fab0b547a932839b558731739089d92bbd",
+      "role": "frozen MAP science or exact authority/boundary reference; historical statuses qualified by later approved decisions"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCI-PTC_TO_SCI-MAP_BOUNDARY.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "a499c59afb69eefda74a5b131ad37afd165213b99324c8b67a6de1d20793c9b7",
+      "role": "frozen MAP science or exact authority/boundary reference; historical statuses qualified by later approved decisions"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE_BOUNDARY.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "f7be703d17320de6f6ecfc3a3974d54799540fff1d8b2d9491c941a7ea3b45a4",
+      "role": "frozen MAP science or exact authority/boundary reference; historical statuses qualified by later approved decisions"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCI-MAP_UPSTREAM_ADMISSION_PROFILE.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "0717476c0a1d177074ee8702c18308f093d45a4913b22933f3fda3d33090a883",
+      "role": "frozen MAP science or exact authority/boundary reference; historical statuses qualified by later approved decisions"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCI-MAP_COADD_PROFILES_R0.7.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "d93c04488925931676b02dff433774ff2cda9846fdd1d3f34bff29d76efdd702",
+      "role": "frozen MAP science or exact authority/boundary reference; historical statuses qualified by later approved decisions"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCI-PTC_TO_SCI-MAP_BOUNDARY_UNIFORM_R0.4_2026-09-06.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "58291e1c879dc9116e81a9e3fd4323caf79a176c51e296d8119efb6937272ef8",
+      "role": "frozen MAP science or exact authority/boundary reference; historical statuses qualified by later approved decisions"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/notation.tex",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "2b132704dd1ee8da7a56e5bafdc998df98422fe512736ac4f904fad8a693e569",
+      "role": "frozen MAP shared scientific core"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/definitions.tex",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "740f4a6f1ef0bbb12f721f192b7883144c247d039ab0c9dfa0ffae53cd711b65",
+      "role": "frozen MAP shared scientific core"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/equations.tex",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "36329f4cd1a103c78fcdcc5ff247a850f40aba92a09156d1aa55a1411a430c04",
+      "role": "frozen MAP shared scientific core"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/assumptions.tex",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "bba33b92c4189fe5886ef849caebeeb5400bdc7f2572f58a74de53ca578881de",
+      "role": "frozen MAP shared scientific core"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/requirements.tex",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "68acf81d6c27788495cc680a1819da5f269616493b9aba5a6e0a1d1058ba5fa7",
+      "role": "frozen MAP shared scientific core"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/edge_cases.tex",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "47022012e79173a1778a4e5bdc6743b4691bfecb27faa3090bcf03458d87e123",
+      "role": "frozen MAP shared scientific core"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/scientific-rationale.tex",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "652c94b65e9742f6232c4a97027335536ffa584c2b30222edca1947c80a10cd0",
+      "role": "frozen shared-core view wrapper"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/engineering-conformance.tex",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "3e67d0b0984278c3a2f16f6b1d001cbd228639e9c3456e40e2987f5046ce2c42",
+      "role": "frozen shared-core view wrapper"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/formal-scientific-engineering-contract.tex",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "99fdb64e42c005afb37740170aa69ba41c50e9c53424dbe936a76ee2a7664229",
+      "role": "frozen shared-core view wrapper"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT-v0.1.pdf",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "4249348517d9be1fe8fe5535987258bffb9ce276046032a8db45575fca75e8b8",
+      "role": "frozen MAP view; authority limits unchanged"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-SCIENTIFIC-RATIONALE-v0.1.pdf",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "24f2537ae727db3a024c8df5395f0af47061c0f4066afea8956a1adeac23f14c",
+      "role": "frozen MAP view; authority limits unchanged"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-ENGINEERING-CONFORMANCE-v0.1.pdf",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "60d2a3175b93148098a08a21bf93e0213eb23b0c35e4a7db6b73915cb652b1b8",
+      "role": "frozen MAP view; authority limits unchanged"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC-COEFFICIENT-UNIFORM/v0.1/FREEZE_MANIFEST_R0.4.json",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "c6d23f7f20f35089eba9b5f6dd6e65aaf05561ab3da2d0f7d18e5b8256a2f016",
+      "role": "approved/frozen uniform authority and source identity; no reopening"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC-COEFFICIENT-UNIFORM/v0.1/src/common_core.tex",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "c8f51f5c9999235649dc99ddbfae4f538468ee7530034fb96d51b94d129597cf",
+      "role": "approved/frozen uniform authority and source identity; no reopening"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC-COEFFICIENT-UNIFORM/v0.1/SCIENTIFIC_OWNER_DECISION_LEDGER.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "9bd339c5ea4a75111209ffdfb420106c72a885350d91a34efae872d946be353d",
+      "role": "approved/frozen uniform authority and source identity; no reopening"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC-COEFFICIENT-UNIFORM/v0.1/CROSSWALK.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "6b3ee8d86b485cbca07ef7db46258042b5db3c243d64e6f2a8767a4758eaf2d5",
+      "role": "approved/frozen uniform authority and source identity; no reopening"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC-COEFFICIENT-UNIFORM/v0.1/PREDICTION_CROSSWALK.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "b8dbdcfb477090533ba00ed76993493a59593c2c661d2cbeb76e882b9c19e69a",
+      "role": "approved/frozen uniform authority and source identity; no reopening"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC-COEFFICIENT-UNIFORM/v0.1/src/common/notation.tex",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "88b6ad914bb8ac85a9eec8032deb6185b3b076ce42c31794f93a51925a1c9943",
+      "role": "approved uniform shared scientific core"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC-COEFFICIENT-UNIFORM/v0.1/src/common/definitions.tex",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "6c62e83d673612afd44bc11cd28798a1cfabf2eefb1f9f5215ab03c89c8c6423",
+      "role": "approved uniform shared scientific core"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC-COEFFICIENT-UNIFORM/v0.1/src/common/equations.tex",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "8e84d10a9febf5eb3805604bfce5d41ee15bd2e40110ca2f5294ef56a9c9e73e",
+      "role": "approved uniform shared scientific core"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC-COEFFICIENT-UNIFORM/v0.1/src/common/assumptions.tex",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "7561dbdac512d0c17e98609ee5dedc72810035d0ea99a727b7a96e18eed88a70",
+      "role": "approved uniform shared scientific core"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC-COEFFICIENT-UNIFORM/v0.1/src/common/requirements.tex",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "ca78a7a77aea54832b5baf69d11c16d9603ffd06ae3711cec2914ad55158533c",
+      "role": "approved uniform shared scientific core"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC-COEFFICIENT-UNIFORM/v0.1/src/common/edge_cases.tex",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "e47b0c18016193711275c50bed1a2ab02fd98b0d11b904782f0d95c1c4741151",
+      "role": "approved uniform shared scientific core"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/owner_approval_r04/SCIENTIFIC_OWNER_APPROVAL.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "a771eddc1d1a9cfae76f9f6f0c13398a90552ca0ad28a06f872a77048dc712e5",
+      "role": "exact later uniform owner approval and retained deferrals"
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/PTC_UNIFORM_R04_2026-09-06/ADMISSION_MANIFEST.json",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "500494b7814d3f13306581a6ca0ddfb232928046a6a1c15b9ecc19bb63989f11",
+      "role": "immutable scientific admission/source binding; references are locators only"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/COEFFICIENT_REGISTRY_UNIFORM_R0.4_2026-09-06.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "433309b21d17751ce3972d196f9ba73a5f910f36e88052046928a0163fb7ca76",
+      "role": "admitted uniform family/profile/source register or separate consumer boundary; unchanged"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/SCI-PTC_TO_SCI-MAP_BOUNDARY_UNIFORM_R0.4_2026-09-06.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "58291e1c879dc9116e81a9e3fd4323caf79a176c51e296d8119efb6937272ef8",
+      "role": "admitted uniform family/profile/source register or separate consumer boundary; unchanged"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/SCI-PTC_TO_SCI-JINC_BOUNDARY_UNIFORM_R0.4_2026-09-06.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "e1bc8fc0c1d88f63c958442bba88ff781fda84793ee6f46ed27a5b8d799fa5d4",
+      "role": "admitted uniform family/profile/source register or separate consumer boundary; unchanged"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCI-PTC_TO_SCI-JINC_BOUNDARY_UNIFORM_R0.4_2026-09-06.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "e1bc8fc0c1d88f63c958442bba88ff781fda84793ee6f46ed27a5b8d799fa5d4",
+      "role": "admitted uniform family/profile/source register or separate consumer boundary; unchanged"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/PROFILE_REGISTRY_PTC_UNIFORM_R0_4_2026-09-06.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "a8fdf512507c877c22aa5457566f66782f89a466504115812b5dc7b5d46dfb5f",
+      "role": "admitted uniform family/profile/source register or separate consumer boundary; unchanged"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/SOURCE_BINDING_REGISTER_PTC_UNIFORM_R0_4_2026-09-06.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "fb13be222a9a8bb928fa172253f65aaf6ede081a88e901cdf6eb3799fad35f6e",
+      "role": "admitted uniform family/profile/source register or separate consumer boundary; unchanged"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/SCIENTIFIC_OWNER_FREEZE_R0.5.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "8357961a49272adc40e27a8aa9e760e0d01ff2419ae2c88a62c0f93c9f959e66",
+      "role": "frozen PTC publication/coefficient obligations; bounded use only"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/src/common/requirements.tex",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "f2047600cc06c234a78aa3ddf6a575abf2f9592b3e3da810491f6db0150fe21c",
+      "role": "frozen PTC publication/coefficient obligations; bounded use only"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/SCI-PTC_TO_SCI-MAP_BOUNDARY.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "a499c59afb69eefda74a5b131ad37afd165213b99324c8b67a6de1d20793c9b7",
+      "role": "frozen PTC publication/coefficient obligations; bounded use only"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-AST/v0.1/SOURCE_MANIFEST.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "b54b6013750540f28aad02339a60bf36078980dc53b132beab73069d66ef3601",
+      "role": "frozen AST coordinate/ownership authority; no derivation of new astrometry"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-AST/v0.1/src/common/notation.tex",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "ba0bd3a366416860d612d1d94b723c4a72553290990c0663294901c2dc1586d7",
+      "role": "frozen AST coordinate/ownership authority; no derivation of new astrometry"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-AST/v0.1/src/common/requirements.tex",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "47b357dd79136fb3d019f45b1092a2efd88fbd1ed16ab038fc6bf51beaf06f01",
+      "role": "frozen AST coordinate/ownership authority; no derivation of new astrometry"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/SCIENTIFIC_OWNER_FREEZE_R0.3.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "2fc3b3ad329fe3035d442b43d1e564a74fc86ab49f85f56e87322d8553fad9a6",
+      "role": "frozen VAL owner/evaluator and binding boundary"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/src/common/requirements.tex",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "8c518ea1ffba9142d70a5982ce6f403dcb462ecf7de772047bffc7d24bad99d6",
+      "role": "frozen VAL owner/evaluator and binding boundary"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-NOI/v0.1/stage_b/r0.5/POST_SNAPSHOT_SCIENTIFIC_OWNER_FREEZE_APPROVAL.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "dba66966ed7082ea55b756c23f4cc9de6205022f1362ff0a69da63bc85190d2c",
+      "role": "frozen NOI nonmutation and profile-admission ceiling only"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-NOI/v0.1/stage_b/r0.5/normative/REQUIREMENTS.md",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "7e7d0bbca6e58155ceccb2ceef1bc825f0a15a4fbb58266f736d766fd3cb1ba1",
+      "role": "frozen NOI nonmutation and profile-admission ceiling only"
+    }
+  ]
+}

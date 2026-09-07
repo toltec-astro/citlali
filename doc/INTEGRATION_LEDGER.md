@@ -1,5 +1,26 @@
 # Citlali Integration Ledger
 
+## 2026-09-07 MAP Post-Freeze Contract Reconciliation Candidate
+
+The owner directed contract reconciliation after clarifying that “repair”
+meant scientific/engineering contracts, not application code. The
+[reconciliation record](scientific_contracts/studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/README.md)
+recovers exact August 28 decisions from `54475956f...`, preserves frozen MAP
+r0.7.1, and accounts for the already admitted uniform family/profile and
+separate consumer grants. All eight later MAP choices are decided; versioned
+incorporation remains pending. Current navigation is corrected selectively;
+archived decision/audit snapshots retain their original bytes.
+
+The one documentation branch `codex/map-contract-reconciliation-2026-09-07`
+starts at canonical `8eccf8990027b8f65febb5f20d9a415829152322`. Its bounded
+Scope Brief and exact scientific references are prepared for independent
+review and owner scope disposition before implementation-blind successor
+authorship. No new scientific choice is made and no settled one is reopened.
+The NOI application candidate is preserved and paused for separate engineering
+ownership; this task opens no implementation slot. FRUIT remains independent,
+OOF remains deferred, and no code/config/test/build, frozen-source, Registry,
+canonical, push, Unity, activation or cleanup operation is performed.
+
 ## VAL Native Target Canonical Acceptance — 2026-09-07
 
 Owner directive: "approved." The preceding explicit request named admission

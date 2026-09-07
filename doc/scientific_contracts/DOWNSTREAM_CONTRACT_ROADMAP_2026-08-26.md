@@ -2,8 +2,8 @@
 
 Date: `2026-08-26`
 
-Updated: `2026-09-05` for owner acceptance of the map-space source study and
-its bounded documentation-integration route
+Updated: `2026-09-07` for recovery of approved MAP post-freeze decisions and
+the bounded contract-reconciliation scope
 
 Status: scientific-owner-approved program sequencing record
 
@@ -11,6 +11,24 @@ This record preserves the agreed progression after the frozen ALIGN-through-PTC
 handoff. It is a program plan, not a scientific contract, package freeze,
 implementation-conformity finding, validation result, or production-readiness
 claim.
+
+## 2026-09-07 MAP Contract Reconciliation
+
+The owner authorized [contract reconciliation](studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/README.md).
+The recovered August 28 decisions resolve the eight MAP-local questions and
+PTC coefficient-Registry architecture; the September 6 uniform admission
+already completes the uniform-first authority subgate. The next contract step
+is the bounded MAP successor Scope Brief and exact input review, followed by
+separately approved implementation-blind authorship and successor binding.
+These scientific decisions do not need to be asked again. Historical pending
+entries below retain their date-specific meaning.
+
+This task owns contracts and read-only feasibility inspection. Application,
+configuration/default and test-code repairs require separate explicit
+engineering authorization. The existing NOI application candidate remains
+preserved and paused; this does not affect other tasks' authorizations.
+FRUIT continues independently and receives a focused attachment review only
+after its own completion, owner review and integration. OOF remains deferred.
 
 ## 2026-09-05 Map-Space Source-Study Acceptance
 
