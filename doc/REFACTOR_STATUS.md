@@ -1,5 +1,26 @@
 # Citlali Refactor Status
 
+## 2026-09-07 Original Paired RTC Spike Learn Implementation
+
+The owner re-anchored the next increment to the existing contracted S2 work
+order and selected the bounded spike-learning policy one question at a time.
+From verified live canonical `8eccf8990027b8f65febb5f20d9a415829152322`, the
+isolated `codex/timestream-successor-rtc-spike-learn-001` branch implements
+original x/r adjacent-difference noise and candidate Learn evidence, the
+owner-selected paired exclusion requirement when screening cannot run, and a
+conditional sampled-optical reference using the approved beam/AST authorities.
+
+The [implementation handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_SPIKE_LEARN_001_2026-09-07.md)
+records the owner decisions, exact base, runtime Learn/Consider/Apply boundary,
+remaining event predicates and local conformance evidence. All 916 runnable
+local CTests pass, including 17 new tests; config preflight and all 207
+baseline-tool tests pass. Local AppleClang/cached-source evidence is
+supplemental. Independent exact-SHA review and a new owner-run Unity gate
+remain required before acceptance/admission. Existing D2 and VAL remain intact.
+No complete despiking Apply plan, operational route, map comparison, filtering,
+downsampling or subsequent component is delivered by this unit. Earlier
+planning-only and no-new-unit entries below remain historical checkpoints.
+
 ## 2026-09-07 VAL Native Target Accepted and Incorporated
 
 The owner accepted exact admission `74a2727539a5d1812892042a59f4ca9b14ff9c2e`,

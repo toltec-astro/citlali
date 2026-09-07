@@ -1,5 +1,26 @@
 # Citlali Integration Ledger
 
+## RTC Spike Learn Source Candidate — 2026-09-07
+
+Owner directive: "great. Let's proceed" after selecting the original paired
+spike-candidate Learn increment, its noise/failure policy and provisional
+readout averaging assumption. This opens one bounded scientific-module slot
+from exact verified canonical `8eccf8990027b8f65febb5f20d9a415829152322`.
+The [work order and conformance record](../handoff/TIMESTREAM_SUCCESSOR_RTC_SPIKE_LEARN_001_2026-09-07.md)
+binds those decisions and the implemented responsibility to frozen SCI-RTC,
+SCI-VAL and the accepted native/identity/D2 interfaces. No scientific package
+is rewritten and no additional framework or diagnostic program is introduced.
+
+Local source gates pass 916 runnable CTests, four-mode config preflight and
+207 baseline-tool tests. Exact commit/tree and fresh independent three-axis
+review bind externally under
+`/private/tmp/citlali-rtc-spike-learn-evidence-2026-09-07`. The new owner-run
+Unity source gate, source acceptance and canonical admission remain pending;
+the prior D2/VAL Unity jobs do not cover this code. This entry records an
+implementation candidate, not integration. Preserve the literal source and
+reconcile the verified moving canonical ancestry with a separately reviewed
+admission SHA if the owner later accepts it. Pushes remain owner-held.
+
 ## VAL Native Target Canonical Acceptance — 2026-09-07
 
 Owner directive: "approved." The preceding explicit request named admission
