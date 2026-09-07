@@ -1,0 +1,27 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=0.72in,headheight=15pt,footskip=24pt]{geometry}
+\usepackage{lmodern,amsmath,amssymb,booktabs,array,longtable,enumitem,xcolor,fancyhdr,hyperref}
+\definecolor{ink}{RGB}{24,47,67}
+\definecolor{muted}{RGB}{70,83,92}
+\hypersetup{colorlinks=true,linkcolor=ink,urlcolor=ink,pdftitle={SCI-FRUIT v0.1 Stage B r0.1},pdfauthor={SCI-FRUIT implementation-blind Stage B authorship}}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\small\textcolor{muted}{SCI-FRUIT v0.1 / r0.1}}
+\fancyhead[R]{\small\textcolor{muted}{\ViewName}}
+\fancyfoot[L]{\footnotesize Owner-review draft; not frozen; numerical methods unavailable}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\setlength{\parindent}{0pt}\setlength{\parskip}{6pt}
+\setlength{\emergencystretch}{2em}
+\raggedright
+\let\OriginalUnderscore\_
+\renewcommand{\_}{\OriginalUnderscore\allowbreak}
+\setlist{leftmargin=*,itemsep=2pt,topsep=4pt}
+\setcounter{secnumdepth}{1}
+\input{common/notation.tex}
+\input{common/definitions.tex}
+\input{common/equations.tex}
+\input{common/assumptions.tex}
+\input{common/requirements.tex}
+\input{common/edge_cases.tex}
+\newcommand{\ScientificNarrative}{\OpeningPage\TypePage\CompositionPage\SupportPage\ResponseLocalPage\ResponseOuterPage\UncertaintyPage\StatePage\ContinuationPage\CompletionPage}
+\newcommand{\ScientificAppendices}{\PredictionsAppendix\NotationAppendix\PremiseAppendix\OperationsAppendix\TerminalAppendix\BoundaryAppendix\PTCAppendix}

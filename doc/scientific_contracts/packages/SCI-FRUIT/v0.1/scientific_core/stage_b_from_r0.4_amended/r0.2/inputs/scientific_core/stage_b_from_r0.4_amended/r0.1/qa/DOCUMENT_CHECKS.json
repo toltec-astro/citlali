@@ -1,0 +1,23 @@
+{
+  "scope": "document verification only; no numerical qualification",
+  "permitted_payloads_verified": 11,
+  "reviewed_snapshot_files_verified": 12,
+  "canonical_modules": 6,
+  "stable_requirements": 24,
+  "stable_predictions": 20,
+  "pdf_pages": {
+    "scientist": 28,
+    "engineering": 28
+  },
+  "scientist_main_narrative_pages": 10,
+  "canonical_content_pairs_equal": 28,
+  "source_and_pdf_references_resolved": true,
+  "local_links_checked": 78,
+  "all_56_pages_visually_inspected": true,
+  "open_layout_defects": 0,
+  "tex_diagnostics": 0,
+  "pdf_sha256": {
+    "scientist": "5a511ce26952bf1c81453f282406f5a1aa99a7208ce95ad52f509d1c857c6708",
+    "engineering": "d66e3f96ebcd8aaaf1c8958e828fd6d8c1489b3fbe1669f21a4702f0fe01b671"
+  }
+}

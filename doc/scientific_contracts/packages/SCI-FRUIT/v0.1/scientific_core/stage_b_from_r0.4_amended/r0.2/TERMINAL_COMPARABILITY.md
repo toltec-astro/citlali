@@ -1,0 +1,11 @@
+# Comparable terminal population and open-world use
+
+Sole active Stage B scientific authority as a review candidate: SCI-FRUIT-NORMATIVE-CORE v0.1/r0.2; canonical source-inventory SHA-256 `e7f72712fa1c082bab8bfe8a279f9e568fec7f008fb8ac0cf2fcbae637e3cbcb`. This derived record adds no independent science. r0.2 supersedes r0.1; owner freeze and numerical authority remain pending.
+
+REQ-020 and PRED-016 require exact common quantity/role, unit/scale, frame/grid/domain, reference/gauge, response meaning, support comparison domain, method/generation relation and uncertainty/metric meaning, or exact selector-owned conversion. All cross-route/method/grouping/gauge/generation/support conversions belong to selector identity; shape/scalar agreement does not suffice.
+
+Retain all nine fields: selected completed identity; every candidate/inclusion/exclusion/conversion; exact rule/generation/data access/ties/failure; convergence/stop/resource facts; causes; terminal response; terminal uncertainty; continuation/terminality; and requested/linked named-use identities/statuses or an explicit no-request statement. Field 9 is open-world, not an exhaustive future-use list.
+
+SCI-VAL-governed use retains exact request/applicability/eligibility/realization and profile/source. Not-requested creates no eligibility proposition. Missing profile/scope can produce realized accounting with applicability_unknown and decision_unavailable; incomplete/failed/not-produced artifacts have separate realization conditions. Generic unavailable is not a SCI-VAL realization value. Exact external bindings remain unavailable where absent.
+
+No child participates in base iteration/terminal completion. Only an exact explicitly requested narrower FRUIT role may require its specified child. Selection and later use preserve immutable parent/bundle identity and cause no new FRUIT iteration. No default terminal choice or numerical selection is supplied.

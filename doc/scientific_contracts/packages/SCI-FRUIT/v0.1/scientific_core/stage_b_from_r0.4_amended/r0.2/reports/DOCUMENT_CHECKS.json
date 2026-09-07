@@ -1,0 +1,134 @@
+{
+  "scope": "Document verification only; numerical comparisons remain blocked and evidence artifacts not produced.",
+  "core_identity": "SCI-FRUIT-NORMATIVE-CORE v0.1/r0.2",
+  "core_source_inventory_sha256": "e7f72712fa1c082bab8bfe8a279f9e568fec7f008fb8ac0cf2fcbae637e3cbcb",
+  "source_inventory_counts": {
+    "CORE_SOURCES.sha256": 7,
+    "CORE_DOCUMENT_SOURCES.sha256": 10,
+    "RATIONALE_DOCUMENT_SOURCES.sha256": 11,
+    "ECS_DOCUMENT_SOURCES.sha256": 11
+  },
+  "preserved_input_files": 52,
+  "stage_a_payloads_verified_against_prior_exact_identity": 11,
+  "permission_controls_verified": 5,
+  "preserved_sidecars_verified": 5,
+  "canonical_modules": 6,
+  "normative_units": 17,
+  "requirements": 24,
+  "assumptions": 6,
+  "predictions": 20,
+  "response_roles": 7,
+  "base_model_product_roles": 12,
+  "uncertainty_family_tokens": 13,
+  "registered_product_roles": 32,
+  "request_states": [
+    "not_requested",
+    "requested"
+  ],
+  "successful_producer_stages": [
+    "requested",
+    "effective",
+    "application_scope_resolved",
+    "applied",
+    "iteration_realized",
+    "complete_iteration_candidate",
+    "completion_decided",
+    "completed_iteration",
+    "published"
+  ],
+  "scientific_availability_values": [
+    "available",
+    "unavailable"
+  ],
+  "producer_outcome_values": [
+    "realized",
+    "failed",
+    "not_produced"
+  ],
+  "evidence_result_vocabulary": [
+    "pass",
+    "fail",
+    "blocked",
+    "not_applicable",
+    "not_assessed"
+  ],
+  "evidence_artifact_realization_vocabulary": [
+    "realized",
+    "incomplete",
+    "failed",
+    "not_produced"
+  ],
+  "prospective_requirement_rows": 24,
+  "prospective_fixture_rows": 20,
+  "numerical_fixtures_instantiated": 0,
+  "numerical_results_pass": 0,
+  "canonical_equation_macros": [
+    "EqComposition",
+    "EqMap",
+    "EqLinear",
+    "EqDerivative",
+    "EqShift",
+    "EqCovariance",
+    "EqNOI"
+  ],
+  "rationale_equation_imports": [
+    "EqComposition",
+    "EqMap",
+    "EqLinear",
+    "EqDerivative",
+    "EqCovariance",
+    "EqNOI"
+  ],
+  "view_redefinitions": 0,
+  "all_views_bind_identical_core": true,
+  "all_clean_build_pdf_bytes_identical": true,
+  "tex_diagnostics": 0,
+  "local_links_checked": 268,
+  "reviewed_snapshot_files_verified": 59,
+  "reviewed_current_source_files": 35,
+  "reviewed_retained_input_files": 24,
+  "correction_review_complete": true,
+  "historical_round_3_preserved": true,
+  "pdfs": {
+    "core": {
+      "pages": 26,
+      "sha256": "dc0dbd4baef96c2fbf3079eef4eb21d91537bf0abf4cb000edfaeedeb579cb46",
+      "metadata": {
+        "/Creator": "LaTeX with hyperref",
+        "/Title": "SCI-FRUIT-NORMATIVE-CORE v0.1/r0.2",
+        "/Subject": "SCI-FRUIT v0.1/r0.2 owner-review draft; numerical methods unavailable",
+        "/Author": "Grant Wilson",
+        "/Keywords": "SCI-FRUIT, Stage B, r0.2, conditional, owner review",
+        "/Producer": "xdvipdfmx (0.1)",
+        "/CreationDate": "D:20260907000000-00'00'"
+      }
+    },
+    "rationale": {
+      "pages": 9,
+      "sha256": "36339bbc973359e49c2fe6765901d2542c3d2bca96febedf5598c116835ea508",
+      "metadata": {
+        "/Creator": "LaTeX with hyperref",
+        "/Title": "SCI-FRUIT-SCIENTIFIC-RATIONALE v0.1/r0.2",
+        "/Subject": "SCI-FRUIT v0.1/r0.2 owner-review draft; numerical methods unavailable",
+        "/Author": "Grant Wilson",
+        "/Keywords": "SCI-FRUIT, Stage B, r0.2, conditional, owner review",
+        "/Producer": "xdvipdfmx (0.1)",
+        "/CreationDate": "D:20260907000000-00'00'"
+      }
+    },
+    "ecs": {
+      "pages": 13,
+      "sha256": "4db23ca696ee6922e37fc36da3cd0e10c03d8b2ed0bfa4d972e5ab6411810d49",
+      "metadata": {
+        "/Creator": "LaTeX with hyperref",
+        "/Title": "SCI-FRUIT-ENGINEERING-CONFORMANCE v0.1/r0.2",
+        "/Subject": "SCI-FRUIT v0.1/r0.2 owner-review draft; numerical methods unavailable",
+        "/Author": "Grant Wilson",
+        "/Keywords": "SCI-FRUIT, Stage B, r0.2, conditional, owner review",
+        "/Producer": "xdvipdfmx (0.1)",
+        "/CreationDate": "D:20260907000000-00'00'"
+      }
+    }
+  },
+  "visual_record_verified": true
+}

@@ -1,0 +1,405 @@
+SCI-FRUIT v0.1/r0.2 — INTERIM TARGETED CORE CORRECTION
+
+The current in-progress r0.2 common-core direction is accepted.
+
+Continue the existing r0.2 task. Do not restart Stage B and do not perform
+another broad derivation.
+
+Preserve:
+
+- the exact candidate/accepted/applied model distinction;
+- the applied model as the removal and rejoin operand;
+- additive/reference/gauge/null-space compatibility;
+- the conditional remove -> process -> rejoin composition;
+- the fixed-linear hierarchy and D_k only under complete linearity;
+- strict fixed-numerical RF-01/RF-02 conditioning;
+- prescribed recomputation in RF-03 unless an induced-fixed-map proof exists;
+- the general differentiable fixed-state response;
+- RF-03 through RF-07 causal scopes;
+- complete parent/applied-model covariance with both cross terms;
+- full-product versus zero-target-center member action;
+- all eight support/influence roles;
+- the seven operation-state categories;
+- immutable original-parent ancestry;
+- continuation, restart, retry, completion, and terminal selection distinctions;
+- terminal-candidate comparability;
+- local completion separate from downstream use;
+- no numerical method or route;
+- every existing claim ceiling and nonclaim.
+
+Apply the following corrections before authoring the final requirements,
+predictions, rationale, ECS, manifests, or PDFs.
+
+======================================================================
+1. MAKE CONDITIONING RELATIVE TO THE DECLARED STOCHASTIC LAW
+======================================================================
+
+The current Omega_(k,pre)^FRUIT wording is too universal.
+
+Define every stochastic target by:
+
+    target_law_identity
+    random_variables
+    conditioned_fixed_objects
+    resolution_or_selection_condition
+    omitted_variation
+    support/domain
+    reference/gauge/null-space state.
+
+“Pre-outcome” means fixed before the random event of that exact target law.
+
+Distinguish at least:
+
+A. physical/random-parent target
+
+The measured parent and any model whose variation is being estimated remain
+random. Do not condition on their realized numerical values.
+
+B. fixed-realized-model target
+
+The exact applied model is conditioned fixed. Model covariance and parent-model
+cross terms vanish only within this narrower target. Model-learning variation
+remains omitted.
+
+C. conditional NOI-randomization target
+
+The realized parent payload, fixed applied model, fixed operator graph, support,
+and other declared state may be conditioning facts because they exist before
+the NOI assignment/member is drawn.
+
+This is not the physical-parent stochastic target.
+
+Where the exact NOI source law is conditional on successful design resolution,
+record that conditioning explicitly. Do not hide it in a generic generation
+label, and do not prohibit it as though every form of outcome conditioning were
+the same scientific target.
+
+A branch-, completion-, convergence-, or terminal-selection-conditioned FRUIT
+target would require a separate method and estimand. It remains unavailable
+unless separately authorized; it is not silently represented by
+Omega_(k,pre)^FRUIT.
+
+Update the covariance definition, NOI boundary, assumptions, requirements,
+predictions, method record, and ECS fixtures.
+
+======================================================================
+2. TYPE THE NOI MEMBER AS A ZERO-TARGET-LAW OBJECT
+======================================================================
+
+Do not use “centered perturbation” in a way that implies member-wise,
+map-wise, or finite-ensemble mean subtraction.
+
+Define the relevant object as a member/random variable whose expectation under
+the exact declared NOI target law is zero.
+
+Use a law-qualified expectation, for example:
+
+    E_D[delta y_(k,b)^NOI | exact fixed parent, model, operator and design
+        conditioning] = 0.
+
+Retain explicitly:
+
+- the zero is a target-law expectation;
+- no individual member is required to have zero sample or spatial mean;
+- no finite-ensemble mean subtraction is implied;
+- no B-1 correction is implied;
+- source and deterministic residual structure may remain in individual members.
+
+For a zero-target-law member under the complete fixed-linear premises:
+
+    delta z_(k,b)^NOI
+      =
+      A_k delta y_(k,b)^NOI.
+
+Do not add D_k m_k^applied to each such member.
+
+For a full parent realization:
+
+    z_(k,b)^full
+      =
+      A_k y_(k,b)^full
+      +
+      D_k m_k^applied.
+
+A full-affine-member method requires its own center and estimator authority.
+
+Bind the exact external NOI authority or owner-directive source identity.
+Replace the temporal phrase “current ordinary SCI-NOI ensemble” with one exact
+source-bound target-law identity or a typed unavailable external binding.
+
+This conditional equation does not admit a numerical FRUIT/NOI route.
+
+======================================================================
+3. REPAIR THE LOCAL LIFECYCLE BRANCHING
+======================================================================
+
+Remove:
+
+    not_requested -> requested.
+
+Use:
+
+    request_state:
+        not_requested | requested.
+
+For one immutable requested generation, the successful producer-stage order is:
+
+    requested
+      ->
+    effective
+      ->
+    application_scope_resolved
+      ->
+    applied
+      ->
+    iteration_realized
+      ->
+    complete_iteration_candidate
+      ->
+    completion_decided
+      ->
+    completed_iteration
+      ->
+    published.
+
+A later change from not_requested to requested creates a new request
+generation.
+
+Keep separately typed:
+
+    scientific availability:
+        available | unavailable;
+
+    producer outcome:
+        realized | failed | not_produced
+
+or exact library-compatible equivalents.
+
+Unavailable, failed, and not_produced are branch/role outcomes at the stage
+actually reached. They are not mandatory steps on the successful path.
+
+Do not fabricate applied, realized, completion, or publication records after an
+earlier stop.
+
+An unavailable optional companion may coexist with a narrower complete product
+only when both the core and exact method permit it.
+
+Update product definitions, method record, REQ-017--021 as applicable,
+predictions, ECS records, and all diagrams.
+
+======================================================================
+4. SEPARATE TRANSFER, OUTPUT SHIFT, BIAS, AND UNCERTAINTY
+======================================================================
+
+Choose exact canonical identities.
+
+Use:
+
+    D_k
+      = model-path transfer operator;
+
+    Delta z_k^model
+      = model-induced output shift
+      = D_k delta m_k^applied;
+
+    b_(z,k)^model
+      = model-induced bias
+
+only when the target estimand, reference/truth model, model-error random
+variable, probability law, and conditioning exist.
+
+Do not describe Delta z_k^model interchangeably as both
+model_error_transfer and model_induced_output_shift.
+
+Do not combine model mismatch and bias into one
+“model-mismatch/bias” uncertainty role.
+
+Create independently addressable roles, provisionally:
+
+    SCI-FRUIT/MODEL-PATH-TRANSFER
+    SCI-FRUIT/MODEL-INDUCED-OUTPUT-SHIFT
+    SCI-FRUIT/MODEL-INDUCED-BIAS.
+
+A deterministic model difference or output shift is not covariance.
+A computable output shift does not establish bias.
+Bias may be unavailable while the transfer and shift are available.
+
+Transform accepted-model error through the exact
+acceptance-to-application relation before it enters the applied-model shift.
+
+======================================================================
+5. MAKE r0.2 THE COMPLETE SOLE ACTIVE CORE
+======================================================================
+
+The final core shall not rely on:
+
+    all other inherited r0.1 constraints remain
+
+as hidden normative authority.
+
+Use:
+
+    The r0.1 architecture was accepted as the revision basis.
+    The r0.1 artifacts are historical input and comparison evidence.
+    SCI-FRUIT-NORMATIVE-CORE v0.1/r0.2 is the complete sole active Stage B
+    scientific authority and supersedes r0.1.
+    Every surviving obligation is restated here or imported through one exact
+    explicitly named content-bound source.
+
+Return an exact r0.1-to-r0.2 semantic and identity crosswalk covering:
+
+- all 24 requirements;
+- all six assumptions;
+- all 20 predictions;
+- product roles;
+- lifecycle states;
+- response roles;
+- uncertainty roles;
+- edge cases;
+- nonclaims.
+
+No unstated r0.1 sentence remains active.
+
+Bind the exact Stage A packet, owner approval/freeze, r0.2 directive, common
+core, document sources, and build record by identities and SHA-256 values.
+
+======================================================================
+6. ENUMERATE EXACT PRODUCT-ROLE FAMILIES
+======================================================================
+
+Do not leave these as unexplained placeholder identities:
+
+    SCI-FRUIT/RESPONSE/<RF-role>
+    SCI-FRUIT/UNCERTAINTY/<role>.
+
+Either enumerate every exact role or define a formal registered family grammar.
+
+At minimum bind exact response identities for RF-01 through RF-07.
+
+Enumerate separately available uncertainty roles, including:
+
+- measured-parent covariance;
+- candidate-model uncertainty;
+- candidate-selection uncertainty;
+- accepted-model covariance;
+- acceptance-to-application transformation uncertainty;
+- applied-model covariance;
+- measured-parent/applied-model cross covariance;
+- operator/state uncertainty;
+- support/threshold-selection uncertainty;
+- stopping/terminal-selection uncertainty;
+- external-prior uncertainty;
+- empirical repeatability;
+- exact NOI-owned product identity.
+
+Do not put model-induced output shift or bias into that family by implication.
+
+State explicitly:
+
+    SCI-FRUIT/ITERATION-RESULT is a child numerical payload.
+    A bare z_k is not a scientifically complete FRUIT handoff.
+    Scientific consumption requires the exact ITERATION-BUNDLE or an immutable
+    exact reference to it.
+
+======================================================================
+7. MAKE TERMINAL USE REFERENCES SCI-VAL-CONGRUENT AND OPEN-WORLD
+======================================================================
+
+Terminal field 9 shall contain only explicitly requested or linked downstream
+decision records.
+
+Do not require an exhaustive closed-world list of all future uses.
+
+For a SCI-VAL-governed use, retain exact:
+
+    request
+    applicability
+    eligibility
+    realization
+
+states and the exact profile/source binding.
+
+Do not use generic unavailable as a SCI-VAL realization value.
+
+A not-requested use creates no eligibility proposition.
+A missing profile or unresolved scope may produce a realized accounting record
+with applicability_unknown and decision_unavailable.
+An incomplete, failed, or not-produced decision artifact is a separate
+realization condition.
+
+Use wording equivalent to:
+
+    requested linked named-use decision identities and exact statuses,
+    or an explicit statement that no downstream use was requested.
+
+No downstream decision participates in base iteration or terminal completion
+unless the exact requested FRUIT product role explicitly requires that child.
+
+======================================================================
+8. USE COLLISION-FREE NOI NOTATION
+======================================================================
+
+Replace unqualified Y_b and Z_b with iteration- and role-qualified symbols, for
+example:
+
+    y_(k,b)^full
+    z_(k,b)^full
+    delta y_(k,b)^NOI
+    delta z_(k,b)^NOI.
+
+Bind:
+
+- iteration;
+- member;
+- target law;
+- parent domain;
+- output domain;
+- ensemble generation;
+- center convention.
+
+Use E_D or another exact target-law-qualified expectation rather than one
+unqualified expectation symbol when discussing the NOI design law.
+
+Do not collide with PTC transformed-signal notation or the FRUIT result-space
+symbol Z_k.
+
+======================================================================
+9. COMPLETE THE REMAINING r0.2 ARTIFACTS
+======================================================================
+
+After these corrections, complete:
+
+- normative requirements SCI-FRUIT-REQ-001--024;
+- assumptions SCI-FRUIT-ASM-001--006;
+- predictions SCI-FRUIT-PRED-001--020;
+- typed edge and unavailable behavior;
+- concise scientific rationale;
+- actual Engineering Conformance Specification;
+- source, owner, build, and parity records;
+- manifests and sidecars;
+- PDFs and visual QA.
+
+Preserve IDs when the obligation is being clarified. Add a new ID only for a
+genuinely new independent obligation.
+
+The ECS result vocabulary shall be exact, preferably:
+
+    pass
+    fail
+    blocked
+    not_applicable
+    not_assessed.
+
+Evidence-artifact realization shall remain separately typed.
+
+The rationale shall explain the core without reproducing the requirement,
+prediction, method-template, or engineering-evidence registers.
+
+The ECS shall contain evidence procedure rather than reproduce the scientific
+rationale.
+
+No numerical method, route, implementation conformance, response/covariance
+fidelity, uncertainty coverage, recovered measured mode, convergence adequacy,
+Pointing/OOF/catalogue fitness, observational validation, performance,
+readiness, production suitability, production authorization, or Unity activity
+is established.
