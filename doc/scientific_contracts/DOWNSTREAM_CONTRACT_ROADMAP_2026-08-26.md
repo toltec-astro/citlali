@@ -17,10 +17,11 @@ claim.
 The owner authorized [contract reconciliation](studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/README.md).
 The recovered August 28 decisions resolve the eight MAP-local questions and
 PTC coefficient-Registry architecture; the September 6 uniform admission
-already completes the uniform-first authority subgate. The next contract step
-is implementation-blind successor authorship under the now
-[owner-approved Scope Brief and exact references](studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/SCOPE_APPROVAL_2026-09-07.md),
-followed by candidate review and separately approved successor freeze/binding.
+already completes the uniform-first authority subgate. Implementation-blind
+authorship under the [owner-approved Scope Brief and exact references](studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/SCOPE_APPROVAL_2026-09-07.md)
+has produced the [SCI-MAP v0.2/r0.1 candidate](packages/SCI-MAP/v0.2/README.md).
+The next contract gates are independent exact-candidate review, scientific-owner
+disposition of the assembled successor, and later exact freeze/source binding.
 These scientific decisions do not need to be asked again. Historical pending
 entries below retain their date-specific meaning.
 

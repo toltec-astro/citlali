@@ -2,9 +2,13 @@
 
 Date: 2026-09-07. Status: reconciliation independently reviewed; exact
 successor Scope Brief and 56 references [owner-approved](SCOPE_APPROVAL_2026-09-07.md).
-Implementation-blind authoring is underway; no successor scientific freeze or
-canonical integration. Historical scope-preparation statements below are
-superseded by the approval record, without altering approved input bytes.
+Fresh implementation-blind authoring has produced the
+[SCI-MAP v0.2/r0.1 candidate](../../packages/SCI-MAP/v0.2/README.md), with the
+[authoring record](AUTHORING_RECORD_2026-09-07.md) and three compiled views.
+The candidate awaits independent exact-candidate review and scientific-owner
+disposition; no successor freeze or canonical integration has occurred.
+Historical preparation/underway statements below are superseded by these
+records without altering approved input bytes.
 
 ## Program adherence and prior-work recovery
 

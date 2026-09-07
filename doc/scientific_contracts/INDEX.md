@@ -1,3 +1,12 @@
+The [SCI-MAP v0.2/r0.1 candidate](packages/SCI-MAP/v0.2/README.md) is now
+authored from the exact approved scope and references. All nine MAP owner
+decisions are incorporated, including the settled low-coverage/`coverage_cut`
+policy, and the admitted uniform boundary is preserved. The assembled successor
+awaits independent review, owner scientific disposition and later freeze/binding;
+it creates no implementation or production authority. The
+[authoring record](studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/AUTHORING_RECORD_2026-09-07.md)
+supersedes authoring-underway wording below; prior approvals remain settled.
+
 The owner [approved the exact MAP successor Scope Brief and 56 references](studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/SCOPE_APPROVAL_2026-09-07.md)
 on September 7 at reviewed candidate `ba1187fe1e30525d4bd1f6f782a22b7103e83e9d`.
 Implementation-blind SCI-MAP v0.2/r0.1 contract authorship is now authorized;

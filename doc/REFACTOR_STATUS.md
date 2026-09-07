@@ -1,5 +1,24 @@
 # Citlali Refactor Status
 
+## 2026-09-07 MAP v0.2/r0.1 Contract Candidate Prepared
+
+The owner-approved Scope Brief and exact 56 references have produced the
+[SCI-MAP v0.2/r0.1 candidate](scientific_contracts/packages/SCI-MAP/v0.2/README.md)
+through fresh implementation-blind authorship. The common source and three
+rendered views incorporate all nine decided MAP owner questions and the
+already admitted uniform-family boundary, retaining 52 requirement and 25
+prediction identities. In particular, SCI-MAP-OD-007 is decided and incorporated
+in this candidate; the old frozen ledger remains historical.
+
+The [authoring record](scientific_contracts/studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/AUTHORING_RECORD_2026-09-07.md)
+binds scope, source separation, document checks and preserved work. This exact
+candidate is submitted for independent review and scientific-owner disposition.
+It is not frozen, source/VAL-activated, canonically integrated or pushed.
+Application conformance and Spack/Unity qualification are unassessed. The paused
+NOI candidate is preserved, FRUIT remains independent, and no application,
+configuration/default or implementation-test changes accompany this work.
+Earlier authoring/pending checkpoints below are historical.
+
 ## 2026-09-07 MAP Successor Authoring Scope Approved
 
 Grant Wilson approved the exact Scope Brief and 56-reference list at reviewed
