@@ -1,0 +1,313 @@
+SCI-FRUIT v0.1 r0.4 — FINAL STAGE A
+MODEL-ROLE, LINEARITY, METHOD-IDENTITY, AND PACKET-CLOSURE REPAIR
+
+The SCI-FRUIT r0.3 scope architecture is accepted as the basis for one final
+micro-repair.
+
+The distinction among:
+
+A. program-order authority;
+B. conditional scientific-composition authority; and
+C. numerical FRUIT-FEEDBACK-METHOD authority
+
+is correct and shall be preserved.
+
+Do not perform another broad Stage A derivation.
+
+Preserve:
+
+- no numerical method selection;
+- no Stage B launch before exact packet approval;
+- the typed remove -> residual process -> rejoin composition;
+- immutable original measured-parent ancestry;
+- no default iteration-input rule;
+- distinct continuation, restart, branch, retry, relearning, completion, and
+  terminal selection;
+- operation-level fixed/recomputed/relearned state;
+- grouping as method identity;
+- path-specific support and information origin;
+- model-only content as model/prior-supported and not acquired exposure;
+- separate response and uncertainty families;
+- complete covariance cross terms;
+- SCI-VAL evaluation without SCI-VAL ownership or execution of recurrence;
+- terminal selection as a separate immutable reference to a completed
+  iteration;
+- FRUIT-FEEDBACK-METHOD as unavailable pending separate owner approval;
+- every present nonclaim.
+
+======================================================================
+1. KEEP CANDIDATE, ACCEPTED, AND APPLIED MODELS DISTINCT
+======================================================================
+
+The r0.3 opening correctly says that candidate, accepted, and applied models
+are different scientific objects, but the typed algebra later uses one m_k as
+both accepted and applied.
+
+Define separately:
+
+    m_k^candidate
+    m_k^accepted
+    m_k^applied.
+
+Use the applied model in the scientific composition:
+
+    rho_k
+      = y_k^in - Pi_k(m_k^applied)
+
+    z_k
+      = F_k(rho_k) + B_k(m_k^applied).
+
+If a method establishes:
+
+    m_k^applied = m_k^accepted,
+
+record that as an exact method/state equality.
+
+Any normalization, clipping, sign conversion, support restriction, projection,
+unit conversion, or other transformation between acceptance and application
+shall be explicit.
+
+A generic iteration transition may be written as:
+
+    (S_k, y_k^in)
+      ->
+    (m_k^candidate,
+     m_k^accepted,
+     m_k^applied,
+     rho_k,
+     z_k,
+     S_(k+1)),
+
+with typed not_applicable or unavailable states where a role does not occur.
+
+Update the scope brief, notation taxonomy, lifecycle table, method-record
+template, iteration bundle, response table, uncertainty table, and predictions.
+
+======================================================================
+2. REPAIR THE FIXED-LINEAR EXPANSION
+======================================================================
+
+When only F_k is known to be fixed and linear, use:
+
+    z_k
+      =
+      A_k y_k^in
+      - A_k[Pi_k(m_k^applied)]
+      + B_k(m_k^applied).
+
+Do not call:
+
+    B_k - A_k Pi_k
+
+a linear model-path operator unless Pi_k and B_k are also declared linear on
+the stated model space.
+
+Only under exact linearity of A_k, Pi_k, and B_k define:
+
+    D_k = B_k - A_k o Pi_k
+
+and:
+
+    z_k = A_k y_k^in + D_k m_k^applied.
+
+Bind domains, codomains, units, support, state, and conditioning for every
+composition.
+
+If Pi_k or B_k is nonlinear, retain the map-valued expression and do not apply
+linear response or covariance formulas by implication.
+
+======================================================================
+3. SEPARATE METHOD IDENTITY FROM REALIZED STATE
+======================================================================
+
+Replace the statement that every recomputed coefficient itself requires a new
+method identity.
+
+Use:
+
+    A change to the coefficient-recomputation rule, learning rule, operator
+    family, role order, sign, bypass graph, support rule, recurrence, grouping,
+    stopping rule, or terminal-selection rule creates a new method identity.
+
+    Different coefficient values, learned states, accepted models, or applied
+    models produced under one unchanged method create distinct state,
+    iteration, and application generations.
+
+A fixed-subspace/recomputed-coefficient method therefore retains one method
+identity while publishing a new exact coefficient/application state for each
+realization or iteration.
+
+Do not collapse a rule change into a state change, and do not create a new
+method merely because an approved iterative rule produced another numerical
+state.
+
+======================================================================
+4. MAKE THE PARENT QUANTITY ROUTE-CONDITIONAL
+======================================================================
+
+Do not define the generic measured parent through one PTC-to-MAP mJy/beam
+convention while also stating that no parent route is selected.
+
+Use:
+
+    Every selected parent route supplies its exact quantity, unit, frame,
+    response, beam/template convention, calibration, support, validity,
+    lifecycle, and provenance.
+
+    If the selected route is the ordinary PTC-to-MAP route, retain that route's
+    exact currently authorized quantity and originating nominal-beam/calibration
+    lineage.
+
+    That conditional example does not establish Stokes I, true sky, a generic
+    FRUIT target, or a universal input unit.
+
+    This Stage A packet selects no parent route.
+
+The future numerical method shall bind one exact parent route and all required
+domain conversions. Equal shape or unit labels establish no compatibility.
+
+======================================================================
+5. ENUMERATE THE SIX RESPONSE FAMILIES
+======================================================================
+
+Do not use “adaptive” as an undefined shorthand.
+
+Name the exact response roles in the scope brief and response table.
+
+At minimum distinguish:
+
+1. fixed one-step measured-input response;
+2. fixed one-step model-input response;
+3. one-step FRUIT full-procedure response;
+4. recursive multi-iteration response;
+5. selected-terminal response;
+6. whole-chain response.
+
+If FRUIT-full-procedure with the upstream parent held fixed is intended as an
+additional distinct role, enumerate it explicitly and reconcile the total
+count.
+
+For every role bind:
+
+- what is perturbed;
+- what is held fixed;
+- what is rerun or relearned;
+- baseline and perturbed domains;
+- branch/support/selection comparability;
+- response codomain;
+- unavailable and discontinuity behavior.
+
+An online adaptive filter remains a separately authored estimator and shall not
+be introduced through ambiguous response terminology.
+
+======================================================================
+6. PRESERVE UNIVERSAL CORE COMPLETION GATES
+======================================================================
+
+Clarify:
+
+    The conditional core defines universal minimum bundle structure and hard
+    claim dependencies.
+
+    A numerical method may add method-specific required roles and may declare
+    which optional companions are necessary for one named result or use.
+
+    It may not waive universal requirements for:
+
+    - immutable parent identity;
+    - exact iteration input;
+    - accepted and applied model identities;
+    - removal, residual-processing, and rejoin roles;
+    - iteration result;
+    - path support and information origin;
+    - lifecycle and causes;
+    - state and generation;
+    - provenance;
+    - truthful response and uncertainty status.
+
+Typed unavailable roles may coexist with a complete iteration only where the
+generic core and exact method permit that narrower claim.
+
+Missing science is never zero, identity, successful bypass, or permission to
+omit a required role.
+
+======================================================================
+7. TYPE THE NUMERICAL-METHOD AUTHORITY AS A FAMILY
+======================================================================
+
+Use:
+
+    FRUIT-FEEDBACK-METHOD v0.1
+
+as the required-record schema or authority family.
+
+Every approved numerical method shall receive its own identity:
+
+    FRUIT-FEEDBACK-METHOD/<method-name>@<revision>.
+
+Methods differing in parent route, grouping, recurrence, operator graph,
+model construction, coefficient-recomputation rule, support, learning,
+stopping, terminal selection, or failure behavior shall not share one method
+identity.
+
+No method-specific identity is approved by creating the family record.
+
+The current state remains:
+
+    unavailable_pending_separate_owner_approval.
+
+======================================================================
+8. PACKET-CLOSURE CHECK
+======================================================================
+
+Return the exact bytes of:
+
+- revised Scope Brief;
+- SCIENTIFIC_OWNER_DECISION_LEDGER.md;
+- RESPONSE_AND_UNCERTAINTY_FAMILIES.md;
+- ITERATION_STATE_LIFECYCLE.md;
+- SUPPORT_INFORMATION_ORIGIN.md;
+- REQUIRED_CONDITIONAL_PREDICTIONS.md;
+- FRUIT_FEEDBACK_METHOD_REQUIRED_RECORD.md;
+- NOTATION_AND_ROLE_TAXONOMY.md;
+- BOUNDARIES_AND_CONVENTIONS.md;
+- frozen PTC fragment and its cover;
+- PROGRAM_REFERENCE.md;
+- Stage A semantic-change report;
+- AUTHOR_INPUT_MANIFEST.md;
+- manifest sidecar;
+- compressed archive and archive sidecar.
+
+Verify that:
+
+- candidate, accepted, and applied models remain distinct everywhere;
+- the linear model-path operator is used only under complete linearity;
+- method identity and state generation are never aliases;
+- the exact response-family count and names agree;
+- all seven state categories are present;
+- all eight support/information-origin roles are present;
+- complete covariance retains parent-model cross terms;
+- all twenty predictions are present and traceable;
+- the A/B/C authority distinction is exact;
+- every numerical method requires a method-specific identity;
+- all hashes reproduce;
+- there are no unresolved bundle-local links.
+
+======================================================================
+9. STAGE B DISPOSITION
+======================================================================
+
+After Grant Wilson approves the exact repaired packet bytes, launch Stage B in
+a fresh implementation-blind thread.
+
+Stage B may author and later seek conditional freeze of the generic
+SCI-FRUIT core while numerical methods, parents, models, recurrence, stopping,
+response, covariance, and downstream use profiles remain unavailable.
+
+It shall not infer a familiar FRUIT algorithm or default.
+
+No Stage A approval or Stage B draft establishes numerical availability,
+implementation conformity, recovered sky modes, response/covariance fidelity,
+uncertainty coverage, convergence adequacy, Pointing/OOF/catalog fitness,
+observational validation, performance, readiness, production suitability,
+production authorization, or Unity activity.
