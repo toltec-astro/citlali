@@ -1,5 +1,34 @@
 # Citlali Integration Ledger
 
+## VAL Native Target Canonical Acceptance — 2026-09-07
+
+Owner directive: "approved." The preceding explicit request named admission
+`74a2727539a5d1812892042a59f4ca9b14ff9c2e` and its bounded documentation
+closure. The exact accepted tree is `a35fc4f957991f197ee9ecfec0d8f1e21cd6e10a`.
+The independent review passed all three axes with recorded limitations and
+no findings, SHA-256
+`90e5eccd4bbc4248b8eacb7a6478774fd2da39079cb1b3bf423cdff7b2d53e44`.
+All 17 files in the completion manifest were reverified; manifest SHA-256
+`2e436227cbafd9de25f14c632c4b16e46b558817b8246587f16b1a52b4adbe9b`.
+
+Live explicit-SSH GitHub and clean local canonical were rechecked at
+`36176ac14abe23a5c331ba40af2bb86d3e97a7f6`. Local canonical was then
+fast-forwarded literally to the accepted admission. Its second parent is
+tested VAL source `37e6fb6ce50acba644f04b6b6b546762bf07f384`; exact
+input preservation permits the completed Unity gate to remain evidence at
+that source. It is not relabeled as a run at the admission or closure SHA.
+Unity job `64035873` passed all 899 runnable and 50 focused tests; clean
+identity/dependency and archive-checksum evidence and limitations are retained.
+
+The [bounded closure](../handoff/TIMESTREAM_SUCCESSOR_VAL_NATIVE_ADMISSION_CLOSURE_2026-09-07.md)
+and verbatim admission review make this owner disposition durable. Only
+status, ledger and these two closure/review records change. Fresh independent
+exact-SHA review and clean-parent checks precede the already approved final
+closure incorporation. The final result binds externally under
+`/private/tmp/citlali-val-native-admission-closure-evidence-2026-09-07`.
+No GitHub push, new implementation, activation, production or cleanup is
+performed or authorized by the retrospective request.
+
 ## VAL Native Target Unity Evidence and Admission Candidate — 2026-09-06
 
 The owner supplied the completed Unity GCC13/Spack receipt for job `64035873`

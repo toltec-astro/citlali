@@ -1,5 +1,33 @@
 # Citlali Refactor Status
 
+## 2026-09-07 VAL Native Target Accepted and Incorporated
+
+The owner accepted exact admission `74a2727539a5d1812892042a59f4ca9b14ff9c2e`,
+tree `a35fc4f957991f197ee9ecfec0d8f1e21cd6e10a`, and approved bounded
+documentation closure. After rechecking live GitHub and clean local canonical
+at `36176ac14abe23a5c331ba40af2bb86d3e97a7f6`, local canonical was
+fast-forwarded literally to the accepted SHA. Its two parents preserve that
+canonical history and exact reviewed/Unity-tested VAL source `37e6fb6ce...`.
+The independent admission review passed all three axes with recorded
+limitations and no findings. All 1600 executable-input identities match the
+tested source; scientific authority and both documentation histories remain
+intact.
+
+Unity job `64035873` passed 899/899 runnable CTests and 50/50 focused tests
+with matching clean source/CLI and clean pinned dependencies. The
+[closure record](../handoff/TIMESTREAM_SUCCESSOR_VAL_NATIVE_ADMISSION_CLOSURE_2026-09-07.md)
+binds the owner decision, exact review, completed evidence, remaining historical
+SCI-VAL verifier and unmanaged-deployment limitations. The four-path
+documentation closure needs its own fresh exact-SHA review before the already
+authorized canonical fast-forward; that final identity and review bind
+externally. GitHub push remains owner-held and unperformed by this task.
+
+The VAL native-target unit is complete and no new application unit is opened.
+The owner's requested program overview supports the next planning discussion;
+it does not authorize measurement-producer adoption, a PSD-use policy,
+filtering/downsampling, activation or subsequent implementation. Earlier
+preparation and pending-gate entries below are historical checkpoints.
+
 ## 2026-09-06 VAL Native Target Unity Gate and Admission Preparation
 
 Owner-run Unity GCC13 job `64035873` passed at exact VAL implementation
