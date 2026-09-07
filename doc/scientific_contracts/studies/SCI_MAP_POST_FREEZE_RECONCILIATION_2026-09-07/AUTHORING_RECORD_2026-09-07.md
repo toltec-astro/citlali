@@ -61,6 +61,20 @@ output and rerendered the affected views. No new scientific choice was made.
 Final logs have no overfull box or unresolved reference; underfull prose/table
 notices remain without observed clipping or unreadable content.
 
+The pre-owner exact review of `075ca6068c0329824af5b779dc185ea64b93b784`
+required two minor engineering-view repairs: R01 made an optional preconstruction
+grid request universal; R02 mislabeled the realized plan as the row selector.
+The author corrected only that engineering exposition, regenerated its 21-page
+PDF and refreshed its QA/manifest identities. Shared core, rationale and formal
+PDF bytes are unchanged. The original candidate, 31-file author output and
+97 supporting QA files remain preserved. The original review report has SHA-256
+`f4357657cbce48eb5a3a1c43f64c8b7287dbaa11ebdaa3758c4722cf055f2128`
+under external evidence `review-075ca6068/INDEPENDENT_EXACT_SHA_REVIEW.md`.
+Its scientific/view-consistency disposition was REPAIR REQUIRED, while ownership
+and repository/evidence passed with recorded limitations. The repaired candidate
+requires a fresh review bound to its new exact SHA; the old verdict is not
+transferred and the settled science is not reopened.
+
 Initial sandboxed Tectonic attempts stopped in macOS system-configuration
 initialization before TeX. A scoped cached-only command outside that sandbox
 completed successfully. These failed startup attempts are retained separately

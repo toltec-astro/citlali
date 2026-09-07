@@ -224,14 +224,20 @@ atomic nonmutation.
 \item Evaluate all four axes of the registered observation-coadd admission
 aggregate profile; then exercise admitted
 centered-integer coaddition, exact coadd output-row identity, and companion
-placement.  Verify the canonical target grid is chosen before construction,
-each input is embedded by the exact centered integer rule, and an explicit
-crop creates a new row-selected product with its own identity and provenance.
+placement.  If a canonical target grid was requested before observation-map
+construction, verify that every constructed map honors it.  Otherwise verify
+that already existing compatible bundles, including persisted coadd-only
+inputs, may select a common coadd target and use exact centered-integer
+embedding without modifying or relabeling their scientific samples.  An
+explicit crop creates a new row-selected product with its own identity and
+provenance.
 \item Round-trip all required representations and reconstruct each
 row-selected operator from provenance.
 \item Exercise fixed-state, PTC full-procedure, and PTC+MAP re-resolved
 response families; reconstruct and disclose the complete MAP-local operator
-\(A_{\mathrm{MAP}}\) and row selector \(\Pi\) for every valid product, while
+\(A_{{\mathrm{MAP}},\Pi}\), the immutable realized plan \(\Pi\), and row
+selector \(J_{\rm out}\) with its exact output-row domain for every valid
+product, while
 marking the whole-chain RTC-to-CAL-to-PTC-to-MAP role unavailable unless a
 separate approved authority establishes it; exercise an already realized
 PTC-grid companion applied exactly once; and honest response/covariance
@@ -281,9 +287,11 @@ values differ in the fixture. & Preserve all four stages.  With finite-positive
 Bundle completeness & Required companions retained in memory, persisted, and
 consumed by a coadd-only route. & The logical bundle and plan remain complete;
 publication is required only for routes whose plan requires persistence.\\
-Target grid & Inputs require centered integer embeddings into a preselected
-canonical grid. & Refuse post-construction grid choice or any resampling hidden
-as coaddition.\\
+Target grid & A preconstruction canonical grid is requested, or existing
+bundles have otherwise-compatible shapes. & Honor the requested grid; otherwise
+select a compatible common coadd target and use exact centered-integer
+embedding.  Reject relabeling or resampling as a way to manufacture
+compatibility.\\
 Crop & Explicit row selection after construction. & Emit a new identified
 product with selector/provenance; do not mutate or relabel the base grid.\\
 Response & Valid fixed-state and procedure-response products. & Disclose exact

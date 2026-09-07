@@ -15,6 +15,13 @@ canonical Git commit/tree, immutable final manifest identity, and successor
 VAL Registry/source-binding generation remain pending because the approved
 author packet did not supply them.
 
+Independent exact-SHA review of candidate
+`075ca6068c0329824af5b779dc185ea64b93b784` produced one bounded
+engineering-view repair: optional preconstruction-grid versus compatible
+existing-grid handling and the \(\Pi\)/\(J_{\rm out}\) notation were aligned
+with the unchanged shared authority. The exact repaired engineering source,
+PDF, and QA-record hashes appear below; all other bound bytes are unchanged.
+
 ## Approved author-packet control
 
 | Authority | Local exact file or locator | SHA-256 / state |
@@ -57,7 +64,7 @@ declares exactly `SCI-MAP-PRED-001` through `SCI-MAP-PRED-025` once each.
 | Exact local source | SHA-256 |
 | --- | --- |
 | `src/scientific-rationale.tex` | `a905cc3e79e4d78f8f3dddc3fb394e6446a26b3307847f3d1af748687e4856f9` |
-| `src/engineering-conformance.tex` | `236b1e34e082c8eab386b41dfe8b47dcd5aa7625f17e82c4d74c6b772975c2e6` |
+| `src/engineering-conformance.tex` | `44b0220a5b9b2dc6eccd6b64388501f893da68d1795b5f67f4c97042a5084f04` |
 | `src/formal-scientific-engineering-contract.tex` | `0f6663ff49dee91d944b988e95d7a707c4152df89840d834f8155aaf6ac74df2` |
 | `src/SCI-MAP-v0.2_OWNER_DECISION_REGISTER_r0.1.tex` | `7915568083cc5a842e10e9a8685bf4aac6d6bb4107b78339d27d41a24493f794` |
 
@@ -77,7 +84,7 @@ register abbreviates the current ledger for rendering and does not replace it.
 | `CROSSWALK.md` | `93e8982d2897c9d083cbcc0a1455bb132a36a4ade3e96e456b665083331b440f` |
 | `PREDICTION_CROSSWALK.md` | `7588110175308a63c9ccb94839d12ec26ffda326e417e7c63c8d280f019777cd` |
 | `SOURCE_AND_BINDING_PROPOSAL_R0.1.md` | `0fc1fc27525979b1801aed36b1fd445279cd683c9a9a86af664eb9672377b1e3` |
-| `PDF_VISUAL_QA_R0.1.md` | `8882229990044e82f13fdb537f5916f639e91150db2ed34378911c98e4770eb4` |
+| `PDF_VISUAL_QA_R0.1.md` | `ebcca3659b153226810b36c911936243e3d3e7ce794e2a163907e5541816e841` |
 
 ## PDF artifacts
 
@@ -86,12 +93,13 @@ PDF bytes are rendered evidence, not the canonical scientific source.
 | Exact stable artifact | Pages | SHA-256 |
 | --- | ---: | --- |
 | `pdf/SCI-MAP-SCIENTIFIC-RATIONALE-v0.2.pdf` | 14 | `0fa060f251e1e2bfb222f6b9d87e74261fdef6d3f915ba33306231ce563d07b1` |
-| `pdf/SCI-MAP-ENGINEERING-CONFORMANCE-v0.2.pdf` | 21 | `ca3e056a508b4a56f3b98db5162a7d3e78def54225b8c4dcae0963284fb7b271` |
+| `pdf/SCI-MAP-ENGINEERING-CONFORMANCE-v0.2.pdf` | 21 | `f5912c7be6f8683a843171388800882041a55605b79830f228d2137a122acace` |
 | `pdf/SCI-MAP-FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT-v0.2.pdf` | 30 | `e89e962487e16d1b6ee09d8cad8c18dd472bb3aa6d53f196172523c42f44f6ff` |
 
 Compilation and all-page inspection are recorded in
 `PDF_VISUAL_QA_R0.1.md`. Compiler logs, intermediates, rendered PNGs, and
-contact sheets are preserved outside the package under `output/qa/map-v0.2/`
+contact sheets are preserved outside the package under the isolated repair
+tree's `qa/map-v0.2/`
 and are deliberately excluded from this scientific source binding.
 
 ## Pending external identities

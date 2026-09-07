@@ -18,7 +18,7 @@ unreadable content.
 | View | Stable PDF | Pages | SHA-256 |
 | --- | --- | ---: | --- |
 | Scientist-facing rationale | `pdf/SCI-MAP-SCIENTIFIC-RATIONALE-v0.2.pdf` | 14 | `0fa060f251e1e2bfb222f6b9d87e74261fdef6d3f915ba33306231ce563d07b1` |
-| Engineering conformance | `pdf/SCI-MAP-ENGINEERING-CONFORMANCE-v0.2.pdf` | 21 | `ca3e056a508b4a56f3b98db5162a7d3e78def54225b8c4dcae0963284fb7b271` |
+| Engineering conformance | `pdf/SCI-MAP-ENGINEERING-CONFORMANCE-v0.2.pdf` | 21 | `f5912c7be6f8683a843171388800882041a55605b79830f228d2137a122acace` |
 | Formal scientific/engineering contract | `pdf/SCI-MAP-FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT-v0.2.pdf` | 30 | `e89e962487e16d1b6ee09d8cad8c18dd472bb3aa6d53f196172523c42f44f6ff` |
 
 `pdfinfo` 26.05.0 reopened every artifact and reported letter-size,
@@ -41,6 +41,28 @@ at rendered resolution. The inspection found:
 - readable formal threshold equations and engineering scope-discrimination
   cases, including the separate inclusive normalization/science predicates.
 
-The PNG pages, contact sheets, compiler logs, and intermediate files are
-preserved under `output/qa/map-v0.2/` outside the deliverable package. They are
-supporting production evidence and do not enter the scientific source binding.
+## Exact-SHA review repair
+
+Independent review of candidate
+`075ca6068c0329824af5b779dc185ea64b93b784` identified two engineering-view
+exposition discrepancies. The repaired view now distinguishes an explicitly
+requested preconstruction canonical grid from selection of a compatible common
+coadd target for otherwise-compatible existing bundles, without permitting
+relabeling or resampling to manufacture compatibility. It also identifies
+\(\Pi\) as the immutable realized plan and \(J_{\rm out}\) as the exact
+output-row selector.
+
+The shared scientific source, rationale source/PDF, and formal source/PDF were
+unchanged. Only the engineering source was recompiled. Its final log again has
+no overfull box, undefined control/reference, label, alignment, or rerun
+warning; the same three harmless underfull prose notices remain. Poppler
+reopened and rendered all 21 repaired engineering pages at 110 dpi, and every
+page was reinspected without blank pages, isolated continuations, clipping,
+overlap, or broken tables. The affected execution-order and discrimination
+table text is readable on rendered pages 4--5.
+
+The final PNG pages, contact sheets, compiler logs, and intermediate files are
+preserved under the isolated repair tree's `qa/map-v0.2/` outside the
+deliverable package. Pre-repair engineering render and compiler evidence is
+retained under `qa/map-v0.2/pre-repair/`. These are supporting document-production
+records and do not enter the scientific source binding.
