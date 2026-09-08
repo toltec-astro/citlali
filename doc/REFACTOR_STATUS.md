@@ -1,5 +1,14 @@
 # Citlali Refactor Status
 
+
+## Current SCI-MAP document candidate — 2026-09-08
+
+[SCI-MAP v0.2/r0.3](scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.3/README.md) is the current bounded scientific-document candidate, superseding r0.2 candidate navigation below. [The delivery index](scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.3/DELIVERY_INDEX.md) links all 14 requested items. The owner accepted r0.2 architecture as the basis; prior approvals and predecessor bytes remain preserved.
+
+[The proposed conditional freeze](scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.3/PROPOSED_SCIENTIFIC_OWNER_ACCEPTANCE_AND_FREEZE_DISPOSITION.md) keeps affected draft-identity routes unavailable. Finished r0.3 owner acceptance, fresh post-owner consistency review and later freeze remain pending. Profile approval, registration, binding, activation and object decisions remain separate; this entry performs none of them.
+
+This task owns scientific-contract development and review. No application change, implementation qualification, push or integration is recorded. The NOI candidate remains preserved and paused here; FRUIT remains independent and unfinished. [The scope record](scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.3/build/MANAGER_SCOPE_AND_COMPLETION.md) records document gates and the disclosed manager-read limitation. Exact-commit review and archive identities are in the external receipt. Historical entries below retain every original byte.
+
 ## 2026-09-07 MAP v0.2/r0.2 Targeted Contract Revision
 
 Grant Wilson accepted the r0.1 scientific architecture as the basis for one

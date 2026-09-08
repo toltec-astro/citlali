@@ -1,0 +1,51 @@
+{
+  "scope": "Document build attempts only; no implementation evidence",
+  "attempts": [
+    {
+      "attempt": "provisional-build-01",
+      "build_identity": "SCI-MAP-R03-DOCUMENT-BUILD/provisional-build-01",
+      "disposition": "compiled_all_views_layout_gate_failed",
+      "compile_exit_codes": {
+        "formal": 0,
+        "rationale": 0,
+        "engineering": 0
+      },
+      "cause": "Six overfull boxes; visible clipping in response equation, long identifiers/status chains; rationale authority paragraph also has a short continuation on a final page. Bounded layout repairs requested.",
+      "build_attempt_sha256": "1306c2809a8c6d3e6e11927ce7d6ce46b72c9a208d124da86ea1f174e3d68559",
+      "inspection_sha256": "568d4c9004e65cb2ac2251be80bcd0d31dce1ea3b158cbf09587e1c504067a89",
+      "shared_core_sha256": "ea8a6511fc6316dccb70417c39b61be4d1d70b9b319eda332522f128ef6a090f",
+      "pages": {
+        "formal": 37,
+        "rationale": 17,
+        "engineering": 30
+      },
+      "evidence_directory": "/private/tmp/citlali-map-r03-build-2026-09-08/provisional-build-01",
+      "log_sha256": {
+        "formal": "c721f6bd69273e013316e4dc8187427c31f71a1b40ecb859f6120ea1bba5b860",
+        "rationale": "b8fa684acc91914643801b42dd5a7ba68d6bb4037acc3a08bed91bf846b96560",
+        "engineering": "1258e24ebc000249d2d2ffbcd0d6bca34bcbae0e2feec70f9d6b717993b46b81"
+      }
+    },
+    {
+      "attempt": "candidate-build-01",
+      "build_identity": "SCI-MAP-R03-DOCUMENT-BUILD/candidate-build-01",
+      "disposition": "passed_compilation_mechanical_pdf_and_all_page_visual_gates",
+      "compile_exit_codes": {
+        "formal": 0,
+        "rationale": 0,
+        "engineering": 0
+      },
+      "build_attempt_sha256": "4a21c2a46cfb4728a44ff0514e1f099ec25a35d298231378a4901d2f020e33d0",
+      "inspection_sha256": "1ea26f74f59833f1669ea22f8dd8d3665671518a95c6bd25c6b88bc9aa9c2769",
+      "visual_acceptance_sha256": "39a50acddf4a74b7df1ae2cfbcd5569f0502fbcbc392ad12a2e07db7ed5e70bf",
+      "shared_core_sha256": "45b863cab2713075656e11f5d6008f377879079f0d6f52b08ac579bd04ada4c6",
+      "pages": {
+        "formal": 37,
+        "rationale": 17,
+        "engineering": 30
+      },
+      "evidence_directory": "/private/tmp/citlali-map-r03-build-2026-09-08/candidate-build-01",
+      "source_snapshot": "STABLE_SOURCE_SNAPSHOT_02.json; author metadata completion may proceed without changing these TeX bytes"
+    }
+  ]
+}

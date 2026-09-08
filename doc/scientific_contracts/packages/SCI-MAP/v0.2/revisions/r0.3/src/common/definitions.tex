@@ -1,0 +1,307 @@
+% Canonical shared vocabulary. Exact obligations remain in requirements.tex.
+\providecommand{\SCIMapEstimatorName}{ordinary positive-coefficient normalized mapmaking}
+\providecommand{\SCIMapCoaddName}{centered-integer common-grid observation coaddition}
+\providecommand{\SCIMapSignalUnit}{\texttt{mJy/beam}}
+\providecommand{\SCIMapSignalRole}{calibrated-\(x\)-derived nonpolarimetric total-intensity-equivalent quantity}
+\providecommand{\SCIMapResponseIdentity}{MAP-local realized operator response with separately typed upstream-conditioned response}
+\providecommand{\SCIMapValidityIdentity}{MAP-local base-product scientific validity}
+% Canonical exact boundary/profile identities. Long r0.3 role and candidate
+% identifiers contain explicit typographic break opportunities without
+% changing their literal spelling.
+\providecommand{\SCIMapPTCMapBoundaryId}{\mbox{\footnotesize\texttt{SCI-PTC\_TO\_SCI-MAP\_BOUNDARY v0.2-draft.1/r0.4}}}
+\providecommand{\SCIMapASTFootprintBoundaryId}{\mbox{\footnotesize\texttt{SCI-AST\_TO\_SCI-MAP\_ORIGINAL\_FOOTPRINT\_COORDINATE v0.1/r0.1}}}
+\providecommand{\SCIMapASTRTCGridProfile}{\mbox{\footnotesize\texttt{SCI-AST:rtc\_output\_grid\_coordinates@1}}}
+\providecommand{\SCIMapUpstreamProfileHistorical}{\mbox{\footnotesize\texttt{SCI-MAP:map\_upstream\_admission@1}}}
+\providecommand{\SCIMapUpstreamProfile}{\mbox{\footnotesize\texttt{SCI-MAP:map\_upstream\_admission@2}}}
+\providecommand{\SCIMapOneHotProfile}{\mbox{\footnotesize\texttt{SCI-MAP:one\_hot\_containing\_pixel@1}}}
+\providecommand{\SCIMapCoaddProfileHistorical}{\mbox{\footnotesize\texttt{SCI-MAP:observation\_coadd\_admission@1}}}
+\providecommand{\SCIMapCoaddProfile}{\mbox{\footnotesize\texttt{SCI-MAP:observation\_coadd\_admission@2}}}
+\providecommand{\SCIMapUniformCoaddProfile}{\mbox{\footnotesize\texttt{SCI-MAP:uniform\_observation\_coadd\_coefficient@1}}}
+\providecommand{\SCIMapPTCCoefficientRegistry}{\mbox{\footnotesize\texttt{SCI-PTC:analysis\_gridding\_coefficients@draft-0.1}}}
+\providecommand{\SCIMapPTCUniformFamily}{\mbox{\footnotesize\texttt{SCI-PTC:uniform\_constant@draft-0.1}}}
+\providecommand{\SCIMapPTCUniformHandoffProfile}{\mbox{\footnotesize\texttt{SCI-PTC:uniform\_coefficient\_handoff@draft-0.1}}}
+\providecommand{\SCIMapBaseObservationRole}{{\footnotesize\texttt{SCI-MAP:base\_\allowbreak{}observation\_\allowbreak{}map@1}}}
+\providecommand{\SCIMapResponseObservationRole}{{\footnotesize\texttt{SCI-MAP:response\_\allowbreak{}bearing\_\allowbreak{}observation\_\allowbreak{}map@1}}}
+\providecommand{\SCIMapCovarianceObservationRole}{{\footnotesize\texttt{SCI-MAP:covariance\_\allowbreak{}qualified\_\allowbreak{}observation\_\allowbreak{}map@1}}}
+\providecommand{\SCIMapBaseCoaddRole}{{\footnotesize\texttt{SCI-MAP:base\_\allowbreak{}coadd@1}}}
+\providecommand{\SCIMapResponseCoaddRole}{{\footnotesize\texttt{SCI-MAP:response\_\allowbreak{}bearing\_\allowbreak{}coadd@1}}}
+\providecommand{\SCIMapCovarianceCoaddRole}{{\footnotesize\texttt{SCI-MAP:covariance\_\allowbreak{}qualified\_\allowbreak{}coadd@1}}}
+\providecommand{\SCIMapCandidateVALRegistry}{{\footnotesize\texttt{SCI-VAL\_PROFILE\_\allowbreak{}REGISTRY v0.1/r0.3-map-v0.2-r0.3-\allowbreak{}candidate-2026-09-08}}}
+\providecommand{\SCIMapCandidateVALSourceRegister}{{\footnotesize\texttt{SCI-VAL\_SOURCE\_\allowbreak{}BINDING\_\allowbreak{}REGISTER v0.1/r0.3-map-v0.2-r0.3-\allowbreak{}candidate-2026-09-08}}}
+\providecommand{\SCIMapComparisonSpaceRecordId}{{\footnotesize\texttt{SCI-MAP-FULL-PROCEDURE-\allowbreak{}COMPARISON-SPACE}}}
+\providecommand{\SCIMapSharedAuthorityId}{{\texttt{SCI-MAP-v0.2-\allowbreak{}SHARED-\allowbreak{}AUTHORITY}}}
+
+% The exact occurrence i is not a tuple of time and detector. It binds the
+% observation; detector occurrence and UID; stable RTC output index n; exact
+% PTC product/application generation; segment; array/network/group; and its
+% full parent chain. Time and storage positions are associated attributes or
+% locators only.  z_i=Z_i^PTC is the transformed signal; gamma_i is the exact
+% PTC-selected MAP-facing coefficient, when such a family exists.  x and r
+% remain reserved for the paired upstream KID readout coordinates.
+
+% A stable original occurrence u is the ALIGN-owned acquisition occurrence,
+% keyed by observation, detector occurrence/UID, native occurrence identity,
+% stable ALIGN slot, and exact ALIGN mapping generation.  Its own coordinate
+% is the layered AST ALIGN-grid direction/tangent/continuous-pixel role bound
+% to the target MAP WCS through SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE
+% v0.1/r0.1.  It is never a descendant RTC-output coordinate.  The causal
+% influence graph remains a separate support fact and never duplicates
+% detector-seconds.
+
+% Ordered MAP lifecycle. This remains distinct from PTC/VAL handoff-decision
+% axes and from the state of an ECS evidence artifact.
+\providecommand{\SCIMapLifecycleDefinition}{%
+The exact MAP lifecycle is
+\texttt{requested}, \texttt{effective},
+\texttt{observation\_resolved}, \texttt{applied}, \texttt{realized}, in that
+order. \texttt{requested} is immutable accepted intent. \texttt{effective}
+is its supported executable interpretation. \texttt{observation\_resolved}
+means every observation-specific parent, coefficient, profile, geometry,
+mapping, parameter, support rule, output role, and persistence decision is
+concrete or typed unavailable. \texttt{applied} binds the exact resolved
+operation and parameter state to the invocation or commitment of one
+execution attempt. \texttt{realized} exists only when actual immutable
+accumulators, scientific output rows, product values, role-qualified companion
+statuses, product identity, and provenance were produced. Attempt outcome is a
+separate axis with values \texttt{succeeded}, \texttt{failed}, and
+\texttt{not\_produced}. A stop before application has neither an applied nor a
+realized product record. An applied attempt that fails retains its attempt
+identity and immutable failure-evidence record but creates no realized MAP
+product. An applied attempt with no support-authorized output rows has outcome
+\texttt{not\_produced}, not failure, and likewise creates no realized product.}
+
+\providecommand{\SCIMapLifecycleTable}{%
+\begingroup\small
+\begin{longtable}{@{}L{0.19\linewidth}L{0.38\linewidth}L{0.32\linewidth}@{}}
+\toprule
+MAP stage & Exact meaning & Record rule\\
+\midrule\endfirsthead
+\toprule MAP stage & Exact meaning & Record rule\\
+\midrule\endhead
+\texttt{requested} & Immutable accepted intent. & Exists only for an accepted
+request; it is never reconstructed from a later stage.\\
+\texttt{effective} & Supported executable interpretation of that request. &
+Binds supported/disabled/unavailable interpretation without mutating intent.\\
+\texttt{observation\_resolved} & Every observation-specific parent,
+coefficient, profile, geometry, mapping, parameter, support rule, output role,
+and persistence decision is concrete or typed unavailable. & Supplies the
+exact value/state for pre-application validation.\\
+\texttt{applied} & Exact resolved operation and parameter state was invoked or
+committed for one execution attempt. & Created only at the application event;
+retained with exact terminal failure when output realization fails.\\
+\texttt{realized} & Actual immutable accumulators, scientific output rows,
+product values, role-qualified companion statuses, product identity, and
+provenance were produced. & Created only for an actual MAP product; a failure-
+evidence record is not product realization.\\
+Attempt outcome & Exactly \texttt{succeeded}, \texttt{failed}, or
+\texttt{not\_produced}. & Recorded independently of the reached lifecycle
+prefix and product realization.\\
+Termination rule & Stop before application; post-application terminal failure;
+or applied valid policy with no support-authorized rows. & The first has no
+applied or realized record. The latter two retain the applied-attempt record
+and exact cause but no realized MAP product; the no-support case is
+\texttt{not\_produced}, not \texttt{failed}.\\
+\bottomrule
+\end{longtable}
+The MAP plan, coefficient selection/application, projection, support policy,
+output/coadd plan, response/covariance request, product role, and
+\texttt{coverage\_cut} use this same ordering. Each parameter stage binds its
+exact value and provenance; a completed realization contains all five stages,
+while a nonproducing attempt contains only stages actually reached.\endgroup}
+
+\providecommand{\SCIMapAttemptOutcomeDefinition}{%
+MAP product realization and application-attempt outcome are independent.
+\texttt{succeeded} means the requested immutable MAP product was realized.
+\texttt{failed} means the attempt terminated at an exact failure stage and
+retains cause, affected scope, and nonmutation evidence without a realized MAP
+product or completion marker. \texttt{not\_produced} means no MAP product was
+realized without asserting producer failure; the authorized empty-support case
+uses this value. A response or covariance status of \texttt{unavailable}
+inside a permitted realized base bundle is a companion-status fact, not attempt
+failure. Evidence-artifact realization is another independent axis.}
+
+\providecommand{\SCIMapEmptySupportDisposition}{%
+The 2026-09-08 owner directive selects for this r0.3 candidate the following
+empty-support disposition; final acceptance of these exact r0.3 bytes remains
+pending. If a valid applied support policy yields
+\(\mathcal S_{\rm out}=\varnothing\), or a valid applied coadd support policy
+yields \(\mathcal S^c_{\rm out}=\varnothing\), the application state is
+\texttt{applied\_no\_support\_authorized\_output\_rows}, the product and
+attempt outcome is \texttt{not\_produced}, and the exact cause is
+\texttt{no\_support\_authorized\_output\_rows}. The record retains request,
+effective, observation-resolved, and applied stages; exact parent and plan;
+coefficient, projection, support, role and profile identities; \(Q_\star\),
+thresholds and support predicates; proof that the output-row set is empty;
+attempt identity, cause, and provenance. It has no realized MAP product or
+completion marker and publishes no dense zero map, zero-sky measurement, valid
+ordinary signal plane, no-row coadd member, or fabricated response/covariance
+plane. No immutable empty-row scientific-bundle alternative is authorized.}
+
+\providecommand{\SCIMapCandidateProfileStatusDefinition}{%
+For the r0.3 generation, the proposed owner-governed MAP profile semantics are
+\texttt{candidate}; scientific-owner approval is \texttt{pending}; canonical
+Registry registration is \texttt{pending}; source binding is \texttt{pending};
+SCI-VAL activation/evaluability is \texttt{unavailable}; and an object-specific
+decision realization is \texttt{unavailable}. In particular,
+\SCIMapCoaddProfile{} is the proposed owner-governed aggregate-profile identity
+for this candidate. After exact owner acceptance, canonical Registry/source
+binding, and activation, SCI-VAL may evaluate it for a requested object. The
+same candidate-generation separation applies to \SCIMapUpstreamProfile{}.
+Earlier exact profile approvals and evaluations retain their own immutable
+source generations; this candidate does not rebind or relabel them.}
+
+\providecommand{\SCIMapAxisSeparationDefinition}{%
+The MAP lifecycle does not replace the independently named PTC/VAL handoff
+axes \texttt{requested}/\texttt{not\_requested},
+\texttt{applicable}/\texttt{inapplicable}/\texttt{applicability\_unknown},
+\texttt{eligible}/\texttt{ineligible}/\texttt{decision\_unavailable}, and
+\texttt{realized}/\texttt{incomplete}/\texttt{failed}/\texttt{not\_produced}.
+It also does not replace the ECS requirement-result vocabulary or evidence-
+artifact realization state. In particular, a MAP parameter's resolved or
+applied value may be checked before application or bound after application;
+its \texttt{realized} value is never a prerequisite for a pre-application
+check.}
+
+\providecommand{\SCIMapRequirementResultDefinition}{%
+Every ECS requirement result is exactly one of \texttt{pass}, \texttt{fail},
+\texttt{blocked}, \texttt{not\_applicable}, or \texttt{not\_assessed}.
+\texttt{pass} means complete positive evidence establishes the requirement
+for the exact candidate. \texttt{fail} means evaluated evidence contradicts
+it. \texttt{blocked} means evaluation cannot proceed because one exact named
+authority, dependency, profile, source binding, or prerequisite is
+unavailable. \texttt{not\_applicable} means the requirement is outside the
+exact candidate's declared role under an owner-approved rationale.
+\texttt{not\_assessed} means applicable evidence has not yet been executed or
+reviewed. Evidence-artifact realization is a different axis with values
+\texttt{complete}, \texttt{incomplete}, \texttt{failed}, and
+\texttt{not\_produced}.}
+
+\providecommand{\SCIMapProductRoleDefinition}{%
+The six independently requestable product roles are
+\SCIMapBaseObservationRole, \SCIMapResponseObservationRole,
+\SCIMapCovarianceObservationRole, \SCIMapBaseCoaddRole,
+\SCIMapResponseCoaddRole, and \SCIMapCovarianceCoaddRole. Every request has
+its own immutable identity, parent set, ordered MAP lifecycle, result, and
+failure scope. A stronger role is a new product over the exact base parent;
+it does not rewrite that parent's signal membership, response/covariance
+status, validity, or provenance.}
+
+\providecommand{\SCIMapProductRoleDependencyTable}{%
+\begingroup\small
+\begin{longtable}{@{}L{0.18\linewidth}L{0.24\linewidth}L{0.24\linewidth}L{0.25\linewidth}@{}}
+\toprule
+Role & Exact parent & Required companions & Missing/incompatible companion\\
+\midrule\endfirsthead
+\toprule Role & Exact parent & Required companions & Missing/incompatible companion\\
+\midrule\endhead
+Base observation & Exact realized PTC/AST inputs and complete
+MAP-local observation plan & Complete MAP-local realized operator identity;
+honest upstream-response and covariance states & Base signal may remain valid;
+state and cause are retained.\\
+Response-bearing observation & Exact base-observation product named above & Every named numerical response, with
+exact source domain, basis, class, unit, normalization, parent, WCS/grid, and
+row identity & This role fails or is unavailable before its required-product
+mutation; its base parent is unchanged.\\
+Covariance-qualified observation & Exact base-observation product named above & Every within-observation covariance
+block named by the role on exact rows & Missing blocks are unknown and block
+this role only; its base parent is unchanged.\\
+Base coadd & Ordered set of exact complete base-observation bundles
+and one resolved coadd plan & Every base signal companion and honest response
+and covariance identities/statuses & Unavailable or basis-incompatible
+response and incomplete covariance are permitted with unchanged signal
+membership; coadd response becomes unavailable with exact cause.\\
+Response-bearing coadd & Exact base-coadd parent named above and the identical
+ordered signal-member set & One exact response-family identity \(R\); every
+member response \(R_o^{(R)}\); compatible source domain, perturbation
+definition, basis, class, unit, normalization, reference/gauge/null state,
+parent, WCS/grid, and row identity; fixed membership, placement,
+\(B_{\rm out}\), support and coefficients; and exact linear-composition
+authority & If the base parent already exists, this stronger role is unavailable
+for that parent; it never selects a subset. A separately requested admission
+may reject an observation before mutation only while constructing its own
+separately identified base/signal parent. No hidden subset or zero fill.\\
+Covariance-qualified coadd & Exact base-coadd parent named above and the identical
+ordered signal-member set & Every named within- and cross-observation block on
+exact stacked rows & One missing required block blocks this role for that
+parent; no member subset is formed. A separately requested admission may
+reject before constructing its own identified base/signal parent. Unknown is
+never zero or independence.\\
+\bottomrule
+\end{longtable}\endgroup}
+
+\providecommand{\SCIMapComparisonSpaceDefinition}{%
+A numerical full-procedure difference is defined only by the complete immutable
+\SCIMapComparisonSpaceRecordId{} record. The record binds baseline and perturbed product
+identities; scientific quantity and unit; occurrence or MAP output-row
+identities; source and target frame/WCS; additive reference, gauge, and null-
+space state; baseline and perturbed support; coefficient and response basis;
+one exact common comparison domain; an exact map from each result into that
+domain; explicit treatment of rows present in only one result; perturbation
+amplitude, sign, side, location, source state, and normalization; finite-
+difference convention; state-transition record; and numerical availability
+with cause. It authorizes no implicit zero fill, union-domain sentinel,
+support intersection, coordinate-nearest or same-shape/row-position
+association, interpolation, reprojection, or gauge alignment. Without the
+complete authorized record the numerical difference is unavailable, or the
+result is only a separately typed state transition/discontinuity.
+\(\Delta\mathcal S_{{\rm PTC}\text{-}{\rm FP}}\) never establishes
+subtractability by itself.}
+
+\providecommand{\SCIMapCoaddResponseFamilyDefinition}{%
+For one exact response family \(R\), \(T_{\rm obs}^{(R)}\) is the ordered stack
+of the exact compatible member responses \(R_o^{(R)}\), and
+\(R_{{\rm coadd,out}}^{(R)}=B_{\rm out}T_{\rm obs}^{(R)}\) only when every
+member has that same family identity; source domain, perturbation definition,
+basis, unit, normalization, reference/gauge/null state, WCS/grid and row maps
+are compatible; coadd membership, centered-integer placement,
+\(B_{\rm out}\), support and coefficient state are fixed for the query; and the
+family is mathematically composable through that fixed linear coadd operator.
+\SCIMapResponseCoaddRole{} binds the exact response-family identity it carries.
+Fixed-state, PTC full-procedure finite-difference, PTC+MAP re-resolved,
+coadd-re-resolved/full-procedure, and whole-chain responses are never one
+unqualified family. A finite difference is not multiplied through
+\(B_{\rm out}\) as though it were a linear Jacobian without an exact
+composition theorem. A perturbation that may alter observation admission,
+coadd membership, support, placement, coefficients, role, or plan requires a
+separate coadd-full-procedure or coadd-re-resolved family and its own
+\SCIMapComparisonSpaceRecordId{} record. Both that coadd-procedure response and
+the whole-chain response are unavailable until separately authorized.}
+
+\providecommand{\SCIMapNOIOwnershipStatement}{%
+SCI-NOI owns its exact realization-generation, empirical-uncertainty,
+conditional-scale, and standardization methods and products. Any physical-
+noise, total-uncertainty, covariance-completeness, significance, probability,
+false-rate, completeness, purity, or catalogue interpretation requires a
+separately approved exact method and remains unavailable by default. MAP
+therefore keeps \(Q\) normalization, formal conditional precision, complete
+conditional covariance, the NOI
+\texttt{conditional\_detector\_sign\_randomization\_marginal\_second\_moment},
+the NOI standardized signal, and any future calibrated-significance method as
+distinct identities and claims.}
+
+\providecommand{\SCIMapWCSComparisonDefinition}{%
+For an immutable finite MAP grid of \(n_x\) by \(n_y\) cells, the 0.1-arcsec
+representation-test population is the finite union of (a) every
+scientifically addressable integer pixel center \((j+1,k+1)\) for
+\(0\le j<n_x\), \(0\le k<n_y\), and (b) every outer-footprint cell vertex:
+\((h+\tfrac12,\tfrac12)\), \((h+\tfrac12,n_y+\tfrac12)\) for
+\(0\le h\le n_x\), together with \((\tfrac12,l+\tfrac12)\) and
+\((n_x+\tfrac12,l+\tfrac12)\) for \(0\le l\le n_y\). The second set includes
+all four outer corners and every required outer-boundary vertex. The complete
+population is preregistered from the full-precision typed WCS, grid shape, and
+row domain before the physical FITS WCS is generated. Both representations
+shall bind the same WCS-generation
+identity, celestial frame, axis order, signs, handedness, orientation, shape,
+and centered-integer reference-pixel relation. At every population member,
+each WCS is evaluated at the exactly corresponding center (zero-based memory
+index \((j,k)\), one-based FITS pixel \((j+1,k+1)\)). Separation is the
+great-circle angle \(\operatorname{atan2}(\lVert\boldsymbol u\times
+\boldsymbol v\rVert,\boldsymbol u\!\cdot\!\boldsymbol v)\) between unit
+direction vectors in that exact declared frame, evaluated with IEEE-754
+binary64 round-to-nearest, ties-to-even operations and reported in arcseconds.
+The maximum over the complete finite population shall be at most 0.1 arcsec.
+If either WCS yields an invalid or non-finite direction at any preregistered
+member, the representation fails; the point is not dropped. A center is absent
+only when its scientific row was already absent before population generation;
+every listed outer-boundary vertex remains required. No smaller sampled subset
+or continuum/global-sky claim is authorized.}

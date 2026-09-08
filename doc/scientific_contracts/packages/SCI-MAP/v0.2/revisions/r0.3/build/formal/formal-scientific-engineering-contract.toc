@@ -1,0 +1,17 @@
+\contentsline {section}{Physical model and contract at a glance}{1}{section*.1}%
+\contentsline {section}{\numberline {1}Scientific boundary and estimand}{4}{section.1}%
+\contentsline {section}{\numberline {2}Linear operator, response, and absolute mode}{6}{section.2}%
+\contentsline {section}{\numberline {3}Input classes and falsifiable response behavior}{8}{section.3}%
+\contentsline {section}{\numberline {4}Conditional uncertainty and statistical labels}{9}{section.4}%
+\contentsline {section}{\numberline {5}Distinct map facts, support, and MAP-local validity}{10}{section.5}%
+\contentsline {section}{\numberline {6}Observation coaddition on one common grid}{12}{section.6}%
+\contentsline {section}{\numberline {7}Identity, WCS, units, and lifecycle}{15}{section.7}%
+\contentsline {section}{\numberline {8}Failure, downstream boundary, and immutable parentage}{17}{section.8}%
+\contentsline {section}{\numberline {9}Uncertainty, validity, validation, and claim layers}{18}{section.9}%
+\contentsline {section}{\numberline {10}Owner decisions, external hard gates, and route disposition}{19}{section.10}%
+\contentsline {section}{\numberline {A}Owner-decision register}{21}{appendix.A}%
+\contentsline {section}{\numberline {B}Requirement and crosswalk summary}{22}{appendix.B}%
+\contentsline {section}{\numberline {C}Canonical requirements}{23}{appendix.C}%
+\contentsline {section}{\numberline {D}Falsifiable predictions}{33}{appendix.D}%
+\contentsline {section}{\numberline {E}Product vocabulary}{36}{appendix.E}%
+\contentsline {section}{\numberline {F}Admitted source register and independence statement}{37}{appendix.F}%

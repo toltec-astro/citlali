@@ -1,0 +1,506 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.75in,headheight=15pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,longtable,array,tabularx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+
+\definecolor{EngNavy}{HTML}{23374D}
+\definecolor{EngTeal}{HTML}{2A7F79}
+\definecolor{EngPale}{HTML}{EAF5F3}
+\definecolor{EngGray}{HTML}{58636D}
+\hypersetup{colorlinks=true,linkcolor=EngTeal,urlcolor=EngTeal,
+  pdftitle={SCI-MAP v0.2 Engineering Conformance Specification, r0.3 Candidate},
+  pdfauthor={Grant Wilson},
+  pdfsubject={Candidate for scientific-owner disposition}}
+\setlength{\emergencystretch}{3em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.45em}
+\setlist{nosep,leftmargin=1.5em}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\code}[1]{\nolinkurl{#1}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{EngGray}SCI-MAP v0.2 | Engineering Conformance Specification}
+\fancyhead[R]{\small\color{EngGray}Document r0.3}
+\fancyfoot[L]{\small\color{EngGray}Procedure only | conformance not\_assessed}
+\fancyfoot[R]{\small\color{EngGray}Page \thepage}
+
+\input{SCI-MAP-v0.2_SHARED_AUTHORITY_r0.3.tex}
+\renewcommand{\SCIMapDocumentRevision}{r0.3}
+
+\newcommand{\ProcedureBox}[1]{%
+  \begin{center}\fcolorbox{EngTeal}{EngPale}{\parbox{0.92\linewidth}{#1}}\end{center}}
+\newcommand{\MaybeRequirementBreak}[1]{%
+  \ifcsname SCIMapRequirementBreak#1\endcsname
+    \csname SCIMapRequirementBreak#1\endcsname
+  \fi}
+\newcommand{\MaybePredictionBreak}[1]{%
+  \ifcsname SCIMapPredictionBreak#1\endcsname
+    \csname SCIMapPredictionBreak#1\endcsname
+  \fi}
+\begin{document}
+
+\begin{center}
+{\color{EngNavy}\LARGE\bfseries SCI-MAP}\\[0.25em]
+{\Large Ordinary Mapmaking and Observation Coaddition}\\[0.45em]
+{\large Engineering Conformance Specification}\\[0.8em]
+\begin{tabular}{rL{0.62\linewidth}}
+Scientific contract version: & \textbf{\SCIMapContractVersion}\\
+Document revision: & \textbf{\SCIMapDocumentRevision}\\
+Scientific status: & \textbf{Candidate for scientific-owner disposition}\\
+Conformance status: & \textbf{\texttt{not\_assessed} procedure}\\
+Canonical science source: & \textbf{SCI-MAP v0.2/r0.3 shared authority}\\
+Target implementation: & \textbf{Not selected in this document}
+\end{tabular}
+\end{center}
+
+\input{identity/engineering.tex}
+
+\ProcedureBox{\textbf{No independent science.}
+\texttt{SCI-MAP-v0.2-SHARED-AUTHORITY} is the sole normative scientific
+source, and the Formal Scientific/Engineering Contract PDF is its canonical
+rendered normative scientific view. Every scientific clause and prediction
+printed here is imported from
+\texttt{SCI-MAP-v0.2\_SHARED\_AUTHORITY\_r0.3.tex}. This document supplies the
+prospective evidence, execution, traceability, and verdict procedure. If an
+engineering observation appears to require changing science, record a
+deviation and return it to scientific-owner review; do not edit the expected
+result in this view.}
+
+\tableofcontents
+
+\clearpage
+\section{Purpose and conformance target}
+
+This specification tells a reviewer how to decide whether one exact candidate
+conforms to SCI-MAP v0.2. It does not select a candidate, inspect an
+implementation, execute validation, or assert a result. Before work begins,
+the reviewer freezes:
+
+\begin{itemize}
+\item repository and immutable candidate identity;
+\item build profile, compiler/runtime identities, configuration, and enabled
+parallel modes;
+\item exact input fixtures and independent expected-value generators;
+\item numerical comparison policy and simultaneous statistical error policy;
+\item required product list, representation paths, log policy, and completion
+criteria; and
+\item the shared-authority digest, contract version, this document revision,
+owner-decision ledger revision, exact byte-identical PTC-to-MAP boundary
+digest, exact original-footprint-coordinate boundary, source-bound MAP
+profile versions and their six separate status axes, six product-role
+identities, coadd Registry record, owner r0.3 directive identity/digest, and
+the exact candidate paired
+\SCIMapCandidateVALRegistry{} and \SCIMapCandidateVALSourceRegister{} records.
+Candidate records are not treated as owner-accepted, canonically activated, or
+frozen merely because their bytes and hashes are complete.
+\end{itemize}
+
+Evidence from a different candidate, configuration, or science-authority
+digest is not silently pooled. Each rerun keeps its own identity and reason.
+Historical operational acceptance does not substitute for conformance
+evidence.
+
+\SCIMapLifecycleDefinition
+
+\SCIMapLifecycleTable
+
+\SCIMapAxisSeparationDefinition
+
+\SCIMapAttemptOutcomeDefinition
+
+\SCIMapCandidateProfileStatusDefinition
+
+\section{Evidence record}
+
+Each requirement record contains at least:
+
+\begin{longtable}{L{0.24\linewidth}L{0.66\linewidth}}
+\toprule
+Field & Required content\\
+\midrule
+Requirement & Stable \texttt{SCI-MAP-REQ-NNN} and shared-authority digest.\\
+Candidate & Exact source/build identity and environment profile.\\
+Observable & Public product, typed state, API boundary, metadata, diagnostic,
+or failure transition under test.\\
+Fixture & Immutable input identity and independent expected-value calculation.\\
+Comparison & Exact predicate or preregistered numerical/statistical bound.\\
+Result & Exactly one of \texttt{pass}, \texttt{fail}, \texttt{blocked},
+\texttt{not\_applicable}, or \texttt{not\_assessed}. Skipped required evidence
+is \texttt{not\_assessed}, never a pass.\\
+Artifact realization & Exactly one of \texttt{complete},
+\texttt{incomplete}, \texttt{failed}, or \texttt{not\_produced}; this records
+the evidence artifact and never substitutes for the requirement result.\\
+MAP attempt outcome & Exactly one of \texttt{succeeded}, \texttt{failed}, or
+\texttt{not\_produced}, independently of evidence-artifact realization.\\
+MAP product realization & Exact immutable product identity and all five
+lifecycle stages only when actual accumulators, scientific rows, values,
+role-qualified statuses, and provenance were produced; otherwise absent.\\
+Failure/nonproduction record & Reached lifecycle prefix, attempt identity,
+stage/cause/scope, provenance, and nonmutation evidence. A failure record does
+not realize a MAP product; no-support nonproduction is not failure.\\
+Artifacts & Machine-readable outputs, logs, traces, plots/tables where needed,
+and digest-addressed provenance.\\
+Reviewer & Independent reviewer identity, date, and deviation disposition.\\
+\bottomrule
+\end{longtable}
+
+\SCIMapRequirementResultDefinition
+
+Failures are retained as evidence. A tolerance, fixture, expected result, or
+applicability decision is not changed after viewing a failure without opening
+a new preregistered record.
+
+\clearpage
+\section{Claim-layer gates}
+
+Passing one layer grants no stronger layer automatically.
+
+\begin{longtable}{L{0.22\linewidth}L{0.31\linewidth}L{0.37\linewidth}}
+\toprule
+Layer & Minimum engineering record & Prohibited inference\\
+\midrule
+Algebraic contract & Exact owner-dispositioned shared authority and internally consistent
+independent expected values. & No claim that a candidate implements it.\\
+Engineering conformance & Every applicable requirement passes on one exact
+candidate; no required skip, unresolved deviation, or false completion. & No
+claim that persisted WCS/response is scientifically faithful in real data.\\
+Representation/response fidelity & Round-trip and injection evidence covers
+WCS, units, response classes, boundaries, and covariance representations with
+preregistered bounds. & No observational photometric, astrometric, or noise
+performance claim.\\
+Observational performance & Independent references and repeatability establish
+the named amplitude, shape, position, covariance, or false-rate metric. & No
+production-readiness claim.\\
+Production readiness & Operational profile, complete products, failure/log
+audit, dependency closure, release controls, and owner approval all pass. & No
+authority beyond the exact released profile and contract version.\\
+\bottomrule
+\end{longtable}
+
+All nine stable MAP scope decisions are decided for this candidate.  A claim
+may still be blocked by an unapproved source binding, an unavailable producer,
+or missing conformance evidence; record that state without weakening the
+requirement or substituting a fallback.
+
+\section{Execution order and atomicity protocol}
+
+Run evidence in the following order so later evidence cannot mask an earlier
+contract failure:
+
+\begin{enumerate}
+\item \textbf{Stage A---structural.} Parse and freeze exact identity and
+parent, generation, source/profile binding, producer availability, and
+required decision realization for frozen PTC r0.5, the exact PTC-to-MAP
+boundary, and the AST same-\(n\) signal
+coordinate, all boundaries/profiles, units, lifecycle, WCS, MAP policy, and
+required-product plan.  When the uniform route is selected, require the exact
+uniform Registry, family, and handoff identities declared in the shared
+authority; selection alone supplies no coefficient and creates no default.
+Reject direct CAL, PTC-disabled, missing-product,
+inferred no-op, and cross-generation routes before payload retrieval.
+\item \textbf{Stage B---safe numerical classification.} Retrieve only
+structurally admitted transformed-signal and coefficient payloads. Classify
+\(z_i\) as finite, non-finite, or unrepresentable and \(\gamma_i\) as finite
+strictly positive, exact zero, negative finite, non-finite, or
+unrepresentable. Verify coefficient availability itself imposed no finiteness
+requirement. Separately validate the exact observation-resolved coverage cut
+before application: zero, ordinary \((0,1]\), above one admitted only by an
+independently authorized same-value/scope
+\code{coverage_cut_above_one_override_requested} fact, or invalid when
+missing, non-finite, negative, or unrepresentable. The number above one never
+authorizes itself. Invalid input fails before support construction, application,
+or mutation; no realized cut value is a pre-application prerequisite.
+\item \textbf{Stage C---coordinate and product.} Evaluate exact AST coordinate
+validity, one-hot placement/boundary, and only the companions required by the
+exact selected observation/coadd product role.
+Before any VAL evaluation, verify candidate profile semantics, owner approval,
+Registry registration, source binding, activation/evaluability, and object-
+decision realization separately. This r0.3 generation is candidate/pending/
+pending/pending/unavailable/unavailable. After an exact active generation
+exists, retain request, applicability, eligibility, and decision-artifact-
+realization axes, source binding, immutable reason, cause, and failure scope.
+Only requested/applicable/eligible/realized passes. Verify separately that the
+PTC coefficient/QC pass uses its exact PTC-owned profile and neither replaces
+nor rescues \SCIMapUpstreamProfile.
+\item \textbf{Stages D and E---membership then accumulation.} Construct
+membership only after Stages A--C and perform no payload arithmetic until all
+required gates pass. Verify no numeric-zero mask, late masking, or aggregate
+sanitization substitutes for admission. Then compare exact scientific
+output-row identity and cardinality, plus
+one-pixel, one-hot half-open-boundary, prohibited-fractional, empty-support,
+covariance,
+fixed-state response, full-procedure comparison-space typing, and distinct-fact
+observation outputs, to independent expected values; retained storage rows do
+not count as scientific output rows.
+\item Exercise original-footprint exposure fixtures: one original influencing
+several descendants at different pixels; original and descendants in
+different pixels; missing original coordinate; boundary loss; multiple maps
+sharing one original; distinct observations with numerically identical
+original coordinates; and donor/synthesized descendants. Verify exact
+observation/UID/native/stable-ALIGN-slot/generation keys, layered AST
+ALIGN-grid parent in the target WCS, one own-coordinate placement, separate
+influence edges, and no precision or temporal-support promotion.
+\item Verify complete immutable observation-bundle construction as a logical
+artifact. Independently request all three observation roles and record each
+reached requested, effective, observation-resolved, applied, and realized plan
+stage and separate attempt outcome; a successful realization has all five, a
+pre-application stop has no applied/realized records, and a failed or
+no-support not-produced applied attempt has no realized product. Exercise
+required publication for persisted routes plus explicitly selected in-memory
+and coadd-only routes.  In-memory retention is not a waived product.
+\item Snapshot coadd-owned state; test every compatibility failure under each
+selected role; require atomic nonmutation. Confirm that base-permitted
+unavailable or basis-incompatible response and incomplete covariance preserve
+the base signal membership and publish exact status/cause.
+\item Confirm that the candidate observation-coadd profile cannot be evaluated
+before exact owner acceptance, Registry/source binding, and activation. After
+an active successor exists, evaluate all four object-decision axes separately
+from the MAP lifecycle and attempt outcome; then independently request all
+three coadd roles and exercise admitted
+centered-integer coaddition, exact coadd output-row identity, and companion
+placement.  If a canonical target grid was requested before observation-map
+construction, verify that every constructed map honors it.  Otherwise verify
+that already existing compatible bundles, including persisted coadd-only
+inputs, may select a common coadd target and use exact centered-integer
+embedding without modifying or relabeling their scientific samples.  An
+explicit crop creates a new row-selected product with its own identity and
+provenance.
+\item Round-trip all required representations and reconstruct each
+row-selected operator from provenance. Evaluate the physical FITS and typed
+WCS on every preregistered scientifically addressable pixel center and every
+outer-footprint cell vertex, including all corners, with the exact index
+mapping, common WCS generation/frame, binary64 great-circle metric, and
+fail-on-invalid rule. Infer no continuum maximum from that finite population.
+\item Exercise fixed-state, PTC full-procedure, and PTC+MAP re-resolved
+response families. For every numerical \(\Delta z\) or \(\Delta m\), require
+the complete baseline/perturbed identities, quantity/unit, rows, frames/WCS,
+reference/gauge/null state, supports, coefficient/response bases, exact common
+domain and both maps, unmatched-row treatment, perturbation parameters,
+finite-difference convention, state transition, availability, and cause.
+Reject implicit fill, intersection, coordinate/shape/position association,
+interpolation, reprojection, or gauge alignment; a state delta alone never
+authorizes subtraction. Require the stable
+\SCIMapComparisonSpaceRecordId{} identity in every such record. Reconstruct and disclose the complete MAP-local operator
+\(A_{{\mathrm{MAP}},\Pi}\), the immutable realized plan \(\Pi\), and row
+selector \(J_{\rm out}\) with its exact output-row domain for every valid
+product, while
+marking coadd-full-procedure/re-resolved and whole-chain
+RTC-to-CAL-to-PTC-to-MAP responses unavailable unless separate approved
+authorities establish them; exercise an already realized
+PTC-grid companion applied exactly once; and honest response/covariance
+disclosure. For a response-bearing role, require only every exact response
+object named by that role; absence of a different unselected response family
+does not block it. For a response-bearing coadd, require one exact shared family
+\(R\), compatible source/perturbation/basis/unit/normalization/gauge/WCS/row
+identities, fixed membership/placement/\(B_{\rm out}\)/support/coefficients, and
+an exact composition theorem; reject multiplication of a finite difference
+through \(B_{\rm out}\) as a Jacobian without that theorem. For coadd covariance, require
+every block named by the selected covariance-qualified role before accepting the complete numerical propagation and
+otherwise require partial, symbolic, summarized, lineage-resolvable, or
+unavailable state on the base role. Verify no stronger role subsets an existing
+base parent and verify versioned binding for later derivative products.
+\item Exercise consumer claim boundaries and immutable base/unfiltered MAP
+parentage without assuming a closed-world registry of all future scientific
+uses.  Verify that Pointing and OOF receive only permission to reuse the exact
+ordinary MAP gridding operator when their inputs conform.  Their WCS/frame,
+model/fitting, interpretation, outputs, defaults, profiles, and qualification
+remain mode-owned, and no unsupplied mode profile is activated.
+\item Repeat supported execution modes under the preregistered floating-point
+policy, while requiring exact discrete facts.
+\item Only after deterministic gates pass, execute representation, external,
+observational, and operational evidence appropriate to the requested claim.
+\end{enumerate}
+
+For every failure-injection test, capture pre-state, attempted input, emitted
+diagnostic, post-state, publication/cardinality state, and completion state.
+No partial-state comparison may omit a coadd companion merely because its
+payload was not the injected failure target.
+
+\subsection{Scope-discrimination cases}
+
+The following cases make the targeted r0.3 amendments discriminating. Each
+case records every reached requested, effective, observation-resolved, applied,
+and realized state plus the separate attempt outcome, and asserts
+role-qualified atomic nonmutation on rejection.
+
+\SCIMapProductRoleDefinition
+
+\SCIMapProductRoleDependencyTable
+
+\begin{longtable}{L{0.27\linewidth}L{0.30\linewidth}L{0.33\linewidth}}
+\toprule
+Decision surface & Admitted case & Required discriminator\\
+\midrule
+Uniform coefficient authority & Exact Registry/family/handoff selection and a
+PTC-complete same-generation payload. & Admit only through the frozen
+PTC-to-MAP boundary; no default, fallback, or coefficient synthesis.\\
+Coverage cut & Finite requests at 0, within \((0,1]\), and above 1. & Classify
+zero and ordinary values separately from the independently authorized typed
+above-one override; reject numerical self-authorization and missing, negative,
+non-finite, or unrepresentable values before support/application/mutation.\\
+Coverage stages & Values differ across reached lifecycle stages. & Validate
+\(c_{\rm observation\_resolved}\) before application, then require exact
+\(c_{\rm applied}=c_{\rm observation\_resolved}\) at the event. Evaluate the
+inclusive predicates with \(c_{\rm applied}\); create no future-stage
+placeholder and never require \(c_{\rm realized}\) to authorize application.\\
+Coverage order statistic & \(N=0\) and preregistered small populations around
+integer transitions. & Reproduce the exact zero-based
+\(\lfloor(\lfloor0.75N\rfloor+N)/2\rfloor\) index and selected ordered value;
+for \(N=0\), retain exact \(Q_\star=0\) without a selected population element
+or zero-sky meaning; verify inclusive thresholds and finite-positive row
+requirement.\\
+Empty support & A valid authorized above-one cut produces no observation or
+coadd support-authorized rows. & Record prospective state
+\code{applied_no_support_authorized_output_rows}, outcome \code{not_produced},
+like-named cause, complete support proof and applied provenance; produce no
+product, failure, completion marker, dense zero, or no-row coadd member.\\
+Bundle completeness & Required companions retained in memory, persisted, and
+consumed by a coadd-only route. & The logical bundle and plan remain complete;
+publication is required only for routes whose plan requires persistence.\\
+Target grid & A preconstruction canonical grid is requested, or existing
+bundles have otherwise-compatible shapes. & Honor the requested grid; otherwise
+select a compatible common coadd target and use exact centered-integer
+embedding.  Reject relabeling or resampling as a way to manufacture
+compatibility.\\
+Crop & Explicit row selection after construction. & Emit a new identified
+product with selector/provenance; do not mutate or relabel the base grid.\\
+Response & Valid fixed-state and procedure-response products. & Disclose exact
+MAP-local \(A_{\mathrm{MAP}},\Pi\) separately from any upstream or whole-chain
+claim; numerical procedure deltas require both exact maps into one authorized
+\SCIMapComparisonSpaceRecordId{} domain and all
+gauge/support/perturbation facts.\\
+Coadd response family & Same-family fixed responses, mixed families, and a
+finite difference without a composition theorem. & Bind exact family \(R\) and
+fixed coadd state for \(R_{\rm coadd,out}^{(R)}=B_{\rm out}T_{\rm obs}^{(R)}\);
+reject mixed families and Jacobian-like propagation without exact composition;
+keep coadd-procedure and whole-chain families unavailable.\\
+Profile activation & Candidate MAP/VAL profile bytes exist without canonical
+activation. & Record \texttt{candidate}, \texttt{pending}, \texttt{pending},
+\texttt{pending}, \texttt{unavailable}, and \texttt{unavailable} across the
+six status axes and perform no object evaluation.\\
+Product roles & Independently request base, response-bearing, and
+covariance-qualified observation and coadd roles. & Preserve exact base parent
+and ordered membership; base-permitted unavailable companions do not reject;
+a selected required companion blocks only that stronger role and never forms a
+subset of an existing parent.\\
+WCS population & Typed and FITS WCS differ at an interior center, outer
+boundary vertex, corner, and one invalid point in turn. & Evaluate the full
+preregistered population with exact spherical metric/frame/generation/
+precision; reject on any invalid member and infer no continuum maximum.\\
+NOI vocabulary & Present \(Q\), formal precision, complete covariance, NOI
+conditional marginal second moment, NOI standardized signal, and an attempted
+significance label. & Preserve exact roles and claims; stronger physical-noise,
+uncertainty, significance, probability, false-rate, completeness, purity, or
+catalogue meaning remains unavailable without a separately approved method.\\
+Pointing and OOF & Each requests exact ordinary MAP operator reuse. & Verify
+only the shared operator boundary; require separate mode-owned WCS/frame,
+model/fitting, interpretation, outputs, defaults, profile, and qualification,
+and leave an unsupplied mode profile unavailable.\\
+Application status & Contract sources compile without an identified producer
+candidate. & Record contract completeness only; make no application
+availability or conformance claim.\\
+\bottomrule
+\end{longtable}
+
+\SCIMapNOIOwnershipStatement
+
+\clearpage
+\section{Canonical requirement conformance clauses}\label{sec:requirements}
+
+The following clauses are generated from the shared authority. The first
+paragraph is the canonical science requirement; the second is its minimum
+conformance route. Every one of the 52 result fields is initialized to the
+exact value \texttt{not\_assessed}; this says applicable evidence has not yet
+been executed or reviewed and does not describe artifact realization.
+
+\renewcommand{\SCIMapRequirement}[4]{%
+  \MaybeRequirementBreak{#1}%
+  \phantomsection\label{engreq:#1}%
+  \noindent\textbf{\textcolor{EngNavy}{#1} -- #2}\par\nobreak
+  \textbf{Canonical clause:} #3\par
+  \textbf{Minimum conformance evidence:} #4\par
+  \textbf{Result:} \textcolor{EngGray}{\texttt{not\_assessed}}\par
+  \smallskip\hrule\smallskip}
+\begin{sloppypar}\small
+\SCIMapRequirements
+\end{sloppypar}\normalsize
+
+\clearpage
+\section{Prediction execution matrix}\label{sec:predictions}
+
+Predictions are imported from the same shared authority. Engineering records
+attach fixtures, bounds, artifacts, and results; they do not rewrite the
+prediction.
+
+\renewcommand{\SCIMapPrediction}[4]{%
+  \par\begin{minipage}{\linewidth}%
+  \phantomsection\label{engpred:#1}%
+  \noindent\textbf{\textcolor{EngNavy}{#1} -- #2}\par
+  \textbf{Canonical prediction:} #3\par
+  \textbf{Primary claim layer:} #4.\par
+  \textbf{Fixture / bound / result:} \textcolor{EngGray}{\texttt{not\_assessed}; preregistration pending}\par
+  \smallskip\hrule
+  \end{minipage}\par\smallskip}
+\SCIMapPredictions
+
+\clearpage
+\section{Mechanical completeness checks}
+
+Before a conformance verdict, automated checks shall establish:
+
+\begin{itemize}
+\item exactly one declaration of each stable requirement and prediction ID in
+the shared authority, with no gaps or duplicates;
+\item every requirement appears in this specification and in
+\texttt{CROSSWALK.md}; every prediction is linked to at least one requirement;
+\item lifecycle, attempt outcome, empty-support disposition, six profile-status
+axes, exact response-family coadd construction, the stable comparison-space
+record, NOI terminology, and document-authority roles agree across the core,
+three views, records, profiles, bindings, and prospective templates;
+\item each rendered PDF identifies contract v0.2 and its current document
+revision separately;
+\item no unresolved LaTeX reference, citation, overfull box, clipped glyph,
+broken table, or unreadable page remains;
+\item every required artifact reopens successfully, has the expected page
+count, and renders every page through an independent PDF renderer; and
+\item the owner-decision ledger and author-draft decision record contain no
+silent resolution of an open scientific question.
+\end{itemize}
+
+The conformance verdict uses the same exact five-value requirement-result
+vocabulary. It is \texttt{pass} only when every applicable requirement is
+\texttt{pass} on the exact candidate. Any contradictory evaluated requirement
+makes it \texttt{fail}; otherwise any missing named prerequisite makes it
+\texttt{blocked}; otherwise any applicable unevaluated requirement makes it
+\texttt{not\_assessed}. \texttt{not\_applicable} is permitted only for a
+requirement outside the exact candidate's declared role with an owner-approved
+rationale. Evidence-artifact \texttt{incomplete} is never a requirement result.
+This document records every placeholder as \texttt{not\_assessed} and asserts
+no verdict.
+
+\section{Required handoff contents}
+
+An engineering handoff contains the candidate and authority identities;
+requirement result table using exactly \texttt{pass}, \texttt{fail},
+\texttt{blocked}, \texttt{not\_applicable}, and \texttt{not\_assessed}; a
+separate artifact-realization field using exactly \texttt{complete},
+\texttt{incomplete}, \texttt{failed}, and \texttt{not\_produced}; a separate
+MAP attempt outcome using \texttt{succeeded}, \texttt{failed}, and
+\texttt{not\_produced}; product-realization
+identity only for actual products; prediction result table; exact commands and
+environment; independent expected-value artifacts; build/test/log outputs;
+representation and observational evidence where claimed; failure-injection
+snapshots; skipped/blocked items; deviations and owner dispositions; and an
+explicit statement for each claim layer. The handoff shall not collapse
+``conforms algebraically,'' ``represents faithfully,'' ``performs on sky,'' and
+``ready for production'' into one status word.
+
+\end{document}

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "SCI-MAP:v0.2-r0.2:wcs-comparison-record@1",
+  "title": "SCI-MAP WCS representation comparison record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_identity",
+    "grid_shape",
+    "scientific_row_domain",
+    "population_generation_identity",
+    "typed_wcs_identity",
+    "fits_wcs_identity",
+    "common_wcs_generation",
+    "celestial_frame",
+    "axis_order_signs_handedness_orientation",
+    "centered_integer_reference_pixel_relation",
+    "population",
+    "metric",
+    "precision",
+    "invalid_point_policy",
+    "bound_arcsec",
+    "maximum_arcsec",
+    "result"
+  ],
+  "properties": {
+    "record_identity": {"type": "string"},
+    "grid_shape": {
+      "type": "object",
+      "required": ["n_x", "n_y"],
+      "properties": {"n_x": {"type": "integer", "minimum": 1}, "n_y": {"type": "integer", "minimum": 1}},
+      "additionalProperties": false
+    },
+    "scientific_row_domain": {"type": "array", "items": {"type": "string"}},
+    "population_generation_identity": {"type": "string"},
+    "typed_wcs_identity": {"type": "string"},
+    "fits_wcs_identity": {"type": "string"},
+    "common_wcs_generation": {"type": "string"},
+    "celestial_frame": {"type": "string"},
+    "axis_order_signs_handedness_orientation": {"type": "object"},
+    "centered_integer_reference_pixel_relation": {"type": "object"},
+    "population": {
+      "type": "object",
+      "required": ["addressable_centers", "outer_boundary_vertices_including_corners"],
+      "properties": {
+        "addressable_centers": {"type": "array", "items": {"type": "array", "prefixItems": [{"type": "number"}, {"type": "number"}], "items": false}},
+        "outer_boundary_vertices_including_corners": {"type": "array", "items": {"type": "array", "prefixItems": [{"type": "number"}, {"type": "number"}], "items": false}}
+      },
+      "additionalProperties": false
+    },
+    "metric": {"const": "atan2(norm(cross(u,v)),dot(u,v)) great-circle angle in declared frame"},
+    "precision": {"const": "IEEE-754 binary64 round-to-nearest ties-to-even"},
+    "invalid_point_policy": {"const": "fail_record; do_not_drop_required_point"},
+    "bound_arcsec": {"const": 0.1},
+    "maximum_arcsec": {"type": ["number", "null"], "minimum": 0},
+    "result": {"enum": ["pass", "fail", "not_assessed"]}
+  }
+}

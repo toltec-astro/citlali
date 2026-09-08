@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "SCI-MAP:v0.2-r0.3:candidate-profile-and-val-decision-status-record@1",
+  "title": "SCI-MAP r0.3 candidate profile and unavailable VAL decision record",
+  "description": "Prospective ECS record for the current candidate generation. It does not assert registration, activation, evaluation, or a realized object decision.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_identity",
+    "profile_identity",
+    "source_binding_identity",
+    "profile_semantics_state",
+    "scientific_owner_approval_state",
+    "registry_registration_state",
+    "source_binding_state",
+    "activation_evaluability_state",
+    "object_specific_decision_realization",
+    "object_identity",
+    "request",
+    "applicability",
+    "eligibility",
+    "decision_artifact_realization",
+    "boolean_projection",
+    "immutable_reason",
+    "causes",
+    "failure_scope"
+  ],
+  "properties": {
+    "record_identity": {
+      "type": "string",
+      "minLength": 1
+    },
+    "profile_identity": {
+      "enum": [
+        "SCI-MAP:map_upstream_admission@2",
+        "SCI-MAP:observation_coadd_admission@2"
+      ]
+    },
+    "source_binding_identity": {
+      "type": "string",
+      "minLength": 1
+    },
+    "profile_semantics_state": {
+      "const": "candidate"
+    },
+    "scientific_owner_approval_state": {
+      "const": "pending"
+    },
+    "registry_registration_state": {
+      "const": "pending"
+    },
+    "source_binding_state": {
+      "const": "pending"
+    },
+    "activation_evaluability_state": {
+      "const": "unavailable"
+    },
+    "object_specific_decision_realization": {
+      "const": "unavailable"
+    },
+    "object_identity": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "request": {
+      "enum": [
+        "requested",
+        "not_requested"
+      ]
+    },
+    "applicability": {
+      "const": "applicability_unknown"
+    },
+    "eligibility": {
+      "const": "decision_unavailable"
+    },
+    "decision_artifact_realization": {
+      "const": "not_produced"
+    },
+    "boolean_projection": {
+      "const": false
+    },
+    "immutable_reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "causes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "failure_scope": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

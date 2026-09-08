@@ -1,0 +1,9 @@
+{
+  "argv": [
+    "/Users/gwilson/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdfinfo",
+    "/private/tmp/citlali-map-r03-build-2026-09-08/candidate-build-01/rationale/scientific-rationale.pdf"
+  ],
+  "exit_code": 0,
+  "stdout": "Title:           SCI-MAP v0.2 TolTEC Ordinary Mapmaking and Observation Coaddition - Science-Team Rationale r0.3 Candidate\nSubject:         Candidate for scientific-owner disposition\nAuthor:          Grant Wilson\nCreator:         LaTeX with hyperref\nProducer:        xdvipdfmx (0.1)\nCreationDate:    Mon Sep  7 20:00:00 2026 EDT\nCustom Metadata: no\nMetadata Stream: no\nTagged:          no\nUserProperties:  no\nSuspects:        no\nForm:            none\nJavaScript:      no\nPages:           17\nEncrypted:       no\nPage size:       612 x 792 pts (letter)\nPage rot:        0\nFile size:       151769 bytes\nOptimized:       no\nPDF version:     1.5\n",
+  "stderr": ""
+}
