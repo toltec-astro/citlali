@@ -1,4 +1,13 @@
-## MAP profile-admission proposal — 2026-09-08
+## MAP profile approval — 2026-09-08
++
++The owner [approved the exact profile-admission proposal](acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/OWNER_APPROVAL_2026-09-08.md)
++at `808db18143dbb83eb9e455e0929872e88e102e5a`. Profile-policy approval and
++the five final generation allocations are complete. Post-owner consistency
++review and canonical registration/source-binding admission remain pending.
++Activation remains unavailable. All earlier scientific and proposal bytes
++are preserved; application work and independent FRUIT remain separate.
++
++## MAP profile-admission proposal — 2026-09-08
 
 The owner confirmed the canonical r0.4 incorporation push and authorized the
 next contract step. [The exact admission proposal](acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/README.md)
