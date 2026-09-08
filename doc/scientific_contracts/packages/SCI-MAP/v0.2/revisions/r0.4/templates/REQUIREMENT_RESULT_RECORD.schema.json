@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "SCI-MAP:v0.2-r0.4:requirement-result-record@1",
+  "title": "SCI-MAP v0.2/r0.4 requirement result record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "requirement_id",
+    "shared_authority_identity",
+    "shared_authority_sha256",
+    "candidate_identity",
+    "declared_product_role",
+    "fixture_identity",
+    "comparison_predicate",
+    "result",
+    "result_reason",
+    "artifact_realization",
+    "evidence_artifacts",
+    "map_attempt_outcome",
+    "map_product_realization_identity",
+    "map_failure_evidence_identity",
+    "reviewer"
+  ],
+  "properties": {
+    "requirement_id": {
+      "type": "string",
+      "pattern": "^SCI-MAP-REQ-(00[1-9]|0[1-4][0-9]|05[0-2])$"
+    },
+    "shared_authority_identity": {
+      "const": "SCI-MAP-v0.2-SHARED-AUTHORITY/r0.4"
+    },
+    "shared_authority_sha256": {
+      "const": "3b81ea8180dcc3f5f37964ac1177feb417fef6a1cdcc590b33f9431b54bc1e31"
+    },
+    "candidate_identity": {"type": ["string", "null"]},
+    "declared_product_role": {
+      "type": ["string", "null"],
+      "enum": [
+        "SCI-MAP:base_observation_map@1",
+        "SCI-MAP:response_bearing_observation_map@1",
+        "SCI-MAP:covariance_qualified_observation_map@1",
+        "SCI-MAP:base_coadd@1",
+        "SCI-MAP:response_bearing_coadd@1",
+        "SCI-MAP:covariance_qualified_coadd@1",
+        null
+      ]
+    },
+    "fixture_identity": {"type": ["string", "null"]},
+    "comparison_predicate": {"type": ["string", "null"]},
+    "result": {
+      "enum": ["pass", "fail", "blocked", "not_applicable", "not_assessed"]
+    },
+    "result_reason": {"type": "string", "minLength": 1},
+    "blocked_dependency": {"type": ["string", "null"]},
+    "not_applicable_owner_rationale": {"type": ["string", "null"]},
+    "artifact_realization": {
+      "enum": ["complete", "incomplete", "failed", "not_produced"]
+    },
+    "evidence_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["identity", "sha256"],
+        "properties": {
+          "identity": {"type": "string"},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        },
+        "additionalProperties": true
+      }
+    },
+    "map_attempt_outcome": {
+      "type": ["string", "null"],
+      "enum": ["succeeded", "failed", "not_produced", null]
+    },
+    "map_product_realization_identity": {"type": ["string", "null"]},
+    "map_failure_evidence_identity": {"type": ["string", "null"]},
+    "reviewer": {
+      "type": ["object", "null"],
+      "properties": {
+        "identity": {"type": "string"},
+        "date": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+        "deviation_disposition": {"type": ["string", "null"]}
+      },
+      "required": ["identity", "date", "deviation_disposition"],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,121 @@
+\ifengineeringview
+
+\section{Normative proposed engineering requirements}
+
+Every requirement is an open proposal pending scientific-owner adoption.
+
+\begin{longtable}{p{0.15\linewidth}p{0.76\linewidth}}
+\toprule
+ID & Requirement\\
+\midrule
+\endhead
+UFC-REQ-001 & The family shall retain exact identity \FamilyKey, owner
+SCI-PTC, and inactive draft status until exact owner-approved source and
+Registry bindings exist.\\
+UFC-REQ-002 & The coefficient index shall be exact detector-time occurrence
+\(i\), distinct from spatial index \(p\). A scalar shall bind occurrences by
+either stored compact reference \(\widehat R_g\) independently matched to
+authoritative target \(R_q\), or complete enumerated manifest \(M_g\); order,
+shape, label, or cardinality shall not substitute.\\
+UFC-REQ-003 & Each coefficient realization shall bind one independently
+complete PTC publication generation \(q\), tagged as a segment, scan, or
+bounded within-scan/segment chunk in one observation. Its support shall equal
+the exact output support of \(q\); completion of unrelated units or the whole
+observation shall not gate handoff.\\
+UFC-REQ-004 & On finite nonempty support, the raw constant shall be exact
+dimensionless one and arithmetic-mean-to-one normalization shall be evaluated
+analytically as one. A literal population-wide reduction or stored
+per-occurrence array shall not be required.\\
+UFC-REQ-005 & The family shall accept no numerical parameter. An altered
+constant, unit rule, operator, or population rule shall be another
+family/version and shall not be ignored, clipped, or normalized into
+acceptance.\\
+UFC-REQ-006 & A singleton target shall be valid. Empty support shall create no
+instance. Duplicate, ambiguous, or conflicting identity in the authoritative
+target shall fail structural establishment and shall not be deduplicated or
+repaired.\\
+UFC-REQ-007 & An occurrence authoritatively outside \(q\)'s support shall have
+no coefficient under this family; absence shall remain distinct from numerical
+zero.\\
+UFC-REQ-008 & Every \(q\) and \(g\) shall bind exact application generation,
+CAL parent, observation, segment/scan/chunk bounds, ordinary-route rank
+provenance where applicable, selection lineage, support, source, and durable
+required components/links without mutating a parent or earlier realization.\\
+UFC-REQ-009 & Immutable family, scalar, unit, integrity, compatibility, and
+permission evaluations may be shared once at their exact scope. Every
+occurrence-level handoff shall retain a logical association to those results
+and its own membership/request fact; redundant per-occurrence materialization
+shall not be required.\\
+UFC-REQ-010 & SCI-MAP and SCI-JINC permission facts shall be separate. A
+denial, absence, unknown, or conflict for one shall not change payload fidelity
+or determine the other.\\
+UFC-REQ-011 & An explicit request for \ProfileKey shall set the request axis
+independently of family selection. After the selection-record identity is
+structurally bound, a known different value shall reach UQ-01 and be false,
+missing value shall be unknown, and conflicting value claims shall conflict.
+No named-profile request shall create no evaluation.\\
+UFC-REQ-012 & The complete profile shall bind exact use, owner, source,
+\((g,q,i,c)\) object, applicability, shared-object gate, restrictions,
+fact-level truth rules, no-exception rule, advisory roles, compatibility,
+supersession, scopes, aggregation status, and lifecycle.\\
+UFC-REQ-013 & Structural identity, scalar value, unit, integrity, stored
+membership, payload availability, producer validity, named permission, sample
+validity, consumer admission, numerical classification, and contribution
+shall remain distinct facts.\\
+UFC-REQ-014 & \(Q_{\rm scalar},Q_{\rm unit},Q_{\rm integrity},Q_{\rm member}\)
+shall be independently T/F/U/C. Any independent false shall make UQ-05 false;
+otherwise conflict shall remain conflict, otherwise unknown shall remain
+unknown, and only all true shall yield true. Contradiction within one fact
+shall remain one conflict rather than a selected false.\\
+UFC-REQ-015 & Requested, applicability, eligibility, and profile-artifact
+realization shall be independent axes. A completed false predicate shall yield
+a realized ineligible evaluation; a completed unresolved evaluation may be
+realized and decision unavailable; failed realization shall mean the profile
+artifact itself failed.\\
+UFC-REQ-016 & Every profile restriction and structural invariant shall be
+nonexceptionable. No VAL, consumer, mode, or other-use exception shall alter
+the result.\\
+UFC-REQ-017 & Failure scope shall follow the defective object. A wrong
+\(q,g\) pair or other malformed reference in one request shall remain local;
+a corrupt/misbound authoritative \(q\)-to-\(g\) or other shared
+identity/binding record shall affect every reference to that record. After
+valid payload-publication binding, corrupt bytes, digest failure, and decoder
+failure shall remain \(Q_{\rm integrity}\) rather than structural; payload
+false shall affect that payload's handoffs. Permission state shall affect only
+its named consumer. Every cause and independent fact state shall be retained.\\
+UFC-REQ-018 & Response and uncertainty availability shall be advisory and
+neutral for coefficient fidelity. Exact upstream states shall be preserved,
+and neither identity response nor zero uncertainty shall be inferred.\\
+UFC-REQ-019 & The coefficient shall be nonprecision and shall not mean inverse
+variance, sensitivity, significance, fitted loading, scatter, sample validity,
+exposure, response, covariance, independence, optimality, or a policy
+default.\\
+UFC-REQ-020 & The MAP successor shall change only its coefficient binding,
+retain all MAP-owned gates and arithmetic, and require MAP's independent
+finite-strictly-positive classification before use.\\
+UFC-REQ-021 & The JINC successor shall change only its PTC-coefficient binding,
+retain JINC ownership of spatial index \(p\), \(\kappa_{ip}\), sign,
+arithmetic, gates, and support, and create no new response, covariance,
+uncertainty, or bundle role.\\
+UFC-REQ-022 & NOI compatibility shall require the frozen exact lossless
+rational-parent record for the exact MAP and coefficient generations. Missing
+binding shall leave NOI unavailable and shall not change its design law.\\
+UFC-REQ-023 & No family or publication-size default shall be inferred. Missing
+selection or authority shall produce no unity or alternate-family fallback.
+PTC-disabled shall remain RTC-terminal. On the admitted first ordinary route,
+rank zero, noninteger rank, or unrealizable positive rank shall fail closed and
+shall not select another route or produce a coefficient. No claim is made
+about unapproved identity or zero-rank route families.\\
+UFC-REQ-024 & A change to a scientific family/profile/permission/boundary rule
+shall create the corresponding versioned successor. New application, product,
+support population, payload, request, or evaluation under unchanged rules
+shall create a new immutable realization, not a new family version; no earlier
+record shall be rewritten.\\
+UFC-REQ-025 & Algebraic conformance, implementation conformity,
+representation/response fidelity, observational performance, and production
+readiness shall remain separate evidence claims. No implementation or
+validation result shall be inferred from this specification.\\
+\bottomrule
+\end{longtable}
+
+\fi

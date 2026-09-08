@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "SCI-MAP:v0.2-r0.2:val-handoff-decision-record@1",
+  "title": "SCI-MAP-bound PTC/VAL handoff decision record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "decision_identity",
+    "profile_identity",
+    "source_binding_identity",
+    "object_identity",
+    "request",
+    "applicability",
+    "eligibility",
+    "decision_artifact_realization",
+    "boolean_projection",
+    "immutable_reason",
+    "causes",
+    "failure_scope"
+  ],
+  "properties": {
+    "decision_identity": {"type": "string"},
+    "profile_identity": {"type": "string"},
+    "source_binding_identity": {"type": "string"},
+    "object_identity": {"type": "object"},
+    "request": {"enum": ["requested", "not_requested"]},
+    "applicability": {"enum": ["applicable", "inapplicable", "applicability_unknown"]},
+    "eligibility": {"enum": ["eligible", "ineligible", "decision_unavailable"]},
+    "decision_artifact_realization": {"enum": ["realized", "incomplete", "failed", "not_produced"]},
+    "boolean_projection": {"type": "boolean"},
+    "immutable_reason": {"type": "string"},
+    "causes": {"type": "array", "items": {"type": "string"}},
+    "failure_scope": {"type": "string"}
+  }
+}
+

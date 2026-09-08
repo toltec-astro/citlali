@@ -1,0 +1,172 @@
+SCI-MAP v0.2 — BOUNDED FINAL CORRECTION AND ACCEPTANCE PREFLIGHT
+
+The r0.3 scientific architecture is accepted as the basis for the final
+correction/rebuild.
+
+The previous requested repairs are closed:
+
+- candidate profile semantics are distinct from approval, registration,
+  source binding, activation, and object-decision realization;
+- empty scientific support has the owner-selected not_produced outcome;
+- MAP product realization is distinct from application-attempt failure;
+- response-bearing coadds bind an exact response family and fixed composition
+  state;
+- shared science, formal render, rationale, and ECS have distinct authority
+  roles;
+- numerical full-procedure differences use the named comparison-space record.
+
+Do not reopen the estimator, projection, coefficient family, exposure model,
+coverage_cut policy, six product roles, response taxonomy, coadd arithmetic,
+NOI claim ceilings, or downstream ownership.
+
+Preserve SCI-MAP-REQ-001--052 and SCI-MAP-PRED-001--025.
+
+Perform the following bounded corrections.
+
+1. REPAIR PRED-025: ZERO IS QUANTITY-SPECIFIC
+
+The current statement that an “exact-zero ... aggregate/index never becomes
+a live valid product” is overbroad and contradicts the admitted estimator and
+zero-based indexing.
+
+Amend PRED-025 in the shared authority and regenerate its ECS rendering.
+
+Require:
+
+- a zero signal numerator with finite positive normalization and valid support
+  remains admissible;
+- a zero normalized scientific signal is not, by itself, invalid;
+- an in-bounds zero-based index is valid;
+- a zero centered-integer placement offset is valid when the grids satisfy the
+  exact embedding rule;
+- zero normalization never authorizes division or a supported scientific row;
+- zero coefficients retain their existing noncontributing treatment;
+- coverage_cut=0 and the N=0, Q_star=0 boundary convention retain their existing
+  meanings;
+- non-finite, overflowed, out-of-domain, and unrepresentable quantities follow
+  their exact declared failure scopes;
+- an empty support-authorized output-row set retains the approved not_produced
+  outcome and no-support cause.
+
+Do not confuse a scientifically valid measured value of zero with a fabricated
+zero substituted for unavailable support.
+
+Add fixtures under the existing predictions/evidence mappings for:
+
+A. Two otherwise admitted samples +a and -a in one pixel with equal positive
+   coefficients, giving N=0, Q>0, and a valid normalized value zero.
+
+B. An admitted constant-zero input on nonempty valid support.
+
+C. Memory index zero and zero placement offset under valid domain conditions.
+
+D. Zero normalization and a valid applied policy with empty output support,
+   retaining their distinct row/product outcomes.
+
+No new estimator or owner-selected numerical parameter is introduced.
+
+2. REPLACE EXPANDED PARAGRAPHS WITH SHORT NORMATIVE REFERENCES
+
+The complete empty-support disposition is repeatedly inserted into sentences
+that expect a short reference. Examples include:
+
+    “That prospective case uses The 2026-09-08 owner directive selects ...”
+
+    “that applied attempt follows The 2026-09-08 owner directive selects ...”
+
+    “... alternative is authorized. and is not an admitted coadd member.”
+
+Keep the complete empty-support rule once in the shared authority under an
+exact section/label.
+
+Replace repeated paragraph insertions with grammatical short references.
+Retain each requirement’s direct obligation and traceability.
+
+Audit REQ-009, REQ-012, REQ-031, REQ-032, REQ-033, REQ-039, and REQ-048,
+plus their ECS renderings.
+
+Do not change the approved empty-support outcome.
+
+Replace “like-named cause” everywhere with the exact cause token:
+
+    no_support_authorized_output_rows.
+
+Distinguish a short reference macro from a full rule-body macro if that is the
+source of the rendering defect.
+
+3. CLARIFY VAL EVALUATION ORDER IN THE ECS
+
+Repair execution step 3.
+
+When producing a new decision:
+
+- verify exact profile semantics, owner approval, Registry/source binding,
+  activation/evaluability, and required object facts;
+- perform the evaluation;
+- verify the resulting decision-artifact identity, four-axis state, causes,
+  and realization;
+- only then consume the decision for MAP admission.
+
+When consuming an existing decision, verify its exact binding and realization
+before MAP admission.
+
+Do not require the decision artifact as a prerequisite for creating itself.
+Do not introduce a new VAL disposition function.
+
+4. REMOVE AVOIDABLE REPETITION AND PAGE SPILLS
+
+Do not reduce font sizes, line spacing, or margins.
+
+- Eliminate the ECS contents page carrying only the final contents entry.
+- Avoid the mostly empty continuation page in the ECS result-vocabulary
+  section where normal flow can resolve it.
+- Consolidate the rationale’s final authority paragraph with an existing
+  authority/status section.
+- Render the complete lifecycle once per view; use precise references rather
+  than repeating its complete explanation.
+- Keep candidate-status facts clearly visible without inserting the full
+  status paragraph into every scientific clause.
+
+This is editorial cleanup, not a new document-architecture task.
+No page-count target is an acceptance condition.
+
+5. REBUILD AND VERIFY THE EXACT SUCCESSOR BYTES
+
+Keep contract version v0.2; advance the document/source revision under the
+existing versioning convention.
+
+Return:
+
+- corrected formal contract, rationale, and ECS;
+- exact shared-authority source and source inventory;
+- corrected PRED-025 and fixture mapping;
+- the small semantic-change report;
+- requirement/prediction identity and view-parity report;
+- source, owner-directive, boundary, profile, and build bindings;
+- clean-build and all-page rendering checks;
+- final manifest and matching delivery sidecar.
+
+Separate:
+
+- the PRED-025 semantic clarification;
+- ECS sequencing clarification;
+- cross-reference/prose repair;
+- deduplication and pagination.
+
+Verify that all 52 requirements and 25 predictions remain uniquely identified
+and that the corrected zero cases cannot be classified by a generic
+“zero means invalid” rule.
+
+6. DISPOSITION
+
+Return the corrected bytes for explicit conditional scientific-owner
+acceptance/freeze.
+
+Do not open another broad scientific revision unless the bounded checks
+demonstrate an actual contradiction.
+
+Conditional scientific acceptance does not activate candidate profiles,
+realize a PTC coefficient handoff, supply an unavailable parent, authorize a
+numerical MAP route, establish implementation conformity or response/covariance
+fidelity, validate observations, establish significance, or authorize
+production.

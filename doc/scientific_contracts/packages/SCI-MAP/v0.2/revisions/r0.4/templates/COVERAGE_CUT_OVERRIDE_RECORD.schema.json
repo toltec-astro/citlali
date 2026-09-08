@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "SCI-MAP:v0.2-r0.4:coverage-cut-above-one-override-and-support-outcome@1",
+  "title": "coverage_cut_above_one_override_requested record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "fact",
+    "request_identity",
+    "authority_or_profile",
+    "scope",
+    "stages",
+    "resolved_boolean",
+    "cause",
+    "provenance",
+    "empty_support_outcome"
+  ],
+  "properties": {
+    "fact": {"const": "coverage_cut_above_one_override_requested"},
+    "request_identity": {"type": "string", "minLength": 1},
+    "authority_or_profile": {"type": "string", "minLength": 1},
+    "scope": {
+      "type": "object",
+      "required": ["observation_identity", "product_role", "plan_identity", "execution_scope"],
+      "properties": {
+        "observation_identity": {"type": "string"},
+        "product_role": {"type": "string"},
+        "plan_identity": {"type": "string"},
+        "execution_scope": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "stages": {
+      "description": "Ordered prefix of actually reached MAP stages; completed realization has all five, earlier stop omits unreached stages.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": ["stage", "identity", "exact_value", "parent_stage_identity"],
+        "properties": {
+          "stage": {"enum": ["requested", "effective", "observation_resolved", "applied", "realized"]},
+          "identity": {"type": "string"},
+          "exact_value": {"type": "number", "exclusiveMinimum": 1},
+          "parent_stage_identity": {"type": ["string", "null"]}
+        },
+        "additionalProperties": false
+      }
+    },
+    "resolved_boolean": {"type": "boolean"},
+    "cause": {"type": "string", "minLength": 1},
+    "provenance": {"type": "object"},
+    "empty_support_outcome": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "application_state",
+            "attempt_outcome",
+            "product_realization",
+            "cause",
+            "q_star",
+            "selected_population_element",
+            "thresholds",
+            "support_predicates",
+            "authorized_output_rows",
+            "empty_row_proof",
+            "no_empty_bundle_authorized"
+          ],
+          "properties": {
+            "application_state": {"const": "applied_no_support_authorized_output_rows"},
+            "attempt_outcome": {"const": "not_produced"},
+            "product_realization": {"type": "null"},
+            "cause": {"const": "no_support_authorized_output_rows"},
+            "q_star": {"type": "number", "description": "Retain the exact Q_star value, including Q_star=0 for N=0."},
+            "selected_population_element": {"type": ["string", "null"], "description": "Must be null for N=0; Q_star=0 does not manufacture a selected element."},
+            "thresholds": {"type": "object"},
+            "support_predicates": {"type": "object"},
+            "authorized_output_rows": {"type": "array", "maxItems": 0},
+            "empty_row_proof": {"type": "object"},
+            "no_empty_bundle_authorized": {"const": true}
+          }
+        }
+      ]
+    }
+  }
+}

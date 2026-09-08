@@ -1,0 +1,385 @@
+{
+  "identity": "SCI-MAP-R04-SCIENTIFIC-AUTHOR-OUTPUT-DIGESTS/2026-09-08",
+  "status": "candidate scientific-author output; explicit conditional r0.4 scientific-owner acceptance and freeze pending; candidate profile activation and object decisions unavailable; fresh post-owner exact-SHA review required; manager final package manifest is authoritative for the assembled delivery",
+  "scope": "Every authored file present under output except this self-referential digest report. Generated covers, PDFs, build/QA records, copied inputs, manager source manifest, archive, and sidecar are outside this authored inventory.",
+  "file_digest_algorithm": "SHA-256 over raw file bytes",
+  "authored_file_inventory": {
+    "files_excluding_this_report": 56,
+    "ordering": "UTF-8 bytewise lexicographic order of paths relative to output/",
+    "recipe": "For each ordered entry append UTF-8 relative path, NUL, ASCII decimal raw byte length, NUL, lowercase ASCII raw-file SHA-256 hex, NUL; SHA-256 the concatenated stream.",
+    "sha256": "f9db089f30efc121080ff0721be9444c2f511313aab303019d53141129a1d5fc"
+  },
+  "shared_authority": {
+    "identity": "SCI-MAP-v0.2-SHARED-AUTHORITY/r0.4",
+    "aggregate_sha256": "3b81ea8180dcc3f5f37964ac1177feb417fef6a1cdcc590b33f9431b54bc1e31",
+    "aggregate_recipe": "Ordered wrapper then common/{notation,definitions,equations,assumptions,requirements,edge_cases}.tex; for each source append UTF-8 path relative to src/, NUL, ASCII decimal raw byte length, NUL, raw bytes, NUL; SHA-256 the concatenated stream.",
+    "members": [
+      {
+        "path": "src/SCI-MAP-v0.2_SHARED_AUTHORITY_r0.4.tex",
+        "aggregate_path": "SCI-MAP-v0.2_SHARED_AUTHORITY_r0.4.tex",
+        "bytes": 530,
+        "sha256": "5e405136761255a8f00ff6ca92e943c63e0c3bb6939d56924e5b884206edb56e"
+      },
+      {
+        "path": "src/common/notation.tex",
+        "aggregate_path": "common/notation.tex",
+        "bytes": 656,
+        "sha256": "5a5a004adbff226a0aa37a53f11fa6707f68a4ffac05d5469adffbd8926a0510"
+      },
+      {
+        "path": "src/common/definitions.tex",
+        "aggregate_path": "common/definitions.tex",
+        "bytes": 20867,
+        "sha256": "b06a5089766e6601ec8a08c952a6aafed5642da33e027fce7360dd6234b6534a"
+      },
+      {
+        "path": "src/common/equations.tex",
+        "aggregate_path": "common/equations.tex",
+        "bytes": 8482,
+        "sha256": "40111a13a63331071219713bf4ee420c2ac71ee8f3d6331cb17c0d72fa4c28b6"
+      },
+      {
+        "path": "src/common/assumptions.tex",
+        "aggregate_path": "common/assumptions.tex",
+        "bytes": 2050,
+        "sha256": "215e77c5a959511e4193ac961767631247d5e39eb2f626ec5a620d745f31d3a3"
+      },
+      {
+        "path": "src/common/requirements.tex",
+        "aggregate_path": "common/requirements.tex",
+        "bytes": 56834,
+        "sha256": "213e4e30dcb52ceaf30b46561948263e2ac823c86fbd12769af1fff7e251281d"
+      },
+      {
+        "path": "src/common/edge_cases.tex",
+        "aggregate_path": "common/edge_cases.tex",
+        "bytes": 15432,
+        "sha256": "95fe18adcd12dae0515f3c9db80d94becf51036ca629fc5f92c3f2657c76b615"
+      }
+    ]
+  },
+  "view_and_helper_sha256": {
+    "formal_entry": "9c6a3d360736e96c295c01501e740c46c2944e895722e7bd965ff680d5416763",
+    "rationale_entry": "83272b064257bd83c0bb4bca7ff12e11b2a550912ce22c42ade76cf18871e37a",
+    "engineering_entry": "92a258832664d891443d1b616717978a41bc98c79dd4aa339b63eefbef7fd5f4",
+    "owner_decision_register_helper": "0620311aee94a719a3974e53098ce5f50fc85193c4b71723f17195bd90524728"
+  },
+  "binding_chain": {
+    "product_role_registry_sha256": "d42d93a9f46f4f22c62d010172a20bad4f43e400e8271cbdffa655d689bd9086",
+    "occurrence_profile_sha256": "5e3786f41286305677fb3cac7b791722f5935869d0a7f8229610f4e65cd89265",
+    "coadd_profile_sha256": "290292888accabd4aab9afce1c2ceb471f3b3f275072724ffbe5caed4e3d1130",
+    "candidate_val_profile_registry_sha256": "a50d078bb8f02815578bfc877870d7a3b0af61ab6b1c06b295e1170a5b83b1be",
+    "candidate_val_source_register_sha256": "29ee1dc0ae644628197d9ad402d9a3f346023a1378f2f9a6dee15a868fe19cde",
+    "map_source_binding_sha256": "d6633c154bebc2fae29ba36281a4cdc745a99a441a5d4c206b2378c29d8c8dd6"
+  },
+  "approved_input_bindings": {
+    "author_manifest_identity": "SCI-MAP post-freeze successor proposed author references r0.1/2026-09-07",
+    "author_manifest_sha256": "83baf583f73784bebc6724025fd110e5545303f303c70af590b53c5696ee2c4f",
+    "owner_directive_identity": "SCI-MAP-OWNER-DIRECTIVE-v0.2-r0.4/2026-09-08",
+    "owner_directive_sha256": "34381dc7b1a19ddf6168e2259060fd808e97f8eac2b69074fbea983f02fb017b",
+    "author_packet_identity": "SCI-MAP-R04-AUTHOR-PACKET/2026-09-08",
+    "author_packet_inventory_source_sha256": "a3c78e5ca39ff9ca0c25f2acd48a0418478aa3be56d98da6fbed43fd49a2454b",
+    "predecessor_packet_identity": "SCI-MAP-R03-AUTHOR-PACKET/2026-09-08",
+    "predecessor_packet_inventory_source_sha256": "423b1e41575a019592bcc1e2b21292f77ab0e8873c205ba18cf808835048f6b1",
+    "basis_commit": "9511af9c0aa5a479d22d1b175307dae180935205",
+    "manager_scope_brief_sha256": "d3794abde9cb0c4ecec9aee447df1bdbbc7250f6033350302345573a4c52aff5",
+    "manager_prior_work_sha256": "8e89912f025867f1daac152f0288d025282f4d3e8d53fd062f255d870b24bd70"
+  },
+  "prospective_schema_files": [
+    "templates/COVERAGE_CUT_OVERRIDE_RECORD.schema.json",
+    "templates/FULL_PROCEDURE_COMPARISON_RECORD.schema.json",
+    "templates/MAP_LIFECYCLE_AND_PRODUCT_ROLE_RECORD.schema.json",
+    "templates/REQUIREMENT_RESULT_RECORD.schema.json",
+    "templates/VAL_HANDOFF_DECISION_RECORD.schema.json",
+    "templates/WCS_COMPARISON_RECORD.schema.json"
+  ],
+  "bounded_semantic_changes": [
+    "PRED-025 quantity-specific-zero clarification and prospective fixtures A-D, distinguishing signal numerator N_p from support-population cardinality N while retaining every exact failure scope and no-support product outcome",
+    "ECS prerequisite verification, evaluation, resulting-decision verification, and consumption order, with exact verification of an existing decision before admission and no new VAL disposition logic",
+    "empty-support cross-reference and prose repair using one full labeled rule, grammatical short references, and exact cause no_support_authorized_output_rows",
+    "lifecycle and candidate-status deduplication plus bounded normal-flow pagination repair without font, line-spacing, margin, architecture, or settled-science change"
+  ],
+  "unresolved_material_issues": [],
+  "files": [
+    {
+      "path": "CROSSWALK.md",
+      "bytes": 14389,
+      "sha256": "b764eb5118058ef1597a08297b716945d4b9f84227633c47e97b64f334ae2738"
+    },
+    {
+      "path": "DELIVERABLE_MAP.md",
+      "bytes": 3491,
+      "sha256": "a006da0d45494bc366ecf6e11d31f0336ec826028b989af138064ea6c736f0f7"
+    },
+    {
+      "path": "PREDECESSOR_SUCCESSOR_MAPPING.md",
+      "bytes": 5906,
+      "sha256": "9875660787f3e308e0f6ca827f6dce7af10f99abfbbd003ccadfda3790cb3fd0"
+    },
+    {
+      "path": "PREDICTION_CROSSWALK.md",
+      "bytes": 6068,
+      "sha256": "a3081482fc2cea75486b3bd19f50216b46eff3ed5ac6a7209ff102cdd92f69d9"
+    },
+    {
+      "path": "PRIOR_WORK.md",
+      "bytes": 5443,
+      "sha256": "e65e35ba7df06a1677760e0b7f52aa4b7fcf6a4f944603b0f6f08a2418df9f7f"
+    },
+    {
+      "path": "PROPOSED_SCIENTIFIC_OWNER_ACCEPTANCE_AND_FREEZE_DISPOSITION.md",
+      "bytes": 5620,
+      "sha256": "eb99d327978edd0664c56f298af6193de575025b5298e2594a55617fe5daa693"
+    },
+    {
+      "path": "README.md",
+      "bytes": 6296,
+      "sha256": "e87d69e82f02aae2b3f8f91a25edd035d99137c81d1a11086a281a335176b8f4"
+    },
+    {
+      "path": "SCIENTIFIC_OWNER_DECISION_LEDGER.md",
+      "bytes": 9621,
+      "sha256": "684660400e575c4a00ff433d236af7cc044571253b427f78ec6f85a0f9596fcf"
+    },
+    {
+      "path": "SCOPE_BRIEF.md",
+      "bytes": 5318,
+      "sha256": "cac7f05dcc0bdf542a09099d79079e2ffe60a6f884eb397661771e83d0bb22ac"
+    },
+    {
+      "path": "SEMANTIC_CHANGE_REPORT.md",
+      "bytes": 4371,
+      "sha256": "5c72192143d837f1a70b45a1acc9990e718ae52912f3edf9b3c13f79ec0dcf7d"
+    },
+    {
+      "path": "bindings/SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_BOUNDARY_DISPOSITION_v0.2_r0.4_CANDIDATE.md",
+      "bytes": 1353,
+      "sha256": "10760d7e3b7e6e414a306cfd2b32233a3186c4a4c7688c77a3aa142d511acfbd"
+    },
+    {
+      "path": "bindings/SCI-MAP_SOURCE_BINDING_v0.2_r0.4_CANDIDATE.md",
+      "bytes": 7351,
+      "sha256": "d6633c154bebc2fae29ba36281a4cdc745a99a441a5d4c206b2378c29d8c8dd6"
+    },
+    {
+      "path": "bindings/SCI-PTC_TO_SCI-MAP_BOUNDARY_DISPOSITION_v0.2_r0.4_CANDIDATE.md",
+      "bytes": 1713,
+      "sha256": "cb34eb7f0e5338a017e9ff7341da2537c08e44247c9cfd7219fd82026c7000f0"
+    },
+    {
+      "path": "bindings/SCI-VAL_PROFILE_REGISTRY_SCI-MAP_v0.2_r0.4_CANDIDATE.md",
+      "bytes": 5877,
+      "sha256": "a50d078bb8f02815578bfc877870d7a3b0af61ab6b1c06b295e1170a5b83b1be"
+    },
+    {
+      "path": "bindings/SCI-VAL_SOURCE_BINDING_REGISTER_SCI-MAP_v0.2_r0.4_CANDIDATE.md",
+      "bytes": 6992,
+      "sha256": "29ee1dc0ae644628197d9ad402d9a3f346023a1378f2f9a6dee15a868fe19cde"
+    },
+    {
+      "path": "profiles/SCI-MAP_COADD_AGGREGATE_PROFILE_v0.2_r0.4_CANDIDATE.md",
+      "bytes": 6094,
+      "sha256": "290292888accabd4aab9afce1c2ceb471f3b3f275072724ffbe5caed4e3d1130"
+    },
+    {
+      "path": "profiles/SCI-MAP_OCCURRENCE_ADMISSION_PROFILE_v0.2_r0.4_CANDIDATE.md",
+      "bytes": 3784,
+      "sha256": "5e3786f41286305677fb3cac7b791722f5935869d0a7f8229610f4e65cd89265"
+    },
+    {
+      "path": "profiles/SCI-MAP_PRODUCT_ROLE_REGISTRY_v0.2_r0.4_CANDIDATE.md",
+      "bytes": 4945,
+      "sha256": "d42d93a9f46f4f22c62d010172a20bad4f43e400e8271cbdffa655d689bd9086"
+    },
+    {
+      "path": "records/COMPARISON_SPACE_CROSS_REFERENCE_REPAIR.md",
+      "bytes": 848,
+      "sha256": "2ae254121a043b69d34560e50a8ce1221b9b17df9356519f75fa7b43a30bea94"
+    },
+    {
+      "path": "records/COVERAGE_CUT_EXPERT_OVERRIDE_AND_SMALL_N_FIXTURES.md",
+      "bytes": 5388,
+      "sha256": "a7107ead920f743dc8345a7fa5bcbf3255215439c2aa31438d33b2961bb0adce"
+    },
+    {
+      "path": "records/DOCUMENT_AUTHORITY_ROLE_STATEMENT.md",
+      "bytes": 918,
+      "sha256": "480baadaa1825ef5582bcb747175887f1c4497b06c234a24961cce20edbe08e7"
+    },
+    {
+      "path": "records/ECS_RESULT_AND_REALIZATION_VOCABULARY.md",
+      "bytes": 3421,
+      "sha256": "ed5a87f580d3f82a792558be60572d3ced4119675cda2adb0179ae1be2ac841a"
+    },
+    {
+      "path": "records/EMPTY_SUPPORT_PRODUCT_OUTCOME_OWNER_DISPOSITION.md",
+      "bytes": 1608,
+      "sha256": "2b8663fde214849f9c7db6e8b76000d62df7b7c5572478b5b88f46fea8b27a2c"
+    },
+    {
+      "path": "records/FULL_PROCEDURE_RESPONSE_COMPARISON_SPACE_SPECIFICATION.md",
+      "bytes": 4703,
+      "sha256": "a5ab69d2956de985793cb10e1aab6cf2e51dd9244ee6efe30a6026b525b9437d"
+    },
+    {
+      "path": "records/PDF_VISUAL_QA_AND_METADATA_ACCEPTANCE_CRITERIA.md",
+      "bytes": 1774,
+      "sha256": "d5418b698be6dbd23d2be258e06f40e612cda862b2e39c638d64d67c100026c8"
+    },
+    {
+      "path": "records/PRED014_AND_AGGREGATE_RESPONSE_RULE.md",
+      "bytes": 3344,
+      "sha256": "03e6e33fe3426f06ebc9c9fdd5e80fa8e232005b587b81b4da95e1000a50f80b"
+    },
+    {
+      "path": "records/PRED025_QUANTITY_SPECIFIC_ZERO_FIXTURES.md",
+      "bytes": 5300,
+      "sha256": "5c52c265cb15cdad776f23d1fb70a2d10ef07839feef552a1d9c82633ed5532a"
+    },
+    {
+      "path": "records/PRODUCT_REALIZATION_AND_ATTEMPT_OUTCOME_AMENDMENT.md",
+      "bytes": 1678,
+      "sha256": "78d5dece305b35cd1e33563668a7d7fc99e7c52c4a8ebb7f04325146424b6aec"
+    },
+    {
+      "path": "records/PRODUCT_ROLE_AND_NOTATION_CLEANUP.md",
+      "bytes": 3741,
+      "sha256": "2216b4750bdde063659da2a19ecad8df7f33777771a776cd88e7555f5b2e608b"
+    },
+    {
+      "path": "records/PRODUCT_ROLE_DEPENDENCY_MATRIX.md",
+      "bytes": 4376,
+      "sha256": "e736e4098687369cac35b84b774b1c6216a433daa50282a88f80d035075cbd19"
+    },
+    {
+      "path": "records/PROFILE_REGISTRATION_AND_ACTIVATION_STATUS_AMENDMENT.md",
+      "bytes": 1602,
+      "sha256": "90517d9de7a256758b9b0255a966de0b2ed78482a48ae34eb2efc5231bc7d982"
+    },
+    {
+      "path": "records/REQUIREMENT_PREDICTION_PARITY_REPORT.md",
+      "bytes": 3043,
+      "sha256": "3f38a2fa781e88b3d2fa41ae2f2da103b3bab5ad3647480df725438bda39a696"
+    },
+    {
+      "path": "records/RESPONSE_FAMILY_QUALIFIED_COADD_AMENDMENT.md",
+      "bytes": 1479,
+      "sha256": "7df1ac9e2b85e5c50fd79b69e145d5a4de22cb926f56e2bb44aaeb717456def2"
+    },
+    {
+      "path": "records/SCI-NOI_TERMINOLOGY_AND_OWNERSHIP_AMENDMENT.md",
+      "bytes": 2203,
+      "sha256": "34bba42b07902facc2f911d51a2b142be429d7cf5d27d97fc5ce497a20b5ca7b"
+    },
+    {
+      "path": "records/SOURCE_CORE_VIEW_PARITY_REPORT.md",
+      "bytes": 4254,
+      "sha256": "f62098579502a5196475fd5a8802662825cc9354a26cd4fc5ea74c5cf0f859e1"
+    },
+    {
+      "path": "records/UNIFIED_LIFECYCLE_AND_PARAMETER_STATE_TABLE.md",
+      "bytes": 4840,
+      "sha256": "b4ae414b039d3b0883163d3f4abf7a9bc71a0ec87ed3d89a4ad81719d85b11bf"
+    },
+    {
+      "path": "records/WCS_COMPARISON_DOMAIN_SPECIFICATION.md",
+      "bytes": 2610,
+      "sha256": "620510736305b0c96da4642cac24d329ec68a198287bf4fdd8e1ec69d92365c3"
+    },
+    {
+      "path": "src/SCI-MAP-v0.2_OWNER_DECISION_REGISTER_r0.4.tex",
+      "bytes": 3321,
+      "sha256": "0620311aee94a719a3974e53098ce5f50fc85193c4b71723f17195bd90524728"
+    },
+    {
+      "path": "src/SCI-MAP-v0.2_SHARED_AUTHORITY_r0.4.tex",
+      "bytes": 530,
+      "sha256": "5e405136761255a8f00ff6ca92e943c63e0c3bb6939d56924e5b884206edb56e"
+    },
+    {
+      "path": "src/common/assumptions.tex",
+      "bytes": 2050,
+      "sha256": "215e77c5a959511e4193ac961767631247d5e39eb2f626ec5a620d745f31d3a3"
+    },
+    {
+      "path": "src/common/definitions.tex",
+      "bytes": 20867,
+      "sha256": "b06a5089766e6601ec8a08c952a6aafed5642da33e027fce7360dd6234b6534a"
+    },
+    {
+      "path": "src/common/edge_cases.tex",
+      "bytes": 15432,
+      "sha256": "95fe18adcd12dae0515f3c9db80d94becf51036ca629fc5f92c3f2657c76b615"
+    },
+    {
+      "path": "src/common/equations.tex",
+      "bytes": 8482,
+      "sha256": "40111a13a63331071219713bf4ee420c2ac71ee8f3d6331cb17c0d72fa4c28b6"
+    },
+    {
+      "path": "src/common/notation.tex",
+      "bytes": 656,
+      "sha256": "5a5a004adbff226a0aa37a53f11fa6707f68a4ffac05d5469adffbd8926a0510"
+    },
+    {
+      "path": "src/common/requirements.tex",
+      "bytes": 56834,
+      "sha256": "213e4e30dcb52ceaf30b46561948263e2ac823c86fbd12769af1fff7e251281d"
+    },
+    {
+      "path": "src/engineering-conformance.tex",
+      "bytes": 28245,
+      "sha256": "92a258832664d891443d1b616717978a41bc98c79dd4aa339b63eefbef7fd5f4"
+    },
+    {
+      "path": "src/formal-scientific-engineering-contract.tex",
+      "bytes": 55215,
+      "sha256": "9c6a3d360736e96c295c01501e740c46c2944e895722e7bd965ff680d5416763"
+    },
+    {
+      "path": "src/scientific-rationale.tex",
+      "bytes": 47035,
+      "sha256": "83272b064257bd83c0bb4bca7ff12e11b2a550912ce22c42ade76cf18871e37a"
+    },
+    {
+      "path": "templates/COVERAGE_CUT_OVERRIDE_RECORD.schema.json",
+      "bytes": 3358,
+      "sha256": "1e1037a3e8142fd8d2e9d7a08addc82e80b3087482db2908a583d7ba2b3a9cee"
+    },
+    {
+      "path": "templates/FULL_PROCEDURE_COMPARISON_RECORD.schema.json",
+      "bytes": 4773,
+      "sha256": "9a356add5271e1724f37e6adfd5f6cd7ec680995f6148506a968d0126392d6db"
+    },
+    {
+      "path": "templates/MAP_LIFECYCLE_AND_PRODUCT_ROLE_RECORD.schema.json",
+      "bytes": 9001,
+      "sha256": "51cedbeed6773d6f3546f2d35d7ac4561e59314fc058c464d8896acad60436cc"
+    },
+    {
+      "path": "templates/README.md",
+      "bytes": 3808,
+      "sha256": "03d532362b246769e25c3557d335b50b98df9d6ff5f688e1392ce5f3032a0b89"
+    },
+    {
+      "path": "templates/REQUIREMENT_RESULTS_INITIAL.json",
+      "bytes": 41746,
+      "sha256": "6beb913da58537eb95d236c366cfd37a9d68bdfea3477b777705fc5122ff7693"
+    },
+    {
+      "path": "templates/REQUIREMENT_RESULT_RECORD.schema.json",
+      "bytes": 2924,
+      "sha256": "03416cd734d690b6f6bcf91e3011a13b0c068593b64009fe697fd5b53780f66e"
+    },
+    {
+      "path": "templates/VAL_HANDOFF_DECISION_RECORD.schema.json",
+      "bytes": 2440,
+      "sha256": "c967e48403d9a919b020a6967603f83cee3c8b84ea41cdcec77b2f156772cc1b"
+    },
+    {
+      "path": "templates/WCS_COMPARISON_RECORD.schema.json",
+      "bytes": 2384,
+      "sha256": "b2ed0c2bc74ca27d5d4a30498277e563905d559b1391ffe3a0cc11d9684f1c03"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+\contentsline {section}{\numberline {1}Purpose and conformance target}{2}{section.1}%
+\contentsline {paragraph}{Exact empty-support disposition.}{3}{section*.5}%
+\contentsline {section}{\numberline {2}Evidence record}{3}{section.2}%
+\contentsline {section}{\numberline {3}Claim-layer gates}{4}{section.3}%
+\contentsline {section}{\numberline {4}Execution order and atomicity protocol}{4}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Scope-discrimination cases}{6}{subsection.4.1}%
+\contentsline {section}{\numberline {5}Canonical requirement conformance clauses}{10}{section.5}%
+\contentsline {section}{\numberline {6}Prediction execution matrix}{22}{section.6}%
+\contentsline {section}{\numberline {7}Mechanical completeness checks}{27}{section.7}%

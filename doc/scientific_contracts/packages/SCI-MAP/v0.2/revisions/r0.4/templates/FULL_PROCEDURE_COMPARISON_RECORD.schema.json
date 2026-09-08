@@ -1,0 +1,208 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "SCI-MAP:v0.2-r0.4:full-procedure-comparison-space-record@1",
+  "title": "SCI-MAP-FULL-PROCEDURE-COMPARISON-SPACE record",
+  "description": "Prospective record for one numerical full-procedure family. Current coadd-procedure and whole-chain families are unavailable.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "comparison_record_id",
+    "record_generation_identity",
+    "response_family",
+    "baseline_product",
+    "perturbed_product",
+    "scientific_quantity",
+    "unit",
+    "source_target_frames_wcs",
+    "additive_reference_gauge_null_space",
+    "supports",
+    "coefficient_response_bases",
+    "common_comparison_domain",
+    "baseline_map_to_common",
+    "perturbed_map_to_common",
+    "unmatched_row_treatment",
+    "perturbation",
+    "finite_difference_convention",
+    "state_transition",
+    "coadd_state",
+    "composition_theorem_identity",
+    "numerical_availability",
+    "cause"
+  ],
+  "properties": {
+    "comparison_record_id": {
+      "const": "SCI-MAP-FULL-PROCEDURE-COMPARISON-SPACE"
+    },
+    "record_generation_identity": {
+      "type": "string",
+      "minLength": 1
+    },
+    "response_family": {
+      "enum": [
+        "Delta_z_PTC-FP",
+        "Delta_m_PTC-FP",
+        "Delta_m_PTC+MAP-RR",
+        "Delta_R_coadd_full_procedure",
+        "Delta_R_coadd_re_resolved",
+        "whole_chain"
+      ]
+    },
+    "baseline_product": {
+      "$ref": "#/$defs/product"
+    },
+    "perturbed_product": {
+      "$ref": "#/$defs/product"
+    },
+    "scientific_quantity": {
+      "type": "string",
+      "minLength": 1
+    },
+    "unit": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_target_frames_wcs": {
+      "type": "object"
+    },
+    "additive_reference_gauge_null_space": {
+      "type": "object"
+    },
+    "supports": {
+      "type": "object",
+      "required": [
+        "baseline",
+        "perturbed"
+      ],
+      "properties": {
+        "baseline": {
+          "type": "object"
+        },
+        "perturbed": {
+          "type": "object"
+        }
+      }
+    },
+    "coefficient_response_bases": {
+      "type": "object"
+    },
+    "common_comparison_domain": {
+      "type": "object"
+    },
+    "baseline_map_to_common": {
+      "type": "object"
+    },
+    "perturbed_map_to_common": {
+      "type": "object"
+    },
+    "unmatched_row_treatment": {
+      "type": "object"
+    },
+    "perturbation": {
+      "type": "object",
+      "required": [
+        "amplitude",
+        "unit",
+        "sign",
+        "side",
+        "location",
+        "source_state",
+        "normalization"
+      ]
+    },
+    "finite_difference_convention": {
+      "type": "object"
+    },
+    "state_transition": {
+      "type": "object"
+    },
+    "coadd_state": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "For a coadd procedure family, binds observation admission, ordered membership, centered-integer placement, B_out, support, coefficients, product role, and plan on both sides."
+    },
+    "composition_theorem_identity": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "An exact theorem is required before any finite-difference family is propagated through B_out as a linear composition."
+    },
+    "numerical_availability": {
+      "enum": [
+        "available",
+        "unavailable",
+        "state_transition_only",
+        "discontinuity"
+      ]
+    },
+    "cause": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "$defs": {
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identity",
+        "parent_identity",
+        "row_identities",
+        "plan_identity"
+      ],
+      "properties": {
+        "identity": {
+          "type": "string"
+        },
+        "parent_identity": {
+          "type": "string"
+        },
+        "row_identities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "plan_identity": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "response_family": {
+            "enum": [
+              "Delta_R_coadd_full_procedure",
+              "Delta_R_coadd_re_resolved",
+              "whole_chain"
+            ]
+          }
+        },
+        "required": [
+          "response_family"
+        ]
+      },
+      "then": {
+        "properties": {
+          "numerical_availability": {
+            "const": "unavailable"
+          },
+          "cause": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  ]
+}

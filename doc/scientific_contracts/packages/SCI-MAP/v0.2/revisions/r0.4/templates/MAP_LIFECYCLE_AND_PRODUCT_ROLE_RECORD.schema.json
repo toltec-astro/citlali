@@ -1,0 +1,386 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "SCI-MAP:v0.2-r0.4:lifecycle-product-role-attempt-record@1",
+  "title": "SCI-MAP lifecycle, product-realization, and application-attempt record",
+  "description": "Prospective ECS record model. Product realization, attempt outcome, failure evidence, companion availability, and evidence-artifact realization are independent.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_identity",
+    "product_role",
+    "base_parent_identity",
+    "ordered_membership",
+    "stages",
+    "applied_attempt_identity",
+    "application_attempt_outcome",
+    "product_realization",
+    "failure_evidence",
+    "empty_support_evidence",
+    "companion_statuses",
+    "provenance"
+  ],
+  "properties": {
+    "record_identity": {
+      "type": "string",
+      "minLength": 1
+    },
+    "product_role": {
+      "enum": [
+        "SCI-MAP:base_observation_map@1",
+        "SCI-MAP:response_bearing_observation_map@1",
+        "SCI-MAP:covariance_qualified_observation_map@1",
+        "SCI-MAP:base_coadd@1",
+        "SCI-MAP:response_bearing_coadd@1",
+        "SCI-MAP:covariance_qualified_coadd@1"
+      ]
+    },
+    "base_parent_identity": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ordered_membership": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "stages": {
+      "description": "Only stages actually reached, in an ordered prefix. A product realization has all five; a pre-application stop omits applied/realized; a failed or empty-support applied attempt omits realized.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "stage",
+          "identity",
+          "value_or_state",
+          "parent_stage_identity",
+          "cause",
+          "provenance"
+        ],
+        "properties": {
+          "stage": {
+            "enum": [
+              "requested",
+              "effective",
+              "observation_resolved",
+              "applied",
+              "realized"
+            ]
+          },
+          "identity": {
+            "type": "string",
+            "minLength": 1
+          },
+          "value_or_state": {},
+          "parent_stage_identity": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "cause": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "provenance": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "applied_attempt_identity": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "application_attempt_outcome": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "succeeded",
+        "failed",
+        "not_produced",
+        null
+      ]
+    },
+    "product_realization": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "product_identity",
+            "accumulators",
+            "scientific_output_rows",
+            "product_values",
+            "product_role_statuses",
+            "provenance"
+          ],
+          "properties": {
+            "product_identity": {
+              "type": "string",
+              "minLength": 1
+            },
+            "accumulators": {
+              "type": "object"
+            },
+            "scientific_output_rows": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string"
+              }
+            },
+            "product_values": {
+              "type": "object"
+            },
+            "product_role_statuses": {
+              "type": "object"
+            },
+            "provenance": {
+              "type": "object"
+            }
+          }
+        }
+      ]
+    },
+    "failure_evidence": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "failure_stage",
+            "cause",
+            "affected_scope",
+            "nonmutation_evidence"
+          ],
+          "properties": {
+            "failure_stage": {
+              "type": "string",
+              "minLength": 1
+            },
+            "cause": {
+              "type": "string",
+              "minLength": 1
+            },
+            "affected_scope": {
+              "type": "object"
+            },
+            "nonmutation_evidence": {
+              "type": "object"
+            }
+          }
+        }
+      ]
+    },
+    "empty_support_evidence": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "application_state",
+            "cause",
+            "q_star",
+            "thresholds",
+            "support_predicates",
+            "authorized_output_rows",
+            "empty_row_proof",
+            "retained_parent_and_plan",
+            "no_empty_bundle_authorized"
+          ],
+          "properties": {
+            "application_state": {
+              "const": "applied_no_support_authorized_output_rows"
+            },
+            "cause": {
+              "const": "no_support_authorized_output_rows"
+            },
+            "q_star": {
+              "type": "number"
+            },
+            "thresholds": {
+              "type": "object"
+            },
+            "support_predicates": {
+              "type": "object"
+            },
+            "authorized_output_rows": {
+              "type": "array",
+              "maxItems": 0
+            },
+            "empty_row_proof": {
+              "type": "object"
+            },
+            "retained_parent_and_plan": {
+              "type": "object"
+            },
+            "no_empty_bundle_authorized": {
+              "const": true
+            }
+          }
+        }
+      ]
+    },
+    "companion_statuses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "identity",
+          "kind",
+          "availability",
+          "cause"
+        ],
+        "properties": {
+          "identity": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "response",
+              "covariance"
+            ]
+          },
+          "availability": {
+            "enum": [
+              "available",
+              "limited",
+              "partial",
+              "symbolic",
+              "summarized",
+              "lineage_resolvable",
+              "unavailable"
+            ]
+          },
+          "cause": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "provenance": {
+      "type": "object"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "application_attempt_outcome": {
+            "const": "succeeded"
+          }
+        },
+        "required": [
+          "application_attempt_outcome"
+        ]
+      },
+      "then": {
+        "properties": {
+          "product_realization": {
+            "type": "object"
+          },
+          "failure_evidence": {
+            "type": "null"
+          },
+          "empty_support_evidence": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "application_attempt_outcome": {
+            "const": "failed"
+          }
+        },
+        "required": [
+          "application_attempt_outcome"
+        ]
+      },
+      "then": {
+        "properties": {
+          "product_realization": {
+            "type": "null"
+          },
+          "failure_evidence": {
+            "type": "object"
+          },
+          "empty_support_evidence": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "application_attempt_outcome": {
+            "const": "not_produced"
+          }
+        },
+        "required": [
+          "application_attempt_outcome"
+        ]
+      },
+      "then": {
+        "properties": {
+          "product_realization": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "empty_support_evidence": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "empty_support_evidence"
+        ]
+      },
+      "then": {
+        "properties": {
+          "application_attempt_outcome": {
+            "const": "not_produced"
+          },
+          "product_realization": {
+            "type": "null"
+          },
+          "failure_evidence": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ]
+}
