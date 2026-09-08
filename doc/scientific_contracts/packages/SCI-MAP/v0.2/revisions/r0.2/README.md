@@ -1,0 +1,82 @@
+# SCI-MAP v0.2, document revision r0.2
+
+## Program adherence and prior-work recovery
+
+This is the one targeted implementation-blind SCI-MAP v0.2 document revision
+authorized by
+`inputs/owner/SCI_MAP_R02_OWNER_DIRECTIVE.txt`, identity
+`SCI-MAP-OWNER-DIRECTIVE-v0.2-r0.2/2026-09-07`, SHA-256
+`620d4ff8204b453e2e363e84b9fcfbc480c9f0f88f0f763e0c9be69b873ca2e7`.
+The directive accepts the SCI-MAP v0.2/r0.1 architecture as the basis and
+supersedes conflicting old scope or four-stage wording. `PRIOR_WORK.md`
+records recovery and disposition of the exact approved packet. No new broad
+MAP derivation was commissioned or performed.
+
+Scientific owner: **Grant Wilson**. Candidate date: **2026-09-07**. Status:
+**Candidate for scientific-owner disposition**.
+
+## Authority and claim boundary
+
+The sole normative scientific source is
+`SCI-MAP-v0.2-SHARED-AUTHORITY/r0.2`, aggregate SHA-256
+`6a7e64377e31b8b0e4dac90a27a7662ac825bd59c5a87d8237eb533d7b8d37c0`.
+It is the ordered wrapper and six modules beneath `src/`. The formal document
+renders that authority. The rationale explains it. The ECS imports the same
+clauses and adds prospective evidence procedure with no independent science.
+
+This candidate makes no scientific-owner acceptance, canonical activation,
+source-closed frozen numerical-route, implementation conformity,
+representation or response fidelity, covariance fidelity, observational
+performance, validation, achieved-significance, readiness, production,
+production-authorization, or Unity claim.
+
+The original 56-reference manifest remains byte-identical, identity
+`SCI-MAP post-freeze successor proposed author references r0.1/2026-09-07`,
+SHA-256
+`83baf583f73784bebc6724025fd110e5545303f303c70af590b53c5696ee2c4f`.
+The packet retains the admitted uniform science and its literal `@draft-0.1`
+identifiers plus boundary `v0.2-draft.1/r0.4`. The new r0.2 dependent
+profile/VAL/source route remains candidate until accepted and canonically
+activated; earlier approval and evaluations are not revoked or relabeled.
+
+## Documents
+
+| View | Scientific source | Stable PDF path |
+| --- | --- | --- |
+| Formal Scientific/Engineering Contract r0.2 | `src/formal-scientific-engineering-contract.tex` | `pdf/SCI-MAP-FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT-v0.2.pdf` |
+| Science-Team Rationale r0.2 | `src/scientific-rationale.tex` | `pdf/SCI-MAP-SCIENTIFIC-RATIONALE-v0.2.pdf` |
+| Engineering Conformance Specification r0.2 | `src/engineering-conformance.tex` | `pdf/SCI-MAP-ENGINEERING-CONFORMANCE-v0.2.pdf` |
+
+Each physical cover binds owner, version/revision, shared-source identity and
+digest, original author manifest, r0.2 directive, exact entry source, build
+record, status, and date through a manager-generated inline `identity/*.tex`
+fragment. Build, render, metadata, and package-seal outcomes are reported in
+the manager-owned `build/` and manifest records delivered with this package;
+this scientific-author README does not independently certify those outcomes.
+
+## Review records
+
+- `SCIENTIFIC_OWNER_DECISION_LEDGER.md` preserves the nine stable MAP
+  decisions and records the governing r0.2 directive without inventing a new
+  OD identity.
+- `CROSSWALK.md` and `PREDICTION_CROSSWALK.md` preserve all 52 requirement and
+  25 prediction IDs.
+- `SEMANTIC_CHANGE_REPORT.md` identifies every targeted change and retained
+  boundary.
+- `PREDECESSOR_SUCCESSOR_MAPPING.md` maps exact r0.1 basis bytes and imported
+  identities to r0.2.
+- `records/` supplies the requested lifecycle, role, response-comparison, NOI,
+  result vocabulary, notation, cut, WCS, and parity review records.
+- `profiles/` supplies the six-role Registry, unchanged-predicate occurrence
+  binding, and successor aggregate profile.
+- `bindings/` supplies exact candidate SCI-MAP and SCI-VAL source records plus
+  boundary dispositions.
+- `templates/` supplies machine-readable prospective record schemas and all
+  52 initial requirement placeholders.
+- `PROPOSED_SCIENTIFIC_OWNER_ACCEPTANCE_AND_FREEZE_DISPOSITION.md` separates
+  the proposed scientific acceptance from remaining activation/freeze gates.
+- `DELIVERABLE_MAP.md` maps all 17 items in the owner directive.
+
+All approved portable reference locators begin `inputs/`. A link or locator is
+not authority unless its target is present in the exact delivered input
+inventory and its digest matches.

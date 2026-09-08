@@ -1,0 +1,398 @@
+{
+  "formal": {
+    "comparison_attempt": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-02",
+    "identical_previously_inspected_pages": [
+      {
+        "final_page": 2,
+        "prior_page": 2,
+        "render_sha256": "47e5a3b514d13c24e5bbc29fe57c080e5452fa366c52cfb2475e171c7034381f"
+      },
+      {
+        "final_page": 3,
+        "prior_page": 3,
+        "render_sha256": "8ffa28453e0ab7b55e295c4e2cae92c340c8ca91b9dc084cc684f54b754dde45"
+      },
+      {
+        "final_page": 4,
+        "prior_page": 4,
+        "render_sha256": "78c242b270cbcb9c6083dc4c759f922babde94cfad1451a14a4c916ebf66367d"
+      },
+      {
+        "final_page": 5,
+        "prior_page": 5,
+        "render_sha256": "ff040c4f7f417a0c9036f5c6796d9d68ea2ae665fb80f3397dbf8c2f5dd0ca2f"
+      },
+      {
+        "final_page": 6,
+        "prior_page": 6,
+        "render_sha256": "a7c558b6fa0faf44e0ca46b18670f63ac9f7e6f4d3a13205f823b9f552702c49"
+      },
+      {
+        "final_page": 7,
+        "prior_page": 7,
+        "render_sha256": "2e4d324d143fb347954124fbebfd94c7daceb1f51cdf91d321be58654a01de22"
+      },
+      {
+        "final_page": 8,
+        "prior_page": 8,
+        "render_sha256": "cb3cfc9c06b72d38fd5a40836025bef71c32fd58ec8b5da676fc6465b8cbe022"
+      },
+      {
+        "final_page": 9,
+        "prior_page": 9,
+        "render_sha256": "ec2097eee8c86ec615796e9ee2431e73ec1b10f5f7463b7355b2c9c4c6f7884c"
+      },
+      {
+        "final_page": 10,
+        "prior_page": 10,
+        "render_sha256": "a0eade7e90f44cf88ca38f294ca9c4ba6a701275d71a68e5b88df8dff614bc08"
+      },
+      {
+        "final_page": 11,
+        "prior_page": 11,
+        "render_sha256": "771fd1c2d50a3cd94e4d75c0452ad9db7abe4806710879a09fa5b852c746adaa"
+      },
+      {
+        "final_page": 12,
+        "prior_page": 12,
+        "render_sha256": "9cc4a73d8922659aaee496fa4bbe4d516fcda1f7340ffae4ee21eff6143f0ad5"
+      },
+      {
+        "final_page": 13,
+        "prior_page": 13,
+        "render_sha256": "acdb533218100178ab0f07375533b2cea0ee6b874c80dd14d98e4ce1827bf39f"
+      },
+      {
+        "final_page": 14,
+        "prior_page": 14,
+        "render_sha256": "98319f91e666629b47ccd1f1edadcd299fe9b32e6dbae781454fbe4793c092cd"
+      },
+      {
+        "final_page": 15,
+        "prior_page": 15,
+        "render_sha256": "f1a36f023c86412c902d391400a959035b31402e4d1ee0e61f595367c9740e62"
+      },
+      {
+        "final_page": 16,
+        "prior_page": 16,
+        "render_sha256": "fcc0c1c708d93fca4b1345600df50f4e53963f9159e73ca3c880dc1d33baf923"
+      },
+      {
+        "final_page": 17,
+        "prior_page": 17,
+        "render_sha256": "8e9dae4f261031aa550ac02eab5dcdfb8c2b7f0b88934dbe2824cffe24e71f38"
+      },
+      {
+        "final_page": 18,
+        "prior_page": 18,
+        "render_sha256": "36a8f8b34eac32ab92442b24750f5a3df69285037299e3b10408867aa933db39"
+      },
+      {
+        "final_page": 19,
+        "prior_page": 19,
+        "render_sha256": "88e276cb7ca00015f42f6c08d9932e933b43029bfa4df576b1be31195385a81d"
+      },
+      {
+        "final_page": 20,
+        "prior_page": 20,
+        "render_sha256": "4fdc791ce92a56f98f8633b3c81419bb2216eb7068bdeb45a15219507b8981c9"
+      },
+      {
+        "final_page": 21,
+        "prior_page": 21,
+        "render_sha256": "bc977f6c5a769415dc9961c306d7d5aeacb860c7d087a3c575db8a3bf9f27d13"
+      },
+      {
+        "final_page": 22,
+        "prior_page": 22,
+        "render_sha256": "9aea59b07948a8e411e71de325c3cd90244876637a1d0bae82fa03dc06e940f0"
+      },
+      {
+        "final_page": 23,
+        "prior_page": 23,
+        "render_sha256": "9c562fde6fa0b450a43c2f15a4139b48bfa7c3c2bf708a4d477daf4fb399fe63"
+      },
+      {
+        "final_page": 24,
+        "prior_page": 24,
+        "render_sha256": "38e2abed0e63fe4a45460286e25074a30464f86d8f00001c378caa91dec71405"
+      },
+      {
+        "final_page": 25,
+        "prior_page": 25,
+        "render_sha256": "10f615bbd529071f64f44b1bd6bd890063b9c7219f74718bcc2d631cfb018dd0"
+      },
+      {
+        "final_page": 26,
+        "prior_page": 26,
+        "render_sha256": "79ca1cc03ead0d12b2fac1aee51a79ef8e89c1e55d42443d3fd82af63dc49cef"
+      },
+      {
+        "final_page": 30,
+        "prior_page": 30,
+        "render_sha256": "013e02c6f68c928f28b2367f3fbd791328bfe0747dde7a9f03ce4a26fa625605"
+      },
+      {
+        "final_page": 33,
+        "prior_page": 33,
+        "render_sha256": "0e6c39495a84786c077be2aa137227dcce2a2d2af303ff643df95d195b18b234"
+      },
+      {
+        "final_page": 34,
+        "prior_page": 34,
+        "render_sha256": "fc998a009f119aaf7a140168eb2c548355895a3755c852f6cd9350d1f70755c0"
+      }
+    ],
+    "changed_pages_for_new_visual_inspection": [
+      {
+        "final_page": 1,
+        "render_sha256": "66489ae3320c67b2e7f7244157d74b04fdc4be3c3ddc9d4a556004291ffd2a3b",
+        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/formal/render/page-01.png"
+      },
+      {
+        "final_page": 27,
+        "render_sha256": "1423130dd3271241b85a42a92680bfefd5c2554c5c18e6ab71607c747afbc6b9",
+        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/formal/render/page-27.png"
+      },
+      {
+        "final_page": 28,
+        "render_sha256": "c323edb40a20041caf1b51d7d5e1d45bfab379ddac6fa64b379354b88bb50a96",
+        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/formal/render/page-28.png"
+      },
+      {
+        "final_page": 29,
+        "render_sha256": "f4f9162b53077a3ff8bd540b4e409f32b240fc8019c2a8925b77f502f355a704",
+        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/formal/render/page-29.png"
+      },
+      {
+        "final_page": 31,
+        "render_sha256": "e31158eb5fcf4aa4dc9bfa9f0f5f85b9827f0098b82ce004f079ef8067358d1c",
+        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/formal/render/page-31.png"
+      },
+      {
+        "final_page": 32,
+        "render_sha256": "bc96c60c3b334143c524618fa3087d59704ae5da266ecfc9e686f96c01dc768f",
+        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/formal/render/page-32.png"
+      }
+    ]
+  },
+  "rationale": {
+    "comparison_attempt": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-02",
+    "identical_previously_inspected_pages": [
+      {
+        "final_page": 2,
+        "prior_page": 2,
+        "render_sha256": "3b5996871fcfa2cde7845de9e21aa55503ad75300cbd482f150baafc108e0a5c"
+      },
+      {
+        "final_page": 3,
+        "prior_page": 3,
+        "render_sha256": "cb41529db98a3bd807d402364bd442d072c550f50a2d2891a35f1f9acd798d47"
+      },
+      {
+        "final_page": 4,
+        "prior_page": 4,
+        "render_sha256": "5def93c05e1d1fd76257c454a51891f9df3e08cce67590bc211114a731f95275"
+      },
+      {
+        "final_page": 5,
+        "prior_page": 5,
+        "render_sha256": "ec401eb260e99dc7fd027be0bb12f38c57e2b8fcd32af66eb702017c28f24ad4"
+      },
+      {
+        "final_page": 6,
+        "prior_page": 6,
+        "render_sha256": "52d6af5eddda934f30cf8636f324a06cf9a152b89097281212f4add63036b7dd"
+      },
+      {
+        "final_page": 7,
+        "prior_page": 7,
+        "render_sha256": "de862b5e637eed9a0572f031e39204402775deb3b2553c2a880a69de0a066e24"
+      },
+      {
+        "final_page": 8,
+        "prior_page": 8,
+        "render_sha256": "5a65518cc4e19b7c05de726c5e61887d32965cccf02ec224e33e84b08eac457c"
+      },
+      {
+        "final_page": 9,
+        "prior_page": 9,
+        "render_sha256": "40cb0da14c28d458fa065660c86a186a9b035915be751054921daa35ecf01874"
+      },
+      {
+        "final_page": 10,
+        "prior_page": 10,
+        "render_sha256": "75197c3df5134fe946df80293eae05f7859ec77a260f6b3142678a5b42cfe7f6"
+      },
+      {
+        "final_page": 11,
+        "prior_page": 11,
+        "render_sha256": "c10f7519df8ca0f7307fa3a6dc0a82261417f8ebf7f4d72b4e0af404d0ffa8d0"
+      },
+      {
+        "final_page": 12,
+        "prior_page": 12,
+        "render_sha256": "5492f1b7a9df6eac278b9db3327ad9e0a13ce33cfe22c7fcbb723f0a77261141"
+      },
+      {
+        "final_page": 13,
+        "prior_page": 13,
+        "render_sha256": "36286eaa3df54515ae9aa7796dd86064aa5a980a2c664d03a06d843ea4674e5e"
+      },
+      {
+        "final_page": 14,
+        "prior_page": 14,
+        "render_sha256": "1830b408249f544ca00ffb8b3d4ef9a52badf70b2eb57d0cd343678a996e3cf3"
+      },
+      {
+        "final_page": 15,
+        "prior_page": 15,
+        "render_sha256": "06f2c97e50c11304fac12918a9f7f41e1f5a60829520613e4c6531bb9aa25c8b"
+      },
+      {
+        "final_page": 16,
+        "prior_page": 16,
+        "render_sha256": "857b4a1ee218643cadfee7a86f9953d9121f7933076af42d3178ecc6cc74400d"
+      }
+    ],
+    "changed_pages_for_new_visual_inspection": [
+      {
+        "final_page": 1,
+        "render_sha256": "11e5f86c0132656ad208fdedccf9f1558d12637e3298eddd2db639909aa8dd76",
+        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/rationale/render/page-01.png"
+      }
+    ]
+  },
+  "engineering": {
+    "comparison_attempt": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-02",
+    "identical_previously_inspected_pages": [
+      {
+        "final_page": 2,
+        "prior_page": 2,
+        "render_sha256": "0c07bae0852731fb4cf0fa8990782af810ddf439df7d4804646e65183dda4664"
+      },
+      {
+        "final_page": 3,
+        "prior_page": 3,
+        "render_sha256": "261aa9867a7d176c062fbf5110e67e1643ad8fb1d8ca103eaa6ac35545f4537a"
+      },
+      {
+        "final_page": 4,
+        "prior_page": 4,
+        "render_sha256": "f87d6d8d7be7af758d5f439e9550876d981f05ac774b05c01b785e36cda66fd4"
+      },
+      {
+        "final_page": 5,
+        "prior_page": 5,
+        "render_sha256": "41f71d4f7eedb8a6f0220dac24048ae05091c4fd75ec0ee6a679d8bbc18aec84"
+      },
+      {
+        "final_page": 6,
+        "prior_page": 6,
+        "render_sha256": "7d470cd6ac9ecc50118f99445c93af70073d7505bdee4fc5f4a9be0b64455437"
+      },
+      {
+        "final_page": 7,
+        "prior_page": 7,
+        "render_sha256": "0ab40a44c8a429b613052b3be9f2f031358001285e76f9d7f8fb390c008e0b4e"
+      },
+      {
+        "final_page": 8,
+        "prior_page": 8,
+        "render_sha256": "561af381e909c87492639b029d597cc8a176540a1e0231ba2f39a6a5e83324cf"
+      },
+      {
+        "final_page": 9,
+        "prior_page": 9,
+        "render_sha256": "411179bdd229e777b7dd21a26bc897698f7c85ec3ce56f19b435c27d492da129"
+      },
+      {
+        "final_page": 10,
+        "prior_page": 10,
+        "render_sha256": "d9b26b1090c9a15c604916ccc4cdb9f06b9143ddcb5121b0ae7d653905f55b8f"
+      },
+      {
+        "final_page": 11,
+        "prior_page": 11,
+        "render_sha256": "f5106860d2cdd2148e1d9a5bc6053ce49f00301e3a38001bdc25d09444e0cdbd"
+      },
+      {
+        "final_page": 12,
+        "prior_page": 12,
+        "render_sha256": "4ef2a2e1b5c33af91f8f338e4f42a619afaa3171f43ccf8f3a6de9f5cc8d8b01"
+      },
+      {
+        "final_page": 13,
+        "prior_page": 13,
+        "render_sha256": "0ec3799db09b55376c694f5ac439b820c836b5400eca17e82b6da34d981a3cb5"
+      },
+      {
+        "final_page": 14,
+        "prior_page": 14,
+        "render_sha256": "d19038412140416730fd3f96ae15e9b3c10299cc836a922150a8bbae70554b4b"
+      },
+      {
+        "final_page": 15,
+        "prior_page": 15,
+        "render_sha256": "a135c26dbf2892aa3e74b2a67449c14586ae7c374fe7d8f0da19bc16b972a3fa"
+      },
+      {
+        "final_page": 19,
+        "prior_page": 19,
+        "render_sha256": "7d79943c218155307571f922ec80af14a37e145a2e6cc06f1cc8c80daea1fe9f"
+      },
+      {
+        "final_page": 20,
+        "prior_page": 20,
+        "render_sha256": "979c99194413d527537fb0ba30fd924633d170d80759d917dc1e87b908b8ca16"
+      },
+      {
+        "final_page": 21,
+        "prior_page": 21,
+        "render_sha256": "b64c8604cb53f8453e0a6330b7335e2b354d30cabeafd0bb4b78f50a46aa5e53"
+      },
+      {
+        "final_page": 23,
+        "prior_page": 23,
+        "render_sha256": "3853ca56c5ced5bf8dedff2d157c5c57d42bcb07d35c9995f84be311edd31be4"
+      },
+      {
+        "final_page": 24,
+        "prior_page": 24,
+        "render_sha256": "a136f5815fa9b97ecd7cee5589ae3772cd8b274462e6b20571fbaa841de5edb2"
+      },
+      {
+        "final_page": 25,
+        "prior_page": 25,
+        "render_sha256": "f3063fe0923b912234ebd4b08c72f38539aba76c53b9728564637e99fd4745a0"
+      }
+    ],
+    "changed_pages_for_new_visual_inspection": [
+      {
+        "final_page": 1,
+        "render_sha256": "76383245c85d404709fed6df7a71ef172d8bf0b6a7e406fe29b52153bde52950",
+        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/render/page-01.png"
+      },
+      {
+        "final_page": 16,
+        "render_sha256": "9dc2bd30e52a72b0e54921df7854d682cacdf8c66decec6066772f6b941fc0a6",
+        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/render/page-16.png"
+      },
+      {
+        "final_page": 17,
+        "render_sha256": "9a711470ac08e6b7d5ce2275bb3f9e5f8cef585150a07273ae1df90ab32decef",
+        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/render/page-17.png"
+      },
+      {
+        "final_page": 18,
+        "render_sha256": "e74440757acede3a79d4edcff0f90327f0d611aa797ff7359d677d55c5cac399",
+        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/render/page-18.png"
+      },
+      {
+        "final_page": 22,
+        "render_sha256": "95efd3f3f7c31a8e73911a21f51c3c715c2628cb8b2fc48382466fd2bc05fd20",
+        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/render/page-22.png"
+      }
+    ]
+  }
+}

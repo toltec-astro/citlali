@@ -1,0 +1,1383 @@
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+SCI-MAP
+Ordinary Mapmaking and Observation Coaddition
+Engineering Conformance Speciﬁcation
+Scientiﬁc contract version: v0.2
+Document revision: r0.2
+Scientiﬁc status: Candidate for scientiﬁc-owner disposition
+Conformance status: not_assessed procedure
+Canonical science source: SCI-MAP v0.2/r0.2 shared authority
+Target implementation: Not selected in this document
+Scientiﬁc owner Grant Wilson
+Contract / document SCI-MAP v0.2 / r0.2
+Status / date Candidate for scientiﬁc-owner disposition / 2026-09-07
+Shared authority SCI-MAP-v0.2-SHARED-AUTHORITY/r0.2
+Core bundle SHA-256 6a7e64377e31b8b0e4dac90a27a7662ac825bd59c5a87d8237eb533d7b8d37c0
+Original author manifest SCI-MAP post-freeze successor proposed author references
+r0.1/2026-09-07 (56 references)
+Manifest SHA-256 83baf583f73784bebc6724025fd110e5545303f303c70af590b53c5696ee2c4f
+Packet addendum SCI-MAP-R02-AUTHOR-PACKET/2026-09-07
+Addendum SHA-256 f13f29746b71e90e661ee8cdb7eaba781bec97be1baa11c06529a5c2150b4a29
+Owner directive SCI-MAP-OWNER-DIRECTIVE-v0.2-r0.2/2026-09-07
+Directive SHA-256 620d4ff8204b453e2e363e84b9fcfbc480c9f0f88f0f763e0c9be69b873ca2e7
+Document entry source src/engineering-conformance.tex
+Entry-source SHA-256 ae745f2bd7ec288c1997b24b26720d7d7033dd05939638fac50bd65cf8f175a2
+Build record SCI-MAP-R02-DOCUMENT-BUILD/candidate-build-03
+No independent science. Every normative scientiﬁc clause and every prediction printed here is ren-
+dered from SCI-MAP-v0.2_SHARED_AUTHORITY_r0.2.tex. This document adds only evidence-recording,
+execution, traceability, and pass/fail procedure. If an engineering observation appears to require changing
+science, record a deviation and return it to scientiﬁc-owner review; do not edit the expected result in this
+view.
+Contents
+1 Purpose and conformance target 2
+2 Evidence record 3
+3 Claim-layer gates 4
+4 Execution order and atomicity protocol 4
+4.1 Scope-discrimination cases . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+5 Canonical requirement conformance clauses 9
+6 Prediction execution matrix 21
+7 Mechanical completeness checks 25
+8 Required handoﬀ contents 25
+Procedure only | conformance not_assessed Page 1
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+1 Purpose and conformance target
+This speciﬁcation tells a reviewer how to decide whether one exact candidate conforms to SCI-MAP v0.2. It does
+not select a candidate, inspect an implementation, execute validation, or assert a result. Before work begins, the
+reviewer freezes:
+• repository and immutable candidate identity;
+• build proﬁle, compiler/runtime identities, conﬁguration, and enabled parallel modes;
+• exact input ﬁxtures and independent expected-value generators;
+• numerical comparison policy and simultaneous statistical error policy;
+• required product list, representation paths, log policy, and completion criteria; and
+• the shared-authority digest, contract version, this document revision, owner-decision ledger revision, exact byte-
+identical PTC-to-MAP boundary digest, exact original-footprint-coordinate boundary, source-bound MAP pro-
+ﬁle versions, six product-role identities, coadd Registry record, owner r0.2 directive identity/digest, and the
+exact candidate paired SCI-VAL_PROFILE_REGISTRY v0.1/r0.3-map-v0.2-r0.2-candidate-2026-09-07 and SCI-VAL_SOURCE_
+BINDING_REGISTER v0.1/r0.3-map-v0.2-r0.2-candidate-2026-09-07 records. Candidate records are not treated as owner-
+accepted, canonically activated, or frozen merely because their bytes and hashes are complete.
+Evidence from a diﬀerent candidate, conﬁguration, or science-authority digest is not silently pooled. Each rerun
+keeps its own identity and reason. Historical operational acceptance does not substitute for conformance evidence.
+The exact MAP lifecycle is requested, effective, observation_resolved, applied, realized, in that
+order. requested is immutable accepted intent. effective is its supported executable interpretation.
+observation_resolved means every observation-speciﬁc parent, coeﬃcient, proﬁle, geometry, mapping, pa-
+rameter, support rule, output role, and persistence decision is concrete or typed unavailable. applied binds
+the exact resolved operation and parameter state to the invocation or commitment of one execution attempt.
+realized binds the immutable resulting accumulators, products, statuses, failures, and provenance that were
+actually produced. A stop before application has neither an applied nor a realized record. An applied attempt that
+terminates before output realization retains its applied-attempt identity and exact terminal failure but creates no
+realized product.
+MAP stage Exact meaning Record rule
+requested Immutable accepted intent. Exists only for an accepted request; it is
+never reconstructed from a later stage.
+effective Supported executable interpretation of that
+request.
+Binds supported/disabled/unavailable
+interpretation without mutating intent.
+observation_resolved Every observation-speciﬁc parent, coeﬃcient,
+proﬁle, geometry, mapping, parameter, support
+rule, output role, and persistence decision is
+concrete or typed unavailable.
+Supplies the exact value/state for
+pre-application validation.
+applied Exact resolved operation and parameter state
+was invoked or committed for one execution
+attempt.
+Created only at the application event;
+retained with exact terminal failure
+when output realization fails.
+realized Immutable resulting accumulators, products,
+statuses, failures, and provenance were actually
+produced.
+Created only for actual realization; it
+never authorizes its own earlier
+application.
+Termination rule Stop before application, or stop after
+application but before output realization.
+The former has neither applied nor
+realized record; the latter has an
+applied-attempt record and terminal
+failure but no fabricated realized
+product.
+The MAP plan, coeﬃcient selection/application, projection, support policy, output/coadd plan, response/covariance request,
+product role, and coverage_cut use this same ordering. Each parameter stage binds its exact value and provenance; a
+completed realization contains all ﬁve stages, while an earlier stop contains only stages actually reached.
+The MAP lifecycle does not replace the independently named PTC/V AL handoﬀ axes requested/not_requested,
+applicable/inapplicable/applicability_unknown, eligible/ineligible/decision_unavailable, and
+realized/incomplete/failed/not_produced. It also does not replace the ECS requirement-result vocabulary or
+evidence- artifact realization state. In particular, a MAP parameter’s resolved or applied value may be checked
+Procedure only | conformance not_assessed Page 2
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+before application or bound after application; its realized value is never a prerequisite for a pre-application check.
+2 Evidence record
+Each requirement record contains at least:
+Field Required content
+Requirement Stable SCI-MAP-REQ-NNN and shared-authority digest.
+Candidate Exact source/build identity and environment proﬁle.
+Observable Public product, typed state, API boundary, metadata, diagnostic, or failure
+transition under test.
+Fixture Immutable input identity and independent expected-value calculation.
+Comparison Exact predicate or preregistered numerical/statistical bound.
+Result Exactly one of pass, fail, blocked, not_applicable, or not_assessed.
+Skipped required evidence is not_assessed, never a pass.
+Artifact realization Exactly one of complete, incomplete, failed, or not_produced; this
+records the evidence artifact and never substitutes for the requirement
+result.
+Artifacts Machine-readable outputs, logs, traces, plots/tables where needed, and
+digest-addressed provenance.
+Reviewer Independent reviewer identity, date, and deviation disposition.
+Every ECS requirement result is exactly one of pass, fail, blocked, not_applicable, or not_assessed. pass
+means complete positive evidence establishes the requirement for the exact candidate. fail means evaluated evi-
+dence contradicts it. blocked means evaluation cannot proceed because one exact named authority, dependency,
+proﬁle, source binding, or prerequisite is unavailable. not_applicable means the requirement is outside the exact
+candidate’s declared role under an owner-approved rationale. not_assessed means applicable evidence has not
+yet been executed or reviewed. Evidence-artifact realization is a diﬀerent axis with values complete, incomplete,
+failed, and not_produced.
+Failures are retained as evidence. A tolerance, ﬁxture, expected result, or applicability decision is not changed after
+viewing a failure without opening a new preregistered record.
+Procedure only | conformance not_assessed Page 3
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+3 Claim-layer gates
+Passing one layer grants no stronger layer automatically.
+Layer Minimum engineering record Prohibited inference
+Algebraic contract Exact owner-dispositioned shared
+authority and internally consistent
+independent expected values.
+No claim that a candidate implements it.
+Engineering conformance Every applicable requirement
+passes on one exact candidate; no
+required skip, unresolved deviation,
+or false completion.
+No claim that persisted WCS/response is
+scientiﬁcally faithful in real data.
+Representation/response
+ﬁdelity
+Round-trip and injection evidence
+covers WCS, units, response classes,
+boundaries, and covariance
+representations with preregistered
+bounds.
+No observational photometric, astrometric,
+or noise performance claim.
+Observational
+performance
+Independent references and
+repeatability establish the named
+amplitude, shape, position,
+covariance, or false-rate metric.
+No production-readiness claim.
+Production readiness Operational proﬁle, complete
+products, failure/log audit,
+dependency closure, release
+controls, and owner approval all
+pass.
+No authority beyond the exact released
+proﬁle and contract version.
+All nine stable MAP scope decisions are decided for this candidate. A claim may still be blocked by an unapproved
+source binding, an unavailable producer, or missing conformance evidence; record that state without weakening the
+requirement or substituting a fallback.
+4 Execution order and atomicity protocol
+Run evidence in the following order so later evidence cannot mask an earlier contract failure:
+1. Stage A—structural. Parse and freeze exact identity and parent, generation, source/proﬁle binding, producer
+availability, and required decision realization for frozen PTC r0.5, the exact PTC-to-MAP boundary, and the
+AST same- n signal coordinate, all boundaries/proﬁles, units, lifecycle, WCS, MAP policy, and required-product
+plan. When the uniform route is selected, require the exact uniform Registry, family, and handoﬀ identities
+declared in the shared authority; selection alone supplies no coeﬃcient and creates no default. Reject direct CAL,
+PTC-disabled, missing-product, inferred no-op, and cross-generation routes before payload retrieval.
+2. Stage B—safe numerical classiﬁcation. Retrieve only structurally admitted transformed-signal and coeﬃ-
+cient payloads. Classify zi as ﬁnite, non-ﬁnite, or unrepresentable and γi as ﬁnite strictly positive, exact zero,
+negative ﬁnite, non-ﬁnite, or unrepresentable. Verify coeﬃcient availability itself imposed no ﬁniteness require-
+ment. Separately validate the exact observation-resolved coverage cut before application: zero, ordinary (0, 1],
+above one admitted only by an independently authorized same-value/scope coverage_cut_above_one_override_
+requested fact, or invalid when missing, non-ﬁnite, negative, or unrepresentable. The number above one never
+authorizes itself. Invalid input fails before support construction, application, or mutation; no realized cut value
+is a pre-application prerequisite.
+3. Stage C—coordinate and product. Evaluate exact AST coordinate validity, one-hot placement/boundary,
+and only the companions required by the exact selected observation/coadd product role. For every V AL-evaluated
+gate retain request, applicability, eligibility, and realization axes, source binding, immutable reason, cause, and
+failure scope. Only requested/applicable/eligible/realized passes. Verify separately that the PTC coeﬃcient/QC
+pass uses its exact PTC-owned proﬁle and neither replaces nor rescues SCI-MAP:map_upstream_admission@2.
+Procedure only | conformance not_assessed Page 4
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+4. Stages D and E—membership then accumulation. Construct membership only after Stages A–C and
+perform no payload arithmetic until all required gates pass. Verify no numeric-zero mask, late masking, or ag-
+gregate sanitization substitutes for admission. Then compare exact scientiﬁc output-row identity and cardinality,
+plus one-pixel, one-hot half-open-boundary, prohibited-fractional, covariance, ﬁxed-state response, full-procedure
+comparison-space typing, and distinct-fact observation outputs, to independent expected values; retained storage
+rows do not count as scientiﬁc output rows.
+5. Exercise original-footprint exposure ﬁxtures: one original inﬂuencing several descendants at diﬀerent pixels; orig-
+inal and descendants in diﬀerent pixels; missing original coordinate; boundary loss; multiple maps sharing one
+original; distinct observations with numerically identical original coordinates; and donor/synthesized descendants.
+Verify exact observation/UID/native/stable-ALIGN-slot/generation keys, layered AST ALIGN-grid parent in the
+target WCS, one own-coordinate placement, separate inﬂuence edges, and no precision or temporal-support pro-
+motion.
+6. Verify complete immutable observation-bundle construction as a logical artifact. Independently request all three
+observation roles and record each reached requested, eﬀective, observation-resolved, applied, and realized plan
+stage; a completed realization has all ﬁve, a pre-application stop has no applied/realized records, and an applied
+terminal failure has no realized product. Exercise required publication for persisted routes plus explicitly selected
+in-memory and coadd-only routes. In-memory retention is not a waived product.
+7. Snapshot coadd-owned state; test every compatibility failure under each selected role; require atomic nonmutation.
+Conﬁrm that base-permitted unavailable or basis-incompatible response and incomplete covariance preserve the
+base signal membership and publish exact status/cause.
+8. Evaluate all four axes of the registered observation-coadd admission aggregate proﬁle separately from the MAP
+lifecycle; then independently request all three coadd roles and exercise admitted centered-integer coaddition, exact
+coadd output-row identity, and companion placement. If a canonical target grid was requested before observation-
+map construction, verify that every constructed map honors it. Otherwise verify that already existing compatible
+bundles, including persisted coadd-only inputs, may select a common coadd target and use exact centered-integer
+embedding without modifying or relabeling their scientiﬁc samples. An explicit crop creates a new row-selected
+product with its own identity and provenance.
+9. Round-trip all required representations and reconstruct each row-selected operator from provenance. Evalu-
+ate the physical FITS and typed WCS on every preregistered scientiﬁcally addressable pixel center and every
+outer-footprint cell vertex, including all corners, with the exact index mapping, common WCS generation/frame,
+binary64 great-circle metric, and fail-on-invalid rule. Infer no continuum maximum from that ﬁnite population.
+10. Exercise ﬁxed-state, PTC full-procedure, and PTC+MAP re-resolved response families. For every numerical ∆ z or
+∆ m, require the complete baseline/perturbed identities, quantity/unit, rows, frames/WCS, reference/gauge/null
+state, supports, coeﬃcient/response bases, exact common domain and both maps, unmatched-row treatment,
+perturbation parameters, ﬁnite-diﬀerence convention, state transition, availability, and cause. Reject implicit
+ﬁll, intersection, coordinate/shape/position association, interpolation, reprojection, or gauge alignment; a state
+delta alone never authorizes subtraction. Reconstruct and disclose the complete MAP-local operator AMAP,Π ,
+the immutable realized plan Π , and row selector Jout with its exact output-row domain for every valid prod-
+uct, while marking the whole-chain RTC-to-CAL-to-PTC-to-MAP role unavailable unless a separate approved
+authority establishes it; exercise an already realized PTC-grid companion applied exactly once; and honest re-
+sponse/covariance disclosure. For a response-bearing role, require only every exact response object named by
+that role; absence of a diﬀerent unselected response family does not block it. For coadd covariance, require every
+block named by the selected covariance-qualiﬁed role before accepting the complete numerical propagation and
+otherwise require partial, symbolic, summarized, lineage-resolvable, or unavailable state on the base role. Verify
+no stronger role subsets an existing base parent and verify versioned binding for later derivative products.
+11. Exercise consumer claim boundaries and immutable base/unﬁltered MAP parentage without assuming a closed-
+world registry of all future scientiﬁc uses. Verify that Pointing and OOF receive only permission to reuse the exact
+ordinary MAP gridding operator when their inputs conform. Their WCS/frame, model/ﬁtting, interpretation,
+outputs, defaults, proﬁles, and qualiﬁcation remain mode-owned, and no unsupplied mode proﬁle is activated.
+12. Repeat supported execution modes under the preregistered ﬂoating-point policy, while requiring exact discrete
+facts.
+13. Only after deterministic gates pass, execute representation, external, observational, and operational evidence
+appropriate to the requested claim.
+For every failure-injection test, capture pre-state, attempted input, emitted diagnostic, post-state, publica-
+tion/cardinality state, and completion state. No partial-state comparison may omit a coadd companion merely
+because its payload was not the injected failure target.
+Procedure only | conformance not_assessed Page 5
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+4.1 Scope-discrimination cases
+The following cases make the targeted r0.2 amendments discriminating. Each case records every reached requested,
+eﬀective, observation-resolved, applied, and realized state and asserts role-qualiﬁed atomic nonmutation on rejection.
+The six independently requestable product roles are SCI-MAP:base_observation_map@1, SCI-MAP:response_bearing_
+observation_map@1, SCI-MAP:covariance_qualified_observation_map@1, SCI-MAP:base_coadd@1, SCI-MAP:response_bearing_
+coadd@1, and SCI-MAP:covariance_qualified_coadd@1. Every request has its own immutable identity, parent set, ordered
+MAP lifecycle, result, and failure scope. A stronger role is a new product over the exact base parent; it does not
+rewrite that parent’s signal membership, response/covariance status, validity, or provenance.
+Role Exact parent Required companions Missing/incompatible
+companion
+Base observation Exact realized PTC/AST
+inputs and complete
+MAP-local observation plan
+Complete MAP-local realized
+operator identity; honest
+upstream-response and
+covariance states
+Base signal may remain valid;
+state and cause are retained.
+Response-bearing
+observation
+Exact base-observation
+product named above
+Every named numerical
+response, with exact source
+domain, basis, class, unit,
+normalization, parent,
+WCS/grid, and row identity
+This role fails or is unavailable
+before its required-product
+mutation; its base parent is
+unchanged.
+Covariance-qualiﬁed
+observation
+Exact base-observation
+product named above
+Every within-observation
+covariance block named by
+the role on exact rows
+Missing blocks are unknown
+and block this role only; its
+base parent is unchanged.
+Base coadd Ordered set of exact complete
+base-observation bundles and
+one resolved coadd plan
+Every base signal companion
+and honest response and
+covariance identities/statuses
+Unavailable or
+basis-incompatible response
+and incomplete covariance are
+permitted with unchanged
+signal membership; coadd
+response becomes unavailable
+with exact cause.
+Response-bearing
+coadd
+Exact base-coadd parent
+named above and the
+identical ordered
+signal-member set
+Every member response and
+their exact compatible source
+domain, basis, class, unit,
+normalization, parent,
+WCS/grid, and row identity
+If the base parent already
+exists, this stronger role is
+unavailable for that parent; it
+never selects a subset. A
+separately requested admission
+may reject an observation
+before mutation only while
+constructing its own separately
+identiﬁed base/signal parent.
+No hidden subset or zero ﬁll.
+Covariance-qualiﬁed
+coadd
+Exact base-coadd parent
+named above and the
+identical ordered
+signal-member set
+Every named within- and
+cross-observation block on
+exact stacked rows
+One missing required block
+blocks this role for that parent;
+no member subset is formed.
+A separately requested
+admission may reject before
+constructing its own identiﬁed
+base/signal parent. Unknown
+is never zero or independence.
+Decision surface Admitted case Required discriminator
+Uniform coeﬃcient authority Exact Registry/family/handoﬀ
+selection and a PTC-complete
+same-generation payload.
+Admit only through the frozen
+PTC-to-MAP boundary; no default,
+fallback, or coeﬃcient synthesis.
+Procedure only | conformance not_assessed Page 6
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+Coverage cut Finite requests at 0, within (0, 1],
+and above 1.
+Classify zero and ordinary values
+separately from the independently
+authorized typed above-one override;
+reject numerical self-authorization
+and missing, negative, non-ﬁnite, or
+unrepresentable values before
+support/application/mutation.
+Coverage stages Values diﬀer across reached
+lifecycle stages.
+Validate cobservation_resolved before
+application, then require exact
+capplied = cobservation_resolved at the
+event. Evaluate the inclusive
+predicates with capplied; create no
+future-stage placeholder and never
+require crealized to authorize
+application.
+Coverage order statistic N = 0 and preregistered small
+populations around integer
+transitions.
+Reproduce the exact zero-based
+⌊(⌊0. 75N ⌋+ N )/ 2⌋ index and selected
+ordered value; verify inclusive
+thresholds and ﬁnite-positive row
+requirement.
+Bundle completeness Required companions retained in
+memory, persisted, and consumed
+by a coadd-only route.
+The logical bundle and plan remain
+complete; publication is required only
+for routes whose plan requires
+persistence.
+Target grid A preconstruction canonical grid
+is requested, or existing bundles
+have otherwise-compatible shapes.
+Honor the requested grid; otherwise
+select a compatible common coadd
+target and use exact centered-integer
+embedding. Reject relabeling or
+resampling as a way to manufacture
+compatibility.
+Crop Explicit row selection after
+construction.
+Emit a new identiﬁed product with
+selector/provenance; do not mutate or
+relabel the base grid.
+Response Valid ﬁxed-state and
+procedure-response products.
+Disclose exact MAP-local AMAP, Π
+separately from any upstream or
+whole-chain claim; numerical
+procedure deltas require both exact
+maps into one authorized comparison
+domain and all
+gauge/support/perturbation facts.
+Product roles Independently request base,
+response-bearing, and
+covariance-qualiﬁed observation
+and coadd roles.
+Preserve exact base parent and
+ordered membership; base-permitted
+unavailable companions do not reject;
+a selected required companion blocks
+only that stronger role and never
+forms a subset of an existing parent.
+WCS population Typed and FITS WCS diﬀer at an
+interior center, outer boundary
+vertex, corner, and one invalid
+point in turn.
+Evaluate the full preregistered
+population with exact spherical
+metric/frame/generation/ precision;
+reject on any invalid member and
+infer no continuum maximum.
+NOI vocabulary Present Q, formal precision,
+complete covariance, NOI
+conditional marginal second
+moment, NOI standardized signal,
+and an attempted signiﬁcance
+label.
+Preserve exact roles and claims;
+stronger physical-noise, uncertainty,
+signiﬁcance, probability, false-rate,
+completeness, purity, or catalogue
+meaning remains unavailable without
+a separately approved method.
+Procedure only | conformance not_assessed Page 7
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+Pointing and OOF Each requests exact ordinary
+MAP operator reuse.
+Verify only the shared operator
+boundary; require separate
+mode-owned WCS/frame,
+model/ﬁtting, interpretation, outputs,
+defaults, proﬁle, and qualiﬁcation,
+and leave an unsupplied mode proﬁle
+unavailable.
+Application status Contract sources compile without
+an identiﬁed producer candidate.
+Record contract completeness only;
+make no application availability or
+conformance claim.
+SCI-NOI owns its exact realization-generation, empirical-uncertainty, conditional-scale, and standardization meth-
+ods and products. Any physical- noise, total-uncertainty, covariance-completeness, signiﬁcance, probability, false-
+rate, completeness, purity, or catalogue interpretation requires a separately approved exact method and remains
+unavailable by default. MAP therefore keeps Q normalization, formal conditional precision, complete conditional co-
+variance, the NOI conditional_detector_sign_randomization_marginal_second_moment, the NOI standardized
+signal, and any future calibrated-signiﬁcance method as distinct identities and claims.
+Procedure only | conformance not_assessed Page 8
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+5 Canonical requirement conformance clauses
+The following clauses are generated from the shared authority. The ﬁrst paragraph is the canonical science require-
+ment; the second is its minimum conformance route. Every one of the 52 result ﬁelds is initialized to the exact value
+not_assessed; this says applicable evidence has not yet been executed or reviewed and does not describe artifact
+realization.
+SCI-MAP-REQ-001 – V ersioned authority
+Canonical clause: The scientiﬁc contract version shall be v0.2. The rendered document revision shall be recorded separately
+as r0.2; changing layout or exposition alone shall not be represented as a new scientiﬁc contract version.
+Minimum conformance evidence: Inspect both artifacts and their machine-readable provenance for distinct contract-
+version and document-revision ﬁelds.
+Result: not_assessed
+SCI-MAP-REQ-002 – Capability and realized PTC input
+Canonical clause: The ordinary input shall be the realized SCI-PTC v0.1/r0.5 transformed calibrated- x product zi = Z PTC
+i ,
+a nonpolarimetric total-intensity-equivalent detector-time quantity in the inherited top-of-atmosphere, point-source-equivalent
+mJy/beam convention with its exact originating ﬁxed-nominal-beam identity. Neither that unit nor a STOKES token establishes
+Stokes I. MAP has no CAL-to-MAP fallback, no inferred no-op PTC product, and no product when the required positive-rank
+PTC product is absent or PTC is disabled.
+Minimum conformance evidence: Exercise exact realized PTC input, attempted CAL input, PTC-disabled and no-product
+routes, incompatible PTC generation, missing nominal-beam identity, and attempted Stokes-I promotion.
+Result: not_assessed
+SCI-MAP-REQ-003 – Exact occurrence identity
+Canonical clause: Every candidate occurrence i shall bind observation, detector occurrence and UID, stable RTC output
+sample n, exact PTC product/application generation, segment, and array/network/group as applicable. Sample time is an
+associated attribute. Input-column, row, and container positions are locators only and shall not establish identity or equality.
+Minimum conformance evidence: Permute times, containers, rows, and columns while preserving or breaking the exact
+parent chain; products shall follow exact occurrence identity and reject inferred joins.
+Result: not_assessed
+SCI-MAP-REQ-004 – Producer facts and MAP admission
+Canonical clause: SCI-MAP shall consume PTC-owned transformed-signal availability, output-retention disposition, co-
+eﬃcient family/value/typed availability, and coeﬃcient/QC proposition without reinterpretation. The PTC coeﬃcient/QC
+proposition passes only when the coeﬃcient is requested, applicable, eligible, and realized under the exact PTC-owned coeﬃ-
+cient/QC proﬁle for the declared MAP-facing family. It does not grant MAP use. SCI-MAP shall separately apply the source-
+bound occurrence proﬁle SCI-MAP:map_upstream_admission@2; the manifest-bound SCI-V AL Registry revision binds and V AL
+Core evaluates that MAP-authored policy but does not author it. The immutable r0.5 proﬁle SCI-MAP:map_upstream_admission@1
+is historical, is not a compatibility alias, and shall not replace SCI-MAP:map_upstream_admission@2. Every fact, decision, cause,
+scope, and immutable reason remains separately typed.
+Minimum conformance evidence: Toggle each producer fact and each of the four named ﬁelds independently; verify exact
+PTC coeﬃcient/QC projection, separate MAP admission, preserved causes, source/proﬁle-version rejection, and no rescue or
+universal producer-ﬂag action.
+Result: not_assessed
+SCI-MAP-REQ-005 – Coordinate and projection authority
+Canonical clause: MAP shall consume SCI-AST:rtc_output_grid_coordinates@1 for the same stable RTC sample n and
+complete parent chain as zi; it shall never join by time, row, cardinality, or coordinate equality. MAP owns Gpi through
+SCI-MAP:one_hot_containing_pixel@1: the unique ﬁnite in-grid pixel whose cell contains the coordinate under half-open bounds
+contributes Gpi = 1, every other pixel has Gpi = 0, and an outer-upper-boundary or out-of-grid coordinate contributes nowhere.
+Fractional projection is deferred. AST may materialize the relation only when the artifact binds the AST parent and exact
+MAP plan.
+Minimum conformance evidence: Test exact-parent joins, centers, lower and upper cell boundaries, outer extent, invalid
+coordinates, sum-over-pixel normalization on its in-grid domain, and prohibited wrap/clamp/fractional placement.
+Result: not_assessed
+Procedure only | conformance not_assessed Page 9
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+SCI-MAP-REQ-006 – Ordinary coeﬃcient status
+Canonical clause: The ordinary route requires one explicitly selected PTC-owned MAP-facing analysis/gridding coeﬃ-
+cient family satisfying SCI-PTC-REQ-052–055 and SCI-PTC_TO_SCI-MAP_BOUNDARY v0.2-draft.1/r0.4 . The admitted Registry
+SCI-PTC:analysis_gridding_coefficients@draft-0.1 contains SCI-PTC:uniform_constant@draft-0.1, whose exact supported value
+is dimensionless γi = ωi = 1 , and grants MAP permission through SCI-PTC:uniform_coefficient_handoff@draft-0.1. Registra-
+tion and permission do not select a family or realize a handoﬀ. MAP shall use this family only after explicit selection; one
+immutable completed SCI-PTC v0.1/r0.5 transformed-product publication bound to the exact application, CAL parent, obser-
+vation, and selection lineage and typed as a complete segment, complete scan, or bounded chunk wholly within one named scan
+or segment and one observation; exact target/payload/occurrence association; and a requested, applicable, eligible, realized
+proﬁle evaluation under the admitted source and compatible binding generation. MAP does not reproduce, select, or infer
+the PTC-owned formula. An absent selection without an authorized mode default, unregistered family, incomplete PTC pub-
+lication, missing or mismatched payload, unavailable coeﬃcient/QC decision, or incompatible generation makes the aﬀected
+route unavailable; there is no unity or alternate-family fallback. Structural availability remains distinct from ﬁniteness. MAP
+alone classiﬁes an authorized payload as ﬁnite positive, exact zero, negative ﬁnite, non-ﬁnite, or unrepresentable and applies
+only a matching ﬁnite strictly-positive value. The uniform family supplies no precision, sensitivity, loading, scatter, response,
+covariance, exposure, validity, optimality, or default meaning.
+Minimum conformance evidence: Exercise the registered-but-unselected, selected-but-unpublished, missing/mismatched
+association, nonpassing four-axis evaluation, incompatible generation, and exact admitted uniform cases; verify producer
+QC, MAP admission, numerical classiﬁcation, contribution, and every identity, support, lifecycle, uncertainty, and prohibited
+meaning separately.
+Result: not_assessed
+SCI-MAP-REQ-007 – Exposure lineage and accounting
+Canonical clause: ALIGN-owned eacq and valid-original evo, in seconds, shall remain immutable on stable original
+occurrences through RTC/CAL/PTC. The products are normatively upstream_eligible_original_footprint_exposure
+and retained_original_footprint_exposure. The shorter prose labels “upstream-eligible exposure” and “retained expo-
+sure” are explicit aliases for those products and no others. MAP shall deduplicate by exact observation, detector oc-
+currence/UID, stable original/native occurrence, stable ALIGN slot, and ALIGN mapping generation; place each positive-
+evo original exactly once through SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE v0.1/r0.1 , its layered AST ALIGN-grid
+direction/tangent/continuous-pixel parent in the exact target MAP WCS, and SCI-MAP:one_hot_containing_pixel@1; and never
+use a descendant RTC-output coordinate. Geometry/pointing realization, frame, coordinate validity, boundary state, parent,
+and version are required. Upstream-eligible and retained exposure diﬀer only by ancestor-population restriction. Causal
+inﬂuence, representative RTC occurrence, and original-footprint exposure remain separate. These exposure products are not
+complete temporal support, eﬀective map integration time, precision, or normalized-map inﬂuence. Missing original-coordinate
+authority makes the aﬀected exposure role unavailable. Invalid-original has evo = 0; synthesis, replacement, donor reuse, over-
+lapping ﬁlters, and decimation create no exposure. Boundary loss contributes nowhere. Coadd exposure unions atomically
+admitted observation-scoped original identities.
+Minimum conformance evidence: Use one original inﬂuencing several descendants at diﬀerent pixels, an original and
+descendants in diﬀerent pixels, missing original coordinate, boundary loss, multiple maps sharing one original, distinct ob-
+servations with identical coordinates, donor and synthesized descendants, and repeated lineage; verify exact own-coordinate
+placement, deduplication, and separate inﬂuence support.
+Result: not_assessed
+SCI-MAP-REQ-008 – Response information state
+Canonical clause: Every valid SCI-MAP:base_observation_map@1 product shall disclose its known MAP-local realized operator
+response AMAP, Π , including exact input/output domains, membership, projection, coeﬃcient, support-row, WCS, parent,
+lifecycle, and limitations. MAP shall separately type upstream-conditioned ﬁxed-state linear response, PTC full-procedure
+ﬁnite diﬀerences, and PTC+MAP re-resolved procedure response. An available ﬁxed-state object shall also bind source domain,
+PTC-sample codomain, units, parents, response basis, and upstream limitations. Every numerical full-procedure ∆ zPTC-FP,
+∆ mPTC-FP, or ∆ mPTC+MAP-RR shall bind the complete comparison-space record in A numerical full-procedure diﬀerence is
+deﬁned only by a complete immutable comparison-space record. The record binds baseline and perturbed product identities;
+scientiﬁc quantity and unit; occurrence or MAP output-row identities; source and target frame/WCS; additive reference, gauge,
+and null- space state; baseline and perturbed support; coeﬃcient and response basis; one exact common comparison domain;
+an exact map from each result into that domain; explicit treatment of rows present in only one result; perturbation amplitude,
+sign, side, location, source state, and normalization; ﬁnite- diﬀerence convention; state-transition record; and numerical
+availability with cause. It authorizes no implicit zero ﬁll, union-domain sentinel, support intersection, coordinate-nearest
+or same-shape/row-position association, interpolation, reprojection, or gauge alignment. Without the complete authorized
+record the numerical diﬀerence is unavailable, or the result is only a separately typed state transition/discontinuity. ∆ SPTC-FP
+never establishes subtractability by itself.. The PTC+MAP family reruns PTC and separately resolves Π 0 and Π +, whose
+membership and Sout may diﬀer; subtraction is unavailable without exact maps into one authorized common comparison
+Procedure only | conformance not_assessed Page 10
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+domain. A whole-chain RTC-to-CAL-to-PTC-to-MAP response is reserved for a separately authorized complete study and is
+unavailable unless so established. Absent upstream response shall be reported as limited or unavailable without concealing
+the known MAP-local operator, invalidating an otherwise valid base map, fabricating a whole-chain identity, or prohibiting
+later analysis. A later response estimate or corrected map is a new immutable versioned product bound to the original MAP
+product and processing identity.
+Minimum conformance evidence: Exercise MAP-local-known/upstream-unavailable, ﬁxed-state, full-procedure common-
+domain and unavailable-domain cases, PTC+MAP re-resolved changing membership, companion-starting-at-MAP, partial,
+and attempted whole-chain cases; verify exact typing, maps and rows, application exactly once, complete signal membership,
+honest limitations, and no fabricated identity or implicit subtraction.
+Result: not_assessed
+SCI-MAP-REQ-009 – Immutable plan and lifecycle
+Canonical clause: The exact MAP lifecycle is requested, effective, observation_resolved, applied, realized, in that
+order. requested is immutable accepted intent. effective is its supported executable interpretation. observation_resolved
+means every observation-speciﬁc parent, coeﬃcient, proﬁle, geometry, mapping, parameter, support rule, output role, and
+persistence decision is concrete or typed unavailable. applied binds the exact resolved operation and parameter state to
+the invocation or commitment of one execution attempt. realized binds the immutable resulting accumulators, prod-
+ucts, statuses, failures, and provenance that were actually produced. A stop before application has neither an applied
+nor a realized record. An applied attempt that terminates before output realization retains its applied-attempt iden-
+tity and exact terminal failure but creates no realized product. The same ordered lifecycle shall bind the MAP plan,
+coeﬃcient selection and application, projection, support policy, output plan, coadd plan, response and covariance re-
+quests, every independently requested product role, and coverage_cut. The MAP lifecycle does not replace the inde-
+pendently named PTC/V AL handoﬀ axes requested/not_requested, applicable/inapplicable/applicability_unknown,
+eligible/ineligible/decision_unavailable, and realized/incomplete/failed/not_produced. It also does not replace
+the ECS requirement-result vocabulary or evidence- artifact realization state. In particular, a MAP parameter’s resolved or
+applied value may be checked before application or bound after application; its realized value is never a prerequisite for a
+pre-application check. Disabled expert values remain inactive; one observation’s resolved state shall not leak into another.
+Minimum conformance evidence: Compare serialized states across two deliberately diﬀerent observations; stop one before
+application and one after a terminal applied failure; verify ordered one-way provenance, absence of fabricated applied/realized
+products, exact applied-attempt failure, axis separation, and complete replacement.
+Result: not_assessed
+SCI-MAP-REQ-010 – F actored contribution predicate
+Canonical clause: For each pixel, membership in Cp shall be the conjunction of ten exact Boolean pass predicates derived
+from separately retained typed records: transformed-signal availability; PTC output retention; coeﬃcient availability; PTC
+coeﬃcient/QC proposition passγ, QC; MAP upstream admission; AST coordinate validity; ﬁnite zi; ﬁnite strictly positive γi; ad-
+mitted projection/boundary relation; and MAP-local contribution plus required-companion predicates. Every V AL-evaluated
+gate retains named request, applicability, eligibility, and realization ﬁelds; only request= requested, applicability=applicable,
+eligibility=eligible, and realization= realized passes. Every other ﬁeld combination is nonpassing with its exact cause, fail-
+ure scope, and immutable reason retained. A structural source- or proﬁle-binding failure is recorded only when that structural
+condition actually occurs; an ordinary nonpassing ﬁeld value is not thereby a structural failure. Evaluation follows the ordered
+DAG: A structural identity/parent, generation, source/proﬁle, producer availability, and decision-realization checks; B retrieval
+only of structurally admitted payloads and MAP classiﬁcation of zi and γi; C AST validity, one-hot boundary/placement,
+and MAP-local required companions; D membership construction; E accumulation. All gates pass before payload arithmetic.
+Reading an authorized payload to classify it is not arithmetic, and excluded non-ﬁnite values never contaminate accumulation.
+T/F/U/C or four-ﬁeld records shall never be conjoined directly; no numeric-zero mask represents exclusion.
+Minimum conformance evidence: Vary one gate, each of the four named ﬁelds, source-binding failure, and knowledge
+state at a time; compare the typed record, Boolean projection, exact DAG stage, membership, cause/scope, and immutable
+reason; place NaN/Inf behind structurally excluded and admitted cases to distinguish safe classiﬁcation from arithmetic
+contamination.
+Result: not_assessed
+SCI-MAP-REQ-011 – Ordinary accumulators
+Canonical clause: On the ﬁxed contribution set, SCI-MAP shall accumulate Np =
+∑
+i apizi, Qp =
+∑
+i api, and, when
+available for the identical membership, Kp =
+∑
+i apiki, where api = Gpiγi > 0.
+Minimum conformance evidence: Use one-pixel and one-hot hand calculations and compare accumulators before normal-
+ization; fractional projection is not authorized in v0.2.
+Result: not_assessed
+Procedure only | conformance not_assessed Page 11
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+SCI-MAP-REQ-012 – Normalized publication
+Canonical clause: The scientiﬁc normalized output vector shall contain exactly the rows p ∈ S out authorized by the
+applicable eﬀective support policy. On those rows ﬁnite Qp > 0 gives ˆmp = Np/Q p, and an available response companion
+gives ˆkp = Kp/Q p. No unsupported row, zero-ﬁlled value, or sentinel is a normalized scientiﬁc output or measured zero.
+Minimum conformance evidence: Exercise positive, exact-zero, near-zero, overﬂowed, and non-ﬁnite aggregates; compare
+exact row identity and inspect any nonauthoritative storage slots.
+Result: not_assessed
+SCI-MAP-REQ-013 – Accumulator interpretation
+Canonical clause: The numerator is a pre-normalized accumulator and Qp is a normalization fact by default. Neither shall
+be labeled a sky estimator, inverse variance, conﬁdence, coverage, or signiﬁcance without the separately required conditions.
+Minimum conformance evidence: Audit schema, metadata, API types, and labels for every numerator and normalization
+representation.
+Result: not_assessed
+SCI-MAP-REQ-014 – Constant preservation
+Canonical clause: With ﬁxed admitted membership and positive coeﬃcients, the ordinary estimator shall preserve a constant
+admitted sample input on every row in its exact support-authorized output set. This prediction shall not create rows outside
+that set or be promoted to compact-source, extended-source, integrated-ﬂux, absolute-oﬀset, or astrometric ﬁdelity.
+Minimum conformance evidence: Map constant ﬁxtures with uniform and unequal coeﬃcients; compare exact output-row
+membership, then conﬁrm that stronger response claims remain separately gated.
+Result: not_assessed
+SCI-MAP-REQ-015 – Projection-speciﬁc estimand
+Canonical clause: The authorized base projection is exactly SCI-MAP:one_hot_containing_pixel@1; it preserves unity over the
+ﬁnite in-grid domain and has explicit half-open boundary loss. Fractional projection, diagonal weighted least squares, and
+conservation across a ﬁnite boundary are outside this branch until separately authorized.
+Minimum conformance evidence: Use containing-pixel and outer-boundary ﬁxtures; attempt fractional or WLS substitu-
+tion and require method rejection.
+Result: not_assessed
+SCI-MAP-REQ-016 – One exact MAP operator for linear companions
+Canonical clause: For one selected immutable realized plan Π , AMAP, Π ≡ Aout ≡ D−1
+Q, outJoutGΩ is the only MAP operator
+and its complete realized identity is the MAP-local operator-response disclosure. Its identity binds the exact admitted PTC-
+sample input domain, support-authorized output-row domain, coeﬃcient family/generation, one-hot projection plan, support
+policy, target WCS/grid, immutable parents, and lifecycle generation. Signal, ﬁxed-state response, conditional covariance,
+an available realized PTC-grid response companion, and ﬁxed noise realizations shall use that same operator, membership,
+placement, coeﬃcient state, and output rows. A PTC full-procedure diﬀerence with MAP state ﬁxed may use the same operator
+only after its baseline and perturbed products, common PTC-sample comparison domain, exact input maps, common output-
+row comparison domain, and exact output maps are authorized; equality to AMAP, Π ∆ z requires those exact common domains
+rather than array shape. A PTC-grid companion begins at MAP and receives the operator exactly once, never Hﬁxed, Θ again.
+Physical original-footprint exposure instead uses unique originals and each original’s own AST ALIGN-grid coordinate; causal
+inﬂuence is not a linear exposure companion.
+Minimum conformance evidence: Trace all named uses coeﬃcient by coeﬃcient; compare operator, comparison-domain,
+row-map, and parent identities; verify complete MAP-local disclosure and exactly-once application; reject shape-, intersection-,
+interpolation-, and position-inferred diﬀerences; and separately trace original-footprint placement.
+Result: not_assessed
+SCI-MAP-REQ-017 – Realized response claim
+Canonical clause: A stored kernel may be called a realized ﬁxed-state response to template τ only when its exact sample
+parent satisﬁes k = Hﬁxed, Θ τ and the support-restricted map satisﬁes ˆkout = AMAP, Π Hﬁxed, Θ τ = Rﬁxed, Θ τ on exactly
+the signal rows. A PTC full-procedure ﬁnite diﬀerence ∆ zPTC-FP and either map diﬀerence shall retain its distinct family
+identity and the complete comparison-space record, including both product identities, quantity/unit, rows, frames/WCS,
+reference/gauge/null state, supports, bases, common domain and exact two maps, unmatched-row treatment, perturbation
+and ﬁnite-diﬀerence convention, state transition, availability, and cause. ∆ SPTC-FP records state change but never authorizes
+numerical subtraction. Otherwise the response is a tracer, separately typed discontinuity, limited, or unavailable.
+Minimum conformance evidence: Inject a declared ﬁxed-state template, comparable and noncomparable PTC full-
+Procedure only | conformance not_assessed Page 12
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+procedure perturbations, a PTC+MAP re-resolved perturbation with diﬀerent Π and rows, and a mismatched tracer; verify
+family, complete comparison record, exact maps and rows, state diﬀerences, and no implicit ﬁll, intersection, association,
+interpolation, reprojection, or gauge alignment.
+Result: not_assessed
+SCI-MAP-REQ-018 – Absolute-oﬀset mode
+Canonical clause: SCI-MAP v0.2 shall apply no signal-centering operation: L = I. Coaddition shall not subtract a mean,
+remove a constant mode, or recenter a source; any upstream loss of that mode shall remain explicit in response and provenance.
+Minimum conformance evidence: Use a constant-oﬀset ﬁxture and inspect both the mapped value and recorded upstream
+response/null-mode state.
+Result: not_assessed
+SCI-MAP-REQ-019 – Conditional covariance
+Canonical clause: When a declared PTC-domain covariance NPTC is available for the exact ﬁxed membership and state Θ ,
+MAP shall propagate it as Cm, out = AMAP, Π NPTCAT
+MAP, Π , retaining consequential oﬀ-diagonal terms on the exact operator
+domains. The equation is complete only on the declared available domain. Missing, limited, symbolic, summarized, lineage-
+resolvable, or unavailable terms remain typed and are never zero-ﬁlled or interpreted as independence; absence of a complete
+model does not invalidate the signal map.
+Minimum conformance evidence: Compare a small exact propagation and honest partial, symbolic, summarized, lineage-
+resolvable, and unavailable states on identical operator and row membership.
+Result: not_assessed
+SCI-MAP-REQ-020 – When normalization is precision
+Canonical clause: Normalization may be called marginal inverse variance only when the exact selected γ family is calibrated
+true inverse variance, selected errors are independent on the asserted domain, and
+∑
+i γi(G2
+pi − Gpi) = 0 . One-hot geometry
+alone does not prove the coeﬃcient premise.
+Minimum conformance evidence: Test one-hot geometry with both proven inverse-variance and nonprecision coeﬃcient
+families.
+Result: not_assessed
+SCI-MAP-REQ-021 – F ormal diagonal weight
+Canonical clause: When its assumptions hold, ϕp = Q2
+p/
+∑
+i G2
+piγi is the formal marginal inverse variance. It remains
+distinct from Qp, support-restricted precision C +
+m, out, exposure, hits, and empirical statistical weight.
+Minimum conformance evidence: Compute and label every object for an authorized one-hot ﬁxture and a correlated
+counterexample.
+Result: not_assessed
+SCI-MAP-REQ-022 – Covariance and nuisance disclosure
+Canonical clause: The bundle shall report what uncertainty or covariance information it actually provides, its meaning,
+domain, assumptions, and limitations, and whether fuller information is persisted, lineage-resolvable, summarized, incomplete,
+or unavailable. It shall list omitted correlations and nuisance terms; absence of a complete covariance model shall not invalidate
+the map or prohibit later analysis, and unavailable information shall not be set to zero. A later covariance estimate may be
+attached only as a new versioned product bound to the original MAP product and processing identity.
+Minimum conformance evidence: Inspect every representation state, prevent promotion of normalization, hits, or diag-
+nostic weight to covariance, and verify derivative-product binding without rewriting the original claim.
+Result: not_assessed
+SCI-MAP-REQ-023 – Data-derived state
+Canonical clause: If membership, coeﬃcients, response, or geometry are estimated or selected from the same data, the
+displayed linear expectation and covariance shall remain explicitly conditional; unconditional bias or covariance requires a
+named joint model or resampling result outside this ﬁxed-state claim.
+Minimum conformance evidence: Use metadata cases for ﬁxed and data-derived state and verify that unconditional labels
+appear only with separately admitted evidence.
+Result: not_assessed
+SCI-MAP-REQ-024 – No signiﬁcance promotion
+Canonical clause: Signal multiplied by the square root of merely formal weight shall be labeled formal standardized signal,
+Procedure only | conformance not_assessed Page 13
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+not sig2noise or empirical signiﬁcance. SCI-NOI owns its exact realization-generation, empirical-uncertainty, conditional-
+scale, and standardization methods and products. Any physical- noise, total-uncertainty, covariance-completeness, signiﬁcance,
+probability, false-rate, completeness, purity, or catalogue interpretation requires a separately approved exact method and
+remains unavailable by default. MAP therefore keeps Q normalization, formal conditional precision, complete conditional
+covariance, the NOI conditional_detector_sign_randomization_marginal_second_moment, the NOI standardized signal,
+and any future calibrated-signiﬁcance method as distinct identities and claims. In particular, MAP shall not equate this
+quantity with NOI’s conditional marginal second moment or standardized signal, and no future calibrated signiﬁcance product
+is inferred.
+Minimum conformance evidence: Attempt each prohibited relabeling through all public representations; compare Q,
+formal conditional precision, complete conditional covariance, the exact NOI marginal-second-moment and standardized-signal
+roles, and a hypothetical separately authorized signiﬁcance role; require distinct identities and claims.
+Result: not_assessed
+SCI-MAP-REQ-025 – Distinct map facts
+Canonical clause: Every base/unﬁltered MAP bundle shall separately represent AST-geometric in-
+cidence, MAP-route-candidate incidence, estimator-admitted contribution, admitted-observation count,
+upstream_eligible_original_footprint_exposure, retained_original_footprint_exposure, numerical-normalization
+support, science-policy support, and MAP-local base-product scientiﬁc validity. No fact or downstream eligibility decision
+shall become authority for another.
+Minimum conformance evidence: Construct cases in which each pair diﬀers and verify separately typed identities and
+immutable ownership.
+Result: not_assessed
+SCI-MAP-REQ-026 – Incidence layers
+Canonical clause: AST-geometric incidence records valid coordinate placement independent of signal availability; MAP-
+route-candidate incidence additionally requires the exact realized PTC route and occurrence-level upstream admission; esti-
+mator contribution additionally requires all remaining gates in Cp. The one-hot touch convention counts the unique containing
+pixel only.
+Minimum conformance evidence: Use coordinate-valid/signal-unavailable, route-ineligible, zero-coeﬃcient, and admitted
+occurrences and compare all three populations.
+Result: not_assessed
+SCI-MAP-REQ-027 – Estimator contributions
+Canonical clause: Estimator-admitted contributions shall count exactly i ∈ C p. A candidate ineligible under the exact MAP
+admission or contribution policy for its preserved cause, or with unavailable/conﬂicting required state, zero/negative/non-ﬁnite
+coeﬃcient, non-ﬁnite signal, or out-of-grid projection, contributes nowhere; no producer ﬂag implies a universal action.
+Minimum conformance evidence: Compare exact counts with an independently evaluated proﬁle and factored-gate oracle
+while preserving cause and decision scope.
+Result: not_assessed
+SCI-MAP-REQ-028 – Admitted observation count
+Canonical clause: For coadds, admitted observation count shall count complete observation bundles contributing at the
+pixel and shall not be confused with sample hits or observation attempts.
+Minimum conformance evidence: Use one complete, one unsupported, and one rejected observation bundle and verify
+the per-pixel count.
+Result: not_assessed
+SCI-MAP-REQ-029 – Upstream-eligible original-footprint exposure
+Canonical clause: MAP upstream_eligible_original_footprint_exposure shall union and deduplicate exact positive- evo
+original occurrences that are ancestors of route candidates admitted by SCI-MAP:map_upstream_admission@2. Each original is
+placed once by its own exact AST coordinate and the one-hot half-open rule; it is not placed at every descendant coordinate.
+The exposure population precedes coeﬃcient positivity and MAP-local numerical rejection. Missing original-coordinate or
+lineage authority makes this exposure role unavailable.
+Minimum conformance evidence: Use one original inﬂuencing several candidates at diﬀerent pixels, plus an eligible zero-
+coeﬃcient candidate; verify one own-coordinate exposure placement, separate inﬂuence edges, and no precision promotion.
+Result: not_assessed
+Procedure only | conformance not_assessed Page 14
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+SCI-MAP-REQ-030 – Retained original-footprint exposure
+Canonical clause: MAP retained_original_footprint_exposure shall use the same original-occurrence key and own-
+coordinate placement as REQ-029, restricted to originals that are ancestors of estimator-admitted members. Overlapping
+ﬁlters, decimation, replacement, synthesis, and multiple descendants do not duplicate seconds. Coadded exposure shall union
+observation-scoped original identities after atomic coadd admission; one original can occupy at most one pixel under the base
+one-hot family, or none after boundary loss. Neither exposure is precision.
+Minimum conformance evidence: Use overlapping observation lineage, multiple descendants, mixed admission, donor
+reuse, and boundary loss; compare exact original-key unions, pixel placement, and coadd sums.
+Result: not_assessed
+SCI-MAP-REQ-031 – Adopted threshold selector
+Canonical clause: For each declared support-policy population, sort its ﬁnite strictly positive normalization coeﬃcients
+Qp; for count N > 0, select zero-based k = ⌊(⌊0. 75N ⌋ + N )/ 2⌋ and Q⋆ = Q(k); for empty input set Q⋆ = 0 . The exact
+population and policy identities and each reached requested, eﬀective, observation-resolved, applied, and realized state/value
+of dimensionless c = coverage_cut shall be retained; a completed realization contains all ﬁve. Pre-application admission
+shall check the exact observation-resolved value. Application shall bind that value to one support-policy attempt; realization
+shall later bind only what was produced. The exact Boolean plan fact coverage_cut_above_one_override_requested shall
+bind request identity, authorized owner or proﬁle, scope, each reached lifecycle stage, exact value, cause, and provenance. It
+has no applied/realized record before application and no realized record after an applied terminal failure. The scalar shall
+be ﬁnite and nonnegative. Exact zero requests no relative cut while ﬁnite strictly-positive Qp remains mandatory. Values
+0 < c ≤ 1 are the ordinary recommended range. A value c > 1 is admissible only when that independently authorized fact
+is true for the same resolved value and scope; the number cannot authorize itself and may honestly produce empty science
+support. Negative, non-ﬁnite, missing, or unrepresentable values shall fail before support-row construction, application, or
+required-product mutation. No universal numerical default is established.
+Minimum conformance evidence: Check N = 0 and small N values around every integer-index transition against the exact
+zero-based formula; verify each reached stage and all ﬁve on completed realization, pre-application use of the resolved value,
+absence of future-stage placeholders, applied-terminal failure behavior, exact-zero and ordinary endpoints, independently
+authorized above-one override with same-value/scope matching, self-authorization rejection, possible empty support, and
+preconstruction nonmutation for every invalid state.
+Result: not_assessed
+SCI-MAP-REQ-032 – Separate support predicates
+Canonical clause: Only after the eﬀective plan and exact observation-resolved cut pass REQ-031 shall application bind
+capplied = cobservation_resolved for one support-policy attempt. Numerical normalization support shall then require ﬁnite positive
+Qp ≥ Q⋆capplied/ 10, and science-policy support shall independently require ﬁnite positive Qp ≥ Q⋆capplied. Both comparisons
+are inclusive and use the exact declared population and inherited order statistic. At c = 0 , no relative threshold excludes a
+row, but no zero, negative, non-ﬁnite, or absent Qp is restored. An authorized expert c > 1 may leave the science-support set
+empty. These thresholds are an operational relative-support policy and imply no exposure, precision, signiﬁcance, response,
+completeness, or physical optimality. Neither support state establishes ﬁnal validity or precision; no realized value is required
+to authorize this pre-application check.
+Minimum conformance evidence: Exercise values below, exactly at, and above both thresholds for empty and nonempty
+populations; distinguish normalization from science support; verify resolved-to-applied equality, exact-zero behavior, no self-
+authorizing above-one value, and no use of crealized as a prerequisite.
+Result: not_assessed
+SCI-MAP-REQ-033 – MAP-local base-product validity
+Canonical clause: One MAP-local base-product scientiﬁc-validity state shall require membership in the exact support-
+authorized row set, exact admitted PTC and AST parents, passing MAP contribution/support policy, ﬁnite normalized signal,
+and absence of an applicable MAP-product failure. Explicitly limited or unavailable response/covariance does not alone
+invalidate the map. Retained storage, ﬁnite payload, coeﬃcient, exposure, incidence, normalization, or downstream-local
+eligibility cannot establish or rewrite MAP validity.
+Minimum conformance evidence: Use truth-table ﬁxtures separating producer state, MAP admission, response/covariance
+disclosure, base validity, and later use-local eligibility.
+Result: not_assessed
+SCI-MAP-REQ-034 – Classify before arithmetic
+Canonical clause: Only structurally admitted payloads shall be retrieved and safely classiﬁed for ﬁniteness/sign before
+membership construction. All required gates shall pass before payload arithmetic. Multiplication by zero, masking after
+accumulation, or sanitizing a non-ﬁnite aggregate shall not substitute for admission.
+Procedure only | conformance not_assessed Page 15
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+Minimum conformance evidence: Place NaN and Inf payloads behind structural false and true predicates; verify no
+unauthorized read, exact numerical classiﬁcation when authorized, no contamination, diagnostics, and failure scope.
+Result: not_assessed
+SCI-MAP-REQ-035 – Exceptional contribution states
+Canonical clause: Zero coeﬃcient shall be noncontributing, a low positive coeﬃcient shall follow the explicit adopted policy,
+negative or non-ﬁnite ordinary coeﬃcients shall be invalid, and an out-of-bounds projection shall contribute nowhere. Each
+cause shall remain distinguishable.
+Minimum conformance evidence: Run one-cause-at-a-time ﬁxtures and inspect cause-speciﬁc states plus unchanged
+neighboring pixels.
+Result: not_assessed
+SCI-MAP-REQ-036 – Complete observation bundle and roles
+Canonical clause: The six independently requestable product roles are SCI-MAP:base_observation_map@1, SCI-MAP:response_
+bearing_observation_map@1, SCI-MAP:covariance_qualified_observation_map@1, SCI-MAP:base_coadd@1, SCI-MAP:response_
+bearing_coadd@1, and SCI-MAP:covariance_qualified_coadd@1. Every request has its own immutable identity, parent set, or-
+dered MAP lifecycle, result, and failure scope. A stronger role is a new product over the exact base parent; it does not rewrite
+that parent’s signal membership, response/covariance status, validity, or provenance. A SCI-MAP:base_observation_map@1
+shall exist as one immutable ordered logical bundle before coaddition. It contains signal, numerator, normalization identity,
+complete MAP-local realized operator identity, honest upstream-response and uncertainty/covariance identity and status,
+the distinct facts in REQ-025, exposure lineage/accounting identity, unit and exact nominal-beam parent, complete AST
+frame/WCS, shape/indexing, estimator/projection/proﬁle identities, PTC removed-component/additive-reference/null-space
+state, every actually reached stage of the ﬁve-stage MAP lifecycle, exact PTC/AST parentage, and product identity. It may
+remain valid when a stronger numerical upstream response or complete covariance is unavailable. Independently requested
+SCI-MAP:response_bearing_observation_map@1 and SCI-MAP:covariance_qualified_observation_map@1 products shall each parent
+the exact base observation, bind their own ﬁve-stage lifecycle, and require respectively every named numerical response object
+or every named within-observation covariance block. Physical persistence is separately controlled by the eﬀective output plan.
+Minimum conformance evidence: Request each observation role independently; remove or alter each required iden-
+tity/companion; distinguish absent declarations from honest unavailable states; verify role-speciﬁc failure without base-parent
+mutation; and verify identical scientiﬁc content and identity for in-memory and faithfully persisted forms.
+Result: not_assessed
+SCI-MAP-REQ-037 – Role-qualiﬁed atomic coadd admission
+Canonical clause: A complete observation bundle shall pass every compatibility check and only the companion checks re-
+quired by the exact selected product role and SCI-MAP:observation_coadd_admission@2 before any coadd-owned state changes.
+Under SCI-MAP:base_coadd@1, unavailable or basis-incompatible response and incomplete covariance do not alter signal mem-
+bership and do not reject an otherwise compatible base bundle; their exact identities, states, and causes remain. A required
+companion incompatibility is atomically decisive only for SCI-MAP:response_bearing_coadd@1 or SCI-MAP:covariance_qualified_
+coadd@1 as applicable. If an exact base coadd parent already exists, such an incompatibility blocks the stronger role for that
+parent and never selects a subset. A separately requested stronger-role admission may reject an observation only before
+constructing its own explicitly identiﬁed base/signal parent. Every rejection leaves all aﬀected numerators, normalizations,
+counts, exposure, response, validity, provenance, and product cardinality unchanged.
+Minimum conformance evidence: Snapshot all role-owned and base-parent state; inject one base fact, response, and
+covariance incompatibility at a time; verify role-speciﬁc admission, exact pre-mutation rejection, unchanged base membership,
+and no companion-only subset.
+Result: not_assessed
+SCI-MAP-REQ-038 – Centered integer common grid
+Canonical clause: A canonical target grid may be requested and made immutable before observation-map construction.
+Observation maps constructed on that exact grid, or otherwise compatible observation/coadd shapes, shall use exact centered-
+integer embedding: shape diﬀerences are nonnegative and even in each axis, and the corresponding integer oﬀset maps reference
+pixels to the same world coordinate. A later crop is a newly identiﬁed row-selected product with immutable parent and lineage;
+it shall not relabel the parent or make it retrospectively compatible. Fractional shift, post-hoc pad, reprojection, interpolation,
+wrapping, implicit recentering, mosaicking, and a diﬀerent sky grid are outside this estimator.
+Minimum conformance evidence: Test preconstruction target-grid requests, every parity/sign case and WCS reference-
+pixel relation, exact integer embedding, a separately identiﬁed post-hoc crop, attempted parent relabeling, and each excluded
+grid-changing operation.
+Result: not_assessed
+Procedure only | conformance not_assessed Page 16
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+SCI-MAP-REQ-039 – Ordinary coadd estimator
+Canonical clause: The exact v0.2 family SCI-MAP:uniform_observation_coadd_coefficient@1, owned by MAP, assigns
+dimensionless uop = 1 to every row of each bundle eligible and realized under the V AL-governed aggregate proﬁle
+SCI-MAP:observation_coadd_admission@2. The V AL request/applicability/eligibility/realization ﬁelds remain distinct from the
+ﬁve-stage MAP coadd lifecycle. The coeﬃcient is an equal-observation coeﬃcient, not precision or inverse variance. Each
+of SCI-MAP:base_coadd@1, SCI-MAP:response_bearing_coadd@1, and SCI-MAP:covariance_qualified_coadd@1 is independently re-
+questable, has its own exact base parent and lifecycle, and uses identical centered-integer equal-observation signal arithmetic
+for its admitted ordered membership. On exact row identities, N c
+p =
+∑
+o uop ˆmop, Qc
+p =
+∑
+o uop, and ˆsp = N c
+p /Q c
+p is published
+only on S c
+out. Conforming in-memory and persisted bundles have identical admission, identities, arithmetic, and result; storage
+route is not a scientiﬁc weighting or eligibility fact.
+Minimum conformance evidence: Evaluate all four V AL ﬁelds separately from all MAP lifecycle stages; independently
+request all coadd roles; use one and two observations from in-memory and persisted conforming routes; verify exact par-
+ent/membership, arithmetic equality, and rejection of precision labels.
+Result: not_assessed
+SCI-MAP-REQ-040 – Coadd companions and unavailable response
+Canonical clause: The stacked signal vector ˆmobs shall carry explicit observation-row identities; Bout is the exact centered-
+integer equal-observation averaging operator; and Tobs is the stacked compatible ﬁxed-state observation-response object on
+those same domains. SCI-MAP:base_coadd@1 requires every admitted member’s complete base bundle and all response identi-
+ties/statuses, but permits unavailable or basis-incompatible response with unchanged numerical signal membership. It shall
+then publish coadd response unavailable with exact cause, never a hidden response subset, zero companion, or assumed com-
+patibility. SCI-MAP:response_bearing_coadd@1 parents one exact base coadd with identical ordered membership and requires
+every numerical response object named by the role with exact compatible source domain, basis, class, unit, normalization,
+parent, WCS/grid, and row identity. If the requirement fails for an existing parent, the stronger role is unavailable and the
+parent is unchanged. Any separately selected response-bearing admission that rejects a member shall construct a separately
+identiﬁed base/signal parent and reject before any of its state mutates. Exposure and count follow that selected admission,
+with exposure’s unique-original placement.
+Minimum conformance evidence: Use complete, basis-incompatible, limited, and unavailable responses under both roles;
+verify unchanged base membership and unavailable response, exact stronger-role parent identity, no subset of an existing
+parent, and atomic admission for a separately identiﬁed response-bearing request.
+Result: not_assessed
+SCI-MAP-REQ-041 – Coadd covariance and precision
+Canonical clause: Σ obs shall be the block covariance matrix on exact stacked observation-row identities with every available
+within- and cross-observation block explicitly located. SCI-MAP:base_coadd@1 requires covariance identities/statuses and permits
+partial, symbolic, summarized, lineage-resolvable, or unavailable state. SCI-MAP:covariance_qualified_coadd@1 parents one
+exact base coadd with identical ordered membership and requires every named within- and cross-observation block before
+MAP may publish Cc, out = BoutΣ obsBT
+out. Missing blocks are unknown and block only this stronger role; they are never zero
+or independence. If a block is absent for an existing parent, no subset is selected and the base coadd remains unchanged.
+Any separately selected covariance-qualiﬁed admission that rejects a member shall construct its own separately identiﬁed
+base/signal parent before mutation. The uniform observation coeﬃcient is not precision.
+Minimum conformance evidence: Use complete within/cross blocks and every missing-block state under both roles;
+verify exact propagation only for the complete stronger role, unchanged base membership and validity, no subset, and exact
+parent/role identity.
+Result: not_assessed
+SCI-MAP-REQ-042 – Correlated-GLS boundary
+Canonical clause: A correlated minimum-variance solution using (Σ obs
+p )−11 may require negative combination coeﬃcients
+and therefore belongs to a separately authorized correlated-GLS branch, not the ordinary positive-coeﬃcient coadd. The token
+Kp remains exclusively the MAP response/kernel accumulator and never names a covariance matrix.
+Minimum conformance evidence: Use positive- and negative-correlation covariance matrices that distinguish ordinary
+weighting from the GLS benchmark; require method and notation identity to remain explicit.
+Result: not_assessed
+SCI-MAP-REQ-043 – Minimum product identity
+Canonical clause: Every observation and coadd product shall identify one exact product-role token from the six-role Registry;
+its independent request and every actually reached stage of the ﬁve-stage MAP lifecycle; exact base parent and ordered
+membership; external observation/coadd, array/group, occurrence, and row domains; estimator and coeﬃcient families; MAP-
+local operator and upstream-conditioned response/covariance states; signal unit and ﬁxed-nominal-beam parent; complete AST
+Procedure only | conformance not_assessed Page 17
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+frame/WCS and WCS-generation identity; preconstruction target-grid request where applicable; grid/projection/boundary;
+MAP proﬁles; exact PTC product/application and coeﬃcient generations; exposure convention; logical-bundle and plan-
+controlled persistence state; parentage; causes; and product identity. Any numerical full-procedure response additionally
+binds its complete comparison-space record; coverage policy binds its typed above-one override record. No STOKES token
+supplies quantity authority. Scientiﬁc identity shall be durable without prescribing a persistence format.
+Minimum conformance evidence: Round-trip every role, lifecycle, parent, membership, comparison-space, and override
+identity through in-memory and persisted representations; detect collisions or generation mixing; and reject a bare token,
+storage route, or serialization convention as scientiﬁc authority.
+Result: not_assessed
+SCI-MAP-REQ-044 – F rames and units
+Canonical clause: MAP shall bind the complete frame identity delivered by SCI-AST:rtc_output_grid_coordinates@1: ex-
+act source/target frame, reference system (including ICRS or FK5/J2000 as actually declared), equinox/epoch, time scale,
+site/model state, TAN topology, WCS, axis order, signs, handedness, and degree-valued science axes. MAP shall not equate
+J2000, FK5, ICRS, apparent, observed, or unrefracted frames by name or default. Signal/response units are mJy/beam with
+exact nominal-beam identity; covariance has its square.
+Minimum conformance evidence: Inspect complete frame and unit/beam identity and require cross-frame, ambiguous-
+frame, cross-unit, or cross-beam coadd rejection.
+Result: not_assessed
+SCI-MAP-REQ-045 – WCS and index persistence
+Canonical clause: Full-precision typed or sidecar WCS shall be the lossless admission and provenance authority. For an
+immutable ﬁnite MAP grid of nx by ny cells, the 0.1-arcsec representation-test population is the ﬁnite union of (a) every
+scientiﬁcally addressable integer pixel center (j + 1, k + 1) for 0 ≤ j < n x, 0 ≤ k < n y, and (b) every outer-footprint cell vertex:
+(h + 1
+2 , 1
+2 ), (h + 1
+2 , n y + 1
+2 ) for 0 ≤ h ≤ nx, together with ( 1
+2 , l + 1
+2 ) and (nx + 1
+2 , l + 1
+2 ) for 0 ≤ l ≤ ny. The second set includes all
+four outer corners and every required outer-boundary vertex. The complete population is preregistered from the full-precision
+typed WCS, grid shape, and row domain before the physical FITS WCS is generated. Both representations shall bind the same
+WCS-generation identity, celestial frame, axis order, signs, handedness, orientation, shape, and centered-integer reference-pixel
+relation. At every population member, each WCS is evaluated at the exactly corresponding center (zero-based memory index
+(j, k ), one-based FITS pixel (j + 1, k + 1)). Separation is the great-circle angle atan2(∥u × v∥, u·v) between unit direction
+vectors in that exact declared frame, evaluated with IEEE-754 binary64 round-to-nearest, ties-to-even operations and reported
+in arcseconds. The maximum over the complete ﬁnite population shall be at most 0.1 arcsec. If either WCS yields an invalid
+or non-ﬁnite direction at any preregistered member, the representation fails; the point is not dropped. A center is absent only
+when its scientiﬁc row was already absent before population generation; every listed outer-boundary vertex remains required.
+No smaller sampled subset or continuum/global-sky claim is authorized. The 0.1-arcsec bound is only the maximum over that
+exact preregistered ﬁnite population; it is not a continuum or global-sky maximum. Exact axis sign, handedness, orientation,
+and centered-integer shape/reference-pixel relations remain required independently of the numerical bound.
+Minimum conformance evidence: Evaluate every preregistered center and outer-boundary vertex with the stated index
+relation, frame, WCS generation, binary64 spherical metric, and invalid-point rule; calculate the exact ﬁnite-population
+maximum and separately verify every orientation invariant.
+Result: not_assessed
+SCI-MAP-REQ-046 – Lifecycle-bound provenance
+Canonical clause: Every MAP plan, coeﬃcient selection/application, projection, support policy, output plan, coadd plan, re-
+sponse/covariance request, product role, and coverage policy shall record each reached requested, eﬀective, observation-resolved,
+applied, and realized identity in order. The record shall include each reached exact coverage_cut stage, with all ﬁve included
+for completed realization; the typed coverage_cut_above_one_override_requested identity, authority/proﬁle, scope, value,
+cause, provenance, and binding to every reached stage of the ﬁve-stage lifecycle; exact PTC/AST/boundary/proﬁle and admit-
+ted coeﬃcient Registry/family/handoﬀ generations; every typed gate’s independent request/applicability/eligibility/realization
+ﬁelds plus Boolean projection, immutable reason, cause, failure scope, and DAG stage; exact product-role and base-parent
+identities; admitted contributions/bundles; the complete MAP-local operator AMAP, Π , accumulators, and row domains; unique-
+original exposure facts; PTC additive-reference/removed/null states; response family and complete comparison-space/state-
+transition record; covariance state; WCS comparison population/generation; centered-integer oﬀsets; persistence state; re-
+quired products; and failures. No applied or realized record shall be fabricated before application; a terminal post-application
+failure retains the applied attempt without a realized product.
+Minimum conformance evidence: Reconstruct each reached lifecycle stage, role/parent, row-selected operator,
+cut/override transition, coeﬃcient handoﬀ, exposure population, gate projection, comparison-space map, WCS population,
+logical/persisted relation, and typed unavailable or terminal-failure state from provenance alone.
+Result: not_assessed
+Procedure only | conformance not_assessed Page 18
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+SCI-MAP-REQ-047 – F ailure scope and atomicity
+Canonical clause: An invalid required input, unauthorized above-one cut, incompatible bundle, unrepresentable ﬁnite
+aggregate, unrepresentable coordinate/index conversion, missing companion required by the exact selected role, or failed
+required publication shall propagate at its declared contribution, pixel, observation-admission, or complete-product scope and
+shall fail before the aﬀected live state changes. A pre-application failure creates no applied or realized record. A failure after
+application retains the exact applied attempt and terminal cause without fabricating a realized product or completion marker.
+Base-role response/covariance unavailability permitted by REQ-037–041 is an honest state, not a role-independent atomic
+rejection.
+Minimum conformance evidence: Inject each failure class under every product role at its exact boundary; inspect scope,
+lifecycle, diagnostics, nonmutation, unchanged base parent, and absence of false application, realization, or completion.
+Result: not_assessed
+SCI-MAP-REQ-048 – Required observation products
+Canonical clause: A complete logical SCI-MAP:base_observation_map@1 bundle shall exist before coaddition. Persisted per-
+observation products are the normal scientiﬁc expectation and shall be published whenever the eﬀective v0.2 output plan
+designates them required; every required publication shall complete or the declared operation fails without a completion claim.
+A plan may instead permit a fully in-memory route. A coadd-only entry may consume persisted conforming observation bundles
+without rerunning upstream processing. In-memory and persisted routes shall use identical logical admission, arithmetic,
+role and base-parent identity, ﬁve-stage lifecycle, and provenance. Optional nonpublication does not imply that the logical
+observation product did not exist, and this MAP rule does not waive PTC’s upstream atomic required-publication obligations.
+Minimum conformance evidence: Exercise required-publication success/failure, optional in-memory nonpublication, and
+coadd-only persisted input for each requested role; verify identical base bundle, parent, admission, arithmetic, lifecycle and
+provenance, exact failure propagation, no misleading realization/completion, and unchanged upstream PTC duties.
+Result: not_assessed
+SCI-MAP-REQ-049 – Immutable base parent
+Canonical clause: Every stronger observation/coadd role and downstream transformation shall preserve the exact resolvable
+base/unﬁltered MAP-bundle or base-coadd identity, ordered membership, lifecycle, and MAP-local base-product validity. A
+later local validity/eligibility decision may diﬀer for its named use but shall not rewrite MAP validity, alter the original claims,
+sever parentage, or select a hidden subset of an existing base parent. Later response or covariance estimates are new versioned
+products.
+Minimum conformance evidence: Create stronger roles and later locally eligible products over MAP-invalid and MAP-
+valid parents; verify exact membership, both validity states, parentage, and original claims remain immutable.
+Result: not_assessed
+SCI-MAP-REQ-050 – Complete consumer boundary
+Canonical clause: No consumer shall receive a bare signal plane as a scientiﬁcally complete map. The boundary
+shall include exact product role, request, base parent and membership; quantity and nominal-beam identity; estima-
+tor/normalization/coeﬃcient/proﬁle identity; honest response class/state and uncertainty/covariance disclosure; distinct map
+and exposure facts; PTC additive-reference/removed-component/null-space state; exact frame/WCS, shape/indexing, all
+reached lifecycle stages, parentage, dependency versions, comparison-space record when applicable, and failures. Later anal-
+yses choose their own exact claim requirements and may attach honest versioned response/covariance products; MAP does
+not own their eligibility. SCI-NOI owns its exact realization-generation, empirical-uncertainty, conditional-scale, and stan-
+dardization methods and products. Any physical- noise, total-uncertainty, covariance-completeness, signiﬁcance, probability,
+false-rate, completeness, purity, or catalogue interpretation requires a separately approved exact method and remains unavail-
+able by default. MAP therefore keeps Q normalization, formal conditional precision, complete conditional covariance, the
+NOI conditional_detector_sign_randomization_marginal_second_moment, the NOI standardized signal, and any future
+calibrated-signiﬁcance method as distinct identities and claims.
+Minimum conformance evidence: Exercise every role and claims with missing required facts, including NOI-related claims
+and analyses that explicitly accept limitations; verify fail-closed claim scope, exact parent/membership, and no rewrite of MAP
+validity.
+Result: not_assessed
+SCI-MAP-REQ-051 – Same ﬁxed noise operator
+Canonical clause: An admitted noise realization may be described as using the same map/coadd operator only when
+eligibility, projection, grouping, coeﬃcients, normalization, exact support-authorized row selection, boundary, and atomic
+coadd admission are ﬁxed or identically prescribed. Re-estimation from the randomized data deﬁnes a diﬀerent named
+estimator.
+Procedure only | conformance not_assessed Page 19
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+Minimum conformance evidence: Propagate ﬁxed deterministic vectors through signal and realization paths and compare
+row identities and operator coeﬃcients, not ﬁlenames or shapes.
+Result: not_assessed
+SCI-MAP-REQ-052 – Method and claim separation
+Canonical clause: Pointing and OOF may be registered consumers of the exact ordinary MAP gridding operator only
+when their inputs satisfy this operator contract. Reuse grants no mode-speciﬁc WCS/frame, source model, ﬁtting, response
+interpretation, output, default, or qualiﬁcation authority; an unsupplied mode proﬁle remains unavailable. This authority shall
+not otherwise be applied by analogy to JINC, maximum-likelihood mapmaking, OOF residual transfer, reprojection, ﬁltering,
+empirical noise, ﬁtting, Beammap inference, feedback, Stokes Q/U, measured-R mapmaking, or other units. Independent
+inspection, modiﬁcation, experimentation, and proposal remain unrestricted, while an altered scientiﬁc identity or oﬃcial claim
+requires an explicit versioned successor and evidence appropriate to that claim. Algebraic contract correctness, engineering
+conformance, representation/response ﬁdelity, observational performance, and production readiness shall remain separate
+claims.
+Minimum conformance evidence: Exercise conforming and nonconforming Pointing/OOF operator requests, missing mode
+proﬁles, each prohibited method/claim promotion, and an independently changed support algorithm; verify exact operator
+reuse boundaries, unavailable unsupplied authority, versioned identity, and independent claim-state ﬁelds.
+Result: not_assessed
+Procedure only | conformance not_assessed Page 20
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+6 Prediction execution matrix
+Predictions are imported from the same shared authority. Engineering records attach ﬁxtures, bounds, artifacts, and
+results; they do not rewrite the prediction.
+SCI-MAP-PRED-001 – Uniform constant
+Canonical prediction: For ﬁxed membership, a constant admitted input with uniform positive coeﬃcients produces
+that constant on every support-authorized MAP-valid output row; numerator and normalization scale together, and
+no unsupported scientiﬁc row is created.
+Primary claim layer: Algebraic contract.
+Fixture / bound / result: not_assessed; preregistration pending
+SCI-MAP-PRED-002 – Unequally weighted constant
+Canonical prediction: For ﬁxed membership, unequal positive coeﬃcients still preserve the same constant on every
+support-authorized output row, while normalization and conditional variance generally change with position; rows
+outside that set have no normalized scientiﬁc value.
+Primary claim layer: Algebraic contract.
+Fixture / bound / result: not_assessed; preregistration pending
+SCI-MAP-PRED-003 – One-pixel hand calculation
+Canonical prediction: For an authorized row with admitted zi and ai > 0, the exact triplet is (N, Q, ˆm) =
+(∑ aizi, ∑ ai, ∑ aizi/ ∑ ai); an unauthorized row has no normalized scientiﬁc value.
+Primary claim layer: Algebraic contract.
+Fixture / bound / result: not_assessed; preregistration pending
+SCI-MAP-PRED-004 – One-hot boundary
+Canonical prediction: A ﬁnite coordinate inside exactly one half-open cell has one Gpi = 1 , preserves unity over
+pixels, and contributes only there. A coordinate on an internal upper edge belongs to the adjacent cell; a coordinate
+on the outer upper extent or outside the grid contributes nowhere. Fractional splitting is not authorized.
+Primary claim layer: Algebraic contract.
+Fixture / bound / result: not_assessed; preregistration pending
+SCI-MAP-PRED-005 – Delta input
+Canonical prediction: For a declared ﬁxed state, a basis-pixel sky perturbation produces the corresponding
+support-row-restricted column of Rﬁxed,Θ = AMAP,Π Hﬁxed,Θ , including projection and boundary truncation. A PTC
+full-procedure or PTC+MAP re-resolved numerical diﬀerence exists only when its complete authorized comparison-
+space record supplies exact common domains and both row maps; absent that record it is unavailable or only a typed
+state transition/discontinuity and need not equal the ﬁxed-state column.
+Primary claim layer: Representation ﬁdelity.
+Fixture / bound / result: not_assessed; preregistration pending
+SCI-MAP-PRED-006 – Point-source template
+Canonical prediction: A declared point-source perturbation τb produces Rﬁxed,Θ τb only for the exact ﬁxed re-
+sponse state and authorized rows. PTC full-procedure and PTC+MAP re-resolved families additionally retain base-
+line/perturbed identities, perturbation side/sign/amplitude/location/source state/normalization, ﬁnite-diﬀerence
+convention, gauge/support/bases, exact common domain and row maps, state transition, availability, and cause.
+The unavailable whole-chain RTC-to-CAL-to-PTC-to-MAP family is not inferred. Peak, integrated, and ﬁtted am-
+plitudes remain distinct functionals.
+Primary claim layer: Representation ﬁdelity.
+Fixture / bound / result: not_assessed; preregistration pending
+SCI-MAP-PRED-007 – Resolved and F ourier inputs
+Canonical prediction: At ﬁxed state, resolved disks, gradients, and Fourier modes produce their explicit Rﬁxed,Θ τ
+on the authorized row set; a constant-input pass does not predict preservation of these modes, and procedure-response
+families are not inferred from the ﬁxed matrix.
+Primary claim layer: Representation ﬁdelity.
+Fixture / bound / result: not_assessed; preregistration pending
+Procedure only | conformance not_assessed Page 21
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+SCI-MAP-PRED-008 – V ariable coverage
+Canonical prediction: Fixed-coeﬃcient constant preservation can coexist with spatially varying normalization,
+support-row membership, covariance, and nonconstant-template response; a row that fails support is absent rather
+than measured zero.
+Primary claim layer: Algebraic contract.
+Fixture / bound / result: not_assessed; preregistration pending
+SCI-MAP-PRED-009 – Finite boundary
+Canonical prediction: At an admitted ﬁnite edge, no contribution wraps or clamps; local normalization may
+preserve a constant while compact-source peak or integrated response changes.
+Primary claim layer: Representation ﬁdelity.
+Fixture / bound / result: not_assessed; preregistration pending
+SCI-MAP-PRED-010 – Coeﬃcient states
+Canonical prediction: The admitted uniform family yields exact dimensionless γi = 1 only for an explicit selection
+with complete PTC publication, exact target/payload/occurrence association, MAP permission, and a requested, ap-
+plicable, eligible, realized named handoﬀ under the exact compatible source binding. Registry presence alone realizes
+nothing. Missing selection or handoﬀ remains unavailable with no fallback. Structural availability is independent
+of numerical class; MAP alone classiﬁes ﬁnite positive, exact zero, negative ﬁnite, non-ﬁnite, and unrepresentable.
+Zero is noncontributing and the other nonpositive/non-ﬁnite classes are invalid with exact cause; uniform one is not
+precision.
+Primary claim layer: Engineering conformance.
+Fixture / bound / result: not_assessed; preregistration pending
+SCI-MAP-PRED-011 – Use-qualiﬁed exclusion and non-ﬁnite states
+Canonical prediction: A candidate whose typed gate record projects to Boolean nonmembership does not contam-
+inate an accumulator. Structural exclusion prevents payload retrieval; structurally admitted payloads are read only
+for safe MAP numerical classiﬁcation before membership and arithmetic. Its complete named-ﬁeld or other typed
+record, immutable reason, and cause remain preserved; no universal producer-ﬂag action is inferred.
+Primary claim layer: Engineering conformance.
+Fixture / bound / result: not_assessed; preregistration pending
+SCI-MAP-PRED-012 – Threshold selector
+Canonical prediction: For each predeclared positive ﬁnite coeﬃcient population, the selected zero-based index is
+exactly ⌊(⌊0. 75N ⌋+ N )/ 2⌋; empty input yields Q⋆ = 0, but no row gains support without its own ﬁnite positive Qp.
+Small N ﬁxtures straddle every integer-index transition. At exact c = 0 , both relative thresholds are zero and the
+ﬁnite-positive requirement still excludes zero, negative, non-ﬁnite, or absent normalization. Values 0 < c ≤ 1 use
+inclusive comparisons in the ordinary recommended range. A c > 1 value is admitted only with the independently
+true, same-value/scope coverage_cut_above_one_override_requested fact and may yield empty support; the
+number does not authorize itself. Negative, non-ﬁnite, missing, or unrepresentable c fails before application or
+required-product mutation. Every reached cut stage is retained, with all ﬁve retained for completed realization;
+pre-application validation checks the observation-resolved value and never requires a realized value.
+Primary claim layer: Algebraic contract.
+Fixture / bound / result: not_assessed; preregistration pending
+SCI-MAP-PRED-013 – Missing response
+Canonical prediction: Every SCI-MAP:base_observation_map@1 discloses its known MAP-local realized operator re-
+sponse on exact signal rows. Missing upstream response yields a separately typed limited or unavailable state on
+complete signal membership, never a smaller subset, zero, or identity. SCI-MAP:response_bearing_observation_map@1 is
+unavailable for that exact base parent only when its exact selected role request names that upstream response object
+as required; absence of a diﬀerent ﬁxed-state, full-procedure, re-resolved, or whole-chain family does not block an
+otherwise complete named response role. Each numerical full-procedure diﬀerence requires its complete comparison-
+space record, and whole-chain response remains unavailable unless separately established. The base bundle remains
+usable for claims that do not require the absent response; any later response estimate or corrected map has a new
+versioned identity bound to the original.
+Primary claim layer: Engineering conformance.
+Fixture / bound / result: not_assessed; preregistration pending
+Procedure only | conformance not_assessed Page 22
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+SCI-MAP-PRED-014 – Role-qualiﬁed atomic rejection
+Canonical prediction: A required companion incompatibility rejects the complete observation before coadd muta-
+tion. Under SCI-MAP:base_coadd@1, unavailable or basis-incompatible response does not change signal membership; it
+yields unavailable coadd response with exact cause and no hidden subset or zero companion. Under a selected stronger
+role, an incompatible required response or covariance blocks that role for an existing base parent; any separately
+requested admission may reject the observation only before constructing its own explicitly identiﬁed base/signal par-
+ent. Other required identity, unit, WCS, shape, policy, and parent incompatibilities remain atomic at their declared
+role scope.
+Primary claim layer: Engineering conformance.
+Fixture / bound / result: not_assessed; preregistration pending
+SCI-MAP-PRED-015 – One-observation coadd
+Canonical prediction: A SCI-MAP:base_coadd@1 containing one admitted base observation under the uniform di-
+mensionless coeﬃcient family reproduces its signal on corresponding centered-integer authorized rows. Conforming
+in-memory and persisted bundles give the same admission, identity, and arithmetic. Unavailable or basis-incompatible
+upstream response leaves that signal membership unchanged and makes coadd response unavailable with exact cause.
+SCI-MAP:response_bearing_coadd@1 reproduces response only when its exact base parent and every required response
+identity are compatible.
+Primary claim layer: Algebraic contract.
+Fixture / bound / result: not_assessed; preregistration pending
+SCI-MAP-PRED-016 – Uniform observation coeﬃcients
+Canonical prediction: On each authorized coadd row, two compatible observations produce their equal-observation
+arithmetic mean and count-like normalization under SCI-MAP:uniform_observation_coadd_coefficient@1. Each requested
+coadd role binds its own exact parent, lifecycle, and ordered membership; stronger companions do not change the
+arithmetic membership of their exact base parent. The normalization is not precision.
+Primary claim layer: Algebraic contract.
+Fixture / bound / result: not_assessed; preregistration pending
+SCI-MAP-PRED-017 – Missing or invalid observation
+Canonical prediction: An unsupported observation row contributes at no coadd row; an observation rejected by
+the exact selected role contributes nowhere to that separately identiﬁed base/signal parent and does not increment
+its count. A companion unavailable but permitted by the base role does not remove the observation. Neither case
+creates a zero-valued scientiﬁc or companion substitute.
+Primary claim layer: Engineering conformance.
+Fixture / bound / result: not_assessed; preregistration pending
+SCI-MAP-PRED-018 – Centered integer placement
+Canonical prediction: A canonical target grid requested before construction yields observation maps already
+bound to that grid. Other compatible shape diﬀerences that are nonnegative and even produce the exact half-
+diﬀerence row/column oﬀset; odd, negative, fractional, or WCS-inconsistent relations fail with no mutation. The
+FITS representation comparison evaluates every preregistered addressable pixel center and outer-boundary cell vertex,
+including all corners, with the exact spherical metric and invalid-point rule. A later crop is a new row-selected product
+with its own identity and lineage and cannot relabel its parent as compatible.
+Primary claim layer: Engineering conformance.
+Fixture / bound / result: not_assessed; preregistration pending
+SCI-MAP-PRED-019 – Cross-observation covariance
+Canonical prediction: For two maps with variances σ2
+1, σ 2
+2 and covariance c, a complete SCI-MAP:covariance_
+qualified_coadd@1 over the exact base-coadd membership includes c through Σobs. If a required block is missing, that
+stronger role is unavailable for the parent; the base role retains a partial, symbolic, summarized, lineage-resolvable, or
+unavailable state. No subset is formed, the block is never zero or independence, and equal-observation normalization
+is not precision.
+Primary claim layer: Algebraic contract.
+Fixture / bound / result: not_assessed; preregistration pending
+Procedure only | conformance not_assessed Page 23
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+SCI-MAP-PRED-020 – Fixed noise operator
+Canonical prediction: A deterministic admitted realization propagated with ﬁxed state yields the same support-
+row identities and coeﬃcient-by-coeﬃcient AMAP,Π ≡ Aout and Bout as the signal path; recomputed state exposes a
+named diﬀerence.
+Primary claim layer: Engineering conformance.
+Fixture / bound / result: not_assessed; preregistration pending
+SCI-MAP-PRED-021 – Sequential and parallel reduction
+Canonical prediction: Integer facts, identities, masks, support, and cardinality agree exactly. Floating sums agree
+with a preregistered operation-count/conditioning bound that is frozen before results are viewed and is not loosened
+after failure.
+Primary claim layer: Engineering conformance.
+Fixture / bound / result: not_assessed; preregistration pending
+SCI-MAP-PRED-022 – No false signiﬁcance
+Canonical prediction: A deliberate attempt to label signal times square root of merely formal weight as empirical
+signiﬁcance is rejected or remains unmistakably labeled formal standardized signal.
+Primary claim layer: Engineering conformance.
+Fixture / bound / result: not_assessed; preregistration pending
+SCI-MAP-PRED-023 – No validity promotion
+Canonical prediction: A downstream product may have its own use-local validity or eligibility but cannot change
+MAP-local base-product validity or sever the base/unﬁltered MAP parent.
+Primary claim layer: Engineering conformance.
+Fixture / bound / result: not_assessed; preregistration pending
+SCI-MAP-PRED-024 – No ordinary predicate for JINC
+Canonical prediction: A deliberate attempt to apply positive-coeﬃcient ordinary admission, support, or complete-
+bundle availability to JINC is rejected as outside SCI-MAP v0.2.
+Primary claim layer: Engineering conformance.
+Fixture / bound / result: not_assessed; preregistration pending
+SCI-MAP-PRED-025 – Aggregate and index failure
+Canonical prediction: An exact-zero, non-ﬁnite, overﬂowed, or unrepresentable aggregate/index never becomes a
+live valid product; failure occurs at the declared scope before mutation or completion.
+Primary claim layer: Engineering conformance.
+Fixture / bound / result: not_assessed; preregistration pending
+Procedure only | conformance not_assessed Page 24
+
+SCI-MAP v0.2 | Engineering Conformance Speciﬁcation Document r0.2
+7 Mechanical completeness checks
+Before a conformance verdict, automated checks shall establish:
+• exactly one declaration of each stable requirement and prediction ID in the shared authority, with no gaps or
+duplicates;
+• every requirement appears in this speciﬁcation and in CROSSWALK.md; every prediction is linked to at least one
+requirement;
+• each rendered PDF identiﬁes contract v0.2 and its current document revision separately;
+• no unresolved LaTeX reference, citation, overfull box, clipped glyph, broken table, or unreadable page remains;
+• every required artifact reopens successfully, has the expected page count, and renders every page through an
+independent PDF renderer; and
+• the owner-decision ledger and author-draft decision record contain no silent resolution of an open scientiﬁc ques-
+tion.
+The conformance verdict uses the same exact ﬁve-value requirement-result vocabulary. It is pass only when every
+applicable requirement is pass on the exact candidate. Any contradictory evaluated requirement makes it fail;
+otherwise any missing named prerequisite makes it blocked; otherwise any applicable unevaluated requirement
+makes it not_assessed. not_applicable is permitted only for a requirement outside the exact candidate’s declared
+role with an owner-approved rationale. Evidence-artifact incomplete is never a requirement result. This document
+records every placeholder as not_assessed and asserts no verdict.
+8 Required handoﬀ contents
+An engineering handoﬀ contains the candidate and authority identities; requirement result table using ex-
+actly pass/fail/ blocked/not_applicable/not_assessed; a separate artifact-realization ﬁeld using exactly
+complete/incomplete/ failed/not_produced; prediction result table; exact commands and environment; inde-
+pendent expected-value artifacts; build/test/log outputs; representation and observational evidence where claimed;
+failure-injection snapshots; skipped/blocked items; deviations and owner dispositions; and an explicit statement for
+each claim layer. The handoﬀ shall not collapse “conforms algebraically,” “represents faithfully,” “performs on sky,”
+and “ready for production” into one status word.
+Procedure only | conformance not_assessed Page 25

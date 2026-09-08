@@ -1,0 +1,23 @@
+# SCI-MAP v0.2/r0.2 manager scope and completion
+
+Disposition: **exact contract candidate for independent review and scientific-owner disposition**. The reviewer’s receipt and final Git/archive identities bind externally to avoid a self-referential commit or manifest. This record does not predeclare the review verdict.
+
+## Authority and preserved work
+
+Grant Wilson’s exact [targeted directive](../inputs/owner/SCI_MAP_R02_OWNER_DIRECTIVE.txt), SHA256 `620d4ff8204b453e2e363e84b9fcfbc480c9f0f88f0f763e0c9be69b873ca2e7`, accepts r0.1 architecture as the basis for this revision. It preserves the existing scientific decisions and does not approve or freeze the resulting r0.2 bytes. Fresh authorship used only the isolated 79-file packet: the approved 56 references, their manifest and scope/approval records, 19 selected r0.1 scientific sources/views/records, and this directive. The exact inventory is [bound here](../AUTHOR_PACKET_INVENTORY.json).
+
+Effective engineering and review governance were read before planning. Their canonical effectiveness is recorded at `77507836325eff9f469062d5884481ea37599594` over accepted governance commit `06a3ade51c1b3f38887295433d913811bf25cd14`; both are ancestors of the observed canonical base. Engineering SHA256: `70769787ce2ef4b7323cd2a38e221ade4af3310e0ad6b7b682e08cb4e4d61e76`; review SHA256: `691e6d6250102ef2f4a504397581ee67c5707d898ab20fb8dd9e874c47f99bb1`. The scientific-contract charter requires fresh implementation-blind authorship; review governance requires fresh read-only exact-SHA review and three distinct dispositions.
+
+The existing contract branch is `codex/map-contract-reconciliation-2026-09-07`, worktree `/private/tmp/citlali-map-contract-reconciliation-2026-09-07`. Initial state was clean at base `403b4cdddd0bad131bcce92c94cf8c98b50053f4`, tree `50b6515cbd9bda8619cb401251d1673b47190b07`. Canonical was observed at `8eccf8990027b8f65febb5f20d9a415829152322`. The new package occupies only `doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.2/`; four current navigation documents point to it. Every other preexisting tracked path, including all 31 r0.1 package files, is preserved. Opaque Git blob/mode comparison establishes preservation without interpreting application content. Final exact Git state is recorded in the external completion receipt.
+
+The paused NOI candidate and the default desktop worktree were not edited. No new branch, application/configuration/test change, implementation build or qualification, GitHub push, integration, freeze, activation, cleanup, data reduction, or Unity operation belongs to this increment. FRUIT remains independent and unfinished. Earlier owner approvals remain valid.
+
+## Completed document gates
+
+The [clean build](CLEAN_BUILD_REPORT.md) and [visual QA](PDF_VISUAL_QA_AND_METADATA.md) report the actual final document evidence: three successful cached/untrusted Tectonic builds, 75 independently rendered pages, all source/cover/metadata identities, gap-free 52 requirement and 25 prediction identifiers, and all 52 ECS results still `not_assessed`. Earlier failed or provisional document attempts remain preserved and are not recast as passing evidence. The source manifest, read-only packet verification, and external archive/sidecar close exact artifact delivery. Tool code in this package operates only on document sources and artifacts.
+
+The semantic and parity records describe prospective contract consistency. They establish no Citlali implementation conformance, observational validation, numerical fidelity, performance, readiness, production permission, or Spack/Unity result. Those gates are outside this contract increment. The final independent review must separately report scientific/behavioral contract consistency, architectural ownership, and repository/evidence hygiene; a passing document build cannot grant scientific approval.
+
+## Authority still required
+
+The proposed scientific-owner disposition is reviewable in the package. Acceptance of completed r0.2 and its candidate profile/source-binding generation remains a later owner action. The charter then requires fresh implementation-blind post-owner consistency review before freeze; the present pre-owner exact-SHA review does not substitute for that sequencing. The historical uniform `@draft-0.1` and boundary `v0.2-draft.1/r0.4` identities and their approvals are preserved literally. Their dependent r0.2 bindings remain candidate; this package claims no source-closed frozen numerical route. Canonical incorporation, freeze/activation, and any separate engineering increment remain outside this delivery.

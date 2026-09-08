@@ -1,0 +1,72 @@
+{
+  "scope": "Preserved document build evidence only; no application checks or ECS requirement execution",
+  "attempts": [
+    {
+      "attempt": "provisional-formal-01",
+      "disposition": "failed",
+      "cause": "Sandbox startup failed; scoped offline retry reached undefined mathscr control sequence.",
+      "build_attempt_sha256": "789b44a99d92a72fde80a265fbd317e8e1002ba88c55891cc83286da0f4c00e0",
+      "source_core_sha256": "24eb694c3053dc777ee26a1357695ec5d91829e1695f548854721b9e28fd0958",
+      "evidence_directory": "/private/tmp/citlali-map-r02-build-2026-09-07/provisional-formal-01",
+      "log_files": {
+        "formal/compile-run.txt": "ace680af42b86447f316a099997f171aaaded0f357a270b68d1db6ee01ae0f3c",
+        "formal/formal-scientific-engineering-contract.log": "7f7241e1e43c2cb890b1872f4b022ce2a64c1b7903b3924abb1db9e3ce969334",
+        "formal/sandbox-compile.txt": "2f2dbe3f41a3e9d0ea63cf828367ebe1a82323ee97035ff06090968986e00cb4"
+      }
+    },
+    {
+      "attempt": "provisional-formal-02",
+      "disposition": "compile_complete_visual_gate_failed",
+      "cause": "Undefined command repaired; role lists, table widths, lifecycle token and threshold equation overflowed.",
+      "build_attempt_sha256": "6bc757f5fd241826ed4221812b34539d101c8e0343499f9d40e4ca19fe7741bc",
+      "source_core_sha256": "d785dd528bb3daed1ac9a8f17f1f1dd76c0802126090216415e577072af2378e",
+      "evidence_directory": "/private/tmp/citlali-map-r02-build-2026-09-07/provisional-formal-02",
+      "log_files": {
+        "formal/compile-run.txt": "00ca0a0fc33a6cb406681ee048ac4602ddec58203afb8a94564c8d479540d07b",
+        "formal/formal-scientific-engineering-contract.log": "d981eeab4e7cd6d0cee9c08d05a2315e5a374e02b765e49e4c3d410c60e68c11"
+      }
+    },
+    {
+      "attempt": "provisional-formal-03",
+      "disposition": "compile_complete_visual_gate_failed",
+      "cause": "All other overflow repairs held; threshold equation alignment retained a 6.20067pt overflow.",
+      "build_attempt_sha256": "28d4f952b1c13ab28597817799a4c49dc20e117fc5c8cceeff3548e827fb39bc",
+      "source_core_sha256": "7728bef4f7bd1ad199e11a32c8910dc63b61e9462b3911b0aba1ff8d5f70e21b",
+      "evidence_directory": "/private/tmp/citlali-map-r02-build-2026-09-07/provisional-formal-03",
+      "log_files": {
+        "formal/compile-run.txt": "19c251616cdaf06d95a04c5386d4750461432ddcd288caad040bdd87d6b40f37",
+        "formal/formal-scientific-engineering-contract.log": "6e782cb8ac2b54df1d1d18b88d566b44c3b2377bc4dace6f40d9e4fb7059f0b4"
+      }
+    },
+    {
+      "attempt": "candidate-build-01",
+      "disposition": "compile_and_render_complete_visual_gate_failed",
+      "cause": "Three clean PDFs render79 pages; rationale cover identity block was on physical page2 and legacy page breaks orphaned table/header/requirement tails.",
+      "build_attempt_sha256": "e7fcb3afd6a99b1d687fefb543beaf4a35af9fb9807b79827c787f7ca61a2d73",
+      "source_core_sha256": "c3f0b2690571e92615106c3d9c9d16e4925594bb0f0dd3d49e71fc3dcfedd5e2",
+      "evidence_directory": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-01",
+      "log_files": {
+        "engineering/all-pages.txt": "b4c513d8e045c2f0554e6df2f42558ea76fc28838f6be5c6c0909f4c2f65c532",
+        "engineering/compile-run.txt": "34080002951bc8eee4995bc9b0bb452ce257efb547444d661249b563ec725054",
+        "engineering/engineering-conformance.log": "979129593fad3e0bd8628085d91d04653774745ed519f1d18a330486ad45c8be",
+        "formal/all-pages.txt": "a9f2c462de31b9c8329a3034850e3ef199f34a5aaeadf5d74c74a452950a8a0a",
+        "formal/compile-run.txt": "36e2e8c4bb0dba9af9308cb49e6eef04134db9908252cf1f10663d1b03704321",
+        "formal/formal-scientific-engineering-contract.log": "e2ace444ca3a7f20ee8c4513ee6b665b9e34e5ac0021c186abe253a254319ee0",
+        "rationale/all-pages.txt": "ce8b77ef26f139c290b02e54b5bbf96b174612d12764c2a4b3f19c5a6b811cf3",
+        "rationale/compile-run.txt": "bd300b42ac326f6cc446a529c502e3814ebdf2cacd5222da33ae9d0900d6a9c3",
+        "rationale/scientific-rationale.log": "f93f825b7bf684379e2c1afb243e8043eaa23597b81b5071b6165cc8ecbb3f11"
+      }
+    },
+    {
+      "attempt": "candidate-build-02",
+      "disposition": "document_compile_and_visual_pass_superseded_by_material_source_correction",
+      "cause": "Final scientific source scan corrected reached-stage quantifiers in REQ-036/043/046 and PRED-012; final candidate-build-03 supersedes the source and covers. No earlier passing artifact check is relabeled as scientific approval.",
+      "build_attempt_sha256": "9945c4e3868817b4fcc11c217b4cc582ced8ef0010171a0ddde527eb11133660",
+      "source_core_sha256": "c3f0b2690571e92615106c3d9c9d16e4925594bb0f0dd3d49e71fc3dcfedd5e2",
+      "evidence_directory": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-02",
+      "inspection_sha256": "b24615362a02bc90053690767e881d9ee1fd9d756ea5bc67c4ba4d0414c2d005",
+      "preserved_package_reports": "/private/tmp/citlali-map-r02-evidence-2026-09-07/build-02-package-reports",
+      "visual_qa_report_sha256": "5f315cc4517eb60d199419d68d80830c06c4bcb0d2a4472dfb14f4bc9c61a5ce"
+    }
+  ]
+}

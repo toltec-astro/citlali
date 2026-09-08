@@ -1,3 +1,27 @@
+## 2026-09-07 MAP v0.2/r0.2 Targeted Contract Revision
+
+Grant Wilson accepted the r0.1 scientific architecture as the basis for one
+[targeted r0.2 revision](packages/SCI-MAP/v0.2/revisions/r0.2/README.md). The candidate uses one five-stage
+lifecycle, six explicit observation/coadd roles, exact response comparison
+spaces, current NOI claim limits, and separate ECS result/artifact states.
+It preserves the settled MAP owner decisions, 52 requirement and 25 prediction
+identities, the admitted uniform science, and every r0.1 package file.
+
+The three PDFs have passed [document build and visual checks](packages/SCI-MAP/v0.2/revisions/r0.2/build/PDF_VISUAL_QA_AND_METADATA.md)
+over 75 pages. All ECS requirement results remain `not_assessed`. This
+candidate is prepared for fresh exact-SHA review and scientific-owner
+disposition; the review receipt binds the final commit separately. Acceptance
+of the r0.1 basis does not approve or freeze the completed r0.2. Historical
+uniform identifiers and approvals remain intact; dependent r0.2 profile/source
+bindings remain candidate, with no source-closed frozen numerical-route claim.
+
+This increment contains contract documents and their artifact-build tools only.
+NOI engineering remains paused and preserved; FRUIT continues independently.
+No application/configuration/test change, implementation qualification, push,
+canonical integration, activation, freeze, cleanup, or Unity operation follows.
+Earlier candidate and pending-gate checkpoints below retain their historical
+meaning and do not reopen settled owner decisions.
+
 The [SCI-MAP v0.2/r0.1 candidate](packages/SCI-MAP/v0.2/README.md) is now
 authored from the exact approved scope and references. All nine MAP owner
 decisions are incorporated, including the settled low-coverage/`coverage_cut`

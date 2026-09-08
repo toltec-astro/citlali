@@ -1,0 +1,318 @@
+{
+  "inspection_libraries": {
+    "pypdf": {
+      "version": "6.7.2",
+      "module_sha256": "612ff566b4378c13c7b1180cb2da89ac0b6cde5500a63fe530e30ae6a88b1b9c"
+    },
+    "Pillow": {
+      "version": "11.1.0",
+      "module_sha256": "7c95303c6848f3f99c07c8cd583fa1530ecc88c2725a0a955ff9c5b73223d59b"
+    }
+  },
+  "identity": "SCI-MAP-R02-DOCUMENT-BUILD/candidate-build-03/inspection",
+  "build_attempt_sha256": "6db62507ddea8068ff1d82f65364b2d52ea680a7c74ba4d8754ca5149af6cee6",
+  "views": {
+    "formal": {
+      "dependency_sources": [
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/src/formal-scientific-engineering-contract.tex",
+          "source_path": "src/formal-scientific-engineering-contract.tex",
+          "sha256": "53d0dbf7269ed826a96b96c56e216a53d2ded5d2e3ba2a9a42953bc33d671523"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/formal/common/assumptions.tex",
+          "source_path": "src/common/assumptions.tex",
+          "sha256": "87ef8e16a54e2cec76446d75b0896a18ed255278ab28822271bb182c7d922773"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/formal/common/notation.tex",
+          "source_path": "src/common/notation.tex",
+          "sha256": "1975dfce4b50dda686744a495e3b6ae988fcf30812bfe577e61c2edc80f67cce"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/formal/common/edge_cases.tex",
+          "source_path": "src/common/edge_cases.tex",
+          "sha256": "addd77b0435868c1ddb381f995326f620e4cdf6a55f8d75085fcf26529d6f634"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/formal/common/requirements.tex",
+          "source_path": "src/common/requirements.tex",
+          "sha256": "baef73170ce8638c451de66f2e224c2a5ca0c4a6957aba41bef60db0d8718094"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/formal/SCI-MAP-v0.2_SHARED_AUTHORITY_r0.2.tex",
+          "source_path": "src/SCI-MAP-v0.2_SHARED_AUTHORITY_r0.2.tex",
+          "sha256": "24839f9912e4bd9f7cae9a7be974e726a188d2e9fdadbdd0fcc5e913abd5c4e7"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/formal/common/equations.tex",
+          "source_path": "src/common/equations.tex",
+          "sha256": "10a1f9829af3934d6fa71007fac4a7bfd0d9017431504d08ca9aeb82cfdc02f3"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/formal/common/definitions.tex",
+          "source_path": "src/common/definitions.tex",
+          "sha256": "4762d0c3ccaf3c0cc4b2c8b3fc11fbc8e9e7a6d20414ede53172300dbd3886e5"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/formal/SCI-MAP-v0.2_OWNER_DECISION_REGISTER_r0.2.tex",
+          "source_path": "src/SCI-MAP-v0.2_OWNER_DECISION_REGISTER_r0.2.tex",
+          "sha256": "ab3eb86737d4834a02032962a941b5db9d4c7925e231da56eb2042192e6d9d36"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/formal/identity/formal.tex",
+          "source_path": "src/identity/formal.tex",
+          "sha256": "7ecd6c18fdccf9247dc06484fb2318b79f5baa152bf65c1a98512ad2a319572a"
+        }
+      ],
+      "dependency_rule_note": "Raw compiler makefile retains its outdir-relative spellings. Those spellings are explicitly resolved against the recorded source working directory; only existing in-packet sources are admitted. Cached TeX resources are tool-environment inputs and are not asserted as a portable bundle closure.",
+      "pdf_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/formal/formal-scientific-engineering-contract.pdf",
+      "delivery_filename": "SCI-MAP-FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT-v0.2.pdf",
+      "pdf_sha256": "24aeea833f72cc45dd628826f61acaef9eb2e1105fa1a967b1ef9c28c933e747",
+      "pages": 34,
+      "nonempty_pages": true,
+      "metadata": {
+        "/Creator": "LaTeX with hyperref",
+        "/Title": "SCI-MAP v0.2 Formal Scientific/Engineering Contract, r0.2 Candidate",
+        "/Subject": "Candidate for scientific-owner disposition",
+        "/Author": "Grant Wilson",
+        "/Producer": "xdvipdfmx (0.1)",
+        "/CreationDate": "D:20260907000000-00'00'"
+      },
+      "tex_errors_or_overfull": [],
+      "pdfinfo_exit_code": 0,
+      "render_exit_code": 0,
+      "rendered_pages": 34,
+      "render_sha256": {
+        "page-01.png": "66489ae3320c67b2e7f7244157d74b04fdc4be3c3ddc9d4a556004291ffd2a3b",
+        "page-02.png": "47e5a3b514d13c24e5bbc29fe57c080e5452fa366c52cfb2475e171c7034381f",
+        "page-03.png": "8ffa28453e0ab7b55e295c4e2cae92c340c8ca91b9dc084cc684f54b754dde45",
+        "page-04.png": "78c242b270cbcb9c6083dc4c759f922babde94cfad1451a14a4c916ebf66367d",
+        "page-05.png": "ff040c4f7f417a0c9036f5c6796d9d68ea2ae665fb80f3397dbf8c2f5dd0ca2f",
+        "page-06.png": "a7c558b6fa0faf44e0ca46b18670f63ac9f7e6f4d3a13205f823b9f552702c49",
+        "page-07.png": "2e4d324d143fb347954124fbebfd94c7daceb1f51cdf91d321be58654a01de22",
+        "page-08.png": "cb3cfc9c06b72d38fd5a40836025bef71c32fd58ec8b5da676fc6465b8cbe022",
+        "page-09.png": "ec2097eee8c86ec615796e9ee2431e73ec1b10f5f7463b7355b2c9c4c6f7884c",
+        "page-10.png": "a0eade7e90f44cf88ca38f294ca9c4ba6a701275d71a68e5b88df8dff614bc08",
+        "page-11.png": "771fd1c2d50a3cd94e4d75c0452ad9db7abe4806710879a09fa5b852c746adaa",
+        "page-12.png": "9cc4a73d8922659aaee496fa4bbe4d516fcda1f7340ffae4ee21eff6143f0ad5",
+        "page-13.png": "acdb533218100178ab0f07375533b2cea0ee6b874c80dd14d98e4ce1827bf39f",
+        "page-14.png": "98319f91e666629b47ccd1f1edadcd299fe9b32e6dbae781454fbe4793c092cd",
+        "page-15.png": "f1a36f023c86412c902d391400a959035b31402e4d1ee0e61f595367c9740e62",
+        "page-16.png": "fcc0c1c708d93fca4b1345600df50f4e53963f9159e73ca3c880dc1d33baf923",
+        "page-17.png": "8e9dae4f261031aa550ac02eab5dcdfb8c2b7f0b88934dbe2824cffe24e71f38",
+        "page-18.png": "36a8f8b34eac32ab92442b24750f5a3df69285037299e3b10408867aa933db39",
+        "page-19.png": "88e276cb7ca00015f42f6c08d9932e933b43029bfa4df576b1be31195385a81d",
+        "page-20.png": "4fdc791ce92a56f98f8633b3c81419bb2216eb7068bdeb45a15219507b8981c9",
+        "page-21.png": "bc977f6c5a769415dc9961c306d7d5aeacb860c7d087a3c575db8a3bf9f27d13",
+        "page-22.png": "9aea59b07948a8e411e71de325c3cd90244876637a1d0bae82fa03dc06e940f0",
+        "page-23.png": "9c562fde6fa0b450a43c2f15a4139b48bfa7c3c2bf708a4d477daf4fb399fe63",
+        "page-24.png": "38e2abed0e63fe4a45460286e25074a30464f86d8f00001c378caa91dec71405",
+        "page-25.png": "10f615bbd529071f64f44b1bd6bd890063b9c7219f74718bcc2d631cfb018dd0",
+        "page-26.png": "79ca1cc03ead0d12b2fac1aee51a79ef8e89c1e55d42443d3fd82af63dc49cef",
+        "page-27.png": "1423130dd3271241b85a42a92680bfefd5c2554c5c18e6ab71607c747afbc6b9",
+        "page-28.png": "c323edb40a20041caf1b51d7d5e1d45bfab379ddac6fa64b379354b88bb50a96",
+        "page-29.png": "f4f9162b53077a3ff8bd540b4e409f32b240fc8019c2a8925b77f502f355a704",
+        "page-30.png": "013e02c6f68c928f28b2367f3fbd791328bfe0747dde7a9f03ce4a26fa625605",
+        "page-31.png": "e31158eb5fcf4aa4dc9bfa9f0f5f85b9827f0098b82ce004f079ef8067358d1c",
+        "page-32.png": "bc96c60c3b334143c524618fa3087d59704ae5da266ecfc9e686f96c01dc768f",
+        "page-33.png": "0e6c39495a84786c077be2aa137227dcce2a2d2af303ff643df95d195b18b234",
+        "page-34.png": "fc998a009f119aaf7a140168eb2c548355895a3755c852f6cd9350d1f70755c0"
+      },
+      "recorder_inputs": {},
+      "log_sha256": "bff1baf14656bea8b98fffcb1faa2036c304de468c551e7db8ead916f40b6313",
+      "visual_inspection": "Separate all-page visual review required; this automated record does not assert that result."
+    },
+    "rationale": {
+      "dependency_sources": [
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/src/scientific-rationale.tex",
+          "source_path": "src/scientific-rationale.tex",
+          "sha256": "0a16a682018a0df4464c3aca4d21ee2ea66336aa2c7fb9153b8f34b3848188d2"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/rationale/common/requirements.tex",
+          "source_path": "src/common/requirements.tex",
+          "sha256": "baef73170ce8638c451de66f2e224c2a5ca0c4a6957aba41bef60db0d8718094"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/rationale/common/edge_cases.tex",
+          "source_path": "src/common/edge_cases.tex",
+          "sha256": "addd77b0435868c1ddb381f995326f620e4cdf6a55f8d75085fcf26529d6f634"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/rationale/SCI-MAP-v0.2_OWNER_DECISION_REGISTER_r0.2.tex",
+          "source_path": "src/SCI-MAP-v0.2_OWNER_DECISION_REGISTER_r0.2.tex",
+          "sha256": "ab3eb86737d4834a02032962a941b5db9d4c7925e231da56eb2042192e6d9d36"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/rationale/common/equations.tex",
+          "source_path": "src/common/equations.tex",
+          "sha256": "10a1f9829af3934d6fa71007fac4a7bfd0d9017431504d08ca9aeb82cfdc02f3"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/rationale/common/definitions.tex",
+          "source_path": "src/common/definitions.tex",
+          "sha256": "4762d0c3ccaf3c0cc4b2c8b3fc11fbc8e9e7a6d20414ede53172300dbd3886e5"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/rationale/identity/rationale.tex",
+          "source_path": "src/identity/rationale.tex",
+          "sha256": "eb84087c85fb099026799965d6da20fbf8ed669de9674fcca7cb0258fb29a39b"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/rationale/common/assumptions.tex",
+          "source_path": "src/common/assumptions.tex",
+          "sha256": "87ef8e16a54e2cec76446d75b0896a18ed255278ab28822271bb182c7d922773"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/rationale/SCI-MAP-v0.2_SHARED_AUTHORITY_r0.2.tex",
+          "source_path": "src/SCI-MAP-v0.2_SHARED_AUTHORITY_r0.2.tex",
+          "sha256": "24839f9912e4bd9f7cae9a7be974e726a188d2e9fdadbdd0fcc5e913abd5c4e7"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/rationale/common/notation.tex",
+          "source_path": "src/common/notation.tex",
+          "sha256": "1975dfce4b50dda686744a495e3b6ae988fcf30812bfe577e61c2edc80f67cce"
+        }
+      ],
+      "dependency_rule_note": "Raw compiler makefile retains its outdir-relative spellings. Those spellings are explicitly resolved against the recorded source working directory; only existing in-packet sources are admitted. Cached TeX resources are tool-environment inputs and are not asserted as a portable bundle closure.",
+      "pdf_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/rationale/scientific-rationale.pdf",
+      "delivery_filename": "SCI-MAP-SCIENTIFIC-RATIONALE-v0.2.pdf",
+      "pdf_sha256": "438c5f646c3fe6ab3f44d1985ccbf8594b453837f292bd0fa4335c06136bdf8f",
+      "pages": 16,
+      "nonempty_pages": true,
+      "metadata": {
+        "/Creator": "LaTeX with hyperref",
+        "/Title": "SCI-MAP v0.2 TolTEC Ordinary Mapmaking and Observation Coaddition - Science-Team Rationale r0.2 Candidate",
+        "/Subject": "Candidate for scientific-owner disposition",
+        "/Author": "Grant Wilson",
+        "/Producer": "xdvipdfmx (0.1)",
+        "/CreationDate": "D:20260907000000-00'00'"
+      },
+      "tex_errors_or_overfull": [],
+      "pdfinfo_exit_code": 0,
+      "render_exit_code": 0,
+      "rendered_pages": 16,
+      "render_sha256": {
+        "page-01.png": "11e5f86c0132656ad208fdedccf9f1558d12637e3298eddd2db639909aa8dd76",
+        "page-02.png": "3b5996871fcfa2cde7845de9e21aa55503ad75300cbd482f150baafc108e0a5c",
+        "page-03.png": "cb41529db98a3bd807d402364bd442d072c550f50a2d2891a35f1f9acd798d47",
+        "page-04.png": "5def93c05e1d1fd76257c454a51891f9df3e08cce67590bc211114a731f95275",
+        "page-05.png": "ec401eb260e99dc7fd027be0bb12f38c57e2b8fcd32af66eb702017c28f24ad4",
+        "page-06.png": "52d6af5eddda934f30cf8636f324a06cf9a152b89097281212f4add63036b7dd",
+        "page-07.png": "de862b5e637eed9a0572f031e39204402775deb3b2553c2a880a69de0a066e24",
+        "page-08.png": "5a65518cc4e19b7c05de726c5e61887d32965cccf02ec224e33e84b08eac457c",
+        "page-09.png": "40cb0da14c28d458fa065660c86a186a9b035915be751054921daa35ecf01874",
+        "page-10.png": "75197c3df5134fe946df80293eae05f7859ec77a260f6b3142678a5b42cfe7f6",
+        "page-11.png": "c10f7519df8ca0f7307fa3a6dc0a82261417f8ebf7f4d72b4e0af404d0ffa8d0",
+        "page-12.png": "5492f1b7a9df6eac278b9db3327ad9e0a13ce33cfe22c7fcbb723f0a77261141",
+        "page-13.png": "36286eaa3df54515ae9aa7796dd86064aa5a980a2c664d03a06d843ea4674e5e",
+        "page-14.png": "1830b408249f544ca00ffb8b3d4ef9a52badf70b2eb57d0cd343678a996e3cf3",
+        "page-15.png": "06f2c97e50c11304fac12918a9f7f41e1f5a60829520613e4c6531bb9aa25c8b",
+        "page-16.png": "857b4a1ee218643cadfee7a86f9953d9121f7933076af42d3178ecc6cc74400d"
+      },
+      "recorder_inputs": {},
+      "log_sha256": "0e4f19e237dc39c9bfd4ac05e558d7615ddf94f03dc62a6f97812647e3aa1f5b",
+      "visual_inspection": "Separate all-page visual review required; this automated record does not assert that result."
+    },
+    "engineering": {
+      "dependency_sources": [
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/src/engineering-conformance.tex",
+          "source_path": "src/engineering-conformance.tex",
+          "sha256": "ae745f2bd7ec288c1997b24b26720d7d7033dd05939638fac50bd65cf8f175a2"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/common/assumptions.tex",
+          "source_path": "src/common/assumptions.tex",
+          "sha256": "87ef8e16a54e2cec76446d75b0896a18ed255278ab28822271bb182c7d922773"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/common/requirements.tex",
+          "source_path": "src/common/requirements.tex",
+          "sha256": "baef73170ce8638c451de66f2e224c2a5ca0c4a6957aba41bef60db0d8718094"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/common/definitions.tex",
+          "source_path": "src/common/definitions.tex",
+          "sha256": "4762d0c3ccaf3c0cc4b2c8b3fc11fbc8e9e7a6d20414ede53172300dbd3886e5"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/identity/engineering.tex",
+          "source_path": "src/identity/engineering.tex",
+          "sha256": "98478a568262a987ba170b153a2beb609e2798d8844ba951d7ddd55f1068afae"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/SCI-MAP-v0.2_SHARED_AUTHORITY_r0.2.tex",
+          "source_path": "src/SCI-MAP-v0.2_SHARED_AUTHORITY_r0.2.tex",
+          "sha256": "24839f9912e4bd9f7cae9a7be974e726a188d2e9fdadbdd0fcc5e913abd5c4e7"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/common/notation.tex",
+          "source_path": "src/common/notation.tex",
+          "sha256": "1975dfce4b50dda686744a495e3b6ae988fcf30812bfe577e61c2edc80f67cce"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/common/edge_cases.tex",
+          "source_path": "src/common/edge_cases.tex",
+          "sha256": "addd77b0435868c1ddb381f995326f620e4cdf6a55f8d75085fcf26529d6f634"
+        },
+        {
+          "compiler_reported_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/common/equations.tex",
+          "source_path": "src/common/equations.tex",
+          "sha256": "10a1f9829af3934d6fa71007fac4a7bfd0d9017431504d08ca9aeb82cfdc02f3"
+        }
+      ],
+      "dependency_rule_note": "Raw compiler makefile retains its outdir-relative spellings. Those spellings are explicitly resolved against the recorded source working directory; only existing in-packet sources are admitted. Cached TeX resources are tool-environment inputs and are not asserted as a portable bundle closure.",
+      "pdf_path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/engineering-conformance.pdf",
+      "delivery_filename": "SCI-MAP-ENGINEERING-CONFORMANCE-v0.2.pdf",
+      "pdf_sha256": "ca6862fb94c68103334fcde0b206d8b23fed0cd3904e30fbc92933be624cb327",
+      "pages": 25,
+      "nonempty_pages": true,
+      "metadata": {
+        "/Creator": "LaTeX with hyperref",
+        "/Title": "SCI-MAP v0.2 Engineering Conformance Specification, r0.2 Candidate",
+        "/Subject": "Candidate for scientific-owner disposition",
+        "/Author": "Grant Wilson",
+        "/Producer": "xdvipdfmx (0.1)",
+        "/CreationDate": "D:20260907000000-00'00'"
+      },
+      "tex_errors_or_overfull": [],
+      "pdfinfo_exit_code": 0,
+      "render_exit_code": 0,
+      "rendered_pages": 25,
+      "render_sha256": {
+        "page-01.png": "76383245c85d404709fed6df7a71ef172d8bf0b6a7e406fe29b52153bde52950",
+        "page-02.png": "0c07bae0852731fb4cf0fa8990782af810ddf439df7d4804646e65183dda4664",
+        "page-03.png": "261aa9867a7d176c062fbf5110e67e1643ad8fb1d8ca103eaa6ac35545f4537a",
+        "page-04.png": "f87d6d8d7be7af758d5f439e9550876d981f05ac774b05c01b785e36cda66fd4",
+        "page-05.png": "41f71d4f7eedb8a6f0220dac24048ae05091c4fd75ec0ee6a679d8bbc18aec84",
+        "page-06.png": "7d470cd6ac9ecc50118f99445c93af70073d7505bdee4fc5f4a9be0b64455437",
+        "page-07.png": "0ab40a44c8a429b613052b3be9f2f031358001285e76f9d7f8fb390c008e0b4e",
+        "page-08.png": "561af381e909c87492639b029d597cc8a176540a1e0231ba2f39a6a5e83324cf",
+        "page-09.png": "411179bdd229e777b7dd21a26bc897698f7c85ec3ce56f19b435c27d492da129",
+        "page-10.png": "d9b26b1090c9a15c604916ccc4cdb9f06b9143ddcb5121b0ae7d653905f55b8f",
+        "page-11.png": "f5106860d2cdd2148e1d9a5bc6053ce49f00301e3a38001bdc25d09444e0cdbd",
+        "page-12.png": "4ef2a2e1b5c33af91f8f338e4f42a619afaa3171f43ccf8f3a6de9f5cc8d8b01",
+        "page-13.png": "0ec3799db09b55376c694f5ac439b820c836b5400eca17e82b6da34d981a3cb5",
+        "page-14.png": "d19038412140416730fd3f96ae15e9b3c10299cc836a922150a8bbae70554b4b",
+        "page-15.png": "a135c26dbf2892aa3e74b2a67449c14586ae7c374fe7d8f0da19bc16b972a3fa",
+        "page-16.png": "9dc2bd30e52a72b0e54921df7854d682cacdf8c66decec6066772f6b941fc0a6",
+        "page-17.png": "9a711470ac08e6b7d5ce2275bb3f9e5f8cef585150a07273ae1df90ab32decef",
+        "page-18.png": "e74440757acede3a79d4edcff0f90327f0d611aa797ff7359d677d55c5cac399",
+        "page-19.png": "7d79943c218155307571f922ec80af14a37e145a2e6cc06f1cc8c80daea1fe9f",
+        "page-20.png": "979c99194413d527537fb0ba30fd924633d170d80759d917dc1e87b908b8ca16",
+        "page-21.png": "b64c8604cb53f8453e0a6330b7335e2b354d30cabeafd0bb4b78f50a46aa5e53",
+        "page-22.png": "95efd3f3f7c31a8e73911a21f51c3c715c2628cb8b2fc48382466fd2bc05fd20",
+        "page-23.png": "3853ca56c5ced5bf8dedff2d157c5c57d42bcb07d35c9995f84be311edd31be4",
+        "page-24.png": "a136f5815fa9b97ecd7cee5589ae3772cd8b274462e6b20571fbaa841de5edb2",
+        "page-25.png": "f3063fe0923b912234ebd4b08c72f38539aba76c53b9728564637e99fd4745a0"
+      },
+      "recorder_inputs": {},
+      "log_sha256": "408a4a91d0922e5a3569455a9dae88e82ef78ea08070a3b4145853935f39df37",
+      "visual_inspection": "Separate all-page visual review required; this automated record does not assert that result."
+    }
+  },
+  "interpretation": "Document compilation/rendering evidence only; no prospective ECS result is executed by this inspection."
+}

@@ -1,0 +1,130 @@
+{
+  "identity": "SCI-MAP-R02-DOCUMENT-BUILD/candidate-build-03",
+  "created_at_utc": "2026-09-08T00:22:15.866724+00:00",
+  "status": "document build attempt; no scientific acceptance or application evidence",
+  "shared_authority": {
+    "identity": "SCI-MAP-v0.2-SHARED-AUTHORITY/r0.2",
+    "sha256": "6a7e64377e31b8b0e4dac90a27a7662ac825bd59c5a87d8237eb533d7b8d37c0",
+    "algorithm": "For each ordered core path: UTF8(path), NUL, ASCII(raw byte length), NUL, raw bytes, NUL; SHA256 of concatenation.",
+    "ordered_sources": {
+      "SCI-MAP-v0.2_SHARED_AUTHORITY_r0.2.tex": "24839f9912e4bd9f7cae9a7be974e726a188d2e9fdadbdd0fcc5e913abd5c4e7",
+      "common/notation.tex": "1975dfce4b50dda686744a495e3b6ae988fcf30812bfe577e61c2edc80f67cce",
+      "common/definitions.tex": "4762d0c3ccaf3c0cc4b2c8b3fc11fbc8e9e7a6d20414ede53172300dbd3886e5",
+      "common/equations.tex": "10a1f9829af3934d6fa71007fac4a7bfd0d9017431504d08ca9aeb82cfdc02f3",
+      "common/assumptions.tex": "87ef8e16a54e2cec76446d75b0896a18ed255278ab28822271bb182c7d922773",
+      "common/requirements.tex": "baef73170ce8638c451de66f2e224c2a5ca0c4a6957aba41bef60db0d8718094",
+      "common/edge_cases.tex": "addd77b0435868c1ddb381f995326f620e4cdf6a55f8d75085fcf26529d6f634"
+    }
+  },
+  "original_author_manifest": {
+    "identity": "SCI-MAP post-freeze successor proposed author references r0.1/2026-09-07",
+    "path": "inputs/doc/scientific_contracts/studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/AUTHOR_REFERENCES.json",
+    "sha256": "83baf583f73784bebc6724025fd110e5545303f303c70af590b53c5696ee2c4f"
+  },
+  "author_packet_inventory": {
+    "identity": "SCI-MAP-R02-AUTHOR-PACKET/2026-09-07",
+    "path": "AUTHOR_PACKET_INVENTORY.json",
+    "sha256": "f13f29746b71e90e661ee8cdb7eaba781bec97be1baa11c06529a5c2150b4a29"
+  },
+  "owner_directive": {
+    "identity": "SCI-MAP-OWNER-DIRECTIVE-v0.2-r0.2/2026-09-07",
+    "path": "inputs/owner/SCI_MAP_R02_OWNER_DIRECTIVE.txt",
+    "sha256": "620d4ff8204b453e2e363e84b9fcfbc480c9f0f88f0f763e0c9be69b873ca2e7"
+  },
+  "entry_sources": {
+    "formal": {
+      "path": "src/formal-scientific-engineering-contract.tex",
+      "sha256": "53d0dbf7269ed826a96b96c56e216a53d2ded5d2e3ba2a9a42953bc33d671523"
+    },
+    "rationale": {
+      "path": "src/scientific-rationale.tex",
+      "sha256": "0a16a682018a0df4464c3aca4d21ee2ea66336aa2c7fb9153b8f34b3848188d2"
+    },
+    "engineering": {
+      "path": "src/engineering-conformance.tex",
+      "sha256": "ae745f2bd7ec288c1997b24b26720d7d7033dd05939638fac50bd65cf8f175a2"
+    }
+  },
+  "generated_cover_sources": {
+    "formal": {
+      "path": "src/identity/formal.tex",
+      "sha256": "7ecd6c18fdccf9247dc06484fb2318b79f5baa152bf65c1a98512ad2a319572a"
+    },
+    "rationale": {
+      "path": "src/identity/rationale.tex",
+      "sha256": "eb84087c85fb099026799965d6da20fbf8ed669de9674fcca7cb0258fb29a39b"
+    },
+    "engineering": {
+      "path": "src/identity/engineering.tex",
+      "sha256": "98478a568262a987ba170b153a2beb609e2798d8844ba951d7ddd55f1068afae"
+    }
+  },
+  "environment": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.13.2 (main, Feb  4 2025, 14:51:09) [Clang 16.0.0 (clang-1600.0.26.6)]",
+    "python_executable": "/Users/gwilson/tolteca/bin/python",
+    "python_executable_sha256": "42f792544842512d02eb8a95a6009062591476558f09f07553c138661a0bca8e"
+  },
+  "tools": {
+    "tectonic": {
+      "invoked_path": "/opt/homebrew/bin/tectonic",
+      "resolved_path": "/opt/homebrew/Cellar/tectonic/0.16.9/bin/tectonic",
+      "sha256": "38eff9059ed622672c9a2590415a8f01c043df4232baa459628a2cd86e512d95",
+      "version": {
+        "argv": [
+          "/opt/homebrew/bin/tectonic",
+          "--version"
+        ],
+        "exit_code": 0,
+        "stdout": "Tectonic 0.16.9\n",
+        "stderr": ""
+      }
+    },
+    "pdftoppm": {
+      "invoked_path": "/Users/gwilson/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdftoppm",
+      "resolved_path": "/Users/gwilson/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdftoppm",
+      "sha256": "de772e88ab9977ccde25def9b403bf42675d75f5dd82b19fbd7d8123ad183159",
+      "version": {
+        "argv": [
+          "/Users/gwilson/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdftoppm",
+          "-v"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "pdftoppm version 26.05.0\nCopyright 2005-2026 The Poppler Developers - http://poppler.freedesktop.org\nCopyright 1996-2011, 2022 Glyph & Cog, LLC\n"
+      }
+    },
+    "pdfinfo": {
+      "invoked_path": "/Users/gwilson/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdfinfo",
+      "resolved_path": "/Users/gwilson/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdfinfo",
+      "sha256": "fee70ade670fb025343aca2b5c3a2aacacb8ed9edce1b716b233b5de924b6bf5",
+      "version": {
+        "argv": [
+          "/Users/gwilson/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdfinfo",
+          "-v"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "pdfinfo version 26.05.0\nCopyright 2005-2026 The Poppler Developers - http://poppler.freedesktop.org\nCopyright 1996-2011, 2022 Glyph & Cog, LLC\n"
+      }
+    }
+  },
+  "recipe_sha256": "235b152c596ae0b26b247b132d4b7ef417bf118e2b81d9a124abb1544e063387",
+  "compile_recipe": [
+    "/opt/homebrew/bin/tectonic",
+    "--only-cached",
+    "--untrusted",
+    "--keep-logs",
+    "--keep-intermediates",
+    "--makefile-rules",
+    "<attempt>/<view>/dependencies.mk",
+    "--outdir",
+    "<attempt>/<view>",
+    "<attempt>/src/<entry>.tex"
+  ],
+  "compile_environment": {
+    "SOURCE_DATE_EPOCH": "1788739200",
+    "TZ": "UTC"
+  },
+  "reproducibility_claim": "Exact observed tools, source bytes, generated fragments, commands and outputs are bound. Cached TeX assets are separately inventoried from .fls if emitted; no cross-host bit reproducibility is asserted."
+}
