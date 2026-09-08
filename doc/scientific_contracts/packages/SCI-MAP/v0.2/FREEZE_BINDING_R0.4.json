@@ -1,0 +1,71 @@
+{
+  "identity": "SCI-MAP-v0.2-r0.4-GENERIC-SCIENTIFIC-FREEZE/2026-09-08",
+  "status": "frozen generic scientific authority; affected numerical routes remain unavailable",
+  "scientific_owner": "Grant Wilson",
+  "contract_version": "v0.2",
+  "document_revision": "r0.4",
+  "accepted_content_commit": "c8081c4ee4dc1c5132c3030a351073205fc3142a",
+  "accepted_content_tree": "7003a313bad55d82e06b8bfc18f9a76216a688eb",
+  "owner_acceptance": {
+    "commit": "0f8da1ada267c0d070fcfb18d0807bc4a2645a9d",
+    "path": "SCIENTIFIC_OWNER_ACCEPTANCE_R0.4_2026-09-08.md",
+    "sha256": "68ac69cee03139633c53226d555f548ecb420e1a9bcde86a5c8c6577f38eb686"
+  },
+  "shared_authority": {
+    "identity": "SCI-MAP-v0.2-SHARED-AUTHORITY/r0.4",
+    "sha256": "3b81ea8180dcc3f5f37964ac1177feb417fef6a1cdcc590b33f9431b54bc1e31"
+  },
+  "source_manifest": {
+    "path": "revisions/r0.4/SOURCE_MANIFEST.json",
+    "sha256": "5668162f42a83d653a8a8cb8219d04706150cf48374576e7000cb250baad31c4",
+    "bound_files": 305,
+    "sidecar_path": "revisions/r0.4/SOURCE_MANIFEST.sha256",
+    "sidecar_sha256": "6d344a40dde03e6c2511033eb5501c3252870ad0998c0cdc817fd011c436b272"
+  },
+  "post_owner_review": {
+    "candidate": "0f8da1ada267c0d070fcfb18d0807bc4a2645a9d",
+    "path": "POST_OWNER_CONSISTENCY_REVIEW_R0.4.md",
+    "sha256": "c5ff26d2f1730418b789d0396c38d61262f8e24de42ca5af3401d51297251174",
+    "receipt_path": "POST_OWNER_CONSISTENCY_REVIEW_R0.4.json",
+    "receipt_sha256": "b4b1f4163041314cc81c535d476ce5a1d6a80b12439743293a343f2425436ba5",
+    "verdict": "pass_with_recorded_limitations",
+    "gate_satisfied": true
+  },
+  "source_archive": {
+    "archive": "/private/tmp/citlali-map-r04-build-2026-09-08/delivery/SCI-MAP-v0.2-r0.4-source-build-packet.tar.gz",
+    "bytes": 3581440,
+    "sha256": "a90103b54da2369af1e85898d06d1c328288bdf739f8fac5f0ab2cde16ffc8f2",
+    "sidecar_bytes": 111,
+    "sidecar_sha256": "2b3cc4f621e2496ee50d5c86d95edde8f04ea6c5ac0ff83624265cd4034e77bd",
+    "verified_members": 307
+  },
+  "pdfs": {
+    "SCI-MAP-ENGINEERING-CONFORMANCE-v0.2.pdf": {
+      "sha256": "f53e89d3cf405860e7762560213ea95e31eaa1de68048fb359742eafae54aa7c",
+      "bytes": 207924
+    },
+    "SCI-MAP-FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT-v0.2.pdf": {
+      "sha256": "8857512a6ef5b5b09ebb024daa7fb11b709311a1a60102f7a67b440e4a4a4e35",
+      "bytes": 253074
+    },
+    "SCI-MAP-SCIENTIFIC-RATIONALE-v0.2.pdf": {
+      "sha256": "e0203669a35c5fa5710d0e88287a48271f91cbdef35e54e2173592bedc5238f2",
+      "bytes": 151291
+    }
+  },
+  "stable_requirement_count": 52,
+  "stable_prediction_count": 25,
+  "accepted_packet_files_unchanged": 307,
+  "profile_status": {
+    "content_status": "preserved candidate proposal",
+    "owner_profile_approval": "pending",
+    "registration": "pending",
+    "source_binding": "pending",
+    "evaluability": "unavailable",
+    "object_decisions": "unavailable"
+  },
+  "publication": "Owner-authorized SSH topic-branch push; not yet performed or verified at creation of this local freeze record.",
+  "canonical_integration": "not performed; not authorized by this freeze operation",
+  "application_and_production": "No implementation, activation, qualification, or production authority granted.",
+  "seal_rule": "This separate status binding names immutable accepted content and the completed post-owner review; it does not alter or reseal the accepted packet, and it makes no self-commit or self-hash claim."
+}

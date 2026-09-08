@@ -1,5 +1,17 @@
 # SCI-MAP v0.2
 
+
+**Current SCI-MAP authority — 2026-09-08:** [v0.2/r0.4 is frozen as generic
+scientific authority](SCIENTIFIC_OWNER_FREEZE_R0.4.md), following
+[owner acceptance](SCIENTIFIC_OWNER_ACCEPTANCE_R0.4_2026-09-08.md) and a
+passing fresh post-owner consistency review. [Exact frozen artifacts and
+bindings](FREEZE_BINDING_R0.4.json) retain all prior approvals and all
+52 requirements / 25 predictions. Affected profiles and numerical routes remain
+pending or unavailable under their separate gates. Topic-branch publication
+is owner-authorized; this record supplies no remote receipt. Canonical integration and implementation
+qualification are separate. Earlier candidate entries below are preserved as
+historical records and do not override this status.
+
 Scientific contract: **v0.2**. Document revision: **r0.1**. Date:
 **2026-09-07**.
 
