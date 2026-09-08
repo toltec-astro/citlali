@@ -22,7 +22,7 @@ Owner directive SCI-MAP-OWNER-DIRECTIVE-v0.2-r0.2/2026-09-07
 Directive SHA-256 620d4ff8204b453e2e363e84b9fcfbc480c9f0f88f0f763e0c9be69b873ca2e7
 Document entry source src/engineering-conformance.tex
 Entry-source SHA-256 ae745f2bd7ec288c1997b24b26720d7d7033dd05939638fac50bd65cf8f175a2
-Build record SCI-MAP-R02-DOCUMENT-BUILD/candidate-build-03
+Build record SCI-MAP-R02-DOCUMENT-BUILD/candidate-build-05
 No independent science. Every normative scientiﬁc clause and every prediction printed here is ren-
 dered from SCI-MAP-v0.2_SHARED_AUTHORITY_r0.2.tex. This document adds only evidence-recording,
 execution, traceability, and pass/fail procedure. If an engineering observation appears to require changing

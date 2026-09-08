@@ -38,7 +38,7 @@ report.
 | File | Raw SHA-256 | Role |
 | --- | --- | --- |
 | `src/formal-scientific-engineering-contract.tex` | `53d0dbf7269ed826a96b96c56e216a53d2ded5d2e3ba2a9a42953bc33d671523` | Normative formal view of the shared core. |
-| `src/scientific-rationale.tex` | `0a16a682018a0df4464c3aca4d21ee2ea66336aa2c7fb9153b8f34b3848188d2` | Explanatory science-team view; no independent authority. |
+| `src/scientific-rationale.tex` | `fc6551fa650c23c925229e3dc1cc8ae0764c7688cf698c9adbbbf0dc60c7ba51` | Explanatory science-team view; no independent authority. |
 | `src/engineering-conformance.tex` | `ae745f2bd7ec288c1997b24b26720d7d7033dd05939638fac50bd65cf8f175a2` | Prospective evidence procedure; no independent science. |
 | `src/SCI-MAP-v0.2_OWNER_DECISION_REGISTER_r0.2.tex` | `ab3eb86737d4834a02032962a941b5db9d4c7925e231da56eb2042192e6d9d36` | Render helper for the unchanged nine stable MAP decision identities. |
 
@@ -56,7 +56,7 @@ the build record to avoid a self-hash cycle.
 | Occurrence profile binding | `profiles/SCI-MAP_OCCURRENCE_ADMISSION_PROFILE_v0.2_r0.2_CANDIDATE.md`: `bedd2a7b46b1a18c2fb3150a2f55982779f957e1b48a1c871057f9a925d17c63` |
 | Aggregate successor profile | `profiles/SCI-MAP_COADD_AGGREGATE_PROFILE_v0.2_r0.2_CANDIDATE.md`: `e6372d1f72c78cab512987477ee1576f03ba63b79f23c88bb5fab772657adaf5` |
 | Candidate SCI-VAL Profile Registry | `bindings/SCI-VAL_PROFILE_REGISTRY_SCI-MAP_v0.2_r0.2_CANDIDATE.md`: `a691a73e8a1a7bd73cb9e25ddcc6f8e281b473139c3b0564534929255dc298ee` |
-| Candidate SCI-VAL source register | `bindings/SCI-VAL_SOURCE_BINDING_REGISTER_SCI-MAP_v0.2_r0.2_CANDIDATE.md`: `1cecc8623a4ed0818a761203ff9178edad80308bdcbb0eebd3fa1a74ab8dfc61` |
+| Candidate SCI-VAL source register | `bindings/SCI-VAL_SOURCE_BINDING_REGISTER_SCI-MAP_v0.2_r0.2_CANDIDATE.md`: `148afb6664f2a29f52a0207e16866d64dd023649ec7ca63121b8327590b2c12c` |
 
 The occurrence profile retains exact predicates and identity
 `SCI-MAP:map_upstream_admission@2` under a new candidate source binding. The

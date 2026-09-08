@@ -35,8 +35,9 @@ this mapping.
 | `common/requirements.tex` | `76d9919acddf604ca71ccba56533efad983dffe64b3bbd6316669522506de9dd` | `baef73170ce8638c451de66f2e224c2a5ca0c4a6957aba41bef60db0d8718094` | Same 52 IDs amended under their existing subjects for all eight scientific directive sections. |
 | `common/edge_cases.tex` | `52aff7d0b91aa87fdcc5d19e6e14f54b12df27f651048ca090c3a4c938bd0b23` | `addd77b0435868c1ddb381f995326f620e4cdf6a55f8d75085fcf26529d6f634` | Same 25 IDs; targeted response, role, lifecycle/cut, WCS, covariance, and NOI prediction repairs. |
 
-The r0.1 hashes above are the exact approved-packet bytes listed by
-`PACKET_INVENTORY.json`; r0.2 hashes are raw current candidate bytes.
+The r0.1 hashes above are the exact approved-packet bytes listed by the
+delivered `AUTHOR_PACKET_INVENTORY.json`; r0.2 hashes are raw current candidate
+bytes.
 
 ## Stable requirement subjects amended
 

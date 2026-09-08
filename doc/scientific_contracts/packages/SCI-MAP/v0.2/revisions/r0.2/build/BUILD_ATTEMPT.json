@@ -1,6 +1,6 @@
 {
-  "identity": "SCI-MAP-R02-DOCUMENT-BUILD/candidate-build-03",
-  "created_at_utc": "2026-09-08T00:22:15.866724+00:00",
+  "identity": "SCI-MAP-R02-DOCUMENT-BUILD/candidate-build-05",
+  "created_at_utc": "2026-09-08T00:49:40.181072+00:00",
   "status": "document build attempt; no scientific acceptance or application evidence",
   "shared_authority": {
     "identity": "SCI-MAP-v0.2-SHARED-AUTHORITY/r0.2",
@@ -38,7 +38,7 @@
     },
     "rationale": {
       "path": "src/scientific-rationale.tex",
-      "sha256": "0a16a682018a0df4464c3aca4d21ee2ea66336aa2c7fb9153b8f34b3848188d2"
+      "sha256": "fc6551fa650c23c925229e3dc1cc8ae0764c7688cf698c9adbbbf0dc60c7ba51"
     },
     "engineering": {
       "path": "src/engineering-conformance.tex",
@@ -48,15 +48,15 @@
   "generated_cover_sources": {
     "formal": {
       "path": "src/identity/formal.tex",
-      "sha256": "7ecd6c18fdccf9247dc06484fb2318b79f5baa152bf65c1a98512ad2a319572a"
+      "sha256": "86a3f6a5510f177f84ee2f2e2c4a73b3cc25e8036356a16aa69372f5a206b127"
     },
     "rationale": {
       "path": "src/identity/rationale.tex",
-      "sha256": "eb84087c85fb099026799965d6da20fbf8ed669de9674fcca7cb0258fb29a39b"
+      "sha256": "9b8f36d657eda79b3c37689c8502da05d6973a092d02c8df94d433cee393dbe8"
     },
     "engineering": {
       "path": "src/identity/engineering.tex",
-      "sha256": "98478a568262a987ba170b153a2beb609e2798d8844ba951d7ddd55f1068afae"
+      "sha256": "c7f84181803344ca7901cb2051e8c8342a038bd103836aad146007ddb3b726e9"
     }
   },
   "environment": {

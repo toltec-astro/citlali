@@ -21,7 +21,7 @@ Owner directive SCI-MAP-OWNER-DIRECTIVE-v0.2-r0.2/2026-09-07
 Directive SHA-256 620d4ff8204b453e2e363e84b9fcfbc480c9f0f88f0f763e0c9be69b873ca2e7
 Document entry source src/formal-scientific-engineering-contract.tex
 Entry-source SHA-256 53d0dbf7269ed826a96b96c56e216a53d2ded5d2e3ba2a9a42953bc33d671523
-Build record SCI-MAP-R02-DOCUMENT-BUILD/candidate-build-03
+Build record SCI-MAP-R02-DOCUMENT-BUILD/candidate-build-05
 Authority boundary . This is the normative formal view of the implementation-independent scientiﬁc
 contract. It preserves the canonical equations, 52 requirements, 25 predictions, exact state and support
 semantics, provenance, and conformance routing. The separate science-team rationale r0.2 explains the

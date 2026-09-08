@@ -27,8 +27,8 @@ warning: engineering-conformance.tex:386: Underfull \hbox (badness 10000) in par
 warning: engineering-conformance.tex:386: Underfull \hbox (badness 1215) in paragraph at lines 386--386
 warning: warnings were issued by the TeX engine; use --print and/or --keep-logs for details.
 note: Running xdvipdfmx ...
-note: Writing `/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/engineering-conformance.log` (22.9228515625 KiB)
-note: Writing `/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/engineering-conformance.toc` (766 B)
-note: Writing `/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/engineering-conformance.aux` (9.7294921875 KiB)
-note: Writing `/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/engineering-conformance.pdf` (184.8564453125 KiB)
-note: Writing `/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/engineering-conformance.out` (1.6630859375 KiB)
+note: Writing `/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-05/engineering/engineering-conformance.log` (22.9228515625 KiB)
+note: Writing `/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-05/engineering/engineering-conformance.pdf` (184.85546875 KiB)
+note: Writing `/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-05/engineering/engineering-conformance.out` (1.6630859375 KiB)
+note: Writing `/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-05/engineering/engineering-conformance.aux` (9.7294921875 KiB)
+note: Writing `/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-05/engineering/engineering-conformance.toc` (766 B)

@@ -19,8 +19,8 @@ Addendum SHA-256 f13f29746b71e90e661ee8cdb7eaba781bec97be1baa11c06529a5c2150b4a2
 Owner directive SCI-MAP-OWNER-DIRECTIVE-v0.2-r0.2/2026-09-07
 Directive SHA-256 620d4ff8204b453e2e363e84b9fcfbc480c9f0f88f0f763e0c9be69b873ca2e7
 Document entry source src/scientific-rationale.tex
-Entry-source SHA-256 0a16a682018a0df4464c3aca4d21ee2ea66336aa2c7fb9153b8f34b3848188d2
-Build record SCI-MAP-R02-DOCUMENT-BUILD/candidate-build-03
+Entry-source SHA-256 fc6551fa650c23c925229e3dc1cc8ae0764c7688cf698c9adbbbf0dc60c7ba51
+Build record SCI-MAP-R02-DOCUMENT-BUILD/candidate-build-05
 This document explains the map estimator, its response and uncertainty, the meaning of support
 and validity, and the scope of observation coaddition for TolTEC scientists. The separate formal
 contract remains the normative authority for the 52 requirements, 25 predictions, exact states,
@@ -53,8 +53,13 @@ o uop ˆmop∑
 o uop
 , (2)
 where the named v0.2 uniform family sets dimensionless uop = 1 for every admitted observation row. This is equal-
-observation averaging, not precision. An observation bundle is admitted atomically: its signal, coordinates, response,
-uncertainty, validity, and provenance must be mutually compatible before any of its valid pixels contribute. Pixel-level
+observation averaging, not precision. An observation bundle is admitted atomically under the exact selected product
+role and admission proﬁle. Its base-required signal, identity, coordinate/geometry, unit, WCS/grid, validity, and
+provenance facts must be compatible before any valid pixel contributes. Only companions named as required by that
+exact selected role/proﬁle are admission prerequisites. Under SCI-MAP:base_coadd@1, an unavailable or basis-incompatible
+member response leaves numerical signal membership unchanged and makes the coadd response unavailable with the
+exact cause. Incomplete covariance also leaves signal membership unchanged and is recorded with its exact incomplete
+status and cause. Neither condition creates a hidden subset, zero companion, or assumed independence. Pixel-level
 support then determines where the admitted observation contributes.
 Both equations are linear only conditional on ﬁxed sample and detector membership, projection, coeﬃcients, support
 policy, response state, geometry/WCS, calibration, and upstream processing. If any of those states is estimated from

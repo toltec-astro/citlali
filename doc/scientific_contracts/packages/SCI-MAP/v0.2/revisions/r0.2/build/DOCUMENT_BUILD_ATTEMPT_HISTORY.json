@@ -67,6 +67,24 @@
       "inspection_sha256": "b24615362a02bc90053690767e881d9ee1fd9d756ea5bc67c4ba4d0414c2d005",
       "preserved_package_reports": "/private/tmp/citlali-map-r02-evidence-2026-09-07/build-02-package-reports",
       "visual_qa_report_sha256": "5f315cc4517eb60d199419d68d80830c06c4bcb0d2a4472dfb14f4bc9c61a5ce"
+    },
+    {
+      "attempt": "candidate-build-03",
+      "disposition": "document_compile_and_visual_pass_pre_owner_review_repair_required",
+      "cause": "Exact candidate cc161c29a09647a97e93fcbc05a6e00d61cc84a6 received R02-REV-001 through R02-REV-003; original packet and archive preserved.",
+      "build_attempt_sha256": "6db62507ddea8068ff1d82f65364b2d52ea680a7c74ba4d8754ca5149af6cee6",
+      "source_core_sha256": "6a7e64377e31b8b0e4dac90a27a7662ac825bd59c5a87d8237eb533d7b8d37c0",
+      "evidence_directory": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03",
+      "inspection_sha256": "861cfb17f2f7cdad1a17775ad9e416cb98a1217d53749df4eb24f6dbee2614bb"
+    },
+    {
+      "attempt": "candidate-build-04",
+      "disposition": "document_compile_and_visual_pass_superseded_before_sealing",
+      "cause": "Final author wording explicitly added unavailable coadd-response publication and exact cause; candidate-build-05 supersedes the rationale entry and covers.",
+      "build_attempt_sha256": "fa3af6ce86451034155f992ed75a223b0691c7e2323b67c58f03629bb5089aa8",
+      "source_core_sha256": "6a7e64377e31b8b0e4dac90a27a7662ac825bd59c5a87d8237eb533d7b8d37c0",
+      "evidence_directory": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-04",
+      "inspection_sha256": "a61d160f11463fccb98a5613f4231d8092cbad65fac4573144189cc350bafecc"
     }
   ]
 }

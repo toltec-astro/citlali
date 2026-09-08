@@ -1,6 +1,6 @@
 {
   "formal": {
-    "comparison_attempt": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-02",
+    "comparison_attempt": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03",
     "identical_previously_inspected_pages": [
       {
         "final_page": 2,
@@ -128,9 +128,34 @@
         "render_sha256": "79ca1cc03ead0d12b2fac1aee51a79ef8e89c1e55d42443d3fd82af63dc49cef"
       },
       {
+        "final_page": 27,
+        "prior_page": 27,
+        "render_sha256": "1423130dd3271241b85a42a92680bfefd5c2554c5c18e6ab71607c747afbc6b9"
+      },
+      {
+        "final_page": 28,
+        "prior_page": 28,
+        "render_sha256": "c323edb40a20041caf1b51d7d5e1d45bfab379ddac6fa64b379354b88bb50a96"
+      },
+      {
+        "final_page": 29,
+        "prior_page": 29,
+        "render_sha256": "f4f9162b53077a3ff8bd540b4e409f32b240fc8019c2a8925b77f502f355a704"
+      },
+      {
         "final_page": 30,
         "prior_page": 30,
         "render_sha256": "013e02c6f68c928f28b2367f3fbd791328bfe0747dde7a9f03ce4a26fa625605"
+      },
+      {
+        "final_page": 31,
+        "prior_page": 31,
+        "render_sha256": "e31158eb5fcf4aa4dc9bfa9f0f5f85b9827f0098b82ce004f079ef8067358d1c"
+      },
+      {
+        "final_page": 32,
+        "prior_page": 32,
+        "render_sha256": "bc96c60c3b334143c524618fa3087d59704ae5da266ecfc9e686f96c01dc768f"
       },
       {
         "final_page": 33,
@@ -146,44 +171,14 @@
     "changed_pages_for_new_visual_inspection": [
       {
         "final_page": 1,
-        "render_sha256": "66489ae3320c67b2e7f7244157d74b04fdc4be3c3ddc9d4a556004291ffd2a3b",
-        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/formal/render/page-01.png"
-      },
-      {
-        "final_page": 27,
-        "render_sha256": "1423130dd3271241b85a42a92680bfefd5c2554c5c18e6ab71607c747afbc6b9",
-        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/formal/render/page-27.png"
-      },
-      {
-        "final_page": 28,
-        "render_sha256": "c323edb40a20041caf1b51d7d5e1d45bfab379ddac6fa64b379354b88bb50a96",
-        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/formal/render/page-28.png"
-      },
-      {
-        "final_page": 29,
-        "render_sha256": "f4f9162b53077a3ff8bd540b4e409f32b240fc8019c2a8925b77f502f355a704",
-        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/formal/render/page-29.png"
-      },
-      {
-        "final_page": 31,
-        "render_sha256": "e31158eb5fcf4aa4dc9bfa9f0f5f85b9827f0098b82ce004f079ef8067358d1c",
-        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/formal/render/page-31.png"
-      },
-      {
-        "final_page": 32,
-        "render_sha256": "bc96c60c3b334143c524618fa3087d59704ae5da266ecfc9e686f96c01dc768f",
-        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/formal/render/page-32.png"
+        "render_sha256": "906b767eff0828499092f235d1605642c530ab25a05c4958306a32ff09be91f5",
+        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-05/formal/render/page-01.png"
       }
     ]
   },
   "rationale": {
-    "comparison_attempt": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-02",
+    "comparison_attempt": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03",
     "identical_previously_inspected_pages": [
-      {
-        "final_page": 2,
-        "prior_page": 2,
-        "render_sha256": "3b5996871fcfa2cde7845de9e21aa55503ad75300cbd482f150baafc108e0a5c"
-      },
       {
         "final_page": 3,
         "prior_page": 3,
@@ -258,13 +253,18 @@
     "changed_pages_for_new_visual_inspection": [
       {
         "final_page": 1,
-        "render_sha256": "11e5f86c0132656ad208fdedccf9f1558d12637e3298eddd2db639909aa8dd76",
-        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/rationale/render/page-01.png"
+        "render_sha256": "0cd40265feb8516fdf87fd170fd2ee3341cd9e77f39e4b829f974986f0ab496e",
+        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-05/rationale/render/page-01.png"
+      },
+      {
+        "final_page": 2,
+        "render_sha256": "1f098bfa6d3c366c5210bb85e6e6bf26843a946fb13e8ef159afe1ed73fb8664",
+        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-05/rationale/render/page-02.png"
       }
     ]
   },
   "engineering": {
-    "comparison_attempt": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-02",
+    "comparison_attempt": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03",
     "identical_previously_inspected_pages": [
       {
         "final_page": 2,
@@ -337,6 +337,21 @@
         "render_sha256": "a135c26dbf2892aa3e74b2a67449c14586ae7c374fe7d8f0da19bc16b972a3fa"
       },
       {
+        "final_page": 16,
+        "prior_page": 16,
+        "render_sha256": "9dc2bd30e52a72b0e54921df7854d682cacdf8c66decec6066772f6b941fc0a6"
+      },
+      {
+        "final_page": 17,
+        "prior_page": 17,
+        "render_sha256": "9a711470ac08e6b7d5ce2275bb3f9e5f8cef585150a07273ae1df90ab32decef"
+      },
+      {
+        "final_page": 18,
+        "prior_page": 18,
+        "render_sha256": "e74440757acede3a79d4edcff0f90327f0d611aa797ff7359d677d55c5cac399"
+      },
+      {
         "final_page": 19,
         "prior_page": 19,
         "render_sha256": "7d79943c218155307571f922ec80af14a37e145a2e6cc06f1cc8c80daea1fe9f"
@@ -350,6 +365,11 @@
         "final_page": 21,
         "prior_page": 21,
         "render_sha256": "b64c8604cb53f8453e0a6330b7335e2b354d30cabeafd0bb4b78f50a46aa5e53"
+      },
+      {
+        "final_page": 22,
+        "prior_page": 22,
+        "render_sha256": "95efd3f3f7c31a8e73911a21f51c3c715c2628cb8b2fc48382466fd2bc05fd20"
       },
       {
         "final_page": 23,
@@ -370,28 +390,8 @@
     "changed_pages_for_new_visual_inspection": [
       {
         "final_page": 1,
-        "render_sha256": "76383245c85d404709fed6df7a71ef172d8bf0b6a7e406fe29b52153bde52950",
-        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/render/page-01.png"
-      },
-      {
-        "final_page": 16,
-        "render_sha256": "9dc2bd30e52a72b0e54921df7854d682cacdf8c66decec6066772f6b941fc0a6",
-        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/render/page-16.png"
-      },
-      {
-        "final_page": 17,
-        "render_sha256": "9a711470ac08e6b7d5ce2275bb3f9e5f8cef585150a07273ae1df90ab32decef",
-        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/render/page-17.png"
-      },
-      {
-        "final_page": 18,
-        "render_sha256": "e74440757acede3a79d4edcff0f90327f0d611aa797ff7359d677d55c5cac399",
-        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/render/page-18.png"
-      },
-      {
-        "final_page": 22,
-        "render_sha256": "95efd3f3f7c31a8e73911a21f51c3c715c2628cb8b2fc48382466fd2bc05fd20",
-        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/render/page-22.png"
+        "render_sha256": "ad232657939b8cbb8806ad945e4b86a7dac6bc5092e6b98f069a0810bc9b09d7",
+        "path": "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-05/engineering/render/page-01.png"
       }
     ]
   }

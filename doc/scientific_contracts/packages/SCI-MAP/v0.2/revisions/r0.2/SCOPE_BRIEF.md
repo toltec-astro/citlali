@@ -1,5 +1,31 @@
 # SCI-MAP v0.2 document r0.2 bounded Scope Brief
 
+## Program adherence and prior-work recovery
+
+This brief follows the [scientific-contract charter](inputs/doc/scientific_contracts/README.md)
+and [accepted pilot process](inputs/doc/scientific_contracts/PILOT_PROCESS_REVIEW_2026-08-16.md).
+The [admitted original Scope Brief](inputs/doc/scientific_contracts/studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/SCOPE_BRIEF.md)
+records the approved downstream-roadmap and recovery provenance available in
+the author packet. The roadmap reference is a provenance-only locator, not
+scientific authority; its unadmitted target was not opened. The exact
+predecessor is the
+[frozen SCI-MAP v0.1/r0.7.1 authority](inputs/doc/scientific_contracts/packages/SCI-MAP/v0.1/SCIENTIFIC_OWNER_FREEZE_R0.7.1.md),
+and this package's completed recovery is [`PRIOR_WORK.md`](PRIOR_WORK.md).
+
+Recovery adopts the accepted r0.1 one-core/three-view architecture and 52/25
+stable inventories; cites the frozen predecessor and admitted uniform,
+PTC-to-MAP, AST, NOI, and VAL authority; supersedes only revision-specific
+r0.1 candidate clauses/bindings affected by the new directive; defers
+unsupplied stronger methods and profiles; and excludes implementation, audit,
+repair, test, validation, operational, performance, production, Unity, and
+unlisted material. Genuinely new scientific work is limited to the eight
+targeted amendments below and their exact source/profile closure. The only
+sanitized author references are the 79 exact files in delivered
+`AUTHOR_PACKET_INVENTORY.json`: the 56 scientific references, their three
+manifest/Scope-Brief/approval records, 19 r0.1 basis files, and the owner
+directive. Implementation-derived material remains outside the
+implementation-blind author channel.
+
 Governing identity:
 `SCI-MAP-OWNER-DIRECTIVE-v0.2-r0.2/2026-09-07`, SHA-256
 `620d4ff8204b453e2e363e84b9fcfbc480c9f0f88f0f763e0c9be69b873ca2e7`.
@@ -65,4 +91,3 @@ authorized this bounded revision. Any future new estimator, projection,
 coefficient family, response authority, covariance/GLS method, regridding,
 mode profile, NOI significance method, or production claim remains outside
 scope and requires its own authority.
-

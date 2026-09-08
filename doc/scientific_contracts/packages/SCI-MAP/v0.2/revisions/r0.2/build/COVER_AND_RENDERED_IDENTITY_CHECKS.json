@@ -20,7 +20,7 @@
         "/CreationDate": "D:20260907000000-00'00'"
       },
       "page_count": 34,
-      "pdf_sha256": "24aeea833f72cc45dd628826f61acaef9eb2e1105fa1a967b1ef9c28c933e747"
+      "pdf_sha256": "ec3113ddfc2aba024b14e726d9e227928ab436d2d8a1cb7fc8632ff0c5ca5764"
     },
     "rationale": {
       "physical_page": 1,
@@ -29,7 +29,7 @@
         "original_author_manifest": "83baf583f73784bebc6724025fd110e5545303f303c70af590b53c5696ee2c4f",
         "author_packet_inventory": "f13f29746b71e90e661ee8cdb7eaba781bec97be1baa11c06529a5c2150b4a29",
         "owner_directive": "620d4ff8204b453e2e363e84b9fcfbc480c9f0f88f0f763e0c9be69b873ca2e7",
-        "document_entry_source": "0a16a682018a0df4464c3aca4d21ee2ea66336aa2c7fb9153b8f34b3848188d2"
+        "document_entry_source": "fc6551fa650c23c925229e3dc1cc8ae0764c7688cf698c9adbbbf0dc60c7ba51"
       },
       "all_present": true,
       "metadata": {
@@ -41,7 +41,7 @@
         "/CreationDate": "D:20260907000000-00'00'"
       },
       "page_count": 16,
-      "pdf_sha256": "438c5f646c3fe6ab3f44d1985ccbf8594b453837f292bd0fa4335c06136bdf8f"
+      "pdf_sha256": "2fe369dc1acf7958d3c9004fc7e56736cea98fc3b8debd48c49cc70be0798ae0"
     },
     "engineering": {
       "physical_page": 1,
@@ -62,7 +62,7 @@
         "/CreationDate": "D:20260907000000-00'00'"
       },
       "page_count": 25,
-      "pdf_sha256": "ca6862fb94c68103334fcde0b206d8b23fed0cd3904e30fbc92933be624cb327"
+      "pdf_sha256": "7b1205cc8593e87a496d6d0c48d47bc4305e1f36b9fc971c33710a39c201533f"
     }
   },
   "rendered_headings": {

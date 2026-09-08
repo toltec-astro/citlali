@@ -41,7 +41,7 @@ core is normative; view prose cannot change it.
 | Artifact | Raw SHA-256 |
 | --- | --- |
 | `src/formal-scientific-engineering-contract.tex` | `53d0dbf7269ed826a96b96c56e216a53d2ded5d2e3ba2a9a42953bc33d671523` |
-| `src/scientific-rationale.tex` | `0a16a682018a0df4464c3aca4d21ee2ea66336aa2c7fb9153b8f34b3848188d2` |
+| `src/scientific-rationale.tex` | `fc6551fa650c23c925229e3dc1cc8ae0764c7688cf698c9adbbbf0dc60c7ba51` |
 | `src/engineering-conformance.tex` | `ae745f2bd7ec288c1997b24b26720d7d7033dd05939638fac50bd65cf8f175a2` |
 | `src/SCI-MAP-v0.2_OWNER_DECISION_REGISTER_r0.2.tex` | `ab3eb86737d4834a02032962a941b5db9d4c7925e231da56eb2042192e6d9d36` |
 

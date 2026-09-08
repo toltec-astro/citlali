@@ -17,7 +17,7 @@ view shall import that wrapper exactly once.
 | View | Exact entry-source SHA-256 | Scientific role |
 | --- | --- | --- |
 | Formal | `53d0dbf7269ed826a96b96c56e216a53d2ded5d2e3ba2a9a42953bc33d671523` | Renders normative equations, assumptions, 52 requirements, and 25 predictions. |
-| Rationale | `0a16a682018a0df4464c3aca4d21ee2ea66336aa2c7fb9153b8f34b3848188d2` | Explains the same science and may not contradict or replace the core. |
+| Rationale | `fc6551fa650c23c925229e3dc1cc8ae0764c7688cf698c9adbbbf0dc60c7ba51` | Explains the same science and may not contradict or replace the core. |
 | ECS | `ae745f2bd7ec288c1997b24b26720d7d7033dd05939638fac50bd65cf8f175a2` | Imports canonical clauses and adds only prospective evidence procedure/result records. |
 
 On the stable author bytes, a literal input parse found the same r0.2 wrapper

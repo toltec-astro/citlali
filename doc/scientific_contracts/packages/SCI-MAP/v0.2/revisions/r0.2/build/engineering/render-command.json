@@ -4,8 +4,8 @@
     "-r",
     "100",
     "-png",
-    "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/engineering-conformance.pdf",
-    "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-03/engineering/render/page"
+    "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-05/engineering/engineering-conformance.pdf",
+    "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-05/engineering/render/page"
   ],
   "exit_code": 0,
   "stdout": "",

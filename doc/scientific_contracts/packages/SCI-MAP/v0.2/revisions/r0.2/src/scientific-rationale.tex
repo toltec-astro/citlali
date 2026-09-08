@@ -97,10 +97,18 @@ For compatible observation maps on one common grid, the v0.2 coadd is
 \end{equation}
 where the named v0.2 uniform family sets dimensionless \(u_{op}=1\) for every
 admitted observation row. This is equal-observation averaging, not precision.
-An observation bundle is admitted atomically: its signal,
-coordinates, response, uncertainty, validity, and provenance must be mutually
-compatible before any of its valid pixels contribute. Pixel-level support
-then determines where the admitted observation contributes.
+An observation bundle is admitted atomically under the exact selected product
+role and admission profile. Its base-required signal, identity,
+coordinate/geometry, unit, WCS/grid, validity, and provenance facts must be
+compatible before any valid pixel contributes. Only companions named as
+required by that exact selected role/profile are admission prerequisites.
+Under \SCIMapBaseCoaddRole{}, an unavailable or basis-incompatible member
+response leaves numerical signal membership unchanged and makes the coadd
+response unavailable with the exact cause. Incomplete covariance also leaves
+signal membership unchanged and is recorded with its exact incomplete status
+and cause. Neither condition creates a hidden subset, zero companion, or
+assumed independence. Pixel-level support then determines where the admitted
+observation contributes.
 
 Both equations are linear only \emph{conditional on fixed} sample and detector
 membership, projection, coefficients, support policy, response state,

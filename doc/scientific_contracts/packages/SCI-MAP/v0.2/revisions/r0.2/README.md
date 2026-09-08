@@ -2,6 +2,26 @@
 
 ## Program adherence and prior-work recovery
 
+This package follows the [scientific-contract charter](inputs/doc/scientific_contracts/README.md)
+and [accepted pilot process](inputs/doc/scientific_contracts/PILOT_PROCESS_REVIEW_2026-08-16.md).
+The [admitted original Scope Brief](inputs/doc/scientific_contracts/studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/SCOPE_BRIEF.md)
+is the approved in-packet record of downstream-roadmap and recovery provenance;
+the roadmap reference is a provenance-only locator, not scientific authority,
+and its unadmitted target was not dereferenced. The scientific predecessor is
+the [frozen SCI-MAP v0.1/r0.7.1 authority](inputs/doc/scientific_contracts/packages/SCI-MAP/v0.1/SCIENTIFIC_OWNER_FREEZE_R0.7.1.md).
+The completed package-specific recovery and disposition is
+[`PRIOR_WORK.md`](PRIOR_WORK.md).
+
+Recovery adopts the accepted r0.1 core architecture and stable 52/25
+inventories, cites the frozen predecessor and admitted PTC/AST/NOI authorities,
+supersedes only r0.1 candidate material affected by the targeted revision,
+defers unsupplied stronger methods/profiles, and excludes implementation,
+audit, validation, operations, performance, production, Unity, and unlisted
+material. The genuinely new work is limited to the directive's lifecycle,
+role, comparison-space, NOI, ECS-vocabulary, notation, coverage-cut, WCS, and
+source-binding amendments. Only the 79 exact files in the delivered
+`AUTHOR_PACKET_INVENTORY.json` may enter authorship.
+
 This is the one targeted implementation-blind SCI-MAP v0.2 document revision
 authorized by
 `inputs/owner/SCI_MAP_R02_OWNER_DIRECTIVE.txt`, identity

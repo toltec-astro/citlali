@@ -13,8 +13,8 @@
     "occurrence_profile_sha256": "bedd2a7b46b1a18c2fb3150a2f55982779f957e1b48a1c871057f9a925d17c63",
     "coadd_profile_sha256": "e6372d1f72c78cab512987477ee1576f03ba63b79f23c88bb5fab772657adaf5",
     "candidate_val_profile_registry_sha256": "a691a73e8a1a7bd73cb9e25ddcc6f8e281b473139c3b0564534929255dc298ee",
-    "candidate_val_source_register_sha256": "1cecc8623a4ed0818a761203ff9178edad80308bdcbb0eebd3fa1a74ab8dfc61",
-    "map_source_binding_sha256": "f774e6be57e2d166e2fdbe1536868a954601a469bb0c5d0a5ddd044266b6e684"
+    "candidate_val_source_register_sha256": "148afb6664f2a29f52a0207e16866d64dd023649ec7ca63121b8327590b2c12c",
+    "map_source_binding_sha256": "2936597cb44864e6202b776869af646bf0421bdc4b5f2fa1084c26cf1bfdafaa"
   },
   "approved_input_bindings": {
     "author_manifest_identity": "SCI-MAP post-freeze successor proposed author references r0.1/2026-09-07",
@@ -42,8 +42,8 @@
     },
     {
       "path": "PREDECESSOR_SUCCESSOR_MAPPING.md",
-      "bytes": 8570,
-      "sha256": "a91008c91ceb8b00bf3c8ef8d25b2d11f950c4a7db318920ea3ba9a1965acca0"
+      "bytes": 8591,
+      "sha256": "860e2a9e66e616dcdd86a8f9456b7335b9dc813bbecc4cdfa98fee32aba1a439"
     },
     {
       "path": "PREDICTION_CROSSWALK.md",
@@ -62,8 +62,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 4335,
-      "sha256": "721a1dad97bb784ad9898dadea169a4b69aaeabd650d2a0c12d969792f31f1c0"
+      "bytes": 5780,
+      "sha256": "2d35617fb8e20d1769380745d6d367fc4b5d0d02569ed450d783bb3d18604e4f"
     },
     {
       "path": "SCIENTIFIC_OWNER_DECISION_LEDGER.md",
@@ -72,8 +72,8 @@
     },
     {
       "path": "SCOPE_BRIEF.md",
-      "bytes": 3383,
-      "sha256": "4c1f8eadb6681e5dbe9c28a0268b453336f4b12524d2777fbadd6589a518c2e9"
+      "bytes": 5113,
+      "sha256": "3a9f72c77beb26496fd67728e09a72bea6d3a984a63a35056d1f643dd786e1f8"
     },
     {
       "path": "SEMANTIC_CHANGE_REPORT.md",
@@ -88,7 +88,7 @@
     {
       "path": "bindings/SCI-MAP_SOURCE_BINDING_v0.2_r0.2_CANDIDATE.md",
       "bytes": 6617,
-      "sha256": "f774e6be57e2d166e2fdbe1536868a954601a469bb0c5d0a5ddd044266b6e684"
+      "sha256": "2936597cb44864e6202b776869af646bf0421bdc4b5f2fa1084c26cf1bfdafaa"
     },
     {
       "path": "bindings/SCI-PTC_TO_SCI-MAP_BOUNDARY_DISPOSITION_v0.2_r0.2_CANDIDATE.md",
@@ -103,7 +103,7 @@
     {
       "path": "bindings/SCI-VAL_SOURCE_BINDING_REGISTER_SCI-MAP_v0.2_r0.2_CANDIDATE.md",
       "bytes": 6677,
-      "sha256": "1cecc8623a4ed0818a761203ff9178edad80308bdcbb0eebd3fa1a74ab8dfc61"
+      "sha256": "148afb6664f2a29f52a0207e16866d64dd023649ec7ca63121b8327590b2c12c"
     },
     {
       "path": "profiles/SCI-MAP_COADD_AGGREGATE_PROFILE_v0.2_r0.2_CANDIDATE.md",
@@ -168,7 +168,7 @@
     {
       "path": "records/SOURCE_CORE_VIEW_PARITY_REPORT.md",
       "bytes": 3840,
-      "sha256": "4cc3c0d1a07152cab2011277c47ecf9eb162f65a548bddfbf226495b55d5cd02"
+      "sha256": "6f30536d7d88294d59b0dce8b6222793ada7039e6f621ddc6671a809ad63e772"
     },
     {
       "path": "records/UNIFIED_LIFECYCLE_AND_PARAMETER_STATE_TABLE.md",
@@ -232,8 +232,8 @@
     },
     {
       "path": "src/scientific-rationale.tex",
-      "bytes": 43977,
-      "sha256": "0a16a682018a0df4464c3aca4d21ee2ea66336aa2c7fb9153b8f34b3848188d2"
+      "bytes": 44548,
+      "sha256": "fc6551fa650c23c925229e3dc1cc8ae0764c7688cf698c9adbbbf0dc60c7ba51"
     },
     {
       "path": "templates/COVERAGE_CUT_OVERRIDE_RECORD.schema.json",
