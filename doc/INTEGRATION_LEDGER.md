@@ -1,5 +1,30 @@
 # Citlali Integration Ledger
 
+## RTC Spike Learn Canonical Acceptance — 2026-09-08
+
+Owner directive: "accepted. What's next?" This accepts the preceding explicit
+proposal for source acceptance and canonical admission of reviewed receipt
+candidate `835d7d9940cbdf3c416f7d5f75980a88b3fe7201`, tree
+`91aad35387b6a424fc89b91dfa213443ee4b4134`. Independent exact-SHA review
+passed all three axes with recorded limitations and no findings; report SHA-256
+`d07988f40f9e9be23d92697c9b19e1498b67906fe21ea5b7f0ae7d6b72bdfdc4`.
+
+Live explicit-SSH GitHub and clean local canonical were reverified at
+`8eccf8990027b8f65febb5f20d9a415829152322`. The accepted candidate is its
+linear descendant through tested implementation `4e6d9dbc5997909483e10e3ea95a94202e852bd2`;
+local canonical was fast-forwarded literally to that candidate. No merge,
+rebase or cherry-pick was needed. All 55 original and nine receipt archive
+manifest entries were reverified and remain unchanged. Unity evidence remains
+bound to the tested source: job `64075137`, 916 runnable / 67 focused passed.
+
+The [four-path documentation closure](../handoff/TIMESTREAM_SUCCESSOR_RTC_SPIKE_LEARN_CLOSURE_2026-09-08.md)
+records acceptance and preserves the verbatim admission review. Fresh-context
+read-only review of its exact SHA and clean/live canonical rechecks precede
+the authorized final incorporation. Final evidence binds externally under
+`/private/tmp/citlali-rtc-spike-learn-acceptance-2026-09-08`.
+The unit is complete; pushes remain owner-held. No subsequent application unit,
+route activation, production or cleanup is opened by this acceptance.
+
 ## RTC Spike Learn Unity Evidence Receipt — 2026-09-08
 
 The owner supplied the timestamped receipt for Unity job `64075137`, completed

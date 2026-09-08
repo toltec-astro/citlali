@@ -1,5 +1,29 @@
 # Citlali Refactor Status
 
+## 2026-09-08 RTC Spike Learn Accepted and Incorporated
+
+The owner accepted reviewed candidate
+`835d7d9940cbdf3c416f7d5f75980a88b3fe7201`, preserving exact Unity-tested
+implementation `4e6d9dbc5997909483e10e3ea95a94202e852bd2`. Live GitHub and
+clean local canonical were reverified at its literal base
+`8eccf8990027b8f65febb5f20d9a415829152322`; local canonical was then
+fast-forwarded to the accepted candidate. Both exact source and receipt reviews
+passed all three governance axes with recorded limitations and no findings.
+Unity job `64075137` passed 916/916 runnable and 67/67 focused tests.
+
+The [acceptance and closure record](../handoff/TIMESTREAM_SUCCESSOR_RTC_SPIKE_LEARN_CLOSURE_2026-09-08.md)
+binds the owner decision, verbatim admission review and preserved evidence.
+This four-path documentation closure requires its own independent exact-SHA
+review before the authorized final canonical fast-forward. Its final identity,
+review and incorporation bind externally. GitHub push remains owner-held.
+
+This completes the bounded original-pair spike-candidate Learn unit and its
+screening-failure Consider constraint. Full event assessment, the complete RTC
+plan and Apply remain pending under the existing S2 work order. The next
+implementation unit is not opened by this acceptance. Existing D2, VAL and
+scientific authority remain unchanged; 152390 remains a timestream fixture.
+Earlier pending-acceptance entries below remain historical checkpoints.
+
 ## 2026-09-08 RTC Spike Learn Unity Gate Passed
 
 Owner-run Unity GCC13/Spack job `64075137` passed at exact reviewed source
