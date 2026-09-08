@@ -1,5 +1,18 @@
 # Citlali Integration Ledger
 
+## Current MAP profile registration and source binding — 2026-09-08
+
+The owner approved the exact r0.4 profiles, five final generation identities,
+and paired bindings. [The admission record](scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/REGISTRATION_AND_SOURCE_BINDING.md)
+records the passed post-owner review and the canonical-effect condition:
+after exact merge review and actual canonical incorporation, this generation
+is registered and formally source-bound, with activation/evaluability still
+unavailable. The external completion receipt records the actual merge and
+canonical advance. Earlier proposal/pending labels below are historical.
+All prior science and accepted bytes remain exact. No application work or
+qualification occurs; NOI remains paused here and FRUIT remains independent.
+
+
 ## Current MAP contract incorporation and binding status — 2026-09-08
 
 The owner authorized [documentation-only canonical incorporation](scientific_contracts/acceptance/SCI_MAP_V02_R04_2026-09-08/README.md)
