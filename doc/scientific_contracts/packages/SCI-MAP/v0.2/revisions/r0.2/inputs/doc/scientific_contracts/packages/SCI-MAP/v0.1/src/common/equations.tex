@@ -1,0 +1,166 @@
+% Canonical SCI-MAP v0.1 equations; CI-001 dimensional amendment incorporated 2026-08-16.
+% Canonical equations. They are typeset in the scientist-facing view only.
+\newcommand{\SCIMapObservationEquations}{%
+\begin{align}
+ a_{pi} &= G_{pi}\,\gamma_i,
+ \label{eq:effective-coefficient}\\
+ \mathcal G&=\{Z_{\rm avail},{\rm PTC}_{\rm ret},\gamma_{\rm avail},
+ \gamma_{\rm QC},{\rm MAP}_{\rm adm},
+ \nonumber\\[-2pt]
+ &\hspace{2.4em}{\rm AST}_{\rm coord},Z_{\rm finite},\gamma_{>0},
+ G_{\rm place},{\rm MAP}_{\rm local}\},
+ \label{eq:contribution-gate-family}\\
+ b_g(i,p)&=\operatorname{pass}_g\!\left(\sigma_g(i,p)\right)
+ \in\{0,1\},\qquad g\in\mathcal G,
+ \label{eq:typed-gate-projection}\\
+ \operatorname{pass}_{\gamma,{\rm QC}}(i)&=
+ \boldsymbol 1\!\left[\begin{gathered}
+ \operatorname{request}_{\gamma,{\rm QC}}(i)=\texttt{requested},\\[-2pt]
+ \operatorname{applicability}_{\gamma,{\rm QC}}(i)=\texttt{applicable},\\[-2pt]
+ \operatorname{eligibility}_{\gamma,{\rm QC}}(i)=\texttt{eligible},\\[-2pt]
+ \operatorname{realization}_{\gamma,{\rm QC}}(i)=\texttt{realized}
+ \end{gathered}\right],
+ \label{eq:gamma-qc-named-field-projection}\\
+ \mathcal C_p&=\left\{i:\bigwedge_{g\in\mathcal G}b_g(i,p)=1\right\},
+ \label{eq:contribution-set}\\
+ \mathcal S_{\rm out}(\Pi_{\rm eff})
+ &=\{p:\operatorname{authorize}_{\Pi_{\rm eff}}(p)=1\},
+ \label{eq:support-authorized-row-set}\\
+ N_p &= \sum_{i\in\mathcal C_p} a_{pi}z_i, &
+ Q_p &= \sum_{i\in\mathcal C_p} a_{pi},
+ \label{eq:ordinary-accumulators}\\
+ K_p&=\sum_{i\in\mathcal C_p}a_{pi}k_i,
+ \label{eq:response-accumulator}\\
+ \widehat m_p &= N_p/Q_p, &
+ \widehat k_p&=K_p/Q_p, \qquad p\in\mathcal S_{\rm out},
+ \label{eq:ordinary-products}
+\end{align}}
+
+\newcommand{\SCIMapOperatorEquations}{%
+\begin{align}
+ D_Q&=\operatorname{diag}(G\Omega\boldsymbol 1),
+ &J_{\rm out}\boldsymbol v&=(v_p)_{p\in\mathcal S_{\rm out}},
+ &D_{Q,{\rm out}}&=J_{\rm out}D_QJ_{\rm out}^{\mathsf T},
+ \label{eq:output-row-selection}\\
+ A_{{\rm MAP},\Pi}&\equiv A_{\rm out}
+   \equiv D_{Q,{\rm out}}^{-1}J_{\rm out}G\Omega,
+ &\widehat{\boldsymbol m}_{\rm out}&=A_{{\rm MAP},\Pi}\boldsymbol z,
+ \label{eq:map-operator}\\
+ \delta\boldsymbol m_{\rm out}
+   &=A_{{\rm MAP},\Pi}H_{{\rm fixed},\Theta}\,\delta\boldsymbol s,
+ &R_{{\rm fixed},\Theta}&=A_{{\rm MAP},\Pi}H_{{\rm fixed},\Theta},
+ &C_{m,{\rm out}}&=A_{{\rm MAP},\Pi} N_{\rm PTC}
+                          A_{{\rm MAP},\Pi}^{\mathsf T}.
+ \label{eq:response-covariance}
+\end{align}}
+
+\newcommand{\SCIMapProcedureResponseEquations}{%
+\begin{align}
+ \Delta\boldsymbol z_{{\rm PTC}\text{-}{\rm FP}}(\delta\boldsymbol s;\alpha)
+ &=\mathcal P_{\rm PTC}(\boldsymbol s+\delta\boldsymbol s;\alpha)
+   -\mathcal P_{\rm PTC}(\boldsymbol s;\alpha),
+ \label{eq:ptc-full-procedure-response}\\
+ \Delta\mathcal S_{{\rm PTC}\text{-}{\rm FP}}
+ &=\operatorname{state}_{\rm PTC}(\boldsymbol s+\delta\boldsymbol s;\alpha)
+   \ominus\operatorname{state}_{\rm PTC}(\boldsymbol s;\alpha),
+ \label{eq:ptc-full-procedure-state}\\
+ \Delta\boldsymbol m_{{\rm PTC}\text{-}{\rm FP}}
+ &=A_{{\rm MAP},\Pi}\,\Delta\boldsymbol z_{{\rm PTC}\text{-}{\rm FP}},
+ \qquad\text{only when MAP state }\Pi\text{ is held fixed},
+ \label{eq:map-of-ptc-full-procedure}\\
+ \Delta\boldsymbol m_{{\rm PTC+MAP}\text{-}{\rm RR}}
+ &=\mathcal M\!\left(\mathcal P_{\rm PTC}(\boldsymbol s+\delta\boldsymbol s;\alpha);
+                       \Pi_{+}\right)
+  -\mathcal M\!\left(\mathcal P_{\rm PTC}(\boldsymbol s;\alpha);\Pi_{0}\right),
+ \label{eq:ptc-map-reresolved-procedure-response}
+\end{align}}
+
+\newcommand{\SCIMapExposureEquations}{%
+\begin{align}
+ \mathcal U^{\rm up}_p
+ &=\left\{u:e^{\rm vo}_u>0,\ G^{u}_{p}=1,\
+   \exists i\in\mathcal I_{\rm route}:u\leadsto i\right\},
+ \label{eq:upstream-original-population}\\
+ E^{{\rm up},{\rm footprint}}_p
+ &=\sum_{u\in\mathcal U^{\rm up}_p}e^{\rm vo}_u,
+ \label{eq:original-exposure}\\
+ \mathcal U^{\rm ret}_p
+ &=\left\{u:e^{\rm vo}_u>0,\ G^{u}_{p}=1,\
+   \exists i\in\mathcal C:u\leadsto i\right\},
+ &E^{{\rm ret},{\rm footprint}}_p
+ &=\sum_{u\in\mathcal U^{\rm ret}_p}e^{\rm vo}_u,
+ \label{eq:retained-exposure}\\
+ \mathcal U^c_p&=\bigcup_{o\in\mathcal O_p}\{(o,u):u\in\mathcal U^{\rm ret}_{op}\},
+ &E^c_p&=\sum_{(o,u)\in\mathcal U^c_p}e^{\rm vo}_{ou}.
+ \label{eq:coadd-exposure}
+\end{align}}
+
+\newcommand{\SCIMapFormalWeightEquations}{%
+\begin{align}
+ \operatorname{Var}(\widehat m_p\mid\Theta)
+ &=\frac{\sum_iG_{pi}^{2}\gamma_i}
+         {(\sum_iG_{pi}\gamma_i)^2},
+ &
+ \operatorname{Cov}(\widehat m_p,\widehat m_r\mid\Theta)
+ &=\frac{\sum_iG_{pi}G_{ri}\gamma_i}{Q_pQ_r},
+ \qquad p,r\in\mathcal S_{\rm out},
+ \label{eq:fractional-covariance}\\
+ \phi_p&=\frac{Q_p^2}{\sum_iG_{pi}^{2}\gamma_i},
+ &
+ \phi_p=Q_p&\Longleftrightarrow
+ \sum_i\gamma_i(G_{pi}^{2}-G_{pi})=0,
+ \qquad p\in\mathcal S_{\rm out},
+ \label{eq:formal-weight}
+\end{align}}
+
+\newcommand{\SCIMapThresholdEquations}{%
+\begin{align}
+ \mathcal I_{\Pi_{\rm eff}}&=\text{the declared support-policy population},
+ \label{eq:threshold-population-identity}\\
+ \mathcal P&=\{Q_p:\operatorname{finite}(Q_p),\ Q_p>0,\
+                     p\in\mathcal I_{\Pi_{\rm eff}}\},
+ &N&=|\mathcal P|,
+ \label{eq:threshold-population}\\
+ k&=\left\lfloor\frac{\lfloor0.75N\rfloor+N}{2}\right\rfloor,
+ &Q_\star&=\begin{cases}\mathcal P_{(k)},&N>0,\\0,&N=0,\end{cases}
+ \label{eq:threshold-selector}\\
+ c&=\texttt{coverage\_cut}\text{ (dimensionless scalar)},
+ &\operatorname{admit}_{\Pi_{\rm eff}}(c)&=1,
+ \label{eq:coverage-cut-admission}\\
+ T_{\rm norm}&=Q_\star c/10,
+ &T_{\rm sci}&=Q_\star c,
+ \label{eq:support-thresholds}\\
+ S_p^{\rm norm}&=\boldsymbol 1[\operatorname{finite}(Q_p),\ Q_p>0,\
+                                  Q_p\ge T_{\rm norm}],
+ \label{eq:normalization-support}\\
+ S_p^{\rm sci}&=\boldsymbol 1[\operatorname{finite}(Q_p),\ Q_p>0,\
+                                 Q_p\ge T_{\rm sci}].
+ \label{eq:support-predicates}
+\end{align}}
+
+\newcommand{\SCIMapCoaddEquations}{%
+\begin{align}
+ \mathcal S^c_{\rm out}
+ &=\{p:\operatorname{authorize}_{\Pi^c_{\rm eff}}(p)=1\},
+ \label{eq:coadd-support-authorized-row-set}\\
+ u_{op}&=1\quad\text{for each admitted observation row},
+ \label{eq:coadd-uniform-coefficient}\\
+ N^c_p&=\sum_{o\in\mathcal O_p}u_{op}\widehat m_{op},
+ &Q^c_p&=\sum_{o\in\mathcal O_p}u_{op},
+ \label{eq:coadd-accumulators}\\
+ \widehat s_p&=N^c_p/Q^c_p, \qquad p\in\mathcal S^c_{\rm out},
+ \label{eq:coadd-ordinary}\\
+ J^c_{\rm out}\boldsymbol v^c&=(v^c_p)_{p\in\mathcal S^c_{\rm out}},
+ \label{eq:coadd-output-row-selection}\\
+ \widehat{\boldsymbol m}^{c}_{\rm out}
+   &=(\widehat s_p)_{p\in\mathcal S^c_{\rm out}}
+     =B_{\rm out}\widehat{\boldsymbol m}_{\rm obs},
+ \label{eq:coadd-map-operator}\\
+ \widehat k^c_p&=\frac{\sum_{o\in\mathcal O_p}u_{op}\widehat k_{op}}{Q^c_p},
+ \qquad p\in\mathcal S^c_{\rm out}.
+ \label{eq:coadd-response-product}\\
+ C_{c,{\rm out}}&=B_{\rm out} C_{\rm obs}B_{\rm out}^{\mathsf T}
+ \quad\text{only when every required block is available},
+ &R_{c,{\rm out}}&=B_{\rm out}T_{\rm obs}.
+ \label{eq:coadd-companions}
+\end{align}}

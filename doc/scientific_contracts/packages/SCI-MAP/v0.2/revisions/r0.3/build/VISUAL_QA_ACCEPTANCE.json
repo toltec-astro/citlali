@@ -1,0 +1,36 @@
+{
+  "status": "pass",
+  "build_identity": "SCI-MAP-R03-DOCUMENT-BUILD/candidate-build-01",
+  "method": "The manager visually inspected every final page in the 15 six-page contact sheets (37 formal, 17 rationale, 30 ECS pages). Full-size inspection additionally covered all three covers; formal pages 6, 11, 13, 15 and 16 for the comparison-space reference, preserved N=0 selector, empty-support text, response equation and lifecycle tables; rationale page 17 for the complete authority paragraph; and ECS pages 10 and 30 for profile, response and handoff vocabularies. No clipping, overlap, malformed equation, broken glyph or unreadable table was found.",
+  "views": {
+    "formal": {
+      "pages": 37,
+      "contact_sheets": 7,
+      "full_size_pages": [
+        1,
+        6,
+        11,
+        13,
+        15,
+        16
+      ]
+    },
+    "rationale": {
+      "pages": 17,
+      "contact_sheets": 3,
+      "full_size_pages": [
+        1,
+        17
+      ]
+    },
+    "engineering": {
+      "pages": 30,
+      "contact_sheets": 5,
+      "full_size_pages": [
+        1,
+        10,
+        30
+      ]
+    }
+  }
+}

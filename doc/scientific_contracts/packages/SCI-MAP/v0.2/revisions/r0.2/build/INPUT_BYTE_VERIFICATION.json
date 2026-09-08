@@ -1,0 +1,12 @@
+{
+  "identity": "SCI-MAP-R02-INPUT-BYTE-VERIFICATION/2026-09-07",
+  "scope": "Exact approved scientific packet and accepted r0.1 basis only; no implementation inspection",
+  "original_manifest_identity": "SCI-MAP post-freeze successor proposed author references r0.1/2026-09-07",
+  "original_manifest_sha256": "83baf583f73784bebc6724025fd110e5545303f303c70af590b53c5696ee2c4f",
+  "original_reference_count": 56,
+  "original_references_match": true,
+  "packet_count": 79,
+  "packet_matches": true,
+  "owner_directive_sha256": "620d4ff8204b453e2e363e84b9fcfbc480c9f0f88f0f763e0c9be69b873ca2e7",
+  "uniform_boundary_copies_identical": true
+}

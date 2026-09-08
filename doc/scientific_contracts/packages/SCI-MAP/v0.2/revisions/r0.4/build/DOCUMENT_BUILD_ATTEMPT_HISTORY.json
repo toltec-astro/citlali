@@ -1,0 +1,63 @@
+{
+  "identity": "SCI-MAP-R04-DOCUMENT-BUILD-HISTORY/2026-09-08",
+  "scope": "Document build attempts only; earlier failed or superseded attempts remain preserved and are not counted as passing.",
+  "attempts": [
+    {
+      "path": "/private/tmp/citlali-map-r04-build-2026-09-08/candidate-build-01",
+      "identity": "SCI-MAP-R04-DOCUMENT-BUILD/candidate-build-01",
+      "build_record_sha256": "d152fc1b5e358c0c10882625648ddaf4ee22622edd934114d8722f24c429efdd",
+      "status": "failed formal compilation; two other PDFs provisional and superseded",
+      "findings": [
+        "Formal TeX lines174-176 lost math delimiters/backslashes, causing Missing $ inserted",
+        "Complete lifecycle paragraph and full table both rendered; bounded deduplication correction required",
+        "ECS result-vocabulary continuation retained avoidable forced break before Claim-layer gates"
+      ],
+      "compilation_logs": {
+        "formal": "6073046fa2eef8422f5bc885e9b0729710eee5fb6fb2a9f001438af5f5a896e7",
+        "rationale": "3a4f2fe5ecfbfef201ccfaebceefc5d056824db65f145f13579d73fd2c2c396e",
+        "engineering": "48fc7c112ada2488e41bc18767107ca268f91e5190a89b813f78757da7c3a05e"
+      },
+      "partial_inspection_sha256": "5ec08559a849909a654960b41554b92c0e4fbb3b196c31d9beb49ff6db6c5805",
+      "partial_QA": "ECS cover/ToC and vocabulary continuation viewed; no all-page acceptance claimed."
+    },
+    {
+      "path": "/private/tmp/citlali-map-r04-build-2026-09-08/candidate-build-02",
+      "identity": "SCI-MAP-R04-DOCUMENT-BUILD/candidate-build-02",
+      "build_record_sha256": "688f084b915e077cedaf6d82f71c258d52b2397dd6f07f7f15f44e389eae706e",
+      "status": "clean document compilation and all-page provisional visual inspection; superseded for one cause/outcome prose correction",
+      "findings": [
+        "Formal sentence labels not_produced as a cause; correction must name outcome and exact no-support cause separately"
+      ],
+      "compilation_logs": {
+        "formal": "55e7ed207fe92ad4fd7af221971710bd7569e94a07d1acdbec377de0bcc6e074",
+        "rationale": "76ee3cf61bdd5b929998e2cf75654e323432c6d8ca7349610746521576f7de30",
+        "engineering": "66521009d7a33b7ec57328bcb6e9dfb6d5eb9874a4601d82806888f5bc127a35"
+      },
+      "inspection_sha256": "ce16ccaa511da287a55f63f0b9a655513ba2dcf14b317ee40b9b3ff0cef531dd",
+      "pages": {
+        "formal": 36,
+        "rationale": 16,
+        "engineering": 27
+      },
+      "visual_inspection": "All79 pages inspected on14 six-page contact sheets; ECS cover and vocabulary flow, formal math and final rationale authority consolidation checked. No clipping/overlap/missing glyphs. Not final source acceptance."
+    },
+    {
+      "path": "/private/tmp/citlali-map-r04-build-2026-09-08/candidate-build-03",
+      "identity": "SCI-MAP-R04-DOCUMENT-BUILD/candidate-build-03",
+      "build_record_sha256": "3ce67b07adc6ca1f0f1b543c42a5964a165094c01468af4704373b70e788eb73",
+      "status": "pass final document compilation, reopening, all-page rendering and visual QA",
+      "compilation_logs": {
+        "formal": "efc0e962304a05ff10d50c903389113b112b35cd359143f823cf78101ec23657",
+        "rationale": "21a85277894d055ddb17945dfed1fb857cc8e2f47c6e74c281615c437047d3fa",
+        "engineering": "a0d10007ea50cbdb0df2b5b9f67d8d54bb1f7e25482673cd8e320fad93634c13"
+      },
+      "inspection_sha256": "fa3917a282ef11d38941fcd85ff322651f2b959c1adcaf6790e5ae755defe60b",
+      "visual_QA_sha256": "7996b2970dbd9c544e425b7afdca5139e9c1f76eaf8d91974a8764c66c89c038",
+      "pages": {
+        "formal": 36,
+        "rationale": 16,
+        "engineering": 27
+      }
+    }
+  ]
+}

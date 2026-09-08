@@ -1,5 +1,131 @@
 # Citlali Integration Ledger
 
+## Current MAP contract incorporation and binding status — 2026-09-08
+
+The owner authorized [documentation-only canonical incorporation](scientific_contracts/acceptance/SCI_MAP_V02_R04_2026-09-08/README.md)
+of the published, frozen SCI-MAP v0.2/r0.4 packet. This entry takes effect when
+its exact merge passes independent review and is present on canonical ancestry;
+the actual review and fast-forward are recorded in the external completion receipt.
+The [current reconciliation](scientific_contracts/acceptance/SCI_MAP_V02_R04_2026-09-08/BINDING_RECONCILIATION.md)
+supersedes stale MAP authorship, owner-review and incorporation gates below.
+Settled science is preserved. Profile-policy approval, final immutable identities,
+formal Registry/source binding, activation and object-specific evidence remain
+separate. Files in the contract library do not activate a numerical route.
+Application content is preserved exactly from the canonical first parent; no
+implementation qualification occurs. The NOI candidate stays preserved and
+paused in this task, and unfinished FRUIT work remains independent.
+
+
+
+**Current SCI-MAP authority — 2026-09-08:** [v0.2/r0.4 is frozen as generic
+scientific authority](scientific_contracts/packages/SCI-MAP/v0.2/SCIENTIFIC_OWNER_FREEZE_R0.4.md), following
+[owner acceptance](scientific_contracts/packages/SCI-MAP/v0.2/SCIENTIFIC_OWNER_ACCEPTANCE_R0.4_2026-09-08.md) and a
+passing fresh post-owner consistency review. [Exact frozen artifacts and
+bindings](scientific_contracts/packages/SCI-MAP/v0.2/FREEZE_BINDING_R0.4.json) retain all prior approvals and all
+52 requirements / 25 predictions. Affected profiles and numerical routes remain
+pending or unavailable under their separate gates. Topic-branch publication
+is owner-authorized; this record supplies no remote receipt. Canonical integration and implementation
+qualification are separate. Earlier candidate entries below are preserved as
+historical records and do not override this status.
+
+
+## Current SCI-MAP document candidate — 2026-09-08
+
+[SCI-MAP v0.2/r0.4](scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/README.md) is the current bounded scientific-document candidate, superseding r0.3 candidate navigation below. [The delivery index](scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/DELIVERY_INDEX.md) links the corrected views, sources, fixtures and acceptance evidence. The owner accepted r0.3 architecture as the basis and closed its earlier repairs; prior approvals and predecessor bytes remain preserved.
+
+[The proposed conditional freeze](scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/PROPOSED_SCIENTIFIC_OWNER_ACCEPTANCE_AND_FREEZE_DISPOSITION.md) keeps affected draft-identity routes unavailable. Finished r0.4 owner acceptance, fresh post-owner consistency review and later freeze remain pending. Profile approval, registration, binding, activation and object decisions remain separate; this entry performs none of them.
+
+This task owns scientific-contract development and review. No application change, implementation qualification, push or integration is recorded. The NOI candidate remains preserved and paused here; FRUIT remains independent and unfinished. [The scope record](scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/build/MANAGER_SCOPE_AND_COMPLETION.md) records the bounded document gates and scope. Exact-commit review and archive identities are in the external receipt. Historical entries below retain every original byte.
+
+
+## Current SCI-MAP document candidate — 2026-09-08
+
+[SCI-MAP v0.2/r0.3](scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.3/README.md) is the current bounded scientific-document candidate, superseding r0.2 candidate navigation below. [The delivery index](scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.3/DELIVERY_INDEX.md) links all 14 requested items. The owner accepted r0.2 architecture as the basis; prior approvals and predecessor bytes remain preserved.
+
+[The proposed conditional freeze](scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.3/PROPOSED_SCIENTIFIC_OWNER_ACCEPTANCE_AND_FREEZE_DISPOSITION.md) keeps affected draft-identity routes unavailable. Finished r0.3 owner acceptance, fresh post-owner consistency review and later freeze remain pending. Profile approval, registration, binding, activation and object decisions remain separate; this entry performs none of them.
+
+This task owns scientific-contract development and review. No application change, implementation qualification, push or integration is recorded. The NOI candidate remains preserved and paused here; FRUIT remains independent and unfinished. [The scope record](scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.3/build/MANAGER_SCOPE_AND_COMPLETION.md) records document gates and the disclosed manager-read limitation. Exact-commit review and archive identities are in the external receipt. Historical entries below retain every original byte.
+
+## 2026-09-07 MAP v0.2/r0.2 Targeted Contract Revision
+
+Grant Wilson accepted the r0.1 scientific architecture as the basis for one
+[targeted r0.2 revision](scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.2/README.md). The candidate uses one five-stage
+lifecycle, six explicit observation/coadd roles, exact response comparison
+spaces, current NOI claim limits, and separate ECS result/artifact states.
+It preserves the settled MAP owner decisions, 52 requirement and 25 prediction
+identities, the admitted uniform science, and every r0.1 package file.
+
+The three PDFs have passed [document build and visual checks](scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.2/build/PDF_VISUAL_QA_AND_METADATA.md)
+over 75 pages. All ECS requirement results remain `not_assessed`. This
+candidate is prepared for fresh exact-SHA review and scientific-owner
+disposition; the review receipt binds the final commit separately. Acceptance
+of the r0.1 basis does not approve or freeze the completed r0.2. Historical
+uniform identifiers and approvals remain intact; dependent r0.2 profile/source
+bindings remain candidate, with no source-closed frozen numerical-route claim.
+
+This increment contains contract documents and their artifact-build tools only.
+NOI engineering remains paused and preserved; FRUIT continues independently.
+No application/configuration/test change, implementation qualification, push,
+canonical integration, activation, freeze, cleanup, or Unity operation follows.
+Earlier candidate and pending-gate checkpoints below retain their historical
+meaning and do not reopen settled owner decisions.
+
+## 2026-09-07 MAP v0.2/r0.1 Contract Candidate Prepared
+
+The owner-approved Scope Brief and exact 56 references have produced the
+[SCI-MAP v0.2/r0.1 candidate](scientific_contracts/packages/SCI-MAP/v0.2/README.md)
+through fresh implementation-blind authorship. The common source and three
+rendered views incorporate all nine decided MAP owner questions and the
+already admitted uniform-family boundary, retaining 52 requirement and 25
+prediction identities. In particular, SCI-MAP-OD-007 is decided and incorporated
+in this candidate; the old frozen ledger remains historical.
+
+The [authoring record](scientific_contracts/studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/AUTHORING_RECORD_2026-09-07.md)
+binds scope, source separation, document checks and preserved work. This exact
+candidate is submitted for independent review and scientific-owner disposition.
+It is not frozen, source/VAL-activated, canonically integrated or pushed.
+Application conformance and Spack/Unity qualification are unassessed. The paused
+NOI candidate is preserved, FRUIT remains independent, and no application,
+configuration/default or implementation-test changes accompany this work.
+Earlier authoring/pending checkpoints below are historical.
+
+## 2026-09-07 MAP Successor Authoring Scope Approved
+
+Grant Wilson approved the exact Scope Brief and 56-reference list at reviewed
+candidate `ba1187fe1e30525d4bd1f6f782a22b7103e83e9d`. The
+[scope approval](scientific_contracts/studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/SCOPE_APPROVAL_2026-09-07.md)
+closes that gate and preserves the approved input bytes. A fresh
+implementation-blind author is commissioned from an isolated packet to prepare
+SCI-MAP v0.2/r0.1 on the existing contract lane. All settled MAP decisions and
+admitted uniform science remain inputs; no new scientific choice is made.
+
+The resulting contract candidate still requires owner scientific disposition,
+independent consistency review and exact successor freeze/binding gates.
+Application work and NOI engineering remain outside this approval; FRUIT
+continues independently. No canonical integration, push or activation follows.
+Earlier scope-preparation entries below are historical checkpoints.
+
+## 2026-09-07 MAP Post-Freeze Contract Reconciliation Candidate
+
+The owner directed contract reconciliation after clarifying that “repair”
+meant scientific/engineering contracts, not application code. The
+[reconciliation record](scientific_contracts/studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/README.md)
+recovers exact August 28 decisions from `54475956f...`, preserves frozen MAP
+r0.7.1, and accounts for the already admitted uniform family/profile and
+separate consumer grants. All eight later MAP choices are decided; versioned
+incorporation remains pending. Current navigation is corrected selectively;
+archived decision/audit snapshots retain their original bytes.
+
+The one documentation branch `codex/map-contract-reconciliation-2026-09-07`
+starts at canonical `8eccf8990027b8f65febb5f20d9a415829152322`. Its bounded
+Scope Brief and exact scientific references are prepared for independent
+review and owner scope disposition before implementation-blind successor
+authorship. No new scientific choice is made and no settled one is reopened.
+The NOI application candidate is preserved and paused for separate engineering
+ownership; this task opens no implementation slot. FRUIT remains independent,
+OOF remains deferred, and no code/config/test/build, frozen-source, Registry,
+canonical, push, Unity, activation or cleanup operation is performed.
+
 ## RTC Spike Learn Canonical Acceptance — 2026-09-08
 
 Owner directive: "accepted. What's next?" This accepts the preceding explicit

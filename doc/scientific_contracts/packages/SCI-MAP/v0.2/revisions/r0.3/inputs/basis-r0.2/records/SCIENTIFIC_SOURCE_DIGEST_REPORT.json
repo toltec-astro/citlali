@@ -1,0 +1,279 @@
+{
+  "identity": "SCI-MAP-R02-SCIENTIFIC-AUTHOR-OUTPUT-DIGESTS/2026-09-07",
+  "status": "candidate scientific-author output; manager final package manifest is authoritative for the delivered package",
+  "scope": "All scientific-author files present under output except this self-referential digest report; manager-owned inputs, identity fragments, build/PDF records, PDFs, final manifest, archive, and sidecar are outside this list.",
+  "algorithm": "SHA-256 over raw file bytes",
+  "shared_authority": {
+    "identity": "SCI-MAP-v0.2-SHARED-AUTHORITY/r0.2",
+    "aggregate_sha256": "6a7e64377e31b8b0e4dac90a27a7662ac825bd59c5a87d8237eb533d7b8d37c0",
+    "aggregate_recipe": "Ordered relative-path/NUL/ASCII-byte-length/NUL/raw-bytes/NUL stream over wrapper then notation, definitions, equations, assumptions, requirements, edge_cases, with paths relative to src/."
+  },
+  "binding_chain": {
+    "product_role_registry_sha256": "2087ffc5a48d61888cbdf666be146522267bbf48b704b9562fa445baa6a7c305",
+    "occurrence_profile_sha256": "bedd2a7b46b1a18c2fb3150a2f55982779f957e1b48a1c871057f9a925d17c63",
+    "coadd_profile_sha256": "e6372d1f72c78cab512987477ee1576f03ba63b79f23c88bb5fab772657adaf5",
+    "candidate_val_profile_registry_sha256": "a691a73e8a1a7bd73cb9e25ddcc6f8e281b473139c3b0564534929255dc298ee",
+    "candidate_val_source_register_sha256": "148afb6664f2a29f52a0207e16866d64dd023649ec7ca63121b8327590b2c12c",
+    "map_source_binding_sha256": "2936597cb44864e6202b776869af646bf0421bdc4b5f2fa1084c26cf1bfdafaa"
+  },
+  "approved_input_bindings": {
+    "author_manifest_identity": "SCI-MAP post-freeze successor proposed author references r0.1/2026-09-07",
+    "author_manifest_sha256": "83baf583f73784bebc6724025fd110e5545303f303c70af590b53c5696ee2c4f",
+    "owner_directive_identity": "SCI-MAP-OWNER-DIRECTIVE-v0.2-r0.2/2026-09-07",
+    "owner_directive_sha256": "620d4ff8204b453e2e363e84b9fcfbc480c9f0f88f0f763e0c9be69b873ca2e7",
+    "author_packet_identity": "SCI-MAP-R02-AUTHOR-PACKET/2026-09-07",
+    "author_packet_inventory_source_sha256": "f13f29746b71e90e661ee8cdb7eaba781bec97be1baa11c06529a5c2150b4a29"
+  },
+  "stable_pdf_paths": [
+    "pdf/SCI-MAP-FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT-v0.2.pdf",
+    "pdf/SCI-MAP-SCIENTIFIC-RATIONALE-v0.2.pdf",
+    "pdf/SCI-MAP-ENGINEERING-CONFORMANCE-v0.2.pdf"
+  ],
+  "files": [
+    {
+      "path": "CROSSWALK.md",
+      "bytes": 12905,
+      "sha256": "c4c5a6b449946ea12e8862a16bc53d372f978eb492883c6335e57fbfd1396685"
+    },
+    {
+      "path": "DELIVERABLE_MAP.md",
+      "bytes": 3394,
+      "sha256": "2fb3700e1a61cfb99ff31102f001b3e4e58c0bbd5ce611b067ce3ee1e30cd6e1"
+    },
+    {
+      "path": "PREDECESSOR_SUCCESSOR_MAPPING.md",
+      "bytes": 8591,
+      "sha256": "860e2a9e66e616dcdd86a8f9456b7335b9dc813bbecc4cdfa98fee32aba1a439"
+    },
+    {
+      "path": "PREDICTION_CROSSWALK.md",
+      "bytes": 5607,
+      "sha256": "ea2e981bf2f5b08298a70fbfb578aeda0a2b5791cd008cef3c7da41665e12096"
+    },
+    {
+      "path": "PRIOR_WORK.md",
+      "bytes": 4701,
+      "sha256": "5729998466e4a4cb696a14ffccc543403c776cc1efbfe327fc2952e1d1c2da0e"
+    },
+    {
+      "path": "PROPOSED_SCIENTIFIC_OWNER_ACCEPTANCE_AND_FREEZE_DISPOSITION.md",
+      "bytes": 5149,
+      "sha256": "3bf482af63720af5584909ba64d721a778a224d356c5f595d33cbf97065e5346"
+    },
+    {
+      "path": "README.md",
+      "bytes": 5780,
+      "sha256": "2d35617fb8e20d1769380745d6d367fc4b5d0d02569ed450d783bb3d18604e4f"
+    },
+    {
+      "path": "SCIENTIFIC_OWNER_DECISION_LEDGER.md",
+      "bytes": 8712,
+      "sha256": "3d07e1cc601319bc10e2ac1a93a0a83fb97cc9cd20122ba1d69fb80e08ee52c5"
+    },
+    {
+      "path": "SCOPE_BRIEF.md",
+      "bytes": 5113,
+      "sha256": "3a9f72c77beb26496fd67728e09a72bea6d3a984a63a35056d1f643dd786e1f8"
+    },
+    {
+      "path": "SEMANTIC_CHANGE_REPORT.md",
+      "bytes": 6621,
+      "sha256": "2814683db03ce646e1c1614bb6883d699f4e6391f5dc2c37bb883a9ca50430bd"
+    },
+    {
+      "path": "bindings/SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_BOUNDARY_DISPOSITION_v0.2_r0.2_CANDIDATE.md",
+      "bytes": 1162,
+      "sha256": "f75c7428a3c259d42ac3b9b50286bd47cb72718ea25cde2ae6f397aa3a75efde"
+    },
+    {
+      "path": "bindings/SCI-MAP_SOURCE_BINDING_v0.2_r0.2_CANDIDATE.md",
+      "bytes": 6617,
+      "sha256": "2936597cb44864e6202b776869af646bf0421bdc4b5f2fa1084c26cf1bfdafaa"
+    },
+    {
+      "path": "bindings/SCI-PTC_TO_SCI-MAP_BOUNDARY_DISPOSITION_v0.2_r0.2_CANDIDATE.md",
+      "bytes": 1457,
+      "sha256": "65af6160d8340141cdad7ab9707b809ec7abe253c46ab159046cfdd971b2e2a0"
+    },
+    {
+      "path": "bindings/SCI-VAL_PROFILE_REGISTRY_SCI-MAP_v0.2_r0.2_CANDIDATE.md",
+      "bytes": 5476,
+      "sha256": "a691a73e8a1a7bd73cb9e25ddcc6f8e281b473139c3b0564534929255dc298ee"
+    },
+    {
+      "path": "bindings/SCI-VAL_SOURCE_BINDING_REGISTER_SCI-MAP_v0.2_r0.2_CANDIDATE.md",
+      "bytes": 6677,
+      "sha256": "148afb6664f2a29f52a0207e16866d64dd023649ec7ca63121b8327590b2c12c"
+    },
+    {
+      "path": "profiles/SCI-MAP_COADD_AGGREGATE_PROFILE_v0.2_r0.2_CANDIDATE.md",
+      "bytes": 5149,
+      "sha256": "e6372d1f72c78cab512987477ee1576f03ba63b79f23c88bb5fab772657adaf5"
+    },
+    {
+      "path": "profiles/SCI-MAP_OCCURRENCE_ADMISSION_PROFILE_v0.2_r0.2_CANDIDATE.md",
+      "bytes": 3400,
+      "sha256": "bedd2a7b46b1a18c2fb3150a2f55982779f957e1b48a1c871057f9a925d17c63"
+    },
+    {
+      "path": "profiles/SCI-MAP_PRODUCT_ROLE_REGISTRY_v0.2_r0.2_CANDIDATE.md",
+      "bytes": 4076,
+      "sha256": "2087ffc5a48d61888cbdf666be146522267bbf48b704b9562fa445baa6a7c305"
+    },
+    {
+      "path": "records/COVERAGE_CUT_EXPERT_OVERRIDE_AND_SMALL_N_FIXTURES.md",
+      "bytes": 4370,
+      "sha256": "19f8f098a0679eb4fd6baecef0512403893d2a8150a77a3c03bfd47e0fdc5da6"
+    },
+    {
+      "path": "records/ECS_RESULT_AND_REALIZATION_VOCABULARY.md",
+      "bytes": 2232,
+      "sha256": "7c67d84d8c16e512f51878d749af4abf7d3c72bdad64d51c7164215a1811bcbf"
+    },
+    {
+      "path": "records/FULL_PROCEDURE_RESPONSE_COMPARISON_SPACE_SPECIFICATION.md",
+      "bytes": 3865,
+      "sha256": "b39806ff27e611db24abb80431d06de28c68cee0c539eeedafd6c6266a8460d8"
+    },
+    {
+      "path": "records/PDF_VISUAL_QA_AND_METADATA_ACCEPTANCE_CRITERIA.md",
+      "bytes": 1589,
+      "sha256": "65a9d61c7378c7c62fab2bc30d680453040906075ccad46dd2f6de742e1e151b"
+    },
+    {
+      "path": "records/PRED014_AND_AGGREGATE_RESPONSE_RULE.md",
+      "bytes": 2741,
+      "sha256": "096f26ccb7f88406714577605024e6110da81992da9eeeaedf1003bb5fb8e46c"
+    },
+    {
+      "path": "records/PRODUCT_ROLE_AND_NOTATION_CLEANUP.md",
+      "bytes": 2833,
+      "sha256": "ae8dcec836598677464d617c911d44fa41ad7d79e0fedc2b9286e981aafb4ea9"
+    },
+    {
+      "path": "records/PRODUCT_ROLE_DEPENDENCY_MATRIX.md",
+      "bytes": 3901,
+      "sha256": "4348ab4552acc1b573955276bdceedb4b5b2243c89f37b6c01a1515cb0161221"
+    },
+    {
+      "path": "records/REQUIREMENT_PREDICTION_PARITY_REPORT.md",
+      "bytes": 2898,
+      "sha256": "b64475871ea2732e676c165c7175d6266dc550ba35bc46d15a0b6ae0d1207bfb"
+    },
+    {
+      "path": "records/SCI-NOI_TERMINOLOGY_AND_OWNERSHIP_AMENDMENT.md",
+      "bytes": 2204,
+      "sha256": "2e2ccfc44370bb1008bbb068d254d2108a4c4f941b1c98cf81282fd5c6efe93d"
+    },
+    {
+      "path": "records/SOURCE_CORE_VIEW_PARITY_REPORT.md",
+      "bytes": 3840,
+      "sha256": "6f30536d7d88294d59b0dce8b6222793ada7039e6f621ddc6671a809ad63e772"
+    },
+    {
+      "path": "records/UNIFIED_LIFECYCLE_AND_PARAMETER_STATE_TABLE.md",
+      "bytes": 4025,
+      "sha256": "92f1787be8dcf3b6099c0b85830cfda28918591aa9345c93aef89ef65d0651b6"
+    },
+    {
+      "path": "records/WCS_COMPARISON_DOMAIN_SPECIFICATION.md",
+      "bytes": 2611,
+      "sha256": "a61268a34aa7bbf2f27bd33daa6a889bf9b22ad864de5a4acce60e238986d745"
+    },
+    {
+      "path": "src/SCI-MAP-v0.2_OWNER_DECISION_REGISTER_r0.2.tex",
+      "bytes": 3321,
+      "sha256": "ab3eb86737d4834a02032962a941b5db9d4c7925e231da56eb2042192e6d9d36"
+    },
+    {
+      "path": "src/SCI-MAP-v0.2_SHARED_AUTHORITY_r0.2.tex",
+      "bytes": 530,
+      "sha256": "24839f9912e4bd9f7cae9a7be974e726a188d2e9fdadbdd0fcc5e913abd5c4e7"
+    },
+    {
+      "path": "src/common/assumptions.tex",
+      "bytes": 1787,
+      "sha256": "87ef8e16a54e2cec76446d75b0896a18ed255278ab28822271bb182c7d922773"
+    },
+    {
+      "path": "src/common/definitions.tex",
+      "bytes": 15955,
+      "sha256": "4762d0c3ccaf3c0cc4b2c8b3fc11fbc8e9e7a6d20414ede53172300dbd3886e5"
+    },
+    {
+      "path": "src/common/edge_cases.tex",
+      "bytes": 12679,
+      "sha256": "addd77b0435868c1ddb381f995326f620e4cdf6a55f8d75085fcf26529d6f634"
+    },
+    {
+      "path": "src/common/equations.tex",
+      "bytes": 8235,
+      "sha256": "10a1f9829af3934d6fa71007fac4a7bfd0d9017431504d08ca9aeb82cfdc02f3"
+    },
+    {
+      "path": "src/common/notation.tex",
+      "bytes": 656,
+      "sha256": "1975dfce4b50dda686744a495e3b6ae988fcf30812bfe577e61c2edc80f67cce"
+    },
+    {
+      "path": "src/common/requirements.tex",
+      "bytes": 51893,
+      "sha256": "baef73170ce8638c451de66f2e224c2a5ca0c4a6957aba41bef60db0d8718094"
+    },
+    {
+      "path": "src/engineering-conformance.tex",
+      "bytes": 23770,
+      "sha256": "ae745f2bd7ec288c1997b24b26720d7d7033dd05939638fac50bd65cf8f175a2"
+    },
+    {
+      "path": "src/formal-scientific-engineering-contract.tex",
+      "bytes": 53259,
+      "sha256": "53d0dbf7269ed826a96b96c56e216a53d2ded5d2e3ba2a9a42953bc33d671523"
+    },
+    {
+      "path": "src/scientific-rationale.tex",
+      "bytes": 44548,
+      "sha256": "fc6551fa650c23c925229e3dc1cc8ae0764c7688cf698c9adbbbf0dc60c7ba51"
+    },
+    {
+      "path": "templates/COVERAGE_CUT_OVERRIDE_RECORD.schema.json",
+      "bytes": 1870,
+      "sha256": "7535b301b8af2b0feaa07720226c9746133af6081ff24274ce9332f86290e510"
+    },
+    {
+      "path": "templates/FULL_PROCEDURE_COMPARISON_RECORD.schema.json",
+      "bytes": 2462,
+      "sha256": "c31e5ea5afc921e248873ba8195e945a761c143144a57631ad5dd28ef49a311e"
+    },
+    {
+      "path": "templates/MAP_LIFECYCLE_AND_PRODUCT_ROLE_RECORD.schema.json",
+      "bytes": 2208,
+      "sha256": "cd0025588784c1fa9e8ad254cd71ae6c1dbb65a6bdefd20cfa84a06f56c519b2"
+    },
+    {
+      "path": "templates/README.md",
+      "bytes": 3293,
+      "sha256": "462b16b6bdd2a87381327c7b84218fed829fa216e2e5463a3a1a6ad83de20034"
+    },
+    {
+      "path": "templates/REQUIREMENT_RESULTS_INITIAL.json",
+      "bytes": 35090,
+      "sha256": "610d6b35d417de05af4d74db5a9fd0992f753e99006c5074c445a5c9f1dd55bc"
+    },
+    {
+      "path": "templates/REQUIREMENT_RESULT_RECORD.schema.json",
+      "bytes": 2554,
+      "sha256": "c7a635bf3a60cdde4a260f5c23f111f78bc6fcff4db3a482f461b321dbc65c64"
+    },
+    {
+      "path": "templates/VAL_HANDOFF_DECISION_RECORD.schema.json",
+      "bytes": 1264,
+      "sha256": "9c8be02e8b3918f32eb78505979b3be48a4fbd0203b3cde3a6df7e7ae6eeda42"
+    },
+    {
+      "path": "templates/WCS_COMPARISON_RECORD.schema.json",
+      "bytes": 2384,
+      "sha256": "c6556f7a54833b4f79a316786e9988f59820b3c30f71e6fbee3be3eb346306e5"
+    }
+  ]
+}

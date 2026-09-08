@@ -1,0 +1,180 @@
+{
+  "identity": "SCI-MAP-v0.2-r0.4-CANONICAL-CONTRACT-RECONCILIATION/2026-09-08",
+  "purpose": "Exact documentation preservation and current-status reconciliation; no scientific decision, profile admission, activation or implementation qualification.",
+  "canonical_first_parent": "2d41532ce3493ef329e35f438fe433a69c7c93a2",
+  "frozen_second_parent": "b972d2850c2521662af59bba31d71a3ee525033c",
+  "common_ancestor": "8eccf8990027b8f65febb5f20d9a415829152322",
+  "accepted_content_commit": "c8081c4ee4dc1c5132c3030a351073205fc3142a",
+  "owner_acceptance_commit": "0f8da1ada267c0d070fcfb18d0807bc4a2645a9d",
+  "shared_authority": {
+    "identity": "SCI-MAP-v0.2-SHARED-AUTHORITY/r0.4",
+    "sha256": "3b81ea8180dcc3f5f37964ac1177feb417fef6a1cdcc590b33f9431b54bc1e31"
+  },
+  "existing_freeze_binding": {
+    "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/FREEZE_BINDING_R0.4.json",
+    "bytes": 3421,
+    "sha256": "37e4af6d556efb637cdef27337bc78cd13380aa053978d15012139edaf323ca7"
+  },
+  "existing_packet_manifest": {
+    "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/SOURCE_MANIFEST.json",
+    "bytes": 65230,
+    "sha256": "5668162f42a83d653a8a8cb8219d04706150cf48374576e7000cb250baad31c4"
+  },
+  "existing_packet_sidecar": {
+    "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/SOURCE_MANIFEST.sha256",
+    "bytes": 87,
+    "sha256": "6d344a40dde03e6c2511033eb5501c3252870ad0998c0cdc817fd011c436b272"
+  },
+  "inherited_pdf_evidence": {
+    "SCI-MAP-ENGINEERING-CONFORMANCE-v0.2.pdf": {
+      "sha256": "f53e89d3cf405860e7762560213ea95e31eaa1de68048fb359742eafae54aa7c",
+      "bytes": 207924
+    },
+    "SCI-MAP-FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT-v0.2.pdf": {
+      "sha256": "8857512a6ef5b5b09ebb024daa7fb11b709311a1a60102f7a67b440e4a4a4e35",
+      "bytes": 253074
+    },
+    "SCI-MAP-SCIENTIFIC-RATIONALE-v0.2.pdf": {
+      "sha256": "e0203669a35c5fa5710d0e88287a48271f91cbdef35e54e2173592bedc5238f2",
+      "bytes": 151291
+    }
+  },
+  "unchanged_packet_files": 307,
+  "reconciliation_records": [
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_V02_R04_2026-09-08/README.md",
+      "bytes": 5882,
+      "sha256": "71abbed9fb2f8e7a115c6975f41e377554ff10674332dd0fa26d3407e1dc9400"
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_V02_R04_2026-09-08/BINDING_RECONCILIATION.md",
+      "bytes": 8394,
+      "sha256": "28330fddeb901fbb63e7ab8ba55092537c4e05e1abdf3d931f98f6d3aa7d91e2"
+    }
+  ],
+  "candidate_binding_and_profile_records": [
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/bindings/SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_BOUNDARY_DISPOSITION_v0.2_r0.4_CANDIDATE.md",
+      "bytes": 1353,
+      "sha256": "10760d7e3b7e6e414a306cfd2b32233a3186c4a4c7688c77a3aa142d511acfbd"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/bindings/SCI-MAP_SOURCE_BINDING_v0.2_r0.4_CANDIDATE.md",
+      "bytes": 7351,
+      "sha256": "d6633c154bebc2fae29ba36281a4cdc745a99a441a5d4c206b2378c29d8c8dd6"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/bindings/SCI-PTC_TO_SCI-MAP_BOUNDARY_DISPOSITION_v0.2_r0.4_CANDIDATE.md",
+      "bytes": 1713,
+      "sha256": "cb34eb7f0e5338a017e9ff7341da2537c08e44247c9cfd7219fd82026c7000f0"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/bindings/SCI-VAL_PROFILE_REGISTRY_SCI-MAP_v0.2_r0.4_CANDIDATE.md",
+      "bytes": 5877,
+      "sha256": "a50d078bb8f02815578bfc877870d7a3b0af61ab6b1c06b295e1170a5b83b1be"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/bindings/SCI-VAL_SOURCE_BINDING_REGISTER_SCI-MAP_v0.2_r0.4_CANDIDATE.md",
+      "bytes": 6992,
+      "sha256": "29ee1dc0ae644628197d9ad402d9a3f346023a1378f2f9a6dee15a868fe19cde"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/profiles/SCI-MAP_COADD_AGGREGATE_PROFILE_v0.2_r0.4_CANDIDATE.md",
+      "bytes": 6094,
+      "sha256": "290292888accabd4aab9afce1c2ceb471f3b3f275072724ffbe5caed4e3d1130"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/profiles/SCI-MAP_OCCURRENCE_ADMISSION_PROFILE_v0.2_r0.4_CANDIDATE.md",
+      "bytes": 3784,
+      "sha256": "5e3786f41286305677fb3cac7b791722f5935869d0a7f8229610f4e65cd89265"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/profiles/SCI-MAP_PRODUCT_ROLE_REGISTRY_v0.2_r0.4_CANDIDATE.md",
+      "bytes": 4945,
+      "sha256": "d42d93a9f46f4f22c62d010172a20bad4f43e400e8271cbdffa655d689bd9086"
+    }
+  ],
+  "canonical_producer_authority_comparisons": [
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCI-PTC_TO_SCI-MAP_BOUNDARY_UNIFORM_R0.4_2026-09-06.md",
+      "bytes": 3547,
+      "sha256": "58291e1c879dc9116e81a9e3fd4323caf79a176c51e296d8119efb6937272ef8",
+      "imported_packet_path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/inputs/doc/scientific_contracts/packages/SCI-MAP/v0.1/SCI-PTC_TO_SCI-MAP_BOUNDARY_UNIFORM_R0.4_2026-09-06.md",
+      "canonical_snapshot_commit": "2d41532ce3493ef329e35f438fe433a69c7c93a2",
+      "byte_comparison": "pass"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/COEFFICIENT_REGISTRY_UNIFORM_R0.4_2026-09-06.md",
+      "bytes": 5047,
+      "sha256": "433309b21d17751ce3972d196f9ba73a5f910f36e88052046928a0163fb7ca76",
+      "imported_packet_path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/inputs/doc/scientific_contracts/packages/SCI-PTC/v0.1/COEFFICIENT_REGISTRY_UNIFORM_R0.4_2026-09-06.md",
+      "canonical_snapshot_commit": "2d41532ce3493ef329e35f438fe433a69c7c93a2",
+      "byte_comparison": "pass"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC-COEFFICIENT-UNIFORM/v0.1/FREEZE_MANIFEST_R0.4.json",
+      "bytes": 23889,
+      "sha256": "c6d23f7f20f35089eba9b5f6dd6e65aaf05561ab3da2d0f7d18e5b8256a2f016",
+      "imported_packet_path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/inputs/doc/scientific_contracts/packages/SCI-PTC-COEFFICIENT-UNIFORM/v0.1/FREEZE_MANIFEST_R0.4.json",
+      "canonical_snapshot_commit": "2d41532ce3493ef329e35f438fe433a69c7c93a2",
+      "byte_comparison": "pass"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/PROFILE_REGISTRY_PTC_UNIFORM_R0_4_2026-09-06.md",
+      "bytes": 7381,
+      "sha256": "a8fdf512507c877c22aa5457566f66782f89a466504115812b5dc7b5d46dfb5f",
+      "imported_packet_path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/inputs/doc/scientific_contracts/packages/SCI-VAL/v0.1/PROFILE_REGISTRY_PTC_UNIFORM_R0_4_2026-09-06.md",
+      "canonical_snapshot_commit": "2d41532ce3493ef329e35f438fe433a69c7c93a2",
+      "byte_comparison": "pass"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/SOURCE_BINDING_REGISTER_PTC_UNIFORM_R0_4_2026-09-06.md",
+      "bytes": 4679,
+      "sha256": "fb13be222a9a8bb928fa172253f65aaf6ede081a88e901cdf6eb3799fad35f6e",
+      "imported_packet_path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/inputs/doc/scientific_contracts/packages/SCI-VAL/v0.1/SOURCE_BINDING_REGISTER_PTC_UNIFORM_R0_4_2026-09-06.md",
+      "canonical_snapshot_commit": "2d41532ce3493ef329e35f438fe433a69c7c93a2",
+      "byte_comparison": "pass"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE_BOUNDARY.md",
+      "bytes": 3761,
+      "sha256": "f7be703d17320de6f6ecfc3a3974d54799540fff1d8b2d9491c941a7ea3b45a4",
+      "imported_packet_path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/inputs/doc/scientific_contracts/packages/SCI-MAP/v0.1/SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE_BOUNDARY.md",
+      "canonical_snapshot_commit": "2d41532ce3493ef329e35f438fe433a69c7c93a2",
+      "byte_comparison": "pass"
+    }
+  ],
+  "shared_navigation": [
+    {
+      "path": "doc/REFACTOR_STATUS.md",
+      "before_sha256": "8f5793b7f5f66437b4595d2dd1ab372d7ae96e2fbcd32c2be347822ef6c2f840",
+      "after_sha256": "5e64308bc67c5fb963eac907c9ddd9493af0d24770936f80e31da855f59ecdec"
+    },
+    {
+      "path": "doc/INTEGRATION_LEDGER.md",
+      "before_sha256": "4dadc992657dac46f6ffe8c07b7f00ba2c550fa550129b6d0b8634482d15577c",
+      "after_sha256": "56f4f9b0d8636fb67c277080a71adc100fe0c8498e1038ac0961cac03a52eb2a"
+    },
+    {
+      "path": "doc/scientific_contracts/INDEX.md",
+      "before_sha256": "436d6acd97a9cca801f572f77b850b3ea38edc0706cbd60706f54c66807fe62a",
+      "after_sha256": "35cf2bc159e3a67891f4f49ba3445394504e46410a081cb5b814106a45a15d80"
+    },
+    {
+      "path": "doc/scientific_contracts/DOWNSTREAM_CONTRACT_ROADMAP_2026-08-26.md",
+      "before_sha256": "e1676532963adc14d88de761d8bd3ef3833631cdbfcb7ba1820b583dbd425357",
+      "after_sha256": "0dff083b56156251a54c9bc4411699fb81d2508844b63cfcf34bc249c72ded18"
+    }
+  ],
+  "scope_and_axes": {
+    "generic_scientific_authority": "owner accepted and frozen",
+    "documentary_binding_consistency": "verified",
+    "separate_profile_policy_approval": "pending",
+    "formal_registry_and_source_binding": "pending for r0.4 generation",
+    "activation_and_evaluability": "unavailable",
+    "object_decisions": "not established",
+    "implementation_conformance": "not assessed"
+  },
+  "integration_effect": "Containing merge requires exact-SHA independent review before owner-authorized canonical fast-forward; its review and actual result are external receipts. File incorporation does not register or activate profiles.",
+  "seal_rule": "Names existing exact sources and manager records; excludes its own identity and future merge SHA."
+}

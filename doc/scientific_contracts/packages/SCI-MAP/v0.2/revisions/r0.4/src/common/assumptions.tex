@@ -1,0 +1,32 @@
+% Canonical conditioning and claim-boundary statements shared by both views.
+\providecommand{\SCIMapConditionalityStatement}{%
+All linear expectation, fixed-state response, and complete numerical
+covariance statements are conditional on fixed membership, projection,
+coefficients, support policy, response state, geometry/WCS, calibration, and
+upstream processing state. A MAP-local realized operator response is always
+disclosed for a valid MAP product. Upstream-conditioned fixed-state, PTC
+full-procedure, and PTC+MAP re-resolved responses retain their separate
+availability and limitations. A response-bearing coadd binds one exact family
+and obeys \SCIMapCoaddResponseFamilyDefinition{} Numerical full-procedure subtraction additionally
+requires the complete authorized \SCIMapComparisonSpaceRecordId{} record; a state difference
+alone does not establish subtractability. A whole-chain RTC-to-CAL-to-PTC-to-MAP response
+is unavailable unless separately established by an authorized complete study
+and is not claimed here.}
+\providecommand{\SCIMapClaimBoundaryStatement}{%
+Algebraic contract correctness, engineering conformance,
+representation/response fidelity, observational performance, and production
+readiness are separate claims.}
+\providecommand{\SCIMapQuantityStatement}{%
+The ordinary signal is a calibrated-\(x\)-derived nonpolarimetric
+total-intensity-equivalent detector-time quantity. Neither a unit token nor a
+legacy STOKES field promotes it to Stokes~I.}
+
+\providecommand{\SCIMapLifecycleAssumption}{%
+Resolution, application, and realization are distinct. Pre-application
+validation examines the exact
+\texttt{observation\_\allowbreak{}resolved} parameter and
+profile state. Application binds that resolved state to one attempt. A later
+realized product record exists only when actual immutable MAP output was
+produced; attempt failure evidence does not realize the product and cannot be
+used retroactively as the prerequisite that authorized the attempt. The
+independent outcome axis follows \SCIMapAttemptOutcomeReference{}.}

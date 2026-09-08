@@ -1,0 +1,533 @@
+SCI-MAP v0.2 DOCUMENT r0.2 — FINAL TARGETED
+LIFECYCLE, COADD-ROLE, RESPONSE-COMPARABILITY,
+NOI-CONGRUENCE, AND SOURCE-CLOSURE DIRECTIVE
+
+The SCI-MAP v0.2/r0.1 scientific architecture is accepted as the basis for one
+targeted revision.
+
+Do not perform another broad MAP derivation.
+
+Preserve:
+
+- ordinary positive-coefficient observation mapmaking;
+- exact realized SCI-PTC v0.1/r0.5 transformed calibrated-x input;
+- no direct CAL fallback, PTC-disabled MAP route, or inferred no-op PTC product;
+- exact stable occurrence identity and same-n AST coordinate association;
+- SCI-MAP:one_hot_containing_pixel@1 with half-open cells and outer-boundary
+  loss;
+- the PTC-owned uniform coefficient family, exact gamma_i = 1, and all explicit
+  selection/publication/association/handoff/admission gates;
+- no unity or alternate-family fallback;
+- MAP classification of authorized coefficient payloads;
+- A_MAP,Pi on exactly the support-authorized scientific row set;
+- distinct MAP-local, upstream fixed-state, PTC full-procedure, PTC+MAP
+  re-resolved, and whole-chain response identities;
+- whole-chain response unavailable unless separately authorized;
+- separate AST-geometric incidence, route-candidate incidence, estimator
+  contribution, observation count, exposure, support, and MAP-local validity;
+- original-footprint exposure placed by each original occurrence's own AST
+  ALIGN-grid coordinate;
+- no exposure from synthesis, replacement, donor reuse, filtering, or
+  decimation;
+- the adopted coverage_cut order statistic and two inclusive threshold
+  predicates;
+- no universal coverage_cut default;
+- complete immutable observation bundles;
+- exact centered-integer coadd placement;
+- equal-observation u_op = 1 coaddition;
+- explicit within- and cross-observation covariance status;
+- no correlated-GLS promotion into the positive-coefficient branch;
+- immutable base/unfiltered MAP parentage;
+- all current claim ceilings and nonclaims;
+- SCI-MAP-REQ-001 through SCI-MAP-REQ-052;
+- SCI-MAP-PRED-001 through SCI-MAP-PRED-025.
+
+Amend existing IDs when repairing the same obligation. Add IDs only for a
+genuinely independent new obligation.
+
+Do not inspect implementation, configuration, schemas, tests, audits, repairs,
+reductions, generated products, operational behavior, performance records,
+production material, Unity material, web sources, or undocumented practice.
+
+======================================================================
+1. UNIFY THE ORDERED MAP LIFECYCLE
+======================================================================
+
+The r0.1 authority uses a four-stage lifecycle in REQ-009 and Section 7 but a
+five-stage lifecycle in REQ-046.
+
+Use one exact ordered lifecycle:
+
+    requested
+    effective
+    observation_resolved
+    applied
+    realized.
+
+Define:
+
+    requested
+      = immutable accepted intent;
+
+    effective
+      = the supported executable interpretation of the request;
+
+    observation_resolved
+      = every observation-specific parent, coefficient, profile, geometry,
+        mapping, parameter, support rule, output role, and persistence decision
+        is concrete or typed unavailable;
+
+    applied
+      = the exact resolved operation and parameter state was invoked or
+        committed for one execution attempt;
+
+    realized
+      = immutable resulting accumulators, products, statuses, failures, and
+        provenance were produced.
+
+An operation that stops before application shall not receive applied or
+realized records.
+
+An applied operation that fails before output realization shall retain the
+applied attempt and exact terminal failure without fabricating realized
+products.
+
+Apply this model consistently to:
+
+- the MAP plan;
+- coefficient selection/application;
+- projection;
+- support policy;
+- output plan;
+- coadd plan;
+- response/covariance requests;
+- coverage_cut.
+
+For coverage_cut, either carry:
+
+    c_requested
+    c_effective
+    c_observation_resolved
+    c_applied
+    c_realized
+
+or define c_applied as an exact application-event binding to the resolved
+value. Do not simultaneously call the package lifecycle five-stage and the
+parameter lifecycle four-stage without an explicit typed distinction.
+
+Update REQ-009, REQ-031, REQ-046, the equations, rationale, ECS, profiles,
+provenance, predictions, and crosswalk.
+
+======================================================================
+2. DEFINE EXACT BASE, RESPONSE-BEARING, AND COVARIANCE-QUALIFIED ROLES
+======================================================================
+
+Create durable product-role identities for at least:
+
+    base observation map
+    response-bearing observation map
+    covariance-qualified observation map
+    base coadd
+    response-bearing coadd
+    covariance-qualified coadd.
+
+Exact identifier spelling may follow library convention, but each role shall
+be independently requestable, parented, and lifecycle-bound.
+
+Return one dependency table.
+
+Required base-role semantics:
+
+A. Base observation map
+
+- requires the complete MAP-local realized operator identity;
+- requires honest upstream-response and covariance status;
+- may remain valid when the stronger numerical upstream response or complete
+  covariance is unavailable.
+
+B. Base coadd
+
+- requires every admitted observation's complete base bundle;
+- requires response and covariance identities/statuses;
+- permits unavailable or basis-incompatible member response while retaining
+  unchanged numerical signal membership;
+- publishes coadd response unavailable with exact cause;
+- permits missing covariance blocks with partial, symbolic, summarized,
+  lineage-resolvable, or unavailable covariance state.
+
+C. Response-bearing observation/coadd
+
+- requires every numerical response object named by that role;
+- requires exact compatible source domain, basis, class, unit, normalization,
+  parent, WCS/grid, and row identity.
+
+D. Covariance-qualified observation/coadd
+
+- requires every within- and cross-observation block named by that role;
+- missing blocks are unknown and block only that covariance-qualified role.
+
+A companion incompatibility rejects an observation atomically only when the
+exact selected product role and admission profile require that companion.
+
+Repair SCI-MAP-PRED-014 so it no longer says that every response incompatibility
+rejects a base-coadd member.
+
+Preferred amended meaning:
+
+    A required companion incompatibility rejects the complete observation
+    before coadd mutation. Under the response-independent base-coadd role,
+    unavailable or basis-incompatible response does not change signal
+    membership; it yields unavailable coadd response with exact cause and no
+    hidden subset or zero companion.
+
+Update REQ-036 through REQ-041, PRED-014 through PRED-019, the aggregate
+profile, product vocabulary, rationale, and ECS fixtures.
+
+======================================================================
+3. ADD AN EXACT FULL-PROCEDURE COMPARISON-SPACE GATE
+======================================================================
+
+Do not subtract baseline and perturbed PTC or MAP products merely because both
+procedures produced arrays.
+
+For every:
+
+    Delta z_PTC-FP
+    Delta m_PTC-FP
+    Delta m_PTC+MAP-RR
+
+bind:
+
+- baseline product identity;
+- perturbed product identity;
+- scientific quantity and unit;
+- occurrence or MAP output-row identities;
+- source/target frame and WCS;
+- additive reference, gauge, and null-space state;
+- baseline and perturbed support;
+- coefficient and response basis;
+- exact common comparison domain;
+- exact map from each result into that comparison domain;
+- treatment of rows present in only one output;
+- perturbation amplitude, sign, side, location, source state, and
+  normalization;
+- finite-difference convention;
+- state-transition record;
+- numerical availability and cause.
+
+No implicit:
+
+- zero fill;
+- union-domain sentinel;
+- support intersection;
+- nearest-coordinate association;
+- same-shape association;
+- row-position association;
+- interpolation;
+- reprojection;
+- gauge alignment.
+
+If no exact authorized common comparison space exists, the numerical response
+is unavailable or a separately typed state transition/discontinuity.
+
+Delta S_PTC-FP records changed state but does not itself establish that the two
+payloads are subtractable.
+
+For PTC+MAP re-resolved response, Pi_0 and Pi_+ may generate different
+membership and S_out. Require an explicit common comparison grid and row
+mapping before forming a numerical difference.
+
+Update Equations 13–16, REQ-008, REQ-016, REQ-017, PRED-005, PRED-006,
+PRED-013, the response records, and ECS fixtures.
+
+======================================================================
+4. MAKE MAP LANGUAGE CONGRUENT WITH CURRENT SCI-NOI
+======================================================================
+
+Do not state generically that NOI currently supplies or owns:
+
+    empirical noise
+    physical-noise variance
+    total MAP uncertainty
+    calibrated significance
+    detection probability
+    false-alarm probability
+    completeness
+    purity
+    catalogue authority.
+
+Use:
+
+    SCI-NOI owns its exact realization-generation, empirical-uncertainty,
+    conditional-scale, and standardization methods and products.
+
+    Any physical-noise, total-uncertainty, covariance-completeness,
+    significance, probability, false-rate, completeness, purity, or catalogue
+    interpretation requires a separately approved exact method and remains
+    unavailable by default.
+
+Replace the MAP uncertainty-list entry:
+
+    empirical covariance, weight, or significance calibrated by NOI
+
+with wording equivalent to:
+
+    NOI-owned empirical or conditional uncertainty and standardization
+    products, with only the exact claim authorized by their NOI method.
+
+Replace:
+
+    NOI owns empirical noise and significance
+
+with:
+
+    NOI owns its exact realization, uncertainty, and standardization products;
+    stronger noise or significance interpretation requires separate authority.
+
+Narrow REQ-024's “empirical calibration remains NOI-owned” wording in the same
+way.
+
+Preserve the distinction among:
+
+- Q normalization;
+- formal conditional precision;
+- complete conditional covariance;
+- NOI conditional marginal second moment;
+- NOI standardized signal;
+- any future calibrated significance product.
+
+======================================================================
+5. NORMALIZE ECS RESULT AND REALIZATION VOCABULARY
+======================================================================
+
+Use one exact requirement-result vocabulary:
+
+    pass
+    fail
+    blocked
+    not_applicable
+    not_assessed.
+
+Define:
+
+    blocked
+      = evaluation cannot proceed because one exact named authority,
+        dependency, profile, source binding, or prerequisite is unavailable;
+
+    not_assessed
+      = applicable evidence has not yet been executed or reviewed;
+
+    not_applicable
+      = the requirement is outside the exact candidate's declared role, with
+        an owner-approved rationale;
+
+    fail
+      = evidence was evaluated and contradicts the requirement;
+
+    pass
+      = complete positive evidence establishes the requirement for the exact
+        candidate.
+
+Keep evidence-artifact realization on another axis:
+
+    complete
+    incomplete
+    failed
+    not_produced.
+
+Do not use UNASSESSED unless it is the rendered spelling of not_assessed.
+Do not use incomplete as a substitute for blocked or not_assessed.
+
+Update the evidence-record table, all 52 result placeholders, the final verdict
+rule, machine-readable templates, and handoff specification.
+
+======================================================================
+6. CLEAN PRODUCT AND NOTATION IDENTITIES
+======================================================================
+
+Replace the undefined phrase:
+
+    complete atomic PTC publication q
+
+with the exact PTC publication/product-role identity. Remove q unless it is
+defined in the normative notation and used consistently.
+
+Avoid the collision between:
+
+- K_p as the response/kernel accumulator; and
+- bold K_p as a coadd covariance matrix in the correlated-GLS boundary.
+
+Rename the GLS covariance object, for example:
+
+    C_p^obs
+    or
+    Sigma_p^obs.
+
+Use one stable token for every product role, response family, covariance role,
+support plane, profile, and lifecycle state.
+
+======================================================================
+7. TYPE THE COVERAGE_CUT EXPERT OVERRIDE
+======================================================================
+
+Replace an unbound function-like:
+
+    expert_request(c)
+
+with an exact plan fact such as:
+
+    coverage_cut_above_one_override_requested.
+
+Bind:
+
+- request identity;
+- owner or authorized profile;
+- scope;
+- requested/effective/resolved/applied/realized state;
+- exact value;
+- cause and provenance.
+
+A numerical value c > 1 does not authorize itself.
+
+Preserve:
+
+- c = 0 as no relative cut while finite positive Q_p remains required;
+- 0 < c <= 1 as the ordinary recommended range;
+- c > 1 as explicit expert scope;
+- negative, non-finite, missing, or unrepresentable input failing before
+  support construction or required-product mutation;
+- inclusive comparisons;
+- no universal numerical default.
+
+Add explicit small-N fixtures for the zero-based order-statistic formula.
+
+======================================================================
+8. BIND THE WCS REPRESENTATION COMPARISON DOMAIN
+======================================================================
+
+Retain the 0.1 arcsec maximum-sky-separation representation bound and exact
+axis-sign, handedness, orientation, and centered-integer constraints.
+
+Define the exact comparison population used to establish “maximum”:
+
+- all scientifically addressable pixel centers;
+- required boundary/corner points;
+- or one preregistered finite sampling and analytic bounding rule.
+
+Do not infer a global maximum from an unspecified representative subset.
+
+Bind the spherical separation metric, frame, WCS generation, numerical
+precision, and treatment of invalid projection points.
+
+======================================================================
+9. COMPLETE SOURCE AND AUTHORITY BINDING
+======================================================================
+
+Return exact bytes and hashes for:
+
+- the SCI-MAP v0.2 shared normative authority;
+- all source modules;
+- the formal view source;
+- the rationale source;
+- the ECS source;
+- the 56-reference author manifest;
+- owner decisions;
+- the PTC-to-MAP boundary;
+- the uniform coefficient Registry/family/handoff records;
+- MAP occurrence-admission profile;
+- coadd aggregate profile;
+- original-footprint coordinate boundary;
+- final SCI-VAL Registry and source-binding generation;
+- build recipe and exact tools;
+- requirement and prediction traceability;
+- source/core/view parity;
+- clean-build report;
+- PDF render and metadata report;
+- delivery archive and archive sidecar.
+
+Before freeze, replace or supersede:
+
+    SCI-PTC:analysis_gridding_coefficients@draft-0.1
+    SCI-PTC:uniform_constant@draft-0.1
+    SCI-PTC:uniform_coefficient_handoff@draft-0.1
+    SCI-PTC_TO_SCI-MAP_BOUNDARY v0.2-draft.1/r0.4
+
+with final immutable identities, or explicitly retain their candidate state
+and do not claim a source-closed frozen numerical route.
+
+Every PDF cover shall bind:
+
+- scientific owner;
+- contract version;
+- document revision;
+- exact shared-authority identity and SHA-256;
+- author-packet/manifest identity and SHA-256;
+- owner directive/decision identity and SHA-256;
+- document-source identity and SHA-256;
+- build-record identity;
+- status and date.
+
+The shared authority is normative. The rationale explains it. The ECS adds
+prospective evidence procedure and no independent science.
+
+======================================================================
+10. PRESENTATION AND PREFLIGHT
+======================================================================
+
+Retain readable typography.
+
+The current page lengths are acceptable:
+
+    formal authority: 30 pages
+    ECS: 21 pages
+    rationale: 14 pages.
+
+Do not reduce font size or margins merely to shorten them.
+
+A later editorial pass may replace repeated canonical clauses in the ECS with
+a compact requirement-to-evidence matrix, but only after exact source binding
+ensures that the formal authority remains immediately accessible.
+
+Verify:
+
+- SCI-MAP-REQ-001 through REQ-052 remain gap-free and unique;
+- SCI-MAP-PRED-001 through PRED-025 remain gap-free and unique;
+- lifecycle parity;
+- coadd-role dependency parity;
+- response comparison-space parity;
+- NOI terminology parity;
+- product-role and notation parity;
+- all hashes reproduce;
+- no unresolved references or links;
+- no overfull or clipped content;
+- all PDFs reopen and render through an independent renderer;
+- titles, owner, version, revision, date, status, and PDF metadata agree.
+
+======================================================================
+11. DELIVERABLES
+======================================================================
+
+Return:
+
+1. SCI-MAP v0.2 Formal Scientific Contract, document r0.2;
+2. SCI-MAP v0.2 Science-Team Rationale r0.2;
+3. SCI-MAP v0.2 Engineering Conformance Specification r0.2;
+4. unified lifecycle and parameter-state table;
+5. exact observation/coadd product-role dependency matrix;
+6. amended PRED-014 and aggregate-profile response rule;
+7. full-procedure response comparison-space specification;
+8. SCI-NOI terminology and ownership amendment;
+9. ECS result/realization vocabulary;
+10. product-role and notation cleanup;
+11. coverage-cut expert-override record;
+12. WCS comparison-domain specification;
+13. final source/core/view/build packet;
+14. semantic-change report;
+15. requirement/prediction parity report;
+16. PDF visual-QA and metadata report;
+17. proposed scientific-owner acceptance/freeze disposition.
+
+Do not claim implementation conformity, representation or response fidelity,
+covariance fidelity, observational performance, validation, achieved
+significance, readiness, production suitability, production authorization, or
+Unity activity.

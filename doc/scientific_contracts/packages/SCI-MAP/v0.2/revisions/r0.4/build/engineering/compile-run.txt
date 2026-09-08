@@ -1,0 +1,38 @@
+note: using only cached resource files
+note: Running TeX ...
+warning: identity/engineering.tex:17: Underfull \hbox (badness 10000) in paragraph at lines 17--17
+warning: engineering-conformance.tex:65: Underfull \hbox (badness 10000) in paragraph at lines 17--65
+warning: engineering-conformance.tex:104: Underfull \hbox (badness 10000) in paragraph at lines 95--104
+warning: engineering-conformance.tex:116: Underfull \hbox (badness 10000) in paragraph at lines 115--116
+warning: engineering-conformance.tex:341: Underfull \hbox (badness 1789) in paragraph at lines 340--341
+warning: engineering-conformance.tex:341: Underfull \hbox (badness 10000) in paragraph at lines 340--341
+warning: engineering-conformance.tex:448: Underfull \hbox (badness 1117) in paragraph at lines 448--448
+warning: engineering-conformance.tex:448: Underfull \hbox (badness 3536) in paragraph at lines 448--448
+warning: engineering-conformance.tex:448: Underfull \hbox (badness 10000) in paragraph at lines 448--448
+warning: engineering-conformance.tex:448: Underfull \hbox (badness 10000) in paragraph at lines 448--448
+warning: engineering-conformance.tex:448: Underfull \hbox (badness 10000) in paragraph at lines 448--448
+warning: engineering-conformance.tex:448: Underfull \hbox (badness 4699) in paragraph at lines 448--448
+warning: engineering-conformance.tex:448: Underfull \hbox (badness 10000) in paragraph at lines 448--448
+warning: engineering-conformance.tex:448: Underfull \hbox (badness 4859) in paragraph at lines 448--448
+note: Rerunning TeX because "engineering-conformance.toc" changed ...
+warning: identity/engineering.tex:17: Underfull \hbox (badness 10000) in paragraph at lines 17--17
+warning: engineering-conformance.tex:65: Underfull \hbox (badness 10000) in paragraph at lines 17--65
+warning: engineering-conformance.tex:104: Underfull \hbox (badness 10000) in paragraph at lines 95--104
+warning: engineering-conformance.tex:116: Underfull \hbox (badness 10000) in paragraph at lines 115--116
+warning: engineering-conformance.tex:341: Underfull \hbox (badness 1789) in paragraph at lines 340--341
+warning: engineering-conformance.tex:341: Underfull \hbox (badness 10000) in paragraph at lines 340--341
+warning: engineering-conformance.tex:448: Underfull \hbox (badness 1117) in paragraph at lines 448--448
+warning: engineering-conformance.tex:448: Underfull \hbox (badness 3536) in paragraph at lines 448--448
+warning: engineering-conformance.tex:448: Underfull \hbox (badness 10000) in paragraph at lines 448--448
+warning: engineering-conformance.tex:448: Underfull \hbox (badness 10000) in paragraph at lines 448--448
+warning: engineering-conformance.tex:448: Underfull \hbox (badness 10000) in paragraph at lines 448--448
+warning: engineering-conformance.tex:448: Underfull \hbox (badness 4699) in paragraph at lines 448--448
+warning: engineering-conformance.tex:448: Underfull \hbox (badness 10000) in paragraph at lines 448--448
+warning: engineering-conformance.tex:448: Underfull \hbox (badness 4859) in paragraph at lines 448--448
+warning: warnings were issued by the TeX engine; use --print and/or --keep-logs for details.
+note: Running xdvipdfmx ...
+note: Writing `/private/tmp/citlali-map-r04-build-2026-09-08/candidate-build-03/engineering/engineering-conformance.log` (23.0849609375 KiB)
+note: Writing `/private/tmp/citlali-map-r04-build-2026-09-08/candidate-build-03/engineering/engineering-conformance.out` (1.4931640625 KiB)
+note: Writing `/private/tmp/citlali-map-r04-build-2026-09-08/candidate-build-03/engineering/engineering-conformance.aux` (10.0048828125 KiB)
+note: Writing `/private/tmp/citlali-map-r04-build-2026-09-08/candidate-build-03/engineering/engineering-conformance.toc` (761 B)
+note: Writing `/private/tmp/citlali-map-r04-build-2026-09-08/candidate-build-03/engineering/engineering-conformance.pdf` (203.05078125 KiB)

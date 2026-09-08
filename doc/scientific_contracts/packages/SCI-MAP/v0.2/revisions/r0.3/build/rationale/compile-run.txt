@@ -1,0 +1,29 @@
+note: using only cached resource files
+note: Running TeX ...
+warning: identity/rationale.tex:17: Underfull \hbox (badness 10000) in paragraph at lines 17--17
+warning: scientific-rationale.tex:144: Underfull \hbox (badness 1509) in paragraph at lines 143--144
+warning: scientific-rationale.tex:144: Underfull \hbox (badness 1668) in paragraph at lines 143--144
+warning: scientific-rationale.tex:144: Underfull \hbox (badness 1122) in paragraph at lines 143--144
+warning: scientific-rationale.tex:148: Underfull \hbox (badness 10000) in paragraph at lines 147--148
+warning: scientific-rationale.tex:527: Underfull \hbox (badness 2512) in paragraph at lines 526--527
+note: Rerunning TeX because "scientific-rationale.aux" changed ...
+warning: identity/rationale.tex:17: Underfull \hbox (badness 10000) in paragraph at lines 17--17
+warning: scientific-rationale.tex:144: Underfull \hbox (badness 1509) in paragraph at lines 143--144
+warning: scientific-rationale.tex:144: Underfull \hbox (badness 1668) in paragraph at lines 143--144
+warning: scientific-rationale.tex:144: Underfull \hbox (badness 1122) in paragraph at lines 143--144
+warning: scientific-rationale.tex:148: Underfull \hbox (badness 10000) in paragraph at lines 147--148
+warning: scientific-rationale.tex:527: Underfull \hbox (badness 2512) in paragraph at lines 526--527
+note: Rerunning TeX because "scientific-rationale.out" changed ...
+warning: identity/rationale.tex:17: Underfull \hbox (badness 10000) in paragraph at lines 17--17
+warning: scientific-rationale.tex:144: Underfull \hbox (badness 1509) in paragraph at lines 143--144
+warning: scientific-rationale.tex:144: Underfull \hbox (badness 1668) in paragraph at lines 143--144
+warning: scientific-rationale.tex:144: Underfull \hbox (badness 1122) in paragraph at lines 143--144
+warning: scientific-rationale.tex:148: Underfull \hbox (badness 10000) in paragraph at lines 147--148
+warning: scientific-rationale.tex:527: Underfull \hbox (badness 2512) in paragraph at lines 526--527
+warning: warnings were issued by the TeX engine; use --print and/or --keep-logs for details.
+note: Running xdvipdfmx ...
+note: Writing `/private/tmp/citlali-map-r03-build-2026-09-08/candidate-build-01/rationale/scientific-rationale.pdf` (148.2119140625 KiB)
+note: Writing `/private/tmp/citlali-map-r03-build-2026-09-08/candidate-build-01/rationale/scientific-rationale.out` (236 B)
+note: Writing `/private/tmp/citlali-map-r03-build-2026-09-08/candidate-build-01/rationale/scientific-rationale.log` (19.7822265625 KiB)
+note: Writing `/private/tmp/citlali-map-r03-build-2026-09-08/candidate-build-01/rationale/scientific-rationale.toc` (1.1142578125 KiB)
+note: Writing `/private/tmp/citlali-map-r03-build-2026-09-08/candidate-build-01/rationale/scientific-rationale.aux` (5.7021484375 KiB)

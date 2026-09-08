@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "SCI-MAP:v0.2-r0.2:coverage-cut-above-one-override@1",
+  "title": "coverage_cut_above_one_override_requested record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "fact",
+    "request_identity",
+    "authority_or_profile",
+    "scope",
+    "stages",
+    "resolved_boolean",
+    "cause",
+    "provenance"
+  ],
+  "properties": {
+    "fact": {"const": "coverage_cut_above_one_override_requested"},
+    "request_identity": {"type": "string", "minLength": 1},
+    "authority_or_profile": {"type": "string", "minLength": 1},
+    "scope": {
+      "type": "object",
+      "required": ["observation_identity", "product_role", "plan_identity", "execution_scope"],
+      "properties": {
+        "observation_identity": {"type": "string"},
+        "product_role": {"type": "string"},
+        "plan_identity": {"type": "string"},
+        "execution_scope": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "stages": {
+      "description": "Ordered prefix of actually reached MAP stages; completed realization has all five, earlier stop omits unreached stages.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": ["stage", "identity", "exact_value", "parent_stage_identity"],
+        "properties": {
+          "stage": {"enum": ["requested", "effective", "observation_resolved", "applied", "realized"]},
+          "identity": {"type": "string"},
+          "exact_value": {"type": "number", "exclusiveMinimum": 1},
+          "parent_stage_identity": {"type": ["string", "null"]}
+        },
+        "additionalProperties": false
+      }
+    },
+    "resolved_boolean": {"type": "boolean"},
+    "cause": {"type": "string", "minLength": 1},
+    "provenance": {"type": "object"}
+  }
+}
+

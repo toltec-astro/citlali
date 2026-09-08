@@ -1,0 +1,428 @@
+SCI-MAP v0.2 DOCUMENT r0.3 — FINAL MICRO-REPAIR,
+PROFILE-ACTIVATION, EMPTY-SUPPORT, RESPONSE-FAMILY,
+AND FREEZE-PREFLIGHT DIRECTIVE
+
+The SCI-MAP v0.2/r0.2 scientific architecture is accepted as the basis for the
+freeze candidate.
+
+Do not perform another broad MAP derivation.
+
+Preserve:
+
+- the ordinary positive-coefficient observation estimator;
+- exact realized SCI-PTC v0.1/r0.5 transformed input;
+- no direct CAL fallback, PTC-disabled route, or inferred no-op PTC product;
+- exact stable occurrence identity and same-n AST coordinate association;
+- SCI-MAP:one_hot_containing_pixel@1;
+- the explicitly selected PTC-owned uniform coefficient family;
+- no unity or alternate-family fallback;
+- the five-stage MAP lifecycle:
+      requested
+      effective
+      observation_resolved
+      applied
+      realized;
+- the complete MAP-local realized operator;
+- fixed-state, PTC-full-procedure, and PTC+MAP-re-resolved response families;
+- complete comparison-space records for numerical procedure differences;
+- original-footprint exposure using each unique original's own AST ALIGN-grid
+  coordinate;
+- no exposure from synthesis, replacement, donor reuse, filtering, or
+  decimation;
+- the exact coverage_cut order statistic;
+- separate normalization and science-support predicates;
+- the typed above-one override;
+- six independently requestable observation/coadd product roles;
+- response/covariance-unavailable base products;
+- role-qualified atomic coadd admission;
+- centered-integer common-grid placement;
+- equal-observation coadd coefficients;
+- complete within- and cross-observation covariance status;
+- current SCI-NOI claim ceilings;
+- exact WCS finite-population comparison;
+- the ECS result and artifact-realization vocabularies;
+- SCI-MAP-REQ-001 through REQ-052;
+- SCI-MAP-PRED-001 through PRED-025;
+- every current nonclaim.
+
+Do not inspect implementation, configuration, schemas, tests, audits, repairs,
+reductions, generated products, operational behavior, performance records,
+production material, Unity material, web sources, or undocumented practice.
+
+Amend existing requirement and prediction IDs when repairing the same
+obligation. Add a new ID only for a genuinely new independent obligation.
+
+======================================================================
+1. CORRECT PROFILE REGISTRATION AND EVALUATION STATUS
+======================================================================
+
+The r0.2 source register says that the successor MAP and VAL source/profile
+records remain candidate records whose owner acceptance, canonical activation,
+and frozen identities are pending.
+
+Do not state in unqualified present tense that:
+
+    SCI-MAP:observation_coadd_admission@2
+      is registered and evaluated by SCI-VAL
+
+or that another candidate profile presently passes.
+
+Track separately:
+
+    profile_semantics_state
+    scientific_owner_approval_state
+    registry_registration_state
+    source_binding_state
+    activation/evaluability_state
+    object-specific decision realization.
+
+Use current candidate truth:
+
+    scientific semantics:
+        candidate
+
+    owner acceptance:
+        pending
+
+    canonical Registry/source activation:
+        pending
+
+    SCI-VAL evaluability:
+        unavailable
+
+    realized decision for a particular object:
+        unavailable.
+
+Preferred wording:
+
+    SCI-MAP:observation_coadd_admission@2 is the proposed
+    owner-governed aggregate-profile identity for this candidate.
+    After exact owner acceptance, canonical Registry/source binding, and
+    activation, SCI-VAL may evaluate it for a requested object.
+
+Apply the same status audit to:
+
+- SCI-MAP:map_upstream_admission@2;
+- SCI-MAP:observation_coadd_admission@2;
+- the uniform coefficient handoff profile;
+- the uniform coefficient Registry/family records;
+- the original-footprint coordinate boundary;
+- every source/register/profile statement;
+- every route-status and remaining-gate table.
+
+An owner-accepted scientific core does not silently activate a draft Registry
+record or manufacture a realized VAL decision.
+
+======================================================================
+2. DEFINE THE EMPTY-SUPPORT PRODUCT OUTCOME
+======================================================================
+
+The contract allows an authorized coverage_cut above one to produce:
+
+    S_out = empty set
+
+or, for coaddition:
+
+    S_out_coadd = empty set.
+
+Return one explicit scientific-owner disposition.
+
+Preferred disposition:
+
+    application state:
+        applied_no_support_authorized_output_rows
+
+    product outcome:
+        not_produced
+
+    cause:
+        no_support_authorized_output_rows.
+
+Retain:
+
+- request, effective, observation_resolved, and applied state;
+- exact parent and plan;
+- coefficient/projection/support identities;
+- Q_star, thresholds, and support predicates;
+- proof that the output-row set is empty;
+- attempt identity, cause, and provenance.
+
+Do not publish:
+
+- a dense zero-valued map;
+- a zero-sky measurement;
+- a valid ordinary signal plane;
+- an admitted coadd member with no scientific rows;
+- a fabricated response or covariance plane.
+
+If the owner instead authorizes an immutable empty-row scientific bundle,
+define explicitly:
+
+- its exact product role and identity;
+- whether it is realized or not_produced;
+- base-product validity;
+- publication;
+- coadd admission;
+- response and covariance state;
+- exposure and count state;
+- downstream consumption;
+- storage representation.
+
+Do not leave this choice to implementation or file-writing behavior.
+
+Update:
+
+- the support equations and surrounding text;
+- SCI-MAP-REQ-009, REQ-012, REQ-031 through REQ-033, REQ-039,
+  REQ-047, and REQ-048 as applicable;
+- SCI-MAP-PRED-012, PRED-015, PRED-017, and PRED-025;
+- ECS fixtures and failure-state tables.
+
+======================================================================
+3. SEPARATE PRODUCT REALIZATION FROM ATTEMPT FAILURE
+======================================================================
+
+Do not define realized as binding product “failures” while also saying that a
+post-application terminal failure has no realized product.
+
+Keep distinct:
+
+A. MAP product realization
+
+    actual immutable accumulators, scientific output rows, product values,
+    product-role statuses, and provenance were produced;
+
+B. application-attempt outcome
+
+    succeeded
+    failed
+    not_produced
+
+or exact library-compatible equivalents.
+
+A failed application may produce an immutable failure/evidence record, but that
+record does not make the MAP product realized.
+
+An unavailable response or covariance status inside a permitted base bundle is
+a realized companion-status fact and is not producer failure.
+
+A pre-application stop has no applied or realized product record.
+
+A post-application terminal failure retains:
+
+- applied-attempt identity;
+- failure stage;
+- cause;
+- affected scope;
+- nonmutation evidence;
+
+but has no realized MAP signal product or completion marker.
+
+Repair the lifecycle definition, table, provenance requirement, failure
+section, and ECS record model consistently.
+
+======================================================================
+4. BIND THE RESPONSE FAMILY OF EACH RESPONSE-BEARING COADD
+======================================================================
+
+The current coadd equation stacks compatible fixed-state observation responses,
+while the product-role language can be read as allowing any named response
+family.
+
+Define one exact response-family-qualified construction.
+
+For response family R:
+
+    T_obs^(R)
+      = ordered stack of exact compatible member responses R_o^(R);
+
+    R_coadd,out^(R)
+      = B_out T_obs^(R),
+
+only when:
+
+- every admitted member has the same exact response-family identity;
+- source domain, perturbation definition, basis, unit, normalization,
+  reference/gauge/null state, WCS/grid, and row mapping are compatible;
+- coadd membership, centered-integer placement, B_out, support, and coadd
+  coefficient state are fixed for that query;
+- the response family is mathematically composable through the fixed linear
+  coadd operator.
+
+SCI-MAP:response_bearing_coadd@1 shall bind the exact response-family identity
+it carries.
+
+Do not combine in one unqualified role:
+
+- fixed-state response;
+- PTC full-procedure finite difference;
+- PTC+MAP re-resolved response;
+- coadd re-resolved/full-procedure response;
+- whole-chain response.
+
+If perturbation may alter observation admission, coadd membership, support,
+placement, coadd coefficients, product role, or the coadd plan, define a
+separate coadd-full-procedure or coadd-re-resolved response family with its own
+comparison-space record.
+
+Until separately authorized, that coadd-procedure response is unavailable.
+
+A finite-difference response is not multiplied through B_out as though it were
+a linear Jacobian without an exact composition theorem.
+
+Update:
+
+- Equation 40 and T_obs notation;
+- product-role dependency table;
+- SCI-MAP-REQ-036, REQ-037, REQ-040, and REQ-043;
+- SCI-MAP-PRED-013 through PRED-016;
+- response records and ECS fixtures.
+
+======================================================================
+5. MAKE DOCUMENT AUTHORITY ROLES UNAMBIGUOUS
+======================================================================
+
+Use the following hierarchy:
+
+    SCI-MAP-v0.2-SHARED-AUTHORITY
+        = sole normative scientific source;
+
+    Formal Scientific/Engineering Contract PDF
+        = canonical rendered normative scientific view;
+
+    Science-Team Rationale
+        = explanatory scientist-facing view;
+          no independent authority;
+
+    Engineering Conformance Specification
+        = prospective evidence, execution, traceability, and verdict
+          procedure;
+          no independent science.
+
+The formal contract may carry conformance routing and claim boundaries. It is
+not the sole detailed conformance procedure.
+
+Repair the rationale-cover statement that currently assigns the conformance
+procedure to the formal contract.
+
+All three covers shall bind the identical shared authority, author packet,
+owner directive, and build record.
+
+======================================================================
+6. REPAIR THE COMPARISON-SPACE CROSS-REFERENCE
+======================================================================
+
+Replace malformed wording equivalent to:
+
+    shall bind the complete comparison-space record in A numerical
+    full-procedure difference is defined only by ...
+
+with an exact named reference such as:
+
+    shall bind the complete
+    SCI-MAP-FULL-PROCEDURE-COMPARISON-SPACE record defined in Section <X>.
+
+Use that same stable record identity in:
+
+- formal equations and requirements;
+- response prose;
+- ECS requirements and fixtures;
+- provenance;
+- product boundaries.
+
+Repair duplicate punctuation and any stale prose introduced by the broken
+reference without changing the comparison-space science.
+
+======================================================================
+7. COMPLETE SOURCE AND ACTIVATION CLOSURE
+======================================================================
+
+Return the exact bytes of:
+
+- SCI-MAP-v0.2-SHARED-AUTHORITY/r0.3;
+- every shared source module;
+- formal-contract source;
+- rationale source;
+- ECS source;
+- 56-reference author manifest;
+- r0.2 packet addendum and its successor where required;
+- owner directive and owner disposition;
+- PTC-to-MAP boundary;
+- uniform coefficient Registry, family, and handoff records;
+- MAP upstream-admission profile;
+- observation-coadd aggregate profile;
+- original-footprint coordinate boundary;
+- final SCI-VAL Registry/source-binding generation;
+- build recipe and exact tools;
+- requirement/prediction traceability;
+- semantic-change report;
+- common-core/view parity report;
+- clean-build report;
+- PDF visual-QA and metadata report;
+- compressed delivery archive and archive sidecar.
+
+Before an active numerical route or unconditional freeze, replace or supersede:
+
+    SCI-PTC:analysis_gridding_coefficients@draft-0.1
+    SCI-PTC:uniform_constant@draft-0.1
+    SCI-PTC:uniform_coefficient_handoff@draft-0.1
+    SCI-PTC_TO_SCI-MAP_BOUNDARY v0.2-draft.1/r0.4
+
+with final immutable identities.
+
+Alternatively, freeze the generic MAP scientific authority while preserving
+those exact routes as unavailable pending later activation.
+
+Do not imply that scientific freeze itself registers, activates, or realizes a
+profile, boundary, coefficient payload, parent, or product.
+
+======================================================================
+8. MECHANICAL PREFLIGHT
+======================================================================
+
+Preserve:
+
+    SCI-MAP-REQ-001 through REQ-052
+    SCI-MAP-PRED-001 through PRED-025.
+
+Verify:
+
+- one exact shared scientific authority;
+- lifecycle/outcome parity;
+- empty-support disposition parity;
+- profile-status parity;
+- response-family-qualified coadd parity;
+- comparison-space record parity;
+- NOI terminology parity;
+- document-role parity;
+- all hashes and byte counts;
+- no unresolved references;
+- no duplicate IDs or identifier gaps;
+- all PDFs reopen and render without clipping, overlap, malformed equations,
+  broken glyphs, or unreadable tables;
+- titles, owner, version, revision, date, status, and metadata agree.
+
+======================================================================
+9. DELIVERABLES
+======================================================================
+
+Return:
+
+1. final SCI-MAP v0.2 Formal Scientific Contract;
+2. final Science-Team Rationale;
+3. final Engineering Conformance Specification;
+4. profile registration/activation-status amendment;
+5. empty-support owner disposition;
+6. product-realization versus attempt-failure amendment;
+7. response-family-qualified coadd amendment;
+8. corrected document-authority statement;
+9. corrected comparison-space cross-reference;
+10. exact source, Registry, boundary, and build packet;
+11. semantic-change and owner-parity reports;
+12. requirement/prediction parity report;
+13. PDF visual-QA and metadata report;
+14. proposed conditional or fully activated scientific-owner freeze record.
+
+Do not claim implementation conformity, response or covariance fidelity,
+observational performance, validation, calibrated significance, readiness,
+production suitability, production authorization, or Unity activity.

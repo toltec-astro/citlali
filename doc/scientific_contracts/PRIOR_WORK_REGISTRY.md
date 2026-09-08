@@ -64,6 +64,17 @@ and cross-package handoffs are valuable recovery inputs.
 
 ### MAP And Coaddition
 
+- **Later owner decisions, mandatory recovery:**
+  [August 28 post-freeze MAP/PTC decisions](packages/SCI-MAP/v0.1/POST_FREEZE_SCIENTIFIC_OWNER_DECISIONS_2026-08-28.md),
+  original commit `54475956f6aefb839d43b2f0fb019a142cb64310` on
+  `codex/scientific-contract-library`, SHA-256
+  `4d2b857b7ec9efe489fe065f464df4ecd23b57a4c1320cda6a10a56592825d1c`.
+  All eight MAP-local questions and PTC-OD-010's Registry architecture were
+  resolved after the freeze; historical OPEN rows must not restart them.
+  [September 7 recovery](studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/PRIOR_WORK.md)
+  accounts for the subsequent admitted uniform family/profile and separates
+  pending MAP successor incorporation from completed owner decisions.
+
 - Package-specific JINC recovery:
   [`packages/SCI-JINC/v0.1/PRIOR_WORK.md`](packages/SCI-JINC/v0.1/PRIOR_WORK.md)
   at `2026-08-28`. It resolves the frozen `SCI-MAP-002` independent core,

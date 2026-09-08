@@ -1,0 +1,85 @@
+{
+  "scope": "Document artifact checks only; no implementation evidence",
+  "covers": {
+    "formal": {
+      "physical_page": 1,
+      "expected_hashes": {
+        "shared_authority": "3b81ea8180dcc3f5f37964ac1177feb417fef6a1cdcc590b33f9431b54bc1e31",
+        "original_author_manifest": "83baf583f73784bebc6724025fd110e5545303f303c70af590b53c5696ee2c4f",
+        "author_packet_inventory": "a3c78e5ca39ff9ca0c25f2acd48a0418478aa3be56d98da6fbed43fd49a2454b",
+        "owner_directive": "34381dc7b1a19ddf6168e2259060fd808e97f8eac2b69074fbea983f02fb017b",
+        "document_entry_source": "9c6a3d360736e96c295c01501e740c46c2944e895722e7bd965ff680d5416763"
+      },
+      "all_present": true,
+      "metadata": {
+        "/Creator": "LaTeX with hyperref",
+        "/Title": "SCI-MAP v0.2 Formal Scientific/Engineering Contract, r0.4 Candidate",
+        "/Subject": "Candidate for scientific-owner disposition",
+        "/Author": "Grant Wilson",
+        "/Producer": "xdvipdfmx (0.1)",
+        "/CreationDate": "D:20260908000000-00'00'"
+      },
+      "pages": 36,
+      "pdf_sha256": "8857512a6ef5b5b09ebb024daa7fb11b709311a1a60102f7a67b440e4a4a4e35"
+    },
+    "rationale": {
+      "physical_page": 1,
+      "expected_hashes": {
+        "shared_authority": "3b81ea8180dcc3f5f37964ac1177feb417fef6a1cdcc590b33f9431b54bc1e31",
+        "original_author_manifest": "83baf583f73784bebc6724025fd110e5545303f303c70af590b53c5696ee2c4f",
+        "author_packet_inventory": "a3c78e5ca39ff9ca0c25f2acd48a0418478aa3be56d98da6fbed43fd49a2454b",
+        "owner_directive": "34381dc7b1a19ddf6168e2259060fd808e97f8eac2b69074fbea983f02fb017b",
+        "document_entry_source": "83272b064257bd83c0bb4bca7ff12e11b2a550912ce22c42ade76cf18871e37a"
+      },
+      "all_present": true,
+      "metadata": {
+        "/Creator": "LaTeX with hyperref",
+        "/Title": "SCI-MAP v0.2 TolTEC Ordinary Mapmaking and Observation Coaddition - Science-Team Rationale r0.4 Candidate",
+        "/Subject": "Candidate for scientific-owner disposition",
+        "/Author": "Grant Wilson",
+        "/Producer": "xdvipdfmx (0.1)",
+        "/CreationDate": "D:20260908000000-00'00'"
+      },
+      "pages": 16,
+      "pdf_sha256": "e0203669a35c5fa5710d0e88287a48271f91cbdef35e54e2173592bedc5238f2"
+    },
+    "engineering": {
+      "physical_page": 1,
+      "expected_hashes": {
+        "shared_authority": "3b81ea8180dcc3f5f37964ac1177feb417fef6a1cdcc590b33f9431b54bc1e31",
+        "original_author_manifest": "83baf583f73784bebc6724025fd110e5545303f303c70af590b53c5696ee2c4f",
+        "author_packet_inventory": "a3c78e5ca39ff9ca0c25f2acd48a0418478aa3be56d98da6fbed43fd49a2454b",
+        "owner_directive": "34381dc7b1a19ddf6168e2259060fd808e97f8eac2b69074fbea983f02fb017b",
+        "document_entry_source": "92a258832664d891443d1b616717978a41bc98c79dd4aa339b63eefbef7fd5f4"
+      },
+      "all_present": true,
+      "metadata": {
+        "/Creator": "LaTeX with hyperref",
+        "/Title": "SCI-MAP v0.2 Engineering Conformance Specification, r0.4 Candidate",
+        "/Subject": "Candidate for scientific-owner disposition",
+        "/Author": "Grant Wilson",
+        "/Producer": "xdvipdfmx (0.1)",
+        "/CreationDate": "D:20260908000000-00'00'"
+      },
+      "pages": 27,
+      "pdf_sha256": "f53e89d3cf405860e7762560213ea95e31eaa1de68048fb359742eafae54aa7c"
+    }
+  },
+  "rendered_headings": {
+    "formal": {
+      "requirements": 52,
+      "predictions": 25,
+      "not_assessed_results": 0
+    },
+    "rationale": {
+      "requirements": 0,
+      "predictions": 0,
+      "not_assessed_results": 0
+    },
+    "engineering": {
+      "requirements": 52,
+      "predictions": 25,
+      "not_assessed_results": 52
+    }
+  }
+}

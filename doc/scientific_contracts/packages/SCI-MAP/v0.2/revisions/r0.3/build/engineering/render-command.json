@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "/Users/gwilson/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdftoppm",
+    "-r",
+    "100",
+    "-png",
+    "/private/tmp/citlali-map-r03-build-2026-09-08/candidate-build-01/engineering/engineering-conformance.pdf",
+    "/private/tmp/citlali-map-r03-build-2026-09-08/candidate-build-01/engineering/render/page"
+  ],
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

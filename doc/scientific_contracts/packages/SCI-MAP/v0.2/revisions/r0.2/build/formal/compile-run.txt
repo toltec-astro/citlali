@@ -1,0 +1,66 @@
+note: using only cached resource files
+note: Running TeX ...
+warning: identity/formal.tex:17: Underfull \hbox (badness 10000) in paragraph at lines 17--17
+warning: formal-scientific-engineering-contract.tex:62: Underfull \hbox (badness 10000) in paragraph at lines 17--62
+warning: formal-scientific-engineering-contract.tex:150: Underfull \hbox (badness 1292) in paragraph at lines 135--150
+warning: formal-scientific-engineering-contract.tex:150: Underfull \hbox (badness 1173) in paragraph at lines 135--150
+warning: formal-scientific-engineering-contract.tex:437: Underfull \hbox (badness 1515) in paragraph at lines 427--437
+warning: formal-scientific-engineering-contract.tex:512: Underfull \hbox (badness 1215) in paragraph at lines 511--512
+warning: formal-scientific-engineering-contract.tex:512: Underfull \hbox (badness 6125) in paragraph at lines 511--512
+warning: formal-scientific-engineering-contract.tex:612: Underfull \hbox (badness 1077) in paragraph at lines 611--612
+warning: formal-scientific-engineering-contract.tex:616: Underfull \hbox (badness 10000) in paragraph at lines 615--616
+warning: formal-scientific-engineering-contract.tex:642: Underfull \hbox (badness 1178) in paragraph at lines 633--642
+warning: formal-scientific-engineering-contract.tex:642: Underfull \hbox (badness 2158) in paragraph at lines 633--642
+warning: formal-scientific-engineering-contract.tex:642: Underfull \hbox (badness 1281) in paragraph at lines 633--642
+warning: formal-scientific-engineering-contract.tex:642: Underfull \hbox (badness 1354) in paragraph at lines 633--642
+warning: formal-scientific-engineering-contract.tex:819: Underfull \hbox (badness 10000) in paragraph at lines 819--819
+warning: formal-scientific-engineering-contract.tex:819: Underfull \hbox (badness 10000) in paragraph at lines 819--819
+warning: formal-scientific-engineering-contract.tex:819: Underfull \hbox (badness 10000) in paragraph at lines 819--819
+warning: formal-scientific-engineering-contract.tex:819: Underfull \hbox (badness 10000) in paragraph at lines 819--819
+warning: formal-scientific-engineering-contract.tex:819: Underfull \hbox (badness 2837) in paragraph at lines 819--819
+warning: formal-scientific-engineering-contract.tex:819: Underfull \hbox (badness 10000) in paragraph at lines 819--819
+warning: formal-scientific-engineering-contract.tex:819: Underfull \hbox (badness 10000) in paragraph at lines 819--819
+warning: formal-scientific-engineering-contract.tex:819: Underfull \hbox (badness 1024) in paragraph at lines 819--819
+warning: formal-scientific-engineering-contract.tex:819: Underfull \hbox (badness 10000) in paragraph at lines 819--819
+warning: formal-scientific-engineering-contract.tex:819: Underfull \hbox (badness 1990) in paragraph at lines 819--819
+warning: formal-scientific-engineering-contract.tex:819: Underfull \hbox (badness 10000) in paragraph at lines 819--819
+warning: formal-scientific-engineering-contract.tex:832: Underfull \hbox (badness 2435) in paragraph at lines 832--832
+warning: formal-scientific-engineering-contract.tex:832: Underfull \hbox (badness 1496) in paragraph at lines 832--832
+warning: formal-scientific-engineering-contract.tex:838: Underfull \hbox (badness 1215) in paragraph at lines 837--838
+warning: formal-scientific-engineering-contract.tex:838: Underfull \hbox (badness 6125) in paragraph at lines 837--838
+note: Rerunning TeX because "formal-scientific-engineering-contract.toc" changed ...
+warning: identity/formal.tex:17: Underfull \hbox (badness 10000) in paragraph at lines 17--17
+warning: formal-scientific-engineering-contract.tex:62: Underfull \hbox (badness 10000) in paragraph at lines 17--62
+warning: formal-scientific-engineering-contract.tex:150: Underfull \hbox (badness 1292) in paragraph at lines 135--150
+warning: formal-scientific-engineering-contract.tex:150: Underfull \hbox (badness 1173) in paragraph at lines 135--150
+warning: formal-scientific-engineering-contract.tex:437: Underfull \hbox (badness 1515) in paragraph at lines 427--437
+warning: formal-scientific-engineering-contract.tex:512: Underfull \hbox (badness 1215) in paragraph at lines 511--512
+warning: formal-scientific-engineering-contract.tex:512: Underfull \hbox (badness 6125) in paragraph at lines 511--512
+warning: formal-scientific-engineering-contract.tex:612: Underfull \hbox (badness 1077) in paragraph at lines 611--612
+warning: formal-scientific-engineering-contract.tex:616: Underfull \hbox (badness 10000) in paragraph at lines 615--616
+warning: formal-scientific-engineering-contract.tex:642: Underfull \hbox (badness 1178) in paragraph at lines 633--642
+warning: formal-scientific-engineering-contract.tex:642: Underfull \hbox (badness 2158) in paragraph at lines 633--642
+warning: formal-scientific-engineering-contract.tex:642: Underfull \hbox (badness 1281) in paragraph at lines 633--642
+warning: formal-scientific-engineering-contract.tex:642: Underfull \hbox (badness 1354) in paragraph at lines 633--642
+warning: formal-scientific-engineering-contract.tex:819: Underfull \hbox (badness 10000) in paragraph at lines 819--819
+warning: formal-scientific-engineering-contract.tex:819: Underfull \hbox (badness 10000) in paragraph at lines 819--819
+warning: formal-scientific-engineering-contract.tex:819: Underfull \hbox (badness 10000) in paragraph at lines 819--819
+warning: formal-scientific-engineering-contract.tex:819: Underfull \hbox (badness 10000) in paragraph at lines 819--819
+warning: formal-scientific-engineering-contract.tex:819: Underfull \hbox (badness 2837) in paragraph at lines 819--819
+warning: formal-scientific-engineering-contract.tex:819: Underfull \hbox (badness 10000) in paragraph at lines 819--819
+warning: formal-scientific-engineering-contract.tex:819: Underfull \hbox (badness 10000) in paragraph at lines 819--819
+warning: formal-scientific-engineering-contract.tex:819: Underfull \hbox (badness 1024) in paragraph at lines 819--819
+warning: formal-scientific-engineering-contract.tex:819: Underfull \hbox (badness 10000) in paragraph at lines 819--819
+warning: formal-scientific-engineering-contract.tex:819: Underfull \hbox (badness 1990) in paragraph at lines 819--819
+warning: formal-scientific-engineering-contract.tex:819: Underfull \hbox (badness 10000) in paragraph at lines 819--819
+warning: formal-scientific-engineering-contract.tex:832: Underfull \hbox (badness 2435) in paragraph at lines 832--832
+warning: formal-scientific-engineering-contract.tex:832: Underfull \hbox (badness 1496) in paragraph at lines 832--832
+warning: formal-scientific-engineering-contract.tex:838: Underfull \hbox (badness 1215) in paragraph at lines 837--838
+warning: formal-scientific-engineering-contract.tex:838: Underfull \hbox (badness 6125) in paragraph at lines 837--838
+warning: warnings were issued by the TeX engine; use --print and/or --keep-logs for details.
+note: Running xdvipdfmx ...
+note: Writing `/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-05/formal/formal-scientific-engineering-contract.log` (25.7216796875 KiB)
+note: Writing `/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-05/formal/formal-scientific-engineering-contract.aux` (14.701171875 KiB)
+note: Writing `/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-05/formal/formal-scientific-engineering-contract.out` (4.1875 KiB)
+note: Writing `/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-05/formal/formal-scientific-engineering-contract.pdf` (232.1337890625 KiB)
+note: Writing `/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-05/formal/formal-scientific-engineering-contract.toc` (1.587890625 KiB)

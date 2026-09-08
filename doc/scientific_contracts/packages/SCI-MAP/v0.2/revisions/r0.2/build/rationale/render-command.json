@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "/Users/gwilson/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdftoppm",
+    "-r",
+    "100",
+    "-png",
+    "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-05/rationale/scientific-rationale.pdf",
+    "/private/tmp/citlali-map-r02-build-2026-09-07/candidate-build-05/rationale/render/page"
+  ],
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

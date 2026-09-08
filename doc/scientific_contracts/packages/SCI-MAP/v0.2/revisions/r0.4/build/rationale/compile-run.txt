@@ -1,0 +1,20 @@
+note: using only cached resource files
+note: Running TeX ...
+warning: identity/rationale.tex:17: Underfull \hbox (badness 10000) in paragraph at lines 17--17
+warning: scientific-rationale.tex:152: Underfull \hbox (badness 10000) in paragraph at lines 151--152
+warning: scientific-rationale.tex:529: Underfull \hbox (badness 2512) in paragraph at lines 528--529
+note: Rerunning TeX because "scientific-rationale.toc" changed ...
+warning: identity/rationale.tex:17: Underfull \hbox (badness 10000) in paragraph at lines 17--17
+warning: scientific-rationale.tex:152: Underfull \hbox (badness 10000) in paragraph at lines 151--152
+warning: scientific-rationale.tex:529: Underfull \hbox (badness 2512) in paragraph at lines 528--529
+note: Rerunning TeX because "scientific-rationale.out" changed ...
+warning: identity/rationale.tex:17: Underfull \hbox (badness 10000) in paragraph at lines 17--17
+warning: scientific-rationale.tex:152: Underfull \hbox (badness 10000) in paragraph at lines 151--152
+warning: scientific-rationale.tex:529: Underfull \hbox (badness 2512) in paragraph at lines 528--529
+warning: warnings were issued by the TeX engine; use --print and/or --keep-logs for details.
+note: Running xdvipdfmx ...
+note: Writing `/private/tmp/citlali-map-r04-build-2026-09-08/candidate-build-03/rationale/scientific-rationale.out` (236 B)
+note: Writing `/private/tmp/citlali-map-r04-build-2026-09-08/candidate-build-03/rationale/scientific-rationale.pdf` (147.7451171875 KiB)
+note: Writing `/private/tmp/citlali-map-r04-build-2026-09-08/candidate-build-03/rationale/scientific-rationale.log` (18.9755859375 KiB)
+note: Writing `/private/tmp/citlali-map-r04-build-2026-09-08/candidate-build-03/rationale/scientific-rationale.toc` (1.1142578125 KiB)
+note: Writing `/private/tmp/citlali-map-r04-build-2026-09-08/candidate-build-03/rationale/scientific-rationale.aux` (5.96875 KiB)

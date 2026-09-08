@@ -1,3 +1,101 @@
+## Current MAP contract incorporation and binding status — 2026-09-08
+
+The owner authorized [documentation-only canonical incorporation](acceptance/SCI_MAP_V02_R04_2026-09-08/README.md)
+of the published, frozen SCI-MAP v0.2/r0.4 packet. This entry takes effect when
+its exact merge passes independent review and is present on canonical ancestry;
+the actual review and fast-forward are recorded in the external completion receipt.
+The [current reconciliation](acceptance/SCI_MAP_V02_R04_2026-09-08/BINDING_RECONCILIATION.md)
+supersedes stale MAP authorship, owner-review and incorporation gates below.
+Settled science is preserved. Profile-policy approval, final immutable identities,
+formal Registry/source binding, activation and object-specific evidence remain
+separate. Files in the contract library do not activate a numerical route.
+Application content is preserved exactly from the canonical first parent; no
+implementation qualification occurs. The NOI candidate stays preserved and
+paused in this task, and unfinished FRUIT work remains independent.
+
+## 2026-09-07 MAP v0.2/r0.2 Targeted Contract Revision
+
+
+**Current SCI-MAP authority — 2026-09-08:** [v0.2/r0.4 is frozen as generic
+scientific authority](packages/SCI-MAP/v0.2/SCIENTIFIC_OWNER_FREEZE_R0.4.md), following
+[owner acceptance](packages/SCI-MAP/v0.2/SCIENTIFIC_OWNER_ACCEPTANCE_R0.4_2026-09-08.md) and a
+passing fresh post-owner consistency review. [Exact frozen artifacts and
+bindings](packages/SCI-MAP/v0.2/FREEZE_BINDING_R0.4.json) retain all prior approvals and all
+52 requirements / 25 predictions. Affected profiles and numerical routes remain
+pending or unavailable under their separate gates. Topic-branch publication
+is owner-authorized; this record supplies no remote receipt. Canonical integration and implementation
+qualification are separate. Earlier candidate entries below are preserved as
+historical records and do not override this status.
+
+
+## Current SCI-MAP document candidate — 2026-09-08
+
+[SCI-MAP v0.2/r0.4](packages/SCI-MAP/v0.2/revisions/r0.4/README.md) is the current bounded scientific-document candidate, superseding r0.3 candidate navigation below. [The delivery index](packages/SCI-MAP/v0.2/revisions/r0.4/DELIVERY_INDEX.md) links the corrected views, sources, fixtures and acceptance evidence. The owner accepted r0.3 architecture as the basis and closed its earlier repairs; prior approvals and predecessor bytes remain preserved.
+
+[The proposed conditional freeze](packages/SCI-MAP/v0.2/revisions/r0.4/PROPOSED_SCIENTIFIC_OWNER_ACCEPTANCE_AND_FREEZE_DISPOSITION.md) keeps affected draft-identity routes unavailable. Finished r0.4 owner acceptance, fresh post-owner consistency review and later freeze remain pending. Profile approval, registration, binding, activation and object decisions remain separate; this entry performs none of them.
+
+This task owns scientific-contract development and review. No application change, implementation qualification, push or integration is recorded. The NOI candidate remains preserved and paused here; FRUIT remains independent and unfinished. [The scope record](packages/SCI-MAP/v0.2/revisions/r0.4/build/MANAGER_SCOPE_AND_COMPLETION.md) records the bounded document gates and scope. Exact-commit review and archive identities are in the external receipt. Historical entries below retain every original byte.
+
+
+## Current SCI-MAP document candidate — 2026-09-08
+
+[SCI-MAP v0.2/r0.3](packages/SCI-MAP/v0.2/revisions/r0.3/README.md) is the current bounded scientific-document candidate, superseding r0.2 candidate navigation below. [The delivery index](packages/SCI-MAP/v0.2/revisions/r0.3/DELIVERY_INDEX.md) links all 14 requested items. The owner accepted r0.2 architecture as the basis; prior approvals and predecessor bytes remain preserved.
+
+[The proposed conditional freeze](packages/SCI-MAP/v0.2/revisions/r0.3/PROPOSED_SCIENTIFIC_OWNER_ACCEPTANCE_AND_FREEZE_DISPOSITION.md) keeps affected draft-identity routes unavailable. Finished r0.3 owner acceptance, fresh post-owner consistency review and later freeze remain pending. Profile approval, registration, binding, activation and object decisions remain separate; this entry performs none of them.
+
+This task owns scientific-contract development and review. No application change, implementation qualification, push or integration is recorded. The NOI candidate remains preserved and paused here; FRUIT remains independent and unfinished. [The scope record](packages/SCI-MAP/v0.2/revisions/r0.3/build/MANAGER_SCOPE_AND_COMPLETION.md) records document gates and the disclosed manager-read limitation. Exact-commit review and archive identities are in the external receipt. Historical entries below retain every original byte.
+
+Grant Wilson accepted the r0.1 scientific architecture as the basis for one
+[targeted r0.2 revision](packages/SCI-MAP/v0.2/revisions/r0.2/README.md). The candidate uses one five-stage
+lifecycle, six explicit observation/coadd roles, exact response comparison
+spaces, current NOI claim limits, and separate ECS result/artifact states.
+It preserves the settled MAP owner decisions, 52 requirement and 25 prediction
+identities, the admitted uniform science, and every r0.1 package file.
+
+The three PDFs have passed [document build and visual checks](packages/SCI-MAP/v0.2/revisions/r0.2/build/PDF_VISUAL_QA_AND_METADATA.md)
+over 75 pages. All ECS requirement results remain `not_assessed`. This
+candidate is prepared for fresh exact-SHA review and scientific-owner
+disposition; the review receipt binds the final commit separately. Acceptance
+of the r0.1 basis does not approve or freeze the completed r0.2. Historical
+uniform identifiers and approvals remain intact; dependent r0.2 profile/source
+bindings remain candidate, with no source-closed frozen numerical-route claim.
+
+This increment contains contract documents and their artifact-build tools only.
+NOI engineering remains paused and preserved; FRUIT continues independently.
+No application/configuration/test change, implementation qualification, push,
+canonical integration, activation, freeze, cleanup, or Unity operation follows.
+Earlier candidate and pending-gate checkpoints below retain their historical
+meaning and do not reopen settled owner decisions.
+
+The [SCI-MAP v0.2/r0.1 candidate](packages/SCI-MAP/v0.2/README.md) is now
+authored from the exact approved scope and references. All nine MAP owner
+decisions are incorporated, including the settled low-coverage/`coverage_cut`
+policy, and the admitted uniform boundary is preserved. The assembled successor
+awaits independent review, owner scientific disposition and later freeze/binding;
+it creates no implementation or production authority. The
+[authoring record](studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/AUTHORING_RECORD_2026-09-07.md)
+supersedes authoring-underway wording below; prior approvals remain settled.
+
+The owner [approved the exact MAP successor Scope Brief and 56 references](studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/SCOPE_APPROVAL_2026-09-07.md)
+on September 7 at reviewed candidate `ba1187fe1e30525d4bd1f6f782a22b7103e83e9d`.
+Implementation-blind SCI-MAP v0.2/r0.1 contract authorship is now authorized;
+successor scientific approval, freeze and binding remain later gates. The
+historical preparation wording below does not reopen this approved scope.
+
+The [September 7 MAP reconciliation](studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/README.md)
+recovers the [August 28 post-freeze owner decisions](packages/SCI-MAP/v0.1/POST_FREEZE_SCIENTIFIC_OWNER_DECISIONS_2026-08-28.md):
+all eight formerly open MAP-local choices and PTC-OD-010's Registry architecture
+were decided. The frozen MAP ledger retains its historical state; it is not
+the current owner-question queue. The later uniform family/profile and separate
+MAP/JINC grants are already admitted. MAP successor incorporation and exact
+binding remain pending under the [proposed Scope Brief](studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/SCOPE_BRIEF.md).
+The [current decision reconciliation](studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/DECISION_RECONCILIATION.md)
+governs current CTI dispositions, including approved CTI-OD-003/004 and the
+preparation-only boundary of CTI-OD-006. Superseded introductory checkpoints
+below retain their historical state; they do not reopen those decisions or
+the completed uniform admission. No application work or FRUIT attachment
+follows from this reconciliation.
+
 # Citlali Scientific Contract Package Index
 
 The [uniform canonical admission record](acceptance/PTC_UNIFORM_R04_2026-09-06/INTEGRATION_RECEIPT.md)
@@ -113,16 +211,16 @@ implementation, performance, production, or MAP authorization follows.
 | Package | Scope status | Contract status | Owner decision needed | Next action |
 | --- | --- | --- | --- | --- |
 | [SCI-CAL — detector calibration, extinction, and signal transfer](packages/SCI-CAL/v0.1/README.md) | Owner-approved scientific contract v0.1 scope | **Scientific authority frozen** at v0.1/r0.5-r0.4 on `2026-08-23`; implementation conformity and achieved performance unassessed | No scientific decision remains open in Q01--Q09; named numerical uncertainty products and achieved-performance acceptance remain unavailable until their evidence exists | Preserve the frozen packet; execute the owner-approved validation workflow separately and report the evidence honestly |
-| [SCI-MAP — ordinary mapmaking and observation coaddition](packages/SCI-MAP/v0.1/README.md) | **Scientific authority frozen at v0.1/r0.7.1 by Grant Wilson on `2026-08-28`** | Formal, rationale, and ECS synchronized; byte-identical PTC/MAP boundary, exact manifest-bound atomic and aggregate VAL records, named decision fields, canonical identifiers, exact exposure-product aliases, and externally SHA-bound source manifest; 52 requirement and 25 prediction IDs retained | Hard numerical gates: exact PTC MAP-facing coefficient family and exact owner-admitted numerical `coverage_cut` state/value. Eight MAP owner decisions remain open; OD-008 is resolved | Plan implementation-conformity work against frozen authority; no conformity, validation, achieved response/performance, readiness, or production claim |
+| [SCI-MAP — ordinary mapmaking and observation coaddition](packages/SCI-MAP/v0.2/SCIENTIFIC_OWNER_FREEZE_R0.4.md) | Approved successor scope and recovered owner decisions incorporated; predecessor frozen bytes preserved | **Generic scientific authority frozen** at v0.2/r0.4; nine owner decisions, 52 requirements and 25 predictions; exact owner-pushed freeze `b972d2850c2521662af59bba31d71a3ee525033c` | Settled MAP science, including low coverage and `coverage_cut`, is not reopened; separate profile approval, immutable identities, Registry/source-binding admission, activation and object gates remain | Follow the [current contract-only binding reconciliation](acceptance/SCI_MAP_V02_R04_2026-09-08/BINDING_RECONCILIATION.md); preserve frozen sources and independent unfinished FRUIT development |
 | [SCI-JINC — signed-coefficient JINC observation mapmaker](packages/SCI-JINC/v0.1/README.md) | Stage A, implementation-blind Stage B, bounded review, exact center-tie disposition, freeze, mechanical verification, and post-freeze horizontal audit complete | **Scientific authority frozen** at v0.1/r0.3, commit `a9f43877e01a661db13bd85b2e7f34ea5ac82fb7`, tag `sci-jinc-v0.1-r0.3`; 44 requirements and 36 predictions; post-freeze audit found no material authority inconsistency | Inherited TolTEC numerical realization and numerical-adequacy certificate remain unavailable; no implementation-conformity, validation, achieved-performance, readiness, or production claim | Preserve the tagged bytes; any scientific correction requires an explicitly authorized versioned successor |
 | [SCI-BEAM — Beammap effective PSF, calibration, sensitivity, and APT](packages/SCI-BEAM/v0.1/README.md) | Owner-approved v0.1 boundary; absolute boresight/pivot excluded | Scientific authority frozen at r0.3; 46 requirements and 24 predictions; implementation conformity unassessed | Resolve three stable decision groups containing nine atomic sensitivity, adequacy, wing, pivot, accuracy, and kernel questions | No further editorial round; revise only for a resolved decision, normative change, evidentiary-status change, or genuine inconsistency |
 | [SCI-ALIGN — detector-reference alignment](packages/SCI-ALIGN/v0.1/README.md) | Approved scope and exact r0.3 authority retained; original standalone Stage A files were not recoverable and the gap is explicit | **Scientific authority frozen** at v0.1/r0.3 on `2026-08-22`; 55 requirements and 26 predictions; implementation conformity not assessed | `SCI-ALIGN-ODQ-101--105` and `110` remain open; `109` is deferred; each blocks only its named field or claim | Preserve the frozen packet; resolve typed owner questions or launch a separately governed implementation-conformity audit |
 | [SCI-AST — astrometric coordinate realization](packages/SCI-AST/v0.1/README.md) | Approved scope and exact r0.3 authority retained; original standalone Stage A files were not recoverable and the gap is explicit | **Scientific authority frozen** at v0.1/r0.3 on `2026-08-22`; 90 requirements and 50 predictions; implementation conformity not assessed | `AST-OWNER-Q001--004`, `006`, and `007` remain open; Q005 is deferred; Q008 is closed | Preserve the frozen packet; resolve typed owner questions or launch a separately governed implementation-conformity audit |
 | [SCI-RTC — raw-timestream conditioning and temporal response](packages/SCI-RTC/v0.1/README.md) | Owner-approved Stage A scope and packet; bounded r0.10--r0.12 reopening decisions retained | **Scientific authority frozen** at v0.1/r0.12 on `2026-08-21`; approved explanatory `OWNER-090--096` source correction published `2026-08-25`; implementation conformity not assessed | Preserve the 63 open, one conditional, 34 resolved, and five deferred ledger states; no hidden defaults | Admit the corrected source/PDF manifest to the WP-7 successor; separately govern any conformity, validation, or further successor-authority work |
-| [SCI-PTC-COEFFICIENT-UNIFORM — exact-unity analysis/gridding coefficients](packages/SCI-PTC-COEFFICIENT-UNIFORM/v0.1/README.md) | Uniform-first scope and complete r0.4 science approved on 2026-09-06; post-owner consistency PASS | Exact approved sources, 5-page rationale, 14-page engineering view, 25 requirements, 16 predictions and ten cases promoted without byte changes; freeze and immutable Registry/boundary admission prepared | No scientific decision remains in UFC-OD-001--014 or UFC-Q-001; five deferred subjects retain their future scope | Complete exact-SHA admission/integration review under the owner instruction; separately dispose CTI-OD-003/004/006; no implementation or numerical-availability claim |
-| [SCI-PTC — correlated-mode cleaning and detector coefficients](packages/SCI-PTC/v0.1/README.md) | Owner-approved Stage A scope/packet; Q001--Q003 and `WP1-OWNER-D001--D009` resolve diagnostic `r`, frozen-subspace projection, transformed-signal/truth-rule defects, disabled routing, configured grouping, positive rank, centering, immutable-parent fit, and the time-local full-rank guard | Scientific authority frozen at v0.1/r0.5 on `2026-08-23`: 99 requirements, 60 predictions, exact 159-row crosswalk, canonical 13-page rationale and 26-page engineering view; implementation conformity not assessed | Preserve 10 unresolved entries: three open, four known-but-not-supplied, and three deferred roles remain unavailable; no audit finding is closed before clean-room re-audit | Preserve the frozen handoff while the separate MAP Stage A lane consumes it; independently complete the timestream clean-room re-audit |
-| [SCI-VAL — sample/detector validity, flags, and map eligibility](packages/SCI-VAL/v0.1/README.md) | Owner-approved r0.3 Core; immutable Registry successor chain preserves MAP history and binds MAP `@2`/coadd, JINC map-contribution, and four SCI-NOI `@1` profiles | Core remains r0.3 with 49 requirements and 24 predictions; exact Registry/source-binding successors run through `2026-08-30`; each policy remains authored by its named-use owner | No general VAL science question open; registered profiles remain unavailable wherever their exact producer facts, numerical parents, or owner authorities are unavailable | Preserve VAL as evaluator/registry; no conformity, validation, numerical-availability, or readiness claim |
-| [SCI-NOI — realization ensembles, empirical uncertainty, and standardized signal](packages/SCI-NOI/v0.1/README.md) | Recovery-first Stage A, owner decisions, implementation-blind Stage B, and bounded r0.5 target-law closure complete | **Scientific authority frozen** at v0.1/r0.5 snapshot commit `2303daf7061a19945a6333099d33dd559cf2abf8`, with approval provenance at branch tip `f28d7a2617160febca85c1c40e6f7ba7494e266e`; freeze-manifest SHA-256 `b6915186424dd52d7c94fb0df47db91654d3c20cf4b3fa6ab98c3554626d8bfc` | The four r0.5 profile successors remain proposed, unapproved, Registry-unbound, and unevaluable; coefficient, exact `coverage_cut`, transformed, Wiener, FRUIT, and numerical-parent routes retain their declared gates; no conformity, generator validation, calibration, covariance-completeness, significance, performance, readiness, or production claim | Preserve the frozen r0.5 bytes and approval record; treat any later profile admission or scientific correction as a separately authorized successor |
+| [SCI-PTC-COEFFICIENT-UNIFORM — exact-unity analysis/gridding coefficients](packages/SCI-PTC-COEFFICIENT-UNIFORM/v0.1/README.md) | Uniform-first scope and complete r0.4 science approved on 2026-09-06; consistency review, freeze and canonical admission complete | Exact approved sources, 5-page rationale, 14-page engineering view, 25 requirements, 16 predictions and ten cases preserved; first family/profile and separate MAP/JINC bindings admitted at `36176ac14abe23a5c331ba40af2bb86d3e97a7f6` | No scientific decision remains in UFC-OD-001--014 or UFC-Q-001; five deferred subjects retain their future scope; actual selection/publication and numerical routes remain separately gated | Preserve the admitted authority; follow the current decision reconciliation and bounded MAP successor scope; no repeated admission review or implementation/availability claim |
+| [SCI-PTC — correlated-mode cleaning and detector coefficients](packages/SCI-PTC/v0.1/README.md) | Owner-approved Stage A scope/packet; Q001--Q003 and `WP1-OWNER-D001--D009` resolve diagnostic `r`, frozen-subspace projection, transformed-signal/truth-rule defects, disabled routing, configured grouping, positive rank, centering, immutable-parent fit, and the time-local full-rank guard | Scientific authority frozen at v0.1/r0.5 on `2026-08-23`: 99 requirements, 60 predictions, exact 159-row crosswalk, canonical 13-page rationale and 26-page engineering view; implementation conformity not assessed | Frozen ledger retains its historical ten-entry state; later PTC-OD-010 Registry architecture is resolved and the first uniform family/profile and separate MAP/JINC grants are admitted. Other families/defaults and unrelated roles retain their own gates | Preserve the frozen handoff while the separate MAP Stage A lane consumes it; independently complete the timestream clean-room re-audit |
+| [SCI-VAL — sample/detector validity, flags, and map eligibility](packages/SCI-VAL/v0.1/README.md) | Owner-approved r0.3 Core; immutable Registry successor chain and September 6 uniform admission preserved | Core remains r0.3 with 49 requirements and 24 predictions; exact admitted uniform chain at `36176ac14abe23a5c331ba40af2bb86d3e97a7f6` unchanged; r0.4 MAP/VAL candidate pair is documentarily consistent with frozen MAP | No general VAL science question reopened; new MAP profile approval, formal binding/registration and activation remain separate; four NOI r0.5 profile successors remain unapproved/unbound | Use the [exact binding reconciliation](acceptance/SCI_MAP_V02_R04_2026-09-08/BINDING_RECONCILIATION.md) for the next contract-only disposition; preserve earlier evaluations and VAL evaluator ownership; no numerical availability or conformance claim |
+| [SCI-NOI — realization ensembles, empirical uncertainty, and standardized signal](packages/SCI-NOI/v0.1/README.md) | Recovery-first Stage A, owner decisions, implementation-blind Stage B, and bounded r0.5 target-law closure complete | **Scientific authority frozen** at v0.1/r0.5 snapshot commit `2303daf7061a19945a6333099d33dd559cf2abf8`, with approval provenance at branch tip `f28d7a2617160febca85c1c40e6f7ba7494e266e`; freeze-manifest SHA-256 `b6915186424dd52d7c94fb0df47db91654d3c20cf4b3fa6ab98c3554626d8bfc` | Four r0.5 profile successors remain proposed, unapproved, Registry-unbound and unevaluable; uniform authority is admitted and MAP owner policy is incorporated in frozen v0.2/r0.4; MAP profile/binding gates, transformed/Wiener/FRUIT authorities and actual numerical-parent gates remain | Preserve frozen r0.5 and the [reconciled dependency status](acceptance/SCI_MAP_V02_R04_2026-09-08/BINDING_RECONCILIATION.md); later profile admission or scientific correction needs separate authorization; the preserved NOI code candidate remains paused in this task and no implementation qualification is claimed |
 | [SCI-FLT — map-domain filtering tranche](packages/SCI-FLT/v0.1/README.md) | SCI-FLT-FIXED Stage A and implementation-blind Stage B complete; `SCI-FLT-INF` remains a historical holding tranche only | **Conditionally scientifically frozen** at exact candidate commit `43f4fe59ab23a591c1c9e17a2ac4b1fed0a9e613`, with freeze record on branch tip `7f9307ff4e1cda0f112f2398bb72f52a3f4f01d5`; authority-manifest SHA-256 `69e6766f26396ba843ee29cfb89a48efd91b7e1b517ed90d3d93c87a63e55778`; fixed convolution only | Ordinary numerical MAP/JINC parents remain unavailable, FLT profiles are unregistered, and no numerical, conformity, validation, calibration, performance, readiness, production, or Unity claim follows | Preserve the manifest-bound conditional freeze; any scientific change requires a new candidate, bindings, verification, and owner action |
 | [SCI-FLT-INF — closed inference-bearing filtering holding study](studies/SCI-FLT-INF_STAGE_A_2026-08-30/README.md) | Recovery-first holding study complete; ODQ-001 through ODQ-013 closed, with bounded author assignments retained; `SCI-FLT-MATCHED` successor identity approved `2026-08-31` | Optimal matched-template amplitude map filter; distinct observation/coadd parents; immutable template; exact normalized estimator; complete support; exact fixed-state response; conditional covariance; declared or parent-learned-frozen state; no fallback/selector; minimal non-mutating derived companions; first-class FLT→FRUIT interface with FRUIT science separate; tiered atomic lifecycle/VAL policy; protected SCI-FLT-FIXED bytes unchanged | No holding-study owner decision remains | Preserve as recovery provenance; successor work continues only in `SCI-FLT-MATCHED` |
 | [SCI-FLT-MATCHED — matched-template map amplitude estimation](packages/SCI-FLT-MATCHED/v0.1/README.md) | Stage A, implementation-blind Stage B, two independent review rounds, owner dispositions, and r0.6 freeze closure complete on `2026-09-01` | **Scientific authority frozen** at v0.1/r0.6; 46-object authority-manifest SHA-256 `6b0231a7e9d34f028eda9cce48f62de1fc9e594348aa1448a2d182d732f78688`; 50 requirements, 25 predictions, 17 disposed SODL IDs, and a 96-ID crosswalk | Concrete weight/profile/numerical routes and response/covariance fidelity remain separately gated or unavailable; no implementation conformity, observational validation, achieved performance, readiness, or production claim | Preserve the frozen r0.6 authority; bind any concrete route or scientific change through a separately authorized successor |

@@ -1,0 +1,1450 @@
+{
+  "identity": "PTC-UNIFORM-ADMISSION r0.4/2026-09-06",
+  "scientific_base": "3cb01ef3672435c0cf9e3fec505abaa33c2f37a0",
+  "canonical_base": "080df2a1431487e8cabc255beb9ddc59c0721b59",
+  "freeze_manifest": {
+    "path": "doc/scientific_contracts/packages/SCI-PTC-COEFFICIENT-UNIFORM/v0.1/FREEZE_MANIFEST_R0.4.json",
+    "sha256": "c6d23f7f20f35089eba9b5f6dd6e65aaf05561ab3da2d0f7d18e5b8256a2f016"
+  },
+  "common_source_sha256": "8bc42deb69e23c757883834f7cdb82b94e89210015333f483d15c32377a56685",
+  "inherited_registry": {
+    "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/PROFILE_REGISTRY_NOI_STAGE_A_R0_18_2026-08-30.md",
+    "sha256": "5994f4dff49dff3a9c9da6fbb494671b14a2f926f325f1c7c4a9603a6c2a38c1"
+  },
+  "inherited_source_register": {
+    "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/SOURCE_BINDING_REGISTER_NOI_STAGE_A_R0_18_2026-08-30.md",
+    "sha256": "04eca2da9ce76afacf18ae90dc2dbcb702fedbf55e03acb28e14e7dbc459a7c3"
+  },
+  "bindings": [
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/COEFFICIENT_REGISTRY_UNIFORM_R0.4_2026-09-06.md",
+      "sha256": "433309b21d17751ce3972d196f9ba73a5f910f36e88052046928a0163fb7ca76"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/SCI-PTC_TO_SCI-MAP_BOUNDARY_UNIFORM_R0.4_2026-09-06.md",
+      "sha256": "58291e1c879dc9116e81a9e3fd4323caf79a176c51e296d8119efb6937272ef8"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCI-PTC_TO_SCI-MAP_BOUNDARY_UNIFORM_R0.4_2026-09-06.md",
+      "sha256": "58291e1c879dc9116e81a9e3fd4323caf79a176c51e296d8119efb6937272ef8"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/SCI-PTC_TO_SCI-JINC_BOUNDARY_UNIFORM_R0.4_2026-09-06.md",
+      "sha256": "e1bc8fc0c1d88f63c958442bba88ff781fda84793ee6f46ed27a5b8d799fa5d4"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCI-PTC_TO_SCI-JINC_BOUNDARY_UNIFORM_R0.4_2026-09-06.md",
+      "sha256": "e1bc8fc0c1d88f63c958442bba88ff781fda84793ee6f46ed27a5b8d799fa5d4"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/PROFILE_REGISTRY_PTC_UNIFORM_R0_4_2026-09-06.md",
+      "sha256": "a8fdf512507c877c22aa5457566f66782f89a466504115812b5dc7b5d46dfb5f"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/SOURCE_BINDING_REGISTER_PTC_UNIFORM_R0_4_2026-09-06.md",
+      "sha256": "fb13be222a9a8bb928fa172253f65aaf6ede081a88e901cdf6eb3799fad35f6e"
+    }
+  ],
+  "boundary_pairs": [
+    [
+      "doc/scientific_contracts/packages/SCI-PTC/v0.1/SCI-PTC_TO_SCI-MAP_BOUNDARY_UNIFORM_R0.4_2026-09-06.md",
+      "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCI-PTC_TO_SCI-MAP_BOUNDARY_UNIFORM_R0.4_2026-09-06.md"
+    ],
+    [
+      "doc/scientific_contracts/packages/SCI-PTC/v0.1/SCI-PTC_TO_SCI-JINC_BOUNDARY_UNIFORM_R0.4_2026-09-06.md",
+      "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCI-PTC_TO_SCI-JINC_BOUNDARY_UNIFORM_R0.4_2026-09-06.md"
+    ]
+  ],
+  "protected_originals": [
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/AUTHOR_CONVENTIONS_AND_OWNERSHIP.md",
+      "sha256": "568b35ff3da16c8ed6902d3bb0d845e01eec38e5374c6e89e75823f1f8ecabe6"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/AUTHOR_DRAFT_DECISIONS.md",
+      "sha256": "0c165b707765ae67aa775e356ec714bd8f25a96553071fc2a71bf91e155cc285"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/AUTHOR_METHOD_REFERENCE_BOUNDARY.md",
+      "sha256": "d5d33180c9e40958237916ec6dd98ba655d161bc984a3b694197a1a90d78be61"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/AUTHOR_PACKET_MANIFEST.md",
+      "sha256": "f8ef424d0b13b73d344446b02ce088e065433f9088a12da6b0aa399addc95769"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/AUTHOR_SUPERSESSION_COVER.md",
+      "sha256": "2a13d3984c2334ccd1886021d2d869bb71363abd3a06bb7f9fbf536614d9ee3e"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/CHANGE_LOG_R0.5.md",
+      "sha256": "808d0fb77a11a76058775a8dbe04607d553915996400530cd3c982414b68abc2"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/CONSISTENCY_REPORT_R0.5.md",
+      "sha256": "33c853c50fd4cf892711abd8c06846b08004e4379e44e1e980ee7fcb136d2b14"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/CROSSWALK.md",
+      "sha256": "2b52cc938def84ecadca492460471f3cae2466f54569b8f0d662f9e8cbb04fb7"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/CROSS_PACKAGE_FOLLOWUP.md",
+      "sha256": "1c2db81ecc4ad09f42d4d7448b49264796a11b7dca86f20afe4040f4afd51ccb"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/DECISION_LOG.md",
+      "sha256": "ada9bf3b4a1e87b9c0beca92c7de7ed15681047810295af618011cbc7b3c7878"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/FREEZE_VERIFICATION_R0.5.md",
+      "sha256": "da0a8dc8c5059449afd860abd06955322b3c887188983d4d4b145daea58b6860"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/INTERNAL_DOSSIER.md",
+      "sha256": "5ffbfabe2025b16b01a18e42143b3d39124239797134851e26ed056d1339344b"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/PRIOR_WORK.md",
+      "sha256": "235b36ccb0293937dac012cc9aca5497b24ad81481914114a8548e6abd625101"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/R0.5_CANDIDATE_REVIEW_COVER.md",
+      "sha256": "54f21eda774bae170c9197e5ea7a485d0d4b0a76855dbbe99cdde14866c04383"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/README.md",
+      "sha256": "94dc843b097bf6c6bbeceb84f6aedf7516d780ba0d109704105ff7a214bead65"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/SCI-PTC_TO_SCI-MAP_BOUNDARY.md",
+      "sha256": "a499c59afb69eefda74a5b131ad37afd165213b99324c8b67a6de1d20793c9b7"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/SCIENTIFIC_OWNER_DECISION_LEDGER.md",
+      "sha256": "d899d93bfe433762d4b3b06a9fa7aeff08f7dcbfd6f170d614e69cff58d35c6f"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/SCIENTIFIC_OWNER_FREEZE_R0.4.md",
+      "sha256": "90334ea7853e1ab274f6858fad66078356c06326438625c7fe294e41c07fbcc4"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/SCIENTIFIC_OWNER_FREEZE_R0.5.md",
+      "sha256": "8357961a49272adc40e27a8aa9e760e0d01ff2419ae2c88a62c0f93c9f959e66"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/SCIENTIFIC_OWNER_REVIEW_R0.1.md",
+      "sha256": "0adcd0816d190a1319ea34c0331fc520949492f87b54f4feb4cca9e37c0ebee7"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/SCIENTIFIC_OWNER_REVIEW_R0.2.md",
+      "sha256": "cb757d7777163cc008f58e1afeaeda76e6e845ba814d56c0f4827b352961c782"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/SCOPE_BRIEF.md",
+      "sha256": "8aa05920589b67cb7634003f466161769101e3013cf82573260e94b257532bed"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/SCOPE_REVIEW_R0.1.md",
+      "sha256": "2a3d8f3597256e8e35b420acdc959d5036b53ed23613709b77f212aec374f673"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/SCOPE_REVIEW_R0.2.md",
+      "sha256": "de5b976de29296384516ce77c4b014d2b4ce89820cc81dfddd031c5d2ee6ab24"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/pdf/README.md",
+      "sha256": "f61616b8b2c1101fca52cee5b7898742f9e5cadd4fcea81f23d16dd485f18fac"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/pdf/SCI-PTC-ENGINEERING-CONFORMANCE-v0.1.pdf",
+      "sha256": "f0b3bdc28c0997e4960b8231d6113339fe391d331e84dc7c0638912b0d3f7adb"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/pdf/SCI-PTC-SCIENTIFIC-RATIONALE-v0.1.pdf",
+      "sha256": "3c927dbcb631b2033f04d933fa4d69911698b840b7b4642e759ad8c715c16ab6"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/pdf/r0.5-candidate/README.md",
+      "sha256": "73a077e30aad995052a888cd4832979bbee2cf8a894fdde6d1ad376b5d8c4c12"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/pdf/r0.5-candidate/SCI-PTC-ENGINEERING-CONFORMANCE-v0.1-r0.5-CANDIDATE.pdf",
+      "sha256": "23941bb70fb24a0e46f24a41409d0f94ba5de9c4b14b35126b239f6452ff4dfc"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/pdf/r0.5-candidate/SCI-PTC-SCIENTIFIC-RATIONALE-v0.1-r0.5-CANDIDATE.pdf",
+      "sha256": "eb881ba6d85193d01b3c5f3cc387e5e59d70d498f5210914cfdf0041a4671703"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/src/common/assumptions.tex",
+      "sha256": "dfa6d9b40a506f00ed618142ff2e9debe899e831104c31cfcdfb314fc4ee73d8"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/src/common/definitions.tex",
+      "sha256": "904ffa5292aa0ec0ca89cd6b69567d50dfcd9578d6cf7729d96d01ec78ab63c5"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/src/common/edge_cases.tex",
+      "sha256": "1541a9916f702949c74703211ef181aa260d39b92a767e88034a24b4d47cde04"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/src/common/equations.tex",
+      "sha256": "af4418116e2fd8d827dd8f149bf16af36a95f2155976644ea6148224faf86f9d"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/src/common/notation.tex",
+      "sha256": "469219ed1c2927fa9cca9f4ec6d249af3ea49afabe7bb95f0254ba014648d6cc"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/src/common/requirements.tex",
+      "sha256": "f2047600cc06c234a78aa3ddf6a575abf2f9592b3e3da810491f6db0150fe21c"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/src/engineering-conformance.tex",
+      "sha256": "153d6a4a65d2d5a69052d1e915ba315828e0d07e118f12bdf91b9fe4d64f425b"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/src/generate_crosswalk.py",
+      "sha256": "5c714a4a496038cf0c32f5725b562141a39b39140fbd4e042b11df93ab2f93f9"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/src/scientific-rationale.tex",
+      "sha256": "06373db71626dbae144d282c56939ea5cb3f12bedf9146fbb21fa8b25d577aeb"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-PTC/v0.1/src/verify_contract.py",
+      "sha256": "9ffe2fe9f189d0ef152c11dbc53b0594602fe01602b9f73492ac9068477dcc3b"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/AUTHOR_CONVENTIONS_AND_OWNERSHIP.md",
+      "sha256": "2d478cb6c5e897308d19614b8b01663318744971850c67459f84c7ddcd57c5c9"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/AUTHOR_DRAFT_DECISIONS.md",
+      "sha256": "a6c65dddfa4e9253a6e895f90030006b02bf79ac083bd89e0c2f65152c71dcf9"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/AUTHOR_PACKET_MANIFEST.md",
+      "sha256": "c154cb5b1d2417fff210154ec6a49527ff423a8b4ddb59ed69e173092904e62a"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/AUTHOR_SUPERSESSION_COVER.md",
+      "sha256": "8ea283525f18199d9760c3f672d145d71f0db87b320ab2e88a5c6635ef3d4aa0"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/BYTE_EQUALITY_AND_SHARED_AUTHORITY_REPORT_R0.7.1.md",
+      "sha256": "52bb7b5c43a0b9440b304431ee4d72589df9a76fa9c6855f143042ea149a2716"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/BYTE_EQUALITY_AND_SHARED_AUTHORITY_REPORT_R0.7.md",
+      "sha256": "0a158a02cbf449a51096bf36d333afb2103cdcc8bb86137afafc8dc2a778c0ac"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/CHANGE_LOG_R0.4.md",
+      "sha256": "f6a2eaa23a63d0722f5940dd2971bd66d49808da0d0b17a7f6ba7ff85f136813"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/CHANGE_LOG_R0.6.md",
+      "sha256": "7be71ff1dd0b69060e68994607e732125c277be013c275954296f14f86658359"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/CHANGE_LOG_R0.7.1.md",
+      "sha256": "c49186113fd8f39ca73ef871a128fd3ac931c6d8d4f1c13f4c4579166e640e81"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/CHANGE_LOG_R0.7.md",
+      "sha256": "cb4c77e1acc8903bf7103c8064f5f045ea48a40421caa4fabef4544b705f25b9"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/CONTRACT_INCONSISTENCY_AND_PROPOSED_AMENDMENT_R0.2.md",
+      "sha256": "3d2404983ff9c58d9b72d32ae3028501cc41d615c19cfb117f722001e0328e18"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/CROSSWALK.md",
+      "sha256": "2840b2d74f182117b13b896021b4f5fab0b547a932839b558731739089d92bbd"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/DECISION_LOG.md",
+      "sha256": "ffa74976cc9d394f47227fcb64be77e385f7e54208b8c1a3c83d0becb9ee904e"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/EXPOSURE_DOMAIN_DECISION_R0.6.md",
+      "sha256": "583c2ce0764d8cd5e72471e9b5c69465952871b16e3b76d916380633e43fb6fa"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/EXPOSURE_IDENTITY_COORDINATE_INTERPRETATION_R0.7.md",
+      "sha256": "39d19b7bbf8733932759db56cb8d569c1cc0fae132b5af5b91092fc3d646539d"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/FORMAL_PARITY_REPORT_R0.5.md",
+      "sha256": "871629239046c41c433b73c7f277f1714b8ea2e8fe9a625e49d98f0dd2c3a318"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/FORMAL_PARITY_REPORT_R0.6.md",
+      "sha256": "28f53fa2fc7c3e391f4d34d71be25592b360f4c3a3192476bcf6c870c6952561"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/FREEZE_ONLY_ERRATA_R0.7.1.md",
+      "sha256": "c90008bda0c0168de2c044dd5c7c58722f2e769ea92a299729f1552260ae8d72"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/FREEZE_VERIFICATION_R0.7.1.md",
+      "sha256": "679f09c054baf72accc0cc0134f43fbe747db82cfc1a9054b93a5d803ee618a4"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/HORIZONTAL_AUDIT_R0.5.md",
+      "sha256": "91b213ffa7ce53282fb79c34bc2ebf0964be5e28e56ca3d7161d079c9eda7140"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/HORIZONTAL_AUDIT_R0.6.md",
+      "sha256": "57a2e10e20e3d2bc657afcb6a0a9ddd81df29e007cdb89e969b38136ed63881d"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/HORIZONTAL_AUDIT_R0.7.md",
+      "sha256": "bf30c5eb7b9a1f58b1da2909e70cdf54976fdab3b4fa55f45ddbaa23f514e8d5"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/INTERNAL_DOSSIER.md",
+      "sha256": "d42bb59f1af66051c2275f604713e7ba79785c1a208d45befebc0774aaab4ab8"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/MAP_PTC_HANDOFF_STAGE_A_LAUNCH_2026-08-26.md",
+      "sha256": "daf67affcad99a8bc7c1357505af9d8e817697d97c6b76d5c3efef911f49b03d"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/OPEN_GATE_READINESS_LEVELS_R0.6.md",
+      "sha256": "149464ec70311a8a68d4b4fdebe6def9294168a7748c980d443b584b295f0a84"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/OWNER_DECISION_PARITY_R0.6.md",
+      "sha256": "fc1333f6262653026750b83622c0649dcefd6acd7179a3082f74774b3dff8c3d"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/OWNER_DECISION_PARITY_R0.7.1.md",
+      "sha256": "a860da25555a2c28e0e88c6faf212daa9aa398dbc511a32773a72fb4986adb81"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/OWNER_DECISION_PARITY_R0.7.md",
+      "sha256": "e8231a44c1272edabffcb35340406138c281a589a000a16866eb9e6a916f764f"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/PDF_VISUAL_QA_R0.5.md",
+      "sha256": "5b5908ddaf00b102ef8ab35d42361384f7c175d5208be8095129aa673d629022"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/PDF_VISUAL_QA_R0.6.md",
+      "sha256": "7bc3f8efbaae728b44a763a01fce98a4f00141a96ddd4ef5fc060001127b5358"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/PDF_VISUAL_QA_R0.7.1.md",
+      "sha256": "97ea829d0bff38c58b14a523ca56107a3a15b36297d87fa84162d4ac241cc9e0"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/PDF_VISUAL_QA_R0.7.md",
+      "sha256": "aa9a8aa004ce7a99489d0fafcca4a665dbceb24d1f97b8ae7095869db0d015c6"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/PRIOR_WORK.md",
+      "sha256": "6e276a1c02b62048f27276274f4f96321c41fd5ef083b826df7654c5a9be4e3f"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/PRIOR_WORK_DELTA_PTC_HANDOFF_2026-08-26.md",
+      "sha256": "452cea866202301906a73103429b7932ca8d32c1e73217b2eb3e78c09d4e7c06"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/PTC_HANDOFF_AUTHOR_PACKET_MANIFEST_2026-08-26.md",
+      "sha256": "ca38b2213402a9e47b6641960396d4944d1419936fd362e4dc33eea7cdd610be"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/PTC_HANDOFF_AUTHOR_REFERENCE_EXTRACT_2026-08-26.md",
+      "sha256": "708f169db5fc2f287f0adc874c9a59efb5fb14ab184bf5eb8a66a9f1343c6d1d"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/PTC_HANDOFF_DECISION_MAPPING_2026-08-26.md",
+      "sha256": "3f97028b6c483c9fea797d8fc32294a9d0fcd31176c66d6898abb9b5002e5b21"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/PTC_HANDOFF_SCOPE_SUPERSESSION_2026-08-26.md",
+      "sha256": "f5fe221ce87b6fdcdb07257e1e3e122cc289b3972a9d215ad2900aec1b62794c"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/PTC_HANDOFF_STAGE_A_OWNER_APPROVAL_2026-08-26.md",
+      "sha256": "caf495c99416deae6c0ed3e284421e864997a4788d1cb65552ddd22c0eeea97d"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/PTC_HANDOFF_STAGE_B_AUTHOR_RETURN_R0.1_2026-08-26.md",
+      "sha256": "3edaf5dbd9118bf1ae54066864c362f19ea005efbd361f1654127e5ca002bd76"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/PTC_HANDOFF_STAGE_B_MANAGER_REVIEW_R0.1_2026-08-26.md",
+      "sha256": "0bc5716a64751a96af9ab93a298bcc8722d04354d8bd828a1108cf757e7b8eee"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/PTC_HANDOFF_STAGE_B_R0.2_AUTHOR_PACKET_MANIFEST_2026-08-26.md",
+      "sha256": "520fd488285110f128ff8ad6359c3c88285b9764b4fb7969cb0078e99ad3104f"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/RATIONALE_FORMAL_ECS_PARITY_R0.7.1.md",
+      "sha256": "670904f72769766bff81ab17d37b693f33293e8e136c55ce356a697c5733b325"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/RATIONALE_FORMAL_ECS_PARITY_R0.7.md",
+      "sha256": "03b8e4259206556c3ec8e938b3ee6013ad48cee88cc04f4d44f0dcd7df8d042c"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/README.md",
+      "sha256": "50a29f2a5cc3accef8417451e21d0e2a2de1cf09716f2bfca8d76130fec07a3b"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/REQUIREMENT_EQUATION_PREDICTION_CHANGE_MAP_R0.5.md",
+      "sha256": "6e335d619c7561c87735b04473b57286084fc8812bd0b1017670b2256d55d95c"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/REQUIREMENT_EQUATION_PREDICTION_CHANGE_MAP_R0.6.md",
+      "sha256": "14eda28fc83478e77369c49ab25efd42a85c9ee49eb65118f4e2cf8997b25ae6"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/REQUIREMENT_EQUATION_PREDICTION_CHANGE_MAP_R0.7.md",
+      "sha256": "d20f0cc98da6608af7b5cf4ce2b52c332971441b88923330aa26d83f572ee167"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/RESPONSE_CROSSWALK_R0.6.md",
+      "sha256": "0a2742f9c529afd9443273f10035858e054ce2cf45354412ad38bfb31ba3bc71"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/RESPONSE_FAMILY_DOMAIN_CROSSWALK_R0.7.md",
+      "sha256": "5c07877d9a288c69d1062342a6a86509e94e56372902afe7976823f04beb5c15"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE_BOUNDARY.md",
+      "sha256": "f7be703d17320de6f6ecfc3a3974d54799540fff1d8b2d9491c941a7ea3b45a4"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCI-MAP_COADD_PROFILES_R0.5.md",
+      "sha256": "038ecdc3e5797933490509ffcb14367dcf8a5996dfaf40c53ecfab197a0cd549"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCI-MAP_COADD_PROFILES_R0.6.md",
+      "sha256": "45b676b1257c71608df36fb9bd9689e150c5ede60af4cd7b39ee4b28c5e8d056"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCI-MAP_COADD_PROFILES_R0.7.md",
+      "sha256": "d93c04488925931676b02dff433774ff2cda9846fdd1d3f34bff29d76efdd702"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCI-MAP_UPSTREAM_ADMISSION_PROFILE.md",
+      "sha256": "0717476c0a1d177074ee8702c18308f093d45a4913b22933f3fda3d33090a883"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCI-PTC_TO_SCI-MAP_BOUNDARY.md",
+      "sha256": "a499c59afb69eefda74a5b131ad37afd165213b99324c8b67a6de1d20793c9b7"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCIENCE_TEAM_RATIONALE_R0.2_CHANGELOG.md",
+      "sha256": "ed9b868de8352fad665059cdf3430653d0ba3d884c5ca5b2d64b4a8b772ff625"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCIENCE_TEAM_RATIONALE_R0.3_CHANGELOG.md",
+      "sha256": "5f0238ebbc589f2ddb26a681de9ef0357cfbdce53f32895f8a4485b9e1eff194"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCIENTIFIC_FORMAL_CONSISTENCY_R0.2.md",
+      "sha256": "00318628d2a21b69bbf5e53371a5cd6137b98231450eea6130d41428d204d499"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCIENTIFIC_FORMAL_CONSISTENCY_R0.3.md",
+      "sha256": "360bc2ee4a3ef5df8834d0297abfa232a252dc27a7792efb38c502b4e835fe56"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCIENTIFIC_OWNER_DECISION_LEDGER.md",
+      "sha256": "bfcc18eced116309356d9d597a4423881ef67df058df07be30ec80532452dd9b"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCIENTIFIC_OWNER_DISPOSITIONS_R0.5.md",
+      "sha256": "bce3053a0a09e6860f9d04767d887cb0195e770a13d2d4d106efc3a17131df72"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCIENTIFIC_OWNER_FREEZE_R0.7.1.md",
+      "sha256": "91801005ba2f2bce6471a9f6f4ed0b79806c893f498b4f3cca9e81e26df39ce1"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCIENTIST_CROSSWALK_R0.2.md",
+      "sha256": "0174e64fb32ef3f278f7e665ef3d3973ed1325d3501395b0d36e2dfeffd6d88d"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCIENTIST_CROSSWALK_R0.3.md",
+      "sha256": "a8faa63ba588652389356085d946d3b45aaa4cde686c318a0b8d6444e2c21883"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCOPE_BRIEF.md",
+      "sha256": "e2a9eb51edb5956191813b4cdbd23866e875d52cdf89cd8b6c272988b4f26674"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SOURCE_MANIFEST_R0.5.md",
+      "sha256": "e4605f5a4d5731c25e70c21bd69452fa722f63873cf08dd67a88a67d1a399be5"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SOURCE_MANIFEST_R0.6.md",
+      "sha256": "4f476900c4b2e344e4e8ce197c7a196b39519590b5d67ea823031d192de19e34"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SOURCE_MANIFEST_R0.7.md",
+      "sha256": "bd3f172f8bb1e17bf95fde034ad76632439c766ef89b0a992361b9e6d79ada0a"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SOURCE_MANIFEST_R0.7.sha256",
+      "sha256": "18f4ca464f9bf8892ba9223cbe6bf1367785b4cf4edfc2fc00a7c2622b059482"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/TYPED_CONTRIBUTION_GATE_AND_DAG_R0.7.md",
+      "sha256": "977b26bd014d1e5dd2697efd604372ce7896fa910fccc6760b8eea950f311866"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/TYPED_CONTRIBUTION_GATE_LEGEND_R0.6.md",
+      "sha256": "f2a11895ff00712a8f75ceae08b11c1a561a68148a7b70ca216266b3de0ce1c9"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-ENGINEERING-CONFORMANCE-v0.1.pdf",
+      "sha256": "60d2a3175b93148098a08a21bf93e0213eb23b0c35e4a7db6b73915cb652b1b8"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT-v0.1.pdf",
+      "sha256": "4249348517d9be1fe8fe5535987258bffb9ce276046032a8db45575fca75e8b8"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-SCIENTIFIC-RATIONALE-v0.1.pdf",
+      "sha256": "24f2537ae727db3a024c8df5395f0af47061c0f4066afea8956a1adeac23f14c"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-v0.1_ENGINEERING-CONFORMANCE_r0.2-DRAFT.pdf",
+      "sha256": "33aa0115cc8b1df5b8e28692a4d618a2bca7e7ccb5553db8dac46cbb9bbcb70a"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-v0.1_ENGINEERING-CONFORMANCE_r0.4-DRAFT.pdf",
+      "sha256": "5a4a7122d8ec7160a1805fdc103284e825fafe8452c185eeb504329ec7f28dce"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-v0.1_ENGINEERING-CONFORMANCE_r0.5-DRAFT.pdf",
+      "sha256": "864402b27d3c0c572a6b6c30aeb53c1b7fde19aaad395659672ade739c3f3a14"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-v0.1_ENGINEERING-CONFORMANCE_r0.6-DRAFT.pdf",
+      "sha256": "e7bffc885bd2d84a15917216d22b18b909af1183db9a254696d983f9b05f65c0"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-v0.1_ENGINEERING-CONFORMANCE_r0.7-DRAFT.pdf",
+      "sha256": "01daf915148878c50335fd8cc9da8e5adc63decedf7e54a78a3e38e499a91581"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-v0.1_ENGINEERING-CONFORMANCE_r0.7.1-DRAFT.pdf",
+      "sha256": "60d2a3175b93148098a08a21bf93e0213eb23b0c35e4a7db6b73915cb652b1b8"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-v0.1_ENGINEERING_CONFORMANCE_SPECIFICATION_r0.1.pdf",
+      "sha256": "fb246cc5104370fdc7ee3fbcff89ac9e22ccbac2ac329364f2e9ee7390df3f45"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.3-DRAFT.pdf",
+      "sha256": "24a0194433a1b57d1501f5a424753244f9a042afe3df361ae7a8cda741a9e2f1"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.4-DRAFT.pdf",
+      "sha256": "94067e12de15eb14415169702c67c1002144979d1c96843acc0997c84af9d2f7"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.5-DRAFT.pdf",
+      "sha256": "5d78c4b4a2764c13a78bc929dc7fc1d067370c96dfa3b753c099d7eb306d657b"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.6-DRAFT.pdf",
+      "sha256": "46496bb726da47ff208cefad097f51fcaeea2993a41560c34c7489a99edb1847"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.7-DRAFT.pdf",
+      "sha256": "a3de95602198019e743236925962f70d936e79c83ace0c97ef090904cd2597a8"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.7.1-DRAFT.pdf",
+      "sha256": "4249348517d9be1fe8fe5535987258bffb9ce276046032a8db45575fca75e8b8"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-v0.1_SCIENCE-TEAM-RATIONALE_r0.3-DRAFT.pdf",
+      "sha256": "f04339872de3d1fe0863be6e39c27411e916af898de86761e58ac7971d8e552f"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-v0.1_SCIENCE-TEAM-RATIONALE_r0.4-DRAFT.pdf",
+      "sha256": "25ef0e991732cdbafbad0446280284bcedae4448d18f397af3f514fc733b075b"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-v0.1_SCIENCE-TEAM-RATIONALE_r0.5-DRAFT.pdf",
+      "sha256": "ad35b6fa37502aa36eb0471129750ecb12d0e730ebd80c5199117645af3aecde"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-v0.1_SCIENCE-TEAM-RATIONALE_r0.6-DRAFT.pdf",
+      "sha256": "6d1f50747fdff8f5efac368299c42d3987e1ec56addddaef87a4597141c71bba"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-v0.1_SCIENCE-TEAM-RATIONALE_r0.7-DRAFT.pdf",
+      "sha256": "090122e0750d8be02298897fe0978c27d023994acc77db0ca3a74edcc299404f"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-v0.1_SCIENCE-TEAM-RATIONALE_r0.7.1-DRAFT.pdf",
+      "sha256": "24f2537ae727db3a024c8df5395f0af47061c0f4066afea8956a1adeac23f14c"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-v0.1_SCIENTIFIC_RATIONALE_AND_CONTRACT_r0.1.pdf",
+      "sha256": "cdeb5e689175c92c86a84c0c37eb17fd94e7614fea6405379d9b1ae2e8c91682"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/SCI-MAP-v0.1_OWNER_DECISION_REGISTER_r0.1.tex",
+      "sha256": "740478258f16ef67095798d53a02f7679a20d7a8a8be0c6e6644c4475bc5615d"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/SCI-MAP-v0.1_SHARED_AUTHORITY_r0.7.1.tex",
+      "sha256": "08fcc9782cfba806d33dc07652a2363c8bd6540084f54e752e1fa91a5336b6bb"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/assumptions.tex",
+      "sha256": "bba33b92c4189fe5886ef849caebeeb5400bdc7f2572f58a74de53ca578881de"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/definitions.tex",
+      "sha256": "740f4a6f1ef0bbb12f721f192b7883144c247d039ab0c9dfa0ffae53cd711b65"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/edge_cases.tex",
+      "sha256": "47022012e79173a1778a4e5bdc6743b4691bfecb27faa3090bcf03458d87e123"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/equations.tex",
+      "sha256": "36329f4cd1a103c78fcdcc5ff247a850f40aba92a09156d1aa55a1411a430c04"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/notation.tex",
+      "sha256": "2b132704dd1ee8da7a56e5bafdc998df98422fe512736ac4f904fad8a693e569"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/requirements.tex",
+      "sha256": "68acf81d6c27788495cc680a1819da5f269616493b9aba5a6e0a1d1058ba5fa7"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/engineering-conformance.tex",
+      "sha256": "3e67d0b0984278c3a2f16f6b1d001cbd228639e9c3456e40e2987f5046ce2c42"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/formal-scientific-engineering-contract.tex",
+      "sha256": "99fdb64e42c005afb37740170aa69ba41c50e9c53424dbe936a76ee2a7664229"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/generate_owner_decision_register.py",
+      "sha256": "62677d0bf4d951a6129f5550af11260fd0808eef16fe5cb69762d6830db5c68a"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/scientific-rationale.tex",
+      "sha256": "652c94b65e9742f6232c4a97027335536ffa584c2b30222edca1947c80a10cd0"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/verify_contract.py",
+      "sha256": "68fa1f139e3888e09e941bb4399f2a81f0142955f4abd5d4c7ea1a15e55ba3d0"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/ANALYTIC_JINC_IDENTITY.md",
+      "sha256": "5346085c2fdc677012217ca879ebd7cfb29e723656af337aa5694d0ef6909bed"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/AUTHOR_CONVENTIONS_AND_OWNERSHIP.md",
+      "sha256": "6819454e7fbbab9bfd25442f25c4ea920ef41245951a38d31bb1d28ca74d628e"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/AUTHOR_DECISIONS_AND_OWNERSHIP.md",
+      "sha256": "8398f679bd487e07f80b0ac1db240cc639150d7b0328a8b79545d76d45a3cb9d"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/AUTHOR_DRAFT_DECISION_RECORD.md",
+      "sha256": "3245ff3bdf7ae2636a9c86b7fa24ff4ad8f1be147c6c1c30ab40df0abb6ded68"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/AUTHOR_LMT_JINC_REFERENCE_COVER.md",
+      "sha256": "9b32095fc7e1773e13e70b4c21d4f402b0c7376aff0b776d41fa9f5a263b7c4f"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/AUTHOR_PACKET_MANIFEST.md",
+      "sha256": "52a8e843456a8cb033b7593d9b9f67fb83b0ee565c91c141d8e16d46b906140e"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/AUTHOR_PTC_COEFFICIENT_REGISTRY_COVER.md",
+      "sha256": "941671d0f9113c94a15bf2de6b69bd9b21a528b41d745b6bbdb936e8e8d8646f"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/AUTHOR_SUPERSESSION_COVER.md",
+      "sha256": "5be650ce4e25f161211955f60696033a18adb83d7ff0c9155a776b4e184d601e"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/CROSSWALK.md",
+      "sha256": "df2bbb1f8eec53c91497d52b85591e66f86639f76c63686688367c96e309d2e5"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/DECISION_LOG.md",
+      "sha256": "f0e6324c314a8a61f11c380ff054b9f76ae8653de45abc1c0acb41ba5efbc575"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/DISCRETE_GEOMETRY_AND_WCS_METRIC_DECISION_RECORD_R0.2.md",
+      "sha256": "88fd3a7fb3bc9849a84e667cf41175db53a5de57e12e3f81d213acb79759612a"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/EXACT_SOURCE_PACKET_AND_HASH_REPORT_R0.3.md",
+      "sha256": "b632e97aa3822e2514cc480049ffb14b3d0ff05462cebba3661ed56e9dfa22a5"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/FREEZE_AUTHORITY_MANIFEST_R0.3.md",
+      "sha256": "ff4b79e7cca3950831eda95a16ec6a535597f543c4676378d2fc2f01d50faed2"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/FREEZE_VERIFICATION_R0.3.md",
+      "sha256": "f26b7f6080d8b19939e322fc2742d7eccc2e4e0fda4f5d76bc6cdc3a939d85d2"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/GEOMETRY_DECISION_TABLE.md",
+      "sha256": "b811bb0ff53a4679a0a1f7538b64ffa4a3292c88445d065af348dfbaea1697cb"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/GROUPING_AND_PRODUCT_ROLES.md",
+      "sha256": "02c14c03821b5f00d0665f31b9f8bc6aed63781efb938dc6bfdfd38c98429bb9"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/HORIZONTAL_AUTHORITY_COHERENCE_AUDIT_R0.3.md",
+      "sha256": "88e42c624cdc5448cd68bf83caebc865e28a644567c504306744a2d675c69119"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/INTERNAL_DOSSIER.md",
+      "sha256": "1ae958eb732dcdd77947ea31eb17a583930e6136027e94cf32089607097bca6f"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/NOTATION_AND_UNITS.md",
+      "sha256": "2dd9d1e5e1414ea3bb9befd7ed28c25a2d140fe62ba506e2921181dce09d5ec0"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/NOTATION_EQUATION_REQUIREMENT_PREDICTION_CHANGE_MAP_R0.2.md",
+      "sha256": "a250838c3a2b1a783abf96caa03b54508653f220c0fc2ccfd53fb66dabbedf9d"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/NUMERICAL_ADEQUACY_DISPOSITION_R0.2.md",
+      "sha256": "b2440248306850aec0f5e6a2070e900fe916ddf1eb01b8b525c721b83d9047ec"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/NUMERICAL_CERTIFICATE_CLAIM_BOUNDARY_AMENDMENT_R0.3.md",
+      "sha256": "6ea6eb30a9f9622255b3dc04f91d19a663e6ee5228a6a18bd90b7167e9f5577f"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/PDF_VISUAL_QA_AND_METADATA_REPORT_R0.3.md",
+      "sha256": "f5c361a76a862e31760c57d691430b43deedb9826c7e0ed93ed0c71a7fe62f4e"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/PDF_VISUAL_QA_REPORT_R0.2.md",
+      "sha256": "9d98b4831e0ca6de19cace24d54d7721b21894bfe4ac91596ea54e6da932b43b"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/PHASE_LATTICE_OWNER_DISPOSITION_R0.3.md",
+      "sha256": "0026111ff3c36bb5aea3ad1a1e8a2d0b99d09d288eb5c91488a5a1abf85b1bbd"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/PRIOR_WORK.md",
+      "sha256": "543fac87c7f65b9e7482b2017064634bf4584b406aa01c81e4f1eb0b89f9594c"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/PROFILE_NAME_AND_SUPERSESSION_DISPOSITION_R0.3.md",
+      "sha256": "be4985b8d190f6bb387afb279275b9a066b52d0df28c0ed5c53bbadbb25ffeff"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/RATIONALE_ECS_PARITY_REPORT_R0.2.md",
+      "sha256": "10bce95c3137b2c923f85fde417646f218768f555ae6835423460e56863b014d"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/RATIONALE_ECS_PARITY_REPORT_R0.3.md",
+      "sha256": "7e47cfccb50e36b33960aba410b957940ff6e6ab6ca10960d36d77be39867947"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/README.md",
+      "sha256": "26baeddb5d87c887799686f7a1f21b8923f46143dfca72f3e5e0fe13334a4d5e"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/REQUIREMENT_EQUATION_PREDICTION_SEMANTIC_CHANGE_MAP_R0.3.md",
+      "sha256": "3769a03ff4008956be6d672e0f57781da4ec0f696b89a257f6d7813b42306d1f"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/RESPONSE_AND_COVARIANCE_FAMILIES.md",
+      "sha256": "a9083676d1152f1422f7678072e244bf292a4a6ffde962d2497f7737cb13bc88"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/RESPONSE_AND_COVARIANCE_PRODUCT_ROLE_TABLE_R0.2.md",
+      "sha256": "29c8f4571d38af591ae05840b7698d5d5cd7a7aa11e3aa9836f52549adba786a"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCI-AST_TO_SCI-JINC_BOUNDARY.md",
+      "sha256": "efffa7059b59c89793fa1d523fb3bb48235f1ab55f7d55060af1600cbfd470a5"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCI-JINC_UPSTREAM_ADMISSION_PROFILE.md",
+      "sha256": "2db95da7e5d1b980df79993907d45ac0ababc3aa05c189bfb62dcf04ff2c2e8a"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCI-PTC_TO_SCI-JINC_BOUNDARY.md",
+      "sha256": "5769d413460e931745e0d401ea432b12d1077c15466247c49caa71b997d4ab1e"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCIENTIFIC_OWNER_DECISION_LEDGER.md",
+      "sha256": "c46f49ff540f2bb9a2cdde79350bf4b24e457ddc9992744c5721ee52bb248fbb"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCIENTIFIC_OWNER_ODQ_101_DECISION_2026-08-28.md",
+      "sha256": "0e889f285e73ff487562d2c3d2c4c6e488fed0612434b4f0987a54b4e14f0425"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCIENTIFIC_OWNER_ODQ_102B_DECISION_2026-08-28.md",
+      "sha256": "63f8eb45d599a369cdf12bc6637d22396fee6a1b4bda775c622d2dbee0ecc811"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCIENTIFIC_OWNER_ODQ_103_DECISION_2026-08-28.md",
+      "sha256": "95252f23337c5ec1c8a6792ec72d8cee49c7f50b6b2a1ab4fbef86f6ef8015e0"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCIENTIFIC_OWNER_ODQ_104_DECISION_2026-08-28.md",
+      "sha256": "550289a461b042b09ae85ad210744ead893aea74f298b5031e03ff2d549fa56d"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCIENTIFIC_OWNER_ODQ_105_DECISION_2026-08-28.md",
+      "sha256": "468f11d314c3c7ba03b02636569a74b6afa4e5ec1cda01638a3aa2a6cdb02654"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCIENTIFIC_OWNER_ODQ_106_DECISION_2026-08-28.md",
+      "sha256": "27aa79f572505f2ad5269f0415d01b5a0848aac98048b6e4edc9993dfa986925"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCIENTIFIC_OWNER_ODQ_107_DECISION_2026-08-28.md",
+      "sha256": "b10768b0d264f936e1076353d15a0b1cfcee8409dfa0cef0d429851be2aa0e24"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCIENTIFIC_OWNER_ODQ_109_DECISION_2026-08-28.md",
+      "sha256": "a9e44ea09e76cbc68ac70ee3d1e9a862f1b6ab82eff62da5ac9bbac97d28034e"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCIENTIFIC_OWNER_ODQ_110_DECISION_2026-08-28.md",
+      "sha256": "1de1872a6fc315a8d617380e13731b814c04965c740872a722b05af04f38a80f"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-28.md",
+      "sha256": "4a46dfdad8c66d3dcc3aa04ede1c7389f3011f6b9be85b755987603b8291820d"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCIENTIFIC_OWNER_STAGE_A_Q002_APPROVAL_2026-08-28.md",
+      "sha256": "c70e8216e816a7f98486b4c61236acc49713a5ce1d6f5ba722ad6e015e0c7e9f"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCI_VAL_REGISTRY_BINDING_2026-08-28.md",
+      "sha256": "ee8f20db5febdb51e39f7157449d6c2d03a0d17058605dd5531e9ab5ca439e30"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCOPE_BRIEF.md",
+      "sha256": "5f2505c2760fc5cb07506249f33f449651aca67cccc9c444305b059674f0ddbd"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/SOURCE_REGISTRY_LIFECYCLE_DISPOSITION_R0.3.md",
+      "sha256": "d8665e621a54478c58e9503c4d9bb42dd002ba750171cb9c2e3c8d380cc1aa28"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/STAGE_A_CHANGE_LOG.md",
+      "sha256": "e0257d585e473e7a53d0daa41aea45b8398538429394031454c2b7140fe6d8ac"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/STAGE_A_SCOPE_PARITY_REPORT_R0.2.md",
+      "sha256": "e2f61f4c3293c29b20ecdff2c5bec6e986789af5a0d09016d2f1c4e156f0553e"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/STAGE_B_SOURCE_MANIFEST_R0.2.md",
+      "sha256": "371bc49826985903e4b9621724f509f0408fb1dd26055f37f5701349800422e1"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/pdf/README.md",
+      "sha256": "e26799542e1e088938d6218dc6a62fbd4d9bf62ab98c1ecd13333380df148e71"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/pdf/SCI-JINC-ENGINEERING-CONFORMANCE-v0.1.pdf",
+      "sha256": "6b78e80bb485815292972c5de60c444954d7bb62902799d6fa4c3f421766114a"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/pdf/SCI-JINC-SCIENTIFIC-RATIONALE-v0.1.pdf",
+      "sha256": "53ed941658ae1205950a8bc533d569cc85b246a40bb6e448fbbc6d7f0509a7b8"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/references/LMT_JINC_OTF_MAPMAKING_MEMO/README.md",
+      "sha256": "cc07daee93eeb7525864562a5bf7e1067df0c6c2c9eead87e86e7ef8a32af4cc"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/references/LMT_JINC_OTF_MAPMAKING_MEMO/REFERENCE_INTAKE.md",
+      "sha256": "bd425c10079f82fdf1cfff8112fc9fe6ae455f3db73286f7ae5119477e42c233"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/references/LMT_JINC_OTF_MAPMAKING_MEMO/Schloerb_JINC_memo_v1.1.pdf",
+      "sha256": "835fb02e842c9109c2c7ad3f03288882dfac283e63bfcd0f818c7d5379e7e5cd"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/references/LMT_JINC_OTF_MAPMAKING_MEMO/Schloerb_JINC_memo_v1.1_METHOD_EXCERPT_pp15-19.pdf",
+      "sha256": "a065843b4b83c21aabb25233c588817e998773a5d6a7bd389874eab50c9a88e9"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/src/common/assumptions.tex",
+      "sha256": "15b811ab6ace92aa2d1713ae19b92454cb865e8862b82a599f94eca1003a1765"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/src/common/definitions.tex",
+      "sha256": "9e6f3ff015c753c879ff03be65fe981ac4f6ad2fc572d4a2f13f8a5240a12e1e"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/src/common/edge_cases.tex",
+      "sha256": "815c70e925f103d989e4ec015a64d69ac0710c1a0c57789a4dfe754bdb81bd2d"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/src/common/equations.tex",
+      "sha256": "2b1870e92f9a0e6141fdda1a8865babae41208aafb73fc233f4befc0e1b665c1"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/src/common/notation.tex",
+      "sha256": "fed76501dfc57540a4f383bf329d35118508f1e96a143b1cde8e09078d6dade1"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/src/common/requirements.tex",
+      "sha256": "207a85acb31a4f381b289781706c9f14058d330ff847e99023e9e5714c4d4dff"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/src/engineering-conformance.tex",
+      "sha256": "a8cc9b66d22f1c4c0e9dc53c46724721f38fa2b2d267f74e7341b359874c19aa"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/src/scientific-rationale.tex",
+      "sha256": "7cabea85eaa5ad9afbb0914c585d2fe7917806c9919964a465c0d9742fdb55e2"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/AUTHOR_CONVENTIONS_AND_OWNERSHIP.md",
+      "sha256": "32dc62160dff5dcb15e4af83d0df3311024494f30de075784603d4b4bfb4a52c"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/AUTHOR_CROSS_PACKAGE_BOUNDARY_PROFILE.md",
+      "sha256": "7296112f48fd1edc8eb4b4527883aad86b3dbade19509ab8268e9c6f8b7e4964"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/AUTHOR_DRAFT_DECISIONS.md",
+      "sha256": "01870bd9054227df31809b5cba239ec08cbea18b74b57a84315db247f2b9b269"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/AUTHOR_PACKET_MANIFEST.md",
+      "sha256": "464fb2665ef17803bf7cd801ceb7c7ccec1599da6a5c58873dc116a51fd0fd54"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/CROSSWALK.md",
+      "sha256": "2fcbb48ed152b325065b81bd48c4ee13528e982f5c7316d385e3b16ef6b28ed0"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/CROSS_PACKAGE_FOLLOWUP.md",
+      "sha256": "cf349c7c3e72a7ce23cdb8cabcd6b96d4a78fecb848e266ce98a61897d52341a"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/DECISION_LOG.md",
+      "sha256": "29c771980de40d7953faa1325c568492cc0c32ac3976494c11fc65bd5b8dae60"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/FREEZE_VERIFICATION_R0.3.md",
+      "sha256": "cfda29e50d34dd5ab07c4a0227948e9c48d6ca043fd298c05ea90279669f067b"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/INTERNAL_DOSSIER.md",
+      "sha256": "9fdd3d0ebe5aa9cac2b2fde2a2ba3ff4fa270bb1350a794ec20ebc74e6d15480"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/MANAGER_REVIEW_R0.1.md",
+      "sha256": "c5ecb33dfa2b26ea0b2392cc058a7d8653f492f030cb3de097f36c33d965d17e"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/MANAGER_REVIEW_R0.2.md",
+      "sha256": "4fde8e661bf6aac454fa911dc10acf48b2f6e377db4c418fd702bf94e32e9375"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/MANAGER_REVIEW_R0.3.md",
+      "sha256": "8902276659274c076d2f5c43615cfd49785076619a2c41f1c05f036d9dc19e89"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/PRIOR_WORK.md",
+      "sha256": "3593b89e15d6f4d7558979041be98a85df8c9373fe6dc5e09de3fb681b041a9f"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/PROFILE_REGISTRY.md",
+      "sha256": "95b2ddeca2039aa2b3614e3dfede530cb7e024e6db33ca22baed867f19d2709d"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/PROFILE_REGISTRY_JINC_STAGE_A_Q002_2026-08-28.md",
+      "sha256": "4b9a1ebecfc847c83b59da772afd9b031ab1830e8febbb12d1a47f70ce5a1110"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/PROFILE_REGISTRY_NOI_STAGE_A_R0_18_2026-08-30.md",
+      "sha256": "5994f4dff49dff3a9c9da6fbb494671b14a2f926f325f1c7c4a9603a6c2a38c1"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/R0.3_FREEZE_CANDIDATE_REVIEW_COVER.md",
+      "sha256": "f16f489648919e57f65a0e0625565c7a701e8ba2616ad6736235b8cf804995dc"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/README.md",
+      "sha256": "bc9504e7f9a10eb491f6b612a5c99636d26ac33b8bc4724a293ed7a7b04eaca2"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/REVISION_DIRECTIVE_R0.2.md",
+      "sha256": "5b8f36288917bb12c342ada192d2dee0b87bb40f8f9868acdcc11eff489d8ef0"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/REVISION_DIRECTIVE_R0.3.md",
+      "sha256": "c33e07121dcb2979a28463eecbfe61025e4bd4b9c310b733f8f8e5ebe5c9da0e"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/SCIENTIFIC_OWNER_DECISION_LEDGER.md",
+      "sha256": "249685df554c2879f8ebc4737c81f9cf37dfcc3e4e8a00e2a9e99d54c0788d49"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/SCIENTIFIC_OWNER_FREEZE_R0.3.md",
+      "sha256": "2fc3b3ad329fe3035d442b43d1e564a74fc86ab49f85f56e87322d8553fad9a6"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/SCOPE_BRIEF.md",
+      "sha256": "98510ed385164ee2f3339284a3b15434da4821b85a43b19de1f9f691186594f9"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/SCOPE_OWNERSHIP_DECISION_R0.2.md",
+      "sha256": "fd73969c57a5a35f60ca1f0eb1a965a199459692ca2f72fefff8e2c388dc532a"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/SCOPE_REVIEW_R0.1.md",
+      "sha256": "28fe58ca7ace6b99ebe5c9a2d86dcda6d853dbdf23b4a15c08e9e1d6ccb16976"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/SOURCE_BINDING_REGISTER.md",
+      "sha256": "7b91a324f35196a8c8a6e23c8abbbf5322fc601798e36d4ac821907a6090eadf"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/SOURCE_BINDING_REGISTER_JINC_STAGE_A_Q002_2026-08-28.md",
+      "sha256": "0e7ca29ee2e9cd02fb1b76cf87cc64fce6164407a7801f9b9a105ca646317e88"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/SOURCE_BINDING_REGISTER_NOI_STAGE_A_R0_18_2026-08-30.md",
+      "sha256": "04eca2da9ce76afacf18ae90dc2dbcb702fedbf55e03acb28e14e7dbc459a7c3"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/pdf/README.md",
+      "sha256": "f7a09d9954d1c4d34b8f2815dc8ec9d3c463039fdc3f1b4e2d537dfda921473f"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/pdf/SCI-VAL-ENGINEERING-CONFORMANCE-v0.1.pdf",
+      "sha256": "e5b353d52303e7f9fd3d10abcd35a4a15eb24021eab4e0663244d414052232fa"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/pdf/SCI-VAL-SCIENTIFIC-RATIONALE-v0.1.pdf",
+      "sha256": "53e32a12ad4b60b4cccaaf05e1c0f9ad248d7e31637fbcfe2b4344992b81359c"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/src/common/assumptions.tex",
+      "sha256": "e616b2c28ea2052b7a0af39a0ca5a320e0b2be95cbe65393d51408e696c16b9b"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/src/common/definitions.tex",
+      "sha256": "30b86d7fc888b21d21794799f2ef5c77f869ca1a9506cb49b6349af27feabdd1"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/src/common/edge_cases.tex",
+      "sha256": "13381205d78f7b69b6e80f3705c9c74351ad2028bffa010dac4f2ae6ea7bb579"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/src/common/equations.tex",
+      "sha256": "fc2b07567bad39314776fda9453b010b482ba67525d5b14dc093df4cc459046e"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/src/common/notation.tex",
+      "sha256": "b2101d551100fce6afb79153c3bd0e3419c945f874fa6663a31ee4d693516f44"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/src/common/requirements.tex",
+      "sha256": "8c518ea1ffba9142d70a5982ce6f403dcb462ecf7de772047bffc7d24bad99d6"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/src/engineering-conformance.tex",
+      "sha256": "6f5e5f6bd8aec2a2577b426b54dad1deb8bd761858e8f124d1f7f234199768fd"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/src/scientific-rationale.tex",
+      "sha256": "a56d79357ee9758c74c7fc692646ba2d2bdb5ecef12bd3499410b06318a03b65"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/src/verify_contract.py",
+      "sha256": "b11342d962ed2fd01e881f48cb36824ef0ca971b55107f80e333aca113270fdb"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/DECISION_BRIEF.md",
+      "sha256": "e2357e8fdbeff1ba72b5449f0d38451b02898b3a0e73bebc6725d8fb4159f194"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/PRIOR_WORK.md",
+      "sha256": "8b020f1db33806e492433eec6586ddaedeac3e032c7050020ac84e3d7a385b7d"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/README.md",
+      "sha256": "c5c7c95ddcc2b0bc01c169165546d4a8c9af9117bd8253b06fbfc5ca96b9190d"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/SOURCE_MANIFEST.json",
+      "sha256": "40154ec4b1d5f83e92efe92ddfe15c8b279ba71a78d5150a7cf880ae56809095"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_a/EXTRACTION_MANIFEST.json",
+      "sha256": "be97c0015d049a560813cac3169c9cd5a2c086444029c41b7683ace8e81cbc39"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_a/OWNER_SCOPE_APPROVAL.md",
+      "sha256": "364880bec1e1e889075e7c0b1acc4b23968d56c493c1ccb52f4e25d71b2434ea"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_a/README.md",
+      "sha256": "6a88bf3359236a92455d2a7d7e04660ec1b16d2072301546608858fb73e152ce"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_a/RECOVERY_REVIEW_84974658.md",
+      "sha256": "c4f52fe248adb7712e2fb1293a03ab8e7b261fe32fa5c861c45586b09e71a83f"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_a/author_packet/MANIFEST.json",
+      "sha256": "3140f1769ce1d4ed970c21f8cb56ff50e697880d5676983314d7b0584afd8f00"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_a/author_packet/PRIOR_WORK.md",
+      "sha256": "2fc533d236ab04b98783c6acd932a23f1e6caa2de0548d273436a2e44e6f9d8d"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_a/author_packet/README.md",
+      "sha256": "a9402af0d78f93be1bd1ecf693eac582e10b16ca78b9ba5baca21c0601245303"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_a/author_packet/SCOPE_BRIEF.md",
+      "sha256": "d42df7ae3e6b2272eb42e420fd2b4c364db7df8cd1db96cea5eee88fd47a7481"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_a/author_packet/references/JINC_BOUNDARY.md",
+      "sha256": "246f9c87d04bdbf09c878155810d089da9f7509f744847a61a83846824c9728c"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_a/author_packet/references/MAP_BOUNDARY.md",
+      "sha256": "a02a98af1d381336b47bba10d908bd84999613fe5c60a1cc92fc6286b40606a3"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_a/author_packet/references/NOI_BINDING.md",
+      "sha256": "b8bf96cf6e32e82b244d1f2f0eb45683435e3725f51ea4135a14703b10c9dde4"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_a/author_packet/references/PROCESS_AND_SCOPE.md",
+      "sha256": "3665e6008399a7af49b7050709fa00c66e2f3a92070da1623c9bd0dfbc41501c"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_a/author_packet/references/PTC_COEFFICIENTS.md",
+      "sha256": "ffe62f6a9110ac7d442944afaedde90d69e0f28cabc2dc2d2159a53bb011e014"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_a/author_packet/references/REGISTRY_FRAMEWORK.md",
+      "sha256": "9b9a8426b26afdce584bb30189d6dc25dc03f090b6bbebfbf07f15c0e56fef46"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_a/author_packet/references/VAL_RULES.md",
+      "sha256": "579d966ad64a378bfab05b5c8f4ffa3a1400dfb319e3bd8f43a9bd29a0b03d75"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_a/verify_author_packet.py",
+      "sha256": "754b58c1479ddf036d6655d486eaf0c986c32830b0dc98f06451dc1492945bd1"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/AUTHOR_INPUT_REVIEW_959bb909.md",
+      "sha256": "c151c8d67fe5115572f818adab6f9928df4b89eae2201b65216aaed4754358d0"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/DRAFT_CANDIDATE_REVIEW_f605be6f.md",
+      "sha256": "9af2b676c6dfc1a1dd0bf1a0de508816bbe362f170e508f6f25e02c82dc56e11"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/MANAGER_CHECK_RESULTS.json",
+      "sha256": "11ea99f1526ae6932ec5eedd22ce154ad360a5ce4b5241ad52c866b17183024e"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/MANAGER_QA_AND_COMPLETION.md",
+      "sha256": "9a629ad0195173e7a18afa82fee99ae84be49d2aafa683df4ad4755e59aeffda"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/OWNER_INPUT_RELEASE_2026-09-05.md",
+      "sha256": "6f7e6c986830c637f4bf59166ec156cb02a6b161567abfd2502b58b2d4dbe966"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/README.md",
+      "sha256": "de2be14e7c19c26ca12effa3f63dd89ed3a8f15e296aec5cda8d61b447df3aea"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/BLOCKED_DEFINITIONS_AND_QUESTIONS.md",
+      "sha256": "c8345970d9d470edacb8bb06724fc1be2dd0f08b3dddf25836d112dc1511560f"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/CROSSWALK.md",
+      "sha256": "6b3ee8d86b485cbca07ef7db46258042b5db3c243d64e6f2a8767a4758eaf2d5"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/DECISION_REGISTER_CHECK.md",
+      "sha256": "e1f566e1f8cb09421794800ada2483b5cf97eb9832a7c7ac783e7b7356005ffd"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/DRAFT_ARTIFACT_MANIFEST.sha256",
+      "sha256": "e8ba0c16a9ee64358b8fb45d8989fdf5988c929bcbae3b1463e8ca767952c17e"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/INPUT_INTEGRITY_AND_READ_RECORD.md",
+      "sha256": "ffe799a47d23c6b8d928d274559093b0f1247f04067a2c30c8bf0739bf8b019c"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/LINK_AND_COPY_CHECK.md",
+      "sha256": "5049205173f7fad75b0d2b13b67e003b5a1c93b1ff4351b7a0ca768b31bef00a"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/OWNER_DECISION_LEDGER.md",
+      "sha256": "9bd339c5ea4a75111209ffdfb420106c72a885350d91a34efae872d946be353d"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/OWNER_REVIEW_1_RESPONSE.md",
+      "sha256": "ce3cbe50c7482691722d85451a3bb0879be6951992353f4f93ec2469381cb809"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/PACKAGE_INVENTORY.md",
+      "sha256": "7d9a39783e3b377d35edbefd06cb06251683677b5b5ab039b5dd9f41b2341ff3"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/PREDICTION_CROSSWALK.md",
+      "sha256": "b8dbdcfb477090533ba00ed76993493a59593c2c661d2cbeb76e882b9c19e69a"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/PRIOR_WORK.md",
+      "sha256": "2fc533d236ab04b98783c6acd932a23f1e6caa2de0548d273436a2e44e6f9d8d"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/PROPOSED_REGISTRY_AND_BOUNDARY_RECORDS.md",
+      "sha256": "5a0e2fce9ad012d9d004c2b04151175e71396ddac818dde066727d815c8c3667"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/README.md",
+      "sha256": "a4f181a3906e30aa37ed57c18529545ed6d71cb6af760740b80269fd03ea25e1"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/RENDER_RECEIPT.md",
+      "sha256": "35af0e13456d679d1f432448ca0d6418a6c8eca941c869d735a4732cbe5253df"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/SCOPE_BRIEF.md",
+      "sha256": "d42df7ae3e6b2272eb42e420fd2b4c364db7df8cd1db96cea5eee88fd47a7481"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/engineering_conformance.pdf",
+      "sha256": "655192bef6a8db428d9b6bdc192318eeb78b2b983d2e53f0792961a97911d5c3"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/inputs/MANIFEST.json",
+      "sha256": "3140f1769ce1d4ed970c21f8cb56ff50e697880d5676983314d7b0584afd8f00"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/inputs/PRIOR_WORK.md",
+      "sha256": "2fc533d236ab04b98783c6acd932a23f1e6caa2de0548d273436a2e44e6f9d8d"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/inputs/README.md",
+      "sha256": "a9402af0d78f93be1bd1ecf693eac582e10b16ca78b9ba5baca21c0601245303"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/inputs/SCOPE_BRIEF.md",
+      "sha256": "d42df7ae3e6b2272eb42e420fd2b4c364db7df8cd1db96cea5eee88fd47a7481"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/inputs/references/JINC_BOUNDARY.md",
+      "sha256": "246f9c87d04bdbf09c878155810d089da9f7509f744847a61a83846824c9728c"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/inputs/references/MAP_BOUNDARY.md",
+      "sha256": "a02a98af1d381336b47bba10d908bd84999613fe5c60a1cc92fc6286b40606a3"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/inputs/references/NOI_BINDING.md",
+      "sha256": "b8bf96cf6e32e82b244d1f2f0eb45683435e3725f51ea4135a14703b10c9dde4"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/inputs/references/PROCESS_AND_SCOPE.md",
+      "sha256": "3665e6008399a7af49b7050709fa00c66e2f3a92070da1623c9bd0dfbc41501c"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/inputs/references/PTC_COEFFICIENTS.md",
+      "sha256": "ffe62f6a9110ac7d442944afaedde90d69e0f28cabc2dc2d2159a53bb011e014"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/inputs/references/REGISTRY_FRAMEWORK.md",
+      "sha256": "9b9a8426b26afdce584bb30189d6dc25dc03f090b6bbebfbf07f15c0e56fef46"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/inputs/references/VAL_RULES.md",
+      "sha256": "579d966ad64a378bfab05b5c8f4ffa3a1400dfb319e3bd8f43a9bd29a0b03d75"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/owner-review-1-input/MANIFEST.json",
+      "sha256": "3732fe857290645e52b6b1a37ec9e161eb46de5c89094380425e0983c29400ea"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/owner-review-1-input/OWNER_REVIEW_1_VERBATIM.md",
+      "sha256": "1e9074bfa86566a790f7d1a0284817aced321c66222c6899ef0e13a229a223e9"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/owner-review-1-input/PTC_RANK_AND_PUBLICATION_CLAUSES.md",
+      "sha256": "9e16b036203e0fbb6d4899220864476be4a6cc3f412df6e2157f693fc066abea"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/owner-review-1-input/README.md",
+      "sha256": "b54e80d86b270ae4c558e80a01bf68679e08b595091f44972f39cd0cb62e62a9"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/references/JINC_BOUNDARY.md",
+      "sha256": "246f9c87d04bdbf09c878155810d089da9f7509f744847a61a83846824c9728c"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/references/MAP_BOUNDARY.md",
+      "sha256": "a02a98af1d381336b47bba10d908bd84999613fe5c60a1cc92fc6286b40606a3"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/references/NOI_BINDING.md",
+      "sha256": "b8bf96cf6e32e82b244d1f2f0eb45683435e3725f51ea4135a14703b10c9dde4"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/references/PROCESS_AND_SCOPE.md",
+      "sha256": "3665e6008399a7af49b7050709fa00c66e2f3a92070da1623c9bd0dfbc41501c"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/references/PTC_COEFFICIENTS.md",
+      "sha256": "ffe62f6a9110ac7d442944afaedde90d69e0f28cabc2dc2d2159a53bb011e014"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/references/REGISTRY_FRAMEWORK.md",
+      "sha256": "9b9a8426b26afdce584bb30189d6dc25dc03f090b6bbebfbf07f15c0e56fef46"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/references/VAL_RULES.md",
+      "sha256": "579d966ad64a378bfab05b5c8f4ffa3a1400dfb319e3bd8f43a9bd29a0b03d75"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/scientific_rationale.pdf",
+      "sha256": "22907c022cb91e05364c20f2fb3d982d5a23b0211e652fab277e54ec9188b817"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/src/common/assumptions.tex",
+      "sha256": "7561dbdac512d0c17e98609ee5dedc72810035d0ea99a727b7a96e18eed88a70"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/src/common/definitions.tex",
+      "sha256": "6c62e83d673612afd44bc11cd28798a1cfabf2eefb1f9f5215ab03c89c8c6423"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/src/common/edge_cases.tex",
+      "sha256": "e47b0c18016193711275c50bed1a2ab02fd98b0d11b904782f0d95c1c4741151"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/src/common/equations.tex",
+      "sha256": "8e84d10a9febf5eb3805604bfce5d41ee15bd2e40110ca2f5294ef56a9c9e73e"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/src/common/notation.tex",
+      "sha256": "88b6ad914bb8ac85a9eec8032deb6185b3b076ce42c31794f93a51925a1c9943"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/src/common/requirements.tex",
+      "sha256": "ca78a7a77aea54832b5baf69d11c16d9603ffd06ae3711cec2914ad55158533c"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/src/common_core.tex",
+      "sha256": "c8f51f5c9999235649dc99ddbfae4f538468ee7530034fb96d51b94d129597cf"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/src/engineering_conformance.tex",
+      "sha256": "4f5f123c9520ea229ab798e537348c01cf57df3444ee5d424fe7818c1f09dea1"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/src/scientific_rationale.tex",
+      "sha256": "6f5a90bd4a2386fd0d5f2394b37fb54897629daa5c0ee73b6551daa73296e61b"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/owner_approval_r04/APPROVED_ARTIFACTS.json",
+      "sha256": "fa6fbd420d75aac365fde9b22451a6d407d1b63fd2956eb236695450cc2e0f15"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/owner_approval_r04/CONSISTENCY_INPUT_RELEASE.json",
+      "sha256": "21c2bb95bd2413ca379c27ecad0710c9179729906b25491d6013147607c9f0c2"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/owner_approval_r04/README.md",
+      "sha256": "8ad3811ba052e1264f3fee051cc59e077d14a947551bc23f8ff1c4b0037cbd5e"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/owner_approval_r04/SCIENTIFIC_OWNER_APPROVAL.md",
+      "sha256": "a771eddc1d1a9cfae76f9f6f0c13398a90552ca0ad28a06f872a77048dc712e5"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/owner_review_1/CANDIDATE_REVIEW_0dbcc9f0.md",
+      "sha256": "11f94fab9b0c2d911fcb0555ee03d087e62072fc25fc55b19915d92324a7e1eb"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/owner_review_1/CANDIDATE_REVIEW_448194ac.md",
+      "sha256": "402f9569c06b8d6197f51da14533d35efcff6995c42392d6cdc744ddd5522715"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/owner_review_1/PRIOR_SOURCE_RECHECK.json",
+      "sha256": "5c9bea12a1ecfc0546eedcaae1dc62fc2e75bd2231c03e03b34404ee5554477a"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/owner_review_1/R04_CANONICAL_REASSESSMENT.json",
+      "sha256": "177bb6589169ae02bd3774284f50c45a5f2c4e841c2d3462ca7c66503da0878b"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/owner_review_1/README.md",
+      "sha256": "3cc5d30176f255360fa514e24a8ab6f832dc8e230eb610db2442471e99fa5e58"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/owner_review_1/SOURCE_AND_PREFLIGHT_CHECK.json",
+      "sha256": "1b7ffd7e502a3a545e05f9b59cee30148aa14bebfa66e1fc830a946ac782d63b"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/owner_review_1/author_supplement/MANIFEST.json",
+      "sha256": "3732fe857290645e52b6b1a37ec9e161eb46de5c89094380425e0983c29400ea"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/owner_review_1/author_supplement/OWNER_REVIEW_1_VERBATIM.md",
+      "sha256": "1e9074bfa86566a790f7d1a0284817aced321c66222c6899ef0e13a229a223e9"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/owner_review_1/author_supplement/PTC_RANK_AND_PUBLICATION_CLAUSES.md",
+      "sha256": "9e16b036203e0fbb6d4899220864476be4a6cc3f412df6e2157f693fc066abea"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/owner_review_1/author_supplement/README.md",
+      "sha256": "b54e80d86b270ae4c558e80a01bf68679e08b595091f44972f39cd0cb62e62a9"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/render_evidence/engineering_conformance.log",
+      "sha256": "60331f56ccecd152ac46d0619ba5824e1f318fdf3f2d55b25b4210ce058f0fbc"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/render_evidence/scientific_rationale.log",
+      "sha256": "2559dbf20ef6e78d554d5c7a02cf311c675814831e155a052c6adee21e4b4260"
+    }
+  ],
+  "scope": "Uniform-first coefficient scientific authority only; MAP/JINC grants separate; NOI profiles unchanged; no default, implementation, runtime activation or production claim.",
+  "activation": "Canonical scientific admission only after exact-candidate review and owner-authorized integration. Exact Git commit binds this manifest externally."
+}

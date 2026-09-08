@@ -1,0 +1,253 @@
+\section{Scientific assumptions, uncertainty, and route limits}
+
+The family assumes only a completed, exact PTC publication generation \(q\)
+with identifiable finite nonempty output support. It assumes no statistical
+distribution, stationarity, independence, equal detector response, equal
+exposure, residual model, sensitivity model, or covariance model. The
+coefficient is defined rather than estimated and ranks no data quality.
+
+The exact policy constant introduces no coefficient sampling uncertainty.
+This does not assign zero to signal, calibration, response, covariance,
+support-selection, family-selection, representation, or performance
+uncertainty. Unknown remains unknown, and absent covariance does not mean
+independence.
+
+\subsection{Ordinary-route and rank provenance}
+
+Frozen SCI-PTC v0.1/r0.5 requirement 090 defines the admitted first ordinary
+PTC route: the parent \(q\) is an explicitly requested calibrated-\(x\),
+configured-rank, group-local PCA/SVD operation with exact CAL parent, segment,
+output identity, lifecycle, and failure state. Requirement 094 requires an
+integer rank at least one for each group, or one explicitly common positive
+rank applied to named groups; every group verifies realizability on its own
+support and degeneracy state. Requirement 095 says rank zero, noninteger rank,
+or an unrealizable positive rank fails closed with exact group and cause. It
+does not become centering-only output, get clipped or substituted, become
+PTC-disabled, select RTC-terminal export, or produce a map.
+
+Consequently, this coefficient can be instantiated on the ordinary route only
+from a completed \(q\) produced after those rank obligations pass. The
+PTC-disabled route remains separately RTC-terminal and produces no PTC
+coefficient. These inherited statements provide no authority for an identity
+PTC route, a zero-rank route family, or any other route.
+
+\subsection{Family rules, realizations, and immutable change}
+
+A family-rule version defines the constant, unit, normalization operator,
+support rule, representation permissions, and profile semantics. Changing one
+of those scientific rules creates the appropriate versioned family, profile,
+permission, or boundary successor.
+
+Applying unchanged rules to a different application generation, observation,
+publication unit, or exact support population creates new immutable \(q\) and
+\(g\) realizations under the same family version. It does not version the
+family. A published realization is never rewritten: a corrected or changed
+actual support produces a new realization and preserves the earlier record.
+Numerical equality alone does not authorize cross-generation borrowing.
+
+\section{Scientific choices still awaiting owner approval}
+
+Owner review round 1 supports the basic uniform design in principle and
+withholds approval of the complete contract. The owner still must adopt,
+revise, or reject:
+
+\begin{itemize}
+\item the registered exact-unity family and analytic mean-one convention;
+\item the exact publication-unit support rule, compact support reference,
+shared-fact association, and incremental handoff proposal;
+\item the named-profile identity, independent request rule, four fidelity
+facts, mixed-evidence composition, nonexceptionability, and failure scopes;
+\item the separate MAP and JINC grants and their r0.4 boundary successors;
+\item immutable realization, replay, supersession, uncertainty, and Registry
+source-binding rules; and
+\item the proposed actual-owner field, Grant Wilson acting for SCI-PTC.
+\end{itemize}
+
+The first five groups are complete author proposals rather than missing
+definitions. The final item remains precise question UFC-Q-001 and blocks
+active Registry/profile binding. No implementation conformity, observational
+performance, production readiness, Registry activation, default, or complete
+scientific freeze follows from this revision.
+
+\ifengineeringview
+
+\section{Decision semantics and failure scopes}
+
+\subsection{Knowledge states and four independent axes}
+
+Every fact uses \(\{\mathbf T,\mathbf F,\mathbf U,\mathbf C\}\). Silence is
+unknown. Contradictory authoritative claims about the same fact remain
+\(\mathbf C\). Across independent facts, a decisive \(\mathbf F\) dominates
+unrelated unknown or conflict for eligibility while every cause remains
+recorded. With no false, any required unknown or conflict yields decision
+unavailable; all required facts true yields eligible.
+
+The named profile carries independent axes:
+
+\begin{itemize}
+\item \(R\): requested or not requested, set by the explicit named-profile
+request rather than by the selected-family value;
+\item \(A\): applicable, inapplicable, or applicability unknown;
+\item \(E\): eligible, ineligible, decision unavailable, or uninstantiated
+where no question is evaluated; and
+\item \(Z\): realized, incomplete, failed, or not produced for the profile
+evaluation artifact, separate from payload availability.
+\end{itemize}
+
+A completed false predicate produces a successfully realized negative
+evaluation, \(Z=\) realized and \(E=\) ineligible. A completed record of
+missing authority may likewise have \(Z=\) realized and \(E=\) decision
+unavailable. \(Z=\) failed is reserved for failure to complete or publish the
+profile-evaluation artifact.
+
+\subsection{Failure-scope table}
+
+\begin{longtable}{p{0.31\linewidth}p{0.35\linewidth}p{0.25\linewidth}}
+\toprule
+Established condition & Required result & Scope\\
+\midrule
+\endhead
+Named request and evaluation identity are recordable, but its occurrence,
+consumer, selection-record, or \(q,g\) reference is malformed, missing,
+ambiguous, or pairs the wrong otherwise-authoritative objects &
+\(R=\) requested, \(A=\) unknown, \(E=\) decision unavailable in a completed
+request-local record; no shared object changes & That attempted request only\\
+Request lacks enough identity to create a durable named-profile record &
+No eligibility assertion; evaluation artifact is failed or not produced &
+That attempted request only\\
+An authoritative identity/binding record for Registry/source/owner,
+selection, application/CAL, \(q\)-to-\(g\), target \(R_q\), payload
+publication, or target broadcast is missing, conflicting, corrupt, or
+misbound; or the authoritative population identity is ambiguous & Applicability unknown or decision
+unavailable; no UQ-05 evaluation or fallback & Every request referencing the
+defective shared object\\
+Known empty output support of \(q\) & No family instance, coefficient
+realization, or eligibility claim & That publication unit\\
+Explicit named profile request with known different selected family or
+known incompatible \(q\)-to-\(g\) permission & UQ-01 or UQ-02 is
+\(\mathbf F\); ineligible without reinterpreting the payload & Every request
+sharing that exact selection or compatibility fact\\
+Any independent payload-fidelity fact is \(\mathbf F\) & UQ-05 is
+\(\mathbf F\); payload producer-invalid; completed handoff evaluations
+ineligible & Every request using that payload publication\\
+No fidelity false, but a required fidelity fact is \(\mathbf U\) or
+\(\mathbf C\) & UQ-05 remains unknown/conflicting; decision unavailable
+unless another restriction is false & Every request using that payload
+publication\\
+Complete permission record denies or does not authorize named consumer \(c\)
+& UQ-06 is \(\mathbf F\); that named use is ineligible; payload and other
+consumer unchanged & Consumer \(c\) under that permission record\\
+Permission evidence for \(c\) is missing/unresolved or contradictory &
+UQ-06 is \(\mathbf U\) or \(\mathbf C\); decision unavailable absent another
+false & Consumer \(c\) under that permission record\\
+Occurrence is authoritatively outside \(q\)'s support & Inapplicable,
+\(E=\varnothing_E\), and no coefficient for that occurrence & That occurrence
+request\\
+Consumer rejects an otherwise faithful value under its own numerical rule &
+Preserve PTC profile; consumer excludes or fails under its rule & That
+consumer contribution\\
+Advisory response, uncertainty, or unrelated diagnostic is missing/conflicting
+& Preserve exact state and cause; neutral for coefficient fidelity & No
+coefficient-profile failure\\
+\bottomrule
+\end{longtable}
+
+In the structural row, ``corrupt'' modifies an authoritative identity or
+binding record, not bytes of an already bound payload. After valid publication
+identity and binding, authoritative payload-byte corruption, digest failure,
+or decoder-invalid bytes gives \(Q_{\rm integrity}=\mathbf F\); unavailable
+or unexplained integrity evidence gives \(\mathbf U\); and contradictory
+integrity evidence gives \(\mathbf C\). Payload bytes never become structural
+merely because they are corrupt.
+
+\subsection{Noncircular UQ-07 construction and finalization}
+
+UQ-07 is staged and never requires an already completed evaluation of itself.
+
+\begin{enumerate}
+\item Construction allocates the evaluation identity and snapshots the
+pre-existing request, Registry, parent, lineage, support, payload, permission,
+and UQ-01--UQ-06 fact references.
+\item Before sealing, UQ-07 evaluates only those pre-existing lineage,
+nonmutation, scope, and write-once-target facts. A known violation is
+\(\mathbf F\); missing/conflicting evidence is \(\mathbf U/\mathbf C\).
+\item Finalization durably writes the complete result and its retained causes,
+then the lifecycle envelope records \(Z=\) realized. If durable finalization
+fails, the envelope records failed/incomplete as available; no completed
+UQ-07 value or eligibility assertion is invented.
+\end{enumerate}
+
+Later discovery never rewrites the sealed record. It produces a successor
+evaluation or realization with explicit supersession and preserved cause.
+
+\section{Evidence status and compact owner-decision register}
+
+Algebraic equality follows from the exact definition. Implementation
+conformity, representation and response fidelity, observational performance,
+and production readiness are separate evidence layers and have not been
+established.
+
+This register is checked against the companion owner ledger.
+
+\subsection*{Recovered and deferred states}
+
+\begin{center}
+\begin{tabular}{p{0.25\linewidth}p{0.13\linewidth}p{0.52\linewidth}}
+\toprule
+IDs & State & Disposition\\
+\midrule
+UFC-REC-001--008 & decided & Admitted PTC, Registry, MAP, JINC, NOI, VAL,
+PTC-disabled, atomic-output, and ordinary-rank facts are recovered
+constraints; no claim is blocked.\\
+UFC-DEF-001--005 & deferred & Other coefficient families, defaults, NOI
+profile successors, performance criteria, and a general cross-generation
+alias remain outside this draft.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection*{Open author proposals}
+
+\begin{longtable}{p{0.18\linewidth}p{0.12\linewidth}p{0.61\linewidth}}
+\toprule
+ID & State & Exact blocked claim or output\\
+\midrule
+\endhead
+UFC-OD-001 & open & Registered exact-unity numerical family and payload.\\
+UFC-OD-002 & open & Exact logical index and compact occurrence-association
+forms.\\
+UFC-OD-003 & open & Publication-unit support and incremental handoff rule.\\
+UFC-OD-004 & open & Analytic mean-one operator and empty/singleton behavior.\\
+UFC-OD-005 & open & No-parameter and no-default selection rule.\\
+UFC-OD-006 & open & Named-profile identity, independent request, object, and
+applicability.\\
+UFC-OD-007 & open & Fidelity-fact composition, restrictions,
+nonexceptionability, permission distinctions, and failure scopes.\\
+UFC-OD-008 & open & SCI-MAP permission and MAP use of this family.\\
+UFC-OD-009 & open & SCI-JINC permission and JINC use of this family.\\
+UFC-OD-010 & open & Immutable MAP and JINC r0.4 successor-boundary
+bindings.\\
+UFC-OD-011 & open & Exact actual-owner field; the mathematical draft is not
+blocked.\\
+UFC-OD-012 & open & Realization, replay, finalization, family-version, and
+cross-generation rules.\\
+UFC-OD-013 & open & Coefficient uncertainty meaning.\\
+UFC-OD-014 & open & Active coefficient Registry identity and source binding.\\
+\bottomrule
+\end{longtable}
+
+\subsection*{Precise open question}
+
+\begin{center}
+\begin{tabular}{p{0.18\linewidth}p{0.12\linewidth}p{0.61\linewidth}}
+\toprule
+ID & State & Exact question and blocked output\\
+\midrule
+UFC-Q-001 & open & Is the actual scientific owner Grant Wilson acting for
+SCI-PTC, as proposed, or another named authority? This blocks active
+Registry/profile binding only.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\fi

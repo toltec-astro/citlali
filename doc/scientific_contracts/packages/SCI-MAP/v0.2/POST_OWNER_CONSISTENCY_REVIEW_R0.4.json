@@ -1,0 +1,49 @@
+{
+  "candidate": "0f8da1ada267c0d070fcfb18d0807bc4a2645a9d",
+  "candidate_tree": "7678596c8a754f8c11d65752033891f1ff626c0a",
+  "accepted_content_commit": "c8081c4ee4dc1c5132c3030a351073205fc3142a",
+  "review_kind": "fresh_context_implementation_blind_post_owner_consistency_and_tier2_exact_sha",
+  "reviewer": "map_r04_post_owner_review",
+  "date": "2026-09-08",
+  "report": {
+    "path": "/private/tmp/citlali-map-r04-freeze-2026-09-08/post-owner-review-0f8da1ada/POST_OWNER_CONSISTENCY_REVIEW.md",
+    "sha256": "c5ff26d2f1730418b789d0396c38d61262f8e24de42ca5af3401d51297251174",
+    "bytes": 8807
+  },
+  "verdict": "pass_with_recorded_limitations",
+  "dispositions": {
+    "scientific_consistency": "pass",
+    "document_architecture_ownership": "pass",
+    "repository_evidence": "pass"
+  },
+  "required_repairs": [],
+  "post_owner_consistency_gate_satisfied": true,
+  "generic_freeze_eligible": true,
+  "generic_freeze_scope": "Exact accepted unchanged SCI-MAP v0.2/r0.4 generic scientific bytes only; a status-only freeze record remains to be recorded and reviewed.",
+  "profile_approval": "pending",
+  "registry_registration": "pending",
+  "source_binding": "pending",
+  "activation_evaluability": "unavailable",
+  "object_specific_decisions": "unavailable",
+  "affected_numerical_routes": "unavailable",
+  "freeze_recorded_by_this_review": false,
+  "publication_performed_by_this_review": false,
+  "repository_or_ref_mutations": false,
+  "evidence": [
+    {
+      "path": "/private/tmp/citlali-map-r04-freeze-2026-09-08/post-owner-review-0f8da1ada/VERIFY_PACKET.json",
+      "sha256": "ac7fda2460e31ea0212d7a216d2a9138b51d46640602964762db73eb3a8b4cdf",
+      "bytes": 8102
+    },
+    {
+      "path": "/private/tmp/citlali-map-r04-freeze-2026-09-08/post-owner-review-0f8da1ada/BYTE_CHECKS.json",
+      "sha256": "0c64a283da802ba81fa6cf82528d6aa2ebf4b261fc621f1beb3d4c3015bd6528",
+      "bytes": 97010
+    },
+    {
+      "path": "/private/tmp/citlali-map-r04-freeze-2026-09-08/post-owner-review-0f8da1ada/REVIEW_CHECKS.json",
+      "sha256": "396df352e050a3fd439ff7d0b8f5a9db04440696bf9597c56a198f93e92a3cfc",
+      "bytes": 5191
+    }
+  ]
+}

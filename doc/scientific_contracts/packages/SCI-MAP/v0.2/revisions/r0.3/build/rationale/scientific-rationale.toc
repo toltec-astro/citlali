@@ -1,0 +1,14 @@
+\contentsline {section}{Executive summary and current status}{1}{section*.1}%
+\contentsline {section}{\numberline {1}What SCI-MAP estimates}{4}{section.1}%
+\contentsline {section}{\numberline {2}From samples to pixels}{5}{section.2}%
+\contentsline {section}{\numberline {3}Projection, response, and removed modes}{6}{section.3}%
+\contentsline {section}{\numberline {4}Weights and uncertainty}{7}{section.4}%
+\contentsline {section}{\numberline {5}Coverage, support, and validity}{8}{section.5}%
+\contentsline {section}{\numberline {6}Observation coaddition}{10}{section.6}%
+\contentsline {section}{\numberline {7}Units, WCS, products, and downstream use}{12}{section.7}%
+\contentsline {section}{\numberline {8}Validation}{13}{section.8}%
+\contentsline {section}{\numberline {9}Scientific-owner decisions and remaining gates}{13}{section.9}%
+\setcounter {tocdepth}{-1}
+\contentsline {section}{\numberline {A}Compact rationale-to-contract crosswalk}{14}{appendix.A}%
+\contentsline {section}{\numberline {B}Compact scientific-owner decision register}{15}{appendix.B}%
+\contentsline {section}{\numberline {C}Document authority}{16}{appendix.C}%

@@ -1,0 +1,70 @@
+note: using only cached resource files
+note: Running TeX ...
+warning: identity/formal.tex:17: Underfull \hbox (badness 10000) in paragraph at lines 17--17
+warning: formal-scientific-engineering-contract.tex:62: Underfull \hbox (badness 10000) in paragraph at lines 17--62
+warning: formal-scientific-engineering-contract.tex:154: Underfull \hbox (badness 1292) in paragraph at lines 139--154
+warning: formal-scientific-engineering-contract.tex:154: Underfull \hbox (badness 1173) in paragraph at lines 139--154
+warning: formal-scientific-engineering-contract.tex:282: Underfull \hbox (badness 2205) in paragraph at lines 281--282
+warning: formal-scientific-engineering-contract.tex:450: Underfull \hbox (badness 1515) in paragraph at lines 440--450
+warning: formal-scientific-engineering-contract.tex:530: Underfull \hbox (badness 1215) in paragraph at lines 529--530
+warning: formal-scientific-engineering-contract.tex:530: Underfull \hbox (badness 6125) in paragraph at lines 529--530
+warning: formal-scientific-engineering-contract.tex:636: Underfull \hbox (badness 10000) in paragraph at lines 635--636
+warning: formal-scientific-engineering-contract.tex:667: Underfull \hbox (badness 1178) in paragraph at lines 658--667
+warning: formal-scientific-engineering-contract.tex:667: Underfull \hbox (badness 2158) in paragraph at lines 658--667
+warning: formal-scientific-engineering-contract.tex:667: Underfull \hbox (badness 1281) in paragraph at lines 658--667
+warning: formal-scientific-engineering-contract.tex:667: Underfull \hbox (badness 1354) in paragraph at lines 658--667
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 10000) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 1102) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 2080) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 3039) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 2837) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 10000) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 10000) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 1024) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 10000) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 1990) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 10000) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 1502) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:855: Underfull \hbox (badness 2435) in paragraph at lines 855--855
+warning: formal-scientific-engineering-contract.tex:855: Underfull \hbox (badness 1024) in paragraph at lines 855--855
+warning: formal-scientific-engineering-contract.tex:855: Underfull \hbox (badness 1496) in paragraph at lines 855--855
+warning: formal-scientific-engineering-contract.tex:861: Underfull \hbox (badness 1215) in paragraph at lines 860--861
+warning: formal-scientific-engineering-contract.tex:861: Underfull \hbox (badness 6125) in paragraph at lines 860--861
+note: Rerunning TeX because "formal-scientific-engineering-contract.toc" changed ...
+warning: identity/formal.tex:17: Underfull \hbox (badness 10000) in paragraph at lines 17--17
+warning: formal-scientific-engineering-contract.tex:62: Underfull \hbox (badness 10000) in paragraph at lines 17--62
+warning: formal-scientific-engineering-contract.tex:154: Underfull \hbox (badness 1292) in paragraph at lines 139--154
+warning: formal-scientific-engineering-contract.tex:154: Underfull \hbox (badness 1173) in paragraph at lines 139--154
+warning: formal-scientific-engineering-contract.tex:282: Underfull \hbox (badness 2205) in paragraph at lines 281--282
+warning: formal-scientific-engineering-contract.tex:450: Underfull \hbox (badness 1515) in paragraph at lines 440--450
+warning: formal-scientific-engineering-contract.tex:530: Underfull \hbox (badness 1215) in paragraph at lines 529--530
+warning: formal-scientific-engineering-contract.tex:530: Underfull \hbox (badness 6125) in paragraph at lines 529--530
+warning: formal-scientific-engineering-contract.tex:636: Underfull \hbox (badness 10000) in paragraph at lines 635--636
+warning: formal-scientific-engineering-contract.tex:667: Underfull \hbox (badness 1178) in paragraph at lines 658--667
+warning: formal-scientific-engineering-contract.tex:667: Underfull \hbox (badness 2158) in paragraph at lines 658--667
+warning: formal-scientific-engineering-contract.tex:667: Underfull \hbox (badness 1281) in paragraph at lines 658--667
+warning: formal-scientific-engineering-contract.tex:667: Underfull \hbox (badness 1354) in paragraph at lines 658--667
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 10000) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 1102) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 2080) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 3039) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 2837) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 10000) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 10000) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 1024) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 10000) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 1990) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 10000) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:842: Underfull \hbox (badness 1502) in paragraph at lines 842--842
+warning: formal-scientific-engineering-contract.tex:855: Underfull \hbox (badness 2435) in paragraph at lines 855--855
+warning: formal-scientific-engineering-contract.tex:855: Underfull \hbox (badness 1024) in paragraph at lines 855--855
+warning: formal-scientific-engineering-contract.tex:855: Underfull \hbox (badness 1496) in paragraph at lines 855--855
+warning: formal-scientific-engineering-contract.tex:861: Underfull \hbox (badness 1215) in paragraph at lines 860--861
+warning: formal-scientific-engineering-contract.tex:861: Underfull \hbox (badness 6125) in paragraph at lines 860--861
+warning: warnings were issued by the TeX engine; use --print and/or --keep-logs for details.
+note: Running xdvipdfmx ...
+note: Writing `/private/tmp/citlali-map-r04-build-2026-09-08/candidate-build-03/formal/formal-scientific-engineering-contract.pdf` (247.142578125 KiB)
+note: Writing `/private/tmp/citlali-map-r04-build-2026-09-08/candidate-build-03/formal/formal-scientific-engineering-contract.aux` (15.19921875 KiB)
+note: Writing `/private/tmp/citlali-map-r04-build-2026-09-08/candidate-build-03/formal/formal-scientific-engineering-contract.out` (4.1875 KiB)
+note: Writing `/private/tmp/citlali-map-r04-build-2026-09-08/candidate-build-03/formal/formal-scientific-engineering-contract.toc` (1.587890625 KiB)
+note: Writing `/private/tmp/citlali-map-r04-build-2026-09-08/candidate-build-03/formal/formal-scientific-engineering-contract.log` (26.1142578125 KiB)
