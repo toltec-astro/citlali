@@ -1,0 +1,34 @@
+% Canonical shared vocabulary. Exact obligations remain in requirements.tex.
+\providecommand{\SCIMapEstimatorName}{ordinary positive-coefficient normalized mapmaking}
+\providecommand{\SCIMapCoaddName}{centered-integer common-grid observation coaddition}
+\providecommand{\SCIMapSignalUnit}{\texttt{mJy/beam}}
+\providecommand{\SCIMapSignalRole}{calibrated-\(x\)-derived nonpolarimetric total-intensity-equivalent quantity}
+\providecommand{\SCIMapResponseIdentity}{support-restricted realized response}
+\providecommand{\SCIMapValidityIdentity}{MAP-local base-product scientific validity}
+% Canonical exact boundary/profile identities. Each renderer is one
+% unbreakable box so spacing and punctuation cannot drift at a line break.
+\providecommand{\SCIMapPTCMapBoundaryId}{\mbox{\footnotesize\texttt{SCI-PTC\_TO\_SCI-MAP v0.1/r0.1}}}
+\providecommand{\SCIMapASTFootprintBoundaryId}{\mbox{\footnotesize\texttt{SCI-AST\_TO\_SCI-MAP\_ORIGINAL\_FOOTPRINT\_COORDINATE v0.1/r0.1}}}
+\providecommand{\SCIMapASTRTCGridProfile}{\mbox{\footnotesize\texttt{SCI-AST:rtc\_output\_grid\_coordinates@1}}}
+\providecommand{\SCIMapUpstreamProfileHistorical}{\mbox{\footnotesize\texttt{SCI-MAP:map\_upstream\_admission@1}}}
+\providecommand{\SCIMapUpstreamProfile}{\mbox{\footnotesize\texttt{SCI-MAP:map\_upstream\_admission@2}}}
+\providecommand{\SCIMapOneHotProfile}{\mbox{\footnotesize\texttt{SCI-MAP:one\_hot\_containing\_pixel@1}}}
+\providecommand{\SCIMapCoaddProfile}{\mbox{\footnotesize\texttt{SCI-MAP:observation\_coadd\_admission@1}}}
+\providecommand{\SCIMapUniformCoaddProfile}{\mbox{\footnotesize\texttt{SCI-MAP:uniform\_observation\_coadd\_coefficient@1}}}
+
+% The exact occurrence i is not a tuple of time and detector. It binds the
+% observation; detector occurrence and UID; stable RTC output index n; exact
+% PTC product/application generation; segment; array/network/group; and its
+% full parent chain. Time and storage positions are associated attributes or
+% locators only.  z_i=Z_i^PTC is the transformed signal; gamma_i is the exact
+% PTC-selected MAP-facing coefficient, when such a family exists.  x and r
+% remain reserved for the paired upstream KID readout coordinates.
+
+% A stable original occurrence u is the ALIGN-owned acquisition occurrence,
+% keyed by observation, detector occurrence/UID, native occurrence identity,
+% stable ALIGN slot, and exact ALIGN mapping generation.  Its own coordinate
+% is the layered AST ALIGN-grid direction/tangent/continuous-pixel role bound
+% to the target MAP WCS through SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE
+% v0.1/r0.1.  It is never a descendant RTC-output coordinate.  The causal
+% influence graph remains a separate support fact and never duplicates
+% detector-seconds.

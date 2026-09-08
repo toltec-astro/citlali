@@ -1,0 +1,145 @@
+SCI-FRUIT ORDINARY-MAP FIRST METHOD — SCOPE APPROVAL
+AND NEXT PAPER-DEFINITION DIRECTION
+
+I approve D001–D005 as scope and bounded paper-only preparation directions,
+subject to the clarifications below.
+
+The revised MAP-first direction is accepted. Do not produce another standalone
+scope-review cycle or reopen the frozen generic FRUIT core.
+
+This approval does not select a numerical method, feedback projector, selector,
+coefficient value, coverage_cut value, iteration count, executable, observation,
+or experiment. Author dispatch and execution remain separately authorized.
+
+1. PRESERVE THE REVISED SEPARATION
+
+The first newly specified method is for one observation, separately identified
+array bundles, compact-source-pointing use, and unfiltered normalized ordinary
+SCI-MAP feedback.
+
+Keep the historical JINC control unchanged. JINC specialization remains later
+work with its own method identity.
+
+Retain original-measured-parent reruns and complete-map replacement as the
+candidate recurrence direction to define. Do not infer cumulative processing
+of the preceding residual.
+
+The matched piecewise-constant feedback projector remains an illustrative
+candidate, not an approved operator.
+
+2. CLOSE BOTH SIDES OF THE PTC INTERFACE
+
+Extend U02/U03 into one explicit two-sided boundary task:
+
+    exact pre-removal producer product
+      -> model subtraction
+      -> FRUIT residual
+      -> authorized PTC application
+      -> residual PTC output
+      -> FRUIT rejoined sample product
+      -> authorized ordinary MAP input.
+
+For each crossing, identify:
+
+- exact producer and consumer product roles;
+- quantity, unit, reference/gauge, support and occurrence identity;
+- existing authority that suffices, or the precise missing permission;
+- any bounded boundary or controlled successor required;
+- affected response, uncertainty, validity and provenance.
+
+Do not relabel a residual as unchanged CAL output or a rejoined descendant as
+unchanged PTC output.
+
+Bind the signal population and generation used for every analysis/gridding
+coefficient and QC result. Residual-derived, post-rejoin-recomputed, and
+explicitly retained coefficients are not aliases.
+
+If the route cannot be closed within the selected scope, return the specific
+unavailable-route disposition before expanding it.
+
+3. RETURN CONCRETE METHOD RULES
+
+Use the existing twenty-one-class record. For each unresolved method choice,
+return an exact proposed rule or one precise blocking question.
+
+Prioritize:
+
+- candidate/accepted/applied model construction and transformations;
+- feedback projection and its normalized-MAP round trip;
+- selector inputs and exact companion meanings;
+- residual-operation and bypass graph;
+- state fixed, reevaluated or relearned at each stage;
+- removal, rejoin and final MAP support;
+- flags, coefficients and QC after rejoin;
+- missing/non-finite behavior and failure scope.
+
+Do not import historical gates, fallback behavior or numerical values as
+defaults. Keep frozen MAP normalization separate from the separately proposed
+feedback projection.
+
+4. RESOLVE BOOTSTRAP AND FINITE-EXTENT SEMANTICS
+
+Propose explicitly:
+
+- the first unseeded iteration and its no-predecessor behavior;
+- the first product eligible to become a feedback-model parent;
+- whether the extent includes the bootstrap iteration;
+- absolute zero-based indexing;
+- per-array versus larger-request completion/failure scope;
+- the successful terminal-selection rule.
+
+After successful completion of the declared extent, select its final required
+completed iteration. A failed required run remains failed; an earlier completed
+product is not silently substituted as successful completion.
+
+Preserve earlier immutable products and their exact states without claiming
+convergence or continuation sufficiency.
+
+5. PRESERVE HISTORICAL COMPARABILITY
+
+Return a concise historical-to-proposed rule table:
+
+    historical behavior
+    proposed ordinary-MAP rule
+    unchanged / restricted / changed / unresolved
+    reason and owner
+    affected identity and claims.
+
+Do not modify the historical control to resemble the candidate.
+
+Keep U08's distinction between mapmaker effects and feedback effects. A later
+MAP-versus-JINC difference is not, by itself, evidence of FRUIT benefit.
+No experiment design or execution is authorized by this response.
+
+6. RECONCILE SOURCE PERMISSIONS AND WORDING
+
+The three inputs/program documents are proposed author references in the
+reference control and author inventory but have proposed_author_reference=false
+in SOURCE_IDENTITIES.json.
+
+Make those records agree while preserving their process-only authority.
+
+Use “unfiltered normalized ordinary MAP” rather than ambiguous “raw” wording,
+and “separately identified array bundles” rather than language implying
+statistical independence.
+
+Keep the exact frozen MAP v0.1/r0.7.1 binding unless a separately approved
+successor is explicitly adopted. Do not silently import decisions from a
+candidate MAP revision.
+
+7. NEXT DELIVERABLE AND GATES
+
+Return a compact method-definition and boundary-closure proposal containing
+the concrete rules, U01–U08 dispositions, historical comparison, remaining
+owner questions, and updated source bindings.
+
+Do not generate another generic FRUIT contract or PDF set at this stage.
+Do not repeat the current list of unknowns without proposing their disposition.
+
+The manager recovery materials remain outside independent scientific
+authorship. Any later sanitized author packet and dispatch require their own
+exact approval.
+
+No numerical route, implementation conformity, response/covariance fidelity,
+uncertainty coverage, source-recovery benefit, pointing accuracy, qualification,
+readiness or production authorization follows.

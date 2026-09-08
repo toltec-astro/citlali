@@ -1197,6 +1197,44 @@ opaque archive changed. No new author, implementation assessment, experiment,
 replay, qualification or Unity activity was launched. The next owner decision
 is the revised exact scope and paper-only method-definition direction.
 
+Subsequently on `2026-09-08`, Grant Wilson
+[approved D001–D005](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.1/OWNER_SCOPE_APPROVAL_2026-09-08.md)
+as ordinary-MAP scope and bounded paper-preparation directions, with explicit
+two-sided PTC boundary and source-control corrections. Those scope decisions
+are closed; the preceding pending-scope statements and exact r0.2 packet are
+historical. No further standalone scope review is requested.
+
+The [paper method and boundary proposal r0.1](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.1/README.md)
+now supplies concrete rules for all twenty-one method classes, U01–U08
+dispositions, a historical comparison and precise method/upstream questions.
+The proposed candidate uses an unseeded k=0 bootstrap, previous complete-map
+replacement, support-only model selection of either sign, matched containing-
+pixel removal/rejoin, PTC state fitted on bootstrap CAL then held fixed, and
+a proposed PTC-owned uniform analysis/gridding family retained with current
+compatibility/QC. These are new proposals, not scope-approved numerical choices.
+L includes bootstrap; successful completion selects final required k=L-1 for
+all required arrays. Any required array failure fails the observation request;
+earlier immutable products remain in their actual states and do not rescue it.
+
+The two-sided review identifies a specific unavailable numerical route:
+`unavailable_under_current_frozen_parent_permissions`. Frozen PTC's admitted
+CAL parent does not automatically permit this FRUIT residual; frozen MAP's
+PTC-product input does not automatically permit the rejoined FRUIT child.
+BC-IN and BC-OUT propose bounded controlled scientific permissions, including
+reference/gauge compatibility; no successor is adopted. Coefficient-family/QC,
+exact PTC plan and numerical MAP support-policy bindings remain required.
+MAP stays exactly v0.1/r0.7.1. The three program-reference flags now agree in
+the current source controls with process-only authority. Manager evidence stays
+outside any future independently authored packet.
+
+The next substantive owner review is Q01/Q02: the concrete method rules and
+named boundary/family actions. Exact numerical-plan/support and later execution
+bindings are explicit remaining prerequisites. This delivery includes no
+experiment design, numerical method approval, author dispatch, implementation,
+replay, qualification or Unity work. Generic-core and upstream frozen bytes,
+historical JINC control, existing reduction products and both opaque review
+archives remain preserved.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
