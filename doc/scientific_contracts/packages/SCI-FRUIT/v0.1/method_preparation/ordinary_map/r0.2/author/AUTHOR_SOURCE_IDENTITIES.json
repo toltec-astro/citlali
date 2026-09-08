@@ -1,0 +1,197 @@
+{
+  "status": "proposed references; exact owner admission and dispatch pending",
+  "sources": [
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/README.md",
+      "packet_path": "inputs/program/README.md",
+      "bytes": 16297,
+      "sha256": "351e9b7775b0bf78cba01bf4cd2fafd9591c4b43931b0dc23d82d97f0dfe82d2",
+      "classification": "governing program/process authority"
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/PILOT_PROCESS_REVIEW_2026-08-16.md",
+      "packet_path": "inputs/program/PILOT_PROCESS_REVIEW_2026-08-16.md",
+      "bytes": 5942,
+      "sha256": "c4c29c13d5829773cfa2e061571101edec059313a4bd1a096d13fd9878d85b07",
+      "classification": "governing program/process authority"
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/DOWNSTREAM_CONTRACT_ROADMAP_2026-08-26.md",
+      "packet_path": "inputs/program/DOWNSTREAM_CONTRACT_ROADMAP_2026-08-26.md",
+      "bytes": 14334,
+      "sha256": "bcc5a874e1cf45894f3d4733abc0d0e3b8fe9a2480ec47ceb23c12326e4f7eee",
+      "classification": "governing program/process authority"
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/SCI_FRUIT_STAGE_B_R0.4_OWNER_CONDITIONAL_FREEZE_2026-09-08.md",
+      "packet_path": "inputs/authority/fruit/SCI_FRUIT_STAGE_B_R0.4_OWNER_CONDITIONAL_FREEZE_2026-09-08.md",
+      "bytes": 5665,
+      "sha256": "4ec91dfd4d6c6ff8092537263e6aa7ea6c1662415901b431e84452706c088980",
+      "classification": "approved scientific decision"
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/stage_b_from_r0.4_amended/r0.4/src/common/notation.tex",
+      "packet_path": "inputs/authority/fruit/src/common/notation.tex",
+      "bytes": 4151,
+      "sha256": "55154c68564def848ac015a52e1e96d97da19c984084999c8cd749745257cdac",
+      "classification": "governing scientific authority"
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/stage_b_from_r0.4_amended/r0.4/src/common/definitions.tex",
+      "packet_path": "inputs/authority/fruit/src/common/definitions.tex",
+      "bytes": 24768,
+      "sha256": "4859e093b2cf241f3ce928487a91af9733c1f47e502e186f3956f63d50fb3957",
+      "classification": "governing scientific authority"
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/stage_b_from_r0.4_amended/r0.4/src/common/equations.tex",
+      "packet_path": "inputs/authority/fruit/src/common/equations.tex",
+      "bytes": 23497,
+      "sha256": "ff1f4556c2bc84a429b077b220a6435b225873b1c3df069580552ae3afa3ba19",
+      "classification": "governing scientific authority"
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/stage_b_from_r0.4_amended/r0.4/src/common/assumptions.tex",
+      "packet_path": "inputs/authority/fruit/src/common/assumptions.tex",
+      "bytes": 3353,
+      "sha256": "0f154e9d8c07f04b4d3bdd363b4b2b5cff5b6a06bfd5284171bdb84f0b2d2c00",
+      "classification": "governing scientific authority"
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/stage_b_from_r0.4_amended/r0.4/src/common/requirements.tex",
+      "packet_path": "inputs/authority/fruit/src/common/requirements.tex",
+      "bytes": 19463,
+      "sha256": "5b32ac6622262d3d678fee268b6ba40deb8429ff737b656837e3fe1d281097fe",
+      "classification": "governing scientific authority"
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/stage_b_from_r0.4_amended/r0.4/src/common/edge_cases.tex",
+      "packet_path": "inputs/authority/fruit/src/common/edge_cases.tex",
+      "bytes": 11250,
+      "sha256": "3c54afeed1cc2bb491f35ec7e6fd605b0ed75943e6ba29cd1764d8d39484b2a8",
+      "classification": "governing scientific authority"
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/stage_b_from_r0.4_amended/r0.4/src/core_body.tex",
+      "packet_path": "inputs/authority/fruit/src/core_body.tex",
+      "bytes": 295,
+      "sha256": "4bbfe3e925ddf81e23fac6f9e512a6d2d7772cf94081c1ac1792f7062bea96ac",
+      "classification": "governing scientific authority"
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/stage_b_from_r0.4_amended/r0.4/identities/CORE_SOURCES.sha256",
+      "packet_path": "inputs/authority/fruit/identities/CORE_SOURCES.sha256",
+      "bytes": 637,
+      "sha256": "3dc912d9f6a58d9f92561ad10b9442485c5b47232e5327389d2fb3b89c296e92",
+      "classification": "identity evidence"
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/r0.4-amended/PTC_APPLICATION_REFERENCE.tex",
+      "packet_path": "inputs/authority/PTC_APPLICATION_REFERENCE.tex",
+      "bytes": 1965,
+      "sha256": "75116261a33ec1adbb092d38da43a590624a08428e51cac32ee0c4a34f216a59",
+      "classification": "governing scientific authority under frozen FRUIT admission"
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCIENTIFIC_OWNER_FREEZE_R0.7.1.md",
+      "packet_path": "inputs/authority/map/SCIENTIFIC_OWNER_FREEZE_R0.7.1.md",
+      "bytes": 4036,
+      "sha256": "91801005ba2f2bce6471a9f6f4ed0b79806c893f498b4f3cca9e81e26df39ce1",
+      "classification": "governing scientific status/source control"
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/notation.tex",
+      "packet_path": "inputs/authority/map/src/common/notation.tex",
+      "bytes": 627,
+      "sha256": "2b132704dd1ee8da7a56e5bafdc998df98422fe512736ac4f904fad8a693e569",
+      "classification": "governing scientific authority"
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/definitions.tex",
+      "packet_path": "inputs/authority/map/src/common/definitions.tex",
+      "bytes": 2723,
+      "sha256": "740f4a6f1ef0bbb12f721f192b7883144c247d039ab0c9dfa0ffae53cd711b65",
+      "classification": "governing scientific authority"
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/equations.tex",
+      "packet_path": "inputs/authority/map/src/common/equations.tex",
+      "bytes": 7006,
+      "sha256": "36329f4cd1a103c78fcdcc5ff247a850f40aba92a09156d1aa55a1411a430c04",
+      "classification": "governing scientific authority"
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/assumptions.tex",
+      "packet_path": "inputs/authority/map/src/common/assumptions.tex",
+      "bytes": 1020,
+      "sha256": "bba33b92c4189fe5886ef849caebeeb5400bdc7f2572f58a74de53ca578881de",
+      "classification": "governing scientific authority"
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/requirements.tex",
+      "packet_path": "inputs/authority/map/src/common/requirements.tex",
+      "bytes": 39138,
+      "sha256": "68acf81d6c27788495cc680a1819da5f269616493b9aba5a6e0a1d1058ba5fa7",
+      "classification": "governing scientific authority"
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/edge_cases.tex",
+      "packet_path": "inputs/authority/map/src/common/edge_cases.tex",
+      "bytes": 9326,
+      "sha256": "47022012e79173a1778a4e5bdc6743b4691bfecb27faa3090bcf03458d87e123",
+      "classification": "governing scientific authority"
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/SCI-MAP-v0.1_SHARED_AUTHORITY_r0.7.1.tex",
+      "packet_path": "inputs/authority/map/src/SCI-MAP-v0.1_SHARED_AUTHORITY_r0.7.1.tex",
+      "bytes": 439,
+      "sha256": "08fcc9782cfba806d33dc07652a2363c8bd6540084f54e752e1fa91a5336b6bb",
+      "classification": "governing scientific authority"
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCI-PTC_TO_SCI-MAP_BOUNDARY.md",
+      "packet_path": "inputs/authority/map/SCI-PTC_TO_SCI-MAP_BOUNDARY.md",
+      "bytes": 9091,
+      "sha256": "a499c59afb69eefda74a5b131ad37afd165213b99324c8b67a6de1d20793c9b7",
+      "classification": "governing scientific boundary/profile"
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE_BOUNDARY.md",
+      "packet_path": "inputs/authority/map/SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE_BOUNDARY.md",
+      "bytes": 3761,
+      "sha256": "f7be703d17320de6f6ecfc3a3974d54799540fff1d8b2d9491c941a7ea3b45a4",
+      "classification": "governing scientific boundary/profile"
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCI-MAP_UPSTREAM_ADMISSION_PROFILE.md",
+      "packet_path": "inputs/authority/map/SCI-MAP_UPSTREAM_ADMISSION_PROFILE.md",
+      "bytes": 4039,
+      "sha256": "0717476c0a1d177074ee8702c18308f093d45a4913b22933f3fda3d33090a883",
+      "classification": "governing scientific boundary/profile"
+    }
+  ]
+}

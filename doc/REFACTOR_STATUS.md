@@ -1174,6 +1174,29 @@ existing reduction products, frozen deliveries and both known untracked review
 archives are preserved. Document verification establishes packet integrity and
 scope coverage, not scientific approval or numerical availability.
 
+Later on `2026-09-08`, the owner supplied a sidebar recommending ordinary
+(naive) MAP as the first new FRUIT method setting. The manager agrees and
+supersedes the unapproved JINC-first recommendation with the
+[r0.2 ordinary-MAP-first proposal](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/r0.2/README.md).
+Historical-control reconstruction and first-method selection are explicitly
+separate: the historical JINC control and exact r0.1 packet remain unchanged.
+The proposed successor uses one observation, separate arrays and raw ordinary
+MAP, with the feedback projection separately specified. A matched
+containing-pixel example illustrates conditional restoration of the applied
+model on admitted supported rows; it selects no projection and establishes no
+unit sky response, convergence, independent noise or benefit.
+
+The successor retains all twenty-one method classes and the full sanitized
+Scope Brief, replaces direct JINC author references with exact frozen MAP
+science, and exposes the MAP-facing PTC coefficient, numerical support-policy/
+`coverage_cut`, rejoined-signal handoff and companion dependencies. JINC
+specialization is deferred. D001–D005 remain pending exact owner disposition;
+the sidebar is not recorded as numerical-method or experiment approval.
+No frozen core, control, reduction, code/configuration, empirical outcome or
+opaque archive changed. No new author, implementation assessment, experiment,
+replay, qualification or Unity activity was launched. The next owner decision
+is the revised exact scope and paper-only method-definition direction.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

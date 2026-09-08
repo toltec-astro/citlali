@@ -1,0 +1,266 @@
+\section{Canonical equations}
+\label{sec:equations}
+
+\subsection{Peak-normalized analytic family}
+\label{sec:analytic-family}
+
+Let $J_1$ be the first-order Bessel function of the first kind, and define its
+first positive zero exactly by
+\begin{equation}
+  j_{1,1}=\min\{x>0:J_1(x)=0\}.
+  \label{eq:first-bessel-root}
+\end{equation}
+The rounded decimal $3.831706$ is only a nonnormative approximation to
+$j_{1,1}$.  Define the collision-free peak-normalized function
+\begin{equation}
+  \mathcal{J}(x)=
+  \begin{cases}
+    2J_1(x)/x, & x\ne0,\\
+    1, & x=0.
+  \end{cases}
+  \label{eq:peak-jinc}
+\end{equation}
+For $r'_a=r/s_a$, the generic SCI-JINC coefficient is
+\begin{equation}
+  \kappa_a(r'_a; a_a,b_a,c_a,(r_{\max})_a)
+  =\mathcal{J}\!\left(\frac{2\pi r'_a}{a_a}\right)
+   \exp\!\left[-\left(\frac{2r'_a}{b_a}\right)^{c_a}\right]
+   \mathcal{J}\!\left(\frac{j_{1,1}r'_a}{(r_{\max})_a}\right).
+  \label{eq:analytic-kernel}
+\end{equation}
+Equation~\eqref{eq:analytic-kernel} has $\kappa_a(0)=1$.
+$a_a$ scales the first JINC argument, $b_a$ scales the generalized-exponential
+envelope, $c_a$ is its exponent, and $(r_{\max})_a$ places the first zero of
+the second JINC factor.  Analytic zeros and finite signed lobes are retained.
+The square-cache rule, rather than a radial cutoff, determines membership.
+
+\subsection{Exact discrete point-phase and WCS operator}
+\label{sec:discrete-operator}
+
+Let the exact AST continuous FITS pixel coordinate in the target JINC WCS be
+$\boldsymbol{u}_i=(x_i,y_i)$.  Integer FITS coordinates denote pixel centers.
+The exact rounded cache center is
+\begin{equation}
+  \boldsymbol{c}_i=
+  \left(\left\lfloor x_i+\tfrac12\right\rfloor,
+        \left\lfloor y_i+\tfrac12\right\rfloor\right).
+  \label{eq:rounded-center}
+\end{equation}
+Thus an exact half-pixel tie rounds toward the positive coordinate axis.  The
+scientific owner retains this directional convention as part of the selected
+discrete operator.  The
+residual phase is
+\begin{equation}
+  \boldsymbol{\phi}_i=\boldsymbol{u}_i-\boldsymbol{c}_i
+  \in[-\tfrac12,\tfrac12)^2.
+  \label{eq:residual-phase}
+\end{equation}
+For $n_{\mathrm{sub}}\ge1$, each axis uses the exact half-open bins
+\begin{align}
+  B_q & =\left[-\tfrac12+\frac{q}{n_{\mathrm{sub}}},
+                    -\tfrac12+\frac{q+1}{n_{\mathrm{sub}}}\right),
+        \qquad q\in\{0,\ldots,n_{\mathrm{sub}}-1\},
+        \label{eq:phase-bin}\\
+  q(\phi) & =\left\lfloor
+          n_{\mathrm{sub}}(\phi+\tfrac12)\right\rfloor,
+        \label{eq:phase-index}\\
+  \widehat{\phi}_q &=-\tfrac12+
+          \frac{q+\tfrac12}{n_{\mathrm{sub}}}.
+        \label{eq:phase-representative}
+\end{align}
+The two axis indices form $\boldsymbol{q}_i$, and their midpoint
+representatives form $\widehat{\boldsymbol{\phi}}_i$.  Every positive integer
+$n_{\mathrm{sub}}$ is permitted under
+\texttt{SCI-JINC-DEC-PHASE-CENTER-001}.  The half-open upper-bin convention is observable:
+when $n_{\mathrm{sub}}$ is even, an exact $\phi=0$ selects
+$q=n_{\mathrm{sub}}/2$ and
+$\widehat\phi=+1/(2n_{\mathrm{sub}})$, with the sign interpreted in the exact
+target-WCS axis orientation.  No special case substitutes a zero
+representative.
+The exact logical cache mapping is
+\begin{equation}
+  \beta_i=q_{i1}+n_{\mathrm{sub}}q_{i2},\qquad
+  \mathcal{K}_{i\boldsymbol d}=(\beta_i,d_1,d_2),
+  \label{eq:phase-cache-index}
+\end{equation}
+equivalently $(q_{i1},q_{i2},d_1,d_2)$ with axis 1 varying fastest. Physical
+storage may use any proven value-preserving bijection of this logical key.
+
+Base v0.1 requires an affine tangent-plane target WCS with exact pixel matrix
+$\mathbf{M}$ satisfying
+\begin{equation}
+  \mathbf{M}^{\mathsf T}\mathbf{M}=\Delta^2\mathbf{I},
+  \qquad \Delta>0.
+  \label{eq:square-wcs-metric}
+\end{equation}
+The exact $\mathbf{M}$ retains axis order, signs, rotation, and handedness;
+Equation~\eqref{eq:square-wcs-metric} prohibits representing an anisotropic or
+skewed metric by a scalar pixel size.  With finite destination domain
+$\mathcal{D}=\{1,\ldots,N_x\}\mathbin{\times}\{1,\ldots,N_y\}$, define
+\begin{align}
+  h_a &=\left\lceil\frac{s_a(r_{\max})_a}{\Delta}\right\rceil,
+       \label{eq:cache-half-width}\\
+  \boldsymbol{d}&\in\{-h_a,\ldots,h_a\}^2,
+       \qquad \boldsymbol{p}=\boldsymbol{c}_i+\boldsymbol{d}.
+       \label{eq:square-offsets}
+\end{align}
+For every retained square offset, the exact discrete point-phase radius is
+\begin{equation}
+  \widehat r_{i\boldsymbol{d}}
+   =\left\|\mathbf{M}
+      (\boldsymbol{d}-\widehat{\boldsymbol{\phi}}_i)\right\|_2,
+  \qquad
+  \widehat r'_{i\boldsymbol{d}}=
+      \widehat r_{i\boldsymbol{d}}/s_a,
+  \label{eq:discrete-radius}
+\end{equation}
+and $\kappa_{ip}$ is Equation~\eqref{eq:analytic-kernel} evaluated at
+$\widehat r'_{i\boldsymbol{d}}$.  The occurrence passes the center-domain gate
+only when $\boldsymbol{c}_i\in\mathcal{D}$; a square pixel is retained only
+when $\boldsymbol{p}\in\mathcal{D}$.  These integer-domain predicates, rather
+than footprint overlap or a radial cutoff, determine geometry membership.
+
+For an occurrence at an exact integer pixel center, both residual-phase
+components are zero.  When $n_{\mathrm{sub}}$ is even, the upper-bin rule in
+\texttt{SCI-JINC-DEC-PHASE-CENTER-001} and
+Equation~\eqref{eq:square-wcs-metric} therefore give, at
+the nominal central offset $\boldsymbol d=\boldsymbol0$,
+\begin{align*}
+  \widehat r_{i\boldsymbol0}
+    &=\frac{\Delta}{\sqrt{2}\,n_{\mathrm{sub}}},\\
+  \kappa_{i,\boldsymbol c_i}
+    &=\kappa_a\!\left(
+       \frac{\Delta}{\sqrt{2}\,n_{\mathrm{sub}}s_a};
+       a_a,b_a,c_a,(r_{\max})_a\right).
+\end{align*}
+The nominal central cache element is thus evaluated at this exact nonzero
+radius and shall not be replaced by the zero-radius limit
+$\kappa_a(0)=1$.  For odd $n_{\mathrm{sub}}$, exact zero phase has midpoint
+representative zero and the nominal central offset evaluates the analytic
+limit at zero.
+
+\subsection{Signed estimator}
+\label{sec:signed-estimator}
+
+For the exact occurrence population of one bundle,
+\begin{align}
+  w_{ip} &= \omega_i\kappa_{ip},
+    \label{eq:effective-coefficient}\\
+  N_p &= \sum_i I_{ip}\omega_i\kappa_{ip}z_i,
+    \label{eq:numerator}\\
+  C_p &= \sum_i I_{ip}\omega_i\kappa_{ip},
+    \label{eq:normalization}\\
+  Q_p &= \sum_i I_{ip}\omega_i\kappa_{ip}^{2},
+    \label{eq:quadratic}\\
+  m_p &= \frac{N_p}{C_p},
+    \label{eq:map-estimate}\\
+  A_{pi} &= \frac{I_{ip}\omega_i\kappa_{ip}}{C_p}.
+    \label{eq:operator}
+\end{align}
+All coupled accumulator terms for one contribution use the same $I_{ip}$ and
+the same realized $\kappa_{ip}$ identity.  The normalization is signed.  A
+finite negative $C_p$ is admissible; exact $C_p=0$ is not a zero-sky result.
+
+\subsection{Conditioning and local support}
+\label{sec:conditioning}
+
+Define construction-state quantities
+\begin{align}
+  D_p &= \sum_i I_{ip}\left|\omega_i\kappa_{ip}\right|,
+    \label{eq:absolute-sum}\\
+  \rho_p &= \frac{|C_p|}{D_p}, \qquad D_p>0.
+    \label{eq:cancellation-ratio}
+\end{align}
+For exact arithmetic, $0\le\rho_p\le1$.  Accepted local support requires
+the algebraic predicate
+\begin{equation}
+  \operatorname{AlgSupport}_p=
+  \bigl[\text{required inputs and }N_p,C_p,Q_p\text{ are finite}\bigr]
+  \land[Q_p>0]\land[C_p\ne0].
+  \label{eq:algebraic-support}
+\end{equation}
+A finite-precision numerical realization additionally requires
+\begin{equation}
+  \operatorname{NumAdeq}_p=
+  \bigl[\mathcal{E}_p\text{ is a valid certificate under }
+        \mathcal{P}_{\mathrm{NA}}\bigr]
+  \land
+  \bigl[\mathcal{E}_p\models\mathcal{P}_{\mathrm{NA}}\bigr].
+  \label{eq:numerical-adequacy}
+\end{equation}
+The exact profile supplies the observable, norm, domain, error propagation,
+near-zero rule, simultaneous or worst-case interpretation, and pass/fail
+inequality.  No such owner-approved profile or matching certificate is
+admitted or supplied by this source packet, so
+Equation~\eqref{eq:numerical-adequacy} is presently typed unavailable.  In
+particular, no approximate fidelity scale promotes a near-cancellation pixel.
+$D_p$ remains construction state rather than a numerical map-plane role; any
+future certificate is referenced by the compact generative record $G_a$.
+A passing $\mathcal{P}_{\mathrm{NA}}$/$\mathcal{E}_p$ pair establishes only
+finite-precision fidelity to the exact selected discrete SCI-JINC oracle over
+the profile's declared domain.  It does not establish scientific adequacy of
+$s_a$, $a_a$, $b_a$, $c_a$, $(r_{\max})_a$, $n_{\mathrm{sub}}$, or square
+truncation; source-response or beam fidelity; photometric or astrometric
+performance; optimality; observational validation; response/covariance
+fidelity; readiness; or production authority.  Qualification of a TolTEC
+parameter set is a separate scientific and observational program.
+
+\subsection{Coefficient-squared temporal accounting}
+\label{sec:coefficient-time}
+
+The sole authorized base-v0.1 coefficient-squared temporal-accounting product
+is \path{jinc_coefficient_squared_time}, defined by
+\begin{equation}
+  T_p^{(\kappa^2)}
+  =\sum_i I_{ip}\frac{\kappa_{ip}^{2}}{f_{s,i}}.
+  \label{eq:kappa-time}
+\end{equation}
+It is nonnegative and has unit seconds.  The squared object is $\kappa_{ip}$,
+not $\omega_i$ or $w_{ip}$.
+
+\subsection{Conditional mathematics retained for future science}
+\label{sec:conditional-math}
+
+The following identities do not create base-v0.1 products.  For an exact
+available realized PTC-grid source-template response, the fixed-state response
+is
+\begin{equation}
+  \mathbf{R}_{\mathrm{JINC,fixed}}
+  =\mathbf{A}_{\mathrm{JINC}}
+   \mathbf{H}_{\mathrm{PTC,fixed}}.
+  \label{eq:fixed-state-response}
+\end{equation}
+The exact signal membership is used and the already realized PTC companion
+receives the JINC operator exactly once.  A PTC full-procedure finite
+difference with JINC held fixed, a JINC re-resolved procedure response, and a
+whole-chain response are distinct families and must not be substituted for
+Equation~\eqref{eq:fixed-state-response} or for one another.
+
+If and only if an
+exact PTC family establishes $\omega_i=\operatorname{Var}(z_i)^{-1}$ for
+mutually independent admitted occurrences,
+\begin{align}
+  \operatorname{Var}_{\mathrm{formal}}(m_p) &= \frac{Q_p}{C_p^2},
+    \label{eq:conditional-variance}\\
+  W_{\mathrm{formal},p} &= \frac{C_p^2}{Q_p},
+    \label{eq:conditional-weight}\\
+  \operatorname{Cov}(m_p,m_{p'})
+   &=\frac{\sum_i I_{ip}I_{ip'}\omega_i\kappa_{ip}\kappa_{ip'}}
+           {C_pC_{p'}}.
+    \label{eq:conditional-covariance}
+\end{align}
+For a general available upstream covariance,
+\begin{equation}
+  \mathbf{C}_{\mathrm{JINC}}
+  =\mathbf{A}_{\mathrm{JINC}}
+   \mathbf{C}_{\mathrm{PTC}}
+   \mathbf{A}_{\mathrm{JINC}}^{\mathsf T}.
+  \label{eq:general-covariance}
+\end{equation}
+Inverse-square units alone do not establish inverse variance, independence,
+precision, covariance authority, or significance.  A covariance state, if a
+future use authorizes one, is exactly one of complete numerical, partial,
+symbolic, summarized, lineage-resolvable, or unavailable and declares every
+omitted term.  Missing covariance is never zero or independence.  Response,
+variance, formal-weight, and covariance companions remain deferred until a
+concrete scientific use separately authorizes them.

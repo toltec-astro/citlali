@@ -1,0 +1,630 @@
+{
+  "schema": "SCI-FRUIT ordinary-MAP-first method-scope source inventory r0.2",
+  "base_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+  "predecessor_proposal": "SCI-FRUIT-HISTORICAL-CONTROL-METHOD-SCOPE-R0.1",
+  "historical_source_commit": "f70701ad488444f3e2528c6bbe3e798863c9e301",
+  "historical_source_tree": "2009a1397bd67d615a1d6e9a8419e18fc794a81e",
+  "note": "The sidebar changes the manager recommendation, not numerical authority. Historical-control/JINC sources are retained as manager context and excluded from the proposed first-method author references.",
+  "sources": [
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/README.md",
+      "packet_path": "inputs/program/README.md",
+      "bytes": 16297,
+      "sha256": "351e9b7775b0bf78cba01bf4cd2fafd9591c4b43931b0dc23d82d97f0dfe82d2",
+      "classification": "governing program/process authority",
+      "disposition": "adopt",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/PILOT_PROCESS_REVIEW_2026-08-16.md",
+      "packet_path": "inputs/program/PILOT_PROCESS_REVIEW_2026-08-16.md",
+      "bytes": 5942,
+      "sha256": "c4c29c13d5829773cfa2e061571101edec059313a4bd1a096d13fd9878d85b07",
+      "classification": "governing program/process authority",
+      "disposition": "adopt",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/DOWNSTREAM_CONTRACT_ROADMAP_2026-08-26.md",
+      "packet_path": "inputs/program/DOWNSTREAM_CONTRACT_ROADMAP_2026-08-26.md",
+      "bytes": 14334,
+      "sha256": "bcc5a874e1cf45894f3d4733abc0d0e3b8fe9a2480ec47ceb23c12326e4f7eee",
+      "classification": "governing program/process authority",
+      "disposition": "adopt",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/HISTORICAL_RECURRENCE_BASELINE.md",
+      "packet_path": "inputs/manager/recovery/HISTORICAL_RECURRENCE_BASELINE.md",
+      "bytes": 14317,
+      "sha256": "65e1380fe571af437447ec73e1c0d5233106025e7a953b87a429f3752b45b17c",
+      "classification": "implementation-informed scope evidence",
+      "disposition": "abstract",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/HISTORICAL_CONTROL_COMPATIBILITY_FALLBACK_TAXONOMY.md",
+      "packet_path": "inputs/manager/recovery/HISTORICAL_CONTROL_COMPATIBILITY_FALLBACK_TAXONOMY.md",
+      "bytes": 1508,
+      "sha256": "a0304c757e223fcb5ecb304a8f0689765658cabc1d9f038bf01df445c8724f27",
+      "classification": "implementation-informed scope evidence",
+      "disposition": "abstract",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/PRIOR_WORK.md",
+      "packet_path": "inputs/manager/recovery/PRIOR_WORK.md",
+      "bytes": 14858,
+      "sha256": "084d38c3b2b6809e79270c6e052a1a7daef3c093ceeb3490e63935547816c2a1",
+      "classification": "implementation-informed scope evidence",
+      "disposition": "abstract",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/ACCEPTED_INPUT_BINDINGS_R0.1.md",
+      "packet_path": "inputs/manager/empirical_controls/ACCEPTED_INPUT_BINDINGS_R0.1.md",
+      "bytes": 3200,
+      "sha256": "6dcd4d2a047923473c4ac49a3eee08dc2c6ca10bf3f9a92700cb05de8fcb1675",
+      "classification": "mixed owner gate and historical evidence",
+      "disposition": "cite (owner gates only); defer (numerical evidence)",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EMPIRICAL_LANE_GATE_ARCHITECTURE_R0.1.md",
+      "packet_path": "inputs/manager/empirical_controls/EMPIRICAL_LANE_GATE_ARCHITECTURE_R0.1.md",
+      "bytes": 3696,
+      "sha256": "756e85b3e20d558bbb85ab338936828ffa97e1e674f2cd2a2a67bdd6396c9b69",
+      "classification": "mixed owner gate and historical evidence",
+      "disposition": "cite (owner gates only); defer (numerical evidence)",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_G0_HISTORICAL_CONTROL_FEASIBILITY_R0.1.md",
+      "packet_path": "inputs/manager/empirical_controls/EL_G0_HISTORICAL_CONTROL_FEASIBILITY_R0.1.md",
+      "bytes": 4790,
+      "sha256": "80c7587b0f6f032e3db1bd9c492653a40f5a9e223dc2da75d34f737ff6c9bc5c",
+      "classification": "mixed owner gate and historical evidence",
+      "disposition": "cite (owner gates only); defer (numerical evidence)",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/SCI_FRUIT_STAGE_B_R0.4_OWNER_CONDITIONAL_FREEZE_2026-09-08.md",
+      "packet_path": "inputs/authority/fruit/SCI_FRUIT_STAGE_B_R0.4_OWNER_CONDITIONAL_FREEZE_2026-09-08.md",
+      "bytes": 5665,
+      "sha256": "4ec91dfd4d6c6ff8092537263e6aa7ea6c1662415901b431e84452706c088980",
+      "classification": "approved scientific decision",
+      "disposition": "adopt",
+      "proposed_author_reference": true
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/SCI_FRUIT_STAGE_B_R0.4_OWNER_CONDITIONAL_FREEZE_2026-09-08.md.sha256",
+      "packet_path": "inputs/authority/fruit/SCI_FRUIT_STAGE_B_R0.4_OWNER_CONDITIONAL_FREEZE_2026-09-08.md.sha256",
+      "bytes": 128,
+      "sha256": "df17a58dd89035c830de3229fa3ff71ffee4ccf47d012eb25023fb14cb1f8b3b",
+      "classification": "identity evidence",
+      "disposition": "cite",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/stage_b_from_r0.4_amended/r0.4/src/common/notation.tex",
+      "packet_path": "inputs/authority/fruit/src/common/notation.tex",
+      "bytes": 4151,
+      "sha256": "55154c68564def848ac015a52e1e96d97da19c984084999c8cd749745257cdac",
+      "classification": "governing scientific authority",
+      "disposition": "adopt",
+      "proposed_author_reference": true
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/stage_b_from_r0.4_amended/r0.4/src/common/definitions.tex",
+      "packet_path": "inputs/authority/fruit/src/common/definitions.tex",
+      "bytes": 24768,
+      "sha256": "4859e093b2cf241f3ce928487a91af9733c1f47e502e186f3956f63d50fb3957",
+      "classification": "governing scientific authority",
+      "disposition": "adopt",
+      "proposed_author_reference": true
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/stage_b_from_r0.4_amended/r0.4/src/common/equations.tex",
+      "packet_path": "inputs/authority/fruit/src/common/equations.tex",
+      "bytes": 23497,
+      "sha256": "ff1f4556c2bc84a429b077b220a6435b225873b1c3df069580552ae3afa3ba19",
+      "classification": "governing scientific authority",
+      "disposition": "adopt",
+      "proposed_author_reference": true
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/stage_b_from_r0.4_amended/r0.4/src/common/assumptions.tex",
+      "packet_path": "inputs/authority/fruit/src/common/assumptions.tex",
+      "bytes": 3353,
+      "sha256": "0f154e9d8c07f04b4d3bdd363b4b2b5cff5b6a06bfd5284171bdb84f0b2d2c00",
+      "classification": "governing scientific authority",
+      "disposition": "adopt",
+      "proposed_author_reference": true
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/stage_b_from_r0.4_amended/r0.4/src/common/requirements.tex",
+      "packet_path": "inputs/authority/fruit/src/common/requirements.tex",
+      "bytes": 19463,
+      "sha256": "5b32ac6622262d3d678fee268b6ba40deb8429ff737b656837e3fe1d281097fe",
+      "classification": "governing scientific authority",
+      "disposition": "adopt",
+      "proposed_author_reference": true
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/stage_b_from_r0.4_amended/r0.4/src/common/edge_cases.tex",
+      "packet_path": "inputs/authority/fruit/src/common/edge_cases.tex",
+      "bytes": 11250,
+      "sha256": "3c54afeed1cc2bb491f35ec7e6fd605b0ed75943e6ba29cd1764d8d39484b2a8",
+      "classification": "governing scientific authority",
+      "disposition": "adopt",
+      "proposed_author_reference": true
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/stage_b_from_r0.4_amended/r0.4/src/core_body.tex",
+      "packet_path": "inputs/authority/fruit/src/core_body.tex",
+      "bytes": 295,
+      "sha256": "4bbfe3e925ddf81e23fac6f9e512a6d2d7772cf94081c1ac1792f7062bea96ac",
+      "classification": "governing scientific authority",
+      "disposition": "adopt",
+      "proposed_author_reference": true
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/stage_b_from_r0.4_amended/r0.4/identities/CORE_SOURCES.sha256",
+      "packet_path": "inputs/authority/fruit/identities/CORE_SOURCES.sha256",
+      "bytes": 637,
+      "sha256": "3dc912d9f6a58d9f92561ad10b9442485c5b47232e5327389d2fb3b89c296e92",
+      "classification": "identity evidence",
+      "disposition": "cite",
+      "proposed_author_reference": true
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/stage_b_from_r0.4_amended/r0.4/METHOD_RECORD_TEMPLATE.md",
+      "packet_path": "inputs/authority/fruit/METHOD_RECORD_TEMPLATE.md",
+      "bytes": 9877,
+      "sha256": "7ab2aa2d84c3e8eb603672db5782a6dd978c9fe1f6ba257a5627712a563b4324",
+      "classification": "derived explanatory method-record view",
+      "disposition": "cite",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/r0.4-amended/PTC_APPLICATION_REFERENCE.tex",
+      "packet_path": "inputs/authority/PTC_APPLICATION_REFERENCE.tex",
+      "bytes": 1965,
+      "sha256": "75116261a33ec1adbb092d38da43a590624a08428e51cac32ee0c4a34f216a59",
+      "classification": "governing scientific authority under frozen FRUIT admission",
+      "disposition": "adopt",
+      "proposed_author_reference": true
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/FREEZE_AUTHORITY_MANIFEST_R0.3.md",
+      "packet_path": "inputs/authority/jinc/FREEZE_AUTHORITY_MANIFEST_R0.3.md",
+      "bytes": 17331,
+      "sha256": "ff4b79e7cca3950831eda95a16ec6a535597f543c4676378d2fc2f01d50faed2",
+      "classification": "approved scientific freeze/source control",
+      "disposition": "cite for historical-control and deferred JINC context only; excluded from the first-method author proposal",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/src/common/notation.tex",
+      "packet_path": "inputs/authority/jinc/src/common/notation.tex",
+      "bytes": 6745,
+      "sha256": "fed76501dfc57540a4f383bf329d35118508f1e96a143b1cde8e09078d6dade1",
+      "classification": "governing scientific authority",
+      "disposition": "cite for historical-control and deferred JINC context only; excluded from the first-method author proposal",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/src/common/definitions.tex",
+      "packet_path": "inputs/authority/jinc/src/common/definitions.tex",
+      "bytes": 6797,
+      "sha256": "9e6f3ff015c753c879ff03be65fe981ac4f6ad2fc572d4a2f13f8a5240a12e1e",
+      "classification": "governing scientific authority",
+      "disposition": "cite for historical-control and deferred JINC context only; excluded from the first-method author proposal",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/src/common/equations.tex",
+      "packet_path": "inputs/authority/jinc/src/common/equations.tex",
+      "bytes": 11209,
+      "sha256": "2b1870e92f9a0e6141fdda1a8865babae41208aafb73fc233f4befc0e1b665c1",
+      "classification": "governing scientific authority",
+      "disposition": "cite for historical-control and deferred JINC context only; excluded from the first-method author proposal",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/src/common/assumptions.tex",
+      "packet_path": "inputs/authority/jinc/src/common/assumptions.tex",
+      "bytes": 5751,
+      "sha256": "15b811ab6ace92aa2d1713ae19b92454cb865e8862b82a599f94eca1003a1765",
+      "classification": "governing scientific authority",
+      "disposition": "cite for historical-control and deferred JINC context only; excluded from the first-method author proposal",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/src/common/requirements.tex",
+      "packet_path": "inputs/authority/jinc/src/common/requirements.tex",
+      "bytes": 21667,
+      "sha256": "207a85acb31a4f381b289781706c9f14058d330ff847e99023e9e5714c4d4dff",
+      "classification": "governing scientific authority",
+      "disposition": "cite for historical-control and deferred JINC context only; excluded from the first-method author proposal",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/src/common/edge_cases.tex",
+      "packet_path": "inputs/authority/jinc/src/common/edge_cases.tex",
+      "bytes": 11254,
+      "sha256": "815c70e925f103d989e4ec015a64d69ac0710c1a0c57789a4dfe754bdb81bd2d",
+      "classification": "governing scientific authority",
+      "disposition": "cite for historical-control and deferred JINC context only; excluded from the first-method author proposal",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCI-PTC_TO_SCI-JINC_BOUNDARY.md",
+      "packet_path": "inputs/authority/jinc/SCI-PTC_TO_SCI-JINC_BOUNDARY.md",
+      "bytes": 9773,
+      "sha256": "5769d413460e931745e0d401ea432b12d1077c15466247c49caa71b997d4ab1e",
+      "classification": "governing scientific authority in JINC freeze role",
+      "disposition": "cite for historical-control and deferred JINC context only; excluded from the first-method author proposal",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCI-AST_TO_SCI-JINC_BOUNDARY.md",
+      "packet_path": "inputs/authority/jinc/SCI-AST_TO_SCI-JINC_BOUNDARY.md",
+      "bytes": 8879,
+      "sha256": "efffa7059b59c89793fa1d523fb3bb48235f1ab55f7d55060af1600cbfd470a5",
+      "classification": "governing scientific authority in JINC freeze role",
+      "disposition": "cite for historical-control and deferred JINC context only; excluded from the first-method author proposal",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCI-JINC_UPSTREAM_ADMISSION_PROFILE.md",
+      "packet_path": "inputs/authority/jinc/SCI-JINC_UPSTREAM_ADMISSION_PROFILE.md",
+      "bytes": 8725,
+      "sha256": "2db95da7e5d1b980df79993907d45ac0ababc3aa05c189bfb62dcf04ff2c2e8a",
+      "classification": "governing scientific authority in JINC freeze role",
+      "disposition": "cite for historical-control and deferred JINC context only; excluded from the first-method author proposal",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "6c997638d3e554db089790e8113b7ee03ac50a13",
+      "source_path": "doc/scientific_contracts/packages/SCI-JINC/v0.1/GROUPING_AND_PRODUCT_ROLES.md",
+      "packet_path": "inputs/authority/jinc/GROUPING_AND_PRODUCT_ROLES.md",
+      "bytes": 7106,
+      "sha256": "02c14c03821b5f00d0665f31b9f8bc6aed63781efb938dc6bfdfd38c98429bb9",
+      "classification": "governing scientific authority in JINC freeze role",
+      "disposition": "cite for historical-control and deferred JINC context only; excluded from the first-method author proposal",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "f70701ad488444f3e2528c6bbe3e798863c9e301",
+      "source_path": "CMakeLists.txt",
+      "packet_path": "inputs/manager/historical/CMakeLists.txt",
+      "bytes": 4811,
+      "sha256": "8a84cef756cd4cdadd3eb827b0e2615596ded05b65fd8a1b96c35cbaf571885b",
+      "classification": "implementation-informed scope evidence",
+      "disposition": "abstract; excluded from authorship",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "f70701ad488444f3e2528c6bbe3e798863c9e301",
+      "source_path": "config/tolteca/point/70_pipeline.yaml",
+      "packet_path": "inputs/manager/historical/config/tolteca/point/70_pipeline.yaml",
+      "bytes": 18603,
+      "sha256": "a47989ad900db690353ae02d90981cd9606af3156f492c761d02822efb928eab",
+      "classification": "implementation-informed scope evidence",
+      "disposition": "abstract; excluded from authorship",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "f70701ad488444f3e2528c6bbe3e798863c9e301",
+      "source_path": "config/tolteca/point/90_user_overrides.yaml",
+      "packet_path": "inputs/manager/historical/config/tolteca/point/90_user_overrides.yaml",
+      "bytes": 81,
+      "sha256": "f15c8a71ad8a64a1864d90d8fcf6f5be8130a2c71db929fad01314fee0a64d19",
+      "classification": "implementation-informed scope evidence",
+      "disposition": "abstract; excluded from authorship",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "f70701ad488444f3e2528c6bbe3e798863c9e301",
+      "source_path": "include/citlali/core/pipeline/reduction_iteration_loop.h",
+      "packet_path": "inputs/manager/historical/include/citlali/core/pipeline/reduction_iteration_loop.h",
+      "bytes": 1952,
+      "sha256": "553a33ca0ba0849cb7cb8ce99b7542a0951b76d4ff27ea2a7c78d2c11266d9ef",
+      "classification": "implementation-informed scope evidence",
+      "disposition": "abstract; excluded from authorship",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "f70701ad488444f3e2528c6bbe3e798863c9e301",
+      "source_path": "include/citlali/core/pipeline/fruit_loop_iteration_state.h",
+      "packet_path": "inputs/manager/historical/include/citlali/core/pipeline/fruit_loop_iteration_state.h",
+      "bytes": 1069,
+      "sha256": "fbd0da0c583ac8b1e33031e8cae12aa259d79a9ef3b49307ed7fa35f0221e956",
+      "classification": "implementation-informed scope evidence",
+      "disposition": "abstract; excluded from authorship",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "f70701ad488444f3e2528c6bbe3e798863c9e301",
+      "source_path": "include/citlali/core/pipeline/reduction_iteration_setup.h",
+      "packet_path": "inputs/manager/historical/include/citlali/core/pipeline/reduction_iteration_setup.h",
+      "bytes": 2343,
+      "sha256": "eb4e2ee326a394fb4ad925e8702e0a9b89f4f00c89e404e163a452869c09b3e2",
+      "classification": "implementation-informed scope evidence",
+      "disposition": "abstract; excluded from authorship",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "f70701ad488444f3e2528c6bbe3e798863c9e301",
+      "source_path": "include/citlali/core/pipeline/reduction_observation_pipeline.h",
+      "packet_path": "inputs/manager/historical/include/citlali/core/pipeline/reduction_observation_pipeline.h",
+      "bytes": 1603,
+      "sha256": "191d452abdcbee35614623bae996fe62d37cfb7f88d62b61d7bbeaac91671e0a",
+      "classification": "implementation-informed scope evidence",
+      "disposition": "abstract; excluded from authorship",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "f70701ad488444f3e2528c6bbe3e798863c9e301",
+      "source_path": "include/citlali/core/pipeline/reduction_observation_inputs.h",
+      "packet_path": "inputs/manager/historical/include/citlali/core/pipeline/reduction_observation_inputs.h",
+      "bytes": 4382,
+      "sha256": "878a7774920456b26bc8d5a0d2f40cb67961b8fc18ff94380f7e1d817df7d0a9",
+      "classification": "implementation-informed scope evidence",
+      "disposition": "abstract; excluded from authorship",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "f70701ad488444f3e2528c6bbe3e798863c9e301",
+      "source_path": "include/citlali/core/pipeline/fruit_loop_iteration_policy.h",
+      "packet_path": "inputs/manager/historical/include/citlali/core/pipeline/fruit_loop_iteration_policy.h",
+      "bytes": 6379,
+      "sha256": "2d57ecab82f88b625fc85cd67372beb9efe18606d07a1e9354047744cefd257e",
+      "classification": "implementation-informed scope evidence",
+      "disposition": "abstract; excluded from authorship",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "f70701ad488444f3e2528c6bbe3e798863c9e301",
+      "source_path": "include/citlali/core/pipeline/previous_fruit_loop_map_loading.h",
+      "packet_path": "inputs/manager/historical/include/citlali/core/pipeline/previous_fruit_loop_map_loading.h",
+      "bytes": 2356,
+      "sha256": "91f7cd5f0b311693569423bbd6fd28682790f63f675ab4fb364b8d8c398851e4",
+      "classification": "implementation-informed scope evidence",
+      "disposition": "abstract; excluded from authorship",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "f70701ad488444f3e2528c6bbe3e798863c9e301",
+      "source_path": "include/citlali/core/pipeline/observation_fruit_loop_map_loading.h",
+      "packet_path": "inputs/manager/historical/include/citlali/core/pipeline/observation_fruit_loop_map_loading.h",
+      "bytes": 568,
+      "sha256": "105033a8c70db72059115e586c3224f61b403d471d3494e90f190a5fe2449950",
+      "classification": "implementation-informed scope evidence",
+      "disposition": "abstract; excluded from authorship",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "f70701ad488444f3e2528c6bbe3e798863c9e301",
+      "source_path": "include/citlali/core/pipeline/fruit_loop_map_io.h",
+      "packet_path": "inputs/manager/historical/include/citlali/core/pipeline/fruit_loop_map_io.h",
+      "bytes": 546,
+      "sha256": "3b83959cfbb7771e707a5fc9a3a6b166bd57a5de9fbc58a6b572c7903b41eb23",
+      "classification": "implementation-informed scope evidence",
+      "disposition": "abstract; excluded from authorship",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "f70701ad488444f3e2528c6bbe3e798863c9e301",
+      "source_path": "include/citlali/core/pipeline/fruit_loop_restart_lifecycle.h",
+      "packet_path": "inputs/manager/historical/include/citlali/core/pipeline/fruit_loop_restart_lifecycle.h",
+      "bytes": 8539,
+      "sha256": "dbc2c46f7992d0b56d96de1d49278ae7c0bb36cfbb47b8184dc38f36227930a1",
+      "classification": "implementation-informed scope evidence",
+      "disposition": "abstract; excluded from authorship",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "f70701ad488444f3e2528c6bbe3e798863c9e301",
+      "source_path": "include/citlali/core/engine/detail/pointing_run_impl.h",
+      "packet_path": "inputs/manager/historical/include/citlali/core/engine/detail/pointing_run_impl.h",
+      "bytes": 7545,
+      "sha256": "0200e17b209023d51e71e34506752d33f51082e4849bee1ab33732a301c85cab",
+      "classification": "implementation-informed scope evidence",
+      "disposition": "abstract; excluded from authorship",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "f70701ad488444f3e2528c6bbe3e798863c9e301",
+      "source_path": "include/citlali/core/engine/detail/pointing_fruitloop_impl.h",
+      "packet_path": "inputs/manager/historical/include/citlali/core/engine/detail/pointing_fruitloop_impl.h",
+      "bytes": 4301,
+      "sha256": "eb6ca404a75fa56e04a7e515d1c81c48240fb0050891218bdd165faa8c520945",
+      "classification": "implementation-informed scope evidence",
+      "disposition": "abstract; excluded from authorship",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "f70701ad488444f3e2528c6bbe3e798863c9e301",
+      "source_path": "include/citlali/core/timestream/timestream.h",
+      "packet_path": "inputs/manager/historical/include/citlali/core/timestream/timestream.h",
+      "bytes": 159064,
+      "sha256": "83418ff0123e64dd8a7807b7e6a480848f422d0443ca302b0762862bacab1b78",
+      "classification": "implementation-informed scope evidence",
+      "disposition": "abstract; excluded from authorship",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCIENTIFIC_OWNER_FREEZE_R0.7.1.md",
+      "packet_path": "inputs/authority/map/SCIENTIFIC_OWNER_FREEZE_R0.7.1.md",
+      "bytes": 4036,
+      "sha256": "91801005ba2f2bce6471a9f6f4ed0b79806c893f498b4f3cca9e81e26df39ce1",
+      "classification": "governing scientific status/source control",
+      "disposition": "adopt",
+      "proposed_author_reference": true
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SOURCE_MANIFEST_R0.7.md",
+      "packet_path": "inputs/authority/map/SOURCE_MANIFEST_R0.7.md",
+      "bytes": 11311,
+      "sha256": "bd3f172f8bb1e17bf95fde034ad76632439c766ef89b0a992361b9e6d79ada0a",
+      "classification": "governing scientific status/source control",
+      "disposition": "cite as source/status control",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SOURCE_MANIFEST_R0.7.sha256",
+      "packet_path": "inputs/authority/map/SOURCE_MANIFEST_R0.7.sha256",
+      "bytes": 90,
+      "sha256": "18f4ca464f9bf8892ba9223cbe6bf1367785b4cf4edfc2fc00a7c2622b059482",
+      "classification": "governing scientific status/source control",
+      "disposition": "cite as source/status control",
+      "proposed_author_reference": false
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/notation.tex",
+      "packet_path": "inputs/authority/map/src/common/notation.tex",
+      "bytes": 627,
+      "sha256": "2b132704dd1ee8da7a56e5bafdc998df98422fe512736ac4f904fad8a693e569",
+      "classification": "governing scientific authority",
+      "disposition": "adopt",
+      "proposed_author_reference": true
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/definitions.tex",
+      "packet_path": "inputs/authority/map/src/common/definitions.tex",
+      "bytes": 2723,
+      "sha256": "740f4a6f1ef0bbb12f721f192b7883144c247d039ab0c9dfa0ffae53cd711b65",
+      "classification": "governing scientific authority",
+      "disposition": "adopt",
+      "proposed_author_reference": true
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/equations.tex",
+      "packet_path": "inputs/authority/map/src/common/equations.tex",
+      "bytes": 7006,
+      "sha256": "36329f4cd1a103c78fcdcc5ff247a850f40aba92a09156d1aa55a1411a430c04",
+      "classification": "governing scientific authority",
+      "disposition": "adopt",
+      "proposed_author_reference": true
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/assumptions.tex",
+      "packet_path": "inputs/authority/map/src/common/assumptions.tex",
+      "bytes": 1020,
+      "sha256": "bba33b92c4189fe5886ef849caebeeb5400bdc7f2572f58a74de53ca578881de",
+      "classification": "governing scientific authority",
+      "disposition": "adopt",
+      "proposed_author_reference": true
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/requirements.tex",
+      "packet_path": "inputs/authority/map/src/common/requirements.tex",
+      "bytes": 39138,
+      "sha256": "68acf81d6c27788495cc680a1819da5f269616493b9aba5a6e0a1d1058ba5fa7",
+      "classification": "governing scientific authority",
+      "disposition": "adopt",
+      "proposed_author_reference": true
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/common/edge_cases.tex",
+      "packet_path": "inputs/authority/map/src/common/edge_cases.tex",
+      "bytes": 9326,
+      "sha256": "47022012e79173a1778a4e5bdc6743b4691bfecb27faa3090bcf03458d87e123",
+      "classification": "governing scientific authority",
+      "disposition": "adopt",
+      "proposed_author_reference": true
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/SCI-MAP-v0.1_SHARED_AUTHORITY_r0.7.1.tex",
+      "packet_path": "inputs/authority/map/src/SCI-MAP-v0.1_SHARED_AUTHORITY_r0.7.1.tex",
+      "bytes": 439,
+      "sha256": "08fcc9782cfba806d33dc07652a2363c8bd6540084f54e752e1fa91a5336b6bb",
+      "classification": "governing scientific authority",
+      "disposition": "adopt",
+      "proposed_author_reference": true
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCI-PTC_TO_SCI-MAP_BOUNDARY.md",
+      "packet_path": "inputs/authority/map/SCI-PTC_TO_SCI-MAP_BOUNDARY.md",
+      "bytes": 9091,
+      "sha256": "a499c59afb69eefda74a5b131ad37afd165213b99324c8b67a6de1d20793c9b7",
+      "classification": "governing scientific boundary/profile",
+      "disposition": "adopt",
+      "proposed_author_reference": true
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE_BOUNDARY.md",
+      "packet_path": "inputs/authority/map/SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE_BOUNDARY.md",
+      "bytes": 3761,
+      "sha256": "f7be703d17320de6f6ecfc3a3974d54799540fff1d8b2d9491c941a7ea3b45a4",
+      "classification": "governing scientific boundary/profile",
+      "disposition": "adopt",
+      "proposed_author_reference": true
+    },
+    {
+      "source_commit": "de6a3a53e2925f7315b081474d48caa1d825514a",
+      "source_path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/SCI-MAP_UPSTREAM_ADMISSION_PROFILE.md",
+      "packet_path": "inputs/authority/map/SCI-MAP_UPSTREAM_ADMISSION_PROFILE.md",
+      "bytes": 4039,
+      "sha256": "0717476c0a1d177074ee8702c18308f093d45a4913b22933f3fda3d33090a883",
+      "classification": "governing scientific boundary/profile",
+      "disposition": "adopt",
+      "proposed_author_reference": true
+    },
+    {
+      "source_commit": null,
+      "source_path": "/Users/gwilson/.codex/attachments/e11c6d07-cac7-4b14-ad43-c2b21a67af59/pasted-text.txt",
+      "packet_path": "inputs/manager/SIDEBAR_JINC_VS_NAIVE.txt",
+      "bytes": 5699,
+      "sha256": "ebf69eba50d7fe4be365933fc81d5f5fb80e8b357e213ac32a943bc3149f3bd9",
+      "classification": "user-supplied discussion; proposal feedback, not an approved numerical method",
+      "disposition": "abstract question and preparation order; exclude original sidebar from independent authorship",
+      "proposed_author_reference": false
+    }
+  ]
+}

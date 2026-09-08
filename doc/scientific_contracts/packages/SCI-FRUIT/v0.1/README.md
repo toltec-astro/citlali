@@ -1,7 +1,7 @@
 # SCI-FRUIT v0.1 — Iterative Feedback, State, And Termination
 
 Status: generic SCI-FRUIT-NORMATIVE-CORE v0.1/r0.4 accepted and conditionally
-frozen; historical-control method-scope proposal r0.1 prepared for owner review.
+frozen; ordinary-MAP first-method scope proposal r0.2 prepared for owner review.
 Every numerical method/route remains unavailable pending separate approval.
 Updated: 2026-09-08.
 
@@ -10,30 +10,33 @@ Updated: 2026-09-08.
 This package follows the [program charter](../../../README.md),
 [accepted pilot workflow](../../../PILOT_PROCESS_REVIEW_2026-08-16.md) and
 [downstream roadmap](../../../DOWNSTREAM_CONTRACT_ROADMAP_2026-08-26.md).
-The [current method recovery](method_preparation/historical_control/r0.1/PRIOR_WORK.md)
-adopts the exact frozen generic FRUIT core and inherited PTC/JINC science,
+The [current method recovery](method_preparation/ordinary_map/r0.2/PRIOR_WORK.md)
+adopts the exact frozen generic FRUIT core and inherited PTC/MAP science,
 abstracts historical behavior into scope questions, and defers empirical evidence.
 Implementation/configuration and the internal dossier remain outside independent
 authorship. New work is one exact method proposal and its upstream permissions;
 no generic FRUIT or PCA derivation is repeated.
 
-The [current proposed Scope Brief](method_preparation/historical_control/r0.1/author/SCOPE_BRIEF.md)
-and [proposed references](method_preparation/historical_control/r0.1/PROPOSED_AUTHOR_REFERENCES.md)
+The [current proposed Scope Brief](method_preparation/ordinary_map/r0.2/author/SCOPE_BRIEF.md)
+and [proposed references](method_preparation/ordinary_map/r0.2/PROPOSED_AUTHOR_REFERENCES.md)
 are pending owner approval. The generic-core program-order exception permits
 conditional-core authorship before numerical-method qualification; it grants
 no numerical method or new method-specific author dispatch.
 
 ## Current Owner Review
 
-- [Historical-control method proposal](method_preparation/historical_control/r0.1/README.md)
-- [Twenty-one method classes](method_preparation/historical_control/r0.1/METHOD_RECORD_PROPOSAL.md)
-- [Upstream permissions](method_preparation/historical_control/r0.1/UPSTREAM_PERMISSIONS.md)
-- [Five grouped owner decisions](method_preparation/historical_control/r0.1/SCIENTIFIC_OWNER_DECISION_LEDGER.md)
+- [Ordinary-MAP first-method proposal](method_preparation/ordinary_map/r0.2/README.md)
+- [Twenty-one method classes](method_preparation/ordinary_map/r0.2/METHOD_RECORD_PROPOSAL.md)
+- [Upstream permissions](method_preparation/ordinary_map/r0.2/UPSTREAM_PERMISSIONS.md)
+- [Five grouped owner decisions](method_preparation/ordinary_map/r0.2/SCIENTIFIC_OWNER_DECISION_LEDGER.md)
 - [Exact generic-core conditional freeze](scientific_core/SCI_FRUIT_STAGE_B_R0.4_OWNER_CONDITIONAL_FREEZE_2026-09-08.md)
 
 The proposed first scope is compact-source pointing with one observation,
-independent array maps and raw normalized JINC feedback. The owner has approved
-preparation, not this route, a numerical method or an experiment. The next
+independent array maps and raw ordinary MAP feedback with an explicitly
+specified feedback projection. The sidebar prompted this revised recommendation;
+the historical JINC control and prior proposal archive remain unchanged. The
+owner has approved preparation, not an exact numerical method or experiment.
+Exact scope/reference disposition remains pending. The next
 significant decision is exact scope and bounded paper-only dependency closure.
 Stage A and the Stage B r0.4 core/delivery remain unchanged. Earlier pending
 review and not-launched wording in historical packets is historical status.

@@ -1,0 +1,76 @@
+**I think naive mapmaking is the better starting point for understanding and defining FRUIT.** My earlier endorsement of JINC gave too much weight to continuity with the historical configuration and too little to isolating the feedback problem itself.
+
+### Why JINC ended up first
+
+Based on Codex’s report, the motivation was to stay close to the recovered historical pointing configuration. That makes sense when the task is **reconstructing a historical control**. It is not, by itself, a compelling reason to choose JINC for the **first newly specified FRUIT method**.
+
+Those are different tasks. We need to preserve the historical control faithfully, but we do not need to make its mapmaker the starting point for every successor. The earlier FRUIT framework already distinguishes the historical scientific control from a candidate method and treats the parent-map route as part of the method’s identity.  
+
+**The proposal has allowed “historically motivated” to do more work than it should in choosing the initial scientific scope.**
+
+### What naive mapmaking simplifies
+
+For ordinary binning, an admitted sample belongs to one pixel, and that pixel’s estimate is a normalized positive-weight average. That is the one-pixel assignment described in the ordinary MAP contract. 
+
+There is a particularly transparent illustrative case. Suppose we also use a matching, piecewise-constant map-to-timestream projection: each sample receives the model value of its containing pixel. Let \(m_{k,p}\) be the accepted feedback model in pixel \(p\), and let \(r^{\mathrm{clean}}_{k,i}\) be the residual sample after the selected cleaning operations. After adding the model back and binning, we obtain
+
+\[
+\widehat s_{k+1,p}
+=
+\frac{\sum_{i\in p}w_i
+\left(r^{\mathrm{clean}}_{k,i}+m_{k,p}\right)}
+{\sum_{i\in p}w_i}
+=
+m_{k,p}
++
+\frac{\sum_{i\in p}w_i r^{\mathrm{clean}}_{k,i}}
+{\sum_{i\in p}w_i}.
+\]
+
+This identity assumes compatible units, a fixed realized binning operator, nonzero normalization, and that the model is restored consistently on the samples being binned. It illustrates a possible method; it does not select that projection or those support rules for us.
+
+But the conceptual benefit is immediate:
+
+> **The next map is the model we protected, plus the binned residual that survived cleaning.**
+
+We can then concentrate on the actual FRUIT questions: what gets protected, what cleaning does to the residual, how the next accepted model is constructed, and what changes across iterations.
+
+Importantly, that equation does **not** require changing the proposed original-observation recurrence into cumulative residual processing. Each iteration can still start from the original measured parent, subtract its current model, clean, restore, and produce a complete replacement map.
+
+### What JINC adds to that discussion
+
+JINC introduces a signed spatial-kernel estimator rather than the ordinary one-pixel binning rule. Its contract explicitly treats its normalization and support as distinct from ordinary MAP, not as interchangeable variants. 
+
+The relevant question becomes: **what happens to a model when we project it into the timestream and then grid it back into a map?**
+
+Writing the map-to-sample operation as \(P\) and the sample-to-map operation as \(G\), the restored model contributes
+
+\[
+GPm_k.
+\]
+
+For the matched naive example above, \(GPm_k=m_k\) on the supported pixels: every sample in a pixel receives the same model value, so averaging those values returns that value.
+
+For a JINC gridding operator paired with a chosen feedback interpolator, **we cannot assume that identity**. We have to establish what the round trip does to spatial structure, normalization, and support. Consequently, a change between FRUIT iterations can reflect both the residual cleaning and the interaction between model projection and gridding.
+
+That is not an argument that JINC is wrong, unstable, or unsuitable for FRUIT. It is an argument that **JINC makes us answer an additional operator-composition question while we are still trying to settle the feedback method**.
+
+Your proposed ordering separates those questions more cleanly.
+
+### What would still need to be specified
+
+Naive mapmaking does not make the underlying FRUIT issues disappear. In particular, we still need an explicit map-to-timestream projection; choosing naive *forward* mapmaking does not automatically choose the feedback projection. We also still need to define which operations the model bypasses, how flags and weights behave after rejoining, and which map companions the model selector actually requires.
+
+Likewise, the simple algebra above is not a claim of unit response to the true sky, independent noise, or convergence. It is a transparent bookkeeping identity under stated assumptions. That transparency is precisely why it is useful here.
+
+### My recommendation
+
+I would revise the proposed **first new method-definition scope** to:
+
+**One observation, separate array maps, raw naive-map feedback, and an explicitly specified feedback projection.**
+
+Keep the recovered historical control unchanged. Reuse the frozen generic FRUIT core rather than reopening it. Resolve the FRUIT-specific model, recurrence, cleaning, and rejoin questions in the naive setting first; then specialize the same framework to JINC, identifying exactly which conclusions carry over and which depend on the different map/projection pair.
+
+This would change the proposed order of method definition—not authorize implementation or another experiment campaign.
+
+**We should start with the simplest mapmaker that exposes the FRUIT science, rather than make the initial FRUIT definition carry JINC’s additional complexity.**
