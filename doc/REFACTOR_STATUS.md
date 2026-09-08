@@ -1,5 +1,28 @@
 # Citlali Refactor Status
 
+## 2026-09-08 RTC Event Background Learn Candidate
+
+The owner selected the joint cubic versus cubic-plus-additive-offset method
+and authorized this next bounded S2 implementation. The
+[work order and recovered decisions](../handoff/TIMESTREAM_SUCCESSOR_RTC_EVENT_BACKGROUND_001_2026-09-08.md)
+implement RTC-owned original-pair background-fit evidence and bounded Consider
+constraints on canonical base `b675bb64a7054f7b24403c79898965e8765cfd02`.
+Accepted D2, VAL and RTC spike Learn, including its original screening
+consequences, are preserved. No complete event classification or Apply
+correction is claimed: offset uncertainty/significance, fit adequacy, trial
+exclusion containment, completed recovery and protected optical predicates
+remain explicit prerequisites.
+
+Local supplemental AppleClang/Homebrew gates pass: 16 new tests, 83 focused
+successor tests, 932/932 runnable CTest tests, four config modes and 207 baseline
+tool tests. One established MapFitterLifecycle test remains disabled. The
+actual cached dependency dirt is disclosed in the work order/evidence; these
+results do not substitute for a new exact-source GCC13/Spack Unity gate.
+Independent exact-SHA review, owner-run Unity evidence, acceptance and canonical
+admission remain pending. No push, route activation, map comparison, downstream
+implementation or cleanup is authorized by this candidate. Historical records
+below preserve their original scope and identities.
+
 ## Current MAP contract incorporation and binding status — 2026-09-08
 
 The owner authorized [documentation-only canonical incorporation](scientific_contracts/acceptance/SCI_MAP_V02_R04_2026-09-08/README.md)
