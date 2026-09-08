@@ -1,0 +1,121 @@
+Tue Sep  8 12:24:09 PM UTC 2026
+JobID|JobName|Partition|State|ExitCode|Elapsed|AllocCPUS|ReqMem|MaxRSS
+64075137|citlali-rtc-spike-learn|toltec-cpu|COMPLETED|0:0|00:10:11|6|64G|
+64075137.batch|batch||COMPLETED|0:0|00:10:11|6||22794024K
+64075137.extern|extern||COMPLETED|0:0|00:10:11|6||
+./build-all.log: OK
+./build-safety.log: OK
+./check.log: OK
+./cli-artifact.log: OK
+./cli-source-binding.log: OK
+./cli-version.log: OK
+./compiler-cache.txt: OK
+./configure.log: OK
+./context.txt: OK
+./final-status.txt: OK
+./first-party-sources-after.log: OK
+./first-party-sources-before.log: OK
+./focused-rtc-spike-learn.log: OK
+./gate-script.sbatch: OK
+./source-state-after.txt: OK
+./source-state-before-finalization.txt: OK
+./spack.lock: OK
+./spack.yaml: OK
+./test-inventory-binding.log: OK
+./test-inventory.log: OK
+./upstream-revisions.json: OK
+disposition=PASS
+exit_status=0
+completed_at=2026-09-08T02:07:24Z
+job_id=64075137
+source_revision=4e6d9dbc5997909483e10e3ea95a94202e852bd2
+source_tree=d7e4d0f43ebe32a8d9dc1fb8d6ea6b9b02f5fb22
+source_root=/home/toltec_umass_edu/work_toltec/wilson/citlali_testing/rtc_spike_learn_001/source-4e6d9dbc5997909483e10e3ea95a94202e852bd2
+scratch_root=/tmp/citlali-rtc-spike-learn-4e6d9dbc5997909483e10e3ea95a94202e852bd2.64075137.FdmQ4n
+evidence=/work/toltec/citlali_dev/citlali_acceptance_evidence/TIMESTREAM-SUCCESSOR-RTC-SPIKE-LEARN-001/4e6d9dbc5997909483e10e3ea95a94202e852bd2/unity-gcc13-sbatch-64075137
+==> cli-version.log <==
+** logging ** Configured with level=info; available levels: ["info", "warning", "error", "critical", "off"].
+v2-ngc4449-memory-repair-187df04b-262-g4e6d9dbc5 (2026-09-08T01:57:37)
+kids 3.1.0 (spack-package)
+build spack dag=ryu6zhjvp5sh7fsbwrzyykbkgkglzkkx compiler=GNU-13.3.0 cxx=23 Release +openmp +wiener_openmp; deployment profile=unmanaged lock=unavailable binding=unmanaged
+==> cli-source-binding.log <==
+matched_revision=4e6d9dbc5
+==> test-inventory-binding.log <==
+registered=917 runnable=916 focused_d2=8 focused_val=10 focused_rtc_spike=17
+disabled=citlali::MapFitterLifecycle.ExactProductSequence
+==> first-party-sources-after.log <==
+tula_cmake=6433cdabe7010d0af2d0ba69da7af27510391b80 clean=true
+tula=aa16c853c6b596c04ccdc90dc3acc4ce2006d947 clean=true
+kidscpp=498ece1113001ae2d42d96d9fc29152aea3eaaef clean=true
+==> source-state-after.txt <==
+## HEAD (no branch)
+==> check.log <==
+        Start 912: citlali::safety::ordered_writer.derives_standard_and_beammap_output_expectations
+912/917 Test #912: citlali::safety::ordered_writer.derives_standard_and_beammap_output_expectations ..............................................................................   Passed    0.01 sec
+        Start 913: citlali::safety::ordered_writer.netcdf_failure_leaves_diagnosed_partial_product_and_next_run_recovers
+913/917 Test #913: citlali::safety::ordered_writer.netcdf_failure_leaves_diagnosed_partial_product_and_next_run_recovers .........................................................   Passed    0.02 sec
+        Start 914: citlali::safety::ptc_tod_schema.includes_all_second_pass_summary_fields
+914/917 Test #914: citlali::safety::ptc_tod_schema.includes_all_second_pass_summary_fields .......................................................................................   Passed    0.02 sec
+        Start 915: citlali::safety::scan_cursor.enumerates_each_scan_once
+915/917 Test #915: citlali::safety::scan_cursor.enumerates_each_scan_once ........................................................................................................   Passed    0.01 sec
+        Start 916: citlali::safety::scan_cursor.new_run_starts_clean_after_interrupted_run
+916/917 Test #916: citlali::safety::scan_cursor.new_run_starts_clean_after_interrupted_run .......................................................................................   Passed    0.01 sec
+        Start 917: citlali::build_gitversion_refresh
+917/917 Test #917: citlali::build_gitversion_refresh .............................................................................................................................   Passed    2.78 sec
+
+100% tests passed, 0 tests failed out of 916
+
+Total Test time (real) =  37.81 sec
+
+The following tests did not run:
+	553 - citlali::MapFitterLifecycle.ExactProductSequence (Disabled)
+[100%] Built target check
+==> focused-rtc-spike-learn.log <==
+      Start 852: citlali::timestream_successor::rtc_spike_learn::rtc_spike_learn.source_protection_changes_required_assessment_only_and_unknown_is_not_outside
+60/67 Test #852: citlali::timestream_successor::rtc_spike_learn::rtc_spike_learn.source_protection_changes_required_assessment_only_and_unknown_is_not_outside .................   Passed    0.01 sec
+      Start 853: citlali::timestream_successor::rtc_spike_learn::rtc_spike_learn.protection_and_snapshot_identity_fail_closed
+61/67 Test #853: citlali::timestream_successor::rtc_spike_learn::rtc_spike_learn.protection_and_snapshot_identity_fail_closed ..................................................   Passed    0.01 sec
+      Start 854: citlali::timestream_successor::rtc_spike_learn::rtc_spike_learn.noise_failure_publication_uses_exact_original_coordinate_and_retains_snapshot
+62/67 Test #854: citlali::timestream_successor::rtc_spike_learn::rtc_spike_learn.noise_failure_publication_uses_exact_original_coordinate_and_retains_snapshot .................   Passed    0.01 sec
+      Start 855: citlali::timestream_successor::rtc_spike_learn::rtc_spike_learn.full_view_of_a_clipped_occurrence_axis_cannot_reanchor_a_physical_run
+63/67 Test #855: citlali::timestream_successor::rtc_spike_learn::rtc_spike_learn.full_view_of_a_clipped_occurrence_axis_cannot_reanchor_a_physical_run .........................   Passed    0.01 sec
+      Start 856: citlali::timestream_successor::rtc_spike_learn::rtc_spike_learn.injected_events_on_fluctuating_background_are_candidates_without_a_clipping_quota
+64/67 Test #856: citlali::timestream_successor::rtc_spike_learn::rtc_spike_learn.injected_events_on_fluctuating_background_are_candidates_without_a_clipping_quota .............   Passed    0.01 sec
+      Start 857: citlali::timestream_successor::rtc_spike_learn::rtc_spike_learn.compact_evidence_measurement_does_not_copy_heavy_parent_planes
+65/67 Test #857: citlali::timestream_successor::rtc_spike_learn::rtc_spike_learn.compact_evidence_measurement_does_not_copy_heavy_parent_planes ................................   Passed    0.04 sec
+      Start 858: citlali::timestream_successor::rtc_spike_learn::rtc_spike_optical_reference.sampled_average_has_unit_dc_sinc_attenuation_and_free_phase
+66/67 Test #858: citlali::timestream_successor::rtc_spike_learn::rtc_spike_optical_reference.sampled_average_has_unit_dc_sinc_attenuation_and_free_phase .......................   Passed    0.01 sec
+      Start 859: citlali::timestream_successor::rtc_spike_learn::rtc_spike_optical_reference.missing_or_foreign_motion_never_becomes_a_speed_bound
+67/67 Test #859: citlali::timestream_successor::rtc_spike_learn::rtc_spike_optical_reference.missing_or_foreign_motion_never_becomes_a_speed_bound .............................   Passed    0.02 sec
+
+100% tests passed, 0 tests failed out of 67
+
+Total Test time (real) =   0.44 sec
+8006cce18cb2e8ce238d783d67f1b2ecb51a190932accadf40ab80a37b81829b  gate-script.sbatch
+64e3ff0c6458d11b081774da78a2a5017718d21e4281f46acc226b31e4d8db6d  final-status.txt
+ef0bc37e39caae92507adec99c9c1fc71b1980355b62f1e8b368d8e2b301cdfc  SHA256SUMS
+62/67 Test #854: citlali::timestream_successor::rtc_spike_learn::rtc_spike_learn.noise_failure_publication_uses_exact_original_coordinate_and_retains_snapshot .................   Passed    0.01 sec
+      Start 855: citlali::timestream_successor::rtc_spike_learn::rtc_spike_learn.full_view_of_a_clipped_occurrence_axis_cannot_reanchor_a_physical_run
+63/67 Test #855: citlali::timestream_successor::rtc_spike_learn::rtc_spike_learn.full_view_of_a_clipped_occurrence_axis_cannot_reanchor_a_physical_run .........................   Passed    0.01 sec
+      Start 856: citlali::timestream_successor::rtc_spike_learn::rtc_spike_learn.injected_events_on_fluctuating_background_are_candidates_without_a_clipping_quota
+64/67 Test #856: citlali::timestream_successor::rtc_spike_learn::rtc_spike_learn.injected_events_on_fluctuating_background_are_candidates_without_a_clipping_quota .............   Passed    0.01 sec
+      Start 857: citlali::timestream_successor::rtc_spike_learn::rtc_spike_learn.compact_evidence_measurement_does_not_copy_heavy_parent_planes
+65/67 Test #857: citlali::timestream_successor::rtc_spike_learn::rtc_spike_learn.compact_evidence_measurement_does_not_copy_heavy_parent_planes ................................   Passed    0.04 sec
+      Start 858: citlali::timestream_successor::rtc_spike_learn::rtc_spike_optical_reference.sampled_average_has_unit_dc_sinc_attenuation_and_free_phase
+66/67 Test #858: citlali::timestream_successor::rtc_spike_learn::rtc_spike_optical_reference.sampled_average_has_unit_dc_sinc_attenuation_and_free_phase .......................   Passed    0.01 sec
+      Start 859: citlali::timestream_successor::rtc_spike_learn::rtc_spike_optical_reference.missing_or_foreign_motion_never_becomes_a_speed_bound
+67/67 Test #859: citlali::timestream_successor::rtc_spike_learn::rtc_spike_optical_reference.missing_or_foreign_motion_never_becomes_a_speed_bound .............................   Passed    0.02 sec
+
+100% tests passed, 0 tests failed out of 67
+
+Total Test time (real) =   0.44 sec
+STAGE_END name=focused-rtc-spike-learn status=0 at=2026-09-08T02:07:23Z
+STAGE_START name=first-party-sources-after at=2026-09-08T02:07:23Z
+tula_cmake=6433cdabe7010d0af2d0ba69da7af27510391b80 clean=true
+tula=aa16c853c6b596c04ccdc90dc3acc4ce2006d947 clean=true
+kidscpp=498ece1113001ae2d42d96d9fc29152aea3eaaef clean=true
+STAGE_END name=first-party-sources-after status=0 at=2026-09-08T02:07:23Z
+RTC SPIKE LEARN UNITY GCC13 GATE PASS
+EVIDENCE=/work/toltec/citlali_dev/citlali_acceptance_evidence/TIMESTREAM-SUCCESSOR-RTC-SPIKE-LEARN-001/4e6d9dbc5997909483e10e3ea95a94202e852bd2/unity-gcc13-sbatch-64075137
+64e3ff0c6458d11b081774da78a2a5017718d21e4281f46acc226b31e4d8db6d  /work/toltec/citlali_dev/citlali_acceptance_evidence/TIMESTREAM-SUCCESSOR-RTC-SPIKE-LEARN-001/4e6d9dbc5997909483e10e3ea95a94202e852bd2/unity-gcc13-sbatch-64075137/final-status.txt
+ef0bc37e39caae92507adec99c9c1fc71b1980355b62f1e8b368d8e2b301cdfc  /work/toltec/citlali_dev/citlali_acceptance_evidence/TIMESTREAM-SUCCESSOR-RTC-SPIKE-LEARN-001/4e6d9dbc5997909483e10e3ea95a94202e852bd2/unity-gcc13-sbatch-64075137/SHA256SUMS

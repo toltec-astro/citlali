@@ -1,5 +1,29 @@
 # Citlali Refactor Status
 
+## 2026-09-08 RTC Spike Learn Unity Gate Passed
+
+Owner-run Unity GCC13/Spack job `64075137` passed at exact reviewed source
+`4e6d9dbc5997909483e10e3ea95a94202e852bd2`, tree
+`d7e4d0f43ebe32a8d9dc1fb8d6ea6b9b02f5fb22`: 916/916 runnable tests and
+67/67 focused successor tests, including all 17 new RTC tests. The supplied
+receipt binds a matching clean source/CLI, clean pinned dependencies, 21
+successful archive checksums and the prepared gate-script digest. Allocation
+was six CPUs / 64 GiB; elapsed 10m11s; batch MaxRSS about 21.74 GiB.
+
+The [receipt review](../handoff/TIMESTREAM_SUCCESSOR_RTC_SPIKE_LEARN_UNITY_RECEIPT_2026-09-08.md)
+records exact evidence identities and limitations. Source independent review
+already passed all three axes with recorded limitations and no findings.
+This completes the required source-build/test gate; source owner acceptance
+and canonical admission remain pending. Real 152390 measurements, final event
+classification and Apply treatment are not established by this gate.
+
+Live canonical was reverified at `8eccf8990027b8f65febb5f20d9a415829152322`.
+Only receipt/status documentation is added on the existing feature branch;
+tested executable inputs remain unchanged. Its documentation SHA receives a
+separate exact-SHA review. No integration, push or subsequent component is
+authorized by the supplied test receipt. Earlier pending-gate entries below
+remain historical checkpoints.
+
 ## 2026-09-07 Original Paired RTC Spike Learn Implementation
 
 The owner re-anchored the next increment to the existing contracted S2 work

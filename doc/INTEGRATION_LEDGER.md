@@ -1,5 +1,30 @@
 # Citlali Integration Ledger
 
+## RTC Spike Learn Unity Evidence Receipt — 2026-09-08
+
+The owner supplied the timestamped receipt for Unity job `64075137`, completed
+`2026-09-08T02:07:24Z` and retrieved `2026-09-08T12:24:09Z`. Exact source
+`4e6d9dbc5997909483e10e3ea95a94202e852bd2` and its reviewed tree passed
+916 runnable / 67 focused tests with matching clean source/CLI and clean pinned
+dependencies. All 21 archived-file checksums pass in the owner receipt. The
+gate script matches the prepared digest; the final-status digest is independently
+reconstructed from the receipt. The full Unity archive remains owner-held.
+
+The [receipt review](../handoff/TIMESTREAM_SUCCESSOR_RTC_SPIKE_LEARN_UNITY_RECEIPT_2026-09-08.md)
+and preserved verbatim receipt bind this evidence. New external checks are at
+`/private/tmp/citlali-rtc-spike-learn-unity-receipt-2026-09-08`; the original
+55-file implementation archive was reverified and remains unchanged.
+The documentation update preserves all tested source inputs and requires its
+own exact-SHA review, recorded externally after commit.
+
+Live explicit-SSH GitHub canonical remains
+`8eccf8990027b8f65febb5f20d9a415829152322`, the implementation's literal base.
+No canonical movement, push, new branch, source acceptance, operational
+activation or subsequent work follows from this receipt. Before a proposed
+admission, reverify the live base, preserve the literal tested implementation
+and independently review the exact admission identity. Owner acceptance
+remains a separate decision.
+
 ## RTC Spike Learn Source Candidate — 2026-09-07
 
 Owner directive: "great. Let's proceed" after selecting the original paired
