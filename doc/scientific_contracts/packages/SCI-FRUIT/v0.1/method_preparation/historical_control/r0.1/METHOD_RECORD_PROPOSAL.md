@@ -1,0 +1,53 @@
+# Historical-control method record proposal: all twenty-one classes
+
+Status: owner-review proposal with explicit gaps; **not a complete numerical
+method record, Registry entry or activation record**.
+Proposed future instance name:
+`FRUIT-FEEDBACK-METHOD/historical-obs-raw-jinc@r0.1`.
+The name is reserved here only for discussion; no instance is approved.
+Current family state: `unavailable_pending_separate_owner_approval`.
+
+The [frozen core's method table](inputs/authority/fruit/METHOD_RECORD_TEMPLATE.md)
+and REQ-023 require all twenty-one classes. “Recovered” below means source
+evidence H01–H11 in the [dossier](INTERNAL_DOSSIER.md), not scientific approval.
+“Proposed” means an owner choice still pending. U01–U08 refer to
+[upstream/input dependencies](UPSTREAM_PERMISSIONS.md); D001–D005 to the
+[decision ledger](SCIENTIFIC_OWNER_DECISION_LEDGER.md).
+
+| Class | Recovered fact | Proposed first scope | Missing binding and blocked claim |
+| --- | --- | --- | --- |
+| 01 Authority and lineage | H01/H11 identify a historical source, not a qualified method or exact executable. | Keep the historical control immutable; use a separately approved method identity for any scientific successor. | D001–D005; U08. Exact owner-approved method record, method generation, parents and realized artifact still absent; no numerical availability. |
+| 02 Parent route and grouping | H10 exposes pointing, raw observation feedback and JINC; PTC grouping is a separate policy. | One observation, independent TolTEC array maps, raw normalized JINC output; no coadd/filter feedback. | D001/D003; U01–U05. Exact observation, sample domain, PTC grouping, coefficients, WCS/grid, unit/reference and rejoin handoff remain unbound. |
+| 03 Iteration-input rule | H01/H03 rerun original observations; preceding residual is not the new input. | Retain an original-measured-parent rerun rule as the candidate to define. Make the exact pre-removal product and prior-state influence explicit. | D002; U01/U02. Exact upstream rerun/application generations and conversion rules; no claim of unchanged per-iteration input. |
+| 04 Target and model | H02/H06 derive a model from a complete predecessor map and gates. | Internally constructed feedback model for compact-source pointing; distinct candidate, accepted and applied objects. No external sky truth or external seed in the first requested route. | D002; U05/U07. Exact target relation, three model spaces, unit/normalization/reference/support and transformations. |
+| 05 Construction, selection, acceptance and application | H04/H06 select using loaded-map values, optional companion gates, sign and current support; no future outcome is needed by those branches. | Specify a causal selector whose allowed inputs all exist before removal; any rejoin-dependent support evaluation is separately declared. | D002/D003; U05. Exact sign/threshold/union/support rules, companion methods and acceptance-to-application map. Historical gates are candidates, not approved numbers. |
+| 06 Accumulation meaning | H02 carries one complete selected map, replaced by the next complete map; separate learned state persists. | Preserve complete-map replacement as the candidate recurrence meaning, without cumulative-increment algebra. | D002. Exact state/object association and initial unseeded behavior; no accelerated accumulation or new intervention. |
+| 07 Typed composition | H03/H04 remove before residual processing and rejoin afterward; map generation follows. | Bind the frozen remove → process → rejoin relations in exact spaces, then name downstream weighting/gridding as additional operations. Do not conflate the rejoined sample result with the terminal JINC map. | D002/D003; U02–U05. Numerical Pi, complete F, B, additional operators and exact locations remain unavailable. Neither equality/inversion nor full linearity follows. |
+| 08 Additive compatibility and unavailable modes | H10's unit label does not establish compatible additive references or measured modes. | Require separate removal and rejoin compatibility records, including beam/template, calibration, gauge and null-space meaning. | D002/D003; U01/U05. Missing absolute/reference modes stay unavailable or model/prior-supported; no true-sky or unit-response inference. |
+| 09 Operation graph | H03 identifies pre-removal RTC/masks, residual atmosphere/line/PTC/weight/noise, rejoin, then later exclusions/weights/learning/map operations. | Recover one complete named graph; approve its exact bypass set and application counts before use. | D002/D003; U02/U03/U05. Detailed operator identities and branch behavior are unfinished; no blanket RTC/PTC/learning bypass. |
+| 10 State by operation | H03/H07/H09 distinguish persistent learned masks/penalties and weight state from rerun scan products. | For every consequential state component, assign one frozen-core operation-state category. Separate defining state from internal fixed-map application coordinates. | D002; U02/U08. Exact learning schedule, triggers and state closure remain unbound; no claim the procedure is fixed linear. |
+| 11 Support and missing data | H04–H06 permit unequal removal/rejoin support and implementation fallbacks. | Define all eight core support roles and the four information-origin classes; expose rather than silently inherit fallbacks. | D002/D003; U01–U05. Exact path supports, edge/cancellation/missing/non-finite behavior and failure scopes. No zero-filling or equal-support presumption. |
+| 12 Update and transition | H01–H03 replace the selected complete map and update separate learning state. | Define one transition from exact input/state through separate candidate/accepted/applied models, residual/result and successor state. | D002. Exact construction/acceptance/update and the zero-based first iteration remain to be specified, including core-permitted statuses. |
+| 13 Response | No numerical response is established by this recovery. | Populate statuses for all seven core response roles. Any fixed-map query fixes complete defining maps/state while reevaluating application coordinates; recurrence and terminal queries remain distinct. | D003/D004; U06. Exact perturbation source/domain, codomain, fixed/rerun rules, branch comparability and numerical availability; no transfer or source-recovery claim. |
+| 14 Uncertainty | H03's residual noise pass precedes model rejoin; this is a historical product path only. | Bind all applicable thirteen-role uncertainty records and unavailable causes. Retain both parent/applied-model cross terms where full fixed-linear propagation applies. | D003/D004; U05/U06. Exact law/conditioning, model transformations and NOI-owned method missing. No variance, precision, significance, source-free or coverage claim. |
+| 15 Continuation sufficiency | H09 restores selected map plus represented learning/weight state and checks policy/observation identity. | First numerical request, if later approved, would start unseeded and make no continuation claim. The method must still state continuation unavailable until its complete state query and equality criterion are established. | D004; U08. Exact causal closure and numerical equivalence profile not established. A map-only seed is not continuation; source “restart” is not a scientific identity. |
+| 16 Stochastic state | H10 requests noise products; randomness elsewhere depends on actual options. | Bind every active generator, key/counter, population and sampling rule; use justified not_applicable only for a demonstrably deterministic role. | D002/D004; U06/U08. No seeds or ensemble law selected; randomness cannot be ignored merely because the central map seems deterministic. |
+| 17 Convergence proposition | H08 recovers a count bound but no evaluated scientific convergence proposition. | Do not add an early-stop rule. The first candidate would report convergence unassessed and distinguish finite completion from adequacy. | D004. If any convergence claim is later requested, its norm/domain/scale/tolerance/persistence and missing-state behavior need separate approval. |
+| 18 Resource limits | H08 uses an exclusive maximum-iteration bound; actual executed configuration is absent. | Predeclare an exact finite iteration extent, wall/runtime and peak-memory accounting plus exhaustion behavior before any run. | D004; U08. No count, runtime or memory cap selected here. Exhaustion is not convergence and does not waive required outputs. |
+| 19 Terminal selection | H02/H08 explain saved map locations and bounded looping, not a scientific selector. | Candidate rule: last completed iteration within the predeclared finite extent; no best-looking-map choice. A failed/incomplete requested run reports failure, without silently substituting an earlier candidate as successful completion. | D004. Exact candidate population, expected extent, ties/incomplete behavior, immutable selection record and selected response/uncertainty still need binding. |
+| 20 Persistence and reconstruction | H02/H09 use map files plus compact checkpoint state and external inputs. | Preserve the core's query-complete representation requirement; no storage format is selected. Every attempt and selected result remains immutable. | D002/D004; U08. Exact required state/product retention and reconstruction sufficiency missing; historical checkpoint presence proves neither. |
+| 21 Completion, failure and publication | Successful software return or existing map file does not establish core completion. | Adopt all universal core bundle and hard-claim dependencies, the nine successful stages and separate outcomes. Declare a narrower descriptive product only where core and exact method permit unavailable companions. | D004/D005; U01–U08. Exact required method bundle, unavailable-role permissions, failure scope and requested downstream use still unbound. No audit, scientific fitness or production claim. |
+
+## Scientific disposition proposed
+
+The historical recurrence is a well-defined candidate family to recover, but
+this table is not yet one fully specified numerical instance. The most useful
+next work is to close the named choices and upstream handoffs on paper. It is
+premature to run it as a contract-qualified method or improve its thresholds.
+
+The proposed rule choices above are deliberately explicit so the owner can
+accept or revise them before further method work. Accepting the scope would
+not approve source defaults, an executable, an input observation or an
+experiment. If owner-approved science requires a changed historical fallback,
+projection, support or state rule, record a successor identity and keep the
+historical control intact.

@@ -1138,6 +1138,42 @@ No scientific derivation, numerical choice, experiment, replay, qualification,
 production change or Unity action occurs. All earlier empirical conclusions,
 reduction products, r0.1 input bytes and both review archives are preserved.
 
+On `2026-09-08`, Grant Wilson accepted and conditionally froze the exact
+`SCI-FRUIT-NORMATIVE-CORE v0.1/r0.4`, recorded in the separate
+[conditional freeze](scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/SCI_FRUIT_STAGE_B_R0.4_OWNER_CONDITIONAL_FREEZE_2026-09-08.md).
+It binds the seven canonical sources through inventory SHA-256
+`3dc912d9f6a58d9f92561ad10b9442485c5b47232e5327389d2fb3b89c296e92`.
+Stage A and the exact Stage B source/PDF/archive bytes remain unchanged.
+The earlier Stage A draft/not-launched statements above are historical.
+Program-order authorship authority, conditional composition authority and
+numerical-method authority remain separate. The numerical family remains
+`unavailable_pending_separate_owner_approval`; the freeze creates no Registry,
+activation, implementation conformity or numerical qualification.
+
+The owner then [approved historical-control recovery and method-scope preparation](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/historical_control/r0.1/OWNER_PREPARATION_AUTHORIZATION_2026-09-08.md).
+The [r0.1 owner proposal](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/historical_control/r0.1/README.md)
+now contains a completed prior-work record, internal historical-source dossier,
+separate eleven-section sanitized Scope Brief, all twenty-one required method
+classes, exact proposed references and five grouped owner decisions. Its
+proposed first use is compact-source pointing with one observation, independent
+array maps and raw normalized JINC feedback. That route is not yet selected.
+The recovery keeps original-observation rerun and complete-map replacement as
+historical facts, and separates source identity from executable reproducibility.
+It exposes missing residual-PTC/rejoined-signal/JINC permissions, numerical
+coefficient/parameter bindings and any selector-required map companions; frozen
+JINC's base bundle does not supply them by implication.
+
+The next significant owner decision is the exact proposed scope and bounded
+paper-only closure of its method/upstream questions. This preparation does not
+approve numerical operators, a method instance, a population or an experiment.
+No new author, implementation assessment, replay, diagnostic, qualification,
+production change or Unity operation was launched. Historical control remains
+mandatory, the UID 4460 diagnosis stays closed, EL-F14 remains unapproved/unrun,
+and independent-pointing replication is still required before policy. All
+existing reduction products, frozen deliveries and both known untracked review
+archives are preserved. Document verification establishes packet integrity and
+scope coverage, not scientific approval or numerical availability.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
