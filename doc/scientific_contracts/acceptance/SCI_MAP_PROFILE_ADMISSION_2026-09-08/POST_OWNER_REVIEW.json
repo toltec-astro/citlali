@@ -1,0 +1,89 @@
+{
+  "review": "independent_post_owner_repair_exact_sha",
+  "reviewer": "/root/map_profile_post_owner_review",
+  "date": "2026-09-08",
+  "candidate": "6bf8205b0ed20a8feaf3af4847280b47f5ebbc96",
+  "tree": "998a28b178ddfe995e0335364be9dd8bd73baa2f",
+  "parent": "c6936068f04814fd9e9561352ae379fa7201966d",
+  "accepted_proposal": "808db18143dbb83eb9e455e0929872e88e102e5a",
+  "canonical_base": "b675bb64a7054f7b24403c79898965e8765cfd02",
+  "verdict": "pass_with_recorded_limitations",
+  "post_owner_gate_satisfied": true,
+  "closed_findings": [
+    "PO-MAP-001"
+  ],
+  "required_findings": [],
+  "dispositions": {
+    "science": "pass_with_recorded_limitations",
+    "ownership": "pass",
+    "repository": "pass"
+  },
+  "owner_acceptance_scope": "Exact accepted OWNER_DISPOSITION.md: compatible occurrence binding, coadd @2, six roles, unchanged method associations, five final generation allocations, exact Registry/source records; subsequent status-only admission and exact-reviewed canonical documentation incorporation.",
+  "gate_states": {
+    "profile_policy_approval": "complete",
+    "final_identity_allocation": "complete",
+    "registration": "pending",
+    "formal_source_binding": "pending",
+    "activation_evaluability": "unavailable",
+    "implementation_conformity": "not_assessed"
+  },
+  "verification": {
+    "fresh_checks": 20,
+    "fresh_passed": 20,
+    "fresh_failed": 0,
+    "inherited_packet_actual_checks": 79,
+    "inherited_packet_passed": 79,
+    "inherited_packet_metadata_entries": 1,
+    "approved_files_exact": 8,
+    "source_records_exact": 36,
+    "packet_files_exact": 307,
+    "accepted_pdfs_exact": 3
+  },
+  "changed_paths": [
+    {
+      "path": "doc/REFACTOR_STATUS.md",
+      "bytes": 478144,
+      "sha256": "ed99e5faaf33c62b226263abf80e2fc9a7aefe10127f880f792fc34b47c6da71"
+    },
+    {
+      "path": "doc/scientific_contracts/INDEX.md",
+      "bytes": 30160,
+      "sha256": "707ddc27217bcdc943774ac0e263b568cdca1960dd82a31beed8f67051bbf8dd"
+    }
+  ],
+  "environment": {
+    "python": "3.13.2",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "git": "git version 2.50.1 (Apple Git-155)"
+  },
+  "worktree_clean": true,
+  "repository_read_only": true,
+  "report": {
+    "path": "/private/tmp/citlali-map-profile-admission-closure-2026-09-08/post-owner-6bf8205b0/INDEPENDENT_POST_OWNER_REVIEW.md",
+    "sha256": "9af867b39698dbc9ae2880bf14a87916071c5252db52a287dcbc6f42109e267f"
+  },
+  "evidence": [
+    {
+      "path": "/private/tmp/citlali-map-profile-admission-closure-2026-09-08/post-owner-6bf8205b0/REPAIR_CHECKS.json",
+      "sha256": "362cbcf5e6de80f2b980c2ca0512f4debecc14375f514c940a2062ec35cbf748"
+    },
+    {
+      "path": "/private/tmp/citlali-map-profile-admission-closure-2026-09-08/post-owner-c6936068f/INDEPENDENT_POST_OWNER_REVIEW.md",
+      "sha256": "6fccf6e20bbdf7dd2eceb9118b5449928b12daca73c5bdd223d54eaabdf22eb3"
+    },
+    {
+      "path": "/private/tmp/citlali-map-profile-admission-closure-2026-09-08/post-owner-c6936068f/REVIEW_RECEIPT.json",
+      "sha256": "a301e97a897f36db1cbaca1e52e57ac0d916089461061d2ee62fc3989ece1378"
+    },
+    {
+      "path": "/private/tmp/citlali-map-profile-admission-closure-2026-09-08/post-owner-c6936068f/PACKET_VERIFICATION.json",
+      "sha256": "ac7fda2460e31ea0212d7a216d2a9138b51d46640602964762db73eb3a8b4cdf"
+    }
+  ],
+  "limitations": [
+    "Packet and prior visual parity inherited through exact unchanged bytes; no rerun or rebuild.",
+    "No application, operational, observational or performance qualification.",
+    "Prior firewall and manager-supplied remote-evidence limitations retained."
+  ],
+  "eligible_next_step": "Record admission and prepare exact canonical merge review; actual registration occurs only on reviewed canonical incorporation."
+}

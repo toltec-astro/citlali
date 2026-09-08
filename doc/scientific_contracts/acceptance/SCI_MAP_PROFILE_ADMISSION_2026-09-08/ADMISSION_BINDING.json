@@ -1,0 +1,100 @@
+{
+  "identity": "SCI-MAP-r0.4-CANONICAL-REGISTRATION-AND-SOURCE-BINDING/2026-09-08",
+  "owner_approved_content_commit": "808db18143dbb83eb9e455e0929872e88e102e5a",
+  "owner_approved_content_tree": "406ec42fcd5e8cc1cb2db1d5374ed73bfb4d5e04",
+  "owner_approval_commit": "c6936068f04814fd9e9561352ae379fa7201966d",
+  "post_owner_reviewed_commit": "6bf8205b0ed20a8feaf3af4847280b47f5ebbc96",
+  "canonical_first_parent": "b675bb64a7054f7b24403c79898965e8765cfd02",
+  "accepted_content_manifest": {
+    "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/BINDING_MANIFEST.json",
+    "sha256": "57229670cd540ce2f8aeecf5d1a568414d0a85b6a9d6cf5a74b7e698b6ac5ec3",
+    "bytes": 15160
+  },
+  "accepted_content_records": [
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/IDENTITY_ALLOCATION.json",
+      "sha256": "2afbf10026784ac4528aa799b9f4362bf5f2bf328f77d3a3edb187c3221523f4",
+      "bytes": 3590
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/MAP_BINDING_AND_ROLES.md",
+      "sha256": "3229f3ef7aa62c0803dba2f6f8210083d664182988e19050d78c7dbeb5a38882",
+      "bytes": 3099
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/OWNER_DISPOSITION.md",
+      "sha256": "451c4f5db80f0ba04261149bb4689c4a94992af7cbf1c181f697b07b0d5fdc93",
+      "bytes": 2977
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/PRIOR_WORK.md",
+      "sha256": "d8c237f6be7e25a0cdca111302dc8200d0c2dc73a4a1c6ac22781151a3ecf396",
+      "bytes": 3785
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/PROFILE_REGISTRY.md",
+      "sha256": "ce027c3a5c0e71291e9ea509c3a2d1e2d9971fac64763e2afc676241df7d442b",
+      "bytes": 8286
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/README.md",
+      "sha256": "a7a09968a54ce2bdf95b6c847c96e0345b2c4229704115e4985a0c6f659f9aa6",
+      "bytes": 4491
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/SOURCE_BINDING_REGISTER.md",
+      "sha256": "a30c1b71ada4793b6ae805699f9335e9f912399e066a4af6bb68ab81456d4555",
+      "bytes": 5975
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/BINDING_MANIFEST.json",
+      "sha256": "57229670cd540ce2f8aeecf5d1a568414d0a85b6a9d6cf5a74b7e698b6ac5ec3",
+      "bytes": 15160
+    }
+  ],
+  "owner_approval": {
+    "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/OWNER_APPROVAL_2026-09-08.md",
+    "sha256": "f23ef8679d792b02f3b720eee3b388b318e9fbb171bad8c49b3b510d13c2eede",
+    "bytes": 4306
+  },
+  "post_owner_review": {
+    "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/POST_OWNER_REVIEW.md",
+    "sha256": "9af867b39698dbc9ae2880bf14a87916071c5252db52a287dcbc6f42109e267f",
+    "bytes": 4295
+  },
+  "post_owner_receipt": {
+    "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/POST_OWNER_REVIEW.json",
+    "sha256": "8ab3413acb5eaee33c80679076020672ac190d1462b250ddf582c1f6e4c3ade4",
+    "bytes": 3773
+  },
+  "registration_record": {
+    "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/REGISTRATION_AND_SOURCE_BINDING.md",
+    "sha256": "e56f3a4ec89f75fda7672b3d7abdb99412e82c980fea5fb148eb804ca78fb87d",
+    "bytes": 5265
+  },
+  "allocated_final_identities": [
+    "SCI-VAL_PROFILE_REGISTRY v0.1/r0.3-map-v0.2-r0.4-2026-09-08",
+    "SCI-VAL_SOURCE_BINDING_REGISTER v0.1/r0.3-map-v0.2-r0.4-2026-09-08",
+    "SCI-MAP_SOURCE_BINDING v0.2/r0.4-2026-09-08",
+    "SCI-MAP_PRODUCT_ROLE_REGISTRY v0.2/r0.4-2026-09-08",
+    "SCI-MAP:map_upstream_admission@2 / SCI-MAP-v0.2-r0.4-2026-09-08"
+  ],
+  "shared_authority": {
+    "identity": "SCI-MAP-v0.2-SHARED-AUTHORITY/r0.4",
+    "sha256": "3b81ea8180dcc3f5f37964ac1177feb417fef6a1cdcc590b33f9431b54bc1e31"
+  },
+  "scope_axes": {
+    "generic_science": "accepted and frozen",
+    "profile_policy_approval": "complete",
+    "final_identity_allocation": "complete",
+    "post_owner_consistency": "passed",
+    "registration": "pending until exact reviewed canonical incorporation; then registered inactive",
+    "formal_source_binding": "pending until exact reviewed canonical incorporation; then complete",
+    "activation_evaluability": "unavailable",
+    "object_decisions": "not supplied",
+    "implementation": "not assessed"
+  },
+  "canonical_effect": "Only after exact merge review passes and the unchanged admitted content/record is actually on canonical ancestry. External completion receipt binds actual merge and advance.",
+  "review_scope": "Document/authority preservation and status only; prior exact-source PDF QA inherited; no application qualification.",
+  "seal_rule": "All accepted bytes and previous records preserved. Manifest excludes its own hash and future containing commit."
+}
