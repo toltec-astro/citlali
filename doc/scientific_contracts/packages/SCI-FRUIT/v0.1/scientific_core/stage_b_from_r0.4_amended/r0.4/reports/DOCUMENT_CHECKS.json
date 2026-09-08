@@ -1,0 +1,117 @@
+{
+  "scope": "Document checks only; numerical comparisons blocked, evidence artifacts not produced.",
+  "core_identity": "SCI-FRUIT-NORMATIVE-CORE v0.1/r0.4",
+  "core_source_inventory_sha256": "3dc912d9f6a58d9f92561ad10b9442485c5b47232e5327389d2fb3b89c296e92",
+  "source_inventory_counts": {
+    "CORE_SOURCES.sha256": 7,
+    "CORE_DOCUMENT_SOURCES.sha256": 10,
+    "RATIONALE_DOCUMENT_SOURCES.sha256": 11,
+    "ECS_DOCUMENT_SOURCES.sha256": 11
+  },
+  "preserved_input_files": 134,
+  "prior_r02_payloads_verified": 107,
+  "prior_r03_archive_verified": true,
+  "exact_b2_b3_boundary_source_verified": true,
+  "restored_normownership_spans": 2,
+  "accepted_r03_science_byte_preservation_verified": true,
+  "preserved_sidecars_verified": 8,
+  "exact_ptc_source_verified": true,
+  "requirements": 24,
+  "assumptions": 6,
+  "predictions": 20,
+  "canonical_modules": 6,
+  "normative_macros": 19,
+  "core_declared_products": 32,
+  "base_model_roles": 12,
+  "response_roles": 7,
+  "uncertainty_grammar_tokens": 13,
+  "successful_producer_stages": [
+    "requested",
+    "effective",
+    "application_scope_resolved",
+    "applied",
+    "iteration_realized",
+    "complete_iteration_candidate",
+    "completion_decided",
+    "completed_iteration",
+    "published"
+  ],
+  "canonical_equation_macros": [
+    "EqComposition",
+    "EqMap",
+    "EqLinear",
+    "EqDerivative",
+    "EqShift",
+    "EqCovariance",
+    "EqNOI",
+    "EqPTC",
+    "EqPTCAffine"
+  ],
+  "rationale_equation_imports": [
+    "EqComposition",
+    "EqMap",
+    "EqLinear",
+    "EqDerivative",
+    "EqPTC",
+    "EqPTCAffine",
+    "EqCovariance",
+    "EqNOI"
+  ],
+  "evidence_result_vocabulary": [
+    "pass",
+    "fail",
+    "blocked",
+    "not_applicable",
+    "not_assessed"
+  ],
+  "numerical_fixtures_instantiated": 0,
+  "numerical_results_pass": 0,
+  "source_and_view_identity_verified": true,
+  "all_clean_build_pdf_bytes_identical": true,
+  "tex_diagnostics": 0,
+  "in_tree_local_links_checked": 385,
+  "outer_self_links": 0,
+  "new_independent_review_rounds": 0,
+  "visual_record_verified": true,
+  "pdfs": {
+    "core": {
+      "pages": 28,
+      "sha256": "86ffefab210439d095a0955fc133afa717a8d3b91fad0149d794cb4c256a6687",
+      "metadata": {
+        "/Creator": "LaTeX with hyperref",
+        "/Title": "SCI-FRUIT-NORMATIVE-CORE v0.1/r0.4",
+        "/Subject": "SCI-FRUIT v0.1/r0.4 review candidate; not approved, frozen or activated; numerical methods unavailable",
+        "/Author": "Grant Wilson",
+        "/Keywords": "SCI-FRUIT, Stage B, r0.4, conditional, owner review",
+        "/Producer": "xdvipdfmx (0.1)",
+        "/CreationDate": "D:20260908000000-00'00'"
+      }
+    },
+    "rationale": {
+      "pages": 10,
+      "sha256": "ac980a74ad33d6daf5a41dbe5cd138ff5a61ec1ca7b6f35c0ac8e4151075b397",
+      "metadata": {
+        "/Creator": "LaTeX with hyperref",
+        "/Title": "SCI-FRUIT-SCIENTIFIC-RATIONALE v0.1/r0.4",
+        "/Subject": "SCI-FRUIT v0.1/r0.4 review candidate; not approved, frozen or activated; numerical methods unavailable",
+        "/Author": "Grant Wilson",
+        "/Keywords": "SCI-FRUIT, Stage B, r0.4, conditional, owner review",
+        "/Producer": "xdvipdfmx (0.1)",
+        "/CreationDate": "D:20260908000000-00'00'"
+      }
+    },
+    "ecs": {
+      "pages": 13,
+      "sha256": "0805c7ffd9d6165f058bc23775e4713a6c8da1a03261195752176d0190a821c1",
+      "metadata": {
+        "/Creator": "LaTeX with hyperref",
+        "/Title": "SCI-FRUIT-ENGINEERING-CONFORMANCE v0.1/r0.4",
+        "/Subject": "SCI-FRUIT v0.1/r0.4 review candidate; not approved, frozen or activated; numerical methods unavailable",
+        "/Author": "Grant Wilson",
+        "/Keywords": "SCI-FRUIT, Stage B, r0.4, conditional, owner review",
+        "/Producer": "xdvipdfmx (0.1)",
+        "/CreationDate": "D:20260908000000-00'00'"
+      }
+    }
+  }
+}

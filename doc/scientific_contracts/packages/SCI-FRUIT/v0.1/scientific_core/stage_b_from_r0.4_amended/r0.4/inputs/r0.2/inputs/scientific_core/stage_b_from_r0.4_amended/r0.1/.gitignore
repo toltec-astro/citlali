@@ -1,0 +1,4 @@
+qa/cache/
+qa/build/
+qa/renders/
+qa/__pycache__/

@@ -1,0 +1,753 @@
+SCI-FRUIT v0.1 r0.2 — TARGETED STAGE B
+NORMATIVE-CORE, RESPONSE-CONDITIONING, NOI-BOUNDARY,
+PRODUCT-LIFECYCLE, AND ENGINEERING-CONFORMANCE DIRECTIVE
+
+The SCI-FRUIT r0.1 conditional scientific architecture is accepted as the
+basis for one targeted Stage B revision.
+
+Do not perform another broad FRUIT derivation.
+
+Preserve:
+
+- the separation among program-order authority, conditional-composition
+  authority, and numerical-method authority;
+- no approved numerical FRUIT method or route;
+- FRUIT-FEEDBACK-METHOD v0.1 as a required-record family;
+- method-specific FRUIT-FEEDBACK-METHOD/<method-name>@<revision> identities;
+- exact candidate, accepted, and applied model roles and spaces;
+- the applied model as the removal and rejoin operand;
+- exact additive/reference/gauge/null-space compatibility;
+- rho_k = y_k^in - Pi_k(m_k^applied);
+- z_k = F_k(rho_k) + B_k(m_k^applied);
+- the fixed-linear hierarchy and D_k only under complete linearity;
+- immutable original measured-parent ancestry;
+- no default iteration-input recurrence;
+- distinct method, state, iteration, application, branch, and lineage identity;
+- the seven operation/state categories;
+- all eight support and influence roles;
+- residual-and-model, residual-only, model-only, and unavailable occurrence
+  classes;
+- model_or_prior_supported as mode-origin state rather than measured support;
+- no acquired exposure or independent observation from iteration or rejoin;
+- the seven response-query scopes, subject to the conditioning repair below;
+- the complete four-term parent/applied-model covariance;
+- separate fixed-state, dependent-successor, and per-realization-relearned NOI
+  methods;
+- continuation, restart, convergence, resource limit, terminal selection, and
+  consumer fitness as distinct claims;
+- the nine terminal-selection fields;
+- local completion separate from downstream Pointing, OOF, source, catalog, or
+  production fitness;
+- SCI-FRUIT-PRED-001 through PRED-020;
+- every current nonclaim.
+
+Do not inspect implementation, configuration, schemas, defaults, tests, audits,
+repairs, validation products, reductions, accepted runs, performance evidence,
+production material, Unity material, adjacent-package implementation, web
+sources, or undocumented practice.
+
+Preserve existing requirement, assumption, and prediction identities where
+their scientific obligation is unchanged. Append new IDs only for genuinely
+new independent obligations.
+
+======================================================================
+1. CREATE ONE EXACT SHARED NORMATIVE SCIENTIFIC CORE
+======================================================================
+
+Create a canonical artifact:
+
+    SCI-FRUIT-NORMATIVE-CORE v0.1/r0.2.
+
+The core shall be the sole normative scientific source.
+
+It shall contain exact, stable modules or sections for:
+
+- notation and typed spaces;
+- definitions and ownership;
+- equations;
+- assumptions;
+- product roles;
+- lifecycle and state identities;
+- support and information origin;
+- response families;
+- uncertainty families;
+- exact normative requirements;
+- falsifiable predictions;
+- typed unavailability and edge behavior.
+
+Convert the current 24 requirement crosswalk rows into exact normative
+requirements:
+
+    SCI-FRUIT-REQ-001 through SCI-FRUIT-REQ-024.
+
+Each shall contain its own complete authoritative statement with normative
+force. A crosswalk summary or an engineering interpretation shall not be the
+only location of the requirement.
+
+Retain:
+
+    SCI-FRUIT-ASM-001 through SCI-FRUIT-ASM-006
+
+and:
+
+    SCI-FRUIT-PRED-001 through SCI-FRUIT-PRED-020.
+
+The rationale and ECS shall both import or cite the identical core by exact
+identity and SHA-256. Neither view may author broader science.
+
+======================================================================
+2. PRODUCE A REAL ENGINEERING CONFORMANCE SPECIFICATION
+======================================================================
+
+The current engineering PDF substantially reproduces the scientist document in
+another order. Replace it with a prospective implementation-facing evidence
+procedure.
+
+Define one exact conformance candidate tuple containing at least:
+
+- implementation/source identity;
+- build and runtime/environment identity;
+- SCI-FRUIT core identity and digest;
+- method-specific FRUIT-FEEDBACK-METHOD identity and digest;
+- exact parent route and generation;
+- candidate/accepted/applied model generations;
+- resolved operation graph and state generations;
+- iteration/branch/application identity;
+- output product generation;
+- evidence generation.
+
+Define one requirement-level evidence record containing:
+
+- requirement ID;
+- candidate identity;
+- exact observable;
+- immutable fixture;
+- independent oracle or expected-value construction;
+- preregistered comparison;
+- result;
+- artifacts;
+- reviewer and date;
+- deviation/failure disposition.
+
+Use one exact engineering result vocabulary, for example:
+
+    pass
+    fail
+    not_assessed
+    not_applicable
+
+with any dependency-blocked result recorded explicitly and never counted as
+pass.
+
+A finite numerical payload, successful process exit, familiar filename, or
+shared array shape is not evidence of conformance.
+
+The ECS shall define prospective evidence procedures for:
+
+- exact parent and method binding;
+- accepted-to-applied model transformation;
+- operation order, bypass locations, and application counts;
+- additive/reference/gauge compatibility;
+- support and information-origin propagation;
+- fail-closed missing or incompatible inputs;
+- limiting-case equations;
+- state and generation identity;
+- continuation replay;
+- restart and retry behavior;
+- response queries;
+- covariance propagation;
+- NOI parity;
+- terminal selection;
+- publication and immutable parentage.
+
+Where no numerical method is approved, the numerical conformance result is
+not_assessed or blocked by the exact named dependency. It is never pass by
+virtue of the generic contract.
+
+Include:
+
+- requirement-to-evidence index;
+- prediction-to-fixture index;
+- source/build/core parity procedure;
+- blank conformance-result template;
+- explicit distinction among engineering conformance, response/representation
+  fidelity, uncertainty coverage, observational validation, performance,
+  readiness, and production authorization.
+
+======================================================================
+3. SEPARATE FIXED NUMERICAL RESPONSE FROM FIXED-RULE RECOMPUTATION
+======================================================================
+
+The r0.1 wording says RF-01/RF-02 hold declared maps and state fixed, but later
+requires prescribed coefficients to be recomputed under a perturbed operand.
+
+Make the response conditioning exact.
+
+Preferred disposition:
+
+A. RF-01 fixed one-step measured-input response
+
+Hold fixed:
+
+- the realized numerical Pi_k, F_k, and B_k maps;
+- every numerical coefficient;
+- the applied model;
+- support;
+- reference/gauge/null-space state;
+- branch;
+- all other consequential state.
+
+Perturb only y_k^in.
+
+B. RF-02 fixed one-step applied-model response
+
+Hold fixed:
+
+- the realized numerical Pi_k, F_k, and B_k maps;
+- every numerical coefficient;
+- the measured input;
+- support;
+- reference/gauge/null-space state;
+- branch;
+- all other consequential state.
+
+Perturb only m_k^applied.
+
+C. RF-03 one-iteration full-procedure response
+
+Rerun every coefficient, model, support, selection, or state realization that
+the unchanged iteration rule prescribes, while holding prior S_k and the
+upstream producer procedure/state fixed.
+
+A fixed-structure/recomputed-coefficient procedure may claim RF-01/RF-02 only
+when an exact proof establishes that its complete induced numerical input-output
+map is one fixed operator on the declared domain and support.
+
+Otherwise its prescribed recomputation belongs to RF-03 or another separately
+typed procedure response.
+
+Freezing coefficient values when the declared procedure recomputes them changes
+the query. Recomputing coefficients when the declared response freezes them
+also changes the query.
+
+Update RF-01, RF-02, RF-03, REQ-012/013, PRED-006/009/010, the PTC
+application crosswalk, and the ECS response evidence.
+
+======================================================================
+4. ADD THE GENERAL DIFFERENTIABLE FIXED-STATE RESPONSE
+======================================================================
+
+When Pi_k, F_k, and B_k are differentiable on exact compatible tangent spaces,
+with every declared state and support fixed, define:
+
+    J_(z<-y,k)^fixed
+      =
+      D F_k evaluated at rho_k;
+
+    J_(z<-m,k)^fixed
+      =
+      D B_k evaluated at m_k^applied
+      -
+      [D F_k evaluated at rho_k]
+      o
+      [D Pi_k evaluated at m_k^applied].
+
+Bind:
+
+- tangent/reference/gauge spaces;
+- perturbation units and basis;
+- baseline;
+- support;
+- codomain;
+- derivative convention;
+- conditioning.
+
+Under complete fixed linearity these reduce to:
+
+    J_(z<-y,k)^fixed = A_k
+
+    J_(z<-m,k)^fixed = D_k.
+
+If differentiability, branch comparability, support comparability, or gauge
+compatibility fails, the requested response is unavailable or a separately
+typed finite-difference/state-transition object.
+
+Do not substitute the fixed derivative for RF-03, RF-04, RF-05, RF-06, or
+RF-07.
+
+======================================================================
+5. REPAIR THE FIXED-STATE NOI ACTION AND CENTERING
+======================================================================
+
+Distinguish a complete science-product map from a centered perturbation map.
+
+For a full parent realization Y_b with fixed applied model:
+
+    Z_b
+      =
+      A_k Y_b
+      +
+      D_k m_k^applied
+
+under the complete fixed-linear premises.
+
+Its center is:
+
+    E[Z_b]
+      =
+      A_k E[Y_b]
+      +
+      D_k m_k^applied.
+
+For a centered perturbation delta Y_b with fixed model and state:
+
+    delta Z_b
+      =
+      A_k delta Y_b.
+
+The deterministic model-path term shall not be added to every zero-centered
+perturbation realization.
+
+Every FRUIT-to-NOI boundary shall state whether an ensemble member represents:
+
+- a full parent realization;
+- a centered perturbation;
+- a residual;
+- a complete FRUIT output;
+- or another exact quantity.
+
+For the current ordinary SCI-NOI ensemble whose admitted target mean is zero
+and whose initial uncertainty product is an uncentered second moment about
+that known zero, use the compatible centered-perturbation action unless a
+separately approved nonzero-center ensemble/estimator exists.
+
+Do not apply the complete affine FRUIT science-product map to zero-centered
+members and then call the uncentered second moment a zero-centered uncertainty.
+
+A full-affine-member route requires:
+
+- exact member center;
+- transformed center;
+- exact centering or second-moment convention;
+- response and support parity;
+- compatible uncertainty estimator;
+- separately bound method identity.
+
+Per-realization relearning of the model, support, cleaner, coefficients,
+stopping, or terminal selector remains a separate method and ensemble.
+
+Update REQ-016, PRED-011/018, the uncertainty section, method-record template,
+and FLT/NOI boundary language.
+
+======================================================================
+6. KEEP STOCHASTIC CONDITIONING PRE-OUTCOME
+======================================================================
+
+Replace any ambiguous use of Omega_k^FRUIT with one exact pre-outcome
+conditioning object, provisionally:
+
+    Omega_(k,pre)^FRUIT.
+
+It may bind:
+
+- parent role, population, method, and generation;
+- exact stochastic-law identity;
+- operators and operator rules;
+- support and domains;
+- reference/gauge/null-space coordinates;
+- resolved state;
+- grouping;
+- fixed selection rules;
+- assumptions.
+
+It shall not condition a stochastic target on:
+
+- the realized numerical parent values;
+- the realized applied-model values when model variance is being estimated;
+- successful execution;
+- a selected favorable branch;
+- convergence;
+- terminal selection;
+- publication;
+- censoring;
+- or a draw-dependent domain.
+
+If the realized applied model is deliberately conditioned fixed, state that
+target explicitly. Its covariance and parent-model cross terms then vanish only
+inside that narrower conditional target, and model-learning variation remains
+omitted.
+
+If the applied model is random, retain its covariance and both parent-model
+cross terms.
+
+Do not call these two uncertainty targets equivalent.
+
+======================================================================
+7. TYPE MODEL-ERROR TRANSFER BEFORE CLAIMING BIAS
+======================================================================
+
+Retain the exact fixed-linear relation:
+
+    Delta z_k^model
+      =
+      D_k delta m_k^applied.
+
+Name this primary object:
+
+    model_error_transfer
+
+or:
+
+    model_induced_output_shift.
+
+It is not automatically bias.
+
+Define a model-induced bias only when the method supplies:
+
+- one exact target estimand;
+- one reference or truth model;
+- a declared model-error random variable;
+- a probability law;
+- exact conditioning.
+
+Then:
+
+    b_(z,k)^model
+      =
+      E[D_k delta m_k^applied | Omega_(k,pre)^FRUIT].
+
+If no target/reference model or expectation authority exists, bias is
+unavailable while the declared output shift or sensitivity may remain
+available.
+
+Accepted-model error must be transformed through the exact
+accepted-to-applied relation before it can enter this equation.
+
+Update Equation 4 interpretation, PRED-005, uncertainty roles, and product
+vocabulary.
+
+======================================================================
+8. SEPARATE MODEL-STAGE UNCERTAINTY ROLES
+======================================================================
+
+Do not use one undifferentiated
+“candidate/accepted/applied model covariance” state.
+
+Keep separately addressable:
+
+- candidate-model/prior uncertainty;
+- candidate-selection uncertainty;
+- accepted-model covariance;
+- acceptance-to-application transformation uncertainty;
+- applied-model covariance;
+- measured-parent/applied-model cross covariance;
+- external-prior uncertainty;
+- model-mismatch and bias.
+
+An accepted-model covariance becomes an applied-model covariance only through
+the exact transformation and dependence rules.
+
+Storage in one container is allowed only when every role, domain, unit,
+conditioning, availability, cause, generation, and omitted term remains
+lossless.
+
+======================================================================
+9. DEFINE STABLE PRODUCT ROLES AND AN ORDERED PRODUCER LIFECYCLE
+======================================================================
+
+Create exact product identities for at least:
+
+    SCI-FRUIT/ITERATION-RESULT
+    SCI-FRUIT/ITERATION-BUNDLE
+    SCI-FRUIT/SUCCESSOR-STATE
+    SCI-FRUIT/CONTINUATION-STATE
+    SCI-FRUIT/PATH-SUPPORT
+    SCI-FRUIT/INFORMATION-ORIGIN
+    SCI-FRUIT/RESPONSE/<RF-role>
+    SCI-FRUIT/UNCERTAINTY/<role>
+    SCI-FRUIT/TERMINAL-SELECTION
+    SCI-FRUIT/TERMINAL-PRODUCT.
+
+Use an ordered local lifecycle such as:
+
+    not_requested
+    requested
+    effective
+    unavailable
+    application_scope_resolved
+    applied
+    iteration_realized
+    complete_iteration_candidate
+    completion_decided
+    completed_iteration
+    published
+    failed
+    not_produced
+    superseded.
+
+Define:
+
+- applied:
+    the exact resolved operation was invoked;
+
+- iteration_realized:
+    immutable numerical path values and execution-outcome records exist;
+
+- complete_iteration_candidate:
+    every universal and method-required role has an exact value or a
+    core/method-permitted typed status;
+
+- completion_decided:
+    the FRUIT-owned local completion decision exists;
+
+- completed_iteration:
+    the candidate satisfies the exact local completion rule;
+
+- published:
+    the immutable completed product is exposed under its product role.
+
+Do not fabricate later lifecycle records after an earlier unavailable or failed
+terminal state. Preserve every stage actually reached.
+
+A terminal selection consumes one or more completed iterations and creates a
+separate immutable selector record. It never mutates a selected iteration.
+
+A downstream Pointing, OOF, source, catalog, or production-use decision is a
+separate child decision and is not required for base local completion.
+
+======================================================================
+10. REQUIRE TERMINAL-CANDIDATE COMPARABILITY
+======================================================================
+
+A terminal-selection population shall contain scientifically comparable
+candidates.
+
+Every candidate shall share, or be mapped by one exact selector-owned
+transformation into, a common:
+
+- scientific quantity and role;
+- unit and scale;
+- frame/grid/domain;
+- additive reference/gauge;
+- response meaning;
+- support comparison domain;
+- method and generation relation;
+- uncertainty/metric meaning.
+
+Equal array shape or a common scalar diagnostic is not comparability.
+
+If the selector compares different methods, routes, groupings, gauges,
+generations, or support domains, the exact conversion and comparison rule is
+part of the terminal-selection method identity.
+
+The selector shall retain:
+
+- every candidate and inclusion/exclusion state;
+- every conversion;
+- ties;
+- unavailable comparisons;
+- causes;
+- selected-terminal response;
+- selected-terminal uncertainty.
+
+No final, latest, lowest-residual, or visually favorable iteration is selected
+by default.
+
+======================================================================
+11. KEEP LOCAL COMPLETION INDEPENDENT OF DOWNSTREAM USE
+======================================================================
+
+FRUIT owns:
+
+- local iteration completeness;
+- recurrence;
+- convergence and stopping;
+- terminal selection;
+- local product publication.
+
+Downstream owners retain:
+
+- Pointing admission;
+- OOF admission;
+- source-inference admission;
+- catalog admission;
+- production fitness.
+
+SCI-VAL may bind and evaluate an exact owner-approved use policy. It does not
+run FRUIT, advance the recurrence, select the model, or choose the terminal
+iteration.
+
+An absent, unrequested, unavailable, incomplete, failed, or not-produced
+downstream decision shall not erase an otherwise complete FRUIT iteration or
+terminal product.
+
+Later downstream decisions reference the immutable FRUIT parent and do not
+mutate it or create a new FRUIT iteration generation.
+
+======================================================================
+12. SEPARATE THE THREE DOCUMENT ROLES
+======================================================================
+
+Produce three canonical views.
+
+A. SCI-FRUIT-NORMATIVE-CORE
+
+Contains the exact science, including all requirements, assumptions,
+predictions, product roles, and lifecycle states.
+
+B. SCI-FRUIT-SCIENTIFIC-RATIONALE
+
+Retain:
+
+- scientific motivation;
+- conditional composition;
+- three model roles;
+- support and information origin;
+- key response and covariance equations;
+- iteration/continuation/terminal interpretation;
+- present unavailability and claim ceilings.
+
+Do not reproduce the complete requirement crosswalk, full method-record
+template, complete prediction register, or engineering evidence procedure.
+
+Soft target: 8–10 readable pages.
+
+C. SCI-FRUIT-ENGINEERING-CONFORMANCE
+
+Contain only:
+
+- conformance object;
+- evidence model;
+- record contracts;
+- requirement-to-evidence index;
+- prediction-to-fixture index;
+- comparison and numerical-policy requirements;
+- response/covariance/NOI evidence procedures;
+- continuation and terminal-selection tests;
+- source/build/parity controls;
+- result and nonclaim rules.
+
+Do not reproduce the complete scientific rationale.
+
+Soft target: 10–14 readable pages.
+
+The normative core may be approximately 16–20 pages. Page targets are editorial
+guides, not permission to reduce typography or remove science.
+
+Optional full archival views may append the core, but the concise rationale and
+ECS shall remain the canonical reading surfaces.
+
+======================================================================
+13. SOURCE, OWNER, AND BUILD CLOSURE
+======================================================================
+
+Return the exact bytes of:
+
+- all eleven admitted Stage A payloads;
+- SOURCE_IDENTITIES.md;
+- the exact amended Stage A packet;
+- owner approval/launch control;
+- OWNER_LEDGER.md;
+- DECISION_LOG.md;
+- normative-core source modules;
+- rationale source;
+- ECS source;
+- build recipe and exact tools;
+- requirement/prediction traceability;
+- source/core/view parity report;
+- clean-build report;
+- PDF render/metadata report;
+- complete manifest and sidecars.
+
+Every cover shall identify:
+
+- scientific owner: Grant Wilson;
+- document identity and revision;
+- status;
+- Stage A packet identity and SHA-256;
+- owner directive/approval identity and SHA-256;
+- normative-core identity and SHA-256;
+- document-source identity and SHA-256;
+- build-record identity;
+- date.
+
+Use distinct PDF metadata titles for the core, rationale, and ECS.
+
+A source or digest that cannot be reproduced returns only its dependent claim
+to typed unavailability.
+
+======================================================================
+14. REQUIRED PREDICTION REPAIRS
+======================================================================
+
+Preserve SCI-FRUIT-PRED-001 through PRED-020.
+
+Amend existing predictions where the same obligation is being clarified.
+
+Add new prediction IDs only if needed for genuinely independent obligations.
+
+Ensure explicit fixtures or deductions cover:
+
+- fixed numerical operator versus prescribed coefficient recomputation;
+- general differentiable response reducing to A_k and D_k under complete
+  linearity;
+- a zero-centered NOI perturbation receiving A_k delta y and not a deterministic
+  rejoin term;
+- a full affine ensemble requiring its exact transformed center;
+- pre-outcome conditioning versus conditioning on a realized model;
+- model-induced output shift versus bias;
+- accepted-to-applied uncertainty transformation;
+- terminal candidate comparability;
+- lifecycle early stop without fabricated later records;
+- downstream-use failure without mutation of local FRUIT completion.
+
+======================================================================
+15. MECHANICAL PREFLIGHT
+======================================================================
+
+Verify:
+
+- one exact shared normative core;
+- SCI-FRUIT-REQ-001 through REQ-024 remain gap-free;
+- SCI-FRUIT-ASM-001 through ASM-006 remain gap-free;
+- SCI-FRUIT-PRED-001 through PRED-020 remain gap-free;
+- exact equation, role, state, response, uncertainty, and prediction parity;
+- no fixed-map/fixed-rule ambiguity;
+- no zero-centered NOI affine-offset ambiguity;
+- no incomplete producer lifecycle;
+- no unstated terminal-comparison mapping;
+- no unresolved bundle-local links;
+- all source hashes reproduce;
+- all PDFs reopen and render without clipping, overlap, malformed equations,
+  broken glyphs, or unreadable tables;
+- titles, owner, revision, date, status, and PDF metadata agree.
+
+======================================================================
+16. DELIVERABLES
+======================================================================
+
+Return:
+
+1. SCI-FRUIT-NORMATIVE-CORE v0.1/r0.2;
+2. concise SCI-FRUIT Scientific Rationale r0.2;
+3. actual Engineering Conformance Specification r0.2;
+4. fixed-numerical versus recomputed-rule response amendment;
+5. general differentiable-response amendment;
+6. centered-perturbation versus full-product NOI boundary;
+7. pre-outcome conditioning amendment;
+8. model-error-transfer and bias amendment;
+9. model-stage uncertainty crosswalk;
+10. product-role and ordered-lifecycle table;
+11. terminal-candidate comparability rule;
+12. requirement-to-evidence index;
+13. prediction-to-fixture index;
+14. exact source/build/authority packet;
+15. semantic-change and core/view parity reports;
+16. PDF visual-QA and metadata report;
+17. proposed conditional scientific-owner disposition.
+
+Do not claim a numerical FRUIT method, numerical route, implementation
+conformity, response or covariance fidelity, recovered measured modes,
+uncertainty coverage, convergence adequacy, Pointing/OOF/catalog fitness,
+observational validation, performance, readiness, production suitability,
+production authorization, or Unity activity.

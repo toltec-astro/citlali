@@ -1,0 +1,5 @@
+# Bounded author verification record - r0.4
+
+The owner accepted the r0.3 fixed-operator repair and requested only a boundary restoration. The author compared exact admitted B2-B3, the two affected NormOwnership spans, the rendered core and derived crosswalks. The accepted equations and closed scientific sections were checked by byte equality, not rederived. [Change report](../BOUNDARY_CHANGE_REPORT.md), [source crosswalk](../R0.3_TO_R0.4_CROSSWALK.md).
+
+No independent derivation, independent review round, broad scientific revision or compression pass was commissioned. Historical independent reports remain in the exact prior deliveries and do not certify changed bytes. Source/mechanical/visual checks are document verification only. Grant Wilson’s separate conditional scientific-freeze decision is pending. No numerical FRUIT availability, implementation conformity, response/covariance fidelity, uncertainty coverage, recovered measured mode, convergence adequacy, downstream fitness, observational validation, performance, readiness, production suitability/authorization or Unity activity is established.

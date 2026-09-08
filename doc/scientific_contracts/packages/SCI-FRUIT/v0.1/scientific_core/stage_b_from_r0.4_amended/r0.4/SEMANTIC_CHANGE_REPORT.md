@@ -1,0 +1,7 @@
+# Semantic-change report - r0.4
+
+Complete sole current Stage B review-candidate normative core: SCI-FRUIT-NORMATIVE-CORE v0.1/r0.4. Canonical source-inventory SHA-256: `3dc912d9f6a58d9f92561ad10b9442485c5b47232e5327389d2fb3b89c296e92`. Owner approval, freeze, Registry registration and activation are not established. Numerical methods/routes remain unavailable_pending_separate_owner_approval.
+
+[The short change report](BOUNDARY_CHANGE_REPORT.md) is the complete semantic delta. Two NormOwnership spans restore the admitted analysis/gridding-coefficient boundary. The accepted response specialization is untouched. The [exact source crosswalk](R0.3_TO_R0.4_CROSSWALK.md) distinguishes that restoration from revision/provenance-only changes.
+
+All 24 requirements, six assumptions and twenty predictions retain their obligations and IDs. No numerical method, route, value, fixture, evidence plan, experiment, replay, reduction, scientific validation or production activity is supplied. No broad revision, independent derivation, independent review round or document-compression pass was commissioned. No numerical FRUIT availability, implementation conformity, response/covariance fidelity, uncertainty coverage, recovered measured mode, convergence adequacy, downstream fitness, observational validation, performance, readiness, production suitability/authorization or Unity activity is established.

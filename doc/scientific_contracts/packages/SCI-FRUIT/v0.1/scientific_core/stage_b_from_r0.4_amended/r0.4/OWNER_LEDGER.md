@@ -1,0 +1,7 @@
+# Owner-disposition ledger - r0.4
+
+Complete sole current Stage B review-candidate normative core: SCI-FRUIT-NORMATIVE-CORE v0.1/r0.4. Canonical source-inventory SHA-256: `3dc912d9f6a58d9f92561ad10b9442485c5b47232e5327389d2fb3b89c296e92`. Owner approval, freeze, Registry registration and activation are not established. Numerical methods/routes remain unavailable_pending_separate_owner_approval.
+
+The [current directive](inputs/OWNER_DIRECTIVE_R0.4.txt) accepts the r0.3 response/authority/delivery corrections and closes those issues. It authorizes only restoration of the admitted analysis/gridding-coefficient producer/consumer boundary, verification and successor document delivery. Stage A remains frozen; exact earlier decisions remain in the [preserved ledger](inputs/r0.2/OWNER_LEDGER.md).
+
+A separate explicit Grant Wilson decision is required to conditionally freeze the exact r0.4 generic core. [Proposed disposition](PROPOSED_OWNER_DISPOSITION.md) is not an executed decision. Every numerical method/route remains unavailable_pending_separate_owner_approval. No Registry record or activation is created. No numerical FRUIT availability, implementation conformity, response/covariance fidelity, uncertainty coverage, recovered measured mode, convergence adequacy, downstream fitness, observational validation, performance, readiness, production suitability/authorization or Unity activity is established.

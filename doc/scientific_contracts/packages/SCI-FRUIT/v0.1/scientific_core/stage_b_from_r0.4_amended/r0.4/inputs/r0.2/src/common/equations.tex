@@ -1,0 +1,275 @@
+% Canonical equation macros: reused verbatim by views; science authority is core.
+\newcommand{\EqComposition}{\begin{equation}\begin{aligned}
+\rho_k&=\yin-\Pi_k(\ma),&z_k&=F_k(\rho_k)+B_k(\ma).
+\end{aligned}\label{eq:composition}\end{equation}}
+\newcommand{\EqMap}{\begin{equation}z_k=A_k\yin-A_k[\Pi_k(\ma)]+B_k(\ma).\label{eq:map}\end{equation}}
+\newcommand{\EqLinear}{\begin{equation}D_k:=B_k-A_k\circ\Pi_k,\qquad z_k=A_k\yin+D_k\ma.\label{eq:linear}\end{equation}}
+\newcommand{\EqDerivative}{\begin{equation}\begin{aligned}
+J_{z\leftarrow y,k}^{\mathrm{fixed}}&=\mathrm{D}F_k|_{\rho_k},\\
+J_{z\leftarrow m,k}^{\mathrm{fixed}}&=\mathrm{D}B_k|_{\ma}
+ -(\mathrm{D}F_k|_{\rho_k})\circ(\mathrm{D}\Pi_k|_{\ma}).
+\end{aligned}\label{eq:derivative}\end{equation}}
+\newcommand{\EqShift}{\begin{equation}\begin{aligned}
+\Delta z_k^{\mathrm{model}}&=z_k(m_{\mathrm{ref}}^{\ap}+\delta m_k^{\ap})-z_k(m_{\mathrm{ref}}^{\ap})=D_k\delta m_k^{\ap},\\
+b_{z,k}^{\mathrm{model}}&=\mathbb E_{\mathcal L}[D_k\delta m_k^{\ap}\mid\Op]
+\quad\text{only with exact bias authority.}
+\end{aligned}\label{eq:shift}\end{equation}}
+
+\newcommand{\EqCovariance}{\begin{equation}\begin{aligned}
+C_z^{\mathrm{FRUIT}}={}&A_kC_{yy}^{\mathrm{FRUIT}}A_k^{\mathsf T}
+ +D_kC_{mm}^{\mathrm{FRUIT}}D_k^{\mathsf T}\\
+ &+A_kC_{ym}^{\mathrm{FRUIT}}D_k^{\mathsf T}
+ +D_kC_{my}^{\mathrm{FRUIT}}A_k^{\mathsf T}.
+\end{aligned}\label{eq:covariance}\end{equation}}
+\newcommand{\EqNOI}{\begin{equation}\begin{aligned}
+z_{k,b}^{\mathrm{full}}&=A_k y_{k,b}^{\mathrm{full}}+D_k\ma,\\
+\mathbb E_{\mathcal L}[z_{k,b}^{\mathrm{full}}\mid\Op]
+ &=A_k\mathbb E_{\mathcal L}[y_{k,b}^{\mathrm{full}}\mid\Op]+D_k\ma,\\
+\mathbb E_{\Lnoi}[\delta y_{k,b}^{\mathrm{NOI}}\mid\Onoi]&=0,
+&\delta z_{k,b}^{\mathrm{NOI}}&=A_k\delta y_{k,b}^{\mathrm{NOI}}.
+\end{aligned}\label{eq:noi}\end{equation}}
+
+\newcommand{\NormEquations}{\Unit{Composition, fixed-state derivatives and model-error transfer}{core:equations}{%
+Bind $\Pi_k:M_k\to Y_k$, $F_k:Y_k\to Z_k$, $B_k:M_k\to Z_k$ with
+compatible operand pairs, support, reference/gauge/null-space state and all
+consequential state. The ordinary conditional composition is
+\EqComposition
+$\Pi_k(\ma)$ is the removal contribution; $F_k(\rho_k)$ is processed residual;
+$B_k(\ma)$ is rejoin contribution. The exact operation graph specifies order,
+bypassed operations, removal/rejoin locations and all path application counts.
+No inverse, $\Pi_k=B_k$, equal spaces/supports, universal upstream bypass,
+model truth or unit response is assumed. Unknown contributions are not zero.
+
+Only when the \emph{complete} $F_k=A_k$ is exact fixed linear on the declared
+domain, support and state does distributivity give
+\EqMap
+Nonlinear $\Pi_k/B_k$ keep this map-valued form. Only when $A_k,\Pi_k,B_k$
+are all exact fixed linear maps on compatible vector spaces/coordinates may one use
+\EqLinear
+A fixed basis or coefficient recomputation alone proves neither linearity nor
+nonlinearity; all centering, support and material state count. Affine offsets
+cannot be discarded. Otherwise retain the full composition.
+
+For differentiable fixed numerical maps, the chain rule on exact compatible
+tangent/reference/gauge spaces gives
+\EqDerivative
+Bind baseline, perturbation units/basis, support, tangent domains/codomain,
+derivative convention and fixed conditioning. Complete fixed linearity reduces
+these maps to $A_k$ and $D_k$. Failed differentiability or branch/support/gauge
+comparison makes the derivative unavailable, or permits a separately typed
+finite-difference/state-transition object with its own convention. This fixed
+derivative never substitutes for RF-03--RF-07.
+
+Under complete fixed linearity, the same input/operators and compatible applied
+reference/error space, subtraction of two results gives
+\EqShift
+Here $D_k$ is the \textbf{model-path transfer operator};
+$\Delta z_k^{\mathrm{model}}$ is the \textbf{model-induced output shift}.
+These are distinct products, not interchangeable names. Model mismatch is the
+declared model/reference discrepancy, not covariance or bias by implication.
+Calling the law-qualified expected shift model-induced bias additionally
+requires an exact target estimand, reference/truth model, model-error random
+variable, probability law and its exact law-relative conditioning. Without those, bias is
+unavailable while the declared shift/sensitivity may remain available. Transform
+accepted error through its exact acceptance-to-application relation first.
+}}
+\newcommand{\NormResponseLocal}{\Unit{Response conditioning: fixed numerical maps and one iteration}{core:response-local}{%
+Every response record binds role, perturbation source/domain, units, basis or
+direction, baseline, codomain, derivative or finite-difference convention
+(including limit/step/normalization where relevant), fixed/rerun state,
+recurrence/selector extent, operation counts, generations and conditioning.
+Baseline/perturbed branch, support, state and reference/gauge/null-space
+comparability shall be explicit; changed reference is not silently signal.
+Use all identities/statuses required by method and claim. Catalog membership
+makes no numerical response universally available.
+
+\begin{description}
+\item[RF-01: fixed one-step measured-input response.]
+Perturb only $\yin\in Y_k$. Hold the realized numerical $\Pi_k,F_k,B_k$
+maps, every numerical coefficient, applied model, support, reference/gauge/
+null-space state, branch and every other consequential state fixed. The
+codomain is the compatible $Z_k$ difference/tangent space. No model learning,
+coefficient recomputation, recurrence, stop or selector rerun belongs to this
+query. ``Measured-input'' names the iteration-input path, not a new independent
+measurement or necessarily the original parent.
+\item[RF-02: fixed one-step applied-model response.]
+Perturb only $\ma\in M_k^{\ap}$. Hold the realized numerical
+$\Pi_k,F_k,B_k$, every numerical coefficient, measured iteration input,
+support, reference/gauge/null-space state, branch and every other consequential
+state fixed. Codomain is the compatible $Z_k$ difference/tangent space.
+Candidate or accepted perturbations are separate queries that must include
+their transformations. No acceptance/learning, recurrence or selector is rerun.
+\item[RF-03: one-iteration full-procedure response.]
+Perturb the exact declared one-iteration input, holding prior $S_k$ and upstream
+producer procedure/state fixed. Rerun every construction, coefficient, model,
+support, selection, resolution and application/state realization prescribed
+by the unchanged iteration rule. Bind that iteration's result codomain and
+all branch/support/state transitions. Earlier recurrence and terminal selection
+are outside this local role.
+\end{description}
+A fixed-structure/recomputed-coefficient procedure may claim RF-01/RF-02 only
+when an exact proof establishes its complete induced numerical input-output
+map as one fixed operator on the declared domain/support. The proof must cover
+all material centering, coefficients, support and state. Otherwise prescribed
+recomputation belongs to RF-03 or another separately typed procedure response.
+Numerical coefficients in an RF-01/RF-02 state binding are held fixed; any
+induced-map equivalence must be recorded as such rather than silently changing
+that binding. The PTC ordinary recomputation rule is not redefined.
+
+Freezing coefficients when the declared procedure recomputes them changes the
+query. Recomputing them when the query freezes them also changes the query.
+A change in method-defining rules requires a new method identity and an explicit
+comparison of methods. Changes in realized values under unchanged rules have
+new state/application generations. RF-01/RF-02 fixed derivatives are given by
+the general differentiable relation, and by $A_k,D_k$ only under full linearity.
+}}
+\newcommand{\NormResponseOuter}{\Unit{Recursive, terminal, whole-chain and parent-domain responses}{core:response-outer}{%
+\begin{description}
+\item[RF-04: fixed-sequence recursive response.]
+Perturb the declared recursion input; fix method rules, initial state, upstream
+producer procedure/state and the predeclared sequence or absolute endpoint
+index. Propagate input/model/state dependence through that exact fixed extent.
+Bind recursion-input and result/sequence codomains and query convention.
+Data-dependent sequence length and terminal selection are outside this role.
+\item[RF-05: selected-terminal response.]
+Perturb the declared procedure/selection input, naming fixed initial/upstream
+facts. Include consequential iterations, convergence, stopping, resource
+limits and terminal selection. Bind complete candidate population, conversions,
+comparison rule, causes, terminal-record identity, selected-result codomain
+and query convention. Include branch/support/state/selection transitions.
+\item[RF-06: whole-chain response.]
+Perturb the exact upstream/source query, naming fixed external facts. Rerun
+every included data-dependent upstream producer and the declared FRUIT
+procedure, including its recurrence/terminal extent. Bind upstream/final
+domains, producer identities and query convention; unavailable included
+producer or comparison dependencies remain unavailable.
+\item[RF-07: complete FRUIT-only parent-domain response.]
+Perturb the realized parent-domain payload while holding upstream producer
+operation, learned state and generation fixed. Compose declared parent-domain
+entry with the complete FRUIT procedure, including recurrence and terminal
+selection as applicable. Bind initial FRUIT conditions, parent/final domains,
+query convention and RF-03/RF-04/RF-05 component references. No upstream
+producer is rerun. The numerical query payload is not held fixed.
+\end{description}
+RF-03 is the local one-iteration relation with prior state fixed. RF-04 composes
+fixed extent; RF-05 includes stopping/selection extent. RF-07 is the outer
+parent-domain composition and references those components, not an independent
+alias of any one of them. A one-iteration specialization that reduces to a
+component reuses its exact response/status with that specialization recorded.
+RF-06 reruns the included upstream producers; RF-07 does not. Equal numerical
+values do not erase distinct query identities.
+
+Perturbed parent payloads are separately identified response-query objects
+with immutable baseline-parent ancestry. Fixed producer generation neither
+mutates the measured parent nor claims a new upstream realization. All roles
+retain exact reference/gauge/null-space and branch/support/state/selection
+comparison. Threshold or selection boundaries may destroy a derivative;
+undefined comparisons, missing results and nonexistent derivatives retain
+typed unavailability/discontinuity, with affected scope and cause. A finite
+difference needs its own declared step, normalization and comparison contract;
+a fixed-branch derivative is not its replacement. No online adaptive filter
+or other numerical estimator is introduced.
+
+\textbf{Scoped supersession.} The former RF-07 held-numerical-parent meaning
+remains retired. r0.2 further replaces r0.1's fixed-rule/recomputed-coefficient
+wording for RF-01/RF-02 with the fixed numerical conditioning above; prescribed
+recomputation is assigned to RF-03 unless the stated induced-map proof applies.
+The seven stable role identities remain, with the corrected exact boundaries.
+}}
+\newcommand{\NormCovariance}{\Unit{Law-relative stochastic targets and complete joint covariance}{core:covariance}{%
+Every target binds \texttt{target\_law\_identity}, random variables, conditioned
+fixed objects, resolution/selection condition, omitted variation, support/domain
+and reference/gauge/null-space state. $\Op$ means fixed \emph{before the random
+event of that exact law} $\mathcal L$, not before every physical or computational
+outcome. Bind quantity/units, parent/population/generation, maps/rules, state,
+grouping and assumptions explicitly; a generation label is no substitute for
+conditioning. Three distinct targets are required:
+\begin{description}
+\item[Physical/random-parent target.]
+The measured parent and every model whose variation is estimated remain random.
+Do not condition them on realized numerical values. Preserve all model-learning
+variation and parent/model dependence included by this exact law.
+\item[Fixed-realized-model target.]
+The exact applied model is deliberately conditioned fixed under a separately
+named law/target. Its model covariance and parent/model cross blocks vanish
+only there; model-learning variation is omitted. This is not equivalent to the
+random-model target. The stochastic parent is not silently fixed too.
+\item[Conditional NOI-randomization target.]
+The realized parent payload, fixed applied model/operator graph, support and
+other exact state may be conditioning facts because they precede the declared
+NOI assignment/member draw. When its source law conditions on successful design
+resolution, retain that exact resolution condition explicitly. This is neither
+a physical-parent target nor permission to select favorable FRUIT outcomes.
+\end{description}
+A branch-, completion-, convergence- or terminal-selection-conditioned FRUIT
+target requires a separate method and estimand; it remains unavailable without
+separate authority. Do not hide such censoring or a draw-dependent domain in
+$\Op$. Record any permitted selection/domain conditioning in its exact source
+law and target; no universal physical-parent interpretation is imposed on NOI.
+
+Under complete fixed linearity, compatible real vector coordinates, finite
+joint second moments and exact law/conditioning, define $C_{yy}^{\mathrm{FRUIT}},
+C_{mm}^{\mathrm{FRUIT}},C_{ym}^{\mathrm{FRUIT}},C_{my}^{\mathrm{FRUIT}}$ as the
+conditional covariance blocks of $(\yin,\ma)$ under
+$\operatorname{Cov}_{\mathcal L}[\cdot\mid\Op]$. Axes bind quantity, units,
+support and reference/gauge/null-space coordinates; $m$ is applied model.
+\EqCovariance
+For a real joint covariance $C_{my}^{\mathrm{FRUIT}}=(C_{ym}^{\mathrm{FRUIT}})^{\mathsf T}$.
+Both cross terms remain unless the exact law/conditioning justifies omission.
+A parent-learned model is not independent by implication. Fixed gauge or a
+singular covariance does not mean an unavailable absolute mode was measured
+with zero uncertainty. Nonlinear/random-operator propagation or a Jacobian
+approximation requires its own typed method; it is not this exact identity.
+Accepted uncertainty reaches applied space only through the exact transformation
+and dependence. Repeated shared-parent iterations are not independent observations
+and imply no inverse-square-root iteration-count uncertainty law.
+}}
+
+\newcommand{\NormNOI}{\Unit{NOI target-law members, full-product action and source binding}{core:noi}{%
+For complete fixed linearity and explicitly fixed applied model/operators/state,
+full parent realizations and zero-target-law NOI members have distinct actions:
+\EqNOI
+Here $k$ is absolute iteration, $b$ the member, and $g$ the ensemble generation.
+Bind each object's full versus NOI role, exact parent/output domain, units,
+support/reference/gauge/null-space, target law and center convention.
+$\mathcal L$ in the full-product expectation is its separately declared law;
+$\Lnoi$ is the exact conditional NOI design/assignment law and $\Onoi$ its
+fixed-parent/model/operator/support/design-resolution conditioning. These are
+role-qualified symbols, not PTC transformed signal or the result-space $Z_k$.
+
+The zero is a \textbf{target-law expectation}. No member is required to have
+zero sample or spatial mean. No finite-ensemble mean subtraction, member-wise
+centering or $B-1$ correction is implied. Source and deterministic residual
+structure may remain in individual members. The deterministic $D_k\ma$ term
+shall not be added to each zero-target-law member. It belongs to the full product
+and its exact law-qualified center.
+
+The exact content-bound owner source is
+\texttt{OWNER\_INTERIM\_CORRECTION\_R0.2.txt}, section 2, with its directive
+identity/digest in the source/cover closure. It authorizes this conditional
+zero-target-law distinction; it does not supply a complete external numerical
+NOI law or estimator. An actual source-law identity/digest, random event,
+conditioning/design resolution, ensemble generation, exact NOI-owned product
+and estimator binding remain \texttt{unavailable\_external\_binding} until
+supplied through separately approved authority. A symbolic $\Lnoi$ is not an
+admitted law instance. Where an exact law supplies known-zero second moments,
+use its quantity-appropriate zero-target-law action and estimator convention.
+No numerical FRUIT/NOI route follows from the equation.
+
+Every boundary names member meaning: full parent realization, zero-target-law
+NOI member, residual, complete FRUIT output or another exact quantity. A
+full-affine-member method requires exact member/transformed centers, source-law
+and estimator authority, centering/second-moment convention, response/support
+parity and a separately bound method. No finite-ensemble centering is inferred.
+
+Fixed-state NOI requires exact application, response and support parity and
+explicit omitted learning/support/selection/stopping/restart/leakage variation.
+NOI-informed later learning creates a dependent immutable science/ensemble/
+uncertainty successor, not independent validation or retroactive editing.
+Per-realization relearning of model/support/cleaner/coefficients/stopping/selector
+is a distinct method and ensemble with complete member-state graph. New values
+under unchanged rules produce new states, not a method each. No mixing/pooling
+of fixed and relearned members is authorized here. FLT and other parent routes
+retain exact producer quantities and response authority; no filter inverse,
+route permission or interchangeability is supplied by FRUIT/NOI naming.
+}}

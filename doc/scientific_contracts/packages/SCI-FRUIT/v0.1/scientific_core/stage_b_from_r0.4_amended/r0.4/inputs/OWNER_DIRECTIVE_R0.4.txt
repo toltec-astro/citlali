@@ -1,0 +1,97 @@
+feedback:
+
+SCI-FRUIT — BOUNDED BOUNDARY RESTORATION AND CONDITIONAL-FREEZE PREFLIGHT
+
+The r0.3 fixed-operator response repair is accepted.
+
+The following prior issues are closed:
+
+- operator-defining state is distinct from input-dependent internal application
+  coordinates and a frozen numerical removed component;
+- ordinary fixed-subspace PTC evaluation can remain RF-01 while its internal
+  modal coordinates change;
+- fixed affine centering is retained;
+- defining-state reruns belong to the appropriate procedure-response query;
+- fixed-domain failure does not silently change RF identity;
+- candidate/core-declared terminology does not imply approval or activation;
+- outer archive artifacts are distinct from in-tree links.
+
+Do not reopen those corrections, the generic FRUIT architecture, the response
+catalog, uncertainty laws, support/origin rules, lifecycle, continuation,
+terminal selection, or the three-document structure.
+
+One unintended boundary-language regression remains.
+
+1. RESTORE ANALYSIS/GRIDDING-COEFFICIENT IDENTITY
+
+In src/common/definitions.tex, within NormOwnership, the current lines 11 and
+52–54 replace coefficient-family and coefficient/QC boundary language with
+operator-family and modal-application-coordinate language.
+
+The preserved admitted source is:
+```bash
+inputs/r0.2/inputs/scientific_core/r0.4-amended/
+BOUNDARIES_AND_CONVENTIONS.md
+```
+
+Use §§B2–B3, especially lines 76–80 and 134–139.
+
+Restore wording equivalent to:
+```css
+PTC retains ownership of its cleaning operators,
+analysis/gridding-coefficient families, and fitted/resolved/applied state.
+
+A selected MAP/JINC parent route retains the exact PTC transformed-output
+identity, the analysis/gridding-coefficient and QC identities required by
+that route, and compatible coordinate association. Internal modal
+application coordinates remain separate and do not substitute for those
+handoff facts.
+
+Permission for MAP to use a PTC analysis/gridding-coefficient family does
+not imply permission for JINC to use that family.
+```
+
+This is restoration of the admitted producer/consumer boundary, not new science.
+
+Do not apply the internal-modal-coordinate terminology to downstream
+analysis/gridding coefficients. Do not weaken the fixed-map response repair.
+No new taxonomy, coefficient family, numerical value, method, or route is
+requested.
+
+2. VERIFY THE BOUNDED CHANGE
+
+Check current source, rendered core, and derived crosswalks for this same
+substitution. Correct only affected occurrences.
+
+Preserve the historical r0.2 delivery and Stage A inputs byte-for-byte.
+Record that the patch restores their coefficient-ownership/use-permission
+boundary without altering the accepted PTC response specialization.
+
+No new requirement, assumption, or prediction ID is needed.
+
+3. REBUILD AND RETURN FOR OWNER DISPOSITION
+
+Retain contract version v0.1 and advance the document/source revision under the
+existing convention.
+
+Regenerate affected source inventories, cover bindings, PDFs, parity records,
+manifest, archive, and external archive sidecar. Do not reuse the r0.3 core
+digest after changing its source.
+
+Verify the existing 24 requirements, six assumptions, and twenty predictions;
+source/view consistency; in-tree links; hashes; and rendered pages.
+
+Return a short change report and the corrected exact-byte owner-disposition
+proposal. Do not commission another broad scientific revision, independent
+derivation, or document-compression pass.
+
+The corrected generic core is ready for Grant Wilson’s separate conditional
+scientific-freeze decision, with every numerical FRUIT method/route remaining:
+```
+unavailable_pending_separate_owner_approval.
+```
+
+No scientific freeze implies implementation conformity, response/covariance
+fidelity, uncertainty coverage, recovered measured modes, convergence adequacy,
+downstream fitness, observational validation, readiness, or production
+authorization.

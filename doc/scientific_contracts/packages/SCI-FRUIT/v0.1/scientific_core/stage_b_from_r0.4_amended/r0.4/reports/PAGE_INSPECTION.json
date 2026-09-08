@@ -1,0 +1,430 @@
+{
+  "date": "2026-09-08",
+  "reviewer": "Codex author visual inspection",
+  "scope": "All final PDF pages; document QA only, no numerical or independent scientific review.",
+  "renderer": "pdftoppm 26.05.0",
+  "render_dpi": 100,
+  "method": "Every final page reopened with pypdf, rendered to PNG with Poppler and inspected in full-page pairs using view_image.",
+  "checked": [
+    "clipping",
+    "overlap",
+    "equations",
+    "glyphs",
+    "table readability",
+    "accidental blank pages",
+    "headers/footers",
+    "cover identities/status/date"
+  ],
+  "closed_corrections": [],
+  "bounded_revision": "Two NormOwnership spans restore the admitted analysis/gridding-coefficient boundary; accepted r0.3 fixed-map response specialization remains unchanged.",
+  "views": {
+    "core": {
+      "pdf_sha256": "86ffefab210439d095a0955fc133afa717a8d3b91fad0149d794cb4c256a6687",
+      "inspected_pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28
+      ],
+      "open_visual_defects": 0,
+      "metadata": {
+        "/Creator": "LaTeX with hyperref",
+        "/Title": "SCI-FRUIT-NORMATIVE-CORE v0.1/r0.4",
+        "/Subject": "SCI-FRUIT v0.1/r0.4 review candidate; not approved, frozen or activated; numerical methods unavailable",
+        "/Author": "Grant Wilson",
+        "/Keywords": "SCI-FRUIT, Stage B, r0.4, conditional, owner review",
+        "/Producer": "xdvipdfmx (0.1)",
+        "/CreationDate": "D:20260908000000-00'00'"
+      },
+      "pages": [
+        {
+          "page": 1,
+          "render_sha256": "449f3d45d26479bb61b54d23b04671164420df419056f09e853567b851620c14",
+          "visual_result": "no open defect",
+          "text_words": 147
+        },
+        {
+          "page": 2,
+          "render_sha256": "01c6a9098bad2718358fcd2b2fe8b7a0dcf3141ab321ddf30cd3c0c34c0053a8",
+          "visual_result": "no open defect",
+          "text_words": 479
+        },
+        {
+          "page": 3,
+          "render_sha256": "25ae56d8eb0bfc709617480738acfbe8f9ebe2b54b005caa7f923e67df9b1a8f",
+          "visual_result": "no open defect",
+          "text_words": 539
+        },
+        {
+          "page": 4,
+          "render_sha256": "f65be334889552f6e69b80e7f8e3eb910ce725da209fc3463ced48b930da9ba8",
+          "visual_result": "no open defect",
+          "text_words": 450
+        },
+        {
+          "page": 5,
+          "render_sha256": "afbfd6b096eec2010d6a842f049eb6fc70528e271991177376e1e5d49a707985",
+          "visual_result": "no open defect",
+          "text_words": 293
+        },
+        {
+          "page": 6,
+          "render_sha256": "41c4f4cdd679e9057e1d97eb8ba151e223f6d246b3d47f177f1867dbb195f250",
+          "visual_result": "no open defect",
+          "text_words": 426
+        },
+        {
+          "page": 7,
+          "render_sha256": "05d8fa0d3112e63b7950a8955d23559466095ecba42134e120dea3afb16caa0b",
+          "visual_result": "no open defect",
+          "text_words": 441
+        },
+        {
+          "page": 8,
+          "render_sha256": "cbc1fe61529b48d450ddcc9f37999100c039f0a946c43395eceada7b0ee00e35",
+          "visual_result": "no open defect",
+          "text_words": 409
+        },
+        {
+          "page": 9,
+          "render_sha256": "894ca0422d694121a6f66ff3d904a4faa7f841114b3189711949052eb6f5b551",
+          "visual_result": "no open defect",
+          "text_words": 442
+        },
+        {
+          "page": 10,
+          "render_sha256": "9ba288d4bea48fee64e35bd19c98fbb63eb40559ad6bd529be09e95a574cf18f",
+          "visual_result": "no open defect",
+          "text_words": 449
+        },
+        {
+          "page": 11,
+          "render_sha256": "bbf4d7d1548a9eb4348284a45624a775e43fbeb29e9ad482e95fa6085849c2e9",
+          "visual_result": "no open defect",
+          "text_words": 297
+        },
+        {
+          "page": 12,
+          "render_sha256": "f5a251470603c580c53be9f32ddba5c17956c9f462368f6f3b7dd21c17cfbfd8",
+          "visual_result": "no open defect",
+          "text_words": 375
+        },
+        {
+          "page": 13,
+          "render_sha256": "cb29045f201a6d552fb49d2c91a77518b981d157aa0fc99d579a3aebeb961089",
+          "visual_result": "no open defect",
+          "text_words": 268
+        },
+        {
+          "page": 14,
+          "render_sha256": "bd98e12868c6c99980461faf748def26d5656f4fa12c62c91794d0692894e2ed",
+          "visual_result": "no open defect",
+          "text_words": 303
+        },
+        {
+          "page": 15,
+          "render_sha256": "efb68243d44cc97e41ca4e3ad9db112f7b5355cdfd07b4edfd330b757a743004",
+          "visual_result": "no open defect",
+          "text_words": 528
+        },
+        {
+          "page": 16,
+          "render_sha256": "02502a5b0e951db5fdec7ee1ff87189fecadcf587e6e9d0cc9c767071ccd00ff",
+          "visual_result": "no open defect",
+          "text_words": 373
+        },
+        {
+          "page": 17,
+          "render_sha256": "0ea631daa8de2390853ddd43dbabf3968bab08184976570f867830670a88d974",
+          "visual_result": "no open defect",
+          "text_words": 183
+        },
+        {
+          "page": 18,
+          "render_sha256": "21b4734e15fae4840234189eec34fdd7579f6c681d7141645d42814522f75038",
+          "visual_result": "no open defect",
+          "text_words": 373
+        },
+        {
+          "page": 19,
+          "render_sha256": "bdb252220e165e13ee048353b3ece0e99a9832b7088067aea19b4a21cf985406",
+          "visual_result": "no open defect",
+          "text_words": 390
+        },
+        {
+          "page": 20,
+          "render_sha256": "4e64e23da6f655349875919597652a00a48dd86d3a82ce9fe1869eece568ce0d",
+          "visual_result": "no open defect",
+          "text_words": 430
+        },
+        {
+          "page": 21,
+          "render_sha256": "73c3343b25a2c0ad5b590227d17980dc80c0f9d351859edd4a0b6a708381a812",
+          "visual_result": "no open defect",
+          "text_words": 443
+        },
+        {
+          "page": 22,
+          "render_sha256": "4a018b94ead05a3c8caf5017d8de63555f1739be80d586f2710d26b98489b07a",
+          "visual_result": "no open defect",
+          "text_words": 435
+        },
+        {
+          "page": 23,
+          "render_sha256": "730b3493fb851f32b185b1e9b94432aac3345d1d8ea353cf2a574cf3db0d129e",
+          "visual_result": "no open defect",
+          "text_words": 295
+        },
+        {
+          "page": 24,
+          "render_sha256": "72e757545a6ab896251c715e60a067b902c8f3ad518466979338d3cc934fbc57",
+          "visual_result": "no open defect",
+          "text_words": 346
+        },
+        {
+          "page": 25,
+          "render_sha256": "7296f01adaa81023c3bec34fb6d7e7291312154e500d79c0cdaaf4eb60168733",
+          "visual_result": "no open defect",
+          "text_words": 476
+        },
+        {
+          "page": 26,
+          "render_sha256": "57697a12eb1a2e902025425903ad61971c569c1b74c475609209640516bc2898",
+          "visual_result": "no open defect",
+          "text_words": 440
+        },
+        {
+          "page": 27,
+          "render_sha256": "7c0fc9a923b26fa54683083c7e86cd27e74c4bf6789d9fe7e260ce51cc4998ff",
+          "visual_result": "no open defect",
+          "text_words": 277
+        },
+        {
+          "page": 28,
+          "render_sha256": "fe6c8a4e74daee843a72f3bc06987eacb1cc82f1d9e6caab7435aedd0156ef16",
+          "visual_result": "no open defect",
+          "text_words": 244
+        }
+      ]
+    },
+    "rationale": {
+      "pdf_sha256": "ac980a74ad33d6daf5a41dbe5cd138ff5a61ec1ca7b6f35c0ac8e4151075b397",
+      "inspected_pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "open_visual_defects": 0,
+      "metadata": {
+        "/Creator": "LaTeX with hyperref",
+        "/Title": "SCI-FRUIT-SCIENTIFIC-RATIONALE v0.1/r0.4",
+        "/Subject": "SCI-FRUIT v0.1/r0.4 review candidate; not approved, frozen or activated; numerical methods unavailable",
+        "/Author": "Grant Wilson",
+        "/Keywords": "SCI-FRUIT, Stage B, r0.4, conditional, owner review",
+        "/Producer": "xdvipdfmx (0.1)",
+        "/CreationDate": "D:20260908000000-00'00'"
+      },
+      "pages": [
+        {
+          "page": 1,
+          "render_sha256": "ff1a70701f15f8fafeb83c23b9cc51b8f554fd68752cb4624dc1118890a8e8c8",
+          "visual_result": "no open defect",
+          "text_words": 146
+        },
+        {
+          "page": 2,
+          "render_sha256": "400742a255e8b75d8f75a3393ad84a74cda6cc738584abd23371550dcd78670f",
+          "visual_result": "no open defect",
+          "text_words": 282
+        },
+        {
+          "page": 3,
+          "render_sha256": "e0544ca94778b77b0e35ac6158f1483737b99d4d08e205c6d3304d143d205981",
+          "visual_result": "no open defect",
+          "text_words": 271
+        },
+        {
+          "page": 4,
+          "render_sha256": "2f2db33374d7bbb52ca6bbae8d8fb2aa3c35fa00f09d2c84392a8c4bc2db7294",
+          "visual_result": "no open defect",
+          "text_words": 287
+        },
+        {
+          "page": 5,
+          "render_sha256": "e5cf416f9080a4850ed6b836659ac91b84c119a8dcc3a899edd2cafda11e706f",
+          "visual_result": "no open defect",
+          "text_words": 265
+        },
+        {
+          "page": 6,
+          "render_sha256": "664ae01d0ba3ba08b3272333962381918a099c46216f627d2dd3b02e7b217a61",
+          "visual_result": "no open defect",
+          "text_words": 304
+        },
+        {
+          "page": 7,
+          "render_sha256": "d55faf0cdfddd0e667d6c7af9f9bc08fc29e85cc45fb318a49473f3280d8aed6",
+          "visual_result": "no open defect",
+          "text_words": 263
+        },
+        {
+          "page": 8,
+          "render_sha256": "2a20f13e5f2fa4be08d9f24ac151b57c96bc99446ed126c30b7b6ec2c40cc5ee",
+          "visual_result": "no open defect",
+          "text_words": 345
+        },
+        {
+          "page": 9,
+          "render_sha256": "ddb221eac29604647674396e6240fc5953f7c1500d7977686a1f05c41acb4e2c",
+          "visual_result": "no open defect",
+          "text_words": 283
+        },
+        {
+          "page": 10,
+          "render_sha256": "790f422ff95f284e5f0718aae2f134df9ef227defd84d594d1cedd5e36f4e396",
+          "visual_result": "no open defect",
+          "text_words": 336
+        }
+      ]
+    },
+    "ecs": {
+      "pdf_sha256": "0805c7ffd9d6165f058bc23775e4713a6c8da1a03261195752176d0190a821c1",
+      "inspected_pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "open_visual_defects": 0,
+      "metadata": {
+        "/Creator": "LaTeX with hyperref",
+        "/Title": "SCI-FRUIT-ENGINEERING-CONFORMANCE v0.1/r0.4",
+        "/Subject": "SCI-FRUIT v0.1/r0.4 review candidate; not approved, frozen or activated; numerical methods unavailable",
+        "/Author": "Grant Wilson",
+        "/Keywords": "SCI-FRUIT, Stage B, r0.4, conditional, owner review",
+        "/Producer": "xdvipdfmx (0.1)",
+        "/CreationDate": "D:20260908000000-00'00'"
+      },
+      "pages": [
+        {
+          "page": 1,
+          "render_sha256": "18a0e032bc61c7051c7ed801eab3deabbbf4273f5c82941f6bf53c8794705fcc",
+          "visual_result": "no open defect",
+          "text_words": 147
+        },
+        {
+          "page": 2,
+          "render_sha256": "5afbf677aae18919fffe15199fe8640da6ddbd408623cfc8ca709030f4f9ff60",
+          "visual_result": "no open defect",
+          "text_words": 294
+        },
+        {
+          "page": 3,
+          "render_sha256": "42c9c03b862b2f04b88849cc0f50fcdb13c40d70313ee627668b2bd4b8d63f8b",
+          "visual_result": "no open defect",
+          "text_words": 375
+        },
+        {
+          "page": 4,
+          "render_sha256": "1c5abaa6fdc1be7f67f7449e063b6a204dde634924939deae907dca8f91c0b6d",
+          "visual_result": "no open defect",
+          "text_words": 307
+        },
+        {
+          "page": 5,
+          "render_sha256": "bda4cd044dbf1af6a2f7bbdf18fe50e89a34314b6feac5bc0450fbfaebc215fe",
+          "visual_result": "no open defect",
+          "text_words": 417
+        },
+        {
+          "page": 6,
+          "render_sha256": "a471736db9dab02f61421933ee7eca121acf4c62d977d8ef23edb85438fb9ffd",
+          "visual_result": "no open defect",
+          "text_words": 352
+        },
+        {
+          "page": 7,
+          "render_sha256": "35b6f167bff421499eac48fad63dc5f9cd356f163cff86157c2f0f731b0b7613",
+          "visual_result": "no open defect",
+          "text_words": 361
+        },
+        {
+          "page": 8,
+          "render_sha256": "5fc105c0f21d7eee2d1f735dc2d63392cee23e79676bab49d5b7b2795c426155",
+          "visual_result": "no open defect",
+          "text_words": 340
+        },
+        {
+          "page": 9,
+          "render_sha256": "ebe963c453eba3d457844f82900cbc16e919c6d709883f9e9547c87de4ede026",
+          "visual_result": "no open defect",
+          "text_words": 372
+        },
+        {
+          "page": 10,
+          "render_sha256": "858d7cb64ee9b4f2729bfb337886542ebb4eaac5bf08dcb9e82b92f95383f659",
+          "visual_result": "no open defect",
+          "text_words": 291
+        },
+        {
+          "page": 11,
+          "render_sha256": "3665dd93f1050fec0c91e085aeafbcde1b6cb6eda2ce9306c3028713965c24a9",
+          "visual_result": "no open defect",
+          "text_words": 236
+        },
+        {
+          "page": 12,
+          "render_sha256": "3f43ef98e2cfc34f2e2e9ca66db5e4fa83a72dfa4a72f772788c4a3267755b87",
+          "visual_result": "no open defect",
+          "text_words": 337
+        },
+        {
+          "page": 13,
+          "render_sha256": "7f1c877ddbace49a98593bb4149e5723b39c200883cf13bd26e99857aa244393",
+          "visual_result": "no open defect",
+          "text_words": 300
+        }
+      ]
+    }
+  }
+}

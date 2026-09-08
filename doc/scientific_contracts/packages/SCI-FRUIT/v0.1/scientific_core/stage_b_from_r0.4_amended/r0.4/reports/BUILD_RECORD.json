@@ -1,0 +1,93 @@
+{
+  "identity": "SCI-FRUIT-DOC-BUILD-R0.4-2026-09-08",
+  "scope": "Document build only; no numerical conformance or experiments.",
+  "source_date_epoch": "1788825600",
+  "bindings": {
+    "StageAHash": "654185e4a036b96350b6f2059f7986dc34e57eecbdd78a58695eeeb070bad9bd",
+    "DirectiveHash": "f544c7d6ed358f7c628d74c295537245df55c8a156be5f11e785141aa9da9274",
+    "ApprovalHash": "36fb05922951e77b4540c95192f639685b303a00d2831b772d83fb3ce78adb94",
+    "PriorHash": "6d552e49510c92fff65d9c835f8f31cd21f8ef50bed4f1a24ff355cfce7523a4",
+    "FreezeHash": "754e81b3940f77f3bca067ba00a94f87707746d3c0bc9c6089487602de4c3aa8",
+    "CoreHash": "3dc912d9f6a58d9f92561ad10b9442485c5b47232e5327389d2fb3b89c296e92",
+    "CoreSourceHash": "d5f3f0e17092ce8f94d8373201b807c3e3824b25cc2844891dcc7ad8b074c6a2",
+    "RationaleSourceHash": "9a7f80992ab2015ee40bbf19a2ca2bc68e8ee08958a9e323fc62e41b0713aae2",
+    "EcsSourceHash": "3bc26f0ed4290baa55168b45b45554dbc4bc72b2fa350a2996ad70a10f577d49"
+  },
+  "tex_bundle_content_digest": "a52652bd8f951ad6ceaac8269fbce6e92cbbefa092819ce8df2208b2106a15ba",
+  "tex_resource_count": 619,
+  "tex_resource_inventory_sha256": "57e263922b731404210fdae3fa64b6926d749aa6d6c81b31116a6f042cc85514",
+  "tools": {
+    "tectonic": {
+      "path": "/opt/homebrew/bin/tectonic",
+      "resolved_path": "/opt/homebrew/Cellar/tectonic/0.16.9/bin/tectonic",
+      "sha256": "38eff9059ed622672c9a2590415a8f01c043df4232baa459628a2cd86e512d95",
+      "version": "Tectonic 0.16.9"
+    },
+    "pdftoppm": {
+      "path": "/Users/gwilson/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdftoppm",
+      "resolved_path": "/Users/gwilson/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdftoppm",
+      "sha256": "de772e88ab9977ccde25def9b403bf42675d75f5dd82b19fbd7d8123ad183159",
+      "version": "pdftoppm version 26.05.0\nCopyright 2005-2026 The Poppler Developers - http://poppler.freedesktop.org\nCopyright 1996-2011, 2022 Glyph & Cog, LLC"
+    },
+    "pdfinfo": {
+      "path": "/Users/gwilson/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdfinfo",
+      "resolved_path": "/Users/gwilson/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdfinfo",
+      "sha256": "fee70ade670fb025343aca2b5c3a2aacacb8ed9edce1b716b233b5de924b6bf5",
+      "version": "pdfinfo version 26.05.0\nCopyright 2005-2026 The Poppler Developers - http://poppler.freedesktop.org\nCopyright 1996-2011, 2022 Glyph & Cog, LLC"
+    }
+  },
+  "python": {
+    "executable": "/Users/gwilson/tolteca/bin/python",
+    "resolved_executable": "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/bin/python3.13",
+    "executable_sha256": "42f792544842512d02eb8a95a6009062591476558f09f07553c138661a0bca8e",
+    "version": "3.13.2 (main, Feb  4 2025, 14:51:09) [Clang 16.0.0 (clang-1600.0.26.6)]",
+    "packages": {
+      "pypdf": "6.7.2",
+      "Pillow": "11.1.0"
+    }
+  },
+  "views": {
+    "core": {
+      "sha256": "86ffefab210439d095a0955fc133afa717a8d3b91fad0149d794cb4c256a6687",
+      "diagnostics": []
+    },
+    "rationale": {
+      "sha256": "ac980a74ad33d6daf5a41dbe5cd138ff5a61ec1ca7b6f35c0ac8e4151075b397",
+      "diagnostics": []
+    },
+    "ecs": {
+      "sha256": "0805c7ffd9d6165f058bc23775e4713a6c8da1a03261195752176d0190a821c1",
+      "diagnostics": []
+    }
+  },
+  "clean_build": {
+    "copied_source_files": 15,
+    "independent_source_and_build_directories": true,
+    "fresh_format_cache": true,
+    "views": {
+      "core": {
+        "sha256": "86ffefab210439d095a0955fc133afa717a8d3b91fad0149d794cb4c256a6687",
+        "diagnostics": []
+      },
+      "rationale": {
+        "sha256": "ac980a74ad33d6daf5a41dbe5cd138ff5a61ec1ca7b6f35c0ac8e4151075b397",
+        "diagnostics": []
+      },
+      "ecs": {
+        "sha256": "0805c7ffd9d6165f058bc23775e4713a6c8da1a03261195752176d0190a821c1",
+        "diagnostics": []
+      }
+    },
+    "all_pdf_bytes_identical": true
+  },
+  "render": {
+    "tool": "pdftoppm",
+    "dpi": 100,
+    "views": [
+      "core",
+      "rationale",
+      "ecs"
+    ],
+    "visual_inspection": "not established by build; separate page record required"
+  }
+}

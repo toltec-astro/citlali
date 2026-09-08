@@ -1,0 +1,111 @@
+{
+  "record_identity": null,
+  "requirement_id": null,
+  "candidate": {
+    "implementation_source_identity": null,
+    "implementation_source_digest": null,
+    "build_recipe_identity": null,
+    "build_artifact_identity": null,
+    "runtime_environment_identity": null,
+    "core_identity": null,
+    "core_digest": null,
+    "method_specific_identity": null,
+    "method_digest": null,
+    "owner_decision_identity": null,
+    "parent_route": null,
+    "parent_generation": null,
+    "candidate_model_generation": null,
+    "accepted_model_generation": null,
+    "applied_model_generation": null,
+    "resolved_operation_graph": null,
+    "state_generations": null,
+    "iteration": null,
+    "lineage": null,
+    "branch": null,
+    "application": null,
+    "attempt": null,
+    "output_product_role": null,
+    "output_product_generation": null,
+    "evidence_generation": null,
+    "request_generation": null,
+    "request_state": null,
+    "scientific_availability": null,
+    "producer_outcome": null,
+    "producer_stage_reached": null,
+    "iteration_bundle_reference": null,
+    "requested_linked_use_records": null,
+    "operator_defining_state": null,
+    "induced_fixed_map": null,
+    "internal_application_coordinate_bindings": null,
+    "frozen_component_binding": null,
+    "fixed_map_domain": null,
+    "affine_reference_binding": null,
+    "operator_source_binding": null,
+    "response_role": null,
+    "defining_state_rerun_trace": null
+  },
+  "candidate_digest": null,
+  "candidate_serialization_convention": null,
+  "observable": null,
+  "fixture": {
+    "identity": null,
+    "sha256": null,
+    "immutable_payload": null
+  },
+  "independent_oracle": {
+    "identity": null,
+    "sha256": null,
+    "expected_construction": null,
+    "premises": null,
+    "shared_dependencies": null
+  },
+  "preregistered_comparison": {
+    "identity": null,
+    "sha256": null,
+    "policy": null,
+    "numerical_profile": null
+  },
+  "result": "blocked",
+  "allowed_result_values": [
+    "pass",
+    "fail",
+    "blocked",
+    "not_applicable",
+    "not_assessed"
+  ],
+  "applicability_premise": null,
+  "blocking_dependencies": [
+    "unavailable_pending_separate_owner_approval: exact method-specific FRUIT-FEEDBACK-METHOD and required upstream authority",
+    "Fixture, independent oracle and preregistered comparison are not instantiated."
+  ],
+  "artifacts": [],
+  "reviewer": null,
+  "date": null,
+  "deviation_failure_disposition": null,
+  "affected_claim_scope": null,
+  "supersedes": null,
+  "note": "Blank prospective record; numerical assessment blocked. Evidence-artifact realization is independent of engineering result.",
+  "evidence_artifact_realization": {
+    "state": "not_produced",
+    "allowed_values": [
+      "realized",
+      "incomplete",
+      "failed",
+      "not_produced"
+    ],
+    "generation": null,
+    "last_reached_stage": null,
+    "cause": "No authorized numerical evidence artifact is produced by this document template."
+  },
+  "target_law": {
+    "target_law_identity": null,
+    "random_variables": null,
+    "conditioned_fixed_objects": null,
+    "resolution_or_selection_condition": null,
+    "omitted_variation": null,
+    "support_domain": null,
+    "reference_gauge_null_space": null,
+    "external_source_identity": null,
+    "external_source_digest": null
+  }
+}

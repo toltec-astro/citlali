@@ -1,0 +1,25 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=0.72in,headheight=15pt,footskip=24pt]{geometry}
+\usepackage{lmodern,amsmath,amssymb,booktabs,array,longtable,enumitem,xcolor,fancyhdr,hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,pdfauthor={Grant Wilson},pdfsubject={SCI-FRUIT v0.1/r0.3 review candidate; not approved, frozen or activated; numerical methods unavailable},pdfkeywords={SCI-FRUIT, Stage B, r0.3, conditional, owner review}}
+\raggedright
+\setlength{\parindent}{0pt}\setlength{\parskip}{5pt}
+\setlength{\emergencystretch}{2em}
+\setlist[description]{style=nextline,leftmargin=0pt,labelwidth=0pt,labelsep=0pt,itemsep=3pt,topsep=3pt}
+\setlist[enumerate]{leftmargin=18pt,itemsep=3pt,topsep=3pt}
+\setlist[itemize]{leftmargin=18pt,itemsep=3pt,topsep=3pt}
+\let\OriginalUnderscore\_\renewcommand{\_}{\OriginalUnderscore\allowbreak}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\small SCI-FRUIT v0.1/r0.3}\fancyhead[R]{\small\ViewShort}
+\fancyfoot[L]{\small Review candidate | 2026-09-08}\fancyfoot[R]{\small\thepage}
+\newcommand{\Unit}[3]{\clearpage\section{#1}\label{#2}#3}
+\newcommand{\ReadCore}[1]{\par\textit{Normative source: review-candidate core, #1}\par}
+\newcommand{\Digest}[1]{{\footnotesize\ttfamily#1}}
+\input{bindings.tex}
+\input{common/notation.tex}
+\input{common/definitions.tex}
+\input{common/equations.tex}
+\input{common/assumptions.tex}
+\input{common/requirements.tex}
+\input{common/edge_cases.tex}
+\input{cover.tex}
