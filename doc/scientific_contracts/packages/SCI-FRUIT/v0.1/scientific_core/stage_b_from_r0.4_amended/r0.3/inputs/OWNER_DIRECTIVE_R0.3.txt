@@ -1,0 +1,441 @@
+SCI-FRUIT v0.1/r0.3 — FINAL FIXED-OPERATOR,
+CANDIDATE-AUTHORITY, AND DELIVERY-CLOSURE DIRECTIVE
+
+The SCI-FRUIT Stage B r0.2 architecture and three-document publication
+structure are accepted as the basis for one final narrow revision.
+
+Do not perform another broad FRUIT derivation.
+
+Do not freeze or reuse the current r0.2 core source-inventory digest after any
+byte change.
+
+Preserve:
+
+- SCI-FRUIT-NORMATIVE-CORE as the complete normative scientific source;
+- the concise scientist rationale and actual engineering-conformance
+  specification as separate views;
+- 24 requirements, six assumptions, and twenty predictions with stable IDs;
+- no approved numerical FRUIT method or route;
+- FRUIT-FEEDBACK-METHOD as a required-record family;
+- candidate, accepted, and applied models as distinct objects and spaces;
+- the applied model as the removal and rejoin operand;
+- exact additive/reference/gauge/null-space compatibility;
+- rho_k = y_k^in - Pi_k(m_k^applied);
+- z_k = F_k(rho_k) + B_k(m_k^applied);
+- the fixed-linearity hierarchy;
+- general fixed-state differentiable response;
+- all seven RF identities;
+- all eight support/influence roles;
+- model/prior-supported origin in unavailable measured modes;
+- all four joint-covariance terms where required by the target law;
+- physical-parent, fixed-realized-model, and conditional-NOI target laws;
+- full-product versus zero-target-law NOI actions;
+- exact product roles and bundle-required handoff;
+- immutable request state and the nine-stage successful producer path;
+- continuation, restart, retry, branch, terminal selection, and publication as
+  separate identities;
+- terminal-candidate comparability;
+- local completion independent of absent downstream use;
+- every current claim ceiling and nonclaim.
+
+Do not inspect implementation, configuration, schemas, tests, audits, repairs,
+reductions, generated products, operational behavior, performance records,
+production material, Unity material, web sources, or undocumented practice.
+
+======================================================================
+1. DISTINGUISH OPERATOR-DEFINING STATE FROM INPUT-DEPENDENT
+   APPLICATION COORDINATES
+======================================================================
+
+The current r0.2 wording freezes “every numerical coefficient” in RF-01/RF-02
+and places prescribed coefficient recomputation in RF-03 unless an
+induced-fixed-map proof is supplied.
+
+That wording is too coarse for the exact admitted SCI-PTC fixed-subspace
+application.
+
+Define three different classes.
+
+A. Operator-defining state and coefficients
+
+These determine the input-output map and are frozen in a fixed-state response.
+For the admitted PTC application they include, as applicable:
+
+- frozen detector-loading subspace A_g;
+- application metric/influence W_(g,t)^app;
+- normal matrix G_(g,t)^app and its generalized inverse;
+- fixed centering/additive reference lambda_g;
+- detector/group binding;
+- application support and output support;
+- rank requirement and frozen tolerance;
+- mask state;
+- projection orientation and family;
+- branch and generation;
+- every other fact that changes the induced map.
+
+B. Input-dependent internal application coordinates
+
+These are numerical coordinates or intermediate solves evaluated from the
+perturbed operand while the operator-defining state remains frozen.
+
+For the admitted PTC route:
+
+    m_hat_(g,t)^app(x)
+      =
+      x_(g,t) W_(g,t)^app A_hat_g
+      [A_hat_g^T W_(g,t)^app A_hat_g]^+.
+
+A changed value of this coordinate under a changed x is not by itself:
+
+- coefficient relearning;
+- operator re-resolution;
+- a changed method;
+- a changed operator generation;
+- an RF-03 full-procedure response.
+
+It is evaluation of the same fixed map.
+
+C. Frozen numerical removed component
+
+A component U_hat computed from one parent and then held numerically fixed
+under perturbation defines the separately named affine subtraction family:
+
+    A_sub,U_hat(Y') = Y' - U_hat
+
+with input derivative:
+
+    D A_sub,U_hat[H] = H.
+
+This is not the ordinary fixed-subspace projection.
+
+Do not use the word coefficient without identifying which of these three
+scientific roles it denotes.
+
+======================================================================
+2. BIND THE EXACT FIXED-SUBSPACE PTC SPECIALIZATION
+======================================================================
+
+Without reauthoring PTC science, derive the exact conditional input-output map
+from the admitted PTC_APPLICATION_REFERENCE.
+
+For one frozen group/time application state:
+
+    G_(g,t)^app
+      =
+      A_hat_g^T W_(g,t)^app A_hat_g;
+
+    m_hat_(g,t)^app
+      =
+      x_(g,t) W_(g,t)^app A_hat_g
+      [G_(g,t)^app]^+;
+
+    z_(g,t)
+      =
+      x_(g,t)
+      -
+      m_hat_(g,t)^app A_hat_g^T.
+
+Therefore, on the exact admitted support and rank domain:
+
+    z_(g,t)
+      =
+      x_(g,t) P_(g,t,Theta)^PTC,
+
+where:
+
+    P_(g,t,Theta)^PTC
+      =
+      I
+      -
+      W_(g,t)^app A_hat_g
+      [A_hat_g^T W_(g,t)^app A_hat_g]^+
+      A_hat_g^T.
+
+When A_hat_g, W_(g,t)^app, centering, support, detector binding, rank/tolerance,
+branch, and every other operator-defining fact are fixed, this is one fixed
+numerical map.
+
+The RF-01 perturbation is then:
+
+    delta z_(g,t)
+      =
+      delta x_(g,t) P_(g,t,Theta)^PTC.
+
+The input-dependent modal coordinate is recomputed algebraically as part of
+evaluating that same map.
+
+For uncentered calibrated input with fixed lambda_g:
+
+    x_(g,t) = Y_(g,t)^CAL - lambda_g;
+
+    z_(g,t)
+      =
+      [Y_(g,t)^CAL - lambda_g] P_(g,t,Theta)^PTC;
+
+    D_Y z[H]
+      =
+      H P_(g,t,Theta)^PTC.
+
+This is a fixed affine map with fixed-state derivative P. Do not discard the
+fixed additive term, and do not call the complete uncentered map strictly
+linear.
+
+If the perturbation causes lambda_g, A_hat_g, W^app, support, mask, detector
+binding, rank state, tolerance, grouping, selection, or another
+operator-defining fact to be relearned or re-resolved, the query is RF-03 or
+another separately typed procedure response.
+
+If the perturbed object leaves the exact finite/rank/support domain on which P
+is defined, the affected RF-01 result is unavailable or a separately typed
+state transition/discontinuity. It does not silently acquire RF-03 identity.
+
+======================================================================
+3. REPAIR RF-01/RF-02/RF-03 WORDING
+======================================================================
+
+RF-01 shall mean:
+
+    perturb the declared iteration input while freezing the complete realized
+    operator-defining state and complete induced numerical input-output map.
+
+It shall permit internal coordinates that are functions evaluated by that
+fixed map to change with the perturbation.
+
+RF-02 shall analogously perturb the applied-model operand while freezing the
+operator-defining maps/state, while evaluating every internal fixed-map
+coordinate required by that applied-model action.
+
+RF-03 shall rerun every method-prescribed operation that can change the
+operator-defining map or consequential state, including:
+
+- model construction or acceptance;
+- loading subspace;
+- metric;
+- support or mask;
+- centering/reference;
+- rank state;
+- grouping;
+- selection;
+- threshold;
+- branch;
+- another state-resolution rule.
+
+Do not classify evaluation of an input-dependent coordinate under one unchanged
+fixed map as RF-03 merely because that coordinate is commonly called a
+coefficient.
+
+Retain the generic rule that a recomputed quantity belongs to RF-03 when its
+recomputation changes the operator-defining state or map.
+
+Update consistently:
+
+- the PTC application crosswalk;
+- NormResponseLocal;
+- NormState;
+- REQ-011;
+- REQ-012;
+- REQ-013;
+- PRED-006;
+- PRED-009;
+- PRED-010 where referenced;
+- AMENDMENTS.md;
+- PRODUCT_LIFECYCLE.md;
+- METHOD_RECORD_TEMPLATE.md;
+- R0.1_TO_R0.2_CROSSWALK.md;
+- SEMANTIC_CHANGE_REPORT.md;
+- rationale response explanation;
+- ECS EV-005/EV-006 and associated fixtures;
+- requirement-to-evidence and prediction-to-fixture indexes.
+
+Preserve the existing stable IDs by amending their same obligations.
+
+======================================================================
+4. PRESERVE PTC OWNERSHIP
+======================================================================
+
+The repair above is a FRUIT response-classification crosswalk derived from the
+exact admitted PTC equations.
+
+It does not:
+
+- alter the PTC estimator;
+- select a new PTC family;
+- alter rank or support;
+- redefine PTC application coefficients;
+- authorize a numerical FRUIT method;
+- authorize a PTC or FRUIT route;
+- establish response fidelity.
+
+State explicitly:
+
+    PTC owns the estimator and its exact fixed-state application map.
+    FRUIT owns only the response role assigned to a declared use of that
+    upstream operation inside a FRUIT method.
+
+If the admitted PTC source is insufficient to establish one exact induced map
+for a particular support/state, retain typed unavailability for that case.
+Do not replace it with a generic “all coefficient recomputation is RF-03” rule.
+
+======================================================================
+5. REPAIR CANDIDATE/AUTHORITY AND REGISTRY LANGUAGE
+======================================================================
+
+The current package is an owner-review candidate, not yet frozen or activated.
+
+Replace:
+
+    complete sole active Stage B scientific authority as an owner-review
+    candidate
+
+with:
+
+    complete sole current Stage B review-candidate normative core
+
+or another wording that does not imply owner approval or activation.
+
+Unless an exact content-bound FRUIT Registry record exists, replace:
+
+    registered base products
+    registered response products
+    registered uncertainty family
+    exact registry
+
+with:
+
+    core-declared product roles
+    core-declared response-role vocabulary
+    closed uncertainty-role grammar
+    exact core declaration.
+
+If an actual Registry is intended, create and bind separate states for:
+
+    semantics_authored
+    scientific_owner_approved
+    registered
+    source_bound
+    activated.
+
+No owner-review candidate may describe an unactivated Registry item as active.
+
+Apply this wording consistently to:
+
+- normative core;
+- product/lifecycle table;
+- model-uncertainty crosswalk;
+- method-record template;
+- semantic-change report;
+- source and parity records;
+- rationale and ECS covers;
+- proposed owner disposition.
+
+======================================================================
+6. REPAIR EXTERNAL ARCHIVE/SIDECAR LINK STATUS
+======================================================================
+
+The archive cannot contain a local link to itself.
+
+The current README and DOCUMENT_VERIFICATION each contain local Markdown links
+to:
+
+    SCI-FRUIT-v0.1-stage-b-r0.2-owner-review.tar.gz
+    SCI-FRUIT-v0.1-stage-b-r0.2-owner-review.tar.gz.sha256
+
+but those files are not members of the extracted delivery tree.
+
+Treat them as external sibling delivery artifacts.
+
+Do one of:
+
+A. render the filenames as external-delivery code rather than in-tree Markdown
+   links; or
+
+B. provide a package-level landing document outside the archive whose links
+   point to the archive and sidecar.
+
+Narrow the verification statement to:
+
+    every in-tree local Markdown link resolves inside the extracted delivery;
+    the outer archive and its digest sidecar are separately verified external
+    sibling artifacts.
+
+Ship the external SHA-256 sidecar beside the final archive.
+
+The reviewed r0.2 archive had:
+
+    size:
+      2519780 bytes
+
+    SHA-256:
+      6d552e49510c92fff65d9c835f8f31cd21f8ef50bed4f1a24ff355cfce7523a4
+
+Do not reuse that digest after any byte change.
+
+======================================================================
+7. FINAL SOURCE AND MECHANICAL CLOSURE
+======================================================================
+
+Rebuild and return:
+
+1. successor SCI-FRUIT-NORMATIVE-CORE;
+2. concise scientific rationale;
+3. Engineering Conformance Specification;
+4. corrected PTC-response crosswalk;
+5. RF-01/RF-02/RF-03 amendment;
+6. candidate/Registry terminology amendment;
+7. corrected archive/link verification;
+8. updated product/lifecycle and method-record tables;
+9. updated requirement and prediction evidence indexes;
+10. semantic-change and r0.2-to-r0.3 crosswalk;
+11. exact source inventories and view parity;
+12. clean-build report;
+13. all-page PDF visual/metadata report;
+14. artifact manifest and sidecar;
+15. external archive and archive-digest sidecar;
+16. proposed conditional scientific-owner disposition.
+
+Verify:
+
+- SCI-FRUIT-REQ-001 through REQ-024 remain unique and gap-free;
+- SCI-FRUIT-ASM-001 through ASM-006 remain unique and gap-free;
+- SCI-FRUIT-PRED-001 through PRED-020 remain unique and gap-free;
+- ordinary fixed-subspace PTC projection is not confused with frozen-component
+  subtraction;
+- input-dependent internal coordinates are not confused with
+  operator-defining state;
+- fixed affine centering is not discarded;
+- RF-01 and RF-03 have nonoverlapping causal meanings;
+- no “active” or “registered” claim exceeds the candidate’s actual authority;
+- all in-tree links resolve;
+- every manifest and sidecar hash reproduces;
+- no symlink, hard link, absolute path, or traversal member exists;
+- every PDF reopens and renders without clipping, overlap, malformed equations,
+  broken glyphs, unreadable tables, or accidental blank pages;
+- owner, status, version, revision, date, source identities, and metadata agree.
+
+======================================================================
+8. FREEZE DISPOSITION
+======================================================================
+
+After this narrow repair, return the successor core for a separate explicit
+Grant Wilson conditional-freeze decision.
+
+A conditional freeze may preserve:
+
+    every numerical FRUIT method/route
+      =
+    unavailable_pending_separate_owner_approval.
+
+It shall not establish:
+
+- numerical FRUIT availability;
+- implementation conformity;
+- response or covariance fidelity;
+- uncertainty coverage;
+- recovered measured modes;
+- convergence adequacy;
+- Pointing, OOF, source, or catalogue fitness;
+- observational validation;
+- performance;
+- readiness;
+- production suitability or authorization;
+- Unity activity.

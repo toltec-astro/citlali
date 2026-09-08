@@ -1,0 +1,446 @@
+{
+  "status": "prospective; numerical assessment blocked by exact dependencies",
+  "result_vocabulary": [
+    "pass",
+    "fail",
+    "blocked",
+    "not_applicable",
+    "not_assessed"
+  ],
+  "dependency": "unavailable_pending_separate_owner_approval: exact method-specific FRUIT-FEEDBACK-METHOD and required upstream authority",
+  "evidence_procedures": {
+    "001": "Parent, type and method binding",
+    "002": "Accepted-to-applied transformation",
+    "003": "Operation order, bypass and counts",
+    "004": "Additive/reference/gauge compatibility",
+    "005": "Support and information origin",
+    "006": "Fail-closed inputs and limiting equations",
+    "007": "Method/state/generation identity",
+    "008": "Continuation replay",
+    "009": "Restart, retry and lifecycle",
+    "010": "Response queries",
+    "011": "Covariance and bias targets",
+    "012": "NOI parity and member centers",
+    "013": "Convergence and resource claims",
+    "014": "Terminal comparability and selection",
+    "015": "Publication and immutable parentage"
+  },
+  "requirements": [
+    {
+      "id": "SCI-FRUIT-REQ-001",
+      "procedures": [
+        "SCI-FRUIT-EV-001"
+      ],
+      "observable": "A/B/C decision binding",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-REQ-002",
+      "procedures": [
+        "SCI-FRUIT-EV-001",
+        "SCI-FRUIT-EV-004"
+      ],
+      "observable": "Typed object/domain inventory",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-REQ-003",
+      "procedures": [
+        "SCI-FRUIT-EV-002"
+      ],
+      "observable": "Three model stages and transformations",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-REQ-004",
+      "procedures": [
+        "SCI-FRUIT-EV-004"
+      ],
+      "observable": "Removal/rejoin compatibility",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-REQ-005",
+      "procedures": [
+        "SCI-FRUIT-EV-003",
+        "SCI-FRUIT-EV-006"
+      ],
+      "observable": "Complete path equation and counts",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-REQ-006",
+      "procedures": [
+        "SCI-FRUIT-EV-006",
+        "SCI-FRUIT-EV-010"
+      ],
+      "observable": "Linearity and derivative premises",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-REQ-007",
+      "procedures": [
+        "SCI-FRUIT-EV-001"
+      ],
+      "observable": "Route/grouping/input ancestry",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-REQ-008",
+      "procedures": [
+        "SCI-FRUIT-EV-005"
+      ],
+      "observable": "Eight support/influence roles",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-REQ-009",
+      "procedures": [
+        "SCI-FRUIT-EV-005",
+        "SCI-FRUIT-EV-006"
+      ],
+      "observable": "Occurrence and mode-origin propagation",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-REQ-010",
+      "procedures": [
+        "SCI-FRUIT-EV-007"
+      ],
+      "observable": "Rules versus realized generations",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-REQ-011",
+      "procedures": [
+        "SCI-FRUIT-EV-003",
+        "SCI-FRUIT-EV-007"
+      ],
+      "observable": "Defining-state and internal-coordinate role records",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-REQ-012",
+      "procedures": [
+        "SCI-FRUIT-EV-005",
+        "SCI-FRUIT-EV-006",
+        "SCI-FRUIT-EV-010"
+      ],
+      "observable": "RF-01/02 fixed-map and affine PTC response",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-REQ-013",
+      "procedures": [
+        "SCI-FRUIT-EV-010"
+      ],
+      "observable": "RF-03 defining-state reruns and RF-04--07 scopes",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-REQ-014",
+      "procedures": [
+        "SCI-FRUIT-EV-011"
+      ],
+      "observable": "Law-relative target and four covariance blocks",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-REQ-015",
+      "procedures": [
+        "SCI-FRUIT-EV-002",
+        "SCI-FRUIT-EV-011"
+      ],
+      "observable": "Core-declared uncertainty, transfer/shift/bias roles",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-REQ-016",
+      "procedures": [
+        "SCI-FRUIT-EV-012"
+      ],
+      "observable": "NOI law, member meaning, centers and action",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-REQ-017",
+      "procedures": [
+        "SCI-FRUIT-EV-008",
+        "SCI-FRUIT-EV-009"
+      ],
+      "observable": "Causal continuation/restart/retry state",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-REQ-018",
+      "procedures": [
+        "SCI-FRUIT-EV-009",
+        "SCI-FRUIT-EV-015"
+      ],
+      "observable": "Request, availability, outcome and producer stage",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-REQ-019",
+      "procedures": [
+        "SCI-FRUIT-EV-013"
+      ],
+      "observable": "Separate completion/stop/convergence",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-REQ-020",
+      "procedures": [
+        "SCI-FRUIT-EV-014"
+      ],
+      "observable": "Comparable selector and open-world use references",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-REQ-021",
+      "procedures": [
+        "SCI-FRUIT-EV-006",
+        "SCI-FRUIT-EV-015"
+      ],
+      "observable": "Bundle handoff and role-local dependencies",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-REQ-022",
+      "procedures": [
+        "SCI-FRUIT-EV-001",
+        "SCI-FRUIT-EV-005",
+        "SCI-FRUIT-EV-012",
+        "SCI-FRUIT-EV-015"
+      ],
+      "observable": "Producer and SCI-VAL-congruent child records",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-REQ-023",
+      "procedures": [
+        "SCI-FRUIT-EV-001"
+      ],
+      "observable": "Complete method record and approval gate",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-REQ-024",
+      "procedures": [
+        "SCI-FRUIT-EV-006",
+        "SCI-FRUIT-EV-010",
+        "SCI-FRUIT-EV-011",
+        "SCI-FRUIT-EV-012",
+        "SCI-FRUIT-EV-015"
+      ],
+      "observable": "Complete r0.3 review-candidate core and claim ceilings",
+      "result": "blocked",
+      "evidence_artifact_realization": "not_produced"
+    }
+  ],
+  "predictions": [
+    {
+      "id": "SCI-FRUIT-PRED-001",
+      "fixture": "SCI-FRUIT-FIX-001",
+      "design": "Zero applied operand; non-zero-preserving control",
+      "independent_expected_construction": "Substitute into composition under exact zero-preserving premises.",
+      "result": "blocked",
+      "fixture_payload": null,
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-PRED-002",
+      "fixture": "SCI-FRUIT-FIX-002",
+      "design": "Identity residual and compatible equal removal/rejoin",
+      "independent_expected_construction": "Cancel compatible contributions; reject missing-space/gauge controls.",
+      "result": "blocked",
+      "fixture_payload": null,
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-PRED-003",
+      "fixture": "SCI-FRUIT-FIX-003",
+      "design": "Complete linearity with equal model-path maps",
+      "independent_expected_construction": "Use exact operator equality to establish D=0 on declared domain.",
+      "result": "blocked",
+      "fixture_payload": null,
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-PRED-004",
+      "fixture": "SCI-FRUIT-FIX-004",
+      "design": "Perfect applied reference, distinct accepted-stage control",
+      "independent_expected_construction": "Set residual to zero; retain rejoin meaning and unavailable-mode origin.",
+      "result": "blocked",
+      "fixture_payload": null,
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-PRED-005",
+      "fixture": "SCI-FRUIT-FIX-005",
+      "design": "Distinct mismatch, transfer, shift and law-qualified bias",
+      "independent_expected_construction": "Subtract applied-reference results; transform accepted error; require exact expectation authority.",
+      "result": "blocked",
+      "fixture_payload": null,
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-PRED-006",
+      "fixture": "SCI-FRUIT-FIX-006",
+      "design": "Fixed PTC map versus frozen component; affine centering",
+      "independent_expected_construction": "Substitute exact admitted PTC coordinate into output to derive P; compare delta x P and affine derivative HP with frozen-component derivative H, preserving domain and offset.",
+      "result": "blocked",
+      "fixture_payload": null,
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-PRED-007",
+      "fixture": "SCI-FRUIT-FIX-007",
+      "design": "Permitted model-only and unavailable measured mode",
+      "independent_expected_construction": "Trace model/prior ancestry independently of occurrence support class.",
+      "result": "blocked",
+      "fixture_payload": null,
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-PRED-008",
+      "fixture": "SCI-FRUIT-FIX-008",
+      "design": "Unequal support and incompatible reference/gauge",
+      "independent_expected_construction": "Check exact allowed restriction/composition or typed unavailability.",
+      "result": "blocked",
+      "fixture_payload": null,
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-PRED-009",
+      "fixture": "SCI-FRUIT-FIX-009",
+      "design": "Internal fixed-map coordinates versus defining-state reruns",
+      "independent_expected_construction": "Apply the fixed-map chain rule with internal-coordinate evaluation; reduce to A,D only under complete linearity; trace defining-state reruns separately.",
+      "result": "blocked",
+      "fixture_payload": null,
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-PRED-010",
+      "fixture": "SCI-FRUIT-FIX-010",
+      "design": "Finite/rank/support-domain failure without implicit RF-03",
+      "independent_expected_construction": "Check finite/rank/support-domain and derivative/comparison failure; retain unavailable or separately typed transition, never implicit RF-03.",
+      "result": "blocked",
+      "fixture_payload": null,
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-PRED-011",
+      "fixture": "SCI-FRUIT-FIX-011",
+      "design": "Physical-parent, fixed-model and conditional NOI laws",
+      "independent_expected_construction": "Bind each random event/fixed objects/design resolution; expand four covariance terms with exact omissions.",
+      "result": "blocked",
+      "fixture_payload": null,
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-PRED-012",
+      "fixture": "SCI-FRUIT-FIX-012",
+      "design": "Repeated shared parent/model lineage",
+      "independent_expected_construction": "Trace shared dependence; no independent-count uncertainty scaling.",
+      "result": "blocked",
+      "fixture_payload": null,
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-PRED-013",
+      "fixture": "SCI-FRUIT-FIX-013",
+      "design": "Checkpoint after absolute index N and same future controls",
+      "independent_expected_construction": "Compare full causal state/results with uninterrupted continuation at N+1.",
+      "result": "blocked",
+      "fixture_payload": null,
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-PRED-014",
+      "fixture": "SCI-FRUIT-FIX-014",
+      "design": "Immutable request generation and early branch/role outcomes",
+      "independent_expected_construction": "New request creates a generation; no fabricated producer stages; retain restart/retry lineage.",
+      "result": "blocked",
+      "fixture_payload": null,
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-PRED-015",
+      "fixture": "SCI-FRUIT-FIX-015",
+      "design": "Declared resource exhaustion without convergence premise",
+      "independent_expected_construction": "Separate exact limit accounting from convergence proposition.",
+      "result": "blocked",
+      "fixture_payload": null,
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-PRED-016",
+      "fixture": "SCI-FRUIT-FIX-016",
+      "design": "Comparable selector and open-world linked use records",
+      "independent_expected_construction": "Apply exact conversions; field 9 is requested/linked only or no request; retain nine fields.",
+      "result": "blocked",
+      "fixture_payload": null,
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-PRED-017",
+      "fixture": "SCI-FRUIT-FIX-017",
+      "design": "Observation/coadd/joint grouping comparison",
+      "independent_expected_construction": "Require an exact commutation proof; shape agreement is insufficient.",
+      "result": "blocked",
+      "fixture_payload": null,
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-PRED-018",
+      "fixture": "SCI-FRUIT-FIX-018",
+      "design": "Zero-target-law NOI members versus full-parent members",
+      "independent_expected_construction": "Use role-qualified law expectations and exact centers; no spatial/finite-ensemble centering or B-1 implication.",
+      "result": "blocked",
+      "fixture_payload": null,
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-PRED-019",
+      "fixture": "SCI-FRUIT-FIX-019",
+      "design": "Missing/unapproved method or upstream authority",
+      "independent_expected_construction": "Gate remains unavailable; generic family/finite output never admits route.",
+      "result": "blocked",
+      "fixture_payload": null,
+      "evidence_artifact_realization": "not_produced"
+    },
+    {
+      "id": "SCI-FRUIT-PRED-020",
+      "fixture": "SCI-FRUIT-FIX-020",
+      "design": "Bundle-bound payload and SCI-VAL-congruent child accounting",
+      "independent_expected_construction": "No eligibility for not-requested; realized unknown-applicability/decision-unavailable differs from failed artifacts; no base mutation.",
+      "result": "blocked",
+      "fixture_payload": null,
+      "evidence_artifact_realization": "not_produced"
+    }
+  ]
+}
