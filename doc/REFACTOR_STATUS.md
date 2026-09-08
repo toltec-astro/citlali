@@ -1,5 +1,16 @@
 # Citlali Refactor Status
 
+## MAP profile-admission proposal — 2026-09-08
+
+The owner confirmed the canonical r0.4 incorporation push and authorized the
+next contract step. [The exact admission proposal](scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/README.md)
+presents final identities, complete inherited Registry records and MAP/VAL
+source bindings for owner disposition. Generic MAP science remains frozen;
+profile approval, registration, source binding and activation remain separate
+and pending. This is contract development; the application is unchanged, the
+NOI candidate remains paused here, and FRUIT remains independent.
+
+
 ## Current MAP contract incorporation and binding status — 2026-09-08
 
 The owner authorized [documentation-only canonical incorporation](scientific_contracts/acceptance/SCI_MAP_V02_R04_2026-09-08/README.md)

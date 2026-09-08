@@ -1,0 +1,77 @@
+{
+  "identity": "SCI-MAP-PROFILE-IDENTITY-ALLOCATION/2026-09-08",
+  "status": "proposed for owner approval; no final identity allocated or activated yet",
+  "canonical_base": "b675bb64a7054f7b24403c79898965e8765cfd02",
+  "allocations": [
+    {
+      "subject": "val_registry",
+      "frozen_proposal_identity": "SCI-VAL_PROFILE_REGISTRY v0.1/r0.3-map-v0.2-r0.4-candidate-2026-09-08",
+      "proposed_final_identity": "SCI-VAL_PROFILE_REGISTRY v0.1/r0.3-map-v0.2-r0.4-2026-09-08",
+      "complete_successor_record": "PROFILE_REGISTRY.md"
+    },
+    {
+      "subject": "val_source_register",
+      "frozen_proposal_identity": "SCI-VAL_SOURCE_BINDING_REGISTER v0.1/r0.3-map-v0.2-r0.4-candidate-2026-09-08",
+      "proposed_final_identity": "SCI-VAL_SOURCE_BINDING_REGISTER v0.1/r0.3-map-v0.2-r0.4-2026-09-08",
+      "complete_successor_record": "SOURCE_BINDING_REGISTER.md"
+    },
+    {
+      "subject": "map_source_binding",
+      "frozen_proposal_identity": "SCI-MAP_SOURCE_BINDING v0.2/r0.4-candidate-2026-09-08",
+      "proposed_final_identity": "SCI-MAP_SOURCE_BINDING v0.2/r0.4-2026-09-08",
+      "complete_successor_record": "MAP_BINDING_AND_ROLES.md"
+    },
+    {
+      "subject": "map_role_registry",
+      "frozen_proposal_identity": "SCI-MAP_PRODUCT_ROLE_REGISTRY v0.2/r0.4-candidate-2026-09-08",
+      "proposed_final_identity": "SCI-MAP_PRODUCT_ROLE_REGISTRY v0.2/r0.4-2026-09-08",
+      "complete_successor_record": "MAP_BINDING_AND_ROLES.md"
+    },
+    {
+      "subject": "map_occurrence_binding",
+      "frozen_proposal_identity": "SCI-MAP:map_upstream_admission@2 / SCI-MAP-v0.2-r0.4-candidate-2026-09-08",
+      "proposed_final_identity": "SCI-MAP:map_upstream_admission@2 / SCI-MAP-v0.2-r0.4-2026-09-08",
+      "complete_successor_record": "PROFILE_REGISTRY.md"
+    }
+  ],
+  "unchanged_map_profile_keys": [
+    "SCI-MAP:map_upstream_admission@2",
+    "SCI-MAP:one_hot_containing_pixel@1",
+    "SCI-MAP:uniform_observation_coadd_coefficient@1"
+  ],
+  "new_coadd_profile_key": "SCI-MAP:observation_coadd_admission@2",
+  "historical_coadd_key_preserved": "SCI-MAP:observation_coadd_admission@1",
+  "unchanged_product_role_keys": [
+    "SCI-MAP:base_observation_map@1",
+    "SCI-MAP:response_bearing_observation_map@1",
+    "SCI-MAP:covariance_qualified_observation_map@1",
+    "SCI-MAP:base_coadd@1",
+    "SCI-MAP:response_bearing_coadd@1",
+    "SCI-MAP:covariance_qualified_coadd@1"
+  ],
+  "inherited_named_use_keys": [
+    "SCI-VAL:independent_exposure@1",
+    "SCI-PTC:basis_fit_admission@1",
+    "SCI-PTC:loading_fit_admission@1",
+    "SCI-PTC:operator_application@1",
+    "SCI-PTC:output_retention@1",
+    "SCI-PTC:response_companion@1",
+    "SCI-MAP:map_upstream_admission@1",
+    "SCI-MAP:map_upstream_admission@2",
+    "SCI-MAP:observation_coadd_admission@1",
+    "SCI-JINC:jinc_map_contribution@1",
+    "SCI-NOI:generation_input_admission@1",
+    "SCI-NOI:uncertainty_member_admission@1",
+    "SCI-NOI:uncertainty_ensemble_admission@1",
+    "SCI-NOI:standardization_admission@1",
+    "SCI-PTC:uniform_coefficient_handoff@draft-0.1"
+  ],
+  "retained_approved_producer_identifiers": [
+    "SCI-PTC:analysis_gridding_coefficients@draft-0.1",
+    "SCI-PTC:uniform_constant@draft-0.1",
+    "SCI-PTC:uniform_coefficient_handoff@draft-0.1",
+    "SCI-PTC_TO_SCI-MAP_BOUNDARY v0.2-draft.1/r0.4",
+    "SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE v0.1/r0.1"
+  ],
+  "interpretation": "Explicit proposed new binding generations, not aliases or edits of frozen candidate records. Subject to exact owner acceptance; all prior evaluations retain original complete identities."
+}
