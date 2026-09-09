@@ -1,17 +1,17 @@
 # SCI-FRUIT v0.1 — Iterative Feedback, State, And Termination
 
 Status: generic SCI-FRUIT-NORMATIVE-CORE v0.1/r0.4 accepted and conditionally
-frozen; ordinary-MAP scope r0.2 and residual-relearning direction approved,
-with targeted paper method/boundary proposal r0.2 prepared for owner review.
+frozen; ordinary-MAP scope, residual-relearning and mode-aware paper directions
+approved, with method/boundary proposal r0.3 prepared for owner review.
 Every numerical method/route remains unavailable pending separate approval.
-Updated: 2026-09-08.
+Updated: 2026-09-09.
 
 ## Program Adherence And Prior-Work Recovery
 
 This package follows the [program charter](../../../README.md),
 [accepted pilot workflow](../../../PILOT_PROCESS_REVIEW_2026-08-16.md) and
 [downstream roadmap](../../../DOWNSTREAM_CONTRACT_ROADMAP_2026-08-26.md).
-The [current method recovery](method_preparation/ordinary_map/method_definition/r0.2/PRIOR_WORK.md)
+The [current method recovery](method_preparation/ordinary_map/method_definition/r0.3/PRIOR_WORK.md)
 adopts the exact frozen generic FRUIT core and inherited PTC/MAP science,
 identifies both sides of the PTC boundary, and defers empirical evidence.
 Implementation/configuration and the internal dossier remain outside independent
@@ -20,7 +20,7 @@ no generic FRUIT or PCA derivation is repeated.
 
 The [scope approval](method_preparation/ordinary_map/method_definition/r0.2/OWNER_SCOPE_APPROVAL_2026-09-08.md)
 closes D001–D005 as scope and paper-preparation directions. The
-[current source control](method_preparation/ordinary_map/method_definition/r0.2/REFERENCE_CONTROL.md)
+[current source control](method_preparation/ordinary_map/method_definition/r0.3/REFERENCE_CONTROL.md)
 reconciles the three process-only reference flags; any later exact sanitized
 author packet and dispatch still require separate approval.
 The generic-core program-order exception permits
@@ -29,33 +29,39 @@ no numerical method or new method-specific author dispatch.
 
 ## Current Owner Review
 
-- [Residual-relearning direction and review](method_preparation/ordinary_map/method_definition/r0.2/RELEARNING_DIRECTION_AND_REVIEW.md)
-- [Concrete ordinary-MAP paper proposal](method_preparation/ordinary_map/method_definition/r0.2/README.md)
-- [Method rules and twenty-one classes](method_preparation/ordinary_map/method_definition/r0.2/METHOD_DEFINITION.md)
-- [Two-sided PTC/MAP boundaries](method_preparation/ordinary_map/method_definition/r0.2/PTC_MAP_BOUNDARIES.md)
-- [U01–U08 and remaining method questions](method_preparation/ordinary_map/method_definition/r0.2/DISPOSITIONS_AND_OWNER_QUESTIONS.md)
-- [Historical-to-proposed comparison](method_preparation/ordinary_map/method_definition/r0.2/HISTORICAL_COMPARISON.md)
+- [Owner directives, precedence and crosswalk](method_preparation/ordinary_map/method_definition/r0.3/OWNER_DIRECTION_AND_CROSSWALK.md)
+- [Ordinary-MAP r0.3 paper proposal and archive](method_preparation/ordinary_map/method_definition/r0.3/README.md)
+- [Scientific definition and twenty-one classes](method_preparation/ordinary_map/method_definition/r0.3/METHOD_DEFINITION.md)
+- [Actual proposed PTC/MAP amendments](method_preparation/ordinary_map/method_definition/r0.3/BOUNDARY_AMENDMENTS.md)
+- [Prospective engineering requirements](method_preparation/ordinary_map/method_definition/r0.3/ENGINEERING_CONFORMANCE.md)
+- [Minimal experiments, recovered bindings and precise questions](method_preparation/ordinary_map/method_definition/r0.3/EXPERIMENTS_AND_OPEN_DECISIONS.md)
 - [Exact generic-core conditional freeze](scientific_core/SCI_FRUIT_STAGE_B_R0.4_OWNER_CONDITIONAL_FREEZE_2026-09-08.md)
 
-The approved scope is compact-source pointing with one observation, separately
-identified array bundles and unfiltered normalized ordinary MAP feedback.
-The owner accepted residual relearning as the intended paper-method schedule.
-Each iteration now learns centering and correlated subspace from its fresh
-model-subtracted residual under the same PTC recipe, then fixes the resolved
-state for that pass's application. This supersedes the fixed-bootstrap r0.1
-recommendation while preserving its exact packet. Support-only model selection,
-matched containing-pixel projection, retained uniform gridding coefficients and
-other candidate rules remain proposals; relearning establishes no benefit.
+The owner directed mode-aware replacement inference from the reconstructed
+total, while retaining ordinary MAP first and current-residual PTC relearning.
+Each pass learns under the same recipe, then fixes its resolved state during
+Apply. FRUIT separately resolves model admission, retained flux and application.
+The leading proposal retains unfiltered calibrated total flux on admitted
+support with unity application. Earlier admitted structure can change or be
+revoked, inside a fixed available MAP domain. POINT, OOF, BEAM and distinct
+SCIENCE policy interfaces are specified now; numerical policies and missing
+mode/quantity routes remain gated. The all-support/both-sign selector remains
+a comparison baseline, and historical PCA/S/N remains a practical control.
+Relearning, repeated acceptance and apparent convergence establish no benefit
+or independent recovered signal. Optional floor, gain, coherence, pooling and
+alternative PTC choices remain experimental.
 
 The current route is `unavailable_under_current_frozen_parent_permissions`:
 residual PTC learning/application admission and rejoined-child MAP admission
-require exact controlled amendments. This is a contract limit, not a requirement
-to know eigenvectors beforehand. Coefficient-family, applicable PTC-plan and
-numerical MAP support bindings remain separate. Frozen MAP stays v0.1/r0.7.1;
-no successor is adopted. The next review concerns remaining method choices and
-exact boundary work; scope and learning direction are already resolved.
-Historical JINC control and all prior packets remain unchanged. No experiment
-design, execution or author dispatch is authorized here.
+require the proposed controlled amendments, including PTC REQ-099 disposition
+and separate MAP profile admission. Coefficient/current-QC, applicable PTC-plan
+and numerical MAP support bindings remain separate; learned eigenvectors are
+results, not requested owner settings. Frozen MAP stays v0.1/r0.7.1; no successor
+is adopted. Q01/Q02 concern the remaining method and exact boundary approval.
+The latest direction permits a minimal experiment proposal, with exact
+reference recovery first and independent-pointing replication before policy
+recommendation. No execution, implementation or author dispatch is authorized.
+Historical JINC control, existing products and all prior packets are unchanged.
 Stage A and the Stage B r0.4 core/delivery remain unchanged. Earlier pending
 review and not-launched wording in historical packets is historical status.
 

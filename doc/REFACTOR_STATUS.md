@@ -1273,6 +1273,48 @@ qualification, production or Unity action occurred. The next review is the
 remaining method combination and exact boundary work, with no repeat scope or
 learning-schedule approval requested.
 
+On `2026-09-09`, Grant Wilson supplied an earlier boundary-closure directive
+and a later mode-aware inference directive, explicitly giving the later one
+precedence. The [r0.3 direction record](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.3/OWNER_DIRECTION_AND_CROSSWALK.md)
+binds `SCI-FRUIT-OD-MODE-AWARE-AND-BOUNDARY-2026-09-09`. Ordinary MAP first,
+original-parent reconstruction and current-residual PTC relearning remain
+resolved directions. The leading feedback proposal now re-infers a replacement
+model from the reconstructed total with explicit mode policies. It separates
+admission, retained calibrated flux and application; previously admitted
+structure can change or be revoked. Fixed MAP science domain/contributor
+populations are distinct from variable admitted-model support. The all-support,
+both-sign model remains a comparison baseline; historical PCA/S/N and its actual
+optional flux cut remain a practical baseline and fallback, with JINC preserved.
+
+The [r0.3 review packet](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.3/README.md)
+contains the scientific definition, directive crosswalk, prospective engineering
+requirements and minimal experiment proposal. POINT, OOF, BEAM and distinct
+SCIENCE inference regimes have explicit required interfaces and limits.
+Unity application is a hypothesis; flux floors, non-unity gain, coherence,
+detector borrowing and alternative PTC estimators remain experimental.
+Convergence, perturbation stability and measured recovery are separate claims.
+
+The actual bounded amendment annex addresses PTC's residual parent and one-fit
+rules, current fixed-state application, centering/reference loss, total removed
+signal and REQ-099 exclusions. It also proposes a scoped rejoined-descendant
+MAP boundary/profile successor and constant gridding/current-QC/retained-use
+records. All are proposals, not adopted authority. Exact MAP arithmetic stays
+v0.1/r0.7.1. Effective-plan recovery reuses decided PTC and MAP rules and returns
+only missing/request-specific bindings and exact mode/input conflicts.
+
+The newer directive authorizes focused experiment proposals, superseding the
+earlier no-design boundary only for that paper work. E00 establishes exact
+historical and naive references; E01 proposes one POINT selector comparison
+with PTC recipe held fixed but relearned separately per arm. Independent-pointing
+replication is required before recommendation. A bounded OOF follow-on is
+conditional on a specific justified question. No experiment, injection, replay,
+implementation, Unity work, qualification, production, author dispatch or
+amendment adoption occurred. The next substantive review remains Q01/Q02;
+required numerical policy, effective-plan/support, evidence and execution
+bindings remain explicit. Frozen core/upstream sources, prior packets/products
+and both opaque review archives are preserved. The 43 copied inputs include
+five new owner/manager sources; the 24 proposed references remain unchanged.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

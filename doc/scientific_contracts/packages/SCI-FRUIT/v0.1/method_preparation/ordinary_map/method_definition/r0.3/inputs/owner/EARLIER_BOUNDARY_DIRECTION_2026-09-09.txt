@@ -1,0 +1,143 @@
+SCI-FRUIT ORDINARY-MAP RESIDUAL-RELEARNING METHOD —
+REVIEW DISPOSITION AND BOUNDARY-CLOSURE DIRECTION
+
+The residual-relearning correction is accepted as the intended method direction.
+
+Do not reopen that decision, the approved ordinary-MAP scope, or the frozen
+generic FRUIT core.
+
+The correct separation is:
+
+- keep the declared scientific recipe fixed across the request;
+- reconstruct each residual from the original-parent CAL realization and the
+  current applied model;
+- learn current centering and correlated subspace from that residual;
+- resolve Theta_k;
+- hold Theta_k fixed during its own application and conditional response
+  queries;
+- repeat learning on the next iteration's newly constructed residual.
+
+Internal modal coordinates remain evaluations under the resolved map.
+Downstream analysis/gridding coefficients remain a separate scientific role.
+
+A repeated fit may return the same subspace. No forced subspace change,
+adaptive rank, support refinement, previous-state fallback, or performance
+claim follows.
+
+1. RETAIN THE CONCRETE FIRST-METHOD PROPOSAL
+
+For the next boundary-closure pass, retain:
+
+- unseeded k=0 bootstrap with explicit not_applicable model-path roles;
+- original-parent reruns and complete-map replacement;
+- full-supported-map, both-sign feedback without amplitude thresholds;
+- the proposed matching containing-pixel projector;
+- fixed post-bootstrap required populations and MAP science support;
+- the proposed constant analysis/gridding family with current-generation QC;
+- finite L including bootstrap;
+- successful terminal selection of the final required completed iteration;
+- preservation of completed products when the larger required request fails.
+
+Keep the remaining Q01 method-combination approval distinct from the already
+approved relearning direction.
+
+Describe the all-support selector as an intentionally unthresholded baseline.
+It protects nuisance structure as well as sources and supplies no
+source-purification or benefit claim.
+
+Make the all-required-array barrier visible as a request-completion policy.
+It does not invalidate a completed sibling product or establish statistical
+independence.
+
+2. COMPLETE THE EXACT PTC RESIDUAL-PARENT AMENDMENT
+
+Prepare the actual bounded BC-IN scientific amendment and its clause crosswalk.
+
+Address not only PTC's CAL-parent clauses and external-parent requirements,
+but also:
+
+- the one-immutable-parent-fit rule;
+- the ordinary centering/scaling and rank rules;
+- total removed signal relative to the actual residual;
+- fixed-state application and kernel rules;
+- REQ-099's explicit ordinary-route exclusions.
+
+Preferred ownership:
+
+    FRUIT constructs each residual and owns the outer recurrence.
+
+    The authorized PTC residual-parent pass performs one configured-rank
+    Learn–Resolve–Apply operation on that exact immutable residual.
+
+    PTC gains no internal FRUIT recurrence, new source selector, adaptive
+    rank, or support-changing refinement.
+
+State exactly how this bounded use is admitted while preserving the ordinary
+CAL route and its existing authority.
+
+Do not globally replace CAL-parent language or infer that external residual
+identity alone activates the route.
+
+3. COMPLETE BC-OUT AND THE COEFFICIENT/QC RECORDS
+
+Prepare the exact proposed MAP input/boundary/profile successor for the
+FRUIT-rejoined descendant.
+
+Retain:
+
+- actual CAL, residual, PTC, model and rejoin parents;
+- occurrence, coordinate, quantity and reference compatibility;
+- producer retention and origin/influence causes;
+- coefficient value-generation identity;
+- fresh compatibility/QC and MAP admission decisions;
+- the frozen MAP arithmetic and support meaning.
+
+Do not relabel the rejoined signal as unchanged PTC output.
+
+Keep retained constant gridding values separate from newly learned PCA state.
+Their constant value does not eliminate their family, association, current-QC
+or admission requirements.
+
+4. BIND EXISTING SETTINGS BEFORE REQUESTING NEW DECISIONS
+
+For Q03 and Q04, retrieve and reuse applicable approved effective-plan and
+support-policy authority.
+
+Return only genuinely missing, incompatible or request-specific choices.
+Do not request precomputed eigenvectors or centering values: those are learned
+results.
+
+Retain the exact frozen MAP v0.1/r0.7.1 binding unless a separately approved
+successor is explicitly adopted. Do not import candidate decisions silently.
+
+5. KEEP THE RESPONSE AND CLAIM LIMITS
+
+RF-01/02 remain conditional on current Theta_k.
+RF-03 includes the pass's relearning.
+Recursive and terminal responses retain prior model and learned-state
+dependence.
+
+The normalized MAP/model round-trip identity remains conditional on the exact
+projector, support, occurrence population, quantity/reference compatibility,
+and complete restoration. It is not unit astronomical response.
+
+No full-procedure covariance, NOI method, convergence, source recovery,
+pointing accuracy or performance is inferred.
+
+6. NEXT DELIVERABLE
+
+Return a compact approval packet containing:
+
+- the bounded BC-IN amendment and PTC clause crosswalk;
+- BC-OUT and proposed MAP admission changes;
+- the coefficient-family/QC/retained-use records;
+- the correction-domain/reference disposition;
+- effective-plan binding results and only the remaining precise questions;
+- updated source bindings and checks.
+
+Do not generate another generic FRUIT contract or standalone scope cycle.
+Do not modify frozen authorities in place.
+
+Historical JINC control, prior method records and frozen source bytes remain
+preserved. Author dispatch, amendment adoption, execution and experiments
+remain separately authorized.
