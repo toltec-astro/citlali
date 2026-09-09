@@ -1,0 +1,144 @@
+{
+  "identity": "SCI-MAP-PROFILE-ACTIVATION-PROPOSAL-SOURCE-BINDING/2026-09-09",
+  "status": "proposal only; no activation performed",
+  "canonical_commit": "3efd079bb5c28f28f6f2d49296a29e966bde050b",
+  "canonical_tree": "7f3ef6310991cc9cf33e18b3bd88dd6e2dd81abf",
+  "live_remote": {
+    "repository": "git@github.com:toltec-astro/citlali.git",
+    "ref": "refs/heads/codex/refactor-mainline",
+    "observed_commit": "3efd079bb5c28f28f6f2d49296a29e966bde050b",
+    "verification_date": "2026-09-09",
+    "read_only": true
+  },
+  "allocated_final_identities": [
+    "SCI-VAL_PROFILE_REGISTRY v0.1/r0.3-map-v0.2-r0.4-2026-09-08",
+    "SCI-VAL_SOURCE_BINDING_REGISTER v0.1/r0.3-map-v0.2-r0.4-2026-09-08",
+    "SCI-MAP_SOURCE_BINDING v0.2/r0.4-2026-09-08",
+    "SCI-MAP_PRODUCT_ROLE_REGISTRY v0.2/r0.4-2026-09-08",
+    "SCI-MAP:map_upstream_admission@2 / SCI-MAP-v0.2-r0.4-2026-09-08"
+  ],
+  "proposed_evaluable_map_profiles": [
+    "SCI-MAP:map_upstream_admission@2",
+    "SCI-MAP:observation_coadd_admission@2"
+  ],
+  "proposed_role_scope": "The existing six-role rules in the exact approved MAP_BINDING_AND_ROLES record, without relaxing any object-specific requirement. Base observation does not depend on coadd or stronger companions.",
+  "authorities": [
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/BINDING_MANIFEST.json",
+      "bytes": 15160,
+      "sha256": "57229670cd540ce2f8aeecf5d1a568414d0a85b6a9d6cf5a74b7e698b6ac5ec3"
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/ADMISSION_BINDING.json",
+      "bytes": 5058,
+      "sha256": "3390d2e1d5e7f04e80f9ecf06708f0a219db35d0561f84f798960e14923a44e7"
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/IDENTITY_ALLOCATION.json",
+      "bytes": 3590,
+      "sha256": "2afbf10026784ac4528aa799b9f4362bf5f2bf328f77d3a3edb187c3221523f4"
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/OWNER_APPROVAL_2026-09-08.md",
+      "bytes": 4306,
+      "sha256": "f23ef8679d792b02f3b720eee3b388b318e9fbb171bad8c49b3b510d13c2eede"
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/REGISTRATION_AND_SOURCE_BINDING.md",
+      "bytes": 5265,
+      "sha256": "e56f3a4ec89f75fda7672b3d7abdb99412e82c980fea5fb148eb804ca78fb87d"
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/PROFILE_REGISTRY.md",
+      "bytes": 8286,
+      "sha256": "ce027c3a5c0e71291e9ea509c3a2d1e2d9971fac64763e2afc676241df7d442b"
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/SOURCE_BINDING_REGISTER.md",
+      "bytes": 5975,
+      "sha256": "a30c1b71ada4793b6ae805699f9335e9f912399e066a4af6bb68ab81456d4555"
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/MAP_BINDING_AND_ROLES.md",
+      "bytes": 3099,
+      "sha256": "3229f3ef7aa62c0803dba2f6f8210083d664182988e19050d78c7dbeb5a38882"
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/POST_OWNER_REVIEW.md",
+      "bytes": 4295,
+      "sha256": "9af867b39698dbc9ae2880bf14a87916071c5252db52a287dcbc6f42109e267f"
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/POST_OWNER_REVIEW.json",
+      "bytes": 3773,
+      "sha256": "8ab3413acb5eaee33c80679076020672ac190d1462b250ddf582c1f6e4c3ade4"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/SCIENTIFIC_OWNER_FREEZE_R0.4.md",
+      "bytes": 3747,
+      "sha256": "39b1be29431083c8f1fcc4b56c4dbfc51a44b6b00c1d27ebba10d62eb7768bf1"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/POST_OWNER_CONSISTENCY_REVIEW_R0.4.md",
+      "bytes": 8807,
+      "sha256": "c5ff26d2f1730418b789d0396c38d61262f8e24de42ca5af3401d51297251174"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/POST_OWNER_CONSISTENCY_REVIEW_R0.4.json",
+      "bytes": 2148,
+      "sha256": "b4b1f4163041314cc81c535d476ce5a1d6a80b12439743293a343f2425436ba5"
+    },
+    {
+      "path": "doc/governance/ENGINEERING_GOVERNANCE.md",
+      "bytes": 10814,
+      "sha256": "70769787ce2ef4b7323cd2a38e221ade4af3310e0ad6b7b682e08cb4e4d61e76"
+    },
+    {
+      "path": "doc/governance/REVIEW_AND_CONFORMANCE.md",
+      "bytes": 9852,
+      "sha256": "691e6d6250102ef2f4a504397581ee67c5707d898ab20fb8dd9e874c47f99bb1"
+    },
+    {
+      "path": "doc/governance/TIMESTREAM_SUCCESSOR_GOVERNANCE.md",
+      "bytes": 8246,
+      "sha256": "29fae6f789bb6133c1f5bcdaf0f15437f2eb8c4110f338d3a8de9a4d98ba88dc"
+    }
+  ],
+  "transitive_source_binding": {
+    "manifest": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/BINDING_MANIFEST.json",
+    "verified_proposal_records": 7,
+    "verified_scientific_and_registry_records": 36,
+    "shared_core_identity": "SCI-MAP-v0.2-SHARED-AUTHORITY/r0.4",
+    "shared_core_sha256": "3b81ea8180dcc3f5f37964ac1177feb417fef6a1cdcc590b33f9431b54bc1e31"
+  },
+  "retained_external_evidence": [
+    {
+      "path": "/private/tmp/citlali-map-profile-admission-closure-2026-09-08/merge-review-3efd079bb/INDEPENDENT_MERGE_REVIEW.md",
+      "bytes": 5084,
+      "sha256": "d8248b9a2b61fb074f892536fe38b4c96eccb69c613f405644fc4d1e2cd8c1d3"
+    },
+    {
+      "path": "/private/tmp/citlali-map-profile-admission-closure-2026-09-08/merge-review-3efd079bb/REVIEW_RECEIPT.json",
+      "bytes": 2770,
+      "sha256": "be9ae2665d1d1b070cee3e42e6387b73f29b2f2faf0d9caad065e3b4e36c620f"
+    },
+    {
+      "path": "/private/tmp/citlali-map-profile-admission-closure-2026-09-08/CANONICAL_COMPLETION_RECEIPT.json",
+      "bytes": 7509,
+      "sha256": "345f2b7633c4782082e96bb6e6945f79b610b7bfd23841f3f26de27bee4b1a3d"
+    },
+    {
+      "path": "/private/tmp/citlali-map-profile-admission-closure-2026-09-08/PUSH_VERIFICATION.json",
+      "bytes": 1154,
+      "sha256": "f360f33084df79df1ec5d97d47c0fecd70453f88bb5c75ee83602dc66a8be03d"
+    }
+  ],
+  "reuse": {
+    "packet_checks": 79,
+    "post_owner_checks": 20,
+    "independent_merge_checks": 36,
+    "freshly_rerun": false,
+    "basis": "Prior reports retained and hash-verified; all pre-existing canonical tree entries preserved by this proposal. No PDF rerender or application qualification."
+  },
+  "proposal_identity_rule": "The reviewed candidate Git commit binds these three new files. This manifest does not hash itself or claim its own future containing commit."
+}
