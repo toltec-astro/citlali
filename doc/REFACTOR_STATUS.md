@@ -1,5 +1,22 @@
 # Citlali Refactor Status
 
+## RTC real-timestream census continuation — 2026-09-09
+
+The owner requests a broad census using the current RTC event-background
+implementation before deciding acceptance. The bounded continuation in
+[the existing work order](../handoff/TIMESTREAM_SUCCESSOR_RTC_EVENT_BACKGROUND_001_2026-09-08.md)
+adds an inert raw/Tune/compact-v2 test driver and local runner, preserving every
+scientific application header and the reviewed implementation/Unity receipt.
+Initial real-input execution and 83 focused successor tests pass locally;
+input-mismatch/output-preservation checks pass. The local corpus contains
+27 observations; 13 have detector-binding bundles for strict input verification.
+Complete census counts, input/executable/source hashes, failures, time/memory,
+figures and exact candidate review are bound in the external completion evidence
+under `/private/tmp/citlali-rtc-event-census-2026-09-09`.
+This is descriptive Learn/Consider evidence; hard classification and Apply,
+owner acceptance, canonical integration, push and activation remain pending.
+
+
 ## RTC Event Background Unity Gate Passed — 2026-09-09 UTC receipt
 
 Owner-supplied job **64109974** passes the representative GCC13/Spack gate for

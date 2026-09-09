@@ -223,3 +223,85 @@ requirements. No generic finite-fit or residual threshold silently closes them.
   before any hard shift classification. Final event extent/recovery and
   protected optical admission likewise remain unresolved; these are not
   encoded as hidden defaults.
+
+
+## Owner-directed observational census continuation — 2026-09-09
+
+The owner requests testing this implementation on as many timestreams as possible
+for a census of the data. This authorizes a bounded continuation of this same
+RTC work order: an inert real-input test driver and census evidence. It does
+not accept the pending candidate or authorize integration, push or activation.
+The original numerical headers, accepted D2/VAL/spike implementation, sealed
+source/Unity evidence and receipt remain unchanged.
+
+Literal continuation parent is receipt `b5a7411bd09a95849b36df52c037971cad47089f`
+(tree `20f2ddaa1e2b4841467bd77c82bab533f5383bfd`). Live canonical was reverified
+by explicit SSH GitHub query at `3efd079bb5c28f28f6f2d49296a29e966bde050b`.
+Its intervening documentation is preserved; no admission operation occurs.
+The existing branch/worktree remains the sole RTC work-order location and was
+clean at census preflight. The unrelated SCI-ALIGN checkout is unchanged.
+All three effective governance documents were reread; their identities and
+subject authorities above continue to apply. This is risk tier 2 test/evidence
+work, not a second scientific module or framework.
+
+Expected changes are one excluded-from-default-build executable under
+`tools/timestream_successor`, its CMake registration, a bounded local runner
+and necessary status/evidence records. The driver calls the actual approved
+RTC Learn and bounded Consider interfaces and existing raw/Tune/compact-v2
+adapters. No numerical algorithm is reimplemented. It consumes verified
+original I/Q, the raw-header-named Tune report, exact detector relations and
+producer timing. It records separate original x/r candidate and fit facts,
+all detector denominators, unavailable noise blocks, fitting failures and
+unresolved Consider predicates. It never constructs or executes an Apply plan.
+Engineering conformance remains distinct from these runtime responsibilities.
+
+Input preflight found 27 observation headers / 148,494 channel timestreams,
+298 unique filenames in 441 local copies; filename deduplication is discovery,
+not hash identity. Thirteen observations / 71,734 channel timestreams have
+local compact-v2 manifests for strict verification. Missing bindings remain
+explicit input unavailability, not a newly missing scientific decision. No
+legacy APT or already filtered/despiked/downsampled RTC product is substituted.
+152390 remains included; maps and their comparisons remain excluded.
+
+The explicit initial fitting trial uses +/-50 ms around each candidate edge,
+clipped only at actual observation/acquisition-run boundaries. It includes both
+candidate endpoints and labels its exact native rows. This reuses the owner's
+initial-mask suggestion, not physical event extent or a recovery declaration.
+The two-second flanks, cubic, frozen pre-scale, Huber tuning, minimum support
+and candidate rejection rules remain those in the unchanged implementation.
+No thresholds are tuned from census outcomes. The existing provisional uniform
+readout averaging assumption is retained; midpoint assignment is explicitly a
+within-network trial convention. Telescope epoch synchronization, cross-network
+coincidence, source membership and optical incompatibility are not inferred.
+Source protection is typed unavailable, so no protected-region treatment can
+be authorized by these results.
+
+Gates: verify raw/Tune/APT binding before invocation; exercise the driver on real
+inputs; reconcile counts and typed failures; check required unresolved predicates;
+run existing focused successor tests; preserve exact input/source/executable
+hashes, actual local build identity and time/memory evidence; independently
+review the exact census candidate. A new Unity build is not required for this
+inert local test driver unless new evidence triggers that reassessment. Prior
+Unity gates remain bound to their exact source. Unexpected input, numerical,
+resource or performance behavior is recorded and reassessed; it is not silently
+converted to a successful census. Missing detector bindings block those inputs;
+uncertainty/classification/extent/source-policy decisions continue to block
+classification and Apply, not descriptive fitting on admissible inputs.
+
+
+Census implementation checks: local CMake target build, real raw/Tune/APT input
+execution, all 83 focused successor regressions, wrong-Tune rejection, invalid
+trial-width rejection, and existing-output preservation pass. The real driver
+requires the Tune report's exact digest/size to match the compact-v2 KMP source,
+in addition to its raw-header calibration relation. Original-input identities
+are therefore checked before fitting. Six explicitly selected display examples
+per network are hard bounded to at most 2,048 original rows each; selection is
+for review only and does not change census populations. The all-detector and
+candidate-summary records retain exact input/parent/binding identities and
+unavailable causes without publishing a detector-by-sample mask history.
+The external completion binds the final observational outcome and independent
+exact-SHA verdict; no candidate is approved by the writer. No application mode
+is changed, so ordinary-mode reduction and a repeated full application build
+are not triggered by this test-driver addition. The earlier 932-test Unity
+result remains evidence for the unchanged scientific implementation, not a
+Spack test of this new local driver.
