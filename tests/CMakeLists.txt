@@ -382,6 +382,17 @@ gtest_discover_tests(citlali_timestream_successor_rtc_event_background_test
     TEST_PREFIX "citlali::timestream_successor::rtc_event_background::"
     DISCOVERY_MODE PRE_TEST)
 
+add_executable(citlali_timestream_successor_rtc_event_assessment_test EXCLUDE_FROM_ALL
+    timestream_rtc_event_assessment_header.cpp test_timestream_rtc_event_assessment.cpp)
+set_source_files_properties(timestream_rtc_event_assessment_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+set_target_properties(citlali_timestream_successor_rtc_event_assessment_test PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
+target_link_libraries(citlali_timestream_successor_rtc_event_assessment_test PRIVATE citlali::citlali GTest::gtest_main)
+add_dependencies(check citlali_timestream_successor_rtc_event_assessment_test)
+gtest_discover_tests(citlali_timestream_successor_rtc_event_assessment_test
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    TEST_PREFIX "citlali::timestream_successor::rtc_event_assessment::" DISCOVERY_MODE PRE_TEST)
+
 set_target_properties(citlali_science_map_truth_test
     PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"

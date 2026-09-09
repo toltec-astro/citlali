@@ -1,5 +1,24 @@
 # Citlali Refactor Status
 
+## RTC event assessment and same-corpus rerun — 2026-09-09
+
+The owner approved the A–F continuation in the existing
+[RTC work order](../handoff/TIMESTREAM_SUCCESSOR_RTC_EVENT_BACKGROUND_001_2026-09-08.md).
+New RTC Learn/Consider evidence implements multiple paired fitting exclusions,
+bounded recovery and event membership, per-candidate same-network context, and
+the explicit observation-time health review rule. Accepted native/D2/VAL/spike
+and original joint-fit code remains unchanged. The owner explicitly deferred
+native spectral context for this rerun. No hard pathology, numerical correction,
+Apply route or automatic scientific rejection is claimed.
+
+Twenty focused tests, four config modes and 207 baseline-tool tests pass locally;
+the six-case real-input pilot completes. Full exact-source regression/census and
+independent review remain pending. Canonical was verified at
+`86c20b31f7300ba4063be044380b61cd0baf25eb`; its later changes are documentation only.
+The module continues from literal `be5636087af3c662655779eb99a032156799f04b`,
+preserving both histories for later independent exact-admission review.
+No integration, push, production or cleanup occurs in this continuation.
+
 ## RTC real-timestream census completed — 2026-09-09
 
 Owner-requested census source `bff55895310c415a2924273514146cee3c9ad30c`

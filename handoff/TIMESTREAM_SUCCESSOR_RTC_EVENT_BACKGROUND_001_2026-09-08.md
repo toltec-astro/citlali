@@ -382,3 +382,102 @@ independent evidence review/seal bind the final disposition externally.
 - `report/census-overview.png` SHA-256: `a198a7c6b1736a49eae0898d6799cebcdbe3b989d8afe8885f30a0bd2d2af1a8`.
 
 - `report/census-examples.png` SHA-256: `efb56474611794c00843b483caa5831f95767eccddc40d908adc12925eed71b3`.
+
+
+## Approved event-assessment continuation — 2026-09-09
+
+Owner instruction: "I like these ideas. Let's do this and rerun the same test
+suite." This accepts the six-case proposal preserved in this task: A isolated
+recovery, B same-network context, C multiple fitting exclusions, D shift
+assessment with neighboring spike excluded, E spectral context without automatic
+periodicity rejection, F observation-time health review. This is one Tier-2 RTC
+module continuation on the existing owned clean worktree/branch. Literal source
+base is `be5636087af3c662655779eb99a032156799f04b`; earlier accepted D2/VAL/spike
+and joint-fit implementations remain unchanged. No new integration branch.
+
+Preflight: AGENTS, toltec-context, current status, architecture/scientific
+contracts and all three effective governance documents read. Their digests and
+accepted/effectiveness identities above remain exact. Live canonical verified
+read-only on 2026-09-09 at `86c20b31f7300ba4063be044380b61cd0baf25eb`. Its common
+ancestor with this module is `b675bb64a7054f7b24403c79898965e8765cfd02`; subsequent
+canonical differences are documentation-only. Continue the approved module on
+its literal source; preserve both histories and require independently reviewed
+exact merge/closure identities before later admission. No merge or push here.
+
+New owner selections: two-second bounded forward recovery search; 50 ms
+continuous recovery within inclusive +/-4 frozen pre-scale sigma; preserve the
+joint cubic background and two-second flanks. Starting +/-50 ms exclusions are
+sample-support rounded and remain distinct from measured affected support.
+Known candidates in either coordinate receive paired fitting exclusions;
+remaining original valid samples define the fit. Confirmed recovery separates
+events; further candidates before recovery stay compound/unresolved. Combining
+fitting masks does not merge physical identities by itself. The pre-reference
+polynomial part of the existing joint cubic-plus-offset fit defines continuing
+background; its fitted offset is not subtracted when checking return. Lack of
+recovery cannot establish a short event, gain change, or accepted level shift.
+
+Trial health rule (review only): per coordinate, first-difference scale strictly
+above 10 times the contemporaneous median of other explicitly eligible same-
+network detectors AND candidate edges strictly above 1% of admitted differences,
+in at least 80% of complete ten-second blocks, with at least six such blocks.
+Insufficient/unknown comparison evidence remains unavailable; it is not healthy.
+An either-coordinate finding raises a paired review concern, never a Tune rewrite
+or automatic scientific exclusion. Peer eligibility is an explicit exact-parent
+input, not an internal positional/flag inference. The census adapter binds it to
+verified original Tune and existing clear APT quality fields; missing fields
+exclude a detector from the comparison population, not from the census.
+
+B compares original paired samples on exact within-network native rows. Level
+correlation and first-difference correlation are distinct evidence; deterministic
+strongest-peer summaries retain counts, support and timing. No atmospheric
+subtraction, source diagnosis, cross-network association or hard coherence cut.
+E's native spectral-use adoption gap was recovered from the prior VAL/D2 handoff;
+a narrow owner decision is pending while independent implementation proceeds.
+Neither legacy mask behavior nor diagnostic naming supplies that missing policy.
+
+Runtime: RTC Learn consumes immutable original-pair spike evidence, the exact
+initial VAL/protection handles and explicit peer eligibility; produces immutable
+background, recovery, event membership and health/context facts. RTC Consider
+consumes those facts and the same snapshot, applies the selected review policy,
+retains prior noise-screening exclusions and reports unmet protection/adequacy/
+shift-acceptance requirements. No Apply plan, replacement or offset correction.
+Engineering recovery/testing/review is separate from these runtime boundaries.
+
+Scope: new RTC event-assessment interface, tests/header isolation, inert census
+adapter/runner and conformance records. Bounded original-sample scratch and
+compact event/block summaries; no duplicate full observation or per-cell
+provenance. Same exact 143 network inputs / 13 observations; A-F fixed review
+cases and a spike injected on E's original oscillating background. Measure time,
+memory, candidate preservation, unavailable dispositions and all caught health
+channels. Preserve original census and all failed attempts. Tests: analytic and
+injected recovery/extent/multiple events, shifts, health boundary comparisons,
+peer isolation, gaps/endpoints/invalid support, partition determinism, original
+immutability, source-protection honesty; prior focused tests, local full CTest,
+config preflight and baseline tools. Independent fresh-context exact-SHA
+three-axis review is required. Local AppleClang/Homebrew/cached dependencies are
+supplemental; representative Spack/Unity admission remains separately gated.
+No filtering, factor selection, downsampling, substantive PTC/AST/MAP/CAL,
+activation, production, cleanup or user-controlled push is included.
+
+Owner disposition of recovered E prerequisite: "Keep spectral context unavailable
+for this rerun." No native PSD-use profile is adopted or inferred. Every event
+retains explicit spectral-context unavailability. The E original-background
+injection remains a candidate/recovery check, not periodicity classification.
+
+Implementation binding: every original candidate receives a centered same-network
+peer comparison; identical x/r edges reuse the same calculation. Event seed
+context is separately referenced by the grouped record. Recovery-support
+refinement expands fitting exclusions monotonically for at most eight numerical
+attempts; exhaustion is explicitly unresolved and never accepted recovery.
+A candidate that never leaves the fitted band receives `no_resolved_excursion`,
+not `recovered_candidate`. Health assessment availability is distinct from a
+negative review concern. Public evidence/decision construction is factory-only.
+
+Local pre-candidate checks: 20 new focused tests, isolated public header, original
+E waveform plus explicitly separate synthetic injection, four-mode config
+preflight, 207 baseline tests / 137 subtests pass. Six real-input pilot networks
+complete (A-F) with all candidate memberships accounted for. Pilot source bytes
+and exact executable are recorded externally; later per-candidate-context and
+disposition refinements require a complete new exact-source census. The E crop
+has its own shorter noise population and does not claim bitwise reproduction of
+the full-observation noise blocks. Original sample values remain exact.
