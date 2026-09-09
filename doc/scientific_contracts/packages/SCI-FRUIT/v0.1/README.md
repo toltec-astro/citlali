@@ -29,6 +29,7 @@ no numerical method or new method-specific author dispatch.
 
 ## Locked Scientific Definition And Remaining Review
 
+- [Q02: three boundary decisions and recommendations](method_preparation/ordinary_map/method_definition/q02_review/r0.1/README.md)
 - [Owner directives, precedence and crosswalk](method_preparation/ordinary_map/method_definition/r0.4/OWNER_DIRECTION_AND_CROSSWALK.md)
 - [Ordinary-MAP r0.4 scientific definition and archive](method_preparation/ordinary_map/method_definition/r0.4/README.md)
 - [Scientific definition and twenty-one classes](method_preparation/ordinary_map/method_definition/r0.4/METHOD_DEFINITION.md)
@@ -63,6 +64,11 @@ and numerical MAP support bindings remain separate; learned eigenvectors are
 results, not requested owner settings. Frozen MAP stays v0.1/r0.7.1; no successor
 is adopted. Q01 scientific-definition review is resolved; numerical policy
 slots remain unbound. Q02 exact boundary approval is the next separate review.
+The Q02 decision sheet recommends the residual PTC pass, compatible correction
+and rejoin, and explicit MAP handoff with uniform occurrence coefficients for
+the controlled reference. It also requires successor profile versions for
+changed residual domains/source bindings; ordinary-route @1 records remain
+immutable. These recommendations are pending, not adopted amendments.
 POINT/E01 is a recommended first experiment, not an approved campaign order;
 OOF is separately selectable. Exact reference recovery precedes comparison
 interpretation and independent-pointing replication precedes recommendation.

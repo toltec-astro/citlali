@@ -1345,6 +1345,27 @@ the inherited 43 rows and the 24 proposed references are unchanged. Both known
 untracked review archives remain present and opaque. No numerical work, Unity
 action, upstream amendment adoption or production change occurred.
 
+The owner then authorized Q02 review preparation. The
+[three-decision Q02 sheet](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.1/README.md)
+recommends A: the scoped residual PTC pass; B: compatible containing-pixel
+correction/removal/rejoin; and C: explicit rejoined MAP input with uniform
+occurrence gridding for the controlled reference and fresh current QC. All
+three decisions remain pending. Uniform coefficients are a deliberate
+reference choice, not a consequence of naive mapping or a noise-optimal claim.
+
+The review identifies one necessary proposed clarification S1: frozen VAL
+profile supersession rules require new immutable versions when the residual
+domain or authoritative source changes. Preserve ordinary-route @1 records;
+residual basis/loading/application/retention and requested conditional-response
+uses must bind appropriate successor versions, and downstream QC/MAP must
+reference the current residual-route decisions. The registered VAL source is
+already bound by frozen MAP r0.7.1. S1 clarifies B05 and dependent B09–B11
+references without editing the frozen annex. After scientific disposition,
+exact controlled successor/source-binding records still require review and
+adoption. Q01 remains frozen; mode registration, numerical/evidence/settings
+and execution remain at their existing gates. No amendment adoption, author
+dispatch, numerical work or implementation occurred.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
