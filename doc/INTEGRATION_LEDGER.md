@@ -1,5 +1,25 @@
 # Citlali Integration Ledger
 
+## RTC real-timestream census completed — 2026-09-09
+
+Owner-requested census source `bff55895310c415a2924273514146cee3c9ad30c`
+completed all **143/143 network invocations**, **71,734 channel timestreams in
+13 observations**, and **2,148,911,461 original x/r sample pairs** locally.
+The 910,241 candidate edges seed separate x/r fitting attempts; they are not
+physical event counts or a measured affected-data fraction. Numerical fits are
+available for 130,791 x and 338,458 r attempts; nearby candidates in fitting
+flanks account for 775,929 x and 568,299 r unavailable attempts. Insufficient
+support and explicit iteration limits account for the remainder.
+The census preserves original scientific implementation and accepted D2/VAL/RTC
+bytes, with 83/83 focused regressions and independent source review passing.
+The full [results and figures](/private/tmp/citlali-rtc-event-census-2026-09-09/report/README.md)
+and exact source/input/executable checks remain externally bound. Fourteen
+other discovered observations lack required local detector-binding manifests
+and are explicitly untested. This documentation receipt's exact review and
+completion seal are recorded externally; no new scientific policy, acceptance,
+canonical admission, push, Apply or activation is implied.
+
+
 ## RTC real-timestream census continuation — 2026-09-09
 
 The owner requests a broad census using the current RTC event-background

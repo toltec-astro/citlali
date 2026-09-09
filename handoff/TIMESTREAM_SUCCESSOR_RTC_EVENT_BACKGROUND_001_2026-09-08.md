@@ -305,3 +305,80 @@ is changed, so ordinary-mode reduction and a repeated full application build
 are not triggered by this test-driver addition. The earlier 932-test Unity
 result remains evidence for the unchanged scientific implementation, not a
 Spack test of this new local driver.
+
+
+## Completed census evidence — 2026-09-09
+
+The owner-directed continuation completed on exact source
+`bff55895310c415a2924273514146cee3c9ad30c`, tree
+`c5c2d27cd27d7e0d3ac27ffa1dcba04cb612598f`, parent reviewed Unity receipt
+`b5a7411bd09a95849b36df52c037971cad47089f`. The compiled source-file digests
+match this commit despite the explicitly disclosed precommit build Git label.
+Executable SHA-256 is
+`8d10a8c397893463c2666e81ce3b58dedad0a9504ffec4a6cba626c66dfb2af2`.
+Independent exact-source review passes with recorded limitations and no findings
+(report SHA-256 `a4ac8ed5d9bf41c52555c1b7fc3ee9c243e9e9f9ce30a7aa0f8ab5c890b5ae4d`).
+Its fixed snapshot covered 123 completed networks; it does not itself approve
+later aggregate/figures or this documentation receipt.
+
+Final census: 143/143 network invocations pass, 71,734 channel-observation
+instances (the same 5,518-channel inventory in 13 observations), 2,148,911,461
+original x/r detector-sample pairs. All selected observations are from the
+2026-02-19 night; no all-weather or distinct-device generalization is claimed.
+There are 70,024 Tune-valid channel-observation instances. All input denominators
+retain the invalid remainder and typed unavailable screening consequences.
+The code finds 608,223 x candidate edges and 302,018 r candidate edges.
+Each of the total 910,241 seeds receives one fitting attempt per coordinate.
+These are seed/attempt counts, not unique physical events or affected-data
+occupancy. No event grouping or physical extent is inferred.
+
+| Coordinate outcome | x attempts | r attempts |
+| --- | ---: | ---: |
+| Numerically available | 130791 | 338458 |
+| Other candidate in fitting flank | 775929 | 568299 |
+| Insufficient fitting samples | 3416 | 3416 |
+| Explicit iteration limit | 105 | 68 |
+
+All records and per-network output checksums reconcile; the local runner exited
+zero. Serial network wall time sums to 862.170958 seconds; peak per-process
+resident memory is 5,328,666,624 bytes (macOS `wait4` resource accounting).
+No unexpected producer error/critical-level message occurred. Existing legacy
+`kindvar=0` raw-reader warnings remain in logs; they are not suppressed or
+promoted into a different producer authority. The initial `/usr/bin/time` pilot
+could not query sandboxed clock-rate metadata; final resource evidence uses
+per-child kernel accounting instead. Expected negative-input tests and the
+first harness compile failure are preserved separately, not called passes.
+
+The test uses unchanged runtime Learn and bounded Consider. The principal
+observational limitation is the existing isolated-candidate rule, which leaves
+nearby-event cases unavailable. Numerical convergence or offset/pre-scale ratio
+is not scientific acceptance. Correlated uncertainty, model adequacy, physical
+extent/recovery and protected optical admission remain unresolved. No threshold
+or policy is retuned from these data, and no Apply plan is constructed.
+
+The discovery inventory also contains 155 network files / 76,760 channel streams
+in 14 other observations lacking local canonical detector-binding manifests.
+They are untested and are not counted as passed; 123424 also lacks a Tune report
+in its discovered raw directory. Existing producer/binding preparation is the
+needed prerequisite for expansion, not a new scientific classification decision.
+No raw download, legacy APT substitution, MAP comparison or alternate framework
+is added to address that gap.
+
+Evidence root: `/private/tmp/citlali-rtc-event-census-2026-09-09`.
+The final report includes all-observation totals, unavailable outcomes, offset
+amplitude distributions and bounded actual-data displays. Saved examples are
+illustrations from explicit selections, not a random population or optical
+classification. The original 52-member source evidence and nine-member Unity
+receipt seal both remain intact. This continuation does not integrate or accept
+the still-pending RTC increment; the final documentation-only receipt and its
+independent evidence review/seal bind the final disposition externally.
+
+- `campaign-01/summary.json` SHA-256: `111b2f31b5349007fd6caefc02c4394afee013271da19d9660d27958852eadae`.
+
+- `report/metrics.json` SHA-256: `43f8abf8d7309b82dd4a33ece7d9184e26f6233711cc2ce951f144beffcfcbba`.
+
+- `report/README.md` SHA-256: `a5b66213dd72344bf91dab72ec6735a6d4617b18f7c62aa718187d4ce73d05d4`.
+
+- `report/census-overview.png` SHA-256: `a198a7c6b1736a49eae0898d6799cebcdbe3b989d8afe8885f30a0bd2d2af1a8`.
+
+- `report/census-examples.png` SHA-256: `efb56474611794c00843b483caa5831f95767eccddc40d908adc12925eed71b3`.
