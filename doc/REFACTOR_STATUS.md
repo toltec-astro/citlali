@@ -1235,6 +1235,44 @@ replay, qualification or Unity work. Generic-core and upstream frozen bytes,
 historical JINC control, existing reduction products and both opaque review
 archives remain preserved.
 
+Following review of an owner-supplied PCA discussion on `2026-09-08`, Grant
+Wilson accepted the manager's recommendation for a targeted residual-relearning
+successor. The [direction record](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.2/RELEARNING_DIRECTION_AND_REVIEW.md)
+binds that assent as
+`SCI-FRUIT-OD-RESIDUAL-RELEARNING-DIRECTION-2026-09-08`.
+The learning schedule is resolved for the intended paper method: learn current
+centering and correlated subspace from each newly constructed model-subtracted
+residual under the same declared PTC recipe, then hold that resolved state
+fixed for its own application. This addresses astronomical influence on fitting;
+it does not require eigenmodes to change or establish improved recovery.
+
+The [method-definition r0.2 successor](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.2/README.md)
+has proposed identity `FRUIT-FEEDBACK-METHOD/ordinary-map-residual-relearning@r0.2`.
+It replaces the fixed-bootstrap recommendation without changing the exact
+method-definition r0.1 packet/archive or historical control. BC-IN now specifies
+residual learning, resolution and application admission. Per-pass learning
+influence, centering/subspace state, response conditioning, uncertainty and
+persistence records are updated. Fixed-state response remains conditional;
+full-procedure response includes the prescribed relearning and its transitions.
+Ordinary configured-rank/centering/scaling and zero-refinement rules are reused;
+adaptive rank, changing populations or gridding-weight estimation are not added.
+
+Scope and learning direction are not new open questions. The other candidate
+rules remain proposals, especially support-only selection and uniform gridding
+coefficients. Exact PTC/MAP amendments remain unapproved and unadopted;
+`unavailable_under_current_frozen_parent_permissions` describes those contract
+limits, not an inability to calculate PCA or a need to know eigenvectors in
+advance. Existing approved recipe decisions are reused; applicable effective
+settings and missing request-specific values are bound separately before any
+execution request. The 24 proposed-reference entries and corrected process-only
+flags are unchanged; the additional discussion stays manager-only.
+
+No generic core, frozen upstream contract, historical product or prior archive
+changed. No author dispatch, experiment design/execution, implementation,
+qualification, production or Unity action occurred. The next review is the
+remaining method combination and exact boundary work, with no repeat scope or
+learning-schedule approval requested.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
