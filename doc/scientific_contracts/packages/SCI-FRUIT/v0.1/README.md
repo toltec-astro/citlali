@@ -33,6 +33,7 @@ no numerical method or new method-specific author dispatch.
 
 ## Locked Scientific Definition And Remaining Review
 
+- [Next review: exact training-only weight-precision diagnostic](method_preparation/ordinary_map/method_definition/q02_review/r0.5/README.md)
 - [Approved 20% weight-precision goal and next assessment](method_preparation/ordinary_map/method_definition/q02_review/WEIGHT_PRECISION_DIRECTION_2026-09-09.md)
 - [Latest input intake: replacement single-pass state checks pass](method_preparation/ordinary_map/method_definition/input_intake/r0.2/README.md)
 - [Q02: preflight findings and proposed standalone synthetic execution](method_preparation/ordinary_map/method_definition/q02_review/r0.4/README.md)
@@ -110,6 +111,13 @@ from correlated-data precision and noise stability using the existing discovery
 reductions. It supersedes leading with the 64-sample cutoff or observation-wide
 pooling. No replacement hard gate, window, uncertainty method or execution is
 adopted; standalone T1 remains unapproved and 129081 remains reserved.
+The r0.5 proposal now supplies exact diagnostic bindings for one-, two- and
+four-chunk windows on 123424/152389, joint first-order uncertainty and fixed
+correlation-span sensitivity, and checks for changing scatter. One pending
+owner decision covers that method, limited empirical input permission and a
+bounded local diagnostic together. Its error estimates have no established
+finite-data coverage and cannot certify the 20% goal. No analysis or run has
+occurred, and no window or weighting policy is selected.
 POINT/E01 is a recommended first experiment, not an approved campaign order;
 OOF is separately selectable. Exact reference recovery precedes comparison
 interpretation and independent-pointing replication precedes recommendation.

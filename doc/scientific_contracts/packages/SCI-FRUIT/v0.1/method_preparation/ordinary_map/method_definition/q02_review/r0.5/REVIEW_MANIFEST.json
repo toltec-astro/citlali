@@ -1,0 +1,175 @@
+{
+  "schema": "SCI-FRUIT Q02 weight-precision diagnostic review r0.5",
+  "repository_base": "0bfd8ac4f0aac400f317606d8523e472ec5a4cd0",
+  "created_utc": "2026-09-09T20:29:16.732194+00:00",
+  "decision": {
+    "identity": "SCI-FRUIT-Q02-WEIGHT-PRECISION-SCREEN-R0.5",
+    "state": "pending_owner_approval",
+    "scope": "Exact diagnostic method, limited two-file empirical input permission, implementation and one bounded local run together"
+  },
+  "approved_goal": "Provisional 0.20 fractional relative-weight uncertainty at one standard deviation; not a certified pass criterion",
+  "proposed_settings": {
+    "window_chunks": [
+      1,
+      2,
+      4
+    ],
+    "correlation_spans_seconds": [
+      0.125,
+      0.25,
+      0.5,
+      1,
+      2,
+      4
+    ],
+    "uncertainty": "First-order centered-scatter influence with actual-time Bartlett kernel and joint full-array normalization",
+    "finite_data_coverage": "unavailable; sensitivity is not a confidence interval",
+    "wall_time_limit_seconds": 7200,
+    "aggregate_memory_limit_bytes": 4294967296,
+    "output_limit_bytes": 2147483648,
+    "workers": 1,
+    "numerical_library_threads": 1
+  },
+  "inputs_recovered_from_prior_preflight": [
+    {
+      "obsnum": 152389,
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/152389/raw/toltec_commissioning_pointing_152389_ptc_timestream.nc",
+      "bytes": 138244964,
+      "sha256": "894fff53babfb0070e7d0a8b831aa88098d87f9772d4a8ecb253aef009d35643"
+    },
+    {
+      "obsnum": 123424,
+      "path": "/Users/gwilson/work_toltec/local_data/beammaps/pointings/reduced/redu01/123424/raw/toltec_commissioning_pointing_123424_ptc_timestream.nc",
+      "bytes": 760674540,
+      "sha256": "b53ad776173b1bd2b12569c87ae15ad78a3db1c76ef4515c855255b0e4f20ba9"
+    }
+  ],
+  "input_rehash_or_scientific_access_this_revision": false,
+  "reference": {
+    "url": "https://publish.illinois.edu/xshao/files/2012/11/JASA-DWB.pdf",
+    "doi": "10.1198/jasa.2009.tm08744",
+    "use": "manager statistical motivation only; proposed adaptation, not finite-sample validation or author admission"
+  },
+  "review_sources": [
+    {
+      "repository_path": "AGENTS.md",
+      "source_commit": "0bfd8ac4f0aac400f317606d8523e472ec5a4cd0",
+      "bytes": 6662,
+      "sha256": "ddeb9dd6bbc1fd9fa54af998b46a4af4a99c49d2cf7842303c7e332501e366ee",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/README.md",
+      "source_commit": "0bfd8ac4f0aac400f317606d8523e472ec5a4cd0",
+      "bytes": 16297,
+      "sha256": "351e9b7775b0bf78cba01bf4cd2fafd9591c4b43931b0dc23d82d97f0dfe82d2",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/PRIOR_WORK.md",
+      "source_commit": "0bfd8ac4f0aac400f317606d8523e472ec5a4cd0",
+      "bytes": 4711,
+      "sha256": "a2a08b8f217273da563aa6a4630d9a697ca1a3440691c4431b2089fe840ba98e",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/SCIENTIFIC_OWNER_FREEZE_R0.4.md",
+      "source_commit": "0bfd8ac4f0aac400f317606d8523e472ec5a4cd0",
+      "bytes": 6294,
+      "sha256": "04860a81899f76fa7ec9bafb2ab1324bb55a30b8b3f3c56d53ad41052af35c0a",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/program/PILOT_PROCESS_REVIEW_2026-08-16.md",
+      "source_commit": "0bfd8ac4f0aac400f317606d8523e472ec5a4cd0",
+      "bytes": 5942,
+      "sha256": "c4c29c13d5829773cfa2e061571101edec059313a4bd1a096d13fd9878d85b07",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/program/DOWNSTREAM_CONTRACT_ROADMAP_2026-08-26.md",
+      "source_commit": "0bfd8ac4f0aac400f317606d8523e472ec5a4cd0",
+      "bytes": 14334,
+      "sha256": "bcc5a874e1cf45894f3d4733abc0d0e3b8fe9a2480ec47ceb23c12326e4f7eee",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/WEIGHT_PRECISION_DIRECTION_2026-09-09.md",
+      "source_commit": "0bfd8ac4f0aac400f317606d8523e472ec5a4cd0",
+      "bytes": 6613,
+      "sha256": "c38c52d883b9ad9816ba05193d331c8acb9b6b95511fa2fa693785983d620cb9",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.2/WEIGHTING_TEST_PLAN.md",
+      "source_commit": "0bfd8ac4f0aac400f317606d8523e472ec5a4cd0",
+      "bytes": 19874,
+      "sha256": "351a5de83d89234686e0943d815c80bfd51cbff498a60bf42559141d16243c88",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.4/INPUT_PREFLIGHT.md",
+      "source_commit": "0bfd8ac4f0aac400f317606d8523e472ec5a4cd0",
+      "bytes": 9144,
+      "sha256": "58e03c4e1776aed4e18dbef02f7fbbae2e0611a6123d48f52866a0dbdd8124f5",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.4/DISCOVERY_PREFLIGHT.json",
+      "source_commit": "0bfd8ac4f0aac400f317606d8523e472ec5a4cd0",
+      "bytes": 32401,
+      "sha256": "570c71068b9e35b1bcb73334e3ec4f33d9e619096ddcca069a0caf456c51e811",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.4/check_discovery_inputs.py",
+      "source_commit": "0bfd8ac4f0aac400f317606d8523e472ec5a4cd0",
+      "bytes": 6531,
+      "sha256": "32eb8f239b16f441490da200c27e6a9b12f65d3420feb22ac393075241c4649f",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.4/REVIEW_MANIFEST.json",
+      "source_commit": "0bfd8ac4f0aac400f317606d8523e472ec5a4cd0",
+      "bytes": 17669,
+      "sha256": "653919b321423fd3c087f728f1cf47ed8fbe7f973d4214687012b86c0444145c",
+      "use": "manager preparation; no independent-author reference admission"
+    }
+  ],
+  "payloads": [
+    {
+      "path": "README.md",
+      "bytes": 4973,
+      "sha256": "40b06a30dbfef0472c4a6718fd02665d7382becb26d98603f64628a5de747b22"
+    },
+    {
+      "path": "WEIGHT_PRECISION_PROTOCOL.md",
+      "bytes": 21006,
+      "sha256": "87fea48533182241296fbcf5644d6587bbb939d32ad662893271ff1b115a43ab"
+    }
+  ],
+  "verification": {
+    "prior_review_payload_counts": {
+      "r0.1": 1,
+      "r0.2": 2,
+      "r0.3": 4,
+      "r0.4": 6
+    },
+    "frozen_definition_payloads": 57,
+    "frozen_archive": "verified unchanged",
+    "opaque_archives": "both present; neither read, hashed nor unpacked",
+    "reserved_129081": "not opened",
+    "new_signal_analysis": false,
+    "experiment_implementation": false,
+    "numerical_run": false,
+    "reduction_mutation": false,
+    "Unity_access": false,
+    "push": false
+  },
+  "scientific_state": {
+    "Q01": "frozen_unchanged",
+    "Q02_A_B": "approved_substance_unchanged",
+    "Q02_C": "open",
+    "FRUIT_FEEDBACK_METHOD": "unavailable_pending_separate_owner_approval"
+  }
+}

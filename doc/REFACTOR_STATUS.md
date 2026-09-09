@@ -1494,6 +1494,22 @@ This approval does not approve standalone T1, observation-wide pooling, map-loss
 margins, a detector veto or a numerical run. Earlier preflight counts remain
 historical evidence, and 129081 remains reserved. No new data analysis occurred.
 
+The owner then directed preparation to proceed. The
+[Q02 r0.5 diagnostic proposal](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.5/README.md)
+now binds one training-only assessment on the exact 123424 and 152389 discovery
+exports. It compares one-, two- and four-chunk training windows, with unchanged
+PCA reductions and source/evaluation separation. The proposed first-order
+uncertainty calculation propagates centered-scatter correlations and whole-array
+normalization jointly over six fixed elapsed-time correlation spans. Temporal
+scatter changes, sparse support and sensitivity are reported alongside precision;
+finite-data coverage of the error estimate remains explicitly unavailable.
+There is no certified 20% pass, detector veto or automatic window selection.
+One pending decision covers the precise diagnostic method, limited legacy-input
+permission and bounded local implementation/execution together. The proposal
+does not authorize T1, T2 maps, 129081 access or feedback. No new signal analysis,
+coefficient computation, numerical implementation or run occurred; all earlier
+packets, frozen authority and reduction products are preserved.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
