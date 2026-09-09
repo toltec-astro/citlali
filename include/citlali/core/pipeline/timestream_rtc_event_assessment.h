@@ -415,7 +415,7 @@ inline std::shared_ptr<const RtcEventAssessmentEvidence> learn_rtc_event_assessm
                 auto boundary=seed.later_row+1;next=cursor;
                 do {
                     const auto &s=spikes->candidates()[list[next]];
-                    if(s.earlier_row>=run.past_last || (next>cursor && s.earlier_row>=boundary)) break;
+                    if(s.earlier_row>=run.past_last || (next>cursor && s.later_row>=boundary)) break;
                     out.candidates.push_back(list[next]);const auto c=s.coordinate==NativeReadoutCoordinate::x?0U:1U;out.seeded[c]=true;
                     out.recovery[c]=recover(*spikes,out,run,c);
                     const auto &r=out.recovery[c];

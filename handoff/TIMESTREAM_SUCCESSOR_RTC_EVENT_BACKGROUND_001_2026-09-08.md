@@ -498,3 +498,13 @@ join the existing suite (22 focused tests pass). Every required output and the
 receipt now explicitly close and check errors; every candidate serializes peer
 eligibility and shared-support counts. No scientific policy or scope expands.
 A new exact-SHA independent review and complete census are still required.
+
+Second exact review on `71cf11f43d28d14a7a709e1dc77930b6777759e5`
+closed the three findings but found one boundary error: membership used the
+pre-edge row, merging a new spike immediately after completed recovery. The
+comparison now uses the post-edge sample against the half-open confirmation
+end. A regression verifies two separate pulses with seven quiet native cells
+between them (57.344 ms). All 23 focused tests pass. The intervening full-build
+attempt is retained as interim evidence only because this final boundary repair
+began before that build/test command ended; the final exact candidate must be
+rebuilt and rechecked before the full census.

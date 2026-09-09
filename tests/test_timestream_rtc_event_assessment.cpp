@@ -114,6 +114,15 @@ TEST(rtc_event_assessment, later_edges_interrupt_confirmation_and_all_members_pr
         ASSERT_TRUE(a.recovery[c].recovered());EXPECT_GE(a.recovery[c].confirmation.first,s.later_row);
     }
 }
+TEST(rtc_event_assessment, first_edge_after_completed_confirmation_starts_a_separate_event) {
+    Input in;in.spike(500);in.spike(508);Fixture f(in);const auto e=f.learn();
+    ASSERT_EQ(e->events().size(),2U);
+    EXPECT_EQ(e->events()[0].candidates.size(),4U);EXPECT_EQ(e->events()[1].candidates.size(),4U);
+    for(const auto &r:e->events()[0].recovery) {
+        ASSERT_TRUE(r.recovered());EXPECT_EQ(r.confirmation.first,601);EXPECT_EQ(r.confirmation.past_last,608);
+    }
+    EXPECT_EQ(f.spikes->candidates()[e->events()[1].seed].later_row,608);
+}
 TEST(rtc_event_assessment, peer_context_excludes_self_and_preserves_sample_pairing) {
     Input in;in.step(500,0);in.step(500,1);Fixture f(in);const auto e=f.learn();
     ASSERT_FALSE(e->events().empty());const auto &p=e->events()[0].peers[0];
