@@ -32,6 +32,7 @@ no numerical method or new method-specific author dispatch.
 
 ## Locked Scientific Definition And Remaining Review
 
+- [Latest input intake: full PTC files require single-pass replacements](method_preparation/ordinary_map/method_definition/input_intake/r0.1/README.md)
 - [Q02: approved test design and first-screen preparation](method_preparation/ordinary_map/method_definition/q02_review/r0.3/README.md)
 - [Short pointing input request: 123424 and 129081](method_preparation/ordinary_map/method_definition/q02_review/r0.3/DATA_COLLECTION_REQUEST.md)
 - [Proposed numerical first-screen bindings](method_preparation/ordinary_map/method_definition/q02_review/r0.3/FIRST_SCREEN_BINDINGS.md)
@@ -87,6 +88,11 @@ reusing the existing 152389 candidate; 129081's new weighting outcomes are
 reserved for replication. Their current noise contrast and T2 input/evidence
 permissions remain to be established. New numerical T1 bindings are proposed,
 with no synthetic trial, comparison or FRUIT run performed.
+The supplied `beammaps/pointings/reduced/redu01` includes full PTC files for
+123424 and 129081, but saved config and headers identify final FRUIT iteration
+9 with max_iters=10. Preserve them and request ordinary single-pass replacements
+for the same observations; they cannot serve as the proposed bootstrap inputs.
+No signal/noise or reserved replication outcomes were inspected during intake.
 POINT/E01 is a recommended first experiment, not an approved campaign order;
 OOF is separately selectable. Exact reference recovery precedes comparison
 interpretation and independent-pointing replication precedes recommendation.

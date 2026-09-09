@@ -1422,6 +1422,22 @@ Next receive exact input/provenance bundles and finish T2's input, support,
 response/noise and interval bindings before execution review. Frozen authority,
 prior packets, archived products and numerical-method gates are unchanged.
 
+The owner subsequently supplied the local directory
+`/Users/gwilson/work_toltec/local_data/beammaps/pointings/reduced/redu01`.
+The [input intake](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/input_intake/r0.1/README.md)
+finds both requested full PTC files, with signal, flags, detector-by-sample
+coordinates and 12 declared chunks. Their combined size is 1,470,806,154 bytes.
+However, the saved config enables FRUIT with max_iters=10 and both files report
+FRUITLOOPS_ITER=9. These final-state candidates are not admitted as the requested
+ordinary single-pass inputs. The legacy Boolean header is not relied upon.
+Preserve the delivered products and collect fresh ordinary exports of the same
+two observations with FRUIT disabled and max_iters=1, retaining config/run log
+and identities. No new observation or experiment is selected by this correction.
+129081's signal/noise/weighting outcomes remain unexamined and reserved.
+The intake is metadata/identity only; no weighting statistic, map comparison,
+implementation, numerical experiment or Unity action occurred. A/B approval,
+C's open status and all execution/authority gates remain unchanged.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

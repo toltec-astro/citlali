@@ -1,0 +1,7 @@
+# Apply these two leaves to the complete ordinary collection configuration.
+# This is not a standalone runnable config and is not an experiment launcher.
+# Preserve redu01; select a fresh output directory for the owner-run export.
+timestream:
+  fruit_loops:
+    enabled: false
+    max_iters: 1
