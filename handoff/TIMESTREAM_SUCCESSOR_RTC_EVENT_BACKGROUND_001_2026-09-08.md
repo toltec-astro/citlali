@@ -613,3 +613,77 @@ preserve moving-base ancestry and require independent exact-merge review for
 later admission. Implementation worktree was clean throughout the final build
 and census. The next owner decision is review of A–F and the health records;
 this receipt does not silently approve further scientific policy.
+
+## Owner decision: level-0 full-scan detector flagging — 2026-09-09
+
+The owner now selects:
+
+> The problem with shorter scans is that we're using a fixed number of
+> eigenmodes in the PCA projection, so shorter scans would arguably be cleaned
+> differently from longer scans. I think the level-0 approach should be to flag
+> the detector with the jump for the full scan.
+
+This supersedes the discussion's proposed level-0 retention of separately
+processed pre/post pieces or preference for releveling when available. A confirmed
+jump flags the affected detector for the full existing scan used by the
+requested PCA processing. Other detectors retain that scan; this decision does
+not split the PCA group into shorter intervals or change its configured rank.
+Equal rank alone does not assert an identical learned projection after detector
+exclusion; remaining-group support and rank feasibility still have to pass.
+
+The event learner continues to use original native acquisition support, the
+selected cubic and two-second flanks, paired fitting exclusions, and the
+accepted recovery controls. Those fitting windows, ten-second noise blocks,
+and detector-local stable segments do not define new telescope/PCA scans.
+Confirmed event support and the full-scan treatment extent remain distinct.
+The event-to-existing-scan binding, including a transition touching a scan
+boundary, must be explicit before execution; this decision does not invent a
+new scan definition or settle an ambiguous boundary-assignment rule.
+
+The detector-scan flag is an intended exclusion from the selected PCA science
+use, not merely an instruction to omit the detector from mode learning and
+then retain its untreated stepped output. Implementation must express separate
+learning, application and output-use decisions under their named owner. RTC
+retains original event evidence, pair-coherent causes/support and the selected
+treatment fact; PTC owns PCA-use admission and shared VAL evaluates that policy.
+This does not rewrite Tune/APT producer flags, mark the detector permanently
+bad, zero-fill excluded samples, or reject the rest of the detector group.
+It selects no offset subtraction, gain correction, independent segment
+centering, donor reconstruction or adaptive PCA rank. An unrealizable retained
+group follows the existing PTC failure contract rather than a reduced rank.
+
+Recovered authority: SCI-RTC REQ-094--099/102/106/114/118--125 separates event
+evidence, transition support, treatment and consumer-owned admission;
+SCI-PTC REQ-011--015/023/029/089/092--096 separates causes and named uses and
+preserves configured rank, group support and fixed-plan application. These
+contracts remain byte-unchanged. The selection closes the level-0 treatment
+choice only; unselected recovery alternatives remain future proposals.
+
+Runtime increment still required: Learn supplies accepted-method event and
+quality/protection evidence; Consider must apply an explicitly selected jump
+admission rule and bind an accepted event to the existing scan and detector;
+Apply must execute the exact resolved detector-scan exclusion with realized
+causes and support. No candidate, persistent/compound review disposition,
+health concern, or unavailable source-protection state becomes an accepted
+jump merely because this treatment is now selected. Adequate discrimination
+from atmosphere/optical signal and background-model failure remains required.
+The next scientific decision is that admission evidence and false-rejection
+control. Precise additive-offset estimation is not a prerequisite for this
+treatment; amplitude and its uncertainty may still inform event evidence.
+
+Documentation-only receipt preflight: owner Grant Wilson; tier 2 because this
+records scientific and cross-stage policy; local parent
+`fefba770ce80f0073ce5987745373c74a00e66ff`, tree
+`fef1be12b08ada7c010674f4071b74ea1e72d8cf`; the existing branch/worktree named
+above was clean. AGENTS.md, toltec-context routing and all three governance
+documents were read; their digests match the effective ledger bindings listed
+in this work order. Only this work order and `doc/REFACTOR_STATUS.md` change.
+Verification is documentation diff/whitespace, scope and immutable-source
+preservation plus independent fresh-context exact-SHA three-axis review; no
+compilation, census rerun or Unity gate is triggered by this receipt. Exact
+review and completion evidence will be recorded outside the sealed census at
+`/private/tmp/citlali-rtc-level0-policy-2026-09-09`.
+The last canonical observation above remains historical, not a fresh live-ref
+claim; this receipt performs no canonical admission or ancestry reconciliation.
+No application source, frozen contract, route, integration, push, activation,
+sealed evidence or cleanup changes are authorized or performed here.

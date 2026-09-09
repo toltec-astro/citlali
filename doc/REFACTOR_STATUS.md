@@ -1,5 +1,18 @@
 # Citlali Refactor Status
 
+## RTC level-0 jump treatment selected — 2026-09-09
+
+The owner selected full-existing-scan flagging of the detector with a confirmed
+level jump as the level-0 treatment. Preserve the shared PCA scan and configured
+mode count; detector-local event windows do not create shorter PCA scans.
+The [existing RTC work order](../handoff/TIMESTREAM_SUCCESSOR_RTC_EVENT_BACKGROUND_001_2026-09-08.md#owner-decision-level-0-full-scan-detector-flagging--2026-09-09)
+records the decision, ownership, and remaining implementation prerequisites.
+This selects treatment, not a jump-acceptance threshold or executable rejection.
+The next decision is sufficient event evidence to justify detector-scan loss;
+accurate offset recovery is not a prerequisite for this level-0 treatment.
+Accepted code and sealed census evidence are unchanged. No PTC implementation,
+route activation, integration, or push follows from this documentation receipt.
+
 ## RTC event assessment and same-corpus rerun — 2026-09-09
 
 The owner approved the A–F continuation in the existing
