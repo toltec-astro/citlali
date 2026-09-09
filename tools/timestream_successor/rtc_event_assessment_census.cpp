@@ -129,7 +129,7 @@ int main(int argc, char **argv) {
             const auto c=s.coordinate==pipeline::NativeReadoutCoordinate::x?0:1;++counts[b.detector_index][c];
             candidates<<"{\"candidate\":"<<i<<",\"detector\":"<<b.detector_index<<",\"seed_coordinate\":"<<c<<",\"earlier_row\":"<<s.earlier_row<<",\"later_row\":"<<s.later_row<<",\"score\":";number(candidates,s.absolute_score);
             candidates<<",\"peer_context\":[";
-            for(std::size_t k=0;k<2;++k) {if(k)candidates<<',';const auto &p=assessment->candidate_peer_context()[i][k];candidates<<"{\"usable_peers\":"<<p.usable_peers<<",\"strongest_peer\":"<<p.strongest_peer<<",\"level_correlation\":";number(candidates,p.strongest_level_correlation);candidates<<",\"difference_correlation\":";number(candidates,p.strongest_difference_correlation);candidates<<",\"edge_delay_seconds\":";number(candidates,p.strongest_edge_delay_seconds);candidates<<'}';}candidates<<"]}\n";
+            for(std::size_t k=0;k<2;++k) {if(k)candidates<<',';const auto &p=assessment->candidate_peer_context()[i][k];candidates<<"{\"eligible_peers\":"<<p.eligible_peers<<",\"shared_samples\":"<<p.strongest_shared_samples<<",\"usable_peers\":"<<p.usable_peers<<",\"strongest_peer\":"<<p.strongest_peer<<",\"level_correlation\":";number(candidates,p.strongest_level_correlation);candidates<<",\"difference_correlation\":";number(candidates,p.strongest_difference_correlation);candidates<<",\"edge_delay_seconds\":";number(candidates,p.strongest_edge_delay_seconds);candidates<<'}';}candidates<<"]}\n";
         }
         for(const auto &h:assessment->health_blocks()) {
             const auto &b=spikes->blocks()[h.noise_block_index];
@@ -170,12 +170,17 @@ int main(int argc, char **argv) {
                 for(auto c:{pipeline::NativeReadoutCoordinate::x,pipeline::NativeReadoutCoordinate::r}) {displays<<',';number(displays,parent->network(nw).value(c,row,item.channel));displays<<','<<(parent->network(nw).state(c,row,item.channel).valid()?"true":"false");}displays<<']';
             }displays<<"]}\n";
         }
-        require(candidates && events && blocks && summaries && displays,"assessment output write failed");
+        // Explicit close exposes trailing buffered writes and close failures.
+        for(auto *stream:{&candidates,&events,&blocks,&summaries,&displays}) {
+            stream->close();
+            require(static_cast<bool>(*stream),"assessment output write/close failed");
+        }
         require(logs->errors==0 && logs->criticals==0,"unexpected producer error-level messages");
         const auto elapsed=std::chrono::duration<double>(std::chrono::steady_clock::now()-started).count();
         std::ofstream receipt(output/"receipt.json");
         receipt<<"{\"status\":\"PASS-event-assessment-census\",\"policy\":"<<std::quoted(std::string(pipeline::RtcEventAssessmentPolicy::identity))<<",\"observation\":"<<obs<<",\"network\":"<<nw<<",\"rows\":"<<rows<<",\"channels\":"<<source.channel_count<<",\"physical_runs\":"<<runs.size()<<",\"candidate_edges\":"<<spikes->candidates().size()<<",\"assessed_events\":"<<assessment->events().size()<<",\"raw_sha256\":"<<std::quoted(citlali::utils::sha256_file(raw_path))<<",\"tune_sha256\":"<<std::quoted(input.tune_sha256)<<",\"manifest_sha256\":"<<std::quoted(citlali::utils::sha256_file(manifest))<<",\"peer_population\":"<<std::quoted(population->source_identity())<<",\"elapsed_seconds\":";number(receipt,elapsed);receipt<<",\"source_protection\":\"unavailable\",\"spectral_context\":\"owner-deferred\",\"hard_classification\":\"not_performed\",\"Apply\":\"not_performed\"}\n";
-        require(static_cast<bool>(receipt),"assessment receipt write failed");
+        receipt.close();
+        require(static_cast<bool>(receipt),"assessment receipt write/close failed");
         std::cout<<"ASSESSMENT obs="<<obs<<" network="<<nw<<" candidates="<<spikes->candidates().size()<<" events="<<assessment->events().size()<<" seconds="<<elapsed<<'\n';return 0;
     } catch(const std::exception &e) {std::cerr<<"ASSESSMENT INPUT OR EXECUTION FAILURE: "<<e.what()<<'\n';return 2;}
 }

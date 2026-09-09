@@ -95,6 +95,25 @@ TEST(rtc_event_assessment, jumps_before_recovery_form_compound_assessment) {
     Fixture f(in);const auto e=f.learn();ASSERT_FALSE(e->events().empty());
     EXPECT_GT(e->events()[0].candidates.size(),4U);
 }
+TEST(rtc_event_assessment, delayed_other_coordinate_step_cannot_inherit_earlier_recovery) {
+    Input in;
+    for(std::size_t i=500;i<600;++i) in.x(i,0)+=30;
+    in.step(550,0,0,20);
+    Fixture f(in);const auto e=f.learn();const auto d=RtcEventAssessmentDecision::consider(e,f.val,1);
+    ASSERT_FALSE(e->events().empty());const auto &a=e->events()[0];
+    EXPECT_TRUE(a.seeded[0]);EXPECT_TRUE(a.seeded[1]);
+    ASSERT_TRUE(a.background[1].available());EXPECT_FALSE(a.recovery[1].recovered());
+    EXPECT_EQ(d->event_reviews()[0].disposition,RtcEventReviewDisposition::persistent_or_compound_unresolved);
+}
+TEST(rtc_event_assessment, later_edges_interrupt_confirmation_and_all_members_precede_recovery) {
+    Input in;in.spike(500,0,30,0);in.spike(505,0,0,20);in.spike(509,0,30,0);
+    Fixture f(in);const auto e=f.learn();ASSERT_EQ(e->events().size(),1U);
+    const auto &a=e->events()[0];EXPECT_EQ(a.candidates.size(),6U);
+    for(auto i:a.candidates) {
+        const auto &s=f.spikes->candidates()[i];const auto c=s.coordinate==NativeReadoutCoordinate::x?0U:1U;
+        ASSERT_TRUE(a.recovery[c].recovered());EXPECT_GE(a.recovery[c].confirmation.first,s.later_row);
+    }
+}
 TEST(rtc_event_assessment, peer_context_excludes_self_and_preserves_sample_pairing) {
     Input in;in.step(500,0);in.step(500,1);Fixture f(in);const auto e=f.learn();
     ASSERT_FALSE(e->events().empty());const auto &p=e->events()[0].peers[0];

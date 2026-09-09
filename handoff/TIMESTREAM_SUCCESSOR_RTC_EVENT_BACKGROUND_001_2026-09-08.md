@@ -481,3 +481,20 @@ and exact executable are recorded externally; later per-candidate-context and
 disposition refinements require a complete new exact-source census. The E crop
 has its own shorter noise population and does not claim bitwise reproduction of
 the full-observation noise blocks. Original sample values remain exact.
+
+First exact candidate `3b277caaa018f74624d979e5c3d5932aea9cdda6` passed
+952 runnable local CTests (one established disabled test). Independent review
+required repair: later grouped x/r candidates could inherit recovery preceding
+their edge; required buffered output close failures were unchecked; candidate
+peer records omitted available population/support counts. Preserve that review
+and all test attempts in the external assessment evidence directory.
+
+Repair retains the fixed original two-second search deadline, anchors onset to
+the first member in each coordinate, and requires confirmation after its latest
+member. New edges during the confirmation interval interrupt recovery; membership
+is recomputed after each support refinement. A never-departing coordinate still
+has no invented affected cells. Two staggered/alternating-coordinate regressions
+join the existing suite (22 focused tests pass). Every required output and the
+receipt now explicitly close and check errors; every candidate serializes peer
+eligibility and shared-support counts. No scientific policy or scope expands.
+A new exact-SHA independent review and complete census are still required.

@@ -227,6 +227,14 @@ inline RtcEventRecovery recover(const RtcSpikeEvidence &spikes,const RtcAssessed
     if(!fit.available()) return r;
     const auto &net=spikes.input_handle()->network(e.network);const auto &axis=net.occurrence_axis();
     const auto &seed=spikes.candidates()[e.seed];
+    // Every member in this coordinate must precede its recovery confirmation.
+    // Keep the original event deadline fixed even when later edges join it.
+    const RtcSpikeCandidate *first_seed=nullptr,*last_seed=nullptr;
+    for(auto i:e.candidates) if(spikes.candidates()[i].coordinate==coord(c)) {
+        if(!first_seed) first_seed=&spikes.candidates()[i];
+        last_seed=&spikes.candidates()[i];
+    }
+    if(!first_seed) first_seed=last_seed=&seed;
     const double center=std::midpoint(time(axis,seed.earlier_row),time(axis,seed.later_row));
     const double deadline=center+RtcEventAssessmentPolicy::search_seconds;
     const auto first=lower(axis,run,center-2),last=lower(axis,run,deadline);
@@ -246,29 +254,30 @@ inline RtcEventRecovery recover(const RtcSpikeEvidence &spikes,const RtcAssessed
         support_end=std::max(support_end,s.end_unix_sec);
         return support_end-axis.occurrence(quiet).integration_support.begin_unix_sec>=RtcEventAssessmentPolicy::recovery_seconds;
     };
-    for(auto row=first;row<seed.later_row;++row) {
+    for(auto row=first;row<first_seed->later_row;++row) {
         if(!good(row)) {quiet=-1;support_end=-INFINITY;continue;}
         if(accumulate(row)) onset=row+1;
     }
     if(onset<0) {r.cause=RtcEventRecoveryCause::onset_unavailable;return r;}
-    quiet=-1;support_end=-INFINITY;bool invalid=false,nonfinite=false;
-    for(auto row=seed.later_row;row<last;++row) {
+    quiet=-1;support_end=-INFINITY;bool invalid=false;
+    bool departure=onset<first_seed->later_row;
+    for(auto row=first_seed->later_row;row<last;++row) {
+        if(row==last_seed->later_row) {quiet=-1;support_end=-INFINITY;}
         const auto &s=axis.occurrence(row).integration_support;
         if(s.end_unix_sec>deadline) break;
         if(!net.state(coord(c),row,e.detector).valid()) invalid=true;
         else if(!std::isfinite(net.value(coord(c),row,e.detector))) {r.cause=RtcEventRecoveryCause::nonfinite;return r;}
-        if(!good(row)) {quiet=-1;support_end=-INFINITY;continue;}
-        if(accumulate(row)) {
+        if(!good(row)) {departure=true;quiet=-1;support_end=-INFINITY;continue;}
+        if(accumulate(row) && row>=last_seed->later_row) {
             r.confirmation={quiet,row+1};
             // A seed can be large in only the other coordinate. No invented
             // affected cells in a coordinate that never left its background.
-            r.affected=quiet>onset ? RtcEventRange{onset,quiet} : RtcEventRange{};
+            r.affected=departure && quiet>onset ? RtcEventRange{onset,quiet} : RtcEventRange{};
             r.cause=RtcEventRecoveryCause::recovered;return r;
         }
     }
     r.affected={onset,last};
-    if(nonfinite) r.cause=RtcEventRecoveryCause::nonfinite;
-    else if(invalid) r.cause=RtcEventRecoveryCause::invalid_support;
+    if(invalid) r.cause=RtcEventRecoveryCause::invalid_support;
     else if(axis.occurrence(run.past_last-1).integration_support.end_unix_sec<deadline)
         r.cause=run.past_last==axis.past_last_native_row() ? RtcEventRecoveryCause::observation_end : RtcEventRecoveryCause::acquisition_gap;
     else r.cause=RtcEventRecoveryCause::search_limit;
@@ -398,6 +407,7 @@ inline std::shared_ptr<const RtcEventAssessmentEvidence> learn_rtc_event_assessm
             std::size_t next=cursor;
             for(std::size_t refinement=0;refinement<RtcEventAssessmentPolicy::maximum_support_refinements;++refinement) {
                 background(*spikes,list,out,run);
+                out.candidates.clear();
                 for(std::size_t c=0;c<2;++c) out.recovery[c]=recover(*spikes,out,run,c);
                 // Recompute membership after every support refinement. A
                 // numerical iteration limit never becomes confirmed support.
@@ -407,8 +417,11 @@ inline std::shared_ptr<const RtcEventAssessmentEvidence> learn_rtc_event_assessm
                     const auto &s=spikes->candidates()[list[next]];
                     if(s.earlier_row>=run.past_last || (next>cursor && s.earlier_row>=boundary)) break;
                     out.candidates.push_back(list[next]);const auto c=s.coordinate==NativeReadoutCoordinate::x?0U:1U;out.seeded[c]=true;
+                    out.recovery[c]=recover(*spikes,out,run,c);
                     const auto &r=out.recovery[c];
-                    if(r.recovered()) boundary=std::max(boundary,r.confirmation.first);
+                    // A new edge inside the confirmation interval interrupts
+                    // recovery, including an edge seen only in the other coordinate.
+                    if(r.recovered()) boundary=std::max(boundary,r.confirmation.past_last);
                     else if(r.affected.present()) boundary=std::max(boundary,r.affected.past_last);
                     else boundary=std::max(boundary,out.trial_exclusion.past_last);
                     ++next;
