@@ -1,5 +1,18 @@
 # Citlali Refactor Status
 
+## RTC Event Background Unity Gate Passed — 2026-09-09 UTC receipt
+
+Owner-supplied job **64109974** passes the representative GCC13/Spack gate for
+exact implementation `d73a33a81dbe45ef2f478ca212ebf93d481ef7b4`: **932/932 runnable
+and 83/83 focused tests**, matching CLI/source/tree, clean pinned dependencies,
+21 successful checksum checks and zero-byte stderr. The
+[receipt](../handoff/TIMESTREAM_SUCCESSOR_RTC_EVENT_BACKGROUND_UNITY_RECEIPT_2026-09-09.md)
+preserves exact identities, evidence limitations and prior passing source review.
+Owner acceptance and canonical admission remain pending. Live canonical has
+advanced to `3efd079bb5c28f28f6f2d49296a29e966bde050b` through documentation-only
+work; admission must preserve both histories and receive exact-merge review.
+No source change, push, activation or further scientific decision occurs here.
+
 ## 2026-09-08 RTC Event Background Learn Candidate
 
 The owner selected the joint cubic versus cubic-plus-additive-offset method

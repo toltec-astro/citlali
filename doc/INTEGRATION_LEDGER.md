@@ -1,5 +1,18 @@
 # Citlali Integration Ledger
 
+## RTC Event Background Unity Receipt — 2026-09-09 UTC
+
+The [owner-mediated receipt](../handoff/TIMESTREAM_SUCCESSOR_RTC_EVENT_BACKGROUND_UNITY_RECEIPT_2026-09-09.md)
+records job **64109974**, PASS on exact source
+`d73a33a81dbe45ef2f478ca212ebf93d481ef7b4` / tree
+`89fe92adc435b3e283ae6634087be7251ff18343`: 932 runnable and 83 focused tests,
+matching CLI, clean dependencies and zero-byte stderr. This is an evidence-only
+continuation on the existing RTC branch; it records no owner acceptance or
+canonical integration. Live canonical `3efd079bb5c28f28f6f2d49296a29e966bde050b`
+adds independent documentation. Later owner-authorized admission must preserve
+both ancestries, retain exact tested application bytes and receive independent
+exact-SHA merge review. The source and sealed prior evidence remain unchanged.
+
 ## 2026-09-08 RTC Event Background Learn Candidate
 
 The owner selected the joint cubic versus cubic-plus-additive-offset method
