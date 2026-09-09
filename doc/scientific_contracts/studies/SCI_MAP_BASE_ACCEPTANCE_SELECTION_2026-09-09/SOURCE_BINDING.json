@@ -1,0 +1,110 @@
+{
+  "record": "Base observation map initial acceptance selection source binding",
+  "date": "2026-09-09",
+  "scope": "Documentary selection of unchanged prospective examples; no application results or work authorization.",
+  "canonical_basis": {
+    "commit": "86c20b31f7300ba4063be044380b61cd0baf25eb",
+    "tree": "cfd38b85c5d8d6a1c928b180e83eae4682292f72"
+  },
+  "shared_authority": {
+    "identity": "SCI-MAP-v0.2-SHARED-AUTHORITY/r0.4",
+    "aggregate_sha256": "3b81ea8180dcc3f5f37964ac1177feb417fef6a1cdcc590b33f9431b54bc1e31"
+  },
+  "selection": {
+    "path": "doc/scientific_contracts/studies/SCI_MAP_BASE_ACCEPTANCE_SELECTION_2026-09-09/README.md",
+    "sha256": "ab9e958a8406e1df33d7e9977cc99517da96bba7fb28f109ac318a6df71a6c38"
+  },
+  "unchanged_source_records": [
+    {
+      "path": "doc/governance/ENGINEERING_GOVERNANCE.md",
+      "bytes": 10814,
+      "sha256": "70769787ce2ef4b7323cd2a38e221ade4af3310e0ad6b7b682e08cb4e4d61e76"
+    },
+    {
+      "path": "doc/governance/REVIEW_AND_CONFORMANCE.md",
+      "bytes": 9852,
+      "sha256": "691e6d6250102ef2f4a504397581ee67c5707d898ab20fb8dd9e874c47f99bb1"
+    },
+    {
+      "path": "doc/scientific_contracts/DOWNSTREAM_CONTRACT_ROADMAP_2026-08-26.md",
+      "bytes": 33724,
+      "sha256": "a81062e24534f4ec3c7acffcb682d29ac5a36e9cf556c4b7b3d771427908bab5"
+    },
+    {
+      "path": "doc/scientific_contracts/PRIOR_WORK_REGISTRY.md",
+      "bytes": 26745,
+      "sha256": "21443c7bd8b13e20beec62ffc69c46cd25b800adf7ae0092a86e2e2c6f918872"
+    },
+    {
+      "path": "doc/scientific_contracts/README.md",
+      "bytes": 16297,
+      "sha256": "351e9b7775b0bf78cba01bf4cd2fafd9591c4b43931b0dc23d82d97f0dfe82d2"
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ACTIVATION_2026-09-09/ACTIVATION_BINDING.json",
+      "bytes": 3732,
+      "sha256": "149e7441acb93fb6ce5dc0db8325275dc9be1de8c22a38c46f01b7c2e5c90d18"
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ACTIVATION_2026-09-09/ACTIVATION_RECORD.md",
+      "bytes": 4685,
+      "sha256": "3cd06e52abd21bb42364206d767081ab308fecbd56f333ae15a86729b2489107"
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/BINDING_MANIFEST.json",
+      "bytes": 15160,
+      "sha256": "57229670cd540ce2f8aeecf5d1a568414d0a85b6a9d6cf5a74b7e698b6ac5ec3"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/SCIENTIFIC_OWNER_FREEZE_R0.4.md",
+      "bytes": 3747,
+      "sha256": "39b1be29431083c8f1fcc4b56c4dbfc51a44b6b00c1d27ebba10d62eb7768bf1"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/PREDICTION_CROSSWALK.md",
+      "bytes": 6068,
+      "sha256": "a3081482fc2cea75486b3bd19f50216b46eff3ed5ac6a7209ff102cdd92f69d9"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/PRIOR_WORK.md",
+      "bytes": 5443,
+      "sha256": "e65e35ba7df06a1677760e0b7f52aa4b7fcf6a4f944603b0f6f08a2418df9f7f"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/SOURCE_MANIFEST.json",
+      "bytes": 65230,
+      "sha256": "5668162f42a83d653a8a8cb8219d04706150cf48374576e7000cb250baad31c4"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/records/COVERAGE_CUT_EXPERT_OVERRIDE_AND_SMALL_N_FIXTURES.md",
+      "bytes": 5388,
+      "sha256": "a7107ead920f743dc8345a7fa5bcbf3255215439c2aa31438d33b2961bb0adce"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/records/PRED025_QUANTITY_SPECIFIC_ZERO_FIXTURES.md",
+      "bytes": 5300,
+      "sha256": "5c52c265cb15cdad776f23d1fb70a2d10ef07839feef552a1d9c82633ed5532a"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/src/common/edge_cases.tex",
+      "bytes": 15432,
+      "sha256": "95fe18adcd12dae0515f3c9db80d94becf51036ca629fc5f92c3f2657c76b615"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/src/common/requirements.tex",
+      "bytes": 56834,
+      "sha256": "213e4e30dcb52ceaf30b46561948263e2ac823c86fbd12769af1fff7e251281d"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/revisions/r0.4/src/engineering-conformance.tex",
+      "bytes": 28245,
+      "sha256": "92a258832664d891443d1b616717978a41bc98c79dd4aa339b63eefbef7fd5f4"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/SCI_MAP_PROFILE_ACTIVATION_2026-09-09/README.md",
+      "bytes": 7972,
+      "sha256": "17e176ceaaedce9252cd0c6ee0024e8143757b356a8723f367082febdd193b26"
+    }
+  ],
+  "evidence_ceiling": "Source/document consistency only. Exact-commit independent review is recorded separately. Implementation conformity remains unassessed."
+}
