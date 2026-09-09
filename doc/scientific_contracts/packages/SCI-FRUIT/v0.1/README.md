@@ -4,7 +4,8 @@ Status: generic SCI-FRUIT-NORMATIVE-CORE v0.1/r0.4 accepted and conditionally
 frozen; ordinary-MAP scientific definition r0.4 accepted and frozen after
 three bounded scope clarifications. Q02-A/B scientific substance approved;
 Q02-C open for weighting evidence; bounded design approved for preparation.
-First-screen numerical bindings and short-input collection are in review.
+A provisional 20% relative-weight precision goal is approved; the next
+preparation binds its assessment on existing discovery inputs.
 Upstream amendments remain unadopted.
 Every numerical method/route remains unavailable pending separate approval.
 Updated: 2026-09-09.
@@ -32,6 +33,7 @@ no numerical method or new method-specific author dispatch.
 
 ## Locked Scientific Definition And Remaining Review
 
+- [Approved 20% weight-precision goal and next assessment](method_preparation/ordinary_map/method_definition/q02_review/WEIGHT_PRECISION_DIRECTION_2026-09-09.md)
 - [Latest input intake: replacement single-pass state checks pass](method_preparation/ordinary_map/method_definition/input_intake/r0.2/README.md)
 - [Q02: preflight findings and proposed standalone synthetic execution](method_preparation/ordinary_map/method_definition/q02_review/r0.4/README.md)
 - [Short pointing input request: 123424 and 129081](method_preparation/ordinary_map/method_definition/q02_review/r0.3/DATA_COLLECTION_REQUEST.md)
@@ -102,6 +104,12 @@ observation-level detector training are proposed, both pending owner decision.
 No training law, threshold or detector population was changed and no weighting
 outcome was calculated. 129081 remains reserved; frozen input admission and
 T2's uncertainty/execution decisions are still unavailable.
+The owner then approved a provisional 20% one-standard-deviation goal for
+relative-weight precision. The next preparation justifies training windows
+from correlated-data precision and noise stability using the existing discovery
+reductions. It supersedes leading with the 64-sample cutoff or observation-wide
+pooling. No replacement hard gate, window, uncertainty method or execution is
+adopted; standalone T1 remains unapproved and 129081 remains reserved.
 POINT/E01 is a recommended first experiment, not an approved campaign order;
 OOF is separately selectable. Exact reference recovery precedes comparison
 interpretation and independent-pointing replication precedes recommendation.

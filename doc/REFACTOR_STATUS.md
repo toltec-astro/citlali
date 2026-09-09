@@ -1479,6 +1479,21 @@ matrix, stored weights, noise estimate, weighted map, injection or replay was
 read or computed during this preflight. No upstream adoption, Unity action or
 push occurred. Q01, A/B, C's open status and all frozen/archived bytes remain.
 
+The owner subsequently approved an initial goal of about 20% fractional
+uncertainty in relative detector weights at one standard deviation. The
+[dated Q02/Q05 direction](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/WEIGHT_PRECISION_DIRECTION_2026-09-09.md)
+records that provisional design objective, with actual precision unmeasured.
+Training windows and any sample-count requirement should be justified against
+precision and noise stability; 64 is no longer the leading T2 design criterion.
+The next preparation assesses shorter weight-estimation windows on the existing
+discovery reductions before proposing observation-wide pooling. PCA chunks,
+products and source/evaluation separation stay intact. Joint coefficient
+normalization, temporal correlation, changing noise and bias need explicit
+handling. The exact uncertainty method and execution scope remain to be bound.
+This approval does not approve standalone T1, observation-wide pooling, map-loss
+margins, a detector veto or a numerical run. Earlier preflight counts remain
+historical evidence, and 129081 remains reserved. No new data analysis occurred.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
