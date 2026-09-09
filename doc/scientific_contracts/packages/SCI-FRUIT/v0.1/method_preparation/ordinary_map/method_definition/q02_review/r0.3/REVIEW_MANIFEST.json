@@ -1,0 +1,362 @@
+{
+  "schema": "SCI-FRUIT Q02 approved-design continuation and first-screen proposal manifest r0.3",
+  "date": "2026-09-09",
+  "scientific_owner": "Grant Wilson",
+  "repository_base": "1eb1cc1d8bf6dcf86d192153dcbc77e3edce804d",
+  "branch": "codex/sci-fruit-historical-control-method-scope-r0.1",
+  "owner_design_approval": "Looks good to me.  Let's proceed",
+  "owner_input_offer": "I can create and download from unity full timestreams.  You need to tell me what observations (obsnums).  Note that if they are very long, like beammaps, they will be HUGE.",
+  "approved_design": {
+    "path": "../r0.2/WEIGHTING_TEST_PLAN.md",
+    "sha256": "351a5de83d89234686e0943d815c80bfd51cbff498a60bf42559141d16243c88",
+    "scope": "Design accepted for input/settings/margin preparation; no previously unbound numerical choice inferred"
+  },
+  "q01_scientific_definition": "accepted_frozen_unchanged",
+  "q02_decisions": {
+    "Q02-A": "scientific_substance_approved_including_S1_for_controlled_amendment_preparation",
+    "Q02-B": "scientific_substance_approved_for_controlled_amendment_preparation",
+    "Q02-C": "open_pending_weighting_evidence_no_separate_MAP_handoff_approval"
+  },
+  "proposed_first_screen": {
+    "case_rows": 9,
+    "independent_trials_per_case": 1024,
+    "stochastic_map_evaluations": 36864,
+    "new_numerical_bindings": "proposed_pending_completed_execution_review",
+    "discovery_obsnums": [
+      152389,
+      123424
+    ],
+    "reserved_weighting_replication_obsnum": 129081,
+    "detector_noise_contrast": "unmeasured_pending_training_inventory",
+    "real_input_and_uncertainty_bindings": "incomplete_pending_returned_bundles"
+  },
+  "collection_scope": "Owner-requested identification of two short ordinary POINT PTC exports; no RTC dump, beammap, FRUIT intervention, replay or numerical comparison requested",
+  "numerical_method": "unavailable_pending_separate_owner_approval",
+  "route": "unavailable_under_current_frozen_parent_permissions",
+  "amendments_adopted": false,
+  "author_dispatch_authorized": false,
+  "source_reference_inventory_changed": false,
+  "test_execution_authorized": false,
+  "review_sources": [
+    {
+      "repository_path": "AGENTS.md",
+      "source_commit": "4e8d99b3fac2185892692ba51ea6da3c3d9070b7",
+      "review_relative_path": "../../../../../../../../../../AGENTS.md",
+      "bytes": 6662,
+      "sha256": "ddeb9dd6bbc1fd9fa54af998b46a4af4a99c49d2cf7842303c7e332501e366ee",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/README.md",
+      "source_commit": "4e8d99b3fac2185892692ba51ea6da3c3d9070b7",
+      "review_relative_path": "../../../../../../../../README.md",
+      "bytes": 16297,
+      "sha256": "351e9b7775b0bf78cba01bf4cd2fafd9591c4b43931b0dc23d82d97f0dfe82d2",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/PROFILE_REGISTRY.md",
+      "source_commit": "4e8d99b3fac2185892692ba51ea6da3c3d9070b7",
+      "review_relative_path": "../../../../../../../SCI-VAL/v0.1/PROFILE_REGISTRY.md",
+      "bytes": 39897,
+      "sha256": "95b2ddeca2039aa2b3614e3dfede530cb7e024e6db33ca22baed867f19d2709d",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/SCIENTIFIC_OWNER_FREEZE_R0.4.md",
+      "source_commit": "4e8d99b3fac2185892692ba51ea6da3c3d9070b7",
+      "review_relative_path": "../../r0.4/SCIENTIFIC_OWNER_FREEZE_R0.4.md",
+      "bytes": 6294,
+      "sha256": "04860a81899f76fa7ec9bafb2ab1324bb55a30b8b3f3c56d53ad41052af35c0a",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/METHOD_DEFINITION.md",
+      "source_commit": "4e8d99b3fac2185892692ba51ea6da3c3d9070b7",
+      "review_relative_path": "../../r0.4/METHOD_DEFINITION.md",
+      "bytes": 26336,
+      "sha256": "3a6389a39fe3a5e2d5a6652259000721a9bcc6f9c429dc066d279cd98567c926",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/BOUNDARY_AMENDMENTS.md",
+      "source_commit": "4e8d99b3fac2185892692ba51ea6da3c3d9070b7",
+      "review_relative_path": "../../r0.4/BOUNDARY_AMENDMENTS.md",
+      "bytes": 20126,
+      "sha256": "528ca373cf70c480f97280de4a47a160d93992fc3f550f74bfd49b62f21daf28",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/EXPERIMENTS_AND_OPEN_DECISIONS.md",
+      "source_commit": "4e8d99b3fac2185892692ba51ea6da3c3d9070b7",
+      "review_relative_path": "../../r0.4/EXPERIMENTS_AND_OPEN_DECISIONS.md",
+      "bytes": 15289,
+      "sha256": "976948dab630c34223080ee272f0d25c497f66ad988d094cd138353f67d2042d",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/PRIOR_WORK.md",
+      "source_commit": "4e8d99b3fac2185892692ba51ea6da3c3d9070b7",
+      "review_relative_path": "../../r0.4/PRIOR_WORK.md",
+      "bytes": 4711,
+      "sha256": "a2a08b8f217273da563aa6a4630d9a697ca1a3440691c4431b2089fe840ba98e",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/SOURCE_IDENTITIES.json",
+      "source_commit": "4e8d99b3fac2185892692ba51ea6da3c3d9070b7",
+      "review_relative_path": "../../r0.4/SOURCE_IDENTITIES.json",
+      "bytes": 32692,
+      "sha256": "e6e6d329e36894320ee1b6c6bfe111120f7a85ba1a60ef5b94034a005c4b2d7f",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/AUTHOR_REFERENCE_INVENTORY.json",
+      "source_commit": "4e8d99b3fac2185892692ba51ea6da3c3d9070b7",
+      "review_relative_path": "../../r0.4/AUTHOR_REFERENCE_INVENTORY.json",
+      "bytes": 17112,
+      "sha256": "9eea8f481ef118d23f208e9d5ab08b56fe55171868c597664c3802427e1a6912",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/program/README.md",
+      "source_commit": "4e8d99b3fac2185892692ba51ea6da3c3d9070b7",
+      "review_relative_path": "../../r0.4/inputs/program/README.md",
+      "bytes": 16297,
+      "sha256": "351e9b7775b0bf78cba01bf4cd2fafd9591c4b43931b0dc23d82d97f0dfe82d2",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/program/PILOT_PROCESS_REVIEW_2026-08-16.md",
+      "source_commit": "4e8d99b3fac2185892692ba51ea6da3c3d9070b7",
+      "review_relative_path": "../../r0.4/inputs/program/PILOT_PROCESS_REVIEW_2026-08-16.md",
+      "bytes": 5942,
+      "sha256": "c4c29c13d5829773cfa2e061571101edec059313a4bd1a096d13fd9878d85b07",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/program/DOWNSTREAM_CONTRACT_ROADMAP_2026-08-26.md",
+      "source_commit": "4e8d99b3fac2185892692ba51ea6da3c3d9070b7",
+      "review_relative_path": "../../r0.4/inputs/program/DOWNSTREAM_CONTRACT_ROADMAP_2026-08-26.md",
+      "bytes": 14334,
+      "sha256": "bcc5a874e1cf45894f3d4733abc0d0e3b8fe9a2480ec47ceb23c12326e4f7eee",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/manager/cal/src/common/definitions.tex",
+      "source_commit": "4e8d99b3fac2185892692ba51ea6da3c3d9070b7",
+      "review_relative_path": "../../r0.4/inputs/manager/cal/src/common/definitions.tex",
+      "bytes": 13193,
+      "sha256": "2a9c91f485ea7d41ba6d5b13c77f77b8314612da4bc4b59eb1228235374b71b5",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/manager/ptc/src/common/requirements.tex",
+      "source_commit": "4e8d99b3fac2185892692ba51ea6da3c3d9070b7",
+      "review_relative_path": "../../r0.4/inputs/manager/ptc/src/common/requirements.tex",
+      "bytes": 38673,
+      "sha256": "f2047600cc06c234a78aa3ddf6a575abf2f9592b3e3da810491f6db0150fe21c",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/manager/ptc/AUTHOR_DRAFT_DECISIONS.md",
+      "source_commit": "4e8d99b3fac2185892692ba51ea6da3c3d9070b7",
+      "review_relative_path": "../../r0.4/inputs/manager/ptc/AUTHOR_DRAFT_DECISIONS.md",
+      "bytes": 18420,
+      "sha256": "0c165b707765ae67aa775e356ec714bd8f25a96553071fc2a71bf91e155cc285",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/authority/map/src/common/equations.tex",
+      "source_commit": "4e8d99b3fac2185892692ba51ea6da3c3d9070b7",
+      "review_relative_path": "../../r0.4/inputs/authority/map/src/common/equations.tex",
+      "bytes": 7006,
+      "sha256": "36329f4cd1a103c78fcdcc5ff247a850f40aba92a09156d1aa55a1411a430c04",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/authority/map/src/common/requirements.tex",
+      "source_commit": "4e8d99b3fac2185892692ba51ea6da3c3d9070b7",
+      "review_relative_path": "../../r0.4/inputs/authority/map/src/common/requirements.tex",
+      "bytes": 39138,
+      "sha256": "68acf81d6c27788495cc680a1819da5f269616493b9aba5a6e0a1d1058ba5fa7",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/authority/map/SCI-PTC_TO_SCI-MAP_BOUNDARY.md",
+      "source_commit": "4e8d99b3fac2185892692ba51ea6da3c3d9070b7",
+      "review_relative_path": "../../r0.4/inputs/authority/map/SCI-PTC_TO_SCI-MAP_BOUNDARY.md",
+      "bytes": 9091,
+      "sha256": "a499c59afb69eefda74a5b131ad37afd165213b99324c8b67a6de1d20793c9b7",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/authority/map/SCI-MAP_UPSTREAM_ADMISSION_PROFILE.md",
+      "source_commit": "4e8d99b3fac2185892692ba51ea6da3c3d9070b7",
+      "review_relative_path": "../../r0.4/inputs/authority/map/SCI-MAP_UPSTREAM_ADMISSION_PROFILE.md",
+      "bytes": 4039,
+      "sha256": "0717476c0a1d177074ee8702c18308f093d45a4913b22933f3fda3d33090a883",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/manager/map/SCIENTIFIC_OWNER_DECISION_LEDGER.md",
+      "source_commit": "4e8d99b3fac2185892692ba51ea6da3c3d9070b7",
+      "review_relative_path": "../../r0.4/inputs/manager/map/SCIENTIFIC_OWNER_DECISION_LEDGER.md",
+      "bytes": 12460,
+      "sha256": "bfcc18eced116309356d9d597a4423881ef67df058df07be30ec80532452dd9b",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/manager/map/SOURCE_MANIFEST_R0.7.md",
+      "source_commit": "4e8d99b3fac2185892692ba51ea6da3c3d9070b7",
+      "review_relative_path": "../../r0.4/inputs/manager/map/SOURCE_MANIFEST_R0.7.md",
+      "bytes": 11311,
+      "sha256": "bd3f172f8bb1e17bf95fde034ad76632439c766ef89b0a992361b9e6d79ada0a",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.1/README.md",
+      "source_commit": "8bd2e7840c72312723363deee4f40ac58fcface4",
+      "review_relative_path": "../r0.1/README.md",
+      "bytes": 11508,
+      "sha256": "cedb3f701299638f8a98f35eeb94c30d673efc5e043ccfdcfd021fdfb5a699d0",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.1/REVIEW_MANIFEST.json",
+      "source_commit": "8bd2e7840c72312723363deee4f40ac58fcface4",
+      "review_relative_path": "../r0.1/REVIEW_MANIFEST.json",
+      "bytes": 13637,
+      "sha256": "4d645bcc6192efb7c7edc10e6f6d76287d1b335063e0a5928f0037e82db1ba63",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.1/REVIEW_MANIFEST.json.sha256",
+      "source_commit": "8bd2e7840c72312723363deee4f40ac58fcface4",
+      "review_relative_path": "../r0.1/REVIEW_MANIFEST.json.sha256",
+      "bytes": 87,
+      "sha256": "b65de6dbea07f416c4ee5dc60fbeff9c06e3b3ccc3b057938ab4ccdbcdb2d504",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/manager/approved_scope/INTERNAL_DOSSIER.md",
+      "source_commit": "8bd2e7840c72312723363deee4f40ac58fcface4",
+      "review_relative_path": "../../r0.4/inputs/manager/approved_scope/INTERNAL_DOSSIER.md",
+      "bytes": 10424,
+      "sha256": "2dfeb5064c2dafde936c7e1bb154f5fbceb61a7c7b2b4c88fcda86c7b47e86eb",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.2/README.md",
+      "source_commit": "1eb1cc1d8bf6dcf86d192153dcbc77e3edce804d",
+      "review_relative_path": "../r0.2/README.md",
+      "bytes": 5902,
+      "sha256": "3a72699e879bf0f5263c7661daf6f4e8ab8eb7d18137e288c6ea54cc6e40d5b8",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.2/WEIGHTING_TEST_PLAN.md",
+      "source_commit": "1eb1cc1d8bf6dcf86d192153dcbc77e3edce804d",
+      "review_relative_path": "../r0.2/WEIGHTING_TEST_PLAN.md",
+      "bytes": 19874,
+      "sha256": "351a5de83d89234686e0943d815c80bfd51cbff498a60bf42559141d16243c88",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.2/REVIEW_MANIFEST.json",
+      "source_commit": "1eb1cc1d8bf6dcf86d192153dcbc77e3edce804d",
+      "review_relative_path": "../r0.2/REVIEW_MANIFEST.json",
+      "bytes": 16597,
+      "sha256": "c4d387be5505d24412743e35f56aaca3b5468464dc70a1c7bcced421a57dc0e6",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.2/REVIEW_MANIFEST.json.sha256",
+      "source_commit": "1eb1cc1d8bf6dcf86d192153dcbc77e3edce804d",
+      "review_relative_path": "../r0.2/REVIEW_MANIFEST.json.sha256",
+      "bytes": 87,
+      "sha256": "6c7b2c19223292f652bfb8f4ef1050317f2505f3d4b8678dd9d830fc62d51473",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_G0_POPULATION_ACCESS_AND_LINEAGE_PLAN_R0.1.md",
+      "source_commit": "1eb1cc1d8bf6dcf86d192153dcbc77e3edce804d",
+      "review_relative_path": "../../../../../empirical_lane/EL_G0_POPULATION_ACCESS_AND_LINEAGE_PLAN_R0.1.md",
+      "bytes": 3375,
+      "sha256": "e77fbcc4d32913882d8019b4a300d6e96319bce03c8fabeba2841b2aec9b41ee",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "validation/fruit_loop_population_quality_2026-07-26/manifest.json",
+      "source_commit": "1eb1cc1d8bf6dcf86d192153dcbc77e3edce804d",
+      "review_relative_path": "../../../../../../../../../../validation/fruit_loop_population_quality_2026-07-26/manifest.json",
+      "bytes": 1543,
+      "sha256": "607c0bfc4eb87a0e2bf891c6dddf4a123cce87af73ff0cd884295ffbc530b9f1",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "validation/fruit_loop_point_123424_el_f2_early_stop_2026-09-02/INPUT_INVENTORY_R0.1.md",
+      "source_commit": "1eb1cc1d8bf6dcf86d192153dcbc77e3edce804d",
+      "review_relative_path": "../../../../../../../../../../validation/fruit_loop_point_123424_el_f2_early_stop_2026-09-02/INPUT_INVENTORY_R0.1.md",
+      "bytes": 3789,
+      "sha256": "008592874d01862bfbdb5c56eb9376d845530de07d78816715aab1748a7d8f01",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "validation/accepted_runs.json",
+      "source_commit": "1eb1cc1d8bf6dcf86d192153dcbc77e3edce804d",
+      "review_relative_path": "../../../../../../../../../../validation/accepted_runs.json",
+      "bytes": 322583,
+      "sha256": "4a134dcdd14e0444d96875547f628a3353574cc66574dd9a559bcf59dafb94bb",
+      "use": "manager review only; no change to independent-author reference permissions"
+    },
+    {
+      "repository_path": "validation/validation_profiles.json",
+      "source_commit": "1eb1cc1d8bf6dcf86d192153dcbc77e3edce804d",
+      "review_relative_path": "../../../../../../../../../../validation/validation_profiles.json",
+      "bytes": 14843,
+      "sha256": "7c640245c2666a1dcd473b1d42574e9ce14cfe666e6bde7fdff5e68a042fb4d5",
+      "use": "manager review only; no change to independent-author reference permissions"
+    }
+  ],
+  "payloads": [
+    {
+      "path": "README.md",
+      "bytes": 4472,
+      "sha256": "e811624785790734f92e58cda4d3a8f75df3f694bcb3df3191728563f8a93997"
+    },
+    {
+      "path": "DATA_COLLECTION_REQUEST.md",
+      "bytes": 5814,
+      "sha256": "658172af668d3c533395f6ff4b249ca655747d079d6ef502b2369df504fe5209"
+    },
+    {
+      "path": "FIRST_SCREEN_BINDINGS.md",
+      "bytes": 13879,
+      "sha256": "45961b6c7d2e4eda0fa63bb449230814f51a4868dc9eab1a8962b3d68037d433"
+    },
+    {
+      "path": "INPUT_METADATA.json",
+      "bytes": 8878,
+      "sha256": "ab55cfdf304ccde2f349cdcfc19b39244db413efe01845fb547a75dfec58dfce"
+    }
+  ],
+  "verification": {
+    "result": "PASS",
+    "exact_repository_sources_verified": 35,
+    "external_metadata_source_files_verified": 11,
+    "locked_r04_payloads_verified": 57,
+    "locked_r04_archive_sha256": "cdbd36d70e6924879c6a3240bae6353a6ebceddc866a4a73c1e8779673748545",
+    "annex_sha256": "528ca373cf70c480f97280de4a47a160d93992fc3f550f74bfd49b62f21daf28",
+    "prior_reviews": "r0.1 and r0.2 unchanged",
+    "links_tables_whitespace_and_navigation": "passed",
+    "scope": "three review documents, metadata inventory, manifest/sidecar and three navigation/status files only",
+    "prior_packets_frozen_upstreams_generic_core": "unchanged",
+    "opaque_archives": "both present; neither read, hashed nor unpacked",
+    "scientific_tests": "none; source/header/metadata and document verification only",
+    "implementation_or_execution": "none",
+    "Unity_or_transfer": "none",
+    "push": "none"
+  },
+  "identity_note": "Manifest hashes four payloads and exact repository sources. INPUT_METADATA.json binds external read-only input identities. A separate sidecar hashes this manifest. No earlier packet is regenerated and no author-source inventory or archive is created."
+}

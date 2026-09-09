@@ -3,7 +3,9 @@
 Status: generic SCI-FRUIT-NORMATIVE-CORE v0.1/r0.4 accepted and conditionally
 frozen; ordinary-MAP scientific definition r0.4 accepted and frozen after
 three bounded scope clarifications. Q02-A/B scientific substance approved;
-Q02-C open for weighting evidence. Upstream amendments remain unadopted.
+Q02-C open for weighting evidence; bounded design approved for preparation.
+First-screen numerical bindings and short-input collection are in review.
+Upstream amendments remain unadopted.
 Every numerical method/route remains unavailable pending separate approval.
 Updated: 2026-09-09.
 
@@ -30,7 +32,10 @@ no numerical method or new method-specific author dispatch.
 
 ## Locked Scientific Definition And Remaining Review
 
-- [Q02: A/B approved and C awaiting weighting evidence](method_preparation/ordinary_map/method_definition/q02_review/r0.2/README.md)
+- [Q02: approved test design and first-screen preparation](method_preparation/ordinary_map/method_definition/q02_review/r0.3/README.md)
+- [Short pointing input request: 123424 and 129081](method_preparation/ordinary_map/method_definition/q02_review/r0.3/DATA_COLLECTION_REQUEST.md)
+- [Proposed numerical first-screen bindings](method_preparation/ordinary_map/method_definition/q02_review/r0.3/FIRST_SCREEN_BINDINGS.md)
+- [Q02 A/B approval and C evidence direction](method_preparation/ordinary_map/method_definition/q02_review/r0.2/README.md)
 - [Proposed bounded tests of uniform and noise-aware weighting](method_preparation/ordinary_map/method_definition/q02_review/r0.2/WEIGHTING_TEST_PLAN.md)
 - [Prior Q02 three-decision review](method_preparation/ordinary_map/method_definition/q02_review/r0.1/README.md)
 - [Owner directives, precedence and crosswalk](method_preparation/ordinary_map/method_definition/r0.4/OWNER_DIRECTION_AND_CROSSWALK.md)
@@ -76,6 +81,12 @@ one causal inverse-bootstrap-scatter family in elementary cases and identical-
 PTC-output maps, then separately considers feedback testing. The next review
 binds the first screen's exact inputs/permissions, coefficient/QC identities,
 settings, evidence, margins and execution scope. No weighting policy is adopted.
+The owner approved that bounded design and offered to supply full timestreams.
+The collection request is for short ordinary pointings 123424 and 129081,
+reusing the existing 152389 candidate; 129081's new weighting outcomes are
+reserved for replication. Their current noise contrast and T2 input/evidence
+permissions remain to be established. New numerical T1 bindings are proposed,
+with no synthetic trial, comparison or FRUIT run performed.
 POINT/E01 is a recommended first experiment, not an approved campaign order;
 OOF is separately selectable. Exact reference recovery precedes comparison
 interpretation and independent-pointing replication precedes recommendation.

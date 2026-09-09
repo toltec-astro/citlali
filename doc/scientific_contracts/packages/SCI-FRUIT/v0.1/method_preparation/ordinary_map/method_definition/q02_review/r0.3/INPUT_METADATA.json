@@ -1,0 +1,273 @@
+{
+  "schema": "SCI-FRUIT Q02 metadata-only input recovery r0.3",
+  "repository_base": "1eb1cc1d8bf6dcf86d192153dcbc77e3edce804d",
+  "inspected_at_utc": "2026-09-09T15:40:46.133782+00:00",
+  "access": "Read-only metadata and identity hashes. No signal/flag/weight/quality array values, maps or numerical comparisons read or calculated. Telescope endpoints and scalar source/configuration headers were read. File hashing covers bytes without scientific evaluation.",
+  "local_search": {
+    "root": "/Users/gwilson/work_toltec/local_data/fruit-development",
+    "mechanism": "rg --files; basename suffix inventory",
+    "full_ptc_file_count": 20,
+    "observations_with_full_ptc_filenames": [
+      "152389"
+    ],
+    "legacy_2026_refactor_point_root_present": false,
+    "limitation": "Bounded path inventory, not a claim that no other storage contains suitable data"
+  },
+  "candidate_152389": {
+    "state": "legacy_uninjected_single_pass_candidate_not_contract_admitted",
+    "ptc_file": {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/152389/raw/toltec_commissioning_pointing_152389_ptc_timestream.nc",
+      "bytes": 138244964,
+      "sha256": "894fff53babfb0070e7d0a8b831aa88098d87f9772d4a8ecb253aef009d35643"
+    },
+    "dimensions": {
+      "n_pts": 3628,
+      "n_dets": 5518,
+      "n_scans": 12
+    },
+    "scalar_headers": {
+      "BUNIT": "mJy/beam",
+      "FRUITLOOPS_ITER": 0,
+      "SOURCE": "1146+399",
+      "METHOD": "jinc",
+      "GROUPING": "array",
+      "CONFIG.CLEANED.MODESEL": "standard_pca",
+      "CONFIG.CLEANED.NEIG_a1100": 5,
+      "CONFIG.CLEANED.NEIG_a1400": 5,
+      "CONFIG.CLEANED.NEIG_a2000": 5
+    },
+    "field_shapes": {
+      "signal": {
+        "shape": [
+          3628,
+          5518
+        ],
+        "dtype": "float32",
+        "units": "mJy/beam"
+      },
+      "flags": {
+        "shape": [
+          3628,
+          5518
+        ],
+        "dtype": "int8"
+      },
+      "weights": {
+        "shape": [
+          12,
+          5518
+        ],
+        "dtype": "float64"
+      },
+      "apt_uid": {
+        "shape": [
+          5518
+        ],
+        "dtype": "float64"
+      },
+      "apt_array": {
+        "shape": [
+          5518
+        ],
+        "dtype": "float64"
+      },
+      "apt_nw": {
+        "shape": [
+          5518
+        ],
+        "dtype": "float64"
+      },
+      "lat_phys": {
+        "shape": [
+          3628
+        ],
+        "dtype": "float64"
+      },
+      "lon_phys": {
+        "shape": [
+          3628
+        ],
+        "dtype": "float64"
+      },
+      "pointing_offset_alt": {
+        "shape": [
+          3628
+        ],
+        "dtype": "float64"
+      },
+      "pointing_offset_az": {
+        "shape": [
+          3628
+        ],
+        "dtype": "float64"
+      },
+      "scan_indices": {
+        "shape": [
+          12,
+          2
+        ],
+        "dtype": "int32"
+      }
+    },
+    "actual_ptc_cleaning": {
+      "active": "standard_pca",
+      "grouping": [
+        "nw"
+      ],
+      "n_eig_to_cut": {
+        "a1100": [
+          5
+        ],
+        "a1400": [
+          5
+        ],
+        "a2000": [
+          5
+        ]
+      }
+    },
+    "fruit_enabled": false,
+    "injected_source_enabled": false,
+    "output": {
+      "enabled": true,
+      "mode": "mini",
+      "selected_chunks_1based": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    "realized_chunks": {
+      "n_output_scans": 12,
+      "scan_to_output": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    "provenance_files": [
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/processed_timestream_provenance.yaml",
+        "bytes": 16791,
+        "sha256": "9a0d259eca45b858132c03ab005e03f722691c7c660ef0c927f1fd488c91a563"
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/152389/timestream_output_provenance.yaml",
+        "bytes": 1918,
+        "sha256": "1875eba11ce1c7e00699035d98924e32153df9631a0e71564e6f47b2720fc598"
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/runtime_provenance.yaml",
+        "bytes": 948,
+        "sha256": "2996dbcec0dbfc6818857178dcefd893204e3fc8e77427a45899d50f88637871"
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/mapmaking_provenance.yaml",
+        "bytes": 34962,
+        "sha256": "ac3caaebf17d8e6fe2eec4d469b2998357b69da7dc59232aa9815121a3000727"
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/astrometry_provenance.yaml",
+        "bytes": 1362,
+        "sha256": "a63ea61b732b46dfbeda3dbbf6ce52aca77860ce986e157c48848668828b05db"
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/config_source_manifest.yaml",
+        "bytes": 680,
+        "sha256": "818f70abaf2edc39b5e9c679124e3a46b38a04719410030e762232178ec14006"
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/kids_external_provenance.yaml",
+        "bytes": 823,
+        "sha256": "ebbd005c021917ac58a473fd90ea3e85a0fd4a132403e13e9fb530d9643a8b24"
+      }
+    ],
+    "missing_or_unverified": [
+      "No per-occurrence detector/sample coordinate field in mini output; exact AST join needs verification or export",
+      "Input/calibration/reference and named-use flags need exact admission; metadata is not conformity evidence",
+      "No noise-dispersion comparison or experimental outcome has been produced"
+    ]
+  },
+  "telescope_header_candidates": [
+    {
+      "obsnum": 123424,
+      "role": "requested_discovery_with_existing_152389",
+      "file": {
+        "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/pointings_rc1/reduced/tel_toltec_2024-11-27_123424_00_0002_recomputed.nc",
+        "bytes": 1226332,
+        "sha256": "bfb95deda33e8f5a3e86a0990db2698bddb9ed7c39c6284733900d91fd99defe"
+      },
+      "fields": {
+        "Header.Dcs.ObsNum": 123424,
+        "Header.Dcs.SubObsNum": 0,
+        "Header.Dcs.RequestedTime": 60.0,
+        "Header.Source.SourceName": "Neptune",
+        "telescope_sample_count": 3138,
+        "telescope_time_first_seconds": 1732680596.49,
+        "telescope_time_last_seconds": 1732680659.22,
+        "telescope_span_seconds": 62.730000019073486
+      }
+    },
+    {
+      "obsnum": 129081,
+      "role": "requested_reserved_weighting_replication",
+      "file": {
+        "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/pointings_rc1/reduced/tel_toltec_2025-03-04_129081_00_0002_recomputed.nc",
+        "bytes": 1234472,
+        "sha256": "e22e750264a47e93799f11f2dc4beb1e2ced397e1fe0878e75ca2a4dd95380aa"
+      },
+      "fields": {
+        "Header.Dcs.ObsNum": 129081,
+        "Header.Dcs.SubObsNum": 0,
+        "Header.Dcs.RequestedTime": 60.0,
+        "Header.Source.SourceName": "3c273",
+        "telescope_sample_count": 3159,
+        "telescope_time_first_seconds": 1741075538.519,
+        "telescope_time_last_seconds": 1741075601.67,
+        "telescope_span_seconds": 63.151000022888184
+      }
+    },
+    {
+      "obsnum": 153481,
+      "role": "header_only_candidate_not_requested",
+      "file": {
+        "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/pointings_rc1/reduced/tel_toltec_2026-03-04_153481_00_0002_recomputed.nc",
+        "bytes": 1310552,
+        "sha256": "d4600c34e167511a777d4923aa80ba725977e3b268d6d8e632d3f306b1aad449"
+      },
+      "fields": {
+        "Header.Dcs.ObsNum": 153481,
+        "Header.Dcs.SubObsNum": 0,
+        "Header.Dcs.RequestedTime": 60.0,
+        "Header.Source.SourceName": "3c279",
+        "telescope_sample_count": 3223,
+        "telescope_time_first_seconds": 1772606315.5161703,
+        "telescope_time_last_seconds": 1772606379.9458945,
+        "telescope_span_seconds": 64.42972421646118
+      }
+    }
+  ],
+  "outcome_based_population_labels": "Excluded: validation/fruit_loop_population_quality_2026-07-26/manifest.json defines ranks from fitted-map/kernel outcomes, not current detector-noise metadata",
+  "protected_lineage": "Previously exposed fruit-loop lineage remains development-only and ineligible for untouched qualification; reserved 129081 refers only to new weighting outcomes",
+  "remote_access": "none",
+  "production_changes": "none",
+  "test_execution": "none"
+}

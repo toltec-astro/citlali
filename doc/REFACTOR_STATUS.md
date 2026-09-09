@@ -1393,6 +1393,35 @@ A/B do not need another scientific-substance vote. All numerical routes remain
 unavailable; Q01/core/upstream freezes, prior packets/archives and reduction
 products are preserved. This revision performs document/source checks only.
 
+The owner then approved the r0.2 weighting design and directed preparation to
+proceed. The [r0.3 first-screen record](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.3/README.md)
+preserves A/B approval and C's open disposition, and proposes exact T1 cases,
+training, 1,024 trials per case, numerical loss limits and local resource bounds.
+Those newly supplied numbers still require disposition in the completed
+execution record; no comparison, coefficient adoption or FRUIT method was run.
+
+The owner offered to create/download full PTC timestreams from Unity and asked
+for observation numbers. The [short collection request](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.3/DATA_COLLECTION_REQUEST.md)
+names 123424 (Neptune, 2024-11-27) for discovery alongside existing 152389, and
+129081 (3c273, 2025-03-04) as reserved weighting replication. Both requested
+integrations are 60 seconds; local telescope time spans are 62.730 and 63.151
+seconds. No beammap, RTC dump, intervention, or multi-iteration FRUIT run is
+requested. Collection is owner-run; Codex performed no Unity access or transfer.
+
+Metadata-only recovery found full PTC signal/flags for 152389, with all 12
+chunks, 3,628 samples and 5,518 detector slots, FRUIT/injection disabled,
+network cleaning and rank five. Its exact occurrence-coordinate join and
+scientific input admission remain unverified; its `mini` output is not a
+contract-conformity result. Within the inspected fruit-development tree,
+123424 has diagnostic products but no full PTC signal file. Old normal/stress
+strata use map outcomes and are excluded from current detector-noise selection.
+The proposed discovery pair's noise contrast remains unmeasured; the training
+inventory must establish it before evaluation maps are opened. 129081 is
+reserved only for new weighting outcomes, not untouched qualification.
+Next receive exact input/provenance bundles and finish T2's input, support,
+response/noise and interval bindings before execution review. Frozen authority,
+prior packets, archived products and numerical-method gates are unchanged.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
