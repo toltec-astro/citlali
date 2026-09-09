@@ -1438,6 +1438,21 @@ The intake is metadata/identity only; no weighting statistic, map comparison,
 implementation, numerical experiment or Unity action occurred. A/B approval,
 C's open status and all execution/authority gates remain unchanged.
 
+The owner then replaced the contents of the same `redu01` directory. The
+[replacement intake](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/input_intake/r0.2/README.md)
+clears the previous iteration-state mismatch: the YAML disables FRUIT and both
+PTC files report iteration 0 with effective max_iters=1. The inactive YAML
+max_iters=10 is consistent with source at the reported e0090e2d revision, which
+forces one pass when disabled; no further export is requested for that setting.
+Both full signal/flag/coordinate schemas and all 12 declared chunk records remain
+present, with new payload hashes and combined size 1,470,806,136 bytes. Prior
+intake bytes/hashes remain historical; the owner replaced the external payloads.
+The replacement manifest also corrects the prior helper's malformed FRUIT-config
+field without changing the old disposition. 129081's scientific values remain
+reserved. No run log/provenance sidecar was found; exact scientific input,
+support, response/noise and execution bindings remain pending. No numerical
+comparison, science-array inspection, upstream adoption or Unity action occurred.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

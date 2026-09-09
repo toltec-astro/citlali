@@ -1,0 +1,699 @@
+{
+  "schema": "SCI-FRUIT ordinary-MAP weighting replacement input intake r0.2",
+  "repository_base": "94aea547fd781979ff437df825e9c60d83e054fa",
+  "inspected_at_utc": "2026-09-09T18:37:12.834277+00:00",
+  "owner_supplied_directory": "/Users/gwilson/work_toltec/local_data/beammaps/pointings/reduced/redu01",
+  "owner_direction": "okay, take a look in the same directory, which I've replaced",
+  "directory_inventory": [
+    {
+      "path": "123424/index.yaml",
+      "bytes": 181
+    },
+    {
+      "path": "123424/raw/index.yaml",
+      "bytes": 610
+    },
+    {
+      "path": "123424/raw/ppt_commissioning_pointing_123424_citlali.ecsv",
+      "bytes": 21021
+    },
+    {
+      "path": "123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bytes": 1391040
+    },
+    {
+      "path": "123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bytes": 1391040
+    },
+    {
+      "path": "123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+      "bytes": 1391040
+    },
+    {
+      "path": "123424/raw/toltec_commissioning_pointing_123424_hist.nc",
+      "bytes": 10285
+    },
+    {
+      "path": "123424/raw/toltec_commissioning_pointing_123424_psd.nc",
+      "bytes": 1294862
+    },
+    {
+      "path": "123424/raw/toltec_commissioning_pointing_123424_ptc_timestream.nc",
+      "bytes": 760674540
+    },
+    {
+      "path": "123424/raw/toltec_commissioning_pointing_123424_stats.nc",
+      "bytes": 5169897
+    },
+    {
+      "path": "129081/index.yaml",
+      "bytes": 181
+    },
+    {
+      "path": "129081/raw/index.yaml",
+      "bytes": 610
+    },
+    {
+      "path": "129081/raw/ppt_commissioning_pointing_129081_citlali.ecsv",
+      "bytes": 21000
+    },
+    {
+      "path": "129081/raw/toltec_commissioning_a1100_pointing_129081_citlali.fits",
+      "bytes": 1448640
+    },
+    {
+      "path": "129081/raw/toltec_commissioning_a1400_pointing_129081_citlali.fits",
+      "bytes": 1448640
+    },
+    {
+      "path": "129081/raw/toltec_commissioning_a2000_pointing_129081_citlali.fits",
+      "bytes": 1448640
+    },
+    {
+      "path": "129081/raw/toltec_commissioning_pointing_129081_hist.nc",
+      "bytes": 10285
+    },
+    {
+      "path": "129081/raw/toltec_commissioning_pointing_129081_psd.nc",
+      "bytes": 1296654
+    },
+    {
+      "path": "129081/raw/toltec_commissioning_pointing_129081_ptc_timestream.nc",
+      "bytes": 710131596
+    },
+    {
+      "path": "129081/raw/toltec_commissioning_pointing_129081_stats.nc",
+      "bytes": 4880649
+    },
+    {
+      "path": "citlali_o123424_0_2_c2.yaml",
+      "bytes": 9724
+    },
+    {
+      "path": "index.yaml",
+      "bytes": 227
+    }
+  ],
+  "observations": [
+    {
+      "obsnum": 123424,
+      "role": "discovery_candidate",
+      "file": {
+        "path": "/Users/gwilson/work_toltec/local_data/beammaps/pointings/reduced/redu01/123424/raw/toltec_commissioning_pointing_123424_ptc_timestream.nc",
+        "bytes": 760674540,
+        "sha256": "b53ad776173b1bd2b12569c87ae15ad78a3db1c76ef4515c855255b0e4f20ba9"
+      },
+      "headers": {
+        "BUNIT": "mJy/beam",
+        "SOURCE": "Neptune",
+        "VERSION": "v4.0.0-62-ge0090e2d",
+        "KIDS": "4a3428e",
+        "TULA": "28875ba",
+        "GROUPING": "array",
+        "METHOD": "jinc",
+        "FRUITLOOPS_ITER": "0",
+        "CONFIG.FRUITLOOPS": "25856",
+        "CONFIG.FRUITLOOPS.MAXITER": "1",
+        "CONFIG.FRUITLOOPS.PATH": "",
+        "Header.Dcs.ObsNum": "123424.0",
+        "Header.Dcs.SubObsNum": "0.0",
+        "Header.Dcs.ScanNum": "2.0"
+      },
+      "dimensions": {
+        "n_pts": 3628,
+        "n_dets": 5905,
+        "n_scans": 12
+      },
+      "field_schemas": {
+        "signal": {
+          "shape": [
+            3628,
+            5905
+          ],
+          "dtype": "float64",
+          "units": "mJy/beam"
+        },
+        "flags": {
+          "shape": [
+            3628,
+            5905
+          ],
+          "dtype": "float64",
+          "units": "N/A"
+        },
+        "det_lat": {
+          "shape": [
+            3628,
+            5905
+          ],
+          "dtype": "float64",
+          "units": "rad"
+        },
+        "det_lon": {
+          "shape": [
+            3628,
+            5905
+          ],
+          "dtype": "float64",
+          "units": "rad"
+        },
+        "apt_uid": {
+          "shape": [
+            5905
+          ],
+          "dtype": "float64",
+          "units": "N/A"
+        },
+        "apt_array": {
+          "shape": [
+            5905
+          ],
+          "dtype": "float64",
+          "units": "N/A"
+        },
+        "apt_nw": {
+          "shape": [
+            5905
+          ],
+          "dtype": "float64",
+          "units": "N/A"
+        },
+        "weights": {
+          "shape": [
+            12,
+            5905
+          ],
+          "dtype": "float64",
+          "units": "(mJy/beam)^-2"
+        },
+        "scan_indices": {
+          "shape": [
+            12,
+            2
+          ],
+          "dtype": "int32",
+          "units": "N/A"
+        },
+        "raw_scan_indices": {
+          "shape": [
+            12,
+            4
+          ],
+          "dtype": "int32",
+          "units": "N/A"
+        }
+      },
+      "declared_scan_indices": [
+        [
+          0,
+          288
+        ],
+        [
+          305,
+          593
+        ],
+        [
+          610,
+          898
+        ],
+        [
+          915,
+          1203
+        ],
+        [
+          1220,
+          1508
+        ],
+        [
+          1525,
+          1813
+        ],
+        [
+          1830,
+          2118
+        ],
+        [
+          2135,
+          2423
+        ],
+        [
+          2440,
+          2728
+        ],
+        [
+          2745,
+          3033
+        ],
+        [
+          3050,
+          3338
+        ],
+        [
+          3339,
+          3627
+        ]
+      ],
+      "collection_check": "PASS_METADATA_CONSISTENT_WITH_ORDINARY_SINGLE_PASS",
+      "scientific_input_admission": "pending_exact_input_evidence_and_execution_bindings",
+      "scientific_array_values_accessed": false,
+      "prior_generation": {
+        "path": "/Users/gwilson/work_toltec/local_data/beammaps/pointings/reduced/redu01/123424/raw/toltec_commissioning_pointing_123424_ptc_timestream.nc",
+        "bytes": 760674549,
+        "sha256": "c593052f7f3207bc0f734be04082d9200733e5e900cde02d49d5316755a25d3a",
+        "current_state": "owner_replaced_at_same_path; older_copy_elsewhere_not_checked"
+      }
+    },
+    {
+      "obsnum": 129081,
+      "role": "reserved_weighting_replication_candidate",
+      "file": {
+        "path": "/Users/gwilson/work_toltec/local_data/beammaps/pointings/reduced/redu01/129081/raw/toltec_commissioning_pointing_129081_ptc_timestream.nc",
+        "bytes": 710131596,
+        "sha256": "e635211eaa9512f9dab166b5a28391b8ea00fa5b498f18bde69f0f6fe1d1af46"
+      },
+      "headers": {
+        "BUNIT": "mJy/beam",
+        "SOURCE": "3c273",
+        "VERSION": "v4.0.0-62-ge0090e2d",
+        "KIDS": "4a3428e",
+        "TULA": "28875ba",
+        "GROUPING": "array",
+        "METHOD": "jinc",
+        "FRUITLOOPS_ITER": "0",
+        "CONFIG.FRUITLOOPS": "25856",
+        "CONFIG.FRUITLOOPS.MAXITER": "1",
+        "CONFIG.FRUITLOOPS.PATH": "",
+        "Header.Dcs.ObsNum": "129081.0",
+        "Header.Dcs.SubObsNum": "0.0",
+        "Header.Dcs.ScanNum": "2.0"
+      },
+      "dimensions": {
+        "n_pts": 3628,
+        "n_dets": 5512,
+        "n_scans": 12
+      },
+      "field_schemas": {
+        "signal": {
+          "shape": [
+            3628,
+            5512
+          ],
+          "dtype": "float64",
+          "units": "mJy/beam"
+        },
+        "flags": {
+          "shape": [
+            3628,
+            5512
+          ],
+          "dtype": "float64",
+          "units": "N/A"
+        },
+        "det_lat": {
+          "shape": [
+            3628,
+            5512
+          ],
+          "dtype": "float64",
+          "units": "rad"
+        },
+        "det_lon": {
+          "shape": [
+            3628,
+            5512
+          ],
+          "dtype": "float64",
+          "units": "rad"
+        },
+        "apt_uid": {
+          "shape": [
+            5512
+          ],
+          "dtype": "float64",
+          "units": "N/A"
+        },
+        "apt_array": {
+          "shape": [
+            5512
+          ],
+          "dtype": "float64",
+          "units": "N/A"
+        },
+        "apt_nw": {
+          "shape": [
+            5512
+          ],
+          "dtype": "float64",
+          "units": "N/A"
+        },
+        "weights": {
+          "shape": [
+            12,
+            5512
+          ],
+          "dtype": "float64",
+          "units": "(mJy/beam)^-2"
+        },
+        "scan_indices": {
+          "shape": [
+            12,
+            2
+          ],
+          "dtype": "int32",
+          "units": "N/A"
+        },
+        "raw_scan_indices": {
+          "shape": [
+            12,
+            4
+          ],
+          "dtype": "int32",
+          "units": "N/A"
+        }
+      },
+      "declared_scan_indices": [
+        [
+          0,
+          288
+        ],
+        [
+          305,
+          593
+        ],
+        [
+          610,
+          898
+        ],
+        [
+          915,
+          1203
+        ],
+        [
+          1220,
+          1508
+        ],
+        [
+          1525,
+          1813
+        ],
+        [
+          1830,
+          2118
+        ],
+        [
+          2135,
+          2423
+        ],
+        [
+          2440,
+          2728
+        ],
+        [
+          2745,
+          3033
+        ],
+        [
+          3050,
+          3338
+        ],
+        [
+          3339,
+          3627
+        ]
+      ],
+      "collection_check": "PASS_METADATA_CONSISTENT_WITH_ORDINARY_SINGLE_PASS",
+      "scientific_input_admission": "pending_exact_input_evidence_and_execution_bindings",
+      "scientific_array_values_accessed": false,
+      "prior_generation": {
+        "path": "/Users/gwilson/work_toltec/local_data/beammaps/pointings/reduced/redu01/129081/raw/toltec_commissioning_pointing_129081_ptc_timestream.nc",
+        "bytes": 710131605,
+        "sha256": "da9a5ec718e4b051a47bb8ddea5eaf4d88c98f37e521443248008b2c3933a7dd",
+        "current_state": "owner_replaced_at_same_path; older_copy_elsewhere_not_checked"
+      }
+    }
+  ],
+  "configuration_and_indexes": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/beammaps/pointings/reduced/redu01/citlali_o123424_0_2_c2.yaml",
+      "bytes": 9724,
+      "sha256": "e836563dda267e1224ff6057d1d05be6468f44802a7d25c258e6059451c71737"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/beammaps/pointings/reduced/redu01/index.yaml",
+      "bytes": 227,
+      "sha256": "fea0265aabff29afd692f41d45b88cc946511a57174ec8b4834262ee42548d44"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/beammaps/pointings/reduced/redu01/123424/index.yaml",
+      "bytes": 181,
+      "sha256": "0be5930ab8b0198cd2c384bd8ad60c8ed0e2b118edfc9fea43be5008fb5a0709"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/beammaps/pointings/reduced/redu01/129081/index.yaml",
+      "bytes": 181,
+      "sha256": "0be5930ab8b0198cd2c384bd8ad60c8ed0e2b118edfc9fea43be5008fb5a0709"
+    }
+  ],
+  "saved_config_facts": {
+    "fruit_loops": {
+      "array_flux_limit": [
+        12,
+        18,
+        10
+      ],
+      "enabled": false,
+      "max_iters": 10,
+      "mode": "upper",
+      "path": null,
+      "save_all_iters": false,
+      "sig2noise_limit": 100,
+      "type": "obsnum/raw"
+    },
+    "ptc_clean": {
+      "cut_std": 0.0,
+      "enabled": true,
+      "grouping": [
+        "nw"
+      ],
+      "mask_radius_arcsec": 0,
+      "n_eig_to_cut": {
+        "a1100": [
+          5
+        ],
+        "a1400": [
+          5
+        ],
+        "a2000": [
+          5
+        ]
+      },
+      "stddev_limit": 0,
+      "tau": 0.0
+    },
+    "ptc_weighting": {
+      "lower_map_weight_factor": 0.0,
+      "median_map_weight_factor": 10,
+      "type": "approximate",
+      "upper_map_weight_factor": 11
+    },
+    "ptc_output": {
+      "enabled": true
+    },
+    "rtc_output": {
+      "enabled": false
+    },
+    "chunking": {
+      "chunk_mode": "duration",
+      "force_chunking": false,
+      "value": 5
+    },
+    "runtime": {
+      "interp_over_gaps": false,
+      "meta": {
+        "version": "tolteca..."
+      },
+      "n_threads": 16,
+      "output_dir": "/work/toltec/commissioning2025-test/beammaps/pointings/reduced/",
+      "parallel_policy": "omp",
+      "reduction_type": "pointing",
+      "use_subdir": true,
+      "verbose": false
+    },
+    "mapmaking": {
+      "coverage_cut": 0.1,
+      "crpix1": 0,
+      "crpix2": 0,
+      "crval1_J2000": 0,
+      "crval2_J2000": 0,
+      "cunit": "mJy/beam",
+      "enabled": true,
+      "grouping": "auto",
+      "jinc_filter": {
+        "r_max": 1.5,
+        "shape_params": {
+          "a1100": [
+            1.1,
+            1.67,
+            2.0
+          ],
+          "a1400": [
+            1.1,
+            2.17,
+            2.0
+          ],
+          "a2000": [
+            1.1,
+            3.17,
+            2.0
+          ]
+        }
+      },
+      "maximum_likelihood": {
+        "max_iterations": 50,
+        "tolerance": "1e-20"
+      },
+      "method": "jinc",
+      "pixel_axes": "altaz",
+      "pixel_size_arcsec": 2.0,
+      "x_size_pix": 0,
+      "y_size_pix": 0
+    }
+  },
+  "reported_index_timestamp": [
+    "2026-09-09.18:09:47"
+  ],
+  "index_timezone": "not_declared",
+  "disposition": "Prior collection mismatch resolved; disabled config and zero-iteration/effective-one headers are consistent with reported-source handling. No further export needed for inactive requested max_iters=10.",
+  "requested_effective_distinction": {
+    "requested_enabled": false,
+    "inactive_requested_max_iters": 10,
+    "output_effective_max_iters": 1,
+    "output_iteration": 0,
+    "legacy_boolean_header": "25856 retained uninterpreted; not used as Boolean"
+  },
+  "reported_source_resolution": {
+    "commit": "e0090e2da68ec118876aa7d3506b4dfb10ae696d",
+    "binary_identity": "not independently verified against executable bytes",
+    "source_blobs": [
+      {
+        "source_commit": "e0090e2da68ec118876aa7d3506b4dfb10ae696d",
+        "repository_path": "include/citlali/core/timestream/ptc/ptcproc.h",
+        "bytes": 25634,
+        "sha256": "06381a1fab128d77174d4b0c9d199a8cb0808db253cd4a47bd1c2ab38e459476",
+        "reviewed_lines": [
+          86,
+          115
+        ],
+        "role": "FRUIT-specific values read only when enabled",
+        "use": "historical implementation evidence only; no scientific authority or independent-author reference admission"
+      },
+      {
+        "source_commit": "e0090e2da68ec118876aa7d3506b4dfb10ae696d",
+        "repository_path": "src/citlali/cli/main.cpp",
+        "bytes": 52297,
+        "sha256": "f5a4d813a67e13ce92333a4218ed5e3b9ccb22de84ad4a27da15f2028774e83c",
+        "reviewed_lines": [
+          422,
+          425
+        ],
+        "role": "disabled FRUIT forces effective limit one",
+        "use": "historical implementation evidence only; no scientific authority or independent-author reference admission"
+      },
+      {
+        "source_commit": "e0090e2da68ec118876aa7d3506b4dfb10ae696d",
+        "repository_path": "include/citlali/core/engine/engine.h",
+        "bytes": 114789,
+        "sha256": "8c9c9a70561e5103a5109884c896adf7713df6fb1d3e4d5de7a841e9755da9ba",
+        "reviewed_lines": [
+          1247,
+          1260
+        ],
+        "role": "NetCDF maximum records effective fruit_loops_iters",
+        "use": "historical implementation evidence only; no scientific authority or independent-author reference admission"
+      }
+    ]
+  },
+  "full_ptc_total_bytes": 1470806136,
+  "remaining_provenance": "No run log or provenance sidecars found in supplied directory or bounded filename search under local beammaps/pointings; recover if available, no claim of full provenance or conformity",
+  "prior_generation_state": "Owner replaced external path contents; old local intake records remain byte-for-byte unchanged; old external files are not asserted preserved elsewhere",
+  "routine_record_correction": {
+    "prior_record": "../r0.1/INPUT_MANIFEST.json",
+    "field": "saved_config_facts.fruit_loops",
+    "error": "Prior helper reused variable while building manifest; field contains navigation path rather than mapping",
+    "current_resolution": "Current successor field extracted directly from replacement YAML and checked as mapping; prior bytes preserved; old README and independent headers support old disposition",
+    "scientific_change": false
+  },
+  "access": "Schemas, scalar identity/config headers and small chunk-index arrays only; payload hashing for identity. No signal/flag/coordinate/weight/noise/fitted-source/map values inspected. 129081 scientific values remain reserved.",
+  "scientific_input_admission": "pending",
+  "test_execution_authorized": false,
+  "review_sources": [
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.3/README.md",
+      "source_commit": "94aea547fd781979ff437df825e9c60d83e054fa",
+      "bytes": 4472,
+      "sha256": "e811624785790734f92e58cda4d3a8f75df3f694bcb3df3191728563f8a93997",
+      "use": "manager review only; no author-reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.3/DATA_COLLECTION_REQUEST.md",
+      "source_commit": "94aea547fd781979ff437df825e9c60d83e054fa",
+      "bytes": 5814,
+      "sha256": "658172af668d3c533395f6ff4b249ca655747d079d6ef502b2369df504fe5209",
+      "use": "manager review only; no author-reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.3/FIRST_SCREEN_BINDINGS.md",
+      "source_commit": "94aea547fd781979ff437df825e9c60d83e054fa",
+      "bytes": 13879,
+      "sha256": "45961b6c7d2e4eda0fa63bb449230814f51a4868dc9eab1a8962b3d68037d433",
+      "use": "manager review only; no author-reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.3/REVIEW_MANIFEST.json",
+      "source_commit": "94aea547fd781979ff437df825e9c60d83e054fa",
+      "bytes": 21795,
+      "sha256": "944bce073cca6b2888477a8284c814f15ea5f1121e17ef28973038751fd7329f",
+      "use": "manager review only; no author-reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/input_intake/r0.1/README.md",
+      "source_commit": "94aea547fd781979ff437df825e9c60d83e054fa",
+      "bytes": 5551,
+      "sha256": "c2eab5c0fa040c79a49ffd2c9be668d17c82209ce7ac7e895349d2bdea480227",
+      "use": "manager review only; no author-reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/input_intake/r0.1/INPUT_MANIFEST.json",
+      "source_commit": "94aea547fd781979ff437df825e9c60d83e054fa",
+      "bytes": 16636,
+      "sha256": "6ca88b4ecb9e7e9e909bea7cf483a2b579862b2d5aa7ef704d1e6da78610b9ca",
+      "use": "manager review only; no author-reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/input_intake/r0.1/INPUT_MANIFEST.json.sha256",
+      "source_commit": "94aea547fd781979ff437df825e9c60d83e054fa",
+      "bytes": 86,
+      "sha256": "15572f0c6cd09c8482ab32152d44accd31a370a536bf2d8bc97ef925b8233811",
+      "use": "manager review only; no author-reference admission"
+    }
+  ],
+  "payloads": [
+    {
+      "path": "README.md",
+      "bytes": 5112,
+      "sha256": "3dfb4261fb664080799e1a79b062487deb0de1982ef77c62cc07d2d776b5a091"
+    }
+  ],
+  "verification": {
+    "document_source_identity_checks": "PASS",
+    "single_pass_collection_check": "PASS_METADATA_CONSISTENT",
+    "scientific_or_numerical_tests": "none",
+    "frozen_definition_payloads_verified": 57,
+    "prior_reviews_core_upstreams": "unchanged",
+    "opaque_archives": "both present; neither read, hashed nor unpacked",
+    "owner_directory_mutations_by_Codex": "none",
+    "Unity_access_or_transfer": "none",
+    "push": "none"
+  },
+  "identity_note": "New hashes bind the replacement at the reused path. Prior hashes remain historical identifiers and are not assertions about that path now. This manifest binds README; the separate sidecar hashes this manifest."
+}
