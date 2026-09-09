@@ -1,0 +1,75 @@
+{
+  "identity": "SCI-MAP-CONTRACTUAL-ACTIVATION-BINDING/2026-09-09",
+  "approved_proposal_commit": "973a1c22a51e19f148f94be554f23569258fa33b",
+  "approved_proposal_tree": "54cfb0b833c242af86a9ac899e5c38b70159c1be",
+  "owner_approval_and_post_owner_reviewed_commit": "11e8b1a0346831e3e0d5b651d5e531e3faa580a5",
+  "canonical_base": "3efd079bb5c28f28f6f2d49296a29e966bde050b",
+  "allocated_final_identities": [
+    "SCI-VAL_PROFILE_REGISTRY v0.1/r0.3-map-v0.2-r0.4-2026-09-08",
+    "SCI-VAL_SOURCE_BINDING_REGISTER v0.1/r0.3-map-v0.2-r0.4-2026-09-08",
+    "SCI-MAP_SOURCE_BINDING v0.2/r0.4-2026-09-08",
+    "SCI-MAP_PRODUCT_ROLE_REGISTRY v0.2/r0.4-2026-09-08",
+    "SCI-MAP:map_upstream_admission@2 / SCI-MAP-v0.2-r0.4-2026-09-08"
+  ],
+  "policies": [
+    "SCI-MAP:map_upstream_admission@2",
+    "SCI-MAP:observation_coadd_admission@2"
+  ],
+  "role_scope": "Exactly the six already-registered role rules; stronger companions local to selected role; no new profile or method.",
+  "sources": [
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/BINDING_MANIFEST.json",
+      "sha256": "57229670cd540ce2f8aeecf5d1a568414d0a85b6a9d6cf5a74b7e698b6ac5ec3",
+      "bytes": 15160
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ADMISSION_2026-09-08/ADMISSION_BINDING.json",
+      "sha256": "3390d2e1d5e7f04e80f9ecf06708f0a219db35d0561f84f798960e14923a44e7",
+      "bytes": 5058
+    },
+    {
+      "path": "doc/scientific_contracts/studies/SCI_MAP_PROFILE_ACTIVATION_2026-09-09/README.md",
+      "sha256": "17e176ceaaedce9252cd0c6ee0024e8143757b356a8723f367082febdd193b26",
+      "bytes": 7972
+    },
+    {
+      "path": "doc/scientific_contracts/studies/SCI_MAP_PROFILE_ACTIVATION_2026-09-09/PRIOR_WORK.md",
+      "sha256": "9d3ae1586c69341d79da40cbf87c725477ce1faa970b1839968ec99355bbb9c7",
+      "bytes": 5073
+    },
+    {
+      "path": "doc/scientific_contracts/studies/SCI_MAP_PROFILE_ACTIVATION_2026-09-09/SOURCE_BINDING.json",
+      "sha256": "a1b48ecdd2de908f539f84d4960003e1e62a62b81698fabce5eb3b024573e0f5",
+      "bytes": 6622
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ACTIVATION_2026-09-09/OWNER_APPROVAL.md",
+      "sha256": "f4ded327ca76d8c0a571bb104a1b37b5864db1c851bd93bbb88241528ce3d024",
+      "bytes": 5636
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ACTIVATION_2026-09-09/POST_OWNER_REVIEW.md",
+      "sha256": "28e5aaa532f4de40d0d0826c9c58f243645769ef0d214159995161105211d6fd",
+      "bytes": 4716
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ACTIVATION_2026-09-09/POST_OWNER_REVIEW.json",
+      "sha256": "a82ebeadcf60df63251be38fdfd193b5525846cdec11b0e50337a2c94c91a116",
+      "bytes": 2314
+    },
+    {
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ACTIVATION_2026-09-09/ACTIVATION_RECORD.md",
+      "sha256": "3cd06e52abd21bb42364206d767081ab308fecbd56f333ae15a86729b2489107",
+      "bytes": 4685
+    }
+  ],
+  "canonical_effect": "Pending until exact independent merge review passes and unchanged record is on canonical ancestry; then contractually active/evaluable for requested objects with required facts.",
+  "separate_gates": {
+    "objects": "not supplied or evaluated",
+    "implementation": "unassessed; no work authorized",
+    "numerical_execution": "not authorized",
+    "production": "not qualified or authorized"
+  },
+  "preservation": "Frozen sources, exact approved proposal/admission, other inherited profiles, prior evaluations and application tree unchanged.",
+  "seal": "No self-hash or future containing commit claimed; external completion receipt binds actual canonical merge and advance."
+}
