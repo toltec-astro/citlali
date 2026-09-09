@@ -508,3 +508,108 @@ between them (57.344 ms). All 23 focused tests pass. The intervening full-build
 attempt is retained as interim evidence only because this final boundary repair
 began before that build/test command ended; the final exact candidate must be
 rebuilt and rechecked before the full census.
+
+
+### 2026-09-09 A–F implementation and same-corpus completion
+
+Disposition: **candidate**, ready for owner review; no accepted canonical
+integration or production disposition. Literal base
+`be5636087af3c662655779eb99a032156799f04b`; final implementation
+`17c1bf0e6a33648d2ea0aede03fa111012ad4bed`, tree
+`c7d12ea2a45c15e9fb6202818024575cea38a2a7`, immediate parent
+`71cf11f43d28d14a7a709e1dc77930b6777759e5`. The earlier repair-required source
+and reviews remain preserved. Independent review-03 binds the final full SHA:
+**PASS with recorded limitations, no remaining findings**, all three axes.
+Review SHA256 `7a1eccec8bc7a21ac6141c0cebc475c9bb9bee31ae37c00402b5c2dc03e1a7b6`.
+
+External completion evidence:
+`/private/tmp/citlali-rtc-event-assessment-2026-09-09`.
+`EVIDENCE_SHA256SUMS` seals 1,282 files, SHA256
+`a084be76119a32e35df89e8dbd997b53047d2542169102b98fdbb23906914af5`.
+Changed-source digests, exact executable/CLI binding, complete source-state and
+cached-dependency checks are in `source-binding.json` and
+`source-state-after.json`. The census executable SHA256 is
+`1eb2c2cbaa7d03daacbd96929f2979ea1f58122a2c82e3cf2bfacd57a6bba377`.
+All accepted D2/VAL/spike and original joint-fit source remains byte unchanged.
+Only this documentation receipt follows the tested implementation; its exact-SHA
+review and final completion seal are added externally after commit.
+
+Focused and broader local gates: final build/CLI match the implementation SHA;
+955/955 runnable CTests pass, including 23/23 new focused tests and public-header
+isolation. The established MapFitterLifecycle test is the sole disabled test.
+Four config-preflight modes and 207 baseline-tool tests / 137 subtests passed;
+subsequent repairs touch neither config nor baseline behavior. Both governance
+ledgers validate unchanged (60 validation records; three scientific changes,
+five integration commits). Wrong-Tune and existing-output negative checks pass.
+All required data streams and receipt explicitly close/check failures. Expected
+negative-test failures and intermediate build/review attempts are preserved;
+all 143 successful census invocations require zero unexpected producer
+error/critical messages.
+
+The complete rerun uses the same 143 exact network inputs, 71,734 detector-
+observation streams, 13 observations, and 2,148,911,461 original x/r sample pairs.
+Every one of 910,241 original candidate detector/coordinate/row/score records,
+all raw/Tune/manifest digests, original Tune validity and paired screening
+exclusions match. Every candidate belongs to exactly one review assessment;
+confirmed coordinate recovery never predates any member in that coordinate.
+All A–F original displayed sample values compare exactly. Previous consumed
+census/quality/case files are checked against their original sealed manifests.
+
+Results: 242,014 grouped assessments, comprising 123,715 measured returns,
+28,704 persistent/compound unresolved, 51,386 unavailable backgrounds, and
+38,209 with no resolved excursion. Three explicitly retain a support-refinement
+limit. These are review dispositions, not accepted physical event counts or
+an affected-data percentage. Member-candidate-weighted background availability
+is x 697,858 and r 698,761 of 910,241; earlier independent per-edge attempts had
+x 130,791 and r 338,458 available. Grouped fits are shared by their members, so
+this measures available fitting evidence, not classification accuracy.
+
+A remains a one-native-cell paired excursion. B has strong same-network shared
+variation: x channel 273 gives level correlation 0.994154 and difference
+correlation 0.473555 over 488 original shared samples, with a 16.384 ms largest-
+peer-edge delay; no causal atmospheric/electronic diagnosis follows. C separates
+into three brief assessments with recovery between them and both backgrounds
+available. D retains a large persistent shift assessment while excluding the
+earlier small spike from its fit. E has no resolved departure from the return
+band; spectral context remains explicitly owner-deferred. Its saved-background
+injection test verifies candidate preservation, not periodicity classification
+or equivalence to the full-observation noise population. F raises the health
+review concern through r in all 124 complete ten-second blocks.
+
+The health table retains all 17 caught detector-observation occurrences with
+existing quality evidence: five clear, one already APT-flagged, eleven with
+unavailable APT quality fields, and valid Tune flags in all seventeen. No new
+scientific rejection or Tune/APT rewrite follows. Original samples remain
+available for inspection. The full figures include fitting exclusions, measured
+support, recovery confirmation, frozen pre-reference +/-4-sigma bands, and F's
+block-by-block health comparison. See external `README.md`, `reconciliation.json`,
+`cases.json`, `health-review.csv`, and full-identity `health-review.jsonl`.
+
+Runtime architectural outcome: RTC Learn produces the immutable fit/recovery/
+membership/context/health evidence from exact native parents; RTC Consider
+applies the selected review policy while retaining original noise-screening
+constraints. Apply produces no correction, replacement, offset subtraction or
+new rejection plan in this increment. Engineering Learn/Consider/Apply was
+separately followed through implementation, testing and independent review;
+that workflow is not credited as the runtime architecture.
+
+Resource result: 1,853.260 seconds summed serialized network process wall time
+(30.89 minutes), peak child RSS 5,347,835,904 bytes (4.98 GiB). Local AppleClang 21,
+arm64, Release C++20/Homebrew, with the same disclosed cached tula/kidscpp heads
+and all nine pre-existing dirty source-file digests as the original census.
+Representative Spack/Unity: **not performed for this candidate**; earlier job
+64109974 applies only to its earlier exact source. No deployed affected-mode
+route is exercised: this is the inert native test driver. Fourteen additional
+observations (155 discovered network records) remain unavailable for this test
+because required local detector-binding manifests are missing.
+
+Retained limits: source protection is unavailable in this corpus; native spectra
+are owner-deferred. Hard event acceptance, optical incompatibility, offset
+uncertainty/significance and Apply remain separate contracted prerequisites.
+No filtering, downsampling, factor selection, PTC/AST/common-grid/MAP/CAL,
+production route, map comparison, canonical integration, push or cleanup.
+Live canonical was reverified at `86c20b31f7300ba4063be044380b61cd0baf25eb`;
+preserve moving-base ancestry and require independent exact-merge review for
+later admission. Implementation worktree was clean throughout the final build
+and census. The next owner decision is review of A–F and the health records;
+this receipt does not silently approve further scientific policy.

@@ -11,13 +11,35 @@ and original joint-fit code remains unchanged. The owner explicitly deferred
 native spectral context for this rerun. No hard pathology, numerical correction,
 Apply route or automatic scientific rejection is claimed.
 
-Twenty focused tests, four config modes and 207 baseline-tool tests pass locally;
-the six-case real-input pilot completes. Full exact-source regression/census and
-independent review remain pending. Canonical was verified at
-`86c20b31f7300ba4063be044380b61cd0baf25eb`; its later changes are documentation only.
-The module continues from literal `be5636087af3c662655779eb99a032156799f04b`,
-preserving both histories for later independent exact-admission review.
-No integration, push, production or cleanup occurs in this continuation.
+Exact implementation `17c1bf0e6a33648d2ea0aede03fa111012ad4bed` passes
+independent three-axis source review with no remaining findings, 955/955 runnable
+local CTests (23 new focused tests; one established disabled test), four config
+modes, and 207 baseline-tool tests / 137 subtests. The same **143/143 files,
+71,734 channel timestreams in 13 observations, and 2,148,911,461 original sample
+pairs** complete. All 910,241 original candidate identities/rows/scores, input
+digests, original screening decisions, and A–F sample windows reconcile exactly.
+
+The 242,014 grouped review assessments include 123,715 measured returns, 28,704
+persistent/compound unresolved cases, 51,386 unavailable backgrounds, and 38,209
+with no resolved excursion. Three retain an explicit numerical refinement limit.
+These are not accepted physical event counts. The trial health rule raises 17
+channel-observation concerns: five with clear APT quality, one already flagged,
+and eleven with unavailable quality fields; all retain valid Tune flags. F's r
+coordinate satisfies both trial conditions in all 124 complete ten-second blocks.
+
+[Results, A–F figures, and health records](/private/tmp/citlali-rtc-event-assessment-2026-09-09/README.md)
+are bound by the completion entry in the existing work order and the sealed
+external evidence. The serialized census took 30.89 minutes, peak 4.98 GiB.
+Local AppleClang/Homebrew/cached-dependency results are supplemental; no new
+representative Spack/Unity gate or owner acceptance is implied. Fourteen other
+observations still lack required detector-binding manifests and remain untested.
+
+Canonical was reverified at `86c20b31f7300ba4063be044380b61cd0baf25eb`;
+its later changes are documentation only. The module continues from literal
+`be5636087af3c662655779eb99a032156799f04b`, preserving both histories for later
+independent exact-admission review. This documentation receipt's exact review
+and final seal are recorded externally. No integration, push, production or
+cleanup occurs in this continuation.
 
 ## RTC real-timestream census completed — 2026-09-09
 
