@@ -1,0 +1,51 @@
+{
+  "identity": "SCI-MAP-ACTIVATION-POST-OWNER-INDEPENDENT-REVIEW/2026-09-09",
+  "reviewer": "/root/map_activation_post_owner_review",
+  "candidate": "11e8b1a0346831e3e0d5b651d5e531e3faa580a5",
+  "tree": "6074d1cd14c5925eab2a96b8a391467b12dd9c94",
+  "sole_parent": "973a1c22a51e19f148f94be554f23569258fa33b",
+  "canonical_base": "3efd079bb5c28f28f6f2d49296a29e966bde050b",
+  "verdict": "pass_with_recorded_limitations",
+  "post_owner_gate_satisfied": true,
+  "eligibility": "Finish bounded status record and required exact final-merge review; activation remains pending reviewed canonical incorporation.",
+  "dispositions": {
+    "scientific_behavioral": "pass_with_recorded_limitations",
+    "architecture_ownership": "pass",
+    "repository_evidence": "pass"
+  },
+  "findings": [],
+  "fresh_checks": {
+    "passed": 17,
+    "total": 17,
+    "mechanical_groups": 14,
+    "manual_groups": 3
+  },
+  "inherited_not_rerun": {
+    "packet_checks": 79,
+    "pdf_qa": true,
+    "earlier_post_owner_checks": 20,
+    "earlier_merge_checks": 36,
+    "pre_owner_proposal_checks": 14
+  },
+  "owner_approval": {
+    "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ACTIVATION_2026-09-09/OWNER_APPROVAL.md",
+    "sha256": "f4ded327ca76d8c0a571bb104a1b37b5864db1c851bd93bbb88241528ce3d024"
+  },
+  "former_canonical_inventory": {
+    "path": "/private/tmp/citlali-map-profile-activation-closure-2026-09-09/FORMER_CANONICAL_INVENTORY.json",
+    "sha256": "24055f2dd9e7b57542aa7ad230ebb6177d245191f011bb9b4c72b49717984f84",
+    "entries_verified": 1685,
+    "comparison": "path-keyed mode and content; traversal order immaterial"
+  },
+  "report": {
+    "path": "/private/tmp/citlali-map-profile-activation-closure-2026-09-09/post-owner-11e8b1a03/INDEPENDENT_REVIEW.md",
+    "sha256": "28e5aaa532f4de40d0d0826c9c58f243645769ef0d214159995161105211d6fd",
+    "bytes": 4716
+  },
+  "repository_clean": true,
+  "activation_performed": false,
+  "ref_movement_performed": false,
+  "implementation_conformance": "not_assessed",
+  "remote_evidence": "Inherited hash-verified records; no reviewer remote query.",
+  "operation_condition": "Canonical advance only after exact final-merge review, immediate recorded state/preservation checks and ancestry-checked compare-and-swap from exact base; no checkout mutation or cleanup."
+}

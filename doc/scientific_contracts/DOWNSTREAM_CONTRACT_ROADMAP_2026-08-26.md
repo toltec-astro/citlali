@@ -1,5 +1,19 @@
 # Citlali Downstream Scientific-Contract Roadmap
 
+## MAP contractual activation — 2026-09-09
+
+The owner approved the exact registered MAP/VAL r0.4 generation for contractual
+evaluation. [The activation record](acceptance/SCI_MAP_PROFILE_ACTIVATION_2026-09-09/ACTIVATION_RECORD.md)
+binds the approval, passed post-owner review and canonical-effect condition:
+after exact merge review and actual canonical incorporation, the existing
+occurrence/coadd policies are active for evaluation under their unchanged
+six-role rules. Object facts and verified decision artifacts remain required;
+activation creates no object admission or map. Stronger companions, coadd and
+FRUIT are not base-observation prerequisites. Application work, numerical
+execution and production remain separately gated; NOI stays paused here.
+Earlier unavailable/pending labels below are historical for this generation.
+
+
 ## Current MAP profile registration and source binding — 2026-09-08
 
 The owner approved the exact r0.4 profiles, five final generation identities,
