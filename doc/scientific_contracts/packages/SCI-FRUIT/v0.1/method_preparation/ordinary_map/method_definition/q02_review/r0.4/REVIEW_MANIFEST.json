@@ -1,0 +1,355 @@
+{
+  "schema": "SCI-FRUIT Q02 discovery preflight and next-execution review r0.4",
+  "repository_base": "23fdbe6556e246b04cf8717ff942615ed8ac18f4",
+  "created_utc": "2026-09-09T19:08:08.734937+00:00",
+  "owner_direction": "Let's go",
+  "owner_direction_scope": "Complete local checks and execution proposal; no numerical run or scientific change approved",
+  "scientific_state": {
+    "Q01": "accepted_frozen",
+    "Q02_A": "approved_substance_unchanged",
+    "Q02_B": "approved_substance_unchanged",
+    "Q02_C": "open",
+    "FRUIT_FEEDBACK_METHOD": "unavailable_pending_separate_owner_approval"
+  },
+  "owner_decisions": [
+    {
+      "question": "Q02/Q06 first execution unit",
+      "proposal": "Standalone T1 under exact r0.3 cases and r0.4 completion rules",
+      "state": "open"
+    },
+    {
+      "question": "Q02/Q05 T2 training",
+      "proposal": "Authorize paper definition/feasibility of observation-pooled per-detector training",
+      "state": "open"
+    }
+  ],
+  "findings": {
+    "single_pass_collection": "previous_pass_preserved",
+    "legacy_chunk_labels": "defective; exact recovery evidenced; later T2 adapter adoption pending",
+    "legacy_coordinate_relation": "recoverable; full export comparison <=4.336808689942018e-19 rad",
+    "training": "existing proposed per-chunk rule not ready; geometry/flags show insufficient and zero-count groups",
+    "scientific_input_admission": "pending",
+    "T2_noise_evidence": "unbound; no independent-trial interval inferred"
+  },
+  "review_sources": [
+    {
+      "repository_path": "AGENTS.md",
+      "source_commit": "23fdbe6556e246b04cf8717ff942615ed8ac18f4",
+      "bytes": 6662,
+      "sha256": "ddeb9dd6bbc1fd9fa54af998b46a4af4a99c49d2cf7842303c7e332501e366ee",
+      "use": "manager preparation; no new author-reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/README.md",
+      "source_commit": "23fdbe6556e246b04cf8717ff942615ed8ac18f4",
+      "bytes": 16297,
+      "sha256": "351e9b7775b0bf78cba01bf4cd2fafd9591c4b43931b0dc23d82d97f0dfe82d2",
+      "use": "manager preparation; no new author-reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/PRIOR_WORK.md",
+      "source_commit": "23fdbe6556e246b04cf8717ff942615ed8ac18f4",
+      "bytes": 4711,
+      "sha256": "a2a08b8f217273da563aa6a4630d9a697ca1a3440691c4431b2089fe840ba98e",
+      "use": "manager preparation; no new author-reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/SCIENTIFIC_OWNER_FREEZE_R0.4.md",
+      "source_commit": "23fdbe6556e246b04cf8717ff942615ed8ac18f4",
+      "bytes": 6294,
+      "sha256": "04860a81899f76fa7ec9bafb2ab1324bb55a30b8b3f3c56d53ad41052af35c0a",
+      "use": "manager preparation; no new author-reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.2/WEIGHTING_TEST_PLAN.md",
+      "source_commit": "23fdbe6556e246b04cf8717ff942615ed8ac18f4",
+      "bytes": 19874,
+      "sha256": "351a5de83d89234686e0943d815c80bfd51cbff498a60bf42559141d16243c88",
+      "use": "manager preparation; no new author-reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.3/README.md",
+      "source_commit": "23fdbe6556e246b04cf8717ff942615ed8ac18f4",
+      "bytes": 4472,
+      "sha256": "e811624785790734f92e58cda4d3a8f75df3f694bcb3df3191728563f8a93997",
+      "use": "manager preparation; no new author-reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.3/FIRST_SCREEN_BINDINGS.md",
+      "source_commit": "23fdbe6556e246b04cf8717ff942615ed8ac18f4",
+      "bytes": 13879,
+      "sha256": "45961b6c7d2e4eda0fa63bb449230814f51a4868dc9eab1a8962b3d68037d433",
+      "use": "manager preparation; no new author-reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.3/DATA_COLLECTION_REQUEST.md",
+      "source_commit": "23fdbe6556e246b04cf8717ff942615ed8ac18f4",
+      "bytes": 5814,
+      "sha256": "658172af668d3c533395f6ff4b249ca655747d079d6ef502b2369df504fe5209",
+      "use": "manager preparation; no new author-reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/input_intake/r0.2/README.md",
+      "source_commit": "23fdbe6556e246b04cf8717ff942615ed8ac18f4",
+      "bytes": 5112,
+      "sha256": "3dfb4261fb664080799e1a79b062487deb0de1982ef77c62cc07d2d776b5a091",
+      "use": "manager preparation; no new author-reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/input_intake/r0.2/INPUT_MANIFEST.json",
+      "source_commit": "23fdbe6556e246b04cf8717ff942615ed8ac18f4",
+      "bytes": 20760,
+      "sha256": "708164f45de2310ddbd72e130dfe1764b336b80555b7f847cf08fe59cc6a8940",
+      "use": "manager preparation; no new author-reference admission"
+    }
+  ],
+  "historical_source_blobs": [
+    {
+      "source_commit": "e0090e2da68ec118876aa7d3506b4dfb10ae696d",
+      "repository_path": "include/citlali/core/utils/pointing.h",
+      "bytes": 6331,
+      "sha256": "87b69e7da998bcf45519c169cbcc69658a2ca49ad36631d39b4745d170680b40",
+      "use": "historical implementation/representation evidence; neither scientific nor independent-author authority"
+    },
+    {
+      "source_commit": "e0090e2da68ec118876aa7d3506b4dfb10ae696d",
+      "repository_path": "include/citlali/core/utils/constants.h",
+      "bytes": 1145,
+      "sha256": "217dee25bf5d3ff9cc09109e06683713de69df7b5e4e260e784db77211127062",
+      "use": "historical implementation/representation evidence; neither scientific nor independent-author authority"
+    },
+    {
+      "source_commit": "e0090e2da68ec118876aa7d3506b4dfb10ae696d",
+      "repository_path": "include/citlali/core/timestream/timestream.h",
+      "bytes": 44695,
+      "sha256": "226ddc3a3f590c9a3f626936495acc8e81d657ebb65a233f9e1ca2433f54bbbb",
+      "use": "historical implementation/representation evidence; neither scientific nor independent-author authority"
+    },
+    {
+      "source_commit": "e0090e2da68ec118876aa7d3506b4dfb10ae696d",
+      "repository_path": "include/citlali/core/timestream/ptc/ptcproc.h",
+      "bytes": 25634,
+      "sha256": "06381a1fab128d77174d4b0c9d199a8cb0808db253cd4a47bd1c2ab38e459476",
+      "use": "historical implementation/representation evidence; neither scientific nor independent-author authority"
+    },
+    {
+      "source_commit": "e0090e2da68ec118876aa7d3506b4dfb10ae696d",
+      "repository_path": "include/citlali/core/timestream/rtc/rtcproc.h",
+      "bytes": 22570,
+      "sha256": "22b0a50b384a7981bd88545c43f899565245ddc43c50a0b757521771907b93e5",
+      "use": "historical implementation/representation evidence; neither scientific nor independent-author authority"
+    },
+    {
+      "source_commit": "e0090e2da68ec118876aa7d3506b4dfb10ae696d",
+      "repository_path": "include/citlali/core/engine/pointing.h",
+      "bytes": 22602,
+      "sha256": "9d305a22192c3746881a12a585765dba5abf14a13910e69944276ada35f3f150",
+      "use": "historical implementation/representation evidence; neither scientific nor independent-author authority"
+    },
+    {
+      "source_commit": "e0090e2da68ec118876aa7d3506b4dfb10ae696d",
+      "repository_path": "include/citlali/core/mapmaking/jinc_mm.h",
+      "bytes": 18124,
+      "sha256": "c0fa27d2314858c9382808ff7d21ba8430f3836c745f0c424da2e904b98ceea7",
+      "use": "historical implementation/representation evidence; neither scientific nor independent-author authority"
+    },
+    {
+      "source_commit": "e0090e2da68ec118876aa7d3506b4dfb10ae696d",
+      "repository_path": "src/citlali/core/engine/calib.cpp",
+      "bytes": 14281,
+      "sha256": "4701cd118dd4fa875dd9d646752536d59c17f8c7bece8542106e128b20b6882d",
+      "use": "historical implementation/representation evidence; neither scientific nor independent-author authority"
+    },
+    {
+      "source_commit": "c31a60a0b74a7149d03d542966d6e35b77b8091c",
+      "repository_path": "include/citlali/core/utils/pointing.h",
+      "bytes": 10274,
+      "sha256": "d342c8369b01ec8ea97e91da014bc471737b0f15b5135aa312cad07ddedc6bc4",
+      "use": "historical implementation/representation evidence; neither scientific nor independent-author authority"
+    },
+    {
+      "source_commit": "c31a60a0b74a7149d03d542966d6e35b77b8091c",
+      "repository_path": "include/citlali/core/timestream/timestream.h",
+      "bytes": 161945,
+      "sha256": "cdf58217c79c41f41f136df22bc4e707cdd29c8b7bf28d3e1596f27da08645fd",
+      "use": "historical implementation/representation evidence; neither scientific nor independent-author authority"
+    },
+    {
+      "source_commit": "c31a60a0b74a7149d03d542966d6e35b77b8091c",
+      "repository_path": "include/citlali/core/engine/detail/pointing_run_impl.h",
+      "bytes": 11540,
+      "sha256": "84035068754f4f9450a56515c402cceea07facae7daa085f6da1fc55f27bf41e",
+      "use": "historical implementation/representation evidence; neither scientific nor independent-author authority"
+    },
+    {
+      "source_commit": "c31a60a0b74a7149d03d542966d6e35b77b8091c",
+      "repository_path": "include/citlali/core/engine/detail/pointing_timestream_output_impl.h",
+      "bytes": 5793,
+      "sha256": "d09f44b270405caeb55b01354cd01cc50835667d971e35528a7ad5a5033ff8ae",
+      "use": "historical implementation/representation evidence; neither scientific nor independent-author authority"
+    },
+    {
+      "source_commit": "c31a60a0b74a7149d03d542966d6e35b77b8091c",
+      "repository_path": "include/citlali/core/pipeline/timestream_native_science_projection.h",
+      "bytes": 25633,
+      "sha256": "59450d8328802741f16d73a956f850320b16a1357fd940beac3296e9d974ee04",
+      "use": "historical implementation/representation evidence; neither scientific nor independent-author authority"
+    }
+  ],
+  "external_provenance": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/astrometry_provenance.yaml",
+      "bytes": 1362,
+      "sha256": "a63ea61b732b46dfbeda3dbbf6ce52aca77860ce986e157c48848668828b05db"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/runtime_provenance.yaml",
+      "bytes": 948,
+      "sha256": "2996dbcec0dbfc6818857178dcefd893204e3fc8e77427a45899d50f88637871"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/processed_timestream_provenance.yaml",
+      "bytes": 16791,
+      "sha256": "9a0d259eca45b858132c03ab005e03f722691c7c660ef0c927f1fd488c91a563"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/mapmaking_provenance.yaml",
+      "bytes": 34962,
+      "sha256": "ac3caaebf17d8e6fe2eec4d469b2998357b69da7dc59232aa9815121a3000727"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/config_source_manifest.yaml",
+      "bytes": 680,
+      "sha256": "818f70abaf2edc39b5e9c679124e3a46b38a04719410030e762232178ec14006"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/citlali_merged_config.yaml",
+      "bytes": 14338,
+      "sha256": "ce88478878b6222ca867077c75ed4629ef07e438971209120c8691fe9d868230"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/152389/timestream_output_provenance.yaml",
+      "bytes": 1918,
+      "sha256": "1875eba11ce1c7e00699035d98924e32153df9631a0e71564e6f47b2720fc598"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/log/reduce.log",
+      "bytes": 520155,
+      "sha256": "7be3804b63dff6c06488d1e4e92a17e99f9ef0aaeb8155d9ddeb7afd9ffe15ba"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/152389/logs/chunk_summary_0.log",
+      "bytes": 1415,
+      "sha256": "3506bd723b401beac0b1226ba73649bc1b1f344ed865f06442fd6c1f011dea47"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/152389/logs/chunk_summary_1.log",
+      "bytes": 1414,
+      "sha256": "a900ef37e48914642688e2f1399f06cb9194c24dc99e9a04459699c8f0d54117"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/152389/logs/chunk_summary_2.log",
+      "bytes": 1413,
+      "sha256": "4db0ee090f19c6c4b6d1c97101490368be39c79807377bf088b334fbdf4647b6"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/152389/logs/chunk_summary_3.log",
+      "bytes": 1408,
+      "sha256": "f3b86810b82d87ea22a827192a2c6a701a149a25f93e93d56cdf7cfdf63c233d"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/152389/logs/chunk_summary_4.log",
+      "bytes": 1407,
+      "sha256": "02773bd51aeb0d9a2a08edb5e286adf99c2066bb71b455ab9f565e1b30c49375"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/152389/logs/chunk_summary_5.log",
+      "bytes": 1414,
+      "sha256": "5233d16751e233bb8b3352b6d21217cd0d9f444e1d40f7537220b4065d5528ee"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/152389/logs/chunk_summary_6.log",
+      "bytes": 1415,
+      "sha256": "cc8f7c4d6a17c3bc9d25be104bd08d765d6938dc80847ff488222c082550929f"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/152389/logs/chunk_summary_7.log",
+      "bytes": 1413,
+      "sha256": "6d527d3d1f59bc5f01c2d80a5a55b90d2541b96f0b8e090bf7e1847e42364697"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/152389/logs/chunk_summary_8.log",
+      "bytes": 1412,
+      "sha256": "8b77e822aa93c2421b393279a556cc4a839217fea5f92aaa4264fc8078ca91ec"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/152389/logs/chunk_summary_9.log",
+      "bytes": 1407,
+      "sha256": "e0290fb299e6c60a83acaa2c6a0a40aff14ea3d0ea3a0f224ea29697893412f7"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/152389/logs/chunk_summary_10.log",
+      "bytes": 1413,
+      "sha256": "6afe7bfcb928094fe4dcdd6bf154f5ad8da408f01bfe78872b5cfec71f82a7ae"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/152389/logs/chunk_summary_11.log",
+      "bytes": 1415,
+      "sha256": "9d08bcf90a3cef5eb728316136ddaf6fa9031ab7aaf192930f26f1b4100d7eb6"
+    }
+  ],
+  "reserved_129081": {
+    "identity": {
+      "path": "/Users/gwilson/work_toltec/local_data/beammaps/pointings/reduced/redu01/129081/raw/toltec_commissioning_pointing_129081_ptc_timestream.nc",
+      "bytes": 710131596,
+      "sha256": "e635211eaa9512f9dab166b5a28391b8ea00fa5b498f18bde69f0f6fe1d1af46"
+    },
+    "access": "identity hashing only; no array access during this preflight"
+  },
+  "tests": {
+    "preflight_scope": "metadata, coordinate representation, flags and integer segment/training feasibility; no signal or weights read",
+    "preflight_checker": "check_discovery_inputs.py",
+    "document_source_hash_checks": "PASS",
+    "T1_stochastic_trials_run": 0,
+    "T2_weighting_comparisons_run": 0,
+    "pooled_training_evaluated": false,
+    "preserved_frozen_payloads": 57,
+    "opaque_archives": "both present; neither read, hashed nor unpacked",
+    "Unity": "none",
+    "reduction_mutations": "none",
+    "push": "none"
+  },
+  "payloads": [
+    {
+      "path": "APT_CANDIDATES.json",
+      "bytes": 9168,
+      "sha256": "f45d0f6a4e3e243f5f92846de3e3b19a8bf9ea3a8720f2f650bfaba80a16dfa5"
+    },
+    {
+      "path": "DISCOVERY_PREFLIGHT.json",
+      "bytes": 32401,
+      "sha256": "570c71068b9e35b1bcb73334e3ec4f33d9e619096ddcca069a0caf456c51e811"
+    },
+    {
+      "path": "EXECUTION_PROPOSAL.md",
+      "bytes": 8548,
+      "sha256": "e0804623f7d6b5a52d00100ca9ba35861a5623cc74314b135af7dcf6a816967e"
+    },
+    {
+      "path": "INPUT_PREFLIGHT.md",
+      "bytes": 9144,
+      "sha256": "58e03c4e1776aed4e18dbef02f7fbbae2e0611a6123d48f52866a0dbdd8124f5"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4646,
+      "sha256": "094692b4560f8709a8767c485dd8f51b46b537ecc023f3fd2520436039dd5e98"
+    },
+    {
+      "path": "check_discovery_inputs.py",
+      "bytes": 6531,
+      "sha256": "32eb8f239b16f441490da200c27e6a9b12f65d3420feb22ac393075241c4649f"
+    }
+  ],
+  "identity_note": "This manager review is not a new scientific authority or freeze. Prior packets are immutable. Payload hashes bind this review; a separate sidecar hashes the manifest."
+}

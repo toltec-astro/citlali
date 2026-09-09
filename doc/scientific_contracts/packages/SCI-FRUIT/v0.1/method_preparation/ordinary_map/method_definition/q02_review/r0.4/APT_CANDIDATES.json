@@ -1,0 +1,337 @@
+[
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/beammaps/matched_apts/apt_123424_matched.ecsv",
+    "bytes": 6550694,
+    "sha256": "9adfde23c31908a931dfad92322b18c84d22639756ee933dc83dc823c1893980",
+    "comparisons": {
+      "uid": {
+        "rows": 5905,
+        "exact": false,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 5506.0
+      },
+      "nw": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "array": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "x_t": {
+        "rows": 5905,
+        "exact": false,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 304.7241606319469
+      },
+      "y_t": {
+        "rows": 5905,
+        "exact": false,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 222.26338981193402
+      },
+      "flag": {
+        "rows": 5905,
+        "exact": false,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 1.0
+      },
+      "flxscale": {
+        "rows": 5905,
+        "exact": false,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 96437987350.01404
+      },
+      "responsivity": {
+        "rows": 5905,
+        "exact": false,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 1.0
+      },
+      "a_fwhm": {
+        "rows": 5905,
+        "exact": false,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 20.60958744027479
+      },
+      "b_fwhm": {
+        "rows": 5905,
+        "exact": false,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 18.579217288637672
+      }
+    }
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/beammaps/matched_apts_134784/apt_123424_matched.ecsv",
+    "bytes": 11372568,
+    "sha256": "06ad0923be32f0b9100a71ce8dc9e04089a76b06fbec54b6fbe931e79594ab9a",
+    "comparisons": {
+      "uid": {
+        "rows": 5905,
+        "exact": false,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 5509.0
+      },
+      "nw": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "array": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "x_t": {
+        "rows": 5905,
+        "exact": false,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 298.1185533694518
+      },
+      "y_t": {
+        "rows": 5905,
+        "exact": false,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 221.0262713681165
+      },
+      "flag": {
+        "rows": 5905,
+        "exact": false,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 1.0
+      },
+      "flxscale": {
+        "rows": 5905,
+        "exact": false,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 43643054388.39058
+      },
+      "responsivity": {
+        "rows": 5905,
+        "exact": false,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 1.0
+      },
+      "a_fwhm": {
+        "rows": 5905,
+        "exact": false,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 18.44770560952509
+      },
+      "b_fwhm": {
+        "rows": 5905,
+        "exact": false,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 19.269672946371912
+      }
+    }
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/apts/apt_123424_matched.ecsv",
+    "bytes": 4946172,
+    "sha256": "5f831fb406c7893f2994724c12a5d57ac56c0b7f4e606ce0c4d3c4c7155d85f8",
+    "comparisons": {
+      "uid": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "nw": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "array": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "x_t": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "y_t": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "flag": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "flxscale": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "responsivity": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "a_fwhm": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "b_fwhm": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      }
+    }
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/apts/hero_v4/apt_123424_matched.ecsv",
+    "bytes": 6150605,
+    "sha256": "c6823500cb69efaec9a5886b0a65168dab3f68fa9907fcb9769eadfef93039bf",
+    "comparisons": {
+      "uid": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "nw": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "array": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "x_t": {
+        "rows": 5905,
+        "exact": false,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 149.70616443233496
+      },
+      "y_t": {
+        "rows": 5905,
+        "exact": false,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 131.3935040018255
+      },
+      "flag": {
+        "rows": 5905,
+        "exact": false,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 1.0
+      },
+      "flxscale": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "responsivity": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "a_fwhm": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "b_fwhm": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      }
+    }
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/apts/hero_rc1/apt_123424_matched.ecsv",
+    "bytes": 6207815,
+    "sha256": "16389e5e58b76d39ef7fcedd3888c662e96db592bc3a8561530379e51c435626",
+    "comparisons": {
+      "uid": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "nw": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "array": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "x_t": {
+        "rows": 5905,
+        "exact": false,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 149.55648632224433
+      },
+      "y_t": {
+        "rows": 5905,
+        "exact": false,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 137.09363200141735
+      },
+      "flag": {
+        "rows": 5905,
+        "exact": false,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 1.0
+      },
+      "flxscale": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "responsivity": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "a_fwhm": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      },
+      "b_fwhm": {
+        "rows": 5905,
+        "exact": true,
+        "required_finite_count": 4480,
+        "max_abs_difference_required": 0.0
+      }
+    }
+  }
+]

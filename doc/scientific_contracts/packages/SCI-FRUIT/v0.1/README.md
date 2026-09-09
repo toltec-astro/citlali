@@ -33,7 +33,7 @@ no numerical method or new method-specific author dispatch.
 ## Locked Scientific Definition And Remaining Review
 
 - [Latest input intake: replacement single-pass state checks pass](method_preparation/ordinary_map/method_definition/input_intake/r0.2/README.md)
-- [Q02: approved test design and first-screen preparation](method_preparation/ordinary_map/method_definition/q02_review/r0.3/README.md)
+- [Q02: preflight findings and proposed standalone synthetic execution](method_preparation/ordinary_map/method_definition/q02_review/r0.4/README.md)
 - [Short pointing input request: 123424 and 129081](method_preparation/ordinary_map/method_definition/q02_review/r0.3/DATA_COLLECTION_REQUEST.md)
 - [Proposed numerical first-screen bindings](method_preparation/ordinary_map/method_definition/q02_review/r0.3/FIRST_SCREEN_BINDINGS.md)
 - [Q02 A/B approval and C evidence direction](method_preparation/ordinary_map/method_definition/q02_review/r0.2/README.md)
@@ -94,6 +94,14 @@ headers clear the prior collection mismatch. The inactive YAML max_iters=10
 needs no new export; the reported source revision forces one pass when disabled.
 Exact scientific admission and evidence bindings remain pending. No signal/noise
 or reserved replication outcomes were inspected during intake.
+The later Q02 r0.4 preflight recovers the discovery files' chunk-label defect
+and legacy detector-coordinate relation, but finds insufficient first-half
+training for many detector/chunk groups under the proposed minimum 64.
+T2 is held. Standalone T1 execution and a paper revision toward pooled
+observation-level detector training are proposed, both pending owner decision.
+No training law, threshold or detector population was changed and no weighting
+outcome was calculated. 129081 remains reserved; frozen input admission and
+T2's uncertainty/execution decisions are still unavailable.
 POINT/E01 is a recommended first experiment, not an approved campaign order;
 OOF is separately selectable. Exact reference recovery precedes comparison
 interpretation and independent-pointing replication precedes recommendation.

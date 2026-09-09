@@ -1,0 +1,1181 @@
+{
+  "purpose": "Discovery input-coordinate/flag/segment preflight only; no signal or stored weights read; no noise estimation or mapping comparison. Reserved 129081 not opened.",
+  "observations": [
+    {
+      "obsnum": 152389,
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/152389/raw/toltec_commissioning_pointing_152389_ptc_timestream.nc",
+      "sha256": "894fff53babfb0070e7d0a8b831aa88098d87f9772d4a8ecb253aef009d35643",
+      "bytes": 138244964,
+      "reported_scan_indices": [
+        [
+          0,
+          288
+        ],
+        [
+          305,
+          593
+        ],
+        [
+          610,
+          898
+        ],
+        [
+          915,
+          1203
+        ],
+        [
+          1220,
+          1508
+        ],
+        [
+          1525,
+          1813
+        ],
+        [
+          1830,
+          2118
+        ],
+        [
+          2135,
+          2423
+        ],
+        [
+          2440,
+          2728
+        ],
+        [
+          2745,
+          3033
+        ],
+        [
+          3050,
+          3338
+        ],
+        [
+          3339,
+          3627
+        ]
+      ],
+      "recovered_scan_indices": [
+        [
+          0,
+          288
+        ],
+        [
+          289,
+          593
+        ],
+        [
+          594,
+          898
+        ],
+        [
+          899,
+          1203
+        ],
+        [
+          1204,
+          1508
+        ],
+        [
+          1509,
+          1813
+        ],
+        [
+          1814,
+          2118
+        ],
+        [
+          2119,
+          2423
+        ],
+        [
+          2424,
+          2728
+        ],
+        [
+          2729,
+          3033
+        ],
+        [
+          3034,
+          3338
+        ],
+        [
+          3339,
+          3627
+        ]
+      ],
+      "recovered_lengths": [
+        289,
+        305,
+        305,
+        305,
+        305,
+        305,
+        305,
+        305,
+        305,
+        305,
+        305,
+        289
+      ],
+      "corroboration": {
+        "chunk_summary_lengths": [
+          289,
+          305,
+          305,
+          305,
+          305,
+          305,
+          305,
+          305,
+          305,
+          305,
+          305,
+          289
+        ],
+        "output_scan_index": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      "rows_missed_by_reported_intervals": 160,
+      "time": {
+        "first": 1771482887.5941517,
+        "last": 1771482947.0107276,
+        "strictly_increasing": true,
+        "median_step_seconds": 0.016383886337280273,
+        "stored_SAMPRATE": 122.0703125,
+        "note": "TelTime unit label rad is malformed; SAMPRATE records acquisition rate, not automatically output cadence"
+      },
+      "identity": {
+        "slots": 5518,
+        "uid_distinct_all": 5518,
+        "any_flag_zero_slots": 4443,
+        "uid_distinct_among_any_flag_zero": 4443,
+        "network_uid_distinct_among_any_flag_zero": 4443,
+        "nonfinite_uid_required": 0,
+        "nonfinite_network_required": 0,
+        "flag_zero_occurrences_where_final_apt_not_zero": 0
+      },
+      "coordinate": {
+        "formula": "reported-source altaz detector rotation plus stored telescope coordinates and pointing offsets",
+        "full_export_max_abs_difference_rad": null,
+        "flag_zero_nonfinite_coordinates": 0
+      },
+      "flags": {
+        "values": [
+          0,
+          1
+        ],
+        "zero_count": 13828245,
+        "one_count": 6191059
+      },
+      "nominal_beam_headers": {
+        "BMAJ": {
+          "a1100": 6.019470773217042,
+          "a1400": 7.038981629872071,
+          "a2000": 9.127865915169647
+        },
+        "BMIN": {
+          "a1100": 5.109260666884472,
+          "a1400": 6.534721280285321,
+          "a2000": 9.006294450947044
+        }
+      },
+      "proposed_guard_arcsec": 27.38359774550894,
+      "training_geometry_feasibility": [
+        {
+          "segment": 0,
+          "stored_start": 0,
+          "stored_stop_exclusive": 289,
+          "samples": 289,
+          "first_half_count": 144,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2550,
+              "training_count_min": 0,
+              "groups_below_64": 194,
+              "zero_training_groups": 120,
+              "groups_below_64_with_central_evaluation": 193
+            },
+            {
+              "array": 1,
+              "required_groups": 937,
+              "training_count_min": 0,
+              "groups_below_64": 47,
+              "zero_training_groups": 35,
+              "groups_below_64_with_central_evaluation": 47
+            },
+            {
+              "array": 2,
+              "required_groups": 850,
+              "training_count_min": 0,
+              "groups_below_64": 49,
+              "zero_training_groups": 31,
+              "groups_below_64_with_central_evaluation": 48
+            }
+          ]
+        },
+        {
+          "segment": 1,
+          "stored_start": 289,
+          "stored_stop_exclusive": 594,
+          "samples": 305,
+          "first_half_count": 152,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2532,
+              "training_count_min": 52,
+              "groups_below_64": 48,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 29
+            },
+            {
+              "array": 1,
+              "required_groups": 935,
+              "training_count_min": 51,
+              "groups_below_64": 27,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 16
+            },
+            {
+              "array": 2,
+              "required_groups": 844,
+              "training_count_min": 53,
+              "groups_below_64": 16,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 10
+            }
+          ]
+        },
+        {
+          "segment": 2,
+          "stored_start": 594,
+          "stored_stop_exclusive": 899,
+          "samples": 305,
+          "first_half_count": 152,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2521,
+              "training_count_min": 0,
+              "groups_below_64": 175,
+              "zero_training_groups": 128,
+              "groups_below_64_with_central_evaluation": 162
+            },
+            {
+              "array": 1,
+              "required_groups": 949,
+              "training_count_min": 0,
+              "groups_below_64": 85,
+              "zero_training_groups": 62,
+              "groups_below_64_with_central_evaluation": 81
+            },
+            {
+              "array": 2,
+              "required_groups": 849,
+              "training_count_min": 0,
+              "groups_below_64": 61,
+              "zero_training_groups": 45,
+              "groups_below_64_with_central_evaluation": 56
+            }
+          ]
+        },
+        {
+          "segment": 3,
+          "stored_start": 899,
+          "stored_stop_exclusive": 1204,
+          "samples": 305,
+          "first_half_count": 152,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2524,
+              "training_count_min": 0,
+              "groups_below_64": 166,
+              "zero_training_groups": 9,
+              "groups_below_64_with_central_evaluation": 138
+            },
+            {
+              "array": 1,
+              "required_groups": 938,
+              "training_count_min": 0,
+              "groups_below_64": 61,
+              "zero_training_groups": 6,
+              "groups_below_64_with_central_evaluation": 54
+            },
+            {
+              "array": 2,
+              "required_groups": 844,
+              "training_count_min": 0,
+              "groups_below_64": 41,
+              "zero_training_groups": 3,
+              "groups_below_64_with_central_evaluation": 33
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "stored_start": 1204,
+          "stored_stop_exclusive": 1509,
+          "samples": 305,
+          "first_half_count": 152,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2535,
+              "training_count_min": 20,
+              "groups_below_64": 136,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 136
+            },
+            {
+              "array": 1,
+              "required_groups": 934,
+              "training_count_min": 18,
+              "groups_below_64": 87,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 87
+            },
+            {
+              "array": 2,
+              "required_groups": 849,
+              "training_count_min": 28,
+              "groups_below_64": 38,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 38
+            }
+          ]
+        },
+        {
+          "segment": 5,
+          "stored_start": 1509,
+          "stored_stop_exclusive": 1814,
+          "samples": 305,
+          "first_half_count": 152,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2537,
+              "training_count_min": 33,
+              "groups_below_64": 125,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 113
+            },
+            {
+              "array": 1,
+              "required_groups": 941,
+              "training_count_min": 33,
+              "groups_below_64": 59,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 54
+            },
+            {
+              "array": 2,
+              "required_groups": 846,
+              "training_count_min": 33,
+              "groups_below_64": 31,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 29
+            }
+          ]
+        },
+        {
+          "segment": 6,
+          "stored_start": 1814,
+          "stored_stop_exclusive": 2119,
+          "samples": 305,
+          "first_half_count": 152,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2539,
+              "training_count_min": 9,
+              "groups_below_64": 185,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 50
+            },
+            {
+              "array": 1,
+              "required_groups": 939,
+              "training_count_min": 17,
+              "groups_below_64": 23,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 10
+            },
+            {
+              "array": 2,
+              "required_groups": 850,
+              "training_count_min": 16,
+              "groups_below_64": 45,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 11
+            }
+          ]
+        },
+        {
+          "segment": 7,
+          "stored_start": 2119,
+          "stored_stop_exclusive": 2424,
+          "samples": 305,
+          "first_half_count": 152,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2528,
+              "training_count_min": 0,
+              "groups_below_64": 73,
+              "zero_training_groups": 12,
+              "groups_below_64_with_central_evaluation": 47
+            },
+            {
+              "array": 1,
+              "required_groups": 928,
+              "training_count_min": 0,
+              "groups_below_64": 65,
+              "zero_training_groups": 7,
+              "groups_below_64_with_central_evaluation": 26
+            },
+            {
+              "array": 2,
+              "required_groups": 849,
+              "training_count_min": 0,
+              "groups_below_64": 57,
+              "zero_training_groups": 4,
+              "groups_below_64_with_central_evaluation": 30
+            }
+          ]
+        },
+        {
+          "segment": 8,
+          "stored_start": 2424,
+          "stored_stop_exclusive": 2729,
+          "samples": 305,
+          "first_half_count": 152,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2529,
+              "training_count_min": 0,
+              "groups_below_64": 177,
+              "zero_training_groups": 35,
+              "groups_below_64_with_central_evaluation": 166
+            },
+            {
+              "array": 1,
+              "required_groups": 933,
+              "training_count_min": 102,
+              "groups_below_64": 0,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 0
+            },
+            {
+              "array": 2,
+              "required_groups": 850,
+              "training_count_min": 0,
+              "groups_below_64": 43,
+              "zero_training_groups": 8,
+              "groups_below_64_with_central_evaluation": 39
+            }
+          ]
+        },
+        {
+          "segment": 9,
+          "stored_start": 2729,
+          "stored_stop_exclusive": 3034,
+          "samples": 305,
+          "first_half_count": 152,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2521,
+              "training_count_min": 36,
+              "groups_below_64": 147,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 88
+            },
+            {
+              "array": 1,
+              "required_groups": 925,
+              "training_count_min": 34,
+              "groups_below_64": 76,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 44
+            },
+            {
+              "array": 2,
+              "required_groups": 837,
+              "training_count_min": 34,
+              "groups_below_64": 48,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 30
+            }
+          ]
+        },
+        {
+          "segment": 10,
+          "stored_start": 3034,
+          "stored_stop_exclusive": 3339,
+          "samples": 305,
+          "first_half_count": 152,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2531,
+              "training_count_min": 0,
+              "groups_below_64": 170,
+              "zero_training_groups": 1,
+              "groups_below_64_with_central_evaluation": 115
+            },
+            {
+              "array": 1,
+              "required_groups": 932,
+              "training_count_min": 0,
+              "groups_below_64": 45,
+              "zero_training_groups": 1,
+              "groups_below_64_with_central_evaluation": 19
+            },
+            {
+              "array": 2,
+              "required_groups": 845,
+              "training_count_min": 4,
+              "groups_below_64": 44,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 29
+            }
+          ]
+        },
+        {
+          "segment": 11,
+          "stored_start": 3339,
+          "stored_stop_exclusive": 3628,
+          "samples": 289,
+          "first_half_count": 144,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2531,
+              "training_count_min": 34,
+              "groups_below_64": 149,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 0
+            },
+            {
+              "array": 1,
+              "required_groups": 932,
+              "training_count_min": 36,
+              "groups_below_64": 47,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 0
+            },
+            {
+              "array": 2,
+              "required_groups": 842,
+              "training_count_min": 37,
+              "groups_below_64": 35,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "obsnum": 123424,
+      "path": "/Users/gwilson/work_toltec/local_data/beammaps/pointings/reduced/redu01/123424/raw/toltec_commissioning_pointing_123424_ptc_timestream.nc",
+      "sha256": "b53ad776173b1bd2b12569c87ae15ad78a3db1c76ef4515c855255b0e4f20ba9",
+      "bytes": 760674540,
+      "reported_scan_indices": [
+        [
+          0,
+          288
+        ],
+        [
+          305,
+          593
+        ],
+        [
+          610,
+          898
+        ],
+        [
+          915,
+          1203
+        ],
+        [
+          1220,
+          1508
+        ],
+        [
+          1525,
+          1813
+        ],
+        [
+          1830,
+          2118
+        ],
+        [
+          2135,
+          2423
+        ],
+        [
+          2440,
+          2728
+        ],
+        [
+          2745,
+          3033
+        ],
+        [
+          3050,
+          3338
+        ],
+        [
+          3339,
+          3627
+        ]
+      ],
+      "recovered_scan_indices": [
+        [
+          0,
+          288
+        ],
+        [
+          289,
+          593
+        ],
+        [
+          594,
+          898
+        ],
+        [
+          899,
+          1203
+        ],
+        [
+          1204,
+          1508
+        ],
+        [
+          1509,
+          1813
+        ],
+        [
+          1814,
+          2118
+        ],
+        [
+          2119,
+          2423
+        ],
+        [
+          2424,
+          2728
+        ],
+        [
+          2729,
+          3033
+        ],
+        [
+          3034,
+          3338
+        ],
+        [
+          3339,
+          3627
+        ]
+      ],
+      "recovered_lengths": [
+        289,
+        305,
+        305,
+        305,
+        305,
+        305,
+        305,
+        305,
+        305,
+        305,
+        305,
+        289
+      ],
+      "corroboration": {
+        "raw_inner_lengths": [
+          578,
+          610,
+          610,
+          610,
+          610,
+          610,
+          610,
+          610,
+          610,
+          610,
+          610,
+          578
+        ],
+        "downsample_factor": 2
+      },
+      "rows_missed_by_reported_intervals": 160,
+      "time": {
+        "first": 1732680598.6543794,
+        "last": 1732680658.0791473,
+        "strictly_increasing": true,
+        "median_step_seconds": 0.016383886337280273,
+        "stored_SAMPRATE": 122.0703125,
+        "note": "TelTime unit label rad is malformed; SAMPRATE records acquisition rate, not automatically output cadence"
+      },
+      "identity": {
+        "slots": 5905,
+        "uid_distinct_all": 4961,
+        "any_flag_zero_slots": 4480,
+        "uid_distinct_among_any_flag_zero": 4480,
+        "network_uid_distinct_among_any_flag_zero": 4480,
+        "nonfinite_uid_required": 0,
+        "nonfinite_network_required": 0,
+        "flag_zero_occurrences_where_final_apt_not_zero": 0
+      },
+      "coordinate": {
+        "formula": "reported-source altaz detector rotation plus stored telescope coordinates and pointing offsets",
+        "full_export_max_abs_difference_rad": [
+          4.336808689942018e-19,
+          4.336808689942018e-19
+        ],
+        "flag_zero_nonfinite_coordinates": 0
+      },
+      "flags": {
+        "values": [
+          0,
+          1
+        ],
+        "zero_count": 15927544,
+        "one_count": 5495796
+      },
+      "nominal_beam_headers": {
+        "BMAJ": {
+          "a1100": 5.931101190862529,
+          "a1400": 7.106285114815095,
+          "a2000": 9.53247597650985
+        },
+        "BMIN": {
+          "a1100": 5.413745453608345,
+          "a1400": 6.685686171491547,
+          "a2000": 9.490549203051316
+        }
+      },
+      "proposed_guard_arcsec": 28.59742792952955,
+      "training_geometry_feasibility": [
+        {
+          "segment": 0,
+          "stored_start": 0,
+          "stored_stop_exclusive": 289,
+          "samples": 289,
+          "first_half_count": 144,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2736,
+              "training_count_min": 15,
+              "groups_below_64": 128,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 25
+            },
+            {
+              "array": 1,
+              "required_groups": 797,
+              "training_count_min": 101,
+              "groups_below_64": 0,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 0
+            },
+            {
+              "array": 2,
+              "required_groups": 866,
+              "training_count_min": 20,
+              "groups_below_64": 33,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 4
+            }
+          ]
+        },
+        {
+          "segment": 1,
+          "stored_start": 289,
+          "stored_stop_exclusive": 594,
+          "samples": 305,
+          "first_half_count": 152,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2749,
+              "training_count_min": 28,
+              "groups_below_64": 184,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 0
+            },
+            {
+              "array": 1,
+              "required_groups": 787,
+              "training_count_min": 29,
+              "groups_below_64": 91,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 0
+            },
+            {
+              "array": 2,
+              "required_groups": 863,
+              "training_count_min": 31,
+              "groups_below_64": 46,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 0
+            }
+          ]
+        },
+        {
+          "segment": 2,
+          "stored_start": 594,
+          "stored_stop_exclusive": 899,
+          "samples": 305,
+          "first_half_count": 152,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2749,
+              "training_count_min": 40,
+              "groups_below_64": 82,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 21
+            },
+            {
+              "array": 1,
+              "required_groups": 798,
+              "training_count_min": 42,
+              "groups_below_64": 29,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 7
+            },
+            {
+              "array": 2,
+              "required_groups": 865,
+              "training_count_min": 41,
+              "groups_below_64": 22,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 8
+            }
+          ]
+        },
+        {
+          "segment": 3,
+          "stored_start": 899,
+          "stored_stop_exclusive": 1204,
+          "samples": 305,
+          "first_half_count": 152,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2747,
+              "training_count_min": 33,
+              "groups_below_64": 87,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 0
+            },
+            {
+              "array": 1,
+              "required_groups": 795,
+              "training_count_min": 37,
+              "groups_below_64": 34,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 0
+            },
+            {
+              "array": 2,
+              "required_groups": 862,
+              "training_count_min": 35,
+              "groups_below_64": 19,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 0
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "stored_start": 1204,
+          "stored_stop_exclusive": 1509,
+          "samples": 305,
+          "first_half_count": 152,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2744,
+              "training_count_min": 10,
+              "groups_below_64": 127,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 5
+            },
+            {
+              "array": 1,
+              "required_groups": 773,
+              "training_count_min": 10,
+              "groups_below_64": 70,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 5
+            },
+            {
+              "array": 2,
+              "required_groups": 865,
+              "training_count_min": 12,
+              "groups_below_64": 35,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 0
+            }
+          ]
+        },
+        {
+          "segment": 5,
+          "stored_start": 1509,
+          "stored_stop_exclusive": 1814,
+          "samples": 305,
+          "first_half_count": 152,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2711,
+              "training_count_min": 0,
+              "groups_below_64": 179,
+              "zero_training_groups": 48,
+              "groups_below_64_with_central_evaluation": 177
+            },
+            {
+              "array": 1,
+              "required_groups": 792,
+              "training_count_min": 0,
+              "groups_below_64": 68,
+              "zero_training_groups": 15,
+              "groups_below_64_with_central_evaluation": 67
+            },
+            {
+              "array": 2,
+              "required_groups": 869,
+              "training_count_min": 0,
+              "groups_below_64": 40,
+              "zero_training_groups": 12,
+              "groups_below_64_with_central_evaluation": 40
+            }
+          ]
+        },
+        {
+          "segment": 6,
+          "stored_start": 1814,
+          "stored_stop_exclusive": 2119,
+          "samples": 305,
+          "first_half_count": 152,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2715,
+              "training_count_min": 40,
+              "groups_below_64": 52,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 0
+            },
+            {
+              "array": 1,
+              "required_groups": 794,
+              "training_count_min": 39,
+              "groups_below_64": 19,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 0
+            },
+            {
+              "array": 2,
+              "required_groups": 863,
+              "training_count_min": 43,
+              "groups_below_64": 13,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 0
+            }
+          ]
+        },
+        {
+          "segment": 7,
+          "stored_start": 2119,
+          "stored_stop_exclusive": 2424,
+          "samples": 305,
+          "first_half_count": 152,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2730,
+              "training_count_min": 72,
+              "groups_below_64": 0,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 0
+            },
+            {
+              "array": 1,
+              "required_groups": 795,
+              "training_count_min": 72,
+              "groups_below_64": 0,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 0
+            },
+            {
+              "array": 2,
+              "required_groups": 860,
+              "training_count_min": 72,
+              "groups_below_64": 0,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 0
+            }
+          ]
+        },
+        {
+          "segment": 8,
+          "stored_start": 2424,
+          "stored_stop_exclusive": 2729,
+          "samples": 305,
+          "first_half_count": 152,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2756,
+              "training_count_min": 0,
+              "groups_below_64": 171,
+              "zero_training_groups": 115,
+              "groups_below_64_with_central_evaluation": 171
+            },
+            {
+              "array": 1,
+              "required_groups": 795,
+              "training_count_min": 34,
+              "groups_below_64": 2,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 2
+            },
+            {
+              "array": 2,
+              "required_groups": 866,
+              "training_count_min": 0,
+              "groups_below_64": 46,
+              "zero_training_groups": 33,
+              "groups_below_64_with_central_evaluation": 46
+            }
+          ]
+        },
+        {
+          "segment": 9,
+          "stored_start": 2729,
+          "stored_stop_exclusive": 3034,
+          "samples": 305,
+          "first_half_count": 152,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2739,
+              "training_count_min": 24,
+              "groups_below_64": 77,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 4
+            },
+            {
+              "array": 1,
+              "required_groups": 792,
+              "training_count_min": 34,
+              "groups_below_64": 10,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 1
+            },
+            {
+              "array": 2,
+              "required_groups": 863,
+              "training_count_min": 25,
+              "groups_below_64": 31,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 2
+            }
+          ]
+        },
+        {
+          "segment": 10,
+          "stored_start": 3034,
+          "stored_stop_exclusive": 3339,
+          "samples": 305,
+          "first_half_count": 152,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2736,
+              "training_count_min": 47,
+              "groups_below_64": 52,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 0
+            },
+            {
+              "array": 1,
+              "required_groups": 800,
+              "training_count_min": 72,
+              "groups_below_64": 0,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 0
+            },
+            {
+              "array": 2,
+              "required_groups": 866,
+              "training_count_min": 48,
+              "groups_below_64": 12,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 0
+            }
+          ]
+        },
+        {
+          "segment": 11,
+          "stored_start": 3339,
+          "stored_stop_exclusive": 3628,
+          "samples": 289,
+          "first_half_count": 144,
+          "arrays": [
+            {
+              "array": 0,
+              "required_groups": 2707,
+              "training_count_min": 0,
+              "groups_below_64": 154,
+              "zero_training_groups": 3,
+              "groups_below_64_with_central_evaluation": 42
+            },
+            {
+              "array": 1,
+              "required_groups": 780,
+              "training_count_min": 4,
+              "groups_below_64": 38,
+              "zero_training_groups": 0,
+              "groups_below_64_with_central_evaluation": 8
+            },
+            {
+              "array": 2,
+              "required_groups": 855,
+              "training_count_min": 0,
+              "groups_below_64": 50,
+              "zero_training_groups": 1,
+              "groups_below_64_with_central_evaluation": 10
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

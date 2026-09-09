@@ -1453,6 +1453,32 @@ reserved. No run log/provenance sidecar was found; exact scientific input,
 support, response/noise and execution bindings remain pending. No numerical
 comparison, science-array inspection, upstream adoption or Unity action occurred.
 
+The owner next authorized completing local preflight and the execution proposal.
+The [Q02 r0.4 review](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.4/README.md)
+recovers a historical chunk-label defect in both discovery exports: the stored
+3,628 rows have contiguous lengths 289, ten times 305, then 289, whereas the
+reported intervals omit 160 rows. Exact source recurrence plus 152389 chunk
+logs and 123424 raw indices support a separately bound recovery; products are
+unchanged. The legacy detector-coordinate relation is recoverable from 152389's
+embedded inputs and agrees with 123424's full export to 4.34e-19 rad. A local
+123424 APT candidate matches all ten inspected identity/geometry/calibration
+columns; original executable/raw-input identities and the new run log remain
+missing. None of this establishes frozen PTC/AST/MAP conformity.
+
+The unchanged first-half/64-sample training proposal fails input feasibility:
+2,875 detector/chunk groups in 152389 and 2,001 in 123424 have evaluation
+occurrences but too little source-excluded training at the flag/coordinate
+level; respectively 507 and 227 have none. These counts precede final signal/
+grid admission and are not noise outcomes. T2 remains stopped; no threshold,
+guard, population or coefficient law was relaxed. The concrete next review
+proposes standalone T1 execution with the exact r0.3 synthetic cases/margins,
+and a separate paper revision of T2 toward observation-pooled detector training.
+Both decisions are open. The revised T2 method, uncertainty, input permission
+and run still require a completed decision. 129081 stays reserved; no signal
+matrix, stored weights, noise estimate, weighted map, injection or replay was
+read or computed during this preflight. No upstream adoption, Unity action or
+push occurred. Q01, A/B, C's open status and all frozen/archived bytes remain.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
