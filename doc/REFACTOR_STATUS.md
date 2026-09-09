@@ -1366,6 +1366,33 @@ adoption. Q01 remains frozen; mode registration, numerical/evidence/settings
 and execution remain at their existing gates. No amendment adoption, author
 dispatch, numerical work or implementation occurred.
 
+On 2026-09-09 the owner **approved Q02-A and Q02-B** and requested tests of
+uniform weighting because detector quality and noise vary. The
+[r0.2 disposition](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.2/README.md)
+records A's B01–B07 plus S1 and B's B08/M04 scientific substance as approved for
+controlled amendment preparation. Exact successor sources/profile bindings
+still require adoption; ordinary-route records and the frozen annex are
+unchanged. Q02-C remains open pending weighting evidence, including its bundled
+MAP handoff; no separate handoff approval or scientific rejection of uniform
+weighting is inferred.
+
+The [bounded weighting test proposal](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.2/WEIGHTING_TEST_PLAN.md)
+compares uniform occurrences with one proposed inverse-bootstrap-scatter family
+whose values are available before map/model action and fixed through the loop.
+It proposes elementary noise/quality cases and paired maps from identical PTC
+outputs first, with a separately decided feedback continuation if warranted.
+The tests retain detector influence, noise, source recovery, morphology,
+leakage, native/common support, stability/convergence and cost measurements.
+Acceptability requires predeclared bounded losses and independent-pointing
+replication for a pointing recommendation. Neither an estimated scatter nor Q
+is precision evidence. Next bind and review the exact first screen's inputs,
+experimental permissions, coefficient/QC identities, settings, evidence,
+margins and execution scope under existing Q02–Q06. No candidate coefficient
+family, mode, case, run, implementation or author dispatch is approved here.
+A/B do not need another scientific-substance vote. All numerical routes remain
+unavailable; Q01/core/upstream freezes, prior packets/archives and reduction
+products are preserved. This revision performs document/source checks only.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

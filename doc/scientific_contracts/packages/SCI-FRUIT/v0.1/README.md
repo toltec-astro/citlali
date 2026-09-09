@@ -2,7 +2,8 @@
 
 Status: generic SCI-FRUIT-NORMATIVE-CORE v0.1/r0.4 accepted and conditionally
 frozen; ordinary-MAP scientific definition r0.4 accepted and frozen after
-three bounded scope clarifications. Q02 upstream amendments remain unadopted.
+three bounded scope clarifications. Q02-A/B scientific substance approved;
+Q02-C open for weighting evidence. Upstream amendments remain unadopted.
 Every numerical method/route remains unavailable pending separate approval.
 Updated: 2026-09-09.
 
@@ -29,7 +30,9 @@ no numerical method or new method-specific author dispatch.
 
 ## Locked Scientific Definition And Remaining Review
 
-- [Q02: three boundary decisions and recommendations](method_preparation/ordinary_map/method_definition/q02_review/r0.1/README.md)
+- [Q02: A/B approved and C awaiting weighting evidence](method_preparation/ordinary_map/method_definition/q02_review/r0.2/README.md)
+- [Proposed bounded tests of uniform and noise-aware weighting](method_preparation/ordinary_map/method_definition/q02_review/r0.2/WEIGHTING_TEST_PLAN.md)
+- [Prior Q02 three-decision review](method_preparation/ordinary_map/method_definition/q02_review/r0.1/README.md)
 - [Owner directives, precedence and crosswalk](method_preparation/ordinary_map/method_definition/r0.4/OWNER_DIRECTION_AND_CROSSWALK.md)
 - [Ordinary-MAP r0.4 scientific definition and archive](method_preparation/ordinary_map/method_definition/r0.4/README.md)
 - [Scientific definition and twenty-one classes](method_preparation/ordinary_map/method_definition/r0.4/METHOD_DEFINITION.md)
@@ -63,12 +66,16 @@ and separate MAP profile admission. Coefficient/current-QC, applicable PTC-plan
 and numerical MAP support bindings remain separate; learned eigenvectors are
 results, not requested owner settings. Frozen MAP stays v0.1/r0.7.1; no successor
 is adopted. Q01 scientific-definition review is resolved; numerical policy
-slots remain unbound. Q02 exact boundary approval is the next separate review.
-The Q02 decision sheet recommends the residual PTC pass, compatible correction
-and rejoin, and explicit MAP handoff with uniform occurrence coefficients for
-the controlled reference. It also requires successor profile versions for
-changed residual domains/source bindings; ordinary-route @1 records remain
-immutable. These recommendations are pending, not adopted amendments.
+slots remain unbound. The owner approved Q02-A's residual PTC pass, including
+S1's successor-profile rule, and Q02-B's compatible correction/removal/rejoin.
+Exact controlled successor sources and registry bindings still require adoption;
+ordinary-route @1 records remain immutable. Q02-C stays open pending evidence
+about detector quality/noise and uniform occurrence weighting. Its MAP handoff
+has no separate inferred approval. The bounded proposal compares uniform and
+one causal inverse-bootstrap-scatter family in elementary cases and identical-
+PTC-output maps, then separately considers feedback testing. The next review
+binds the first screen's exact inputs/permissions, coefficient/QC identities,
+settings, evidence, margins and execution scope. No weighting policy is adopted.
 POINT/E01 is a recommended first experiment, not an approved campaign order;
 OOF is separately selectable. Exact reference recovery precedes comparison
 interpretation and independent-pointing replication precedes recommendation.
