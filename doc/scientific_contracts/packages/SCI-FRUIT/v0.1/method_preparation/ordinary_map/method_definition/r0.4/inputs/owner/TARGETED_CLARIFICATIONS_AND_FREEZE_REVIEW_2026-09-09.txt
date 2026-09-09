@@ -1,0 +1,133 @@
+I reviewed the r0.3 packet against the directive from our discussion. I think Codex has done a **very strong job translating the conceptual discussion into a disciplined scientific definition**. More importantly, it did not simply paste our ideas into the old framework: it caught several places where our conversational shorthand was too loose and tightened them appropriately.
+
+My recommendation is **approve the scientific direction of r0.3, with a small number of targeted corrections before freezing the method definition**. I would *not* send this back for another broad rethink.
+
+### What I think it got particularly right
+
+The biggest success is M02–M04. The packet now has the architecture we actually intended:
+
+$$
+\text{current model}
+\rightarrow
+\text{sky-subtracted original data}
+\rightarrow
+\text{relearn PTC}
+\rightarrow
+\text{clean}
+\rightarrow
+\text{reconstruct total}
+\rightarrow
+\text{re-infer complete sky model}.
+$$
+
+That is the important conceptual correction. It explicitly says that previously accepted structure can be retained, changed, **or revoked**, and that old support is not simply unioned with new support. It also explicitly warns that seeing the old model again in the reconstructed total is *not independent confirmation*. That's excellent.
+
+M03 is similarly strong. It cleanly separates **inference/admission**, **flux estimation**, and **application gain**. In particular, this is exactly the reference hypothesis I think we wanted:
+
+> `mhat_(k+1,a,p) = a_(k,a,p) T_(k,a,p)`
+
+In words: inference decides whether the map value is admissible; the unfiltered reconstructed map supplies the flux. It does **not** turn “confidence” into a fractional flux multiplier. That's an important scientific distinction.
+
+I also like that it leaves the flux floor genuinely open and treats unity gain as the reference hypothesis rather than as established truth. And the distinction between attenuation and relaxation is excellent; those really are different algorithms.
+
+M04 gets yesterday's PCA issue right. It is now completely explicit that the PCA subspace is relearned from the **current residual each iteration**, while the resulting \(\Theta_k\) is held fixed during that iteration's application. That is exactly the distinction we struggled to articulate yesterday.
+
+And M05 captures our observing-mode conversation remarkably well. POINT is soft-location/soft-scale; OOF explicitly forbids sneaking in a core/ring/contiguity assumption; BEAM preserves centroid, shape and calibration flux as things to be measured; compact blank-field science and extended/mixed science are separate regimes. I wouldn't materially change that section.
+
+### Codex also improved on a few things we said conversationally
+
+One particularly good correction is the treatment of negative feedback. We were starting to tell ourselves a story that negative map values are intrinsically dangerous. Codex correctly refuses to turn that into a theorem:
+
+> “Both positive and negative artifacts can be falsely promoted.”
+
+That's better. The issue isn't sign; it's whether the inferred feature is astronomical under the mode-specific model. SZ is then naturally allowed to be negative.
+
+The convergence section is also better than our initial conversation. M08 separates **convergence**, **stability**, and **scientific correctness**. That's crucial. A FRUIT loop can converge beautifully to the wrong answer.
+
+And this little fixed-linear example is worth keeping:
+
+$$
+C(y-m)+m=Cy+(I-C)m.
+$$
+
+It makes a subtle point very clearly: a mistaken feedback component lying in something the cleaner removes can persist through the model path. Therefore “the iterations stopped changing” is not evidence that the model is right.
+
+### Where I would push back
+
+There are three places where I think Codex has gone a little farther than our discussion warrants.
+
+**First, E01 is prematurely committing us to POINT as the first numerical experiment.** The document says:
+
+> “First screen: one POINT case, one selector change”
+
+POINT is certainly the easiest conceptual mode, and it's a perfectly sensible first experiment. But I don't remember us deciding this morning that POINT *must* be the first experimental campaign. Our main decision was to establish the architecture and retain the historical S/N selector as the baseline.
+
+I'd change this from a methodological commitment to a **recommended first experiment**. Something like:
+
+> “Recommended first bounded screen, subject to owner authorization: POINT…”
+
+That distinction matters because otherwise approving this document quietly approves an experimental ordering that we haven't really considered.
+
+**Second, the packet may be making the fixed \(D_a\) domain stronger than necessary.** I understand exactly why Codex did this: it wants to prevent a method from “converging” by silently losing difficult pixels. That's good. But statements such as:
+
+> “Keep \(D_a\), the normalization/contribution population, PTC use-support populations and WCS/occurrence association fixed for this reference.”
+
+are quite restrictive.
+
+For the **reference experiment**, that may be precisely what we want. I just don't want it to become a defining property of FRUIT itself. Real iterative processing can legitimately encounter changed validity/support because of operations elsewhere in the chain. The scientific requirement should be that support changes are **explicit, attributable, and cannot masquerade as inference rejection or convergence**, rather than that every FRUIT method must necessarily preserve an identical support domain.
+
+The packet mostly qualifies this as “for this reference,” so this may require only wording reinforcement rather than a scientific change.
+
+**Third, I would not approve the entire B01–B12 amendment annex simply by approving the FRUIT scientific method.** This is the biggest governance point.
+
+The method definition is scientifically compelling. The boundary annex is much more specific: residual-parent PTC permissions, MAP descendant routes, uniform-occurrence gridding coefficients, QC identities, correction embeddings, and so forth. Some of that is necessary plumbing. But it's a different kind of decision from:
+
+> “Yes, this is what FRUIT scientifically means.”
+
+Codex itself recognizes this and labels those amendments proposed/not adopted. I would preserve that separation. In fact, I think its Q01/Q02 distinction is useful: **Q01 scientific method; Q02 exact upstream boundary amendments.**
+
+### One conceptual point I would sharpen
+
+There's one phrase in M03 I'd tweak:
+
+> “Leading reference hypothesis: the candidate numerical model is the unfiltered total-map flux on \(D_a\); the accepted estimate applies the mode policy's binary admission mask…”
+
+I agree with that as the **first reference implementation**, but I wouldn't let “binary” creep upward into the generic inference contract.
+
+Our reasoning was that *probability-weighted flux* is dubious because confidence isn't flux. But that doesn't prove that every future inference must return a binary support mask. For example, a future inference model might produce a fitted astronomical component with a continuous spatial model, and that could be scientifically legitimate without being “probability times flux.”
+
+Codex actually acknowledges fitted-source replacement as a separate estimator identity later in the paragraph, so the underlying architecture is fine. I'd simply make absolutely explicit:
+
+> Binary admission × reconstructed flux is the **leading ordinary-MAP reference policy**, not a universal FRUIT requirement.
+
+That protects exactly the extensibility we were trying to create.
+
+### The experiment plan is otherwise excellent
+
+I particularly like the discipline in E01: change the selector while keeping mapmaker, PTC recipe, flux estimator, gain, floor, and extent fixed. Each arm still relearns PCA on **its own** residual, which is essential; freezing one common PCA solution would defeat the experiment.
+
+Likewise, I strongly agree with:
+
+> “A final-map injection may test the inference/flux construction in isolation; it cannot test atmosphere relearning or the whole loop.”
+
+That's exactly the kind of experimental distinction we need.
+
+And the rule that a negative or inconclusive result should cause us to retain the simpler S/N baseline rather than launch an ever-expanding parameter search is very healthy. It operationalizes our statement this morning that the more sophisticated inference has to **earn its keep**.
+
+### My disposition
+
+I would give Codex something close to:
+
+> **Scientific-owner disposition: r0.3 is accepted in direction and is very close to approval as the ordinary-MAP FRUIT method definition. No broad scientific rewrite is requested.**
+>
+> Before freeze, make three bounded clarifications:
+>
+> 1. Treat POINT/E01 as the *recommended first bounded experiment*, not as an owner-selected mandatory experimental ordering unless separately approved.
+> 2. Make unmistakable that fixed \(D_a\) and fixed contributor/support populations are properties of this controlled reference method/experiment, not a universal FRUIT requirement. The general requirement is explicit accounting of support changes and prohibition against confusing support loss with inference rejection or convergence.
+> 3. State explicitly that binary admission × unfiltered reconstructed-total flux is the leading ordinary-MAP reference estimator, not a universal restriction on future FRUIT inference/flux estimators.
+>
+> Preserve the separation between approval of the scientific method (Q01) and adoption of the detailed PTC/MAP boundary amendments (Q02). Do not broaden the revision beyond these points.
+
+After those changes, **I think I would be comfortable approving the scientific method definition**. Then I would review Q02 separately rather than letting the considerable machinery in B01–B12 hitch a ride on that approval.
+
+Overall, this is a meaningful improvement over r0.2. The central FRUIT idea is much clearer now: **relearn the nuisance model from sky-subtracted data; reconstruct the total; infer afresh what astronomical signal deserves feedback; and make that inference scientifically appropriate to the observing mode.** That feels like the architecture we've actually been trying to get to.

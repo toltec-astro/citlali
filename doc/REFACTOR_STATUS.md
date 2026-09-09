@@ -1315,6 +1315,36 @@ bindings remain explicit. Frozen core/upstream sources, prior packets/products
 and both opaque review archives are preserved. The 43 copied inputs include
 five new owner/manager sources; the 24 proposed references remain unchanged.
 
+After reviewing r0.3, the owner supplied targeted feedback and instructed that
+it be addressed and the definition locked. The
+[r0.4 scientific-definition freeze](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/SCIENTIFIC_OWNER_FREEZE_R0.4.md)
+records `SCI-FRUIT-OD-ORDINARY-MAP-DEFINITION-FREEZE-2026-09-09`.
+Q01's scientific definition is accepted/frozen after three clarifications:
+POINT/E01 is a recommended first bounded screen, subject to separate owner
+selection; fixed D_a/contributor/support populations are controlled-reference
+restrictions, with general FRUIT support changes requiring explicit attribution
+and comparison accounting; and binary admission times reconstructed-total flux
+is the leading reference estimator, not a universal inference restriction.
+The derived conformance requirements reflect those same limits. No broad
+rewrite or reference-algorithm change occurred.
+
+Q02 remains open. The B01–B12 annex, including PTC/MAP permissions, uniform
+gridding, QC identities and correction embedding, is byte-identical to r0.3 and
+not adopted by the scientific-definition freeze. Numerical policy slots under
+Q01, effective-plan/support bindings Q03/Q04, and evidence/execution Q05/Q06
+remain unavailable until separately bound and authorized. No experimental
+ordering, case, run, author dispatch, implementation or qualification is
+approved by this lock. The next substantive review is Q02 separately; the
+scientific definition is not reopened merely because its numerical bindings
+remain incomplete.
+
+The [r0.4 packet and frozen-definition archive](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/README.md)
+preserve the r0.3 packet/archive, historical controls/products and all upstream
+and generic-core freezes. All 44 source copies match their exact sources;
+the inherited 43 rows and the 24 proposed references are unchanged. Both known
+untracked review archives remain present and opaque. No numerical work, Unity
+action, upstream amendment adoption or production change occurred.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

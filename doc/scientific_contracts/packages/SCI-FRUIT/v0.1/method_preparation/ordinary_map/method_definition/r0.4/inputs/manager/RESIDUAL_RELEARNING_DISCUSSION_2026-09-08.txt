@@ -1,0 +1,360 @@
+**After reassessing it, I would choose PCA relearning on the model-subtracted residual for the intended FRUIT method. That conclusion has a sound statistical basis independent of historical Citlali.** But I need to qualify my previous answer: a fixed-basis feedback method is not inherently scientifically wrong, and relearning does not guarantee that each successive map is better.
+
+I initially gave too much weight to the analytical convenience of freezing PTC, then went too far in the opposite direction by declaring it wrong outright. The defensible distinction is:
+
+> **Fixed-basis feedback can protect a model from an existing cleaner. Residual-based relearning can additionally reduce that model’s influence on how the cleaner is estimated. Your stated objective requires the second capability.**
+
+## 1. Your argument follows directly from the covariance being estimated
+
+Let the calibrated, sample-by-detector data be
+
+\[
+Y=S+N,
+\]
+
+where \(S\) is the astronomical contribution and \(N\) includes atmosphere, instrumental correlations, and other noise. These are conceptual components, not quantities that the pipeline already knows separately.
+
+For an ordinary, uniformly sampled, mean-centered illustration, PCA uses
+
+\[
+C_Y=\frac{1}{T}Y^{\mathsf T}Y.
+\]
+
+Expanding gives
+
+\[
+C_Y=
+\frac{1}{T}
+\left(
+N^{\mathsf T}N+
+S^{\mathsf T}S+
+N^{\mathsf T}S+
+S^{\mathsf T}N
+\right).
+\]
+
+Thus the astronomical contribution can affect the covariance through both its own detector correlations and its finite-data cross terms with the nuisance signal. The latter need not vanish in a particular observation even when the underlying physical processes are independent.
+
+Now subtract the projected current map estimate, \(\widehat S_k\), and define its remaining error by
+
+\[
+E_k=S-\widehat S_k.
+\]
+
+The residual is
+
+\[
+R_k=Y-\widehat S_k=N+E_k,
+\]
+
+and its covariance becomes
+
+\[
+C_{R_k}=
+\frac{1}{T}
+\left(
+N^{\mathsf T}N+
+E_k^{\mathsf T}E_k+
+N^{\mathsf T}E_k+
+E_k^{\mathsf T}N
+\right).
+\]
+
+**The learning problem now contains the astronomical-model error rather than the entire astronomical signal.** With an exact model, the astronomical contribution disappears from that learning problem altogether. With an imperfect model, the improvement depends on the error and its correlations; it is not automatically monotonic.
+
+This is more than a plausible thought experiment. Downes et al.’s AzTEC transfer-function paper—on which you are a coauthor—explicitly found that adding simulated astronomical sources changed the estimated PCA eigenvectors and cleaning operator, even when the number of removed modes did not change. It rejected the assumption that a faint source necessarily leaves the cleaner unchanged. That is direct evidence for the mechanism you are concerned about, although not a demonstration that every particular relearning scheme will outperform a fixed-basis scheme. 
+
+So your concern is not merely “the historical algorithm did this.” It is **“we should estimate nuisance correlations from data in which our current astronomical estimate has been removed.”** That is a well-founded estimator choice.
+
+## 2. What the fixed-basis proposal actually does—and why it is not nonsense
+
+There are two different ways the astronomical signal can be harmed:
+
+**It can overlap the removed subspace.** Even a perfectly estimated atmospheric subspace can contain directions that also carry astronomical information.
+
+**It can influence the estimation of that subspace.** The PCA fit can select different directions because astronomical emission was present during learning.
+
+The first problem exists even with a fixed cleaner. The second requires attention to how the cleaner is learned.
+
+To see what fixed-basis feedback accomplishes, suppose, solely for this illustration, that removal and rejoin use the same compatible timestream model \(\widehat S_k\), and the fixed cleaner is linear with operator \(A_0\). Then
+
+\[
+Z_k=A_0(Y-\widehat S_k)+\widehat S_k
+   =A_0Y+(I-A_0)\widehat S_k.
+\]
+
+The second term restores the part of the model that this particular cleaner would remove. **That can be useful even though the eigenvectors never change.** It is not equivalent to running ordinary PCA once and doing nothing afterward.
+
+But it leaves \(A_0\) itself unchanged. If astronomical signal affected the bootstrap estimate of the nuisance subspace, this construction cannot revise that estimate.
+
+That is the precise limitation—not that fixed-basis feedback has no scientific meaning.
+
+There are circumstances where freezing a basis would be defensible: for example, a basis established from an appropriate independent nuisance measurement, or one demonstrated to be sufficiently insensitive to the astronomical signal in the relevant regime. Those would be additional premises. They are not established merely by choosing a simpler first method.
+
+**For this proposal, analytical simplicity was not an adequate reason to assume away the effect you actually want FRUIT to address.**
+
+There is also support outside the Citlali/AzTEC lineage. Chapin et al.’s SCUBA-2 map-maker explicitly recalculates its common-mode model after removing the preceding astronomical estimate, explaining that source removal improves subsequent common-mode estimates. That is not the same algorithm as PCA-based FRUIT, but it independently supports the same separation principle. 
+
+## 3. The right simplification is fixed rules, not fixed learned eigenvectors
+
+My earlier statement that relearning makes it impossible to “isolate feedback” was misleading.
+
+A learning algorithm can be completely specified and unchanged while its fitted result changes with its input. Indeed, that is the intended behavior here.
+
+We should distinguish three things:
+
+| Item | Appropriate interpretation for the proposed relearning method |
+|---|---|
+| **PTC method and configuration** | Keep the declared estimator, grouping rules, mode-selection policy, support rules, and numerical tolerances fixed unless a separate change is approved. |
+| **PTC fitted state** | Re-estimate the correlated subspace and other quantities that the declared method learns from each iteration’s model-subtracted residual. |
+| **PTC application** | Resolve that iteration’s fitted state, then apply it consistently to that iteration’s residual. Do not change it partway through that application. |
+
+This is **one method with successive fitted states**, not a succession of different cleaning algorithms. The FRUIT core already makes that distinction: changed realized coefficients or state under unchanged rules are new state generations; changing the learning rule or operator family changes the method identity. 
+
+An important consequence is that **relearning eigenvectors does not require changing the number of modes removed**. A fixed-rank method can recompute its rank-\(p\) subspace every iteration. An adaptive-rank method can reevaluate the same approved rank-selection rule. Which policy to use is a separate choice; we should not silently introduce adaptive rank merely because we approve relearning.
+
+Similarly, we need to distinguish the *centering rule* from its *estimated centering values*. If the selected estimator learns a location or scale from its input, its normal application to \(R_k\) should follow that rule on \(R_k\). Reusing bootstrap values while recomputing eigenvectors is another specific method, not an innocuous default. This does not imply restoring discarded offsets or changing PTC’s existing reference convention.
+
+The useful formulation is therefore:
+
+> **Freeze the scientific recipe across FRUIT iterations; learn its input-dependent state anew at each iteration; freeze the resolved state for that iteration’s Apply step.**
+
+The retrieved PTC rationale also explicitly distinguishes a complete PTC pass, with its own immutable input and realized identity, from both an internal solver iteration and an external FRUIT recurrence. That conceptual separation is compatible with this architecture. 
+
+And recomputation must be allowed to return essentially the same subspace. We should require **fresh estimation**, not require the eigenmodes to change.
+
+## 4. The strongest objections to relearning are real—but different
+
+The statistical argument supports your proposed learning parent. It does **not** establish all the desirable properties of the complete feedback algorithm.
+
+### The current map may contain nuisance signal
+
+The phrase “best-guess astronomical signal” is appropriate. “The astronomical signal” would be too strong.
+
+Suppose the projected model contains an error \(V_k\):
+
+\[
+\widehat S_k=S+V_k.
+\]
+
+Then the residual used for learning is
+
+\[
+R_k=N-V_k.
+\]
+
+If \(V_k\) includes atmospheric leakage or map-domain noise, FRUIT subtracts some of that from the PCA learning input and adds it back afterward. Consequently, the feedback can protect a mistaken feature as well as a genuine source.
+
+For a matched removal/rejoin example with a resolved linear cleaner \(A_k\), the resulting output is
+
+\[
+\begin{aligned}
+Z_k
+&=A_k(Y-\widehat S_k)+\widehat S_k\\
+&=S+A_kN+(I-A_k)V_k.
+\end{aligned}
+\]
+
+This is a revealing identity. The part of the model error lying in directions the cleaner would suppress is precisely the part that the model path can preserve.
+
+That risk exists with fixed-basis feedback too. Relearning adds another dependence because the erroneous model can also change the estimated \(A_k\).
+
+**This is why accepting every valid map pixel as a feedback model deserves its own scientific interpretation.** In the current proposal, the all-support, both-sign selector would carry a noisy map estimate—not a purified astronomical component. That is not automatically disqualifying for a first method, but we must not describe it as though source/noise separation had already occurred. Nor does this observation authorize inserting a new significance threshold or source detector without a separate decision.
+
+### Relearning does not make PCA identify physical origin
+
+PCA finds correlations; it does not certify that they are atmospheric. Source subtraction changes the data used to estimate those correlations, but residual astronomical emission, electronics, and other effects can remain.
+
+This is consistent with the PTC rationale’s explicit statement that its fitted correlated component has no uniquely assigned physical origin. 
+
+There are also genuinely ambiguous sky/nuisance modes. If the scan and detector geometry do not distinguish a particular astronomical structure from an allowed nuisance component, iteration alone does not create that missing information. SCUBA-2’s map-making analysis discusses precisely this kind of degeneracy: a solution can move between spurious large-scale map structure and common-mode structure while retaining apparently satisfactory timestream residuals. 
+
+Thus “the residual looks cleaner” is not, by itself, evidence that the map is more faithful.
+
+### The response is that of an adaptive procedure
+
+With relearning, the operation is schematically
+
+\[
+R\longmapsto A(R)\,R,
+\]
+
+not simply \(R\longmapsto A_0R\).
+
+Where differentiable, its perturbation contains both
+
+\[
+\delta Z
+=
+A(R)\,\delta R
++
+\bigl[\delta A(R)\bigr]R,
+\]
+
+before accounting for the model path and the rest of the iteration. A calculation that freezes the basis retains only the first term.
+
+That does not make fixed-state response calculations useless. It makes them **conditional calculations**, not the response of the whole adaptive method. The AzTEC transfer-function work demonstrates why ignoring the operator’s change can matter.  The FRUIT core likewise distinguishes fixed numerical response queries from responses involving recomputation. 
+
+These are consequences the method must represent honestly, not reasons to suppress relearning merely to preserve an easier response calculation.
+
+## 5. What I would change in the proposal
+
+I would make a targeted correction rather than reopen the entire scientific program.
+
+For each feedback iteration, construct a fresh residual from the declared calibrated parent and the preceding accepted model:
+
+\[
+R_k=Y_k^{\rm CAL}-\Pi_k m_{k-1}.
+\]
+
+Then run the selected PTC procedure on that residual:
+
+\[
+\Theta_k
+=
+\operatorname{Consider}_{\mathcal C}
+\!\left[
+\operatorname{Learn}_{\mathcal C}(R_k)
+\right],
+\]
+
+where \(\mathcal C\) denotes the unchanged declared PTC rules and configuration. Apply the resolved state to the same residual, then rejoin and map:
+
+\[
+Z_k=
+\operatorname{Apply}_{\mathcal C}(R_k;\Theta_k)
++
+B_km_{k-1}.
+\]
+
+The precise projection, reference, support, and affine-centering requirements remain necessary; these schematic equations do not replace them.
+
+The parent distinction matters. **Each new FRUIT iteration starts from the declared calibrated data minus the current model—not from the preceding PCA-cleaned residual.** Within that PTC pass, the newly constructed residual is the immutable input. Relearning therefore does not mean repeatedly stripping additional modes from an already-cleaned timestream.
+
+For the boundary proposal, BC-IN must consequently admit the specified FRUIT residual as a **learning and application parent**, not merely as an application operand for \(\Theta_0\). The PTC plan must describe its per-iteration learning behavior rather than only a bootstrap fit. The MAP rejoin permission remains a separate requirement.
+
+This correction does not automatically approve changes to gridding coefficients, support populations, detector penalties, model selection, or stopping rules. Those have different roles and should not be swept into “rerun everything.”
+
+## My recommendation
+
+**Approve residual-based PCA relearning as the intended learning schedule for this first ordinary-MAP FRUIT method.** The justification should be reduction of astronomical influence on nuisance-subspace estimation—not historical fidelity, and not an assertion that iterative improvement is guaranteed.
+
+I would record the decision along these lines:
+
+> At every FRUIT feedback iteration, PTC shall estimate its correlated-mode state from the current model-subtracted residual under the same declared PTC method and configuration. The resolved state shall be fixed for that iteration’s application, but shall not be inherited unchanged from bootstrap. This choice addresses astronomical contamination of correlated-mode estimation. It establishes neither pure atmospheric separation nor convergence, unbiased recovery, or improved performance for every input.
+
+The fixed-bootstrap proposal remains a mathematically meaningful alternative, but **it omits a mechanism central to the objective you articulated and therefore should not be our default merely because it is easier to analyze**.
+
+My confidence is high in that architectural recommendation. The performance of the complete proposed combination—relearning, all-support model selection, projection, coefficients, and finite iteration count—remains a separate question. This reassessment rests on the estimator argument and published methods; it is not an independent verification of the historical Citlali executable.
+
+**In that sentence, “numerical” means the concrete calculation that would be performed on actual detector data.** It does **not** mean floating-point accuracy, rounding errors, or numerical precision.
+
+But the phrase “the numerical route remains unavailable” bundles several different issues together—and our discussion of PCA has exposed why that is confusing.
+
+## A numerical method does not require fixed eigenmodes
+
+This is the most important distinction for our current discussion:
+
+> **A fully specified numerical method can—and often should—recalculate its fitted quantities when its input changes.**
+
+For example, we can specify a PCA method that uses the same detector grouping, covariance estimator, centering procedure, and mode-selection policy at every FRUIT iteration. That completely defines the *recipe*. It does not require the resulting covariance matrix or eigenvectors to remain unchanged.
+
+For iteration \(k\), we would construct
+
+\[
+R_k=Y_k^{\rm CAL}-\Pi_k m_{k-1},
+\]
+
+then run
+
+\[
+\Theta_k
+=
+\operatorname{Consider}_{\mathcal C}
+\left[
+\operatorname{Learn}_{\mathcal C}(R_k)
+\right],
+\]
+
+where \(\mathcal C\) is the declared PTC method and configuration.
+
+Here, **\(\mathcal C\) stays fixed, while \(\Theta_k\) is learned anew**. Once resolved, \(\Theta_k\) is held fixed while applying that iteration’s cleaning operation.
+
+There is no incompleteness in saying, “The eigenvectors will be computed from the residual.” We do not need to know their numerical entries in advance. We need to know the procedure that determines them.
+
+Consequently, **freezing bootstrap eigenvectors was not necessary to make FRUIT a well-defined numerical method.** It was a separate scientific choice about what estimator FRUIT should use. That is why it deserved the scrutiny you gave it.
+
+## What the packet actually leaves unresolved
+
+The packet’s owner-question table, particularly Q01–Q04, distinguishes several outstanding items. I would describe them this way:
+
+| Issue | What must be settled | What kind of issue is it? |
+|---|---|---|
+| **FRUIT method** | Whether PTC relearns on each residual, how the model is selected, and how removal, rejoin, and map replacement work. | Scientific algorithm definition. |
+| **PTC and MAP boundaries** | Whether the specified FRUIT residual is an admitted PTC input and the rejoined product is an admitted MAP input. | Scientific input/output compatibility and contract amendments. |
+| **Configuration** | Which applicable PTC plan, coefficient prescription, and MAP support policy this method uses. | Concrete parameter and policy bindings. |
+| **Execution** | Which observation, executable, effective configuration, iteration count, and resource limits are used. | A particular run, distinct from the method definition. |
+
+Calling all of these “numerical” obscures which decision is actually being requested.
+
+For example, **“relearn the eigenvectors or retain the bootstrap eigenvectors?” is not comparable to “use this particular numerical tolerance.”** The former changes the scientific estimator. The latter might be an implementation detail or might have scientific consequences, depending on what it controls.
+
+Likewise, **“MAP currently admits PTC outputs but not FRUIT-rejoined outputs” is not a numerical difficulty.** It is a limitation in the currently approved input contract.
+
+## What “unavailable” means—and what it does not
+
+In the supplied `PTC_MAP_BOUNDARIES.md` excerpt, the specific status is:
+
+`unavailable_under_current_frozen_parent_permissions`
+
+That qualifier matters.
+
+It means the proposed processing chain is **not admitted under the particular frozen contracts currently referenced by the packet**. It does not, by itself, establish that the calculation is mathematically undefined, that the underlying routines cannot perform it, or that the required implementation does not exist.
+
+For the revised method we have been discussing, the intended chain is:
+
+\[
+\begin{aligned}
+&\text{CAL data}\\
+&\quad\rightarrow \text{FRUIT model subtraction}\\
+&\quad\rightarrow \text{PTC Learn–Consider–Apply on that residual}\\
+&\quad\rightarrow \text{FRUIT model rejoin}\\
+&\quad\rightarrow \text{ordinary MAP}.
+\end{aligned}
+\]
+
+The contract amendments need to recognize those actual inputs and outputs. In particular:
+
+**On the PTC side**, the residual must be admitted as the input to the learning and application process—not merely as something passed through a transformation learned at bootstrap.
+
+**On the MAP side**, the rejoined signal must be admitted under its actual identity and scientific meaning—not relabeled as an unchanged PTC output.
+
+Those changes require checking units, reference conventions, sample associations, validity, and support. They are not merely administrative renaming. But neither should they automatically trigger a redesign of PCA or the ordinary map estimator.
+
+Also, **permission to prepare those amendments is not the same as having approved and adopted their finished contents**. That is a project-state distinction, not an additional mathematical uncertainty.
+
+## “Fully specified” does not mean every choice must be newly invented
+
+There is another important practical point here.
+
+The packet asks for an exact PTC plan and an exact MAP coverage/support policy. An unresolved reference in this packet does **not** prove that the corresponding scientific decision has never been made elsewhere.
+
+The proper sequence should be:
+
+> Identify the applicable approved method and settings; bind them to this FRUIT method; raise only the choices that remain genuinely unresolved.
+
+For instance, an already approved mode-selection policy should not be reopened merely because PTC now evaluates it on a FRUIT residual. We should ask whether that policy is applicable to the new input, not assume that every aspect of PTC must be chosen again.
+
+Conversely, a historical configuration value is not automatically an approved scientific default. The distinction is between **reusing established decisions** and **silently importing unreviewed ones**.
+
+The same principle applies to unity gridding coefficients: whether unity is an appropriate declared weighting prescription is separate from whether those coefficients are mistakenly being interpreted as inverse variances. Specifying a numerical value does not settle its scientific meaning.
+
+## How I would rewrite the status
+
+Given our discussion, a more informative statement would be:
+
+> **The ordinary-map FRUIT proposal needs revision to relearn PTC from each iteration’s model-subtracted residual. The corresponding PTC and MAP input-boundary amendments are not yet approved. Applicable PTC, coefficient, and MAP-support configurations must also be bound before an execution request is ready. The supplied report does not establish implementation readiness.**
+
+That tells us what remains to be done without suggesting there is some mysterious numerical obstacle.
+
+**The central requirement is a fully specified rule for recalculating the correlated modes—not a preselected, permanently frozen set of correlated modes.** Our scientific choice determines what the numerical calculation must do; making that calculation easier to analyze is not sufficient justification for changing that choice.

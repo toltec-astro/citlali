@@ -1,0 +1,291 @@
+SCI-FRUIT owner directive: mode-aware inference, feedback updates, and stability
+
+Date: September 9, 2026
+Scientific owner: Grant Wilson
+Purpose: Incorporate the outcomes of this morning’s discussion into the current FRUIT scientific definition, its engineering-conformance requirements, and the next bounded development step.
+
+1. Direction and scope
+
+Revise the current SCI-FRUIT materials around this organizing principle:
+
+FRUIT alternates between estimating correlated contamination from sky-subtracted data and constructing an updated astronomical feedback model from the reconstructed total map. Both operations have explicit scientific assumptions. The sky-feedback policy is observing-mode dependent; the correlated-signal estimator remains PTC-owned.
+
+This is a substantive clarification of the existing approach, not a replacement pipeline. Keep naive mapmaking as the initial setting for defining and understanding the feedback problem. Do not redirect this work into optimal mapmaking, a joint global sky–atmosphere solver, or a general pipeline redesign.
+
+The immediate task is to update the scientific contract and associated conformance requirements, identify the smallest necessary interface changes, and propose focused experiments. This directive does not itself broaden existing numerical, implementation, or activation permissions. Preserve useful work and existing evidence; identify specific conflicts rather than discarding the current packet or reopening unrelated decisions.
+
+Keep the exact recovered historical implementation and the naive-map reference candidate distinct. Historical PCA plus empirical S/N selection, sometimes supplemented by a flux cut, is an established practical baseline and fallback—not a failed approach to be replaced on principle. Preserve its actual mapmaker, update semantics, and settings when calling something the historical control. A naive-map variant is a deliberately modified reference, not automatically an exact historical reproduction.
+
+Preserve the JINC work. Its historical role does not make it the best starting point for isolating the feedback question, and choosing naive mapping first does not invalidate it.
+
+The goal is better scientific recovery with understood behavior. There need not be one universally best FRUIT policy.
+
+2. Define the iteration unambiguously
+
+Each iteration must start from the declared immutable measured-data parent, with the current feedback model removed in the appropriate domain. It must not repeatedly clean an already-cleaned residual unless that is a separately declared method.
+
+For exposition, let (y) denote the immutable data at the declared PTC-input boundary, (m_k) the map representation of the feedback model actually applied in iteration (k), and (P_k) the authorized projection into the subtraction domain. Then
+
+[
+\rho_k = y-P_km_k.
+]
+
+PTC must learn and resolve its correlated-signal state from this current sky-subtracted input, then apply its contracted cleaning procedure:
+
+[
+\Theta_k = \operatorname{PTC.LearnConsider}(\rho_k,\text{required context}),
+\qquad
+c_k = \operatorname{PTC.Apply}(\rho_k;\Theta_k).
+]
+
+The result used for the next sky inference is the reconstructed total, not just the cleaned residual map:
+
+[
+T_k = \operatorname{ReconstructTotal}(c_k,m_k;\text{declared route and state}).
+]
+
+A simple compatible special case is
+
+[
+T_k=\mathcal B_k[c_k+P_km_k],
+]
+
+where (\mathcal B_k) is the declared mapmaker. This illustration is not permission to replace the existing removal/rejoin contract. In particular, even for a linear mapmaker,
+
+[
+\mathcal B_k[c_k+P_km_k]
+=\mathcal B_kc_k+\mathcal B_kP_km_k
+]
+
+does not become (\mathcal B_kc_k+m_k) without establishing the required projection–mapping identity on the actual domain and support.
+
+Retain explicit units, calibration, response, normalization, coordinate, validity, support, and reference conventions on both paths. Naive mapping simplifies the estimator; it does not make those obligations disappear. Preserve the existing distinction among candidate, accepted, and actually applied feedback models. The symbols above are explanatory, not instructions to replace established contract notation or product identities.
+
+Relearning versus application state
+
+For the PCA reference, relearn the detector-loading subspace/eigenmodes from the current sky-subtracted data on every FRUIT iteration. Do not retain the first iteration’s eigenmodes throughout the loop, and do not treat recomputing coefficients in an unchanged subspace as equivalent to relearning that subspace.
+
+Holding the newly resolved state fixed for the appropriate application or conditional-response calculation within one iteration is a different matter. Preserve PTC’s existing distinctions between fixed-subspace application, frozen numerical-component subtraction, and fully relearned processing. Do not conflate them.
+
+3. Re-infer the complete feedback model from the reconstructed total
+
+The chosen development direction is full re-inference of a replacement feedback model each iteration.
+
+Apply the observing-mode policy to (T_k), the reconstructed total, and the associated evidence. Previously admitted pixels or structures may remain, change amplitude, or be rejected. Previously excluded structure may enter. Acceptance is not permanent ownership of a piece of flux.
+
+This is not accumulate-only feedback in which accepted flux is carried forward unquestioned and the inference operates only on progressively weaker residual increments. Such accumulation may remain a clearly identified comparison method, but it is not the leading approach established by this discussion.
+
+Crucially, distinguish algebraic rejoining of the current model to reconstruct the total from permanent accumulation of accepted model content. Rejoining is necessary bookkeeping; it does not oblige the next selector to retain the old model.
+
+The motivation is that improved separation of astronomical signal and correlated contamination may make the reconstructed source easier to infer. However, do not state that evidence must strengthen monotonically. Iterations reuse the same measurements; they do not create independent observations. The reconstructed total also contains the old model, so its appearance there is not independent confirmation of that model.
+
+The evidence and uncertainty treatment must account for this dependence. Re-inference permits revocation, but does not by itself guarantee that a false feature will be revoked.
+
+4. Make sky inference and numerical feedback separate, explicit operations
+
+The scientific question is not merely whether a pixel crosses a threshold. It is whether a feature is sufficiently supported as astronomical signal, rather than residual atmosphere, instrumental contamination, noise, or a processing artifact, to be included in the feedback model.
+
+S/N can provide a well-defined decision statistic. The historical S/N cut remains a legitimate policy. The aim is to make its assumptions explicit and determine whether additional evidence improves it—not to replace a useful threshold with an undefined “confidence” label.
+
+An inference policy must identify its allowed priors, relevant alternative explanations, evidence inputs, decision statistic, and decision rule. Pixelwise, featurewise, and spatially coherent decisions are all possible. Do not assume that every retained pixel must independently satisfy the same detection threshold. Spatial coherence is evidence only relative to a suitable contamination model; residual atmosphere can also be coherent.
+
+If a quantity is described as a probability or posterior confidence, its statistical meaning must be supplied. Otherwise call it a score, test statistic, or decision. A tail probability under a noise model is not automatically the probability that a feature is astronomical.
+
+What flux actually goes back?
+
+Inference must lead to an explicit numerical sky model. The leading simple candidate is an inference-defined support mask applied to the reconstructed total-map flux:
+
+[
+\widehat m_{k+1}(p)=a_k(p),T_k(p),
+\qquad a_k(p)\in{0,1}.
+]
+
+Here the mask may come from a structure-level decision rather than an independent test at pixel (p). This is a candidate reference rule, not approval of particular thresholds or a claim that thresholded flux is unbiased.
+
+Keep three questions distinct: whether a feature is admitted; which flux estimator supplies its retained values; and whether those values undergo any additional transformation before application.
+
+Probability weighting, shrinkage, fitted-source replacement, denoising, or extrapolation are different flux-estimation policies. They may be proposed, but must not be introduced silently as consequences of “using inference.” In particular, confidence that a feature exists is not automatically the fraction of its measured flux that should be subtracted.
+
+A filtered or matched-filter statistic may help decide admission. Its numerical values do not automatically constitute the calibrated sky model to project back. Declare any conversion, fitted model, or response treatment needed to construct that model.
+
+Retain both the reconstructed total product and the selected feedback model as distinct objects. Do not silently replace the science map with a thresholded feedback map. FRUIT’s internal inference also does not automatically establish a catalogue detection, pointing solution, beam calibration, or OOF solution.
+
+5. Build observing-mode policies into the contract now
+
+Do not postpone mode-specific selection as somebody else’s future problem. FRUIT must have an explicit, testable interface for these policies from the outset, even though their detailed numerical recipes will develop experimentally.
+
+POINT: targeted pointing observations
+
+Use the prior that there is a dominant localized source, with soft constraints on location and spatial scale.
+
+Do not tightly anchor the source to its expected position: locating the pointing offset is part of the measurement. Do not require the nominal in-focus beam shape or width: a pointing observation may also reveal substantial defocus or beam distortion. The prior should help discriminate a localized response from contamination without assuming the parameters that the observation is intended to measure.
+
+OOF: out-of-focus holography
+
+The source is known to be present by the observing design, but its mapped response can be highly distorted, distributed, and faint. Do not require a bright core, a high-S/N seed, a ring, a contiguous footprint, or a narrow predetermined morphology family.
+
+The discussion of roughly fourteen or more deformation basis functions illustrates the possible complexity; it is not a dimensional cap or an approved morphology model. A feature may be evident through faint coherent structure even when there is no useful central anchor.
+
+Coherence-aware inference is worth investigating. Cross-observation or cross-focus information may also be useful, but neither is an adopted algorithm yet. Any such method must avoid forcing the surface or beam structure that OOF is supposed to measure. This does not rule out useful physical priors; it rules out assuming their adequacy without evidence.
+
+Use the substantial OOF archive to compare candidates against the historical S/N-based baseline. Human-visible structure can guide case selection and diagnostics, but is not quantitative ground truth. Near-focus and strongly defocused observations may ultimately justify different policies.
+
+BEAM: detector-by-detector beam mapping
+
+The objectives include finding each detector’s response within a large map and recovering the flux observable needed for calibration. Those objectives must remain free to be measured.
+
+The source S/N discussed was of order a few tens, not merely two or three. Specify the actual S/N convention rather than leaving peak, integrated, or per-pixel meanings interchangeable.
+
+Use soft compactness and location priors without fixing the centroid, nominal beam shape, or amplitude. Evaluate preservation of the calibration-relevant flux, not merely whether a recognizable source appears.
+
+Ensemble information is an open research choice. Shared observation context or contamination information may help, but pooling is not automatically justified. Do not force weak detectors toward the positions, shapes, or amplitudes of strong detectors. Any borrowing must disclose its assumptions and dependence, and demonstrate that it does not suppress genuine detector differences or bias calibration.
+
+SCIENCE: blank-field compact-source searches
+
+Treat relatively blank-field searches for dusty star-forming galaxies as a distinct inference regime: compact responses, unknown source positions, and a declared instrumental/processing response.
+
+Matched-filter-style evidence is a natural candidate to compare with the baseline. Its search and noise assumptions must be explicit. Internal feedback selection is not automatically a final source catalogue or a calibrated detection claim. Do not move catalogue production into FRUIT or turn the map-filtering stage into a source finder by implication.
+
+SCIENCE: extended emission
+
+Keep extended-emission inference distinct from blank-field compact-source inference. Allow meaningful differences between bright extended fields, such as molecular clouds or nearby galaxies, and faint extended targets, such as an SZ decrement in a cluster.
+
+Bright structure may support relatively straightforward admission while its faint outskirts remain difficult. Faint, extended structure requires particular care in distinguishing sky from correlated residuals. These are not necessarily exclusive observation classes: a field may contain compact sources, bright extended emission, and faint diffuse structure together.
+
+Coherence and scale-dependent evidence are candidates, not guarantees of astronomical origin. Declare any shape, spatial-scale, or sign prior. Avoid a single universal SCIENCE selector whose hidden assumptions happen to suit only one of these regimes. Any composition or switching of policies for mixed fields must itself be explicit, not an undocumented automatic choice.
+
+6. Leave the additional flux floor genuinely open
+
+We have not established whether an additional lower flux limit is necessary after inference-based admission. Do not turn an unresolved question into a mandatory gate simply because a floor was discussed.
+
+The reference comparison should allow an inference/S/N rule alone and, where historically used or scientifically motivated, a separately declared flux floor. Determine whether the extra floor improves stability or contamination control enough to justify any lost recovery.
+
+Specify what the floor applies to: a pixel value, amplitude estimate, surface brightness, integrated feature, or another defined quantity. State units, sign handling, support, and whether the floor changes selection or modifies accepted values. Do not silently clip or round admitted flux.
+
+A structure-level decision may legitimately admit pixels with weak individual evidence. A per-pixel floor could defeat that purpose. No universal floor value or universal requirement for one was agreed today.
+
+7. Treat gain as an explicit policy, not a hidden safety knob
+
+Unity gain is the leading reference hypothesis: subtract the admitted model at its declared amplitude. This is not a demonstrated optimal choice or a claim of unconditional stability.
+
+Distinguish two operations often called “gain.” Direct attenuation uses
+
+[
+m_{k+1}=\alpha\widehat m_{k+1},
+]
+
+whereas relaxation toward a newly inferred model uses
+
+[
+m_{k+1}=(1-\gamma)m_k+\gamma\widehat m_{k+1}.
+]
+
+They are not the same algorithm. The former changes the amplitude fed back. The latter changes the transition toward the new estimate and can preserve old content temporarily, including content the new inference has rejected.
+
+Any proposal must explain which operation is intended, where it acts, and what happens to newly rejected support. Relaxation must not silently reintroduce permanent acceptance. Do not use the intuition “smaller gain is safer” as a substitute for testing, or assume unity gain is safe because the admitted model seems plausible.
+
+Keep the initial comparison small. Introduce damping or attenuation because a specific behavior motivates it, then assess its stability and scientific consequences separately.
+
+8. Make FRUIT compatible with alternative PTC estimators without taking over PTC
+
+PCA remains the reference correlated-signal estimator, but FRUIT must not require eigenvectors as its universal internal language.
+
+The conceptual alternatives discussed were robust correlated-component methods, weighted/noise-aware PCA or factor models, and a common mode supplemented by low-order focal-plane structure. These are candidate families—not approved implementations, guaranteed improvements, or instructions to build them all now.
+
+PTC owns how correlated contamination is inferred and removed. FRUIT owns the iterative placement of that operation, its input/model generations, and its relationship to sky feedback. At each iteration, the chosen PTC estimator must be relearned or re-estimated on the current sky-subtracted state according to its own contract.
+
+The interface must expose the relevant input and learned-state identity, application semantics, output validity/support, and required response or noise information. Preserve PTC’s existing obligations; do not weaken them to make an alternative appear interchangeable.
+
+This creates a controlled way to compare atmosphere estimators within the same FRUIT framework. It does not authorize replacing ordinary mapping with a different global inference architecture.
+
+9. Put sign admissibility in the sky policy
+
+There is no FRUIT-wide rule that negative map values are forbidden, and no established mathematical principle that feedback of negative values is intrinsically unstable.
+
+The empirical difficulty discussed is that negative features may represent residual noise, filtering structure, or bowls associated with imperfect removal of positive emission. Promoting those features as sky can preserve a processing error. But positive artifacts can also be promoted incorrectly; sign alone is not evidence of reality.
+
+For modes where the astronomical model is physically nonnegative, a declared positivity constraint may be appropriate. For an SZ decrement or another legitimately signed observable, the policy must permit the relevant negative signal. Distinguish the astronomical model’s sign from signed features of an instrumental or processing response, and from negative fluctuations in a measured map.
+
+Apply sign constraints at the declared feedback-inference/estimation step. Do not silently clip the reconstructed total or final science product. Test both erroneous positive and erroneous negative feedback, as well as recovery of legitimate signed signals.
+
+10. Distinguish convergence, stability, and scientific correctness
+
+These are separate claims.
+
+Convergence asks whether the iteration satisfies a declared stopping criterion. Examine the feedback model, reconstructed total, and relevant support/selection changes—not just one scalar map-difference statistic. Use the pertinent scientific quantities, such as centroid, calibration flux, or extended-profile recovery, where appropriate. Compare on explicitly defined support so that dropping difficult regions cannot masquerade as convergence.
+
+Stability asks how the loop responds to changes or errors. Small positive and negative perturbations of the feedback model should be tested in relevant cases. Determine whether they decay, persist, oscillate, or grow. Include near-threshold features and changes in admitted support. For PCA, compare the cleaning action or subspace rather than raw eigenvector signs or ordering.
+
+Scientific correctness asks whether the result preserves the relevant astronomical information with acceptable bias and contamination. A stable fixed point may be wrong. Small map changes can coexist with retained artifacts, suppressed extended emission, or biased calibration.
+
+For a declared update (m_{k+1}=F(m_k;y)), local perturbation behavior may be studied through
+
+[
+\delta m_{k+1}\simeq J_F,\delta m_k
+]
+
+where the necessary differentiability exists. This is useful analysis, not a demand for a universal contraction proof. Threshold changes and estimator-state transitions require direct tests too. Empirical stability in tested cases does not establish global stability.
+
+A simplified algebraic check illustrates a particular danger. In a common additive domain, with identity projection and a fixed linear cleaner (C),
+
+[
+C(y-m)+m=Cy+(I-C)m.
+]
+
+Thus an erroneous model component in a direction removed by the cleaner can survive through the model path. Its sign does not resolve the problem. This is an illustrative fixed-cleaner limit, not the full relearned FRUIT algorithm; it explains why add-back and apparent convergence do not establish measured recovery.
+
+Preserve explicit handling of observationally unconstrained modes. Model- or prior-supported content must not be relabeled as independently recovered signal. Neutral behavior in an unidentifiable direction also needs a different interpretation from amplification in a measured direction.
+
+Stopping, termination, and terminal-product selection must retain explicit causes. Reaching an iteration limit is not convergence. Detecting instability is not successful completion. Do not automatically select the last or highest-flux iteration as scientifically best. Specify the decision without inventing numerical tolerances in this revision.
+
+11. Keep evidence and uncertainty honest
+
+A model learned from the data and rejoined to those data is statistically dependent on the residual and reconstructed product. Do not treat model and residual as independent measurements, add their uncertainties under an unsupported independence assumption, or shrink error bars merely because more iterations have run.
+
+Similarly, repeated acceptance of the same feature is not a sequence of independent detections. A fixed-state noise calculation answers a different question from one that includes relearning, selection, and feedback. Retain the existing response and NOI distinctions rather than relabeling a conditional calculation as full iterative uncertainty.
+
+Inference must identify what its noise evidence actually represents. Formal map weights do not automatically establish covariance or significance. Missing required evidence must produce the existing appropriate unavailable or limited disposition, not a fabricated confidence estimate.
+
+Acceptance means suitability for feedback under a declared policy. It does not by itself establish truth, unbiased flux, or downstream fitness.
+
+12. Use focused comparisons to earn improvements over the baseline
+
+The next experiments should answer specific questions raised here, not expand into a general validation campaign.
+
+First establish the exact reference behavior and the naive-map comparison boundary. Then vary one major choice at a time: the sky-selection rule with PTC held fixed; an extra floor or gain policy when motivated; or the PTC estimator with sky feedback held fixed. Do not change the mapmaker, cleaner, selector, floor, and gain together and attribute the outcome to one component.
+
+Use a bounded combination of representative observations, null/no-source cases where suitable, and injections with known truth. The OOF archive is particularly useful. Inject at a declared stage that actually exercises the inference or cleaning effect under test; a final-map injection cannot test relearning the atmosphere from timestreams.
+
+Judge candidates on the appropriate science: pointing offset without nominal-position bias; OOF structure without an imposed morphology; detector location and calibration flux for BEAM; compact-source flux and false promotion for blank fields; and extended/signed-signal recovery without manufactured structure for diffuse science. Include perturbation behavior and sensitivity to modest threshold or prior changes.
+
+Independent subsets may provide useful checks where justified, but shared-model or shared-data dependence must be disclosed. Visual improvement and an apparently cleaner residual are not sufficient acceptance criteria. Report computational cost separately from scientific quality.
+
+A more elaborate method must demonstrate a useful advantage over the simpler baseline for its intended regime. Conditional or specialized success is acceptable. There is no requirement to replace a baseline that remains the better-supported choice.
+
+13. Preserve Learn–Consider–Apply in both workflow and runtime architecture
+
+Learn–Consider–Apply is both how we develop these decisions and how the eventual code processes data. Engineering-process compliance alone does not satisfy the runtime requirement.
+
+Within FRUIT, learning gathers the evidence required by the selected policy; consideration resolves the admission, flux-estimation, sign, floor, gain, and transition decisions; application constructs and projects the exact chosen model. PTC retains its own contracted learning and application responsibilities on the sky-subtracted input.
+
+These conceptual responsibilities need not force a particular class hierarchy. They must be visible in the scientific definition and represented by explicit runtime interfaces/state rather than hidden inside an opaque iteration function.
+
+VAL remains alongside the processing chain with the appropriate participation at learning and decision boundaries. NOI retains its uncertainty authority. MAP retains map-estimator authority. FRUIT does not acquire those responsibilities by orchestrating their use.
+
+Record enough existing method/state/iteration information to reconstruct what evidence was used, what was accepted or rejected, what flux transformation occurred, what PTC state was learned, what operand was applied, and why the run continued or stopped. Reuse existing product and lineage structures where possible; do not create redundant registries or document families merely to express this refinement.
+
+14. Requested next delivery
+
+Return a bounded revision with four components:
+
+Updated scientific definition and rationale. Incorporate the iteration above, total-map re-inference, mode-aware feedback policies, PTC compatibility, sign handling, and convergence/stability distinctions. Explain the scientific consequences rather than only adding interface vocabulary.
+
+A concise crosswalk against the current packet. Identify what remains unchanged, what this directive changes, what already supports the direction, and any specific unresolved conflict. Preserve existing approved work and distinguish owner decisions from proposals.
+
+Updated engineering-conformance requirements. State observable obligations and targeted tests for the same science, including per-iteration relearning, reconstructed-total selection, revocation, explicit flux construction, and unchanged producer boundaries. Do not present prospective tests as executed evidence.
+
+A minimal experiment proposal and open-decision list. Prioritize the questions that actually block the next method definition. Keep OOF coherence, BEAM ensemble borrowing, detailed science priors, extra flux floors, and non-unity gain explicitly experimental until resolved.
+
+Do not return another broad architectural survey or an implementation detour. The next review should make the ordinary-map FRUIT method more concrete while leaving genuinely unsettled numerical choices visible.
+
+Bottom line: Keep the current ordinary-map development path and its historical controls. Make sky-feedback inference explicitly mode aware, re-infer a replacement model from the reconstructed total each iteration, relearn the PTC-owned correlated estimator from the current sky-subtracted data, and require evidence for both scientific recovery and feedback stability. Improve the existing method through controlled comparisons—not by assuming that a more elaborate inference model is automatically better.

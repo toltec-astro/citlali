@@ -1,8 +1,8 @@
 # SCI-FRUIT v0.1 — Iterative Feedback, State, And Termination
 
 Status: generic SCI-FRUIT-NORMATIVE-CORE v0.1/r0.4 accepted and conditionally
-frozen; ordinary-MAP scope, residual-relearning and mode-aware paper directions
-approved, with method/boundary proposal r0.3 prepared for owner review.
+frozen; ordinary-MAP scientific definition r0.4 accepted and frozen after
+three bounded scope clarifications. Q02 upstream amendments remain unadopted.
 Every numerical method/route remains unavailable pending separate approval.
 Updated: 2026-09-09.
 
@@ -11,7 +11,7 @@ Updated: 2026-09-09.
 This package follows the [program charter](../../../README.md),
 [accepted pilot workflow](../../../PILOT_PROCESS_REVIEW_2026-08-16.md) and
 [downstream roadmap](../../../DOWNSTREAM_CONTRACT_ROADMAP_2026-08-26.md).
-The [current method recovery](method_preparation/ordinary_map/method_definition/r0.3/PRIOR_WORK.md)
+The [current method recovery](method_preparation/ordinary_map/method_definition/r0.4/PRIOR_WORK.md)
 adopts the exact frozen generic FRUIT core and inherited PTC/MAP science,
 identifies both sides of the PTC boundary, and defers empirical evidence.
 Implementation/configuration and the internal dossier remain outside independent
@@ -20,21 +20,22 @@ no generic FRUIT or PCA derivation is repeated.
 
 The [scope approval](method_preparation/ordinary_map/method_definition/r0.2/OWNER_SCOPE_APPROVAL_2026-09-08.md)
 closes D001–D005 as scope and paper-preparation directions. The
-[current source control](method_preparation/ordinary_map/method_definition/r0.3/REFERENCE_CONTROL.md)
+[current source control](method_preparation/ordinary_map/method_definition/r0.4/REFERENCE_CONTROL.md)
 reconciles the three process-only reference flags; any later exact sanitized
 author packet and dispatch still require separate approval.
 The generic-core program-order exception permits
 conditional-core authorship before numerical-method qualification; it grants
 no numerical method or new method-specific author dispatch.
 
-## Current Owner Review
+## Locked Scientific Definition And Remaining Review
 
-- [Owner directives, precedence and crosswalk](method_preparation/ordinary_map/method_definition/r0.3/OWNER_DIRECTION_AND_CROSSWALK.md)
-- [Ordinary-MAP r0.3 paper proposal and archive](method_preparation/ordinary_map/method_definition/r0.3/README.md)
-- [Scientific definition and twenty-one classes](method_preparation/ordinary_map/method_definition/r0.3/METHOD_DEFINITION.md)
-- [Actual proposed PTC/MAP amendments](method_preparation/ordinary_map/method_definition/r0.3/BOUNDARY_AMENDMENTS.md)
-- [Prospective engineering requirements](method_preparation/ordinary_map/method_definition/r0.3/ENGINEERING_CONFORMANCE.md)
-- [Minimal experiments, recovered bindings and precise questions](method_preparation/ordinary_map/method_definition/r0.3/EXPERIMENTS_AND_OPEN_DECISIONS.md)
+- [Owner directives, precedence and crosswalk](method_preparation/ordinary_map/method_definition/r0.4/OWNER_DIRECTION_AND_CROSSWALK.md)
+- [Ordinary-MAP r0.4 scientific definition and archive](method_preparation/ordinary_map/method_definition/r0.4/README.md)
+- [Scientific definition and twenty-one classes](method_preparation/ordinary_map/method_definition/r0.4/METHOD_DEFINITION.md)
+- [Actual proposed PTC/MAP amendments](method_preparation/ordinary_map/method_definition/r0.4/BOUNDARY_AMENDMENTS.md)
+- [Prospective engineering requirements](method_preparation/ordinary_map/method_definition/r0.4/ENGINEERING_CONFORMANCE.md)
+- [Minimal experiments, recovered bindings and precise questions](method_preparation/ordinary_map/method_definition/r0.4/EXPERIMENTS_AND_OPEN_DECISIONS.md)
+- [Scoped ordinary-MAP scientific-definition freeze](method_preparation/ordinary_map/method_definition/r0.4/SCIENTIFIC_OWNER_FREEZE_R0.4.md)
 - [Exact generic-core conditional freeze](scientific_core/SCI_FRUIT_STAGE_B_R0.4_OWNER_CONDITIONAL_FREEZE_2026-09-08.md)
 
 The owner directed mode-aware replacement inference from the reconstructed
@@ -42,8 +43,11 @@ total, while retaining ordinary MAP first and current-residual PTC relearning.
 Each pass learns under the same recipe, then fixes its resolved state during
 Apply. FRUIT separately resolves model admission, retained flux and application.
 The leading proposal retains unfiltered calibrated total flux on admitted
-support with unity application. Earlier admitted structure can change or be
-revoked, inside a fixed available MAP domain. POINT, OOF, BEAM and distinct
+support with unity application. Binary admission and fixed support are
+controlled-reference choices, not universal FRUIT restrictions. Other declared
+methods may account explicitly for support changes or use their own continuous/
+fitted flux estimators. Support loss cannot masquerade as inference rejection
+or convergence. Earlier admitted structure can change or be revoked. POINT, OOF, BEAM and distinct
 SCIENCE policy interfaces are specified now; numerical policies and missing
 mode/quantity routes remain gated. The all-support/both-sign selector remains
 a comparison baseline, and historical PCA/S/N remains a practical control.
@@ -57,10 +61,12 @@ require the proposed controlled amendments, including PTC REQ-099 disposition
 and separate MAP profile admission. Coefficient/current-QC, applicable PTC-plan
 and numerical MAP support bindings remain separate; learned eigenvectors are
 results, not requested owner settings. Frozen MAP stays v0.1/r0.7.1; no successor
-is adopted. Q01/Q02 concern the remaining method and exact boundary approval.
-The latest direction permits a minimal experiment proposal, with exact
-reference recovery first and independent-pointing replication before policy
-recommendation. No execution, implementation or author dispatch is authorized.
+is adopted. Q01 scientific-definition review is resolved; numerical policy
+slots remain unbound. Q02 exact boundary approval is the next separate review.
+POINT/E01 is a recommended first experiment, not an approved campaign order;
+OOF is separately selectable. Exact reference recovery precedes comparison
+interpretation and independent-pointing replication precedes recommendation.
+No execution, implementation or author dispatch is authorized.
 Historical JINC control, existing products and all prior packets are unchanged.
 Stage A and the Stage B r0.4 core/delivery remain unchanged. Earlier pending
 review and not-launched wording in historical packets is historical status.
