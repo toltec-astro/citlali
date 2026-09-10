@@ -1,0 +1,9 @@
+{
+  "status": "INCOMPLETE_INTERPRETATION_BLOCKED",
+  "error_type": "PermissionError",
+  "error": "[Errno 1] Operation not permitted (originated from sysctl(KERN_PROC_ALL))",
+  "traceback": "Traceback (most recent call last):\n  File \"/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_q02_mapping_screen_2026-09-10/run_screen.py\", line 47, in main\n    write_json(out/'THREAD_POOLS.json',threadpool_info());run.check('Deterministic verification passed; no input or stochastic access yet')\n                                                          ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_q02_mapping_screen_2026-09-10/run_screen.py\", line 24, in check\n    require(not psutil.Process().children(recursive=True),'Unexpected child process in one-process campaign')\n                ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^\n  File \"/Users/gwilson/tolteca/lib/python3.13/site-packages/psutil/__init__.py\", line 966, in children\n    ppid_map = _ppid_map()\n  File \"/Users/gwilson/tolteca/lib/python3.13/site-packages/psutil/__init__.py\", line 259, in _ppid_map\n    for pid in pids():\n               ~~~~^^\n  File \"/Users/gwilson/tolteca/lib/python3.13/site-packages/psutil/__init__.py\", line 1454, in pids\n    ret = sorted(_psplatform.pids())\n                 ~~~~~~~~~~~~~~~~^^\n  File \"/Users/gwilson/tolteca/lib/python3.13/site-packages/psutil/_psosx.py\", line 312, in pids\n    ls = cext.pids()\nPermissionError: [Errno 1] Operation not permitted (originated from sysctl(KERN_PROC_ALL))\n",
+  "wall_seconds": 0.14481079205870628,
+  "peak_aggregate_memory_bytes": 104628224,
+  "retention": "This attempt is preserved; method/input/population/scope changes need review"
+}

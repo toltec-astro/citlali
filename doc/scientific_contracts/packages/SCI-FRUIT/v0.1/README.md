@@ -33,7 +33,9 @@ no numerical method or new method-specific author dispatch.
 
 ## Locked Scientific Definition And Remaining Review
 
-- [Current Q02 r0.6 mapping-screen proposal and owner decision](method_preparation/ordinary_map/method_definition/q02_review/r0.6/README.md)
+- [Completed Q02 mapping screen and recommended owner disposition](../../../../../validation/fruit_q02_mapping_screen_2026-09-10/SCIENTIFIC_REPORT.md)
+- [Owner approval of the exact r0.6 mapping screen](method_preparation/ordinary_map/method_definition/q02_review/MAPPING_SCREEN_APPROVAL_2026-09-10.md)
+- [Prior Q02 r0.6 mapping-screen execution review](method_preparation/ordinary_map/method_definition/q02_review/r0.6/README.md)
 - [Completed weight-precision diagnostic and next scientific decision](../../../../../validation/fruit_q02_weight_precision_2026-09-09/SCIENTIFIC_REPORT.md)
 - [Owner approval of the exact r0.5 diagnostic](method_preparation/ordinary_map/method_definition/q02_review/WEIGHT_PRECISION_APPROVAL_2026-09-09.md)
 - [Prior r0.5 diagnostic execution review](method_preparation/ordinary_map/method_definition/q02_review/r0.5/README.md)
@@ -137,6 +139,15 @@ been started. T2 cannot certify real-data noninferiority or physical recovery
 from spatial scatter, and independent replication remains a later decision.
 The prior diagnostic completed one attempt and all deterministic/product checks
 within bounds; inputs and prior products are preserved. 129081 remains reserved.
+The owner subsequently approved and executed r0.6. The completed screen retains
+all nine synthetic cases (two pass, seven fail a required criterion) and six
+discovery array cases. Lower real-map background RMS accompanies material
+source-template changes, missing a1400 support and unavailable signed morphology.
+These outcomes select no policy. One scientific campaign completed after two
+preserved startup-only repairs; all arithmetic/input/product checks passed.
+The report recommends returning to minimum source/recovery requirements before
+further numerical work. That owner disposition remains open; no replication,
+129081 access, source adoption, C closure or FRUIT continuation is inferred.
 POINT/E01 is a recommended first experiment, not an approved campaign order;
 OOF is separately selectable. Exact reference recovery precedes comparison
 interpretation and independent-pointing replication precedes recommendation.

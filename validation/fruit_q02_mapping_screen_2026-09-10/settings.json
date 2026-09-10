@@ -1,0 +1,53 @@
+{
+  "decision": "SCI-FRUIT-Q02-MAPPING-SCREEN-R0.6",
+  "proposal_commit": "d7364e62eb44230b47f227fbf1eb251ea5449dd7",
+  "protocol_sha256": "84553f9253f4a71009d5a7e5a40042ad0166c08ec02b3d95a8d7a9a084c61173",
+  "approval_sha256": "6a8cea0198448b6a9f2f5a705cdfe70b201fb7a874336118625d590feb58f486",
+  "inputs": [
+    {
+      "obsnum": 123424,
+      "path": "/Users/gwilson/work_toltec/local_data/beammaps/pointings/reduced/redu01/123424/raw/toltec_commissioning_pointing_123424_ptc_timestream.nc",
+      "bytes": 760674540,
+      "sha256": "b53ad776173b1bd2b12569c87ae15ad78a3db1c76ef4515c855255b0e4f20ba9"
+    },
+    {
+      "obsnum": 152389,
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/152389/raw/toltec_commissioning_pointing_152389_ptc_timestream.nc",
+      "bytes": 138244964,
+      "sha256": "894fff53babfb0070e7d0a8b831aa88098d87f9772d4a8ecb253aef009d35643"
+    }
+  ],
+  "edges": [
+    0,
+    289,
+    594,
+    899,
+    1204,
+    1509,
+    1814,
+    2119,
+    2424,
+    2729,
+    3034,
+    3339,
+    3628
+  ],
+  "guard_arcsec": {
+    "123424": 28.59742792952955,
+    "152389": 27.38359774550894
+  },
+  "window_chunks": 4,
+  "trials": 1024,
+  "tail_probability": 0.0001953125,
+  "tail_count": 242,
+  "T1_stochastic_maps": 36864,
+  "T2_maps": 72,
+  "pixel_arcsec": 2.0,
+  "coverage_cut": 0.1,
+  "grid_pixel_limit": 2000000,
+  "wall_time_limit_seconds": 7200,
+  "aggregate_memory_limit_bytes": 4294967296,
+  "output_limit_bytes": 2147483648,
+  "workers": 1,
+  "numerical_library_threads": 1
+}

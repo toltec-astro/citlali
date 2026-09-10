@@ -1,0 +1,201 @@
+{
+  "case": "W04a",
+  "row": 6,
+  "trials": 1024,
+  "conditional_disposition": "failure",
+  "support_missing_pixels": 0,
+  "checks": {
+    "noise": {
+      "n": 1024,
+      "available": true,
+      "mean": 0.019816745736100864,
+      "se": 0.00021673569036283842,
+      "lower": 0.019045569981094163,
+      "upper": 0.020587921491107566,
+      "margin": 0.0,
+      "absolute": false,
+      "disposition": "failure"
+    },
+    "U/amplitude_bias": {
+      "n": 1024,
+      "available": true,
+      "mean": -5.368969158148218e-16,
+      "se": 7.655193659507219e-18,
+      "lower": -5.641351604260805e-16,
+      "upper": -5.096586712035631e-16,
+      "margin": 0.025,
+      "absolute": true,
+      "disposition": "pass"
+    },
+    "U/centroid_x_bias": {
+      "n": 1024,
+      "available": true,
+      "mean": -3.662593013461868e-17,
+      "se": 3.7935115320363136e-18,
+      "lower": -5.012377220643991e-17,
+      "upper": -2.3128088062797444e-17,
+      "margin": 0.04,
+      "absolute": true,
+      "disposition": "pass"
+    },
+    "U/centroid_y_bias": {
+      "n": 1024,
+      "available": true,
+      "mean": 3.3826251705480284e-17,
+      "se": 3.861587812053891e-18,
+      "lower": 2.0086184753424905e-17,
+      "upper": 4.7566318657535665e-17,
+      "margin": 0.04,
+      "absolute": true,
+      "disposition": "pass"
+    },
+    "U/width_x_bias": {
+      "n": 1024,
+      "available": true,
+      "mean": -1.5699247457590104e-16,
+      "se": 5.106815634826502e-18,
+      "lower": -1.7516323545185236e-16,
+      "upper": -1.3882171369994973e-16,
+      "margin": 0.017604712122452622,
+      "absolute": true,
+      "disposition": "pass"
+    },
+    "U/width_y_bias": {
+      "n": 1024,
+      "available": true,
+      "mean": -1.6566609195578508e-16,
+      "se": 5.1612470926144744e-18,
+      "lower": -1.840305275351758e-16,
+      "upper": -1.4730165637639435e-16,
+      "margin": 0.017604712122452622,
+      "absolute": true,
+      "disposition": "pass"
+    },
+    "N4U/amplitude_bias": {
+      "n": 1024,
+      "available": true,
+      "mean": -4.711942641622002e-16,
+      "se": 1.8684792064487945e-17,
+      "lower": -5.376773551720479e-16,
+      "upper": -4.047111731523526e-16,
+      "margin": 0.025,
+      "absolute": true,
+      "disposition": "pass"
+    },
+    "N4U/centroid_x_bias": {
+      "n": 1024,
+      "available": true,
+      "mean": -3.670263365322521e-17,
+      "se": 4.11202452149243e-18,
+      "lower": -5.1333789277198623e-17,
+      "upper": -2.2071478029251797e-17,
+      "margin": 0.04,
+      "absolute": true,
+      "disposition": "pass"
+    },
+    "N4U/centroid_y_bias": {
+      "n": 1024,
+      "available": true,
+      "mean": 2.872546771814596e-17,
+      "se": 4.202077319495533e-18,
+      "lower": 1.3773891703907112e-17,
+      "upper": 4.36770437323848e-17,
+      "margin": 0.04,
+      "absolute": true,
+      "disposition": "pass"
+    },
+    "N4U/width_x_bias": {
+      "n": 1024,
+      "available": true,
+      "mean": -1.5146304349622497e-16,
+      "se": 4.492325214694388e-18,
+      "lower": -1.6744736192286652e-16,
+      "upper": -1.3547872506958342e-16,
+      "margin": 0.017604712122452622,
+      "absolute": true,
+      "disposition": "pass"
+    },
+    "N4U/width_y_bias": {
+      "n": 1024,
+      "available": true,
+      "mean": -1.478851763270228e-16,
+      "se": 4.7420399245565135e-18,
+      "lower": -1.647580144505902e-16,
+      "upper": -1.310123382034554e-16,
+      "margin": 0.017604712122452622,
+      "absolute": true,
+      "disposition": "pass"
+    },
+    "excursion_difference": {
+      "lower": 0.3088807014942444,
+      "upper": 0.44214937584054104,
+      "margin": 0.01,
+      "arms": [
+        {
+          "successes": 399,
+          "n": 1024,
+          "lower": 0.33624109027781435,
+          "upper": 0.4449511209425647
+        },
+        {
+          "successes": 11,
+          "n": 1024,
+          "lower": 0.0028017451020236847,
+          "upper": 0.02736038878356995
+        }
+      ],
+      "disposition": "failure"
+    }
+  },
+  "analytic_U": null,
+  "metric_names": [
+    "noise_power",
+    "null_mean",
+    "amplitude_bias",
+    "centroid_x_bias",
+    "centroid_y_bias",
+    "width_x_bias",
+    "width_y_bias",
+    "response_residual_power",
+    "signal_error_power",
+    "gross_excursion",
+    "null_corr_x",
+    "null_corr_y"
+  ],
+  "metric_means": [
+    [
+      0.048669580670979595,
+      0.00029680128026916765,
+      -5.368969158148218e-16,
+      -3.662593013461878e-17,
+      3.3826251705480345e-17,
+      -1.5699247457590104e-16,
+      -1.6566609195578508e-16,
+      1.5437150435015502e-32,
+      0.048669580670979595,
+      0.3896484375,
+      -0.010775387820948515,
+      -0.006671856929250542
+    ],
+    [
+      0.026170371823019303,
+      0.0006781595594282293,
+      -4.711942641622002e-16,
+      -3.670263365322525e-17,
+      2.872546771814596e-17,
+      -1.5146304349622497e-16,
+      -1.478851763270228e-16,
+      2.3360608966753231e-32,
+      0.026170371823019303,
+      0.0107421875,
+      -0.011389617658451541,
+      -0.008640712660016746
+    ]
+  ],
+  "interpretation": "Synthetic-law conditional result; no TolTEC policy qualification",
+  "seconds": {
+    "weights": 0.08742429059930146,
+    "U_mapping": 0.1499795715790242,
+    "N4U_mapping": 0.1483951909467578
+  }
+}

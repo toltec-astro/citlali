@@ -1,0 +1,33 @@
+{
+  "generation_path": "T2_152389_generation.npz",
+  "sha256": "e67794a8cc840ad6b686ced6614ce9a0d94c65c7908d0c5ebb7fb4cf8adb4b09",
+  "evaluation_signal_moments_consumed": false,
+  "training_dispersion": [
+    {
+      "array": "a1100",
+      "required_groups": 7742,
+      "trained_groups": 7741,
+      "fallback_groups": 1,
+      "q10_sd": 69.50141722052673,
+      "q90_sd": 297.9736000381013
+    },
+    {
+      "array": "a1400",
+      "required_groups": 2889,
+      "trained_groups": 2888,
+      "fallback_groups": 1,
+      "q10_sd": 36.715698057595894,
+      "q90_sd": 200.1146161429969
+    },
+    {
+      "array": "a2000",
+      "required_groups": 2550,
+      "trained_groups": 2550,
+      "fallback_groups": 0,
+      "q10_sd": 62.1953719883772,
+      "q90_sd": 357.28779926479575
+    }
+  ],
+  "seconds": 0.521918292157352,
+  "rule": "N4U exact r0.6; this generation is fixed for all following full/window/response maps"
+}

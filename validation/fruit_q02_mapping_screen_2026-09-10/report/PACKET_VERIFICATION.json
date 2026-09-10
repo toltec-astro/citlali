@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "prior_review_payload_counts": {
+    "r0.1": 1,
+    "r0.2": 2,
+    "r0.3": 4,
+    "r0.4": 6,
+    "r0.5": 2,
+    "r0.6": 2
+  },
+  "prior_review_source_rows": 131,
+  "frozen_definition_payloads": 57,
+  "prior_diagnostic_payloads": 46,
+  "executed_sources": "all unchanged since attempt_03 startup",
+  "attempt_manifests": "all verified",
+  "opaque_archives": "both present; neither opened, hashed nor unpacked",
+  "protected_worktrees": "exact HEAD/tracked states unchanged",
+  "figures": "all four visually inspected; labels, masks, scales and legends readable",
+  "documents": "links/tables/whitespace checked",
+  "numerical_checks": "15 deterministic checks, four analytic U checks, 36,864 T1 maps and 72 T2 maps independently checked",
+  "no_production_changes": true,
+  "no_Unity_access": true,
+  "no_push": true
+}

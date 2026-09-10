@@ -1,0 +1,14 @@
+{
+  "status": "COMPLETE",
+  "completed_utc": "2026-09-10T15:07:34.743437+00:00",
+  "wall_seconds": 23.217260874807835,
+  "peak_aggregate_memory_bytes": 1570914304,
+  "processes": 1,
+  "T1_stochastic_maps": 36864,
+  "T2_maps": 72,
+  "deterministic_checks": 15,
+  "product_verification": "PASS",
+  "scientific_disposition": "See all cases and alerts; no automatic policy qualification",
+  "external_inputs": "both hashes unchanged",
+  "reserved_129081": "not opened"
+}

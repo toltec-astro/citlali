@@ -1,0 +1,31 @@
+{
+  "products": [
+    {
+      "path": "DETERMINISTIC_VERIFICATION.json",
+      "bytes": 1611,
+      "sha256": "7eda298ba1455d21dd14fdb8f0b450615bce2d2dee666070d7215e81b4865042"
+    },
+    {
+      "path": "FAILURE.json",
+      "bytes": 1829,
+      "sha256": "9cd4948281dfbcc337edc6c0e9fd53e4aaa7197903a63dc180080669389486b8"
+    },
+    {
+      "path": "RUN_START.json",
+      "bytes": 4274,
+      "sha256": "de02bece7e67133162522683711d1465aa49097236b20200eba092c6d77812bb"
+    },
+    {
+      "path": "TAIL_REGISTRY.json",
+      "bytes": 6881,
+      "sha256": "ca45cd4d177a4f9089dabbbf4e700c7f1f14460f2d45efb463316f6018457173"
+    },
+    {
+      "path": "THREAD_POOLS.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    }
+  ],
+  "payload_bytes": 14598,
+  "external_inputs_modified": false
+}

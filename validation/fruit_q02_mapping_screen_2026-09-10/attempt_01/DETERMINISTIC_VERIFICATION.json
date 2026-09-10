@@ -1,0 +1,68 @@
+{
+  "status": "PASS",
+  "count": 15,
+  "checks": [
+    {
+      "name": "fallback mean and exact signal contribution",
+      "status": "PASS"
+    },
+    {
+      "name": "all fallback causes, n=2, and unused groups",
+      "status": "PASS"
+    },
+    {
+      "name": "all training unavailable fails closed",
+      "status": "PASS"
+    },
+    {
+      "name": "common scale invariance",
+      "status": "PASS"
+    },
+    {
+      "name": "threshold integer oracle and distinct supports",
+      "status": "PASS"
+    },
+    {
+      "name": "half-open containing-cell edges",
+      "status": "PASS"
+    },
+    {
+      "name": "same invalidity population and equal-arm identity",
+      "status": "PASS"
+    },
+    {
+      "name": "finite evaluation replacement cannot affect generation",
+      "status": "PASS"
+    },
+    {
+      "name": "contaminated training changes its own generation",
+      "status": "PASS"
+    },
+    {
+      "name": "window partition and column identity without UID merge",
+      "status": "PASS"
+    },
+    {
+      "name": "constant and signed fixed-generation response",
+      "status": "PASS"
+    },
+    {
+      "name": "signed morphology, amplitude and missing support",
+      "status": "PASS"
+    },
+    {
+      "name": "interval directions, missing trials and exact tail count",
+      "status": "PASS"
+    },
+    {
+      "name": "all T1 ideal source metrics and registered occurrence counts",
+      "status": "PASS"
+    },
+    {
+      "name": "full required disk included even when unvisited",
+      "status": "PASS"
+    }
+  ],
+  "stochastic_trials": 0,
+  "external_inputs_opened": false
+}

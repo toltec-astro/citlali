@@ -1,0 +1,76 @@
+{
+  "status": "PASS",
+  "T1_maps": 36864,
+  "T2_maps": 72,
+  "input_hashes": "both unchanged",
+  "generation_locks": "unchanged",
+  "reserved_129081": "not opened",
+  "checks": [
+    {
+      "case": "W00",
+      "checks": "map/normalization/support/independent scalar moments PASS"
+    },
+    {
+      "case": "W01a",
+      "checks": "map/normalization/support/independent scalar moments PASS"
+    },
+    {
+      "case": "W01b",
+      "checks": "map/normalization/support/independent scalar moments PASS"
+    },
+    {
+      "case": "W02",
+      "checks": "map/normalization/support/independent scalar moments PASS"
+    },
+    {
+      "case": "W03a",
+      "checks": "map/normalization/support/independent scalar moments PASS"
+    },
+    {
+      "case": "W03b",
+      "checks": "map/normalization/support/independent scalar moments PASS"
+    },
+    {
+      "case": "W04a",
+      "checks": "map/normalization/support/independent scalar moments PASS"
+    },
+    {
+      "case": "W04b",
+      "checks": "map/normalization/support/independent scalar moments PASS"
+    },
+    {
+      "case": "W05",
+      "checks": "map/normalization/support/independent scalar moments PASS"
+    },
+    {
+      "obsnum": 123424,
+      "array": "a1100",
+      "checks": "independent evaluation accumulation, support, fallback, response and complete-region moments PASS"
+    },
+    {
+      "obsnum": 123424,
+      "array": "a1400",
+      "checks": "independent evaluation accumulation, support, fallback, response and complete-region moments PASS"
+    },
+    {
+      "obsnum": 123424,
+      "array": "a2000",
+      "checks": "independent evaluation accumulation, support, fallback, response and complete-region moments PASS"
+    },
+    {
+      "obsnum": 152389,
+      "array": "a1100",
+      "checks": "independent evaluation accumulation, support, fallback, response and complete-region moments PASS"
+    },
+    {
+      "obsnum": 152389,
+      "array": "a1400",
+      "checks": "independent evaluation accumulation, support, fallback, response and complete-region moments PASS"
+    },
+    {
+      "obsnum": 152389,
+      "array": "a2000",
+      "checks": "independent evaluation accumulation, support, fallback, response and complete-region moments PASS"
+    }
+  ]
+}

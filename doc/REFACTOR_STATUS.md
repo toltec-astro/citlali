@@ -1562,6 +1562,34 @@ reserved, Q02-C/MAP handoff remain open, and FRUIT/T3, numerical source adoption
 Unity, production and qualification remain separately gated. All prior/frozen
 packets, diagnostic products, reduction inputs and opaque archives are preserved.
 
+The owner approved that exact screen on 2026-09-10 in the
+[Q02 r0.6 approval](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/MAPPING_SCREEN_APPROVAL_2026-09-10.md).
+The [completed mapping-screen report](../validation/fruit_q02_mapping_screen_2026-09-10/SCIENTIFIC_REPORT.md)
+records 36,864 synthetic maps and 72 discovery maps. Two startup failures occurred
+before scientific access; routine process-monitoring/metadata repairs and both
+old runners are retained. The sole scientific campaign, attempt 03, completed
+in 23.217 seconds at 1.46 GiB peak aggregate memory. Fifteen deterministic
+checks, four analytic U checks and independent product verification passed;
+both discovery input hashes are unchanged.
+
+Uniform passes the equal-noise and shared-component synthetic cases and fails
+at least one registered criterion in the other seven. N4U lowers complete-
+region real-map background RMS by 21.9–54.5%, while the three complete positive
+native template amplitudes change by -32.2%, -20.3% and -11.9%. Both a1400
+cases lose required outer support; signed morphology is largely unavailable.
+The fixed-state signed mapping checks pass, but do not establish physical
+recovery or real-data covariance. Both missing-training groups remain with the
+approved uniform fallback and explicit influence accounting. No region, detector
+population, coefficient family or threshold was changed after results.
+
+Close the authorized screen as evidence. The report recommends returning to the
+minimum source-quantity/recovery contract question before further numerical work;
+that next owner disposition remains open. No weighting policy, Q02-C/MAP handoff,
+FRUIT method or qualification is approved by these outcomes. 129081 stays reserved,
+and any later recommendation still needs independent replication and adequate
+uncertainty evidence. All previous/frozen packets, diagnostic attempts, reductions
+and opaque archives remain preserved; no Unity access or push occurred.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

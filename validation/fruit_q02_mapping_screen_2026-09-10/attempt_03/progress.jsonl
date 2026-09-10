@@ -1,0 +1,261 @@
+{"seconds": 0.01619795779697597, "stage": "Deterministic verification passed; no input or stochastic access yet", "peak_bytes": 102727680, "all_new_output_bytes": 95085}
+{"seconds": 0.39172824984416366, "stage": "T1 W00 start", "peak_bytes": 102727680, "all_new_output_bytes": 95857}
+{"seconds": 0.4026797499973327, "stage": "T1 W00 trial 0", "peak_bytes": 102776832, "all_new_output_bytes": 95971}
+{"seconds": 0.45277291582897305, "stage": "T1 W00 trial 64", "peak_bytes": 104005632, "all_new_output_bytes": 96086}
+{"seconds": 0.5015659998171031, "stage": "T1 W00 trial 128", "peak_bytes": 104546304, "all_new_output_bytes": 96203}
+{"seconds": 0.5525807498488575, "stage": "T1 W00 trial 192", "peak_bytes": 105086976, "all_new_output_bytes": 96320}
+{"seconds": 0.6020537079311907, "stage": "T1 W00 trial 256", "peak_bytes": 105627648, "all_new_output_bytes": 96437}
+{"seconds": 0.6507152079138905, "stage": "T1 W00 trial 320", "peak_bytes": 106184704, "all_new_output_bytes": 96554}
+{"seconds": 0.7007951659616083, "stage": "T1 W00 trial 384", "peak_bytes": 106741760, "all_new_output_bytes": 96671}
+{"seconds": 0.7502961249556392, "stage": "T1 W00 trial 448", "peak_bytes": 107298816, "all_new_output_bytes": 96788}
+{"seconds": 0.8010692908428609, "stage": "T1 W00 trial 512", "peak_bytes": 107839488, "all_new_output_bytes": 96905}
+{"seconds": 0.8525724578648806, "stage": "T1 W00 trial 576", "peak_bytes": 108445696, "all_new_output_bytes": 97022}
+{"seconds": 0.9034437499940395, "stage": "T1 W00 trial 640", "peak_bytes": 109002752, "all_new_output_bytes": 97139}
+{"seconds": 0.9556335830129683, "stage": "T1 W00 trial 704", "peak_bytes": 109559808, "all_new_output_bytes": 97256}
+{"seconds": 1.0082781249657273, "stage": "T1 W00 trial 768", "peak_bytes": 110100480, "all_new_output_bytes": 97373}
+{"seconds": 1.0631232908926904, "stage": "T1 W00 trial 832", "peak_bytes": 110657536, "all_new_output_bytes": 97490}
+{"seconds": 1.1156684579327703, "stage": "T1 W00 trial 896", "peak_bytes": 111280128, "all_new_output_bytes": 97607}
+{"seconds": 1.1653770830016583, "stage": "T1 W00 trial 960", "peak_bytes": 111837184, "all_new_output_bytes": 97724}
+{"seconds": 1.3226254158653319, "stage": "T1 W00 saved: pass", "peak_bytes": 118800384, "all_new_output_bytes": 4509679}
+{"seconds": 1.3332654999103397, "stage": "T1 W01a start", "peak_bytes": 118800384, "all_new_output_bytes": 4509800}
+{"seconds": 1.3427310828119516, "stage": "T1 W01a trial 0", "peak_bytes": 118800384, "all_new_output_bytes": 4509916}
+{"seconds": 1.3914049158338457, "stage": "T1 W01a trial 64", "peak_bytes": 118800384, "all_new_output_bytes": 4510034}
+{"seconds": 1.4428838749881834, "stage": "T1 W01a trial 128", "peak_bytes": 118800384, "all_new_output_bytes": 4510153}
+{"seconds": 1.4941305830143392, "stage": "T1 W01a trial 192", "peak_bytes": 118800384, "all_new_output_bytes": 4510273}
+{"seconds": 1.5460666657891124, "stage": "T1 W01a trial 256", "peak_bytes": 118800384, "all_new_output_bytes": 4510393}
+{"seconds": 1.598996624816209, "stage": "T1 W01a trial 320", "peak_bytes": 118800384, "all_new_output_bytes": 4510513}
+{"seconds": 1.6482711248099804, "stage": "T1 W01a trial 384", "peak_bytes": 118800384, "all_new_output_bytes": 4510632}
+{"seconds": 1.6974574578925967, "stage": "T1 W01a trial 448", "peak_bytes": 118800384, "all_new_output_bytes": 4510752}
+{"seconds": 1.7479394578840584, "stage": "T1 W01a trial 512", "peak_bytes": 118800384, "all_new_output_bytes": 4510872}
+{"seconds": 1.798225165810436, "stage": "T1 W01a trial 576", "peak_bytes": 118800384, "all_new_output_bytes": 4510992}
+{"seconds": 1.8545966248493642, "stage": "T1 W01a trial 640", "peak_bytes": 118800384, "all_new_output_bytes": 4511111}
+{"seconds": 1.9060860828030854, "stage": "T1 W01a trial 704", "peak_bytes": 118800384, "all_new_output_bytes": 4511231}
+{"seconds": 1.9580570408143103, "stage": "T1 W01a trial 768", "peak_bytes": 118800384, "all_new_output_bytes": 4511351}
+{"seconds": 2.0094874578062445, "stage": "T1 W01a trial 832", "peak_bytes": 118800384, "all_new_output_bytes": 4511471}
+{"seconds": 2.0642419578507543, "stage": "T1 W01a trial 896", "peak_bytes": 118800384, "all_new_output_bytes": 4511591}
+{"seconds": 2.1136515829712152, "stage": "T1 W01a trial 960", "peak_bytes": 118800384, "all_new_output_bytes": 4511711}
+{"seconds": 2.2736093748826534, "stage": "T1 W01a saved: failure", "peak_bytes": 122765312, "all_new_output_bytes": 8922590}
+{"seconds": 2.2843137909658253, "stage": "T1 W01b start", "peak_bytes": 122765312, "all_new_output_bytes": 8922715}
+{"seconds": 2.2930730408988893, "stage": "T1 W01b trial 0", "peak_bytes": 122765312, "all_new_output_bytes": 8922831}
+{"seconds": 2.3451433749869466, "stage": "T1 W01b trial 64", "peak_bytes": 122781696, "all_new_output_bytes": 8922949}
+{"seconds": 2.397238457808271, "stage": "T1 W01b trial 128", "peak_bytes": 122781696, "all_new_output_bytes": 8923068}
+{"seconds": 2.448270665947348, "stage": "T1 W01b trial 192", "peak_bytes": 122781696, "all_new_output_bytes": 8923187}
+{"seconds": 2.499100332846865, "stage": "T1 W01b trial 256", "peak_bytes": 122781696, "all_new_output_bytes": 8923306}
+{"seconds": 2.549127290956676, "stage": "T1 W01b trial 320", "peak_bytes": 122781696, "all_new_output_bytes": 8923425}
+{"seconds": 2.6025306249503046, "stage": "T1 W01b trial 384", "peak_bytes": 122781696, "all_new_output_bytes": 8923544}
+{"seconds": 2.653245624853298, "stage": "T1 W01b trial 448", "peak_bytes": 122781696, "all_new_output_bytes": 8923664}
+{"seconds": 2.7069070828147233, "stage": "T1 W01b trial 512", "peak_bytes": 122781696, "all_new_output_bytes": 8923783}
+{"seconds": 2.758590249810368, "stage": "T1 W01b trial 576", "peak_bytes": 122781696, "all_new_output_bytes": 8923903}
+{"seconds": 2.810911040985957, "stage": "T1 W01b trial 640", "peak_bytes": 122781696, "all_new_output_bytes": 8924022}
+{"seconds": 2.862668582936749, "stage": "T1 W01b trial 704", "peak_bytes": 122781696, "all_new_output_bytes": 8924141}
+{"seconds": 2.9142493749968708, "stage": "T1 W01b trial 768", "peak_bytes": 122781696, "all_new_output_bytes": 8924260}
+{"seconds": 2.966545291012153, "stage": "T1 W01b trial 832", "peak_bytes": 122781696, "all_new_output_bytes": 8924380}
+{"seconds": 3.0159804578870535, "stage": "T1 W01b trial 896", "peak_bytes": 122781696, "all_new_output_bytes": 8924499}
+{"seconds": 3.0656365829054266, "stage": "T1 W01b trial 960", "peak_bytes": 122781696, "all_new_output_bytes": 8924619}
+{"seconds": 3.220881582936272, "stage": "T1 W01b saved: failure", "peak_bytes": 122945536, "all_new_output_bytes": 13332099}
+{"seconds": 3.232751374831423, "stage": "T1 W02 start", "peak_bytes": 122945536, "all_new_output_bytes": 13332224}
+{"seconds": 3.2413778328336775, "stage": "T1 W02 trial 0", "peak_bytes": 122945536, "all_new_output_bytes": 13332339}
+{"seconds": 3.317414540797472, "stage": "T1 W02 trial 64", "peak_bytes": 122978304, "all_new_output_bytes": 13332457}
+{"seconds": 3.392182624898851, "stage": "T1 W02 trial 128", "peak_bytes": 122978304, "all_new_output_bytes": 13332575}
+{"seconds": 3.4700099998153746, "stage": "T1 W02 trial 192", "peak_bytes": 122978304, "all_new_output_bytes": 13332694}
+{"seconds": 3.5464385407976806, "stage": "T1 W02 trial 256", "peak_bytes": 122978304, "all_new_output_bytes": 13332814}
+{"seconds": 3.623596040997654, "stage": "T1 W02 trial 320", "peak_bytes": 122978304, "all_new_output_bytes": 13332934}
+{"seconds": 3.699775790795684, "stage": "T1 W02 trial 384", "peak_bytes": 122978304, "all_new_output_bytes": 13333053}
+{"seconds": 3.7767467498779297, "stage": "T1 W02 trial 448", "peak_bytes": 122978304, "all_new_output_bytes": 13333172}
+{"seconds": 3.8539864160120487, "stage": "T1 W02 trial 512", "peak_bytes": 122978304, "all_new_output_bytes": 13333292}
+{"seconds": 3.931900082854554, "stage": "T1 W02 trial 576", "peak_bytes": 122994688, "all_new_output_bytes": 13333412}
+{"seconds": 4.008002499816939, "stage": "T1 W02 trial 640", "peak_bytes": 123011072, "all_new_output_bytes": 13333531}
+{"seconds": 4.085218415828422, "stage": "T1 W02 trial 704", "peak_bytes": 123027456, "all_new_output_bytes": 13333650}
+{"seconds": 4.160307874903083, "stage": "T1 W02 trial 768", "peak_bytes": 123027456, "all_new_output_bytes": 13333769}
+{"seconds": 4.237002957845107, "stage": "T1 W02 trial 832", "peak_bytes": 123043840, "all_new_output_bytes": 13333888}
+{"seconds": 4.314710165839642, "stage": "T1 W02 trial 896", "peak_bytes": 123076608, "all_new_output_bytes": 13334007}
+{"seconds": 4.391774540999904, "stage": "T1 W02 trial 960", "peak_bytes": 123092992, "all_new_output_bytes": 13334126}
+{"seconds": 4.5789478328078985, "stage": "T1 W02 saved: failure", "peak_bytes": 123092992, "all_new_output_bytes": 17746611}
+{"seconds": 4.592925457982346, "stage": "T1 W03a start", "peak_bytes": 123092992, "all_new_output_bytes": 17746736}
+{"seconds": 4.604324624873698, "stage": "T1 W03a trial 0", "peak_bytes": 123092992, "all_new_output_bytes": 17746852}
+{"seconds": 4.672557290876284, "stage": "T1 W03a trial 64", "peak_bytes": 123092992, "all_new_output_bytes": 17746970}
+{"seconds": 4.739787707803771, "stage": "T1 W03a trial 128", "peak_bytes": 123092992, "all_new_output_bytes": 17747089}
+{"seconds": 4.806280499789864, "stage": "T1 W03a trial 192", "peak_bytes": 123092992, "all_new_output_bytes": 17747209}
+{"seconds": 4.874864165904, "stage": "T1 W03a trial 256", "peak_bytes": 123092992, "all_new_output_bytes": 17747329}
+{"seconds": 4.941516374936327, "stage": "T1 W03a trial 320", "peak_bytes": 123109376, "all_new_output_bytes": 17747446}
+{"seconds": 5.0098998749163, "stage": "T1 W03a trial 384", "peak_bytes": 123109376, "all_new_output_bytes": 17747566}
+{"seconds": 5.081445749849081, "stage": "T1 W03a trial 448", "peak_bytes": 123633664, "all_new_output_bytes": 17747684}
+{"seconds": 5.14172308286652, "stage": "T1 W03a trial 512", "peak_bytes": 123633664, "all_new_output_bytes": 17747804}
+{"seconds": 5.205755082890391, "stage": "T1 W03a trial 576", "peak_bytes": 123633664, "all_new_output_bytes": 17747923}
+{"seconds": 5.273684374988079, "stage": "T1 W03a trial 640", "peak_bytes": 123633664, "all_new_output_bytes": 17748043}
+{"seconds": 5.340600915951654, "stage": "T1 W03a trial 704", "peak_bytes": 123633664, "all_new_output_bytes": 17748163}
+{"seconds": 5.406807207968086, "stage": "T1 W03a trial 768", "peak_bytes": 123633664, "all_new_output_bytes": 17748283}
+{"seconds": 5.47280712495558, "stage": "T1 W03a trial 832", "peak_bytes": 123633664, "all_new_output_bytes": 17748403}
+{"seconds": 5.541234790813178, "stage": "T1 W03a trial 896", "peak_bytes": 123633664, "all_new_output_bytes": 17748522}
+{"seconds": 5.608696999959648, "stage": "T1 W03a trial 960", "peak_bytes": 123633664, "all_new_output_bytes": 17748642}
+{"seconds": 5.780754082836211, "stage": "T1 W03a saved: pass", "peak_bytes": 126926848, "all_new_output_bytes": 22148425}
+{"seconds": 5.792970874812454, "stage": "T1 W03b start", "peak_bytes": 126926848, "all_new_output_bytes": 22148547}
+{"seconds": 5.80243416596204, "stage": "T1 W03b trial 0", "peak_bytes": 126926848, "all_new_output_bytes": 22148663}
+{"seconds": 5.859877790790051, "stage": "T1 W03b trial 64", "peak_bytes": 126926848, "all_new_output_bytes": 22148780}
+{"seconds": 5.913179124938324, "stage": "T1 W03b trial 128", "peak_bytes": 126926848, "all_new_output_bytes": 22148899}
+{"seconds": 5.965051499893889, "stage": "T1 W03b trial 192", "peak_bytes": 126926848, "all_new_output_bytes": 22149019}
+{"seconds": 6.015464540803805, "stage": "T1 W03b trial 256", "peak_bytes": 126926848, "all_new_output_bytes": 22149139}
+{"seconds": 6.067155415890738, "stage": "T1 W03b trial 320", "peak_bytes": 126926848, "all_new_output_bytes": 22149259}
+{"seconds": 6.11789883300662, "stage": "T1 W03b trial 384", "peak_bytes": 126926848, "all_new_output_bytes": 22149379}
+{"seconds": 6.169182874960825, "stage": "T1 W03b trial 448", "peak_bytes": 126926848, "all_new_output_bytes": 22149498}
+{"seconds": 6.219782624859363, "stage": "T1 W03b trial 512", "peak_bytes": 126926848, "all_new_output_bytes": 22149618}
+{"seconds": 6.272089374950156, "stage": "T1 W03b trial 576", "peak_bytes": 126926848, "all_new_output_bytes": 22149738}
+{"seconds": 6.322961290832609, "stage": "T1 W03b trial 640", "peak_bytes": 126926848, "all_new_output_bytes": 22149858}
+{"seconds": 6.374661749927327, "stage": "T1 W03b trial 704", "peak_bytes": 126926848, "all_new_output_bytes": 22149978}
+{"seconds": 6.42734016594477, "stage": "T1 W03b trial 768", "peak_bytes": 126926848, "all_new_output_bytes": 22150098}
+{"seconds": 6.479157040826976, "stage": "T1 W03b trial 832", "peak_bytes": 126926848, "all_new_output_bytes": 22150217}
+{"seconds": 6.5307168329600245, "stage": "T1 W03b trial 896", "peak_bytes": 126926848, "all_new_output_bytes": 22150337}
+{"seconds": 6.5820687499362975, "stage": "T1 W03b trial 960", "peak_bytes": 126926848, "all_new_output_bytes": 22150458}
+{"seconds": 6.739734582835808, "stage": "T1 W03b saved: failure", "peak_bytes": 130121728, "all_new_output_bytes": 26552669}
+{"seconds": 6.7515077909920365, "stage": "T1 W04a start", "peak_bytes": 130121728, "all_new_output_bytes": 26552794}
+{"seconds": 6.761028874898329, "stage": "T1 W04a trial 0", "peak_bytes": 130121728, "all_new_output_bytes": 26552911}
+{"seconds": 6.818692290922627, "stage": "T1 W04a trial 64", "peak_bytes": 130154496, "all_new_output_bytes": 26553029}
+{"seconds": 6.875791790895164, "stage": "T1 W04a trial 128", "peak_bytes": 130154496, "all_new_output_bytes": 26553148}
+{"seconds": 6.9344037908595055, "stage": "T1 W04a trial 192", "peak_bytes": 130154496, "all_new_output_bytes": 26553268}
+{"seconds": 6.992687207879499, "stage": "T1 W04a trial 256", "peak_bytes": 130154496, "all_new_output_bytes": 26553389}
+{"seconds": 7.051503540948033, "stage": "T1 W04a trial 320", "peak_bytes": 130154496, "all_new_output_bytes": 26553509}
+{"seconds": 7.10878058290109, "stage": "T1 W04a trial 384", "peak_bytes": 130154496, "all_new_output_bytes": 26553629}
+{"seconds": 7.16674695792608, "stage": "T1 W04a trial 448", "peak_bytes": 130154496, "all_new_output_bytes": 26553748}
+{"seconds": 7.223762125009671, "stage": "T1 W04a trial 512", "peak_bytes": 130154496, "all_new_output_bytes": 26553867}
+{"seconds": 7.2809399999678135, "stage": "T1 W04a trial 576", "peak_bytes": 130154496, "all_new_output_bytes": 26553987}
+{"seconds": 7.338626582873985, "stage": "T1 W04a trial 640", "peak_bytes": 130154496, "all_new_output_bytes": 26554108}
+{"seconds": 7.396891415817663, "stage": "T1 W04a trial 704", "peak_bytes": 130154496, "all_new_output_bytes": 26554228}
+{"seconds": 7.454532874980941, "stage": "T1 W04a trial 768", "peak_bytes": 130154496, "all_new_output_bytes": 26554348}
+{"seconds": 7.5137310000136495, "stage": "T1 W04a trial 832", "peak_bytes": 130154496, "all_new_output_bytes": 26554468}
+{"seconds": 7.571638957830146, "stage": "T1 W04a trial 896", "peak_bytes": 130187264, "all_new_output_bytes": 26554589}
+{"seconds": 7.631255374988541, "stage": "T1 W04a trial 960", "peak_bytes": 130220032, "all_new_output_bytes": 26554709}
+{"seconds": 7.794404499931261, "stage": "T1 W04a saved: failure", "peak_bytes": 130252800, "all_new_output_bytes": 30966589}
+{"seconds": 7.807162165874615, "stage": "T1 W04b start", "peak_bytes": 130252800, "all_new_output_bytes": 30966714}
+{"seconds": 7.818260165862739, "stage": "T1 W04b trial 0", "peak_bytes": 130252800, "all_new_output_bytes": 30966830}
+{"seconds": 7.872715665958822, "stage": "T1 W04b trial 64", "peak_bytes": 130252800, "all_new_output_bytes": 30966948}
+{"seconds": 7.9252264578826725, "stage": "T1 W04b trial 128", "peak_bytes": 130252800, "all_new_output_bytes": 30967067}
+{"seconds": 7.977642624871805, "stage": "T1 W04b trial 192", "peak_bytes": 130252800, "all_new_output_bytes": 30967188}
+{"seconds": 8.029882124857977, "stage": "T1 W04b trial 256", "peak_bytes": 130252800, "all_new_output_bytes": 30967308}
+{"seconds": 8.082001165952533, "stage": "T1 W04b trial 320", "peak_bytes": 130252800, "all_new_output_bytes": 30967428}
+{"seconds": 8.133396499790251, "stage": "T1 W04b trial 384", "peak_bytes": 130252800, "all_new_output_bytes": 30967548}
+{"seconds": 8.184449415886775, "stage": "T1 W04b trial 448", "peak_bytes": 130252800, "all_new_output_bytes": 30967668}
+{"seconds": 8.236259958008304, "stage": "T1 W04b trial 512", "peak_bytes": 130252800, "all_new_output_bytes": 30967788}
+{"seconds": 8.288928624941036, "stage": "T1 W04b trial 576", "peak_bytes": 130252800, "all_new_output_bytes": 30967908}
+{"seconds": 8.341854540864006, "stage": "T1 W04b trial 640", "peak_bytes": 130252800, "all_new_output_bytes": 30968028}
+{"seconds": 8.395487665897235, "stage": "T1 W04b trial 704", "peak_bytes": 130252800, "all_new_output_bytes": 30968148}
+{"seconds": 8.447214624844491, "stage": "T1 W04b trial 768", "peak_bytes": 130252800, "all_new_output_bytes": 30968268}
+{"seconds": 8.500316540943459, "stage": "T1 W04b trial 832", "peak_bytes": 130252800, "all_new_output_bytes": 30968388}
+{"seconds": 8.552881625015289, "stage": "T1 W04b trial 896", "peak_bytes": 130252800, "all_new_output_bytes": 30968508}
+{"seconds": 8.605919082881883, "stage": "T1 W04b trial 960", "peak_bytes": 130252800, "all_new_output_bytes": 30968628}
+{"seconds": 8.763916624942794, "stage": "T1 W04b saved: failure", "peak_bytes": 130252800, "all_new_output_bytes": 35403191}
+{"seconds": 8.775892124976963, "stage": "T1 W05 start", "peak_bytes": 130252800, "all_new_output_bytes": 35403316}
+{"seconds": 8.788149582920596, "stage": "T1 W05 trial 0", "peak_bytes": 130252800, "all_new_output_bytes": 35403431}
+{"seconds": 8.841515499865636, "stage": "T1 W05 trial 64", "peak_bytes": 130252800, "all_new_output_bytes": 35403548}
+{"seconds": 8.895360415801406, "stage": "T1 W05 trial 128", "peak_bytes": 130252800, "all_new_output_bytes": 35403666}
+{"seconds": 8.946912124985829, "stage": "T1 W05 trial 192", "peak_bytes": 130252800, "all_new_output_bytes": 35403785}
+{"seconds": 8.998893999960274, "stage": "T1 W05 trial 256", "peak_bytes": 130252800, "all_new_output_bytes": 35403904}
+{"seconds": 9.05289129097946, "stage": "T1 W05 trial 320", "peak_bytes": 130252800, "all_new_output_bytes": 35404023}
+{"seconds": 9.105019999900833, "stage": "T1 W05 trial 384", "peak_bytes": 130252800, "all_new_output_bytes": 35404141}
+{"seconds": 9.157236499944702, "stage": "T1 W05 trial 448", "peak_bytes": 130252800, "all_new_output_bytes": 35404260}
+{"seconds": 9.208314665826038, "stage": "T1 W05 trial 512", "peak_bytes": 130252800, "all_new_output_bytes": 35404379}
+{"seconds": 9.261163790943101, "stage": "T1 W05 trial 576", "peak_bytes": 130252800, "all_new_output_bytes": 35404498}
+{"seconds": 9.313475915929303, "stage": "T1 W05 trial 640", "peak_bytes": 130252800, "all_new_output_bytes": 35404617}
+{"seconds": 9.364763374906033, "stage": "T1 W05 trial 704", "peak_bytes": 130252800, "all_new_output_bytes": 35404736}
+{"seconds": 9.416928374907002, "stage": "T1 W05 trial 768", "peak_bytes": 130252800, "all_new_output_bytes": 35404855}
+{"seconds": 9.467425749870017, "stage": "T1 W05 trial 832", "peak_bytes": 130252800, "all_new_output_bytes": 35404974}
+{"seconds": 9.51799837499857, "stage": "T1 W05 trial 896", "peak_bytes": 130252800, "all_new_output_bytes": 35405093}
+{"seconds": 9.568770749960095, "stage": "T1 W05 trial 960", "peak_bytes": 130252800, "all_new_output_bytes": 35405211}
+{"seconds": 9.748048165813088, "stage": "T1 W05 saved: failure", "peak_bytes": 131989504, "all_new_output_bytes": 40742871}
+{"seconds": 9.760470249922946, "stage": "T2 123424 training and census", "peak_bytes": 132136960, "all_new_output_bytes": 40794894}
+{"seconds": 9.80218366580084, "stage": "123424: read training half and evaluation finite census, chunk 0", "peak_bytes": 236814336, "all_new_output_bytes": 40795026}
+{"seconds": 9.854735124856234, "stage": "123424: read training half and evaluation finite census, chunk 1", "peak_bytes": 482770944, "all_new_output_bytes": 40795192}
+{"seconds": 9.895594083005562, "stage": "123424: read training half and evaluation finite census, chunk 2", "peak_bytes": 577044480, "all_new_output_bytes": 40795359}
+{"seconds": 9.944880165858194, "stage": "123424: read training half and evaluation finite census, chunk 3", "peak_bytes": 723697664, "all_new_output_bytes": 40795526}
+{"seconds": 9.98306966596283, "stage": "123424: read training half and evaluation finite census, chunk 4", "peak_bytes": 725532672, "all_new_output_bytes": 40795693}
+{"seconds": 10.028171290876344, "stage": "123424: read training half and evaluation finite census, chunk 5", "peak_bytes": 758972416, "all_new_output_bytes": 40795859}
+{"seconds": 10.063094582874328, "stage": "123424: read training half and evaluation finite census, chunk 6", "peak_bytes": 760774656, "all_new_output_bytes": 40796027}
+{"seconds": 10.106725874822587, "stage": "123424: read training half and evaluation finite census, chunk 7", "peak_bytes": 763281408, "all_new_output_bytes": 40796195}
+{"seconds": 10.134795249905437, "stage": "123424: read training half and evaluation finite census, chunk 8", "peak_bytes": 770621440, "all_new_output_bytes": 40796363}
+{"seconds": 10.172785374801606, "stage": "123424: read training half and evaluation finite census, chunk 9", "peak_bytes": 772423680, "all_new_output_bytes": 40796531}
+{"seconds": 10.206395665882155, "stage": "123424: read training half and evaluation finite census, chunk 10", "peak_bytes": 774209536, "all_new_output_bytes": 40796699}
+{"seconds": 10.241359290899709, "stage": "123424: read training half and evaluation finite census, chunk 11", "peak_bytes": 776011776, "all_new_output_bytes": 40796868}
+{"seconds": 10.877317165955901, "stage": "T2 123424 generation locked before evaluation mapping", "peak_bytes": 778125312, "all_new_output_bytes": 42892071}
+{"seconds": 10.907713499851525, "stage": "T2 123424 evaluation chunk 0", "peak_bytes": 788447232, "all_new_output_bytes": 42892228}
+{"seconds": 10.923938624793664, "stage": "T2 123424 evaluation chunk 1", "peak_bytes": 805224448, "all_new_output_bytes": 42892360}
+{"seconds": 10.944518540985882, "stage": "T2 123424 evaluation chunk 2", "peak_bytes": 827441152, "all_new_output_bytes": 42892492}
+{"seconds": 10.960494540864602, "stage": "T2 123424 evaluation chunk 3", "peak_bytes": 844038144, "all_new_output_bytes": 42892624}
+{"seconds": 10.980274165980518, "stage": "T2 123424 evaluation chunk 4", "peak_bytes": 855031808, "all_new_output_bytes": 42892756}
+{"seconds": 10.996329165995121, "stage": "T2 123424 evaluation chunk 5", "peak_bytes": 871153664, "all_new_output_bytes": 42892888}
+{"seconds": 11.016423124819994, "stage": "T2 123424 evaluation chunk 6", "peak_bytes": 890437632, "all_new_output_bytes": 42893020}
+{"seconds": 11.03265087492764, "stage": "T2 123424 evaluation chunk 7", "peak_bytes": 915619840, "all_new_output_bytes": 42893152}
+{"seconds": 11.052779749967158, "stage": "T2 123424 evaluation chunk 8", "peak_bytes": 940965888, "all_new_output_bytes": 42893283}
+{"seconds": 11.0686012909282, "stage": "T2 123424 evaluation chunk 9", "peak_bytes": 960839680, "all_new_output_bytes": 42893415}
+{"seconds": 11.084587749792263, "stage": "T2 123424 evaluation chunk 10", "peak_bytes": 980713472, "all_new_output_bytes": 42893545}
+{"seconds": 11.103518124902621, "stage": "T2 123424 evaluation chunk 11", "peak_bytes": 991641600, "all_new_output_bytes": 42893678}
+{"seconds": 11.120050999801606, "stage": "T2 123424 a1100 maps", "peak_bytes": 1183481856, "all_new_output_bytes": 42893811}
+{"seconds": 12.304806665983051, "stage": "T2 123424 a1100 full saved", "peak_bytes": 1540997120, "all_new_output_bytes": 51059472}
+{"seconds": 12.496604790911078, "stage": "T2 123424 a1100 window0 saved", "peak_bytes": 1544110080, "all_new_output_bytes": 52910830}
+{"seconds": 12.69357445789501, "stage": "T2 123424 a1100 window1 saved", "peak_bytes": 1550663680, "all_new_output_bytes": 54922972}
+{"seconds": 12.901213207980618, "stage": "T2 123424 a1100 window2 saved", "peak_bytes": 1553448960, "all_new_output_bytes": 56950188}
+{"seconds": 13.184041749918833, "stage": "T2 123424 a1400 maps", "peak_bytes": 1553760256, "all_new_output_bytes": 61112330}
+{"seconds": 13.57001412496902, "stage": "T2 123424 a1400 full saved", "peak_bytes": 1559117824, "all_new_output_bytes": 64677100}
+{"seconds": 13.660906499950215, "stage": "T2 123424 a1400 window0 saved", "peak_bytes": 1559527424, "all_new_output_bytes": 66070991}
+{"seconds": 13.759418290806934, "stage": "T2 123424 a1400 window1 saved", "peak_bytes": 1563688960, "all_new_output_bytes": 67713250}
+{"seconds": 13.864329665899277, "stage": "T2 123424 a1400 window2 saved", "peak_bytes": 1570783232, "all_new_output_bytes": 69354446}
+{"seconds": 14.033797124866396, "stage": "T2 123424 a2000 maps", "peak_bytes": 1570914304, "all_new_output_bytes": 72922634}
+{"seconds": 14.43490849994123, "stage": "T2 123424 a2000 full saved", "peak_bytes": 1570914304, "all_new_output_bytes": 76760668}
+{"seconds": 14.546015665866435, "stage": "T2 123424 a2000 window0 saved", "peak_bytes": 1570914304, "all_new_output_bytes": 78444347}
+{"seconds": 14.66369166597724, "stage": "T2 123424 a2000 window1 saved", "peak_bytes": 1570914304, "all_new_output_bytes": 80289709}
+{"seconds": 14.786892832955346, "stage": "T2 123424 a2000 window2 saved", "peak_bytes": 1570914304, "all_new_output_bytes": 82174516}
+{"seconds": 14.984524207888171, "stage": "T2 152389 training and census", "peak_bytes": 1570914304, "all_new_output_bytes": 86193784}
+{"seconds": 15.0249512498267, "stage": "152389: read training half and evaluation finite census, chunk 0", "peak_bytes": 1570914304, "all_new_output_bytes": 86193918}
+{"seconds": 15.057057082885876, "stage": "152389: read training half and evaluation finite census, chunk 1", "peak_bytes": 1570914304, "all_new_output_bytes": 86194085}
+{"seconds": 15.09448358300142, "stage": "152389: read training half and evaluation finite census, chunk 2", "peak_bytes": 1570914304, "all_new_output_bytes": 86194254}
+{"seconds": 15.12809595791623, "stage": "152389: read training half and evaluation finite census, chunk 3", "peak_bytes": 1570914304, "all_new_output_bytes": 86194422}
+{"seconds": 15.160866165999323, "stage": "152389: read training half and evaluation finite census, chunk 4", "peak_bytes": 1570914304, "all_new_output_bytes": 86194590}
+{"seconds": 15.192046957788989, "stage": "152389: read training half and evaluation finite census, chunk 5", "peak_bytes": 1570914304, "all_new_output_bytes": 86194759}
+{"seconds": 15.222114166012034, "stage": "152389: read training half and evaluation finite census, chunk 6", "peak_bytes": 1570914304, "all_new_output_bytes": 86194928}
+{"seconds": 15.25418245792389, "stage": "152389: read training half and evaluation finite census, chunk 7", "peak_bytes": 1570914304, "all_new_output_bytes": 86195097}
+{"seconds": 15.285113540943712, "stage": "152389: read training half and evaluation finite census, chunk 8", "peak_bytes": 1570914304, "all_new_output_bytes": 86195265}
+{"seconds": 15.31480791582726, "stage": "152389: read training half and evaluation finite census, chunk 9", "peak_bytes": 1570914304, "all_new_output_bytes": 86195434}
+{"seconds": 15.34325937484391, "stage": "152389: read training half and evaluation finite census, chunk 10", "peak_bytes": 1570914304, "all_new_output_bytes": 86195602}
+{"seconds": 15.376588125014678, "stage": "152389: read training half and evaluation finite census, chunk 11", "peak_bytes": 1570914304, "all_new_output_bytes": 86195771}
+{"seconds": 15.93559420784004, "stage": "T2 152389 generation locked before evaluation mapping", "peak_bytes": 1570914304, "all_new_output_bytes": 88047763}
+{"seconds": 15.98124925000593, "stage": "T2 152389 evaluation chunk 0", "peak_bytes": 1570914304, "all_new_output_bytes": 88047920}
+{"seconds": 16.003834208007902, "stage": "T2 152389 evaluation chunk 1", "peak_bytes": 1570914304, "all_new_output_bytes": 88048052}
+{"seconds": 16.028004082851112, "stage": "T2 152389 evaluation chunk 2", "peak_bytes": 1570914304, "all_new_output_bytes": 88048185}
+{"seconds": 16.051396874943748, "stage": "T2 152389 evaluation chunk 3", "peak_bytes": 1570914304, "all_new_output_bytes": 88048318}
+{"seconds": 16.075871750013903, "stage": "T2 152389 evaluation chunk 4", "peak_bytes": 1570914304, "all_new_output_bytes": 88048451}
+{"seconds": 16.099365541012958, "stage": "T2 152389 evaluation chunk 5", "peak_bytes": 1570914304, "all_new_output_bytes": 88048584}
+{"seconds": 16.121741582872346, "stage": "T2 152389 evaluation chunk 6", "peak_bytes": 1570914304, "all_new_output_bytes": 88048717}
+{"seconds": 16.142661958001554, "stage": "T2 152389 evaluation chunk 7", "peak_bytes": 1570914304, "all_new_output_bytes": 88048850}
+{"seconds": 16.16696116584353, "stage": "T2 152389 evaluation chunk 8", "peak_bytes": 1570914304, "all_new_output_bytes": 88048983}
+{"seconds": 16.18904049997218, "stage": "T2 152389 evaluation chunk 9", "peak_bytes": 1570914304, "all_new_output_bytes": 88049115}
+{"seconds": 16.2117726248689, "stage": "T2 152389 evaluation chunk 10", "peak_bytes": 1570914304, "all_new_output_bytes": 88049247}
+{"seconds": 16.235331957926974, "stage": "T2 152389 evaluation chunk 11", "peak_bytes": 1570914304, "all_new_output_bytes": 88049379}
+{"seconds": 16.257253790972754, "stage": "T2 152389 a1100 maps", "peak_bytes": 1570914304, "all_new_output_bytes": 88049513}
+{"seconds": 17.14334199996665, "stage": "T2 152389 a1100 full saved", "peak_bytes": 1570914304, "all_new_output_bytes": 94443018}
+{"seconds": 17.329504957888275, "stage": "T2 152389 a1100 window0 saved", "peak_bytes": 1570914304, "all_new_output_bytes": 96152907}
+{"seconds": 17.51012362493202, "stage": "T2 152389 a1100 window1 saved", "peak_bytes": 1570914304, "all_new_output_bytes": 97831853}
+{"seconds": 17.684590499848127, "stage": "T2 152389 a1100 window2 saved", "peak_bytes": 1570914304, "all_new_output_bytes": 99480009}
+{"seconds": 17.9623493750114, "stage": "T2 152389 a1400 maps", "peak_bytes": 1570914304, "all_new_output_bytes": 103170110}
+{"seconds": 18.354378040879965, "stage": "T2 152389 a1400 full saved", "peak_bytes": 1570914304, "all_new_output_bytes": 106598446}
+{"seconds": 18.471614040900022, "stage": "T2 152389 a1400 window0 saved", "peak_bytes": 1570914304, "all_new_output_bytes": 108082133}
+{"seconds": 18.58371137501672, "stage": "T2 152389 a1400 window1 saved", "peak_bytes": 1570914304, "all_new_output_bytes": 109514392}
+{"seconds": 18.692552624968812, "stage": "T2 152389 a1400 window2 saved", "peak_bytes": 1570914304, "all_new_output_bytes": 110959140}
+{"seconds": 18.899222374893725, "stage": "T2 152389 a2000 maps", "peak_bytes": 1570914304, "all_new_output_bytes": 114325584}
+{"seconds": 19.266369707882404, "stage": "T2 152389 a2000 full saved", "peak_bytes": 1570914304, "all_new_output_bytes": 117705335}
+{"seconds": 19.389416749821976, "stage": "T2 152389 a2000 window0 saved", "peak_bytes": 1570914304, "all_new_output_bytes": 119342761}
+{"seconds": 19.5124164998997, "stage": "T2 152389 a2000 window1 saved", "peak_bytes": 1570914304, "all_new_output_bytes": 120966376}
+{"seconds": 19.62979095801711, "stage": "T2 152389 a2000 window2 saved", "peak_bytes": 1570914304, "all_new_output_bytes": 122528218}
+{"seconds": 19.845860249828547, "stage": "Verify T1 W00", "peak_bytes": 1570914304, "all_new_output_bytes": 126549932}
+{"seconds": 19.89861829089932, "stage": "Verify T1 W01a", "peak_bytes": 1570914304, "all_new_output_bytes": 126550051}
+{"seconds": 19.949014332843944, "stage": "Verify T1 W01b", "peak_bytes": 1570914304, "all_new_output_bytes": 126550170}
+{"seconds": 19.995493332855403, "stage": "Verify T1 W02", "peak_bytes": 1570914304, "all_new_output_bytes": 126550290}
+{"seconds": 20.04215195798315, "stage": "Verify T1 W03a", "peak_bytes": 1570914304, "all_new_output_bytes": 126550409}
+{"seconds": 20.08883083285764, "stage": "Verify T1 W03b", "peak_bytes": 1570914304, "all_new_output_bytes": 126550528}
+{"seconds": 20.115205499809235, "stage": "Verify T1 W04a", "peak_bytes": 1570914304, "all_new_output_bytes": 126550647}
+{"seconds": 20.14255516580306, "stage": "Verify T1 W04b", "peak_bytes": 1570914304, "all_new_output_bytes": 126550767}
+{"seconds": 20.170662040822208, "stage": "Verify T1 W05", "peak_bytes": 1570914304, "all_new_output_bytes": 126550886}
+{"seconds": 20.64645537501201, "stage": "Verify T2 123424 a1100", "peak_bytes": 1570914304, "all_new_output_bytes": 126551005}
+{"seconds": 21.173740040976554, "stage": "Verify T2 123424 a1400", "peak_bytes": 1570914304, "all_new_output_bytes": 126551132}
+{"seconds": 21.459033124847338, "stage": "Verify T2 123424 a2000", "peak_bytes": 1570914304, "all_new_output_bytes": 126551260}
+{"seconds": 22.14546062494628, "stage": "Verify T2 152389 a1100", "peak_bytes": 1570914304, "all_new_output_bytes": 126551388}
+{"seconds": 22.603313999949023, "stage": "Verify T2 152389 a1400", "peak_bytes": 1570914304, "all_new_output_bytes": 126551515}
+{"seconds": 22.901818707818165, "stage": "Verify T2 152389 a2000", "peak_bytes": 1570914304, "all_new_output_bytes": 126551643}
+{"seconds": 23.20276299980469, "stage": "Campaign and independent product verification complete", "peak_bytes": 1570914304, "all_new_output_bytes": 126554013}

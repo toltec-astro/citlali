@@ -1,0 +1,12 @@
+{
+  "status": "INCOMPLETE_STARTUP_NO_SCIENTIFIC_ACCESS",
+  "recorded_after_failure_utc": "2026-09-10T15:07:11.005256+00:00",
+  "stage": "Before RUN_START.json could be written",
+  "error_type": "RuntimeError",
+  "error": "Child-process launch prohibited in this single-process campaign",
+  "cause": "platform.platform() attempted uname -p via subprocess; audit guard rejected it",
+  "source_snapshot": "repairs/attempt_02/run_screen.py",
+  "source_sha256": "f70e8b1d0defd28b644566b48d8bd3cf4ca677a1a38ff2fa4acd7e56db4413e8",
+  "stochastic_trials": 0,
+  "input_files_opened": false
+}

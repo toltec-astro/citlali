@@ -1,0 +1,97 @@
+{
+  "started_utc": "2026-09-10T15:05:53.475891+00:00",
+  "decision": "SCI-FRUIT-Q02-MAPPING-SCREEN-R0.6",
+  "proposal_commit": "d7364e62eb44230b47f227fbf1eb251ea5449dd7",
+  "source_rows": [
+    {
+      "repository_path": "validation/fruit_q02_mapping_screen_2026-09-10/core.py",
+      "bytes": 6908,
+      "sha256": "9d4f98e1ee59016986b0f921b4a6575b5d89f2490d29229a485cca0066e7c483"
+    },
+    {
+      "repository_path": "validation/fruit_q02_mapping_screen_2026-09-10/discovery.py",
+      "bytes": 14839,
+      "sha256": "8047b12bf99bda3e78e5a2dd98d93cb8ab21effa1184cc333852665bcb2f9724"
+    },
+    {
+      "repository_path": "validation/fruit_q02_mapping_screen_2026-09-10/run_screen.py",
+      "bytes": 5949,
+      "sha256": "81543478c34b0c5a5f2bb683844859834e856a993fa9d733cc09ef18e68369cf"
+    },
+    {
+      "repository_path": "validation/fruit_q02_mapping_screen_2026-09-10/synthetic.py",
+      "bytes": 8477,
+      "sha256": "663517241c2fd7a145f5f31aacc3e9107d683163b60fac1f2ae9343253ee2afe"
+    },
+    {
+      "repository_path": "validation/fruit_q02_mapping_screen_2026-09-10/test_screen.py",
+      "bytes": 5880,
+      "sha256": "4e42fc2604aa8bd6a28343fd3e2cb2b972ae7edf5c0c6e00d1db4d8d9ebf329e"
+    },
+    {
+      "repository_path": "validation/fruit_q02_mapping_screen_2026-09-10/verify_products.py",
+      "bytes": 7797,
+      "sha256": "827aad952efa7bd8b7bf2e262153227374e98ad2de3b32c4cf81cc08755178c8"
+    },
+    {
+      "repository_path": "validation/fruit_q02_mapping_screen_2026-09-10/settings.json",
+      "bytes": 1558,
+      "sha256": "50829d2e1c2f360f6b73e507e244d857fa45519431f530799852597012430775"
+    },
+    {
+      "repository_path": "validation/fruit_q02_weight_precision_2026-09-09/run_weight_precision.py",
+      "bytes": 41212,
+      "sha256": "b53e05481fe11ba99bfb8dc55ae6d0600c1151541c39d235982bbd72dbc75409"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.6/MAPPING_SCREEN_PROTOCOL.md",
+      "bytes": 23807,
+      "sha256": "84553f9253f4a71009d5a7e5a40042ad0166c08ec02b3d95a8d7a9a084c61173"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.6/README.md",
+      "bytes": 5769,
+      "sha256": "4d5e6349d9d8c1f55ad24d31d0e921d247ec72919015c25351e3fac82ee68878"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.6/REVIEW_MANIFEST.json",
+      "bytes": 14651,
+      "sha256": "93baead0e60453d8a3cb76f37b764c4c0333af93679382eb56251315dccfc48c"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/MAPPING_SCREEN_APPROVAL_2026-09-10.md",
+      "bytes": 2060,
+      "sha256": "6a8cea0198448b6a9f2f5a705cdfe70b201fb7a874336118625d590feb58f486"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.3/FIRST_SCREEN_BINDINGS.md",
+      "bytes": 13879,
+      "sha256": "45961b6c7d2e4eda0fa63bb449230814f51a4868dc9eab1a8962b3d68037d433"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.4/EXECUTION_PROPOSAL.md",
+      "bytes": 8548,
+      "sha256": "e0804623f7d6b5a52d00100ca9ba35861a5623cc74314b135af7dcf6a816967e"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.5/WEIGHT_PRECISION_PROTOCOL.md",
+      "bytes": 21006,
+      "sha256": "87fea48533182241296fbcf5644d6587bbb939d32ad662893271ff1b115a43ab"
+    }
+  ],
+  "environment": {
+    "python": "3.13.2 (main, Feb  4 2025, 14:51:09) [Clang 16.0.0 (clang-1600.0.26.6)]",
+    "numpy": "2.2.3",
+    "scipy": "1.15.2",
+    "netCDF4": "1.7.2",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "pid": 2239
+  },
+  "thread_limits": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1"
+  },
+  "inputs_opened": false
+}

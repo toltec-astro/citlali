@@ -1,0 +1,11 @@
+{
+  "products": [
+    {
+      "path": "FAILURE.json",
+      "bytes": 583,
+      "sha256": "de8bcd5710c80723a9df79305fc471dc3364666a298bb62e4806d29b6fe1ad99"
+    }
+  ],
+  "payload_bytes": 583,
+  "external_inputs_modified": false
+}
