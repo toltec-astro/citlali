@@ -1590,6 +1590,20 @@ and any later recommendation still needs independent replication and adequate
 uncertainty evidence. All previous/frozen packets, diagnostic attempts, reductions
 and opaque archives remain preserved; no Unity access or push occurred.
 
+On 2026-09-10 the owner explicitly **closed the weighting exploration** in the
+[closure decision and next-work outline](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/WEIGHTING_EXPLORATION_CLOSURE_2026-09-10.md).
+No further weighting search, rerun or replication follows from its completed
+execution approval. All evidence remains preserved at 349af6c33; neither U nor
+N4U is selected, and Q02-C/MAP handoff remain scientifically unresolved.
+The recommended next task is one short paper-only minimum reference-method
+brief: intended recovered quantity, claim-specific recovery/uncertainty evidence,
+exact historical and ordinary-MAP references, and only the remaining numerical
+bindings under Q01–Q06. Generic Stage A/B and Q01 remain frozen; approved
+residual relearning and A/B substance are not reopened. This closure does not
+approve a new source estimator, method, input or numerical run. 129081 remains
+reserved, all subsequent execution gates remain, and no reduction product,
+prior packet, protected archive, production behavior or Unity state was changed.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

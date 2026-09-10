@@ -33,6 +33,7 @@ no numerical method or new method-specific author dispatch.
 
 ## Locked Scientific Definition And Remaining Review
 
+- [Owner closure of weighting exploration and minimum reference-method next step](method_preparation/ordinary_map/method_definition/q02_review/WEIGHTING_EXPLORATION_CLOSURE_2026-09-10.md)
 - [Completed Q02 mapping screen and recommended owner disposition](../../../../../validation/fruit_q02_mapping_screen_2026-09-10/SCIENTIFIC_REPORT.md)
 - [Owner approval of the exact r0.6 mapping screen](method_preparation/ordinary_map/method_definition/q02_review/MAPPING_SCREEN_APPROVAL_2026-09-10.md)
 - [Prior Q02 r0.6 mapping-screen execution review](method_preparation/ordinary_map/method_definition/q02_review/r0.6/README.md)
@@ -146,8 +147,14 @@ source-template changes, missing a1400 support and unavailable signed morphology
 These outcomes select no policy. One scientific campaign completed after two
 preserved startup-only repairs; all arithmetic/input/product checks passed.
 The report recommends returning to minimum source/recovery requirements before
-further numerical work. That owner disposition remains open; no replication,
-129081 access, source adoption, C closure or FRUIT continuation is inferred.
+further numerical work. Owner disposition was pending at that report's closeout.
+The owner has now explicitly closed the weighting exploration. Its evidence remains
+unchanged; no further weighting search or replication follows automatically.
+Q02-C and MAP handoff remain unresolved, and neither U nor N4U is selected.
+Next prepare a short paper-only reference-method brief around the intended
+recovered quantity, required recovery evidence and existing Q01–Q06 bindings;
+this is a recommended next task, not a new method or run approval. The frozen
+core and accepted ordinary-MAP scientific definition do not need to be restarted.
 POINT/E01 is a recommended first experiment, not an approved campaign order;
 OOF is separately selectable. Exact reference recovery precedes comparison
 interpretation and independent-pointing replication precedes recommendation.
