@@ -33,6 +33,7 @@ no numerical method or new method-specific author dispatch.
 
 ## Locked Scientific Definition And Remaining Review
 
+- [Minimum reference-method brief r0.1 — proposed choices for owner review](method_preparation/ordinary_map/method_definition/MINIMUM_REFERENCE_METHOD_BRIEF_R0.1.md)
 - [Owner closure of weighting exploration and minimum reference-method next step](method_preparation/ordinary_map/method_definition/q02_review/WEIGHTING_EXPLORATION_CLOSURE_2026-09-10.md)
 - [Completed Q02 mapping screen and recommended owner disposition](../../../../../validation/fruit_q02_mapping_screen_2026-09-10/SCIENTIFIC_REPORT.md)
 - [Owner approval of the exact r0.6 mapping screen](method_preparation/ordinary_map/method_definition/q02_review/MAPPING_SCREEN_APPROVAL_2026-09-10.md)
@@ -151,10 +152,13 @@ further numerical work. Owner disposition was pending at that report's closeout.
 The owner has now explicitly closed the weighting exploration. Its evidence remains
 unchanged; no further weighting search or replication follows automatically.
 Q02-C and MAP handoff remain unresolved, and neither U nor N4U is selected.
-Next prepare a short paper-only reference-method brief around the intended
-recovered quantity, required recovery evidence and existing Q01–Q06 bindings;
-this is a recommended next task, not a new method or run approval. The frozen
-core and accepted ordinary-MAP scientific definition do not need to be restarted.
+The owner authorized the brief, and r0.1 now proposes POINT recovery quantities,
+an evaluation-only source fit and provisional error targets, uniform weighting
+only as an unqualified reference with its known limits, and exact reference-record
+completion under Q01–Q06. Those choices are pending owner review; generating the
+brief approves none of them. The frozen core and accepted ordinary-MAP scientific
+definition do not need to be restarted. No source estimator was implemented or
+new numerical evidence generated.
 POINT/E01 is a recommended first experiment, not an approved campaign order;
 OOF is separately selectable. Exact reference recovery precedes comparison
 interpretation and independent-pointing replication precedes recommendation.

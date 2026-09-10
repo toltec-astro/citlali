@@ -1604,6 +1604,21 @@ approve a new source estimator, method, input or numerical run. 129081 remains
 reserved, all subsequent execution gates remain, and no reduction product,
 prior packet, protected archive, production behavior or Unity state was changed.
 
+The owner then authorized generating the brief. The
+[minimum reference-method brief r0.1](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/MINIMUM_REFERENCE_METHOD_BRIEF_R0.1.md)
+is now ready for review: proposed POINT peak/position/shape recovery, an
+explicitly evaluation-only Gaussian-plus-background fit, provisional bias/loss
+requirements, uniform occurrence weighting solely as an unqualified reference,
+and one exact reference-record completion step under Q01–Q06. These are new
+proposals, not inferred approvals or a reopening of the weighting search.
+Q02-C/MAP handoff remain open; A/B substance and the frozen definitions persist.
+The historical source anchor is recovered but its exact executed binding remains
+unavailable; template settings and recent single-pass exports cannot fill it.
+All new choices, source/profile adoption and any essential recovery experiment
+retain their separate review. No data analysis, method implementation, source
+adoption, run, author dispatch or 129081 scientific access occurred. Only the
+brief and current navigation were added/updated; prior evidence is unchanged.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
