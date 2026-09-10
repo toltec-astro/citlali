@@ -1,0 +1,69 @@
+{
+  "decision": "SCI-FRUIT-Q02-WEIGHT-PRECISION-SCREEN-R0.5",
+  "proposal_commit": "8612912173dbd35a97d8ec739ea9d1fd6180576d",
+  "protocol_sha256": "87fea48533182241296fbcf5644d6587bbb939d32ad662893271ff1b115a43ab",
+  "window_chunks": [
+    1,
+    2,
+    4
+  ],
+  "correlation_spans_seconds": [
+    0.125,
+    0.25,
+    0.5,
+    1,
+    2,
+    4
+  ],
+  "uncertainty": "First-order centered-scatter influence with actual-time Bartlett kernel and joint full-array normalization",
+  "finite_data_coverage": "unavailable; sensitivity is not a confidence interval",
+  "wall_time_limit_seconds": 7200,
+  "aggregate_memory_limit_bytes": 4294967296,
+  "output_limit_bytes": 2147483648,
+  "workers": 1,
+  "numerical_library_threads": 1,
+  "inputs": [
+    {
+      "obsnum": 123424,
+      "path": "/Users/gwilson/work_toltec/local_data/beammaps/pointings/reduced/redu01/123424/raw/toltec_commissioning_pointing_123424_ptc_timestream.nc",
+      "bytes": 760674540,
+      "sha256": "b53ad776173b1bd2b12569c87ae15ad78a3db1c76ef4515c855255b0e4f20ba9"
+    },
+    {
+      "obsnum": 152389,
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/152389/raw/toltec_commissioning_pointing_152389_ptc_timestream.nc",
+      "bytes": 138244964,
+      "sha256": "894fff53babfb0070e7d0a8b831aa88098d87f9772d4a8ecb253aef009d35643"
+    }
+  ],
+  "guard_arcsec": {
+    "123424": 28.59742792952955,
+    "152389": 27.38359774550894
+  },
+  "edges": [
+    0,
+    289,
+    594,
+    899,
+    1204,
+    1509,
+    1814,
+    2119,
+    2424,
+    2729,
+    3034,
+    3339,
+    3628
+  ],
+  "lag_edges_seconds": [
+    0,
+    0.125,
+    0.25,
+    0.5,
+    1,
+    2,
+    4,
+    8
+  ],
+  "batch_columns": 64
+}

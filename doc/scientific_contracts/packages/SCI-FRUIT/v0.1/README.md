@@ -33,7 +33,9 @@ no numerical method or new method-specific author dispatch.
 
 ## Locked Scientific Definition And Remaining Review
 
-- [Next review: exact training-only weight-precision diagnostic](method_preparation/ordinary_map/method_definition/q02_review/r0.5/README.md)
+- [Completed weight-precision diagnostic and next scientific decision](../../../../../validation/fruit_q02_weight_precision_2026-09-09/SCIENTIFIC_REPORT.md)
+- [Owner approval of the exact r0.5 diagnostic](method_preparation/ordinary_map/method_definition/q02_review/WEIGHT_PRECISION_APPROVAL_2026-09-09.md)
+- [Prior r0.5 diagnostic execution review](method_preparation/ordinary_map/method_definition/q02_review/r0.5/README.md)
 - [Approved 20% weight-precision goal and next assessment](method_preparation/ordinary_map/method_definition/q02_review/WEIGHT_PRECISION_DIRECTION_2026-09-09.md)
 - [Latest input intake: replacement single-pass state checks pass](method_preparation/ordinary_map/method_definition/input_intake/r0.2/README.md)
 - [Q02: preflight findings and proposed standalone synthetic execution](method_preparation/ordinary_map/method_definition/q02_review/r0.4/README.md)
@@ -117,11 +119,23 @@ correlation-span sensitivity, and checks for changing scatter. One pending
 owner decision covers that method, limited empirical input permission and a
 bounded local diagnostic together. Its error estimates have no established
 finite-data coverage and cannot certify the 20% goal. No analysis or run has
-occurred, and no window or weighting policy is selected.
+occurred at that review, and no window or weighting policy was selected.
+The owner subsequently approved and executed the exact r0.5 diagnostic. Its
+report was closed out on 2026-09-10: four-chunk windows provide a complete
+coefficient vector for all three 123424 arrays and 152389 a2000. One group each
+in 152389 a1100/a1400 still has no training, preserving full-array unavailability.
+Typical normalized precision estimates in the four available cases are about
+8–12%, with substantial 123424 tails and observed changes in child scatter.
+This is completed bounded evidence, not certified 20% precision, a selected
+window or map benefit. The next review completes a practical U/N map-screen
+design with explicit missing-training behavior and map-level evidence/loss
+criteria. One attempt and all deterministic/product checks completed within
+bounds; inputs and prior products are preserved. 129081 remains reserved.
 POINT/E01 is a recommended first experiment, not an approved campaign order;
 OOF is separately selectable. Exact reference recovery precedes comparison
 interpretation and independent-pointing replication precedes recommendation.
-No execution, implementation or author dispatch is authorized.
+No FRUIT execution, production implementation or fresh scientific-author
+dispatch is authorized. The approved local training-only diagnostic is complete.
 Historical JINC control, existing products and all prior packets are unchanged.
 Stage A and the Stage B r0.4 core/delivery remain unchanged. Earlier pending
 review and not-launched wording in historical packets is historical status.

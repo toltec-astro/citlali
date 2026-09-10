@@ -1,0 +1,74 @@
+[
+  {
+    "obsnum": 123424,
+    "array": "a1100",
+    "child_ratio_available_groups": 7885,
+    "child_ratio_available_evaluation_share": 0.9609641921481598,
+    "gamma_quantiles": [
+      0.10517585993510675,
+      0.776020473545186,
+      2.1533204066212854
+    ],
+    "zero_normalized_precision_entries": 0
+  },
+  {
+    "obsnum": 123424,
+    "array": "a1400",
+    "child_ratio_available_groups": 2256,
+    "child_ratio_available_evaluation_share": 0.9500020130808606,
+    "gamma_quantiles": [
+      0.07566487010514754,
+      0.5058897606383642,
+      2.7448169851874793
+    ],
+    "zero_normalized_precision_entries": 0
+  },
+  {
+    "obsnum": 123424,
+    "array": "a2000",
+    "child_ratio_available_groups": 2521,
+    "child_ratio_available_evaluation_share": 0.9730552351455778,
+    "gamma_quantiles": [
+      0.10989203373339457,
+      0.6843399583501599,
+      2.2783705201487843
+    ],
+    "zero_normalized_precision_entries": 0
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1100",
+    "child_ratio_available_groups": 7113,
+    "child_ratio_available_evaluation_share": 0.9368433744840668,
+    "gamma_quantiles": [
+      null,
+      null,
+      null
+    ],
+    "zero_normalized_precision_entries": 0
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1400",
+    "child_ratio_available_groups": 2619,
+    "child_ratio_available_evaluation_share": 0.9335992012053382,
+    "gamma_quantiles": [
+      null,
+      null,
+      null
+    ],
+    "zero_normalized_precision_entries": 0
+  },
+  {
+    "obsnum": 152389,
+    "array": "a2000",
+    "child_ratio_available_groups": 2427,
+    "child_ratio_available_evaluation_share": 0.9561809758703719,
+    "gamma_quantiles": [
+      0.07057568311389278,
+      0.729035660261964,
+      2.2810998308997803
+    ],
+    "zero_normalized_precision_entries": 0
+  }
+]

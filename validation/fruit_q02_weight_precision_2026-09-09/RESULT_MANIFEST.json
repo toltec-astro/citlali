@@ -1,0 +1,365 @@
+{
+  "schema": "SCI-FRUIT Q02 weight-precision diagnostic result r0.1",
+  "repository_base_before_implementation": "8612912173dbd35a97d8ec739ea9d1fd6180576d",
+  "report_closed_utc": "2026-09-10T12:24:27.692559+00:00",
+  "decision": "SCI-FRUIT-Q02-WEIGHT-PRECISION-SCREEN-R0.5",
+  "authority_state": "approved exact r0.5 diagnostic; no weight policy selected",
+  "experiment": {
+    "attempt": "attempt_01",
+    "state": "complete",
+    "repairs": 0,
+    "deviations": 0,
+    "inputs": [
+      123424,
+      152389
+    ],
+    "window_chunks": [
+      1,
+      2,
+      4
+    ],
+    "correlation_spans_seconds": [
+      0.125,
+      0.25,
+      0.5,
+      1,
+      2,
+      4
+    ],
+    "completion": {
+      "status": "complete",
+      "elapsed_seconds": 43.67631050013006,
+      "peak_aggregate_process_bytes": 887603200,
+      "subprocesses": 0,
+      "numerical_threads": 1,
+      "scientific_changes": "none beyond the approved diagnostic",
+      "finite_data_coverage": "unavailable"
+    },
+    "finite_data_coverage": "unavailable"
+  },
+  "result": {
+    "missing_required_weights_123424_by_K": [
+      230,
+      4,
+      0
+    ],
+    "missing_required_weights_152389_by_K": [
+      529,
+      12,
+      2
+    ],
+    "normalized_precision_available_cases": [
+      {
+        "obsnum": 123424,
+        "array": "a1100",
+        "K": 4
+      },
+      {
+        "obsnum": 123424,
+        "array": "a1400",
+        "K": 4
+      },
+      {
+        "obsnum": 123424,
+        "array": "a2000",
+        "K": 4
+      },
+      {
+        "obsnum": 152389,
+        "array": "a2000",
+        "K": 4
+      }
+    ],
+    "disposition": "Close the diagnostic as evidence; complete practical U/N map-screen design with explicit missing-training behavior and map-level evidence/loss criteria"
+  },
+  "verification": {
+    "deterministic_checks": 11,
+    "saved_product_checks": "PASS",
+    "run_products_verified": 33,
+    "prior_review_payload_counts": {
+      "r0.1": 1,
+      "r0.2": 2,
+      "r0.3": 4,
+      "r0.4": 6,
+      "r0.5": 2
+    },
+    "frozen_definition_payloads": 57,
+    "frozen_archive": "unchanged",
+    "opaque_archives": "presence verified; neither read, hashed nor unpacked",
+    "prior_protected_worktrees": "unchanged",
+    "post_run_discovery_hashes": "both unchanged",
+    "visual_inspection": "three figures checked; no clipping or illegible labels",
+    "statistical_coverage": "not established; deterministic checks are not coverage evidence"
+  },
+  "boundaries": {
+    "reserved_129081_scientific_access": false,
+    "evaluation_moment_or_map": false,
+    "weighted_map": false,
+    "injection": false,
+    "reduction_or_FRUIT_run": false,
+    "Unity_access": false,
+    "production_change": false,
+    "push": false,
+    "FRUIT_FEEDBACK_METHOD": "unavailable_pending_separate_owner_approval"
+  },
+  "sources": [
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/WEIGHT_PRECISION_APPROVAL_2026-09-09.md",
+      "bytes": 2168,
+      "sha256": "92f7b3244589ce2b001755f91a7d50cbc097f313a42b8c691ac463b7cde622e7"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.5/README.md",
+      "bytes": 4973,
+      "sha256": "40b06a30dbfef0472c4a6718fd02665d7382becb26d98603f64628a5de747b22"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.5/WEIGHT_PRECISION_PROTOCOL.md",
+      "bytes": 21006,
+      "sha256": "87fea48533182241296fbcf5644d6587bbb939d32ad662893271ff1b115a43ab"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.5/REVIEW_MANIFEST.json",
+      "bytes": 8170,
+      "sha256": "1d601cf9c577dc9ac25ac1138e057d75221abbbceb24c183fba3fb65e58e580b"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.4/DISCOVERY_PREFLIGHT.json",
+      "bytes": 32401,
+      "sha256": "570c71068b9e35b1bcb73334e3ec4f33d9e619096ddcca069a0caf456c51e811"
+    }
+  ],
+  "payloads": [
+    {
+      "path": "README.md",
+      "bytes": 3759,
+      "sha256": "04f3868233bbba5c4d4eecf2b5616f755d56c37df7ce6bb0ced00ecbfffbad91"
+    },
+    {
+      "path": "SCIENTIFIC_REPORT.md",
+      "bytes": 9078,
+      "sha256": "ea4b5641f0118be6ae5aaf910c721becf6594c0843f5c9838d97706b3ed76406"
+    },
+    {
+      "path": "attempt_01/123424_K1_groups.npz",
+      "bytes": 5326135,
+      "sha256": "7f285acbe1a57d0d2b91876184817c23210cd03524c5f987a689ada146cd4a14"
+    },
+    {
+      "path": "attempt_01/123424_K1_summary.json",
+      "bytes": 44373,
+      "sha256": "430e0db75111125d7f1b797f9827a6cbef101cac85be7f4c15f8ab4cdfaf88c1"
+    },
+    {
+      "path": "attempt_01/123424_K1_training_bins.npz",
+      "bytes": 710610,
+      "sha256": "78fad5191a5deb83ffc4069e4681efb244e8d7378d606c33ee09e3313dfce92b"
+    },
+    {
+      "path": "attempt_01/123424_K2_groups.npz",
+      "bytes": 3418075,
+      "sha256": "077d5220a86dc9b0c421f3728185f43f2724f1b8e3ebc3aa464153ffe23426d1"
+    },
+    {
+      "path": "attempt_01/123424_K2_summary.json",
+      "bytes": 44604,
+      "sha256": "d19e81da6307ec7f44fbf35fa70d95ee94a03d1cb1fab318f76b0ac01b87efdb"
+    },
+    {
+      "path": "attempt_01/123424_K2_training_bins.npz",
+      "bytes": 691333,
+      "sha256": "b8c51620f19462e7cfcc90bf55774aae337a5a9ad12f1dca77444716950d08c2"
+    },
+    {
+      "path": "attempt_01/123424_K4_groups.npz",
+      "bytes": 2525365,
+      "sha256": "322970c5d5ab4a8f14c008b66d98b310bdc000301ae3b75c7d2b03913f4d7b10"
+    },
+    {
+      "path": "attempt_01/123424_K4_summary.json",
+      "bytes": 47532,
+      "sha256": "46176c46a6b1de20c2271a7efb4bfac5e7b98e0f39f58c6b42bde91d6729d331"
+    },
+    {
+      "path": "attempt_01/123424_K4_training_bins.npz",
+      "bytes": 682747,
+      "sha256": "c12a1632703b2367344e73eecd2e95f35e221477877e5e94cde9b3b019285d78"
+    },
+    {
+      "path": "attempt_01/123424_chunk_diagnostics.npz",
+      "bytes": 3138760,
+      "sha256": "e232f547654266ba977c2f4c1415f2169d4a0d4e7026bb37b4e1811bec7b5ace"
+    },
+    {
+      "path": "attempt_01/123424_input_audit.json",
+      "bytes": 1798,
+      "sha256": "de5339d90b74655e67e313178dff0342b85c96566e37fbafb0f041f9b9402423"
+    },
+    {
+      "path": "attempt_01/123424_lag_diagnostics.npz",
+      "bytes": 686406,
+      "sha256": "f103ac77c2b083a27cae0bd3ae1bf17474e01365eb3879731a92640f3eb15e97"
+    },
+    {
+      "path": "attempt_01/123424_lag_summary.json",
+      "bytes": 23217,
+      "sha256": "aa00718a41742b04ba3d451acb7937d6ef2fea51fdfb3864cbfda60cee1b9f3c"
+    },
+    {
+      "path": "attempt_01/152389_K1_groups.npz",
+      "bytes": 5003074,
+      "sha256": "e188807f586e7310501f56fbcb0267312884c0fd093b9a9541126d7e320aab0b"
+    },
+    {
+      "path": "attempt_01/152389_K1_summary.json",
+      "bytes": 44420,
+      "sha256": "56f392bc2da4e48c8b58a8595ad7ad0daca0781b1e4bd505ef0618ba5f867911"
+    },
+    {
+      "path": "attempt_01/152389_K1_training_bins.npz",
+      "bytes": 627280,
+      "sha256": "52d5e5781dd2b35dc5758d76fe0876ff9161d25dba63b86114943d202b6582c2"
+    },
+    {
+      "path": "attempt_01/152389_K2_groups.npz",
+      "bytes": 3242698,
+      "sha256": "b96799e8063268b281be8601895a2e2dcbd15847d3207ef4c01408839dc41ae4"
+    },
+    {
+      "path": "attempt_01/152389_K2_summary.json",
+      "bytes": 44621,
+      "sha256": "db9a3b959fb811af3aa1b0c64bab3fbb98e3b29c65ce14d1622b6df9ad9979d7"
+    },
+    {
+      "path": "attempt_01/152389_K2_training_bins.npz",
+      "bytes": 608899,
+      "sha256": "28e239c048dc8fd260b0993e9ec3ec296dfb4244f35d3e508e7d42be1461a765"
+    },
+    {
+      "path": "attempt_01/152389_K4_groups.npz",
+      "bytes": 1880018,
+      "sha256": "06898cc99d5bd9aee8180481cfdffce90272a3cdba6e599db9802dbaeb5a0331"
+    },
+    {
+      "path": "attempt_01/152389_K4_summary.json",
+      "bytes": 45558,
+      "sha256": "2e7e1dd256e56162c78ce0b742222a2071c6bf7aabed4862bea854619e94ebee"
+    },
+    {
+      "path": "attempt_01/152389_K4_training_bins.npz",
+      "bytes": 600297,
+      "sha256": "79cf7cb0da0f7590d9734bce53de95d238ad124f0cd21f8476193a1c77dfe8dd"
+    },
+    {
+      "path": "attempt_01/152389_chunk_diagnostics.npz",
+      "bytes": 2865614,
+      "sha256": "25eeb78240b68990c833c63c5da1205c7ae11c9cbfb9050fb7998e087d7b0e8e"
+    },
+    {
+      "path": "attempt_01/152389_input_audit.json",
+      "bytes": 1783,
+      "sha256": "e1a3c24b5927a1c076e16027828492b62cc275d744ca24b19173ac96f108877b"
+    },
+    {
+      "path": "attempt_01/152389_lag_diagnostics.npz",
+      "bytes": 672816,
+      "sha256": "30aeb417614ff460e0a56aa258d1cf72192d460067987acc870814028cbc2985"
+    },
+    {
+      "path": "attempt_01/152389_lag_summary.json",
+      "bytes": 23193,
+      "sha256": "3f85d5dd76cee7b1eccb553d9e46fe572dc3842800d0ab086d35e6c9dc64a092"
+    },
+    {
+      "path": "attempt_01/COMPLETION.json",
+      "bytes": 263,
+      "sha256": "42fabca7e949a031405b2c4f9cbc6980bc6f729fe51947d249bda0c32566a6c5"
+    },
+    {
+      "path": "attempt_01/DETERMINISTIC_VERIFICATION.json",
+      "bytes": 2173,
+      "sha256": "97b71de42a4e65e175ac385bdd6aa2dcb81fb26332240e57865996126d796574"
+    },
+    {
+      "path": "attempt_01/PRODUCT_MANIFEST.json",
+      "bytes": 5492,
+      "sha256": "31b916315e9ac8419a81b1cc43f364ce9aa3791b7afc6e0fa811171a3ffd5f95"
+    },
+    {
+      "path": "attempt_01/PRODUCT_MANIFEST.json.sha256",
+      "bytes": 88,
+      "sha256": "ed9dd62e8a415a10186e4128f68dc8533d6c59a3f81872e43b32d635f918984f"
+    },
+    {
+      "path": "attempt_01/RUN_START.json",
+      "bytes": 3541,
+      "sha256": "5fe649e7bfddc62b4c6bbb9bc47dadf4d2ff707d8f06e45a8bb31d322ea011b0"
+    },
+    {
+      "path": "attempt_01/SUMMARY.json",
+      "bytes": 337616,
+      "sha256": "0b45271133aad558bfff9aec07447b278c840879c948c753c5ea736c68f0373b"
+    },
+    {
+      "path": "attempt_01/progress.jsonl",
+      "bytes": 7673,
+      "sha256": "330d72dc7d3902ac380547705403b5deab0730d9b1afb5f685b4069ecd2fd70f"
+    },
+    {
+      "path": "attempt_01/training_availability.png",
+      "bytes": 98435,
+      "sha256": "7c5c7c65100fc4a4d737b096d6f4f702bad9900a2ef16372c4e2b0d554ee7686"
+    },
+    {
+      "path": "attempt_01/unnormalized_precision_sensitivity.png",
+      "bytes": 213501,
+      "sha256": "624b0f3d43d1ee88eb30c36769087dd4f4084b2476a5f326e578b9780f49ee10"
+    },
+    {
+      "path": "render_report.py",
+      "bytes": 7359,
+      "sha256": "3733396426db404367d371984cb78549ca3e84eb0d29923e5d754dc15d9c9cf7"
+    },
+    {
+      "path": "report/DERIVED_TABLE_COUNTS.json",
+      "bytes": 1799,
+      "sha256": "cd5f7e76dd6759ba9eb226aba5f78d7129110c87d8165c94f69c45c3a24405b3"
+    },
+    {
+      "path": "report/FULL_RESULT_TABLES.md",
+      "bytes": 17672,
+      "sha256": "2d5591584ad9580227541125c344f1bb06eb49157ccb7266c92252e31e81d755"
+    },
+    {
+      "path": "report/PRODUCT_VERIFICATION.json",
+      "bytes": 3681,
+      "sha256": "ab213a0ffd62fbeb64387848ea3328d77755f0f9066027f3e2f13072494610ef"
+    },
+    {
+      "path": "report/normalized_precision_K4.png",
+      "bytes": 160534,
+      "sha256": "64c60a012eb5559f38f4891b0c6b8f479ac7cd14221583a4153f7dc947d9538c"
+    },
+    {
+      "path": "run_weight_precision.py",
+      "bytes": 41212,
+      "sha256": "b53e05481fe11ba99bfb8dc55ae6d0600c1151541c39d235982bbd72dbc75409"
+    },
+    {
+      "path": "settings.json",
+      "bytes": 1717,
+      "sha256": "c1ee50237623c969906665c1d42100c0f85fd9cd7ec10cf75fddbe2403d1c85d"
+    },
+    {
+      "path": "test_weight_precision.py",
+      "bytes": 8701,
+      "sha256": "5a8a8c51e90482b52df48ebea02139c056c88eb3e00c893d005ea76d92d5a6c1"
+    },
+    {
+      "path": "verify_products.py",
+      "bytes": 5344,
+      "sha256": "2b1be285bbb4c008807f12ff636960ded888830d0ba66adca06e4fa8387b9ed8"
+    }
+  ],
+  "payload_bytes": 33930864
+}

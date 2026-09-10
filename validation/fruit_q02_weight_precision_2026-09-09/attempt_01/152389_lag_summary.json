@@ -1,0 +1,1010 @@
+[
+  {
+    "obsnum": 152389,
+    "array": "a1100",
+    "lower_seconds": 0,
+    "upper_seconds": 0.125,
+    "category": "within_chunk",
+    "participating_detector_columns": 2610,
+    "detector_columns_with_pairs": 2609,
+    "pair_count_quantiles_10_50_90": [
+      8746.0,
+      9983.0,
+      10892.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      0.10635039773156892,
+      0.24675469219276996,
+      0.3589117394206013
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      0.030832348082849275,
+      0.07237212053362728,
+      0.13494873822486794
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1100",
+    "lower_seconds": 0,
+    "upper_seconds": 0.125,
+    "category": "cross_chunk",
+    "participating_detector_columns": 2610,
+    "detector_columns_with_pairs": 0,
+    "pair_count_quantiles_10_50_90": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1100",
+    "lower_seconds": 0.125,
+    "upper_seconds": 0.25,
+    "category": "within_chunk",
+    "participating_detector_columns": 2610,
+    "detector_columns_with_pairs": 2609,
+    "pair_count_quantiles_10_50_90": [
+      9280.0,
+      10676.0,
+      11728.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      -0.001954575994096022,
+      0.05383757512290074,
+      0.1264000567927201
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      -0.029334786494769085,
+      -0.008989254800410754,
+      0.01603064532965766
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1100",
+    "lower_seconds": 0.125,
+    "upper_seconds": 0.25,
+    "category": "cross_chunk",
+    "participating_detector_columns": 2610,
+    "detector_columns_with_pairs": 0,
+    "pair_count_quantiles_10_50_90": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1100",
+    "lower_seconds": 0.25,
+    "upper_seconds": 0.5,
+    "category": "within_chunk",
+    "participating_detector_columns": 2610,
+    "detector_columns_with_pairs": 2609,
+    "pair_count_quantiles_10_50_90": [
+      15420.0,
+      17926.0,
+      19920.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      -0.066477197773664,
+      -0.025241049089407285,
+      0.010732254543120542
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      -0.03572470531815077,
+      -0.01561576084412143,
+      0.001640278950310354
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1100",
+    "lower_seconds": 0.25,
+    "upper_seconds": 0.5,
+    "category": "cross_chunk",
+    "participating_detector_columns": 2610,
+    "detector_columns_with_pairs": 0,
+    "pair_count_quantiles_10_50_90": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1100",
+    "lower_seconds": 0.5,
+    "upper_seconds": 1,
+    "category": "within_chunk",
+    "participating_detector_columns": 2610,
+    "detector_columns_with_pairs": 2609,
+    "pair_count_quantiles_10_50_90": [
+      24397.0,
+      28859.0,
+      32612.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      -0.11245283392876072,
+      -0.060533927714941524,
+      -0.02149193387956937
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      -0.031432189480052594,
+      -0.01659810134158897,
+      -0.0047450211765216015
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1100",
+    "lower_seconds": 0.5,
+    "upper_seconds": 1,
+    "category": "cross_chunk",
+    "participating_detector_columns": 2610,
+    "detector_columns_with_pairs": 0,
+    "pair_count_quantiles_10_50_90": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1100",
+    "lower_seconds": 1,
+    "upper_seconds": 2,
+    "category": "within_chunk",
+    "participating_detector_columns": 2610,
+    "detector_columns_with_pairs": 2607,
+    "pair_count_quantiles_10_50_90": [
+      21745.0,
+      26115.0,
+      30500.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      -0.09951337645403613,
+      -0.04500806776226989,
+      -0.014280915536545332
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      -0.04142573486234762,
+      -0.02158125351039777,
+      -0.007571740031383056
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1100",
+    "lower_seconds": 1,
+    "upper_seconds": 2,
+    "category": "cross_chunk",
+    "participating_detector_columns": 2610,
+    "detector_columns_with_pairs": 0,
+    "pair_count_quantiles_10_50_90": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1100",
+    "lower_seconds": 2,
+    "upper_seconds": 4,
+    "category": "within_chunk",
+    "participating_detector_columns": 2610,
+    "detector_columns_with_pairs": 2603,
+    "pair_count_quantiles_10_50_90": [
+      555.0,
+      672.0,
+      800.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      -0.21346705842469518,
+      -0.03435676063796228,
+      0.11619950348728159
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      -0.11644508214762617,
+      -0.028315953459194767,
+      0.06513650939518784
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1100",
+    "lower_seconds": 2,
+    "upper_seconds": 4,
+    "category": "cross_chunk",
+    "participating_detector_columns": 2610,
+    "detector_columns_with_pairs": 2572,
+    "pair_count_quantiles_10_50_90": [
+      20078.0,
+      26123.0,
+      31153.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      -0.02942522355441952,
+      0.0019251421310053551,
+      0.031820349778260655
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      -0.014452922371007109,
+      -0.0012251162157863637,
+      0.01092896913648381
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1100",
+    "lower_seconds": 4,
+    "upper_seconds": 8,
+    "category": "within_chunk",
+    "participating_detector_columns": 2610,
+    "detector_columns_with_pairs": 0,
+    "pair_count_quantiles_10_50_90": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1100",
+    "lower_seconds": 4,
+    "upper_seconds": 8,
+    "category": "cross_chunk",
+    "participating_detector_columns": 2610,
+    "detector_columns_with_pairs": 2577,
+    "pair_count_quantiles_10_50_90": [
+      107055.0,
+      141042.0,
+      168212.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      -0.006079235259078909,
+      -0.0003718531159048226,
+      0.005408789369078026
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      -0.0020982586964081573,
+      0.0002009767471739379,
+      0.002604352209900707
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1400",
+    "lower_seconds": 0,
+    "upper_seconds": 0.125,
+    "category": "within_chunk",
+    "participating_detector_columns": 983,
+    "detector_columns_with_pairs": 983,
+    "pair_count_quantiles_10_50_90": [
+      8764.0,
+      10087.0,
+      10892.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      0.049167260561883,
+      0.15706279119128477,
+      0.2994720593419429
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      0.015770007918364776,
+      0.04207865002436005,
+      0.09264498709169564
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1400",
+    "lower_seconds": 0,
+    "upper_seconds": 0.125,
+    "category": "cross_chunk",
+    "participating_detector_columns": 983,
+    "detector_columns_with_pairs": 0,
+    "pair_count_quantiles_10_50_90": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1400",
+    "lower_seconds": 0.125,
+    "upper_seconds": 0.25,
+    "category": "within_chunk",
+    "participating_detector_columns": 983,
+    "detector_columns_with_pairs": 983,
+    "pair_count_quantiles_10_50_90": [
+      9245.0,
+      10744.0,
+      11728.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      -0.009605284539845408,
+      0.03511836375008397,
+      0.1092804733318464
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      -0.028679757089875257,
+      -0.010994816558940903,
+      0.010839580628105073
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1400",
+    "lower_seconds": 0.125,
+    "upper_seconds": 0.25,
+    "category": "cross_chunk",
+    "participating_detector_columns": 983,
+    "detector_columns_with_pairs": 0,
+    "pair_count_quantiles_10_50_90": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1400",
+    "lower_seconds": 0.25,
+    "upper_seconds": 0.5,
+    "category": "within_chunk",
+    "participating_detector_columns": 983,
+    "detector_columns_with_pairs": 981,
+    "pair_count_quantiles_10_50_90": [
+      15420.0,
+      18090.0,
+      19920.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      -0.04872698110390386,
+      -0.01380716084619623,
+      0.016625972932836068
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      -0.030020143965033694,
+      -0.01349654971677818,
+      -0.0005056108826376748
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1400",
+    "lower_seconds": 0.25,
+    "upper_seconds": 0.5,
+    "category": "cross_chunk",
+    "participating_detector_columns": 983,
+    "detector_columns_with_pairs": 0,
+    "pair_count_quantiles_10_50_90": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1400",
+    "lower_seconds": 0.5,
+    "upper_seconds": 1,
+    "category": "within_chunk",
+    "participating_detector_columns": 983,
+    "detector_columns_with_pairs": 981,
+    "pair_count_quantiles_10_50_90": [
+      24335.0,
+      29295.0,
+      32612.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      -0.08149989497601796,
+      -0.03876067706778511,
+      -0.012987286327941909
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      -0.025466551877073227,
+      -0.013240861345369857,
+      -0.0035208553175809626
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1400",
+    "lower_seconds": 0.5,
+    "upper_seconds": 1,
+    "category": "cross_chunk",
+    "participating_detector_columns": 983,
+    "detector_columns_with_pairs": 0,
+    "pair_count_quantiles_10_50_90": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1400",
+    "lower_seconds": 1,
+    "upper_seconds": 2,
+    "category": "within_chunk",
+    "participating_detector_columns": 983,
+    "detector_columns_with_pairs": 982,
+    "pair_count_quantiles_10_50_90": [
+      22239.0,
+      26658.0,
+      30500.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      -0.09457390490929782,
+      -0.03886906764354721,
+      -0.010729414742533559
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      -0.029648627645322095,
+      -0.01491746239258042,
+      -0.004483854596807931
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1400",
+    "lower_seconds": 1,
+    "upper_seconds": 2,
+    "category": "cross_chunk",
+    "participating_detector_columns": 983,
+    "detector_columns_with_pairs": 0,
+    "pair_count_quantiles_10_50_90": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1400",
+    "lower_seconds": 2,
+    "upper_seconds": 4,
+    "category": "within_chunk",
+    "participating_detector_columns": 983,
+    "detector_columns_with_pairs": 979,
+    "pair_count_quantiles_10_50_90": [
+      556.0,
+      712.0,
+      800.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      -0.18000551692589925,
+      -0.022761986539005612,
+      0.09754769419737824
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      -0.10175945007936722,
+      -0.023259075569699438,
+      0.05515827636034629
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1400",
+    "lower_seconds": 2,
+    "upper_seconds": 4,
+    "category": "cross_chunk",
+    "participating_detector_columns": 983,
+    "detector_columns_with_pairs": 945,
+    "pair_count_quantiles_10_50_90": [
+      19907.0,
+      26797.0,
+      31153.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      -0.01830385297527651,
+      0.0024822351231103277,
+      0.028947513284834678
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      -0.00895189974974843,
+      0.00023919067586674868,
+      0.009515560906237334
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1400",
+    "lower_seconds": 4,
+    "upper_seconds": 8,
+    "category": "within_chunk",
+    "participating_detector_columns": 983,
+    "detector_columns_with_pairs": 0,
+    "pair_count_quantiles_10_50_90": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1400",
+    "lower_seconds": 4,
+    "upper_seconds": 8,
+    "category": "cross_chunk",
+    "participating_detector_columns": 983,
+    "detector_columns_with_pairs": 952,
+    "pair_count_quantiles_10_50_90": [
+      108446.0,
+      144141.0,
+      168212.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      -0.006183092349613139,
+      -0.0005292904787939475,
+      0.003572760244793978
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      -0.0017889189224460317,
+      -3.547414851207607e-05,
+      0.0017696871409280106
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a2000",
+    "lower_seconds": 0,
+    "upper_seconds": 0.125,
+    "category": "within_chunk",
+    "participating_detector_columns": 850,
+    "detector_columns_with_pairs": 850,
+    "pair_count_quantiles_10_50_90": [
+      9191.0,
+      10263.0,
+      10892.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      0.03470404876513543,
+      0.07509631536884236,
+      0.17136495718816608
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      0.014101299050749807,
+      0.03376671038676068,
+      0.06394938298057455
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a2000",
+    "lower_seconds": 0,
+    "upper_seconds": 0.125,
+    "category": "cross_chunk",
+    "participating_detector_columns": 850,
+    "detector_columns_with_pairs": 0,
+    "pair_count_quantiles_10_50_90": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a2000",
+    "lower_seconds": 0.125,
+    "upper_seconds": 0.25,
+    "category": "within_chunk",
+    "participating_detector_columns": 850,
+    "detector_columns_with_pairs": 850,
+    "pair_count_quantiles_10_50_90": [
+      9772.0,
+      10944.0,
+      11728.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      -0.024826943134939588,
+      0.0016264986670414846,
+      0.056705627812618245
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      -0.025905424805183916,
+      -0.009373227828297977,
+      0.008777198222560336
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a2000",
+    "lower_seconds": 0.125,
+    "upper_seconds": 0.25,
+    "category": "cross_chunk",
+    "participating_detector_columns": 850,
+    "detector_columns_with_pairs": 0,
+    "pair_count_quantiles_10_50_90": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a2000",
+    "lower_seconds": 0.25,
+    "upper_seconds": 0.5,
+    "category": "within_chunk",
+    "participating_detector_columns": 850,
+    "detector_columns_with_pairs": 850,
+    "pair_count_quantiles_10_50_90": [
+      16261.0,
+      18411.0,
+      19920.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      -0.03822888327580949,
+      -0.013295683499421958,
+      0.016267376085656145
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      -0.026739916833106347,
+      -0.013377572316884537,
+      -0.0004552635842704273
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a2000",
+    "lower_seconds": 0.25,
+    "upper_seconds": 0.5,
+    "category": "cross_chunk",
+    "participating_detector_columns": 850,
+    "detector_columns_with_pairs": 0,
+    "pair_count_quantiles_10_50_90": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a2000",
+    "lower_seconds": 0.5,
+    "upper_seconds": 1,
+    "category": "within_chunk",
+    "participating_detector_columns": 850,
+    "detector_columns_with_pairs": 850,
+    "pair_count_quantiles_10_50_90": [
+      25943.0,
+      29853.0,
+      32612.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      -0.06377722782685304,
+      -0.026593029321835285,
+      -0.00939501360355465
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      -0.024630678917266467,
+      -0.012907839806043488,
+      -0.003870593356406962
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a2000",
+    "lower_seconds": 0.5,
+    "upper_seconds": 1,
+    "category": "cross_chunk",
+    "participating_detector_columns": 850,
+    "detector_columns_with_pairs": 0,
+    "pair_count_quantiles_10_50_90": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a2000",
+    "lower_seconds": 1,
+    "upper_seconds": 2,
+    "category": "within_chunk",
+    "participating_detector_columns": 850,
+    "detector_columns_with_pairs": 850,
+    "pair_count_quantiles_10_50_90": [
+      23408.0,
+      27783.0,
+      30500.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      -0.051066588413626164,
+      -0.01586372893069077,
+      -0.002736036581633435
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      -0.02466895011250859,
+      -0.013060912985813342,
+      -0.004036862912538658
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a2000",
+    "lower_seconds": 1,
+    "upper_seconds": 2,
+    "category": "cross_chunk",
+    "participating_detector_columns": 850,
+    "detector_columns_with_pairs": 0,
+    "pair_count_quantiles_10_50_90": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a2000",
+    "lower_seconds": 2,
+    "upper_seconds": 4,
+    "category": "within_chunk",
+    "participating_detector_columns": 850,
+    "detector_columns_with_pairs": 850,
+    "pair_count_quantiles_10_50_90": [
+      599.0,
+      722.0,
+      800.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      -0.10874453710345837,
+      -0.012240710252033327,
+      0.07849577886719517
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      -0.07991565068309357,
+      -0.014828282354006373,
+      0.05298629895792579
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a2000",
+    "lower_seconds": 2,
+    "upper_seconds": 4,
+    "category": "cross_chunk",
+    "participating_detector_columns": 850,
+    "detector_columns_with_pairs": 850,
+    "pair_count_quantiles_10_50_90": [
+      22087.0,
+      27788.0,
+      31153.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      -0.011640895359831474,
+      0.000568530087512315,
+      0.014434311460427762
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      -0.008387323075231077,
+      0.00015827756630802184,
+      0.009323117681324518
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a2000",
+    "lower_seconds": 4,
+    "upper_seconds": 8,
+    "category": "within_chunk",
+    "participating_detector_columns": 850,
+    "detector_columns_with_pairs": 0,
+    "pair_count_quantiles_10_50_90": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ]
+  },
+  {
+    "obsnum": 152389,
+    "array": "a2000",
+    "lower_seconds": 4,
+    "upper_seconds": 8,
+    "category": "cross_chunk",
+    "participating_detector_columns": 850,
+    "detector_columns_with_pairs": 850,
+    "pair_count_quantiles_10_50_90": [
+      117509.0,
+      149643.0,
+      168212.0
+    ],
+    "centered_signal_correlation_quantiles_10_50_90": [
+      -0.002810887677634321,
+      -0.00012218084198478972,
+      0.002200103523454576
+    ],
+    "squared_signal_correlation_quantiles_10_50_90": [
+      -0.0017664978182202165,
+      -1.269905152996356e-05,
+      0.0015620636552954642
+    ]
+  }
+]

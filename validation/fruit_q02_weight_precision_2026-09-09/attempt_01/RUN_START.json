@@ -1,0 +1,112 @@
+{
+  "started_utc": "2026-09-09T20:55:50.546956+00:00",
+  "decision": "SCI-FRUIT-Q02-WEIGHT-PRECISION-SCREEN-R0.5",
+  "sources": [
+    {
+      "path": "validation/fruit_q02_weight_precision_2026-09-09/run_weight_precision.py",
+      "bytes": 41212,
+      "sha256": "b53e05481fe11ba99bfb8dc55ae6d0600c1151541c39d235982bbd72dbc75409"
+    },
+    {
+      "path": "validation/fruit_q02_weight_precision_2026-09-09/settings.json",
+      "bytes": 1717,
+      "sha256": "c1ee50237623c969906665c1d42100c0f85fd9cd7ec10cf75fddbe2403d1c85d"
+    },
+    {
+      "path": "validation/fruit_q02_weight_precision_2026-09-09/test_weight_precision.py",
+      "bytes": 8701,
+      "sha256": "5a8a8c51e90482b52df48ebea02139c056c88eb3e00c893d005ea76d92d5a6c1"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.5/WEIGHT_PRECISION_PROTOCOL.md",
+      "bytes": 21006,
+      "sha256": "87fea48533182241296fbcf5644d6587bbb939d32ad662893271ff1b115a43ab"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/WEIGHT_PRECISION_APPROVAL_2026-09-09.md",
+      "bytes": 2168,
+      "sha256": "92f7b3244589ce2b001755f91a7d50cbc097f313a42b8c691ac463b7cde622e7"
+    }
+  ],
+  "settings": {
+    "decision": "SCI-FRUIT-Q02-WEIGHT-PRECISION-SCREEN-R0.5",
+    "proposal_commit": "8612912173dbd35a97d8ec739ea9d1fd6180576d",
+    "protocol_sha256": "87fea48533182241296fbcf5644d6587bbb939d32ad662893271ff1b115a43ab",
+    "window_chunks": [
+      1,
+      2,
+      4
+    ],
+    "correlation_spans_seconds": [
+      0.125,
+      0.25,
+      0.5,
+      1,
+      2,
+      4
+    ],
+    "uncertainty": "First-order centered-scatter influence with actual-time Bartlett kernel and joint full-array normalization",
+    "finite_data_coverage": "unavailable; sensitivity is not a confidence interval",
+    "wall_time_limit_seconds": 7200,
+    "aggregate_memory_limit_bytes": 4294967296,
+    "output_limit_bytes": 2147483648,
+    "workers": 1,
+    "numerical_library_threads": 1,
+    "inputs": [
+      {
+        "obsnum": 123424,
+        "path": "/Users/gwilson/work_toltec/local_data/beammaps/pointings/reduced/redu01/123424/raw/toltec_commissioning_pointing_123424_ptc_timestream.nc",
+        "bytes": 760674540,
+        "sha256": "b53ad776173b1bd2b12569c87ae15ad78a3db1c76ef4515c855255b0e4f20ba9"
+      },
+      {
+        "obsnum": 152389,
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/152389/raw/toltec_commissioning_pointing_152389_ptc_timestream.nc",
+        "bytes": 138244964,
+        "sha256": "894fff53babfb0070e7d0a8b831aa88098d87f9772d4a8ecb253aef009d35643"
+      }
+    ],
+    "guard_arcsec": {
+      "123424": 28.59742792952955,
+      "152389": 27.38359774550894
+    },
+    "edges": [
+      0,
+      289,
+      594,
+      899,
+      1204,
+      1509,
+      1814,
+      2119,
+      2424,
+      2729,
+      3034,
+      3339,
+      3628
+    ],
+    "lag_edges_seconds": [
+      0,
+      0.125,
+      0.25,
+      0.5,
+      1,
+      2,
+      4,
+      8
+    ],
+    "batch_columns": 64
+  },
+  "verification": "PASS",
+  "python": "3.13.2 (main, Feb  4 2025, 14:51:09) [Clang 16.0.0 (clang-1600.0.26.6)]",
+  "environment": {
+    "numpy": "2.2.3",
+    "scipy": "1.15.2",
+    "netCDF4": "1.7.2",
+    "matplotlib": "3.10.0",
+    "threadpoolctl": "3.6.0"
+  },
+  "threadpools": [],
+  "numerical_threads": 1,
+  "scientific_signal_access_at_record_time": false
+}

@@ -1,0 +1,100 @@
+{
+  "obsnum": 123424,
+  "input": {
+    "obsnum": 123424,
+    "path": "/Users/gwilson/work_toltec/local_data/beammaps/pointings/reduced/redu01/123424/raw/toltec_commissioning_pointing_123424_ptc_timestream.nc",
+    "bytes": 760674540,
+    "sha256": "b53ad776173b1bd2b12569c87ae15ad78a3db1c76ef4515c855255b0e4f20ba9"
+  },
+  "signal_dtype": "float64",
+  "recovered_edges": [
+    0,
+    289,
+    594,
+    899,
+    1204,
+    1509,
+    1814,
+    2119,
+    2424,
+    2729,
+    3034,
+    3339,
+    3628
+  ],
+  "original_scan_indices": [
+    [
+      0,
+      288
+    ],
+    [
+      305,
+      593
+    ],
+    [
+      610,
+      898
+    ],
+    [
+      915,
+      1203
+    ],
+    [
+      1220,
+      1508
+    ],
+    [
+      1525,
+      1813
+    ],
+    [
+      1830,
+      2118
+    ],
+    [
+      2135,
+      2423
+    ],
+    [
+      2440,
+      2728
+    ],
+    [
+      2745,
+      3033
+    ],
+    [
+      3050,
+      3338
+    ],
+    [
+      3339,
+      3627
+    ]
+  ],
+  "coordinate_max_difference_rad": [
+    4.336808689942018e-19,
+    4.336808689942018e-19
+  ],
+  "elapsed_span_seconds": 59.42476797103882,
+  "original_chunk_elapsed_spans_seconds": [
+    4.718591928482056,
+    4.980736017227173,
+    4.980736017227173,
+    4.980735778808594,
+    4.980736017227173,
+    4.980736017227173,
+    4.980736017227173,
+    4.980736017227173,
+    4.980735778808594,
+    4.980736017227173,
+    4.980736017227173,
+    4.718591928482056
+  ],
+  "training_candidate_rows": 1808,
+  "evaluation_candidate_rows": 1820,
+  "training_signal_access": "candidate first halves only; statistics use eligible source-excluded rows",
+  "evaluation_signal_access": "masked/nonfinite predicate only; values not retained",
+  "stored_weights_access": false,
+  "input_units": "declared mJy/beam; no new conformity or physical-flux claim"
+}

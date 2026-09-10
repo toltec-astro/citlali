@@ -1,0 +1,1316 @@
+[
+  {
+    "obsnum": 152389,
+    "array": "a1100",
+    "K": 4,
+    "windows": 3,
+    "required_groups": 7742,
+    "required_detector_columns": 2610,
+    "evaluation_occurrences": 4088708,
+    "central_evaluation_occurrences": 263250,
+    "no_training_groups": 1,
+    "one_training_groups": 0,
+    "two_training_groups": 0,
+    "degenerate_or_unavailable_score_groups": 1,
+    "weight_state": "unavailable_required_weight",
+    "normalized_uncertainty_state": "unavailable_required_weight",
+    "weight_unavailable": {
+      "groups": 1,
+      "evaluation_occurrences": 136,
+      "evaluation_share": 3.326234106226221e-05,
+      "central_evaluation_occurrences": 62,
+      "central_evaluation_share": 0.00023551756885090218,
+      "coefficient_mass": null
+    },
+    "normalized_uncertainty_unavailable": {
+      "groups": 7742,
+      "evaluation_occurrences": 4088708,
+      "evaluation_share": 1.0,
+      "central_evaluation_occurrences": 263250,
+      "central_evaluation_share": 1.0,
+      "coefficient_mass": null
+    },
+    "any_normalized_estimate_above_goal": {
+      "groups": 0,
+      "evaluation_occurrences": 0,
+      "evaluation_share": 0.0,
+      "central_evaluation_occurrences": 0,
+      "central_evaluation_share": 0.0,
+      "coefficient_mass": null
+    },
+    "training_count_quantiles_10_50_90": [
+      402.0,
+      508.0,
+      535.0
+    ],
+    "training_span_quantiles_seconds_10_50_90": [
+      16.334848165512085,
+      17.055743932724,
+      17.186815977096558
+    ],
+    "exclusion_scope": "All array columns, including inactive slots; sequential reasons are disjoint within each half.",
+    "training_exclusions": [
+      1720285,
+      0,
+      0,
+      271810
+    ],
+    "evaluation_exclusions": [
+      1686152,
+      0,
+      0
+    ],
+    "raw_signal_masked_nonfinite_counts": [
+      0,
+      508048,
+      0,
+      511420
+    ],
+    "child_scatter_ratio_quantiles_10_50_90": [
+      1.327398063571345,
+      1.9290506620830525,
+      4.4075119063372314
+    ],
+    "mean_change_fraction_quantiles_10_50_90": [
+      0.0018933030838955078,
+      0.011691823131775558,
+      0.04658496233309098
+    ],
+    "radial_log_scatter_ratio_quantiles_10_50_90": [
+      -0.7758717355245528,
+      -0.11760880551618957,
+      0.3924103189590522
+    ],
+    "late_early_log_scatter_ratio_quantiles_10_50_90": [
+      -0.6157842252001791,
+      -0.031397418494178826,
+      0.5193734253646579
+    ],
+    "precision": [
+      {
+        "tau_seconds": 0.125,
+        "normalized": {
+          "required_groups": 7742,
+          "available_groups": 0,
+          "unavailable_groups": 7742,
+          "above_goal_groups": 0,
+          "at_or_below_goal_groups": 0,
+          "group_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "below_goal_fraction_of_available_groups": null,
+          "below_goal_fraction_of_all_required_groups": 0.0,
+          "available_evaluation_occurrences": 0,
+          "below_goal_fraction_of_available_occurrences": null,
+          "below_goal_fraction_of_all_occurrences": 0.0,
+          "unknown_fraction_of_all_occurrences": 1.0,
+          "above_goal_fraction_of_all_occurrences": 0.0
+        },
+        "unnormalized": {
+          "required_groups": 7742,
+          "available_groups": 7741,
+          "unavailable_groups": 1,
+          "above_goal_groups": 177,
+          "at_or_below_goal_groups": 7564,
+          "group_quantiles_10_50_90": [
+            0.07443325847595142,
+            0.0949514853300354,
+            0.14011609945374515
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.07432097588415383,
+            0.09467951370637034,
+            0.13750516471942556
+          ],
+          "below_goal_fraction_of_available_groups": 0.977134737114068,
+          "below_goal_fraction_of_all_required_groups": 0.977008524928959,
+          "available_evaluation_occurrences": 4088572,
+          "below_goal_fraction_of_available_occurrences": 0.9787627562875253,
+          "below_goal_fraction_of_all_occurrences": 0.9787302003469066,
+          "unknown_fraction_of_all_occurrences": 3.326234106226221e-05,
+          "above_goal_fraction_of_all_occurrences": 0.021236537312031088
+        },
+        "occupied_bin_quantiles_10_50_90": [
+          56.0,
+          71.0,
+          76.0
+        ]
+      },
+      {
+        "tau_seconds": 0.25,
+        "normalized": {
+          "required_groups": 7742,
+          "available_groups": 0,
+          "unavailable_groups": 7742,
+          "above_goal_groups": 0,
+          "at_or_below_goal_groups": 0,
+          "group_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "below_goal_fraction_of_available_groups": null,
+          "below_goal_fraction_of_all_required_groups": 0.0,
+          "available_evaluation_occurrences": 0,
+          "below_goal_fraction_of_available_occurrences": null,
+          "below_goal_fraction_of_all_occurrences": 0.0,
+          "unknown_fraction_of_all_occurrences": 1.0,
+          "above_goal_fraction_of_all_occurrences": 0.0
+        },
+        "unnormalized": {
+          "required_groups": 7742,
+          "available_groups": 7741,
+          "unavailable_groups": 1,
+          "above_goal_groups": 353,
+          "at_or_below_goal_groups": 7388,
+          "group_quantiles_10_50_90": [
+            0.075454347188352,
+            0.10260497893219658,
+            0.16373438012370062
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.0753458111210558,
+            0.10218018728733008,
+            0.16108088671688886
+          ],
+          "below_goal_fraction_of_available_groups": 0.9543986565043276,
+          "below_goal_fraction_of_all_required_groups": 0.9542753810384913,
+          "available_evaluation_occurrences": 4088572,
+          "below_goal_fraction_of_available_occurrences": 0.9567937167304379,
+          "below_goal_fraction_of_all_occurrences": 0.9567618915315058,
+          "unknown_fraction_of_all_occurrences": 3.326234106226221e-05,
+          "above_goal_fraction_of_all_occurrences": 0.043204846127431945
+        },
+        "occupied_bin_quantiles_10_50_90": [
+          30.0,
+          37.0,
+          40.0
+        ]
+      },
+      {
+        "tau_seconds": 0.5,
+        "normalized": {
+          "required_groups": 7742,
+          "available_groups": 0,
+          "unavailable_groups": 7742,
+          "above_goal_groups": 0,
+          "at_or_below_goal_groups": 0,
+          "group_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "below_goal_fraction_of_available_groups": null,
+          "below_goal_fraction_of_all_required_groups": 0.0,
+          "available_evaluation_occurrences": 0,
+          "below_goal_fraction_of_available_occurrences": null,
+          "below_goal_fraction_of_all_occurrences": 0.0,
+          "unknown_fraction_of_all_occurrences": 1.0,
+          "above_goal_fraction_of_all_occurrences": 0.0
+        },
+        "unnormalized": {
+          "required_groups": 7742,
+          "available_groups": 7741,
+          "unavailable_groups": 1,
+          "above_goal_groups": 656,
+          "at_or_below_goal_groups": 7085,
+          "group_quantiles_10_50_90": [
+            0.07403979004022301,
+            0.10890484939263755,
+            0.18923923988608507
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.07390494186844572,
+            0.10854235934320988,
+            0.18739724352659834
+          ],
+          "below_goal_fraction_of_available_groups": 0.9152564268182405,
+          "below_goal_fraction_of_all_required_groups": 0.9151382071816068,
+          "available_evaluation_occurrences": 4088572,
+          "below_goal_fraction_of_available_occurrences": 0.9175790471587635,
+          "below_goal_fraction_of_all_occurrences": 0.9175485263315453,
+          "unknown_fraction_of_all_occurrences": 3.326234106226221e-05,
+          "above_goal_fraction_of_all_occurrences": 0.08241821132739242
+        },
+        "occupied_bin_quantiles_10_50_90": [
+          18.0,
+          21.0,
+          24.0
+        ]
+      },
+      {
+        "tau_seconds": 1,
+        "normalized": {
+          "required_groups": 7742,
+          "available_groups": 0,
+          "unavailable_groups": 7742,
+          "above_goal_groups": 0,
+          "at_or_below_goal_groups": 0,
+          "group_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "below_goal_fraction_of_available_groups": null,
+          "below_goal_fraction_of_all_required_groups": 0.0,
+          "available_evaluation_occurrences": 0,
+          "below_goal_fraction_of_available_occurrences": null,
+          "below_goal_fraction_of_all_occurrences": 0.0,
+          "unknown_fraction_of_all_occurrences": 1.0,
+          "above_goal_fraction_of_all_occurrences": 0.0
+        },
+        "unnormalized": {
+          "required_groups": 7742,
+          "available_groups": 7741,
+          "unavailable_groups": 1,
+          "above_goal_groups": 1019,
+          "at_or_below_goal_groups": 6722,
+          "group_quantiles_10_50_90": [
+            0.0708958969193119,
+            0.11417989763027925,
+            0.21752766139927562
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.07086384539114331,
+            0.11407923641769364,
+            0.21651450919591333
+          ],
+          "below_goal_fraction_of_available_groups": 0.868363260560651,
+          "below_goal_fraction_of_all_required_groups": 0.8682510979075174,
+          "available_evaluation_occurrences": 4088572,
+          "below_goal_fraction_of_available_occurrences": 0.8693954759754751,
+          "below_goal_fraction_of_all_occurrences": 0.8693665578466352,
+          "unknown_fraction_of_all_occurrences": 3.326234106226221e-05,
+          "above_goal_fraction_of_all_occurrences": 0.13060017981230257
+        },
+        "occupied_bin_quantiles_10_50_90": [
+          11.0,
+          14.0,
+          16.0
+        ]
+      },
+      {
+        "tau_seconds": 2,
+        "normalized": {
+          "required_groups": 7742,
+          "available_groups": 0,
+          "unavailable_groups": 7742,
+          "above_goal_groups": 0,
+          "at_or_below_goal_groups": 0,
+          "group_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "below_goal_fraction_of_available_groups": null,
+          "below_goal_fraction_of_all_required_groups": 0.0,
+          "available_evaluation_occurrences": 0,
+          "below_goal_fraction_of_available_occurrences": null,
+          "below_goal_fraction_of_all_occurrences": 0.0,
+          "unknown_fraction_of_all_occurrences": 1.0,
+          "above_goal_fraction_of_all_occurrences": 0.0
+        },
+        "unnormalized": {
+          "required_groups": 7742,
+          "available_groups": 7741,
+          "unavailable_groups": 1,
+          "above_goal_groups": 1351,
+          "at_or_below_goal_groups": 6390,
+          "group_quantiles_10_50_90": [
+            0.06502036836366439,
+            0.11788409420683844,
+            0.243770430686042
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.06527084684497514,
+            0.11808696172591777,
+            0.24414825881614383
+          ],
+          "below_goal_fraction_of_available_groups": 0.8254747448650045,
+          "below_goal_fraction_of_all_required_groups": 0.8253681219323172,
+          "available_evaluation_occurrences": 4088572,
+          "below_goal_fraction_of_available_occurrences": 0.8246908700641691,
+          "below_goal_fraction_of_all_occurrences": 0.8246634389151781,
+          "unknown_fraction_of_all_occurrences": 3.326234106226221e-05,
+          "above_goal_fraction_of_all_occurrences": 0.17530329874375963
+        },
+        "occupied_bin_quantiles_10_50_90": [
+          7.0,
+          9.0,
+          10.0
+        ]
+      },
+      {
+        "tau_seconds": 4,
+        "normalized": {
+          "required_groups": 7742,
+          "available_groups": 0,
+          "unavailable_groups": 7742,
+          "above_goal_groups": 0,
+          "at_or_below_goal_groups": 0,
+          "group_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "below_goal_fraction_of_available_groups": null,
+          "below_goal_fraction_of_all_required_groups": 0.0,
+          "available_evaluation_occurrences": 0,
+          "below_goal_fraction_of_available_occurrences": null,
+          "below_goal_fraction_of_all_occurrences": 0.0,
+          "unknown_fraction_of_all_occurrences": 1.0,
+          "above_goal_fraction_of_all_occurrences": 0.0
+        },
+        "unnormalized": {
+          "required_groups": 7742,
+          "available_groups": 7741,
+          "unavailable_groups": 1,
+          "above_goal_groups": 1488,
+          "at_or_below_goal_groups": 6253,
+          "group_quantiles_10_50_90": [
+            0.05846311176149973,
+            0.11818023351039371,
+            0.2592905645389135
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.059056996573679556,
+            0.11887235152300428,
+            0.2601266749916649
+          ],
+          "below_goal_fraction_of_available_groups": 0.8077767730267408,
+          "below_goal_fraction_of_all_required_groups": 0.8076724360630329,
+          "available_evaluation_occurrences": 4088572,
+          "below_goal_fraction_of_available_occurrences": 0.8059520536754642,
+          "below_goal_fraction_of_all_occurrences": 0.805925245823375,
+          "unknown_fraction_of_all_occurrences": 3.326234106226221e-05,
+          "above_goal_fraction_of_all_occurrences": 0.1940414918355627
+        },
+        "occupied_bin_quantiles_10_50_90": [
+          5.0,
+          6.0,
+          6.0
+        ]
+      }
+    ],
+    "finite_data_coverage": "unavailable; all precision estimates descriptive",
+    "sensitivity_min_p_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ],
+    "sensitivity_max_p_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ],
+    "all_tau_at_or_below_goal_groups": 0
+  },
+  {
+    "obsnum": 152389,
+    "array": "a1400",
+    "K": 4,
+    "windows": 3,
+    "required_groups": 2889,
+    "required_detector_columns": 983,
+    "evaluation_occurrences": 1511277,
+    "central_evaluation_occurrences": 96204,
+    "no_training_groups": 1,
+    "one_training_groups": 0,
+    "two_training_groups": 0,
+    "degenerate_or_unavailable_score_groups": 1,
+    "weight_state": "unavailable_required_weight",
+    "normalized_uncertainty_state": "unavailable_required_weight",
+    "weight_unavailable": {
+      "groups": 1,
+      "evaluation_occurrences": 136,
+      "evaluation_share": 8.999012093745886e-05,
+      "central_evaluation_occurrences": 128,
+      "central_evaluation_share": 0.0013305060080661926,
+      "coefficient_mass": null
+    },
+    "normalized_uncertainty_unavailable": {
+      "groups": 2889,
+      "evaluation_occurrences": 1511277,
+      "evaluation_share": 1.0,
+      "central_evaluation_occurrences": 96204,
+      "central_evaluation_share": 1.0,
+      "coefficient_mass": null
+    },
+    "any_normalized_estimate_above_goal": {
+      "groups": 0,
+      "evaluation_occurrences": 0,
+      "evaluation_share": 0.0,
+      "central_evaluation_occurrences": 0,
+      "central_evaluation_share": 0.0,
+      "coefficient_mass": null
+    },
+    "training_count_quantiles_10_50_90": [
+      405.0,
+      510.0,
+      532.0
+    ],
+    "training_span_quantiles_seconds_10_50_90": [
+      16.285696029663086,
+      17.055743932724,
+      17.186815977096558
+    ],
+    "exclusion_scope": "All array columns, including inactive slots; sequential reasons are disjoint within each half.",
+    "training_exclusions": [
+      983159,
+      0,
+      0,
+      96723
+    ],
+    "evaluation_exclusions": [
+      978483,
+      0,
+      0
+    ],
+    "raw_signal_masked_nonfinite_counts": [
+      0,
+      495392,
+      0,
+      498680
+    ],
+    "child_scatter_ratio_quantiles_10_50_90": [
+      1.2227576435906624,
+      1.5418256256624607,
+      2.3828585862100433
+    ],
+    "mean_change_fraction_quantiles_10_50_90": [
+      0.0025749846107509565,
+      0.01441766703087713,
+      0.05143870925266066
+    ],
+    "radial_log_scatter_ratio_quantiles_10_50_90": [
+      -0.510192092094048,
+      -0.07727204731498247,
+      0.2733593133830319
+    ],
+    "late_early_log_scatter_ratio_quantiles_10_50_90": [
+      -0.4744377425634079,
+      -0.007562225243669276,
+      0.4819533068179833
+    ],
+    "precision": [
+      {
+        "tau_seconds": 0.125,
+        "normalized": {
+          "required_groups": 2889,
+          "available_groups": 0,
+          "unavailable_groups": 2889,
+          "above_goal_groups": 0,
+          "at_or_below_goal_groups": 0,
+          "group_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "below_goal_fraction_of_available_groups": null,
+          "below_goal_fraction_of_all_required_groups": 0.0,
+          "available_evaluation_occurrences": 0,
+          "below_goal_fraction_of_available_occurrences": null,
+          "below_goal_fraction_of_all_occurrences": 0.0,
+          "unknown_fraction_of_all_occurrences": 1.0,
+          "above_goal_fraction_of_all_occurrences": 0.0
+        },
+        "unnormalized": {
+          "required_groups": 2889,
+          "available_groups": 2888,
+          "unavailable_groups": 1,
+          "above_goal_groups": 35,
+          "at_or_below_goal_groups": 2853,
+          "group_quantiles_10_50_90": [
+            0.06920514562048553,
+            0.08215776810153406,
+            0.11321650151305702
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.06911774235685349,
+            0.08168524110989799,
+            0.10846351447696174
+          ],
+          "below_goal_fraction_of_available_groups": 0.9878808864265928,
+          "below_goal_fraction_of_all_required_groups": 0.9875389408099688,
+          "available_evaluation_occurrences": 1511141,
+          "below_goal_fraction_of_available_occurrences": 0.9907315068547541,
+          "below_goal_fraction_of_all_occurrences": 0.9906423508066358,
+          "unknown_fraction_of_all_occurrences": 8.999012093745886e-05,
+          "above_goal_fraction_of_all_occurrences": 0.009267659072426828
+        },
+        "occupied_bin_quantiles_10_50_90": [
+          55.0,
+          72.0,
+          75.0
+        ]
+      },
+      {
+        "tau_seconds": 0.25,
+        "normalized": {
+          "required_groups": 2889,
+          "available_groups": 0,
+          "unavailable_groups": 2889,
+          "above_goal_groups": 0,
+          "at_or_below_goal_groups": 0,
+          "group_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "below_goal_fraction_of_available_groups": null,
+          "below_goal_fraction_of_all_required_groups": 0.0,
+          "available_evaluation_occurrences": 0,
+          "below_goal_fraction_of_available_occurrences": null,
+          "below_goal_fraction_of_all_occurrences": 0.0,
+          "unknown_fraction_of_all_occurrences": 1.0,
+          "above_goal_fraction_of_all_occurrences": 0.0
+        },
+        "unnormalized": {
+          "required_groups": 2889,
+          "available_groups": 2888,
+          "unavailable_groups": 1,
+          "above_goal_groups": 65,
+          "at_or_below_goal_groups": 2823,
+          "group_quantiles_10_50_90": [
+            0.06898106998202186,
+            0.08482046769462083,
+            0.12679608367751316
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.06889013272114788,
+            0.08425423861313314,
+            0.12271699506678399
+          ],
+          "below_goal_fraction_of_available_groups": 0.9774930747922438,
+          "below_goal_fraction_of_all_required_groups": 0.9771547248182763,
+          "available_evaluation_occurrences": 1511141,
+          "below_goal_fraction_of_available_occurrences": 0.9808191293863379,
+          "below_goal_fraction_of_all_occurrences": 0.9807308653542667,
+          "unknown_fraction_of_all_occurrences": 8.999012093745886e-05,
+          "above_goal_fraction_of_all_occurrences": 0.019179144524795917
+        },
+        "occupied_bin_quantiles_10_50_90": [
+          29.0,
+          37.0,
+          40.0
+        ]
+      },
+      {
+        "tau_seconds": 0.5,
+        "normalized": {
+          "required_groups": 2889,
+          "available_groups": 0,
+          "unavailable_groups": 2889,
+          "above_goal_groups": 0,
+          "at_or_below_goal_groups": 0,
+          "group_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "below_goal_fraction_of_available_groups": null,
+          "below_goal_fraction_of_all_required_groups": 0.0,
+          "available_evaluation_occurrences": 0,
+          "below_goal_fraction_of_available_occurrences": null,
+          "below_goal_fraction_of_all_occurrences": 0.0,
+          "unknown_fraction_of_all_occurrences": 1.0,
+          "above_goal_fraction_of_all_occurrences": 0.0
+        },
+        "unnormalized": {
+          "required_groups": 2889,
+          "available_groups": 2888,
+          "unavailable_groups": 1,
+          "above_goal_groups": 81,
+          "at_or_below_goal_groups": 2807,
+          "group_quantiles_10_50_90": [
+            0.0666711063402756,
+            0.08617608323510334,
+            0.13536890093780765
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.06659400467142979,
+            0.08574036652059146,
+            0.13158723283094503
+          ],
+          "below_goal_fraction_of_available_groups": 0.9719529085872576,
+          "below_goal_fraction_of_all_required_groups": 0.9716164762893735,
+          "available_evaluation_occurrences": 1511141,
+          "below_goal_fraction_of_available_occurrences": 0.9744054327160735,
+          "below_goal_fraction_of_all_occurrences": 0.9743177458533413,
+          "unknown_fraction_of_all_occurrences": 8.999012093745886e-05,
+          "above_goal_fraction_of_all_occurrences": 0.025592264025721293
+        },
+        "occupied_bin_quantiles_10_50_90": [
+          17.0,
+          21.0,
+          24.0
+        ]
+      },
+      {
+        "tau_seconds": 1,
+        "normalized": {
+          "required_groups": 2889,
+          "available_groups": 0,
+          "unavailable_groups": 2889,
+          "above_goal_groups": 0,
+          "at_or_below_goal_groups": 0,
+          "group_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "below_goal_fraction_of_available_groups": null,
+          "below_goal_fraction_of_all_required_groups": 0.0,
+          "available_evaluation_occurrences": 0,
+          "below_goal_fraction_of_available_occurrences": null,
+          "below_goal_fraction_of_all_occurrences": 0.0,
+          "unknown_fraction_of_all_occurrences": 1.0,
+          "above_goal_fraction_of_all_occurrences": 0.0
+        },
+        "unnormalized": {
+          "required_groups": 2889,
+          "available_groups": 2888,
+          "unavailable_groups": 1,
+          "above_goal_groups": 117,
+          "at_or_below_goal_groups": 2771,
+          "group_quantiles_10_50_90": [
+            0.0613369687707904,
+            0.08633288901421203,
+            0.1459349461381815
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.0613369687707904,
+            0.08612373606162474,
+            0.14376640730979526
+          ],
+          "below_goal_fraction_of_available_groups": 0.9594875346260388,
+          "below_goal_fraction_of_all_required_groups": 0.9591554170993424,
+          "available_evaluation_occurrences": 1511141,
+          "below_goal_fraction_of_available_occurrences": 0.9612656926124035,
+          "below_goal_fraction_of_all_occurrences": 0.9611791881964723,
+          "unknown_fraction_of_all_occurrences": 8.999012093745886e-05,
+          "above_goal_fraction_of_all_occurrences": 0.03873082168259029
+        },
+        "occupied_bin_quantiles_10_50_90": [
+          11.0,
+          14.0,
+          16.0
+        ]
+      },
+      {
+        "tau_seconds": 2,
+        "normalized": {
+          "required_groups": 2889,
+          "available_groups": 0,
+          "unavailable_groups": 2889,
+          "above_goal_groups": 0,
+          "at_or_below_goal_groups": 0,
+          "group_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "below_goal_fraction_of_available_groups": null,
+          "below_goal_fraction_of_all_required_groups": 0.0,
+          "available_evaluation_occurrences": 0,
+          "below_goal_fraction_of_available_occurrences": null,
+          "below_goal_fraction_of_all_occurrences": 0.0,
+          "unknown_fraction_of_all_occurrences": 1.0,
+          "above_goal_fraction_of_all_occurrences": 0.0
+        },
+        "unnormalized": {
+          "required_groups": 2889,
+          "available_groups": 2888,
+          "unavailable_groups": 1,
+          "above_goal_groups": 151,
+          "at_or_below_goal_groups": 2737,
+          "group_quantiles_10_50_90": [
+            0.0549960383850675,
+            0.083820915088142,
+            0.1520278851704313
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.05520166646147735,
+            0.083820915088142,
+            0.15088697471020568
+          ],
+          "below_goal_fraction_of_available_groups": 0.9477146814404432,
+          "below_goal_fraction_of_all_required_groups": 0.947386638975424,
+          "available_evaluation_occurrences": 1511141,
+          "below_goal_fraction_of_available_occurrences": 0.9491371089792415,
+          "below_goal_fraction_of_all_occurrences": 0.9490516960160182,
+          "unknown_fraction_of_all_occurrences": 8.999012093745886e-05,
+          "above_goal_fraction_of_all_occurrences": 0.0508583138630443
+        },
+        "occupied_bin_quantiles_10_50_90": [
+          7.0,
+          9.0,
+          10.0
+        ]
+      },
+      {
+        "tau_seconds": 4,
+        "normalized": {
+          "required_groups": 2889,
+          "available_groups": 0,
+          "unavailable_groups": 2889,
+          "above_goal_groups": 0,
+          "at_or_below_goal_groups": 0,
+          "group_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            null,
+            null,
+            null
+          ],
+          "below_goal_fraction_of_available_groups": null,
+          "below_goal_fraction_of_all_required_groups": 0.0,
+          "available_evaluation_occurrences": 0,
+          "below_goal_fraction_of_available_occurrences": null,
+          "below_goal_fraction_of_all_occurrences": 0.0,
+          "unknown_fraction_of_all_occurrences": 1.0,
+          "above_goal_fraction_of_all_occurrences": 0.0
+        },
+        "unnormalized": {
+          "required_groups": 2889,
+          "available_groups": 2888,
+          "unavailable_groups": 1,
+          "above_goal_groups": 166,
+          "at_or_below_goal_groups": 2722,
+          "group_quantiles_10_50_90": [
+            0.04744180807055662,
+            0.08096893581600217,
+            0.15566133752118702
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.048199142315958204,
+            0.08141409277252895,
+            0.15552476566250337
+          ],
+          "below_goal_fraction_of_available_groups": 0.9425207756232687,
+          "below_goal_fraction_of_all_required_groups": 0.9421945309795777,
+          "available_evaluation_occurrences": 1511141,
+          "below_goal_fraction_of_available_occurrences": 0.9417149028449364,
+          "below_goal_fraction_of_all_occurrences": 0.9416301578069407,
+          "unknown_fraction_of_all_occurrences": 8.999012093745886e-05,
+          "above_goal_fraction_of_all_occurrences": 0.05827985207212179
+        },
+        "occupied_bin_quantiles_10_50_90": [
+          5.0,
+          6.0,
+          6.0
+        ]
+      }
+    ],
+    "finite_data_coverage": "unavailable; all precision estimates descriptive",
+    "sensitivity_min_p_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ],
+    "sensitivity_max_p_quantiles_10_50_90": [
+      null,
+      null,
+      null
+    ],
+    "all_tau_at_or_below_goal_groups": 0
+  },
+  {
+    "obsnum": 152389,
+    "array": "a2000",
+    "K": 4,
+    "windows": 3,
+    "required_groups": 2550,
+    "required_detector_columns": 850,
+    "evaluation_occurrences": 1366370,
+    "central_evaluation_occurrences": 82675,
+    "no_training_groups": 0,
+    "one_training_groups": 0,
+    "two_training_groups": 0,
+    "degenerate_or_unavailable_score_groups": 0,
+    "weight_state": "available",
+    "normalized_uncertainty_state": "available",
+    "weight_unavailable": {
+      "groups": 0,
+      "evaluation_occurrences": 0,
+      "evaluation_share": 0.0,
+      "central_evaluation_occurrences": 0,
+      "central_evaluation_share": 0.0,
+      "coefficient_mass": 0.0
+    },
+    "normalized_uncertainty_unavailable": {
+      "groups": 0,
+      "evaluation_occurrences": 0,
+      "evaluation_share": 0.0,
+      "central_evaluation_occurrences": 0,
+      "central_evaluation_share": 0.0,
+      "coefficient_mass": 0.0
+    },
+    "any_normalized_estimate_above_goal": {
+      "groups": 135,
+      "evaluation_occurrences": 71252,
+      "evaluation_share": 0.05214692945541837,
+      "central_evaluation_occurrences": 4710,
+      "central_evaluation_share": 0.056970063501663136,
+      "coefficient_mass": 0.03307641719802553
+    },
+    "training_count_quantiles_10_50_90": [
+      430.0,
+      527.0,
+      540.0
+    ],
+    "training_span_quantiles_seconds_10_50_90": [
+      16.629760026931763,
+      17.055743932724,
+      17.186815977096558
+    ],
+    "exclusion_scope": "All array columns, including inactive slots; sequential reasons are disjoint within each half.",
+    "training_exclusions": [
+      411210,
+      0,
+      0,
+      81872
+    ],
+    "evaluation_exclusions": [
+      411770,
+      0,
+      0
+    ],
+    "raw_signal_masked_nonfinite_counts": [
+      0,
+      171760,
+      0,
+      172900
+    ],
+    "child_scatter_ratio_quantiles_10_50_90": [
+      1.2251006601964278,
+      1.5687179421695852,
+      2.5012819594768008
+    ],
+    "mean_change_fraction_quantiles_10_50_90": [
+      0.0012324249504336421,
+      0.006547463116887793,
+      0.028906620766558984
+    ],
+    "radial_log_scatter_ratio_quantiles_10_50_90": [
+      -0.4753083524615475,
+      -0.0479991545075367,
+      0.37212276712090975
+    ],
+    "late_early_log_scatter_ratio_quantiles_10_50_90": [
+      -0.43296581896088426,
+      0.0023614762785690827,
+      0.46742081391786594
+    ],
+    "precision": [
+      {
+        "tau_seconds": 0.125,
+        "normalized": {
+          "required_groups": 2550,
+          "available_groups": 2550,
+          "unavailable_groups": 0,
+          "above_goal_groups": 26,
+          "at_or_below_goal_groups": 2524,
+          "group_quantiles_10_50_90": [
+            0.06790831232922315,
+            0.07806764612576289,
+            0.09898317669889857
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.06790615838042742,
+            0.07801568651158852,
+            0.09858245644788181
+          ],
+          "below_goal_fraction_of_available_groups": 0.9898039215686274,
+          "below_goal_fraction_of_all_required_groups": 0.9898039215686274,
+          "available_evaluation_occurrences": 1366370,
+          "below_goal_fraction_of_available_occurrences": 0.990267643464069,
+          "below_goal_fraction_of_all_occurrences": 0.990267643464069,
+          "unknown_fraction_of_all_occurrences": 0.0,
+          "above_goal_fraction_of_all_occurrences": 0.00973235653593097
+        },
+        "unnormalized": {
+          "required_groups": 2550,
+          "available_groups": 2550,
+          "unavailable_groups": 0,
+          "above_goal_groups": 26,
+          "at_or_below_goal_groups": 2524,
+          "group_quantiles_10_50_90": [
+            0.06771859175771978,
+            0.07833007217648122,
+            0.10004763793964759
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.06771539530192816,
+            0.07827810256294762,
+            0.09961969915717866
+          ],
+          "below_goal_fraction_of_available_groups": 0.9898039215686274,
+          "below_goal_fraction_of_all_required_groups": 0.9898039215686274,
+          "available_evaluation_occurrences": 1366370,
+          "below_goal_fraction_of_available_occurrences": 0.990267643464069,
+          "below_goal_fraction_of_all_occurrences": 0.990267643464069,
+          "unknown_fraction_of_all_occurrences": 0.0,
+          "above_goal_fraction_of_all_occurrences": 0.00973235653593097
+        },
+        "occupied_bin_quantiles_10_50_90": [
+          61.0,
+          72.0,
+          76.0
+        ]
+      },
+      {
+        "tau_seconds": 0.25,
+        "normalized": {
+          "required_groups": 2550,
+          "available_groups": 2550,
+          "unavailable_groups": 0,
+          "above_goal_groups": 45,
+          "at_or_below_goal_groups": 2505,
+          "group_quantiles_10_50_90": [
+            0.0673136929448884,
+            0.08042653312793754,
+            0.1108674190245485
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.0673136929448884,
+            0.08036544283046083,
+            0.1102061386610741
+          ],
+          "below_goal_fraction_of_available_groups": 0.9823529411764705,
+          "below_goal_fraction_of_all_required_groups": 0.9823529411764705,
+          "available_evaluation_occurrences": 1366370,
+          "below_goal_fraction_of_available_occurrences": 0.9829738650585127,
+          "below_goal_fraction_of_all_occurrences": 0.9829738650585127,
+          "unknown_fraction_of_all_occurrences": 0.0,
+          "above_goal_fraction_of_all_occurrences": 0.0170261349414873
+        },
+        "unnormalized": {
+          "required_groups": 2550,
+          "available_groups": 2550,
+          "unavailable_groups": 0,
+          "above_goal_groups": 48,
+          "at_or_below_goal_groups": 2502,
+          "group_quantiles_10_50_90": [
+            0.06717887076260942,
+            0.08073828955299409,
+            0.11262880936785499
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.06717887076260942,
+            0.08062032495038389,
+            0.11166297609558808
+          ],
+          "below_goal_fraction_of_available_groups": 0.9811764705882353,
+          "below_goal_fraction_of_all_required_groups": 0.9811764705882353,
+          "available_evaluation_occurrences": 1366370,
+          "below_goal_fraction_of_available_occurrences": 0.9818036110277597,
+          "below_goal_fraction_of_all_occurrences": 0.9818036110277597,
+          "unknown_fraction_of_all_occurrences": 0.0,
+          "above_goal_fraction_of_all_occurrences": 0.018196388972240317
+        },
+        "occupied_bin_quantiles_10_50_90": [
+          33.0,
+          37.0,
+          40.0
+        ]
+      },
+      {
+        "tau_seconds": 0.5,
+        "normalized": {
+          "required_groups": 2550,
+          "available_groups": 2550,
+          "unavailable_groups": 0,
+          "above_goal_groups": 63,
+          "at_or_below_goal_groups": 2487,
+          "group_quantiles_10_50_90": [
+            0.0645999265286144,
+            0.08226965871425151,
+            0.12380111020847459
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.0645999265286144,
+            0.08219319014261536,
+            0.12309161175387728
+          ],
+          "below_goal_fraction_of_available_groups": 0.9752941176470589,
+          "below_goal_fraction_of_all_required_groups": 0.9752941176470589,
+          "available_evaluation_occurrences": 1366370,
+          "below_goal_fraction_of_available_occurrences": 0.9759172112970864,
+          "below_goal_fraction_of_all_occurrences": 0.9759172112970864,
+          "unknown_fraction_of_all_occurrences": 0.0,
+          "above_goal_fraction_of_all_occurrences": 0.024082788702913558
+        },
+        "unnormalized": {
+          "required_groups": 2550,
+          "available_groups": 2550,
+          "unavailable_groups": 0,
+          "above_goal_groups": 66,
+          "at_or_below_goal_groups": 2484,
+          "group_quantiles_10_50_90": [
+            0.06419216383284843,
+            0.08275689059328059,
+            0.12647369759493324
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.06419216383284843,
+            0.08272163926766517,
+            0.1257606297185029
+          ],
+          "below_goal_fraction_of_available_groups": 0.9741176470588235,
+          "below_goal_fraction_of_all_required_groups": 0.9741176470588235,
+          "available_evaluation_occurrences": 1366370,
+          "below_goal_fraction_of_available_occurrences": 0.974722805682209,
+          "below_goal_fraction_of_all_occurrences": 0.974722805682209,
+          "unknown_fraction_of_all_occurrences": 0.0,
+          "above_goal_fraction_of_all_occurrences": 0.025277194317790935
+        },
+        "occupied_bin_quantiles_10_50_90": [
+          19.0,
+          22.0,
+          24.0
+        ]
+      },
+      {
+        "tau_seconds": 1,
+        "normalized": {
+          "required_groups": 2550,
+          "available_groups": 2550,
+          "unavailable_groups": 0,
+          "above_goal_groups": 92,
+          "at_or_below_goal_groups": 2458,
+          "group_quantiles_10_50_90": [
+            0.06124844221789983,
+            0.08325400026319126,
+            0.13514908173097115
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.06124844221789983,
+            0.083190122337202,
+            0.13493800577662612
+          ],
+          "below_goal_fraction_of_available_groups": 0.9639215686274509,
+          "below_goal_fraction_of_all_required_groups": 0.9639215686274509,
+          "available_evaluation_occurrences": 1366370,
+          "below_goal_fraction_of_available_occurrences": 0.9645725535543082,
+          "below_goal_fraction_of_all_occurrences": 0.9645725535543082,
+          "unknown_fraction_of_all_occurrences": 0.0,
+          "above_goal_fraction_of_all_occurrences": 0.03542744644569187
+        },
+        "unnormalized": {
+          "required_groups": 2550,
+          "available_groups": 2550,
+          "unavailable_groups": 0,
+          "above_goal_groups": 102,
+          "at_or_below_goal_groups": 2448,
+          "group_quantiles_10_50_90": [
+            0.06002403722966636,
+            0.08430319382541111,
+            0.14006368179519166
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.06002403722966636,
+            0.08426179359748265,
+            0.13949605716604996
+          ],
+          "below_goal_fraction_of_available_groups": 0.96,
+          "below_goal_fraction_of_all_required_groups": 0.96,
+          "available_evaluation_occurrences": 1366370,
+          "below_goal_fraction_of_available_occurrences": 0.9606380409405945,
+          "below_goal_fraction_of_all_occurrences": 0.9606380409405945,
+          "unknown_fraction_of_all_occurrences": 0.0,
+          "above_goal_fraction_of_all_occurrences": 0.03936195905940558
+        },
+        "occupied_bin_quantiles_10_50_90": [
+          12.0,
+          15.0,
+          16.0
+        ]
+      },
+      {
+        "tau_seconds": 2,
+        "normalized": {
+          "required_groups": 2550,
+          "available_groups": 2550,
+          "unavailable_groups": 0,
+          "above_goal_groups": 126,
+          "at_or_below_goal_groups": 2424,
+          "group_quantiles_10_50_90": [
+            0.05684980281485184,
+            0.08324615197495967,
+            0.14669416449016956
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.05684980281485184,
+            0.08321017263292911,
+            0.1465138889517494
+          ],
+          "below_goal_fraction_of_available_groups": 0.9505882352941176,
+          "below_goal_fraction_of_all_required_groups": 0.9505882352941176,
+          "available_evaluation_occurrences": 1366370,
+          "below_goal_fraction_of_available_occurrences": 0.9513953028828209,
+          "below_goal_fraction_of_all_occurrences": 0.9513953028828209,
+          "unknown_fraction_of_all_occurrences": 0.0,
+          "above_goal_fraction_of_all_occurrences": 0.048604697117179095
+        },
+        "unnormalized": {
+          "required_groups": 2550,
+          "available_groups": 2550,
+          "unavailable_groups": 0,
+          "above_goal_groups": 134,
+          "at_or_below_goal_groups": 2416,
+          "group_quantiles_10_50_90": [
+            0.054147043993842334,
+            0.08485870183710177,
+            0.15380658177073475
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.054147043993842334,
+            0.08476458856341369,
+            0.15343173496657786
+          ],
+          "below_goal_fraction_of_available_groups": 0.9474509803921569,
+          "below_goal_fraction_of_all_required_groups": 0.9474509803921569,
+          "available_evaluation_occurrences": 1366370,
+          "below_goal_fraction_of_available_occurrences": 0.9482336409610866,
+          "below_goal_fraction_of_all_occurrences": 0.9482336409610866,
+          "unknown_fraction_of_all_occurrences": 0.0,
+          "above_goal_fraction_of_all_occurrences": 0.05176635903891332
+        },
+        "occupied_bin_quantiles_10_50_90": [
+          8.0,
+          9.0,
+          10.0
+        ]
+      },
+      {
+        "tau_seconds": 4,
+        "normalized": {
+          "required_groups": 2550,
+          "available_groups": 2550,
+          "unavailable_groups": 0,
+          "above_goal_groups": 135,
+          "at_or_below_goal_groups": 2415,
+          "group_quantiles_10_50_90": [
+            0.05196010957531452,
+            0.08323571399928363,
+            0.15504629412850826
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.05223151641710334,
+            0.08323571399928363,
+            0.15492244750837267
+          ],
+          "below_goal_fraction_of_available_groups": 0.9470588235294117,
+          "below_goal_fraction_of_all_required_groups": 0.9470588235294117,
+          "available_evaluation_occurrences": 1366370,
+          "below_goal_fraction_of_available_occurrences": 0.9478530705445817,
+          "below_goal_fraction_of_all_occurrences": 0.9478530705445817,
+          "unknown_fraction_of_all_occurrences": 0.0,
+          "above_goal_fraction_of_all_occurrences": 0.05214692945541837
+        },
+        "unnormalized": {
+          "required_groups": 2550,
+          "available_groups": 2550,
+          "unavailable_groups": 0,
+          "above_goal_groups": 158,
+          "at_or_below_goal_groups": 2392,
+          "group_quantiles_10_50_90": [
+            0.04767286839362706,
+            0.0842860246071381,
+            0.16389779786821296
+          ],
+          "occurrence_weighted_quantiles_10_50_90": [
+            0.04775421607432935,
+            0.0842860246071381,
+            0.1630355493718337
+          ],
+          "below_goal_fraction_of_available_groups": 0.9380392156862745,
+          "below_goal_fraction_of_all_required_groups": 0.9380392156862745,
+          "available_evaluation_occurrences": 1366370,
+          "below_goal_fraction_of_available_occurrences": 0.9390648213880574,
+          "below_goal_fraction_of_all_occurrences": 0.9390648213880574,
+          "unknown_fraction_of_all_occurrences": 0.0,
+          "above_goal_fraction_of_all_occurrences": 0.06093517861194259
+        },
+        "occupied_bin_quantiles_10_50_90": [
+          5.0,
+          6.0,
+          6.0
+        ]
+      }
+    ],
+    "finite_data_coverage": "unavailable; all precision estimates descriptive",
+    "sensitivity_min_p_quantiles_10_50_90": [
+      0.051391124558361166,
+      0.07286853431112221,
+      0.0969831607376087
+    ],
+    "sensitivity_max_p_quantiles_10_50_90": [
+      0.0710809149053021,
+      0.0897194890452971,
+      0.1553278365490963
+    ],
+    "all_tau_at_or_below_goal_groups": 2415
+  }
+]

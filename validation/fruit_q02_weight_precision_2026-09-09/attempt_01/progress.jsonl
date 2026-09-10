@@ -1,0 +1,53 @@
+{"seconds": 1.155, "stage": "Both input hashes and deterministic verification passed; begin approved access", "peak_bytes": 68616192, "output_bytes": 5714}
+{"seconds": 1.227, "stage": "123424: read training half and evaluation finite census, chunk 0", "peak_bytes": 181698560, "output_bytes": 5870}
+{"seconds": 1.368, "stage": "123424: read training half and evaluation finite census, chunk 1", "peak_bytes": 430424064, "output_bytes": 6013}
+{"seconds": 1.44, "stage": "123424: read training half and evaluation finite census, chunk 2", "peak_bytes": 528089088, "output_bytes": 6156}
+{"seconds": 1.543, "stage": "123424: read training half and evaluation finite census, chunk 3", "peak_bytes": 674807808, "output_bytes": 6298}
+{"seconds": 1.614, "stage": "123424: read training half and evaluation finite census, chunk 4", "peak_bytes": 678674432, "output_bytes": 6441}
+{"seconds": 1.698, "stage": "123424: read training half and evaluation finite census, chunk 5", "peak_bytes": 712261632, "output_bytes": 6584}
+{"seconds": 1.77, "stage": "123424: read training half and evaluation finite census, chunk 6", "peak_bytes": 714211328, "output_bytes": 6727}
+{"seconds": 1.861, "stage": "123424: read training half and evaluation finite census, chunk 7", "peak_bytes": 716390400, "output_bytes": 6869}
+{"seconds": 1.936, "stage": "123424: read training half and evaluation finite census, chunk 8", "peak_bytes": 724140032, "output_bytes": 7012}
+{"seconds": 2.028, "stage": "123424: read training half and evaluation finite census, chunk 9", "peak_bytes": 731693056, "output_bytes": 7155}
+{"seconds": 2.096, "stage": "123424: read training half and evaluation finite census, chunk 10", "peak_bytes": 733855744, "output_bytes": 7298}
+{"seconds": 2.16, "stage": "123424: read training half and evaluation finite census, chunk 11", "peak_bytes": 735903744, "output_bytes": 7442}
+{"seconds": 2.624, "stage": "123424: K=1 pooled statistics", "peak_bytes": 750157824, "output_bytes": 3148143}
+{"seconds": 4.627, "stage": "123424: K=1 a1100: unavailable_required_weight, uncertainty=unavailable_required_weight", "peak_bytes": 827047936, "output_bytes": 3858864}
+{"seconds": 4.667, "stage": "123424: K=1 a1400: unavailable_required_weight, uncertainty=unavailable_required_weight", "peak_bytes": 827342848, "output_bytes": 3859033}
+{"seconds": 4.708, "stage": "123424: K=1 a2000: unavailable_required_weight, uncertainty=unavailable_required_weight", "peak_bytes": 827523072, "output_bytes": 3859202}
+{"seconds": 5.129, "stage": "123424: K=2 pooled statistics", "peak_bytes": 829964288, "output_bytes": 9229879}
+{"seconds": 7.003, "stage": "123424: K=2 a1100: unavailable_required_weight, uncertainty=unavailable_required_weight", "peak_bytes": 876511232, "output_bytes": 9921323}
+{"seconds": 7.034, "stage": "123424: K=2 a1400: unavailable_required_weight, uncertainty=unavailable_required_weight", "peak_bytes": 876560384, "output_bytes": 9921492}
+{"seconds": 7.077, "stage": "123424: K=2 a2000: unavailable_required_weight, uncertainty=unavailable_required_weight", "peak_bytes": 876560384, "output_bytes": 9921661}
+{"seconds": 7.326, "stage": "123424: K=4 pooled statistics", "peak_bytes": 877281280, "output_bytes": 13384509}
+{"seconds": 10.896, "stage": "123424: K=4 a1100: available, uncertainty=available", "peak_bytes": 882163712, "output_bytes": 14067368}
+{"seconds": 11.329, "stage": "123424: K=4 a1400: available, uncertainty=available", "peak_bytes": 882425856, "output_bytes": 14067503}
+{"seconds": 11.782, "stage": "123424: K=4 a2000: available, uncertainty=available", "peak_bytes": 882491392, "output_bytes": 14067638}
+{"seconds": 16.049, "stage": "123424: lag diagnostics complete", "peak_bytes": 882573312, "output_bytes": 17350293}
+{"seconds": 16.124, "stage": "152389: read training half and evaluation finite census, chunk 0", "peak_bytes": 882573312, "output_bytes": 17350409}
+{"seconds": 16.186, "stage": "152389: read training half and evaluation finite census, chunk 1", "peak_bytes": 882573312, "output_bytes": 17350557}
+{"seconds": 16.233, "stage": "152389: read training half and evaluation finite census, chunk 2", "peak_bytes": 882573312, "output_bytes": 17350705}
+{"seconds": 16.289, "stage": "152389: read training half and evaluation finite census, chunk 3", "peak_bytes": 882573312, "output_bytes": 17350853}
+{"seconds": 16.344, "stage": "152389: read training half and evaluation finite census, chunk 4", "peak_bytes": 882573312, "output_bytes": 17351001}
+{"seconds": 16.4, "stage": "152389: read training half and evaluation finite census, chunk 5", "peak_bytes": 882573312, "output_bytes": 17351149}
+{"seconds": 16.453, "stage": "152389: read training half and evaluation finite census, chunk 6", "peak_bytes": 882573312, "output_bytes": 17351295}
+{"seconds": 16.51, "stage": "152389: read training half and evaluation finite census, chunk 7", "peak_bytes": 882573312, "output_bytes": 17351443}
+{"seconds": 16.566, "stage": "152389: read training half and evaluation finite census, chunk 8", "peak_bytes": 882573312, "output_bytes": 17351590}
+{"seconds": 16.621, "stage": "152389: read training half and evaluation finite census, chunk 9", "peak_bytes": 882573312, "output_bytes": 17351738}
+{"seconds": 16.676, "stage": "152389: read training half and evaluation finite census, chunk 10", "peak_bytes": 882573312, "output_bytes": 17351886}
+{"seconds": 16.73, "stage": "152389: read training half and evaluation finite census, chunk 11", "peak_bytes": 882573312, "output_bytes": 17352035}
+{"seconds": 17.178, "stage": "152389: K=1 pooled statistics", "peak_bytes": 882573312, "output_bytes": 20219580}
+{"seconds": 19.319, "stage": "152389: K=1 a1100: unavailable_required_weight, uncertainty=unavailable_required_weight", "peak_bytes": 887373824, "output_bytes": 20846973}
+{"seconds": 19.366, "stage": "152389: K=1 a1400: unavailable_required_weight, uncertainty=unavailable_required_weight", "peak_bytes": 887455744, "output_bytes": 20847144}
+{"seconds": 19.406, "stage": "152389: K=1 a2000: unavailable_required_weight, uncertainty=unavailable_required_weight", "peak_bytes": 887455744, "output_bytes": 20847315}
+{"seconds": 19.829, "stage": "152389: K=2 pooled statistics", "peak_bytes": 887455744, "output_bytes": 25894980}
+{"seconds": 21.622, "stage": "152389: K=2 a1100: unavailable_required_weight, uncertainty=unavailable_required_weight", "peak_bytes": 887455744, "output_bytes": 26503992}
+{"seconds": 21.653, "stage": "152389: K=2 a1400: unavailable_required_weight, uncertainty=unavailable_required_weight", "peak_bytes": 887537664, "output_bytes": 26504163}
+{"seconds": 21.682, "stage": "152389: K=2 a2000: unavailable_required_weight, uncertainty=unavailable_required_weight", "peak_bytes": 887537664, "output_bytes": 26504334}
+{"seconds": 21.941, "stage": "152389: K=4 pooled statistics", "peak_bytes": 887554048, "output_bytes": 29791824}
+{"seconds": 23.612, "stage": "152389: K=4 a1100: unavailable_required_weight, uncertainty=unavailable_required_weight", "peak_bytes": 887570432, "output_bytes": 30392234}
+{"seconds": 23.635, "stage": "152389: K=4 a1400: unavailable_required_weight, uncertainty=unavailable_required_weight", "peak_bytes": 887570432, "output_bytes": 30392405}
+{"seconds": 23.985, "stage": "152389: K=4 a2000: available, uncertainty=available", "peak_bytes": 887586816, "output_bytes": 30392576}
+{"seconds": 28.321, "stage": "152389: lag diagnostics complete", "peak_bytes": 887603200, "output_bytes": 33014296}
+{"seconds": 43.64, "stage": "Figures written", "peak_bytes": 887603200, "output_bytes": 33663964}
+{"seconds": 43.654, "stage": "Diagnostic complete", "peak_bytes": 887603200, "output_bytes": 33664062}

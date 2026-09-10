@@ -1,0 +1,9 @@
+{
+  "status": "complete",
+  "elapsed_seconds": 43.67631050013006,
+  "peak_aggregate_process_bytes": 887603200,
+  "subprocesses": 0,
+  "numerical_threads": 1,
+  "scientific_changes": "none beyond the approved diagnostic",
+  "finite_data_coverage": "unavailable"
+}

@@ -1510,6 +1510,32 @@ does not authorize T1, T2 maps, 129081 access or feedback. No new signal analysi
 coefficient computation, numerical implementation or run occurred; all earlier
 packets, frozen authority and reduction products are preserved.
 
+The owner then approved the exact r0.5 diagnostic and directed execution in the
+[2026-09-09 approval record](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/WEIGHT_PRECISION_APPROVAL_2026-09-09.md).
+The [completed diagnostic report](../validation/fruit_q02_weight_precision_2026-09-09/SCIENTIFIC_REPORT.md)
+was closed out on 2026-09-10. One local attempt completed in 43.676 seconds,
+with 0.827 GiB peak memory, eleven deterministic checks and independent saved-
+product verification passing. Both exact discovery input hashes are unchanged.
+The one/two/four-chunk designs leave respectively 230/4/0 required weights
+unavailable in 123424 and 529/12/2 in 152389. Four-chunk normalized precision
+is available in all 123424 arrays and 152389 a2000; one zero-training group in
+each of 152389 a1100/a1400 keeps those full-array results unavailable.
+
+In the four available cases, occurrence-weighted median fractional uncertainty
+is about 8–12% across the prescribed correlation spans. The 123424 tails are
+material: groups above 20% at any span supply 23–27% of evaluation occurrences.
+Four-chunk child-scatter max/min ratios have medians about 1.5–1.9; the screen
+does not separate true noise changes from sampling or source effects. There is
+no certified precision, selected window, qualified weighting policy or map-
+benefit result. Close this precision diagnostic as evidence. The next owner
+decision is a completed U/N mapping-screen design, including explicit handling
+of missing training and map-level evidence/loss criteria. Do not choose only
+successful arrays, fill unavailable weights or alter PCA chunks by inference.
+No evaluation moment, weighted map, injection, reduction, FRUIT execution,
+Unity action or push occurred. 129081 remains reserved; historical control,
+Q01/A/B, generic/upstream freezes, earlier packets and both opaque archives
+are preserved. Numerical FRUIT availability remains unchanged.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

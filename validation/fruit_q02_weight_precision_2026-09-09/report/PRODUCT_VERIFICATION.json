@@ -1,0 +1,155 @@
+{
+  "status": "PASS",
+  "attempt": "attempt_01",
+  "products_verified": 33,
+  "pre_signal_source_digests_verified": 5,
+  "post_run_discovery_input_hashes": "both unchanged",
+  "reserved_129081": "not opened",
+  "groups": [
+    {
+      "obsnum": 123424,
+      "array": "a1100",
+      "K": 1,
+      "groups": 32819,
+      "evaluation_occurrences": 4977763,
+      "normalized_precision_available": false
+    },
+    {
+      "obsnum": 123424,
+      "array": "a1400",
+      "K": 1,
+      "groups": 9498,
+      "evaluation_occurrences": 1440578,
+      "normalized_precision_available": false
+    },
+    {
+      "obsnum": 123424,
+      "array": "a2000",
+      "K": 1,
+      "groups": 10363,
+      "evaluation_occurrences": 1571771,
+      "normalized_precision_available": false
+    },
+    {
+      "obsnum": 123424,
+      "array": "a1100",
+      "K": 2,
+      "groups": 16561,
+      "evaluation_occurrences": 4977763,
+      "normalized_precision_available": false
+    },
+    {
+      "obsnum": 123424,
+      "array": "a1400",
+      "K": 2,
+      "groups": 4861,
+      "evaluation_occurrences": 1440578,
+      "normalized_precision_available": false
+    },
+    {
+      "obsnum": 123424,
+      "array": "a2000",
+      "K": 2,
+      "groups": 5205,
+      "evaluation_occurrences": 1571771,
+      "normalized_precision_available": false
+    },
+    {
+      "obsnum": 123424,
+      "array": "a1100",
+      "K": 4,
+      "groups": 8319,
+      "evaluation_occurrences": 4977763,
+      "normalized_precision_available": true
+    },
+    {
+      "obsnum": 123424,
+      "array": "a1400",
+      "K": 4,
+      "groups": 2467,
+      "evaluation_occurrences": 1440578,
+      "normalized_precision_available": true
+    },
+    {
+      "obsnum": 123424,
+      "array": "a2000",
+      "K": 4,
+      "groups": 2607,
+      "evaluation_occurrences": 1571771,
+      "normalized_precision_available": true
+    },
+    {
+      "obsnum": 152389,
+      "array": "a1100",
+      "K": 1,
+      "groups": 30378,
+      "evaluation_occurrences": 4088708,
+      "normalized_precision_available": false
+    },
+    {
+      "obsnum": 152389,
+      "array": "a1400",
+      "K": 1,
+      "groups": 11223,
+      "evaluation_occurrences": 1511277,
+      "normalized_precision_available": false
+    },
+    {
+      "obsnum": 152389,
+      "array": "a2000",
+      "K": 1,
+      "groups": 10155,
+      "evaluation_occurrences": 1366370,
+      "normalized_precision_available": false
+    },
+    {
+      "obsnum": 152389,
+      "array": "a1100",
+      "K": 2,
+      "groups": 15367,
+      "evaluation_occurrences": 4088708,
+      "normalized_precision_available": false
+    },
+    {
+      "obsnum": 152389,
+      "array": "a1400",
+      "K": 2,
+      "groups": 5700,
+      "evaluation_occurrences": 1511277,
+      "normalized_precision_available": false
+    },
+    {
+      "obsnum": 152389,
+      "array": "a2000",
+      "K": 2,
+      "groups": 5095,
+      "evaluation_occurrences": 1366370,
+      "normalized_precision_available": false
+    },
+    {
+      "obsnum": 152389,
+      "array": "a1100",
+      "K": 4,
+      "groups": 7742,
+      "evaluation_occurrences": 4088708,
+      "normalized_precision_available": false
+    },
+    {
+      "obsnum": 152389,
+      "array": "a1400",
+      "K": 4,
+      "groups": 2889,
+      "evaluation_occurrences": 1511277,
+      "normalized_precision_available": false
+    },
+    {
+      "obsnum": 152389,
+      "array": "a2000",
+      "K": 4,
+      "groups": 2550,
+      "evaluation_occurrences": 1366370,
+      "normalized_precision_available": true
+    }
+  ],
+  "checks": "Exact population, bin counts, availability, joint normalization, summary denominators, lag missingness and resource limits"
+}

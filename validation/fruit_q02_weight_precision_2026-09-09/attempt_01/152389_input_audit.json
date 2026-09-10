@@ -1,0 +1,100 @@
+{
+  "obsnum": 152389,
+  "input": {
+    "obsnum": 152389,
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/152389/raw/toltec_commissioning_pointing_152389_ptc_timestream.nc",
+    "bytes": 138244964,
+    "sha256": "894fff53babfb0070e7d0a8b831aa88098d87f9772d4a8ecb253aef009d35643"
+  },
+  "signal_dtype": "float32",
+  "recovered_edges": [
+    0,
+    289,
+    594,
+    899,
+    1204,
+    1509,
+    1814,
+    2119,
+    2424,
+    2729,
+    3034,
+    3339,
+    3628
+  ],
+  "original_scan_indices": [
+    [
+      0,
+      288
+    ],
+    [
+      305,
+      593
+    ],
+    [
+      610,
+      898
+    ],
+    [
+      915,
+      1203
+    ],
+    [
+      1220,
+      1508
+    ],
+    [
+      1525,
+      1813
+    ],
+    [
+      1830,
+      2118
+    ],
+    [
+      2135,
+      2423
+    ],
+    [
+      2440,
+      2728
+    ],
+    [
+      2745,
+      3033
+    ],
+    [
+      3050,
+      3338
+    ],
+    [
+      3339,
+      3627
+    ]
+  ],
+  "coordinate_max_difference_rad": [
+    0.0,
+    0.0
+  ],
+  "elapsed_span_seconds": 59.41657590866089,
+  "original_chunk_elapsed_spans_seconds": [
+    4.718592166900635,
+    4.980736017227173,
+    4.980736017227173,
+    4.980736017227173,
+    4.980736017227173,
+    4.980736017227173,
+    4.980736017227173,
+    4.980735778808594,
+    4.980736017227173,
+    4.980736017227173,
+    4.980736017227173,
+    4.718591928482056
+  ],
+  "training_candidate_rows": 1808,
+  "evaluation_candidate_rows": 1820,
+  "training_signal_access": "candidate first halves only; statistics use eligible source-excluded rows",
+  "evaluation_signal_access": "masked/nonfinite predicate only; values not retained",
+  "stored_weights_access": false,
+  "input_units": "declared mJy/beam; no new conformity or physical-flux claim"
+}

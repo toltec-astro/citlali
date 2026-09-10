@@ -1,0 +1,78 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "name": "Recovered labels; all rows retained; disjoint first-half/evaluation split",
+      "status": "PASS"
+    },
+    {
+      "name": "Whole-array occurrence normalization; common weight/input-scale cancellation",
+      "status": "PASS"
+    },
+    {
+      "name": "Exact joint first-order derivative; all three prescribed finite-difference steps",
+      "status": "PASS"
+    },
+    {
+      "name": "Irregular-time positive kernel; gaps; direct versus bounded batches; time translation",
+      "status": "PASS"
+    },
+    {
+      "name": "Cross-detector dependence changes normalized uncertainty from independent-error propagation",
+      "status": "PASS"
+    },
+    {
+      "name": "Missing required weight or score propagates to whole array; empty and nonrequired populations",
+      "status": "PASS"
+    },
+    {
+      "name": "Zero/one/two rows, constant signal, nonfinite values and degenerate uncertainty",
+      "status": "PASS"
+    },
+    {
+      "name": "Original-time half-open bin membership and exact counts including gaps",
+      "status": "PASS"
+    },
+    {
+      "name": "Within/cross-chunk lag pairs against independent explicit pair enumeration",
+      "status": "PASS"
+    },
+    {
+      "name": "Evaluation reader returns finite/mask predicates only for specified rows",
+      "status": "PASS"
+    },
+    {
+      "name": "Declared quantiles and all-population/available-population denominators",
+      "status": "PASS"
+    }
+  ],
+  "finite_difference_errors": [
+    {
+      "step": 0.0001,
+      "max_absolute_error": 5.624751220345559e-10
+    },
+    {
+      "step": 1e-05,
+      "max_absolute_error": 2.5141111414939132e-11
+    },
+    {
+      "step": 1e-06,
+      "max_absolute_error": 2.138650923022567e-10
+    }
+  ],
+  "cross_detector_joint_variance": [
+    0.028254271149507865,
+    0.013422948737756733,
+    0.015859729837150942,
+    0.0147680890481534
+  ],
+  "independent_error_variance": [
+    0.036416927227524556,
+    0.014915495695215303,
+    0.027129195929872164,
+    0.016425727356897457
+  ],
+  "statistical_coverage_test": false,
+  "stochastic_trials": 0,
+  "external_signal_access": false
+}
