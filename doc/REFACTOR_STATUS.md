@@ -1,5 +1,18 @@
 # Citlali Refactor Status
 
+## RTC jump transition learner approved — 2026-09-10
+
+The owner approved the next bounded RTC Learn increment: compare original
+samples with the existing cubic before a jump and cubic plus fitted offset
+afterward; require sustained 50 ms agreement within inclusive +/-4 times the
+frozen primary pre-event residual scale. Search the existing two-second context
+on either side; the last pre-event and first post-event confirmations bracket
+the transition. Missing or ambiguous support remains unresolved. This is an
+explicit new use of existing settings, distinct from the unchanged recovery
+test and trial fitting exclusion. The continuation in the existing RTC work
+order binds the method, runtime products and conformance gates. No hard-event
+acceptance, scan flagging or Apply follows from a measured bound alone.
+
 ## RTC level-0 scan intersection rule selected — 2026-09-10
 
 The owner reports the push and approves the starting recommendation: exclude

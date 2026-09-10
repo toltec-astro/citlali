@@ -1077,3 +1077,99 @@ method or new ownership. No integration, push by the agent, route activation,
 automatic flagging, PTC implementation, native PSD use, filtering, downsampling,
 AST/CAL/MAP work, production or cleanup occurs here. Observation 152390 remains
 a timestream fixture.
+
+## Jump transition Learn continuation — 2026-09-10
+
+Owner Grant Wilson says "Let's try this", selecting the proposed original-sample
+transition bracket: compare against the primary fitted cubic before the jump,
+and that same cubic plus its signed fitted offset afterward. Require inclusive
++/-4-sigma agreement sustained for at least 50 ms, with the unchanged primary
+pre-event residual scale, separately in each originating coordinate. Search
+within two seconds either side of the existing event seed in its native
+physical run. Use the last confirmed pre-jump support and first confirmed
+post-jump support to bracket the transition. Ambiguous or missing support
+remains unresolved. This explicitly binds a new use of the accepted settings;
+it neither changes the recovery test nor promotes the +/-50 ms fitting mask.
+
+`TIMESTREAM-SUCCESSOR-RTC-JUMP-TRANSITION-001` is a bounded continuation of S2,
+in the same owned RTC module branch/worktree. Literal parent
+`8755461edb7e4060ee09c9e1262e8b00b8266026`, tree
+`3f2ec2e0afef46a8ed0a7669d597ab7ef7eb15da`, was clean. Live canonical was
+reverified read-only at `86c20b31f7300ba4063be044380b61cd0baf25eb`; published
+module closure remains `d1ed875f7aa3ccbadbe783b571f635d7ba96b2e4`.
+The recorded common ancestor and moving-base review obligations remain intact.
+No merge, history rewrite, new branch or canonical admission occurs here.
+
+Tier-2 preflight: AGENTS, toltec-context routing, status/program/application
+baselines, S2 work order, architecture/conventions, authority router, SCI-RTC
+REQ-094--098/118--126 and OWNER-060/061/075, and all three effective governance
+documents apply. Governance digests/effectiveness ancestry were reverified.
+The selected physical-support measurement advances OWNER-060/061 within the
+frozen contracts; complete event admission and uncertainty qualification stay
+separate. RTC/PTC/VAL ownership and settled half-open intervals are unchanged.
+
+Runtime Consider explicitly requests bounds for coordinates passing the prior
+amplitude/consistency check without confirmed recovery. Runtime Learn retains
+that request, original parent/VAL and distinct coordinate evidence, then
+measures confirmations and the intervening physical/native support. It uses
+original producer-valid samples and preserves paired candidate/neighbor
+exclusions; no donor samples or refitted model enter the search. Candidate
+edge endpoints cannot certify stable support. Confirmation measures covered
+integration time, not a fixed row count, and cannot bridge invalid/excluded
+cells or physical gaps. Its support is distinct from affected transition
+cells and the original fitting mask. Recorded model/support ambiguity, missing
+context and unquantified timing/source protection remain visible to subsequent
+Consider. No new hard-class pair union is performed before hard admission.
+No automatic refit, repeat-until-clean loop or Apply is implemented.
+
+Expected changes: one coherent RTC header; isolated-header and focused tests;
+test CMake; new diagnostic output/timing in the existing inert census driver
+and runner; these status/work-order records. Prior D2/VAL/native/spike,
+background, assessment and consistency application headers remain byte-exact.
+Retain only compact confirmations/bounds/counts per event/coordinate and shared
+parent handles; no observation copy, per-cell provenance plane, generic
+framework, Engine state or cross-stage reach-through.
+
+Gates: threshold/duration equality, signed steps and finite transitions,
+original-sample masks, missing/nonfinite/overlapping support, gaps and true
+observation edges, internal scan/chunk invariance, compound/ambiguous cases,
+exact identity, deterministic repeat and immutability; header isolation,
+prior/full local CTest, all config modes and baseline-tool tests. Rerun the
+same real-input census and A-F windows, preserving prior outputs and exact
+input identities. Measure added request/search/output time and bounded memory.
+These are local AppleClang/Homebrew/cached-dependency supplemental results;
+no representative Spack/Unity gate or production-runtime claim is implied.
+Independent fresh-context read-only exact-SHA review precedes closure.
+
+External evidence belongs under
+`/private/tmp/citlali-rtc-jump-transition-2026-09-10`; preserve every earlier
+sealed root and failed attempt. Stop/reassess for an actual scientific gap,
+outside ownership, changed source/authority, unexpected numerical/resources
+or required primary-estimator changes. No source-protection policy, spectral
+binding, correction, automatic flagging, filtering, downsampling, PTC/AST/CAL/
+MAP work, production, route activation, integration, agent push or cleanup.
+
+Implementation binding/reassessment: the earlier `neighbor_exclusions` is a
+merged fitting-mask union that includes the current event's own trial. It
+cannot be used unchanged for localization, or subtracted blindly where another
+candidate overlaps it. The new learner reconstructs other candidates' unchanged
+paired masks from exact membership, using a temporary index of candidate IDs
+for requested detectors. Only the current group's fitting trial is omitted
+from the confirmation search; its original candidate edge endpoints still
+cannot certify a stable side. No primary-fit population changes. Index entries
+and peak local neighbor-range counts are measured; sample payload is never
+copied. This is a bounded local prerequisite, not a new mask-selection policy.
+
+The recorded last pre-confirmation is the latest sustained agreeing run ending
+before the group's earliest candidate endpoint; the post-confirmation is the
+first run after its latest endpoint to reach 50 ms. Their intervening half-open
+integration support defines the measured bracket and original cell range.
+Agreement with both reference models throughout a selected confirmation is
+explicitly ambiguous. Multiple distinct edge pairs in an unrecovered group
+retain the existing compound/unresolved disposition rather than inventing a
+split/merge identity. Invalid or competing masked support inside the bracket,
+nonfinite arithmetic, or non-contiguous/overlapping integration geometry makes
+the measurement unavailable. Floating-point adjacency uses the existing native
+recovery comparison tolerance; it is not a scientific gap allowance.
+Bounds outside the primary fitting exclusion are explicitly marked for later
+fit-containment reassessment; no automatic refit or acceptance follows.

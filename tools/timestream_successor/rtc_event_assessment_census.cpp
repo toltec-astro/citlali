@@ -6,7 +6,7 @@
 #include "identity_route_acceptance.cpp"
 #undef main
 #include <citlali/core/pipeline/timestream_rtc_event_assessment.h>
-#include <citlali/core/pipeline/timestream_rtc_jump_consistency.h>
+#include <citlali/core/pipeline/timestream_rtc_jump_transition.h>
 
 namespace {
 void number(std::ostream &out, double x) {
@@ -25,7 +25,7 @@ void fit_json(std::ostream &out, const pipeline::RtcEventCubicFit &f) {
 }
 
 // argv: raw file, Tune fit report, compact-v2 manifest, output directory,
-// trial exclusion half-width seconds. No automatic event extent is selected.
+// trial exclusion half-width seconds. Transition bounds are diagnostic evidence only.
 int main(int argc, char **argv) {
     try {
         const auto execution_started=std::chrono::steady_clock::now();
@@ -133,6 +133,10 @@ int main(int argc, char **argv) {
         const auto short_fit_finished=std::chrono::steady_clock::now();
         const auto jump_decision=pipeline::RtcJumpConsistencyDecision::consider(jump_evidence,val,6);
         const auto jump_consider_finished=std::chrono::steady_clock::now();
+        const auto transition_request=pipeline::RtcJumpTransitionRequest::consider(jump_decision,val,7);
+        const auto transition_request_finished=std::chrono::steady_clock::now();
+        const auto transition=pipeline::RtcJumpTransitionEvidence::learn(transition_request,8);
+        const auto transition_learn_finished=std::chrono::steady_clock::now();
         fs::create_directories(output);
         std::ofstream candidates(output/"candidates.jsonl"),events(output/"events.jsonl"),blocks(output/"health-blocks.jsonl"),summaries(output/"detectors.jsonl"),displays(output/"examples.jsonl");
         require(candidates && events && blocks && summaries && displays,"cannot open assessment outputs");
@@ -231,6 +235,42 @@ int main(int argc, char **argv) {
         }
         jumps.close();require(static_cast<bool>(jumps),"jump consistency output write/close failed");
         const auto jump_output_finished=std::chrono::steady_clock::now();
+        std::ofstream transitions(output/"jump-transitions.jsonl");
+        require(static_cast<bool>(transitions),"cannot open transition output");
+        std::array<std::size_t,11> transition_causes{};
+        std::size_t outside_trial=0;
+        for(std::size_t i=0;i<assessment->events().size();++i) {
+            transitions<<"{\"event\":"<<i<<",\"detector\":"<<assessment->events()[i].detector<<",\"coordinates\":[";
+            for(std::size_t c=0;c<2;++c) {
+                const auto &b=transition->coordinates()[i][c];
+                ++transition_causes[static_cast<std::size_t>(b.cause)];
+                outside_trial+=b.available() && b.exceeds_fitting_exclusion;
+                if(c)transitions<<',';
+                transitions<<"{\"request_cause\":"<<static_cast<int>(transition_request->coordinates()[i][c])
+                    <<",\"cause\":"<<static_cast<int>(b.cause)<<",\"available\":"<<(b.available()?"true":"false")
+                    <<",\"residual_scale\":";number(transitions,b.frozen_residual_scale);
+                transitions<<",\"confirmations\":[";
+                for(std::size_t side=0;side<2;++side){
+                    if(side)transitions<<',';const auto &q=b.confirmations[side];
+                    transitions<<"{\"rows\":";range(transitions,q.rows);
+                    transitions<<",\"begin\":";if(q.rows.present())number(transitions,q.physical.begin_unix_sec);else transitions<<"null";
+                    transitions<<",\"end\":";if(q.rows.present())number(transitions,q.physical.end_unix_sec);else transitions<<"null";
+                    transitions<<",\"also_matches_other_reference\":"<<(q.also_matches_other_reference?"true":"false")<<'}';
+                }
+                transitions<<"],\"examined\":";range(transitions,b.examined);
+                transitions<<",\"affected\":";range(transitions,b.affected);
+                transitions<<",\"begin\":";if(b.affected.present())number(transitions,b.physical_bound.begin_unix_sec);else transitions<<"null";
+                transitions<<",\"end\":";if(b.affected.present())number(transitions,b.physical_bound.end_unix_sec);else transitions<<"null";
+                transitions<<",\"examined_rows\":"<<b.examined_rows<<",\"invalid_rows\":"<<b.invalid_rows<<",\"excluded_rows\":"<<b.excluded_rows
+                    <<",\"observation_truncated\":"<<(b.observation_truncated?"true":"false")
+                    <<",\"acquisition_truncated\":"<<(b.acquisition_truncated?"true":"false")
+                    <<",\"exceeds_fitting_exclusion\":"<<(b.exceeds_fitting_exclusion?"true":"false")
+                    <<",\"timing_uncertainty_quantified\":false}";
+            }
+            transitions<<"],\"hard_event_accepted\":false,\"apply_authorized\":false}\n";
+        }
+        transitions.close();require(static_cast<bool>(transitions),"transition output write/close failed");
+        const auto transition_output_finished=std::chrono::steady_clock::now();
         const auto seconds=[](auto a,auto b){return std::chrono::duration<double>(b-a).count();};
         const auto &jc=jump_evidence->counts();
         std::ofstream timings(output/"timing.json");
@@ -245,10 +285,13 @@ int main(int argc, char **argv) {
             std::pair{"jump_amplitude_consider",seconds(review_finished,amplitude_finished)},
             std::pair{"jump_short_fit_learn",seconds(amplitude_finished,short_fit_finished)},
             std::pair{"jump_consistency_consider",seconds(short_fit_finished,jump_consider_finished)},
-            std::pair{"original_output",seconds(jump_consider_finished,original_output_finished)},
-            std::pair{"jump_output",seconds(original_output_finished,jump_output_finished)}};
+            std::pair{"transition_request_consider",seconds(jump_consider_finished,transition_request_finished)},
+            std::pair{"transition_learn",seconds(transition_request_finished,transition_learn_finished)},
+            std::pair{"original_output",seconds(transition_learn_finished,original_output_finished)},
+            std::pair{"jump_output",seconds(original_output_finished,jump_output_finished)},
+            std::pair{"transition_output",seconds(jump_output_finished,transition_output_finished)}};
         for(std::size_t i=0;i<stages.size();++i){if(i)timings<<',';timings<<std::quoted(stages[i].first)<<':';number(timings,stages[i].second);}
-        timings<<"},\"measured_total_seconds\":";number(timings,seconds(execution_started,jump_output_finished));
+        timings<<"},\"measured_total_seconds\":";number(timings,seconds(execution_started,transition_output_finished));
         timings<<",\"requested_coordinates\":"<<jc.requested_coordinates<<",\"pre_fit_calls\":"<<jc.pre_fit_calls
             <<",\"joint_fit_calls\":"<<jc.joint_fit_calls<<",\"available_coordinates\":"<<jc.available_coordinates
             <<",\"pre_reported_iterations\":"<<jc.pre_iterations<<",\"joint_reported_iterations\":"<<jc.joint_iterations
@@ -256,6 +299,13 @@ int main(int argc, char **argv) {
         for(std::size_t i=0;i<amplitude_counts.size();++i){if(i)timings<<',';timings<<amplitude_counts[i];}
         timings<<"],\"consistency_cause_counts\":[";
         for(std::size_t i=0;i<consistency_counts.size();++i){if(i)timings<<',';timings<<consistency_counts[i];}
+        timings<<"],\"transition_policy\":"<<std::quoted(std::string(pipeline::RtcJumpTransitionPolicy::identity))
+            <<",\"transition_requested\":"<<transition->requested_coordinates()<<",\"transition_examined_rows\":"<<transition->examined_rows()
+            <<",\"transition_index_entries\":"<<transition->indexed_candidates()
+            <<",\"transition_peak_neighbor_ranges\":"<<transition->peak_neighbor_ranges()
+            <<",\"transition_result_bytes\":"<<transition->coordinates().size()*2*sizeof(pipeline::RtcJumpTransition)
+            <<",\"transition_outside_trial\":"<<outside_trial<<",\"transition_cause_counts\":[";
+        for(std::size_t i=0;i<transition_causes.size();++i){if(i)timings<<',';timings<<transition_causes[i];}
         timings<<"],\"consistent_without_confirmed_recovery\":"<<consistent_without_recovery
             <<",\"timing_scope\":\"local inert driver through diagnostic output close; excludes final receipt/hash and process shutdown; not production RTC/PTC\",\"iteration_count_definition\":\"IRLS loop entries on successful and failed fits; zero before loop\"}\n";
         timings.close();require(static_cast<bool>(timings),"jump timing output write/close failed");

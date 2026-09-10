@@ -30,6 +30,8 @@ def main():
     parser.add_argument('--executable', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--trial-half-width-seconds', type=float, required=True)
+    parser.add_argument('--previous-campaign', type=Path,
+                        help='Require unchanged inputs and six earlier output files per invocation')
     args = parser.parse_args()
     if args.output.exists():
         parser.error('output exists: preserve prior campaigns')
@@ -141,6 +143,56 @@ def main():
                 assert pre_calls == timing['pre_fit_calls'] and joint_calls == timing['joint_fit_calls']
                 assert short_available == timing['available_coordinates']
                 assert without_recovery == timing['consistent_without_confirmed_recovery']
+                transition_counts = [0]*11
+                transition_requested = transition_examined = transition_outside = transition_rows = 0
+                checks = map(json.loads, (target/'jump-consistency.jsonl').open())
+                for bound, check in zip(map(json.loads, (target/'jump-transitions.jsonl').open()), checks, strict=True):
+                    assert bound['event'] == check['event'] == transition_rows
+                    assert bound['detector'] == check['detector']
+                    assert not bound['hard_event_accepted'] and not bound['apply_authorized']
+                    event = events[transition_rows]
+                    for c, b in enumerate(bound['coordinates']):
+                        d = check['coordinates'][c]
+                        expected = 0 if d['consistency_cause'] != 6 else 1 if d['confirmed_recovery_excludes_persistent_shift'] else 2
+                        assert b['request_cause'] == expected
+                        transition_requested += expected == 2
+                        transition_counts[b['cause']] += 1
+                        transition_examined += b['examined_rows']
+                        assert b['available'] == (b['cause'] == 1)
+                        assert not b['timing_uncertainty_quantified']
+                        if expected != 2:
+                            assert b['cause'] == 0 and b['examined_rows'] == 0
+                        else:
+                            assert b['cause'] != 0
+                            assert b['residual_scale'] == event['coordinates'][c]['pre']['scale']
+                        if b['available']:
+                            pre, post = b['confirmations']
+                            assert pre['end']-pre['begin'] >= .05 and post['end']-post['begin'] >= .05
+                            assert not pre['also_matches_other_reference'] and not post['also_matches_other_reference']
+                            assert pre['rows'][1] == b['affected'][0] < b['affected'][1] == post['rows'][0]
+                            assert pre['end'] == b['begin'] < b['end'] == post['begin']
+                            edge_rows = {seeds[k]['earlier_row'] for k in event['candidates']}
+                            assert len(edge_rows) == 1
+                            assert b['affected'][0] <= min(edge_rows) and b['affected'][1] > max(edge_rows)+1
+                            expected_outside = b['affected'][0] < event['trial_exclusion'][0] or b['affected'][1] > event['trial_exclusion'][1]
+                            assert b['exceeds_fitting_exclusion'] == expected_outside
+                            transition_outside += expected_outside
+                    transition_rows += 1
+                assert transition_rows == len(events)
+                assert transition_counts == timing['transition_cause_counts']
+                assert transition_requested == without_recovery == timing['transition_requested']
+                assert transition_examined == timing['transition_examined_rows']
+                assert transition_outside == timing['transition_outside_trial']
+                if args.previous_campaign:
+                    previous = args.previous_campaign/stem
+                    old_receipt = json.loads((previous/'receipt.json').read_text())
+                    for key in ('raw_sha256', 'tune_sha256', 'manifest_sha256', 'candidate_edges', 'assessed_events'):
+                        assert receipt[key] == old_receipt[key], f'Prior identity/count changed: {key}'
+                    preserved = ('candidates.jsonl', 'events.jsonl', 'health-blocks.jsonl',
+                                 'detectors.jsonl', 'examples.jsonl', 'jump-consistency.jsonl')
+                    for name in preserved:
+                        assert digest(target/name) == digest(previous/name), f'Prior output changed: {name}'
+                    entry['preserved_previous_outputs'] = list(preserved)
                 entry.update(status='completed', receipt=receipt, fit_rows=fits_count, assessed_events=len(events), jump_timing=timing)
                 write_json(target/'SHA256.json', {p.name: digest(p) for p in sorted(target.iterdir()) if p.is_file()})
             else:
@@ -172,6 +224,14 @@ def main():
         'requested_coordinates', 'pre_fit_calls', 'joint_fit_calls', 'available_coordinates',
         'pre_reported_iterations', 'joint_reported_iterations', 'consistent_without_confirmed_recovery')}
     summary['peak_short_scratch_rows'] = max((e['jump_timing']['peak_short_scratch_rows'] for e in complete), default=0)
+    summary['transition_cause_counts'] = [sum(e['jump_timing']['transition_cause_counts'][i] for e in complete) for i in range(11)]
+    summary['transition_requested'] = sum(e['jump_timing']['transition_requested'] for e in complete)
+    summary['transition_examined_rows'] = sum(e['jump_timing']['transition_examined_rows'] for e in complete)
+    summary['transition_outside_trial'] = sum(e['jump_timing']['transition_outside_trial'] for e in complete)
+    summary['peak_transition_index_entries'] = max((e['jump_timing']['transition_index_entries'] for e in complete), default=0)
+    summary['peak_transition_neighbor_ranges'] = max((e['jump_timing']['transition_peak_neighbor_ranges'] for e in complete), default=0)
+    summary['peak_transition_result_bytes'] = max((e['jump_timing']['transition_result_bytes'] for e in complete), default=0)
+    summary['preserved_previous_outputs'] = sum(len(e.get('preserved_previous_outputs', [])) for e in complete)
     summary['timing_scope'] = 'Local inert native test driver; production RTC/PTC runtime not measured; iteration counts include successful and failed IRLS loop entries, zero before loop'
     write_json(args.output/'summary.json', summary)
     print(json.dumps(summary, indent=2))
