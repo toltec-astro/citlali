@@ -1185,3 +1185,106 @@ Initial 18 focused and 989 runnable CTests, four config modes and 207 baseline
 tests passed; a later make jobserver-pipe failure affected the next census
 build target after `check` completed. The separate repaired-source build,
 focused/full regressions, source review and exact real-data census follow.
+
+## Jump transition implementation and measurement completion — 2026-09-10
+
+`TIMESTREAM-SUCCESSOR-RTC-JUMP-TRANSITION-001` completes its bounded local
+implementation/measurement gates, ready for owner acceptance. Exact tested
+implementation `14c93a4ad4793a554eb98360c7dd9fe9aabe59e7`, tree
+`bddc3b6325ea2da57735188c382f5189e03bb8f8`, has parent
+`2e24ca315ee5696b1c025e9fb67c6f8f732c5e11` and literal increment base
+`8755461edb7e4060ee09c9e1262e8b00b8266026`. Initial implementation and
+RTC-JT-R01 repair remain separate preserved commits. Independent repaired-source
+and full-evidence three-axis reviews pass with recorded limitations and no
+remaining findings. The review history and preliminary failed attempts remain
+in the external evidence root; no prior accepted implementation is rewritten.
+
+Runtime Consider requests bounds only for prior consistency passes without
+confirmed recovery, retaining exact original VAL and evidence. Runtime Learn
+compares original producer-valid samples with the unchanged primary cubic before
+and cubic plus signed fitted offset afterward. The inclusive 4-sigma limit uses
+the frozen primary pre-event residual scale, with 50 ms continuous confirmation
+inside the selected two-second context and physical native run. It reconstructs
+other candidates' paired masks by exact membership without changing any primary
+fit population. Temporary indices contain candidate IDs, not sample copies.
+Last pre and first post confirmations bracket original half-open integration
+support. Multiple candidate edges remain an explicit fact, not a single-edge veto
+or resolved physical split/merge decision. Exact support/invalid/nonfinite/mask
+and fit-containment limits remain explicit. No automatic refit or outer loop.
+
+Later complete Consider must resolve physical identity, timing uncertainty,
+source protection, hard-event admission and exact scan-use binding under the
+approved owners. Apply must consume the completed plan for the selected
+every-intersected-existing-scan detector treatment; no new Apply action is
+implemented here. Matching D x/r brackets do not select a coherence tolerance
+or hard-class union policy. The development Learn/Consider/Apply workflow is
+recorded separately from these runtime responsibilities.
+
+Exact repaired-source local check passes 990/990 runnable tests, including 19
+new focused tests and isolated-header compilation; one established
+MapFitterLifecycle test remains disabled. Four config modes and 207 baseline-tool
+tests passed on the initial implementation; the transition-only repair left
+their behavior untouched. CLI version g14c93a4ad and both executable hashes bind
+the repaired source. Prior scientific headers are byte-exact to the literal
+base; dependency revisions and nine pre-existing cached dirty files match the
+preceding census. AppleClang 21 arm64 Release C++20/Homebrew results are local
+supplemental evidence; no GCC13/Spack/Unity or production gate is claimed.
+
+Six pilot networks pass before the complete same-corpus run. All 143/143 files,
+13 observations, 71,734 channel timestreams and 2,148,911,461 original sample pairs
+complete. Raw/Tune/APT identity digests match. All 858 prior candidate, event,
+health, detector, example and consistency outputs are byte-identical, preserving
+910,241 candidate edges and 242,014 group assessments. Per-network manifests,
+request/cause/support accounting and source/executable/dependency post-run
+identity checks pass. Fixed A-F sample audits directly verify all measured
+confirmations there (D x/r) against the original samples and raw-header duration;
+this is not a sample-by-sample independent audit of every corpus bracket.
+Fourteen other observations / 155 files still lack binding manifests and remain
+untested; the tested observations cover one night. Spectra remain owner-deferred
+and source protection unavailable.
+
+Of 484,028 coordinate assessments, 12,815 request this Learn work. Measured
+conditional brackets: 11,830; unavailable: 985.
+Cause counts in enum order (not requested, measured, background unavailable,
+nonfinite, pre missing, post missing, ambiguous reference, invalid support,
+competing exclusion, support geometry): [471213, 11830, 0, 0, 0, 599, 2, 0, 384, 0].
+Measured records with multiple candidate edges: 8,005;
+measured brackets outside the original fitting exclusion: 4,464.
+These retain later identity/fit-containment reassessment; no hard-event count,
+detector-scan loss fraction or false-positive rate is inferred. D x/r both
+produce original cells [6253,6256), a conditional 0.02457594871520996-second
+bracket. The duration is sampled support, not a measured intrinsic jump duration.
+A/C, B, E and F retain preceding pulse/consistency/health decisions.
+
+Serial local timing on Apple M4 Pro, 48 GiB RAM, with no competing agent
+build/test/profiler workload: new request/Learn 0.134633861 s,
+new diagnostic output 0.699774168 s. Numerical work is
+0.007592719% of preceding same-run driver stages and
+0.009170065% of existing event assessment.
+All additions including output are 0.047056701% of preceding stages.
+Stage total 1774.031461 s; summed child wall time
+1845.709842 s, excluding Python reconciliation between
+children. Normal desktop scheduling/cache variation remains; no production
+fraction or cross-run speedup is claimed. Learner examines 3,796,349 rows.
+Peak whole-driver RSS 5339938816 bytes (4.973 GiB) is not
+incremental memory. Peak temporary index 48,450 candidate IDs;
+peak local mask list 8 ranges; largest logical result
+payload 5,267,328 bytes excludes capacity, request/map/allocator
+overhead and parent-owned evidence. These measurements do not trigger optimization.
+
+External evidence: `/private/tmp/citlali-rtc-jump-transition-2026-09-10`.
+Repaired source review SHA-256: `c9201edda688de2bc93ffc9af17227337df97813702d62870cce1e742f1cf89d`.
+Full evidence review SHA-256: `eefc9920fd79956623014ab1596070e96377c0b90851a786c04d9a8d2518e69d`.
+`EVIDENCE_SHA256SUMS`: `027269c719c192f130b4049a038b36495c649e10a9920d1435f457a2d8bed515`.
+The documentation-only closure has the tested implementation as its direct
+parent; its exact commit/tree, independent exact-SHA review and final complete
+manifest are recorded receipt-last in external `completion.json` and
+`SHA256SUMS`, avoiding a self-referential commit identity inside the closure.
+
+Canonical was reverified at the recorded current authority; both literal
+histories and common ancestor remain intact. No merge or canonical admission
+occurs; later admission requires the then-live authority and an independent
+exact-result-SHA review. Prior sealed evidence remains untouched. No scientific
+policy selection beyond the owner-approved transition method, full-scan flag
+execution, correction, spectral binding, filtering, downsampling, PTC/AST/CAL/MAP,
+production, route activation, Unity operation, agent push or cleanup occurs.

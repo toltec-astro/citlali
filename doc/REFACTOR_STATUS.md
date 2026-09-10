@@ -1,17 +1,37 @@
 # Citlali Refactor Status
 
-## RTC jump transition learner approved — 2026-09-10
+## RTC jump transition implementation and measurement — 2026-09-10
 
-The owner approved the next bounded RTC Learn increment: compare original
-samples with the existing cubic before a jump and cubic plus fitted offset
-afterward; require sustained 50 ms agreement within inclusive +/-4 times the
-frozen primary pre-event residual scale. Search the existing two-second context
-on either side; the last pre-event and first post-event confirmations bracket
-the transition. Missing or ambiguous support remains unresolved. This is an
-explicit new use of existing settings, distinct from the unchanged recovery
-test and trial fitting exclusion. The continuation in the existing RTC work
-order binds the method, runtime products and conformance gates. No hard-event
-acceptance, scan flagging or Apply follows from a measured bound alone.
+The owner-approved transition learner is implemented on exact
+`14c93a4ad4793a554eb98360c7dd9fe9aabe59e7`, tree
+`bddc3b6325ea2da57735188c382f5189e03bb8f8`. Explicit runtime Consider requests
+original-sample Learn evidence using the unchanged primary cubic/offset and
+inclusive +/-4 frozen residual-sigma agreement for 50 ms. Half-open numerical
+bounds retain native/VAL identity, separate x/r support and explicit limitations.
+Physical-event identity, timing uncertainty, complete admission, scan binding
+and Apply remain separate; no full-scan flag is executed.
+
+The same 143 files, 71,734 channel timestreams and 2,148,911,461 sample pairs
+complete; all 858 preceding output files are byte-identical. Of 12,815 requested
+coordinate assessments, 11,830 have measured conditional brackets;
+985 remain unavailable. D has the same three-cell bracket in x/r,
+24.576 ms under the provisional native timing assumption. A-F original decisions
+remain unchanged. These are evidence records, not accepted physical-event counts.
+
+All 990 runnable local CTests (19 new focused tests), isolated-header compilation,
+four config modes and 207 baseline-tool tests pass under the recorded exact-source
+and repair scopes. Independent source and evidence reviews pass with recorded
+limitations and no remaining findings. Prior D2/VAL/native/RTC science is preserved.
+New request/Learn work totals 0.134634 seconds, 0.007593% of
+preceding driver stages; new diagnostic output costs 0.699774 seconds.
+Peak whole-process RSS is 4.973 GiB, not incremental memory.
+These are local Apple M4 Pro/AppleClang measurements, not production or Unity.
+
+[Results, A-F figures and timing](/private/tmp/citlali-rtc-jump-transition-2026-09-10/README.md)
+and the completion entry in the existing RTC work order bind exact source and
+sealed evidence. The documentation closure's exact identity/review and final
+manifest are recorded externally in `completion.json`. Ready for owner acceptance;
+no canonical admission, route activation, agent push or cleanup occurs.
 
 ## RTC level-0 scan intersection rule selected — 2026-09-10
 
