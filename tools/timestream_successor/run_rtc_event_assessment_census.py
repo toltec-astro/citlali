@@ -8,6 +8,7 @@ It does not submit jobs, fetch inputs, issue APTs, change policy, or merge refs.
 import argparse
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import subprocess
@@ -89,7 +90,58 @@ def main():
                 assert fits_count == receipt['candidate_edges'] == sum(sum(d['candidate_counts']) for d in detectors)
                 assert len({d['occurrence'] for d in detectors}) == len(detectors)
                 assert all(d['rows'] == r['rows'] and d['pair_screening_excluded_rows'] <= d['rows'] for d in detectors)
-                entry.update(status='completed', receipt=receipt, fit_rows=fits_count, assessed_events=len(events))
+                timing = json.loads((target/'timing.json').read_text())
+                stage_values = list(timing['stages_seconds'].values())
+                assert all(math.isfinite(v) and v >= 0 for v in stage_values)
+                assert math.isclose(sum(stage_values), timing['measured_total_seconds'], rel_tol=1e-10, abs_tol=1e-7)
+                seeds = {s['candidate']: s for s in map(json.loads, (target/'candidates.jsonl').open())}
+                noise = {b['noise_block']: b for b in map(json.loads, (target/'health-blocks.jsonl').open())}
+                amplitude_counts, consistency_counts = [0]*6, [0]*7
+                joint_calls = pre_calls = short_available = without_recovery = jump_rows = 0
+                for row in map(json.loads, (target/'jump-consistency.jsonl').open()):
+                    assert row['event'] == jump_rows
+                    event = events[jump_rows]
+                    assert row['detector'] == event['detector']
+                    assert not row['hard_event_accepted'] and not row['apply_authorized']
+                    for c, check in enumerate(row['coordinates']):
+                        amplitude_counts[check['amplitude_cause']] += 1
+                        consistency_counts[check['consistency_cause']] += 1
+                        first = next((i for i in event['candidates'] if seeds[i]['seed_coordinate'] == c), None)
+                        assert check['candidate'] == first
+                        if first is not None:
+                            block = noise[check['noise_block']]
+                            assert block['detector'] == event['detector']
+                            # The original producer assigns an edge to its later
+                            # endpoint's block, including a crossing at block start.
+                            assert seeds[first]['earlier_row'] + 1 == seeds[first]['later_row']
+                            assert block['first'] <= seeds[first]['later_row'] < block['end']
+                            if check['sigma_delta'] is not None:
+                                assert check['sigma_delta'] == block['coordinates'][c]['scale']
+                        fit = check['short_fit']
+                        if check['amplitude_cause'] != 5:
+                            assert fit is None and check['short_fit_cause'] == 0
+                        else:
+                            assert fit is not None
+                            pre_calls += fit['pre_scale_fit']['cause'] != 1
+                            joint_calls += fit['with_offset']['cause'] != 1
+                            short_available += fit['available']
+                        if check['consistency_cause'] == 6:
+                            assert fit['available'] and check['amplitude_cause'] == 5
+                            a = event['coordinates'][c]['with_offset']['offset']
+                            b = fit['with_offset']['offset']
+                            sigma = check['sigma_delta']
+                            assert abs(a) >= 5*sigma and abs(b) >= 5*sigma
+                            assert (a > 0) == (b > 0) and abs(a-b) <= 2*sigma
+                            without_recovery += not check['confirmed_recovery_excludes_persistent_shift']
+                    jump_rows += 1
+                assert jump_rows == len(events)
+                assert amplitude_counts == timing['amplitude_cause_counts']
+                assert consistency_counts == timing['consistency_cause_counts']
+                assert amplitude_counts[5] == timing['requested_coordinates']
+                assert pre_calls == timing['pre_fit_calls'] and joint_calls == timing['joint_fit_calls']
+                assert short_available == timing['available_coordinates']
+                assert without_recovery == timing['consistent_without_confirmed_recovery']
+                entry.update(status='completed', receipt=receipt, fit_rows=fits_count, assessed_events=len(events), jump_timing=timing)
                 write_json(target/'SHA256.json', {p.name: digest(p) for p in sorted(target.iterdir()) if p.is_file()})
             else:
                 entry.update(status='failed', failure_tail=log.read_text(errors='replace')[-3000:])
@@ -114,6 +166,13 @@ def main():
                                     'Spectral context remains owner-deferred and unavailable',
                                     'Input preflight defers missing canonical detector bindings',
                                     'Candidate edges may represent the same physical event; counts are not event rates'])
+    stage_names = sorted({s for e in complete for s in e['jump_timing']['stages_seconds']})
+    summary['timed_stages_seconds'] = {s: sum(e['jump_timing']['stages_seconds'][s] for e in complete) for s in stage_names}
+    summary['jump_fit_counts'] = {k: sum(e['jump_timing'][k] for e in complete) for k in (
+        'requested_coordinates', 'pre_fit_calls', 'joint_fit_calls', 'available_coordinates',
+        'pre_reported_iterations', 'joint_reported_iterations', 'consistent_without_confirmed_recovery')}
+    summary['peak_short_scratch_rows'] = max((e['jump_timing']['peak_short_scratch_rows'] for e in complete), default=0)
+    summary['timing_scope'] = 'Local inert native test driver; production RTC/PTC runtime not measured; failed-fit internal iteration counts unavailable'
     write_json(args.output/'summary.json', summary)
     print(json.dumps(summary, indent=2))
 

@@ -748,3 +748,120 @@ record belongs at
 `/private/tmp/citlali-rtc-jump-threshold-policy-2026-09-10`.
 No fresh canonical-ref observation, admission, ancestry reconciliation, push,
 route activation, application implementation or cleanup occurs in this receipt.
+
+## Jump consistency and timing continuation — 2026-09-10
+
+Owner Grant Wilson agreed to the fixed consistency check: "Well this makes
+sense. We'll need to do some compute timing estimates to make sure this isn't
+dominating the processing time." This accepts the proposed inner-one-second
+check, same-sign and two five-sigma amplitude tests, and inclusive two-sigma
+offset-agreement tolerance as an initial trial. It additionally requires
+measured computation cost, rather than assuming that one extra fit is cheap.
+
+Bounded work: `TIMESTREAM-SUCCESSOR-RTC-JUMP-CONSISTENCY-001`, within the existing
+S2 RTC module/work order and its owned branch/worktree. Local literal parent
+`ee30f449f8766104be23d3729a3ab9409fb5b720`, tree
+`a5e53deb924b22d8d4162c53ee2a394651bf489c`, initially clean. Canonical was verified
+read-only via explicit SSH GitHub URL on 2026-09-10 at unchanged
+`86c20b31f7300ba4063be044380b61cd0baf25eb`. The previously recorded common
+ancestor and documentation-only canonical delta still apply. Preserve the
+literal module and canonical histories for later exact-admission review;
+no merge, ref movement, push or canonical admission occurs here.
+
+Preflight: tier 2; AGENTS, toltec-context, current status, application/program
+baselines, architecture/conventions, implementation baseline S2, authority router,
+SCI-RTC/SCI-PTC requirements and all three effective governance documents read.
+The recorded governance digests and accepted/effectiveness commits remain exact.
+This binds selected owner decisions within the frozen scientific contracts;
+it does not alter those contracts or confer observational classification or
+production authority. Prior accepted implementation/evidence stays preserved.
+
+Numerical policy: keep the primary two-second flanks, original paired exclusions,
+native run/timing, cubic degree and robust-fit method. For each seeded coordinate
+of the existing grouped assessment, bind its first original candidate in the
+existing ordered membership (the coordinate's existing onset seed), with that
+candidate's exact same-coordinate ten-second noise block. No choice among noise
+blocks by score, no pooling, and no unseeded-coordinate surrogate is allowed.
+The primary offset must pass `abs(A2) >= 5*sigma_delta` before the shorter fit
+is requested. Then fit the inner one-second pre/post flanks immediately outside
+the unchanged trial exclusion, using a subset of the original valid primary-fit
+support and the same neighbor exclusions. Preserve the primary coordinate/time
+basis and reference side. Re-estimate the shorter pre-flank residual scale with
+the existing pre-cubic procedure and freeze it for its cubic-plus-offset fit;
+this is distinct from the unchanged `sigma_delta` in all admission comparisons.
+There is no need to compute an unused shorter plain joint-cubic comparator.
+The method therefore invokes at most one shorter pre-scale fit and one shorter
+joint offset fit per qualifying coordinate, each retaining the existing finite
+numerical iteration bound and 64-valid-samples-per-flank minimum. Count actual
+fit calls and exposed iteration counts, distinguishing unavailable results;
+the preserved solver does not expose internal iteration counts after failure.
+
+The shorter offset A1 must satisfy `abs(A1) >= 5*sigma_delta`, have the same
+nonzero sign as A2, and satisfy `abs(A1-A2) <= 2*sigma_delta`. Equality passes.
+All comparisons use original coordinate units and the one exact noise scale.
+These overlapping fits are dependent empirical checks, not independent
+uncertainty estimates. Missing support, numerical failure or nonfinite comparison
+remains unavailable. Existing confirmed recovery excludes persistent-shift
+treatment; no recovery alone still does not establish it. Preserve source
+protection, model-adequacy, compound-event and scan-binding constraints.
+Consistency success never alone authorizes the level-0 detector-scan flag.
+
+Runtime architecture: prior Learn/Consider assessment -> immutable RTC amplitude
+Consider decision -> bounded short-fit Learn evidence for the requested subset
+-> immutable RTC consistency Consider result. The gate is explicit policy in
+Consider, not a hidden selection inside a producer. These concrete products
+retain exact earlier evidence handles, coordinate origins and original VAL
+snapshot. They feed later complete planning; no Apply correction, replacement,
+full-scan rejection, PCA change, route or other stage is implemented here.
+This fixed diagnostic sequence does not add a repeat-until-satisfied loop.
+
+Changed areas: one coherent RTC header and isolated/focused tests; test CMake;
+the existing inert census driver/runner for extra evidence and stage timing;
+necessary work-order/status updates. No Engine state, generic framework,
+source-sample mutation, per-cell provenance plane or scientific optimization.
+Scientific change is the explicit amplitude/consistency predicates; primary
+measurements, candidate identities, screening and earlier review output must
+remain exact. Frozen D2/VAL/spike/background/assessment source stays unchanged.
+
+Gates: threshold equality and signed/invalid arithmetic; exact parent/VAL and
+noise-block binding; deterministic ordering; short-fit original-sample subset,
+neighbor exclusions, gap/edge/insufficient support; injected positive/negative
+steps, nearby spikes, curved backgrounds and unstable offsets; recovery and
+protection preservation; header isolation, prior focused and full local CTest,
+config preflight and baseline-tool regressions. Rerun the same exact 143-file
+corpus and A-F windows, with source/input/output identities and candidate/
+screening/earlier-assessment reconciliation. Include shorter-window residuals
+in the report as model diagnostics, not an unapproved extra numerical gate.
+Independent fresh-context exact-SHA three-axis review is required before close.
+
+Timing: separate input/producer, spike learning, original assessment, original
+Consider, new amplitude gate, short-fit learning, final Consider and output
+cost in the inert driver. Record candidate/coordinate gate counts, pre/joint
+fit calls and iterations, cumulative wall time, maximum per-network cost and
+memory; show incremental cost relative to the original stages in the same run.
+Use representative quiet and event-rich inputs, then the complete same corpus.
+No arbitrary performance budget or hardware-independent throughput is assumed.
+Stage/corpus timings are local AppleClang/Homebrew supplemental measurements;
+they are not full production RTC/PTC runtime or a Unity result. No direct Unity
+access is authorized. Preserve the earlier sealed evidence and all failed
+attempts; new artifacts belong under
+`/private/tmp/citlali-rtc-jump-consistency-2026-09-10`.
+
+Stop/reassess for a scientific-policy ambiguity, changed authority or source,
+new ownership, nonfinite/incorrect behavior, incompatible parents, unexpected
+resource growth or an apparent need to change the primary estimator. Timings
+may motivate a separately recorded optimization; they cannot silently change
+the accepted fit or threshold. Missing source protection in the current corpus
+remains explicit; no MAP comparison, native PSD use, filtering, downsampling,
+PTC/CAL/AST work, production, integration, push or cleanup is included.
+
+Pre-candidate verification: 16 focused tests and public-header compilation pass,
+including signed/equality thresholds, short-support insufficiency, real packet
+gaps, noise-block boundary ownership and nonlinear-background offset instability.
+The second six-network A-F pilot completes. The first pilot stopped on a runner
+assertion that incorrectly required both endpoints inside a noise block; the
+original producer correctly owns a crossing edge by its later endpoint. The
+runner and a focused boundary test now preserve that rule. Build setup/type
+errors and the initial gap-fixture correction are retained in external logs.
+No primary scientific source changed. Full exact-source gates/timing and
+independent review remain pending at this implementation commit.

@@ -1,5 +1,18 @@
 # Citlali Refactor Status
 
+## RTC jump consistency implementation and timing — 2026-09-10
+
+The owner agreed to the bounded one-second consistency check and requested
+compute timing to determine its processing cost. The continuation in the
+[existing RTC work order](../handoff/TIMESTREAM_SUCCESSOR_RTC_EVENT_BACKGROUND_001_2026-09-08.md)
+implements the selected 5-sigma amplitude gate, one shorter cubic-plus-offset
+fit per qualifying coordinate, same-sign/5-sigma/2-sigma agreement predicates,
+and local stage/corpus timing. Original native/D2/VAL/spike/background/assessment
+science remains intact; this adds explicit RTC Learn/Consider products.
+No full-scan flag is executed: source protection, hard-event admission and exact
+scan binding remain separately required. Spectra remain owner-deferred.
+Implementation, conformance tests, timing and exact-SHA review are in progress.
+
 ## RTC jump amplitude rule selected — 2026-09-10
 
 The owner approved the initial jump-amplitude cut

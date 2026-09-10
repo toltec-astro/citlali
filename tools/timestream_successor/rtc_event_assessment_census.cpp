@@ -6,6 +6,7 @@
 #include "identity_route_acceptance.cpp"
 #undef main
 #include <citlali/core/pipeline/timestream_rtc_event_assessment.h>
+#include <citlali/core/pipeline/timestream_rtc_jump_consistency.h>
 
 namespace {
 void number(std::ostream &out, double x) {
@@ -27,6 +28,7 @@ void fit_json(std::ostream &out, const pipeline::RtcEventCubicFit &f) {
 // trial exclusion half-width seconds. No automatic event extent is selected.
 int main(int argc, char **argv) {
     try {
+        const auto execution_started=std::chrono::steady_clock::now();
         require(argc==6,"expected raw, Tune, APT manifest, new output directory, trial half-width seconds");
         const fs::path raw_path=argv[1], tune_path=argv[2], manifest=argv[3], output=argv[4];
         const double guard=std::stod(argv[5]);
@@ -101,7 +103,9 @@ int main(int argc, char **argv) {
         auto view=pipeline::NativePairedReadoutView::full(parent);
         auto protection=pipeline::RtcSpikeSourceProtection::admit(parent,
             "rtc-census-source-membership-unavailable",pipeline::RtcSpikeProtection::unavailable);
+        const auto ingress_finished=std::chrono::steady_clock::now();
         auto spikes=pipeline::learn_rtc_spike_candidates(view,val,protection,1);
+        const auto spikes_finished=std::chrono::steady_clock::now();
         std::vector<pipeline::RtcEventPeerEligibility> eligible;
         std::vector<bool> clear(source.channel_count,false);
         for(const auto &row:verified.apt.rows) if(row.network==nw) {
@@ -118,8 +122,17 @@ int main(int argc, char **argv) {
             eligible.push_back({nw,d,detectors[d].detector_occurrence_id,clear[d]});
         const auto population=pipeline::RtcEventPeerPopulation::admit(spikes,
             "verified-apt-sha256:"+citlali::utils::sha256_file(manifest)+":Tune-valid:flag=0:flag2=0",std::move(eligible));
+        const auto population_finished=std::chrono::steady_clock::now();
         const auto assessment=pipeline::learn_rtc_event_assessment(spikes,population,2);
+        const auto assessment_finished=std::chrono::steady_clock::now();
         const auto decision=pipeline::RtcEventAssessmentDecision::consider(assessment,val,3);
+        const auto review_finished=std::chrono::steady_clock::now();
+        const auto jump_amplitude=pipeline::RtcJumpAmplitudeDecision::consider(decision,val,4);
+        const auto amplitude_finished=std::chrono::steady_clock::now();
+        const auto jump_evidence=pipeline::RtcJumpConsistencyEvidence::learn(jump_amplitude,5);
+        const auto short_fit_finished=std::chrono::steady_clock::now();
+        const auto jump_decision=pipeline::RtcJumpConsistencyDecision::consider(jump_evidence,val,6);
+        const auto jump_consider_finished=std::chrono::steady_clock::now();
         fs::create_directories(output);
         std::ofstream candidates(output/"candidates.jsonl"),events(output/"events.jsonl"),blocks(output/"health-blocks.jsonl"),summaries(output/"detectors.jsonl"),displays(output/"examples.jsonl");
         require(candidates && events && blocks && summaries && displays,"cannot open assessment outputs");
@@ -175,6 +188,77 @@ int main(int argc, char **argv) {
             stream->close();
             require(static_cast<bool>(*stream),"assessment output write/close failed");
         }
+        const auto original_output_finished=std::chrono::steady_clock::now();
+        std::ofstream jumps(output/"jump-consistency.jsonl");
+        require(static_cast<bool>(jumps),"cannot open jump consistency output");
+        std::array<std::size_t,6> amplitude_counts{};
+        std::array<std::size_t,7> consistency_counts{};
+        std::size_t consistent_without_recovery=0;
+        for(std::size_t i=0;i<assessment->events().size();++i) {
+            jumps<<"{\"event\":"<<i<<",\"detector\":"<<assessment->events()[i].detector<<",\"coordinates\":[";
+            for(std::size_t c=0;c<2;++c) {
+                const auto &a=jump_amplitude->coordinates()[i][c];
+                const auto &s=jump_evidence->coordinates()[i][c];
+                const auto &d=jump_decision->coordinates()[i][c];
+                ++amplitude_counts[static_cast<std::size_t>(a.cause)];
+                ++consistency_counts[static_cast<std::size_t>(d.cause)];
+                consistent_without_recovery+=d.passes() && !d.confirmed_recovery_excludes_persistent_shift;
+                if(c) jumps<<',';
+                jumps<<"{\"candidate\":"; if(a.candidate) jumps<<*a.candidate;else jumps<<"null";
+                jumps<<",\"noise_block\":"; if(a.noise_block) jumps<<*a.noise_block;else jumps<<"null";
+                jumps<<",\"sigma_delta\":";number(jumps,a.sigma_delta);
+                jumps<<",\"primary_offset_sigma\":";number(jumps,a.offset_sigma);
+                jumps<<",\"amplitude_cause\":"<<static_cast<int>(a.cause)
+                    <<",\"short_fit_cause\":"<<static_cast<int>(s.cause)<<",\"short_fit\":";
+                if(s.cause==pipeline::RtcJumpShortFitCause::not_requested) jumps<<"null";
+                else {
+                    jumps<<"{\"available\":"<<(s.available()?"true":"false")<<",\"support\":[";
+                    for(std::size_t side=0;side<2;++side) {
+                        if(side)jumps<<',';const auto &p=s.support[side];
+                        jumps<<"{\"usable\":"<<p.usable<<",\"invalid\":"<<p.invalid<<",\"neighbor_excluded\":"<<s.neighbor_excluded[side]
+                            <<",\"first_used\":"<<p.first_used<<",\"last_used\":"<<p.last_used<<",\"begin\":";number(jumps,p.begin_unix_sec);
+                        jumps<<",\"end\":";number(jumps,p.end_unix_sec);jumps<<'}';
+                    }
+                    jumps<<"],\"pre_scale_fit\":";fit_json(jumps,s.pre_scale_fit);
+                    jumps<<",\"with_offset\":";fit_json(jumps,s.cubic_with_offset);
+                    jumps<<",\"scratch_rows\":"<<s.scratch_rows<<'}';
+                }
+                jumps<<",\"consistency_cause\":"<<static_cast<int>(d.cause)<<",\"short_offset_sigma\":";number(jumps,d.short_offset_sigma);
+                jumps<<",\"offset_difference_sigma\":";number(jumps,d.offset_difference_sigma);
+                jumps<<",\"confirmed_recovery_excludes_persistent_shift\":"<<(d.confirmed_recovery_excludes_persistent_shift?"true":"false")<<'}';
+            }
+            jumps<<"],\"hard_event_accepted\":false,\"apply_authorized\":false}\n";
+        }
+        jumps.close();require(static_cast<bool>(jumps),"jump consistency output write/close failed");
+        const auto jump_output_finished=std::chrono::steady_clock::now();
+        const auto seconds=[](auto a,auto b){return std::chrono::duration<double>(b-a).count();};
+        const auto &jc=jump_evidence->counts();
+        std::ofstream timings(output/"timing.json");
+        timings<<"{\"policy\":"<<std::quoted(std::string(pipeline::RtcJumpConsistencyPolicy::identity))<<",\"stages_seconds\":{";
+        const std::array stages{
+            std::pair{"input_verification",seconds(execution_started,started)},
+            std::pair{"producer_and_native_ingress",seconds(started,ingress_finished)},
+            std::pair{"spike_learn",seconds(ingress_finished,spikes_finished)},
+            std::pair{"peer_population",seconds(spikes_finished,population_finished)},
+            std::pair{"original_event_assessment",seconds(population_finished,assessment_finished)},
+            std::pair{"original_consider",seconds(assessment_finished,review_finished)},
+            std::pair{"jump_amplitude_consider",seconds(review_finished,amplitude_finished)},
+            std::pair{"jump_short_fit_learn",seconds(amplitude_finished,short_fit_finished)},
+            std::pair{"jump_consistency_consider",seconds(short_fit_finished,jump_consider_finished)},
+            std::pair{"original_output",seconds(jump_consider_finished,original_output_finished)},
+            std::pair{"jump_output",seconds(original_output_finished,jump_output_finished)}};
+        for(std::size_t i=0;i<stages.size();++i){if(i)timings<<',';timings<<std::quoted(stages[i].first)<<':';number(timings,stages[i].second);}
+        timings<<"},\"measured_total_seconds\":";number(timings,seconds(execution_started,jump_output_finished));
+        timings<<",\"requested_coordinates\":"<<jc.requested_coordinates<<",\"pre_fit_calls\":"<<jc.pre_fit_calls
+            <<",\"joint_fit_calls\":"<<jc.joint_fit_calls<<",\"available_coordinates\":"<<jc.available_coordinates
+            <<",\"pre_reported_iterations\":"<<jc.pre_iterations<<",\"joint_reported_iterations\":"<<jc.joint_iterations
+            <<",\"peak_short_scratch_rows\":"<<jc.peak_scratch_rows<<",\"amplitude_cause_counts\":[";
+        for(std::size_t i=0;i<amplitude_counts.size();++i){if(i)timings<<',';timings<<amplitude_counts[i];}
+        timings<<"],\"consistency_cause_counts\":[";
+        for(std::size_t i=0;i<consistency_counts.size();++i){if(i)timings<<',';timings<<consistency_counts[i];}
+        timings<<"],\"consistent_without_confirmed_recovery\":"<<consistent_without_recovery
+            <<",\"timing_scope\":\"local inert driver through diagnostic output close; excludes final receipt/hash and process shutdown; not production RTC/PTC\",\"failed_fit_internal_iteration_counts\":\"unavailable from preserved solver\"}\n";
+        timings.close();require(static_cast<bool>(timings),"jump timing output write/close failed");
         require(logs->errors==0 && logs->criticals==0,"unexpected producer error-level messages");
         const auto elapsed=std::chrono::duration<double>(std::chrono::steady_clock::now()-started).count();
         std::ofstream receipt(output/"receipt.json");
