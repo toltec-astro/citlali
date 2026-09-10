@@ -237,7 +237,7 @@ int main(int argc, char **argv) {
         const auto jump_output_finished=std::chrono::steady_clock::now();
         std::ofstream transitions(output/"jump-transitions.jsonl");
         require(static_cast<bool>(transitions),"cannot open transition output");
-        std::array<std::size_t,11> transition_causes{};
+        std::array<std::size_t,10> transition_causes{};
         std::size_t outside_trial=0;
         for(std::size_t i=0;i<assessment->events().size();++i) {
             transitions<<"{\"event\":"<<i<<",\"detector\":"<<assessment->events()[i].detector<<",\"coordinates\":[";
@@ -265,7 +265,8 @@ int main(int argc, char **argv) {
                     <<",\"observation_truncated\":"<<(b.observation_truncated?"true":"false")
                     <<",\"acquisition_truncated\":"<<(b.acquisition_truncated?"true":"false")
                     <<",\"exceeds_fitting_exclusion\":"<<(b.exceeds_fitting_exclusion?"true":"false")
-                    <<",\"timing_uncertainty_quantified\":false}";
+                    <<",\"multiple_candidate_edges\":"<<(b.multiple_candidate_edges?"true":"false")
+                    <<",\"physical_event_identity_resolved\":false,\"timing_uncertainty_quantified\":false}";
             }
             transitions<<"],\"hard_event_accepted\":false,\"apply_authorized\":false}\n";
         }

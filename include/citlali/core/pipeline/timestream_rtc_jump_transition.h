@@ -52,7 +52,7 @@ private:
 enum class RtcJumpTransitionCause : std::uint8_t {
     not_requested, measured, background_unavailable, nonfinite,
     pre_confirmation_missing, post_confirmation_missing, ambiguous_reference,
-    compound_candidates, invalid_transition_support, competing_exclusion,
+    invalid_transition_support, competing_exclusion,
     support_geometry_unavailable
 };
 
@@ -74,6 +74,8 @@ struct RtcJumpTransition {
     std::size_t examined_rows = 0, invalid_rows = 0, excluded_rows = 0;
     bool observation_truncated = false, acquisition_truncated = false;
     bool exceeds_fitting_exclusion = false;
+    bool multiple_candidate_edges = false;
+    static constexpr bool physical_event_identity_resolved = false;
     // Parent mapping retains the declared timing-uncertainty authority. This
     // trial does not estimate its magnitude or certify total physical coverage.
     static constexpr bool timing_uncertainty_quantified = false;
@@ -145,6 +147,7 @@ inline RtcJumpTransition measure(const RtcSpikeEvidence &spikes,
         first_edge = std::min(first_edge, candidate.earlier_row);
         last_edge = std::max(last_edge, candidate.later_row);
     }
+    out.multiple_candidate_edges = last_edge != first_edge + 1;
     const auto run_begin = axis.occurrence(run.first_native_row).integration_support.begin_unix_sec;
     const auto run_end = axis.occurrence(run.past_last_native_row - 1).integration_support.end_unix_sec;
     out.observation_truncated = (run_begin > low && run.first_native_row == axis.first_native_row()) ||
@@ -203,8 +206,6 @@ inline RtcJumpTransition measure(const RtcSpikeEvidence &spikes,
     else if (!post.rows.present()) out.cause = RtcJumpTransitionCause::post_confirmation_missing;
     else if (pre.also_matches_other_reference || post.also_matches_other_reference)
         out.cause = RtcJumpTransitionCause::ambiguous_reference;
-    else if (last_edge != first_edge + 1)
-        out.cause = RtcJumpTransitionCause::compound_candidates;
     else {
         out.affected = {pre.rows.past_last, post.rows.first};
         out.physical_bound = {pre.physical.end_unix_sec, post.physical.begin_unix_sec};

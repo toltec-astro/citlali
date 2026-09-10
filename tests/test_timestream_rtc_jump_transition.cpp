@@ -193,10 +193,21 @@ TEST(rtc_jump_transition, competing_neighbor_exclusion_is_not_swallowed_by_bound
     EXPECT_EQ(b.cause,RtcJumpTransitionCause::competing_exclusion);
     EXPECT_GT(b.excluded_rows,0U);EXPECT_FALSE(b.available());
 }
-TEST(rtc_jump_transition, multiple_edges_remain_compound_without_new_split_merge_policy) {
+TEST(rtc_jump_transition, separated_jumps_retain_group_bound_without_resolving_event_identity) {
     Input in;in.step(500,4,0);in.step(520,1,0);Fixture f(in);const auto i=f.event_at(500);
     const auto b=measured(f,f.assessment->events()[i]);
-    EXPECT_EQ(b.cause,RtcJumpTransitionCause::compound_candidates);EXPECT_FALSE(b.available());
+    ASSERT_TRUE(b.available());EXPECT_TRUE(b.multiple_candidate_edges);
+    EXPECT_FALSE(b.physical_event_identity_resolved);
+    EXPECT_LE(b.affected.first,599);EXPECT_GT(b.affected.past_last,620);
+    EXPECT_FALSE(f.transition->hard_event_accepted);EXPECT_FALSE(f.transition->apply_authorized);
+}
+TEST(rtc_jump_transition, finite_transition_with_adjacent_edges_keeps_measured_bracket) {
+    Input in;in.step(500,2.4,-2);in.step(501,1.6,-1);Fixture f(in);const auto i=f.event_at(500);
+    for(std::size_t c=0;c<2;++c){
+        const auto &b=f.transition->coordinates()[i][c];ASSERT_TRUE(b.available());
+        EXPECT_TRUE(b.multiple_candidate_edges);EXPECT_FALSE(b.physical_event_identity_resolved);
+        EXPECT_EQ(b.affected.first,599);EXPECT_EQ(b.affected.past_last,602);
+    }
 }
 TEST(rtc_jump_transition, real_gap_clips_context_without_cross_gap_confirmation) {
     Input in;

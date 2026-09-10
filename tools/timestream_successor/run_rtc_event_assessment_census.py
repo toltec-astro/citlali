@@ -143,7 +143,7 @@ def main():
                 assert pre_calls == timing['pre_fit_calls'] and joint_calls == timing['joint_fit_calls']
                 assert short_available == timing['available_coordinates']
                 assert without_recovery == timing['consistent_without_confirmed_recovery']
-                transition_counts = [0]*11
+                transition_counts = [0]*10
                 transition_requested = transition_examined = transition_outside = transition_rows = 0
                 checks = map(json.loads, (target/'jump-consistency.jsonl').open())
                 for bound, check in zip(map(json.loads, (target/'jump-transitions.jsonl').open()), checks, strict=True):
@@ -160,6 +160,7 @@ def main():
                         transition_examined += b['examined_rows']
                         assert b['available'] == (b['cause'] == 1)
                         assert not b['timing_uncertainty_quantified']
+                        assert not b['physical_event_identity_resolved']
                         if expected != 2:
                             assert b['cause'] == 0 and b['examined_rows'] == 0
                         else:
@@ -172,7 +173,7 @@ def main():
                             assert pre['rows'][1] == b['affected'][0] < b['affected'][1] == post['rows'][0]
                             assert pre['end'] == b['begin'] < b['end'] == post['begin']
                             edge_rows = {seeds[k]['earlier_row'] for k in event['candidates']}
-                            assert len(edge_rows) == 1
+                            assert b['multiple_candidate_edges'] == (len(edge_rows) > 1)
                             assert b['affected'][0] <= min(edge_rows) and b['affected'][1] > max(edge_rows)+1
                             expected_outside = b['affected'][0] < event['trial_exclusion'][0] or b['affected'][1] > event['trial_exclusion'][1]
                             assert b['exceeds_fitting_exclusion'] == expected_outside
@@ -224,7 +225,7 @@ def main():
         'requested_coordinates', 'pre_fit_calls', 'joint_fit_calls', 'available_coordinates',
         'pre_reported_iterations', 'joint_reported_iterations', 'consistent_without_confirmed_recovery')}
     summary['peak_short_scratch_rows'] = max((e['jump_timing']['peak_short_scratch_rows'] for e in complete), default=0)
-    summary['transition_cause_counts'] = [sum(e['jump_timing']['transition_cause_counts'][i] for e in complete) for i in range(11)]
+    summary['transition_cause_counts'] = [sum(e['jump_timing']['transition_cause_counts'][i] for e in complete) for i in range(10)]
     summary['transition_requested'] = sum(e['jump_timing']['transition_requested'] for e in complete)
     summary['transition_examined_rows'] = sum(e['jump_timing']['transition_examined_rows'] for e in complete)
     summary['transition_outside_trial'] = sum(e['jump_timing']['transition_outside_trial'] for e in complete)

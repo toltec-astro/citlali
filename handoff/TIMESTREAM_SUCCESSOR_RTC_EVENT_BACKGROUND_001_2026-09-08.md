@@ -1165,11 +1165,23 @@ before the group's earliest candidate endpoint; the post-confirmation is the
 first run after its latest endpoint to reach 50 ms. Their intervening half-open
 integration support defines the measured bracket and original cell range.
 Agreement with both reference models throughout a selected confirmation is
-explicitly ambiguous. Multiple distinct edge pairs in an unrecovered group
-retain the existing compound/unresolved disposition rather than inventing a
-split/merge identity. Invalid or competing masked support inside the bracket,
+explicitly ambiguous. Multiple candidate edges do not by themselves establish
+multiple physical jumps or invalidate a measured group bracket. Preserve their
+exact membership and multiplicity separately; physical-event identity stays
+unresolved for later Consider, without an invented split/merge rule. Invalid or competing masked support inside the bracket,
 nonfinite arithmetic, or non-contiguous/overlapping integration geometry makes
 the measurement unavailable. Floating-point adjacency uses the existing native
 recovery comparison tolerance; it is not a scientific gap allowance.
 Bounds outside the primary fitting exclusion are explicitly marked for later
 fit-containment reassessment; no automatic refit or acceptance follows.
+
+Independent source review of `2e24ca315ee5696b1c025e9fb67c6f8f732c5e11`
+identified RTC-JT-R01: an added single-edge veto conflated multiple difference
+candidates with multiple physical jumps. The repair removes that extra gate,
+retains a conditional group bracket and a separate multiplicity/unresolved-
+identity fact, and tests both adjacent-edge finite transitions and separated
+jumps. No physical split/merge, coherence or acceptance policy is selected.
+Initial 18 focused and 989 runnable CTests, four config modes and 207 baseline
+tests passed; a later make jobserver-pipe failure affected the next census
+build target after `check` completed. The separate repaired-source build,
+focused/full regressions, source review and exact real-data census follow.
