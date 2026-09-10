@@ -1650,6 +1650,26 @@ experimental order, case, input, implementation, run, author dispatch, Unity or
 production authority follows. 129081 and all reduction/archive products remain
 preserved. The local acceptance checkpoint is ready for the owner to push.
 
+On 2026-09-10 the owner reported that checkpoint pushed and authorized the
+paper continuation. The [POINT reference record r0.1](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/point_reference/r0.1/README.md)
+now dispositions all 21 method-record classes, fills the accepted POINT scope,
+and supplies controlled B01–B12/S1 amendment and seven candidate profile records.
+The five residual PTC @2 versions, uniform QC and MAP @3 are review drafts,
+not registered permissions. All existing upstream/frozen sources remain unchanged.
+Read-only recovery rehashed the preserved C31 executable and four configuration/
+provenance files against recorded identities. C31 remains a distinct refactor-era
+reference; the exact f70701ad executable/environment/input/product tuple is still
+unavailable. The historical scalar MEDRMS and OR-combined admission branches
+are documented as implementation evidence, without a new noise value or
+scientific-outcome analysis. Numerical S/N remains unavailable until a compatible
+current scale and meaning are approved. Array-wide rank 5, coverage_cut=0.1 and
+L=6 including bootstrap are explicit new paper proposals under Q03/Q04/Q06,
+not defaults or selected values. Their review, complete source/mode adoption and
+remaining evidence/plan bindings precede a separately authorized numerical
+request. No run, implementation, new scientific data access, author dispatch,
+Unity action or production change occurred. Weighting stays closed and all
+prior results, frozen packets, reductions and protected archives are preserved.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

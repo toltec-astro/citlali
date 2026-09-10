@@ -1,0 +1,75 @@
+{
+  "identity": "SCI-FRUIT-POINT-REFERENCE-REVIEW@r0.1",
+  "date": "2026-09-10",
+  "base_commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+  "branch": "codex/sci-fruit-historical-control-method-scope-r0.1",
+  "state": "paper_review_ready; numerical_method_unavailable",
+  "authority": "Accepted POINT brief authorizes this paper completion only; no new numerical decision or source adoption is recorded",
+  "payloads": [
+    {
+      "path": "README.md",
+      "bytes": 6331,
+      "sha256": "f313a70482b55c078ee5ea59b44bb1c065f62d6561208f59d7be530a67578a21"
+    },
+    {
+      "path": "REFERENCE_RECORD.md",
+      "bytes": 12894,
+      "sha256": "881c72d104515a778ac3cddd682562e29c418f8c5c0a5c4c49fa4cfb3bc8ac23"
+    },
+    {
+      "path": "HISTORICAL_CONTROL_RECOVERY.md",
+      "bytes": 7064,
+      "sha256": "19596989e88e4c1535e284d23704087c082e1fc7d9f13d519fe7527ce47311ba"
+    },
+    {
+      "path": "SOURCE_ADOPTION_DRAFT.md",
+      "bytes": 8124,
+      "sha256": "3f9f31e6f0bfcb86de684d8f66c1d9210306be9f7de8b8efb607294a9e1f69ee"
+    },
+    {
+      "path": "PROFILE_BINDING_DRAFT.json",
+      "bytes": 44007,
+      "sha256": "18b10db179121b39e362e7cbce2faf2aa52e268a616a201c9c4b9f352925cda7"
+    },
+    {
+      "path": "SOURCE_IDENTITIES.json",
+      "bytes": 29347,
+      "sha256": "9bb3136e2174c92d56136c7d562044505bda1d0ce510c344dca5b6e80193769d"
+    },
+    {
+      "path": "VERIFICATION.md",
+      "bytes": 4021,
+      "sha256": "81490ba79ca5bcaa89a9b903c7cd0f1813b5b064776a775004a49f543974e561"
+    }
+  ],
+  "navigation_files_outside_payload": [
+    {
+      "path": "doc/REFACTOR_STATUS.md",
+      "bytes": 379472,
+      "sha256": "36b10ae98fafdebfa0562c596cccb676044f59ac061cdbb72ceae80c2879f0ba"
+    },
+    {
+      "path": "doc/scientific_contracts/INDEX.md",
+      "bytes": 15486,
+      "sha256": "da56d668f93b509ba0a125b7f0483f3233663e93ba6f64fe08582e4757c439cc"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/README.md",
+      "bytes": 15671,
+      "sha256": "3c72cbeef1fab5af7d01a8eb343769789cf55cce9f2406cf57699d92f0698dfa"
+    }
+  ],
+  "exclusions": [
+    "This manifest and its sidecar, avoiding cyclic hashes",
+    "Frozen packages and earlier review archives, unchanged",
+    "External executable/configuration files: referenced hashes only, no copies",
+    "All scientific reduction values and protected opaque archives"
+  ],
+  "limitations": [
+    "Exact f70701ad executable/environment/input/product tuple unavailable",
+    "Numerical S/N evidence and threshold unavailable",
+    "PTC rank/grouping, MAP policy and fixed extent proposed, not approved",
+    "Final PTC/MAP/VAL source/profile and POINT applicability adoption unavailable",
+    "No implementation, run, qualification, Unity or author dispatch"
+  ]
+}

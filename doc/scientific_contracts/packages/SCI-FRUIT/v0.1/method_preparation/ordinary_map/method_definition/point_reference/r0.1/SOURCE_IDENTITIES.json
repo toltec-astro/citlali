@@ -1,0 +1,553 @@
+{
+  "identity": "SCI-FRUIT-POINT-REFERENCE-SOURCES@r0.1",
+  "date": "2026-09-10",
+  "base_commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+  "branch": "codex/sci-fruit-historical-control-method-scope-r0.1",
+  "scope": "manager paper recovery; no independent author packet or source adoption",
+  "source_rows": [
+    {
+      "path": "AGENTS.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 6662,
+      "sha256": "ddeb9dd6bbc1fd9fa54af998b46a4af4a99c49d2cf7842303c7e332501e366ee",
+      "disposition": "cite",
+      "authority_role": "process/current navigation at recovered base; no scientific upgrade",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/README.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 16297,
+      "sha256": "351e9b7775b0bf78cba01bf4cd2fafd9591c4b43931b0dc23d82d97f0dfe82d2",
+      "disposition": "cite",
+      "authority_role": "process/current navigation at recovered base; no scientific upgrade",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/PRIOR_WORK_REGISTRY.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 16042,
+      "sha256": "ce6ea7269464ab9bac295c3b6e7dc5103bbbc06681b99bcab643f8d23a576a5f",
+      "disposition": "cite",
+      "authority_role": "process/current navigation at recovered base; no scientific upgrade",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/REFACTOR_STATUS.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 377872,
+      "sha256": "cccda097a3412cd1350336bbd3de5349da244e1b771a170ac93a6f4bce62d821",
+      "disposition": "cite",
+      "authority_role": "process/current navigation at recovered base; no scientific upgrade",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/INDEX.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 15491,
+      "sha256": "d68eefd9766e1044bc9ecd6ed8f5d127f11084506c6d1d3c3f513cadec331cd5",
+      "disposition": "cite",
+      "authority_role": "process/current navigation at recovered base; no scientific upgrade",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/README.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 15851,
+      "sha256": "bbd3733f744ca32ae33e16db7a010f3aeb155af4667de62d6d575316da3d49a2",
+      "disposition": "cite",
+      "authority_role": "process/current navigation at recovered base; no scientific upgrade",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/program/README.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 16297,
+      "sha256": "351e9b7775b0bf78cba01bf4cd2fafd9591c4b43931b0dc23d82d97f0dfe82d2",
+      "disposition": "adopt",
+      "authority_role": "exact inherited process authority",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/program/PILOT_PROCESS_REVIEW_2026-08-16.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 5942,
+      "sha256": "c4c29c13d5829773cfa2e061571101edec059313a4bd1a096d13fd9878d85b07",
+      "disposition": "adopt",
+      "authority_role": "exact inherited process authority",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/program/DOWNSTREAM_CONTRACT_ROADMAP_2026-08-26.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 14334,
+      "sha256": "bcc5a874e1cf45894f3d4733abc0d0e3b8fe9a2480ec47ceb23c12326e4f7eee",
+      "disposition": "adopt",
+      "authority_role": "exact inherited process authority",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/PRIOR_WORK.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 4711,
+      "sha256": "a2a08b8f217273da563aa6a4630d9a697ca1a3440691c4431b2089fe840ba98e",
+      "disposition": "adopt",
+      "authority_role": "frozen conditional scientific definition and reviewed scope; no numerical instantiation",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/REFERENCE_CONTROL.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 2940,
+      "sha256": "54a65a2b790b0cc1d676f7506fe969709f5a8e2bca948da00af9df7ee19a6b96",
+      "disposition": "adopt",
+      "authority_role": "frozen conditional scientific definition and reviewed scope; no numerical instantiation",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/METHOD_DEFINITION.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 26336,
+      "sha256": "3a6389a39fe3a5e2d5a6652259000721a9bcc6f9c429dc066d279cd98567c926",
+      "disposition": "adopt",
+      "authority_role": "frozen conditional scientific definition and reviewed scope; no numerical instantiation",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/SCIENTIFIC_OWNER_FREEZE_R0.4.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 6294,
+      "sha256": "04860a81899f76fa7ec9bafb2ab1324bb55a30b8b3f3c56d53ad41052af35c0a",
+      "disposition": "adopt",
+      "authority_role": "frozen conditional scientific definition and reviewed scope; no numerical instantiation",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/OWNER_DIRECTION_AND_CROSSWALK.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 8706,
+      "sha256": "a5542da7d38357bd27a9409626c99b8c5c8f40d3d130c956b8adc210bc2712a3",
+      "disposition": "adopt",
+      "authority_role": "frozen conditional scientific definition and reviewed scope; no numerical instantiation",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/BOUNDARY_AMENDMENTS.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 20126,
+      "sha256": "528ca373cf70c480f97280de4a47a160d93992fc3f550f74bfd49b62f21daf28",
+      "disposition": "cite",
+      "authority_role": "unchanged frozen-packet proposal; later scoped approvals separately bound",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/EXPERIMENTS_AND_OPEN_DECISIONS.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 15289,
+      "sha256": "976948dab630c34223080ee272f0d25c497f66ad988d094cd138353f67d2042d",
+      "disposition": "cite",
+      "authority_role": "unchanged frozen-packet proposal; later scoped approvals separately bound",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/POINT_REFERENCE_BRIEF_ACCEPTANCE_2026-09-10.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 5427,
+      "sha256": "18f250d178a94b5de3daf6317d18b3e2f6fd514d25e6ed61b984d22703115ada",
+      "disposition": "adopt",
+      "authority_role": "owner decision/approved scope with later acceptance precedence; no new experiment",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/MINIMUM_REFERENCE_METHOD_BRIEF_R0.2.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 16250,
+      "sha256": "e4eff7ac42155bd14d58337cacc49ccbe24f49bd348e21ddf8b60f8e87e69b86",
+      "disposition": "adopt",
+      "authority_role": "owner decision/approved scope with later acceptance precedence; no new experiment",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.2/README.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 5902,
+      "sha256": "3a72699e879bf0f5263c7661daf6f4e8ab8eb7d18137e288c6ea54cc6e40d5b8",
+      "disposition": "adopt",
+      "authority_role": "owner decision/approved scope with later acceptance precedence; no new experiment",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.1/README.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 11508,
+      "sha256": "cedb3f701299638f8a98f35eeb94c30d673efc5e043ccfdcfd021fdfb5a699d0",
+      "disposition": "adopt",
+      "authority_role": "owner decision/approved scope with later acceptance precedence; no new experiment",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/WEIGHTING_EXPLORATION_CLOSURE_2026-09-10.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 6468,
+      "sha256": "7fde1a3b39b929fd595ea1d2688bb247b1bdacc8222be239cad538b7ab06a0ca",
+      "disposition": "adopt",
+      "authority_role": "owner decision/approved scope with later acceptance precedence; no new experiment",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/MINIMUM_REFERENCE_METHOD_BRIEF_R0.1.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 13374,
+      "sha256": "4435d55bd0a79acfc00db7e57c1b698ee824c09272b46ea61c1d9d3e6e0cba2b",
+      "disposition": "cite",
+      "authority_role": "preserved earlier review, not current permission",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/MINIMUM_REFERENCE_METHOD_REVIEW_2026-09-10.json",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 16108,
+      "sha256": "6369a4dddd6fa15fe22c9ae6523d2e314a537a8902b344f940d51f9524bf5529",
+      "disposition": "cite",
+      "authority_role": "preserved earlier review, not current permission",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/authority/fruit/SCI_FRUIT_STAGE_B_R0.4_OWNER_CONDITIONAL_FREEZE_2026-09-08.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 5665,
+      "sha256": "4ec91dfd4d6c6ff8092537263e6aa7ea6c1662415901b431e84452706c088980",
+      "disposition": "adopt",
+      "authority_role": "exact frozen generic conditional science; numerical method remains unavailable",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/authority/fruit/src/core_body.tex",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 295,
+      "sha256": "4bbfe3e925ddf81e23fac6f9e512a6d2d7772cf94081c1ac1792f7062bea96ac",
+      "disposition": "adopt",
+      "authority_role": "exact frozen generic conditional science; numerical method remains unavailable",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/authority/fruit/src/common/requirements.tex",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 19463,
+      "sha256": "5b32ac6622262d3d678fee268b6ba40deb8429ff737b656837e3fe1d281097fe",
+      "disposition": "adopt",
+      "authority_role": "exact frozen generic conditional science; numerical method remains unavailable",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/authority/fruit/src/common/equations.tex",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 23497,
+      "sha256": "ff1f4556c2bc84a429b077b220a6435b225873b1c3df069580552ae3afa3ba19",
+      "disposition": "adopt",
+      "authority_role": "exact frozen generic conditional science; numerical method remains unavailable",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/authority/fruit/src/common/definitions.tex",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 24768,
+      "sha256": "4859e093b2cf241f3ce928487a91af9733c1f47e502e186f3956f63d50fb3957",
+      "disposition": "adopt",
+      "authority_role": "exact frozen generic conditional science; numerical method remains unavailable",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/authority/map/src/common/requirements.tex",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 39138,
+      "sha256": "68acf81d6c27788495cc680a1819da5f269616493b9aba5a6e0a1d1058ba5fa7",
+      "disposition": "adopt",
+      "authority_role": "frozen MAP science/arithmetic and existing ordinary boundary; draft is not successor adoption",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/authority/map/SCI-PTC_TO_SCI-MAP_BOUNDARY.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 9091,
+      "sha256": "a499c59afb69eefda74a5b131ad37afd165213b99324c8b67a6de1d20793c9b7",
+      "disposition": "adopt",
+      "authority_role": "frozen MAP science/arithmetic and existing ordinary boundary; draft is not successor adoption",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/authority/map/SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE_BOUNDARY.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 3761,
+      "sha256": "f7be703d17320de6f6ecfc3a3974d54799540fff1d8b2d9491c941a7ea3b45a4",
+      "disposition": "adopt",
+      "authority_role": "frozen MAP science/arithmetic and existing ordinary boundary; draft is not successor adoption",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/authority/map/SCI-MAP_UPSTREAM_ADMISSION_PROFILE.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 4039,
+      "sha256": "0717476c0a1d177074ee8702c18308f093d45a4913b22933f3fda3d33090a883",
+      "disposition": "adopt",
+      "authority_role": "frozen MAP science/arithmetic and existing ordinary boundary; draft is not successor adoption",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/authority/map/SCIENTIFIC_OWNER_FREEZE_R0.7.1.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 4036,
+      "sha256": "91801005ba2f2bce6471a9f6f4ed0b79806c893f498b4f3cca9e81e26df39ce1",
+      "disposition": "adopt",
+      "authority_role": "frozen MAP science/arithmetic and existing ordinary boundary; draft is not successor adoption",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/manager/ptc/AUTHOR_DRAFT_DECISIONS.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 18420,
+      "sha256": "0c165b707765ae67aa775e356ec714bd8f25a96553071fc2a71bf91e155cc285",
+      "disposition": "cite",
+      "authority_role": "source recovery within existing manager channel; adopted frozen clauses only in their original scope",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/manager/ptc/SCIENTIFIC_OWNER_DECISION_LEDGER.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 4286,
+      "sha256": "d899d93bfe433762d4b3b06a9fa7aeff08f7dcbfd6f170d614e69cff58d35c6f",
+      "disposition": "cite",
+      "authority_role": "source recovery within existing manager channel; adopted frozen clauses only in their original scope",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/manager/ptc/src/common/requirements.tex",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 38673,
+      "sha256": "f2047600cc06c234a78aa3ddf6a575abf2f9592b3e3da810491f6db0150fe21c",
+      "disposition": "cite",
+      "authority_role": "source recovery within existing manager channel; adopted frozen clauses only in their original scope",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/manager/ptc/SCIENTIFIC_OWNER_FREEZE_R0.5.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 4370,
+      "sha256": "8357961a49272adc40e27a8aa9e760e0d01ff2419ae2c88a62c0f93c9f959e66",
+      "disposition": "cite",
+      "authority_role": "source recovery within existing manager channel; adopted frozen clauses only in their original scope",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/manager/cal/SCIENTIFIC_OWNER_FREEZE_R0.5.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 5223,
+      "sha256": "413426f49edf1249f751a05bb8c6e9fd907b11e8da0530fe2da39814885efb22",
+      "disposition": "cite",
+      "authority_role": "source recovery within existing manager channel; adopted frozen clauses only in their original scope",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/manager/map/SCIENTIFIC_OWNER_DECISION_LEDGER.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 12460,
+      "sha256": "bfcc18eced116309356d9d597a4423881ef67df058df07be30ec80532452dd9b",
+      "disposition": "cite",
+      "authority_role": "source recovery within existing manager channel; adopted frozen clauses only in their original scope",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/PROFILE_REGISTRY.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 39897,
+      "sha256": "95b2ddeca2039aa2b3614e3dfede530cb7e024e6db33ca22baed867f19d2709d",
+      "disposition": "adopt",
+      "authority_role": "exact existing source/profile semantics; no registry mutation",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/SOURCE_BINDING_REGISTER.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 6968,
+      "sha256": "7b91a324f35196a8c8a6e23c8abbbf5322fc601798e36d4ac821907a6090eadf",
+      "disposition": "adopt",
+      "authority_role": "exact existing source/profile semantics; no registry mutation",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/audits/SIX_PACKAGE_TIMESTREAM_CLOSURE_PROGRAM_55EFD8A/PTC_NAMED_USE_COMMON_SEMANTICS_R0.1.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 2686,
+      "sha256": "c1fc8370007b65307769fb966c8523251695924aaff84f3e5b4c89b6d3380b8c",
+      "disposition": "adopt",
+      "authority_role": "exact existing source/profile semantics; no registry mutation",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-NOI/v0.1/README.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 13662,
+      "sha256": "7c75a6a0f2c8c304623ebce81e629e234be59894ba18e681debb8028f7721d74",
+      "disposition": "defer",
+      "authority_role": "no available numerical FRUIT-conditioned scalar supplied for this request",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/historical_control/r0.1/INTERNAL_DOSSIER.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 10424,
+      "sha256": "2dfeb5064c2dafde936c7e1bb154f5fbceb61a7c7b2b4c88fcda86c7b47e86eb",
+      "disposition": "cite",
+      "authority_role": "historical/control recovery or existing method-record classes; not new scientific authority",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/historical_control/r0.1/inputs/manager/historical/include/citlali/core/timestream/timestream.h",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 159064,
+      "sha256": "83418ff0123e64dd8a7807b7e6a480848f422d0443ca302b0762862bacab1b78",
+      "disposition": "cite",
+      "authority_role": "historical/control recovery or existing method-record classes; not new scientific authority",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/historical_control/r0.1/inputs/authority/fruit/METHOD_RECORD_TEMPLATE.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 9877,
+      "sha256": "7ab2aa2d84c3e8eb603672db5782a6dd978c9fe1f6ba257a5627712a563b4324",
+      "disposition": "cite",
+      "authority_role": "historical/control recovery or existing method-record classes; not new scientific authority",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_G0_HISTORICAL_CONTROL_FEASIBILITY_R0.1.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 4790,
+      "sha256": "80c7587b0f6f032e3db1bd9c492653a40f5a9e223dc2da75d34f737ff6c9bc5c",
+      "disposition": "cite",
+      "authority_role": "historical/control recovery or existing method-record classes; not new scientific authority",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_G0_GATE_D_READINESS_R0.2.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 3680,
+      "sha256": "955b7ebd354ebec18614ed99e70d469ffc3809c52c422ddeb525a346d31e1b38",
+      "disposition": "cite",
+      "authority_role": "historical/control recovery or existing method-record classes; not new scientific authority",
+      "new_author_input": false
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_OWNER_POST_D19_EMPIRICAL_LANE_DIRECTION_2026-09-02.md",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 1641,
+      "sha256": "fba0388886dba8eaa1deaf92026ab054c485f1e2f23e821318a6f7ffcda21529",
+      "disposition": "cite",
+      "authority_role": "historical/control recovery or existing method-record classes; not new scientific authority",
+      "new_author_input": false
+    },
+    {
+      "path": "src/citlali/core/mapmaking/map.cpp",
+      "commit": "f70701ad488444f3e2528c6bbe3e798863c9e301",
+      "bytes": 46979,
+      "sha256": "6887ab016d70bb080f6883039ca445efee0593c91a3d5be87297624a26ef1188",
+      "disposition": "cite",
+      "authority_role": "historical calc_median_rms source implementation, lines 724-751; no numerical scalar recovered",
+      "new_author_input": false
+    },
+    {
+      "path": "validation/fruit_loop_point_152389_development_2026-09-02/manifest.json",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 6130,
+      "sha256": "3457567dc440f5aaf0cf7e594da08bba06df3b7f0a2ad9bf787827d006e635ce",
+      "disposition": "cite",
+      "authority_role": "existing recorded control identities/configuration only; no new outcome analysis or permission",
+      "new_author_input": false
+    },
+    {
+      "path": "validation/fruit_loop_point_152389_injected_development_2026-09-02/manifest.json",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 13696,
+      "sha256": "96bbe41ced5ea638a9736fea35ac4d2a94aae6c0a90441168d8884716415df19",
+      "disposition": "cite",
+      "authority_role": "existing recorded control identities/configuration only; no new outcome analysis or permission",
+      "new_author_input": false
+    },
+    {
+      "path": "validation/fruit_loop_feedback_model_bypass_2026-09-02/REGISTRATION_R0.1.yaml",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 2850,
+      "sha256": "28ab92386c6818ca871eee380b92a547419bf0f31cf0b304e0dc6bb556055d67",
+      "disposition": "cite",
+      "authority_role": "existing recorded control identities/configuration only; no new outcome analysis or permission",
+      "new_author_input": false
+    },
+    {
+      "path": "validation/fruit_q02_mapping_screen_2026-09-10/RESULT_MANIFEST.json",
+      "commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+      "bytes": 47437,
+      "sha256": "5eaa8e7d8af90228e6856a2b953bbdfc7dcb6cd189ad19c0e43e5a50af486fc1",
+      "disposition": "defer",
+      "authority_role": "closed weighting results preserved; no reanalysis or new weighting adequacy claim",
+      "new_author_input": false
+    }
+  ],
+  "external_metadata_and_artifact_rows": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/point/refactor/reduced/redu02/citlali_merged_config.yaml",
+      "bytes": 14338,
+      "sha256": "fbb33d39916e267445d1dafe46743f80ad0254c22e4f5bd47201375a15882bda",
+      "check": "fresh_read_only_hash_matches_recorded_manifest",
+      "role": "recorded C31 configuration/provenance only",
+      "new_author_input": false,
+      "copied_to_packet": false
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/point/refactor/reduced/redu02/config_source_manifest.yaml",
+      "bytes": 680,
+      "sha256": "7b83104eb768d5a230419a698b0971f25366d3e09a7e9c50e7f646e8e83a9d03",
+      "check": "fresh_read_only_hash_matches_recorded_manifest",
+      "role": "recorded C31 configuration/provenance only",
+      "new_author_input": false,
+      "copied_to_packet": false
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/point/refactor/reduced/redu02/runtime_provenance.yaml",
+      "bytes": 948,
+      "sha256": "2996dbcec0dbfc6818857178dcefd893204e3fc8e77427a45899d50f88637871",
+      "check": "fresh_read_only_hash_matches_recorded_manifest",
+      "role": "recorded C31 configuration/provenance only",
+      "new_author_input": false,
+      "copied_to_packet": false
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/point/refactor/reduced/redu02/citlali_o152389_0_2_c1.yaml",
+      "bytes": 16123,
+      "sha256": "19dfb228d0ec953fe120b6140369d8eec496c2d3d789f426723c1a2e5c306bd4",
+      "check": "fresh_read_only_hash_matches_recorded_manifest",
+      "role": "recorded C31 configuration/provenance only",
+      "new_author_input": false,
+      "copied_to_packet": false
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/point/refactor/.tolproj/citlali-snapshots/9d3ce4f31260bbdf3f630dbaa09e0c18eb92b3ebcc8be15eb146024acd6f7f65/citlali",
+      "bytes": 12320912,
+      "sha256": "9d3ce4f31260bbdf3f630dbaa09e0c18eb92b3ebcc8be15eb146024acd6f7f65",
+      "check": "fresh_read_only_hash_matches_recorded_manifest",
+      "role": "preserved C31 executable, not run",
+      "new_author_input": false,
+      "copied_to_packet": false
+    }
+  ],
+  "excluded_without_opening": [
+    "Both protected untracked review archives: opaque presence/status only",
+    "129081 scientific values: reserved replication",
+    "New reductions, numerical experiments, implementation and Unity: outside this task"
+  ],
+  "limitations": [
+    "No exact f70701ad executable/environment/config/input/product tuple recovered",
+    "C31 code equivalence to f70701ad not established",
+    "No scientific data or new MEDRMS value recovered",
+    "Unbound numerical S/N and source-adoption identities remain unavailable"
+  ]
+}

@@ -1,14 +1,12 @@
 # SCI-FRUIT v0.1 — Iterative Feedback, State, And Termination
 
-Status: generic SCI-FRUIT-NORMATIVE-CORE v0.1/r0.4 accepted and conditionally
-frozen; ordinary-MAP scientific definition r0.4 accepted and frozen after
-three bounded scope clarifications. Q02-A/B scientific substance approved;
-Q02-C open for weighting evidence; bounded design approved for preparation.
-A provisional 20% relative-weight precision goal is approved; the next
-preparation binds its assessment on existing discovery inputs.
-Upstream amendments remain unadopted.
-Every numerical method/route remains unavailable pending separate approval.
-Updated: 2026-09-09.
+Status: generic SCI-FRUIT-NORMATIVE-CORE v0.1/r0.4 and ordinary-MAP scientific
+definition r0.4 remain accepted and frozen. The weighting exploration is closed.
+The initial POINT brief r0.2 is accepted, including Q02-C's limited uniform
+occurrence/rejoined-MAP substance. The exact POINT paper reference record r0.1
+and controlled amendment/profile drafts are ready for review. Numerical S/N,
+full control/plan/input bindings, source adoption and execution remain unavailable.
+Updated: 2026-09-10.
 
 ## Program Adherence And Prior-Work Recovery
 
@@ -33,6 +31,7 @@ no numerical method or new method-specific author dispatch.
 
 ## Locked Scientific Definition And Remaining Review
 
+- [POINT reference record r0.1: approved fields, recovered control and remaining choices](method_preparation/ordinary_map/method_definition/point_reference/r0.1/README.md)
 - [Owner acceptance of the initial POINT reference brief](method_preparation/ordinary_map/method_definition/POINT_REFERENCE_BRIEF_ACCEPTANCE_2026-09-10.md)
 - [Accepted initial POINT reference within mode-aware FRUIT — r0.2](method_preparation/ordinary_map/method_definition/MINIMUM_REFERENCE_METHOD_BRIEF_R0.2.md)
 - [Prior minimum reference-method brief r0.1](method_preparation/ordinary_map/method_definition/MINIMUM_REFERENCE_METHOD_BRIEF_R0.1.md)
@@ -77,29 +76,30 @@ Relearning, repeated acceptance and apparent convergence establish no benefit
 or independent recovered signal. Optional floor, gain, coherence, pooling and
 alternative PTC choices remain experimental.
 
-The current route is `unavailable_under_current_frozen_parent_permissions`:
-residual PTC learning/application admission and rejoined-child MAP admission
-require the proposed controlled amendments, including PTC REQ-099 disposition
-and separate MAP profile admission. Coefficient/current-QC, applicable PTC-plan
-and numerical MAP support bindings remain separate; learned eigenvectors are
-results, not requested owner settings. Frozen MAP stays v0.1/r0.7.1; no successor
-is adopted. Q01 scientific-definition review is resolved; numerical policy
-slots remain unbound. The owner approved Q02-A's residual PTC pass, including
-S1's successor-profile rule, and Q02-B's compatible correction/removal/rejoin.
-Exact controlled successor sources and registry bindings still require adoption;
-ordinary-route @1 records remain immutable. Q02-C stays open pending evidence
-about detector quality/noise and uniform occurrence weighting. Its MAP handoff
-has no separate inferred approval. The bounded proposal compares uniform and
-one causal inverse-bootstrap-scatter family in elementary cases and identical-
-PTC-output maps, then separately considers feedback testing. The next review
-binds the first screen's exact inputs/permissions, coefficient/QC identities,
-settings, evidence, margins and execution scope. No weighting policy is adopted.
-The owner approved that bounded design and offered to supply full timestreams.
-The collection request is for short ordinary pointings 123424 and 129081,
-reusing the existing 152389 candidate; 129081's new weighting outcomes are
-reserved for replication. Their current noise contrast and T2 input/evidence
-permissions remain to be established. New numerical T1 bindings are proposed,
-with no synthetic trial, comparison or FRUIT run performed.
+The route remains `unavailable_under_current_frozen_parent_permissions`.
+Q02-A/B and the limited POINT-reference Q02-C substance are accepted; exact
+PTC/MAP/VAL successors and POINT applicability still require controlled review
+and adoption. The [new boundary draft](method_preparation/ordinary_map/method_definition/point_reference/r0.1/SOURCE_ADOPTION_DRAFT.md)
+applies S1 with distinct residual-route @2 profiles, fresh coefficient QC and
+proposed MAP @3; existing ordinary profiles remain immutable. No upstream
+source or registry is changed by the draft.
+
+The [reference record](method_preparation/ordinary_map/method_definition/point_reference/r0.1/REFERENCE_RECORD.md)
+fills all 21 binding classes with accepted, proposed or unavailable states.
+It proposes array-wide rank 5, coverage_cut=0.1 and six passes including
+bootstrap for review, without selecting a complete effective plan or run.
+Numerical S/N remains unavailable pending an exact compatible scale; gamma/Q
+and historical threshold 100 do not fill it. Read-only C31 binary/configuration
+hash recovery is useful evidence, not the missing f70701ad historical executable
+or its complete input/environment tuple. No numerical trial or new source
+adoption occurs; 129081 remains reserved.
+
+## Earlier preparation history
+
+The following dated records preserve the sequence leading to the current
+accepted brief. Earlier open/next-step wording describes that historical
+checkpoint, not a reopening of the closed weighting exploration.
+
 The owner replaced `beammaps/pointings/reduced/redu01` with full PTC files for
 123424 and 129081. The new disabled-FRUIT config and iteration-0/effective-limit-1
 headers clear the prior collection mismatch. The inactive YAML max_iters=10

@@ -1,0 +1,254 @@
+{
+  "identity": "SCI-FRUIT-POINT-PROFILE-BINDING-DRAFT@r0.1",
+  "date": "2026-09-10",
+  "state": "manager_review_draft_not_registry",
+  "author_channel_admission": "excluded; no new author dispatch",
+  "construction": "Full proposed fields are review text, not active registry records. Exact inherited registry entry and clause references supply unchanged predicates. SOURCE_ADOPTION_DRAFT.md defines scoped changes; final source adoption remains unavailable. No schema, serialization or JSON format is imposed on production.",
+  "registry_base_commit": "1a9438f954ab081f4785037d91a97ba54914a0b8",
+  "registry_base_sha256": "95b2ddeca2039aa2b3614e3dfede530cb7e024e6db33ca22baed867f19d2709d",
+  "coefficient_family": {
+    "identity": "PTC-ANALYSIS/UNIFORM-OCCURRENCE@proposal-r0.1",
+    "owner": "SCI-PTC / Grant Wilson",
+    "definition": "dimensionless gamma_i=1 per exact bootstrap PTC output-retained occurrence in fixed I_Gamma,0,a; no fit, empirical normalization or noise meaning",
+    "state": "scientific_substance_accepted_for_limited_POINT_reference; exact_source_adoption_unavailable",
+    "lifecycle": "immutable bootstrap values/population; fresh current QC and explicit retained-use compatibility before each MAP use",
+    "actual_population_and_value_generation": null
+  },
+  "profiles": [
+    {
+      "candidate_key": "SCI-PTC:basis_fit_admission@2",
+      "state": "proposed_not_registered",
+      "base_registry_entry": {
+        "key": "SCI-PTC:basis_fit_admission@1",
+        "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/PROFILE_REGISTRY.md",
+        "sha256": "95b2ddeca2039aa2b3614e3dfede530cb7e024e6db33ca22baed867f19d2709d"
+      },
+      "common_fragment": {
+        "identity": "SCI-PTC-COMMON-NAMED-USE-SEMANTICS-v0.1/r0.1",
+        "sha256": "c1fc8370007b65307769fb966c8523251695924aaff84f3e5b4c89b6d3380b8c",
+        "disposition": "unchanged proposition semantics only; supplies no parent-domain or numerical permission"
+      },
+      "proposed_fields": {
+        "Registry key": "SCI-PTC:basis_fit_admission@2",
+        "Named use and action": "`basis_fit_admission`; authorize whether one exact occurrence may influence ordinary-route detector centering and PCA basis/subspace estimation",
+        "Scientific owner": "Grant Wilson, SCI-PTC scientific owner",
+        "Authoritative source": "Draft SCI-FRUIT-POINT-BOUNDARY-DRAFT@r0.1, SOURCE_ADOPTION_DRAFT.md, and exact inherited clause predicates below. Final adopted PTC source/profile digest unavailable; no executable permission exists from this draft.",
+        "Applicability and object": "Separately requested and source-admitted initial POINT reference, feedback pass k>=1 only; one immutable exact CAL-derived residual rho_k with B01/B02/B08 identities and the exact current PTC group/segment. Atomic sample-detector occurrence in its exact basis/centering fit population.",
+        "Required restrictions": "Exact CAL parent, detector/sample identity, group, segment, calibrated `x`, basis-fit support/mask, and every quantity explicitly used by the frozen basis estimator are resolved and numerically admissible. The occurrence lies within the exact group/segment, its required calibrated `x` is finite and available, and its basis-fit mask admits it. Direct ALIGN-synthesized or RTC-replaced origin is a decisive exclusion. No unrelated metadata is a restriction",
+        "Centering consequence": "Eligibility supplies binary centering influence one and basis influence. Ineligibility supplies binary centering influence zero. The same admitted finite population defines the frozen ordinary \\(\\lambda_{g,d}\\); VAL does not infer a different centering estimator",
+        "Classification consequence": "CAL `engineering-only` is preserved and has no basis-fit admission consequence by itself; eligibility does not create CAL science qualification",
+        "Exceptions": "None. Direct synthesized/replaced origin and failed required numerical inputs are non-exceptionable under this profile",
+        "Response/uncertainty roles": "`advisory` for both. Their typed states remain visible, but numerical response or covariance availability is not required for basis fitting",
+        "Aggregation and propagation compatibility": "`atomic_only`; no VAL aggregate or reverse propagation is defined. Consumption of eligible atomic occurrences by the exact PTC centering/basis estimator is the named action, not permission for another use",
+        "Missing/conflicting behavior": "Missing/conflicting structural binding or applicability authority yields `applicability_unknown` and `decision_unavailable`. For an applicable requested occurrence, any decisive false restriction yields `ineligible`, all restrictions true yields `eligible`, and every remaining required U/C state yields `decision_unavailable`; all facts and causes are preserved",
+        "Action scope and nonimplication": "Authorizes only centering and basis/subspace influence. It grants no loading-fit, operator-application, output-retention, coefficient/QC, response, empirical/simulation, exposure, or MAP permission",
+        "Supersession": "A changed domain, estimator population, centering identity, restriction, exception, common-fragment digest, or source digest requires a new immutable profile version; no prior decision is rewritten This candidate is an additional residual-domain version; ordinary @1 and its evaluated decisions remain available unchanged for the ordinary route, never aliases for @2.",
+        "Inherited clause predicates": "Frozen SCI-PTC clauses `SCI-PTC-DEF-007`, `SCI-PTC-REQ-012`, `SCI-PTC-REQ-016`, `SCI-PTC-REQ-023`, `SCI-PTC-REQ-031`, `SCI-PTC-REQ-090`--`SCI-PTC-REQ-094`, and `SCI-PTC-REQ-098`; `WP5-OWNER-D004` and `WP5-OWNER-D011`; exact common and source bindings above",
+        "Additional required restrictions": "Exact B01-B08 residual permission, method/iteration, CAL realization, applied model, projection/subtraction/rho generation, quantity/beam/reference, occurrence/coordinate/support and direct-origin/transitive-influence facts; exact source/profile and current decision generation. Ordinary @1 permission or an external-parent identifier cannot substitute. Only inputs required by this named use affect its decision.",
+        "Lifecycle": "Each evaluation binds the current immutable residual, requested/effective/resolved/applied/realized identities and exact owner-source/profile generation. It grants only this named use; other named uses require separate current decisions."
+      },
+      "adopted_owner_source": null
+    },
+    {
+      "candidate_key": "SCI-PTC:loading_fit_admission@2",
+      "state": "proposed_not_registered",
+      "base_registry_entry": {
+        "key": "SCI-PTC:loading_fit_admission@1",
+        "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/PROFILE_REGISTRY.md",
+        "sha256": "95b2ddeca2039aa2b3614e3dfede530cb7e024e6db33ca22baed867f19d2709d"
+      },
+      "common_fragment": {
+        "identity": "SCI-PTC-COMMON-NAMED-USE-SEMANTICS-v0.1/r0.1",
+        "sha256": "c1fc8370007b65307769fb966c8523251695924aaff84f3e5b4c89b6d3380b8c",
+        "disposition": "unchanged proposition semantics only; supplies no parent-domain or numerical permission"
+      },
+      "proposed_fields": {
+        "Registry key": "SCI-PTC:loading_fit_admission@2",
+        "Named use and action": "`loading_fit_admission`; authorize whether one exact occurrence may influence estimation of a detector's coupling to an already fixed basis/template",
+        "Scientific owner": "Grant Wilson, SCI-PTC scientific owner",
+        "Authoritative source": "Draft SCI-FRUIT-POINT-BOUNDARY-DRAFT@r0.1, SOURCE_ADOPTION_DRAFT.md, and exact inherited clause predicates below. Final adopted PTC source/profile digest unavailable; no executable permission exists from this draft.",
+        "Applicability and object": "Separately requested and source-admitted initial POINT reference, feedback pass k>=1 only; one immutable exact CAL-derived residual rho_k with B01/B02/B08 identities and the exact current PTC group/segment. Atomic sample-detector occurrence in a separately requested loading fit to this pass's already resolved fixed basis/template. This named use is not automatically requested.",
+        "Required restrictions": "Only inputs explicitly required by the frozen loading estimator may restrict admission: exact fixed basis/template identity, frozen centering state, detector/group/segment identity, loading support and mask, fitting coordinate, declared metric and gauge, and numerical quantities actually used to estimate that loading. Required inputs are resolved, available, and finite. Direct ALIGN-synthesized or RTC-replaced origin is a decisive exclusion. Reachable or optional metadata not used by the estimator has no admission consequence",
+        "Fixed-model consequence": "The loading fit uses the already frozen \\(\\lambda_{g,d}\\) and model. It cannot re-estimate centering, change the basis, alter basis membership, change configured rank, or change the resolved subspace. Basis-fit and loading-fit populations need not be identical",
+        "Classification consequence": "CAL `engineering-only` is preserved and has no loading-fit admission consequence by itself; eligibility does not create CAL science qualification",
+        "Exceptions": "None. Direct synthesized/replaced origin and failed required estimator inputs are non-exceptionable under this profile",
+        "Response/uncertainty roles": "`advisory` for both; neither numerical response nor covariance availability is required to fit a loading",
+        "Aggregation and propagation compatibility": "`atomic_only`; no VAL aggregate or reverse propagation is defined. The fitted loading retains exact basis/template, gauge, unit, group, support, lifecycle, and numerical-use identity and is not a weight, precision, significance, sensitivity, or independent-noise measure",
+        "Missing/conflicting behavior": "Missing/conflicting structural binding or applicability authority yields `applicability_unknown` and `decision_unavailable`. For an applicable requested occurrence, any decisive false restriction yields `ineligible`, all restrictions true yields `eligible`, and every remaining required U/C state yields `decision_unavailable`; all facts and causes are preserved",
+        "Action scope and nonimplication": "Authorizes only influence on the fitted detector loading. It grants no basis, application, output, coefficient/QC, response, empirical/simulation, exposure, or MAP permission",
+        "Supersession": "A changed loading estimator, fixed-model meaning, domain, restriction, exception, common-fragment digest, or source digest requires a new immutable profile version; no prior decision is rewritten This candidate is an additional residual-domain version; ordinary @1 and its evaluated decisions remain available unchanged for the ordinary route, never aliases for @2.",
+        "Inherited clause predicates": "Frozen SCI-PTC clauses `SCI-PTC-REQ-012`, `SCI-PTC-REQ-016`, `SCI-PTC-REQ-019`, `SCI-PTC-REQ-029`, `SCI-PTC-REQ-031`, `SCI-PTC-REQ-053`, `SCI-PTC-REQ-090`--`SCI-PTC-REQ-092`, and `SCI-PTC-REQ-098`; `WP5-OWNER-D005` and `WP5-OWNER-D011`; exact common and source bindings above",
+        "Additional required restrictions": "Exact B01-B08 residual permission, method/iteration, CAL realization, applied model, projection/subtraction/rho generation, quantity/beam/reference, occurrence/coordinate/support and direct-origin/transitive-influence facts; exact source/profile and current decision generation. Ordinary @1 permission or an external-parent identifier cannot substitute. Only inputs required by this named use affect its decision.",
+        "Lifecycle": "Each evaluation binds the current immutable residual, requested/effective/resolved/applied/realized identities and exact owner-source/profile generation. It grants only this named use; other named uses require separate current decisions."
+      },
+      "adopted_owner_source": null
+    },
+    {
+      "candidate_key": "SCI-PTC:operator_application@2",
+      "state": "proposed_not_registered",
+      "base_registry_entry": {
+        "key": "SCI-PTC:operator_application@1",
+        "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/PROFILE_REGISTRY.md",
+        "sha256": "95b2ddeca2039aa2b3614e3dfede530cb7e024e6db33ca22baed867f19d2709d"
+      },
+      "common_fragment": {
+        "identity": "SCI-PTC-COMMON-NAMED-USE-SEMANTICS-v0.1/r0.1",
+        "sha256": "c1fc8370007b65307769fb966c8523251695924aaff84f3e5b4c89b6d3380b8c",
+        "disposition": "unchanged proposition semantics only; supplies no parent-domain or numerical permission"
+      },
+      "proposed_fields": {
+        "Registry key": "SCI-PTC:operator_application@2",
+        "Named use and action": "`operator_application`; authorize application of the exact resolved frozen operator at one configured group-time",
+        "Scientific owner": "Grant Wilson, SCI-PTC scientific owner",
+        "Authoritative source": "Draft SCI-FRUIT-POINT-BOUNDARY-DRAFT@r0.1, SOURCE_ADOPTION_DRAFT.md, and exact inherited clause predicates below. Final adopted PTC source/profile digest unavailable; no executable permission exists from this draft.",
+        "Applicability and object": "Separately requested and source-admitted initial POINT reference, feedback pass k>=1 only; one immutable exact CAL-derived residual rho_k with B01/B02/B08 identities and the exact current PTC group/segment. Exact coupled group-time application event and target occurrence roles; configured network-time or array-time as separately approved in the effective plan.",
+        "Required restrictions": "Resolved \\(\\Theta_g\\), frozen \\(\\lambda_g\\), strictly positive configured rank, fitted subspace and required loadings, metric, tolerance, generalized inverse, application support/mask, detector bindings, finite time-local coefficient-recomputation inputs, and every coordinate transform and boundary state explicitly used by the operator are available within the same configured group. The finite time-local normal matrix satisfies \\(\\operatorname{rank}(N_{g,t})=k_{{\\rm req},g}\\) under frozen \\(\\tau_g\\)",
+        "Fail-closed guard": "\\(\\operatorname{rank}(N_{g,t})<k_{{\\rm req},g}\\) makes the exact group-time application unavailable. No lower-rank, interpolated, zero-filled, reconstructed, or cross-group alternative may be labeled as the same operator. Failure is scoped to the configured group",
+        "Fit and classification consequence": "Basis/loading-fit exclusion does not imply application exclusion when the frozen operator defines the value completely. Direct synthesized/replaced origin and CAL `engineering-only` are preserved producer facts but are not universal vetoes on performing the mathematics; application does not authorize residual-route output retention or relabel either fact",
+        "Exceptions": "None for the full-rank guard, group identity, or required frozen-operator inputs; this residual route defines no numerical fallback",
+        "Response/uncertainty roles": "`advisory` for complete-chain response and covariance. Their availability is not required for data application. Response-kernel action is governed separately by `SCI-PTC:response_companion@2`",
+        "Aggregation and propagation compatibility": "Not an aggregate profile. The decision is group-time local and cannot be transferred across groups, times, lifecycle states, or operator identities. Reverse propagation is `not_applicable`",
+        "Missing/conflicting behavior": "Missing/conflicting structural binding or applicability authority yields `applicability_unknown` and `decision_unavailable`. For an applicable requested group-time, any decisive false restriction yields `ineligible`, all restrictions true yields `eligible`, and every remaining required U/C state yields `decision_unavailable`; no numerical action is authorized unless eligible",
+        "Action scope and nonimplication": "Authorizes only data application of the exact frozen operator. It grants no output-retention, coefficient/QC, response-companion, empirical/simulation, exposure, or MAP permission",
+        "Supersession": "A changed operator, group mode, guard, domain, restriction, exception, common-fragment digest, or source digest requires a new immutable profile version; no prior decision is rewritten This candidate is an additional residual-domain version; ordinary @1 and its evaluated decisions remain available unchanged for the ordinary route, never aliases for @2.",
+        "Inherited clause predicates": "Frozen SCI-PTC clauses `SCI-PTC-REQ-012`, `SCI-PTC-REQ-029`, `SCI-PTC-REQ-031`, `SCI-PTC-REQ-083`, `SCI-PTC-REQ-089`--`SCI-PTC-REQ-095`, and `SCI-PTC-REQ-098`; `WP5-OWNER-D006` and `WP5-OWNER-D011`; exact common and source bindings above",
+        "Additional required restrictions": "Exact B01-B08 residual permission, method/iteration, CAL realization, applied model, projection/subtraction/rho generation, quantity/beam/reference, occurrence/coordinate/support and direct-origin/transitive-influence facts; exact source/profile and current decision generation. Ordinary @1 permission or an external-parent identifier cannot substitute. Only inputs required by this named use affect its decision.",
+        "Lifecycle": "Each evaluation binds the current immutable residual, requested/effective/resolved/applied/realized identities and exact owner-source/profile generation. It grants only this named use; other named uses require separate current decisions."
+      },
+      "adopted_owner_source": null
+    },
+    {
+      "candidate_key": "SCI-PTC:output_retention@2",
+      "state": "proposed_not_registered",
+      "base_registry_entry": {
+        "key": "SCI-PTC:output_retention@1",
+        "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/PROFILE_REGISTRY.md",
+        "sha256": "95b2ddeca2039aa2b3614e3dfede530cb7e024e6db33ca22baed867f19d2709d"
+      },
+      "common_fragment": {
+        "identity": "SCI-PTC-COMMON-NAMED-USE-SEMANTICS-v0.1/r0.1",
+        "sha256": "c1fc8370007b65307769fb966c8523251695924aaff84f3e5b4c89b6d3380b8c",
+        "disposition": "unchanged proposition semantics only; supplies no parent-domain or numerical permission"
+      },
+      "proposed_fields": {
+        "Registry key": "SCI-PTC:output_retention@2",
+        "Named use and action": "`output_retention`; decide whether one exact transformed occurrence is scientifically legitimate as a member of the declared residual-route PTC science-signal support",
+        "Scientific owner": "Grant Wilson, SCI-PTC scientific owner",
+        "Authoritative source": "Draft SCI-FRUIT-POINT-BOUNDARY-DRAFT@r0.1, SOURCE_ADOPTION_DRAFT.md, and exact inherited clause predicates below. Final adopted PTC source/profile digest unavailable; no executable permission exists from this draft.",
+        "Applicability and object": "Separately requested and source-admitted initial POINT reference, feedback pass k>=1 only; one immutable exact CAL-derived residual rho_k with B01/B02/B08 identities and the exact current PTC group/segment. Atomic transformed residual occurrence c_k with actual rho_k, current group-time application, segment/group and output identity. The CAL ancestor remains ancestry, not its numerical parent. Zjoin_k is a different downstream product.",
+        "Required restrictions": "Exact group-time operator application was realized successfully; the transformed value is finite; the exact output support/mask admits the occurrence; and every output-specific required fact is resolved. Direct ALIGN-synthesized or RTC-replaced origin is a decisive exclusion from the declared residual-route PTC science-signal support. A failed application supplies no retained substitute",
+        "Classification consequence": "CAL `engineering-only` may be retained with the classification preserved. Retention does not create CAL science qualification or a general science-quality claim; later uses apply their own policies",
+        "Exceptions": "None for realized application, finite transformed value, output mask, or direct synthesized/replaced exclusion. An ineligible calculated value may remain reachable only as explicitly flagged diagnostic/ineligible data, never as declared residual-route retained support",
+        "Response/uncertainty roles": "`advisory` for both. Missing complete-chain response or covariance does not erase an otherwise valid transformed signal, and retention establishes no response-dependent or uncertainty-qualified claim",
+        "Aggregation and propagation compatibility": "`atomic_only`; no VAL aggregate, generic usable exposure, or reverse propagation is defined. Retention cannot recreate or increase physical acquisition or valid-original exposure",
+        "Missing/conflicting behavior": "Missing/conflicting structural binding or applicability authority yields `applicability_unknown` and `decision_unavailable`. For an applicable requested occurrence, any decisive false restriction yields `ineligible`, all restrictions true yields `eligible`, and every remaining required U/C state yields `decision_unavailable`; all facts and causes are preserved",
+        "Action scope and nonimplication": "Authorizes only the declared residual-route PTC science-signal membership. It neither prescribes serialization nor grants coefficient/QC, response, empirical/simulation, MAP contribution, exposure, beam, photometry, or later-use admission",
+        "Supersession": "A changed transformed-product role, output support, domain, restriction, exception, common-fragment digest, or source digest requires a new immutable profile version; no prior decision is rewritten This candidate is an additional residual-domain version; ordinary @1 and its evaluated decisions remain available unchanged for the ordinary route, never aliases for @2.",
+        "Inherited clause predicates": "Frozen SCI-PTC clauses `SCI-PTC-REQ-012`, `SCI-PTC-REQ-016`, `SCI-PTC-REQ-021`, `SCI-PTC-REQ-039`, `SCI-PTC-REQ-069`--`SCI-PTC-REQ-074`, `SCI-PTC-REQ-088`, `SCI-PTC-REQ-090`--`SCI-PTC-REQ-096`, and `SCI-PTC-REQ-098`; `WP5-OWNER-D007` and `WP5-OWNER-D011`; exact common and source bindings above",
+        "Additional required restrictions": "Exact B01-B08 residual permission, method/iteration, CAL realization, applied model, projection/subtraction/rho generation, quantity/beam/reference, occurrence/coordinate/support and direct-origin/transitive-influence facts; exact source/profile and current decision generation. Ordinary @1 permission or an external-parent identifier cannot substitute. Only inputs required by this named use affect its decision.",
+        "Lifecycle": "Each evaluation binds the current immutable residual, requested/effective/resolved/applied/realized identities and exact owner-source/profile generation. It grants only this named use; other named uses require separate current decisions."
+      },
+      "adopted_owner_source": null
+    },
+    {
+      "candidate_key": "SCI-PTC:response_companion@2",
+      "state": "proposed_not_registered",
+      "base_registry_entry": {
+        "key": "SCI-PTC:response_companion@1",
+        "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/PROFILE_REGISTRY.md",
+        "sha256": "95b2ddeca2039aa2b3614e3dfede530cb7e024e6db33ca22baed867f19d2709d"
+      },
+      "common_fragment": {
+        "identity": "SCI-PTC-COMMON-NAMED-USE-SEMANTICS-v0.1/r0.1",
+        "sha256": "c1fc8370007b65307769fb966c8523251695924aaff84f3e5b4c89b6d3380b8c",
+        "disposition": "unchanged proposition semantics only; supplies no parent-domain or numerical permission"
+      },
+      "proposed_fields": {
+        "Registry key": "SCI-PTC:response_companion@2",
+        "Named use and action": "`response_companion`; authorize the existing fixed-state tracked-kernel propagation through PTC, not a new response computation",
+        "Scientific owner": "Grant Wilson, SCI-PTC scientific owner",
+        "Authoritative source": "Draft SCI-FRUIT-POINT-BOUNDARY-DRAFT@r0.1, SOURCE_ADOPTION_DRAFT.md, and exact inherited clause predicates below. Final adopted PTC source/profile digest unavailable; no executable permission exists from this draft.",
+        "Applicability and object": "Separately requested and source-admitted initial POINT reference, feedback pass k>=1 only; one immutable exact CAL-derived residual rho_k with B01/B02/B08 identities and the exact current PTC group/segment. Exactly requested compatible fixed-state companion coupled to this pass's data operator, with exact perturbation parent/domain. Local role is on the residual grid; source-domain role additionally requires the exact admitted upstream-to-residual response. Full-procedure response remains excluded.",
+        "Required restrictions": "Exact current data Apply state, group, coordinates, metric, support/masks, positive rank, resolved subspace, tolerance, generalized inverse and full-rank guard are available and identical to the data role. Exact parent/domain is bound. A local residual-grid perturbation receives only the linear part of this Apply. A source-domain role additionally requires the exact admitted upstream-to-residual response; CAL ancestry alone cannot supply it. No upstream operator is applied twice. No numerical full-procedure response permission is created.",
+        "Propagation consequence": "Apply only the linear part of the current resolved map at rho_k; do not subtract, re-estimate or restore lambda_k, relearn PTC, change science values or use another pass's solve. A data-unavailable group-time is unavailable for this kernel; no alternate support, rank, interpolation or borrowed solve.",
+        "Classification consequence": "CAL `engineering-only` is preserved and does not by itself prohibit the exact tracked-kernel mathematics. Companion eligibility does not upgrade the input or establish science qualification",
+        "Pointing consequence": "When the requested response domain requires pointing, exact pointing identity is a structural gate. Unrecoverable pointing makes the affected response role unavailable; PTC cannot reconstruct or replace it",
+        "Exceptions": "None for parent/domain identity, identical frozen state, the full-rank guard, single application of each upstream operator, or the prohibition on companion influence over learning",
+        "Response/uncertainty roles": "Response is `required_permission` for the exact requested companion role. Response uncertainty is `advisory` unless a separately named claimed use makes it required; no uncertainty is manufactured here",
+        "Aggregation and propagation compatibility": "This profile authorizes only the existing forward fixed-state propagation. It requires response authority and exact recoverability, not dense kernel serialization. No aggregate or reverse propagation is registered",
+        "Missing/conflicting behavior": "Missing/conflicting parent, domain, operator, group-time, required source-domain upstream response, or pointing gate yields `applicability_unknown` and `decision_unavailable`. For an applicable requested companion, any decisive false restriction yields `ineligible`, all restrictions true yields `eligible`, and every remaining required U/C state yields `decision_unavailable`",
+        "Action scope and nonimplication": "Authorizes only the existing tracked-kernel role. It creates no response object, estimator, computation, sidecar, payload, PSF/beam recovery, photometric validity, MAP authority, science qualification, or full-procedure response",
+        "Supersession": "A changed response role, operator/domain chain, restriction, exception, common-fragment digest, or source digest requires a new immutable profile version; no prior decision is rewritten This candidate is an additional residual-domain version; ordinary @1 and its evaluated decisions remain available unchanged for the ordinary route, never aliases for @2.",
+        "Inherited clause predicates": "Frozen SCI-PTC clauses `SCI-PTC-DEF-016`, `SCI-PTC-REQ-012`, `SCI-PTC-REQ-061`, `SCI-PTC-REQ-062`, `SCI-PTC-REQ-066`, `SCI-PTC-REQ-083`, `SCI-PTC-REQ-087`, `SCI-PTC-REQ-088`, and `SCI-PTC-REQ-097`; `WP5-OWNER-D009` and `WP5-OWNER-D011`; exact common and source bindings above",
+        "Additional required restrictions": "Exact B01-B08 residual permission, method/iteration, CAL realization, applied model, projection/subtraction/rho generation, quantity/beam/reference, occurrence/coordinate/support and direct-origin/transitive-influence facts; exact source/profile and current decision generation. Ordinary @1 permission or an external-parent identifier cannot substitute. Only inputs required by this named use affect its decision.",
+        "Lifecycle": "Each evaluation binds the current immutable residual, requested/effective/resolved/applied/realized identities and exact owner-source/profile generation. It grants only this named use; other named uses require separate current decisions."
+      },
+      "adopted_owner_source": null
+    },
+    {
+      "candidate_key": "SCI-MAP:map_upstream_admission@3",
+      "state": "proposed_not_registered",
+      "base_registry_entry": {
+        "key": "SCI-MAP:map_upstream_admission@2",
+        "path": "doc/scientific_contracts/packages/SCI-VAL/v0.1/PROFILE_REGISTRY.md",
+        "sha256": "95b2ddeca2039aa2b3614e3dfede530cb7e024e6db33ca22baed867f19d2709d"
+      },
+      "ordinary_branch_exact_predicates": {
+        "Registry key": "`SCI-MAP:map_upstream_admission@2`",
+        "Named use and action": "`map_upstream_admission`; decide whether one exact realized PTC occurrence may enter the MAP-route-candidate population before pixel-specific placement and local numerical contribution gates",
+        "Scientific owner": "Grant Wilson, SCI-MAP scientific-policy owner",
+        "Authoritative source": "SCI-MAP r0.7 directive SHA-256 `f7747eea28710d524e12c818b872ac3fcc49f413271f83c0644ae129949a8c8c`; r0.7.1 errata `FREEZE_ONLY_ERRATA_R0.7.1.md`; `SCI-PTC_TO_SCI-MAP v0.1/r0.1`; MAP scientist-readable profile; shared MAP r0.7.1 authority; original-footprint-coordinate boundary; frozen SCI-PTC v0.1/r0.5, SCI-AST v0.1/r0.3, and SCI-CAL v0.1/r0.5-r0.4 authorities; SCI-VAL Core r0.3 plus exact source-binding revision `SCI-VAL_SOURCE_BINDING_REGISTER v0.1/r0.3-map-r0.7.1-2026-08-28`, SHA-256 `7b91a324f35196a8c8a6e23c8abbbf5322fc601798e36d4ac821907a6090eadf`. Exact remaining digests are bound by `SCI-MAP_SOURCE_MANIFEST v0.1/r0.7.1`",
+        "Applicability and object": "Requested ordinary positive-rank PTC-to-MAP route; one exact occurrence binding observation, detector occurrence/UID, stable RTC output sample `n`, PTC product/application generation, segment, array/network/group, and complete PTC/AST/CAL/RTC/ALIGN parent chain",
+        "Required permissions": "Exact realized PTC product exists; `SCI-PTC:output_retention@1` is `eligible`; transformed signal and source identity are available; an exact PTC-owner-selected MAP-facing coefficient family/value is typed available; its coefficient/QC record is requested, applicable, eligible, and realized under the exact PTC-owned coefficient/QC profile for that family; exact AST RTC-grid coordinate for the same `n` and parent chain is structurally bound; all required boundary, source, and lifecycle bindings are compatible. The PTC coefficient/QC pass never grants, replaces, or rescues this MAP admission",
+        "Decisive exclusions": "PTC-disabled, no-product, direct CAL input, inferred no-op PTC, retention `ineligible`, direct synthesized or replaced representative source for the MAP signal use, incompatible signal/coordinate parents, incompatible generations, coefficient/QC exclusion, or boundary/profile/source-version mismatch",
+        "Classification and influence behavior": "CAL `engineering-only` may remain a route candidate only when PTC retained it and the classification is preserved; this creates no science-qualification claim. Direct synthesized/replaced origin is decisive for this profile. Transitive influence and all other causes are preserved but have no universal veto unless an exact required restriction names them",
+        "Response/uncertainty roles": "`advisory` for base numerical MAP signal admission. Exact fixed-state, PTC full-procedure, or PTC+MAP re-resolved response class/state and conditional covariance limitations remain carried; whole-chain RTC-to-CAL-to-PTC-to-MAP response is unavailable here. A stronger product role applies its own exact requirement; this profile neither fabricates nor upgrades response or uncertainty",
+        "Exceptions": "None for exact occurrence/parent/generation binding, realized positive-rank PTC route, output-retention permission, direct synthesized/replaced exclusion, coefficient identity/QC permission, same-`n` AST binding, or exact boundary/source/profile identity",
+        "Four named decision fields and pass projection": "Request: `requested`/`not_requested`; applicability: `applicable`/`inapplicable`/`applicability_unknown`; eligibility: `eligible`/`ineligible`/`decision_unavailable`; realization: `realized`/`incomplete`/`failed`/`not_produced`. Only request=`requested`, applicability=`applicable`, eligibility=`eligible`, and realization=`realized` projects to Boolean MAP upstream-admission pass. Every other field combination is estimator nonmembership with complete causes retained",
+        "Missing/conflicting behavior": "Missing or conflicting applicability, identity, parent, generation, required permission, coefficient family/value/QC state, coordinate, boundary, source, or profile binding yields `applicability_unknown` and `decision_unavailable` where evaluable. A decisive false restriction yields `ineligible`; all restrictions true yields `eligible`. Realization remains independent",
+        "Lifecycle and consumer action": "Evaluation binds requested, effective, observation-resolved, applied, and realized identities plus exact source/profile versions. Passing creates a MAP-route candidate only. MAP still evaluates finiteness, positive coefficient, `G_pi`, boundary, support, required companions, and final contribution; VAL performs no pixel placement or accumulation",
+        "Aggregation and propagation compatibility": "`atomic_only`; no pixel, detector, observation, exposure, or coadd aggregate is implied. No reverse propagation or producer-fact rewrite is authorized",
+        "Supersession": "Any changed source digest, occurrence domain, restriction, exception, response/uncertainty role, lifecycle, or direct/inherited influence rule requires a new immutable profile version and evaluation generation; prior decisions remain unchanged"
+      },
+      "proposed_fields": {
+        "Registry key": "SCI-MAP:map_upstream_admission@3",
+        "Scientific owner": "Grant Wilson, SCI-MAP scientific-policy owner",
+        "Named use and action": "Decide MAP-route candidacy before MAP-local placement/contribution, using an explicitly tagged ordinary PTC branch or the separately admitted initial POINT FRUIT-rejoined branch.",
+        "Authoritative source": "Draft SCI-FRUIT-POINT-BOUNDARY-DRAFT@r0.1 B08-B12 and proposed SCI-PTC_TO_SCI-MAP v0.1/r0.2. Final adopted MAP/PTC/boundary source digests unavailable. Ordinary branch retains exact @2 scientific predicates and their bound sources.",
+        "Applicability and object": "Ordinary branch: exact @2 applicability unchanged. Added branch: exact POINT Zjoin_k occurrence, k>=1, with distinct current residual/PTC/rejoin generations and all B01-B12 permission, quantity/reference, same-n AST and original ancestry bindings. A mode label or compatible shape cannot select a branch.",
+        "Required permissions": "Ordinary branch: all @2 predicates. Added branch: all B01-B12 applicability/compatibility permissions, realized current positive-rank residual PTC c_k with SCI-PTC:output_retention@2 eligible and realized required product; complete exact Zjoin_k; authorized compatible correction; PTC-ANALYSIS/UNIFORM-OCCURRENCE@proposal-r0.1 values and fresh SCI-PTC:uniform_occurrence_gridding_qc@proposal-r0.1 requested/applicable/eligible/realized, exact retained-use and population; same-n AST coordinates and complete compatible ancestry. Old QC or ordinary retention decisions do not substitute.",
+        "Decisive exclusions": "PTC-disabled, no-product, direct CAL input, inferred no-op PTC, retention `ineligible`, direct synthesized or replaced representative source for the MAP signal use, incompatible signal/coordinate parents, incompatible generations, coefficient/QC exclusion, or boundary/profile/source-version mismatch For the added branch also exclude incompatible correction/rejoin/residual identity, unadmitted POINT applicability, changed coefficient/population, or use of ordinary @1 retention in place of current residual @2.",
+        "Classification and influence behavior": "CAL `engineering-only` may remain a route candidate only when PTC retained it and the classification is preserved; this creates no science-qualification claim. Direct synthesized/replaced origin is decisive for this profile. Transitive influence and all other causes are preserved but have no universal veto unless an exact required restriction names them",
+        "Response/uncertainty roles": "`advisory` for base numerical MAP signal admission. Exact fixed-state, PTC full-procedure, or PTC+MAP re-resolved response class/state and conditional covariance limitations remain carried; whole-chain RTC-to-CAL-to-PTC-to-MAP response is unavailable here. A stronger product role applies its own exact requirement; this profile neither fabricates nor upgrades response or uncertainty The added branch carries FRUIT conditioning, state/model influence and unavailable terms; no full-loop response is created.",
+        "Exceptions": "None for exact occurrence/parent/generation binding, realized positive-rank PTC route, output-retention permission, direct synthesized/replaced exclusion, coefficient identity/QC permission, same-`n` AST binding, or exact boundary/source/profile identity No exception to additional branch permission, correction identity or fresh current residual retention/QC.",
+        "Four named decision fields and pass projection": "Request: `requested`/`not_requested`; applicability: `applicable`/`inapplicable`/`applicability_unknown`; eligibility: `eligible`/`ineligible`/`decision_unavailable`; realization: `realized`/`incomplete`/`failed`/`not_produced`. Only request=`requested`, applicability=`applicable`, eligibility=`eligible`, and realization=`realized` projects to Boolean MAP upstream-admission pass. Every other field combination is estimator nonmembership with complete causes retained",
+        "Missing/conflicting behavior": "Missing or conflicting applicability, identity, parent, generation, required permission, coefficient family/value/QC state, coordinate, boundary, source, or profile binding yields `applicability_unknown` and `decision_unavailable` where evaluable. A decisive false restriction yields `ineligible`; all restrictions true yields `eligible`. Realization remains independent",
+        "Lifecycle and consumer action": "Evaluation binds requested, effective, observation-resolved, applied, and realized identities plus exact source/profile versions. Passing creates a MAP-route candidate only. MAP still evaluates finiteness, positive coefficient, `G_pi`, boundary, support, required companions, and final contribution; VAL performs no pixel placement or accumulation Branch, residual result and rejoined child are explicit; original exposure ancestry/placement remain unchanged.",
+        "Aggregation and propagation compatibility": "`atomic_only`; no pixel, detector, observation, exposure, or coadd aggregate is implied. No reverse propagation or producer-fact rewrite is authorized",
+        "Supersession": "Any changed source digest, occurrence domain, restriction, exception, response/uncertainty role, lifecycle, or direct/inherited influence rule requires a new immutable profile version and evaluation generation; prior decisions remain unchanged Existing @1/@2 records and their decisions remain immutable; @3 is not an alias and creates no coadd profile."
+      },
+      "adopted_owner_source": null
+    },
+    {
+      "candidate_key": "SCI-PTC:uniform_occurrence_gridding_qc@proposal-r0.1",
+      "state": "proposed_not_registered",
+      "base_registry_entry": null,
+      "proposed_fields": {
+        "Registry key": "SCI-PTC:uniform_occurrence_gridding_qc@proposal-r0.1",
+        "Scientific owner": "Grant Wilson, SCI-PTC scientific owner",
+        "Named use and action": "Current producer QC for exact retained uniform-occurrence gridding coefficients; does not grant MAP admission.",
+        "Authoritative source": "SOURCE_ADOPTION_DRAFT.md B09 with S1; accepted limited POINT scientific substance. Final owner source/digest and registry adoption unavailable.",
+        "Applicability and object": "Exact requested POINT reference coefficient/product use. Bootstrap binds current ordinary PTC output_retention@1; k>=1 binds current residual output_retention@2 and actual rejoined generation. Atomic occurrence and exact fixed bootstrap coefficient population/value generation; no implicit broadcast.",
+        "Required restrictions": "Exact authorized family and value generation; readable typed coefficients; unchanged gamma_i=1/population; valid occurrence and compatible quantity/reference/group/support; finite current transformed signal and compatible required current rejoined signal; realized current required PTC product and eligible current retention; full retained-use mapping from original coefficients to current product and QC; actual CAL/model/rho/Theta/rejoin ancestry. Bootstrap model/rho/rejoin roles are not_applicable: bootstrap_no_predecessor.",
+        "Exceptions": "None for required family/index/quantity/parents, current retention, support, finite product or immutable values/population. No reweighting, shrinkage or normalization rescue.",
+        "Response/uncertainty roles": "Advisory for producer QC; preserve typed unavailable states. Gamma and QC confer no precision, covariance, sensitivity, significance, S/N or NOI law.",
+        "Four named decision fields and pass projection": "Request: `requested`/`not_requested`; applicability: `applicable`/`inapplicable`/`applicability_unknown`; eligibility: `eligible`/`ineligible`/`decision_unavailable`; realization: `realized`/`incomplete`/`failed`/`not_produced`. Only request=`requested`, applicability=`applicable`, eligibility=`eligible`, and realization=`realized` projects to Boolean producer QC pass. Every other field combination is failure to pass this QC with complete causes retained",
+        "Missing/conflicting behavior": "Required missing/conflicting applicability or identity gives applicability_unknown and decision_unavailable. A decisive false required predicate gives ineligible; all required predicates true gives eligible; unresolved required predicates give decision_unavailable. Realization is independent and all causes persist.",
+        "Lifecycle and consumer action": "Values retain their bootstrap generation. Every new product use requires a new QC and retained-use generation binding actual current parents and named-use decisions. Only requested/applicable/eligible/realized passes. MAP independently classifies finite-positive coefficients and decides its own candidacy/local contribution.",
+        "Aggregation and propagation compatibility": "Atomic-only QC, no generic aggregate or reverse propagation. Fixed population is method-level compatibility, not permission to reinterpret a missing atomic decision.",
+        "Supersession": "Changed family, index, source, predicates, roles or lifecycle requires a new immutable key and evaluation generation. This proposal has no adopted predecessor and rewrites no earlier decision."
+      },
+      "adopted_owner_source": null
+    }
+  ]
+}
