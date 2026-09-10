@@ -172,7 +172,7 @@ def main():
         'requested_coordinates', 'pre_fit_calls', 'joint_fit_calls', 'available_coordinates',
         'pre_reported_iterations', 'joint_reported_iterations', 'consistent_without_confirmed_recovery')}
     summary['peak_short_scratch_rows'] = max((e['jump_timing']['peak_short_scratch_rows'] for e in complete), default=0)
-    summary['timing_scope'] = 'Local inert native test driver; production RTC/PTC runtime not measured; failed-fit internal iteration counts unavailable'
+    summary['timing_scope'] = 'Local inert native test driver; production RTC/PTC runtime not measured; iteration counts include successful and failed IRLS loop entries, zero before loop'
     write_json(args.output/'summary.json', summary)
     print(json.dumps(summary, indent=2))
 

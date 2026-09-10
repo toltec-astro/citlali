@@ -228,5 +228,20 @@ TEST(rtc_jump_consistency, fixed_short_fit_is_deterministic_and_has_no_refinemen
     }
     EXPECT_LE(again->counts().pre_fit_calls,again->counts().requested_coordinates);
     EXPECT_LE(again->counts().joint_fit_calls,again->counts().pre_fit_calls);
+    // Timing counters retain failed numerical work, including the entry that
+    // diagnoses a zero scale; failures before any loop entry report zero.
+    Eigen::MatrixXd design(64,4);
+    for (Eigen::Index row=0;row<design.rows();++row) {
+        const double t=static_cast<double>(row)/64.;
+        design.row(row)<<1,t,t*t,t*t*t;
+    }
+    Eigen::VectorXd values=Eigen::VectorXd::Zero(64);
+    const auto zero_scale=rtc_event_background_detail::fit(design,values);
+    EXPECT_EQ(zero_scale.cause,RtcEventFitCause::zero_scale);
+    EXPECT_EQ(zero_scale.iterations,1U);
+    values[0]=NAN;
+    const auto nonfinite=rtc_event_background_detail::fit(design,values);
+    EXPECT_EQ(nonfinite.cause,RtcEventFitCause::nonfinite);
+    EXPECT_EQ(nonfinite.iterations,0U);
 }
 } // namespace

@@ -793,8 +793,9 @@ There is no need to compute an unused shorter plain joint-cubic comparator.
 The method therefore invokes at most one shorter pre-scale fit and one shorter
 joint offset fit per qualifying coordinate, each retaining the existing finite
 numerical iteration bound and 64-valid-samples-per-flank minimum. Count actual
-fit calls and exposed iteration counts, distinguishing unavailable results;
-the preserved solver does not expose internal iteration counts after failure.
+fit calls and exposed iteration counts, distinguishing unavailable results.
+Counts include IRLS loop entries on successful and failed fits; zero denotes
+failure before entering the loop.
 
 The shorter offset A1 must satisfy `abs(A1) >= 5*sigma_delta`, have the same
 nonzero sign as A2, and satisfy `abs(A1-A2) <= 2*sigma_delta`. Equality passes.
@@ -865,3 +866,11 @@ runner and a focused boundary test now preserve that rule. Build setup/type
 errors and the initial gap-fixture correction are retained in external logs.
 No primary scientific source changed. Full exact-source gates/timing and
 independent review remain pending at this implementation commit.
+
+Independent source review of `5f0492722d3b05b944c222604ea0a3bcf999ba1a`
+found one minor evidence-label error, RTC-JC-R01: the preserved solver does
+retain iteration counts after failure. This continuation corrects the labels
+and adds assertions for failure before/inside the loop, without changing the
+solver, accumulated counts or scientific behavior. All 971 runnable local
+tests, configuration preflight and 207 baseline-tool tests passed on that
+candidate. Final repaired-source build, corpus timing and review follow.

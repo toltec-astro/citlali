@@ -116,8 +116,8 @@ struct RtcJumpShortFit {
 
 struct RtcJumpFitCounts {
     std::size_t requested_coordinates = 0, pre_fit_calls = 0, joint_fit_calls = 0;
-    // Preserved solver reports converged iteration counts; failed-fit internal
-    // counts are unavailable. Call counts include failed numerical attempts.
+    // IRLS loop entries on successful and failed fits; zero means failure
+    // before the loop. Call counts also include failed numerical attempts.
     std::size_t available_coordinates = 0, pre_iterations = 0, joint_iterations = 0;
     std::size_t peak_scratch_rows = 0;
 };

@@ -257,7 +257,7 @@ int main(int argc, char **argv) {
         timings<<"],\"consistency_cause_counts\":[";
         for(std::size_t i=0;i<consistency_counts.size();++i){if(i)timings<<',';timings<<consistency_counts[i];}
         timings<<"],\"consistent_without_confirmed_recovery\":"<<consistent_without_recovery
-            <<",\"timing_scope\":\"local inert driver through diagnostic output close; excludes final receipt/hash and process shutdown; not production RTC/PTC\",\"failed_fit_internal_iteration_counts\":\"unavailable from preserved solver\"}\n";
+            <<",\"timing_scope\":\"local inert driver through diagnostic output close; excludes final receipt/hash and process shutdown; not production RTC/PTC\",\"iteration_count_definition\":\"IRLS loop entries on successful and failed fits; zero before loop\"}\n";
         timings.close();require(static_cast<bool>(timings),"jump timing output write/close failed");
         require(logs->errors==0 && logs->criticals==0,"unexpected producer error-level messages");
         const auto elapsed=std::chrono::duration<double>(std::chrono::steady_clock::now()-started).count();
