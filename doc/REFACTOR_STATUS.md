@@ -1,5 +1,30 @@
 # Citlali Refactor Status
 
+## RTC level-0 scan intersection rule selected — 2026-09-10
+
+The owner reports the push and approves the starting recommendation: exclude
+the affected detector from every existing scan intersected by an accepted
+conservative physical transition bound. A transition spanning a scan boundary
+therefore selects both scans; preserve the shared scan definitions and configured
+PCA rank. This selects treatment extent for an accepted event, not a new event
+admission rule or permission to flag a candidate automatically.
+
+Read-only live GitHub verification finds the RTC module branch at exact closure
+`d1ed875f7aa3ccbadbe783b571f635d7ba96b2e4` and canonical at unchanged
+`86c20b31f7300ba4063be044380b61cd0baf25eb`. The pushed closure preserves tested
+implementation `0d04f442f70fb221694355cba20c301bccb1008c` and its reviewed local
+timing/census evidence. Publication does not imply canonical admission.
+
+The [decision in the existing RTC work order](../handoff/TIMESTREAM_SUCCESSOR_RTC_EVENT_BACKGROUND_001_2026-09-08.md#owner-decision-every-scan-intersected-by-an-accepted-transition-bound--2026-09-10)
+records the remaining narrow prerequisite: the physical transition-bounding
+method and timing inclusion convention required by SCI-RTC REQ-094/096.
+The current +/-50 ms fitting exclusion is not an accepted physical bound.
+Runtime Learn must produce that evidence, Consider must resolve accepted events
+and their scan-use consequences under the named RTC/PTC/VAL owners, and Apply
+must consume the completed plan. Existing amplitude/consistency predicates,
+source-protection requirements and hard-class pair-union policy stay intact.
+This is a documentation receipt; no application code or sealed evidence changes.
+
 ## RTC jump consistency implementation and timing — 2026-09-10
 
 The owner-approved fixed consistency check is implemented in explicit RTC

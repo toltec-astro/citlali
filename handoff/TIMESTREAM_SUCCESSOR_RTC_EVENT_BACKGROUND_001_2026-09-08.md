@@ -983,3 +983,92 @@ downsampling, PTC/AST/CAL/MAP implementation, production route, canonical
 integration, Unity operation, push or cleanup is included. The next executable
 treatment must consume complete contracted event/protection evidence and exact
 scan binding; this consistency result alone cannot authorize detector loss.
+
+## Owner decision: every scan intersected by an accepted transition bound — 2026-09-10
+
+Owner Grant Wilson reports, "Pushed. And I agree with this starting
+recommendation", accepting exclusion of the affected detector from every
+existing scan intersected by an accepted conservative physical transition
+bound. This completes the scan-selection choice left open by the level-0
+treatment discussion: a transition that spans two existing scans selects both,
+rather than assigning the event only to a candidate-center scan. It does not
+select an endpoint-touch convention or a numerical transition-bounding method.
+The existing scan authority must supply its exact support and timing identity;
+no event window, noise block or detector-local segment becomes a new PCA scan.
+
+The full-existing-scan treatment, shared scan definitions, configured PCA rank,
+remaining-group feasibility, and separate learning/application/output-use
+dispositions remain as selected above. RTC retains pair-coherent physical
+event and treatment facts; PTC owns PCA-use admission and VAL evaluates the
+named consumer policy. A full-scan treatment extent is not the physical
+transition extent or an operator guard. No offset subtraction, gain correction,
+source substitution, scan splitting, Tune/APT rewriting or permanent detector
+flag is selected.
+
+Recovered settled authority: SCI-RTC DEF-036 and REQ-094/096 require a finite
+physical transition interval or conservative bound, with affected pair cells
+derived from the native timing vector and timing uncertainty retained.
+REQ-118/119/126 already preserve distinct coordinate evidence and form the
+pair-coherent union after class-specific hard-event admission. This decision
+does not reopen that union or require both coordinates to independently pass.
+REQ-121 continues to require causal/source-protection predicates; unavailable
+required authority does not become a hard event. REQ-124/125 require the
+complete immutable plan before Apply, with no new detection during Apply.
+
+Narrow unresolved prerequisite: OWNER-060/061 leave the physical transition
+localization or bounding estimator, stable-side support/quality criterion,
+timing inclusion/equality and uncertainty treatment to explicit selection.
+The current +/-50 ms trial exclusion was selected to protect background fitting;
+it is not measured or accepted physical transition support. Likewise, the
+existing +/-4-sigma/50 ms return-to-pre-event-baseline test answers recovery,
+not establishment of the post-jump plateau. Reusing those numerical settings
+for transition localization would require an explicit new use binding.
+Existing two-second primary and one-second consistency fits, same-coordinate
+five-sigma amplitude cut and two-sigma agreement remain accepted evidence;
+they are not silently promoted into a complete physical-jump classifier.
+Required background/causal/protection and compound-event dispositions remain
+prerequisites for hard admission; no missing predicate is replaced by this
+scan-selection rule.
+
+Next executable responsibility remains inside implementation-baseline S2 RTC:
+runtime Learn must produce the selected original-sample transition bound and
+its evidence/availability; runtime Consider must consume it with the existing
+amplitude, consistency, recovery and protection evidence to resolve an event.
+The accepted event's exact detector, pair support and existing scan identities
+then support the selected scan-use rule under RTC/PTC/VAL ownership. Apply
+executes only the completed resolved plan and records realized treatment.
+Following the engineering Learn/Consider/Apply workflow does not implement
+these runtime products. This receipt introduces no runtime framework or code.
+
+Publication receipt: read-only `ls-remote` using the explicit Mac SSH GitHub URL
+on 2026-09-10 verifies
+`refs/heads/codex/timestream-successor-rtc-event-background-001` at
+`d1ed875f7aa3ccbadbe783b571f635d7ba96b2e4`, tree
+`b5fa1e1242b1f7b508082ac4330a72cbf355ecf4`, whose direct parent is tested
+implementation `0d04f442f70fb221694355cba20c301bccb1008c`. Canonical
+`refs/heads/codex/refactor-mainline` remains
+`86c20b31f7300ba4063be044380b61cd0baf25eb`. Common ancestor is
+`b675bb64a7054f7b24403c79898965e8765cfd02`; preserve both literal histories.
+This is verified feature publication, not canonical admission. Any eventual
+admission must reverify the then-live canonical base, preserve the accepted
+implementation, and receive independent review of the exact admission SHA;
+neither the old source review nor this receipt's review transfers to a merge.
+
+Documentation-only preflight: owner Grant Wilson; tier 2 scientific/cross-stage
+policy receipt; same owned branch/worktree, initially clean at the pushed
+closure above. AGENTS, toltec-context routing, current status, existing RTC
+work order and all three effective governance documents were read. Governance
+digests match the accepted integration-ledger bindings; governance acceptance
+`06a3ade51c1b3f38887295433d913811bf25cd14` and effectiveness record
+`77507836325eff9f469062d5884481ea37599594` remain on canonical ancestry.
+Only this work order and `doc/REFACTOR_STATUS.md` change. Gates are exact
+identity/ancestry, diff/whitespace, unchanged application/frozen-contract bytes
+and independent fresh-context exact-SHA three-axis review. No build, config,
+census, timing or Unity rerun is triggered by documentation alone. Evidence,
+review, final identities and conformance belong in the new external receipt at
+`/private/tmp/citlali-rtc-scan-intersection-policy-2026-09-10`; the earlier
+sealed roots remain unchanged. Stop before selecting any unresolved scientific
+method or new ownership. No integration, push by the agent, route activation,
+automatic flagging, PTC implementation, native PSD use, filtering, downsampling,
+AST/CAL/MAP work, production or cleanup occurs here. Observation 152390 remains
+a timestream fixture.
