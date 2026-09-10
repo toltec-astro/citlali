@@ -874,3 +874,112 @@ and adds assertions for failure before/inside the loop, without changing the
 solver, accumulated counts or scientific behavior. All 971 runnable local
 tests, configuration preflight and 207 baseline-tool tests passed on that
 candidate. Final repaired-source build, corpus timing and review follow.
+
+## Jump consistency and timing completion — 2026-09-10
+
+`TIMESTREAM-SUCCESSOR-RTC-JUMP-CONSISTENCY-001` completes its bounded local
+implementation and measurement gates, ready for owner acceptance. Tested
+implementation `0d04f442f70fb221694355cba20c301bccb1008c`, tree
+`a75ba2e8a955a0f7500ebdc0bc00fa4b1bad4648`, has parent
+`5f0492722d3b05b944c222604ea0a3bcf999ba1a` and literal increment base
+`ee30f449f8766104be23d3729a3ab9409fb5b720`. The earlier implementation and
+review-label repair remain separate commits; no scientific solver or prior
+accepted implementation was rewritten. Live canonical was rechecked read-only
+during the final corpus observation at unchanged
+`86c20b31f7300ba4063be044380b61cd0baf25eb`.
+Preserve the recorded moving-base ancestry for later admission. No merge,
+canonical ref movement or push occurs in this module closure.
+
+Runtime products now implement amplitude Consider -> requested shorter-fit
+Learn -> consistency Consider, each retaining the exact prior evidence and
+original VAL snapshot. Both offsets use the same original candidate-coordinate
+noise block for the selected comparisons. The shorter fit uses original inner
+support and preserved exclusions, with at most one pre-scale and one joint
+offset fit, keeping the 256-entry numerical bound. Recovery and protection
+constraints remain visible. These products are not an Apply plan and do not
+execute the chosen full-existing-scan detector flag. Development workflow
+conformance is recorded separately from these runtime responsibilities.
+
+Exact-source local gates: 971/971 runnable CTests pass, including 16 new focused
+tests and isolated-header compilation; one established MapFitterLifecycle
+test remains disabled. Four config modes and 207 baseline-tool tests passed
+on the implementation candidate before the comment/evidence-label repair;
+their source was untouched by that repair. Repaired exact-source full CTest
+and the corpus then pass. AppleClang 21 arm64 Release C++20, CLI version
+`g0d04f442f`, and both executable digests are bound. All cached dependency
+revisions and nine pre-existing dirty dependency file digests are unchanged.
+No GCC13/Spack or Unity result is claimed.
+
+The exact prior 143/143 inputs complete: 13 observations, 71,734 channel
+timestreams, 2,148,911,461 original x/r sample pairs. All raw/Tune/APT digests
+match. All 715 original candidate/event/health/detector/example JSONL outputs
+match byte for byte, preserving 910,241 original candidate edges and 242,014
+grouped assessments. The runner and independent reconciliation check exact
+noise-block links, comparisons, fit/iteration counts and per-network hashes.
+Source, binaries and dependency state are unchanged after the run. Fourteen
+other discovered observations, 155 files, still lack detector-binding manifests
+and remain untested. The tested corpus covers one observing night.
+
+Of 484,028 assessment-coordinate records, 51,280 pass the primary amplitude
+gate; 40,246 shorter pre-scale and 40,220 shorter joint fits are attempted,
+with 40,125 available results. The remaining 11,155 requested results are
+unavailable: 195 truncated contexts, 10,839 insufficient supports, 26 pre-fit
+iteration limits and 95 joint-fit iteration limits. The final consistency
+counts are 6,558 shorter offsets below threshold, 2,630 sign disagreements,
+16,144 offset disagreements and 14,793 passes. Of those passes, 12,815 lack
+confirmed recovery; that is not an accepted physical-jump or detector-scan-loss
+count. Missing source protection and other admission predicates remain missing.
+
+A/C retain the selected pulse recovery evidence; their evaluated persistent
+offsets fail the amplitude cut. B's x offsets are 26.450 and 50.895 sigma_delta,
+disagreeing by 24.445 sigma_delta. D's x/r agreement differences are
+0.0146/0.1816 sigma_delta,
+both passing. E's selected x offset stays below the primary cut; spectra remain
+unavailable, without a blanket oscillation-rejection claim. F retains its
+separate detector-health concern. Original sample windows are unchanged.
+The shorter residual plots use recorded row support; primary residual display
+bounds are explicitly reconstructed from sample timing. Residuals are model
+diagnostics, not an extra admission threshold or fitted-offset significance.
+
+Measured on Apple M4 Pro with 48 GiB RAM, serial networks, no competing agent
+build/test/profiler workload: new amplitude/short-fit/final-Consider stages
+total 6.533370 seconds. Existing event assessment takes 1,469.529250 seconds:
+the increment is 0.444589%. Relative to prior spike Learn + event assessment
+and Consider it is 0.422710%, and relative to all original driver stages,
+including input/output, 0.369606%. New output costs another 0.865588 seconds;
+all additions are 0.418574% of original stages. Stage total 1,775.057590 seconds
+excludes final receipt/hash and shutdown; summed child wall time is
+1,847.726008 seconds (30.80 minutes), excluding Python orchestration between
+children. These are same-run stage comparisons, not a cross-run speedup or
+production fraction. The normal desktop was not exclusively reserved.
+
+Amortized numerical cost is 0.1274 ms per requested coordinate, not individual
+fit latency. Pre/joint IRLS loop entries are 653,664/1,084,518, including failed
+fits. Maximum added numerical time is 1.251178 seconds at 152392/network11;
+maximum relative increment is 1.627980% at 152390/network11. Whole-child peak
+RSS is 5,343,887,360 bytes (4.977 GiB), not isolated incremental memory.
+Maximum shorter support is 244 logical sample rows, not a byte allocation.
+These local results do not trigger a solver optimization or policy change.
+
+Independent exact-source and full evidence three-axis reviews pass with
+recorded limitations and no remaining findings. Source finding RTC-JC-R01 is
+closed; failed/preliminary build, test, pilot and source-binding attempts are
+preserved. The optional hardware-read sandbox denial was resolved by a scoped
+read-only metadata query and did not affect the source or census. All prior
+sealed evidence remains untouched.
+
+External evidence root: `/private/tmp/citlali-rtc-jump-consistency-2026-09-10`.
+Source review SHA-256: `51f8ce89fb3744c98fbd57862709af5dabbe21f7554c621f527b77639df07c94`.
+Full evidence review SHA-256: `2c5f52bc386b3617e47e8e2cf08269d7fecd4cce61741782603c9b3b23177726`.
+`EVIDENCE_SHA256SUMS`: `382f906777ab25d2c114ec2bde591210a4021b5a9eb7450d2b355fecaa8dbaef`.
+The documentation-only closure must have the tested implementation as its
+direct parent;
+its exact commit/tree, independent exact-SHA review and final complete manifest
+are recorded receipt-last in external `completion.json` and `SHA256SUMS`.
+This avoids a self-referential commit identity inside the closure itself.
+
+No Apply correction/replacement/rejection, native PSD binding, filtering,
+downsampling, PTC/AST/CAL/MAP implementation, production route, canonical
+integration, Unity operation, push or cleanup is included. The next executable
+treatment must consume complete contracted event/protection evidence and exact
+scan binding; this consistency result alone cannot authorize detector loss.

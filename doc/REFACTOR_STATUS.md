@@ -2,16 +2,34 @@
 
 ## RTC jump consistency implementation and timing — 2026-09-10
 
-The owner agreed to the bounded one-second consistency check and requested
-compute timing to determine its processing cost. The continuation in the
+The owner-approved fixed consistency check is implemented in explicit RTC
+Learn/Consider products on exact `0d04f442f70fb221694355cba20c301bccb1008c`,
+tree `a75ba2e8a955a0f7500ebdc0bc00fa4b1bad4648`. The original two-second fit and
+all accepted native/D2/VAL/spike/background/assessment science remain intact.
+The same 143 files, 71,734 channel timestreams and 2,148,911,461 original sample
+pairs pass; all 715 earlier output files are byte-identical. All 971 runnable
+local CTests (16 new focused tests), four config modes and 207 baseline-tool
+tests pass. Independent exact-source and final evidence reviews pass with
+recorded limitations and no remaining findings.
+
+New numerical work takes 6.533 seconds across the corpus: 0.445% of the existing
+1,469.529-second event assessment, or 0.370% of all original driver stages.
+Additional diagnostic output costs 0.866 seconds. The largest per-network
+relative increment is 1.628%; largest absolute increment is 1.251 seconds.
+Peak whole-process RSS is 4.977 GiB; shorter-fit support reaches 244 rows.
+These are local Apple M4 Pro/AppleClang 21 measurements, not production RTC/PTC
+or a Unity gate. [Timing, counts and A-F figures](/private/tmp/citlali-rtc-jump-consistency-2026-09-10/README.md)
+and the completion record in the
 [existing RTC work order](../handoff/TIMESTREAM_SUCCESSOR_RTC_EVENT_BACKGROUND_001_2026-09-08.md)
-implements the selected 5-sigma amplitude gate, one shorter cubic-plus-offset
-fit per qualifying coordinate, same-sign/5-sigma/2-sigma agreement predicates,
-and local stage/corpus timing. Original native/D2/VAL/spike/background/assessment
-science remains intact; this adds explicit RTC Learn/Consider products.
-No full-scan flag is executed: source protection, hard-event admission and exact
-scan binding remain separately required. Spectra remain owner-deferred.
-Implementation, conformance tests, timing and exact-SHA review are in progress.
+bind the tested source and sealed evidence. The documentation closure's exact
+identity/review is recorded externally in `completion.json` at that evidence root.
+
+D passes the selected fitted-offset consistency check in both coordinates;
+B's x offset fails agreement across the two windows. These are bounded
+predicates, not complete hard-event admission. No full-scan flag is executed:
+source protection, complete event admission and exact scan binding remain
+required. Spectra remain owner-deferred. No canonical admission, push or route
+activation occurs; this module result is ready for owner acceptance.
 
 ## RTC jump amplitude rule selected — 2026-09-10
 
