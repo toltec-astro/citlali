@@ -1,5 +1,17 @@
 # Citlali Refactor Status
 
+## RTC jump amplitude rule selected — 2026-09-10
+
+The owner approved the initial jump-amplitude cut
+`abs(fitted additive offset) >= 5 * sigma_delta`, reusing the candidate's
+existing detector/coordinate first-difference noise scale from its exact
+ten-second block. The [existing RTC work order](../handoff/TIMESTREAM_SUCCESSOR_RTC_EVENT_BACKGROUND_001_2026-09-08.md#owner-decision-initial-5-sigma-jump-amplitude-cut--2026-09-10)
+records the definition and limits. This is an empirical amplitude criterion,
+not fitted-offset significance or permission to reject on amplitude alone.
+Persistent-shift/background-adequacy admission, required source protection and
+exact event-to-scan binding remain prerequisites for the selected full-scan
+detector treatment. This receipt changes documentation only.
+
 ## RTC level-0 jump treatment selected — 2026-09-09
 
 The owner selected full-existing-scan flagging of the detector with a confirmed

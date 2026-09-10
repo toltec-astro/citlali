@@ -687,3 +687,64 @@ The last canonical observation above remains historical, not a fresh live-ref
 claim; this receipt performs no canonical admission or ancestry reconciliation.
 No application source, frozen contract, route, integration, push, activation,
 sealed evidence or cleanup changes are authorized or performed here.
+
+## Owner decision: initial 5-sigma jump amplitude cut — 2026-09-10
+
+Following the level-0 full-scan detector treatment, the owner suggested the same
+threshold as candidate detection and then explicitly agreed to the proposed
+definition: "I agree with this. What's next?"
+
+Selected initial rule: `abs(A_jump) >= 5 * sigma_delta`. `A_jump` is the signed
+additive offset from the existing cubic-plus-step fit in the candidate's
+coordinate and original units. `sigma_delta` is the existing positive, finite,
+available robust scale of adjacent-sample differences for that same detector
+and coordinate in the candidate's exact ten-second noise block:
+`1.4826 * MAD(difference)`. Preserve its original admitted population, native
+run/block identity, exclusions and parent evidence. Equality passes. Use no
+cross-coordinate scale substitution, sample-count reduction, square-root-of-two
+conversion or newly estimated plateau-error denominator. The fitted background
+and candidate/block parents must be explicitly compatible; grouping candidates
+does not authorize silently choosing a more permissive block or combining
+coordinate evidence under an unstated pair-admission rule.
+
+This is an empirical noise-relative amplitude cut. It does not estimate the
+standard error of the offset or assert a Gaussian false-detection probability.
+The frozen pre-event residual scale used by the existing +/-4-sigma recovery
+band is a different quantity and remains unchanged. A missing fit, invalid
+scale or incompatible parent makes the amplitude criterion unavailable, not
+passed. No unavailable uncertainty component becomes zero.
+
+The cut supplies one RTC Consider predicate. It does not alone distinguish a
+persistent additive jump from an isolated spike, atmospheric/optical variation,
+compound event or inadequate cubic continuation. Existing confirmed-recovery
+rules remain intact; failure to recover within the two-second search is not
+hard shift acceptance. Required source protection and quality evidence remain
+required. A candidate below this cut has not been proved harmless; its other
+causes and selected screening rules remain visible. Level-0 full-scan flagging
+requires a separately accepted jump and an exact existing-scan binding.
+
+Next bounded runtime work is implementation of this amplitude predicate and
+its exact evidence linkage, with threshold-boundary/unavailable/identity tests.
+Hard jump admission additionally requires the still-open persistent-shift and
+background-adequacy policy; it must not be inferred from successful fits or
+good-looking census examples. Subsequent checks should challenge known shifts,
+isolated spikes, atmospheric curvature and oscillations using the established
+examples and controlled injections. No releveling uncertainty program or new
+spectral-use policy is selected by this decision.
+
+Documentation-only receipt: tier 2, same owned branch/worktree, initially clean;
+parent `07cb9105c05ceab554098ccc0b990f5cc04c96b3`, tree
+`21fb8a40e326014b1be467766c8ffa8e359ce427`. The previously read AGENTS,
+toltec-context routing and three effective governance documents apply; their
+digests were rechecked unchanged against the recorded accepted bindings.
+SCI-RTC REQ-043--045/055--057/094--098/118--125 and the preceding treatment
+decision retain their separate uncertainty, admission, ownership and lifecycle
+requirements. Only this work order and `doc/REFACTOR_STATUS.md` change; all
+application code, frozen contracts and sealed evidence remain unchanged.
+Checks are diff/whitespace, scope and source preservation, plus independent
+fresh-context exact-SHA three-axis review. Build, census and Unity gates are
+not triggered by this documentation-only receipt. Its exact review/completion
+record belongs at
+`/private/tmp/citlali-rtc-jump-threshold-policy-2026-09-10`.
+No fresh canonical-ref observation, admission, ancestry reconciliation, push,
+route activation, application implementation or cleanup occurs in this receipt.
