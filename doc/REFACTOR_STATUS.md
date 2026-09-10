@@ -17,7 +17,9 @@ timing/census evidence. Publication does not imply canonical admission.
 
 The [decision in the existing RTC work order](../handoff/TIMESTREAM_SUCCESSOR_RTC_EVENT_BACKGROUND_001_2026-09-08.md#owner-decision-every-scan-intersected-by-an-accepted-transition-bound--2026-09-10)
 records the remaining narrow prerequisite: the physical transition-bounding
-method and timing inclusion convention required by SCI-RTC REQ-094/096.
+method and its support/uncertainty binding to native pair cells and existing
+scans, required by SCI-RTC REQ-094/096. The settled half-open interval convention
+from SCI-RTC notation and SCI-ALIGN REQ-031/053 remains unchanged.
 The current +/-50 ms fitting exclusion is not an accepted physical bound.
 Runtime Learn must produce that evidence, Consider must resolve accepted events
 and their scan-use consequences under the named RTC/PTC/VAL owners, and Apply

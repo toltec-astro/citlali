@@ -991,8 +991,10 @@ recommendation", accepting exclusion of the affected detector from every
 existing scan intersected by an accepted conservative physical transition
 bound. This completes the scan-selection choice left open by the level-0
 treatment discussion: a transition that spans two existing scans selects both,
-rather than assigning the event only to a candidate-center scan. It does not
-select an endpoint-touch convention or a numerical transition-bounding method.
+rather than assigning the event only to a candidate-center scan. SCI-RTC
+notation and SCI-ALIGN REQ-031/053 already select half-open intervals; preserve
+that representation and its ordinary endpoint intersection semantics. The
+new instruction selects no numerical transition-bounding method.
 The existing scan authority must supply its exact support and timing identity;
 no event window, noise block or detector-local segment becomes a new PCA scan.
 
@@ -1016,8 +1018,11 @@ required authority does not become a hard event. REQ-124/125 require the
 complete immutable plan before Apply, with no new detection during Apply.
 
 Narrow unresolved prerequisite: OWNER-060/061 leave the physical transition
-localization or bounding estimator, stable-side support/quality criterion,
-timing inclusion/equality and uncertainty treatment to explicit selection.
+localization or bounding estimator, stable-side support/quality criterion, and
+the binding of physical support and timing uncertainty into native pair cells
+and existing scan supports to explicit selection. The general half-open
+interval convention is already resolved; these open methodological details do
+not reopen it or select a new rounding or uncertainty-expansion rule.
 The current +/-50 ms trial exclusion was selected to protect background fitting;
 it is not measured or accepted physical transition support. Likewise, the
 existing +/-4-sigma/50 ms return-to-pre-event-baseline test answers recovery,
