@@ -33,7 +33,8 @@ no numerical method or new method-specific author dispatch.
 
 ## Locked Scientific Definition And Remaining Review
 
-- [Initial POINT reference within mode-aware FRUIT — r0.2 owner-review brief](method_preparation/ordinary_map/method_definition/MINIMUM_REFERENCE_METHOD_BRIEF_R0.2.md)
+- [Owner acceptance of the initial POINT reference brief](method_preparation/ordinary_map/method_definition/POINT_REFERENCE_BRIEF_ACCEPTANCE_2026-09-10.md)
+- [Accepted initial POINT reference within mode-aware FRUIT — r0.2](method_preparation/ordinary_map/method_definition/MINIMUM_REFERENCE_METHOD_BRIEF_R0.2.md)
 - [Prior minimum reference-method brief r0.1](method_preparation/ordinary_map/method_definition/MINIMUM_REFERENCE_METHOD_BRIEF_R0.1.md)
 - [Owner closure of weighting exploration and minimum reference-method next step](method_preparation/ordinary_map/method_definition/q02_review/WEIGHTING_EXPLORATION_CLOSURE_2026-09-10.md)
 - [Completed Q02 mapping screen and recommended owner disposition](../../../../../validation/fruit_q02_mapping_screen_2026-09-10/SCIENTIFIC_REPORT.md)
@@ -163,10 +164,14 @@ roles separate from evaluation, and a Gaussian evaluator confined to suitable
 responses. Evaluator inadequacy is not by itself FRUIT failure. A paper-only
 OOF substitution check finds no missing scientific role in the existing M02/M03/M05
 interface; it supplies no OOF recipe, implementation evidence or campaign.
-POINT, uniform weighting and numerical targets remain pending, with no transfer
-to other intents. The frozen core and accepted ordinary-MAP scientific definition
-do not need to be restarted. No source estimator was implemented or new numerical
-evidence generated.
+Those choices were pending at delivery. The owner has now accepted r0.2: POINT
+for paper completion, its evaluator direction and provisional targets, and
+Q02-C's uniform occurrence/rejoined MAP scientific substance solely for this
+unqualified POINT reference. Exact sources/profile adoption and numerical method/
+execution bindings remain pending; no general weighting adequacy is claimed.
+Next prepare the exact reference record under the accepted scope. The frozen
+core and accepted ordinary-MAP scientific definition do not need to be restarted.
+No source estimator was implemented or new numerical evidence generated.
 POINT/E01 is a recommended first experiment, not an approved campaign order;
 OOF is separately selectable. Exact reference recovery precedes comparison
 interpretation and independent-pointing replication precedes recommendation.

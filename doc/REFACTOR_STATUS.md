@@ -1635,6 +1635,21 @@ cross-mode acceptance are inferred. The r0.1 brief, weighting closure/results,
 frozen definitions and protected archives remain unchanged. No numerical work,
 new input access, implementation, author dispatch, run or Unity action occurred.
 
+The owner accepted the exact r0.2 brief on 2026-09-10 in the
+[POINT reference acceptance](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/POINT_REFERENCE_BRIEF_ACCEPTANCE_2026-09-10.md).
+This accepts POINT for paper completion, its evaluation-only measurement direction
+and provisional recovery targets, and Q02-C's uniform occurrence/rejoined MAP
+scientific substance for this unqualified POINT reference. The detector-noise
+adequacy question is not qualified by that choice. Exact family/QC/source/profile
+adoption and intended mode applicability remain pending before numerical use;
+A/B substance, all frozen science and the weighting closure persist. The next
+authorized paper work is one exact reference record containing recovered control
+identities and actual remaining Q01–Q06 choices. The reviewed r0.2 bytes and their
+pending-at-delivery wording remain preserved under the acceptance hash. No
+experimental order, case, input, implementation, run, author dispatch, Unity or
+production authority follows. 129081 and all reduction/archive products remain
+preserved. The local acceptance checkpoint is ready for the owner to push.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
