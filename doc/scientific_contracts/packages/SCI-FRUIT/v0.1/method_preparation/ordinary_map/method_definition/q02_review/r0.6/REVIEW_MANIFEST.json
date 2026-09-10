@@ -1,0 +1,291 @@
+{
+  "schema": "SCI-FRUIT Q02 mapping-screen review r0.6",
+  "repository_base": "a017c0753e602d76fca3581834f339cfbd61b245",
+  "created_utc": "2026-09-10T12:53:17.435108+00:00",
+  "owner_direction": "I agree with the proposed next step: prepare the mapping-screen design; new method/input/gate/execution choices pending",
+  "decision": {
+    "identity": "SCI-FRUIT-Q02-MAPPING-SCREEN-R0.6",
+    "state": "pending_owner_approval",
+    "scope": "Exact U/N4U comparator, experimental populations/adapter/geometry/support, T1 loss criteria and T2 exploratory alerts, isolated implementation, verification and one bounded local campaign"
+  },
+  "proposed_settings": {
+    "policies": [
+      "U",
+      "N4U"
+    ],
+    "window_chunks": 4,
+    "fallback": "relative gamma=1 for arithmetically unavailable training; normalize valid groups to occurrence mean one; H empty unavailable",
+    "precision_20_percent": "design objective only; no veto, fallback trigger or certified pass",
+    "T1_cases": 9,
+    "trials_per_case": 1024,
+    "T1_stochastic_maps": 36864,
+    "statistical_tail_count": 242,
+    "tail_probability": "0.05/256",
+    "T2_observations": [
+      123424,
+      152389
+    ],
+    "arrays": [
+      "a1100",
+      "a1400",
+      "a2000"
+    ],
+    "T2_native_maps": 48,
+    "T2_response_maps": 24,
+    "T2_total_maps": 72,
+    "T2_pixel_arcsec": 2,
+    "support_coverage_cut": 0.1,
+    "T2_confidence_intervals": "unavailable; no spatial-pixel or window independence assumed",
+    "T2_recovery": "pixel-defined fixed-state arithmetic check only; physical/full-procedure source recovery unavailable",
+    "wall_seconds": 7200,
+    "aggregate_memory_bytes": 4294967296,
+    "output_bytes": 2147483648,
+    "workers": 1,
+    "numerical_library_threads": 1
+  },
+  "inputs_recovered_from_approved_diagnostic": [
+    {
+      "obsnum": 152389,
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/refactor/reduced/redu00/152389/raw/toltec_commissioning_pointing_152389_ptc_timestream.nc",
+      "bytes": 138244964,
+      "sha256": "894fff53babfb0070e7d0a8b831aa88098d87f9772d4a8ecb253aef009d35643"
+    },
+    {
+      "obsnum": 123424,
+      "path": "/Users/gwilson/work_toltec/local_data/beammaps/pointings/reduced/redu01/123424/raw/toltec_commissioning_pointing_123424_ptc_timestream.nc",
+      "bytes": 760674540,
+      "sha256": "b53ad776173b1bd2b12569c87ae15ad78a3db1c76ef4515c855255b0e4f20ba9"
+    }
+  ],
+  "review_sources": [
+    {
+      "repository_path": "AGENTS.md",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 6662,
+      "sha256": "ddeb9dd6bbc1fd9fa54af998b46a4af4a99c49d2cf7842303c7e332501e366ee",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/README.md",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 16297,
+      "sha256": "351e9b7775b0bf78cba01bf4cd2fafd9591c4b43931b0dc23d82d97f0dfe82d2",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/REFACTOR_STATUS.md",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 369168,
+      "sha256": "8beda14fb510cbe1d116277cfc0d37539ef73b57d1c6266635da2cc0d2e0946b",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/PRIOR_WORK.md",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 4711,
+      "sha256": "a2a08b8f217273da563aa6a4630d9a697ca1a3440691c4431b2089fe840ba98e",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/SCIENTIFIC_OWNER_FREEZE_R0.4.md",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 6294,
+      "sha256": "04860a81899f76fa7ec9bafb2ab1324bb55a30b8b3f3c56d53ad41052af35c0a",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/program/PILOT_PROCESS_REVIEW_2026-08-16.md",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 5942,
+      "sha256": "c4c29c13d5829773cfa2e061571101edec059313a4bd1a096d13fd9878d85b07",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/program/DOWNSTREAM_CONTRACT_ROADMAP_2026-08-26.md",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 14334,
+      "sha256": "bcc5a874e1cf45894f3d4733abc0d0e3b8fe9a2480ec47ceb23c12326e4f7eee",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.2/README.md",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 5902,
+      "sha256": "3a72699e879bf0f5263c7661daf6f4e8ab8eb7d18137e288c6ea54cc6e40d5b8",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.2/WEIGHTING_TEST_PLAN.md",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 19874,
+      "sha256": "351a5de83d89234686e0943d815c80bfd51cbff498a60bf42559141d16243c88",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.3/FIRST_SCREEN_BINDINGS.md",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 13879,
+      "sha256": "45961b6c7d2e4eda0fa63bb449230814f51a4868dc9eab1a8962b3d68037d433",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.4/EXECUTION_PROPOSAL.md",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 8548,
+      "sha256": "e0804623f7d6b5a52d00100ca9ba35861a5623cc74314b135af7dcf6a816967e",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.4/INPUT_PREFLIGHT.md",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 9144,
+      "sha256": "58e03c4e1776aed4e18dbef02f7fbbae2e0611a6123d48f52866a0dbdd8124f5",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.4/DISCOVERY_PREFLIGHT.json",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 32401,
+      "sha256": "570c71068b9e35b1bcb73334e3ec4f33d9e619096ddcca069a0caf456c51e811",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.4/check_discovery_inputs.py",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 6531,
+      "sha256": "32eb8f239b16f441490da200c27e6a9b12f65d3420feb22ac393075241c4649f",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/WEIGHT_PRECISION_DIRECTION_2026-09-09.md",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 6613,
+      "sha256": "c38c52d883b9ad9816ba05193d331c8acb9b6b95511fa2fa693785983d620cb9",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/WEIGHT_PRECISION_APPROVAL_2026-09-09.md",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 2168,
+      "sha256": "92f7b3244589ce2b001755f91a7d50cbc097f313a42b8c691ac463b7cde622e7",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.5/WEIGHT_PRECISION_PROTOCOL.md",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 21006,
+      "sha256": "87fea48533182241296fbcf5644d6587bbb939d32ad662893271ff1b115a43ab",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.5/REVIEW_MANIFEST.json",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 8170,
+      "sha256": "1d601cf9c577dc9ac25ac1138e057d75221abbbceb24c183fba3fb65e58e580b",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/authority/map/SCIENTIFIC_OWNER_FREEZE_R0.7.1.md",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 4036,
+      "sha256": "91801005ba2f2bce6471a9f6f4ed0b79806c893f498b4f3cca9e81e26df39ce1",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/authority/map/src/common/equations.tex",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 7006,
+      "sha256": "36329f4cd1a103c78fcdcc5ff247a850f40aba92a09156d1aa55a1411a430c04",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/authority/map/src/common/requirements.tex",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 39138,
+      "sha256": "68acf81d6c27788495cc680a1819da5f269616493b9aba5a6e0a1d1058ba5fa7",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/inputs/authority/map/src/common/edge_cases.tex",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 9326,
+      "sha256": "47022012e79173a1778a4e5bdc6743b4691bfecb27faa3090bcf03458d87e123",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "validation/fruit_q02_weight_precision_2026-09-09/SCIENTIFIC_REPORT.md",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 9078,
+      "sha256": "ea4b5641f0118be6ae5aaf910c721becf6594c0843f5c9838d97706b3ed76406",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "validation/fruit_q02_weight_precision_2026-09-09/RESULT_MANIFEST.json",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 12016,
+      "sha256": "96bd224555329eb916d9229343e93f087182ac67e58db5b665f5481a3e60a096",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "validation/fruit_q02_weight_precision_2026-09-09/report/FULL_RESULT_TABLES.md",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 17672,
+      "sha256": "2d5591584ad9580227541125c344f1bb06eb49157ccb7266c92252e31e81d755",
+      "use": "manager preparation; no independent-author reference admission"
+    },
+    {
+      "repository_path": "validation/fruit_q02_weight_precision_2026-09-09/report/PRODUCT_VERIFICATION.json",
+      "source_commit": "a017c0753e602d76fca3581834f339cfbd61b245",
+      "bytes": 3681,
+      "sha256": "ab213a0ffd62fbeb64387848ea3328d77755f0f9066027f3e2f13072494610ef",
+      "use": "manager preparation; no independent-author reference admission"
+    }
+  ],
+  "payloads": [
+    {
+      "path": "MAPPING_SCREEN_PROTOCOL.md",
+      "bytes": 23807,
+      "sha256": "84553f9253f4a71009d5a7e5a40042ad0166c08ec02b3d95a8d7a9a084c61173"
+    },
+    {
+      "path": "README.md",
+      "bytes": 5769,
+      "sha256": "4d5e6349d9d8c1f55ad24d31d0e921d247ec72919015c25351e3fac82ee68878"
+    }
+  ],
+  "verification": {
+    "prior_review_payload_counts": {
+      "r0.1": 1,
+      "r0.2": 2,
+      "r0.3": 4,
+      "r0.4": 6,
+      "r0.5": 2
+    },
+    "prior_review_source_rows": 105,
+    "frozen_definition_payloads": 57,
+    "frozen_archive": "verified unchanged",
+    "diagnostic_result_payloads": 46,
+    "diagnostic_attempt_payloads": 33,
+    "protected_worktrees": "HEAD and tracked state unchanged",
+    "opaque_archives": "both present; neither read, hashed nor unpacked",
+    "document_links": "PASS",
+    "whitespace_and_tables": "PASS",
+    "scope": "documents and three navigation files only",
+    "new_scientific_array_access": false,
+    "numerical_experiment_implementation": false,
+    "numerical_run": false,
+    "external_inputs_opened": false,
+    "reserved_129081": "not opened",
+    "Unity_access": false,
+    "push": false
+  },
+  "scientific_state": {
+    "Q01": "frozen_unchanged",
+    "Q02_A_B": "approved_substance_unchanged",
+    "Q02_C": "open",
+    "MAP_handoff": "open",
+    "FRUIT_FEEDBACK_METHOD": "unavailable_pending_separate_owner_approval",
+    "replication": "requires separate decision and precedes policy recommendation",
+    "T3": "not authorized"
+  }
+}

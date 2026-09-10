@@ -33,6 +33,7 @@ no numerical method or new method-specific author dispatch.
 
 ## Locked Scientific Definition And Remaining Review
 
+- [Current Q02 r0.6 mapping-screen proposal and owner decision](method_preparation/ordinary_map/method_definition/q02_review/r0.6/README.md)
 - [Completed weight-precision diagnostic and next scientific decision](../../../../../validation/fruit_q02_weight_precision_2026-09-09/SCIENTIFIC_REPORT.md)
 - [Owner approval of the exact r0.5 diagnostic](method_preparation/ordinary_map/method_definition/q02_review/WEIGHT_PRECISION_APPROVAL_2026-09-09.md)
 - [Prior r0.5 diagnostic execution review](method_preparation/ordinary_map/method_definition/q02_review/r0.5/README.md)
@@ -127,10 +128,15 @@ in 152389 a1100/a1400 still has no training, preserving full-array unavailabilit
 Typical normalized precision estimates in the four available cases are about
 8–12%, with substantial 123424 tails and observed changes in child scatter.
 This is completed bounded evidence, not certified 20% precision, a selected
-window or map benefit. The next review completes a practical U/N map-screen
-design with explicit missing-training behavior and map-level evidence/loss
-criteria. One attempt and all deterministic/product checks completed within
-bounds; inputs and prior products are preserved. 129081 remains reserved.
+window or map benefit. The owner authorized preparation of the next mapping
+screen. The r0.6 review now proposes U versus four-chunk inverse scatter with
+an explicit uniform fallback for missing training, all six discovery array
+cases, synthetic loss tests and descriptive real-map alerts. Its completed
+method/input/execution decision remains open; no mapping harness or run has
+been started. T2 cannot certify real-data noninferiority or physical recovery
+from spatial scatter, and independent replication remains a later decision.
+The prior diagnostic completed one attempt and all deterministic/product checks
+within bounds; inputs and prior products are preserved. 129081 remains reserved.
 POINT/E01 is a recommended first experiment, not an approved campaign order;
 OOF is separately selectable. Exact reference recovery precedes comparison
 interpretation and independent-pointing replication precedes recommendation.

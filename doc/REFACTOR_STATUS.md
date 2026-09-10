@@ -1536,6 +1536,32 @@ Unity action or push occurred. 129081 remains reserved; historical control,
 Q01/A/B, generic/upstream freezes, earlier packets and both opaque archives
 are preserved. Numerical FRUIT availability remains unchanged.
 
+The owner then agreed to preparation of that mapping screen. The
+[Q02 r0.6 proposal](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/q02_review/r0.6/README.md)
+now supplies one exact review decision for U versus N4U: four-chunk inverse
+centered training scatter, with explicit uniform relative weight for groups
+whose training cannot define a raw weight. All admitted detector occurrences
+and all six discovery array cases stay included; fallback influence is reported.
+This proposed successor does not revise the completed diagnostic's missingness,
+select a policy, or turn the 20% objective into a detector cutoff.
+
+The proposed campaign combines the nine previously specified T1 synthetic
+cases (1,024 trials each, with a 242-tail pass/failure/inconclusive prescription)
+and 72 T2 native/response maps on the two exact existing discovery inputs.
+It binds containing pixels, c=0.1 for this isolated test, native/common support,
+background/source/morphology/leakage/influence and temporal/cost measurements.
+T2 is explicitly exploratory: observed-change alerts and fixed-state arithmetic
+response do not certify noise uncertainty, real-data noninferiority or physical
+source recovery. The old unexecuted noise-contrast selection is replaced by
+reporting both fixed observations. Those method/input/gate changes and execution
+are pending the single SCI-FRUIT-Q02-MAPPING-SCREEN-R0.6 decision, not inferred
+from preparation approval. No new array analysis, coefficient computation,
+mapping implementation or run occurred. After the screen, make a bounded
+continue-to-replication-proposal or close-exploration disposition. 129081 remains
+reserved, Q02-C/MAP handoff remain open, and FRUIT/T3, numerical source adoption,
+Unity, production and qualification remain separately gated. All prior/frozen
+packets, diagnostic products, reduction inputs and opaque archives are preserved.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
