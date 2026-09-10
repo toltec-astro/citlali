@@ -1619,6 +1619,22 @@ retain their separate review. No data analysis, method implementation, source
 adoption, run, author dispatch or 129081 scientific access occurred. Only the
 brief and current navigation were added/updated; prior evidence is unchanged.
 
+The owner then supplied the ChatGPT discussion “Reference Method Brief” for
+consideration. The [r0.2 brief](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/MINIMUM_REFERENCE_METHOD_BRIEF_R0.2.md)
+clarifies the pending proposal as an initial POINT reference within existing
+mode-aware FRUIT. It makes pointing-offset recovery primary, separates runtime
+intent policies from the shared declared recurrence and external evaluation,
+and limits the Gaussian evaluator to its adequate subset. Evaluator inadequacy
+leaves a claim unavailable and does not itself establish FRUIT failure. A bounded
+paper OOF counterexample check finds no missing scientific role in M02/M03/M05;
+no OOF numerical policy or implementation adequacy is claimed. The retrieved
+three-message discussion is retained as manager review input, not owner approval
+or independent-author science. POINT selection, provisional tolerances, uniform
+weighting/Q02-C and source adoption remain pending; no generic requirements or
+cross-mode acceptance are inferred. The r0.1 brief, weighting closure/results,
+frozen definitions and protected archives remain unchanged. No numerical work,
+new input access, implementation, author dispatch, run or Unity action occurred.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
