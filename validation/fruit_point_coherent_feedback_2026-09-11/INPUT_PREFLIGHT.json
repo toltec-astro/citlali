@@ -1,0 +1,1174 @@
+{
+  "input": {
+    "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/pointings_v4/reduced/redu00/123424/raw/toltec_commissioning_pointing_123424_rtc_timestream.nc",
+    "bytes": 139129545,
+    "sha256": "0c653c1bcf54d013e82cd51575ab8b7d139fbcb0069eb7a6335056a8a6d03c2a"
+  },
+  "version": "v4.0.0-3584-g785d18ec",
+  "units": "mJy/beam",
+  "fruit_iteration": 0,
+  "effective_maxiter": 1,
+  "shape": [
+    3628,
+    5905
+  ],
+  "reported_scan_indices": [
+    [
+      0,
+      288
+    ],
+    [
+      305,
+      593
+    ],
+    [
+      610,
+      898
+    ],
+    [
+      915,
+      1203
+    ],
+    [
+      1220,
+      1508
+    ],
+    [
+      1525,
+      1813
+    ],
+    [
+      1830,
+      2118
+    ],
+    [
+      2135,
+      2423
+    ],
+    [
+      2440,
+      2728
+    ],
+    [
+      2745,
+      3033
+    ],
+    [
+      3050,
+      3338
+    ],
+    [
+      3339,
+      3627
+    ]
+  ],
+  "recovered_edges": [
+    0,
+    289,
+    594,
+    899,
+    1204,
+    1509,
+    1814,
+    2119,
+    2424,
+    2729,
+    3034,
+    3339,
+    3628
+  ],
+  "chunk_length_corroboration": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/pointings_v4/reduced/redu00/123424/logs/chunk_summary_0.log",
+      "bytes": 1415,
+      "sha256": "7f9794bded5ded16aad71d56f2b9bbdc03fd056677fe58ca0fd506fffd442811"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/pointings_v4/reduced/redu00/123424/logs/chunk_summary_1.log",
+      "bytes": 1415,
+      "sha256": "05cf6d61dbbd3526f236fb27d3fde23a96cc4074cdaff451cb44ddf5caecb74b"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/pointings_v4/reduced/redu00/123424/logs/chunk_summary_2.log",
+      "bytes": 1415,
+      "sha256": "5898bb29b05ad78ebaf6993fcfe1ec0055a976d055ef3334699f47b77c5fa36f"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/pointings_v4/reduced/redu00/123424/logs/chunk_summary_3.log",
+      "bytes": 1414,
+      "sha256": "870cf2726652571ffea75043331f797ad7bf74ce5dcffde8dbee438e48eb8714"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/pointings_v4/reduced/redu00/123424/logs/chunk_summary_4.log",
+      "bytes": 1413,
+      "sha256": "e12018ec7c45c5532aa69ca0d2c938876791d09feab16455de59be3433105476"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/pointings_v4/reduced/redu00/123424/logs/chunk_summary_5.log",
+      "bytes": 1415,
+      "sha256": "680f52601426d5e530a380b34d375caf07a6385f614e38b1b6cd84e69a26ec69"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/pointings_v4/reduced/redu00/123424/logs/chunk_summary_6.log",
+      "bytes": 1415,
+      "sha256": "7cf4f82b82a78dbbbb3e1f1b7c74d91da6c498c6053f568a17afcf2ea79ee9bf"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/pointings_v4/reduced/redu00/123424/logs/chunk_summary_7.log",
+      "bytes": 1415,
+      "sha256": "a8f2e338ff5ea873712400dd82c81a7ef157d26627471014b2afccd6c9c07a55"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/pointings_v4/reduced/redu00/123424/logs/chunk_summary_8.log",
+      "bytes": 1415,
+      "sha256": "6ddbb98e590fe038afe9894e35a578e1bb57aae014a0c1f426abd7ded17807fb"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/pointings_v4/reduced/redu00/123424/logs/chunk_summary_9.log",
+      "bytes": 1414,
+      "sha256": "d5bc8419d3498b4916391cfe34631d521754aed8352950d0dd9eceea0eb31a2f"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/pointings_v4/reduced/redu00/123424/logs/chunk_summary_10.log",
+      "bytes": 1414,
+      "sha256": "d69e7ebfbc09e6d28b8b13caa107fc473abb6544a3b76f8485719b04bb985cd1"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/pointings_v4/reduced/redu00/123424/logs/chunk_summary_11.log",
+      "bytes": 1415,
+      "sha256": "b388fa423fb14e59f517fc9be7c26abae8f61fb4951533c2b5b4ee86320fc08f"
+    }
+  ],
+  "groups": [
+    {
+      "segment": 0,
+      "network": 0,
+      "array": 0,
+      "detectors": 203,
+      "valid": 51730
+    },
+    {
+      "segment": 0,
+      "network": 1,
+      "array": 0,
+      "detectors": 342,
+      "valid": 87192
+    },
+    {
+      "segment": 0,
+      "network": 2,
+      "array": 0,
+      "detectors": 339,
+      "valid": 86445
+    },
+    {
+      "segment": 0,
+      "network": 3,
+      "array": 0,
+      "detectors": 322,
+      "valid": 82073
+    },
+    {
+      "segment": 0,
+      "network": 4,
+      "array": 0,
+      "detectors": 312,
+      "valid": 79560
+    },
+    {
+      "segment": 0,
+      "network": 5,
+      "array": 0,
+      "detectors": 319,
+      "valid": 81345
+    },
+    {
+      "segment": 0,
+      "network": 6,
+      "array": 0,
+      "detectors": 82,
+      "valid": 20910
+    },
+    {
+      "segment": 0,
+      "network": 7,
+      "array": 1,
+      "detectors": 17,
+      "valid": 4335
+    },
+    {
+      "segment": 0,
+      "network": 8,
+      "array": 1,
+      "detectors": 245,
+      "valid": 62416
+    },
+    {
+      "segment": 0,
+      "network": 9,
+      "array": 1,
+      "detectors": 116,
+      "valid": 29298
+    },
+    {
+      "segment": 0,
+      "network": 11,
+      "array": 2,
+      "detectors": 288,
+      "valid": 73296
+    },
+    {
+      "segment": 0,
+      "network": 12,
+      "array": 2,
+      "detectors": 227,
+      "valid": 57562
+    },
+    {
+      "segment": 1,
+      "network": 0,
+      "array": 0,
+      "detectors": 201,
+      "valid": 54471
+    },
+    {
+      "segment": 1,
+      "network": 1,
+      "array": 0,
+      "detectors": 344,
+      "valid": 93224
+    },
+    {
+      "segment": 1,
+      "network": 2,
+      "array": 0,
+      "detectors": 339,
+      "valid": 91869
+    },
+    {
+      "segment": 1,
+      "network": 3,
+      "array": 0,
+      "detectors": 322,
+      "valid": 87262
+    },
+    {
+      "segment": 1,
+      "network": 4,
+      "array": 0,
+      "detectors": 322,
+      "valid": 87039
+    },
+    {
+      "segment": 1,
+      "network": 5,
+      "array": 0,
+      "detectors": 320,
+      "valid": 86668
+    },
+    {
+      "segment": 1,
+      "network": 6,
+      "array": 0,
+      "detectors": 82,
+      "valid": 22186
+    },
+    {
+      "segment": 1,
+      "network": 7,
+      "array": 1,
+      "detectors": 17,
+      "valid": 4607
+    },
+    {
+      "segment": 1,
+      "network": 8,
+      "array": 1,
+      "detectors": 246,
+      "valid": 66579
+    },
+    {
+      "segment": 1,
+      "network": 9,
+      "array": 1,
+      "detectors": 120,
+      "valid": 32498
+    },
+    {
+      "segment": 1,
+      "network": 11,
+      "array": 2,
+      "detectors": 289,
+      "valid": 77142
+    },
+    {
+      "segment": 1,
+      "network": 12,
+      "array": 2,
+      "detectors": 226,
+      "valid": 61235
+    },
+    {
+      "segment": 2,
+      "network": 0,
+      "array": 0,
+      "detectors": 202,
+      "valid": 54742
+    },
+    {
+      "segment": 2,
+      "network": 1,
+      "array": 0,
+      "detectors": 344,
+      "valid": 93224
+    },
+    {
+      "segment": 2,
+      "network": 2,
+      "array": 0,
+      "detectors": 339,
+      "valid": 91737
+    },
+    {
+      "segment": 2,
+      "network": 3,
+      "array": 0,
+      "detectors": 323,
+      "valid": 87438
+    },
+    {
+      "segment": 2,
+      "network": 4,
+      "array": 0,
+      "detectors": 317,
+      "valid": 85874
+    },
+    {
+      "segment": 2,
+      "network": 5,
+      "array": 0,
+      "detectors": 320,
+      "valid": 86720
+    },
+    {
+      "segment": 2,
+      "network": 6,
+      "array": 0,
+      "detectors": 82,
+      "valid": 22222
+    },
+    {
+      "segment": 2,
+      "network": 7,
+      "array": 1,
+      "detectors": 17,
+      "valid": 4607
+    },
+    {
+      "segment": 2,
+      "network": 8,
+      "array": 1,
+      "detectors": 245,
+      "valid": 66395
+    },
+    {
+      "segment": 2,
+      "network": 9,
+      "array": 1,
+      "detectors": 117,
+      "valid": 31508
+    },
+    {
+      "segment": 2,
+      "network": 11,
+      "array": 2,
+      "detectors": 288,
+      "valid": 77819
+    },
+    {
+      "segment": 2,
+      "network": 12,
+      "array": 2,
+      "detectors": 227,
+      "valid": 61379
+    },
+    {
+      "segment": 3,
+      "network": 0,
+      "array": 0,
+      "detectors": 204,
+      "valid": 55165
+    },
+    {
+      "segment": 3,
+      "network": 1,
+      "array": 0,
+      "detectors": 343,
+      "valid": 92888
+    },
+    {
+      "segment": 3,
+      "network": 2,
+      "array": 0,
+      "detectors": 339,
+      "valid": 91869
+    },
+    {
+      "segment": 3,
+      "network": 3,
+      "array": 0,
+      "detectors": 323,
+      "valid": 87439
+    },
+    {
+      "segment": 3,
+      "network": 4,
+      "array": 0,
+      "detectors": 314,
+      "valid": 85094
+    },
+    {
+      "segment": 3,
+      "network": 5,
+      "array": 0,
+      "detectors": 319,
+      "valid": 86449
+    },
+    {
+      "segment": 3,
+      "network": 6,
+      "array": 0,
+      "detectors": 82,
+      "valid": 22222
+    },
+    {
+      "segment": 3,
+      "network": 7,
+      "array": 1,
+      "detectors": 17,
+      "valid": 4607
+    },
+    {
+      "segment": 3,
+      "network": 8,
+      "array": 1,
+      "detectors": 244,
+      "valid": 66124
+    },
+    {
+      "segment": 3,
+      "network": 9,
+      "array": 1,
+      "detectors": 120,
+      "valid": 31978
+    },
+    {
+      "segment": 3,
+      "network": 11,
+      "array": 2,
+      "detectors": 289,
+      "valid": 78150
+    },
+    {
+      "segment": 3,
+      "network": 12,
+      "array": 2,
+      "detectors": 227,
+      "valid": 61360
+    },
+    {
+      "segment": 4,
+      "network": 0,
+      "array": 0,
+      "detectors": 204,
+      "valid": 55284
+    },
+    {
+      "segment": 4,
+      "network": 1,
+      "array": 0,
+      "detectors": 343,
+      "valid": 92953
+    },
+    {
+      "segment": 4,
+      "network": 2,
+      "array": 0,
+      "detectors": 339,
+      "valid": 91869
+    },
+    {
+      "segment": 4,
+      "network": 3,
+      "array": 0,
+      "detectors": 318,
+      "valid": 86178
+    },
+    {
+      "segment": 4,
+      "network": 4,
+      "array": 0,
+      "detectors": 315,
+      "valid": 85268
+    },
+    {
+      "segment": 4,
+      "network": 5,
+      "array": 0,
+      "detectors": 320,
+      "valid": 86641
+    },
+    {
+      "segment": 4,
+      "network": 6,
+      "array": 0,
+      "detectors": 82,
+      "valid": 22222
+    },
+    {
+      "segment": 4,
+      "network": 7,
+      "array": 1,
+      "detectors": 17,
+      "valid": 4607
+    },
+    {
+      "segment": 4,
+      "network": 8,
+      "array": 1,
+      "detectors": 246,
+      "valid": 66666
+    },
+    {
+      "segment": 4,
+      "network": 9,
+      "array": 1,
+      "detectors": 117,
+      "valid": 31671
+    },
+    {
+      "segment": 4,
+      "network": 11,
+      "array": 2,
+      "detectors": 288,
+      "valid": 77939
+    },
+    {
+      "segment": 4,
+      "network": 12,
+      "array": 2,
+      "detectors": 226,
+      "valid": 61209
+    },
+    {
+      "segment": 5,
+      "network": 0,
+      "array": 0,
+      "detectors": 204,
+      "valid": 54442
+    },
+    {
+      "segment": 5,
+      "network": 1,
+      "array": 0,
+      "detectors": 337,
+      "valid": 90948
+    },
+    {
+      "segment": 5,
+      "network": 2,
+      "array": 0,
+      "detectors": 339,
+      "valid": 91672
+    },
+    {
+      "segment": 5,
+      "network": 3,
+      "array": 0,
+      "detectors": 319,
+      "valid": 85768
+    },
+    {
+      "segment": 5,
+      "network": 4,
+      "array": 0,
+      "detectors": 301,
+      "valid": 79870
+    },
+    {
+      "segment": 5,
+      "network": 5,
+      "array": 0,
+      "detectors": 317,
+      "valid": 85107
+    },
+    {
+      "segment": 5,
+      "network": 6,
+      "array": 0,
+      "detectors": 82,
+      "valid": 22129
+    },
+    {
+      "segment": 5,
+      "network": 7,
+      "array": 1,
+      "detectors": 17,
+      "valid": 4558
+    },
+    {
+      "segment": 5,
+      "network": 8,
+      "array": 1,
+      "detectors": 245,
+      "valid": 66395
+    },
+    {
+      "segment": 5,
+      "network": 9,
+      "array": 1,
+      "detectors": 117,
+      "valid": 31228
+    },
+    {
+      "segment": 5,
+      "network": 11,
+      "array": 2,
+      "detectors": 290,
+      "valid": 78498
+    },
+    {
+      "segment": 5,
+      "network": 12,
+      "array": 2,
+      "detectors": 227,
+      "valid": 61327
+    },
+    {
+      "segment": 6,
+      "network": 0,
+      "array": 0,
+      "detectors": 202,
+      "valid": 54482
+    },
+    {
+      "segment": 6,
+      "network": 1,
+      "array": 0,
+      "detectors": 334,
+      "valid": 90514
+    },
+    {
+      "segment": 6,
+      "network": 2,
+      "array": 0,
+      "detectors": 339,
+      "valid": 91869
+    },
+    {
+      "segment": 6,
+      "network": 3,
+      "array": 0,
+      "detectors": 314,
+      "valid": 85094
+    },
+    {
+      "segment": 6,
+      "network": 4,
+      "array": 0,
+      "detectors": 308,
+      "valid": 83436
+    },
+    {
+      "segment": 6,
+      "network": 5,
+      "array": 0,
+      "detectors": 319,
+      "valid": 86356
+    },
+    {
+      "segment": 6,
+      "network": 6,
+      "array": 0,
+      "detectors": 82,
+      "valid": 22222
+    },
+    {
+      "segment": 6,
+      "network": 7,
+      "array": 1,
+      "detectors": 17,
+      "valid": 4607
+    },
+    {
+      "segment": 6,
+      "network": 8,
+      "array": 1,
+      "detectors": 245,
+      "valid": 66395
+    },
+    {
+      "segment": 6,
+      "network": 9,
+      "array": 1,
+      "detectors": 119,
+      "valid": 32249
+    },
+    {
+      "segment": 6,
+      "network": 11,
+      "array": 2,
+      "detectors": 288,
+      "valid": 78048
+    },
+    {
+      "segment": 6,
+      "network": 12,
+      "array": 2,
+      "detectors": 227,
+      "valid": 61337
+    },
+    {
+      "segment": 7,
+      "network": 0,
+      "array": 0,
+      "detectors": 204,
+      "valid": 54577
+    },
+    {
+      "segment": 7,
+      "network": 1,
+      "array": 0,
+      "detectors": 344,
+      "valid": 93224
+    },
+    {
+      "segment": 7,
+      "network": 2,
+      "array": 0,
+      "detectors": 339,
+      "valid": 91869
+    },
+    {
+      "segment": 7,
+      "network": 3,
+      "array": 0,
+      "detectors": 319,
+      "valid": 86323
+    },
+    {
+      "segment": 7,
+      "network": 4,
+      "array": 0,
+      "detectors": 308,
+      "valid": 83364
+    },
+    {
+      "segment": 7,
+      "network": 5,
+      "array": 0,
+      "detectors": 318,
+      "valid": 85724
+    },
+    {
+      "segment": 7,
+      "network": 6,
+      "array": 0,
+      "detectors": 82,
+      "valid": 22222
+    },
+    {
+      "segment": 7,
+      "network": 7,
+      "array": 1,
+      "detectors": 17,
+      "valid": 4583
+    },
+    {
+      "segment": 7,
+      "network": 8,
+      "array": 1,
+      "detectors": 244,
+      "valid": 66048
+    },
+    {
+      "segment": 7,
+      "network": 9,
+      "array": 1,
+      "detectors": 120,
+      "valid": 31886
+    },
+    {
+      "segment": 7,
+      "network": 11,
+      "array": 2,
+      "detectors": 286,
+      "valid": 76327
+    },
+    {
+      "segment": 7,
+      "network": 12,
+      "array": 2,
+      "detectors": 226,
+      "valid": 61148
+    },
+    {
+      "segment": 8,
+      "network": 0,
+      "array": 0,
+      "detectors": 204,
+      "valid": 54674
+    },
+    {
+      "segment": 8,
+      "network": 1,
+      "array": 0,
+      "detectors": 343,
+      "valid": 92886
+    },
+    {
+      "segment": 8,
+      "network": 2,
+      "array": 0,
+      "detectors": 339,
+      "valid": 91809
+    },
+    {
+      "segment": 8,
+      "network": 3,
+      "array": 0,
+      "detectors": 323,
+      "valid": 87195
+    },
+    {
+      "segment": 8,
+      "network": 4,
+      "array": 0,
+      "detectors": 322,
+      "valid": 87046
+    },
+    {
+      "segment": 8,
+      "network": 5,
+      "array": 0,
+      "detectors": 320,
+      "valid": 86464
+    },
+    {
+      "segment": 8,
+      "network": 6,
+      "array": 0,
+      "detectors": 82,
+      "valid": 22222
+    },
+    {
+      "segment": 8,
+      "network": 7,
+      "array": 1,
+      "detectors": 17,
+      "valid": 4587
+    },
+    {
+      "segment": 8,
+      "network": 8,
+      "array": 1,
+      "detectors": 246,
+      "valid": 66544
+    },
+    {
+      "segment": 8,
+      "network": 9,
+      "array": 1,
+      "detectors": 120,
+      "valid": 32098
+    },
+    {
+      "segment": 8,
+      "network": 11,
+      "array": 2,
+      "detectors": 287,
+      "valid": 77340
+    },
+    {
+      "segment": 8,
+      "network": 12,
+      "array": 2,
+      "detectors": 227,
+      "valid": 61199
+    },
+    {
+      "segment": 9,
+      "network": 0,
+      "array": 0,
+      "detectors": 203,
+      "valid": 54945
+    },
+    {
+      "segment": 9,
+      "network": 1,
+      "array": 0,
+      "detectors": 335,
+      "valid": 90679
+    },
+    {
+      "segment": 9,
+      "network": 2,
+      "array": 0,
+      "detectors": 339,
+      "valid": 91869
+    },
+    {
+      "segment": 9,
+      "network": 3,
+      "array": 0,
+      "detectors": 321,
+      "valid": 86900
+    },
+    {
+      "segment": 9,
+      "network": 4,
+      "array": 0,
+      "detectors": 320,
+      "valid": 86679
+    },
+    {
+      "segment": 9,
+      "network": 5,
+      "array": 0,
+      "detectors": 320,
+      "valid": 86701
+    },
+    {
+      "segment": 9,
+      "network": 6,
+      "array": 0,
+      "detectors": 82,
+      "valid": 22222
+    },
+    {
+      "segment": 9,
+      "network": 7,
+      "array": 1,
+      "detectors": 17,
+      "valid": 4607
+    },
+    {
+      "segment": 9,
+      "network": 8,
+      "array": 1,
+      "detectors": 246,
+      "valid": 66666
+    },
+    {
+      "segment": 9,
+      "network": 9,
+      "array": 1,
+      "detectors": 118,
+      "valid": 31978
+    },
+    {
+      "segment": 9,
+      "network": 11,
+      "array": 2,
+      "detectors": 289,
+      "valid": 78103
+    },
+    {
+      "segment": 9,
+      "network": 12,
+      "array": 2,
+      "detectors": 227,
+      "valid": 61480
+    },
+    {
+      "segment": 10,
+      "network": 0,
+      "array": 0,
+      "detectors": 203,
+      "valid": 54913
+    },
+    {
+      "segment": 10,
+      "network": 1,
+      "array": 0,
+      "detectors": 343,
+      "valid": 92914
+    },
+    {
+      "segment": 10,
+      "network": 2,
+      "array": 0,
+      "detectors": 339,
+      "valid": 91869
+    },
+    {
+      "segment": 10,
+      "network": 3,
+      "array": 0,
+      "detectors": 322,
+      "valid": 87262
+    },
+    {
+      "segment": 10,
+      "network": 4,
+      "array": 0,
+      "detectors": 301,
+      "valid": 81541
+    },
+    {
+      "segment": 10,
+      "network": 5,
+      "array": 0,
+      "detectors": 319,
+      "valid": 86416
+    },
+    {
+      "segment": 10,
+      "network": 6,
+      "array": 0,
+      "detectors": 82,
+      "valid": 22222
+    },
+    {
+      "segment": 10,
+      "network": 7,
+      "array": 1,
+      "detectors": 17,
+      "valid": 4607
+    },
+    {
+      "segment": 10,
+      "network": 8,
+      "array": 1,
+      "detectors": 244,
+      "valid": 66088
+    },
+    {
+      "segment": 10,
+      "network": 9,
+      "array": 1,
+      "detectors": 117,
+      "valid": 31139
+    },
+    {
+      "segment": 10,
+      "network": 11,
+      "array": 2,
+      "detectors": 287,
+      "valid": 77739
+    },
+    {
+      "segment": 10,
+      "network": 12,
+      "array": 2,
+      "detectors": 227,
+      "valid": 61325
+    },
+    {
+      "segment": 11,
+      "network": 0,
+      "array": 0,
+      "detectors": 204,
+      "valid": 51407
+    },
+    {
+      "segment": 11,
+      "network": 1,
+      "array": 0,
+      "detectors": 327,
+      "valid": 83385
+    },
+    {
+      "segment": 11,
+      "network": 2,
+      "array": 0,
+      "detectors": 337,
+      "valid": 85935
+    },
+    {
+      "segment": 11,
+      "network": 3,
+      "array": 0,
+      "detectors": 315,
+      "valid": 80172
+    },
+    {
+      "segment": 11,
+      "network": 4,
+      "array": 0,
+      "detectors": 311,
+      "valid": 79236
+    },
+    {
+      "segment": 11,
+      "network": 5,
+      "array": 0,
+      "detectors": 320,
+      "valid": 81433
+    },
+    {
+      "segment": 11,
+      "network": 6,
+      "array": 0,
+      "detectors": 82,
+      "valid": 20910
+    },
+    {
+      "segment": 11,
+      "network": 7,
+      "array": 1,
+      "detectors": 17,
+      "valid": 4335
+    },
+    {
+      "segment": 11,
+      "network": 8,
+      "array": 1,
+      "detectors": 245,
+      "valid": 62441
+    },
+    {
+      "segment": 11,
+      "network": 9,
+      "array": 1,
+      "detectors": 115,
+      "valid": 29325
+    },
+    {
+      "segment": 11,
+      "network": 11,
+      "array": 2,
+      "detectors": 288,
+      "valid": 72612
+    },
+    {
+      "segment": 11,
+      "network": 12,
+      "array": 2,
+      "detectors": 227,
+      "valid": 57885
+    }
+  ],
+  "source_stage": "785d18ec write_pointing_rtc_outputs serializes current ptcdata before model subtraction and PTC; fixed RTC/CAL realization",
+  "format_limit": "mini float32 signal, int8 flags; experimental legacy mJy/beam, extinction disabled; no TOA flux qualification",
+  "coordinate_formula": "x=az_phys*648000/pi+cos(el)*apt_x_t-sin(el)*apt_y_t+pointing_offset_az; y=alt_phys*648000/pi+cos(el)*apt_y_t+sin(el)*apt_x_t+pointing_offset_alt; units arcsec; same row/detector in exact file",
+  "reserved_129081": "not opened",
+  "read_scope": "input structure, identity, masks, geometry and chunk bounds; no output selection or candidate result used",
+  "supporting_inputs": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/pointings_v4/reduced/redu00/citlali_o123424_0_2_c108.yaml",
+      "bytes": 326183,
+      "sha256": "7ba1d08d4bde6ebd3b4b775399230abf3ede900359ab765e49429ac8896489eb"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/pointings_v4/reduced/redu00/123424/raw_timestream_provenance.yaml",
+      "bytes": 12441,
+      "sha256": "c5c826f9ed9415a110ce2aff2c51d14dc16e6efab7b0cb8723b6487d7a6cdc44"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/pointings_v4/reduced/redu00/123424/timestream_output_provenance.yaml",
+      "bytes": 1990,
+      "sha256": "56960d7a1c4ca7f3b8988a2ada20fca04790f72d289d9f0366595f36166b4334"
+    }
+  ]
+}

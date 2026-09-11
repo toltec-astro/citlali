@@ -1,0 +1,244 @@
+{
+  "identity": "POINT-123424-OG-RECURRENCE-EL-F2-ALPHA1-CONTROL-2026-09-02",
+  "scope": "Historical-recurrence operational benchmark; alpha=1 control with diagnostic overhead, not a claim of byte equality to the unavailable f70701ad executable",
+  "root": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced",
+  "log": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/logs/alpha-1.00-control.log",
+  "files": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/logs/alpha-1.00-control.log",
+      "bytes": 3144322,
+      "sha256": "1926f378f3402fd0f23d8473f33f5f680d510766daaba5ce442be0cffcd2be2d"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/setup/ALPHA_1P00_CONTROL.yaml",
+      "bytes": 549,
+      "sha256": "c5fc9f5c4ea86de468a0e939e07b6d60d91ec40dd50cae6a67d858983906e3a7"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/setup/ALPHA_1P00_INJECTED.yaml",
+      "bytes": 549,
+      "sha256": "74f0e27c320951552cfb23093fa8e116672ddd27570c7c2cefabd69bb731e603"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/setup/ALPHA_1P25_CONTROL.yaml",
+      "bytes": 550,
+      "sha256": "e0e84e693d75033e02e2af0b097f171bf84e1751d7aacff4a40a51bb82eafd56"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/setup/ALPHA_1P25_INJECTED.yaml",
+      "bytes": 550,
+      "sha256": "e140f68eb4d445393e7bab590f1901a7f732869d699e23b7608e4ffd3ef0f8c0"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/setup/ANALYSIS_MANIFEST_R0.1.yaml",
+      "bytes": 2817,
+      "sha256": "b566e6a301f5d3677be92753faef9ed8754382befd227209637ce68a56deafc1"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/setup/BASE_POINT_123424.yaml",
+      "bytes": 16258,
+      "sha256": "f710d1c172b5655b136ef4d8ebbff918083d37cb4974036c7af8725978d51491"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/setup/COMMON_LOCAL.yaml",
+      "bytes": 356,
+      "sha256": "716c952133ee37b51d8ca4edb783741279aa8f9117149810ab94f987c5d4e269"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/setup/FITREPORTS_LOCAL_R0.2.yaml",
+      "bytes": 121,
+      "sha256": "8caa3f8827b56eb3b716b469ce67904588d8e4dbd632c089fa926877d78f94ff"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/setup/FITREPORTS_LOCAL_R0.3.yaml",
+      "bytes": 119,
+      "sha256": "df63463a1a3e83ed5dc2969525b9600c60d88b3226f79af82fda6cba4750d629"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/setup/INPUTS_LOCAL.yaml",
+      "bytes": 2975,
+      "sha256": "d79e22e1fdfdc67e9235829f1fc2b904a82894c4fbfc10fbfa7b713409b9bc02"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu00/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bytes": 7191360,
+      "sha256": "ae87ca0c2aa92138cde61fbae7ff5868506565324834b51a38d40486d2c8a5ad"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu00/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bytes": 7191360,
+      "sha256": "191500d477c920afc170e88e5a65d8bb3583c82024577a93ab667a461ca05fba"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu00/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+      "bytes": 7191360,
+      "sha256": "b2fccbcbc8857ecb77e109e0ca6b5327405a37ca332b221fb2ef963f2f678b52"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu00/123424/raw/ppt_commissioning_pointing_123424_citlali.ecsv",
+      "bytes": 22079,
+      "sha256": "6dc9a454ae7cabf1ebb3d6268a483b7e776a4073fdddf9505c1d304cc009f5bc"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu00/runtime_provenance.yaml",
+      "bytes": 1126,
+      "sha256": "df3728c32403e164c6f77ff45d9c7e01476c862bca78f97903ca48d6eec7b766"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu01/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bytes": 7191360,
+      "sha256": "c3f68675849d2eea96d386e4e3679843a5dd377873ae3537253ea33e53799551"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu01/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bytes": 7191360,
+      "sha256": "8ce28601b7a030b0f1d2526d756d169dccb6ca4e3ba85e258bcaca88e310d118"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu01/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+      "bytes": 7191360,
+      "sha256": "c29097b59359fb3e2c86268f7b0db60de76764c2b4a048215c095089755867e5"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu01/123424/raw/ppt_commissioning_pointing_123424_citlali.ecsv",
+      "bytes": 22077,
+      "sha256": "e7427553770b18ca26dbf12c9500182cc989c789a50cb02e7ea26f2b7bddda4d"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu01/runtime_provenance.yaml",
+      "bytes": 1126,
+      "sha256": "df3728c32403e164c6f77ff45d9c7e01476c862bca78f97903ca48d6eec7b766"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu02/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bytes": 7191360,
+      "sha256": "8c6e38e8fd8dc0424925b0cf194e2aa1141f213f461e5540187f5e9d4ee3a0d2"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu02/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bytes": 7191360,
+      "sha256": "50b2f53b389fb0ebb3f021e21c87073d48e4b7de361723d46c1f75630770ace1"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu02/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+      "bytes": 7191360,
+      "sha256": "901a68290ee137b94499d94050923a20b8f21eb91cb8944cdf386f8941d287e1"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu02/123424/raw/ppt_commissioning_pointing_123424_citlali.ecsv",
+      "bytes": 22078,
+      "sha256": "620e6d0d69fcc2333ea4dc6ca16ab14ae6e8624a4df2fa373278d9e51ea7b877"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu02/runtime_provenance.yaml",
+      "bytes": 1126,
+      "sha256": "df3728c32403e164c6f77ff45d9c7e01476c862bca78f97903ca48d6eec7b766"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu03/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bytes": 7191360,
+      "sha256": "ee63f536db4d02798a87fca6b0dd8d78930ed61fa68a9a05c25ca8fc9c3e7e39"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu03/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bytes": 7191360,
+      "sha256": "d2a8d3189249c5543e8c49277dc17da2287d45d6a38e5ca384b943beb5649c08"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu03/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+      "bytes": 7191360,
+      "sha256": "fa9a9579d64c6e88817ce54370fb6991a9906ec4e555cdd993455fc44663cc82"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu03/123424/raw/ppt_commissioning_pointing_123424_citlali.ecsv",
+      "bytes": 22075,
+      "sha256": "95f60e5157b4ba8eafb5f7cd56e32441dce9977612587e16233b68a16f1931db"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu03/runtime_provenance.yaml",
+      "bytes": 1126,
+      "sha256": "df3728c32403e164c6f77ff45d9c7e01476c862bca78f97903ca48d6eec7b766"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu04/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bytes": 7191360,
+      "sha256": "5fe1f9372ff4fcb9f69e36289c2f47f91b61cf74a08ca3d3b121212b1a7f3e21"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu04/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bytes": 7191360,
+      "sha256": "fd456734a154a1865e1b8b15381df87d8488db304fc112402b21251bcf0ace8d"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu04/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+      "bytes": 7191360,
+      "sha256": "39d59fc54225af97c843e4d6c60b9fb97b49caac7e057a39677d7a2732595109"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu04/123424/raw/ppt_commissioning_pointing_123424_citlali.ecsv",
+      "bytes": 22072,
+      "sha256": "ee8921e0190ce48389686d16faca739d9e53a722794a02c65f398ca3c513d9ea"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu04/runtime_provenance.yaml",
+      "bytes": 1126,
+      "sha256": "df3728c32403e164c6f77ff45d9c7e01476c862bca78f97903ca48d6eec7b766"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu05/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bytes": 7191360,
+      "sha256": "7e4bd7fb7850d0f4a2ef4810ea57e622b80a5e75d35057262768f6737685cc64"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu05/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bytes": 7191360,
+      "sha256": "de9a86000c82abf3f4c85bee411ceafdf761e6600a1ce85b118d27edb1bee14d"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu05/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+      "bytes": 7191360,
+      "sha256": "eaacb1afa8c447c6a26a94617b12e9e8ca65c943c218096dfa3ec167392dbbd0"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu05/123424/raw/ppt_commissioning_pointing_123424_citlali.ecsv",
+      "bytes": 22065,
+      "sha256": "84311bc3e58619c1836e9701b2fc7abb704a5a4cbd5f160b9693a3b54d058be0"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu05/runtime_provenance.yaml",
+      "bytes": 1126,
+      "sha256": "df3728c32403e164c6f77ff45d9c7e01476c862bca78f97903ca48d6eec7b766"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu06/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bytes": 7191360,
+      "sha256": "b01edf32ce64f1e4ece3bbfd6b7cc6ea878b0d70c3073e585069a94bbc5c8853"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu06/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bytes": 7191360,
+      "sha256": "08a56ccb657e15897b943f5824411a9824694416c485fbcb5b52d25afb42d754"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu06/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+      "bytes": 7191360,
+      "sha256": "47ad60d2d0dd5893e4fdb09f028b471ac4320f18776fd8590f454d6801cc4ee2"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu06/123424/raw/ppt_commissioning_pointing_123424_citlali.ecsv",
+      "bytes": 22066,
+      "sha256": "b4fba92fccd11fe66da3ca46e26e72f75a90f9751620259add0986d774a0a6c6"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu06/runtime_provenance.yaml",
+      "bytes": 1126,
+      "sha256": "df3728c32403e164c6f77ff45d9c7e01476c862bca78f97903ca48d6eec7b766"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu06/citlali_merged_config.yaml",
+      "bytes": 14967,
+      "sha256": "7730ef155983f0367360493f38c072f1cd8828be3e5ee50a6deedff867c9e821"
+    }
+  ],
+  "timing_limit": "OS full-run wall and per-pass logged timing; different runtime/diagnostic/upstream/JINC/weighting scope from harness. Do not label unmatched core-vs-full speed ratio an end-to-end gain."
+}

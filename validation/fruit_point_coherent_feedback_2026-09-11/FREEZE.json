@@ -1,0 +1,40 @@
+{
+  "identity": "SCI-FRUIT-POINT-COHERENT-SCREEN-FREEZE@r0.1",
+  "utc": "2026-09-11T17:01:06.117121+00:00",
+  "base_commit": "ce1873743c2b4519265fad2c41de655b16da3f18",
+  "authorization": "SCI-FRUIT-POINT-INNOVATION-2026-09-11",
+  "candidate": "elliptical Gaussian source only; plane never fed back",
+  "state": "frozen_before_initial_candidate_trajectories",
+  "files": [
+    {
+      "path": "OWNER_DIRECTION.md",
+      "bytes": 2283,
+      "sha256": "8533bb51d1418071b8de3e191f3575572343ce24348325fcb72873c257e49c76"
+    },
+    {
+      "path": "PROTOCOL.md",
+      "bytes": 11444,
+      "sha256": "07984283c33d2e582ccf13a2aca414cb0382785dc08b6279f0086ded23a29abe"
+    },
+    {
+      "path": "INPUT_PREFLIGHT.json",
+      "bytes": 22573,
+      "sha256": "3e45798d1e2ff69b7fc007841e8b5c48237f1404448a4dd2e1ed87c248f0a07c"
+    },
+    {
+      "path": "OG_BENCHMARK.json",
+      "bytes": 16308,
+      "sha256": "3ff19ee1d318b9808106b835fd2ccc9d577501b79032444782980608cb3220e8"
+    },
+    {
+      "path": "experiment.py",
+      "bytes": 17418,
+      "sha256": "1a7e5ab8682bc3d65eb72d903bdebffe8c058f8a48e43526d5174bc1625511a0"
+    },
+    {
+      "path": "test_experiment.py",
+      "bytes": 2863,
+      "sha256": "0db979a762a07fdc2f5814d003c17cddb318d339312d941c30e0879086e4c393"
+    }
+  ]
+}
