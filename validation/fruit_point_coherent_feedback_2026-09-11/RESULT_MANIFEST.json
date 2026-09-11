@@ -1,0 +1,180 @@
+{
+  "identity": "SCI-FRUIT-POINT-COHERENT-SCREEN-RESULT@r0.2",
+  "utc": "2026-09-11T17:23:28.536228+00:00",
+  "decision": "REJECT candidate r0.2 as tested; one revision exhausted",
+  "reserved_129081": "not evaluated",
+  "review_file_paths_relative_to": "validation/fruit_point_coherent_feedback_2026-09-11",
+  "files": [
+    {
+      "path": "DECISION_EVIDENCE.json",
+      "bytes": 9408,
+      "sha256": "6aa7e6c84f4c48965d06abb84e1bfa299e94edb04bd62fce3626eebd72ebc41b"
+    },
+    {
+      "path": "FREEZE.json",
+      "bytes": 1289,
+      "sha256": "29ac8a17f8c98e0a7b10c5c325fac0a4f28e36d032850c2e5abdb33fa6a183b8"
+    },
+    {
+      "path": "FREEZE.json.sha256",
+      "bytes": 78,
+      "sha256": "0d6fba29bb0714c609f0765cf747f77fbd7502dd6d1562334771847a4b142241"
+    },
+    {
+      "path": "FREEZE_R0.2.json",
+      "bytes": 1556,
+      "sha256": "c1d10765727dee25534802f1d4cbc803613b8943014399484fb03882a22109b2"
+    },
+    {
+      "path": "FREEZE_R0.2.json.sha256",
+      "bytes": 83,
+      "sha256": "f1e4321ca8229d9c9b74ee706b534222db86b5891b2bfaf23adb72e223ff0a24"
+    },
+    {
+      "path": "INPUT_PREFLIGHT.json",
+      "bytes": 22573,
+      "sha256": "3e45798d1e2ff69b7fc007841e8b5c48237f1404448a4dd2e1ed87c248f0a07c"
+    },
+    {
+      "path": "NUMERICAL_EVIDENCE_R0.1.json",
+      "bytes": 349146,
+      "sha256": "9aa082ee581462c405adf8b1f7242e84ad235ffe41c08a2fdfb8bbed809aa9cf"
+    },
+    {
+      "path": "NUMERICAL_EVIDENCE_R0.2.json",
+      "bytes": 351048,
+      "sha256": "615c44157a1e69996415b1f8a8f85c9efac4d40c8f8514a440c5243d615c8802"
+    },
+    {
+      "path": "OG_BENCHMARK.json",
+      "bytes": 16308,
+      "sha256": "3ff19ee1d318b9808106b835fd2ccc9d577501b79032444782980608cb3220e8"
+    },
+    {
+      "path": "OWNER_DIRECTION.md",
+      "bytes": 2283,
+      "sha256": "8533bb51d1418071b8de3e191f3575572343ce24348325fcb72873c257e49c76"
+    },
+    {
+      "path": "PROTOCOL.md",
+      "bytes": 11444,
+      "sha256": "07984283c33d2e582ccf13a2aca414cb0382785dc08b6279f0086ded23a29abe"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3540,
+      "sha256": "c42044c974027a2251ddfd77ca0a1a16d8947206aef7e932f578aaa3fd647da2"
+    },
+    {
+      "path": "REVISION_R0.2.md",
+      "bytes": 2707,
+      "sha256": "a998fab6e1431e68522703dd573317dccf514fdcab5a81dddcb68524fc1d2bd0"
+    },
+    {
+      "path": "SCIENTIFIC_REPORT.md",
+      "bytes": 8016,
+      "sha256": "23b1c72f58bc9b3aef870971555607181098409b6d44a9dd761e1eafa5b71ec0"
+    },
+    {
+      "path": "VERIFICATION.json",
+      "bytes": 1016,
+      "sha256": "fb0e822ff998ade5fb0420aa07190019889d2d0132fe367d32a8bd173b01d7c5"
+    },
+    {
+      "path": "analyze.py",
+      "bytes": 6649,
+      "sha256": "fc32b8bfe28ec52a1dd4d3a8595d0495e5f78e1d27b2c7039db85f05b5a61a50"
+    },
+    {
+      "path": "analyze_r02.py",
+      "bytes": 6653,
+      "sha256": "d606a12ef5f6867af3702d831f17c5034fd08787c2608f4bfb2fdbcf2940bc78"
+    },
+    {
+      "path": "experiment.py",
+      "bytes": 17418,
+      "sha256": "1a7e5ab8682bc3d65eb72d903bdebffe8c058f8a48e43526d5174bc1625511a0"
+    },
+    {
+      "path": "experiment_r02.py",
+      "bytes": 18548,
+      "sha256": "67f78850b7d07cd2723231ad0114d607934990b9ee05531dabeb23b164b5f6ac"
+    },
+    {
+      "path": "figures/known_signal_recovery.png",
+      "bytes": 277416,
+      "sha256": "dbf45a65b36f3545e28b74bdc4878c34068c686e7009bacfe75bf44c560488d5"
+    },
+    {
+      "path": "figures/real_point_maps.png",
+      "bytes": 225274,
+      "sha256": "ed1b33b27baa29bdc8f8a9a81cac74180932c7b8deabc9504f2cbea6cbc803bc"
+    },
+    {
+      "path": "render_evidence.py",
+      "bytes": 4216,
+      "sha256": "be603249d1f023fc5ba9c0696bfed7b54c2a63c4b5ce702d5fc202e5ebba85c0"
+    },
+    {
+      "path": "test_experiment.py",
+      "bytes": 2863,
+      "sha256": "0db979a762a07fdc2f5814d003c17cddb318d339312d941c30e0879086e4c393"
+    },
+    {
+      "path": "test_revision.py",
+      "bytes": 759,
+      "sha256": "97728fdf69bf73a598d42a359cc7d0a24b2141e614cb2a9775bc637723d7b22b"
+    },
+    {
+      "path": "verify_evidence.py",
+      "bytes": 5095,
+      "sha256": "7cd0d6f5bf273c642bc8e3cf3450c649eb415343edebc1274969217bdfaf6811"
+    }
+  ],
+  "external_products": [
+    {
+      "revision": "r0.1",
+      "implementation_freeze_commit": "0f8ccd9d82c1e13da032b60b66742ee7b33cf0cf",
+      "root": "/private/tmp/sci-fruit-point-coherent-feedback-20260911-r0.1",
+      "product_manifest": {
+        "path": "/private/tmp/sci-fruit-point-coherent-feedback-20260911-r0.1/PRODUCT_MANIFEST.json",
+        "bytes": 45153,
+        "sha256": "eda123a7d2ac6f6cc747782a008016c62f6cbca5acb69a3977e614c63efd69bd"
+      },
+      "product_files": 272,
+      "product_bytes": 201215382,
+      "passes": 84,
+      "campaign": {
+        "status": "campaign_finished_see_each_trajectory",
+        "wall_seconds": 106.07724920799956,
+        "peak_rss_bytes": 2018852864,
+        "reserved_129081": "not opened"
+      },
+      "freeze_before_start": true
+    },
+    {
+      "revision": "r0.2",
+      "implementation_freeze_commit": "afce35267e4e006ed03447d7e0b705932fe640b7",
+      "root": "/private/tmp/sci-fruit-point-coherent-feedback-20260911-r0.2",
+      "product_manifest": {
+        "path": "/private/tmp/sci-fruit-point-coherent-feedback-20260911-r0.2/PRODUCT_MANIFEST.json",
+        "bytes": 45153,
+        "sha256": "56630094708f84d430c2a8f620bd9ed8e2f769337590f24cd674d6ba1c07f624"
+      },
+      "product_files": 272,
+      "product_bytes": 203858827,
+      "passes": 84,
+      "campaign": {
+        "status": "campaign_finished_see_each_trajectory",
+        "wall_seconds": 109.59230933291838,
+        "peak_rss_bytes": 2018492416,
+        "reserved_129081": "not opened"
+      },
+      "freeze_before_start": true
+    }
+  ],
+  "full_products_in_git": false,
+  "retention": "Preserve both external roots including every iteration; transfer them with this record when relocating or archiving. Product manifests bind full contents. No prior reduction product was modified.",
+  "verification": "VERIFICATION.json",
+  "frozen_prior_work": "57 ordinary-MAP r0.4 payload hashes and manifest/freeze sidecars verified unchanged; two opaque review archives checked by status only, never read"
+}

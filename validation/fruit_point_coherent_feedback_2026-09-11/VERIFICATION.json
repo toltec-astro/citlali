@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "runs": [
+    {
+      "root": "/private/tmp/sci-fruit-point-coherent-feedback-20260911-r0.1",
+      "files": 272,
+      "bytes": 201215382,
+      "complete_trajectories": 12,
+      "passes": 84,
+      "all_hashes_match": true,
+      "bootstrap_identical": true,
+      "replacement_and_no_background_checked": true
+    },
+    {
+      "root": "/private/tmp/sci-fruit-point-coherent-feedback-20260911-r0.2",
+      "files": 272,
+      "bytes": 203858827,
+      "complete_trajectories": 12,
+      "passes": 84,
+      "all_hashes_match": true,
+      "bootstrap_identical": true,
+      "replacement_and_no_background_checked": true
+    }
+  ],
+  "reference_maps_reproduce_exactly_across_revision": true,
+  "max_reference_difference": 0.0,
+  "independent_stored_state_map_max_abs_error": {
+    "P": 2.7284841053187847e-12,
+    "G": 1.908695423935569e-12
+  },
+  "input_hash_unchanged": true,
+  "OG_hashes_unchanged": true,
+  "production_or_upstream_changes": false,
+  "reserved_129081": "not opened"
+}

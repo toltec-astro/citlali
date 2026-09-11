@@ -1670,6 +1670,47 @@ request. No run, implementation, new scientific data access, author dispatch,
 Unity action or production change occurred. Weighting stays closed and all
 prior results, frozen packets, reductions and protected archives are preserved.
 
+On 2026-09-11 the owner replaced the paper-only next step with one bounded
+[POINT coherent-source innovation experiment](../validation/fruit_point_coherent_feedback_2026-09-11/OWNER_DIRECTION.md).
+The scoped authorization permitted necessary input/control/numerical definitions
+and isolated implementation/execution. OG remained an operational benchmark;
+reconstructing the unavailable historical environment, comprehensive noise
+qualification and OOF generalization were not prerequisites. This did not adopt
+upstream production source/profile successors or revise frozen science.
+
+The [completed decision report](../validation/fruit_point_coherent_feedback_2026-09-11/SCIENTIFIC_REPORT.md)
+**rejects candidate r0.2 as tested**, after its single targeted revision.
+Both matched arms used immutable-parent replacement, rank-5 residual PTC
+relearning and common ordinary-map controls. Coherent Gaussian feedback excluded
+the fitted background and imposed no expected flux or nominal centroid/width.
+Two Gaussian/null realizations and one mismatch case reran learning. The sole
+revision fixed a brightest-pixel fit-start failure using coherent numerical
+starts for the same free model; reference maps reproduced exactly.
+
+The candidate met all-array Gaussian amplitude/width/centroid targets by pass
+three (3.90 and 3.59 s), while the pixelwise reference missed joint targets
+through seven. No source was admitted in the two synthetic nulls; direct
+mismatch errors improved. Real a2000 candidate feedback nevertheless lay
+46.43 arcsec from the OG published pointing estimate, with unresolved source
+identification and large strong-array shape/peak changes. OG is not truth and
+reference a2000 identification is also unreliable; this is not a measured true
+pointing error. The conflict prevents a useful POINT recovery claim. Equal-pass
+real method time was 6.59 s reference versus 7.78 s candidate (+18.0%). The
+identified OG control's 205.38 s full latency has different upstream work and
+threading and does not establish an end-to-end speedup.
+
+Both frozen campaigns completed 168 passes with zero trajectory failures and
+about 2.02 GB peak memory. The [integrity check](../validation/fruit_point_coherent_feedback_2026-09-11/VERIFICATION.json)
+passed all product hashes, replacement/background exclusion and independent
+saved-state map reconstruction. All iteration products and both attempts remain
+retained at the [result-manifest paths](../validation/fruit_point_coherent_feedback_2026-09-11/RESULT_MANIFEST.json).
+The revision allowance is exhausted; no sweep, further diagnostic study or
+129081 evaluation follows. The bounded screen is closed with useful conditional
+mechanism evidence but no recommended policy. Any later candidate requires new
+bounded owner direction. Weighting remains closed; prior contracts, reductions
+and protected review archives remain preserved. No Unity or production change
+occurred.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

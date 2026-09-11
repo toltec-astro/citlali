@@ -2,11 +2,12 @@
 
 Status: generic SCI-FRUIT-NORMATIVE-CORE v0.1/r0.4 and ordinary-MAP scientific
 definition r0.4 remain accepted and frozen. The weighting exploration is closed.
-The initial POINT brief r0.2 is accepted, including Q02-C's limited uniform
-occurrence/rejoined-MAP substance. The exact POINT paper reference record r0.1
-and controlled amendment/profile drafts are ready for review. Numerical S/N,
-full control/plan/input bindings, source adoption and execution remain unavailable.
-Updated: 2026-09-10.
+The owner-authorized POINT coherent-source innovation screen is complete:
+candidate r0.2 is rejected as tested after one targeted revision. Controlled
+recovery improved; real source identification remains unreliable. 129081 stays
+reserved. Scoped experimental execution did not adopt production source/profile
+successors or qualify a numerical method. Earlier paper drafts remain preserved.
+Updated: 2026-09-11.
 
 ## Program Adherence And Prior-Work Recovery
 
@@ -17,8 +18,9 @@ The [current method recovery](method_preparation/ordinary_map/method_definition/
 adopts the exact frozen generic FRUIT core and inherited PTC/MAP science,
 identifies both sides of the PTC boundary, and defers empirical evidence.
 Implementation/configuration and the internal dossier remain outside independent
-authorship. New work is one exact method proposal and its upstream permissions;
-no generic FRUIT or PCA derivation is repeated.
+authorship. The latest [owner direction](../../../../../validation/fruit_point_coherent_feedback_2026-09-11/OWNER_DIRECTION.md)
+authorized one isolated numerical innovation screen, replacing the paper-only
+next step for that experiment. No generic FRUIT or PCA derivation was repeated.
 
 The [scope approval](method_preparation/ordinary_map/method_definition/r0.2/OWNER_SCOPE_APPROVAL_2026-09-08.md)
 closes D001–D005 as scope and paper-preparation directions. The
@@ -31,6 +33,8 @@ no numerical method or new method-specific author dispatch.
 
 ## Locked Scientific Definition And Remaining Review
 
+- [Completed POINT coherent-feedback screen: reject r0.2, controlled gains and real-data limitation](../../../../../validation/fruit_point_coherent_feedback_2026-09-11/SCIENTIFIC_REPORT.md)
+- [Scoped innovation authorization, input/control bindings and both candidate freezes](../../../../../validation/fruit_point_coherent_feedback_2026-09-11/README.md)
 - [POINT reference record r0.1: approved fields, recovered control and remaining choices](method_preparation/ordinary_map/method_definition/point_reference/r0.1/README.md)
 - [Owner acceptance of the initial POINT reference brief](method_preparation/ordinary_map/method_definition/POINT_REFERENCE_BRIEF_ACCEPTANCE_2026-09-10.md)
 - [Accepted initial POINT reference within mode-aware FRUIT — r0.2](method_preparation/ordinary_map/method_definition/MINIMUM_REFERENCE_METHOD_BRIEF_R0.2.md)
@@ -76,7 +80,7 @@ Relearning, repeated acceptance and apparent convergence establish no benefit
 or independent recovered signal. Optional floor, gain, coherence, pooling and
 alternative PTC choices remain experimental.
 
-The route remains `unavailable_under_current_frozen_parent_permissions`.
+The production route remains `unavailable_under_current_frozen_parent_permissions`.
 Q02-A/B and the limited POINT-reference Q02-C substance are accepted; exact
 PTC/MAP/VAL successors and POINT applicability still require controlled review
 and adoption. The [new boundary draft](method_preparation/ordinary_map/method_definition/point_reference/r0.1/SOURCE_ADOPTION_DRAFT.md)
@@ -84,15 +88,28 @@ applies S1 with distinct residual-route @2 profiles, fresh coefficient QC and
 proposed MAP @3; existing ordinary profiles remain immutable. No upstream
 source or registry is changed by the draft.
 
-The [reference record](method_preparation/ordinary_map/method_definition/point_reference/r0.1/REFERENCE_RECORD.md)
+The earlier [reference record](method_preparation/ordinary_map/method_definition/point_reference/r0.1/REFERENCE_RECORD.md)
 fills all 21 binding classes with accepted, proposed or unavailable states.
 It proposes array-wide rank 5, coverage_cut=0.1 and six passes including
 bootstrap for review, without selecting a complete effective plan or run.
 Numerical S/N remains unavailable pending an exact compatible scale; gamma/Q
 and historical threshold 100 do not fill it. Read-only C31 binary/configuration
 hash recovery is useful evidence, not the missing f70701ad historical executable
-or its complete input/environment tuple. No numerical trial or new source
-adoption occurs; 129081 remains reserved.
+or its complete input/environment tuple. These are preserved paper proposals,
+not prerequisites reinstated after the completed innovation screen.
+
+The 2026-09-11 screen used an identified immutable pre-PTC parent for 123424,
+rank 5, network grouping, common ordinary-map choices, seven retained passes and
+a small predeclared known-signal/null/mismatch set with learning rerun. After
+one frozen revision, coherent feedback met all-array Gaussian recovery targets
+by pass three; the pixelwise reference missed the joint targets within seven.
+Real a2000 candidate feedback was 46.43 arcsec from the OG published pointing
+estimate, an unresolved source-identification conflict rather than a known
+true error. Equal-pass method time increased 18.0%. The decision is **reject
+this version**, retaining the positive controlled evidence. No additional
+revision, parameter sweep or 129081 evaluation follows. Full historical
+environment reconstruction, noise qualification and OOF were not prerequisites;
+no production source adoption or general numerical qualification resulted.
 
 ## Earlier preparation history
 
