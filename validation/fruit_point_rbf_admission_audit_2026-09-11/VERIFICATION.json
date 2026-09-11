@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "focused_tests": 2,
+  "gate_rows": 378,
+  "timelines": 54,
+  "oracle_measurements": 15,
+  "all_oracle_covariances_available": true,
+  "plan_and_code_unchanged_after_diagnostic_start": true,
+  "retained_read_files_verified": 275,
+  "frozen_RBF_packet_files_verified": 49,
+  "source_of_authority": "OWNER_REASSESSMENT.md; retained-product audit only",
+  "new_cleaning_passes": 0,
+  "archive_preservation": "status only; no payload read/hash/unpack",
+  "protected_worktree_status": {
+    "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor": "?? SCI-FRUIT-v0.1-ODQ-001F-r0.8-owner-review.tar.gz\n?? SCI-FRUIT-v0.1-empirical-lane-gate-0-r0.1-owner-review.tar.gz\n",
+    "/Users/gwilson/.codex/worktrees/346d/citlali-refactor": ""
+  },
+  "starlet_proposal_state": "pending_scientific_owner_approval"
+}

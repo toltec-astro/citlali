@@ -1,0 +1,74 @@
+{
+  "identity": "SCI-FRUIT-POINT-RBF-ADMISSION-AUDIT@r0.1",
+  "utc": "2026-09-11T19:51:03.225554+00:00",
+  "base_commit": "ba59feec6e37a0086760fd291f4e4bbbf2dd0a47",
+  "state": "audit_complete_starlet_preliminary_screen_proposed_not_approved",
+  "files": [
+    {
+      "path": "ADMISSION_TIMELINES.csv",
+      "bytes": 2003,
+      "sha256": "1c5861f0154d5d6eafe28682de59ce5f695b134a0c5d90a9e7a5e486d7d70caa"
+    },
+    {
+      "path": "AUDIT_PLAN.md",
+      "bytes": 4095,
+      "sha256": "d5f9b8633f9d384525a0ebe9a7439f3c952ee514cf997019d9f2d9c6bdced3e1"
+    },
+    {
+      "path": "AUDIT_RESULTS.json",
+      "bytes": 341448,
+      "sha256": "00d7568685f3f98d1d99d8a82d98a433090941d80f602a17bc9f973dbc09cae4"
+    },
+    {
+      "path": "AUDIT_START.json",
+      "bytes": 218,
+      "sha256": "c877306c5aa8b17f511dcd56cfad11ee1f1e8e309e80d215b5b580acb0c8a1b5"
+    },
+    {
+      "path": "DIAGNOSTIC_FEATURES.npz",
+      "bytes": 402888,
+      "sha256": "4e82e955d696a8407aa0fabb4572e12d5c75a67b7a4c7e92f66617174968b25c"
+    },
+    {
+      "path": "GATES_BY_PASS.csv",
+      "bytes": 42226,
+      "sha256": "58938ad72900d5ccfc573c6dbce8d1339eb4a8d266e844eda0b69a7611f5ab69"
+    },
+    {
+      "path": "OWNER_REASSESSMENT.md",
+      "bytes": 19041,
+      "sha256": "49963ae0b988eae2340d97ffa69a2607af96e885901c7c0ddbba67b86fc47627"
+    },
+    {
+      "path": "README.md",
+      "bytes": 963,
+      "sha256": "07727881e2de6e6c2c0a84376292b059bbf5515f93f9e3395bce7cb798d937ff"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 7731,
+      "sha256": "1a3b4d9f92ba79f235c3af7dfe236b87b51c93beeb899599cd77d707367df0ad"
+    },
+    {
+      "path": "STARLET_SCREEN_PROPOSAL.md",
+      "bytes": 9867,
+      "sha256": "113b2a3e153bcf235afa4632c99e858c008e74f980e8755f8ba55a81064b53c8"
+    },
+    {
+      "path": "VERIFICATION.json",
+      "bytes": 824,
+      "sha256": "ab1a02ce9af9ef2eea9ff2536282b5eeabd5e1dd48f8b228abf7a5fc9d92161f"
+    },
+    {
+      "path": "audit.py",
+      "bytes": 8469,
+      "sha256": "9e4698f9dc6afc4da969b6b0a2593593701a575c9e486767d4e02b39eb97b335"
+    },
+    {
+      "path": "test_oracle.py",
+      "bytes": 837,
+      "sha256": "139bc7c3c6bb2b74de72ab47df9eeb0238684325c07a1a7f6aff11d4d98e8a0c"
+    }
+  ],
+  "previous_packet_manifest_sha256": "de098df0520e1085e4440dd30f34cb2f200ea40f4cf1ad01b1b691e26852e78e"
+}

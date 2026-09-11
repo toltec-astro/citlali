@@ -1789,6 +1789,32 @@ corrects the broader 129081 description: July population-quality measurements
 already characterized it. It remains reserved for new feedback comparisons,
 but is not untouched holdout data. Previous campaign-scoped records are retained.
 
+The owner subsequently supplied a [reassessment](../validation/fruit_point_rbf_admission_audit_2026-09-11/OWNER_REASSESSMENT.md).
+The completed [retained-product audit](../validation/fruit_point_rbf_admission_audit_2026-09-11/REPORT.md)
+preserves both rejections and corrects the causal interpretation: low pixel-parity
+cosine does not uniquely diagnose overfitting. All compact rejection cases fail
+the cosine gate, often despite passing both score gates. The two admitted R2
+compact cases are first admitted after map 1 and applied in maps 2–7, so late
+admission does not explain their final errors. Fully rejected synthetic outputs
+are bitwise identical across all seven maps; repetition supplies no new evidence.
+
+A declared oracle diagnostic uses the actual processed response and covariance
+of three signed template projections estimated from the other null seed, with
+coverage-compatible spatial placements. Compact source scores are 17.04–32.13
+empirical scales. Bright-coma source scores are 5.96/2.58/5.27 in array order;
+half-bright scores are 3.05/0.48/2.79. These use known processed morphology,
+overlapping placements and only two nuisance realizations; they are not
+calibrated detection significances. The comatic regime remains unestablished
+across arrays. No new parent read or cleaning pass was performed; all 275 used
+retained files and 49 frozen RBF packet payloads remain unchanged.
+
+The next proposed owner decision is a [single preliminary starlet screen](../validation/fruit_point_rbf_admission_audit_2026-09-11/STARLET_SCREEN_PROPOSAL.md):
+saved-map estimator tests, explicit multiscale support and amplitude recovery,
+and one frozen 4× brighter-coma bootstrap with learning rerun. This is proposed,
+not numerically approved or implemented. A failed screen stops before full
+trajectories; a passing screen supports a separate matched-run review. No RBF
+retuning, 129081 evaluation, Unity activity or production change is authorized.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

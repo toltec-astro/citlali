@@ -10,7 +10,11 @@ arrays. The earlier positional-prior screen retains its revise decision and
 conditional association benefit; the independent Gaussian candidate remains
 rejected. 129081 is historically characterized and reserved for new feedback
 comparisons, not untouched holdout data. Production source/profile adoption and
-numerical qualification remain unavailable. Previous results are preserved.
+numerical qualification remain unavailable. The subsequent retained-product audit
+separates whole-model admission from processed detectability and confirms that
+the two admitted compact models were applied in maps 2–7. One preliminary
+starlet screen is proposed; implementation and its new bootstrap need owner
+approval. Previous results are preserved.
 Updated: 2026-09-11.
 
 ## Program Adherence And Prior-Work Recovery
@@ -40,6 +44,9 @@ conditional-core authorship before numerical-method qualification; it grants
 no numerical method or new method-specific author dispatch.
 
 ## Locked Scientific Definition And Remaining Review
+
+- [RBF admission and processed-template audit: causal interpretation corrected, rejection retained](../../../../../validation/fruit_point_rbf_admission_audit_2026-09-11/REPORT.md)
+- [Proposed single starlet estimator screen and one brighter-coma bootstrap](../../../../../validation/fruit_point_rbf_admission_audit_2026-09-11/STARLET_SCREEN_PROPOSAL.md)
 
 - [Completed RBF screen: reject both feedback candidates; concentration remains unvalidated](../../../../../validation/fruit_point_rbf_feedback_2026-09-11/SCIENTIFIC_REPORT.md)
 - [RBF numerical evidence, costs and separate decisions](../../../../../validation/fruit_point_rbf_feedback_2026-09-11/DECISION_EVIDENCE.json)
