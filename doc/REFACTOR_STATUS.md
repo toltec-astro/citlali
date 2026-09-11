@@ -1,5 +1,17 @@
 # Citlali Refactor Status
 
+## RTC jump-loss diagnosis in progress — 2026-09-11
+
+The owner authorized a bounded known-truth comparison of the completed single
+reassessment at closure `8a66bc0203383995a2e6bdcf4261245003a20237`. Preserve
+that method and sealed 143-file control. Read saved census results for disjoint
+loss causes and detector/observation concentrations; use targeted injection
+replays for original/current/known-transition-exclusion comparisons, truth errors
+and separately labelled missed-candidate location probes. No full corpus rerun
+or scientific-policy change is authorized. Existing RTC runtime Learn/Consider
+products are exercised; the diagnostic does not deliver a new runtime phase.
+The existing RTC handoff records scope and gates.
+
 ## RTC single support reassessment completed locally — 2026-09-11
 
 The owner-approved one-pass support reassessment is implemented on exact

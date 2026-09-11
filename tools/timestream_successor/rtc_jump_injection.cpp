@@ -4,6 +4,8 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <yaml-cpp/yaml.h>
+#include "rtc_jump_loss_anchor.h"
 namespace {
 using namespace citlali::pipeline;
 namespace support=citlali::test::timestream_successor;
@@ -55,9 +57,11 @@ void bound(std::ostream &out,const RtcJumpTransition &b) {
     out<<'['<<std::setprecision(17)<<b.physical_bound.begin_unix_sec<<','<<b.physical_bound.end_unix_sec<<']';
 }
 }
+#include "rtc_jump_loss_diagnostic.h"
 int main(int argc,char **argv) {
     try {
-        if(argc!=3) throw std::invalid_argument("expected background text (or synthetic) and exact background identity");
+        const bool diagnostic=argc==4 && std::string(argv[3])=="--loss-diagnosis";
+        if(argc!=3 && !diagnostic) throw std::invalid_argument("expected background text (or synthetic), exact identity, optional --loss-diagnosis");
         Background original;original.identity=argv[2];
         if(std::string(argv[1])=="synthetic") {
             for(int i=0;i<2442;++i) {
@@ -86,6 +90,7 @@ int main(int argc,char **argv) {
         for(const auto &b:baseline.spikes->blocks()) if(b.first<=static_cast<TimestreamNativeRow>(center) && b.past_last>static_cast<TimestreamNativeRow>(center))
             for(std::size_t c=0;c<2;++c) if(b.coordinates[c].available()) sigma[c]=b.coordinates[c].scale;
         for(double s:sigma) if(!std::isfinite(s)||s<=0) throw std::invalid_argument("fixed background noise unavailable");
+        if(diagnostic) return diagnose_injections(original,sigma,std::string(argv[1])=="synthetic");
         struct Trial {const char *name;int cells;bool jump,spike;};
         const std::array trials{Trial{"unmodified",0,false,false},Trial{"sharp_step",0,true,false},Trial{"finite_3_cells",3,true,false},Trial{"finite_12_cells",12,true,false},Trial{"sharp_plus_neighbor_spike",0,true,true},Trial{"spike_only_control",0,false,true}};
         for(const auto trial:trials) {

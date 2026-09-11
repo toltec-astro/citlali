@@ -1466,3 +1466,72 @@ uncertainty and real scan binding remain required before action. Spectra remain
 owner-deferred. No filtering, stitching, new classifier, automatic flags, MAP/CAL/
 PTC/AST implementation, route activation, production, canonical admission, push,
 cleanup or subsequent work is performed. Ready for owner acceptance.
+
+
+## Owner-authorized jump-loss diagnosis — 2026-09-11
+
+`TIMESTREAM-SUCCESSOR-RTC-JUMP-LOSS-DIAGNOSIS-001` continues the same S2 module
+slot, owned branch and worktree. Owner Grant Wilson requests a bounded comparison
+against known injected truth and saved census breakdown, preserving the current
+candidate method. Literal clean base is closure
+`8a66bc0203383995a2e6bdcf4261245003a20237`, tree
+`f1253f7621a09ebdeeb57306ac1cbbf12c8b617a`; tested control source remains
+`aaa86ea1b006cb11aa740adce2429375b13e5026`. All 2,281 sealed control files were
+verified before work. New evidence and the full owner directive are at
+`/private/tmp/citlali-rtc-jump-loss-diagnosis-2026-09-11`.
+
+Tier-2 preflight reads effective AGENTS, toltec-context routing, three governance
+documents and their accepted digests/ancestry, current status, S2/router,
+architecture/conventions, SCI-RTC REQ-043--045/055/094/098/118 and the recorded
+amplitude/consistency/transition/reassessment decisions. Read-only GitHub lookup
+this turn still finds canonical `86c20b31f7300ba4063be044380b61cd0baf25eb` and
+published module `d1ed875f7aa3ccbadbe783b571f635d7ba96b2e4`. Common ancestor
+`b675bb64a7054f7b24403c79898965e8765cfd02` and moving-base/exact-admission-review
+obligations are unchanged. No canonical admission or agent push occurs.
+
+The selected sigma_delta is the fixed empirical adjacent-difference scale,
+not a parameter standard error. The 5-sigma amplitude and 2-sigma agreement
+rules explicitly forbid inventing a plateau-error denominator. Primary and
+short pre-event residual scales remain distinct and frozen for reassessment.
+This task diagnoses those decisions; it does not replace their scientific policy.
+Support/design changes do not by themselves establish an offset covariance.
+
+Included work: read saved 143-file results for mutually exclusive original-
+coordinate terminal causes, additional evaluated conditions, distinct paired-
+candidate-group counts and health/concentration context. Replay the same 18 fixed
+injection cases and add two predetermined synthetic finite-pulse controls (3 and
+12 cells), keeping original samples, validity, amplitudes, times and noise.
+Compare original measurement, current single reassessment, and a test-only fit
+whose exclusion covers known transition/pulse support. The latter preserves the
+original outer context, time basis, frozen scale roles and other candidate
+exclusions, while replacing the target's inferred exclusion; it cannot become a
+production mask. Missing candidates stay in end-to-end denominators. A supplied
+location for missed/no-candidate cases is explicitly separate diagnostic evidence.
+An ungated numerical transition probe may expose a later decision's effect but
+never counts as an end-to-end retained measurement.
+
+Expected changes are the inert injection executable and private diagnostic
+helpers, saved-result analysis/report tooling, this handoff and status. Original
+runtime headers and frozen contracts remain byte-identical. Test-only explicit-
+anchor adapters copy the exact existing recovery/transition numerical bodies,
+replacing candidate lookup only; parity with production functions is checked for
+every detected replay group/coordinate/model. They cannot fabricate immutable RTC
+producer evidence or mutate a parent. Review must inspect this copied-body scope
+and parity as a specific provenance risk. Original typed runtime Learn/Consider
+ownership is preserved; engineering learn/consider/apply is a separate workflow.
+
+Gates: unchanged sealed control and production source, exact replay of all 18
+old injection outputs, explicit denominators and sample/fit/truth/decision audits,
+focused and broad local tests, config and baseline-tool gates as applicable,
+headless visual inspection and fresh independent exact-SHA three-axis review.
+Preserve failure attempts and inherited cached-dependency bytes. Local AppleClang/
+Homebrew/cached dependencies are supplemental; no Unity/Spack reproduction or
+production qualification is required or claimed. Do not rerun the full corpus.
+
+Stop/reassess before a new scientific rule, production algorithm change, changed
+owner or runtime interface, altered original input, broadened sample context,
+new uncertainty assumption or other scope expansion. The final compact report
+must recommend at most one smallest next change, or retention unchanged; a
+recommendation is not authorization to implement it. No automatic flags, offset
+correction, filtering, spectra, new candidate policy, Apply, PTC/CAL/AST/MAP,
+route activation, production, canonical integration, push or cleanup occurs.
