@@ -1759,7 +1759,12 @@ relearning and the accepted recurrence. Cross-array coupling is excluded.
 A bounded noiseless resolution adjustment passed before the first empirical
 freeze; 189 passes over nine matched cases are authorized, with at most one
 targeted empirical revision. Concentration is a separate diagnostic and cannot
-select reconstruction, admission or stopping. Execution is pending at this freeze.
+select reconstruction, admission or stopping. The initial 189 passes completed without solver failures, but the candidate
+rejected all synthetic sources and provided no recovery improvement. The one
+allowed revision strengthens only the quadratic penalty, with the original
+basis, inputs, admission and recovery gates unchanged. Its noiseless fitted
+models show substantial smoothing bias; revised empirical execution is pending
+at this second freeze. No further tuning or automatic sweep is authorized.
 The [exposure audit](../validation/fruit_point_rbf_feedback_2026-09-11/EXPOSURE_AUDIT.md)
 corrects the broader 129081 description: July population-quality measurements
 already characterized it. It remains reserved for new feedback comparisons,

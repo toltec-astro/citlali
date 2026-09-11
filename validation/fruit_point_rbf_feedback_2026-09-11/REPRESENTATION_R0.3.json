@@ -1,0 +1,1518 @@
+{
+  "config": {
+    "spacing_arcsec": 3.0,
+    "fwhm_arcsec": 4.0,
+    "center_radius_arcsec": 94.0,
+    "lambda_value": 1.0,
+    "screened_floor": 0.01,
+    "cross_score_min": 5.0,
+    "fold_cosine_min": 0.8,
+    "maxiter": 2000,
+    "maxfun": 6000,
+    "kkt_relative_limit": 0.0001
+  },
+  "truth_config": {
+    "fft_size": 2048,
+    "pupil_radius_pixels": 64.0,
+    "obscuration_radius_fraction": 0.3,
+    "fine_pixel_arcsec": 0.5,
+    "defocus_waves": 0.6,
+    "coma_waves": 0.3,
+    "main_translation_arcsec": [
+      17.0,
+      -11.0
+    ],
+    "sub_lattice_translation_arcsec": [
+      2.0,
+      1.0
+    ]
+  },
+  "rows": [
+    {
+      "array": "a1100",
+      "kind": "compact",
+      "phase": 0,
+      "translation": [
+        17.0,
+        -11.0
+      ],
+      "lambda_value": 0.0,
+      "relative_L2": 0.00849190388641933,
+      "integrated_brightness_error": 5.9118355025145064e-05,
+      "effective_area_error": 0.00018995258682941163,
+      "concentration": {
+        "integrated_brightness": 10878.307410007583,
+        "effective_area_arcsec2": 217.59461161730792,
+        "coefficient_effective_number": 19.220962712150747,
+        "direct_effective_area_arcsec2": 217.594611617308
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10877.664340385263,
+        "effective_area_arcsec2": 217.55328680770558
+      },
+      "background": [
+        -9.256031010143578e-06,
+        -1.8085008389725433e-06,
+        1.4090609500038093e-06
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 49,
+        "function_evaluations": 51,
+        "relative_kkt": 1.1388414489502329e-07,
+        "condition_upper_bound": null,
+        "seconds": 0.05803154199384153
+      }
+    },
+    {
+      "array": "a1100",
+      "kind": "compact",
+      "phase": 0,
+      "translation": [
+        17.0,
+        -11.0
+      ],
+      "lambda_value": 1.0,
+      "relative_L2": 0.44613962691500647,
+      "integrated_brightness_error": -0.025752737307294438,
+      "effective_area_error": 1.1805089915816733,
+      "concentration": {
+        "integrated_brightness": 10597.534708110397,
+        "effective_area_arcsec2": 474.37689803234866,
+        "coefficient_effective_number": 47.79071560370965,
+        "direct_effective_area_arcsec2": 474.37689803234827
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10877.664340385263,
+        "effective_area_arcsec2": 217.55328680770558
+      },
+      "background": [
+        0.004035265608198829,
+        0.0011459427689714458,
+        -0.0006375350242513795
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 22,
+        "function_evaluations": 26,
+        "relative_kkt": 8.75972814889136e-08,
+        "condition_upper_bound": 413.92848265594654,
+        "seconds": 0.02382837515324354
+      }
+    },
+    {
+      "array": "a1100",
+      "kind": "compact",
+      "phase": 1,
+      "translation": [
+        19.0,
+        -10.0
+      ],
+      "lambda_value": 0.0,
+      "relative_L2": 0.006391962563262643,
+      "integrated_brightness_error": 4.4749798361998216e-05,
+      "effective_area_error": 0.00013006248343727655,
+      "concentration": {
+        "integrated_brightness": 10878.151113671145,
+        "effective_area_arcsec2": 217.58158232846708,
+        "coefficient_effective_number": 19.216482933835657,
+        "direct_effective_area_arcsec2": 217.58158232846714
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10877.664340385263,
+        "effective_area_arcsec2": 217.55328680770495
+      },
+      "background": [
+        -7.007627499112029e-06,
+        -1.484598451158309e-06,
+        1.0548993100375575e-06
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 51,
+        "function_evaluations": 53,
+        "relative_kkt": 1.7989411665779727e-07,
+        "condition_upper_bound": null,
+        "seconds": 0.06183349993079901
+      }
+    },
+    {
+      "array": "a1100",
+      "kind": "compact",
+      "phase": 1,
+      "translation": [
+        19.0,
+        -10.0
+      ],
+      "lambda_value": 1.0,
+      "relative_L2": 0.4461409645963492,
+      "integrated_brightness_error": -0.025764401267716286,
+      "effective_area_error": 1.180471381822147,
+      "concentration": {
+        "integrated_brightness": 10597.407831464048,
+        "effective_area_arcsec2": 474.36871590554625,
+        "coefficient_effective_number": 47.7898137516961,
+        "direct_effective_area_arcsec2": 474.36871590554625
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10877.664340385263,
+        "effective_area_arcsec2": 217.55328680770495
+      },
+      "background": [
+        0.004039123150512263,
+        0.0012777300086203645,
+        -0.0005685639116405894
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 21,
+        "function_evaluations": 24,
+        "relative_kkt": 4.120341967754938e-07,
+        "condition_upper_bound": 413.92848265594654,
+        "seconds": 0.022086875047534704
+      }
+    },
+    {
+      "array": "a1100",
+      "kind": "diffraction",
+      "phase": 0,
+      "translation": [
+        17.0,
+        -11.0
+      ],
+      "lambda_value": 0.0,
+      "relative_L2": 0.03546900183787007,
+      "integrated_brightness_error": 0.027107885150238875,
+      "effective_area_error": 0.05607575021298805,
+      "concentration": {
+        "integrated_brightness": 10871.98106131214,
+        "effective_area_arcsec2": 241.5652245841941,
+        "coefficient_effective_number": 18.2452302830958,
+        "direct_effective_area_arcsec2": 241.56522458419408
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10585.042933169436,
+        "effective_area_arcsec2": 228.73853938552756
+      },
+      "background": [
+        -0.004132747345742967,
+        -0.0008502473797477084,
+        0.00041992203122551245
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 70,
+        "function_evaluations": 73,
+        "relative_kkt": 5.267204145502248e-08,
+        "condition_upper_bound": null,
+        "seconds": 0.06714704190380871
+      }
+    },
+    {
+      "array": "a1100",
+      "kind": "diffraction",
+      "phase": 0,
+      "translation": [
+        17.0,
+        -11.0
+      ],
+      "lambda_value": 1.0,
+      "relative_L2": 0.554466320287501,
+      "integrated_brightness_error": -0.03699083135802095,
+      "effective_area_error": 1.6559868096102877,
+      "concentration": {
+        "integrated_brightness": 10193.493395111154,
+        "effective_area_arcsec2": 607.5265434574844,
+        "coefficient_effective_number": 60.35277060347547,
+        "direct_effective_area_arcsec2": 607.5265434574844
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10585.042933169436,
+        "effective_area_arcsec2": 228.73853938552756
+      },
+      "background": [
+        0.005639555225756496,
+        0.0012613005138790206,
+        -0.0006538777605091909
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 28,
+        "function_evaluations": 31,
+        "relative_kkt": 2.335299284488224e-07,
+        "condition_upper_bound": 413.92848265594654,
+        "seconds": 0.030417750123888254
+      }
+    },
+    {
+      "array": "a1100",
+      "kind": "diffraction",
+      "phase": 1,
+      "translation": [
+        19.0,
+        -10.0
+      ],
+      "lambda_value": 0.0,
+      "relative_L2": 0.03457069627598184,
+      "integrated_brightness_error": 0.027073235205762103,
+      "effective_area_error": 0.05593628348619317,
+      "concentration": {
+        "integrated_brightness": 10870.948843611322,
+        "effective_area_arcsec2": 241.50376284716833,
+        "coefficient_effective_number": 18.237259736095393,
+        "direct_effective_area_arcsec2": 241.5037628471683
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10584.395027520559,
+        "effective_area_arcsec2": 228.71054496758006
+      },
+      "background": [
+        -0.004128621751399177,
+        -0.0009846547896024528,
+        0.0004107166183244879
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 67,
+        "function_evaluations": 70,
+        "relative_kkt": 5.997296980385651e-08,
+        "condition_upper_bound": null,
+        "seconds": 0.0649229590781033
+      }
+    },
+    {
+      "array": "a1100",
+      "kind": "diffraction",
+      "phase": 1,
+      "translation": [
+        19.0,
+        -10.0
+      ],
+      "lambda_value": 1.0,
+      "relative_L2": 0.5544650285051064,
+      "integrated_brightness_error": -0.03701559612729999,
+      "effective_area_error": 1.6558710919276192,
+      "concentration": {
+        "integrated_brightness": 10192.607335930055,
+        "effective_area_arcsec2": 607.4257247984077,
+        "coefficient_effective_number": 60.342523917683366,
+        "direct_effective_area_arcsec2": 607.4257247984075
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10584.395027520559,
+        "effective_area_arcsec2": 228.71054496758006
+      },
+      "background": [
+        0.005645196954854723,
+        0.001406502601741091,
+        -0.0005800770684109861
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 28,
+        "function_evaluations": 30,
+        "relative_kkt": 1.4843026221548689e-07,
+        "condition_upper_bound": 413.92848265594654,
+        "seconds": 0.02972441609017551
+      }
+    },
+    {
+      "array": "a1100",
+      "kind": "coma",
+      "phase": 0,
+      "translation": [
+        17.0,
+        -11.0
+      ],
+      "lambda_value": 0.0,
+      "relative_L2": 0.0102509775230205,
+      "integrated_brightness_error": 0.0011912479024309697,
+      "effective_area_error": 0.00235661227673023,
+      "concentration": {
+        "integrated_brightness": 10400.530984069455,
+        "effective_area_arcsec2": 3703.9703270691825,
+        "coefficient_effective_number": 373.5223968278578,
+        "direct_effective_area_arcsec2": 3703.970327069181
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10388.15611488747,
+        "effective_area_arcsec2": 3695.2620272101244
+      },
+      "background": [
+        -0.00017814971243782142,
+        -2.4582949453779818e-05,
+        1.5113252919816732e-05
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 136,
+        "function_evaluations": 141,
+        "relative_kkt": 1.7944391809927183e-07,
+        "condition_upper_bound": null,
+        "seconds": 0.1289247921667993
+      }
+    },
+    {
+      "array": "a1100",
+      "kind": "coma",
+      "phase": 0,
+      "translation": [
+        17.0,
+        -11.0
+      ],
+      "lambda_value": 1.0,
+      "relative_L2": 0.2469199218477696,
+      "integrated_brightness_error": -0.037591411894916216,
+      "effective_area_error": 0.23850447139113062,
+      "concentration": {
+        "integrated_brightness": 9997.650659544042,
+        "effective_area_arcsec2": 4576.598543661593,
+        "coefficient_effective_number": 495.3020011868932,
+        "direct_effective_area_arcsec2": 4576.598543661593
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10388.15611488747,
+        "effective_area_arcsec2": 3695.2620272101244
+      },
+      "background": [
+        0.005628395086948153,
+        0.001633419027612661,
+        -0.0006306545175488803
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 29,
+        "function_evaluations": 33,
+        "relative_kkt": 1.4361517948167267e-06,
+        "condition_upper_bound": 413.92848265594654,
+        "seconds": 0.03168845898471773
+      }
+    },
+    {
+      "array": "a1100",
+      "kind": "coma",
+      "phase": 1,
+      "translation": [
+        19.0,
+        -10.0
+      ],
+      "lambda_value": 0.0,
+      "relative_L2": 0.015848385641762823,
+      "integrated_brightness_error": 0.0018397162005918677,
+      "effective_area_error": 0.003728052746708954,
+      "concentration": {
+        "integrated_brightness": 10390.7595498661,
+        "effective_area_arcsec2": 3697.4427241872295,
+        "coefficient_effective_number": 373.32976620840515,
+        "direct_effective_area_arcsec2": 3697.4427241872286
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10371.678604709683,
+        "effective_area_arcsec2": 3683.7096602701813
+      },
+      "background": [
+        -0.00027488614953549977,
+        -5.027139162013031e-05,
+        1.641750109848407e-05
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 164,
+        "function_evaluations": 172,
+        "relative_kkt": 5.779514803059058e-07,
+        "condition_upper_bound": null,
+        "seconds": 0.146184790879488
+      }
+    },
+    {
+      "array": "a1100",
+      "kind": "coma",
+      "phase": 1,
+      "translation": [
+        19.0,
+        -10.0
+      ],
+      "lambda_value": 1.0,
+      "relative_L2": 0.24690294987307493,
+      "integrated_brightness_error": -0.03758236338518628,
+      "effective_area_error": 0.23852190264287687,
+      "concentration": {
+        "integrated_brightness": 9981.886410473122,
+        "effective_area_arcsec2": 4562.355097221771,
+        "coefficient_effective_number": 493.78264674776204,
+        "direct_effective_area_arcsec2": 4562.355097221769
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10371.678604709683,
+        "effective_area_arcsec2": 3683.7096602701813
+      },
+      "background": [
+        0.005620334990228937,
+        0.0017827330405146735,
+        -0.0005615006058051813
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 31,
+        "function_evaluations": 34,
+        "relative_kkt": 2.760244144829321e-07,
+        "condition_upper_bound": 413.92848265594654,
+        "seconds": 0.031080417102202773
+      }
+    },
+    {
+      "array": "a1100",
+      "kind": "plane_only",
+      "max_source": 0.0,
+      "background": [
+        13.000000000000005,
+        7.0000000000000036,
+        -3.999999999999998
+      ],
+      "solver": {
+        "status": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "iterations": 0,
+        "function_evaluations": 1,
+        "relative_kkt": 1.2729531848677694e-07,
+        "condition_upper_bound": 413.92848265594654,
+        "seconds": 0.0056084999814629555
+      }
+    },
+    {
+      "array": "a1400",
+      "kind": "compact",
+      "phase": 0,
+      "translation": [
+        17.0,
+        -11.0
+      ],
+      "lambda_value": 0.0,
+      "relative_L2": 0.008491904099967551,
+      "integrated_brightness_error": 6.686200243222196e-05,
+      "effective_area_error": 0.0002053411852322995,
+      "concentration": {
+        "integrated_brightness": 10878.391642804849,
+        "effective_area_arcsec2": 217.59795945746993,
+        "coefficient_effective_number": 19.221258819715572,
+        "direct_effective_area_arcsec2": 217.5979594574699
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10877.664340385265,
+        "effective_area_arcsec2": 217.55328680770566
+      },
+      "background": [
+        -1.27560493460001e-05,
+        7.158649475674123e-08,
+        3.418317244150561e-06
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 49,
+        "function_evaluations": 51,
+        "relative_kkt": 1.1225058943846222e-07,
+        "condition_upper_bound": null,
+        "seconds": 0.05500375013798475
+      }
+    },
+    {
+      "array": "a1400",
+      "kind": "compact",
+      "phase": 0,
+      "translation": [
+        17.0,
+        -11.0
+      ],
+      "lambda_value": 1.0,
+      "relative_L2": 0.41411158600542536,
+      "integrated_brightness_error": -0.021510319684159396,
+      "effective_area_error": 1.0191798284147855,
+      "concentration": {
+        "integrated_brightness": 10643.682303006597,
+        "effective_area_arcsec2": 439.27920832745576,
+        "coefficient_effective_number": 43.96563663052496,
+        "direct_effective_area_arcsec2": 439.27920832745576
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10877.664340385265,
+        "effective_area_arcsec2": 217.55328680770566
+      },
+      "background": [
+        0.004059513559733676,
+        0.0005983252815339929,
+        -0.0009752687104469503
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 19,
+        "function_evaluations": 23,
+        "relative_kkt": 1.8754581490204633e-07,
+        "condition_upper_bound": 414.8628798868286,
+        "seconds": 0.019648707937449217
+      }
+    },
+    {
+      "array": "a1400",
+      "kind": "compact",
+      "phase": 1,
+      "translation": [
+        19.0,
+        -10.0
+      ],
+      "lambda_value": 0.0,
+      "relative_L2": 0.006391962711453891,
+      "integrated_brightness_error": 5.038697369053047e-05,
+      "effective_area_error": 0.00014128615268371725,
+      "concentration": {
+        "integrated_brightness": 10878.212432972196,
+        "effective_area_arcsec2": 217.5840240746017,
+        "coefficient_effective_number": 19.21669902133727,
+        "direct_effective_area_arcsec2": 217.58402407460161
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10877.664340385263,
+        "effective_area_arcsec2": 217.55328680770495
+      },
+      "background": [
+        -9.59520153436222e-06,
+        -1.6247444294096995e-07,
+        2.48513787417867e-06
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 52,
+        "function_evaluations": 54,
+        "relative_kkt": 1.3123863198344055e-07,
+        "condition_upper_bound": null,
+        "seconds": 0.05902462499216199
+      }
+    },
+    {
+      "array": "a1400",
+      "kind": "compact",
+      "phase": 1,
+      "translation": [
+        19.0,
+        -10.0
+      ],
+      "lambda_value": 1.0,
+      "relative_L2": 0.41411265712835954,
+      "integrated_brightness_error": -0.021512947919354097,
+      "effective_area_error": 1.0191772006270843,
+      "concentration": {
+        "integrated_brightness": 10643.65371394634,
+        "effective_area_arcsec2": 439.27863664360285,
+        "coefficient_effective_number": 43.96550248284549,
+        "direct_effective_area_arcsec2": 439.2786366436025
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10877.664340385263,
+        "effective_area_arcsec2": 217.55328680770495
+      },
+      "background": [
+        0.00404299727918995,
+        0.0007799192160151031,
+        -0.0008545120027162676
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 19,
+        "function_evaluations": 23,
+        "relative_kkt": 1.9781092631454462e-07,
+        "condition_upper_bound": 414.8628798868286,
+        "seconds": 0.02024462493136525
+      }
+    },
+    {
+      "array": "a1400",
+      "kind": "diffraction",
+      "phase": 0,
+      "translation": [
+        17.0,
+        -11.0
+      ],
+      "lambda_value": 0.0,
+      "relative_L2": 0.035478672847387684,
+      "integrated_brightness_error": 0.03028766384649728,
+      "effective_area_error": 0.06255765287439563,
+      "concentration": {
+        "integrated_brightness": 10904.626516560686,
+        "effective_area_arcsec2": 243.00275529819433,
+        "coefficient_effective_number": 18.354155677731875,
+        "direct_effective_area_arcsec2": 243.0027552981943
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10584.060063234308,
+        "effective_area_arcsec2": 228.69606617658005
+      },
+      "background": [
+        -0.005596421774831874,
+        -0.00012975001326080097,
+        0.0011750136507367834
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 72,
+        "function_evaluations": 77,
+        "relative_kkt": 2.603096750425827e-07,
+        "condition_upper_bound": null,
+        "seconds": 0.06655358290299773
+      }
+    },
+    {
+      "array": "a1400",
+      "kind": "diffraction",
+      "phase": 0,
+      "translation": [
+        17.0,
+        -11.0
+      ],
+      "lambda_value": 1.0,
+      "relative_L2": 0.5256135863449187,
+      "integrated_brightness_error": -0.03399512102405622,
+      "effective_area_error": 1.4477125046402395,
+      "concentration": {
+        "integrated_brightness": 10224.253660458779,
+        "effective_area_arcsec2": 559.7822209424467,
+        "coefficient_effective_number": 55.041826359832065,
+        "direct_effective_area_arcsec2": 559.7822209424464
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10584.060063234308,
+        "effective_area_arcsec2": 228.69606617658005
+      },
+      "background": [
+        0.006270968263678796,
+        0.00035261721738316,
+        -0.0013652650867048497
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 27,
+        "function_evaluations": 31,
+        "relative_kkt": 1.0590397996517435e-07,
+        "condition_upper_bound": 414.8628798868286,
+        "seconds": 0.028571417089551687
+      }
+    },
+    {
+      "array": "a1400",
+      "kind": "diffraction",
+      "phase": 1,
+      "translation": [
+        19.0,
+        -10.0
+      ],
+      "lambda_value": 0.0,
+      "relative_L2": 0.034580304379705946,
+      "integrated_brightness_error": 0.030179732598081488,
+      "effective_area_error": 0.06226857162769073,
+      "concentration": {
+        "integrated_brightness": 10902.678330369627,
+        "effective_area_arcsec2": 242.9007434062612,
+        "coefficient_effective_number": 18.343089520629384,
+        "direct_effective_area_arcsec2": 242.9007434062611
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10583.27783528939,
+        "effective_area_arcsec2": 228.66227044076976
+      },
+      "background": [
+        -0.005558804561979641,
+        -0.00035297258536172075,
+        0.001098459091240107
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 82,
+        "function_evaluations": 84,
+        "relative_kkt": 8.701832801789998e-08,
+        "condition_upper_bound": null,
+        "seconds": 0.0730039170011878
+      }
+    },
+    {
+      "array": "a1400",
+      "kind": "diffraction",
+      "phase": 1,
+      "translation": [
+        19.0,
+        -10.0
+      ],
+      "lambda_value": 1.0,
+      "relative_L2": 0.525611456667949,
+      "integrated_brightness_error": -0.03394670535571909,
+      "effective_area_error": 1.4479625070835294,
+      "concentration": {
+        "integrated_brightness": 10224.010420917108,
+        "effective_area_arcsec2": 559.7566648235987,
+        "coefficient_effective_number": 55.039086000054894,
+        "direct_effective_area_arcsec2": 559.756664823599
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10583.27783528939,
+        "effective_area_arcsec2": 228.66227044076976
+      },
+      "background": [
+        0.00624029074593445,
+        0.0005815489894226345,
+        -0.001215009098723875
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 25,
+        "function_evaluations": 28,
+        "relative_kkt": 1.9203718951385213e-07,
+        "condition_upper_bound": 414.8628798868286,
+        "seconds": 0.025928041897714138
+      }
+    },
+    {
+      "array": "a1400",
+      "kind": "coma",
+      "phase": 0,
+      "translation": [
+        17.0,
+        -11.0
+      ],
+      "lambda_value": 0.0,
+      "relative_L2": 0.010251998458762677,
+      "integrated_brightness_error": 0.0013362042307916155,
+      "effective_area_error": 0.002603334086842546,
+      "concentration": {
+        "integrated_brightness": 10400.61694256847,
+        "effective_area_arcsec2": 3703.871814569744,
+        "coefficient_effective_number": 373.5139886771446,
+        "direct_effective_area_arcsec2": 3703.871814569744
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10386.738139122848,
+        "effective_area_arcsec2": 3694.254436070851
+      },
+      "background": [
+        -0.00024333426007131247,
+        1.1016165070793745e-05,
+        5.11877465284469e-05
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 133,
+        "function_evaluations": 136,
+        "relative_kkt": 1.3781541662771562e-07,
+        "condition_upper_bound": null,
+        "seconds": 0.12440937501378357
+      }
+    },
+    {
+      "array": "a1400",
+      "kind": "coma",
+      "phase": 0,
+      "translation": [
+        17.0,
+        -11.0
+      ],
+      "lambda_value": 1.0,
+      "relative_L2": 0.22888440682562475,
+      "integrated_brightness_error": -0.03441593309441415,
+      "effective_area_error": 0.20769484637237423,
+      "concentration": {
+        "integrated_brightness": 10029.268854257596,
+        "effective_area_arcsec2": 4461.5320436310485,
+        "coefficient_effective_number": 481.85840137996826,
+        "direct_effective_area_arcsec2": 4461.532043631048
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10386.738139122848,
+        "effective_area_arcsec2": 3694.254436070851
+      },
+      "background": [
+        0.006188400483547287,
+        0.0008967188217240301,
+        -0.0011866600270672004
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 30,
+        "function_evaluations": 34,
+        "relative_kkt": 1.9661744357526977e-07,
+        "condition_upper_bound": 414.8628798868286,
+        "seconds": 0.030930666951462626
+      }
+    },
+    {
+      "array": "a1400",
+      "kind": "coma",
+      "phase": 1,
+      "translation": [
+        19.0,
+        -10.0
+      ],
+      "lambda_value": 0.0,
+      "relative_L2": 0.015849972616295352,
+      "integrated_brightness_error": 0.0020580262481282308,
+      "effective_area_error": 0.00410097381728769,
+      "concentration": {
+        "integrated_brightness": 10391.794555135393,
+        "effective_area_arcsec2": 3697.9424636165395,
+        "coefficient_effective_number": 373.38294031275575,
+        "direct_effective_area_arcsec2": 3697.942463616538
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10370.451892934781,
+        "effective_area_arcsec2": 3682.83923633505
+      },
+      "background": [
+        -0.00037205666700108506,
+        -5.472754192486915e-06,
+        6.297632696418134e-05
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 92,
+        "function_evaluations": 96,
+        "relative_kkt": 3.2710378803767237e-06,
+        "condition_upper_bound": null,
+        "seconds": 0.0834021249320358
+      }
+    },
+    {
+      "array": "a1400",
+      "kind": "coma",
+      "phase": 1,
+      "translation": [
+        19.0,
+        -10.0
+      ],
+      "lambda_value": 1.0,
+      "relative_L2": 0.22886585477948385,
+      "integrated_brightness_error": -0.03433802660883489,
+      "effective_area_error": 0.20783878403009837,
+      "concentration": {
+        "integrated_brightness": 10014.351039889545,
+        "effective_area_arcsec2": 4448.2760649932625,
+        "coefficient_effective_number": 480.4485416785121,
+        "direct_effective_area_arcsec2": 4448.2760649932625
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10370.451892934781,
+        "effective_area_arcsec2": 3682.83923633505
+      },
+      "background": [
+        0.006143925305832245,
+        0.0011201498702169438,
+        -0.0010409163085943931
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 29,
+        "function_evaluations": 33,
+        "relative_kkt": 2.835099768412913e-07,
+        "condition_upper_bound": 414.8628798868286,
+        "seconds": 0.029582625022158027
+      }
+    },
+    {
+      "array": "a1400",
+      "kind": "plane_only",
+      "max_source": 0.0,
+      "background": [
+        13.000000000000005,
+        7.000000000000031,
+        -3.999999999999981
+      ],
+      "solver": {
+        "status": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "iterations": 0,
+        "function_evaluations": 1,
+        "relative_kkt": 5.869522459094639e-07,
+        "condition_upper_bound": 414.8628798868286,
+        "seconds": 0.005359000060707331
+      }
+    },
+    {
+      "array": "a2000",
+      "kind": "compact",
+      "phase": 0,
+      "translation": [
+        17.0,
+        -11.0
+      ],
+      "lambda_value": 0.0,
+      "relative_L2": 0.00849190388826885,
+      "integrated_brightness_error": 5.915863930461285e-05,
+      "effective_area_error": 0.00019001742773805397,
+      "concentration": {
+        "integrated_brightness": 10878.307848206452,
+        "effective_area_arcsec2": 217.59462572366076,
+        "coefficient_effective_number": 19.220963967761865,
+        "direct_effective_area_arcsec2": 217.5946257236607
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10877.664340385263,
+        "effective_area_arcsec2": 217.55328680770558
+      },
+      "background": [
+        -9.276453997451712e-06,
+        -1.5871834268164422e-06,
+        1.7194030465445452e-06
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 49,
+        "function_evaluations": 51,
+        "relative_kkt": 1.2630360207063347e-07,
+        "condition_upper_bound": null,
+        "seconds": 0.05689883301965892
+      }
+    },
+    {
+      "array": "a2000",
+      "kind": "compact",
+      "phase": 0,
+      "translation": [
+        17.0,
+        -11.0
+      ],
+      "lambda_value": 1.0,
+      "relative_L2": 0.44576721730973445,
+      "integrated_brightness_error": -0.025696513242238206,
+      "effective_area_error": 1.178521451599758,
+      "concentration": {
+        "integrated_brightness": 10598.14629461793,
+        "effective_area_arcsec2": 473.94450217662126,
+        "coefficient_effective_number": 47.74358395064826,
+        "direct_effective_area_arcsec2": 473.9445021766212
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10877.664340385263,
+        "effective_area_arcsec2": 217.55328680770558
+      },
+      "background": [
+        0.004026798344180719,
+        0.0010597477414273822,
+        -0.0007477841324711283
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 22,
+        "function_evaluations": 26,
+        "relative_kkt": 8.770025393400238e-08,
+        "condition_upper_bound": 413.9383252428173,
+        "seconds": 0.023425207938998938
+      }
+    },
+    {
+      "array": "a2000",
+      "kind": "compact",
+      "phase": 1,
+      "translation": [
+        19.0,
+        -10.0
+      ],
+      "lambda_value": 0.0,
+      "relative_L2": 0.006391962544758472,
+      "integrated_brightness_error": 4.472750769179967e-05,
+      "effective_area_error": 0.00013002551226537484,
+      "concentration": {
+        "integrated_brightness": 10878.150871200716,
+        "effective_area_arcsec2": 217.58157428526715,
+        "coefficient_effective_number": 19.21648225348253,
+        "direct_effective_area_arcsec2": 217.58157428526718
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10877.664340385263,
+        "effective_area_arcsec2": 217.55328680770495
+      },
+      "background": [
+        -7.012579692967223e-06,
+        -1.3137104393392734e-06,
+        1.2576261732297261e-06
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 52,
+        "function_evaluations": 54,
+        "relative_kkt": 9.975858641769055e-08,
+        "condition_upper_bound": null,
+        "seconds": 0.06321899988688529
+      }
+    },
+    {
+      "array": "a2000",
+      "kind": "compact",
+      "phase": 1,
+      "translation": [
+        19.0,
+        -10.0
+      ],
+      "lambda_value": 1.0,
+      "relative_L2": 0.4457685458794438,
+      "integrated_brightness_error": -0.02570646306990587,
+      "effective_area_error": 1.1784902848837477,
+      "concentration": {
+        "integrated_brightness": 10598.038063732318,
+        "effective_area_arcsec2": 473.9377217551128,
+        "coefficient_effective_number": 47.74282582967577,
+        "direct_effective_area_arcsec2": 473.9377217551128
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10877.664340385263,
+        "effective_area_arcsec2": 217.55328680770495
+      },
+      "background": [
+        0.00402714983731316,
+        0.0011906716958458088,
+        -0.0006807967429828733
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 21,
+        "function_evaluations": 24,
+        "relative_kkt": 4.310807486042353e-07,
+        "condition_upper_bound": 413.9383252428173,
+        "seconds": 0.02110637491568923
+      }
+    },
+    {
+      "array": "a2000",
+      "kind": "diffraction",
+      "phase": 0,
+      "translation": [
+        17.0,
+        -11.0
+      ],
+      "lambda_value": 0.0,
+      "relative_L2": 0.03546901519551558,
+      "integrated_brightness_error": 0.027116402792428884,
+      "effective_area_error": 0.05609329923316886,
+      "concentration": {
+        "integrated_brightness": 10872.07122092041,
+        "effective_area_arcsec2": 241.56923872143796,
+        "coefficient_effective_number": 18.24553357018258,
+        "direct_effective_area_arcsec2": 241.56923872143804
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10585.042933169436,
+        "effective_area_arcsec2": 228.73853938552756
+      },
+      "background": [
+        -0.004136396459785269,
+        -0.0007460450457355671,
+        0.0005451646424295551
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 67,
+        "function_evaluations": 69,
+        "relative_kkt": 1.0717809080047323e-07,
+        "condition_upper_bound": null,
+        "seconds": 0.06310137500986457
+      }
+    },
+    {
+      "array": "a2000",
+      "kind": "diffraction",
+      "phase": 0,
+      "translation": [
+        17.0,
+        -11.0
+      ],
+      "lambda_value": 1.0,
+      "relative_L2": 0.5541359199167648,
+      "integrated_brightness_error": -0.03692275512619436,
+      "effective_area_error": 1.6535815946753218,
+      "concentration": {
+        "integrated_brightness": 10194.213984947766,
+        "effective_area_arcsec2": 606.9763781063522,
+        "coefficient_effective_number": 60.29121352052373,
+        "direct_effective_area_arcsec2": 606.9763781063522
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10585.042933169436,
+        "effective_area_arcsec2": 228.73853938552756
+      },
+      "background": [
+        0.005631870041869953,
+        0.0011233806688832723,
+        -0.0008195502323709738
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 28,
+        "function_evaluations": 31,
+        "relative_kkt": 2.2543104314822846e-07,
+        "condition_upper_bound": 413.9383252428173,
+        "seconds": 0.02907287492416799
+      }
+    },
+    {
+      "array": "a2000",
+      "kind": "diffraction",
+      "phase": 1,
+      "translation": [
+        19.0,
+        -10.0
+      ],
+      "lambda_value": 0.0,
+      "relative_L2": 0.034570685198128094,
+      "integrated_brightness_error": 0.02707391920548452,
+      "effective_area_error": 0.05593804055595908,
+      "concentration": {
+        "integrated_brightness": 10870.956083334582,
+        "effective_area_arcsec2": 241.50416470755204,
+        "coefficient_effective_number": 18.237288131730967,
+        "direct_effective_area_arcsec2": 241.50416470755218
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10584.395027520559,
+        "effective_area_arcsec2": 228.71054496758006
+      },
+      "background": [
+        -0.004128684140809457,
+        -0.0008812642251449993,
+        0.0005381466467300035
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 69,
+        "function_evaluations": 72,
+        "relative_kkt": 9.970629089476533e-08,
+        "condition_upper_bound": null,
+        "seconds": 0.06351162516511977
+      }
+    },
+    {
+      "array": "a2000",
+      "kind": "diffraction",
+      "phase": 1,
+      "translation": [
+        19.0,
+        -10.0
+      ],
+      "lambda_value": 1.0,
+      "relative_L2": 0.554134615153934,
+      "integrated_brightness_error": -0.03693173497382951,
+      "effective_area_error": 1.6535498413863037,
+      "concentration": {
+        "integrated_brightness": 10193.49495550585,
+        "effective_area_arcsec2": 606.8948303220972,
+        "coefficient_effective_number": 60.282889679110674,
+        "direct_effective_area_arcsec2": 606.8948303220969
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10584.395027520559,
+        "effective_area_arcsec2": 228.71054496758006
+      },
+      "background": [
+        0.005631575356793112,
+        0.0012673658760911034,
+        -0.0007480492422466514
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 29,
+        "function_evaluations": 32,
+        "relative_kkt": 1.9786153253612836e-07,
+        "condition_upper_bound": 413.9383252428173,
+        "seconds": 0.030070459004491568
+      }
+    },
+    {
+      "array": "a2000",
+      "kind": "coma",
+      "phase": 0,
+      "translation": [
+        17.0,
+        -11.0
+      ],
+      "lambda_value": 0.0,
+      "relative_L2": 0.010250982488151386,
+      "integrated_brightness_error": 0.001192091418210639,
+      "effective_area_error": 0.0023583858389453205,
+      "concentration": {
+        "integrated_brightness": 10400.53974664306,
+        "effective_area_arcsec2": 3703.9768808462895,
+        "coefficient_effective_number": 373.5230454906579,
+        "direct_effective_area_arcsec2": 3703.9768808462895
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10388.15611488747,
+        "effective_area_arcsec2": 3695.2620272101244
+      },
+      "background": [
+        -0.00017853288398604101,
+        -1.997047413101172e-05,
+        2.0294773729726786e-05
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 135,
+        "function_evaluations": 138,
+        "relative_kkt": 1.1334966309108376e-07,
+        "condition_upper_bound": null,
+        "seconds": 0.11770120891742408
+      }
+    },
+    {
+      "array": "a2000",
+      "kind": "coma",
+      "phase": 0,
+      "translation": [
+        17.0,
+        -11.0
+      ],
+      "lambda_value": 1.0,
+      "relative_L2": 0.24670395456164027,
+      "integrated_brightness_error": -0.03748173348245665,
+      "effective_area_error": 0.23826611754927862,
+      "concentration": {
+        "integrated_brightness": 9998.790016015106,
+        "effective_area_arcsec2": 4575.717763760757,
+        "coefficient_effective_number": 495.1956722837081,
+        "direct_effective_area_arcsec2": 4575.717763760757
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10388.15611488747,
+        "effective_area_arcsec2": 3695.2620272101244
+      },
+      "background": [
+        0.005608102965031746,
+        0.001495903167327565,
+        -0.0008031563733608032
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 31,
+        "function_evaluations": 35,
+        "relative_kkt": 2.108849182080409e-07,
+        "condition_upper_bound": 413.9383252428173,
+        "seconds": 0.03188995784148574
+      }
+    },
+    {
+      "array": "a2000",
+      "kind": "coma",
+      "phase": 1,
+      "translation": [
+        19.0,
+        -10.0
+      ],
+      "lambda_value": 0.0,
+      "relative_L2": 0.015848390274703177,
+      "integrated_brightness_error": 0.001839992942937796,
+      "effective_area_error": 0.0037289830744129393,
+      "concentration": {
+        "integrated_brightness": 10390.762420148767,
+        "effective_area_arcsec2": 3697.44615124438,
+        "coefficient_effective_number": 373.33023995733015,
+        "direct_effective_area_arcsec2": 3697.446151244378
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10371.678604709683,
+        "effective_area_arcsec2": 3683.7096602701813
+      },
+      "background": [
+        -0.00027501262727283886,
+        -4.312462158298969e-05,
+        2.4573124439388068e-05
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 107,
+        "function_evaluations": 114,
+        "relative_kkt": 3.0776571707511997e-06,
+        "condition_upper_bound": null,
+        "seconds": 0.09864170802757144
+      }
+    },
+    {
+      "array": "a2000",
+      "kind": "coma",
+      "phase": 1,
+      "translation": [
+        19.0,
+        -10.0
+      ],
+      "lambda_value": 1.0,
+      "relative_L2": 0.2466864392630037,
+      "integrated_brightness_error": -0.03746025288075938,
+      "effective_area_error": 0.2383043621209333,
+      "concentration": {
+        "integrated_brightness": 9983.152901379297,
+        "effective_area_arcsec2": 4561.553741099587,
+        "coefficient_effective_number": 493.6850685469382,
+        "direct_effective_area_arcsec2": 4561.553741099587
+      },
+      "truth_concentration": {
+        "integrated_brightness": 10371.678604709683,
+        "effective_area_arcsec2": 3683.7096602701813
+      },
+      "background": [
+        0.005594648918076058,
+        0.0016446225526327166,
+        -0.0007358583618562589
+      ],
+      "solver": {
+        "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "iterations": 31,
+        "function_evaluations": 34,
+        "relative_kkt": 3.0532389614079565e-07,
+        "condition_upper_bound": 413.9383252428173,
+        "seconds": 0.031084000132977962
+      }
+    },
+    {
+      "array": "a2000",
+      "kind": "plane_only",
+      "max_source": 0.0,
+      "background": [
+        13.000000000000021,
+        6.999999999999945,
+        -4.000000000000018
+      ],
+      "solver": {
+        "status": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "iterations": 0,
+        "function_evaluations": 1,
+        "relative_kkt": 9.13190129987393e-07,
+        "condition_upper_bound": 413.9383252428173,
+        "seconds": 0.00532141700387001
+      }
+    }
+  ],
+  "bases": [
+    {
+      "array": "a1100",
+      "spacing_arcsec": 3.0,
+      "fwhm_arcsec": 4.0,
+      "center_radius_arcsec": 94.0,
+      "basis_count": 3093,
+      "phi_nnz": 532937,
+      "edge_count": 6060,
+      "fit_pixels": 17373,
+      "aperture_pixels": 6361,
+      "clipped_basis_integral_range": [
+        0.00926566795050263,
+        1.0000000000000009
+      ],
+      "lambda_value": 0.0,
+      "setup_seconds": 0.3986209169961512,
+      "conditioning_bounds": [
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "array": "a1100",
+      "spacing_arcsec": 3.0,
+      "fwhm_arcsec": 4.0,
+      "center_radius_arcsec": 94.0,
+      "basis_count": 3093,
+      "phi_nnz": 532937,
+      "edge_count": 6060,
+      "fit_pixels": 17373,
+      "aperture_pixels": 6361,
+      "clipped_basis_integral_range": [
+        0.00926566795050263,
+        1.0000000000000009
+      ],
+      "lambda_value": 1.0,
+      "setup_seconds": 0.4101644582115114,
+      "conditioning_bounds": [
+        413.92848265594654,
+        415.8475143243141,
+        415.84375630691216
+      ]
+    },
+    {
+      "array": "a1400",
+      "spacing_arcsec": 3.0,
+      "fwhm_arcsec": 4.0,
+      "center_radius_arcsec": 94.0,
+      "basis_count": 3093,
+      "phi_nnz": 527724,
+      "edge_count": 6060,
+      "fit_pixels": 14446,
+      "aperture_pixels": 6289,
+      "clipped_basis_integral_range": [
+        4.9668444550740965e-05,
+        1.0000000000000009
+      ],
+      "lambda_value": 0.0,
+      "setup_seconds": 0.3999066250398755,
+      "conditioning_bounds": [
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "array": "a1400",
+      "spacing_arcsec": 3.0,
+      "fwhm_arcsec": 4.0,
+      "center_radius_arcsec": 94.0,
+      "basis_count": 3093,
+      "phi_nnz": 527724,
+      "edge_count": 6060,
+      "fit_pixels": 14446,
+      "aperture_pixels": 6289,
+      "clipped_basis_integral_range": [
+        4.9668444550740965e-05,
+        1.0000000000000009
+      ],
+      "lambda_value": 1.0,
+      "setup_seconds": 0.39514808310195804,
+      "conditioning_bounds": [
+        414.8628798868286,
+        417.1902799763391,
+        417.14679827929
+      ]
+    },
+    {
+      "array": "a2000",
+      "spacing_arcsec": 3.0,
+      "fwhm_arcsec": 4.0,
+      "center_radius_arcsec": 94.0,
+      "basis_count": 3093,
+      "phi_nnz": 532937,
+      "edge_count": 6060,
+      "fit_pixels": 17336,
+      "aperture_pixels": 6361,
+      "clipped_basis_integral_range": [
+        0.00926566795050263,
+        1.0000000000000009
+      ],
+      "lambda_value": 0.0,
+      "setup_seconds": 0.40306108398362994,
+      "conditioning_bounds": [
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "array": "a2000",
+      "spacing_arcsec": 3.0,
+      "fwhm_arcsec": 4.0,
+      "center_radius_arcsec": 94.0,
+      "basis_count": 3093,
+      "phi_nnz": 532937,
+      "edge_count": 6060,
+      "fit_pixels": 17336,
+      "aperture_pixels": 6361,
+      "clipped_basis_integral_range": [
+        0.00926566795050263,
+        1.0000000000000009
+      ],
+      "lambda_value": 1.0,
+      "setup_seconds": 0.41386037482880056,
+      "conditioning_bounds": [
+        413.9383252428173,
+        415.86561321385074,
+        415.85353616169635
+      ]
+    }
+  ],
+  "wall_seconds": 5.578324666945264,
+  "raw_representation_pass": true
+}
