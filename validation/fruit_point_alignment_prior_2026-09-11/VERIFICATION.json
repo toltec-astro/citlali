@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "passes": 154,
+  "trajectories": 22,
+  "files": 498,
+  "bytes": 387200006,
+  "freeze_before_run": true,
+  "all_product_hashes_match": true,
+  "bootstrap_identical": true,
+  "replacement_no_background_and_own_array_admission": true,
+  "relative_position_and_tension_rules": true,
+  "prior_experiment_payload_hashes_unchanged": 25,
+  "unchanged_control_cases": 6,
+  "max_control_difference": 0.0,
+  "stored_state_map_max_abs_error": {
+    "G": 1.908695423935569e-12,
+    "J": 1.8189894035458565e-12
+  },
+  "input_hash_unchanged": true,
+  "reserved_129081": "not opened"
+}

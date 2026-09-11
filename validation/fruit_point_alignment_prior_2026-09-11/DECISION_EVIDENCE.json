@@ -1,0 +1,164 @@
+{
+  "decision": "REVISE: positional association shows value; this frozen candidate fails the mismatch nondegradation gate",
+  "scientific_revision_executed": false,
+  "reserved_129081": "not evaluated because development gate failed",
+  "aligned_and_near_recovery": [
+    {
+      "case": "gauss20260911",
+      "array": "a1100",
+      "joint_target": true,
+      "amplitude_degradation_pp": -0.10060390384070139
+    },
+    {
+      "case": "gauss20260911",
+      "array": "a1400",
+      "joint_target": true,
+      "amplitude_degradation_pp": -0.11071297592308849
+    },
+    {
+      "case": "gauss20260911",
+      "array": "a2000",
+      "joint_target": true,
+      "amplitude_degradation_pp": -0.10458088598224169
+    },
+    {
+      "case": "gauss20260912",
+      "array": "a1100",
+      "joint_target": true,
+      "amplitude_degradation_pp": -0.00922496570077147
+    },
+    {
+      "case": "gauss20260912",
+      "array": "a1400",
+      "joint_target": true,
+      "amplitude_degradation_pp": 0.007022166738535063
+    },
+    {
+      "case": "gauss20260912",
+      "array": "a2000",
+      "joint_target": true,
+      "amplitude_degradation_pp": 3.420060391556845e-05
+    },
+    {
+      "case": "near20260911",
+      "array": "a1100",
+      "joint_target": true,
+      "amplitude_degradation_pp": -0.0955085342559725
+    },
+    {
+      "case": "near20260911",
+      "array": "a1400",
+      "joint_target": true,
+      "amplitude_degradation_pp": -0.04742562256121463
+    },
+    {
+      "case": "near20260911",
+      "array": "a2000",
+      "joint_target": true,
+      "amplitude_degradation_pp": -1.7505014038299294e-05
+    }
+  ],
+  "aligned_near_gate": true,
+  "mismatch": [
+    {
+      "array": "a1100",
+      "direct_error_G": 0.16189724835435354,
+      "direct_error_J": 0.2833761186893618,
+      "direct_error_ratio": 1.7503454911668461,
+      "exterior_error_G": 0.035580921990714665,
+      "exterior_error_J": 0.063312173423669,
+      "exterior_error_ratio": 1.7793854088489105
+    },
+    {
+      "array": "a1400",
+      "direct_error_G": 0.17603472524708966,
+      "direct_error_J": 0.1748890881555284,
+      "direct_error_ratio": 0.9934919823918082,
+      "exterior_error_G": 0.0640447413050755,
+      "exterior_error_J": 0.06596969920771266,
+      "exterior_error_ratio": 1.0300564552750346
+    },
+    {
+      "array": "a2000",
+      "direct_error_G": 0.29212160456521774,
+      "direct_error_J": 0.16076698259735575,
+      "direct_error_ratio": 0.5503426658108187,
+      "exterior_error_G": 0.08477642143511228,
+      "exterior_error_J": 0.051120143459409975,
+      "exterior_error_ratio": 0.602999543906642
+    }
+  ],
+  "mismatch_gate": false,
+  "null_array_passes": 42,
+  "null_promotions": 0,
+  "absent_a2000_passes": 7,
+  "absent_a2000_promotions": 0,
+  "contaminant_without_anchor_promotions": 0,
+  "outside_offset_tension_passes": 7,
+  "outside_offset_final_recovery": false,
+  "source_contaminant_a2000": {
+    "amplitude_bias_G": -0.19481070031676817,
+    "amplitude_bias_J": -0.0007491275412351284,
+    "width_bias_G": [
+      -0.04887172715958121,
+      -0.10856127253423842
+    ],
+    "width_bias_J": [
+      -0.006566016821142107,
+      -0.002310964912110247
+    ],
+    "centroid_error_arcsec_J": 0.03330937396412606,
+    "direct_D_error_G": 1.482350351317107,
+    "direct_D_error_J": 0.08124966698700908
+  },
+  "source_contaminant_joint_gate": true,
+  "real_effect": [
+    {
+      "array": "a1100",
+      "peak_change_fraction": -9.882670592986642e-08,
+      "centroid_change_arcsec": 0.055924263482459574,
+      "width_change_fraction": [
+        -0.0008694431584967965,
+        -0.0006462617236130397
+      ],
+      "residual_rms_G": 88.42371789874157,
+      "residual_rms_J": 88.46866478171748,
+      "exterior_rms_G": 24.070408463725485,
+      "exterior_rms_J": 24.12165432734371
+    },
+    {
+      "array": "a1400",
+      "peak_change_fraction": 0.02206548527836727,
+      "centroid_change_arcsec": 0.44533531149657285,
+      "width_change_fraction": [
+        -0.05967967842832045,
+        0.003491198265377138
+      ],
+      "residual_rms_G": 61.51619081919819,
+      "residual_rms_J": 61.24890371846624,
+      "exterior_rms_G": 42.72824213627204,
+      "exterior_rms_J": 42.58407943651834
+    },
+    {
+      "array": "a2000",
+      "peak_change_fraction": -0.4222453224620172,
+      "centroid_change_arcsec": 0.22732991843841135,
+      "width_change_fraction": [
+        -0.08761022618848802,
+        -0.28828836923786305
+      ],
+      "residual_rms_G": 29.789931202930543,
+      "residual_rms_J": 29.856161761646504,
+      "exterior_rms_G": 29.73952061842522,
+      "exterior_rms_J": 29.777785484400457
+    }
+  ],
+  "real_method_seconds": {
+    "G": 6.567567334044725,
+    "J": 7.862439000047743
+  },
+  "real_method_cost_ratio": 1.1971615364018742,
+  "real_a2000_max_map_change_from_bootstrap": 0.0,
+  "real_a2000_feedback_admissions": 0,
+  "interpretation": "A bound on relative physical alignment is not automatically a bound on a processed-map Gaussian centroid. This hard-constraint candidate cannot establish true geometric misalignment from its boundary hits. The mismatch deterioration is measured; exact equality versus numerical fit branch is not isolated as its cause."
+}

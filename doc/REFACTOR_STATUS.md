@@ -1721,9 +1721,36 @@ on a direction-free offset disk, retaining independent amplitudes/shapes and
 own-array admission. The exact-sharing and disk approximations are declared,
 not measured calibration distributions. Eleven cases, two arms and seven passes
 are fixed; source-absent, contaminant and offset-mismatch tests rerun learning.
-The candidate is being frozen before execution; 129081 remains reserved.
-This new scoped authority does not reopen the rejected screen or adopt production
-sources. No automatic scientific revision or parameter sweep is included.
+The candidate was frozen at `ae758cd2f` before execution. The
+[completed report](../validation/fruit_point_alignment_prior_2026-09-11/SCIENTIFIC_REPORT.md)
+recommends **REVISE**: the prior reduces a2000 desired-source amplitude error
+from −19.48% to −0.07% in the remote-contaminant test, reaching joint recovery
+targets in two passes, while the independent-fit control misses them through
+seven. Both aligned Gaussian realizations and the small-offset case pass final
+recovery; null and absent-a2000 tests create no source feedback. However, the
+two-component mismatch increases a1100 direct map error from 0.162 to 0.283
+mJy/beam (+75.0%) and exterior error by 77.9%, failing the frozen +10% gate.
+The exact causal division between shared-position inference and its numerical
+fit solution is not established. No gate or candidate was changed afterward.
+
+Real a2000 feedback is rejected at the 2-arcsec boundary throughout, preventing
+reinforcement of the remote feature while leaving its output at bootstrap;
+this is not recovered weak-source pointing or a measurement of true array
+misalignment. Physical alignment is distinct from a processed-map fit centroid.
+Real seven-pass method time is 6.57 s control versus 7.86 s candidate (+19.7%).
+All 154 passes completed in 175.96 s with 2.19 GB peak memory and no trajectory
+failure. The [integrity verification](../validation/fruit_point_alignment_prior_2026-09-11/VERIFICATION.json)
+passes all 498 product hashes, exact reproduction of the previous six-case
+control, and independent stored-state reconstruction. All products are retained
+at the [manifest paths](../validation/fruit_point_alignment_prior_2026-09-11/RESULT_MANIFEST.json).
+
+The bounded test is closed with a useful conditional association benefit and a
+revise recommendation. A further numerical revision addressing morphology cost
+and the relation between geometric alignment and fitted-position uncertainty
+requires a new bounded owner decision. 129081 remains reserved because the
+development gate failed. This authority does not reopen the rejected predecessor,
+adopt production sources, or authorize a parameter sweep; frozen science,
+weighting closure, prior reductions and protected archives remain unchanged.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the

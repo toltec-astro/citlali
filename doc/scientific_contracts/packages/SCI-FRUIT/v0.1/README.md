@@ -2,11 +2,12 @@
 
 Status: generic SCI-FRUIT-NORMATIVE-CORE v0.1/r0.4 and ordinary-MAP scientific
 definition r0.4 remain accepted and frozen. The weighting exploration is closed.
-The owner-authorized POINT coherent-source innovation screen is complete:
-candidate r0.2 is rejected as tested after one targeted revision. Controlled
-recovery improved; real source identification remains unreliable. 129081 stays
-reserved. Scoped experimental execution did not adopt production source/profile
-successors or qualify a numerical method. Earlier paper drafts remain preserved.
+The subsequent POINT relative-position prior screen is complete, with a
+**revise** recommendation: positional association improves contaminated-source
+recovery, but a1100 mismatch error fails the nondegradation gate. The earlier
+independent coherent candidate r0.2 remains rejected. 129081 stays reserved.
+Scoped execution did not adopt production source/profile successors or qualify
+a numerical method. Earlier paper drafts and experiments remain preserved.
 Updated: 2026-09-11.
 
 ## Program Adherence And Prior-Work Recovery
@@ -18,9 +19,11 @@ The [current method recovery](method_preparation/ordinary_map/method_definition/
 adopts the exact frozen generic FRUIT core and inherited PTC/MAP science,
 identifies both sides of the PTC boundary, and defers empirical evidence.
 Implementation/configuration and the internal dossier remain outside independent
-authorship. The latest [owner direction](../../../../../validation/fruit_point_coherent_feedback_2026-09-11/OWNER_DIRECTION.md)
-authorized one isolated numerical innovation screen, replacing the paper-only
-next step for that experiment. No generic FRUIT or PCA derivation was repeated.
+authorship. The [innovation direction](../../../../../validation/fruit_point_coherent_feedback_2026-09-11/OWNER_DIRECTION.md)
+authorized the first isolated screen; the latest
+[prior-test authorization](../../../../../validation/fruit_point_alignment_prior_2026-09-11/OWNER_DIRECTION.md)
+corrected the alignment premise and authorized its bounded successor. No generic
+FRUIT or PCA derivation was repeated.
 
 The [scope approval](method_preparation/ordinary_map/method_definition/r0.2/OWNER_SCOPE_APPROVAL_2026-09-08.md)
 closes D001–D005 as scope and paper-preparation directions. The
@@ -33,6 +36,8 @@ no numerical method or new method-specific author dispatch.
 
 ## Locked Scientific Definition And Remaining Review
 
+- [Completed relative-position prior test: revise, measured association benefit and morphology cost](../../../../../validation/fruit_point_alignment_prior_2026-09-11/SCIENTIFIC_REPORT.md)
+- [Corrected alignment evidence, prior-test protocol and source freeze](../../../../../validation/fruit_point_alignment_prior_2026-09-11/README.md)
 - [Completed POINT coherent-feedback screen: reject r0.2, controlled gains and real-data limitation](../../../../../validation/fruit_point_coherent_feedback_2026-09-11/SCIENTIFIC_REPORT.md)
 - [Scoped innovation authorization, input/control bindings and both candidate freezes](../../../../../validation/fruit_point_coherent_feedback_2026-09-11/README.md)
 - [POINT reference record r0.1: approved fields, recovered control and remaining choices](method_preparation/ordinary_map/method_definition/point_reference/r0.1/README.md)
@@ -110,6 +115,20 @@ this version**, retaining the positive controlled evidence. No additional
 revision, parameter sweep or 129081 evaluation follows. Full historical
 environment reconstruction, noise qualification and OOF were not prerequisites;
 no production source adoption or general numerical qualification resulted.
+
+The subsequently authorized positional-prior screen used a free common
+a1100/a1400 position and separate a2000 displacement within 2 arcsec, keeping
+amplitude/shape parameters independent. These are declared approximations to
+the owner's accurate reference-pair alignment and small systematic a2000 offset,
+not a measured offset vector or uncertainty distribution. The prior reduces
+contaminated a2000 source amplitude error from −19.48% to −0.07% and creates
+no null/absent-array source feedback. It increases a1100 mismatch direct and
+exterior errors by 75.0% and 77.9%, failing the predeclared gate. Real a2000
+feedback is rejected without recovered weak-source pointing. Method time rises
+19.7%. All 154 passes and verification are retained. The recommendation is
+**revise the positional inference**, with no further revision/run or reserved
+129081 evaluation initiated. The next scientific decision is one bounded
+revision addressing this morphology cost and processed-position uncertainty.
 
 ## Earlier preparation history
 

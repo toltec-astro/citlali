@@ -1,0 +1,114 @@
+{
+  "identity": "SCI-FRUIT-POINT-ALIGNMENT-PRIOR-RESULT@r0.1",
+  "utc": "2026-09-11T17:59:20.626413+00:00",
+  "decision": "REVISE; mismatch nondegradation gate failed despite useful source-association benefit",
+  "implementation_freeze_commit": "ae758cd2f4b07f6acff063bd9fe2a1a45ba9ebb2",
+  "files": [
+    {
+      "path": "DECISION_EVIDENCE.json",
+      "bytes": 5216,
+      "sha256": "ce4f4a41ac7279454394871d4acc6d151f94d02e559f7266135296519dc26402"
+    },
+    {
+      "path": "FREEZE.json",
+      "bytes": 1698,
+      "sha256": "d79312e714e661732f81d10c7b3e678308aa75fc1dd67abee1f31d39e8d88b5f"
+    },
+    {
+      "path": "FREEZE.json.sha256",
+      "bytes": 78,
+      "sha256": "9fabaf761ef11c3c3aadb99ab3a2b24cf37645e8043c14d71360b237d97c8298"
+    },
+    {
+      "path": "NUMERICAL_EVIDENCE.json",
+      "bytes": 2078870,
+      "sha256": "80042114d9c530146feabfdf5798eacd1c4f4feb971ae1a03686a0fbda9d5167"
+    },
+    {
+      "path": "OWNER_DIRECTION.md",
+      "bytes": 1785,
+      "sha256": "4aea9a296e4efe0a7d8dac3a46e9b8f200ffa7fd23f6894973f7a0bbc43d27b3"
+    },
+    {
+      "path": "PROTOCOL.md",
+      "bytes": 9202,
+      "sha256": "5234d743c608a5a3dff34b9bf2acd04de49f05d335cee6677a3034ebb0fb1d2c"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2535,
+      "sha256": "9692122ac04f4478f817be1a621959e65ab09f469a6c7c8d50208a0b1e7d4f3f"
+    },
+    {
+      "path": "SCIENTIFIC_REPORT.md",
+      "bytes": 7850,
+      "sha256": "ad84c6b7cd2e1fa1a8069242cb6a28825eb80f18d41d920efc1de9a458c48aee"
+    },
+    {
+      "path": "VERIFICATION.json",
+      "bytes": 594,
+      "sha256": "32a7c88b44ddb1be3e33d54aff91b98022ab4de7e6dced1fb41e88e961424848"
+    },
+    {
+      "path": "analyze.py",
+      "bytes": 4797,
+      "sha256": "b5d1e6a718a6ddf6d5f072d43c0c878cb058cd1084794df14b883c52f798a9e4"
+    },
+    {
+      "path": "experiment.py",
+      "bytes": 11361,
+      "sha256": "aa245b5b1386874089f833e731b6c71f87d30627510f8637ea01e6747fae1508"
+    },
+    {
+      "path": "figures/a2000_maps.png",
+      "bytes": 164855,
+      "sha256": "7534c436e908718e5d09b1413c40f6cd6e56aa1889ace6b99a8cc41604ece39b"
+    },
+    {
+      "path": "figures/a2000_recovery.png",
+      "bytes": 173959,
+      "sha256": "0bbe35fa97823f8773e2b687078371c470ad24bd491afede0ad808e73dab64ea"
+    },
+    {
+      "path": "render_evidence.py",
+      "bytes": 3673,
+      "sha256": "1d4a89892ba3f9a2885816fa474ae9ab3b6a608a5dd6d13bc5c3b30fa49f32bf"
+    },
+    {
+      "path": "summarize.py",
+      "bytes": 4880,
+      "sha256": "2bd5af4a9d4b5c77d5f5c916c7a1d09eabfa474fba1b34b639115e5c3372ae2b"
+    },
+    {
+      "path": "test_prior.py",
+      "bytes": 3040,
+      "sha256": "b528d0fdd96017affa7664a541df18ee4cc2d210e1755011cf51a876b5315207"
+    },
+    {
+      "path": "verify_evidence.py",
+      "bytes": 5204,
+      "sha256": "d4dfca7e818860dabb6b8fe2bd3d32a91dc79cc24050be85dfcdadec5f8817f0"
+    }
+  ],
+  "paths_relative_to": "validation/fruit_point_alignment_prior_2026-09-11",
+  "external_products": {
+    "root": "/private/tmp/sci-fruit-point-alignment-prior-20260911-r0.1",
+    "manifest": {
+      "path": "/private/tmp/sci-fruit-point-alignment-prior-20260911-r0.1/PRODUCT_MANIFEST.json",
+      "bytes": 83664,
+      "sha256": "5c44ec4443ca6852df71264164f4b8e6821bf6c3d18505e1bfa2f0307a095d56"
+    },
+    "campaign": {
+      "wall_seconds": 175.963772875024,
+      "peak_rss_bytes": 2192277504,
+      "cases": 11,
+      "reserved_129081": "not opened"
+    },
+    "files": 498,
+    "passes": 154
+  },
+  "full_products_in_git": false,
+  "retention": "Preserve the external product directory with this record. It contains all maps, models, learned state, fits, timings and receipts; copy it alongside any relocation or archive. Previous products are unchanged.",
+  "reserved_129081": "not evaluated; development gate failed",
+  "scientific_revision_executed": false
+}
