@@ -1535,3 +1535,108 @@ must recommend at most one smallest next change, or retention unchanged; a
 recommendation is not authorization to implement it. No automatic flags, offset
 correction, filtering, spectra, new candidate policy, Apply, PTC/CAL/AST/MAP,
 route activation, production, canonical integration, push or cleanup occurs.
+
+
+## Jump-loss diagnosis completion — 2026-09-11
+
+Exact diagnostic source `8ef77477823a5393f9cc7860d8f963509aee0fc8`, tree
+`5d6d10ac9ef5d0068898ad3f0053f7e559062fc2`, has direct parent/literal base
+`8a66bc0203383995a2e6bdcf4261245003a20237`. The changed executable is inert
+injection tooling, with private test-only anchors and saved-result/report scripts.
+Original runtime headers, tests/build configuration, governance and frozen
+contracts are unchanged. Candidate method, 2-second/1-second contexts, cubic and
+offset models, 64-sample support minimum, original validity, three fixed scale
+roles, amplitude/agreement/4-sigma/50-ms rules and single-pass limit are preserved.
+
+The saved 143-file census gives 7,809 original coordinate measurements retained
+without a refit, 1,263 retained after a refit and 2,758 unresolved, from 11,830.
+There are 3,226 requested paired refits touching 4,021 original coordinates;
+28 new partner measurements are counted separately. Terminal causes are disjoint:
+1,994 insufficient fitting support, 7 numerical fit failures, 343 short/long
+offset disagreements, 1 sign disagreement, 44 primary-amplitude failures, 32
+short-amplitude failures, 2 confirmed recoveries, 3 unavailable transitions and
+332 remaining paired overlaps. Support takes reporting precedence within the
+combined availability OR when a numerical failure also occurs; all other
+actually evaluated conditions remain recorded. Recovery changes persistent-jump
+interpretation; it does not assert no disturbance occurred.
+
+The 8,980 original paired candidate groups split into 5,754 no-refit retained,
+942 retaining all original coordinate measurements after refit, 57 losing some
+and 2,227 losing all. Including new partner evidence, 6,758 groups retain at least
+one bound. These are candidate groups, not accepted physical-event identities.
+Losses occur across 1,039 observation/network/channel combinations; top ten supply
+434 (15.7%). Of 17 saved health-concern streams, none supplied an original measured
+bound; absence of this marker is not health certification. Full observation and
+channel populations and additional evaluated conditions remain in the report's
+linked machine-readable census. No full data-corpus rerun was performed.
+
+All 18 original injection records reproduce byte-for-byte. Two fixed synthetic
+finite-pulse controls extend the catalog to 20 cases / 40 coordinate comparisons.
+Across 12 injected jumps /24 coordinates, 18 coordinates have candidates at the
+injection. Original retention is 16/24 and current retention 9/24; known-truth
+fitting is test-only and does not bypass subsequent decisions. All 18 detected
+coordinates have numerical primary offset fits, including withheld cases. Every
+x/r/version retains offset availability, raw added-offset difference, incremental
+error against the same-support uninjected background, signed physical boundary
+error in native cells and seconds, and first decisive disposition. Real controls
+are not assumed event-free. Synthetic unmodified/spike/3-cell-pulse/12-cell-pulse
+controls retain zero persistent-jump measurements in eight coordinate cases.
+
+The failed sharp injection on 152385/network 4/channel 61 is grouped with later
+background candidate edges. The existing endpoint-span rule expands its bound to
+[1220,1324), 0.851968050 seconds, around instantaneous truth at cell 1221's
+midpoint. The reassessment mask [1214,1330) leaves only 20 post samples for the
+short fit (previously 104, or 89 with the neighboring spike), below 64. That support
+failure precedes the 2-sigma consistency test. Truth exclusion restores 111 (or 96)
+short post samples and passes existing x/r amplitude/sign/agreement checks, but
+the unchanged grouping-based bound still overlaps correct fitting samples and
+therefore remains withheld. A distinct 152430/network 8/channel 253 x-coordinate
+case fails offset agreement even with truth exclusion; r survives current
+reassessment. Its uninjected comparison exposes background contribution, without
+claiming a real-event truth or a calibrated covariance.
+
+The twelve-cell ramps last about 98.304 ms and miss candidate finding in x/r on
+all three backgrounds. Exact durations and amplitudes are in the report. Supplied-
+location current probes retain both coordinates on synthetic and 152385 backgrounds;
+152430 remains unresolved for overlap. These probes never count as end-to-end
+recovery. The unchanged sigma_delta is the approved empirical adjacent-difference
+comparison tolerance, not the standard error of revised offset estimates. Frozen
+residual noise does not establish parameter uncertainty under changed support,
+design and shared-data dependence; no new uncertainty assumption was adopted.
+
+Recommendation only: separate the onset transition's support from later candidate
+edges already grouped with it, retaining those later edges as visible/masked
+context rather than forcing intervening stable plateau into the onset transition.
+Do not implement this recommendation without the next bounded owner decision.
+No new split/merge classifier, threshold, model or iterative pass was selected,
+and this evidence does not show all 2,758 lost measurements are safe to retain.
+
+Exact-source local CLI/injection builds, all 1,000 runnable CTests (one established
+disabled test), 102 focused tests, four config modes and 207 baseline-tool tests
+pass. Independent data audits cover 97,680 sample values, 384 available fit losses
+and 132 production/explicit-anchor parity comparisons. Pilot/final output is
+deterministic. The independent ramp formula differs by at most 1 floating-point
+ULP on a few cells; a retained failed strict-equality audit was narrowed to a
+2-ULP arithmetic tolerance, separate from exact legacy reproduction. No input or
+scientific rule changed. All 2,281 control files and three copied executables are
+preserved; nine inherited cached-dependency dirty files remain unchanged.
+
+Independent fresh-context review of this exact source and sealed evidence passes
+with recorded limitations and no findings on scientific/behavioral conformance,
+architecture/ownership and repository/evidence hygiene. Source/evidence review
+SHA-256: `7314b57211849965d0f614060f93cc3b75bdee71ae7acffcf7771bffd6eb2237`. The 181-file scientific evidence
+manifest SHA-256 is `83d9ffc6fa9fce3fa8734bcf716a85ca51e5c895aaca88a6f46d7c7af986c93b`. Evidence root:
+`/private/tmp/citlali-rtc-jump-loss-diagnosis-2026-09-11`. All four final figures were viewed headlessly.
+Local AppleClang/Homebrew/cached dependencies remain supplemental; no Unity/Spack
+or production qualification is required or claimed. No unexpected final replay
+stderr is present. Live canonical/module refs remain respectively
+`86c20b31f7300ba4063be044380b61cd0baf25eb` and
+`d1ed875f7aa3ccbadbe783b571f635d7ba96b2e4`; future admission must reverify moving
+canonical authority and receive its own exact-SHA review.
+
+The documentation-only closure must have this tested diagnostic source as its
+direct parent. Its exact SHA/tree and fresh independent review will be recorded in the
+external completion receipt and final manifest after review, not guessed within
+its own contents. No automatic flags, Apply, correction, filtering, spectra,
+new candidate policy, PTC/CAL/AST/MAP, route activation, production, canonical
+integration, agent push, cleanup or later work occurs. Ready for owner acceptance.

@@ -1,16 +1,46 @@
 # Citlali Refactor Status
 
-## RTC jump-loss diagnosis in progress — 2026-09-11
+## RTC jump-loss diagnosis completed locally — 2026-09-11
 
-The owner authorized a bounded known-truth comparison of the completed single
-reassessment at closure `8a66bc0203383995a2e6bdcf4261245003a20237`. Preserve
-that method and sealed 143-file control. Read saved census results for disjoint
-loss causes and detector/observation concentrations; use targeted injection
-replays for original/current/known-transition-exclusion comparisons, truth errors
-and separately labelled missed-candidate location probes. No full corpus rerun
-or scientific-policy change is authorized. Existing RTC runtime Learn/Consider
-products are exercised; the diagnostic does not deliver a new runtime phase.
-The existing RTC handoff records scope and gates.
+The bounded diagnosis is committed at exact `8ef77477823a5393f9cc7860d8f963509aee0fc8`, tree
+`5d6d10ac9ef5d0068898ad3f0053f7e559062fc2`, directly preserving closure
+`8a66bc0203383995a2e6bdcf4261245003a20237` and its tested single-pass method.
+Production headers, frozen contracts and runtime Learn/Consider ownership are
+unchanged. Truth exclusions and supplied-location probes remain test-only; no
+runtime Apply plan, flags or corrections are produced.
+
+Saved 143-file results reconcile 11,830 original coordinate measurements into
+7,809 retained without refitting, 1,263 retained after refitting and 2,758
+unresolved. The 3,226 paired refit requests are counted separately. Mutually
+exclusive loss causes include 1,994 insufficient-support cases and 343 short/long
+offset disagreements. Losses span 1,039 observation/network/channel combinations;
+none came from a stream with a saved health concern, which is not a health
+certification. The corpus was not rerun.
+
+Twenty fixed targeted trials preserve all 18 preceding outputs byte-for-byte.
+A failed sharp injection is grouped with later edges, yielding a 0.851968-second
+bound and leaving only 20 short-fit post samples against the required 64.
+Known-support fitting restores 111 samples and passes the existing offset checks,
+but the unchanged wide-bound overlap rule still withholds final retention.
+A separate x-coordinate consistency failure remains visible. All 24 injected-jump
+coordinate cases, including six twelve-cell-ramp candidate misses, remain in the
+end-to-end denominator; known-location downstream probes do not repair detection.
+The selected sigma_delta remains a fixed empirical comparison tolerance, not a
+refitted-offset standard error.
+
+All 1,000 runnable local CTests, 102 focused tests, four config modes and 207
+baseline-tool tests pass. Independent exact-source/evidence review passes with
+recorded limitations and no findings; all 2,281 sealed control files and three
+control binaries are preserved. This is supplemental local evidence, with no
+Unity/Spack or production qualification. [Compact report and four figures](/private/tmp/citlali-rtc-jump-loss-diagnosis-2026-09-11/report-final-01/README.md).
+
+Recommend one next change for owner consideration: keep later grouped candidate
+edges from forcing stable post-jump data into the onset transition. This is not
+implemented or an authorization for a new classifier, threshold, iterative pass,
+candidate policy, flags, spectra, MAP, route or production work. The existing RTC
+handoff binds results and limitations; the documentation closure and its required
+fresh exact-SHA review are recorded externally after review. No canonical
+admission, agent push or cleanup occurs. Ready for owner acceptance.
 
 ## RTC single support reassessment completed locally — 2026-09-11
 
