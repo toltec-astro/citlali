@@ -2,19 +2,19 @@
 
 Status: generic SCI-FRUIT-NORMATIVE-CORE v0.1/r0.4 and ordinary-MAP scientific
 definition r0.4 remain accepted and frozen. The weighting exploration is closed.
-The latest bounded RBF screen is complete: both feedback candidates are
-**rejected**, and the concentration diagnostic needs further empirical work.
-378 passes demonstrate failed compact recovery and no comatic improvement;
-comatic detectability at the chosen brightnesses was not established across
-arrays. The earlier positional-prior screen retains its revise decision and
-conditional association benefit; the independent Gaussian candidate remains
-rejected. 129081 is historically characterized and reserved for new feedback
-comparisons, not untouched holdout data. Production source/profile adoption and
-numerical qualification remain unavailable. The subsequent retained-product audit
-separates whole-model admission from processed detectability and confirms that
-the two admitted compact models were applied in maps 2–7. One preliminary
-starlet screen is owner-approved and frozen for execution, including exactly one
-new bootstrap. [Approval and scope](../../../../../validation/fruit_point_starlet_preliminary_2026-09-11/OWNER_APPROVAL.md). Previous results are preserved.
+The latest [preliminary starlet screen](../../../../../validation/fruit_point_starlet_preliminary_2026-09-11/SCIENTIFIC_REPORT.md)
+**rejects this candidate**: admitted source models in 5/6 null cases and 3/3
+background cases, plus unavailable required source solves. One new 4× coma
+bootstrap establishes the intended detectable regime; no full trajectories ran.
+Required noiseless recovery/phase checks remain unavailable because the declared
+normalization is zero. Both RBF candidates and the independent Gaussian candidate
+remain rejected. The prior positional-prior screen retains its revise decision
+and conditional association benefit. Previous results are preserved. A new
+estimator or changed screen needs a separate owner decision; returning to a
+bounded POINT reference contract remains an option. 129081 is historically
+characterized and reserved for new feedback comparisons. Production adoption,
+qualification, Unity activity and a new independent-author dispatch remain
+unavailable.
 Updated: 2026-09-11.
 
 ## Program Adherence And Prior-Work Recovery
@@ -45,8 +45,9 @@ no numerical method or new method-specific author dispatch.
 
 ## Locked Scientific Definition And Remaining Review
 
+- [Completed preliminary starlet screen: reject this candidate; one brighter-coma bootstrap](../../../../../validation/fruit_point_starlet_preliminary_2026-09-11/SCIENTIFIC_REPORT.md)
 - [RBF admission and processed-template audit: causal interpretation corrected, rejection retained](../../../../../validation/fruit_point_rbf_admission_audit_2026-09-11/REPORT.md)
-- [Proposed single starlet estimator screen and one brighter-coma bootstrap](../../../../../validation/fruit_point_rbf_admission_audit_2026-09-11/STARLET_SCREEN_PROPOSAL.md)
+- [Original starlet proposal, subsequently approved and now closed](../../../../../validation/fruit_point_rbf_admission_audit_2026-09-11/STARLET_SCREEN_PROPOSAL.md)
 
 - [Completed RBF screen: reject both feedback candidates; concentration remains unvalidated](../../../../../validation/fruit_point_rbf_feedback_2026-09-11/SCIENTIFIC_REPORT.md)
 - [RBF numerical evidence, costs and separate decisions](../../../../../validation/fruit_point_rbf_feedback_2026-09-11/DECISION_EVIDENCE.json)

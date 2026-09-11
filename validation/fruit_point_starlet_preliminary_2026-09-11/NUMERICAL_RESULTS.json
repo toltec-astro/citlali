@@ -1,0 +1,4532 @@
+{
+  "rows": [
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        -1.5280630832243145,
+        -0.9316089052736535,
+        -0.35779794204537524
+      ],
+      "selected_per_band": [
+        341,
+        808,
+        1513,
+        3685,
+        5062
+      ],
+      "outer_MAD": 21.827089019064452,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 4398235.147192416,
+      "iterations": 300,
+      "function_evaluations": 306,
+      "relative_projected_gradient": 9.015716206922802e-05,
+      "finite": true,
+      "seconds": 0.5330732921138406,
+      "array": "a1100",
+      "case": "saved_real123424",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        -0.5015537486215093,
+        0.036977603866328326,
+        1.395399193964368
+      ],
+      "selected_per_band": [
+        179,
+        419,
+        895,
+        1195,
+        1692
+      ],
+      "outer_MAD": 33.61936162577886,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 389131.7586796708,
+      "iterations": 300,
+      "function_evaluations": 305,
+      "relative_projected_gradient": 0.00015416242792925727,
+      "finite": true,
+      "seconds": 0.5330789578147233,
+      "array": "a1400",
+      "case": "saved_real123424",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        -0.2574169105330358,
+        1.1740975757974588,
+        0.028762495088412308
+      ],
+      "selected_per_band": [
+        283,
+        532,
+        1206,
+        2169,
+        2121
+      ],
+      "outer_MAD": 25.29549726421044,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 150918.5959717948,
+      "iterations": 300,
+      "function_evaluations": 302,
+      "relative_projected_gradient": 0.00048694746127023186,
+      "finite": true,
+      "seconds": 0.5292829580139369,
+      "array": "a2000",
+      "case": "saved_real123424",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": true,
+      "reason": "accepted_solve",
+      "background": [
+        0.10093967720069869,
+        0.004072165013871578,
+        0.24502929228350032
+      ],
+      "selected_per_band": [
+        1,
+        3,
+        2,
+        0,
+        0
+      ],
+      "outer_MAD": 13.037640595444243,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+      "objective": 4.017284584541032e-16,
+      "iterations": 19,
+      "function_evaluations": 22,
+      "relative_projected_gradient": 1.1086802162759854e-09,
+      "finite": true,
+      "seconds": 0.04977941722609103,
+      "array": "a1100",
+      "case": "saved_null20260911",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": true,
+      "reason": "accepted_solve",
+      "background": [
+        -0.07534665720631514,
+        0.41582818525116283,
+        0.34855785677211515
+      ],
+      "selected_per_band": [
+        10,
+        2,
+        0,
+        0,
+        0
+      ],
+      "outer_MAD": 21.76897626683597,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+      "objective": 1.9425300150963513e-14,
+      "iterations": 16,
+      "function_evaluations": 18,
+      "relative_projected_gradient": 1.2125510513127783e-08,
+      "finite": true,
+      "seconds": 0.04298150003887713,
+      "array": "a1400",
+      "case": "saved_null20260911",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": true,
+      "reason": "accepted_solve",
+      "background": [
+        0.08048595820500953,
+        -0.19947653468371868,
+        -0.15576536463073254
+      ],
+      "selected_per_band": [
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "outer_MAD": 16.675395444982787,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+      "objective": 3.8720732389332174e-26,
+      "iterations": 6,
+      "function_evaluations": 8,
+      "relative_projected_gradient": 8.305602012346485e-15,
+      "finite": true,
+      "seconds": 0.026333707850426435,
+      "array": "a2000",
+      "case": "saved_null20260911",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        -0.021198977956921102,
+        -0.05407853386483852,
+        0.28723099564646204
+      ],
+      "selected_per_band": [
+        1,
+        21,
+        56,
+        144,
+        256
+      ],
+      "outer_MAD": 13.018700570219327,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 333.8453495776723,
+      "iterations": 300,
+      "function_evaluations": 306,
+      "relative_projected_gradient": 0.0005238207853294325,
+      "finite": true,
+      "seconds": 0.539237166987732,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385263,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          17.0,
+          -11.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 7.576761614312621e-28,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0,
+        "amplitude_bias": -1.0,
+        "width_bias": [
+          -0.5,
+          -0.24999999999999978
+        ],
+        "gaussian_centroid_error": 90.60905032059435,
+        "fit_boundary": false,
+        "fit": {
+          "parameters": [
+            0.0,
+            -44.0,
+            -78.0,
+            1.791759469228055,
+            1.791759469228055,
+            0.2,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "peak": 0.0,
+          "centroid": [
+            -44.0,
+            -78.0
+          ],
+          "widths": [
+            6.0,
+            6.0
+          ],
+          "angle_rad": 1.7707963267948965,
+          "gaussian_integral": 0.0,
+          "background": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "residual_rms": 0.0,
+          "sse": 0.0,
+          "boundary_rejection": false,
+          "solver_status": 1,
+          "nfev": 1,
+          "successful_starts": 3
+        }
+      },
+      "array": "a1100",
+      "case": "saved_gauss20260911",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        -0.2051229376149054,
+        0.3432804778482385,
+        0.37671635054467634
+      ],
+      "selected_per_band": [
+        10,
+        14,
+        38,
+        87,
+        0
+      ],
+      "outer_MAD": 21.67192829561911,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 0.0019412213569868883,
+      "iterations": 300,
+      "function_evaluations": 310,
+      "relative_projected_gradient": 1.603909007111155e-05,
+      "finite": true,
+      "seconds": 0.5969000000040978,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385265,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          17.0,
+          -11.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 7.576761614312622e-28,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0,
+        "amplitude_bias": -1.0,
+        "width_bias": [
+          -0.5,
+          -0.24999999999999978
+        ],
+        "gaussian_centroid_error": 90.60905032059435,
+        "fit_boundary": false,
+        "fit": {
+          "parameters": [
+            0.0,
+            -44.0,
+            -78.0,
+            1.791759469228055,
+            1.791759469228055,
+            0.2,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "peak": 0.0,
+          "centroid": [
+            -44.0,
+            -78.0
+          ],
+          "widths": [
+            6.0,
+            6.0
+          ],
+          "angle_rad": 1.7707963267948965,
+          "gaussian_integral": 0.0,
+          "background": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "residual_rms": 0.0,
+          "sse": 0.0,
+          "boundary_rejection": false,
+          "solver_status": 1,
+          "nfev": 1,
+          "successful_starts": 3
+        }
+      },
+      "array": "a1400",
+      "case": "saved_gauss20260911",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        -0.045069886917032335,
+        -0.25657072369746337,
+        -0.12215304543150428
+      ],
+      "selected_per_band": [
+        1,
+        17,
+        52,
+        136,
+        15
+      ],
+      "outer_MAD": 16.747812586769715,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 13.264278432123056,
+      "iterations": 300,
+      "function_evaluations": 305,
+      "relative_projected_gradient": 0.00018510883109332056,
+      "finite": true,
+      "seconds": 0.5432710000313818,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385263,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          17.0,
+          -11.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 7.576761614312621e-28,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0,
+        "amplitude_bias": -1.0,
+        "width_bias": [
+          -0.5,
+          -0.24999999999999978
+        ],
+        "gaussian_centroid_error": 90.60905032059435,
+        "fit_boundary": false,
+        "fit": {
+          "parameters": [
+            0.0,
+            -44.0,
+            -78.0,
+            1.791759469228055,
+            1.791759469228055,
+            0.2,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "peak": 0.0,
+          "centroid": [
+            -44.0,
+            -78.0
+          ],
+          "widths": [
+            6.0,
+            6.0
+          ],
+          "angle_rad": 1.7707963267948965,
+          "gaussian_integral": 0.0,
+          "background": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "residual_rms": 0.0,
+          "sse": 0.0,
+          "boundary_rejection": false,
+          "solver_status": 1,
+          "nfev": 1,
+          "successful_starts": 3
+        }
+      },
+      "array": "a2000",
+      "case": "saved_gauss20260911",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        -0.020269693003536458,
+        -0.05961370844478199,
+        0.2827342613836827
+      ],
+      "selected_per_band": [
+        1,
+        18,
+        53,
+        136,
+        247
+      ],
+      "outer_MAD": 13.021557458959947,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 190.463869221029,
+      "iterations": 300,
+      "function_evaluations": 305,
+      "relative_projected_gradient": 0.0002036850841731213,
+      "finite": true,
+      "seconds": 0.5366019590292126,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385265,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          19.0,
+          -9.799999999999999
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 2.8335329006745597e-18,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1100",
+      "case": "saved_mismatch20260911",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        -0.20433408625091154,
+        0.3367995864607078,
+        0.36979119460750504
+      ],
+      "selected_per_band": [
+        10,
+        9,
+        30,
+        81,
+        0
+      ],
+      "outer_MAD": 21.687325425117976,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 0.00097288462562515,
+      "iterations": 300,
+      "function_evaluations": 320,
+      "relative_projected_gradient": 1.6745032352449224e-05,
+      "finite": true,
+      "seconds": 0.6144521669484675,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385265,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          19.0,
+          -9.799999999999999
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 2.83353290067456e-18,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1400",
+      "case": "saved_mismatch20260911",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        -0.04515539893006581,
+        -0.2626971493154452,
+        -0.12490210212432581
+      ],
+      "selected_per_band": [
+        1,
+        14,
+        46,
+        131,
+        4
+      ],
+      "outer_MAD": 16.751618214721457,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 2.970800084128515,
+      "iterations": 300,
+      "function_evaluations": 307,
+      "relative_projected_gradient": 6.294378767329067e-05,
+      "finite": true,
+      "seconds": 0.5517214590217918,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385265,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          19.0,
+          -9.799999999999999
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 2.8335329006745597e-18,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a2000",
+      "case": "saved_mismatch20260911",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": true,
+      "reason": "accepted_solve",
+      "background": [
+        -0.008002072866012934,
+        -0.04485076995211243,
+        0.2698556518414416
+      ],
+      "selected_per_band": [
+        1,
+        4,
+        2,
+        0,
+        0
+      ],
+      "outer_MAD": 13.019604328355769,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+      "objective": 2.2595314672175803e-15,
+      "iterations": 22,
+      "function_evaluations": 24,
+      "relative_projected_gradient": 1.6894541316560038e-09,
+      "finite": true,
+      "seconds": 0.05403275019489229,
+      "model_metrics": {
+        "integrated_brightness": 44463.32111808717,
+        "truth_integrated_brightness": 10388.15611488747,
+        "brightness_error": 3.280193773211198,
+        "relative_L2": 1.015116641151895,
+        "centroid": [
+          29.87452346684616,
+          -58.705483941813746
+        ],
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": 48.700961583589425,
+        "wing_error": -0.9745821437254467,
+        "exterior_D_brightness": 44263.53472803937,
+        "truth_exterior_D_brightness": 440.2451319778405,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1100",
+      "case": "saved_coma_bright",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": true,
+      "reason": "accepted_solve",
+      "background": [
+        -0.19156005954686736,
+        0.3565939920380138,
+        0.3746992637768162
+      ],
+      "selected_per_band": [
+        10,
+        2,
+        0,
+        0,
+        0
+      ],
+      "outer_MAD": 21.73053325727789,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+      "objective": 1.972953792864923e-14,
+      "iterations": 16,
+      "function_evaluations": 18,
+      "relative_projected_gradient": 1.218467341546407e-08,
+      "finite": true,
+      "seconds": 0.04277416691184044,
+      "model_metrics": {
+        "integrated_brightness": 32572.52759628052,
+        "truth_integrated_brightness": 10386.738139122848,
+        "brightness_error": 2.1359727336912764,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 32572.527596280517,
+        "truth_exterior_D_brightness": 438.8271562132188,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1400",
+      "case": "saved_coma_bright",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": true,
+      "reason": "accepted_solve",
+      "background": [
+        -0.024331271267114547,
+        -0.24077148437596693,
+        -0.1315913993517185
+      ],
+      "selected_per_band": [
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "outer_MAD": 16.69755814923526,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+      "objective": 3.836799181870565e-26,
+      "iterations": 6,
+      "function_evaluations": 8,
+      "relative_projected_gradient": 8.358125118676331e-15,
+      "finite": true,
+      "seconds": 0.02592283394187689,
+      "model_metrics": {
+        "integrated_brightness": 21501.61089108866,
+        "truth_integrated_brightness": 10388.15611488747,
+        "brightness_error": 1.069819769099762,
+        "relative_L2": 0.9999999975400514,
+        "centroid": [
+          -34.421052631578945,
+          18.52631578947368
+        ],
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": 61.98352935554441,
+        "wing_error": -0.999994263044682,
+        "exterior_D_brightness": 21501.565798159485,
+        "truth_exterior_D_brightness": 440.2451319778405,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a2000",
+      "case": "saved_coma_bright",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": true,
+      "reason": "accepted_solve",
+      "background": [
+        0.04646819507785719,
+        -0.020390445067621586,
+        0.2574412955989769
+      ],
+      "selected_per_band": [
+        1,
+        3,
+        2,
+        0,
+        0
+      ],
+      "outer_MAD": 13.012120567755977,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+      "objective": 5.889599942198013e-19,
+      "iterations": 18,
+      "function_evaluations": 22,
+      "relative_projected_gradient": 7.404946219511512e-11,
+      "finite": true,
+      "seconds": 0.05001837480813265,
+      "model_metrics": {
+        "integrated_brightness": 47416.85689385386,
+        "truth_integrated_brightness": 5194.078057443735,
+        "brightness_error": 8.129022777372365,
+        "relative_L2": 1.060839060234406,
+        "centroid": [
+          25.58586494598084,
+          -56.90793521949022
+        ],
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": 46.237152800370275,
+        "wing_error": -0.945875420359523,
+        "exterior_D_brightness": 47204.14512417461,
+        "truth_exterior_D_brightness": 220.12256598892026,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1100",
+      "case": "saved_coma_half",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": true,
+      "reason": "accepted_solve",
+      "background": [
+        -0.13344958459417502,
+        0.38619244365184374,
+        0.3616289175383215
+      ],
+      "selected_per_band": [
+        10,
+        2,
+        0,
+        0,
+        0
+      ],
+      "outer_MAD": 21.761982782701878,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+      "objective": 1.9580680189670388e-14,
+      "iterations": 16,
+      "function_evaluations": 18,
+      "relative_projected_gradient": 1.2153729912701647e-08,
+      "finite": true,
+      "seconds": 0.04281316697597504,
+      "model_metrics": {
+        "integrated_brightness": 32567.385294505177,
+        "truth_integrated_brightness": 5193.369069561424,
+        "brightness_error": 5.27095530055511,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 32567.385294505177,
+        "truth_exterior_D_brightness": 219.4135781066094,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1400",
+      "case": "saved_coma_half",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": true,
+      "reason": "accepted_solve",
+      "background": [
+        0.02805845723875379,
+        -0.22012132313809007,
+        -0.14367324388218336
+      ],
+      "selected_per_band": [
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "outer_MAD": 16.683560039427675,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+      "objective": 3.786813972982992e-26,
+      "iterations": 6,
+      "function_evaluations": 8,
+      "relative_projected_gradient": 8.351691810621892e-15,
+      "finite": true,
+      "seconds": 0.03264850005507469,
+      "model_metrics": {
+        "integrated_brightness": 21479.255186859664,
+        "truth_integrated_brightness": 5194.078057443735,
+        "brightness_error": 3.1353354626770233,
+        "relative_L2": 1.0000000014886763,
+        "centroid": [
+          -34.421052631578945,
+          18.52631578947368
+        ],
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": 61.98352935554441,
+        "wing_error": -0.9999885403816879,
+        "exterior_D_brightness": 21479.210150099894,
+        "truth_exterior_D_brightness": 220.12256598892026,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a2000",
+      "case": "saved_coma_half",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": true,
+      "reason": "accepted_solve",
+      "background": [
+        0.2381677893519368,
+        1.7735871651359016,
+        0.038718613056636694
+      ],
+      "selected_per_band": [
+        1,
+        3,
+        2,
+        0,
+        0
+      ],
+      "outer_MAD": 12.988513362120502,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+      "objective": 2.7157085424274534e-18,
+      "iterations": 18,
+      "function_evaluations": 22,
+      "relative_projected_gradient": 1.6380436484140407e-10,
+      "finite": true,
+      "seconds": 0.04963337490335107,
+      "array": "a1100",
+      "case": "saved_background20260911",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": true,
+      "reason": "accepted_solve",
+      "background": [
+        -0.06486187437938191,
+        2.1481905221424737,
+        0.6223545654834456
+      ],
+      "selected_per_band": [
+        10,
+        1,
+        0,
+        0,
+        0
+      ],
+      "outer_MAD": 21.70650356174214,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+      "objective": 2.2354881269154013e-16,
+      "iterations": 16,
+      "function_evaluations": 18,
+      "relative_projected_gradient": 1.5513645211796873e-09,
+      "finite": true,
+      "seconds": 0.04260787507519126,
+      "array": "a1400",
+      "case": "saved_background20260911",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": true,
+      "reason": "accepted_solve",
+      "background": [
+        0.07891760048663424,
+        1.4988703446937588,
+        -0.5599901151213563
+      ],
+      "selected_per_band": [
+        2,
+        0,
+        1,
+        0,
+        0
+      ],
+      "outer_MAD": 16.73814722873786,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+      "objective": 6.065652267760941e-18,
+      "iterations": 14,
+      "function_evaluations": 15,
+      "relative_projected_gradient": 4.969155148075987e-10,
+      "finite": true,
+      "seconds": 0.03803291614167392,
+      "array": "a2000",
+      "case": "saved_background20260911",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": true,
+      "reason": "accepted_solve",
+      "background": [
+        0.17589277019320676,
+        -0.1505146361268107,
+        -0.21820141121856748
+      ],
+      "selected_per_band": [
+        3,
+        5,
+        0,
+        0,
+        0
+      ],
+      "outer_MAD": 12.786755886847708,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+      "objective": 4.907819852648883e-15,
+      "iterations": 18,
+      "function_evaluations": 21,
+      "relative_projected_gradient": 3.812278001476596e-09,
+      "finite": true,
+      "seconds": 0.04825449991039932,
+      "array": "a1100",
+      "case": "saved_null20260912",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": true,
+      "reason": "accepted_solve",
+      "background": [
+        -0.20451624565224572,
+        0.006691200015517027,
+        0.2620183533418756
+      ],
+      "selected_per_band": [
+        2,
+        0,
+        2,
+        0,
+        0
+      ],
+      "outer_MAD": 22.382724197934884,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+      "objective": 1.5592338366763527e-15,
+      "iterations": 14,
+      "function_evaluations": 16,
+      "relative_projected_gradient": 4.736363383571714e-09,
+      "finite": true,
+      "seconds": 0.03942841594107449,
+      "array": "a1400",
+      "case": "saved_null20260912",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": false,
+      "reason": "empty_multiscale_support",
+      "background": [
+        0.23993377430664933,
+        -0.020552631951538645,
+        0.17413404630273674
+      ],
+      "selected_per_band": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "outer_MAD": 16.222708883557377,
+      "seconds": 0.0018546250648796558,
+      "array": "a2000",
+      "case": "saved_null20260912",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        0.06110493361794149,
+        -0.20601791163784572,
+        -0.17189536703851277
+      ],
+      "selected_per_band": [
+        3,
+        24,
+        53,
+        128,
+        232
+      ],
+      "outer_MAD": 12.787836382098885,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 295.5298030796119,
+      "iterations": 300,
+      "function_evaluations": 306,
+      "relative_projected_gradient": 7.167893714615426e-05,
+      "finite": true,
+      "seconds": 0.5361564999911934,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385263,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          17.0,
+          -11.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 7.576761614312621e-28,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0,
+        "amplitude_bias": -1.0,
+        "width_bias": [
+          -0.5,
+          -0.24999999999999978
+        ],
+        "gaussian_centroid_error": 90.60905032059435,
+        "fit_boundary": false,
+        "fit": {
+          "parameters": [
+            0.0,
+            -44.0,
+            -78.0,
+            1.791759469228055,
+            1.791759469228055,
+            0.2,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "peak": 0.0,
+          "centroid": [
+            -44.0,
+            -78.0
+          ],
+          "widths": [
+            6.0,
+            6.0
+          ],
+          "angle_rad": 1.7707963267948965,
+          "gaussian_integral": 0.0,
+          "background": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "residual_rms": 0.0,
+          "sse": 0.0,
+          "boundary_rejection": false,
+          "solver_status": 1,
+          "nfev": 1,
+          "successful_starts": 3
+        }
+      },
+      "array": "a1100",
+      "case": "saved_gauss20260912",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        -0.3541438342922489,
+        -0.0845047562500328,
+        0.298259568447328
+      ],
+      "selected_per_band": [
+        2,
+        10,
+        38,
+        81,
+        0
+      ],
+      "outer_MAD": 22.403322906273708,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 0.0008421153732561542,
+      "iterations": 300,
+      "function_evaluations": 318,
+      "relative_projected_gradient": 2.159952435302692e-05,
+      "finite": true,
+      "seconds": 0.609434749931097,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385265,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          17.0,
+          -11.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 7.576761614312622e-28,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0,
+        "amplitude_bias": -1.0,
+        "width_bias": [
+          -0.5,
+          -0.24999999999999978
+        ],
+        "gaussian_centroid_error": 90.60905032059435,
+        "fit_boundary": false,
+        "fit": {
+          "parameters": [
+            0.0,
+            -44.0,
+            -78.0,
+            1.791759469228055,
+            1.791759469228055,
+            0.2,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "peak": 0.0,
+          "centroid": [
+            -44.0,
+            -78.0
+          ],
+          "widths": [
+            6.0,
+            6.0
+          ],
+          "angle_rad": 1.7707963267948965,
+          "gaussian_integral": 0.0,
+          "background": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "residual_rms": 0.0,
+          "sse": 0.0,
+          "boundary_rejection": false,
+          "solver_status": 1,
+          "nfev": 1,
+          "successful_starts": 3
+        }
+      },
+      "array": "a1400",
+      "case": "saved_gauss20260912",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        0.1260692080955865,
+        -0.10044126168102897,
+        0.20291104454224246
+      ],
+      "selected_per_band": [
+        0,
+        16,
+        48,
+        120,
+        0
+      ],
+      "outer_MAD": 16.189295511903417,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 0.0022652235415284634,
+      "iterations": 300,
+      "function_evaluations": 315,
+      "relative_projected_gradient": 1.8967934616904617e-05,
+      "finite": true,
+      "seconds": 0.602415916044265,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385263,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          17.0,
+          -11.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 7.576761614312621e-28,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0,
+        "amplitude_bias": -1.0,
+        "width_bias": [
+          -0.5,
+          -0.24999999999999978
+        ],
+        "gaussian_centroid_error": 90.60905032059435,
+        "fit_boundary": false,
+        "fit": {
+          "parameters": [
+            0.0,
+            -44.0,
+            -78.0,
+            1.791759469228055,
+            1.791759469228055,
+            0.2,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "peak": 0.0,
+          "centroid": [
+            -44.0,
+            -78.0
+          ],
+          "widths": [
+            6.0,
+            6.0
+          ],
+          "angle_rad": 1.7707963267948965,
+          "gaussian_integral": 0.0,
+          "background": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "residual_rms": 0.0,
+          "sse": 0.0,
+          "boundary_rejection": false,
+          "solver_status": 1,
+          "nfev": 1,
+          "successful_starts": 3
+        }
+      },
+      "array": "a2000",
+      "case": "saved_gauss20260912",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        -0.33466586015049504,
+        -0.19146314781307472,
+        0.34440099578718913
+      ],
+      "selected_per_band": [
+        1,
+        4,
+        43,
+        178,
+        1006
+      ],
+      "outer_MAD": 12.995232690170848,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 40.50872536215189,
+      "iterations": 300,
+      "function_evaluations": 301,
+      "relative_projected_gradient": 0.0002808220183193721,
+      "finite": true,
+      "seconds": 0.5708084171637893,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 41552.62445954988,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 1760.980527911362,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1100",
+      "case": "saved_coma4",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        -0.5413069387109486,
+        0.18101991659308067,
+        0.45264417259557405
+      ],
+      "selected_per_band": [
+        10,
+        2,
+        12,
+        24,
+        0
+      ],
+      "outer_MAD": 21.695034956434835,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 5.8409380049732396e-05,
+      "iterations": 300,
+      "function_evaluations": 316,
+      "relative_projected_gradient": 6.81599300065518e-06,
+      "finite": true,
+      "seconds": 0.6019359580241144,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 41546.95255649139,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 1755.3086248528753,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1400",
+      "case": "saved_coma4",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        -0.33764141895655986,
+        -0.364626474754837,
+        -0.05929257670150791
+      ],
+      "selected_per_band": [
+        1,
+        0,
+        27,
+        173,
+        533
+      ],
+      "outer_MAD": 16.685838938036788,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 28.39392380446519,
+      "iterations": 300,
+      "function_evaluations": 304,
+      "relative_projected_gradient": 0.00028111970702971296,
+      "finite": true,
+      "seconds": 0.5666840418707579,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 41552.62445954988,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 1760.980527911362,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a2000",
+      "case": "saved_coma4",
+      "kind": "saved_processed",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "nonpositive_outer_MAD_for_declared_solver_scaling",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        22,
+        62,
+        176,
+        741
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.0016703750006854534,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385263,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          17.0,
+          -11.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 7.576761614312621e-28,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0,
+        "amplitude_bias": -1.0,
+        "width_bias": [
+          -0.5,
+          -0.24999999999999978
+        ],
+        "gaussian_centroid_error": 90.60905032059435,
+        "fit_boundary": false,
+        "fit": {
+          "parameters": [
+            0.0,
+            -44.0,
+            -78.0,
+            1.791759469228055,
+            1.791759469228055,
+            0.2,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "peak": 0.0,
+          "centroid": [
+            -44.0,
+            -78.0
+          ],
+          "widths": [
+            6.0,
+            6.0
+          ],
+          "angle_rad": 1.7707963267948965,
+          "gaussian_integral": 0.0,
+          "background": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "residual_rms": 0.0,
+          "sse": 0.0,
+          "boundary_rejection": false,
+          "solver_status": 1,
+          "nfev": 1,
+          "successful_starts": 3
+        }
+      },
+      "array": "a1100",
+      "case": "noiseless_phase0_compact",
+      "kind": "noiseless",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "nonpositive_outer_MAD_for_declared_solver_scaling",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        14,
+        52,
+        122,
+        46
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.0015842500142753124,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385265,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          17.0,
+          -11.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 7.576761614312622e-28,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0,
+        "amplitude_bias": -1.0,
+        "width_bias": [
+          -0.5,
+          -0.24999999999999978
+        ],
+        "gaussian_centroid_error": 90.60905032059435,
+        "fit_boundary": false,
+        "fit": {
+          "parameters": [
+            0.0,
+            -44.0,
+            -78.0,
+            1.791759469228055,
+            1.791759469228055,
+            0.2,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "peak": 0.0,
+          "centroid": [
+            -44.0,
+            -78.0
+          ],
+          "widths": [
+            6.0,
+            6.0
+          ],
+          "angle_rad": 1.7707963267948965,
+          "gaussian_integral": 0.0,
+          "background": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "residual_rms": 0.0,
+          "sse": 0.0,
+          "boundary_rejection": false,
+          "solver_status": 1,
+          "nfev": 1,
+          "successful_starts": 3
+        }
+      },
+      "array": "a1400",
+      "case": "noiseless_phase0_compact",
+      "kind": "noiseless",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "nonpositive_outer_MAD_for_declared_solver_scaling",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        22,
+        60,
+        176,
+        396
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.0016506249085068703,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385263,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          17.0,
+          -11.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 7.576761614312621e-28,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0,
+        "amplitude_bias": -1.0,
+        "width_bias": [
+          -0.5,
+          -0.24999999999999978
+        ],
+        "gaussian_centroid_error": 90.60905032059435,
+        "fit_boundary": false,
+        "fit": {
+          "parameters": [
+            0.0,
+            -44.0,
+            -78.0,
+            1.791759469228055,
+            1.791759469228055,
+            0.2,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "peak": 0.0,
+          "centroid": [
+            -44.0,
+            -78.0
+          ],
+          "widths": [
+            6.0,
+            6.0
+          ],
+          "angle_rad": 1.7707963267948965,
+          "gaussian_integral": 0.0,
+          "background": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "residual_rms": 0.0,
+          "sse": 0.0,
+          "boundary_rejection": false,
+          "solver_status": 1,
+          "nfev": 1,
+          "successful_starts": 3
+        }
+      },
+      "array": "a2000",
+      "case": "noiseless_phase0_compact",
+      "kind": "noiseless",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "nonpositive_outer_MAD_for_declared_solver_scaling",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        0,
+        0,
+        0,
+        501
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.0017192079685628414,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10388.15611488747,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 440.2451319778405,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1100",
+      "case": "noiseless_phase0_coma1p0",
+      "kind": "noiseless",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": false,
+      "reason": "empty_multiscale_support",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.001573291141539812,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10386.738139122848,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 438.8271562132188,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1400",
+      "case": "noiseless_phase0_coma1p0",
+      "kind": "noiseless",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": false,
+      "reason": "empty_multiscale_support",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.0015965839847922325,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10388.15611488747,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 440.2451319778405,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a2000",
+      "case": "noiseless_phase0_coma1p0",
+      "kind": "noiseless",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": false,
+      "reason": "empty_multiscale_support",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.0017218340653926134,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 5194.078057443735,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 220.12256598892026,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1100",
+      "case": "noiseless_phase0_coma0p5",
+      "kind": "noiseless",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": false,
+      "reason": "empty_multiscale_support",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.0017041249666363,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 5193.369069561424,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 219.4135781066094,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1400",
+      "case": "noiseless_phase0_coma0p5",
+      "kind": "noiseless",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": false,
+      "reason": "empty_multiscale_support",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.00158129190094769,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 5194.078057443735,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 220.12256598892026,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a2000",
+      "case": "noiseless_phase0_coma0p5",
+      "kind": "noiseless",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "nonpositive_outer_MAD_for_declared_solver_scaling",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        2,
+        56,
+        257,
+        2262
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.001696875086054206,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 41552.62445954988,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 1760.980527911362,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1100",
+      "case": "noiseless_phase0_coma4p0",
+      "kind": "noiseless",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "nonpositive_outer_MAD_for_declared_solver_scaling",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        0,
+        23,
+        79,
+        598
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.0015897501725703478,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 41546.95255649139,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 1755.3086248528753,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1400",
+      "case": "noiseless_phase0_coma4p0",
+      "kind": "noiseless",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "nonpositive_outer_MAD_for_declared_solver_scaling",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        0,
+        44,
+        259,
+        1631
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.0016271250788122416,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 41552.62445954988,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 1760.980527911362,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a2000",
+      "case": "noiseless_phase0_coma4p0",
+      "kind": "noiseless",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "nonpositive_outer_MAD_for_declared_solver_scaling",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        22,
+        66,
+        178,
+        749
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.0016302498988807201,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385263,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          18.999999999999996,
+          -9.999999999999996
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 1.0057190889830423e-27,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0,
+        "amplitude_bias": -1.0,
+        "width_bias": [
+          -0.49999999999999956,
+          -0.25000000000000044
+        ],
+        "gaussian_centroid_error": 92.69843580125827,
+        "fit_boundary": false,
+        "fit": {
+          "parameters": [
+            0.0,
+            -44.0,
+            -78.0,
+            1.791759469228055,
+            1.791759469228055,
+            0.2,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "peak": 0.0,
+          "centroid": [
+            -44.0,
+            -78.0
+          ],
+          "widths": [
+            6.0,
+            6.0
+          ],
+          "angle_rad": 1.7707963267948965,
+          "gaussian_integral": 0.0,
+          "background": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "residual_rms": 0.0,
+          "sse": 0.0,
+          "boundary_rejection": false,
+          "solver_status": 1,
+          "nfev": 1,
+          "successful_starts": 3
+        }
+      },
+      "array": "a1100",
+      "case": "noiseless_phase1_compact",
+      "kind": "noiseless",
+      "phase": [
+        19,
+        -10
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "nonpositive_outer_MAD_for_declared_solver_scaling",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        12,
+        48,
+        132,
+        44
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.001617542002350092,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385263,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          18.999999999999996,
+          -9.999999999999996
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 1.0057190889830423e-27,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0,
+        "amplitude_bias": -1.0,
+        "width_bias": [
+          -0.4999999999999978,
+          -0.2500000000000031
+        ],
+        "gaussian_centroid_error": 92.69843580125827,
+        "fit_boundary": false,
+        "fit": {
+          "parameters": [
+            0.0,
+            -44.0,
+            -78.0,
+            1.791759469228055,
+            1.791759469228055,
+            0.2,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "peak": 0.0,
+          "centroid": [
+            -44.0,
+            -78.0
+          ],
+          "widths": [
+            6.0,
+            6.0
+          ],
+          "angle_rad": 1.7707963267948965,
+          "gaussian_integral": 0.0,
+          "background": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "residual_rms": 0.0,
+          "sse": 0.0,
+          "boundary_rejection": false,
+          "solver_status": 1,
+          "nfev": 1,
+          "successful_starts": 3
+        }
+      },
+      "array": "a1400",
+      "case": "noiseless_phase1_compact",
+      "kind": "noiseless",
+      "phase": [
+        19,
+        -10
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "nonpositive_outer_MAD_for_declared_solver_scaling",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        22,
+        62,
+        178,
+        400
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.0016952920705080032,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385263,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          18.999999999999996,
+          -9.999999999999996
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 1.0057190889830423e-27,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0,
+        "amplitude_bias": -1.0,
+        "width_bias": [
+          -0.49999999999999956,
+          -0.25000000000000044
+        ],
+        "gaussian_centroid_error": 92.69843580125827,
+        "fit_boundary": false,
+        "fit": {
+          "parameters": [
+            0.0,
+            -44.0,
+            -78.0,
+            1.791759469228055,
+            1.791759469228055,
+            0.2,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "peak": 0.0,
+          "centroid": [
+            -44.0,
+            -78.0
+          ],
+          "widths": [
+            6.0,
+            6.0
+          ],
+          "angle_rad": 1.7707963267948965,
+          "gaussian_integral": 0.0,
+          "background": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "residual_rms": 0.0,
+          "sse": 0.0,
+          "boundary_rejection": false,
+          "solver_status": 1,
+          "nfev": 1,
+          "successful_starts": 3
+        }
+      },
+      "array": "a2000",
+      "case": "noiseless_phase1_compact",
+      "kind": "noiseless",
+      "phase": [
+        19,
+        -10
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "nonpositive_outer_MAD_for_declared_solver_scaling",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        0,
+        0,
+        0,
+        498
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.0016910000704228878,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10371.678604709683,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          22.0770139921004,
+          -10.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 425.5990564886955,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1100",
+      "case": "noiseless_phase1_coma1p0",
+      "kind": "noiseless",
+      "phase": [
+        19,
+        -10
+      ]
+    },
+    {
+      "available": true,
+      "admitted": false,
+      "reason": "empty_multiscale_support",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.0015580831095576286,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10370.451892934781,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          22.0770139921004,
+          -10.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 424.3723447137936,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1400",
+      "case": "noiseless_phase1_coma1p0",
+      "kind": "noiseless",
+      "phase": [
+        19,
+        -10
+      ]
+    },
+    {
+      "available": true,
+      "admitted": false,
+      "reason": "empty_multiscale_support",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.0016334159299731255,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10371.678604709683,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          22.0770139921004,
+          -10.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 425.5990564886955,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a2000",
+      "case": "noiseless_phase1_coma1p0",
+      "kind": "noiseless",
+      "phase": [
+        19,
+        -10
+      ]
+    },
+    {
+      "available": true,
+      "admitted": false,
+      "reason": "empty_multiscale_support",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.0016415000427514315,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 5185.8393023548415,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          22.0770139921004,
+          -10.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 212.79952824434775,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1100",
+      "case": "noiseless_phase1_coma0p5",
+      "kind": "noiseless",
+      "phase": [
+        19,
+        -10
+      ]
+    },
+    {
+      "available": true,
+      "admitted": false,
+      "reason": "empty_multiscale_support",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.001568209147080779,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 5185.225946467391,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          22.0770139921004,
+          -10.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 212.1861723568968,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1400",
+      "case": "noiseless_phase1_coma0p5",
+      "kind": "noiseless",
+      "phase": [
+        19,
+        -10
+      ]
+    },
+    {
+      "available": true,
+      "admitted": false,
+      "reason": "empty_multiscale_support",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.0015972498804330826,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 5185.8393023548415,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          22.0770139921004,
+          -10.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 212.79952824434775,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a2000",
+      "case": "noiseless_phase1_coma0p5",
+      "kind": "noiseless",
+      "phase": [
+        19,
+        -10
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "nonpositive_outer_MAD_for_declared_solver_scaling",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        1,
+        53,
+        256,
+        2262
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.00183750013820827,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 41486.71441883873,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          22.0770139921004,
+          -10.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 1702.396225954782,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1100",
+      "case": "noiseless_phase1_coma4p0",
+      "kind": "noiseless",
+      "phase": [
+        19,
+        -10
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "nonpositive_outer_MAD_for_declared_solver_scaling",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        0,
+        27,
+        97,
+        616
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.0015662908554077148,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 41481.807571739126,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          22.0770139921004,
+          -10.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 1697.4893788551744,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1400",
+      "case": "noiseless_phase1_coma4p0",
+      "kind": "noiseless",
+      "phase": [
+        19,
+        -10
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "nonpositive_outer_MAD_for_declared_solver_scaling",
+      "background": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "selected_per_band": [
+        0,
+        0,
+        46,
+        256,
+        1645
+      ],
+      "outer_MAD": 0.0,
+      "seconds": 0.0015869170892983675,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 41486.71441883873,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          22.0770139921004,
+          -10.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 1702.396225954782,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a2000",
+      "case": "noiseless_phase1_coma4p0",
+      "kind": "noiseless",
+      "phase": [
+        19,
+        -10
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        0.10093967720069869,
+        0.004072165013871578,
+        0.24502929228350032
+      ],
+      "selected_per_band": [
+        1,
+        23,
+        64,
+        209,
+        683
+      ],
+      "outer_MAD": 13.037640595444243,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 230.2053277478056,
+      "iterations": 300,
+      "function_evaluations": 303,
+      "relative_projected_gradient": 0.00015895216075782436,
+      "finite": true,
+      "seconds": 0.540795125067234,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385263,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          17.0,
+          -11.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 7.576761614312621e-28,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0,
+        "amplitude_bias": -1.0,
+        "width_bias": [
+          -0.5,
+          -0.24999999999999978
+        ],
+        "gaussian_centroid_error": 90.60905032059435,
+        "fit_boundary": false,
+        "fit": {
+          "parameters": [
+            0.0,
+            -44.0,
+            -78.0,
+            1.791759469228055,
+            1.791759469228055,
+            0.2,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "peak": 0.0,
+          "centroid": [
+            -44.0,
+            -78.0
+          ],
+          "widths": [
+            6.0,
+            6.0
+          ],
+          "angle_rad": 1.7707963267948965,
+          "gaussian_integral": 0.0,
+          "background": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "residual_rms": 0.0,
+          "sse": 0.0,
+          "boundary_rejection": false,
+          "solver_status": 1,
+          "nfev": 1,
+          "successful_starts": 3
+        }
+      },
+      "array": "a1100",
+      "case": "map_add_compact_seed1",
+      "kind": "estimator_only_map_addition",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        -0.07534665720631514,
+        0.41582818525116283,
+        0.34855785677211515
+      ],
+      "selected_per_band": [
+        10,
+        16,
+        46,
+        124,
+        0
+      ],
+      "outer_MAD": 21.76897626683597,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 0.0021544597706177763,
+      "iterations": 300,
+      "function_evaluations": 323,
+      "relative_projected_gradient": 1.3080866279407964e-05,
+      "finite": true,
+      "seconds": 0.629897209117189,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385265,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          17.0,
+          -11.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 7.576761614312622e-28,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0,
+        "amplitude_bias": -1.0,
+        "width_bias": [
+          -0.5,
+          -0.24999999999999978
+        ],
+        "gaussian_centroid_error": 90.60905032059435,
+        "fit_boundary": false,
+        "fit": {
+          "parameters": [
+            0.0,
+            -44.0,
+            -78.0,
+            1.791759469228055,
+            1.791759469228055,
+            0.2,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "peak": 0.0,
+          "centroid": [
+            -44.0,
+            -78.0
+          ],
+          "widths": [
+            6.0,
+            6.0
+          ],
+          "angle_rad": 1.7707963267948965,
+          "gaussian_integral": 0.0,
+          "background": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "residual_rms": 0.0,
+          "sse": 0.0,
+          "boundary_rejection": false,
+          "solver_status": 1,
+          "nfev": 1,
+          "successful_starts": 3
+        }
+      },
+      "array": "a1400",
+      "case": "map_add_compact_seed1",
+      "kind": "estimator_only_map_addition",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        0.08048595820500953,
+        -0.19947653468371868,
+        -0.15576536463073254
+      ],
+      "selected_per_band": [
+        1,
+        20,
+        60,
+        177,
+        391
+      ],
+      "outer_MAD": 16.675395444982787,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 29.80955403939767,
+      "iterations": 300,
+      "function_evaluations": 313,
+      "relative_projected_gradient": 0.0001191760436365024,
+      "finite": true,
+      "seconds": 0.5652519171126187,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385263,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          17.0,
+          -11.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 7.576761614312621e-28,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0,
+        "amplitude_bias": -1.0,
+        "width_bias": [
+          -0.5,
+          -0.24999999999999978
+        ],
+        "gaussian_centroid_error": 90.60905032059435,
+        "fit_boundary": false,
+        "fit": {
+          "parameters": [
+            0.0,
+            -44.0,
+            -78.0,
+            1.791759469228055,
+            1.791759469228055,
+            0.2,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "peak": 0.0,
+          "centroid": [
+            -44.0,
+            -78.0
+          ],
+          "widths": [
+            6.0,
+            6.0
+          ],
+          "angle_rad": 1.7707963267948965,
+          "gaussian_integral": 0.0,
+          "background": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "residual_rms": 0.0,
+          "sse": 0.0,
+          "boundary_rejection": false,
+          "solver_status": 1,
+          "nfev": 1,
+          "successful_starts": 3
+        }
+      },
+      "array": "a2000",
+      "case": "map_add_compact_seed1",
+      "kind": "estimator_only_map_addition",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        0.17589277019320676,
+        -0.1505146361268107,
+        -0.21820141121856748
+      ],
+      "selected_per_band": [
+        3,
+        30,
+        64,
+        179,
+        697
+      ],
+      "outer_MAD": 12.786755886847708,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 61.44364321793873,
+      "iterations": 300,
+      "function_evaluations": 309,
+      "relative_projected_gradient": 0.0001723209647665733,
+      "finite": true,
+      "seconds": 0.5496287501882762,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385263,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          17.0,
+          -11.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 7.576761614312621e-28,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0,
+        "amplitude_bias": -1.0,
+        "width_bias": [
+          -0.5,
+          -0.24999999999999978
+        ],
+        "gaussian_centroid_error": 90.60905032059435,
+        "fit_boundary": false,
+        "fit": {
+          "parameters": [
+            0.0,
+            -44.0,
+            -78.0,
+            1.791759469228055,
+            1.791759469228055,
+            0.2,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "peak": 0.0,
+          "centroid": [
+            -44.0,
+            -78.0
+          ],
+          "widths": [
+            6.0,
+            6.0
+          ],
+          "angle_rad": 1.7707963267948965,
+          "gaussian_integral": 0.0,
+          "background": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "residual_rms": 0.0,
+          "sse": 0.0,
+          "boundary_rejection": false,
+          "solver_status": 1,
+          "nfev": 1,
+          "successful_starts": 3
+        }
+      },
+      "array": "a1100",
+      "case": "map_add_compact_seed2",
+      "kind": "estimator_only_map_addition",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        -0.20451624565224572,
+        0.006691200015517027,
+        0.2620183533418756
+      ],
+      "selected_per_band": [
+        2,
+        13,
+        48,
+        119,
+        52
+      ],
+      "outer_MAD": 22.382724197934884,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 0.08728460984015668,
+      "iterations": 300,
+      "function_evaluations": 305,
+      "relative_projected_gradient": 4.494233182325787e-05,
+      "finite": true,
+      "seconds": 0.5681071667931974,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385265,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          17.0,
+          -11.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 7.576761614312622e-28,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0,
+        "amplitude_bias": -1.0,
+        "width_bias": [
+          -0.5,
+          -0.24999999999999978
+        ],
+        "gaussian_centroid_error": 90.60905032059435,
+        "fit_boundary": false,
+        "fit": {
+          "parameters": [
+            0.0,
+            -44.0,
+            -78.0,
+            1.791759469228055,
+            1.791759469228055,
+            0.2,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "peak": 0.0,
+          "centroid": [
+            -44.0,
+            -78.0
+          ],
+          "widths": [
+            6.0,
+            6.0
+          ],
+          "angle_rad": 1.7707963267948965,
+          "gaussian_integral": 0.0,
+          "background": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "residual_rms": 0.0,
+          "sse": 0.0,
+          "boundary_rejection": false,
+          "solver_status": 1,
+          "nfev": 1,
+          "successful_starts": 3
+        }
+      },
+      "array": "a1400",
+      "case": "map_add_compact_seed2",
+      "kind": "estimator_only_map_addition",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        0.23993377430664933,
+        -0.020552631951538645,
+        0.17413404630273674
+      ],
+      "selected_per_band": [
+        0,
+        21,
+        65,
+        175,
+        284
+      ],
+      "outer_MAD": 16.222708883557377,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 51.23213221453115,
+      "iterations": 300,
+      "function_evaluations": 318,
+      "relative_projected_gradient": 5.096740881523141e-05,
+      "finite": true,
+      "seconds": 0.554432415869087,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385263,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          17.0,
+          -11.000000000000002
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 7.576761614312621e-28,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0,
+        "amplitude_bias": -1.0,
+        "width_bias": [
+          -0.5,
+          -0.24999999999999978
+        ],
+        "gaussian_centroid_error": 90.60905032059435,
+        "fit_boundary": false,
+        "fit": {
+          "parameters": [
+            0.0,
+            -44.0,
+            -78.0,
+            1.791759469228055,
+            1.791759469228055,
+            0.2,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "peak": 0.0,
+          "centroid": [
+            -44.0,
+            -78.0
+          ],
+          "widths": [
+            6.0,
+            6.0
+          ],
+          "angle_rad": 1.7707963267948965,
+          "gaussian_integral": 0.0,
+          "background": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "residual_rms": 0.0,
+          "sse": 0.0,
+          "boundary_rejection": false,
+          "solver_status": 1,
+          "nfev": 1,
+          "successful_starts": 3
+        }
+      },
+      "array": "a2000",
+      "case": "map_add_compact_seed2",
+      "kind": "estimator_only_map_addition",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        0.10093967720069869,
+        0.004072165013871578,
+        0.24502929228350032
+      ],
+      "selected_per_band": [
+        1,
+        23,
+        64,
+        196,
+        685
+      ],
+      "outer_MAD": 13.037640595444243,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 170.85035157544894,
+      "iterations": 300,
+      "function_evaluations": 305,
+      "relative_projected_gradient": 0.00026372537968218334,
+      "finite": true,
+      "seconds": 0.5503200828097761,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385265,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          19.0,
+          -9.799999999999999
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 2.8335329006745597e-18,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1100",
+      "case": "map_add_mismatch",
+      "kind": "estimator_only_map_addition",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        -0.07534665720631514,
+        0.41582818525116283,
+        0.34855785677211515
+      ],
+      "selected_per_band": [
+        10,
+        15,
+        47,
+        134,
+        0
+      ],
+      "outer_MAD": 21.76897626683597,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 0.0024560043833208155,
+      "iterations": 300,
+      "function_evaluations": 318,
+      "relative_projected_gradient": 2.7852522415426192e-05,
+      "finite": true,
+      "seconds": 0.626160291954875,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385265,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          19.0,
+          -9.799999999999999
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 2.83353290067456e-18,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1400",
+      "case": "map_add_mismatch",
+      "kind": "estimator_only_map_addition",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        0.08048595820500953,
+        -0.19947653468371868,
+        -0.15576536463073254
+      ],
+      "selected_per_band": [
+        1,
+        18,
+        64,
+        182,
+        394
+      ],
+      "outer_MAD": 16.675395444982787,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 25.496856585358827,
+      "iterations": 300,
+      "function_evaluations": 307,
+      "relative_projected_gradient": 0.00010939006588492965,
+      "finite": true,
+      "seconds": 0.5551251661963761,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10877.664340385265,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          19.0,
+          -9.799999999999999
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 2.8335329006745597e-18,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a2000",
+      "case": "map_add_mismatch",
+      "kind": "estimator_only_map_addition",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        0.10093967720069869,
+        0.004072165013871578,
+        0.24502929228350032
+      ],
+      "selected_per_band": [
+        1,
+        3,
+        2,
+        31,
+        377
+      ],
+      "outer_MAD": 13.037640595444243,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 0.32451275161974613,
+      "iterations": 300,
+      "function_evaluations": 304,
+      "relative_projected_gradient": 0.0001651731563211961,
+      "finite": true,
+      "seconds": 0.5673314579762518,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10388.15611488747,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 440.2451319778405,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1100",
+      "case": "map_add_coma1",
+      "kind": "estimator_only_map_addition",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": true,
+      "reason": "accepted_solve",
+      "background": [
+        -0.07534665720631514,
+        0.41582818525116283,
+        0.34855785677211515
+      ],
+      "selected_per_band": [
+        10,
+        2,
+        0,
+        0,
+        0
+      ],
+      "outer_MAD": 21.76897626683597,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+      "objective": 1.9428751357677928e-14,
+      "iterations": 16,
+      "function_evaluations": 18,
+      "relative_projected_gradient": 1.2127080588607669e-08,
+      "finite": true,
+      "seconds": 0.04325470817275345,
+      "model_metrics": {
+        "integrated_brightness": 32563.541313911748,
+        "truth_integrated_brightness": 10386.738139122848,
+        "brightness_error": 2.1351075648337963,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 32563.54131391175,
+        "truth_exterior_D_brightness": 438.8271562132188,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1400",
+      "case": "map_add_coma1",
+      "kind": "estimator_only_map_addition",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        0.08048595820500953,
+        -0.19947653468371868,
+        -0.15576536463073254
+      ],
+      "selected_per_band": [
+        1,
+        0,
+        1,
+        21,
+        0
+      ],
+      "outer_MAD": 16.675395444982787,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 9.522255087677833e-06,
+      "iterations": 300,
+      "function_evaluations": 324,
+      "relative_projected_gradient": 2.0912011077569483e-06,
+      "finite": true,
+      "seconds": 0.6233692090027034,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 10388.15611488747,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 440.2451319778405,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a2000",
+      "case": "map_add_coma1",
+      "kind": "estimator_only_map_addition",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": true,
+      "reason": "accepted_solve",
+      "background": [
+        0.10093967720069869,
+        0.004072165013871578,
+        0.24502929228350032
+      ],
+      "selected_per_band": [
+        1,
+        3,
+        2,
+        0,
+        0
+      ],
+      "outer_MAD": 13.037640595444243,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+      "objective": 4.019168337374736e-16,
+      "iterations": 19,
+      "function_evaluations": 22,
+      "relative_projected_gradient": 1.1521507287760487e-09,
+      "finite": true,
+      "seconds": 0.050210250075906515,
+      "model_metrics": {
+        "integrated_brightness": 47379.604805743664,
+        "truth_integrated_brightness": 5194.078057443735,
+        "brightness_error": 8.12185074651372,
+        "relative_L2": 1.0609034339008612,
+        "centroid": [
+          25.615808524058902,
+          -56.920654752075684
+        ],
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": 46.25335726734218,
+        "wing_error": -0.9458680489032258,
+        "exterior_D_brightness": 47166.86406594541,
+        "truth_exterior_D_brightness": 220.12256598892026,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1100",
+      "case": "map_add_coma0p5",
+      "kind": "estimator_only_map_addition",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": true,
+      "reason": "accepted_solve",
+      "background": [
+        -0.07534665720631514,
+        0.41582818525116283,
+        0.34855785677211515
+      ],
+      "selected_per_band": [
+        10,
+        2,
+        0,
+        0,
+        0
+      ],
+      "outer_MAD": 21.76897626683597,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+      "objective": 1.9427026692479e-14,
+      "iterations": 16,
+      "function_evaluations": 18,
+      "relative_projected_gradient": 1.2126295932053125e-08,
+      "finite": true,
+      "seconds": 0.043619582895189524,
+      "model_metrics": {
+        "integrated_brightness": 32562.999989691103,
+        "truth_integrated_brightness": 5193.369069561424,
+        "brightness_error": 5.2701108959392755,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 32562.99998969111,
+        "truth_exterior_D_brightness": 219.4135781066094,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1400",
+      "case": "map_add_coma0p5",
+      "kind": "estimator_only_map_addition",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": true,
+      "reason": "accepted_solve",
+      "background": [
+        0.08048595820500953,
+        -0.19947653468371868,
+        -0.15576536463073254
+      ],
+      "selected_per_band": [
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "outer_MAD": 16.675395444982787,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+      "objective": 3.678051452210873e-26,
+      "iterations": 6,
+      "function_evaluations": 8,
+      "relative_projected_gradient": 8.049897480087335e-15,
+      "finite": true,
+      "seconds": 0.026254832977429032,
+      "model_metrics": {
+        "integrated_brightness": 21455.962021729825,
+        "truth_integrated_brightness": 5194.078057443735,
+        "brightness_error": 3.130850900667707,
+        "relative_L2": 1.000000001470045,
+        "centroid": [
+          -34.421052631578945,
+          18.526315789473685
+        ],
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": 61.98352935554441,
+        "wing_error": -0.9999885553196912,
+        "exterior_D_brightness": 21455.917043677004,
+        "truth_exterior_D_brightness": 220.12256598892026,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a2000",
+      "case": "map_add_coma0p5",
+      "kind": "estimator_only_map_addition",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        0.10093967720069869,
+        0.004072165013871578,
+        0.24502929228350032
+      ],
+      "selected_per_band": [
+        1,
+        4,
+        64,
+        259,
+        2206
+      ],
+      "outer_MAD": 13.037640595444243,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 25.38576691781225,
+      "iterations": 300,
+      "function_evaluations": 304,
+      "relative_projected_gradient": 0.00014313523378618547,
+      "finite": true,
+      "seconds": 0.5795178329572082,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 41552.62445954988,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 1760.980527911362,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1100",
+      "case": "map_add_coma4",
+      "kind": "estimator_only_map_addition",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        -0.07534665720631514,
+        0.41582818525116283,
+        0.34855785677211515
+      ],
+      "selected_per_band": [
+        10,
+        2,
+        27,
+        58,
+        471
+      ],
+      "outer_MAD": 21.76897626683597,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 0.02185377702810986,
+      "iterations": 300,
+      "function_evaluations": 307,
+      "relative_projected_gradient": 4.723676062941838e-05,
+      "finite": true,
+      "seconds": 0.5862036251928657,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 41546.95255649139,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 1755.3086248528753,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a1400",
+      "case": "map_add_coma4",
+      "kind": "estimator_only_map_addition",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": false,
+      "admitted": false,
+      "reason": "solver_gate_failure",
+      "background": [
+        0.08048595820500953,
+        -0.19947653468371868,
+        -0.15576536463073254
+      ],
+      "selected_per_band": [
+        1,
+        0,
+        53,
+        304,
+        1597
+      ],
+      "outer_MAD": 16.675395444982787,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+      "objective": 31.472790136230575,
+      "iterations": 300,
+      "function_evaluations": 302,
+      "relative_projected_gradient": 0.0005156848250474317,
+      "finite": true,
+      "seconds": 0.5824983329512179,
+      "model_metrics": {
+        "integrated_brightness": 0.0,
+        "truth_integrated_brightness": 41552.62445954988,
+        "brightness_error": -1.0,
+        "relative_L2": 1.0,
+        "centroid": null,
+        "truth_centroid": [
+          20.078072015243716,
+          -11.0
+        ],
+        "centroid_error": null,
+        "wing_error": -1.0,
+        "exterior_D_brightness": 0.0,
+        "truth_exterior_D_brightness": 1760.980527911362,
+        "negative_pixels": 0,
+        "outside_D_nonzero": 0
+      },
+      "array": "a2000",
+      "case": "map_add_coma4",
+      "kind": "estimator_only_map_addition",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": false,
+      "reason": "empty_multiscale_support",
+      "background": [
+        7.000000000000002,
+        1.9999999999999807,
+        -3.0000000000000027
+      ],
+      "selected_per_band": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "outer_MAD": 2.633626650094811e-14,
+      "seconds": 0.0017675419803708792,
+      "array": "a1100",
+      "case": "pure_plane",
+      "kind": "pure_plane",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": false,
+      "reason": "empty_multiscale_support",
+      "background": [
+        7.000000000000001,
+        1.999999999999989,
+        -3.0
+      ],
+      "selected_per_band": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "outer_MAD": 1.448494657552146e-14,
+      "seconds": 0.0016109999269247055,
+      "array": "a1400",
+      "case": "pure_plane",
+      "kind": "pure_plane",
+      "phase": [
+        17,
+        -11
+      ]
+    },
+    {
+      "available": true,
+      "admitted": false,
+      "reason": "empty_multiscale_support",
+      "background": [
+        7.000000000000002,
+        2.000000000000014,
+        -2.9999999999999987
+      ],
+      "selected_per_band": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "outer_MAD": 1.9752199875711083e-14,
+      "seconds": 0.0017017500940710306,
+      "array": "a2000",
+      "case": "pure_plane",
+      "kind": "pure_plane",
+      "phase": [
+        17,
+        -11
+      ]
+    }
+  ],
+  "scope": "estimator tests only; no full FRUIT trajectories",
+  "calibration": [
+    {
+      "available": true,
+      "failures": [],
+      "bands": [
+        {
+          "band": 1,
+          "stratum": 0,
+          "eligible_pixels": 3182,
+          "scatter": 10.10729621429597,
+          "available": true
+        },
+        {
+          "band": 1,
+          "stratum": 1,
+          "eligible_pixels": 3179,
+          "scatter": 8.244439696625186,
+          "available": true
+        },
+        {
+          "band": 2,
+          "stratum": 0,
+          "eligible_pixels": 3182,
+          "scatter": 2.3324341948566323,
+          "available": true
+        },
+        {
+          "band": 2,
+          "stratum": 1,
+          "eligible_pixels": 3179,
+          "scatter": 2.1898215627949904,
+          "available": true
+        },
+        {
+          "band": 3,
+          "stratum": 0,
+          "eligible_pixels": 3182,
+          "scatter": 1.0177155971745944,
+          "available": true
+        },
+        {
+          "band": 3,
+          "stratum": 1,
+          "eligible_pixels": 3179,
+          "scatter": 0.9486991172246965,
+          "available": true
+        },
+        {
+          "band": 4,
+          "stratum": 0,
+          "eligible_pixels": 2865,
+          "scatter": 0.4014541157512361,
+          "available": true
+        },
+        {
+          "band": 4,
+          "stratum": 1,
+          "eligible_pixels": 3178,
+          "scatter": 0.4848037551213856,
+          "available": true
+        },
+        {
+          "band": 5,
+          "stratum": 0,
+          "eligible_pixels": 2865,
+          "scatter": 0.29229418908200683,
+          "available": true
+        },
+        {
+          "band": 5,
+          "stratum": 1,
+          "eligible_pixels": 3178,
+          "scatter": 0.27133504309410483,
+          "available": true
+        }
+      ],
+      "q_median": 503.0,
+      "background": [
+        0.10093967720069869,
+        0.004072165013871578,
+        0.24502929228350032
+      ],
+      "eligible_D_per_band": [
+        6361,
+        6361,
+        6361,
+        6043,
+        6043
+      ],
+      "outer_MAD": 13.037640595444243
+    },
+    {
+      "available": true,
+      "failures": [],
+      "bands": [
+        {
+          "band": 1,
+          "stratum": 0,
+          "eligible_pixels": 3141,
+          "scatter": 19.399106667043448,
+          "available": true
+        },
+        {
+          "band": 1,
+          "stratum": 1,
+          "eligible_pixels": 3128,
+          "scatter": 14.51735805250501,
+          "available": true
+        },
+        {
+          "band": 2,
+          "stratum": 0,
+          "eligible_pixels": 2974,
+          "scatter": 4.488099125401834,
+          "available": true
+        },
+        {
+          "band": 2,
+          "stratum": 1,
+          "eligible_pixels": 3128,
+          "scatter": 3.576043915592008,
+          "available": true
+        },
+        {
+          "band": 3,
+          "stratum": 0,
+          "eligible_pixels": 2307,
+          "scatter": 1.8382312942786763,
+          "available": true
+        },
+        {
+          "band": 3,
+          "stratum": 1,
+          "eligible_pixels": 3113,
+          "scatter": 1.6365485569600198,
+          "available": true
+        },
+        {
+          "band": 4,
+          "stratum": 0,
+          "eligible_pixels": 703,
+          "scatter": 0.9075811407418243,
+          "available": true
+        },
+        {
+          "band": 4,
+          "stratum": 1,
+          "eligible_pixels": 1614,
+          "scatter": 0.7717728786854271,
+          "available": true
+        },
+        {
+          "band": 5,
+          "stratum": 0,
+          "eligible_pixels": 703,
+          "scatter": 0.7391956658799935,
+          "available": true
+        },
+        {
+          "band": 5,
+          "stratum": 1,
+          "eligible_pixels": 1614,
+          "scatter": 0.8392134246620371,
+          "available": true
+        }
+      ],
+      "q_median": 105.0,
+      "background": [
+        -0.07534665720631514,
+        0.41582818525116283,
+        0.34855785677211515
+      ],
+      "eligible_D_per_band": [
+        6269,
+        6102,
+        5420,
+        2317,
+        2317
+      ],
+      "outer_MAD": 21.76897626683597
+    },
+    {
+      "available": true,
+      "failures": [],
+      "bands": [
+        {
+          "band": 1,
+          "stratum": 0,
+          "eligible_pixels": 3231,
+          "scatter": 11.445975257586314,
+          "available": true
+        },
+        {
+          "band": 1,
+          "stratum": 1,
+          "eligible_pixels": 3130,
+          "scatter": 8.970629908231542,
+          "available": true
+        },
+        {
+          "band": 2,
+          "stratum": 0,
+          "eligible_pixels": 3231,
+          "scatter": 2.9973827617177,
+          "available": true
+        },
+        {
+          "band": 2,
+          "stratum": 1,
+          "eligible_pixels": 3130,
+          "scatter": 2.373654894803025,
+          "available": true
+        },
+        {
+          "band": 3,
+          "stratum": 0,
+          "eligible_pixels": 3231,
+          "scatter": 1.23765661172584,
+          "available": true
+        },
+        {
+          "band": 3,
+          "stratum": 1,
+          "eligible_pixels": 3130,
+          "scatter": 1.1286746409132276,
+          "available": true
+        },
+        {
+          "band": 4,
+          "stratum": 0,
+          "eligible_pixels": 2692,
+          "scatter": 0.567731040654203,
+          "available": true
+        },
+        {
+          "band": 4,
+          "stratum": 1,
+          "eligible_pixels": 3033,
+          "scatter": 0.48215245267773493,
+          "available": true
+        },
+        {
+          "band": 5,
+          "stratum": 0,
+          "eligible_pixels": 2692,
+          "scatter": 0.42154081504956115,
+          "available": true
+        },
+        {
+          "band": 5,
+          "stratum": 1,
+          "eligible_pixels": 3033,
+          "scatter": 0.4872102574316136,
+          "available": true
+        }
+      ],
+      "q_median": 127.0,
+      "background": [
+        0.08048595820500953,
+        -0.19947653468371868,
+        -0.15576536463073254
+      ],
+      "eligible_D_per_band": [
+        6361,
+        6361,
+        6361,
+        5725,
+        5725
+      ],
+      "outer_MAD": 16.675395444982787
+    }
+  ],
+  "oracle": [
+    {
+      "array": "a1100",
+      "source_score": 23.42460004895691,
+      "paired_null_score": 0.14235229462558752,
+      "processed_response_score": 23.282247754331326,
+      "amplitude": 1.006114198943661,
+      "paired_null_amplitude": 0.006114198943661053,
+      "empirical_scale": 0.04295117939435055,
+      "expected": [
+        289.0933255369196,
+        234.70905103355244,
+        74.48090009173335
+      ],
+      "covariance": [
+        [
+          362.1887677969854,
+          -75.34855084138259,
+          8.493361848546064
+        ],
+        [
+          -75.34855084138259,
+          293.96050015736876,
+          1.3185620247785912
+        ],
+        [
+          8.493361848546064,
+          1.3185620247785912,
+          293.7605321417522
+        ]
+      ],
+      "shrunk_covariance": [
+        [
+          362.1887677969854,
+          -67.81369575724433,
+          7.644025663691457
+        ],
+        [
+          -67.81369575724433,
+          293.96050015736876,
+          1.186705822300732
+        ],
+        [
+          7.644025663691457,
+          1.186705822300732,
+          293.7605321417522
+        ]
+      ],
+      "weights": [
+        0.0018177702586709707,
+        0.001890634967553218,
+        0.0004127986065631327
+      ],
+      "condition_number": 1.607149277305354,
+      "placements": 62,
+      "reference_score_range": [
+        -2.1972728189858923,
+        2.9955433613992706
+      ],
+      "five_scale_gate": true
+    },
+    {
+      "array": "a1400",
+      "source_score": 15.036794050376765,
+      "paired_null_score": -1.773598603438314,
+      "processed_response_score": 16.81039265381508,
+      "amplitude": 0.8944939217088544,
+      "paired_null_amplitude": -0.1055060782911457,
+      "empirical_scale": 0.05948701024381203,
+      "expected": [
+        301.2826840858207,
+        234.0618761064632,
+        79.47517881950054
+      ],
+      "covariance": [
+        [
+          845.2217918926126,
+          -164.74407896753314,
+          -146.8075172699775
+        ],
+        [
+          -164.74407896753314,
+          771.2545846653227,
+          -269.8499593796212
+        ],
+        [
+          -146.8075172699775,
+          -269.8499593796212,
+          925.6703981636283
+        ]
+      ],
+      "shrunk_covariance": [
+        [
+          845.2217918926126,
+          -148.26967107077982,
+          -132.12676554297974
+        ],
+        [
+          -148.26967107077982,
+          771.2545846653227,
+          -242.8649634416591
+        ],
+        [
+          -132.12676554297974,
+          -242.8649634416591,
+          925.6703981636283
+        ]
+      ],
+      "weights": [
+        0.0017194025593322128,
+        0.001719495289544548,
+        0.0010003813725780538
+      ],
+      "condition_number": 2.279083139330967,
+      "placements": 41,
+      "reference_score_range": [
+        -1.596198211189722,
+        1.9482471119921632
+      ],
+      "five_scale_gate": true
+    },
+    {
+      "array": "a2000",
+      "source_score": 20.130002926685624,
+      "paired_null_score": 0.3051733071545064,
+      "processed_response_score": 19.824829619531116,
+      "amplitude": 1.0153934895285988,
+      "paired_null_amplitude": 0.015393489528598743,
+      "empirical_scale": 0.050441795424804835,
+      "expected": [
+        290.3501385266421,
+        234.60147548517813,
+        81.98713414349969
+      ],
+      "covariance": [
+        [
+          359.1927444842173,
+          1.1598490514276585,
+          -23.76311372364202
+        ],
+        [
+          1.1598490514276585,
+          384.45268987749444,
+          43.14708542504635
+        ],
+        [
+          -23.76311372364202,
+          43.14708542504635,
+          358.470297854776
+        ]
+      ],
+      "shrunk_covariance": [
+        [
+          359.1927444842173,
+          1.0438641462848928,
+          -21.38680235127782
+        ],
+        [
+          1.0438641462848928,
+          384.45268987749444,
+          38.832376882541716
+        ],
+        [
+          -21.38680235127782,
+          38.832376882541716,
+          358.470297854776
+        ]
+      ],
+      "weights": [
+        0.0020848179129746396,
+        0.001491954568004454,
+        0.0005446962821767663
+      ],
+      "condition_number": 1.2905713713897067,
+      "placements": 62,
+      "reference_score_range": [
+        -1.654431446198853,
+        2.7085143407707304
+      ],
+      "five_scale_gate": true
+    }
+  ]
+}

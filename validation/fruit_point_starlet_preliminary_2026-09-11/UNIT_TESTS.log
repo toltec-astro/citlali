@@ -1,0 +1,9 @@
+test_background_excluded_and_selected_gradient (test_starlet_operator.StarletAlgebra.test_background_excluded_and_selected_gradient) ... ok
+test_complete_mask_excludes_missing_influence (test_starlet_operator.StarletAlgebra.test_complete_mask_excludes_missing_influence) ... ok
+test_positive_source_has_signed_details (test_starlet_operator.StarletAlgebra.test_positive_source_has_signed_details) ... ok
+test_sum_and_exact_masked_adjoint (test_starlet_operator.StarletAlgebra.test_sum_and_exact_masked_adjoint) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.007s
+
+OK

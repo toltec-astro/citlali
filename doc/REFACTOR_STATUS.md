@@ -1808,12 +1808,23 @@ calibrated detection significances. The comatic regime remains unestablished
 across arrays. No new parent read or cleaning pass was performed; all 275 used
 retained files and 49 frozen RBF packet payloads remain unchanged.
 
-The owner approved the [single preliminary starlet screen](../validation/fruit_point_starlet_preliminary_2026-09-11/OWNER_APPROVAL.md):
-saved-map estimator tests, explicit multiscale support and amplitude recovery,
-and one frozen 4× brighter-coma bootstrap with learning rerun. The exact candidate
-and inputs are frozen before execution; numerical results are pending. A failed screen stops before full
-trajectories; a passing screen supports a separate matched-run review. No RBF
-retuning, 129081 evaluation, Unity activity or production change is authorized.
+The owner-approved [preliminary starlet screen](../validation/fruit_point_starlet_preliminary_2026-09-11/SCIENTIFIC_REPORT.md)
+is complete: **reject this estimator/admission candidate**. Exactly one new
+rank-5 bootstrap on the frozen 4× coma established descriptive processed-template
+scores of 23.425/15.037/20.130 across the arrays. The 75 map-estimator checks
+admitted models in 5/6 null and 3/3 background-only cases. All six processed
+compact and three new coma solves hit the 300-iteration cap; no usable model
+was admitted for them. The noiseless normalization was undefined at zero outer
+MAD, so required recovery/phase checks remain unavailable rather than evidence
+of starlet representation failure. The null failure independently rejects the
+candidate. The screen used 21.88 s and 2.21 GiB peak RSS; the 0.5 s median-array
+inference bound was exceeded on 10/25 maps. Operator, mask and stored-gradient
+checks passed, and prior packets/products and protected archives remain intact.
+No full trajectories ran. This candidate is closed with no revision allowance;
+any new estimator or changed screen requires a separate owner decision. The
+next direction may return to a bounded POINT reference contract. 129081 remains
+reserved for new feedback comparisons, with historical exposure disclosed.
+No RBF retuning, Unity activity, production change or qualification is authorized.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the

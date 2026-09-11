@@ -1,0 +1,128 @@
+{
+  "identity": "SCI-FRUIT-POINT-STARLET-PRELIMINARY-RESULT@r0.1",
+  "state": "complete_reject_candidate_no_full_trajectory_authority",
+  "utc": "2026-09-11T20:19:03.792114+00:00",
+  "freeze_commit": "fb8a4612d60ae5176766b863a834a8a81186e14d",
+  "new_cleaning_passes": 1,
+  "full_trajectories": 0,
+  "method_revisions": 0,
+  "external_products": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1",
+  "files": [
+    {
+      "path": "DECISION_EVIDENCE.json",
+      "bytes": 38400,
+      "sha256": "c2d70afdf369322f2a8490fdc5eaf5632ad5476cd90923b1337b19e3f1fc6221"
+    },
+    {
+      "path": "EXECUTION.log",
+      "bytes": 3471,
+      "sha256": "3528071b816c9ef72e8ee60981ff724971b5df5144adf240e1cdc358dad4c1a8"
+    },
+    {
+      "path": "FREEZE.json",
+      "bytes": 7345,
+      "sha256": "794c94127ee0d8e3517488a7184e8d72a0305dbb8b18be7b53d515b691787277"
+    },
+    {
+      "path": "FREEZE.json.sha256",
+      "bytes": 78,
+      "sha256": "10c7b80a43149ceb64de2c48722b5e210ecf1cd28010120273e2611dd902f80f"
+    },
+    {
+      "path": "NULL_ADMISSION.png",
+      "bytes": 359113,
+      "sha256": "53ba2b9ab02ff32802e54e101b59533bab7380b66ef194acdf45612f308ca34d"
+    },
+    {
+      "path": "NUMERICAL_RESULTS.json",
+      "bytes": 113139,
+      "sha256": "afb6b7f7a20402eaa0b1afd2cf240722b998c536756521f1736f36a2df422a79"
+    },
+    {
+      "path": "OWNER_APPROVAL.md",
+      "bytes": 1371,
+      "sha256": "1107a51fedbcb86010daf0d615654780b57053456177453610ba2f2127dc66c1"
+    },
+    {
+      "path": "PRESERVATION_START.json",
+      "bytes": 534,
+      "sha256": "5b3f7ff5cbd6e654acc58068b2455326885ba909f58cc47afa56955696aa87c2"
+    },
+    {
+      "path": "PROTOCOL.md",
+      "bytes": 5372,
+      "sha256": "90937e4e69419d13c5eeaea4e1be00d3b587f7e50633bdb5098d38be6fe3a401"
+    },
+    {
+      "path": "README.md",
+      "bytes": 612,
+      "sha256": "fca82e29eab1ddeae27fa1f4f517f4e46c2ecdd64007b3596226846767190160"
+    },
+    {
+      "path": "RUN_PRODUCT_MANIFEST.json",
+      "bytes": 10158,
+      "sha256": "dce74e82d2047636a54a44a63a6a1a6d180c38b41401e9478352692ecd333100"
+    },
+    {
+      "path": "RUN_RECEIPTS.json",
+      "bytes": 1814,
+      "sha256": "dac8e2439a3ef718236fcd7f720b280f951211ce9482da8d5b543e9ac0b0d58a"
+    },
+    {
+      "path": "SCIENTIFIC_REPORT.md",
+      "bytes": 9201,
+      "sha256": "9b82480fe8b5cc731a20475a2b668c8c7dbc892178162cb896804f0803cd4640"
+    },
+    {
+      "path": "UNIT_TESTS.log",
+      "bytes": 616,
+      "sha256": "affc47c196ba55b85119caf93b08cdc418c69d2e8cb1df5c5a0df1f8ba1ef2cf"
+    },
+    {
+      "path": "VERIFICATION.json",
+      "bytes": 1133,
+      "sha256": "3796ddcdf6bc85d8f10c240ae6ad009e8518a91284d6bba7f133c0f7c78ffab1"
+    },
+    {
+      "path": "build_result_manifest.py",
+      "bytes": 1293,
+      "sha256": "0b1a35ef60b7ad91636134b86ffa3aa0669abd2ce545687728d8d6f17a6f4f68"
+    },
+    {
+      "path": "oracle_verification/ORACLE.json",
+      "bytes": 4557,
+      "sha256": "3978cd0328a8173300c1c8d6200fe0fae1762f4460d9953a7848507d79a42cc0"
+    },
+    {
+      "path": "oracle_verification/ORACLE_FEATURES.npz",
+      "bytes": 80168,
+      "sha256": "67e256901d97f19f823b5897e394cf2c6fee8b301834ef4eb1a1d777e34d1770"
+    },
+    {
+      "path": "render_null_evidence.py",
+      "bytes": 1961,
+      "sha256": "5d560178c1ac0b227c5ded641ef455fb07c33cb15c3590ffd2fc5cf512ec0b3f"
+    },
+    {
+      "path": "run_screen.py",
+      "bytes": 12541,
+      "sha256": "e02fe230bbef798b9a24a41cf183727446ca53989b5c5337c9534409c2709978"
+    },
+    {
+      "path": "starlet.py",
+      "bytes": 5929,
+      "sha256": "6496d01fb9806965546c74c3cc690723cd6477a7b5f40e7a9ae03cbd08578b07"
+    },
+    {
+      "path": "test_starlet_operator.py",
+      "bytes": 2150,
+      "sha256": "a792be07de05423b894e99c78bb44aee831819dc8cd576af33b1de599e10a649"
+    },
+    {
+      "path": "verify_and_summarize.py",
+      "bytes": 10502,
+      "sha256": "2c5ae823090048db24da94e95f8f7a908a975892016ebc48c40bb695bd1904b0"
+    }
+  ],
+  "total_payload_bytes": 671458
+}

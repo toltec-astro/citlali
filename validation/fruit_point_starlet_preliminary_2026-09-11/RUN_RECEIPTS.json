@@ -1,0 +1,65 @@
+{
+  "START.json": {
+    "utc": "2026-09-11T20:10:15.087638+00:00",
+    "freeze_sha256": "794c94127ee0d8e3517488a7184e8d72a0305dbb8b18be7b53d515b691787277",
+    "pid": 18028,
+    "python": "3.13.2",
+    "numpy": "2.2.3"
+  },
+  "THREAD_POOLS.json": [],
+  "TRUTH_BINDING.json": {
+    "config": {
+      "fft_size": 2048,
+      "pupil_radius_pixels": 64.0,
+      "obscuration_radius_fraction": 0.3,
+      "fine_pixel_arcsec": 0.5,
+      "defocus_waves": 0.6,
+      "coma_waves": 0.3,
+      "main_translation_arcsec": [
+        17.0,
+        -11.0
+      ],
+      "sub_lattice_translation_arcsec": [
+        2.0,
+        1.0
+      ]
+    },
+    "brightness": 4.0,
+    "seed": 20260911,
+    "truth_sha256": "02123c56d64f53aa8fb57c6219ee9cb5274ded1472145c3212ceb195705798d9"
+  },
+  "BOOTSTRAP_STARTED.json": {
+    "parent_sha256_float64_C": "49c4754228a1929b9b6f5a1b4e26970bbcd956c80f6c63082be9e61e31744d6d",
+    "parent_shape": [
+      3628,
+      5905
+    ],
+    "seed": 20260911,
+    "truth_sha256": "02123c56d64f53aa8fb57c6219ee9cb5274ded1472145c3212ceb195705798d9",
+    "setup_seconds": 1.228167291963473,
+    "planned_cleaning_passes": 1
+  },
+  "BOOTSTRAP_COMPLETE.json": {
+    "cleaning_passes": 1,
+    "clean_seconds": 0.5001551671884954,
+    "map_seconds": 0.17285462492145598,
+    "rank_guard": 0.0005449609931094992,
+    "groups": 144,
+    "seconds": 2.222786500118673,
+    "peak_rss_bytes": 2349105152,
+    "output_bytes": 2427806
+  },
+  "COMPLETE.json": {
+    "cleaning_passes": 1,
+    "estimator_array_cases": 75,
+    "seconds": 21.883326709037647,
+    "peak_rss_bytes": 2371239936,
+    "output_bytes": 13112535
+  },
+  "execution_environment": {
+    "OPENBLAS_NUM_THREADS": "4",
+    "OMP_NUM_THREADS": "4",
+    "VECLIB_MAXIMUM_THREADS": "4",
+    "python": "/Users/gwilson/tolteca/bin/python -B -W error"
+  }
+}
