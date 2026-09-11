@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "passes": 189,
+  "trajectories": 27,
+  "files": 672,
+  "bytes": 455116255,
+  "freeze_before_run": true,
+  "all_product_hashes_match": true,
+  "bootstrap_identical": true,
+  "immutable_parent_replacement_and_stored_relearning": true,
+  "nonnegative_coefficients_background_excluded": true,
+  "admission_rule_verified": true,
+  "max_relative_overlap_integral_error": 8.826273012192441e-16,
+  "unchanged_control_trajectories": 18,
+  "previous_packet_hashes_unchanged": 42,
+  "stored_state_map_max_abs_error": {
+    "P": 2.7284841053187847e-12,
+    "G": 1.908695423935569e-12,
+    "R": 2.5917046286849654e-12
+  },
+  "input_hash_unchanged": true,
+  "reserved_129081": "historically characterized; no new raw scientific read or feedback trajectory"
+}

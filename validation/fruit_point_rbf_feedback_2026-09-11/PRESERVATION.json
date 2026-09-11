@@ -1,0 +1,16 @@
+{
+  "frozen_ordinary_MAP_payloads_verified": 57,
+  "protected_worktrees": [
+    {
+      "worktree": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor",
+      "status": "?? SCI-FRUIT-v0.1-ODQ-001F-r0.8-owner-review.tar.gz\n?? SCI-FRUIT-v0.1-empirical-lane-gate-0-r0.1-owner-review.tar.gz\n",
+      "archive_handling": "presence/status only; no read, hash or unpack"
+    },
+    {
+      "worktree": "/Users/gwilson/.codex/worktrees/346d/citlali-refactor",
+      "status": "",
+      "archive_handling": "presence/status only; no read, hash or unpack"
+    }
+  ],
+  "production_code_or_profiles_changed": false
+}

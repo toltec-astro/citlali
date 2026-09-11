@@ -2,12 +2,15 @@
 
 Status: generic SCI-FRUIT-NORMATIVE-CORE v0.1/r0.4 and ordinary-MAP scientific
 definition r0.4 remain accepted and frozen. The weighting exploration is closed.
-The subsequent POINT relative-position prior screen is complete, with a
-**revise** recommendation: positional association improves contaminated-source
-recovery, but a1100 mismatch error fails the nondegradation gate. The earlier
-independent coherent candidate r0.2 remains rejected. 129081 stays reserved.
-Scoped execution did not adopt production source/profile successors or qualify
-a numerical method. Earlier paper drafts and experiments remain preserved.
+The latest bounded RBF screen is complete: both feedback candidates are
+**rejected**, and the concentration diagnostic needs further empirical work.
+378 passes demonstrate failed compact recovery and no comatic improvement;
+comatic detectability at the chosen brightnesses was not established across
+arrays. The earlier positional-prior screen retains its revise decision and
+conditional association benefit; the independent Gaussian candidate remains
+rejected. 129081 is historically characterized and reserved for new feedback
+comparisons, not untouched holdout data. Production source/profile adoption and
+numerical qualification remain unavailable. Previous results are preserved.
 Updated: 2026-09-11.
 
 ## Program Adherence And Prior-Work Recovery
@@ -20,10 +23,12 @@ adopts the exact frozen generic FRUIT core and inherited PTC/MAP science,
 identifies both sides of the PTC boundary, and defers empirical evidence.
 Implementation/configuration and the internal dossier remain outside independent
 authorship. The [innovation direction](../../../../../validation/fruit_point_coherent_feedback_2026-09-11/OWNER_DIRECTION.md)
-authorized the first isolated screen; the latest
+authorized the first isolated screen; the subsequent
 [prior-test authorization](../../../../../validation/fruit_point_alignment_prior_2026-09-11/OWNER_DIRECTION.md)
 corrected the alignment premise and authorized its bounded successor. No generic
-FRUIT or PCA derivation was repeated.
+FRUIT or PCA derivation was repeated. The latest
+[RBF directive](../../../../../validation/fruit_point_rbf_feedback_2026-09-11/OWNER_DIRECTIVE.md)
+authorized one isolated comparison and one targeted revision, now completed.
 
 The [scope approval](method_preparation/ordinary_map/method_definition/r0.2/OWNER_SCOPE_APPROVAL_2026-09-08.md)
 closes D001–D005 as scope and paper-preparation directions. The
@@ -35,6 +40,10 @@ conditional-core authorship before numerical-method qualification; it grants
 no numerical method or new method-specific author dispatch.
 
 ## Locked Scientific Definition And Remaining Review
+
+- [Completed RBF screen: reject both feedback candidates; concentration remains unvalidated](../../../../../validation/fruit_point_rbf_feedback_2026-09-11/SCIENTIFIC_REPORT.md)
+- [RBF numerical evidence, costs and separate decisions](../../../../../validation/fruit_point_rbf_feedback_2026-09-11/DECISION_EVIDENCE.json)
+- [Corrected 129081 historical-exposure record](../../../../../validation/fruit_point_rbf_feedback_2026-09-11/EXPOSURE_AUDIT.md)
 
 - [Completed relative-position prior test: revise, measured association benefit and morphology cost](../../../../../validation/fruit_point_alignment_prior_2026-09-11/SCIENTIFIC_REPORT.md)
 - [Corrected alignment evidence, prior-test protocol and source freeze](../../../../../validation/fruit_point_alignment_prior_2026-09-11/README.md)

@@ -1763,8 +1763,27 @@ select reconstruction, admission or stopping. The initial 189 passes completed w
 rejected all synthetic sources and provided no recovery improvement. The one
 allowed revision strengthens only the quadratic penalty, with the original
 basis, inputs, admission and recovery gates unchanged. Its noiseless fitted
-models show substantial smoothing bias; revised empirical execution is pending
-at this second freeze. No further tuning or automatic sweep is authorized.
+models show substantial smoothing bias. The [completed report](../validation/fruit_point_rbf_feedback_2026-09-11/SCIENTIFIC_REPORT.md)
+rejects both candidates after 378 passes: R1 rejects all injections, and R2
+admits only two compact array/case combinations, still with −13.45%/−11.77%
+amplitude bias and broad excess brightness. Neither admits the comatic source
+at either brightness; all comatic output gates fail. The chosen comatic
+brightnesses did not establish standalone detectability across arrays, so the
+broader RBF hypothesis remains unresolved. Neither candidate admits null or
+background-only feedback. Concentration is separately marked revise for
+empirical use: its full-overlap algebra is verified, but noisy source estimates
+are biased or unavailable. No concentration value selected the method.
+
+The real R2 seventh map costs 7.84 seconds including 1.19-second basis setup,
+versus matched P/G 5.23/6.56 seconds. Comparable-useful-recovery cost is unavailable
+because the R candidates never meet the joint targets. OG remains the identified
+205.38-second operational control with different processing/runtime scope, not
+a matched speed ratio. Both campaigns have zero trajectory failures, about
+198 seconds each, and at most 2.72 GB peak RSS. All 1,344 payload hashes and
+unchanged controls verify; prior packages, 57 frozen ordinary-MAP payloads and
+opaque review archives remain preserved. The one revision allowance is exhausted.
+This experiment is closed; further scientific design requires a new bounded
+owner decision, with no automatic sweep or numerical qualification.
 The [exposure audit](../validation/fruit_point_rbf_feedback_2026-09-11/EXPOSURE_AUDIT.md)
 corrects the broader 129081 description: July population-quality measurements
 already characterized it. It remains reserved for new feedback comparisons,
