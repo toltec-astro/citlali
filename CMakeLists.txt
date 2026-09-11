@@ -139,6 +139,9 @@ if (CITLALI_STANDALONE)
         "tools/timestream_successor/rtc_event_assessment_census.cpp")
     target_link_libraries(citlali_rtc_event_assessment_census PRIVATE citlali::citlali)
     target_include_directories(citlali_rtc_event_assessment_census PRIVATE "include")
+    add_executable(citlali_rtc_jump_injection EXCLUDE_FROM_ALL "tools/timestream_successor/rtc_jump_injection.cpp")
+    target_link_libraries(citlali_rtc_jump_injection PRIVATE citlali::citlali)
+    target_include_directories(citlali_rtc_jump_injection PRIVATE "include")
 
     # Tests, examples, and docs
     option(CITLALI_BUILD_TESTS "Build tests" ON)

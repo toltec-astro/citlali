@@ -1,5 +1,22 @@
 # Citlali Refactor Status
 
+## RTC single support reassessment — 2026-09-11, implementation gates in progress
+
+The owner approved one diagnostic reassessment against sealed transition closure
+`6de4d5914c3598eb2d93f22b0bdc0aa32d9ee97f`. The existing RTC work order records
+actual admitted-fit-sample auditing, paired exclusion union on measured overlap,
+unchanged contexts/models and frozen scale roles, one refit and remeasurement,
+and explicit unresolved results. Runtime Learn/Consider boundaries retain the
+original evidence chain; no Apply plan or automatic flags are produced.
+
+The fixed review selection retains A-F plus 24 distinct detector groups across
+all 13 observations. The three-input pilot preserves all 21 preceding outputs.
+Fixed injections run through candidate finding, including gradual-transition
+misses. Full exact-source gates, 143-input census, timing and independent review
+remain pending. Native-to-existing-scan timing remains unavailable in this
+census; scan consequences cannot be silently inferred from legacy metadata.
+No route, spectral work, canonical admission or push occurs.
+
 ## RTC jump transition implementation and measurement — 2026-09-10
 
 The owner-approved transition learner is implemented on exact

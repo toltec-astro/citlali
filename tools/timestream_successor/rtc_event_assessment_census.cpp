@@ -6,7 +6,7 @@
 #include "identity_route_acceptance.cpp"
 #undef main
 #include <citlali/core/pipeline/timestream_rtc_event_assessment.h>
-#include <citlali/core/pipeline/timestream_rtc_jump_transition.h>
+#include <citlali/core/pipeline/timestream_rtc_jump_reassessment.h>
 
 namespace {
 void number(std::ostream &out, double x) {
@@ -24,12 +24,14 @@ void fit_json(std::ostream &out, const pipeline::RtcEventCubicFit &f) {
 }
 }
 
+#include "rtc_jump_reassessment_output.h"
+
 // argv: raw file, Tune fit report, compact-v2 manifest, output directory,
 // trial exclusion half-width seconds. Transition bounds are diagnostic evidence only.
 int main(int argc, char **argv) {
     try {
         const auto execution_started=std::chrono::steady_clock::now();
-        require(argc==6,"expected raw, Tune, APT manifest, new output directory, trial half-width seconds");
+        require(argc==7,"expected raw, Tune, APT manifest, new output directory, trial half-width seconds, fixed example selection");
         const fs::path raw_path=argv[1], tune_path=argv[2], manifest=argv[3], output=argv[4];
         const double guard=std::stod(argv[5]);
         require(guard==0.05,"assessment policy requires explicit 50 ms starting half-width");
@@ -272,6 +274,21 @@ int main(int argc, char **argv) {
         }
         transitions.close();require(static_cast<bool>(transitions),"transition output write/close failed");
         const auto transition_output_finished=std::chrono::steady_clock::now();
+        const auto support_audit=pipeline::RtcJumpSupportEvidence::learn(transition,9);
+        const auto support_finished=std::chrono::steady_clock::now();
+        const auto refit_request=pipeline::RtcJumpRefitRequest::consider(support_audit,val,10);
+        const auto refit_request_finished=std::chrono::steady_clock::now();
+        const auto refit=pipeline::RtcJumpRefitEvidence::learn(refit_request,11);
+        const auto refit_finished=std::chrono::steady_clock::now();
+        const auto remeasure_request=pipeline::RtcJumpRemeasureRequest::consider(refit,val,12);
+        const auto remeasure_request_finished=std::chrono::steady_clock::now();
+        const auto reassessed=pipeline::RtcJumpReassessmentEvidence::learn(remeasure_request,13);
+        const auto remeasure_finished=std::chrono::steady_clock::now();
+        const auto reassessment_decision=pipeline::RtcJumpReassessmentDecision::consider(reassessed,val,14);
+        const auto reassessment_consider_finished=std::chrono::steady_clock::now();
+        write_reassessment(output,*reassessment_decision);
+        write_reassessment_examples(output,argv[6],obs,nw,*assessment);
+        const auto reassessment_output_finished=std::chrono::steady_clock::now();
         const auto seconds=[](auto a,auto b){return std::chrono::duration<double>(b-a).count();};
         const auto &jc=jump_evidence->counts();
         std::ofstream timings(output/"timing.json");
@@ -290,9 +307,16 @@ int main(int argc, char **argv) {
             std::pair{"transition_learn",seconds(transition_request_finished,transition_learn_finished)},
             std::pair{"original_output",seconds(transition_learn_finished,original_output_finished)},
             std::pair{"jump_output",seconds(original_output_finished,jump_output_finished)},
-            std::pair{"transition_output",seconds(jump_output_finished,transition_output_finished)}};
+            std::pair{"transition_output",seconds(jump_output_finished,transition_output_finished)},
+            std::pair{"support_audit_learn",seconds(transition_output_finished,support_finished)},
+            std::pair{"refit_request_consider",seconds(support_finished,refit_request_finished)},
+            std::pair{"refit_learn",seconds(refit_request_finished,refit_finished)},
+            std::pair{"remeasure_request_consider",seconds(refit_finished,remeasure_request_finished)},
+            std::pair{"remeasure_learn",seconds(remeasure_request_finished,remeasure_finished)},
+            std::pair{"reassessment_consider",seconds(remeasure_finished,reassessment_consider_finished)},
+            std::pair{"reassessment_output",seconds(reassessment_consider_finished,reassessment_output_finished)}};
         for(std::size_t i=0;i<stages.size();++i){if(i)timings<<',';timings<<std::quoted(stages[i].first)<<':';number(timings,stages[i].second);}
-        timings<<"},\"measured_total_seconds\":";number(timings,seconds(execution_started,transition_output_finished));
+        timings<<"},\"measured_total_seconds\":";number(timings,seconds(execution_started,reassessment_output_finished));
         timings<<",\"requested_coordinates\":"<<jc.requested_coordinates<<",\"pre_fit_calls\":"<<jc.pre_fit_calls
             <<",\"joint_fit_calls\":"<<jc.joint_fit_calls<<",\"available_coordinates\":"<<jc.available_coordinates
             <<",\"pre_reported_iterations\":"<<jc.pre_iterations<<",\"joint_reported_iterations\":"<<jc.joint_iterations
@@ -310,6 +334,10 @@ int main(int argc, char **argv) {
         timings<<"],\"consistent_without_confirmed_recovery\":"<<consistent_without_recovery
             <<",\"timing_scope\":\"local inert driver through diagnostic output close; excludes final receipt/hash and process shutdown; not production RTC/PTC\",\"iteration_count_definition\":\"IRLS loop entries on successful and failed fits; zero before loop\"}\n";
         timings.close();require(static_cast<bool>(timings),"jump timing output write/close failed");
+        std::ofstream refit_counts(output/"refit-counts.json");
+        const auto &rc=refit->counts();
+        refit_counts<<"{\"requested_groups\":"<<rc.requested_groups<<",\"fit_calls\":"<<rc.fit_calls<<",\"iterations\":"<<rc.iterations<<",\"peak_scratch_rows\":"<<rc.peak_scratch_rows<<"}\n";
+        refit_counts.close();require(bool(refit_counts),"refit counters write/close failed");
         require(logs->errors==0 && logs->criticals==0,"unexpected producer error-level messages");
         const auto elapsed=std::chrono::duration<double>(std::chrono::steady_clock::now()-started).count();
         std::ofstream receipt(output/"receipt.json");

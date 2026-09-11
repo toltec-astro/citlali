@@ -31,13 +31,16 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--trial-half-width-seconds', type=float, required=True)
     parser.add_argument('--previous-campaign', type=Path,
-                        help='Require unchanged inputs and six earlier output files per invocation')
+                        help='Require unchanged inputs and seven earlier output files per invocation')
+    parser.add_argument('--example-selection', type=Path, required=True)
     args = parser.parse_args()
     if args.output.exists():
         parser.error('output exists: preserve prior campaigns')
     args.output.mkdir(parents=True)
     exe = args.executable.resolve(strict=True)
     executable_hash = digest(exe)
+    selection_hash = digest(args.example_selection)
+    (args.output/'selected-examples.tsv').write_bytes(args.example_selection.read_bytes())
     records = json.loads(args.inventory.read_text())['records']
     candidates = [r for r in records if r.get('apt_manifests') and r.get('fitreports')]
     deferred = [r for r in records if r not in candidates]
@@ -65,7 +68,7 @@ def main():
             manifest = Path(manifests[0])
             target = args.output/stem
             log = args.output/f'{stem}.log'
-            command = [str(exe), str(raw), str(tune), str(manifest), str(target), str(args.trial_half_width_seconds)]
+            command = [str(exe), str(raw), str(tune), str(manifest), str(target), str(args.trial_half_width_seconds), str(args.example_selection.resolve(strict=True))]
             before = {str(p): (p.stat().st_size, p.stat().st_mtime_ns) for p in (raw, tune, manifest)}
             started = time.monotonic()
             with log.open('wb') as stream:
@@ -190,7 +193,7 @@ def main():
                     for key in ('raw_sha256', 'tune_sha256', 'manifest_sha256', 'candidate_edges', 'assessed_events'):
                         assert receipt[key] == old_receipt[key], f'Prior identity/count changed: {key}'
                     preserved = ('candidates.jsonl', 'events.jsonl', 'health-blocks.jsonl',
-                                 'detectors.jsonl', 'examples.jsonl', 'jump-consistency.jsonl')
+                                 'detectors.jsonl', 'examples.jsonl', 'jump-consistency.jsonl', 'jump-transitions.jsonl')
                     for name in preserved:
                         assert digest(target/name) == digest(previous/name), f'Prior output changed: {name}'
                     entry['preserved_previous_outputs'] = list(preserved)
@@ -234,8 +237,12 @@ def main():
     summary['peak_transition_result_bytes'] = max((e['jump_timing']['transition_result_bytes'] for e in complete), default=0)
     summary['preserved_previous_outputs'] = sum(len(e.get('preserved_previous_outputs', [])) for e in complete)
     summary['timing_scope'] = 'Local inert native test driver; production RTC/PTC runtime not measured; iteration counts include successful and failed IRLS loop entries, zero before loop'
+    assert digest(args.example_selection) == selection_hash, 'Example selection changed during census'
+    summary['example_selection_sha256'] = selection_hash
     write_json(args.output/'summary.json', summary)
     print(json.dumps(summary, indent=2))
+    if len(complete) != len(candidates):
+        raise SystemExit(1)
 
 
 if __name__ == '__main__':

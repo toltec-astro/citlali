@@ -1288,3 +1288,72 @@ exact-result-SHA review. Prior sealed evidence remains untouched. No scientific
 policy selection beyond the owner-approved transition method, full-scan flag
 execution, correction, spectral binding, filtering, downsampling, PTC/AST/CAL/MAP,
 production, route activation, Unity operation, agent push or cleanup occurs.
+
+## Owner-approved single reassessment and validation — 2026-09-11
+
+`TIMESTREAM-SUCCESSOR-RTC-JUMP-REASSESSMENT-001` continues the existing S2 slot
+from clean closure `6de4d5914c3598eb2d93f22b0bdc0aa32d9ee97f`. The owner's exact
+pasted instruction and Tier-2 preflight are preserved at
+`/private/tmp/citlali-rtc-jump-reassessment-2026-09-11`. Live read-only verification
+finds canonical `86c20b31f7300ba4063be044380b61cd0baf25eb` and remote module
+`d1ed875f7aa3ccbadbe783b571f635d7ba96b2e4`; closure 6de remains local. No push is
+needed to continue locally. Canonical admission is separate and must reconcile
+the moving base, preserve accepted implementation ancestry, and receive fresh
+independent review of the exact resulting SHA. Previous reviews do not transfer.
+All three effective governance digests and their ancestry are verified.
+
+The original 4,464 coordinate brackets outside the fitting exclusion are an
+audit population, not proof that a transition influenced its fit. Runtime Learn
+recovers the actual original admitted finite, producer-valid fitting cells under
+the existing flank, exclusion and support predicates. Runtime Consider requests
+one additional paired refit only where a measured transition intersects admitted
+fit samples. Its immutable request masks the union of original fitting exclusion,
+measured x/r support and existing neighboring-event exclusions. This diagnostic
+mask union is not an accepted hard-event union or a physical-event identity.
+
+The successor Learn uses original samples and unchanged two-second primary and
+one-second shorter contexts, original polynomial basis, cubic/cubic-plus-offset
+models, and minimum 64 samples per flank. The primary pre-fit residual scale,
+the shorter pre-fit residual scale, and the original candidate difference-noise
+scale remain fixed in their respective uses; they are not pooled or substituted.
+The old pre-fit is retained as scale authority, not represented as a new fit to
+the successor support. Missing old scales remain unavailable. Consider reuses
+the 5-sigma amplitude and 2-sigma agreement checks and recomputed existing
+recovery predicate; Learn reuses the existing 4-residual-sigma, 50-ms transition
+measurement. One pass only. Any new overlap, inadequate support, ambiguity or
+failed consistency remains unresolved. No iterative acceptance or new threshold.
+
+This implements SCI-RTC REQ-013/095 original-pair ordering, REQ-026/027 explicit
+failure, REQ-043--045/055--057 truthful support and complete lifecycle,
+REQ-094/096/098 finite transitions excluded from plateau estimates, and
+REQ-118--125 preserved coordinate origins/protection/immutable attempts. The
+settled additive model and physical half-open interval convention remain intact.
+Engineering Learn/Consider/Apply governs development and verification separately;
+it does not substitute for these runtime evidence and decision boundaries.
+No runtime Apply plan or automatic full-scan flag is authorized by this increment.
+
+Validation preserves the previous sealed corpus as control and compares all
+seven preceding scientific output files on the same 143 inputs. Retain A-F and
+select 24 distinct groups reproducibly across inside/outside/unresolved strata
+and observations/detectors before rerunning. Review original x/r, actual fit
+samples, both fitted states, bounds, confirmations and residuals. A fixed small
+injection catalog includes sharp/finite steps, neighboring spikes and no-jump
+controls, including matched original/injected real backgrounds, through candidate
+finding. Detection, known-support coverage, excess and unresolved are observations,
+not new qualification cuts. D's 24.576 ms is a sampled conditional bracket, not
+an intrinsic settling time or calibrated timing-confidence interval.
+
+The every-intersected-existing-scan rule is unchanged. Conditional reporting
+keeps coordinate records, detector event groups and unique detector-scan pairs
+separate. The current census explicitly lacks a native-to-telescope scan timing
+binding; absent an accepted relation, real scan assignments and their changes
+remain unavailable. Existing scan metadata must not silently become authority.
+Known scan-boundary fixtures verify the intersection arithmetic without
+inventing real scan assignments. Protection, harmfulness, physical identity,
+timing uncertainty and complete admission remain required for action.
+
+Focused/header, full local CTest, config/baseline gates, fixed corpus preservation,
+plots/injections, separate refit/output cost and fresh independent exact-SHA
+three-axis review govern completion. The local cached dependency realization is
+supplemental, not Unity/Spack or production. No spectra, filters, stitching, new
+classifier, MAP/CAL/PTC/AST implementation, canonical admission, push or cleanup.
