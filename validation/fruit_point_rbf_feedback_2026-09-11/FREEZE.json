@@ -1,0 +1,89 @@
+{
+  "identity": "SCI-FRUIT-POINT-RBF-FREEZE@r0.1",
+  "utc": "2026-09-11T19:07:13.009787+00:00",
+  "base_commit": "16a8ad12cb3ed7a1b23942f685a79c9d20a6f025",
+  "state": "frozen_before_empirical_RBF_trajectories",
+  "authorization": "OWNER_DIRECTIVE.md",
+  "files": [
+    {
+      "path": "../fruit_point_coherent_feedback_2026-09-11/INPUT_PREFLIGHT.json",
+      "bytes": 22573,
+      "sha256": "3e45798d1e2ff69b7fc007841e8b5c48237f1404448a4dd2e1ed87c248f0a07c"
+    },
+    {
+      "path": "../fruit_point_coherent_feedback_2026-09-11/OG_BENCHMARK.json",
+      "bytes": 16308,
+      "sha256": "3ff19ee1d318b9808106b835fd2ccc9d577501b79032444782980608cb3220e8"
+    },
+    {
+      "path": "../fruit_point_coherent_feedback_2026-09-11/experiment_r02.py",
+      "bytes": 18548,
+      "sha256": "67f78850b7d07cd2723231ad0114d607934990b9ee05531dabeb23b164b5f6ac"
+    },
+    {
+      "path": "EXPOSURE_AUDIT.md",
+      "bytes": 1519,
+      "sha256": "208737df1dc3a76792aec4051b33fbf98519734ae42b793a697dc8720e5a7d58"
+    },
+    {
+      "path": "OWNER_DIRECTIVE.md",
+      "bytes": 13488,
+      "sha256": "eab9dbd16995fbcf13e96e1de7858bc27b1f9406c43597da9713b227733fb633"
+    },
+    {
+      "path": "PROTOCOL.md",
+      "bytes": 10435,
+      "sha256": "5667734102973289c91c264ba43d19c05e31641c2e05c19f16332f1a6ee0fb94"
+    },
+    {
+      "path": "README.md",
+      "bytes": 860,
+      "sha256": "6f6af9ffc20acef7e743168dc3fd17d39c8bf7d2e0411c747655e478f8fa3e48"
+    },
+    {
+      "path": "REPRESENTATION_DECISION.md",
+      "bytes": 1796,
+      "sha256": "c2dabcbdb55b17c5043b6aca25b76eaa33f8aefaf218383808473d8b71973478"
+    },
+    {
+      "path": "REPRESENTATION_R0.1.json",
+      "bytes": 46683,
+      "sha256": "a4d8b22b27058ad796d5becbb6bf69cc88d7cfe89341ac747627029cad1af90e"
+    },
+    {
+      "path": "REPRESENTATION_R0.2.json",
+      "bytes": 46752,
+      "sha256": "666af071780b57a53852d904d4fdeee3cd12d585103f5075f5df76329e32bf7d"
+    },
+    {
+      "path": "rbf.py",
+      "bytes": 9072,
+      "sha256": "293d4f982e30b0c566954eca0dc03e1d90538e3cd911127c139a9e7263247a60"
+    },
+    {
+      "path": "rbf_initial_representation.py",
+      "bytes": 8895,
+      "sha256": "2dcd4531130d45199196a0bab694d87cf3d58148c581e30693c6127499a3bf45"
+    },
+    {
+      "path": "representation.py",
+      "bytes": 3005,
+      "sha256": "0e93f4734979772f58297bcc6a0542d358637f354269c5663e263e5310db3835"
+    },
+    {
+      "path": "run_screen.py",
+      "bytes": 8503,
+      "sha256": "1f25f17d96d7b8d2b2c6e59c5ff72a11283d23557b0bee14d4523f128b13064d"
+    },
+    {
+      "path": "test_rbf.py",
+      "bytes": 2941,
+      "sha256": "57522365765bb8128d56991e4abe828fe4b54e4f9f4faceef8829eb04a80a7d4"
+    },
+    {
+      "path": "truths.py",
+      "bytes": 1988,
+      "sha256": "da0a31c41e3722b1d309b62e5363480fa5f0bc0a16e731505a62c123421c21cf"
+    }
+  ]
+}

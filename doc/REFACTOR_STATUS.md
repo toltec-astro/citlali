@@ -1752,6 +1752,19 @@ development gate failed. This authority does not reopen the rejected predecessor
 adopt production sources, or authorize a parameter sweep; frozen science,
 weighting closure, prior reductions and protected archives remain unchanged.
 
+The owner then authorized one isolated [RBF feedback experiment](../validation/fruit_point_rbf_feedback_2026-09-11/README.md)
+on 2026-09-11. It compares nonnegative regularized Gaussian-basis inference with
+matched pixelwise and independent-Gaussian controls, preserving rank-5 network
+relearning and the accepted recurrence. Cross-array coupling is excluded.
+A bounded noiseless resolution adjustment passed before the first empirical
+freeze; 189 passes over nine matched cases are authorized, with at most one
+targeted empirical revision. Concentration is a separate diagnostic and cannot
+select reconstruction, admission or stopping. Execution is pending at this freeze.
+The [exposure audit](../validation/fruit_point_rbf_feedback_2026-09-11/EXPOSURE_AUDIT.md)
+corrects the broader 129081 description: July population-quality measurements
+already characterized it. It remains reserved for new feedback comparisons,
+but is not untouched holdout data. Previous campaign-scoped records are retained.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
