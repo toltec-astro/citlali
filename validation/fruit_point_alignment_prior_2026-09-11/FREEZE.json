@@ -1,0 +1,45 @@
+{
+  "identity": "SCI-FRUIT-POINT-ALIGNMENT-PRIOR-FREEZE@r0.1",
+  "utc": "2026-09-11T17:47:12.218638+00:00",
+  "authorization": "SCI-FRUIT-POINT-ALIGNMENT-PRIOR-AUTH-2026-09-11",
+  "state": "frozen before candidate trajectories and before reserved 129081 evaluation",
+  "prior_direction": "not supplied; free within radius 2 arcsec",
+  "files": [
+    {
+      "path": "OWNER_DIRECTION.md",
+      "bytes": 1785,
+      "sha256": "4aea9a296e4efe0a7d8dac3a46e9b8f200ffa7fd23f6894973f7a0bbc43d27b3"
+    },
+    {
+      "path": "PROTOCOL.md",
+      "bytes": 9202,
+      "sha256": "5234d743c608a5a3dff34b9bf2acd04de49f05d335cee6677a3034ebb0fb1d2c"
+    },
+    {
+      "path": "experiment.py",
+      "bytes": 11361,
+      "sha256": "aa245b5b1386874089f833e731b6c71f87d30627510f8637ea01e6747fae1508"
+    },
+    {
+      "path": "test_prior.py",
+      "bytes": 3040,
+      "sha256": "b528d0fdd96017affa7664a541df18ee4cc2d210e1755011cf51a876b5315207"
+    },
+    {
+      "path": "../fruit_point_coherent_feedback_2026-09-11/experiment_r02.py",
+      "bytes": 18548,
+      "sha256": "67f78850b7d07cd2723231ad0114d607934990b9ee05531dabeb23b164b5f6ac"
+    },
+    {
+      "path": "../fruit_point_coherent_feedback_2026-09-11/INPUT_PREFLIGHT.json",
+      "bytes": 22573,
+      "sha256": "3e45798d1e2ff69b7fc007841e8b5c48237f1404448a4dd2e1ed87c248f0a07c"
+    },
+    {
+      "path": "../fruit_point_coherent_feedback_2026-09-11/OG_BENCHMARK.json",
+      "bytes": 16308,
+      "sha256": "3ff19ee1d318b9808106b835fd2ccc9d577501b79032444782980608cb3220e8"
+    }
+  ],
+  "focused_tests": "three tests passed with -W error; analytic Jacobians, nonzero relative offset/free shape recovery, own-array/anchor/boundary admission"
+}

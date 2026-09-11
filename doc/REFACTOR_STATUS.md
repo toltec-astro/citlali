@@ -1711,6 +1711,20 @@ bounded owner direction. Weighting remains closed; prior contracts, reductions
 and protected review archives remain preserved. No Unity or production change
 occurred.
 
+Later on 2026-09-11 the owner corrected the alignment premise: a1100/a1400
+are very accurately aligned, while a2000 has a small systematic relative
+displacement below 2 arcsec. The owner authorized a new bounded
+[relative-position prior test](../validation/fruit_point_alignment_prior_2026-09-11/OWNER_DIRECTION.md).
+Its [protocol](../validation/fruit_point_alignment_prior_2026-09-11/PROTOCOL.md)
+uses the reference pair to infer a free common position, then conditions a2000
+on a direction-free offset disk, retaining independent amplitudes/shapes and
+own-array admission. The exact-sharing and disk approximations are declared,
+not measured calibration distributions. Eleven cases, two arms and seven passes
+are fixed; source-absent, contaminant and offset-mismatch tests rerun learning.
+The candidate is being frozen before execution; 129081 remains reserved.
+This new scoped authority does not reopen the rejected screen or adopt production
+sources. No automatic scientific revision or parameter sweep is included.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
