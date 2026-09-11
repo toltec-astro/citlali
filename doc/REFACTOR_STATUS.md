@@ -1,21 +1,45 @@
 # Citlali Refactor Status
 
-## RTC single support reassessment — 2026-09-11, implementation gates in progress
+## RTC single support reassessment completed locally — 2026-09-11
 
-The owner approved one diagnostic reassessment against sealed transition closure
-`6de4d5914c3598eb2d93f22b0bdc0aa32d9ee97f`. The existing RTC work order records
-actual admitted-fit-sample auditing, paired exclusion union on measured overlap,
-unchanged contexts/models and frozen scale roles, one refit and remeasurement,
-and explicit unresolved results. Runtime Learn/Consider boundaries retain the
-original evidence chain; no Apply plan or automatic flags are produced.
+The owner-approved one-pass support reassessment is implemented on exact
+`aaa86ea1b006cb11aa740adce2429375b13e5026`, tree `0cceff728976b7ee8ced918ab49d91460105482c`, directly preserving
+reviewed control closure `6de4d5914c3598eb2d93f22b0bdc0aa32d9ee97f`. Runtime Learn/Consider
+products recover actual fit support, request one paired-mask refit, freeze the
+existing scale roles and remeasure under unchanged 4-sigma/50-ms conditions.
+No runtime Apply plan or automatic flags are produced.
 
-The fixed review selection retains A-F plus 24 distinct detector groups across
-all 13 observations. The three-input pilot preserves all 21 preceding outputs.
-Fixed injections run through candidate finding, including gradual-transition
-misses. Full exact-source gates, 143-input census, timing and independent review
-remain pending. Native-to-existing-scan timing remains unavailable in this
-census; scan consequences cannot be silently inferred from legacy metadata.
-No route, spectral work, canonical admission or push occurs.
+All 143 inputs complete and all 1,001 prior scientific outputs are byte-identical.
+Of 4,464 brackets outside the original fitting exclusion, 3,785 overlap their own
+primary fitting samples and 679 do not. One paired refit is requested for 3,226
+candidate detector groups. Of 11,830 original coordinate measurements, 7,809 need
+no refit and 1,263 remain measured after refitting; 2,758 remain unresolved.
+Another 28 partner-coordinate measurements become available, separately counted.
+These are numerical evidence records, not accepted physical-event counts.
+
+The A-F controls plus 24 fixed distinct groups across all 13 observations have
+original-sample, support, residual and confirmation audits. Eighteen fixed
+candidate-through-transition injection trials retain gradual 12-cell misses and
+sharp/finite steps whose original brackets do not survive reassessment on one
+real background. No thresholds
+were tuned. Real detector-scan assignments remain unavailable without an accepted
+native-to-existing-scan timing relation; four controlled boundary fixtures verify
+intersection arithmetic only. Protection, harmfulness, event identity and timing
+uncertainty remain separate admission requirements.
+
+All 1,000 runnable local CTests (10 new focused tests), isolated-header compilation,
+four config modes and 207 baseline-tool tests pass. Independent exact-source and
+full-evidence reviews pass with recorded limitations and no remaining findings. New
+numerical work costs 2.267549 seconds (0.125414% of preceding stages), including
+2.045850 seconds of refitting; additional diagnostic output costs 0.411774 seconds.
+Peak whole-process RSS is 4.976 GiB, not incremental memory. This is the recorded
+supplemental local AppleClang/cached-dependency realization, not Unity/Spack or
+production. Prior source/evidence remains preserved.
+
+[Results and 30 detail plots](/private/tmp/citlali-rtc-jump-reassessment-2026-09-11/README.md) and the existing RTC work order
+bind exact source and evidence. The documentation closure's exact identity and
+independent review are recorded externally in `completion.json`. Ready for owner
+acceptance; no canonical admission, route activation, agent push or later work.
 
 ## RTC jump transition implementation and measurement — 2026-09-10
 

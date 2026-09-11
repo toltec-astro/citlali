@@ -1357,3 +1357,112 @@ plots/injections, separate refit/output cost and fresh independent exact-SHA
 three-axis review govern completion. The local cached dependency realization is
 supplemental, not Unity/Spack or production. No spectra, filters, stitching, new
 classifier, MAP/CAL/PTC/AST implementation, canonical admission, push or cleanup.
+
+## Single reassessment completion and conformance — 2026-09-11
+
+Tested source: `aaa86ea1b006cb11aa740adce2429375b13e5026`; tree `0cceff728976b7ee8ced918ab49d91460105482c`;
+literal direct parent/control closure: `6de4d5914c3598eb2d93f22b0bdc0aa32d9ee97f`. The same S2 slot
+and branch are retained. There is no rebase, redesign or canonical admission.
+Final read-only GitHub verification still finds canonical
+`86c20b31f7300ba4063be044380b61cd0baf25eb` and remote module
+`d1ed875f7aa3ccbadbe783b571f635d7ba96b2e4`. The common ancestor remains
+`b675bb64a7054f7b24403c79898965e8765cfd02`; publication and exact-result-SHA
+canonical admission review are separate. No agent push occurred.
+
+Runtime Learn audits original admitted rows, then learns refits and transition
+measurements from the original immutable pair. Explicit Consider products select
+one paired refit on actual overlap, reuse the existing amplitude/consistency and
+recovery predicates, and leave renewed overlap unresolved. Original two-second
+and shorter one-second contexts, polynomial basis, 64-sample flank minimum,
+primary/shorter residual scales and candidate sigma_delta roles are unchanged.
+The intentional numerical change is removal of newly measured transition cells
+from the successor fitting population. It is diagnostic evidence, not a hard
+event, donor/offset correction, full-scan flag, or Apply plan. Development
+Learn/Consider/Apply is separately satisfied by preflight, bounded implementation,
+verification and independent review; it does not substitute for runtime phases.
+
+### Counts and observational limits
+
+The identical 143 files / 13 observations / 71,734 channel streams /
+2,148,911,461 sample pairs complete. All 1,001 preceding scientific files compare
+byte-for-byte. Original 910,241 candidate edges, 242,014 groups and 484,028
+coordinate assessments are unchanged. Of 4,464 outside-exclusion coordinate
+brackets, 3,785 overlap their own primary fitting samples; 679 do not. Paired
+mask consequences request one refit on 3,226 groups, touching 4,021 originally
+measured coordinates. Original measured-coordinate dispositions are:
+
+| Disposition | Count |
+|---|---:|
+| No refit needed, original measurement retained | 7,809 |
+| Measurement survives one refit | 1,263 |
+| Required refit unavailable | 2,001 |
+| Existing consistency fails | 420 |
+| Remaining successor support overlap | 332 |
+| Confirmed return to original state | 2 |
+| New transition unavailable | 3 |
+
+Thus 9,072 of 11,830 original coordinate measurements remain numerically supported;
+2,758 stay unresolved. Another 28 previously unmeasured partner coordinates become
+measurable; total remaining coordinate bounds are 9,100 in 6,758 candidate groups
+versus 8,980 groups with original bounds. None are counts of accepted physical
+events or independent x/r exposures. Unique real detector-scan pairs and their
+before/after changes remain unavailable, not zero, because the corpus has no
+accepted native-to-existing-scan timing relation. The every-intersected-existing-
+scan treatment and fixed shared scan/PCA definition remain settled. Four controlled
+half-open boundary fixtures verify arithmetic/deduplication without supplying a
+real relation or selecting other detectors.
+
+A-F and 24 deterministic distinct detector groups across the three requested
+strata and all 13 observations have detailed x/r, actual fit support, two fitted
+states, confirmations, bounds and residual plots. Unavailable fits' retained
+populations are labelled eligible-only. All 60 coordinate sample audits pass,
+including independent support reconstruction, frozen-scale Huber losses,
+4-sigma confirmations lasting at least 50 ms, raw-header integration cells, and
+byte-exact A-F control values. D retains its 24.576-ms sampled conditional bracket;
+it is not a physical settling time or calibrated confidence interval.
+
+Eighteen fixed trials use a synthetic background and matched unmodified/injected
+first-20-second real backgrounds from 152385/4/61 and 152430/8/253. The twelve-cell
+ramps are missed at candidate finding in all three backgrounds. Sharp/three-cell
+candidates on 152385/4/61 produce original brackets, but none remain measured
+after reassessment. Other successful/unsuccessful
+outcomes, known physical and affected-cell support coverage, excess support and
+unresolved causes are all retained. This is bounded conformance evidence, not
+observational qualification or justification to tune thresholds or add a classifier.
+
+### Gates, cost and review
+
+All 1,000 runnable CTests pass (1,001 registered; the established
+MapFitterLifecycle.ExactProductSequence remains disabled), including 10 focused
+new tests and header isolation. Four config modes and all 207 baseline-tool tests
+pass. The same 155 unbound input files remain explicitly deferred. Required failures
+propagate; there are no unexpected error-level messages in completed invocations.
+The initial fixture-count/exporter-identity corrections and gate attempts are
+preserved in the evidence; no prior scientific header or contract bytes changed.
+
+Added numerical time: 2.267548661 s, of which refitting is 2.045849748 s across
+12,069 fit calls. This is 0.125414% of 1,808.052299 s in preceding stages of the
+same run; maximum per-network ratio is 0.845651%. Additional diagnostic output
+and sample exports cost 0.411773753 s. Peak per-fit scratch is 487 rows. Peak
+whole-process RSS is 5,343,215,616 bytes (4.976 GiB), not incremental memory.
+The source-bound local AppleClang/Homebrew/cached dependency realization is
+supplemental; there is no Unity/Spack or production claim. The original nine
+cached-dependency dirty files are unchanged, and all 1,783 sealed predecessor
+files have been reverified.
+
+Independent source and final evidence reviews pass with recorded limitations and
+no remaining findings. Evidence: `/private/tmp/citlali-rtc-jump-reassessment-2026-09-11`.
+Scientific evidence manifest SHA-256: `8af212434016221b22c88c2f5716a4055e07b50ff8394a27afc6e2be8dfa8ef5`.
+Source review SHA-256: `f4d412ecf1dfc4c7a49aa7572e6af7dc169f70e1548615fb195bf8483add5ae6`.
+Final evidence review SHA-256: `0c7c9d61277c56c1fa3f0285bc12df25067e70eeb9ad469f7d58031b92281049`.
+The documentation-only closure must have the tested source as its direct parent;
+its exact SHA/tree and fresh independent review are recorded in the external completion
+receipt and final manifest after that review, not guessed in its own contents.
+
+Conformance: scientific/behavioral PASS for the bounded implementation with the
+recorded qualification limits; architecture/ownership PASS; repository/evidence
+PASS. Source protection, harmfulness/complete admission, physical identity, timing
+uncertainty and real scan binding remain required before action. Spectra remain
+owner-deferred. No filtering, stitching, new classifier, automatic flags, MAP/CAL/
+PTC/AST implementation, route activation, production, canonical admission, push,
+cleanup or subsequent work is performed. Ready for owner acceptance.
