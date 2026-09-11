@@ -13,8 +13,8 @@ comparisons, not untouched holdout data. Production source/profile adoption and
 numerical qualification remain unavailable. The subsequent retained-product audit
 separates whole-model admission from processed detectability and confirms that
 the two admitted compact models were applied in maps 2–7. One preliminary
-starlet screen is proposed; implementation and its new bootstrap need owner
-approval. Previous results are preserved.
+starlet screen is owner-approved and frozen for execution, including exactly one
+new bootstrap. [Approval and scope](../../../../../validation/fruit_point_starlet_preliminary_2026-09-11/OWNER_APPROVAL.md). Previous results are preserved.
 Updated: 2026-09-11.
 
 ## Program Adherence And Prior-Work Recovery

@@ -1,0 +1,14 @@
+{
+  "packets": [
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_rbf_feedback_2026-09-11/RESULT_MANIFEST.json",
+      "sha256": "de098df0520e1085e4440dd30f34cb2f200ea40f4cf1ad01b1b691e26852e78e",
+      "payloads": 49
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_rbf_admission_audit_2026-09-11/MANIFEST.json",
+      "sha256": "a507f88038416e0aa72f5ab8e9a7677241d9ddce5c25911b197094f53a5e1dc0",
+      "payloads": 13
+    }
+  ]
+}

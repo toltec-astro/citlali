@@ -1808,10 +1808,10 @@ calibrated detection significances. The comatic regime remains unestablished
 across arrays. No new parent read or cleaning pass was performed; all 275 used
 retained files and 49 frozen RBF packet payloads remain unchanged.
 
-The next proposed owner decision is a [single preliminary starlet screen](../validation/fruit_point_rbf_admission_audit_2026-09-11/STARLET_SCREEN_PROPOSAL.md):
+The owner approved the [single preliminary starlet screen](../validation/fruit_point_starlet_preliminary_2026-09-11/OWNER_APPROVAL.md):
 saved-map estimator tests, explicit multiscale support and amplitude recovery,
-and one frozen 4× brighter-coma bootstrap with learning rerun. This is proposed,
-not numerically approved or implemented. A failed screen stops before full
+and one frozen 4× brighter-coma bootstrap with learning rerun. The exact candidate
+and inputs are frozen before execution; numerical results are pending. A failed screen stops before full
 trajectories; a passing screen supports a separate matched-run review. No RBF
 retuning, 129081 evaluation, Unity activity or production change is authorized.
 

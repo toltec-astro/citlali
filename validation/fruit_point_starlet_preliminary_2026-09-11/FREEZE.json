@@ -1,0 +1,159 @@
+{
+  "identity": "SCI-FRUIT-POINT-STARLET@preliminary-r0.1",
+  "utc": "2026-09-11T20:09:56.744384+00:00",
+  "base_commit": "1f650e97f28fcb35ddaac2e3461dfd748f27f55b",
+  "approved_cleaning_passes": 1,
+  "brighter_coma_factor": 4.0,
+  "files": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/pointings_v4/reduced/redu00/123424/raw/toltec_commissioning_pointing_123424_rtc_timestream.nc",
+      "bytes": 139129545,
+      "sha256": "0c653c1bcf54d013e82cd51575ab8b7d139fbcb0069eb7a6335056a8a6d03c2a"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_coherent_feedback_2026-09-11/INPUT_PREFLIGHT.json",
+      "bytes": 22573,
+      "sha256": "3e45798d1e2ff69b7fc007841e8b5c48237f1404448a4dd2e1ed87c248f0a07c"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_coherent_feedback_2026-09-11/OG_BENCHMARK.json",
+      "bytes": 16308,
+      "sha256": "3ff19ee1d318b9808106b835fd2ccc9d577501b79032444782980608cb3220e8"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_coherent_feedback_2026-09-11/experiment_r02.py",
+      "bytes": 18548,
+      "sha256": "67f78850b7d07cd2723231ad0114d607934990b9ee05531dabeb23b164b5f6ac"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_rbf_admission_audit_2026-09-11/STARLET_SCREEN_PROPOSAL.md",
+      "bytes": 9867,
+      "sha256": "113b2a3e153bcf235afa4632c99e858c008e74f980e8755f8ba55a81064b53c8"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_rbf_admission_audit_2026-09-11/audit.py",
+      "bytes": 8469,
+      "sha256": "9e4698f9dc6afc4da969b6b0a2593593701a575c9e486767d4e02b39eb97b335"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_rbf_feedback_2026-09-11/truths.py",
+      "bytes": 1988,
+      "sha256": "da0a31c41e3722b1d309b62e5363480fa5f0bc0a16e731505a62c123421c21cf"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_starlet_preliminary_2026-09-11/OWNER_APPROVAL.md",
+      "bytes": 1371,
+      "sha256": "1107a51fedbcb86010daf0d615654780b57053456177453610ba2f2127dc66c1"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_starlet_preliminary_2026-09-11/PROTOCOL.md",
+      "bytes": 5372,
+      "sha256": "90937e4e69419d13c5eeaea4e1be00d3b587f7e50633bdb5098d38be6fe3a401"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_starlet_preliminary_2026-09-11/README.md",
+      "bytes": 612,
+      "sha256": "fca82e29eab1ddeae27fa1f4f517f4e46c2ecdd64007b3596226846767190160"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_starlet_preliminary_2026-09-11/run_screen.py",
+      "bytes": 12541,
+      "sha256": "e02fe230bbef798b9a24a41cf183727446ca53989b5c5337c9534409c2709978"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_starlet_preliminary_2026-09-11/starlet.py",
+      "bytes": 5929,
+      "sha256": "6496d01fb9806965546c74c3cc690723cd6477a7b5f40e7a9ae03cbd08578b07"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_starlet_preliminary_2026-09-11/test_starlet_operator.py",
+      "bytes": 2150,
+      "sha256": "a792be07de05423b894e99c78bb44aee831819dc8cd576af33b1de599e10a649"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/CASES.json",
+      "bytes": 729,
+      "sha256": "629d1c07e200672b751d30f32e6e8cf97f0b0c2da7af6773996bd38d6f84519c"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/background20260911/R/pass00_maps.npz",
+      "bytes": 540683,
+      "sha256": "0ff9e280093d00bc0fcbe7f127fd2dec18e7324f90b1dfba604cedb52fb8e066"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/background20260911_truth.npz",
+      "bytes": 959,
+      "sha256": "5bc3920b86a6a25ea1083bed6f8ddd5e03e16666c8fc5c253633744c3beac792"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/coma_bright/R/pass00_maps.npz",
+      "bytes": 540579,
+      "sha256": "31fa7744e0ce0ef33e40f2216d7e920d73f16a0fc6b18e3b9fa371c2ee5dd40c"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/coma_bright_truth.npz",
+      "bytes": 132938,
+      "sha256": "a9d523c4eccb16dba18fbb4ae341195d77fd98e1c712b39dbe1d2b60f28af3de"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/coma_half/R/pass00_maps.npz",
+      "bytes": 540547,
+      "sha256": "8cc348c0fc80a6b745c1e09acec9f6acf4bf3ddaa212391649c62a563e7afd5b"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/coma_half_truth.npz",
+      "bytes": 132653,
+      "sha256": "6894580592c13c099167979bf2cccd7a32be7bd4f4df5c6deb3963fa0a209cca"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/gauss20260911/R/pass00_maps.npz",
+      "bytes": 540538,
+      "sha256": "d03404109c4ab7b76b6055ec697e9f08a8550bd65af581cee6decd123b9c729c"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/gauss20260911_truth.npz",
+      "bytes": 142240,
+      "sha256": "4df3448440b3254227f7d50b8b47c82950ff1929ffe65f2f4710acf8ed48b606"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/gauss20260912/R/pass00_maps.npz",
+      "bytes": 540627,
+      "sha256": "d2a4b2ddcb244f2ffcd9bd6e4faf747e757528b2facf68815beef9ff8492cbab"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/gauss20260912_truth.npz",
+      "bytes": 142240,
+      "sha256": "4df3448440b3254227f7d50b8b47c82950ff1929ffe65f2f4710acf8ed48b606"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/geometry.npz",
+      "bytes": 2941338,
+      "sha256": "92623d98871a3400dece39df0eae07ace07f69c51352c0ccfc7dffc174cbe671"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/mismatch20260911/R/pass00_maps.npz",
+      "bytes": 540551,
+      "sha256": "f769aa30078a25aa04e7bb068f7870d724747b73ce7ed9e074b80686bb5b0a88"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/mismatch20260911_truth.npz",
+      "bytes": 154762,
+      "sha256": "3eed4c0d5141820b2523f3befad1856a88bf31861025f167e157fb04f970b653"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/null20260911/R/pass00_maps.npz",
+      "bytes": 540611,
+      "sha256": "e6f9c6e607896095ce22da3393b606942674694e44dc352bbd54487730d72222"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/null20260912/R/pass00_maps.npz",
+      "bytes": 540611,
+      "sha256": "e1ed76660bd6424b239788d21fec2e41040dcf6983c787efd55ca58821327a87"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/real123424/R/pass00_maps.npz",
+      "bytes": 638291,
+      "sha256": "5a76b1e43d8981f2e70df345c3c472ed01ab2bb775760093ecbf7a502daa9521"
+    }
+  ]
+}
