@@ -1,0 +1,1550 @@
+{
+  "solver_records": [
+    {
+      "case": "real123424",
+      "array": "a1100",
+      "pass_index": 0,
+      "available": true,
+      "iterations": 292,
+      "relative_projected_gradient": 2.1419849624209485e-07,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "real123424",
+      "array": "a1400",
+      "pass_index": 0,
+      "available": true,
+      "iterations": 1584,
+      "relative_projected_gradient": 2.259156972890821e-07,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "real123424",
+      "array": "a2000",
+      "pass_index": 0,
+      "available": true,
+      "iterations": 653,
+      "relative_projected_gradient": 5.61554047599826e-07,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "real123424",
+      "array": "a1100",
+      "pass_index": 1,
+      "available": true,
+      "iterations": 264,
+      "relative_projected_gradient": 1.0886719381149456e-07,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "real123424",
+      "array": "a1400",
+      "pass_index": 1,
+      "available": true,
+      "iterations": 1107,
+      "relative_projected_gradient": 1.046372020276853e-07,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "real123424",
+      "array": "a2000",
+      "pass_index": 1,
+      "available": true,
+      "iterations": 610,
+      "relative_projected_gradient": 2.8105757216549614e-07,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "real123424",
+      "array": "a1100",
+      "pass_index": 2,
+      "available": true,
+      "iterations": 320,
+      "relative_projected_gradient": 7.507719189690405e-08,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "real123424",
+      "array": "a1400",
+      "pass_index": 2,
+      "available": true,
+      "iterations": 723,
+      "relative_projected_gradient": 4.808225234413539e-08,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "real123424",
+      "array": "a2000",
+      "pass_index": 2,
+      "available": true,
+      "iterations": 946,
+      "relative_projected_gradient": 2.1492407706651346e-07,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "real123424",
+      "array": "a1100",
+      "pass_index": 3,
+      "available": true,
+      "iterations": 212,
+      "relative_projected_gradient": 7.542152808776179e-08,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "real123424",
+      "array": "a1400",
+      "pass_index": 3,
+      "available": true,
+      "iterations": 1416,
+      "relative_projected_gradient": 6.072209904019347e-08,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "real123424",
+      "array": "a2000",
+      "pass_index": 3,
+      "available": true,
+      "iterations": 1270,
+      "relative_projected_gradient": 1.9324178481331263e-07,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "real123424",
+      "array": "a1100",
+      "pass_index": 4,
+      "available": true,
+      "iterations": 224,
+      "relative_projected_gradient": 6.700290406964127e-08,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "real123424",
+      "array": "a1400",
+      "pass_index": 4,
+      "available": true,
+      "iterations": 1056,
+      "relative_projected_gradient": 2.9465583824956122e-08,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "real123424",
+      "array": "a2000",
+      "pass_index": 4,
+      "available": true,
+      "iterations": 1590,
+      "relative_projected_gradient": 2.041345820696734e-07,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "real123424",
+      "array": "a1100",
+      "pass_index": 5,
+      "available": true,
+      "iterations": 228,
+      "relative_projected_gradient": 6.125592594598632e-08,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "real123424",
+      "array": "a1400",
+      "pass_index": 5,
+      "available": true,
+      "iterations": 1855,
+      "relative_projected_gradient": 1.9339303950339927e-08,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "real123424",
+      "array": "a2000",
+      "pass_index": 5,
+      "available": true,
+      "iterations": 1827,
+      "relative_projected_gradient": 1.4685321711990005e-07,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "real123424",
+      "array": "a1100",
+      "pass_index": 6,
+      "available": true,
+      "iterations": 305,
+      "relative_projected_gradient": 5.0139889373938324e-08,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "real123424",
+      "array": "a1400",
+      "pass_index": 6,
+      "available": true,
+      "iterations": 1372,
+      "relative_projected_gradient": 1.5985764314136038e-08,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "real123424",
+      "array": "a2000",
+      "pass_index": 6,
+      "available": true,
+      "iterations": 1117,
+      "relative_projected_gradient": 8.414310071264283e-06,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "H_20260911",
+      "array": "a1100",
+      "pass_index": 0,
+      "available": true,
+      "iterations": 592,
+      "relative_projected_gradient": 1.1958507286153396e-07,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "H_20260911",
+      "array": "a1400",
+      "pass_index": 0,
+      "available": false,
+      "iterations": 3000,
+      "relative_projected_gradient": 2.529893965002311e-07,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+    },
+    {
+      "case": "H_20260911",
+      "array": "a2000",
+      "pass_index": 0,
+      "available": true,
+      "iterations": 2696,
+      "relative_projected_gradient": 1.5326943678400685e-08,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "H-shift_20260911",
+      "array": "a1100",
+      "pass_index": 0,
+      "available": true,
+      "iterations": 644,
+      "relative_projected_gradient": 1.5244236142624103e-07,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "H-shift_20260911",
+      "array": "a1400",
+      "pass_index": 0,
+      "available": false,
+      "iterations": 3000,
+      "relative_projected_gradient": 2.1449877660188991e-07,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+    },
+    {
+      "case": "H-shift_20260911",
+      "array": "a2000",
+      "pass_index": 0,
+      "available": false,
+      "iterations": 397,
+      "relative_projected_gradient": 0.000131246717102492,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "D_20260911",
+      "array": "a1100",
+      "pass_index": 0,
+      "available": true,
+      "iterations": 720,
+      "relative_projected_gradient": 1.377754898707975e-07,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "D_20260911",
+      "array": "a1400",
+      "pass_index": 0,
+      "available": false,
+      "iterations": 3000,
+      "relative_projected_gradient": 4.395627374805797e-07,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+    },
+    {
+      "case": "D_20260911",
+      "array": "a2000",
+      "pass_index": 0,
+      "available": false,
+      "iterations": 3000,
+      "relative_projected_gradient": 1.948466248513809e-07,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+    },
+    {
+      "case": "C_20260911",
+      "array": "a1100",
+      "pass_index": 0,
+      "available": false,
+      "iterations": 3000,
+      "relative_projected_gradient": 6.078815758160944e-06,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+    },
+    {
+      "case": "C_20260911",
+      "array": "a1400",
+      "pass_index": 0,
+      "available": true,
+      "iterations": 1108,
+      "relative_projected_gradient": 2.4732227032370885e-06,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "C_20260911",
+      "array": "a2000",
+      "pass_index": 0,
+      "available": false,
+      "iterations": 3000,
+      "relative_projected_gradient": 3.971403492021248e-05,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+    },
+    {
+      "case": "T_20260911",
+      "array": "a1100",
+      "pass_index": 0,
+      "available": true,
+      "iterations": 592,
+      "relative_projected_gradient": 1.1958507286153396e-07,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "T_20260911",
+      "array": "a1400",
+      "pass_index": 0,
+      "available": true,
+      "iterations": 1642,
+      "relative_projected_gradient": 8.452707132851559e-07,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "T_20260911",
+      "array": "a2000",
+      "pass_index": 0,
+      "available": true,
+      "iterations": 2696,
+      "relative_projected_gradient": 1.5326943678400685e-08,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "T_20260911",
+      "array": "a1100",
+      "pass_index": 1,
+      "available": true,
+      "iterations": 2324,
+      "relative_projected_gradient": 6.757285726553943e-08,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "T_20260911",
+      "array": "a1400",
+      "pass_index": 1,
+      "available": false,
+      "iterations": 3000,
+      "relative_projected_gradient": 3.651496703125745e-06,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+    },
+    {
+      "case": "T_20260911",
+      "array": "a2000",
+      "pass_index": 1,
+      "available": false,
+      "iterations": 3000,
+      "relative_projected_gradient": 7.5357875967640926e-06,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+    },
+    {
+      "case": "E_20260911",
+      "array": "a1100",
+      "pass_index": 0,
+      "available": true,
+      "iterations": 332,
+      "relative_projected_gradient": 7.528591721614316e-08,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "E_20260911",
+      "array": "a1400",
+      "pass_index": 0,
+      "available": false,
+      "iterations": 3000,
+      "relative_projected_gradient": 4.792632721959189e-05,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+    },
+    {
+      "case": "E_20260911",
+      "array": "a2000",
+      "pass_index": 0,
+      "available": false,
+      "iterations": 3000,
+      "relative_projected_gradient": 3.45145594860588e-05,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+    },
+    {
+      "case": "H_20260912",
+      "array": "a1100",
+      "pass_index": 0,
+      "available": true,
+      "iterations": 742,
+      "relative_projected_gradient": 1.2107183884340803e-07,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "H_20260912",
+      "array": "a1400",
+      "pass_index": 0,
+      "available": false,
+      "iterations": 3000,
+      "relative_projected_gradient": 5.778715140773161e-07,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+    },
+    {
+      "case": "H_20260912",
+      "array": "a2000",
+      "pass_index": 0,
+      "available": false,
+      "iterations": 3000,
+      "relative_projected_gradient": 4.501094736156818e-07,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+    },
+    {
+      "case": "H-shift_20260912",
+      "array": "a1100",
+      "pass_index": 0,
+      "available": true,
+      "iterations": 482,
+      "relative_projected_gradient": 7.975798747569348e-08,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "H-shift_20260912",
+      "array": "a1400",
+      "pass_index": 0,
+      "available": true,
+      "iterations": 2818,
+      "relative_projected_gradient": 2.935506884378763e-07,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "H-shift_20260912",
+      "array": "a2000",
+      "pass_index": 0,
+      "available": false,
+      "iterations": 3000,
+      "relative_projected_gradient": 8.82119492593711e-07,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+    },
+    {
+      "case": "D_20260912",
+      "array": "a1100",
+      "pass_index": 0,
+      "available": true,
+      "iterations": 652,
+      "relative_projected_gradient": 1.0286758466509463e-07,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "D_20260912",
+      "array": "a1400",
+      "pass_index": 0,
+      "available": true,
+      "iterations": 1566,
+      "relative_projected_gradient": 7.934398537956293e-07,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "D_20260912",
+      "array": "a2000",
+      "pass_index": 0,
+      "available": false,
+      "iterations": 3000,
+      "relative_projected_gradient": 6.421480581621842e-07,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+    },
+    {
+      "case": "C_20260912",
+      "array": "a1100",
+      "pass_index": 0,
+      "available": false,
+      "iterations": 3000,
+      "relative_projected_gradient": 1.3062109025260894e-05,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+    },
+    {
+      "case": "C_20260912",
+      "array": "a1400",
+      "pass_index": 0,
+      "available": true,
+      "iterations": 1339,
+      "relative_projected_gradient": 1.409646483272177e-06,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "C_20260912",
+      "array": "a2000",
+      "pass_index": 0,
+      "available": false,
+      "iterations": 3000,
+      "relative_projected_gradient": 2.1767484377494898e-05,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+    },
+    {
+      "case": "T_20260912",
+      "array": "a1100",
+      "pass_index": 0,
+      "available": true,
+      "iterations": 742,
+      "relative_projected_gradient": 1.2107183884340803e-07,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "T_20260912",
+      "array": "a1400",
+      "pass_index": 0,
+      "available": false,
+      "iterations": 3000,
+      "relative_projected_gradient": 2.9660442107719847e-07,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+    },
+    {
+      "case": "T_20260912",
+      "array": "a2000",
+      "pass_index": 0,
+      "available": false,
+      "iterations": 3000,
+      "relative_projected_gradient": 4.501094736156818e-07,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+    },
+    {
+      "case": "E_20260912",
+      "array": "a1100",
+      "pass_index": 0,
+      "available": true,
+      "iterations": 400,
+      "relative_projected_gradient": 1.1589045115034335e-07,
+      "solver_success": true,
+      "solver_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+    },
+    {
+      "case": "E_20260912",
+      "array": "a1400",
+      "pass_index": 0,
+      "available": false,
+      "iterations": 3000,
+      "relative_projected_gradient": 5.939874709862009e-05,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+    },
+    {
+      "case": "E_20260912",
+      "array": "a2000",
+      "pass_index": 0,
+      "available": false,
+      "iterations": 3000,
+      "relative_projected_gradient": 0.00011206631859157319,
+      "solver_success": false,
+      "solver_message": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+    }
+  ],
+  "solver_counts": {
+    "nonempty": 60,
+    "accepted": 39,
+    "failed": 21,
+    "failed_with_projected_gradient_pass": 19,
+    "failed_with_projected_gradient_failure": 2
+  },
+  "raw_reference_fit_diagnostics": [
+    {
+      "case": "H_20260911",
+      "array": "a1100",
+      "status": "adequate_for_finite_screen",
+      "measurement_available": true,
+      "centroid_error_arcsec": 0.04168729799421534,
+      "peak_relative_error": 0.06912862115614571,
+      "width_relative_error": [
+        -0.05905431378422188,
+        -0.1517646586918695
+      ],
+      "shape_error": 0.22594254577725167,
+      "empirical_peak_score": 8.205902711102413
+    },
+    {
+      "case": "H_20260911",
+      "array": "a1400",
+      "status": "degraded_shape",
+      "measurement_available": false,
+      "centroid_error_arcsec": 0.5282914113470505,
+      "peak_relative_error": 0.08173067505102849,
+      "width_relative_error": [
+        -0.1459612928628825,
+        -0.19020118838615352
+      ],
+      "shape_error": 0.38762131056144195,
+      "empirical_peak_score": 4.983762426355068
+    },
+    {
+      "case": "H_20260911",
+      "array": "a2000",
+      "status": "adequate_for_finite_screen",
+      "measurement_available": true,
+      "centroid_error_arcsec": 0.21120731944963328,
+      "peak_relative_error": -0.018600213622115946,
+      "width_relative_error": [
+        -0.10298398974719392,
+        -0.10351273165381325
+      ],
+      "shape_error": 0.1884176797957833,
+      "empirical_peak_score": 5.85892566708887
+    },
+    {
+      "case": "H-shift_20260911",
+      "array": "a1100",
+      "status": "adequate_for_finite_screen",
+      "measurement_available": true,
+      "centroid_error_arcsec": 0.18116949479495872,
+      "peak_relative_error": 0.09477896966292954,
+      "width_relative_error": [
+        -0.09448482292605942,
+        -0.17056600936615607
+      ],
+      "shape_error": 0.20616792816464188,
+      "empirical_peak_score": 8.407109102949079
+    },
+    {
+      "case": "H-shift_20260911",
+      "array": "a1400",
+      "status": "degraded_shape",
+      "measurement_available": false,
+      "centroid_error_arcsec": 0.06814993691968169,
+      "peak_relative_error": 0.10108205027457351,
+      "width_relative_error": [
+        -0.14940673869829835,
+        -0.13882707738333844
+      ],
+      "shape_error": 0.339281409399354,
+      "empirical_peak_score": 5.0694384934582555
+    },
+    {
+      "case": "H-shift_20260911",
+      "array": "a2000",
+      "status": "adequate_for_finite_screen",
+      "measurement_available": true,
+      "centroid_error_arcsec": 0.3618564735165558,
+      "peak_relative_error": -0.008465042091609809,
+      "width_relative_error": [
+        -0.12248617862679267,
+        -0.10003746912448364
+      ],
+      "shape_error": 0.16909123087714825,
+      "empirical_peak_score": 5.918257439912948
+    },
+    {
+      "case": "D_20260911",
+      "array": "a1100",
+      "status": "degraded_shape",
+      "measurement_available": false,
+      "centroid_error_arcsec": 0.03357699270627271,
+      "peak_relative_error": 0.0704981258194115,
+      "width_relative_error": [
+        -0.06879088772441833,
+        -0.1648132452601473
+      ],
+      "shape_error": 0.2594304354647079,
+      "empirical_peak_score": 7.395156964284402
+    },
+    {
+      "case": "D_20260911",
+      "array": "a1400",
+      "status": "degraded_shape",
+      "measurement_available": false,
+      "centroid_error_arcsec": 0.5888175221735215,
+      "peak_relative_error": 0.02087024324370068,
+      "width_relative_error": [
+        -0.12974507806179636,
+        -0.1980019257205553
+      ],
+      "shape_error": 0.4447586425711284,
+      "empirical_peak_score": 4.231527959512891
+    },
+    {
+      "case": "D_20260911",
+      "array": "a2000",
+      "status": "adequate_for_finite_screen",
+      "measurement_available": true,
+      "centroid_error_arcsec": 0.19010522064166602,
+      "peak_relative_error": -0.05148455680695241,
+      "width_relative_error": [
+        -0.11236204861055621,
+        -0.11143340256300882
+      ],
+      "shape_error": 0.2152169634579625,
+      "empirical_peak_score": 5.1004475242273655
+    },
+    {
+      "case": "H_20260912",
+      "array": "a1100",
+      "status": "adequate_for_finite_screen",
+      "measurement_available": true,
+      "centroid_error_arcsec": 0.32262829242846336,
+      "peak_relative_error": 0.04470110671152416,
+      "width_relative_error": [
+        -0.0033208596164860937,
+        -0.1610106507633733
+      ],
+      "shape_error": 0.18689563872166917,
+      "empirical_peak_score": 8.167777196578161
+    },
+    {
+      "case": "H_20260912",
+      "array": "a1400",
+      "status": "degraded_shape",
+      "measurement_available": false,
+      "centroid_error_arcsec": 0.2091803738817302,
+      "peak_relative_error": 0.015619641950342267,
+      "width_relative_error": [
+        -0.14814824302446616,
+        -0.23904519135404745
+      ],
+      "shape_error": 0.27290049595512184,
+      "empirical_peak_score": 4.529575126983739
+    },
+    {
+      "case": "H_20260912",
+      "array": "a2000",
+      "status": "adequate_for_finite_screen",
+      "measurement_available": true,
+      "centroid_error_arcsec": 0.22020208194847352,
+      "peak_relative_error": -0.13308086813641262,
+      "width_relative_error": [
+        -0.07344467691647649,
+        -0.08381456951326405
+      ],
+      "shape_error": 0.2206902187280717,
+      "empirical_peak_score": 5.344391873149702
+    },
+    {
+      "case": "H-shift_20260912",
+      "array": "a1100",
+      "status": "adequate_for_finite_screen",
+      "measurement_available": true,
+      "centroid_error_arcsec": 0.09758250194546739,
+      "peak_relative_error": 0.05023613679240779,
+      "width_relative_error": [
+        -0.04905284140559407,
+        -0.1582941889026338
+      ],
+      "shape_error": 0.18141601640030744,
+      "empirical_peak_score": 8.208780992177354
+    },
+    {
+      "case": "H-shift_20260912",
+      "array": "a1400",
+      "status": "degraded_shape",
+      "measurement_available": false,
+      "centroid_error_arcsec": 0.3489986604347937,
+      "peak_relative_error": -0.060450941671099656,
+      "width_relative_error": [
+        -0.08927322570451857,
+        -0.1814719331678183
+      ],
+      "shape_error": 0.3035558591308281,
+      "empirical_peak_score": 4.181444732259377
+    },
+    {
+      "case": "H-shift_20260912",
+      "array": "a2000",
+      "status": "adequate_for_finite_screen",
+      "measurement_available": true,
+      "centroid_error_arcsec": 0.26285548596056696,
+      "peak_relative_error": -0.13028193281960798,
+      "width_relative_error": [
+        -0.07482652518781363,
+        -0.06736992596206937
+      ],
+      "shape_error": 0.22293362009174478,
+      "empirical_peak_score": 5.3657560914678
+    },
+    {
+      "case": "D_20260912",
+      "array": "a1100",
+      "status": "adequate_for_finite_screen",
+      "measurement_available": true,
+      "centroid_error_arcsec": 0.42192628130647386,
+      "peak_relative_error": 0.04646672195759183,
+      "width_relative_error": [
+        -0.003284813333478631,
+        -0.1739372174739895
+      ],
+      "shape_error": 0.22462715468781716,
+      "empirical_peak_score": 7.369809461244405
+    },
+    {
+      "case": "D_20260912",
+      "array": "a1400",
+      "status": "degraded_shape",
+      "measurement_available": false,
+      "centroid_error_arcsec": 0.2563558155002833,
+      "peak_relative_error": 8.152184385989969e-06,
+      "width_relative_error": [
+        -0.14074738472533344,
+        -0.25949931551823047
+      ],
+      "shape_error": 0.31320175420350177,
+      "empirical_peak_score": 4.01565535402973
+    },
+    {
+      "case": "D_20260912",
+      "array": "a2000",
+      "status": "unassessable_measurement",
+      "measurement_available": false,
+      "centroid_error_arcsec": 0.2908438604395364,
+      "peak_relative_error": -0.15529596191768114,
+      "width_relative_error": [
+        -0.07779929766204763,
+        -0.08500568092762051
+      ],
+      "shape_error": 0.24323855097745442,
+      "empirical_peak_score": 4.68699416182699
+    }
+  ],
+  "raw_reference_gain_diagnostics": [
+    {
+      "seed": 20260911,
+      "array": "a1100",
+      "ratio": 1.109689649633158,
+      "relative_error": -0.001279315330157793,
+      "measurement_available": false,
+      "meaning": "Ungated fit diagnostic, not a pass where the common evaluator is unavailable"
+    },
+    {
+      "seed": 20260911,
+      "array": "a1400",
+      "ratio": 1.177351362950834,
+      "relative_error": 0.059616226655750726,
+      "measurement_available": false,
+      "meaning": "Ungated fit diagnostic, not a pass where the common evaluator is unavailable"
+    },
+    {
+      "seed": 20260911,
+      "array": "a2000",
+      "ratio": 1.1496325282967523,
+      "relative_error": 0.03466927546707699,
+      "measurement_available": true,
+      "meaning": "Ungated fit diagnostic, not a pass where the common evaluator is unavailable"
+    },
+    {
+      "seed": 20260912,
+      "array": "a1100",
+      "ratio": 1.1092364268266621,
+      "relative_error": -0.0016872158560041761,
+      "measurement_available": true,
+      "meaning": "Ungated fit diagnostic, not a pass where the common evaluator is unavailable"
+    },
+    {
+      "seed": 20260912,
+      "array": "a1400",
+      "ratio": 1.1284570694436118,
+      "relative_error": 0.015611362499250658,
+      "measurement_available": false,
+      "meaning": "Ungated fit diagnostic, not a pass where the common evaluator is unavailable"
+    },
+    {
+      "seed": 20260912,
+      "array": "a2000",
+      "ratio": 1.1403325146109453,
+      "relative_error": 0.02629926314985065,
+      "measurement_available": false,
+      "meaning": "Ungated fit diagnostic, not a pass where the common evaluator is unavailable"
+    }
+  ],
+  "real_fit_diagnostics": [
+    {
+      "arm": "P",
+      "array": "a1100",
+      "status": "degraded_shape",
+      "fit": {
+        "parameters": [
+          5729.8888082295325,
+          10.395852757181839,
+          -5.276179397746421,
+          2.989153644558833,
+          2.0776873499998287,
+          3.003137047701678,
+          13.792945989695287,
+          -11.987226386524933,
+          -7.062226384851244
+        ],
+        "peak": 5729.8888082295325,
+        "centroid": [
+          10.395852757181839,
+          -5.276179397746421
+        ],
+        "widths": [
+          19.86885925620929,
+          7.985978768119594
+        ],
+        "angle_rad": 3.003137047701678,
+        "gaussian_integral": 1030176.6436539904,
+        "background": [
+          13.792945989695287,
+          -11.987226386524933,
+          -7.062226384851244
+        ],
+        "residual_rms": 283.00172769253135,
+        "sse": 225933827.5908976,
+        "boundary_rejection": false,
+        "solver_status": 2,
+        "nfev": 17,
+        "successful_starts": 3
+      },
+      "OG_native_centroid": [
+        12.962779998779297,
+        -5.575401782989502
+      ],
+      "separation_arcsec": 2.584308321289411,
+      "meaning": "Descriptive fitted location, not available operational pointing or truth error"
+    },
+    {
+      "arm": "P",
+      "array": "a1400",
+      "status": "degraded_shape",
+      "fit": {
+        "parameters": [
+          4949.077933169367,
+          11.653743846760223,
+          -5.32910892626216,
+          1.9003729197361543,
+          2.801266248835757,
+          1.452073058888647,
+          7.546982681515184,
+          -3.0924658127230775,
+          -2.5951665159376454
+        ],
+        "peak": 4949.077933169367,
+        "centroid": [
+          11.653743846760223,
+          -5.32910892626216
+        ],
+        "widths": [
+          16.465482975050843,
+          6.6883882092291955
+        ],
+        "angle_rad": 3.022869385683544,
+        "gaussian_integral": 617567.8228123744,
+        "background": [
+          7.546982681515184,
+          -3.0924658127230775,
+          -2.5951665159376454
+        ],
+        "residual_rms": 143.8328902981493,
+        "sse": 58360566.83521637,
+        "boundary_rejection": false,
+        "solver_status": 2,
+        "nfev": 32,
+        "successful_starts": 3
+      },
+      "OG_native_centroid": [
+        12.740460395812988,
+        -5.35203218460083
+      ],
+      "separation_arcsec": 1.0869582943968052,
+      "meaning": "Descriptive fitted location, not available operational pointing or truth error"
+    },
+    {
+      "arm": "P",
+      "array": "a2000",
+      "status": "unassessable_support",
+      "fit": {
+        "parameters": [
+          113.10025857597019,
+          -20.938377047572224,
+          -21.67641733300703,
+          2.256830859443826,
+          3.5398373930875318,
+          0.8132426893245346,
+          3.9626144620336663,
+          14.389751102196854,
+          5.986056568624935
+        ],
+        "peak": 113.10025857597019,
+        "centroid": [
+          -20.938377047572224,
+          -21.67641733300703
+        ],
+        "widths": [
+          34.46131508719081,
+          9.552767083083321
+        ],
+        "angle_rad": 2.384039016119431,
+        "gaussian_integral": 42188.01129900986,
+        "background": [
+          3.9626144620336663,
+          14.389751102196854,
+          5.986056568624935
+        ],
+        "residual_rms": 40.26924648150135,
+        "sse": 4574568.05058209,
+        "boundary_rejection": false,
+        "solver_status": 2,
+        "nfev": 67,
+        "successful_starts": 3
+      },
+      "OG_native_centroid": [
+        15.301119804382324,
+        -9.411735534667969
+      ],
+      "separation_arcsec": 38.258640222795854,
+      "meaning": "Descriptive fitted location, not available operational pointing or truth error"
+    },
+    {
+      "arm": "C",
+      "array": "a1100",
+      "status": "degraded_shape",
+      "fit": {
+        "parameters": [
+          5948.944671682956,
+          11.109768465424617,
+          -5.323834915506092,
+          2.8390980324492525,
+          1.920325957203298,
+          3.0050007690461817,
+          3.2548441822745287,
+          -14.277096442229132,
+          -1.2255834748570988
+        ],
+        "peak": 5948.944671682956,
+        "centroid": [
+          11.109768465424617,
+          -5.323834915506092
+        ],
+        "widths": [
+          17.100334632159104,
+          6.823182172233519
+        ],
+        "angle_rad": 3.0050007690461817,
+        "gaussian_integral": 786494.9272392195,
+        "background": [
+          3.2548441822745287,
+          -14.277096442229132,
+          -1.2255834748570988
+        ],
+        "residual_rms": 270.10741367842724,
+        "sse": 205814560.10074225,
+        "boundary_rejection": false,
+        "solver_status": 2,
+        "nfev": 34,
+        "successful_starts": 3
+      },
+      "OG_native_centroid": [
+        12.962779998779297,
+        -5.575401782989502
+      ],
+      "separation_arcsec": 1.8700100618876032,
+      "meaning": "Descriptive fitted location, not available operational pointing or truth error"
+    },
+    {
+      "arm": "C",
+      "array": "a1400",
+      "status": "degraded_shape",
+      "fit": {
+        "parameters": [
+          4962.637228195544,
+          11.81107047319443,
+          -5.3274836530486045,
+          1.8491275902727728,
+          2.738808552094842,
+          1.4620270923228056,
+          9.270170164264801,
+          -8.881648633378445,
+          -8.702859098280236
+        ],
+        "peak": 4962.637228195544,
+        "centroid": [
+          11.81107047319443,
+          -5.3274836530486045
+        ],
+        "widths": [
+          15.468544148285636,
+          6.354273573708537
+        ],
+        "angle_rad": 3.032823419117702,
+        "gaussian_integral": 552703.60776513,
+        "background": [
+          9.270170164264801,
+          -8.881648633378445,
+          -8.702859098280236
+        ],
+        "residual_rms": 147.09674985722984,
+        "sse": 61039257.22215903,
+        "boundary_rejection": false,
+        "solver_status": 2,
+        "nfev": 36,
+        "successful_starts": 3
+      },
+      "OG_native_centroid": [
+        12.740460395812988,
+        -5.35203218460083
+      ],
+      "separation_arcsec": 0.9297140736088165,
+      "meaning": "Descriptive fitted location, not available operational pointing or truth error"
+    },
+    {
+      "arm": "C",
+      "array": "a2000",
+      "status": "unassessable_support",
+      "fit": {
+        "parameters": [
+          169.28573384188752,
+          -13.326297185840492,
+          27.27153941185751,
+          3.310823677647691,
+          2.059268825042041,
+          3.1415926535897927,
+          12.026293540983161,
+          18.746974667661224,
+          -12.461107638374454
+        ],
+        "peak": 169.28573384188752,
+        "centroid": [
+          -13.326297185840492,
+          27.27153941185751
+        ],
+        "widths": [
+          27.407691279833628,
+          7.840235130454882
+        ],
+        "angle_rad": 3.1415926535897927,
+        "gaussian_integral": 41217.94373355525,
+        "background": [
+          12.026293540983161,
+          18.746974667661224,
+          -12.461107638374454
+        ],
+        "residual_rms": 43.22875249605999,
+        "sse": 5271673.344513394,
+        "boundary_rejection": false,
+        "solver_status": 2,
+        "nfev": 10,
+        "successful_starts": 3
+      },
+      "OG_native_centroid": [
+        15.301119804382324,
+        -9.411735534667969
+      ],
+      "separation_arcsec": 46.53162004846255,
+      "meaning": "Descriptive fitted location, not available operational pointing or truth error"
+    }
+  ],
+  "OG": {
+    "identity": "POINT-123424-OG-RECURRENCE-EL-F2-ALPHA1-CONTROL-2026-09-02",
+    "native_sequence": [
+      {
+        "pass_index": 0,
+        "array": "a1100",
+        "peak": 3473.69091796875,
+        "centroid": [
+          13.528619766235352,
+          -5.539103031158447
+        ],
+        "widths": [
+          5.193957805633545,
+          4.998448848724365
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 0,
+        "array": "a1400",
+        "peak": 835.5167236328125,
+        "centroid": [
+          12.831600189208984,
+          -5.147377967834473
+        ],
+        "widths": [
+          11.461750030517578,
+          5.5456109046936035
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 0,
+        "array": "a2000",
+        "peak": 59.820499420166016,
+        "centroid": [
+          -22.571380615234375,
+          -23.170379638671875
+        ],
+        "widths": [
+          9.518202781677246,
+          11.944979667663574
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 1,
+        "array": "a1100",
+        "peak": 5006.3349609375,
+        "centroid": [
+          13.541589736938477,
+          -5.569039821624756
+        ],
+        "widths": [
+          5.936615943908691,
+          5.415958881378174
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 1,
+        "array": "a1400",
+        "peak": 1227.39697265625,
+        "centroid": [
+          12.784700393676758,
+          -5.217065811157227
+        ],
+        "widths": [
+          12.196940422058105,
+          6.051180839538574
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 1,
+        "array": "a2000",
+        "peak": 95.5030288696289,
+        "centroid": [
+          16.649980545043945,
+          -12.306229591369629
+        ],
+        "widths": [
+          12.495889663696289,
+          12.292949676513672
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 2,
+        "array": "a1100",
+        "peak": 5734.31689453125,
+        "centroid": [
+          13.502420425415039,
+          -5.579638957977295
+        ],
+        "widths": [
+          6.635243892669678,
+          5.765449047088623
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 2,
+        "array": "a1400",
+        "peak": 1440.60498046875,
+        "centroid": [
+          12.630789756774902,
+          -5.272756099700928
+        ],
+        "widths": [
+          12.600000381469727,
+          6.415824890136719
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 2,
+        "array": "a2000",
+        "peak": 104.54450225830078,
+        "centroid": [
+          -23.634279251098633,
+          -20.997650146484375
+        ],
+        "widths": [
+          10.859339714050293,
+          19.0
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 3,
+        "array": "a1100",
+        "peak": 6023.60791015625,
+        "centroid": [
+          13.440759658813477,
+          -5.585949897766113
+        ],
+        "widths": [
+          7.430129051208496,
+          6.120337009429932
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 3,
+        "array": "a1400",
+        "peak": 1593.3890380859375,
+        "centroid": [
+          12.587430000305176,
+          -5.307140827178955
+        ],
+        "widths": [
+          12.600000381469727,
+          6.715114116668701
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 3,
+        "array": "a2000",
+        "peak": 126.220703125,
+        "centroid": [
+          15.330180168151855,
+          -9.56197452545166
+        ],
+        "widths": [
+          18.61823081970215,
+          8.425772666931152
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 4,
+        "array": "a1100",
+        "peak": 5997.81689453125,
+        "centroid": [
+          13.303009986877441,
+          -5.5865960121154785
+        ],
+        "widths": [
+          8.54372501373291,
+          6.5099639892578125
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 4,
+        "array": "a1400",
+        "peak": 1693.739990234375,
+        "centroid": [
+          12.567890167236328,
+          -5.325777053833008
+        ],
+        "widths": [
+          12.600000381469727,
+          6.977074146270752
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 4,
+        "array": "a2000",
+        "peak": 133.94810485839844,
+        "centroid": [
+          15.238670349121094,
+          -9.435276985168457
+        ],
+        "widths": [
+          19.0,
+          8.49411678314209
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 5,
+        "array": "a1100",
+        "peak": 5768.05322265625,
+        "centroid": [
+          13.041020393371582,
+          -5.576796054840088
+        ],
+        "widths": [
+          10.0,
+          6.941061973571777
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 5,
+        "array": "a1400",
+        "peak": 1768.092041015625,
+        "centroid": [
+          12.553970336914062,
+          -5.332098007202148
+        ],
+        "widths": [
+          12.600000381469727,
+          7.198681831359863
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 5,
+        "array": "a2000",
+        "peak": 138.3831024169922,
+        "centroid": [
+          15.242210388183594,
+          -9.401651382446289
+        ],
+        "widths": [
+          19.0,
+          8.639032363891602
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 6,
+        "array": "a1100",
+        "peak": 5985.419921875,
+        "centroid": [
+          12.962779998779297,
+          -5.575401782989502
+        ],
+        "widths": [
+          10.0,
+          7.2272748947143555
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 6,
+        "array": "a1400",
+        "peak": 1782.759033203125,
+        "centroid": [
+          12.740460395812988,
+          -5.35203218460083
+        ],
+        "widths": [
+          12.600000381469727,
+          7.325132846832275
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 6,
+        "array": "a2000",
+        "peak": 141.0706024169922,
+        "centroid": [
+          15.301119804382324,
+          -9.411735534667969
+        ],
+        "widths": [
+          19.0,
+          8.813047409057617
+        ],
+        "angle": 0.0
+      }
+    ],
+    "runtime": {
+      "schema_version": "citlali-runtime-provenance-v2",
+      "initialized": true,
+      "requested": {
+        "verbose": true,
+        "interp_over_gaps": true,
+        "n_threads": 1,
+        "output_dir": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/",
+        "parallel_policy": "omp",
+        "reduction_type": "pointing",
+        "use_subdir": true
+      },
+      "effective": {
+        "values": {
+          "verbose": true,
+          "interp_over_gaps": true,
+          "n_threads": 1,
+          "output_dir": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/",
+          "parallel_policy": "omp",
+          "reduction_type": "pointing",
+          "use_subdir": true
+        },
+        "threads": {
+          "requested": 1,
+          "effective": 1,
+          "omp": 1,
+          "eigen": 1,
+          "fftw_plan": 1,
+          "wiener_filter_omp": false,
+          "adjusted": false,
+          "adjustment_reason": "",
+          "availability": {
+            "slurm_cpus_per_task": 0,
+            "affinity_cpus": 0,
+            "hardware_cpus": 14,
+            "available_threads": 14,
+            "source": "hardware"
+          }
+        }
+      },
+      "realized": {
+        "threads": {
+          "omp": 1,
+          "eigen": 1,
+          "fftw_plan": 1,
+          "fftw_initialized": true
+        },
+        "parallel_policy": "omp",
+        "reduction_type": "pointing"
+      }
+    },
+    "full_wall_seconds": 205.38,
+    "log_sha256": "1926f378f3402fd0f23d8473f33f5f680d510766daaba5ce442be0cffcd2be2d"
+  },
+  "routine_metadata_repair": {
+    "original": "analyze.py expected an OG key, but the already-bound source provides OG_native_pointing_sequence and OG_runtime.",
+    "disposition": "Original DECISION_EVIDENCE.json retains OG=null. This supplement uses the actual keys and already-bound benchmark log. No method, metric, gate, input population or reduction changed.",
+    "new_cleaning_calls": 0
+  }
+}

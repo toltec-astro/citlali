@@ -4,12 +4,19 @@ Status: generic SCI-FRUIT-NORMATIVE-CORE v0.1/r0.4 and ordinary-MAP scientific
 definition r0.4 remain accepted and frozen. The weighting exploration is closed.
 The owner has [specified five operational POINT uses](method_preparation/ordinary_map/method_definition/POINT_OPERATIONAL_USE_CASES_2026-09-12.md)
 and selected peak response as the primary before/after OOF gain measure.
-The next review is the [use-specific gate proposal](method_preparation/ordinary_map/method_definition/POINT_USE_CASE_GATE_DESIGN_R0.1.md):
-prioritize reliable pointing and relative peak gain, with honest startup,
-degradation and detector/condition information. Full-image accuracy would be
-required where the claimed use needs it; failed solves and false reassurance
-remain unacceptable. Gate applicability, new numerical targets and the bounded
-test set remain proposals. No new numerical experiment is authorized.
+The owner subsequently approved the [bounded operational-gate trial](../../../../../validation/fruit_point_operational_gate_trial_2026-09-12/SCIENTIFIC_REPORT.md)
+and a 1-arcsec pointing criterion. It is complete: **candidate not accepted;
+recommend one bounded completion/evaluator revision**. Central null admission
+remains zero, but no synthetic source trajectory completes both solve checks.
+Nineteen of 21 failed solves meet the gradient requirement but fail optimizer
+success. The common measurement veto also withholds eight reference centroids
+whose actual controlled errors meet 1 arcsec. The real candidate takes 43.51 s
+versus 8.07 s for the matched reference, without an available operational
+measurement under that evaluator. No primary improvement is established.
+The trial used 167 cleaning calls; further numerical work and 129081 evaluation
+remain separate decisions. The [gate design](method_preparation/ordinary_map/method_definition/POINT_USE_CASE_GATE_DESIGN_R0.1.md)
+is preserved with its original proposal-time wording and later execution
+authority in the trial protocol.
 The latest [matched central-domain starlet test](../../../../../validation/fruit_point_starlet_central_domain_2026-09-12/SCIENTIFIC_REPORT.md)
 **supports the edge/domain hypothesis**: the fixed central domain removes all
 observed null/background admissions. It does not accept the tested 60-arcsec
@@ -19,9 +26,8 @@ explicitly repaired for the comparison; 51 nonzero-MAD controls match the prior
 outputs bitwise. There were 174 estimator calls and zero new cleaning passes.
 Both RBF candidates, the independent Gaussian candidate and the original
 full-domain starlet candidate remain rejected. The positional-prior screen
-retains its prior limited result. The use-specific review will inform whether
-a new bounded candidate should separate central source evidence from model
-extent and address reconstruction completion.
+retains its prior limited result. The new completion/evaluator decision precedes
+any further candidate or model-extent change.
 Previous products are preserved. 129081 remains historically characterized and
 reserved for new feedback comparisons. Production adoption, qualification,
 Unity activity and independent-author dispatch remain unavailable.
@@ -55,6 +61,8 @@ no numerical method or new method-specific author dispatch.
 
 ## Locked Scientific Definition And Remaining Review
 
+- [Completed operational-gate trial: candidate unaccepted; completion and evaluator findings](../../../../../validation/fruit_point_operational_gate_trial_2026-09-12/SCIENTIFIC_REPORT.md)
+- [Frozen trial protocol, 1-arcsec owner decision and bounded execution](../../../../../validation/fruit_point_operational_gate_trial_2026-09-12/PROTOCOL.md)
 - [Owner-established POINT operational uses and peak-response gain meaning](method_preparation/ordinary_map/method_definition/POINT_OPERATIONAL_USE_CASES_2026-09-12.md)
 - [Proposed use-specific gates and bounded future comparison](method_preparation/ordinary_map/method_definition/POINT_USE_CASE_GATE_DESIGN_R0.1.md)
 - [Completed central-domain test: edge hypothesis supported; 60-arcsec reconstruction candidate not accepted](../../../../../validation/fruit_point_starlet_central_domain_2026-09-12/SCIENTIFIC_REPORT.md)

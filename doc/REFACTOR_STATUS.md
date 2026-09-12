@@ -1876,6 +1876,27 @@ from 300 to 3000 solver iterations. Sources and inputs are frozen before
 execution; up to 238 cleaning calls, one hour, 8 GiB RSS and 4 GiB output are
 the bounds. No automatic revision, 129081 comparison or qualification follows.
 
+The [operational-gate trial is now complete](../validation/fruit_point_operational_gate_trial_2026-09-12/SCIENTIFIC_REPORT.md):
+**candidate not accepted; recommend a bounded completion/evaluator revision**.
+All 17 pixelwise trajectories completed; the central candidate completed the
+real case and four null/background cases, but no synthetic source trajectory.
+It made zero false admissions over 12 null/background array cases and all seven
+passes, versus false pixel admission in every corresponding reference case;
+neither arm issued a positive POINT source report there. Of 21 rejected
+nonempty solves, 19 meet the relative-gradient requirement but fail optimizer
+success; two fail both. All 18 reference compact/mild-case centroid errors are
+0.0336–0.5888 arcsec, yet the common shape/score gate admits only ten. This
+exposes a limitation of the shared measurement veto, without changing the
+registered scores. The candidate's real trajectory takes 43.51 s versus 8.07 s
+for the matched reference and supplies no available operational measurement
+under that evaluator. No primary recovery/time improvement is established.
+The run used 167 cleaning calls in 400.12 s and 1.94 GiB peak RSS. Source/input,
+product, recurrence, objective/gradient and sampled learned-state checks pass;
+prior products and protected archives remain unchanged. The next significant
+decision is one explicit completion rule and separation of centroid usability
+from peak/shape and health-warning rules. No further trial or 129081 evaluation
+is authorized automatically.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

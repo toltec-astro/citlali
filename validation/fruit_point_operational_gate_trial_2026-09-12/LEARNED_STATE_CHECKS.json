@@ -1,0 +1,594 @@
+{
+  "checks": [
+    {
+      "case": "real123424",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c00_nw00",
+      "eigen_residual": 6.9778616798637e-16
+    },
+    {
+      "case": "real123424",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c11_nw06",
+      "eigen_residual": 3.2940319842275043e-16
+    },
+    {
+      "case": "real123424",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c00_nw07",
+      "eigen_residual": 3.870754378269425e-16
+    },
+    {
+      "case": "real123424",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c11_nw09",
+      "eigen_residual": 6.726770699465318e-16
+    },
+    {
+      "case": "real123424",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c00_nw11",
+      "eigen_residual": 7.666098620791475e-16
+    },
+    {
+      "case": "real123424",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c11_nw12",
+      "eigen_residual": 4.833924623416317e-16
+    },
+    {
+      "case": "real123424",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c00_nw00",
+      "eigen_residual": 4.448134210690022e-16
+    },
+    {
+      "case": "real123424",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c11_nw06",
+      "eigen_residual": 4.1314558874116113e-16
+    },
+    {
+      "case": "real123424",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c00_nw07",
+      "eigen_residual": 3.870754378269425e-16
+    },
+    {
+      "case": "real123424",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c11_nw09",
+      "eigen_residual": 5.218235242521486e-16
+    },
+    {
+      "case": "real123424",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c00_nw11",
+      "eigen_residual": 7.394921372630995e-16
+    },
+    {
+      "case": "real123424",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c11_nw12",
+      "eigen_residual": 8.211325670612714e-16
+    },
+    {
+      "case": "real123424",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c00_nw00",
+      "eigen_residual": 6.9778616798637e-16
+    },
+    {
+      "case": "real123424",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c11_nw06",
+      "eigen_residual": 3.2940319842275043e-16
+    },
+    {
+      "case": "real123424",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c00_nw07",
+      "eigen_residual": 3.870754378269425e-16
+    },
+    {
+      "case": "real123424",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c11_nw09",
+      "eigen_residual": 6.726770699465318e-16
+    },
+    {
+      "case": "real123424",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c00_nw11",
+      "eigen_residual": 7.666098620791475e-16
+    },
+    {
+      "case": "real123424",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c11_nw12",
+      "eigen_residual": 4.833924623416317e-16
+    },
+    {
+      "case": "real123424",
+      "arm": "C",
+      "pass_index": 6,
+      "group": "c00_nw00",
+      "eigen_residual": 4.737745547483429e-16
+    },
+    {
+      "case": "real123424",
+      "arm": "C",
+      "pass_index": 6,
+      "group": "c11_nw06",
+      "eigen_residual": 5.534993351973031e-16
+    },
+    {
+      "case": "real123424",
+      "arm": "C",
+      "pass_index": 6,
+      "group": "c00_nw07",
+      "eigen_residual": 5.465079686260328e-16
+    },
+    {
+      "case": "real123424",
+      "arm": "C",
+      "pass_index": 6,
+      "group": "c11_nw09",
+      "eigen_residual": 6.315742832610168e-16
+    },
+    {
+      "case": "real123424",
+      "arm": "C",
+      "pass_index": 6,
+      "group": "c00_nw11",
+      "eigen_residual": 1.1274510189173683e-15
+    },
+    {
+      "case": "real123424",
+      "arm": "C",
+      "pass_index": 6,
+      "group": "c11_nw12",
+      "eigen_residual": 6.685027694867708e-16
+    },
+    {
+      "case": "H_20260911",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c00_nw00",
+      "eigen_residual": 6.547989678951684e-16
+    },
+    {
+      "case": "H_20260911",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c11_nw06",
+      "eigen_residual": 7.461987979570595e-16
+    },
+    {
+      "case": "H_20260911",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c00_nw07",
+      "eigen_residual": 4.915361166012751e-16
+    },
+    {
+      "case": "H_20260911",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c11_nw09",
+      "eigen_residual": 6.368080843207928e-16
+    },
+    {
+      "case": "H_20260911",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c00_nw11",
+      "eigen_residual": 7.651328792687334e-16
+    },
+    {
+      "case": "H_20260911",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c11_nw12",
+      "eigen_residual": 6.394506149187686e-16
+    },
+    {
+      "case": "H_20260911",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c00_nw00",
+      "eigen_residual": 5.478600607692259e-16
+    },
+    {
+      "case": "H_20260911",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c11_nw06",
+      "eigen_residual": 7.122040668700237e-16
+    },
+    {
+      "case": "H_20260911",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c00_nw07",
+      "eigen_residual": 3.9456056021719154e-16
+    },
+    {
+      "case": "H_20260911",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c11_nw09",
+      "eigen_residual": 5.718473683858523e-16
+    },
+    {
+      "case": "H_20260911",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c00_nw11",
+      "eigen_residual": 4.591832995884074e-16
+    },
+    {
+      "case": "H_20260911",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c11_nw12",
+      "eigen_residual": 7.351978691351673e-16
+    },
+    {
+      "case": "H_20260911",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c00_nw00",
+      "eigen_residual": 6.547989678951684e-16
+    },
+    {
+      "case": "H_20260911",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c11_nw06",
+      "eigen_residual": 7.461987979570595e-16
+    },
+    {
+      "case": "H_20260911",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c00_nw07",
+      "eigen_residual": 4.915361166012751e-16
+    },
+    {
+      "case": "H_20260911",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c11_nw09",
+      "eigen_residual": 6.368080843207928e-16
+    },
+    {
+      "case": "H_20260911",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c00_nw11",
+      "eigen_residual": 7.651328792687334e-16
+    },
+    {
+      "case": "H_20260911",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c11_nw12",
+      "eigen_residual": 6.394506149187686e-16
+    },
+    {
+      "case": "T_20260911",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c00_nw00",
+      "eigen_residual": 6.547989678951684e-16
+    },
+    {
+      "case": "T_20260911",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c11_nw06",
+      "eigen_residual": 7.461987979570595e-16
+    },
+    {
+      "case": "T_20260911",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c00_nw07",
+      "eigen_residual": 3.6913814135509916e-16
+    },
+    {
+      "case": "T_20260911",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c11_nw09",
+      "eigen_residual": 9.288881001497851e-16
+    },
+    {
+      "case": "T_20260911",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c00_nw11",
+      "eigen_residual": 7.651328792687334e-16
+    },
+    {
+      "case": "T_20260911",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c11_nw12",
+      "eigen_residual": 6.394506149187686e-16
+    },
+    {
+      "case": "T_20260911",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c00_nw00",
+      "eigen_residual": 5.478600607692259e-16
+    },
+    {
+      "case": "T_20260911",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c11_nw06",
+      "eigen_residual": 7.122040668700237e-16
+    },
+    {
+      "case": "T_20260911",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c00_nw07",
+      "eigen_residual": 6.304645549251408e-16
+    },
+    {
+      "case": "T_20260911",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c11_nw09",
+      "eigen_residual": 1.1290245627863612e-15
+    },
+    {
+      "case": "T_20260911",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c00_nw11",
+      "eigen_residual": 4.591832995884074e-16
+    },
+    {
+      "case": "T_20260911",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c11_nw12",
+      "eigen_residual": 7.351978691351673e-16
+    },
+    {
+      "case": "T_20260911",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c00_nw00",
+      "eigen_residual": 6.547989678951684e-16
+    },
+    {
+      "case": "T_20260911",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c11_nw06",
+      "eigen_residual": 7.461987979570595e-16
+    },
+    {
+      "case": "T_20260911",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c00_nw07",
+      "eigen_residual": 3.6913814135509916e-16
+    },
+    {
+      "case": "T_20260911",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c11_nw09",
+      "eigen_residual": 9.288881001497851e-16
+    },
+    {
+      "case": "T_20260911",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c00_nw11",
+      "eigen_residual": 7.651328792687334e-16
+    },
+    {
+      "case": "T_20260911",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c11_nw12",
+      "eigen_residual": 6.394506149187686e-16
+    },
+    {
+      "case": "T_20260911",
+      "arm": "C",
+      "pass_index": 1,
+      "group": "c00_nw00",
+      "eigen_residual": 7.359279916247893e-16
+    },
+    {
+      "case": "T_20260911",
+      "arm": "C",
+      "pass_index": 1,
+      "group": "c11_nw06",
+      "eigen_residual": 7.461987979570595e-16
+    },
+    {
+      "case": "T_20260911",
+      "arm": "C",
+      "pass_index": 1,
+      "group": "c00_nw07",
+      "eigen_residual": 3.6621563963994935e-16
+    },
+    {
+      "case": "T_20260911",
+      "arm": "C",
+      "pass_index": 1,
+      "group": "c11_nw09",
+      "eigen_residual": 7.029417210061011e-16
+    },
+    {
+      "case": "T_20260911",
+      "arm": "C",
+      "pass_index": 1,
+      "group": "c00_nw11",
+      "eigen_residual": 1.807440485330929e-15
+    },
+    {
+      "case": "T_20260911",
+      "arm": "C",
+      "pass_index": 1,
+      "group": "c11_nw12",
+      "eigen_residual": 6.809422707586919e-16
+    },
+    {
+      "case": "H_20260912",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c00_nw00",
+      "eigen_residual": 9.708140930472103e-16
+    },
+    {
+      "case": "H_20260912",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c11_nw06",
+      "eigen_residual": 5.735123255736748e-16
+    },
+    {
+      "case": "H_20260912",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c00_nw07",
+      "eigen_residual": 3.9129082027855955e-16
+    },
+    {
+      "case": "H_20260912",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c11_nw09",
+      "eigen_residual": 5.787283407450226e-16
+    },
+    {
+      "case": "H_20260912",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c00_nw11",
+      "eigen_residual": 1.1206919207133684e-15
+    },
+    {
+      "case": "H_20260912",
+      "arm": "P",
+      "pass_index": 0,
+      "group": "c11_nw12",
+      "eigen_residual": 7.148898258541299e-16
+    },
+    {
+      "case": "H_20260912",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c00_nw00",
+      "eigen_residual": 4.907544488517406e-16
+    },
+    {
+      "case": "H_20260912",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c11_nw06",
+      "eigen_residual": 6.907137826875333e-16
+    },
+    {
+      "case": "H_20260912",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c00_nw07",
+      "eigen_residual": 5.184668333575402e-16
+    },
+    {
+      "case": "H_20260912",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c11_nw09",
+      "eigen_residual": 7.296031351192991e-16
+    },
+    {
+      "case": "H_20260912",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c00_nw11",
+      "eigen_residual": 9.453612269165889e-16
+    },
+    {
+      "case": "H_20260912",
+      "arm": "P",
+      "pass_index": 6,
+      "group": "c11_nw12",
+      "eigen_residual": 5.777751730925316e-16
+    },
+    {
+      "case": "H_20260912",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c00_nw00",
+      "eigen_residual": 9.708140930472103e-16
+    },
+    {
+      "case": "H_20260912",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c11_nw06",
+      "eigen_residual": 5.735123255736748e-16
+    },
+    {
+      "case": "H_20260912",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c00_nw07",
+      "eigen_residual": 3.9129082027855955e-16
+    },
+    {
+      "case": "H_20260912",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c11_nw09",
+      "eigen_residual": 5.787283407450226e-16
+    },
+    {
+      "case": "H_20260912",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c00_nw11",
+      "eigen_residual": 1.1206919207133684e-15
+    },
+    {
+      "case": "H_20260912",
+      "arm": "C",
+      "pass_index": 0,
+      "group": "c11_nw12",
+      "eigen_residual": 7.148898258541299e-16
+    }
+  ],
+  "cleaning_calls": 0,
+  "meaning": "Selected original-parent residual means/covariance eigen-identities; no new cleaning/replay"
+}

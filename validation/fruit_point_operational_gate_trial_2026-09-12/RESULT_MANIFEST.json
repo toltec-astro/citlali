@@ -1,0 +1,198 @@
+{
+  "identity": "SCI-FRUIT-POINT-OPERATIONAL-GATE-TRIAL-RESULT@r0.1",
+  "utc": "2026-09-12T16:00:01.028543+00:00",
+  "freeze_commit": "7836bc8c3b27ec6ce2f3914c0b6d02168fdee64d",
+  "state": "complete_candidate_not_accepted_recommend_bounded_completion_evaluator_revision",
+  "new_cleaning_calls": 167,
+  "trajectories_registered": 34,
+  "trajectories_complete": 22,
+  "independent_pointing_replication": false,
+  "qualification": false,
+  "files": [
+    {
+      "path": "ACCURACY_VS_TIME.png",
+      "bytes": 178368,
+      "sha256": "c50bac18d05d4b248f7a35118734ecd3a2974137ca3259221d3369f5666a37bb"
+    },
+    {
+      "path": "ANALYSIS.log",
+      "bytes": 2750,
+      "sha256": "56c885e507d4a0a1989c1a78315e0f481bdcb580f36eafa8ab9101d35cb51341"
+    },
+    {
+      "path": "CASES.json",
+      "bytes": 1910,
+      "sha256": "a7cca0688b0679b4f2a9e57a129ab74a571791e97edac7bde88dc0d68360f113"
+    },
+    {
+      "path": "DECISION_EVIDENCE.json",
+      "bytes": 74150,
+      "sha256": "4aad175a3e68462d2e3170f576cdfb9a89d892cda797f48c16623ded79ea4d26"
+    },
+    {
+      "path": "DIAGNOSTIC_EVIDENCE.json",
+      "bytes": 44463,
+      "sha256": "e842b7cadfc702a3f0a0e7e4538b0602ae40cb0fb38601ec3063c1218fa1d4d8"
+    },
+    {
+      "path": "EXECUTION.log",
+      "bytes": 14944,
+      "sha256": "d094b933f339497301208b9432afcdbd029e6968ef5fe0bdd4640fb6baaafdda"
+    },
+    {
+      "path": "FREEZE.json",
+      "bytes": 6246,
+      "sha256": "9cbbcb45a7649274c7b3c39df6bc73a7ffc8c8cff36e45411108902910b196f7"
+    },
+    {
+      "path": "FREEZE.json.sha256",
+      "bytes": 78,
+      "sha256": "99122bb76d79a59c394257fc72e2cbb76e2ea9e7e2537cb34c6f915497e4bd63"
+    },
+    {
+      "path": "LEARNED_STATE_CHECKS.json",
+      "bytes": 13181,
+      "sha256": "75d6b8d71d6f38017bba91625c6e5bfc003fb8cf198a15b91c5b71683af79462"
+    },
+    {
+      "path": "PRESERVATION_START.json",
+      "bytes": 1484,
+      "sha256": "9e69f5406c77d6ebaacc50b067095970b4f9e2e4c38a00449262c68d59bacb63"
+    },
+    {
+      "path": "PRE_EXECUTION_CHECKS.json",
+      "bytes": 190,
+      "sha256": "6ddf5837922f357399b9486877b646af60ef9d8b01b3f206f11821a4f44fe476"
+    },
+    {
+      "path": "PROTOCOL.md",
+      "bytes": 12551,
+      "sha256": "57174413b0f7338f1500e474274a63916207b651c1d9297bd160914da513e3d6"
+    },
+    {
+      "path": "README.md",
+      "bytes": 671,
+      "sha256": "c13a58c472dcbac321decad30f7c029792e658be87b08bf84c635de91d915ad9"
+    },
+    {
+      "path": "RENDER.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "RUN_PRODUCT_MANIFEST.json",
+      "bytes": 95417,
+      "sha256": "7268eb19a65bd21a1f6c92513e779a22570ab2261786d079cdcd1d29fc6d4b9f"
+    },
+    {
+      "path": "RUN_RECEIPTS.json",
+      "bytes": 1429420,
+      "sha256": "550670bfd000790467be22c6adbadc40f513d7092d6b4f4f0bcc7d76297994c0"
+    },
+    {
+      "path": "SCIENTIFIC_REPORT.md",
+      "bytes": 13600,
+      "sha256": "322f5f372ff401c310688ca31119184ce6c29a40a3c5fde5844c7a59329f7e80"
+    },
+    {
+      "path": "SUPPLEMENT.log",
+      "bytes": 2094,
+      "sha256": "02939fc987ab7b23ba117c8bf90cccad748663fdc5adf7a93ca4c061e6855ac1"
+    },
+    {
+      "path": "TOTAL_MAPS.png",
+      "bytes": 780005,
+      "sha256": "eb3a8586f4cea8c4f358989dbd16e6ae62611f68ff747d1befbd1223e4862a0e"
+    },
+    {
+      "path": "VERIFICATION.json",
+      "bytes": 563,
+      "sha256": "d48ac422039db805fb1b996520897f9d176e1e505a4daf1d77277f9a628e093e"
+    },
+    {
+      "path": "VERIFICATION.log",
+      "bytes": 511,
+      "sha256": "c86c31c94de37b672871da5e052de9dd5487164b69dff28211420ecbe7b0147d"
+    },
+    {
+      "path": "analyze.py",
+      "bytes": 7947,
+      "sha256": "dd6e212b219220d1b3dbac6bd505e700b6de0b4a4be28c9279b049171d075636"
+    },
+    {
+      "path": "build_result_manifest.py",
+      "bytes": 1676,
+      "sha256": "b8ba551f8bafa5d92aa3a9843e0e53c4177ca244d33fd620b02a596ba36895bd"
+    },
+    {
+      "path": "candidate.py",
+      "bytes": 6052,
+      "sha256": "39aba38f44e6b7192e3cbae76d7c2207cabb3d8acb39750e3159af406a8a9404"
+    },
+    {
+      "path": "common.py",
+      "bytes": 941,
+      "sha256": "ec65d9697a801bac97783f7d701088e39e127dec0e2814dc43d56627bf05037e"
+    },
+    {
+      "path": "evaluation.py",
+      "bytes": 4317,
+      "sha256": "414a4a30bb564bc3acaa27b5ffbd630e0827d0cd356a35e4a5e8cb32a9ef8b78"
+    },
+    {
+      "path": "render_results.py",
+      "bytes": 5018,
+      "sha256": "f786b63944cac26c0c6a7ffb5a18c673bedd66762b31b4f58b14b130c390dee2"
+    },
+    {
+      "path": "run_trial.py",
+      "bytes": 11673,
+      "sha256": "e932b264d3231593964c7400e8db324d5926095f114fa5bdada9a733f0c173c5"
+    },
+    {
+      "path": "supplement.py",
+      "bytes": 4214,
+      "sha256": "c79002d850824550e90c3b1813cd81bbaf451f2a6d8f6f057aadea1b4e237661"
+    },
+    {
+      "path": "test_trial.py",
+      "bytes": 3616,
+      "sha256": "455cc8c7e75d311ac62b79b798c9fc000ca0f60678b5f09f1debccb5103eb6a7"
+    },
+    {
+      "path": "verify_results.py",
+      "bytes": 8063,
+      "sha256": "b4085c73c48ef98d7e115f991b644eed090b23d8ccd6da25674bca62fe96fe91"
+    }
+  ],
+  "total_payload_bytes": 2726113,
+  "external_products": {
+    "root": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1",
+    "manifest": "RUN_PRODUCT_MANIFEST.json",
+    "manifest_sha256": "7268eb19a65bd21a1f6c92513e779a22570ab2261786d079cdcd1d29fc6d4b9f",
+    "payload_count": 584,
+    "payload_bytes": 389773390
+  },
+  "verification": {
+    "frozen_files": 23,
+    "run_payloads": 584,
+    "retained_passes": 167,
+    "cleaning_calls": 167,
+    "matched_bootstraps": 17,
+    "applied_model_continuity_checks": 133,
+    "selected_support_checks": 144,
+    "objective_gradient_checks": 60,
+    "immutable_parent_receipts": 34,
+    "sampled_learned_state_checks": 84,
+    "verification_cleaning_calls": 0,
+    "preserved_packet_payloads": [
+      23,
+      23,
+      49,
+      13
+    ],
+    "frozen_ordinary_MAP_payloads": 57,
+    "protected_worktrees_unchanged": true,
+    "archives": "presence/status only; not read, hashed or unpacked"
+  }
+}

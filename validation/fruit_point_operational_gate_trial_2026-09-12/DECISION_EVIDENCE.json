@@ -1,0 +1,2714 @@
+{
+  "summary": [
+    {
+      "arm": "P",
+      "use": "G3",
+      "passed": 6,
+      "required": 6
+    },
+    {
+      "arm": "P",
+      "use": "U1",
+      "passed": 6,
+      "required": 6
+    },
+    {
+      "arm": "P",
+      "use": "U2_U4_unchanged",
+      "passed": 1,
+      "required": 3
+    },
+    {
+      "arm": "P",
+      "use": "U2_gain",
+      "passed": 2,
+      "required": 6
+    },
+    {
+      "arm": "P",
+      "use": "U3",
+      "passed": 10,
+      "required": 18
+    },
+    {
+      "arm": "P",
+      "use": "U4_loss",
+      "passed": 2,
+      "required": 6
+    },
+    {
+      "arm": "P",
+      "use": "U5_health",
+      "passed": 6,
+      "required": 6
+    },
+    {
+      "arm": "C",
+      "use": "G3",
+      "passed": 0,
+      "required": 6
+    },
+    {
+      "arm": "C",
+      "use": "U1",
+      "passed": 0,
+      "required": 6
+    },
+    {
+      "arm": "C",
+      "use": "U2_U4_unchanged",
+      "passed": 0,
+      "required": 3
+    },
+    {
+      "arm": "C",
+      "use": "U2_gain",
+      "passed": 0,
+      "required": 6
+    },
+    {
+      "arm": "C",
+      "use": "U3",
+      "passed": 0,
+      "required": 18
+    },
+    {
+      "arm": "C",
+      "use": "U4_loss",
+      "passed": 0,
+      "required": 6
+    },
+    {
+      "arm": "C",
+      "use": "U5_health",
+      "passed": 0,
+      "required": 6
+    }
+  ],
+  "trajectories": [
+    {
+      "case": "real123424",
+      "arm": "P",
+      "complete": true,
+      "retained_passes": 7,
+      "failure": null,
+      "final_retained_wall_seconds": 8.073776625096798,
+      "terminal_wall_seconds": 8.073776625096798
+    },
+    {
+      "case": "real123424",
+      "arm": "C",
+      "complete": true,
+      "retained_passes": 7,
+      "failure": null,
+      "final_retained_wall_seconds": 43.50847158301622,
+      "terminal_wall_seconds": 43.50847158301622
+    },
+    {
+      "case": "N_20260911",
+      "arm": "P",
+      "complete": true,
+      "retained_passes": 7,
+      "failure": null,
+      "final_retained_wall_seconds": 7.892256916966289,
+      "terminal_wall_seconds": 7.892256916966289
+    },
+    {
+      "case": "N_20260911",
+      "arm": "C",
+      "complete": true,
+      "retained_passes": 7,
+      "failure": null,
+      "final_retained_wall_seconds": 7.977452666033059,
+      "terminal_wall_seconds": 7.977452666033059
+    },
+    {
+      "case": "B_20260911",
+      "arm": "P",
+      "complete": true,
+      "retained_passes": 7,
+      "failure": null,
+      "final_retained_wall_seconds": 8.395022958051413,
+      "terminal_wall_seconds": 8.395022958051413
+    },
+    {
+      "case": "B_20260911",
+      "arm": "C",
+      "complete": true,
+      "retained_passes": 7,
+      "failure": null,
+      "final_retained_wall_seconds": 8.217184790875763,
+      "terminal_wall_seconds": 8.217184790875763
+    },
+    {
+      "case": "H_20260911",
+      "arm": "P",
+      "complete": true,
+      "retained_passes": 7,
+      "failure": null,
+      "final_retained_wall_seconds": 8.685717832995579,
+      "terminal_wall_seconds": 8.685717832995579
+    },
+    {
+      "case": "H_20260911",
+      "arm": "C",
+      "complete": false,
+      "retained_passes": 1,
+      "failure": {
+        "reason": "required feedback solve unavailable; failed iterate not applied",
+        "traceback": "Traceback (most recent call last):\n  File \"/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/run_trial.py\", line 133, in trajectory\n    raise ValueError('required feedback solve unavailable; failed iterate not applied')\nValueError: required feedback solve unavailable; failed iterate not applied\n",
+        "parent_unchanged": true,
+        "retained_passes": 1,
+        "wall_seconds": 13.712255416903645
+      },
+      "final_retained_wall_seconds": 13.647133166901767,
+      "terminal_wall_seconds": null
+    },
+    {
+      "case": "H-shift_20260911",
+      "arm": "P",
+      "complete": true,
+      "retained_passes": 7,
+      "failure": null,
+      "final_retained_wall_seconds": 8.377821665955707,
+      "terminal_wall_seconds": 8.377821665955707
+    },
+    {
+      "case": "H-shift_20260911",
+      "arm": "C",
+      "complete": false,
+      "retained_passes": 1,
+      "failure": {
+        "reason": "required feedback solve unavailable; failed iterate not applied",
+        "traceback": "Traceback (most recent call last):\n  File \"/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/run_trial.py\", line 133, in trajectory\n    raise ValueError('required feedback solve unavailable; failed iterate not applied')\nValueError: required feedback solve unavailable; failed iterate not applied\n",
+        "parent_unchanged": true,
+        "retained_passes": 1,
+        "wall_seconds": 9.560336334165186
+      },
+      "final_retained_wall_seconds": 9.49658125010319,
+      "terminal_wall_seconds": null
+    },
+    {
+      "case": "D_20260911",
+      "arm": "P",
+      "complete": true,
+      "retained_passes": 7,
+      "failure": null,
+      "final_retained_wall_seconds": 8.72240799991414,
+      "terminal_wall_seconds": 8.72240799991414
+    },
+    {
+      "case": "D_20260911",
+      "arm": "C",
+      "complete": false,
+      "retained_passes": 1,
+      "failure": {
+        "reason": "required feedback solve unavailable; failed iterate not applied",
+        "traceback": "Traceback (most recent call last):\n  File \"/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/run_trial.py\", line 133, in trajectory\n    raise ValueError('required feedback solve unavailable; failed iterate not applied')\nValueError: required feedback solve unavailable; failed iterate not applied\n",
+        "parent_unchanged": true,
+        "retained_passes": 1,
+        "wall_seconds": 14.382076208014041
+      },
+      "final_retained_wall_seconds": 14.31774245784618,
+      "terminal_wall_seconds": null
+    },
+    {
+      "case": "C_20260911",
+      "arm": "P",
+      "complete": true,
+      "retained_passes": 7,
+      "failure": null,
+      "final_retained_wall_seconds": 7.055582124972716,
+      "terminal_wall_seconds": 7.055582124972716
+    },
+    {
+      "case": "C_20260911",
+      "arm": "C",
+      "complete": false,
+      "retained_passes": 1,
+      "failure": {
+        "reason": "required feedback solve unavailable; failed iterate not applied",
+        "traceback": "Traceback (most recent call last):\n  File \"/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/run_trial.py\", line 133, in trajectory\n    raise ValueError('required feedback solve unavailable; failed iterate not applied')\nValueError: required feedback solve unavailable; failed iterate not applied\n",
+        "parent_unchanged": true,
+        "retained_passes": 1,
+        "wall_seconds": 14.853516499977559
+      },
+      "final_retained_wall_seconds": 14.787883249809965,
+      "terminal_wall_seconds": null
+    },
+    {
+      "case": "T_20260911",
+      "arm": "P",
+      "complete": true,
+      "retained_passes": 7,
+      "failure": null,
+      "final_retained_wall_seconds": 8.720619458006695,
+      "terminal_wall_seconds": 8.720619458006695
+    },
+    {
+      "case": "T_20260911",
+      "arm": "C",
+      "complete": false,
+      "retained_passes": 2,
+      "failure": {
+        "reason": "required feedback solve unavailable; failed iterate not applied",
+        "traceback": "Traceback (most recent call last):\n  File \"/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/run_trial.py\", line 133, in trajectory\n    raise ValueError('required feedback solve unavailable; failed iterate not applied')\nValueError: required feedback solve unavailable; failed iterate not applied\n",
+        "parent_unchanged": true,
+        "retained_passes": 2,
+        "wall_seconds": 27.65381024987437
+      },
+      "final_retained_wall_seconds": 27.588181667029858,
+      "terminal_wall_seconds": null
+    },
+    {
+      "case": "E_20260911",
+      "arm": "P",
+      "complete": true,
+      "retained_passes": 7,
+      "failure": null,
+      "final_retained_wall_seconds": 8.69512104196474,
+      "terminal_wall_seconds": 8.69512104196474
+    },
+    {
+      "case": "E_20260911",
+      "arm": "C",
+      "complete": false,
+      "retained_passes": 1,
+      "failure": {
+        "reason": "required feedback solve unavailable; failed iterate not applied",
+        "traceback": "Traceback (most recent call last):\n  File \"/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/run_trial.py\", line 133, in trajectory\n    raise ValueError('required feedback solve unavailable; failed iterate not applied')\nValueError: required feedback solve unavailable; failed iterate not applied\n",
+        "parent_unchanged": true,
+        "retained_passes": 1,
+        "wall_seconds": 13.286560249980539
+      },
+      "final_retained_wall_seconds": 13.217122500063851,
+      "terminal_wall_seconds": null
+    },
+    {
+      "case": "N_20260912",
+      "arm": "P",
+      "complete": true,
+      "retained_passes": 7,
+      "failure": null,
+      "final_retained_wall_seconds": 7.7649691249243915,
+      "terminal_wall_seconds": 7.7649691249243915
+    },
+    {
+      "case": "N_20260912",
+      "arm": "C",
+      "complete": true,
+      "retained_passes": 7,
+      "failure": null,
+      "final_retained_wall_seconds": 7.568004917120561,
+      "terminal_wall_seconds": 7.568004917120561
+    },
+    {
+      "case": "B_20260912",
+      "arm": "P",
+      "complete": true,
+      "retained_passes": 7,
+      "failure": null,
+      "final_retained_wall_seconds": 7.369677332928404,
+      "terminal_wall_seconds": 7.369677332928404
+    },
+    {
+      "case": "B_20260912",
+      "arm": "C",
+      "complete": true,
+      "retained_passes": 7,
+      "failure": null,
+      "final_retained_wall_seconds": 7.593989541055635,
+      "terminal_wall_seconds": 7.593989541055635
+    },
+    {
+      "case": "H_20260912",
+      "arm": "P",
+      "complete": true,
+      "retained_passes": 7,
+      "failure": null,
+      "final_retained_wall_seconds": 8.942802374949679,
+      "terminal_wall_seconds": 8.942802374949679
+    },
+    {
+      "case": "H_20260912",
+      "arm": "C",
+      "complete": false,
+      "retained_passes": 1,
+      "failure": {
+        "reason": "required feedback solve unavailable; failed iterate not applied",
+        "traceback": "Traceback (most recent call last):\n  File \"/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/run_trial.py\", line 133, in trajectory\n    raise ValueError('required feedback solve unavailable; failed iterate not applied')\nValueError: required feedback solve unavailable; failed iterate not applied\n",
+        "parent_unchanged": true,
+        "retained_passes": 1,
+        "wall_seconds": 15.064040291821584
+      },
+      "final_retained_wall_seconds": 14.996107874903828,
+      "terminal_wall_seconds": null
+    },
+    {
+      "case": "H-shift_20260912",
+      "arm": "P",
+      "complete": true,
+      "retained_passes": 7,
+      "failure": null,
+      "final_retained_wall_seconds": 8.953060125000775,
+      "terminal_wall_seconds": 8.953060125000775
+    },
+    {
+      "case": "H-shift_20260912",
+      "arm": "C",
+      "complete": false,
+      "retained_passes": 1,
+      "failure": {
+        "reason": "required feedback solve unavailable; failed iterate not applied",
+        "traceback": "Traceback (most recent call last):\n  File \"/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/run_trial.py\", line 133, in trajectory\n    raise ValueError('required feedback solve unavailable; failed iterate not applied')\nValueError: required feedback solve unavailable; failed iterate not applied\n",
+        "parent_unchanged": true,
+        "retained_passes": 1,
+        "wall_seconds": 14.364896167069674
+      },
+      "final_retained_wall_seconds": 14.295455875108019,
+      "terminal_wall_seconds": null
+    },
+    {
+      "case": "D_20260912",
+      "arm": "P",
+      "complete": true,
+      "retained_passes": 7,
+      "failure": null,
+      "final_retained_wall_seconds": 8.39065270894207,
+      "terminal_wall_seconds": 8.39065270894207
+    },
+    {
+      "case": "D_20260912",
+      "arm": "C",
+      "complete": false,
+      "retained_passes": 1,
+      "failure": {
+        "reason": "required feedback solve unavailable; failed iterate not applied",
+        "traceback": "Traceback (most recent call last):\n  File \"/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/run_trial.py\", line 133, in trajectory\n    raise ValueError('required feedback solve unavailable; failed iterate not applied')\nValueError: required feedback solve unavailable; failed iterate not applied\n",
+        "parent_unchanged": true,
+        "retained_passes": 1,
+        "wall_seconds": 12.077367499936372
+      },
+      "final_retained_wall_seconds": 12.008402874926105,
+      "terminal_wall_seconds": null
+    },
+    {
+      "case": "C_20260912",
+      "arm": "P",
+      "complete": true,
+      "retained_passes": 7,
+      "failure": null,
+      "final_retained_wall_seconds": 7.288544125156477,
+      "terminal_wall_seconds": 7.288544125156477
+    },
+    {
+      "case": "C_20260912",
+      "arm": "C",
+      "complete": false,
+      "retained_passes": 1,
+      "failure": {
+        "reason": "required feedback solve unavailable; failed iterate not applied",
+        "traceback": "Traceback (most recent call last):\n  File \"/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/run_trial.py\", line 133, in trajectory\n    raise ValueError('required feedback solve unavailable; failed iterate not applied')\nValueError: required feedback solve unavailable; failed iterate not applied\n",
+        "parent_unchanged": true,
+        "retained_passes": 1,
+        "wall_seconds": 15.331614958122373
+      },
+      "final_retained_wall_seconds": 15.26238733297214,
+      "terminal_wall_seconds": null
+    },
+    {
+      "case": "T_20260912",
+      "arm": "P",
+      "complete": true,
+      "retained_passes": 7,
+      "failure": null,
+      "final_retained_wall_seconds": 8.783232333138585,
+      "terminal_wall_seconds": 8.783232333138585
+    },
+    {
+      "case": "T_20260912",
+      "arm": "C",
+      "complete": false,
+      "retained_passes": 1,
+      "failure": {
+        "reason": "required feedback solve unavailable; failed iterate not applied",
+        "traceback": "Traceback (most recent call last):\n  File \"/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/run_trial.py\", line 133, in trajectory\n    raise ValueError('required feedback solve unavailable; failed iterate not applied')\nValueError: required feedback solve unavailable; failed iterate not applied\n",
+        "parent_unchanged": true,
+        "retained_passes": 1,
+        "wall_seconds": 15.028080082964152
+      },
+      "final_retained_wall_seconds": 14.951870958087966,
+      "terminal_wall_seconds": null
+    },
+    {
+      "case": "E_20260912",
+      "arm": "P",
+      "complete": true,
+      "retained_passes": 7,
+      "failure": null,
+      "final_retained_wall_seconds": 8.257373166969046,
+      "terminal_wall_seconds": 8.257373166969046
+    },
+    {
+      "case": "E_20260912",
+      "arm": "C",
+      "complete": false,
+      "retained_passes": 1,
+      "failure": {
+        "reason": "required feedback solve unavailable; failed iterate not applied",
+        "traceback": "Traceback (most recent call last):\n  File \"/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/run_trial.py\", line 133, in trajectory\n    raise ValueError('required feedback solve unavailable; failed iterate not applied')\nValueError: required feedback solve unavailable; failed iterate not applied\n",
+        "parent_unchanged": true,
+        "retained_passes": 1,
+        "wall_seconds": 13.247822208795696
+      },
+      "final_retained_wall_seconds": 13.171632249839604,
+      "terminal_wall_seconds": null
+    }
+  ],
+  "use_scores": [
+    {
+      "use": "U3",
+      "case": "H_20260911",
+      "arm": "P",
+      "array": "a1100",
+      "pass_gate": true,
+      "measurement_available": true,
+      "error_arcsec": 0.04168729799421534
+    },
+    {
+      "use": "U3",
+      "case": "H_20260911",
+      "arm": "P",
+      "array": "a1400",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": 0.5282914113470505
+    },
+    {
+      "use": "U3",
+      "case": "H_20260911",
+      "arm": "P",
+      "array": "a2000",
+      "pass_gate": true,
+      "measurement_available": true,
+      "error_arcsec": 0.21120731944963328
+    },
+    {
+      "use": "U3",
+      "case": "H-shift_20260911",
+      "arm": "P",
+      "array": "a1100",
+      "pass_gate": true,
+      "measurement_available": true,
+      "error_arcsec": 0.18116949479495872
+    },
+    {
+      "use": "U3",
+      "case": "H-shift_20260911",
+      "arm": "P",
+      "array": "a1400",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": 0.06814993691968169
+    },
+    {
+      "use": "U3",
+      "case": "H-shift_20260911",
+      "arm": "P",
+      "array": "a2000",
+      "pass_gate": true,
+      "measurement_available": true,
+      "error_arcsec": 0.3618564735165558
+    },
+    {
+      "use": "U3",
+      "case": "D_20260911",
+      "arm": "P",
+      "array": "a1100",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": 0.03357699270627271
+    },
+    {
+      "use": "U3",
+      "case": "D_20260911",
+      "arm": "P",
+      "array": "a1400",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": 0.5888175221735215
+    },
+    {
+      "use": "U3",
+      "case": "D_20260911",
+      "arm": "P",
+      "array": "a2000",
+      "pass_gate": true,
+      "measurement_available": true,
+      "error_arcsec": 0.19010522064166602
+    },
+    {
+      "use": "U1",
+      "case": "C_20260911",
+      "arm": "P",
+      "array": "a1100",
+      "pass_gate": true,
+      "measurement": {
+        "source_present": true,
+        "positive_counts": [
+          1,
+          0,
+          42,
+          181,
+          1031
+        ],
+        "source_evidence": "positive_band_2_to_5_coefficient_above_5_empirical_scales",
+        "background": [
+          -0.3163598239453223,
+          -0.18942436685929515,
+          0.33270220552787594
+        ],
+        "measurement_available": false,
+        "support_pixels": 6361,
+        "exterior_rms": 14.635200260067476,
+        "fit": {
+          "parameters": [
+            25.54324074841274,
+            6.8138846285821275,
+            -12.437553223251697,
+            2.4892733999788557,
+            3.4249049247227874,
+            3.1415926535897927,
+            -0.0976981703049379,
+            1.8271992868454932,
+            0.30251333779908196
+          ],
+          "peak": 25.54324074841274,
+          "centroid": [
+            6.8138846285821275,
+            -12.437553223251697
+          ],
+          "widths": [
+            30.71972402637828,
+            12.052515580050418
+          ],
+          "angle_rad": 1.5707963267948966,
+          "gaussian_integral": 10716.067200613623,
+          "background": [
+            -0.0976981703049379,
+            1.8271992868454932,
+            0.30251333779908196
+          ],
+          "residual_rms": 10.445309989785475,
+          "sse": 307783.7967080312,
+          "boundary_rejection": false,
+          "solver_status": 2,
+          "nfev": 9,
+          "successful_starts": 3
+        },
+        "fit_radius": 14.181740158134561,
+        "empirical_peak_score": 1.9581968667488343,
+        "shape_error": 0.8228278800264688,
+        "shape_core_pixels": 240,
+        "aperture_brightness": 10576.889072122645,
+        "source_support_fraction": 0.9994008388256441,
+        "boundary_warning": false,
+        "distortion_warning": true,
+        "status": "degraded_shape"
+      }
+    },
+    {
+      "use": "U1",
+      "case": "C_20260911",
+      "arm": "P",
+      "array": "a1400",
+      "pass_gate": true,
+      "measurement": {
+        "source_present": true,
+        "positive_counts": [
+          0,
+          0,
+          12,
+          24,
+          0
+        ],
+        "source_evidence": "positive_band_2_to_5_coefficient_above_5_empirical_scales",
+        "background": [
+          -0.478081277397826,
+          0.16502133260747343,
+          0.4710543154740635
+        ],
+        "measurement_available": false,
+        "support_pixels": 6289,
+        "exterior_rms": 27.89000563814499,
+        "fit": {
+          "parameters": [
+            26.48397718111213,
+            5.902275984489225,
+            -16.667216904185263,
+            2.469854447469963,
+            3.337873056479779,
+            0.05581491342085087,
+            -0.3958680187925902,
+            1.9351910543864124,
+            1.7459936550659265
+          ],
+          "peak": 26.48397718111213,
+          "centroid": [
+            5.902275984489225,
+            -16.667216904185263
+          ],
+          "widths": [
+            28.159170001580723,
+            11.820726189822256
+          ],
+          "angle_rad": 1.6266112402157473,
+          "gaussian_integral": 9988.761247580023,
+          "background": [
+            -0.3958680187925902,
+            1.9351910543864124,
+            1.7459936550659265
+          ],
+          "residual_rms": 18.682111619133153,
+          "sse": 984589.0719248445,
+          "boundary_rejection": false,
+          "solver_status": 2,
+          "nfev": 17,
+          "successful_starts": 3
+        },
+        "fit_radius": 17.68143040390786,
+        "empirical_peak_score": 1.2175172472865161,
+        "shape_error": 1.3159889635281912,
+        "shape_core_pixels": 222,
+        "aperture_brightness": 11007.579539081355,
+        "source_support_fraction": 1.0,
+        "boundary_warning": false,
+        "distortion_warning": true,
+        "status": "degraded_shape"
+      }
+    },
+    {
+      "use": "U1",
+      "case": "C_20260911",
+      "arm": "P",
+      "array": "a2000",
+      "pass_gate": true,
+      "measurement": {
+        "source_present": true,
+        "positive_counts": [
+          0,
+          0,
+          28,
+          172,
+          544
+        ],
+        "source_evidence": "positive_band_2_to_5_coefficient_above_5_empirical_scales",
+        "background": [
+          -0.3246911288097629,
+          -0.3643340908528582,
+          -0.06845925947977342
+        ],
+        "measurement_available": false,
+        "support_pixels": 6361,
+        "exterior_rms": 19.56879186531337,
+        "fit": {
+          "parameters": [
+            23.56417196450752,
+            6.04408741135706,
+            -10.971032625335667,
+            2.573250011967102,
+            3.472340537962326,
+            -3.129027831145417,
+            -0.36316915690942114,
+            3.754820588555229,
+            -0.05095150385959436
+          ],
+          "peak": 23.56417196450752,
+          "centroid": [
+            6.04408741135706,
+            -10.971032625335667
+          ],
+          "widths": [
+            32.2120478035785,
+            13.108357605936959
+          ],
+          "angle_rad": 1.5833611492392725,
+          "gaussian_integral": 11274.134702508796,
+          "background": [
+            -0.36316915690942114,
+            3.754820588555229,
+            -0.05095150385959436
+          ],
+          "residual_rms": 11.295413608218155,
+          "sse": 359921.14576621074,
+          "boundary_rejection": false,
+          "solver_status": 2,
+          "nfev": 12,
+          "successful_starts": 3
+        },
+        "fit_radius": 12.525755446371468,
+        "empirical_peak_score": 1.4106135081760354,
+        "shape_error": 1.0382251829180849,
+        "shape_core_pixels": 271,
+        "aperture_brightness": 11434.731024067802,
+        "source_support_fraction": 0.997275204359673,
+        "boundary_warning": false,
+        "distortion_warning": true,
+        "status": "degraded_shape"
+      }
+    },
+    {
+      "use": "G3",
+      "case": "E_20260911",
+      "arm": "P",
+      "array": "a1100",
+      "pass_gate": true,
+      "measurement": {
+        "source_present": true,
+        "positive_counts": [
+          0,
+          13,
+          33,
+          89,
+          239
+        ],
+        "source_evidence": "positive_band_2_to_5_coefficient_above_5_empirical_scales",
+        "background": [
+          0.0748073972947195,
+          -0.03392836460534163,
+          0.24764546527594616
+        ],
+        "measurement_available": false,
+        "support_pixels": 6361,
+        "exterior_rms": 14.620658563611599,
+        "fit": {
+          "parameters": [
+            104.44674723227735,
+            58.03573483270626,
+            -10.845886806344911,
+            2.51119306878675,
+            1.9347131088172895,
+            0.4561240000274249,
+            -0.2800325790656232,
+            -0.8276029030433586,
+            0.628491138269961
+          ],
+          "peak": 104.44674723227735,
+          "centroid": [
+            58.03573483270626,
+            -10.845886806344911
+          ],
+          "widths": [
+            12.31961944947206,
+            6.922057893109933
+          ],
+          "angle_rad": 0.4561240000274249,
+          "gaussian_integral": 10092.339690403613,
+          "background": [
+            -0.2800325790656232,
+            -0.8276029030433586,
+            0.628491138269961
+          ],
+          "residual_rms": 10.356617264582363,
+          "sse": 302579.10920659325,
+          "boundary_rejection": false,
+          "solver_status": 2,
+          "nfev": 136,
+          "successful_starts": 3
+        },
+        "fit_radius": 59.040492699402854,
+        "empirical_peak_score": 8.01813421021823,
+        "shape_error": 0.10886875915896514,
+        "shape_core_pixels": 30,
+        "aperture_brightness": 10864.006035562936,
+        "source_support_fraction": 0.4925925925925926,
+        "boundary_warning": true,
+        "distortion_warning": false,
+        "status": "unassessable_support"
+      }
+    },
+    {
+      "use": "G3",
+      "case": "E_20260911",
+      "arm": "P",
+      "array": "a1400",
+      "pass_gate": true,
+      "measurement": {
+        "source_present": true,
+        "positive_counts": [
+          0,
+          6,
+          18,
+          31,
+          0
+        ],
+        "source_evidence": "positive_band_2_to_5_coefficient_above_5_empirical_scales",
+        "background": [
+          -0.07763532611009334,
+          0.3384368456312843,
+          0.384241922193994
+        ],
+        "measurement_available": false,
+        "support_pixels": 6289,
+        "exterior_rms": 27.890098199965028,
+        "fit": {
+          "parameters": [
+            91.13898997573862,
+            58.98592123498278,
+            -12.192988686751928,
+            2.313942302440705,
+            2.186201254475254,
+            3.1415926535897847,
+            -0.5000391212038269,
+            -0.878384354060006,
+            1.7371392320930497
+          ],
+          "peak": 91.13898997573862,
+          "centroid": [
+            58.98592123498278,
+            -12.192988686751928
+          ],
+          "widths": [
+            10.114219473985647,
+            8.901334901961006
+          ],
+          "angle_rad": 3.1415926535897847,
+          "gaussian_integral": 9297.285045065331,
+          "background": [
+            -0.5000391212038269,
+            -0.878384354060006,
+            1.7371392320930497
+          ],
+          "residual_rms": 18.64296687933861,
+          "sse": 980467.363874872,
+          "boundary_rejection": false,
+          "solver_status": 2,
+          "nfev": 13,
+          "successful_starts": 2
+        },
+        "fit_radius": 60.23294677379526,
+        "empirical_peak_score": 4.193630695356762,
+        "shape_error": 0.44024037166072383,
+        "shape_core_pixels": 25,
+        "aperture_brightness": 7098.236747501088,
+        "source_support_fraction": 0.46195652173913043,
+        "boundary_warning": true,
+        "distortion_warning": true,
+        "status": "unassessable_support"
+      }
+    },
+    {
+      "use": "G3",
+      "case": "E_20260911",
+      "arm": "P",
+      "array": "a2000",
+      "pass_gate": true,
+      "measurement": {
+        "source_present": true,
+        "positive_counts": [
+          0,
+          11,
+          28,
+          73,
+          95
+        ],
+        "source_evidence": "positive_band_2_to_5_coefficient_above_5_empirical_scales",
+        "background": [
+          0.0402899979340436,
+          -0.2385582655126079,
+          -0.134666967856863
+        ],
+        "measurement_available": false,
+        "support_pixels": 6361,
+        "exterior_rms": 19.56329390136496,
+        "fit": {
+          "parameters": [
+            95.92937060229589,
+            58.036301873811794,
+            -10.960988088303441,
+            2.3888678228146962,
+            1.9889700217808195,
+            -2.5658197414381543,
+            -0.47731737504026367,
+            0.9498907018732802,
+            0.4440929968270031
+          ],
+          "peak": 95.92937060229589,
+          "centroid": [
+            58.036301873811794,
+            -10.960988088303441
+          ],
+          "widths": [
+            10.901144926144413,
+            7.30800280090159
+          ],
+          "angle_rad": 0.5757729121516388,
+          "gaussian_integral": 8659.380712189124,
+          "background": [
+            -0.47731737504026367,
+            0.9498907018732802,
+            0.4440929968270031
+          ],
+          "residual_rms": 11.206295304128828,
+          "sse": 354264.1545846616,
+          "boundary_rejection": false,
+          "solver_status": 2,
+          "nfev": 21,
+          "successful_starts": 2
+        },
+        "fit_radius": 59.062302656264094,
+        "empirical_peak_score": 5.727275669424776,
+        "shape_error": 0.2437145038229756,
+        "shape_core_pixels": 30,
+        "aperture_brightness": 8033.606737608046,
+        "source_support_fraction": 0.49765258215962443,
+        "boundary_warning": true,
+        "distortion_warning": false,
+        "status": "unassessable_support"
+      }
+    },
+    {
+      "use": "U2_gain",
+      "case": "H_20260911/D_20260911",
+      "arm": "P",
+      "array": "a1100",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 1.1111111111111112,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U2_gain",
+      "case": "H_20260911/D_20260911",
+      "arm": "P",
+      "array": "a1400",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 1.1111111111111112,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U2_gain",
+      "case": "H_20260911/D_20260911",
+      "arm": "P",
+      "array": "a2000",
+      "pass_gate": true,
+      "ratio": 1.1496325282967523,
+      "expected": 1.1111111111111112,
+      "relative_error": 0.03466927546707699,
+      "measurement_available": true,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U4_loss",
+      "case": "D_20260911/H_20260911",
+      "arm": "P",
+      "array": "a1100",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 0.9,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U4_loss",
+      "case": "D_20260911/H_20260911",
+      "arm": "P",
+      "array": "a1400",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 0.9,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U4_loss",
+      "case": "D_20260911/H_20260911",
+      "arm": "P",
+      "array": "a2000",
+      "pass_gate": true,
+      "ratio": 0.8698431676090084,
+      "expected": 0.9,
+      "relative_error": -0.03350759154554628,
+      "measurement_available": true,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U5_health",
+      "case": "T_20260911/H_20260911",
+      "arm": "P",
+      "array": "a1100",
+      "pass_gate": true,
+      "ratio": 1.0,
+      "expected": 1,
+      "relative_error": 0.0,
+      "measurement_available": true,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U5_health",
+      "case": "T_20260911/H_20260911",
+      "arm": "P",
+      "array": "a1400",
+      "pass_gate": true,
+      "ratio": null,
+      "expected": 0.8,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": true
+    },
+    {
+      "use": "U5_health",
+      "case": "T_20260911/H_20260911",
+      "arm": "P",
+      "array": "a2000",
+      "pass_gate": true,
+      "ratio": 1.0,
+      "expected": 1,
+      "relative_error": 0.0,
+      "measurement_available": true,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U3",
+      "case": "H_20260912",
+      "arm": "P",
+      "array": "a1100",
+      "pass_gate": true,
+      "measurement_available": true,
+      "error_arcsec": 0.32262829242846336
+    },
+    {
+      "use": "U3",
+      "case": "H_20260912",
+      "arm": "P",
+      "array": "a1400",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": 0.2091803738817302
+    },
+    {
+      "use": "U3",
+      "case": "H_20260912",
+      "arm": "P",
+      "array": "a2000",
+      "pass_gate": true,
+      "measurement_available": true,
+      "error_arcsec": 0.22020208194847352
+    },
+    {
+      "use": "U3",
+      "case": "H-shift_20260912",
+      "arm": "P",
+      "array": "a1100",
+      "pass_gate": true,
+      "measurement_available": true,
+      "error_arcsec": 0.09758250194546739
+    },
+    {
+      "use": "U3",
+      "case": "H-shift_20260912",
+      "arm": "P",
+      "array": "a1400",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": 0.3489986604347937
+    },
+    {
+      "use": "U3",
+      "case": "H-shift_20260912",
+      "arm": "P",
+      "array": "a2000",
+      "pass_gate": true,
+      "measurement_available": true,
+      "error_arcsec": 0.26285548596056696
+    },
+    {
+      "use": "U3",
+      "case": "D_20260912",
+      "arm": "P",
+      "array": "a1100",
+      "pass_gate": true,
+      "measurement_available": true,
+      "error_arcsec": 0.42192628130647386
+    },
+    {
+      "use": "U3",
+      "case": "D_20260912",
+      "arm": "P",
+      "array": "a1400",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": 0.2563558155002833
+    },
+    {
+      "use": "U3",
+      "case": "D_20260912",
+      "arm": "P",
+      "array": "a2000",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": 0.2908438604395364
+    },
+    {
+      "use": "U1",
+      "case": "C_20260912",
+      "arm": "P",
+      "array": "a1100",
+      "pass_gate": true,
+      "measurement": {
+        "source_present": true,
+        "positive_counts": [
+          1,
+          6,
+          41,
+          152,
+          1004
+        ],
+        "source_evidence": "positive_band_2_to_5_coefficient_above_5_empirical_scales",
+        "background": [
+          -0.17518435627563408,
+          -0.34390543263237133,
+          -0.15222708095606
+        ],
+        "measurement_available": false,
+        "support_pixels": 6361,
+        "exterior_rms": 14.576265814287975,
+        "fit": {
+          "parameters": [
+            31.066031024639795,
+            7.026951909318631,
+            -11.603367765271196,
+            2.2928115202386787,
+            3.115874651297413,
+            -2.9086527288518487,
+            0.21838197130653947,
+            2.6543396984918717,
+            -1.37120268240358
+          ],
+          "peak": 31.066031024639795,
+          "centroid": [
+            7.026951909318631,
+            -11.603367765271196
+          ],
+          "widths": [
+            22.553147869306873,
+            9.902740333865685
+          ],
+          "angle_rad": 1.803736251532841,
+          "gaussian_integral": 7861.632720305935,
+          "background": [
+            0.21838197130653947,
+            2.6543396984918717,
+            -1.37120268240358
+          ],
+          "residual_rms": 10.457388621916907,
+          "sse": 308496.0315240179,
+          "boundary_rejection": false,
+          "solver_status": 2,
+          "nfev": 15,
+          "successful_starts": 3
+        },
+        "fit_radius": 13.56525696888973,
+        "empirical_peak_score": 2.427888304412504,
+        "shape_error": 0.7335872137955872,
+        "shape_core_pixels": 147,
+        "aperture_brightness": 9411.943891184354,
+        "source_support_fraction": 1.0,
+        "boundary_warning": false,
+        "distortion_warning": true,
+        "status": "degraded_shape"
+      }
+    },
+    {
+      "use": "U1",
+      "case": "C_20260912",
+      "arm": "P",
+      "array": "a1400",
+      "pass_gate": true,
+      "measurement": {
+        "source_present": true,
+        "positive_counts": [
+          0,
+          0,
+          14,
+          32,
+          8
+        ],
+        "source_evidence": "positive_band_2_to_5_coefficient_above_5_empirical_scales",
+        "background": [
+          -0.6142766241844461,
+          -0.28399434698416715,
+          0.38168980159217814
+        ],
+        "measurement_available": false,
+        "support_pixels": 6289,
+        "exterior_rms": 28.502509915760264,
+        "fit": {
+          "parameters": [
+            30.381569106086634,
+            6.248823321238686,
+            -12.16132901986558,
+            3.3764502524745286,
+            2.2139823591876415,
+            -1.6066957221212486,
+            0.02951918114220896,
+            3.0049018756647854,
+            0.6119305382970157
+          ],
+          "peak": 30.381569106086634,
+          "centroid": [
+            6.248823321238686,
+            -12.16132901986558
+          ],
+          "widths": [
+            29.266697118695046,
+            9.152090829934147
+          ],
+          "angle_rad": 1.5348969314685446,
+          "gaussian_integral": 9220.801119740794,
+          "background": [
+            0.02951918114220896,
+            3.0049018756647854,
+            0.6119305382970157
+          ],
+          "residual_rms": 18.15761789333842,
+          "sse": 930081.1260081239,
+          "boundary_rejection": false,
+          "solver_status": 2,
+          "nfev": 28,
+          "successful_starts": 3
+        },
+        "fit_radius": 13.672809383205824,
+        "empirical_peak_score": 1.3496383363975384,
+        "shape_error": 1.184475568869194,
+        "shape_core_pixels": 176,
+        "aperture_brightness": 10186.823501694145,
+        "source_support_fraction": 1.0,
+        "boundary_warning": false,
+        "distortion_warning": true,
+        "status": "degraded_shape"
+      }
+    },
+    {
+      "use": "U1",
+      "case": "C_20260912",
+      "arm": "P",
+      "array": "a2000",
+      "pass_gate": true,
+      "measurement": {
+        "source_present": true,
+        "positive_counts": [
+          0,
+          1,
+          26,
+          140,
+          285
+        ],
+        "source_evidence": "positive_band_2_to_5_coefficient_above_5_empirical_scales",
+        "background": [
+          -0.13628361517292686,
+          -0.25520656092734123,
+          0.2174162111747842
+        ],
+        "measurement_available": false,
+        "support_pixels": 6361,
+        "exterior_rms": 19.274195152816716,
+        "fit": {
+          "parameters": [
+            26.27821161536462,
+            7.325554300899068,
+            -10.76446571449874,
+            2.298474580242593,
+            3.1589155489310885,
+            3.062258348676329,
+            0.11453248975466694,
+            1.9269310721778825,
+            -0.8226371929506233
+          ],
+          "peak": 26.27821161536462,
+          "centroid": [
+            7.325554300899068,
+            -10.76446571449874
+          ],
+          "widths": [
+            23.54504862602172,
+            9.958979238425531
+          ],
+          "angle_rad": 1.491462021881432,
+          "gaussian_integral": 6981.916404700035,
+          "background": [
+            0.11453248975466694,
+            1.9269310721778825,
+            -0.8226371929506233
+          ],
+          "residual_rms": 10.937450264352847,
+          "sse": 337470.0753825271,
+          "boundary_rejection": false,
+          "solver_status": 2,
+          "nfev": 31,
+          "successful_starts": 3
+        },
+        "fit_radius": 13.020655434118503,
+        "empirical_peak_score": 1.6192873302073312,
+        "shape_error": 0.8451781859642095,
+        "shape_core_pixels": 152,
+        "aperture_brightness": 6926.46228857781,
+        "source_support_fraction": 1.0,
+        "boundary_warning": false,
+        "distortion_warning": true,
+        "status": "degraded_shape"
+      }
+    },
+    {
+      "use": "G3",
+      "case": "E_20260912",
+      "arm": "P",
+      "array": "a1100",
+      "pass_gate": true,
+      "measurement": {
+        "source_present": true,
+        "positive_counts": [
+          1,
+          11,
+          31,
+          82,
+          237
+        ],
+        "source_evidence": "positive_band_2_to_5_coefficient_above_5_empirical_scales",
+        "background": [
+          0.16568147824403917,
+          -0.20093984637841017,
+          -0.22151840786026125
+        ],
+        "measurement_available": false,
+        "support_pixels": 6361,
+        "exterior_rms": 14.566885225018439,
+        "fit": {
+          "parameters": [
+            102.67038934324668,
+            57.29287047568893,
+            -11.090912201507871,
+            1.940634290330059,
+            2.217953747249362,
+            -1.1008841076904727,
+            -0.12311276298978292,
+            0.18006217483217501,
+            -0.7939756257477633
+          ],
+          "peak": 102.67038934324668,
+          "centroid": [
+            57.29287047568893,
+            -11.090912201507871
+          ],
+          "widths": [
+            9.188509602869798,
+            6.963166239220289
+          ],
+          "angle_rad": 0.4699122191044238,
+          "gaussian_integral": 7443.230468736177,
+          "background": [
+            -0.12311276298978292,
+            0.18006217483217501,
+            -0.7939756257477633
+          ],
+          "residual_rms": 10.336727359226767,
+          "sse": 301418.0175796428,
+          "boundary_rejection": false,
+          "solver_status": 2,
+          "nfev": 10,
+          "successful_starts": 2
+        },
+        "fit_radius": 58.356502129630975,
+        "empirical_peak_score": 8.026420349315597,
+        "shape_error": 0.09352530343636663,
+        "shape_core_pixels": 25,
+        "aperture_brightness": 5958.2530069383165,
+        "source_support_fraction": 0.543046357615894,
+        "boundary_warning": true,
+        "distortion_warning": false,
+        "status": "unassessable_support"
+      }
+    },
+    {
+      "use": "G3",
+      "case": "E_20260912",
+      "arm": "P",
+      "array": "a1400",
+      "pass_gate": true,
+      "measurement": {
+        "source_present": true,
+        "positive_counts": [
+          0,
+          8,
+          25,
+          51,
+          0
+        ],
+        "source_evidence": "positive_band_2_to_5_coefficient_above_5_empirical_scales",
+        "background": [
+          -0.19908886518556845,
+          -0.10378498544676638,
+          0.2964780415556456
+        ],
+        "measurement_available": false,
+        "support_pixels": 6289,
+        "exterior_rms": 28.488225426088864,
+        "fit": {
+          "parameters": [
+            98.98827827763319,
+            56.05546956140927,
+            -11.190219965774528,
+            2.1447006794097065,
+            1.8965605148029647,
+            -2.256836995735735,
+            -0.2327177647364429,
+            -0.1008498239587234,
+            1.1797952225939357
+          ],
+          "peak": 98.98827827763319,
+          "centroid": [
+            56.05546956140927,
+            -11.190219965774528
+          ],
+          "widths": [
+            8.539484811083224,
+            6.662937909275254
+          ],
+          "angle_rad": 0.8847556578540581,
+          "gaussian_integral": 6381.835822444567,
+          "background": [
+            -0.2327177647364429,
+            -0.1008498239587234,
+            1.1797952225939357
+          ],
+          "residual_rms": 18.105440865670975,
+          "sse": 924743.5158006102,
+          "boundary_rejection": false,
+          "solver_status": 2,
+          "nfev": 16,
+          "successful_starts": 3
+        },
+        "fit_radius": 57.16149657446435,
+        "empirical_peak_score": 4.416697337226746,
+        "shape_error": 0.24828882294287252,
+        "shape_core_pixels": 27,
+        "aperture_brightness": 9497.21130285424,
+        "source_support_fraction": 0.609375,
+        "boundary_warning": true,
+        "distortion_warning": false,
+        "status": "unassessable_support"
+      }
+    },
+    {
+      "use": "G3",
+      "case": "E_20260912",
+      "arm": "P",
+      "array": "a2000",
+      "pass_gate": true,
+      "measurement": {
+        "source_present": true,
+        "positive_counts": [
+          0,
+          12,
+          30,
+          79,
+          90
+        ],
+        "source_evidence": "positive_band_2_to_5_coefficient_above_5_empirical_scales",
+        "background": [
+          0.2090887297787204,
+          -0.06920487355279833,
+          0.18171875161288048
+        ],
+        "measurement_available": false,
+        "support_pixels": 6361,
+        "exterior_rms": 19.270037673858432,
+        "fit": {
+          "parameters": [
+            102.70883797827649,
+            56.80847112340057,
+            -11.284833854868502,
+            1.9386887085762705,
+            2.2027949845940316,
+            2.37361354107574,
+            -0.2708513860627274,
+            -0.7700928538683103,
+            -0.12280539200073251
+          ],
+          "peak": 102.70883797827649,
+          "centroid": [
+            56.80847112340057,
+            -11.284833854868502
+          ],
+          "widths": [
+            9.050273557418254,
+            6.949632000290072
+          ],
+          "angle_rad": 0.8028172142808434,
+          "gaussian_integral": 7319.741616038849,
+          "background": [
+            -0.2708513860627274,
+            -0.7700928538683103,
+            -0.12280539200073251
+          ],
+          "residual_rms": 10.775018361756159,
+          "sse": 327520.97938393045,
+          "boundary_rejection": false,
+          "solver_status": 2,
+          "nfev": 17,
+          "successful_starts": 2
+        },
+        "fit_radius": 57.91847603753247,
+        "empirical_peak_score": 6.340080516394763,
+        "shape_error": 0.21243700256000703,
+        "shape_core_pixels": 27,
+        "aperture_brightness": 12189.764071808462,
+        "source_support_fraction": 0.5586206896551724,
+        "boundary_warning": true,
+        "distortion_warning": false,
+        "status": "unassessable_support"
+      }
+    },
+    {
+      "use": "U2_gain",
+      "case": "H_20260912/D_20260912",
+      "arm": "P",
+      "array": "a1100",
+      "pass_gate": true,
+      "ratio": 1.1092364268266621,
+      "expected": 1.1111111111111112,
+      "relative_error": -0.0016872158560041761,
+      "measurement_available": true,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U2_gain",
+      "case": "H_20260912/D_20260912",
+      "arm": "P",
+      "array": "a1400",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 1.1111111111111112,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U2_gain",
+      "case": "H_20260912/D_20260912",
+      "arm": "P",
+      "array": "a2000",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 1.1111111111111112,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U4_loss",
+      "case": "D_20260912/H_20260912",
+      "arm": "P",
+      "array": "a1100",
+      "pass_gate": true,
+      "ratio": 0.9015210606280133,
+      "expected": 0.9,
+      "relative_error": 0.0016900673644590913,
+      "measurement_available": true,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U4_loss",
+      "case": "D_20260912/H_20260912",
+      "arm": "P",
+      "array": "a1400",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 0.9,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U4_loss",
+      "case": "D_20260912/H_20260912",
+      "arm": "P",
+      "array": "a2000",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 0.9,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U5_health",
+      "case": "T_20260912/H_20260912",
+      "arm": "P",
+      "array": "a1100",
+      "pass_gate": true,
+      "ratio": 1.0,
+      "expected": 1,
+      "relative_error": 0.0,
+      "measurement_available": true,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U5_health",
+      "case": "T_20260912/H_20260912",
+      "arm": "P",
+      "array": "a1400",
+      "pass_gate": true,
+      "ratio": null,
+      "expected": 0.8,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": true
+    },
+    {
+      "use": "U5_health",
+      "case": "T_20260912/H_20260912",
+      "arm": "P",
+      "array": "a2000",
+      "pass_gate": true,
+      "ratio": 1.0,
+      "expected": 1,
+      "relative_error": 0.0,
+      "measurement_available": true,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U2_U4_unchanged",
+      "case": "H_seed2/seed1",
+      "arm": "P",
+      "array": "a1100",
+      "pass_gate": true,
+      "ratio": 0.9771519404108686
+    },
+    {
+      "use": "U2_U4_unchanged",
+      "case": "H_seed2/seed1",
+      "arm": "P",
+      "array": "a1400",
+      "pass_gate": false,
+      "ratio": null
+    },
+    {
+      "use": "U2_U4_unchanged",
+      "case": "H_seed2/seed1",
+      "arm": "P",
+      "array": "a2000",
+      "pass_gate": false,
+      "ratio": 0.8833496235649104
+    },
+    {
+      "use": "U3",
+      "case": "H_20260911",
+      "arm": "C",
+      "array": "a1100",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": null
+    },
+    {
+      "use": "U3",
+      "case": "H_20260911",
+      "arm": "C",
+      "array": "a1400",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": null
+    },
+    {
+      "use": "U3",
+      "case": "H_20260911",
+      "arm": "C",
+      "array": "a2000",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": null
+    },
+    {
+      "use": "U3",
+      "case": "H-shift_20260911",
+      "arm": "C",
+      "array": "a1100",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": null
+    },
+    {
+      "use": "U3",
+      "case": "H-shift_20260911",
+      "arm": "C",
+      "array": "a1400",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": null
+    },
+    {
+      "use": "U3",
+      "case": "H-shift_20260911",
+      "arm": "C",
+      "array": "a2000",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": null
+    },
+    {
+      "use": "U3",
+      "case": "D_20260911",
+      "arm": "C",
+      "array": "a1100",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": null
+    },
+    {
+      "use": "U3",
+      "case": "D_20260911",
+      "arm": "C",
+      "array": "a1400",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": null
+    },
+    {
+      "use": "U3",
+      "case": "D_20260911",
+      "arm": "C",
+      "array": "a2000",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": null
+    },
+    {
+      "use": "U1",
+      "case": "C_20260911",
+      "arm": "C",
+      "array": "a1100",
+      "pass_gate": false,
+      "measurement": null
+    },
+    {
+      "use": "U1",
+      "case": "C_20260911",
+      "arm": "C",
+      "array": "a1400",
+      "pass_gate": false,
+      "measurement": null
+    },
+    {
+      "use": "U1",
+      "case": "C_20260911",
+      "arm": "C",
+      "array": "a2000",
+      "pass_gate": false,
+      "measurement": null
+    },
+    {
+      "use": "G3",
+      "case": "E_20260911",
+      "arm": "C",
+      "array": "a1100",
+      "pass_gate": false,
+      "measurement": null
+    },
+    {
+      "use": "G3",
+      "case": "E_20260911",
+      "arm": "C",
+      "array": "a1400",
+      "pass_gate": false,
+      "measurement": null
+    },
+    {
+      "use": "G3",
+      "case": "E_20260911",
+      "arm": "C",
+      "array": "a2000",
+      "pass_gate": false,
+      "measurement": null
+    },
+    {
+      "use": "U2_gain",
+      "case": "H_20260911/D_20260911",
+      "arm": "C",
+      "array": "a1100",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 1.1111111111111112,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U2_gain",
+      "case": "H_20260911/D_20260911",
+      "arm": "C",
+      "array": "a1400",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 1.1111111111111112,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U2_gain",
+      "case": "H_20260911/D_20260911",
+      "arm": "C",
+      "array": "a2000",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 1.1111111111111112,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U4_loss",
+      "case": "D_20260911/H_20260911",
+      "arm": "C",
+      "array": "a1100",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 0.9,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U4_loss",
+      "case": "D_20260911/H_20260911",
+      "arm": "C",
+      "array": "a1400",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 0.9,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U4_loss",
+      "case": "D_20260911/H_20260911",
+      "arm": "C",
+      "array": "a2000",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 0.9,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U5_health",
+      "case": "T_20260911/H_20260911",
+      "arm": "C",
+      "array": "a1100",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 1,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U5_health",
+      "case": "T_20260911/H_20260911",
+      "arm": "C",
+      "array": "a1400",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 0.8,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U5_health",
+      "case": "T_20260911/H_20260911",
+      "arm": "C",
+      "array": "a2000",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 1,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U3",
+      "case": "H_20260912",
+      "arm": "C",
+      "array": "a1100",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": null
+    },
+    {
+      "use": "U3",
+      "case": "H_20260912",
+      "arm": "C",
+      "array": "a1400",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": null
+    },
+    {
+      "use": "U3",
+      "case": "H_20260912",
+      "arm": "C",
+      "array": "a2000",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": null
+    },
+    {
+      "use": "U3",
+      "case": "H-shift_20260912",
+      "arm": "C",
+      "array": "a1100",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": null
+    },
+    {
+      "use": "U3",
+      "case": "H-shift_20260912",
+      "arm": "C",
+      "array": "a1400",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": null
+    },
+    {
+      "use": "U3",
+      "case": "H-shift_20260912",
+      "arm": "C",
+      "array": "a2000",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": null
+    },
+    {
+      "use": "U3",
+      "case": "D_20260912",
+      "arm": "C",
+      "array": "a1100",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": null
+    },
+    {
+      "use": "U3",
+      "case": "D_20260912",
+      "arm": "C",
+      "array": "a1400",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": null
+    },
+    {
+      "use": "U3",
+      "case": "D_20260912",
+      "arm": "C",
+      "array": "a2000",
+      "pass_gate": false,
+      "measurement_available": false,
+      "error_arcsec": null
+    },
+    {
+      "use": "U1",
+      "case": "C_20260912",
+      "arm": "C",
+      "array": "a1100",
+      "pass_gate": false,
+      "measurement": null
+    },
+    {
+      "use": "U1",
+      "case": "C_20260912",
+      "arm": "C",
+      "array": "a1400",
+      "pass_gate": false,
+      "measurement": null
+    },
+    {
+      "use": "U1",
+      "case": "C_20260912",
+      "arm": "C",
+      "array": "a2000",
+      "pass_gate": false,
+      "measurement": null
+    },
+    {
+      "use": "G3",
+      "case": "E_20260912",
+      "arm": "C",
+      "array": "a1100",
+      "pass_gate": false,
+      "measurement": null
+    },
+    {
+      "use": "G3",
+      "case": "E_20260912",
+      "arm": "C",
+      "array": "a1400",
+      "pass_gate": false,
+      "measurement": null
+    },
+    {
+      "use": "G3",
+      "case": "E_20260912",
+      "arm": "C",
+      "array": "a2000",
+      "pass_gate": false,
+      "measurement": null
+    },
+    {
+      "use": "U2_gain",
+      "case": "H_20260912/D_20260912",
+      "arm": "C",
+      "array": "a1100",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 1.1111111111111112,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U2_gain",
+      "case": "H_20260912/D_20260912",
+      "arm": "C",
+      "array": "a1400",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 1.1111111111111112,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U2_gain",
+      "case": "H_20260912/D_20260912",
+      "arm": "C",
+      "array": "a2000",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 1.1111111111111112,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U4_loss",
+      "case": "D_20260912/H_20260912",
+      "arm": "C",
+      "array": "a1100",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 0.9,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U4_loss",
+      "case": "D_20260912/H_20260912",
+      "arm": "C",
+      "array": "a1400",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 0.9,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U4_loss",
+      "case": "D_20260912/H_20260912",
+      "arm": "C",
+      "array": "a2000",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 0.9,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U5_health",
+      "case": "T_20260912/H_20260912",
+      "arm": "C",
+      "array": "a1100",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 1,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U5_health",
+      "case": "T_20260912/H_20260912",
+      "arm": "C",
+      "array": "a1400",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 0.8,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U5_health",
+      "case": "T_20260912/H_20260912",
+      "arm": "C",
+      "array": "a2000",
+      "pass_gate": false,
+      "ratio": null,
+      "expected": 1,
+      "relative_error": null,
+      "measurement_available": false,
+      "affected_unavailable": false
+    },
+    {
+      "use": "U2_U4_unchanged",
+      "case": "H_seed2/seed1",
+      "arm": "C",
+      "array": "a1100",
+      "pass_gate": false,
+      "ratio": null
+    },
+    {
+      "use": "U2_U4_unchanged",
+      "case": "H_seed2/seed1",
+      "arm": "C",
+      "array": "a1400",
+      "pass_gate": false,
+      "ratio": null
+    },
+    {
+      "use": "U2_U4_unchanged",
+      "case": "H_seed2/seed1",
+      "arm": "C",
+      "array": "a2000",
+      "pass_gate": false,
+      "ratio": null
+    }
+  ],
+  "nulls": [
+    {
+      "case": "N_20260911",
+      "arm": "P",
+      "completed": true,
+      "examined_array_passes": 21,
+      "admitted_array_passes": 21,
+      "positive_source_reports": 0
+    },
+    {
+      "case": "B_20260911",
+      "arm": "P",
+      "completed": true,
+      "examined_array_passes": 21,
+      "admitted_array_passes": 21,
+      "positive_source_reports": 0
+    },
+    {
+      "case": "N_20260912",
+      "arm": "P",
+      "completed": true,
+      "examined_array_passes": 21,
+      "admitted_array_passes": 21,
+      "positive_source_reports": 0
+    },
+    {
+      "case": "B_20260912",
+      "arm": "P",
+      "completed": true,
+      "examined_array_passes": 21,
+      "admitted_array_passes": 21,
+      "positive_source_reports": 0
+    },
+    {
+      "case": "N_20260911",
+      "arm": "C",
+      "completed": true,
+      "examined_array_passes": 21,
+      "admitted_array_passes": 0,
+      "positive_source_reports": 0
+    },
+    {
+      "case": "B_20260911",
+      "arm": "C",
+      "completed": true,
+      "examined_array_passes": 21,
+      "admitted_array_passes": 0,
+      "positive_source_reports": 0
+    },
+    {
+      "case": "N_20260912",
+      "arm": "C",
+      "completed": true,
+      "examined_array_passes": 21,
+      "admitted_array_passes": 0,
+      "positive_source_reports": 0
+    },
+    {
+      "case": "B_20260912",
+      "arm": "C",
+      "completed": true,
+      "examined_array_passes": 21,
+      "admitted_array_passes": 0,
+      "positive_source_reports": 0
+    }
+  ],
+  "exterior_leakage": [
+    {
+      "case": "real123424",
+      "array": "a1100",
+      "ratio": 1.0234286394010303,
+      "pass_gate": true
+    },
+    {
+      "case": "real123424",
+      "array": "a1400",
+      "ratio": 1.004043460557492,
+      "pass_gate": true
+    },
+    {
+      "case": "real123424",
+      "array": "a2000",
+      "ratio": 1.001833066183996,
+      "pass_gate": true
+    },
+    {
+      "case": "N_20260911",
+      "array": "a1100",
+      "ratio": 1.0000319730910663,
+      "pass_gate": true
+    },
+    {
+      "case": "N_20260911",
+      "array": "a1400",
+      "ratio": 1.0001844984112425,
+      "pass_gate": true
+    },
+    {
+      "case": "N_20260911",
+      "array": "a2000",
+      "ratio": 0.9999754257203356,
+      "pass_gate": true
+    },
+    {
+      "case": "B_20260911",
+      "array": "a1100",
+      "ratio": 0.9999980833673515,
+      "pass_gate": true
+    },
+    {
+      "case": "B_20260911",
+      "array": "a1400",
+      "ratio": 1.0001227628047404,
+      "pass_gate": true
+    },
+    {
+      "case": "B_20260911",
+      "array": "a2000",
+      "ratio": 0.9999691713887637,
+      "pass_gate": true
+    },
+    {
+      "case": "N_20260912",
+      "array": "a1100",
+      "ratio": 0.9999877381977167,
+      "pass_gate": true
+    },
+    {
+      "case": "N_20260912",
+      "array": "a1400",
+      "ratio": 1.000372947294566,
+      "pass_gate": true
+    },
+    {
+      "case": "N_20260912",
+      "array": "a2000",
+      "ratio": 0.9999319921315478,
+      "pass_gate": true
+    },
+    {
+      "case": "B_20260912",
+      "array": "a1100",
+      "ratio": 0.999942911388022,
+      "pass_gate": true
+    },
+    {
+      "case": "B_20260912",
+      "array": "a1400",
+      "ratio": 1.0004527166736301,
+      "pass_gate": true
+    },
+    {
+      "case": "B_20260912",
+      "array": "a2000",
+      "ratio": 0.9999443920398989,
+      "pass_gate": true
+    }
+  ],
+  "cost": [
+    {
+      "case": "real123424",
+      "wall_ratio_C_over_P": 5.388862437409158,
+      "pass_gate": false,
+      "P_wall": 8.073776625096798,
+      "C_wall": 43.50847158301622
+    },
+    {
+      "case": "N_20260911",
+      "wall_ratio_C_over_P": 1.0107948524690855,
+      "pass_gate": true,
+      "P_wall": 7.892256916966289,
+      "C_wall": 7.977452666033059
+    },
+    {
+      "case": "B_20260911",
+      "wall_ratio_C_over_P": 0.9788162381372535,
+      "pass_gate": true,
+      "P_wall": 8.395022958051413,
+      "C_wall": 8.217184790875763
+    },
+    {
+      "case": "N_20260912",
+      "wall_ratio_C_over_P": 0.974634257440689,
+      "pass_gate": true,
+      "P_wall": 7.7649691249243915,
+      "C_wall": 7.568004917120561
+    },
+    {
+      "case": "B_20260912",
+      "wall_ratio_C_over_P": 1.0304371817101112,
+      "pass_gate": true,
+      "P_wall": 7.369677332928404,
+      "C_wall": 7.593989541055635
+    }
+  ],
+  "OG": null,
+  "displacements": [
+    {
+      "arm": "P",
+      "seed": 20260911,
+      "array": "a1100",
+      "available": true,
+      "measured": [
+        2.8421466347333677,
+        2.0557373209544423
+      ],
+      "error_arcsec": 0.16740470086941808
+    },
+    {
+      "arm": "P",
+      "seed": 20260911,
+      "array": "a1400",
+      "available": false,
+      "measured": null,
+      "error_arcsec": null
+    },
+    {
+      "arm": "P",
+      "seed": 20260911,
+      "array": "a2000",
+      "available": true,
+      "measured": [
+        2.896186443195539,
+        2.119711696986819
+      ],
+      "error_arcsec": 0.15845549839578624
+    },
+    {
+      "arm": "P",
+      "seed": 20260912,
+      "array": "a1100",
+      "available": true,
+      "measured": [
+        3.2103756926600013,
+        2.0839064743939666
+      ],
+      "error_arcsec": 0.22649112235891436
+    },
+    {
+      "arm": "P",
+      "seed": 20260912,
+      "array": "a1400",
+      "available": false,
+      "measured": null,
+      "error_arcsec": null
+    },
+    {
+      "arm": "P",
+      "seed": 20260912,
+      "array": "a2000",
+      "available": true,
+      "measured": [
+        3.1011252658607162,
+        2.0832516009381585
+      ],
+      "error_arcsec": 0.13098529861845926
+    },
+    {
+      "arm": "C",
+      "seed": 20260911,
+      "array": "a1100",
+      "available": false,
+      "measured": null,
+      "error_arcsec": null
+    },
+    {
+      "arm": "C",
+      "seed": 20260911,
+      "array": "a1400",
+      "available": false,
+      "measured": null,
+      "error_arcsec": null
+    },
+    {
+      "arm": "C",
+      "seed": 20260911,
+      "array": "a2000",
+      "available": false,
+      "measured": null,
+      "error_arcsec": null
+    },
+    {
+      "arm": "C",
+      "seed": 20260912,
+      "array": "a1100",
+      "available": false,
+      "measured": null,
+      "error_arcsec": null
+    },
+    {
+      "arm": "C",
+      "seed": 20260912,
+      "array": "a1400",
+      "available": false,
+      "measured": null,
+      "error_arcsec": null
+    },
+    {
+      "arm": "C",
+      "seed": 20260912,
+      "array": "a2000",
+      "available": false,
+      "measured": null,
+      "error_arcsec": null
+    }
+  ],
+  "two_seed_error_summaries": [
+    {
+      "case": "H",
+      "arm": "P",
+      "array": "a1100",
+      "available": true,
+      "mean_error_vector": [
+        -0.14339004246887477,
+        -0.04821906758720651
+      ],
+      "coordinate_sample_scatter": [
+        0.20974680277618965,
+        0.12673420650369102
+      ],
+      "meaning": "Two reused finite realizations; not an ensemble-bias or uncertainty qualification"
+    },
+    {
+      "case": "H",
+      "arm": "P",
+      "array": "a1400",
+      "available": false,
+      "mean_error_vector": null,
+      "coordinate_sample_scatter": null,
+      "meaning": "Two reused finite realizations; not an ensemble-bias or uncertainty qualification"
+    },
+    {
+      "case": "H",
+      "arm": "P",
+      "array": "a2000",
+      "available": true,
+      "mean_error_vector": [
+        -0.16030396111489864,
+        0.13404401100804186
+      ],
+      "coordinate_sample_scatter": [
+        0.04349579433087744,
+        0.062251834403218465
+      ],
+      "meaning": "Two reused finite realizations; not an ensemble-bias or uncertainty qualification"
+    },
+    {
+      "case": "H-shift",
+      "arm": "P",
+      "array": "a1100",
+      "available": true,
+      "mean_error_vector": [
+        -0.11712887877219025,
+        0.021602830086997926
+      ],
+      "coordinate_sample_scatter": [
+        0.050630461113667015,
+        0.10681560708631903
+      ],
+      "meaning": "Two reused finite realizations; not an ensemble-bias or uncertainty qualification"
+    },
+    {
+      "case": "H-shift",
+      "arm": "P",
+      "array": "a1400",
+      "available": false,
+      "mean_error_vector": null,
+      "coordinate_sample_scatter": null,
+      "meaning": "Two reused finite realizations; not an ensemble-bias or uncertainty qualification"
+    },
+    {
+      "case": "H-shift",
+      "arm": "P",
+      "array": "a2000",
+      "available": true,
+      "mean_error_vector": [
+        -0.16164810658677098,
+        0.23552565997053065
+      ],
+      "coordinate_sample_scatter": [
+        0.18840942556581153,
+        0.03647065324449777
+      ],
+      "meaning": "Two reused finite realizations; not an ensemble-bias or uncertainty qualification"
+    },
+    {
+      "case": "D",
+      "arm": "P",
+      "array": "a1100",
+      "available": false,
+      "mean_error_vector": null,
+      "coordinate_sample_scatter": null,
+      "meaning": "Two reused finite realizations; not an ensemble-bias or uncertainty qualification"
+    },
+    {
+      "case": "D",
+      "arm": "P",
+      "array": "a1400",
+      "available": false,
+      "mean_error_vector": null,
+      "coordinate_sample_scatter": null,
+      "meaning": "Two reused finite realizations; not an ensemble-bias or uncertainty qualification"
+    },
+    {
+      "case": "D",
+      "arm": "P",
+      "array": "a2000",
+      "available": false,
+      "mean_error_vector": null,
+      "coordinate_sample_scatter": null,
+      "meaning": "Two reused finite realizations; not an ensemble-bias or uncertainty qualification"
+    },
+    {
+      "case": "H",
+      "arm": "C",
+      "array": "a1100",
+      "available": false,
+      "mean_error_vector": null,
+      "coordinate_sample_scatter": null,
+      "meaning": "Two reused finite realizations; not an ensemble-bias or uncertainty qualification"
+    },
+    {
+      "case": "H",
+      "arm": "C",
+      "array": "a1400",
+      "available": false,
+      "mean_error_vector": null,
+      "coordinate_sample_scatter": null,
+      "meaning": "Two reused finite realizations; not an ensemble-bias or uncertainty qualification"
+    },
+    {
+      "case": "H",
+      "arm": "C",
+      "array": "a2000",
+      "available": false,
+      "mean_error_vector": null,
+      "coordinate_sample_scatter": null,
+      "meaning": "Two reused finite realizations; not an ensemble-bias or uncertainty qualification"
+    },
+    {
+      "case": "H-shift",
+      "arm": "C",
+      "array": "a1100",
+      "available": false,
+      "mean_error_vector": null,
+      "coordinate_sample_scatter": null,
+      "meaning": "Two reused finite realizations; not an ensemble-bias or uncertainty qualification"
+    },
+    {
+      "case": "H-shift",
+      "arm": "C",
+      "array": "a1400",
+      "available": false,
+      "mean_error_vector": null,
+      "coordinate_sample_scatter": null,
+      "meaning": "Two reused finite realizations; not an ensemble-bias or uncertainty qualification"
+    },
+    {
+      "case": "H-shift",
+      "arm": "C",
+      "array": "a2000",
+      "available": false,
+      "mean_error_vector": null,
+      "coordinate_sample_scatter": null,
+      "meaning": "Two reused finite realizations; not an ensemble-bias or uncertainty qualification"
+    },
+    {
+      "case": "D",
+      "arm": "C",
+      "array": "a1100",
+      "available": false,
+      "mean_error_vector": null,
+      "coordinate_sample_scatter": null,
+      "meaning": "Two reused finite realizations; not an ensemble-bias or uncertainty qualification"
+    },
+    {
+      "case": "D",
+      "arm": "C",
+      "array": "a1400",
+      "available": false,
+      "mean_error_vector": null,
+      "coordinate_sample_scatter": null,
+      "meaning": "Two reused finite realizations; not an ensemble-bias or uncertainty qualification"
+    },
+    {
+      "case": "D",
+      "arm": "C",
+      "array": "a2000",
+      "available": false,
+      "mean_error_vector": null,
+      "coordinate_sample_scatter": null,
+      "meaning": "Two reused finite realizations; not an ensemble-bias or uncertainty qualification"
+    }
+  ],
+  "campaign": {
+    "state": "trial_finished_see_trajectory_statuses",
+    "cleaning_calls": 167,
+    "maximum_cleaning_calls": 238,
+    "trajectories": 34,
+    "elapsed_seconds": 400.12079020915553,
+    "peak_rss_bytes": 2083717120,
+    "output_bytes": 388343732
+  },
+  "uncertainty": "Finite development errors; two reused nuisance seeds do not qualify intervals, ensemble bias, or false-alarm rates."
+}
