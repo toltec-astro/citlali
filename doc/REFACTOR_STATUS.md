@@ -1,25 +1,54 @@
 # Citlali Refactor Status
 
-## RTC plateau-boundary implementation in progress — 2026-09-12
+## RTC plateau-boundary implementation completed locally — 2026-09-12
 
-The owner approved keeping original-group edges unresolved until original
-samples establish the fitted post-jump level for 50 ms within ±4 frozen
-residual sigma. Runtime Learn measures this coordinate-local separator; later
-members retain their guards. A later guard overlapping the selected evidence
-withholds the measurement without another separator search. Existing Consider
-consumes the result under its unchanged single-reassessment limit. Original
-candidates, grouping, fits, thresholds and D2/VAL remain preserved; no Apply
-plan is produced. Engineering conformance will use focused native-support
-regressions, preserved injection trials and the same 143-file corpus.
+The owner-approved rule is implemented at exact `81a35ced25d45eeccafabc3243b5aa3010893625`,
+tree `cf70c8b7f35c825f85ca37260026ba0299bb9802`, directly preserving reviewed
+closure `bed75cd828a2db9655f311545cc739c0cd3b32c6`. Within an original group,
+runtime Learn keeps nearby edges unresolved until original samples confirm the
+fitted post-jump level for 50 ms within ±4 frozen residual sigma. Original edge
+cells cannot certify that plateau. Later members retain their guards, and a
+later guard overlapping the first selected evidence withholds the measurement.
+Existing Consider consumes this coordinate-local evidence under the unchanged
+single-reassessment limit. Original candidates, grouping, fits, scale roles,
+thresholds and D2/VAL remain preserved. No runtime Apply plan is produced.
 
-Base is reviewed closure `bed75cd828a2db9655f311545cc739c0cd3b32c6`
-on the existing RTC module worktree. The approved Tier 2 preflight and immutable
-read-only preparation are recorded in
-`/private/tmp/citlali-rtc-jump-guard-boundary-2026-09-12`. Source/evidence and
-documentation closure each require fresh independent exact-SHA review. This
-authorizes bounded implementation and local tests; canonical integration,
-pushes, activation, flags, correction, spectra, MAP and production remain
-outside this increment.
+Across the same 143 eligible files, final conditional coordinate measurements
+increase from 9,667 to 11,150: 9,656 retained by both, 1,494 gained and 11 lost.
+This recovers 1,091 of the 1,170 preceding guard-conflict losses and preserves
+1,746 of the 1,757 preceding gains. The 11 new losses follow unchanged fitting
+support (seven), offset consistency (two) or remaining overlap (two) checks.
+Initial bounds change from 10,318 to 12,219; paired refits from 1,314 to 2,030.
+These are conditional measurement outcomes, not accepted physical events or
+truth-accuracy rates. Some retained bounds still accompany multiple levels
+and substantial background residuals.
+
+All 1,004 runnable local CTests, 33 focused tests, four config modes and 207
+baseline-tool tests pass. Fixed injections retain 15/24 jump coordinates,
+unchanged from the onset control; all six gradual-ramp misses remain explicit.
+All 14,164 available native bounds, 184 selected coordinate/version sample
+records and 50 selected first-post confirmations pass their audits. The 46
+comparison figures are inspected. All 858 earlier output files, 143 sample
+exports and two injection backgrounds remain byte-identical. Independent
+exact-source/evidence review passes with recorded limitations and no findings.
+
+The whole transition/reassessment chain costs 2.451023 seconds, 0.135191% of
+preceding input/numerical work in this local run. This is supplemental
+AppleClang/cached-dependency evidence; concurrent work prevents a controlled
+speed comparison, and peak whole-process RSS (4.970 GiB) is not added memory.
+The same 155 missing-binding inputs remain deferred. Source protection, spectra,
+physical-event admission and real scan relations retain their existing limits.
+
+[Results, timing and plots](/private/tmp/citlali-rtc-jump-guard-boundary-2026-09-12/README.md)
+and the existing RTC handoff bind the tested source, sealed evidence and review.
+The engineering conformance workflow is separate from the runtime Learn and
+Consider responsibilities implemented above. A separate two-document closure
+must have the tested source as its direct parent and receive fresh independent
+exact-SHA review; its identity and verdict are recorded externally after review. This
+completes the bounded implementation for owner acceptance. Future canonical
+admission must freshly verify moving ancestry and review the exact integration
+SHA. No integration, push, activation, flags, correction, filtering, spectral
+work, MAP/CAL/PTC/AST, Unity access, new data, production or cleanup occurs.
 
 ## RTC onset-support full-corpus test completed locally — 2026-09-12
 

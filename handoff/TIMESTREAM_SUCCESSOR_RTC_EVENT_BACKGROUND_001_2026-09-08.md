@@ -1998,3 +1998,144 @@ only its pending-owner status. No integration, push, route, flags, correction,
 spectra, MAP/CAL/PTC/AST, new data, Unity access or cleanup is authorized. Future
 canonical admission must verify the live moving authority and independently
 review the exact integration SHA.
+
+## Plateau-boundary implementation completion — 2026-09-12
+
+Work order TIMESTREAM-SUCCESSOR-RTC-JUMP-PLATEAU-BOUNDARY-001 completed on
+exact source `81a35ced25d45eeccafabc3243b5aa3010893625`, tree
+`cf70c8b7f35c825f85ca37260026ba0299bb9802`, with literal base/direct parent
+`bed75cd828a2db9655f311545cc739c0cd3b32c6`. It changes the transition header,
+focused transition tests, private injection parity adapter/output, inert Python
+census verifier and the two existing scope records. The other 37 timestream
+headers, frozen contracts, effective governance, D2/VAL, original event/background learner and
+Consider/reassessment implementation are unchanged. The worktree remains the
+existing `codex/timestream-successor-rtc-event-background-001` slot.
+
+The approved support binding is executable: original-group edge cells remain
+unresolved until the first original-sample post-level confirmation lasts at
+least 50 ms within ±4 frozen residual sigma. Candidate edge cells in either
+coordinate cannot certify either coordinate's plateau. Seed-connected onset
+cells remain mandatory. Other groups retain their guards throughout; members
+after the first post confirmation retain their original ±50 ms guards. If one
+of these later guards overlaps the selected pre confirmation, bracket or post
+confirmation, the measurement is unavailable without another separator search.
+Original membership remains immutable and does not become physical-event
+identity. No threshold, fit, grouping, window, scale or refit-count rule changes.
+
+Runtime Learn owns this conditional coordinate-local support measurement and
+consumes original native x/r, initial VAL/source-protection parents, frozen
+coordinate model and residual scale. Existing Consider audits the output and
+may request the same one paired reassessment; the remeasurement uses the same
+helper and preserves separate x/r support and origins. No runtime Apply plan
+or sample mutation is produced. Separately, engineering Learn/Consider/Apply
+uses the source-bound tests and measurements below to establish conformance;
+that workflow does not substitute for the runtime boundaries.
+
+All 143 eligible network files complete, preserving the exact 13-observation,
+71,734-channel, 2,148,911,461-paired-sample population. All 910,241 candidate
+edges, 242,014 groups, 484,028 coordinate assessments and 12,815 initial
+transition requests remain fixed. The same 155 missing-binding inventory
+entries remain deferred, not admitted. All 858 pre-transition output files,
+143 original-sample exports and both injection backgrounds are byte-identical
+to the preserved control. Selected replays preserve 81 same-source scientific
+files across nine network invocations; both fixed injection replays are
+numerically identical. No unexpected runtime error-level output occurs;
+143 inherited raw-kind warning lines remain explicit.
+
+| Evidence population | Preserved onset control | Plateau boundary |
+| --- | ---: | ---: |
+| Initial available coordinate bounds | 10,318 | 12,219 |
+| Paired refit requests | 1,314 | 2,030 |
+| Final retained coordinates | 9,667 | 11,150 |
+| Groups with at least one retained coordinate | 7,169 | 8,389 |
+
+The full final comparison is 9,656 retained by both, 1,494 gained, 11 lost and
+472,867 retained by neither. Gains comprise 773 x and 721 r coordinates;
+losses comprise five x and six r coordinates. The control total includes 9,652
+retained own-initial measurements plus 15 partner recoveries; the new total
+includes 11,121 retained own-initial measurements plus 29 partner recoveries.
+All coordinate and paired 0/1/2-coordinate consequences are recorded.
+
+Of the gains, 1,478 recover competing-exclusion losses, 14 are partner-coordinate
+recoveries and two formerly lacked post confirmation. Of the losses, seven
+fail fixed fitting support, two fail short/long offset consistency and two
+retain paired overlap. Every earlier changed coordinate is followed: 1,746
+of the preceding 1,757 gains remain retained, 1,091 of 1,170 prior guard losses
+are recovered, and nine of the other 20 prior losses are recovered. The 79
+remaining prior guard losses are 77 competing exclusions, one unavailable
+transition and one remaining overlap. None are silently dropped from counts.
+
+The motivating previous L04 (now PL04), 152432/network 2/channel 292/group 366/r,
+retains native cells [5976,5985), 73.728 ms, with post confirmation [5985,5992),
+57.344 ms. Original fitting rows and cubic-plus-offset fit remain identical.
+Nearby original-group edges now belong to unresolved support; the x coordinate
+remains withheld independently. Representative new losses preserve the support
+rule: 152418/network 11/channel 11/group 288 leaves zero short-fit post samples
+instead of 85, and 152430/network 2/channel 359/group 300 leaves 37 instead of
+87, below the unchanged minimum 64. Some gained bounds (G01/G03) occur among
+several levels and large residuals. Conditional support does not certify the
+entire disturbance model, physical truth, or an Apply disposition.
+
+The same 20 fixed injection trials retain 15/24 injected-jump coordinate
+measurements, with zero final gains/losses relative to the onset method.
+Detection remains 18/24; all six twelve-cell gradual-ramp misses remain in the
+denominator. Synthetic no-jump/spike/pulse controls retain zero persistent
+jumps in eight coordinates. One new initial x bound on the complex real
+background reaches reassessment but fails the unchanged offset-consistency
+check. Supplied-location diagnostics remain separate from candidate detection
+and cannot convert a missed injection into a retained runtime candidate.
+Original candidates, groups, fitting values, losses, scales and test truth
+support remain preserved; private adapter/runtime parity passes.
+
+All 1,004 runnable CTests out of 1,005 registered, 33 focused transition/
+reassessment tests, four config modes and 207 baseline-tool tests pass at this
+exact source. The sole established disabled test remains
+`citlali::MapFitterLifecycle.ExactProductSequence`. All 14,164 available bounds
+(12,219 initial plus 1,945 remeasured) are independently checked against raw
+producer clocks, physical cells, membership and all relevant guards. The 60
+fixed-coordinate audit, 184 comparison coordinate/version original-sample
+checks and 50 first-post confirmations pass. All 46 labeled figures were
+inspected through contact sheets, with individual gain/loss/motivating views.
+The fixed 30, preceding eight and new eight selections are preserved; two
+previous/new selections overlap and do not imply 46 distinct physical groups.
+
+Existing stage clocks measure 2.451022743 seconds for the complete transition/
+reassessment chain, 0.135191% of preceding input/numerical work. Transition
+Learn costs 0.137657917 seconds, refitting 2.10128191 seconds; original event
+assessment remains 1,517.717125126 seconds. Summed child wall time is
+1,903.999702742 seconds; peak whole-process RSS is 5,336,137,728 bytes
+(4.970 GiB). Concurrent build/test/diagnostic work prevents a controlled speed
+comparison; RSS does not measure incremental memory. The recorded Apple M4 Pro,
+AppleClang 21 arm64 Release C++20, Homebrew and cached dependencies remain
+supplemental local evidence, not Unity/Spack or production qualification. All
+nine existing dirty dependency file digests and the three control binaries
+remain unchanged. The exact CLI, census and injection executables are bound
+in `source-binding.json`; the CLI reports the tested `81a35ced2` source.
+
+Evidence root: `/private/tmp/citlali-rtc-jump-guard-boundary-2026-09-12`.
+The sealed 2,448-file `EVIDENCE_SHA256SUMS` has digest
+`0f3380179d9121793b126b25a5671aa0a1fb2b7a422e049d0b6d12b46cdb156a`. All 2,412 previous
+full-corpus, 196 onset-trial and 2,281 reassessment evidence files were
+reverified unchanged. Historical preparation remains sealed and is superseded
+only in its pending-owner status by `approved-preflight.json`. Effective
+scientific/engineering/governance authority and file digests are recorded in
+`effective-authority.json`. No contract was reopened or inferred from legacy
+behavior. Source/evidence review `review-01.md`, by
+`/root/rtc_plateau_boundary_exact_review`, passes on all three governance axes
+with recorded limitations and no findings; its SHA-256 is
+`f285a395a122fbceb85ad2bb26819b49b5c385ec0d7cb87f11ff9fffec5c9d62`.
+
+This completes the approved implementation and its conformance measurements,
+ready for owner acceptance. Physical-event identity, full timing uncertainty,
+harmfulness/protection admission, real native-to-existing-scan relations and
+Apply authority remain outside this support increment. Spectral context and
+source membership remain unavailable in this corpus; sigma_delta remains the
+settled empirical comparison tolerance, not a fitted-parameter standard error.
+The separate two-document closure must have the exact tested source as its
+direct parent; its SHA/tree and fresh independent exact-SHA review are bound externally after
+review. No rebuilding at documentation HEAD may replace the tested identity.
+Preflight remote observations are historical; future canonical admission must
+freshly verify live moving ancestry and independently review the exact
+integration SHA. No integration, push, route activation, flags, correction,
+filtering, spectra, MAP/CAL/PTC/AST, Unity access, new data, production or cleanup
+occurs. All GitHub pushes remain owner-controlled.
