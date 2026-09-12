@@ -1826,14 +1826,27 @@ next direction may return to a bounded POINT reference contract. 129081 remains
 reserved for new feedback comparisons, with historical exposure disclosed.
 No RBF retuning, Unity activity, production change or qualification is authorized.
 
-On 2026-09-12 the owner explicitly reopened one [matched central-domain test](../validation/fruit_point_starlet_central_domain_2026-09-12/PROTOCOL.md)
-following a review of possible edge-dominated failures. The fixed comparison
-uses a 60-arcsec domain about the commanded origin, retains the full surrounding
-map and original noise calibration, and shares an explicit zero-MAD normalization
-repair with the full-domain control. A spatial audit precedes 174 estimator
-calls on retained maps and four map-level offset stress inputs. Zero new PTC
-passes or trajectories are authorized. The source/input definition is frozen;
-results are pending. This does not supersede the original full-domain rejection.
+On 2026-09-12 the owner directed one [matched central-domain test](../validation/fruit_point_starlet_central_domain_2026-09-12/SCIENTIFIC_REPORT.md).
+It is complete: **the edge/domain hypothesis is supported, while the tested
+60-arcsec reconstruction candidate is not accepted**. All 32 selected null
+coefficients and 20 background coefficients lie at radii 68.41–89.31 arcsec;
+selection rates account for eligible coefficient counts. The central domain
+removes all null admissions (5/6 to 0/6) and background admissions (3/3 to 0/3),
+using unchanged noise scales and surrounding computational/background maps.
+Some old false brightness had spread inward, up to 6.72%. The normalization
+repair enables noiseless solves, and all 51 positive-MAD controls reproduce the
+old numerical outputs bitwise. Required synthetic solves still hit 300 iterations.
+The domain excludes 11.45–11.47% of the original coma brightness and 25.38% for
+the fixed offset stress case; that offset has an irreducible 29.01% image-error
+floor, independently failing both declared image-error limits. The test used
+174 estimator calls in 72.66 s, with zero new PTC passes or trajectories.
+All prior packets/products and protected archives remain unchanged. The next
+owner decision may separate central source-evidence eligibility from model
+extent and resolve reconstruction fidelity/completion. No automatic radius,
+threshold or solver sweep, full trajectory, new 129081 comparison, Unity,
+production or qualification follows. The earlier full-domain rejection remains
+preserved; its broad return-to-contract recommendation is narrowed by this
+new spatial evidence.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the

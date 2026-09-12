@@ -1,0 +1,32 @@
+{
+  "frozen_source_input_files": 44,
+  "run_payloads": 147,
+  "recomputed_selected_supports": 174,
+  "recomputed_objectives_gradients": 128,
+  "positive_MAD_control_matches": 51,
+  "transform_and_masks_unchanged": true,
+  "zero_MAD_normalization_available": true,
+  "no_new_PTC_or_parent_calls": true,
+  "new_cleaning_passes": 0,
+  "full_trajectories": 0,
+  "preserved_previous_packet_payloads": [
+    23,
+    49,
+    13
+  ],
+  "frozen_ordinary_MAP_payloads": 57,
+  "protected_worktrees": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor",
+      "status": "?? SCI-FRUIT-v0.1-ODQ-001F-r0.8-owner-review.tar.gz\n?? SCI-FRUIT-v0.1-empirical-lane-gate-0-r0.1-owner-review.tar.gz\n",
+      "archives": "presence/status only; no read/hash/unpack"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/346d/citlali-refactor",
+      "status": "",
+      "archives": "presence/status only; no read/hash/unpack"
+    }
+  ],
+  "unexpected_execution_warnings_or_errors": false,
+  "unit_tests": 3
+}

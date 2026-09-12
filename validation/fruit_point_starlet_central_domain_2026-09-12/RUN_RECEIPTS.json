@@ -1,0 +1,316 @@
+{
+  "START.json": {
+    "utc": "2026-09-12T14:38:18.502243+00:00",
+    "freeze_sha256": "1682f6722a6244684b09c099c5f5b13e818ad4baa8e80071c26cd31e4ac1edcf",
+    "pid": 40098,
+    "new_cleaning_passes": 0
+  },
+  "SETUP.json": {
+    "calibration": [
+      {
+        "available": true,
+        "failures": [],
+        "bands": [
+          {
+            "band": 1,
+            "stratum": 0,
+            "eligible_pixels": 3182,
+            "scatter": 10.10729621429597,
+            "available": true
+          },
+          {
+            "band": 1,
+            "stratum": 1,
+            "eligible_pixels": 3179,
+            "scatter": 8.244439696625186,
+            "available": true
+          },
+          {
+            "band": 2,
+            "stratum": 0,
+            "eligible_pixels": 3182,
+            "scatter": 2.3324341948566323,
+            "available": true
+          },
+          {
+            "band": 2,
+            "stratum": 1,
+            "eligible_pixels": 3179,
+            "scatter": 2.1898215627949904,
+            "available": true
+          },
+          {
+            "band": 3,
+            "stratum": 0,
+            "eligible_pixels": 3182,
+            "scatter": 1.0177155971745944,
+            "available": true
+          },
+          {
+            "band": 3,
+            "stratum": 1,
+            "eligible_pixels": 3179,
+            "scatter": 0.9486991172246965,
+            "available": true
+          },
+          {
+            "band": 4,
+            "stratum": 0,
+            "eligible_pixels": 2865,
+            "scatter": 0.4014541157512361,
+            "available": true
+          },
+          {
+            "band": 4,
+            "stratum": 1,
+            "eligible_pixels": 3178,
+            "scatter": 0.4848037551213856,
+            "available": true
+          },
+          {
+            "band": 5,
+            "stratum": 0,
+            "eligible_pixels": 2865,
+            "scatter": 0.29229418908200683,
+            "available": true
+          },
+          {
+            "band": 5,
+            "stratum": 1,
+            "eligible_pixels": 3178,
+            "scatter": 0.27133504309410483,
+            "available": true
+          }
+        ],
+        "q_median": 503.0,
+        "background": [
+          0.10093967720069869,
+          0.004072165013871578,
+          0.24502929228350032
+        ],
+        "eligible_D_per_band": [
+          6361,
+          6361,
+          6361,
+          6043,
+          6043
+        ],
+        "outer_MAD": 13.037640595444243
+      },
+      {
+        "available": true,
+        "failures": [],
+        "bands": [
+          {
+            "band": 1,
+            "stratum": 0,
+            "eligible_pixels": 3141,
+            "scatter": 19.399106667043448,
+            "available": true
+          },
+          {
+            "band": 1,
+            "stratum": 1,
+            "eligible_pixels": 3128,
+            "scatter": 14.51735805250501,
+            "available": true
+          },
+          {
+            "band": 2,
+            "stratum": 0,
+            "eligible_pixels": 2974,
+            "scatter": 4.488099125401834,
+            "available": true
+          },
+          {
+            "band": 2,
+            "stratum": 1,
+            "eligible_pixels": 3128,
+            "scatter": 3.576043915592008,
+            "available": true
+          },
+          {
+            "band": 3,
+            "stratum": 0,
+            "eligible_pixels": 2307,
+            "scatter": 1.8382312942786763,
+            "available": true
+          },
+          {
+            "band": 3,
+            "stratum": 1,
+            "eligible_pixels": 3113,
+            "scatter": 1.6365485569600198,
+            "available": true
+          },
+          {
+            "band": 4,
+            "stratum": 0,
+            "eligible_pixels": 703,
+            "scatter": 0.9075811407418243,
+            "available": true
+          },
+          {
+            "band": 4,
+            "stratum": 1,
+            "eligible_pixels": 1614,
+            "scatter": 0.7717728786854271,
+            "available": true
+          },
+          {
+            "band": 5,
+            "stratum": 0,
+            "eligible_pixels": 703,
+            "scatter": 0.7391956658799935,
+            "available": true
+          },
+          {
+            "band": 5,
+            "stratum": 1,
+            "eligible_pixels": 1614,
+            "scatter": 0.8392134246620371,
+            "available": true
+          }
+        ],
+        "q_median": 105.0,
+        "background": [
+          -0.07534665720631514,
+          0.41582818525116283,
+          0.34855785677211515
+        ],
+        "eligible_D_per_band": [
+          6269,
+          6102,
+          5420,
+          2317,
+          2317
+        ],
+        "outer_MAD": 21.76897626683597
+      },
+      {
+        "available": true,
+        "failures": [],
+        "bands": [
+          {
+            "band": 1,
+            "stratum": 0,
+            "eligible_pixels": 3231,
+            "scatter": 11.445975257586314,
+            "available": true
+          },
+          {
+            "band": 1,
+            "stratum": 1,
+            "eligible_pixels": 3130,
+            "scatter": 8.970629908231542,
+            "available": true
+          },
+          {
+            "band": 2,
+            "stratum": 0,
+            "eligible_pixels": 3231,
+            "scatter": 2.9973827617177,
+            "available": true
+          },
+          {
+            "band": 2,
+            "stratum": 1,
+            "eligible_pixels": 3130,
+            "scatter": 2.373654894803025,
+            "available": true
+          },
+          {
+            "band": 3,
+            "stratum": 0,
+            "eligible_pixels": 3231,
+            "scatter": 1.23765661172584,
+            "available": true
+          },
+          {
+            "band": 3,
+            "stratum": 1,
+            "eligible_pixels": 3130,
+            "scatter": 1.1286746409132276,
+            "available": true
+          },
+          {
+            "band": 4,
+            "stratum": 0,
+            "eligible_pixels": 2692,
+            "scatter": 0.567731040654203,
+            "available": true
+          },
+          {
+            "band": 4,
+            "stratum": 1,
+            "eligible_pixels": 3033,
+            "scatter": 0.48215245267773493,
+            "available": true
+          },
+          {
+            "band": 5,
+            "stratum": 0,
+            "eligible_pixels": 2692,
+            "scatter": 0.42154081504956115,
+            "available": true
+          },
+          {
+            "band": 5,
+            "stratum": 1,
+            "eligible_pixels": 3033,
+            "scatter": 0.4872102574316136,
+            "available": true
+          }
+        ],
+        "q_median": 127.0,
+        "background": [
+          0.08048595820500953,
+          -0.19947653468371868,
+          -0.15576536463073254
+        ],
+        "eligible_D_per_band": [
+          6361,
+          6361,
+          6361,
+          5725,
+          5725
+        ],
+        "outer_MAD": 16.675395444982787
+      }
+    ],
+    "setup_seconds": 0.08196875010617077,
+    "central_radius": 60.0,
+    "full_D_pixels": [
+      6361,
+      6289,
+      6361
+    ],
+    "central_D_pixels": [
+      2821,
+      2821,
+      2821
+    ],
+    "solver_normalization_fallback": [
+      13.037640595444243,
+      21.76897626683597,
+      16.675395444982787
+    ]
+  },
+  "THREAD_POOLS.json": {
+    "pools": [],
+    "requested_environment": {
+      "OPENBLAS_NUM_THREADS": "4",
+      "OMP_NUM_THREADS": "4",
+      "VECLIB_MAXIMUM_THREADS": "4"
+    }
+  },
+  "COMPLETE.json": {
+    "cases": 29,
+    "estimator_calls": 174,
+    "new_cleaning_passes": 0,
+    "full_trajectories": 0,
+    "seconds": 72.65837354213,
+    "peak_rss_bytes": 727302144,
+    "output_bytes": 28310839
+  }
+}

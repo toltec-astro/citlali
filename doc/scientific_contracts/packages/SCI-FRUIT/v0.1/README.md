@@ -2,20 +2,21 @@
 
 Status: generic SCI-FRUIT-NORMATIVE-CORE v0.1/r0.4 and ordinary-MAP scientific
 definition r0.4 remain accepted and frozen. The weighting exploration is closed.
-The latest [preliminary starlet screen](../../../../../validation/fruit_point_starlet_preliminary_2026-09-11/SCIENTIFIC_REPORT.md)
-**rejects this candidate**: admitted source models in 5/6 null cases and 3/3
-background cases, plus unavailable required source solves. One new 4× coma
-bootstrap establishes the intended detectable regime; no full trajectories ran.
-Required noiseless recovery/phase checks remain unavailable because the declared
-normalization is zero. Both RBF candidates and the independent Gaussian candidate
-remain rejected. The prior positional-prior screen retains its revise decision
-and conditional association benefit. Previous results are preserved. A new
-estimator or changed screen needs a separate owner decision; returning to a
-bounded POINT reference contract remains an option. 129081 is historically
-characterized and reserved for new feedback comparisons. Production adoption,
-qualification, Unity activity and a new independent-author dispatch remain
-unavailable.
-Updated: 2026-09-11.
+The latest [matched central-domain starlet test](../../../../../validation/fruit_point_starlet_central_domain_2026-09-12/SCIENTIFIC_REPORT.md)
+**supports the edge/domain hypothesis**: the fixed central domain removes all
+observed null/background admissions. It does not accept the tested 60-arcsec
+reconstruction candidate: required source solves remain unavailable, and the
+offset coma loses too much supported structure. The zero-MAD normalization is
+explicitly repaired for the comparison; 51 nonzero-MAD controls match the prior
+outputs bitwise. There were 174 estimator calls and zero new cleaning passes.
+Both RBF candidates, the independent Gaussian candidate and the original
+full-domain starlet candidate remain rejected. The positional-prior screen
+retains its prior limited result. A new bounded decision may separate central
+source evidence from model extent and address reconstruction fidelity/completion.
+Previous products are preserved. 129081 remains historically characterized and
+reserved for new feedback comparisons. Production adoption, qualification,
+Unity activity and independent-author dispatch remain unavailable.
+Updated: 2026-09-12.
 
 ## Program Adherence And Prior-Work Recovery
 
@@ -45,6 +46,7 @@ no numerical method or new method-specific author dispatch.
 
 ## Locked Scientific Definition And Remaining Review
 
+- [Completed central-domain test: edge hypothesis supported; 60-arcsec reconstruction candidate not accepted](../../../../../validation/fruit_point_starlet_central_domain_2026-09-12/SCIENTIFIC_REPORT.md)
 - [Completed preliminary starlet screen: reject this candidate; one brighter-coma bootstrap](../../../../../validation/fruit_point_starlet_preliminary_2026-09-11/SCIENTIFIC_REPORT.md)
 - [RBF admission and processed-template audit: causal interpretation corrected, rejection retained](../../../../../validation/fruit_point_rbf_admission_audit_2026-09-11/REPORT.md)
 - [Original starlet proposal, subsequently approved and now closed](../../../../../validation/fruit_point_rbf_admission_audit_2026-09-11/STARLET_SCREEN_PROPOSAL.md)

@@ -1,0 +1,7843 @@
+{
+  "rings": [
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 1,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 0,
+      "selected": 0,
+      "rate": null,
+      "abs_standardized_quantiles": null,
+      "standardized_spatial_MAD": null,
+      "assigned_sigma": 10.10729621429597,
+      "Q_quantiles": null
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 1,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 709,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6114917583634102,
+        1.6962714716888996,
+        2.1597288681661895,
+        2.6521031555931067,
+        3.4881157117959027,
+        3.653731820131424
+      ],
+      "standardized_spatial_MAD": 0.902167380535738,
+      "assigned_sigma": 8.244439696625186,
+      "Q_quantiles": [
+        552.0,
+        741.0,
+        1016.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 1,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 284,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7002915584909196,
+        1.7714096253701688,
+        2.10007727471693,
+        2.7495503938515937,
+        3.5138031392064404,
+        3.523694516650845
+      ],
+      "standardized_spatial_MAD": 1.0333528845889501,
+      "assigned_sigma": 10.10729621429597,
+      "Q_quantiles": [
+        357.0,
+        471.5,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 1,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1828,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6875982603169077,
+        1.8096759733051038,
+        2.163455929926923,
+        2.9465745820902756,
+        4.158944235524467,
+        4.543794021481192
+      ],
+      "standardized_spatial_MAD": 1.0125338259050405,
+      "assigned_sigma": 8.244439696625186,
+      "Q_quantiles": [
+        504.0,
+        621.0,
+        990.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 1,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2898,
+      "selected": 1,
+      "rate": 0.0003450655624568668,
+      "abs_standardized_quantiles": [
+        0.6684919857974024,
+        1.792599953498651,
+        2.2164702903415594,
+        3.1164097224124734,
+        4.679393125561665,
+        5.314377070793674
+      ],
+      "standardized_spatial_MAD": 0.9981563248550999,
+      "assigned_sigma": 10.10729621429597,
+      "Q_quantiles": [
+        145.0,
+        406.0,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 1,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 642,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7402554623612477,
+        1.8950694705742055,
+        2.2205092928900507,
+        2.9356032301810355,
+        3.9755183990265293,
+        4.0281055314376095
+      ],
+      "standardized_spatial_MAD": 1.1069281235593975,
+      "assigned_sigma": 8.244439696625186,
+      "Q_quantiles": [
+        504.0,
+        542.0,
+        726.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 2,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 0,
+      "selected": 0,
+      "rate": null,
+      "abs_standardized_quantiles": null,
+      "standardized_spatial_MAD": null,
+      "assigned_sigma": 2.3324341948566323,
+      "Q_quantiles": null
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 2,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 709,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7111247476442422,
+        1.5637999514904035,
+        1.8645287648616753,
+        2.5550828166289445,
+        2.8969721342681445,
+        2.952738459767685
+      ],
+      "standardized_spatial_MAD": 1.0463900757830995,
+      "assigned_sigma": 2.1898215627949904,
+      "Q_quantiles": [
+        552.0,
+        741.0,
+        1016.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 2,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 284,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6810198115791154,
+        1.9501773818250248,
+        2.1588110341264604,
+        2.4960135459176924,
+        3.1524403529669263,
+        3.1670796331803035
+      ],
+      "standardized_spatial_MAD": 1.0536704140198272,
+      "assigned_sigma": 2.3324341948566323,
+      "Q_quantiles": [
+        357.0,
+        471.5,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 2,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1828,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6536931448758422,
+        1.6067493419933903,
+        1.9494186135105358,
+        2.5742326307151693,
+        3.2203506878790367,
+        3.9750228559507366
+      ],
+      "standardized_spatial_MAD": 0.9742784316442982,
+      "assigned_sigma": 2.1898215627949904,
+      "Q_quantiles": [
+        504.0,
+        621.0,
+        990.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 2,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2898,
+      "selected": 3,
+      "rate": 0.0010351966873706005,
+      "abs_standardized_quantiles": [
+        0.6752136609826025,
+        1.815660349474169,
+        2.2789022939411883,
+        3.4364007361033666,
+        5.000650824376311,
+        6.0309737365859934
+      ],
+      "standardized_spatial_MAD": 0.9980642246706869,
+      "assigned_sigma": 2.3324341948566323,
+      "Q_quantiles": [
+        145.0,
+        406.0,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 2,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 642,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7124023199886489,
+        1.8155075455341902,
+        2.2701211095956424,
+        3.284965466962875,
+        4.206025613109922,
+        4.42447630462665
+      ],
+      "standardized_spatial_MAD": 1.0614304590505261,
+      "assigned_sigma": 2.1898215627949904,
+      "Q_quantiles": [
+        504.0,
+        542.0,
+        726.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 3,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 0,
+      "selected": 0,
+      "rate": null,
+      "abs_standardized_quantiles": null,
+      "standardized_spatial_MAD": null,
+      "assigned_sigma": 1.0177155971745944,
+      "Q_quantiles": null
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 3,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 709,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6765185930453983,
+        1.7916257157365407,
+        2.308478471904289,
+        3.0579944005866055,
+        3.332884226965406,
+        3.39276595445475
+      ],
+      "standardized_spatial_MAD": 0.9894660731256055,
+      "assigned_sigma": 0.9486991172246965,
+      "Q_quantiles": [
+        552.0,
+        741.0,
+        1016.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 3,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 284,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7040017870183567,
+        1.5251792127921302,
+        1.7671057681692495,
+        2.072630227492471,
+        2.410439279589964,
+        2.4800083401190363
+      ],
+      "standardized_spatial_MAD": 1.0190041228157893,
+      "assigned_sigma": 1.0177155971745944,
+      "Q_quantiles": [
+        357.0,
+        471.5,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 3,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1828,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6547655171325304,
+        1.5223453747257458,
+        1.7747883557003488,
+        2.2107270944086466,
+        2.7888419552795094,
+        2.9075366646740752
+      ],
+      "standardized_spatial_MAD": 0.9778049374878037,
+      "assigned_sigma": 0.9486991172246965,
+      "Q_quantiles": [
+        504.0,
+        621.0,
+        990.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 3,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2898,
+      "selected": 2,
+      "rate": 0.0006901311249137336,
+      "abs_standardized_quantiles": [
+        0.6715178955049819,
+        1.640080623473914,
+        2.0652024246555776,
+        3.103152462308431,
+        4.675886715630403,
+        5.2323173874369635
+      ],
+      "standardized_spatial_MAD": 0.999234909252234,
+      "assigned_sigma": 1.0177155971745944,
+      "Q_quantiles": [
+        145.0,
+        406.0,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 3,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 642,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7121436093788616,
+        1.6065258000278457,
+        1.947484527990876,
+        2.637699319739222,
+        3.510356745179852,
+        3.861159318751131
+      ],
+      "standardized_spatial_MAD": 1.0518368013664798,
+      "assigned_sigma": 0.9486991172246965,
+      "Q_quantiles": [
+        504.0,
+        542.0,
+        726.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 4,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 0,
+      "selected": 0,
+      "rate": null,
+      "abs_standardized_quantiles": null,
+      "standardized_spatial_MAD": null,
+      "assigned_sigma": 0.4014541157512361,
+      "Q_quantiles": null
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 4,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 709,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.9559650580538234,
+        1.7816378243767608,
+        1.983182306944026,
+        2.140431760462086,
+        2.2147307336321145,
+        2.2230581581922015
+      ],
+      "standardized_spatial_MAD": 1.066839772799779,
+      "assigned_sigma": 0.4848037551213856,
+      "Q_quantiles": [
+        552.0,
+        741.0,
+        1016.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 4,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 284,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7379392770805264,
+        2.4348571599145763,
+        2.902640429880034,
+        3.3119396083544106,
+        3.3849697691514105,
+        3.385940827554354
+      ],
+      "standardized_spatial_MAD": 1.1611581067563375,
+      "assigned_sigma": 0.4014541157512361,
+      "Q_quantiles": [
+        357.0,
+        471.5,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 4,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1828,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6330838115466185,
+        1.5336024179454402,
+        1.8966728554945937,
+        2.44039392563511,
+        2.817718591865993,
+        2.8560322068509345
+      ],
+      "standardized_spatial_MAD": 0.9183216388325117,
+      "assigned_sigma": 0.4848037551213856,
+      "Q_quantiles": [
+        504.0,
+        621.0,
+        990.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 4,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2581,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.668093845503106,
+        1.5078707597892302,
+        1.7397022507126807,
+        2.164153322775009,
+        2.4400961228991886,
+        2.5752992402849806
+      ],
+      "standardized_spatial_MAD": 0.9844139394537936,
+      "assigned_sigma": 0.4014541157512361,
+      "Q_quantiles": [
+        212.0,
+        414.0,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 4,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 641,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5832788292108559,
+        1.2131352296588718,
+        1.3932645426666794,
+        1.859647568583114,
+        2.1545933386394953,
+        2.1668486739390187
+      ],
+      "standardized_spatial_MAD": 0.8218911323115505,
+      "assigned_sigma": 0.4848037551213856,
+      "Q_quantiles": [
+        504.0,
+        542.0,
+        726.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 5,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 0,
+      "selected": 0,
+      "rate": null,
+      "abs_standardized_quantiles": null,
+      "standardized_spatial_MAD": null,
+      "assigned_sigma": 0.29229418908200683,
+      "Q_quantiles": null
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 5,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 709,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7438455404207092,
+        1.831818196485041,
+        1.90940494619555,
+        1.9846391895473898,
+        1.9983001239569345,
+        2.001574928239828
+      ],
+      "standardized_spatial_MAD": 1.2541636258635234,
+      "assigned_sigma": 0.27133504309410483,
+      "Q_quantiles": [
+        552.0,
+        741.0,
+        1016.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 5,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 284,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6259402851462192,
+        1.229284250250143,
+        1.4617621349000176,
+        1.5989491840649788,
+        1.6251645691670238,
+        1.6307696252205652
+      ],
+      "standardized_spatial_MAD": 0.5079397460891454,
+      "assigned_sigma": 0.29229418908200683,
+      "Q_quantiles": [
+        357.0,
+        471.5,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 5,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1828,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6514253037827744,
+        1.3566616643628229,
+        1.5057258657972217,
+        1.6847216992369527,
+        1.7573884428736462,
+        1.762968880567
+      ],
+      "standardized_spatial_MAD": 0.9422672731787696,
+      "assigned_sigma": 0.27133504309410483,
+      "Q_quantiles": [
+        504.0,
+        621.0,
+        990.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 5,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2581,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6605602000194366,
+        1.3025364016291825,
+        1.4465958411514837,
+        1.6825026547177477,
+        1.7775613172002913,
+        1.788738734270854
+      ],
+      "standardized_spatial_MAD": 1.0326732468942252,
+      "assigned_sigma": 0.29229418908200683,
+      "Q_quantiles": [
+        212.0,
+        414.0,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 5,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 641,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.771040595546983,
+        1.3802995559008329,
+        1.5906894684103154,
+        1.8735646019886585,
+        1.9133712896908335,
+        1.9153155121066308
+      ],
+      "standardized_spatial_MAD": 1.0310604718888403,
+      "assigned_sigma": 0.27133504309410483,
+      "Q_quantiles": [
+        504.0,
+        542.0,
+        726.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 1,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 39,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6000239755543453,
+        1.3683933662854397,
+        1.5093635660788738,
+        1.6618601788466985,
+        1.7364038935073653,
+        1.7446865284696609
+      ],
+      "standardized_spatial_MAD": 0.8929105772022569,
+      "assigned_sigma": 19.399106667043448,
+      "Q_quantiles": [
+        69.0,
+        97.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 1,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 670,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6672975163782278,
+        1.5608793219543404,
+        1.876286809837103,
+        2.707541393554808,
+        3.732322493516495,
+        4.020906177829847
+      ],
+      "standardized_spatial_MAD": 0.9768596764214539,
+      "assigned_sigma": 14.51735805250501,
+      "Q_quantiles": [
+        106.0,
+        169.0,
+        289.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 1,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 645,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7124232007299002,
+        1.6993846267557606,
+        2.1283926304365637,
+        3.137900572801894,
+        3.4823875145343224,
+        3.77241517308375
+      ],
+      "standardized_spatial_MAD": 1.0578205016007423,
+      "assigned_sigma": 19.399106667043448,
+      "Q_quantiles": [
+        30.0,
+        90.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 1,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1467,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6661836836584184,
+        1.751468516959397,
+        2.1164016942459525,
+        2.9144383645908856,
+        3.9057237303778964,
+        4.063452995846221
+      ],
+      "standardized_spatial_MAD": 1.002215993699304,
+      "assigned_sigma": 14.51735805250501,
+      "Q_quantiles": [
+        106.0,
+        137.0,
+        292.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 1,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2457,
+      "selected": 10,
+      "rate": 0.00407000407000407,
+      "abs_standardized_quantiles": [
+        0.6655634930255759,
+        1.801294368315272,
+        2.273929548905727,
+        3.3306947106375246,
+        5.828387138651068,
+        6.241652522396928
+      ],
+      "standardized_spatial_MAD": 0.9830378914077476,
+      "assigned_sigma": 19.399106667043448,
+      "Q_quantiles": [
+        13.0,
+        71.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 1,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 991,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6893463073453583,
+        1.7574278913661083,
+        2.2089111431829176,
+        3.0976223022681832,
+        3.7633680954786133,
+        4.075049466347759
+      ],
+      "standardized_spatial_MAD": 1.0234378194173073,
+      "assigned_sigma": 14.51735805250501,
+      "Q_quantiles": [
+        106.0,
+        124.0,
+        235.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 2,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 39,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.47583329291257537,
+        1.4076306054905627,
+        2.0751943245508335,
+        2.2318585980793064,
+        2.3096688822253375,
+        2.3183144693526736
+      ],
+      "standardized_spatial_MAD": 0.8003078930780979,
+      "assigned_sigma": 4.488099125401834,
+      "Q_quantiles": [
+        69.0,
+        97.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 2,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 670,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6329124928752916,
+        1.5398260412986629,
+        1.7852929414682315,
+        2.5154000479964687,
+        3.320360883871293,
+        3.5994060095235563
+      ],
+      "standardized_spatial_MAD": 0.9406495145085221,
+      "assigned_sigma": 3.576043915592008,
+      "Q_quantiles": [
+        106.0,
+        169.0,
+        289.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 2,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 645,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6240214695919425,
+        1.586983629100873,
+        2.0711916281835703,
+        2.6739852120484024,
+        3.3803165191326854,
+        3.4032972238624666
+      ],
+      "standardized_spatial_MAD": 0.9313217705451372,
+      "assigned_sigma": 4.488099125401834,
+      "Q_quantiles": [
+        30.0,
+        90.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 2,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1467,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6728007721148913,
+        1.7723802611871196,
+        2.078133036870576,
+        2.675110141716196,
+        3.7375220102581594,
+        4.108888421336817
+      ],
+      "standardized_spatial_MAD": 0.9977893998856207,
+      "assigned_sigma": 3.576043915592008,
+      "Q_quantiles": [
+        106.0,
+        137.0,
+        292.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 2,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2290,
+      "selected": 1,
+      "rate": 0.0004366812227074236,
+      "abs_standardized_quantiles": [
+        0.6954378417230727,
+        1.9317805326961568,
+        2.43772400976664,
+        3.442537911065306,
+        4.136247711199007,
+        5.1006442397968526
+      ],
+      "standardized_spatial_MAD": 1.0191204085599344,
+      "assigned_sigma": 4.488099125401834,
+      "Q_quantiles": [
+        15.0,
+        73.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 2,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 991,
+      "selected": 1,
+      "rate": 0.0010090817356205853,
+      "abs_standardized_quantiles": [
+        0.70427299559299,
+        1.9026963127982692,
+        2.469950212602967,
+        3.638402702718451,
+        4.631448427681605,
+        5.027907026857759
+      ],
+      "standardized_spatial_MAD": 1.0426655347090974,
+      "assigned_sigma": 3.576043915592008,
+      "Q_quantiles": [
+        106.0,
+        124.0,
+        235.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 3,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 39,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.9057424966975011,
+        1.7817149294776813,
+        1.9353004796051252,
+        2.0549792371961635,
+        2.1051795799795414,
+        2.1107573958443604
+      ],
+      "standardized_spatial_MAD": 1.027489281909532,
+      "assigned_sigma": 1.8382312942786763,
+      "Q_quantiles": [
+        69.0,
+        97.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 3,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 670,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6982663743988371,
+        1.4921719404729188,
+        1.753215984509048,
+        2.0804153427398395,
+        2.3270929611177857,
+        2.40842233057852
+      ],
+      "standardized_spatial_MAD": 1.0494786440829087,
+      "assigned_sigma": 1.6365485569600198,
+      "Q_quantiles": [
+        106.0,
+        169.0,
+        289.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 3,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 559,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5855031251578298,
+        1.694870541256714,
+        2.0183851234803503,
+        2.5304304161134317,
+        2.700796764361932,
+        2.7176164163958427
+      ],
+      "standardized_spatial_MAD": 0.8788375650035566,
+      "assigned_sigma": 1.8382312942786763,
+      "Q_quantiles": [
+        32.0,
+        92.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 3,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1462,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6205263249835586,
+        1.6202738682591422,
+        1.9847344219538514,
+        2.5006340444424677,
+        2.908451626721627,
+        2.98688059165658
+      ],
+      "standardized_spatial_MAD": 0.9241282305508564,
+      "assigned_sigma": 1.6365485569600198,
+      "Q_quantiles": [
+        106.0,
+        137.0,
+        292.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 3,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 1709,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.703742763784743,
+        1.9563590821764825,
+        2.5348995155743994,
+        3.4302156987134405,
+        4.243586327072495,
+        4.473007384674203
+      ],
+      "standardized_spatial_MAD": 1.0367479525380623,
+      "assigned_sigma": 1.8382312942786763,
+      "Q_quantiles": [
+        28.0,
+        80.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 3,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 981,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7280778558497423,
+        2.006919555869756,
+        2.4326561348593136,
+        3.4284320661570375,
+        4.515818182046646,
+        4.563476175906116
+      ],
+      "standardized_spatial_MAD": 1.070952872215934,
+      "assigned_sigma": 1.6365485569600198,
+      "Q_quantiles": [
+        106.0,
+        124.0,
+        235.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 4,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 12,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7705795314064876,
+        1.2937563313060254,
+        1.4391394154965964,
+        1.5791997180269872,
+        1.610713286096325,
+        1.6142147936595845
+      ],
+      "standardized_spatial_MAD": 0.7629732814036596,
+      "assigned_sigma": 0.9075811407418243,
+      "Q_quantiles": [
+        69.0,
+        98.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 4,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 436,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5443364957423971,
+        2.1001132199424752,
+        2.326720521683531,
+        2.5344615538338027,
+        2.591853278785645,
+        2.598234014773182
+      ],
+      "standardized_spatial_MAD": 1.015329824760476,
+      "assigned_sigma": 0.7717728786854271,
+      "Q_quantiles": [
+        106.0,
+        174.0,
+        285.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 4,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 140,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6899481966402339,
+        1.26018507375248,
+        1.4328987216274143,
+        1.6091441903901447,
+        1.715844327004442,
+        1.726693644445964
+      ],
+      "standardized_spatial_MAD": 1.0314907937283133,
+      "assigned_sigma": 0.9075811407418243,
+      "Q_quantiles": [
+        59.0,
+        95.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 4,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 728,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6170917995634831,
+        1.6607197870582169,
+        2.089030438261258,
+        2.5307907614811174,
+        2.6427562245530263,
+        2.6613567408893664
+      ],
+      "standardized_spatial_MAD": 0.9232584809723927,
+      "assigned_sigma": 0.7717728786854271,
+      "Q_quantiles": [
+        106.0,
+        144.0,
+        289.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 4,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 551,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.8286546001788783,
+        1.8365465131788623,
+        2.100287371576588,
+        2.63774538962331,
+        2.740923355047964,
+        2.7603672351361417
+      ],
+      "standardized_spatial_MAD": 1.0092033580385735,
+      "assigned_sigma": 0.9075811407418243,
+      "Q_quantiles": [
+        38.0,
+        85.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 4,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 450,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.9110203892054943,
+        2.3309650630574756,
+        2.6927267752520803,
+        3.1230172712,
+        3.22350791327059,
+        3.237696887115461
+      ],
+      "standardized_spatial_MAD": 1.2482713314648182,
+      "assigned_sigma": 0.7717728786854271,
+      "Q_quantiles": [
+        106.0,
+        124.5,
+        210.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 5,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 12,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5240770271393276,
+        0.897597448153525,
+        0.9043325475466617,
+        0.9066251120643016,
+        0.9071409390807706,
+        0.9071982531937116
+      ],
+      "standardized_spatial_MAD": 0.4502106662581206,
+      "assigned_sigma": 0.7391956658799935,
+      "Q_quantiles": [
+        69.0,
+        98.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 5,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 436,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6413477336707105,
+        0.8653815066518651,
+        0.9015907950572691,
+        1.0144208032305535,
+        1.0426543381578381,
+        1.0512849961368043
+      ],
+      "standardized_spatial_MAD": 0.29202214423584155,
+      "assigned_sigma": 0.8392134246620371,
+      "Q_quantiles": [
+        106.0,
+        174.0,
+        285.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 5,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 140,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        1.4921965605460803,
+        1.902873746109775,
+        1.966595752907476,
+        2.0731890124638555,
+        2.093196984624188,
+        2.094977160805787
+      ],
+      "standardized_spatial_MAD": 0.8049963658410854,
+      "assigned_sigma": 0.7391956658799935,
+      "Q_quantiles": [
+        59.0,
+        95.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 5,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 728,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        1.01927117560122,
+        1.5073216419815232,
+        1.5680984531875641,
+        1.645872716217414,
+        1.7881891105349725,
+        1.790575354229092
+      ],
+      "standardized_spatial_MAD": 1.3309461639171465,
+      "assigned_sigma": 0.8392134246620371,
+      "Q_quantiles": [
+        106.0,
+        144.0,
+        289.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 5,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 551,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        1.5256548822970157,
+        2.225158606125071,
+        2.291732531615902,
+        2.3457959753437425,
+        2.3563297630219524,
+        2.359891939287419
+      ],
+      "standardized_spatial_MAD": 1.0239347628933073,
+      "assigned_sigma": 0.7391956658799935,
+      "Q_quantiles": [
+        38.0,
+        85.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 5,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 450,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.8276911939764227,
+        1.55677772406479,
+        1.8153364760079764,
+        1.9728904971956722,
+        2.0780572210954533,
+        2.0802553441572416
+      ],
+      "standardized_spatial_MAD": 1.034946705625579,
+      "assigned_sigma": 0.8392134246620371,
+      "Q_quantiles": [
+        106.0,
+        124.5,
+        210.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 1,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 61,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.586095113645746,
+        1.7352257508685383,
+        2.1800521121328047,
+        2.437972331545804,
+        2.5452877548312958,
+        2.5572116907519065
+      ],
+      "standardized_spatial_MAD": 0.980571342215744,
+      "assigned_sigma": 11.445975257586314,
+      "Q_quantiles": [
+        64.0,
+        114.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 1,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 648,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5749411162772271,
+        1.5394808837221428,
+        1.9367190475193192,
+        2.789316652963685,
+        4.207750463025582,
+        4.346780454009033
+      ],
+      "standardized_spatial_MAD": 0.8387800084350876,
+      "assigned_sigma": 8.970629908231542,
+      "Q_quantiles": [
+        128.0,
+        192.0,
+        363.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 1,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 677,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.682508575346789,
+        1.637682826907202,
+        2.021580546082169,
+        2.7027323578279487,
+        3.755243046781335,
+        4.333778480884001
+      ],
+      "standardized_spatial_MAD": 0.99371851430843,
+      "assigned_sigma": 11.445975257586314,
+      "Q_quantiles": [
+        52.0,
+        108.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 1,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1435,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6666781897070042,
+        1.6731133519334442,
+        2.0055999122801706,
+        2.7281771448516485,
+        3.3812105827340386,
+        3.5634392878608896
+      ],
+      "standardized_spatial_MAD": 0.9831342493956594,
+      "assigned_sigma": 8.970629908231542,
+      "Q_quantiles": [
+        128.0,
+        169.0,
+        338.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 1,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2493,
+      "selected": 1,
+      "rate": 0.00040112314480545525,
+      "abs_standardized_quantiles": [
+        0.6691053417521051,
+        1.7952265059773946,
+        2.1721536582249943,
+        2.9342805399106044,
+        4.3957293520586775,
+        5.109710679608406
+      ],
+      "standardized_spatial_MAD": 0.996559006429489,
+      "assigned_sigma": 11.445975257586314,
+      "Q_quantiles": [
+        26.0,
+        94.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 1,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 1047,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7579125815094346,
+        1.80438498610822,
+        2.1219052261434497,
+        2.994062066483776,
+        4.03268489689759,
+        4.959795332091867
+      ],
+      "standardized_spatial_MAD": 1.1301310010535581,
+      "assigned_sigma": 8.970629908231542,
+      "Q_quantiles": [
+        128.0,
+        149.0,
+        296.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 2,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 61,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5116766922941333,
+        1.379284251995334,
+        1.4505071086482104,
+        1.8709034944415126,
+        2.2055021009476077,
+        2.242679723892731
+      ],
+      "standardized_spatial_MAD": 0.7158447403487997,
+      "assigned_sigma": 2.9973827617177,
+      "Q_quantiles": [
+        64.0,
+        114.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 2,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 648,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6550735316073313,
+        1.5308127879755846,
+        1.8699013082779503,
+        2.4044829767624463,
+        2.9569045722328458,
+        2.9597340056032726
+      ],
+      "standardized_spatial_MAD": 0.9722461739954033,
+      "assigned_sigma": 2.373654894803025,
+      "Q_quantiles": [
+        128.0,
+        192.0,
+        363.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 2,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 677,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6647828284353636,
+        1.5544027256942474,
+        1.8635125028845774,
+        2.43450922736098,
+        3.0442352690859065,
+        3.2939445825543716
+      ],
+      "standardized_spatial_MAD": 0.9846976961441558,
+      "assigned_sigma": 2.9973827617177,
+      "Q_quantiles": [
+        52.0,
+        108.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 2,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1435,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6441347697163968,
+        1.569198183840036,
+        1.979765259321537,
+        2.7386693061384104,
+        3.5728568222134895,
+        3.7454037964212783
+      ],
+      "standardized_spatial_MAD": 0.9587398155029419,
+      "assigned_sigma": 2.373654894803025,
+      "Q_quantiles": [
+        128.0,
+        169.0,
+        338.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 2,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2493,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.686765672238451,
+        1.717087866747646,
+        2.143241511374291,
+        2.9914977475549507,
+        4.149082790306131,
+        4.449303664867112
+      ],
+      "standardized_spatial_MAD": 1.0093010938804268,
+      "assigned_sigma": 2.9973827617177,
+      "Q_quantiles": [
+        26.0,
+        94.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 2,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 1047,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7156760148200821,
+        1.8590430570069054,
+        2.2132047792185348,
+        2.8702437900395945,
+        3.564436905085835,
+        3.632975792353468
+      ],
+      "standardized_spatial_MAD": 1.0578688747723826,
+      "assigned_sigma": 2.373654894803025,
+      "Q_quantiles": [
+        128.0,
+        149.0,
+        296.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 3,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 61,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5150845800712487,
+        1.4102871965123536,
+        1.5238304465072239,
+        1.7240562917678557,
+        1.7416836395318964,
+        1.743642233727901
+      ],
+      "standardized_spatial_MAD": 0.7830996451388685,
+      "assigned_sigma": 1.23765661172584,
+      "Q_quantiles": [
+        64.0,
+        114.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 3,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 648,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5961830020152291,
+        1.4834730818581436,
+        1.6488741953932942,
+        1.9036177821691633,
+        2.092102041674201,
+        2.193917940232852
+      ],
+      "standardized_spatial_MAD": 0.8730783953752795,
+      "assigned_sigma": 1.1286746409132276,
+      "Q_quantiles": [
+        128.0,
+        192.0,
+        363.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 3,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 677,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6589299333679371,
+        1.8135758493856906,
+        2.132171595458523,
+        3.020917556403367,
+        3.3318456359306885,
+        3.3445910892463213
+      ],
+      "standardized_spatial_MAD": 0.9778526657878545,
+      "assigned_sigma": 1.23765661172584,
+      "Q_quantiles": [
+        52.0,
+        108.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 3,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1435,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6874351604922381,
+        1.6159955039506833,
+        1.9462558206375487,
+        2.6842444073285474,
+        3.3238212303872365,
+        3.5733190820599225
+      ],
+      "standardized_spatial_MAD": 1.0134607949949628,
+      "assigned_sigma": 1.1286746409132276,
+      "Q_quantiles": [
+        128.0,
+        169.0,
+        338.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 3,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2493,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6845293979949354,
+        1.9835654299254968,
+        2.3778658642966906,
+        3.183446229045113,
+        4.3534968350714305,
+        4.869398081335934
+      ],
+      "standardized_spatial_MAD": 0.9988330017199946,
+      "assigned_sigma": 1.23765661172584,
+      "Q_quantiles": [
+        26.0,
+        94.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 3,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 1047,
+      "selected": 1,
+      "rate": 0.0009551098376313276,
+      "abs_standardized_quantiles": [
+        0.6935554956167601,
+        1.6522965119449944,
+        2.1304460850040488,
+        3.130471744912908,
+        4.854041885480352,
+        5.122990302655275
+      ],
+      "standardized_spatial_MAD": 1.011407273169905,
+      "assigned_sigma": 1.1286746409132276,
+      "Q_quantiles": [
+        128.0,
+        149.0,
+        296.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 4,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 61,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.688445587023132,
+        1.3086943986371213,
+        1.429858454639303,
+        1.8370777339026585,
+        1.9222802900224982,
+        1.9317472407024807
+      ],
+      "standardized_spatial_MAD": 0.8700312276760177,
+      "assigned_sigma": 0.567731040654203,
+      "Q_quantiles": [
+        64.0,
+        114.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 4,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 648,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6282012048008375,
+        1.4858196557118137,
+        1.8262703358424497,
+        2.525214774680955,
+        2.7285944850153734,
+        2.7323070716237106
+      ],
+      "standardized_spatial_MAD": 0.9237394191147347,
+      "assigned_sigma": 0.48215245267773493,
+      "Q_quantiles": [
+        128.0,
+        192.0,
+        363.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 4,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 677,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6024236596973255,
+        1.5752983093925033,
+        1.8546150824686745,
+        2.4380346249880334,
+        2.678153305517047,
+        2.7065299763854433
+      ],
+      "standardized_spatial_MAD": 0.9162627075769243,
+      "assigned_sigma": 0.567731040654203,
+      "Q_quantiles": [
+        52.0,
+        108.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 4,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1435,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7006350267649755,
+        1.8623033315807633,
+        2.3186233393129068,
+        2.8000457572667017,
+        3.1740907357166868,
+        3.233805501864297
+      ],
+      "standardized_spatial_MAD": 1.0287755228130857,
+      "assigned_sigma": 0.48215245267773493,
+      "Q_quantiles": [
+        128.0,
+        169.0,
+        338.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 4,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 1954,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7064678872855391,
+        1.708917045414826,
+        2.1710697476514986,
+        3.0504851527461607,
+        3.62707094801861,
+        3.6894693747437954
+      ],
+      "standardized_spatial_MAD": 1.0510215334211739,
+      "assigned_sigma": 0.567731040654203,
+      "Q_quantiles": [
+        32.0,
+        96.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 4,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 950,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6707374174909384,
+        1.8419022140279753,
+        2.2729560726265694,
+        3.230346486208542,
+        4.032929821962662,
+        4.09442328929485
+      ],
+      "standardized_spatial_MAD": 0.9813363290860238,
+      "assigned_sigma": 0.48215245267773493,
+      "Q_quantiles": [
+        128.0,
+        149.0,
+        296.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 5,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 61,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.8017134610150295,
+        1.609284913793459,
+        1.7531429086952246,
+        1.85088039869869,
+        1.853292226965814,
+        1.8535602078843834
+      ],
+      "standardized_spatial_MAD": 0.7765097060594195,
+      "assigned_sigma": 0.42154081504956115,
+      "Q_quantiles": [
+        64.0,
+        114.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 5,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 648,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.48696222842893266,
+        1.2858338518022185,
+        1.4316339823575719,
+        1.558381735888895,
+        1.6050873560357692,
+        1.6142593406938415
+      ],
+      "standardized_spatial_MAD": 0.7219461372940951,
+      "assigned_sigma": 0.4872102574316136,
+      "Q_quantiles": [
+        128.0,
+        192.0,
+        363.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 5,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 677,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        1.1546717381078704,
+        1.8173939206064933,
+        1.9563113205624352,
+        2.2300804681374773,
+        2.29985176019433,
+        2.3084441245440166
+      ],
+      "standardized_spatial_MAD": 0.7319574312830451,
+      "assigned_sigma": 0.42154081504956115,
+      "Q_quantiles": [
+        52.0,
+        108.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 5,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1435,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.8165634978131378,
+        1.4418622354942305,
+        1.557351219464927,
+        1.7258948045802274,
+        1.9292847350834625,
+        1.9811534532881125
+      ],
+      "standardized_spatial_MAD": 1.2160256547939177,
+      "assigned_sigma": 0.4872102574316136,
+      "Q_quantiles": [
+        128.0,
+        169.0,
+        338.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 5,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 1954,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5771770227474071,
+        1.4018956752238427,
+        1.6118303143227843,
+        2.187019910078724,
+        2.305393098698489,
+        2.3199232749189105
+      ],
+      "standardized_spatial_MAD": 0.8709128956427918,
+      "assigned_sigma": 0.42154081504956115,
+      "Q_quantiles": [
+        32.0,
+        96.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 5,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 950,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.4709351690281122,
+        1.1872931476195852,
+        1.2421979587146552,
+        1.815378406772179,
+        1.9987886358710976,
+        2.0042921205765
+      ],
+      "standardized_spatial_MAD": 0.7214028703921016,
+      "assigned_sigma": 0.4872102574316136,
+      "Q_quantiles": [
+        128.0,
+        149.0,
+        296.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 1,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 0,
+      "selected": 0,
+      "rate": null,
+      "abs_standardized_quantiles": null,
+      "standardized_spatial_MAD": null,
+      "assigned_sigma": 10.10729621429597,
+      "Q_quantiles": null
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 1,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 709,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6111287901012996,
+        1.6548969825280961,
+        2.044827486562202,
+        2.7732702524761863,
+        3.524143601259009,
+        4.003444432394464
+      ],
+      "standardized_spatial_MAD": 0.9076782134255362,
+      "assigned_sigma": 8.244439696625186,
+      "Q_quantiles": [
+        552.0,
+        741.0,
+        1016.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 1,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 284,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.654679418826503,
+        1.845559592357175,
+        2.19887481193065,
+        2.7515328101053913,
+        3.8373823349828293,
+        4.145214964076312
+      ],
+      "standardized_spatial_MAD": 0.9710512830604909,
+      "assigned_sigma": 10.10729621429597,
+      "Q_quantiles": [
+        357.0,
+        471.5,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 1,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1828,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6967151007480505,
+        1.7618824768212091,
+        2.1404306091519656,
+        3.1543033105336478,
+        3.875193669993316,
+        4.674299370140502
+      ],
+      "standardized_spatial_MAD": 1.041120032058921,
+      "assigned_sigma": 8.244439696625186,
+      "Q_quantiles": [
+        504.0,
+        621.0,
+        990.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 1,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2898,
+      "selected": 2,
+      "rate": 0.0006901311249137336,
+      "abs_standardized_quantiles": [
+        0.6635654724836315,
+        1.7766082794388893,
+        2.270614669911281,
+        3.219407573418664,
+        4.66439854251328,
+        6.280805676279228
+      ],
+      "standardized_spatial_MAD": 0.9817152064691089,
+      "assigned_sigma": 10.10729621429597,
+      "Q_quantiles": [
+        145.0,
+        406.0,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 1,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 642,
+      "selected": 1,
+      "rate": 0.001557632398753894,
+      "abs_standardized_quantiles": [
+        0.8082751152482781,
+        1.994677604730248,
+        2.569251298747095,
+        3.6036550551798183,
+        4.806472406082139,
+        5.162762950376237
+      ],
+      "standardized_spatial_MAD": 1.1825497452778622,
+      "assigned_sigma": 8.244439696625186,
+      "Q_quantiles": [
+        504.0,
+        542.0,
+        726.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 2,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 0,
+      "selected": 0,
+      "rate": null,
+      "abs_standardized_quantiles": null,
+      "standardized_spatial_MAD": null,
+      "assigned_sigma": 2.3324341948566323,
+      "Q_quantiles": null
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 2,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 709,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.58205072070945,
+        1.5737468560351642,
+        1.864780827676526,
+        2.371734257377748,
+        3.202050487051208,
+        3.636515398621619
+      ],
+      "standardized_spatial_MAD": 0.8587733238213243,
+      "assigned_sigma": 2.1898215627949904,
+      "Q_quantiles": [
+        552.0,
+        741.0,
+        1016.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 2,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 284,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7788856261618904,
+        1.7186111312815737,
+        1.9756345426111135,
+        2.69973909340279,
+        3.041651154310539,
+        3.0839650111788934
+      ],
+      "standardized_spatial_MAD": 1.1822393324500986,
+      "assigned_sigma": 2.3324341948566323,
+      "Q_quantiles": [
+        357.0,
+        471.5,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 2,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1828,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7169836524225923,
+        1.7578589465724475,
+        2.1555974100526205,
+        2.7437845571899784,
+        3.5746449629988866,
+        3.9029445854389606
+      ],
+      "standardized_spatial_MAD": 1.0584447764428861,
+      "assigned_sigma": 2.1898215627949904,
+      "Q_quantiles": [
+        504.0,
+        621.0,
+        990.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 2,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2898,
+      "selected": 5,
+      "rate": 0.001725327812284334,
+      "abs_standardized_quantiles": [
+        0.73127139760888,
+        1.8815009296348775,
+        2.258829021815761,
+        3.1720839311748694,
+        5.403519772290764,
+        7.267576053103948
+      ],
+      "standardized_spatial_MAD": 1.0681099231256668,
+      "assigned_sigma": 2.3324341948566323,
+      "Q_quantiles": [
+        145.0,
+        406.0,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 2,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 642,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.8286121146585177,
+        1.8620225355784572,
+        2.1721245042583273,
+        2.7564225424137527,
+        3.59660879585023,
+        3.8253409277288197
+      ],
+      "standardized_spatial_MAD": 1.2111114260654992,
+      "assigned_sigma": 2.1898215627949904,
+      "Q_quantiles": [
+        504.0,
+        542.0,
+        726.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 3,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 0,
+      "selected": 0,
+      "rate": null,
+      "abs_standardized_quantiles": null,
+      "standardized_spatial_MAD": null,
+      "assigned_sigma": 1.0177155971745944,
+      "Q_quantiles": null
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 3,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 709,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5715084080045537,
+        1.666251575991552,
+        2.0116796522197116,
+        2.8259753873324045,
+        3.3962026659848625,
+        3.4567964269032134
+      ],
+      "standardized_spatial_MAD": 0.7997624420664342,
+      "assigned_sigma": 0.9486991172246965,
+      "Q_quantiles": [
+        552.0,
+        741.0,
+        1016.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 3,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 284,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6693463174682147,
+        1.611316191965363,
+        1.8492572461797019,
+        2.2392332124456247,
+        2.6555467526336116,
+        2.703952808935469
+      ],
+      "standardized_spatial_MAD": 0.9893130519411543,
+      "assigned_sigma": 1.0177155971745944,
+      "Q_quantiles": [
+        357.0,
+        471.5,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 3,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1828,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7889249793127695,
+        1.7303054322684046,
+        2.0262165075891176,
+        2.5030071557653466,
+        2.8010206398617057,
+        2.8522906877233463
+      ],
+      "standardized_spatial_MAD": 1.1573157548277737,
+      "assigned_sigma": 0.9486991172246965,
+      "Q_quantiles": [
+        504.0,
+        621.0,
+        990.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 3,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2898,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6435954390195116,
+        1.6671404670976195,
+        1.9687670923333058,
+        2.6081702507327287,
+        3.330920738854187,
+        3.5851639290825577
+      ],
+      "standardized_spatial_MAD": 0.9504376758611972,
+      "assigned_sigma": 1.0177155971745944,
+      "Q_quantiles": [
+        145.0,
+        406.0,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 3,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 642,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7310406873662141,
+        1.7760305065161792,
+        2.0411727166054887,
+        2.5675683464384718,
+        3.1485420739021217,
+        3.3622787366047184
+      ],
+      "standardized_spatial_MAD": 1.064442302102746,
+      "assigned_sigma": 0.9486991172246965,
+      "Q_quantiles": [
+        504.0,
+        542.0,
+        726.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 4,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 0,
+      "selected": 0,
+      "rate": null,
+      "abs_standardized_quantiles": null,
+      "standardized_spatial_MAD": null,
+      "assigned_sigma": 0.4014541157512361,
+      "Q_quantiles": null
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 4,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 709,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6051399149981734,
+        1.3894435138465193,
+        1.6387307171091323,
+        1.947106526098717,
+        2.027484035749214,
+        2.0364722790528402
+      ],
+      "standardized_spatial_MAD": 0.8966461745708264,
+      "assigned_sigma": 0.4848037551213856,
+      "Q_quantiles": [
+        552.0,
+        741.0,
+        1016.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 4,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 284,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6697430729963705,
+        1.6695415819346657,
+        1.8831662145372379,
+        2.3211779748603165,
+        2.492620517767555,
+        2.503197185710883
+      ],
+      "standardized_spatial_MAD": 1.0015147315338708,
+      "assigned_sigma": 0.4014541157512361,
+      "Q_quantiles": [
+        357.0,
+        471.5,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 4,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1828,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5392253056422875,
+        1.4692170319965394,
+        1.6755615697635138,
+        2.027988146535023,
+        2.1635755254455495,
+        2.271803250459791
+      ],
+      "standardized_spatial_MAD": 0.7966732986007379,
+      "assigned_sigma": 0.4848037551213856,
+      "Q_quantiles": [
+        504.0,
+        621.0,
+        990.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 4,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2581,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.9262634434223227,
+        2.886483838213072,
+        3.554307571871259,
+        4.229907095620669,
+        4.664737458172853,
+        4.717314176980088
+      ],
+      "standardized_spatial_MAD": 1.333073792225934,
+      "assigned_sigma": 0.4014541157512361,
+      "Q_quantiles": [
+        212.0,
+        414.0,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 4,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 641,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7117710580705608,
+        2.009029223514188,
+        2.6248024111026873,
+        3.3306267321386946,
+        3.5470203603055044,
+        3.5488982985341826
+      ],
+      "standardized_spatial_MAD": 1.00423795826037,
+      "assigned_sigma": 0.4848037551213856,
+      "Q_quantiles": [
+        504.0,
+        542.0,
+        726.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 5,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 0,
+      "selected": 0,
+      "rate": null,
+      "abs_standardized_quantiles": null,
+      "standardized_spatial_MAD": null,
+      "assigned_sigma": 0.29229418908200683,
+      "Q_quantiles": null
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 5,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 709,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.280879687216128,
+        0.7999365357776385,
+        0.9106226018823278,
+        1.0562336972223945,
+        1.1150138825399754,
+        1.163307242648717
+      ],
+      "standardized_spatial_MAD": 0.39570707639593994,
+      "assigned_sigma": 0.27133504309410483,
+      "Q_quantiles": [
+        552.0,
+        741.0,
+        1016.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 5,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 284,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        1.1903147046951839,
+        2.1875596378601987,
+        2.6868745074091116,
+        3.0666461663489866,
+        3.113340703174372,
+        3.117441139328663
+      ],
+      "standardized_spatial_MAD": 0.6990567827587071,
+      "assigned_sigma": 0.29229418908200683,
+      "Q_quantiles": [
+        357.0,
+        471.5,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 5,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1828,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.8352999665046865,
+        1.8246442337638724,
+        1.9791871076420786,
+        2.5236268437875276,
+        3.2382583841773815,
+        3.344819358669254
+      ],
+      "standardized_spatial_MAD": 0.8689295114098355,
+      "assigned_sigma": 0.27133504309410483,
+      "Q_quantiles": [
+        504.0,
+        621.0,
+        990.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 5,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2581,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        1.056811950025283,
+        2.6050573309955025,
+        2.9307672299439473,
+        3.5001215653552333,
+        3.6255611434684765,
+        3.6441007762412556
+      ],
+      "standardized_spatial_MAD": 1.4441441115753406,
+      "assigned_sigma": 0.29229418908200683,
+      "Q_quantiles": [
+        212.0,
+        414.0,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 5,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 641,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        1.0235551002770533,
+        1.9720144824722514,
+        2.134282123050213,
+        3.0728032522752784,
+        3.7985542117168323,
+        3.894008180626956
+      ],
+      "standardized_spatial_MAD": 1.1791758354476318,
+      "assigned_sigma": 0.27133504309410483,
+      "Q_quantiles": [
+        504.0,
+        542.0,
+        726.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 1,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 39,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5369896521352334,
+        1.7390742210285728,
+        1.9617546074960288,
+        2.796800318344811,
+        3.0838077518247275,
+        3.115697466655826
+      ],
+      "standardized_spatial_MAD": 0.7993672379777619,
+      "assigned_sigma": 19.399106667043448,
+      "Q_quantiles": [
+        69.0,
+        97.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 1,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 670,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.622817252338273,
+        1.634502733848485,
+        1.9536926033413453,
+        2.6559291078977307,
+        3.2696648156464905,
+        3.6233374207694373
+      ],
+      "standardized_spatial_MAD": 0.9268097210444797,
+      "assigned_sigma": 14.51735805250501,
+      "Q_quantiles": [
+        106.0,
+        169.0,
+        289.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 1,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 645,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6207824060468937,
+        1.5584539217358822,
+        1.8138009670061466,
+        2.681888793301581,
+        3.9681283482622813,
+        4.782478485894513
+      ],
+      "standardized_spatial_MAD": 0.9396757056148815,
+      "assigned_sigma": 19.399106667043448,
+      "Q_quantiles": [
+        30.0,
+        90.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 1,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1467,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6689093460675071,
+        1.6675197736709462,
+        2.0377017059507905,
+        2.8655699991394052,
+        4.2551371792407835,
+        4.517689457726469
+      ],
+      "standardized_spatial_MAD": 0.9884135494443158,
+      "assigned_sigma": 14.51735805250501,
+      "Q_quantiles": [
+        106.0,
+        137.0,
+        292.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 1,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2457,
+      "selected": 1,
+      "rate": 0.000407000407000407,
+      "abs_standardized_quantiles": [
+        0.6942094966662952,
+        1.8629298150220108,
+        2.315619198194848,
+        3.350814817974917,
+        4.339526279234439,
+        6.422621430716736
+      ],
+      "standardized_spatial_MAD": 1.0303605471044994,
+      "assigned_sigma": 19.399106667043448,
+      "Q_quantiles": [
+        13.0,
+        71.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 1,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 991,
+      "selected": 1,
+      "rate": 0.0010090817356205853,
+      "abs_standardized_quantiles": [
+        0.6750340737221864,
+        1.7717596977639478,
+        2.19360322879123,
+        2.8816201790385425,
+        4.772973310100773,
+        6.428312577399533
+      ],
+      "standardized_spatial_MAD": 0.9991051998172346,
+      "assigned_sigma": 14.51735805250501,
+      "Q_quantiles": [
+        106.0,
+        124.0,
+        235.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 2,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 39,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5920246500322051,
+        1.7429423184109185,
+        2.350739452898174,
+        2.4292746044444247,
+        2.4523349886103385,
+        2.454897253517662
+      ],
+      "standardized_spatial_MAD": 0.7638156399405086,
+      "assigned_sigma": 4.488099125401834,
+      "Q_quantiles": [
+        69.0,
+        97.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 2,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 670,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6585446568262822,
+        1.7319843292598167,
+        2.17138821999484,
+        2.787049611466575,
+        3.2498174656410352,
+        3.4114579724925806
+      ],
+      "standardized_spatial_MAD": 0.9784311172920956,
+      "assigned_sigma": 3.576043915592008,
+      "Q_quantiles": [
+        106.0,
+        169.0,
+        289.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 2,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 645,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6529829827876088,
+        1.6964205985902188,
+        1.9549441779958423,
+        2.7124886322858894,
+        4.216525386770372,
+        4.593687558968453
+      ],
+      "standardized_spatial_MAD": 0.9768624495032813,
+      "assigned_sigma": 4.488099125401834,
+      "Q_quantiles": [
+        30.0,
+        90.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 2,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1467,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6826883971359484,
+        1.7349018398420926,
+        2.064935362709123,
+        2.718813843361433,
+        3.4745470975553854,
+        4.047758303797671
+      ],
+      "standardized_spatial_MAD": 1.0227383814197162,
+      "assigned_sigma": 3.576043915592008,
+      "Q_quantiles": [
+        106.0,
+        137.0,
+        292.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 2,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2290,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7064239520792293,
+        1.9085640423547416,
+        2.241685760985754,
+        3.1041963566732163,
+        4.183944600004658,
+        4.714012744539622
+      ],
+      "standardized_spatial_MAD": 1.0506511240384524,
+      "assigned_sigma": 4.488099125401834,
+      "Q_quantiles": [
+        15.0,
+        73.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 2,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 991,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.8050227169914829,
+        1.9740459482908104,
+        2.376615634988199,
+        3.1624734020772363,
+        4.397827164930182,
+        4.683282388210481
+      ],
+      "standardized_spatial_MAD": 1.1827693037377385,
+      "assigned_sigma": 3.576043915592008,
+      "Q_quantiles": [
+        106.0,
+        124.0,
+        235.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 3,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 39,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.48495454027956325,
+        1.4163203910176698,
+        1.8119551567123802,
+        1.915828722976094,
+        1.9474033747106045,
+        1.950911669347772
+      ],
+      "standardized_spatial_MAD": 0.5940050515654239,
+      "assigned_sigma": 1.8382312942786763,
+      "Q_quantiles": [
+        69.0,
+        97.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 3,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 670,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.47347318892790846,
+        1.3089046628148684,
+        1.4608158629884298,
+        2.010666049856596,
+        2.383489849774519,
+        2.4296308621521967
+      ],
+      "standardized_spatial_MAD": 0.6936473863896929,
+      "assigned_sigma": 1.6365485569600198,
+      "Q_quantiles": [
+        106.0,
+        169.0,
+        289.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 3,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 559,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6829809883567062,
+        1.693137874808497,
+        1.9479309226540098,
+        2.6794176699287893,
+        3.200228302299185,
+        3.2818188431368744
+      ],
+      "standardized_spatial_MAD": 1.0032647061524544,
+      "assigned_sigma": 1.8382312942786763,
+      "Q_quantiles": [
+        32.0,
+        92.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 3,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1462,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6876221927023215,
+        1.8324366888942587,
+        2.211827700831755,
+        2.941886396715908,
+        3.566295622260531,
+        3.6746475231518874
+      ],
+      "standardized_spatial_MAD": 1.0182274309572197,
+      "assigned_sigma": 1.6365485569600198,
+      "Q_quantiles": [
+        106.0,
+        137.0,
+        292.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 3,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 1709,
+      "selected": 2,
+      "rate": 0.0011702750146284377,
+      "abs_standardized_quantiles": [
+        0.6417518584174182,
+        1.8647322000774302,
+        2.3466353129130764,
+        3.3893690101054315,
+        4.803274198995763,
+        5.029158906228339
+      ],
+      "standardized_spatial_MAD": 0.9811333485611244,
+      "assigned_sigma": 1.8382312942786763,
+      "Q_quantiles": [
+        28.0,
+        80.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 3,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 981,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6920086949509445,
+        1.87958298979121,
+        2.3684871760531543,
+        3.5634170333689625,
+        4.811764822879315,
+        4.891258560603553
+      ],
+      "standardized_spatial_MAD": 1.0579751042204257,
+      "assigned_sigma": 1.6365485569600198,
+      "Q_quantiles": [
+        106.0,
+        124.0,
+        235.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 4,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 12,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.27609053040251463,
+        0.5280333123734402,
+        0.5562874430201675,
+        0.5771810535705163,
+        0.5818821159443448,
+        0.5824044562081034
+      ],
+      "standardized_spatial_MAD": 0.4093318203747682,
+      "assigned_sigma": 0.9075811407418243,
+      "Q_quantiles": [
+        69.0,
+        98.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 4,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 436,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.21683921446911442,
+        0.7026167729810491,
+        0.8095709085522427,
+        1.1996714945051394,
+        1.4362942127998497,
+        1.4829713166854759
+      ],
+      "standardized_spatial_MAD": 0.31300967028076926,
+      "assigned_sigma": 0.7717728786854271,
+      "Q_quantiles": [
+        106.0,
+        174.0,
+        285.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 4,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 140,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5761472774610688,
+        1.3536754664340007,
+        1.413941630263947,
+        1.4976510023531722,
+        1.5041696386291712,
+        1.5045617867230854
+      ],
+      "standardized_spatial_MAD": 0.7709716081595164,
+      "assigned_sigma": 0.9075811407418243,
+      "Q_quantiles": [
+        59.0,
+        95.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 4,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 728,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5191763847398732,
+        1.3534044790369961,
+        1.5946880378438135,
+        1.8561157822597767,
+        2.0595235749734946,
+        2.0780337958078983
+      ],
+      "standardized_spatial_MAD": 0.7033147917424939,
+      "assigned_sigma": 0.7717728786854271,
+      "Q_quantiles": [
+        106.0,
+        144.0,
+        289.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 4,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 551,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.615344576267647,
+        1.8956903882048917,
+        2.151273376436441,
+        2.367974703480428,
+        2.4005969863495324,
+        2.4097856327261615
+      ],
+      "standardized_spatial_MAD": 0.9878645436616551,
+      "assigned_sigma": 0.9075811407418243,
+      "Q_quantiles": [
+        38.0,
+        85.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 4,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 450,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.3722920552255905,
+        2.0777149247587454,
+        2.573171117193099,
+        2.7836737667362073,
+        2.823422621329886,
+        2.8277854864343244
+      ],
+      "standardized_spatial_MAD": 0.6165653920196956,
+      "assigned_sigma": 0.7717728786854271,
+      "Q_quantiles": [
+        106.0,
+        124.5,
+        210.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 5,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 12,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.45500596285951,
+        0.5441819134175051,
+        0.5531601809096652,
+        0.56048540585953,
+        0.5621335814732495,
+        0.5623167120969962
+      ],
+      "standardized_spatial_MAD": 0.11739025524060863,
+      "assigned_sigma": 0.7391956658799935,
+      "Q_quantiles": [
+        69.0,
+        98.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 5,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 436,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.1591310774550877,
+        0.46628209891175143,
+        0.4949499591291418,
+        0.5595836792178032,
+        0.5864730091094189,
+        0.5883375732651663
+      ],
+      "standardized_spatial_MAD": 0.16603377518174742,
+      "assigned_sigma": 0.8392134246620371,
+      "Q_quantiles": [
+        106.0,
+        174.0,
+        285.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 5,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 140,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.8351572418452784,
+        1.6832596661216406,
+        1.835466646577709,
+        1.9291529614831524,
+        1.9571068598789156,
+        1.9600795448603592
+      ],
+      "standardized_spatial_MAD": 0.6751966200383415,
+      "assigned_sigma": 0.7391956658799935,
+      "Q_quantiles": [
+        59.0,
+        95.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 5,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 728,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.24356882900775717,
+        1.0657895175290062,
+        1.314689700905277,
+        1.5722926138623023,
+        1.6641365808245898,
+        1.68364527946055
+      ],
+      "standardized_spatial_MAD": 0.41419090587758683,
+      "assigned_sigma": 0.8392134246620371,
+      "Q_quantiles": [
+        106.0,
+        144.0,
+        289.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 5,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 551,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        1.2515385164274608,
+        2.046087953148736,
+        2.1306964766291667,
+        2.1948751947389544,
+        2.2203201992740738,
+        2.2230497544337107
+      ],
+      "standardized_spatial_MAD": 1.0339748341984416,
+      "assigned_sigma": 0.7391956658799935,
+      "Q_quantiles": [
+        38.0,
+        85.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 5,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 450,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.2681722047501509,
+        1.579579572960904,
+        1.7696597401105085,
+        1.9327600913387681,
+        1.95324266611305,
+        1.9554862326785307
+      ],
+      "standardized_spatial_MAD": 0.3027159022837449,
+      "assigned_sigma": 0.8392134246620371,
+      "Q_quantiles": [
+        106.0,
+        124.5,
+        210.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 1,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 61,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5649189122167133,
+        1.1672911413605394,
+        1.6107241323064219,
+        1.9973939524585222,
+        2.130897750459092,
+        2.145731505792489
+      ],
+      "standardized_spatial_MAD": 0.6836078416781709,
+      "assigned_sigma": 11.445975257586314,
+      "Q_quantiles": [
+        64.0,
+        114.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 1,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 648,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6105337066814374,
+        1.5646335370974385,
+        1.9343353989390981,
+        2.515775617893696,
+        3.637360731147714,
+        4.587221813096521
+      ],
+      "standardized_spatial_MAD": 0.9145067359112088,
+      "assigned_sigma": 8.970629908231542,
+      "Q_quantiles": [
+        128.0,
+        192.0,
+        363.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 1,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 677,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6252418645347844,
+        1.7152460802851364,
+        2.0904814427674254,
+        2.8694835113343666,
+        3.5593367157206295,
+        3.6931057717759375
+      ],
+      "standardized_spatial_MAD": 0.9375316696946062,
+      "assigned_sigma": 11.445975257586314,
+      "Q_quantiles": [
+        52.0,
+        108.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 1,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1435,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6174634524839928,
+        1.5801652853020487,
+        1.940934667108104,
+        2.5777948039299767,
+        3.193687262105059,
+        3.2960519933671377
+      ],
+      "standardized_spatial_MAD": 0.9130326532494851,
+      "assigned_sigma": 8.970629908231542,
+      "Q_quantiles": [
+        128.0,
+        169.0,
+        338.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 1,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2493,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6965470715764611,
+        1.7964006038842082,
+        2.1563693644641044,
+        3.088078264571898,
+        4.244263302977452,
+        4.611210773332343
+      ],
+      "standardized_spatial_MAD": 1.0272676435158608,
+      "assigned_sigma": 11.445975257586314,
+      "Q_quantiles": [
+        26.0,
+        94.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 1,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 1047,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6806219737464895,
+        1.7311318023599045,
+        2.2233254652297467,
+        3.1067247186612623,
+        3.9977491679028945,
+        4.108512371112013
+      ],
+      "standardized_spatial_MAD": 1.0105431477558895,
+      "assigned_sigma": 8.970629908231542,
+      "Q_quantiles": [
+        128.0,
+        149.0,
+        296.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 2,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 61,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5956038586745545,
+        1.3193500102165825,
+        1.4377113985567371,
+        1.8368192899500926,
+        2.0108790130850753,
+        2.0302189823222965
+      ],
+      "standardized_spatial_MAD": 0.8105736480599051,
+      "assigned_sigma": 2.9973827617177,
+      "Q_quantiles": [
+        64.0,
+        114.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 2,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 648,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6176737159142046,
+        1.5121212535153734,
+        1.8381483779469363,
+        2.238601017311573,
+        2.8856959442180443,
+        2.962152782796639
+      ],
+      "standardized_spatial_MAD": 0.9153415259246095,
+      "assigned_sigma": 2.373654894803025,
+      "Q_quantiles": [
+        128.0,
+        192.0,
+        363.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 2,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 677,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5807481399350946,
+        1.4336467022502448,
+        1.705744339463645,
+        2.2550591499138934,
+        2.637314485165651,
+        2.8227166429862787
+      ],
+      "standardized_spatial_MAD": 0.8447818015779558,
+      "assigned_sigma": 2.9973827617177,
+      "Q_quantiles": [
+        52.0,
+        108.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 2,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1435,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5706901534524783,
+        1.4832504034866367,
+        1.766683359441581,
+        2.2513109253616816,
+        2.857865197266379,
+        3.3137067682759453
+      ],
+      "standardized_spatial_MAD": 0.8542368288661433,
+      "assigned_sigma": 2.373654894803025,
+      "Q_quantiles": [
+        128.0,
+        169.0,
+        338.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 2,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2493,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6752705401583597,
+        1.6694763612591794,
+        2.0183667022976257,
+        2.5844113172856913,
+        3.5310836265799894,
+        4.3165062187131
+      ],
+      "standardized_spatial_MAD": 0.9998621316129,
+      "assigned_sigma": 2.9973827617177,
+      "Q_quantiles": [
+        26.0,
+        94.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 2,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 1047,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7185926226134312,
+        1.7729053204210543,
+        2.1629772901524897,
+        2.801117933913008,
+        3.4652835792182204,
+        3.94021287798104
+      ],
+      "standardized_spatial_MAD": 1.0728295133934598,
+      "assigned_sigma": 2.373654894803025,
+      "Q_quantiles": [
+        128.0,
+        149.0,
+        296.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 3,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 61,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.3649727295071811,
+        1.059105627509772,
+        1.2346419793590935,
+        1.5511757244051503,
+        1.6055270047151748,
+        1.6115660358607333
+      ],
+      "standardized_spatial_MAD": 0.5457414006365441,
+      "assigned_sigma": 1.23765661172584,
+      "Q_quantiles": [
+        64.0,
+        114.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 3,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 648,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.49494633235252955,
+        1.0831071011801106,
+        1.215669516631621,
+        1.555787488090849,
+        1.8314673069946117,
+        2.0031982627164617
+      ],
+      "standardized_spatial_MAD": 0.7264964697742088,
+      "assigned_sigma": 1.1286746409132276,
+      "Q_quantiles": [
+        128.0,
+        192.0,
+        363.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 3,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 677,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5882784391847067,
+        1.3964429561228975,
+        1.5968405406341861,
+        2.0289766734739794,
+        3.238720465369754,
+        3.3873083610200507
+      ],
+      "standardized_spatial_MAD": 0.8789238206029392,
+      "assigned_sigma": 1.23765661172584,
+      "Q_quantiles": [
+        52.0,
+        108.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 3,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1435,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.562706556202614,
+        1.4464878157858203,
+        1.6983885186065122,
+        2.1195521412237976,
+        2.5559560401556265,
+        3.607576933968143
+      ],
+      "standardized_spatial_MAD": 0.8373646959214612,
+      "assigned_sigma": 1.1286746409132276,
+      "Q_quantiles": [
+        128.0,
+        169.0,
+        338.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 3,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2493,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7051220904159375,
+        1.7282797348513237,
+        2.1396047688455906,
+        3.1571982576875146,
+        3.717928104303243,
+        3.945690906781727
+      ],
+      "standardized_spatial_MAD": 1.044948083787201,
+      "assigned_sigma": 1.23765661172584,
+      "Q_quantiles": [
+        26.0,
+        94.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 3,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 1047,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6662931914810097,
+        1.5735652620658545,
+        2.079952116292838,
+        2.8527618865759377,
+        3.748777735975185,
+        4.191256782875441
+      ],
+      "standardized_spatial_MAD": 0.9965243051316868,
+      "assigned_sigma": 1.1286746409132276,
+      "Q_quantiles": [
+        128.0,
+        149.0,
+        296.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 4,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 61,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.2709179244094489,
+        0.843210817490911,
+        0.9636621921314343,
+        1.0562133651351748,
+        1.0640687763495658,
+        1.0649415998178315
+      ],
+      "standardized_spatial_MAD": 0.3454678435572856,
+      "assigned_sigma": 0.567731040654203,
+      "Q_quantiles": [
+        64.0,
+        114.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 4,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 648,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.31626619520683247,
+        1.0677372190689882,
+        1.2669663258878223,
+        1.5615933712493109,
+        1.6431272090301747,
+        1.645113280454744
+      ],
+      "standardized_spatial_MAD": 0.438376856373105,
+      "assigned_sigma": 0.48215245267773493,
+      "Q_quantiles": [
+        128.0,
+        192.0,
+        363.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 4,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 677,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5699761756995408,
+        1.3165257189636126,
+        1.5135336155160193,
+        1.7514515953411063,
+        2.0488208538836767,
+        2.0763442150074987
+      ],
+      "standardized_spatial_MAD": 0.8612629038867218,
+      "assigned_sigma": 0.567731040654203,
+      "Q_quantiles": [
+        52.0,
+        108.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 4,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1435,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5887868546988293,
+        1.4753924329533135,
+        1.713211010850997,
+        2.1658029518051474,
+        2.552695187220868,
+        2.5849403005679092
+      ],
+      "standardized_spatial_MAD": 0.8657389813508442,
+      "assigned_sigma": 0.48215245267773493,
+      "Q_quantiles": [
+        128.0,
+        169.0,
+        338.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 4,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 1954,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7074816345957462,
+        1.678580484998267,
+        1.9172813490228797,
+        2.396685509775225,
+        3.193112797717932,
+        3.6317685565712883
+      ],
+      "standardized_spatial_MAD": 1.0525164501572686,
+      "assigned_sigma": 0.567731040654203,
+      "Q_quantiles": [
+        32.0,
+        96.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 4,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 950,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.8096242399485487,
+        1.9772786968917644,
+        2.2406263027738103,
+        2.571107302047736,
+        2.903529227230658,
+        2.9780716504715183
+      ],
+      "standardized_spatial_MAD": 1.1839668621019979,
+      "assigned_sigma": 0.48215245267773493,
+      "Q_quantiles": [
+        128.0,
+        149.0,
+        296.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 5,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 61,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        1.2692017541086797,
+        1.6652512541058675,
+        1.737823844510376,
+        1.7403911030688164,
+        1.7427608978270495,
+        1.7430242083557421
+      ],
+      "standardized_spatial_MAD": 0.3472552368634619,
+      "assigned_sigma": 0.42154081504956115,
+      "Q_quantiles": [
+        64.0,
+        114.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 5,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 648,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        1.2322186307770862,
+        1.4682432570174422,
+        1.4907592335574897,
+        1.5051963033722295,
+        1.5086083754278858,
+        1.5086566047273853
+      ],
+      "standardized_spatial_MAD": 0.2516954108571516,
+      "assigned_sigma": 0.4872102574316136,
+      "Q_quantiles": [
+        128.0,
+        192.0,
+        363.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 5,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 677,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5826196477049357,
+        1.2950847634273739,
+        1.5571209322952733,
+        1.8275668128028337,
+        1.94936966356188,
+        1.9557220887977713
+      ],
+      "standardized_spatial_MAD": 0.7158568956420335,
+      "assigned_sigma": 0.42154081504956115,
+      "Q_quantiles": [
+        52.0,
+        108.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 5,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1435,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6552359483312811,
+        1.4362065899756735,
+        1.5254015921271367,
+        1.6349792797021188,
+        1.682137058059101,
+        1.6997392008195356
+      ],
+      "standardized_spatial_MAD": 0.503898048283873,
+      "assigned_sigma": 0.4872102574316136,
+      "Q_quantiles": [
+        128.0,
+        169.0,
+        338.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 5,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 1954,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6331519788296582,
+        1.6642704022805486,
+        1.8448076369033461,
+        2.0308362335845977,
+        2.1177392233968964,
+        2.152856452905298
+      ],
+      "standardized_spatial_MAD": 0.9605275302781903,
+      "assigned_sigma": 0.42154081504956115,
+      "Q_quantiles": [
+        32.0,
+        96.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "band": 5,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 950,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6328943842738347,
+        1.5442443478357968,
+        1.658108693532097,
+        1.7334916380471777,
+        1.7836319721117433,
+        1.7869058673316394
+      ],
+      "standardized_spatial_MAD": 1.0172122396119097,
+      "assigned_sigma": 0.4872102574316136,
+      "Q_quantiles": [
+        128.0,
+        149.0,
+        296.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 1,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 0,
+      "selected": 0,
+      "rate": null,
+      "abs_standardized_quantiles": null,
+      "standardized_spatial_MAD": null,
+      "assigned_sigma": 10.10729621429597,
+      "Q_quantiles": null
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 1,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 709,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6094168866132681,
+        1.7143569776917247,
+        2.1572557198012023,
+        2.649371086714125,
+        3.533846201230586,
+        3.7406138126046384
+      ],
+      "standardized_spatial_MAD": 0.9047409161547495,
+      "assigned_sigma": 8.244439696625186,
+      "Q_quantiles": [
+        552.0,
+        741.0,
+        1016.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 1,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 284,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.701228469893847,
+        1.7594637773178088,
+        2.1074571007613203,
+        2.749460512708817,
+        3.5027585759030164,
+        3.5060899305544417
+      ],
+      "standardized_spatial_MAD": 1.0572942580476963,
+      "assigned_sigma": 10.10729621429597,
+      "Q_quantiles": [
+        357.0,
+        471.5,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 1,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1828,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6844226614473041,
+        1.8150353590932866,
+        2.1808564858455335,
+        2.929959522073307,
+        4.175210845356255,
+        4.537741211528812
+      ],
+      "standardized_spatial_MAD": 1.0168369439642013,
+      "assigned_sigma": 8.244439696625186,
+      "Q_quantiles": [
+        504.0,
+        621.0,
+        990.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 1,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2898,
+      "selected": 1,
+      "rate": 0.0003450655624568668,
+      "abs_standardized_quantiles": [
+        0.6643289545216484,
+        1.7990336525389314,
+        2.2111048990225153,
+        3.114963462993165,
+        4.661308619501169,
+        5.347692924561278
+      ],
+      "standardized_spatial_MAD": 0.9860697333139831,
+      "assigned_sigma": 10.10729621429597,
+      "Q_quantiles": [
+        145.0,
+        406.0,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 1,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 642,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7349254000915352,
+        1.900538341522887,
+        2.215659750361951,
+        2.9596690622748754,
+        3.9570086367380033,
+        4.016884698240728
+      ],
+      "standardized_spatial_MAD": 1.13447602506179,
+      "assigned_sigma": 8.244439696625186,
+      "Q_quantiles": [
+        504.0,
+        542.0,
+        726.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 2,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 0,
+      "selected": 0,
+      "rate": null,
+      "abs_standardized_quantiles": null,
+      "standardized_spatial_MAD": null,
+      "assigned_sigma": 2.3324341948566323,
+      "Q_quantiles": null
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 2,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 709,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7042594212970716,
+        1.558212936878811,
+        1.881487614552994,
+        2.534820670601718,
+        2.900557445708656,
+        2.93894322177915
+      ],
+      "standardized_spatial_MAD": 1.0500671912204564,
+      "assigned_sigma": 2.1898215627949904,
+      "Q_quantiles": [
+        552.0,
+        741.0,
+        1016.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 2,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 284,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.679032114583992,
+        1.9498430377736762,
+        2.162970241741654,
+        2.4987472204797085,
+        3.1376243600061406,
+        3.143850924926642
+      ],
+      "standardized_spatial_MAD": 1.024614762431135,
+      "assigned_sigma": 2.3324341948566323,
+      "Q_quantiles": [
+        357.0,
+        471.5,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 2,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1828,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6549822016577163,
+        1.5952841840755958,
+        1.9552737525193307,
+        2.5731913298647617,
+        3.220045265480781,
+        4.0123894030559395
+      ],
+      "standardized_spatial_MAD": 0.9692488324550057,
+      "assigned_sigma": 2.1898215627949904,
+      "Q_quantiles": [
+        504.0,
+        621.0,
+        990.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 2,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2898,
+      "selected": 3,
+      "rate": 0.0010351966873706005,
+      "abs_standardized_quantiles": [
+        0.672777962830881,
+        1.8211427352967622,
+        2.2757396783957047,
+        3.425671806917058,
+        5.006865713509946,
+        6.020725254647544
+      ],
+      "standardized_spatial_MAD": 1.0062060622237474,
+      "assigned_sigma": 2.3324341948566323,
+      "Q_quantiles": [
+        145.0,
+        406.0,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 2,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 642,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7108318635196078,
+        1.799822516081261,
+        2.247744951628027,
+        3.285359158587151,
+        4.201691095332771,
+        4.469598613404297
+      ],
+      "standardized_spatial_MAD": 1.054207528667824,
+      "assigned_sigma": 2.1898215627949904,
+      "Q_quantiles": [
+        504.0,
+        542.0,
+        726.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 3,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 0,
+      "selected": 0,
+      "rate": null,
+      "abs_standardized_quantiles": null,
+      "standardized_spatial_MAD": null,
+      "assigned_sigma": 1.0177155971745944,
+      "Q_quantiles": null
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 3,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 709,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6717781236282173,
+        1.7690983257715187,
+        2.2891658927723983,
+        3.025088449428764,
+        3.317729902354035,
+        3.3589932819461032
+      ],
+      "standardized_spatial_MAD": 1.0056897660945836,
+      "assigned_sigma": 0.9486991172246965,
+      "Q_quantiles": [
+        552.0,
+        741.0,
+        1016.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 3,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 284,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7049654583001523,
+        1.5524545130210987,
+        1.7887749195894016,
+        2.1494315368890575,
+        2.4099599793794613,
+        2.443028273323444
+      ],
+      "standardized_spatial_MAD": 1.0024301681581822,
+      "assigned_sigma": 1.0177155971745944,
+      "Q_quantiles": [
+        357.0,
+        471.5,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 3,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1828,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6638969643938429,
+        1.5490482777427397,
+        1.8157160004062836,
+        2.2454108401937813,
+        2.75150159336213,
+        2.8661345427470297
+      ],
+      "standardized_spatial_MAD": 0.9859065510348856,
+      "assigned_sigma": 0.9486991172246965,
+      "Q_quantiles": [
+        504.0,
+        621.0,
+        990.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 3,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2898,
+      "selected": 2,
+      "rate": 0.0006901311249137336,
+      "abs_standardized_quantiles": [
+        0.6727715477181818,
+        1.6504650522538753,
+        2.0422649490285263,
+        3.064265410361165,
+        4.703105648183555,
+        5.243861296800059
+      ],
+      "standardized_spatial_MAD": 0.9998288164812815,
+      "assigned_sigma": 1.0177155971745944,
+      "Q_quantiles": [
+        145.0,
+        406.0,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 3,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 642,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.707993566221079,
+        1.6077777219926834,
+        1.9691719182732306,
+        2.6751139361772056,
+        3.535367365385091,
+        3.8831185551755545
+      ],
+      "standardized_spatial_MAD": 1.0571056320496308,
+      "assigned_sigma": 0.9486991172246965,
+      "Q_quantiles": [
+        504.0,
+        542.0,
+        726.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 4,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 0,
+      "selected": 0,
+      "rate": null,
+      "abs_standardized_quantiles": null,
+      "standardized_spatial_MAD": null,
+      "assigned_sigma": 0.4014541157512361,
+      "Q_quantiles": null
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 4,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 709,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.9418862352057796,
+        1.668339237220937,
+        1.8831267243178353,
+        2.005579869155067,
+        2.068442709328565,
+        2.0741318825181283
+      ],
+      "standardized_spatial_MAD": 1.0396145341651166,
+      "assigned_sigma": 0.4848037551213856,
+      "Q_quantiles": [
+        552.0,
+        741.0,
+        1016.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 4,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 284,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.766567863658226,
+        2.574341520666428,
+        3.2257752269527145,
+        3.719963010052084,
+        3.8129217239583024,
+        3.815183562109626
+      ],
+      "standardized_spatial_MAD": 1.118252491031334,
+      "assigned_sigma": 0.4014541157512361,
+      "Q_quantiles": [
+        357.0,
+        471.5,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 4,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1828,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6230172779165489,
+        1.6325616173612232,
+        2.0564763637515684,
+        2.7688917760720533,
+        3.142576820638203,
+        3.184749324231855
+      ],
+      "standardized_spatial_MAD": 0.8958992200017555,
+      "assigned_sigma": 0.4848037551213856,
+      "Q_quantiles": [
+        504.0,
+        621.0,
+        990.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 4,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2581,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.687715051729314,
+        1.5950730798644348,
+        1.809346604480948,
+        2.17433076160406,
+        2.674175214614031,
+        2.8592481698416745
+      ],
+      "standardized_spatial_MAD": 1.0204016264445563,
+      "assigned_sigma": 0.4014541157512361,
+      "Q_quantiles": [
+        212.0,
+        414.0,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 4,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 641,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5479006119173659,
+        1.261259058446755,
+        1.4772862842028815,
+        1.9710782386699013,
+        2.1333782174722233,
+        2.138518442942084
+      ],
+      "standardized_spatial_MAD": 0.7789515572568148,
+      "assigned_sigma": 0.4848037551213856,
+      "Q_quantiles": [
+        504.0,
+        542.0,
+        726.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 5,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 0,
+      "selected": 0,
+      "rate": null,
+      "abs_standardized_quantiles": null,
+      "standardized_spatial_MAD": null,
+      "assigned_sigma": 0.29229418908200683,
+      "Q_quantiles": null
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 5,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 709,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        1.4268187901980258,
+        2.7481857216304153,
+        2.9140142989361095,
+        3.0481495366263203,
+        3.080175489101856,
+        3.083234596016608
+      ],
+      "standardized_spatial_MAD": 1.7691902838050646,
+      "assigned_sigma": 0.27133504309410483,
+      "Q_quantiles": [
+        552.0,
+        741.0,
+        1016.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 5,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 284,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        1.2929564929156472,
+        2.638580228429044,
+        3.166211145859274,
+        3.3385933726947976,
+        3.360824558531293,
+        3.361647969777457
+      ],
+      "standardized_spatial_MAD": 1.2736603536437767,
+      "assigned_sigma": 0.29229418908200683,
+      "Q_quantiles": [
+        357.0,
+        471.5,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 5,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1828,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        1.6765050207279368,
+        2.800642676945725,
+        3.007864911203067,
+        3.4535561452251424,
+        3.606722495262267,
+        3.623883379469063
+      ],
+      "standardized_spatial_MAD": 2.58264413940626,
+      "assigned_sigma": 0.27133504309410483,
+      "Q_quantiles": [
+        504.0,
+        621.0,
+        990.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 5,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2581,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.8207026764843472,
+        1.9956677590055927,
+        2.413990856198119,
+        3.0498478129889075,
+        3.2815549132770743,
+        3.3191338157058
+      ],
+      "standardized_spatial_MAD": 0.8962765645221862,
+      "assigned_sigma": 0.29229418908200683,
+      "Q_quantiles": [
+        212.0,
+        414.0,
+        503.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 5,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 641,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7113490327535525,
+        1.7623330108596507,
+        2.0474383707215322,
+        3.0698851635823874,
+        3.396646716692776,
+        3.5226716716499107
+      ],
+      "standardized_spatial_MAD": 0.9296194359827065,
+      "assigned_sigma": 0.27133504309410483,
+      "Q_quantiles": [
+        504.0,
+        542.0,
+        726.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 1,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 39,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6047369883690066,
+        1.37048621216588,
+        1.5077075554878658,
+        1.6637396685939367,
+        1.7388976301622536,
+        1.7472485147809547
+      ],
+      "standardized_spatial_MAD": 0.8959739482194404,
+      "assigned_sigma": 19.399106667043448,
+      "Q_quantiles": [
+        69.0,
+        97.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 1,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 670,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6520571650336247,
+        1.5613925422077632,
+        1.8826697466453464,
+        2.6622439620732834,
+        3.7417970208301363,
+        4.025217940505534
+      ],
+      "standardized_spatial_MAD": 0.9685227751395606,
+      "assigned_sigma": 14.51735805250501,
+      "Q_quantiles": [
+        106.0,
+        169.0,
+        289.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 1,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 645,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.711359279590936,
+        1.6972203010476121,
+        2.1211242342807206,
+        3.1241706733914745,
+        3.492913481201853,
+        3.7876685103559034
+      ],
+      "standardized_spatial_MAD": 1.0469628905404542,
+      "assigned_sigma": 19.399106667043448,
+      "Q_quantiles": [
+        30.0,
+        90.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 1,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1467,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6674817178752057,
+        1.738016324712581,
+        2.119258641172614,
+        2.9083435157014024,
+        3.8675571351501152,
+        4.080388570492211
+      ],
+      "standardized_spatial_MAD": 1.0038354726358105,
+      "assigned_sigma": 14.51735805250501,
+      "Q_quantiles": [
+        106.0,
+        137.0,
+        292.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 1,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2457,
+      "selected": 10,
+      "rate": 0.00407000407000407,
+      "abs_standardized_quantiles": [
+        0.6637747178594717,
+        1.7967432322370969,
+        2.2677297345165037,
+        3.3115213521673637,
+        5.818770039237682,
+        6.263361553435321
+      ],
+      "standardized_spatial_MAD": 0.9843874007851939,
+      "assigned_sigma": 19.399106667043448,
+      "Q_quantiles": [
+        13.0,
+        71.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 1,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 991,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6949695694444759,
+        1.7619529267319776,
+        2.2122585799626417,
+        3.1012762233199402,
+        3.740405486013773,
+        4.092108316048215
+      ],
+      "standardized_spatial_MAD": 1.0277196801954807,
+      "assigned_sigma": 14.51735805250501,
+      "Q_quantiles": [
+        106.0,
+        124.0,
+        235.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 2,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 39,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5132110610092424,
+        1.4184115458425617,
+        2.0499611010706422,
+        2.2384316507741446,
+        2.334125588682526,
+        2.344758248450123
+      ],
+      "standardized_spatial_MAD": 0.7862898805550114,
+      "assigned_sigma": 4.488099125401834,
+      "Q_quantiles": [
+        69.0,
+        97.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 2,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 670,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6477483697141834,
+        1.549556512297627,
+        1.7755437193451895,
+        2.5476392994899473,
+        3.2937544417269606,
+        3.5572337941573844
+      ],
+      "standardized_spatial_MAD": 0.9253745890378545,
+      "assigned_sigma": 3.576043915592008,
+      "Q_quantiles": [
+        106.0,
+        169.0,
+        289.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 2,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 645,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6293800491567072,
+        1.589874810609644,
+        2.021900981489659,
+        2.65197307104854,
+        3.3805641583151127,
+        3.4094848710914256
+      ],
+      "standardized_spatial_MAD": 0.9203628603725508,
+      "assigned_sigma": 4.488099125401834,
+      "Q_quantiles": [
+        30.0,
+        90.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 2,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1467,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6715961957277279,
+        1.7760509401567304,
+        2.08435822728051,
+        2.6624666194100732,
+        3.7444723030976332,
+        4.1144102868408545
+      ],
+      "standardized_spatial_MAD": 0.9913218462211166,
+      "assigned_sigma": 3.576043915592008,
+      "Q_quantiles": [
+        106.0,
+        137.0,
+        292.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 2,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2290,
+      "selected": 1,
+      "rate": 0.0004366812227074236,
+      "abs_standardized_quantiles": [
+        0.6956621404704151,
+        1.921942245069717,
+        2.4221420608802773,
+        3.4309857215026085,
+        4.133230807511837,
+        5.100874813868542
+      ],
+      "standardized_spatial_MAD": 1.034198126323703,
+      "assigned_sigma": 4.488099125401834,
+      "Q_quantiles": [
+        15.0,
+        73.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 2,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 991,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6977472084888966,
+        1.9237646275870008,
+        2.466817235465955,
+        3.6176758028878804,
+        4.64188480984964,
+        4.925960557162093
+      ],
+      "standardized_spatial_MAD": 1.03021017095276,
+      "assigned_sigma": 3.576043915592008,
+      "Q_quantiles": [
+        106.0,
+        124.0,
+        235.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 3,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 39,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.9014906412775234,
+        1.7993895403894136,
+        1.8719735149314767,
+        1.9846946669768868,
+        2.0231030799325573,
+        2.027370681372076
+      ],
+      "standardized_spatial_MAD": 1.0430732730095065,
+      "assigned_sigma": 1.8382312942786763,
+      "Q_quantiles": [
+        69.0,
+        97.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 3,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 670,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.704256665240431,
+        1.4928245697086067,
+        1.7396773983955167,
+        2.0212538700865914,
+        2.2762280371791133,
+        2.3382771799153166
+      ],
+      "standardized_spatial_MAD": 1.0446787324724656,
+      "assigned_sigma": 1.6365485569600198,
+      "Q_quantiles": [
+        106.0,
+        169.0,
+        289.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 3,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 559,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5813444457119981,
+        1.6852378106624242,
+        1.9598733078910449,
+        2.5483341739453262,
+        2.6845008802450603,
+        2.7027469273478637
+      ],
+      "standardized_spatial_MAD": 0.8488871560898309,
+      "assigned_sigma": 1.8382312942786763,
+      "Q_quantiles": [
+        32.0,
+        92.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 3,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1462,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6175092478767341,
+        1.6022005278423195,
+        1.9754883665844811,
+        2.4488907269240534,
+        2.8715184596937737,
+        2.889481760653945
+      ],
+      "standardized_spatial_MAD": 0.9218173594497218,
+      "assigned_sigma": 1.6365485569600198,
+      "Q_quantiles": [
+        106.0,
+        137.0,
+        292.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 3,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 1709,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.704780423409002,
+        1.9363576673786589,
+        2.5335190880194,
+        3.4238699755520328,
+        4.233701239578821,
+        4.486418724052322
+      ],
+      "standardized_spatial_MAD": 1.035123981481772,
+      "assigned_sigma": 1.8382312942786763,
+      "Q_quantiles": [
+        28.0,
+        80.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 3,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 981,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7285500521125119,
+        1.998638715546738,
+        2.401145073613369,
+        3.4209886401827507,
+        4.552594952683594,
+        4.613912837594917
+      ],
+      "standardized_spatial_MAD": 1.0861945257311427,
+      "assigned_sigma": 1.6365485569600198,
+      "Q_quantiles": [
+        106.0,
+        124.0,
+        235.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 4,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 12,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7238061304629841,
+        1.2575708378982067,
+        1.3848399377708351,
+        1.505599905000992,
+        1.5327708976277774,
+        1.535789896808531
+      ],
+      "standardized_spatial_MAD": 0.7690340429674011,
+      "assigned_sigma": 0.9075811407418243,
+      "Q_quantiles": [
+        69.0,
+        98.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 4,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 436,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5428593485204383,
+        2.022823393454037,
+        2.2441016572659858,
+        2.4573630439296723,
+        2.5132823848430266,
+        2.514022156252247
+      ],
+      "standardized_spatial_MAD": 1.0472581992185006,
+      "assigned_sigma": 0.7717728786854271,
+      "Q_quantiles": [
+        106.0,
+        174.0,
+        285.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 4,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 140,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6349348849447158,
+        1.25156672540965,
+        1.3825006186930613,
+        1.549916899651481,
+        1.6504591359035454,
+        1.6619920752229096
+      ],
+      "standardized_spatial_MAD": 0.9320133219622397,
+      "assigned_sigma": 0.9075811407418243,
+      "Q_quantiles": [
+        59.0,
+        95.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 4,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 728,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.619150272198349,
+        1.631067109721586,
+        2.0534128626959136,
+        2.4813249505003765,
+        2.5838707888079546,
+        2.6049240556280555
+      ],
+      "standardized_spatial_MAD": 0.9207560552044897,
+      "assigned_sigma": 0.7717728786854271,
+      "Q_quantiles": [
+        106.0,
+        144.0,
+        289.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 4,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 551,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.8472100401058739,
+        1.8606822308248039,
+        2.243436878208236,
+        2.781193549176309,
+        2.8584276044107417,
+        2.8717822128413797
+      ],
+      "standardized_spatial_MAD": 1.0555338552205904,
+      "assigned_sigma": 0.9075811407418243,
+      "Q_quantiles": [
+        38.0,
+        85.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 4,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 450,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.8778666755001574,
+        2.4302118974643783,
+        2.860380171986303,
+        3.27708306577981,
+        3.377057281691662,
+        3.3928688083827887
+      ],
+      "standardized_spatial_MAD": 1.2304430067277257,
+      "assigned_sigma": 0.7717728786854271,
+      "Q_quantiles": [
+        106.0,
+        124.5,
+        210.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 5,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 12,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        1.073434879033273,
+        1.3878061637481482,
+        1.4881600901451977,
+        1.5755279451080006,
+        1.5951857124746314,
+        1.5973699088487012
+      ],
+      "standardized_spatial_MAD": 0.31874903436718516,
+      "assigned_sigma": 0.7391956658799935,
+      "Q_quantiles": [
+        69.0,
+        98.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 5,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 436,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        1.2605586823696737,
+        1.5018308681078785,
+        1.5495432999894052,
+        1.6321870444443503,
+        1.6476932732718477,
+        1.6489042862980559
+      ],
+      "standardized_spatial_MAD": 0.3323776088621862,
+      "assigned_sigma": 0.8392134246620371,
+      "Q_quantiles": [
+        106.0,
+        174.0,
+        285.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 5,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 140,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        1.1869114749897647,
+        1.8022305811079895,
+        1.964187628664166,
+        2.1400542159700233,
+        2.225493961119241,
+        2.236435072185279
+      ],
+      "standardized_spatial_MAD": 0.976301974974268,
+      "assigned_sigma": 0.7391956658799935,
+      "Q_quantiles": [
+        59.0,
+        95.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 5,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 728,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        1.1110538836055968,
+        1.8767724863044664,
+        1.9352987411209372,
+        1.9771155391963966,
+        1.9858015587926794,
+        1.9862391047017358
+      ],
+      "standardized_spatial_MAD": 1.1183645106867843,
+      "assigned_sigma": 0.8392134246620371,
+      "Q_quantiles": [
+        106.0,
+        144.0,
+        289.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 5,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 551,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        1.186016708317744,
+        1.9267193363575519,
+        2.001478038528914,
+        2.059678434248633,
+        2.112653213342803,
+        2.1639703633786658
+      ],
+      "standardized_spatial_MAD": 0.8710261298554556,
+      "assigned_sigma": 0.7391956658799935,
+      "Q_quantiles": [
+        38.0,
+        85.0,
+        105.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 5,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 450,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.8886909107149559,
+        1.7151056230090165,
+        1.792081246758572,
+        1.8703169614516106,
+        1.901346148480118,
+        1.9053310430958437
+      ],
+      "standardized_spatial_MAD": 1.0838111359595255,
+      "assigned_sigma": 0.8392134246620371,
+      "Q_quantiles": [
+        106.0,
+        124.5,
+        210.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 1,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 61,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5894662710073774,
+        1.7459690871273823,
+        2.1618591933665505,
+        2.460872612826179,
+        2.5447663017030986,
+        2.5540878226894232
+      ],
+      "standardized_spatial_MAD": 0.9503020087926948,
+      "assigned_sigma": 11.445975257586314,
+      "Q_quantiles": [
+        64.0,
+        114.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 1,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 648,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5869972848041791,
+        1.5268808526112372,
+        1.9305784917292108,
+        2.7842071834105644,
+        4.223901596247544,
+        4.343293188370852
+      ],
+      "standardized_spatial_MAD": 0.8565331480414816,
+      "assigned_sigma": 8.970629908231542,
+      "Q_quantiles": [
+        128.0,
+        192.0,
+        363.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 1,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 677,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6698947982682049,
+        1.662091232547902,
+        2.0288549662489714,
+        2.683554374618741,
+        3.7578046998075125,
+        4.371502847916389
+      ],
+      "standardized_spatial_MAD": 1.0054543429047558,
+      "assigned_sigma": 11.445975257586314,
+      "Q_quantiles": [
+        52.0,
+        108.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 1,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1435,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6645591506562597,
+        1.6601452846474265,
+        2.02714651234545,
+        2.7325182974960764,
+        3.4097675466828465,
+        3.5968328297062087
+      ],
+      "standardized_spatial_MAD": 0.9857586983838572,
+      "assigned_sigma": 8.970629908231542,
+      "Q_quantiles": [
+        128.0,
+        169.0,
+        338.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 1,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2493,
+      "selected": 1,
+      "rate": 0.00040112314480545525,
+      "abs_standardized_quantiles": [
+        0.6700247677223309,
+        1.7978820300219263,
+        2.1580350924831784,
+        2.9773957536599904,
+        4.411871145825006,
+        5.055380747732285
+      ],
+      "standardized_spatial_MAD": 0.9874470542911835,
+      "assigned_sigma": 11.445975257586314,
+      "Q_quantiles": [
+        26.0,
+        94.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 1,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 1047,
+      "selected": 1,
+      "rate": 0.0009551098376313276,
+      "abs_standardized_quantiles": [
+        0.7748656059685781,
+        1.799393200023712,
+        2.1072779392628487,
+        2.9960186852697746,
+        4.043605795947345,
+        5.0267746176087185
+      ],
+      "standardized_spatial_MAD": 1.1372836868550373,
+      "assigned_sigma": 8.970629908231542,
+      "Q_quantiles": [
+        128.0,
+        149.0,
+        296.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 2,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 61,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.4999279799124885,
+        1.4011687157527943,
+        1.4902367629122886,
+        1.8800750539923425,
+        2.1694890532892726,
+        2.2016461643222662
+      ],
+      "standardized_spatial_MAD": 0.7256703803186628,
+      "assigned_sigma": 2.9973827617177,
+      "Q_quantiles": [
+        64.0,
+        114.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 2,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 648,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6556422913078299,
+        1.5506072621570577,
+        1.8639923740207691,
+        2.369977298391555,
+        2.946249560981123,
+        2.9823364882218666
+      ],
+      "standardized_spatial_MAD": 0.9705787526454053,
+      "assigned_sigma": 2.373654894803025,
+      "Q_quantiles": [
+        128.0,
+        192.0,
+        363.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 2,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 677,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6666215435462773,
+        1.571766876456867,
+        1.8750724872886937,
+        2.3837089998789813,
+        2.9965959217958953,
+        3.2277965539105287
+      ],
+      "standardized_spatial_MAD": 0.9861914940092238,
+      "assigned_sigma": 2.9973827617177,
+      "Q_quantiles": [
+        52.0,
+        108.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 2,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1435,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6511334759364249,
+        1.5660322745156068,
+        1.9619924364651897,
+        2.7173788726453023,
+        3.589856497395646,
+        3.732122212411471
+      ],
+      "standardized_spatial_MAD": 0.9725827478441091,
+      "assigned_sigma": 2.373654894803025,
+      "Q_quantiles": [
+        128.0,
+        169.0,
+        338.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 2,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2493,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6757315613552064,
+        1.7171255795370661,
+        2.146608043004388,
+        2.9858089226944236,
+        4.105767834796138,
+        4.395640681554386
+      ],
+      "standardized_spatial_MAD": 0.9976327132200355,
+      "assigned_sigma": 2.9973827617177,
+      "Q_quantiles": [
+        26.0,
+        94.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 2,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 1047,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.7215669659974961,
+        1.8787423385447104,
+        2.209804726338903,
+        2.8636437386185007,
+        3.559357700906952,
+        3.6080683375263516
+      ],
+      "standardized_spatial_MAD": 1.057236392994108,
+      "assigned_sigma": 2.373654894803025,
+      "Q_quantiles": [
+        128.0,
+        149.0,
+        296.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 3,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 61,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5582487199327787,
+        1.3610029381796136,
+        1.5278370306751725,
+        1.7273430858378773,
+        1.7658193884921511,
+        1.770094533231515
+      ],
+      "standardized_spatial_MAD": 0.821816006224076,
+      "assigned_sigma": 1.23765661172584,
+      "Q_quantiles": [
+        64.0,
+        114.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 3,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 648,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6161245800220585,
+        1.4908870954188385,
+        1.6635867036124519,
+        1.8975856788865468,
+        2.122969847161035,
+        2.2641084586311946
+      ],
+      "standardized_spatial_MAD": 0.9051507985680566,
+      "assigned_sigma": 1.1286746409132276,
+      "Q_quantiles": [
+        128.0,
+        192.0,
+        363.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 3,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 677,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6778456184693322,
+        1.8030806997228372,
+        2.139375041873771,
+        3.0085100375165625,
+        3.294714644647917,
+        3.3492126442674524
+      ],
+      "standardized_spatial_MAD": 0.9805285107674456,
+      "assigned_sigma": 1.23765661172584,
+      "Q_quantiles": [
+        52.0,
+        108.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 3,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1435,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6945799122757043,
+        1.6292038288519686,
+        1.9906996781178372,
+        2.735812092289965,
+        3.259392975876158,
+        3.492321811228297
+      ],
+      "standardized_spatial_MAD": 1.021852407605261,
+      "assigned_sigma": 1.1286746409132276,
+      "Q_quantiles": [
+        128.0,
+        169.0,
+        338.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 3,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 2493,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6819641062880889,
+        1.9924185829194907,
+        2.385016595282348,
+        3.18029020556209,
+        4.349334196430354,
+        4.872766573240784
+      ],
+      "standardized_spatial_MAD": 1.0047870475378546,
+      "assigned_sigma": 1.23765661172584,
+      "Q_quantiles": [
+        26.0,
+        94.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 3,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 1047,
+      "selected": 1,
+      "rate": 0.0009551098376313276,
+      "abs_standardized_quantiles": [
+        0.7071557451032288,
+        1.6341894739951237,
+        2.135106962916131,
+        3.127909496783154,
+        4.906873718845052,
+        5.16510265134521
+      ],
+      "standardized_spatial_MAD": 1.0338435277581786,
+      "assigned_sigma": 1.1286746409132276,
+      "Q_quantiles": [
+        128.0,
+        149.0,
+        296.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 4,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 61,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6214965969980679,
+        1.3195158999854697,
+        1.472799268501451,
+        1.7825565606946738,
+        1.8670690558985097,
+        1.8764593331433808
+      ],
+      "standardized_spatial_MAD": 0.950630469475366,
+      "assigned_sigma": 0.567731040654203,
+      "Q_quantiles": [
+        64.0,
+        114.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 4,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 648,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6055574443486585,
+        1.5307051206848394,
+        1.7377106623530014,
+        2.379581334909391,
+        2.5849817772624046,
+        2.6131407100216686
+      ],
+      "standardized_spatial_MAD": 0.911491538014139,
+      "assigned_sigma": 0.48215245267773493,
+      "Q_quantiles": [
+        128.0,
+        192.0,
+        363.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 4,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 677,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6363715687140638,
+        1.564330985297254,
+        1.8565326126116153,
+        2.2584069937167977,
+        2.490537422509642,
+        2.512156935448521
+      ],
+      "standardized_spatial_MAD": 0.8815680408445967,
+      "assigned_sigma": 0.567731040654203,
+      "Q_quantiles": [
+        52.0,
+        108.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 4,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1435,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.754594906337657,
+        1.7891162900795627,
+        2.218422798176282,
+        2.615015791441387,
+        2.9497027535808327,
+        3.0119327102682245
+      ],
+      "standardized_spatial_MAD": 1.0475378874027272,
+      "assigned_sigma": 0.48215245267773493,
+      "Q_quantiles": [
+        128.0,
+        169.0,
+        338.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 4,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 1954,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.754848690167104,
+        1.684605778043835,
+        2.144193834154338,
+        2.8638073699288,
+        3.4971075536701117,
+        3.5477171825226623
+      ],
+      "standardized_spatial_MAD": 1.1027602329240207,
+      "assigned_sigma": 0.567731040654203,
+      "Q_quantiles": [
+        32.0,
+        96.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 4,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 950,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.6900911715463124,
+        1.8040103625606467,
+        2.253487102067752,
+        3.1989694228195384,
+        3.8812826123824777,
+        3.8837376381005817
+      ],
+      "standardized_spatial_MAD": 0.9842241986014777,
+      "assigned_sigma": 0.48215245267773493,
+      "Q_quantiles": [
+        128.0,
+        149.0,
+        296.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 5,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 0,
+      "eligible": 61,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.770666702679358,
+        1.0756084394693044,
+        1.2769222639917948,
+        1.4075471069081802,
+        1.4411020226936881,
+        1.4448303466698558
+      ],
+      "standardized_spatial_MAD": 0.2296069812416415,
+      "assigned_sigma": 0.42154081504956115,
+      "Q_quantiles": [
+        64.0,
+        114.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 5,
+      "inner_arcsec": 0,
+      "outer_arcsec": 30,
+      "stratum": 1,
+      "eligible": 648,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5721378825125314,
+        0.8881072066977709,
+        0.9667614151238805,
+        1.184750550004169,
+        1.3007897781852489,
+        1.3185074414680584
+      ],
+      "standardized_spatial_MAD": 0.26386411078611754,
+      "assigned_sigma": 0.4872102574316136,
+      "Q_quantiles": [
+        128.0,
+        192.0,
+        363.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 5,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 0,
+      "eligible": 677,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.9462351806040235,
+        1.78277859704394,
+        2.1853013396221446,
+        2.5475437624873742,
+        2.588516700997081,
+        2.5891162669135057
+      ],
+      "standardized_spatial_MAD": 0.7490464088635059,
+      "assigned_sigma": 0.42154081504956115,
+      "Q_quantiles": [
+        52.0,
+        108.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 5,
+      "inner_arcsec": 30,
+      "outer_arcsec": 60,
+      "stratum": 1,
+      "eligible": 1435,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.5349789357229038,
+        1.4669367723644384,
+        1.7845709344365401,
+        2.1224545146913836,
+        2.2381662989195896,
+        2.2623001276613284
+      ],
+      "standardized_spatial_MAD": 0.6772084792510004,
+      "assigned_sigma": 0.4872102574316136,
+      "Q_quantiles": [
+        128.0,
+        169.0,
+        338.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 5,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 0,
+      "eligible": 1954,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.41699306812471126,
+        1.8364583262330199,
+        2.3224804157971195,
+        2.5777837480419765,
+        2.638798465824556,
+        2.6457066555641653
+      ],
+      "standardized_spatial_MAD": 0.6359319155795595,
+      "assigned_sigma": 0.42154081504956115,
+      "Q_quantiles": [
+        32.0,
+        96.0,
+        127.0
+      ]
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 5,
+      "inner_arcsec": 60,
+      "outer_arcsec": 90,
+      "stratum": 1,
+      "eligible": 950,
+      "selected": 0,
+      "rate": 0.0,
+      "abs_standardized_quantiles": [
+        0.18045920587279302,
+        1.1907017298163722,
+        1.822864419676101,
+        2.2612668444921353,
+        2.2858050065452398,
+        2.286872116935999
+      ],
+      "standardized_spatial_MAD": 0.31225203186474065,
+      "assigned_sigma": 0.4872102574316136,
+      "Q_quantiles": [
+        128.0,
+        149.0,
+        296.0
+      ]
+    }
+  ],
+  "selected_locations": [
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 1,
+      "x": -48,
+      "y": -74,
+      "radius": 88.20430828479978,
+      "Q": 307.0,
+      "Q_over_median_D": 0.610337972166998,
+      "stratum": 0,
+      "coefficient": -53.71398324897421,
+      "assigned_sigma": 10.10729621429597,
+      "standardized": -5.314377070793674,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 2,
+      "x": 48,
+      "y": -74,
+      "radius": 88.20430828479978,
+      "Q": 307.0,
+      "Q_over_median_D": 0.610337972166998,
+      "stratum": 0,
+      "coefficient": -12.162427521758236,
+      "assigned_sigma": 2.3324341948566323,
+      "standardized": -5.214478311361673,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 2,
+      "x": -64,
+      "y": -44,
+      "radius": 77.6659513557904,
+      "Q": 425.0,
+      "Q_over_median_D": 0.8449304174950298,
+      "stratum": 0,
+      "coefficient": -11.773615452843398,
+      "assigned_sigma": 2.3324341948566323,
+      "standardized": -5.047780331297658,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 2,
+      "x": -64,
+      "y": -42,
+      "radius": 76.55063683601855,
+      "Q": 374.0,
+      "Q_over_median_D": 0.7435387673956262,
+      "stratum": 0,
+      "coefficient": -14.066849371495447,
+      "assigned_sigma": 2.3324341948566323,
+      "standardized": -6.0309737365859934,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 3,
+      "x": -64,
+      "y": -44,
+      "radius": 77.6659513557904,
+      "Q": 425.0,
+      "Q_over_median_D": 0.8449304174950298,
+      "stratum": 0,
+      "coefficient": -5.186079186584811,
+      "assigned_sigma": 1.0177155971745944,
+      "standardized": -5.095803976064162,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "band": 3,
+      "x": -62,
+      "y": -44,
+      "radius": 76.02631123499285,
+      "Q": 468.0,
+      "Q_over_median_D": 0.9304174950298211,
+      "stratum": 0,
+      "coefficient": -5.325011014562422,
+      "assigned_sigma": 1.0177155971745944,
+      "standardized": -5.2323173874369635,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 1,
+      "x": -64,
+      "y": -38,
+      "radius": 74.43117626371358,
+      "Q": 20.0,
+      "Q_over_median_D": 0.19047619047619047,
+      "stratum": 0,
+      "coefficient": 101.6718863051286,
+      "assigned_sigma": 19.399106667043448,
+      "standardized": 5.241060222523332,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 1,
+      "x": -80,
+      "y": -18,
+      "radius": 82.0,
+      "Q": 77.0,
+      "Q_over_median_D": 0.7333333333333333,
+      "stratum": 0,
+      "coefficient": 115.30181145731734,
+      "assigned_sigma": 19.399106667043448,
+      "standardized": 5.943666037632552,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 1,
+      "x": -86,
+      "y": -14,
+      "radius": 87.13208364316786,
+      "Q": 37.0,
+      "Q_over_median_D": 0.3523809523809524,
+      "stratum": 0,
+      "coefficient": 108.78944387581728,
+      "assigned_sigma": 19.399106667043448,
+      "standardized": 5.607961528488132,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 1,
+      "x": -86,
+      "y": -12,
+      "radius": 86.83317338436964,
+      "Q": 25.0,
+      "Q_over_median_D": 0.23809523809523808,
+      "stratum": 0,
+      "coefficient": -116.14403998218496,
+      "assigned_sigma": 19.399106667043448,
+      "standardized": -5.987081878337137,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 1,
+      "x": -80,
+      "y": 36,
+      "radius": 87.72684879784524,
+      "Q": 54.0,
+      "Q_over_median_D": 0.5142857142857142,
+      "stratum": 0,
+      "coefficient": -103.46647364109317,
+      "assigned_sigma": 19.399106667043448,
+      "standardized": -5.333568984229012,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 1,
+      "x": 46,
+      "y": 52,
+      "radius": 69.42621983083913,
+      "Q": 32.0,
+      "Q_over_median_D": 0.3047619047619048,
+      "stratum": 0,
+      "coefficient": -106.23672219356538,
+      "assigned_sigma": 19.399106667043448,
+      "standardized": -5.476371877167298,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 1,
+      "x": 62,
+      "y": 56,
+      "radius": 83.54639429682169,
+      "Q": 47.0,
+      "Q_over_median_D": 0.44761904761904764,
+      "stratum": 0,
+      "coefficient": 121.08248306059879,
+      "assigned_sigma": 19.399106667043448,
+      "standardized": 6.241652522396928,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 1,
+      "x": 56,
+      "y": 60,
+      "radius": 82.07313811473277,
+      "Q": 69.0,
+      "Q_over_median_D": 0.6571428571428571,
+      "stratum": 0,
+      "coefficient": 100.82676760128925,
+      "assigned_sigma": 19.399106667043448,
+      "standardized": 5.197495396660753,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 1,
+      "x": 48,
+      "y": 74,
+      "radius": 88.20430828479978,
+      "Q": 43.0,
+      "Q_over_median_D": 0.4095238095238095,
+      "stratum": 0,
+      "coefficient": -107.85368341592479,
+      "assigned_sigma": 19.399106667043448,
+      "standardized": -5.559724232000545,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 1,
+      "x": 10,
+      "y": 88,
+      "radius": 88.56635930193812,
+      "Q": 65.0,
+      "Q_over_median_D": 0.6190476190476191,
+      "stratum": 0,
+      "coefficient": 110.39762799722854,
+      "assigned_sigma": 19.399106667043448,
+      "standardized": 5.690861434603054,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 2,
+      "x": -80,
+      "y": -18,
+      "radius": 82.0,
+      "Q": 77.0,
+      "Q_over_median_D": 0.7333333333333333,
+      "stratum": 0,
+      "coefficient": 22.892196951618157,
+      "assigned_sigma": 4.488099125401834,
+      "standardized": 5.1006442397968526,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "band": 2,
+      "x": 28,
+      "y": 66,
+      "radius": 71.69379331573968,
+      "Q": 114.0,
+      "Q_over_median_D": 1.0857142857142856,
+      "stratum": 1,
+      "coefficient": 17.98001633155699,
+      "assigned_sigma": 3.576043915592008,
+      "standardized": 5.027907026857759,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 1,
+      "x": -74,
+      "y": -32,
+      "radius": 80.62257748298549,
+      "Q": 89.0,
+      "Q_over_median_D": 0.7007874015748031,
+      "stratum": 0,
+      "coefficient": -58.485622012222365,
+      "assigned_sigma": 11.445975257586314,
+      "standardized": -5.109710679608406,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "band": 3,
+      "x": -62,
+      "y": 44,
+      "radius": 76.02631123499285,
+      "Q": 147.0,
+      "Q_over_median_D": 1.1574803149606299,
+      "stratum": 1,
+      "coefficient": -5.782189240251389,
+      "assigned_sigma": 1.1286746409132276,
+      "standardized": -5.122990302655275,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 1,
+      "x": -48,
+      "y": -70,
+      "radius": 84.87638069569178,
+      "Q": 327.0,
+      "Q_over_median_D": 0.6500994035785288,
+      "stratum": 0,
+      "coefficient": 51.712498422621465,
+      "assigned_sigma": 10.10729621429597,
+      "standardized": 5.116353308165465,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 1,
+      "x": 28,
+      "y": -66,
+      "radius": 71.69379331573968,
+      "Q": 445.0,
+      "Q_over_median_D": 0.8846918489065606,
+      "stratum": 0,
+      "coefficient": 63.48196343458568,
+      "assigned_sigma": 10.10729621429597,
+      "standardized": 6.280805676279228,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 1,
+      "x": -54,
+      "y": 42,
+      "radius": 68.41052550594829,
+      "Q": 565.0,
+      "Q_over_median_D": 1.1232604373757455,
+      "stratum": 1,
+      "coefficient": 42.564087812347616,
+      "assigned_sigma": 8.244439696625186,
+      "standardized": 5.162762950376237,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 2,
+      "x": -30,
+      "y": -78,
+      "radius": 83.57032966310472,
+      "Q": 338.0,
+      "Q_over_median_D": 0.6719681908548708,
+      "stratum": 0,
+      "coefficient": 12.284442533752053,
+      "assigned_sigma": 2.3324341948566323,
+      "standardized": 5.266790617647904,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 2,
+      "x": -30,
+      "y": -76,
+      "radius": 81.70679286326198,
+      "Q": 324.0,
+      "Q_over_median_D": 0.6441351888667992,
+      "stratum": 0,
+      "coefficient": 12.927192203377832,
+      "assigned_sigma": 2.3324341948566323,
+      "standardized": 5.542360951440444,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 2,
+      "x": 48,
+      "y": -74,
+      "radius": 88.20430828479978,
+      "Q": 307.0,
+      "Q_over_median_D": 0.610337972166998,
+      "stratum": 0,
+      "coefficient": 16.951142899980848,
+      "assigned_sigma": 2.3324341948566323,
+      "standardized": 7.267576053103948,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 2,
+      "x": 50,
+      "y": -74,
+      "radius": 89.30845424706443,
+      "Q": 351.0,
+      "Q_over_median_D": 0.6978131212723658,
+      "stratum": 0,
+      "coefficient": 13.316949587649988,
+      "assigned_sigma": 2.3324341948566323,
+      "standardized": 5.709464222834609,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "band": 2,
+      "x": 48,
+      "y": -72,
+      "radius": 86.53323061113575,
+      "Q": 338.0,
+      "Q_over_median_D": 0.6719681908548708,
+      "stratum": 0,
+      "coefficient": 12.566168887989924,
+      "assigned_sigma": 2.3324341948566323,
+      "standardized": 5.387577028196643,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 1,
+      "x": -84,
+      "y": -18,
+      "radius": 85.90692637965812,
+      "Q": 30.0,
+      "Q_over_median_D": 0.2857142857142857,
+      "stratum": 0,
+      "coefficient": 124.59311821651316,
+      "assigned_sigma": 19.399106667043448,
+      "standardized": 6.422621430716736,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 1,
+      "x": -34,
+      "y": 78,
+      "radius": 85.0881895447306,
+      "Q": 113.0,
+      "Q_over_median_D": 1.0761904761904761,
+      "stratum": 1,
+      "coefficient": 93.32211535953034,
+      "assigned_sigma": 14.51735805250501,
+      "standardized": 6.428312577399533,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 3,
+      "x": 66,
+      "y": 42,
+      "radius": 78.23042886243178,
+      "Q": 68.0,
+      "Q_over_median_D": 0.6476190476190476,
+      "stratum": 0,
+      "coefficient": 9.201373514126384,
+      "assigned_sigma": 1.8382312942786763,
+      "standardized": 5.005558083340656,
+      "inside_central": false
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "band": 3,
+      "x": 68,
+      "y": 42,
+      "radius": 79.92496481075234,
+      "Q": 64.0,
+      "Q_over_median_D": 0.6095238095238096,
+      "stratum": 0,
+      "coefficient": 9.244757285329252,
+      "assigned_sigma": 1.8382312942786763,
+      "standardized": 5.029158906228339,
+      "inside_central": false
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 1,
+      "x": -48,
+      "y": -74,
+      "radius": 88.20430828479978,
+      "Q": 307.0,
+      "Q_over_median_D": 0.610337972166998,
+      "stratum": 0,
+      "coefficient": -54.05071645163554,
+      "assigned_sigma": 10.10729621429597,
+      "standardized": -5.347692924561278,
+      "inside_central": false
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 2,
+      "x": 48,
+      "y": -74,
+      "radius": 88.20430828479978,
+      "Q": 307.0,
+      "Q_over_median_D": 0.610337972166998,
+      "stratum": 0,
+      "coefficient": -12.059580860711657,
+      "assigned_sigma": 2.3324341948566323,
+      "standardized": -5.170384179457171,
+      "inside_central": false
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 2,
+      "x": -64,
+      "y": -44,
+      "radius": 77.6659513557904,
+      "Q": 425.0,
+      "Q_over_median_D": 0.8449304174950298,
+      "stratum": 0,
+      "coefficient": -11.828173900576934,
+      "assigned_sigma": 2.3324341948566323,
+      "standardized": -5.071171536869008,
+      "inside_central": false
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 2,
+      "x": -64,
+      "y": -42,
+      "radius": 76.55063683601855,
+      "Q": 374.0,
+      "Q_over_median_D": 0.7435387673956262,
+      "stratum": 0,
+      "coefficient": -14.042945461776835,
+      "assigned_sigma": 2.3324341948566323,
+      "standardized": -6.020725254647544,
+      "inside_central": false
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 3,
+      "x": -64,
+      "y": -44,
+      "radius": 77.6659513557904,
+      "Q": 425.0,
+      "Q_over_median_D": 0.8449304174950298,
+      "stratum": 0,
+      "coefficient": -5.216660972576393,
+      "assigned_sigma": 1.0177155971745944,
+      "standardized": -5.125853418242786,
+      "inside_central": false
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "band": 3,
+      "x": -62,
+      "y": -44,
+      "radius": 76.02631123499285,
+      "Q": 468.0,
+      "Q_over_median_D": 0.9304174950298211,
+      "stratum": 0,
+      "coefficient": -5.336759431173615,
+      "assigned_sigma": 1.0177155971745944,
+      "standardized": -5.243861296800059,
+      "inside_central": false
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 1,
+      "x": -64,
+      "y": -38,
+      "radius": 74.43117626371358,
+      "Q": 20.0,
+      "Q_over_median_D": 0.19047619047619047,
+      "stratum": 0,
+      "coefficient": 101.85336204243478,
+      "assigned_sigma": 19.399106667043448,
+      "standardized": 5.250415072745095,
+      "inside_central": false
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 1,
+      "x": -80,
+      "y": -18,
+      "radius": 82.0,
+      "Q": 77.0,
+      "Q_over_median_D": 0.7333333333333333,
+      "stratum": 0,
+      "coefficient": 115.37474780297521,
+      "assigned_sigma": 19.399106667043448,
+      "standardized": 5.947425816209457,
+      "inside_central": false
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 1,
+      "x": -86,
+      "y": -14,
+      "radius": 87.13208364316786,
+      "Q": 37.0,
+      "Q_over_median_D": 0.3523809523809524,
+      "stratum": 0,
+      "coefficient": 108.28756627001601,
+      "assigned_sigma": 19.399106667043448,
+      "standardized": 5.58209035748963,
+      "inside_central": false
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 1,
+      "x": -86,
+      "y": -12,
+      "radius": 86.83317338436964,
+      "Q": 25.0,
+      "Q_over_median_D": 0.23809523809523808,
+      "stratum": 0,
+      "coefficient": -116.61250462915747,
+      "assigned_sigma": 19.399106667043448,
+      "standardized": -6.011230652557156,
+      "inside_central": false
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 1,
+      "x": -80,
+      "y": 36,
+      "radius": 87.72684879784524,
+      "Q": 54.0,
+      "Q_over_median_D": 0.5142857142857142,
+      "stratum": 0,
+      "coefficient": -102.6779555574613,
+      "assigned_sigma": 19.399106667043448,
+      "standardized": -5.292921850463236,
+      "inside_central": false
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 1,
+      "x": 46,
+      "y": 52,
+      "radius": 69.42621983083913,
+      "Q": 32.0,
+      "Q_over_median_D": 0.3047619047619048,
+      "stratum": 0,
+      "coefficient": -106.24843327943076,
+      "assigned_sigma": 19.399106667043448,
+      "standardized": -5.476975569186028,
+      "inside_central": false
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 1,
+      "x": 62,
+      "y": 56,
+      "radius": 83.54639429682169,
+      "Q": 47.0,
+      "Q_over_median_D": 0.44761904761904764,
+      "stratum": 0,
+      "coefficient": 121.50361886935075,
+      "assigned_sigma": 19.399106667043448,
+      "standardized": 6.263361553435321,
+      "inside_central": false
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 1,
+      "x": 56,
+      "y": 60,
+      "radius": 82.07313811473277,
+      "Q": 69.0,
+      "Q_over_median_D": 0.6571428571428571,
+      "stratum": 0,
+      "coefficient": 100.43837807686003,
+      "assigned_sigma": 19.399106667043448,
+      "standardized": 5.177474396153084,
+      "inside_central": false
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 1,
+      "x": 48,
+      "y": 74,
+      "radius": 88.20430828479978,
+      "Q": 43.0,
+      "Q_over_median_D": 0.4095238095238095,
+      "stratum": 0,
+      "coefficient": -107.92516957424263,
+      "assigned_sigma": 19.399106667043448,
+      "standardized": -5.563409255210366,
+      "inside_central": false
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 1,
+      "x": 10,
+      "y": 88,
+      "radius": 88.56635930193812,
+      "Q": 65.0,
+      "Q_over_median_D": 0.6190476190476191,
+      "stratum": 0,
+      "coefficient": 109.9014865292776,
+      "assigned_sigma": 19.399106667043448,
+      "standardized": 5.665285954429329,
+      "inside_central": false
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "band": 2,
+      "x": -80,
+      "y": -18,
+      "radius": 82.0,
+      "Q": 77.0,
+      "Q_over_median_D": 0.7333333333333333,
+      "stratum": 0,
+      "coefficient": 22.893231790907645,
+      "assigned_sigma": 4.488099125401834,
+      "standardized": 5.100874813868542,
+      "inside_central": false
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 1,
+      "x": 72,
+      "y": -44,
+      "radius": 84.38009243891595,
+      "Q": 141.0,
+      "Q_over_median_D": 1.110236220472441,
+      "stratum": 1,
+      "coefficient": 45.09333472665994,
+      "assigned_sigma": 8.970629908231542,
+      "standardized": 5.0267746176087185,
+      "inside_central": false
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 1,
+      "x": -74,
+      "y": -32,
+      "radius": 80.62257748298549,
+      "Q": 89.0,
+      "Q_over_median_D": 0.7007874015748031,
+      "stratum": 0,
+      "coefficient": -57.86376295622193,
+      "assigned_sigma": 11.445975257586314,
+      "standardized": -5.055380747732285,
+      "inside_central": false
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "band": 3,
+      "x": -62,
+      "y": 44,
+      "radius": 76.02631123499285,
+      "Q": 147.0,
+      "Q_over_median_D": 1.1574803149606299,
+      "stratum": 1,
+      "coefficient": -5.829720380287014,
+      "assigned_sigma": 1.1286746409132276,
+      "standardized": -5.16510265134521,
+      "inside_central": false
+    }
+  ],
+  "false_models": [
+    {
+      "case": "saved_null20260911",
+      "array": "a1100",
+      "total_brightness": 47373.23453925473,
+      "central_brightness": 1879.004603768825,
+      "outer_brightness": 45494.229935485906,
+      "central_fraction": 0.03966384440589193,
+      "central_peak": {
+        "value": 23.60495954992532,
+        "x": -48,
+        "y": -36,
+        "radius": 60.0,
+        "Q": 599.0
+      },
+      "outer_peak": {
+        "value": 104.10134539552823,
+        "x": -48,
+        "y": -72,
+        "radius": 86.53323061113575,
+        "Q": 347.0
+      }
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a1400",
+      "total_brightness": 32562.458658136748,
+      "central_brightness": 1.757533706036953,
+      "outer_brightness": 32560.701124430707,
+      "central_fraction": 5.397423224360173e-05,
+      "central_peak": {
+        "value": 0.10587552446005744,
+        "x": 26,
+        "y": 54,
+        "radius": 59.93329625508679,
+        "Q": 131.0
+      },
+      "outer_peak": {
+        "value": 210.7484028746928,
+        "x": -86,
+        "y": -14,
+        "radius": 87.13208364316786,
+        "Q": 37.0
+      }
+    },
+    {
+      "case": "saved_null20260911",
+      "array": "a2000",
+      "total_brightness": 21456.96202585646,
+      "central_brightness": 1441.5768555252857,
+      "outer_brightness": 20015.385170331178,
+      "central_fraction": 0.06718457411576394,
+      "central_peak": {
+        "value": 17.471477969041576,
+        "x": -48,
+        "y": 36,
+        "radius": 60.0,
+        "Q": 84.0
+      },
+      "outer_peak": {
+        "value": 99.70467859130915,
+        "x": -74,
+        "y": -34,
+        "radius": 81.43709228600933,
+        "Q": 55.0
+      }
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1100",
+      "total_brightness": 2762.402761596459,
+      "central_brightness": 0.0,
+      "outer_brightness": 2762.4027615964596,
+      "central_fraction": 0.0,
+      "central_peak": {
+        "value": 0.0,
+        "x": 0,
+        "y": -60,
+        "radius": 60.0,
+        "Q": 443.0
+      },
+      "outer_peak": {
+        "value": 73.99049802532076,
+        "x": 28,
+        "y": -66,
+        "radius": 71.69379331573968,
+        "Q": 445.0
+      }
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a1400",
+      "total_brightness": 4148.212797644661,
+      "central_brightness": 7.211297064681972,
+      "outer_brightness": 4141.001500579979,
+      "central_fraction": 0.0017384105918521148,
+      "central_peak": {
+        "value": 0.09313907791632833,
+        "x": 50,
+        "y": 32,
+        "radius": 59.36328831862332,
+        "Q": 81.0
+      },
+      "outer_peak": {
+        "value": 144.981648959261,
+        "x": -84,
+        "y": -18,
+        "radius": 85.90692637965812,
+        "Q": 30.0
+      }
+    },
+    {
+      "case": "saved_null20260912",
+      "array": "a2000",
+      "total_brightness": 0.0,
+      "central_brightness": 0.0,
+      "outer_brightness": 0.0,
+      "central_fraction": null,
+      "central_peak": {
+        "value": 0.0,
+        "x": 0,
+        "y": -60,
+        "radius": 60.0,
+        "Q": 86.0
+      },
+      "outer_peak": {
+        "value": 0.0,
+        "x": 0,
+        "y": -90,
+        "radius": 90.0,
+        "Q": 83.0
+      }
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1100",
+      "total_brightness": 47435.82245761271,
+      "central_brightness": 1883.7807832418978,
+      "outer_brightness": 45552.041674370805,
+      "central_fraction": 0.039712198200530624,
+      "central_peak": {
+        "value": 23.66729488450391,
+        "x": -48,
+        "y": -36,
+        "radius": 60.0,
+        "Q": 599.0
+      },
+      "outer_peak": {
+        "value": 104.78542581485243,
+        "x": -48,
+        "y": -72,
+        "radius": 86.53323061113575,
+        "Q": 347.0
+      }
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a1400",
+      "total_brightness": 31247.296806295813,
+      "central_brightness": 0.0,
+      "outer_brightness": 31247.29680629581,
+      "central_fraction": 0.0,
+      "central_peak": {
+        "value": 0.0,
+        "x": 0,
+        "y": -60,
+        "radius": 60.0,
+        "Q": 108.0
+      },
+      "outer_peak": {
+        "value": 210.26458853616646,
+        "x": -86,
+        "y": -14,
+        "radius": 87.13208364316786,
+        "Q": 37.0
+      }
+    },
+    {
+      "case": "saved_background20260911",
+      "array": "a2000",
+      "total_brightness": 21089.48333955484,
+      "central_brightness": 1376.392500372384,
+      "outer_brightness": 19713.090839182456,
+      "central_fraction": 0.06526440113356693,
+      "central_peak": {
+        "value": 16.68146318723161,
+        "x": -48,
+        "y": 36,
+        "radius": 60.0,
+        "Q": 84.0
+      },
+      "outer_peak": {
+        "value": 98.64455043148358,
+        "x": -74,
+        "y": -34,
+        "radius": 81.43709228600933,
+        "Q": 55.0
+      }
+    }
+  ],
+  "central_radius": 60.0,
+  "noise_statement": "Assigned band/Q-stratum scales; spatial descriptive diagnostics, not calibrated local coefficient uncertainties"
+}

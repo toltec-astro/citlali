@@ -1,0 +1,128 @@
+{
+  "identity": "SCI-FRUIT-POINT-STARLET-CENTRAL-DOMAIN-RESULT@r0.1",
+  "utc": "2026-09-12T14:52:32.860123+00:00",
+  "freeze_commit": "f79e93b469b4341681fd92e355ea7041cdccc0fd",
+  "state": "complete_edge_hypothesis_supported_tested_reconstruction_candidate_not_accepted",
+  "new_cleaning_passes": 0,
+  "estimator_calls": 174,
+  "full_trajectories": 0,
+  "external_products": "/private/tmp/sci-fruit-starlet-central-domain-20260912-r0.1",
+  "files": [
+    {
+      "path": "DECISION_EVIDENCE.json",
+      "bytes": 209380,
+      "sha256": "e14daee925c7712adec2a3b987257557d872b810c2d7aa47850370724026aa6b"
+    },
+    {
+      "path": "DOMAIN_CLIPPING.png",
+      "bytes": 117392,
+      "sha256": "2c7e27f67d6196027729ae80867d99d89fe388b5ef6c74636392ba44677112ad"
+    },
+    {
+      "path": "EXECUTION.log",
+      "bytes": 7102,
+      "sha256": "9069a9d6385b464c7b60fd763a63343f2456c3ae1c01482c5da7577aeea9b98b"
+    },
+    {
+      "path": "FREEZE.json",
+      "bytes": 10513,
+      "sha256": "1682f6722a6244684b09c099c5f5b13e818ad4baa8e80071c26cd31e4ac1edcf"
+    },
+    {
+      "path": "FREEZE.json.sha256",
+      "bytes": 78,
+      "sha256": "f932f5e7c73cc43a1e8baadbbffb9d5e908ce7fec59746a1191f8ef0d1015862"
+    },
+    {
+      "path": "NUMERICAL_RESULTS.json",
+      "bytes": 309971,
+      "sha256": "e514c3fd59c85fbe435c6c96bf35e29f822d171815ba5ebcdd072639f2479ef2"
+    },
+    {
+      "path": "PRESERVATION_START.json",
+      "bytes": 797,
+      "sha256": "69f6b1e55320cca747c342e65d16e2bd69f82a26e6c6ce0e12bdeb5a197d4031"
+    },
+    {
+      "path": "PRE_EXECUTION_CHECKS.json",
+      "bytes": 318,
+      "sha256": "ddcfd6c125cceb041a227ff243a22eedd34b3611f2db6edfc29961199bbea21d"
+    },
+    {
+      "path": "PROTOCOL.md",
+      "bytes": 8981,
+      "sha256": "dbf8249406f17cade8053f41d4946c53190c8ba04fb7c1301b20b3842a41c6a8"
+    },
+    {
+      "path": "README.md",
+      "bytes": 642,
+      "sha256": "37089c7166c6786d8e96193631c3468693e6f3c533dab33160845a6cf92aa685"
+    },
+    {
+      "path": "REVIEW_DISCUSSION.json",
+      "bytes": 19060,
+      "sha256": "bdee3121f6028f21a15b79c8e55d65ab4fa9b4688f848e3d3e0aed940088a226"
+    },
+    {
+      "path": "RUN_PRODUCT_MANIFEST.json",
+      "bytes": 24045,
+      "sha256": "743324c5d30ae1f1a734be80e9165e1364d5fc047a49393d3be249b8951bc2e1"
+    },
+    {
+      "path": "RUN_RECEIPTS.json",
+      "bytes": 7744,
+      "sha256": "8ad1ce71bacbba11668dc5108a083ab195b8d9d26c67277d39a2b288c655379b"
+    },
+    {
+      "path": "SCIENTIFIC_REPORT.md",
+      "bytes": 10331,
+      "sha256": "28d413ddd375e0a62f3a6aeffef60cbcae727aaacce973373aa1bb654c4fa8c6"
+    },
+    {
+      "path": "SPATIAL_AUDIT.json",
+      "bytes": 187564,
+      "sha256": "97244ebd9ceea967b93eacf2043de14fcb2356b126749765445d6f9a7ad8fc42"
+    },
+    {
+      "path": "SPATIAL_EVIDENCE.png",
+      "bytes": 447865,
+      "sha256": "ef466fdc4e3d1704331c7114b173bb1ae5633305e74f17b648166901626ed1ff"
+    },
+    {
+      "path": "VERIFICATION.json",
+      "bytes": 1018,
+      "sha256": "19c7e78d6709c8c467c4d3fa885fc187dba8979a31e8a71bf24f806e89cecf47"
+    },
+    {
+      "path": "build_result_manifest.py",
+      "bytes": 1435,
+      "sha256": "c61375bf96479f9eccf02ae727fb82b23dc96d60d803dd90b5f6cb96f33eda87"
+    },
+    {
+      "path": "candidate.py",
+      "bytes": 6044,
+      "sha256": "7c0e3c8e207d22c882e4225db692ee13366a294c3e907ee4bca691210d5be36a"
+    },
+    {
+      "path": "render_evidence.py",
+      "bytes": 3839,
+      "sha256": "66879e1c595689e1f42c3d72263fdfcd1efe337aa8c4c24f50e239d80fa5ccb9"
+    },
+    {
+      "path": "run_comparison.py",
+      "bytes": 11407,
+      "sha256": "92de139b000db41b1a956282eb29bda9a95cdfec073fdefb26ea436d12844a2c"
+    },
+    {
+      "path": "test_central_domain.py",
+      "bytes": 2909,
+      "sha256": "5b057d875bfd9273d9ec7fcd0af8350fe978ef7a0eb631684ed45ee689469185"
+    },
+    {
+      "path": "verify_and_summarize.py",
+      "bytes": 10374,
+      "sha256": "bfad53b6c395a50ae71eed73c04d26fb80a0bd93673f2551060d0f73cfc477ad"
+    }
+  ],
+  "total_payload_bytes": 1398809
+}
