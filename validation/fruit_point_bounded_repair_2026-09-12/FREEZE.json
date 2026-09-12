@@ -1,0 +1,937 @@
+{
+  "identity": "SCI-FRUIT-POINT-BOUNDED-REPAIR-RETEST@r0.1",
+  "utc": "2026-09-12T17:56:13.458495+00:00",
+  "starting_commit": "10dce47f4c613ed1cf3f6bcbd287419a7f592d33",
+  "files": [
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_bounded_repair_2026-09-12/PRESERVATION_START.json",
+      "bytes": 1933,
+      "sha256": "4c08c692ac633cf54528766534b5baf54c049791bd5774a8ac02e2975ca60690"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_bounded_repair_2026-09-12/PROTOCOL.md",
+      "bytes": 9638,
+      "sha256": "558d537704e1cd67384987608e26f54ede2fd15697d1dbe90ed03ed63de8e024"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_bounded_repair_2026-09-12/common.py",
+      "bytes": 1817,
+      "sha256": "f12d5281f427a7217d0c2a924e630154eea6976665e3bf09ed8159d4a109b0c8"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_bounded_repair_2026-09-12/prepare.py",
+      "bytes": 2973,
+      "sha256": "e30702f4c8be05d501f64ccbed83770743325c93d58cf782381b4b69a1eeb201"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_bounded_repair_2026-09-12/reevaluate.py",
+      "bytes": 3748,
+      "sha256": "4de6be43a4ba6a2f8e9d5858b4a332cb703ce9feb3d83dfbe9fb561aa8cb38cd"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_bounded_repair_2026-09-12/run_saved.py",
+      "bytes": 8207,
+      "sha256": "3602799002e00f53f07fd7e67259fb0bf71f0aaec539cf2d84aef048add6f638"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_bounded_repair_2026-09-12/stopping.py",
+      "bytes": 4432,
+      "sha256": "d07f111a29d03c7986ac44788b71749f213248855d27c2d0587f7124d53dd7d0"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_bounded_repair_2026-09-12/test_repair.py",
+      "bytes": 2792,
+      "sha256": "a5c0dc5b4d3e61cc85eb0c535b1f19de6734d24ba0d22c7157ab1469276fb119"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_coherent_feedback_2026-09-11/experiment_r02.py",
+      "bytes": 18548,
+      "sha256": "67f78850b7d07cd2723231ad0114d607934990b9ee05531dabeb23b164b5f6ac"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/CASES.json",
+      "bytes": 1910,
+      "sha256": "a7cca0688b0679b4f2a9e57a129ab74a571791e97edac7bde88dc0d68360f113"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/DIAGNOSTIC_EVIDENCE.json",
+      "bytes": 44463,
+      "sha256": "e842b7cadfc702a3f0a0e7e4538b0602ae40cb0fb38601ec3063c1218fa1d4d8"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/RESULT_MANIFEST.json",
+      "bytes": 6097,
+      "sha256": "fe50d33cdb178f80838cdcb6a49c1cd315501b1d7b68376d1360b817ad72ad76"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/candidate.py",
+      "bytes": 6052,
+      "sha256": "39aba38f44e6b7192e3cbae76d7c2207cabb3d8acb39750e3159af406a8a9404"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/evaluation.py",
+      "bytes": 4317,
+      "sha256": "414a4a30bb564bc3acaa27b5ffbd630e0827d0cd356a35e4a5e8cb32a9ef8b78"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260911/C/pass00_maps.npz",
+      "bytes": 542308,
+      "sha256": "686ad53e56ef929812fcb3353c488d4e2a9b703b077ec8a7cc9da2e47d0f521f"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260911/C/pass01_maps.npz",
+      "bytes": 542308,
+      "sha256": "686ad53e56ef929812fcb3353c488d4e2a9b703b077ec8a7cc9da2e47d0f521f"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260911/C/pass02_maps.npz",
+      "bytes": 542308,
+      "sha256": "686ad53e56ef929812fcb3353c488d4e2a9b703b077ec8a7cc9da2e47d0f521f"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260911/C/pass03_maps.npz",
+      "bytes": 542308,
+      "sha256": "686ad53e56ef929812fcb3353c488d4e2a9b703b077ec8a7cc9da2e47d0f521f"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260911/C/pass04_maps.npz",
+      "bytes": 542308,
+      "sha256": "686ad53e56ef929812fcb3353c488d4e2a9b703b077ec8a7cc9da2e47d0f521f"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260911/C/pass05_maps.npz",
+      "bytes": 542308,
+      "sha256": "686ad53e56ef929812fcb3353c488d4e2a9b703b077ec8a7cc9da2e47d0f521f"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260911/C/pass06_maps.npz",
+      "bytes": 542308,
+      "sha256": "686ad53e56ef929812fcb3353c488d4e2a9b703b077ec8a7cc9da2e47d0f521f"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260911/P/pass00_maps.npz",
+      "bytes": 543338,
+      "sha256": "da2fada7f15577c8bf5b99fbfc410fa4018889658fc119071a76e33569a39d6e"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260911/P/pass01_maps.npz",
+      "bytes": 543718,
+      "sha256": "36f913ad84550fff557731b466de9ddd7d6c1b70212a217a280d7ed0ea4f785a"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260911/P/pass02_maps.npz",
+      "bytes": 543762,
+      "sha256": "bb6605ada861830efd5e9c08bc8dec8b54f3010eaafff1e3febe8b6e9287c732"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260911/P/pass03_maps.npz",
+      "bytes": 543835,
+      "sha256": "a07ffb5997c66c5c52ba0f125ff8a2769b1126c0005eaf22b1ae246ae594dbe6"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260911/P/pass04_maps.npz",
+      "bytes": 543882,
+      "sha256": "668ffd4c846b2390aae4f6bc8b65fe402043a602c074b53f43d2e92b8e0768f9"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260911/P/pass05_maps.npz",
+      "bytes": 543797,
+      "sha256": "d4933fd94a1faf6243cb01fb52a30c1d930ad5042dd08051fc69f251f9c07a19"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260911/P/pass06_maps.npz",
+      "bytes": 543898,
+      "sha256": "e9ddcecd90a61f954ccd62894d903ad5b58a05b49f796f9b0f773ce9c1bd5151"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260912/C/pass00_maps.npz",
+      "bytes": 542155,
+      "sha256": "38f5fa5e3c94512f8f7e11b391645378472ea92ceb487084159ceb6b73163d82"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260912/C/pass01_maps.npz",
+      "bytes": 542155,
+      "sha256": "38f5fa5e3c94512f8f7e11b391645378472ea92ceb487084159ceb6b73163d82"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260912/C/pass02_maps.npz",
+      "bytes": 542155,
+      "sha256": "38f5fa5e3c94512f8f7e11b391645378472ea92ceb487084159ceb6b73163d82"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260912/C/pass03_maps.npz",
+      "bytes": 542155,
+      "sha256": "38f5fa5e3c94512f8f7e11b391645378472ea92ceb487084159ceb6b73163d82"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260912/C/pass04_maps.npz",
+      "bytes": 542155,
+      "sha256": "38f5fa5e3c94512f8f7e11b391645378472ea92ceb487084159ceb6b73163d82"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260912/C/pass05_maps.npz",
+      "bytes": 542155,
+      "sha256": "38f5fa5e3c94512f8f7e11b391645378472ea92ceb487084159ceb6b73163d82"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260912/C/pass06_maps.npz",
+      "bytes": 542155,
+      "sha256": "38f5fa5e3c94512f8f7e11b391645378472ea92ceb487084159ceb6b73163d82"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260912/P/pass00_maps.npz",
+      "bytes": 543339,
+      "sha256": "b0aa64e1c3ea07228c8545624cd78f14f18fb6da40d9b689aad48edb319b569c"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260912/P/pass01_maps.npz",
+      "bytes": 543962,
+      "sha256": "16e83e80d49da52ededf12c3f5e36464e7b0e47248cc72db97157e5a6894e020"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260912/P/pass02_maps.npz",
+      "bytes": 543985,
+      "sha256": "1d339d2ad7616c595baaa0cb9e6c4395b2ebc10c57803bc984ecf34d894ecb74"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260912/P/pass03_maps.npz",
+      "bytes": 543991,
+      "sha256": "20556f8f88ec850409229c7c07bc634c3c3ca5b3c9a7f943f5c8b04e4b296eb0"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260912/P/pass04_maps.npz",
+      "bytes": 544030,
+      "sha256": "4f3959fa962a90d1dee44033d7bbfff27b11679d6fcd72778b4d53a7b63b5200"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260912/P/pass05_maps.npz",
+      "bytes": 543982,
+      "sha256": "b62dd2a125a87354e24f5851cbb68c0e40ee49e67c0c3a531b7c114157a20e14"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/B_20260912/P/pass06_maps.npz",
+      "bytes": 544076,
+      "sha256": "fe009f4de20d44e52883de06c475864e1578fdc21ab0581d1fc5829170cb8a41"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/C_20260911/C/pass00_maps.npz",
+      "bytes": 588516,
+      "sha256": "b30ed437f0706e5bb0680e6805253b416a5db7edb6b4b94dd6e819ffc001755a"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/C_20260911/P/pass00_maps.npz",
+      "bytes": 543217,
+      "sha256": "63408b0414e06cc8c338c39a507ebdc187d571c2e2a2a6a5edd1c38dfb347ea6"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/C_20260911/P/pass01_maps.npz",
+      "bytes": 543844,
+      "sha256": "26abeec0ff985281ee2b83bb5a92737c1d9a87609e21c02d60aca199aed9f12d"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/C_20260911/P/pass02_maps.npz",
+      "bytes": 543874,
+      "sha256": "8bb3bbd32633db400b8487132208f975e0734ca0afab81eef159e4597eb86aa9"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/C_20260911/P/pass03_maps.npz",
+      "bytes": 543871,
+      "sha256": "b61aee7941465e43d6af2c02046b0c214446f458fca677aced978d84862eb8bf"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/C_20260911/P/pass04_maps.npz",
+      "bytes": 543845,
+      "sha256": "b6fbe5259b96cf4c0ca5e53d92093d9c131d38e95e5cbe16e8c6a386dd479f40"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/C_20260911/P/pass05_maps.npz",
+      "bytes": 543879,
+      "sha256": "3f979850caa07a2761b6deea1d3a45b8e761c2506b0f2fac2016278a35ae8b35"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/C_20260911/P/pass06_maps.npz",
+      "bytes": 543829,
+      "sha256": "2ae90fe3ff4473cad754760d1292d6927de1798c6c375c7d49e60301cd0e362e"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/C_20260912/C/pass00_maps.npz",
+      "bytes": 590170,
+      "sha256": "4a6e985cbfc57fdecd4f78d6a88b274635a321eafd09e0ce54798d73a0f8aa66"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/C_20260912/P/pass00_maps.npz",
+      "bytes": 543610,
+      "sha256": "22cf61d494c21d181af934759f2dea78726b296339e6b0af59c206e908fdfb2b"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/C_20260912/P/pass01_maps.npz",
+      "bytes": 544200,
+      "sha256": "1fb5ba79d3ecface65e67630fe6249c771f93a160ad20900e41aa973a36b65ab"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/C_20260912/P/pass02_maps.npz",
+      "bytes": 544350,
+      "sha256": "038aac5484421506bd72ceab1a3798152e2779284649f6a1622d2cb8c8b6c5f8"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/C_20260912/P/pass03_maps.npz",
+      "bytes": 544168,
+      "sha256": "43e64d6adbad454b939be5d8b707e7621184a5d142552477c98f0c9bd1c22b00"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/C_20260912/P/pass04_maps.npz",
+      "bytes": 544245,
+      "sha256": "0c0ca10fed11faa0a61985e8b4a172f432c6cec8c4b4d66cd12e26f68345c786"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/C_20260912/P/pass05_maps.npz",
+      "bytes": 544241,
+      "sha256": "f7786d55d4f190f2c9c2415ad4fce8cef22048696179630cb352490d1ed16ade"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/C_20260912/P/pass06_maps.npz",
+      "bytes": 544218,
+      "sha256": "e541697c7c8dea53654e3208f1e5b56a33d9548645ce38782b6cafc192cb8641"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/D_20260911/C/pass00_maps.npz",
+      "bytes": 565811,
+      "sha256": "43697332a4655c8e4aba785d72e3b2fa280b45c0d727702cae8bc36f0e58fb7b"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/D_20260911/P/pass00_maps.npz",
+      "bytes": 543877,
+      "sha256": "654ad1df13d1e4b2f8f6388c709cd6aa97dbb548fe5e7b6d136408837872e17c"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/D_20260911/P/pass01_maps.npz",
+      "bytes": 544793,
+      "sha256": "aeffb45d2fba7e52e6b9f594633cd4275d8b4f3d80540a83cacb9c6224caef06"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/D_20260911/P/pass02_maps.npz",
+      "bytes": 544834,
+      "sha256": "89a198ff958831a65223a8f0663403fb0a704c7aaa78505f9033394e98cbccab"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/D_20260911/P/pass03_maps.npz",
+      "bytes": 544738,
+      "sha256": "cb0d1544bc3578dc8c4b3cb0467107615caae07b23a9f2b84bd395bad8e6d696"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/D_20260911/P/pass04_maps.npz",
+      "bytes": 544848,
+      "sha256": "f549f6bf978cbe91c4c51062d24ea1aedea12ff1ef12c5fe737a2a33e25d5eb5"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/D_20260911/P/pass05_maps.npz",
+      "bytes": 544843,
+      "sha256": "b36e3f2b3a16e383cab264d4bf307a67865830251901463dbd6b0ecd1a51b628"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/D_20260911/P/pass06_maps.npz",
+      "bytes": 544858,
+      "sha256": "79b1ca296527a1bc09b81a6c9dfee0395eab61b4c7acb9394f3dcc6a83b4e9ff"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/D_20260912/C/pass00_maps.npz",
+      "bytes": 609736,
+      "sha256": "f37df26c3416f89ba13f20390691bc0202ef7b857123fe9014d6c4b835d0c9a6"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/D_20260912/P/pass00_maps.npz",
+      "bytes": 544006,
+      "sha256": "cd77f28510ba10e3540db49bcfabda93d2dfbfa0e712df8143c7448f4c507611"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/D_20260912/P/pass01_maps.npz",
+      "bytes": 545141,
+      "sha256": "38971714ec0bd2dd041a0adbde24eb72a2735137c9f9f8c0a86ac3375c07fbc5"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/D_20260912/P/pass02_maps.npz",
+      "bytes": 545274,
+      "sha256": "81125920455a7e2a2dc8d66aef7632a7820fd09ee3af72e0deb9a9d20827bfc8"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/D_20260912/P/pass03_maps.npz",
+      "bytes": 545299,
+      "sha256": "25917a7759d3f8a898538cd0b801d47fbec3cc3a40424ebdb0015647c4d593c7"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/D_20260912/P/pass04_maps.npz",
+      "bytes": 545311,
+      "sha256": "84c548eec15e21004b40933e77df626ad5f2de2094582d2db1f55bbee6622601"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/D_20260912/P/pass05_maps.npz",
+      "bytes": 545334,
+      "sha256": "7d208d9946d5cb39f53169a020495c238c82fa7f34fcb813dc55d8a875d61a23"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/D_20260912/P/pass06_maps.npz",
+      "bytes": 545286,
+      "sha256": "47189ef7e54fe92e188a09e014f9a4fa22636a30ce26eec8b5e405d1794afce1"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/E_20260911/C/pass00_maps.npz",
+      "bytes": 551575,
+      "sha256": "52d5314371827c20cd0cb281e84c652987670bc5c07d3b86eede085c9644c56c"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/E_20260911/P/pass00_maps.npz",
+      "bytes": 543810,
+      "sha256": "23b6dc8c664266e010f2a315c9634d102e50d032fef26fa3fdace2281a1ee6b5"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/E_20260911/P/pass01_maps.npz",
+      "bytes": 544803,
+      "sha256": "9c1fe5c34ff02ac5178a4e9f7de6786c08a2c815179f0d0a2617eb8ac4dc4a4c"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/E_20260911/P/pass02_maps.npz",
+      "bytes": 545009,
+      "sha256": "ed682ae52d0323d7e8aa758e16046d2ff4d8a349e7eb4300efddb8cfacf99548"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/E_20260911/P/pass03_maps.npz",
+      "bytes": 545013,
+      "sha256": "eb5f61f4446a5e0ff6386fce96536ca3a31ec912ce88551ceab3fbd6dadc2bdd"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/E_20260911/P/pass04_maps.npz",
+      "bytes": 545015,
+      "sha256": "18b8dea13893a8a92d11348168ea7ef581049962b32096bdad415ea6bba2050a"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/E_20260911/P/pass05_maps.npz",
+      "bytes": 544961,
+      "sha256": "4b2f1c7d2f0d75a88c46ff24aa25a5c866677c6a7647c91d03165d3602bfa2a5"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/E_20260911/P/pass06_maps.npz",
+      "bytes": 545025,
+      "sha256": "802f1b72fa671aae053f579ac077517228aa40bd602b6b864b2ab973aaf63eb9"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/E_20260912/C/pass00_maps.npz",
+      "bytes": 549309,
+      "sha256": "9776803ec043645fe25a89d8845b3697fb5fc515efe81e2563f1b5c5a641ff1d"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/E_20260912/P/pass00_maps.npz",
+      "bytes": 544266,
+      "sha256": "3ed89d3320fe742362a820e442fc03e9cc8925e4037152e7ef3aa39ea5e43d0a"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/E_20260912/P/pass01_maps.npz",
+      "bytes": 545319,
+      "sha256": "f7feec81b937b493dc14919cb1e2f12f7c0ab7270906a27c63aa8c513a1f9302"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/E_20260912/P/pass02_maps.npz",
+      "bytes": 545560,
+      "sha256": "e7dfce3393b477799c2751562c0115d8a7e3b75b311c5976439148b996221a54"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/E_20260912/P/pass03_maps.npz",
+      "bytes": 545594,
+      "sha256": "250e6bf77d231710714639bf7b6f578998f2b0e197389732afd4168b1794c175"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/E_20260912/P/pass04_maps.npz",
+      "bytes": 545616,
+      "sha256": "2438bd8b0e9fa0c797b07b7ba545e000778f9487ee0cac15ec00f30b38b942f0"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/E_20260912/P/pass05_maps.npz",
+      "bytes": 545631,
+      "sha256": "0cca754b0f6b04d5a75da43045569f4f2104321cc88b0a40d0687e81e51d38d9"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/E_20260912/P/pass06_maps.npz",
+      "bytes": 545736,
+      "sha256": "9f7597292f43bf8b8c084c5bb08bb139c78f0d203c0fdb7e5a3d86ef05be1ae1"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H-shift_20260911/C/pass00_maps.npz",
+      "bytes": 565592,
+      "sha256": "9581a4b1c6a07d476574a07fa80e32595223914855e034189b1bd72e3458c835"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H-shift_20260911/P/pass00_maps.npz",
+      "bytes": 543952,
+      "sha256": "d8645a750a726fb0484faae3166881d9e5f29e0a8624851d29aadf6ccd37c67b"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H-shift_20260911/P/pass01_maps.npz",
+      "bytes": 544855,
+      "sha256": "842e81c5a8f5ecef148e136d5afbc6b341769d7fd8b948c2fbc94de96f90319b"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H-shift_20260911/P/pass02_maps.npz",
+      "bytes": 544911,
+      "sha256": "88cd0933b97e5615c2a84f61ca72ac54a681825208ced449b2aa63dbe98ad69b"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H-shift_20260911/P/pass03_maps.npz",
+      "bytes": 545038,
+      "sha256": "75f507aca107a65d7f6c48b9d04f5c419a71945659bbccc0ede8df23b6321606"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H-shift_20260911/P/pass04_maps.npz",
+      "bytes": 545037,
+      "sha256": "ef84e5daaa47579e615a8d5cff92f8de4b40500501e2aaec88226bc351568ddb"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H-shift_20260911/P/pass05_maps.npz",
+      "bytes": 545007,
+      "sha256": "4ebc96d35f1e3e637b98d5405499eed6bbc0be5f863b3a0e3d6787f803f4d17c"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H-shift_20260911/P/pass06_maps.npz",
+      "bytes": 545058,
+      "sha256": "1a051d09d820e6b467dd59cbd4542af3f6d78b0ca5d3971705f94bc21fdc8517"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H-shift_20260912/C/pass00_maps.npz",
+      "bytes": 609149,
+      "sha256": "d60b9393bd0f759274c5967c125bd0f21e9decb5c11f26226e06d49731bfafbf"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H-shift_20260912/P/pass00_maps.npz",
+      "bytes": 544147,
+      "sha256": "35f2a9790b7fccea876a32c9a8a359e2b18f4c5c4b45ca121e6311aa2e1e4d84"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H-shift_20260912/P/pass01_maps.npz",
+      "bytes": 545110,
+      "sha256": "5a0d7317d5ca1f27a0f7dabba1f9680440c0da109a15a40374380c2e828bd444"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H-shift_20260912/P/pass02_maps.npz",
+      "bytes": 545273,
+      "sha256": "17fd3ab694d5ef949ba60e4fa39164acffdaa4225ec3dcfc97c6d70817733668"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H-shift_20260912/P/pass03_maps.npz",
+      "bytes": 545291,
+      "sha256": "be9d9c9853366847db6335df9d6ed276fa7b46e66460e700a3225451fc424824"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H-shift_20260912/P/pass04_maps.npz",
+      "bytes": 545327,
+      "sha256": "d7c0e10eed63246a50aa154bec794abca2247fde9a6ab0979a96a36159f70f6b"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H-shift_20260912/P/pass05_maps.npz",
+      "bytes": 545319,
+      "sha256": "ceb808b5c6ba7ea87adaeb20aa318625546cda5ad4af0b8b29922899866b25f9"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H-shift_20260912/P/pass06_maps.npz",
+      "bytes": 545400,
+      "sha256": "00456536539fec88709d5f2fefff459847785ae02190ddb1ba2192ad0e087eaa"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H_20260911/C/pass00_maps.npz",
+      "bytes": 565928,
+      "sha256": "d8fff67ffdeb4e2bd772820795d9674c5d02b288cdf22968e244692496b2b6fc"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H_20260911/P/pass00_maps.npz",
+      "bytes": 543865,
+      "sha256": "f03324566ecec64175fbb5e01a319a2e9cd230c7bb8ac826b52ab389f8e501c3"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H_20260911/P/pass01_maps.npz",
+      "bytes": 544943,
+      "sha256": "9f35406ccf0573fe561a5eb25400a58bc52b496b0274cc67a56306ac9e676c57"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H_20260911/P/pass02_maps.npz",
+      "bytes": 544967,
+      "sha256": "d404814f01e45b3b9857c75f8a0c701e46d0df1d1ff0c48c7674fdda95e6e36e"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H_20260911/P/pass03_maps.npz",
+      "bytes": 544935,
+      "sha256": "ab2145f596617bd7a30507704c71219cfaa7b9cc75922a2b4f636882805b3ee5"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H_20260911/P/pass04_maps.npz",
+      "bytes": 544907,
+      "sha256": "bf387085993c71e10d7997b908be14bde345d559caa902544ca98d8f5aeaac10"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H_20260911/P/pass05_maps.npz",
+      "bytes": 544901,
+      "sha256": "8d71f99cfcf142877a26103165519d146a40dc207f1c3141eb591f59dcc76d9d"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H_20260911/P/pass06_maps.npz",
+      "bytes": 544976,
+      "sha256": "e668f633434f19f709abf7bd4777e14248216e594b294f7ea20ffc99dca9cc87"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H_20260912/C/pass00_maps.npz",
+      "bytes": 587249,
+      "sha256": "c983919c8cb51e3de929a9d39db1984afa73857d2925a149800d135f4c2d3a22"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H_20260912/P/pass00_maps.npz",
+      "bytes": 544126,
+      "sha256": "c70c8c20a823a23fe5146ce80c9562417fd659ce544830243b54614b91b16536"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H_20260912/P/pass01_maps.npz",
+      "bytes": 545119,
+      "sha256": "8c59c7dda273ddaab517bdb8f0e585d0d068806c4a7016f12c7300c4f8622b81"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H_20260912/P/pass02_maps.npz",
+      "bytes": 545367,
+      "sha256": "8e25717eb27ff575e26249ee9e353fe39aabadd18203a48b128edf9e6247f78d"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H_20260912/P/pass03_maps.npz",
+      "bytes": 545388,
+      "sha256": "19d4f91c3cf328071b6bb0eee8517687c35572483305a84bf60fac0f3179bb1c"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H_20260912/P/pass04_maps.npz",
+      "bytes": 545291,
+      "sha256": "a2d596f272a0fd36f16cba4cd8d51aefc891d3ce3bce8fac9abcbcf55da30cfe"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H_20260912/P/pass05_maps.npz",
+      "bytes": 545384,
+      "sha256": "44959f4809d673ccd537b51eb85b31a3e35555fa76f9f60bf6de14a6f03553ed"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H_20260912/P/pass06_maps.npz",
+      "bytes": 545403,
+      "sha256": "7eb1beee26b1ff6c8c0ed0ca11fe5f81e401711b694f2b8d2ffe367bc49f0223"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260911/C/pass00_maps.npz",
+      "bytes": 542236,
+      "sha256": "2ff52c56e3a8d3080d0c00e35736a8309d537607866b0c38aa279d69d93a3341"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260911/C/pass01_maps.npz",
+      "bytes": 542236,
+      "sha256": "2ff52c56e3a8d3080d0c00e35736a8309d537607866b0c38aa279d69d93a3341"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260911/C/pass02_maps.npz",
+      "bytes": 542236,
+      "sha256": "2ff52c56e3a8d3080d0c00e35736a8309d537607866b0c38aa279d69d93a3341"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260911/C/pass03_maps.npz",
+      "bytes": 542236,
+      "sha256": "2ff52c56e3a8d3080d0c00e35736a8309d537607866b0c38aa279d69d93a3341"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260911/C/pass04_maps.npz",
+      "bytes": 542236,
+      "sha256": "2ff52c56e3a8d3080d0c00e35736a8309d537607866b0c38aa279d69d93a3341"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260911/C/pass05_maps.npz",
+      "bytes": 542236,
+      "sha256": "2ff52c56e3a8d3080d0c00e35736a8309d537607866b0c38aa279d69d93a3341"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260911/C/pass06_maps.npz",
+      "bytes": 542236,
+      "sha256": "2ff52c56e3a8d3080d0c00e35736a8309d537607866b0c38aa279d69d93a3341"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260911/P/pass00_maps.npz",
+      "bytes": 543288,
+      "sha256": "e1f5b23eb02524667277b36b4e11e7950e86605009c641f456f420ed24d3bf90"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260911/P/pass01_maps.npz",
+      "bytes": 543797,
+      "sha256": "a5f862f5946c174ae912610e58668dc9f46fa3b15891f77527dbe0a2629e4e3f"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260911/P/pass02_maps.npz",
+      "bytes": 543881,
+      "sha256": "a7be887f1330274fce47ac34f48a030ba7bfa9ade03f8dd99715072aa8472468"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260911/P/pass03_maps.npz",
+      "bytes": 543932,
+      "sha256": "b73e3cd9b38c426284970397c9db7f9115aac593ac1be06e99659129c71518eb"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260911/P/pass04_maps.npz",
+      "bytes": 543852,
+      "sha256": "8f5a0c6779101dc51b0df2325571cad3b2f179da7813be8298c8ee8aa4c7a65b"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260911/P/pass05_maps.npz",
+      "bytes": 543881,
+      "sha256": "7d80826009934769ac18071e57ca9dad8e86c437af4ae50091282b0463eccef1"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260911/P/pass06_maps.npz",
+      "bytes": 543857,
+      "sha256": "aa381433f8593c2461a1396aa0d858b17467086657bc88e54c1744963ba73590"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260912/C/pass00_maps.npz",
+      "bytes": 542236,
+      "sha256": "eafe291e8f9a3adf64ee0e21f02a0feaa34fec2a5ab9d1cde563a211095d82a3"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260912/C/pass01_maps.npz",
+      "bytes": 542236,
+      "sha256": "eafe291e8f9a3adf64ee0e21f02a0feaa34fec2a5ab9d1cde563a211095d82a3"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260912/C/pass02_maps.npz",
+      "bytes": 542236,
+      "sha256": "eafe291e8f9a3adf64ee0e21f02a0feaa34fec2a5ab9d1cde563a211095d82a3"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260912/C/pass03_maps.npz",
+      "bytes": 542236,
+      "sha256": "eafe291e8f9a3adf64ee0e21f02a0feaa34fec2a5ab9d1cde563a211095d82a3"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260912/C/pass04_maps.npz",
+      "bytes": 542236,
+      "sha256": "eafe291e8f9a3adf64ee0e21f02a0feaa34fec2a5ab9d1cde563a211095d82a3"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260912/C/pass05_maps.npz",
+      "bytes": 542236,
+      "sha256": "eafe291e8f9a3adf64ee0e21f02a0feaa34fec2a5ab9d1cde563a211095d82a3"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260912/C/pass06_maps.npz",
+      "bytes": 542236,
+      "sha256": "eafe291e8f9a3adf64ee0e21f02a0feaa34fec2a5ab9d1cde563a211095d82a3"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260912/P/pass00_maps.npz",
+      "bytes": 543498,
+      "sha256": "30e7f345950ba746ca3b0fed4f5a42d76078ea27906037d89a990a8ce7303e52"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260912/P/pass01_maps.npz",
+      "bytes": 544208,
+      "sha256": "8cbaf927b21d779a69324561df6010e6a59c19462041c8b1e60fb977d8d3a774"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260912/P/pass02_maps.npz",
+      "bytes": 544237,
+      "sha256": "04375d9bead413d4c246c9e3a10695c895255fd55a8f542a94ea382806bcfa09"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260912/P/pass03_maps.npz",
+      "bytes": 544206,
+      "sha256": "0c937d57852d795d577a577ef2eb7b1f0c0c744e7daf4c9005c5f77d5963ebc6"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260912/P/pass04_maps.npz",
+      "bytes": 544151,
+      "sha256": "995b25eb0c8330b70ee0f3b67670094c16c79645a258af2c40c6dbd6d2a74eb2"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260912/P/pass05_maps.npz",
+      "bytes": 544213,
+      "sha256": "92bf0a0b89f4d4675b4d94a1ee577d638fc1ec94a1bd604d97c52cb42437e2ca"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/N_20260912/P/pass06_maps.npz",
+      "bytes": 544222,
+      "sha256": "b2596a79fb7518489ee38db081dbb413930584d401cd32cb1e7c0389ffd5d83d"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/PRODUCT_MANIFEST.json",
+      "bytes": 95417,
+      "sha256": "7268eb19a65bd21a1f6c92513e779a22570ab2261786d079cdcd1d29fc6d4b9f"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/RECEIPTS.json",
+      "bytes": 1429420,
+      "sha256": "550670bfd000790467be22c6adbadc40f513d7092d6b4f4f0bcc7d76297994c0"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/T_20260911/C/pass00_maps.npz",
+      "bytes": 588352,
+      "sha256": "f55ed3868cd4111fc81324fa25290be25bccefa4fcd0a0852c9c4a38ea7511e2"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/T_20260911/C/pass01_maps.npz",
+      "bytes": 569273,
+      "sha256": "2aa29e90ef32891d6e1514e28cdd5e9a6c0c16f7d0f323448858ec991eb7fbef"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/T_20260911/P/pass00_maps.npz",
+      "bytes": 544086,
+      "sha256": "62e523bdfd2c1ac0f29dabd729d202cc850922935a7d7428fe142548e907ae63"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/T_20260911/P/pass01_maps.npz",
+      "bytes": 545057,
+      "sha256": "cf495c74309c6566091fb170481e83562e8dbe71dab8c2df8e63c52aab6a0796"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/T_20260911/P/pass02_maps.npz",
+      "bytes": 545126,
+      "sha256": "9bf089fc4ab91540efffadfe4d204a27ea3dc9c4dcc3b76bf1842c172cb74812"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/T_20260911/P/pass03_maps.npz",
+      "bytes": 545117,
+      "sha256": "57a7426d29535af5b134550d9d0afb35b4fad03a825f43f7bc4e8a582f7c55d0"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/T_20260911/P/pass04_maps.npz",
+      "bytes": 545054,
+      "sha256": "cf3b90aefca4dd97dee280c4c47b52315e576562d4e4ccd398074f05fe8cedd0"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/T_20260911/P/pass05_maps.npz",
+      "bytes": 545211,
+      "sha256": "52ee9e994553bddce889e7889d58dd5a591e4cdc890fc9b39a120876d9456052"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/T_20260911/P/pass06_maps.npz",
+      "bytes": 545140,
+      "sha256": "2c46232167cda4a9afd8a88c947e2588f3e0a843a1855f22981c0c35718c34de"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/T_20260912/C/pass00_maps.npz",
+      "bytes": 587147,
+      "sha256": "f14dfd27f178d91754a1216acd48fb55a73d9c91cb38d6097d1b457a48a97ea3"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/T_20260912/P/pass00_maps.npz",
+      "bytes": 544361,
+      "sha256": "2fe57f15a7ed7d1bec364a37bb1e4978d6a882c7111b902082512c35967a9ac7"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/T_20260912/P/pass01_maps.npz",
+      "bytes": 545322,
+      "sha256": "1a72e164a3ba8717b85fdfca163a49ddfa21a72acbcd23ab5c4a4ab88589d66c"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/T_20260912/P/pass02_maps.npz",
+      "bytes": 545517,
+      "sha256": "69c428f601b217554e24ff4f87a312d042c92bd4acd990330fa144827e799c68"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/T_20260912/P/pass03_maps.npz",
+      "bytes": 545546,
+      "sha256": "12cbe45df061b0de7bddc1ed08edd96fbc7ec115a0d699a5859feaa2ab317af8"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/T_20260912/P/pass04_maps.npz",
+      "bytes": 545534,
+      "sha256": "d2109e14980881c5874399fdc81794372acfb47802388d63ca896a90d2288592"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/T_20260912/P/pass05_maps.npz",
+      "bytes": 545567,
+      "sha256": "830ac32cff602d6cc657ef192af64680d4f16f7d16fb30317d9320ebd045fdf6"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/T_20260912/P/pass06_maps.npz",
+      "bytes": 545644,
+      "sha256": "5cb5bce22b7d69f9ecdba9851e8c1309fe42563762f0659e504b291233526ae1"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/geometry.npz",
+      "bytes": 2918727,
+      "sha256": "f485295644a30a96f6ff0cc9e2f34951d28187a1741e0600f599e3e6ab3fed30"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/real123424/C/pass00_maps.npz",
+      "bytes": 550443,
+      "sha256": "aff9bdbfb3338718fde8044ba3308950dbf393dfd95451d955931133657a0b5b"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/real123424/C/pass01_maps.npz",
+      "bytes": 556013,
+      "sha256": "f29bc7e956470a42240e478e63fbac124ea145edce652958e78e63858815e40d"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/real123424/C/pass02_maps.npz",
+      "bytes": 558780,
+      "sha256": "6360b0d746df10652acc71b2a9886ef0724697f1255ffbf8e14e0a44d9a5c0c9"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/real123424/C/pass03_maps.npz",
+      "bytes": 560764,
+      "sha256": "24fe732519309d231eb56094738e4b5b716dfd9362c4c0ee6fd248409ef695c6"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/real123424/C/pass04_maps.npz",
+      "bytes": 562898,
+      "sha256": "c2d24b42592a681eaf48dbff772d98933818705513a5a85ea96c8f9b7defa8c5"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/real123424/C/pass05_maps.npz",
+      "bytes": 564796,
+      "sha256": "6c5ee41a2e65a77bf7a918352590598de2eaf6c13eb0211f755f472c6f71e0a3"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/real123424/C/pass06_maps.npz",
+      "bytes": 566833,
+      "sha256": "2481ff859601b72849468f3fb57f41f0394fb1fdccd97e82583093fa38435939"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/real123424/P/pass00_maps.npz",
+      "bytes": 548769,
+      "sha256": "cbe786e5ba874ae15ebf3f9ebd02816f60bba4ecc5408a2cde3e4d9e6fff2c60"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/real123424/P/pass01_maps.npz",
+      "bytes": 554719,
+      "sha256": "1a09aa8736d03f6340013c82be5bd426f68da8ce66899504823a95e5337e218c"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/real123424/P/pass02_maps.npz",
+      "bytes": 557041,
+      "sha256": "806aeb8810f7963926d60eeeac89fa8995242335b79501f2c988a0537276c79b"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/real123424/P/pass03_maps.npz",
+      "bytes": 558400,
+      "sha256": "7f87627c3ca76ecb98b464a8da97ce7ba095116752bf26ee1fbe27336e8ec80d"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/real123424/P/pass04_maps.npz",
+      "bytes": 559608,
+      "sha256": "995907658843ae7ae2d1b41b27466c0b14912e65757e911bf06187bc1021b27a"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/real123424/P/pass05_maps.npz",
+      "bytes": 560522,
+      "sha256": "83197050fd0bfd53089a6e8e7bf085264f475f5e6570d2c8e89cd00f181b95a7"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/real123424/P/pass06_maps.npz",
+      "bytes": 561482,
+      "sha256": "98de36ed1a87fa014596da9dfc188b428d7144bd8974fca243b65020f6b5a4e3"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/null20260911/R/pass00_maps.npz",
+      "bytes": 540611,
+      "sha256": "e6f9c6e607896095ce22da3393b606942674694e44dc352bbd54487730d72222"
+    }
+  ],
+  "saved_map_count": 167,
+  "saved_candidate_array_problems": 144,
+  "pre_PTC_input_reads": 0,
+  "numerical_execution_started": false,
+  "cleaning_calls": 0
+}

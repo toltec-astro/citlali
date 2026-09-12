@@ -1,0 +1,43 @@
+{
+  "packets": [
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_starlet_central_domain_2026-09-12/RESULT_MANIFEST.json",
+      "sha256": "41f34c9cd42c483254bec27b63f54abd47bd115f2ab0f0c85a9635ec6d925037",
+      "payloads": 23
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_starlet_preliminary_2026-09-11/RESULT_MANIFEST.json",
+      "sha256": "4b815db4f6e59037a40fe98c43127a0550d94f293eaeb6c60e197fac6bdfbc36",
+      "payloads": 23
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_rbf_feedback_2026-09-11/RESULT_MANIFEST.json",
+      "sha256": "de098df0520e1085e4440dd30f34cb2f200ea40f4cf1ad01b1b691e26852e78e",
+      "payloads": 49
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_rbf_admission_audit_2026-09-11/MANIFEST.json",
+      "sha256": "a507f88038416e0aa72f5ab8e9a7677241d9ddce5c25911b197094f53a5e1dc0",
+      "payloads": 13
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/RESULT_MANIFEST.json",
+      "sha256": "fe50d33cdb178f80838cdcb6a49c1cd315501b1d7b68376d1360b817ad72ad76",
+      "payloads": 31
+    }
+  ],
+  "frozen_ordinary_MAP_payloads": 57,
+  "saved_reduction_payloads": 584,
+  "saved_product_manifest_sha256": "7268eb19a65bd21a1f6c92513e779a22570ab2261786d079cdcd1d29fc6d4b9f",
+  "protected_worktrees": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor",
+      "status": "?? SCI-FRUIT-v0.1-ODQ-001F-r0.8-owner-review.tar.gz\n?? SCI-FRUIT-v0.1-empirical-lane-gate-0-r0.1-owner-review.tar.gz\n"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/346d/citlali-refactor",
+      "status": ""
+    }
+  ],
+  "archive_policy": "presence/status only; never read, hash or unpack"
+}

@@ -1897,6 +1897,21 @@ decision is one explicit completion rule and separation of centroid usability
 from peak/shape and health-warning rules. No further trial or 129081 evaluation
 is authorized automatically.
 
+The owner subsequently authorized **one bounded repair-and-retest**, handling
+saved-map evaluator reassessment and numerical stopping qualification separately
+before any new operational trajectories. The
+[repair protocol](../validation/fruit_point_bounded_repair_2026-09-12/PROTOCOL.md)
+preserves original records and uses data-only source association, fit-domain
+sensitivity and separate centroid/peak availability with retained shape/support
+warnings. The numerical check preserves the objective and L-BFGS-B family,
+captures the declared 1e-4 relative-gradient stop and a 1e-6 point along the same
+optimizer path, and compares peak/centroid stability against 0.5%/0.1-arcsec
+allocations. The operational 3000-iteration cap remains; only the diagnostic
+tighter comparator gets extra work. All saved problems are retained. A failed
+saved-stage gate blocks the conditional 34-trajectory rerun. Neither repaired
+labels nor optimizer completion alone establishes candidate benefit. No further
+revision, 129081 comparison or production change is authorized by this decision.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

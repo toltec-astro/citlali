@@ -1,0 +1,8 @@
+test_projected_gradient_constraints_and_finiteness (test_repair.RepairTests.test_projected_gradient_constraints_and_finiteness) ... ok
+test_same_path_operational_prefix_and_tight_comparison (test_repair.RepairTests.test_same_path_operational_prefix_and_tight_comparison) ... ok
+test_truth_does_not_change_judgments_and_shape_is_separate (test_repair.RepairTests.test_truth_does_not_change_judgments_and_shape_is_separate) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.002s
+
+OK
