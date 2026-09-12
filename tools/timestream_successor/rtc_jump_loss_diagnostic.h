@@ -208,6 +208,7 @@ int diagnose_injections(const Background &original,const std::array<double,2> &s
             group["original_exclusions"]=ranges_node(original_mask);group["inferred_reassessment_exclusions"]=ranges_node(current_mask);
             group["truth_exclusions"]=ranges_node(truth_mask);group["refit_requested"]=requested;
             group["transition_neighbor_exclusions"]=ranges_node(neighbors);
+            group["transition_neighbor_exclusion_scope"]="other original groups; later own-member guards validated against each coordinate post confirmation";
             RtcEventRange onset{seed.earlier_row,seed.later_row+1};
             for(const auto &m:members)if(m.earlier_row<onset.past_last && m.later_row>=onset.first){onset.first=std::min(onset.first,m.earlier_row);onset.past_last=std::max(onset.past_last,m.later_row+1);}
             group["transition_onset_edges"]=range_node(onset);group["transition_seed_edges"]=range_node({seed.earlier_row,seed.later_row+1});

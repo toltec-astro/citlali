@@ -40,9 +40,15 @@ inline RtcJumpTransition diagnostic_measure_at(const RtcSpikeEvidence &spikes,
         }
     }
     const auto first_edge = onset.first, last_edge = onset.past_last - 1;
-    for (const auto &candidate : members)
+    // Original member edge cells cannot establish a stable plateau in either
+    // coordinate. Membership stays immutable; only their support role changes.
+    std::vector<RtcEventRange> member_cells;
+    for (const auto &candidate : members) {
+        member_cells.push_back({candidate.earlier_row, candidate.later_row + 1});
         out.multiple_candidate_edges |= candidate.earlier_row != seed.earlier_row ||
             candidate.later_row != seed.later_row;
+    }
+    member_cells = merge(std::move(member_cells));
     const auto run_begin = axis.occurrence(run.first_native_row).integration_support.begin_unix_sec;
     const auto run_end = axis.occurrence(run.past_last_native_row - 1).integration_support.end_unix_sec;
     out.observation_truncated = (run_begin > low && run.first_native_row == axis.first_native_row()) ||
@@ -68,7 +74,7 @@ inline RtcJumpTransition diagnostic_measure_at(const RtcSpikeEvidence &spikes,
             geometry = true; reset();
         }
         previous_end = cell.end_unix_sec;
-        if (row >= first_edge && row <= last_edge) { reset(); continue; }
+        if ((row >= first_edge && row <= last_edge) || contains(member_cells, row)) { reset(); continue; }
         if (contains(neighbors, row)) { ++out.excluded_rows; reset(); continue; }
         if (!net.state(coord(c), row, event.detector).valid()) { ++out.invalid_rows; reset(); continue; }
         const double y = net.value(coord(c), row, event.detector);
@@ -121,6 +127,19 @@ inline RtcJumpTransition diagnostic_measure_at(const RtcSpikeEvidence &spikes,
         }
         out.exceeds_fitting_exclusion = out.affected.first < event.trial_exclusion.first ||
             out.affected.past_last > event.trial_exclusion.past_last;
+        // The first complete post plateau separates unresolved same-group
+        // edges from later neighbors. Preserve every later member's existing
+        // guard. If it reaches back into either confirmation or the bracket,
+        // withhold this measurement; do not absorb that later disturbance or
+        // search for another separator. This is not an extra reassessment.
+        if (out.available()) for (const auto &candidate : members) {
+            if (candidate.earlier_row < post.rows.past_last) continue;
+            const auto guard = trial(axis, range, candidate);
+            if (guard.first < post.rows.past_last && guard.past_last > pre.rows.first) {
+                out.cause = RtcJumpTransitionCause::competing_exclusion;
+                break;
+            }
+        }
     }
     return out;
 }

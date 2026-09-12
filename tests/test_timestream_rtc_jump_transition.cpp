@@ -193,11 +193,18 @@ TEST(rtc_jump_transition, competing_neighbor_exclusion_is_not_swallowed_by_bound
     EXPECT_EQ(b.cause,RtcJumpTransitionCause::competing_exclusion);
     EXPECT_GT(b.excluded_rows,0U);EXPECT_FALSE(b.available());
 }
-TEST(rtc_jump_transition, later_distinct_step_cannot_be_swallowed_as_one_onset) {
+TEST(rtc_jump_transition, stable_fitted_plateau_separates_later_step) {
     Input in;in.step(500,4,0);in.step(520,1,0);Fixture f(in);const auto i=f.event_at(500);
-    const auto b=measured(f,f.assessment->events()[i]);
-    EXPECT_FALSE(b.available());EXPECT_TRUE(b.multiple_candidate_edges);
-    EXPECT_EQ(b.cause,RtcJumpTransitionCause::competing_exclusion);
+    auto event=f.assessment->events()[i];
+    // Isolate support semantics with the known first plateau model. This does
+    // not replace the producer fit or make a supplied fit runtime evidence.
+    event.origin=in.times[500];event.time_scale=1;
+    event.background[0].cubic_with_offset.coefficients={10,.8,.1,-.05};
+    event.background[0].cubic_with_offset.offset=4;
+    const auto b=measured(f,event);
+    ASSERT_TRUE(b.available());EXPECT_TRUE(b.multiple_candidate_edges);
+    EXPECT_EQ(b.affected.first,599);EXPECT_EQ(b.affected.past_last,601);
+    EXPECT_LT(b.confirmations[1].rows.past_last,619);
     EXPECT_FALSE(b.physical_event_identity_resolved);
     EXPECT_FALSE(f.transition->hard_event_accepted);EXPECT_FALSE(f.transition->apply_authorized);
 }
@@ -219,14 +226,41 @@ TEST(rtc_jump_transition, later_grouped_spike_keeps_stable_plateau_and_original_
         EXPECT_FALSE(f.transition->hard_event_accepted);EXPECT_FALSE(f.transition->apply_authorized);
     }
 }
-TEST(rtc_jump_transition, nearby_disconnected_member_guard_still_blocks_onset_bound) {
+TEST(rtc_jump_transition, nearby_disconnected_members_stay_unresolved_until_plateau) {
     Input in;in.step();in.spike(505,40,0);Fixture f(in);
     const auto &event=f.assessment->events()[f.event_at(500)];
     const auto onset=rtc_jump_transition_detail::onset_edges(*f.spikes,event);
     EXPECT_EQ(onset.first,599);EXPECT_EQ(onset.past_last,601);
+    for(std::size_t c=0;c<2;++c) {
+        // The x-only edge cannot certify stability in r either. Original
+        // candidates are paired context; residuals and scales remain separate.
+        const auto b=measured(f,event,c);
+        ASSERT_TRUE(b.available());EXPECT_EQ(b.affected.first,599);EXPECT_EQ(b.affected.past_last,607);
+        EXPECT_EQ(b.confirmations[1].rows.first,607);
+        EXPECT_GE(b.confirmations[1].physical.duration_sec(),.05);
+        EXPECT_DOUBLE_EQ(b.frozen_residual_scale,event.background[c].pre_scale_fit.scale);
+        EXPECT_FALSE(b.physical_event_identity_resolved);
+    }
+}
+TEST(rtc_jump_transition, disconnected_partial_steps_without_plateau_keep_one_unresolved_support) {
+    Input in;in.step(500,2.4,-2);in.step(503,1.6,-1);Fixture f(in);
+    const auto &event=f.assessment->events()[f.event_at(500)];
+    const auto original_members=event.candidates;
+    for(std::size_t c=0;c<2;++c) {
+        const auto b=measured(f,event,c);
+        ASSERT_TRUE(b.available());EXPECT_EQ(b.affected.first,599);EXPECT_EQ(b.affected.past_last,604);
+        EXPECT_FALSE(b.physical_event_identity_resolved);
+    }
+    EXPECT_EQ(event.candidates,original_members);
+}
+TEST(rtc_jump_transition, later_member_guard_reaching_back_into_first_plateau_withholds) {
+    Input in;in.step();in.spike(511,40,0);Fixture f(in);
+    const auto &event=f.assessment->events()[f.event_at(500)];
     const auto b=measured(f,event);
-    EXPECT_FALSE(b.available());EXPECT_EQ(b.cause,RtcJumpTransitionCause::competing_exclusion);
-    EXPECT_GT(b.excluded_rows,0U);
+    ASSERT_TRUE(b.confirmations[1].rows.present());
+    EXPECT_LT(b.confirmations[1].rows.past_last,610);
+    EXPECT_EQ(b.cause,RtcJumpTransitionCause::competing_exclusion);
+    EXPECT_FALSE(b.available());
 }
 TEST(rtc_jump_transition, finite_transition_with_adjacent_edges_keeps_measured_bracket) {
     Input in;in.step(500,2.4,-2);in.step(501,1.6,-1);Fixture f(in);const auto i=f.event_at(500);

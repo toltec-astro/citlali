@@ -1952,3 +1952,49 @@ production or cleanup occurs. Ready for owner review of this completed test.
 Source/evidence review: `review-01.md`, SHA-256
 `d5d48a9e9e504c1e980433d60464eee4ec2a0d0d42ec2d5d8709b883333f93bb`,
 reviewer `/root/rtc_onset_corpus_exact_review`.
+
+## Approved plateau boundary increment — 2026-09-12
+
+Following the preserved full-corpus comparison and read-only characterization,
+the owner approved the proposed rule: retain nearby original-group edges as
+an unresolved transition until original samples demonstrate the fitted
+post-jump level continuously for 50 ms within ±4 frozen residual sigma.
+Original candidate cells cannot certify the plateau. Members after it retain
+the existing ±50 ms guards; if a later guard reaches into the first selected
+confirmation or bracket, withhold rather than absorb that later disturbance or
+search again. Other original groups keep their guards throughout. x/r retain
+separate model, scale, support, parent and outcome identities. This is a
+provisional support role, not new candidate grouping or resolved physical-event
+identity. Frozen contract REQ-096/118 and owner decisions 060/061/075 remain
+authorities; this owner binding resolves only the narrow separator decision.
+
+Work order TIMESTREAM-SUCCESSOR-RTC-JUMP-PLATEAU-BOUNDARY-001 is Tier 2,
+based directly on reviewed closure bed75cd828a2db9655f311545cc739c0cd3b32c6,
+in the existing codex/timestream-successor-rtc-event-background-001 slot.
+Governance remains effective 06a3ade51c1b3f38887295433d913811bf25cd14 as
+incorporated by 77507836325eff9f469062d5884481ea37599594; current status
+governs sequencing. The three governance document digests remain unchanged.
+Expected paths are the transition header, private injection parity adapter and
+output, inert corpus verifier, focused transition tests and these two records.
+Runtime Learn owns the original-sample separator measurement; existing
+Consider consumes it and limits reassessment to one. Runtime Apply remains
+unimplemented in this increment. The separate engineering Learn/Consider/Apply
+workflow requires source-bound local tests and independent conformance review.
+
+Focused tests cover nearby disconnected edges, later separated disturbances,
+overlapping later guards, native physical duration, invalidity/gaps, x/r
+origins and unchanged threshold/identity semantics. Broader gates are local
+CTest, config and baseline tools; preserved injections and the same eligible
+143-file corpus demonstrate affected behavior, all gains/losses, original-sample
+boundaries, determinism and timing. Cached local dependency bytes are bound
+and preserved. This is supplemental local evidence, not Unity/Spack or
+production qualification. Independent fresh-context exact-source/evidence and
+separate documentation-only closure reviews are required. A new scientific gap
+or broadened responsibility triggers reassessment; no unapproved policy tuning.
+
+External root: /private/tmp/citlali-rtc-jump-guard-boundary-2026-09-12.
+The sealed preparation remains historical; approved-preflight.json supersedes
+only its pending-owner status. No integration, push, route, flags, correction,
+spectra, MAP/CAL/PTC/AST, new data, Unity access or cleanup is authorized. Future
+canonical admission must verify the live moving authority and independently
+review the exact integration SHA.

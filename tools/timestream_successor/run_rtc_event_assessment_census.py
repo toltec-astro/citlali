@@ -26,6 +26,7 @@ def write_json(path, value):
 
 GROUP_SPAN_POLICY = 'rtc-jump-transition-2026-09-10-v1'
 ONSET_POLICY = 'rtc-jump-transition-onset-2026-09-12-v2'
+PLATEAU_POLICY = 'rtc-jump-transition-plateau-2026-09-12-v3'
 
 
 def onset_cells(event, candidates):
@@ -51,7 +52,7 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--trial-half-width-seconds', type=float, required=True)
     parser.add_argument('--previous-campaign', type=Path,
-                        help='Require unchanged inputs and upstream outputs; only the named v1-to-v2 transition change may differ')
+                        help='Require unchanged inputs and upstream outputs; only the named v1-to-v2 or v2-to-v3 transition change may differ')
     parser.add_argument('--example-selection', type=Path, required=True)
     args = parser.parse_args()
     if args.output.exists():
@@ -117,7 +118,7 @@ def main():
                 assert all(d['rows'] == r['rows'] and d['pair_screening_excluded_rows'] <= d['rows'] for d in detectors)
                 timing = json.loads((target/'timing.json').read_text())
                 transition_policy = timing['transition_policy']
-                assert transition_policy in (GROUP_SPAN_POLICY, ONSET_POLICY), 'unreviewed transition policy'
+                assert transition_policy in (GROUP_SPAN_POLICY, ONSET_POLICY, PLATEAU_POLICY), 'unreviewed transition policy'
                 stage_values = list(timing['stages_seconds'].values())
                 assert all(math.isfinite(v) and v >= 0 for v in stage_values)
                 assert math.isclose(sum(stage_values), timing['measured_total_seconds'], rel_tol=1e-10, abs_tol=1e-7)
@@ -199,9 +200,16 @@ def main():
                             assert pre['end'] == b['begin'] < b['end'] == post['begin']
                             edge_rows = {seeds[k]['earlier_row'] for k in event['candidates']}
                             assert b['multiple_candidate_edges'] == (len(edge_rows) > 1)
-                            required = (onset_cells(event, seeds) if transition_policy == ONSET_POLICY
+                            required = (onset_cells(event, seeds) if transition_policy in (ONSET_POLICY, PLATEAU_POLICY)
                                         else {min(edge_rows), max(edge_rows)+1})
                             assert b['affected'][0] <= min(required) and b['affected'][1] > max(required)
+                            if transition_policy == PLATEAU_POLICY:
+                                # No original member edge cell can certify the separator.
+                                for k in event['candidates']:
+                                    edge = seeds[k]
+                                    assert not (edge['earlier_row'] < post['rows'][1] and edge['later_row'] >= post['rows'][0])
+                                    if edge['earlier_row'] < post['rows'][1]:
+                                        assert b['affected'][0] <= edge['earlier_row'] <= edge['later_row'] < b['affected'][1]
                             expected_outside = b['affected'][0] < event['trial_exclusion'][0] or b['affected'][1] > event['trial_exclusion'][1]
                             assert b['exceeds_fitting_exclusion'] == expected_outside
                             transition_outside += expected_outside
@@ -222,7 +230,7 @@ def main():
                     if previous_policy == transition_policy:
                         preserved += ('jump-transitions.jsonl',)
                     else:
-                        assert (previous_policy, transition_policy) == (GROUP_SPAN_POLICY, ONSET_POLICY)
+                        assert (previous_policy, transition_policy) in ((GROUP_SPAN_POLICY, ONSET_POLICY), (ONSET_POLICY, PLATEAU_POLICY))
                     entry['transition_policy_comparison'] = [previous_policy, transition_policy]
                     for name in preserved:
                         assert digest(target/name) == digest(previous/name), f'Prior output changed: {name}'

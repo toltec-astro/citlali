@@ -4,10 +4,10 @@
 
 namespace citlali::pipeline {
 
-// Owner-selected onset-support trial, 2026-09-12. These constants are
+// Owner-selected plateau boundary, 2026-09-12. These constants are
 // deliberately a separate use binding from recovery and fitting exclusion.
 struct RtcJumpTransitionPolicy {
-    static constexpr std::string_view identity = "rtc-jump-transition-onset-2026-09-12-v2";
+    static constexpr std::string_view identity = "rtc-jump-transition-plateau-2026-09-12-v3";
     static constexpr double residual_sigma = 4.0;
     static constexpr double confirmation_seconds = 0.05;
     static constexpr double search_seconds = 2.0;
@@ -103,15 +103,14 @@ inline RtcEventRange onset_edges(const RtcSpikeEvidence &spikes,
     return onset;
 }
 
-// The earlier merged fitting-mask list also contains this event's own trial
-// mask. Keep disconnected members as other candidates with unchanged guards;
+// Keep other original groups' guards intact. This group's members are resolved
+// coordinate-locally by measure after original samples establish a plateau;
 // subtracting the own mask from a merged union would erase overlapping peers.
 inline std::vector<RtcEventRange> neighbor_masks(
     const RtcSpikeEvidence &spikes, const RtcAssessedEvent &event,
     const NativeContiguousRun &run, std::span<const std::size_t> candidates) {
     using namespace rtc_event_assessment_detail;
     const auto &axis = spikes.input_handle()->network(event.network).occurrence_axis();
-    const auto onset = onset_edges(spikes, event);
     const auto &seed = spikes.candidates()[event.seed];
     const double center = std::midpoint(time(axis, seed.earlier_row), time(axis, seed.later_row));
     const double low = center - RtcJumpTransitionPolicy::search_seconds - RtcEventAssessmentPolicy::trial_half_width_seconds;
@@ -126,8 +125,7 @@ inline std::vector<RtcEventRange> neighbor_masks(
         if (candidate.earlier_row >= run.past_last_native_row) break;
         if (candidate.earlier_row < run.first_native_row) continue;
         if (time(axis, candidate.earlier_row) > high) break;
-        if (candidate.earlier_row >= onset.first && candidate.later_row < onset.past_last &&
-            std::find(event.candidates.begin(), event.candidates.end(), *it) != event.candidates.end()) continue;
+        if (std::find(event.candidates.begin(), event.candidates.end(), *it) != event.candidates.end()) continue;
         masks.push_back(trial(axis, range, candidate));
     }
     return merge(std::move(masks));
@@ -164,13 +162,16 @@ inline RtcJumpTransition measure(const RtcSpikeEvidence &spikes,
     }
     const auto onset = onset_edges(spikes, event);
     const auto first_edge = onset.first, last_edge = onset.past_last - 1;
-    // This diagnostic still describes all original group members, including
-    // disconnected edges retained as neighboring context.
+    // Original member edge cells cannot establish a stable plateau in either
+    // coordinate. Membership stays immutable; only their support role changes.
+    std::vector<RtcEventRange> member_cells;
     for (auto i : event.candidates) {
         const auto &candidate = spikes.candidates()[i];
+        member_cells.push_back({candidate.earlier_row, candidate.later_row + 1});
         out.multiple_candidate_edges |= candidate.earlier_row != seed.earlier_row ||
             candidate.later_row != seed.later_row;
     }
+    member_cells = merge(std::move(member_cells));
     const auto run_begin = axis.occurrence(run.first_native_row).integration_support.begin_unix_sec;
     const auto run_end = axis.occurrence(run.past_last_native_row - 1).integration_support.end_unix_sec;
     out.observation_truncated = (run_begin > low && run.first_native_row == axis.first_native_row()) ||
@@ -196,7 +197,7 @@ inline RtcJumpTransition measure(const RtcSpikeEvidence &spikes,
             geometry = true; reset();
         }
         previous_end = cell.end_unix_sec;
-        if (row >= first_edge && row <= last_edge) { reset(); continue; }
+        if ((row >= first_edge && row <= last_edge) || contains(member_cells, row)) { reset(); continue; }
         if (contains(neighbors, row)) { ++out.excluded_rows; reset(); continue; }
         if (!net.state(coord(c), row, event.detector).valid()) { ++out.invalid_rows; reset(); continue; }
         const double y = net.value(coord(c), row, event.detector);
@@ -249,6 +250,20 @@ inline RtcJumpTransition measure(const RtcSpikeEvidence &spikes,
         }
         out.exceeds_fitting_exclusion = out.affected.first < event.trial_exclusion.first ||
             out.affected.past_last > event.trial_exclusion.past_last;
+        // The first complete post plateau separates unresolved same-group
+        // edges from later neighbors. Preserve every later member's existing
+        // guard. If it reaches back into either confirmation or the bracket,
+        // withhold this measurement; do not absorb that later disturbance or
+        // search for another separator. This is not an extra reassessment.
+        if (out.available()) for (auto i : event.candidates) {
+            const auto &candidate = spikes.candidates()[i];
+            if (candidate.earlier_row < post.rows.past_last) continue;
+            const auto guard = trial(axis, range, candidate);
+            if (guard.first < post.rows.past_last && guard.past_last > pre.rows.first) {
+                out.cause = RtcJumpTransitionCause::competing_exclusion;
+                break;
+            }
+        }
     }
     return out;
 }

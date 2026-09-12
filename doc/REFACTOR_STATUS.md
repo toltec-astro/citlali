@@ -1,5 +1,26 @@
 # Citlali Refactor Status
 
+## RTC plateau-boundary implementation in progress — 2026-09-12
+
+The owner approved keeping original-group edges unresolved until original
+samples establish the fitted post-jump level for 50 ms within ±4 frozen
+residual sigma. Runtime Learn measures this coordinate-local separator; later
+members retain their guards. A later guard overlapping the selected evidence
+withholds the measurement without another separator search. Existing Consider
+consumes the result under its unchanged single-reassessment limit. Original
+candidates, grouping, fits, thresholds and D2/VAL remain preserved; no Apply
+plan is produced. Engineering conformance will use focused native-support
+regressions, preserved injection trials and the same 143-file corpus.
+
+Base is reviewed closure `bed75cd828a2db9655f311545cc739c0cd3b32c6`
+on the existing RTC module worktree. The approved Tier 2 preflight and immutable
+read-only preparation are recorded in
+`/private/tmp/citlali-rtc-jump-guard-boundary-2026-09-12`. Source/evidence and
+documentation closure each require fresh independent exact-SHA review. This
+authorizes bounded implementation and local tests; canonical integration,
+pushes, activation, flags, correction, spectra, MAP and production remain
+outside this increment.
+
 ## RTC onset-support full-corpus test completed locally — 2026-09-12
 
 The unchanged reviewed onset method has now run on all 143 eligible network
