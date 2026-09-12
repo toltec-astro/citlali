@@ -1,0 +1,122 @@
+{
+  "identity": "SCI-FRUIT-POINT-OPERATIONAL-GATE-TRIAL-FREEZE@r0.1",
+  "utc": "2026-09-12T15:42:42.465764+00:00",
+  "base_commit": "d76eb6135ffe123a211e280b4a91d3a648fae7fa",
+  "files": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/pointings_v4/reduced/redu00/123424/raw/toltec_commissioning_pointing_123424_rtc_timestream.nc",
+      "bytes": 139129545,
+      "sha256": "0c653c1bcf54d013e82cd51575ab8b7d139fbcb0069eb7a6335056a8a6d03c2a"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/POINT_OPERATIONAL_USE_CASES_2026-09-12.md",
+      "bytes": 8595,
+      "sha256": "fbd5cd5658ef5e6f6f811f1f2970e5826669de604893bd652c065336aa7fc922"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/POINT_USE_CASE_GATE_DESIGN_R0.1.md",
+      "bytes": 17126,
+      "sha256": "7235fcc67039ba44504e38f3ec28fb5488bb495aad767f52027917613b043b82"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/r0.4/METHOD_DEFINITION.md",
+      "bytes": 26336,
+      "sha256": "3a6389a39fe3a5e2d5a6652259000721a9bcc6f9c429dc066d279cd98567c926"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_coherent_feedback_2026-09-11/DECISION_EVIDENCE.json",
+      "bytes": 9408,
+      "sha256": "6aa7e6c84f4c48965d06abb84e1bfa299e94edb04bd62fce3626eebd72ebc41b"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_coherent_feedback_2026-09-11/INPUT_PREFLIGHT.json",
+      "bytes": 22573,
+      "sha256": "3e45798d1e2ff69b7fc007841e8b5c48237f1404448a4dd2e1ed87c248f0a07c"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_coherent_feedback_2026-09-11/OG_BENCHMARK.json",
+      "bytes": 16308,
+      "sha256": "3ff19ee1d318b9808106b835fd2ccc9d577501b79032444782980608cb3220e8"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_coherent_feedback_2026-09-11/experiment_r02.py",
+      "bytes": 18548,
+      "sha256": "67f78850b7d07cd2723231ad0114d607934990b9ee05531dabeb23b164b5f6ac"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/CASES.json",
+      "bytes": 1910,
+      "sha256": "a7cca0688b0679b4f2a9e57a129ab74a571791e97edac7bde88dc0d68360f113"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/PRESERVATION_START.json",
+      "bytes": 1484,
+      "sha256": "9e69f5406c77d6ebaacc50b067095970b4f9e2e4c38a00449262c68d59bacb63"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/PRE_EXECUTION_CHECKS.json",
+      "bytes": 190,
+      "sha256": "6ddf5837922f357399b9486877b646af60ef9d8b01b3f206f11821a4f44fe476"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/PROTOCOL.md",
+      "bytes": 12551,
+      "sha256": "57174413b0f7338f1500e474274a63916207b651c1d9297bd160914da513e3d6"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/README.md",
+      "bytes": 671,
+      "sha256": "c13a58c472dcbac321decad30f7c029792e658be87b08bf84c635de91d915ad9"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/analyze.py",
+      "bytes": 7947,
+      "sha256": "dd6e212b219220d1b3dbac6bd505e700b6de0b4a4be28c9279b049171d075636"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/candidate.py",
+      "bytes": 6052,
+      "sha256": "39aba38f44e6b7192e3cbae76d7c2207cabb3d8acb39750e3159af406a8a9404"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/common.py",
+      "bytes": 941,
+      "sha256": "ec65d9697a801bac97783f7d701088e39e127dec0e2814dc43d56627bf05037e"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/evaluation.py",
+      "bytes": 4317,
+      "sha256": "414a4a30bb564bc3acaa27b5ffbd630e0827d0cd356a35e4a5e8cb32a9ef8b78"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/run_trial.py",
+      "bytes": 11673,
+      "sha256": "e932b264d3231593964c7400e8db324d5926095f114fa5bdada9a733f0c173c5"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/test_trial.py",
+      "bytes": 3616,
+      "sha256": "455cc8c7e75d311ac62b79b798c9fc000ca0f60678b5f09f1debccb5103eb6a7"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_starlet_central_domain_2026-09-12/candidate.py",
+      "bytes": 6044,
+      "sha256": "7c0e3c8e207d22c882e4225db692ee13366a294c3e907ee4bca691210d5be36a"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/geometry.npz",
+      "bytes": 2941338,
+      "sha256": "92623d98871a3400dece39df0eae07ace07f69c51352c0ccfc7dffc174cbe671"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/null20260911/R/pass00_maps.npz",
+      "bytes": 540611,
+      "sha256": "e6f9c6e607896095ce22da3393b606942674694e44dc352bbd54487730d72222"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/coma4_truth.npz",
+      "bytes": 133485,
+      "sha256": "02123c56d64f53aa8fb57c6219ee9cb5274ded1472145c3212ceb195705798d9"
+    }
+  ]
+}

@@ -1866,6 +1866,16 @@ prospective applicability change and one bounded successor protocol. No new
 numerical work, candidate selection, 129081 comparison or production change
 was performed or authorized by the notes.
 
+The owner then authorized **“Let's give this test run a try”** and selected
+**1 arcsec** as the per-observation pointing criterion for this trial. The
+[prospective protocol](../validation/fruit_point_operational_gate_trial_2026-09-12/PROTOCOL.md)
+binds the eight states/two nuisance seeds, real123424, rank 5, matched pixelwise
+control and seven-pass development sequences. It retains the central starlet
+objective/domain and both solve-success checks, with one predeclared increase
+from 300 to 3000 solver iterations. Sources and inputs are frozen before
+execution; up to 238 cleaning calls, one hour, 8 GiB RSS and 4 GiB output are
+the bounds. No automatic revision, 129081 comparison or qualification follows.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

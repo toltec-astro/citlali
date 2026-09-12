@@ -1,0 +1,8 @@
+{
+  "unit_tests": 4,
+  "source_compile": true,
+  "document_links": 10,
+  "candidate_changes_only_declared_solver_budget": true,
+  "new_cleaning_calls": 0,
+  "empirical_candidate_calls": 0
+}
