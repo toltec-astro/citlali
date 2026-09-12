@@ -1912,6 +1912,29 @@ saved-stage gate blocks the conditional 34-trajectory rerun. Neither repaired
 labels nor optimizer completion alone establishes candidate benefit. No further
 revision, 129081 comparison or production change is authorized by this decision.
 
+The [bounded repair is complete](../validation/fruit_point_bounded_repair_2026-09-12/SCIENTIFIC_REPORT.md)
+at the saved-problem gate: **retain the evaluator repair; reject the
+completion-only repair at the declared tolerance**. The data-only evaluator
+recovers all 18 reference compact/mild centroids as usable (0.0336–0.5888 arcsec
+external errors), retains all seven shape warnings, and preserves null and
+boundary safeguards. Peak availability remains separate and limited; only two
+of six reference gain/degradation pairs are available and pass, and the usable
+unchanged a2000 pair shows an 11.67% apparent peak loss. Original measurements
+and registered outcomes remain unchanged.
+All 60 nonempty saved problems reach relative gradient <=1e-4 within 21–611
+iterations; 57 reach the tighter 1e-6 comparison point on the same optimizer
+path. Only 10/60 pass the registered 0.5% peak/0.1-arcsec model-stability
+allocations, including 0/27 compact/mild/response-loss problems. For those 27,
+Gaussian readout changes stay within the full operational budgets (max 2.49%
+peak, 0.189 arcsec), but the actual model sampled peaks differ by 0.94–67.27%.
+This is a failed numerical qualification, not demonstrated operational failure
+or a general rejection of wavelets. The conditional trajectory rerun was not
+admitted: zero new pre-PTC reads or cleaning calls. Saved-map work took 272.11 s
+and 146.28 MiB peak RSS; verification and preservation checks pass. No useful
+candidate recovery/time improvement is established. Any new tolerance,
+objective, support or image-selection procedure is a separate scientific owner
+decision; no further numerical experiment is authorized by this completed repair.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

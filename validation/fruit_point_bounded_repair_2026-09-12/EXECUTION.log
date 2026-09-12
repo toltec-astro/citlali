@@ -1,0 +1,65 @@
+A maps 30 of 167
+A maps 60 of 167
+A maps 90 of 167
+A maps 120 of 167
+A maps 150 of 167
+B real123424_pass00_a1100 qualified True stops {'declared': 114, 'tight': 233} seconds 0.43
+B real123424_pass00_a1400 qualified False stops {'declared': 115, 'tight': 1282} seconds 2.29
+B real123424_pass00_a2000 qualified True stops {'declared': 176, 'tight': 589} seconds 1.07
+B real123424_pass01_a1100 qualified True stops {'declared': 82, 'tight': 240} seconds 0.44
+B real123424_pass01_a1400 qualified False stops {'declared': 44, 'tight': 472} seconds 0.86
+B real123424_pass01_a2000 qualified False stops {'declared': 232, 'tight': 558} seconds 1.01
+B real123424_pass02_a1100 qualified True stops {'declared': 45, 'tight': 235} seconds 0.43
+B real123424_pass02_a1400 qualified False stops {'declared': 43, 'tight': 491} seconds 0.9
+B real123424_pass02_a2000 qualified False stops {'declared': 264, 'tight': 847} seconds 1.54
+B real123424_pass03_a1100 qualified True stops {'declared': 48, 'tight': 190} seconds 0.35
+B real123424_pass03_a1400 qualified False stops {'declared': 55, 'tight': 573} seconds 1.05
+B real123424_pass03_a2000 qualified True stops {'declared': 240, 'tight': 961} seconds 1.76
+B real123424_pass04_a1100 qualified True stops {'declared': 46, 'tight': 187} seconds 0.35
+B real123424_pass04_a1400 qualified False stops {'declared': 66, 'tight': 551} seconds 1.01
+B real123424_pass04_a2000 qualified False stops {'declared': 270, 'tight': 1049} seconds 1.91
+B real123424_pass05_a1100 qualified True stops {'declared': 52, 'tight': 181} seconds 0.34
+B real123424_pass05_a1400 qualified False stops {'declared': 52, 'tight': 1269} seconds 2.32
+B real123424_pass05_a2000 qualified False stops {'declared': 311, 'tight': 1288} seconds 2.35
+B real123424_pass06_a1100 qualified True stops {'declared': 52, 'tight': 228} seconds 0.42
+B real123424_pass06_a1400 qualified False stops {'declared': 45, 'tight': 897} seconds 1.63
+B real123424_pass06_a2000 qualified False stops {'declared': 286, 'tight': 1384} seconds 2.52
+B H_20260911_pass00_a1100 qualified False stops {'declared': 212, 'tight': 435} seconds 0.81
+B H_20260911_pass00_a1400 qualified False stops {'declared': 68, 'tight': 947} seconds 1.9
+B H_20260911_pass00_a2000 qualified False stops {'declared': 252, 'tight': 1426} seconds 2.63
+B H-shift_20260911_pass00_a1100 qualified False stops {'declared': 229, 'tight': 556} seconds 1.01
+B H-shift_20260911_pass00_a1400 qualified False stops {'declared': 69, 'tight': 1256} seconds 2.49
+B H-shift_20260911_pass00_a2000 qualified False stops {'declared': 185, 'tight': 1415} seconds 2.62
+B D_20260911_pass00_a1100 qualified False stops {'declared': 176, 'tight': 591} seconds 1.09
+B D_20260911_pass00_a1400 qualified False stops {'declared': 47, 'tight': 1201} seconds 2.4
+B D_20260911_pass00_a2000 qualified False stops {'declared': 178, 'tight': 1664} seconds 3.01
+B C_20260911_pass00_a1100 qualified False stops {'declared': 451, 'tight': 6970} seconds 12.76
+B C_20260911_pass00_a1400 qualified False stops {'declared': 25, 'tight': 464} seconds 0.95
+B C_20260911_pass00_a2000 qualified False stops {'declared': 349} seconds 22.08
+B T_20260911_pass00_a1100 qualified False stops {'declared': 212, 'tight': 435} seconds 0.83
+B T_20260911_pass00_a1400 qualified False stops {'declared': 46, 'tight': 707} seconds 1.45
+B T_20260911_pass00_a2000 qualified False stops {'declared': 252, 'tight': 1426} seconds 2.62
+B T_20260911_pass01_a1100 qualified False stops {'declared': 202, 'tight': 2008} seconds 3.57
+B T_20260911_pass01_a1400 qualified False stops {'declared': 91, 'tight': 3638} seconds 6.64
+B T_20260911_pass01_a2000 qualified False stops {'declared': 377, 'tight': 5691} seconds 10.1
+B E_20260911_pass00_a1100 qualified False stops {'declared': 134, 'tight': 268} seconds 0.48
+B E_20260911_pass00_a1400 qualified False stops {'declared': 588} seconds 21.71
+B E_20260911_pass00_a2000 qualified False stops {'declared': 611, 'tight': 8842} seconds 15.84
+B H_20260912_pass00_a1100 qualified False stops {'declared': 191, 'tight': 459} seconds 0.82
+B H_20260912_pass00_a1400 qualified False stops {'declared': 71, 'tight': 931} seconds 1.82
+B H_20260912_pass00_a2000 qualified False stops {'declared': 50, 'tight': 1163} seconds 2.28
+B H-shift_20260912_pass00_a1100 qualified False stops {'declared': 129, 'tight': 344} seconds 0.62
+B H-shift_20260912_pass00_a1400 qualified False stops {'declared': 57, 'tight': 969} seconds 1.91
+B H-shift_20260912_pass00_a2000 qualified False stops {'declared': 65, 'tight': 1050} seconds 2.05
+B D_20260912_pass00_a1100 qualified False stops {'declared': 169, 'tight': 547} seconds 0.98
+B D_20260912_pass00_a1400 qualified False stops {'declared': 79, 'tight': 805} seconds 1.6
+B D_20260912_pass00_a2000 qualified False stops {'declared': 45, 'tight': 1018} seconds 2.0
+B C_20260912_pass00_a1100 qualified False stops {'declared': 420, 'tight': 9178} seconds 16.45
+B C_20260912_pass00_a1400 qualified False stops {'declared': 21, 'tight': 581} seconds 1.15
+B C_20260912_pass00_a2000 qualified False stops {'declared': 353, 'tight': 6177} seconds 11.13
+B T_20260912_pass00_a1100 qualified False stops {'declared': 191, 'tight': 459} seconds 0.83
+B T_20260912_pass00_a1400 qualified False stops {'declared': 56, 'tight': 662} seconds 1.29
+B T_20260912_pass00_a2000 qualified False stops {'declared': 50, 'tight': 1163} seconds 2.29
+B E_20260912_pass00_a1100 qualified True stops {'declared': 222, 'tight': 347} seconds 0.65
+B E_20260912_pass00_a1400 qualified False stops {'declared': 398} seconds 21.66
+B E_20260912_pass00_a2000 qualified False stops {'declared': 463, 'tight': 10495} seconds 18.82

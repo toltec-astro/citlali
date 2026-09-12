@@ -1,0 +1,7 @@
+/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_bounded_repair_2026-09-12/verify_saved.py:98: RuntimeWarning: divide by zero encountered in matmul
+  analytic = float(g@direction)
+/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_bounded_repair_2026-09-12/verify_saved.py:98: RuntimeWarning: overflow encountered in matmul
+  analytic = float(g@direction)
+/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_bounded_repair_2026-09-12/verify_saved.py:98: RuntimeWarning: invalid value encountered in matmul
+  analytic = float(g@direction)
+{'frozen_files': 185, 'new_external_payloads': 293, 'selected_problem_checks': 144, 'original_objective_gradient_checks': 60, 'checkpoint_objective_gradient_checks': 177, 'finite_positive_supported_models': 345, 'finite_difference_checks': [{'array': 'a1100', 'relative_error': 6.960274654949765e-11}, {'array': 'a1400', 'relative_error': 1.3741230375785563e-12}, {'array': 'a2000', 'relative_error': 1.460476184433901e-11}], 'original_measurement_records_preserved': True, 'matched_evaluator_bootstraps': 17, 'verification_cleaning_calls': 0, 'verification_optimizer_runs': 0}

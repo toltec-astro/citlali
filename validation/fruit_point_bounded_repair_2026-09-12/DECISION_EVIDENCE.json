@@ -1,0 +1,371 @@
+{
+  "evaluator_saved_stage_passed": true,
+  "stopping_qualification_passed": false,
+  "operational_rerun_admitted": false,
+  "disposition": "retain_evaluator_reject_completion_only_repair",
+  "candidate_policy_recommended": false,
+  "independent_pointing_replication": false,
+  "new_cleaning_calls": 0,
+  "new_operational_trajectories": 0,
+  "saved_stage_campaign": {
+    "saved_maps": 167,
+    "numerical_problems": 144,
+    "numerical_qualification_passed": false,
+    "cleaning_calls": 0,
+    "wall_seconds": 272.10745037486777,
+    "peak_rss_bytes": 153387008,
+    "output_bytes": 4903436
+  },
+  "prior_OG": {
+    "identity": "POINT-123424-OG-RECURRENCE-EL-F2-ALPHA1-CONTROL-2026-09-02",
+    "native_sequence": [
+      {
+        "pass_index": 0,
+        "array": "a1100",
+        "peak": 3473.69091796875,
+        "centroid": [
+          13.528619766235352,
+          -5.539103031158447
+        ],
+        "widths": [
+          5.193957805633545,
+          4.998448848724365
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 0,
+        "array": "a1400",
+        "peak": 835.5167236328125,
+        "centroid": [
+          12.831600189208984,
+          -5.147377967834473
+        ],
+        "widths": [
+          11.461750030517578,
+          5.5456109046936035
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 0,
+        "array": "a2000",
+        "peak": 59.820499420166016,
+        "centroid": [
+          -22.571380615234375,
+          -23.170379638671875
+        ],
+        "widths": [
+          9.518202781677246,
+          11.944979667663574
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 1,
+        "array": "a1100",
+        "peak": 5006.3349609375,
+        "centroid": [
+          13.541589736938477,
+          -5.569039821624756
+        ],
+        "widths": [
+          5.936615943908691,
+          5.415958881378174
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 1,
+        "array": "a1400",
+        "peak": 1227.39697265625,
+        "centroid": [
+          12.784700393676758,
+          -5.217065811157227
+        ],
+        "widths": [
+          12.196940422058105,
+          6.051180839538574
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 1,
+        "array": "a2000",
+        "peak": 95.5030288696289,
+        "centroid": [
+          16.649980545043945,
+          -12.306229591369629
+        ],
+        "widths": [
+          12.495889663696289,
+          12.292949676513672
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 2,
+        "array": "a1100",
+        "peak": 5734.31689453125,
+        "centroid": [
+          13.502420425415039,
+          -5.579638957977295
+        ],
+        "widths": [
+          6.635243892669678,
+          5.765449047088623
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 2,
+        "array": "a1400",
+        "peak": 1440.60498046875,
+        "centroid": [
+          12.630789756774902,
+          -5.272756099700928
+        ],
+        "widths": [
+          12.600000381469727,
+          6.415824890136719
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 2,
+        "array": "a2000",
+        "peak": 104.54450225830078,
+        "centroid": [
+          -23.634279251098633,
+          -20.997650146484375
+        ],
+        "widths": [
+          10.859339714050293,
+          19.0
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 3,
+        "array": "a1100",
+        "peak": 6023.60791015625,
+        "centroid": [
+          13.440759658813477,
+          -5.585949897766113
+        ],
+        "widths": [
+          7.430129051208496,
+          6.120337009429932
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 3,
+        "array": "a1400",
+        "peak": 1593.3890380859375,
+        "centroid": [
+          12.587430000305176,
+          -5.307140827178955
+        ],
+        "widths": [
+          12.600000381469727,
+          6.715114116668701
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 3,
+        "array": "a2000",
+        "peak": 126.220703125,
+        "centroid": [
+          15.330180168151855,
+          -9.56197452545166
+        ],
+        "widths": [
+          18.61823081970215,
+          8.425772666931152
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 4,
+        "array": "a1100",
+        "peak": 5997.81689453125,
+        "centroid": [
+          13.303009986877441,
+          -5.5865960121154785
+        ],
+        "widths": [
+          8.54372501373291,
+          6.5099639892578125
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 4,
+        "array": "a1400",
+        "peak": 1693.739990234375,
+        "centroid": [
+          12.567890167236328,
+          -5.325777053833008
+        ],
+        "widths": [
+          12.600000381469727,
+          6.977074146270752
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 4,
+        "array": "a2000",
+        "peak": 133.94810485839844,
+        "centroid": [
+          15.238670349121094,
+          -9.435276985168457
+        ],
+        "widths": [
+          19.0,
+          8.49411678314209
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 5,
+        "array": "a1100",
+        "peak": 5768.05322265625,
+        "centroid": [
+          13.041020393371582,
+          -5.576796054840088
+        ],
+        "widths": [
+          10.0,
+          6.941061973571777
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 5,
+        "array": "a1400",
+        "peak": 1768.092041015625,
+        "centroid": [
+          12.553970336914062,
+          -5.332098007202148
+        ],
+        "widths": [
+          12.600000381469727,
+          7.198681831359863
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 5,
+        "array": "a2000",
+        "peak": 138.3831024169922,
+        "centroid": [
+          15.242210388183594,
+          -9.401651382446289
+        ],
+        "widths": [
+          19.0,
+          8.639032363891602
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 6,
+        "array": "a1100",
+        "peak": 5985.419921875,
+        "centroid": [
+          12.962779998779297,
+          -5.575401782989502
+        ],
+        "widths": [
+          10.0,
+          7.2272748947143555
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 6,
+        "array": "a1400",
+        "peak": 1782.759033203125,
+        "centroid": [
+          12.740460395812988,
+          -5.35203218460083
+        ],
+        "widths": [
+          12.600000381469727,
+          7.325132846832275
+        ],
+        "angle": 0.0
+      },
+      {
+        "pass_index": 6,
+        "array": "a2000",
+        "peak": 141.0706024169922,
+        "centroid": [
+          15.301119804382324,
+          -9.411735534667969
+        ],
+        "widths": [
+          19.0,
+          8.813047409057617
+        ],
+        "angle": 0.0
+      }
+    ],
+    "runtime": {
+      "schema_version": "citlali-runtime-provenance-v2",
+      "initialized": true,
+      "requested": {
+        "verbose": true,
+        "interp_over_gaps": true,
+        "n_threads": 1,
+        "output_dir": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/",
+        "parallel_policy": "omp",
+        "reduction_type": "pointing",
+        "use_subdir": true
+      },
+      "effective": {
+        "values": {
+          "verbose": true,
+          "interp_over_gaps": true,
+          "n_threads": 1,
+          "output_dir": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/",
+          "parallel_policy": "omp",
+          "reduction_type": "pointing",
+          "use_subdir": true
+        },
+        "threads": {
+          "requested": 1,
+          "effective": 1,
+          "omp": 1,
+          "eigen": 1,
+          "fftw_plan": 1,
+          "wiener_filter_omp": false,
+          "adjusted": false,
+          "adjustment_reason": "",
+          "availability": {
+            "slurm_cpus_per_task": 0,
+            "affinity_cpus": 0,
+            "hardware_cpus": 14,
+            "available_threads": 14,
+            "source": "hardware"
+          }
+        }
+      },
+      "realized": {
+        "threads": {
+          "omp": 1,
+          "eigen": 1,
+          "fftw_plan": 1,
+          "fftw_initialized": true
+        },
+        "parallel_policy": "omp",
+        "reduction_type": "pointing"
+      }
+    },
+    "full_wall_seconds": 205.38,
+    "log_sha256": "1926f378f3402fd0f23d8473f33f5f680d510766daaba5ce442be0cffcd2be2d"
+  }
+}

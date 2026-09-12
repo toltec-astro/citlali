@@ -1,0 +1,174 @@
+{
+  "identity": "SCI-FRUIT-POINT-BOUNDED-REPAIR-RETEST-RESULT@r0.1",
+  "utc": "2026-09-12T18:09:18.291140+00:00",
+  "freeze_commit": "3771640012492ce31d871540661c92f0673d7af1",
+  "source_freeze_sha256": "68bce6c25be44d7f08ef82c3049a7b415a30a17c16de7921b44a3207b9e01a36",
+  "disposition": "retain_evaluator_reject_completion_only_repair",
+  "evaluator_saved_stage_passed": true,
+  "stopping_qualification_passed": false,
+  "operational_rerun_admitted": false,
+  "new_cleaning_calls": 0,
+  "new_operational_trajectories": 0,
+  "qualification": false,
+  "independent_pointing_replication": false,
+  "full_external_product_manifest": "/private/tmp/sci-fruit-point-bounded-repair-20260912-r0.1/PRODUCT_MANIFEST.json",
+  "external_payloads": 293,
+  "visual_inspection": "Both standalone scientific figures inspected; labels, model support and legends readable.",
+  "files": [
+    {
+      "path": "ANALYSIS.log",
+      "bytes": 1823,
+      "sha256": "b90e4f0119beb2152acb90eae6e1cdc652fea3324ad60c48f8a8af7b62a5cd76"
+    },
+    {
+      "path": "DECISION_EVIDENCE.json",
+      "bytes": 8777,
+      "sha256": "8f0d8c6dcdf44376a69b76695ce2e17cc484ab5ef1c56089bf93d28c13df9e71"
+    },
+    {
+      "path": "EVALUATOR_EVIDENCE.json",
+      "bytes": 279903,
+      "sha256": "0a4f8840168ec6c5a6ef6c4dc6e2b2a85d20c57d1a3992d2d06a531a00fe4f0d"
+    },
+    {
+      "path": "EXECUTION.log",
+      "bytes": 5651,
+      "sha256": "36270a9273adb4f23d2bbb6283e09e1e60934d02e648cd70b9734e0b056997dd"
+    },
+    {
+      "path": "FEEDBACK_STOPPING_MAPS.png",
+      "bytes": 147486,
+      "sha256": "5551635b8a4164a8c0f0540f51d60efbf83ba1e3ed4fe81e94ec20fb6cc9a7fe"
+    },
+    {
+      "path": "FREEZE.json",
+      "bytes": 42612,
+      "sha256": "68bce6c25be44d7f08ef82c3049a7b415a30a17c16de7921b44a3207b9e01a36"
+    },
+    {
+      "path": "FREEZE.json.sha256",
+      "bytes": 78,
+      "sha256": "58e03c8a8f475040fbf495f3bbf785ba6f164c1dae4467d45cbd80f48b3c8a1e"
+    },
+    {
+      "path": "PRESERVATION_START.json",
+      "bytes": 1933,
+      "sha256": "4c08c692ac633cf54528766534b5baf54c049791bd5774a8ac02e2975ca60690"
+    },
+    {
+      "path": "PRE_EXECUTION_TESTS.log",
+      "bytes": 527,
+      "sha256": "20952e6be065194b70a17e60b8b41da286171cda73f3b160aafdbea765e3f24f"
+    },
+    {
+      "path": "PROTOCOL.md",
+      "bytes": 9638,
+      "sha256": "558d537704e1cd67384987608e26f54ede2fd15697d1dbe90ed03ed63de8e024"
+    },
+    {
+      "path": "README.md",
+      "bytes": 758,
+      "sha256": "92cfeea62a8a0f53ebf21785a4a5f1716b21cc175e3d32da2ff162806535d76c"
+    },
+    {
+      "path": "RENDER.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "ROUTINE_REPAIR.md",
+      "bytes": 857,
+      "sha256": "bfc67e064e96cef004970f60f8cb8a4007d537b15f138da92218aa483a22fe60"
+    },
+    {
+      "path": "RUN_PRODUCT_MANIFEST.json",
+      "bytes": 50185,
+      "sha256": "885d61c5775a287331a5760a7c763ec61102bfe9887ba68464e733c1730920c7"
+    },
+    {
+      "path": "SCIENTIFIC_REPORT.md",
+      "bytes": 9418,
+      "sha256": "2d684c0e90fb3509b18e5dee17f35498fac74b425dab215bfae44dc08d6fc20b"
+    },
+    {
+      "path": "STOPPING_EVIDENCE.json",
+      "bytes": 261629,
+      "sha256": "701b71d2ae85b66ec08de4b0ea5fb5130de9a662ec7657e4361de5d7efc78440"
+    },
+    {
+      "path": "STOPPING_STABILITY.png",
+      "bytes": 110262,
+      "sha256": "c13b30e7b84a448bda3c723f045aa38d5772d3a8156ee6b0011dd70df32a057b"
+    },
+    {
+      "path": "VERIFICATION.json",
+      "bytes": 2705,
+      "sha256": "fe0ed875634c59b849eb405512161ae56ca434dd57c37708232b04a763e48a76"
+    },
+    {
+      "path": "VERIFICATION.log",
+      "bytes": 578,
+      "sha256": "125b947ad3532be571ffb0f1cb9d761f11aba98a0ff9718cd867bcba00e920a0"
+    },
+    {
+      "path": "VERIFICATION_FIRST_ATTEMPT.json",
+      "bytes": 2705,
+      "sha256": "85bf5d369d314e20c465bd1de913531adfdc8e865181d75ee1466b9c160a1d70"
+    },
+    {
+      "path": "VERIFICATION_FIRST_ATTEMPT.log",
+      "bytes": 1192,
+      "sha256": "ba0af80da169bee471864b5b2053aadb1ab60f2e0c4abd5fb2d72b6396e0bd4f"
+    },
+    {
+      "path": "analyze_saved.py",
+      "bytes": 10939,
+      "sha256": "0b0e970e96b6b4c1d2817551e1fe737bb59f0152e6ac11e7b5f849d9b42d85bd"
+    },
+    {
+      "path": "build_result_manifest.py",
+      "bytes": 2758,
+      "sha256": "63dc0d4efe6dac72226b7a145ec008129d98f6f0a5737fa616585a6832e00fc3"
+    },
+    {
+      "path": "common.py",
+      "bytes": 1817,
+      "sha256": "f12d5281f427a7217d0c2a924e630154eea6976665e3bf09ed8159d4a109b0c8"
+    },
+    {
+      "path": "prepare.py",
+      "bytes": 2973,
+      "sha256": "e30702f4c8be05d501f64ccbed83770743325c93d58cf782381b4b69a1eeb201"
+    },
+    {
+      "path": "reevaluate.py",
+      "bytes": 3748,
+      "sha256": "4de6be43a4ba6a2f8e9d5858b4a332cb703ce9feb3d83dfbe9fb561aa8cb38cd"
+    },
+    {
+      "path": "render_saved.py",
+      "bytes": 3543,
+      "sha256": "1f5aaf5c49e53e62308eae1718c90e3999a726290285a666279ea6f69cefb675"
+    },
+    {
+      "path": "run_saved.py",
+      "bytes": 8207,
+      "sha256": "3602799002e00f53f07fd7e67259fb0bf71f0aaec539cf2d84aef048add6f638"
+    },
+    {
+      "path": "stopping.py",
+      "bytes": 4432,
+      "sha256": "d07f111a29d03c7986ac44788b71749f213248855d27c2d0587f7124d53dd7d0"
+    },
+    {
+      "path": "test_repair.py",
+      "bytes": 2792,
+      "sha256": "a5c0dc5b4d3e61cc85eb0c535b1f19de6734d24ba0d22c7157ab1469276fb119"
+    },
+    {
+      "path": "verify_saved.py",
+      "bytes": 6954,
+      "sha256": "40605b769e71bad5af103733f8108343fa9c5c849c9f8d8cfd266bd368c0a1f0"
+    }
+  ]
+}
