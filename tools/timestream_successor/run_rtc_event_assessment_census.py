@@ -24,6 +24,26 @@ def write_json(path, value):
     path.write_text(json.dumps(value, indent=2, allow_nan=False) + '\n')
 
 
+GROUP_SPAN_POLICY = 'rtc-jump-transition-2026-09-10-v1'
+ONSET_POLICY = 'rtc-jump-transition-onset-2026-09-12-v2'
+
+
+def onset_cells(event, candidates):
+    """Independent set closure; do not assume the producer's member ordering."""
+    seed = candidates[event['seed']]
+    component = set(range(seed['earlier_row'], seed['later_row'] + 1))
+    while True:
+        expanded = set(component)
+        for index in event['candidates']:
+            candidate = candidates[index]
+            edge = set(range(candidate['earlier_row'], candidate['later_row'] + 1))
+            if edge & component:
+                expanded |= edge
+        if expanded == component:
+            return component
+        component = expanded
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--inventory', type=Path, required=True)
@@ -31,7 +51,7 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--trial-half-width-seconds', type=float, required=True)
     parser.add_argument('--previous-campaign', type=Path,
-                        help='Require unchanged inputs and seven earlier output files per invocation')
+                        help='Require unchanged inputs and upstream outputs; only the named v1-to-v2 transition change may differ')
     parser.add_argument('--example-selection', type=Path, required=True)
     args = parser.parse_args()
     if args.output.exists():
@@ -96,6 +116,8 @@ def main():
                 assert len({d['occurrence'] for d in detectors}) == len(detectors)
                 assert all(d['rows'] == r['rows'] and d['pair_screening_excluded_rows'] <= d['rows'] for d in detectors)
                 timing = json.loads((target/'timing.json').read_text())
+                transition_policy = timing['transition_policy']
+                assert transition_policy in (GROUP_SPAN_POLICY, ONSET_POLICY), 'unreviewed transition policy'
                 stage_values = list(timing['stages_seconds'].values())
                 assert all(math.isfinite(v) and v >= 0 for v in stage_values)
                 assert math.isclose(sum(stage_values), timing['measured_total_seconds'], rel_tol=1e-10, abs_tol=1e-7)
@@ -177,7 +199,9 @@ def main():
                             assert pre['end'] == b['begin'] < b['end'] == post['begin']
                             edge_rows = {seeds[k]['earlier_row'] for k in event['candidates']}
                             assert b['multiple_candidate_edges'] == (len(edge_rows) > 1)
-                            assert b['affected'][0] <= min(edge_rows) and b['affected'][1] > max(edge_rows)+1
+                            required = (onset_cells(event, seeds) if transition_policy == ONSET_POLICY
+                                        else {min(edge_rows), max(edge_rows)+1})
+                            assert b['affected'][0] <= min(required) and b['affected'][1] > max(required)
                             expected_outside = b['affected'][0] < event['trial_exclusion'][0] or b['affected'][1] > event['trial_exclusion'][1]
                             assert b['exceeds_fitting_exclusion'] == expected_outside
                             transition_outside += expected_outside
@@ -193,7 +217,13 @@ def main():
                     for key in ('raw_sha256', 'tune_sha256', 'manifest_sha256', 'candidate_edges', 'assessed_events'):
                         assert receipt[key] == old_receipt[key], f'Prior identity/count changed: {key}'
                     preserved = ('candidates.jsonl', 'events.jsonl', 'health-blocks.jsonl',
-                                 'detectors.jsonl', 'examples.jsonl', 'jump-consistency.jsonl', 'jump-transitions.jsonl')
+                                 'detectors.jsonl', 'examples.jsonl', 'jump-consistency.jsonl')
+                    previous_policy = json.loads((previous/'timing.json').read_text())['transition_policy']
+                    if previous_policy == transition_policy:
+                        preserved += ('jump-transitions.jsonl',)
+                    else:
+                        assert (previous_policy, transition_policy) == (GROUP_SPAN_POLICY, ONSET_POLICY)
+                    entry['transition_policy_comparison'] = [previous_policy, transition_policy]
                     for name in preserved:
                         assert digest(target/name) == digest(previous/name), f'Prior output changed: {name}'
                     entry['preserved_previous_outputs'] = list(preserved)

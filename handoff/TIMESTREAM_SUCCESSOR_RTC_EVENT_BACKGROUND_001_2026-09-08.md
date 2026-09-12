@@ -1790,3 +1790,50 @@ completion receipt and final manifest after review. Ready for owner acceptance
 of this bounded trial; no full-corpus rerun, additional scientific policy,
 filtering, flags, correction, spectra, Apply, PTC/CAL/AST/MAP, route activation,
 production, canonical integration, agent push, cleanup or later increment occurs.
+
+
+## Owner-approved onset-support corpus test — 2026-09-12
+
+`TIMESTREAM-SUCCESSOR-RTC-JUMP-ONSET-CORPUS-001`: the owner requests “Let's run
+this on the full corpus unless you have another idea.” Continue the owned S2
+module at clean literal base `f0deca48083d6b7a20931a1aa09d4b706063dd8c`, tree
+`e11d52a8fb058e68c625dbb19fa6ea23e1322239`. This authorizes the unchanged
+reviewed onset method's full observational test, not a new numerical increment.
+The three effective governance documents, owned AGENTS/status, toltec-context,
+scientific and recorded owner requirements were recovered. Read-only live refs
+remain canonical `86c20b31f7300ba4063be044380b61cd0baf25eb` and module
+`d1ed875f7aa3ccbadbe783b571f635d7ba96b2e4`; future admission must reverify both
+moving ancestry and its independent exact-SHA candidate review.
+
+Preserve all 196 sealed onset-trial files and 2,281 preceding reassessment files,
+their executable identities and inherited cached dependencies. Use the same
+143 eligible inputs across 13 observations, 71,734 channel timestreams and
+2,148,911,461 paired samples; retain the same 155 explicit missing-binding
+deferrals without admitting new files. Keep 152390 as a timestream fixture.
+Runtime Learn/Consider and the original maximum one reassessment are unchanged;
+the engineering workflow is separate from these runtime responsibilities.
+
+Only the inert Python census verifier and existing documentation need changes.
+The verifier independently checks the reviewed seed-connected onset component
+and explicitly allows transition output differences only for the named v1-to-v2
+policy pair. All six earlier outputs remain byte-identical; input raw/Tune/APT
+hashes, candidate identities, original fits and scales remain exact. Compare
+the full original and final coordinate populations, paired groups, gains/losses,
+support, bounds, unresolved causes and observation/channel concentration.
+Retain all 30 previously selected examples; inspect gains/losses with fixed
+deterministic selections if needed. No numerical policy is tuned to improve
+retention. Tests and source review remain inherited where runtime bytes are
+unchanged; build and CLI binding must identify this exact run source, and new
+verifier behavior and evidence receive focused and independent exact-SHA review.
+
+Run networks serially locally, preserving full native runs and bounded memory.
+Use existing numerical stage timers to separate transition/reassessment costs
+from original fitting, ingress and diagnostic output. Process RSS is not
+incremental memory; previous-run timing is not a controlled speed benchmark.
+The same supplemental AppleClang/Homebrew/cached-dependency environment is used;
+no Unity access or Spack/application-generation qualification is claimed.
+Unexpected behavior, provenance, numerical, logging or resource differences
+trigger recorded reassessment; diagnose within this test, preserve failures and
+stop before any new scientific choice. No filters, flags, correction, spectral
+context, Apply, PTC/CAL/AST/MAP, new data download, canonical integration, push,
+route activation, production or cleanup is included.

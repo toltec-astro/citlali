@@ -1,5 +1,20 @@
 # Citlali Refactor Status
 
+## RTC onset-support corpus test in progress — 2026-09-12
+
+The owner authorizes the full existing eligible corpus after reviewed onset
+closure `f0deca48083d6b7a20931a1aa09d4b706063dd8c`. Run the same 143 network
+files, 71,734 channel timestreams and original fixed examples against the preserved
+single-reassessment results. Scientific code remains unchanged; the Python census
+verifier now recognizes the reviewed seed-connected onset instead of requiring
+the historical full group span. Six upstream scientific outputs must remain
+byte-identical; transition and reassessment changes are counted explicitly.
+Measure existing stage timers, whole-process memory, gained/lost measurements and
+unresolved causes. The same 155 inventory records lacking complete canonical
+bindings remain deferred. No new admission, Apply or downstream route is added.
+Scope and gate details are in the existing RTC handoff and external preflight at
+`/private/tmp/citlali-rtc-jump-onset-corpus-2026-09-12/preflight.json`.
+
 ## RTC onset-support trial completed locally — 2026-09-12
 
 The bounded owner-approved trial is committed at exact
