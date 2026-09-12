@@ -1,0 +1,234 @@
+{
+  "identity": "SCI-FRUIT-POINT-STARLET-CENTRAL-DOMAIN@r0.1",
+  "base_commit": "dc5d588c94489e089285cabe5216e8090695b394",
+  "utc": "2026-09-12T14:37:55.219607+00:00",
+  "central_radius_arcsec": 60.0,
+  "offset_stress_center_arcsec": [
+    35.0,
+    -11.0
+  ],
+  "estimator_calls": 174,
+  "new_cleaning_passes": 0,
+  "files": [
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_coherent_feedback_2026-09-11/experiment_r02.py",
+      "bytes": 18548,
+      "sha256": "67f78850b7d07cd2723231ad0114d607934990b9ee05531dabeb23b164b5f6ac"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_rbf_feedback_2026-09-11/truths.py",
+      "bytes": 1988,
+      "sha256": "da0a31c41e3722b1d309b62e5363480fa5f0bc0a16e731505a62c123421c21cf"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_starlet_central_domain_2026-09-12/PROTOCOL.md",
+      "bytes": 8981,
+      "sha256": "dbf8249406f17cade8053f41d4946c53190c8ba04fb7c1301b20b3842a41c6a8"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_starlet_central_domain_2026-09-12/README.md",
+      "bytes": 642,
+      "sha256": "37089c7166c6786d8e96193631c3468693e6f3c533dab33160845a6cf92aa685"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_starlet_central_domain_2026-09-12/REVIEW_DISCUSSION.json",
+      "bytes": 19060,
+      "sha256": "bdee3121f6028f21a15b79c8e55d65ab4fa9b4688f848e3d3e0aed940088a226"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_starlet_central_domain_2026-09-12/candidate.py",
+      "bytes": 6044,
+      "sha256": "7c0e3c8e207d22c882e4225db692ee13366a294c3e907ee4bca691210d5be36a"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_starlet_central_domain_2026-09-12/run_comparison.py",
+      "bytes": 11407,
+      "sha256": "92de139b000db41b1a956282eb29bda9a95cdfec073fdefb26ea436d12844a2c"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_starlet_central_domain_2026-09-12/test_central_domain.py",
+      "bytes": 2909,
+      "sha256": "5b057d875bfd9273d9ec7fcd0af8350fe978ef7a0eb631684ed45ee689469185"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_starlet_preliminary_2026-09-11/NUMERICAL_RESULTS.json",
+      "bytes": 113139,
+      "sha256": "afb6b7f7a20402eaa0b1afd2cf240722b998c536756521f1736f36a2df422a79"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_starlet_preliminary_2026-09-11/RESULT_MANIFEST.json",
+      "bytes": 4016,
+      "sha256": "4b815db4f6e59037a40fe98c43127a0550d94f293eaeb6c60e197fac6bdfbc36"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_starlet_preliminary_2026-09-11/run_screen.py",
+      "bytes": 12541,
+      "sha256": "e02fe230bbef798b9a24a41cf183727446ca53989b5c5337c9534409c2709978"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_starlet_preliminary_2026-09-11/starlet.py",
+      "bytes": 5929,
+      "sha256": "6496d01fb9806965546c74c3cc690723cd6477a7b5f40e7a9ae03cbd08578b07"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/coma_bright_truth.npz",
+      "bytes": 132938,
+      "sha256": "a9d523c4eccb16dba18fbb4ae341195d77fd98e1c712b39dbe1d2b60f28af3de"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/coma_half_truth.npz",
+      "bytes": 132653,
+      "sha256": "6894580592c13c099167979bf2cccd7a32be7bd4f4df5c6deb3963fa0a209cca"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/gauss20260911_truth.npz",
+      "bytes": 142240,
+      "sha256": "4df3448440b3254227f7d50b8b47c82950ff1929ffe65f2f4710acf8ed48b606"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/gauss20260912_truth.npz",
+      "bytes": 142240,
+      "sha256": "4df3448440b3254227f7d50b8b47c82950ff1929ffe65f2f4710acf8ed48b606"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/geometry.npz",
+      "bytes": 2941338,
+      "sha256": "92623d98871a3400dece39df0eae07ace07f69c51352c0ccfc7dffc174cbe671"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-rbf-feedback-20260911-r0.1/mismatch20260911_truth.npz",
+      "bytes": 154762,
+      "sha256": "3eed4c0d5141820b2523f3befad1856a88bf31861025f167e157fb04f970b653"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/coma4_truth.npz",
+      "bytes": 133485,
+      "sha256": "02123c56d64f53aa8fb57c6219ee9cb5274ded1472145c3212ceb195705798d9"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/map_add_coma0p5.npz",
+      "bytes": 556636,
+      "sha256": "9bbd36b6ee6bda96772017bb68851d59e26f690720d859d1ed19fb8a3efac31c"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/map_add_coma1.npz",
+      "bytes": 592708,
+      "sha256": "c327dd15c4394cb87b87b30d8dbed455d1558c6db610eefaaf2b366fe119b343"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/map_add_coma4.npz",
+      "bytes": 608749,
+      "sha256": "8b575ddbcf2e122e3acabbbc903eb2d9371eddfbf228f8d5648abfd47b7f855b"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/map_add_compact_seed1.npz",
+      "bytes": 592499,
+      "sha256": "19aaf94ec13db81c3b8aac0c1d4f92c3bb79c852d9f12c8f58cdd4c53610edac"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/map_add_compact_seed2.npz",
+      "bytes": 561149,
+      "sha256": "a8bc83054c93084d5e079066c7c974aea21272dd8cec45a493f961d5a46616d7"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/map_add_mismatch.npz",
+      "bytes": 591618,
+      "sha256": "d053727aeebd5945d1c20d8eeccc19508ece08948a91f14e792f8cafa77aaebc"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/noiseless_phase0_coma0p5.npz",
+      "bytes": 135227,
+      "sha256": "720b77042b10ab0425f33b45751a9aa5cf1fc1c5a2e2d582e3a5c9443af4bea6"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/noiseless_phase0_coma1p0.npz",
+      "bytes": 135609,
+      "sha256": "c74b9f5db6a59cfb104db59903cde065322bb46d87ae2a2b27e5aceecc832b36"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/noiseless_phase0_coma4p0.npz",
+      "bytes": 136741,
+      "sha256": "de1d97ffebf6fda9a005e25d61f1cf997f087f82d1ef0992c50489624bc5627a"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/noiseless_phase0_compact.npz",
+      "bytes": 145212,
+      "sha256": "76b9c220957b175f32e8ea5860be508c30abc0f915b300b9b730e3bf4c77ec01"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/noiseless_phase1_coma0p5.npz",
+      "bytes": 135237,
+      "sha256": "9d20a847d0604047bd9b75cf5980bf77260c2f96f15cf02c04847d8b7b1854f7"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/noiseless_phase1_coma1p0.npz",
+      "bytes": 135599,
+      "sha256": "e5b13a70d431257031c78c22ec21dd2dc3f78f230c622a1e7e9e93cebb594d61"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/noiseless_phase1_coma4p0.npz",
+      "bytes": 136789,
+      "sha256": "5b33f0fc8f0f7c14d576eabb80f98b1be49b9769df7cad75e609257ebc31f037"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/noiseless_phase1_compact.npz",
+      "bytes": 145557,
+      "sha256": "e2ed57c7d6ecc0781f2e1e59e35c7f7f67b57eedef019f6234aaaadc25df72db"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/pure_plane.npz",
+      "bytes": 52618,
+      "sha256": "4a99c11a32ff480aafc684dc58556143ce4838c5ebf55c10ec341f5bdb1e14a8"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/saved_background20260911.npz",
+      "bytes": 556270,
+      "sha256": "a16d1ad5b65147f245672ff004a030b455b59f9e30b7503cbf1b0b28751c1b4d"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/saved_coma4.npz",
+      "bytes": 594411,
+      "sha256": "f112c3b8772b6db20b9dd9c851bd7a429507f12cde73cd9da7f8d78a36e575f9"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/saved_coma_bright.npz",
+      "bytes": 556734,
+      "sha256": "ab5cdf10ef4c70d071398179a8731f0857151d3919aee1d12b75f8ae50e9d6a3"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/saved_coma_half.npz",
+      "bytes": 556574,
+      "sha256": "556296272c1e97a6913e4480dc6677a71dafe8ca4dcf4dfb078807d0326b98c7"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/saved_gauss20260911.npz",
+      "bytes": 589549,
+      "sha256": "93c68abf9ceec321210e4104e67e12cf3a1393a079929ef032c5ae7c9591fec8"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/saved_gauss20260912.npz",
+      "bytes": 615959,
+      "sha256": "d65ac18edfa52f4190916b85a52cc44efd7707cf4ddb3fc78a4b7e84c251ddfc"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/saved_mismatch20260911.npz",
+      "bytes": 589195,
+      "sha256": "77f5c45ad96278b941a3f0141eab4edff908494e6fa9526c898604023f6e23f3"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/saved_null20260911.npz",
+      "bytes": 556700,
+      "sha256": "7a43292117438db27b1fd5f9368209137892127092f449f44e87e96e34c15776"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/saved_null20260912.npz",
+      "bytes": 551968,
+      "sha256": "644444e4ea5cc0bb97402500a5313d7dde03a934c4f0affb6cfb427ac895ed78"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-starlet-preliminary-20260911-r0.1/saved_real123424.npz",
+      "bytes": 551017,
+      "sha256": "1f2aa8e6fbde86cceed7b7599d426fee497668612cb4a711a54df6b894b16482"
+    }
+  ]
+}

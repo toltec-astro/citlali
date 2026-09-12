@@ -1,0 +1,10 @@
+{
+  "tests": 3,
+  "passed": true,
+  "checks": [
+    "feedback domain leaves original calibration/background/computational masks unchanged",
+    "zero-MAD objective finite and equal to unscaled objective",
+    "positive-MAD objective and gradient exactly match old implementation"
+  ],
+  "source_syntax_passed": true
+}
