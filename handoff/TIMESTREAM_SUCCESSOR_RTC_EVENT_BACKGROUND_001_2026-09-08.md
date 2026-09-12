@@ -1691,3 +1691,102 @@ reports and these existing documentation records. No filter, flag, correction,
 spectral context, new candidate/grouping policy, MAP/CAL/PTC/AST, route,
 production, canonical admission, push, cleanup or later increment. Record and
 reassess any unexpected outcome; do not tune further policy to obtain a pass.
+
+
+## Onset-support trial completion — 2026-09-12
+
+Exact tested source `d929070dbdfb8d8262bad109126d000b5c941462`, tree
+`10a02bdb8ff39a7f647eed13d14a5b288a4a1dd0`, has direct parent/literal base
+`019a0ee3fe710c1a62da3107286cf3c92794a5ca`. The intentional numerical change
+is confined to RTC Learn's conditional transition support: start with the original
+seed edge cells, extend through members sharing an endpoint cell, and retain
+disconnected members under existing neighbor masks. The immutable assessment
+producer supplies chronological seed-first membership. No new time threshold,
+candidate split/merge rule or physical-event identity is introduced. The policy
+identity is `rtc-jump-transition-onset-2026-09-12-v2`; the diagnostic schema records
+seed/onset cells and every neighbor exclusion. Private explicit-location adapters
+remain test-only and are audited against production calculations.
+
+Runtime Consider still requests the same original-sample Learn evidence and
+audits actual fit support under the same maximum single reassessment. Original
+finding/grouping, initial cubic/offset fits, 2s/1s context, 64-sample minimum,
+fixed scale roles, amplitude/sign/consistency checks, +/-4-sigma/50ms confirmation,
+recovery, validity and source-protection rules are unchanged. This delivers a
+bounded Learn correction consumed by existing Consider; the engineering workflow
+does not substitute for those runtime responsibilities. No Apply plan, accepted
+event, flag, correction or scan assignment is produced.
+
+The preserved diagnosis executable reproduces all its targeted outputs exactly.
+The same 20 trial cases /40 coordinate comparisons use unchanged synthetic and
+two real background samples and added signals. Of 24 injected-jump coordinates,
+18 have candidates; retained measurements improve from 9 to 15, with six gains
+and zero losses. The gains are x/r for sharp, three-cell and sharp-plus-spike
+injections on 152385/network 4/channel 61. The sharp and sharp-plus-spike bounds
+change from the original broad [1220,1324) interval (0.851968050 seconds) to
+[1220,1223), about 24.576 ms. The instantaneous truth is enclosed with signed
+endpoint errors of -1.5/+1.5 native cells. The three-cell injection bound is
+[1221,1224), matching its injected extent. Short post fitting support is now
+104 samples, or 89 with the neighboring spike, rather than 20; these recovered
+cases require no additional refit. All actual masks, fits, offsets and signed
+truth errors remain in the report's JSON/TSV, including unavailable outcomes.
+
+Three detected x-coordinate injections on 152430/network 8/channel 253 remain
+unresolved: sharp and three-cell cases fail the unchanged initial offset
+consistency rule; sharp-plus-spike is withheld by a competing neighbor exclusion
+while measuring transition support. Its r measurement survives with a shorter
+bound. The six twelve-cell-ramp coordinate misses remain end-to-end misses at
+the original duration/amplitude; supplied-location probes remain separately
+labelled diagnostic results. Synthetic unmodified/spike/three-cell-pulse/
+twelve-cell-pulse controls retain 0/8 persistent-jump coordinates. Real unmodified
+backgrounds are not assumed event-free. No evidence here establishes that every
+loss in the earlier 143-file census is recoverable; the full corpus was not rerun.
+
+Known-support fits may still report support conflict because conservative learned
+bounds include adjacent native cells outside the exact injected support. Their
+availability is not a production-retention gate or a calibrated parameter
+uncertainty. The approved sigma_delta remains a fixed empirical comparison
+tolerance. Event identity, harmfulness, protection, timing uncertainty and the
+real native-to-existing-scan relation remain separate admission requirements.
+
+Exact-source CLI and injection builds, all 1,002 runnable local CTests (one
+established disabled test), 31 focused tests, all four require-all config modes
+and 207 baseline-tool tests pass. Added regressions cover later grouped x/r
+spikes, an overlapping disconnected guard and a genuine later step. Data audits
+verify 97,680 original values, 396 available model losses, 112 explicit-anchor/
+production parity comparisons, 40 unchanged upstream coordinate chains and
+20 independent onset/neighbor-mask reconstructions. Eighteen same-source
+legacy/diagnostic cases agree; this is not a claim that the changed trial matches
+the old control's transition output. Pilot/final replay bytes are deterministic.
+All four final plots were inspected headlessly.
+
+All 194 sealed predecessor files and two copied control binaries are preserved,
+as are 37 other timestream headers, contracts/governance/validation/build
+configuration and nine inherited cached-dependency dirty files. Retained initial
+attempts record a misspelled pilot test target, an audit-only correction separating
+forced-location full-mask probes from production-local masks, and a report-label
+clarification for candidate misses. None caused additional scientific tuning.
+The onset scan uses a constant-size result without allocation; the existing
+neighbor-mask vector may grow. Concurrent whole-process diagnostic timings are
+not an incremental cost measurement, and no full-corpus performance inference is
+made. AppleClang/Homebrew/cached-dependency results are supplemental local
+evidence; Unity/Spack or production qualification is neither required nor claimed.
+
+Fresh independent exact-source/evidence review passes with recorded limitations
+and no findings on scientific/behavioral conformance, architecture/ownership
+and repository/evidence hygiene. Source review SHA-256:
+`a53f8ec4f625a2685a22e5504093df2bcdc279523b877a8181022acaeb58aaed`.
+The 189-file scientific evidence manifest SHA-256 is
+`7b73ef2af1b824bfc603ed67341f7b30a630f33c6a8ee1166092a9e37f73f63f`.
+Evidence root: `/private/tmp/citlali-rtc-jump-onset-trial-2026-09-12`.
+The report is `report-final-01/README.md`; source and gate bindings are alongside it.
+No unexpected final replay stderr is present. Live canonical/module refs were
+verified read-only as `86c20b31f7300ba4063be044380b61cd0baf25eb` and
+`d1ed875f7aa3ccbadbe783b571f635d7ba96b2e4`; future admission must reverify
+moving canonical authority and receive its own independent exact-SHA review.
+
+The documentation-only closure must have this tested source as its direct parent.
+Its exact SHA/tree and fresh independent review are recorded in the external
+completion receipt and final manifest after review. Ready for owner acceptance
+of this bounded trial; no full-corpus rerun, additional scientific policy,
+filtering, flags, correction, spectra, Apply, PTC/CAL/AST/MAP, route activation,
+production, canonical integration, agent push, cleanup or later increment occurs.

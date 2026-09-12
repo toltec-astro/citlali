@@ -1,15 +1,43 @@
 # Citlali Refactor Status
 
-## RTC onset-support trial in progress — 2026-09-12
+## RTC onset-support trial completed locally — 2026-09-12
 
-The owner approves testing the diagnosed onset-support recommendation from
-reviewed closure `019a0ee3fe710c1a62da3107286cf3c92794a5ca`. The same RTC
-module/worktree tests a seed-connected candidate-edge onset while retaining
-later edges as masked context. Runtime Learn alone changes its conditional
-transition evidence; existing Consider consumes it with unchanged one-pass
-reassessment. Fixed injection tests compare against preserved control evidence;
-no full-corpus rerun or Apply action is included. The existing RTC handoff and
-`/private/tmp/citlali-rtc-jump-onset-trial-2026-09-12/preflight.json` record scope.
+The bounded owner-approved trial is committed at exact
+`d929070dbdfb8d8262bad109126d000b5c941462`, tree
+`10a02bdb8ff39a7f647eed13d14a5b288a4a1dd0`, with reviewed diagnosis closure
+`019a0ee3fe710c1a62da3107286cf3c92794a5ca` as direct parent/literal base.
+Runtime RTC Learn anchors the conditional onset bound to seed-connected native
+candidate edge cells; disconnected later members keep their existing masks.
+Existing Consider consumes that evidence under the same single-reassessment
+limit. Original candidate finding/grouping, fits, scale roles, contexts and
+thresholds are unchanged; no runtime Apply plan is produced.
+
+The same 20 fixed trials retain 15/24 injected-jump coordinate measurements,
+compared with 9/24 for the preserved control: six gained, zero lost. Candidate
+detection remains 18/24. All six gains are x/r for three injections on the
+152385/network 4/channel 61 background. Its sharp transition now spans three
+native cells (24.576 ms), versus 0.852 seconds; the short fit keeps 104 post
+samples, or 89 with a neighboring spike, instead of 20. Three detected x cases
+on the other real background remain unresolved, and all six twelve-cell ramp
+misses stay in the denominator. Synthetic no-jump/spike/pulse controls retain
+zero persistent-jump measurements in eight coordinate cases.
+
+All 1,002 runnable local CTests, 31 focused transition/reassessment tests, four
+config modes and 207 baseline-tool tests pass. Independent fresh-context
+exact-source/evidence review passes with recorded limitations and no findings.
+All 194 predecessor evidence files and both control binaries are preserved;
+37 other timestream headers and frozen contracts remain unchanged. The fixed
+replay is deterministic. Local evidence is supplemental; concurrent diagnostic
+process timings do not measure incremental processing cost. No full-corpus
+rerun or Unity/Spack/production qualification is claimed.
+
+[Trial results and four inspected figures](/private/tmp/citlali-rtc-jump-onset-trial-2026-09-12/report-final-01/README.md)
+and the existing RTC handoff bind the evidence and limitations. The separate
+documentation closure must have this tested source as its direct parent; its
+exact identity and fresh independent review are recorded externally after review.
+Ready for owner acceptance of this bounded trial. Canonical admission, route
+activation, flags, correction, spectral work and subsequent increments remain
+outside it; no agent push or cleanup occurs.
 
 ## RTC jump-loss diagnosis completed locally — 2026-09-11
 
