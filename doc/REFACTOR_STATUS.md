@@ -1,19 +1,52 @@
 # Citlali Refactor Status
 
-## RTC onset-support corpus test in progress — 2026-09-12
+## RTC onset-support full-corpus test completed locally — 2026-09-12
 
-The owner authorizes the full existing eligible corpus after reviewed onset
-closure `f0deca48083d6b7a20931a1aa09d4b706063dd8c`. Run the same 143 network
-files, 71,734 channel timestreams and original fixed examples against the preserved
-single-reassessment results. Scientific code remains unchanged; the Python census
-verifier now recognizes the reviewed seed-connected onset instead of requiring
-the historical full group span. Six upstream scientific outputs must remain
-byte-identical; transition and reassessment changes are counted explicitly.
-Measure existing stage timers, whole-process memory, gained/lost measurements and
-unresolved causes. The same 155 inventory records lacking complete canonical
-bindings remain deferred. No new admission, Apply or downstream route is added.
-Scope and gate details are in the existing RTC handoff and external preflight at
-`/private/tmp/citlali-rtc-jump-onset-corpus-2026-09-12/preflight.json`.
+The unchanged reviewed onset method has now run on all 143 eligible network
+files: 13 observations, 71,734 channel timestreams and 2,148,911,461 paired
+samples. Exact run source `e83815a91fc87d658fd63f1da40ecac82d602105`, tree
+`6d91ff288f53ce5c65e8bb0ca2211af32eeccf09`, directly preserves reviewed
+closure `f0deca48083d6b7a20931a1aa09d4b706063dd8c`. All scientific headers,
+contracts, tests and C++ diagnostic code remain unchanged. Only the inert
+Python census checks and existing documentation changed for this work order.
+
+Final conditional coordinate measurements change from 9,100 to 9,667:
+7,910 retained by both, 1,757 gained and 1,190 lost. Of the gains, 1,350 recover
+former fitting-support failures and 329 recover missing post confirmations.
+Of the losses, 1,170 arise from competing neighbor exclusions, 19 lose an
+earlier partner-refit opportunity and one lacks post confirmation. Initial
+bounds decrease from 11,830 to 10,318; paired refits decrease from 3,226 to
+1,314. Natural-data retention is not physical-event truth. The full corpus
+shows both benefits and losses that the prior 20-case injection trial did not.
+
+All 858 pre-transition output files, 143 original-sample exports and two
+injection backgrounds match the control. All-event support/decision audits,
+11,693 available onset-bound checks, deterministic selected replay and 152
+coordinate/version sample checks pass. The 38 final figures are inspected.
+Prior 1,002 runnable CTests, four config modes and 207 baseline tests remain
+inherited from unchanged reviewed science; they were not rerun at this source.
+Fresh independent exact-source/evidence review passes with recorded limitations
+and no findings.
+
+Transition plus reassessment work costs 1.793314 seconds, 0.095002% of preceding
+input/numerical work. Whole-process peak RSS is 4.981 GiB; neither this nor
+prior-run wall-time differences measure incremental production performance.
+This is supplemental local AppleClang/cached-dependency evidence. The same 155
+missing-binding inventory entries remain deferred. All 196 onset-trial and
+2,281 preceding reassessment evidence files remain preserved.
+
+[Full comparison, timing and plots](/private/tmp/citlali-rtc-jump-onset-corpus-2026-09-12/README.md)
+and the existing RTC handoff bind the evidence. Runtime Learn produces
+conditional onset evidence; unchanged Consider audits support and permits at
+most one reassessment. Engineering review of the corpus is separate from those
+runtime responsibilities. No Apply plan is produced.
+
+Recommend reviewing the nearby-edge guard tradeoff before promoting this rule
+unchanged; no replacement edge policy is selected here. This closes the
+authorized test, not a scientific-policy or production admission. The exact
+documentation closure and its fresh independent review are recorded externally
+after review. No canonical integration, route activation, flags, correction,
+spectral work, MAP, agent push or cleanup occurs.
 
 ## RTC onset-support trial completed locally — 2026-09-12
 

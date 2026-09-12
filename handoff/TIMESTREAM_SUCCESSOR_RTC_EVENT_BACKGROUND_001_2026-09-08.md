@@ -1837,3 +1837,118 @@ trigger recorded reassessment; diagnose within this test, preserve failures and
 stop before any new scientific choice. No filters, flags, correction, spectral
 context, Apply, PTC/CAL/AST/MAP, new data download, canonical integration, push,
 route activation, production or cleanup is included.
+
+## Onset-support full-corpus completion — 2026-09-12
+
+The authorized test completed on exact source
+`e83815a91fc87d658fd63f1da40ecac82d602105`, tree
+`6d91ff288f53ce5c65e8bb0ca2211af32eeccf09`, with literal base/direct parent
+`f0deca48083d6b7a20931a1aa09d4b706063dd8c`. Its only changed source file is
+`tools/timestream_successor/run_rtc_event_assessment_census.py`; existing status
+and this handoff record scope. All 38 timestream headers, C++ tools, tests,
+build configuration, contracts and governance remain unchanged. The rebuilt
+local CLI identifies `e83815a91`; the source/evidence receipt binds the exact
+CLI, census executable and inherited nine cached dependency file changes.
+
+All 143 eligible files complete with unchanged raw/Tune/APT identities:
+13 observations, 71,734 channel timestreams, 2,148,911,461 paired samples,
+910,241 original candidate edges, 242,014 groups and 484,028 coordinate
+assessments. The same 12,815 initial transition requests are made. All 858
+pre-transition output files, 143 selected-sample exports and two injection
+backgrounds are byte-identical to the preceding corpus. The same 155
+missing-binding inventory entries remain deferred, not passed or admitted.
+
+| Evidence population | Preserved control | Onset method |
+| --- | ---: | ---: |
+| Initial available coordinate bounds | 11,830 | 10,318 |
+| Paired refit requests | 3,226 | 1,314 |
+| Final retained coordinates | 9,100 | 9,667 |
+| Groups with at least one retained coordinate | 6,758 | 7,169 |
+
+The final comparison is 7,910 retained by both, 1,757 gained, 1,190 lost and
+473,171 retained by neither. Gains comprise 771 x and 986 r coordinates;
+losses comprise 637 x and 553 r coordinates. The control total explicitly
+includes its 9,072 retained original measurements and 28 new partners; the
+onset total includes 9,652 retained onset-initial measurements and 15 partners.
+The report also keeps the original 11,830-bound and 12,815-request denominators
+fixed and records paired 0/1/2-coordinate changes.
+
+Of the gains, 1,350 were formerly unavailable through fitting-support loss,
+329 lacked a post confirmation and 78 follow other recorded paths. Of the
+losses, 1,170 are initial competing exclusions, 19 lose the earlier
+partner-refit opportunity and one lacks post confirmation. The earlier
+107-file partial result (387 gains, 500 losses) is preserved as partial evidence;
+the full population has a net gain of 567. Gains concentrate in 152390/152392,
+while several shorter observations have net losses. These are conditional
+coordinate measurements, not accepted physical events or truth-accuracy rates.
+
+The original A-F and 24 fixed selections are preserved, with four gained and
+four lost groups selected by a fixed SHA-256 rank and unique detector rule.
+All 38 comparison figures were inspected through contact sheets with individual
+detail views. In G01 (152390/network 11/channel 481), 70 more post fitting
+samples survive and both coordinates are retained while the nearby spike guard
+remains. Some gains occur among several large level changes with substantial
+fit residuals; a retained onset does not certify the whole disturbance model.
+No thresholds or fit rules were tuned to improve results.
+
+A reproduced loss at 152432/network 2/channel 292/event 366/r has exactly the
+same original fit and fitting samples. Seed cells 5978–5979 are disconnected
+from later original-group candidate edges starting at 5981, about 24.576 ms
+after the seed edge. Existing ±50 ms guards remove confirmation samples and
+overlap the resulting proposed bound, causing competing-exclusion withholding.
+The independent reconstruction accounts for all 14 counted excluded cells.
+This explains one step-like example without assigning physical-event truth,
+merging edges or authorizing a new guard exception.
+
+All-event support/decision audits, 11,693 available-bound checks, the 60-coordinate
+fixed-sample audit and 152 coordinate/version comparison checks pass. Replays
+preserve 118 same-source scientific files. Independent tests exercise 1,016
+graph/member-order cases and 12 mocked actual-driver policy/preservation gates.
+Exact local CLI/census builds pass. Prior 1,002 runnable CTests, 31 focused tests,
+four config modes and 207 baseline tests remain inherited from reviewed
+`d929070dbdfb8d8262bad109126d000b5c941462`; these suites were not rerun at
+`e83815a91`. No unexpected runtime error-level output occurs; 143 inherited
+raw-kind warning lines remain explicit. External plotting/checker failures and
+their bounded repairs are retained separately; scientific outputs were unchanged.
+
+Existing numerical stage clocks measure 1.793314045 seconds for the complete
+transition/reassessment sequence, 0.0950023% of preceding input/numerical work
+(1,887.652991 seconds). Transition learning costs 0.146556333 seconds and
+refitting 1.416161129 seconds. Diagnostic output totals 15.757960 seconds;
+summed child wall time is 1,982.896693 seconds and peak whole-process RSS
+5,348,720,640 bytes (4.981 GiB). Concurrent local analysis and targeted replays
+prevent controlled speed comparisons; RSS is not incremental memory.
+The actual environment remains supplemental AppleClang/Homebrew with bound
+cached dependencies, not Unity/Spack, V2 application reproduction or production.
+
+Runtime RTC Learn still supplies conditional original-sample evidence and
+unchanged Consider still audits support and requests at most one reassessment.
+No runtime Apply plan is produced. Separately, the engineering workflow uses
+these conformance measurements for the next owner decision; it does not replace
+the required runtime phase boundaries. Preserved D2/VAL, source protection and
+spectral limits remain unchanged. Real scan admission and downstream work remain
+outside this test.
+
+Evidence root:
+`/private/tmp/citlali-rtc-jump-onset-corpus-2026-09-12`.
+The sealed 2,401-file `EVIDENCE_SHA256SUMS` has digest
+`61fd2c4343d669025329698fba60137abe01abd98a054b8ec496c2174798a5e4`.
+All 196 prior onset-trial files and 2,281 preceding reassessment files, control
+binaries and dependency bytes were reverified. Independent exact-source/evidence
+review passes with recorded limitations and no findings on the three governance
+axes; the review identity/digest is recorded below. This documents conformance
+of the bounded test and its evidence, not automatic adoption of the rule.
+
+Recommend reviewing nearby-edge membership/guard treatment before promoting
+the onset method unchanged. No new connection interval, grouping rule,
+classifier, threshold, correction or Apply choice is made here. The separate
+two-document closure must have the tested source as its direct parent; its exact SHA/tree,
+fresh independent exact-SHA review and final completion binding are recorded
+externally after review. Future canonical admission must reverify live moving
+ancestry and review the exact integration candidate independently. No merge,
+push, route activation, filtering, flags, spectra, PTC/CAL/AST/MAP, new data,
+production or cleanup occurs. Ready for owner review of this completed test.
+
+Source/evidence review: `review-01.md`, SHA-256
+`d5d48a9e9e504c1e980433d60464eee4ec2a0d0d42ec2d5d8709b883333f93bb`,
+reviewer `/root/rtc_onset_corpus_exact_review`.
