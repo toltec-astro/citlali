@@ -68,6 +68,8 @@ def main():
     p.add_argument("control_root", type=Path)
     p.add_argument("replay", type=Path)
     p.add_argument("output", type=Path)
+    p.add_argument("--legacy-replay", type=Path,
+                   help="Compare diagnostic output to this same-source legacy replay; does not establish control equality.")
     args = p.parse_args()
     if args.output.resolve() == args.control_root.resolve() or args.control_root.resolve() in args.output.resolve().parents:
         p.error("output must be outside the sealed control")
@@ -77,7 +79,8 @@ def main():
     for index in range(3):
         with (args.replay / f"{index:02d}-diagnostic.out").open() as stream:
             docs = list(yaml.safe_load_all(stream))
-        expected = {d["trial"]: d for d in map(json.loads, (args.control_root / f"injection-final-{index:02d}.jsonl").read_text().splitlines())}
+        legacy = (args.legacy_replay / f"{index:02d}-legacy.out") if args.legacy_replay else (args.control_root / f"injection-final-{index:02d}.jsonl")
+        expected = {d["trial"]: d for d in map(json.loads, legacy.read_text().splitlines())}
         assert len(docs) == (8 if index == 0 else 6)
         for d in docs:
             samples = np.array(d["samples"], dtype=float)
@@ -204,7 +207,8 @@ def main():
             median_absolute_fit_minus_injected_sigma=float(np.median([abs(r["raw_fit_minus_injected_sigma"]) for r in available])) if available else None,
             forced_location_coordinate_cases=sum(r["forced_location"] for r in rs),
             forced_location_diagnostic_retained=sum(r["forced_location"] and r["diagnostic_retained"] for r in rs))
-    result = dict(status="PASS", audits=dict(counts), injection_summary=summary, records=metrics,
+    result = dict(status="PASS", legacy_comparison_scope="same-source replay" if args.legacy_replay else "sealed prior control",
+        audits=dict(counts), injection_summary=summary, records=metrics,
         definitions=dict(raw_fit_minus_injected="Includes any offset/background-model bias already present in the real background; not total truth error for an unknown real event.",
             recovered_injection_error="Fitted injected offset minus same-support/frozen-scale uninjected fit minus known injected offset; describes recovery of the added signal only.",
             boundary_error_samples="Signed bound minus known physical boundary on the native integration-cell axis; midpoint sharp truth has half-cell position. Integer affected-cell errors are separate.",

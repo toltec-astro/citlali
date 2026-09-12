@@ -1640,3 +1640,54 @@ external completion receipt and final manifest after review, not guessed within
 its own contents. No automatic flags, Apply, correction, filtering, spectra,
 new candidate policy, PTC/CAL/AST/MAP, route activation, production, canonical
 integration, agent push, cleanup or later work occurs. Ready for owner acceptance.
+
+
+## Owner-approved onset-support trial — 2026-09-12
+
+`TIMESTREAM-SUCCESSOR-RTC-JUMP-ONSET-TRIAL-001`: the owner says “Let's try the
+test with your recommendation.” Continue the owned S2 module at clean literal
+base `019a0ee3fe710c1a62da3107286cf3c92794a5ca`, tree
+`418e5dfd05447eedcbfece7aba257c75e8dd79c5`, preserving the reviewed diagnostic
+and single-pass controls. This is approval for a bounded implementation trial,
+not general scientific acceptance, canonical admission, activation or production.
+Read-only live refs remain canonical `86c20b31f7300ba4063be044380b61cd0baf25eb`
+and module `d1ed875f7aa3ccbadbe783b571f635d7ba96b2e4`. Three effective governance
+digests and accepted ancestry were reverified; owned AGENTS, toltec-context,
+status, SCI-RTC REQ-055/094/096/098/118 and recorded owner rules were read.
+
+The trial defines the onset anchor as the connected component of native candidate
+edge cells containing the original seed: edges sharing a native endpoint cell
+connect, with no new temporal threshold. Parent assessment members are already
+chronological and seed-first; membership and physical-event identity remain
+unchanged. Disconnected later members retain their existing +/-50ms neighbor
+guards. This removes the implicit rule that their entire intervening span must
+belong to the onset. Stable confirmation still uses original samples and the
+unchanged 4-sigma/50ms rule; masks still interrupt confirmation and a competing
+exclusion inside the inferred bound still makes it unavailable. A second genuine
+jump is not silently combined or assigned a corrected offset.
+
+Runtime Consider requests the existing RTC Learn transition product; Learn
+produces conditional x/r physical bounds and causes; existing Consider audits
+actual fitting support and permits the same single reassessment. Engineering
+learn/consider/apply remains a separate development workflow. No runtime Apply
+plan or accepted event is produced. Candidate finding, parent grouping, recovery,
+initial fits, 2s/1s contexts, frozen scale roles, amplitude/consistency thresholds,
+validity, protection and timing uncertainty policy remain unchanged.
+
+Preserve all 194 files and both source-bound binaries of the previous diagnosis.
+Use the same 20 fixed trials, including the synthetic no-jump/pulse controls,
+same two real backgrounds, x/r truth errors and all missed/unresolved cases.
+The 12-cell misses stay in end-to-end denominators. Do not rerun the 143-file
+corpus. Focused regressions must cover connected edges, later disturbances,
+competing guards and genuine later steps; broad local tests/config/baseline
+and fresh independent exact-SHA source/evidence and closure reviews remain
+required. Local evidence is supplemental, without a Unity/Spack/production
+claim. Onset selection scans existing ordered members without an allocation; the
+existing neighbor-mask vector may contain more guards. Targeted timing cannot
+establish full-corpus performance.
+
+Scope: transition learner, focused tests, inert diagnostic adapters/comparison
+reports and these existing documentation records. No filter, flag, correction,
+spectral context, new candidate/grouping policy, MAP/CAL/PTC/AST, route,
+production, canonical admission, push, cleanup or later increment. Record and
+reassess any unexpected outcome; do not tune further policy to obtain a pass.

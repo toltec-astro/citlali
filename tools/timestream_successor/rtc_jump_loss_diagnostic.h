@@ -107,7 +107,7 @@ int diagnose_injections(const Background &original,const std::array<double,2> &s
         std::vector<RtcEventRange> truth_mask{truth};
         for(auto i:indices)if(std::find(associated.begin(),associated.end(),i)==associated.end())truth_mask.push_back(rtc_event_assessment_detail::trial(axis,{run.first_native_row,run.past_last_native_row},spikes.candidates()[i]));
         truth_mask=rtc_event_assessment_detail::merge(std::move(truth_mask));
-        Node result;result["schema"]="rtc-jump-loss-diagnostic-v1";result["background_identity"]=original.identity;result["trial"]=trial.name;
+        Node result;result["schema"]="rtc-jump-loss-diagnostic-v2";result["transition_policy"]=std::string(RtcJumpTransitionPolicy::identity);result["background_identity"]=original.identity;result["trial"]=trial.name;
         result["jump_injected"]=trial.jump;result["pulse_injected"]=trial.pulse_cells>0;result["truth_cells"]=range_node(truth);
         const double tb=trial.ramp_cells?input.cells[center].begin_unix_sec:input.times[center];
         const double te=trial.ramp_cells?input.cells[truth.past_last-1].end_unix_sec:trial.pulse_cells?input.times[center+trial.pulse_cells]:tb;
@@ -207,6 +207,10 @@ int diagnose_injections(const Background &original,const std::array<double,2> &s
             auto original_mask=event.neighbor_exclusions;original_mask.push_back(event.trial_exclusion);original_mask=rtc_event_assessment_detail::merge(std::move(original_mask));
             group["original_exclusions"]=ranges_node(original_mask);group["inferred_reassessment_exclusions"]=ranges_node(current_mask);
             group["truth_exclusions"]=ranges_node(truth_mask);group["refit_requested"]=requested;
+            group["transition_neighbor_exclusions"]=ranges_node(neighbors);
+            RtcEventRange onset{seed.earlier_row,seed.later_row+1};
+            for(const auto &m:members)if(m.earlier_row<onset.past_last && m.later_row>=onset.first){onset.first=std::min(onset.first,m.earlier_row);onset.past_last=std::max(onset.past_last,m.later_row+1);}
+            group["transition_onset_edges"]=range_node(onset);group["transition_seed_edges"]=range_node({seed.earlier_row,seed.later_row+1});
             group["candidate_members"]=Node(YAML::NodeType::Sequence);for(const auto &m:members){Node z;z["coordinate"]=m.coordinate==NativeReadoutCoordinate::x?"x":"r";z["earlier"]=m.earlier_row;z["later"]=m.later_row;group["candidate_members"].push_back(z);}
             for(std::size_t c=0;c<2;++c){Node coord;coord["coordinate"]=c?"r":"x";coord["original"]=version_node(before[c],tolerance[c]);coord["current"]=version_node(current[c],tolerance[c]);coord["truth_fit"]=version_node(oracle[c],tolerance[c]);
                 for(const auto &[name,version]:std::array<std::pair<const char *,const DiagnosticVersion *>,3>{{{"original",&before[c]},{"current",&current[c]},{"truth_fit",&oracle[c]}}}) {

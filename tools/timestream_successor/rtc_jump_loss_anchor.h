@@ -1,9 +1,9 @@
 #pragma once
 // Test-only anchor adapters for a missed injected candidate. Numerical bodies
-// are copied from exact source aaa86ea1b006cb11aa740adce2429375b13e5026:
+// track their respective source-bound production functions:
 // timestream_rtc_jump_transition.h::measure and
 // timestream_rtc_event_assessment.h::recover. Only candidate lookup is replaced
-// by explicit test-supplied metadata. The diagnostic driver verifies equality
+// by explicit test-supplied metadata, including the onset-edge selection. The diagnostic driver verifies equality
 // against both production functions on every detected replay group/coordinate.
 // This header is private to the inert injection executable. It neither creates
 // RTC evidence nor changes the immutable producer candidates or original data.
@@ -32,12 +32,17 @@ inline RtcJumpTransition diagnostic_measure_at(const RtcSpikeEvidence &spikes,
         !std::isfinite(RtcJumpTransitionPolicy::residual_sigma * out.frozen_residual_scale)) {
         out.cause = RtcJumpTransitionCause::nonfinite; return out;
     }
-    auto first_edge = seed.earlier_row, last_edge = seed.later_row;
+    RtcEventRange onset{seed.earlier_row, seed.later_row + 1};
     for (const auto &candidate : members) {
-        first_edge = std::min(first_edge, candidate.earlier_row);
-        last_edge = std::max(last_edge, candidate.later_row);
+        if (candidate.earlier_row < onset.past_last && candidate.later_row >= onset.first) {
+            onset.first = std::min(onset.first, candidate.earlier_row);
+            onset.past_last = std::max(onset.past_last, candidate.later_row + 1);
+        }
     }
-    out.multiple_candidate_edges = last_edge != first_edge + 1;
+    const auto first_edge = onset.first, last_edge = onset.past_last - 1;
+    for (const auto &candidate : members)
+        out.multiple_candidate_edges |= candidate.earlier_row != seed.earlier_row ||
+            candidate.later_row != seed.later_row;
     const auto run_begin = axis.occurrence(run.first_native_row).integration_support.begin_unix_sec;
     const auto run_end = axis.occurrence(run.past_last_native_row - 1).integration_support.end_unix_sec;
     out.observation_truncated = (run_begin > low && run.first_native_row == axis.first_native_row()) ||

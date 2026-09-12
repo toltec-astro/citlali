@@ -1,5 +1,16 @@
 # Citlali Refactor Status
 
+## RTC onset-support trial in progress — 2026-09-12
+
+The owner approves testing the diagnosed onset-support recommendation from
+reviewed closure `019a0ee3fe710c1a62da3107286cf3c92794a5ca`. The same RTC
+module/worktree tests a seed-connected candidate-edge onset while retaining
+later edges as masked context. Runtime Learn alone changes its conditional
+transition evidence; existing Consider consumes it with unchanged one-pass
+reassessment. Fixed injection tests compare against preserved control evidence;
+no full-corpus rerun or Apply action is included. The existing RTC handoff and
+`/private/tmp/citlali-rtc-jump-onset-trial-2026-09-12/preflight.json` record scope.
+
 ## RTC jump-loss diagnosis completed locally — 2026-09-11
 
 The bounded diagnosis is committed at exact `8ef77477823a5393f9cc7860d8f963509aee0fc8`, tree
