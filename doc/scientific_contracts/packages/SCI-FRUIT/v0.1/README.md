@@ -2,6 +2,14 @@
 
 Status: generic SCI-FRUIT-NORMATIVE-CORE v0.1/r0.4 and ordinary-MAP scientific
 definition r0.4 remain accepted and frozen. The weighting exploration is closed.
+The owner has [specified five operational POINT uses](method_preparation/ordinary_map/method_definition/POINT_OPERATIONAL_USE_CASES_2026-09-12.md)
+and selected peak response as the primary before/after OOF gain measure.
+The next review is the [use-specific gate proposal](method_preparation/ordinary_map/method_definition/POINT_USE_CASE_GATE_DESIGN_R0.1.md):
+prioritize reliable pointing and relative peak gain, with honest startup,
+degradation and detector/condition information. Full-image accuracy would be
+required where the claimed use needs it; failed solves and false reassurance
+remain unacceptable. Gate applicability, new numerical targets and the bounded
+test set remain proposals. No new numerical experiment is authorized.
 The latest [matched central-domain starlet test](../../../../../validation/fruit_point_starlet_central_domain_2026-09-12/SCIENTIFIC_REPORT.md)
 **supports the edge/domain hypothesis**: the fixed central domain removes all
 observed null/background admissions. It does not accept the tested 60-arcsec
@@ -11,8 +19,9 @@ explicitly repaired for the comparison; 51 nonzero-MAD controls match the prior
 outputs bitwise. There were 174 estimator calls and zero new cleaning passes.
 Both RBF candidates, the independent Gaussian candidate and the original
 full-domain starlet candidate remain rejected. The positional-prior screen
-retains its prior limited result. A new bounded decision may separate central
-source evidence from model extent and address reconstruction fidelity/completion.
+retains its prior limited result. The use-specific review will inform whether
+a new bounded candidate should separate central source evidence from model
+extent and address reconstruction completion.
 Previous products are preserved. 129081 remains historically characterized and
 reserved for new feedback comparisons. Production adoption, qualification,
 Unity activity and independent-author dispatch remain unavailable.
@@ -46,6 +55,8 @@ no numerical method or new method-specific author dispatch.
 
 ## Locked Scientific Definition And Remaining Review
 
+- [Owner-established POINT operational uses and peak-response gain meaning](method_preparation/ordinary_map/method_definition/POINT_OPERATIONAL_USE_CASES_2026-09-12.md)
+- [Proposed use-specific gates and bounded future comparison](method_preparation/ordinary_map/method_definition/POINT_USE_CASE_GATE_DESIGN_R0.1.md)
 - [Completed central-domain test: edge hypothesis supported; 60-arcsec reconstruction candidate not accepted](../../../../../validation/fruit_point_starlet_central_domain_2026-09-12/SCIENTIFIC_REPORT.md)
 - [Completed preliminary starlet screen: reject this candidate; one brighter-coma bootstrap](../../../../../validation/fruit_point_starlet_preliminary_2026-09-11/SCIENTIFIC_REPORT.md)
 - [RBF admission and processed-template audit: causal interpretation corrected, rejection retained](../../../../../validation/fruit_point_rbf_admission_audit_2026-09-11/REPORT.md)

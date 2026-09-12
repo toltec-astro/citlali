@@ -1848,6 +1848,24 @@ production or qualification follows. The earlier full-domain rejection remains
 preserved; its broad return-to-contract recommendation is narrowed by this
 new spatial evidence.
 
+The owner's later [POINT operational account](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/POINT_OPERATIONAL_USE_CASES_2026-09-12.md)
+establishes five uses: startup flux/focus assessment, before/after OOF gain and
+recentering, routine pointing, degradation monitoring, and tune/condition health.
+The owner explicitly selects **peak response** as the primary same-source OOF
+gain measure; integrated brightness and shape remain diagnostics. The new
+[use-specific gate design](scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/POINT_USE_CASE_GATE_DESIGN_R0.1.md)
+proposes routine pointing and relative peak gain as the first improvement
+targets, with honest startup/degradation/health safeguards. It would make
+whole-image fidelity blocking only where needed for the claimed use, while
+retaining all residual, support, failure and cost evidence. A 5% peak-ratio
+error target, 10% degradation sensitivity probe and eight-state/two-realization
+test design are proposals, not adopted operational thresholds or execution
+permission. The accepted brief and all candidate dispositions remain unchanged;
+failed starlet solves do not become available. The next review concerns this
+prospective applicability change and one bounded successor protocol. No new
+numerical work, candidate selection, 129081 comparison or production change
+was performed or authorized by the notes.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
