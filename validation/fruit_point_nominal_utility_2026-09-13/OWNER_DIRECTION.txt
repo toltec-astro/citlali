@@ -1,0 +1,119 @@
+**I would change my recommendation: do not add a fine-scale constraint yet. The next step should be one bounded, end-to-end POINT comparison using the existing nominal-tolerance estimator—not another attempt to stabilize its reconstructed image.**
+
+Your concern is justified. My previous analysis moved too quickly from “the feedback differences affect PCA and morphology” to “we should constrain those differences.” That is not enough to establish that the proposed constraint would improve POINT. It could introduce another parameter, change peak recovery, and consume effort without addressing the operational problem.
+
+The question we still need to answer is:
+
+> **Does this feedback method give us more trustworthy POINT peak-response measurements, while preserving pointing performance, useful-result availability, and acceptable execution time?**
+
+The six one-step branches help justify asking that question directly. They do not answer it.
+
+## What I would revise in the interpretation
+
+### Changes inside the pipeline are not automatically measurement failures
+
+Taking the experimental numbers from the supplied Codex report, the nominal-versus-tight feedback comparison produced next-map centroid differences below **0.044″**, and eight of nine fitted peak-response differences below **0.5%**. Those are much more relevant to POINT than the much larger differences between individual feedback-image pixels.
+
+The changed PCA subspaces establish that the feedback perturbation affects the cleaning machinery. **They do not, by themselves, establish that the resulting pointing or peak measurement is worse.** Nor should maintaining a particular PCA subspace become an objective: your intended recurrence explicitly relearns it from the current sky-subtracted data on every iteration. 
+
+Likewise, off-source structure deserves attention when it biases the source fit, produces false source association, compromises uncertainty estimates, or destabilizes later iterations. But “the off-source maps differ” is not itself a POINT rejection criterion.
+
+Your existing directive makes the underlying distinction correctly: convergence, stability, and scientific correctness are separate claims, and the relevant astronomical quantities must drive the assessment. 
+
+### I overstated what we know about the numerical cause
+
+The results are **consistent with weakly constrained image degrees of freedom**, but they do not prove that the solution is nonunique. They also do not establish that every important difference is unsupported fine-scale structure. The reported differences occurred both near a boundary and within the source region.
+
+Consequently, “add a constraint on unsupported fine scales” is premature as a remedy. We have not yet demonstrated that those scales cause an unacceptable POINT result, or that suppressing them improves one.
+
+There is also a distinction between the experiment’s custom **relative projected-gradient criterion** and SciPy’s built-in stopping conditions. SciPy documents its `gtol` as an absolute projected-gradient threshold and separately reports unsuccessful termination at work limits. Neither numerical condition is a certificate of astronomical accuracy. We should preserve those distinctions without turning their reconciliation into the main scientific objective. 
+
+### Small nominal-versus-tight differences do not establish good recovery
+
+This is the important counterweight.
+
+Two reductions can agree closely and both give the wrong peak. The tighter solution was reportedly not consistently closer to injection truth. Therefore, we should neither treat it as the target nor conclude that the nominal solution is accurate because its next-map measurements resemble the tighter solution’s.
+
+**The decisive comparison is candidate versus known injected response and the matched reference—not nominal versus tight optimization.**
+
+That is also why another stopping-tolerance study would now have diminishing value. It would refine a secondary comparison while the primary scientific comparison remains incomplete.
+
+## Where I would draw the POINT boundary
+
+For this next experiment, I would use the following hierarchy.
+
+| Quantity or behavior | Role in the POINT decision |
+|---|---|
+| **Pointing offset** | Preserve accurate, usable offsets without pulling the source toward its commanded position. Retain the existing trial’s 1″ requirement and compare directly with the reference. |
+| **Peak response and response ratios** | The principal opportunity for improvement: recover imposed amplitude changes faithfully, preserve real degradation, and improve the errors or repeatability seen in the existing cases. Retain the applicable 5% trial requirements. |
+| **Availability and failure handling** | Count how often each method returns a usable pointing and a usable peak. Retain null safeguards and explicit support limitations; do not improve reported accuracy merely by withholding difficult measurements. |
+| **Elapsed time** | A primary operational outcome, not a secondary engineering note. Charge the candidate for the work required to deliver its usable result. |
+| **Feedback pixels, PCA-subspace differences, detailed morphology** | Supporting diagnostics. They become blocking issues when they cause failure of a required POINT output or prevent reliable completion—not simply because they differ. |
+
+The **1″ and 5% figures are the existing experimental budgets**, not newly asserted universal telescope requirements.
+
+There is one important qualification concerning shape. I would **not** declare all morphology irrelevant to POINT. Your POINT policy explicitly allows an observation to reveal defocus or beam distortion and forbids forcing the source to have its nominal in-focus shape. 
+
+The distinction is:
+
+> **POINT must not conceal a distorted beam. It need not solve the general problem of accurately reconstructing every detail of that beam before returning a useful pointing measurement.**
+
+Accordingly, the reported **+13.7% and −8.0% width changes** should remain a warning and a reason not to claim qualified width or focus measurements in that case. They should not automatically invalidate an otherwise usable centroid. They matter to peak-response use when they undermine that measurement’s interpretation or usability.
+
+The repaired evaluator’s separate judgments are therefore worth keeping. And the one withheld peak must remain in the availability accounting; its exclusion is not evidence that the underlying issue is harmless.
+
+For OOF, morphology is much closer to the scientific target. Your OOF directive explicitly anticipates distributed, distorted, faint structure without a required bright core or narrow morphology family. That warrants a different assessment, but it does not make a particular smoothing constraint automatically appropriate there either. 
+
+## Our next best step
+
+### 1. Freeze a POINT-specific experimental decision—not another estimator revision
+
+I would retain the current feedback objective, source domain, coefficient selection, background treatment, normalization, and numerical path. Use the **already tested nominal stopping rule**, with the existing work cap and explicit finite-value and constraint checks.
+
+No new regularization, scale cutoff, spatial taper, optimizer family, or tolerance sweep.
+
+This needs one clear distinction in the experiment record:
+
+> The previous tighter-solution qualification remains failed. This new experiment evaluates a fixed, bounded approximate estimator for POINT utility; it does not claim that the estimator has passed the earlier image-stability requirement.
+
+That is a change in the question being tested, not a retrospective conversion of failure into success.
+
+The earlier **0.5% and 0.1″ numerical allocations** were useful conservative diagnostic targets. I would not continue treating agreement with a tighter reconstructed image as a prerequisite for discovering whether the complete procedure meets its POINT goals. But neither would I silently give numerical error the entire operational budget: the end-to-end truth tests must assess the combined error of the actual method we propose to use.
+
+### 2. Complete the operational comparison that the stopping issue prevented
+
+Run the existing nominal candidate against the matched reference on the **already established POINT operational test set**. Reuse valid matching control products where possible; rerun controls where input matching or credible timing requires it.
+
+This should be a genuine FRUIT trajectory test. Every iteration must return to the immutable input, subtract the current feedback, relearn PTC, reconstruct the total map, and infer the replacement feedback. The six one-step branches did not exercise repeated feedback re-inference, so they cannot establish the behavior of that complete loop. Those recurrence requirements are already explicit; no architectural change is needed.  
+
+The emphasis should be on the existing compact, displaced-source, amplitude-change, and degradation cases, together with null/background cases and the discovery observation. Keep the existing boundary and gross-distortion challenges visible, but do not expand them into an OOF reconstruction campaign.
+
+For each array, the comparison should answer:
+
+- **Does peak-response fidelity improve?** Assess the known imposed changes and retained truth definitions, not whether the candidate produces a larger peak.
+- **Are pointing and usable-result yield preserved?** Apply the repaired, data-only evaluator to both methods; injection truth scores accuracy but does not decide usability.
+- **Does the complete procedure finish at worthwhile cost?** Retain the existing pass limits and terminal-selection rules; do not select a favorable iteration after inspecting truth.
+
+Record the existing morphology and feedback diagnostics, but do not launch separate investigations into them during this run. The established POINT measurement should remain a common downstream evaluation without forcing its Gaussian form onto the feedback model. 
+
+### 3. Make the outcome consequential
+
+The candidate needs to demonstrate a useful advantage—not merely survive a revised evaluator.
+
+The previous operational trial reported **43.5 seconds for the candidate versus 8.1 seconds for the matched reference**. That is roughly a fivefold cost increase. Those timings do not establish the cost of the proposed nominal-stop trajectory, but they make runtime a central part of the decision. Your earlier experiment directive already requires charging inference and admission work to the candidate and explicitly reporting a scientifically interesting method that misses the POINT runtime requirement. 
+
+My proposed disposition would be:
+
+**Advance the candidate** only when it demonstrates a meaningful POINT benefit—especially in peak-response recovery or useful-result availability—while preserving pointing and meeting the operational cost requirements.
+
+**Park it for POINT** when it mainly produces different or richer images, offers no meaningful improvement in the required measurements, or remains too expensive. Preserve the evidence for OOF work, without claiming that it is already suitable for OOF.
+
+A failure should not automatically trigger another smoothing parameter or numerical repair. A further modification would need a specific, demonstrated POINT failure and a credible reason that the modification addresses it. That follows your existing requirement that a more elaborate method earn its place through an advantage over the simpler baseline. 
+
+## Bottom line
+
+**We have enough evidence to stop making feedback-image stability the next obstacle. We do not yet have enough evidence to accept the candidate for POINT.**
+
+I would now spend the next bounded experiment on the missing scientific comparison: **does the current approximate starlet feedback improve peak-response measurements, preserve pointing and honest failure handling, and deliver the result quickly enough?**
+
+That keeps the effort aimed at a genuinely better-than-reference POINT method, rather than either protecting the reference indefinitely or turning POINT development into an OOF-quality image-reconstruction project.

@@ -1971,6 +1971,20 @@ peak RSS. All 864 learned covariance/eigen identities, 432 subspace comparisons,
 product/preservation checks and focused tests pass. No full-trajectory stability,
 scientific advantage, policy or production readiness is established.
 
+On 2026-09-13 the owner superseded the fine-scale-constraint recommendation
+and authorized one [fixed nominal-estimator POINT utility comparison](../validation/fruit_point_nominal_utility_2026-09-13/PROTOCOL.md).
+The earlier image-stability qualification remains failed. This new question
+keeps the tested nominal 1e-4 stopping path, objective, domain and work caps,
+and compares complete replacement-feedback trajectories against matched P on
+the existing 17 cases. Both arms are rerun for credible timing: at most 238
+cleaning calls, seven passes, rank 5, four threads, unchanged resource ceilings.
+The repaired data-only evaluator separates pointing, peak availability and
+shape/support warnings. Required 1-arcsec/5%-ratio results, honest yield, null
+safeguards and <=2x matched wall cost govern advance versus park for POINT;
+standalone image/subspace/leakage differences are supporting diagnostics.
+No fine-scale constraint, tighter solve, sweep, automatic revision, 129081,
+Unity, OOF campaign or production change is authorized by this experiment.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
