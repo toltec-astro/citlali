@@ -67,6 +67,10 @@ class IntervalTests(unittest.TestCase):
         r = burden.qualify([(0, 40), (60, 100)], [], [], 50)
         self.assertEqual(r["all_us"], 0)
 
+    def test_extra_guard_does_not_import_events_from_another_acquisition_run(self):
+        result = burden.qualify([(100, 200)], [(80, 90)], [], 0, 50)
+        self.assertEqual(result["all_us"], 100)
+
     def test_concurrency_respects_physical_time_and_pair_unions(self):
         a = [(10, 30), (20, 40)]
         b = [(20, 50)]
@@ -83,6 +87,13 @@ class IntervalTests(unittest.TestCase):
 
 
 class EvidenceTests(unittest.TestCase):
+    def test_group_refinement_limit_survives_available_coordinate_footprints(self):
+        coordinates = [dict(coordinate="x", state="finite_recovery_supported", unresolved=False),
+                       dict(coordinate="r", state="no_resolved_excursion", unresolved=False)]
+        self.assertEqual(burden.unresolved_group_causes(dict(refinement_limited=True), coordinates),
+                         ["producer_refinement_limited"])
+        self.assertEqual(burden.unresolved_group_causes(dict(refinement_limited=False), coordinates), [])
+
     def evidence(self):
         original = dict(seeded=True, available=True, recovery_cause=3,
                         affected=[0, 4], with_offset=dict(offset=7.))

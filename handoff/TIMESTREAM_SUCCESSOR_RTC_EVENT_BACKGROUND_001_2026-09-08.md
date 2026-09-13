@@ -2224,3 +2224,25 @@ is authorized. Owner performs all GitHub pushes. Completion records exact
 source and evidence plus the three independent review dispositions; canonical
 admission would separately require fresh moving-base and exact integration-SHA
 review. The same original evidence remains immutable.
+
+
+Census review reassessment: exact preliminary source
+`b4872da9d75a1cbc429a0b65bf91f8599aa87135` passed 19 analytical tests and
+completed the 143-file census twice. Its 152 deterministic artifacts matched
+byte-for-byte. Independent review found two original producer groups with
+`refinement_limited=true` that were absent from group-level unresolved counts
+because their coordinate recovery bounds were available. Repair preserves the
+producer refinement-limit cause and unions it with coordinate-level unresolved
+states; it keeps the measured support and all scientific decisions unchanged.
+Unresolved group count changes 75,743 to 75,745; both detector streams already
+had unresolved evidence, so stream/exposure totals do not change. A regression
+fixture covers this distinction. The new persisted reporting field is scoped
+to this inert census and introduces no runtime schema or authority.
+
+The same bounded reporting completion adds coordinate-local amplitude and
+transition-duration distribution summaries/figure plus concentration and
+verified program coverage summaries. Reassessed recoveries without exported
+new support remain explicitly unavailable (703 coordinate records in the
+preliminary corpus); no extra solver or event-analysis pass is needed to
+report the limit. The final source must receive a new full-corpus accounting
+run and independent exact-SHA review. Original source/evidence remains sealed.

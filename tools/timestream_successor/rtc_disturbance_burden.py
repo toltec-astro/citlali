@@ -14,6 +14,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 import gzip
 import hashlib
+import importlib.metadata
 import io
 import json
 import math
@@ -315,6 +316,14 @@ def coordinate_evidence(event, initial, audit, check, coordinate, axis):
     return result
 
 
+def unresolved_group_causes(event, coordinates):
+    causes = [value["coordinate"] + ":" + value["state"]
+              for value in coordinates if value["unresolved"]]
+    if event["refinement_limited"]:
+        causes.append("producer_refinement_limited")
+    return causes
+
+
 def verify_validity(folder, detectors, axis):
     """Prove all initial samples valid, or stop instead of filling missing masks.
 
@@ -482,7 +491,9 @@ def process_network(entry, inventory, root, output, event_stream, detector_strea
             count["transition_groups"] += 1
             count["transition_groups_" + "".join(found)] += 1
         count["finite_recovery_groups"] += bool(finite)
-        count["unresolved_groups"] += bool(unresolved)
+        group_causes = unresolved_group_causes(event, coordinates)
+        count["unresolved_groups"] += bool(group_causes)
+        count["producer_refinement_limited_groups"] += event["refinement_limited"]
         count["partner_unresolved_with_transition"] += bool(found and unresolved)
         count["no_resolved_excursion_groups"] += all(c["state"] == "no_resolved_excursion" for c in coordinates)
         emit(event_stream, dict(observation=obs, network=network, detector=detector,
@@ -490,6 +501,8 @@ def process_network(entry, inventory, root, output, event_stream, detector_strea
                                 physical_event_identity="unresolved", coordinates=coordinates,
                                 candidate_edge_us_by_coordinate=[union(x) for x in candidate_by_coordinate],
                                 fitting_guard_us=guards, original_review_disposition=event["review_disposition"],
+                                producer_refinement_limited=event["refinement_limited"],
+                                unresolved_group_causes=group_causes,
                                 source_protection="unavailable", spectral_context="unavailable",
                                 hard_event_accepted=False, apply_authorized=False))
         event_count += 1
@@ -538,7 +551,8 @@ def process_network(entry, inventory, root, output, event_stream, detector_strea
             totals[category + "_streams"] += count[key] > 0
         for key in ("finite_recovery_coordinates", "finite_recovery_groups", "unresolved_coordinates",
                     "unresolved_groups", "partner_unresolved_with_transition", "extent_unavailable_after_refit",
-                    "transition_groups_x", "transition_groups_r", "transition_groups_xr"):
+                    "transition_groups_x", "transition_groups_r", "transition_groups_xr",
+                    "producer_refinement_limited_groups"):
             totals[key] += count[key]
         totals["no_candidate_eligible_streams"] += bool(eligible_us) and not count["candidate_edges"]
         for kind in ("direct", "transition", "finite_recovery", "candidate_inclusive"):
@@ -640,6 +654,7 @@ def summarize(networks, deferred, inventory_count):
                     "Coordinate measurements and original candidate groups are not physical-event identities.",
                     "Direct support combines final retained transition bounds with available unreassessed finite recoveries.",
                     "Reassessed recovery extent is unavailable in the saved export; earlier fits are not substituted.",
+                    "Original group refinement-limit causes remain unresolved even when coordinate recovery support is available.",
                     "Unresolved-stream exposure is a population denominator, not the duration of unknown disturbances.",
                     "Candidate-inclusive support adds recorded candidate edge cells, not invented event extents.",
                     "Candidate-inclusive and measurement-supported cases are not bounds on true prevalence.",
@@ -652,7 +667,46 @@ def summarize(networks, deferred, inventory_count):
                     "Full-detector/full-existing-PCA-scan level-0 policy is preserved; this census selects no Apply treatment."])
 
 
-def make_plots(output, summary):
+def distribution_summaries(output):
+    """Descriptive distributions preserve coordinate and empirical-scale meaning."""
+    values = {c: defaultdict(list) for c in "xr"}
+    missing = Counter()
+    for row in records(output / "evidence-intervals.jsonl.gz"):
+        for value in row["coordinates"]:
+            if value["state"] != "transition_supported":
+                continue
+            c = value["coordinate"]
+            values[c]["transition_duration_seconds"].append(measure(value["transition_us"]) / US)
+            values[c]["offset_dimensionless"].append(value["offset"])
+            sigma = value["sigma_delta"]
+            if sigma is None:
+                missing[c] += 1
+            else:
+                require(math.isfinite(sigma) and sigma > 0, "invalid empirical scale")
+                values[c]["absolute_offset_over_sigma_delta"].append(abs(value["offset"]) / sigma)
+    result = {}
+    for coordinate, fields in values.items():
+        result[coordinate] = {key: dict(count=len(v),
+            quantiles={str(p): float(np.percentile(v, p)) for p in (0, 25, 50, 75, 90, 95, 99, 100)})
+            for key, v in fields.items() if v}
+        result[coordinate]["sigma_delta_unavailable_count"] = missing[coordinate]
+    concentration_values = defaultdict(list)
+    for row in records(output / "detector-accounting.jsonl.gz"):
+        if row["durations_us"]["eligible_us"]:
+            for key in ("direct", "transition", "candidate_inclusive"):
+                concentration_values[key].append(row["durations_us"][key + "_us"])
+    concentration = {}
+    for key, data in concentration_values.items():
+        ordered = sorted(data, reverse=True)
+        total = sum(ordered)
+        concentration[key] = {f"top_{p}_percent_streams_share":
+            sum(ordered[:math.ceil(len(ordered) * p / 100)]) / total if total else None
+            for p in (1, 5, 10)}
+    return dict(coordinate_measurements=result, concentration=concentration,
+                claim="conditional coordinate measurements, not unique physical events; sigma_delta is not fitted-offset uncertainty"), values
+
+
+def make_plots(output, summary, measurements):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -705,6 +759,20 @@ def make_plots(output, summary):
     ax.legend(frameon=False, fontsize=9)
     fig.savefig(figures / "native-sensitivity.png"); plt.close(fig)
 
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4.5), layout="constrained")
+    for ax, key, label in zip(axes,
+            ("transition_duration_seconds", "absolute_offset_over_sigma_delta"),
+            ("Transition duration (s)", "Absolute offset / empirical difference scale")):
+        for coordinate in "xr":
+            ordered = np.sort(measurements[coordinate][key])
+            if len(ordered):
+                ax.plot(ordered, np.arange(1, len(ordered) + 1) / len(ordered) * 100,
+                        label=f"{coordinate}: {len(ordered):,} measurements")
+        ax.set(xscale="log", xlabel=label, ylabel="Cumulative share (%)", ylim=(0, 101))
+        ax.legend(frameon=False, fontsize=9)
+    fig.suptitle("Retained coordinate measurements — conditional evidence\nEmpirical difference scale is not fitted-offset uncertainty", fontsize=12)
+    fig.savefig(figures / "measurement-distributions.png"); plt.close(fig)
+
 
 def write_report(output, summary, networks, elapsed):
     t, f = summary["totals"], summary["fractions"]
@@ -729,7 +797,7 @@ def write_report(output, summary, networks, elapsed):
               f"Direct/noise-screen overlap is {t['noise_direct_overlap_us'] / US:,.3f} detector-seconds.", "",
               "| Evidence incidence | Eligible detector streams | Share of eligible streams |", "|---|---:|---:|"]
     for label, key in (("Any candidate", "candidate_streams"), ("Retained transition measurement", "transition_streams"),
-                       ("Bounded finite recovery", "finite_recovery_streams"), ("Unresolved coordinate evidence", "unresolved_streams"),
+                       ("Bounded finite recovery", "finite_recovery_streams"), ("Unresolved group or coordinate evidence", "unresolved_streams"),
                        ("No detected candidate", "no_candidate_eligible_streams")):
         lines.append(f"| {label} | {t[key]:,} | {100 * t[key] / t['eligible_detector_streams']:.3f}% |")
     lines += ["", f"Final measurements reconcile to **{t['retained_coordinates']:,} coordinates in "
@@ -739,6 +807,30 @@ def write_report(output, summary, networks, elapsed):
               "This is the exposure of that population, not the unknown disturbance duration. "
               f"{t['extent_unavailable_after_refit']:,} coordinate records report a reassessed recovery without its new extent; "
               "these remain unavailable rather than borrowing earlier bounds.", "",
+              "## Measured distributions and corpus coverage", "",
+              f"The top 5% of eligible detector streams, ranked by direct support, contain "
+              f"{100 * summary['distributions']['concentration']['direct']['top_5_percent_streams_share']:.2f}% "
+              "of that support. Ranking is descriptive; it creates no new detector flag.", "",
+              "| Coordinate | Retained measurements | Median transition duration (ms) | 95th percentile duration (ms) | Median signed offset (raw dimensionless) |",
+              "|---|---:|---:|---:|---:|"]
+    for c in "xr":
+        values = summary["distributions"]["coordinate_measurements"][c]
+        duration = values["transition_duration_seconds"]
+        lines.append(f"| {c} | {duration['count']:,} | {1000 * duration['quantiles']['50']:.3f} | "
+                     f"{1000 * duration['quantiles']['95']:.3f} | {values['offset_dimensionless']['quantiles']['50']:.6g} |")
+    lines += ["", "Full signed-offset, duration, and absolute-offset/empirical-scale quantiles are in `summary.json`. "
+              "x and r retain separate coordinate meanings; these are distributions of measurements, not event populations.", "",
+              "| Verified producer goal / program | Observations | Network files | Eligible detector-hours | Direct support / eligible exposure |",
+              "|---|---:|---:|---:|---:|"]
+    for program, row in summary["partitions"]["program"].items():
+        observations = {n["observation"] for n in networks if
+            n["program_metadata"].get("goal", "unavailable") + " / " +
+            n["program_metadata"].get("program", "unavailable") == program}
+        lines.append(f"| {program} | {len(observations)} | {row['network_files']} | {row['eligible_us'] / US / 3600:,.3f} | "
+                     f"{100 * row['direct_us'] / row['eligible_us']:.5f}% |")
+    lines += ["", "These program-specific percentages have different denominators and are not averaged. "
+              "Absent or conflicting producer headers remain unavailable. "
+              "This selection does not establish coverage of other programs or observing conditions.", "",
               "## What the hypothetical accounting does and does not establish", "",
               "The direct-support row is an incomplete exclusion benchmark. The native sensitivity grid varies only "
               "minimum remaining duration (1/5/10 s) and extra transition guards (0/50/100 ms per side). "
@@ -753,8 +845,10 @@ def write_report(output, summary, networks, elapsed):
               "The next prerequisite for that comparison is the exact native-cell/PCA-scan association. "
               "Source safety and scientific adequacy remain prerequisites for selecting any treatment.", "",
               "## Concentration, fragmentation and sensitivity", "",
-              "![Concentration](figures/concentration.png)", "", "![Native interval durations](figures/interval-durations.png)", "",
-              "![Native duration sensitivity](figures/native-sensitivity.png)", "",
+              f"![Concentration]({output / 'figures/concentration.png'})", "",
+              f"![Native interval durations]({output / 'figures/interval-durations.png'})", "",
+              f"![Native duration sensitivity]({output / 'figures/native-sensitivity.png'})", "",
+              f"![Measurement distributions]({output / 'figures/measurement-distributions.png'})", "",
               "## Evidence and reproducibility", "",
               "`summary.json` contains exact integer totals, per-observation/network/array/program partitions, rates, "
               "scenario assumptions and unavailable states. `detector-accounting.jsonl.gz` preserves identities and "
@@ -821,6 +915,7 @@ def main():
                        tool_sha256=digest(__file__), evidence=str(root),
                        command=sys.argv, python=sys.version, interpreter=sys.executable,
                        platform=platform.platform(), numpy=np.__version__,
+                       library_versions={k: importlib.metadata.version(k) for k in ("numpy", "netCDF4", "matplotlib")},
                        timing_unit="integer microseconds relative to first native center",
                        minimum_duration_seconds=MINIMUM_SECONDS, extra_transition_guard_ms=EXTRA_GUARD_MS,
                        scan_association="unavailable; not inferred", runtime_apply=False)
@@ -836,10 +931,14 @@ def main():
                 if (index + 1) % 11 == 0:
                     print(f"Accounted {index + 1}/143 files; {sum(n['totals']['retained_coordinates'] for n in networks)} retained coordinates", flush=True)
         summary = summarize(networks, deferred, len(inventory))
+        distributions, measurements = distribution_summaries(output)
+        require(sum(len(measurements[c]["transition_duration_seconds"]) for c in "xr") ==
+                summary["totals"]["retained_coordinates"], "distribution population mismatch")
+        summary["distributions"] = distributions
         write_json(output / "networks.json", networks)
         write_json(output / "summary.json", summary)
         analysis_seconds = time.monotonic() - started - seal_seconds
-        make_plots(output, summary)
+        make_plots(output, summary, measurements)
         write_report(output, summary, networks, time.monotonic() - started)
         require(git("rev-parse", "HEAD") == candidate and not git("status", "--porcelain"), "source changed during census")
         write_json(output / "timing.json", dict(wall_seconds=time.monotonic() - started,
