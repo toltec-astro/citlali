@@ -193,6 +193,18 @@ public:
                 rtc_event_assessment_detail::contains(target->contaminated, row))
                 return fail(RtcDonorFillCause::boundary_unavailable);
         }
+        // Reconstruct the actually used x fit population from its original
+        // support/masks. Later treatment facts can make an old numerical fit
+        // unusable; its previous success cannot erase newly known contamination.
+        for (const auto &side : e.background[0].support) {
+            for (auto row = side.first_used; row <= side.last_used; ++row) {
+                if (!net.state(NativeReadoutCoordinate::x, row, e.detector).valid() ||
+                    rtc_event_assessment_detail::contains(e.neighbor_exclusions, row)) continue;
+                if (rtc_event_assessment_detail::contains(target->contaminated, row) ||
+                    out->exclusions_->excludes(e.network, row, e.detector))
+                    return fail(RtcDonorFillCause::background_unavailable);
+            }
+        }
         out->begin_ = rtc_event_assessment_detail::time(axis, out->support_.first);
         out->end_ = rtc_event_assessment_detail::time(axis, out->support_.past_last - 1);
         if (!std::isfinite(out->end_ - out->begin_) || out->end_ <= out->begin_)

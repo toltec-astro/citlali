@@ -211,6 +211,20 @@ TEST(rtc_donor_fill, background_is_not_reused_for_support_it_was_fitted_through)
     EXPECT_EQ(t.plan(t.records(), {400, 800})->cause(), RtcDonorFillCause::background_unavailable);
 }
 
+TEST(rtc_donor_fill, newly_known_contamination_of_a_used_fit_sample_invalidates_background_reuse) {
+    Input in; in.spike(); Trial t(in);
+    const auto &e = t.assessment->events()[t.selection().event];
+    for (const auto &side : e.background[0].support) {
+        auto r = t.records(); r[0].contaminated = {{side.first_used, side.first_used + 1}};
+        auto out = t.apply(t.plan(r)); EXPECT_EQ(out->cause(), RtcDonorFillCause::background_unavailable);
+        EXPECT_FALSE(out->value_for_conditioning(NativeReadoutCoordinate::x, 0, 600, 0));
+        EXPECT_TRUE(out->requires_map_exclusion(0, 600, 0));
+    }
+    auto r = t.records(); r[0].contaminated = {{600, 601}};
+    // The selected spike was masked out of this fit originally.
+    EXPECT_TRUE(t.apply(t.plan(r))->filled());
+}
+
 TEST(rtc_donor_fill, explicit_selection_is_required_and_protected_targets_are_not_admitted) {
     Input in; in.spike(); Trial t(in); auto s = t.selection(); s.state = RtcDonorSelectionState::unavailable;
     EXPECT_THROW(RtcDonorFillPlan::consider(s, t.facts(t.records()), t.exclusions, t.val, 18), std::invalid_argument);

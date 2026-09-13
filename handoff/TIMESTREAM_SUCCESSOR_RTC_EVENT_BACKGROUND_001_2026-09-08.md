@@ -3136,3 +3136,20 @@ claim. No map, PTC, CAL, AST, D2/VAL change, native PSD, notch, lowpass,
 downsampling, generic framework, route/default activation or cleanup. Reassess
 scope/ownership, unresolved policy, unexpected numeric behavior or changed
 authority before proceeding. Pushes remain owner-only.
+
+### Independent-review reassessment of background reuse
+
+The initial candidate `36a9c76b947a467fc9fe471e50f191239acb5530` passed 21
+focused tests. Independent source review found that caller-supplied target
+contamination in an actually used background flank did not invalidate the reused
+fit. The reviewer independently reproduced `ready`/`filled` after marking the
+first pre-fit row contaminated. This is a bounded scientific/behavioral repair,
+not permission to change the learner or fill policy. Consider now reconstructs
+the original used x fit population from side supports, original state and neighbor
+exclusions and refuses reuse when new contamination or prior exclusions intersect
+it. Regression covers both flanks and a masked-out target spike. The original
+candidate/failure remain preserved; final gates and independent review must bind
+the repaired source SHA. Other initial failures were test setup only: one build
+started before configure completed, and one invalid-donor fixture declared a
+finite payload nonfinite. Both are retained; the latter now supplies an actual
+nonfinite value with matching producer state.
