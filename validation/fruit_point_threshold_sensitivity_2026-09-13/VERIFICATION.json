@@ -1,0 +1,22 @@
+{
+  "source_fit_records": 84,
+  "source_ratios": 192,
+  "source_measurements": 42,
+  "output_error_records": 456,
+  "original_source_records_retained": true,
+  "ratio_identities_verified": 192,
+  "raw_primary_absolute_identities_verified": 192,
+  "summary_groups": 224,
+  "threshold_monotonicity_verified": true,
+  "source_input_hashes_unchanged": true,
+  "protected_archive_statuses_unchanged": true,
+  "archive_contents_read": false,
+  "map_reads": 0,
+  "PTC_calls": 0,
+  "feedback_fits": 0,
+  "source_fits": 0,
+  "optimization_calls": 0,
+  "new_observations": 0,
+  "registered_threshold_changes": 0,
+  "cutoff_selected": false
+}

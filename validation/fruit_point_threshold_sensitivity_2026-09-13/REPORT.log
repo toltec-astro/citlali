@@ -1,0 +1,704 @@
+[
+  {
+    "population": "H_D",
+    "radius": 60,
+    "readout": "repaired",
+    "arm": "P",
+    "quantity": "absolute_peak",
+    "array": "all",
+    "required": 12,
+    "numeric_available": 12,
+    "usable_available": 7,
+    "numerical_complete": 12,
+    "numerical_incomplete": 0,
+    "thresholds": [
+      {
+        "percent": 5.0,
+        "raw": 6,
+        "usable": 3
+      },
+      {
+        "percent": 7.5,
+        "raw": 9,
+        "usable": 6
+      },
+      {
+        "percent": 10.0,
+        "raw": 10,
+        "usable": 6
+      },
+      {
+        "percent": 15.0,
+        "raw": 11,
+        "usable": 7
+      }
+    ],
+    "median_signed_pct": 1.8234420667439633,
+    "median_absolute_pct": 4.897507998739769,
+    "worst": {
+      "id": "D_20260912_P_a2000_60_repaired",
+      "array": "a2000",
+      "case": "D_20260912",
+      "signed_error_pct": -15.529268695784616
+    },
+    "sorted_magnitudes": [
+      {
+        "id": "D_20260912_P_a1400_60_repaired",
+        "array": "a1400",
+        "case": "D_20260912",
+        "magnitude_pct": 0.0023289457705577554,
+        "signed_error_pct": -0.0023289457705577554,
+        "usable_at_60": false,
+        "numerically_complete": true
+      },
+      {
+        "id": "H_20260912_P_a1400_60_repaired",
+        "array": "a1400",
+        "case": "H_20260912",
+        "magnitude_pct": 1.5599503807859572,
+        "signed_error_pct": 1.5599503807859572,
+        "usable_at_60": false,
+        "numerically_complete": true
+      },
+      {
+        "id": "H_20260911_P_a2000_60_repaired",
+        "array": "a2000",
+        "case": "H_20260911",
+        "magnitude_pct": 1.8601772182240128,
+        "signed_error_pct": -1.8601772182240128,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "D_20260911_P_a1400_60_repaired",
+        "array": "a1400",
+        "case": "D_20260911",
+        "magnitude_pct": 2.0869337527019693,
+        "signed_error_pct": 2.0869337527019693,
+        "usable_at_60": false,
+        "numerically_complete": true
+      },
+      {
+        "id": "H_20260912_P_a1100_60_repaired",
+        "array": "a1100",
+        "case": "H_20260912",
+        "magnitude_pct": 4.4702672022538525,
+        "signed_error_pct": 4.4702672022538525,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "D_20260912_P_a1100_60_repaired",
+        "array": "a1100",
+        "case": "D_20260912",
+        "magnitude_pct": 4.647664398790741,
+        "signed_error_pct": 4.647664398790741,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "D_20260911_P_a2000_60_repaired",
+        "array": "a2000",
+        "case": "D_20260911",
+        "magnitude_pct": 5.1473515986887985,
+        "signed_error_pct": -5.1473515986887985,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "H_20260911_P_a1100_60_repaired",
+        "array": "a1100",
+        "case": "H_20260911",
+        "magnitude_pct": 6.912712015254052,
+        "signed_error_pct": 6.912712015254052,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "D_20260911_P_a1100_60_repaired",
+        "array": "a1100",
+        "case": "D_20260911",
+        "magnitude_pct": 7.050432803475859,
+        "signed_error_pct": 7.050432803475859,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "H_20260911_P_a1400_60_repaired",
+        "array": "a1400",
+        "case": "H_20260911",
+        "magnitude_pct": 8.17234052443725,
+        "signed_error_pct": 8.17234052443725,
+        "usable_at_60": false,
+        "numerically_complete": true
+      },
+      {
+        "id": "H_20260912_P_a2000_60_repaired",
+        "array": "a2000",
+        "case": "H_20260912",
+        "magnitude_pct": 13.30804162663739,
+        "signed_error_pct": -13.30804162663739,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "D_20260912_P_a2000_60_repaired",
+        "array": "a2000",
+        "case": "D_20260912",
+        "magnitude_pct": 15.529268695784616,
+        "signed_error_pct": -15.529268695784616,
+        "usable_at_60": false,
+        "numerically_complete": true
+      }
+    ]
+  },
+  {
+    "population": "H_D",
+    "radius": 60,
+    "readout": "repaired",
+    "arm": "P",
+    "quantity": "matched_ratio",
+    "array": "all",
+    "required": 6,
+    "numeric_available": 6,
+    "usable_available": 3,
+    "numerical_complete": 6,
+    "numerical_incomplete": 0,
+    "thresholds": [
+      {
+        "percent": 5.0,
+        "raw": 5,
+        "usable": 3
+      },
+      {
+        "percent": 7.5,
+        "raw": 6,
+        "usable": 3
+      },
+      {
+        "percent": 10.0,
+        "raw": 6,
+        "usable": 3
+      },
+      {
+        "percent": 15.0,
+        "raw": 6,
+        "usable": 3
+      }
+    ],
+    "median_signed_pct": 2.095948810741055,
+    "median_absolute_pct": 2.095948810741055,
+    "worst": {
+      "id": "P_a1400_60_H20260911_D20260911_repaired",
+      "array": "a1400",
+      "case": "H20260911/D20260911",
+      "signed_error_pct": 5.961004555663019
+    },
+    "sorted_magnitudes": [
+      {
+        "id": "P_a1100_60_H20260911_D20260911_repaired",
+        "array": "a1100",
+        "case": "H20260911/D20260911",
+        "magnitude_pct": 0.12865037965297255,
+        "signed_error_pct": -0.12865037965297255,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "P_a1100_60_H20260912_D20260912_repaired",
+        "array": "a1100",
+        "case": "H20260912/D20260912",
+        "magnitude_pct": 0.16951854353945972,
+        "signed_error_pct": -0.16951854353945972,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "P_a1400_60_H20260912_D20260912_repaired",
+        "array": "a1400",
+        "case": "H20260912/D20260912",
+        "magnitude_pct": 1.562315712042217,
+        "signed_error_pct": 1.562315712042217,
+        "usable_at_60": false,
+        "numerically_complete": true
+      },
+      {
+        "id": "P_a2000_60_H20260912_D20260912_repaired",
+        "array": "a2000",
+        "case": "H20260912/D20260912",
+        "magnitude_pct": 2.629581909439893,
+        "signed_error_pct": 2.629581909439893,
+        "usable_at_60": false,
+        "numerically_complete": true
+      },
+      {
+        "id": "P_a2000_60_H20260911_D20260911_repaired",
+        "array": "a2000",
+        "case": "H20260911/D20260911",
+        "magnitude_pct": 3.465558880925612,
+        "signed_error_pct": 3.465558880925612,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "P_a1400_60_H20260911_D20260911_repaired",
+        "array": "a1400",
+        "case": "H20260911/D20260911",
+        "magnitude_pct": 5.961004555663019,
+        "signed_error_pct": 5.961004555663019,
+        "usable_at_60": false,
+        "numerically_complete": true
+      }
+    ]
+  },
+  {
+    "population": "H_D",
+    "radius": 60,
+    "readout": "repaired",
+    "arm": "P",
+    "quantity": "crossed_ratio",
+    "array": "all",
+    "required": 6,
+    "numeric_available": 6,
+    "usable_available": 3,
+    "numerical_complete": 6,
+    "numerical_incomplete": 0,
+    "thresholds": [
+      {
+        "percent": 5.0,
+        "raw": 3,
+        "usable": 2
+      },
+      {
+        "percent": 7.5,
+        "raw": 3,
+        "usable": 2
+      },
+      {
+        "percent": 10.0,
+        "raw": 5,
+        "usable": 3
+      },
+      {
+        "percent": 15.0,
+        "raw": 5,
+        "usable": 3
+      }
+    ],
+    "median_signed_pct": 0.8241203931660723,
+    "median_absolute_pct": 5.292546776233026,
+    "worst": {
+      "id": "P_a2000_60_H20260911_D20260912_repaired",
+      "array": "a2000",
+      "case": "H20260911/D20260912",
+      "signed_error_pct": 16.182044675725994
+    },
+    "sorted_magnitudes": [
+      {
+        "id": "P_a1400_60_H20260912_D20260911_repaired",
+        "array": "a1400",
+        "case": "H20260912/D20260911",
+        "magnitude_pct": 0.5162104027853331,
+        "signed_error_pct": -0.5162104027853331,
+        "usable_at_60": false,
+        "numerically_complete": true
+      },
+      {
+        "id": "P_a1100_60_H20260911_D20260912_repaired",
+        "array": "a1100",
+        "case": "H20260911/D20260912",
+        "magnitude_pct": 2.164451189117478,
+        "signed_error_pct": 2.164451189117478,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "P_a1100_60_H20260912_D20260911_repaired",
+        "array": "a1100",
+        "case": "H20260912/D20260911",
+        "magnitude_pct": 2.4102336942053326,
+        "signed_error_pct": -2.4102336942053326,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "P_a1400_60_H20260911_D20260912_repaired",
+        "array": "a1400",
+        "case": "H20260911/D20260912",
+        "magnitude_pct": 8.174859858260719,
+        "signed_error_pct": 8.174859858260719,
+        "usable_at_60": false,
+        "numerically_complete": true
+      },
+      {
+        "id": "P_a2000_60_H20260912_D20260911_repaired",
+        "array": "a2000",
+        "case": "H20260912/D20260911",
+        "magnitude_pct": 8.603544724889078,
+        "signed_error_pct": -8.603544724889078,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "P_a2000_60_H20260911_D20260912_repaired",
+        "array": "a2000",
+        "case": "H20260911/D20260912",
+        "magnitude_pct": 16.182044675725994,
+        "signed_error_pct": 16.182044675725994,
+        "usable_at_60": false,
+        "numerically_complete": true
+      }
+    ]
+  },
+  {
+    "population": "H_D",
+    "radius": 60,
+    "readout": "repaired",
+    "arm": "C",
+    "quantity": "absolute_peak",
+    "array": "all",
+    "required": 12,
+    "numeric_available": 12,
+    "usable_available": 9,
+    "numerical_complete": 11,
+    "numerical_incomplete": 1,
+    "thresholds": [
+      {
+        "percent": 5.0,
+        "raw": 4,
+        "usable": 4
+      },
+      {
+        "percent": 7.5,
+        "raw": 7,
+        "usable": 7
+      },
+      {
+        "percent": 10.0,
+        "raw": 8,
+        "usable": 8
+      },
+      {
+        "percent": 15.0,
+        "raw": 10,
+        "usable": 8
+      }
+    ],
+    "median_signed_pct": 6.274525882694714,
+    "median_absolute_pct": 6.30760538747966,
+    "worst": {
+      "id": "H_20260911_C_a1400_60_repaired",
+      "array": "a1400",
+      "case": "H_20260911",
+      "signed_error_pct": 16.69487998344099
+    },
+    "sorted_magnitudes": [
+      {
+        "id": "H_20260911_C_a2000_60_repaired",
+        "array": "a2000",
+        "case": "H_20260911",
+        "magnitude_pct": 2.2594557428232687,
+        "signed_error_pct": 2.2594557428232687,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "D_20260911_C_a2000_60_repaired",
+        "array": "a2000",
+        "case": "D_20260911",
+        "magnitude_pct": 2.8100282024625,
+        "signed_error_pct": 2.8100282024625,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "H_20260912_C_a1100_60_repaired",
+        "array": "a1100",
+        "case": "H_20260912",
+        "magnitude_pct": 4.360117341377356,
+        "signed_error_pct": 4.360117341377356,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "H_20260912_C_a2000_60_repaired",
+        "array": "a2000",
+        "case": "H_20260912",
+        "magnitude_pct": 4.474201220041952,
+        "signed_error_pct": -4.474201220041952,
+        "usable_at_60": true,
+        "numerically_complete": false
+      },
+      {
+        "id": "D_20260912_C_a1100_60_repaired",
+        "array": "a1100",
+        "case": "D_20260912",
+        "magnitude_pct": 5.165194341727641,
+        "signed_error_pct": 5.165194341727641,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "D_20260912_C_a2000_60_repaired",
+        "array": "a2000",
+        "case": "D_20260912",
+        "magnitude_pct": 5.23135335129753,
+        "signed_error_pct": -5.23135335129753,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "H_20260911_C_a1100_60_repaired",
+        "array": "a1100",
+        "case": "H_20260911",
+        "magnitude_pct": 7.383857423661788,
+        "signed_error_pct": 7.383857423661788,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "D_20260911_C_a1100_60_repaired",
+        "array": "a1100",
+        "case": "D_20260911",
+        "magnitude_pct": 7.615203246768387,
+        "signed_error_pct": 7.615203246768387,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "D_20260912_C_a1400_60_repaired",
+        "array": "a1400",
+        "case": "D_20260912",
+        "magnitude_pct": 10.459661008517585,
+        "signed_error_pct": 10.459661008517585,
+        "usable_at_60": false,
+        "numerically_complete": true
+      },
+      {
+        "id": "H_20260912_C_a1400_60_repaired",
+        "array": "a1400",
+        "case": "H_20260912",
+        "magnitude_pct": 10.855108299651883,
+        "signed_error_pct": 10.855108299651883,
+        "usable_at_60": false,
+        "numerically_complete": true
+      },
+      {
+        "id": "D_20260911_C_a1400_60_repaired",
+        "array": "a1400",
+        "case": "D_20260911",
+        "magnitude_pct": 15.000368573380229,
+        "signed_error_pct": 15.000368573380229,
+        "usable_at_60": false,
+        "numerically_complete": true
+      },
+      {
+        "id": "H_20260911_C_a1400_60_repaired",
+        "array": "a1400",
+        "case": "H_20260911",
+        "magnitude_pct": 16.69487998344099,
+        "signed_error_pct": 16.69487998344099,
+        "usable_at_60": true,
+        "numerically_complete": true
+      }
+    ]
+  },
+  {
+    "population": "H_D",
+    "radius": 60,
+    "readout": "repaired",
+    "arm": "C",
+    "quantity": "matched_ratio",
+    "array": "all",
+    "required": 6,
+    "numeric_available": 6,
+    "usable_available": 4,
+    "numerical_complete": 5,
+    "numerical_incomplete": 1,
+    "thresholds": [
+      {
+        "percent": 5.0,
+        "raw": 6,
+        "usable": 4
+      },
+      {
+        "percent": 7.5,
+        "raw": 6,
+        "usable": 4
+      },
+      {
+        "percent": 10.0,
+        "raw": 6,
+        "usable": 4
+      },
+      {
+        "percent": 15.0,
+        "raw": 6,
+        "usable": 4
+      }
+    ],
+    "median_signed_pct": 0.07151325309918688,
+    "median_absolute_pct": 0.6505298404090365,
+    "worst": {
+      "id": "C_a1400_60_H20260911_D20260911_repaired",
+      "array": "a1400",
+      "case": "H20260911/D20260911",
+      "signed_error_pct": 1.4734834601678015
+    },
+    "sorted_magnitudes": [
+      {
+        "id": "C_a1100_60_H20260911_D20260911_repaired",
+        "array": "a1100",
+        "case": "H20260911/D20260911",
+        "magnitude_pct": 0.21497503710150578,
+        "signed_error_pct": -0.21497503710150578,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "C_a1400_60_H20260912_D20260912_repaired",
+        "array": "a1400",
+        "case": "H20260912/D20260912",
+        "magnitude_pct": 0.35800154329987954,
+        "signed_error_pct": 0.35800154329987954,
+        "usable_at_60": false,
+        "numerically_complete": true
+      },
+      {
+        "id": "C_a2000_60_H20260911_D20260911_repaired",
+        "array": "a2000",
+        "case": "H20260911/D20260911",
+        "magnitude_pct": 0.5355240819066798,
+        "signed_error_pct": -0.5355240819066798,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "C_a1100_60_H20260912_D20260912_repaired",
+        "array": "a1100",
+        "case": "H20260912/D20260912",
+        "magnitude_pct": 0.7655355989113932,
+        "signed_error_pct": -0.7655355989113932,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "C_a2000_60_H20260912_D20260912_repaired",
+        "array": "a2000",
+        "case": "H20260912/D20260912",
+        "magnitude_pct": 0.7989479200460226,
+        "signed_error_pct": 0.7989479200460226,
+        "usable_at_60": true,
+        "numerically_complete": false
+      },
+      {
+        "id": "C_a1400_60_H20260911_D20260911_repaired",
+        "array": "a1400",
+        "case": "H20260911/D20260911",
+        "magnitude_pct": 1.4734834601678015,
+        "signed_error_pct": 1.4734834601678015,
+        "usable_at_60": false,
+        "numerically_complete": true
+      }
+    ]
+  },
+  {
+    "population": "H_D",
+    "radius": 60,
+    "readout": "repaired",
+    "arm": "C",
+    "quantity": "crossed_ratio",
+    "array": "all",
+    "required": 6,
+    "numeric_available": 6,
+    "usable_available": 4,
+    "numerical_complete": 5,
+    "numerical_incomplete": 1,
+    "thresholds": [
+      {
+        "percent": 5.0,
+        "raw": 3,
+        "usable": 2
+      },
+      {
+        "percent": 7.5,
+        "raw": 5,
+        "usable": 3
+      },
+      {
+        "percent": 10.0,
+        "raw": 6,
+        "usable": 4
+      },
+      {
+        "percent": 15.0,
+        "raw": 6,
+        "usable": 4
+      }
+    ],
+    "median_signed_pct": -0.45752603697850613,
+    "median_absolute_pct": 4.624677691738455,
+    "worst": {
+      "id": "C_a2000_60_H20260911_D20260912_repaired",
+      "array": "a2000",
+      "case": "H20260911/D20260912",
+      "signed_error_pct": 7.90431156191187
+    },
+    "sorted_magnitudes": [
+      {
+        "id": "C_a1100_60_H20260911_D20260912_repaired",
+        "array": "a1100",
+        "case": "H20260911/D20260912",
+        "magnitude_pct": 2.10969332184634,
+        "signed_error_pct": 2.10969332184634,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "C_a1100_60_H20260912_D20260911_repaired",
+        "array": "a1100",
+        "case": "H20260912/D20260911",
+        "magnitude_pct": 3.024745395803352,
+        "signed_error_pct": -3.024745395803352,
+        "usable_at_60": true,
+        "numerically_complete": true
+      },
+      {
+        "id": "C_a1400_60_H20260912_D20260911_repaired",
+        "array": "a1400",
+        "case": "H20260912/D20260911",
+        "magnitude_pct": 3.604562598495775,
+        "signed_error_pct": -3.604562598495775,
+        "usable_at_60": false,
+        "numerically_complete": true
+      },
+      {
+        "id": "C_a1400_60_H20260911_D20260912_repaired",
+        "array": "a1400",
+        "case": "H20260911/D20260912",
+        "magnitude_pct": 5.644792784981134,
+        "signed_error_pct": 5.644792784981134,
+        "usable_at_60": false,
+        "numerically_complete": true
+      },
+      {
+        "id": "C_a2000_60_H20260912_D20260911_repaired",
+        "array": "a2000",
+        "case": "H20260912/D20260911",
+        "magnitude_pct": 7.085135127246245,
+        "signed_error_pct": -7.085135127246245,
+        "usable_at_60": true,
+        "numerically_complete": false
+      },
+      {
+        "id": "C_a2000_60_H20260911_D20260912_repaired",
+        "array": "a2000",
+        "case": "H20260911/D20260912",
+        "magnitude_pct": 7.90431156191187,
+        "signed_error_pct": 7.90431156191187,
+        "usable_at_60": true,
+        "numerically_complete": true
+      }
+    ]
+  }
+]

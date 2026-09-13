@@ -2101,6 +2101,23 @@ trajectory runtime failures remain unchanged. Starlet stays parked for POINT;
 no follow-on numerical, PTC, feedback, reserved-pointing, OOF or production
 work is initiated.
 
+The owner subsequently requested a [reporting-only threshold-sensitivity check](../validation/fruit_point_threshold_sensitivity_2026-09-13/REPORT.md)
+from the three saved readout JSON products. The report retains every signed
+error and numerical/availability flag, separates absolute peaks from matched
+and crossed H/D ratios, and gives full-denominator raw/usable counts at 5%,
+7.5%, 10% and 15%. No cutoff or domain is selected and no registered rule changes.
+At the primary 60-arcsec repaired readout, median signed absolute-peak errors
+are P +1.8234% and C +6.2745%; median absolute errors are 4.8975% and 6.3076%.
+C's six matched ratios are all inside 5% but only four are usable; its six
+crossed ratios are all inside 10% with four usable. P's worst crossed error
+remains +16.1820%. The 52-arcsec sensitivity has one extra C raw absolute peak
+inside 15% (11/12 versus 10/12), caused by a withheld primary peak at +15.0004%;
+it is not substituted for the primary result. All original and coefficient-
+only diagnostics and all safeguards remain separately visible. Arithmetic,
+456 retained error records and source-hash checks pass, with zero map reads,
+fits, optimizations, cleaning calls or new observations. Starlet remains parked;
+prior products, labels, numerical-completion and runtime findings are unchanged.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

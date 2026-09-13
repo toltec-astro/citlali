@@ -1,0 +1,37 @@
+{
+  "source_commit": "1eab249ff169ac36437f66653cc53f1138ebf1d8",
+  "files": [
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/FIT_COMPARISON.json",
+      "sha256": "6f799b57bf1d2ba838b5822889dcb8031298e21d12498dc7102b566ff4eb0d34"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/RATIOS.json",
+      "sha256": "7bbc50939bed976720b382c443b960a65f4a5e3b83231d97bb07469821dc8b9e"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/MEASUREMENTS.json",
+      "sha256": "f377f1caa0208bed3f0826798d0c4d4e83338d0f053c896c33ddfb5d76df1c88"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/RESULT_MANIFEST.json",
+      "sha256": "802614f49dae497cdc424794d53c50d6a6ad815bc570601b6f4acec26e889ffe"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/PRESERVATION_START.json",
+      "sha256": "2abe0f9ad3bc582e2c9d9fa5bb7372a070fa91ced232470460753b9d584fa33a"
+    }
+  ],
+  "protected_worktrees": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor",
+      "status": "?? SCI-FRUIT-v0.1-ODQ-001F-r0.8-owner-review.tar.gz\n?? SCI-FRUIT-v0.1-empirical-lane-gate-0-r0.1-owner-review.tar.gz\n"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/346d/citlali-refactor",
+      "status": ""
+    }
+  ],
+  "source_script_sha256": "b7fccc6205131f59e38723f47e6bf77da0c86e5d282745b2f378c25369a0d71a",
+  "scope_sha256": "490b69e82f6dbba15108a0ac4e300a6cfb292c6629031c52f1c778c555f9b99a"
+}

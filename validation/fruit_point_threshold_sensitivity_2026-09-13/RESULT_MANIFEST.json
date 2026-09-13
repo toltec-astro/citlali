@@ -1,0 +1,72 @@
+{
+  "identity": "SCI-FRUIT-POINT-THRESHOLD-SENSITIVITY-REPORT@r0.1",
+  "source_commit": "1eab249ff169ac36437f66653cc53f1138ebf1d8",
+  "primary_radius_arcsec": 60,
+  "sensitivity_radius_arcsec": 52,
+  "descriptive_error_limits_percent": [
+    5,
+    7.5,
+    10,
+    15
+  ],
+  "registered_threshold_changes": 0,
+  "selected_cutoff": null,
+  "candidate": "parked_for_POINT",
+  "source_input_hashes_verified": true,
+  "previous_packet_edits": 0,
+  "map_reads": 0,
+  "fits": 0,
+  "PTC_calls": 0,
+  "files": [
+    {
+      "path": "COUNTS_AND_ORDERED_ERRORS.md",
+      "bytes": 59378,
+      "sha256": "43746e032db790dc974c5ed4ba8652bc25ae796c7537176830f5ba3d731b089d"
+    },
+    {
+      "path": "ERROR_RECORDS.json",
+      "bytes": 671005,
+      "sha256": "76f457e7c615dda1119914013e5ddd9fa9c9dcdbcbbb01c1fec329b946af0550"
+    },
+    {
+      "path": "EVERY_ERROR.md",
+      "bytes": 47353,
+      "sha256": "c56c6c5fbba12f7034302f5f08e87c23fc17a8f9bbde16fef7d64a021fc78105"
+    },
+    {
+      "path": "INPUT_BINDINGS.json",
+      "bytes": 1799,
+      "sha256": "678b30edc215ce18a1a6b512a73c3d76e44c21cc26784245a8d088a8ee7ca2f6"
+    },
+    {
+      "path": "REPORT.log",
+      "bytes": 19475,
+      "sha256": "d78833a8c6cb46d10a49636aa00fbc6ecc53696d8f2a1266d7775ca65117be11"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 11693,
+      "sha256": "004f9f3519b7bf4ec24caa85ca080335b2e8de9aaf24e1d7ac4a4e173acd1661"
+    },
+    {
+      "path": "SCOPE.md",
+      "bytes": 2777,
+      "sha256": "490b69e82f6dbba15108a0ac4e300a6cfb292c6629031c52f1c778c555f9b99a"
+    },
+    {
+      "path": "SUMMARY.json",
+      "bytes": 461287,
+      "sha256": "a40fdb01ce513877e9d65ed00f82fd5a3d7d3e7716c6ea2996c222ecec698862"
+    },
+    {
+      "path": "VERIFICATION.json",
+      "bytes": 632,
+      "sha256": "146deb1f7478824a5adea81fd147325e961c4d7c729509cb11a6144190c602ad"
+    },
+    {
+      "path": "report.py",
+      "bytes": 22383,
+      "sha256": "b7fccc6205131f59e38723f47e6bf77da0c86e5d282745b2f378c25369a0d71a"
+    }
+  ]
+}
