@@ -1,0 +1,253 @@
+{
+  "starting_commit": "4742e0ad561f7e64b25b9225179818caf5ec01b9",
+  "files": [
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_nominal_utility_2026-09-13/CASES.json",
+      "sha256": "a7cca0688b0679b4f2a9e57a129ab74a571791e97edac7bde88dc0d68360f113"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_nominal_utility_2026-09-13/RESULT_MANIFEST.json",
+      "sha256": "7bc8c2f6bff3033bb8ec22c0527fca62860616acd0aca03f7e52d9b35a41a7f5"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_peak_failure_diagnosis_2026-09-13/SCOPE.md",
+      "sha256": "42a6c265ad46566cbad891fbc5ce9befce85174a39248c91e0c3595e378e07ef"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_peak_failure_diagnosis_2026-09-13/diagnose.py",
+      "sha256": "1ac32635bff530b6c8c9ce3648cb57b91b80113b13b450c8741f934f2d95e2a3"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260911/C/pass00_maps.npz",
+      "sha256": "b7bb84ffed2dc88a4ab3df3c188e28c2cd0d57fb39130bc08a4bd8aa6f0238a0"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260911/C/pass01_maps.npz",
+      "sha256": "f9a7028ad9704473710770d014784f3bd30100e8fe6181efbd0f0a991fbbd91f"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260911/C/pass02_maps.npz",
+      "sha256": "8dc9008caf9118c76a6d36485c084c8be62d97990ac510f5e0d31a83436937de"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260911/C/pass03_maps.npz",
+      "sha256": "73127b788f289af2da3419887349bad7308f0ec70a8fbd5c500258b885bb7882"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260911/C/pass04_maps.npz",
+      "sha256": "3a7d14c83173c117bf9e2237552941a458ada95fb22b3e93c5e53486d75b8f2a"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260911/C/pass05_maps.npz",
+      "sha256": "c3f9b2dbf3877f76e85e6e0c7429097e54dd0989c91c7766df39421c728854a1"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260911/C/pass06_maps.npz",
+      "sha256": "8951f9e6a49b67678311b26be9f0bcbf0d53afd3ab8a7b6e181ac04bd7bcb98e"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260911/P/pass00_maps.npz",
+      "sha256": "f03324566ecec64175fbb5e01a319a2e9cd230c7bb8ac826b52ab389f8e501c3"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260911/P/pass01_maps.npz",
+      "sha256": "9f35406ccf0573fe561a5eb25400a58bc52b496b0274cc67a56306ac9e676c57"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260911/P/pass02_maps.npz",
+      "sha256": "d404814f01e45b3b9857c75f8a0c701e46d0df1d1ff0c48c7674fdda95e6e36e"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260911/P/pass03_maps.npz",
+      "sha256": "ab2145f596617bd7a30507704c71219cfaa7b9cc75922a2b4f636882805b3ee5"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260911/P/pass04_maps.npz",
+      "sha256": "bf387085993c71e10d7997b908be14bde345d559caa902544ca98d8f5aeaac10"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260911/P/pass05_maps.npz",
+      "sha256": "8d71f99cfcf142877a26103165519d146a40dc207f1c3141eb591f59dcc76d9d"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260911/P/pass06_maps.npz",
+      "sha256": "e668f633434f19f709abf7bd4777e14248216e594b294f7ea20ffc99dca9cc87"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260912/C/pass00_maps.npz",
+      "sha256": "079fd25ca74d1197405c86ecfe30ac0d3ab694f40ae5a5a14b54a286bdd87b3d"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260912/C/pass01_maps.npz",
+      "sha256": "cc861aee77a554ad5a5123afe18b531fbc932a34c22a27a2b8839ec5bd45fed6"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260912/C/pass02_maps.npz",
+      "sha256": "8552473bcdde24048e7c45dd8c85541670f9123245095110c90e4d0fdb87d80a"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260912/C/pass03_maps.npz",
+      "sha256": "06a65cf5d11d93f8134560b6f56310fdd20af5d9045250afc722a4df2bc21048"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260912/C/pass04_maps.npz",
+      "sha256": "2dcd8278ecd20c12f7e8be856f6dcef601716b21005d64b8480332789ea1abcc"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260912/C/pass05_maps.npz",
+      "sha256": "f1550cc8288c8d85b7eccbd41baa9f3db7cf048ae30b1a2eedfe76eda8c246db"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260912/C/pass06_maps.npz",
+      "sha256": "e9974e870bd491de56b32835eed37f0a5edf34741e6cf242e7c325351e2cbd19"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260912/P/pass00_maps.npz",
+      "sha256": "c70c8c20a823a23fe5146ce80c9562417fd659ce544830243b54614b91b16536"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260912/P/pass01_maps.npz",
+      "sha256": "8c59c7dda273ddaab517bdb8f0e585d0d068806c4a7016f12c7300c4f8622b81"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260912/P/pass02_maps.npz",
+      "sha256": "8e25717eb27ff575e26249ee9e353fe39aabadd18203a48b128edf9e6247f78d"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260912/P/pass03_maps.npz",
+      "sha256": "19d4f91c3cf328071b6bb0eee8517687c35572483305a84bf60fac0f3179bb1c"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260912/P/pass04_maps.npz",
+      "sha256": "a2d596f272a0fd36f16cba4cd8d51aefc891d3ce3bce8fac9abcbcf55da30cfe"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260912/P/pass05_maps.npz",
+      "sha256": "44959f4809d673ccd537b51eb85b31a3e35555fa76f9f60bf6de14a6f03553ed"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260912/P/pass06_maps.npz",
+      "sha256": "7eb1beee26b1ff6c8c0ed0ca11fe5f81e401711b694f2b8d2ffe367bc49f0223"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/RECEIPTS.json",
+      "sha256": "d62a4bb24e83f8f1affb913a0e4b550d8ce0cec8e31dc0292c9113492cf0a22f"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260911/C/pass00_maps.npz",
+      "sha256": "08eeb3591b487f6a25ea7e3426b2cf7dc35908ffb556576ec5ef64fba4c211bf"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260911/C/pass01_maps.npz",
+      "sha256": "e62ee3d75622b19baca312e7bb7a84cc52b6060ecf9ce2a1e81d76a482472ce6"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260911/C/pass02_maps.npz",
+      "sha256": "3728565a25696575aa90346dae9afce8cf2e4e430b1538a36a3d13262122e8a1"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260911/C/pass03_maps.npz",
+      "sha256": "09af365ea385cd6f1f13807fd936e0bfd93769bf6efb462bfca71c182f8ba911"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260911/C/pass04_maps.npz",
+      "sha256": "fd35858479fb6b40b87ca0ac88c160919dac9cb15f43e7eb57850a2e8809f4d3"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260911/C/pass05_maps.npz",
+      "sha256": "d882df0fc761b0dd15c8d2ea75e06cbcacdb6eed7701989b1fd3679eacf8113a"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260911/C/pass06_maps.npz",
+      "sha256": "6cd984504aa5ca6b4243be30513e17e198b2d27c7067490fef8f23cefa6a4211"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260911/P/pass00_maps.npz",
+      "sha256": "62e523bdfd2c1ac0f29dabd729d202cc850922935a7d7428fe142548e907ae63"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260911/P/pass01_maps.npz",
+      "sha256": "cf495c74309c6566091fb170481e83562e8dbe71dab8c2df8e63c52aab6a0796"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260911/P/pass02_maps.npz",
+      "sha256": "9bf089fc4ab91540efffadfe4d204a27ea3dc9c4dcc3b76bf1842c172cb74812"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260911/P/pass03_maps.npz",
+      "sha256": "57a7426d29535af5b134550d9d0afb35b4fad03a825f43f7bc4e8a582f7c55d0"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260911/P/pass04_maps.npz",
+      "sha256": "cf3b90aefca4dd97dee280c4c47b52315e576562d4e4ccd398074f05fe8cedd0"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260911/P/pass05_maps.npz",
+      "sha256": "52ee9e994553bddce889e7889d58dd5a591e4cdc890fc9b39a120876d9456052"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260911/P/pass06_maps.npz",
+      "sha256": "2c46232167cda4a9afd8a88c947e2588f3e0a843a1855f22981c0c35718c34de"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260912/C/pass00_maps.npz",
+      "sha256": "d5436d5ce43a851544dd34e50ee70f96bf09478aac849e03590fdd88dc2da295"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260912/C/pass01_maps.npz",
+      "sha256": "f17b44773b970a718bd41624a89c6b1793c6df37c375d22c24885843dcebbcee"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260912/C/pass02_maps.npz",
+      "sha256": "bf51187ea91690826d2c50a947554f03d5bdb990c85107c0788b1be38ddae8a5"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260912/C/pass03_maps.npz",
+      "sha256": "d2e8c58d686584aef20a78713cf760e061e0a2b8667aa2bac5ce7095813af062"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260912/C/pass04_maps.npz",
+      "sha256": "42ae2523a74a75d2383cef7fd20256f30723c472464aa7e376fc67ef35806684"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260912/C/pass05_maps.npz",
+      "sha256": "7ceefea2a48367e3d8c172f0714efacf1a994e287f79b904c1a05f04b1d73345"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260912/C/pass06_maps.npz",
+      "sha256": "f2334678cc59bfa42c55e9516fb349b75751c7fd44b08e84180c92bb56109ece"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260912/P/pass00_maps.npz",
+      "sha256": "2fe57f15a7ed7d1bec364a37bb1e4978d6a882c7111b902082512c35967a9ac7"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260912/P/pass01_maps.npz",
+      "sha256": "1a72e164a3ba8717b85fdfca163a49ddfa21a72acbcd23ab5c4a4ab88589d66c"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260912/P/pass02_maps.npz",
+      "sha256": "69c428f601b217554e24ff4f87a312d042c92bd4acd990330fa144827e799c68"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260912/P/pass03_maps.npz",
+      "sha256": "12cbe45df061b0de7bddc1ed08edd96fbc7ec115a0d699a5859feaa2ab317af8"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260912/P/pass04_maps.npz",
+      "sha256": "d2109e14980881c5874399fdc81794372acfb47802388d63ca896a90d2288592"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260912/P/pass05_maps.npz",
+      "sha256": "830ac32cff602d6cc657ef192af64680d4f16f7d16fb30317d9320ebd045fdf6"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/T_20260912/P/pass06_maps.npz",
+      "sha256": "5cb5bce22b7d69f9ecdba9851e8c1309fe42563762f0659e504b291233526ae1"
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/geometry.npz",
+      "sha256": "f485295644a30a96f6ff0cc9e2f34951d28187a1741e0600f599e3e6ab3fed30"
+    }
+  ]
+}

@@ -2008,6 +2008,27 @@ evaluator relaxation, new parameter, OOF campaign, 129081 evaluation or
 production advancement follows this result. Further numerical work requires
 its own specific scientific owner decision.
 
+The owner's subsequent [saved-product peak diagnosis](../validation/fruit_point_peak_failure_diagnosis_2026-09-13/DIAGNOSIS.md)
+preserves the parked candidate and every registered result. Its strongest
+finding is cancellation of shared noise-dependent peak errors: raw H/D
+within-5% counts change from matched P 5/6 and C 6/6 to crossed P 3/6 and C
+2/6. These are dependent recombinations of two saved realizations, not new
+validation cases. Primary H/D/T peak withholding is exact: P has six score
+failures and two domain-sensitivity failures; C has four score and three domain
+failures, with no shape-only veto or unfinished feedback solve. A separate
+common-readout contribution is demonstrated by P's essentially exact 0.8 map
+scaling but 0.817% peak-fit departure and a score crossing from 4.9838 to 5.0245.
+The dominant map-versus-free-fit contribution to larger between-noise errors
+remains unresolved. Exactly one next experiment is proposed, not executed:
+compare the saved free Gaussian readouts with truth-shaped, unit-peak template
+plus free-plane amplitude fits on the 24 terminal H/D array maps in both
+existing domains (48 linear diagnostic fits). Truth assistance would remain
+an evaluation-only ruler, never feedback or a deployable availability policy.
+The diagnosis verifies 714 availability records, 504 ratios and 84 saved-map
+scaling cases, with zero pre-PTC reads, PTC calls, refits, new thresholds,
+truth-selected iterations or reserved observations. No OOF or production
+advancement follows; the proposed experiment requires a separate owner decision.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

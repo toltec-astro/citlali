@@ -1,0 +1,105 @@
+{
+  "identity": "SCI-FRUIT-POINT-SAVED-PEAK-DIAGNOSIS@r0.1",
+  "source_commit": "4742e0ad561f7e64b25b9225179818caf5ec01b9",
+  "candidate": "parked_for_POINT",
+  "registered_outcomes": "preserved",
+  "recommended_experiments": 1,
+  "executed_new_experiments": 0,
+  "files": [
+    {
+      "path": "DIAGNOSIS.log",
+      "bytes": 8994,
+      "sha256": "bea6c94195cd1aa2efdab80796054cc85f1d63ba7b051f8620f0af6b862f7dfa"
+    },
+    {
+      "path": "DIAGNOSIS.md",
+      "bytes": 8560,
+      "sha256": "72f2b530baed5eafb0aee0034ffb455bddfb2f2fc673f10e19078c964ce6f763"
+    },
+    {
+      "path": "DIAGNOSIS_DISPOSITION.json",
+      "bytes": 1153,
+      "sha256": "dca8a48e84f2d7f0dbd0435878be552de572c3413e062c4e258c9e5b000dc05d"
+    },
+    {
+      "path": "INPUT_BINDINGS.json",
+      "bytes": 12643,
+      "sha256": "6733a5a7beb982ef0c8530487d5793cc5be740632a4974bf89efac86fd67d355"
+    },
+    {
+      "path": "MATCHED_AND_CROSSED_RATIOS.md",
+      "bytes": 2712,
+      "sha256": "63636f6f75370849162225df7e04aee9afc04b27a1c1419abeb7bf3b6eed6ad2"
+    },
+    {
+      "path": "NEXT_EXPERIMENT.md",
+      "bytes": 3260,
+      "sha256": "8ad72a9c5ae64803516b74f50a55b959def8ad885a3c3da25b85f17ee252d0b3"
+    },
+    {
+      "path": "PRESERVATION_START.json",
+      "bytes": 3403,
+      "sha256": "b689e58e8584ccdfd7ea64e16c66d286a4471adf5fe2cf90a91fe9b1375d1652"
+    },
+    {
+      "path": "RATIOS.json",
+      "bytes": 217807,
+      "sha256": "39e1cf926c3279dd55dd4052df1529cb8d14c550a1dc84a5083eeeded5c81adf"
+    },
+    {
+      "path": "RENDER.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "SAVED_PEAK_TRACES.png",
+      "bytes": 832266,
+      "sha256": "a0cdc47fc2bbb9117ced2f3f8f97289e6e7950bcf9547a8f82bd75b47857b25c"
+    },
+    {
+      "path": "SCALING_CHECKS.json",
+      "bytes": 65558,
+      "sha256": "9ec48e27fa99516b0dfb96e5ba6477deb10c16626ce207d446e86ac1e4ff40bc"
+    },
+    {
+      "path": "SCOPE.md",
+      "bytes": 3715,
+      "sha256": "42a6c265ad46566cbad891fbc5ce9befce85174a39248c91e0c3595e378e07ef"
+    },
+    {
+      "path": "SEED_RESPONSE.json",
+      "bytes": 42744,
+      "sha256": "351ab9a5da40d27e0e7b7529846a944499bcb913f592d84698e1db27e19b96c0"
+    },
+    {
+      "path": "SUMMARY.json",
+      "bytes": 8994,
+      "sha256": "bea6c94195cd1aa2efdab80796054cc85f1d63ba7b051f8620f0af6b862f7dfa"
+    },
+    {
+      "path": "TRACES.json",
+      "bytes": 1894917,
+      "sha256": "ada8d521813379d5056a675594ab1fe08b82374108d510155895459a65b19884"
+    },
+    {
+      "path": "VERIFICATION.json",
+      "bytes": 377,
+      "sha256": "31ad422e8d7d38cfcd0614cd13d5ee8a9b6ccabad7c6d2719380c7d6ab451d7d"
+    },
+    {
+      "path": "WITHHOLDING_AND_PASS_TRACES.md",
+      "bytes": 35624,
+      "sha256": "4c84c8ade7bb17955226e2628707747b4f68c0def7bb9bf1cbb30773741619c2"
+    },
+    {
+      "path": "diagnose.py",
+      "bytes": 12707,
+      "sha256": "1ac32635bff530b6c8c9ce3648cb57b91b80113b13b450c8741f934f2d95e2a3"
+    },
+    {
+      "path": "render_report.py",
+      "bytes": 8813,
+      "sha256": "8e3da85b3e5d6faad8fe7d0548518f7e25332c7b734b6892ba8e0a291224b4d3"
+    }
+  ]
+}

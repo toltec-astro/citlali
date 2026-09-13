@@ -1,0 +1,10 @@
+{
+  "candidate": "parked_for_POINT",
+  "registered_outcomes": "unchanged",
+  "strongest_supported_effect": "Same-seed peak shifts partly cancel in matched ratios; the accuracy does not carry over to crossed-noise pairs.",
+  "exact_withholding": "Primary P: six score and two domain failures. Primary C: four score and three domain failures. No terminal primary shape-only veto or unfinished solve.",
+  "demonstrated_readout_effect": "P T/H map scaling agrees near 1e-13 while saved Gaussian-plus-plane fits can differ in peak, width and attainable fit objective; first-seed terminal score crosses five.",
+  "unresolved": "The dominant contribution to between-noise peak errors: source/nuisance structure in reconstructed total maps versus amplification by the free-shape Gaussian-plus-plane readout.",
+  "next_experiment": "One saved-map controlled readout comparison: fixed truth-shaped unit-peak source template plus free plane versus the retained free Gaussian fit, in both existing domains, on the 24 terminal H/D array maps. Diagnostic only; 48 linear solves, no feedback/PTC, no availability-policy change.",
+  "next_experiment_executed": false
+}

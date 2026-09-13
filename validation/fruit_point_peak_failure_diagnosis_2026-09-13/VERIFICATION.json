@@ -1,0 +1,15 @@
+{
+  "saved_array_pass_labels_verified": 714,
+  "ratios": 504,
+  "scaling_array_pass_checks": 84,
+  "exact_ratio_identities_checked": 84,
+  "prior_products_preserved": true,
+  "pre_PTC_reads": 0,
+  "PTC_calls": 0,
+  "refits": 0,
+  "optimizations": 0,
+  "threshold_changes": 0,
+  "selected_iterations": 0,
+  "reserved_observations": 0,
+  "candidate_status": "parked_for_POINT"
+}

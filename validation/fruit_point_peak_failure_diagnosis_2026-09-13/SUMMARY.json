@@ -1,0 +1,291 @@
+{
+  "availability": [
+    {
+      "arm": "P",
+      "population": "primary_HDT",
+      "required": 18,
+      "usable": 10,
+      "withheld": 8,
+      "reason_occurrences": {
+        "peak_score_le_5": 6,
+        "peak_domain_change_gt_1pct": 2
+      },
+      "reason_combinations": {
+        "peak_score_le_5": 6,
+        "peak_domain_change_gt_1pct": 2
+      },
+      "accuracy_availability": {
+        "usable_accurate": 3,
+        "usable_inaccurate": 7,
+        "withheld_accurate": 6,
+        "withheld_inaccurate": 2
+      }
+    },
+    {
+      "arm": "P",
+      "population": "all_compact",
+      "required": 24,
+      "usable": 15,
+      "withheld": 9,
+      "reason_occurrences": {
+        "peak_score_le_5": 7,
+        "peak_domain_change_gt_1pct": 2
+      },
+      "reason_combinations": {
+        "peak_score_le_5": 7,
+        "peak_domain_change_gt_1pct": 2
+      },
+      "accuracy_availability": {
+        "usable_accurate": 4,
+        "usable_inaccurate": 11,
+        "withheld_accurate": 6,
+        "withheld_inaccurate": 3
+      }
+    },
+    {
+      "arm": "P",
+      "population": "all_cases",
+      "required": 51,
+      "usable": 17,
+      "withheld": 34,
+      "reason_occurrences": {
+        "outside_compact_measurement_domain": 11,
+        "source_support_limit": 14,
+        "peak_domain_change_gt_1pct": 9,
+        "peak_score_le_5": 28,
+        "fit_parameter_limit": 8,
+        "source_not_established": 12,
+        "inner_probe_unavailable": 13
+      },
+      "reason_combinations": {
+        "outside_compact_measurement_domain+source_support_limit+peak_domain_change_gt_1pct+peak_score_le_5": 1,
+        "fit_parameter_limit+outside_compact_measurement_domain+source_support_limit+source_not_established+inner_probe_unavailable+peak_score_le_5": 3,
+        "fit_parameter_limit+outside_compact_measurement_domain+source_support_limit+source_not_established+peak_domain_change_gt_1pct+peak_score_le_5": 2,
+        "fit_parameter_limit+source_not_established+inner_probe_unavailable+peak_score_le_5": 3,
+        "source_not_established+peak_score_le_5": 1,
+        "peak_score_le_5": 8,
+        "outside_compact_measurement_domain+peak_score_le_5": 3,
+        "outside_compact_measurement_domain+peak_domain_change_gt_1pct+peak_score_le_5": 1,
+        "source_support_limit+inner_probe_unavailable": 4,
+        "source_support_limit+peak_domain_change_gt_1pct+peak_score_le_5": 1,
+        "source_support_limit+source_not_established+inner_probe_unavailable+peak_score_le_5": 1,
+        "outside_compact_measurement_domain+source_support_limit+source_not_established+inner_probe_unavailable+peak_score_le_5": 1,
+        "source_not_established+peak_domain_change_gt_1pct+peak_score_le_5": 1,
+        "peak_domain_change_gt_1pct": 2,
+        "peak_domain_change_gt_1pct+peak_score_le_5": 1,
+        "source_support_limit+inner_probe_unavailable+peak_score_le_5": 1
+      },
+      "accuracy_availability": {
+        "usable_accurate": 4,
+        "usable_inaccurate": 11,
+        "withheld_accurate": 11,
+        "withheld_inaccurate": 4
+      }
+    },
+    {
+      "arm": "C",
+      "population": "primary_HDT",
+      "required": 18,
+      "usable": 11,
+      "withheld": 7,
+      "reason_occurrences": {
+        "peak_domain_change_gt_1pct": 3,
+        "peak_score_le_5": 4
+      },
+      "reason_combinations": {
+        "peak_domain_change_gt_1pct": 3,
+        "peak_score_le_5": 4
+      },
+      "accuracy_availability": {
+        "usable_accurate": 6,
+        "usable_inaccurate": 5,
+        "withheld_accurate": 1,
+        "withheld_inaccurate": 6
+      }
+    },
+    {
+      "arm": "C",
+      "population": "all_compact",
+      "required": 24,
+      "usable": 16,
+      "withheld": 8,
+      "reason_occurrences": {
+        "peak_domain_change_gt_1pct": 4,
+        "peak_score_le_5": 5
+      },
+      "reason_combinations": {
+        "peak_domain_change_gt_1pct": 3,
+        "peak_score_le_5": 4,
+        "peak_domain_change_gt_1pct+peak_score_le_5": 1
+      },
+      "accuracy_availability": {
+        "usable_accurate": 8,
+        "usable_inaccurate": 8,
+        "withheld_accurate": 2,
+        "withheld_inaccurate": 6
+      }
+    },
+    {
+      "arm": "C",
+      "population": "all_cases",
+      "required": 51,
+      "usable": 18,
+      "withheld": 33,
+      "reason_occurrences": {
+        "outside_compact_measurement_domain": 14,
+        "source_support_limit": 15,
+        "peak_domain_change_gt_1pct": 11,
+        "fit_parameter_limit": 8,
+        "source_not_established": 12,
+        "inner_probe_unavailable": 14,
+        "peak_score_le_5": 24
+      },
+      "reason_combinations": {
+        "outside_compact_measurement_domain+source_support_limit+peak_domain_change_gt_1pct": 1,
+        "fit_parameter_limit+outside_compact_measurement_domain+source_support_limit+source_not_established+inner_probe_unavailable+peak_score_le_5": 4,
+        "fit_parameter_limit+outside_compact_measurement_domain+source_support_limit+source_not_established+peak_domain_change_gt_1pct+peak_score_le_5": 2,
+        "fit_parameter_limit+source_not_established+inner_probe_unavailable+peak_score_le_5": 2,
+        "source_not_established+inner_probe_unavailable+peak_score_le_5": 1,
+        "peak_domain_change_gt_1pct": 3,
+        "peak_score_le_5": 4,
+        "outside_compact_measurement_domain+peak_score_le_5": 4,
+        "outside_compact_measurement_domain+peak_domain_change_gt_1pct+peak_score_le_5": 2,
+        "source_support_limit+inner_probe_unavailable": 4,
+        "source_support_limit+peak_domain_change_gt_1pct": 1,
+        "source_support_limit+source_not_established+inner_probe_unavailable+peak_score_le_5": 1,
+        "outside_compact_measurement_domain+source_support_limit+source_not_established+inner_probe_unavailable+peak_score_le_5": 1,
+        "source_not_established+peak_domain_change_gt_1pct+peak_score_le_5": 1,
+        "peak_domain_change_gt_1pct+peak_score_le_5": 1,
+        "source_support_limit+inner_probe_unavailable+peak_score_le_5": 1
+      },
+      "accuracy_availability": {
+        "usable_accurate": 8,
+        "usable_inaccurate": 8,
+        "withheld_accurate": 6,
+        "withheld_inaccurate": 8
+      }
+    }
+  ],
+  "ratios": [
+    {
+      "arm": "P",
+      "family": "H/D",
+      "pairing": "matched",
+      "required": 6,
+      "numeric_within_5pct": 5,
+      "available": 2,
+      "usable_and_accurate": 2,
+      "max_abs_error": 0.059616226655750726
+    },
+    {
+      "arm": "P",
+      "family": "H/D",
+      "pairing": "crossed",
+      "required": 6,
+      "numeric_within_5pct": 3,
+      "available": 2,
+      "usable_and_accurate": 1,
+      "max_abs_error": 0.16182679628938113
+    },
+    {
+      "arm": "P",
+      "family": "D/H",
+      "pairing": "matched",
+      "required": 6,
+      "numeric_within_5pct": 5,
+      "available": 2,
+      "usable_and_accurate": 2,
+      "max_abs_error": 0.056262092969173616
+    },
+    {
+      "arm": "P",
+      "family": "D/H",
+      "pairing": "crossed",
+      "required": 6,
+      "numeric_within_5pct": 3,
+      "available": 2,
+      "usable_and_accurate": 1,
+      "max_abs_error": 0.1392865070819682
+    },
+    {
+      "arm": "P",
+      "family": "T/H",
+      "pairing": "matched",
+      "required": 6,
+      "numeric_within_5pct": 6,
+      "available": 3,
+      "usable_and_accurate": 3,
+      "max_abs_error": 0.008168288780039612
+    },
+    {
+      "arm": "P",
+      "family": "T/H",
+      "pairing": "crossed",
+      "required": 6,
+      "numeric_within_5pct": 2,
+      "available": 2,
+      "usable_and_accurate": 0,
+      "max_abs_error": 0.13205459460584446
+    },
+    {
+      "arm": "C",
+      "family": "H/D",
+      "pairing": "matched",
+      "required": 6,
+      "numeric_within_5pct": 6,
+      "available": 1,
+      "usable_and_accurate": 1,
+      "max_abs_error": 0.008004484291972647
+    },
+    {
+      "arm": "C",
+      "family": "H/D",
+      "pairing": "crossed",
+      "required": 6,
+      "numeric_within_5pct": 2,
+      "available": 1,
+      "usable_and_accurate": 1,
+      "max_abs_error": 0.0790469036515613
+    },
+    {
+      "arm": "C",
+      "family": "D/H",
+      "pairing": "matched",
+      "required": 6,
+      "numeric_within_5pct": 6,
+      "available": 1,
+      "usable_and_accurate": 1,
+      "max_abs_error": 0.007940921312066362
+    },
+    {
+      "arm": "C",
+      "family": "D/H",
+      "pairing": "crossed",
+      "required": 6,
+      "numeric_within_5pct": 2,
+      "available": 1,
+      "usable_and_accurate": 1,
+      "max_abs_error": 0.07623592064480933
+    },
+    {
+      "arm": "C",
+      "family": "T/H",
+      "pairing": "matched",
+      "required": 6,
+      "numeric_within_5pct": 6,
+      "available": 5,
+      "usable_and_accurate": 5,
+      "max_abs_error": 0.013210745059723417
+    },
+    {
+      "arm": "C",
+      "family": "T/H",
+      "pairing": "crossed",
+      "required": 6,
+      "numeric_within_5pct": 4,
+      "available": 4,
+      "usable_and_accurate": 2,
+      "max_abs_error": 0.07047827709763554
+    }
+  ]
+}
