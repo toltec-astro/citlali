@@ -1,0 +1,53 @@
+{
+  "starting_commit": "cc93cb7b6b8c8063c29f59b74d0f6e31409775ff",
+  "files": [
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/FIT_COMPARISON.json",
+      "sha256": "6f799b57bf1d2ba838b5822889dcb8031298e21d12498dc7102b566ff4eb0d34"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/MEASUREMENTS.json",
+      "sha256": "f377f1caa0208bed3f0826798d0c4d4e83338d0f053c896c33ddfb5d76df1c88"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/RATIOS.json",
+      "sha256": "7bbc50939bed976720b382c443b960a65f4a5e3b83231d97bb07469821dc8b9e"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/PRESERVATION_START.json",
+      "sha256": "2abe0f9ad3bc582e2c9d9fa5bb7372a070fa91ced232470460753b9d584fa33a"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/RESULT_MANIFEST.json",
+      "sha256": "802614f49dae497cdc424794d53c50d6a6ad815bc570601b6f4acec26e889ffe"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_nominal_utility_2026-09-13/DECISION_EVIDENCE.json",
+      "sha256": "47af2aff2858972f628fa970f448a9f1d0ece623a0730733cc8dc98f0bf058a8"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_nominal_utility_2026-09-13/PROTOCOL.md",
+      "sha256": "841af2656120fedd570a237357b5044ca4dc49fac9336e2db3ee7a4056a4b33b"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_nominal_utility_2026-09-13/RESULT_MANIFEST.json",
+      "sha256": "7bc8c2f6bff3033bb8ec22c0527fca62860616acd0aca03f7e52d9b35a41a7f5"
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_threshold_sensitivity_2026-09-13/RESULT_MANIFEST.json",
+      "sha256": "f31a3039c73a4dbca28cddd6ccb278c876c63165f582ae9d02ccd94a3a85e971"
+    }
+  ],
+  "protected_worktrees": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor",
+      "status": "?? SCI-FRUIT-v0.1-ODQ-001F-r0.8-owner-review.tar.gz\n?? SCI-FRUIT-v0.1-empirical-lane-gate-0-r0.1-owner-review.tar.gz\n"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/346d/citlali-refactor",
+      "status": ""
+    }
+  ],
+  "script_sha256": "59741d4f1f1880ab75ab8fe3cf42bbc5bbc1bad3e967abf40a3ae9e833b7366e",
+  "scope_sha256": "cae8f7fba747e0b30756e8efa8ae1362ba2399f88981e70fbefcf22593f8f260"
+}

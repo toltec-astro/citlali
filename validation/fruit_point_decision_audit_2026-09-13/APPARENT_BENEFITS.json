@@ -1,0 +1,655 @@
+[
+  {
+    "kind": "new_usable_ratio_success",
+    "candidate": {
+      "id": "a2000_C_D_20260912_over_H_20260912",
+      "array": "a2000",
+      "arm": "C",
+      "family": "D/H",
+      "pairing": "matched",
+      "numerator": "D_20260912",
+      "denominator": "H_20260912",
+      "expected_ratio": 0.9,
+      "ratio": 0.8928664619732759,
+      "signed_error_pct": -0.7926153363026822,
+      "observed_fractional_change_pct": -10.71335380267241,
+      "raw_within_5pct": true,
+      "degradation_below_0p95": true,
+      "raw_requirement_pass": true,
+      "usable": true,
+      "usable_requirement_pass": true,
+      "numerical_complete": false,
+      "inner_numerical_complete": true,
+      "involves_incomplete_fit": true,
+      "both_trajectory_costs_pass": true,
+      "cost_eligible_usable_pass": true,
+      "cost_and_numerically_complete_usable_pass": false,
+      "members": [
+        {
+          "case": "D_20260912",
+          "array": "a2000",
+          "arm": "C",
+          "peak": 85.29178198383222,
+          "absolute_error_pct": -5.23135335129753,
+          "fit_available": true,
+          "peak_usable": true,
+          "numerical_complete": true,
+          "inner_numerical_complete": true,
+          "judgments": {
+            "source_evidence_present": true,
+            "associated_source": true,
+            "centroid_usable": true,
+            "peak_response_usable": true,
+            "shape_warning": false,
+            "support_warning": false,
+            "limitations": [],
+            "centroid_stability_pass": true,
+            "peak_stability_pass": true,
+            "peak_score_pass": true
+          },
+          "peak_score": 5.2530521696123715,
+          "inner_probe": {
+            "available": true,
+            "fit": {
+              "parameters": [
+                85.32178979348625,
+                16.88184142982922,
+                -10.744279750951662,
+                2.555897129621497,
+                2.1515688670600053,
+                0.4742983419866551,
+                -0.32141783054858136,
+                -0.2498522344344238,
+                0.09243855459289753
+              ],
+              "peak": 85.32178979348625,
+              "centroid": [
+                16.88184142982922,
+                -10.744279750951662
+              ],
+              "widths": [
+                12.8828520629398,
+                8.598337469403523
+              ],
+              "angle_rad": 0.4742983419866551,
+              "gaussian_integral": 10709.048451856377,
+              "background": [
+                -0.32141783054858136,
+                -0.2498522344344238,
+                0.09243855459289753
+              ],
+              "residual_rms": 10.26554020977693,
+              "sse": 223513.7708087181,
+              "boundary_rejection": false,
+              "solver_status": 2,
+              "nfev": 12,
+              "successful_starts": 3
+            },
+            "centroid_difference_arcsec": 0.0037821489403516975,
+            "peak_relative_difference": 0.0003518253336494137
+          },
+          "centroid_error_arcsec": 0.2818941645852475,
+          "matched_trajectory_cost": {
+            "case": "D_20260912",
+            "P_seconds": 9.240276499884203,
+            "C_seconds": 14.90592991700396,
+            "ratio": 1.6131476062638122,
+            "existing_cost_pass": true,
+            "retained_passes": 7,
+            "role": "full all-array trajectory; no apportioning or retiming"
+          }
+        },
+        {
+          "case": "H_20260912",
+          "array": "a2000",
+          "arm": "C",
+          "peak": 95.52579877995805,
+          "absolute_error_pct": -4.474201220041952,
+          "fit_available": true,
+          "peak_usable": true,
+          "numerical_complete": false,
+          "inner_numerical_complete": true,
+          "judgments": {
+            "source_evidence_present": true,
+            "associated_source": true,
+            "centroid_usable": true,
+            "peak_response_usable": true,
+            "shape_warning": false,
+            "support_warning": false,
+            "limitations": [],
+            "centroid_stability_pass": true,
+            "peak_stability_pass": true,
+            "peak_score_pass": true
+          },
+          "peak_score": 5.876446491996885,
+          "inner_probe": {
+            "available": true,
+            "fit": {
+              "parameters": [
+                95.55139555734078,
+                16.865014944216057,
+                -10.831180176741851,
+                2.514578062482225,
+                2.1005275405732524,
+                0.4807912978113284,
+                -0.30802202000440165,
+                -0.22875531335514857,
+                0.10518010116708912
+              ],
+              "peak": 95.55139555734078,
+              "centroid": [
+                16.865014944216057,
+                -10.831180176741851
+              ],
+              "widths": [
+                12.361391943567353,
+                8.170479035043138
+              ],
+              "angle_rad": 0.4807912978113284,
+              "gaussian_integral": 10934.938669632455,
+              "background": [
+                -0.30802202000440165,
+                -0.22875531335514857,
+                0.10518010116708912
+              ],
+              "residual_rms": 10.288769347851298,
+              "sse": 224526.46112445625,
+              "boundary_rejection": false,
+              "solver_status": 2,
+              "nfev": 12,
+              "successful_starts": 3
+            },
+            "centroid_difference_arcsec": 0.0033030566692817346,
+            "peak_relative_difference": 0.00026795669556967106
+          },
+          "centroid_error_arcsec": 0.2152967680751504,
+          "matched_trajectory_cost": {
+            "case": "H_20260912",
+            "P_seconds": 9.864352999953553,
+            "C_seconds": 15.66116475011222,
+            "ratio": 1.5876525049525259,
+            "existing_cost_pass": true,
+            "retained_passes": 7,
+            "role": "full all-array trajectory; no apportioning or retiming"
+          }
+        }
+      ]
+    },
+    "reference": {
+      "id": "a2000_P_D_20260912_over_H_20260912",
+      "array": "a2000",
+      "arm": "P",
+      "family": "D/H",
+      "pairing": "matched",
+      "numerator": "D_20260912",
+      "denominator": "H_20260912",
+      "expected_ratio": 0.9,
+      "ratio": 0.8769401407034455,
+      "signed_error_pct": -2.562206588506055,
+      "observed_fractional_change_pct": -12.30598592965545,
+      "raw_within_5pct": true,
+      "degradation_below_0p95": true,
+      "raw_requirement_pass": true,
+      "usable": false,
+      "usable_requirement_pass": false,
+      "numerical_complete": true,
+      "inner_numerical_complete": true,
+      "involves_incomplete_fit": false,
+      "both_trajectory_costs_pass": true,
+      "cost_eligible_usable_pass": false,
+      "cost_and_numerically_complete_usable_pass": false,
+      "members": [
+        {
+          "case": "D_20260912",
+          "array": "a2000",
+          "arm": "P",
+          "peak": 76.02365817379385,
+          "absolute_error_pct": -15.529268695784616,
+          "fit_available": true,
+          "peak_usable": false,
+          "numerical_complete": true,
+          "inner_numerical_complete": true,
+          "judgments": {
+            "source_evidence_present": true,
+            "associated_source": true,
+            "centroid_usable": true,
+            "peak_response_usable": false,
+            "shape_warning": false,
+            "support_warning": false,
+            "limitations": [],
+            "centroid_stability_pass": true,
+            "peak_stability_pass": true,
+            "peak_score_pass": false
+          },
+          "peak_score": 4.68701233353795,
+          "inner_probe": {
+            "available": true,
+            "fit": {
+              "parameters": [
+                76.04610789621172,
+                16.907459684191984,
+                -10.725104885434332,
+                2.047286615030913,
+                2.4607601429507415,
+                2.020308177166439,
+                -0.5626067959075998,
+                -0.47735745722194906,
+                0.36692137035675804
+              ],
+              "peak": 76.04610789621172,
+              "centroid": [
+                16.907459684191984,
+                -10.725104885434332
+              ],
+              "widths": [
+                11.713712252441065,
+                7.746852369780421
+              ],
+              "angle_rad": 0.4495118503715423,
+              "gaussian_integral": 7819.1805767444475,
+              "background": [
+                -0.5626067959075998,
+                -0.47735745722194906,
+                0.36692137035675804
+              ],
+              "residual_rms": 10.276775025120271,
+              "sse": 224003.2745288207,
+              "boundary_rejection": false,
+              "solver_status": 2,
+              "nfev": 12,
+              "successful_starts": 3
+            },
+            "centroid_difference_arcsec": 0.0033772248735883257,
+            "peak_relative_difference": 0.00029529916025028413
+          },
+          "centroid_error_arcsec": 0.2908538365343614,
+          "matched_trajectory_cost": {
+            "case": "D_20260912",
+            "P_seconds": 9.240276499884203,
+            "C_seconds": 14.90592991700396,
+            "ratio": 1.6131476062638122,
+            "existing_cost_pass": true,
+            "retained_passes": 7,
+            "role": "full all-array trajectory; no apportioning or retiming"
+          }
+        },
+        {
+          "case": "H_20260912",
+          "array": "a2000",
+          "arm": "P",
+          "peak": 86.69195837336261,
+          "absolute_error_pct": -13.30804162663739,
+          "fit_available": true,
+          "peak_usable": true,
+          "numerical_complete": true,
+          "inner_numerical_complete": true,
+          "judgments": {
+            "source_evidence_present": true,
+            "associated_source": true,
+            "centroid_usable": true,
+            "peak_response_usable": true,
+            "shape_warning": false,
+            "support_warning": false,
+            "limitations": [],
+            "centroid_stability_pass": true,
+            "peak_stability_pass": true,
+            "peak_score_pass": true
+          },
+          "peak_score": 5.344394658842708,
+          "inner_probe": {
+            "available": true,
+            "fit": {
+              "parameters": [
+                86.7107250537588,
+                16.868133914271432,
+                -10.823263656429138,
+                2.41226216857826,
+                1.9954617521988696,
+                0.46374146986499465,
+                -0.5496805051735998,
+                -0.47016362044882504,
+                0.36090713126015395
+              ],
+              "peak": 86.7107250537588,
+              "centroid": [
+                16.868133914271432,
+                -10.823263656429138
+              ],
+              "widths": [
+                11.159176552116875,
+                7.3555987077264415
+              ],
+              "angle_rad": 0.46374146986499465,
+              "gaussian_integral": 8064.6851058603725,
+              "background": [
+                -0.5496805051735998,
+                -0.47016362044882504,
+                0.36090713126015395
+              ],
+              "residual_rms": 10.277437710940527,
+              "sse": 224032.16463869868,
+              "boundary_rejection": false,
+              "solver_status": 2,
+              "nfev": 11,
+              "successful_starts": 3
+            },
+            "centroid_difference_arcsec": 0.0026663566466517664,
+            "peak_relative_difference": 0.0002164754464926144
+          },
+          "centroid_error_arcsec": 0.2202023470722322,
+          "matched_trajectory_cost": {
+            "case": "H_20260912",
+            "P_seconds": 9.864352999953553,
+            "C_seconds": 15.66116475011222,
+            "ratio": 1.5876525049525259,
+            "existing_cost_pass": true,
+            "retained_passes": 7,
+            "role": "full all-array trajectory; no apportioning or retiming"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "kind": "new_usable_absolute_peak_success",
+    "candidate": {
+      "case": "D_20260911",
+      "array": "a2000",
+      "arm": "C",
+      "peak": 92.52902538221625,
+      "absolute_error_pct": 2.8100282024625,
+      "fit_available": true,
+      "peak_usable": true,
+      "numerical_complete": true,
+      "inner_numerical_complete": true,
+      "judgments": {
+        "source_evidence_present": true,
+        "associated_source": true,
+        "centroid_usable": true,
+        "peak_response_usable": true,
+        "shape_warning": false,
+        "support_warning": false,
+        "limitations": [],
+        "centroid_stability_pass": true,
+        "peak_stability_pass": true,
+        "peak_score_pass": true
+      },
+      "peak_score": 5.520818953621909,
+      "inner_probe": {
+        "available": true,
+        "fit": {
+          "parameters": [
+            92.52225106887488,
+            16.99867830093919,
+            -11.115610554482789,
+            2.4886452949203934,
+            2.17666528959439,
+            0.5930213088087211,
+            0.11405218891406274,
+            2.0914817678681197,
+            0.4983509269806584
+          ],
+          "peak": 92.52225106887488,
+          "centroid": [
+            16.99867830093919,
+            -11.115610554482789
+          ],
+          "widths": [
+            12.044947711004612,
+            8.816855521320676
+          ],
+          "angle_rad": 0.5930213088087211,
+          "gaussian_integral": 11133.436954149032,
+          "background": [
+            0.11405218891406274,
+            2.0914817678681197,
+            0.4983509269806584
+          ],
+          "residual_rms": 10.825189286358414,
+          "sse": 248548.79766432213,
+          "boundary_rejection": false,
+          "solver_status": 2,
+          "nfev": 13,
+          "successful_starts": 3
+        },
+        "centroid_difference_arcsec": 0.011995601851345723,
+        "peak_relative_difference": 7.321284660011251e-05
+      },
+      "centroid_error_arcsec": 0.12715262975307962,
+      "matched_trajectory_cost": {
+        "case": "D_20260911",
+        "P_seconds": 9.261863874970004,
+        "C_seconds": 17.94660666701384,
+        "ratio": 1.9376884511889851,
+        "existing_cost_pass": true,
+        "retained_passes": 7,
+        "role": "full all-array trajectory; no apportioning or retiming"
+      }
+    },
+    "reference": {
+      "case": "D_20260911",
+      "array": "a2000",
+      "arm": "P",
+      "peak": 85.36738356118008,
+      "absolute_error_pct": -5.1473515986887985,
+      "fit_available": true,
+      "peak_usable": true,
+      "numerical_complete": true,
+      "inner_numerical_complete": true,
+      "judgments": {
+        "source_evidence_present": true,
+        "associated_source": true,
+        "centroid_usable": true,
+        "peak_response_usable": true,
+        "shape_warning": false,
+        "support_warning": false,
+        "limitations": [],
+        "centroid_stability_pass": true,
+        "peak_stability_pass": true,
+        "peak_score_pass": true
+      },
+      "peak_score": 5.10050689397592,
+      "inner_probe": {
+        "available": true,
+        "fit": {
+          "parameters": [
+            85.36360036568956,
+            16.809465724560386,
+            -11.015626674530308,
+            2.41308609807243,
+            2.0071660074913478,
+            -2.5354513716480356,
+            -0.4680733347636797,
+            1.5370352339020845,
+            -0.08591180386693001
+          ],
+          "peak": 85.36360036568956,
+          "centroid": [
+            16.809465724560386,
+            -11.015626674530308
+          ],
+          "widths": [
+            11.168374715607555,
+            7.442196304442001
+          ],
+          "angle_rad": 0.6061412819417575,
+          "gaussian_integral": 8039.48524270012,
+          "background": [
+            -0.4680733347636797,
+            1.5370352339020845,
+            -0.08591180386693001
+          ],
+          "residual_rms": 10.785976798962038,
+          "sse": 246751.40377193218,
+          "boundary_rejection": false,
+          "solver_status": 2,
+          "nfev": 13,
+          "successful_starts": 3
+        },
+        "centroid_difference_arcsec": 0.005739030937238893,
+        "peak_relative_difference": 4.431663865867019e-05
+      },
+      "centroid_error_arcsec": 0.1901348484799479,
+      "matched_trajectory_cost": {
+        "case": "D_20260911",
+        "P_seconds": 9.261863874970004,
+        "C_seconds": 17.94660666701384,
+        "ratio": 1.9376884511889851,
+        "existing_cost_pass": true,
+        "retained_passes": 7,
+        "role": "full all-array trajectory; no apportioning or retiming"
+      }
+    }
+  },
+  {
+    "kind": "new_usable_absolute_peak_success",
+    "candidate": {
+      "case": "H_20260912",
+      "array": "a2000",
+      "arm": "C",
+      "peak": 95.52579877995805,
+      "absolute_error_pct": -4.474201220041952,
+      "fit_available": true,
+      "peak_usable": true,
+      "numerical_complete": false,
+      "inner_numerical_complete": true,
+      "judgments": {
+        "source_evidence_present": true,
+        "associated_source": true,
+        "centroid_usable": true,
+        "peak_response_usable": true,
+        "shape_warning": false,
+        "support_warning": false,
+        "limitations": [],
+        "centroid_stability_pass": true,
+        "peak_stability_pass": true,
+        "peak_score_pass": true
+      },
+      "peak_score": 5.876446491996885,
+      "inner_probe": {
+        "available": true,
+        "fit": {
+          "parameters": [
+            95.55139555734078,
+            16.865014944216057,
+            -10.831180176741851,
+            2.514578062482225,
+            2.1005275405732524,
+            0.4807912978113284,
+            -0.30802202000440165,
+            -0.22875531335514857,
+            0.10518010116708912
+          ],
+          "peak": 95.55139555734078,
+          "centroid": [
+            16.865014944216057,
+            -10.831180176741851
+          ],
+          "widths": [
+            12.361391943567353,
+            8.170479035043138
+          ],
+          "angle_rad": 0.4807912978113284,
+          "gaussian_integral": 10934.938669632455,
+          "background": [
+            -0.30802202000440165,
+            -0.22875531335514857,
+            0.10518010116708912
+          ],
+          "residual_rms": 10.288769347851298,
+          "sse": 224526.46112445625,
+          "boundary_rejection": false,
+          "solver_status": 2,
+          "nfev": 12,
+          "successful_starts": 3
+        },
+        "centroid_difference_arcsec": 0.0033030566692817346,
+        "peak_relative_difference": 0.00026795669556967106
+      },
+      "centroid_error_arcsec": 0.2152967680751504,
+      "matched_trajectory_cost": {
+        "case": "H_20260912",
+        "P_seconds": 9.864352999953553,
+        "C_seconds": 15.66116475011222,
+        "ratio": 1.5876525049525259,
+        "existing_cost_pass": true,
+        "retained_passes": 7,
+        "role": "full all-array trajectory; no apportioning or retiming"
+      }
+    },
+    "reference": {
+      "case": "H_20260912",
+      "array": "a2000",
+      "arm": "P",
+      "peak": 86.69195837336261,
+      "absolute_error_pct": -13.30804162663739,
+      "fit_available": true,
+      "peak_usable": true,
+      "numerical_complete": true,
+      "inner_numerical_complete": true,
+      "judgments": {
+        "source_evidence_present": true,
+        "associated_source": true,
+        "centroid_usable": true,
+        "peak_response_usable": true,
+        "shape_warning": false,
+        "support_warning": false,
+        "limitations": [],
+        "centroid_stability_pass": true,
+        "peak_stability_pass": true,
+        "peak_score_pass": true
+      },
+      "peak_score": 5.344394658842708,
+      "inner_probe": {
+        "available": true,
+        "fit": {
+          "parameters": [
+            86.7107250537588,
+            16.868133914271432,
+            -10.823263656429138,
+            2.41226216857826,
+            1.9954617521988696,
+            0.46374146986499465,
+            -0.5496805051735998,
+            -0.47016362044882504,
+            0.36090713126015395
+          ],
+          "peak": 86.7107250537588,
+          "centroid": [
+            16.868133914271432,
+            -10.823263656429138
+          ],
+          "widths": [
+            11.159176552116875,
+            7.3555987077264415
+          ],
+          "angle_rad": 0.46374146986499465,
+          "gaussian_integral": 8064.6851058603725,
+          "background": [
+            -0.5496805051735998,
+            -0.47016362044882504,
+            0.36090713126015395
+          ],
+          "residual_rms": 10.277437710940527,
+          "sse": 224032.16463869868,
+          "boundary_rejection": false,
+          "solver_status": 2,
+          "nfev": 11,
+          "successful_starts": 3
+        },
+        "centroid_difference_arcsec": 0.0026663566466517664,
+        "peak_relative_difference": 0.0002164754464926144
+      },
+      "centroid_error_arcsec": 0.2202023470722322,
+      "matched_trajectory_cost": {
+        "case": "H_20260912",
+        "P_seconds": 9.864352999953553,
+        "C_seconds": 15.66116475011222,
+        "ratio": 1.5876525049525259,
+        "existing_cost_pass": true,
+        "retained_passes": 7,
+        "role": "full all-array trajectory; no apportioning or retiming"
+      }
+    }
+  }
+]

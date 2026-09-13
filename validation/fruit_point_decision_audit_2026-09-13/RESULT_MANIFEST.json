@@ -1,0 +1,91 @@
+{
+  "identity": "SCI-FRUIT-POINT-SAVED-DECISION-AUDIT@r0.1",
+  "source_commit": "cc93cb7b6b8c8063c29f59b74d0f6e31409775ff",
+  "recommendation": "close_this_starlet_experiment_for_POINT",
+  "independent_replication_earned": false,
+  "repaired_common_readout": "preserved",
+  "registered_results": "preserved",
+  "new_experiments": 0,
+  "files": [
+    {
+      "path": "ALL_CASES.md",
+      "bytes": 7950,
+      "sha256": "4adf10ef11d75448d6528cf5c6f20cbf222c7f01ba7066d3fa5a389916d69adc"
+    },
+    {
+      "path": "APPARENT_BENEFITS.json",
+      "bytes": 21514,
+      "sha256": "7f2aeac9a0d46ccf9106f6443d00cb6313060a62a55efd81594a88cd72d25529"
+    },
+    {
+      "path": "AUDIT.log",
+      "bytes": 9067,
+      "sha256": "63ed9ec19f7d8902bcb44147fd2b2e6e5df6907cc48601a5a45fbe18b82b84d3"
+    },
+    {
+      "path": "DECISION_AUDIT.md",
+      "bytes": 7395,
+      "sha256": "84d88d8607e7f0f12df9529f02d77f1cfd46cdbb3c3d7ca2dc5f26fcc7078398"
+    },
+    {
+      "path": "DISPOSITION.json",
+      "bytes": 709,
+      "sha256": "bfa006934d484a64999ffa35fcdef3256cef099f3469eaedd5de63a5511b5155"
+    },
+    {
+      "path": "INPUT_BINDINGS.json",
+      "bytes": 2741,
+      "sha256": "391c99ba191b03165cc5a518b4464056aac59501f0c866eacc98195fb67ff964"
+    },
+    {
+      "path": "PEAKS.json",
+      "bytes": 51595,
+      "sha256": "857a6e674fb15d05820a842d4a980ec59fa078e2bc1394a8b69f72e1a057c852"
+    },
+    {
+      "path": "PRESERVED_CONTEXT.json",
+      "bytes": 3957,
+      "sha256": "41ae97cba6cafc26b9a9aad5a33a41d3a5c3a0c7e62eb2cdcc6768caf4dcaf04"
+    },
+    {
+      "path": "REPEATABILITY_AND_RESPONSE.json",
+      "bytes": 204611,
+      "sha256": "3b8a0c3614105b1d5491d5f2abf9d649154f2e3a9509627378e46a24a178cf86"
+    },
+    {
+      "path": "REPORT.log",
+      "bytes": 677,
+      "sha256": "904a72f78568e052695b2db46b17c48b8d900f8237aa89f398c3a1d3394e0133"
+    },
+    {
+      "path": "SCOPE.md",
+      "bytes": 3192,
+      "sha256": "cae8f7fba747e0b30756e8efa8ae1362ba2399f88981e70fbefcf22593f8f260"
+    },
+    {
+      "path": "SUMMARY.json",
+      "bytes": 8859,
+      "sha256": "0ac3a411f88f54b17e771ebd56dc50c8a84b9597abcd1a085ca68877cbe98e36"
+    },
+    {
+      "path": "TRAJECTORY_COSTS.json",
+      "bytes": 1073,
+      "sha256": "19a3eb4f61cf8bc371e7b0932f72561651cf75f9699d10609a8ad4e635abfe42"
+    },
+    {
+      "path": "VERIFICATION.json",
+      "bytes": 908,
+      "sha256": "f6a11d3079e6e300a935a7b736ee835c35cecc12bc4149ca86bd52a309a35483"
+    },
+    {
+      "path": "audit.py",
+      "bytes": 10077,
+      "sha256": "59741d4f1f1880ab75ab8fe3cf42bbc5bbc1bad3e967abf40a3ae9e833b7366e"
+    },
+    {
+      "path": "report.py",
+      "bytes": 12706,
+      "sha256": "629700ce5ac5f56a3164c4a658b0ec1e2868729b1381ca712866cb531b15cc19"
+    }
+  ]
+}

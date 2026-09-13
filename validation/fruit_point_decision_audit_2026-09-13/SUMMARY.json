@@ -1,0 +1,398 @@
+[
+  {
+    "array": "a1100",
+    "arm": "P",
+    "family": "H/H",
+    "pairing": "repeat",
+    "required": 1,
+    "raw_passes": 1,
+    "usable": 1,
+    "usable_passes": 1,
+    "numerically_complete": 1,
+    "cost_eligible_usable_passes": 0,
+    "cost_and_numerically_complete_usable_passes": 0,
+    "signed_errors_pct": [
+      -2.2845223612433574
+    ]
+  },
+  {
+    "array": "a1100",
+    "arm": "P",
+    "family": "D/D",
+    "pairing": "repeat",
+    "required": 1,
+    "raw_passes": 1,
+    "usable": 1,
+    "usable_passes": 1,
+    "numerically_complete": 1,
+    "cost_eligible_usable_passes": 1,
+    "cost_and_numerically_complete_usable_passes": 1,
+    "signed_errors_pct": [
+      -2.244520028327346
+    ]
+  },
+  {
+    "array": "a1100",
+    "arm": "P",
+    "family": "D/H",
+    "pairing": "matched",
+    "required": 2,
+    "raw_passes": 2,
+    "usable": 2,
+    "usable_passes": 2,
+    "numerically_complete": 2,
+    "cost_eligible_usable_passes": 1,
+    "cost_and_numerically_complete_usable_passes": 1,
+    "signed_errors_pct": [
+      0.12881610205732752,
+      0.16980639687027566
+    ]
+  },
+  {
+    "array": "a1100",
+    "arm": "P",
+    "family": "D/H",
+    "pairing": "crossed",
+    "required": 2,
+    "raw_passes": 2,
+    "usable": 2,
+    "usable_passes": 2,
+    "numerically_complete": 2,
+    "cost_eligible_usable_passes": 1,
+    "cost_and_numerically_complete_usable_passes": 1,
+    "signed_errors_pct": [
+      2.469760698732415,
+      -2.1185952294804133
+    ]
+  },
+  {
+    "array": "a1100",
+    "arm": "C",
+    "family": "H/H",
+    "pairing": "repeat",
+    "required": 1,
+    "raw_passes": 1,
+    "usable": 1,
+    "usable_passes": 1,
+    "numerically_complete": 1,
+    "cost_eligible_usable_passes": 0,
+    "cost_and_numerically_complete_usable_passes": 0,
+    "signed_errors_pct": [
+      -2.815823676695528
+    ]
+  },
+  {
+    "array": "a1100",
+    "arm": "C",
+    "family": "D/D",
+    "pairing": "repeat",
+    "required": 1,
+    "raw_passes": 1,
+    "usable": 1,
+    "usable_passes": 1,
+    "numerically_complete": 1,
+    "cost_eligible_usable_passes": 1,
+    "cost_and_numerically_complete_usable_passes": 1,
+    "signed_errors_pct": [
+      -2.276638273332743
+    ]
+  },
+  {
+    "array": "a1100",
+    "arm": "C",
+    "family": "D/H",
+    "pairing": "matched",
+    "required": 2,
+    "raw_passes": 2,
+    "usable": 2,
+    "usable_passes": 2,
+    "numerically_complete": 2,
+    "cost_eligible_usable_passes": 1,
+    "cost_and_numerically_complete_usable_passes": 1,
+    "signed_errors_pct": [
+      0.21543817539899646,
+      0.7714412563534667
+    ]
+  },
+  {
+    "array": "a1100",
+    "arm": "C",
+    "family": "D/H",
+    "pairing": "crossed",
+    "required": 2,
+    "raw_passes": 2,
+    "usable": 2,
+    "usable_passes": 2,
+    "numerically_complete": 2,
+    "cost_eligible_usable_passes": 1,
+    "cost_and_numerically_complete_usable_passes": 1,
+    "signed_errors_pct": [
+      3.1190899246914094,
+      -2.0661048458902487
+    ]
+  },
+  {
+    "array": "a1400",
+    "arm": "P",
+    "family": "H/H",
+    "pairing": "repeat",
+    "required": 1,
+    "raw_passes": 0,
+    "usable": 0,
+    "usable_passes": 0,
+    "numerically_complete": 1,
+    "cost_eligible_usable_passes": 0,
+    "cost_and_numerically_complete_usable_passes": 0,
+    "signed_errors_pct": [
+      -6.1128289464694285
+    ]
+  },
+  {
+    "array": "a1400",
+    "arm": "P",
+    "family": "D/D",
+    "pairing": "repeat",
+    "required": 1,
+    "raw_passes": 1,
+    "usable": 0,
+    "usable_passes": 0,
+    "numerically_complete": 1,
+    "cost_eligible_usable_passes": 0,
+    "cost_and_numerically_complete_usable_passes": 0,
+    "signed_errors_pct": [
+      -2.046552503510024
+    ]
+  },
+  {
+    "array": "a1400",
+    "arm": "P",
+    "family": "D/H",
+    "pairing": "matched",
+    "required": 2,
+    "raw_passes": 1,
+    "usable": 0,
+    "usable_passes": 0,
+    "numerically_complete": 2,
+    "cost_eligible_usable_passes": 0,
+    "cost_and_numerically_complete_usable_passes": 0,
+    "signed_errors_pct": [
+      -5.625658779529241,
+      -1.5382828769598178
+    ]
+  },
+  {
+    "array": "a1400",
+    "arm": "P",
+    "family": "D/H",
+    "pairing": "crossed",
+    "required": 2,
+    "raw_passes": 1,
+    "usable": 0,
+    "usable_passes": 0,
+    "numerically_complete": 2,
+    "cost_eligible_usable_passes": 0,
+    "cost_and_numerically_complete_usable_passes": 0,
+    "signed_errors_pct": [
+      0.5188889615839409,
+      -7.557079222447872
+    ]
+  },
+  {
+    "array": "a1400",
+    "arm": "C",
+    "family": "H/H",
+    "pairing": "repeat",
+    "required": 1,
+    "raw_passes": 0,
+    "usable": 0,
+    "usable_passes": 0,
+    "numerically_complete": 1,
+    "cost_eligible_usable_passes": 0,
+    "cost_and_numerically_complete_usable_passes": 0,
+    "signed_errors_pct": [
+      -5.004308402063373
+    ]
+  },
+  {
+    "array": "a1400",
+    "arm": "C",
+    "family": "D/D",
+    "pairing": "repeat",
+    "required": 1,
+    "raw_passes": 1,
+    "usable": 0,
+    "usable_passes": 0,
+    "numerically_complete": 1,
+    "cost_eligible_usable_passes": 0,
+    "cost_and_numerically_complete_usable_passes": 0,
+    "signed_errors_pct": [
+      -3.9484287060917334
+    ]
+  },
+  {
+    "array": "a1400",
+    "arm": "C",
+    "family": "D/H",
+    "pairing": "matched",
+    "required": 2,
+    "raw_passes": 2,
+    "usable": 0,
+    "usable_passes": 0,
+    "numerically_complete": 2,
+    "cost_eligible_usable_passes": 0,
+    "cost_and_numerically_complete_usable_passes": 0,
+    "signed_errors_pct": [
+      -1.4520871955146841,
+      -0.35672446421266546
+    ]
+  },
+  {
+    "array": "a1400",
+    "arm": "C",
+    "family": "D/H",
+    "pairing": "crossed",
+    "required": 2,
+    "raw_passes": 1,
+    "usable": 0,
+    "usable_passes": 0,
+    "numerically_complete": 2,
+    "cost_eligible_usable_passes": 0,
+    "cost_and_numerically_complete_usable_passes": 0,
+    "signed_errors_pct": [
+      3.739349802918701,
+      -5.343181273941222
+    ]
+  },
+  {
+    "array": "a2000",
+    "arm": "P",
+    "family": "H/H",
+    "pairing": "repeat",
+    "required": 1,
+    "raw_passes": 0,
+    "usable": 1,
+    "usable_passes": 0,
+    "numerically_complete": 1,
+    "cost_eligible_usable_passes": 0,
+    "cost_and_numerically_complete_usable_passes": 0,
+    "signed_errors_pct": [
+      -11.664851315116886
+    ]
+  },
+  {
+    "array": "a2000",
+    "arm": "P",
+    "family": "D/D",
+    "pairing": "repeat",
+    "required": 1,
+    "raw_passes": 0,
+    "usable": 0,
+    "usable_passes": 0,
+    "numerically_complete": 1,
+    "cost_eligible_usable_passes": 0,
+    "cost_and_numerically_complete_usable_passes": 0,
+    "signed_errors_pct": [
+      -10.945310723608948
+    ]
+  },
+  {
+    "array": "a2000",
+    "arm": "P",
+    "family": "D/H",
+    "pairing": "matched",
+    "required": 2,
+    "raw_passes": 2,
+    "usable": 1,
+    "usable_passes": 1,
+    "numerically_complete": 2,
+    "cost_eligible_usable_passes": 0,
+    "cost_and_numerically_complete_usable_passes": 0,
+    "signed_errors_pct": [
+      -3.349480656567072,
+      -2.562206588506055
+    ]
+  },
+  {
+    "array": "a2000",
+    "arm": "P",
+    "family": "D/H",
+    "pairing": "crossed",
+    "required": 2,
+    "raw_passes": 0,
+    "usable": 1,
+    "usable_passes": 0,
+    "numerically_complete": 2,
+    "cost_eligible_usable_passes": 0,
+    "cost_and_numerically_complete_usable_passes": 0,
+    "signed_errors_pct": [
+      9.413433703737951,
+      -13.928180314687587
+    ]
+  },
+  {
+    "array": "a2000",
+    "arm": "C",
+    "family": "H/H",
+    "pairing": "repeat",
+    "required": 1,
+    "raw_passes": 0,
+    "usable": 1,
+    "usable_passes": 0,
+    "numerically_complete": 0,
+    "cost_eligible_usable_passes": 0,
+    "cost_and_numerically_complete_usable_passes": 0,
+    "signed_errors_pct": [
+      -6.584874634772142
+    ]
+  },
+  {
+    "array": "a2000",
+    "arm": "C",
+    "family": "D/D",
+    "pairing": "repeat",
+    "required": 1,
+    "raw_passes": 0,
+    "usable": 1,
+    "usable_passes": 0,
+    "numerically_complete": 1,
+    "cost_eligible_usable_passes": 0,
+    "cost_and_numerically_complete_usable_passes": 0,
+    "signed_errors_pct": [
+      -7.821592595932603
+    ]
+  },
+  {
+    "array": "a2000",
+    "arm": "C",
+    "family": "D/H",
+    "pairing": "matched",
+    "required": 2,
+    "raw_passes": 2,
+    "usable": 2,
+    "usable_passes": 2,
+    "numerically_complete": 1,
+    "cost_eligible_usable_passes": 1,
+    "cost_and_numerically_complete_usable_passes": 0,
+    "signed_errors_pct": [
+      0.5384073831019354,
+      -0.7926153363026822
+    ]
+  },
+  {
+    "array": "a2000",
+    "arm": "C",
+    "family": "D/H",
+    "pairing": "crossed",
+    "required": 2,
+    "raw_passes": 0,
+    "usable": 2,
+    "usable_passes": 0,
+    "numerically_complete": 1,
+    "cost_eligible_usable_passes": 0,
+    "cost_and_numerically_complete_usable_passes": 0,
+    "signed_errors_pct": [
+      7.625405404129126,
+      -7.325297244843309
+    ]
+  }
+]

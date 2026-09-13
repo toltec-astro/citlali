@@ -2118,6 +2118,34 @@ only diagnostics and all safeguards remain separately visible. Arithmetic,
 fits, optimizations, cleaning calls or new observations. Starlet remains parked;
 prior products, labels, numerical-completion and runtime findings are unchanged.
 
+The owner-requested [saved-products POINT decision audit](../validation/fruit_point_decision_audit_2026-09-13/DECISION_AUDIT.md)
+closes the current comparison with one recommendation: **close this starlet
+experiment for POINT; it has not earned an independent replication**. The
+repaired common source readout and all prior results remain preserved. This
+is the disposition of the tested candidate, not a general wavelet rejection.
+
+The audit uses only repaired 60-arcsec H/D saved readouts, all arrays and both
+noise realizations. At a1100 both arms meet the tested unchanged-repeat and
+matched/crossed response requirements, with C slower. At a1400 every pair
+remains withheld despite better raw C matched ratios. At a2000 C improves
+usable matched D/H from 1/2 to 2/2, but unchanged H/H and D/D falsely lose
+6.585% and 7.822%, and crossed D/H errors remain +7.625% and -7.325%. The
+extra usable matched pair and one absolute-peak gain depend on the incomplete
+C/H2/a2000 fit. D/D and one crossed failure use complete fits, so that single
+fit cannot explain away the repeatability problem. The other complete usable
+absolute-peak gain is D1/a2000; D2 misses the same 5% requirement. No subset
+may select only the favorable realization.
+
+Matched full-trajectory C/P wall costs are H1 2.114x, H2 1.588x, D1 1.938x
+and D2 1.613x. H1 exceeds the existing per-observation 2x requirement;
+pair averages and array-specific cost apportionment do not excuse it. The
+three C-only usable successes are explicitly bound to cost and numerical
+flags, without adding image-quality vetoes. All 24 peaks, 36 repeat/response
+pairs, 24 inverse D/H and 18 cancellation identities, four matched trajectory
+receipt pairs and source/opaque-archive checks pass. No maps, fitter, FRUIT,
+PTC, tolerance changes, corrections or reserved observations were used.
+No independent replication, OOF campaign or further rescue experiment starts.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

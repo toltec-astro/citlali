@@ -1,0 +1,17 @@
+{
+  "identity": "SCI-FRUIT-POINT-SAVED-DECISION-AUDIT@r0.1",
+  "recommendation": "close_this_starlet_experiment_for_POINT",
+  "independent_replication_earned": false,
+  "defensible_operational_subset": null,
+  "scope": "tested nominal central starlet candidate, not all wavelet methods",
+  "repaired_common_readout": "preserved",
+  "previous_registered_results": "preserved",
+  "starlet_only_usable_successes": 3,
+  "successes_depending_on_incomplete_fit": 2,
+  "other_complete_success_limited_to_one_noise_realization": true,
+  "standalone_image_quality_veto": false,
+  "changed_tolerances": false,
+  "amplitude_correction": false,
+  "new_experiment_started": false,
+  "reserved_observation_opened": false
+}

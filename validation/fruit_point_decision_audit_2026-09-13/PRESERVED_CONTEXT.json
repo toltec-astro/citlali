@@ -1,0 +1,193 @@
+{
+  "prior_nulls": [
+    {
+      "case": "N_20260911",
+      "arm": "P",
+      "complete": true,
+      "required_array_passes": 21,
+      "retained_array_passes": 21,
+      "feedback_admissions": 21,
+      "source_reports": 0,
+      "usable_centroids": 0,
+      "usable_peaks": 0
+    },
+    {
+      "case": "B_20260911",
+      "arm": "P",
+      "complete": true,
+      "required_array_passes": 21,
+      "retained_array_passes": 21,
+      "feedback_admissions": 21,
+      "source_reports": 0,
+      "usable_centroids": 0,
+      "usable_peaks": 0
+    },
+    {
+      "case": "N_20260912",
+      "arm": "P",
+      "complete": true,
+      "required_array_passes": 21,
+      "retained_array_passes": 21,
+      "feedback_admissions": 21,
+      "source_reports": 0,
+      "usable_centroids": 0,
+      "usable_peaks": 0
+    },
+    {
+      "case": "B_20260912",
+      "arm": "P",
+      "complete": true,
+      "required_array_passes": 21,
+      "retained_array_passes": 21,
+      "feedback_admissions": 21,
+      "source_reports": 0,
+      "usable_centroids": 0,
+      "usable_peaks": 0
+    },
+    {
+      "case": "N_20260911",
+      "arm": "C",
+      "complete": true,
+      "required_array_passes": 21,
+      "retained_array_passes": 21,
+      "feedback_admissions": 0,
+      "source_reports": 0,
+      "usable_centroids": 0,
+      "usable_peaks": 0
+    },
+    {
+      "case": "B_20260911",
+      "arm": "C",
+      "complete": true,
+      "required_array_passes": 21,
+      "retained_array_passes": 21,
+      "feedback_admissions": 0,
+      "source_reports": 0,
+      "usable_centroids": 0,
+      "usable_peaks": 0
+    },
+    {
+      "case": "N_20260912",
+      "arm": "C",
+      "complete": true,
+      "required_array_passes": 21,
+      "retained_array_passes": 21,
+      "feedback_admissions": 0,
+      "source_reports": 0,
+      "usable_centroids": 0,
+      "usable_peaks": 0
+    },
+    {
+      "case": "B_20260912",
+      "arm": "C",
+      "complete": true,
+      "required_array_passes": 21,
+      "retained_array_passes": 21,
+      "feedback_admissions": 0,
+      "source_reports": 0,
+      "usable_centroids": 0,
+      "usable_peaks": 0
+    }
+  ],
+  "prior_use_summary": [
+    {
+      "arm": "P",
+      "use": "G3_boundary",
+      "passed": 6,
+      "required": 6,
+      "available": 0
+    },
+    {
+      "arm": "P",
+      "use": "U1_startup",
+      "passed": 6,
+      "required": 6,
+      "available": 0
+    },
+    {
+      "arm": "P",
+      "use": "U2_U4_unchanged",
+      "passed": 0,
+      "required": 3,
+      "available": 1
+    },
+    {
+      "arm": "P",
+      "use": "U2_gain",
+      "passed": 2,
+      "required": 6,
+      "available": 2
+    },
+    {
+      "arm": "P",
+      "use": "U3_pointing",
+      "passed": 18,
+      "required": 18,
+      "available": 18
+    },
+    {
+      "arm": "P",
+      "use": "U4_degradation",
+      "passed": 2,
+      "required": 6,
+      "available": 2
+    },
+    {
+      "arm": "P",
+      "use": "U5_health",
+      "passed": 3,
+      "required": 6,
+      "available": 3
+    },
+    {
+      "arm": "C",
+      "use": "G3_boundary",
+      "passed": 6,
+      "required": 6,
+      "available": 0
+    },
+    {
+      "arm": "C",
+      "use": "U1_startup",
+      "passed": 6,
+      "required": 6,
+      "available": 0
+    },
+    {
+      "arm": "C",
+      "use": "U2_U4_unchanged",
+      "passed": 1,
+      "required": 3,
+      "available": 2
+    },
+    {
+      "arm": "C",
+      "use": "U2_gain",
+      "passed": 1,
+      "required": 6,
+      "available": 1
+    },
+    {
+      "arm": "C",
+      "use": "U3_pointing",
+      "passed": 18,
+      "required": 18,
+      "available": 18
+    },
+    {
+      "arm": "C",
+      "use": "U4_degradation",
+      "passed": 1,
+      "required": 6,
+      "available": 1
+    },
+    {
+      "arm": "C",
+      "use": "U5_health",
+      "passed": 5,
+      "required": 6,
+      "available": 5
+    }
+  ],
+  "role": "historical registered results, not repaired-readout claims; no image-only veto"
+}

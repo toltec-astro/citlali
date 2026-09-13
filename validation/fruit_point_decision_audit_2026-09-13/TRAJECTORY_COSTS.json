@@ -1,0 +1,38 @@
+[
+  {
+    "case": "H_20260911",
+    "P_seconds": 9.014632208039984,
+    "C_seconds": 19.054889041930437,
+    "ratio": 2.1137733189974997,
+    "existing_cost_pass": false,
+    "retained_passes": 7,
+    "role": "full all-array trajectory; no apportioning or retiming"
+  },
+  {
+    "case": "H_20260912",
+    "P_seconds": 9.864352999953553,
+    "C_seconds": 15.66116475011222,
+    "ratio": 1.5876525049525259,
+    "existing_cost_pass": true,
+    "retained_passes": 7,
+    "role": "full all-array trajectory; no apportioning or retiming"
+  },
+  {
+    "case": "D_20260911",
+    "P_seconds": 9.261863874970004,
+    "C_seconds": 17.94660666701384,
+    "ratio": 1.9376884511889851,
+    "existing_cost_pass": true,
+    "retained_passes": 7,
+    "role": "full all-array trajectory; no apportioning or retiming"
+  },
+  {
+    "case": "D_20260912",
+    "P_seconds": 9.240276499884203,
+    "C_seconds": 14.90592991700396,
+    "ratio": 1.6131476062638122,
+    "existing_cost_pass": true,
+    "retained_passes": 7,
+    "role": "full all-array trajectory; no apportioning or retiming"
+  }
+]
