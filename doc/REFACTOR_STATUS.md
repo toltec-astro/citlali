@@ -1,5 +1,25 @@
 # Citlali Refactor Status
 
+## RTC transient continuation and sequencing — 2026-09-13
+
+Owner directs RTC-first development: transients, line/notch workflow, lowpass,
+then downsampling. Final corpus loss measurement and real scan bindings may
+wait for preliminary RTC assembly; focused conformance/timing remain active.
+For isolated spikes the owner selected donor reconstruction first. The existing
+x-only donor/conditioned-r availability contract is preserved; donor selection,
+combination, fallback and hard-event/source predicates need their exact bindings.
+
+**TIMESTREAM-SUCCESSOR-RTC-TRANSIENT-APPLY-001** advances the independent, already
+selected screening-failure and accepted-jump exclusions into a combined RTC
+Consider/Apply boundary. Literal reviewed base `4d609306c868338e2f5c6b7920b81a4d39ebf967`;
+one clean owned RTC module worktree. The prior jump/census work is retained.
+Fresh canonical remains `86c20b31f7300ba4063be044380b61cd0baf25eb`. No push or cleanup
+is needed to continue; all publication remains owner-controlled. Full preflight
+and owner decisions are in the existing RTC event handoff. Implementation/gates
+are in progress; 15 focused tests and four config modes pass. The new public
+header compiles without a precompiled header. Broader and independent review
+gates remain pending. No complete RTC route or donor treatment is claimed.
+
 ## RTC initial jump admission and exclusion completed locally — 2026-09-13
 
 Owner-approved **TIMESTREAM-SUCCESSOR-RTC-JUMP-APPLY-001** is implemented at exact

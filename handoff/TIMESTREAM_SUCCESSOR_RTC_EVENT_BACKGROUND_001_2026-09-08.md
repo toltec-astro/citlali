@@ -2736,3 +2736,122 @@ externally afterward. Future canonical admission must reverify moving canonical
 ancestry and independently review the exact integration SHA. Next implementation
 connection is authoritative source and existing-scan bindings for corpus execution,
 within the accepted runtime architecture; no new census or framework is selected.
+
+
+## Owner sequencing and donor-first continuation — 2026-09-13
+
+The owner directs continuing preliminary RTC implementation before undertaking
+PTC development or resolving the final corpus-wide lost-data fraction. The
+ordered RTC work is transient treatment, native-rate line/notch Learn–Consider–
+Apply, lowpass filtering, then downsampling. The notch workflow belongs after
+transients and before lowpass/downsampling; its existing SCI-RTC REQ-055--082
+and 129--130 contracts and settled D2/VAL/beam/motion decisions must be reused.
+This schedule does not select numerical notch policies or authorize filtering.
+An exact existing-scan binding remains necessary to execute the accepted
+full-scan jump action, but its real-data connection may wait while other RTC
+components are developed. Controlled existing-scan fixtures remain explicit.
+Focused conformance, source injections and timing continue with implementation;
+the combined real-corpus loss fraction is deferred until preliminary RTC is
+assembled. This does not redefine scans or implement PTC/PCA.
+
+Owner: "Sounds good. Assess if we need any git push and/or cleanup. Then let's
+continue with #1." In response to the proposed first isolated-spike action,
+the owner selected **"Use donor reconstruction first"**. This supersedes the
+proposed paired sample-exclusion action for accepted isolated spikes. It does
+not reopen the separate accepted noise-screening or persistent-jump exclusions.
+SCI-RTC REQ-014--020/064--065/095/131--132 already prescribe compatible raw
+flxscale transfer, stable-segment restrictions, x-only reconstruction, raw-r
+preservation, conditioned-r unavailability over causal influence, and the lack
+of independent detector exposure at replaced representatives. OWNER-004/005
+selection/combination/fallback and hard-event/optical predicates are not silently
+selected by the action choice. The proposed same-network simultaneous donor
+pool is pending an explicit owner answer; no donor code follows from silence.
+
+## RTC transient exclusion composition preflight — 2026-09-13
+
+Work order **TIMESTREAM-SUCCESSOR-RTC-TRANSIENT-APPLY-001**, owner Grant Wilson,
+Tier 2, one RTC scientific-module slot. Owner authorization above covers
+continuation of step #1 and the one bounded worktree. This increment composes
+already selected noise-screening exclusions with the exact reviewed jump plan;
+it does not accept isolated spikes or provide their donor recovery. The donor
+choice remains the next isolated-spike treatment, independently of these two
+settled exclusion operations.
+
+Read applicable AGENTS, toltec-context references, all three effective governance
+documents, status/ledger, architecture/conventions, S2 work order and the original
+RTC Learn and event owner decisions. Governance bytes/digests and accepted
+06a3ade51c1b3f38887295433d913811bf25cd14 / effectiveness
+77507836325eff9f469062d5884481ea37599594 ancestry remain unchanged.
+Literal base is reviewed closure **4d609306c868338e2f5c6b7920b81a4d39ebf967**,
+tree bf7c28e599759d58360840e86fc26af6e8e37dae. New owned worktree
+`/private/tmp/citlali-timestream-successor-rtc-transient-apply-001`, branch
+`codex/timestream-successor-rtc-transient-apply-001`, was clean on creation.
+Completed jump/census lanes are retained evidence, not active modules.
+
+Read-only live SSH GitHub verification: canonical remains
+86c20b31f7300ba4063be044380b61cd0baf25eb, published RTC event branch remains
+d1ed875f7aa3ccbadbe783b571f635d7ba96b2e4; jump and census branches are absent.
+The literal base contains 23 commits beyond that published RTC ancestor. A
+push is useful as an owner-run checkpoint, not a prerequisite for local work.
+No integration or push is performed. Both canonical and RTC ancestry remain;
+future admission needs fresh canonical verification and exact integration-SHA
+review. The unrelated dirty checkout and old prunable worktree records remain
+untouched. No cleanup is required for this increment; assessment is not a full
+preservation/deletion audit or deletion authorization.
+
+Runtime Learn remains unchanged. RTC Consider consumes the exact original
+`RtcSpikeLearningDecision` and reviewed `RtcJumpExclusionPlan`, checks identical
+Learn/VAL parentage and freezes their union. Apply verifies plan/input/VAL and
+the complete ordered partition schedule and exposes the selected paired native
+exclusions. Raw values, producer causes, coordinate-specific screening failures,
+accepted jump facts and unresolved evidence remain separately reconstructible.
+Union counts count a paired cell once; overlapping reasons remain available.
+This is a complete plan only for the two selected exclusions, not a complete
+RTC/transient route, an isolated-spike action or PTC/VAL named-use admission.
+
+Scientific requirements: owner September 7 screening-failure disposition;
+September 9--13 accepted jump policy; SCI-RTC REQ-026/043--047/055--058/094/118--126/138.
+No noise floor, threshold, scientific exclusion class or event acceptance is
+invented. Scoped outputs are half-open native detector/sample treatment ranges
+with original axes, physical runs and parent identities retained; no numeric
+transformation, new time grid, sky-frame calculation or uncertainty estimate.
+Sparse per-detector/block records and interval unions reference existing heavy
+parents. No sample or state plane allocation. Engineering recovery, testing,
+exact-SHA independent review and closure remain separate from runtime phases.
+
+Expected changed paths: one RTC transient-exclusion header, isolated-header and
+focused tests, tests/CMakeLists.txt, this existing handoff and living status.
+Gates: exact-parent and stale-state failures; x/r causes and paired action;
+block/run/scan and engineering-partition boundaries; overlap accounting;
+invalid-before-payload access; unresolved/protected non-promotion; source
+injections, deterministic sparse cost; header isolation; full runnable CTest,
+four config modes, 207 baseline-tool tests and CLI source binding. Actual local
+AppleClang/Homebrew/preserved cached dependencies are supplemental; no Unity,
+Spack reproduction, real-corpus execution or operational qualification. New
+scientific or cross-owner choices, dependency changes, semantic mismatch or
+unexpected failure/performance trigger reassessment. Stop dependent work for a
+missing scientific rule; do not import legacy donor policy.
+
+Exclusions: donor implementation pending choices, isolated-spike/optical hard
+admission, new source geometry/scan generation, health rejection, spectra,
+notches, lowpass/factors/downsampling, CAL/PTC/AST/MAP algorithms, activation,
+production, cleanup. All 39 bound prior scientific headers and nine cached
+patches are preserved. Evidence/preflight, reviewed source/closure identities,
+actual local gates and limitations bind externally under
+`/private/tmp/citlali-rtc-transient-apply-2026-09-13`.
+
+
+Pre-commit verification: all 15 new focused tests pass; isolated public header
+compiles without a precompiled header; all four config modes pass. The first
+focused run retained a failing fixture with NaN incorrectly declared finite;
+native admission rejected it as required. The fixture's finiteness declaration
+was corrected, without changing production policy. Physical-gap continuity,
+paired causes and overlap, original identity/VAL, protected and candidate
+non-promotion, and 8,800 bitwise source-sample comparisons pass. The 1,000-pair
+plan/Apply microtest takes approximately 0.00050 seconds with 144 logical owned
+bytes for its three-block fixture; whole focused process wall time 0.36572 seconds
+and peak child RSS 10,649,600 bytes. This is local synthetic conformance, not
+production throughput or donor/astronomical classification qualification.
+All 39 bound prior headers, normative governance and nine cached dependency
+patches/heads reverify unchanged. Full source build/CTest, baseline tools, final
+CLI source binding and exact-SHA review follow this coherent source commit.
