@@ -2855,3 +2855,85 @@ production throughput or donor/astronomical classification qualification.
 All 39 bound prior headers, normative governance and nine cached dependency
 patches/heads reverify unchanged. Full source build/CTest, baseline tools, final
 CLI source binding and exact-SHA review follow this coherent source commit.
+
+
+## RTC transient exclusion composition completion — 2026-09-13
+
+Exact source **be4d1d4eb921c9a1adb78fb64902715bb6052bd1**, tree
+**7aa541da3ac58d3085d685198f57e41d51449d5e**, direct parent/literal base
+**4d609306c868338e2f5c6b7920b81a4d39ebf967**. Six source paths: new
+`timestream_rtc_transient_exclusion.h`, its isolated-header and focused test
+translation units, `tests/CMakeLists.txt`, current status and this existing
+handoff. No prior scientific interface or numerical algorithm was edited.
+
+Runtime Consider consumes the exact original screening decision and reviewed
+jump plan. Different Learn generations are rejected even when their native
+parent/snapshot happen to match. Exact original VAL is required. It freezes
+sparse per-detector/block treatment ranges, union/overlap counts and original
+block references. Separate x/r screening causes and accepted-jump causes remain
+available at an excluded cell; the parent chain retains every original event,
+recovery, source and unresolved disposition. Apply validates the exact parent,
+plan, VAL and complete ordered partition schedule, and exposes only the selected
+exclusions through a zero-copy native view. Retained values and producer state
+are unchanged. No plan is relabeled as a full RTC or donor treatment; no new
+PTC/VAL admission policy, Engine state, generic framework or source authority.
+
+Local gates: isolated header compiles without PCH; 15 focused tests pass;
+**1,035/1,035 runnable CTests pass** in 29.37 seconds, **1,036 registered**;
+all **1,021 prior registrations retained**, 15 new; only established disabled
+`citlali::MapFitterLifecycle.ExactProductSequence` remains. All four config
+modes and **207 baseline tests** pass. Full application and safety builds pass;
+CLI reports `gbe4d1d4eb`. Boundary tests cover one/both-coordinate failures,
+locality across blocks/detectors/physical gaps, overlaps counted once, exact
+Learn and VAL identity, partitions, invalid payloads, candidate/protected
+non-promotion and **8,800 bitwise source-sample comparisons**. The first fixture
+failure and repair are retained. No unexpected application errors remain in
+final passing gates. All 39 bound inherited scientific headers, normative
+governance, two cached source heads and nine cached patch digests reverify.
+
+Focused process: 0.36571554210968316 seconds, 10,649,600 bytes peak child RSS.
+The three-block synthetic fixture repeats 1,000 plan constructions plus Apply
+and assertions in about 0.00050 seconds, with 144 logical owned plan bytes.
+Apply owns zero numeric and state-plane bytes. Whole-process memory is not an
+incremental algorithm measurement. Actual environment: AppleClang 21 arm64,
+C++20 Release, Homebrew and preserved cached patches. These are supplemental
+local results, not representative Spack/Unity reproduction, full-observation
+throughput, real source-geometry validation or physical-event truth. No real
+corpus exclusions, combined loss fraction, donor result or affected application
+mode is claimed; 152390 remains a timestream fixture for subsequent work.
+
+Independent fresh-context read-only source review by
+`/root/rtc_transient_exact_review`: **PASS with recorded limitations; no findings
+on scientific/behavioral, architectural/ownership, or repository/evidence axes**.
+The reviewer independently repeated all 15 focused tests, no-PCH syntax-only
+header compilation and CLI identity; verified the complete source seal,
+source/dependency/binary digests, prior test retention and clean exact ancestry.
+No repairs requested. `review-source-01.md` SHA-256:
+**878c3f282ee57c795a1146644a27c558a2f893425aaee57db087b1b54609d5b6**.
+`source-binding.json` SHA-256:
+**a470df830f05d1434ac2b02b133860fe6de7c34db2ec7df6945d30615e738844**.
+`SOURCE_SHA256SUMS` binds **136 files**, SHA-256:
+**4735a74e311694f855f10463e7ce4c794419590bdb3ad25dee52cd261e54059b**.
+The sealed gate-status record's earlier review-pending state is superseded by
+this separately bound review, not rewritten. The later documentation closure
+and review identities are external to the source seal to avoid self-reference.
+
+Owner-selected next isolated-spike action remains donor reconstruction. The
+pending donor-pool proposal is same-network/same-native-time eligible detectors,
+excluding transient-contaminated, failed-screening and protected/unknown-source
+donors. It has not received an owner answer and is not coded. Donor combination,
+no-donor/invalid-transfer fallback and exact event/optical admission also retain
+their required decisions. Their governing requirements and already settled
+x-only/flxscale/raw-r/stable-segment boundaries are recorded above. No paired
+sample-exclusion policy is substituted for donor treatment.
+
+This source work is complete within its two-exclusion boundary. The docs-only
+closure changes only current status and this handoff, directly follows source,
+and receives a separate exact-SHA review without source rebuild. No canonical
+integration, push, route activation, production, cleanup, new scan/source method,
+notch/lowpass/downsampling or PTC/CAL/AST/MAP algorithm follows. Publication is
+owner-only; no push/cleanup is a prerequisite for local continuation. Future
+canonical admission must verify moving ancestry and obtain independent exact
+integration-SHA review. The scientific donor choice remains the next boundary
+for the owner-directed transient work, while the exact corpus loss fraction
+continues to wait for preliminary RTC assembly.

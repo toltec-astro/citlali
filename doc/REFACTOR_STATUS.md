@@ -9,16 +9,58 @@ For isolated spikes the owner selected donor reconstruction first. The existing
 x-only donor/conditioned-r availability contract is preserved; donor selection,
 combination, fallback and hard-event/source predicates need their exact bindings.
 
-**TIMESTREAM-SUCCESSOR-RTC-TRANSIENT-APPLY-001** advances the independent, already
-selected screening-failure and accepted-jump exclusions into a combined RTC
-Consider/Apply boundary. Literal reviewed base `4d609306c868338e2f5c6b7920b81a4d39ebf967`;
-one clean owned RTC module worktree. The prior jump/census work is retained.
-Fresh canonical remains `86c20b31f7300ba4063be044380b61cd0baf25eb`. No push or cleanup
-is needed to continue; all publication remains owner-controlled. Full preflight
-and owner decisions are in the existing RTC event handoff. Implementation/gates
-are in progress; 15 focused tests and four config modes pass. The new public
-header compiles without a precompiled header. Broader and independent review
-gates remain pending. No complete RTC route or donor treatment is claimed.
+**TIMESTREAM-SUCCESSOR-RTC-TRANSIENT-APPLY-001** is locally implemented and
+independently reviewed at exact `be4d1d4eb921c9a1adb78fb64902715bb6052bd1`, tree
+`7aa541da3ac58d3085d685198f57e41d51449d5e`, directly preserving reviewed base
+`4d609306c868338e2f5c6b7920b81a4d39ebf967`. Source review passes with recorded
+limitations and no findings on all three axes.
+
+The original Learn and all numerical scientific policies are unchanged. RTC
+Consider composes the exact original screening decision and reviewed jump plan,
+checks common Learn/VAL identity, and freezes their paired exclusion union.
+Apply checks input/plan/VAL/ordered-partition identity and withholds excluded or
+producer-invalid payloads through its accessor. Raw parents and retained values
+are unchanged. Screening failure, coordinate of cause and accepted jump remain
+distinct; overlapping reasons count a pair cell once. This completes those two
+selected exclusions only, not isolated-spike/donor treatment, a full RTC route,
+or any downstream PTC/VAL named-use admission.
+
+All 15 focused tests, isolated public header, 1,035 runnable CTests, four config
+modes and 207 baseline-tool tests pass. All 1,021 earlier registrations remain;
+15 added, with only the established disabled test unchanged. Tests include
+8,800 bitwise source-sample comparisons and physical-run/block/partition
+boundaries. Source review independently repeated the focused tests, isolated
+header and CLI. The CLI reports `gbe4d1d4eb`; 39 previous scientific headers and
+nine cached patches remain unchanged. The first NaN-finiteness fixture failure
+is preserved and corrected. Final application/test gates have no unexpected errors.
+
+These are supplemental local AppleClang/Homebrew/cached-dependency results.
+No Unity/Spack reproduction, real-corpus exclusion count, donor accuracy or
+production performance is claimed. Full CTest took 29.37 seconds. The focused
+process took 0.36572 seconds and peak child RSS 10,649,600 bytes; its small
+1,000 plan/Apply microtest took about 0.00050 seconds and owned 144 logical bytes.
+Apply owns no numeric/state plane. The donor-pool question remains pending;
+no silent donor, fallback or event/optical admission choice was made.
+
+[Results](/private/tmp/citlali-rtc-transient-apply-2026-09-13/README.md) and the
+existing RTC handoff bind source, gates, owner sequencing and limitations.
+Source evidence seal: 136 files, SHA-256
+`4735a74e311694f855f10463e7ce4c794419590bdb3ad25dee52cd261e54059b`;
+independent source review SHA-256
+`878c3f282ee57c795a1146644a27c558a2f893425aaee57db087b1b54609d5b6`.
+This documentation-only closure follows the tested source directly and receives
+separate exact-SHA review, externally bound without rebuilding at the docs HEAD.
+
+The owned worktree is
+`/private/tmp/citlali-timestream-successor-rtc-transient-apply-001`, branch
+`codex/timestream-successor-rtc-transient-apply-001`. Fresh preflight canonical
+remained `86c20b31f7300ba4063be044380b61cd0baf25eb`. No push or cleanup is needed
+to continue locally. The old published RTC tip is 23 commits behind this
+increment's literal base; publishing the reviewed descendant is an optional
+owner-run checkpoint. Both histories and old worktree/evidence records remain.
+No integration, push, activation, production or cleanup occurred. Future
+canonical admission still requires moving-base verification and independent
+review of the exact integration SHA.
 
 ## RTC initial jump admission and exclusion completed locally — 2026-09-13
 
