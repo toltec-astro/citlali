@@ -1,0 +1,8 @@
+test_feedback_optimization_and_inference_disabled (test_sensitivity.SensitivityTests.test_feedback_optimization_and_inference_disabled) ... ok
+test_selection_uses_only_registered_projected_core_metric (test_sensitivity.SensitivityTests.test_selection_uses_only_registered_projected_core_metric) ... ok
+test_subspace_invariant_to_signs_and_rotations (test_sensitivity.SensitivityTests.test_subspace_invariant_to_signs_and_rotations) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+OK

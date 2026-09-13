@@ -1,0 +1,10 @@
+{
+  "starting_commit": "219b7d9ab77047f3d67cdddfc4bf3305c34af894",
+  "missing_tracked_restored": 3202,
+  "untracked_preserved": [
+    "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/method_preparation/ordinary_map/method_definition/.DS_Store",
+    "validation/fruit_point_coherent_feedback_2026-09-11/__pycache__/",
+    "validation/fruit_q02_weight_precision_2026-09-09/__pycache__/"
+  ],
+  "action": "Recreated missing worktree pointer and restored only absent tracked paths from HEAD; no surviving file replaced."
+}

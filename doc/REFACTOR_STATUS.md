@@ -1935,6 +1935,17 @@ candidate recovery/time improvement is established. Any new tolerance,
 objective, support or image-selection procedure is a separate scientific owner
 decision; no further numerical experiment is authorized by this completed repair.
 
+On 2026-09-13 the owner separately authorized a
+[small paired feedback-sensitivity experiment](../validation/fruit_point_feedback_sensitivity_2026-09-13/PROTOCOL.md).
+It preserves the evaluator repair and failed qualification, examines all saved
+nominal/tighter pairs in image, selected-coefficient and actual projected-sample
+space, then performs exactly six one-step PTC-relearning branches on three
+registered states. The largest source-region projected-change state is selected
+before replay by a frozen data-only rule. There is no new feedback optimization,
+regularizer, method, gate or full trajectory. Subspace and next-total peak/centroid
+effects determine whether a later scientific change is warranted; image-peak
+differences alone do not establish consequential underconstraint.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
