@@ -2357,3 +2357,67 @@ Future canonical admission must freshly verify live ancestry and review its
 exact integration SHA. The next decision is the bounded scan-association
 prerequisite, not an inference that low direct support makes an Apply treatment
 safe or inexpensive at scan scale.
+
+
+## RTC observation recurrence assessment approved preflight — 2026-09-13
+
+Owner approval: “sounds good. Proceed” authorizes the proposed comparison of
+repetition counts, rates, temporal spread and exposure costs using the same
+sealed census, plus read-only investigation of the native-to-existing-PCA-scan
+prerequisite. Work order **RTC-OBSERVATION-RECURRENCE-001**, Tier 2, is an inert
+evidence-tool continuation on the same owned clean worktree and branch
+`/private/tmp/citlali-rtc-disturbance-burden-census-001`,
+`codex/rtc-disturbance-burden-census-001`. It occupies no runtime spine/module
+slot and opens no second branch. Literal base is accepted census closure
+`4eb5de86ce3f4fe071053e0c2381bf77fdc14e1c`, tree
+`aaa784903ef594e280c9d90aaf796ec8e207c43b`; its exact tested source remains
+`5973de4eb696ad211be4eceeeabcc20e25435b6f`. Initial index/worktree/untracked
+state is empty. Live GitHub canonical verified by explicit SSH URL is
+`86c20b31f7300ba4063be044380b61cd0baf25eb`; former RTC remote remains
+`d1ed875f7aa3ccbadbe783b571f635d7ba96b2e4`; this census branch is absent
+remotely. There is no canonical admission or remote mutation.
+
+AGENTS, toltec-context, current status, scientific conventions, architectural
+invariants and all three effective governance documents were read. Governance
+effectiveness/digests remain those above (accepted 06a3ade51, incorporation
+775078363). SCI-RTC r0.12 REQ-094–099, 102, 106, 114, 118–125 and 138,
+SCI-ALIGN half-open support requirements, and the preserved September 9/10
+owner decisions govern identities, paired evidence, support, health review and
+full-intersected-existing-scan treatment. Prior D2/VAL and RTC source are immutable.
+
+The tool consumes the exact 158-file sealed census generation, retaining initial
+producer/VAL exposure, original producer-group identities and separate retained
+transition, recovery, unresolved, noise and health evidence. A group counts
+once even when x and r both contain retained measurements. Original groups
+are not physical-event identities. Rates use eligible detector-minutes; elapsed
+temporal spread is separately described and acquisition gaps are not exposure.
+Four equal elapsed-time divisions are descriptive bins, never processing scans;
+a group's earliest retained-bound start places one marker, without regrouping.
+Counts 2/3/5/10, rates 0.25/0.5/1/2 per minute and occupied divisions 2/3/4
+are exploratory sensitivity coordinates, not scientific defaults or a chosen
+exclusion policy. Whole-observation cost is unioned initially eligible exposure;
+additional loss beyond direct measured support is not additional loss beyond
+full-scan treatment. The latter remains unavailable without exact scan support.
+
+The existing health rule (10x peer scale, >1% edges, >=80% of >=6 complete
+10-second blocks) remains review-only. No observation-wide bad-detector policy
+is selected. Any future exclusion has observation/named-use scope, not persistent
+hardware identity or Tune/APT rewrite. This engineering assessment consumes
+runtime Learn and Consider products; it produces no runtime Consider/Apply plan.
+
+Expected edits: one Python recurrence consumer and analytical tests; existing
+status/handoff only. New artifacts live outside the sealed census root. Fresh
+gates: pair/group and identity reconciliation, eligible-time/gap/rate boundary
+checks, analytic costs, monotonic threshold sensitivity, all-corpus accounting,
+deterministic replay, timing/RSS, and independent fresh-context exact-SHA review
+with all three dispositions. C++/config/Spack gates remain inherited because
+no corresponding source changes; no build or Unity run is required. A docs-only
+closure directly follows the tested source and receives its own exact review.
+
+Read-only metadata/log investigation may recover a previously recorded relation,
+but must not reverse-engineer missing alignment or scan rows into authority.
+Missing native clock/run/config relations, unexpected schemas or counts, new
+policy needs, changes to runtime/corpus/ownership trigger reassessment; preserve
+and report missing bindings rather than inventing them. No map data, spectral
+work, new observations, runtime flags/corrections, activation, integration, push
+or cleanup. GitHub pushes remain owner-controlled.

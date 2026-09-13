@@ -1,5 +1,23 @@
 # Citlali Refactor Status
 
+## RTC observation recurrence assessment in progress — 2026-09-13
+
+Owner-approved **RTC-OBSERVATION-RECURRENCE-001** continues the accepted census
+closure `4eb5de86ce3f4fe071053e0c2381bf77fdc14e1c` on the same clean owned
+evidence branch/worktree. It compares original retained-group counts, rates
+per initially eligible detector-minute, elapsed temporal spread and hypothetical
+whole-observation exposure costs. It preserves all runtime methods, D2/VAL,
+original group identities and the immutable census generation. The existing
+RTC handoff contains the bounded Tier-2 preflight and exact authorities.
+
+No threshold is selected. Four elapsed-time quarters are descriptive bins, not
+PCA scans. Repeated retained measurements, bounded recoveries, unresolved causes
+and existing review-only detector-health concerns remain distinct. This consumer
+produces engineering decision evidence; it implements no runtime Consider/Apply
+plan. Read-only scan-binding investigation must preserve unavailable actual
+scan losses when exact native/processing relations are absent. No C++ change,
+new corpus, spectra, map work, Unity, push, integration or activation is included.
+
 ## RTC native disturbance-burden census completed locally — 2026-09-13
 
 Owner-approved **RTC-DISTURBANCE-BURDEN-CENSUS-001** is implemented at exact
