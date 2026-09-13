@@ -2139,3 +2139,88 @@ freshly verify live moving ancestry and independently review the exact
 integration SHA. No integration, push, route activation, flags, correction,
 filtering, spectra, MAP/CAL/PTC/AST, Unity access, new data, production or cleanup
 occurs. All GitHub pushes remain owner-controlled.
+
+
+## RTC disturbance-burden census approved preflight — 2026-09-13
+
+Work order **RTC-DISTURBANCE-BURDEN-CENSUS-001**, owned by the project owner,
+is approved for the native-time census proposed in the design review. Risk
+Tier 2: inert persisted evidence accounting; no runtime scientific change.
+Engineering governance, Timestream Successor governance and Review And
+Conformance are effective through accepted `06a3ade51c1b3f38887295433d913811bf25cd14`
+and incorporation `77507836325eff9f469062d5884481ea37599594`; their digests remain
+those recorded in the integration ledger. SCI-RTC r0.12 REQ-094–099, 102, 106,
+114, 118–125 and 138 govern support distinctions, evidence origin, source
+protection, phase separation and downstream ownership. D2/VAL and all frozen
+contracts remain preserved. Architecture and scientific conventions retain
+their existing authority.
+
+Literal implementation base is reviewed documentation closure
+`8fff882dd0e8891512b01e6065cdb442981b1e5d`, tree
+`8b3167e4d477fbb7aa515339306a432257cd2c62`, directly after tested source
+`81a35ced25d45eeccafabc3243b5aa3010893625`. Live canonical, read by explicit
+SSH GitHub URL on 2026-09-13, is `86c20b31f7300ba4063be044380b61cd0baf25eb`;
+live former RTC branch is `d1ed875f7aa3ccbadbe783b571f635d7ba96b2e4`. This
+work is not canonical admission. The old temporary checkout is incomplete
+and lacks its .git pointer; its files and registered ref are left untouched.
+The unrelated dirty citlali-refactor checkout is likewise preserved.
+
+The one clean owned worktree is
+`/private/tmp/citlali-rtc-disturbance-burden-census-001`, branch
+`codex/rtc-disturbance-burden-census-001`, initially empty staged/unstaged/
+untracked state. This bounded evidence tool does not reopen the completed RTC
+module or occupy a runtime spine slot. Expected changes are one local Python
+accounting tool, its analytical tests, and these existing handoff/status records.
+The tool consumes saved Learn evidence and final Consider dispositions; it
+produces engineering decision evidence, not a runtime Consider or Apply plan.
+
+The fixed input cohort is 143 eligible network files, 13 observations and 155
+deferred inventory entries. Initial VAL and producer Tune-valid finite-pair
+support define the fixed detector-time denominator before RTC disturbance
+exclusions. Saved noise-screening-required support is reported separately;
+peer-only APT cuts and review-only health concerns do not remove denominator
+support. Failed fits and unresolved bounds never shrink it. Pairs count once.
+All durations use interval unions. Physical transition bounds, bounded recovery
+support, original fitting guards, additional hypothetical guards and unresolved
+extents remain distinct. Final retained coordinates must reconcile to 11,150.
+No producer group becomes a physical-event identity.
+
+Timing is reconstructed from the recorded producer clock and integration-center
+support, with the already provisional uniform averaging assumption unchanged.
+Accounting uses integer microseconds relative to the first native center;
+rounding error is measured, no more than half a microsecond per endpoint, and
+checked against saved bounds. This avoids artificial nanosecond clock-rounding
+holes without hiding acquisition-run breaks. Deferred exposure is unavailable
+unless its missing binding can actually be supplied. Verified metadata only
+may name program intent/array; missing labels remain unavailable. Cross-network
+concurrency, actual full-scan rejection, longest/all segments per scan and
+releveling-opportunity exposure remain unavailable without authoritative
+native-to-PCA-scan and clock relations. Acquisition ScanNum is never a proxy.
+Existing full-detector/full-intersected-PCA-scan level-0 policy remains settled.
+
+Approved sensitivity assumptions are minimum native interval durations of
+1, 5, 10 s and additional boundary exclusions of 0, 50, 100 ms. These show
+native duration qualification only, not scientific adequacy or runtime defaults.
+Localized recovered transients are exclusions, not new level-shift identities.
+Candidate-inclusive edge/guard footprints are sensitivities, not prevalence
+bounds or a completeness correction. Source protection and spectral context
+remain unavailable; no harmfulness threshold is introduced.
+
+Focused gates cover overlap/union, pair coherence, gaps, invalidity, differing
+cadence, missing bounds, phase selection and analytic scenario costs; corpus
+hierarchical sums and preserved population reconciliation are required.
+Determinism, timings, memory, source/input/output digests and independent fresh
+read-only exact-SHA review are required. The prior 1,004 CTests, 33 focused RTC
+tests, four config modes and 207 baseline tests remain inherited evidence for
+unchanged C++; local Python accounting tests are the fresh gate. A new build,
+Unity/Spack campaign or reduction is not required for this non-runtime tool.
+New authority needs, absent input bindings, unexpected support, schema, memory
+or numerical outcomes trigger recorded reassessment. Keep bounded or stop;
+do not broaden into scan reconstruction or detector development.
+
+No integration, push, cleanup, route activation, flags, replacement, correction,
+filtering, spectra, maps, production, new data or subsequent runtime capability
+is authorized. Owner performs all GitHub pushes. Completion records exact
+source and evidence plus the three independent review dispositions; canonical
+admission would separately require fresh moving-base and exact integration-SHA
+review. The same original evidence remains immutable.
