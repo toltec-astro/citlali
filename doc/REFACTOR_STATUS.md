@@ -1,5 +1,75 @@
 # Citlali Refactor Status
 
+## RTC donor-fill component implementation — 2026-09-13
+
+Owner-approved TIMESTREAM-SUCCESSOR-RTC-DONOR-FILL-001 is implemented as a
+candidate on `codex/timestream-successor-rtc-donor-fill-001`, based on pushed
+closure `d1e9bab76dadded53e8dd107947d508142e2b8ed`. Fresh canonical authority is
+`86c20b31f7300ba4063be044380b61cd0baf25eb`; no ancestry integration is performed.
+The new worktree is `/private/tmp/citlali-timestream-successor-rtc-donor-fill-001`.
+The earlier two decision-note edits are preserved in their original worktree
+and copied into this candidate; no unrelated dirt or sealed evidence is changed.
+
+Runtime Learn/background is reused. RTC Consider consumes explicitly selected
+event support, exact original VAL, reviewed screening/jump exclusions, original
+peer eligibility and caller-bound prior flxscale/resolved-segment/contamination
+facts. It freezes eligible/central donor identities and the median samples at
+native times. Apply uses the selected target cubic plus donor fluctuations
+relative to their end-to-end line, tapered with `16 u^2 (1-u)^2` between clean
+bracketing occurrences. Replacements are available only to conditioning,
+permanently excluded as independent/map inputs, and create conditioned-r
+unavailability; original x/r and retained values remain unchanged.
+
+Missing donors, transfer, background, stable boundaries, prior exclusion or
+nonfinite arithmetic leaves an explicit unrepaired excluded gap. Fits that used
+newly selected samples or cross resolved target-segment boundaries are not reused.
+This implements one bounded fill operation, not automatic spike/optical admission,
+a complete RTC route or propagation through not-yet-implemented filters. No
+application producer currently supplies the selected-event/factor/segment bindings;
+the focused fixtures do so explicitly. No production or real-corpus repair claim.
+
+Focused C++ compilation and the isolated public header pass; exact-source broad
+gates and independent review are in progress. Local AppleClang/Homebrew/cached
+results are supplemental, not Unity/Spack V2 reproduction. Existing D2/VAL/RTC,
+frozen scientific packages, AST/CAL/PTC/MAP, config/route defaults and the user-only
+push boundary remain unchanged. Detailed preflight, owner decisions and limits
+remain in the existing RTC event-background handoff.
+
+## RTC donor-pool and combination owner decisions — 2026-09-13
+
+The owner reports the reviewed transient-exclusion closure
+`d1e9bab76dadded53e8dd107947d508142e2b8ed` pushed to
+`codex/timestream-successor-rtc-transient-apply-001`; the supplied GitHub output
+reports creation of that feature branch. This is an owner-supplied push receipt,
+not a fresh remote-ref verification or canonical admission.
+
+The owner has now approved the first isolated-spike donor pool: other eligible,
+uncontaminated detectors on the same network at the same native sample time,
+excluding failed-screening and protected/unknown-source donors. This supersedes
+the donor-pool-pending statements in the earlier closure below. The existing
+compatible flxscale transfer, resolved stable-segment, x-only repair and raw-r
+preservation requirements continue to apply. This is a partial binding of
+SCI-RTC-OWNER-004, not closure of its remaining choices. The owner also approved
+the median of eligible donor values after compatible transfer into target raw-x
+scale, averaging the two central values for an even count. The owner clarified
+that donor values serve only to maintain a continuous stream where needed:
+replacements remain flagged and must never enter the map. Numerical filling
+must not restore map eligibility; the replacement identity/cause must survive
+later transformations. Existing full-support influence requirements remain.
+The owner approved using the median with at least one eligible donor and an
+explicit unrepaired, excluded gap when none is available. The owner then raised
+edge matching: multiplicative transfer and a median alone do not ensure a
+continuous join. The owner subsequently approved reusing the target's existing
+local cubic background, removing an end-to-end trend from the transferred median
+donor segment, and adding its fluctuations with a taper that vanishes in value
+and slope at both gap edges. This joins the fitted background without modifying
+retained measurements; it does not force equality with noisy neighboring samples
+or authorize bridging a true shift or missing boundary. The precise realization,
+remaining deterministic/reuse details and exact event/optical admission still
+need their implementation binding. See the appended owner-decision record in
+the existing RTC event-background handoff. These are working decision notes for the
+next increment; no reconstruction code or new reviewed candidate is claimed.
+
 ## RTC transient continuation and sequencing — 2026-09-13
 
 Owner directs RTC-first development: transients, line/notch workflow, lowpass,

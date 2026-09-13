@@ -2937,3 +2937,202 @@ canonical admission must verify moving ancestry and obtain independent exact
 integration-SHA review. The scientific donor choice remains the next boundary
 for the owner-directed transient work, while the exact corpus loss fraction
 continues to wait for preliminary RTC assembly.
+
+## Owner approves the initial donor pool — 2026-09-13
+
+The owner supplied a successful GitHub push receipt for
+`codex/timestream-successor-rtc-transient-apply-001`, whose local reviewed
+closure is `d1e9bab76dadded53e8dd107947d508142e2b8ed`, tree
+`27bdb6a860bb829cc77a92d873340508fdb17869`. The supplied output reports a new
+feature branch; this record does not assert a fresh remote-ref verification or
+canonical integration. Published source, closure and sealed review evidence
+remain unchanged.
+
+Owner question: "Do you approve that donor pool?" The stated proposal was
+eligible, uncontaminated detectors on the same network at the same native sample
+time, excluding donors whose source status is protected or unknown. Owner
+answer: **"Sure"**. The previously pending pool question is therefore resolved:
+other detectors on the target's network, using simultaneous native occurrences,
+with transient-contaminated, failed-screening and protected/unknown-source donors
+excluded. This selection supplies topology, time support and those eligibility
+restrictions for the first reconstruction policy. It does not imply that any
+eligible donor is available in a particular observation.
+
+This partially binds SCI-RTC-OWNER-004. Preserve the settled requirements:
+REQ-014--016 require exact-occurrence compatible flxscale transfer in the stated
+donor-to-target direction; REQ-095 requires resolved stable segments before
+replacement, with no crossing of unresolved or accepted shift boundaries;
+REQ-018/020/064 retain donor influence and do not promote replacements into
+independent target exposure or evidence of common sky; REQ-131--132 retain
+x-only repair, raw-r parentage and conditioned-r unavailability over complete
+causal influence. No additive transfer or legacy responsivity fallback is
+selected. Donor combination, count, reuse, remaining deterministic selection
+details, OWNER-005 fallback, and exact hard-event/protected-optical admission
+remain open for their respective dependent operations.
+
+This turn only records the owner's selection in this handoff and current
+status, from the clean reviewed closure above on its existing owned worktree.
+Applicable AGENTS, toltec-context routing, Engineering Governance, Timestream
+Successor Governance and Review And Conformance were read; all three governance
+digests match the effective integration-ledger bindings and effectiveness record
+`77507836325eff9f469062d5884481ea37599594` remains an ancestor of the closure.
+The notes are uncommitted pending the remaining policy discussion and a coherent
+increment; they do not claim a new independent review or completed work order.
+No source, frozen contract, sealed evidence, branch/ref, integration, activation,
+push or cleanup changes are made. The next question concerns donor combination.
+
+## Owner approves median combination and clarifies purpose — 2026-09-13
+
+The owner answered **"Yes"** to the proposed median of eligible donor values
+after the approved flxscale transfer into target raw-x scale, with the two
+central values averaged for an even donor count. The owner added: "Our donor's
+are just there to provide a continuous data stream where needed. The values
+remain flagged and must never enter the map."
+
+Record median combination as selected under SCI-RTC-OWNER-004, superseding the
+combination-pending statement above. Donor-filled values are continuity-only;
+their replacement cause persists and they remain excluded from map input.
+Finiteness or successful filling never restores eligibility. Preserve this
+identity/cause through later filtering and sampling, along with the existing
+REQ-018/020/052 full-support donor influence. This does not silently select a
+new downstream rejection rule for every neighboring output with nonrepresentative
+filter influence. The x-only repair and conditioned-r-unavailability contract
+is unchanged. No map implementation or product comparison is in scope.
+
+Minimum usable donor count, reuse/remaining deterministic details and the
+OWNER-005 no-donor/invalid-transfer disposition are not selected by this answer.
+The next recommendation should keep those choices proportionate to continuity
+filling, without adding reconstruction-quality optimization. Exact event and
+protected-source admission still require their own binding. These remain
+uncommitted working owner-decision notes; no source or sealed evidence changes
+and no new tested/reviewed reconstruction candidate are claimed.
+
+## Owner approves count/fallback and requests matching edges — 2026-09-13
+
+The owner answered "Yes" to using the approved median with at least one eligible
+donor and recording an unrepaired, excluded gap when none exists, then asked:
+"what is the plan to match the donor value edges so that there is not an abrupt
+jump?" The count and empty-pool disposition are selected; they do not authorize
+an arbitrary discontinuous fill. Eligibility continues to require the compatible
+exact-occurrence transfer, so an invalid transfer does not supply a usable donor.
+
+Multiplicative flxscale transfer and median combination do not by themselves
+match the target background. Recovered SCI-RTC-EQ-007 already represents a
+declared replacement boundary contribution through beta; this is not permission
+to invent an undocumented additive transfer. The existing event-background
+learner supplies cubic coefficients and their availability in original units.
+Reusing that background for replacement requires an explicit application
+binding, not a new background learning algorithm.
+
+Proposed, not owner-selected: use the accepted target cubic background across an
+isolated event, add the transferred median donor segment's variation after
+removing its end-to-end trend, and smoothly taper that donor variation to zero
+with zero taper slope at the two joins. This would match the fitted target
+background and its slope without editing retained samples. It would not promise
+exact equality with individual noisy neighboring measurements. Replacement stays
+flagged and excluded from map input. Required usable boundaries, degenerate or
+one-sided cases and the exact taper must be bound before implementation; no
+bridging of a real shift or unavailable boundary is implied. Edge behavior and
+subsequent filter transients need focused conformance checks. This remains a
+working proposal in the existing decision notes, with no source change.
+
+## Owner approves joining the target background — 2026-09-13
+
+Owner response to the preceding boundary-treatment proposal: **"I like this
+approach"**. The owner-approved construction is now:
+
+1. Reuse the target's existing local cubic background learned from clean
+   surrounding samples.
+2. Remove an end-to-end trend from the compatibly transferred median donor
+   segment to obtain donor fluctuations.
+3. Add those fluctuations to the target background with a smooth taper that
+   vanishes in both value and slope at the gap edges.
+
+The fitted target background and slope define the joins. Retained samples are
+unchanged, and exact equality with individual noisy neighboring measurements is
+not promised. This construction applies within a resolved stable segment; it
+does not authorize bridging a true level shift or inventing missing boundary
+support. Replacements remain continuity-only, permanently marked, excluded from
+map input and subject to the preserved x-only/raw-r/influence requirements.
+
+Prior-work recovery for implementation: `RtcEventCubicFit` and the event
+assessment evidence already carry cubic coefficients in the original coordinate
+units, time origin/scale, support and availability. Reuse this Learn evidence;
+do not refit the atmosphere in Apply. SCI-RTC-EQ-007 already has an explicit
+replacement boundary term. The implementation must record this selected use
+alongside the donor links and compatible factors. The existing
+`NativeDetectorRunFcfContract` aggregates a run-local conversion factor, including
+an extinction-active branch; it is not automatically the compatible
+detector-static flxscale authority required for raw donor transfer.
+
+Runtime responsibilities remain distinct: existing Learn supplies background,
+event and screening evidence; RTC Consider must freeze the selected fill support,
+eligible donors, exact transfer and boundary construction; Apply must execute
+that plan with persistent replacement and availability facts. This approval does
+not promote recovered event candidates to accepted hard spikes or supply a
+protected optical admission predicate. Precise taper/time/support realization
+and remaining donor-policy details must be explicit and tested within the
+bounded implementation; unselected admission policy remains outside it.
+
+These working notes record approved treatment, not a completed reconstruction
+implementation. Only current status and this handoff are modified, atop the
+previously pushed/reviewed closure. No source, frozen scientific package or sealed
+evidence is changed; the notes remain uncommitted for the coherent next increment.
+
+## RTC donor-fill implementation preflight — 2026-09-13
+
+Owner: Grant Wilson; authorization: the treatment decisions above followed by
+"Let's give it a shot". Work order TIMESTREAM-SUCCESSOR-RTC-DONOR-FILL-001,
+Tier 2, one RTC module slot. Literal base is pushed/reviewed closure
+`d1e9bab76dadded53e8dd107947d508142e2b8ed`, tree
+`27bdb6a860bb829cc77a92d873340508fdb17869`. Fresh SSH GitHub reads confirm that
+feature tip and canonical `86c20b31f7300ba4063be044380b61cd0baf25eb`. No merge
+is implied; eventual canonical admission requires fresh moving-base checks and
+independent exact integration-SHA review. The owned initially clean worktree is
+`/private/tmp/citlali-timestream-successor-rtc-donor-fill-001`, branch
+`codex/timestream-successor-rtc-donor-fill-001`. The previous worktree's two
+working decision notes were copied here and preserved there unchanged; all
+earlier sources, seals and reviews are retained.
+
+Applicable AGENTS, toltec-context routing, Engineering Governance, Timestream
+Successor Governance and Review And Conformance were read. Their three digests
+match the effective ledger binding at 06a3ade51/775078363. Current status and
+the existing implementation work order govern sequencing; SCI-RTC r0.12
+REQ-013--020/041--045/052/064--065/095/124/131--135 and EQ-002/007 govern the
+fill, alongside the explicit owner selections above. Architecture remains RTC
+ownership with immutable facts/plan/result; Engine and orchestration are untouched.
+
+Scope: a bounded native x continuity-fill component for explicitly selected
+event support. It consumes original Learn/background, VAL, peer-population and
+reviewed screening/jump exclusions plus exact caller-bound static flxscale,
+resolved stable segments and selected-event authority. It does not produce
+automatic hard-spike or protected-source admission. Fixtures explicitly supply
+these still-unwired producer facts; identity strings alone cannot supply usable
+state/support. The existing run-averaged/extinction FCF is not used as flxscale.
+Consider freezes donor selection and boundary inputs; Apply changes only the
+selected x support, keeps it excluded, withholds conditioned r there, and retains
+original values, parents, factors and full local donor/background support.
+Future filters must propagate these causes/support; no filter is activated here.
+
+Numerical realization of the approved smooth join: normalized physical time
+between the immediately bracketing native occurrences, an end-to-end donor
+line, and the minimal symmetric quartic taper `16 u^2 (1-u)^2` (zero endpoint
+value/slope, unit midpoint). No fit or taper-length tuning is added. All eligible
+donors at a given time enter the median; detector identity orders value ties.
+No reuse-based optimization is introduced; reuse remains explicit correlation
+provenance. Missing required factors, donors, background, or two-sided stable
+boundary support yields an unrepaired, excluded gap, never a zero/legacy fill.
+
+Expected paths: one RTC donor header, isolated-header TU, focused C++ tests,
+tests/CMakeLists.txt, current status and this handoff. Sparse storage scales with
+selected support and donor memberships, not the full observation. Gates: focused
+analytic joins, flags/raw preservation, donor/factor/source/segment failures,
+stale-identity/partition checks, simple filter-response fixtures, time/memory;
+isolated header, full CTest/check, four config modes and baseline-tool tests;
+independent fresh-context exact-SHA review. Actual local AppleClang/Homebrew
+cached build evidence is supplemental, not Unity/Spack V2 reproduction. No
+real-data treatment, map product, production timing or scientific-event truth
+claim. No map, PTC, CAL, AST, D2/VAL change, native PSD, notch, lowpass,
+downsampling, generic framework, route/default activation or cleanup. Reassess
+scope/ownership, unresolved policy, unexpected numeric behavior or changed
+authority before proceeding. Pushes remain owner-only.

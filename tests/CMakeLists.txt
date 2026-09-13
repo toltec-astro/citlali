@@ -559,3 +559,14 @@ add_dependencies(check citlali_timestream_successor_rtc_transient_exclusion_test
 gtest_discover_tests(citlali_timestream_successor_rtc_transient_exclusion_test
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     TEST_PREFIX "citlali::timestream_successor::rtc_transient_exclusion::" DISCOVERY_MODE PRE_TEST)
+
+add_executable(citlali_timestream_successor_rtc_donor_fill_test EXCLUDE_FROM_ALL
+    timestream_rtc_donor_fill_header.cpp test_timestream_rtc_donor_fill.cpp)
+set_source_files_properties(timestream_rtc_donor_fill_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+set_target_properties(citlali_timestream_successor_rtc_donor_fill_test PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
+target_link_libraries(citlali_timestream_successor_rtc_donor_fill_test PRIVATE citlali::citlali GTest::gtest_main)
+add_dependencies(check citlali_timestream_successor_rtc_donor_fill_test)
+gtest_discover_tests(citlali_timestream_successor_rtc_donor_fill_test
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    TEST_PREFIX "citlali::timestream_successor::rtc_donor_fill::" DISCOVERY_MODE PRE_TEST)
