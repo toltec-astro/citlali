@@ -2438,3 +2438,96 @@ normalized to a string for the JSON audit, and the installed safe C parser
 handles the large bounded provenance documents. New analytical cases cover
 published counts without intervals, absent provenance and unexpected schemas.
 The failed run log is retained externally; review must bind the repaired SHA.
+
+
+## RTC observation recurrence assessment completed locally — 2026-09-13
+
+Owner-approved **RTC-OBSERVATION-RECURRENCE-001** is implemented at exact
+`71ea2580df0129ae41ddcce4779a9b08727f540e`, tree
+`14639acfbb488a4581a6348f4eb4d8db207ba688`, preserving literal accepted census
+closure `4eb5de86ce3f4fe071053e0c2381bf77fdc14e1c`. This local evidence
+consumer summarizes the sealed runtime Learn/Consider census; it selects no
+runtime exclusion threshold, Consider plan or Apply operation. Original groups,
+D2/VAL, scientific methods and the 143-file/13-observation cohort remain unchanged.
+
+All 71,734 detector occurrences and 242,014 original groups reconcile. Initial
+eligible exposure remains 17,216,191,725,568 microseconds across 70,024 records.
+The 8,389 groups with retained transition evidence still count paired x/r once.
+Whole-observation cuts at >=2/3/5/10 such groups would discard respectively
+3.93448/3.06864/1.90358/0.87404% of initial detector-time. These are conditional
+measurement groups, not independently accepted physical events.
+
+Exploratory joint sensitivity uses group rates per eligible minute and four
+equal elapsed-time quarters, which are not processing scans. At >=3 groups,
+>=0.5 groups/minute and >=3 occupied quarters, 296 detector-observation records
+represent 0.829318% of initial exposure; rates >=1 or >=2 with the same other
+settings select 246/225 records and 0.467997/0.316362%. These coordinates are
+not recommended or selected scientific defaults. Recovery, unresolved and
+review-only health concerns remain separate; all 17 existing health concerns
+have zero retained transition groups. No permanent detector identity is inferred.
+
+Read-only scan investigation recovered 124 bounded native scan summaries in
+each of Science 152390/152392, including alignment/observation binding digests,
+RTC interval-authority names and PTC counts. The 11 short-observation records
+declare native-cohort provenance unavailable. Pointing NetCDF scan indices
+refer to output timebases; saved log matrices are abbreviated. Exact native
+intervals and per-network native-to-processing relations are still missing, so
+full-scan costs and incremental loss beyond scan-by-scan treatment remain null.
+This is a missing explicit binding, not an unresolved scientific scan-selection
+rule: every intersected existing scan remains the accepted policy.
+
+Fresh 18 recurrence tests and 21 existing census-consumer tests pass. The
+full-corpus accounting run and replay reproduce nine scientific artifacts
+byte-for-byte; all 66 inspected metadata/log/NetCDF files reverify. Both plots
+are inspected. Local runs took 20.340 and 12.454 seconds with peak whole-process
+RSS 780,009,472 and 777,846,784 bytes. Initial metadata-guard failure is preserved
+with its bounded repair; final accounting reports zero unexpected errors.
+Independent exact-source/evidence review: PASS with recorded limitations and no findings.
+No C++ or Spack build, Unity campaign, event reanalysis or map processing occurs.
+
+[Assessment and plots](/private/tmp/citlali-rtc-observation-recurrence-2026-09-13/run-02/README.md)
+bind the source and output manifest SHA-256
+`3126f56626846290d9e914f8d2f8317e380b111a99d8287f7e8d5c4a87f7a26f`.
+The existing RTC handoff records preflight, reassessment and full conformance.
+The same owned branch remains `codex/rtc-disturbance-burden-census-001` in
+`/private/tmp/citlali-rtc-disturbance-burden-census-001`. Live preflight canonical
+was `86c20b31f7300ba4063be044380b61cd0baf25eb`; this evidence lane remains local.
+The docs-only closure must directly follow tested source and receive independent
+exact-SHA review, bound externally. No threshold selection, flags, correction,
+activation, integration, push, new data or cleanup. Future canonical admission
+requires fresh moving-base verification and independent exact integration-SHA review.
+
+
+Completion/conformance: evidence candidate complete; actual scan-treatment-cost
+comparison remains unavailable for the recorded missing binding. Scientific/
+behavioral PASS with recorded limitations, architecture/ownership PASS, and
+repository/evidence hygiene PASS, all without findings. Independent reviewer
+/root/rtc_recurrence_exact_review binds exact tested source
+71ea2580df0129ae41ddcce4779a9b08727f540e. Review record:
+/private/tmp/citlali-rtc-observation-recurrence-2026-09-13/review-source.md
+SHA-256 8a1ffb6f16c11c8cc4aac10287ea0342dc69118df4efa572f39aed7cb3fd468c.
+
+Exact direct source parent is c9bfb8d80e11e29ee260b0ba08aa5e87e6e45582;
+the literal approved base remains 4eb5de86ce3f4fe071053e0c2381bf77fdc14e1c.
+Changed paths over that base are the recurrence tool/test and these two existing
+documents; accepted census tool/tests and all runtime source remain unchanged.
+The output root contains 11 sealed files plus SHA256SUMS. Detailed review
+independently reconciles every descriptor and all 17 population summaries.
+The fresh local 21 census-consumer tests accompany 18 recurrence tests; broader
+C++/config/baseline evidence remains inherited, not a new gate result.
+
+Missing binding is specifically: exact native input/axis/run identity, exact
+requested processing generation and full existing PCA scan support, and the
+per-network native-to-processing relation with validity/timing uncertainty.
+Existing owner policy already selects every intersected scan. Recover/export
+that relation under its existing owner; do not reconstruct omitted rows from
+counts or abbreviated logs or reopen the scientific scan definition. Selecting
+a whole-observation exclusion threshold and validating its scientific adequacy
+remain owner decisions after the cost comparison. The proposed joint sensitivity
+example is not an admission recommendation.
+
+This separate documentation-only closure directly follows tested source; its
+exact SHA/tree and independent closure review will be bound externally after
+review. No rebuilding at documentation HEAD substitutes for tested source.
+Owner acceptance, canonical integration, push and runtime activation remain
+separate; user performs every GitHub push with the required explicit URL/refspec.

@@ -1,22 +1,61 @@
 # Citlali Refactor Status
 
-## RTC observation recurrence assessment in progress — 2026-09-13
+## RTC observation recurrence assessment completed locally — 2026-09-13
 
-Owner-approved **RTC-OBSERVATION-RECURRENCE-001** continues the accepted census
-closure `4eb5de86ce3f4fe071053e0c2381bf77fdc14e1c` on the same clean owned
-evidence branch/worktree. It compares original retained-group counts, rates
-per initially eligible detector-minute, elapsed temporal spread and hypothetical
-whole-observation exposure costs. It preserves all runtime methods, D2/VAL,
-original group identities and the immutable census generation. The existing
-RTC handoff contains the bounded Tier-2 preflight and exact authorities.
+Owner-approved **RTC-OBSERVATION-RECURRENCE-001** is implemented at exact
+`71ea2580df0129ae41ddcce4779a9b08727f540e`, tree
+`14639acfbb488a4581a6348f4eb4d8db207ba688`, preserving literal accepted census
+closure `4eb5de86ce3f4fe071053e0c2381bf77fdc14e1c`. This local evidence
+consumer summarizes the sealed runtime Learn/Consider census; it selects no
+runtime exclusion threshold, Consider plan or Apply operation. Original groups,
+D2/VAL, scientific methods and the 143-file/13-observation cohort remain unchanged.
 
-No threshold is selected. Four elapsed-time quarters are descriptive bins, not
-PCA scans. Repeated retained measurements, bounded recoveries, unresolved causes
-and existing review-only detector-health concerns remain distinct. This consumer
-produces engineering decision evidence; it implements no runtime Consider/Apply
-plan. Read-only scan-binding investigation must preserve unavailable actual
-scan losses when exact native/processing relations are absent. No C++ change,
-new corpus, spectra, map work, Unity, push, integration or activation is included.
+All 71,734 detector occurrences and 242,014 original groups reconcile. Initial
+eligible exposure remains 17,216,191,725,568 microseconds across 70,024 records.
+The 8,389 groups with retained transition evidence still count paired x/r once.
+Whole-observation cuts at >=2/3/5/10 such groups would discard respectively
+3.93448/3.06864/1.90358/0.87404% of initial detector-time. These are conditional
+measurement groups, not independently accepted physical events.
+
+Exploratory joint sensitivity uses group rates per eligible minute and four
+equal elapsed-time quarters, which are not processing scans. At >=3 groups,
+>=0.5 groups/minute and >=3 occupied quarters, 296 detector-observation records
+represent 0.829318% of initial exposure; rates >=1 or >=2 with the same other
+settings select 246/225 records and 0.467997/0.316362%. These coordinates are
+not recommended or selected scientific defaults. Recovery, unresolved and
+review-only health concerns remain separate; all 17 existing health concerns
+have zero retained transition groups. No permanent detector identity is inferred.
+
+Read-only scan investigation recovered 124 bounded native scan summaries in
+each of Science 152390/152392, including alignment/observation binding digests,
+RTC interval-authority names and PTC counts. The 11 short-observation records
+declare native-cohort provenance unavailable. Pointing NetCDF scan indices
+refer to output timebases; saved log matrices are abbreviated. Exact native
+intervals and per-network native-to-processing relations are still missing, so
+full-scan costs and incremental loss beyond scan-by-scan treatment remain null.
+This is a missing explicit binding, not an unresolved scientific scan-selection
+rule: every intersected existing scan remains the accepted policy.
+
+Fresh 18 recurrence tests and 21 existing census-consumer tests pass. The
+full-corpus accounting run and replay reproduce nine scientific artifacts
+byte-for-byte; all 66 inspected metadata/log/NetCDF files reverify. Both plots
+are inspected. Local runs took 20.340 and 12.454 seconds with peak whole-process
+RSS 780,009,472 and 777,846,784 bytes. Initial metadata-guard failure is preserved
+with its bounded repair; final accounting reports zero unexpected errors.
+Independent exact-source/evidence review: PASS with recorded limitations and no findings.
+No C++ or Spack build, Unity campaign, event reanalysis or map processing occurs.
+
+[Assessment and plots](/private/tmp/citlali-rtc-observation-recurrence-2026-09-13/run-02/README.md)
+bind the source and output manifest SHA-256
+`3126f56626846290d9e914f8d2f8317e380b111a99d8287f7e8d5c4a87f7a26f`.
+The existing RTC handoff records preflight, reassessment and full conformance.
+The same owned branch remains `codex/rtc-disturbance-burden-census-001` in
+`/private/tmp/citlali-rtc-disturbance-burden-census-001`. Live preflight canonical
+was `86c20b31f7300ba4063be044380b61cd0baf25eb`; this evidence lane remains local.
+The docs-only closure must directly follow tested source and receive independent
+exact-SHA review, bound externally. No threshold selection, flags, correction,
+activation, integration, push, new data or cleanup. Future canonical admission
+requires fresh moving-base verification and independent exact integration-SHA review.
 
 ## RTC native disturbance-burden census completed locally — 2026-09-13
 
