@@ -1,5 +1,35 @@
 # Citlali Refactor Status
 
+## RTC initial jump admission and exclusion implementation — 2026-09-13
+
+The owner approved **TIMESTREAM-SUCCESSOR-RTC-JUMP-APPLY-001**: outside explicit
+source protection, final >=5 sigma_delta offsets at both existing fit durations,
+same sign / <=2 sigma_delta agreement, supported transition/post-level and usable
+non-recovery evidence qualify a coordinate for paired exclusion. Every intersected
+existing PCA scan is selected; three qualifying original groups select that exact
+detector occurrence for the observation. Paired evidence counts once per group.
+Protected-source, unavailable protection/recovery and unresolved evidence do not
+become hard events. The existing Learn chain and D2/VAL remain unchanged.
+
+The bounded runtime implementation adds RTC Consider admission and an immutable
+jump-exclusion plan, followed by Apply as a mask-aware native paired view with
+unchanged raw samples. Exact original input/VAL and existing-scan generation /
+native support bindings are required. It adds no route activation or downstream
+PTC/VAL policy implementation. This is one selected operation within S2 RTC,
+not a claim that all RTC operations or the production route are complete.
+
+The owned branch is `codex/timestream-successor-rtc-jump-apply-001`, clean literal
+base `e7ccd3da4bf2ac3412508dd07118f136272655c5`, worktree
+`/private/tmp/citlali-timestream-successor-rtc-jump-apply-001`. Live canonical is
+`86c20b31f7300ba4063be044380b61cd0baf25eb`; both divergent histories are retained.
+The existing handoff records authority, exact preflight, gates and limitations.
+Local tests and independent exact-SHA review are in progress. Saved corpus source
+membership and full native-to-PCA-scan bindings remain unavailable; no real-corpus
+exclusion or production qualification is claimed. Beam/AST/ALIGN/readout rules
+remain settled; protected optical rejection and unresolved-contamination rules
+remain unselected. No maps, filtering, spectra, correction, integration, push,
+Unity, activation, production or cleanup.
+
 ## RTC observation recurrence assessment completed locally — 2026-09-13
 
 Owner-approved **RTC-OBSERVATION-RECURRENCE-001** is implemented at exact

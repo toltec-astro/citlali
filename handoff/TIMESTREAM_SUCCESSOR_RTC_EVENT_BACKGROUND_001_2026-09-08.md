@@ -2531,3 +2531,100 @@ exact SHA/tree and independent closure review will be bound externally after
 review. No rebuilding at documentation HEAD substitutes for tested source.
 Owner acceptance, canonical integration, push and runtime activation remain
 separate; user performs every GitHub push with the required explicit URL/refspec.
+
+
+## RTC jump admission and exclusion approved preflight — 2026-09-13
+
+Owner Grant Wilson approves the proposed starting rule: "I agree with this
+starting point." Work order **TIMESTREAM-SUCCESSOR-RTC-JUMP-APPLY-001**, Tier 2,
+implements one bounded RTC module increment. All three effective governance
+documents, AGENTS, toltec-context, current status, program/router, architecture,
+SCI-RTC and existing RTC owner dispositions have been read. Governance is
+unchanged from accepted 06a3ade51c1b3f38887295433d913811bf25cd14 and canonical
+effectiveness record 77507836325eff9f469062d5884481ea37599594.
+
+### Owner-selected scientific binding
+
+Outside explicitly protected source regions, one coordinate qualifies for
+initial jump exclusion when its final original/single-reassessment measurement
+passes the existing >=5 sigma_delta amplitude at both two-second and one-second
+fits, same-sign and <=2 sigma_delta agreement, supported transition and confirmed
+post-level, and usable recovery assessment with no confirmed return. A complete
+valid search ending at its fixed search limit supplies that last condition;
+missing/invalid/truncated recovery does not. Protected-source and unavailable
+source authority remain unavailable for this rule. Compound/unresolved outcomes
+and review-only health findings are not promoted. Either x or r can qualify;
+the resulting exclusion is paired and retains the coordinate of evidence.
+
+Each admitted original group counts once, including when both coordinates
+qualify. Three qualifying original groups for an exact detector occurrence in
+one observation select observation-local exclusion, without rate or quarter
+cuts. This is the owner-selected initial treatment rule, not a permanent Tune,
+APT or hardware identity, nor a claim that original groups are independent
+physical events. Otherwise every existing requested PCA scan intersected by
+admitted conservative transition support is selected. Existing scans and PCA
+rank remain unchanged. No offset correction, donor repair or zero fill occurs.
+
+### Runtime and engineering responsibilities
+
+Preserved Learn produces candidates, fits, recovery, transition and single
+reassessment evidence on original native x/r. New RTC Consider consumes those
+exact products, original VAL and source membership to produce admission causes
+and one immutable plan for the selected jump-exclusion operation. It retains
+rejected/unavailable dispositions. Apply executes that exact plan as a native
+paired exclusion view with realized support/counts, no learning or numerical
+sample changes. RTC supplies treatment facts; downstream PTC and VAL retain
+ownership of their named learning/application/output-use admission. No existing
+route is activated or claimed complete by this module.
+
+SCI-RTC REQ-094/096/118--126/138 and the September 9--10 full-existing-scan
+owner decisions govern identity, physical support versus treatment, pair union,
+source protection and frozen application. The array Airy beam, AST/ALIGN motion
+and uniform native integration assumption remain preserved; the protected-source
+optical incompatibility test and unresolved-contamination predicate remain
+unselected. No filtering/downsampling mode ceiling becomes a spike threshold.
+
+An exact existing-scan/native-support binding is a required typed input to
+scan treatment, with its processing generation, original native parent and
+relation/uncertainty authority. No output-row indices, scan counts, shortened
+noise blocks or abbreviated logs substitute for it. Its producer attests the
+complete requested scan support; this increment adds no scan-definition method
+or timing-uncertainty estimate. Missing binding cannot publish a partial plan.
+Source membership is checked across the decision's evidence support; original
+noise learning remains unchanged. No corpus occurrence is declared outside a
+source by default. The saved corpus has unavailable source membership and lacks
+complete native-to-existing-PCA-scan relations; actual corpus exclusions remain
+unavailable. Explicit analytical fixtures test executable behavior.
+
+### Repository and gates
+
+Literal clean implementation base/accepted recurrence closure:
+`e7ccd3da4bf2ac3412508dd07118f136272655c5`, tree
+`95c55598e1a10b010ba0399c6cf48763bf9303fd`. Owned branch
+`codex/timestream-successor-rtc-jump-apply-001`, worktree
+`/private/tmp/citlali-timestream-successor-rtc-jump-apply-001`; initial staged,
+unstaged and untracked state clean. Prior census lane is completed evidence.
+Live canonical remains `86c20b31f7300ba4063be044380b61cd0baf25eb`, common ancestor
+`b675bb64a7054f7b24403c79898965e8765cfd02` (9 canonical / 34 local commits).
+No merge/rebase or canonical admission occurs; future admission requires fresh
+moving-base verification and independent review of the exact integration SHA.
+
+Expected paths: new domain-specific RTC jump admission/exclusion headers,
+focused/header-isolation tests and test registration, bounded census consumer
+binding if needed, this handoff and living status. Sparse per-group/interval
+storage and referenced immutable parents avoid another TOD plane. Measure local
+time/memory and deterministic application; preserve all earlier evidence.
+Gates: focused C++ tests, header isolation, local full CTest/config/baseline
+regressions, source/protected/unavailable and injection controls, exact plan /
+parent / VAL rejection, scan-boundary and paired-count tests, independent fresh
+read-only exact-source and docs-closure reviews. Actual local environment is
+AppleClang / Homebrew / recorded cached dependencies, supplemental rather than
+accepted Unity/Spack V2 reproduction. No Unity campaign is required to exercise
+this inert typed boundary; no operational science acceptance is claimed.
+
+Stop/reassess on a new scientific predicate, cross-stage ownership change,
+missing prerequisite outside this binding, numerical regression or scope
+expansion. No integration, push, activation, production, cleanup, new corpus,
+MAP/CAL, PTC algorithm, AST algorithm, spectra, filtering or downsampling work.
+User performs all GitHub pushes. Completion records tests, exact source and tree,
+three review axes, limitations and a separately reviewed documentation closure.
