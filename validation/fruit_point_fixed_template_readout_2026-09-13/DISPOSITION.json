@@ -1,0 +1,25 @@
+{
+  "candidate": "parked_for_POINT",
+  "registered_outcomes": "unchanged",
+  "diagnostic": "mixed_map_and_readout_effects",
+  "full_domain_absolute_within_5pct": {
+    "P_free": 6,
+    "P_fixed": 0,
+    "C_free": 4,
+    "C_fixed": 11,
+    "required": 12
+  },
+  "full_domain_crossed_within_5pct": {
+    "P_free": 3,
+    "P_fixed": 4,
+    "C_free": 2,
+    "C_fixed": 4,
+    "required": 6
+  },
+  "known_feasible_lower_cost_source_fits": 6,
+  "inner_fit_witnesses_for_H_D_domain_rejections": 4,
+  "interpretation": "Candidate has better recovered amplitude along the known source shape; common source-fit numerical failures obscure some outcomes, while crossed-noise map variation persists.",
+  "operational_policy_changed": false,
+  "next_experiment_started": false,
+  "production_qualified": false
+}

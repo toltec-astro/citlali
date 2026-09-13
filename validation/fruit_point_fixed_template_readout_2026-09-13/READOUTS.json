@@ -1,0 +1,5810 @@
+[
+  {
+    "case": "H_20260911",
+    "arm": "P",
+    "array": "a1100",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 8.205902711102413,
+    "outer_background": [
+      0.05831861429170848,
+      -0.02206496374452644,
+      0.25401761777200543
+    ],
+    "free_fit": {
+      "parameters": [
+        106.91286211561457,
+        17.004923344106366,
+        -10.95860445076015,
+        2.4240367895073356,
+        1.9148443851141397,
+        0.5526342114752851,
+        -0.2901219331596587,
+        -0.5795861141064462,
+        0.6456523612066334
+      ],
+      "peak": 106.91286211561457,
+      "centroid": [
+        17.004923344106366,
+        -10.95860445076015
+      ],
+      "widths": [
+        11.291348234589337,
+        6.785882730465044
+      ],
+      "angle_rad": 0.5526342114752851,
+      "gaussian_integral": 9282.106094428245,
+      "background": [
+        -0.2901219331596587,
+        -0.5795861141064462,
+        0.6456523612066334
+      ],
+      "residual_rms": 10.36324695645282,
+      "sse": 302966.61958228913,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 16,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 302966.61958228913,
+    "free_relative_peak_error": 0.06912862115614571,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      94.92348351994742,
+      -0.382584873887839,
+      -0.7367164360007705,
+      0.7510002781138243
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11556641298747,
+      17.68826116754218,
+      17.68472871235603,
+      3.6343818664867125
+    ],
+    "condition_number": 14.614745605786679,
+    "residual_norm": 552.4123349372082,
+    "sse": 305159.3877907783,
+    "normal_equation_residual": [
+      -2.5793920089965227e-13,
+      -1.4459544672718039e-12,
+      -7.771561172376096e-15,
+      -6.039613253960852e-14
+    ],
+    "relative_normal_equation_residual": 3.832259988113496e-17,
+    "reported_residual_sum": [
+      305159.38779077824
+    ],
+    "seconds": 0.00025999988429248333,
+    "amplitude": 94.92348351994742,
+    "relative_peak_error": -0.05076516480052573,
+    "background": [
+      -0.382584873887839,
+      -0.7367164360007705,
+      0.7510002781138243
+    ],
+    "fitted_background_at_truth_center": -0.6135313457907853,
+    "free_background_at_truth_center": -0.4785123766383537,
+    "free_SSE_minus_fixed_SSE": -2192.7682084891712
+  },
+  {
+    "case": "H_20260911",
+    "arm": "P",
+    "array": "a1100",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 8.205902711102413,
+    "outer_background": [
+      0.05831861429170848,
+      -0.02206496374452644,
+      0.25401761777200543
+    ],
+    "free_fit": {
+      "parameters": [
+        106.89581468324927,
+        17.00544812737558,
+        -10.957023838577994,
+        2.4209523114344798,
+        1.9115557222336526,
+        0.5527279589105603,
+        -0.1348997829548112,
+        -0.5454366191257696,
+        0.5045588239812551
+      ],
+      "peak": 106.89581468324927,
+      "centroid": [
+        17.00544812737558,
+        -10.957023838577994
+      ],
+      "widths": [
+        11.25657397633551,
+        6.763602905315254
+      ],
+      "angle_rad": 0.5527279589105603,
+      "gaussian_integral": 9221.66738484607,
+      "background": [
+        -0.1348997829548112,
+        -0.5454366191257696,
+        0.5045588239812551
+      ],
+      "residual_rms": 10.160083018075834,
+      "sse": 218945.07558742326,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 148,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 218945.07558742326,
+    "free_relative_peak_error": 0.06895814683249268,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      94.70608687816751,
+      -0.2622150653297337,
+      -0.8331485664790537,
+      0.697462793724742
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05812481262999,
+      13.305169053181139,
+      13.296578971512899,
+      3.608006095009896
+    ],
+    "condition_number": 12.765534092730977,
+    "residual_norm": 470.33055665016656,
+    "sse": 221210.83251885552,
+    "normal_equation_residual": [
+      -7.357549684736409e-13,
+      -2.120970066243899e-12,
+      3.9102054927298013e-13,
+      1.2434497875801753e-14
+    ],
+    "relative_normal_equation_residual": 7.82413275928729e-17,
+    "reported_residual_sum": [
+      221210.83251885566
+    ],
+    "seconds": 0.00015233387239277363,
+    "amplitude": 94.70608687816751,
+    "relative_peak_error": -0.05293913121832494,
+    "background": [
+      -0.2622150653297337,
+      -0.8331485664790537,
+      0.697462793724742
+    ],
+    "fitted_background_at_truth_center": -0.50483302489769,
+    "free_background_at_truth_center": -0.29959500060961,
+    "free_SSE_minus_fixed_SSE": -2265.756931432261
+  },
+  {
+    "case": "H_20260911",
+    "arm": "P",
+    "array": "a1400",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": true,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": false
+    },
+    "original_probe_available": true,
+    "original_peak_score": 4.983762426355068,
+    "outer_background": [
+      -0.10577019183963159,
+      0.3528602241233274,
+      0.38603581288178057
+    ],
+    "free_fit": {
+      "parameters": [
+        108.17306750510285,
+        17.45085393874484,
+        -10.724641068382876,
+        1.8684720987889363,
+        2.3271278880838393,
+        -1.1664552018221555,
+        -0.5893166927084564,
+        -0.7662624249929172,
+        1.8579051814526533
+      ],
+      "peak": 108.17306750510285,
+      "centroid": [
+        17.45085393874484,
+        -10.724641068382876
+      ],
+      "widths": [
+        10.24846448564541,
+        6.478390492910772
+      ],
+      "angle_rad": 0.4043411249727411,
+      "gaussian_integral": 8137.846397102994,
+      "background": [
+        -0.5893166927084564,
+        -0.7662624249929172,
+        1.8579051814526533
+      ],
+      "residual_rms": 18.631008228575592,
+      "sse": 979209.9131369821,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 10,
+      "successful_starts": 2
+    },
+    "free_fit_sse_reproduced": 979209.9131369821,
+    "free_relative_peak_error": 0.08173067505102849,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      88.49843517888102,
+      -0.7212483063526678,
+      -0.9584573187192583,
+      2.0232549493399543
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11556641298747,
+      17.68826116754218,
+      17.68472871235603,
+      3.6343818664867125
+    ],
+    "condition_number": 14.614745605786679,
+    "residual_norm": 991.7624481846568,
+    "sse": 983592.7536292241,
+    "normal_equation_residual": [
+      -3.0811598944008736e-13,
+      -5.762057497804562e-13,
+      -4.858335955759685e-13,
+      4.789502128232925e-13
+    ],
+    "relative_normal_equation_residual": 1.5399193072016868e-17,
+    "reported_residual_sum": [
+      983592.753629225
+    ],
+    "seconds": 0.00016850000247359276,
+    "amplitude": 88.49843517888102,
+    "relative_peak_error": -0.1150156482111897,
+    "background": [
+      -0.7212483063526678,
+      -0.9584573187192583,
+      2.0232549493399543
+    ],
+    "fitted_background_at_truth_center": -1.149576960363411,
+    "free_background_at_truth_center": -0.9611324507179985,
+    "free_SSE_minus_fixed_SSE": -4382.840492242016
+  },
+  {
+    "case": "H_20260911",
+    "arm": "P",
+    "array": "a1400",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": true,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": false
+    },
+    "original_probe_available": true,
+    "original_peak_score": 4.983762426355068,
+    "outer_background": [
+      -0.10577019183963159,
+      0.3528602241233274,
+      0.38603581288178057
+    ],
+    "free_fit": {
+      "parameters": [
+        108.15606466857196,
+        17.445906487947763,
+        -10.731088011697482,
+        2.3330512392626868,
+        1.8727334184295472,
+        -2.737065260344925,
+        -0.6621247149104907,
+        -0.6185677149471992,
+        3.7264496696318856
+      ],
+      "peak": 108.15606466857196,
+      "centroid": [
+        17.445906487947763,
+        -10.731088011697482
+      ],
+      "widths": [
+        10.309349884618618,
+        6.506055889241844
+      ],
+      "angle_rad": 0.4045273932448681,
+      "gaussian_integral": 8219.858964379075,
+      "background": [
+        -0.6621247149104907,
+        -0.6185677149471992,
+        3.7264496696318856
+      ],
+      "residual_rms": 18.166464078329085,
+      "sse": 699973.3046886579,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 11,
+      "successful_starts": 2
+    },
+    "free_fit_sse_reproduced": 699973.3046886579,
+    "free_relative_peak_error": 0.0815606466857195,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      89.21747222618728,
+      -0.837150433806259,
+      -0.9575955142415867,
+      4.017811888792535
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05812481262999,
+      13.305169053181139,
+      13.296578971512899,
+      3.608006095009896
+    ],
+    "condition_number": 12.765534092730977,
+    "residual_norm": 839.1095418147743,
+    "sse": 704104.8231646004,
+    "normal_equation_residual": [
+      -1.0964634446054352e-13,
+      -7.593925488436071e-14,
+      1.4414025528708407e-12,
+      3.7125857943465235e-13
+    ],
+    "relative_normal_equation_residual": 3.329779898907272e-17,
+    "reported_residual_sum": [
+      704104.8231646019
+    ],
+    "seconds": 0.0001230000052601099,
+    "amplitude": 89.21747222618728,
+    "relative_peak_error": -0.10782527773812722,
+    "background": [
+      -0.837150433806259,
+      -0.9575955142415867,
+      4.017811888792535
+    ],
+    "fitted_background_at_truth_center": -1.509095484015424,
+    "free_background_at_truth_center": -1.234420242911081,
+    "free_SSE_minus_fixed_SSE": -4131.5184759425465
+  },
+  {
+    "case": "H_20260911",
+    "arm": "P",
+    "array": "a2000",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 5.85892566708887,
+    "outer_background": [
+      0.0010021777220844482,
+      -0.23908314697167338,
+      -0.13597426493676204
+    ],
+    "free_fit": {
+      "parameters": [
+        98.1399786377884,
+        16.808939867760643,
+        -10.909974683239776,
+        2.3762250813707095,
+        1.9701703541319344,
+        0.5929040168781787,
+        -0.5447585111822465,
+        1.159662513796799,
+        0.5735394986882066
+      ],
+      "peak": 98.1399786377884,
+      "centroid": [
+        16.808939867760643,
+        -10.909974683239776
+      ],
+      "widths": [
+        10.764192123033673,
+        7.171898146769494
+      ],
+      "angle_rad": 0.5929040168781787,
+      "gaussian_integral": 8584.716016959313,
+      "background": [
+        -0.5447585111822465,
+        1.159662513796799,
+        0.5735394986882066
+      ],
+      "residual_rms": 11.198932222586038,
+      "sse": 353798.76993445994,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 202,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 353798.76993445994,
+    "free_relative_peak_error": -0.018600213622115946,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      87.4416199904891,
+      -0.6269004732181596,
+      1.0051430548300242,
+      0.6709606165308498
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11556641298747,
+      17.68826116754218,
+      17.68472871235603,
+      3.6343818664867125
+    ],
+    "condition_number": 14.614745605786679,
+    "residual_norm": 596.4097488635163,
+    "sse": 355704.5885394425,
+    "normal_equation_residual": [
+      -4.4462187019616874e-14,
+      2.006006472043964e-12,
+      5.224709553885987e-13,
+      1.3417045252595017e-13
+    ],
+    "relative_normal_equation_residual": 5.214977827971725e-17,
+    "reported_residual_sum": [
+      355704.5885394427
+    ],
+    "seconds": 0.00013241590932011604,
+    "amplitude": 87.4416199904891,
+    "relative_peak_error": -0.12558380009510894,
+    "background": [
+      -0.6269004732181596,
+      1.0051430548300242,
+      0.6709606165308498
+    ],
+    "fitted_background_at_truth_center": -0.5190464159929256,
+    "free_background_at_truth_center": -0.3958104195269653,
+    "free_SSE_minus_fixed_SSE": -1905.8186049825745
+  },
+  {
+    "case": "H_20260911",
+    "arm": "P",
+    "array": "a2000",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 5.85892566708887,
+    "outer_background": [
+      0.0010021777220844482,
+      -0.23908314697167338,
+      -0.13597426493676204
+    ],
+    "free_fit": {
+      "parameters": [
+        98.12704438491059,
+        16.80798239491988,
+        -10.90551861293117,
+        1.96452679975934,
+        2.3715735162071874,
+        -0.978222729095898,
+        -0.43709234844837663,
+        1.5254060217009797,
+        -0.11187439828563156
+      ],
+      "peak": 98.12704438491059,
+      "centroid": [
+        16.80798239491988,
+        -10.90551861293117
+      ],
+      "widths": [
+        10.714238054315183,
+        7.1315371464970525
+      ],
+      "angle_rad": 0.5925735976989985,
+      "gaussian_integral": 8495.668901847175,
+      "background": [
+        -0.43709234844837663,
+        1.5254060217009797,
+        -0.11187439828563156
+      ],
+      "residual_rms": 10.784189297756399,
+      "sse": 246669.6250156784,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 12,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 246669.6250156784,
+    "free_relative_peak_error": -0.01872955615089411,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      87.05589374162703,
+      -0.5518942117066253,
+      1.2396301490979602,
+      0.06906633832224014
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05812481262999,
+      13.305169053181139,
+      13.296578971512899,
+      3.608006095009896
+    ],
+    "condition_number": 12.765534092730977,
+    "residual_norm": 498.6818465812559,
+    "sse": 248683.58410969126,
+    "normal_equation_residual": [
+      -3.23854542970081e-13,
+      7.442935157087049e-13,
+      -3.748668042646841e-13,
+      -1.127986593019159e-13
+    ],
+    "relative_normal_equation_residual": 3.048906445186729e-17,
+    "reported_residual_sum": [
+      248683.58410969083
+    ],
+    "seconds": 0.00011041713878512383,
+    "amplitude": 87.05589374162703,
+    "relative_peak_error": -0.12944106258372967,
+    "background": [
+      -0.5518942117066253,
+      1.2396301490979602,
+      0.06906633832224014
+    ],
+    "fitted_background_at_truth_center": -0.32618329156083997,
+    "free_background_at_truth_center": -0.1352865623366144,
+    "free_SSE_minus_fixed_SSE": -2013.9590940128546
+  },
+  {
+    "case": "H_20260911",
+    "arm": "C",
+    "array": "a1100",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 8.239611086502102,
+    "outer_background": [
+      0.14164548001709512,
+      -0.04068963069462492,
+      0.21972162473664852
+    ],
+    "free_fit": {
+      "parameters": [
+        107.38378453629346,
+        16.94701502811238,
+        -11.003550648919992,
+        2.0068665733398223,
+        2.4720995341345913,
+        2.116660350623726,
+        0.04116888418502368,
+        -0.9804848106789813,
+        -0.1651513438912066
+      ],
+      "peak": 107.38378453629346,
+      "centroid": [
+        16.94701502811238,
+        -11.003550648919992
+      ],
+      "widths": [
+        11.84729455754165,
+        7.439968190309476
+      ],
+      "angle_rad": 0.5458640238288295,
+      "gaussian_integral": 10724.903450702865,
+      "background": [
+        0.04116888418502368,
+        -0.9804848106789813,
+        -0.1651513438912066
+      ],
+      "residual_rms": 10.40069939517164,
+      "sse": 305160.39965050964,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 14,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 305160.39965050964,
+    "free_relative_peak_error": 0.0738378453629347,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      102.75833032488308,
+      0.0010410213843005639,
+      -1.0539008881371992,
+      -0.12125085249073754
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11556641298747,
+      17.68826116754218,
+      17.68472871235603,
+      3.6343818664867125
+    ],
+    "condition_number": 14.614745605786679,
+    "residual_norm": 553.0552547166528,
+    "sse": 305870.11476970173,
+    "normal_equation_residual": [
+      -2.5216155429944743e-13,
+      1.1759482276829658e-12,
+      4.1744385725905886e-14,
+      -3.730349362740526e-14
+    ],
+    "relative_normal_equation_residual": 3.055360718327892e-17,
+    "reported_residual_sum": [
+      305870.1147697031
+    ],
+    "seconds": 0.00018720794469118118,
+    "amplitude": 102.75833032488308,
+    "relative_peak_error": 0.02758330324883085,
+    "background": [
+      0.0010410213843005639,
+      -1.0539008881371992,
+      -0.12125085249073754
+    ],
+    "fitted_background_at_truth_center": -0.18320959773719137,
+    "free_background_at_truth_center": -0.12384863802319199,
+    "free_SSE_minus_fixed_SSE": -709.7151191920857
+  },
+  {
+    "case": "H_20260911",
+    "arm": "C",
+    "array": "a1100",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 8.239611086502102,
+    "outer_background": [
+      0.14164548001709512,
+      -0.04068963069462492,
+      0.21972162473664852
+    ],
+    "free_fit": {
+      "parameters": [
+        107.38074605043269,
+        16.943634068850972,
+        -11.00381652601927,
+        2.0037484056173285,
+        2.4691938147137695,
+        -1.0250402346521919,
+        0.12694028372981567,
+        -0.5139561134000531,
+        -0.08028692677627718
+      ],
+      "peak": 107.38074605043269,
+      "centroid": [
+        16.943634068850972,
+        -11.00381652601927
+      ],
+      "widths": [
+        11.812919609824416,
+        7.41680525337094
+      ],
+      "angle_rad": 0.5457560921427047,
+      "gaussian_integral": 10660.19039625475,
+      "background": [
+        0.12694028372981567,
+        -0.5139561134000531,
+        -0.08028692677627718
+      ],
+      "residual_rms": 10.172143932362205,
+      "sse": 219465.19833525032,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 11,
+      "successful_starts": 2
+    },
+    "free_fit_sse_reproduced": 219465.19833525032,
+    "free_relative_peak_error": 0.07380746050432685,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      102.50147008063178,
+      0.0692345478480837,
+      -0.6541601148191031,
+      0.0036854690137164314
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05812481262999,
+      13.305169053181139,
+      13.296578971512899,
+      3.608006095009896
+    ],
+    "condition_number": 12.765534092730977,
+    "residual_norm": 469.26426324721405,
+    "sse": 220208.9487609506,
+    "normal_equation_residual": [
+      -3.4236129066560274e-13,
+      -1.0658141036401503e-13,
+      3.503863865716994e-13,
+      3.197442310920451e-14
+    ],
+    "relative_normal_equation_residual": 1.671895349755341e-17,
+    "reported_residual_sum": [
+      220208.94876095053
+    ],
+    "seconds": 0.00014070793986320496,
+    "amplitude": 102.50147008063178,
+    "relative_peak_error": 0.025014700806317736,
+    "background": [
+      0.0692345478480837,
+      -0.6541601148191031,
+      0.0036854690137164314
+    ],
+    "fitted_background_at_truth_center": -0.05477947560831222,
+    "free_background_at_truth_center": 0.039672531138017296,
+    "free_SSE_minus_fixed_SSE": -743.7504257002729
+  },
+  {
+    "case": "H_20260911",
+    "arm": "C",
+    "array": "a1400",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": true,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 5.360699227093206,
+    "outer_background": [
+      0.2308212524118195,
+      0.2866906869679115,
+      0.37777191912964403
+    ],
+    "free_fit": {
+      "parameters": [
+        116.69408689407923,
+        17.438784578466965,
+        -10.670309869251493,
+        1.956811907443433,
+        2.4181562290459087,
+        2.0200687960305967,
+        1.35558578554608,
+        -2.836867551466072,
+        3.9187197075393216
+      ],
+      "peak": 116.69408689407923,
+      "centroid": [
+        17.438784578466965,
+        -10.670309869251493
+      ],
+      "widths": [
+        11.225143629481353,
+        7.076729793619926
+      ],
+      "angle_rad": 0.4492724692357002,
+      "gaussian_integral": 10503.590714767146,
+      "background": [
+        1.35558578554608,
+        -2.836867551466072,
+        3.9187197075393216
+      ],
+      "residual_rms": 18.93083012934788,
+      "sse": 1010979.6251985419,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 114,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 1010979.6251985419,
+    "free_relative_peak_error": 0.1669408689407923,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      105.48620842493385,
+      1.2695484793184035,
+      -2.9425213823997285,
+      4.044328034649131
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11556641298747,
+      17.68826116754218,
+      17.68472871235603,
+      3.6343818664867125
+    ],
+    "condition_number": 14.614745605786679,
+    "residual_norm": 1006.7574359720259,
+    "sse": 1013560.5348849678,
+    "normal_equation_residual": [
+      -5.670362999622695e-13,
+      -3.2862601528904634e-13,
+      7.082112674083874e-13,
+      7.05546732149287e-13
+    ],
+    "relative_normal_equation_residual": 1.8719391100588408e-17,
+    "reported_residual_sum": [
+      1013560.5348849663
+    ],
+    "seconds": 0.00013329111970961094,
+    "amplitude": 105.48620842493385,
+    "relative_peak_error": 0.05486208424933858,
+    "background": [
+      1.2695484793184035,
+      -2.9425213823997285,
+      4.044328034649131
+    ],
+    "fitted_background_at_truth_center": 0.21943212507467214,
+    "free_background_at_truth_center": 0.3407783949032382,
+    "free_SSE_minus_fixed_SSE": -2580.9096864259336
+  },
+  {
+    "case": "H_20260911",
+    "arm": "C",
+    "array": "a1400",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": true,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 5.360699227093206,
+    "outer_background": [
+      0.2308212524118195,
+      0.2866906869679115,
+      0.37777191912964403
+    ],
+    "free_fit": {
+      "parameters": [
+        116.70063265178241,
+        17.4380120843096,
+        -10.682954285591341,
+        1.961494831823982,
+        2.424879375993409,
+        -1.1214543198675448,
+        1.5913141701846314,
+        -3.8148649639558125,
+        7.141160494504862
+      ],
+      "peak": 116.70063265178241,
+      "centroid": [
+        17.4380120843096,
+        -10.682954285591341
+      ],
+      "widths": [
+        11.300866181304883,
+        7.109947300938102
+      ],
+      "angle_rad": 0.4493420069273517,
+      "gaussian_integral": 10624.67721521885,
+      "background": [
+        1.5913141701846314,
+        -3.8148649639558125,
+        7.141160494504862
+      ],
+      "residual_rms": 18.504432661481413,
+      "sse": 726260.1536495194,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 119,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 726260.1536495194,
+    "free_relative_peak_error": 0.1670063265178241,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      106.26876229540895,
+      1.4811206238477614,
+      -3.9914505703776104,
+      7.355657214949785
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05812481262999,
+      13.305169053181139,
+      13.296578971512899,
+      3.608006095009896
+    ],
+    "condition_number": 12.765534092730977,
+    "residual_norm": 853.6028198022157,
+    "sse": 728637.7739742938,
+    "normal_equation_residual": [
+      -3.7008622987168707e-13,
+      1.6227019727921288e-12,
+      1.710493725826101e-12,
+      -5.710987238671805e-13
+    ],
+    "relative_normal_equation_residual": 5.1908232174199836e-17,
+    "reported_residual_sum": [
+      728637.773974293
+    ],
+    "seconds": 0.00013699987903237343,
+    "amplitude": 106.26876229540895,
+    "relative_peak_error": 0.06268762295408958,
+    "background": [
+      1.4811206238477614,
+      -3.9914505703776104,
+      7.355657214949785
+    ],
+    "fitted_background_at_truth_center": -0.17184481016187203,
+    "free_background_at_truth_center": -0.0020799390020607156,
+    "free_SSE_minus_fixed_SSE": -2377.6203247744124
+  },
+  {
+    "case": "H_20260911",
+    "arm": "C",
+    "array": "a2000",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 6.1069351583719165,
+    "outer_background": [
+      0.15234416665252684,
+      -0.1664270533841211,
+      -0.13554089682921344
+    ],
+    "free_fit": {
+      "parameters": [
+        102.25923605074925,
+        17.019960109666126,
+        -11.07712044124208,
+        2.4473578870043413,
+        2.1294991784618267,
+        -2.5577002614791824,
+        0.10815307626622561,
+        2.0809811190150005,
+        1.574148422816085
+      ],
+      "peak": 102.25923605074925,
+      "centroid": [
+        17.019960109666126,
+        -11.07712044124208
+      ],
+      "widths": [
+        11.557769409899239,
+        8.410653520041706
+      ],
+      "angle_rad": 0.5838923921106107,
+      "gaussian_integral": 11263.431760714935,
+      "background": [
+        0.10815307626622561,
+        2.0809811190150005,
+        1.574148422816085
+      ],
+      "residual_rms": 11.25947241522273,
+      "sse": 357634.30349410477,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 214,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 357634.30349410477,
+    "free_relative_peak_error": 0.02259236050749247,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      102.5887440485964,
+      0.11738495609347235,
+      2.0987069803864604,
+      1.5562557053298136
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11556641298747,
+      17.68826116754218,
+      17.68472871235603,
+      3.6343818664867125
+    ],
+    "condition_number": 14.614745605786679,
+    "residual_norm": 598.6847358162084,
+    "sse": 358423.4128993233,
+    "normal_equation_residual": [
+      -7.195482150785474e-13,
+      -8.690825836765725e-13,
+      2.751132655021138e-13,
+      5.588862705963038e-13
+    ],
+    "relative_normal_equation_residual": 3.081701834544002e-17,
+    "reported_residual_sum": [
+      358423.41289932345
+    ],
+    "seconds": 0.00016258400864899158,
+    "amplitude": 102.5887440485964,
+    "relative_peak_error": 0.02588744048596392,
+    "background": [
+      0.11738495609347235,
+      2.0987069803864604,
+      1.5562557053298136
+    ],
+    "fitted_background_at_truth_center": 0.3235983550706043,
+    "free_background_at_truth_center": 0.30883136929153765,
+    "free_SSE_minus_fixed_SSE": -789.1094052185072
+  },
+  {
+    "case": "H_20260911",
+    "arm": "C",
+    "array": "a2000",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 6.1069351583719165,
+    "outer_background": [
+      0.15234416665252684,
+      -0.1664270533841211,
+      -0.13554089682921344
+    ],
+    "free_fit": {
+      "parameters": [
+        102.25251060809185,
+        17.02269840203984,
+        -11.067870913327926,
+        2.1265571495949187,
+        2.4449204092330943,
+        -0.9868960490711738,
+        0.10410752666528865,
+        2.0863148728330185,
+        0.4043173271245106
+      ],
+      "peak": 102.25251060809185,
+      "centroid": [
+        17.02269840203984,
+        -11.067870913327926
+      ],
+      "widths": [
+        11.529631910073695,
+        8.38594549827458
+      ],
+      "angle_rad": 0.5839002777237228,
+      "gaussian_integral": 11202.265934326664,
+      "background": [
+        0.10410752666528865,
+        2.0863148728330185,
+        0.4043173271245106
+      ],
+      "residual_rms": 10.832924519288369,
+      "sse": 248904.12997171082,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 11,
+      "successful_starts": 2
+    },
+    "free_fit_sse_reproduced": 248904.12997171082,
+    "free_relative_peak_error": 0.022525106080918622,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      102.3060192496975,
+      0.11280160496145927,
+      2.110011005961296,
+      0.379623967358678
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05812481262999,
+      13.305169053181139,
+      13.296578971512899,
+      3.608006095009896
+    ],
+    "condition_number": 12.765534092730977,
+    "residual_norm": 499.681928243675,
+    "sse": 249682.02941331713,
+    "normal_equation_residual": [
+      1.5491886014902504e-15,
+      1.8136603330276557e-12,
+      -2.208788707491749e-13,
+      -1.1013412404281553e-13
+    ],
+    "relative_normal_equation_residual": 5.835359560408289e-17,
+    "reported_residual_sum": [
+      249682.02941331736
+    ],
+    "seconds": 0.0001349169760942459,
+    "amplitude": 102.3060192496975,
+    "relative_peak_error": 0.023060192496974885,
+    "background": [
+      0.11280160496145927,
+      2.110011005961296,
+      0.379623967358678
+    ],
+    "fitted_background_at_truth_center": 0.4649607545214212,
+    "free_background_at_truth_center": 0.4487726626629742,
+    "free_SSE_minus_fixed_SSE": -777.8994416063069
+  },
+  {
+    "case": "H_20260912",
+    "arm": "P",
+    "array": "a1100",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": false,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 8.167777196578161,
+    "outer_background": [
+      0.16639038664377567,
+      -0.1777019767207127,
+      -0.21858163978117998
+    ],
+    "free_fit": {
+      "parameters": [
+        104.47011067115243,
+        16.708296570955884,
+        -11.137833684414263,
+        2.481580263879132,
+        1.9038842744915112,
+        0.4874534827226186,
+        -0.19914053764675071,
+        0.14535282622873547,
+        -0.6543386924258073
+      ],
+      "peak": 104.47011067115243,
+      "centroid": [
+        16.708296570955884,
+        -11.137833684414263
+      ],
+      "widths": [
+        11.960149684602166,
+        6.711914793893014
+      ],
+      "angle_rad": 0.4874534827226186,
+      "gaussian_integral": 9502.536024287918,
+      "background": [
+        -0.19914053764675071,
+        0.14535282622873547,
+        -0.6543386924258073
+      ],
+      "residual_rms": 10.332397474425479,
+      "sse": 301165.55238359905,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 194,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 301165.55238359905,
+    "free_relative_peak_error": 0.04470110671152416,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      94.81697884889678,
+      -0.2710420507110731,
+      -0.0017709450646161875,
+      -0.5867044189043069
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11556641298747,
+      17.68826116754218,
+      17.68472871235603,
+      3.6343818664867125
+    ],
+    "condition_number": 14.614745605786679,
+    "residual_norm": 550.9533512031426,
+    "sse": 303549.59520197334,
+    "normal_equation_residual": [
+      -4.808296907181993e-13,
+      -2.922995179233112e-12,
+      -1.5543122344752192e-13,
+      -7.638334409421077e-14
+    ],
+    "relative_normal_equation_residual": 7.737301021828076e-17,
+    "reported_residual_sum": [
+      303549.5952019726
+    ],
+    "seconds": 0.00016424991190433502,
+    "amplitude": 94.81697884889678,
+    "relative_peak_error": -0.051830211511032176,
+    "background": [
+      -0.2710420507110731,
+      -0.0017709450646161875,
+      -0.5867044189043069
+    ],
+    "fitted_background_at_truth_center": -0.1996682446905298,
+    "free_background_at_truth_center": -0.09171027472927978,
+    "free_SSE_minus_fixed_SSE": -2384.0428183742915
+  },
+  {
+    "case": "H_20260912",
+    "arm": "P",
+    "array": "a1100",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": false,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 8.167777196578161,
+    "outer_background": [
+      0.16639038664377567,
+      -0.1777019767207127,
+      -0.21858163978117998
+    ],
+    "free_fit": {
+      "parameters": [
+        101.08507990320095,
+        16.769760558202297,
+        -11.075917455791895,
+        2.334715971935588,
+        2.044914534535904,
+        3.1415926535897927,
+        -0.045975544878764735,
+        -0.5182071215230094,
+        -0.8828944562551727
+      ],
+      "peak": 101.08507990320095,
+      "centroid": [
+        16.769760558202297,
+        -11.075917455791895
+      ],
+      "widths": [
+        10.326526489468723,
+        7.728497990015784
+      ],
+      "angle_rad": 3.1415926535897927,
+      "gaussian_integral": 9141.150111538762,
+      "background": [
+        -0.045975544878764735,
+        -0.5182071215230094,
+        -0.8828944562551727
+      ],
+      "residual_rms": 10.35592907170826,
+      "sse": 227467.21117603313,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 10,
+      "successful_starts": 2
+    },
+    "free_fit_sse_reproduced": 227467.21117603313,
+    "free_relative_peak_error": 0.010850799032009473,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      94.94914531206739,
+      -0.18589765824741625,
+      -0.8683432498104986,
+      -0.6886356021671547
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05812481262999,
+      13.305169053181139,
+      13.296578971512899,
+      3.608006095009896
+    ],
+    "condition_number": 12.765534092730977,
+    "residual_norm": 470.6442339951143,
+    "sse": 221505.9949928479,
+    "normal_equation_residual": [
+      -5.866804152510446e-13,
+      8.117950756059145e-13,
+      1.4477308241112041e-13,
+      7.105427357601002e-14
+    ],
+    "relative_normal_equation_residual": 3.4726366354623245e-17,
+    "reported_residual_sum": [
+      221505.9949928475
+    ],
+    "seconds": 0.0001309579238295555,
+    "amplitude": 94.94914531206739,
+    "relative_peak_error": -0.050508546879326155,
+    "background": [
+      -0.18589765824741625,
+      -0.8683432498104986,
+      -0.6886356021671547
+    ],
+    "fitted_background_at_truth_center": -0.26575147628008045,
+    "free_background_at_truth_center": -0.0359497898463676,
+    "free_SSE_minus_fixed_SSE": 5961.216183185228
+  },
+  {
+    "case": "H_20260912",
+    "arm": "P",
+    "array": "a1400",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": true,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": false
+    },
+    "original_probe_available": true,
+    "original_peak_score": 4.529575126983739,
+    "outer_background": [
+      -0.2582452404807163,
+      -0.10071167721912624,
+      0.3164671955253369
+    ],
+    "free_fit": {
+      "parameters": [
+        101.56196419503422,
+        17.110639131068172,
+        -11.177525805148942,
+        2.3245638883362676,
+        1.8062602346251848,
+        -2.704726830126124,
+        -0.2764603539412144,
+        0.2590175461577964,
+        1.2526975647941285
+      ],
+      "peak": 101.56196419503422,
+      "centroid": [
+        17.110639131068172,
+        -11.177525805148942
+      ],
+      "widths": [
+        10.222221083706406,
+        6.08763846916762
+      ],
+      "angle_rad": 0.4368658234636693,
+      "gaussian_integral": 7161.263172715096,
+      "background": [
+        -0.2764603539412144,
+        0.2590175461577964,
+        1.2526975647941285
+      ],
+      "residual_rms": 18.12632187188089,
+      "sse": 926877.7593251405,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 11,
+      "successful_starts": 2
+    },
+    "free_fit_sse_reproduced": 926877.7593251405,
+    "free_relative_peak_error": 0.015619641950342267,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      80.10873264092031,
+      -0.4140619023482865,
+      0.031612411472095744,
+      1.3931040336677143
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11556641298747,
+      17.68826116754218,
+      17.68472871235603,
+      3.6343818664867125
+    ],
+    "condition_number": 14.614745605786679,
+    "residual_norm": 965.0489231520426,
+    "sse": 931319.4240769168,
+    "normal_equation_residual": [
+      -4.051307236716047e-14,
+      -2.5579538487363607e-13,
+      3.886890809212673e-13,
+      -1.2789769243681803e-13
+    ],
+    "relative_normal_equation_residual": 8.162891953349401e-18,
+    "reported_residual_sum": [
+      931319.4240769196
+    ],
+    "seconds": 0.00015400000847876072,
+    "amplitude": 80.10873264092031,
+    "relative_peak_error": -0.1989126735907969,
+    "background": [
+      -0.4140619023482865,
+      0.031612411472095744,
+      1.3931040336677143
+    ],
+    "fitted_background_at_truth_center": -0.5783589398518335,
+    "free_background_at_truth_center": -0.38064229758624635,
+    "free_SSE_minus_fixed_SSE": -4441.664751776261
+  },
+  {
+    "case": "H_20260912",
+    "arm": "P",
+    "array": "a1400",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": true,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": false
+    },
+    "original_probe_available": true,
+    "original_peak_score": 4.529575126983739,
+    "outer_background": [
+      -0.2582452404807163,
+      -0.10071167721912624,
+      0.3164671955253369
+    ],
+    "free_fit": {
+      "parameters": [
+        101.58496504797422,
+        17.123272361020117,
+        -11.169142374655536,
+        1.8044971434742394,
+        2.321823375733387,
+        -1.133425673567973,
+        -0.12051033170891887,
+        -1.010430398208649,
+        -0.264380978185638
+      ],
+      "peak": 101.58496504797422,
+      "centroid": [
+        17.123272361020117,
+        -11.169142374655536
+      ],
+      "widths": [
+        10.194245309487112,
+        6.076914863777213
+      ],
+      "angle_rad": 0.4373706532269235,
+      "gaussian_integral": 7130.698727841163,
+      "background": [
+        -0.12051033170891887,
+        -1.010430398208649,
+        -0.264380978185638
+      ],
+      "residual_rms": 17.74889402176467,
+      "sse": 668164.2899101631,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 14,
+      "successful_starts": 2
+    },
+    "free_fit_sse_reproduced": 668164.2899101631,
+    "free_relative_peak_error": 0.015849650479742294,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      80.09978574434813,
+      -0.3070128191816384,
+      -1.4192414837998564,
+      -0.009869519081302658
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05812481262999,
+      13.305169053181139,
+      13.296578971512899,
+      3.608006095009896
+    ],
+    "condition_number": 12.765534092730977,
+    "residual_norm": 820.1474705814163,
+    "sse": 672641.8735010952,
+    "normal_equation_residual": [
+      1.4982131945225283e-13,
+      5.937472735695337e-13,
+      4.363176486776865e-13,
+      3.723688024592775e-13
+    ],
+    "relative_normal_equation_residual": 1.932110797842188e-17,
+    "reported_residual_sum": [
+      672641.8735010957
+    ],
+    "seconds": 0.00012516719289124012,
+    "amplitude": 80.09978574434813,
+    "relative_peak_error": -0.1990021425565187,
+    "background": [
+      -0.3070128191816384,
+      -1.4192414837998564,
+      -0.009869519081302658
+    ],
+    "fitted_background_at_truth_center": -0.5738854915672299,
+    "free_background_at_truth_center": -0.2790561762589746,
+    "free_SSE_minus_fixed_SSE": -4477.583590932074
+  },
+  {
+    "case": "H_20260912",
+    "arm": "P",
+    "array": "a2000",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 5.344391873149702,
+    "outer_background": [
+      0.16334507032875875,
+      -0.08666765124509462,
+      0.19363955675049419
+    ],
+    "free_fit": {
+      "parameters": [
+        86.69191318635873,
+        16.87045221000956,
+        -10.82193729474414,
+        1.9919050419138111,
+        2.4086251266574146,
+        -1.1072433943213535,
+        -0.38961915463483343,
+        -0.6289094648278237,
+        0.06962795868812084
+      ],
+      "peak": 86.69191318635873,
+      "centroid": [
+        16.87045221000956,
+        -10.82193729474414
+      ],
+      "widths": [
+        11.118663877002282,
+        7.329483443893888
+      ],
+      "angle_rad": 0.463552932473543,
+      "gaussian_integral": 8005.140844203668,
+      "background": [
+        -0.38961915463483343,
+        -0.6289094648278237,
+        0.06962795868812084
+      ],
+      "residual_rms": 10.801737387798354,
+      "sse": 329147.3138083844,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 16,
+      "successful_starts": 2
+    },
+    "free_fit_sse_reproduced": 329147.3138083844,
+    "free_relative_peak_error": -0.13308086813641262,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      79.64986991480829,
+      -0.4480119809993699,
+      -0.737608655632311,
+      0.14666302826140745
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11556641298747,
+      17.68826116754218,
+      17.68472871235603,
+      3.6343818664867125
+    ],
+    "condition_number": 14.614745605786679,
+    "residual_norm": 574.4573054152249,
+    "sse": 330001.195744921,
+    "normal_equation_residual": [
+      -6.851328555798641e-13,
+      -2.106759211528697e-12,
+      -4.654332474984813e-13,
+      4.2810199829546036e-13
+    ],
+    "relative_normal_equation_residual": 6.084284446358044e-17,
+    "reported_residual_sum": [
+      330001.1957449219
+    ],
+    "seconds": 0.0001527499407529831,
+    "amplitude": 79.64986991480829,
+    "relative_peak_error": -0.2035013008519171,
+    "background": [
+      -0.4480119809993699,
+      -0.737608655632311,
+      0.14666302826140745
+    ],
+    "fitted_background_at_truth_center": -0.605263541628534,
+    "free_background_at_truth_center": -0.516923248497526,
+    "free_SSE_minus_fixed_SSE": -853.881936536578
+  },
+  {
+    "case": "H_20260912",
+    "arm": "P",
+    "array": "a2000",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 5.344391873149702,
+    "outer_background": [
+      0.16334507032875875,
+      -0.08666765124509462,
+      0.19363955675049419
+    ],
+    "free_fit": {
+      "parameters": [
+        86.71032233384409,
+        16.868142653010203,
+        -10.823269389280666,
+        1.9954745502006845,
+        2.412259016154673,
+        -1.1070518893202943,
+        -0.5496852591233571,
+        -0.4701754167096156,
+        0.3609147157079964
+      ],
+      "peak": 86.71032233384409,
+      "centroid": [
+        16.868142653010203,
+        -10.823269389280666
+      ],
+      "widths": [
+        11.15914137372095,
+        7.355692845294438
+      ],
+      "angle_rad": 0.46374443747460226,
+      "gaussian_integral": 8064.725438743846,
+      "background": [
+        -0.5496852591233571,
+        -0.4701754167096156,
+        0.3609147157079964
+      ],
+      "residual_rms": 10.277437711133894,
+      "sse": 224032.1646471289,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 11,
+      "successful_starts": 2
+    },
+    "free_fit_sse_reproduced": 224032.1646471289,
+    "free_relative_peak_error": -0.13289677666155908,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      80.06033603303281,
+      -0.6255892177610659,
+      -0.6588841985827751,
+      0.4946030083894576
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05812481262999,
+      13.305169053181139,
+      13.296578971512899,
+      3.608006095009896
+    ],
+    "condition_number": 12.765534092730977,
+    "residual_norm": 474.15883571435694,
+    "sse": 224826.60148599453,
+    "normal_equation_residual": [
+      -3.1554837731765085e-13,
+      -2.1538326677728037e-13,
+      2.395861287141088e-13,
+      1.1035616864774056e-13
+    ],
+    "relative_normal_equation_residual": 1.6732553093082437e-17,
+    "reported_residual_sum": [
+      224826.60148599482
+    ],
+    "seconds": 0.00013183406554162502,
+    "amplitude": 80.06033603303281,
+    "relative_peak_error": -0.19939663966967192,
+    "background": [
+      -0.6255892177610659,
+      -0.6588841985827751,
+      0.4946030083894576
+    ],
+    "fitted_background_at_truth_center": -0.8104966007409683,
+    "free_background_at_truth_center": -0.6826079697550396,
+    "free_SSE_minus_fixed_SSE": -794.4368388656294
+  },
+  {
+    "case": "H_20260912",
+    "arm": "C",
+    "array": "a1100",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 8.162823546155272,
+    "outer_background": [
+      0.20431578493275948,
+      -0.1746260397255264,
+      -0.2139658678635871
+    ],
+    "free_fit": {
+      "parameters": [
+        104.35970346799101,
+        16.68794414564526,
+        -11.160687902144353,
+        2.5562275239766503,
+        1.9899816885092556,
+        -2.6233000088600718,
+        0.06644537524764693,
+        -0.328152814437065,
+        -0.7855756314492421
+      ],
+      "peak": 104.35970346799101,
+      "centroid": [
+        16.68794414564526,
+        -11.160687902144353
+      ],
+      "widths": [
+        12.887109187765951,
+        7.315399805207268
+      ],
+      "angle_rad": 0.5182926447297214,
+      "gaussian_integral": 11147.842680825523,
+      "background": [
+        0.06644537524764693,
+        -0.328152814437065,
+        -0.7855756314492421
+      ],
+      "residual_rms": 10.383374396814284,
+      "sse": 304144.6025615243,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 76,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 304144.6025615243,
+    "free_relative_peak_error": 0.04359703467991016,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      102.81543444223834,
+      0.06324835574292095,
+      -0.36449735908626285,
+      -0.7979612631388796
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11556641298747,
+      17.68826116754218,
+      17.68472871235603,
+      3.6343818664867125
+    ],
+    "condition_number": 14.614745605786679,
+    "residual_norm": 553.0643614183973,
+    "sse": 305880.1878711396,
+    "normal_equation_residual": [
+      -2.8113117539378087e-15,
+      -1.5019097077129118e-12,
+      -2.546851618490109e-13,
+      -1.1457501614131615e-13
+    ],
+    "relative_normal_equation_residual": 3.869825268738579e-17,
+    "reported_residual_sum": [
+      305880.18787113886
+    ],
+    "seconds": 0.00015333294868469238,
+    "amplitude": 102.81543444223834,
+    "relative_peak_error": 0.028154344422383515,
+    "background": [
+      0.06324835574292095,
+      -0.36449735908626285,
+      -0.7979612631388796
+    ],
+    "fitted_background_at_truth_center": 0.09192745341026769,
+    "free_background_at_truth_center": 0.1004757541422198,
+    "free_SSE_minus_fixed_SSE": -1735.5853096153005
+  },
+  {
+    "case": "H_20260912",
+    "arm": "C",
+    "array": "a1100",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 8.162823546155272,
+    "outer_background": [
+      0.20431578493275948,
+      -0.1746260397255264,
+      -0.2139658678635871
+    ],
+    "free_fit": {
+      "parameters": [
+        104.35856227763175,
+        16.694379602579062,
+        -11.157175457733034,
+        1.989425894592425,
+        2.555749559349088,
+        -1.0526026470490433,
+        0.16341625649289895,
+        -0.8516495037431617,
+        -1.0086348300049106
+      ],
+      "peak": 104.35856227763175,
+      "centroid": [
+        16.694379602579062,
+        -11.157175457733034
+      ],
+      "widths": [
+        12.880951077219407,
+        7.311335080175709
+      ],
+      "angle_rad": 0.5181936797458533,
+      "gaussian_integral": 11136.202680236953,
+      "background": [
+        0.16341625649289895,
+        -0.8516495037431617,
+        -1.0086348300049106
+      ],
+      "residual_rms": 10.21220400185069,
+      "sse": 221197.2035304557,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 11,
+      "successful_starts": 2
+    },
+    "free_fit_sse_reproduced": 221197.2035304557,
+    "free_relative_peak_error": 0.04358562277631739,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      102.77763542549344,
+      0.15827675642915004,
+      -0.9167691251737143,
+      -1.0285994190361438
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05812481262999,
+      13.305169053181139,
+      13.296578971512899,
+      3.608006095009896
+    ],
+    "condition_number": 12.765534092730977,
+    "residual_norm": 472.1447679716646,
+    "sse": 222920.68192301693,
+    "normal_equation_residual": [
+      -2.648684741521341e-13,
+      1.3677947663381929e-13,
+      -3.632649736573512e-13,
+      1.687538997430238e-14
+    ],
+    "relative_normal_equation_residual": 1.554887777112934e-17,
+    "reported_residual_sum": [
+      222920.68192301696
+    ],
+    "seconds": 0.0001427498646080494,
+    "amplitude": 102.77763542549344,
+    "relative_peak_error": 0.02777635425493452,
+    "background": [
+      0.15827675642915004,
+      -0.9167691251737143,
+      -1.0285994190361438
+    ],
+    "fitted_background_at_truth_center": 0.11082696177853268,
+    "free_background_at_truth_center": 0.12582671834201303,
+    "free_SSE_minus_fixed_SSE": -1723.4783925612282
+  },
+  {
+    "case": "H_20260912",
+    "arm": "C",
+    "array": "a1400",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": true,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": false
+    },
+    "original_probe_available": true,
+    "original_peak_score": 4.908047831766035,
+    "outer_background": [
+      -0.1385137825228725,
+      -0.01109083035690371,
+      0.254725546958508
+    ],
+    "free_fit": {
+      "parameters": [
+        110.23406922427833,
+        17.00736928282618,
+        -11.280070770622949,
+        2.309530380840768,
+        2.0023733446664984,
+        3.1415926535897927,
+        0.40813698201621135,
+        0.5441744973250555,
+        0.853987656542858
+      ],
+      "peak": 110.23406922427833,
+      "centroid": [
+        17.00736928282618,
+        -11.280070770622949
+      ],
+      "widths": [
+        10.06969462292113,
+        7.406613702694643
+      ],
+      "angle_rad": 3.1415926535897927,
+      "gaussian_integral": 9315.71630294715,
+      "background": [
+        0.40813698201621135,
+        0.5441744973250555,
+        0.853987656542858
+      ],
+      "residual_rms": 18.185795946005527,
+      "sse": 932970.0743892879,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 8,
+      "successful_starts": 2
+    },
+    "free_fit_sse_reproduced": 932970.0743892879,
+    "free_relative_peak_error": 0.1023406922427832,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      98.96759711952994,
+      0.2796677585647832,
+      0.325901355532223,
+      0.9724446226224971
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11556641298747,
+      17.68826116754218,
+      17.68472871235603,
+      3.6343818664867125
+    ],
+    "condition_number": 14.614745605786679,
+    "residual_norm": 963.8887354801608,
+    "sse": 929081.4943855434,
+    "normal_equation_residual": [
+      -8.486322745143308e-14,
+      9.237055564881302e-13,
+      8.038014698286133e-14,
+      8.881784197001252e-15
+    ],
+    "relative_normal_equation_residual": 1.5345704512578583e-17,
+    "reported_residual_sum": [
+      929081.4943855428
+    ],
+    "seconds": 0.00015920796431601048,
+    "amplitude": 98.96759711952994,
+    "relative_peak_error": -0.010324028804700625,
+    "background": [
+      0.2796677585647832,
+      0.325901355532223,
+      0.9724446226224971
+    ],
+    "fitted_background_at_truth_center": 0.22237256073367567,
+    "free_background_at_truth_center": 0.40654922904459473,
+    "free_SSE_minus_fixed_SSE": 3888.580003744457
+  },
+  {
+    "case": "H_20260912",
+    "arm": "C",
+    "array": "a1400",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": true,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": false
+    },
+    "original_probe_available": true,
+    "original_peak_score": 4.908047831766035,
+    "outer_background": [
+      -0.1385137825228725,
+      -0.01109083035690371,
+      0.254725546958508
+    ],
+    "free_fit": {
+      "parameters": [
+        110.89798861873508,
+        17.02041965764856,
+        -11.200754580970603,
+        1.8826254094505854,
+        2.464409048833053,
+        -1.1348148461996594,
+        0.6139093449769811,
+        -1.0414436109491447,
+        -0.7142568273315473
+      ],
+      "peak": 110.89798861873508,
+      "centroid": [
+        17.02041965764856,
+        -11.200754580970603
+      ],
+      "widths": [
+        11.756532562111662,
+        6.57073310148607
+      ],
+      "angle_rad": 0.4359814805952371,
+      "gaussian_integral": 9706.913677808756,
+      "background": [
+        0.6139093449769811,
+        -1.0414436109491447,
+        -0.7142568273315473
+      ],
+      "residual_rms": 17.734697614060337,
+      "sse": 667095.8583592358,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 18,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 667095.8583592358,
+    "free_relative_peak_error": 0.10897988618735077,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      98.78834615559127,
+      0.4914492995982036,
+      -1.3158285576712858,
+      -0.5653156690635661
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05812481262999,
+      13.305169053181139,
+      13.296578971512899,
+      3.608006095009896
+    ],
+    "condition_number": 12.765534092730977,
+    "residual_norm": 818.5016443215653,
+    "sse": 669944.9417571062,
+    "normal_equation_residual": [
+      -3.317650969951784e-13,
+      2.1960211427085596e-13,
+      3.3151259515307174e-13,
+      -1.7763568394002505e-15
+    ],
+    "relative_normal_equation_residual": 1.1570042937033887e-17,
+    "reported_residual_sum": [
+      669944.9417571062
+    ],
+    "seconds": 0.00012862496078014374,
+    "amplitude": 98.78834615559127,
+    "relative_peak_error": -0.012116538444087332,
+    "background": [
+      0.4914492995982036,
+      -1.3158285576712858,
+      -0.5653156690635661
+    ],
+    "fitted_background_at_truth_center": 0.3119980427013966,
+    "free_background_at_truth_center": 0.5044902751382208,
+    "free_SSE_minus_fixed_SSE": -2849.0833978704177
+  },
+  {
+    "case": "H_20260912",
+    "arm": "C",
+    "array": "a2000",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 5.876500714953616,
+    "outer_background": [
+      0.22462113224127137,
+      -0.03739670517683026,
+      0.1846042590744586
+    ],
+    "free_fit": {
+      "parameters": [
+        95.52668021251445,
+        16.86803740697199,
+        -10.829843567664048,
+        2.098433458789122,
+        2.512480743185072,
+        -1.0899380204719695,
+        -0.17863485382953595,
+        -0.4514115765466184,
+        -0.10096584113472008
+      ],
+      "peak": 95.52668021251445,
+      "centroid": [
+        16.86803740697199,
+        -10.829843567664048
+      ],
+      "widths": [
+        12.335493326033061,
+        8.15338728573454
+      ],
+      "angle_rad": 0.48085830632292703,
+      "gaussian_integral": 10886.385270122457,
+      "background": [
+        -0.17863485382953595,
+        -0.4514115765466184,
+        -0.10096584113472008
+      ],
+      "residual_rms": 10.802334198592469,
+      "sse": 329183.6864935248,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 162,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 329183.6864935248,
+    "free_relative_peak_error": -0.044733197874855524,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      97.57852429546764,
+      -0.15451920986438566,
+      -0.42308344929738945,
+      -0.11109944908138346
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11556641298747,
+      17.68826116754218,
+      17.68472871235603,
+      3.6343818664867125
+    ],
+    "condition_number": 14.614745605786679,
+    "residual_norm": 574.0608049162448,
+    "sse": 329545.8077410869,
+    "normal_equation_residual": [
+      -7.83072625460056e-13,
+      -5.933031843596837e-13,
+      -2.931821452278882e-13,
+      6.199485369506874e-13
+    ],
+    "relative_normal_equation_residual": 3.009824636372608e-17,
+    "reported_residual_sum": [
+      329545.80774108705
+    ],
+    "seconds": 0.00015433295629918575,
+    "amplitude": 97.57852429546764,
+    "relative_peak_error": -0.0242147570453235,
+    "background": [
+      -0.15451920986438566,
+      -0.42308344929738945,
+      -0.11109944908138346
+    ],
+    "fitted_background_at_truth_center": -0.2208561509550568,
+    "free_background_at_truth_center": -0.251561215482987,
+    "free_SSE_minus_fixed_SSE": -362.12124756205594
+  },
+  {
+    "case": "H_20260912",
+    "arm": "C",
+    "array": "a2000",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 100,
+    "template_sampled_max": 0.9568210191038327,
+    "truth_template_origin": {
+      "peak": [
+        100,
+        100,
+        100
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12,
+        8
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 5.876500714953616,
+    "outer_background": [
+      0.22462113224127137,
+      -0.03739670517683026,
+      0.1846042590744586
+    ],
+    "free_fit": {
+      "parameters": [
+        95.5517404393181,
+        16.865009969608277,
+        -10.831166834697937,
+        2.100519673044179,
+        2.514578349281772,
+        -1.0900033228693722,
+        -0.30801690130941045,
+        -0.22874295151682317,
+        0.10517041845089699
+      ],
+      "peak": 95.5517404393181,
+      "centroid": [
+        16.865009969608277,
+        -10.831166834697937
+      ],
+      "widths": [
+        12.361395488809475,
+        8.170414753814653
+      ],
+      "angle_rad": 0.4807930039255244,
+      "gaussian_integral": 10934.89524326191,
+      "background": [
+        -0.30801690130941045,
+        -0.22874295151682317,
+        0.10517041845089699
+      ],
+      "residual_rms": 10.28876934802113,
+      "sse": 224526.46113186856,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 10,
+      "successful_starts": 2
+    },
+    "free_fit_sse_reproduced": 224526.46113186856,
+    "free_relative_peak_error": -0.044482595606819,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      97.767109300165,
+      -0.272642401350904,
+      -0.1717747547773041,
+      0.08230834950293439
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05812481262999,
+      13.305169053181139,
+      13.296578971512899,
+      3.608006095009896
+    ],
+    "condition_number": 12.765534092730977,
+    "residual_norm": 474.2389278035315,
+    "sse": 224902.56064424315,
+    "normal_equation_residual": [
+      -7.668488341985559e-13,
+      -1.305178187749334e-12,
+      -1.8485213360008856e-13,
+      2.1860291354869332e-13
+    ],
+    "relative_normal_equation_residual": 5.1957207521991995e-17,
+    "reported_residual_sum": [
+      224902.56064424367
+    ],
+    "seconds": 0.00012433412484824657,
+    "amplitude": 97.767109300165,
+    "relative_peak_error": -0.022328906998349995,
+    "background": [
+      -0.272642401350904,
+      -0.1717747547773041,
+      0.08230834950293439
+    ],
+    "fitted_background_at_truth_center": -0.31514865330364233,
+    "free_background_at_truth_center": -0.36407806551769784,
+    "free_SSE_minus_fixed_SSE": -376.09951237458154
+  },
+  {
+    "case": "D_20260911",
+    "arm": "P",
+    "array": "a1100",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": true,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 7.395156964284402,
+    "outer_background": [
+      0.05394432572531667,
+      -0.024298446761790195,
+      0.2553279388082979
+    ],
+    "free_fit": {
+      "parameters": [
+        96.34483132374704,
+        17.00010379336678,
+        -10.966423167717396,
+        2.466315491083382,
+        1.952021878740744,
+        0.5578097153769831,
+        -0.29555579633853196,
+        -0.5779401923463436,
+        0.6511795011186527
+      ],
+      "peak": 96.34483132374704,
+      "centroid": [
+        17.00010379336678,
+        -10.966423167717396
+      ],
+      "widths": [
+        11.7789670907772,
+        7.042913110886303
+      ],
+      "angle_rad": 0.5578097153769831,
+      "gaussian_integral": 9056.332934710763,
+      "background": [
+        -0.29555579633853196,
+        -0.5779401923463436,
+        0.6511795011186527
+      ],
+      "residual_rms": 10.362638191822791,
+      "sse": 302931.0265011352,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 161,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 302931.0265011352,
+    "free_relative_peak_error": 0.0704981258194115,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      84.36084022290447,
+      -0.3965630625929115,
+      -0.7500256780269094,
+      0.7652351369265817
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11614959470608,
+      17.689110309460503,
+      17.684728712356016,
+      3.824594810119994
+    ],
+    "condition_number": 13.88804624588182,
+    "residual_norm": 552.4382885013968,
+    "sse": 305188.06260235247,
+    "normal_equation_residual": [
+      -2.5898004809637e-13,
+      -9.912071163853398e-13,
+      9.248157795127554e-13,
+      -4.085620730620576e-14
+    ],
+    "relative_normal_equation_residual": 3.663839091305827e-17,
+    "reported_residual_sum": [
+      305188.0626023531
+    ],
+    "seconds": 0.0001547501888126135,
+    "amplitude": 84.36084022290447,
+    "relative_peak_error": -0.06265733085661696,
+    "background": [
+      -0.3965630625929115,
+      -0.7500256780269094,
+      0.7652351369265817
+    ],
+    "fitted_background_at_truth_center": -0.6317633185112432,
+    "free_background_at_truth_center": -0.4843108828073433,
+    "free_SSE_minus_fixed_SSE": -2257.0361012172652
+  },
+  {
+    "case": "D_20260911",
+    "arm": "P",
+    "array": "a1100",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": true,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 7.395156964284402,
+    "outer_background": [
+      0.05394432572531667,
+      -0.024298446761790195,
+      0.2553279388082979
+    ],
+    "free_fit": {
+      "parameters": [
+        96.33617155762008,
+        17.00079684121991,
+        -10.964423075729067,
+        1.9481551444626901,
+        2.46279388268599,
+        2.1286050246075967,
+        -0.1387195263960672,
+        -0.5354801636603949,
+        0.5081692115718844
+      ],
+      "peak": 96.33617155762008,
+      "centroid": [
+        17.00079684121991,
+        -10.964423075729067
+      ],
+      "widths": [
+        11.737559135453475,
+        7.015732621074961
+      ],
+      "angle_rad": 0.5578086978127001,
+      "gaussian_integral": 8988.8601990589,
+      "background": [
+        -0.1387195263960672,
+        -0.5354801636603949,
+        0.5081692115718844
+      ],
+      "residual_rms": 10.159171354743998,
+      "sse": 218905.7855065232,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 13,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 218905.7855065232,
+    "free_relative_peak_error": 0.07040190619577857,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      84.1502117457918,
+      -0.27801485305047685,
+      -0.8510161721104652,
+      0.7174368629049014
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05902144727843,
+      13.307272314446264,
+      13.296578971512899,
+      3.793405640505807
+    ],
+    "condition_number": 12.14186559841172,
+    "residual_norm": 470.36384588969264,
+    "sse": 221242.14752014255,
+    "normal_equation_residual": [
+      3.409923054515972e-13,
+      9.521272659185342e-13,
+      -1.5987211554602254e-14,
+      1.580957587066223e-13
+    ],
+    "relative_normal_equation_residual": 3.593841398582872e-17,
+    "reported_residual_sum": [
+      221242.1475201425
+    ],
+    "seconds": 0.0001237918622791767,
+    "amplitude": 84.1502117457918,
+    "relative_peak_error": -0.06499764726898005,
+    "background": [
+      -0.27801485305047685,
+      -0.8510161721104652,
+      0.7174368629049014
+    ],
+    "fitted_background_at_truth_center": -0.5264490799152749,
+    "free_background_at_truth_center": -0.3019753498351499,
+    "free_SSE_minus_fixed_SSE": -2336.362013619335
+  },
+  {
+    "case": "D_20260911",
+    "arm": "P",
+    "array": "a1400",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": true,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": false
+    },
+    "original_probe_available": true,
+    "original_peak_score": 4.231527959512891,
+    "outer_background": [
+      -0.12093315908401683,
+      0.3417531425965079,
+      0.3915033742846654
+    ],
+    "free_fit": {
+      "parameters": [
+        91.87832189193306,
+        17.52348128298935,
+        -10.730419917689774,
+        1.9114727272424192,
+        2.398617811085342,
+        -1.156454987844323,
+        -0.6237117975803796,
+        -0.7826991453955906,
+        1.8875119866422667
+      ],
+      "peak": 91.87832189193306,
+      "centroid": [
+        17.52348128298935,
+        -10.730419917689774
+      ],
+      "widths": [
+        11.007950793187034,
+        6.7630415834451965
+      ],
+      "angle_rad": 0.41434133895057346,
+      "gaussian_integral": 7750.433816979234,
+      "background": [
+        -0.6237117975803796,
+        -0.7826991453955906,
+        1.8875119866422667
+      ],
+      "residual_rms": 18.63603335595089,
+      "sse": 979738.206407646,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 29,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 979738.206407646,
+    "free_relative_peak_error": 0.02087024324370068,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      75.53225759022074,
+      -0.7458862647910584,
+      -0.954821883759897,
+      2.040759762255006
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11614959470608,
+      17.689110309460503,
+      17.684728712356016,
+      3.824594810119994
+    ],
+    "condition_number": 13.88804624588182,
+    "residual_norm": 991.6102767790617,
+    "sse": 983290.9410138471,
+    "normal_equation_residual": [
+      -3.415361078953317e-14,
+      -1.3442580382161395e-12,
+      1.5696333122150463e-12,
+      -1.6890933096647132e-12
+    ],
+    "relative_normal_equation_residual": 4.391521639797602e-17,
+    "reported_residual_sum": [
+      983290.9410138492
+    ],
+    "seconds": 0.00014958390966057777,
+    "amplitude": 75.53225759022074,
+    "relative_peak_error": -0.16075269344199183,
+    "background": [
+      -0.7458862647910584,
+      -0.954821883759897,
+      2.040759762255006
+    ],
+    "fitted_background_at_truth_center": -1.1756677026657618,
+    "free_background_at_truth_center": -1.0022508789669349,
+    "free_SSE_minus_fixed_SSE": -3552.7346062011784
+  },
+  {
+    "case": "D_20260911",
+    "arm": "P",
+    "array": "a1400",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": true,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": false
+    },
+    "original_probe_available": true,
+    "original_peak_score": 4.231527959512891,
+    "outer_background": [
+      -0.12093315908401683,
+      0.3417531425965079,
+      0.3915033742846654
+    ],
+    "free_fit": {
+      "parameters": [
+        91.86340198144454,
+        17.51494823287815,
+        -10.739609441460093,
+        2.4058672159669396,
+        1.9165503280242893,
+        0.41462099421307846,
+        -0.7019473598143242,
+        -0.6469156701115544,
+        3.764323765267086
+      ],
+      "peak": 91.86340198144454,
+      "centroid": [
+        17.51494823287815,
+        -10.739609441460093
+      ],
+      "widths": [
+        11.088041840861965,
+        6.797468938893361
+      ],
+      "angle_rad": 0.41462099421307846,
+      "gaussian_integral": 7845.290558786851,
+      "background": [
+        -0.7019473598143242,
+        -0.6469156701115544,
+        3.764323765267086
+      ],
+      "residual_rms": 18.170812781383837,
+      "sse": 700308.4651656728,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 186,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 700308.4651656728,
+    "free_relative_peak_error": 0.020704466460494952,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      76.25263065037224,
+      -0.8635251941611157,
+      -0.9495840469704766,
+      4.033334970250013
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05902144727843,
+      13.307272314446264,
+      13.296578971512899,
+      3.793405640505807
+    ],
+    "condition_number": 12.14186559841172,
+    "residual_norm": 838.8243901364826,
+    "sse": 703626.3574878422,
+    "normal_equation_residual": [
+      -1.7856076512229611e-13,
+      -2.440714297335944e-12,
+      -1.07749920097433e-12,
+      -5.113687251423471e-13
+    ],
+    "relative_normal_equation_residual": 6.142382969695338e-17,
+    "reported_residual_sum": [
+      703626.3574878419
+    ],
+    "seconds": 0.00011016707867383957,
+    "amplitude": 76.25263065037224,
+    "relative_peak_error": -0.15274854832919738,
+    "background": [
+      -0.8635251941611157,
+      -0.9495840469704766,
+      4.033334970250013
+    ],
+    "fitted_background_at_truth_center": -1.5358542327305407,
+    "free_background_at_truth_center": -1.2842265577013727,
+    "free_SSE_minus_fixed_SSE": -3317.892322169384
+  },
+  {
+    "case": "D_20260911",
+    "arm": "P",
+    "array": "a2000",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 5.1004475242273655,
+    "outer_background": [
+      -0.008223417369645318,
+      -0.24169694332424663,
+      -0.13623591943576602
+    ],
+    "free_fit": {
+      "parameters": [
+        85.36638988737428,
+        16.8110755272584,
+        -11.021155106109985,
+        2.0139761202217272,
+        2.418395576090373,
+        -0.9642595836782917,
+        -0.5747276931714888,
+        1.162314379785338,
+        0.5953178208909723
+      ],
+      "peak": 85.36638988737428,
+      "centroid": [
+        16.8110755272584,
+        -11.021155106109985
+      ],
+      "widths": [
+        11.227830655985857,
+        7.493051468391538
+      ],
+      "angle_rad": 0.6065367431166049,
+      "gaussian_integral": 8137.779262615792,
+      "background": [
+        -0.5747276931714888,
+        1.162314379785338,
+        0.5953178208909723
+      ],
+      "residual_rms": 11.201042748536938,
+      "sse": 353932.134764491,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 12,
+      "successful_starts": 2
+    },
+    "free_fit_sse_reproduced": 353932.134764491,
+    "free_relative_peak_error": -0.05148455680695241,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      75.27668848509039,
+      -0.6598377963488191,
+      1.0036506643845735,
+      0.6876178759952107
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11614959470608,
+      17.689110309460503,
+      17.684728712356016,
+      3.824594810119994
+    ],
+    "condition_number": 13.88804624588182,
+    "residual_norm": 596.4081318246965,
+    "sse": 355702.65970662463,
+    "normal_equation_residual": [
+      4.067891825173312e-13,
+      -3.4416913763379853e-15,
+      -6.095124405192109e-13,
+      -1.926514503480803e-13
+    ],
+    "relative_normal_equation_residual": 1.9404132441187443e-17,
+    "reported_residual_sum": [
+      355702.65970662487
+    ],
+    "seconds": 0.00012729200534522533,
+    "amplitude": 75.27668848509039,
+    "relative_peak_error": -0.16359235016566231,
+    "background": [
+      -0.6598377963488191,
+      1.0036506643845735,
+      0.6876178759952107
+    ],
+    "fitted_background_at_truth_center": -0.5543015223644809,
+    "free_background_at_truth_center": -0.42794048843204374,
+    "free_SSE_minus_fixed_SSE": -1770.5249421336339
+  },
+  {
+    "case": "D_20260911",
+    "arm": "P",
+    "array": "a2000",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 5.1004475242273655,
+    "outer_background": [
+      -0.008223417369645318,
+      -0.24169694332424663,
+      -0.13623591943576602
+    ],
+    "free_fit": {
+      "parameters": [
+        85.36303531897654,
+        16.809484179097986,
+        -11.015629513968653,
+        2.007178240763178,
+        2.413087629307397,
+        -0.9646575522330479,
+        -0.4680801056094178,
+        1.5370177318465217,
+        -0.08590150334561668
+      ],
+      "peak": 85.36303531897654,
+      "centroid": [
+        16.809484179097986,
+        -11.015629513968653
+      ],
+      "widths": [
+        11.168391817026537,
+        7.442287347409283
+      ],
+      "angle_rad": 0.6061387745618486,
+      "gaussian_integral": 8039.542686567208,
+      "background": [
+        -0.4680801056094178,
+        1.5370177318465217,
+        -0.08590150334561668
+      ],
+      "residual_rms": 10.785976799129694,
+      "sse": 246751.4037796031,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 15,
+      "successful_starts": 2
+    },
+    "free_fit_sse_reproduced": 246751.4037796031,
+    "free_relative_peak_error": -0.05152182978914954,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      74.89481463476628,
+      -0.5874182226343867,
+      1.242528309971042,
+      0.08710499813831463
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05902144727843,
+      13.307272314446264,
+      13.296578971512899,
+      3.793405640505807
+    ],
+    "condition_number": 12.14186559841172,
+    "residual_norm": 498.6277005540348,
+    "sse": 248629.5837598042,
+    "normal_equation_residual": [
+      2.0957369213943032e-13,
+      7.549516567451064e-13,
+      -2.736699755701011e-14,
+      -8.881784197001252e-15
+    ],
+    "relative_normal_equation_residual": 2.7240110840129445e-17,
+    "reported_residual_sum": [
+      248629.58375980455
+    ],
+    "seconds": 0.0001077079214155674,
+    "amplitude": 74.89481463476628,
+    "relative_peak_error": -0.16783539294704142,
+    "background": [
+      -0.5874182226343867,
+      1.242528309971042,
+      0.08710499813831463
+    ],
+    "fitted_background_at_truth_center": -0.363364597190095,
+    "free_background_at_truth_center": -0.16725546140727726,
+    "free_SSE_minus_fixed_SSE": -1878.1799802010937
+  },
+  {
+    "case": "D_20260911",
+    "arm": "C",
+    "array": "a1100",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": false,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 7.432468584383799,
+    "outer_background": [
+      0.14166033505190337,
+      -0.04105524698330068,
+      0.22096136123083104
+    ],
+    "free_fit": {
+      "parameters": [
+        96.85319077263019,
+        16.930366556749238,
+        -11.019332740259037,
+        2.520471577376354,
+        2.058343727010569,
+        0.553928585862368,
+        0.04249642296375157,
+        -0.9889471896315838,
+        -0.15894833444086995
+      ],
+      "peak": 96.85319077263019,
+      "centroid": [
+        16.930366556749238,
+        -11.019332740259037
+      ],
+      "widths": [
+        12.43445909076929,
+        7.83298549819671
+      ],
+      "angle_rad": 0.553928585862368,
+      "gaussian_integral": 10688.889158256312,
+      "background": [
+        0.04249642296375157,
+        -0.9889471896315838,
+        -0.15894833444086995
+      ],
+      "residual_rms": 10.40558707711824,
+      "sse": 305447.27986538154,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 19,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 305447.27986538154,
+    "free_relative_peak_error": 0.07614656414033538,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      92.42082919181851,
+      -0.00016253740213733556,
+      -1.068239291602846,
+      -0.1137546107404929
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11614959470608,
+      17.689110309460503,
+      17.684728712356016,
+      3.824594810119994
+    ],
+    "condition_number": 13.88804624588182,
+    "residual_norm": 553.3113244894795,
+    "sse": 306153.42180830205,
+    "normal_equation_residual": [
+      -1.1753290702367296e-13,
+      -2.0250467969162855e-13,
+      1.1679546219056647e-12,
+      3.375077994860476e-13
+    ],
+    "relative_normal_equation_residual": 3.192357068211136e-17,
+    "reported_residual_sum": [
+      306153.42180830205
+    ],
+    "seconds": 0.00014958297833800316,
+    "amplitude": 92.42082919181851,
+    "relative_peak_error": 0.026898102131316826,
+    "background": [
+      -0.00016253740213733556,
+      -1.068239291602846,
+      -0.1137546107404929
+    ],
+    "fitted_background_at_truth_center": -0.1880377289477258,
+    "free_background_at_truth_center": -0.12487769420166348,
+    "free_SSE_minus_fixed_SSE": -706.1419429205125
+  },
+  {
+    "case": "D_20260911",
+    "arm": "C",
+    "array": "a1100",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": false,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 7.432468584383799,
+    "outer_background": [
+      0.14166033505190337,
+      -0.04105524698330068,
+      0.22096136123083104
+    ],
+    "free_fit": {
+      "parameters": [
+        94.38176526932286,
+        16.95068052436531,
+        -11.01510712206823,
+        2.388058549302996,
+        2.195773313624506,
+        3.1415926535897927,
+        0.1467399676475182,
+        -0.4783369008950281,
+        -0.0984145478595194
+      ],
+      "peak": 94.38176526932286,
+      "centroid": [
+        16.95068052436531,
+        -11.01510712206823
+      ],
+      "widths": [
+        10.892326487054348,
+        8.986948099759962
+      ],
+      "angle_rad": 3.1415926535897927,
+      "gaussian_integral": 10468.522728041195,
+      "background": [
+        0.1467399676475182,
+        -0.4783369008950281,
+        -0.0984145478595194
+      ],
+      "residual_rms": 10.292066547818083,
+      "sse": 224670.39034222264,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 9,
+      "successful_starts": 2
+    },
+    "free_fit_sse_reproduced": 224670.39034222264,
+    "free_relative_peak_error": 0.04868628077025394,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      92.16451819681825,
+      0.06767918982341775,
+      -0.6656035313440865,
+      0.015024352531622908
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05902144727843,
+      13.307272314446264,
+      13.296578971512899,
+      3.793405640505807
+    ],
+    "condition_number": 12.14186559841172,
+    "residual_norm": 469.6138910484821,
+    "sse": 220537.20666569564,
+    "normal_equation_residual": [
+      4.975957177299899e-13,
+      8.597567102697212e-13,
+      -3.8258285428582894e-13,
+      5.5067062021407764e-14
+    ],
+    "relative_normal_equation_residual": 3.61803546720136e-17,
+    "reported_residual_sum": [
+      220537.2066656963
+    ],
+    "seconds": 0.00018354086205363274,
+    "amplitude": 92.16451819681825,
+    "relative_peak_error": 0.024050202186869374,
+    "background": [
+      0.06767918982341775,
+      -0.6656035313440865,
+      0.015024352531622908
+    ],
+    "fitted_background_at_truth_center": -0.05988223140655248,
+    "free_background_at_truth_center": 0.06841588666128748,
+    "free_SSE_minus_fixed_SSE": 4133.183676526998
+  },
+  {
+    "case": "D_20260911",
+    "arm": "C",
+    "array": "a1400",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": true,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": false
+    },
+    "original_probe_available": true,
+    "original_peak_score": 4.749601837164933,
+    "outer_background": [
+      0.5184619731576136,
+      0.021017831612631467,
+      0.2481705170432345
+    ],
+    "free_fit": {
+      "parameters": [
+        104.47723916831004,
+        17.572798342540246,
+        -10.570863099245399,
+        2.3332463400640933,
+        2.066807041617779,
+        3.1415926535897927,
+        2.7978526498999363,
+        -6.998471562948757,
+        0.753438308719273
+      ],
+      "peak": 104.47723916831004,
+      "centroid": [
+        17.572798342540246,
+        -10.570863099245399
+      ],
+      "widths": [
+        10.311361443265058,
+        7.899559841206409
+      ],
+      "angle_rad": 3.1415926535897927,
+      "gaussian_integral": 9642.841134448894,
+      "background": [
+        2.7978526498999363,
+        -6.998471562948757,
+        0.753438308719273
+      ],
+      "residual_rms": 20.037658109499567,
+      "sse": 1132653.3416297196,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 8,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 1132653.3416297196,
+    "free_relative_peak_error": 0.1608582129812226,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      92.56892135225692,
+      2.660905593366796,
+      -7.182741046704302,
+      0.941168484158839
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11614959470608,
+      17.689110309460503,
+      17.684728712356016,
+      3.824594810119994
+    ],
+    "condition_number": 13.88804624588182,
+    "residual_norm": 1063.0807763285222,
+    "sse": 1130140.736999254,
+    "normal_equation_residual": [
+      7.515701441957106e-13,
+      1.0460965427228075e-11,
+      6.8506311734495284e-12,
+      -1.7080781233858033e-13
+    ],
+    "relative_normal_equation_residual": 1.8656899933394502e-16,
+    "reported_residual_sum": [
+      1130140.7369992535
+    ],
+    "seconds": 0.00016399985179305077,
+    "amplitude": 92.56892135225692,
+    "relative_peak_error": 0.028543570580632505,
+    "background": [
+      2.660905593366796,
+      -7.182741046704302,
+      0.941168484158839
+    ],
+    "fitted_background_at_truth_center": 1.189133914258792,
+    "free_background_at_truth_center": 1.3838322280550377,
+    "free_SSE_minus_fixed_SSE": 2512.6046304656193
+  },
+  {
+    "case": "D_20260911",
+    "arm": "C",
+    "array": "a1400",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": true,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": false
+    },
+    "original_probe_available": true,
+    "original_peak_score": 4.749601837164933,
+    "outer_background": [
+      0.5184619731576136,
+      0.021017831612631467,
+      0.2481705170432345
+    ],
+    "free_fit": {
+      "parameters": [
+        103.4808983343991,
+        17.425879895765853,
+        -10.638458782352142,
+        2.4899656365435754,
+        1.9838744417523337,
+        0.45307870658168176,
+        2.5354669227392037,
+        -6.14150867616837,
+        2.85788882487107
+      ],
+      "peak": 103.4808983343991,
+      "centroid": [
+        17.425879895765853,
+        -10.638458782352142
+      ],
+      "widths": [
+        12.060861660429508,
+        7.270859002748882
+      ],
+      "angle_rad": 0.45307870658168176,
+      "gaussian_integral": 10282.262086468922,
+      "background": [
+        2.5354669227392037,
+        -6.14150867616837,
+        2.85788882487107
+      ],
+      "residual_rms": 19.399150651210608,
+      "sse": 798189.664541322,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 113,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 798189.664541322,
+    "free_relative_peak_error": 0.14978775927110122,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      93.25804910302583,
+      2.418873376409903,
+      -6.336913310047975,
+      3.0872521915147657
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05902144727843,
+      13.307272314446264,
+      13.296578971512899,
+      3.793405640505807
+    ],
+    "condition_number": 12.14186559841172,
+    "residual_norm": 894.8608863180798,
+    "sse": 800776.0058619793,
+    "normal_equation_residual": [
+      1.4668749501474827e-13,
+      -1.7976731214730535e-12,
+      -3.863714903573623e-13,
+      4.0545344859310717e-13
+    ],
+    "relative_normal_equation_residual": 3.86683548536781e-17,
+    "reported_residual_sum": [
+      800776.005861981
+    ],
+    "seconds": 0.00013154209591448307,
+    "amplitude": 93.25804910302583,
+    "relative_peak_error": 0.03620054558917585,
+    "background": [
+      2.418873376409903,
+      -6.336913310047975,
+      3.0872521915147657
+    ],
+    "fitted_background_at_truth_center": 0.8445700388823696,
+    "free_background_at_truth_center": 1.026106649756492,
+    "free_SSE_minus_fixed_SSE": -2586.3413206572877
+  },
+  {
+    "case": "D_20260911",
+    "arm": "C",
+    "array": "a2000",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": false,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 5.520776876100177,
+    "outer_background": [
+      0.15447947291646316,
+      -0.16848877421530106,
+      -0.1308935086253712
+    ],
+    "free_fit": {
+      "parameters": [
+        92.528320162192,
+        16.995151417047815,
+        -11.127090732556313,
+        2.1796611221881386,
+        2.4911259644751302,
+        -0.9778584527228523,
+        0.12694298450229335,
+        2.1111139656540496,
+        1.682399151461268
+      ],
+      "peak": 92.528320162192,
+      "centroid": [
+        16.995151417047815,
+        -11.127090732556313
+      ],
+      "widths": [
+        12.074864337370254,
+        8.843308949702315
+      ],
+      "angle_rad": 0.5929378740720442,
+      "gaussian_integral": 11195.310828082216,
+      "background": [
+        0.12694298450229335,
+        2.1111139656540496,
+        1.682399151461268
+      ],
+      "residual_rms": 11.257046785947919,
+      "sse": 357480.2297040185,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 11,
+      "successful_starts": 2
+    },
+    "free_fit_sse_reproduced": 357480.2297040185,
+    "free_relative_peak_error": 0.028092446246577918,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      92.26359178503564,
+      0.13084781737383314,
+      2.1172848107265425,
+      1.6654570973040421
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11614959470608,
+      17.689110309460503,
+      17.684728712356016,
+      3.824594810119994
+    ],
+    "condition_number": 13.88804624588182,
+    "residual_norm": 598.5974470235003,
+    "sse": 358318.9035830522,
+    "normal_equation_residual": [
+      -6.551676112620334e-13,
+      -8.399947404313934e-13,
+      -1.5707435352396715e-12,
+      -4.128919428580957e-13
+    ],
+    "relative_normal_equation_residual": 4.710943043811402e-17,
+    "reported_residual_sum": [
+      358318.90358305146
+    ],
+    "seconds": 0.00014570914208889008,
+    "amplitude": 92.26359178503564,
+    "relative_peak_error": 0.02515101983372947,
+    "background": [
+      0.13084781737383314,
+      2.1172848107265425,
+      1.6654570973040421
+    ],
+    "fitted_background_at_truth_center": 0.3272235252850194,
+    "free_background_at_truth_center": 0.3200823928361256,
+    "free_SSE_minus_fixed_SSE": -838.6738790337113
+  },
+  {
+    "case": "D_20260911",
+    "arm": "C",
+    "array": "a2000",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": false,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 5.520776876100177,
+    "outer_background": [
+      0.15447947291646316,
+      -0.16848877421530106,
+      -0.1308935086253712
+    ],
+    "free_fit": {
+      "parameters": [
+        90.58461750123703,
+        17.052760974294355,
+        -11.120843085794217,
+        2.3941448317848066,
+        2.294077191336354,
+        3.1415926535897927,
+        0.11175803541572568,
+        2.0768066898701836,
+        0.5026669963245199
+      ],
+      "peak": 90.58461750123703,
+      "centroid": [
+        17.052760974294355,
+        -11.120843085794217
+      ],
+      "widths": [
+        10.958822414170488,
+        9.915281881156789
+      ],
+      "angle_rad": 3.1415926535897927,
+      "gaussian_integral": 11152.900552679099,
+      "background": [
+        0.11175803541572568,
+        2.0768066898701836,
+        0.5026669963245199
+      ],
+      "residual_rms": 10.879655328587369,
+      "sse": 251056.19504605103,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 8,
+      "successful_starts": 2
+    },
+    "free_fit_sse_reproduced": 251056.19504605103,
+    "free_relative_peak_error": 0.006495750013744805,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      92.0120100453503,
+      0.115536768153525,
+      2.0946146857680006,
+      0.47595120261907514
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05902144727843,
+      13.307272314446264,
+      13.296578971512899,
+      3.793405640505807
+    ],
+    "condition_number": 12.14186559841172,
+    "residual_norm": 499.376500789665,
+    "sse": 249376.8895409303,
+    "normal_equation_residual": [
+      3.397016443415539e-13,
+      1.5614176618328202e-12,
+      4.25659507641285e-13,
+      -2.4868995751603507e-14
+    ],
+    "relative_normal_equation_residual": 5.37231983391023e-17,
+    "reported_residual_sum": [
+      249376.8895409304
+    ],
+    "seconds": 0.0001207918394356966,
+    "amplitude": 92.0120100453503,
+    "relative_peak_error": 0.022355667170558924,
+    "background": [
+      0.115536768153525,
+      2.0946146857680006,
+      0.47595120261907514
+    ],
+    "fitted_background_at_truth_center": 0.45301439514514924,
+    "free_background_at_truth_center": 0.44260666617376343,
+    "free_SSE_minus_fixed_SSE": 1679.3055051207193
+  },
+  {
+    "case": "D_20260912",
+    "arm": "P",
+    "array": "a1100",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 7.369809461244405,
+    "outer_background": [
+      0.16516526670488765,
+      -0.1784531858517452,
+      -0.21829578389159382
+    ],
+    "free_fit": {
+      "parameters": [
+        94.18200497618326,
+        16.629003604034768,
+        -11.200956366004958,
+        1.9410372990598752,
+        2.5342966874405572,
+        -1.0761700335146618,
+        -0.20036982200521583,
+        0.14897678103904327,
+        -0.6560577416670469
+      ],
+      "peak": 94.18200497618326,
+      "centroid": [
+        16.629003604034768,
+        -11.200956366004958
+      ],
+      "widths": [
+        12.607560673384388,
+        6.965973021542756
+      ],
+      "angle_rad": 0.4946262932802348,
+      "gaussian_integral": 9372.278966800757,
+      "background": [
+        -0.20036982200521583,
+        0.14897678103904327,
+        -0.6560577416670469
+      ],
+      "residual_rms": 10.33571502379118,
+      "sse": 301358.98125457705,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 150,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 301358.98125457705,
+    "free_relative_peak_error": 0.04646672195759183,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      84.67655032690867,
+      -0.2767591886306622,
+      -0.012056371574357674,
+      -0.5885709001936162
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11614959470608,
+      17.689110309460503,
+      17.684728712356016,
+      3.824594810119994
+    ],
+    "condition_number": 13.88804624588182,
+    "residual_norm": 551.3021391895775,
+    "sse": 303934.0486750042,
+    "normal_equation_residual": [
+      -1.1535496685217166e-13,
+      -1.0302869668521453e-12,
+      1.7319479184152442e-13,
+      6.199485369506874e-13
+    ],
+    "relative_normal_equation_residual": 3.233180520713823e-17,
+    "reported_residual_sum": [
+      303934.048675004
+    ],
+    "seconds": 0.00018104095943272114,
+    "amplitude": 84.67655032690867,
+    "relative_peak_error": -0.05914944081212592,
+    "background": [
+      -0.2767591886306622,
+      -0.012056371574357674,
+      -0.5885709001936162
+    ],
+    "fitted_background_at_truth_center": -0.20710005990437663,
+    "free_background_at_truth_center": -0.0920449282718686,
+    "free_SSE_minus_fixed_SSE": -2575.0674204271636
+  },
+  {
+    "case": "D_20260912",
+    "arm": "P",
+    "array": "a1100",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 7.369809461244405,
+    "outer_background": [
+      0.16516526670488765,
+      -0.1784531858517452,
+      -0.21829578389159382
+    ],
+    "free_fit": {
+      "parameters": [
+        94.18552354259388,
+        16.638189744489214,
+        -11.19705156348967,
+        2.5344270102538724,
+        1.9411356409425622,
+        0.49448127236668843,
+        -0.08902573685485361,
+        -0.5987242236107364,
+        -0.8143850111471039
+      ],
+      "peak": 94.18552354259388,
+      "centroid": [
+        16.638189744489214,
+        -11.19705156348967
+      ],
+      "widths": [
+        12.609203833228667,
+        6.966658102129947
+      ],
+      "angle_rad": 0.49448127236668843,
+      "gaussian_integral": 9374.772542289407,
+      "background": [
+        -0.08902573685485361,
+        -0.5987242236107364,
+        -0.8143850111471039
+      ],
+      "residual_rms": 10.169048459860477,
+      "sse": 219331.64829403933,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 198,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 219331.64829403933,
+    "free_relative_peak_error": 0.04650581713993196,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      84.81242153727956,
+      -0.19226781944878943,
+      -0.8859664003476184,
+      -0.6920293357595402
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05902144727843,
+      13.307272314446264,
+      13.296578971512899,
+      3.793405640505807
+    ],
+    "condition_number": 12.14186559841172,
+    "residual_norm": 471.03456887261126,
+    "sse": 221873.56507300676,
+    "normal_equation_residual": [
+      -4.285179308279275e-13,
+      2.220446049250313e-13,
+      6.217248937900877e-15,
+      2.0516921495072893e-13
+    ],
+    "relative_normal_equation_residual": 1.8312844764945034e-17,
+    "reported_residual_sum": [
+      221873.56507300655
+    ],
+    "seconds": 0.00012562493793666363,
+    "amplitude": 84.81242153727956,
+    "relative_peak_error": -0.057639760696893805,
+    "background": [
+      -0.19226781944878943,
+      -0.8859664003476184,
+      -0.6920293357595402
+    ],
+    "fitted_background_at_truth_center": -0.27503566514384015,
+    "free_background_at_truth_center": -0.10258214439668001,
+    "free_SSE_minus_fixed_SSE": -2541.9167789674248
+  },
+  {
+    "case": "D_20260912",
+    "arm": "P",
+    "array": "a1400",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": true,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": false
+    },
+    "original_probe_available": true,
+    "original_peak_score": 4.01565535402973,
+    "outer_background": [
+      -0.26241678317387634,
+      -0.10358383300483229,
+      0.3167452483335762
+    ],
+    "free_fit": {
+      "parameters": [
+        90.00073369659474,
+        17.100045728388164,
+        -11.23602787202383,
+        1.831693078584841,
+        2.3858945880315066,
+        -1.1452502116784833,
+        -0.28024179540042665,
+        0.26632056275832544,
+        1.252521218387677
+      ],
+      "peak": 90.00073369659474,
+      "centroid": [
+        17.100045728388164,
+        -11.23602787202383
+      ],
+      "widths": [
+        10.868781398897333,
+        6.244450058336249
+      ],
+      "angle_rad": 0.42554611511641327,
+      "gaussian_integral": 6921.265685451239,
+      "background": [
+        -0.28024179540042665,
+        0.26632056275832544,
+        1.252521218387677
+      ],
+      "residual_rms": 18.123904186429574,
+      "sse": 926630.5222469987,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 15,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 926630.5222469987,
+    "free_relative_peak_error": 8.152184385989969e-06,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      70.18893280351,
+      -0.41866566000602135,
+      0.036627335557547776,
+      1.3906163475061664
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11614959470608,
+      17.689110309460503,
+      17.684728712356016,
+      3.824594810119994
+    ],
+    "condition_number": 13.88804624588182,
+    "residual_norm": 964.796840545407,
+    "sse": 930832.9435263996,
+    "normal_equation_residual": [
+      9.863033789634897e-14,
+      -1.7763568394002505e-12,
+      6.549205622263798e-13,
+      -6.004086117172847e-13
+    ],
+    "relative_normal_equation_residual": 3.3733977066580036e-17,
+    "reported_residual_sum": [
+      930832.9435263998
+    ],
+    "seconds": 0.00014616711996495724,
+    "amplitude": 70.18893280351,
+    "relative_peak_error": -0.2201229688498889,
+    "background": [
+      -0.41866566000602135,
+      0.036627335557547776,
+      1.3906163475061664
+    ],
+    "fitted_background_at_truth_center": -0.5817113835403493,
+    "free_background_at_truth_center": -0.3830227269045702,
+    "free_SSE_minus_fixed_SSE": -4202.42127940082
+  },
+  {
+    "case": "D_20260912",
+    "arm": "P",
+    "array": "a1400",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": true,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": false
+    },
+    "original_probe_available": true,
+    "original_peak_score": 4.01565535402973,
+    "outer_background": [
+      -0.26241678317387634,
+      -0.10358383300483229,
+      0.3167452483335762
+    ],
+    "free_fit": {
+      "parameters": [
+        90.02776963143316,
+        17.116005469612013,
+        -11.225788162643594,
+        1.8294739810445162,
+        2.382674034834517,
+        1.9968058019117463,
+        -0.12231728924579287,
+        -0.993246858588638,
+        -0.27326424750345674
+      ],
+      "peak": 90.02776963143316,
+      "centroid": [
+        17.116005469612013,
+        -11.225788162643594
+      ],
+      "widths": [
+        10.833834215053962,
+        6.230608378270364
+      ],
+      "angle_rad": 0.4260094751168495,
+      "gaussian_integral": 6885.786478711739,
+      "background": [
+        -0.12231728924579287,
+        -0.993246858588638,
+        -0.27326424750345674
+      ],
+      "residual_rms": 17.746319209122714,
+      "sse": 667970.4442462771,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 125,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 667970.4442462771,
+    "free_relative_peak_error": 0.0003085514603684558,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      70.17235667712649,
+      -0.31037135048016357,
+      -1.4068343889668284,
+      -0.021955211151485833
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05902144727843,
+      13.307272314446264,
+      13.296578971512899,
+      3.793405640505807
+    ],
+    "condition_number": 12.14186559841172,
+    "residual_norm": 819.8832149250478,
+    "sse": 672208.4861158322,
+    "normal_equation_residual": [
+      5.055782713880921e-13,
+      4.53859172466764e-13,
+      -1.1657341758564144e-13,
+      1.5543122344752192e-15
+    ],
+    "relative_normal_equation_residual": 1.600889789325715e-17,
+    "reported_residual_sum": [
+      672208.4861158329
+    ],
+    "seconds": 0.00012229196727275848,
+    "amplitude": 70.17235667712649,
+    "relative_peak_error": -0.22030714803192797,
+    "background": [
+      -0.31037135048016357,
+      -1.4068343889668284,
+      -0.021955211151485833
+    ],
+    "fitted_background_at_truth_center": -0.5734233203664939,
+    "free_background_at_truth_center": -0.2765316211732242,
+    "free_SSE_minus_fixed_SSE": -4238.041869555134
+  },
+  {
+    "case": "D_20260912",
+    "arm": "P",
+    "array": "a2000",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": false
+    },
+    "original_probe_available": true,
+    "original_peak_score": 4.68699416182699,
+    "outer_background": [
+      0.15927029811870258,
+      -0.09007521063504799,
+      0.19356246069965316
+    ],
+    "free_fit": {
+      "parameters": [
+        76.0233634274087,
+        16.910327496398292,
+        -10.723325112716795,
+        2.0432843771187934,
+        2.456594509996717,
+        -1.121641476025861,
+        -0.4010424342990792,
+        -0.6357506449209491,
+        0.07464233920494627
+      ],
+      "peak": 76.0233634274087,
+      "centroid": [
+        16.910327496398292,
+        -10.723325112716795
+      ],
+      "widths": [
+        11.665018716779585,
+        7.715909585022837
+      ],
+      "angle_rad": 0.4491548507690355,
+      "gaussian_integral": 7753.255037352203,
+      "background": [
+        -0.4010424342990792,
+        -0.6357506449209491,
+        0.07464233920494627
+      ],
+      "residual_rms": 10.801374813961704,
+      "sse": 329125.2176960269,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 171,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 329125.2176960269,
+    "free_relative_peak_error": -0.15529596191768114,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      69.59298642885149,
+      -0.4593513412038269,
+      -0.7412711072803747,
+      0.15797724331562168
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11614959470608,
+      17.689110309460503,
+      17.684728712356016,
+      3.824594810119994
+    ],
+    "condition_number": 13.88804624588182,
+    "residual_norm": 574.4477747822093,
+    "sse": 329990.2459522318,
+    "normal_equation_residual": [
+      -8.352767735702336e-14,
+      -2.948752353404416e-13,
+      3.082395449993669e-13,
+      5.044853423896711e-13
+    ],
+    "relative_normal_equation_residual": 1.7866048629600238e-17,
+    "reported_residual_sum": [
+      329990.24595223065
+    ],
+    "seconds": 0.00014266697689890862,
+    "amplitude": 69.59298642885149,
+    "relative_peak_error": -0.22674459523498347,
+    "background": [
+      -0.4593513412038269,
+      -0.7412711072803747,
+      0.15797724331562168
+    ],
+    "fitted_background_at_truth_center": -0.6186775467620292,
+    "free_background_at_truth_center": -0.5302516197980853,
+    "free_SSE_minus_fixed_SSE": -865.0282562049106
+  },
+  {
+    "case": "D_20260912",
+    "arm": "P",
+    "array": "a2000",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": false
+    },
+    "original_probe_available": true,
+    "original_peak_score": 4.68699416182699,
+    "outer_background": [
+      0.15927029811870258,
+      -0.09007521063504799,
+      0.19356246069965316
+    ],
+    "free_fit": {
+      "parameters": [
+        76.04664832415071,
+        16.90744492993824,
+        -10.725078057809887,
+        2.0472627004577637,
+        2.4607691804431493,
+        -1.1212681052800344,
+        -0.5625996340731279,
+        -0.4773395029111309,
+        0.36690783525409265
+      ],
+      "peak": 76.04664832415071,
+      "centroid": [
+        16.90744492993824,
+        -10.725078057809887
+      ],
+      "widths": [
+        11.71381811550498,
+        7.746667109327968
+      ],
+      "angle_rad": 0.44952822151486216,
+      "gaussian_integral": 7819.119817854082,
+      "background": [
+        -0.5625996340731279,
+        -0.4773395029111309,
+        0.36690783525409265
+      ],
+      "residual_rms": 10.276775025972112,
+      "sse": 224003.27456595597,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 12,
+      "successful_starts": 2
+    },
+    "free_fit_sse_reproduced": 224003.27456595597,
+    "free_relative_peak_error": -0.15503724084276993,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      70.00667962461863,
+      -0.6382824607253239,
+      -0.6602100878951005,
+      0.5116527326065577
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05902144727843,
+      13.307272314446264,
+      13.296578971512899,
+      3.793405640505807
+    ],
+    "condition_number": 12.14186559841172,
+    "residual_norm": 474.1384056637846,
+    "sse": 224807.22772539558,
+    "normal_equation_residual": [
+      -3.041626030183848e-13,
+      -2.020605904817785e-13,
+      -2.199351811782435e-13,
+      9.892087149410145e-14
+    ],
+    "relative_normal_equation_residual": 1.6110605555747482e-17,
+    "reported_residual_sum": [
+      224807.2277253954
+    ],
+    "seconds": 0.00011941604316234589,
+    "amplitude": 70.00667962461863,
+    "relative_peak_error": -0.2221480041709042,
+    "background": [
+      -0.6382824607253239,
+      -0.6602100878951005,
+      0.5116527326065577
+    ],
+    "fitted_background_at_truth_center": -0.8255241446463111,
+    "free_background_at_truth_center": -0.6976080533762862,
+    "free_SSE_minus_fixed_SSE": -803.9531594396103
+  },
+  {
+    "case": "D_20260912",
+    "arm": "C",
+    "array": "a1100",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 7.412723132164161,
+    "outer_background": [
+      0.20150872777552525,
+      -0.1773700452147359,
+      -0.2122129369673994
+    ],
+    "free_fit": {
+      "parameters": [
+        94.64898427515682,
+        16.669448905962284,
+        -11.200406120615828,
+        2.602483978699983,
+        2.033859851387386,
+        -2.6263397013138294,
+        0.07907910892041033,
+        -0.33428218376538793,
+        -0.8088338290307729
+      ],
+      "peak": 94.64898427515682,
+      "centroid": [
+        16.669448905962284,
+        -11.200406120615828
+      ],
+      "widths": [
+        13.497223244559045,
+        7.643532392674626
+      ],
+      "angle_rad": 0.5152529522759637,
+      "gaussian_integral": 11064.17202744745,
+      "background": [
+        0.07907910892041033,
+        -0.33428218376538793,
+        -0.8088338290307729
+      ],
+      "residual_rms": 10.374919676764689,
+      "sse": 303649.5013623792,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 168,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 303649.5013623792,
+    "free_relative_peak_error": 0.051655380835075704,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      92.53648770119904,
+      0.06843929422891046,
+      -0.38489320790108306,
+      -0.8167978794779622
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11614959470608,
+      17.689110309460503,
+      17.684728712356016,
+      3.824594810119994
+    ],
+    "condition_number": 13.88804624588182,
+    "residual_norm": 552.5294291697214,
+    "sse": 305288.7700986183,
+    "normal_equation_residual": [
+      2.328459279008675e-13,
+      1.1679546219056647e-12,
+      6.001865671123596e-13,
+      9.769962616701378e-15
+    ],
+    "relative_normal_equation_residual": 3.435047474570224e-17,
+    "reported_residual_sum": [
+      305288.7700986181
+    ],
+    "seconds": 0.00014904187992215157,
+    "amplitude": 92.53648770119904,
+    "relative_peak_error": 0.028183196679989253,
+    "background": [
+      0.06843929422891046,
+      -0.38489320790108306,
+      -0.8167978794779622
+    ],
+    "fitted_background_at_truth_center": 0.09556809578379015,
+    "free_background_at_truth_center": 0.11479438664626487,
+    "free_SSE_minus_fixed_SSE": -1639.2687362391152
+  },
+  {
+    "case": "D_20260912",
+    "arm": "C",
+    "array": "a1100",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": true,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": true,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 7.412723132164161,
+    "outer_background": [
+      0.20150872777552525,
+      -0.1773700452147359,
+      -0.2122129369673994
+    ],
+    "free_fit": {
+      "parameters": [
+        94.6470625543148,
+        16.678618239857794,
+        -11.19559389250453,
+        2.0332234221454546,
+        2.6020680337500495,
+        -1.0556657609883546,
+        0.19283032468573497,
+        -0.9626352304861606,
+        -1.038090287003768
+      ],
+      "peak": 94.6470625543148,
+      "centroid": [
+        16.678618239857794,
+        -11.19559389250453
+      ],
+      "widths": [
+        13.491610310129133,
+        7.638669372796449
+      ],
+      "angle_rad": 0.5151305658065419,
+      "gaussian_integral": 11052.310096032617,
+      "background": [
+        0.19283032468573497,
+        -0.9626352304861606,
+        -1.038090287003768
+      ],
+      "residual_rms": 10.203634965556747,
+      "sse": 220826.14716841467,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 12,
+      "successful_starts": 2
+    },
+    "free_fit_sse_reproduced": 220826.14716841467,
+    "free_relative_peak_error": 0.05163402838127551,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      92.51358498996998,
+      0.17760713869062025,
+      -1.0529389738051234,
+      -1.0497336994127697
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05902144727843,
+      13.307272314446264,
+      13.296578971512899,
+      3.793405640505807
+    ],
+    "condition_number": 12.14186559841172,
+    "residual_norm": 471.6467237272563,
+    "sse": 222450.63200265483,
+    "normal_equation_residual": [
+      4.3030307381100926e-13,
+      2.948752353404416e-13,
+      -1.5276668818842154e-13,
+      -1.199040866595169e-13
+    ],
+    "relative_normal_equation_residual": 1.8780804260983493e-17,
+    "reported_residual_sum": [
+      222450.63200265463
+    ],
+    "seconds": 0.00012208404950797558,
+    "amplitude": 92.51358498996998,
+    "relative_peak_error": 0.02792872211077757,
+    "background": [
+      0.17760713869062025,
+      -1.0529389738051234,
+      -1.0497336994127697
+    ],
+    "fitted_background_at_truth_center": 0.10701945134454657,
+    "free_background_at_truth_center": 0.1378769273388096,
+    "free_SSE_minus_fixed_SSE": -1624.4848342401674
+  },
+  {
+    "case": "D_20260912",
+    "arm": "C",
+    "array": "a1400",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": true,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": false
+    },
+    "original_probe_available": true,
+    "original_peak_score": 4.4257253687765425,
+    "outer_background": [
+      -0.1453312182797248,
+      -0.008369735426216888,
+      0.256011377692053
+    ],
+    "free_fit": {
+      "parameters": [
+        99.41052596815874,
+        16.986929937460474,
+        -11.231989961572753,
+        2.5332794118932087,
+        1.9218960313452156,
+        0.4350443373504877,
+        0.3437605345753698,
+        0.5265329828662348,
+        0.8863203530439127
+      ],
+      "peak": 99.41052596815874,
+      "centroid": [
+        16.986929937460474,
+        -11.231989961572753
+      ],
+      "widths": [
+        12.594741831452327,
+        6.833903488556043
+      ],
+      "angle_rad": 0.4350443373504877,
+      "gaussian_integral": 9695.15826228547,
+      "background": [
+        0.3437605345753698,
+        0.5265329828662348,
+        0.8863203530439127
+      ],
+      "residual_rms": 18.118945247085556,
+      "sse": 926123.5149414805,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 128,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 926123.5149414805,
+    "free_relative_peak_error": 0.10456139964620825,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      88.50226019522974,
+      0.2550078893695692,
+      0.3741928218247605,
+      0.9641884086172666
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11614959470608,
+      17.689110309460503,
+      17.684728712356016,
+      3.824594810119994
+    ],
+    "condition_number": 13.88804624588182,
+    "residual_norm": 963.8008528122597,
+    "sse": 928912.083881639,
+    "normal_equation_residual": [
+      1.1030788151545888e-13,
+      1.3535839116229909e-12,
+      2.2248869413488137e-13,
+      -1.9184653865522705e-13
+    ],
+    "relative_normal_equation_residual": 2.305962653676693e-17,
+    "reported_residual_sum": [
+      928912.0838816392
+    ],
+    "seconds": 0.00014462508261203766,
+    "amplitude": 88.50226019522974,
+    "relative_peak_error": -0.016641553386336216,
+    "background": [
+      0.2550078893695692,
+      0.3741928218247605,
+      0.9641884086172666
+    ],
+    "fitted_background_at_truth_center": 0.20784350577213578,
+    "free_background_at_truth_center": 0.33488872152251375,
+    "free_SSE_minus_fixed_SSE": -2788.5689401584677
+  },
+  {
+    "case": "D_20260912",
+    "arm": "C",
+    "array": "a1400",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": true,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": true,
+      "peak_score_pass": false
+    },
+    "original_probe_available": true,
+    "original_peak_score": 4.4257253687765425,
+    "outer_background": [
+      -0.1453312182797248,
+      -0.008369735426216888,
+      0.256011377692053
+    ],
+    "free_fit": {
+      "parameters": [
+        99.46987925050804,
+        17.010742111436677,
+        -11.218136205313947,
+        2.5284942621296334,
+        1.918644879013498,
+        0.4356469884039522,
+        0.589547307919235,
+        -0.9435685493623159,
+        -0.733237069531699
+      ],
+      "peak": 99.46987925050804,
+      "centroid": [
+        17.010742111436677,
+        -11.218136205313947
+      ],
+      "widths": [
+        12.534618070879006,
+        6.811721505336336
+      ],
+      "angle_rad": 0.4356469884039522,
+      "gaussian_integral": 9623.299456375304,
+      "background": [
+        0.589547307919235,
+        -0.9435685493623159,
+        -0.733237069531699
+      ],
+      "residual_rms": 17.73418585316166,
+      "sse": 667057.3588417701,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 90,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 667057.3588417701,
+    "free_relative_peak_error": 0.10522088056120049,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      88.3050452984693,
+      0.4658429606201314,
+      -1.222263165879189,
+      -0.584835748737393
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05902144727843,
+      13.307272314446264,
+      13.296578971512899,
+      3.793405640505807
+    ],
+    "condition_number": 12.14186559841172,
+    "residual_norm": 818.468595321543,
+    "sse": 669890.8415276199,
+    "normal_equation_residual": [
+      -6.835104449234696e-13,
+      -1.987077169474105e-12,
+      2.62234678416462e-13,
+      2.4713564528155985e-13
+    ],
+    "relative_normal_equation_residual": 4.8069635985858845e-17,
+    "reported_residual_sum": [
+      669890.841527621
+    ],
+    "seconds": 0.00011691614054143429,
+    "amplitude": 88.3050452984693,
+    "relative_peak_error": -0.018832830017007862,
+    "background": [
+      0.4658429606201314,
+      -1.222263165879189,
+      -0.584835748737393
+    ],
+    "fitted_background_at_truth_center": 0.3064509541330771,
+    "free_background_at_truth_center": 0.5009355570935607,
+    "free_SSE_minus_fixed_SSE": -2833.482685849769
+  },
+  {
+    "case": "D_20260912",
+    "arm": "C",
+    "array": "a2000",
+    "pass_index": 6,
+    "radius_arcsec": 60,
+    "pixels": 2821,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": false,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 5.253022443078644,
+    "outer_background": [
+      0.2230290125656645,
+      -0.036905146375056506,
+      0.18005792289601727
+    ],
+    "free_fit": {
+      "parameters": [
+        85.29129932556955,
+        16.885204396294487,
+        -10.742556149391326,
+        2.149247680435325,
+        2.553439689313734,
+        -1.0964679346878097,
+        -0.1896714214882547,
+        -0.45938597530732944,
+        -0.11463542085650917
+      ],
+      "peak": 85.29129932556955,
+      "centroid": [
+        16.885204396294487,
+        -10.742556149391326
+      ],
+      "widths": [
+        12.851232091010944,
+        8.578402269085975
+      ],
+      "angle_rad": 0.4743283921070869,
+      "gaussian_integral": 10654.187256412533,
+      "background": [
+        -0.1896714214882547,
+        -0.45938597530732944,
+        -0.11463542085650917
+      ],
+      "residual_rms": 10.787166534987065,
+      "sse": 328259.91538885003,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 9,
+      "successful_starts": 3
+    },
+    "free_fit_sse_reproduced": 328259.91538885003,
+    "free_relative_peak_error": -0.05231889638256049,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      86.51688051578732,
+      -0.17216849996349584,
+      -0.4404278165518246,
+      -0.10956993490318809
+    ],
+    "rank": 4,
+    "singular_values": [
+      53.11614959470608,
+      17.689110309460503,
+      17.684728712356016,
+      3.824594810119994
+    ],
+    "condition_number": 13.88804624588182,
+    "residual_norm": 573.2849685888262,
+    "sse": 328655.65520989144,
+    "normal_equation_residual": [
+      3.411088133276546e-13,
+      1.0231815394945443e-12,
+      4.5266568271529195e-13,
+      -1.545430450278218e-13
+    ],
+    "relative_normal_equation_residual": 3.0210225065635253e-17,
+    "reported_residual_sum": [
+      328655.65520989185
+    ],
+    "seconds": 0.00014183297753334045,
+    "amplitude": 86.51688051578732,
+    "relative_peak_error": -0.03870132760236311,
+    "background": [
+      -0.17216849996349584,
+      -0.4404278165518246,
+      -0.10956993490318809
+    ],
+    "fitted_background_at_truth_center": -0.2419685399351175,
+    "free_background_at_truth_center": -0.26243333205273245,
+    "free_SSE_minus_fixed_SSE": -395.7398210414103
+  },
+  {
+    "case": "D_20260912",
+    "arm": "C",
+    "array": "a2000",
+    "pass_index": 6,
+    "radius_arcsec": 52,
+    "pixels": 2121,
+    "expected_peak": 90,
+    "template_sampled_max": 0.9610536588385467,
+    "truth_template_origin": {
+      "peak": [
+        90,
+        90,
+        90
+      ],
+      "centroid": [
+        17,
+        -11
+      ],
+      "widths": [
+        12.649110640673518,
+        8.432740427115679
+      ]
+    },
+    "original_peak_usable": false,
+    "original_judgments": {
+      "source_evidence_present": true,
+      "associated_source": true,
+      "centroid_usable": true,
+      "peak_response_usable": false,
+      "shape_warning": false,
+      "support_warning": false,
+      "limitations": [],
+      "centroid_stability_pass": true,
+      "peak_stability_pass": false,
+      "peak_score_pass": true
+    },
+    "original_probe_available": true,
+    "original_peak_score": 5.253022443078644,
+    "outer_background": [
+      0.2230290125656645,
+      -0.036905146375056506,
+      0.18005792289601727
+    ],
+    "free_fit": {
+      "parameters": [
+        84.27474203215615,
+        16.85884812378121,
+        -10.696715711243629,
+        2.4694315714768607,
+        2.228976760472691,
+        3.1415926535897927,
+        -0.29468576947995334,
+        -0.18591057854390572,
+        0.04632019160279854
+      ],
+      "peak": 84.27474203215615,
+      "centroid": [
+        16.85884812378121,
+        -10.696715711243629
+      ],
+      "widths": [
+        11.81572854526197,
+        9.290354955821078
+      ],
+      "angle_rad": 3.1415926535897927,
+      "gaussian_integral": 10482.253646394842,
+      "background": [
+        -0.29468576947995334,
+        -0.18591057854390572,
+        0.04632019160279854
+      ],
+      "residual_rms": 10.346889779797673,
+      "sse": 227070.28973251214,
+      "boundary_rejection": false,
+      "solver_status": 2,
+      "nfev": 8,
+      "successful_starts": 2
+    },
+    "free_fit_sse_reproduced": 227070.28973251214,
+    "free_relative_peak_error": -0.06361397742048713,
+    "available": true,
+    "reason": "finite_full_rank",
+    "coefficients": [
+      86.72469067778525,
+      -0.2946323972517825,
+      -0.20903621300342526,
+      0.09619041001431025
+    ],
+    "rank": 4,
+    "singular_values": [
+      46.05902144727843,
+      13.307272314446264,
+      13.296578971512899,
+      3.793405640505807
+    ],
+    "condition_number": 12.14186559841172,
+    "residual_norm": 473.2009092404626,
+    "sse": 223919.1005060005,
+    "normal_equation_residual": [
+      3.4778688460186724e-14,
+      2.842170943040401e-14,
+      -1.7996715229173788e-13,
+      -2.3425705819590803e-14
+    ],
+    "relative_normal_equation_residual": 6.464763292379889e-18,
+    "reported_residual_sum": [
+      223919.10050600072
+    ],
+    "seconds": 0.00011745793744921684,
+    "amplitude": 86.72469067778525,
+    "relative_peak_error": -0.03639232580238616,
+    "background": [
+      -0.2946323972517825,
+      -0.20903621300342526,
+      0.09619041001431025
+    ],
+    "fitted_background_at_truth_center": -0.3458736209319563,
+    "free_background_at_truth_center": -0.33546356884525536,
+    "free_SSE_minus_fixed_SSE": 3151.189226511633
+  }
+]

@@ -2037,6 +2037,27 @@ truth-assisted source-shape ruler. The free-Gaussian comparators and all
 registered availability labels remain unchanged. No PTC, feedback inference,
 new observations, deployment policy or subsequent experiment is included.
 
+The [48-fit comparison is complete](../validation/fruit_point_fixed_template_readout_2026-09-13/SCIENTIFIC_REPORT.md),
+with a mixed map/readout result. At the existing 60-arcsec domain, raw absolute
+peaks within 5% change from P free 6/12 to fixed-template 0/12, and from C free
+4/12 to fixed-template 11/12. The 52-arcsec comparison also gives P 0/12 and C
+11/12. The candidate therefore contains substantially better amplitude along
+the known injected source shape in these cases; the reference free fits use
+narrower profiles, which can obscure that deficit in a peak-only comparison.
+Residual noise dependence remains: C fixed-template crossed H/D passes 4/6
+at each domain, with maximum errors 7.27% and 8.31%. Six saved free-Gaussian
+fits have higher residual cost than a known feasible fixed-template solution
+in their own model family, including the four inner fits associated with all
+four distinct H/D domain-sensitivity rejection states. This establishes a
+common source-fit numerical solution-selection problem without relabeling
+any prior result. All 48 linear fits are finite, rank four, condition number
+12.14--14.61; independent residual/model checks pass with zero additional fits,
+PTC or feedback work. All prior products and archive statuses remain intact.
+The truth-assisted ruler is not deployable measurement authority: availability,
+pointing, null, runtime and earlier qualification outcomes remain unchanged,
+and starlet stays parked for POINT. No repair, new experiment, reserved pointing,
+OOF or production work follows automatically.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

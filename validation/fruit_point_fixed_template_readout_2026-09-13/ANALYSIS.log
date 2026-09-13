@@ -1,0 +1,27 @@
+P 60 free absolute_peak 6/12 max% 15.5296
+P 60 free matched_H_over_D 5/6 max% 5.96162
+P 60 free crossed_H_over_D 3/6 max% 16.18268
+P 60 fixed absolute_peak 0/12 max% 22.67446
+P 60 fixed matched_H_over_D 5/6 max% 5.44977
+P 60 fixed crossed_H_over_D 4/6 max% 13.47742
+P 52 free absolute_peak 6/12 max% 15.50372
+P 52 free matched_H_over_D 5/6 max% 5.96217
+P 52 free crossed_H_over_D 2/6 max% 16.1318
+P 52 fixed absolute_peak 0/12 max% 22.2148
+P 52 fixed matched_H_over_D 5/6 max% 5.30224
+P 52 fixed crossed_H_over_D 3/6 max% 14.42643
+C 60 free absolute_peak 4/12 max% 16.69409
+C 60 free matched_H_over_D 6/6 max% 0.80045
+C 60 free crossed_H_over_D 2/6 max% 7.90469
+C 60 fixed absolute_peak 11/12 max% 5.48621
+C 60 fixed matched_H_over_D 6/6 max% 2.55881
+C 60 fixed crossed_H_over_D 4/6 max% 7.27137
+C 52 free absolute_peak 5/12 max% 16.70063
+C 52 free matched_H_over_D 6/6 max% 2.39549
+C 52 free crossed_H_over_D 3/6 max% 9.1991
+C 52 fixed absolute_peak 11/12 max% 6.26876
+C 52 fixed matched_H_over_D 6/6 max% 2.55617
+C 52 fixed crossed_H_over_D 4/6 max% 8.30852
+Domain maxima 0.03240190659514819 0.009537290200693826
+Rank and conditioning [4, 4] [12.14186559841172, 14.614745605786679]
+Free minus fixed SSE range -0.011589375262249854 0.026206925175567133

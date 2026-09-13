@@ -1,0 +1,134 @@
+{
+  "witnesses": [
+    {
+      "case": "H_20260912",
+      "arm": "P",
+      "array": "a1100",
+      "radius_arcsec": 52,
+      "free_SSE": 227467.21117603313,
+      "feasible_fixed_SSE": 221505.9949928479,
+      "relative_improvement": 0.026206925175567133,
+      "original_peak_usable": false,
+      "feasible_parameters": [
+        94.94914531206739,
+        17.0,
+        -11.0,
+        2.4849066497880004,
+        2.0794415416798357,
+        0.4363323129985824,
+        -0.18589765824741625,
+        -0.8683432498104986,
+        -0.6886356021671547
+      ]
+    },
+    {
+      "case": "H_20260912",
+      "arm": "C",
+      "array": "a1400",
+      "radius_arcsec": 60,
+      "free_SSE": 932970.0743892879,
+      "feasible_fixed_SSE": 929081.4943855434,
+      "relative_improvement": 0.00416795791257279,
+      "original_peak_usable": false,
+      "feasible_parameters": [
+        98.96759711952994,
+        17.0,
+        -11.0,
+        2.4849066497880004,
+        2.0794415416798357,
+        0.4363323129985824,
+        0.2796677585647832,
+        0.325901355532223,
+        0.9724446226224971
+      ]
+    },
+    {
+      "case": "D_20260911",
+      "arm": "C",
+      "array": "a1100",
+      "radius_arcsec": 52,
+      "free_SSE": 224670.39034222264,
+      "feasible_fixed_SSE": 220537.20666569567,
+      "relative_improvement": 0.018396655074267763,
+      "original_peak_usable": false,
+      "feasible_parameters": [
+        92.16451819681825,
+        17.0,
+        -11.0,
+        2.5375869076169133,
+        2.132121799508749,
+        0.4363323129985824,
+        0.06767918982341775,
+        -0.6656035313440865,
+        0.015024352531622908
+      ]
+    },
+    {
+      "case": "D_20260911",
+      "arm": "C",
+      "array": "a1400",
+      "radius_arcsec": 60,
+      "free_SSE": 1132653.3416297196,
+      "feasible_fixed_SSE": 1130140.736999254,
+      "relative_improvement": 0.002218335070508294,
+      "original_peak_usable": false,
+      "feasible_parameters": [
+        92.56892135225692,
+        17.0,
+        -11.0,
+        2.5375869076169133,
+        2.132121799508749,
+        0.4363323129985824,
+        2.660905593366796,
+        -7.182741046704302,
+        0.941168484158839
+      ]
+    },
+    {
+      "case": "D_20260911",
+      "arm": "C",
+      "array": "a2000",
+      "radius_arcsec": 52,
+      "free_SSE": 251056.19504605103,
+      "feasible_fixed_SSE": 249376.8895409303,
+      "relative_improvement": 0.00668896262373723,
+      "original_peak_usable": false,
+      "feasible_parameters": [
+        92.0120100453503,
+        17.0,
+        -11.0,
+        2.5375869076169133,
+        2.132121799508749,
+        0.4363323129985824,
+        0.115536768153525,
+        2.0946146857680006,
+        0.47595120261907514
+      ]
+    },
+    {
+      "case": "D_20260912",
+      "arm": "C",
+      "array": "a2000",
+      "radius_arcsec": 52,
+      "free_SSE": 227070.28973251214,
+      "feasible_fixed_SSE": 223919.1005060005,
+      "relative_improvement": 0.013877593718771931,
+      "original_peak_usable": false,
+      "feasible_parameters": [
+        86.72469067778525,
+        17.0,
+        -11.0,
+        2.5375869076169133,
+        2.132121799508749,
+        0.4363323129985824,
+        -0.2946323972517825,
+        -0.20903621300342526,
+        0.09619041001431025
+      ]
+    }
+  ],
+  "all_H_D_domain_rejection_states_have_inner_witness": true,
+  "H_D_domain_rejection_states": 4,
+  "inner_witnesses": 4,
+  "meaning": "Known feasible lower-cost model; original fits and labels unchanged. No nonlinear refit was performed."
+}
