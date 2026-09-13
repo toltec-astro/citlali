@@ -1,0 +1,67 @@
+{
+  "identity": "SCI-FRUIT-POINT-PROFILED-READOUT@r0.1",
+  "primary": 48,
+  "safeguards": 36,
+  "cases": [
+    "H_20260911",
+    "H_20260912",
+    "D_20260911",
+    "D_20260912",
+    "H-shift_20260911",
+    "N_20260911",
+    "E_20260911"
+  ],
+  "arms": [
+    "P",
+    "C"
+  ],
+  "arrays": [
+    "a1100",
+    "a1400",
+    "a2000"
+  ],
+  "pass_index": 6,
+  "domains": [
+    60,
+    52
+  ],
+  "starts": [
+    6.0,
+    18.0,
+    42.0
+  ],
+  "settings": {
+    "method": "trf",
+    "max_nfev": 250,
+    "ftol": 1e-10,
+    "xtol": 1e-10,
+    "gtol": 1e-08,
+    "x_scale": [
+      10.0,
+      10.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "loss": "linear",
+    "tr_solver": "exact"
+  },
+  "geometry_scale": [
+    10.0,
+    10.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "objective_comparison_atol": 1e-08,
+  "objective_comparison_rtol": 1e-10,
+  "first_order_relative_tolerance": 1e-06,
+  "similar_cost_relative_tolerance": 1e-06,
+  "linear_diagnostic_problems": 48,
+  "fixed_geometry_uses": "saved free geometry only",
+  "normal_fitter_truth_inputs": false,
+  "availability": "unchanged data-only evaluator; minimum feasible incomplete fit is diagnostic only",
+  "exact_evaluator_reproductions": 42,
+  "maximum_nonlinear_starts": 252,
+  "maximum_residual_evaluations": 63000
+}

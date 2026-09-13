@@ -1,0 +1,183 @@
+**I still recommend addressing the common source fitter next, but my previous explanation overstated what the fixed-template result proves.** The next experiment should repair and test the measurement—not try to reproduce the favorable 11/12 result or rescue starlet.
+
+## Reassessment
+
+**The two readouts measure different quantities.** The free Gaussian estimates the peak of its best-fitting, freely shaped profile. The fixed-template fit estimates the coefficient multiplying the known injected shape, while also fitting a background. Those quantities agree for an exactly recovered Gaussian, but need not agree for a distorted source.
+
+For example, a narrower recovered source could have the correct central peak but a deficient coefficient against the original, broader template. That would be a real profile discrepancy, but not necessarily an erroneous free-Gaussian peak. Conversely, a nearly correct template coefficient does not establish that the rest of the reconstructed morphology is correct.
+
+Thus, the reported **0/12 versus 11/12** comparison is strong evidence of a difference in *amplitude measured against the injected profile*. It is not, by itself, proof that starlet preserves the entire source better, or that repairing the Gaussian fitter should reproduce 11/12.
+
+**The six lower-cost alternatives provide the decisive numerical evidence.** According to the supplied report, these are feasible members of the same Gaussian-plus-plane family, evaluated on identical pixels. They demonstrate that the saved fitter returned solutions inferior to known alternatives. They do not yet identify whether the cause is initialization, parameter scaling, derivatives, premature termination, or selection among local minima. A nonlinear least-squares solver’s success flag does not certify a global optimum; its termination can reflect small steps or small objective changes rather than the requested gradient condition. 
+
+**The remaining crossed-noise errors are not automatically a FRUIT defect.** They survive removal of the free-shape fitting ambiguity, but could reflect residual map noise, background coupling, noise-dependent cleaning response, or a mixture. Two reused noise realizations cannot distinguish those explanations. My earlier suggestion to treat that remainder as belonging straightforwardly to FRUIT/PTC was too strong.
+
+The most targeted repair is also more specific than “try more starts.” **For any fixed Gaussian geometry, amplitude and the three background-plane coefficients are linear parameters.** Solve those four coefficients directly, and reserve nonlinear optimization for centroid, widths, and orientation. This is the standard *variable-projection* approach to separable nonlinear least squares. It reduces the nonlinear search without fixing the source shape or changing the objective, provided the original constraints are preserved. 
+
+That gives us the following directive.
+
+---
+
+# Codex directive: bounded repair and saved-map test of the common POINT source fitter
+
+## Objective and authorization
+
+Proceed with **one bounded repair-and-test of the common Gaussian-plus-plane source readout**, using existing saved maps.
+
+The question is:
+
+> Can a truth-independent implementation solve the existing source-fitting problem more reliably, and how much does that change the POINT conclusions drawn from these maps?
+
+This is **not** an experiment to make starlet reproduce the fixed-template 11/12 result. It is not authorization to change FRUIT feedback, PTC, source priors, scientific acceptance thresholds, or the production route.
+
+Use the evidence in:
+
+`validation/fruit_point_fixed_template_readout_2026-09-13/`
+
+including the six feasible lower-cost witnesses and the previously saved comparator fits. Confirm the current repository state rather than assuming the reported commit is still HEAD. Preserve the existing packets, maps, parameters, labels, and registered outcomes.
+
+**Starlet remains parked for POINT throughout this experiment.**
+
+## 1. Preserve the measurement problem and isolate the change
+
+Inspect the existing source fitter and document its exact model, parameterization, initialization, bounds, residual definition, pixel selection, weighting, and termination criteria.
+
+Keep the scientific fitting problem unchanged: the same elliptical Gaussian plus plane; the same amplitude convention, centroid and width bounds; the same two fitting domains, masks, weights, background coordinates, and least-squares objective. Preserve any existing amplitude constraints.
+
+Do not introduce robust losses, regularization, width priors, a fixed beam, extra background terms, or a different source-association rule. Preserve the distinction between a continuous fitted Gaussian peak and a sampled map maximum.
+
+Trace the relevant call sites. **This experiment changes the terminal saved-map readout only.** Do not alter a shared function in a way that silently changes feedback inference, source admission, map domains, iteration stopping, or PTC behavior.
+
+Where the fitter also participates in those operations, isolate the experimental readout behind a separate entry point. A terminal-map comparison does not establish what an entire trajectory would have done with repaired internal fits.
+
+## 2. First separate coefficient errors from geometry errors
+
+For each of the existing **48 H/D map/domain problems**, take the saved free-Gaussian centroid, widths, and orientation and hold that geometry fixed.
+
+Re-solve only amplitude and the three plane coefficients under the original constraints and objective. Do not use the injected shape.
+
+This provides a cheap intermediate diagnostic:
+
+> How much of the original solution’s deficiency can be removed without changing its fitted geometry?
+
+Record the change in amplitude, background, and objective. A substantial improvement at fixed geometry would identify an inadequately solved linear part. Little improvement there, despite a known better feasible model, would instead implicate geometry selection or its coupling to the linear coefficients.
+
+This intermediate result is diagnostic only. It is not the replacement fitter or a new operational measurement policy.
+
+## 3. Implement one profiled Gaussian-plus-plane fitter
+
+Use the separable structure
+
+\[
+m_i = A\,g_i(q)+b_0+b_xX_i+b_yY_i,
+\]
+
+where \(q\) contains centroid, widths, and orientation, and \(g\) uses the existing peak normalization.
+
+At each trial geometry \(q\), solve
+
+\[
+\hat c(q)=
+\underset{c}{\arg\min}\,
+\left\|W^{1/2}\!\left[d-D(q)c\right]\right\|^2,
+\qquad
+c=(A,b_0,b_x,b_y).
+\]
+
+Then optimize the resulting profiled residual over geometry alone.
+
+This retains the original free-shape model while reducing the nonlinear search from nine parameters to five. Use a stable QR/SVD-based linear solve where coefficients are unrestricted; do not explicitly invert the normal equations. If the original coefficients have bounds, preserve them with an appropriate constrained solve rather than silently enlarging the model family. 
+
+Keep the implementation small. Do not create a general optimization framework or compare a collection of solver families.
+
+Check parameter scaling and derivatives with focused implementation tests. When differentiating the profiled residual, account for the fact that the fitted linear coefficients change with geometry; do not inadvertently differentiate a different problem in which they are held fixed. 
+
+Treat width interchange and equivalent orientation conventions consistently when comparing solutions. An ill-determined orientation for a nearly circular Gaussian must not, by itself, become a new centroid or amplitude rejection.
+
+## 4. Use a bounded, truth-independent initialization and selection rule
+
+Use **at most four deterministic starts per map/domain problem**.
+
+Include the existing ordinary initializer. Any additional starts must come from the map and metadata legitimately available to POINT, using a rule frozen before running the comparison. They may explore plausible centroid or width alternatives, but must not use injected positions, widths, orientation, amplitude, H/D ratios, or previously observed truth errors.
+
+Do not use the truth-template witness as an initializer.
+
+The normal repaired route must start from the map and allowed metadata—not receive a saved fitted solution for free. Saved solutions remain benchmarks. This keeps the timing and robustness comparison relevant to a usable implementation.
+
+Select among feasible results by the unchanged objective, with a deterministic tie rule. Preserve all attempted solutions and termination records.
+
+**Do not choose a solution because its peak is closer to truth or because it improves the candidate’s pass count.**
+
+Freeze the starts, numerical tolerances, per-start evaluation cap, and treatment of incomplete solves before execution. No expanding the start set or raising the budget after seeing failures.
+
+## 5. Keep the empirical workload finite
+
+The primary benchmark is the existing **48 terminal H/D map/domain problems**: both reduction arms, both retained domains, all corresponding arrays and noise realizations.
+
+Add only a small safeguard set from already saved products: **one shifted-source state, one null state, and one near-boundary state**, using the corresponding arms, arrays, and domains where available. Register their exact identities before execution. Select them by their control role, not by favorable results.
+
+These controls check whether the repair introduces an obvious centroid, false-source, or boundary regression. They do not establish population-level false-positive rates.
+
+No new reduction experiments, noise realizations, observations, reserved pointings, PTC calls, feedback fits, or FRUIT trajectories are authorized. Small deterministic analytic fixtures for implementation tests are permitted; they are not additions to the scientific benchmark.
+
+## 6. Judge numerical completion separately from scientific usability
+
+For every repaired result, independently evaluate the saved parameters on the exact registered pixels and reproduce its objective.
+
+Record finite-value and constraint checks, the linear subproblem’s rank and conditioning, termination reason, appropriately scaled bound-aware first-order information, and differences among the solutions returned from the registered starts. Do not collapse these into the optimizer’s success flag. SciPy explicitly distinguishes gradient, step-size, objective-change, and evaluation-limit termination, and parameter scaling affects the numerical search. 
+
+After the repaired results have been saved and frozen, compare their objectives with both the original saved Gaussian solution and the known feasible fixed-template alternative.
+
+The six reported witnesses are the central regression test:
+
+> Does the truth-independent repair reach an objective no worse than these known feasible alternatives, within a declared floating-point comparison tolerance?
+
+The witnesses may test the result; they must not supply its initialization, selection, or operational usability decision.
+
+Distinguish an objective defect from weakly determined parameters. When similar low-cost solutions have materially different peaks or centroids, report that ambiguity rather than hiding it behind the selected minimum.
+
+**Do not seek a global-optimum certificate or chase additional numerical precision indefinitely.** Use the existing 5% peak and 1″ pointing budgets to explain the practical scale of remaining numerical differences, without changing those scientific budgets or inventing retrospective tolerances to obtain a pass.
+
+## 7. Reassess the saved maps without changing the scientific rules
+
+Apply the existing data-only evaluator to the new fits, with its thresholds and separate judgments unchanged. Preserve source evidence, centroid usability, peak usability, shape warnings, and support limitations as distinct outputs.
+
+Write the new judgments alongside the historical ones in a separately identified result set. Do not overwrite prior labels. Report which decisions change because the fitted result changed, and which remain unchanged.
+
+For the H/D benchmark, show the measurement sequence:
+
+**Original free fit → linear re-solve at original geometry → repaired free fit.**
+
+Keep the existing truth-template measurement alongside these as a clearly labeled diagnostic reference—not as the desired answer.
+
+Report absolute peak errors, matched- and crossed-noise H/D ratios, centroid errors and changes, fitted widths, background changes, and 52″/60″ domain sensitivity. For the four previously rejected H/D states associated with inner-domain witnesses, explicitly show whether the objective defect and the domain-sensitivity rejection survive.
+
+Separate raw numerical accuracy from usable-result accuracy. Always retain the full denominator; withheld or failed fits must not disappear from the comparison.
+
+Keep the interpretation open:
+
+- Lower objective and improved truth agreement would support a consequential numerical readout error.
+- Lower objective with little improvement—or worse truth agreement—would show that numerical completion is not sufficient for accurate astronomical measurement.
+- Failure to clear known feasible witnesses within the fixed budget would leave the repair incomplete.
+
+Do not treat a repaired free-Gaussian peak’s disagreement with the fixed-template coefficient as a failure by itself. They remain different measurements when the map profile is distorted.
+
+## 8. Measure the cost that a usable fitter would incur
+
+Record per-fit and aggregate elapsed time, starts attempted, actual residual evaluations, and linear subsolves. Include numerical-derivative work and initialization work rather than relying only on the solver’s reported evaluation count.
+
+Separate one-time diagnostic and verification costs from the cost of the normal truth-independent fitter.
+
+Do not present the earlier millisecond fixed-template timing as evidence that the complete free-shape repair will be cheap. Likewise, improving the common readout does not erase the starlet reduction’s previously measured runtime failures.
+
+## 9. Stop after this comparison and return two verdicts
+
+Return a compact report with two explicitly separate conclusions.
+
+**Fitter verdict:** Which original numerical deficiencies were removed? Did the repair clear the known witnesses without truth-assisted initialization? What ambiguities, safeguard regressions, or latency costs remain?
+
+**POINT interpretation:** How much did repairing the readout change the comparison between the saved reference and candidate maps? Which amplitude, availability, domain-sensitivity, or pointing conclusions survive?
+
+Do not automatically reopen starlet, change its feedback representation, launch a larger noise campaign, or extend the work to OOF. All previous registered outcomes remain preserved; any revised conclusions must be identified as results of this new readout experiment.
+
+**The deliverable is a more trustworthy comparison—not a favorable verdict for either reconstruction method.**

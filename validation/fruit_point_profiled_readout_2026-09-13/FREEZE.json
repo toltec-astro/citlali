@@ -1,0 +1,210 @@
+{
+  "parent_commit": "bbe4ddffd9a03f30d33e69bebd7968a4245c99a9",
+  "files": [
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_bounded_repair_2026-09-12/reevaluate.py",
+      "sha256": "4de6be43a4ba6a2f8e9d5858b4a332cb703ce9feb3d83dfbe9fb561aa8cb38cd",
+      "bytes": 3748
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_coherent_feedback_2026-09-11/experiment_r02.py",
+      "sha256": "67f78850b7d07cd2723231ad0114d607934990b9ee05531dabeb23b164b5f6ac",
+      "bytes": 18548
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_fixed_template_readout_2026-09-13/FIT_OBJECTIVE_WITNESSES.json",
+      "sha256": "1ffeb6fac6c537ef38c1be501e5f8155c21f98ca29dfc5d113f16856ab4f978d",
+      "bytes": 3543
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_fixed_template_readout_2026-09-13/READOUTS.json",
+      "sha256": "cee524404ec34bc474b4d56e3464845f8afa88be1781b2f5ac8991221a47fa7b",
+      "bytes": 151792
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_fixed_template_readout_2026-09-13/RESULT_MANIFEST.json",
+      "sha256": "c159ccf7a5b2eeaf43f6b762e8a77dfcb2a4a63271417f53890d1ece1b7a354c",
+      "bytes": 8128
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_fixed_template_readout_2026-09-13/common.py",
+      "sha256": "98025d5b2ac3ad6c104e21cfc91315c593ae1721e90ed423624bd3da19eacdf4",
+      "bytes": 1061
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_nominal_utility_2026-09-13/CASES.json",
+      "sha256": "a7cca0688b0679b4f2a9e57a129ab74a571791e97edac7bde88dc0d68360f113",
+      "bytes": 1910
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/candidate.py",
+      "sha256": "39aba38f44e6b7192e3cbae76d7c2207cabb3d8acb39750e3159af406a8a9404",
+      "bytes": 6052
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_operational_gate_trial_2026-09-12/evaluation.py",
+      "sha256": "414a4a30bb564bc3acaa27b5ffbd630e0827d0cd356a35e4a5e8cb32a9ef8b78",
+      "bytes": 4317
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_peak_failure_diagnosis_2026-09-13/diagnose.py",
+      "sha256": "1ac32635bff530b6c8c9ce3648cb57b91b80113b13b450c8741f934f2d95e2a3",
+      "bytes": 12707
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/EVIDENCE.npz",
+      "sha256": "3daeb311aae01739f715bcac8fc551affefa60a1d9f992f8f3e7bad3f15ed767",
+      "bytes": 21402
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/IMPLEMENTATION_TESTS.json",
+      "sha256": "046be4dd9b1fd7942a2fe5a43f57cbd4d57477a5f561f699eae042dba0cd5a0b",
+      "bytes": 520
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/IMPLEMENTATION_TESTS.log",
+      "sha256": "72b891c4917bc267e0e38270cd2d89ba1f413011d7e4a6380e06e2743c960b81",
+      "bytes": 434
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/OWNER_DIRECTION.txt",
+      "sha256": "dad439a75386cb0ba12a3e1820c0dc4e56fe482f859ae5fb15f64b2dc48e4fad",
+      "bytes": 15111
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/PRESERVATION_START.json",
+      "sha256": "2abe0f9ad3bc582e2c9d9fa5bb7372a070fa91ced232470460753b9d584fa33a",
+      "bytes": 3935
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/PROBLEMS.json",
+      "sha256": "e7f7459768fd2fbd0921c4f37870386c6fa983d31ea8b62f95cbfa05453d990a",
+      "bytes": 407412
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/PROTOCOL.md",
+      "sha256": "0647c849d8df67dd17d500643e83c84523ed42a8f2efc536bfa2984de6fc946e",
+      "bytes": 9784
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/REGISTRATION.json",
+      "sha256": "09f6d89b0263d42f5e6ff6983a0f52a669a5b232ee7206114bacf4f43ca2a6e7",
+      "bytes": 1265
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/common.py",
+      "sha256": "2cee4cc6c98a26fc7f9b086522be271aab2df7d08d386c382767ca50713ed216",
+      "bytes": 2496
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/evaluator.py",
+      "sha256": "8676d04c59af5101ffaf934c01327720dd338a29f5fbc64c084be1a38e77a65d",
+      "bytes": 3530
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/prepare.py",
+      "sha256": "c4beb6927b998a5f61d1dbe5d6bb3e5748bc9b533f6baa812d49ca71e53ed592",
+      "bytes": 4635
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/profiled.py",
+      "sha256": "e703279da9679a522cb11621ab2011849c4d1f197247686ee1f3de8f90e51842",
+      "bytes": 7883
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/run_comparison.py",
+      "sha256": "cc8706eb55a394da384529a9411f7ff4aeff890a02c9ce0fdc9a2d760b3925d5",
+      "bytes": 3842
+    },
+    {
+      "path": "/private/tmp/citlali-sci-fruit-method-scope-20260908/validation/fruit_point_profiled_readout_2026-09-13/test_implementation.py",
+      "sha256": "57179a7603a38e0f82e4bb3b584f39977d8af65b95e40bfa13d0d6e21b2ea9a0",
+      "bytes": 2581
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/D_20260911/C/pass06_maps.npz",
+      "sha256": "7017dc09875ebf6172434e58e0fb15095029ff400c73e6525596db23d6b265ce",
+      "bytes": 565543
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/D_20260911/P/pass06_maps.npz",
+      "sha256": "79b1ca296527a1bc09b81a6c9dfee0395eab61b4c7acb9394f3dcc6a83b4e9ff",
+      "bytes": 544858
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/D_20260912/C/pass06_maps.npz",
+      "sha256": "8ed6d366bee3bf81dcf9d314e860a57959a1e51c86e0f99a3b4f646219faf707",
+      "bytes": 587490
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/D_20260912/P/pass06_maps.npz",
+      "sha256": "47189ef7e54fe92e188a09e014f9a4fa22636a30ce26eec8b5e405d1794afce1",
+      "bytes": 545286
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/E_20260911/C/pass06_maps.npz",
+      "sha256": "9cad2f9204f4ce9b03c2f9d554101ed6da77c804ee924b5c9c302677447a44e4",
+      "bytes": 574820
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/E_20260911/P/pass06_maps.npz",
+      "sha256": "802f1b72fa671aae053f579ac077517228aa40bd602b6b864b2ab973aaf63eb9",
+      "bytes": 545025
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H-shift_20260911/C/pass06_maps.npz",
+      "sha256": "d9879c8bc7061bfeae9e3c86192e446744288a8a9faf6aa1214a0e4bfbf83f37",
+      "bytes": 562432
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H-shift_20260911/P/pass06_maps.npz",
+      "sha256": "1a051d09d820e6b467dd59cbd4542af3f6d78b0ca5d3971705f94bc21fdc8517",
+      "bytes": 545058
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260911/C/pass06_maps.npz",
+      "sha256": "8951f9e6a49b67678311b26be9f0bcbf0d53afd3ab8a7b6e181ac04bd7bcb98e",
+      "bytes": 561037
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260911/P/pass06_maps.npz",
+      "sha256": "e668f633434f19f709abf7bd4777e14248216e594b294f7ea20ffc99dca9cc87",
+      "bytes": 544976
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260912/C/pass06_maps.npz",
+      "sha256": "e9974e870bd491de56b32835eed37f0a5edf34741e6cf242e7c325351e2cbd19",
+      "bytes": 587485
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/H_20260912/P/pass06_maps.npz",
+      "sha256": "7eb1beee26b1ff6c8c0ed0ca11fe5f81e401711b694f2b8d2ffe367bc49f0223",
+      "bytes": 545403
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/N_20260911/C/pass06_maps.npz",
+      "sha256": "2ff52c56e3a8d3080d0c00e35736a8309d537607866b0c38aa279d69d93a3341",
+      "bytes": 542236
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/N_20260911/P/pass06_maps.npz",
+      "sha256": "aa381433f8593c2461a1396aa0d858b17467086657bc88e54c1744963ba73590",
+      "bytes": 543857
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/RECEIPTS.json",
+      "sha256": "d62a4bb24e83f8f1affb913a0e4b550d8ce0cec8e31dc0292c9113492cf0a22f",
+      "bytes": 3828715
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/SETUP.json",
+      "sha256": "32624c87e47aa90a85339cc0de895434b992202effb8b5aef679874ace9e09ed",
+      "bytes": 8207
+    },
+    {
+      "path": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1/geometry.npz",
+      "sha256": "f485295644a30a96f6ff0cc9e2f34951d28187a1741e0600f599e3e6ab3fed30",
+      "bytes": 2918727
+    }
+  ]
+}

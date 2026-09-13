@@ -2058,6 +2058,20 @@ pointing, null, runtime and earlier qualification outcomes remain unchanged,
 and starlet stays parked for POINT. No repair, new experiment, reserved pointing,
 OOF or production work follows automatically.
 
+The owner next authorized one [profiled Gaussian terminal-readout repair](../validation/fruit_point_profiled_readout_2026-09-13/PROTOCOL.md).
+It preserves the scientific fitting problem, existing three map-derived starts,
+constraints and data-only judgments while solving amplitude/plane coefficients
+at each trial free geometry. The benchmark is the 48 H/D saved problems plus
+36 role-selected shifted/null/boundary safeguards; 48 fixed-original-geometry
+linear solves isolate coefficient error. Sources, settings and exact identities
+are frozen before execution. Truth-template witnesses assess saved outputs only.
+The owner also corrects the prior interpretation: free-profile peak and known-
+profile coefficient differ on distorted maps; the 11/12 result does not establish
+whole-source fidelity or a target for the repaired fitter. Remaining crossed-noise
+error is not isolated FRUIT/PTC bias. Starlet stays parked, historical labels and
+all products remain intact, and no internal feedback fit, PTC, trajectory,
+threshold, reserved pointing, OOF or production change is included.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
