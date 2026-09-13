@@ -1,0 +1,19 @@
+{
+  "frozen_files": 36,
+  "external_payloads": 797,
+  "matched_parent_cases": 17,
+  "recurrence_checks": 238,
+  "repeated_P_map_array_checks": 595,
+  "repeated_P_learned_array_checks": 68544,
+  "saved_nominal_bootstrap_model_identities": 51,
+  "fixed_candidate_problem_checks": 357,
+  "external_truth_checks": 672,
+  "relearned_covariance_eigen_checks": 864,
+  "maximum_eigen_residual": 1.986846759527578e-15,
+  "cleaning_calls": 238,
+  "verification_cleaning_calls": 0,
+  "verification_optimization_calls": 0,
+  "prior_evidence_preserved": true,
+  "protected_archives_preserved": true,
+  "unexpected_runtime_errors": false
+}

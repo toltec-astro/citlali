@@ -1985,6 +1985,29 @@ standalone image/subspace/leakage differences are supporting diagnostics.
 No fine-scale constraint, tighter solve, sweep, automatic revision, 129081,
 Unity, OOF campaign or production change is authorized by this experiment.
 
+The [nominal POINT comparison is complete](../validation/fruit_point_nominal_utility_2026-09-13/SCIENTIFIC_REPORT.md):
+**park this candidate for POINT**, preserving its narrower raw ratio-fidelity
+result. All 34 trajectories completed, with exactly 238 cleaning calls in
+402.62 s and 2.07 GiB peak RSS. All 273 nonempty nominal solves finished within
+746 iterations; 84 empty-support decisions correctly supplied zero models.
+Both arms pass all 18 required usable 1-arcsec pointing cases (C maximum error
+0.716 arcsec; P 0.589). C improves all six raw H/D gain errors to within 0.81%,
+but usable gain/degradation pairs fall from P 2/6 to C 1/6. C improves usable
+health ratios from 3/6 to 5/6 and unchanged-H outcomes from 0/3 to 1/3, while
+the usable unchanged a2000 pair still falsely loses 6.58% peak response. Both
+arms retain startup, null-source and boundary safeguards; C admits no false
+null feedback. Six source trajectories exceed 2x matched wall cost; real123424
+costs 13.07 s versus 8.37 s (1.56x). The successful finite cases do not establish
+a consistent required peak-use improvement across the registered population.
+All P controls and 51 saved nominal bootstrap models match exactly; 238
+recurrences, 357 fixed problems, 672 truth scores and 864 sampled relearning
+identities pass verification. No new verification cleaning/optimization was
+needed. All prior products, frozen authority and opaque archives are preserved.
+The earlier image-stability qualification remains failed. No automatic repair,
+evaluator relaxation, new parameter, OOF campaign, 129081 evaluation or
+production advancement follows this result. Further numerical work requires
+its own specific scientific owner decision.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

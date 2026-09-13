@@ -1,0 +1,9 @@
+{
+  "utc": "2026-09-13T13:51:27.397215+00:00",
+  "freeze_sha256": "0853489be8d4a194a317a72f8b88b27c5536ed95ee2cae5d7f48f69a1bcbf498",
+  "pid": 58102,
+  "source_commit": "9a2c441948298febc57b38c98db14040377da5cb",
+  "python": "3.13.2",
+  "numpy": "2.2.3",
+  "scipy": "1.15.2"
+}

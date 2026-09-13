@@ -1,0 +1,3990 @@
+{
+  "root": "/private/tmp/sci-fruit-point-nominal-utility-20260913-r0.1",
+  "files": [
+    {
+      "path": "B_20260911/C/COMPLETE.json",
+      "bytes": 120,
+      "sha256": "2a4753fae0bcd1e1f92549808c88da5704a3b903630fdf3087bbc8bbe746b8e1"
+    },
+    {
+      "path": "B_20260911/C/START.json",
+      "bytes": 205,
+      "sha256": "3b551708bacba1dd058303a9ab98803c59cf400ce2e195103c66065bc1914580"
+    },
+    {
+      "path": "B_20260911/C/pass00.json",
+      "bytes": 13384,
+      "sha256": "8396cf6ccb37c647fade2da176fbbbef58766539f31d28b73bfa69ad2496ab81"
+    },
+    {
+      "path": "B_20260911/C/pass00_maps.npz",
+      "bytes": 542308,
+      "sha256": "686ad53e56ef929812fcb3353c488d4e2a9b703b077ec8a7cc9da2e47d0f521f"
+    },
+    {
+      "path": "B_20260911/C/pass00_state.npz",
+      "bytes": 1747535,
+      "sha256": "38742b662008a51870a6e0ecd4b61417efe7c8ab1e00bf9e1017c804ac6c372a"
+    },
+    {
+      "path": "B_20260911/C/pass01.json",
+      "bytes": 13382,
+      "sha256": "bbf0bc3b8afb7794c80975b7d00638f0a6a2db16c3dbc73e0569dcf10ef043e4"
+    },
+    {
+      "path": "B_20260911/C/pass01_maps.npz",
+      "bytes": 542308,
+      "sha256": "686ad53e56ef929812fcb3353c488d4e2a9b703b077ec8a7cc9da2e47d0f521f"
+    },
+    {
+      "path": "B_20260911/C/pass01_state.npz",
+      "bytes": 1747535,
+      "sha256": "38742b662008a51870a6e0ecd4b61417efe7c8ab1e00bf9e1017c804ac6c372a"
+    },
+    {
+      "path": "B_20260911/C/pass02.json",
+      "bytes": 13382,
+      "sha256": "fe3fc5059709b629100dff2d5d5abd8a62ba74dadbaf0b2c16ce98c078bc39ad"
+    },
+    {
+      "path": "B_20260911/C/pass02_maps.npz",
+      "bytes": 542308,
+      "sha256": "686ad53e56ef929812fcb3353c488d4e2a9b703b077ec8a7cc9da2e47d0f521f"
+    },
+    {
+      "path": "B_20260911/C/pass02_state.npz",
+      "bytes": 1747535,
+      "sha256": "38742b662008a51870a6e0ecd4b61417efe7c8ab1e00bf9e1017c804ac6c372a"
+    },
+    {
+      "path": "B_20260911/C/pass03.json",
+      "bytes": 13385,
+      "sha256": "9865b56a9009678ef9fc4bb99c396b51f1a213cd3ffe3faf105faecb549cc8dd"
+    },
+    {
+      "path": "B_20260911/C/pass03_maps.npz",
+      "bytes": 542308,
+      "sha256": "686ad53e56ef929812fcb3353c488d4e2a9b703b077ec8a7cc9da2e47d0f521f"
+    },
+    {
+      "path": "B_20260911/C/pass03_state.npz",
+      "bytes": 1747535,
+      "sha256": "38742b662008a51870a6e0ecd4b61417efe7c8ab1e00bf9e1017c804ac6c372a"
+    },
+    {
+      "path": "B_20260911/C/pass04.json",
+      "bytes": 13382,
+      "sha256": "7bd04cf2ca611186c5cc0ee0c39fe816e677bf089b1af428aa4a186c2bc2ac3b"
+    },
+    {
+      "path": "B_20260911/C/pass04_maps.npz",
+      "bytes": 542308,
+      "sha256": "686ad53e56ef929812fcb3353c488d4e2a9b703b077ec8a7cc9da2e47d0f521f"
+    },
+    {
+      "path": "B_20260911/C/pass04_state.npz",
+      "bytes": 1747535,
+      "sha256": "38742b662008a51870a6e0ecd4b61417efe7c8ab1e00bf9e1017c804ac6c372a"
+    },
+    {
+      "path": "B_20260911/C/pass05.json",
+      "bytes": 13378,
+      "sha256": "3a2436e3044b606ebf38d7df479ff4dd2febd4f56609606825c7f00534598e26"
+    },
+    {
+      "path": "B_20260911/C/pass05_maps.npz",
+      "bytes": 542308,
+      "sha256": "686ad53e56ef929812fcb3353c488d4e2a9b703b077ec8a7cc9da2e47d0f521f"
+    },
+    {
+      "path": "B_20260911/C/pass05_state.npz",
+      "bytes": 1747535,
+      "sha256": "38742b662008a51870a6e0ecd4b61417efe7c8ab1e00bf9e1017c804ac6c372a"
+    },
+    {
+      "path": "B_20260911/C/pass06.json",
+      "bytes": 13380,
+      "sha256": "2f83a1d1722e0000062b43742e291f7d6698d9f01c6be586299cbd8bb1cf4812"
+    },
+    {
+      "path": "B_20260911/C/pass06_maps.npz",
+      "bytes": 542308,
+      "sha256": "686ad53e56ef929812fcb3353c488d4e2a9b703b077ec8a7cc9da2e47d0f521f"
+    },
+    {
+      "path": "B_20260911/C/pass06_state.npz",
+      "bytes": 1747535,
+      "sha256": "38742b662008a51870a6e0ecd4b61417efe7c8ab1e00bf9e1017c804ac6c372a"
+    },
+    {
+      "path": "B_20260911/P/COMPLETE.json",
+      "bytes": 120,
+      "sha256": "3d64717ad5ab579a3cc25f5d6c1b5945ff644a3368ce92f8a01d0560adbaaafb"
+    },
+    {
+      "path": "B_20260911/P/START.json",
+      "bytes": 205,
+      "sha256": "ccc91b85c5d08d822a97d901f1c3a4adc114891f73cb77f0da8360679a3d974e"
+    },
+    {
+      "path": "B_20260911/P/pass00.json",
+      "bytes": 12788,
+      "sha256": "2c056a4dfc685f43516103c86633302a706790d3554d1b9d330fe97c054ce8fc"
+    },
+    {
+      "path": "B_20260911/P/pass00_maps.npz",
+      "bytes": 543338,
+      "sha256": "da2fada7f15577c8bf5b99fbfc410fa4018889658fc119071a76e33569a39d6e"
+    },
+    {
+      "path": "B_20260911/P/pass00_state.npz",
+      "bytes": 1747535,
+      "sha256": "38742b662008a51870a6e0ecd4b61417efe7c8ab1e00bf9e1017c804ac6c372a"
+    },
+    {
+      "path": "B_20260911/P/pass01.json",
+      "bytes": 12703,
+      "sha256": "f6cb5d4f4d744b49bc7a46ea0dec6b58e244345399c4160a6100cd87d09051d0"
+    },
+    {
+      "path": "B_20260911/P/pass01_maps.npz",
+      "bytes": 543718,
+      "sha256": "36f913ad84550fff557731b466de9ddd7d6c1b70212a217a280d7ed0ea4f785a"
+    },
+    {
+      "path": "B_20260911/P/pass01_state.npz",
+      "bytes": 1747578,
+      "sha256": "44669ee07a0659c36509f67789d84f8bb0af282377d5c1de26095a3133507c6d"
+    },
+    {
+      "path": "B_20260911/P/pass02.json",
+      "bytes": 12809,
+      "sha256": "1cdda2b240dcba6a7899360aaed880c930447e9cb14eb5d7a244440f27d9494c"
+    },
+    {
+      "path": "B_20260911/P/pass02_maps.npz",
+      "bytes": 543762,
+      "sha256": "bb6605ada861830efd5e9c08bc8dec8b54f3010eaafff1e3febe8b6e9287c732"
+    },
+    {
+      "path": "B_20260911/P/pass02_state.npz",
+      "bytes": 1747501,
+      "sha256": "b05373e14d9c4e4b00226b373109291d55fbd0d2742cc70fbc12e9b6fcd09ce5"
+    },
+    {
+      "path": "B_20260911/P/pass03.json",
+      "bytes": 12719,
+      "sha256": "82b86abd09fa81861776593848c0060cb09b259b1c9d4e86505f55ed7336483b"
+    },
+    {
+      "path": "B_20260911/P/pass03_maps.npz",
+      "bytes": 543835,
+      "sha256": "a07ffb5997c66c5c52ba0f125ff8a2769b1126c0005eaf22b1ae246ae594dbe6"
+    },
+    {
+      "path": "B_20260911/P/pass03_state.npz",
+      "bytes": 1747458,
+      "sha256": "3dc96ab38250ee7965659052cfe9cf71fb758391adf3ef1a5519c74b309b7a16"
+    },
+    {
+      "path": "B_20260911/P/pass04.json",
+      "bytes": 12712,
+      "sha256": "e9007d7edd3fc9ee4e3465325cced15f2d5da589740de90b18c244b1c9e798d3"
+    },
+    {
+      "path": "B_20260911/P/pass04_maps.npz",
+      "bytes": 543882,
+      "sha256": "668ffd4c846b2390aae4f6bc8b65fe402043a602c074b53f43d2e92b8e0768f9"
+    },
+    {
+      "path": "B_20260911/P/pass04_state.npz",
+      "bytes": 1747527,
+      "sha256": "cfb8a8b2e257531452ffe3f8a54ba806a0122462e9991a4ce7f14e43ce0b6357"
+    },
+    {
+      "path": "B_20260911/P/pass05.json",
+      "bytes": 12721,
+      "sha256": "6288dd934a2de241bbe53974090dbfd3c3fda1cd9d023fe3dab5d3ed15ebacd3"
+    },
+    {
+      "path": "B_20260911/P/pass05_maps.npz",
+      "bytes": 543797,
+      "sha256": "d4933fd94a1faf6243cb01fb52a30c1d930ad5042dd08051fc69f251f9c07a19"
+    },
+    {
+      "path": "B_20260911/P/pass05_state.npz",
+      "bytes": 1747583,
+      "sha256": "4df0cd43687b07b9b12b7a0fc69d98a9651db7600e8b87f6debe9ba1cb69aaec"
+    },
+    {
+      "path": "B_20260911/P/pass06.json",
+      "bytes": 12719,
+      "sha256": "79f85532dde46e6ea8c8a107fcdfd8569cf5bb65cadeef9ffbcd392e10ad553d"
+    },
+    {
+      "path": "B_20260911/P/pass06_maps.npz",
+      "bytes": 543898,
+      "sha256": "e9ddcecd90a61f954ccd62894d903ad5b58a05b49f796f9b0f773ce9c1bd5151"
+    },
+    {
+      "path": "B_20260911/P/pass06_state.npz",
+      "bytes": 1747556,
+      "sha256": "13cd538e79081f8204097bc1cdab992f44fa41689312bb11b7152134f2249b66"
+    },
+    {
+      "path": "B_20260912/C/COMPLETE.json",
+      "bytes": 119,
+      "sha256": "abc49a0bd80f3893ddceab27fd51127cda207b1faf2f8aa86da9376547f74360"
+    },
+    {
+      "path": "B_20260912/C/START.json",
+      "bytes": 205,
+      "sha256": "acab62385c0057f119dab9d553b18c00bde4e6f2d42d189a6c5e27bb90e92559"
+    },
+    {
+      "path": "B_20260912/C/pass00.json",
+      "bytes": 13324,
+      "sha256": "9106f00022ae9e9dfdae08e9e7515534f2bf71f15bd3ef9bfdd8b6edfac9d70d"
+    },
+    {
+      "path": "B_20260912/C/pass00_maps.npz",
+      "bytes": 542155,
+      "sha256": "38f5fa5e3c94512f8f7e11b391645378472ea92ceb487084159ceb6b73163d82"
+    },
+    {
+      "path": "B_20260912/C/pass00_state.npz",
+      "bytes": 1747396,
+      "sha256": "11a4e85ec9cd4fd529ef4e28f8a929e295178f210b68a828e8c753fca675a4f2"
+    },
+    {
+      "path": "B_20260912/C/pass01.json",
+      "bytes": 13321,
+      "sha256": "c1273845ac499df5e4847904f27f925e342eb5ee9e892c29841cb3132af771cc"
+    },
+    {
+      "path": "B_20260912/C/pass01_maps.npz",
+      "bytes": 542155,
+      "sha256": "38f5fa5e3c94512f8f7e11b391645378472ea92ceb487084159ceb6b73163d82"
+    },
+    {
+      "path": "B_20260912/C/pass01_state.npz",
+      "bytes": 1747396,
+      "sha256": "11a4e85ec9cd4fd529ef4e28f8a929e295178f210b68a828e8c753fca675a4f2"
+    },
+    {
+      "path": "B_20260912/C/pass02.json",
+      "bytes": 13321,
+      "sha256": "9eb00eaeba58e39f4a9cfdfc5ebd97ea6bf85d0ae6856651da7cb48ea1cd3f9d"
+    },
+    {
+      "path": "B_20260912/C/pass02_maps.npz",
+      "bytes": 542155,
+      "sha256": "38f5fa5e3c94512f8f7e11b391645378472ea92ceb487084159ceb6b73163d82"
+    },
+    {
+      "path": "B_20260912/C/pass02_state.npz",
+      "bytes": 1747396,
+      "sha256": "11a4e85ec9cd4fd529ef4e28f8a929e295178f210b68a828e8c753fca675a4f2"
+    },
+    {
+      "path": "B_20260912/C/pass03.json",
+      "bytes": 13321,
+      "sha256": "e685a50bdc3cb7529a6539a0cd32e640d192e0ea60dedafcb26b11b3d5d2d69d"
+    },
+    {
+      "path": "B_20260912/C/pass03_maps.npz",
+      "bytes": 542155,
+      "sha256": "38f5fa5e3c94512f8f7e11b391645378472ea92ceb487084159ceb6b73163d82"
+    },
+    {
+      "path": "B_20260912/C/pass03_state.npz",
+      "bytes": 1747396,
+      "sha256": "11a4e85ec9cd4fd529ef4e28f8a929e295178f210b68a828e8c753fca675a4f2"
+    },
+    {
+      "path": "B_20260912/C/pass04.json",
+      "bytes": 13317,
+      "sha256": "7ebfbe3d07db6646e085611583b767bdcd1b6677d7b25dbe2ddf59b8166a4da3"
+    },
+    {
+      "path": "B_20260912/C/pass04_maps.npz",
+      "bytes": 542155,
+      "sha256": "38f5fa5e3c94512f8f7e11b391645378472ea92ceb487084159ceb6b73163d82"
+    },
+    {
+      "path": "B_20260912/C/pass04_state.npz",
+      "bytes": 1747396,
+      "sha256": "11a4e85ec9cd4fd529ef4e28f8a929e295178f210b68a828e8c753fca675a4f2"
+    },
+    {
+      "path": "B_20260912/C/pass05.json",
+      "bytes": 13311,
+      "sha256": "44a303412fc8b10e0ecb9f5e065d5872b8333ef0308a2b9c3788c31011757a10"
+    },
+    {
+      "path": "B_20260912/C/pass05_maps.npz",
+      "bytes": 542155,
+      "sha256": "38f5fa5e3c94512f8f7e11b391645378472ea92ceb487084159ceb6b73163d82"
+    },
+    {
+      "path": "B_20260912/C/pass05_state.npz",
+      "bytes": 1747396,
+      "sha256": "11a4e85ec9cd4fd529ef4e28f8a929e295178f210b68a828e8c753fca675a4f2"
+    },
+    {
+      "path": "B_20260912/C/pass06.json",
+      "bytes": 13313,
+      "sha256": "3c5c119d08b3c8995be40d2cf6f4995426ed913af10ef41ece1108913d7bf070"
+    },
+    {
+      "path": "B_20260912/C/pass06_maps.npz",
+      "bytes": 542155,
+      "sha256": "38f5fa5e3c94512f8f7e11b391645378472ea92ceb487084159ceb6b73163d82"
+    },
+    {
+      "path": "B_20260912/C/pass06_state.npz",
+      "bytes": 1747396,
+      "sha256": "11a4e85ec9cd4fd529ef4e28f8a929e295178f210b68a828e8c753fca675a4f2"
+    },
+    {
+      "path": "B_20260912/P/COMPLETE.json",
+      "bytes": 119,
+      "sha256": "515062b2df216a7396e60505cccbe93476e3ca8036fa41cda727e1f022145f11"
+    },
+    {
+      "path": "B_20260912/P/START.json",
+      "bytes": 205,
+      "sha256": "11b50f76a346096c2df3ded32823f147b715b844dc9030d5c62361dfaa88405d"
+    },
+    {
+      "path": "B_20260912/P/pass00.json",
+      "bytes": 12730,
+      "sha256": "0e556449f9b0d620cfaa5eb64f0ce856a7521558ed013028da9187d006420946"
+    },
+    {
+      "path": "B_20260912/P/pass00_maps.npz",
+      "bytes": 543339,
+      "sha256": "b0aa64e1c3ea07228c8545624cd78f14f18fb6da40d9b689aad48edb319b569c"
+    },
+    {
+      "path": "B_20260912/P/pass00_state.npz",
+      "bytes": 1747396,
+      "sha256": "11a4e85ec9cd4fd529ef4e28f8a929e295178f210b68a828e8c753fca675a4f2"
+    },
+    {
+      "path": "B_20260912/P/pass01.json",
+      "bytes": 12722,
+      "sha256": "e011f4bd0173cfa3f603a946d4f0206e853070c23fc00e1e91c20b493c7279a5"
+    },
+    {
+      "path": "B_20260912/P/pass01_maps.npz",
+      "bytes": 543962,
+      "sha256": "16e83e80d49da52ededf12c3f5e36464e7b0e47248cc72db97157e5a6894e020"
+    },
+    {
+      "path": "B_20260912/P/pass01_state.npz",
+      "bytes": 1747413,
+      "sha256": "c9ed14f3d9114cfdb84713abae8f8a27957fd7cc07fadf2f6ce85783873c6652"
+    },
+    {
+      "path": "B_20260912/P/pass02.json",
+      "bytes": 12728,
+      "sha256": "35e00f393dc393b5f48058069268dbfd0568a1846af17cda6aebd364f268f65c"
+    },
+    {
+      "path": "B_20260912/P/pass02_maps.npz",
+      "bytes": 543985,
+      "sha256": "1d339d2ad7616c595baaa0cb9e6c4395b2ebc10c57803bc984ecf34d894ecb74"
+    },
+    {
+      "path": "B_20260912/P/pass02_state.npz",
+      "bytes": 1747335,
+      "sha256": "5fd3d2d3bad3761336a05987fdd9aaed18931be1b3e1c2c317574d6dbfce84da"
+    },
+    {
+      "path": "B_20260912/P/pass03.json",
+      "bytes": 12720,
+      "sha256": "c1d3bd2b50252fb1d81e43f0807d797436728012c9a3ef47e6be6f02471b6fa2"
+    },
+    {
+      "path": "B_20260912/P/pass03_maps.npz",
+      "bytes": 543991,
+      "sha256": "20556f8f88ec850409229c7c07bc634c3c3ca5b3c9a7f943f5c8b04e4b296eb0"
+    },
+    {
+      "path": "B_20260912/P/pass03_state.npz",
+      "bytes": 1747406,
+      "sha256": "720bd93c79b169a53915c5c131a792a0ac24217cc481764df715092a86b66f30"
+    },
+    {
+      "path": "B_20260912/P/pass04.json",
+      "bytes": 12725,
+      "sha256": "ef2345ecb0ee6fb9f42d54f7e29946fbe7f31199ac8af56dbf9160978a1d20ad"
+    },
+    {
+      "path": "B_20260912/P/pass04_maps.npz",
+      "bytes": 544030,
+      "sha256": "4f3959fa962a90d1dee44033d7bbfff27b11679d6fcd72778b4d53a7b63b5200"
+    },
+    {
+      "path": "B_20260912/P/pass04_state.npz",
+      "bytes": 1747350,
+      "sha256": "aed31eb32157291f6fdce166c27469bdad52ccdcd8acf1436415c5eff37ad3dc"
+    },
+    {
+      "path": "B_20260912/P/pass05.json",
+      "bytes": 12722,
+      "sha256": "2e6255ae90720c86f50ccccd0af7948a9e525c8a00b14131f7efd2c76ac5cd1f"
+    },
+    {
+      "path": "B_20260912/P/pass05_maps.npz",
+      "bytes": 543982,
+      "sha256": "b62dd2a125a87354e24f5851cbb68c0e40ee49e67c0c3a531b7c114157a20e14"
+    },
+    {
+      "path": "B_20260912/P/pass05_state.npz",
+      "bytes": 1747401,
+      "sha256": "854a7c88ebeb3a661f2fd04272df10310130e04a5f44da65d6c0de88889b2f50"
+    },
+    {
+      "path": "B_20260912/P/pass06.json",
+      "bytes": 12726,
+      "sha256": "61fb3f82276ad20978326a7cf07a58db2c9dd25fa2bc8b3f2f74796a8a6cd51a"
+    },
+    {
+      "path": "B_20260912/P/pass06_maps.npz",
+      "bytes": 544076,
+      "sha256": "fe009f4de20d44e52883de06c475864e1578fdc21ab0581d1fc5829170cb8a41"
+    },
+    {
+      "path": "B_20260912/P/pass06_state.npz",
+      "bytes": 1747426,
+      "sha256": "294c44d490e34645b87b562f22ae37917e454253c50d66af24dc1f8898ad6ef8"
+    },
+    {
+      "path": "B_truth.npz",
+      "bytes": 959,
+      "sha256": "5bc3920b86a6a25ea1083bed6f8ddd5e03e16666c8fc5c253633744c3beac792"
+    },
+    {
+      "path": "CLEANING_CALLS.json",
+      "bytes": 87,
+      "sha256": "75a690f5c941c465fa9ffe9c990760916442ccdcaa4f8fe79f40612083afefc1"
+    },
+    {
+      "path": "COMPLETE.json",
+      "bytes": 237,
+      "sha256": "c9525cd3a059c4659ba6d25c50494c4d57499c4346d394dbf42fbf8e90c7afe6"
+    },
+    {
+      "path": "C_20260911/C/COMPLETE.json",
+      "bytes": 122,
+      "sha256": "cbf4a033d83fe82d8411b10717527e5fbc6b02955d47c93155c4032a8c7ce014"
+    },
+    {
+      "path": "C_20260911/C/START.json",
+      "bytes": 205,
+      "sha256": "67b3c5ca59a021cbfbebd5d940867bb14bb7fb366cce291eb10fcbeb6ec38345"
+    },
+    {
+      "path": "C_20260911/C/pass00.json",
+      "bytes": 18194,
+      "sha256": "5f390b35d8fca4baacd785cf63f462cccce988efcd648c6eb335b0be05fd892d"
+    },
+    {
+      "path": "C_20260911/C/pass00_maps.npz",
+      "bytes": 597948,
+      "sha256": "5c6cafa8df90addc36be6a7aab52a1c3a3503ef57747593c728257ad09ed5398"
+    },
+    {
+      "path": "C_20260911/C/pass00_state.npz",
+      "bytes": 1747473,
+      "sha256": "a0ec1d25cc5da64bfda815018554a4c3e31159841ae1e4ff51e019ef5ce1792d"
+    },
+    {
+      "path": "C_20260911/C/pass01.json",
+      "bytes": 17520,
+      "sha256": "b685445be3069a31dc1f20141d062e5c1180b8588640a05ee998703589d184cd"
+    },
+    {
+      "path": "C_20260911/C/pass01_maps.npz",
+      "bytes": 618661,
+      "sha256": "00c78106cdb8a937a52f90d3c5f8b34b94d03254ffad8bd88a40bd6812c41d71"
+    },
+    {
+      "path": "C_20260911/C/pass01_state.npz",
+      "bytes": 1747481,
+      "sha256": "abf3f1ca6f61cc5e9d5ee68061d667b9a9fc047a77aa0cfe3409288faeb21845"
+    },
+    {
+      "path": "C_20260911/C/pass02.json",
+      "bytes": 17527,
+      "sha256": "0ecc1031ea91b609d7e4039749feb6683eba3ea760dba54b94af78dbcc768cda"
+    },
+    {
+      "path": "C_20260911/C/pass02_maps.npz",
+      "bytes": 614323,
+      "sha256": "de839b2a94c3049b07ddb99fdcba7a0ae203e30b78a2718d5daf4b841d8ed91f"
+    },
+    {
+      "path": "C_20260911/C/pass02_state.npz",
+      "bytes": 1747485,
+      "sha256": "33c3a9a64292951e8c678577653683e3c3cd6e265c9f2f62d54bb35830950bfb"
+    },
+    {
+      "path": "C_20260911/C/pass03.json",
+      "bytes": 17208,
+      "sha256": "db1cb2d378f78a3c723e19de981967ac62d163af1b5c8b5e7c353fda6230e804"
+    },
+    {
+      "path": "C_20260911/C/pass03_maps.npz",
+      "bytes": 616088,
+      "sha256": "d24f7cb6b3144f937c01422d6ba97af3dfc746058549a1b534925bc8399965ef"
+    },
+    {
+      "path": "C_20260911/C/pass03_state.npz",
+      "bytes": 1747495,
+      "sha256": "0e537707c9b48e5f78050db6a642f7d867df4b74cd9c6230c756a633528adb3b"
+    },
+    {
+      "path": "C_20260911/C/pass04.json",
+      "bytes": 17503,
+      "sha256": "804e70290a992d01f691bfef32004642e94da3df2738439c45ed452e20447cdc"
+    },
+    {
+      "path": "C_20260911/C/pass04_maps.npz",
+      "bytes": 618748,
+      "sha256": "3367f20af57be024ad9442438b1ff6bbfa8bab55b624ab70e28ec06c3835d9e7"
+    },
+    {
+      "path": "C_20260911/C/pass04_state.npz",
+      "bytes": 1747481,
+      "sha256": "ff6e599ced3ae7cb07ffa1e2a4e00ca432ae2238e2b8f20379e765387dbc0593"
+    },
+    {
+      "path": "C_20260911/C/pass05.json",
+      "bytes": 17525,
+      "sha256": "a26cbc8e1673b789d8fed22a42eb6689f3eaa520dae893e93d3cc12bd9fc4c0b"
+    },
+    {
+      "path": "C_20260911/C/pass05_maps.npz",
+      "bytes": 622199,
+      "sha256": "ca9f4f6d32003e0e26aa8efcac878d0c6b8966aede16b1a043223c6af438acac"
+    },
+    {
+      "path": "C_20260911/C/pass05_state.npz",
+      "bytes": 1747443,
+      "sha256": "632405da6f8287d8a0adf6f8bb8ec1dcf82f9791c6e7814f6ef1792074cd90e7"
+    },
+    {
+      "path": "C_20260911/C/pass06.json",
+      "bytes": 17512,
+      "sha256": "43ecdde5afb6ffb29e8cd4e98a1e0420813ec3d6ec365e080499b028461dcd33"
+    },
+    {
+      "path": "C_20260911/C/pass06_maps.npz",
+      "bytes": 622387,
+      "sha256": "7809e2d798ef168b1ff3b35ecb0552604a276c945f8e6a7d7465e793815b412e"
+    },
+    {
+      "path": "C_20260911/C/pass06_state.npz",
+      "bytes": 1747403,
+      "sha256": "a453f5bc9bc63d286ef3cdfda12f09c3f1385139e262cbc19787f94acbf9eed8"
+    },
+    {
+      "path": "C_20260911/P/COMPLETE.json",
+      "bytes": 120,
+      "sha256": "e7074e2a526e56e5fa2671cee923db13f3fd56ea4092eca0271f54e99056f127"
+    },
+    {
+      "path": "C_20260911/P/START.json",
+      "bytes": 205,
+      "sha256": "84f62b497d5ef72477ab47bc214bd87fe526782d8815b14c7c8800a5c30f3b1d"
+    },
+    {
+      "path": "C_20260911/P/pass00.json",
+      "bytes": 12694,
+      "sha256": "ff37fb599de033e196852c7b0e41281983e6e8a1eb4569a629d07e111e053c10"
+    },
+    {
+      "path": "C_20260911/P/pass00_maps.npz",
+      "bytes": 543217,
+      "sha256": "63408b0414e06cc8c338c39a507ebdc187d571c2e2a2a6a5edd1c38dfb347ea6"
+    },
+    {
+      "path": "C_20260911/P/pass00_state.npz",
+      "bytes": 1747473,
+      "sha256": "a0ec1d25cc5da64bfda815018554a4c3e31159841ae1e4ff51e019ef5ce1792d"
+    },
+    {
+      "path": "C_20260911/P/pass01.json",
+      "bytes": 12693,
+      "sha256": "cfa66509ac8558fea2e45e782e624b886253b1d3d827934d666e66b922255ed9"
+    },
+    {
+      "path": "C_20260911/P/pass01_maps.npz",
+      "bytes": 543844,
+      "sha256": "26abeec0ff985281ee2b83bb5a92737c1d9a87609e21c02d60aca199aed9f12d"
+    },
+    {
+      "path": "C_20260911/P/pass01_state.npz",
+      "bytes": 1747432,
+      "sha256": "403dbcea9f2713dcd56cd16c4464d73443c241fa578c391d7eaa3fcbaf080b7d"
+    },
+    {
+      "path": "C_20260911/P/pass02.json",
+      "bytes": 12688,
+      "sha256": "4c7bbc941e16128c9f4821a179c4b8140e1f245116a0f817433e531e5062c42d"
+    },
+    {
+      "path": "C_20260911/P/pass02_maps.npz",
+      "bytes": 543874,
+      "sha256": "8bb3bbd32633db400b8487132208f975e0734ca0afab81eef159e4597eb86aa9"
+    },
+    {
+      "path": "C_20260911/P/pass02_state.npz",
+      "bytes": 1747397,
+      "sha256": "1aa6533b1eadececfa65c346373754a29c3635d8317611b4d1feba189db5f6a2"
+    },
+    {
+      "path": "C_20260911/P/pass03.json",
+      "bytes": 12689,
+      "sha256": "b2ed0ca6273a3179b92a4bfdbf8cad62874b61f390066bf72d67a8d74cf12d9e"
+    },
+    {
+      "path": "C_20260911/P/pass03_maps.npz",
+      "bytes": 543871,
+      "sha256": "b61aee7941465e43d6af2c02046b0c214446f458fca677aced978d84862eb8bf"
+    },
+    {
+      "path": "C_20260911/P/pass03_state.npz",
+      "bytes": 1747421,
+      "sha256": "c1af81b2fd1d1eaa80f85a6946c7c9518fa80717b131f3dcc9846e53734fabca"
+    },
+    {
+      "path": "C_20260911/P/pass04.json",
+      "bytes": 12693,
+      "sha256": "98784de8ca24e0223c23137e14bbaa6fec55dda9d3fef63d27566ede68576af0"
+    },
+    {
+      "path": "C_20260911/P/pass04_maps.npz",
+      "bytes": 543845,
+      "sha256": "b6fbe5259b96cf4c0ca5e53d92093d9c131d38e95e5cbe16e8c6a386dd479f40"
+    },
+    {
+      "path": "C_20260911/P/pass04_state.npz",
+      "bytes": 1747470,
+      "sha256": "1e3a19a4e3cb7445823a8e3070c0dd632228ad4e4c3a086ecfa352cebd9aef04"
+    },
+    {
+      "path": "C_20260911/P/pass05.json",
+      "bytes": 12675,
+      "sha256": "8bc03b2b7643f5ee7eff01575d54f897b6ae9c18c97b753fa858201234b8a4e8"
+    },
+    {
+      "path": "C_20260911/P/pass05_maps.npz",
+      "bytes": 543879,
+      "sha256": "3f979850caa07a2761b6deea1d3a45b8e761c2506b0f2fac2016278a35ae8b35"
+    },
+    {
+      "path": "C_20260911/P/pass05_state.npz",
+      "bytes": 1747511,
+      "sha256": "521b9bdded69851c58906568888106fe4224527dc942927fc37d478dd9f7db39"
+    },
+    {
+      "path": "C_20260911/P/pass06.json",
+      "bytes": 12682,
+      "sha256": "10225ad43270916711a14e56c85c2bf91442350417ca3cff19b5bbadec505b75"
+    },
+    {
+      "path": "C_20260911/P/pass06_maps.npz",
+      "bytes": 543829,
+      "sha256": "2ae90fe3ff4473cad754760d1292d6927de1798c6c375c7d49e60301cd0e362e"
+    },
+    {
+      "path": "C_20260911/P/pass06_state.npz",
+      "bytes": 1747374,
+      "sha256": "016d71ae2be0da8a03c4349917961e62b87b04bef1b13e3c28a75ea1992b5fa7"
+    },
+    {
+      "path": "C_20260912/C/COMPLETE.json",
+      "bytes": 122,
+      "sha256": "b606ab904f402bab91778e431b33628b1477c96a7fb9ce10765f78db08d7a56d"
+    },
+    {
+      "path": "C_20260912/C/START.json",
+      "bytes": 205,
+      "sha256": "fe075b6752425b742dd4037e0670e5632982a7787f1894583bcb8d1bda72c224"
+    },
+    {
+      "path": "C_20260912/C/pass00.json",
+      "bytes": 18058,
+      "sha256": "1ecc33a44be931e80237dd8a658cd35f4923c330b239cf30b1ca78d40a97b82b"
+    },
+    {
+      "path": "C_20260912/C/pass00_maps.npz",
+      "bytes": 596229,
+      "sha256": "59c0e3d9e23d8c5ef8f12a351814247dae378bebf247a8e0d8c725d0d4a8bdb8"
+    },
+    {
+      "path": "C_20260912/C/pass00_state.npz",
+      "bytes": 1747417,
+      "sha256": "63f8519d3890efbdda8dc9ae0d5f45481ef6b43859264599a13f594b3118e97b"
+    },
+    {
+      "path": "C_20260912/C/pass01.json",
+      "bytes": 17173,
+      "sha256": "0d3fe914b4e3e35329f3ba543c2dd97eb5b0b59b158b958e05ffab363f7dd171"
+    },
+    {
+      "path": "C_20260912/C/pass01_maps.npz",
+      "bytes": 624979,
+      "sha256": "ca1c2f39adbb5f6c12e379fc4d1c1703a2d66cd912439ed2106ab0fc1d469610"
+    },
+    {
+      "path": "C_20260912/C/pass01_state.npz",
+      "bytes": 1747392,
+      "sha256": "7a0f52616f7dcfe4f4b3a13fd393ec90b2ebda5c9ec28a667f9f959b9ea4a306"
+    },
+    {
+      "path": "C_20260912/C/pass02.json",
+      "bytes": 17835,
+      "sha256": "b5edc9cb8751023b6709c3a9c6a59e1c833ed19b03949ee1d2b25cd912aa3495"
+    },
+    {
+      "path": "C_20260912/C/pass02_maps.npz",
+      "bytes": 635390,
+      "sha256": "18f672ed7614959aba2e78433d8234046827c41fe323a0cb6e21dc5e3637b6d3"
+    },
+    {
+      "path": "C_20260912/C/pass02_state.npz",
+      "bytes": 1747381,
+      "sha256": "f18dfaaaab5869d47d572537440e4557d3192270a7570702dd7e197282dba0b4"
+    },
+    {
+      "path": "C_20260912/C/pass03.json",
+      "bytes": 17197,
+      "sha256": "b290c5d77dc3420824c98c998bfe1c9844b525eb970e3ff9452f3d456565afca"
+    },
+    {
+      "path": "C_20260912/C/pass03_maps.npz",
+      "bytes": 641811,
+      "sha256": "28f843ddc0e982d32762d1dd5f27ca9c12195fc4044232c32dd3529e6943c3fe"
+    },
+    {
+      "path": "C_20260912/C/pass03_state.npz",
+      "bytes": 1747392,
+      "sha256": "b572994f0dc8f450e2fcf54d78ca31496a282f9e007508ae42f905a33985601a"
+    },
+    {
+      "path": "C_20260912/C/pass04.json",
+      "bytes": 17191,
+      "sha256": "786e8a3e4fe9a8a278dbaf243fd1122420a489c4599229440cdc9527ba79fa45"
+    },
+    {
+      "path": "C_20260912/C/pass04_maps.npz",
+      "bytes": 641830,
+      "sha256": "99d494fd1a14db235173ac905f0b446698092f719f41dc6f3d083eb71059a415"
+    },
+    {
+      "path": "C_20260912/C/pass04_state.npz",
+      "bytes": 1747476,
+      "sha256": "17fa42643914b4293961319fb9c2959171004b3b9798244be1b9c1697fc1955e"
+    },
+    {
+      "path": "C_20260912/C/pass05.json",
+      "bytes": 17201,
+      "sha256": "af64b28b6d61e9befeb699ace117a252cb45bed6f720eb2c2fbcca064e1c6c26"
+    },
+    {
+      "path": "C_20260912/C/pass05_maps.npz",
+      "bytes": 641059,
+      "sha256": "b0e0edbaca2f9c7c15a265a035350f4a788431e9213cccdcb1458e1ab3a3d8e1"
+    },
+    {
+      "path": "C_20260912/C/pass05_state.npz",
+      "bytes": 1747459,
+      "sha256": "35cbcbace92f8ed4f178e098128ecf66234e3131697b3185adbf9cbef6276ea8"
+    },
+    {
+      "path": "C_20260912/C/pass06.json",
+      "bytes": 17537,
+      "sha256": "57303b0b4a106c45d3e7b6c51b8618e0d1a40a87858f458d6778a477e3d8e0d7"
+    },
+    {
+      "path": "C_20260912/C/pass06_maps.npz",
+      "bytes": 641449,
+      "sha256": "6f30bb9cbdaffc7fdecbb7a3fd79fab9209874eadcdd7edb67298f323a2122f8"
+    },
+    {
+      "path": "C_20260912/C/pass06_state.npz",
+      "bytes": 1747320,
+      "sha256": "ac156c486f944d6e18dae068d4a3f28d43ae8afbc903df67270a36368c0b7321"
+    },
+    {
+      "path": "C_20260912/P/COMPLETE.json",
+      "bytes": 120,
+      "sha256": "1001eb981cedb7903ac3f34865b81264720c6b7b34bba12471121630b85f684c"
+    },
+    {
+      "path": "C_20260912/P/START.json",
+      "bytes": 205,
+      "sha256": "f3c5b6aafe70e09cba9afa2277fd435900026638cc102b8c6c0afa768f251231"
+    },
+    {
+      "path": "C_20260912/P/pass00.json",
+      "bytes": 12579,
+      "sha256": "868b187525dc78ca390fff32cbc0abdd662f14b0fd61390946829ab74268d9cb"
+    },
+    {
+      "path": "C_20260912/P/pass00_maps.npz",
+      "bytes": 543610,
+      "sha256": "22cf61d494c21d181af934759f2dea78726b296339e6b0af59c206e908fdfb2b"
+    },
+    {
+      "path": "C_20260912/P/pass00_state.npz",
+      "bytes": 1747417,
+      "sha256": "63f8519d3890efbdda8dc9ae0d5f45481ef6b43859264599a13f594b3118e97b"
+    },
+    {
+      "path": "C_20260912/P/pass01.json",
+      "bytes": 12539,
+      "sha256": "39e7199aec6f0a546a5daa0265bd8b31649c826a05d5ff4b5a4879ea5839169f"
+    },
+    {
+      "path": "C_20260912/P/pass01_maps.npz",
+      "bytes": 544200,
+      "sha256": "1fb5ba79d3ecface65e67630fe6249c771f93a160ad20900e41aa973a36b65ab"
+    },
+    {
+      "path": "C_20260912/P/pass01_state.npz",
+      "bytes": 1747432,
+      "sha256": "a314e4e98cb41ace12c4b5b4d1fdf0ba20a3e8225dd0ba5dd0b21801b91ecb56"
+    },
+    {
+      "path": "C_20260912/P/pass02.json",
+      "bytes": 12546,
+      "sha256": "5b843934a2f64de77670aed5a1f7981018e0f0da0fa956057ca3f086637946de"
+    },
+    {
+      "path": "C_20260912/P/pass02_maps.npz",
+      "bytes": 544350,
+      "sha256": "038aac5484421506bd72ceab1a3798152e2779284649f6a1622d2cb8c8b6c5f8"
+    },
+    {
+      "path": "C_20260912/P/pass02_state.npz",
+      "bytes": 1747410,
+      "sha256": "f91abf502b4c57addda5fef3fda9c6516c038a644177ec666d8fc148b9030f41"
+    },
+    {
+      "path": "C_20260912/P/pass03.json",
+      "bytes": 12518,
+      "sha256": "93b108136e3a78d3ae962b48acea742ef94e0830ea3f8de766bf23f931d5979f"
+    },
+    {
+      "path": "C_20260912/P/pass03_maps.npz",
+      "bytes": 544168,
+      "sha256": "43e64d6adbad454b939be5d8b707e7621184a5d142552477c98f0c9bd1c22b00"
+    },
+    {
+      "path": "C_20260912/P/pass03_state.npz",
+      "bytes": 1747459,
+      "sha256": "db6106f14dc1cf2e2d16d6c297fd77a1617acdd100795b0e0affcedf1b7f5428"
+    },
+    {
+      "path": "C_20260912/P/pass04.json",
+      "bytes": 12530,
+      "sha256": "e4f81d0e5a75775e490646d70713e0b99f9fe46265be69ac19886283a2a2a1ee"
+    },
+    {
+      "path": "C_20260912/P/pass04_maps.npz",
+      "bytes": 544245,
+      "sha256": "0c0ca10fed11faa0a61985e8b4a172f432c6cec8c4b4d66cd12e26f68345c786"
+    },
+    {
+      "path": "C_20260912/P/pass04_state.npz",
+      "bytes": 1747485,
+      "sha256": "60823ba1e5fd56cbb4a700b708dd3e01ea3e2573b8f9ec36a06cabd03d43d505"
+    },
+    {
+      "path": "C_20260912/P/pass05.json",
+      "bytes": 12514,
+      "sha256": "7cddfcf121eeda7fdc90396c72d56395a021ad3eb5551e22fc5dbae6b8476242"
+    },
+    {
+      "path": "C_20260912/P/pass05_maps.npz",
+      "bytes": 544241,
+      "sha256": "f7786d55d4f190f2c9c2415ad4fce8cef22048696179630cb352490d1ed16ade"
+    },
+    {
+      "path": "C_20260912/P/pass05_state.npz",
+      "bytes": 1747418,
+      "sha256": "c014cc472389faf72c8867d3dd10b05739d755bf5ed328ca170965560748d085"
+    },
+    {
+      "path": "C_20260912/P/pass06.json",
+      "bytes": 12531,
+      "sha256": "6ff05d8e3d7a509cb513ac8139e5b5949b25e8e005a79575611ef0ed478e6984"
+    },
+    {
+      "path": "C_20260912/P/pass06_maps.npz",
+      "bytes": 544218,
+      "sha256": "e541697c7c8dea53654e3208f1e5b56a33d9548645ce38782b6cafc192cb8641"
+    },
+    {
+      "path": "C_20260912/P/pass06_state.npz",
+      "bytes": 1747394,
+      "sha256": "77c2669abb1dec494d04619637b065b15728140ef9522e4ef55942bcb58feb35"
+    },
+    {
+      "path": "C_truth.npz",
+      "bytes": 133485,
+      "sha256": "02123c56d64f53aa8fb57c6219ee9cb5274ded1472145c3212ceb195705798d9"
+    },
+    {
+      "path": "D_20260911/C/COMPLETE.json",
+      "bytes": 121,
+      "sha256": "4c29023b939fae954ce14d78f8a2e11b306aaf7b84d91c104ae2ff00e1e7ccd2"
+    },
+    {
+      "path": "D_20260911/C/START.json",
+      "bytes": 205,
+      "sha256": "e302b66d747a75f598a047df5235f6544cabc9bdd1edc6695ffdc7268c2b9087"
+    },
+    {
+      "path": "D_20260911/C/pass00.json",
+      "bytes": 17298,
+      "sha256": "7138676bef4f8575317cf47b36c209e9dd78c21dad9d284ab3a1e85339f7ab8b"
+    },
+    {
+      "path": "D_20260911/C/pass00_maps.npz",
+      "bytes": 588867,
+      "sha256": "9eac7d5d6539f17d75c173977b701756f9fb9a3bdc9039fd1cef4b5e41d39b5d"
+    },
+    {
+      "path": "D_20260911/C/pass00_state.npz",
+      "bytes": 1747415,
+      "sha256": "dc4f7d1cbcb817acbc192ca28b9478774911b21781a26dc5d30cbdcd5763bdf0"
+    },
+    {
+      "path": "D_20260911/C/pass01.json",
+      "bytes": 18268,
+      "sha256": "22eec9bfca9ee95ca6e210c4b9f24e521ad975de8a761a760a81bf84eba0fb87"
+    },
+    {
+      "path": "D_20260911/C/pass01_maps.npz",
+      "bytes": 580143,
+      "sha256": "7316022726ce2daa1db7817bd3b1295bd967e813447900df53454be48c17d511"
+    },
+    {
+      "path": "D_20260911/C/pass01_state.npz",
+      "bytes": 1747356,
+      "sha256": "5b2b22a68f8412714c2081120d48b5ba5650971e4fb30b699bf498d2c6802fcf"
+    },
+    {
+      "path": "D_20260911/C/pass02.json",
+      "bytes": 18958,
+      "sha256": "a449c4c611520a64752f51a4c44c021dd3e0bf914912382b718b494c92d1c705"
+    },
+    {
+      "path": "D_20260911/C/pass02_maps.npz",
+      "bytes": 563324,
+      "sha256": "5a4d80270be907abce5f9110865eeb72c00630100ec066729fd5f40fca21a377"
+    },
+    {
+      "path": "D_20260911/C/pass02_state.npz",
+      "bytes": 1747308,
+      "sha256": "83e340b0ab1d0a8ecac367d9a565d868e4a1cb578e182ba8d6e71f4a13b34da8"
+    },
+    {
+      "path": "D_20260911/C/pass03.json",
+      "bytes": 18310,
+      "sha256": "460c04d58226a76ba284467f7d94e89e7ffb23da299f100900b2785ea7d06bd0"
+    },
+    {
+      "path": "D_20260911/C/pass03_maps.npz",
+      "bytes": 566050,
+      "sha256": "4a7f64313ec3c76679c9ab43fbb32430601dd1cf03bc69013a5d801310f95f22"
+    },
+    {
+      "path": "D_20260911/C/pass03_state.npz",
+      "bytes": 1747337,
+      "sha256": "9d6b9155133b135d88540b3db7a924a3782af22759ec885ce70dbfc034dad3a3"
+    },
+    {
+      "path": "D_20260911/C/pass04.json",
+      "bytes": 18623,
+      "sha256": "301aaae8213b78465c33c5469f7289c541c698e101b7b91a9974d4868ff225a2"
+    },
+    {
+      "path": "D_20260911/C/pass04_maps.npz",
+      "bytes": 570715,
+      "sha256": "bdf63ff2aa3f423c9ba69620b3d799b69324ca02dad6d1e18d158f6a1a6812d0"
+    },
+    {
+      "path": "D_20260911/C/pass04_state.npz",
+      "bytes": 1747350,
+      "sha256": "2d160f64b88e1815796ae9e59d12df054e14ea3bd503ff73da5e18c665404a92"
+    },
+    {
+      "path": "D_20260911/C/pass05.json",
+      "bytes": 19264,
+      "sha256": "ff60968398dd5bf2bee99d1ac1bb809612a6a7aa1f56c23ec1e752e4e64e28cf"
+    },
+    {
+      "path": "D_20260911/C/pass05_maps.npz",
+      "bytes": 563369,
+      "sha256": "a80f8cada3ec3a9d128d9a40dd7865b5d78412dd4893a088ea5a3e24d0f019ef"
+    },
+    {
+      "path": "D_20260911/C/pass05_state.npz",
+      "bytes": 1747384,
+      "sha256": "e10708c8ef9935bfa00c1e41e475ff81be68a8a8ff0a08a4834ecfb2831d853e"
+    },
+    {
+      "path": "D_20260911/C/pass06.json",
+      "bytes": 18604,
+      "sha256": "8592c93932c8f663487eb623dbca2aa72dc5d6345c68b0aa4b8809376bf865b8"
+    },
+    {
+      "path": "D_20260911/C/pass06_maps.npz",
+      "bytes": 565543,
+      "sha256": "7017dc09875ebf6172434e58e0fb15095029ff400c73e6525596db23d6b265ce"
+    },
+    {
+      "path": "D_20260911/C/pass06_state.npz",
+      "bytes": 1747450,
+      "sha256": "73953457842751e8edc22e56831a56507edcd6ad569f23ece9fa55ed516e9f69"
+    },
+    {
+      "path": "D_20260911/P/COMPLETE.json",
+      "bytes": 120,
+      "sha256": "c76316eee3760de927a79edb55767a00bd78b9623cc87337acfdc005242004d9"
+    },
+    {
+      "path": "D_20260911/P/START.json",
+      "bytes": 205,
+      "sha256": "18ffb6030f85e76bebb81155d5f743ca93eaa84d2a561669b89388413d0b8afc"
+    },
+    {
+      "path": "D_20260911/P/pass00.json",
+      "bytes": 13432,
+      "sha256": "893fc70808c7fa28d796e3150404c27a3fd59c1ef04918c82f7c55d8437e8ec3"
+    },
+    {
+      "path": "D_20260911/P/pass00_maps.npz",
+      "bytes": 543877,
+      "sha256": "654ad1df13d1e4b2f8f6388c709cd6aa97dbb548fe5e7b6d136408837872e17c"
+    },
+    {
+      "path": "D_20260911/P/pass00_state.npz",
+      "bytes": 1747415,
+      "sha256": "dc4f7d1cbcb817acbc192ca28b9478774911b21781a26dc5d30cbdcd5763bdf0"
+    },
+    {
+      "path": "D_20260911/P/pass01.json",
+      "bytes": 13410,
+      "sha256": "eeaacd4c4e816720b0fad55c45a04411b6bb0a61c7ac7bcc431399c54699aa74"
+    },
+    {
+      "path": "D_20260911/P/pass01_maps.npz",
+      "bytes": 544793,
+      "sha256": "aeffb45d2fba7e52e6b9f594633cd4275d8b4f3d80540a83cacb9c6224caef06"
+    },
+    {
+      "path": "D_20260911/P/pass01_state.npz",
+      "bytes": 1747430,
+      "sha256": "34484742c1c9279e39649aa2f49446404b7d35e5f0e0d4f5fdfe44100661d096"
+    },
+    {
+      "path": "D_20260911/P/pass02.json",
+      "bytes": 13420,
+      "sha256": "50d54f1f8910a02749e4364ea0adfc49a711b7bcfdbfc23969fdbe4fba92ae33"
+    },
+    {
+      "path": "D_20260911/P/pass02_maps.npz",
+      "bytes": 544834,
+      "sha256": "89a198ff958831a65223a8f0663403fb0a704c7aaa78505f9033394e98cbccab"
+    },
+    {
+      "path": "D_20260911/P/pass02_state.npz",
+      "bytes": 1747517,
+      "sha256": "ce5a2733ffc3a98f1641dfd2a7d8d307de55864599a78c6778c46cc8b69eb322"
+    },
+    {
+      "path": "D_20260911/P/pass03.json",
+      "bytes": 13421,
+      "sha256": "ead6d8281a11259bb6428f58f4ee4eed94c9283b9e86c2eb97a4f768c510be96"
+    },
+    {
+      "path": "D_20260911/P/pass03_maps.npz",
+      "bytes": 544738,
+      "sha256": "cb0d1544bc3578dc8c4b3cb0467107615caae07b23a9f2b84bd395bad8e6d696"
+    },
+    {
+      "path": "D_20260911/P/pass03_state.npz",
+      "bytes": 1747457,
+      "sha256": "3d3631c75abb167681982ce1c8364393fdf68751e4f64de805b9aea9c23f5af4"
+    },
+    {
+      "path": "D_20260911/P/pass04.json",
+      "bytes": 13414,
+      "sha256": "795acfebbf34bf8158da4b8d02b455f2c23b414a31ab5a387fe1928297c619de"
+    },
+    {
+      "path": "D_20260911/P/pass04_maps.npz",
+      "bytes": 544848,
+      "sha256": "f549f6bf978cbe91c4c51062d24ea1aedea12ff1ef12c5fe737a2a33e25d5eb5"
+    },
+    {
+      "path": "D_20260911/P/pass04_state.npz",
+      "bytes": 1747329,
+      "sha256": "d9d301733ea84b88a963ba11d488cc0984522379e6783576571e9c7d409411ed"
+    },
+    {
+      "path": "D_20260911/P/pass05.json",
+      "bytes": 13425,
+      "sha256": "237547451e300a3bd684a9411ea3b7096ec470796e45e1091ef2e5b0be10c181"
+    },
+    {
+      "path": "D_20260911/P/pass05_maps.npz",
+      "bytes": 544843,
+      "sha256": "b36e3f2b3a16e383cab264d4bf307a67865830251901463dbd6b0ecd1a51b628"
+    },
+    {
+      "path": "D_20260911/P/pass05_state.npz",
+      "bytes": 1747375,
+      "sha256": "0f3d993fc48729c15c47cfe82d0e3f2555de5eb99b38a7fc59bacad2a35455a6"
+    },
+    {
+      "path": "D_20260911/P/pass06.json",
+      "bytes": 13418,
+      "sha256": "e803b9e0619e7408cbafa9e397251501209bbef33996dff7057b83355f6271ef"
+    },
+    {
+      "path": "D_20260911/P/pass06_maps.npz",
+      "bytes": 544858,
+      "sha256": "79b1ca296527a1bc09b81a6c9dfee0395eab61b4c7acb9394f3dcc6a83b4e9ff"
+    },
+    {
+      "path": "D_20260911/P/pass06_state.npz",
+      "bytes": 1747438,
+      "sha256": "44a419860a5dc8ab713ae725b1f513c04b9017e6d139b4652422f89793e08091"
+    },
+    {
+      "path": "D_20260912/C/COMPLETE.json",
+      "bytes": 121,
+      "sha256": "9de9c09cfa95c2d0fa45ff4cdefd8c29a047487716ab0afcfcf35f05b5f3e6c6"
+    },
+    {
+      "path": "D_20260912/C/START.json",
+      "bytes": 205,
+      "sha256": "4f49c0f240e8efe1528cb8e6ebc2a0bf16541f232776d8464e08e21428f65db9"
+    },
+    {
+      "path": "D_20260912/C/pass00.json",
+      "bytes": 16979,
+      "sha256": "656064f6ff9bc888486e7ef309179d0174b3ac8f7951dfafc7e63052e5879ead"
+    },
+    {
+      "path": "D_20260912/C/pass00_maps.npz",
+      "bytes": 628403,
+      "sha256": "2f5b84ee8b192ddb59e05571e4980d64edd2f6226e8e0a77c269d91540c201c4"
+    },
+    {
+      "path": "D_20260912/C/pass00_state.npz",
+      "bytes": 1747500,
+      "sha256": "b0c07f56214fe7408caa21d722f8ef330b3e8fe89b32de6d29d97b9460b3c665"
+    },
+    {
+      "path": "D_20260912/C/pass01.json",
+      "bytes": 17642,
+      "sha256": "958e3c5198ea35ad6f3a2dc279b02568e6cc21ce2e5ada844b3020b8de69a311"
+    },
+    {
+      "path": "D_20260912/C/pass01_maps.npz",
+      "bytes": 636031,
+      "sha256": "2f09a59c5b22d720a7349edb5120e3660e4481e8c26555655ecb14703ec3a97a"
+    },
+    {
+      "path": "D_20260912/C/pass01_state.npz",
+      "bytes": 1747433,
+      "sha256": "c997479133ef6900e4d155c0cb4980cc492e08ad254b71a882938cb66c10260a"
+    },
+    {
+      "path": "D_20260912/C/pass02.json",
+      "bytes": 17952,
+      "sha256": "231e9f1ec62f353522c26b929ce69d85e665ca414cd6fd9c6e20965a39f47600"
+    },
+    {
+      "path": "D_20260912/C/pass02_maps.npz",
+      "bytes": 606154,
+      "sha256": "7763b743dbe781634260bb64fb8bdb12ac305557ddb7aa3e35cfbdb0b85468d2"
+    },
+    {
+      "path": "D_20260912/C/pass02_state.npz",
+      "bytes": 1747446,
+      "sha256": "0b9f120d9c9b9c4f3cbca75b31b89a854b0d3a03ec11317f62a1dac002ad8801"
+    },
+    {
+      "path": "D_20260912/C/pass03.json",
+      "bytes": 17634,
+      "sha256": "a3e77531c8efa02a0655cd3a2dbdade68f67aa2c5d62a56ffa750132e5f47072"
+    },
+    {
+      "path": "D_20260912/C/pass03_maps.npz",
+      "bytes": 592631,
+      "sha256": "9975899eb7ee6eceb46d85af2b7640cbcef3c202cf105ef5574cfaeefdc178db"
+    },
+    {
+      "path": "D_20260912/C/pass03_state.npz",
+      "bytes": 1747437,
+      "sha256": "d219db849d8af8155fb7ffea5da38b7fc67ac8234de4694f80542a1442e865ae"
+    },
+    {
+      "path": "D_20260912/C/pass04.json",
+      "bytes": 17628,
+      "sha256": "181e3b8896c6dabc668b787a52227e9e873298fb0e106ef9d9c3a6aa1993611b"
+    },
+    {
+      "path": "D_20260912/C/pass04_maps.npz",
+      "bytes": 590222,
+      "sha256": "48686ee44c47a8af516a029b97e8b114bf2e84eab7d28f408e6756924e221fdc"
+    },
+    {
+      "path": "D_20260912/C/pass04_state.npz",
+      "bytes": 1747450,
+      "sha256": "153d8e324c6482f994d92ac66bde01fede7eece31800ff98215e18750e5d846b"
+    },
+    {
+      "path": "D_20260912/C/pass05.json",
+      "bytes": 17631,
+      "sha256": "b7d446e149c732d6fd1b2a71b5cc1ee4a632acd558ac8cee03fea440301cf38c"
+    },
+    {
+      "path": "D_20260912/C/pass05_maps.npz",
+      "bytes": 589649,
+      "sha256": "3279d9eebae5210cd140caaee0359e711d7ae85112a0073e0836482703d5d331"
+    },
+    {
+      "path": "D_20260912/C/pass05_state.npz",
+      "bytes": 1747483,
+      "sha256": "78fe50ae283b4313982e40225e1be576210bf6cb46f0c09f438fff31c6b206eb"
+    },
+    {
+      "path": "D_20260912/C/pass06.json",
+      "bytes": 17650,
+      "sha256": "870c8e1afef493c8e7c7a5225146c6a02a61483f08cf2cb781a65d7c0a8f844e"
+    },
+    {
+      "path": "D_20260912/C/pass06_maps.npz",
+      "bytes": 587490,
+      "sha256": "8ed6d366bee3bf81dcf9d314e860a57959a1e51c86e0f99a3b4f646219faf707"
+    },
+    {
+      "path": "D_20260912/C/pass06_state.npz",
+      "bytes": 1747451,
+      "sha256": "bcb9f761e7537d77f239c0ec7841e6c1c1281a63000712d80895d619c01e06a2"
+    },
+    {
+      "path": "D_20260912/P/COMPLETE.json",
+      "bytes": 120,
+      "sha256": "9e469765d30f54c6cc2e4cf4ed0af5530149694b85b6328b24e5d4d3e2e277e4"
+    },
+    {
+      "path": "D_20260912/P/START.json",
+      "bytes": 205,
+      "sha256": "6deba70532e955315188668366559526b13b68bb87e13199a9dda5e346700e8c"
+    },
+    {
+      "path": "D_20260912/P/pass00.json",
+      "bytes": 13441,
+      "sha256": "c51f649b8f82a79abc76cba627c38fdb867ada7cbebdcfd1de6ddeefec3389ed"
+    },
+    {
+      "path": "D_20260912/P/pass00_maps.npz",
+      "bytes": 544006,
+      "sha256": "cd77f28510ba10e3540db49bcfabda93d2dfbfa0e712df8143c7448f4c507611"
+    },
+    {
+      "path": "D_20260912/P/pass00_state.npz",
+      "bytes": 1747500,
+      "sha256": "b0c07f56214fe7408caa21d722f8ef330b3e8fe89b32de6d29d97b9460b3c665"
+    },
+    {
+      "path": "D_20260912/P/pass01.json",
+      "bytes": 13450,
+      "sha256": "481343e96aa69b6d2e4d2d7b1aff676e7c80341466671ac6546f329ca6092e93"
+    },
+    {
+      "path": "D_20260912/P/pass01_maps.npz",
+      "bytes": 545141,
+      "sha256": "38971714ec0bd2dd041a0adbde24eb72a2735137c9f9f8c0a86ac3375c07fbc5"
+    },
+    {
+      "path": "D_20260912/P/pass01_state.npz",
+      "bytes": 1747431,
+      "sha256": "1464b76a7dd99713f31a9bdc9510d957f3d52367f080fef203f4f55badc2105a"
+    },
+    {
+      "path": "D_20260912/P/pass02.json",
+      "bytes": 13459,
+      "sha256": "65ad22f4bde3fa1a8d2de56c67e5970760c66c66461a8f6136db28f0d1a046d6"
+    },
+    {
+      "path": "D_20260912/P/pass02_maps.npz",
+      "bytes": 545274,
+      "sha256": "81125920455a7e2a2dc8d66aef7632a7820fd09ee3af72e0deb9a9d20827bfc8"
+    },
+    {
+      "path": "D_20260912/P/pass02_state.npz",
+      "bytes": 1747384,
+      "sha256": "49665191d967fadde5a87a7e3e7ad0ed329b54541cf4230290a3e362c1476358"
+    },
+    {
+      "path": "D_20260912/P/pass03.json",
+      "bytes": 13449,
+      "sha256": "d29781471ae4f6e90b8dbd6af091dbd3326c9f5356a6e0fdfa1a3fedf707d766"
+    },
+    {
+      "path": "D_20260912/P/pass03_maps.npz",
+      "bytes": 545299,
+      "sha256": "25917a7759d3f8a898538cd0b801d47fbec3cc3a40424ebdb0015647c4d593c7"
+    },
+    {
+      "path": "D_20260912/P/pass03_state.npz",
+      "bytes": 1747314,
+      "sha256": "d089e97f56ab725c64d890ae0dca008b47c5cce2138198c76772504257d52653"
+    },
+    {
+      "path": "D_20260912/P/pass04.json",
+      "bytes": 13453,
+      "sha256": "a4d6d570efe71f8d80eeeef34ede87233a1e21d7ee4f157d7b2297f2b3cdae00"
+    },
+    {
+      "path": "D_20260912/P/pass04_maps.npz",
+      "bytes": 545311,
+      "sha256": "84c548eec15e21004b40933e77df626ad5f2de2094582d2db1f55bbee6622601"
+    },
+    {
+      "path": "D_20260912/P/pass04_state.npz",
+      "bytes": 1747450,
+      "sha256": "72b3851151a0979ef54340aefb0938b04f611b396b0c25a7bb535db035a0a896"
+    },
+    {
+      "path": "D_20260912/P/pass05.json",
+      "bytes": 13440,
+      "sha256": "72eafa5421891f63fcae15e73f9e3a5421f14df07f8247413911a81bfcff87f7"
+    },
+    {
+      "path": "D_20260912/P/pass05_maps.npz",
+      "bytes": 545334,
+      "sha256": "7d208d9946d5cb39f53169a020495c238c82fa7f34fcb813dc55d8a875d61a23"
+    },
+    {
+      "path": "D_20260912/P/pass05_state.npz",
+      "bytes": 1747428,
+      "sha256": "1ac271300c43fa468b213ec66a9c4423da70753d71a8f210530d847a88bb5755"
+    },
+    {
+      "path": "D_20260912/P/pass06.json",
+      "bytes": 13468,
+      "sha256": "e6d474274b4c409750b0ca6ebf376a8e550c24c893ab27e2131f275f199713da"
+    },
+    {
+      "path": "D_20260912/P/pass06_maps.npz",
+      "bytes": 545286,
+      "sha256": "47189ef7e54fe92e188a09e014f9a4fa22636a30ce26eec8b5e405d1794afce1"
+    },
+    {
+      "path": "D_20260912/P/pass06_state.npz",
+      "bytes": 1747457,
+      "sha256": "f16baf7e22106005f41e76b714a7a3f1ae18abce6ac62b84d1faaf53f7ac67c0"
+    },
+    {
+      "path": "D_truth.npz",
+      "bytes": 142078,
+      "sha256": "3b08ad2507fe61c791a435f92c9518da3372ad7fc1982b091ed26306d3bf8bf6"
+    },
+    {
+      "path": "E_20260911/C/COMPLETE.json",
+      "bytes": 121,
+      "sha256": "94ba2b3762853bc605839add4fa86841c65cbb965b2adfae9c73072ae7e806a9"
+    },
+    {
+      "path": "E_20260911/C/START.json",
+      "bytes": 205,
+      "sha256": "6ee3e2249a369b279105e8556821e1469ff2f46366e12a6a4e6a5570e8810765"
+    },
+    {
+      "path": "E_20260911/C/pass00.json",
+      "bytes": 20684,
+      "sha256": "a4367d2ebd4383c337113c71721e92dc8eaeb2ce5c08ffbdcacb461a4f82437e"
+    },
+    {
+      "path": "E_20260911/C/pass00_maps.npz",
+      "bytes": 568278,
+      "sha256": "483f69f0a41c3baaa3b6deb3e4a96155aab893b214d932d3f30cc14c8bad3df2"
+    },
+    {
+      "path": "E_20260911/C/pass00_state.npz",
+      "bytes": 1747312,
+      "sha256": "c6349fd77e74bc82e16e4433db4b031f8504fb72556d7a3308faa7ce8ce4c80c"
+    },
+    {
+      "path": "E_20260911/C/pass01.json",
+      "bytes": 18881,
+      "sha256": "164812a8e986ae21cb71d654ee46f72f3a6ab9d07e2390c3558ea618a55c6f95"
+    },
+    {
+      "path": "E_20260911/C/pass01_maps.npz",
+      "bytes": 604637,
+      "sha256": "610627b1ad0a03eb60fe1ef3591954c7026e37905f1fa03e8100170fd654c012"
+    },
+    {
+      "path": "E_20260911/C/pass01_state.npz",
+      "bytes": 1747316,
+      "sha256": "684182992ff52fa5964fb66967802aab51934a325ff37c1ae949204d52495f9a"
+    },
+    {
+      "path": "E_20260911/C/pass02.json",
+      "bytes": 20455,
+      "sha256": "09b5f30f2c77f641f88628bf0d0deac4b4180db03b6e53dfe345d7a93ac8ad99"
+    },
+    {
+      "path": "E_20260911/C/pass02_maps.npz",
+      "bytes": 614118,
+      "sha256": "d1dfb0f6b94e9dd1f0202d92f3d2afad7c729ec2b8fdf57987cd0918bd1ffb67"
+    },
+    {
+      "path": "E_20260911/C/pass02_state.npz",
+      "bytes": 1747420,
+      "sha256": "7de04e9bc437bf6a3599ef09714210744d3e8bc6a22066e6259547c756ff3126"
+    },
+    {
+      "path": "E_20260911/C/pass03.json",
+      "bytes": 21347,
+      "sha256": "3028530810d5cd38285c60dc430d1fe968acd05e851e463cd973e0026b3baa90"
+    },
+    {
+      "path": "E_20260911/C/pass03_maps.npz",
+      "bytes": 608156,
+      "sha256": "c8f35bf27ef0520f56382a5c3dff4dce0239b56c12061576f91945679919c6e1"
+    },
+    {
+      "path": "E_20260911/C/pass03_state.npz",
+      "bytes": 1747371,
+      "sha256": "8751af35023acdeb0b1a373d1d2bc666a1b560ddd0cb5e5bd24568ebb6a09484"
+    },
+    {
+      "path": "E_20260911/C/pass04.json",
+      "bytes": 19725,
+      "sha256": "ae849c4b28029c243f74875e5721f48035c65c06322cc7677dce69c678b3399e"
+    },
+    {
+      "path": "E_20260911/C/pass04_maps.npz",
+      "bytes": 604166,
+      "sha256": "341d8a5856e5f1721f131db1126d80d9894f7c5c5f76c752754172e3d6185a15"
+    },
+    {
+      "path": "E_20260911/C/pass04_state.npz",
+      "bytes": 1747477,
+      "sha256": "32a7d45ba3c2d242c09c6c54a0ce44dd4f8ea05250a409d40a2497a092b8ce8e"
+    },
+    {
+      "path": "E_20260911/C/pass05.json",
+      "bytes": 19369,
+      "sha256": "ec5e60ba3a1458f4456c777193023bdfff35f2aa363611929c17d5467f74de5a"
+    },
+    {
+      "path": "E_20260911/C/pass05_maps.npz",
+      "bytes": 592937,
+      "sha256": "5d268a65eab1896983c3f9a79fea5f3d9c58f4b32373627fa45840364465c92f"
+    },
+    {
+      "path": "E_20260911/C/pass05_state.npz",
+      "bytes": 1747493,
+      "sha256": "a05c5749fbb21d1c3731bad8e8109d898369b484de95c2cfca99a1c32bc8ad49"
+    },
+    {
+      "path": "E_20260911/C/pass06.json",
+      "bytes": 20012,
+      "sha256": "57fbf8cc79e730e0a6ce0819177248ad1a0cfc6d948ea66ccd11426b63ef01f1"
+    },
+    {
+      "path": "E_20260911/C/pass06_maps.npz",
+      "bytes": 574820,
+      "sha256": "9cad2f9204f4ce9b03c2f9d554101ed6da77c804ee924b5c9c302677447a44e4"
+    },
+    {
+      "path": "E_20260911/C/pass06_state.npz",
+      "bytes": 1747390,
+      "sha256": "7658c99c01f61b36e9337011a87df4067f308ec1d029eaa035d5e5ed98d79d54"
+    },
+    {
+      "path": "E_20260911/P/COMPLETE.json",
+      "bytes": 119,
+      "sha256": "f5dcc6e0de2c11de658eafa18ca0545a031c0e0f3343758b6dc36188bed905b0"
+    },
+    {
+      "path": "E_20260911/P/START.json",
+      "bytes": 205,
+      "sha256": "4967571c283c9582d2c944dda3ef08bf11cca1b5864c993829dafa1cc205c2d6"
+    },
+    {
+      "path": "E_20260911/P/pass00.json",
+      "bytes": 13601,
+      "sha256": "d3715a20e3411e885aaa3cbaa3ccebf65dbb92b8c4283056138cf81ada91887f"
+    },
+    {
+      "path": "E_20260911/P/pass00_maps.npz",
+      "bytes": 543810,
+      "sha256": "23b6dc8c664266e010f2a315c9634d102e50d032fef26fa3fdace2281a1ee6b5"
+    },
+    {
+      "path": "E_20260911/P/pass00_state.npz",
+      "bytes": 1747312,
+      "sha256": "c6349fd77e74bc82e16e4433db4b031f8504fb72556d7a3308faa7ce8ce4c80c"
+    },
+    {
+      "path": "E_20260911/P/pass01.json",
+      "bytes": 13575,
+      "sha256": "c99fc193fb0f4d6260f2b5ff83ddc623255b13dc15cb39fafe34e6aad9f445fa"
+    },
+    {
+      "path": "E_20260911/P/pass01_maps.npz",
+      "bytes": 544803,
+      "sha256": "9c1fe5c34ff02ac5178a4e9f7de6786c08a2c815179f0d0a2617eb8ac4dc4a4c"
+    },
+    {
+      "path": "E_20260911/P/pass01_state.npz",
+      "bytes": 1747451,
+      "sha256": "18845255a940efb025bc50c47574d7c27aea29ad94b09ac0bbbf0ef4bdc528aa"
+    },
+    {
+      "path": "E_20260911/P/pass02.json",
+      "bytes": 13580,
+      "sha256": "ffb3ddfe517ea59921f3d44f072d9bba403e3a6ceb581f9b36186de74dad8c3f"
+    },
+    {
+      "path": "E_20260911/P/pass02_maps.npz",
+      "bytes": 545009,
+      "sha256": "ed682ae52d0323d7e8aa758e16046d2ff4d8a349e7eb4300efddb8cfacf99548"
+    },
+    {
+      "path": "E_20260911/P/pass02_state.npz",
+      "bytes": 1747392,
+      "sha256": "350555c4186a4e864001da5928649e16f2eaff59fc1aca7291eea081c89f6aa6"
+    },
+    {
+      "path": "E_20260911/P/pass03.json",
+      "bytes": 13582,
+      "sha256": "c94670c13a408f5c3893eb6f7540147e761c4640b476635862444cd953114021"
+    },
+    {
+      "path": "E_20260911/P/pass03_maps.npz",
+      "bytes": 545013,
+      "sha256": "eb5f61f4446a5e0ff6386fce96536ca3a31ec912ce88551ceab3fbd6dadc2bdd"
+    },
+    {
+      "path": "E_20260911/P/pass03_state.npz",
+      "bytes": 1747455,
+      "sha256": "65b00190ea084e2f37d8dc78d4f8bf1091aaa3b458ab1d1c198c9a1e23a71d2a"
+    },
+    {
+      "path": "E_20260911/P/pass04.json",
+      "bytes": 13589,
+      "sha256": "850b84e2d7d3eddbd1db38de2f88c1c4b72ce69199c559643504f7d0f955f300"
+    },
+    {
+      "path": "E_20260911/P/pass04_maps.npz",
+      "bytes": 545015,
+      "sha256": "18b8dea13893a8a92d11348168ea7ef581049962b32096bdad415ea6bba2050a"
+    },
+    {
+      "path": "E_20260911/P/pass04_state.npz",
+      "bytes": 1747422,
+      "sha256": "0fbf3f48d3c0a1870027b976c187c338d49f3bb5e57767f421f87dd04a60b447"
+    },
+    {
+      "path": "E_20260911/P/pass05.json",
+      "bytes": 13577,
+      "sha256": "192afb39ff67b25544dba0d152ca45eefa80cd545927333f7533b899f9667ec4"
+    },
+    {
+      "path": "E_20260911/P/pass05_maps.npz",
+      "bytes": 544961,
+      "sha256": "4b2f1c7d2f0d75a88c46ff24aa25a5c866677c6a7647c91d03165d3602bfa2a5"
+    },
+    {
+      "path": "E_20260911/P/pass05_state.npz",
+      "bytes": 1747463,
+      "sha256": "ea88f6dfd749e29d403a9531b9043d10b94e5d1e964f9c3bcfc1454269e4128c"
+    },
+    {
+      "path": "E_20260911/P/pass06.json",
+      "bytes": 13582,
+      "sha256": "e97d1e3d586ef84dbadbb11e6d14608e03edb19f391f3a1131595fda88d5e832"
+    },
+    {
+      "path": "E_20260911/P/pass06_maps.npz",
+      "bytes": 545025,
+      "sha256": "802f1b72fa671aae053f579ac077517228aa40bd602b6b864b2ab973aaf63eb9"
+    },
+    {
+      "path": "E_20260911/P/pass06_state.npz",
+      "bytes": 1747454,
+      "sha256": "6b20e03bd333c9814976e52f97435055793bc2ef91ac30ad4d6570ffed2b39b6"
+    },
+    {
+      "path": "E_20260912/C/COMPLETE.json",
+      "bytes": 121,
+      "sha256": "49d0d0c463e8019733576788ff3bbbd059732889e4c2ae39226b4693f66d507b"
+    },
+    {
+      "path": "E_20260912/C/START.json",
+      "bytes": 205,
+      "sha256": "3575a7cc898ddb46f95c6aa7e1626de5c55a744ff5f3aea457f368ff5e710492"
+    },
+    {
+      "path": "E_20260912/C/pass00.json",
+      "bytes": 19704,
+      "sha256": "2944473cf905ffd355c6a0496146191dd20c6b0141f29fd75e8b1b64459bc72e"
+    },
+    {
+      "path": "E_20260912/C/pass00_maps.npz",
+      "bytes": 570066,
+      "sha256": "0f363a9b910ff7c9392ff83e914cad62ea976cb2f0020f7cffa2b43afcc028c3"
+    },
+    {
+      "path": "E_20260912/C/pass00_state.npz",
+      "bytes": 1747488,
+      "sha256": "c992018af6a52ac5d9312d444e9cdb0ed3375f9dac3c5d1c89a06f578e73fb85"
+    },
+    {
+      "path": "E_20260912/C/pass01.json",
+      "bytes": 18878,
+      "sha256": "ba6f99ee9432c02f0d8f4518574d373f31e44a5adece4c4724ff369044054862"
+    },
+    {
+      "path": "E_20260912/C/pass01_maps.npz",
+      "bytes": 613109,
+      "sha256": "b79165be6783dd6b0f2383b4c97cb416b8800fc1bf9d26f67280ff758563a8c7"
+    },
+    {
+      "path": "E_20260912/C/pass01_state.npz",
+      "bytes": 1747408,
+      "sha256": "23bd7f4b4ae8abdf876d5be7769de186007eb6199a2dc44f32cce4bf84fb86d2"
+    },
+    {
+      "path": "E_20260912/C/pass02.json",
+      "bytes": 20734,
+      "sha256": "6493b02377938d0b63fae06b68e877365c2d5b64496e51ba00ef006fc3d07d69"
+    },
+    {
+      "path": "E_20260912/C/pass02_maps.npz",
+      "bytes": 606900,
+      "sha256": "ba15a09b166860db4b068f75d67a4ea4f37c75822612b1629e9c234eb5aa7239"
+    },
+    {
+      "path": "E_20260912/C/pass02_state.npz",
+      "bytes": 1747487,
+      "sha256": "289d407f3cb029a40eb8e75b780e0f5465e69f4c6038449989730dd80bee2318"
+    },
+    {
+      "path": "E_20260912/C/pass03.json",
+      "bytes": 19387,
+      "sha256": "dede3925808e547a7fc03b5b23f7c1fb4b1daa81d722b65c6e9bb9b44b7d8a90"
+    },
+    {
+      "path": "E_20260912/C/pass03_maps.npz",
+      "bytes": 588567,
+      "sha256": "d7dd1d70b805dfb2d78301128a2deb6818437dbfe6cad4b99655c0d7382b4308"
+    },
+    {
+      "path": "E_20260912/C/pass03_state.npz",
+      "bytes": 1747350,
+      "sha256": "da33347396953e9fde2d460c3bd279b3f9c518c5b030c7aff8fc178fed494ea1"
+    },
+    {
+      "path": "E_20260912/C/pass04.json",
+      "bytes": 19082,
+      "sha256": "e7bbe6a69307511d68108dab0b8773eff1850a24cc28b8964c7af2cb31ad021f"
+    },
+    {
+      "path": "E_20260912/C/pass04_maps.npz",
+      "bytes": 580982,
+      "sha256": "02e9ea4b8ee80c09c1fcf39a19c7b11b269535d0e44b5463c4dfd8f18c8d4d3f"
+    },
+    {
+      "path": "E_20260912/C/pass04_state.npz",
+      "bytes": 1747516,
+      "sha256": "ad331c91c61bfafc65dcbbfc2962e6e10ef55cf6acc967feaa467f6eb8f3a1b5"
+    },
+    {
+      "path": "E_20260912/C/pass05.json",
+      "bytes": 18768,
+      "sha256": "3748e0bfb33f5da79b2fd681254a9a1f306129a11581c74c90888d5ac6066141"
+    },
+    {
+      "path": "E_20260912/C/pass05_maps.npz",
+      "bytes": 560500,
+      "sha256": "b5475c5158828f9348adf29237db7c6124f0aa4f8ba508a7b37f0323eb30f2a2"
+    },
+    {
+      "path": "E_20260912/C/pass05_state.npz",
+      "bytes": 1747418,
+      "sha256": "99a02b4c2ac667d9260f8a93d6a9d15b159fe367bac6624d1feab037d83d10ae"
+    },
+    {
+      "path": "E_20260912/C/pass06.json",
+      "bytes": 18753,
+      "sha256": "be62a467108f2a51c66109244001a4a72d2804c1ebed5be84f17deeaee0ff5f5"
+    },
+    {
+      "path": "E_20260912/C/pass06_maps.npz",
+      "bytes": 561490,
+      "sha256": "b319841b7757dc7eb13a89550327fb4bab3e76a15394c44f667d8dfeb3168dff"
+    },
+    {
+      "path": "E_20260912/C/pass06_state.npz",
+      "bytes": 1747357,
+      "sha256": "6721400b048cd146b0bdc3b680c833fa093a71736ece433669f2326e79af2cae"
+    },
+    {
+      "path": "E_20260912/P/COMPLETE.json",
+      "bytes": 120,
+      "sha256": "5343294e0fd36d75524033270a307552512d7bc403bbdcc277323d01b8f3f4ac"
+    },
+    {
+      "path": "E_20260912/P/START.json",
+      "bytes": 205,
+      "sha256": "b41c20fd73705f987399ad5c167cf52a7595b3ce5405aa1274fe3b19b4e3ee02"
+    },
+    {
+      "path": "E_20260912/P/pass00.json",
+      "bytes": 13591,
+      "sha256": "08d07dbefa189f02a7fb63518a57cb8ff4e0361f5f15d2e3ba1380b934f8d739"
+    },
+    {
+      "path": "E_20260912/P/pass00_maps.npz",
+      "bytes": 544266,
+      "sha256": "3ed89d3320fe742362a820e442fc03e9cc8925e4037152e7ef3aa39ea5e43d0a"
+    },
+    {
+      "path": "E_20260912/P/pass00_state.npz",
+      "bytes": 1747488,
+      "sha256": "c992018af6a52ac5d9312d444e9cdb0ed3375f9dac3c5d1c89a06f578e73fb85"
+    },
+    {
+      "path": "E_20260912/P/pass01.json",
+      "bytes": 13597,
+      "sha256": "21b0ca1d514910336f5119ab3baedf2166324aed89709de8b594f1cb948e5963"
+    },
+    {
+      "path": "E_20260912/P/pass01_maps.npz",
+      "bytes": 545319,
+      "sha256": "f7feec81b937b493dc14919cb1e2f12f7c0ab7270906a27c63aa8c513a1f9302"
+    },
+    {
+      "path": "E_20260912/P/pass01_state.npz",
+      "bytes": 1747427,
+      "sha256": "e61338de8e8255eebedfc4836529add5e1f47aaef89ac75c40ef082a139fc5c3"
+    },
+    {
+      "path": "E_20260912/P/pass02.json",
+      "bytes": 13594,
+      "sha256": "ef635e3804c2fd2787b3eff6c5d35ba4df801b3f45f8f778a97b1603119404c5"
+    },
+    {
+      "path": "E_20260912/P/pass02_maps.npz",
+      "bytes": 545560,
+      "sha256": "e7dfce3393b477799c2751562c0115d8a7e3b75b311c5976439148b996221a54"
+    },
+    {
+      "path": "E_20260912/P/pass02_state.npz",
+      "bytes": 1747535,
+      "sha256": "41c0414fa4b56e5490a15bab8061655938cd6b4280dd1a6a475652e49d8302db"
+    },
+    {
+      "path": "E_20260912/P/pass03.json",
+      "bytes": 13604,
+      "sha256": "7b5f48741430c4402184f844a32ff659a30caddb1694bcd24bd34e6c41794fc2"
+    },
+    {
+      "path": "E_20260912/P/pass03_maps.npz",
+      "bytes": 545594,
+      "sha256": "250e6bf77d231710714639bf7b6f578998f2b0e197389732afd4168b1794c175"
+    },
+    {
+      "path": "E_20260912/P/pass03_state.npz",
+      "bytes": 1747494,
+      "sha256": "c06da110eef8b4f4fb5aadf9ede30ae44fac2462ea71ed18faf79dff7c5e43a5"
+    },
+    {
+      "path": "E_20260912/P/pass04.json",
+      "bytes": 13610,
+      "sha256": "44941d4cfa5fc6f7ddf3d12c6fc385ea3a07b09217e0ff49f426bb2b4685f784"
+    },
+    {
+      "path": "E_20260912/P/pass04_maps.npz",
+      "bytes": 545616,
+      "sha256": "2438bd8b0e9fa0c797b07b7ba545e000778f9487ee0cac15ec00f30b38b942f0"
+    },
+    {
+      "path": "E_20260912/P/pass04_state.npz",
+      "bytes": 1747475,
+      "sha256": "250b52994cc99c9421eae12264074641bbe90b9e94addbbee0fc68c2ffee9e60"
+    },
+    {
+      "path": "E_20260912/P/pass05.json",
+      "bytes": 13610,
+      "sha256": "055b3684586131a674d91b7fa9b44f5e26a2bdfff683b7f83d8ca2069a8ef5a2"
+    },
+    {
+      "path": "E_20260912/P/pass05_maps.npz",
+      "bytes": 545631,
+      "sha256": "0cca754b0f6b04d5a75da43045569f4f2104321cc88b0a40d0687e81e51d38d9"
+    },
+    {
+      "path": "E_20260912/P/pass05_state.npz",
+      "bytes": 1747596,
+      "sha256": "9ba1853e2ad3c2eabb8280a5668aa93c1f801a08fa05b6ff4593077bb89611df"
+    },
+    {
+      "path": "E_20260912/P/pass06.json",
+      "bytes": 13595,
+      "sha256": "158422e76867de734b5677a34d2cf7b8148f5a6a73a6456b6c13e001ce5ac380"
+    },
+    {
+      "path": "E_20260912/P/pass06_maps.npz",
+      "bytes": 545736,
+      "sha256": "9f7597292f43bf8b8c084c5bb08bb139c78f0d203c0fdb7e5a3d86ef05be1ae1"
+    },
+    {
+      "path": "E_20260912/P/pass06_state.npz",
+      "bytes": 1747550,
+      "sha256": "1419c719fd15c12989fd086bed13a1a0d54c6fdc05027553efb0a5e227a32de0"
+    },
+    {
+      "path": "E_truth.npz",
+      "bytes": 150571,
+      "sha256": "cda3af46f3201613f6c18f05a096994a815bf77979e1eb3ea895f38c65042a50"
+    },
+    {
+      "path": "H-shift_20260911/C/COMPLETE.json",
+      "bytes": 120,
+      "sha256": "f2bb9e719066e0fd52b156b736f8351bff726b767380c8bfe093a08884ad7ea1"
+    },
+    {
+      "path": "H-shift_20260911/C/START.json",
+      "bytes": 211,
+      "sha256": "88223309dcfcc3aa9a1535f3a3d9e3c5b976401ca175ad76c1d2e1312de6479e"
+    },
+    {
+      "path": "H-shift_20260911/C/pass00.json",
+      "bytes": 17625,
+      "sha256": "8b8b44827d5422864a2712d0d313b887ffc9854dd210f7d0209342357bed9a1a"
+    },
+    {
+      "path": "H-shift_20260911/C/pass00_maps.npz",
+      "bytes": 586727,
+      "sha256": "387b60f056d9b815704493905b5447ac1563e4afb3213faedd8ff96ad8ed77c7"
+    },
+    {
+      "path": "H-shift_20260911/C/pass00_state.npz",
+      "bytes": 1747357,
+      "sha256": "5b69277d9a31ca8e54814421214ac324510fa5cfe17b0633be20b39ed0f0e631"
+    },
+    {
+      "path": "H-shift_20260911/C/pass01.json",
+      "bytes": 17971,
+      "sha256": "0803234f7b5ebdf9e1dfafadb541142bc2d3d48516704dbd0bb935e3ee9b44e0"
+    },
+    {
+      "path": "H-shift_20260911/C/pass01_maps.npz",
+      "bytes": 581658,
+      "sha256": "4c81cde1b8563d59211182aa1a79df6e01504f055a0a9a0c153b50dd75800eb5"
+    },
+    {
+      "path": "H-shift_20260911/C/pass01_state.npz",
+      "bytes": 1747472,
+      "sha256": "585efff0a8078130fc35935d89b1e739585d7b72f7aa7e1658d4af0aa13843f6"
+    },
+    {
+      "path": "H-shift_20260911/C/pass02.json",
+      "bytes": 18946,
+      "sha256": "8c91162c07182ba0025fbb89a168a490f259796bc026a631250686fe538e19e5"
+    },
+    {
+      "path": "H-shift_20260911/C/pass02_maps.npz",
+      "bytes": 564403,
+      "sha256": "03d676d0e08c12fc9ebd232e9df9d4a4e3e121f6072ef51337c5b673bf27f2be"
+    },
+    {
+      "path": "H-shift_20260911/C/pass02_state.npz",
+      "bytes": 1747368,
+      "sha256": "7d5590c97ace0b703b25505eb28c82e5b8ee97ce8b0783b0cce73094d70555dc"
+    },
+    {
+      "path": "H-shift_20260911/C/pass03.json",
+      "bytes": 20594,
+      "sha256": "c225adc345c7b6b882ac5569170c796587f59bf3568e9ec1c97b4b50255a9124"
+    },
+    {
+      "path": "H-shift_20260911/C/pass03_maps.npz",
+      "bytes": 559835,
+      "sha256": "f5a01ea57d13be30d74e56f8e144ce8b9be22a14eaa1c05cd980a4ad3501ab2f"
+    },
+    {
+      "path": "H-shift_20260911/C/pass03_state.npz",
+      "bytes": 1747412,
+      "sha256": "bc00cae5bcc1fd6f80835ded3abd29a8a8468653e158a8071872e0bb3da45834"
+    },
+    {
+      "path": "H-shift_20260911/C/pass04.json",
+      "bytes": 19007,
+      "sha256": "c484b74ce495518bb6cac5a535c48a64b9a44571853f70276db3fe1ccc09a5a0"
+    },
+    {
+      "path": "H-shift_20260911/C/pass04_maps.npz",
+      "bytes": 559944,
+      "sha256": "1cf65a03ced0f3a72f7b1a76a9bd7caa95db9116df105407030483fdefd12d48"
+    },
+    {
+      "path": "H-shift_20260911/C/pass04_state.npz",
+      "bytes": 1747367,
+      "sha256": "abf073eb7d48f72834c07b0a4e3fcf8273c5eae963918e2b40162d51655cdf4f"
+    },
+    {
+      "path": "H-shift_20260911/C/pass05.json",
+      "bytes": 18310,
+      "sha256": "55ac2f0442eea10fb651f8f4821d3cd64303cf499c372730428585fb246e1bfe"
+    },
+    {
+      "path": "H-shift_20260911/C/pass05_maps.npz",
+      "bytes": 566228,
+      "sha256": "7ee5d2ea8ae1dadf361e8f1d3c4ddf9e43e8bef839f1db13fde228af7d5fc2e9"
+    },
+    {
+      "path": "H-shift_20260911/C/pass05_state.npz",
+      "bytes": 1747428,
+      "sha256": "7a8b8d5b39cb710c44a403d800f185549aa772d075acb2c0c97b82d738313efc"
+    },
+    {
+      "path": "H-shift_20260911/C/pass06.json",
+      "bytes": 18632,
+      "sha256": "9959935a1718ad190feed4ecd6af81bf2ae5405d381e31902edefa8604443713"
+    },
+    {
+      "path": "H-shift_20260911/C/pass06_maps.npz",
+      "bytes": 562432,
+      "sha256": "d9879c8bc7061bfeae9e3c86192e446744288a8a9faf6aa1214a0e4bfbf83f37"
+    },
+    {
+      "path": "H-shift_20260911/C/pass06_state.npz",
+      "bytes": 1747336,
+      "sha256": "cd6c5859a9a3dec1aa18fdfeb8a43ed094d14a14c3a16eeca27919200df0ec4b"
+    },
+    {
+      "path": "H-shift_20260911/P/COMPLETE.json",
+      "bytes": 120,
+      "sha256": "f60b01d1bb9838e5d593f1bb898e5b4f82101be899703117ef2038a902105ece"
+    },
+    {
+      "path": "H-shift_20260911/P/START.json",
+      "bytes": 211,
+      "sha256": "2bb6c325a5ef4ec4761920c3c259ac4ea34f46e6dccbcdad0adea0ba3b717ddf"
+    },
+    {
+      "path": "H-shift_20260911/P/pass00.json",
+      "bytes": 13431,
+      "sha256": "47131913a9464f25c59a2c70216f3845325e8f55ae0826444a872394de742aab"
+    },
+    {
+      "path": "H-shift_20260911/P/pass00_maps.npz",
+      "bytes": 543952,
+      "sha256": "d8645a750a726fb0484faae3166881d9e5f29e0a8624851d29aadf6ccd37c67b"
+    },
+    {
+      "path": "H-shift_20260911/P/pass00_state.npz",
+      "bytes": 1747357,
+      "sha256": "5b69277d9a31ca8e54814421214ac324510fa5cfe17b0633be20b39ed0f0e631"
+    },
+    {
+      "path": "H-shift_20260911/P/pass01.json",
+      "bytes": 13449,
+      "sha256": "a165a64d7147156dfd23c69c77503744aeeb7b3bce08dee685490e370cabe258"
+    },
+    {
+      "path": "H-shift_20260911/P/pass01_maps.npz",
+      "bytes": 544855,
+      "sha256": "842e81c5a8f5ecef148e136d5afbc6b341769d7fd8b948c2fbc94de96f90319b"
+    },
+    {
+      "path": "H-shift_20260911/P/pass01_state.npz",
+      "bytes": 1747450,
+      "sha256": "73918d58a7ca9a56eec28e79095613aaaa972068abb04e16ffbafefa75b115ef"
+    },
+    {
+      "path": "H-shift_20260911/P/pass02.json",
+      "bytes": 13446,
+      "sha256": "6c64866cb7e22e1e7fa7d241e48d44eda8c2f85dbee9717fcc80b05d085ad2ed"
+    },
+    {
+      "path": "H-shift_20260911/P/pass02_maps.npz",
+      "bytes": 544911,
+      "sha256": "88cd0933b97e5615c2a84f61ca72ac54a681825208ced449b2aa63dbe98ad69b"
+    },
+    {
+      "path": "H-shift_20260911/P/pass02_state.npz",
+      "bytes": 1747439,
+      "sha256": "617e6629fb7043d6f84ef506597aa3bca2d5d0ef6ba02e0a35579b44de1dce4a"
+    },
+    {
+      "path": "H-shift_20260911/P/pass03.json",
+      "bytes": 13459,
+      "sha256": "d6896597a13ee3d9a92d3efd41f75931eca742d88fcb0f0129fd2abb86e4b298"
+    },
+    {
+      "path": "H-shift_20260911/P/pass03_maps.npz",
+      "bytes": 545038,
+      "sha256": "75f507aca107a65d7f6c48b9d04f5c419a71945659bbccc0ede8df23b6321606"
+    },
+    {
+      "path": "H-shift_20260911/P/pass03_state.npz",
+      "bytes": 1747463,
+      "sha256": "1ba852681e49b259b43d1b80752b0915493d860d6a5f7541002ab7c559accd64"
+    },
+    {
+      "path": "H-shift_20260911/P/pass04.json",
+      "bytes": 13446,
+      "sha256": "6c3ceee150ea1040b742ad5f0a8bc9dae10ec51a5d0389fadb9f7f6d1b06c6f0"
+    },
+    {
+      "path": "H-shift_20260911/P/pass04_maps.npz",
+      "bytes": 545037,
+      "sha256": "ef84e5daaa47579e615a8d5cff92f8de4b40500501e2aaec88226bc351568ddb"
+    },
+    {
+      "path": "H-shift_20260911/P/pass04_state.npz",
+      "bytes": 1747450,
+      "sha256": "11af5783770d49698d9f494ba777b00cc86f550bdf68460921e08a40de14e247"
+    },
+    {
+      "path": "H-shift_20260911/P/pass05.json",
+      "bytes": 13432,
+      "sha256": "de9bac3e03694a01dd89c25660dda24002626aeb5a13e894e2ec803e2ac8b8c5"
+    },
+    {
+      "path": "H-shift_20260911/P/pass05_maps.npz",
+      "bytes": 545007,
+      "sha256": "4ebc96d35f1e3e637b98d5405499eed6bbc0be5f863b3a0e3d6787f803f4d17c"
+    },
+    {
+      "path": "H-shift_20260911/P/pass05_state.npz",
+      "bytes": 1747408,
+      "sha256": "e63bf10ec4ed55dd804d401f610a8bbf332cd500ac17b5b42849688513fa3ff7"
+    },
+    {
+      "path": "H-shift_20260911/P/pass06.json",
+      "bytes": 13454,
+      "sha256": "53b4cc414f364cb357144c65e2d46855a51dd130a16370f824be5c9dce4ad3cb"
+    },
+    {
+      "path": "H-shift_20260911/P/pass06_maps.npz",
+      "bytes": 545058,
+      "sha256": "1a051d09d820e6b467dd59cbd4542af3f6d78b0ca5d3971705f94bc21fdc8517"
+    },
+    {
+      "path": "H-shift_20260911/P/pass06_state.npz",
+      "bytes": 1747414,
+      "sha256": "7161e08e9646c26d1863c60b2d0383cc657f72c752811af5f0b0072cc0f9c8b9"
+    },
+    {
+      "path": "H-shift_20260912/C/COMPLETE.json",
+      "bytes": 122,
+      "sha256": "f6e3c4db6a61c846cfb3ff99ecae2f97814619cc6514001f0e56e3f2f4f5a31e"
+    },
+    {
+      "path": "H-shift_20260912/C/START.json",
+      "bytes": 211,
+      "sha256": "19c7604735ea14e4cfb959fa2a7196cafd847832f0c9a0a1f3212cb09a361cc1"
+    },
+    {
+      "path": "H-shift_20260912/C/pass00.json",
+      "bytes": 16955,
+      "sha256": "ef820a5a37af859a878740bbf41807fce9bfba45c3b7bb1eb57f8b711431a576"
+    },
+    {
+      "path": "H-shift_20260912/C/pass00_maps.npz",
+      "bytes": 627659,
+      "sha256": "1ce561f84fe01610831ad9a28a285cac3682d9187fa2ad2530e9dc6e6eede4f5"
+    },
+    {
+      "path": "H-shift_20260912/C/pass00_state.npz",
+      "bytes": 1747400,
+      "sha256": "c203544ef5c6ff67fea0e5f2eb00a78f707d1f328fd3eefa2ab1082a793c38dc"
+    },
+    {
+      "path": "H-shift_20260912/C/pass01.json",
+      "bytes": 17338,
+      "sha256": "0fc51454c91693a69433a4ffe327c73d08d64fdcbf07579e6e421e080f8b7ec3"
+    },
+    {
+      "path": "H-shift_20260912/C/pass01_maps.npz",
+      "bytes": 631007,
+      "sha256": "1366c8f108dc63c62e3a2f06cc43c72cda927dc789e76a819c8e88a0211c1445"
+    },
+    {
+      "path": "H-shift_20260912/C/pass01_state.npz",
+      "bytes": 1747287,
+      "sha256": "20d7a689d69db719e4e29261260701aa7c6d99770146bb21c751223c51b2c51a"
+    },
+    {
+      "path": "H-shift_20260912/C/pass02.json",
+      "bytes": 17978,
+      "sha256": "01c4740ea872dcd002795eb050d23f5436ca9cd5c3bfddf80671a416d07fc480"
+    },
+    {
+      "path": "H-shift_20260912/C/pass02_maps.npz",
+      "bytes": 592920,
+      "sha256": "cf324e886ceba8c0c0f83b7e0728fdfce9ee79848dea2a70aa5b59d37b544342"
+    },
+    {
+      "path": "H-shift_20260912/C/pass02_state.npz",
+      "bytes": 1747434,
+      "sha256": "36cb1993186701a85eebbc0ddcfd97a865e85c5992e7f46ff1218fb9e71c4a7b"
+    },
+    {
+      "path": "H-shift_20260912/C/pass03.json",
+      "bytes": 17647,
+      "sha256": "9ed84744d2093c46333d2de528166984aa7d886ce6df4c6bda75a2610564905c"
+    },
+    {
+      "path": "H-shift_20260912/C/pass03_maps.npz",
+      "bytes": 583177,
+      "sha256": "05b511dbdc976a58cd26e324f1eca80b9eb72b11ebc9efd3037d323b8cc85c9e"
+    },
+    {
+      "path": "H-shift_20260912/C/pass03_state.npz",
+      "bytes": 1747467,
+      "sha256": "da2d0c6f9aa284e082c030a4b967de44ad56dfcfc145850d4dccac770eb55b34"
+    },
+    {
+      "path": "H-shift_20260912/C/pass04.json",
+      "bytes": 17635,
+      "sha256": "d5fc27c3b252faeb6393a300503f8a8de860c0127fe1b1fa25bf48b6ea722d86"
+    },
+    {
+      "path": "H-shift_20260912/C/pass04_maps.npz",
+      "bytes": 581492,
+      "sha256": "676be326badea41edc2e105be848f1f181aad79ba9b42b8855e1038cbbd4b3ff"
+    },
+    {
+      "path": "H-shift_20260912/C/pass04_state.npz",
+      "bytes": 1747513,
+      "sha256": "c8a568c5cd3b7bd937dca543749278a8631b8b7335875a67ccf963cc74c3741f"
+    },
+    {
+      "path": "H-shift_20260912/C/pass05.json",
+      "bytes": 17669,
+      "sha256": "2df58828cae86e15a537bb6cc64c38015ae9ef0cc9b9da30b881c861dd070fe5"
+    },
+    {
+      "path": "H-shift_20260912/C/pass05_maps.npz",
+      "bytes": 582017,
+      "sha256": "f78e03793f24b3d3b9a55847325b89b7f4074dc43892d351597380d8b82c9105"
+    },
+    {
+      "path": "H-shift_20260912/C/pass05_state.npz",
+      "bytes": 1747324,
+      "sha256": "999e30cc8240d7f8d8bfbc3e0b7b8fef3dbaa61682be8c0e2da9647d2d3a762f"
+    },
+    {
+      "path": "H-shift_20260912/C/pass06.json",
+      "bytes": 17979,
+      "sha256": "309b76ae0cc6b015122b71082dd4cdf8c7dfe1efe92fbdadf2ebed6868a4f29a"
+    },
+    {
+      "path": "H-shift_20260912/C/pass06_maps.npz",
+      "bytes": 582113,
+      "sha256": "3489ff1087f51675ea67b38004e1cf1d5c1f0e18025b934fc3cd011ae2bdff5b"
+    },
+    {
+      "path": "H-shift_20260912/C/pass06_state.npz",
+      "bytes": 1747341,
+      "sha256": "7cad9059d5306cc200aeb00cd65dfba4d120ff09db6a21b4cb23e12514d87a7e"
+    },
+    {
+      "path": "H-shift_20260912/P/COMPLETE.json",
+      "bytes": 120,
+      "sha256": "45eda21d7aa587f9e982bec43d04e7b54716c0f65ebb5bb031430ba4d07f4a82"
+    },
+    {
+      "path": "H-shift_20260912/P/START.json",
+      "bytes": 211,
+      "sha256": "5f542807b79602ca0c2d342daf15df6728610d1793b1aca0ecad40d7cca9e462"
+    },
+    {
+      "path": "H-shift_20260912/P/pass00.json",
+      "bytes": 13434,
+      "sha256": "074a9f9d1af2e28475f934bf4ac1cbe163bf92a8ca9511739303cc4a329732f5"
+    },
+    {
+      "path": "H-shift_20260912/P/pass00_maps.npz",
+      "bytes": 544147,
+      "sha256": "35f2a9790b7fccea876a32c9a8a359e2b18f4c5c4b45ca121e6311aa2e1e4d84"
+    },
+    {
+      "path": "H-shift_20260912/P/pass00_state.npz",
+      "bytes": 1747400,
+      "sha256": "c203544ef5c6ff67fea0e5f2eb00a78f707d1f328fd3eefa2ab1082a793c38dc"
+    },
+    {
+      "path": "H-shift_20260912/P/pass01.json",
+      "bytes": 13448,
+      "sha256": "db129212038c353dda39526f9c569e2b8dac4c8202769c2434ae264a34289629"
+    },
+    {
+      "path": "H-shift_20260912/P/pass01_maps.npz",
+      "bytes": 545110,
+      "sha256": "5a0d7317d5ca1f27a0f7dabba1f9680440c0da109a15a40374380c2e828bd444"
+    },
+    {
+      "path": "H-shift_20260912/P/pass01_state.npz",
+      "bytes": 1747470,
+      "sha256": "9097c820cf36f9542766e709f946584b037ec3f3b5a8a780b3dc45277c1d9e89"
+    },
+    {
+      "path": "H-shift_20260912/P/pass02.json",
+      "bytes": 13452,
+      "sha256": "a7dab8ac350e142e2295456f2725963d5ef9f561a7be5fb5b6a9f655f6388069"
+    },
+    {
+      "path": "H-shift_20260912/P/pass02_maps.npz",
+      "bytes": 545273,
+      "sha256": "17fd3ab694d5ef949ba60e4fa39164acffdaa4225ec3dcfc97c6d70817733668"
+    },
+    {
+      "path": "H-shift_20260912/P/pass02_state.npz",
+      "bytes": 1747421,
+      "sha256": "a007cd01271000ecaac05b0a80dbe8c4d021731fecca503653550f2dd077cf53"
+    },
+    {
+      "path": "H-shift_20260912/P/pass03.json",
+      "bytes": 13457,
+      "sha256": "4107d9c62edc7506271cd00bec30632b25e1421fb610b30ec2b6d78c55a8e13a"
+    },
+    {
+      "path": "H-shift_20260912/P/pass03_maps.npz",
+      "bytes": 545291,
+      "sha256": "be9d9c9853366847db6335df9d6ed276fa7b46e66460e700a3225451fc424824"
+    },
+    {
+      "path": "H-shift_20260912/P/pass03_state.npz",
+      "bytes": 1747430,
+      "sha256": "14f8b3a54c826730c8e7bcb5606d5e671be2f9f2ae4704e7a466fe97d9dd0adb"
+    },
+    {
+      "path": "H-shift_20260912/P/pass04.json",
+      "bytes": 13454,
+      "sha256": "ce29f07162a5a1658ea430d78e7c78295cfad0b5b5e0e3b6ce797d8f1bc1b42c"
+    },
+    {
+      "path": "H-shift_20260912/P/pass04_maps.npz",
+      "bytes": 545327,
+      "sha256": "d7c0e10eed63246a50aa154bec794abca2247fde9a6ab0979a96a36159f70f6b"
+    },
+    {
+      "path": "H-shift_20260912/P/pass04_state.npz",
+      "bytes": 1747436,
+      "sha256": "afa6629e67215ee09c354b95a5be2ce8f22a85770450387e351b38c4980d870d"
+    },
+    {
+      "path": "H-shift_20260912/P/pass05.json",
+      "bytes": 13465,
+      "sha256": "efb2e1b8340b40fa42f2c26788cc10874131520b1c8e963eaf727b66b5efbb46"
+    },
+    {
+      "path": "H-shift_20260912/P/pass05_maps.npz",
+      "bytes": 545319,
+      "sha256": "ceb808b5c6ba7ea87adaeb20aa318625546cda5ad4af0b8b29922899866b25f9"
+    },
+    {
+      "path": "H-shift_20260912/P/pass05_state.npz",
+      "bytes": 1747534,
+      "sha256": "8739dcfeb78206c5cc814625a9ced36fc0261b00f970d3239b74d221670d8643"
+    },
+    {
+      "path": "H-shift_20260912/P/pass06.json",
+      "bytes": 13437,
+      "sha256": "7cc3196b56a645e334919992e6ad727cd7f61caa36490d595db8d9f28b65e786"
+    },
+    {
+      "path": "H-shift_20260912/P/pass06_maps.npz",
+      "bytes": 545400,
+      "sha256": "00456536539fec88709d5f2fefff459847785ae02190ddb1ba2192ad0e087eaa"
+    },
+    {
+      "path": "H-shift_20260912/P/pass06_state.npz",
+      "bytes": 1747359,
+      "sha256": "97ca7992e308ff08407ceb73f12478e83583c4876e3238ec8129bb156602835d"
+    },
+    {
+      "path": "H-shift_truth.npz",
+      "bytes": 142758,
+      "sha256": "598d58c1925390197a32b790cfd587cb9d1d65dc3d138ee9e323c58b255f1580"
+    },
+    {
+      "path": "H_20260911/C/COMPLETE.json",
+      "bytes": 121,
+      "sha256": "5eec42c906880056b6ee60fe2d14f9787d0b071cd7eded61fc425151da89d772"
+    },
+    {
+      "path": "H_20260911/C/START.json",
+      "bytes": 205,
+      "sha256": "766d59414e949b2642a237f8ab653857f54ac26b89beeb0be002ae536c2c053e"
+    },
+    {
+      "path": "H_20260911/C/pass00.json",
+      "bytes": 17948,
+      "sha256": "b58b9748bc5f31d20997f06ba9f992b3a8456d0fb0e63110ee3aff4473ed310a"
+    },
+    {
+      "path": "H_20260911/C/pass00_maps.npz",
+      "bytes": 588524,
+      "sha256": "b7bb84ffed2dc88a4ab3df3c188e28c2cd0d57fb39130bc08a4bd8aa6f0238a0"
+    },
+    {
+      "path": "H_20260911/C/pass00_state.npz",
+      "bytes": 1747463,
+      "sha256": "fbd9cebc0919420580eea3431eb35dc54dfa85b584d3188d92a5d4c79d85ced8"
+    },
+    {
+      "path": "H_20260911/C/pass01.json",
+      "bytes": 18620,
+      "sha256": "93e8da073029e53f9ea7568d96a24dbea50776e9cbcf9634e557519cb5e032ca"
+    },
+    {
+      "path": "H_20260911/C/pass01_maps.npz",
+      "bytes": 584554,
+      "sha256": "f9a7028ad9704473710770d014784f3bd30100e8fe6181efbd0f0a991fbbd91f"
+    },
+    {
+      "path": "H_20260911/C/pass01_state.npz",
+      "bytes": 1747232,
+      "sha256": "3086ba21a13194e8b2001ab2f8fd2f330be4ad8badc4a9463d5397f14994c462"
+    },
+    {
+      "path": "H_20260911/C/pass02.json",
+      "bytes": 18952,
+      "sha256": "03df0ae5bd32750040a165598f88be1eb248c0154eaaf28788cf4345ac98d6ee"
+    },
+    {
+      "path": "H_20260911/C/pass02_maps.npz",
+      "bytes": 563645,
+      "sha256": "8dc9008caf9118c76a6d36485c084c8be62d97990ac510f5e0d31a83436937de"
+    },
+    {
+      "path": "H_20260911/C/pass02_state.npz",
+      "bytes": 1747433,
+      "sha256": "c93e4eb096040b5b6c00172d42fbe95d3754cf1a889748737137dc866a07287d"
+    },
+    {
+      "path": "H_20260911/C/pass03.json",
+      "bytes": 19596,
+      "sha256": "20e6221ff304290e7e281921453d5608fa87daf89bea089543f02c3d076dadc0"
+    },
+    {
+      "path": "H_20260911/C/pass03_maps.npz",
+      "bytes": 561181,
+      "sha256": "73127b788f289af2da3419887349bad7308f0ec70a8fbd5c500258b885bb7882"
+    },
+    {
+      "path": "H_20260911/C/pass03_state.npz",
+      "bytes": 1747351,
+      "sha256": "ba437960b794ccb59a3bfeb133810cee0d402931224d9a5f001a30eb4a291c44"
+    },
+    {
+      "path": "H_20260911/C/pass04.json",
+      "bytes": 19017,
+      "sha256": "fe73cb7ff44b743d9deabcab4eb69be4df8a8edadede30b08c150aabe52de50f"
+    },
+    {
+      "path": "H_20260911/C/pass04_maps.npz",
+      "bytes": 560902,
+      "sha256": "3a7d14c83173c117bf9e2237552941a458ada95fb22b3e93c5e53486d75b8f2a"
+    },
+    {
+      "path": "H_20260911/C/pass04_state.npz",
+      "bytes": 1747357,
+      "sha256": "a88ae7a18eee9441269bda384cd577031c7e2e2b5d3fe359efe3fc44bfadaeeb"
+    },
+    {
+      "path": "H_20260911/C/pass05.json",
+      "bytes": 18936,
+      "sha256": "0326e3aae97ec6c5c1322fa33a20ed1a62235d6cffed2ea44c1a7dea83478c71"
+    },
+    {
+      "path": "H_20260911/C/pass05_maps.npz",
+      "bytes": 563139,
+      "sha256": "c3f9b2dbf3877f76e85e6e0c7429097e54dd0989c91c7766df39421c728854a1"
+    },
+    {
+      "path": "H_20260911/C/pass05_state.npz",
+      "bytes": 1747347,
+      "sha256": "7d545721aff1c505270c4c38ef203c28632361e6470644ac3245368c7844521d"
+    },
+    {
+      "path": "H_20260911/C/pass06.json",
+      "bytes": 19278,
+      "sha256": "f26a69c1f19258cb37b083b8025303adc79e0efc68601a7ca42f882fc01675ee"
+    },
+    {
+      "path": "H_20260911/C/pass06_maps.npz",
+      "bytes": 561037,
+      "sha256": "8951f9e6a49b67678311b26be9f0bcbf0d53afd3ab8a7b6e181ac04bd7bcb98e"
+    },
+    {
+      "path": "H_20260911/C/pass06_state.npz",
+      "bytes": 1747331,
+      "sha256": "5670c933ae610832c952e642d5841d1958631ffeb09a6331c6b21a03706f77a5"
+    },
+    {
+      "path": "H_20260911/P/COMPLETE.json",
+      "bytes": 121,
+      "sha256": "68312b1124fa0d1a4b48be7e5825b083f97536d805ff745b7634dcec454cac57"
+    },
+    {
+      "path": "H_20260911/P/START.json",
+      "bytes": 205,
+      "sha256": "c1980ba8be65335ea875a7e2d68a6cf71a217b5253362c8384c01cc96937bfab"
+    },
+    {
+      "path": "H_20260911/P/pass00.json",
+      "bytes": 13430,
+      "sha256": "641141034908a805415497d3473e55696969cd654889c0dfe52c3ec04523fd27"
+    },
+    {
+      "path": "H_20260911/P/pass00_maps.npz",
+      "bytes": 543865,
+      "sha256": "f03324566ecec64175fbb5e01a319a2e9cd230c7bb8ac826b52ab389f8e501c3"
+    },
+    {
+      "path": "H_20260911/P/pass00_state.npz",
+      "bytes": 1747463,
+      "sha256": "fbd9cebc0919420580eea3431eb35dc54dfa85b584d3188d92a5d4c79d85ced8"
+    },
+    {
+      "path": "H_20260911/P/pass01.json",
+      "bytes": 13455,
+      "sha256": "9cf65a9cb61ae5671523858fc0d38e43d3aaf5acbc4ac26782d9c72a93d0b0b9"
+    },
+    {
+      "path": "H_20260911/P/pass01_maps.npz",
+      "bytes": 544943,
+      "sha256": "9f35406ccf0573fe561a5eb25400a58bc52b496b0274cc67a56306ac9e676c57"
+    },
+    {
+      "path": "H_20260911/P/pass01_state.npz",
+      "bytes": 1747546,
+      "sha256": "9b2ed30a516cc1422dcaf493bbbf8201611ce393ed12dac0c5fa67bb91373c9a"
+    },
+    {
+      "path": "H_20260911/P/pass02.json",
+      "bytes": 13438,
+      "sha256": "cd1a6b17bd67a838250cbfd71276dc727fe788c74cd23caaf712b28d4db13f59"
+    },
+    {
+      "path": "H_20260911/P/pass02_maps.npz",
+      "bytes": 544967,
+      "sha256": "d404814f01e45b3b9857c75f8a0c701e46d0df1d1ff0c48c7674fdda95e6e36e"
+    },
+    {
+      "path": "H_20260911/P/pass02_state.npz",
+      "bytes": 1747467,
+      "sha256": "f2117e40f0b5faa77a1f5aee337d622f061ab1a0e76880dbaa9aeb31b2b01c91"
+    },
+    {
+      "path": "H_20260911/P/pass03.json",
+      "bytes": 13441,
+      "sha256": "3cf35b449c6a1e0f4892ebe162f0852154e47f76cfdce1cd238d8d803176eacc"
+    },
+    {
+      "path": "H_20260911/P/pass03_maps.npz",
+      "bytes": 544935,
+      "sha256": "ab2145f596617bd7a30507704c71219cfaa7b9cc75922a2b4f636882805b3ee5"
+    },
+    {
+      "path": "H_20260911/P/pass03_state.npz",
+      "bytes": 1747505,
+      "sha256": "548c9a495794632ad4508713026ad8250f98a535b1f5b3eaac1549d0618d481e"
+    },
+    {
+      "path": "H_20260911/P/pass04.json",
+      "bytes": 13440,
+      "sha256": "3e5bf6f67328c6d178e3211ee921d62e20675cfc923bd6434e55177a7801b0ff"
+    },
+    {
+      "path": "H_20260911/P/pass04_maps.npz",
+      "bytes": 544907,
+      "sha256": "bf387085993c71e10d7997b908be14bde345d559caa902544ca98d8f5aeaac10"
+    },
+    {
+      "path": "H_20260911/P/pass04_state.npz",
+      "bytes": 1747365,
+      "sha256": "064567648713bbac704af17053bde390ac91d586bcf5b1ff5c4980e88a97804a"
+    },
+    {
+      "path": "H_20260911/P/pass05.json",
+      "bytes": 13461,
+      "sha256": "88f6510508a9997919bba77b69f90005fbb66c9f7553c65d9ab12bf5ed20aad2"
+    },
+    {
+      "path": "H_20260911/P/pass05_maps.npz",
+      "bytes": 544901,
+      "sha256": "8d71f99cfcf142877a26103165519d146a40dc207f1c3141eb591f59dcc76d9d"
+    },
+    {
+      "path": "H_20260911/P/pass05_state.npz",
+      "bytes": 1747468,
+      "sha256": "727ed26214973710d0ba6719d4248c66be1b08edc39e73dee2321f0c46a30a0d"
+    },
+    {
+      "path": "H_20260911/P/pass06.json",
+      "bytes": 13457,
+      "sha256": "d93433607c515bb26fc771ada27038e0e7fecee178517679c5953e5014d8aae6"
+    },
+    {
+      "path": "H_20260911/P/pass06_maps.npz",
+      "bytes": 544976,
+      "sha256": "e668f633434f19f709abf7bd4777e14248216e594b294f7ea20ffc99dca9cc87"
+    },
+    {
+      "path": "H_20260911/P/pass06_state.npz",
+      "bytes": 1747401,
+      "sha256": "ae8b172b9a0052f1084cfbbf2dc36548fd07e2a6549030eb5b67223fd1efad7f"
+    },
+    {
+      "path": "H_20260912/C/COMPLETE.json",
+      "bytes": 121,
+      "sha256": "2b9c5907cceea12f48daeaa1a271b1c667fecc482f4bf6de16e4c7e56d904366"
+    },
+    {
+      "path": "H_20260912/C/START.json",
+      "bytes": 205,
+      "sha256": "b1eb78ae2589948a880ab734f9ad2e83343119243a59f57eca88f2d3fbc6f632"
+    },
+    {
+      "path": "H_20260912/C/pass00.json",
+      "bytes": 16996,
+      "sha256": "6a97fede8adba5a004721233850b2e80fd8c241663ac974225571219cc6c77bf"
+    },
+    {
+      "path": "H_20260912/C/pass00_maps.npz",
+      "bytes": 628969,
+      "sha256": "079fd25ca74d1197405c86ecfe30ac0d3ab694f40ae5a5a14b54a286bdd87b3d"
+    },
+    {
+      "path": "H_20260912/C/pass00_state.npz",
+      "bytes": 1747465,
+      "sha256": "fb6d3e00fdfefef790ded59bbf0d5e210a4f71e662a7e5c78206ced7d0bc42d2"
+    },
+    {
+      "path": "H_20260912/C/pass01.json",
+      "bytes": 17659,
+      "sha256": "722bcdcee5fea83c6620d68752399bd293fb265e93dff07c61bbc8aaf8d541b2"
+    },
+    {
+      "path": "H_20260912/C/pass01_maps.npz",
+      "bytes": 635786,
+      "sha256": "cc861aee77a554ad5a5123afe18b531fbc932a34c22a27a2b8839ec5bd45fed6"
+    },
+    {
+      "path": "H_20260912/C/pass01_state.npz",
+      "bytes": 1747474,
+      "sha256": "73defc3f587840711dd8bc1e870c07cdf2fcd8cca0e836b921ab8de100423a74"
+    },
+    {
+      "path": "H_20260912/C/pass02.json",
+      "bytes": 17998,
+      "sha256": "6ba4073acacaaa9f8858831bccc115f28e960a82ca8c6701cf52cfd8afc1f13c"
+    },
+    {
+      "path": "H_20260912/C/pass02_maps.npz",
+      "bytes": 604054,
+      "sha256": "8552473bcdde24048e7c45dd8c85541670f9123245095110c90e4d0fdb87d80a"
+    },
+    {
+      "path": "H_20260912/C/pass02_state.npz",
+      "bytes": 1747344,
+      "sha256": "ca0405247d9813b48ae7c0552c0f3ecc2cf2ed795a496d90db5e345d81af56f8"
+    },
+    {
+      "path": "H_20260912/C/pass03.json",
+      "bytes": 18005,
+      "sha256": "66bfc0f1226aa3c80c0ea75f6c6a78cf9d934261faa914b2c95a398e17f1e275"
+    },
+    {
+      "path": "H_20260912/C/pass03_maps.npz",
+      "bytes": 590803,
+      "sha256": "06a65cf5d11d93f8134560b6f56310fdd20af5d9045250afc722a4df2bc21048"
+    },
+    {
+      "path": "H_20260912/C/pass03_state.npz",
+      "bytes": 1747435,
+      "sha256": "3d3d977420a67a3681f92c006fdc5d68922ed73e393979626517477c1d4c4aaf"
+    },
+    {
+      "path": "H_20260912/C/pass04.json",
+      "bytes": 17675,
+      "sha256": "f3c88f1fb8c2482e8aeeea22c0f404b9994451c532637dbd66c69e3963e38ac2"
+    },
+    {
+      "path": "H_20260912/C/pass04_maps.npz",
+      "bytes": 586855,
+      "sha256": "2dcd8278ecd20c12f7e8be856f6dcef601716b21005d64b8480332789ea1abcc"
+    },
+    {
+      "path": "H_20260912/C/pass04_state.npz",
+      "bytes": 1747369,
+      "sha256": "5631de03583198acf5dffd483123316ace0a151fe1053735fe9cfcd7de3c7dba"
+    },
+    {
+      "path": "H_20260912/C/pass05.json",
+      "bytes": 18015,
+      "sha256": "0c23f0c2704c42d9d13942c0d50d764387343a6a707952b680212332cade5479"
+    },
+    {
+      "path": "H_20260912/C/pass05_maps.npz",
+      "bytes": 585681,
+      "sha256": "f1550cc8288c8d85b7eccbd41baa9f3db7cf048ae30b1a2eedfe76eda8c246db"
+    },
+    {
+      "path": "H_20260912/C/pass05_state.npz",
+      "bytes": 1747399,
+      "sha256": "4bc95b9786a00af5e9d03b444708cc8601044e9a1cbda401350ae18ba626c5e4"
+    },
+    {
+      "path": "H_20260912/C/pass06.json",
+      "bytes": 17644,
+      "sha256": "d3896e968ff7b54deaa5f17e99f28a5fccfed186d3a0b482d50488eeda43d069"
+    },
+    {
+      "path": "H_20260912/C/pass06_maps.npz",
+      "bytes": 587485,
+      "sha256": "e9974e870bd491de56b32835eed37f0a5edf34741e6cf242e7c325351e2cbd19"
+    },
+    {
+      "path": "H_20260912/C/pass06_state.npz",
+      "bytes": 1747407,
+      "sha256": "23019a79143124d69d16020534e44b7f7095dc346a0f7fa11f44c919e21321a3"
+    },
+    {
+      "path": "H_20260912/P/COMPLETE.json",
+      "bytes": 120,
+      "sha256": "bdd6b0a4037987d73f4f84cab346fd3b5195c3ac7a07b836879a943323d730b2"
+    },
+    {
+      "path": "H_20260912/P/START.json",
+      "bytes": 205,
+      "sha256": "66814a99f2419448b581b4706028770e0df4363fcfc8716609a5d5bacda1db81"
+    },
+    {
+      "path": "H_20260912/P/pass00.json",
+      "bytes": 13460,
+      "sha256": "d1b44d73084a5b7e22c0cdc58f98c30433f8e30eea9fb13fbb3d76c44a93ca05"
+    },
+    {
+      "path": "H_20260912/P/pass00_maps.npz",
+      "bytes": 544126,
+      "sha256": "c70c8c20a823a23fe5146ce80c9562417fd659ce544830243b54614b91b16536"
+    },
+    {
+      "path": "H_20260912/P/pass00_state.npz",
+      "bytes": 1747465,
+      "sha256": "fb6d3e00fdfefef790ded59bbf0d5e210a4f71e662a7e5c78206ced7d0bc42d2"
+    },
+    {
+      "path": "H_20260912/P/pass01.json",
+      "bytes": 13443,
+      "sha256": "e7d148e5cca60bad1586ee3b7a3d994d6cab8c29b2dfaea6d1e062df850852df"
+    },
+    {
+      "path": "H_20260912/P/pass01_maps.npz",
+      "bytes": 545119,
+      "sha256": "8c59c7dda273ddaab517bdb8f0e585d0d068806c4a7016f12c7300c4f8622b81"
+    },
+    {
+      "path": "H_20260912/P/pass01_state.npz",
+      "bytes": 1747395,
+      "sha256": "68c7f96f07e65779f0e068b2f99fe0280669bcbea9c953b4dd05f434e35ffe5e"
+    },
+    {
+      "path": "H_20260912/P/pass02.json",
+      "bytes": 13461,
+      "sha256": "662003948001b2fd2c9de19bb6535f12bf5ee33c396c12af20f704838a98091c"
+    },
+    {
+      "path": "H_20260912/P/pass02_maps.npz",
+      "bytes": 545367,
+      "sha256": "8e25717eb27ff575e26249ee9e353fe39aabadd18203a48b128edf9e6247f78d"
+    },
+    {
+      "path": "H_20260912/P/pass02_state.npz",
+      "bytes": 1747421,
+      "sha256": "f113721c6b0029ceef0a377546f3b4c1c5decdb39f875048bbbaa2931118b2e7"
+    },
+    {
+      "path": "H_20260912/P/pass03.json",
+      "bytes": 13447,
+      "sha256": "b162214926254ee216125a5aa6692faccf1949a3c23e8274804ff4ad5d34eece"
+    },
+    {
+      "path": "H_20260912/P/pass03_maps.npz",
+      "bytes": 545388,
+      "sha256": "19d4f91c3cf328071b6bb0eee8517687c35572483305a84bf60fac0f3179bb1c"
+    },
+    {
+      "path": "H_20260912/P/pass03_state.npz",
+      "bytes": 1747439,
+      "sha256": "c178244e90b02b1e53ef840fc585a861ffacf3d37d9232167d69a7400404599c"
+    },
+    {
+      "path": "H_20260912/P/pass04.json",
+      "bytes": 13463,
+      "sha256": "6ac5bffff29b943774a50928795c5576a82e221c3663f55b3d15baa8567570bd"
+    },
+    {
+      "path": "H_20260912/P/pass04_maps.npz",
+      "bytes": 545291,
+      "sha256": "a2d596f272a0fd36f16cba4cd8d51aefc891d3ce3bce8fac9abcbcf55da30cfe"
+    },
+    {
+      "path": "H_20260912/P/pass04_state.npz",
+      "bytes": 1747470,
+      "sha256": "6e13b08bdeb952f9ab0f56b879ab496e3c9f818980f10e449331c67b4f1539b1"
+    },
+    {
+      "path": "H_20260912/P/pass05.json",
+      "bytes": 13447,
+      "sha256": "80d64de4c97e91b733ab6f3d7830662fde3746bccdef7e8e06f8b2cd3f62f46e"
+    },
+    {
+      "path": "H_20260912/P/pass05_maps.npz",
+      "bytes": 545384,
+      "sha256": "44959f4809d673ccd537b51eb85b31a3e35555fa76f9f60bf6de14a6f03553ed"
+    },
+    {
+      "path": "H_20260912/P/pass05_state.npz",
+      "bytes": 1747400,
+      "sha256": "6f99c6aa65c4178e818d6b5c411dae5d1117d2f6538f98a3c00dc3944d8897c2"
+    },
+    {
+      "path": "H_20260912/P/pass06.json",
+      "bytes": 13468,
+      "sha256": "13cd97364329dbf0e45aad215439b1d77fa8d6dea5bb7b08a6cbb573ed7487cd"
+    },
+    {
+      "path": "H_20260912/P/pass06_maps.npz",
+      "bytes": 545403,
+      "sha256": "7eb1beee26b1ff6c8c0ed0ca11fe5f81e401711b694f2b8d2ffe367bc49f0223"
+    },
+    {
+      "path": "H_20260912/P/pass06_state.npz",
+      "bytes": 1747393,
+      "sha256": "ae58a7b998c9e3af19be821b6e31207b613eb5f9dd25038e34e2aa0358430109"
+    },
+    {
+      "path": "H_truth.npz",
+      "bytes": 142240,
+      "sha256": "4df3448440b3254227f7d50b8b47c82950ff1929ffe65f2f4710acf8ed48b606"
+    },
+    {
+      "path": "N_20260911/C/COMPLETE.json",
+      "bytes": 120,
+      "sha256": "d8fe220504c9021762b3d6b8cf11379b7249ce71a49d46ac7813f985e630d28f"
+    },
+    {
+      "path": "N_20260911/C/START.json",
+      "bytes": 205,
+      "sha256": "a0b6c5533bc7bee8ec5cfaabfaffdb699c14ce5eb0a8454f4c65b00787cb2085"
+    },
+    {
+      "path": "N_20260911/C/pass00.json",
+      "bytes": 13458,
+      "sha256": "45dec7a3dc874a94f1068e6c39777d5f63d536b4ec6942fed8b89d9a51763a7d"
+    },
+    {
+      "path": "N_20260911/C/pass00_maps.npz",
+      "bytes": 542236,
+      "sha256": "2ff52c56e3a8d3080d0c00e35736a8309d537607866b0c38aa279d69d93a3341"
+    },
+    {
+      "path": "N_20260911/C/pass00_state.npz",
+      "bytes": 1747154,
+      "sha256": "0d8f5c5dd47fdb6ddc2fc4630bbce693d8692d5c10da46a09777585ca491564a"
+    },
+    {
+      "path": "N_20260911/C/pass01.json",
+      "bytes": 13464,
+      "sha256": "102da40a349e1dde0a9a787cd4841ad48285bdea0dcc3d25258d8db0f0f8de3e"
+    },
+    {
+      "path": "N_20260911/C/pass01_maps.npz",
+      "bytes": 542236,
+      "sha256": "2ff52c56e3a8d3080d0c00e35736a8309d537607866b0c38aa279d69d93a3341"
+    },
+    {
+      "path": "N_20260911/C/pass01_state.npz",
+      "bytes": 1747154,
+      "sha256": "0d8f5c5dd47fdb6ddc2fc4630bbce693d8692d5c10da46a09777585ca491564a"
+    },
+    {
+      "path": "N_20260911/C/pass02.json",
+      "bytes": 13461,
+      "sha256": "a0e131a25bc764d2b54548222c6a510fbda2072d0ea8f4d0aad1cc74de359d99"
+    },
+    {
+      "path": "N_20260911/C/pass02_maps.npz",
+      "bytes": 542236,
+      "sha256": "2ff52c56e3a8d3080d0c00e35736a8309d537607866b0c38aa279d69d93a3341"
+    },
+    {
+      "path": "N_20260911/C/pass02_state.npz",
+      "bytes": 1747154,
+      "sha256": "0d8f5c5dd47fdb6ddc2fc4630bbce693d8692d5c10da46a09777585ca491564a"
+    },
+    {
+      "path": "N_20260911/C/pass03.json",
+      "bytes": 13458,
+      "sha256": "9a45cb1c01ff9ee8b85e37fc9f7703161ce6016fb7beb3262ca08e0ee4ee61de"
+    },
+    {
+      "path": "N_20260911/C/pass03_maps.npz",
+      "bytes": 542236,
+      "sha256": "2ff52c56e3a8d3080d0c00e35736a8309d537607866b0c38aa279d69d93a3341"
+    },
+    {
+      "path": "N_20260911/C/pass03_state.npz",
+      "bytes": 1747154,
+      "sha256": "0d8f5c5dd47fdb6ddc2fc4630bbce693d8692d5c10da46a09777585ca491564a"
+    },
+    {
+      "path": "N_20260911/C/pass04.json",
+      "bytes": 13458,
+      "sha256": "d50516e47f8c5657402f5856e9423a9596ee213a3149f90b7609fd320bf08aeb"
+    },
+    {
+      "path": "N_20260911/C/pass04_maps.npz",
+      "bytes": 542236,
+      "sha256": "2ff52c56e3a8d3080d0c00e35736a8309d537607866b0c38aa279d69d93a3341"
+    },
+    {
+      "path": "N_20260911/C/pass04_state.npz",
+      "bytes": 1747154,
+      "sha256": "0d8f5c5dd47fdb6ddc2fc4630bbce693d8692d5c10da46a09777585ca491564a"
+    },
+    {
+      "path": "N_20260911/C/pass05.json",
+      "bytes": 13458,
+      "sha256": "efde3958a32d083445ecd8bc107e3962acdaed670ff50f2d3e03df396a34d6d0"
+    },
+    {
+      "path": "N_20260911/C/pass05_maps.npz",
+      "bytes": 542236,
+      "sha256": "2ff52c56e3a8d3080d0c00e35736a8309d537607866b0c38aa279d69d93a3341"
+    },
+    {
+      "path": "N_20260911/C/pass05_state.npz",
+      "bytes": 1747154,
+      "sha256": "0d8f5c5dd47fdb6ddc2fc4630bbce693d8692d5c10da46a09777585ca491564a"
+    },
+    {
+      "path": "N_20260911/C/pass06.json",
+      "bytes": 13458,
+      "sha256": "1a16c8b28e7f0af508e820cba5aca7637fd99f96da48d08585219d1400872198"
+    },
+    {
+      "path": "N_20260911/C/pass06_maps.npz",
+      "bytes": 542236,
+      "sha256": "2ff52c56e3a8d3080d0c00e35736a8309d537607866b0c38aa279d69d93a3341"
+    },
+    {
+      "path": "N_20260911/C/pass06_state.npz",
+      "bytes": 1747154,
+      "sha256": "0d8f5c5dd47fdb6ddc2fc4630bbce693d8692d5c10da46a09777585ca491564a"
+    },
+    {
+      "path": "N_20260911/P/COMPLETE.json",
+      "bytes": 120,
+      "sha256": "386684fec519f30a1408380c5d8226491684a2dcdf1660235f05acc5396840c7"
+    },
+    {
+      "path": "N_20260911/P/START.json",
+      "bytes": 205,
+      "sha256": "fc0fa3b7c05fd02e4951a6a3217b19334b91f8e9016d373e69f4d69002521f1e"
+    },
+    {
+      "path": "N_20260911/P/pass00.json",
+      "bytes": 12860,
+      "sha256": "195139a28dec0255139494fa48b7af9013a1544271cfb81a4b1a560d325485b8"
+    },
+    {
+      "path": "N_20260911/P/pass00_maps.npz",
+      "bytes": 543288,
+      "sha256": "e1f5b23eb02524667277b36b4e11e7950e86605009c641f456f420ed24d3bf90"
+    },
+    {
+      "path": "N_20260911/P/pass00_state.npz",
+      "bytes": 1747154,
+      "sha256": "0d8f5c5dd47fdb6ddc2fc4630bbce693d8692d5c10da46a09777585ca491564a"
+    },
+    {
+      "path": "N_20260911/P/pass01.json",
+      "bytes": 12860,
+      "sha256": "723e25fff1ae1aac6f21e9752b663f49dba779ef2d0aee943e2b02b4b4379093"
+    },
+    {
+      "path": "N_20260911/P/pass01_maps.npz",
+      "bytes": 543797,
+      "sha256": "a5f862f5946c174ae912610e58668dc9f46fa3b15891f77527dbe0a2629e4e3f"
+    },
+    {
+      "path": "N_20260911/P/pass01_state.npz",
+      "bytes": 1747377,
+      "sha256": "c0aea4a0f174dde0b1a1e6a583c2c8f50857cdc287fb6a784121c48fd5b9667b"
+    },
+    {
+      "path": "N_20260911/P/pass02.json",
+      "bytes": 12840,
+      "sha256": "e01e3bd6333679514474a3b9810b0a13cd3d01a1808014ef787bb50e7ae9b55a"
+    },
+    {
+      "path": "N_20260911/P/pass02_maps.npz",
+      "bytes": 543881,
+      "sha256": "a7be887f1330274fce47ac34f48a030ba7bfa9ade03f8dd99715072aa8472468"
+    },
+    {
+      "path": "N_20260911/P/pass02_state.npz",
+      "bytes": 1747413,
+      "sha256": "0a7c8195d8cfb31b8110e84e0d974ce0c7f3ba3288d52de1ae21545a21e2ab49"
+    },
+    {
+      "path": "N_20260911/P/pass03.json",
+      "bytes": 12839,
+      "sha256": "0f885dcfadaec9d78be72cb186cffa90651cb747f62542264c54038894ecfac0"
+    },
+    {
+      "path": "N_20260911/P/pass03_maps.npz",
+      "bytes": 543932,
+      "sha256": "b73e3cd9b38c426284970397c9db7f9115aac593ac1be06e99659129c71518eb"
+    },
+    {
+      "path": "N_20260911/P/pass03_state.npz",
+      "bytes": 1747378,
+      "sha256": "f718d1a1213d0a497b4b770675f539831ccbf1da6cb1a1358597e3578eac499a"
+    },
+    {
+      "path": "N_20260911/P/pass04.json",
+      "bytes": 12855,
+      "sha256": "95b7b4416ab5adb66e974744a6f6a08afe4e61553c3163c500d53d7ec41c5b6c"
+    },
+    {
+      "path": "N_20260911/P/pass04_maps.npz",
+      "bytes": 543852,
+      "sha256": "8f5a0c6779101dc51b0df2325571cad3b2f179da7813be8298c8ee8aa4c7a65b"
+    },
+    {
+      "path": "N_20260911/P/pass04_state.npz",
+      "bytes": 1747329,
+      "sha256": "acc159c9bcc1db25e39b8838e486d54f330ed3774011853bd2db62bff9c9769d"
+    },
+    {
+      "path": "N_20260911/P/pass05.json",
+      "bytes": 12852,
+      "sha256": "866e852dbb204839bae5eb291ff9dd7cf29fcd431b2064ae55c6ddffb7f2b0ac"
+    },
+    {
+      "path": "N_20260911/P/pass05_maps.npz",
+      "bytes": 543881,
+      "sha256": "7d80826009934769ac18071e57ca9dad8e86c437af4ae50091282b0463eccef1"
+    },
+    {
+      "path": "N_20260911/P/pass05_state.npz",
+      "bytes": 1747363,
+      "sha256": "62bf524e79268ab5e513e5d562befeeda7918c850f661a748ee3478e5902769a"
+    },
+    {
+      "path": "N_20260911/P/pass06.json",
+      "bytes": 12851,
+      "sha256": "fa185a48a0e5255221e19ec33a1b7608eb3e28963e27f7b4b04bdb0beef28596"
+    },
+    {
+      "path": "N_20260911/P/pass06_maps.npz",
+      "bytes": 543857,
+      "sha256": "aa381433f8593c2461a1396aa0d858b17467086657bc88e54c1744963ba73590"
+    },
+    {
+      "path": "N_20260911/P/pass06_state.npz",
+      "bytes": 1747373,
+      "sha256": "ef94fb7472b80c903e02abdf84af913e701703461093044d29981c982ff0fffd"
+    },
+    {
+      "path": "N_20260912/C/COMPLETE.json",
+      "bytes": 120,
+      "sha256": "ec7a94d15b92517a3c43c7dec26bbff4de977f03cc6084ad7fea1a23756f0ea1"
+    },
+    {
+      "path": "N_20260912/C/START.json",
+      "bytes": 205,
+      "sha256": "c13134b3faa28e6656c94edaa01ae13a4ab5e3077f9ab998d798947c9bcc9bd4"
+    },
+    {
+      "path": "N_20260912/C/pass00.json",
+      "bytes": 13426,
+      "sha256": "2ce4ab7ca5578af3d86a322c4e0b7d82dbf60e06416afe14e6f103a57c086160"
+    },
+    {
+      "path": "N_20260912/C/pass00_maps.npz",
+      "bytes": 542236,
+      "sha256": "eafe291e8f9a3adf64ee0e21f02a0feaa34fec2a5ab9d1cde563a211095d82a3"
+    },
+    {
+      "path": "N_20260912/C/pass00_state.npz",
+      "bytes": 1747295,
+      "sha256": "21c8e4f37a3e59ed23c4c7c9ce59cf0e6ef1b8bd8f827fd979d0604c7c265e00"
+    },
+    {
+      "path": "N_20260912/C/pass01.json",
+      "bytes": 13424,
+      "sha256": "701fd6a1e2c2a549e396cdf41a03241fb0bc80fd1c7069941a04332a1633015d"
+    },
+    {
+      "path": "N_20260912/C/pass01_maps.npz",
+      "bytes": 542236,
+      "sha256": "eafe291e8f9a3adf64ee0e21f02a0feaa34fec2a5ab9d1cde563a211095d82a3"
+    },
+    {
+      "path": "N_20260912/C/pass01_state.npz",
+      "bytes": 1747295,
+      "sha256": "21c8e4f37a3e59ed23c4c7c9ce59cf0e6ef1b8bd8f827fd979d0604c7c265e00"
+    },
+    {
+      "path": "N_20260912/C/pass02.json",
+      "bytes": 13422,
+      "sha256": "29228aa0bfeaf3dec514f46af0325ece82f8a1ba7346246d0747cf032447b666"
+    },
+    {
+      "path": "N_20260912/C/pass02_maps.npz",
+      "bytes": 542236,
+      "sha256": "eafe291e8f9a3adf64ee0e21f02a0feaa34fec2a5ab9d1cde563a211095d82a3"
+    },
+    {
+      "path": "N_20260912/C/pass02_state.npz",
+      "bytes": 1747295,
+      "sha256": "21c8e4f37a3e59ed23c4c7c9ce59cf0e6ef1b8bd8f827fd979d0604c7c265e00"
+    },
+    {
+      "path": "N_20260912/C/pass03.json",
+      "bytes": 13421,
+      "sha256": "79db116517f4ad5782a2d0e9a152740680b47c9f29f924c50483139db9ea8c66"
+    },
+    {
+      "path": "N_20260912/C/pass03_maps.npz",
+      "bytes": 542236,
+      "sha256": "eafe291e8f9a3adf64ee0e21f02a0feaa34fec2a5ab9d1cde563a211095d82a3"
+    },
+    {
+      "path": "N_20260912/C/pass03_state.npz",
+      "bytes": 1747295,
+      "sha256": "21c8e4f37a3e59ed23c4c7c9ce59cf0e6ef1b8bd8f827fd979d0604c7c265e00"
+    },
+    {
+      "path": "N_20260912/C/pass04.json",
+      "bytes": 13419,
+      "sha256": "7d4425bf1287860f2e5f2da74751afd5c961aa6c701ec081139deb2f6e5f4474"
+    },
+    {
+      "path": "N_20260912/C/pass04_maps.npz",
+      "bytes": 542236,
+      "sha256": "eafe291e8f9a3adf64ee0e21f02a0feaa34fec2a5ab9d1cde563a211095d82a3"
+    },
+    {
+      "path": "N_20260912/C/pass04_state.npz",
+      "bytes": 1747295,
+      "sha256": "21c8e4f37a3e59ed23c4c7c9ce59cf0e6ef1b8bd8f827fd979d0604c7c265e00"
+    },
+    {
+      "path": "N_20260912/C/pass05.json",
+      "bytes": 13422,
+      "sha256": "d1dffe8b11747273efee30abb5b5cc3c04e809f01e7155d67a184eae9495c272"
+    },
+    {
+      "path": "N_20260912/C/pass05_maps.npz",
+      "bytes": 542236,
+      "sha256": "eafe291e8f9a3adf64ee0e21f02a0feaa34fec2a5ab9d1cde563a211095d82a3"
+    },
+    {
+      "path": "N_20260912/C/pass05_state.npz",
+      "bytes": 1747295,
+      "sha256": "21c8e4f37a3e59ed23c4c7c9ce59cf0e6ef1b8bd8f827fd979d0604c7c265e00"
+    },
+    {
+      "path": "N_20260912/C/pass06.json",
+      "bytes": 13419,
+      "sha256": "c460d5ec30e142fe5cc1d28f6f9ef8eb2d2ce5f13b936f0220723a4ebfb8d1f4"
+    },
+    {
+      "path": "N_20260912/C/pass06_maps.npz",
+      "bytes": 542236,
+      "sha256": "eafe291e8f9a3adf64ee0e21f02a0feaa34fec2a5ab9d1cde563a211095d82a3"
+    },
+    {
+      "path": "N_20260912/C/pass06_state.npz",
+      "bytes": 1747295,
+      "sha256": "21c8e4f37a3e59ed23c4c7c9ce59cf0e6ef1b8bd8f827fd979d0604c7c265e00"
+    },
+    {
+      "path": "N_20260912/P/COMPLETE.json",
+      "bytes": 120,
+      "sha256": "5e5ed46ed3452fd2d7db8c8dd6969c60ad80672102c6d6e5dcc269412d94992e"
+    },
+    {
+      "path": "N_20260912/P/START.json",
+      "bytes": 205,
+      "sha256": "7e8b3719764dd93b90f908bf711ceedb28393c92f380735fd78d15f3519c94c8"
+    },
+    {
+      "path": "N_20260912/P/pass00.json",
+      "bytes": 12820,
+      "sha256": "45e4253838088772d9f9ed09a69c1040bd78cc9854ae9a413b9afe2dfc550dd2"
+    },
+    {
+      "path": "N_20260912/P/pass00_maps.npz",
+      "bytes": 543498,
+      "sha256": "30e7f345950ba746ca3b0fed4f5a42d76078ea27906037d89a990a8ce7303e52"
+    },
+    {
+      "path": "N_20260912/P/pass00_state.npz",
+      "bytes": 1747295,
+      "sha256": "21c8e4f37a3e59ed23c4c7c9ce59cf0e6ef1b8bd8f827fd979d0604c7c265e00"
+    },
+    {
+      "path": "N_20260912/P/pass01.json",
+      "bytes": 12838,
+      "sha256": "518006af9a2c5c92c00d0a66fd377d8d4d13cf148a3d7b189d40bb843a60232b"
+    },
+    {
+      "path": "N_20260912/P/pass01_maps.npz",
+      "bytes": 544208,
+      "sha256": "8cbaf927b21d779a69324561df6010e6a59c19462041c8b1e60fb977d8d3a774"
+    },
+    {
+      "path": "N_20260912/P/pass01_state.npz",
+      "bytes": 1747383,
+      "sha256": "5e77c36f96a43f7b55b0df769a9d2f86e7357e5ed63f34ae05b2f2070600f29d"
+    },
+    {
+      "path": "N_20260912/P/pass02.json",
+      "bytes": 12727,
+      "sha256": "40924a753fb4c45a7dca3eda861e2b74e711ea9d4af6c4be0ea234a679db42f5"
+    },
+    {
+      "path": "N_20260912/P/pass02_maps.npz",
+      "bytes": 544237,
+      "sha256": "04375d9bead413d4c246c9e3a10695c895255fd55a8f542a94ea382806bcfa09"
+    },
+    {
+      "path": "N_20260912/P/pass02_state.npz",
+      "bytes": 1747473,
+      "sha256": "4e7fe461ffa00a94c656f1a7d2f5b4435e261c612b09927967daef6c9960d1f0"
+    },
+    {
+      "path": "N_20260912/P/pass03.json",
+      "bytes": 12776,
+      "sha256": "e5b745fc0da7d4157cbafa919848089da64f3229060bff28e99382299987d9c1"
+    },
+    {
+      "path": "N_20260912/P/pass03_maps.npz",
+      "bytes": 544206,
+      "sha256": "0c937d57852d795d577a577ef2eb7b1f0c0c744e7daf4c9005c5f77d5963ebc6"
+    },
+    {
+      "path": "N_20260912/P/pass03_state.npz",
+      "bytes": 1747423,
+      "sha256": "d68f5c29b8d30556ac0b0bd80f9208609d36932fbd4f8768567c0efbac7262ec"
+    },
+    {
+      "path": "N_20260912/P/pass04.json",
+      "bytes": 12776,
+      "sha256": "2d458b7df684c7dee51d18ff6592c759cf747ffcf67ce57f7b6b32c83ac5078d"
+    },
+    {
+      "path": "N_20260912/P/pass04_maps.npz",
+      "bytes": 544151,
+      "sha256": "995b25eb0c8330b70ee0f3b67670094c16c79645a258af2c40c6dbd6d2a74eb2"
+    },
+    {
+      "path": "N_20260912/P/pass04_state.npz",
+      "bytes": 1747434,
+      "sha256": "c4c33303cead90e8ae329dad8b8379000c27b6353cc3516d512d036b81b36308"
+    },
+    {
+      "path": "N_20260912/P/pass05.json",
+      "bytes": 12680,
+      "sha256": "14e199066513b5b96dc0c141dc3ff2aaa4c3f77e6a70c6313d0e900451c81417"
+    },
+    {
+      "path": "N_20260912/P/pass05_maps.npz",
+      "bytes": 544213,
+      "sha256": "92bf0a0b89f4d4675b4d94a1ee577d638fc1ec94a1bd604d97c52cb42437e2ca"
+    },
+    {
+      "path": "N_20260912/P/pass05_state.npz",
+      "bytes": 1747466,
+      "sha256": "ff9ea9c51c35adb5e0d5a3e25f6462e7277487f99a4e27c1ff4d47b16aec973b"
+    },
+    {
+      "path": "N_20260912/P/pass06.json",
+      "bytes": 12812,
+      "sha256": "4ba6eeab479a317b0f527741436390eeeb7b8bce07134abedc92dcc359d8a7e4"
+    },
+    {
+      "path": "N_20260912/P/pass06_maps.npz",
+      "bytes": 544222,
+      "sha256": "b2596a79fb7518489ee38db081dbb413930584d401cd32cb1e7c0389ffd5d83d"
+    },
+    {
+      "path": "N_20260912/P/pass06_state.npz",
+      "bytes": 1747393,
+      "sha256": "c24a5fc4a010b65266da033672393f7f2eacbbd3fc6a3528af6ec226322900cd"
+    },
+    {
+      "path": "N_truth.npz",
+      "bytes": 959,
+      "sha256": "5bc3920b86a6a25ea1083bed6f8ddd5e03e16666c8fc5c253633744c3beac792"
+    },
+    {
+      "path": "RECEIPTS.json",
+      "bytes": 3828715,
+      "sha256": "d62a4bb24e83f8f1affb913a0e4b550d8ce0cec8e31dc0292c9113492cf0a22f"
+    },
+    {
+      "path": "SETUP.json",
+      "bytes": 8207,
+      "sha256": "32624c87e47aa90a85339cc0de895434b992202effb8b5aef679874ace9e09ed"
+    },
+    {
+      "path": "START.json",
+      "bytes": 277,
+      "sha256": "0a6b3b88d76690fca0a7ae06d8a802d85acc9fea28714be646b5c3342277a0e8"
+    },
+    {
+      "path": "THREAD_POOLS.json",
+      "bytes": 138,
+      "sha256": "55f6889a9f48cb8223934d0c96add13f027685bb0ec12d40a7226c566e3f4803"
+    },
+    {
+      "path": "T_20260911/C/COMPLETE.json",
+      "bytes": 122,
+      "sha256": "48e95519c8328bccf3a7f8084bab25070f205217630880451a3124a9e8a8eaa6"
+    },
+    {
+      "path": "T_20260911/C/START.json",
+      "bytes": 205,
+      "sha256": "30d69e1dd4729c8a51342c41f6391c08c71286c22b97255e43e9143debf240cf"
+    },
+    {
+      "path": "T_20260911/C/pass00.json",
+      "bytes": 17943,
+      "sha256": "64e4168e03cd33ba9311a8cef3b65b842594aad626be4c1d7d3ff2c92f49f363"
+    },
+    {
+      "path": "T_20260911/C/pass00_maps.npz",
+      "bytes": 586988,
+      "sha256": "08eeb3591b487f6a25ea7e3426b2cf7dc35908ffb556576ec5ef64fba4c211bf"
+    },
+    {
+      "path": "T_20260911/C/pass00_state.npz",
+      "bytes": 1747500,
+      "sha256": "f3ea6d18230f0e2965eab78b12783b1b0749be279931bb8440be4d20d0324a82"
+    },
+    {
+      "path": "T_20260911/C/pass01.json",
+      "bytes": 18286,
+      "sha256": "8efc38e8f734e5859f7cff71aebdcdf9e28009984978d325562e17a49792c707"
+    },
+    {
+      "path": "T_20260911/C/pass01_maps.npz",
+      "bytes": 611856,
+      "sha256": "e62ee3d75622b19baca312e7bb7a84cc52b6060ecf9ce2a1e81d76a482472ce6"
+    },
+    {
+      "path": "T_20260911/C/pass01_state.npz",
+      "bytes": 1747281,
+      "sha256": "c0053171517d39b1f10941ec38bf0650f6cea32672d889acd60b2c33b16d4a9c"
+    },
+    {
+      "path": "T_20260911/C/pass02.json",
+      "bytes": 18289,
+      "sha256": "bee70b0a66aa325f25fce45ecde9e4d2f86183e9b99518852e532bb44e1d2b4e"
+    },
+    {
+      "path": "T_20260911/C/pass02_maps.npz",
+      "bytes": 584857,
+      "sha256": "3728565a25696575aa90346dae9afce8cf2e4e430b1538a36a3d13262122e8a1"
+    },
+    {
+      "path": "T_20260911/C/pass02_state.npz",
+      "bytes": 1747413,
+      "sha256": "9b6ec47f804d5ce9ae066f2f20c0e5a3902a6c209cd35a2850233f59fec6ef41"
+    },
+    {
+      "path": "T_20260911/C/pass03.json",
+      "bytes": 17972,
+      "sha256": "a1ca5f879d1c8a24cd4dfbd1dafac8ac3c426b6bafa3ff116067cecdb51272ce"
+    },
+    {
+      "path": "T_20260911/C/pass03_maps.npz",
+      "bytes": 601910,
+      "sha256": "09af365ea385cd6f1f13807fd936e0bfd93769bf6efb462bfca71c182f8ba911"
+    },
+    {
+      "path": "T_20260911/C/pass03_state.npz",
+      "bytes": 1747364,
+      "sha256": "084697607305bef3b692c0698e423daeb7785c727dc2d0336a33db4836e088aa"
+    },
+    {
+      "path": "T_20260911/C/pass04.json",
+      "bytes": 18305,
+      "sha256": "bec2d54e0c05f7b86b1cfcc35bd5f6477ce587e31354c6bb37f0725a68724ff1"
+    },
+    {
+      "path": "T_20260911/C/pass04_maps.npz",
+      "bytes": 585819,
+      "sha256": "fd35858479fb6b40b87ca0ac88c160919dac9cb15f43e7eb57850a2e8809f4d3"
+    },
+    {
+      "path": "T_20260911/C/pass04_state.npz",
+      "bytes": 1747339,
+      "sha256": "650b272f62cc216b8d0373dd312e5cc9054f28224ffb0026cb0792f537f075af"
+    },
+    {
+      "path": "T_20260911/C/pass05.json",
+      "bytes": 18275,
+      "sha256": "685abb5565e95342bb3267444730888a8a3e01154352d378f4b4147509bdcb1e"
+    },
+    {
+      "path": "T_20260911/C/pass05_maps.npz",
+      "bytes": 601644,
+      "sha256": "d882df0fc761b0dd15c8d2ea75e06cbcacdb6eed7701989b1fd3679eacf8113a"
+    },
+    {
+      "path": "T_20260911/C/pass05_state.npz",
+      "bytes": 1747384,
+      "sha256": "a942c0811ec24e6c5cfa338bc9b7ef6e6434742788f4c895374abd584d6cac69"
+    },
+    {
+      "path": "T_20260911/C/pass06.json",
+      "bytes": 18627,
+      "sha256": "bd86358ccff5bcb0b3171d53b8efe80d47e2883d7c0867ad66e26cc78d418485"
+    },
+    {
+      "path": "T_20260911/C/pass06_maps.npz",
+      "bytes": 590099,
+      "sha256": "6cd984504aa5ca6b4243be30513e17e198b2d27c7067490fef8f23cefa6a4211"
+    },
+    {
+      "path": "T_20260911/C/pass06_state.npz",
+      "bytes": 1747318,
+      "sha256": "61ae0a417ff9f2a813fa3b2f15f34707e2e60fbd3d1e36bb80ee8298eabbb0fd"
+    },
+    {
+      "path": "T_20260911/P/COMPLETE.json",
+      "bytes": 120,
+      "sha256": "09a8126835876d50d5a03118d7992a4fd4bc959505d5dab54ed48c90850f3721"
+    },
+    {
+      "path": "T_20260911/P/START.json",
+      "bytes": 205,
+      "sha256": "0df58963c3129626aeed5e949d81ad1874b1c4b838edcdb6e53e72565e1a256b"
+    },
+    {
+      "path": "T_20260911/P/pass00.json",
+      "bytes": 13433,
+      "sha256": "2e4779267e444ed2e69d47bbb91ad76109d0e29d1aa4268034e8044775c1527c"
+    },
+    {
+      "path": "T_20260911/P/pass00_maps.npz",
+      "bytes": 544086,
+      "sha256": "62e523bdfd2c1ac0f29dabd729d202cc850922935a7d7428fe142548e907ae63"
+    },
+    {
+      "path": "T_20260911/P/pass00_state.npz",
+      "bytes": 1747500,
+      "sha256": "f3ea6d18230f0e2965eab78b12783b1b0749be279931bb8440be4d20d0324a82"
+    },
+    {
+      "path": "T_20260911/P/pass01.json",
+      "bytes": 13442,
+      "sha256": "bbc5c25052d64f89084e31d11ef6b8568ca36cb538aebc322f4150b9f8abeb5a"
+    },
+    {
+      "path": "T_20260911/P/pass01_maps.npz",
+      "bytes": 545057,
+      "sha256": "cf495c74309c6566091fb170481e83562e8dbe71dab8c2df8e63c52aab6a0796"
+    },
+    {
+      "path": "T_20260911/P/pass01_state.npz",
+      "bytes": 1747490,
+      "sha256": "3fc1665e46dcacec8eedcd4f6500fec3f5c972fb9f386211a9a8b0bf2f700c3b"
+    },
+    {
+      "path": "T_20260911/P/pass02.json",
+      "bytes": 13445,
+      "sha256": "e2df984cf4715c386184b9680516f163c713d5ff41046714987eea5b6e8c08d2"
+    },
+    {
+      "path": "T_20260911/P/pass02_maps.npz",
+      "bytes": 545126,
+      "sha256": "9bf089fc4ab91540efffadfe4d204a27ea3dc9c4dcc3b76bf1842c172cb74812"
+    },
+    {
+      "path": "T_20260911/P/pass02_state.npz",
+      "bytes": 1747465,
+      "sha256": "daef45f39ad0406f55cc730cfb4082d7019479244fe0c1dd3cf8a2290e872e4c"
+    },
+    {
+      "path": "T_20260911/P/pass03.json",
+      "bytes": 13440,
+      "sha256": "6df3ec9c91fdf70a2e5d690ad19bb47893db975f8f2d778c7b918aea87ffb6f8"
+    },
+    {
+      "path": "T_20260911/P/pass03_maps.npz",
+      "bytes": 545117,
+      "sha256": "57a7426d29535af5b134550d9d0afb35b4fad03a825f43f7bc4e8a582f7c55d0"
+    },
+    {
+      "path": "T_20260911/P/pass03_state.npz",
+      "bytes": 1747486,
+      "sha256": "b66b03e9355c2e9793ec0e6e3eba6b27617d2145cb83d9e2063816cf94a9fd13"
+    },
+    {
+      "path": "T_20260911/P/pass04.json",
+      "bytes": 13436,
+      "sha256": "6acfe38fc4840e924d5e291f145d6fd3c9126c4f33a19b067f247a44c72c1065"
+    },
+    {
+      "path": "T_20260911/P/pass04_maps.npz",
+      "bytes": 545054,
+      "sha256": "cf3b90aefca4dd97dee280c4c47b52315e576562d4e4ccd398074f05fe8cedd0"
+    },
+    {
+      "path": "T_20260911/P/pass04_state.npz",
+      "bytes": 1747368,
+      "sha256": "1c1b9f95b6d61b399658685c0556a3512532ecbc718ce36d16f211db9a0bedf3"
+    },
+    {
+      "path": "T_20260911/P/pass05.json",
+      "bytes": 13437,
+      "sha256": "b1f7f930c7660384ae4bf1a41c2d1ba7b0df4c63b289d38868480415b10fab68"
+    },
+    {
+      "path": "T_20260911/P/pass05_maps.npz",
+      "bytes": 545211,
+      "sha256": "52ee9e994553bddce889e7889d58dd5a591e4cdc890fc9b39a120876d9456052"
+    },
+    {
+      "path": "T_20260911/P/pass05_state.npz",
+      "bytes": 1747513,
+      "sha256": "fb8da2f166d37e251f786c142717e6f0cb45a0c3ef610da83751faf3b56f95a0"
+    },
+    {
+      "path": "T_20260911/P/pass06.json",
+      "bytes": 13440,
+      "sha256": "abba800882919bc2d48babbdc8e30fa5842321e729019ef2f8d7db3284b77db3"
+    },
+    {
+      "path": "T_20260911/P/pass06_maps.npz",
+      "bytes": 545140,
+      "sha256": "2c46232167cda4a9afd8a88c947e2588f3e0a843a1855f22981c0c35718c34de"
+    },
+    {
+      "path": "T_20260911/P/pass06_state.npz",
+      "bytes": 1747395,
+      "sha256": "dc2422e956f42a78dfb17fa5243109a734687020520ee8a2bbcd0930eb83a642"
+    },
+    {
+      "path": "T_20260912/C/COMPLETE.json",
+      "bytes": 122,
+      "sha256": "9e360eb830d0ac631a8ad81db1d5f8859c0bbb4590e50f000580695ba35f48f8"
+    },
+    {
+      "path": "T_20260912/C/START.json",
+      "bytes": 205,
+      "sha256": "486a3a3a27454cb07887ef51e995abbde90c88e00ed8a886b4f7731588d92ec2"
+    },
+    {
+      "path": "T_20260912/C/pass00.json",
+      "bytes": 17005,
+      "sha256": "fd9a99ac29e7d8e5dfe1904de4a1f5d9d8648ddbfc682bedaccde50e59a6a23c"
+    },
+    {
+      "path": "T_20260912/C/pass00_maps.npz",
+      "bytes": 628353,
+      "sha256": "d5436d5ce43a851544dd34e50ee70f96bf09478aac849e03590fdd88dc2da295"
+    },
+    {
+      "path": "T_20260912/C/pass00_state.npz",
+      "bytes": 1747440,
+      "sha256": "e5355ef2216ad31ca0e772dba1eb3cb9187303ae969af630d12e580571f0b63e"
+    },
+    {
+      "path": "T_20260912/C/pass01.json",
+      "bytes": 17653,
+      "sha256": "738f566dc0e5aae16b9574df2ff0793117e8b4743032cf12857599fbee75d0d2"
+    },
+    {
+      "path": "T_20260912/C/pass01_maps.npz",
+      "bytes": 639183,
+      "sha256": "f17b44773b970a718bd41624a89c6b1793c6df37c375d22c24885843dcebbcee"
+    },
+    {
+      "path": "T_20260912/C/pass01_state.npz",
+      "bytes": 1747552,
+      "sha256": "e261d8b7e9d89a933e990bbda12bec0e308d1c3448cccc58d86e8c6be259bc89"
+    },
+    {
+      "path": "T_20260912/C/pass02.json",
+      "bytes": 17979,
+      "sha256": "26d2a746d404f0577fce5b7b3cb8ac19bb7da2d758b27f42063b9e8a9bb12345"
+    },
+    {
+      "path": "T_20260912/C/pass02_maps.npz",
+      "bytes": 614752,
+      "sha256": "bf51187ea91690826d2c50a947554f03d5bdb990c85107c0788b1be38ddae8a5"
+    },
+    {
+      "path": "T_20260912/C/pass02_state.npz",
+      "bytes": 1747337,
+      "sha256": "789adf45f6663bc24fb68f096b3c98d5df0ce24f8e1019adcbebb17a516f13e3"
+    },
+    {
+      "path": "T_20260912/C/pass03.json",
+      "bytes": 17994,
+      "sha256": "d9e8a93c1248971385bb582615b39ff9e6fb7418cdf8c43afa51e71883b56336"
+    },
+    {
+      "path": "T_20260912/C/pass03_maps.npz",
+      "bytes": 610514,
+      "sha256": "d2e8c58d686584aef20a78713cf760e061e0a2b8667aa2bac5ce7095813af062"
+    },
+    {
+      "path": "T_20260912/C/pass03_state.npz",
+      "bytes": 1747399,
+      "sha256": "e409a5291313142ef6d70c327d975f4faa3e7a69c9fd97cef07c5c0146d5c57d"
+    },
+    {
+      "path": "T_20260912/C/pass04.json",
+      "bytes": 17672,
+      "sha256": "85337c2a13ac3c43afe102b49206fbba3f2e945c672b388c059f21d3cebcb8d2"
+    },
+    {
+      "path": "T_20260912/C/pass04_maps.npz",
+      "bytes": 606998,
+      "sha256": "42ae2523a74a75d2383cef7fd20256f30723c472464aa7e376fc67ef35806684"
+    },
+    {
+      "path": "T_20260912/C/pass04_state.npz",
+      "bytes": 1747371,
+      "sha256": "36930e79f73ba4df0e0d1eef790111a782214f43a59b15fa79c2f9b3d9cb011e"
+    },
+    {
+      "path": "T_20260912/C/pass05.json",
+      "bytes": 18003,
+      "sha256": "e24cb50331c38fff2f44a2fc088a75d9dacff12492b7a41fc0c2b99f3b49bb9c"
+    },
+    {
+      "path": "T_20260912/C/pass05_maps.npz",
+      "bytes": 610074,
+      "sha256": "7ceefea2a48367e3d8c172f0714efacf1a994e287f79b904c1a05f04b1d73345"
+    },
+    {
+      "path": "T_20260912/C/pass05_state.npz",
+      "bytes": 1747382,
+      "sha256": "6e68a286cf48fbf954bca2aa5ec07a8b607efd6588350ebf35dc90974cee7b31"
+    },
+    {
+      "path": "T_20260912/C/pass06.json",
+      "bytes": 17664,
+      "sha256": "a4eccebbb60445bd9b92aba718ca245134407c7d9c00e27767d68bc16655f20e"
+    },
+    {
+      "path": "T_20260912/C/pass06_maps.npz",
+      "bytes": 609238,
+      "sha256": "f2334678cc59bfa42c55e9516fb349b75751c7fd44b08e84180c92bb56109ece"
+    },
+    {
+      "path": "T_20260912/C/pass06_state.npz",
+      "bytes": 1747373,
+      "sha256": "8f9089f4f7434f2dac73ec327ddffcb06ec176a16d689985719f8230c260470c"
+    },
+    {
+      "path": "T_20260912/P/COMPLETE.json",
+      "bytes": 120,
+      "sha256": "ac3d16ad3ff3d9e3ee4559f0be8d02dedeeea94f6de72ed24e5764e512ae0cdd"
+    },
+    {
+      "path": "T_20260912/P/START.json",
+      "bytes": 205,
+      "sha256": "45f241301d6b545dccd4151a3c5bf0f3387b2ae41f0caf1c3a5cac3a5f8924b1"
+    },
+    {
+      "path": "T_20260912/P/pass00.json",
+      "bytes": 13468,
+      "sha256": "7948fffa5937c32a2a58d01d1ecdeccf76e1664d6596b6aa4e6708144a70b8da"
+    },
+    {
+      "path": "T_20260912/P/pass00_maps.npz",
+      "bytes": 544361,
+      "sha256": "2fe57f15a7ed7d1bec364a37bb1e4978d6a882c7111b902082512c35967a9ac7"
+    },
+    {
+      "path": "T_20260912/P/pass00_state.npz",
+      "bytes": 1747440,
+      "sha256": "e5355ef2216ad31ca0e772dba1eb3cb9187303ae969af630d12e580571f0b63e"
+    },
+    {
+      "path": "T_20260912/P/pass01.json",
+      "bytes": 13438,
+      "sha256": "0a874dd1b3dfd03a9ada4ff64bd5a1b95380be33cf4abe10e2dd41a9aafe4f6b"
+    },
+    {
+      "path": "T_20260912/P/pass01_maps.npz",
+      "bytes": 545322,
+      "sha256": "1a72e164a3ba8717b85fdfca163a49ddfa21a72acbcd23ab5c4a4ab88589d66c"
+    },
+    {
+      "path": "T_20260912/P/pass01_state.npz",
+      "bytes": 1747381,
+      "sha256": "d51a325f1e4679def51c3a7aff361fcb4fea4cb4418d678148235e60b5ba3f35"
+    },
+    {
+      "path": "T_20260912/P/pass02.json",
+      "bytes": 13454,
+      "sha256": "9dcc2ae70b2cef4a92b797e529accb0f1e385e3f1b77fbf9f941e289e5a22bb4"
+    },
+    {
+      "path": "T_20260912/P/pass02_maps.npz",
+      "bytes": 545517,
+      "sha256": "69c428f601b217554e24ff4f87a312d042c92bd4acd990330fa144827e799c68"
+    },
+    {
+      "path": "T_20260912/P/pass02_state.npz",
+      "bytes": 1747374,
+      "sha256": "ea512626093c69d2316776c8cb3a3023d7531810a9160a4dbd309177d2a2999c"
+    },
+    {
+      "path": "T_20260912/P/pass03.json",
+      "bytes": 13452,
+      "sha256": "cceddd97842895456aa9e4b417a69178aaffd98af5c743206488709ef65cc6ca"
+    },
+    {
+      "path": "T_20260912/P/pass03_maps.npz",
+      "bytes": 545546,
+      "sha256": "12cbe45df061b0de7bddc1ed08edd96fbc7ec115a0d699a5859feaa2ab317af8"
+    },
+    {
+      "path": "T_20260912/P/pass03_state.npz",
+      "bytes": 1747447,
+      "sha256": "558f2ff1a6790b167f5e6ed4834308e10288900c311e5e6fdaecd7f1656d18eb"
+    },
+    {
+      "path": "T_20260912/P/pass04.json",
+      "bytes": 13463,
+      "sha256": "f81a917d908ad99f1856505b3420f442bbe7c1e21c75a35b83043d8c1612b927"
+    },
+    {
+      "path": "T_20260912/P/pass04_maps.npz",
+      "bytes": 545534,
+      "sha256": "d2109e14980881c5874399fdc81794372acfb47802388d63ca896a90d2288592"
+    },
+    {
+      "path": "T_20260912/P/pass04_state.npz",
+      "bytes": 1747414,
+      "sha256": "940cf326272e0e4feb75dd8c65cae571462d6da21bac81a63da4d6800a42464e"
+    },
+    {
+      "path": "T_20260912/P/pass05.json",
+      "bytes": 13453,
+      "sha256": "fc5d8d0e9e5de939ba8045ca316b949c15f09b5b46c0999ae305fea07b88e2de"
+    },
+    {
+      "path": "T_20260912/P/pass05_maps.npz",
+      "bytes": 545567,
+      "sha256": "830ac32cff602d6cc657ef192af64680d4f16f7d16fb30317d9320ebd045fdf6"
+    },
+    {
+      "path": "T_20260912/P/pass05_state.npz",
+      "bytes": 1747359,
+      "sha256": "a029045aee718715f5ad995399d16d975d559d34c2225a8ac368c2c722c6bcde"
+    },
+    {
+      "path": "T_20260912/P/pass06.json",
+      "bytes": 13468,
+      "sha256": "df308ff4e89e8fcb1982605a98d890669bb346170107f747c42bf6dbe13680ad"
+    },
+    {
+      "path": "T_20260912/P/pass06_maps.npz",
+      "bytes": 545644,
+      "sha256": "5cb5bce22b7d69f9ecdba9851e8c1309fe42563762f0659e504b291233526ae1"
+    },
+    {
+      "path": "T_20260912/P/pass06_state.npz",
+      "bytes": 1747436,
+      "sha256": "514e023f19d80edbcd33b9aaceb66ba8229f40658f52a8d33ed2a9b4f2a30354"
+    },
+    {
+      "path": "T_truth.npz",
+      "bytes": 142223,
+      "sha256": "6dfd48188229f24bc64715dd7e338cfd8944e6e3212acb25c26e45664fa2572f"
+    },
+    {
+      "path": "geometry.npz",
+      "bytes": 2918727,
+      "sha256": "f485295644a30a96f6ff0cc9e2f34951d28187a1741e0600f599e3e6ab3fed30"
+    },
+    {
+      "path": "real123424/C/COMPLETE.json",
+      "bytes": 122,
+      "sha256": "7a8439bf228128aa002d95f23301dd8bee3b57fa352adaa6fb7514c464f593d7"
+    },
+    {
+      "path": "real123424/C/START.json",
+      "bytes": 205,
+      "sha256": "161685ccdcb7b96faed630ece2f9b66a90793079197ff33dafc3a725566112e0"
+    },
+    {
+      "path": "real123424/C/pass00.json",
+      "bytes": 16302,
+      "sha256": "21f85d926f2fd0b5f425c048f3f54213c7d04c89cb92fbbaa29610370d036840"
+    },
+    {
+      "path": "real123424/C/pass00_maps.npz",
+      "bytes": 551043,
+      "sha256": "b0c866df3f6cd81cf6c0232c9777da50c82b830329fc56c90851b287dcd5803f"
+    },
+    {
+      "path": "real123424/C/pass00_state.npz",
+      "bytes": 1731449,
+      "sha256": "da8bdb2ba0724a054864270eeb23599f42c8fcdba4d56e0a4668f0ff9faf7fc2"
+    },
+    {
+      "path": "real123424/C/pass01.json",
+      "bytes": 16005,
+      "sha256": "9cdaab0c4cc979c9847c2659e3b92df0e83220dc5fe3502640bfa3f8e2c8366d"
+    },
+    {
+      "path": "real123424/C/pass01_maps.npz",
+      "bytes": 557522,
+      "sha256": "9dc098ac0ca680913e1e77a98ef5c6870ebeae7356ddb0be81b7416944f99345"
+    },
+    {
+      "path": "real123424/C/pass01_state.npz",
+      "bytes": 1736781,
+      "sha256": "3f7b2d0d39cd0612372c06b3ade34c1b4637bea43cf6ead1ee07bb4dee9cdba4"
+    },
+    {
+      "path": "real123424/C/pass02.json",
+      "bytes": 15986,
+      "sha256": "4afc8f556a3abd33fbfc68a63bc9dbfb1156cb083b1207560f3caaa06ad6aa9c"
+    },
+    {
+      "path": "real123424/C/pass02_maps.npz",
+      "bytes": 561029,
+      "sha256": "cfa45adf4a84d1ea1a95b0d6421471eb83d69897adad3575312671677d2767de"
+    },
+    {
+      "path": "real123424/C/pass02_state.npz",
+      "bytes": 1737207,
+      "sha256": "f3be3e43e7b619257a6ea8fdbe93dbadf6fa20db346e7c02544f6f4a0f6a1977"
+    },
+    {
+      "path": "real123424/C/pass03.json",
+      "bytes": 16005,
+      "sha256": "649ca06497029852ba5a539f89d1b3fb87991337cb1c016f58b59a48d0747f3c"
+    },
+    {
+      "path": "real123424/C/pass03_maps.npz",
+      "bytes": 562800,
+      "sha256": "08a1abf1a4d6f752dd813c663132e5757394392b281320df7e92a2e5576eada5"
+    },
+    {
+      "path": "real123424/C/pass03_state.npz",
+      "bytes": 1737816,
+      "sha256": "3dd64928fa10cafb87683966407e333c349043afd95fc969eced80584b75eb16"
+    },
+    {
+      "path": "real123424/C/pass04.json",
+      "bytes": 15989,
+      "sha256": "8ef3ee9ab29862ce3747cd91f48d19cf03c320e933e9ef1a3e56b0da1ee09d1c"
+    },
+    {
+      "path": "real123424/C/pass04_maps.npz",
+      "bytes": 564931,
+      "sha256": "5279bc94ef1d982f9b4e74c560b00df42bf64d8dddc24ee2e0872a1b1eef2e4a"
+    },
+    {
+      "path": "real123424/C/pass04_state.npz",
+      "bytes": 1738188,
+      "sha256": "7aa06c1efe6e7de8159d9f840c1a028e204292e2bbc2493c7f875832205b21f0"
+    },
+    {
+      "path": "real123424/C/pass05.json",
+      "bytes": 16028,
+      "sha256": "84fb8395dc1f2412c1a6bd5fe1d8d9f7077bd497fd7cef46beae86d56982b19a"
+    },
+    {
+      "path": "real123424/C/pass05_maps.npz",
+      "bytes": 567867,
+      "sha256": "3b704c611ad6b7b037cd1b600cc8603895fd011232534f989a6ea94227620ec7"
+    },
+    {
+      "path": "real123424/C/pass05_state.npz",
+      "bytes": 1738227,
+      "sha256": "b441440e94a5ebac1637930cef2a001707e0d78baf13f245b87221e7b15d9aa9"
+    },
+    {
+      "path": "real123424/C/pass06.json",
+      "bytes": 16025,
+      "sha256": "3caf72282f68922fed4dfe6439dbf037b639cb9b15785a92eb4935579b910efa"
+    },
+    {
+      "path": "real123424/C/pass06_maps.npz",
+      "bytes": 571045,
+      "sha256": "4e912c1e4ed3f635aea502d803ea1781507e38463f6243a5ed8d4df530452e36"
+    },
+    {
+      "path": "real123424/C/pass06_state.npz",
+      "bytes": 1738737,
+      "sha256": "29c30506aab41fb6e58aabcdb6afaa4e2564a242f7b4c98adc640962cd68e80a"
+    },
+    {
+      "path": "real123424/P/COMPLETE.json",
+      "bytes": 120,
+      "sha256": "f718accd8ed8703fcaad9d47d26f09e42a3b89ffbf34be9a42b33c03292a6329"
+    },
+    {
+      "path": "real123424/P/START.json",
+      "bytes": 205,
+      "sha256": "47f152fd13195ee8c735afb3a3e7a3de54cab96713e79f5d0d885134cfefc35c"
+    },
+    {
+      "path": "real123424/P/pass00.json",
+      "bytes": 12113,
+      "sha256": "a52e2bc0ac6239b4af52fc4e612234f4a772a2207be19a47332a248620489905"
+    },
+    {
+      "path": "real123424/P/pass00_maps.npz",
+      "bytes": 548769,
+      "sha256": "cbe786e5ba874ae15ebf3f9ebd02816f60bba4ecc5408a2cde3e4d9e6fff2c60"
+    },
+    {
+      "path": "real123424/P/pass00_state.npz",
+      "bytes": 1731449,
+      "sha256": "da8bdb2ba0724a054864270eeb23599f42c8fcdba4d56e0a4668f0ff9faf7fc2"
+    },
+    {
+      "path": "real123424/P/pass01.json",
+      "bytes": 12136,
+      "sha256": "df6aab710e3f3c9d9e6215da75b167ea01bdfb74c77a1049ac9d651a618cbc03"
+    },
+    {
+      "path": "real123424/P/pass01_maps.npz",
+      "bytes": 554719,
+      "sha256": "1a09aa8736d03f6340013c82be5bd426f68da8ce66899504823a95e5337e218c"
+    },
+    {
+      "path": "real123424/P/pass01_state.npz",
+      "bytes": 1739490,
+      "sha256": "333d142434b6e59d6cbc710582d77ae5a761256be13d34ea14a87b4dcd0cc995"
+    },
+    {
+      "path": "real123424/P/pass02.json",
+      "bytes": 12122,
+      "sha256": "9f14a04bca01d7cc8c6bc6c70766b7ed83e46c22a83f5203afa33338ab8ca914"
+    },
+    {
+      "path": "real123424/P/pass02_maps.npz",
+      "bytes": 557041,
+      "sha256": "806aeb8810f7963926d60eeeac89fa8995242335b79501f2c988a0537276c79b"
+    },
+    {
+      "path": "real123424/P/pass02_state.npz",
+      "bytes": 1740236,
+      "sha256": "7a55dd0687206a515b5e2e6d65cd2f2d22eb11a8d95b0b44d4ab902b9a151316"
+    },
+    {
+      "path": "real123424/P/pass03.json",
+      "bytes": 12087,
+      "sha256": "2ae34b0f846cf1b95050543a4790a7691c5a988e03637e42805edb4561466336"
+    },
+    {
+      "path": "real123424/P/pass03_maps.npz",
+      "bytes": 558400,
+      "sha256": "7f87627c3ca76ecb98b464a8da97ce7ba095116752bf26ee1fbe27336e8ec80d"
+    },
+    {
+      "path": "real123424/P/pass03_state.npz",
+      "bytes": 1740231,
+      "sha256": "e24c001470b6937bfb51fcdf0930adf60ebd7b3af56e9299491a83a87d308c1f"
+    },
+    {
+      "path": "real123424/P/pass04.json",
+      "bytes": 12109,
+      "sha256": "7b07c9a81c78cd492abe3c7cf0c6668b6cda8204b5800a6b3353382477a760ce"
+    },
+    {
+      "path": "real123424/P/pass04_maps.npz",
+      "bytes": 559608,
+      "sha256": "995907658843ae7ae2d1b41b27466c0b14912e65757e911bf06187bc1021b27a"
+    },
+    {
+      "path": "real123424/P/pass04_state.npz",
+      "bytes": 1740100,
+      "sha256": "332d165f25431366f47e182bc4593ce9fe6783aad286de75d3c0f2e8f7c3c453"
+    },
+    {
+      "path": "real123424/P/pass05.json",
+      "bytes": 12081,
+      "sha256": "59c23570ebb69c04ff8b82cd258c77b1019bf47f01d91ee03c7ad77dabf988de"
+    },
+    {
+      "path": "real123424/P/pass05_maps.npz",
+      "bytes": 560522,
+      "sha256": "83197050fd0bfd53089a6e8e7bf085264f475f5e6570d2c8e89cd00f181b95a7"
+    },
+    {
+      "path": "real123424/P/pass05_state.npz",
+      "bytes": 1740347,
+      "sha256": "ad01834d7bcf058c77d6236871cc91eb6a964b103da2091efba2004322a0efcb"
+    },
+    {
+      "path": "real123424/P/pass06.json",
+      "bytes": 12088,
+      "sha256": "95e08e11a09413166d7ca633ead98f24e89f535b8753e613c79e143a228556cd"
+    },
+    {
+      "path": "real123424/P/pass06_maps.npz",
+      "bytes": 561482,
+      "sha256": "98de36ed1a87fa014596da9dfc188b428d7144bd8974fca243b65020f6b5a4e3"
+    },
+    {
+      "path": "real123424/P/pass06_state.npz",
+      "bytes": 1740561,
+      "sha256": "d48b4bcb76ab9afdaebd225fdfd53084ba7063af483443e4729a1fdb4d39c8be"
+    }
+  ]
+}

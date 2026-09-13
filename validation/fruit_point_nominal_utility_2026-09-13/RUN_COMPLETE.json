@@ -1,0 +1,9 @@
+{
+  "state": "trial_finished_see_trajectory_statuses",
+  "cleaning_calls": 238,
+  "maximum_cleaning_calls": 238,
+  "trajectories": 34,
+  "elapsed_seconds": 402.6154024999123,
+  "peak_rss_bytes": 2217967616,
+  "output_bytes": 557202004
+}

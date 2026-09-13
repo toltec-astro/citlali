@@ -1,0 +1,19 @@
+{
+  "identity": "SCI-FRUIT-POINT-NOMINAL-UTILITY@r0.1",
+  "disposition": "park_for_POINT",
+  "earlier_image_stability_qualification": "failed_unchanged",
+  "raw_gain_accuracy_P": 5,
+  "raw_gain_accuracy_C": 6,
+  "raw_gain_required": 6,
+  "usable_gain_P": 2,
+  "usable_gain_C": 1,
+  "pointing_P": 18,
+  "pointing_C": 18,
+  "pointing_required": 18,
+  "cost_misses_C": 6,
+  "preserved_value": "All six raw candidate H/D ratios within 0.81%; partial health/repeatability availability gains; no false null feedback.",
+  "blocking_result": "No consistent required usable peak benefit across the registered population; six cost misses. No automatic revision.",
+  "next_authorized_numerical_work": null,
+  "independent_replication": false,
+  "production_qualified": false
+}
