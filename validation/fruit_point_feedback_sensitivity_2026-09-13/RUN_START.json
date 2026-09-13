@@ -1,0 +1,8 @@
+{
+  "utc": "2026-09-13T12:58:53.101053+00:00",
+  "pid": 52690,
+  "source_freeze_sha256": "e5dcd772d2e0ce13e9b6a73ede20da78ede9a824461ad1140086a33c74aa6c8d",
+  "python": "3.13.2",
+  "numpy": "2.2.3",
+  "scipy": "1.15.2"
+}

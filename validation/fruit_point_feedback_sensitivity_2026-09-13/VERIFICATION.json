@@ -1,0 +1,17 @@
+{
+  "frozen_files": 907,
+  "external_payloads": 130,
+  "same_parent_pairs": 3,
+  "saved_model_identity_checks": 6,
+  "total_map_support_checks": 6,
+  "group_waveform_checks": 6816,
+  "relearned_covariance_eigen_checks": 864,
+  "invariant_subspace_checks": 432,
+  "maximum_eigen_residual": 2.6437445167130456e-15,
+  "truth_score_checks": 12,
+  "cleaning_calls_in_experiment": 6,
+  "verification_cleaning_calls": 0,
+  "new_feedback_optimization_calls": 0,
+  "prior_evidence_preserved": true,
+  "protected_archive_states_unchanged": true
+}

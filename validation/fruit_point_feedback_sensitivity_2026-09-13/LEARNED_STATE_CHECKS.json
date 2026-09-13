@@ -1,0 +1,5186 @@
+[
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c00_nw00",
+    "eigen_residual": 7.5291201985463825e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c00_nw01",
+    "eigen_residual": 7.604816081469342e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c00_nw02",
+    "eigen_residual": 7.175907798749907e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c00_nw03",
+    "eigen_residual": 8.201394884634397e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c00_nw04",
+    "eigen_residual": 6.18089591433428e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c00_nw05",
+    "eigen_residual": 6.781800422334371e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c00_nw06",
+    "eigen_residual": 7.161291064282101e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c00_nw07",
+    "eigen_residual": 3.926450074368749e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c00_nw08",
+    "eigen_residual": 7.621070584488097e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c00_nw09",
+    "eigen_residual": 6.813497506586588e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c00_nw11",
+    "eigen_residual": 5.633628955600451e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c00_nw12",
+    "eigen_residual": 8.151781775765266e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c01_nw00",
+    "eigen_residual": 7.308042234945159e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c01_nw01",
+    "eigen_residual": 9.689963173604744e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c01_nw02",
+    "eigen_residual": 7.093123699314314e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c01_nw03",
+    "eigen_residual": 6.038496617664809e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c01_nw04",
+    "eigen_residual": 9.892047502169422e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c01_nw05",
+    "eigen_residual": 7.801277586936827e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c01_nw06",
+    "eigen_residual": 6.742738716131312e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c01_nw07",
+    "eigen_residual": 3.8756851480701654e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c01_nw08",
+    "eigen_residual": 6.985385685908971e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c01_nw09",
+    "eigen_residual": 5.515535799323647e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c01_nw11",
+    "eigen_residual": 8.201072243762464e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c01_nw12",
+    "eigen_residual": 8.108755612403657e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c02_nw00",
+    "eigen_residual": 6.784572778130886e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c02_nw01",
+    "eigen_residual": 8.280116481909882e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c02_nw02",
+    "eigen_residual": 5.980231221830448e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c02_nw03",
+    "eigen_residual": 7.502293497166289e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c02_nw04",
+    "eigen_residual": 1.298444205289864e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c02_nw05",
+    "eigen_residual": 8.683135229984884e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c02_nw06",
+    "eigen_residual": 7.682121301934415e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c02_nw07",
+    "eigen_residual": 4.65756078416264e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c02_nw08",
+    "eigen_residual": 1.6964813777777237e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c02_nw09",
+    "eigen_residual": 6.599022461346587e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c02_nw11",
+    "eigen_residual": 1.4549224544317499e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c02_nw12",
+    "eigen_residual": 5.849133373698921e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c03_nw00",
+    "eigen_residual": 6.27095370341479e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c03_nw01",
+    "eigen_residual": 7.564269456215158e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c03_nw02",
+    "eigen_residual": 6.766855523798873e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c03_nw03",
+    "eigen_residual": 5.726437044614357e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c03_nw04",
+    "eigen_residual": 1.169219012305921e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c03_nw05",
+    "eigen_residual": 6.918271913023492e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c03_nw06",
+    "eigen_residual": 4.687096630623783e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c03_nw07",
+    "eigen_residual": 3.0294372638575356e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c03_nw08",
+    "eigen_residual": 6.778748429061388e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c03_nw09",
+    "eigen_residual": 8.53760740344967e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c03_nw11",
+    "eigen_residual": 5.494403764756562e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c03_nw12",
+    "eigen_residual": 7.598131490363425e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c04_nw00",
+    "eigen_residual": 7.179789803881628e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c04_nw01",
+    "eigen_residual": 1.143800600807463e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c04_nw02",
+    "eigen_residual": 9.026635250279538e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c04_nw03",
+    "eigen_residual": 7.203174052497567e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c04_nw04",
+    "eigen_residual": 8.727321061600777e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c04_nw05",
+    "eigen_residual": 9.170327293418383e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c04_nw06",
+    "eigen_residual": 8.0776098423406e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c04_nw07",
+    "eigen_residual": 3.4293511731552216e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c04_nw08",
+    "eigen_residual": 8.164479810841283e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c04_nw09",
+    "eigen_residual": 8.028833334987306e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c04_nw11",
+    "eigen_residual": 1.2341574609046525e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c04_nw12",
+    "eigen_residual": 8.53148694915584e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c05_nw00",
+    "eigen_residual": 6.330150421422748e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c05_nw01",
+    "eigen_residual": 7.884846843027715e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c05_nw02",
+    "eigen_residual": 6.231210108551903e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c05_nw03",
+    "eigen_residual": 6.865808522650807e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c05_nw04",
+    "eigen_residual": 2.0727359079167672e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c05_nw05",
+    "eigen_residual": 6.696687523297377e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c05_nw06",
+    "eigen_residual": 4.1320608884406474e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c05_nw07",
+    "eigen_residual": 4.159893491690352e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c05_nw08",
+    "eigen_residual": 7.970836860833322e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c05_nw09",
+    "eigen_residual": 5.359221549971734e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c05_nw11",
+    "eigen_residual": 7.918112401206346e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c05_nw12",
+    "eigen_residual": 7.327464116488696e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c06_nw00",
+    "eigen_residual": 1.1473035918043565e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c06_nw01",
+    "eigen_residual": 8.9662914083001e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c06_nw02",
+    "eigen_residual": 7.555056608281543e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c06_nw03",
+    "eigen_residual": 6.496063935586403e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c06_nw04",
+    "eigen_residual": 1.034161296019716e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c06_nw05",
+    "eigen_residual": 7.884352321541513e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c06_nw06",
+    "eigen_residual": 5.570533740740633e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c06_nw07",
+    "eigen_residual": 2.901576675289933e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c06_nw08",
+    "eigen_residual": 8.692800188258222e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c06_nw09",
+    "eigen_residual": 5.998467018588823e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c06_nw11",
+    "eigen_residual": 5.622191176261197e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c06_nw12",
+    "eigen_residual": 6.734949186957908e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c07_nw00",
+    "eigen_residual": 5.681486688149206e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c07_nw01",
+    "eigen_residual": 7.541028090486651e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c07_nw02",
+    "eigen_residual": 5.366486748432983e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c07_nw03",
+    "eigen_residual": 7.773095147255845e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c07_nw04",
+    "eigen_residual": 3.3085985258949907e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c07_nw05",
+    "eigen_residual": 6.948266658506001e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c07_nw06",
+    "eigen_residual": 6.721466698959609e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c07_nw07",
+    "eigen_residual": 3.6970460806705376e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c07_nw08",
+    "eigen_residual": 7.713441960886608e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c07_nw09",
+    "eigen_residual": 4.774833493118188e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c07_nw11",
+    "eigen_residual": 5.623103260926652e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c07_nw12",
+    "eigen_residual": 8.734771559265298e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c08_nw00",
+    "eigen_residual": 5.718715936322487e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c08_nw01",
+    "eigen_residual": 7.981108185848271e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c08_nw02",
+    "eigen_residual": 7.929143501003205e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c08_nw03",
+    "eigen_residual": 1.0225163723229543e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c08_nw04",
+    "eigen_residual": 7.091604565270409e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c08_nw05",
+    "eigen_residual": 7.0750157182928775e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c08_nw06",
+    "eigen_residual": 5.769931003526299e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c08_nw07",
+    "eigen_residual": 3.7442231120845154e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c08_nw08",
+    "eigen_residual": 9.187475698400786e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c08_nw09",
+    "eigen_residual": 5.796879552584324e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c08_nw11",
+    "eigen_residual": 1.1831957225543868e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c08_nw12",
+    "eigen_residual": 5.584972949523959e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c09_nw00",
+    "eigen_residual": 7.002276966101702e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c09_nw01",
+    "eigen_residual": 7.253785410629739e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c09_nw02",
+    "eigen_residual": 5.443465838622668e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c09_nw03",
+    "eigen_residual": 5.953472739018444e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c09_nw04",
+    "eigen_residual": 9.219532081164606e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c09_nw05",
+    "eigen_residual": 7.725014009925187e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c09_nw06",
+    "eigen_residual": 4.083486894287077e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c09_nw07",
+    "eigen_residual": 3.6509779777931746e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c09_nw08",
+    "eigen_residual": 7.231941401276077e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c09_nw09",
+    "eigen_residual": 1.1685039260849492e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c09_nw11",
+    "eigen_residual": 1.2246823424195766e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c09_nw12",
+    "eigen_residual": 9.289291731187869e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c10_nw00",
+    "eigen_residual": 7.023965013315662e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c10_nw01",
+    "eigen_residual": 1.0283481709486462e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c10_nw02",
+    "eigen_residual": 7.334309689390903e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c10_nw03",
+    "eigen_residual": 7.606510420902968e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c10_nw04",
+    "eigen_residual": 6.455106165152047e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c10_nw05",
+    "eigen_residual": 9.16432401773927e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c10_nw06",
+    "eigen_residual": 5.644028256750402e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c10_nw07",
+    "eigen_residual": 4.0460735336235475e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c10_nw08",
+    "eigen_residual": 8.266877606675728e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c10_nw09",
+    "eigen_residual": 1.1328192918397426e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c10_nw11",
+    "eigen_residual": 7.597882413521185e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c10_nw12",
+    "eigen_residual": 6.721374416282624e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c11_nw00",
+    "eigen_residual": 6.691338180619547e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c11_nw01",
+    "eigen_residual": 9.171186204740855e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c11_nw02",
+    "eigen_residual": 8.606359955691582e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c11_nw03",
+    "eigen_residual": 7.648330851378827e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c11_nw04",
+    "eigen_residual": 5.118704611086087e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c11_nw05",
+    "eigen_residual": 7.451385291578115e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c11_nw06",
+    "eigen_residual": 7.461987979570596e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c11_nw07",
+    "eigen_residual": 3.1483717406240585e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c11_nw08",
+    "eigen_residual": 8.628483002401541e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c11_nw09",
+    "eigen_residual": 6.089481494808646e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c11_nw11",
+    "eigen_residual": 1.2186535554692925e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "nominal",
+    "group": "c11_nw12",
+    "eigen_residual": 5.727701234539356e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c00_nw00",
+    "eigen_residual": 6.388515312250466e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c00_nw01",
+    "eigen_residual": 7.67803678321569e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c00_nw02",
+    "eigen_residual": 6.976490613335634e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c00_nw03",
+    "eigen_residual": 7.143522875910991e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c00_nw04",
+    "eigen_residual": 3.9327149926832313e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c00_nw05",
+    "eigen_residual": 6.781800422334371e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c00_nw06",
+    "eigen_residual": 7.161291064282101e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c00_nw07",
+    "eigen_residual": 6.512540907360297e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c00_nw08",
+    "eigen_residual": 7.336779950852923e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c00_nw09",
+    "eigen_residual": 5.186972472853942e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c00_nw11",
+    "eigen_residual": 1.1768341050421606e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c00_nw12",
+    "eigen_residual": 8.093902424410521e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c01_nw00",
+    "eigen_residual": 7.308042234945159e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c01_nw01",
+    "eigen_residual": 9.689963173604744e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c01_nw02",
+    "eigen_residual": 7.093123699314314e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c01_nw03",
+    "eigen_residual": 7.55326529283147e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c01_nw04",
+    "eigen_residual": 4.0761814634760127e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c01_nw05",
+    "eigen_residual": 7.60333378832704e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c01_nw06",
+    "eigen_residual": 5.313280507215945e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c01_nw07",
+    "eigen_residual": 4.797567773183782e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c01_nw08",
+    "eigen_residual": 6.6633572002039e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c01_nw09",
+    "eigen_residual": 6.948600243554496e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c01_nw11",
+    "eigen_residual": 2.8156066863317854e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c01_nw12",
+    "eigen_residual": 8.322117751076089e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c02_nw00",
+    "eigen_residual": 6.784572778130886e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c02_nw01",
+    "eigen_residual": 8.280116481909882e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c02_nw02",
+    "eigen_residual": 5.520037136700872e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c02_nw03",
+    "eigen_residual": 6.975647766421305e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c02_nw04",
+    "eigen_residual": 1.298444205289864e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c02_nw05",
+    "eigen_residual": 8.683135229984884e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c02_nw06",
+    "eigen_residual": 7.682121301934415e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c02_nw07",
+    "eigen_residual": 4.765612247127237e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c02_nw08",
+    "eigen_residual": 9.881976570290317e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c02_nw09",
+    "eigen_residual": 8.460828769723067e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c02_nw11",
+    "eigen_residual": 5.279871602933119e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c02_nw12",
+    "eigen_residual": 1.0628789798925528e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c03_nw00",
+    "eigen_residual": 6.27095370341479e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c03_nw01",
+    "eigen_residual": 7.564269456215158e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c03_nw02",
+    "eigen_residual": 6.766855523798873e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c03_nw03",
+    "eigen_residual": 6.337250557346836e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c03_nw04",
+    "eigen_residual": 1.169219012305921e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c03_nw05",
+    "eigen_residual": 6.918271913023492e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c03_nw06",
+    "eigen_residual": 4.687096630623783e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c03_nw07",
+    "eigen_residual": 3.4564274076213674e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c03_nw08",
+    "eigen_residual": 3.800611247632842e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c03_nw09",
+    "eigen_residual": 6.059860852117691e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c03_nw11",
+    "eigen_residual": 1.0011197711942177e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c03_nw12",
+    "eigen_residual": 7.406327290593093e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c04_nw00",
+    "eigen_residual": 7.179789803881628e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c04_nw01",
+    "eigen_residual": 1.143800600807463e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c04_nw02",
+    "eigen_residual": 9.026635250279538e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c04_nw03",
+    "eigen_residual": 5.746563160240184e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c04_nw04",
+    "eigen_residual": 1.0232816974177692e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c04_nw05",
+    "eigen_residual": 5.742184162448367e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c04_nw06",
+    "eigen_residual": 8.0776098423406e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c04_nw07",
+    "eigen_residual": 2.893954002160826e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c04_nw08",
+    "eigen_residual": 7.937644142081601e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c04_nw09",
+    "eigen_residual": 6.6813300549843015e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c04_nw11",
+    "eigen_residual": 1.2725186598870224e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c04_nw12",
+    "eigen_residual": 6.587442507510029e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c05_nw00",
+    "eigen_residual": 1.0711002365484497e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c05_nw01",
+    "eigen_residual": 7.942473574723226e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c05_nw02",
+    "eigen_residual": 6.26521161279631e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c05_nw03",
+    "eigen_residual": 6.249440226784069e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c05_nw04",
+    "eigen_residual": 5.556246579952229e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c05_nw05",
+    "eigen_residual": 6.696687523297377e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c05_nw06",
+    "eigen_residual": 4.1320608884406474e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c05_nw07",
+    "eigen_residual": 6.892148753326317e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c05_nw08",
+    "eigen_residual": 5.1845420846196e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c05_nw09",
+    "eigen_residual": 6.488910593006729e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c05_nw11",
+    "eigen_residual": 1.1384308348271123e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c05_nw12",
+    "eigen_residual": 6.473739938300696e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c06_nw00",
+    "eigen_residual": 1.1473035918043565e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c06_nw01",
+    "eigen_residual": 8.9662914083001e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c06_nw02",
+    "eigen_residual": 7.372971118160121e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c06_nw03",
+    "eigen_residual": 6.433407205759818e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c06_nw04",
+    "eigen_residual": 2.2123599646996893e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c06_nw05",
+    "eigen_residual": 6.803973507218255e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c06_nw06",
+    "eigen_residual": 6.315554669831094e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c06_nw07",
+    "eigen_residual": 3.6634587249824447e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c06_nw08",
+    "eigen_residual": 9.581966919521115e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c06_nw09",
+    "eigen_residual": 5.748185307654447e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c06_nw11",
+    "eigen_residual": 1.6231437857427657e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c06_nw12",
+    "eigen_residual": 6.625169095863385e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c07_nw00",
+    "eigen_residual": 7.333967385067272e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c07_nw01",
+    "eigen_residual": 8.869127030235796e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c07_nw02",
+    "eigen_residual": 8.847163967213219e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c07_nw03",
+    "eigen_residual": 5.857338107064104e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c07_nw04",
+    "eigen_residual": 1.0779470366295652e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c07_nw05",
+    "eigen_residual": 8.221077396691771e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c07_nw06",
+    "eigen_residual": 8.268744937759198e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c07_nw07",
+    "eigen_residual": 5.024769521886831e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c07_nw08",
+    "eigen_residual": 7.617667890279333e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c07_nw09",
+    "eigen_residual": 6.582666379044886e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c07_nw11",
+    "eigen_residual": 1.0191333002632307e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c07_nw12",
+    "eigen_residual": 1.1331705201061447e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c08_nw00",
+    "eigen_residual": 8.869474757956879e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c08_nw01",
+    "eigen_residual": 9.798902168289407e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c08_nw02",
+    "eigen_residual": 5.601801161756096e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c08_nw03",
+    "eigen_residual": 8.226035451848413e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c08_nw04",
+    "eigen_residual": 6.725143578855239e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c08_nw05",
+    "eigen_residual": 7.327512076972897e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c08_nw06",
+    "eigen_residual": 5.396848355723617e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c08_nw07",
+    "eigen_residual": 5.170167831259978e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c08_nw08",
+    "eigen_residual": 8.186777689490324e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c08_nw09",
+    "eigen_residual": 6.422159971211361e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c08_nw11",
+    "eigen_residual": 5.967938462153406e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c08_nw12",
+    "eigen_residual": 9.05829193004471e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c09_nw00",
+    "eigen_residual": 7.087899550176433e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c09_nw01",
+    "eigen_residual": 6.863224747164113e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c09_nw02",
+    "eigen_residual": 9.207320256188648e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c09_nw03",
+    "eigen_residual": 6.979144382681078e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c09_nw04",
+    "eigen_residual": 6.141433006065509e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c09_nw05",
+    "eigen_residual": 8.417279317959304e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c09_nw06",
+    "eigen_residual": 3.9770371295226747e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c09_nw07",
+    "eigen_residual": 3.479037158477987e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c09_nw08",
+    "eigen_residual": 7.684607456865597e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c09_nw09",
+    "eigen_residual": 7.856011495572981e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c09_nw11",
+    "eigen_residual": 6.015331935226159e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c09_nw12",
+    "eigen_residual": 4.649966823180344e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c10_nw00",
+    "eigen_residual": 6.2096251815457e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c10_nw01",
+    "eigen_residual": 8.058723716803045e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c10_nw02",
+    "eigen_residual": 5.500968837010023e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c10_nw03",
+    "eigen_residual": 8.90968722954699e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c10_nw04",
+    "eigen_residual": 1.5647096172897013e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c10_nw05",
+    "eigen_residual": 9.180519477704003e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c10_nw06",
+    "eigen_residual": 5.644028256750402e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c10_nw07",
+    "eigen_residual": 5.158675965294577e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c10_nw08",
+    "eigen_residual": 6.455309379565687e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c10_nw09",
+    "eigen_residual": 1.0898998488732124e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c10_nw11",
+    "eigen_residual": 9.49081684886966e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c10_nw12",
+    "eigen_residual": 8.327159368893714e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c11_nw00",
+    "eigen_residual": 6.691338180619547e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c11_nw01",
+    "eigen_residual": 9.171186204740855e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c11_nw02",
+    "eigen_residual": 1.0316654212123472e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c11_nw03",
+    "eigen_residual": 7.374202876372691e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c11_nw04",
+    "eigen_residual": 8.478982102227042e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c11_nw05",
+    "eigen_residual": 6.742336594276711e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c11_nw06",
+    "eigen_residual": 7.461987979570596e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c11_nw07",
+    "eigen_residual": 4.791683497617144e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c11_nw08",
+    "eigen_residual": 5.716926847313505e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c11_nw09",
+    "eigen_residual": 6.832731125348048e-16
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c11_nw11",
+    "eigen_residual": 1.2659133643503932e-15
+  },
+  {
+    "case": "H_20260911",
+    "branch": "tight",
+    "group": "c11_nw12",
+    "eigen_residual": 5.842147330284258e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c00_nw00",
+    "eigen_residual": 6.220168383353893e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c00_nw01",
+    "eigen_residual": 8.217259024993232e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c00_nw02",
+    "eigen_residual": 6.613524307574289e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c00_nw03",
+    "eigen_residual": 9.122099695307336e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c00_nw04",
+    "eigen_residual": 5.833146008272252e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c00_nw05",
+    "eigen_residual": 6.781800422334371e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c00_nw06",
+    "eigen_residual": 7.161291064282101e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c00_nw07",
+    "eigen_residual": 1.0098970648103719e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c00_nw08",
+    "eigen_residual": 7.825153989508349e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c00_nw09",
+    "eigen_residual": 7.235705238237941e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c00_nw11",
+    "eigen_residual": 1.0577017026491398e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c00_nw12",
+    "eigen_residual": 6.189653199783213e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c01_nw00",
+    "eigen_residual": 7.308042234945159e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c01_nw01",
+    "eigen_residual": 9.465685848863368e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c01_nw02",
+    "eigen_residual": 5.499388818578733e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c01_nw03",
+    "eigen_residual": 8.916032807667084e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c01_nw04",
+    "eigen_residual": 5.789811084861452e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c01_nw05",
+    "eigen_residual": 6.517499731197576e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c01_nw06",
+    "eigen_residual": 4.896772627570076e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c01_nw07",
+    "eigen_residual": 4.41787857784821e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c01_nw08",
+    "eigen_residual": 1.4191016305835723e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c01_nw09",
+    "eigen_residual": 5.163949053587034e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c01_nw11",
+    "eigen_residual": 5.695644981006377e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c01_nw12",
+    "eigen_residual": 6.773320164081636e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c02_nw00",
+    "eigen_residual": 6.119246626075896e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c02_nw01",
+    "eigen_residual": 8.193329267138675e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c02_nw02",
+    "eigen_residual": 9.774403040774484e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c02_nw03",
+    "eigen_residual": 6.184236993988166e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c02_nw04",
+    "eigen_residual": 1.298444205289864e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c02_nw05",
+    "eigen_residual": 8.683135229984884e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c02_nw06",
+    "eigen_residual": 7.682121301934415e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c02_nw07",
+    "eigen_residual": 4.976754329263735e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c02_nw08",
+    "eigen_residual": 6.796595679834245e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c02_nw09",
+    "eigen_residual": 6.212599365745706e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c02_nw11",
+    "eigen_residual": 4.926135804167225e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c02_nw12",
+    "eigen_residual": 7.145522705988687e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c03_nw00",
+    "eigen_residual": 8.207634980533076e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c03_nw01",
+    "eigen_residual": 7.141531019156967e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c03_nw02",
+    "eigen_residual": 6.766855523798873e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c03_nw03",
+    "eigen_residual": 7.151821064876796e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c03_nw04",
+    "eigen_residual": 1.169219012305921e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c03_nw05",
+    "eigen_residual": 6.918271913023492e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c03_nw06",
+    "eigen_residual": 4.687096630623783e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c03_nw07",
+    "eigen_residual": 4.747706676294049e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c03_nw08",
+    "eigen_residual": 7.504639844054181e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c03_nw09",
+    "eigen_residual": 7.480478930490143e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c03_nw11",
+    "eigen_residual": 6.90705640980308e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c03_nw12",
+    "eigen_residual": 7.286442050958465e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c04_nw00",
+    "eigen_residual": 7.179789803881628e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c04_nw01",
+    "eigen_residual": 7.616310652456035e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c04_nw02",
+    "eigen_residual": 6.046463169645297e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c04_nw03",
+    "eigen_residual": 6.255140507210999e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c04_nw04",
+    "eigen_residual": 6.576678961827725e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c04_nw05",
+    "eigen_residual": 7.347730830644112e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c04_nw06",
+    "eigen_residual": 8.0776098423406e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c04_nw07",
+    "eigen_residual": 4.143655397523199e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c04_nw08",
+    "eigen_residual": 4.275165208554391e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c04_nw09",
+    "eigen_residual": 5.689852010997106e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c04_nw11",
+    "eigen_residual": 7.954612156111803e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c04_nw12",
+    "eigen_residual": 7.910952101734301e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c05_nw00",
+    "eigen_residual": 1.069710590379952e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c05_nw01",
+    "eigen_residual": 9.81084401676215e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c05_nw02",
+    "eigen_residual": 7.035951131814562e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c05_nw03",
+    "eigen_residual": 1.1256163931688245e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c05_nw04",
+    "eigen_residual": 4.63949096614191e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c05_nw05",
+    "eigen_residual": 6.696687523297377e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c05_nw06",
+    "eigen_residual": 4.1320608884406474e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c05_nw07",
+    "eigen_residual": 6.128111492427474e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c05_nw08",
+    "eigen_residual": 3.9852943409932116e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c05_nw09",
+    "eigen_residual": 5.868154624628261e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c05_nw11",
+    "eigen_residual": 1.5270903461567977e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c05_nw12",
+    "eigen_residual": 6.986958993324203e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c06_nw00",
+    "eigen_residual": 6.289741017758933e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c06_nw01",
+    "eigen_residual": 9.181142423021435e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c06_nw02",
+    "eigen_residual": 7.164445581002044e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c06_nw03",
+    "eigen_residual": 7.544826673597213e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c06_nw04",
+    "eigen_residual": 1.07166516727596e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c06_nw05",
+    "eigen_residual": 7.488181928252989e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c06_nw06",
+    "eigen_residual": 4.734091940250305e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c06_nw07",
+    "eigen_residual": 3.1828030857868043e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c06_nw08",
+    "eigen_residual": 6.075784611707889e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c06_nw09",
+    "eigen_residual": 8.61201171706472e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c06_nw11",
+    "eigen_residual": 8.099306051384779e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c06_nw12",
+    "eigen_residual": 5.878994779113862e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c07_nw00",
+    "eigen_residual": 7.095764151551926e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c07_nw01",
+    "eigen_residual": 9.874182117715038e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c07_nw02",
+    "eigen_residual": 7.47490213021753e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c07_nw03",
+    "eigen_residual": 6.344598924880515e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c07_nw04",
+    "eigen_residual": 1.1656420482315424e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c07_nw05",
+    "eigen_residual": 7.304030822532931e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c07_nw06",
+    "eigen_residual": 5.702896879320911e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c07_nw07",
+    "eigen_residual": 4.789094952700468e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c07_nw08",
+    "eigen_residual": 8.96430233129435e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c07_nw09",
+    "eigen_residual": 7.710853189712945e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c07_nw11",
+    "eigen_residual": 8.798631456564769e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c07_nw12",
+    "eigen_residual": 7.750270742895713e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c08_nw00",
+    "eigen_residual": 6.283574513346857e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c08_nw01",
+    "eigen_residual": 7.421530029239709e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c08_nw02",
+    "eigen_residual": 5.738992845977856e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c08_nw03",
+    "eigen_residual": 6.645769405405831e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c08_nw04",
+    "eigen_residual": 4.894551587066926e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c08_nw05",
+    "eigen_residual": 1.1554090360460463e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c08_nw06",
+    "eigen_residual": 4.0663730786634225e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c08_nw07",
+    "eigen_residual": 3.863874808133597e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c08_nw08",
+    "eigen_residual": 4.386037552556567e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c08_nw09",
+    "eigen_residual": 6.582078864555688e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c08_nw11",
+    "eigen_residual": 1.2625086859504503e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c08_nw12",
+    "eigen_residual": 8.804091614244713e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c09_nw00",
+    "eigen_residual": 7.180684057820075e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c09_nw01",
+    "eigen_residual": 8.061920932174897e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c09_nw02",
+    "eigen_residual": 9.660753443045923e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c09_nw03",
+    "eigen_residual": 7.131129623556809e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c09_nw04",
+    "eigen_residual": 9.708494298897674e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c09_nw05",
+    "eigen_residual": 8.145870072116693e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c09_nw06",
+    "eigen_residual": 8.270343608260863e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c09_nw07",
+    "eigen_residual": 4.2566036947052374e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c09_nw08",
+    "eigen_residual": 7.122434051630434e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c09_nw09",
+    "eigen_residual": 6.028597665714152e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c09_nw11",
+    "eigen_residual": 1.96310279635442e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c09_nw12",
+    "eigen_residual": 6.415943180726278e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c10_nw00",
+    "eigen_residual": 1.0902388320200755e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c10_nw01",
+    "eigen_residual": 9.41932835658968e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c10_nw02",
+    "eigen_residual": 8.491659892555519e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c10_nw03",
+    "eigen_residual": 7.492478155921246e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c10_nw04",
+    "eigen_residual": 1.1175627862055517e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c10_nw05",
+    "eigen_residual": 9.289118680683421e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c10_nw06",
+    "eigen_residual": 5.644028256750402e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c10_nw07",
+    "eigen_residual": 5.241995149911544e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c10_nw08",
+    "eigen_residual": 5.349007986347896e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c10_nw09",
+    "eigen_residual": 6.165105779454114e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c10_nw11",
+    "eigen_residual": 1.2876990344846675e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c10_nw12",
+    "eigen_residual": 6.160083473884256e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c11_nw00",
+    "eigen_residual": 5.859670477893982e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c11_nw01",
+    "eigen_residual": 9.774410368083344e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c11_nw02",
+    "eigen_residual": 4.862795372300942e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c11_nw03",
+    "eigen_residual": 7.072084264743327e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c11_nw04",
+    "eigen_residual": 6.63533330933243e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c11_nw05",
+    "eigen_residual": 6.527626866885537e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c11_nw06",
+    "eigen_residual": 7.461987979570596e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c11_nw07",
+    "eigen_residual": 3.88817778751564e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c11_nw08",
+    "eigen_residual": 7.373329778307021e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c11_nw09",
+    "eigen_residual": 5.893477554601589e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c11_nw11",
+    "eigen_residual": 9.969106046369894e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "nominal",
+    "group": "c11_nw12",
+    "eigen_residual": 7.63607724233329e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c00_nw00",
+    "eigen_residual": 6.009517648436095e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c00_nw01",
+    "eigen_residual": 1.058627822856287e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c00_nw02",
+    "eigen_residual": 5.772504368925884e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c00_nw03",
+    "eigen_residual": 6.006746906674786e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c00_nw04",
+    "eigen_residual": 5.089251543552986e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c00_nw05",
+    "eigen_residual": 6.781800422334371e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c00_nw06",
+    "eigen_residual": 7.161291064282101e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c00_nw07",
+    "eigen_residual": 3.3191201128254725e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c00_nw08",
+    "eigen_residual": 4.77897883695569e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c00_nw09",
+    "eigen_residual": 8.425445303778123e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c00_nw11",
+    "eigen_residual": 1.2173519785393384e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c00_nw12",
+    "eigen_residual": 8.693223627167049e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c01_nw00",
+    "eigen_residual": 7.308042234945159e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c01_nw01",
+    "eigen_residual": 7.520807889505629e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c01_nw02",
+    "eigen_residual": 7.2207775525834465e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c01_nw03",
+    "eigen_residual": 6.329409561077326e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c01_nw04",
+    "eigen_residual": 1.1036074336096489e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c01_nw05",
+    "eigen_residual": 9.628711364284766e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c01_nw06",
+    "eigen_residual": 7.698587344276766e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c01_nw07",
+    "eigen_residual": 3.1606510026222054e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c01_nw08",
+    "eigen_residual": 7.208394446165958e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c01_nw09",
+    "eigen_residual": 4.2809099295132265e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c01_nw11",
+    "eigen_residual": 7.562683629231682e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c01_nw12",
+    "eigen_residual": 1.0288098887023953e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c02_nw00",
+    "eigen_residual": 6.246254442327606e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c02_nw01",
+    "eigen_residual": 7.558243832376612e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c02_nw02",
+    "eigen_residual": 6.123045935512039e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c02_nw03",
+    "eigen_residual": 7.108642090394969e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c02_nw04",
+    "eigen_residual": 1.298444205289864e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c02_nw05",
+    "eigen_residual": 8.683135229984884e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c02_nw06",
+    "eigen_residual": 7.682121301934415e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c02_nw07",
+    "eigen_residual": 2.8843604101286223e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c02_nw08",
+    "eigen_residual": 9.479423657410661e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c02_nw09",
+    "eigen_residual": 8.606081271549347e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c02_nw11",
+    "eigen_residual": 1.2265067815984393e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c02_nw12",
+    "eigen_residual": 5.94856203882633e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c03_nw00",
+    "eigen_residual": 6.27095370341479e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c03_nw01",
+    "eigen_residual": 7.510824613312558e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c03_nw02",
+    "eigen_residual": 6.766855523798873e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c03_nw03",
+    "eigen_residual": 9.125962649357082e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c03_nw04",
+    "eigen_residual": 1.169219012305921e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c03_nw05",
+    "eigen_residual": 6.918271913023492e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c03_nw06",
+    "eigen_residual": 4.687096630623783e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c03_nw07",
+    "eigen_residual": 3.7515610079288767e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c03_nw08",
+    "eigen_residual": 4.3821947498034316e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c03_nw09",
+    "eigen_residual": 7.335160868707542e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c03_nw11",
+    "eigen_residual": 7.475657620637428e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c03_nw12",
+    "eigen_residual": 6.317863410987473e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c04_nw00",
+    "eigen_residual": 7.179789803881628e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c04_nw01",
+    "eigen_residual": 7.893436479134669e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c04_nw02",
+    "eigen_residual": 6.963181099840943e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c04_nw03",
+    "eigen_residual": 9.65919260975608e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c04_nw04",
+    "eigen_residual": 3.421309014734763e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c04_nw05",
+    "eigen_residual": 7.391710817879746e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c04_nw06",
+    "eigen_residual": 8.0776098423406e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c04_nw07",
+    "eigen_residual": 1.077541466210663e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c04_nw08",
+    "eigen_residual": 6.636272380001769e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c04_nw09",
+    "eigen_residual": 7.599585158994762e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c04_nw11",
+    "eigen_residual": 5.746355327846743e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c04_nw12",
+    "eigen_residual": 6.064478709925597e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c05_nw00",
+    "eigen_residual": 6.621980517682813e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c05_nw01",
+    "eigen_residual": 7.205700556455601e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c05_nw02",
+    "eigen_residual": 5.634121516215119e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c05_nw03",
+    "eigen_residual": 7.821779749177739e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c05_nw04",
+    "eigen_residual": 1.0652370539520161e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c05_nw05",
+    "eigen_residual": 6.696687523297377e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c05_nw06",
+    "eigen_residual": 4.1320608884406474e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c05_nw07",
+    "eigen_residual": 4.404198101465032e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c05_nw08",
+    "eigen_residual": 1.682817940355112e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c05_nw09",
+    "eigen_residual": 1.042549122961247e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c05_nw11",
+    "eigen_residual": 1.1045412186416555e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c05_nw12",
+    "eigen_residual": 7.338944373203898e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c06_nw00",
+    "eigen_residual": 5.664411307469944e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c06_nw01",
+    "eigen_residual": 9.042186137603143e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c06_nw02",
+    "eigen_residual": 6.37063849532558e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c06_nw03",
+    "eigen_residual": 7.700182362449549e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c06_nw04",
+    "eigen_residual": 7.828040825341449e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c06_nw05",
+    "eigen_residual": 8.499122561452294e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c06_nw06",
+    "eigen_residual": 6.203840351441327e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c06_nw07",
+    "eigen_residual": 3.4542077290440304e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c06_nw08",
+    "eigen_residual": 9.746369559221989e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c06_nw09",
+    "eigen_residual": 1.3533850627787734e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c06_nw11",
+    "eigen_residual": 2.6437445167130456e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c06_nw12",
+    "eigen_residual": 6.589763964886876e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c07_nw00",
+    "eigen_residual": 7.910865957157977e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c07_nw01",
+    "eigen_residual": 8.356688794194202e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c07_nw02",
+    "eigen_residual": 6.532375605027137e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c07_nw03",
+    "eigen_residual": 5.749360496106686e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c07_nw04",
+    "eigen_residual": 6.319154239636036e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c07_nw05",
+    "eigen_residual": 8.667211260307941e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c07_nw06",
+    "eigen_residual": 5.049534987148184e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c07_nw07",
+    "eigen_residual": 7.849895248922721e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c07_nw08",
+    "eigen_residual": 6.352649785911055e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c07_nw09",
+    "eigen_residual": 9.745646397730108e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c07_nw11",
+    "eigen_residual": 7.450700899505043e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c07_nw12",
+    "eigen_residual": 7.335715596756868e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c08_nw00",
+    "eigen_residual": 6.470000388198335e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c08_nw01",
+    "eigen_residual": 7.941341026649787e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c08_nw02",
+    "eigen_residual": 5.628551904311201e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c08_nw03",
+    "eigen_residual": 6.705844009359518e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c08_nw04",
+    "eigen_residual": 6.125987623469199e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c08_nw05",
+    "eigen_residual": 8.838410303367996e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c08_nw06",
+    "eigen_residual": 6.364588634374838e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c08_nw07",
+    "eigen_residual": 4.3296187080023657e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c08_nw08",
+    "eigen_residual": 7.295575942174349e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c08_nw09",
+    "eigen_residual": 8.006910429870201e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c08_nw11",
+    "eigen_residual": 1.7255481472746106e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c08_nw12",
+    "eigen_residual": 7.690696747492655e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c09_nw00",
+    "eigen_residual": 7.790240403895475e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c09_nw01",
+    "eigen_residual": 8.202533600029392e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c09_nw02",
+    "eigen_residual": 5.61561890573461e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c09_nw03",
+    "eigen_residual": 5.579325961692327e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c09_nw04",
+    "eigen_residual": 1.904327467583979e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c09_nw05",
+    "eigen_residual": 7.179830852805579e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c09_nw06",
+    "eigen_residual": 5.221548655258401e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c09_nw07",
+    "eigen_residual": 5.115798183741995e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c09_nw08",
+    "eigen_residual": 1.0816402237576152e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c09_nw09",
+    "eigen_residual": 7.347997138817259e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c09_nw11",
+    "eigen_residual": 2.3640832781082584e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c09_nw12",
+    "eigen_residual": 7.935535099133114e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c10_nw00",
+    "eigen_residual": 5.663035959986233e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c10_nw01",
+    "eigen_residual": 7.136094209050245e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c10_nw02",
+    "eigen_residual": 6.38793954212351e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c10_nw03",
+    "eigen_residual": 6.467477042500364e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c10_nw04",
+    "eigen_residual": 9.915432825150619e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c10_nw05",
+    "eigen_residual": 7.102347650349889e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c10_nw06",
+    "eigen_residual": 5.644028256750402e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c10_nw07",
+    "eigen_residual": 5.082830126663805e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c10_nw08",
+    "eigen_residual": 1.3289249039277087e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c10_nw09",
+    "eigen_residual": 6.607673579004426e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c10_nw11",
+    "eigen_residual": 7.474797340110948e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c10_nw12",
+    "eigen_residual": 9.215293652386942e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c11_nw00",
+    "eigen_residual": 6.691338180619547e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c11_nw01",
+    "eigen_residual": 8.095589497864179e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c11_nw02",
+    "eigen_residual": 7.901870107858314e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c11_nw03",
+    "eigen_residual": 7.260440199927672e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c11_nw04",
+    "eigen_residual": 5.8670217562055975e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c11_nw05",
+    "eigen_residual": 8.095870374258113e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c11_nw06",
+    "eigen_residual": 7.461987979570596e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c11_nw07",
+    "eigen_residual": 4.1426074633265494e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c11_nw08",
+    "eigen_residual": 1.0149531141656817e-15
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c11_nw09",
+    "eigen_residual": 6.018062607891168e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c11_nw11",
+    "eigen_residual": 9.830787217891855e-16
+  },
+  {
+    "case": "T_20260911",
+    "branch": "tight",
+    "group": "c11_nw12",
+    "eigen_residual": 4.924515416011381e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c00_nw00",
+    "eigen_residual": 4.482204674033848e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c00_nw01",
+    "eigen_residual": 8.074741523895276e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c00_nw02",
+    "eigen_residual": 9.519027825610172e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c00_nw03",
+    "eigen_residual": 1.2070021870875925e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c00_nw04",
+    "eigen_residual": 9.441230937826524e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c00_nw05",
+    "eigen_residual": 6.9204903645705385e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c00_nw06",
+    "eigen_residual": 7.168086846098104e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c00_nw07",
+    "eigen_residual": 3.870754378269425e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c00_nw08",
+    "eigen_residual": 6.010288526567522e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c00_nw09",
+    "eigen_residual": 5.0842957574978955e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c00_nw11",
+    "eigen_residual": 7.087736198768411e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c00_nw12",
+    "eigen_residual": 6.986738160720535e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c01_nw00",
+    "eigen_residual": 6.74031924844494e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c01_nw01",
+    "eigen_residual": 5.825549475456647e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c01_nw02",
+    "eigen_residual": 6.507781881377034e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c01_nw03",
+    "eigen_residual": 6.322342262573969e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c01_nw04",
+    "eigen_residual": 6.175935920154603e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c01_nw05",
+    "eigen_residual": 5.686599631133336e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c01_nw06",
+    "eigen_residual": 5.421016163336797e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c01_nw07",
+    "eigen_residual": 6.476409621356804e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c01_nw08",
+    "eigen_residual": 6.862029053756289e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c01_nw09",
+    "eigen_residual": 4.1366959652578286e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c01_nw11",
+    "eigen_residual": 7.969437900792383e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c01_nw12",
+    "eigen_residual": 6.258220728949835e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c02_nw00",
+    "eigen_residual": 7.910477668025247e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c02_nw01",
+    "eigen_residual": 5.889033349817659e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c02_nw02",
+    "eigen_residual": 6.118134264376154e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c02_nw03",
+    "eigen_residual": 7.147542486621179e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c02_nw04",
+    "eigen_residual": 1.0836403949364162e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c02_nw05",
+    "eigen_residual": 8.636537627025285e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c02_nw06",
+    "eigen_residual": 7.957302195462858e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c02_nw07",
+    "eigen_residual": 8.18413091514626e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c02_nw08",
+    "eigen_residual": 1.509191917359456e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c02_nw09",
+    "eigen_residual": 6.998169143908812e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c02_nw11",
+    "eigen_residual": 1.3920696985946893e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c02_nw12",
+    "eigen_residual": 7.09634510118011e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c03_nw00",
+    "eigen_residual": 1.0059663658486391e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c03_nw01",
+    "eigen_residual": 6.059634455877318e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c03_nw02",
+    "eigen_residual": 6.22214626139688e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c03_nw03",
+    "eigen_residual": 8.410877150237336e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c03_nw04",
+    "eigen_residual": 1.1335629959915777e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c03_nw05",
+    "eigen_residual": 5.014805384378252e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c03_nw06",
+    "eigen_residual": 3.848533730349004e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c03_nw07",
+    "eigen_residual": 3.02811249368469e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c03_nw08",
+    "eigen_residual": 6.95964298609964e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c03_nw09",
+    "eigen_residual": 7.040281126052369e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c03_nw11",
+    "eigen_residual": 6.738268287281564e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c03_nw12",
+    "eigen_residual": 5.493974556440728e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c04_nw00",
+    "eigen_residual": 4.026881448992761e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c04_nw01",
+    "eigen_residual": 5.941436683703571e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c04_nw02",
+    "eigen_residual": 6.974192021220288e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c04_nw03",
+    "eigen_residual": 1.148582173230004e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c04_nw04",
+    "eigen_residual": 9.149487695112404e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c04_nw05",
+    "eigen_residual": 6.638647981823937e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c04_nw06",
+    "eigen_residual": 4.927613084962292e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c04_nw07",
+    "eigen_residual": 3.8416088628847645e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c04_nw08",
+    "eigen_residual": 6.447378847337182e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c04_nw09",
+    "eigen_residual": 5.000214267448406e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c04_nw11",
+    "eigen_residual": 6.689977107736064e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c04_nw12",
+    "eigen_residual": 4.896379312106056e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c05_nw00",
+    "eigen_residual": 4.995186333698755e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c05_nw01",
+    "eigen_residual": 1.023609355687899e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c05_nw02",
+    "eigen_residual": 5.93266566695098e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c05_nw03",
+    "eigen_residual": 1.2423517927407663e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c05_nw04",
+    "eigen_residual": 6.982849717429978e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c05_nw05",
+    "eigen_residual": 8.968714251569923e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c05_nw06",
+    "eigen_residual": 1.162084955563709e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c05_nw07",
+    "eigen_residual": 1.034503161831114e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c05_nw08",
+    "eigen_residual": 6.990040913610641e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c05_nw09",
+    "eigen_residual": 9.008270028517052e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c05_nw11",
+    "eigen_residual": 9.247092690976109e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c05_nw12",
+    "eigen_residual": 5.945019001911557e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c06_nw00",
+    "eigen_residual": 6.406609414211732e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c06_nw01",
+    "eigen_residual": 9.892637986503323e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c06_nw02",
+    "eigen_residual": 4.965822918430098e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c06_nw03",
+    "eigen_residual": 6.667308052218619e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c06_nw04",
+    "eigen_residual": 1.5816870141181508e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c06_nw05",
+    "eigen_residual": 7.756471875461029e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c06_nw06",
+    "eigen_residual": 6.963972058638886e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c06_nw07",
+    "eigen_residual": 3.321620007713009e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c06_nw08",
+    "eigen_residual": 7.553282269671736e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c06_nw09",
+    "eigen_residual": 1.358742097607304e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c06_nw11",
+    "eigen_residual": 7.301822252071303e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c06_nw12",
+    "eigen_residual": 6.787773141952608e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c07_nw00",
+    "eigen_residual": 3.569344875321845e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c07_nw01",
+    "eigen_residual": 7.126987340415519e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c07_nw02",
+    "eigen_residual": 1.2210081362114628e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c07_nw03",
+    "eigen_residual": 5.892681208742881e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c07_nw04",
+    "eigen_residual": 6.156124114774631e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c07_nw05",
+    "eigen_residual": 6.827920170502693e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c07_nw06",
+    "eigen_residual": 4.832655852912933e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c07_nw07",
+    "eigen_residual": 5.625332074667832e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c07_nw08",
+    "eigen_residual": 4.927967113040928e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c07_nw09",
+    "eigen_residual": 8.205033659716007e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c07_nw11",
+    "eigen_residual": 8.769932961540349e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c07_nw12",
+    "eigen_residual": 7.245509730973319e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c08_nw00",
+    "eigen_residual": 4.733464830199086e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c08_nw01",
+    "eigen_residual": 9.721525769967706e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c08_nw02",
+    "eigen_residual": 7.976480566738612e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c08_nw03",
+    "eigen_residual": 5.661844492575389e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c08_nw04",
+    "eigen_residual": 1.0678024820916577e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c08_nw05",
+    "eigen_residual": 7.94205046162315e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c08_nw06",
+    "eigen_residual": 1.0346832493867862e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c08_nw07",
+    "eigen_residual": 4.65843241138653e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c08_nw08",
+    "eigen_residual": 8.035244296134231e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c08_nw09",
+    "eigen_residual": 9.801019475825493e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c08_nw11",
+    "eigen_residual": 5.046563476751705e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c08_nw12",
+    "eigen_residual": 5.877634282368703e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c09_nw00",
+    "eigen_residual": 5.305538860339702e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c09_nw01",
+    "eigen_residual": 5.712847699317984e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c09_nw02",
+    "eigen_residual": 7.547964683167548e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c09_nw03",
+    "eigen_residual": 8.450176149187858e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c09_nw04",
+    "eigen_residual": 1.5066026939291033e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c09_nw05",
+    "eigen_residual": 6.312664030929846e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c09_nw06",
+    "eigen_residual": 7.923405453035608e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c09_nw07",
+    "eigen_residual": 3.177218796727063e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c09_nw08",
+    "eigen_residual": 6.955864837806719e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c09_nw09",
+    "eigen_residual": 8.509465113904359e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c09_nw11",
+    "eigen_residual": 6.977722636073295e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c09_nw12",
+    "eigen_residual": 5.828210157593637e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c10_nw00",
+    "eigen_residual": 6.890501604246412e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c10_nw01",
+    "eigen_residual": 9.831051406305566e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c10_nw02",
+    "eigen_residual": 7.411737384613156e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c10_nw03",
+    "eigen_residual": 7.583124609272035e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c10_nw04",
+    "eigen_residual": 5.288695545654751e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c10_nw05",
+    "eigen_residual": 7.730312274375902e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c10_nw06",
+    "eigen_residual": 3.634480515954695e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c10_nw07",
+    "eigen_residual": 3.664995514129481e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c10_nw08",
+    "eigen_residual": 7.100701644426165e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c10_nw09",
+    "eigen_residual": 1.0026227960387488e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c10_nw11",
+    "eigen_residual": 6.498764858411114e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c10_nw12",
+    "eigen_residual": 6.971071278297966e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c11_nw00",
+    "eigen_residual": 4.9459618884614665e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c11_nw01",
+    "eigen_residual": 5.150738888930065e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c11_nw02",
+    "eigen_residual": 6.211919671437725e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c11_nw03",
+    "eigen_residual": 8.86596190480799e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c11_nw04",
+    "eigen_residual": 8.029552936626076e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c11_nw05",
+    "eigen_residual": 7.245665738701044e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c11_nw06",
+    "eigen_residual": 4.1871593084725285e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c11_nw07",
+    "eigen_residual": 4.291636285288304e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c11_nw08",
+    "eigen_residual": 6.319940248825332e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c11_nw09",
+    "eigen_residual": 4.522454888752395e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c11_nw11",
+    "eigen_residual": 8.90328708630166e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "nominal",
+    "group": "c11_nw12",
+    "eigen_residual": 5.328209074445759e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c00_nw00",
+    "eigen_residual": 6.517273251241943e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c00_nw01",
+    "eigen_residual": 7.42382843467518e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c00_nw02",
+    "eigen_residual": 5.3470887202230525e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c00_nw03",
+    "eigen_residual": 9.325329602761424e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c00_nw04",
+    "eigen_residual": 1.616142915439394e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c00_nw05",
+    "eigen_residual": 6.381985770158167e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c00_nw06",
+    "eigen_residual": 6.485480882946765e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c00_nw07",
+    "eigen_residual": 3.870754378269425e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c00_nw08",
+    "eigen_residual": 7.823419360658988e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c00_nw09",
+    "eigen_residual": 5.278937207746347e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c00_nw11",
+    "eigen_residual": 8.313567787240922e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c00_nw12",
+    "eigen_residual": 5.767061303391692e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c01_nw00",
+    "eigen_residual": 6.74031924844494e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c01_nw01",
+    "eigen_residual": 5.825549475456647e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c01_nw02",
+    "eigen_residual": 6.507781881377034e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c01_nw03",
+    "eigen_residual": 7.774132297259174e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c01_nw04",
+    "eigen_residual": 6.77208550846837e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c01_nw05",
+    "eigen_residual": 5.635233732387721e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c01_nw06",
+    "eigen_residual": 5.93662858769072e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c01_nw07",
+    "eigen_residual": 2.35379492427388e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c01_nw08",
+    "eigen_residual": 7.107800255219875e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c01_nw09",
+    "eigen_residual": 8.1039380821882785e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c01_nw11",
+    "eigen_residual": 8.728650525832109e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c01_nw12",
+    "eigen_residual": 5.637873447360049e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c02_nw00",
+    "eigen_residual": 7.910477668025247e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c02_nw01",
+    "eigen_residual": 6.349619375504125e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c02_nw02",
+    "eigen_residual": 5.723816439655545e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c02_nw03",
+    "eigen_residual": 5.930144258442283e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c02_nw04",
+    "eigen_residual": 1.043839857305093e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c02_nw05",
+    "eigen_residual": 7.200993033279285e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c02_nw06",
+    "eigen_residual": 7.957302195462858e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c02_nw07",
+    "eigen_residual": 8.18413091514626e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c02_nw08",
+    "eigen_residual": 9.411606033356482e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c02_nw09",
+    "eigen_residual": 7.138472240444036e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c02_nw11",
+    "eigen_residual": 6.735517535000674e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c02_nw12",
+    "eigen_residual": 8.7693431341039e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c03_nw00",
+    "eigen_residual": 1.0059663658486391e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c03_nw01",
+    "eigen_residual": 6.059634455877318e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c03_nw02",
+    "eigen_residual": 6.809580282888974e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c03_nw03",
+    "eigen_residual": 7.385069518683318e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c03_nw04",
+    "eigen_residual": 1.1335629959915777e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c03_nw05",
+    "eigen_residual": 6.696324614069796e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c03_nw06",
+    "eigen_residual": 6.630711966646721e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c03_nw07",
+    "eigen_residual": 3.02811249368469e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c03_nw08",
+    "eigen_residual": 6.587593375458794e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c03_nw09",
+    "eigen_residual": 6.148114600373249e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c03_nw11",
+    "eigen_residual": 9.196006868394148e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c03_nw12",
+    "eigen_residual": 8.499654618072285e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c04_nw00",
+    "eigen_residual": 4.026881448992761e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c04_nw01",
+    "eigen_residual": 5.941436683703571e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c04_nw02",
+    "eigen_residual": 6.974192021220288e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c04_nw03",
+    "eigen_residual": 1.0049951626782292e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c04_nw04",
+    "eigen_residual": 8.357109386471445e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c04_nw05",
+    "eigen_residual": 9.188557871293195e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c04_nw06",
+    "eigen_residual": 3.6633026399748966e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c04_nw07",
+    "eigen_residual": 8.096114696583529e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c04_nw08",
+    "eigen_residual": 5.7523808771344565e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c04_nw09",
+    "eigen_residual": 5.951962193822504e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c04_nw11",
+    "eigen_residual": 8.728270473013095e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c04_nw12",
+    "eigen_residual": 5.201360190550575e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c05_nw00",
+    "eigen_residual": 5.483691998643116e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c05_nw01",
+    "eigen_residual": 6.407277356585599e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c05_nw02",
+    "eigen_residual": 8.60966248498353e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c05_nw03",
+    "eigen_residual": 9.405033096159975e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c05_nw04",
+    "eigen_residual": 7.717994477894585e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c05_nw05",
+    "eigen_residual": 6.341393102011561e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c05_nw06",
+    "eigen_residual": 1.371523144512333e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c05_nw07",
+    "eigen_residual": 1.034503161831114e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c05_nw08",
+    "eigen_residual": 6.618225830772008e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c05_nw09",
+    "eigen_residual": 1.0493172983314797e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c05_nw11",
+    "eigen_residual": 1.0114097138906332e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c05_nw12",
+    "eigen_residual": 9.308071396369405e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c06_nw00",
+    "eigen_residual": 6.406609414211732e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c06_nw01",
+    "eigen_residual": 1.2250383149856743e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c06_nw02",
+    "eigen_residual": 7.285767632360759e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c06_nw03",
+    "eigen_residual": 6.960047974519965e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c06_nw04",
+    "eigen_residual": 4.718505032949793e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c06_nw05",
+    "eigen_residual": 8.297924802963927e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c06_nw06",
+    "eigen_residual": 5.348531720496391e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c06_nw07",
+    "eigen_residual": 4.462369134789171e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c06_nw08",
+    "eigen_residual": 7.77615122989251e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c06_nw09",
+    "eigen_residual": 7.198890385171937e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c06_nw11",
+    "eigen_residual": 6.33302860668129e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c06_nw12",
+    "eigen_residual": 7.059365082801052e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c07_nw00",
+    "eigen_residual": 7.221422357055004e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c07_nw01",
+    "eigen_residual": 8.003709005852592e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c07_nw02",
+    "eigen_residual": 4.102282669917983e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c07_nw03",
+    "eigen_residual": 5.747925872303124e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c07_nw04",
+    "eigen_residual": 6.262464057770667e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c07_nw05",
+    "eigen_residual": 9.748928756796256e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c07_nw06",
+    "eigen_residual": 7.144093982893388e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c07_nw07",
+    "eigen_residual": 3.608947921836093e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c07_nw08",
+    "eigen_residual": 4.866245984539501e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c07_nw09",
+    "eigen_residual": 6.700934648004424e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c07_nw11",
+    "eigen_residual": 1.0082192880713345e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c07_nw12",
+    "eigen_residual": 5.2901077202396805e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c08_nw00",
+    "eigen_residual": 4.623832106427149e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c08_nw01",
+    "eigen_residual": 7.030001903231055e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c08_nw02",
+    "eigen_residual": 6.773257229704357e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c08_nw03",
+    "eigen_residual": 6.157243264213903e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c08_nw04",
+    "eigen_residual": 8.428996936535573e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c08_nw05",
+    "eigen_residual": 1.0852802427041902e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c08_nw06",
+    "eigen_residual": 8.171225374451106e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c08_nw07",
+    "eigen_residual": 3.9556851272873264e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c08_nw08",
+    "eigen_residual": 1.7219807041741572e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c08_nw09",
+    "eigen_residual": 7.252163085604723e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c08_nw11",
+    "eigen_residual": 7.883246098724125e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c08_nw12",
+    "eigen_residual": 8.039077902768305e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c09_nw00",
+    "eigen_residual": 4.3735814267696276e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c09_nw01",
+    "eigen_residual": 6.791418477665537e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c09_nw02",
+    "eigen_residual": 5.842598351986268e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c09_nw03",
+    "eigen_residual": 8.219400062874203e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c09_nw04",
+    "eigen_residual": 6.80128055579497e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c09_nw05",
+    "eigen_residual": 6.091549736872531e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c09_nw06",
+    "eigen_residual": 7.442133337619018e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c09_nw07",
+    "eigen_residual": 3.9157602474001094e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c09_nw08",
+    "eigen_residual": 9.577690956690544e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c09_nw09",
+    "eigen_residual": 9.454380688358028e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c09_nw11",
+    "eigen_residual": 7.553563688350183e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c09_nw12",
+    "eigen_residual": 5.619327195068955e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c10_nw00",
+    "eigen_residual": 5.657144468957817e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c10_nw01",
+    "eigen_residual": 8.833587929788965e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c10_nw02",
+    "eigen_residual": 6.099668439447787e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c10_nw03",
+    "eigen_residual": 5.994487819376141e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c10_nw04",
+    "eigen_residual": 5.188973878753477e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c10_nw05",
+    "eigen_residual": 8.521489166509962e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c10_nw06",
+    "eigen_residual": 4.259260087330479e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c10_nw07",
+    "eigen_residual": 4.829599837569171e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c10_nw08",
+    "eigen_residual": 7.692229416887934e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c10_nw09",
+    "eigen_residual": 5.8215461839815005e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c10_nw11",
+    "eigen_residual": 1.0184518318861292e-15
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c10_nw12",
+    "eigen_residual": 7.760099524859982e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c11_nw00",
+    "eigen_residual": 4.9459618884614665e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c11_nw01",
+    "eigen_residual": 5.150738888930065e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c11_nw02",
+    "eigen_residual": 5.086714935393776e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c11_nw03",
+    "eigen_residual": 8.264065170031425e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c11_nw04",
+    "eigen_residual": 4.958663621863312e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c11_nw05",
+    "eigen_residual": 7.05017498915124e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c11_nw06",
+    "eigen_residual": 4.0814554666676177e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c11_nw07",
+    "eigen_residual": 4.086677755758003e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c11_nw08",
+    "eigen_residual": 7.41346194417043e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c11_nw09",
+    "eigen_residual": 6.204672282476192e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c11_nw11",
+    "eigen_residual": 6.520145793390446e-16
+  },
+  {
+    "case": "real123424",
+    "branch": "tight",
+    "group": "c11_nw12",
+    "eigen_residual": 7.360850710672792e-16
+  }
+]

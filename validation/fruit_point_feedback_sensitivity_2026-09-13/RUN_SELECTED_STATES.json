@@ -1,0 +1,142 @@
+{
+  "states": [
+    {
+      "role": "ordinary",
+      "case": "H_20260911",
+      "pass_index": 0,
+      "files": [
+        {
+          "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H_20260911/C/pass00_maps.npz",
+          "sha256": "d8fff67ffdeb4e2bd772820795d9674c5d02b288cdf22968e244692496b2b6fc"
+        },
+        {
+          "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H_20260911/C/pass00_state.npz",
+          "sha256": "fbd9cebc0919420580eea3431eb35dc54dfa85b584d3188d92a5d4c79d85ced8"
+        },
+        {
+          "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/H_20260911/C/START.json",
+          "sha256": "766d59414e949b2642a237f8ab653857f54ac26b89beeb0be002ae536c2c053e"
+        },
+        {
+          "path": "/private/tmp/sci-fruit-point-bounded-repair-20260912-r0.1/stopping/H_20260911_pass00_a1100.npz",
+          "sha256": "8a63410f7a18679cbfa70b4926b655da121da6e4f4839acf1b72e6f807b9b521"
+        },
+        {
+          "path": "/private/tmp/sci-fruit-point-bounded-repair-20260912-r0.1/stopping/H_20260911_pass00_a1400.npz",
+          "sha256": "c530b4645a96a58bc8a9e666ae747a0d57439aac300476375ab5e2a3946f7ef2"
+        },
+        {
+          "path": "/private/tmp/sci-fruit-point-bounded-repair-20260912-r0.1/stopping/H_20260911_pass00_a2000.npz",
+          "sha256": "371d1342b1b3568f1cbb7946a64258c69eaf2759c23ee418854ca24a65d02a2b"
+        }
+      ]
+    },
+    {
+      "role": "largest_source_region_change",
+      "case": "T_20260911",
+      "pass_index": 1,
+      "files": [
+        {
+          "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/T_20260911/C/pass01_maps.npz",
+          "sha256": "2aa29e90ef32891d6e1514e28cdd5e9a6c0c16f7d0f323448858ec991eb7fbef"
+        },
+        {
+          "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/T_20260911/C/pass01_state.npz",
+          "sha256": "9a0fc6c43427aa80615aa408caeea3b57a99a7da36826feb32bd54eadf217b20"
+        },
+        {
+          "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/T_20260911/C/START.json",
+          "sha256": "30d69e1dd4729c8a51342c41f6391c08c71286c22b97255e43e9143debf240cf"
+        },
+        {
+          "path": "/private/tmp/sci-fruit-point-bounded-repair-20260912-r0.1/stopping/T_20260911_pass01_a1100.npz",
+          "sha256": "65592d65961424c0cbc6df1cbf0db7bac448e76f2878c7c629ee4aac49304eb6"
+        },
+        {
+          "path": "/private/tmp/sci-fruit-point-bounded-repair-20260912-r0.1/stopping/T_20260911_pass01_a1400.npz",
+          "sha256": "8bed78acb3d8a905f091f9a80fcc2940b6dd939147b6bfad5fe9b179b7abd817"
+        },
+        {
+          "path": "/private/tmp/sci-fruit-point-bounded-repair-20260912-r0.1/stopping/T_20260911_pass01_a2000.npz",
+          "sha256": "0395688ea50c1aa42d0f8e7da5d0495e901350f762f6bd1d4900670bc62ef489"
+        }
+      ]
+    },
+    {
+      "role": "real",
+      "case": "real123424",
+      "pass_index": 0,
+      "files": [
+        {
+          "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/real123424/C/pass00_maps.npz",
+          "sha256": "aff9bdbfb3338718fde8044ba3308950dbf393dfd95451d955931133657a0b5b"
+        },
+        {
+          "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/real123424/C/pass00_state.npz",
+          "sha256": "da8bdb2ba0724a054864270eeb23599f42c8fcdba4d56e0a4668f0ff9faf7fc2"
+        },
+        {
+          "path": "/private/tmp/sci-fruit-point-operational-gates-20260912-r0.1/real123424/C/START.json",
+          "sha256": "161685ccdcb7b96faed630ece2f9b66a90793079197ff33dafc3a725566112e0"
+        },
+        {
+          "path": "/private/tmp/sci-fruit-point-bounded-repair-20260912-r0.1/stopping/real123424_pass00_a1100.npz",
+          "sha256": "4cb6c00f686936d029faba200c5db8a31c43198fd7d1ac7b1e4b06ffc2093cc0"
+        },
+        {
+          "path": "/private/tmp/sci-fruit-point-bounded-repair-20260912-r0.1/stopping/real123424_pass00_a1400.npz",
+          "sha256": "19d047118f095be3887d5cfc0a25547051aa120ee54813f6007a01fe9e6e03ee"
+        },
+        {
+          "path": "/private/tmp/sci-fruit-point-bounded-repair-20260912-r0.1/stopping/real123424_pass00_a2000.npz",
+          "sha256": "c1351a087ecebc2b247c82fcd59523378401e53a243ac34291db3fd3d7c245f1"
+        }
+      ]
+    }
+  ],
+  "ranking": [
+    {
+      "source_core_difference_energy": 34899223.76104579,
+      "case": "T_20260911",
+      "pass_index": 1
+    },
+    {
+      "source_core_difference_energy": 11464446.91103001,
+      "case": "D_20260911",
+      "pass_index": 0
+    },
+    {
+      "source_core_difference_energy": 11237748.00190196,
+      "case": "H-shift_20260912",
+      "pass_index": 0
+    },
+    {
+      "source_core_difference_energy": 9343159.299355228,
+      "case": "H-shift_20260911",
+      "pass_index": 0
+    },
+    {
+      "source_core_difference_energy": 5476386.766054869,
+      "case": "H_20260912",
+      "pass_index": 0
+    },
+    {
+      "source_core_difference_energy": 5476386.766054869,
+      "case": "T_20260912",
+      "pass_index": 0
+    },
+    {
+      "source_core_difference_energy": 3066623.2209598986,
+      "case": "T_20260911",
+      "pass_index": 0
+    },
+    {
+      "source_core_difference_energy": 2766263.1557591883,
+      "case": "D_20260912",
+      "pass_index": 0
+    }
+  ],
+  "selected_before_cleaning": true,
+  "cleaning_calls_at_selection": 0,
+  "utc": "2026-09-13T12:59:23.445724+00:00"
+}

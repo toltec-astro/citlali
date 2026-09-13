@@ -1,0 +1,10 @@
+{
+  "saved_pair_records": 144,
+  "available_pairs": 141,
+  "unavailable_pairs": 3,
+  "one_step_branches": 6,
+  "new_feedback_optimizations": 0,
+  "wall_seconds": 41.20732954191044,
+  "peak_rss_bytes": 2781511680,
+  "output_bytes": 40325577
+}

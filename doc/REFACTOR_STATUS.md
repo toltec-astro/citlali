@@ -1946,6 +1946,31 @@ regularizer, method, gate or full trajectory. Subspace and next-total peak/centr
 effects determine whether a later scientific change is warranted; image-peak
 differences alone do not establish consequential underconstraint.
 
+The [paired feedback-sensitivity diagnostic is complete](../validation/fruit_point_feedback_sensitivity_2026-09-13/SCIENTIFIC_REPORT.md):
+141 saved pairs were screened (57 nonempty, 84 zero; three tighter solutions
+remain missing), followed by exactly six one-step relearning branches on
+H_20260911/pass0, T_20260911/pass1 selected by the frozen source-core projection
+rule, and real123424/pass0. All nine raw next-map centroid movements are below
+0.1 arcsec (max 0.04351); eight of nine fitted peak changes are below 0.5%.
+T/a1400 changes by -1.195% in peak and +13.72%/-7.98% in fitted major/minor width;
+the nominal peak is withheld by the unchanged evaluator and the tighter one is
+available. Seven peak pairs and eight centroid pairs are jointly usable. The
+earlier 67% model-peak statistic therefore overstates the next central-readout
+effect, but the difference is not harmless: projected models, returned off-source
+structure and learned subspaces change substantially (real/a1400 reaches an
+88.02-degree principal angle in one group). Selected wavelet evidence changes
+by only 0.026–0.247% of its target norm across the replayed array pairs, while
+some small remaining objectives improve materially. This supports consequential
+reconstruction freedom without proving an exact null space or excluding
+numerical conditioning. The recommendation is to propose one explicit constraint
+on unsupported fine-scale feedback, with source position, amplitude and shape
+remaining free; formulation and execution require a new scientific owner
+decision. No estimator or gate changed, no new feedback optimization occurred,
+and the prior qualification remains failed. The run took 41.21 s and 2.59 GiB
+peak RSS. All 864 learned covariance/eigen identities, 432 subspace comparisons,
+product/preservation checks and focused tests pass. No full-trajectory stability,
+scientific advantage, policy or production readiness is established.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

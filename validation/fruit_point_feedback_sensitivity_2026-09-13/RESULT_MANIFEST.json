@@ -1,0 +1,183 @@
+{
+  "identity": "SCI-FRUIT-POINT-PAIRED-FEEDBACK-SENSITIVITY-RESULT@r0.1",
+  "utc": "2026-09-13T13:16:40.684801+00:00",
+  "source_snapshot_commit": "bece76cc4c63f00c28aa7b4bf5746b03d3764925",
+  "source_hash_freeze_utc": "2026-09-13T12:58:15.397735+00:00",
+  "execution_started_utc": "2026-09-13T12:58:53.101053+00:00",
+  "source_commit_ordering": "Commit completed after run launch; exact source/input hash freeze preceded execution. See PROVENANCE_NOTE.md.",
+  "disposition": "diagnostic_complete_mixed_central_response_with_consequential_structure_and_subspace_changes",
+  "recommendation": "Propose one explicit image-selection constraint targeting unsupported fine-scale feedback; preserve free source amplitude, centroid and shape. Exact formulation and execution require a separate owner decision.",
+  "cleaning_calls": 6,
+  "feedback_optimization_calls": 0,
+  "old_qualification": "failed_and_preserved",
+  "new_candidate_admitted": false,
+  "full_trajectory_stability": false,
+  "production": false,
+  "external_payloads": 130,
+  "figures_visually_inspected": [
+    "NEXT_MAP_SENSITIVITY.png",
+    "FEEDBACK_AND_NEXT_MAP.png"
+  ],
+  "files": [
+    {
+      "path": "ANALYSIS.log",
+      "bytes": 1644,
+      "sha256": "70a2d1e96b3cc0b686d14d6e4c2926982e347e6907ab0f7fd091f3145f11484e"
+    },
+    {
+      "path": "DECISION_EVIDENCE.json",
+      "bytes": 332568,
+      "sha256": "d684c4fd5057a9fca124db99c78c90ef39990cdb31b4fc1ec715e3cbddf03a27"
+    },
+    {
+      "path": "EXECUTION.log",
+      "bytes": 2634,
+      "sha256": "dced6c49e88385af2dde40052055ec89802fcee62b526023574b3d449142a01c"
+    },
+    {
+      "path": "FEEDBACK_AND_NEXT_MAP.png",
+      "bytes": 217426,
+      "sha256": "884397f74de14bdedc597b421191d4a0a4e3a00b7518b21193e3bddeee994872"
+    },
+    {
+      "path": "FREEZE.json",
+      "bytes": 205889,
+      "sha256": "e5dcd772d2e0ce13e9b6a73ede20da78ede9a824461ad1140086a33c74aa6c8d"
+    },
+    {
+      "path": "FREEZE.json.sha256",
+      "bytes": 78,
+      "sha256": "ed4a3a02032091afa315a463e9ca5263ef6095aadec81ec8bf3ae0626882943c"
+    },
+    {
+      "path": "LEARNED_STATE_CHECKS.json",
+      "bytes": 110646,
+      "sha256": "cfffa99fc550795531e49c2882c5be6ac6446babf932256b1d0b3b2669c7bf75"
+    },
+    {
+      "path": "NEXT_MAP_SENSITIVITY.png",
+      "bytes": 103109,
+      "sha256": "58d42116944f926d811738260fb31eef60b4dadd59024b6225bf03ae8aa43e01"
+    },
+    {
+      "path": "OWNER_DIRECTION.md",
+      "bytes": 7820,
+      "sha256": "acbb2645eaa203e335a6c01840f037066fad3e7e174daf709b452fcbbbb07774"
+    },
+    {
+      "path": "PRESERVATION_START.json",
+      "bytes": 2479,
+      "sha256": "30f39b2553a499bf1d0cf089a61cee523ca1f836bed1f8e9ceeaee5308d863ee"
+    },
+    {
+      "path": "PRE_EXECUTION_TESTS.log",
+      "bytes": 537,
+      "sha256": "7e3847cc720868a93d87fa5f37046a21cf7464a640b45ee1e1acfb9604e69c53"
+    },
+    {
+      "path": "PROTOCOL.md",
+      "bytes": 8611,
+      "sha256": "9eb1381ce44ab454ad24187310d79d09f84f83fb076cf880c27bfb259f87caab"
+    },
+    {
+      "path": "PROVENANCE_NOTE.md",
+      "bytes": 1228,
+      "sha256": "9fa09ae18d838ff8512ad8c07060e6268c94e56b39cbbab714d03b879a7e2400"
+    },
+    {
+      "path": "README.md",
+      "bytes": 870,
+      "sha256": "4548a9436c736a13f115d7007e5caaec31707fbecb995541c345531b764e09df"
+    },
+    {
+      "path": "RENDER.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "RUN_COMPLETE.json",
+      "bytes": 242,
+      "sha256": "ff5091a5f2d96817df2156d4a8e042c114edeabafbff5ca908215ef0286d50a2"
+    },
+    {
+      "path": "RUN_PRODUCT_MANIFEST.json",
+      "bytes": 22956,
+      "sha256": "8c72cc5eb179ce03de6793dbb3b397648a6af50a5eb9e0a16d51ca09bc987516"
+    },
+    {
+      "path": "RUN_SELECTED_STATES.json",
+      "bytes": 5472,
+      "sha256": "c68ec98030e46abf50fee371091ce76c387e469446780e6cbf9ed492b7d1d558"
+    },
+    {
+      "path": "RUN_START.json",
+      "bytes": 221,
+      "sha256": "c4dab1e8ee941e02f9ca11ba667e66936d99a649e009a8736417ac1091ebe541"
+    },
+    {
+      "path": "SCIENTIFIC_REPORT.md",
+      "bytes": 11526,
+      "sha256": "ed9ab8815f25f0603e8729d3c29dcdf181aefd8da277b55068ae5471267fd7fd"
+    },
+    {
+      "path": "VERIFICATION.json",
+      "bytes": 537,
+      "sha256": "a7f70892db11f0f1373891a8075ea358dc60e1ebb57661823c8e8aa022fe72de"
+    },
+    {
+      "path": "VERIFICATION.log",
+      "bytes": 517,
+      "sha256": "a708d67797eb34a258491d5724f2b6e8fc978d9b68ce86789d09124739e5f48d"
+    },
+    {
+      "path": "WORKTREE_RECOVERY.json",
+      "bytes": 520,
+      "sha256": "2002bed622c3ec6662e6d8fe9ba9e5aa6435400f26770b28c6821aeb9edf33c1"
+    },
+    {
+      "path": "analyze_results.py",
+      "bytes": 6775,
+      "sha256": "04c2ed430e8c5b202d530bdaca8ec9ba5bc09d0ab7895b7038a64fb894b7b1b5"
+    },
+    {
+      "path": "build_result_manifest.py",
+      "bytes": 3053,
+      "sha256": "48424613210d7de27d3b31080ca2f4f52265041671da9f336cc8adda43f6ef6d"
+    },
+    {
+      "path": "common.py",
+      "bytes": 2699,
+      "sha256": "733333701bcc0e2b7913579ccba40cbbfe50ff3e093e6cc14242c2da965175d4"
+    },
+    {
+      "path": "diagnostics.py",
+      "bytes": 7691,
+      "sha256": "03283fe109dd985b76cb9a19cc840b9dbd5c096989946f38bf9f79a4086dd14b"
+    },
+    {
+      "path": "prepare.py",
+      "bytes": 3155,
+      "sha256": "c629eccdca98c00edece1356848fef165334d84c127f90b9a992b244cc840907"
+    },
+    {
+      "path": "render_results.py",
+      "bytes": 4398,
+      "sha256": "6812c9c586f5ed864ed6fdffab585ac46185348f1b0f791aee8c94333e5eabb6"
+    },
+    {
+      "path": "run_experiment.py",
+      "bytes": 11577,
+      "sha256": "824b450b1cadac6c42e8f2c8a92aa8a2cc50153b144988da38189cb41f216b61"
+    },
+    {
+      "path": "test_sensitivity.py",
+      "bytes": 1730,
+      "sha256": "08473b596360b58581b714b11e1e45d92b8767a3982a1d40d2b9ca6418551b38"
+    },
+    {
+      "path": "verify_results.py",
+      "bytes": 6092,
+      "sha256": "6f208df8a8bb5ef86785ba8208ea90984894b7915aa63c626ef323598424eb77"
+    }
+  ]
+}
