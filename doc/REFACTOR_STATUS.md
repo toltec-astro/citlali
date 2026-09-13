@@ -1,5 +1,72 @@
 # Citlali Refactor Status
 
+## RTC native disturbance-burden census completed locally — 2026-09-13
+
+Owner-approved **RTC-DISTURBANCE-BURDEN-CENSUS-001** is implemented at exact
+`5973de4eb696ad211be4eceeeabcc20e25435b6f`, tree
+`ccdd4a8d1edca3c6c2b64c46d01ec392fe8a07f8`, preserving literal reviewed
+RTC closure `8fff882dd0e8891512b01e6065cdb442981b1e5d` and original producer
+source `81a35ced25d45eeccafabc3243b5aa3010893625`. The bounded Python tool
+consumes preserved runtime Learn evidence and Consider dispositions; it creates
+engineering accounting artifacts, not a runtime plan or Apply operation.
+D2/VAL, detector/event methods, thresholds, grouping, single reassessment,
+source protection, spectra and all runtime/scientific contracts are unchanged.
+
+Across the same 143 eligible network files / 13 observations, the fixed initial
+producer/VAL paired denominator is 17,216,191,725,568 microseconds, or 4,782.275
+**detector-hours**. It contains 70,024 initially eligible detector streams;
+1,710 initial exclusions represent 107.692 detector-hours. All x/r and event
+support overlaps are unioned. The 155 deferred entries retain unavailable
+exposure. Failures and unresolved extents do not shrink the denominator.
+
+Available direct support occupies **0.1282264%** of initial detector-time:
+transition support 0.0035881%, bounded finite recoveries 0.1249041%, with overlap.
+Original fitting exclusions occupy 0.3103354%, and direct-plus-candidate-edge
+sensitivity 0.1633147%; neither is a physical-extent or treatment-policy claim.
+Final retained measurements reconcile to 11,150 coordinates in 8,389 original
+groups. There are 75,745 unresolved groups in 7,020 detector streams; those
+streams represent 14.92746% of initial exposure, not measured disturbance
+extent. Three producer refinement-limit causes persist, and 703 reassessed
+recoveries lack exported new extents. No old bounds or zero-duration substitutes
+fill those unavailable results.
+
+The highest-burden 5% of eligible detector streams carry 74.77575% of available
+direct support. Native duration/guard sensitivity and coordinate amplitude/
+transition-duration distributions are reported with their conditional meanings.
+No network file or acquisition ScanNum substitutes for a processing scan.
+Full detector-scan rejection, longest/all segments per scan, releveling costs
+and cross-network concurrency remain unavailable pending exact scan/clock
+relations. The settled full-affected-detector/full-intersected-existing-PCA-scan
+level-0 policy remains preserved; segmentation and releveling are not selected.
+
+Fresh 21/21 analytical tests and all-corpus exposure/population/hierarchy/
+concurrency gates pass. Independent exact-source/evidence review passes with
+recorded limitations and no remaining findings. Review repaired two omitted
+unresolved group causes without changing footprints, detector exposure or
+runtime evidence. Initial-source full replay has 152 byte-identical artifacts;
+the final repair preserves 149 timing/interval/metadata/original-plot artifacts,
+all 71,734 detector support records and every original coordinate event field.
+Four figures are inspected. Maximum endpoint rounding is 0.0078125 microseconds
+under the declared integer-microsecond accounting representation.
+
+Final local Python accounting took 67.184 seconds, whole-process peak RSS
+293,289,984 bytes. Prior 1,004 CTests, 33 RTC tests, four config modes and 207
+baseline tests remain inherited from unchanged C++; they are not rerun or
+claimed as new gates. This is local Python evidence, not a Unity/Spack,
+production-performance or end-to-end scientific acceptance result.
+
+[Report and four plots](/private/tmp/citlali-rtc-disturbance-burden-2026-09-13/census-02/README.md) and the existing RTC handoff bind the
+source, environment and 158-file output manifest (SHA-256 `e8156f63a96b21f045e571ff784d1c246994acd83f8e1cf0647e4c4ef33b95b4`).
+The source review is `/private/tmp/citlali-rtc-disturbance-burden-2026-09-13/review-source.md` (SHA-256 `659b7f01e859aee62f594b50a9610117b83576c2272666db9d7890d7c275924f`).
+The owned branch is `codex/rtc-disturbance-burden-census-001`, worktree
+`/private/tmp/citlali-rtc-disturbance-burden-census-001`. Live preflight canonical
+was `86c20b31f7300ba4063be044380b61cd0baf25eb`; no canonical admission occurs.
+A separate two-document closure must directly follow the tested source and
+receive independent exact-SHA review, bound externally after commit. Future
+admission requires fresh moving-base verification and exact integration review.
+No integration, push, cleanup, Unity access, new data, maps, activation, science
+flags, correction, filtering, spectra or subsequent runtime work occurs.
+
 ## RTC plateau-boundary implementation completed locally — 2026-09-12
 
 The owner-approved rule is implemented at exact `81a35ced25d45eeccafabc3243b5aa3010893625`,

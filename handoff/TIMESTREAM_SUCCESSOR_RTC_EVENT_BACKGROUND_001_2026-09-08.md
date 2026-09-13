@@ -2246,3 +2246,114 @@ new support remain explicitly unavailable (703 coordinate records in the
 preliminary corpus); no extra solver or event-analysis pass is needed to
 report the limit. The final source must receive a new full-corpus accounting
 run and independent exact-SHA review. Original source/evidence remains sealed.
+
+
+## RTC disturbance-burden census completion — 2026-09-13
+
+Disposition: implementation/evidence candidate complete for owner acceptance;
+no canonical integration, production admission or Apply treatment selection.
+Tested source `5973de4eb696ad211be4eceeeabcc20e25435b6f`, tree
+`ccdd4a8d1edca3c6c2b64c46d01ec392fe8a07f8`, direct parent
+`b4872da9d75a1cbc429a0b65bf91f8599aa87135`, literal approved base
+`8fff882dd0e8891512b01e6065cdb442981b1e5d`. Scope is the single accounting
+Python tool, 21 analytical tests and existing handoff/status records. The new
+branch/worktree and effective authority are the approved preflight above;
+prior partial temporary worktrees, unrelated dirty checkout and all preserved
+refs remain untouched. No second runtime probe, spine or integration branch
+is created. The engineering evidence consumer does not satisfy or change any
+runtime Learn/Consider/Apply responsibility.
+
+The original source `81a35ced25d45eeccafabc3243b5aa3010893625` and its 2,457-file
+closure manifest are preserved and verified. Final accounting binds original
+raw/Tune/APT input SHA-256 values, program-only telescope metadata and every
+native timing cell. Original candidate and final coordinate populations
+reconcile exactly. The 21 tests cover paired overlap, acquisition gaps, initial
+invalidity, unequal cadence, hypothetical scan boundaries, missing bounds,
+final bound selection, original group uncertainty, guards, qualification and
+byte-stable serialization. Full corpus checks conserve integer-microsecond
+exposure across detector, observation, network, array, program and concurrency
+partitions. Maximum endpoint rounding is 0.0078125 microseconds; the inherited
+provisional uniform-averaging and absent absolute/cross-network clock authority
+remain explicit.
+
+| Final accounting quantity | Value |
+|---|---:|
+| Assessed files / observations | 143 / 13 |
+| Initially eligible detector streams | 70,024 |
+| Initial producer/VAL paired exposure | 17,216,191,725,568 us |
+| Initial excluded exposure | 387,690,962,944 us |
+| Union of available direct support | 22,075,703,296 us / 0.1282264% |
+| Union of retained transition support | 617,742,336 us / 0.0035881% |
+| Union of bounded finite recoveries | 21,503,729,664 us / 0.1249041% |
+| Original fitting exclusions | 53,427,945,472 us / 0.3103354% |
+| Direct plus recorded candidate-edge sensitivity | 28,116,566,016 us / 0.1633147% |
+| Existing noise-screening-required support | 7,489,978,368 us / 0.0435054% |
+| Final retained coordinate measurements / original groups | 11,150 / 8,389 |
+| Unresolved original groups / detector streams | 75,745 / 7,020 |
+| Exposure of streams containing unresolved evidence | 2,569,939,558,400 us / 14.92746% |
+| Reassessed recovered coordinates lacking new extent export | 703 |
+| Deferred inventory entries / exposure | 155 / unavailable |
+
+These support rows overlap and must not be summed. Unresolved-stream exposure
+is a population denominator, not unknown-event duration or a prevalence bound.
+Final bounds comprise 9,678 unchanged initial and 1,472 remeasured coordinates;
+this phase distinction is separate from prior own-initial/partner-recovery
+categories. There are 170,088 bounded unreassessed recovery coordinates.
+Original refinement limits remain group-level unresolved causes, including
+when local coordinate support is measurable. One-coordinate bounds do not
+resolve unavailable partner extents. Failures never become zero-duration or
+clean-data assertions; rejected jump checks do not classify spikes.
+
+The descriptive concentration result is 74.77575% of direct support in the top
+5% of eligible detector streams. Scope-verified producer metadata covers three
+OOF, eight pointing and two science observations, all labeled Lissajous. The
+result does not establish coverage of other programs/conditions or operation-
+wide prevalence. x/r amplitudes, empirical sigma_delta and physical transition
+durations remain coordinate-local; sigma_delta is not fitted-offset uncertainty.
+Available-bound native duration qualification ranges from approximately 0.12825%
+to 0.21254% exclusion across approved min-duration 1/5/10 s and additional
+transition guard 0/50/100 ms assumptions. These are not scientifically qualified
+plateaus, selected runtime defaults or actual scan-treatment costs. Transient
+holes do not become level-shift boundaries. All-segment retention cannot be less
+than longest-segment retention under identical declared fixture definitions.
+
+Actual full-detector/full-PCA-scan loss, longest/all segments per scan and
+releveling opportunity remain unavailable. The exact native-cell/PCA-scan
+relation is the next prerequisite for comparing those costs; acquisition ScanNum
+and network files are not substitutes. Source protection, spectra, cross-network
+concurrency, physical-event identity/completeness and downstream scientific
+adequacy retain their existing limits. No new harmfulness or small-amplitude
+threshold, donor/replacement scheme, releveling policy or correction is selected.
+The owner-settled full-affected-detector/full-intersected-existing-scan level-0
+policy remains unchanged. No native-PSD use profile was activated.
+
+Fresh source-bound run: `/private/tmp/citlali-rtc-disturbance-burden-2026-09-13/census-02`; manifest SHA-256 `e8156f63a96b21f045e571ff784d1c246994acd83f8e1cf0647e4c4ef33b95b4` (158 files).
+Initial exact-source replay proof: `/private/tmp/citlali-rtc-disturbance-burden-2026-09-13/determinism-01.json`, 152 identical
+artifacts. Final invariance proof: `/private/tmp/citlali-rtc-disturbance-burden-2026-09-13/invariant-final.json`, 149 identical
+timing/interval/metadata/original-plot artifacts, 71,734 unchanged detector
+support/duration records and 242,014 unchanged original event-field records;
+only the two reviewed unresolved group counts and explicit new reporting fields
+change. Distribution aggregation was independently replayed exactly. Four
+figures were visually inspected. Source review by `/root/rtc_burden_exact_review`
+is `/private/tmp/citlali-rtc-disturbance-burden-2026-09-13/review-source.md`, SHA-256 `659b7f01e859aee62f594b50a9610117b83576c2272666db9d7890d7c275924f`:
+scientific/behavioral PASS with recorded limitations, architecture/ownership
+PASS, repository/evidence PASS, no remaining findings.
+
+Final local environment: macOS arm64, Python 3.13.2, NumPy 2.2.3, netCDF4 1.7.2,
+Matplotlib 3.10.0. Full census wall time 67.1844426 s, peak process RSS
+293,289,984 bytes, zero unexpected errors. This includes input hashing and
+artifact generation, not another solver/event-analysis pass or future runtime
+Apply cost. Prior unchanged C++/config/baseline gates are inherited evidence,
+not newly run gates; representative Spack/Unity and affected-mode reductions
+are not required for this inert tool and were not performed. New science,
+route activation, maps, flags, correction, filtering, spectra, PTC/AST/CAL,
+production, remote writes and cleanup are outside scope.
+
+The documentation-only closure must directly follow tested source `5973de4eb`
+and receive independent exact-SHA review. Its exact identity/tree/review are
+recorded externally after commit; no run at documentation HEAD replaces the
+tested identity. Owner acceptance and any owner-run push remain separate.
+Future canonical admission must freshly verify live ancestry and review its
+exact integration SHA. The next decision is the bounded scan-association
+prerequisite, not an inference that low direct support makes an Apply treatment
+safe or inexpensive at scan scale.
