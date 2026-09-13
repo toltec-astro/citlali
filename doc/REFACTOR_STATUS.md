@@ -2029,6 +2029,14 @@ scaling cases, with zero pre-PTC reads, PTC calls, refits, new thresholds,
 truth-selected iterations or reserved observations. No OOF or production
 advancement follows; the proposed experiment requires a separate owner decision.
 
+The owner then authorized **“Give this a go”** for that exact saved-map
+[fixed-template readout comparison](../validation/fruit_point_fixed_template_readout_2026-09-13/PROTOCOL.md).
+It binds 48 unrestricted linear amplitude-plus-plane fits on the existing
+24 terminal H/D array maps in the two retained domains, with a deliberately
+truth-assisted source-shape ruler. The free-Gaussian comparators and all
+registered availability labels remain unchanged. No PTC, feedback inference,
+new observations, deployment policy or subsequent experiment is included.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
