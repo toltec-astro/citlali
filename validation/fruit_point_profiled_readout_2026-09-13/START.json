@@ -1,0 +1,8 @@
+{
+  "utc": "2026-09-13T18:38:58.031769+00:00",
+  "source_commit": "416adb0b10a1257ce9b4ffff84c8db72fbdb83af",
+  "freeze_sha256": "8cbc8dc8440d3618d3e3d2204d310268b530dfc553042c64e82abafab878ba49",
+  "python": "3.13.2",
+  "numpy": "2.2.3",
+  "scipy": "1.15.2"
+}

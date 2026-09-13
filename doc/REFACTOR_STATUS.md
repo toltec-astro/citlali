@@ -2072,6 +2072,35 @@ error is not isolated FRUIT/PTC bias. Starlet stays parked, historical labels an
 all products remain intact, and no internal feedback fit, PTC, trajectory,
 threshold, reserved pointing, OOF or production change is included.
 
+The [bounded profiled-readout comparison is complete](../validation/fruit_point_profiled_readout_2026-09-13/SCIENTIFIC_REPORT.md).
+All 84 selected fits are finite, in bounds and rank four, have no worse saved-map
+objective, and clear all six known feasible witnesses. Linear re-solving at the
+original free geometry changes peak by at most 2.97e-8 relative and does not
+clear any witness: the original coefficient part was already solved. All six
+old witness fits sit at theta=+pi with an outward angle gradient, consistent
+with geometry search trapped at the angular coordinate boundary; this bounded
+repair does not isolate profiling, scaling, termination and path effects.
+All 252 starts terminate on objective change. The independent first-order
+criterion passes 65/84 selected fits (47/48 H/D); limits remain explicit.
+Similar-cost starts differ by at most 0.0397% peak and 0.00853 arcsec across all
+84 problems. No budget or start set was expanded.
+
+With the unchanged data-only evaluator, all four H/D domain-sensitivity peak
+rejections disappear. At 60 arcsec, usable matched gain within 5% changes from
+P 2/6 to 3/6 and C 1/6 to 4/6; usable peaks change P 6/12 to 7/12 and C 6/12
+to 9/12. Those usability counts do not imply full numerical qualification.
+Raw absolute peak counts stay P 6/12 and C 4/12. Raw crossed counts are 3/6
+for both repaired arms, and the 52-arcsec C absolute count falls from 5/12 to
+4/12 despite lower cost. All 12 H/D centroids per arm remain usable within
+1 arcsec; shifted-source, null-source and boundary safeguards are retained.
+The normal fitter costs 2.085 s for 84 fits (19.1 ms median), including all
+initialization, 252 starts and 4,776 linear subsolves. The 48 separate linear
+diagnostics cost 24.1 ms; 252 independent model/cost/gradient checks and all
+preservation checks pass without refitting. Earlier labels, qualification and
+trajectory runtime failures remain unchanged. Starlet stays parked for POINT;
+no follow-on numerical, PTC, feedback, reserved-pointing, OOF or production
+work is initiated.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

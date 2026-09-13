@@ -1,0 +1,10 @@
+{
+  "source_freeze_unchanged": true,
+  "prior_preservation_passed": true,
+  "raw_results_unchanged": true,
+  "workload_counts_and_limits_passed": true,
+  "python_syntax_passed": true,
+  "benchmark_repetitions": 0,
+  "additional_fits": 0,
+  "plot_inspected": true
+}

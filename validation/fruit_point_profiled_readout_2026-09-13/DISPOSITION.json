@@ -1,0 +1,11 @@
+{
+  "identity": "SCI-FRUIT-POINT-PROFILED-READOUT-RESULT@r0.1",
+  "fitter_verdict": "six_known_witnesses_cleared; incomplete independent first-order qualification (65/84)",
+  "POINT_verdict": "four_H_D_peak_availability_rejections_removed; absolute_peak_accuracy_counts_unchanged_at_60arcsec",
+  "strongest_supported_mechanism": "geometry_search_or_coupling; all six old witnesses at angular upper bound; linear coefficients already solved",
+  "candidate": "parked_for_POINT",
+  "registered_outcomes": "preserved",
+  "truth_independent_initialization": true,
+  "no_production_readiness": true,
+  "follow_on_experiment_started": false
+}

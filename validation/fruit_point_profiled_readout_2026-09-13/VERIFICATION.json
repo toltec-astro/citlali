@@ -1,0 +1,17 @@
+{
+  "independent_attempt_models_costs_gradients": 252,
+  "original_costs": 84,
+  "diagnostic_costs_and_unchanged_geometry": 48,
+  "selection_rules": 84,
+  "evaluator_reproductions_before_run": 42,
+  "new_terminal_judgments": 42,
+  "source_input_freeze_preserved": true,
+  "all_prior_products_preserved": true,
+  "verification_refits": 0,
+  "PTC_calls": 0,
+  "feedback_fits": 0,
+  "reserved_observations": 0,
+  "max_linear_normal_residual": 4.07684276120324e-16,
+  "results_frozen_before_comparisons": true,
+  "verification_analysis_seconds": 1.894914000062272
+}

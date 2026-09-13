@@ -1,0 +1,17 @@
+{
+  "problems": 84,
+  "primary": 48,
+  "safeguards": 36,
+  "normal_starts": 252,
+  "residual_evaluations": 4692,
+  "linear_subsolves_normal": 4776,
+  "linear_diagnostic_subsolves": 48,
+  "normal_fitter_seconds": 2.084582880139351,
+  "diagnostic_linear_seconds": 0.024109875550493598,
+  "wall_seconds": 5.012414625147358,
+  "peak_rss_bytes": 111558656,
+  "results_sha256": "cc82d0c10b65b9145f2fa1e7fc5fc15a757fe729d129a663ba143abdd7059608",
+  "PTC_calls": 0,
+  "feedback_fits": 0,
+  "reserved_observations": 0
+}

@@ -1,0 +1,1777 @@
+{
+  "summary": {
+    "old_witnesses_at_angular_upper_bound": 6,
+    "old_witnesses_with_outward_angle_gradient": 6,
+    "original_geometry_max_abs_relative_peak_change": 2.9658395295228956e-08,
+    "original_geometry_max_relative_objective_improvement": 1.9327463068992514e-16,
+    "original_geometry_max_background_change": 6.471952307407491e-08,
+    "original_terminal_evaluation_seconds": 5.657194663537666,
+    "old_timing_role": "archived full evaluator timing; not a controlled fit-only benchmark",
+    "all_start_peak_spread_gt_5pct": 17,
+    "all_start_centroid_spread_gt_1arcsec": 17,
+    "max_similar_cost_peak_span": 0.00039731916248425823,
+    "max_similar_cost_centroid_diameter": 0.00852648587982587,
+    "primary_max_similar_cost_peak_span": 3.954599153384338e-06,
+    "primary_max_similar_cost_centroid_diameter": 2.93426200113327e-05,
+    "first_order_misses": [
+      {
+        "id": "H_20260912_C_a2000_60",
+        "relative_gradient": 1.2340362443048998e-06
+      },
+      {
+        "id": "H-shift_20260911_P_a1400_52",
+        "relative_gradient": 1.5668327126003806e-06
+      },
+      {
+        "id": "N_20260911_P_a1400_60",
+        "relative_gradient": 2.055441222651077e-06
+      },
+      {
+        "id": "N_20260911_P_a1400_52",
+        "relative_gradient": 3.271868578423176e-06
+      },
+      {
+        "id": "N_20260911_P_a2000_60",
+        "relative_gradient": 2.3734724828001286e-06
+      },
+      {
+        "id": "N_20260911_P_a2000_52",
+        "relative_gradient": 1.0975299680705752e-06
+      },
+      {
+        "id": "N_20260911_C_a1100_52",
+        "relative_gradient": 0.0004920310608847503
+      },
+      {
+        "id": "N_20260911_C_a1400_60",
+        "relative_gradient": 2.6218643669437255e-06
+      },
+      {
+        "id": "N_20260911_C_a1400_52",
+        "relative_gradient": 2.908588226750729e-06
+      },
+      {
+        "id": "N_20260911_C_a2000_60",
+        "relative_gradient": 1.2075132602638164e-06
+      },
+      {
+        "id": "N_20260911_C_a2000_52",
+        "relative_gradient": 1.554992665088432e-06
+      },
+      {
+        "id": "E_20260911_P_a1100_52",
+        "relative_gradient": 3.5123676273978747e-06
+      },
+      {
+        "id": "E_20260911_P_a1400_60",
+        "relative_gradient": 1.0235169520729764e-06
+      },
+      {
+        "id": "E_20260911_P_a1400_52",
+        "relative_gradient": 3.4491382656881227e-06
+      },
+      {
+        "id": "E_20260911_P_a2000_60",
+        "relative_gradient": 1.0558032440030741e-06
+      },
+      {
+        "id": "E_20260911_C_a1100_52",
+        "relative_gradient": 2.0137205601912837e-06
+      },
+      {
+        "id": "E_20260911_C_a1400_60",
+        "relative_gradient": 1.778690143493449e-06
+      },
+      {
+        "id": "E_20260911_C_a1400_52",
+        "relative_gradient": 1.2185954607418091e-06
+      },
+      {
+        "id": "E_20260911_C_a2000_52",
+        "relative_gradient": 2.0923417174019153e-06
+      }
+    ]
+  },
+  "original_boundary_checks": [
+    {
+      "id": "H_20260911_P_a1100_60",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": 0.5526342114752851,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0026437396965714502,
+        -0.00889852572589071,
+        -0.00010990928750487454,
+        -0.0015031823328371875,
+        -0.0042117316494239615
+      ],
+      "original_relative_unprojected_gradient": 8.83398356809528e-06,
+      "original_relative_projected_gradient": 8.83398356809528e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.5526491806471672
+    },
+    {
+      "id": "H_20260911_P_a1100_52",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": 0.5527279589105603,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.001104450505559036,
+        0.0032027695723506906,
+        -0.0003459317960033631,
+        0.000943775827352483,
+        0.0018711765550712585
+      ],
+      "original_relative_unprojected_gradient": 4.664192577274506e-06,
+      "original_relative_projected_gradient": 4.664192577274506e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.5527198123770227
+    },
+    {
+      "id": "H_20260911_P_a1400_60",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -1.1664552018221555,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0010609755043481514,
+        0.004307523679284289,
+        0.0010439721997432048,
+        -0.002736923120940873,
+        0.0005112092960125159
+      ],
+      "original_relative_unprojected_gradient": 3.3903610599080194e-06,
+      "original_relative_projected_gradient": 3.3903610599080194e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.40433203378605614
+    },
+    {
+      "id": "H_20260911_P_a1400_52",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -2.737065260344925,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.002199417989498537,
+        0.0077643987008611665,
+        -0.005684543734288878,
+        0.0027141812025056476,
+        0.0010442205957586282
+      ],
+      "original_relative_unprojected_gradient": 8.45004754144329e-06,
+      "original_relative_projected_gradient": 8.45004754144329e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.40450673198073317
+    },
+    {
+      "id": "H_20260911_P_a2000_60",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": 0.5929040168781787,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.00019693013276373883,
+        -0.001744034397998589,
+        -0.0012608059965742886,
+        0.000267749319674626,
+        0.00041501050908990706
+      ],
+      "original_relative_unprojected_gradient": 1.5962579482201422e-06,
+      "original_relative_projected_gradient": 1.5962579482201422e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 2.1636970533345026
+    },
+    {
+      "id": "H_20260911_P_a2000_52",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -0.978222729095898,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.002298867339868049,
+        -0.0006924940018895826,
+        0.0025409716215087507,
+        0.0005848837947131436,
+        -0.0008117353869649959
+      ],
+      "original_relative_unprojected_gradient": 3.375278981969221e-06,
+      "original_relative_projected_gradient": 3.375278981969221e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.592580293052921
+    },
+    {
+      "id": "H_20260911_C_a1100_60",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": 2.116660350623726,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0021013954814216,
+        -0.004889642924561138,
+        0.00025816495247986675,
+        0.00030568049516193247,
+        -0.001747391730875953
+      ],
+      "original_relative_unprojected_gradient": 5.059868668215621e-06,
+      "original_relative_projected_gradient": 5.059868668215621e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.5458719127399033
+    },
+    {
+      "id": "H_20260911_C_a1100_52",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -1.0250402346521919,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.003879439423011071,
+        -0.008875480823703097,
+        0.0005769009971120051,
+        0.00012882468444523872,
+        -0.0032731470211041554
+      ],
+      "original_relative_unprojected_gradient": 1.362078686810508e-05,
+      "original_relative_projected_gradient": 1.362078686810508e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.54577046485073
+    },
+    {
+      "id": "H_20260911_C_a1400_60",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": 2.0200687960305967,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.0019790111623218627,
+        -0.00254023556891782,
+        0.0024797675450342655,
+        0.000755265732252354,
+        -0.001428116705627559
+      ],
+      "original_relative_unprojected_gradient": 2.0674984602310346e-06,
+      "original_relative_projected_gradient": 2.0674984602310346e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.4492857186380617
+    },
+    {
+      "id": "H_20260911_C_a1400_52",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -1.1214543198675448,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.004844446463302985,
+        -0.004577164401345183,
+        -6.687579192858636e-05,
+        0.00017748960356697016,
+        0.003656037800962822
+      ],
+      "original_relative_unprojected_gradient": 5.509051537017533e-06,
+      "original_relative_projected_gradient": 5.509051537017533e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.4493020865998989
+    },
+    {
+      "id": "H_20260911_C_a2000_60",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -2.5577002614791824,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0029073099508003957,
+        -0.002212729989211752,
+        -0.0005665760692264933,
+        0.002233625293207922,
+        -0.0003784707039477243
+      ],
+      "original_relative_unprojected_gradient": 2.867331485039285e-06,
+      "original_relative_projected_gradient": 2.867331485039285e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.5838963440210418
+    },
+    {
+      "id": "H_20260911_C_a2000_52",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -0.9868960490711738,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0006643478171662273,
+        -0.000922687209129401,
+        0.0007414795279178523,
+        -0.0004849746300306016,
+        -0.00047994950535780093
+      ],
+      "original_relative_unprojected_gradient": 1.3497277997287475e-06,
+      "original_relative_projected_gradient": 1.3497277997287475e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.5839064628874935
+    },
+    {
+      "id": "H_20260912_P_a1100_60",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": 0.4874534827226186,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.0019798128781046017,
+        -0.007230287858926831,
+        -0.00916894547625063,
+        0.009657252543567075,
+        -0.004559863078252902
+      ],
+      "original_relative_unprojected_gradient": 9.601873604029408e-06,
+      "original_relative_projected_gradient": 9.601873604029408e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.48746307501141667
+    },
+    {
+      "id": "H_20260912_P_a1100_52",
+      "primary": true,
+      "witness": true,
+      "original_angle_rad": 3.1415926535897927,
+      "angle_upper_active": true,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.010105776380334214,
+        -0.026867397387456297,
+        0.00023564976834043698,
+        0.003433280390893552,
+        -59.87479137991088
+      ],
+      "original_relative_unprojected_gradient": 0.08415125368610579,
+      "original_relative_projected_gradient": 3.776088603117595e-05,
+      "original_outward_angle_gradient": true,
+      "original_status": 2,
+      "new_angle_rad": -1.083442495396922
+    },
+    {
+      "id": "H_20260912_P_a1400_60",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -2.704726830126124,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.005356895269197763,
+        -0.0005643140355428171,
+        -0.005602887062881067,
+        0.0016770622676300047,
+        0.001499825630594806
+      ],
+      "original_relative_unprojected_gradient": 4.35476101118223e-06,
+      "original_relative_projected_gradient": 4.35476101118223e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": -2.704752523786452
+    },
+    {
+      "id": "H_20260912_P_a1400_52",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -1.133425673567973,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.00477408355796844,
+        -0.0013787670049226594,
+        0.001357069421190817,
+        -0.004828351522668798,
+        0.0016257251926983553
+      ],
+      "original_relative_unprojected_gradient": 5.153359126013469e-06,
+      "original_relative_projected_gradient": 5.153359126013469e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.43734492510206724
+    },
+    {
+      "id": "H_20260912_P_a2000_60",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -1.1072433943213535,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0006506478715909926,
+        -7.571825919942124e-05,
+        0.00123877589742281,
+        -0.0008075942540571284,
+        0.0001347622444135512
+      ],
+      "original_relative_unprojected_gradient": 1.1042358649617604e-06,
+      "original_relative_projected_gradient": 1.1042358649617604e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 2.034347175863992
+    },
+    {
+      "id": "H_20260912_P_a2000_52",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -1.1070518893202943,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0020676538585824465,
+        -0.0026789259456680386,
+        0.004084955283799534,
+        -0.0011216465462415357,
+        0.00024147673384864672
+      ],
+      "original_relative_unprojected_gradient": 5.302281295738122e-06,
+      "original_relative_projected_gradient": 5.302281295738122e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.46374146986499465
+    },
+    {
+      "id": "H_20260912_C_a1100_60",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -2.6233000088600718,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.0010137781552554891,
+        0.0022612603438882514,
+        0.006963177658833224,
+        -0.0028919528027439387,
+        0.004485915262464917
+      ],
+      "original_relative_unprojected_gradient": 7.232337607733922e-06,
+      "original_relative_projected_gradient": 7.232337607733922e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.5182799235721366
+    },
+    {
+      "id": "H_20260912_C_a1100_52",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -1.0526026470490433,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.0010178653026125838,
+        0.0013941100446290355,
+        -0.002611206033507917,
+        0.0064117280958925415,
+        0.004615928778695167
+      ],
+      "original_relative_unprojected_gradient": 9.857053548278635e-06,
+      "original_relative_projected_gradient": 9.857053548278635e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.5181799717659337
+    },
+    {
+      "id": "H_20260912_C_a1400_60",
+      "primary": true,
+      "witness": true,
+      "original_angle_rad": 3.1415926535897927,
+      "angle_upper_active": true,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.007775080049827304,
+        -0.025565256708327218,
+        0.003945791780915398,
+        -0.001590371556844509,
+        -23.804253464988925
+      ],
+      "original_relative_unprojected_gradient": 0.019147520758569365,
+      "original_relative_projected_gradient": 2.056402584692768e-05,
+      "original_outward_angle_gradient": true,
+      "original_status": 2,
+      "new_angle_rad": 0.4354743248056008
+    },
+    {
+      "id": "H_20260912_C_a1400_52",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -1.1348148461996594,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.003823084837884731,
+        -0.001238398195696429,
+        0.0009932973716287748,
+        -0.003546042831108877,
+        0.0005715648045360605
+      ],
+      "original_relative_unprojected_gradient": 4.307913129807009e-06,
+      "original_relative_projected_gradient": 4.307913129807009e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.43597638082969614
+    },
+    {
+      "id": "H_20260912_C_a2000_60",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -1.0899380204719695,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.006666857036834,
+        0.014242509090047378,
+        -0.01080064122386373,
+        0.0012880358783607187,
+        0.0009226075339392305
+      ],
+      "original_relative_unprojected_gradient": 1.3968343593542382e-05,
+      "original_relative_projected_gradient": 1.3968343593542382e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.4808539397498954
+    },
+    {
+      "id": "H_20260912_C_a2000_52",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -1.0900033228693722,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.002568123881847095,
+        0.0055029108502772026,
+        -0.004050859426525204,
+        0.00045128630342502926,
+        0.0003553123861392255
+      ],
+      "original_relative_unprojected_gradient": 8.077501575647797e-06,
+      "original_relative_projected_gradient": 8.077501575647797e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.4807912978113284
+    },
+    {
+      "id": "D_20260911_P_a1100_60",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": 0.5578097153769831,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.005810125713953932,
+        0.016735028881987198,
+        -0.0018490360145527122,
+        0.006472064130116586,
+        0.008595459464600946
+      ],
+      "original_relative_unprojected_gradient": 1.6032700155535395e-05,
+      "original_relative_projected_gradient": 1.6032700155535395e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.5577750619598834
+    },
+    {
+      "id": "D_20260911_P_a1100_52",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": 2.1286050246075967,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.0013666381498365697,
+        0.0034994891711059087,
+        0.002152762998088176,
+        -0.000692382294219317,
+        0.002179740132192065
+      ],
+      "original_relative_unprojected_gradient": 4.873904752191068e-06,
+      "original_relative_projected_gradient": 4.873904752191068e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.5577991040685247
+    },
+    {
+      "id": "D_20260911_P_a1400_60",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -1.156454987844323,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.0021055392562417704,
+        0.0003023643577334367,
+        -0.005938404471087934,
+        0.003947561557524673,
+        0.001427139650764532
+      ],
+      "original_relative_unprojected_gradient": 4.584237399490713e-06,
+      "original_relative_projected_gradient": 4.584237399490713e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.41433152003473334
+    },
+    {
+      "id": "D_20260911_P_a1400_52",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": 0.41462099421307846,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.0023088550918816363,
+        -0.001283543161251635,
+        0.0031472284721809174,
+        -0.0023885744127973003,
+        7.496545057580877e-05
+      ],
+      "original_relative_unprojected_gradient": 3.336952367725073e-06,
+      "original_relative_projected_gradient": 3.336952367725073e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.4146256764591324
+    },
+    {
+      "id": "D_20260911_P_a2000_60",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -0.9642595836782917,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.005343307560352534,
+        -0.003781503755048197,
+        0.006051837358154719,
+        -5.275821159728967e-05,
+        -0.000616480189893761
+      ],
+      "original_relative_unprojected_gradient": 5.317453786606988e-06,
+      "original_relative_projected_gradient": 5.317453786606988e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.6065421016810987
+    },
+    {
+      "id": "D_20260911_P_a2000_52",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -0.9646575522330479,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0031835481709444674,
+        -0.0016245860916986065,
+        0.003106901891277864,
+        0.000537531110309052,
+        -0.00029780568196962026
+      ],
+      "original_relative_unprojected_gradient": 4.008543247728913e-06,
+      "original_relative_projected_gradient": 4.008543247728913e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": -2.5354513716480356
+    },
+    {
+      "id": "D_20260911_C_a1100_60",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": 0.553928585862368,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.00020177568850799352,
+        -0.003975991859819247,
+        0.0009364725047031422,
+        0.0029586629914634026,
+        0.0009803665545480684
+      ],
+      "original_relative_unprojected_gradient": 3.97912020021267e-06,
+      "original_relative_projected_gradient": 3.97912020021267e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 2.124719267522367
+    },
+    {
+      "id": "D_20260911_C_a1100_52",
+      "primary": true,
+      "witness": true,
+      "original_angle_rad": 3.1415926535897927,
+      "angle_upper_active": true,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.007949044617174134,
+        -0.0005194427508646933,
+        -0.000609666980602248,
+        0.0026698346399810953,
+        -27.4668920960991
+      ],
+      "original_relative_unprojected_gradient": 0.03953994250517706,
+      "original_relative_projected_gradient": 1.1443040808347975e-05,
+      "original_outward_angle_gradient": true,
+      "original_status": 2,
+      "new_angle_rad": 2.1244781573300098
+    },
+    {
+      "id": "D_20260911_C_a1400_60",
+      "primary": true,
+      "witness": true,
+      "original_angle_rad": 3.1415926535897927,
+      "angle_upper_active": true,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.0032416165300249724,
+        0.01231675332239121,
+        0.0005448927731549517,
+        -0.0016524483942680693,
+        -15.567458950129149
+      ],
+      "original_relative_unprojected_gradient": 0.012234474716532707,
+      "original_relative_projected_gradient": 9.679743341241659e-06,
+      "original_outward_angle_gradient": true,
+      "original_status": 2,
+      "new_angle_rad": 0.452859546446008
+    },
+    {
+      "id": "D_20260911_C_a1400_52",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": 0.45307870658168176,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0012733778757431863,
+        -0.003223960628819033,
+        0.004393802522569799,
+        -0.005075287092694176,
+        0.0017331318932655474
+      ],
+      "original_relative_unprojected_gradient": 5.5529866433826174e-06,
+      "original_relative_projected_gradient": 5.5529866433826174e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.4530636430511821
+    },
+    {
+      "id": "D_20260911_C_a2000_60",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -0.9778584527228523,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.010888558677684766,
+        -0.00961336005694088,
+        0.009159435766816052,
+        -0.004303750832156036,
+        0.0012317061469472653
+      ],
+      "original_relative_unprojected_gradient": 1.0428311905909586e-05,
+      "original_relative_projected_gradient": 1.0428311905909586e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.5929270798641905
+    },
+    {
+      "id": "D_20260911_C_a2000_52",
+      "primary": true,
+      "witness": true,
+      "original_angle_rad": 3.1415926535897927,
+      "angle_upper_active": true,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.00532061975667409,
+        0.004137732595899372,
+        0.0009978292699504385,
+        -0.0019137060575086311,
+        -9.76458208688715
+      ],
+      "original_relative_unprojected_gradient": 0.013622108740863026,
+      "original_relative_projected_gradient": 7.422546121203626e-06,
+      "original_outward_angle_gradient": true,
+      "original_status": 2,
+      "new_angle_rad": 0.5930213088087211
+    },
+    {
+      "id": "D_20260912_P_a1100_60",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -1.0761700335146618,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.0030136603645729856,
+        0.0053566915908232985,
+        0.0006475379299303933,
+        0.006989397168885432,
+        0.005526726248196097
+      ],
+      "original_relative_unprojected_gradient": 6.72322311067935e-06,
+      "original_relative_projected_gradient": 6.72322311067935e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.4946079915719398
+    },
+    {
+      "id": "D_20260912_P_a1100_52",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": 0.49448127236668843,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0006414183411229562,
+        -0.0031954612447642706,
+        -0.003378310198150522,
+        0.001249002585253548,
+        -0.0014413994426030177
+      ],
+      "original_relative_unprojected_gradient": 4.728595256539329e-06,
+      "original_relative_projected_gradient": 4.728595256539329e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.49448663837661994
+    },
+    {
+      "id": "D_20260912_P_a1400_60",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -1.1452502116784833,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.007094176749643772,
+        -5.062639750130087e-06,
+        0.002814726252073367,
+        -0.007991555350182866,
+        0.0014574346808122422
+      ],
+      "original_relative_unprojected_gradient": 6.132340463980378e-06,
+      "original_relative_projected_gradient": 6.132340463980378e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": -2.71607517322156
+    },
+    {
+      "id": "D_20260912_P_a1400_52",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": 1.9968058019117463,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.006134579610816987,
+        0.0037113756155284405,
+        -0.001789234863191792,
+        0.006733276987183737,
+        -0.0021200947755571553
+      ],
+      "original_relative_unprojected_gradient": 7.0641760901683e-06,
+      "original_relative_projected_gradient": 7.0641760901683e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": -2.715544162437122
+    },
+    {
+      "id": "D_20260912_P_a2000_60",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -1.121641476025861,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.000998284805972055,
+        -0.002343287706718432,
+        0.0024058663869159277,
+        -0.00026403626382285044,
+        -0.00034490192228643174
+      ],
+      "original_relative_unprojected_gradient": 2.0775368923455907e-06,
+      "original_relative_projected_gradient": 2.0775368923455907e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.4491583136291796
+    },
+    {
+      "id": "D_20260912_P_a2000_52",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -1.1212681052800344,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.003976668198901966,
+        0.007674512852770514,
+        -0.007554777573333761,
+        0.002869219817742853,
+        0.0017293065859283819
+      ],
+      "original_relative_unprojected_gradient": 9.545163081418975e-06,
+      "original_relative_projected_gradient": 9.545163081418975e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 2.020308177166439
+    },
+    {
+      "id": "D_20260912_C_a1100_60",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -2.6263397013138294,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0028544836630832763,
+        -0.016265107200056392,
+        -0.014745039598104585,
+        0.009420774624166848,
+        0.0017176614433636744
+      ],
+      "original_relative_unprojected_gradient": 1.635333343619839e-05,
+      "original_relative_projected_gradient": 1.635333343619839e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.5152384330172213
+    },
+    {
+      "id": "D_20260912_C_a1100_52",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -1.0556657609883546,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.0020675400066439108,
+        0.002628948857519223,
+        -0.00402515933396974,
+        0.011017025620941501,
+        0.005900533370815694
+      ],
+      "original_relative_unprojected_gradient": 1.6269374968132532e-05,
+      "original_relative_projected_gradient": 1.6269374968132532e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 2.085909540572019
+    },
+    {
+      "id": "D_20260912_C_a1400_60",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": 0.4350443373504877,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.0096798801093331,
+        0.004796770827229173,
+        0.009126327537388849,
+        -0.002130057300159055,
+        -0.002188847435748465
+      ],
+      "original_relative_unprojected_gradient": 7.732911833712816e-06,
+      "original_relative_projected_gradient": 7.732911833712816e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.4350670901316574
+    },
+    {
+      "id": "D_20260912_C_a1400_52",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": 0.4356469884039522,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.007111644086338648,
+        0.0034802999111273564,
+        0.006777811580875677,
+        -0.001694355440136327,
+        -0.001514236384990235
+      ],
+      "original_relative_unprojected_gradient": 7.86450936039321e-06,
+      "original_relative_projected_gradient": 7.86450936039321e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.43566394257146346
+    },
+    {
+      "id": "D_20260912_C_a2000_60",
+      "primary": true,
+      "witness": false,
+      "original_angle_rad": -1.0964679346878097,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0017186565272142638,
+        -0.0043546186122645405,
+        0.004416610011634723,
+        0.00011245800799719381,
+        -0.00038814719657799925
+      ],
+      "original_relative_unprojected_gradient": 4.180059352548056e-06,
+      "original_relative_projected_gradient": 4.180059352548056e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 2.0451276390455186
+    },
+    {
+      "id": "D_20260912_C_a2000_52",
+      "primary": true,
+      "witness": true,
+      "original_angle_rad": 3.1415926535897927,
+      "angle_upper_active": true,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -6.060867150995026e-05,
+        0.024939568072952077,
+        0.001125100891934783,
+        -0.003125057151197891,
+        -32.63522005607291
+      ],
+      "original_relative_unprojected_gradient": 0.045040590277763665,
+      "original_relative_projected_gradient": 3.441965046805937e-05,
+      "original_outward_angle_gradient": true,
+      "original_status": 2,
+      "new_angle_rad": 0.4742983419866551
+    },
+    {
+      "id": "H-shift_20260911_P_a1100_60",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": -1.0699663573741538,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.0006313576697928134,
+        0.0015824141566114867,
+        0.0005543767048038334,
+        -0.0005116012361672171,
+        0.0006347128930149948
+      ],
+      "original_relative_unprojected_gradient": 1.565692666744101e-06,
+      "original_relative_projected_gradient": 1.565692666744101e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 2.0716231488553776
+    },
+    {
+      "id": "H-shift_20260911_P_a1100_52",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": 0.50044245891375,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0036375735967735336,
+        -0.01162003679763147,
+        0.0010470238115530466,
+        -0.0027917971533933713,
+        -0.002415868368450148
+      ],
+      "original_relative_unprojected_gradient": 1.6851154702675544e-05,
+      "original_relative_projected_gradient": 1.6851154702675544e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.5004528910664657
+    },
+    {
+      "id": "H-shift_20260911_P_a1400_60",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": -2.7099977374378894,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.004373512865014152,
+        -0.016301011992828934,
+        0.0049655086085753485,
+        0.013320227731128093,
+        0.005827271218720922
+      ],
+      "original_relative_unprojected_gradient": 1.2949755172389465e-05,
+      "original_relative_projected_gradient": 1.2949755172389465e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.4315096567614147
+    },
+    {
+      "id": "H-shift_20260911_P_a1400_52",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": 0.43122027485576336,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0014587018585925631,
+        -0.008490844059230757,
+        0.0031423519425950227,
+        0.007260120469999726,
+        0.00236315099752632
+      ],
+      "original_relative_unprojected_gradient": 9.35290631277753e-06,
+      "original_relative_projected_gradient": 9.35290631277753e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 2.001974914468725
+    },
+    {
+      "id": "H-shift_20260911_P_a2000_60",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": -2.6503386535337126,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0013906077960248074,
+        0.0034267968452358602,
+        -0.0003650590577551498,
+        1.4577342059809313e-05,
+        -0.0010013188352094554
+      ],
+      "original_relative_unprojected_gradient": 3.1372275123069068e-06,
+      "original_relative_projected_gradient": 3.1372275123069068e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.49126534195081223
+    },
+    {
+      "id": "H-shift_20260911_P_a2000_52",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": 0.4905296031191411,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.000850091203610199,
+        0.002837215225307025,
+        0.0024521635628715044,
+        0.00030565231280312456,
+        -0.0003676735041107546
+      ],
+      "original_relative_unprojected_gradient": 3.7684977713230186e-06,
+      "original_relative_projected_gradient": 3.7684977713230186e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 2.06132915404738
+    },
+    {
+      "id": "H-shift_20260911_C_a1100_60",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": 0.5096118357880094,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0026290904373605173,
+        -0.008189987962306708,
+        0.0009224888773216174,
+        -0.0006159027149599348,
+        -0.0017455791429751533
+      ],
+      "original_relative_unprojected_gradient": 8.467911168366503e-06,
+      "original_relative_projected_gradient": 8.467911168366503e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 2.0804142722819665
+    },
+    {
+      "id": "H-shift_20260911_C_a1100_52",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": -2.6323179388332325,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.0005100748887881647,
+        0.0010640080027690877,
+        -0.0006199527212174191,
+        0.0004003519965972344,
+        0.0006789769216951647
+      ],
+      "original_relative_unprojected_gradient": 1.6292592829433388e-06,
+      "original_relative_projected_gradient": 1.6292592829433388e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 2.0800687565495717
+    },
+    {
+      "id": "H-shift_20260911_C_a1400_60",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": 1.9865711954951208,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.0005281625171742819,
+        0.006375045243714251,
+        -0.007114777243464859,
+        -0.0026987789188132943,
+        -0.001887600410514774
+      ],
+      "original_relative_unprojected_gradient": 5.834659008509821e-06,
+      "original_relative_projected_gradient": 5.834659008509821e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": -1.1549961784324143
+    },
+    {
+      "id": "H-shift_20260911_C_a1400_52",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": -2.726225053855658,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.00023850396330001743,
+        -0.0045955159937058525,
+        0.002220420329694019,
+        0.005672188236577085,
+        0.0011369683488679663
+      ],
+      "original_relative_unprojected_gradient": 6.522054762998113e-06,
+      "original_relative_projected_gradient": 6.522054762998113e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.41535773458140984
+    },
+    {
+      "id": "H-shift_20260911_C_a2000_60",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": 0.5721719000300972,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0031712811351794277,
+        0.0003687790825319341,
+        0.005170253688126352,
+        0.0032453331756735976,
+        0.0001195596241673639
+      ],
+      "original_relative_unprojected_gradient": 5.034456183395134e-06,
+      "original_relative_projected_gradient": 5.034456183395134e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.5721693642760972
+    },
+    {
+      "id": "H-shift_20260911_C_a2000_52",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": -0.9995211228547983,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0014821040608162196,
+        -0.010401791410099002,
+        0.0001584664914568982,
+        0.001020945987927672,
+        3.045165918677964e-06
+      ],
+      "original_relative_unprojected_gradient": 1.4951690966411456e-05,
+      "original_relative_projected_gradient": 1.4951690966411456e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.5712733621645346
+    },
+    {
+      "id": "N_20260911_P_a1100_60",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": 0.08989002571305958,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.0012512161067469419,
+        -0.0008978441373907065,
+        -5.167122927236886,
+        0.005311119809576061,
+        -0.0037568218269896153
+      ],
+      "original_relative_unprojected_gradient": 0.003690261062867456,
+      "original_relative_projected_gradient": 3.793100901507548e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.08989604904343723
+    },
+    {
+      "id": "N_20260911_P_a1100_52",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": 3.1148743412306357,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.003519362734720837,
+        0.025907383088849045,
+        -0.005851645236511316,
+        7.573784509330631,
+        -0.0010620777636019538
+      ],
+      "original_relative_unprojected_gradient": 0.0072309803428745306,
+      "original_relative_projected_gradient": 2.473476471637086e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": -3.1415926535897927
+    },
+    {
+      "id": "N_20260911_P_a1400_60",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": -0.3730265471794713,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.0019421680596445746,
+        -0.010242823605587353,
+        0.0030199816103196725,
+        0.5008344900014153,
+        -0.04741087633976774
+      ],
+      "original_relative_unprojected_gradient": 0.0003580922616373095,
+      "original_relative_projected_gradient": 3.389836018415237e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": -0.3728797914418168
+    },
+    {
+      "id": "N_20260911_P_a1400_52",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": -0.3718986024180147,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0006774402980113768,
+        -6.0484266602502565e-05,
+        0.003225690398734253,
+        0.0004548764026317964,
+        -0.031557919053735874
+      ],
+      "original_relative_unprojected_gradient": 3.0158283080869982e-05,
+      "original_relative_projected_gradient": 3.0158283080869982e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": -0.3718258322882115
+    },
+    {
+      "id": "N_20260911_P_a2000_60",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": -3.074242648665264,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.00034078213344369173,
+        0.012388567494772598,
+        -0.005272490931631946,
+        4.612502017962041,
+        0.01813939894338655
+      ],
+      "original_relative_unprojected_gradient": 0.0032961350356958065,
+      "original_relative_projected_gradient": 1.2962576092308596e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.0670756828097362
+    },
+    {
+      "id": "N_20260911_P_a2000_52",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": 0.06685778618945201,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0008075553514376687,
+        0.013571874923020918,
+        0.0003927247044959262,
+        4.976310526817715,
+        -0.013049633794621823
+      ],
+      "original_relative_unprojected_gradient": 0.004745178317837095,
+      "original_relative_projected_gradient": 1.2941508828690284e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.06704325055893556
+    },
+    {
+      "id": "N_20260911_C_a1100_60",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": 3.1415926535897927,
+      "angle_upper_active": true,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.0011437335020528458,
+        0.001637983843564889,
+        -2.4065885225749386,
+        0.005376122439111766,
+        -7.956128684604588
+      ],
+      "original_relative_unprojected_gradient": 0.005681026363022816,
+      "original_relative_projected_gradient": 3.838788249683819e-06,
+      "original_outward_angle_gradient": true,
+      "original_status": 2,
+      "new_angle_rad": 0.09004741302508569
+    },
+    {
+      "id": "N_20260911_C_a1100_52",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": -3.141592651276914,
+      "angle_upper_active": false,
+      "angle_lower_active": true,
+      "original_raw_scaled_geometry_gradient": [
+        -0.0076692302171648494,
+        0.010240124658114559,
+        0.005021882290969229,
+        0.5367780933884131,
+        0.17719866762689496
+      ],
+      "original_relative_unprojected_gradient": 0.0005103234694561388,
+      "original_relative_projected_gradient": 9.735449355253406e-06,
+      "original_outward_angle_gradient": true,
+      "original_status": 2,
+      "new_angle_rad": -0.715253961081735
+    },
+    {
+      "id": "N_20260911_C_a1400_60",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": -0.37396117905082626,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.0006945140426334045,
+        -0.004585714754227377,
+        0.0018507416816492385,
+        0.4262896394593634,
+        -0.024863605059813672
+      ],
+      "original_relative_unprojected_gradient": 0.00030480963933124643,
+      "original_relative_projected_gradient": 1.7778209436119328e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": -0.37389478171576956
+    },
+    {
+      "id": "N_20260911_C_a1400_52",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": -0.37258398955420385,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0010187772869001872,
+        0.006805610002936852,
+        -0.0009482429697446376,
+        -0.001808864033965166,
+        0.03301690652045667
+      ],
+      "original_relative_unprojected_gradient": 3.155408469409259e-05,
+      "original_relative_projected_gradient": 3.155408469409259e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": -0.3726856110468785
+    },
+    {
+      "id": "N_20260911_C_a2000_60",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": 0.06686065823937168,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0005912519086389073,
+        0.01579031128388902,
+        -0.005436517888251936,
+        4.602456539804732,
+        -0.014564250770384854
+      ],
+      "original_relative_unprojected_gradient": 0.0032889708344458262,
+      "original_relative_projected_gradient": 0.0032889708344458262,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.06706104466780446
+    },
+    {
+      "id": "N_20260911_C_a2000_52",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": 0.06651826248703241,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0012308071674171383,
+        0.023031648153477573,
+        -0.010167827000916538,
+        4.940268902312182,
+        -0.029557593502691503
+      ],
+      "original_relative_unprojected_gradient": 0.004710865199917967,
+      "original_relative_projected_gradient": 2.8185072792289054e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.06700987732512394
+    },
+    {
+      "id": "E_20260911_P_a1100_60",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": 0.4561240000274249,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0002521140186938012,
+        -0.003097910166334839,
+        0.000965293766464886,
+        -0.0016438000012874733,
+        -0.0005029737413160973
+      ],
+      "original_relative_unprojected_gradient": 2.7520399694498936e-06,
+      "original_relative_projected_gradient": 2.7520399694498936e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.4561318360470502
+    },
+    {
+      "id": "E_20260911_P_a1100_52",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": 1.9359463865627757,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.002415742676802891,
+        0.00233426614151159,
+        -0.008596804198417166,
+        0.27748765350645793,
+        0.0293793225539509
+      ],
+      "original_relative_unprojected_gradient": 0.000265030966784474,
+      "original_relative_projected_gradient": 2.8060456606100117e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.364852834785484
+    },
+    {
+      "id": "E_20260911_P_a1400_60",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": 3.1415926535897847,
+      "angle_upper_active": true,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.001885087128715322,
+        0.01348209213283317,
+        -0.0012864485756239944,
+        -0.003873376231867281,
+        -1.1393340833247405
+      ],
+      "original_relative_unprojected_gradient": 0.0008469571968041313,
+      "original_relative_projected_gradient": 1.0022306123378531e-05,
+      "original_outward_angle_gradient": true,
+      "original_status": 2,
+      "new_angle_rad": 0.774318698221959
+    },
+    {
+      "id": "E_20260911_P_a1400_52",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": -0.37019842154038696,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.00221534277459926,
+        0.004635412733413725,
+        0.006487955934740895,
+        -0.0002629174049252962,
+        -0.049406379306012785
+      ],
+      "original_relative_unprojected_gradient": 4.72252026412729e-05,
+      "original_relative_projected_gradient": 4.72252026412729e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": -0.3700827191948201
+    },
+    {
+      "id": "E_20260911_P_a2000_60",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": -2.5658197414381543,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0013777385925916143,
+        -0.008134955301299627,
+        0.0031887612348410806,
+        0.0014284633332693226,
+        0.0030348506756462746
+      ],
+      "original_relative_unprojected_gradient": 6.771415758170568e-06,
+      "original_relative_projected_gradient": 6.771415758170568e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": -2.5658629961376964
+    },
+    {
+      "id": "E_20260911_P_a2000_52",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": 0.07079173446119998,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.0009847793358273766,
+        0.0009149997494390439,
+        0.0032747333865608985,
+        5.034662225595098,
+        0.011198194430249582
+      ],
+      "original_relative_unprojected_gradient": 0.004798549179227518,
+      "original_relative_projected_gradient": 1.0673027163357082e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.07065291224456934
+    },
+    {
+      "id": "E_20260911_C_a1100_60",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": -2.7027929031846605,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.0006624832717198642,
+        -0.002085498528737694,
+        -0.00029585979727032164,
+        -0.004866142451741155,
+        -0.0019743550077547796
+      ],
+      "original_relative_unprojected_gradient": 4.3886127667261916e-06,
+      "original_relative_projected_gradient": 4.3886127667261916e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.4387950108499146
+    },
+    {
+      "id": "E_20260911_C_a1100_52",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": 2.0267337983986433,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.01759775948466892,
+        -0.0007738794904275728,
+        -0.006109199524806465,
+        0.0006733120245184092,
+        -0.004579817189062123
+      ],
+      "original_relative_unprojected_gradient": 1.6878741580260453e-05,
+      "original_relative_projected_gradient": 1.6878741580260453e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": -1.1147387243796083
+    },
+    {
+      "id": "E_20260911_C_a1400_60",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": -2.654649017820537,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.005876779758890462,
+        0.021201406808338895,
+        -0.005772220764411377,
+        0.01359413427898354,
+        -0.005210912463507238
+      ],
+      "original_relative_unprojected_gradient": 1.6080572395974493e-05,
+      "original_relative_projected_gradient": 1.6080572395974493e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.4872308579916422
+    },
+    {
+      "id": "E_20260911_C_a1400_52",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": -0.3179917462490467,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        0.0025070248866660262,
+        0.012162158757090603,
+        -0.004758373437097659,
+        0.01008770876482415,
+        -0.00392289504098467
+      ],
+      "original_relative_unprojected_gradient": 1.16696407242744e-05,
+      "original_relative_projected_gradient": 1.16696407242744e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 1.2542221645519744
+    },
+    {
+      "id": "E_20260911_C_a2000_60",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": 0.5435107311018004,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.00032641874798890094,
+        0.008197191007402453,
+        -0.004314572215357157,
+        0.000957985453787033,
+        -0.0031231977057991607
+      ],
+      "original_relative_unprojected_gradient": 7.05712741784895e-06,
+      "original_relative_projected_gradient": 7.05712741784895e-06,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 2.1143562006231567
+    },
+    {
+      "id": "E_20260911_C_a2000_52",
+      "primary": false,
+      "witness": false,
+      "original_angle_rad": -2.7935519661024073,
+      "angle_upper_active": false,
+      "angle_lower_active": false,
+      "original_raw_scaled_geometry_gradient": [
+        -0.0008347332701756,
+        0.019079194432432507,
+        -0.005953129968006008,
+        1.297250528165812,
+        0.002259191417011018
+      ],
+      "original_relative_unprojected_gradient": 0.0012415338807741795,
+      "original_relative_projected_gradient": 1.8259746896565045e-05,
+      "original_outward_angle_gradient": false,
+      "original_status": 2,
+      "new_angle_rad": 0.3479402395162527
+    }
+  ]
+}
