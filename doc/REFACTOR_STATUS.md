@@ -1,34 +1,61 @@
 # Citlali Refactor Status
 
-## RTC initial jump admission and exclusion implementation — 2026-09-13
+## RTC initial jump admission and exclusion completed locally — 2026-09-13
 
-The owner approved **TIMESTREAM-SUCCESSOR-RTC-JUMP-APPLY-001**: outside explicit
-source protection, final >=5 sigma_delta offsets at both existing fit durations,
-same sign / <=2 sigma_delta agreement, supported transition/post-level and usable
-non-recovery evidence qualify a coordinate for paired exclusion. Every intersected
-existing PCA scan is selected; three qualifying original groups select that exact
-detector occurrence for the observation. Paired evidence counts once per group.
-Protected-source, unavailable protection/recovery and unresolved evidence do not
-become hard events. The existing Learn chain and D2/VAL remain unchanged.
+Owner-approved **TIMESTREAM-SUCCESSOR-RTC-JUMP-APPLY-001** is implemented at exact
+`19fa68da7e357b12a5b5193c5764d0970ba8a7cd`, tree
+`bd18813c5946d2d4964fb3c2bef9708920eb9771`, directly preserving reviewed closure
+`e7ccd3da4bf2ac3412508dd07118f136272655c5`. Independent exact-source/evidence
+review passes with recorded limitations and no findings on all three axes.
 
-The bounded runtime implementation adds RTC Consider admission and an immutable
-jump-exclusion plan, followed by Apply as a mask-aware native paired view with
-unchanged raw samples. Exact original input/VAL and existing-scan generation /
-native support bindings are required. It adds no route activation or downstream
-PTC/VAL policy implementation. This is one selected operation within S2 RTC,
-not a claim that all RTC operations or the production route are complete.
+Outside explicitly protected source regions, final measurements passing the
+preserved two-duration >=5 sigma_delta amplitude, same-sign / <=2 sigma_delta
+agreement, supported transition/post-level and usable non-recovery checks now
+qualify for paired exclusion. Either coordinate can qualify. Every intersected
+existing requested PCA scan is selected; three qualifying original groups select
+the exact detector occurrence for the observation, counting paired evidence once.
+Protected, unknown and unresolved cases remain unavailable under this initial
+rule. These empirical checks do not claim independent physical-event truth.
 
-The owned branch is `codex/timestream-successor-rtc-jump-apply-001`, clean literal
-base `e7ccd3da4bf2ac3412508dd07118f136272655c5`, worktree
-`/private/tmp/citlali-timestream-successor-rtc-jump-apply-001`. Live canonical is
-`86c20b31f7300ba4063be044380b61cd0baf25eb`; both divergent histories are retained.
-The existing handoff records authority, exact preflight, gates and limitations.
-Local tests and independent exact-SHA review are in progress. Saved corpus source
-membership and full native-to-PCA-scan bindings remain unavailable; no real-corpus
-exclusion or production qualification is claimed. Beam/AST/ALIGN/readout rules
-remain settled; protected optical rejection and unresolved-contamination rules
-remain unselected. No maps, filtering, spectra, correction, integration, push,
-Unity, activation, production or cleanup.
+Preserved runtime Learn supplies the measurements. RTC Consider now produces
+admission causes and one immutable plan for the selected jump-exclusion operation;
+Apply executes it as a mask-aware native paired view with original samples and
+producer causes preserved. Exact input, original VAL, complete ordered partitions,
+and existing-scan generation/native-support authorities are checked. RTC treatment
+facts remain separate from PTC/VAL named-use admission. This is one executable S2
+RTC component; no complete RTC/PTC or production-route claim is made.
+
+All 16 new focused tests, both public-header isolation checks, 1,020 runnable
+CTests, four configuration modes and 207 baseline tests pass. All 1,005 earlier
+registrations remain, plus 16 new; the sole established disabled test is unchanged.
+Full Learn/Consider source injections at four brightnesses, alone and with a jump,
+preserve 12,800 protected coordinate-sample values bit-for-bit. The CLI reports
+`g19fa68da7`. All 37 previously bound scientific headers and nine cached-dependency
+patches remain unchanged. Initial build/test setup failures and their bounded
+repairs are preserved; final application/test gates have zero unexpected errors.
+
+Focused tests took 0.05176 seconds with whole-process peak child RSS 12,976,128
+bytes; Apply owns no duplicate numeric/state plane. Full CTest took 24.37 seconds.
+These are supplemental local AppleClang/Homebrew/cached-dependency results, not
+Unity/Spack reproduction or production timing/qualification. The saved corpus
+still lacks source membership and complete native-to-existing-PCA-scan bindings;
+no real-corpus exclusion or loss fraction is claimed. Beam/AST/ALIGN/readout rules
+remain preserved; protected optical and unresolved-contamination predicates remain
+unselected. No maps, filtering, downsampling, spectra, correction or route activation.
+
+[Implementation results](/private/tmp/citlali-rtc-jump-apply-2026-09-13/README.md)
+and the existing RTC handoff bind source, tests and review. The 137-file source
+evidence seal has SHA-256
+`2fd3f3da49c4094da4d42c5896e55b0183b2f293ab8db22c90697ddfcf780188`;
+source review SHA-256 is
+`2a8b18a3b0fd9bec40c86a0d8a7a33fbc94a9d7701cfbc525e5f919f84d2d8f4`.
+The owned branch is `codex/timestream-successor-rtc-jump-apply-001`, worktree
+`/private/tmp/citlali-timestream-successor-rtc-jump-apply-001`. Live preflight
+canonical was `86c20b31f7300ba4063be044380b61cd0baf25eb`; both histories remain
+preserved. No integration, push, Unity, production or cleanup. The separate
+docs-only closure directly follows tested source and requires independent
+exact-SHA review, bound externally. Future canonical admission requires fresh
+moving-base verification and independent exact integration-SHA review.
 
 ## RTC observation recurrence assessment completed locally — 2026-09-13
 

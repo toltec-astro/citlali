@@ -2536,7 +2536,7 @@ separate; user performs every GitHub push with the required explicit URL/refspec
 ## RTC jump admission and exclusion approved preflight — 2026-09-13
 
 Owner Grant Wilson approves the proposed starting rule: "I agree with this
-starting point." Work order **TIMESTREAM-SUCCESSOR-RTC-JUMP-APPLY-001**, Tier 2,
+starting poing." Work order **TIMESTREAM-SUCCESSOR-RTC-JUMP-APPLY-001**, Tier 2,
 implements one bounded RTC module increment. All three effective governance
 documents, AGENTS, toltec-context, current status, program/router, architecture,
 SCI-RTC and existing RTC owner dispositions have been read. Governance is
@@ -2628,3 +2628,111 @@ expansion. No integration, push, activation, production, cleanup, new corpus,
 MAP/CAL, PTC algorithm, AST algorithm, spectra, filtering or downsampling work.
 User performs all GitHub pushes. Completion records tests, exact source and tree,
 three review axes, limitations and a separately reviewed documentation closure.
+
+
+## RTC jump admission and exclusion completion / conformance — 2026-09-13
+
+Disposition: independently reviewed local implementation candidate for owner
+acceptance; no canonical or production admission. Exact tested source
+`19fa68da7e357b12a5b5193c5764d0970ba8a7cd`, tree
+`bd18813c5946d2d4964fb3c2bef9708920eb9771`; direct parent/literal base
+`e7ccd3da4bf2ac3412508dd07118f136272655c5`. Branch/worktree and effective
+scientific/engineering authority are the approved preflight above. Source changed
+eight paths: two new RTC headers, two isolation translation units, one focused
+test source, test registration, status and this handoff. Exact content hashes
+are in `source-binding.json` within the sealed evidence. No pre-existing
+scientific header or dependency patch changed.
+
+Runtime Learn remains the accepted original native x/r evidence chain with its
+one bounded reassessment. New RTC `RtcJumpAdmissionDecision` uses surviving
+original or refitted evidence and the owner-selected rule. It preserves original
+group/coordinate identity, physical transition support, and rejected/unavailable
+causes through the immutable parent chain. Only a valid completed fixed recovery
+search counts as no confirmed return; gap/end/invalid/missing states do not.
+Required outside-source membership covers the selected fit and recovery/transition
+evidence context, rather than the candidate seed alone. Neither unavailable source
+authority nor a protected-source mismatch becomes hard contamination.
+
+`RtcJumpExclusionPlan` resolves the selected per-detector treatment before Apply:
+all intersected existing scans, or the whole exact detector occurrence when three
+original groups qualify. Paired x/r evidence counts once per group; origins remain
+separate, and full treatment ranges remain separate from physical transition
+bounds. Scan support includes every interval of a selected scan; overlapping ranges
+are unioned and ordinary half-open endpoint semantics are retained. The scan owner
+must explicitly supply complete conservative native support, its exact processing
+generation/native parent, relation authority and timing-uncertainty authority.
+Authority names without an available conservative-support assertion are insufficient.
+The binding does not reconstruct unpublished scan rows or estimate uncertainty.
+
+`RtcJumpExclusionResult` validates exact plan/input/VAL and the existing complete
+ordered partition contract, then exposes a native paired exclusion view. The
+mask-aware accessor never reads excluded payloads; retained values and the raw
+parent remain unchanged. No thresholds, events, coefficients or support are learned
+in Apply. It allocates no new numeric or state plane. This implements the selected
+jump-exclusion operation only. RTC supplies treatment facts; PTC/VAL retain their
+named downstream-use admission. Following the separate engineering workflow does
+not substitute for these runtime responsibilities.
+
+Scientific/behavioral conformance: PASS with recorded limitations, no findings.
+Architecture/ownership: PASS with recorded limitations, no findings. Repository,
+branch and evidence hygiene: PASS with recorded limitations, no findings.
+Independent fresh-context reviewer `/root/rtc_jump_apply_exact_review` reviewed
+this exact source read-only, independently reran all 16 focused tests and both
+no-PCH header-isolation compilations, and verified the full evidence inventory,
+executable identities, governance ancestry/digests, preserved source and dependency
+hashes and clean worktree. Review file `review-source-01.md` has SHA-256
+`2a8b18a3b0fd9bec40c86a0d8a7a33fbc94a9d7701cfbc525e5f919f84d2d8f4`.
+
+Focused gates: 16/16 tests; source brightness 0/3/30/300 with and without an
+outside-source jump reruns complete Learn/Consider and retains 12,800 protected
+coordinate-sample comparisons bitwise. Spike/no-jump controls, x/r evidence origins,
+unusable recovery, source in fit flanks, 2-versus-3 recurrence, scan boundary and
+disjoint/overlap semantics, stale input/VAL, missing/invalid scan relations,
+partitioning, invalid producer payloads and sparse deterministic plans pass.
+These analytical stimuli demonstrate the selected boundary, not real-event truth
+or source geometry validation. All earlier 1,005 test registrations remain plus
+16 new registrations: 1,020 runnable CTests pass in 24.37 seconds, with only the
+established `MapFitterLifecycle.ExactProductSequence` disabled. All four config
+modes and 207 baseline-tool tests pass. The exact-source CLI reports `g19fa68da7`.
+
+Time/memory: focused process 0.0517555 seconds; peak child RSS 12,976,128 bytes.
+The repeated fixture executes 2,000 plan constructions and 1,000 Apply calls plus
+assertions; it is a small local microtest, not a production throughput estimate.
+Logical sparse ownership is tested; whole-process RSS is not incremental algorithm
+memory. Actual environment is AppleClang 21 arm64 Release C++20 / Homebrew /
+recorded cached dependencies. Representative Unity/Spack gate not performed and
+not required for this inert typed-boundary increment; no V2 reproduction, route
+activation or operational scientific acceptance is claimed.
+
+Preserved in-progress failures and reassessment: restore omitted existing local
+FetchContent/cache policy options after initial CMake setup failures; repair one
+header return-type compilation error and two incorrectly constructed test fixtures
+before source commit; supply the expected task-owned ignored CLI path; build the
+established separate safety-test target after a NOT_BUILT inventory guard; repeat
+the CLI as a separate build after Make jobserver failure following the passing
+CTest target. These are within-scope setup/code/test repairs; no scientific policy
+or dependency patch changed. Final required gates have zero unexpected errors.
+
+Evidence root `/private/tmp/citlali-rtc-jump-apply-2026-09-13` preserves the report,
+source/executable bindings, all failed/final logs and config reports. The 137-file
+`SOURCE_SHA256SUMS` has SHA-256
+`2fd3f3da49c4094da4d42c5896e55b0183b2f293ab8db22c90697ddfcf780188`.
+Review/closure identities are outside that seal to avoid self-reference. The
+source gate receipt intentionally predates independent review; the review above
+supplies its final disposition without rewriting sealed evidence.
+
+Retained limitations: saved corpus source membership and complete native-to-existing
+PCA scan relations are unavailable. No actual corpus exclusions or combined loss
+fraction are claimed. Numerical timing uncertainty not supplied by accepted
+producers remains unavailable. Protected optical rejection and unresolved-evidence
+exclusion require their still-unselected predicates; the approved beam/motion/
+averaging facts remain unchanged. No spectra, filtering, downsampling, repair,
+MAP/CAL, PTC/AST algorithm work, source-map comparison, new data, route activation,
+Unity, integration, agent push, production or cleanup occurs. User controls pushes.
+
+This two-document closure must directly follow tested source and receive its own
+independent exact-SHA review; that closure identity and report are recorded
+externally afterward. Future canonical admission must reverify moving canonical
+ancestry and independently review the exact integration SHA. Next implementation
+connection is authoritative source and existing-scan bindings for corpus execution,
+within the accepted runtime architecture; no new census or framework is selected.
