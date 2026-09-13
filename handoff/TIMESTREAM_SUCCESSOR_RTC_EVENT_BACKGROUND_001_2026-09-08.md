@@ -2421,3 +2421,20 @@ policy needs, changes to runtime/corpus/ownership trigger reassessment; preserve
 and report missing bindings rather than inventing them. No map data, spectral
 work, new observations, runtime flags/corrections, activation, integration, push
 or cleanup. GitHub pushes remain owner-controlled.
+
+
+Recurrence metadata reassessment: initial source c9bfb8d80e11e29ee260b0ba08aa5e87e6e45582
+passed 15 recurrence and 21 inherited-consumer tests, then stopped before output
+publication at its explicit native-provenance availability guard. Unlike the
+11 short-observation records, the two long Science records have bounded native
+provenance available: each lists 124 scan summaries, alignment/observation
+binding digests, RTC support counts and PTC grouping counts. Inspection recovers
+these facts but finds no serialized exact native interval rows or per-network
+relation. Existing reduction-log matrices are also abbreviated with ellipses.
+Within-scope repair preserves both availability states, exports only RTC/PTC
+metadata and exact bindings, and keeps actual scan costs unavailable. It does
+not infer row starts from counts or digest strings. The YAML timestamp is
+normalized to a string for the JSON audit, and the installed safe C parser
+handles the large bounded provenance documents. New analytical cases cover
+published counts without intervals, absent provenance and unexpected schemas.
+The failed run log is retained externally; review must bind the repaired SHA.

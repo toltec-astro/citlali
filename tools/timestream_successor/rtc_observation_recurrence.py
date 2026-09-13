@@ -146,6 +146,29 @@ def summarize(rows):
                     r["occupied_quarters"] for r in eligible if r["transition_groups"] >= 3).items())))
 
 
+def native_scan_summary(native):
+    """Project bounded RTC/PTC metadata only; counts do not supply intervals."""
+    if native.get("available") is False:
+        return dict(available=False, complete_native_scan_relation=False)
+    require(native.get("available") is True, "missing native provenance availability")
+    value = native.get("value", {})
+    require(value.get("schema_version") == "citlali-native-cohort-product-provenance-v3",
+            "new native schema: reassess scan binding")
+    rtc_keys = {"run_count", "loaded_input_row_count", "selected_input_row_count",
+                "output_row_count", "exact_support_identity_count", "detector_support_count",
+                "flagged_detector_support_count", "final_short_support_count", "interval_authority"}
+    scans = []
+    for s in value["scans"]:
+        require(set(s["rtc"]) == rtc_keys, "native support schema changed: reassess relation")
+        require(s["rtc"]["interval_authority"] == "telescope.scan_indices.inner_and_outer_intervals",
+                "unexpected scan authority")
+        scans.append({k: s[k] for k in ("scan_index", "chunk_index", "observation_binding_digest", "rtc", "ptc")})
+    return dict(available=True, schema=value["schema_version"],
+                observation_binding=value["observation_binding"], scans=scans,
+                complete_native_scan_relation=False,
+                limitation="scan identifiers, counts and binding digests exist; exact native intervals/relations are not serialized")
+
+
 def audit_scan_inputs(metadata_root, observations):
     """Read exact existing V2 timing metadata. Never reconstruct alignment."""
     import yaml
@@ -164,10 +187,9 @@ def audit_scan_inputs(metadata_root, observations):
         raw = folder / "raw_timestream_provenance.yaml"
         require(raw.is_file(), f"missing known provenance {raw}")
         with raw.open() as stream:
-            doc = yaml.safe_load(stream)
+            doc = yaml.load(stream, Loader=yaml.CSafeLoader)
         native = doc.get("realized", {}).get("native_cohort_provenance", {})
-        require(native.get("available") is False,
-                "native provenance state changed: reassess scan binding")
+        native_summary = native_scan_summary(native)
         for name in ("raw_timestream_provenance.yaml", "timestream_output_provenance.yaml"):
             p = folder / name
             require(p.is_file(), f"missing known metadata {p}")
@@ -190,11 +212,11 @@ def audit_scan_inputs(metadata_root, observations):
                                           attributes={a: str(v.getncattr(a)) for a in v.ncattrs()})
             products.append(dict(path=str(p), sha256=h, timing_metadata=selected))
         entries.append(dict(observation=obs, inspected_run=str(run), files=files,
-                            software_identity=doc.get("software_identity"),
+                            software_identity={k: str(v) for k, v in doc.get("software_identity", {}).items()},
                             canonical_run_identity=doc.get("canonical_run_identity"),
-                            native_cohort_provenance=native, products=products,
+                            native_cohort_provenance=native_summary, products=products,
                             native_to_pca_scan_relation=None,
-                            cause="native cohort relation not published; output indices are not native indices"))
+                            cause="complete native scan relation not published; output indices are not native indices"))
     logs = []
     for relative in ("oof/refactor/1146+399/log/reduce.log",
                      "science/refactor/NGC4449/log/reduce.log"):
@@ -302,7 +324,10 @@ def report(output, s, scan):
               "An observation-scoped use exclusion would not rewrite Tune/APT or label hardware permanently bad.", "",
               "## Existing-scan prerequisite", "",
               "Full-scan exclusion and additional loss beyond that treatment remain **unavailable**. "
-              "All 13 inspected observation provenance records declare native-cohort provenance unavailable. "
+              "Eleven short-observation provenance records declare native-cohort provenance unavailable. "
+              "The two long science observations each publish 124 native scan summaries, alignment/observation "
+              "binding digests and RTC/PTC counts. Those recover the named scan authority and existing identifiers, "
+              "but omit the exact native intervals and per-network relation needed for intersection. "
               "The selected V2 pointing files publish output-timebase scan indices; OOF diagnostic files publish "
               "scan identifiers/durations. The inspected NGC4449 generation has no RTC/PTC timestream or "
               "diagnostic NetCDF files. Saved reduction-log matrices contain ellipses and do not supply "

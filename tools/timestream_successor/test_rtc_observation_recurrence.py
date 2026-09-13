@@ -1,6 +1,6 @@
 import unittest
 
-from rtc_observation_recurrence import describe, retained_markers, summarize, cost
+from rtc_observation_recurrence import describe, retained_markers, summarize, cost, native_scan_summary
 
 
 def detector(support=((0, 60_000_000),), groups=0):
@@ -19,6 +19,33 @@ def event(group, bounds):
 
 
 class RecurrenceTests(unittest.TestCase):
+    def test_native_absent_does_not_imply_scan_cost(self):
+        result = native_scan_summary(dict(available=False))
+        self.assertFalse(result["complete_native_scan_relation"])
+
+    def test_native_counts_are_preserved_without_inventing_intervals(self):
+        rtc = {k: 11 for k in ("run_count", "loaded_input_row_count", "selected_input_row_count",
+                               "output_row_count", "exact_support_identity_count", "detector_support_count",
+                               "flagged_detector_support_count", "final_short_support_count")}
+        rtc["interval_authority"] = "telescope.scan_indices.inner_and_outer_intervals"
+        value = dict(schema_version="citlali-native-cohort-product-provenance-v3",
+                     observation_binding={"alignment_plan_digest": "exact-plan"},
+                     scans=[dict(scan_index=0, chunk_index=0, observation_binding_digest="exact-binding",
+                                 rtc=rtc, ptc={"group_count": 11}, unrelated_output={"do_not_copy": 1})])
+        result = native_scan_summary(dict(available=True, value=value))
+        self.assertTrue(result["available"])
+        self.assertFalse(result["complete_native_scan_relation"])
+        self.assertEqual(result["scans"][0]["rtc"]["exact_support_identity_count"], 11)
+        self.assertNotIn("unrelated_output", result["scans"][0])
+        rtc["native_intervals"] = [[0, 42]]
+        with self.assertRaisesRegex(ValueError, "schema changed"):
+            native_scan_summary(dict(available=True, value=value))
+
+    def test_unknown_native_provenance_requires_reassessment(self):
+        for value in ({}, {"available": True, "value": {"schema_version": "new-version"}}):
+            with self.assertRaises(ValueError):
+                native_scan_summary(value)
+
     def test_paired_coordinates_count_one_original_group(self):
         markers, n = retained_markers([event(5, [[(30, 40)], [(20, 35)]]),
                                        event(6, [[], []])])
