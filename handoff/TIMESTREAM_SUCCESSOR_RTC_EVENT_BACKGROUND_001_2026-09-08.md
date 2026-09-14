@@ -3153,3 +3153,84 @@ the repaired source SHA. Other initial failures were test setup only: one build
 started before configure completed, and one invalid-donor fixture declared a
 finite payload nonfinite. Both are retained; the latter now supplies an actual
 nonfinite value with matching producer state.
+
+
+## RTC donor-fill source completion and documentation closure — 2026-09-13
+
+Disposition: locally reviewed candidate; no canonical admission or production
+activation. Exact tested source is `9d3d6a66b2e731e20c01d07d3c9d91ffbbd13db6`,
+tree `b1b6ec05259ebdbd56d5c6a1323de71e66960bc2`, parent initial candidate
+`36a9c76b947a467fc9fe471e50f191239acb5530`. Literal base remains
+`d1e9bab76dadded53e8dd107947d508142e2b8ed`. Source scope is exactly the six
+preflight paths. The source was clean during final gates and independent review.
+This successor documentation commit changes only current status and this handoff;
+its exact SHA/tree/parent and independent review are bound externally, avoiding
+a self-referential source claim.
+
+Runtime Learn is unchanged and supplies the original local cubic and candidate,
+screening and peer evidence. RTC Consider owns immutable selected-event, VAL,
+prior static flxscale, resolved-segment and contamination bindings and freezes
+the median/eligible/central donor and background-support plan. RTC Apply produces
+only selected native-x continuity samples and persistent replacement/exclusion
+facts. It preserves raw x/r and retained measurements, withholds conditioned r
+on the selected support and never makes replacement values independent/map inputs.
+The application does not yet produce the selected-event/factor/segment inputs;
+tests bind them explicitly. No new automatic hard-spike/optical admission rule,
+protected-source treatment or full RTC route is claimed. Development
+learn/consider/apply is distinct from these runtime owners.
+
+Final focused gate: 22/22 pass, 57 ms test time. Full CTest/check: 1057/1057
+runnable pass, 1058 registered, 34.60 seconds test time. All prior 1036 names
+are retained and 22 donor tests added; the sole unchanged disabled test is
+`citlali::MapFitterLifecycle.ExactProductSequence`. CLI and safety builds pass;
+CLI reports `g9d3d6a66b`. Configuration preflight passes all four modes; baseline
+tools pass 207 tests and 137 subtests. The isolated new header has no precompiled
+header dependency. Forty previous headers and nine cached dependency patches
+were hash-verified unchanged. Negative tests retain intentional diagnostics;
+there are no remaining unexpected errors in final gates. Earlier setup failures
+and the original review finding remain preserved as described above.
+
+Focused evidence includes 26,392 bitwise retained-coordinate comparisons across
+four source-brightness fixtures, exact factor/even-median behavior, deterministic
+input reordering, donor/source/segment/identity failures, newly contaminated fit
+support, analytic zero-value/slope taper endpoints, unchanged raw values and
+persistent exclusion. A fixed `[1,2,1]/4` test convolution checks donor-offset
+invariance only; it is not a filtering implementation or science qualification.
+The three-detector/eleven-filled-row microfixture takes 0.0430852 seconds for
+1000 Consider+Apply operations, with 1040 logical plan bytes and 88 output numeric
+bytes. Learn is excluded. Focused-process peak child RSS is 10,256,384 bytes;
+full check/build takes 119.71 seconds with peak child RSS 3,266,494,464 bytes;
+CLI build takes 81.17 seconds with peak child RSS 4,299,079,680 bytes. These are
+process-level local measurements, not aggregate memory or production throughput.
+
+Actual environment is AppleClang 21.0.0.21000334, arm64 macOS, C++20 Release,
+Homebrew and the unchanged cached dependencies. Representative Unity/Spack V2:
+not performed. Affected application mode/real corpus: not triggered because
+there is no route wiring or producer supplying the required runtime bindings.
+This is supplemental local conformance evidence. No new real-data repair,
+combined loss fraction, map product, filtering, downsampling or production claim.
+
+Evidence root: `/private/tmp/citlali-rtc-donor-fill-2026-09-13`.
+`source-binding.json`, `executable-binding.json`, `inventory-binding.json`,
+`gate-status.json`, `README.md` and `join-review.png` bind the tested source and
+results. `SOURCE_SHA256SUMS` seals 169 files, SHA256
+`d5bc90ea015fc89c6e6766f88b7f9a290b1522403332b33fe3ae7e0df233b5a1`.
+Independent fresh-context exact-source report `review-source-01.md`, SHA256
+`0abefcd52144acc7007c5ef45860351ad44a9f620daed5df33fc3597c1855e0b`, passes with recorded limitations
+in scientific/behavioral conformance, architecture/ownership and repository/evidence
+hygiene, with no outstanding findings. The original fit-contamination reproduction
+now rejects reuse; reviewer independently ran the 22 repository tests plus that
+regression and checked header isolation. A separate exact-SHA docs-only review
+and final evidence seal follow outside this immutable source-evidence generation.
+
+Fresh SSH GitHub read still gives canonical
+`86c20b31f7300ba4063be044380b61cd0baf25eb` and published transient
+`d1e9bab76dadded53e8dd107947d508142e2b8ed`; the donor branch is not published.
+No integration, push, activation or cleanup occurs. The two original decision-note
+edits remain unchanged in the prior worktree and unrelated checkout dirt is
+untouched. The owner controls pushes. Future canonical admission must check the
+live moving base and review the exact resulting integration SHA independently.
+The next integration prerequisite is connecting contracted event-admission and
+exact producer facts to this bounded component, with any genuinely missing
+scientific rule resolved explicitly; the completed fill does not silently supply
+those rules or expand into notch/lowpass/downsampling work.

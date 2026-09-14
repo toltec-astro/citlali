@@ -1,6 +1,6 @@
 # Citlali Refactor Status
 
-## RTC donor-fill component implementation — 2026-09-13
+## RTC donor-fill component reviewed closure — 2026-09-13
 
 Owner-approved TIMESTREAM-SUCCESSOR-RTC-DONOR-FILL-001 is implemented as a
 candidate on `codex/timestream-successor-rtc-donor-fill-001`, based on pushed
@@ -28,12 +28,33 @@ a complete RTC route or propagation through not-yet-implemented filters. No
 application producer currently supplies the selected-event/factor/segment bindings;
 the focused fixtures do so explicitly. No production or real-corpus repair claim.
 
-Focused C++ compilation and the isolated public header pass; exact-source broad
-gates and independent review are in progress. Local AppleClang/Homebrew/cached
-results are supplemental, not Unity/Spack V2 reproduction. Existing D2/VAL/RTC,
-frozen scientific packages, AST/CAL/PTC/MAP, config/route defaults and the user-only
-push boundary remain unchanged. Detailed preflight, owner decisions and limits
-remain in the existing RTC event-background handoff.
+Tested source `9d3d6a66b2e731e20c01d07d3c9d91ffbbd13db6`, tree
+`b1b6ec05259ebdbd56d5c6a1323de71e66960bc2`, passes 22 focused tests,
+1057/1057 runnable CTests (1058 registered, one unchanged disabled), all four
+configuration modes and 207 baseline tests plus 137 subtests. All prior 1036
+registrations and 40 prior headers remain; the new header compiles in isolation.
+Independent exact-source review passes with recorded scope/environment limits
+and no remaining findings. Its background-contamination finding on initial
+`36a9c76b947a467fc9fe471e50f191239acb5530` was repaired and independently
+reproduced at the tested source. This closure changes only status and handoff;
+it does not relabel source tests as a build of the documentation commit.
+
+The three-detector/eleven-row fixture measures 1000 Consider+Apply operations in
+0.0430852 seconds, with 1040 logical plan bytes and 88 numeric output bytes;
+Learn is excluded, so no production throughput claim follows. Local AppleClang
+21/Homebrew/preserved cached results are supplemental, not Unity/Spack V2
+reproduction. Evidence is `/private/tmp/citlali-rtc-donor-fill-2026-09-13`;
+source seal SHA256 `d5bc90ea015fc89c6e6766f88b7f9a290b1522403332b33fe3ae7e0df233b5a1`;
+independent source report SHA256 `0abefcd52144acc7007c5ef45860351ad44a9f620daed5df33fc3597c1855e0b`.
+The exact docs-only closure receives its own independent review externally.
+No application producer or automatic event/optical admission is supplied; these
+remain prerequisites to exercising real-data treatment. Existing D2/VAL/RTC,
+frozen scientific packages, AST/CAL/PTC/MAP and config/route defaults remain.
+Fresh remote assessment confirms the same canonical and published transient tips;
+the new donor branch is absent remotely. No push, integration, activation or cleanup
+is performed. Push remains owner-only; eventual moving-base admission requires
+fresh ancestry checks and independent exact integration-SHA review. Detailed
+preflight, results and retained limits are in the existing RTC handoff.
 
 ## RTC donor-pool and combination owner decisions — 2026-09-13
 
