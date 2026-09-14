@@ -1,36 +1,63 @@
 # Citlali Refactor Status
 
-## RTC initial native spectral learning — 2026-09-14
+## RTC initial native spectral learning reviewed closure — 2026-09-14
 
-Owner-approved TIMESTREAM-SUCCESSOR-RTC-NATIVE-SPECTRAL-LEARN-001 is implemented as a candidate
-on `codex/timestream-successor-rtc-native-spectral-learn-001`, literal pushed
-base `5de31ec52cb3b079b22e47fee95b0725662c69a8`. Fresh canonical remains
-`86c20b31f7300ba4063be044380b61cd0baf25eb`; no integration occurs. The initial
-RTC Learn profile consumes original native x/r, producer coordinate validity and
-its exact initial VAL snapshot, retains source signal/protection metadata and
-unaccepted transient candidates, and supplies spectra to transient consideration.
-Declared-invalid support and physical gaps remain explicit; unexpected admitted
-nonfinite values invalidate the affected coordinate/run with an input-consistency
-cause. No repair, line/source exclusion, filtering or scientific rejection is
-authorized by the spectrum. The existing D2 masked-Welch conventions are retained
-and contributing native windows/support recorded.
+Owner-approved TIMESTREAM-SUCCESSOR-RTC-NATIVE-SPECTRAL-LEARN-001 is a locally
+reviewed component on `codex/timestream-successor-rtc-native-spectral-learn-001`,
+literal published base `5de31ec52cb3b079b22e47fee95b0725662c69a8`. Fresh canonical remains
+`86c20b31f7300ba4063be044380b61cd0baf25eb`; no ancestry integration occurs.
 
-This initial-reference policy does not constrain later RTC Learn to original
-data. Later explicitly identified native intermediate/conditioned evidence may
-use its own bound VAL snapshot and preserve replacement/support history; every
-revised Apply still replays a frozen complete plan on the original admitted pair.
-A feature disappearing after targeted treatment is an outcome, not classification
-proof. The full loop, notch/spike admission, protected-source treatment and stopping
-thresholds remain outside this increment. Detailed owner direction, preflight and
-conformance are appended to the existing RTC handoff. No push or cleanup is needed.
-The 22 focused C++ tests and isolated header pass, including direct reference
-agreement with the unchanged D2 estimator, native support records and source retention.
-Full exact-source gates and independent review are pending. The typed identity layer
-accepts later explicitly bound native stages/VAL; only the initial numerical producer
-is implemented. No conditioned-data spectrum or full RTC replay loop is claimed.
-Independent review identified an understated cadence scratch estimate in the first
-candidate; the bounded repair counts both cadence/median buffers and releases them
-before coordinate measurement. A 10,000-row all-invalid regression covers the case.
+Runtime Learn measures original native x/r under the explicit initial-use policy,
+producer coordinate validity and exact initial VAL. It retains astronomical signal,
+protected/outside/unknown annotations and unaccepted transient candidates. The
+existing D2 four-second Hann/50-percent-overlap/two-window measurement conventions
+are unchanged, including actual median centering, normalization, arithmetic window
+averaging, padding and end anchoring. Each result records the native support used.
+Declared-invalid support splits eligible stretches without collapsing time;
+unexpected admitted NaN/Inf invalidates the affected coordinate/physical-run and
+records input-consistency failure. Good remaining runs may yield explicitly partial
+evidence; unavailable evidence does not automatically reject a detector.
+
+Consider retains spectra and exact transient evidence jointly, with per-event
+coordinate/run links. It changes no prior decision and admits no treatment. The
+initial-only numerical producer is separate from the typed stage/VAL descriptor,
+which supports later explicitly bound native intermediate/conditioned identities.
+Future numerical producers must retain actual parent values and replacement/support
+history. Every revised Apply remains frozen complete-plan replay on the original
+admitted pair. No full loop, notch/spike admission, stopping threshold, protected-source
+change, conditioned spectrum or production route is implemented by this component.
+
+Tested source `a7cd4f8fabf7c8f83d4f30a392105c6ac94d90ea`, tree
+`ea52eaaf87bc3361c4408cfd7f8fdae9daca382d`, passes 22 focused tests,
+1079/1079 runnable CTests (1080 registered; one unchanged disabled), CLI and safety
+builds, all four configuration modes and 207 baseline tests plus 137 subtests.
+All prior 1058 registrations, 41 scientific headers and both Python estimator sources
+are preserved. The new header compiles in isolation; golden numerical references
+regenerate byte-identically. Exact input/VAL, source retention, declared-invalid and
+unexpected-nonfinite cases, insufficient support and unchanged original x/r are tested.
+
+Independent fresh-context exact-source review passes with recorded limitations and
+no remaining findings. RTC-NSL-R01 on initial `f45a442b20d8fb0622fe242f1c3d24f8e6af7fa5`
+understated cadence scratch storage; the repair accounts for both cadence/median
+buffers and releases them before coordinate measurement. Its 10,000-row all-invalid
+regression passes independently. This closure changes only status and the existing
+handoff; source test results are not relabeled as a build of the documentation SHA.
+
+A three-detector, 1600-row, 128-Hz fixture takes 0.0324197
+seconds for 100 spectral Learn calls, excluding upstream transient Learn; it owns
+18688 logical output bytes with a 5248-sample
+visible numeric scratch bound. This is not observation throughput. Evidence is
+`/private/tmp/citlali-rtc-native-spectral-learn-2026-09-14`; source seal SHA256
+`db037a411b987ee326d51389c14fbbc500d22cc6fecf3a0d0ebabfc977ebf2cf`; independent source report SHA256
+`6f3dcb6e488441ca0dfe6758c6a3f2f346e610b07fb4225af040a559fe22e08c`. Actual AppleClang 21/Homebrew/cached-dependency results are
+supplemental, not Unity/Spack V2. Controlled fixtures only; no real-corpus treatment.
+The exact docs-only closure receives its own external independent review.
+
+Fresh GitHub refs confirm the same canonical and published donor tips; this spectral
+branch is absent remotely. No integration, push, activation or cleanup occurs.
+Push remains owner-only. Eventual moving-base admission requires fresh ancestry
+checks and independent exact integration-SHA review. The existing RTC handoff
+records owner policy, runtime responsibilities, exact evidence and remaining bounds.
 
 ## RTC donor-fill component reviewed closure — 2026-09-13
 

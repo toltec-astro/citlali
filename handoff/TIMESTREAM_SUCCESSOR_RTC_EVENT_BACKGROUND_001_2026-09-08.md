@@ -3351,3 +3351,103 @@ releases cadence storage before coordinate measurement. A 10,000-row all-invalid
 fixture reproduces the formerly understated bound. All 22 focused tests now pass;
 PSD numerics and accepted source policies are unchanged. The repaired exact source
 will receive complete gates and independent review; no verdict transfers by ancestry.
+
+
+## RTC initial spectral source completion and documentation closure — 2026-09-14
+
+Disposition: locally reviewed component; no canonical admission or activation.
+Tested source `a7cd4f8fabf7c8f83d4f30a392105c6ac94d90ea`, tree
+`ea52eaaf87bc3361c4408cfd7f8fdae9daca382d`, parent initial source
+`f45a442b20d8fb0622fe242f1c3d24f8e6af7fa5`; literal published base
+`5de31ec52cb3b079b22e47fee95b0725662c69a8`. Source scope is exactly the eight preflight paths.
+The source was clean for final gates and independent review. This successor changes
+only current status and this existing handoff; its SHA/tree/parent and independent
+review are recorded externally, without relabeling tested executables.
+
+Runtime Learn now owns initial spectra with exact original x/r realization,
+producer validity, stage/attempt, initial VAL, explicit cadence authority and actual
+native support. Consider can consume the retained transient decision and spectral
+facts jointly, with exact original parent and per-product VAL verification. It
+exposes each event's coordinate spectrum and whether its own physical run actually
+contributed. It does not rewrite the old transient evidence, promote candidates,
+classify lines, freeze treatment or authorize Apply. This runtime boundary is
+separate from the development Learn/Consider/Apply workflow.
+
+Initial spectra retain source signal and unknown/protected metadata as annotations;
+no candidate, repaired value, new line mask or source subtraction manufactures the
+measurement. Declared-invalid support and gaps split stretches without joining
+native time. Unexpected admitted nonfinite values fail the affected coordinate/run
+and record an input-consistency cause. Good runs can contribute only as explicitly
+partial evidence; failed support is excluded from centering and windows and remains
+visible. Insufficient windows, fixed-grid/cadence unavailability and nonfinite
+arithmetic retain typed dispositions. None introduces detector rejection.
+
+Later native intermediate/conditioned identity and later VAL generation are allowed
+by the descriptor and tested. Only this initial numerical producer is supplied;
+future named producers must carry numerical parent and replacement/support history.
+No generic Learn rule restricts all later evidence to originals. Reconsideration
+may use later residual/conditioned evidence alongside the immutable reference, but
+revised Apply always executes a complete frozen plan afresh on original admitted
+x/r. Filtered-feature disappearance alone cannot justify original classification.
+No full loop, stopping/admission policy or reconstructed independent/map evidence
+is introduced. Operational cadence authority remains an explicit caller binding,
+not a new default inferred from legacy behavior.
+
+Final local gates: 22/22 focused C++ tests; header isolation without PCH;
+1079/1079 runnable full CTests, 1080 registered, 35.01 seconds
+CTest time. All prior 1058 names remain; the single unchanged disabled test is
+`citlali::MapFitterLifecycle.ExactProductSequence`. CLI and safety builds pass;
+CLI reports `ga7cd4f8fa`. All four config modes pass; baseline has 207 passing tests
+and 137 passing subtests. Forty-one prior headers, both Python estimators, three
+effective governance digests and nine preserved dependency patches remain identical.
+The golden generator reproduces byte-identical references. Twenty-two focused tests
+include actual odd/even/padded/gapped PSD agreement, exact used native windows,
+source-retention identity, invalid/nonfinite differences, unavailable support,
+explicit stage/VAL identity and 1446 bitwise original-coordinate comparisons.
+
+The retained 16-Hz review fixture uses seven 64-sample windows with native starts
+100, 132, 164, 196, 228, 260, 277; the last is end-anchored. Its original 3-Hz x
+oscillation and transient both contribute to the spectrum, with no event/line
+classification claim. CSVs record the original pair, spectra and exact integration
+support. Numerical behavior remains the actual inherited D2 profile described above,
+including the odd-length last-bin convention; no estimator repair was smuggled into
+this increment. Measurement-profile settings do not qualify a notch.
+
+Timing: 100 Learn calls take 0.0324197 seconds for
+1600 native rows at 128 Hz, three detectors and both coordinates. Logical output
+is 18688 bytes; conservative visible scalar scratch is
+5248 double-sized samples, excluding FFT internals and allocator
+capacity. Upstream transient Learn is excluded. Focused-process peak child RSS is
+12812288 bytes. Full check/build takes
+121.01 seconds with peak child RSS
+3223502848 bytes. These are local process
+measurements, not aggregate memory or observation throughput. No route/operational
+producer or real-corpus treatment is exercised; controlled fixtures demonstrate
+this component's conformance. No Unity build was needed or performed. AppleClang 21
+arm64, C++20 Release/Homebrew/preserved cached evidence is supplemental, not
+Unity/Spack V2 reproduction.
+
+Retained failures: initial configure omitted the prior cache's required minimum
+policy setting; initial overflow test mistakenly had an odd median population;
+first config-gate command used unsupported `--output-dir` and was corrected to
+`--work-dir`. Final gates pass without remaining unexpected errors. Independent
+review's RTC-NSL-R01 scratch-accounting finding was reproduced and repaired without
+PSD changes. Reviewer independently rebuilt the isolated header and ran all 22
+candidate tests plus its original reproduction (23/23); no source findings remain.
+
+Evidence root `/private/tmp/citlali-rtc-native-spectral-learn-2026-09-14` contains
+source/executable/inventory bindings, gate results, controlled CSV/PNG and report.
+`SOURCE_SHA256SUMS` SHA256 `db037a411b987ee326d51389c14fbbc500d22cc6fecf3a0d0ebabfc977ebf2cf` seals the exact source evidence.
+Independent `review-source-01.md` SHA256 `6f3dcb6e488441ca0dfe6758c6a3f2f346e610b07fb4225af040a559fe22e08c` passes with recorded
+limitations on scientific/behavioral, architecture/ownership, and repository/evidence
+axes. Separate exact-SHA docs-closure review and final seal follow externally.
+
+Fresh SSH GitHub authority remains canonical
+`86c20b31f7300ba4063be044380b61cd0baf25eb`, published donor
+`5de31ec52cb3b079b22e47fee95b0725662c69a8`; spectral branch absent remotely.
+No push, integration, activation or cleanup occurs. User performs any eventual push.
+Future moving-base admission must verify live ancestry and independently review
+its exact resulting SHA. Existing D2/VAL/RTC/donor, downstream contracts, unrelated
+dirt and sealed prior evidence are preserved. Conditioned numerical producers,
+notch admission/treatment, stopping rules and complete RTC plan/replay wiring remain
+subsequent work under their existing contracts and explicit owner decisions.
