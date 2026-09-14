@@ -581,3 +581,14 @@ add_dependencies(check citlali_timestream_successor_rtc_native_spectral_learn_te
 gtest_discover_tests(citlali_timestream_successor_rtc_native_spectral_learn_test
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     TEST_PREFIX "citlali::timestream_successor::rtc_native_spectral_learn::" DISCOVERY_MODE PRE_TEST)
+
+add_executable(citlali_timestream_successor_rtc_line_power_test EXCLUDE_FROM_ALL
+    timestream_rtc_line_power_header.cpp test_timestream_rtc_line_power.cpp)
+set_source_files_properties(timestream_rtc_line_power_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+set_target_properties(citlali_timestream_successor_rtc_line_power_test PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
+target_link_libraries(citlali_timestream_successor_rtc_line_power_test PRIVATE citlali::citlali GTest::gtest_main)
+add_dependencies(check citlali_timestream_successor_rtc_line_power_test)
+gtest_discover_tests(citlali_timestream_successor_rtc_line_power_test
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    TEST_PREFIX "citlali::timestream_successor::rtc_line_power::" DISCOVERY_MODE PRE_TEST)

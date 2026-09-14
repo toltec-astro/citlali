@@ -3451,3 +3451,214 @@ its exact resulting SHA. Existing D2/VAL/RTC/donor, downstream contracts, unrela
 dirt and sealed prior evidence are preserved. Conditioned numerical producers,
 notch admission/treatment, stopping rules and complete RTC plan/replay wiring remain
 subsequent work under their existing contracts and explicit owner decisions.
+
+
+## RTC line-power owner direction and bounded preflight — 2026-09-14
+
+Owner: Grant Wilson. Work order TIMESTREAM-SUCCESSOR-RTC-LINE-POWER-001,
+Tier 2, one RTC module slot. The owner accepted and pushed initial spectral
+closure `77cc29503ae54484cb6f128744f7d32aef0dd8f2`, tree
+`0dc9552802692e400d7f069fdd1ae7181cec00a3`; fresh SSH GitHub queries confirm
+that exact ref and unchanged canonical `86c20b31f7300ba4063be044380b61cd0baf25eb`.
+The new clean worktree is `/private/tmp/citlali-timestream-successor-rtc-line-power-001`,
+branch `codex/timestream-successor-rtc-line-power-001`, with the pushed closure as
+literal base. Prior history, worktrees, dirty files and sealed evidence remain.
+Eventual canonical admission requires fresh moving-base checks and independent
+exact integration-SHA review. No ref integration or push occurs in this increment.
+
+Owner decisions recovered from the current discussion:
+
+- Direct x evidence is required before proposing a shared notch; r remains
+  corroborating/candidate evidence. This is a necessary condition, not sufficient
+  shared-action admission or a threshold for x evidence (SCI-RTC-REQ-129/130).
+- Line candidates should be assessed through their contribution to spectral
+  power or an equivalent treatment-benefit quantity. Measure integrated excess
+  above an explicit local spectral background, retain absolute excess and a
+  declared-band fraction, and retain local contrast because astronomical and
+  atmospheric power can dominate a whole-spectrum denominator. Learn records
+  measurements; Consider evaluates their credibility, treatment benefit and
+  scientific protection; Apply consumes an eventual complete frozen plan.
+- Post-PCA treatment might be useful, but evidence must establish that need after
+  preliminary pipeline assembly. This increment remains RTC-only and does not
+  authorize a post-PCA estimator, treatment, threshold or route.
+- Proceed with defining and implementing this bounded line-power increment,
+  reusing settled D2/VAL/native/transient architecture, controlled fixtures and
+  existing timestream examples. No independent diagnostic/science program.
+
+Applicable authority: AGENTS and toltec-context routing; effective engineering,
+Timestream Successor, and review governance at accepted `06a3ade51` incorporated
+by `775078363`, with the unchanged three ledger digests; current status; existing
+S2 implementation intent; frozen SCI-RTC r0.12 REQ-055--061/069--082/118--125/129--130
+and SCI-VAL exact identity/snapshot/use ownership; latest explicit owner directions
+above. Architecture is settled; old code and unclosed ledger numerical entries are
+not scientific defaults. Existing beam/motion/response authorities will be reused
+when treatment requires their actual astronomical-transfer comparison.
+
+Purpose: one RTC-owned line-power evidence product consuming the exact immutable
+initial native spectral evidence; candidate ranking and connection to existing
+joint spectral/transient Consider. Retain exact source/stage/attempt/VAL/support,
+x/r coordinate units and availability, candidate extent and comparison-domain
+identity, background definition, measured power/fraction/contrast, and unavailable
+causes. Candidate evidence and ranking are not accepted interference, notch
+parameters or authorization. No update to the original spectral product or VAL.
+
+Pending precise measurement definitions, asked explicitly rather than inferred:
+(1) a trial local rolling-median background covering approximately +/-2 Hz,
+clipped at native band edges; (2) connected above-background candidate regions,
+with neighboring peaks grouped until a background return, frequency-bin-weighted
+excess and total native-spectrum power, and incomplete edge-touching regions.
+These proposals remain pending until the owner answers. No numerical implementation
+may silently treat them as approved. Existing D2 peak prominence thresholds,
+half-height support, frequency cuts, fallback medians or detector/notch cuts have
+not been promoted to policy. The four-second Hann spectral estimator remains
+unchanged; this is a downstream measurement definition, not an estimator redesign.
+
+Expected owned areas: one line-power RTC public header; isolated-header TU;
+focused tests and small deterministic fixtures; tests/CMakeLists; only any bounded
+real-input adapter needed to exercise this same implementation; current status
+and this existing handoff. Avoid a new framework, independent raw/conditioned
+pipeline, heavy per-sample provenance copies or redundant estimator implementation.
+Memory should scale with one frequency grid and retained candidate records;
+measure execution time and visible numeric storage with scope stated explicitly.
+
+Gates after implementation: direct scientific fixtures (power, width, continuum,
+atmosphere denominator, narrow/single-bin features, source/unknown retention,
+invalid/unavailable spectra and exact parent/VAL rejection), original x/r and
+accepted spectra unchanged, deterministic ranking and no r-only x action, header
+isolation, CLI/safety, full CTest, four config modes, baseline tools, bounded
+existing-case exercise and independent fresh-context exact-source three-axis
+review. A docs-only closure receives separate exact-SHA review. Local
+AppleClang/Homebrew/preserved cached evidence is supplemental; no Unity/Spack V2
+or production claim. All Unity work remains human-mediated.
+
+Review triggers: missing scientific definition; changed accepted PSD arithmetic;
+new stage/use/response owner; inability to preserve exact native support and
+source-protection status; unexpected nonfinite/arithmetic behavior; scope growth;
+performance or evidence-identity failure; moving authority. Stop dependent work
+for a missing scientific decision, while completing independent preparation.
+No new line/notch significance threshold, false-detection rule, notch operator,
+source treatment, transient admission, full outer iteration/stopping policy,
+lowpass/factor/downsampling, PTC/post-PCA, AST/CAL/MAP, activation, integration,
+push or cleanup is authorized by this bounded measurement task.
+
+
+### Explicit diagnostic-profile approval and validation clarification
+
+The owner-supplied approval now closes the two pending measurement questions.
+Use the actual frequency grid: neighborhood membership is inclusive
+`f_center - radius_hz <= f_neighbor <= f_center + radius_hz` as realized by
+the stored double frequencies and bounds, clipped to the available native spectrum. The initial radius is
+2 Hz; 1/4 Hz are labeled sensitivity profiles only. Median is the middle value
+or arithmetic midpoint of the two central values; no median-to-mean calibration
+or fallback continuum is invented. Strict `PSD > background` connects regions;
+equality terminates a region. Adjacent peaks stay together until that return.
+Record the first maximum positive excess as the deterministic representative, bin indices,
+frequency-center endpoints and finite-bin span. Candidate extent is descriptive,
+not physical linewidth, number of oscillators or notch width.
+
+Finite-bin accounting uses the accepted uniform grid spacing times the sum of
+stored PSD values, with the existing PSD's one-sided weighting already present.
+Do not apply another endpoint doubling or trapezoid half-weight. Record positive
+excess, total stored-PSD power over all native bins, their ratio where defined,
+and local contrast where background is positive. These are diagnostic PSD-relative
+quantities, not unbiased interference power or physical variance fractions.
+Keep immutable parent PSD and full trial background so signed residuals and
+predeclared-band sums are reconstructible. Candidate touching the spectrum edge
+and any candidate-bin background neighborhood clipped by that edge are separate
+flags. No data-dependent search cuts or prominence threshold are adopted.
+
+The numerical measurement belongs to runtime RTC Learn. Diagnostic ranking in
+Consider retains the exact joint spectral/transient evidence, parent, stage,
+attempt and VAL; ranks are per coordinate/detector, never cross-unit x/r power
+comparisons. Direct x remains necessary but not sufficient for a shared notch
+proposal. No proposal/admission, source classification, full plan or Apply action
+is created. The immutable initial spectral input still allows later separately
+bound native/conditioned producers through its established identity descriptor;
+this increment does not implement them. Pooled PSD/window count alone does not
+measure persistence; report that availability explicitly. Validation may provide
+separate time-resolved contributing-window witnesses with their exact overlap;
+it must not relabel correlated support as independent confirmations.
+
+Bounded validation: known stationary white and atmosphere-like AR(1) noise,
+short/long and one representative gapped/padded pattern, fixed reproducible
+seeds; on/off-bin sinusoids, a small neighboring/broader feature set, transient
+controls and the retained real Case E fixture. A known predeclared injection band
+is measured independently of positive-region discovery. Compare both detected
+positive excess and signed band measures, with input noise/injected power and
+actual-estimator ensemble behavior identified separately. Report null strongest-
+candidate distributions, median bias versus mean, recovery/merging/splitting and
+background-radius sensitivity. Nonzero null candidates are expected, not failures.
+No per-scan Monte Carlo or automatic significance/acceptance cut is introduced.
+
+Independently audit each selected fixture's actual contributing windows using
+its stored median, taper, padding, normalization and endpoint convention. Compare
+finite-bin sum with the taper-weighted centered-sample second moment. For odd
+transforms, explicitly account for the inherited highest-positive-bin underweight;
+preserve it rather than repairing the accepted estimator. The audit must also
+reproduce the mean PSD from its actual windows. A time-resolved audit is validation
+only, not a replacement estimator or production persistence algorithm.
+
+The next scientific decision is whether these diagnostic measurements are adequate
+for treatment consideration in light of their measured null bias and injection
+recovery, not merely whether they reproduce their formulas.
+
+### Initial implementation and measurement reassessment
+
+Runtime evidence is implemented in `timestream_rtc_line_power.h`, with one isolated
+header compilation unit, 14 focused tests and a validation-only CSV analysis script.
+All 42 prior scientific headers and both Python estimator sources remain unchanged.
+The existing source/VAL/support and native intermediate identity boundaries remain
+owned by the accepted spectral product. No parallel estimator or application route
+is introduced. Named signed-band measurements are independent of discovered bins;
+PSD and trial background remain recoverable through the immutable evidence owner.
+
+Focused validation passes after two bounded fixture repairs. The first build failed
+because adjacent EXPECT_THROW macros shared a generated GTest label; splitting their
+source lines repaired compilation. The first executable run expected transient events
+at 16 Hz, which cannot provide the accepted minimum 256 differences in a ten-second
+noise block. The transient joint witness now uses 128-Hz original fixtures; null and
+injection spectra retain the 16-Hz cadence and do not claim transient availability.
+No noise policy or accepted transient implementation changed. Failed evidence is
+preserved under `/private/tmp/citlali-rtc-line-power-2026-09-14`.
+
+Measurement findings (initial 2-Hz radius, bounded fixed seeds):
+
+- White null background/mean PSD in the predeclared 2--4 Hz band is 0.911 for
+  short records, 1.010 for long records and 0.810 for the gapped/padded pattern.
+  Summed positive excess has median fractions 0.290, 0.075 and 0.350 of total
+  stored PSD. Positivity is a selection floor, not evidence of interference.
+- Sloping AR(1) null records produce strong low-frequency positive regions:
+  the long-record strongest region has median fraction 0.703 and empirical
+  95th percentile 0.796. This known continuum is not a line; ranking by raw
+  positive power cannot classify it or select a notch.
+- Strong on/off-bin tones give median discovered power ratios about 0.988--1.001
+  relative to the injected-only estimator power in the fixed band. Weak tones
+  illustrate why discovery and measurement are separate: median signed-band
+  increments recover about 0.833--0.847 despite discovered ratios 0.964--0.985.
+- Dense five-tone injections (2, 2.5, 3, 3.5 and 4 Hz) contaminate their own
+  background. At 2 Hz, discovered ratios are 0.053 sloping / 0.087 white;
+  raw paired-band increments are 0.995 / 1.002. Radius sensitivity is large:
+  discovered ratios range from 0.012 / 0.049 at 1 Hz to 0.886 / 1.025 at 4 Hz.
+  Signed background subtraction also loses the dense feature. No median
+  calibration, width selection or alternative background is inferred here.
+- The exact retained Case E fixture (152418/network 5/channel 60, 550 original
+  paired rows) retains a peak near 11.006 Hz. Its positive region contains
+  30.1/31.0/31.3% of stored x PSD for 1/2/4-Hz radii, while descriptive extent
+  varies 0.750/1.251/1.751 Hz. A lower-frequency region ranks higher. This is
+  candidate context, not a contamination fraction or accepted oscillator.
+  The two end-anchored windows share 426/488 samples. Test identities are
+  explicitly reindexed with fixture cadence and unknown source protection;
+  this does not claim operational binding, full-corpus validation or persistence.
+- Independent direct-DFT audits reproduce the actual stored window average and
+  the windowed, median-centered second moment for even and padded transforms.
+  In the odd-N=33 high-frequency control, the inherited highest-positive-bin
+  underweight explains 0.966223 of a 2.42176 second moment: stored power 1.45554.
+  The accepted estimator is preserved and the deficit is explicit.
+
+Disposition: continue the bounded implementation through full gates and independent
+exact-SHA review. The descriptors conform to their approved measurement definition;
+these fixtures show they are insufficient on their own for interference admission
+or notch-benefit prediction. Keep them as joint RTC evidence. A later owner-approved
+increment must address continuum/crowding and time-resolved credibility before any
+notch decision; the current result does not choose those scientific rules. No
+post-PCA work or expanded validation program is authorized by this reassessment.

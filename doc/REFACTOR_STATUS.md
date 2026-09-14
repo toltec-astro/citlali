@@ -1,5 +1,59 @@
 # Citlali Refactor Status
 
+## RTC line-power measurement candidate — 2026-09-14
+
+The owner accepts the initial native spectral result and its push is verified
+at `77cc29503ae54484cb6f128744f7d32aef0dd8f2`, tree
+`0dc9552802692e400d7f069fdd1ae7181cec00a3`. Live canonical is unchanged at
+`86c20b31f7300ba4063be044380b61cd0baf25eb`. The owner approves continuing
+with bounded RTC line-power measurements and candidate ranking before notch
+admission, lowpass and downsampling. The owned worktree is
+`/private/tmp/citlali-timestream-successor-rtc-line-power-001`, branch
+`codex/timestream-successor-rtc-line-power-001`, directly from that pushed closure.
+No integration, push, cleanup or route activation is authorized or performed.
+
+New settled directions: a shared notch proposal requires direct line evidence
+in x; r supplies corroborating/candidate evidence and cannot automatically
+cause a notch in x. Treatment consideration should measure integrated line
+excess power, its contribution to spectral power, and local contrast; strong
+atmosphere/source power must not hide an otherwise relevant feature through
+an unexplained denominator. This does not close numerical significance,
+false-detection, source-protection, notch design or acceptance budgets. Possible
+post-PCA treatment is evidence-triggered later work, outside this RTC increment.
+
+The owner now explicitly approves a +/-2 Hz rolling median and connected positive
+regions as diagnostic measurements, with finite-bin accounting. They are not
+unbiased interference power, intrinsic linewidth or expected notch benefit.
+Null/injection tests must measure median-background and positive-selection bias,
+on/off-bin and neighboring/broader features, transient controls, support/window
+and +/-1/2/4 Hz sensitivity, and even/odd endpoint power accounting against the
+actual centered/windowed samples. Preserve the PSD/background and distinguish
+candidate-boundary truncation from a clipped background neighborhood. Persistence
+requires time-resolved evidence; overlapping windows are not independent witnesses.
+No median correction, notch threshold, treatment or post-PCA work is authorized.
+The accepted PSD and all prior scientific headers remain unchanged.
+
+The bounded candidate now implements immutable positive-excess descriptors in
+runtime Learn and per-coordinate diagnostic ranking bound to the existing joint
+spectral/transient Consider. Fourteen focused tests pass, including 576 null,
+288 injection, six transient and three retained Case E profile evaluations.
+These are profile evaluations, not independent realizations: there are 32 null
+seeds per background/support pair and eight paired seeds per injected shape.
+
+The initial 2-Hz profile measures strong isolated tone power close to the known
+injection, but is not adequate as a standalone contamination/benefit measure.
+Noise-only strongest regions have median stored-PSD fractions of about 13% for
+short white records, 3% for long white records and 70% for long sloping records.
+The deliberately dense five-tone fixture raises its own trial background:
+only about 5--9% of its known band power appears as discovered positive excess
+at 2 Hz, compared with about 89--103% at 4 Hz. No profile is promoted from this
+sensitivity result. Case E retains the roughly 11-Hz feature, but its 488-sample
+windows overlap by 426 samples; they are not independent persistence witnesses.
+The odd-transform highest-bin underweight is audited and preserved, not repaired.
+Full gates, exact source/executable binding and independent source review follow;
+this is not a completed or accepted integration record. Detailed measurement
+results and limitations are retained in the existing RTC handoff and task evidence.
+
 ## RTC initial native spectral learning reviewed closure — 2026-09-14
 
 Owner-approved TIMESTREAM-SUCCESSOR-RTC-NATIVE-SPECTRAL-LEARN-001 is a locally
