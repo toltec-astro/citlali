@@ -1,5 +1,51 @@
 # Citlali Integration Ledger
 
+## RTC canonical integration complete; bounded notch experiment — 2026-09-14
+
+The owner-authorized assessment integration is complete on local canonical
+`codex/refactor-mainline` at `0f52e1a421416eadaf7d8d99d64f537132395c0c`, after
+exact reconciliation, gates and independent review. Both input histories and all
+accepted executable content are preserved. Remote canonical remains
+`86c20b31f7300ba4063be044380b61cd0baf25eb`; owner publication is pending.
+Production filtering remains inactive.
+
+The separately authorized finite-record experiment is complete at source
+`c9765cd5017ea74da791f759144bd73dbf979f48`, tree
+`969420246c398dfa03245e34f5b051db4feab32e`, on
+`codex/timestream-successor-rtc-notch-recovery-001`. It reuses RTC Learn and
+Consider evidence and implements frozen-plan experimental Apply from original
+x/r. Three audited 152390 cases compare FIR/F2, explicit notch plus the same
+FIR/F2, and rejection, with exact native AST/VAL identities and paired full-sky
+source injection. No production route, automatic selection or new bank is added.
+
+The tested 11 Hz notch removes about 99.9% of measured target-band power but
+retains only 29.639 s versus 795.394 s for FIR-only, with about 1.25% peak
+attenuation at the fastest retained injected crossing. The 54 Hz case favors
+FIR-only suppression; the quiet spectral control provides no notch rationale.
+The long-memory notch is explicitly ineligible under the retained five-second
+finite-half-support requirement. Motion/sampling exclusions and complete run
+boundary erosion are preserved; candidate retained time is not qualified recovery.
+
+Final local supplemental gates pass: 1,124 runnable CTests (1,125 registered,
+one unchanged disabled), 11 focused C++ controls, four Python controls, 211
+baseline/Python tests plus 137 subtests, required config and exact CLI binding.
+Fresh independent exact-source review passes all three axes with recorded
+limitations and no remaining repair findings. Initial failed-support evidence
+is preserved and superseded by the repaired replay. This documentation closure
+receives its own exact-SHA review.
+
+The recommendation is to leave this notch inactive and reserve further bounded
+recovery work for the in-band class with a compliant shorter footprint. Broader
+line admission still needs an explicit residual narrow-line allowance and bound
+cleaned-noise reference; the existing broadband 1% rule does not supply it.
+Settled beam, motion, sampling, response and support policy remains unchanged.
+Full results, integration identities, reviews, failure dispositions, evidence
+seal and exact owner push commands are in
+[the notch-recovery handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_NOTCH_RECOVERY_001_2026-09-14.md).
+The experiment is not integrated into canonical, and no push, Unity run,
+map qualification or production activation has occurred.
+
+
 
 ## RTC completed-assessment canonical admission — 2026-09-14
 
