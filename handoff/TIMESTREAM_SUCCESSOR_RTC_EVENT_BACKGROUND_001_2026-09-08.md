@@ -3234,3 +3234,112 @@ The next integration prerequisite is connecting contracted event-admission and
 exact producer facts to this bounded component, with any genuinely missing
 scientific rule resolved explicitly; the completed fill does not silently supply
 those rules or expand into notch/lowpass/downsampling work.
+
+
+## Initial native spectral learning authorization and preflight — 2026-09-14
+
+Owner: Grant Wilson. Work order TIMESTREAM-SUCCESSOR-RTC-NATIVE-SPECTRAL-LEARN-001,
+Tier 2, one RTC module slot. The owner approved original native spectral evidence
+connected to transient consideration and expressly required a future RTC-wide
+relearning path. This supersedes the earlier rerun-specific decision to keep
+spectral context unavailable; it does not reopen the accepted D2, VAL, transient,
+jump or donor algorithms. The owner-pushed donor closure is independently verified
+at `5de31ec52cb3b079b22e47fee95b0725662c69a8`, tree
+`b2368a564ed236e7c9cddadff039992731e6b0eb`. New clean worktree:
+`/private/tmp/citlali-timestream-successor-rtc-native-spectral-learn-001`, branch
+`codex/timestream-successor-rtc-native-spectral-learn-001`. Fresh SSH GitHub canonical
+is `86c20b31f7300ba4063be044380b61cd0baf25eb`. Preserve both histories literally;
+future admission requires fresh moving-base checks and independent exact integration
+SHA review. Prior worktrees, dirt, reviews and sealed evidence remain unchanged.
+
+AGENTS, toltec-context routing and all three effective governance documents are
+read; accepted 06a3ade51 and effectiveness775078363 remain on ancestry, with the
+unchanged ledger digests. Current status, S2 of the existing implementation work
+order, SCI-RTC r0.12 REQ-013/026/027/043--045/059/071--082/118--125/140, SCI-VAL
+exact-target/snapshot ownership and the present owner policy govern the work.
+The replay/lifecycle architecture is settled. Numerical line/notch admission and
+stopping policies remain explicitly open; legacy defaults do not settle them.
+
+Initial use profile: original native x/r, producer validity and exact initial VAL.
+Coordinate-local validity is preserved. Declared-invalid support remains excluded;
+source signal is retained and source protection, including unknown, is annotation
+only. Unaccepted transient candidates are not exclusions. No new line exclusions,
+source subtraction, repair or filtering manufactures this spectrum. Unexpected
+NaN/Inf in admitted support makes that detector/coordinate/physical-run unavailable
+and records an input-consistency failure, not detector rejection. Too few qualifying
+windows yields typed unavailable evidence. Native time is never collapsed or
+joined across an excluded interval or physical gap.
+
+Reuse the actual D2 fixed-grid masked-Welch estimator: four-second target, two-second
+minimum eligible segment, at least sixteen samples, nearest-even length/hop rounding,
+50 percent nominal overlap, symmetric Hann, global admitted-population median
+centering followed by each actual chunk median, normalization fs*sum(window^2),
+existing interior-bin one-sided doubling, arithmetic averaging, final end-anchored
+window, and zero-padding of eligible short chunks on the full fixed grid. No grid
+shortening is admitted by the D2 wrapper. Windows pool across independent runs;
+each unavailable run is explicitly dispositioned and contributes no window. The
+existing last-rFFT-bin convention, including odd lengths, is preserved and identified
+as inherited measurement behavior, not silently repaired or notch qualification.
+Record cadence authority/bounds and measured interval, each contributing native row
+range and integration support, padding, counts, annotation and all centering support.
+
+Runtime Learn owns immutable spectral results. Consider retains spectra and the
+exact original transient evidence together without promoting events or selecting
+a treatment. Initial-original/initial-VAL restrictions belong to the named initial
+producer, not to a universal Learn interface. Later native intermediate/conditioned
+products may carry different explicitly bound VAL generations; their adapters must
+retain exact numerical parent and replacement/support history. New evidence never
+mutates or rebinds prior evidence. Apply remains frozen original-pair replay; this
+increment neither implements the full loop nor treats disappearance after filtering
+as sufficient classification evidence. This is distinct from development workflow.
+
+Expected paths: one RTC native-spectral public header, isolated-header TU, focused
+C++ tests, generated numerical-reference header and compact Python fixture generator, tests/CMakeLists,
+current status and this existing handoff. Scratch scales with one detector's native support or an FFT window, results with frequencies and contributing-window/support records; no
+new observation-sized paired validity/payload copy. Test source/unknown retention,
+invalid versus admitted-nonfinite, gaps, short support, actual padding/odd/even FFT
+conventions, exact input/stage/attempt/VAL, retained x/r, controlled line/transient
+fixtures and timing. Gates: isolated header, focused/reference parity, CLI/safety,
+full CTest, four config modes, baseline tests and independent fresh-context exact-SHA
+three-axis review. Local AppleClang/Homebrew/cached dependencies are supplemental;
+no Unity/Spack V2 or production claim. Representative application reductions are
+not triggered by this unwired evidence unit. No notch, event admission, stopping
+threshold, protected-source change, CAL/PTC/AST/MAP work, route activation, integration,
+push or cleanup. Reassess missing scientific prerequisites, owner/seam changes,
+new numerical behavior, ancestry drift or evidence contamination before proceeding.
+
+### Initial implementation and local verification
+
+The candidate adds `timestream_rtc_native_spectral_learn.h`: a spectral-input
+identity descriptor, initial original-data producer, explicit per-run/window
+contributions, and RTC spectral/transient consideration. The latter retains
+the exact old transient decision unchanged and exposes linked spectral context;
+it neither rewrites the old spectral-unavailable field nor admits an event/notch.
+Initial generation-zero/unchanged-original restrictions live in `learn_initial`,
+not the identity descriptor. A later-stage/later-VAL descriptor is supported and
+tested but does not itself supply numeric values, replacement history, a plan or
+permission to use a conditioned spectrum. A future named producer must supply
+those exact immutable parents/support facts; no full outer loop is implemented.
+
+The inherited D2 cadence-domain prerequisite remains an explicit caller authority:
+nominal interval and permitted measured deviation have no new runtime defaults.
+Current fixtures supply that bound; an operational producer binding is separate.
+A failed run contributes no window; remaining runs may produce explicitly partial
+evidence if the pooled minimum is met. The original interval and excluded-stretch
+structure remains intact. Availability refers to evidence, never detector rejection.
+The existing ingress rejects a producer-valid nonfinite payload before RTC. Tests
+therefore separately check that invariant and inject an isolated post-admission
+payload fault into fixture-owned storage to exercise the defensive consistency
+check; the fixture restores the cell and no production mutation path is added.
+
+Precommit focused result: 21/21 pass, including even/odd-grid and padded/gapped
+agreement against generated outputs of the unchanged Python estimator. Golden
+regeneration is byte-identical. Header isolation compiles without PCH. All 41
+prior scientific headers and both Python estimator sources remain hash-identical.
+Earlier setup evidence is retained: initial CMake configuration omitted the prior
+cache's required `CMAKE_POLICY_VERSION_MINIMUM=3.5`; adding that same local command
+setting configured successfully without changing dependencies/build policy. The
+first focused run was 20/21 because the overflow fixture used an odd population;
+its median was correctly finite. The fixture now uses an even population and
+exercises the inherited even-median overflow as intended. No numerical estimator
+change was made in response. Final gates and review will bind the exact source SHA.

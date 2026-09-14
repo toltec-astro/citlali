@@ -1,5 +1,34 @@
 # Citlali Refactor Status
 
+## RTC initial native spectral learning — 2026-09-14
+
+Owner-approved TIMESTREAM-SUCCESSOR-RTC-NATIVE-SPECTRAL-LEARN-001 is implemented as a candidate
+on `codex/timestream-successor-rtc-native-spectral-learn-001`, literal pushed
+base `5de31ec52cb3b079b22e47fee95b0725662c69a8`. Fresh canonical remains
+`86c20b31f7300ba4063be044380b61cd0baf25eb`; no integration occurs. The initial
+RTC Learn profile consumes original native x/r, producer coordinate validity and
+its exact initial VAL snapshot, retains source signal/protection metadata and
+unaccepted transient candidates, and supplies spectra to transient consideration.
+Declared-invalid support and physical gaps remain explicit; unexpected admitted
+nonfinite values invalidate the affected coordinate/run with an input-consistency
+cause. No repair, line/source exclusion, filtering or scientific rejection is
+authorized by the spectrum. The existing D2 masked-Welch conventions are retained
+and contributing native windows/support recorded.
+
+This initial-reference policy does not constrain later RTC Learn to original
+data. Later explicitly identified native intermediate/conditioned evidence may
+use its own bound VAL snapshot and preserve replacement/support history; every
+revised Apply still replays a frozen complete plan on the original admitted pair.
+A feature disappearing after targeted treatment is an outcome, not classification
+proof. The full loop, notch/spike admission, protected-source treatment and stopping
+thresholds remain outside this increment. Detailed owner direction, preflight and
+conformance are appended to the existing RTC handoff. No push or cleanup is needed.
+The initial 21 focused C++ tests and isolated header pass, including direct reference
+agreement with the unchanged D2 estimator, native support records and source retention.
+Full exact-source gates and independent review are pending. The typed identity layer
+accepts later explicitly bound native stages/VAL; only the initial numerical producer
+is implemented. No conditioned-data spectrum or full RTC replay loop is claimed.
+
 ## RTC donor-fill component reviewed closure — 2026-09-13
 
 Owner-approved TIMESTREAM-SUCCESSOR-RTC-DONOR-FILL-001 is implemented as a
