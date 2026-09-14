@@ -3676,3 +3676,55 @@ support. This changes tests only; the scientific implementation is unchanged.
 The initial source passed 1093 runnable tests; the repaired source must receive
 its own focused/full gates, source/executable bindings and exact-SHA review.
 Initial source evidence is preserved under the evidence root's `initial-source`.
+
+### Reviewed source and documentation closure receipt
+
+Final tested source: `1ab054a40eb45d70dbd4cf571b3c52182fb29686`.
+Tree: `6bcae1ee75e5471d2a50aace8b5746bcb2065b01`.
+Parent: `d83061b1256454bc8f92ce851a305472d9c308c2`.
+Literal published base: `77cc29503ae54484cb6f128744f7d32aef0dd8f2`.
+Fifteen focused tests, 1094 runnable CTests (1095 registrations; unchanged disabled
+MapFitterLifecycle.ExactProductSequence), CLI/safety, four configuration modes,
+207 baseline tests and 137 subtests pass. All 1080 prior registrations and 42 prior
+scientific headers remain; the inherited spectral estimator and original x/r are
+unchanged. The numeric and plot exports reproduce byte-identically after the
+scale-aware validation repair.
+
+Independent exact-source review in `review-source-02.md` passes with recorded
+limitations and no remaining findings. V1 from `review-source-01.md` is closed;
+its historical repair-required verdict remains preserved. Scientific/behavioral
+conformance passes for the approved diagnostic definition; architecture/ownership
+and repository/evidence hygiene pass. The measured null/crowding limitations
+remain material: these descriptors do not establish interference, physical
+linewidth, persistence, notch benefit or treatment admission.
+
+Evidence root: `/private/tmp/citlali-rtc-line-power-2026-09-14`.
+Source seal SHA256: `0522142e111d5dd66fb92ad77b2c66632e8addc9190d7636abcd5b76e28ae0be`.
+Source review SHA256: `015aa41becfd860a02405b15fbd1d9eacbd1084870050813ac5058590657b991`.
+Source/executable/inventory/gate binding files and `README.md` identify exact
+commands, environment and measurement reports. All 219 source-seal entries are
+separate from subsequent reviews and documentation closure. Local AppleClang 21,
+arm64 Release C++20/Homebrew/preserved cached dependencies are supplemental only;
+no Unity, Spack V2, operational corpus or map validation is claimed.
+
+The 1,000-call microbenchmark measures 0.00732387 seconds
+on six 33-bin spectra, with 8080 logical output bytes.
+Elapsed time includes line-evidence allocations and excludes upstream spectral/
+transient Learn. Logical bytes exclude capacity/allocator overhead and the parent
+spectra. This is not a processing-throughput or whole-observation memory claim.
+
+Current read-only remote evidence records canonical `86c20b31f7300ba4063be044380b61cd0baf25eb`
+and published spectral closure `77cc29503ae54484cb6f128744f7d32aef0dd8f2`; the
+line-power branch is not yet remote. The repaired source has 46 feature-only
+commits versus nine canonical-only, with merge base
+`b675bb64a7054f7b24403c79898965e8765cfd02`. Preserve both histories. No merge,
+rebase, push, cleanup or activation occurs. Later canonical admission requires
+fresh authority/ancestry checks and independent exact integration-SHA review.
+The user performs any push with an absolute repository path, explicit Mac SSH
+GitHub URL and complete refs/heads source-to-destination refspec.
+
+This documentation-only receipt has a separate exact-SHA review. It preserves
+compiled/tested-source identity rather than claiming a new build. The next
+scientific discussion is measurement adequacy in joint RTC Consider, especially
+continuum/crowded features and time-resolved credibility before notch admission;
+post-PCA remains an evidence-triggered possibility, outside this increment.

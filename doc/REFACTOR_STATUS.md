@@ -1,58 +1,63 @@
 # Citlali Refactor Status
 
-## RTC line-power measurement candidate — 2026-09-14
+## RTC line-power measurement reviewed component closure — 2026-09-14
 
-The owner accepts the initial native spectral result and its push is verified
-at `77cc29503ae54484cb6f128744f7d32aef0dd8f2`, tree
-`0dc9552802692e400d7f069fdd1ae7181cec00a3`. Live canonical is unchanged at
-`86c20b31f7300ba4063be044380b61cd0baf25eb`. The owner approves continuing
-with bounded RTC line-power measurements and candidate ranking before notch
-admission, lowpass and downsampling. The owned worktree is
-`/private/tmp/citlali-timestream-successor-rtc-line-power-001`, branch
-`codex/timestream-successor-rtc-line-power-001`, directly from that pushed closure.
-No integration, push, cleanup or route activation is authorized or performed.
+Owner-approved TIMESTREAM-SUCCESSOR-RTC-LINE-POWER-001 is implemented and locally
+reviewed on `codex/timestream-successor-rtc-line-power-001`, in
+`/private/tmp/citlali-timestream-successor-rtc-line-power-001`. Literal published
+base is `77cc29503ae54484cb6f128744f7d32aef0dd8f2`. The verified canonical authority
+remains `86c20b31f7300ba4063be044380b61cd0baf25eb`; no ancestry integration occurs.
 
-New settled directions: a shared notch proposal requires direct line evidence
-in x; r supplies corroborating/candidate evidence and cannot automatically
-cause a notch in x. Treatment consideration should measure integrated line
-excess power, its contribution to spectral power, and local contrast; strong
-atmosphere/source power must not hide an otherwise relevant feature through
-an unexplained denominator. This does not close numerical significance,
-false-detection, source-protection, notch design or acceptance budgets. Possible
-post-PCA treatment is evidence-triggered later work, outside this RTC increment.
+Runtime Learn now measures connected positive excess above the explicitly approved
++/-2-Hz rolling median of the immutable native PSD. It retains exact input/VAL,
+source/unknown status and support, full background, finite-bin power, descriptive
+extent, contrast and separate edge/neighborhood flags. Named signed-band measures
+retain negative residuals independently of discovery. Runtime Consider ranks each
+detector/coordinate separately and retains the exact joint transient evidence.
+Apply is unchanged. The native intermediate/attempt/VAL interfaces remain available
+for later RTC relearning; a future complete plan still replays on original x/r.
+No notch, numerical admission threshold, filtering, downsampling, post-PCA/PTC,
+AST/CAL/MAP, full-loop or production route is implemented or authorized here.
 
-The owner now explicitly approves a +/-2 Hz rolling median and connected positive
-regions as diagnostic measurements, with finite-bin accounting. They are not
-unbiased interference power, intrinsic linewidth or expected notch benefit.
-Null/injection tests must measure median-background and positive-selection bias,
-on/off-bin and neighboring/broader features, transient controls, support/window
-and +/-1/2/4 Hz sensitivity, and even/odd endpoint power accounting against the
-actual centered/windowed samples. Preserve the PSD/background and distinguish
-candidate-boundary truncation from a clipped background neighborhood. Persistence
-requires time-resolved evidence; overlapping windows are not independent witnesses.
-No median correction, notch threshold, treatment or post-PCA work is authorized.
-The accepted PSD and all prior scientific headers remain unchanged.
+Tested source `1ab054a40eb45d70dbd4cf571b3c52182fb29686`, tree
+`6bcae1ee75e5471d2a50aace8b5746bcb2065b01`, passes 15 focused tests,
+1094/1094 runnable CTests (1095 registered; one unchanged disabled), CLI/safety
+builds, all four configuration modes and 207 baseline tests plus 137 subtests.
+All 1080 prior registrations, 42 scientific headers, both Python estimator sources,
+prior evidence and nine cached dependency patches are preserved. The public header
+compiles in isolation. Actual AppleClang 21 arm64 C++20/Homebrew/cached results are
+supplemental component evidence, not Unity/Spack V2 or production validation.
 
-The bounded candidate now implements immutable positive-excess descriptors in
-runtime Learn and per-coordinate diagnostic ranking bound to the existing joint
-spectral/transient Consider. Fifteen focused tests cover, including 576 null,
-288 injection, six transient and three retained Case E profile evaluations.
-These are profile evaluations, not independent realizations: there are 32 null
-seeds per background/support pair and eight paired seeds per injected shape.
+Independent source review passes with recorded limitations and no remaining
+findings. Initial `d83061b1256454bc8f92ce851a305472d9c308c2` had one minor audit-
+tolerance finding: a unit-scale absolute floor could miss errors in tiny real PSDs.
+The repaired source uses actual-window/peak-PSD scaling and adds an explicit
+low-amplitude complete/gap-padded regression. Current arithmetic and all exported
+measurement/plot bytes remain unchanged. The initial review and gates are retained.
 
-The initial 2-Hz profile measures strong isolated tone power close to the known
-injection, but is not adequate as a standalone contamination/benefit measure.
-Noise-only strongest regions have median stored-PSD fractions of about 13% for
-short white records, 3% for long white records and 70% for long sloping records.
-The deliberately dense five-tone fixture raises its own trial background:
-only about 5--9% of its known band power appears as discovered positive excess
-at 2 Hz, compared with about 89--103% at 4 Hz. No profile is promoted from this
-sensitivity result. Case E retains the roughly 11-Hz feature, but its 488-sample
-windows overlap by 426 samples; they are not independent persistence witnesses.
-The odd-transform highest-bin underweight is audited and preserved, not repaired.
-Full gates, exact source/executable binding and independent source review follow;
-this is not a completed or accepted integration record. Detailed measurement
-results and limitations are retained in the existing RTC handoff and task evidence.
+The bounded 576 null/288 injection/six transient/three Case E profile evaluations
+show that the descriptors are insufficient alone for notch admission or benefit.
+Strong isolated tones recover about 99--100% of their known estimator band power,
+but dense five-tone injections yield only 5--9% discovered excess at +/-2 Hz
+because they raise their own background; sensitivity to +/-1/4 Hz is substantial.
+Noise-only strongest-region fractions have medians about 13% for short white,
+3% for long white and 70% for long sloping records. These are stored-PSD-relative
+diagnostic fractions, not probabilities or interference fractions. Case E retains
+the roughly 11-Hz feature, but its two windows overlap by 426/488 samples and do
+not establish independent persistence. The odd-transform highest-bin underweight
+is explicitly audited and retained. No median correction or new policy is selected.
+
+Evidence: `/private/tmp/citlali-rtc-line-power-2026-09-14`, including the numerical
+report/plots, exact bindings and independent reports. Source seal SHA256
+`0522142e111d5dd66fb92ad77b2c66632e8addc9190d7636abcd5b76e28ae0be`;
+source review SHA256
+`015aa41becfd860a02405b15fbd1d9eacbd1084870050813ac5058590657b991`.
+The existing RTC handoff records the precise owner definitions, measurement results,
+reassessment and exclusions. This closure changes only status and that handoff;
+source test results are not relabeled as a build of the documentation SHA, which
+receives its own independent exact-SHA review. GitHub push remains owner-only.
+Eventual canonical admission requires fresh moving-base checks and independent
+exact integration-SHA review; local component review does not supply that authority.
 
 ## RTC initial native spectral learning reviewed closure — 2026-09-14
 
