@@ -1,0 +1,20 @@
+{
+  "purpose": "Unmodified original paired case E samples for a separately identified synthetic injection fixture; no source/optical or spectral classification authority",
+  "source_file": "/private/tmp/citlali-rtc-neighbor-review-2026-09-09/selected-cases.json",
+  "source_sha256": "0e5c14f745349c42207c785a634be5e446062b7007d6f24a4af2630bd32f3fb8",
+  "observation": 152418,
+  "network": 5,
+  "channel": 60,
+  "detector_occurrence": "citlali-observation-target-manifest-v2:apt-v2-occurrence:entropy/5ce64db6b366eccce59acdfca34aad75e75aaaa01dc7b7386b1f4836c7a27edf:semantic=sha256:fb0865bde37433bc5a833e7273432df9afc4e47c25a8d4d43a25d4f5409c454c:envelope=sha256:e63880a109047fb50d4793aee47b4d05394aea6c2f0df90b21473a818c63ecfc:row=2759",
+  "original_reference_origin_unix_sec": 1771491653.2306685,
+  "columns": [
+    "native_row",
+    "seconds_relative_to_reference",
+    "x",
+    "r"
+  ],
+  "validity": "All stored original coordinate-local producer states valid",
+  "fixture_sha256": "dedde6b8b6832f6cdd9527f815079c899ed8f813c999f5fd543115036ee23773",
+  "rows": 550,
+  "injection": "One x cell at middle retained row; +50 times original accepted first-difference MAD scale. Independent synthetic parent identity, original fixture immutable."
+}

@@ -129,6 +129,23 @@ if (CITLALI_STANDALONE)
         citlali_timestream_successor_identity_acceptance
         PRIVATE "include")
 
+    # Bounded observational census: inert Learn/Consider evidence only.
+    add_executable(citlali_rtc_event_census EXCLUDE_FROM_ALL
+        "tools/timestream_successor/rtc_event_census.cpp")
+    target_link_libraries(citlali_rtc_event_census PRIVATE citlali::citlali)
+    target_include_directories(citlali_rtc_event_census PRIVATE "include")
+
+    add_executable(citlali_rtc_event_assessment_census EXCLUDE_FROM_ALL
+        "tools/timestream_successor/rtc_event_assessment_census.cpp")
+    target_link_libraries(citlali_rtc_event_assessment_census PRIVATE citlali::citlali)
+    target_include_directories(citlali_rtc_event_assessment_census PRIVATE "include")
+    add_executable(citlali_rtc_real_data_audit EXCLUDE_FROM_ALL "tools/timestream_successor/rtc_real_data_audit.cpp")
+    target_link_libraries(citlali_rtc_real_data_audit PRIVATE citlali::citlali)
+    target_include_directories(citlali_rtc_real_data_audit PRIVATE "include")
+    add_executable(citlali_rtc_jump_injection EXCLUDE_FROM_ALL "tools/timestream_successor/rtc_jump_injection.cpp")
+    target_link_libraries(citlali_rtc_jump_injection PRIVATE citlali::citlali)
+    target_include_directories(citlali_rtc_jump_injection PRIVATE "include")
+
     # Tests, examples, and docs
     option(CITLALI_BUILD_TESTS "Build tests" ON)
     if (CITLALI_BUILD_TESTS)

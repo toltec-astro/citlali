@@ -1,5 +1,109 @@
 # Citlali Integration Ledger
 
+
+## RTC completed-assessment canonical admission — 2026-09-14
+
+The owner authorizes integration of reviewed and pushed closure
+`0bcb132df284257418c6d5196b50c549b9775673` (source
+`a7ef9811401c93851bb087854ab82082805bf94a`) into canonical
+`codex/refactor-mainline`, preserving both it and canonical input
+`86c20b31f7300ba4063be044380b61cd0baf25eb`. The common ancestor is
+`b675bb64a7054f7b24403c79898965e8765cfd02`. The 55 topic-only commits carry
+completed RTC evidence, treatment components and assessment work; the nine
+canonical-only commits carry unrelated MAP contract records. Those records and
+all executable topic bytes are preserved. Only these two narrative records need
+conflict reconciliation; earlier pending/publication labels remain historical.
+
+This owner-authorized admission takes effect after the exact integration commit
+passes its gates and fresh independent three-axis review and is actually placed
+on canonical. The external completion receipt records the exact resulting SHA,
+checks and atomic canonical advance. Evidence is under
+`/private/tmp/citlali-rtc-assessment-integration-2026-09-14`. Remote publication
+remains owner-performed; production filtering stays inactive.
+
+The owner also authorizes one subsequent bounded finite-record notch-recovery
+experiment, based on the integrated result: audit-selected in-band, high-frequency
+and quiet cases; explicit frozen-plan original-pair replay; common scientific
+low-pass/decimation; source-injection paired runs; residual, distortion, support
+and incremental recovery measurements. Include about 29 Hz only for a distinct
+question. No automatic selection, broad search, new bank framework or map-level
+qualification is authorized. That scientific-module implementation has its own
+bounded worktree and evidence after this integration operation completes.
+
+
+## RTC real-timestream census completed — 2026-09-09
+
+Owner-requested census source `bff55895310c415a2924273514146cee3c9ad30c`
+completed all **143/143 network invocations**, **71,734 channel timestreams in
+13 observations**, and **2,148,911,461 original x/r sample pairs** locally.
+The 910,241 candidate edges seed separate x/r fitting attempts; they are not
+physical event counts or a measured affected-data fraction. Numerical fits are
+available for 130,791 x and 338,458 r attempts; nearby candidates in fitting
+flanks account for 775,929 x and 568,299 r unavailable attempts. Insufficient
+support and explicit iteration limits account for the remainder.
+The census preserves original scientific implementation and accepted D2/VAL/RTC
+bytes, with 83/83 focused regressions and independent source review passing.
+The full [results and figures](/private/tmp/citlali-rtc-event-census-2026-09-09/report/README.md)
+and exact source/input/executable checks remain externally bound. Fourteen
+other discovered observations lack required local detector-binding manifests
+and are explicitly untested. This documentation receipt's exact review and
+completion seal are recorded externally; no new scientific policy, acceptance,
+canonical admission, push, Apply or activation is implied.
+
+
+## RTC real-timestream census continuation — 2026-09-09
+
+The owner requests a broad census using the current RTC event-background
+implementation before deciding acceptance. The bounded continuation in
+[the existing work order](../handoff/TIMESTREAM_SUCCESSOR_RTC_EVENT_BACKGROUND_001_2026-09-08.md)
+adds an inert raw/Tune/compact-v2 test driver and local runner, preserving every
+scientific application header and the reviewed implementation/Unity receipt.
+Initial real-input execution and 83 focused successor tests pass locally;
+input-mismatch/output-preservation checks pass. The local corpus contains
+27 observations; 13 have detector-binding bundles for strict input verification.
+Complete census counts, input/executable/source hashes, failures, time/memory,
+figures and exact candidate review are bound in the external completion evidence
+under `/private/tmp/citlali-rtc-event-census-2026-09-09`.
+This is descriptive Learn/Consider evidence; hard classification and Apply,
+owner acceptance, canonical integration, push and activation remain pending.
+
+
+## RTC Event Background Unity Receipt — 2026-09-09 UTC
+
+The [owner-mediated receipt](../handoff/TIMESTREAM_SUCCESSOR_RTC_EVENT_BACKGROUND_UNITY_RECEIPT_2026-09-09.md)
+records job **64109974**, PASS on exact source
+`d73a33a81dbe45ef2f478ca212ebf93d481ef7b4` / tree
+`89fe92adc435b3e283ae6634087be7251ff18343`: 932 runnable and 83 focused tests,
+matching CLI, clean dependencies and zero-byte stderr. This is an evidence-only
+continuation on the existing RTC branch; it records no owner acceptance or
+canonical integration. Live canonical `3efd079bb5c28f28f6f2d49296a29e966bde050b`
+adds independent documentation. Later owner-authorized admission must preserve
+both ancestries, retain exact tested application bytes and receive independent
+exact-SHA merge review. The source and sealed prior evidence remain unchanged.
+
+## 2026-09-08 RTC Event Background Learn Candidate
+
+The owner selected the joint cubic versus cubic-plus-additive-offset method
+and authorized this next bounded S2 implementation. The
+[work order and recovered decisions](../handoff/TIMESTREAM_SUCCESSOR_RTC_EVENT_BACKGROUND_001_2026-09-08.md)
+implement RTC-owned original-pair background-fit evidence and bounded Consider
+constraints on canonical base `b675bb64a7054f7b24403c79898965e8765cfd02`.
+Accepted D2, VAL and RTC spike Learn, including its original screening
+consequences, are preserved. No complete event classification or Apply
+correction is claimed: offset uncertainty/significance, fit adequacy, trial
+exclusion containment, completed recovery and protected optical predicates
+remain explicit prerequisites.
+
+Local supplemental AppleClang/Homebrew gates pass: 16 new tests, 83 focused
+successor tests, 932/932 runnable CTest tests, four config modes and 207 baseline
+tool tests. One established MapFitterLifecycle test remains disabled. The
+actual cached dependency dirt is disclosed in the work order/evidence; these
+results do not substitute for a new exact-source GCC13/Spack Unity gate.
+Independent exact-SHA review, owner-run Unity evidence, acceptance and canonical
+admission remain pending. No push, route activation, map comparison, downstream
+implementation or cleanup is authorized by this candidate. Historical records
+below preserve their original scope and identities.
+
 ## MAP contractual activation — 2026-09-09
 
 The owner approved the exact registered MAP/VAL r0.4 generation for contractual
@@ -25,7 +129,6 @@ unavailable. The external completion receipt records the actual merge and
 canonical advance. Earlier proposal/pending labels below are historical.
 All prior science and accepted bytes remain exact. No application work or
 qualification occurs; NOI remains paused here and FRUIT remains independent.
-
 
 ## Current MAP contract incorporation and binding status — 2026-09-08
 

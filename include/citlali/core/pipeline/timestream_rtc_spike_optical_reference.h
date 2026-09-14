@@ -2,23 +2,17 @@
 
 #include <citlali/core/pipeline/timestream_rtc_spike_learn.h>
 #include <citlali/core/pipeline/ast_scan_motion_alignment.h>
+#include <citlali/core/pipeline/timestream_rtc_optical_model.h>
 
 #include <complex>
 #include <numbers>
 
 namespace citlali::pipeline {
 
-enum class RtcSpikeBeamArray : std::uint8_t { a1100, a1400, a2000 };
-
-// Accepted WP7 v1 numerical beam core, retained by v2/ADR-0020. This is the
-// unobscured 50 m Airy reference, not an empirical APT beam or a new PSF fit.
+// Retain the existing public spelling while sharing the accepted RTC model.
+using RtcSpikeBeamArray = RtcOpticalArray;
 inline double rtc_spike_reference_frequency_hz(RtcSpikeBeamArray array) {
-    switch (array) {
-    case RtcSpikeBeamArray::a1100: return 272e9;
-    case RtcSpikeBeamArray::a1400: return 214e9;
-    case RtcSpikeBeamArray::a2000: return 150e9;
-    }
-    throw std::invalid_argument("RTC spike optical reference requires an approved array");
+    return rtc_optical_frequency_hz(array);
 }
 
 struct RtcSpikeLocalOpticalScale {
@@ -74,10 +68,9 @@ public:
         const auto speed = mapped.scalar_speed_arcsec_per_sec(row);
         const auto support = mapped.support(row);
         if (!speed || !support) return std::nullopt;
-        constexpr double radians_per_arcsec = std::numbers::pi / (180.0 * 3600.0);
-        const double lambda = 299792458.0 / rtc_spike_reference_frequency_hz(array_);
-        const double fwhm = 1.028993969962188 * lambda / 50.0 / radians_per_arcsec;
-        const double band = *speed * radians_per_arcsec * 50.0 / lambda;
+        const auto scale = rtc_optical_scale(array_, *speed);
+        const double fwhm = scale.airy_fwhm_arcsec;
+        const double band = scale.temporal_support_hz;
         if (!std::isfinite(band)) return std::nullopt;
         std::optional<double> crossing;
         if (*speed > 0.0) {

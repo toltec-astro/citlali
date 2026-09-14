@@ -1,5 +1,1078 @@
 # Citlali Refactor Status
 
+
+## RTC completed-assessment canonical admission — 2026-09-14
+
+The owner authorizes integration of reviewed and pushed closure
+`0bcb132df284257418c6d5196b50c549b9775673` (source
+`a7ef9811401c93851bb087854ab82082805bf94a`) into canonical
+`codex/refactor-mainline`, preserving both it and canonical input
+`86c20b31f7300ba4063be044380b61cd0baf25eb`. The common ancestor is
+`b675bb64a7054f7b24403c79898965e8765cfd02`. The 55 topic-only commits carry
+completed RTC evidence, treatment components and assessment work; the nine
+canonical-only commits carry unrelated MAP contract records. Those records and
+all executable topic bytes are preserved. Only these two narrative records need
+conflict reconciliation; earlier pending/publication labels remain historical.
+
+This owner-authorized admission takes effect after the exact integration commit
+passes its gates and fresh independent three-axis review and is actually placed
+on canonical. The external completion receipt records the exact resulting SHA,
+checks and atomic canonical advance. Evidence is under
+`/private/tmp/citlali-rtc-assessment-integration-2026-09-14`. Remote publication
+remains owner-performed; production filtering stays inactive.
+
+The owner also authorizes one subsequent bounded finite-record notch-recovery
+experiment, based on the integrated result: audit-selected in-band, high-frequency
+and quiet cases; explicit frozen-plan original-pair replay; common scientific
+low-pass/decimation; source-injection paired runs; residual, distortion, support
+and incremental recovery measurements. Include about 29 Hz only for a distinct
+question. No automatic selection, broad search, new bank framework or map-level
+qualification is authorized. That scientific-module implementation has its own
+bounded worktree and evidence after this integration operation completes.
+
+
+## RTC line-transfer assessment: reviewed local candidate — 2026-09-14
+
+TIMESTREAM-SUCCESSOR-RTC-LINE-TRANSFER-001 is locally complete at source
+`a7ef9811401c93851bb087854ab82082805bf94a`, tree
+`e62c6a860fae0c4a84b19d19e8e50880b6e23fbf`, on
+`codex/timestream-successor-rtc-line-transfer-001` at
+`/private/tmp/citlali-timestream-successor-rtc-line-transfer-001`.
+Runtime RTC Consider now measures exact supplied notch/low-pass/factor trials
+against bound spectral, line, transient and VAL evidence. It reports combined
+response, native-bin folding/power and optional conditional x optical-domain
+errors. Accepted Learn and original x/r are preserved; Apply is unchanged.
+
+Fresh-context exact-source review passes all three governance categories with
+recorded limitations and no findings after one repaired native-Nyquist rounding
+case. Local AppleClang 21 arm64/C++20 supplemental gates pass: 19 focused tests,
+1,113 runnable CTests (1,114 registered; one unchanged disabled), CLI/safety,
+CLI source binding, required config modes, 207 baseline tests plus 137 subtests.
+Independent numerical witnesses check 4,016 controlled/retained Case E bins.
+These are unrouted numerical fixtures, not Spack/Unity V2 or recovery acceptance.
+
+The report and 176-file evidence seal are under
+`/private/tmp/citlali-rtc-line-transfer-2026-09-14`; `EVIDENCE_SHA256SUMS` has SHA256
+`f765dcc6ded30ba983f508dfdc4de814f4a7bf0cbdeb5909b8d0d2a65e99ed42`.
+The existing RTC handoff records scope, exact reviews, earlier failures, gates,
+ancestry and limitations. This documentation-only closure is separately reviewed.
+
+Fresh remote canonical remains `86c20b31f7300ba4063be044380b61cd0baf25eb` on
+`codex/refactor-mainline`. Source and canonical diverge at `b675bb64a...` (9
+canonical-only, 54 source-only commits); any canonical admission needs refreshed
+live authority, bounded reconciliation and independent review of its resulting
+exact SHA. The audit and transfer branch refs remain absent remotely. Owner
+acceptance/push remain separate; no integration, activation or production action.
+Next work may consume the numerical assessment under concrete mode/source
+bindings. Filter-bank qualification, finite-record/continuous-band response,
+coherent alias guarantees and any missing narrow-line admission decision remain
+outside this closure; the broadband 1% allowance supplies no new line threshold.
+
+## RTC audit recommendations: owner agreement and science context — 2026-09-14
+
+The owner agrees with the completed audit's recovery recommendations and adds
+that about 11 Hz lies squarely in the astronomical signal band for most
+observations, about 29 Hz is the next sensitive family, and lines above 40 Hz
+must receive sufficient pre-decimation suppression to prevent harmful fold-back.
+The notch need not achieve the entire attenuation requirement on its own.
+Assess the chronological notch -> low-pass -> decimation chain using the
+observation's approved array/beam, motion, cadence and selected-mode identities.
+The quoted frequencies describe the audited families, not universal band edges.
+
+This refines the earlier "start around 11 Hz" recommendation: 11 Hz is a high-
+value, scientifically sensitive recovery case, not an intrinsically safe first
+notch. Higher-frequency line assessment must account for attenuation already
+supplied by the low-pass; remaining line alias and astronomical-transfer effects
+are judged for the complete plan. ADR 0020 and its v2 owner authority already
+separate line mitigation from generic broadband alias certification. Preserve
+that separation: its 1% broadband variance bound is not automatically a new
+narrow-line residual budget. No numeric notch width, depth, admission threshold,
+or factor is selected by this clarification. The next recovery assessment must
+reuse settled beam/motion/response authorities and preserve original evidence.
+
+This is a documentation-only owner disposition on audit closure
+`3fe59f26b7c781fa81f040d5d890ff1757f7ec23`; the sealed census and recommendations
+remain preserved, with this later qualification governing their use. Runtime
+Learn/Consider/Apply, filtering, flags, map products and production are unchanged.
+The existing RTC handoff records the exact owner context and authority links.
+
+## Bounded real-data spectral/transient audit completed — 2026-09-14
+
+Owner-authorized RTC-REAL-DATA-AUDIT-001 completes the fixed 143-file,
+13-observation native audit before background improvement or notch development.
+Branch `codex/rtc-real-data-audit-001`, worktree
+`/private/tmp/citlali-rtc-real-data-audit-001`, retains literal pushed line-power
+base `4c066f1e771b904ae78ed030c232f055dbc8dd16`. Fresh read-only GitHub checks
+still find canonical `86c20b31f7300ba4063be044380b61cd0baf25eb`, the same pushed
+base, and no remote audit branch. No ancestry integration or push occurs.
+
+All 143 exact raw/Tune/compact-APT bindings pass: 71,734 detector-observation
+occurrences, 70,024 initially eligible pairs, 140,048 available x/r spectra.
+Original values, initial VAL and accepted spectral/transient machinery are
+unchanged. All 17,160,988 exported coordinate-window records replay to their
+pooled accepted PSD with zero discrepancy. The 155 inventory entries lacking
+exact prerequisites remain deferred. Source status remains unknown and retained;
+the four-ULP clock envelope qualifies numerical audit arithmetic only.
+
+The explicit exploratory x10 screen selects 37,779 occurrences (53.95%); 28,761
+(76.13% of that group) meet the disjoint-window relative-power recurrence rule.
+Leading families near 11.01, 29.77, 47.78 and 52.78 Hz recur across all 13
+observations. Conditional whole-observation rejection costs 63.04%, 75.91%,
+26.77% of baseline detector-time at 1100/1400/2000 microns respectively; static
+APT-weighted RMS multipliers are 1.608/2.348/1.199. Ten-second native-cell costs
+remain almost as high. These cells are hypothetical scan models; actual
+native-to-PCA scan bindings are unavailable. Sensitivity is a per-array,
+APT-good finite-positive inverse-square proxy with explicit coverage, not a
+measurement of PCA or map performance.
+
+Only about 0.1284--0.1285% of x10-active time overlaps prior measured direct
+transient support. Noise-screening-required exclusions form the known baseline;
+source-bound accepted corpus transient Apply is unavailable, so measured
+support overlap is not a claim about full accepted exclusion replay. Nine x10
+recurrence targets are unavailable; all activity-dependent support, overlap,
+exposure and sensitivity costs carry lower/upper bounds rather than zero fills.
+
+286 channels were selected independently of ranking before measurement; all
+39 fixed contacts and the full atlas were inspected, with earlier A--F and
+ranked supplements separately labeled. Broad humps expose limitations of the
+narrow-line descriptors. A report-only stored-band-power check selects 78
+illustrative occurrences and explicitly misses an inspected 30--36 Hz hump;
+it is not a total broad-hump census, estimator change or production classifier.
+The 17 previously identified detector-health concerns are cheap to reject in
+this corpus, but do not establish overall unhealthy-detector prevalence.
+Recommendation: prioritize source-preserving recovery assessment for recurring
+isolated narrow families, then related multi-line cases. Retain broad examples;
+no blanket background rewrite or general broad-spectrum salvage is justified by
+this audit. No production flags or recovery treatment are selected.
+
+Measurement source `c155e638c1ca0243689d6859ca87ba628e2ee26a`; final Python
+analysis/plot source `35507be810f676966056044ee9409425c85ff211`, tree
+`aa9b776ac47ee92a527aea386564161d864cfda7`. Driver/runner/CMake are identical
+between them; measurement receipts are not relabeled as Python repair builds.
+Independent exact-source review passes with recorded limitations and no remaining
+findings. CLI/safety builds, 1094/1094 runnable CTests (1095 registered; one
+unchanged disabled), four config modes, 207 baseline tests plus 137 subtests,
+ten focused tests and 39 reused-accounting tests pass locally. Failed/pilot
+attempts remain preserved. All 44 scientific headers, both previous Python
+estimators, governance and prior sealed evidence are unchanged. Actual
+AppleClang 21 arm64/Homebrew/cached results are supplemental local evidence.
+
+Evidence/report: `/private/tmp/citlali-rtc-real-data-audit-2026-09-14/REPORT.md`.
+Audit seal SHA256:
+`6b631e36bb1532c7bf21c3eb51a2395acd7f30de20495f31ba13861321fa286b`.
+Source-review SHA256:
+`68e9428ade864eab53a9cc865643604880c9c64a9a5feee9d0ce339a9a581d04`.
+This documentation-only closure receives its own fresh independent exact-SHA
+review, including the final report and post-inspection band-power arithmetic.
+The existing RTC handoff records details. The user controls acceptance/push;
+eventual canonical admission requires fresh moving-base checks and independent
+exact integration-SHA review. No runtime Consider/Apply decision, notch,
+filtering/downsampling, outer loop, PTC/AST/CAL/MAP, Unity or production work
+is implemented or activated here.
+
+
+## RTC line-power measurement reviewed component closure — 2026-09-14
+
+Owner-approved TIMESTREAM-SUCCESSOR-RTC-LINE-POWER-001 is implemented and locally
+reviewed on `codex/timestream-successor-rtc-line-power-001`, in
+`/private/tmp/citlali-timestream-successor-rtc-line-power-001`. Literal published
+base is `77cc29503ae54484cb6f128744f7d32aef0dd8f2`. The verified canonical authority
+remains `86c20b31f7300ba4063be044380b61cd0baf25eb`; no ancestry integration occurs.
+
+Runtime Learn now measures connected positive excess above the explicitly approved
++/-2-Hz rolling median of the immutable native PSD. It retains exact input/VAL,
+source/unknown status and support, full background, finite-bin power, descriptive
+extent, contrast and separate edge/neighborhood flags. Named signed-band measures
+retain negative residuals independently of discovery. Runtime Consider ranks each
+detector/coordinate separately and retains the exact joint transient evidence.
+Apply is unchanged. The native intermediate/attempt/VAL interfaces remain available
+for later RTC relearning; a future complete plan still replays on original x/r.
+No notch, numerical admission threshold, filtering, downsampling, post-PCA/PTC,
+AST/CAL/MAP, full-loop or production route is implemented or authorized here.
+
+Tested source `1ab054a40eb45d70dbd4cf571b3c52182fb29686`, tree
+`6bcae1ee75e5471d2a50aace8b5746bcb2065b01`, passes 15 focused tests,
+1094/1094 runnable CTests (1095 registered; one unchanged disabled), CLI/safety
+builds, all four configuration modes and 207 baseline tests plus 137 subtests.
+All 1080 prior registrations, 42 scientific headers, both Python estimator sources,
+prior evidence and nine cached dependency patches are preserved. The public header
+compiles in isolation. Actual AppleClang 21 arm64 C++20/Homebrew/cached results are
+supplemental component evidence, not Unity/Spack V2 or production validation.
+
+Independent source review passes with recorded limitations and no remaining
+findings. Initial `d83061b1256454bc8f92ce851a305472d9c308c2` had one minor audit-
+tolerance finding: a unit-scale absolute floor could miss errors in tiny real PSDs.
+The repaired source uses actual-window/peak-PSD scaling and adds an explicit
+low-amplitude complete/gap-padded regression. Current arithmetic and all exported
+measurement/plot bytes remain unchanged. The initial review and gates are retained.
+
+The bounded 576 null/288 injection/six transient/three Case E profile evaluations
+show that the descriptors are insufficient alone for notch admission or benefit.
+Strong isolated tones recover about 99--100% of their known estimator band power,
+but dense five-tone injections yield only 5--9% discovered excess at +/-2 Hz
+because they raise their own background; sensitivity to +/-1/4 Hz is substantial.
+Noise-only strongest-region fractions have medians about 13% for short white,
+3% for long white and 70% for long sloping records. These are stored-PSD-relative
+diagnostic fractions, not probabilities or interference fractions. Case E retains
+the roughly 11-Hz feature, but its two windows overlap by 426/488 samples and do
+not establish independent persistence. The odd-transform highest-bin underweight
+is explicitly audited and retained. No median correction or new policy is selected.
+
+Evidence: `/private/tmp/citlali-rtc-line-power-2026-09-14`, including the numerical
+report/plots, exact bindings and independent reports. Source seal SHA256
+`0522142e111d5dd66fb92ad77b2c66632e8addc9190d7636abcd5b76e28ae0be`;
+source review SHA256
+`015aa41becfd860a02405b15fbd1d9eacbd1084870050813ac5058590657b991`.
+The existing RTC handoff records the precise owner definitions, measurement results,
+reassessment and exclusions. This closure changes only status and that handoff;
+source test results are not relabeled as a build of the documentation SHA, which
+receives its own independent exact-SHA review. GitHub push remains owner-only.
+Eventual canonical admission requires fresh moving-base checks and independent
+exact integration-SHA review; local component review does not supply that authority.
+
+## RTC initial native spectral learning reviewed closure — 2026-09-14
+
+Owner-approved TIMESTREAM-SUCCESSOR-RTC-NATIVE-SPECTRAL-LEARN-001 is a locally
+reviewed component on `codex/timestream-successor-rtc-native-spectral-learn-001`,
+literal published base `5de31ec52cb3b079b22e47fee95b0725662c69a8`. Fresh canonical remains
+`86c20b31f7300ba4063be044380b61cd0baf25eb`; no ancestry integration occurs.
+
+Runtime Learn measures original native x/r under the explicit initial-use policy,
+producer coordinate validity and exact initial VAL. It retains astronomical signal,
+protected/outside/unknown annotations and unaccepted transient candidates. The
+existing D2 four-second Hann/50-percent-overlap/two-window measurement conventions
+are unchanged, including actual median centering, normalization, arithmetic window
+averaging, padding and end anchoring. Each result records the native support used.
+Declared-invalid support splits eligible stretches without collapsing time;
+unexpected admitted NaN/Inf invalidates the affected coordinate/physical-run and
+records input-consistency failure. Good remaining runs may yield explicitly partial
+evidence; unavailable evidence does not automatically reject a detector.
+
+Consider retains spectra and exact transient evidence jointly, with per-event
+coordinate/run links. It changes no prior decision and admits no treatment. The
+initial-only numerical producer is separate from the typed stage/VAL descriptor,
+which supports later explicitly bound native intermediate/conditioned identities.
+Future numerical producers must retain actual parent values and replacement/support
+history. Every revised Apply remains frozen complete-plan replay on the original
+admitted pair. No full loop, notch/spike admission, stopping threshold, protected-source
+change, conditioned spectrum or production route is implemented by this component.
+
+Tested source `a7cd4f8fabf7c8f83d4f30a392105c6ac94d90ea`, tree
+`ea52eaaf87bc3361c4408cfd7f8fdae9daca382d`, passes 22 focused tests,
+1079/1079 runnable CTests (1080 registered; one unchanged disabled), CLI and safety
+builds, all four configuration modes and 207 baseline tests plus 137 subtests.
+All prior 1058 registrations, 41 scientific headers and both Python estimator sources
+are preserved. The new header compiles in isolation; golden numerical references
+regenerate byte-identically. Exact input/VAL, source retention, declared-invalid and
+unexpected-nonfinite cases, insufficient support and unchanged original x/r are tested.
+
+Independent fresh-context exact-source review passes with recorded limitations and
+no remaining findings. RTC-NSL-R01 on initial `f45a442b20d8fb0622fe242f1c3d24f8e6af7fa5`
+understated cadence scratch storage; the repair accounts for both cadence/median
+buffers and releases them before coordinate measurement. Its 10,000-row all-invalid
+regression passes independently. This closure changes only status and the existing
+handoff; source test results are not relabeled as a build of the documentation SHA.
+
+A three-detector, 1600-row, 128-Hz fixture takes 0.0324197
+seconds for 100 spectral Learn calls, excluding upstream transient Learn; it owns
+18688 logical output bytes with a 5248-sample
+visible numeric scratch bound. This is not observation throughput. Evidence is
+`/private/tmp/citlali-rtc-native-spectral-learn-2026-09-14`; source seal SHA256
+`db037a411b987ee326d51389c14fbbc500d22cc6fecf3a0d0ebabfc977ebf2cf`; independent source report SHA256
+`6f3dcb6e488441ca0dfe6758c6a3f2f346e610b07fb4225af040a559fe22e08c`. Actual AppleClang 21/Homebrew/cached-dependency results are
+supplemental, not Unity/Spack V2. Controlled fixtures only; no real-corpus treatment.
+The exact docs-only closure receives its own external independent review.
+
+Fresh GitHub refs confirm the same canonical and published donor tips; this spectral
+branch is absent remotely. No integration, push, activation or cleanup occurs.
+Push remains owner-only. Eventual moving-base admission requires fresh ancestry
+checks and independent exact integration-SHA review. The existing RTC handoff
+records owner policy, runtime responsibilities, exact evidence and remaining bounds.
+
+## RTC donor-fill component reviewed closure — 2026-09-13
+
+Owner-approved TIMESTREAM-SUCCESSOR-RTC-DONOR-FILL-001 is implemented as a
+candidate on `codex/timestream-successor-rtc-donor-fill-001`, based on pushed
+closure `d1e9bab76dadded53e8dd107947d508142e2b8ed`. Fresh canonical authority is
+`86c20b31f7300ba4063be044380b61cd0baf25eb`; no ancestry integration is performed.
+The new worktree is `/private/tmp/citlali-timestream-successor-rtc-donor-fill-001`.
+The earlier two decision-note edits are preserved in their original worktree
+and copied into this candidate; no unrelated dirt or sealed evidence is changed.
+
+Runtime Learn/background is reused. RTC Consider consumes explicitly selected
+event support, exact original VAL, reviewed screening/jump exclusions, original
+peer eligibility and caller-bound prior flxscale/resolved-segment/contamination
+facts. It freezes eligible/central donor identities and the median samples at
+native times. Apply uses the selected target cubic plus donor fluctuations
+relative to their end-to-end line, tapered with `16 u^2 (1-u)^2` between clean
+bracketing occurrences. Replacements are available only to conditioning,
+permanently excluded as independent/map inputs, and create conditioned-r
+unavailability; original x/r and retained values remain unchanged.
+
+Missing donors, transfer, background, stable boundaries, prior exclusion or
+nonfinite arithmetic leaves an explicit unrepaired excluded gap. Fits that used
+newly selected samples or cross resolved target-segment boundaries are not reused.
+This implements one bounded fill operation, not automatic spike/optical admission,
+a complete RTC route or propagation through not-yet-implemented filters. No
+application producer currently supplies the selected-event/factor/segment bindings;
+the focused fixtures do so explicitly. No production or real-corpus repair claim.
+
+Tested source `9d3d6a66b2e731e20c01d07d3c9d91ffbbd13db6`, tree
+`b1b6ec05259ebdbd56d5c6a1323de71e66960bc2`, passes 22 focused tests,
+1057/1057 runnable CTests (1058 registered, one unchanged disabled), all four
+configuration modes and 207 baseline tests plus 137 subtests. All prior 1036
+registrations and 40 prior headers remain; the new header compiles in isolation.
+Independent exact-source review passes with recorded scope/environment limits
+and no remaining findings. Its background-contamination finding on initial
+`36a9c76b947a467fc9fe471e50f191239acb5530` was repaired and independently
+reproduced at the tested source. This closure changes only status and handoff;
+it does not relabel source tests as a build of the documentation commit.
+
+The three-detector/eleven-row fixture measures 1000 Consider+Apply operations in
+0.0430852 seconds, with 1040 logical plan bytes and 88 numeric output bytes;
+Learn is excluded, so no production throughput claim follows. Local AppleClang
+21/Homebrew/preserved cached results are supplemental, not Unity/Spack V2
+reproduction. Evidence is `/private/tmp/citlali-rtc-donor-fill-2026-09-13`;
+source seal SHA256 `d5bc90ea015fc89c6e6766f88b7f9a290b1522403332b33fe3ae7e0df233b5a1`;
+independent source report SHA256 `0abefcd52144acc7007c5ef45860351ad44a9f620daed5df33fc3597c1855e0b`.
+The exact docs-only closure receives its own independent review externally.
+No application producer or automatic event/optical admission is supplied; these
+remain prerequisites to exercising real-data treatment. Existing D2/VAL/RTC,
+frozen scientific packages, AST/CAL/PTC/MAP and config/route defaults remain.
+Fresh remote assessment confirms the same canonical and published transient tips;
+the new donor branch is absent remotely. No push, integration, activation or cleanup
+is performed. Push remains owner-only; eventual moving-base admission requires
+fresh ancestry checks and independent exact integration-SHA review. Detailed
+preflight, results and retained limits are in the existing RTC handoff.
+
+## RTC donor-pool and combination owner decisions — 2026-09-13
+
+The owner reports the reviewed transient-exclusion closure
+`d1e9bab76dadded53e8dd107947d508142e2b8ed` pushed to
+`codex/timestream-successor-rtc-transient-apply-001`; the supplied GitHub output
+reports creation of that feature branch. This is an owner-supplied push receipt,
+not a fresh remote-ref verification or canonical admission.
+
+The owner has now approved the first isolated-spike donor pool: other eligible,
+uncontaminated detectors on the same network at the same native sample time,
+excluding failed-screening and protected/unknown-source donors. This supersedes
+the donor-pool-pending statements in the earlier closure below. The existing
+compatible flxscale transfer, resolved stable-segment, x-only repair and raw-r
+preservation requirements continue to apply. This is a partial binding of
+SCI-RTC-OWNER-004, not closure of its remaining choices. The owner also approved
+the median of eligible donor values after compatible transfer into target raw-x
+scale, averaging the two central values for an even count. The owner clarified
+that donor values serve only to maintain a continuous stream where needed:
+replacements remain flagged and must never enter the map. Numerical filling
+must not restore map eligibility; the replacement identity/cause must survive
+later transformations. Existing full-support influence requirements remain.
+The owner approved using the median with at least one eligible donor and an
+explicit unrepaired, excluded gap when none is available. The owner then raised
+edge matching: multiplicative transfer and a median alone do not ensure a
+continuous join. The owner subsequently approved reusing the target's existing
+local cubic background, removing an end-to-end trend from the transferred median
+donor segment, and adding its fluctuations with a taper that vanishes in value
+and slope at both gap edges. This joins the fitted background without modifying
+retained measurements; it does not force equality with noisy neighboring samples
+or authorize bridging a true shift or missing boundary. The precise realization,
+remaining deterministic/reuse details and exact event/optical admission still
+need their implementation binding. See the appended owner-decision record in
+the existing RTC event-background handoff. These are working decision notes for the
+next increment; no reconstruction code or new reviewed candidate is claimed.
+
+## RTC transient continuation and sequencing — 2026-09-13
+
+Owner directs RTC-first development: transients, line/notch workflow, lowpass,
+then downsampling. Final corpus loss measurement and real scan bindings may
+wait for preliminary RTC assembly; focused conformance/timing remain active.
+For isolated spikes the owner selected donor reconstruction first. The existing
+x-only donor/conditioned-r availability contract is preserved; donor selection,
+combination, fallback and hard-event/source predicates need their exact bindings.
+
+**TIMESTREAM-SUCCESSOR-RTC-TRANSIENT-APPLY-001** is locally implemented and
+independently reviewed at exact `be4d1d4eb921c9a1adb78fb64902715bb6052bd1`, tree
+`7aa541da3ac58d3085d685198f57e41d51449d5e`, directly preserving reviewed base
+`4d609306c868338e2f5c6b7920b81a4d39ebf967`. Source review passes with recorded
+limitations and no findings on all three axes.
+
+The original Learn and all numerical scientific policies are unchanged. RTC
+Consider composes the exact original screening decision and reviewed jump plan,
+checks common Learn/VAL identity, and freezes their paired exclusion union.
+Apply checks input/plan/VAL/ordered-partition identity and withholds excluded or
+producer-invalid payloads through its accessor. Raw parents and retained values
+are unchanged. Screening failure, coordinate of cause and accepted jump remain
+distinct; overlapping reasons count a pair cell once. This completes those two
+selected exclusions only, not isolated-spike/donor treatment, a full RTC route,
+or any downstream PTC/VAL named-use admission.
+
+All 15 focused tests, isolated public header, 1,035 runnable CTests, four config
+modes and 207 baseline-tool tests pass. All 1,021 earlier registrations remain;
+15 added, with only the established disabled test unchanged. Tests include
+8,800 bitwise source-sample comparisons and physical-run/block/partition
+boundaries. Source review independently repeated the focused tests, isolated
+header and CLI. The CLI reports `gbe4d1d4eb`; 39 previous scientific headers and
+nine cached patches remain unchanged. The first NaN-finiteness fixture failure
+is preserved and corrected. Final application/test gates have no unexpected errors.
+
+These are supplemental local AppleClang/Homebrew/cached-dependency results.
+No Unity/Spack reproduction, real-corpus exclusion count, donor accuracy or
+production performance is claimed. Full CTest took 29.37 seconds. The focused
+process took 0.36572 seconds and peak child RSS 10,649,600 bytes; its small
+1,000 plan/Apply microtest took about 0.00050 seconds and owned 144 logical bytes.
+Apply owns no numeric/state plane. The donor-pool question remains pending;
+no silent donor, fallback or event/optical admission choice was made.
+
+[Results](/private/tmp/citlali-rtc-transient-apply-2026-09-13/README.md) and the
+existing RTC handoff bind source, gates, owner sequencing and limitations.
+Source evidence seal: 136 files, SHA-256
+`4735a74e311694f855f10463e7ce4c794419590bdb3ad25dee52cd261e54059b`;
+independent source review SHA-256
+`878c3f282ee57c795a1146644a27c558a2f893425aaee57db087b1b54609d5b6`.
+This documentation-only closure follows the tested source directly and receives
+separate exact-SHA review, externally bound without rebuilding at the docs HEAD.
+
+The owned worktree is
+`/private/tmp/citlali-timestream-successor-rtc-transient-apply-001`, branch
+`codex/timestream-successor-rtc-transient-apply-001`. Fresh preflight canonical
+remained `86c20b31f7300ba4063be044380b61cd0baf25eb`. No push or cleanup is needed
+to continue locally. The old published RTC tip is 23 commits behind this
+increment's literal base; publishing the reviewed descendant is an optional
+owner-run checkpoint. Both histories and old worktree/evidence records remain.
+No integration, push, activation, production or cleanup occurred. Future
+canonical admission still requires moving-base verification and independent
+review of the exact integration SHA.
+
+## RTC initial jump admission and exclusion completed locally — 2026-09-13
+
+Owner-approved **TIMESTREAM-SUCCESSOR-RTC-JUMP-APPLY-001** is implemented at exact
+`19fa68da7e357b12a5b5193c5764d0970ba8a7cd`, tree
+`bd18813c5946d2d4964fb3c2bef9708920eb9771`, directly preserving reviewed closure
+`e7ccd3da4bf2ac3412508dd07118f136272655c5`. Independent exact-source/evidence
+review passes with recorded limitations and no findings on all three axes.
+
+Outside explicitly protected source regions, final measurements passing the
+preserved two-duration >=5 sigma_delta amplitude, same-sign / <=2 sigma_delta
+agreement, supported transition/post-level and usable non-recovery checks now
+qualify for paired exclusion. Either coordinate can qualify. Every intersected
+existing requested PCA scan is selected; three qualifying original groups select
+the exact detector occurrence for the observation, counting paired evidence once.
+Protected, unknown and unresolved cases remain unavailable under this initial
+rule. These empirical checks do not claim independent physical-event truth.
+
+Preserved runtime Learn supplies the measurements. RTC Consider now produces
+admission causes and one immutable plan for the selected jump-exclusion operation;
+Apply executes it as a mask-aware native paired view with original samples and
+producer causes preserved. Exact input, original VAL, complete ordered partitions,
+and existing-scan generation/native-support authorities are checked. RTC treatment
+facts remain separate from PTC/VAL named-use admission. This is one executable S2
+RTC component; no complete RTC/PTC or production-route claim is made.
+
+All 16 new focused tests, both public-header isolation checks, 1,020 runnable
+CTests, four configuration modes and 207 baseline tests pass. All 1,005 earlier
+registrations remain, plus 16 new; the sole established disabled test is unchanged.
+Full Learn/Consider source injections at four brightnesses, alone and with a jump,
+preserve 12,800 protected coordinate-sample values bit-for-bit. The CLI reports
+`g19fa68da7`. All 37 previously bound scientific headers and nine cached-dependency
+patches remain unchanged. Initial build/test setup failures and their bounded
+repairs are preserved; final application/test gates have zero unexpected errors.
+
+Focused tests took 0.05176 seconds with whole-process peak child RSS 12,976,128
+bytes; Apply owns no duplicate numeric/state plane. Full CTest took 24.37 seconds.
+These are supplemental local AppleClang/Homebrew/cached-dependency results, not
+Unity/Spack reproduction or production timing/qualification. The saved corpus
+still lacks source membership and complete native-to-existing-PCA-scan bindings;
+no real-corpus exclusion or loss fraction is claimed. Beam/AST/ALIGN/readout rules
+remain preserved; protected optical and unresolved-contamination predicates remain
+unselected. No maps, filtering, downsampling, spectra, correction or route activation.
+
+[Implementation results](/private/tmp/citlali-rtc-jump-apply-2026-09-13/README.md)
+and the existing RTC handoff bind source, tests and review. The 137-file source
+evidence seal has SHA-256
+`2fd3f3da49c4094da4d42c5896e55b0183b2f293ab8db22c90697ddfcf780188`;
+source review SHA-256 is
+`2a8b18a3b0fd9bec40c86a0d8a7a33fbc94a9d7701cfbc525e5f919f84d2d8f4`.
+The owned branch is `codex/timestream-successor-rtc-jump-apply-001`, worktree
+`/private/tmp/citlali-timestream-successor-rtc-jump-apply-001`. Live preflight
+canonical was `86c20b31f7300ba4063be044380b61cd0baf25eb`; both histories remain
+preserved. No integration, push, Unity, production or cleanup. The separate
+docs-only closure directly follows tested source and requires independent
+exact-SHA review, bound externally. Future canonical admission requires fresh
+moving-base verification and independent exact integration-SHA review.
+
+## RTC observation recurrence assessment completed locally — 2026-09-13
+
+Owner-approved **RTC-OBSERVATION-RECURRENCE-001** is implemented at exact
+`71ea2580df0129ae41ddcce4779a9b08727f540e`, tree
+`14639acfbb488a4581a6348f4eb4d8db207ba688`, preserving literal accepted census
+closure `4eb5de86ce3f4fe071053e0c2381bf77fdc14e1c`. This local evidence
+consumer summarizes the sealed runtime Learn/Consider census; it selects no
+runtime exclusion threshold, Consider plan or Apply operation. Original groups,
+D2/VAL, scientific methods and the 143-file/13-observation cohort remain unchanged.
+
+All 71,734 detector occurrences and 242,014 original groups reconcile. Initial
+eligible exposure remains 17,216,191,725,568 microseconds across 70,024 records.
+The 8,389 groups with retained transition evidence still count paired x/r once.
+Whole-observation cuts at >=2/3/5/10 such groups would discard respectively
+3.93448/3.06864/1.90358/0.87404% of initial detector-time. These are conditional
+measurement groups, not independently accepted physical events.
+
+Exploratory joint sensitivity uses group rates per eligible minute and four
+equal elapsed-time quarters, which are not processing scans. At >=3 groups,
+>=0.5 groups/minute and >=3 occupied quarters, 296 detector-observation records
+represent 0.829318% of initial exposure; rates >=1 or >=2 with the same other
+settings select 246/225 records and 0.467997/0.316362%. These coordinates are
+not recommended or selected scientific defaults. Recovery, unresolved and
+review-only health concerns remain separate; all 17 existing health concerns
+have zero retained transition groups. No permanent detector identity is inferred.
+
+Read-only scan investigation recovered 124 bounded native scan summaries in
+each of Science 152390/152392, including alignment/observation binding digests,
+RTC interval-authority names and PTC counts. The 11 short-observation records
+declare native-cohort provenance unavailable. Pointing NetCDF scan indices
+refer to output timebases; saved log matrices are abbreviated. Exact native
+intervals and per-network native-to-processing relations are still missing, so
+full-scan costs and incremental loss beyond scan-by-scan treatment remain null.
+This is a missing explicit binding, not an unresolved scientific scan-selection
+rule: every intersected existing scan remains the accepted policy.
+
+Fresh 18 recurrence tests and 21 existing census-consumer tests pass. The
+full-corpus accounting run and replay reproduce nine scientific artifacts
+byte-for-byte; all 66 inspected metadata/log/NetCDF files reverify. Both plots
+are inspected. Local runs took 20.340 and 12.454 seconds with peak whole-process
+RSS 780,009,472 and 777,846,784 bytes. Initial metadata-guard failure is preserved
+with its bounded repair; final accounting reports zero unexpected errors.
+Independent exact-source/evidence review: PASS with recorded limitations and no findings.
+No C++ or Spack build, Unity campaign, event reanalysis or map processing occurs.
+
+[Assessment and plots](/private/tmp/citlali-rtc-observation-recurrence-2026-09-13/run-02/README.md)
+bind the source and output manifest SHA-256
+`3126f56626846290d9e914f8d2f8317e380b111a99d8287f7e8d5c4a87f7a26f`.
+The existing RTC handoff records preflight, reassessment and full conformance.
+The same owned branch remains `codex/rtc-disturbance-burden-census-001` in
+`/private/tmp/citlali-rtc-disturbance-burden-census-001`. Live preflight canonical
+was `86c20b31f7300ba4063be044380b61cd0baf25eb`; this evidence lane remains local.
+The docs-only closure must directly follow tested source and receive independent
+exact-SHA review, bound externally. No threshold selection, flags, correction,
+activation, integration, push, new data or cleanup. Future canonical admission
+requires fresh moving-base verification and independent exact integration-SHA review.
+
+## RTC native disturbance-burden census completed locally — 2026-09-13
+
+Owner-approved **RTC-DISTURBANCE-BURDEN-CENSUS-001** is implemented at exact
+`5973de4eb696ad211be4eceeeabcc20e25435b6f`, tree
+`ccdd4a8d1edca3c6c2b64c46d01ec392fe8a07f8`, preserving literal reviewed
+RTC closure `8fff882dd0e8891512b01e6065cdb442981b1e5d` and original producer
+source `81a35ced25d45eeccafabc3243b5aa3010893625`. The bounded Python tool
+consumes preserved runtime Learn evidence and Consider dispositions; it creates
+engineering accounting artifacts, not a runtime plan or Apply operation.
+D2/VAL, detector/event methods, thresholds, grouping, single reassessment,
+source protection, spectra and all runtime/scientific contracts are unchanged.
+
+Across the same 143 eligible network files / 13 observations, the fixed initial
+producer/VAL paired denominator is 17,216,191,725,568 microseconds, or 4,782.275
+**detector-hours**. It contains 70,024 initially eligible detector streams;
+1,710 initial exclusions represent 107.692 detector-hours. All x/r and event
+support overlaps are unioned. The 155 deferred entries retain unavailable
+exposure. Failures and unresolved extents do not shrink the denominator.
+
+Available direct support occupies **0.1282264%** of initial detector-time:
+transition support 0.0035881%, bounded finite recoveries 0.1249041%, with overlap.
+Original fitting exclusions occupy 0.3103354%, and direct-plus-candidate-edge
+sensitivity 0.1633147%; neither is a physical-extent or treatment-policy claim.
+Final retained measurements reconcile to 11,150 coordinates in 8,389 original
+groups. There are 75,745 unresolved groups in 7,020 detector streams; those
+streams represent 14.92746% of initial exposure, not measured disturbance
+extent. Three producer refinement-limit causes persist, and 703 reassessed
+recoveries lack exported new extents. No old bounds or zero-duration substitutes
+fill those unavailable results.
+
+The highest-burden 5% of eligible detector streams carry 74.77575% of available
+direct support. Native duration/guard sensitivity and coordinate amplitude/
+transition-duration distributions are reported with their conditional meanings.
+No network file or acquisition ScanNum substitutes for a processing scan.
+Full detector-scan rejection, longest/all segments per scan, releveling costs
+and cross-network concurrency remain unavailable pending exact scan/clock
+relations. The settled full-affected-detector/full-intersected-existing-PCA-scan
+level-0 policy remains preserved; segmentation and releveling are not selected.
+
+Fresh 21/21 analytical tests and all-corpus exposure/population/hierarchy/
+concurrency gates pass. Independent exact-source/evidence review passes with
+recorded limitations and no remaining findings. Review repaired two omitted
+unresolved group causes without changing footprints, detector exposure or
+runtime evidence. Initial-source full replay has 152 byte-identical artifacts;
+the final repair preserves 149 timing/interval/metadata/original-plot artifacts,
+all 71,734 detector support records and every original coordinate event field.
+Four figures are inspected. Maximum endpoint rounding is 0.0078125 microseconds
+under the declared integer-microsecond accounting representation.
+
+Final local Python accounting took 67.184 seconds, whole-process peak RSS
+293,289,984 bytes. Prior 1,004 CTests, 33 RTC tests, four config modes and 207
+baseline tests remain inherited from unchanged C++; they are not rerun or
+claimed as new gates. This is local Python evidence, not a Unity/Spack,
+production-performance or end-to-end scientific acceptance result.
+
+[Report and four plots](/private/tmp/citlali-rtc-disturbance-burden-2026-09-13/census-02/README.md) and the existing RTC handoff bind the
+source, environment and 158-file output manifest (SHA-256 `e8156f63a96b21f045e571ff784d1c246994acd83f8e1cf0647e4c4ef33b95b4`).
+The source review is `/private/tmp/citlali-rtc-disturbance-burden-2026-09-13/review-source.md` (SHA-256 `659b7f01e859aee62f594b50a9610117b83576c2272666db9d7890d7c275924f`).
+The owned branch is `codex/rtc-disturbance-burden-census-001`, worktree
+`/private/tmp/citlali-rtc-disturbance-burden-census-001`. Live preflight canonical
+was `86c20b31f7300ba4063be044380b61cd0baf25eb`; no canonical admission occurs.
+A separate two-document closure must directly follow the tested source and
+receive independent exact-SHA review, bound externally after commit. Future
+admission requires fresh moving-base verification and exact integration review.
+No integration, push, cleanup, Unity access, new data, maps, activation, science
+flags, correction, filtering, spectra or subsequent runtime work occurs.
+
+## RTC plateau-boundary implementation completed locally — 2026-09-12
+
+The owner-approved rule is implemented at exact `81a35ced25d45eeccafabc3243b5aa3010893625`,
+tree `cf70c8b7f35c825f85ca37260026ba0299bb9802`, directly preserving reviewed
+closure `bed75cd828a2db9655f311545cc739c0cd3b32c6`. Within an original group,
+runtime Learn keeps nearby edges unresolved until original samples confirm the
+fitted post-jump level for 50 ms within ±4 frozen residual sigma. Original edge
+cells cannot certify that plateau. Later members retain their guards, and a
+later guard overlapping the first selected evidence withholds the measurement.
+Existing Consider consumes this coordinate-local evidence under the unchanged
+single-reassessment limit. Original candidates, grouping, fits, scale roles,
+thresholds and D2/VAL remain preserved. No runtime Apply plan is produced.
+
+Across the same 143 eligible files, final conditional coordinate measurements
+increase from 9,667 to 11,150: 9,656 retained by both, 1,494 gained and 11 lost.
+This recovers 1,091 of the 1,170 preceding guard-conflict losses and preserves
+1,746 of the 1,757 preceding gains. The 11 new losses follow unchanged fitting
+support (seven), offset consistency (two) or remaining overlap (two) checks.
+Initial bounds change from 10,318 to 12,219; paired refits from 1,314 to 2,030.
+These are conditional measurement outcomes, not accepted physical events or
+truth-accuracy rates. Some retained bounds still accompany multiple levels
+and substantial background residuals.
+
+All 1,004 runnable local CTests, 33 focused tests, four config modes and 207
+baseline-tool tests pass. Fixed injections retain 15/24 jump coordinates,
+unchanged from the onset control; all six gradual-ramp misses remain explicit.
+All 14,164 available native bounds, 184 selected coordinate/version sample
+records and 50 selected first-post confirmations pass their audits. The 46
+comparison figures are inspected. All 858 earlier output files, 143 sample
+exports and two injection backgrounds remain byte-identical. Independent
+exact-source/evidence review passes with recorded limitations and no findings.
+
+The whole transition/reassessment chain costs 2.451023 seconds, 0.135191% of
+preceding input/numerical work in this local run. This is supplemental
+AppleClang/cached-dependency evidence; concurrent work prevents a controlled
+speed comparison, and peak whole-process RSS (4.970 GiB) is not added memory.
+The same 155 missing-binding inputs remain deferred. Source protection, spectra,
+physical-event admission and real scan relations retain their existing limits.
+
+[Results, timing and plots](/private/tmp/citlali-rtc-jump-guard-boundary-2026-09-12/README.md)
+and the existing RTC handoff bind the tested source, sealed evidence and review.
+The engineering conformance workflow is separate from the runtime Learn and
+Consider responsibilities implemented above. A separate two-document closure
+must have the tested source as its direct parent and receive fresh independent
+exact-SHA review; its identity and verdict are recorded externally after review. This
+completes the bounded implementation for owner acceptance. Future canonical
+admission must freshly verify moving ancestry and review the exact integration
+SHA. No integration, push, activation, flags, correction, filtering, spectral
+work, MAP/CAL/PTC/AST, Unity access, new data, production or cleanup occurs.
+
+## RTC onset-support full-corpus test completed locally — 2026-09-12
+
+The unchanged reviewed onset method has now run on all 143 eligible network
+files: 13 observations, 71,734 channel timestreams and 2,148,911,461 paired
+samples. Exact run source `e83815a91fc87d658fd63f1da40ecac82d602105`, tree
+`6d91ff288f53ce5c65e8bb0ca2211af32eeccf09`, directly preserves reviewed
+closure `f0deca48083d6b7a20931a1aa09d4b706063dd8c`. All scientific headers,
+contracts, tests and C++ diagnostic code remain unchanged. Only the inert
+Python census checks and existing documentation changed for this work order.
+
+Final conditional coordinate measurements change from 9,100 to 9,667:
+7,910 retained by both, 1,757 gained and 1,190 lost. Of the gains, 1,350 recover
+former fitting-support failures and 329 recover missing post confirmations.
+Of the losses, 1,170 arise from competing neighbor exclusions, 19 lose an
+earlier partner-refit opportunity and one lacks post confirmation. Initial
+bounds decrease from 11,830 to 10,318; paired refits decrease from 3,226 to
+1,314. Natural-data retention is not physical-event truth. The full corpus
+shows both benefits and losses that the prior 20-case injection trial did not.
+
+All 858 pre-transition output files, 143 original-sample exports and two
+injection backgrounds match the control. All-event support/decision audits,
+11,693 available onset-bound checks, deterministic selected replay and 152
+coordinate/version sample checks pass. The 38 final figures are inspected.
+Prior 1,002 runnable CTests, four config modes and 207 baseline tests remain
+inherited from unchanged reviewed science; they were not rerun at this source.
+Fresh independent exact-source/evidence review passes with recorded limitations
+and no findings.
+
+Transition plus reassessment work costs 1.793314 seconds, 0.095002% of preceding
+input/numerical work. Whole-process peak RSS is 4.981 GiB; neither this nor
+prior-run wall-time differences measure incremental production performance.
+This is supplemental local AppleClang/cached-dependency evidence. The same 155
+missing-binding inventory entries remain deferred. All 196 onset-trial and
+2,281 preceding reassessment evidence files remain preserved.
+
+[Full comparison, timing and plots](/private/tmp/citlali-rtc-jump-onset-corpus-2026-09-12/README.md)
+and the existing RTC handoff bind the evidence. Runtime Learn produces
+conditional onset evidence; unchanged Consider audits support and permits at
+most one reassessment. Engineering review of the corpus is separate from those
+runtime responsibilities. No Apply plan is produced.
+
+Recommend reviewing the nearby-edge guard tradeoff before promoting this rule
+unchanged; no replacement edge policy is selected here. This closes the
+authorized test, not a scientific-policy or production admission. The exact
+documentation closure and its fresh independent review are recorded externally
+after review. No canonical integration, route activation, flags, correction,
+spectral work, MAP, agent push or cleanup occurs.
+
+## RTC onset-support trial completed locally — 2026-09-12
+
+The bounded owner-approved trial is committed at exact
+`d929070dbdfb8d8262bad109126d000b5c941462`, tree
+`10a02bdb8ff39a7f647eed13d14a5b288a4a1dd0`, with reviewed diagnosis closure
+`019a0ee3fe710c1a62da3107286cf3c92794a5ca` as direct parent/literal base.
+Runtime RTC Learn anchors the conditional onset bound to seed-connected native
+candidate edge cells; disconnected later members keep their existing masks.
+Existing Consider consumes that evidence under the same single-reassessment
+limit. Original candidate finding/grouping, fits, scale roles, contexts and
+thresholds are unchanged; no runtime Apply plan is produced.
+
+The same 20 fixed trials retain 15/24 injected-jump coordinate measurements,
+compared with 9/24 for the preserved control: six gained, zero lost. Candidate
+detection remains 18/24. All six gains are x/r for three injections on the
+152385/network 4/channel 61 background. Its sharp transition now spans three
+native cells (24.576 ms), versus 0.852 seconds; the short fit keeps 104 post
+samples, or 89 with a neighboring spike, instead of 20. Three detected x cases
+on the other real background remain unresolved, and all six twelve-cell ramp
+misses stay in the denominator. Synthetic no-jump/spike/pulse controls retain
+zero persistent-jump measurements in eight coordinate cases.
+
+All 1,002 runnable local CTests, 31 focused transition/reassessment tests, four
+config modes and 207 baseline-tool tests pass. Independent fresh-context
+exact-source/evidence review passes with recorded limitations and no findings.
+All 194 predecessor evidence files and both control binaries are preserved;
+37 other timestream headers and frozen contracts remain unchanged. The fixed
+replay is deterministic. Local evidence is supplemental; concurrent diagnostic
+process timings do not measure incremental processing cost. No full-corpus
+rerun or Unity/Spack/production qualification is claimed.
+
+[Trial results and four inspected figures](/private/tmp/citlali-rtc-jump-onset-trial-2026-09-12/report-final-01/README.md)
+and the existing RTC handoff bind the evidence and limitations. The separate
+documentation closure must have this tested source as its direct parent; its
+exact identity and fresh independent review are recorded externally after review.
+Ready for owner acceptance of this bounded trial. Canonical admission, route
+activation, flags, correction, spectral work and subsequent increments remain
+outside it; no agent push or cleanup occurs.
+
+## RTC jump-loss diagnosis completed locally — 2026-09-11
+
+The bounded diagnosis is committed at exact `8ef77477823a5393f9cc7860d8f963509aee0fc8`, tree
+`5d6d10ac9ef5d0068898ad3f0053f7e559062fc2`, directly preserving closure
+`8a66bc0203383995a2e6bdcf4261245003a20237` and its tested single-pass method.
+Production headers, frozen contracts and runtime Learn/Consider ownership are
+unchanged. Truth exclusions and supplied-location probes remain test-only; no
+runtime Apply plan, flags or corrections are produced.
+
+Saved 143-file results reconcile 11,830 original coordinate measurements into
+7,809 retained without refitting, 1,263 retained after refitting and 2,758
+unresolved. The 3,226 paired refit requests are counted separately. Mutually
+exclusive loss causes include 1,994 insufficient-support cases and 343 short/long
+offset disagreements. Losses span 1,039 observation/network/channel combinations;
+none came from a stream with a saved health concern, which is not a health
+certification. The corpus was not rerun.
+
+Twenty fixed targeted trials preserve all 18 preceding outputs byte-for-byte.
+A failed sharp injection is grouped with later edges, yielding a 0.851968-second
+bound and leaving only 20 short-fit post samples against the required 64.
+Known-support fitting restores 111 samples and passes the existing offset checks,
+but the unchanged wide-bound overlap rule still withholds final retention.
+A separate x-coordinate consistency failure remains visible. All 24 injected-jump
+coordinate cases, including six twelve-cell-ramp candidate misses, remain in the
+end-to-end denominator; known-location downstream probes do not repair detection.
+The selected sigma_delta remains a fixed empirical comparison tolerance, not a
+refitted-offset standard error.
+
+All 1,000 runnable local CTests, 102 focused tests, four config modes and 207
+baseline-tool tests pass. Independent exact-source/evidence review passes with
+recorded limitations and no findings; all 2,281 sealed control files and three
+control binaries are preserved. This is supplemental local evidence, with no
+Unity/Spack or production qualification. [Compact report and four figures](/private/tmp/citlali-rtc-jump-loss-diagnosis-2026-09-11/report-final-01/README.md).
+
+Recommend one next change for owner consideration: keep later grouped candidate
+edges from forcing stable post-jump data into the onset transition. This is not
+implemented or an authorization for a new classifier, threshold, iterative pass,
+candidate policy, flags, spectra, MAP, route or production work. The existing RTC
+handoff binds results and limitations; the documentation closure and its required
+fresh exact-SHA review are recorded externally after review. No canonical
+admission, agent push or cleanup occurs. Ready for owner acceptance.
+
+## RTC single support reassessment completed locally — 2026-09-11
+
+The owner-approved one-pass support reassessment is implemented on exact
+`aaa86ea1b006cb11aa740adce2429375b13e5026`, tree `0cceff728976b7ee8ced918ab49d91460105482c`, directly preserving
+reviewed control closure `6de4d5914c3598eb2d93f22b0bdc0aa32d9ee97f`. Runtime Learn/Consider
+products recover actual fit support, request one paired-mask refit, freeze the
+existing scale roles and remeasure under unchanged 4-sigma/50-ms conditions.
+No runtime Apply plan or automatic flags are produced.
+
+All 143 inputs complete and all 1,001 prior scientific outputs are byte-identical.
+Of 4,464 brackets outside the original fitting exclusion, 3,785 overlap their own
+primary fitting samples and 679 do not. One paired refit is requested for 3,226
+candidate detector groups. Of 11,830 original coordinate measurements, 7,809 need
+no refit and 1,263 remain measured after refitting; 2,758 remain unresolved.
+Another 28 partner-coordinate measurements become available, separately counted.
+These are numerical evidence records, not accepted physical-event counts.
+
+The A-F controls plus 24 fixed distinct groups across all 13 observations have
+original-sample, support, residual and confirmation audits. Eighteen fixed
+candidate-through-transition injection trials retain gradual 12-cell misses and
+sharp/finite steps whose original brackets do not survive reassessment on one
+real background. No thresholds
+were tuned. Real detector-scan assignments remain unavailable without an accepted
+native-to-existing-scan timing relation; four controlled boundary fixtures verify
+intersection arithmetic only. Protection, harmfulness, event identity and timing
+uncertainty remain separate admission requirements.
+
+All 1,000 runnable local CTests (10 new focused tests), isolated-header compilation,
+four config modes and 207 baseline-tool tests pass. Independent exact-source and
+full-evidence reviews pass with recorded limitations and no remaining findings. New
+numerical work costs 2.267549 seconds (0.125414% of preceding stages), including
+2.045850 seconds of refitting; additional diagnostic output costs 0.411774 seconds.
+Peak whole-process RSS is 4.976 GiB, not incremental memory. This is the recorded
+supplemental local AppleClang/cached-dependency realization, not Unity/Spack or
+production. Prior source/evidence remains preserved.
+
+[Results and 30 detail plots](/private/tmp/citlali-rtc-jump-reassessment-2026-09-11/README.md) and the existing RTC work order
+bind exact source and evidence. The documentation closure's exact identity and
+independent review are recorded externally in `completion.json`. Ready for owner
+acceptance; no canonical admission, route activation, agent push or later work.
+
+## RTC jump transition implementation and measurement — 2026-09-10
+
+The owner-approved transition learner is implemented on exact
+`14c93a4ad4793a554eb98360c7dd9fe9aabe59e7`, tree
+`bddc3b6325ea2da57735188c382f5189e03bb8f8`. Explicit runtime Consider requests
+original-sample Learn evidence using the unchanged primary cubic/offset and
+inclusive +/-4 frozen residual-sigma agreement for 50 ms. Half-open numerical
+bounds retain native/VAL identity, separate x/r support and explicit limitations.
+Physical-event identity, timing uncertainty, complete admission, scan binding
+and Apply remain separate; no full-scan flag is executed.
+
+The same 143 files, 71,734 channel timestreams and 2,148,911,461 sample pairs
+complete; all 858 preceding output files are byte-identical. Of 12,815 requested
+coordinate assessments, 11,830 have measured conditional brackets;
+985 remain unavailable. D has the same three-cell bracket in x/r,
+24.576 ms under the provisional native timing assumption. A-F original decisions
+remain unchanged. These are evidence records, not accepted physical-event counts.
+
+All 990 runnable local CTests (19 new focused tests), isolated-header compilation,
+four config modes and 207 baseline-tool tests pass under the recorded exact-source
+and repair scopes. Independent source and evidence reviews pass with recorded
+limitations and no remaining findings. Prior D2/VAL/native/RTC science is preserved.
+New request/Learn work totals 0.134634 seconds, 0.007593% of
+preceding driver stages; new diagnostic output costs 0.699774 seconds.
+Peak whole-process RSS is 4.973 GiB, not incremental memory.
+These are local Apple M4 Pro/AppleClang measurements, not production or Unity.
+
+[Results, A-F figures and timing](/private/tmp/citlali-rtc-jump-transition-2026-09-10/README.md)
+and the completion entry in the existing RTC work order bind exact source and
+sealed evidence. The documentation closure's exact identity/review and final
+manifest are recorded externally in `completion.json`. Ready for owner acceptance;
+no canonical admission, route activation, agent push or cleanup occurs.
+
+## RTC level-0 scan intersection rule selected — 2026-09-10
+
+The owner reports the push and approves the starting recommendation: exclude
+the affected detector from every existing scan intersected by an accepted
+conservative physical transition bound. A transition spanning a scan boundary
+therefore selects both scans; preserve the shared scan definitions and configured
+PCA rank. This selects treatment extent for an accepted event, not a new event
+admission rule or permission to flag a candidate automatically.
+
+Read-only live GitHub verification finds the RTC module branch at exact closure
+`d1ed875f7aa3ccbadbe783b571f635d7ba96b2e4` and canonical at unchanged
+`86c20b31f7300ba4063be044380b61cd0baf25eb`. The pushed closure preserves tested
+implementation `0d04f442f70fb221694355cba20c301bccb1008c` and its reviewed local
+timing/census evidence. Publication does not imply canonical admission.
+
+The [decision in the existing RTC work order](../handoff/TIMESTREAM_SUCCESSOR_RTC_EVENT_BACKGROUND_001_2026-09-08.md#owner-decision-every-scan-intersected-by-an-accepted-transition-bound--2026-09-10)
+records the remaining narrow prerequisite: the physical transition-bounding
+method and its support/uncertainty binding to native pair cells and existing
+scans, required by SCI-RTC REQ-094/096. The settled half-open interval convention
+from SCI-RTC notation and SCI-ALIGN REQ-031/053 remains unchanged.
+The current +/-50 ms fitting exclusion is not an accepted physical bound.
+Runtime Learn must produce that evidence, Consider must resolve accepted events
+and their scan-use consequences under the named RTC/PTC/VAL owners, and Apply
+must consume the completed plan. Existing amplitude/consistency predicates,
+source-protection requirements and hard-class pair-union policy stay intact.
+This is a documentation receipt; no application code or sealed evidence changes.
+
+## RTC jump consistency implementation and timing — 2026-09-10
+
+The owner-approved fixed consistency check is implemented in explicit RTC
+Learn/Consider products on exact `0d04f442f70fb221694355cba20c301bccb1008c`,
+tree `a75ba2e8a955a0f7500ebdc0bc00fa4b1bad4648`. The original two-second fit and
+all accepted native/D2/VAL/spike/background/assessment science remain intact.
+The same 143 files, 71,734 channel timestreams and 2,148,911,461 original sample
+pairs pass; all 715 earlier output files are byte-identical. All 971 runnable
+local CTests (16 new focused tests), four config modes and 207 baseline-tool
+tests pass. Independent exact-source and final evidence reviews pass with
+recorded limitations and no remaining findings.
+
+New numerical work takes 6.533 seconds across the corpus: 0.445% of the existing
+1,469.529-second event assessment, or 0.370% of all original driver stages.
+Additional diagnostic output costs 0.866 seconds. The largest per-network
+relative increment is 1.628%; largest absolute increment is 1.251 seconds.
+Peak whole-process RSS is 4.977 GiB; shorter-fit support reaches 244 rows.
+These are local Apple M4 Pro/AppleClang 21 measurements, not production RTC/PTC
+or a Unity gate. [Timing, counts and A-F figures](/private/tmp/citlali-rtc-jump-consistency-2026-09-10/README.md)
+and the completion record in the
+[existing RTC work order](../handoff/TIMESTREAM_SUCCESSOR_RTC_EVENT_BACKGROUND_001_2026-09-08.md)
+bind the tested source and sealed evidence. The documentation closure's exact
+identity/review is recorded externally in `completion.json` at that evidence root.
+
+D passes the selected fitted-offset consistency check in both coordinates;
+B's x offset fails agreement across the two windows. These are bounded
+predicates, not complete hard-event admission. No full-scan flag is executed:
+source protection, complete event admission and exact scan binding remain
+required. Spectra remain owner-deferred. No canonical admission, push or route
+activation occurs; this module result is ready for owner acceptance.
+
+## RTC jump amplitude rule selected — 2026-09-10
+
+The owner approved the initial jump-amplitude cut
+`abs(fitted additive offset) >= 5 * sigma_delta`, reusing the candidate's
+existing detector/coordinate first-difference noise scale from its exact
+ten-second block. The [existing RTC work order](../handoff/TIMESTREAM_SUCCESSOR_RTC_EVENT_BACKGROUND_001_2026-09-08.md#owner-decision-initial-5-sigma-jump-amplitude-cut--2026-09-10)
+records the definition and limits. This is an empirical amplitude criterion,
+not fitted-offset significance or permission to reject on amplitude alone.
+Persistent-shift/background-adequacy admission, required source protection and
+exact event-to-scan binding remain prerequisites for the selected full-scan
+detector treatment. This receipt changes documentation only.
+
+## RTC level-0 jump treatment selected — 2026-09-09
+
+The owner selected full-existing-scan flagging of the detector with a confirmed
+level jump as the level-0 treatment. Preserve the shared PCA scan and configured
+mode count; detector-local event windows do not create shorter PCA scans.
+The [existing RTC work order](../handoff/TIMESTREAM_SUCCESSOR_RTC_EVENT_BACKGROUND_001_2026-09-08.md#owner-decision-level-0-full-scan-detector-flagging--2026-09-09)
+records the decision, ownership, and remaining implementation prerequisites.
+This selects treatment, not a jump-acceptance threshold or executable rejection.
+The next decision is sufficient event evidence to justify detector-scan loss;
+accurate offset recovery is not a prerequisite for this level-0 treatment.
+Accepted code and sealed census evidence are unchanged. No PTC implementation,
+route activation, integration, or push follows from this documentation receipt.
+
+## RTC event assessment and same-corpus rerun — 2026-09-09
+
+The owner approved the A–F continuation in the existing
+[RTC work order](../handoff/TIMESTREAM_SUCCESSOR_RTC_EVENT_BACKGROUND_001_2026-09-08.md).
+New RTC Learn/Consider evidence implements multiple paired fitting exclusions,
+bounded recovery and event membership, per-candidate same-network context, and
+the explicit observation-time health review rule. Accepted native/D2/VAL/spike
+and original joint-fit code remains unchanged. The owner explicitly deferred
+native spectral context for this rerun. No hard pathology, numerical correction,
+Apply route or automatic scientific rejection is claimed.
+
+Exact implementation `17c1bf0e6a33648d2ea0aede03fa111012ad4bed` passes
+independent three-axis source review with no remaining findings, 955/955 runnable
+local CTests (23 new focused tests; one established disabled test), four config
+modes, and 207 baseline-tool tests / 137 subtests. The same **143/143 files,
+71,734 channel timestreams in 13 observations, and 2,148,911,461 original sample
+pairs** complete. All 910,241 original candidate identities/rows/scores, input
+digests, original screening decisions, and A–F sample windows reconcile exactly.
+
+The 242,014 grouped review assessments include 123,715 measured returns, 28,704
+persistent/compound unresolved cases, 51,386 unavailable backgrounds, and 38,209
+with no resolved excursion. Three retain an explicit numerical refinement limit.
+These are not accepted physical event counts. The trial health rule raises 17
+channel-observation concerns: five with clear APT quality, one already flagged,
+and eleven with unavailable quality fields; all retain valid Tune flags. F's r
+coordinate satisfies both trial conditions in all 124 complete ten-second blocks.
+
+[Results, A–F figures, and health records](/private/tmp/citlali-rtc-event-assessment-2026-09-09/README.md)
+are bound by the completion entry in the existing work order and the sealed
+external evidence. The serialized census took 30.89 minutes, peak 4.98 GiB.
+Local AppleClang/Homebrew/cached-dependency results are supplemental; no new
+representative Spack/Unity gate or owner acceptance is implied. Fourteen other
+observations still lack required detector-binding manifests and remain untested.
+
+Canonical was reverified at `86c20b31f7300ba4063be044380b61cd0baf25eb`;
+its later changes are documentation only. The module continues from literal
+`be5636087af3c662655779eb99a032156799f04b`, preserving both histories for later
+independent exact-admission review. This documentation receipt's exact review
+and final seal are recorded externally. No integration, push, production or
+cleanup occurs in this continuation.
+
+## RTC real-timestream census completed — 2026-09-09
+
+Owner-requested census source `bff55895310c415a2924273514146cee3c9ad30c`
+completed all **143/143 network invocations**, **71,734 channel timestreams in
+13 observations**, and **2,148,911,461 original x/r sample pairs** locally.
+The 910,241 candidate edges seed separate x/r fitting attempts; they are not
+physical event counts or a measured affected-data fraction. Numerical fits are
+available for 130,791 x and 338,458 r attempts; nearby candidates in fitting
+flanks account for 775,929 x and 568,299 r unavailable attempts. Insufficient
+support and explicit iteration limits account for the remainder.
+The census preserves original scientific implementation and accepted D2/VAL/RTC
+bytes, with 83/83 focused regressions and independent source review passing.
+The full [results and figures](/private/tmp/citlali-rtc-event-census-2026-09-09/report/README.md)
+and exact source/input/executable checks remain externally bound. Fourteen
+other discovered observations lack required local detector-binding manifests
+and are explicitly untested. This documentation receipt's exact review and
+completion seal are recorded externally; no new scientific policy, acceptance,
+canonical admission, push, Apply or activation is implied.
+
+
+## RTC real-timestream census continuation — 2026-09-09
+
+The owner requests a broad census using the current RTC event-background
+implementation before deciding acceptance. The bounded continuation in
+[the existing work order](../handoff/TIMESTREAM_SUCCESSOR_RTC_EVENT_BACKGROUND_001_2026-09-08.md)
+adds an inert raw/Tune/compact-v2 test driver and local runner, preserving every
+scientific application header and the reviewed implementation/Unity receipt.
+Initial real-input execution and 83 focused successor tests pass locally;
+input-mismatch/output-preservation checks pass. The local corpus contains
+27 observations; 13 have detector-binding bundles for strict input verification.
+Complete census counts, input/executable/source hashes, failures, time/memory,
+figures and exact candidate review are bound in the external completion evidence
+under `/private/tmp/citlali-rtc-event-census-2026-09-09`.
+This is descriptive Learn/Consider evidence; hard classification and Apply,
+owner acceptance, canonical integration, push and activation remain pending.
+
+
+## RTC Event Background Unity Gate Passed — 2026-09-09 UTC receipt
+
+Owner-supplied job **64109974** passes the representative GCC13/Spack gate for
+exact implementation `d73a33a81dbe45ef2f478ca212ebf93d481ef7b4`: **932/932 runnable
+and 83/83 focused tests**, matching CLI/source/tree, clean pinned dependencies,
+21 successful checksum checks and zero-byte stderr. The
+[receipt](../handoff/TIMESTREAM_SUCCESSOR_RTC_EVENT_BACKGROUND_UNITY_RECEIPT_2026-09-09.md)
+preserves exact identities, evidence limitations and prior passing source review.
+Owner acceptance and canonical admission remain pending. Live canonical has
+advanced to `3efd079bb5c28f28f6f2d49296a29e966bde050b` through documentation-only
+work; admission must preserve both histories and receive exact-merge review.
+No source change, push, activation or further scientific decision occurs here.
+
+## 2026-09-08 RTC Event Background Learn Candidate
+
+The owner selected the joint cubic versus cubic-plus-additive-offset method
+and authorized this next bounded S2 implementation. The
+[work order and recovered decisions](../handoff/TIMESTREAM_SUCCESSOR_RTC_EVENT_BACKGROUND_001_2026-09-08.md)
+implement RTC-owned original-pair background-fit evidence and bounded Consider
+constraints on canonical base `b675bb64a7054f7b24403c79898965e8765cfd02`.
+Accepted D2, VAL and RTC spike Learn, including its original screening
+consequences, are preserved. No complete event classification or Apply
+correction is claimed: offset uncertainty/significance, fit adequacy, trial
+exclusion containment, completed recovery and protected optical predicates
+remain explicit prerequisites.
+
+Local supplemental AppleClang/Homebrew gates pass: 16 new tests, 83 focused
+successor tests, 932/932 runnable CTest tests, four config modes and 207 baseline
+tool tests. One established MapFitterLifecycle test remains disabled. The
+actual cached dependency dirt is disclosed in the work order/evidence; these
+results do not substitute for a new exact-source GCC13/Spack Unity gate.
+Independent exact-SHA review, owner-run Unity evidence, acceptance and canonical
+admission remain pending. No push, route activation, map comparison, downstream
+implementation or cleanup is authorized by this candidate. Historical records
+below preserve their original scope and identities.
+
 ## MAP contractual activation — 2026-09-09
 
 The owner approved the exact registered MAP/VAL r0.4 generation for contractual
