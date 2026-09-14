@@ -4012,3 +4012,60 @@ No new cadence or scientific tolerance is introduced. An end-to-end Learn fixtur
 covers the reported 402-point transform and factor-one/factor-three boundaries.
 The repaired exact source requires a new independent review; the initial verdict
 and successful broad gates are retained with their original source identity.
+
+### RTC line-transfer source conformance and local closure — 2026-09-14
+
+Final source `a7ef9811401c93851bb087854ab82082805bf94a`, tree
+`e62c6a860fae0c4a84b19d19e8e50880b6e23fbf`, has parent
+`700d1ddcc1414dcb1d3ac7dbf492ba9bd0dc7553` and literal base
+`4a7e7775d3d8350519d75b05a8b8dc0bdf017641`. Fresh independent exact-source review
+passes scientific/behavioral, architecture/ownership and repository/evidence
+categories with the stated limitations and no findings. The report SHA256 is
+`7f509451a13940c980ebd8a94fa94820a51a2f8648132907b1d64fcc916f4379`.
+The prior repair-required review remains separately preserved at report SHA256
+`ef2b666c7eb325a9828ab48fa7a2776de9126c733008a90e3c2a7659475fa822`.
+
+Repaired-source local gates: 19/19 focused tests; 1,113/1,113 runnable CTests
+(1,114 registered; existing `MapFitterLifecycle.ExactProductSequence` disabled);
+CLI and safety builds, CLI short-revision match; required four-mode config
+preflight; 207 baseline tests plus 137 subtests. Dedicated header translation
+unit passes without a precompiled header. Controlled plus retained-original
+Case E export has 4,016 native x/r bins, exact coefficient and window-support
+sidecars. The independent Python response check differs by at most 7.16e-15;
+the reviewer's separate impulse/Fourier check differs by at most 1.793e-14 and
+regenerates byte-identical exports. This is conformance of the numerical
+assessment, not a finite-record filtered result, line classification or notch
+admission. No new original input, repair or background estimator is substituted.
+
+The separate C++ timer measures 100 paired assessments (257 bins per coordinate,
+two notches, three FIR taps) in 0.00246729 seconds, about 24.7 microseconds per
+pair excluding Learn. Whole GTest/fixture-process peak RSS is 9,240,576 bytes;
+it is not incremental assessment memory or corpus throughput. Nine pre-existing
+cached first-party edits are unchanged, with no new changed tracked paths.
+Forty-three inventoried scientific headers and both prior Python estimators
+remain byte-identical; the one planned optical-reference extraction retains the
+accepted constants and arithmetic. Governance and prior evidence seals remain
+preserved. The task-created build symlink was removed after gates; source was
+clean. The unrelated default checkout and all other worktrees were untouched.
+
+The 176-file, 13,472,815-byte evidence set (excluding rebuildable build/cache
+contents) is at `/private/tmp/citlali-rtc-line-transfer-2026-09-14`;
+`EVIDENCE_SHA256SUMS` SHA256 is
+`f765dcc6ded30ba983f508dfdc4de814f4a7bf0cbdeb5909b8d0d2a65e99ed42`.
+`REPORT.md`, `final/source-binding.json`, `final/gates.json` and `artifact-index.json`
+separate exact final evidence from retained development/failed/first-source
+attempts. AppleClang 21 arm64 Release C++20/Homebrew/cached evidence remains
+supplemental; Spack/Unity V2 reproduction is not claimed or required for this
+unrouted numerical module's local closure. Future affected application/operational
+validation retains its own representative-environment gate.
+
+Fresh remote `codex/refactor-mainline` remains
+`86c20b31f7300ba4063be044380b61cd0baf25eb`; merge base with this source is
+`b675bb64a7054f7b24403c79898965e8765cfd02`, with 9 canonical-only and 54 source-only
+commits. No merge/rebase was attempted. A later canonical admission must refresh
+the live ref and independently review the exact reconciled result. Audit and
+transfer refs are still absent remotely; a feature push preserves this lineage
+without integrating it. Owner acceptance/publication, canonical admission and
+production remain distinct. This two-file documentation-only closure receives
+its own exact-SHA review and separate closure seal; executable gates stay bound
+to the source above and are not relabeled with the closure SHA.

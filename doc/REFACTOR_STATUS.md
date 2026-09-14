@@ -1,24 +1,41 @@
 # Citlali Refactor Status
 
-## RTC complete line-transfer assessment active — 2026-09-14
+## RTC line-transfer assessment: reviewed local candidate — 2026-09-14
 
-Owner-directed TIMESTREAM-SUCCESSOR-RTC-LINE-TRANSFER-001 implements the runtime
-RTC Consider numerical assessment seam for exact supplied notch/low-pass/factor
-trials, using existing original spectral and joint transient evidence. It owns
-one module increment at `/private/tmp/citlali-timestream-successor-rtc-line-transfer-001`
-on `codex/timestream-successor-rtc-line-transfer-001`, literal reviewed base
-`4a7e7775d3d8350519d75b05a8b8dc0bdf017641`. Fresh canonical remains
-`86c20b31f7300ba4063be044380b61cd0baf25eb`; no integration or push.
+TIMESTREAM-SUCCESSOR-RTC-LINE-TRANSFER-001 is locally complete at source
+`a7ef9811401c93851bb087854ab82082805bf94a`, tree
+`e62c6a860fae0c4a84b19d19e8e50880b6e23fbf`, on
+`codex/timestream-successor-rtc-line-transfer-001` at
+`/private/tmp/citlali-timestream-successor-rtc-line-transfer-001`.
+Runtime RTC Consider now measures exact supplied notch/low-pass/factor trials
+against bound spectral, line, transient and VAL evidence. It reports combined
+response, native-bin folding/power and optional conditional x optical-domain
+errors. Accepted Learn and original x/r are preserved; Apply is unchanged.
 
-Measurements cover sampled steady-state combined response, per-native-bin folded
-destinations and incoherent power bookkeeping, line-band propagation, and an
-optional explicitly conditional beam/speed science-band response domain. The
-accepted Airy reference is shared without a numerical change. Supplied trials
-are not certified filter-bank entries, selected factors or admitted treatments.
-No runtime filter design, finite-edge qualification, coherent alias guarantee,
-new threshold, source policy, Apply/route, maps or production action is included.
-Exact scope, identities, gates and limitations are in
-`/private/tmp/citlali-rtc-line-transfer-2026-09-14/preflight.json`.
+Fresh-context exact-source review passes all three governance categories with
+recorded limitations and no findings after one repaired native-Nyquist rounding
+case. Local AppleClang 21 arm64/C++20 supplemental gates pass: 19 focused tests,
+1,113 runnable CTests (1,114 registered; one unchanged disabled), CLI/safety,
+CLI source binding, required config modes, 207 baseline tests plus 137 subtests.
+Independent numerical witnesses check 4,016 controlled/retained Case E bins.
+These are unrouted numerical fixtures, not Spack/Unity V2 or recovery acceptance.
+
+The report and 176-file evidence seal are under
+`/private/tmp/citlali-rtc-line-transfer-2026-09-14`; `EVIDENCE_SHA256SUMS` has SHA256
+`f765dcc6ded30ba983f508dfdc4de814f4a7bf0cbdeb5909b8d0d2a65e99ed42`.
+The existing RTC handoff records scope, exact reviews, earlier failures, gates,
+ancestry and limitations. This documentation-only closure is separately reviewed.
+
+Fresh remote canonical remains `86c20b31f7300ba4063be044380b61cd0baf25eb` on
+`codex/refactor-mainline`. Source and canonical diverge at `b675bb64a...` (9
+canonical-only, 54 source-only commits); any canonical admission needs refreshed
+live authority, bounded reconciliation and independent review of its resulting
+exact SHA. The audit and transfer branch refs remain absent remotely. Owner
+acceptance/push remain separate; no integration, activation or production action.
+Next work may consume the numerical assessment under concrete mode/source
+bindings. Filter-bank qualification, finite-record/continuous-band response,
+coherent alias guarantees and any missing narrow-line admission decision remain
+outside this closure; the broadband 1% allowance supplies no new line threshold.
 
 ## RTC audit recommendations: owner agreement and science context — 2026-09-14
 
