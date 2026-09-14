@@ -3343,3 +3343,11 @@ first focused run was 20/21 because the overflow fixture used an odd population;
 its median was correctly finite. The fixture now uses an even population and
 exercises the inherited even-median overflow as intended. No numerical estimator
 change was made in response. Final gates and review will bind the exact source SHA.
+
+Independent source review of `f45a442b20d8fb0622fe242f1c3d24f8e6af7fa5`
+identified RTC-NSL-R01: the conservative numeric scratch estimate omitted the live
+cadence vector and its median copy. The repair records their two-buffer peak and
+releases cadence storage before coordinate measurement. A 10,000-row all-invalid
+fixture reproduces the formerly understated bound. All 22 focused tests now pass;
+PSD numerics and accepted source policies are unchanged. The repaired exact source
+will receive complete gates and independent review; no verdict transfers by ancestry.

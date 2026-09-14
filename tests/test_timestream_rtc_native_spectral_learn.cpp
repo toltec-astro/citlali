@@ -222,4 +222,14 @@ TEST(rtc_native_spectral, bounded_learning_timing_reports_actual_numeric_and_sup
         <<" logical_bytes="<<e->logical_owned_bytes()<<" peak_scratch_samples="<<e->peak_scratch_samples()<<'\n';
     EXPECT_GT(e->logical_owned_bytes(),0);EXPECT_LT(e->peak_scratch_samples(),10000);
 }
+TEST(rtc_native_spectral, scratch_bound_includes_cadence_when_all_coordinate_samples_are_invalid) {
+    auto in=signal(10000);
+    for(auto &state:in.xs)state=NativeReadoutCoordinateState::measured(true,false,true,true);
+    for(auto &state:in.rs)state=NativeReadoutCoordinateState::measured(true,false,true,true);
+    auto e=Trial(in).learn();
+    for(const auto &s:e->spectra())EXPECT_FALSE(s.available());
+    // Cadence retains the original time axis even when no coordinate samples
+    // qualify; its median copy coexists with the interval population.
+    EXPECT_GE(e->peak_scratch_samples(),2*(in.times.size()-1));
+}
 } // namespace

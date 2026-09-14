@@ -163,10 +163,14 @@ public:
                 throw std::invalid_argument("RTC spectral cadence domain is absent or malformed");
             const auto &net = original->input_handle()->network(span.network_id); const auto &axis = net.occurrence_axis();
             RtcSpectralNetwork n; n.input = binding; n.cadence_domain = domain;
+            {
             std::vector<double> intervals;
             for (const auto &run : axis.contiguous_runs())
                 for (auto row = run.first_native_row + 1; row < run.past_last_native_row; ++row)
                     intervals.push_back(axis.native_identity(row).reconstructed_time_unix_sec() - axis.native_identity(row-1).reconstructed_time_unix_sec());
+            // median takes a copy. Account for both buffers, then release
+            // cadence scratch before measuring individual coordinates.
+            out->peak_scratch_ = std::max(out->peak_scratch_, 2*intervals.size());
             if (!intervals.empty()) {
                 n.interval_seconds = rtc_native_spectral_detail::median(intervals);
                 n.minimum_interval_seconds = *std::min_element(intervals.begin(), intervals.end());
@@ -178,6 +182,7 @@ public:
                         std::abs(dt-domain.nominal_interval_seconds)/domain.nominal_interval_seconds <= domain.maximum_fractional_deviation;
                     n.maximum_fractional_interval_deviation = std::max(n.maximum_fractional_interval_deviation, std::abs(dt-n.interval_seconds)/n.interval_seconds);
                 }
+            }
             }
             std::vector<double> window;
             if (n.cadence_available) {

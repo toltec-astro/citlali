@@ -23,11 +23,14 @@ A feature disappearing after targeted treatment is an outcome, not classificatio
 proof. The full loop, notch/spike admission, protected-source treatment and stopping
 thresholds remain outside this increment. Detailed owner direction, preflight and
 conformance are appended to the existing RTC handoff. No push or cleanup is needed.
-The initial 21 focused C++ tests and isolated header pass, including direct reference
+The 22 focused C++ tests and isolated header pass, including direct reference
 agreement with the unchanged D2 estimator, native support records and source retention.
 Full exact-source gates and independent review are pending. The typed identity layer
 accepts later explicitly bound native stages/VAL; only the initial numerical producer
 is implemented. No conditioned-data spectrum or full RTC replay loop is claimed.
+Independent review identified an understated cadence scratch estimate in the first
+candidate; the bounded repair counts both cadence/median buffers and releases them
+before coordinate measurement. A 10,000-row all-invalid regression covers the case.
 
 ## RTC donor-fill component reviewed closure — 2026-09-13
 
