@@ -605,3 +605,10 @@ gtest_discover_tests(citlali_rtc_line_transfer_test
     TEST_PREFIX "citlali::"
     DISCOVERY_MODE PRE_TEST
 )
+
+add_executable(citlali_rtc_notch_recovery_test EXCLUDE_FROM_ALL
+    test_timestream_rtc_notch_recovery.cpp timestream_rtc_notch_recovery_header.cpp)
+set_source_files_properties(timestream_rtc_notch_recovery_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+target_link_libraries(citlali_rtc_notch_recovery_test PRIVATE citlali::citlali GTest::gtest_main)
+add_dependencies(check citlali_rtc_notch_recovery_test)
+gtest_discover_tests(citlali_rtc_notch_recovery_test WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR} TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
