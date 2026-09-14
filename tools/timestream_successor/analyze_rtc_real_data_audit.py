@@ -51,6 +51,12 @@ def cost_bounds(eligible, baseline, proposed, activity_unavailable):
     return lower, upper
 
 
+def overlap_bounds(eligible, activity, other, activity_unavailable):
+    lower = measure(intersect(intersect(eligible, activity), other))
+    upper = measure(intersect(eligible, other)) if activity_unavailable else lower
+    return lower, upper
+
+
 def noise_factor(information, lost):
     if not math.isfinite(information) or information <= 0 or not 0 <= lost <= information:
         return None
@@ -196,27 +202,34 @@ def main():
                         if not chosen: continue
                         totals[name+'_occurrences']+=exposure>0
                         per_observation[obs][name+'_occurrences']+=exposure>0
-                        direct_overlap=measure(intersect(intervals,direct));candidate_overlap=measure(intersect(intervals,candidate));noise_overlap=measure(intersect(intervals,noise))
+                        activity_unavailable=any(descriptions[c]['narrow_fraction']>=threshold and descriptions[c].get('recurrence') is None for c in axes)
+                        overlaps={label:overlap_bounds(eligible,intervals,other,activity_unavailable) for label,other in [('direct',direct),('candidate',candidate),('noise',noise)]}
+                        active_bounds=overlap_bounds(eligible,intervals,eligible,activity_unavailable)
                         proposed=dict(observation=eligible,active_windows=intervals)
                         for duration in (5,10,20):
                             for phase in (0,duration/2):proposed[f'scan_model_{duration}s_phase{phase:g}']=cover_scans(intervals,int(duration*1e6),int(phase*1e6))
                         activity_unavailable=any(descriptions[c]['narrow_fraction']>=threshold and descriptions[c].get('recurrence') is None for c in axes)
                         bound_pairs={mode:cost_bounds(eligible,noise,bounds,activity_unavailable and mode!='observation') for mode,bounds in proposed.items()}
                         loss={mode:value[0] for mode,value in bound_pairs.items()}
-                        row['losses'][name]=dict(incremental_us_lower=loss,incremental_us_upper={mode:value[1] for mode,value in bound_pairs.items()},active_us=measure(intersect(eligible,intervals)),direct_overlap_us=direct_overlap,candidate_overlap_us=candidate_overlap,noise_overlap_us=noise_overlap,recurrence_bound=all(descriptions[c].get('recurrence') is not None for c in axes if descriptions[c]['narrow_fraction']>=threshold))
+                        row['losses'][name]=dict(incremental_us_lower=loss,incremental_us_upper={mode:value[1] for mode,value in bound_pairs.items()},active_us_lower=active_bounds[0],active_us_upper=active_bounds[1],overlap_us_bounds={k:dict(lower=v[0],upper=v[1]) for k,v in overlaps.items()},recurrence_bound=all(descriptions[c].get('recurrence') is not None for c in axes if descriptions[c]['narrow_fraction']>=threshold))
                         for mode,value in loss.items():
                             costs[(name,mode,array)]['lost_us']+=value
                             costs[(name,mode,array)]['lost_us_upper']+=bound_pairs[mode][1]
                             costs[(name,mode,array)]['lost_information_upper']+=bound_pairs[mode][1]/1e6*weight
                             costs[(name,mode,array)]['activity_unavailable_occurrences']+=bool(activity_unavailable and mode!='observation' and exposure)
                             costs[(name,mode,array)]['activity_unavailable_baseline_us']+=base if activity_unavailable and mode!='observation' else 0
-                            costs[(name,mode,array)]['apt_good_lost_us']+=value if apt_good else 0
+                            costs[(name,mode,array)]['apt_good_lost_us_lower']+=value if apt_good else 0
+                            costs[(name,mode,array)]['apt_good_lost_us_upper']+=bound_pairs[mode][1] if apt_good else 0
                             costs[(name,mode,array)]['lost_information']+=value/1e6*weight
                             # Existing direct support is a conditional comparison,
                             # not accepted production exclusion.
-                            costs[(name,mode,array)]['incremental_after_direct_us']+=incremental_cost(eligible,union(noise+direct),proposed[mode])
+                            after_direct=cost_bounds(eligible,union(noise+direct),proposed[mode],activity_unavailable and mode!='observation')
+                            costs[(name,mode,array)]['incremental_after_direct_us_lower']+=after_direct[0]
+                            costs[(name,mode,array)]['incremental_after_direct_us_upper']+=after_direct[1]
                         if name=='x_narrow_10':
-                            totals['x10_active_us']+=measure(intersect(eligible,intervals));totals['x10_direct_overlap_us']+=direct_overlap;totals['x10_candidate_overlap_us']+=candidate_overlap;totals['x10_noise_overlap_us']+=noise_overlap
+                            for endpoint,i in [('lower',0),('upper',1)]:
+                                totals['x10_active_us_'+endpoint]+=active_bounds[i]
+                                for label,bounds in overlaps.items():totals['x10_'+label+'_overlap_us_'+endpoint]+=bounds[i]
                             recurrence=descriptions[0]['recurrence'];totals['x10_recurrence_unavailable']+=recurrence is None
                             totals['x10_persistent_occurrences']+=recurrence is not None and recurrence>=.6 and descriptions[0]['independent_windows']>=3
                             f=descriptions[0]['narrow_frequency_hz'];binid=int(round(f/(frequency[1]-frequency[0])))

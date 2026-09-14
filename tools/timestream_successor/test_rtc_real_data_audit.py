@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 from analyze_rtc_real_data_audit import (independent_windows, cover_scans, incremental_cost,
-                                       noise_factor, row_support, describe_coordinate, cost_bounds)
+                                       noise_factor, row_support, describe_coordinate, cost_bounds, overlap_bounds)
 
 
 class AuditTests(unittest.TestCase):
@@ -12,6 +12,11 @@ class AuditTests(unittest.TestCase):
         self.assertEqual(cost_bounds([(0,100)],[(0,10)],[],True),(0,90))
         self.assertEqual(cost_bounds([(0,100)],[(0,10)],[(20,40)],True),(20,90))
         self.assertEqual(cost_bounds([(0,100)],[(0,10)],[(20,40)],False),(20,20))
+
+    def test_unknown_activity_also_bounds_overlap_and_after_transient_cost(self):
+        self.assertEqual(overlap_bounds([(0,100)],[(10,30)],[(20,40)],True),(10,20))
+        self.assertEqual(overlap_bounds([(0,100)],[(10,30)],[(20,40)],False),(10,10))
+        self.assertEqual(cost_bounds([(0,100)],[(0,10),(20,30)],[(20,40)],True),(10,80))
 
     def test_gaps_and_invalid_support_do_not_enter_denominator(self):
         self.assertEqual(incremental_cost([(0,10),(90,100)],[],[(0,100)]),20)

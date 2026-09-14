@@ -14,6 +14,7 @@ def main():
     p.add_argument('--analysis',type=Path,required=True)
     p.add_argument('--selection',type=Path,required=True)
     p.add_argument('--output',type=Path,required=True)
+    p.add_argument('--burden',type=Path,required=True)
     a=p.parse_args();a.output.mkdir(parents=True,exist_ok=False)
     selected=json.loads(a.selection.read_text()); index=json.loads((a.analysis/'inspection-index.json').read_text())
     lookup={(x['observation'],x['network'],x['detector']):x for x in index}
@@ -89,6 +90,29 @@ def main():
             fig.tight_layout(rect=(0,0,1,.975));fig.savefig(a.output/f'{prefix}-{page+1:02d}.png',dpi=120);plt.close(fig)
     pages(contacts,'independent');pages(supplement,'supplement')
     (a.output/'contact-selection.json').write_text(json.dumps(dict(independent=contacts,supplement=supplement),indent=2)+'\n')
+    # Fixed earlier cases: show actual window support and preserved transient
+    # context. A window is descriptive here, not a standalone qualified PSD.
+    fixed=[(152418,5,60),(152390,8,6)]
+    context={(x['observation'],x['network'],x['detector']):x for x in records(a.burden/'detector-accounting.jsonl.gz') if (x['observation'],x['network'],x['detector']) in fixed}
+    fixed=[x for x in fixed if x in lookup and x in context]
+    if fixed:
+        fig,axes=plt.subplots(len(fixed),2,figsize=(13,4*len(fixed)),squeeze=False)
+        for row,(o,n,d) in zip(axes,fixed):
+            folder,r,_,f=load(o,n);meta=list(records(folder/'spectra.jsonl'));t=np.fromfile(folder/'native-time.f64',dtype='<f8')
+            windows=np.memmap(folder/'windows.f64',dtype='<f8',mode='r',shape=(r['window_records'],14))
+            old=context[(o,n,d)]
+            for c,ax in enumerate(row):
+                mm=meta[2*d+c];ww=windows[mm['window_offset']:mm['window_offset']+mm['window_count']]
+                if len(ww):
+                    mid=(t[ww[:,2].astype(int)]+t[ww[:,3].astype(int)-1])/2
+                    ax.plot(mid,ww[:,9],'.-',ms=3,lw=.7,label='Pooled target: 3-bin fraction')
+                    ax.plot(mid,ww[:,7],'.-',ms=2,lw=.5,alpha=.6,label='Largest ≥2 Hz 3-bin fraction')
+                    peak=f[int(ww[0,8])];ax.set_title(f'{o} / nw {n} / ch {d} / {("x","r")[c]} — target {peak:.2f} Hz')
+                for label,color,key in [('Measured transient support','tab:red','direct'),('Noise-screening required','black','noise_screening_required')]:
+                    for i,(lo,hi) in enumerate(old['intervals_us'][key]):ax.axvspan(lo/1e6,hi/1e6,color=color,alpha=.25,label=label if i==0 else None)
+                ax.set_ylim(0,1);ax.set_xlabel('Native time (seconds)');ax.set_ylabel('Fraction of window stored PSD power');ax.grid(alpha=.2);ax.legend(fontsize=7)
+        fig.suptitle('Fixed prior cases — spectral recurrence and prior transient support; no flags applied')
+        fig.tight_layout(rect=(0,0,1,.96));fig.savefig(a.output/'recurrence-and-transient-overlap.png',dpi=140);plt.close(fig)
     summary=json.loads((a.analysis/'summary.json').read_text())
     fam=summary['families'][:20]
     if fam:
