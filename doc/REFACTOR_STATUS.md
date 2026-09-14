@@ -1,5 +1,25 @@
 # Citlali Refactor Status
 
+## RTC complete line-transfer assessment active — 2026-09-14
+
+Owner-directed TIMESTREAM-SUCCESSOR-RTC-LINE-TRANSFER-001 implements the runtime
+RTC Consider numerical assessment seam for exact supplied notch/low-pass/factor
+trials, using existing original spectral and joint transient evidence. It owns
+one module increment at `/private/tmp/citlali-timestream-successor-rtc-line-transfer-001`
+on `codex/timestream-successor-rtc-line-transfer-001`, literal reviewed base
+`4a7e7775d3d8350519d75b05a8b8dc0bdf017641`. Fresh canonical remains
+`86c20b31f7300ba4063be044380b61cd0baf25eb`; no integration or push.
+
+Measurements cover sampled steady-state combined response, per-native-bin folded
+destinations and incoherent power bookkeeping, line-band propagation, and an
+optional explicitly conditional beam/speed science-band response domain. The
+accepted Airy reference is shared without a numerical change. Supplied trials
+are not certified filter-bank entries, selected factors or admitted treatments.
+No runtime filter design, finite-edge qualification, coherent alias guarantee,
+new threshold, source policy, Apply/route, maps or production action is included.
+Exact scope, identities, gates and limitations are in
+`/private/tmp/citlali-rtc-line-transfer-2026-09-14/preflight.json`.
+
 ## RTC audit recommendations: owner agreement and science context — 2026-09-14
 
 The owner agrees with the completed audit's recovery recommendations and adds

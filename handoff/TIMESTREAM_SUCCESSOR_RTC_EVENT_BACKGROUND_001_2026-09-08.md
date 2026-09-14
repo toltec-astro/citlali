@@ -3946,3 +3946,58 @@ study, canonical integration, push or production disposition. Actual filter
 implementation remains a separately bounded work-order step. This small
 owner-record update receives exact-SHA read-only review; numerical/build gates
 are not repeated for unchanged executable source.
+
+### RTC complete line-transfer numerical assessment — 2026-09-14
+
+Work order TIMESTREAM-SUCCESSOR-RTC-LINE-TRANSFER-001 follows the owner's
+complete-response clarification and direction to proceed. The literal base is
+`4a7e7775d3d8350519d75b05a8b8dc0bdf017641`, tree
+`ab6e096073cd823b2cc3bb6d7c8c737af29bea67`; the fresh canonical ref is
+`86c20b31f7300ba4063be044380b61cd0baf25eb`. No integration or push is included.
+Effective engineering/successor/review governance is the accepted `06a3ade51...`
+package incorporated at `775078363...`, with the ledger's exact digests verified.
+The tier-2 preflight and preservation inventory are at
+`/private/tmp/citlali-rtc-line-transfer-2026-09-14/preflight.json`.
+
+Runtime RTC **Consider** gains an immutable numerical trial assessment consuming
+exact existing line/spectral/transient/VAL handles and an explicit attempt.
+The caller supplies exact stable biquad coefficients and causal or forward/reverse
+convention, an odd symmetric centered FIR, native cadence, trial factor and
+state/support identity. The component neither designs filters nor selects a
+factor. It records combined and separate response, native-bin transmitted power,
+actual mirrored folded destination, an incoherent folded-power proxy, propagated
+positive-excess regions and named-band signed residuals. Earlier background and
+spectral evidence stay unchanged. Original samples are not processed.
+
+An optional **hypothetical** array/speed domain reuses the accepted Airy model
+from the spike reference through one shared RTC-owned helper, preserving exact
+constants and arithmetic. The x-only summary reports sampled magnitude and
+complex-response error and whether this conditional optical support extends
+past native or output Nyquist. It does not confer AST speed/association authority
+or optical calibration on r. Both coordinates retain the same supplied response
+and their independent measurement availability. Unknown source protection stays
+unknown; neither a line descriptor nor disappearance under a hypothetical notch
+admits interference or authorizes shared treatment.
+
+Recovered authority is ADR 0020 and the v2 filter-bank owner authority, and
+SCI-RTC-REQ-021/030/061/069/073/074/077/129/130/140. This increment implements
+only the numerical assessment portion of their full-chain requirements. It is
+not a certified bank entry, accepted complete plan, or finite-record response
+qualification. An opaque state/support identity records the trial convention;
+it does not prove settling, padding, ringing or gap treatment. Sampled frequency
+errors are not continuous-band bounds; native PSDs cannot supply coherent alias
+cross terms. No noise denominator or 1% narrow-line allowance is invented from
+the separate accepted broadband budget.
+
+Engineering Learn/Consider/Apply is exercised in recovery, bounded implementation
+and conformance review. Separately, runtime Learn remains the accepted evidence
+producer, this component extends runtime Consider, and runtime Apply is unchanged.
+Future complete-plan selection can consume these measurements; each revised
+Apply must still restart on the original admitted pair. No route, outer-loop,
+filtering/decimation, background rewrite, source rule, map/PTC/CAL/AST work or
+production action is added. The affected-mode witness uses controlled tones and
+the unchanged Case E excerpt in its accepted reindexed test parent, not an
+operational scan binding or corpus-wide recovery claim. Local AppleClang 21
+arm64/C++20/Homebrew/cached-dependency gates are supplemental; Unity/Spack V2
+reproduction is not claimed and no Unity action is requested for this unrouted
+numerical increment. Exact source and documentation closure reviews follow.

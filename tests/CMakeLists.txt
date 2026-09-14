@@ -592,3 +592,16 @@ add_dependencies(check citlali_timestream_successor_rtc_line_power_test)
 gtest_discover_tests(citlali_timestream_successor_rtc_line_power_test
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     TEST_PREFIX "citlali::timestream_successor::rtc_line_power::" DISCOVERY_MODE PRE_TEST)
+
+add_executable(citlali_rtc_line_transfer_test EXCLUDE_FROM_ALL
+    test_timestream_rtc_line_transfer.cpp
+    timestream_rtc_line_transfer_header.cpp
+)
+set_source_files_properties(timestream_rtc_line_transfer_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+target_link_libraries(citlali_rtc_line_transfer_test PRIVATE citlali::citlali GTest::gtest_main)
+add_dependencies(check citlali_rtc_line_transfer_test)
+gtest_discover_tests(citlali_rtc_line_transfer_test
+    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+    TEST_PREFIX "citlali::"
+    DISCOVERY_MODE PRE_TEST
+)
