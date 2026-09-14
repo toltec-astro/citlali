@@ -135,6 +135,17 @@ def prepare(a):
                 beam="50m-unobscured-Airy-150GHz",
                 speed_ceiling_arcsec_per_sec=235,
                 measured_AST_maximum_arcsec_per_sec=221.40490828695155,
+                inclusive_minimum_speed_arcsec_per_sec=1.0,
+                raw_four_sample_speed_ceiling_arcsec_per_sec=(
+                    1.028993969962188
+                    * (299792458 / 150e9)
+                    / 50
+                    / (np.pi / (180 * 3600))
+                )
+                * (0.9999 / receipt["nominal_interval"])
+                / (4 * 2 * 1.05),
+                design_ceiling_is_not_final_occurrence_admission=True,
+                notch_has_finite_five_second_footprint=False,
                 speed_margin=0.05,
                 cadence_margin=0.0001,
                 optical_support_hz=optical,
@@ -200,6 +211,10 @@ def inject(a):
             ]
         idx = int(interior[np.argmax(speed)])
         centers += [("maxp0", idx, 0.0), ("maxp5", idx, 0.5)]
+        # The original fastest motion is an explicit excluded-domain control,
+        # not silently dropped from the experiment after support admission.
+        idx = int(np.nanargmax(g[:, 1]))
+        centers.append(("max-original-excluded", idx, 0.0))
         # A boundary challenge uses the first *input-admitted* row. Its lost
         # source support is reported, never hidden by selecting retained rows.
         guard = json.loads((run / "receipt.json").read_text())["trials"][1][

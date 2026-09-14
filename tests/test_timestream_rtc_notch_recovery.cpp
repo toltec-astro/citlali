@@ -11,7 +11,7 @@ struct Trial : Fixture {
   std::shared_ptr<const RtcLinePowerEvidence> lines;
   std::shared_ptr<const RtcLinePowerConsideration> joint;
   RtcNotchRecoveryDomain domain;
-  explicit Trial(const Input &in)
+  explicit Trial(const Input &in, double speed = 10)
       : Fixture(in, RtcSpikeProtection::unavailable) {
     auto support = RtcJumpSupportEvidence::learn(transition, 9);
     auto refit = RtcJumpRefitEvidence::learn(
@@ -39,7 +39,7 @@ struct Trial : Fixture {
                                                     20),
         21);
     auto times = Eigen::VectorXd::LinSpaced(5000, 999, 1098.98);
-    Eigen::VectorXd ra = (times.array() - 999) * 10 * std::numbers::pi /
+    Eigen::VectorXd ra = (times.array() - 999) * speed * std::numbers::pi /
                          (180 * 3600),
                     dec = Eigen::VectorXd::Zero(times.size());
     AstScanMotionSourceMetadata metadata{
@@ -278,6 +278,28 @@ TEST(rtc_notch_recovery,
   auto a = t.apply(t.plan(true));
   EXPECT_TRUE(a->output_native_rows().empty());
   EXPECT_EQ(a->causes()[500], RtcNotchRecoveryCause::boundary_guard);
+}
+
+TEST(rtc_notch_recovery,
+     inclusive_minimum_and_sampling_ceiling_use_existing_authority) {
+  EXPECT_FALSE(ast_scan_motion_speed_admitted(std::nextafter(1., 0.)));
+  EXPECT_TRUE(ast_scan_motion_speed_admitted(1.));
+  Input in(6000);
+  Trial slow(in, .5);
+  auto low = slow.apply(slow.plan());
+  EXPECT_TRUE(low->output_native_rows().empty());
+  EXPECT_EQ(low->causes()[3000], RtcNotchRecoveryCause::below_minimum_speed);
+  Trial fast(in, 150);
+  fast.domain.speed_ceiling_arcsec_per_sec = 235;
+  auto plan = fast.plan();
+  auto high = fast.apply(plan);
+  EXPECT_NEAR(plan->sampling_speed_limit_arcsec_per_sec(), 123.277762, 1e-5);
+  EXPECT_TRUE(high->output_native_rows().empty());
+  EXPECT_EQ(high->causes()[3000],
+            RtcNotchRecoveryCause::insufficient_output_sampling);
+  Trial ordinary(in);
+  EXPECT_TRUE(ordinary.plan()->finite_five_second_footprint());
+  EXPECT_FALSE(ordinary.plan(true)->finite_five_second_footprint());
 }
 
 } // namespace

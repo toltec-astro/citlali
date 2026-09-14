@@ -20,6 +20,10 @@ def measured_psd(values, mask, dt):
     no filling, no joining gaps. This is not a new original Learn product.
     """
     n = round(4 / dt)
+    if n % 2:
+        raise ValueError(
+            "bounded diagnostic requires the even FFT lengths used by this experiment"
+        )
     hop = n // 2
     w = np.hanning(n)
     norm = (1 / dt) * np.sum(w * w)
@@ -73,6 +77,26 @@ def overlap_seconds(time, dt, mask, intervals):
             0, np.minimum(hi, last / 1e6) - np.maximum(lo, first / 1e6)
         )[mask].sum()
     return float(total)
+
+
+def difference_covariance(values, mask):
+    """Actual output first-difference covariance; includes residual sky/lines.
+
+    A diagnostic of changed correlations, not a white-noise sensitivity claim.
+    No pair or lag is permitted to cross an excluded stretch.
+    """
+    parts = [np.diff(values[lo:hi]) for lo, hi in runs(mask) if hi - lo > 5]
+    count = sum(len(p) for p in parts)
+    if not count:
+        return None
+    mean = sum(p.sum() for p in parts) / count
+    return [
+        float(
+            sum(np.dot(p[: len(p) - lag] - mean, p[lag:] - mean) for p in parts)
+            / sum(len(p) - lag for p in parts)
+        )
+        for lag in range(5)
+    ]
 
 
 def source_metrics(delta, source, time, rows, center):
@@ -182,7 +206,8 @@ def analyze(a):
             metrics["cost"][k] = dict(
                 causes_seconds=durations,
                 retained_native_seconds=duration,
-                incremental_recovery_beyond_screening_seconds=duration,
+                candidate_retained_beyond_screening_seconds=duration,
+                scientifically_qualified_recovery=False,
                 conditional_recovery_after_direct_seconds=max(
                     0, duration - direct_overlap
                 ),
@@ -221,6 +246,24 @@ def analyze(a):
                     for k, p in [("lowpass", lpout), ("notch", notchout)]
                 },
                 actual_common_native_seconds=float(common.sum() * dt),
+                predicted_whole_original_support={
+                    k: float(
+                        np.fromfile(root / f"{k}-predicted.f64", "<f8")
+                        .reshape(2, pr["bins"], 5)[c][
+                            abs(np.fft.rfftfreq(pr["fft_samples"], mdt) - center)
+                            <= 0.75,
+                            4,
+                        ]
+                        .sum()
+                    )
+                    for k in ("lowpass", "notch")
+                },
+                output_first_difference_covariance={
+                    k: difference_covariance(output[k][::2, c], native_common)
+                    for k in ("lowpass", "notch")
+                },
+                covariance_lag_seconds=2 * mdt,
+                prediction_support="whole original accepted spectrum; bin-center steady-state proxy; finite measured comparison uses common retained support",
                 native_windows=support,
                 output_windows=outsupport,
             )

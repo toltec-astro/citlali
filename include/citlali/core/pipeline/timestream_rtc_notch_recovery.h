@@ -27,7 +27,9 @@ enum class RtcNotchRecoveryCause : std::uint8_t {
   motion_unavailable,
   motion_outside_domain,
   boundary_guard,
-  rejection
+  rejection,
+  below_minimum_speed,
+  insufficient_output_sampling
 };
 
 // Consider freezes one complete *experimental* sequence: existing transient
@@ -96,7 +98,7 @@ public:
             (1 - domain.cadence_margin_fraction))
       throw std::invalid_argument(
           "RTC recovery output cadence cannot contain its optical domain");
-    long double dc = 0;
+    double dc = 0;
     for (double h : s.centered_lowpass)
       dc += h;
     if (std::abs(dc - 1) > 1e-12)
@@ -106,6 +108,11 @@ public:
     out->transients_ = std::move(transients);
     out->domain_ = std::move(domain);
     out->id_ = id;
+    out->sampling_speed_limit_ =
+        optical.airy_fwhm_arcsec *
+        ((1 - out->domain_.cadence_margin_fraction) /
+         out->domain_.nominal_interval_seconds) /
+        (4 * s.factor * (1 + out->domain_.speed_margin_fraction));
     out->first_ = axis.first_native_row();
     out->causes_.resize(axis.occurrence_count(),
                         RtcNotchRecoveryCause::retained);
@@ -135,6 +142,10 @@ public:
               RtcNotchRecoveryCause::retained) { /* retain the upstream cause */
           } else if (!v)
             cause = RtcNotchRecoveryCause::motion_unavailable;
+          else if (!ast_scan_motion_speed_admitted(*v))
+            cause = RtcNotchRecoveryCause::below_minimum_speed;
+          else if (*v > out->sampling_speed_limit_)
+            cause = RtcNotchRecoveryCause::insufficient_output_sampling;
           else if (*v * (1 + d.speed_margin_fraction) >
                    d.speed_ceiling_arcsec_per_sec)
             cause = RtcNotchRecoveryCause::motion_outside_domain;
@@ -174,6 +185,16 @@ public:
   const auto &input_causes() const noexcept { return causes_; }
   auto first_native_row() const noexcept { return first_; }
   auto consideration() const noexcept { return id_; }
+  double sampling_speed_limit_arcsec_per_sec() const noexcept {
+    return sampling_speed_limit_;
+  }
+  // The unchanged experimental IIR has whole-run dependence. A finite
+  // endpoint guard is not proof of a five-second finite source footprint.
+  bool finite_five_second_footprint() const noexcept {
+    const auto &s = assessment_->candidate_handle()->specification();
+    return s.notches.empty() &&
+           (s.centered_lowpass.size() / 2) * s.input_interval_seconds <= 5.;
+  }
   static constexpr bool production_authorized = false;
 
 private:
@@ -185,6 +206,7 @@ private:
   std::vector<RtcEventRange> runs_;
   TimestreamNativeRow first_ = 0;
   std::uint64_t id_ = 0;
+  double sampling_speed_limit_ = NAN;
 };
 
 // A named diagnostic overlay; it never masquerades as original measurements.
@@ -273,10 +295,9 @@ public:
           out->causes_[local] = RtcNotchRecoveryCause::boundary_guard;
         else {
           for (int c = 0; c < 2; ++c) {
-            long double v = 0;
+            double v = 0;
             for (std::size_t j = 0; j < s.centered_lowpass.size(); ++j)
-              v += static_cast<long double>(s.centered_lowpass[j]) *
-                   values(i + j - half, c);
+              v = std::fma(s.centered_lowpass[j], values(i + j - half, c), v);
             out->filtered_(local, c) = static_cast<double>(v);
             if (!std::isfinite(out->filtered_(local, c)))
               throw std::overflow_error("RTC recovery FIR arithmetic failed");

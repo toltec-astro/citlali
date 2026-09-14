@@ -226,6 +226,17 @@ int main(int argc, char **argv) {
         load_telescope(checked("telescope"), parent->scope());
     auto ast =
         build_ast_scan_motion_product(telescope.source, ast_identity_binding);
+    const auto accepted_ast =
+        YAML::LoadFile(checked("ast_acceptance").string());
+    require(
+        accepted_ast["source_revision"].as<std::string>() ==
+                "adbc013e2d4287fb5a32db8bc7f2b0112c1c88d7" &&
+            accepted_ast["authority_policy_id"].as<std::string>() ==
+                std::string(ast_scan_motion_policy_id) &&
+            accepted_ast["observation"].as<int>() == obs &&
+            accepted_ast["telescope"]["sha256"].as<std::string>() ==
+                telescope.sha256,
+        "AST acceptance reference disagrees with exact telescope/policy/scope");
     auto motion = AstScanMotionNetworkView::admit(ast, timing);
     fs::create_directories(output);
     std::ofstream geometry(output / "geometry.f64", std::ios::binary);
@@ -295,6 +306,19 @@ int main(int argc, char **argv) {
       auto candidate = RtcLineTransferCandidate::bind(lines, nw, 0, s);
       auto assessment =
           RtcLineTransferAssessment::consider(candidate, joint, val, 22);
+      std::ofstream prediction(output / (s.identity + "-predicted.f64"),
+                               std::ios::binary);
+      for (const auto &c : assessment->coordinates()) {
+        require(c.available(), "original spectral prediction unavailable");
+        for (const auto &bin : c.bins) {
+          const std::array<double, 5> row{
+              bin.input_hz, bin.folded_output_hz, bin.input_power,
+              bin.lowpass_only_power, bin.combined_power};
+          prediction.write(reinterpret_cast<const char *>(row.data()), 40);
+        }
+      }
+      prediction.close();
+      require(bool(prediction), "prediction export failed");
       RtcNotchRecoveryDomain domain;
       domain.identity = "152390-a2000-235arcsec-s-experiment-only";
       domain.detector_array_association =
@@ -353,6 +377,20 @@ int main(int argc, char **argv) {
       frozen["FIR"] = s.centered_lowpass;
       frozen["notch_guard_each_end"] = guard;
       frozen["reject"] = domain.reject;
+      frozen["minimum_speed_arcsec_per_sec"] = 1.;
+      frozen["sampling_speed_limit_arcsec_per_sec"] =
+          plan->sampling_speed_limit_arcsec_per_sec();
+      frozen["finite_five_second_footprint"] =
+          plan->finite_five_second_footprint();
+      frozen["production_eligible"] = false;
+      frozen["notch_footprint"] = s.notches.empty()
+                                      ? "none"
+                                      : "whole named admissible run; guard is "
+                                        "not exact finite footprint";
+      frozen["cumulative_guard_seconds"] =
+          (guard + s.centered_lowpass.size() / 2) * s.input_interval_seconds;
+      frozen["FIR_arithmetic"] =
+          "binary64 increasing-source-occurrence std::fma; no reassociation";
       frozen["plan_seconds"] =
           std::chrono::duration<double>(apply_started - plan_started).count();
       frozen["Apply_seconds"] =
