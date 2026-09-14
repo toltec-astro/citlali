@@ -1,40 +1,78 @@
 # Citlali Refactor Status
 
-## Bounded real-data spectral/transient audit active — 2026-09-14
+## Bounded real-data spectral/transient audit completed — 2026-09-14
 
-The owner authorized RTC-REAL-DATA-AUDIT-001 before background-estimator improvement
-or notch treatment. This inert audit starts from pushed line-power closure
-`4c066f1e771b904ae78ed030c232f055dbc8dd16` on
-`codex/rtc-real-data-audit-001`, worktree `/private/tmp/citlali-rtc-real-data-audit-001`.
-Read-only live-ref verification found canonical
-`86c20b31f7300ba4063be044380b61cd0baf25eb`; no integration occurs.
+Owner-authorized RTC-REAL-DATA-AUDIT-001 completes the fixed 143-file,
+13-observation native audit before background improvement or notch development.
+Branch `codex/rtc-real-data-audit-001`, worktree
+`/private/tmp/citlali-rtc-real-data-audit-001`, retains literal pushed line-power
+base `4c066f1e771b904ae78ed030c232f055dbc8dd16`. Fresh read-only GitHub checks
+still find canonical `86c20b31f7300ba4063be044380b61cd0baf25eb`, the same pushed
+base, and no remote audit branch. No ancestry integration or push occurs.
 
-The fixed population is the prior 143-file, 13-observation native corpus. Exact
-raw/Tune/compact-APT inputs and detector occurrences join the preserved transient
-census. Runtime original-native spectral Learn and accepted +/-1/2/4 Hz line
-measurements are reused unchanged. Original x/r and initial VAL remain immutable;
-source status remains explicitly unknown. Audit-only stored-window replay checks
-its pooled result against the runtime PSD before exporting temporal descriptors.
-The four-ULP epoch arithmetic envelope is a conditional numerical audit binding,
-not operational cadence or physical-timing qualification. No background estimator,
-filter, notch, new exclusion, runtime Consider/Apply decision, or route is changed.
+All 143 exact raw/Tune/compact-APT bindings pass: 71,734 detector-observation
+occurrences, 70,024 initially eligible pairs, 140,048 available x/r spectra.
+Original values, initial VAL and accepted spectral/transient machinery are
+unchanged. All 17,160,988 exported coordinate-window records replay to their
+pooled accepted PSD with zero discrepancy. The 155 inventory entries lacking
+exact prerequisites remain deferred. Source status remains unknown and retained;
+the four-ULP clock envelope qualifies numerical audit arithmetic only.
 
-Before spectral scores, two hash-selected channels per network/observation were
-recorded for independent inspections, plus earlier A–F examples. Exploratory
-classifications and rejection-cost scenarios remain outside production flags.
-Actual native-to-PCA scan associations are unavailable in this corpus; scan costs
-use explicitly conditional 5/10/20-second cells and two phases. Observation costs
-use actual native exposure. Per-array static inverse-square APT sensitivity costs
-are estimates with finite-positive, APT-quality coverage, not measured PCA/map
-performance. Source-bound transient admission remains unavailable; known noise
-screening and conditional measured transient support are reported separately.
+The explicit exploratory x10 screen selects 37,779 occurrences (53.95%); 28,761
+(76.13% of that group) meet the disjoint-window relative-power recurrence rule.
+Leading families near 11.01, 29.77, 47.78 and 52.78 Hz recur across all 13
+observations. Conditional whole-observation rejection costs 63.04%, 75.91%,
+26.77% of baseline detector-time at 1100/1400/2000 microns respectively; static
+APT-weighted RMS multipliers are 1.608/2.348/1.199. Ten-second native-cell costs
+remain almost as high. These cells are hypothetical scan models; actual
+native-to-PCA scan bindings are unavailable. Sensitivity is a per-array,
+APT-good finite-positive inverse-square proxy with explicit coverage, not a
+measurement of PCA or map performance.
 
-Pilot verification passes for short 152418/network 5 and long 152390/network 5:
-unchanged original pair fingerprints, exact prior input bindings, and zero scaled
-error replaying accepted windows. Full-corpus measurement, accounting, inspection,
-and independent exact-SHA source/closure review are pending. Evidence preflight:
-`/private/tmp/citlali-rtc-real-data-audit-2026-09-14/preflight.json`.
-The user controls pushes. No Unity or production work is authorized by this audit.
+Only about 0.1284--0.1285% of x10-active time overlaps prior measured direct
+transient support. Noise-screening-required exclusions form the known baseline;
+source-bound accepted corpus transient Apply is unavailable, so measured
+support overlap is not a claim about full accepted exclusion replay. Nine x10
+recurrence targets are unavailable; all activity-dependent support, overlap,
+exposure and sensitivity costs carry lower/upper bounds rather than zero fills.
+
+286 channels were selected independently of ranking before measurement; all
+39 fixed contacts and the full atlas were inspected, with earlier A--F and
+ranked supplements separately labeled. Broad humps expose limitations of the
+narrow-line descriptors. A report-only stored-band-power check selects 78
+illustrative occurrences and explicitly misses an inspected 30--36 Hz hump;
+it is not a total broad-hump census, estimator change or production classifier.
+The 17 previously identified detector-health concerns are cheap to reject in
+this corpus, but do not establish overall unhealthy-detector prevalence.
+Recommendation: prioritize source-preserving recovery assessment for recurring
+isolated narrow families, then related multi-line cases. Retain broad examples;
+no blanket background rewrite or general broad-spectrum salvage is justified by
+this audit. No production flags or recovery treatment are selected.
+
+Measurement source `c155e638c1ca0243689d6859ca87ba628e2ee26a`; final Python
+analysis/plot source `35507be810f676966056044ee9409425c85ff211`, tree
+`aa9b776ac47ee92a527aea386564161d864cfda7`. Driver/runner/CMake are identical
+between them; measurement receipts are not relabeled as Python repair builds.
+Independent exact-source review passes with recorded limitations and no remaining
+findings. CLI/safety builds, 1094/1094 runnable CTests (1095 registered; one
+unchanged disabled), four config modes, 207 baseline tests plus 137 subtests,
+ten focused tests and 39 reused-accounting tests pass locally. Failed/pilot
+attempts remain preserved. All 44 scientific headers, both previous Python
+estimators, governance and prior sealed evidence are unchanged. Actual
+AppleClang 21 arm64/Homebrew/cached results are supplemental local evidence.
+
+Evidence/report: `/private/tmp/citlali-rtc-real-data-audit-2026-09-14/REPORT.md`.
+Audit seal SHA256:
+`6b631e36bb1532c7bf21c3eb51a2395acd7f30de20495f31ba13861321fa286b`.
+Source-review SHA256:
+`68e9428ade864eab53a9cc865643604880c9c64a9a5feee9d0ce339a9a581d04`.
+This documentation-only closure receives its own fresh independent exact-SHA
+review, including the final report and post-inspection band-power arithmetic.
+The existing RTC handoff records details. The user controls acceptance/push;
+eventual canonical admission requires fresh moving-base checks and independent
+exact integration-SHA review. No runtime Consider/Apply decision, notch,
+filtering/downsampling, outer loop, PTC/AST/CAL/MAP, Unity or production work
+is implemented or activated here.
 
 
 ## RTC line-power measurement reviewed component closure — 2026-09-14

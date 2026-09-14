@@ -3742,3 +3742,151 @@ governance digests, independent selection and preservation manifest are in
 `/private/tmp/citlali-rtc-real-data-audit-2026-09-14/preflight.json` and selection.json.
 Status records the retained limitations and pilot results. Full-corpus closure and
 independent exact-SHA review will follow; no earlier acceptance is overwritten.
+
+### RTC-REAL-DATA-AUDIT-001 completed evidence and recommendation — 2026-09-14
+
+This entry completes the preflight above without superseding prior accepted D2,
+VAL, transient, donor or spectral/line-power work. It records an inert audit;
+exploratory groupings are not production flags or owner-approved thresholds.
+The source branch is `codex/rtc-real-data-audit-001` in
+`/private/tmp/citlali-rtc-real-data-audit-001`. Literal base remains pushed
+`4c066f1e771b904ae78ed030c232f055dbc8dd16`. Fresh read-only live checks at closure
+find canonical `86c20b31f7300ba4063be044380b61cd0baf25eb`, the same published
+line-power base, and no audit branch remotely. No integration, push or activation
+occurs; future canonical admission needs moving-base ancestry reconciliation and
+fresh independent review of the exact integration SHA.
+
+**Exact evidence and verification.** Measurement source
+`c155e638c1ca0243689d6859ca87ba628e2ee26a`, tree
+`f4d8139dd7ea9855ff1e55a2004ec254227f5d14`; executable SHA256
+`fb95bd812ccbac7ac00e252cf88bb6cee5a81073d011300d47c8ac35eb43df01`.
+Final analysis/plot source `35507be810f676966056044ee9409425c85ff211`, tree
+`aa9b776ac47ee92a527aea386564161d864cfda7`. The intervening Python repairs leave
+the C++ driver, runner and CMake unchanged. Exact original input/initial-VAL
+receipts retain the measurement source, not the later analysis SHA.
+
+The first independent source review found unavailable recurrence implicitly
+counted as zero cost. `be854a2624d42bc7f0a04801c50f11fd430b02e4` repaired main
+cost bounds; final `35507be81` propagates bounds through all secondary overlap,
+after-direct, APT-good and sensitivity accounting too. Fresh exact-source review
+passes all three axes with recorded limitations and no remaining findings. Initial
+reviews and attempts remain preserved. Current independent source report SHA256
+is `68e9428ade864eab53a9cc865643604880c9c64a9a5feee9d0ce339a9a581d04`.
+
+143/143 exact raw/Tune/compact-APT network inputs pass, covering 13 observations
+and 11 networks, 71,734 detector-observation occurrences, 70,024 eligible pairs,
+140,048 available x/r spectra and 17,160,988 coordinate-window records. Initial
+eligible time is 17,216,191.725568 detector-seconds; known noise-screening baseline
+leaves 17,208,701.747200. All original-pair before/after fingerprints match; raw,
+Tune and APT SHA bindings are exact. Window replay discrepancy is zero throughout.
+Actual FFT length is 488 at interval 0.008192062377929688 seconds. Numerical
+four-ULP epoch arithmetic qualification is an audit binding, not cadence policy.
+The 155 other inventory entries remain deferred for missing prerequisites.
+
+Ten focused Python tests, 39 reused-accounting tests, CLI/safety builds,
+1094 runnable CTests (1095 registered; same disabled lifecycle test), all four
+configuration modes, 207 baseline tests plus 137 subtests pass. The initial
+baseline attempt failed on a missing worktree build path; rerun passed after the
+task-created symlink attached the completed local build. Only that symlink was
+removed after verification; the evidence build remains. All 44 scientific
+headers, both previous Python estimators, effective governance, nine dependency
+patches and sealed prior evidence remain unchanged. Results are actual local
+AppleClang 21 arm64 C++20/Homebrew/cached evidence, not Unity/Spack or production.
+Summed invocation duration is 1893.943756 seconds over two workers, not elapsed
+campaign wall time; largest process RSS is 5,487,378,432 bytes. Duplicate FFT
+replay/export contributes about 641 seconds; this is not production RTC overhead.
+
+**Census, recurrence and independent inspection.** The explicit audit x10 screen
+requires a complete positive excess region at >=2 Hz, <=2 Hz width, contrast >=10,
+and >=10% of total stored PSD power under the accepted +/-2 Hz background profile.
+It selects 37,779/70,024 occurrences (53.95%); x20/x30 select 19,729/11,730.
+Either-coordinate 10/20/30 screens select 45,135/29,126/20,546 without pooling x/r
+powers. These are diagnostic thresholds, not admitted interference fractions or
+an optical-safe band. 28,761 x10 occurrences (76.13%) meet the descriptive
+recurrence rule: at least three native-disjoint accepted windows and target
+three-bin raw power >=10% of window total in >=60% of those windows. A changing
+relative fraction is not necessarily appearance/disappearance of a physical line.
+Nine x10 targets lack temporal exports; unknown activity has explicit lower/upper
+support and cost bounds. Observation scenarios are exact for their hypothetical
+selector; time-dependent scenarios remain bounded estimates.
+
+Leading x10 families are 11.01 Hz (19,358 occurrences), 29.77 Hz (8,357),
+47.78 Hz (3,649), 52.78 Hz (2,295), each represented in all 13 observations.
+The 11-Hz family spans all networks; 47.78 Hz concentrates in network 9 and
+52.78 Hz in network 8. Frequency-family recurrence is not permanent physical
+cross-observation detector identity. Long 152390/152392 contribute 80.6% of
+selected exposure, so duration concentration must not be read as a handful of
+bad detectors. Multi-line x descriptors select 19,552 occurrences, mostly also
+x10; the machine `broad_or_crowded_review` field is not a broad-hump census.
+
+Two SHA-selected channels per input were frozen before ranking: 286 independent
+draws, 278 eligible, 237 APT-good. The full atlas and 39 fixed contacts across
+networks 0/7/11 were inspected, alongside separately marked A--F and 12 ranked
+supplements. Fixed examples expose a 15--30 Hz shoulder at 152387/11/431 and a
+30--36 Hz hump at 152432/11/112; the local median follows broad features.
+The final report includes a post-inspection check using only already stored
+[2,10), [10,30), [30,Nyquist] powers. Middle/high band mean density >=2 times
+both others, >=40% total power, and no >=2-Hz-centered three-bin group carrying
+>=15% selects 78 occurrences. Thirty also meet x10; nine meet the analogous
+recurrence rule. It misses the inspected 30--36 Hz hump, whose top-three-bin
+fraction is 21.2%. Therefore 78 is explicitly not total broad-hump prevalence.
+The report-only script/output/initial attempt/four analytical controls are sealed
+and included in independent closure review; no new background estimate is made.
+
+**Transient overlap and cost.** X10 active support covers
+8,645,749.784576--8,646,323.527680 detector-seconds, with
+11,106.123776--11,108.614144 seconds overlapping prior measured direct transient
+support (about 0.1284--0.1285%). Known noise-required overlap is 2,607.005696
+seconds (about 0.0302%); candidate-inclusive overlap about 0.156%. Case F can
+individually overlap heavily. Source-bound accepted corpus Apply is unavailable;
+these measured-support comparisons must not be called full accepted exclusion
+replay. Known noise-required exclusions are the main baseline; after-direct
+conditional incremental cost is also exported with explicit bounds.
+
+X10 whole-observation rejection costs, at 1100/1400/2000 microns, are respectively
+63.04/75.91/26.77% additional detector-time with static APT-weighted RMS factors
+1.608/2.348/1.199. Ten-second native-cell rejection costs roughly
+61.00/74.89/25.93%, factors 1.574/2.279/1.190. Across 5/10/20-second durations
+and two phases, time costs remain 58.34--62.15%, 72.92--75.61%, 24.02--26.64%.
+Cells are hypothetical, not actual native-to-PCA scan bindings or shortened
+physical scans. Weighted information is per-array sum(t/sens^2), using positive
+finite sens and APT flag=flag2=0; exposure coverage is 87.8/79.7/87.9%. It is a
+fixed independent-noise proxy, not measured PCA/correlation/map sensitivity.
+All six thresholds/either-coordinate and 144 per-array cost records are retained.
+
+Whole-observation rejection of the 17 prior detector-health-review occurrences
+costs only 0.0071%/0.0371%/0% detector-time by array; largest modeled RMS increase
+is below 0.0022%. This identified severe subset is inexpensive to exclude; it is
+not a census of all bad detectors. The illustrative 78 broad/distributed cases
+also have small specified-scenario costs, but incomplete classification prevents
+generalizing that result to all broad-spectrum problems.
+
+**Recommendation and runtime boundary.** Prioritize bounded source-preserving
+recovery assessment for recurring isolated narrow families, starting with about
+11 Hz and then related multi-line cases. Reuse settled beam/motion/source
+protection and complete-plan requirements; the 2-Hz audit boundary supplies no
+admission authority. Preserve slow/source structure. Severe steps/pulse trains
+belong with transient and detector-health disposition; sophisticated salvage of
+the identified cheap-to-reject subset is lower priority. Keep the independently
+found broad examples for a later targeted benefit decision, without starting a
+general background rewrite or broad-spectrum recovery program now. A filtered
+feature's disappearance would be treatment evidence, not proof of its cause.
+
+Runtime Learn is reused to produce original-native transient/spectral evidence;
+accepted line and joint consideration connections remain intact. Audit exports
+and Python costs do not issue runtime Consider decisions or Apply plans. Later
+native conditioned evidence may be explicitly bound to stage/attempt/VAL and
+replacement history, while every revised complete Apply still restarts from
+original admitted x/r. Following the engineering workflow during this audit does
+not count as implementing that runtime iteration. No new flags, source policy,
+notch/filter/downsample, full loop, PTC/AST/CAL/MAP, Unity or production action.
+
+The complete report is
+`/private/tmp/citlali-rtc-real-data-audit-2026-09-14/REPORT.md`; final summary,
+per-detector records, native window exports, plots, exact bindings and prior
+preservation checks reside beside it. `AUDIT_SHA256SUMS` covers 1,899 files and
+has SHA256 `6b631e36bb1532c7bf21c3eb51a2395acd7f30de20495f31ba13861321fa286b`.
+The docs-only closure receives fresh independent exact-SHA review including the
+final narrative and post-inspection arithmetic; its separate closure binding/seal
+records the result without relabeling source gates. Owner acceptance and push
+remain separate from this locally completed audit.
