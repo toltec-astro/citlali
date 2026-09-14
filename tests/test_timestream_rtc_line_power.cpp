@@ -168,10 +168,27 @@ std::vector<WindowAudit> audit(const Trial &t) {
             average[k]+=a.psd[k]/s.windows.size();
             if(N%2&&k+1==a.psd.size())a.odd_endpoint_deficit=base/(N*n.interval_seconds);
         }
-        EXPECT_NEAR(a.stored_power+a.odd_endpoint_deficit,a.second_moment,2e-11*std::max(1.,a.second_moment));result.push_back(std::move(a));
+        EXPECT_NEAR(a.stored_power+a.odd_endpoint_deficit,a.second_moment,
+            2e-11*std::max(std::numeric_limits<double>::min(),a.second_moment));result.push_back(std::move(a));
     }
-    for(std::size_t k=0;k<average.size();++k)EXPECT_NEAR(average[k],s.psd[k],2e-11*std::max(1.,s.psd[k]));
+    const double spectral_scale=std::max(std::numeric_limits<double>::min(),*std::max_element(s.psd.begin(),s.psd.end()));
+    for(std::size_t k=0;k<average.size();++k)EXPECT_NEAR(average[k],s.psd[k],2e-11*spectral_scale);
     return result;
+}
+TEST(rtc_line_power, low_amplitude_complete_and_gap_padded_audits_preserve_power_scaling) {
+    for(bool gaps:{false,true}){
+        auto in=noise(241,882);tone(in,3);if(gaps)gap_and_padding(in);
+        Trial full(in);auto expected=full.learn();
+        in.x*=1e-6;in.r*=1e-6;Trial scaled(in);auto actual=scaled.learn();
+        ASSERT_FALSE(audit(scaled).empty());
+        const auto &reference=full.spectral->spectrum(0,0,X).psd;
+        const auto &small=scaled.spectral->spectrum(0,0,X).psd;
+        ASSERT_EQ(reference.size(),small.size());
+        const double peak=*std::max_element(reference.begin(),reference.end());
+        for(std::size_t k=0;k<reference.size();++k)EXPECT_NEAR(small[k]/1e-12,reference[k],2e-11*peak);
+        EXPECT_NEAR(actual->coordinate(0,0,X).total_stored_psd_power/1e-12,
+            expected->coordinate(0,0,X).total_stored_psd_power,2e-11*expected->coordinate(0,0,X).total_stored_psd_power);
+    }
 }
 TEST(rtc_line_power, even_odd_and_padded_power_matches_actual_windowed_moment_with_inherited_deficit) {
     for(int kind=0;kind<3;++kind){auto in=kind==1?zero(141,4./33):noise(241,992);

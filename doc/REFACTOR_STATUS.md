@@ -35,7 +35,7 @@ The accepted PSD and all prior scientific headers remain unchanged.
 
 The bounded candidate now implements immutable positive-excess descriptors in
 runtime Learn and per-coordinate diagnostic ranking bound to the existing joint
-spectral/transient Consider. Fourteen focused tests pass, including 576 null,
+spectral/transient Consider. Fifteen focused tests cover, including 576 null,
 288 injection, six transient and three retained Case E profile evaluations.
 These are profile evaluations, not independent realizations: there are 32 null
 seeds per background/support pair and eight paired seeds per injected shape.

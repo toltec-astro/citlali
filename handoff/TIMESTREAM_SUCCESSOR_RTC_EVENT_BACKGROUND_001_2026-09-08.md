@@ -3605,7 +3605,7 @@ recovery, not merely whether they reproduce their formulas.
 ### Initial implementation and measurement reassessment
 
 Runtime evidence is implemented in `timestream_rtc_line_power.h`, with one isolated
-header compilation unit, 14 focused tests and a validation-only CSV analysis script.
+header compilation unit, 15 focused tests and a validation-only CSV analysis script.
 All 42 prior scientific headers and both Python estimator sources remain unchanged.
 The existing source/VAL/support and native intermediate identity boundaries remain
 owned by the accepted spectral product. No parallel estimator or application route
@@ -3662,3 +3662,17 @@ or notch-benefit prediction. Keep them as joint RTC evidence. A later owner-appr
 increment must address continuum/crowding and time-resolved credibility before any
 notch decision; the current result does not choose those scientific rules. No
 post-PCA work or expanded validation program is authorized by this reassessment.
+
+### Exact-source review repair: low-amplitude audit coverage
+
+Independent review of `d83061b1256454bc8f92ce851a305472d9c308c2` identified a minor
+validation defect: `max(1, scale)` gave tiny real-data PSDs an absolute audit
+allowance larger than the whole signal. Current values agreed independently,
+but the regression gate could have passed an incorrect low-amplitude result.
+The bounded repair scales Parseval tolerance to the actual window second moment
+and PSD tolerance to the actual peak PSD, with a minimum-positive numeric floor.
+An explicit 1e-6-amplitude/1e-12-power regression covers complete and gap/padded
+support. This changes tests only; the scientific implementation is unchanged.
+The initial source passed 1093 runnable tests; the repaired source must receive
+its own focused/full gates, source/executable bindings and exact-SHA review.
+Initial source evidence is preserved under the evidence root's `initial-source`.
