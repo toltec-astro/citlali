@@ -1,5 +1,42 @@
 # Citlali Refactor Status
 
+## Bounded real-data spectral/transient audit active — 2026-09-14
+
+The owner authorized RTC-REAL-DATA-AUDIT-001 before background-estimator improvement
+or notch treatment. This inert audit starts from pushed line-power closure
+`4c066f1e771b904ae78ed030c232f055dbc8dd16` on
+`codex/rtc-real-data-audit-001`, worktree `/private/tmp/citlali-rtc-real-data-audit-001`.
+Read-only live-ref verification found canonical
+`86c20b31f7300ba4063be044380b61cd0baf25eb`; no integration occurs.
+
+The fixed population is the prior 143-file, 13-observation native corpus. Exact
+raw/Tune/compact-APT inputs and detector occurrences join the preserved transient
+census. Runtime original-native spectral Learn and accepted +/-1/2/4 Hz line
+measurements are reused unchanged. Original x/r and initial VAL remain immutable;
+source status remains explicitly unknown. Audit-only stored-window replay checks
+its pooled result against the runtime PSD before exporting temporal descriptors.
+The four-ULP epoch arithmetic envelope is a conditional numerical audit binding,
+not operational cadence or physical-timing qualification. No background estimator,
+filter, notch, new exclusion, runtime Consider/Apply decision, or route is changed.
+
+Before spectral scores, two hash-selected channels per network/observation were
+recorded for independent inspections, plus earlier A–F examples. Exploratory
+classifications and rejection-cost scenarios remain outside production flags.
+Actual native-to-PCA scan associations are unavailable in this corpus; scan costs
+use explicitly conditional 5/10/20-second cells and two phases. Observation costs
+use actual native exposure. Per-array static inverse-square APT sensitivity costs
+are estimates with finite-positive, APT-quality coverage, not measured PCA/map
+performance. Source-bound transient admission remains unavailable; known noise
+screening and conditional measured transient support are reported separately.
+
+Pilot verification passes for short 152418/network 5 and long 152390/network 5:
+unchanged original pair fingerprints, exact prior input bindings, and zero scaled
+error replaying accepted windows. Full-corpus measurement, accounting, inspection,
+and independent exact-SHA source/closure review are pending. Evidence preflight:
+`/private/tmp/citlali-rtc-real-data-audit-2026-09-14/preflight.json`.
+The user controls pushes. No Unity or production work is authorized by this audit.
+
+
 ## RTC line-power measurement reviewed component closure — 2026-09-14
 
 Owner-approved TIMESTREAM-SUCCESSOR-RTC-LINE-POWER-001 is implemented and locally

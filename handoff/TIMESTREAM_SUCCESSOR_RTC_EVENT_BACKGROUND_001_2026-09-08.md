@@ -3728,3 +3728,17 @@ compiled/tested-source identity rather than claiming a new build. The next
 scientific discussion is measurement adequacy in joint RTC Consider, especially
 continuum/crowded features and time-resolved credibility before notch admission;
 post-PCA remains an evidence-triggered possibility, outside this increment.
+
+
+### RTC-REAL-DATA-AUDIT-001 owner direction and preflight — 2026-09-14
+
+The owner requests a bounded real-data audit using accepted spectral and transient
+machinery before background improvements or notch development. Measure spectral
+pathologies, concentration/recurrence, transient overlap and conditional detector-
+scan/observation rejection costs; include inspections independent of rankings and
+recommend which classes merit recovery. This is an inert evidence work order,
+not a new runtime module or production scientific policy. Exact base, input,
+governance digests, independent selection and preservation manifest are in
+`/private/tmp/citlali-rtc-real-data-audit-2026-09-14/preflight.json` and selection.json.
+Status records the retained limitations and pilot results. Full-corpus closure and
+independent exact-SHA review will follow; no earlier acceptance is overwritten.
