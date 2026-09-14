@@ -595,3 +595,39 @@ TEST(rtc_line_transfer,
       std::isnan(unavailable->coordinates()[0].incoherent_folded_power_proxy));
 }
 } // namespace
+
+namespace {
+TEST(rtc_line_transfer, rounded_native_nyquist_uses_exact_fft_membership) {
+  const double dt = 1. / 100.376;
+  Input in(2048, dt);
+  for (std::size_t i = 0; i < in.times.size(); ++i)
+    in.times[i] = i * dt;
+  Trial t(in);
+  const auto &n = t.spectral->network(0);
+  ASSERT_TRUE(t.lines->coordinate(0, 0, X).available());
+  ASSERT_EQ(n.fft_samples, 402);
+  // This real Learn grid exercises independently rounded endpoint arithmetic.
+  ASSERT_GT(n.frequency_hz.back(), .5 / n.interval_seconds);
+  auto s = spec(1);
+  s.input_interval_seconds = n.interval_seconds;
+  s.centered_lowpass = {1};
+  auto a = t.assess(s);
+  for (const auto &c : a->coordinates()) {
+    ASSERT_TRUE(c.available());
+    EXPECT_DOUBLE_EQ(c.incoherent_folded_power_proxy, 0);
+    for (const auto &b : c.bins) {
+      EXPECT_FALSE(b.above_output_nyquist);
+      EXPECT_DOUBLE_EQ(b.input_hz, b.folded_output_hz);
+      EXPECT_DOUBLE_EQ(b.input_power, b.combined_power);
+    }
+  }
+  // Arbitrary caller queries retain their strict declared native domain.
+  EXPECT_THROW(t.candidate(s)->combined_response(n.frequency_hz.back()),
+               std::invalid_argument);
+  s.factor = 3;
+  a = t.assess(s);
+  ASSERT_TRUE(a->coordinates()[0].available());
+  EXPECT_FALSE(a->coordinates()[0].bins[67].above_output_nyquist);
+  EXPECT_TRUE(a->coordinates()[0].bins[68].above_output_nyquist);
+}
+} // namespace

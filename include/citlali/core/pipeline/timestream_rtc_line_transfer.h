@@ -122,9 +122,9 @@ inline bool finite(std::complex<double> z) {
 }
 inline std::pair<std::complex<double>, std::complex<double>>
 response(const RtcLineTransferSpecification &s, double hz) {
-  if (!std::isfinite(hz) || std::abs(hz) > .5 / s.input_interval_seconds)
-    throw std::invalid_argument(
-        "RTC transfer frequency outside native Nyquist");
+  // Caller supplies either a checked arbitrary frequency or an exact bin from
+  // the bound Learn grid. Do not reject its rounded Nyquist using a second
+  // independently rounded calculation of the same boundary.
   const double w = 2 * std::numbers::pi * (hz * s.input_interval_seconds);
   const std::complex<double> z{std::cos(w), -std::sin(w)};
   std::complex<double> notch{1, 0};
@@ -183,6 +183,10 @@ public:
   // Continuous-frequency arithmetic for controlled response checks. It is not
   // a realized finite-record filter, even when the supplied coefficients pass.
   std::complex<double> combined_response(double hz) const {
+    if (!std::isfinite(hz) ||
+        std::abs(hz) > .5 / specification_.input_interval_seconds)
+      throw std::invalid_argument(
+          "RTC transfer frequency outside native Nyquist");
     auto [n, l] = rtc_line_transfer_detail::response(specification_, hz);
     return n * l;
   }
@@ -320,13 +324,17 @@ private:
                      cp = p * std::norm(h);
         if (!std::isfinite(p) || !std::isfinite(lp) || !std::isfinite(cp))
           throw std::overflow_error("RTC transferred power unavailable");
-        const bool folded = network.frequency_hz[i] > output_rate / 2;
+        // k/(N*dt) > 1/(2*factor*dt), using exact bin membership. This avoids
+        // classifying a rounded Nyquist endpoint as out of band.
+        const bool folded = i > network.fft_samples / (2 * spec.factor);
         if (folded)
           alias += cp;
-        result.bins.push_back({network.frequency_hz[i],
-                               rtc_line_transfer_detail::fold(
-                                   network.frequency_hz[i], output_rate),
-                               n, l, h, folded, p, lp, cp});
+        result.bins.push_back(
+            {network.frequency_hz[i],
+             folded ? rtc_line_transfer_detail::fold(network.frequency_hz[i],
+                                                     output_rate)
+                    : network.frequency_hz[i],
+             n, l, h, folded, p, lp, cp});
       }
       result.incoherent_folded_power_proxy = static_cast<double>(alias);
       if (!std::isfinite(result.incoherent_folded_power_proxy))

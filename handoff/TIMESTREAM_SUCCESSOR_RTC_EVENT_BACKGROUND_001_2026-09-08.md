@@ -4001,3 +4001,14 @@ operational scan binding or corpus-wide recovery claim. Local AppleClang 21
 arm64/C++20/Homebrew/cached-dependency gates are supplemental; Unity/Spack V2
 reproduction is not claimed and no Unity action is requested for this unrouted
 numerical increment. Exact source and documentation closure reviews follow.
+
+Independent review of first source `700d1ddcc1414dcb1d3ac7dbf492ba9bd0dc7553`
+found one numerical boundary defect: a valid native FFT's rounded Nyquist bin
+could exceed the independently rounded cadence limit by one ULP and be rejected
+or classified as folded even for factor one. Repair stays inside the assessment:
+native-grid membership uses exact FFT indices, nonfolded bins keep their stored
+frequency, and arbitrary-frequency caller queries keep strict domain validation.
+No new cadence or scientific tolerance is introduced. An end-to-end Learn fixture
+covers the reported 402-point transform and factor-one/factor-three boundaries.
+The repaired exact source requires a new independent review; the initial verdict
+and successful broad gates are retained with their original source identity.
