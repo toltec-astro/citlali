@@ -45,6 +45,12 @@ def incremental_cost(eligible, baseline, proposed):
     return measure(intersect(retained, proposed))
 
 
+def cost_bounds(eligible, baseline, proposed, activity_unavailable):
+    lower = incremental_cost(eligible, baseline, proposed)
+    upper = measure(subtract(eligible, baseline)) if activity_unavailable else lower
+    return lower, upper
+
+
 def noise_factor(information, lost):
     if not math.isfinite(information) or information <= 0 or not 0 <= lost <= information:
         return None
@@ -94,6 +100,8 @@ def describe_coordinate(meta, arrays, windows, frequency):
         power = windows[ids, 4]
         median = float(np.median(power))
         result['burst_ratio'] = float(np.quantile(power, .99)/median) if median > 0 else None
+        result['window_peak3_fraction_quantiles'] = np.quantile(windows[ids,7], [0,.5,.9,1]).tolist()
+        result['window_concentration_review_fraction'] = float(np.mean(windows[ids,7] >= .2))
     selections = {}
     if best:
         target = int(best[2])
@@ -192,10 +200,16 @@ def main():
                         proposed=dict(observation=eligible,active_windows=intervals)
                         for duration in (5,10,20):
                             for phase in (0,duration/2):proposed[f'scan_model_{duration}s_phase{phase:g}']=cover_scans(intervals,int(duration*1e6),int(phase*1e6))
-                        loss={mode:incremental_cost(eligible,noise,bounds) for mode,bounds in proposed.items()}
-                        row['losses'][name]=dict(incremental_us=loss,active_us=measure(intersect(eligible,intervals)),direct_overlap_us=direct_overlap,candidate_overlap_us=candidate_overlap,noise_overlap_us=noise_overlap,recurrence_bound=all(descriptions[c].get('recurrence') is not None for c in axes if descriptions[c]['narrow_fraction']>=threshold))
+                        activity_unavailable=any(descriptions[c]['narrow_fraction']>=threshold and descriptions[c].get('recurrence') is None for c in axes)
+                        bound_pairs={mode:cost_bounds(eligible,noise,bounds,activity_unavailable and mode!='observation') for mode,bounds in proposed.items()}
+                        loss={mode:value[0] for mode,value in bound_pairs.items()}
+                        row['losses'][name]=dict(incremental_us_lower=loss,incremental_us_upper={mode:value[1] for mode,value in bound_pairs.items()},active_us=measure(intersect(eligible,intervals)),direct_overlap_us=direct_overlap,candidate_overlap_us=candidate_overlap,noise_overlap_us=noise_overlap,recurrence_bound=all(descriptions[c].get('recurrence') is not None for c in axes if descriptions[c]['narrow_fraction']>=threshold))
                         for mode,value in loss.items():
                             costs[(name,mode,array)]['lost_us']+=value
+                            costs[(name,mode,array)]['lost_us_upper']+=bound_pairs[mode][1]
+                            costs[(name,mode,array)]['lost_information_upper']+=bound_pairs[mode][1]/1e6*weight
+                            costs[(name,mode,array)]['activity_unavailable_occurrences']+=bool(activity_unavailable and mode!='observation' and exposure)
+                            costs[(name,mode,array)]['activity_unavailable_baseline_us']+=base if activity_unavailable and mode!='observation' else 0
                             costs[(name,mode,array)]['apt_good_lost_us']+=value if apt_good else 0
                             costs[(name,mode,array)]['lost_information']+=value/1e6*weight
                             # Existing direct support is a conditional comparison,
@@ -224,7 +238,13 @@ def main():
         c=cohorts[array];v=dict(v);v.update(scenario=scenario,mode=mode,array=array,
             lost_detector_time_fraction=v['lost_us']/c['baseline_us'] if c['baseline_us'] else None,
             lost_information_fraction=v['lost_information']/c['information_proxy'] if c['information_proxy'] else None,
-            rms_noise_factor=noise_factor(c['information_proxy'],v['lost_information']))
+            rms_noise_factor=noise_factor(c['information_proxy'],v['lost_information']),
+            lost_detector_time_fraction_upper=v['lost_us_upper']/c['baseline_us'] if c['baseline_us'] else None,
+            lost_information_fraction_upper=v['lost_information_upper']/c['information_proxy'] if c['information_proxy'] else None,
+            rms_noise_factor_upper=noise_factor(c['information_proxy'],v['lost_information_upper']),
+            disposition='conditional lower/upper bounds; unavailable activity is not zero' if v['activity_unavailable_occurrences'] else 'exact cost of specified hypothetical scenario')
+        for key in ('lost_us','lost_information','lost_detector_time_fraction','lost_information_fraction','rms_noise_factor'):
+            v[key+'_lower']=v.pop(key)
         cost_rows.append(v)
     ranked=sorted(time_concentration,reverse=True);concentration={}
     for fraction in (.01,.05,.1):
@@ -236,7 +256,7 @@ def main():
         method=dict(thresholds=THRESHOLDS,contrast=10,maximum_width_hz=2,audit_low_frequency_boundary_hz=2,
             recurrence='disjoint accepted windows; fraction with pooled-target three-bin raw power >=10% of all stored PSD power; >=60% descriptive persistent group',
             windows='original accepted 4s Hann windows; time-local arithmetic independently reproduces pooled evidence; a single window is not separately qualified RTC evidence',
-            scan_cost='conditional 5/10/20-second fixed cells, two phases; actual native-to-PCA association unavailable',
+            scan_cost='conditional 5/10/20-second fixed cells, two phases; actual native-to-PCA association unavailable. Unavailable coordinate activity contributes explicit lower/whole-observation-upper bounds and coverage; observation-scenario costs remain exact.',
             sensitivity='per-array static sum(t/sens^2) for finite positive matched APT sens and flag=flag2=0; fixed independent-noise proxy, no PCA/maps; uncovered exposure retained in detector-time denominator',
             exclusion='baseline existing noise-screening-required; measured transient direct/candidate overlap separately conditional; no accepted source-bound corpus Apply',
             classifications='exploratory descriptor screens; not physical labels, notch admission or production flags',

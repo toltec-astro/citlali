@@ -1,12 +1,17 @@
 import unittest
 import numpy as np
 from analyze_rtc_real_data_audit import (independent_windows, cover_scans, incremental_cost,
-                                       noise_factor, row_support, describe_coordinate)
+                                       noise_factor, row_support, describe_coordinate, cost_bounds)
 
 
 class AuditTests(unittest.TestCase):
     def test_incremental_union_does_not_double_count_pair_or_baseline(self):
         self.assertEqual(incremental_cost([(0,100)],[(10,30)],[(20,50),(40,60)]),30)
+
+    def test_unavailable_activity_has_unknown_upper_cost_not_zero(self):
+        self.assertEqual(cost_bounds([(0,100)],[(0,10)],[],True),(0,90))
+        self.assertEqual(cost_bounds([(0,100)],[(0,10)],[(20,40)],True),(20,90))
+        self.assertEqual(cost_bounds([(0,100)],[(0,10)],[(20,40)],False),(20,20))
 
     def test_gaps_and_invalid_support_do_not_enter_denominator(self):
         self.assertEqual(incremental_cost([(0,10),(90,100)],[],[(0,100)]),20)
