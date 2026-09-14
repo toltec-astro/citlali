@@ -1,5 +1,33 @@
 # Citlali Refactor Status
 
+## RTC audit recommendations: owner agreement and science context — 2026-09-14
+
+The owner agrees with the completed audit's recovery recommendations and adds
+that about 11 Hz lies squarely in the astronomical signal band for most
+observations, about 29 Hz is the next sensitive family, and lines above 40 Hz
+must receive sufficient pre-decimation suppression to prevent harmful fold-back.
+The notch need not achieve the entire attenuation requirement on its own.
+Assess the chronological notch -> low-pass -> decimation chain using the
+observation's approved array/beam, motion, cadence and selected-mode identities.
+The quoted frequencies describe the audited families, not universal band edges.
+
+This refines the earlier "start around 11 Hz" recommendation: 11 Hz is a high-
+value, scientifically sensitive recovery case, not an intrinsically safe first
+notch. Higher-frequency line assessment must account for attenuation already
+supplied by the low-pass; remaining line alias and astronomical-transfer effects
+are judged for the complete plan. ADR 0020 and its v2 owner authority already
+separate line mitigation from generic broadband alias certification. Preserve
+that separation: its 1% broadband variance bound is not automatically a new
+narrow-line residual budget. No numeric notch width, depth, admission threshold,
+or factor is selected by this clarification. The next recovery assessment must
+reuse settled beam/motion/response authorities and preserve original evidence.
+
+This is a documentation-only owner disposition on audit closure
+`3fe59f26b7c781fa81f040d5d890ff1757f7ec23`; the sealed census and recommendations
+remain preserved, with this later qualification governing their use. Runtime
+Learn/Consider/Apply, filtering, flags, map products and production are unchanged.
+The existing RTC handoff records the exact owner context and authority links.
+
 ## Bounded real-data spectral/transient audit completed — 2026-09-14
 
 Owner-authorized RTC-REAL-DATA-AUDIT-001 completes the fixed 143-file,

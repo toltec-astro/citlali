@@ -3890,3 +3890,59 @@ The docs-only closure receives fresh independent exact-SHA review including the
 final narrative and post-inspection arithmetic; its separate closure binding/seal
 records the result without relabeling source gates. Owner acceptance and push
 remain separate from this locally completed audit.
+
+### Owner agreement and full-chain spectral context — 2026-09-14
+
+The owner agrees with the audit recommendations, then clarifies:
+
+> Out of the "Native peak bin frequencies" that you list in the table, 11Hz is
+> squarely in the signal band for most observations. 29(ish) Hz lines are the
+> next most sensitive. Lines above 40Hz must be suppressed or notched such that
+> they don't alias back after the downsampling and lowpass filtering. Let's keep
+> in mind that the notch filters do not have to be perfect on their own. The
+> scientific context matters.
+
+The implementation consequence is to evaluate the chronological native-rate
+notch -> low-pass -> decimation chain. Around 11 Hz, astronomical-signal loss
+is central; around 29 Hz, retain the same observation-dependent transfer
+assessment. Above 40 Hz, evaluate the residual line power after all applicable
+pre-decimation attenuation and its actual folded output location under the
+selected factor. If the low-pass already supplies sufficient line attenuation,
+no additional notch depth is implied. Frequency alone neither admits a notch
+nor defines a universal science-band boundary. A less aggressive notch may be
+adequate in combination; evaluate ringing, phase and support as well as residual
+power. This qualifies "start with 11 Hz" as a recovery-value priority, not a
+claim that 11 Hz is the safest or easiest notch to apply.
+
+Recover existing authority rather than introducing a second filtering policy:
+
+- `doc/adr/0020-precertified-rtc-filter-bank-and-science-error-budgets.md` and
+  `doc/WP7_RTC_SCAN_ARRAY_FILTER_BANK_OWNER_AUTHORITY_2026-08-30.md` retain the
+  beam/motion-dependent astronomical-response domain, fixed filter-bank
+  requirements and separate narrow-line ownership. Alias-relevant line
+  mitigation precedes information-losing decimation. The existing 1% broadband
+  alias-to-retained-noise variance bound does not independently select a
+  narrow-line residual allowance; removable atmospheric power must not conceal
+  residual noise that survives cleaning.
+- `SCI-RTC-REQ-021/030/061/069/073/077` retain exact ordered operators, full
+  folded-band accounting, notch parameters and combined response, scientific
+  transfer checks and complete-plan consideration. The existing paired-action
+  and source-protection requirements remain intact.
+
+Runtime Learn supplies bound original and, when implemented, explicitly bound
+conditioned evidence. Runtime Consider judges the complete plan's source
+transfer and residual contamination jointly. Each revised Apply remains frozen
+complete-plan replay on the original admitted x/r. This owner clarification
+does not itself implement any of these remaining capabilities or count the
+engineering workflow as runtime implementation.
+
+Only status and this handoff change, based on exact reviewed audit closure
+`3fe59f26b7c781fa81f040d5d890ff1757f7ec23`, tree
+`fa6443d34d8946bdc56ae3cbc0b76734181c12c2`. All prior sealed census/report bytes
+and source/test identities remain preserved. Agreement here concerns the
+recommendations and their scientific interpretation; it supplies no new
+numerical notch/admission policy, automatic factor selection, map-product
+study, canonical integration, push or production disposition. Actual filter
+implementation remains a separately bounded work-order step. This small
+owner-record update receives exact-SHA read-only review; numerical/build gates
+are not repeated for unchanged executable source.
