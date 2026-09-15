@@ -15,7 +15,8 @@ The caller connects explicit reviewed event/stable/contamination facts and
 existing processing-scan support to the established complete-plan Consider
 and Apply owners. Controlled tests exercise donor reconstruction through the
 assembled plan; conditioned relearning keeps exact stage/support history.
-No candidate is automatically accepted and no absent support is assumed stable.
+No isolated-spike candidate is automatically accepted and no absent support is
+assumed stable.
 These runtime boundaries are separate from the engineering workflow.
 
 The real observation completes Learn only: 151,537 rows across twelve detectors,
