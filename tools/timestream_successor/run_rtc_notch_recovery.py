@@ -40,13 +40,25 @@ def write_json(p, value):
     Path(p).write_text(json.dumps(value, indent=2, allow_nan=False) + "\n")
 
 
-def finite_trial(dt, center, seconds, lowpass):
-    """Existing explicit finite family, at caller-bound cadence and center."""
+def finite_trial(dt, center, seconds, lowpass, *, full_width_hz=0.5):
+    """Explicit finite family; width is the FULL design cutoff separation.
+
+    The default reproduces the previous coefficient construction and identity.
+    This offline argument does not select a runtime filter or admission rule.
+    """
+    if not (
+        np.isfinite([dt, center, seconds, full_width_hz]).all()
+        and dt > 0
+        and seconds > 0
+        and full_width_hz > 0
+        and 0 < center - full_width_hz / 2 < center + full_width_hz / 2 < 0.5 / dt
+    ):
+        raise ValueError("invalid finite-notch design domain")
     half = int(np.floor(seconds / (2 * dt)))
     taps = 2 * half + 1
     h = signal.firwin(
         taps,
-        [center - 0.25, center + 0.25],
+        [center - full_width_hz / 2, center + full_width_hz / 2],
         pass_zero="bandstop",
         window="hann",
         fs=1 / dt,
@@ -62,11 +74,11 @@ def finite_trial(dt, center, seconds, lowpass):
         id=f"finite-{seconds}s",
         notch=False,
         reject=False,
-        finite_notch_identity=f"explicit-Hann-bandstop-width0.5Hz-span{seconds}s",
+        finite_notch_identity=f"explicit-Hann-bandstop-width{full_width_hz:g}Hz-span{seconds}s",
         finite_notch=h.tolist(),
         requested_span_seconds=seconds,
         actual_span_seconds=2 * half * dt,
-        requested_width_hz=0.5,
+        requested_width_hz=full_width_hz,
         actual_center_amplitude=response,
         cumulative_half_seconds=total_half,
         operation="centered finite notch then unchanged centered low-pass; complete support; no padding",
