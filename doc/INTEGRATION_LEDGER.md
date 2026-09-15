@@ -1,5 +1,74 @@
 # Citlali Integration Ledger
 
+## Bounded wider-notch / shorter-support RTC experiment — 2026-09-15
+
+**Result: useful tradeoff, but no clear winner.** The owner-approved grid
+confirms that broader spectral disturbance buys shorter temporal support,
+but worsens fast-source response. No candidate is scientifically admitted.
+Stop at the tested grid; keep production filtering inactive.
+
+Exact source `898ed9a4e1c142f0334cc6f5dfe9974536ee227a`, tree
+`f8687e48f012439979fac46e6700de80df03c505`, directly follows the pushed
+coherent-experiment closure `92544d92401a5c2bdb69b63ac2985d9480a78a19`.
+Fresh live canonical remains `0f52e1a421416eadaf7d8d99d64f537132395c0c`;
+the remote experiment now verifies at that pushed coherent closure.
+Earlier publication-pending notes below are historical. This continuation
+stays on `codex/timestream-successor-rtc-notch-recovery-001`, without
+canonical integration, push, activation or cleanup.
+
+The old 0.5 Hz is full cutoff separation. Nine fixed designs cover 0.5/1/2 Hz
+and 1/3/6 s; exact old narrow coefficients, center, Hann family, normalization,
+307-tap LPF, native cadence and factor-two phase remain unchanged. Only
+1 Hz/3 s and 2 Hz/1 s advance to new native replay, beside LPF and the exact
+0.5 Hz/6 s reference. Same eight affected detectors and four controls; only
+the eight receive optional notches. Runtime Learn evidence and initial VAL 0
+feed existing explicit Consider and frozen paired Apply afresh on original
+x/r. Five Python tool/test files change; no production C++/library or new
+filter-bank framework changes. Development workflow does not replace these
+runtime responsibilities.
+
+Complete half-support is 4.252 s narrow, 2.753 s for 1 Hz/3 s and 1.753 s for
+2 Hz/1 s, all below the unchanged five-second limit. Affected output-cell
+seconds are 2624.2/4106.9/5594.3 versus 6457.0 LPF; 1 Hz/3 s retains 56.5%
+more time than narrow. Whole-network static reference-weight seconds are
+2511.14/2548.97/2586.91 versus 2608.92 LPF, not achieved map sensitivity.
+Known constructed-line residual power is 1.112–1.131%/0.167–0.170%/
+3.482–3.484% of LPF on matched valid windows. Real feature and broad total
+powers stay separate: the lowest broad power in 2 Hz/1 s does not imply the
+strongest known-line suppression. Line/noise separation and residual epsilon
+remain unavailable/unselected.
+
+At the newly inspected supported 122.9 arcsec/s crossing, worst native-source
+peak losses are 1.12%/2.19%/4.47% (narrow/1 Hz/2 Hz); template, centroid,
+waveform and ringing costs remain explicit. Detector 269's boundary is
+14/46 output samples narrow versus 46/46 for both wider candidates. Its
+extended five-sigma timestream domain is 400/491 narrow, hence unavailable,
+and 491/491 for LPF and both wider candidates. Other detectors retain their
+own coverage dispositions. The excluded 221.4 arcsec/s crossing remains
+excluded. No poorly covered prior extended map is used as evidence.
+
+The owner clarifies that eventual scientific qualification is necessary RTC
+conditioning followed by PTC within FRUIT, not the first PCA-cleaned map.
+If further work is authorized, only 1 Hz/3 s merits a bounded FRUIT-inclusive
+comparison with LPF/narrow, addressing both source response and contamination
+of feedback. This does not assume FRUIT restores upstream losses or compensate
+for failed astronomical requirements with retained time. Accepted mapped
+budgets remain mandatory; no new RTC threshold or speed restriction is chosen.
+No downstream campaign runs in this continuation.
+
+Supplemental local gates pass: 1,132 runnable CTests, one established disabled;
+79 RTC Python tests plus three subtests; 207 baseline tests plus 137 subtests;
+require-all configuration and exact CLI. Twelve exact-source C++ invocations
+execute 360 frozen paired Apply calls. Original pairs remain unchanged; 57
+reference artifacts are byte-identical; all 17,631 prior sealed files survive.
+No Unity or Spack-backed V2 qualification is claimed.
+
+Independent exact-source review passes with recorded limitations and no
+actionable findings. Evidence manifest SHA256: `cb09214f637e65fe91b109e911c1d48422440daea2de09da9b19c59d3a4b1f1d`.
+The [existing handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_NOTCH_RECOVERY_001_2026-09-14.md)
+records the report, exact identities, review and sealed evidence. This separate
+documentation-only closure receives its own fresh independent exact-SHA review.
+
 ## Bounded coherent RTC removal and science-error comparison — 2026-09-15
 
 The owner's next directive authorizes one 152390/n12 coherent candidate and

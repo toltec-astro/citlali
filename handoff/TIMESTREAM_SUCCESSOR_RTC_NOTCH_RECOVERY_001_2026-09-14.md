@@ -1,5 +1,120 @@
 # TIMESTREAM-SUCCESSOR-RTC-NOTCH-RECOVERY-001
 
+## Wider-notch / shorter-support continuation — 2026-09-15
+
+The owner authorizes one fixed nine-design coefficient grid and at most two
+new wider native replays, preserving the existing experiment and original
+x/r. Exact directive:
+`/private/tmp/citlali-rtc-wide-notch-2026-09-15/OWNER_DIRECTIVE.md`, SHA256
+`868c0e53ecc57c18abc00c46f0df28c34e03238f708144527f6401483015a430`.
+No new search, threshold, support policy, automatic selection, canonical
+integration, production activation or downstream campaign is authorized.
+
+### Exact identities and preserved authority
+
+- Worktree: `/private/tmp/citlali-timestream-successor-rtc-notch-recovery-001`.
+- Branch: `codex/timestream-successor-rtc-notch-recovery-001`.
+- Literal base and pushed closure: `92544d92401a5c2bdb69b63ac2985d9480a78a19`,
+  tree `075e44b4120a5ddfed2a8b84c11f5f7c30f86d90`.
+- Exact source: `898ed9a4e1c142f0334cc6f5dfe9974536ee227a`, tree
+  `f8687e48f012439979fac46e6700de80df03c505`, direct parent the literal base.
+- Live canonical, freshly verified: `0f52e1a421416eadaf7d8d99d64f537132395c0c`,
+  an ancestor of the candidate; no integration or moving-base reconciliation
+  was needed for this same-branch experiment.
+- Live experiment: `92544d92401a5c2bdb69b63ac2985d9480a78a19`.
+- Effective governance accepted `06a3ade51c1b3f38887295433d913811bf25cd14`,
+  incorporated `77507836325eff9f469062d5884481ea37599594`; unchanged accepted
+  WP7.1 baseline, canonical scientific router and ADR0017–0023.
+- This separate documentation closure's SHA/tree and fresh independent review
+  are recorded externally in `closure-binding.json` below, avoiding circular
+  self-identification. Earlier historical push-pending notes are superseded.
+
+The owner clarifies that eventual science reference is necessary RTC followed
+by PTC within FRUIT, not the first PCA-cleaned map. All existing mapped
+response requirements remain mandatory. No assumption that FRUIT restores
+lost upstream modes is accepted. This experiment performs no new map/PCA/
+FRUIT qualification and does not reuse the earlier poorly covered extended
+map aperture as evidence.
+
+### Implementation, evidence and result
+
+Runtime Learn supplies original spectral/transient evidence with VAL 0;
+existing explicit Consider freezes finite coefficients/support; existing C++
+Apply executes the original pair and paired fixed-plan injections afresh.
+Offline grid selection is not automatic runtime policy. Engineering workflow
+and runtime Learn/Consider/Apply remain distinct. Only five Python tool/test
+files change, recorded with content digests in `source-gates.json`. No C++
+production-library or filter framework changes; no loss of original evidence.
+
+Verified width is full cutoff separation: 0.5/1/2 Hz at fixed 11.0062558446 Hz.
+Same Hann family/normalization and saved 307-tap LPF/F2 phase-zero are retained.
+All nine coefficient screens complete. Exactly two wider cases, 1 Hz/3 s and
+2 Hz/1 s, are selected before replay. Same eight affected channels 269,402,296,
+300,366,438,406,307; controls 193,231,226,330 and the rest of n12 retain LPF.
+
+**Useful tradeoff, but no clear winner.** Narrow 6 s / 1 Hz, 3 s / 2 Hz, 1 s retain
+2624.2/4106.9/5594.3 target output-cell seconds versus 6457.0 LPF, with complete
+half-support 4.252/2.753/1.753 s. Known-line residuals are 1.112–1.131%/
+0.167–0.170%/3.482–3.484% of LPF. The broad 9.75–12.25 Hz total-power diagnostic
+is separate from fixed-feature response and the controlled known-line probe;
+no invented continuum or epsilon. Actual native/output spectra use matched
+complete windows, with candidate-own support recorded separately.
+
+The new supported 122.9 arcsec/s source crossing shows worst peak losses 1.12%/
+2.19%/4.47% relative to native (about 1.06%/2.13%/4.41% additional to LPF).
+Template, centroid, profile and ringing measurements remain separate.
+Detector 269 boundary coverage improves from 14/46 to 46/46; extended five-sigma
+coverage from 400/491 to 491/491. Other detectors' incomplete crossings remain
+unavailable; original 221.4 arcsec/s crossing remains excluded. Extended area
+is explicitly a complete five-sigma timestream-domain ratio, not total
+filtered area or map recovery. No candidate receives a mapped PASS.
+
+If another experiment is authorized, only 1 Hz/3 s merits a bounded comparison
+through PTC within FRUIT against LPF/narrow, testing scientific recovery and
+feedback contamination under unchanged requirements. No expansion occurs
+now. More retained time does not compensate for failed source requirements.
+
+### Gates and evidence binding
+
+Evidence root: `/private/tmp/citlali-rtc-wide-notch-2026-09-15`.
+Authoritative human-readable result: `REPORT.md`; requested single ten-row
+comparison: `comparison-table.md`; all detailed numerics/availability:
+`analysis-01/comparison.json` and `decision-comparison.json`. Plot paths are
+linked in the report, including fast crossings, exact frequency/impulse and
+retention. `screen-01`, `replay-selection.json`, `prepared-01`, `campaign-01`
+and `analysis-01` bind the predetermined grid, selected plans and exact replays.
+
+Source gates pass: 1,132 runnable CTests, one unchanged disabled; 79 RTC Python
+tests plus three subtests; 207 baseline tests plus 137 subtests; require-all config and exact CLI. Twelve
+C++ invocations contain 360 frozen paired Apply calls; conditional numerical
+convolution comparison maximum error 9.76e-19; original pairs unchanged. Fifty-seven
+old reference artifacts remain byte-identical including the narrow output.
+Single-detector repeat spectra are byte-identical; comparison with full-network
+normalization differs by ≤4.95e-16 relative, passing the established 1e-12
+criterion. All 17,631 prior sealed files are verified unchanged.
+
+The initial config-wrapper option error was corrected and its log preserved;
+no required gate remains failed. Local AppleClang21/arm64/Homebrew evidence is
+supplemental; no Unity or Spack-backed V2 claim. Driver campaign wall time 136.4 s
+includes file export and injections and is not a pipeline performance claim.
+
+Independent fresh-context exact-source review passes with recorded limitations
+and no actionable findings in all three governance categories. It is retained
+as `review-source.md`, SHA256 `bc88b39a80974be969540fbf844742a8116c7fc3f6163073ac73765510a3ded4`.
+Manifest `EVIDENCE_SHA256SUMS`, SHA256 `cb09214f637e65fe91b109e911c1d48422440daea2de09da9b19c59d3a4b1f1d`, binds the evidence
+and reporting scripts. `source-seal.json` records membership/exclusions;
+`source-state.json`, `source-gates.json` and `source-completion.json` bind the
+implementation. Source/closure review files and final closure binding are
+separately hashed to avoid circular seals. Three documentation files comprise
+this closure and receive an independent exact-SHA review before completion.
+
+No push, cleanup, integration, production activation, automatic selector or
+new residual-line/speed/support policy. The owner alone publishes the branch:
+
+```sh
+git -C /private/tmp/citlali-timestream-successor-rtc-notch-recovery-001 push git@github.com:toltec-astro/citlali.git refs/heads/codex/timestream-successor-rtc-notch-recovery-001:refs/heads/codex/timestream-successor-rtc-notch-recovery-001
+```
+
 ## Coherent-removal and science-error continuation — 2026-09-15
 
 The owner explicitly authorizes a bounded coherence assessment, one limited
