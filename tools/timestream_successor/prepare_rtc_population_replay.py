@@ -102,6 +102,13 @@ def prepare(a):
 
 def coherence(a):
     a.output.mkdir(parents=True, exist_ok=False)
+    ranking = json.loads((a.population / "ranking.json").read_text())
+    selected_target = next(
+        r
+        for r in ranking
+        if (r["observation"], r["network"], r["detector"]) == (152390, 12, 269)
+    )
+    target_hz = selected_target["spectral"]["narrow_frequency_hz"]
     receipt = json.loads((a.native / "receipt.json").read_text())
     meta = list(records(a.native / "spectra.jsonl"))
     windows = np.memmap(
@@ -148,7 +155,7 @@ def coherence(a):
         left, right = transforms
         coh, phase = cross_spectrum(left, right)
         frequency = np.arange(len(coh)) / (n * dt)
-        i = int(np.argmin(abs(frequency - 10.756113666291341)))
+        i = int(np.argmin(abs(frequency - target_hz)))
         groups = np.array_split(np.arange(len(selected)), 4)
         quarter = []
         for group in groups:
@@ -181,6 +188,8 @@ def coherence(a):
             observation=152390,
             network=12,
             detectors=[269, 402],
+            target_selection_binding=binding(a.population / "ranking.json"),
+            target_frequency_hz=target_hz,
             source_bindings={
                 name: binding(a.native / name)
                 for name in (
