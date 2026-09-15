@@ -43,6 +43,12 @@ public:
           throw std::invalid_argument("RTC complete plan has foreign evidence, support, detector or nonfinite stage");
       }
     if (index != plans.size()) throw std::invalid_argument("RTC complete plan repeats a detector");
+    std::map<std::pair<TimestreamNetworkId,std::uint32_t>,
+        const RtcNotchRecoveryPlan *> by_detector;
+    for (const auto &p : plans) {
+      const auto &candidate = *p->assessment_handle()->candidate_handle();
+      by_detector.emplace(std::pair{candidate.network(),candidate.detector()},p.get());
+    }
     // A newly selected replacement is known contamination for another donor's
     // original fit/selection. Do not combine individually valid plans while
     // silently reusing support that the complete plan has since invalidated.
@@ -52,6 +58,10 @@ public:
     for (auto &[key,ranges] : selected) ranges=rtc_event_assessment_detail::merge(std::move(ranges));
     for (const auto &p : plans) for (const auto &d : p->donor_plans()) {
       for (const auto &sample : d->medians()) for (auto detector : sample.eligible) {
+        const auto &source = *by_detector.at({d->event().network,detector});
+        if (source.domain().reject || source.input_causes().at(sample.row-source.first_native_row()) !=
+            RtcNotchRecoveryCause::retained)
+          throw std::invalid_argument("RTC complete plan invalidates a donor's original median support");
         const auto it=selected.find({d->event().network,detector});
         if (it!=selected.end() && rtc_event_assessment_detail::contains(it->second,sample.row))
           throw std::invalid_argument("RTC complete plan invalidates a donor's original selection support");

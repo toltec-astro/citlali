@@ -752,4 +752,58 @@ TEST(rtc_pipeline, finite_support_limit_includes_donor_background_not_only_filte
   EXPECT_THROW(RtcPipelinePlan::consider({with_donor,t.plan(false,false,{},1),t.plan(false,false,{},2)},
       t.joint->joint_handle(),31),std::invalid_argument);
 }
+TEST(rtc_pipeline, donor_background_cannot_bypass_a_resolved_pair_invalid_boundary) {
+  Input in;in.spike();
+  // The original x background remains fit-eligible, while paired processing
+  // must exclude this occurrence because r is invalid. The old composition
+  // let changes in x349 alter the retained reconstructed x600 through the fit.
+  in.rs[249*3]=NativeReadoutCoordinateState::measured(true,false,true,true);
+  Trial t(in,10,RtcSpikeProtection::outside_source);
+  auto donor=explicit_donor(t);ASSERT_EQ(donor->cause(),RtcDonorFillCause::ready);
+  auto plain=t.plan();EXPECT_EQ(plain->input_causes()[249],RtcNotchRecoveryCause::producer_invalid);
+  EXPECT_THROW(t.plan(false,false,{},0,{donor}),std::invalid_argument);
+}
+TEST(rtc_pipeline, complete_plan_cannot_reuse_a_rejected_donors_original_median) {
+  Input in;in.spike();Trial t(in,10,RtcSpikeProtection::outside_source);
+  auto donor=explicit_donor(t);ASSERT_EQ(donor->cause(),RtcDonorFillCause::ready);
+  auto plans=complete_plans(t,{}, {donor});plans[1]=t.plan(false,true,{},1);
+  EXPECT_THROW(RtcPipelinePlan::consider(plans,t.joint->joint_handle(),31),std::invalid_argument);
+  plans=complete_plans(t,{}, {donor});
+  auto restricted=plans[1]->domain();restricted.speed_ceiling_arcsec_per_sec=5;
+  plans[1]=RtcNotchRecoveryPlan::consider(plans[1]->assessment_handle(),t.transient,t.val,restricted,32);
+  EXPECT_EQ(plans[1]->input_causes()[500],RtcNotchRecoveryCause::motion_outside_domain);
+  EXPECT_THROW(RtcPipelinePlan::consider(plans,t.joint->joint_handle(),33),std::invalid_argument);
+}
+TEST(rtc_pipeline, donor_background_cannot_bridge_a_new_ast_speed_boundary) {
+  Input in;in.spike();Trial t(in,10,RtcSpikeProtection::outside_source);
+  auto donor=explicit_donor(t);ASSERT_EQ(donor->cause(),RtcDonorFillCause::ready);
+  auto times=Eigen::VectorXd::LinSpaced(5000,999,1098.98);
+  Eigen::VectorXd ra(times.size()),dec=Eigen::VectorXd::Zero(times.size());
+  for(Eigen::Index i=0;i<times.size();++i){
+    const double elapsed=times[i]-999;
+    ra[i]=(.5*std::min(elapsed,3.5)+10*std::max(0.,elapsed-3.5))*std::numbers::pi/(180*3600);
+  }
+  AstScanMotionSourceMetadata metadata{AstScanMotionProducerKind::real_toltec,
+      "Science","Lissajous",1,2000,0,50,
+      AstScanMotionFieldRegistry::source_ra_act_source_dec_act_j2000_radians,"fixture-speed-boundary"};
+  auto source=AstScanMotionSource::admit(t.parent->scope(),t.parent->scope(),0,metadata,times,ra,dec);
+  t.domain.motion=AstScanMotionNetworkView::admit(build_ast_scan_motion_product(source,{1,2,3,4}),
+      t.parent->network(0).occurrence_axis().native_timing_handle());
+  auto plain=t.plan();
+  EXPECT_EQ(plain->input_causes()[249],RtcNotchRecoveryCause::below_minimum_speed);
+  EXPECT_EQ(plain->input_causes()[500],RtcNotchRecoveryCause::retained);
+  EXPECT_THROW(t.plan(false,false,{},0,{donor}),std::invalid_argument);
+}
+TEST(rtc_pipeline, unadmitted_selected_support_is_not_a_realized_replacement) {
+  Input in;in.spike();Trial t(in,.5,RtcSpikeProtection::outside_source);
+  auto donor=explicit_donor(t);ASSERT_EQ(donor->cause(),RtcDonorFillCause::ready);
+  // Standalone donor selection remains evidence; the numerical recovery did
+  // not use it because the entire target run fails the AST speed admission.
+  auto result=t.apply(t.plan(false,false,{},0,{donor}));
+  EXPECT_TRUE(result->donor_results()[0]->filled());
+  EXPECT_FALSE(result->representative_replaced(600));
+  EXPECT_TRUE(result->requires_representative_exclusion(600));
+  EXPECT_FALSE(result->replacement_influence(600,false));
+  EXPECT_TRUE(std::isnan(result->conditioned_native_pair()(500,0)));
+}
 } // namespace

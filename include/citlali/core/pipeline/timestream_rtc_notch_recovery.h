@@ -207,6 +207,30 @@ public:
       if (start < run.past_last_native_row)
         out->runs_.push_back({start, run.past_last_native_row});
     }
+    // A standalone donor fit predates this motion/pair-domain resolution.
+    // Reusing it must not carry excluded x samples (including rows whose r
+    // member is invalid), or a fit across a newly resolved run boundary, into
+    // retained outputs. Reject the incompatible frozen composition; do not
+    // silently refit, change donor selection, or invent a rejection policy.
+    if (!d.reject) for (const auto &donor : out->donors_) {
+      if (donor->cause() != RtcDonorFillCause::ready) continue;
+      const auto affected = donor->selection().affected;
+      const auto run = std::find_if(out->runs_.begin(), out->runs_.end(),
+          [&](const auto &r) {
+            return r.first < affected.past_last && affected.first < r.past_last;
+          });
+      if (run == out->runs_.end()) continue; // no replacement is applied
+      const auto support = donor->donor_support();
+      if (support.first < run->first || support.past_last > run->past_last)
+        throw std::invalid_argument("RTC donor support crosses its resolved target run");
+      const auto &event = donor->event();
+      for (const auto &side : event.background[0].support) if (side.usable)
+        for (auto row = side.first_used; row <= side.last_used; ++row)
+          if (net.state(NativeReadoutCoordinate::x, row, event.detector).valid() &&
+              !rtc_event_assessment_detail::contains(event.neighbor_exclusions, row) &&
+              (row < run->first || row >= run->past_last))
+            throw std::invalid_argument("RTC donor background crosses its resolved target run");
+    }
     return out;
   }
   const auto &assessment_handle() const noexcept { return assessment_; }
@@ -453,6 +477,8 @@ public:
   // influence never silently becomes universal rejection (SCI-RTC-REQ-020).
   bool representative_replaced(TimestreamNativeRow row) const {
     (void)native_state_.at(row-plan_->first_native_row());
+    if (plan_->input_causes().at(row-plan_->first_native_row()) !=
+        RtcNotchRecoveryCause::retained) return false;
     for (const auto &d : donors_) {
       const auto r = d->plan_handle()->selection().affected;
       if (d->filled() && row >= r.first && row < r.past_last) return true;
