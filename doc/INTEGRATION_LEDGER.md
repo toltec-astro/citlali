@@ -1,5 +1,51 @@
 # Citlali Integration Ledger
 
+## Bounded RTC assembly and native relearning — 2026-09-15
+
+- Work order `TIMESTREAM-SUCCESSOR-RTC-ASSEMBLY-001`, Tier 2; owner-approved
+  RTC-only assembly after the recorded FRUIT deferral. Existing topic/worktree
+  `codex/timestream-successor-rtc-notch-recovery-001` at
+  `/private/tmp/citlali-timestream-successor-rtc-notch-recovery-001`.
+- Literal source base `4d8136383e77f57c866e5170ad6477af882961a9` preserves the
+  reviewed sequencing decision. Initial source
+  `881d6d0a1f2395542339113b39ca96ecb25d1111` received two independent findings.
+  Repaired exact source `ae8227b97b0e0b10dbe453bb24b6ba315c710ade`, tree
+  `07f4acf8ce1188f8c11d44ae473d8e7d47737554`, directly follows that candidate;
+  eight source/test/tool paths change relative to the literal base.
+- Fresh live canonical `0f52e1a421416eadaf7d8d99d64f537132395c0c` remains an
+  ancestor; live topic remains `c8efff5cb171eb72e6df38c98828da9d9d3df643`.
+  This same-branch continuation performs no integration, push or cleanup.
+  Owner publication is pending. No moving-base reconciliation is claimed.
+- Runtime complete finite plans now compose accepted transient/donor owners,
+  optional notch and LPF/decimation, expose actual native conditioned Learn,
+  and support explicit reconsideration with fresh-original Apply. Exact
+  input/VAL/stage/attempt/support and replacement/availability facts remain
+  bound; no new automatic scientific or downstream eligibility policy.
+- Repaired source review: **PASS with recorded limitations, no actionable
+  findings**, SHA256
+  `82ebdf075958653502facdc9cc9bd44d6a966b55fe0b298868e763b1591947a8`.
+  Scientific/behavioral, architecture/ownership, and repository/evidence
+  categories all pass within the bounded scope. Prior donor-support isolation
+  and unapplied-replacement reporting findings are retained as repaired history.
+- Local gates: 1,147 runnable CTests, focused 34 (15 assembly), RTC Python
+  88 plus 33 subtests, baseline 207 plus 137 subtests, require-all config and
+  isolated headers. Exact CLI binds the source. Supplemental AppleClang 21
+  arm64/C++20/Homebrew only; existing local kids `04088da-dirty` disclosed.
+  No Unity/Spack V2 or production qualification is transferred.
+- Twelve fixed 152390 cases execute 32 plans/320 paired Apply calls; 416
+  prior artifacts and 24 replayed PSD products are byte-identical. Original
+  pairs, fixed baseline numerics and previous scientific limitations remain.
+  Real donor admission is unavailable in this runner; controlled tests cover
+  that path. FRUIT/PTC/CAL/MAP and production activation remain deferred.
+- Evidence `/private/tmp/citlali-rtc-assembly-2026-09-15`: 876 sealed files,
+  1,083,328,844 bytes; manifest SHA256
+  `637e81cbdbc6c65fee1c10ddb123a4a232759b779b0e9261d71e53f1c37a9bcf`.
+  All 881 preceding sealed experiment files remain unchanged. The existing
+  handoff records the full result and remaining caller bindings. This separate
+  documentation-only closure is independently reviewed at its exact SHA;
+  external `closure-binding.json` records that identity and verdict without
+  circular self-identification.
+
 ## RTC completion before downstream FRUIT connection — 2026-09-15
 
 The owner defers the FRUIT connection and downstream comparison until the full

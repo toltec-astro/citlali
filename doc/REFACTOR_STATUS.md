@@ -1,5 +1,50 @@
 # Citlali Refactor Status
 
+## Bounded RTC assembly and native relearning — 2026-09-15
+
+The approved first RTC-only assembly is implemented at exact source
+`ae8227b97b0e0b10dbe453bb24b6ba315c710ade`, tree
+`07f4acf8ce1188f8c11d44ae473d8e7d47737554`. Runtime Learn now consumes actual
+native intermediate products beside original transient evidence; Consider
+freezes explicit complete detector plans; Apply composes transient/donor
+treatment, optional finite notch and LPF/decimation afresh on original x/r.
+This implements a bounded part of S2, not the entire production RTC pipeline.
+The engineering workflow remains separate from these runtime responsibilities.
+
+Native evidence preserves exact input, stage, attempt, VAL, timing and support.
+Donor x remains flagged, r is never reconstructed, and coordinate availability
+and nonrepresentative influence remain distinct from downstream eligibility.
+Resolved run exclusions also constrain donor background and median dependencies.
+Later-VAL evidence is separately bound; initial-VAL numerical plans cannot be
+silently replayed under a later snapshot. No automatic admission, factor or
+stopping policy is introduced.
+
+Same twelve 152390 cases, 32 explicit plans and 320 paired Apply calls pass:
+416 prior reference artifacts are byte-identical, and all 24 relearned spectra
+after returning to LPF alone exactly match the initial LPF spectra. Original
+x/r and the selected 1 Hz / approximately 3 s baseline are unchanged, including
+its measured fast-source loss up to 2.19%. Local median Apply is 0.044 s for LPF
+and 0.133 s for notch plus LPF per approximately 20.7-minute detector record;
+learning both native intermediate spectra adds 0.070/0.046 s respectively.
+These are fixed single-detector timings, not production throughput estimates.
+
+All 1,147 runnable CTests pass; one established test remains disabled.
+Focused 34/34 (15 assembly tests), RTC Python 88 plus 33 subtests, baseline
+207 plus 137 subtests, require-all config and isolated headers pass. Evidence
+is supplemental macOS AppleClang/Homebrew, not Unity/Spack V2 qualification.
+Fresh exact-source independent review passes with recorded limitations and
+no actionable findings; two earlier composition findings were repaired.
+
+The real replay supplies no new donor admission. Binding existing selected
+event, static-transfer, stable-segment and contamination authorities into a
+representative multi-detector RTC caller remains the next implementation gap;
+controlled tests cover the assembled donor path. FRUIT/PTC/CAL/MAP connection
+remains deferred. Production filtering is inactive. The existing topic is
+clean and local; fresh canonical remains `0f52e1a421416eadaf7d8d99d64f537132395c0c`.
+No integration, push or cleanup occurs. The existing
+[handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_NOTCH_RECOVERY_001_2026-09-14.md)
+binds source, review, full results and the separately reviewed closure.
+
 ## RTC completion before downstream FRUIT connection — 2026-09-15
 
 The owner defers the FRUIT connection and downstream comparison until the full

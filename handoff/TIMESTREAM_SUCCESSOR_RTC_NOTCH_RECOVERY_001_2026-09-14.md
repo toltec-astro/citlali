@@ -1,5 +1,123 @@
 # TIMESTREAM-SUCCESSOR-RTC-NOTCH-RECOVERY-001
 
+## RTC-only assembly source and closure — 2026-09-15
+
+Owner authorization: “Excellent. Let's do this,” following the recorded
+decision to assemble RTC before connecting FRUIT. Work order
+`TIMESTREAM-SUCCESSOR-RTC-ASSEMBLY-001`, Tier 2, continues the existing topic
+without a new branch, canonical integration, push, cleanup or production
+activation. This implements a bounded S2 composition; it does not complete
+all automatic planning or production caller responsibilities.
+
+### Exact identity and review
+
+- Literal base: `4d8136383e77f57c866e5170ad6477af882961a9`, the independently
+  reviewed RTC-first sequencing decision.
+- Initial source: `881d6d0a1f2395542339113b39ca96ecb25d1111`, tree
+  `f9e07497eeab32f3c6f3177b6347ad7163231c19`; independent review required repair.
+- Final source: `ae8227b97b0e0b10dbe453bb24b6ba315c710ade`, tree
+  `07f4acf8ce1188f8c11d44ae473d8e7d47737554`, parent the initial source.
+  Eight changed source/test/tool paths are hashed in `repaired-source-binding.json`.
+- Fresh canonical: `0f52e1a421416eadaf7d8d99d64f537132395c0c`, unchanged ancestor.
+  Fresh topic: `c8efff5cb171eb72e6df38c98828da9d9d3df643`. All later sequencing,
+  source and closure commits are local, pending owner publication. Use the
+  existing worktree `/private/tmp/citlali-timestream-successor-rtc-notch-recovery-001`.
+- All three effective governance sources and the unchanged WP7.1 router,
+  ADR0017–0023, S2/occurrence-speed source-footprint rules and frozen SCI-RTC
+  r0.12 requirements govern. Accepted/effective governance remains
+  `06a3ade51c1b3f38887295433d913811bf25cd14` /
+  `77507836325eff9f469062d5884481ea37599594`. Scientific source/closure remains
+  `170ecea9de1ee810da7d7e45a489a4545ccd623d` /
+  `20ba6ae5dcf0b90a24ac3e778a75eff0a1bbe2aa`.
+- Final independent source review: PASS with recorded limitations, no
+  actionable findings, SHA256
+  `82ebdf075958653502facdc9cc9bd44d6a966b55fe0b298868e763b1591947a8`.
+  The earlier review found a frozen donor fit bypassing resolved exclusions
+  and a replacement flag where Apply had not used the donor. Final Consider
+  validates used background/boundary and median populations against resolved
+  admission; realized replacement requires actual numerical application.
+  No silent refit or new rejection policy was introduced.
+
+### Delivered runtime responsibilities and conformance
+
+Concrete `RtcPipelinePlan`, `RtcPipelineResult` and `RtcPipelineReassessment`
+compose existing RTC owners. Learn retains original spectral/transient
+evidence and consumes actual post-notch/post-LPF native numerical products.
+Consider jointly retains those evidence products and freezes explicit complete
+detector plans. Apply executes transient/donor treatment, optional finite
+notch, then the same LPF/decimation afresh from original x/r. Reconsideration
+cannot reuse cumulative conditioned input or another Apply realization.
+These runtime boundaries are distinct from the engineering workflow.
+
+Native products share immutable numeric storage and preserve original time,
+occurrence, stage, attempt, VAL and source identity. They expose actual
+replacement, failed recovery, representative exclusion, causal influence and
+coordinate availability separately. x-only donor reconstruction creates no r;
+unavailable r propagates through exact nonzero filtering support without
+discarding available x or the common schedule. Replaced representative samples
+remain excluded from independent/map input. Nonrepresentative influence does
+not silently become a universal rejection rule.
+
+Conditioned spectral evidence retains the existing 4 s Hann estimator and its
+actual detrending/normalization/window conventions. Declared invalid support
+does not compact time; unexpected nonfinite admitted support records the
+named evidence failure. Source signal and unknown protection remain explicit.
+Feature disappearance is a treatment outcome, not retrospective admission.
+Later VAL creates a new exact product binding; initial-VAL numerical plans
+cannot be reused under that later snapshot without a matching planning use.
+
+Same eight affected and four quiet 152390/n12 detectors, nine saved paired
+source/line injections, exact `w1-t3`/LPF coefficients and factor-two phase
+zero. Affected schedule LPF -> selected notch -> LPF; control schedule
+LPF -> LPF. All 32 complete plans and 320 paired Apply calls pass. All 416
+saved numerical/support/source artifacts are byte-identical, as are all 24
+relearned spectra when returning to LPF. Original pairs remain unchanged.
+Each LPF trial retains 49,263 rows and 504/352 post-notch/post-LPF windows
+per coordinate; selected-notch trials retain 31,333 rows and 324/219 windows.
+Every window's actual native-time support and numerical parent are recorded.
+Previous approximately 0.17% known-line power and up to 2.19% fast-source peak
+loss remain unchanged evidence; neither is converted into a new admission rule.
+
+Local median numerical Apply is 0.0444 s LPF / 0.1333 s notch plus LPF per
+approximately 20.7-minute detector record. Learning both intermediate spectra
+adds 0.0700/0.0457 s; product binding about 0.0011 s. All twelve invocations,
+paired fixtures, exports and verification finish in 151.13 s wall / 131.90 s
+child CPU, peak child RSS 235,732,992 bytes. These fixed single-detector figures
+do not measure real full-network donor admission or production throughput.
+
+All 1,147 runnable CTests pass (1,148 registered; unchanged disabled553),
+focused 34/34 including 15 assembly tests, RTC Python 88 plus 33 subtests,
+baseline 207 plus 137 subtests, require-all config and isolated headers.
+CLI reports `ae8227b97`; the reviewer independently repeated the focused
+tests. Actual environment is supplemental macOS arm64 AppleClang21/C++20,
+cached Homebrew dependencies, local kids `04088da-dirty`. No Unity access,
+Spack V2 reproduction or production qualification is claimed.
+
+### Evidence and remaining work
+
+Evidence root: `/private/tmp/citlali-rtc-assembly-2026-09-15`.
+`REPORT.md`, SHA256
+`4df28bb13d1bbb103d44593fc92d6f62ae503a3d74af7838b43bc338eaca5e4c`,
+records implementation, exact gates, repaired findings, timing and limitations.
+`campaign-summary.json` and `campaign-01/report.json` bind the fixed replay;
+each per-stage YAML preserves windows, numerical-parent digests and support.
+`EVIDENCE_SHA256SUMS` seals 876 files / 1,083,328,844 bytes, SHA256
+`637e81cbdbc6c65fee1c10ddb123a4a232759b779b0e9261d71e53f1c37a9bcf`.
+All 881 prior sealed experiment files remain unchanged. Initial failed setup
+attempts and the repaired source review remain recorded rather than relabeled.
+This three-document closure has its own fresh exact-SHA independent review;
+external `closure-binding.json` and `closure-review.md`, outside the sealed
+computational set, bind its exact identity and disposition.
+
+Real replay retains the prior explicit exclusions and supplies no invented
+donor admission. Controlled tests exercise reconstruction; binding the
+existing selected-event, static flxscale, stable-segment and contamination
+authorities to a representative multi-detector RTC caller is the next
+implementation gap. Recover settled rules before declaring new owner questions.
+Automatic line admission, factor selection, stopping/fallback policy and later
+generation numerical planning remain separately bounded work. FRUIT/PTC/CAL/MAP
+connection stays deferred until RTC is ready. Production filtering is inactive.
+
 ## RTC completion before downstream FRUIT connection — 2026-09-15
 
 The owner defers the FRUIT connection and downstream comparison until the full
