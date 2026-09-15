@@ -1,5 +1,74 @@
 # Citlali Integration Ledger
 
+## Bounded coherent RTC removal and science-error comparison — 2026-09-15
+
+The owner's next directive authorizes one 152390/n12 coherent candidate and
+a small downstream science diagnostic, preserving the existing branch and
+production-inactive state. Exact source
+`10ac50f4537d11cde77a0e7c44cce0a2155471da`, tree
+`77865c5917c6d38cfe357ab2a2cd712cd13d12a4`, follows population closure
+`5b39eb9e4eabd2389e16745c7b8c26d93969bd11`.
+Fresh live canonical remains `0f52e1a421416eadaf7d8d99d64f537132395c0c`;
+the remote experiment remains `1870f99c90218dc7af83d8478eae146a09643bc2`.
+Population and coherent continuations are local, unintegrated and pending
+owner publication. Earlier next-step recommendations below are historical.
+
+**Result: extra RTC line treatment does not show a consistent science-error
+advantage for this tested population. Preserve LPF/F2 plus existing downstream
+cleaning as the comparison reference; do not activate the coherent model or
+choose a residual-line allowance.** This is a conditional diagnostic result,
+not production qualification or a general decision to retain contaminated data.
+
+Eight affected detectors and four descriptor-quiet controls use held-out time
+and disjoint donor/target groups. Original x has a 0.9724 normalized rank-one
+power fraction; held-out complex power-error ratios are 0.0212–0.0486
+(approximately 14.6–22.1% RMS error). A single measured common complex envelope
+with fixed coordinate-specific couplings is supported descriptively. It is
+not an identified non-astronomical oscillator or a successful long-horizon
+forecast. r remains an explicitly provisional leakage control.
+
+The bounded Python diagnostic separates immutable coherence evidence, explicit
+Consider disposition and frozen original-pair Apply. The actual C++ witness
+also repeats existing transient/spectral Learn with sky present before Learn.
+These do not constitute an admitted coherent RTC stage. No production library,
+Engine, automatic selector, notch optimization or downstream algorithm changes.
+The candidate's short direct window does not erase its global fitting
+dependencies: projection reach is 1234.747 s, so it **fails the five-second
+support rule**. Full-model effective degrees of freedom and calibrated parameter
+covariance remain unavailable; two coefficients are only a conditional fit rank.
+
+Four treatments reuse existing ten-mode Cleaner, relearned in each arm, and
+NaiveMapmaker with 419 originally APT-good detectors, own pointing and fixed
+diagnostic scales/weights. This owner-authorized small map diagnostic uses
+four fixed ten-second chunks; it is not a production PTC/CAL/JINC/FRUIT route.
+Eight correlated background realizations, known sky/added line, phase controls,
+common/actual support and separate bias/uncertainty/MSE preserve that distinction.
+Extended-source coverage is only 42.2% and its error is poorly constrained.
+
+For six common complete windows, detector269's actual post-PCA x band power
+is 420.0 with LPF versus 668.2 finite-notch and 709.8 coherent; detector402
+gives 216.3 versus 428.9 and 409.1, in matched-APT (mJy/beam)^2. Earlier spectral
+suppression does not establish a better downstream outcome. Coherent gains
+about 902 target-seconds over finite-notch support but no consistent science
+advantage, and remains ineligible. LPF/finite/coherent/rejection retain
+6457.0/2624.2/3525.8/0 eight-target seconds beyond the existing exclusions.
+The finite-notch boundary challenge loses the principal crossing (14/46
+central-lobe samples); other detectors' map coverage does not recover it.
+
+Final supplemental local gates pass: 1,132 runnable CTests, one unchanged
+disabled; 64 RTC Python tests; 207 baseline tests plus 137 subtests; require-all
+config and exact CLI. Exact source reproduces 495 geometry, 160 runtime and
+4,464 downstream artifacts. All 3,623 prior sealed files remain unchanged.
+No Unity or Spack-backed V2 qualification is claimed.
+
+Independent exact-source review passes with recorded limitations and no
+actionable findings. The 14,008-file evidence manifest SHA256 is
+`221ed79ddff18ea1c89b0232410c8e87902401d02b240dca5fc363e393a5dd22`.
+The [existing handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_NOTCH_RECOVERY_001_2026-09-14.md)
+records the directive, report, exact review, preserved pilots and next-decision
+limits. This documentation-only closure receives its own independent exact-SHA
+review and external binding. No integration, push, activation or cleanup.
+
 ## RTC treatment-aware population audit completed locally — 2026-09-15
 
 The owner directive supersedes further isolated-notch optimization with a

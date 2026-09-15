@@ -1,5 +1,174 @@
 # TIMESTREAM-SUCCESSOR-RTC-NOTCH-RECOVERY-001
 
+## Coherent-removal and science-error continuation — 2026-09-15
+
+The owner explicitly authorizes a bounded coherence assessment, one limited
+network-local coherent candidate if supported, and four-arm science-error
+comparison on 152390/n12. This directive permits a small map diagnostic through
+existing downstream components. It supersedes the previous timestream-only
+diagnostic restriction for this experiment, without authorizing CAL/PTC/MAP or
+FRUIT redesign. It prohibits an arbitrary residual-line epsilon, further notch
+optimization, a general framework, automatic selection and production activation.
+The exact directive is preserved at
+`/private/tmp/citlali-rtc-coherent-removal-2026-09-15/OWNER_DIRECTIVE.md`, SHA256
+`d98308b092355cf8f544b7cc25467263dcddf5d7bedd3d0788d768579b3e12c2`.
+
+Same branch/worktree: `codex/timestream-successor-rtc-notch-recovery-001`,
+`/private/tmp/citlali-timestream-successor-rtc-notch-recovery-001`.
+Literal continuation base: `5b39eb9e4eabd2389e16745c7b8c26d93969bd11`, tree
+`ddf09aa3770fb15b3b929daa157ebb0dfcd9feaa`.
+Exact implementation: `10ac50f4537d11cde77a0e7c44cce0a2155471da`, tree
+`77865c5917c6d38cfe357ab2a2cd712cd13d12a4`, direct parent the literal base.
+The source changes twelve CMake/tool/test files, with no production-library
+changes. `source-state.json` below records every content digest. This separate
+documentation-only commit is the closure; its exact SHA/tree and independent
+review are recorded externally to avoid circular identity.
+
+Effective governance remains accepted `06a3ade51c1b3f38887295433d913811bf25cd14`,
+incorporated `77507836325eff9f469062d5884481ea37599594`, with all three accepted
+digests in `preflight.json`. Scientific authority remains the accepted WP-7.1
+baseline/router, SCI-RTC lifecycle/support requirements and ADR 0017–0023,
+including the retained numerical half-support and optical/motion/cadence rules.
+The user's directive permits an explicitly ineligible experiment, not a waiver
+of those rules or entry in an accepted-plan index.
+
+### Runtime boundaries and fixed experiment
+
+The engineering learn/consider/apply workflow remains distinct from execution.
+Offline `CoherentEvidence` learns exact original pair/time/VAL/support-bound
+donor trajectories. `CoherentPlan` freezes donor bases, target coefficients,
+inverse Gram matrices, training support and an explicit failed admission.
+Diagnostic Apply checks exact identities and replays original paired x/r.
+The same coordinate-diagonal operator/metric/support is fitted separately to
+x and r; no x waveform is copied into r and no x-only fallback exists. The
+existing C++ runtime witness separately repeats actual transient/spectral Learn
+with a named sky overlay present before Learn, then frozen original Apply.
+Its coherent negative overlay and additional support remain identified
+diagnostics; this does not implement an admitted native coherent RTC stage.
+
+Affected channels are 269,402,296,300,366,438,406,307; descriptor-quiet controls
+are 193,231,226,330. The 310 disjoint four-second matched windows use 102
+training windows and two guarded sets of 101 later evaluation windows, with
+reciprocal disjoint donor/target groups. x rank-one fraction is 0.9724 and
+held-out complex power-error ratios 0.0212–0.0486 (14.6–22.1% RMS). r's fraction
+is 0.252, without comparable prediction. Shared structure and small descriptive
+motion/pointing correlations do not establish physical origin or no astronomy.
+
+Only one candidate is tested: a measured common amplitude-and-phase trajectory,
+fixed coordinate-specific target quadratures and no moving detector coupling,
+extra modes or center/width search. Its declared centered 489-point demodulator
+is separate from the unchanged 488-sample descriptive estimator. Training is
+native interval [244,50024), 1.998848–409.788416 s. Although direct half-support
+with LPF is 3.252 s, full projection reach is 1234.747 s because fitted
+coefficients depend on early training. **The candidate fails the five-second
+support rule.** Thirty-two target coefficients plus learned donor weights and
+the correlated trajectory are model costs; conditional fit rank two is not
+total effective degrees of freedom. Full nonlinear effective degrees of freedom
+and calibrated parameter covariance remain unavailable.
+
+Four arms replay original data: unchanged LPF/F2, prior six-second finite notch
+plus LPF, coherent subtraction plus LPF, and rejection of the eight affected
+occurrences. All other originally eligible detectors retain LPF/F2. Existing
+paired exclusions, native time, beam, actual motion and cadence bounds remain.
+Known sky is injected through all 419 originally APT-good detectors' own
+pointing; 72 already flagged columns remain excluded, including explicitly
+unavailable geometry/calibration fields. The provisional readout average and
+r native leakage ratio 0.2 are declared, not measured calibration.
+
+Existing Cleaner uses ten modes learned anew in each arm/injection. Existing
+NaiveMapmaker uses fixed diagnostic APT scales, weights, two-arcsec pixels and
+four ten-second chunks. This is a conditional partition/projection, not admitted
+PTC scans or production CAL/JINC/FRUIT. Eight shared-frequency-phase background
+realizations preserve measured cross-detector and x/r spectra; unknown original
+sky/line magnitudes remain in that conditional background. Known added lines
+and sky provide numerical truth without treating cleaned output or sidebands
+as clean-noise authority. Four phase controls are response probes, not extra
+independent noise draws. Original-template, original-frozen-projection and
+source-before-coherent-Learn comparisons remain distinct. All nine actual C++
+original/sky-before-Learn pairs retain identical transient causes/exclusions;
+the stochastic population trials fix those exclusions while relearning coherent
+and PCA state. They do not estimate full-pipeline transient-policy variance.
+
+### Scientific result and retained limits
+
+Coherent removal does **not consistently beat the finite notch or rejection**
+in compact-source science error. No extra RTC line treatment demonstrates a
+material benefit over the unchanged LPF plus downstream reference here.
+Coherent-minus-LPF paired peak-MSE changes are -11.6,-7.0,+50.0,+143.3 with
+descriptive standard errors 41.6,94.7,40.5,38.8 in (mJy/beam)^2 across three
+crossings and the boundary challenge. Centroid, extended signal, artifacts and
+covariance use separate units and both common/actual support in the full report.
+Only 42.2% of the extended aperture is covered; that result is poorly constrained.
+
+Actual 9.75–12.25 Hz x power on six complete common windows after PCA is
+420.0/668.2/709.8 for LPF/finite/coherent on detector269 and
+216.3/428.9/409.1 on detector402, in matched-APT (mJy/beam)^2. Extra suppression
+before PCA does not imply a better result after relearning PCA and changing
+support. Eight-target retained seconds are 6457.0/2624.2/3525.8/0 for
+LPF/finite/coherent/rejection. Coherent's approximately 902 s advantage over
+the finite notch is not qualified recovery. The finite boundary challenge
+retains 14/46 central-lobe samples versus 46/46 for LPF/coherent and zero for
+rejection; surviving tails or another detector's map do not recover that crossing.
+
+Local model Learn+Consider including I/O and hashing takes 0.131–0.186 s for
+the 1241 s selected record; Apply takes 0.046–0.067 s before LPF/downstream.
+These are bounded local measurements, not whole-array or Unity throughput.
+Runtime cost is small here, but science advantage and support compliance remain
+absent. Retain LPF as the reference for continued comparison. Do not choose
+epsilon or activate anything. Broader use first needs a support-compliant
+model and measured benefit with a bound downstream/source/noise/covariance
+reference; this result does not authorize that development or a model search.
+
+### Exact gates, evidence and independent review
+
+Evidence root: `/private/tmp/citlali-rtc-coherent-removal-2026-09-15`.
+Owner report: `REPORT.md`; detailed bias/uncertainty/MSE, coverage, artifact and
+covariance tables: `analysis-02`, `paired-error-comparison.json`; actual band
+power: `residuals-01`; figures: `figures-02`. `source-completion.json` explicitly
+names authoritative and superseded directories. Exact native exports reuse
+the previously sealed producer; `geometry-final`, `runtime-witness-final` and
+`exact-downstream` supply final compiled-source qualification for earlier pilots.
+
+Final local AppleClang/arm64/Homebrew supplemental gates pass: 1,132 runnable
+CTests, one unchanged disabled; 64 RTC Python tests; 207 baseline tests plus
+137 subtests; require-all config; exact CLI. Exact replay reproduces 495
+geometry, 160 runtime and 4,464 downstream artifacts. Conditional Python FIR
+versus actual frozen C++ Apply differs by at most 4.88e-19 native units.
+All 3,623 files in five prior seals remain unchanged. No Unity or Spack-backed
+V2/production gate was performed. Three exact-source executables are saved in
+`bin` and bound in `binary-binding.json`; build realization is preserved.
+
+Preserved resolved pilots include nullable-APT handling, serialization/NumPy
+warnings, premature analysis, and the original source-only control misbinding.
+`controls-02/control-4` correctly retains the original frozen projection and
+does not claim learning from an absent line. The first baseline run failed
+because the conventional build link was absent; the exact-CLI rerun passed
+and the temporary link was removed. Failed pilots are not acceptance evidence.
+
+Independent fresh-context exact-source reviewer `/root/rtc_coherent_exact_review`
+passes all three axes with recorded limitations and no actionable findings.
+Report: `review-source.md`, SHA256
+`2f70fa3ca0f1b2a0707087ff410f8ced7d812c6e117f37f48adc7993cd82b96b`.
+Manifest `EVIDENCE_SHA256SUMS` covers 14,008 files and 23,345,961,668 bytes,
+SHA256 `221ed79ddff18ea1c89b0232410c8e87902401d02b240dca5fc363e393a5dd22`.
+`source-seal.json` lists excluded caches and separate review/closure receipts.
+Fresh independent exact-SHA documentation review and final identities are bound
+in `review-closure.md`, `closure-state.json` and `closure-binding.json`.
+
+Live read-only GitHub verification before closure reports canonical
+`0f52e1a421416eadaf7d8d99d64f537132395c0c` and experiment
+`1870f99c90218dc7af83d8478eae146a09643bc2`. Canonical is unchanged and remains
+an ancestor; no moving-base reconciliation is required for this same-branch
+continuation. Population/coherent commits remain local pending owner push.
+Unrelated owner dirt, all prior evidence and production-inactive state remain
+preserved. No integration or cleanup is authorized by this closure.
+
+Owner publication, from the Mac, using the same branch:
+
+```sh
+git -C /private/tmp/citlali-timestream-successor-rtc-notch-recovery-001 push git@github.com:toltec-astro/citlali.git refs/heads/codex/timestream-successor-rtc-notch-recovery-001:refs/heads/codex/timestream-successor-rtc-notch-recovery-001
+```
+
 ## Treatment-aware population audit continuation — 2026-09-15
 
 The owner directive supersedes further isolated-notch optimization with a
