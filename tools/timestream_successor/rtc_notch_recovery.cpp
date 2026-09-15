@@ -137,6 +137,28 @@ int main(int argc, char **argv) {
                   rs.back().valid() == (a[3] != 0),
               "export differs from exact producer state convention");
     }
+    // Explicit controlled input for the owner's injection-before-Learn test.
+    // Imported native measurements and their files remain unchanged; this
+    // separately named paired realization is the original of this trial.
+    std::string learning_overlay = "none";
+    if (cfg["learning_overlay"]) {
+      const auto path = checked("learning_overlay");
+      learning_overlay = "sha256:" + citlali::utils::sha256_file(path);
+      require(fs::file_size(path) == static_cast<std::uintmax_t>(rows) * 16,
+              "learning overlay paired shape mismatch");
+      std::ifstream overlay(path, std::ios::binary);
+      for (std::int64_t i = 0; i < rows; ++i) {
+        std::array<double, 2> delta;
+        overlay.read(reinterpret_cast<char *>(delta.data()), 16);
+        require(bool(overlay) && std::isfinite(delta[0]) &&
+                    std::isfinite(delta[1]),
+                "nonfinite or incomplete learning overlay");
+        x(i, 0) += delta[0];
+        r(i, 0) += delta[1];
+        require(std::isfinite(x(i, 0)) && std::isfinite(r(i, 0)),
+                "learning overlay overflow");
+      }
+    }
     const auto original_x = x, original_r = r;
     auto config = load_runtime_config(checked("effective_config"));
     require(config.interface_offset_present[nw] &&
@@ -157,6 +179,9 @@ int main(int argc, char **argv) {
     mapping->paired_xr_record_id +=
         ":exact-original-column-projection:sha256:" +
         citlali::utils::sha256_file(samples_path);
+    if (learning_overlay != "none")
+      mapping->paired_xr_record_id +=
+          ":controlled-sky-before-Learn:" + learning_overlay;
     mapping->timing_uncertainty_state_id =
         "unquantified:uniform-average-center-trial:rtc-native-readout-uniform-"
         "average-assumption-v1";
@@ -277,6 +302,14 @@ int main(int argc, char **argv) {
             << ",\"VAL_generation\":0,\"transient_excluded_cells\":"
             << transients->counts().union_pair_cells
             << ",\"source_status\":\"unknown-retained\",\"trials\":[";
+    std::ofstream learning_receipt(output / "learning-input.yaml");
+    learning_receipt << "overlay: " << learning_overlay << "\n"
+                     << "source_samples_sha256: "
+                     << citlali::utils::sha256_file(samples_path) << "\n"
+                     << "source_files_modified: false\n"
+                     << "original_scope: explicitly_named_trial_input\n";
+    learning_receipt.close();
+    require(bool(learning_receipt), "learning provenance output failed");
     int trial_index = 0;
     for (const auto &trial : cfg["trials"]) {
       RtcLineTransferSpecification s;
