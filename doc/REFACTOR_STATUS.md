@@ -1,5 +1,48 @@
 # Citlali Refactor Status
 
+## Owner-selected RTC notch baseline — 2026-09-15
+
+The owner selects **1 Hz full width / approximately 3 s duration** as the
+working RTC notch baseline for continued development and qualification.
+This settles the candidate choice; it does not change the experiment's
+measured tradeoff or waive astronomical-response requirements. The exact
+selected realization is `w1-t3` from source
+`898ed9a4e1c142f0334cc6f5dfe9974536ee227a`, reviewed closure
+`a2b96e48c9ca64fce4f90f6261d8dcd9fc9dc955`. That closure is now verified pushed.
+Live canonical remains `0f52e1a421416eadaf7d8d99d64f537132395c0c`.
+
+Keep its existing Hann family/normalization, measured native cadence,
+367-tap notch, exact saved 307-tap LPF and factor-two phase zero. Actual notch
+span is 2.9982948303 s; complete sequential half-support is 2.7525329590 s.
+The current 11.0062558446 Hz center and coefficients bind the tested case;
+selection does not automatically admit every line, detector or cadence.
+All original exclusions, paired x/r rules, source protection, replacement
+flags and fresh-original frozen-plan replay remain unchanged. Production
+filtering remains inactive and no global executable default is edited.
+
+The measured benefits and costs remain attached: 56.5% more affected time
+than the narrow six-second reference, about 0.17% residual known-line power
+relative to LPF, restored detector269 boundary coverage, and up to 2.19%
+fast-source peak loss relative to native sky. This is a working baseline,
+not a finding that it wins the final scientific comparison. The previous
+narrow/LPF references and all nine-design evidence remain preserved.
+
+Next proposal for owner discussion: one fixed-design comparison of this
+baseline, LPF alone and the saved narrow reference through necessary RTC
+conditioning and PTC within FRUIT. It should use the existing affected/control
+population and paired source injections, checking final source recovery,
+residual contamination, support and feedback-sky contamination. First establish
+a faithful connection to the existing FRUIT path; the prior isolated Cleaner/
+map diagnostic does not supply it. Preserve the unchanged scientific budgets
+and do not assume FRUIT restores upstream losses. This proposal does not start
+a campaign, select an automatic admission threshold, or authorize integration.
+
+This continuation changes only the status, ledger and existing handoff.
+The handoff binds the exact owner decision, coefficients, prior evidence and
+fresh independent exact-SHA review. No rebuild or computational rerun is
+needed for this documentation-only selection; prior measured gates retain
+their original source and environment identities.
+
 ## Bounded wider-notch / shorter-support RTC experiment — 2026-09-15
 
 **Result: useful tradeoff, but no clear winner.** The owner-approved grid

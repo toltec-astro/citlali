@@ -1,5 +1,90 @@
 # TIMESTREAM-SUCCESSOR-RTC-NOTCH-RECOVERY-001
 
+## Owner-selected working notch baseline — 2026-09-15
+
+Owner decision: “I am in favor of baselining the 1Hz/3 second option you've
+identified. Let's tie that down and discuss where to go from here.”
+
+**Selected working baseline: `w1-t3`.** This fixes which tested design to
+carry forward. It retains all measured limitations and mandatory scientific
+requirements; it does not establish mapped qualification, automatic line
+admission, a global executable default, canonical integration or activation.
+The earlier “useful tradeoff, but no clear winner” experiment remains intact
+as measured evidence; owner candidate selection is a separate disposition.
+
+- Requested full cutoff separation: 1 Hz, center 11.006255844577186 Hz,
+  cutoffs 10.506255844577186 and 11.506255844577186 Hz for this bound case.
+- Same finite Hann bandstop construction and normalization; 367 taps at
+  measured native interval 0.008192062377929688 s (nominal 0.008192 s).
+- Actual end-to-end notch span: 2.9982948303222656 s.
+- Same saved 307-tap LPF, factor-two output and phase zero; combined half-support
+  2.752532958984375 s, subject to the unchanged five-second limit.
+- Exact notch coefficients, serialized little-endian binary64, SHA256:
+  `879c4b7978b3ce08ca6844594e8730ba717e459d3e5db387f7a15957eb055fa7`.
+- Exact LPF coefficients in the same serialization, SHA256:
+  `e25377075b9b20147bfc11b9c4b9ab792dd60576166f6c25dbc8b9aaf75e8967`.
+- Saved trial `/private/tmp/citlali-rtc-wide-notch-2026-09-15/screen-01/w1-t3.json`,
+  SHA256 `48a384ca10f5442a93f573ae87b308ca8bb9e292efc60c8aac44d0b9313ea670`.
+- Exact implementation `898ed9a4e1c142f0334cc6f5dfe9974536ee227a`, tree
+  `f8687e48f012439979fac46e6700de80df03c505`; reviewed experimental closure
+  `a2b96e48c9ca64fce4f90f6261d8dcd9fc9dc955`, tree
+  `509a148822b16dccd942e41651181997788a9e18`, now verified pushed.
+- Preserved experiment manifest SHA256:
+  `cb09214f637e65fe91b109e911c1d48422440daea2de09da9b19c59d3a4b1f1d`.
+
+Selection retains the same eight affected detectors and four controls, the
+source/VAL/input/support bindings and original x/r. Reconstructed values
+remain identifiable, flagged and excluded from independent/map input. The
+runtime order remains transient treatment, optional notch, then LPF/decimation.
+Learn supplies evidence; Consider freezes the complete plan; Apply executes
+that plan afresh on the original admitted pair. Native intermediate evidence
+may support later Learn under its own exact stage/attempt/VAL bindings.
+Baselining does not implement the full RTC outer loop or replace its contracts.
+RTC treatment replanning and downstream FRUIT sky feedback are distinct loops;
+a FRUIT comparison does not substitute for completing RTC-wide relearning.
+
+The new baseline retains 4106.9 affected output-cell seconds versus 2624.2
+narrow (56.5% more), leaves about 0.17% known-line power relative to LPF,
+and restores the inspected detector's boundary/extended domain. Fast-source
+peak loss up to 2.19%, ringing, detector-specific incomplete crossings,
+unavailable real line/noise separation, provisional readout/r response, and
+unqualified mapped response remain explicit. No scientific budget or residual
+allowance is silently changed. A 1 Hz requested width is not a 1 Hz deeply
+attenuated band; its measured transitions remain part of the saved evidence.
+
+For discussion, the next bounded scientific question is whether this fixed
+baseline improves the final result after necessary RTC and PTC within FRUIT,
+compared with LPF alone and the saved narrow notch. Reuse the tested population,
+fast and boundary challenges, adequately supported extended source and paired
+injections under each frozen RTC plan. Examine recovered source amplitude/
+shape/position, residual contamination and available support, including
+contamination of the feedback sky model. Do not assume FRUIT restores modes
+removed upstream or substitute the first PCA-cleaned map for that comparison.
+
+A faithful path from the native frozen RTC output into the existing PTC/FRUIT
+lifecycle must be established before a new run; the prior isolated Cleaner/
+map diagnostic does not exercise FRUIT. Recover existing contracts and code,
+and identify any genuinely missing adapter or authority before implementation.
+This is a proposal for discussion, not a new work order or campaign launch.
+Automatic line selection and its residual/noise/source admission policy remain
+separate unresolved work. No further width/order search is planned.
+
+This documentation-only decision follows directly from the above reviewed
+closure on the same branch/worktree. Read all three effective governance
+sources; accepted/effective identities remain unchanged. Live canonical
+`0f52e1a421416eadaf7d8d99d64f537132395c0c` is unchanged and an ancestor;
+live experiment verifies at `a2b96e48c9ca64fce4f90f6261d8dcd9fc9dc955`.
+Unrelated owner-checkout dirt and prior sealed artifacts remain untouched.
+
+Decision evidence is `/private/tmp/citlali-rtc-notch-baseline-2026-09-15`:
+`OWNER_DECISION.txt`, `preflight.json`, and `baseline-binding.json` preserve
+the exact selection and prior artifact hashes. `completion.json` will bind
+this decision commit and its fresh independent exact-SHA review externally.
+Documentation/binding/source-preservation checks replace computational reruns
+for this change; prior local and Unity evidence are not relabeled. Publication
+remains owner-performed. No code change, push, integration, cleanup, new
+campaign or production activation occurs.
+
 ## Wider-notch / shorter-support continuation — 2026-09-15
 
 The owner authorizes one fixed nine-design coefficient grid and at most two
