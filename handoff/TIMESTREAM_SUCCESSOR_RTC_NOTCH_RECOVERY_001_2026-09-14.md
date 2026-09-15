@@ -1,5 +1,96 @@
 # TIMESTREAM-SUCCESSOR-RTC-NOTCH-RECOVERY-001
 
+## Treatment-aware population audit continuation — 2026-09-15
+
+The owner directive supersedes further isolated-notch optimization with a
+bounded detector/network/array contribution audit. Live refs verify previous
+short-notch closure `1870f99c90218dc7af83d8478eae146a09643bc2` and canonical
+`0f52e1a421416eadaf7d8d99d64f537132395c0c` are pushed. This continuation stays
+on the existing `codex/timestream-successor-rtc-notch-recovery-001` module
+branch; no new branch, canonical integration, push or production activation.
+Earlier publication-pending notes below are historical.
+
+Final implementation source `225931039d33a71b079f06942da7a912c0f39615`, tree
+`d725902a9aa6c3b2a4c26bfa08c668eb6391c392`, preserves the original native
+spectral/transient estimators and frozen paired Apply. RTC Learn now retains
+complete observation-local population/exclusion context, and Consider
+requires a complete exact-bound baseline before reporting optional recovery
+contribution. Offline corpus knowledge is separately identified and never
+silently imported into runtime Learn. Unavailable recovery remains distinct
+from rejection's zero contribution. No automatic selector or new framework.
+
+The prior 143-file/13-observation audit is reused: 71,734 occurrences, 70,024
+producer-eligible, and 286 independent inspections. Only 152390/a2000 n11/n12
+has the prior exact motion/beam/filter bindings for physical post-filter
+population accounting. That denominator is 769,224.876 detector-seconds and
+4,895.119 fixed APT reference-weight seconds. Rejecting occurrences selected
+by the exploratory approximately 11 Hz descriptor costs 19.18% of time and
+26.44% of this proxy; rejecting their measurement-window intervals costs
+13.00% and 17.81%. The existing six-second footprint offers ceilings of
+7.54%/10.44% for whole observations or 4.99%/6.87% on active-window support.
+These are conditional support ceilings, not qualified recovery or map
+sensitivity. Cross-network simultaneity and missing physical domains remain
+unavailable; arrays and science products are not pooled.
+
+A single new contribution-ranked replay, 152390/n12/ch269 at 11.0063 Hz,
+retains 328.016 s versus 807.182 s for LPF/F2 and reduces actual common-support
+x target-band power 90.10% to 5.1556e-15. Paired source tests reach 0.691% peak
+change and 2.500% waveform error over the retained 8.5–113 arcsec/s fixed
+fixtures. The original 221 arcsec/s and boundary crossings remain excluded.
+Its potential reference contribution is 44.2 times the prior bright, low-value
+case. A targeted pair 269/402 has 0.943 original x coherence near 11 Hz; this
+supports shared structure but no physical-origin or interference inference.
+The prior 54 Hz/quiet cases continue to favor no added notch.
+
+Recommendation: targeted qualification of the recurring, high-contribution
+11 Hz population is worthwhile; retain rejection as the competing treatment
+for low-contribution or independently established unhealthy occurrences.
+No covered recovery is claimed for broad, drifting, crowded, or unqualified
+multiple-line features. The missing narrow-line residual allowance and bound
+cleaned-noise/source reference remain explicit, alongside source-domain and
+covariance qualification. No scientific threshold was invented.
+
+Final supplemental local gates pass: 1,132 runnable CTests (1,133 registered,
+one unchanged disabled), 19 focused native controls, 58 RTC Python tests,
+207 baseline tests + 137 subtests, config require-all, exact CLI and saved driver
+bindings. The new 491-detector runtime Learn witness reproduces old spectra
+and original-pair identities; population construction takes 5.68 s and owns
+0.51 MB of logical context. One-pair Apply adds 37–38 ms over LPF, not a
+whole-array throughput claim. 18 uninjected repeat artifacts are identical.
+All 3,385 files across four prior evidence seals are unchanged.
+
+Independent exact-source review passes with recorded limitations and no
+remaining findings. The 238-file source evidence seal is
+`066e5a494e6d1056461c9f2394cb6c401dfb168f99f34ab1841b7f08df5f7d83`.
+The owner report is
+`/private/tmp/citlali-rtc-treatment-aware-audit-2026-09-15/REPORT.md`.
+Complete native-cell accounting and machine-readable network/array tables
+remain beside it. The runtime witness is `native-final`; the one new replay
+is `campaign/valuable`; all 10 original source overlays remain exact and each
+trial runs afresh on original x/r. The targeted coherence assessment uses 310
+matched native-disjoint windows on the exact n12 time axis, not a common grid.
+
+Source review: `/private/tmp/citlali-rtc-treatment-aware-audit-2026-09-15/review-source.md`.
+Reviewer: `/root/rtc_treatment_population_exact_review`.
+Source-review SHA256: `b880b9ced45b4634e023d24d77b0b00da951588be95dd99e0083431c61b4ec1a`.
+Evidence manifest: `/private/tmp/citlali-rtc-treatment-aware-audit-2026-09-15/EVIDENCE_SHA256SUMS`;
+238 files, 586,672,804 bytes. The separately written source-seal and review/closure
+receipts avoid circular hash bindings. Source state, all changed path digests,
+effective governance, three conformance dispositions, recorded in-progress
+repairs and final exact gates are in the same evidence root.
+
+The only reviewer-requested source repair added seal checks for reused APT
+weights, prior summary/invocations and native-cell endpoints. Exact accepted
+audit/short-notch/census seal digests are checked before reading those inputs;
+corruption controls pass and final accounting is byte-identical to the prior
+development pass. An earlier wrong build-target name and a test-helper defect
+are preserved as resolved failures. No failed gate is counted as acceptance.
+
+Documentation closure receives its own fresh independent exact-SHA review.
+The candidate remains local and unintegrated. Production filtering is
+inactive; no Unity/Spack V2 qualification, cleanup, CAL/PTC/MAP work or new
+filter search was performed.
+
 ## Shorter finite-duration continuation — 2026-09-15
 
 The owner requests: “Let's try some shorter duration notch filters.” This
