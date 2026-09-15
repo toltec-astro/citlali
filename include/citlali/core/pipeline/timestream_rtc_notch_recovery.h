@@ -203,6 +203,26 @@ public:
   const auto &input_causes() const noexcept { return causes_; }
   auto first_native_row() const noexcept { return first_; }
   auto consideration() const noexcept { return id_; }
+  std::size_t full_support_half_samples() const noexcept {
+    const auto &s = assessment_->candidate_handle()->specification();
+    return s.centered_lowpass.size() / 2 + s.centered_notch.size() / 2 +
+           domain_.notch_guard_samples;
+  }
+  // Inexpensive Consider accounting on the exact already resolved domain.
+  // An IIR guard is not finite impulse support and cannot use this product.
+  std::vector<RtcEventRange> finite_retained_runs() const {
+    if (!assessment_->candidate_handle()->specification().notches.empty())
+      throw std::invalid_argument("RTC IIR has no finite support accounting");
+    std::vector<RtcEventRange> out;
+    if (domain_.reject)
+      return out;
+    const auto half =
+        static_cast<TimestreamNativeRow>(full_support_half_samples());
+    for (const auto &run : runs_)
+      if (run.past_last - run.first > 2 * half)
+        out.push_back({run.first + half, run.past_last - half});
+    return out;
+  }
   double sampling_speed_limit_arcsec_per_sec() const noexcept {
     return sampling_speed_limit_;
   }
@@ -276,8 +296,7 @@ public:
     const auto &net = original->network(candidate.network());
     const auto half = s.centered_lowpass.size() / 2;
     const auto notch_half = s.centered_notch.size() / 2;
-    const auto guard =
-        half + notch_half + out->plan_->domain().notch_guard_samples;
+    const auto guard = out->plan_->full_support_half_samples();
     for (auto run : out->plan_->runs()) {
       const auto size = run.past_last - run.first;
       Eigen::MatrixXd values(size, 2);

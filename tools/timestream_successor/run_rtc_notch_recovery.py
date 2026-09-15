@@ -40,6 +40,39 @@ def write_json(p, value):
     Path(p).write_text(json.dumps(value, indent=2, allow_nan=False) + "\n")
 
 
+def finite_trial(dt, center, seconds, lowpass):
+    """Existing explicit finite family, at caller-bound cadence and center."""
+    half = int(np.floor(seconds / (2 * dt)))
+    taps = 2 * half + 1
+    h = signal.firwin(
+        taps,
+        [center - 0.25, center + 0.25],
+        pass_zero="bandstop",
+        window="hann",
+        fs=1 / dt,
+        scale=True,
+    )
+    h = (h + h[::-1]) / 2
+    h /= sum(h)
+    total_half = (half + len(lowpass) // 2) * dt
+    assert total_half <= 5 and abs(sum(h) - 1) < 1e-12
+    k = np.arange(-half, half + 1)
+    response = float(np.dot(h, np.cos(2 * np.pi * center * dt * k)))
+    return dict(
+        id=f"finite-{seconds}s",
+        notch=False,
+        reject=False,
+        finite_notch_identity=f"explicit-Hann-bandstop-width0.5Hz-span{seconds}s",
+        finite_notch=h.tolist(),
+        requested_span_seconds=seconds,
+        actual_span_seconds=2 * half * dt,
+        requested_width_hz=0.5,
+        actual_center_amplitude=response,
+        cumulative_half_seconds=total_half,
+        operation="centered finite notch then unchanged centered low-pass; complete support; no padding",
+    )
+
+
 def prepare(a):
     a.output.mkdir(parents=True, exist_ok=False)
     invocations = [
@@ -183,7 +216,7 @@ def inject(a):
     from netCDF4 import Dataset
 
     a.output.mkdir(parents=True, exist_ok=False)
-    for name, _, _, _ in CASES:
+    for name in getattr(a, "cases", None) or [c[0] for c in CASES]:
         cfg = json.loads((a.plans / f"{name}.json").read_text())
         run = a.geometry / name
         g = np.fromfile(run / "geometry.f64", "<f8").reshape(-1, 4)
@@ -280,7 +313,7 @@ def run(a):
     a.output.mkdir(parents=True, exist_ok=False)
     exe = a.executable.resolve(strict=True)
     records = []
-    for name, _, _, _ in CASES:
+    for name in getattr(a, "cases", None) or [c[0] for c in CASES]:
         plan = a.plans / f"{name}.json"
         cmd = [str(exe), str(plan.resolve()), str((a.output / name).resolve())]
         start = time.monotonic()
@@ -330,40 +363,9 @@ def shorter(a):
         cfg["science"]["notch_has_finite_five_second_footprint"] = True
         cfg["trials"] = [dict(id="lowpass", notch=False, reject=False)]
         dt = cfg["measured_interval"]
-        fs = 1 / dt
         center = cfg["notch_hz"]
         for seconds in (1, 3, 6):
-            half = int(np.floor(seconds / (2 * dt)))
-            taps = 2 * half + 1
-            h = signal.firwin(
-                taps,
-                [center - 0.25, center + 0.25],
-                pass_zero="bandstop",
-                window="hann",
-                fs=fs,
-                scale=True,
-            )
-            h = (h + h[::-1]) / 2
-            h /= sum(h)
-            total_half = (half + len(cfg["fir"]) // 2) * dt
-            assert total_half <= 5 and abs(sum(h) - 1) < 1e-12
-            k = np.arange(-half, half + 1)
-            response = float(np.dot(h, np.cos(2 * np.pi * center * dt * k)))
-            cfg["trials"].append(
-                dict(
-                    id=f"finite-{seconds}s",
-                    notch=False,
-                    reject=False,
-                    finite_notch_identity=f"explicit-Hann-bandstop-width0.5Hz-span{seconds}s",
-                    finite_notch=h.tolist(),
-                    requested_span_seconds=seconds,
-                    actual_span_seconds=2 * half * dt,
-                    requested_width_hz=0.5,
-                    actual_center_amplitude=response,
-                    cumulative_half_seconds=total_half,
-                    operation="centered finite notch then unchanged centered low-pass; complete support; no padding",
-                )
-            )
+            cfg["trials"].append(finite_trial(dt, center, seconds, cfg["fir"]))
         cfg["trials"].append(dict(id="reject", notch=False, reject=True))
         write_json(a.output / f"{name}.json", cfg)
 
@@ -385,5 +387,6 @@ if __name__ == "__main__":
     q.add_argument("--prior", type=Path, required=True)
     for q in sub.choices.values():
         q.add_argument("--output", type=Path, required=True)
+    sub.choices["run"].add_argument("--case", action="append", dest="cases")
     a = p.parse_args()
     globals()[a.action](a)

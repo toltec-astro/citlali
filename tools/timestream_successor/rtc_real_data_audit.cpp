@@ -3,6 +3,7 @@
 #include "identity_route_acceptance.cpp"
 #undef main
 #include <citlali/core/pipeline/timestream_rtc_line_power.h>
+#include <citlali/core/pipeline/timestream_rtc_line_population.h>
 #include <bit>
 namespace {
 void number(std::ostream &o,double v) {if(std::isfinite(v))o<<std::setprecision(17)<<v;else o<<"null";}
@@ -27,7 +28,7 @@ void regions(std::ostream &o,const pipeline::RtcLinePowerCoordinate &c){
 // argv: raw, exact Tune, compact-v2 manifest, NEW output directory, independent selection TSV.
 int main(int argc,char **argv){try{
  const auto execution_started=std::chrono::steady_clock::now();
- require(argc==6,"expected raw, Tune, APT manifest, NEW output, independent selection TSV");
+ require(argc==6 || (argc==7 && std::string(argv[6])=="--population-context"),"expected raw, Tune, APT manifest, NEW output, selection TSV and optional --population-context");
  const fs::path raw_path=argv[1],tune_path=argv[2],manifest=argv[3],output=argv[4];
  require(!fs::exists(output),"output exists; preserve prior attempts");
  require(std::endian::native==std::endian::little,"audit binary format requires little endian");
@@ -138,6 +139,65 @@ int main(int argc,char **argv){try{
             }
         }
         std::size_t window_offset=0,coordinate_index=0;double max_replay_error=0;
+        if (argc == 7) {
+            // Runtime observation context is constructed from this invocation's
+            // actual Learn handles, never from offline corpus rankings.
+            const auto population_started = std::chrono::steady_clock::now();
+            std::vector<RtcEventPeerEligibility> peers;
+            std::vector<RtcLinePopulationMember> members;
+            const auto population_weight_authority = "sha256:" + citlali::utils::sha256_file(manifest);
+            for (std::uint32_t d = 0; d < net.detector_count(); ++d) {
+                const auto &binding = net.detector(d);
+                const bool good = flags[d] == 0 && flags2[d] == 0;
+                peers.push_back({nw, d, binding.detector_occurrence_id, good});
+                members.push_back({nw, d, binding.detector_occurrence_id,
+                    binding.detector_association_record_id, "original-native-x:observation-local-APT-proxy",
+                    static_cast<RtcOpticalArray>(arrays[d]),
+                    good && std::isfinite(sens[d]) && sens[d] > 0 ? std::optional<double>(1 / (sens[d]*sens[d])) : std::nullopt,
+                    population_weight_authority,
+                    "static-APT-sens-inverse-square;flag=flag2=0;conditional-independent-noise-proxy"});
+            }
+            auto peer = RtcEventPeerPopulation::admit(spikes, "exact-APT-good-observation-population", std::move(peers));
+            auto events = RtcEventAssessmentDecision::consider(learn_rtc_event_assessment(spikes, peer, 10), val, 11);
+            auto amplitude = RtcJumpAmplitudeDecision::consider(events, val, 12);
+            auto consistency = RtcJumpConsistencyDecision::consider(RtcJumpConsistencyEvidence::learn(amplitude, 13), val, 14);
+            auto transition = RtcJumpTransitionEvidence::learn(RtcJumpTransitionRequest::consider(consistency, val, 15), 16);
+            auto support = RtcJumpSupportEvidence::learn(transition, 17);
+            auto refit = RtcJumpRefitEvidence::learn(RtcJumpRefitRequest::consider(support, val, 18), 19);
+            auto remeasurement = RtcJumpReassessmentEvidence::learn(RtcJumpRemeasureRequest::consider(refit, val, 20), 21);
+            auto admitted = RtcJumpAdmissionDecision::consider(RtcJumpReassessmentDecision::consider(remeasurement, val, 22), val, 23);
+            auto jumps = RtcJumpExclusionPlan::consider(admitted, nullptr, val, 24);
+            auto transients = RtcTransientExclusionPlan::consider(events->original_screening_handle(), jumps, val, 25);
+            const auto population_ready = std::chrono::steady_clock::now();
+            auto population = RtcLinePopulationEvidence::learn(line2, transients, std::move(members), 26);
+            const auto population_finished = std::chrono::steady_clock::now();
+            std::ofstream pop(output / "population.jsonl");
+            for (const auto &d : population->detectors()) {
+                pop << "{\"detector\":" << d.member.detector << ",\"occurrence\":" << std::quoted(d.member.occurrence)
+                    << ",\"array_association\":" << std::quoted(d.member.array_association)
+                    << ",\"array\":" << static_cast<int>(d.member.array)
+                    << ",\"weight\":"; number(pop, d.member.reference_weight.value_or(NAN));
+                pop << ",\"weight_authority\":" << std::quoted(d.member.weight_authority)
+                    << ",\"paired_original_cells\":" << d.paired_original_cells
+                    << ",\"after_existing_exclusions_cells\":" << d.after_existing_exclusions_cells
+                    << ",\"support\":[";
+                bool comma = false;
+                for (const auto &s : d.support) { if (comma) pop << ','; comma = true;
+                    pop << '[' << s.rows.first << ',' << s.rows.past_last << ',' << static_cast<int>(s.cause_bits) << ']'; }
+                pop << "]}\n";
+            }
+            pop.close(); require(bool(pop), "runtime population export failed");
+            std::ofstream pr(output / "population-receipt.json");
+            pr << "{\"source_revision\":" << std::quoted(std::string(CITLALI_GIT_REVISION))
+               << ",\"runtime_Learn\":true,\"offline_corpus_rank_consumed\":false,\"attempt\":26,\"VAL_generation\":0,\"motion_context\":null,\"scan_binding\":null,\"treatment_selected\":false,\"population_logical_owned_bytes\":" << population->logical_owned_bytes()
+               << ",\"population_seconds\":";
+            number(pr, std::chrono::duration<double>(population_finished-population_ready).count());
+            pr << ",\"existing_transient_context_seconds\":";
+            number(pr, std::chrono::duration<double>(population_ready-population_started).count());
+            pr << ",\"seconds\":";
+            number(pr, std::chrono::duration<double>(std::chrono::steady_clock::now()-population_started).count());
+            pr << "}\n"; pr.close(); require(bool(pr), "population receipt failed");
+        }
         for(const auto &s:spectral->spectra()){
             const auto &l1=line1->coordinates()[coordinate_index],&l2=line2->coordinates()[coordinate_index],&l4=line4->coordinates()[coordinate_index];
             std::vector<double> empty(sn.frequency_hz.size(),NAN);

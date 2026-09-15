@@ -1,4 +1,5 @@
 #include "timestream_rtc_reassessment_test_support.h"
+#include <citlali/core/pipeline/timestream_rtc_line_population.h>
 #include <citlali/core/pipeline/timestream_rtc_notch_recovery.h>
 #include <gtest/gtest.h>
 
@@ -64,7 +65,7 @@ struct Trial : Fixture {
     domain.nominal_interval_seconds = .008192;
   }
   auto plan(bool notch = false, bool reject = false,
-            std::vector<double> finite = {}) const {
+            std::vector<double> finite = {}, std::uint32_t detector = 0) const {
     RtcLineTransferSpecification s;
     s.identity = "controlled-plan";
     s.lowpass_identity = "test-only-centered3";
@@ -78,6 +79,9 @@ struct Trial : Fixture {
       s.centered_notch = std::move(finite);
     }
     auto d = domain;
+    if (detector != 0)
+      d.detector_array_association =
+          parent->network(0).detector(detector).detector_association_record_id;
     d.reject = reject;
     if (notch) {
       timestream::Filter f;
@@ -95,7 +99,8 @@ struct Trial : Fixture {
     }
     return RtcNotchRecoveryPlan::consider(
         RtcLineTransferAssessment::consider(
-            RtcLineTransferCandidate::bind(lines, 0, 0, s), joint, val, 22),
+            RtcLineTransferCandidate::bind(lines, 0, detector, s), joint, val,
+            22),
         transient, val, d, 23);
   }
   auto apply(const std::shared_ptr<const RtcNotchRecoveryPlan> &p,
@@ -105,6 +110,127 @@ struct Trial : Fixture {
                                          inj);
   }
 };
+
+auto population_members(const Trial &t) {
+  std::vector<RtcLinePopulationMember> members;
+  for (std::uint32_t d = 0; d < 3; ++d) {
+    const auto &b = t.parent->network(0).detector(d);
+    members.push_back(
+        {0, d, b.detector_occurrence_id, b.detector_association_record_id,
+         "controlled-science", RtcOpticalArray::a2000,
+         d == 2 ? std::nullopt : std::optional<double>(d == 0 ? 1. : 4.),
+         "controlled-prior-APT", "fixed-inverse-square-sensitivity"});
+  }
+  return members;
+}
+
+TEST(rtc_line_population,
+     learn_preserves_overlapping_causes_and_exact_original_context) {
+  Input in(6000);
+  in.xs[3000 * 3] =
+      NativeReadoutCoordinateState::measured(true, false, true, true);
+  in.rs[3000 * 3] = in.xs[3000 * 3];
+  for (std::size_t i = 4000; i < in.times.size(); ++i) {
+    in.times[i] += .5;
+    in.counters[i] += 30;
+  }
+  Trial t(in);
+  auto p = RtcLinePopulationEvidence::learn(t.lines, t.transient,
+                                            population_members(t), 99);
+  ASSERT_EQ(p->detectors().size(), 3);
+  EXPECT_EQ(p->line_handle().get(), t.lines.get());
+  EXPECT_EQ(p->line_handle()->snapshot_handle().get(), t.val.get());
+  EXPECT_FALSE(p->treatment_selected);
+  const auto &d = p->detectors()[0];
+  EXPECT_EQ(d.paired_original_cells, 5999);
+  bool found = false;
+  for (const auto &s : d.support) {
+    if (s.rows.first <= 3100 && s.rows.past_last > 3100) {
+      EXPECT_EQ(s.cause_bits & 3, 3);
+      found = true;
+    }
+    EXPECT_FALSE(s.rows.first < 4100 && s.rows.past_last > 4100);
+  }
+  EXPECT_TRUE(found);
+  EXPECT_FALSE(p->detectors()[2].member.reference_weight.has_value());
+  EXPECT_DOUBLE_EQ(
+      t.parent->network(0).value(NativeReadoutCoordinate::x, 3100, 0),
+      in.x(3000, 0));
+}
+
+TEST(rtc_line_population,
+     incomplete_duplicate_foreign_or_unbound_weight_inputs_fail) {
+  Input in(6000);
+  Trial t(in), other(in);
+  auto m = population_members(t);
+  auto incomplete = m;
+  incomplete.pop_back();
+  EXPECT_THROW(
+      RtcLinePopulationEvidence::learn(t.lines, t.transient, incomplete, 1),
+      std::invalid_argument);
+  auto duplicate = m;
+  duplicate[1] = duplicate[0];
+  EXPECT_THROW(
+      RtcLinePopulationEvidence::learn(t.lines, t.transient, duplicate, 1),
+      std::invalid_argument);
+  auto bad = m;
+  bad[0].reference_weight = NAN;
+  EXPECT_THROW(RtcLinePopulationEvidence::learn(t.lines, t.transient, bad, 1),
+               std::invalid_argument);
+  bad = m;
+  bad[0].weight_authority.clear();
+  EXPECT_THROW(RtcLinePopulationEvidence::learn(t.lines, t.transient, bad, 1),
+               std::invalid_argument);
+  EXPECT_THROW(RtcLinePopulationEvidence::learn(t.lines, other.transient, m, 1),
+               std::invalid_argument);
+}
+
+TEST(rtc_line_population,
+     consider_requires_complete_denominator_and_retains_missing_recovery) {
+  Input in(6000);
+  Trial t(in);
+  auto p = RtcLinePopulationEvidence::learn(t.lines, t.transient,
+                                            population_members(t), 1);
+  std::vector<std::shared_ptr<const RtcNotchRecoveryPlan>> b;
+  for (std::uint32_t d = 0; d < 3; ++d)
+    b.push_back(t.plan(false, false, {}, d));
+  auto recovery = t.plan(false, false, {.1, -.2, 1.2, -.2, .1});
+  auto c = RtcLinePopulationComparison::consider(p, b, {recovery}, 2);
+  ASSERT_EQ(c->contributions().size(), 3);
+  const auto &v = c->contributions();
+  EXPECT_EQ(v[0].baseline_cells, 5998);
+  EXPECT_EQ(*v[0].recovery_cells, 5994);
+  EXPECT_DOUBLE_EQ(*v[1].baseline_weight_seconds,
+                   4 * *v[0].baseline_weight_seconds);
+  EXPECT_FALSE(v[1].recovery_cells.has_value());
+  EXPECT_FALSE(v[2].baseline_weight_seconds.has_value());
+  EXPECT_FALSE(c->scientific_recovery_admitted);
+  auto applied = t.apply(recovery);
+  EXPECT_EQ(*v[0].recovery_cells,
+            std::count(applied->causes().begin(), applied->causes().end(),
+                       RtcNotchRecoveryCause::retained));
+  b.pop_back();
+  EXPECT_THROW(RtcLinePopulationComparison::consider(p, b, {recovery}, 3),
+               std::invalid_argument);
+}
+
+TEST(rtc_line_population,
+     rejection_zero_is_distinct_from_unavailable_and_iir_is_not_finite) {
+  Input in(6000);
+  Trial t(in);
+  auto p = RtcLinePopulationEvidence::learn(t.lines, t.transient,
+                                            population_members(t), 1);
+  std::vector<std::shared_ptr<const RtcNotchRecoveryPlan>> b;
+  for (std::uint32_t d = 0; d < 3; ++d)
+    b.push_back(t.plan(false, false, {}, d));
+  auto c =
+      RtcLinePopulationComparison::consider(p, b, {t.plan(false, true)}, 2);
+  ASSERT_TRUE(c->contributions()[0].recovery_cells.has_value());
+  EXPECT_EQ(*c->contributions()[0].recovery_cells, 0);
+  EXPECT_THROW(RtcLinePopulationComparison::consider(p, b, {t.plan(true)}, 3),
+               std::invalid_argument);
+  EXPECT_THROW(t.plan(true)->finite_retained_runs(), std::invalid_argument);
+}
 
 TEST(rtc_notch_recovery, centered_fir_exact_native_phase_and_original_replay) {
   Input in(6000);

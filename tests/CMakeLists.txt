@@ -607,8 +607,8 @@ gtest_discover_tests(citlali_rtc_line_transfer_test
 )
 
 add_executable(citlali_rtc_notch_recovery_test EXCLUDE_FROM_ALL
-    test_timestream_rtc_notch_recovery.cpp timestream_rtc_notch_recovery_header.cpp)
-set_source_files_properties(timestream_rtc_notch_recovery_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+    test_timestream_rtc_notch_recovery.cpp timestream_rtc_notch_recovery_header.cpp timestream_rtc_line_population_header.cpp)
+set_source_files_properties(timestream_rtc_notch_recovery_header.cpp timestream_rtc_line_population_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
 target_link_libraries(citlali_rtc_notch_recovery_test PRIVATE citlali::citlali GTest::gtest_main)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(citlali_rtc_notch_recovery_test PRIVATE -fno-fast-math -ffp-contract=off)
