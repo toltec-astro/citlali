@@ -1,5 +1,51 @@
 # TIMESTREAM-SUCCESSOR-RTC-NOTCH-RECOVERY-001
 
+## Initial 152390 pass: owner-selected absence of a spatial mask — 2026-09-15
+
+Owner: "I don't think we should start with a mask given that this is a single
+observation. The source itself is not bright."
+
+For the initial RTC pass on NGC4449 observation 152390, select an explicitly
+empty source-protection region. This is an observation-specific scientific
+choice based on the owner's assessment, not a measured brightness cutoff,
+absence-of-emission claim, or generic fallback for unavailable protection.
+Keep original x/r, astronomical signal, producer validity and exact VAL
+bindings. No source subtraction, legacy mask import or new mask geometry is
+needed for this pass.
+
+The existing `RtcSpikeSourceProtection::admit` interface can bind this choice
+to the exact native parent with a named owner authority, `outside_source` as
+the explicit default, and no protected-region overrides. Here that state
+means outside the selected protection region; it does not certify that samples
+contain no source signal. The caller must record this owner choice and scope
+rather than silently relabel previously unknown evidence. Historical evidence
+keeps its original protection binding; any subsequent changed choice creates
+new bound evidence and replays the frozen plan from original x/r.
+
+The accepted spike-Learn handoff's rules 6--7 remain in force: ordinary event
+checks apply outside protection, and the additional approved beam/motion
+optical-response test applies inside source-protected regions. No universal
+optical veto, automatic spike acceptance, or donor eligibility follows from
+this choice. Accepted isolated-event selection, resolved stable segments,
+contamination, static flxscale and any required exact scan binding remain
+separate caller inputs. Reconstructed samples remain identifiable, flagged
+and excluded from independent/map input. FRUIT remains deferred.
+
+This receipt changes only status, ledger and this existing handoff. It does
+not yet change the executable audit caller or run a new observation. Prior
+assembly source and numerical results remain `ae8227b97b0e0b10dbe453bb24b6ba315c710ade`.
+Literal base and live topic are the now-pushed closure
+`becccce85816379e578ac1a325e8c9fe156defbe`; live canonical remains
+`0f52e1a421416eadaf7d8d99d64f537132395c0c`. These fresh observations supersede
+earlier publication-pending statements below without rewriting their history.
+No integration, push, cleanup or production activation is performed.
+
+Documentation checks and a fresh independent exact-SHA review are recorded
+externally in `/private/tmp/citlali-rtc-no-mask-152390-2026-09-15`, separate
+from all sealed computational evidence. No rebuild or computational rerun is
+required for this decision receipt; previous gates retain their original
+source and environment identities.
+
 ## RTC-only assembly source and closure — 2026-09-15
 
 Owner authorization: “Excellent. Let's do this,” following the recorded

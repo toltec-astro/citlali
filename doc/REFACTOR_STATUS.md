@@ -1,5 +1,21 @@
 # Citlali Refactor Status
 
+## Initial 152390 pass without a spatial source mask — 2026-09-15
+
+The owner selects no spatial source-protection mask for the initial RTC pass
+on NGC4449 observation 152390, assessing this single observation's source as
+not bright. Retain astronomical signal in original x/r. Bind an explicitly
+empty protected-region set to this exact observation; this is an owner choice,
+not an inference from missing metadata or a general brightness threshold.
+Ordinary event checks still apply. The established beam/motion safeguard
+remains specific to source-protected regions when such regions are selected.
+This settles the mask choice, not event acceptance or stable donor support.
+The [existing handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_NOTCH_RECOVERY_001_2026-09-14.md)
+records the binding and remaining caller work. No executable profile has yet
+changed or been rerun. The preceding assembly closure
+`becccce85816379e578ac1a325e8c9fe156defbe` is verified pushed; production
+filtering remains inactive.
+
 ## Bounded RTC assembly and native relearning — 2026-09-15
 
 The approved first RTC-only assembly is implemented at exact source

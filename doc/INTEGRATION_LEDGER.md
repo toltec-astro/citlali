@@ -1,5 +1,21 @@
 # Citlali Integration Ledger
 
+## Initial 152390 source-protection choice — 2026-09-15
+
+- Owner selects no spatial source mask for the initial NGC4449/152390 RTC
+  pass. Record an explicit empty protected-region set for the exact parent;
+  retain source signal and ordinary event/donor admission requirements.
+  This does not turn unavailable protection into an implicit outside-source
+  default for other observations or later attempts.
+- Literal base and freshly verified pushed topic:
+  `becccce85816379e578ac1a325e8c9fe156defbe`. Fresh canonical remains
+  `0f52e1a421416eadaf7d8d99d64f537132395c0c`. Earlier publication-pending
+  assembly entries below describe the state at their creation.
+- Documentation-only owner-decision receipt on the existing topic; no code,
+  new runtime evidence, integration, push, cleanup or activation. Previous
+  numerical gates remain bound to source `ae8227b97b0e0b10dbe453bb24b6ba315c710ade`.
+  The existing handoff records scope and an external exact-SHA review binding.
+
 ## Bounded RTC assembly and native relearning — 2026-09-15
 
 - Work order `TIMESTREAM-SUCCESSOR-RTC-ASSEMBLY-001`, Tier 2; owner-approved
