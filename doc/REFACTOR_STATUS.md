@@ -1,5 +1,30 @@
 # Citlali Refactor Status
 
+## RTC completion before downstream FRUIT connection — 2026-09-15
+
+The owner defers the FRUIT connection and downstream comparison until the full
+RTC pipeline has been assembled. This supersedes the next-step FRUIT proposal
+below. The connection investigation was read-only: no bridge, runtime change,
+or new comparison was implemented or run.
+
+The next implementation target returns to the existing implementation-baseline
+S2, complete RTC plan and apply: connect the established transient treatment,
+optional notch, then low-pass/decimation responsibilities in an RTC-only path.
+Runtime Learn produces original and explicitly bound conditioned evidence;
+Consider evaluates that evidence jointly and freezes the complete plan; Apply
+replays each revised complete plan afresh on the original admitted x/r pair.
+Preserve native-resolution evidence, timing, paired validity, source protection,
+and replacement/support/VAL history. RTC-wide reassessment is distinct from
+both the engineering workflow and downstream FRUIT sky feedback.
+
+The selected 1 Hz / approximately 3 s working baseline and all prior measured
+limitations remain unchanged. This sequencing decision supplies no automatic
+line admission, stopping threshold, factor-selection rule, or scientific waiver.
+RTC conformance tests, paired source fixtures, 152390 replay and compute timing
+should support the implementation; downstream connection and qualification
+follow pipeline assembly. Production filtering remains inactive. This record
+changes documentation only and performs no integration, push or cleanup.
+
 ## Owner-selected RTC notch baseline — 2026-09-15
 
 The owner selects **1 Hz full width / approximately 3 s duration** as the
