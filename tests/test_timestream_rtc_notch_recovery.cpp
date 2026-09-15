@@ -2,6 +2,7 @@
 #include <citlali/core/pipeline/timestream_rtc_line_population.h>
 #include <citlali/core/pipeline/timestream_rtc_notch_recovery.h>
 #include <citlali/core/pipeline/timestream_rtc_pipeline.h>
+#include "../tools/timestream_successor/rtc_multidetector_bindings.h"
 #include <gtest/gtest.h>
 
 namespace {
@@ -805,5 +806,108 @@ TEST(rtc_pipeline, unadmitted_selected_support_is_not_a_realized_replacement) {
   EXPECT_TRUE(result->requires_representative_exclusion(600));
   EXPECT_FALSE(result->replacement_influence(600,false));
   EXPECT_TRUE(std::isnan(result->conditioned_native_pair()(500,0)));
+}
+
+namespace caller = citlali::rtc_multidetector_tool;
+YAML::Node explicit_review(const Trial &t) {
+  YAML::Node n;
+  n["schema"]="rtc-reviewed-selection-v1";n["learning_binding"]="exact-controlled-Learn";
+  n["VAL_generation"]=0;n["approved"]=true;n["authority"]="controlled-injected-isolated-spike";
+  n["stable_support_authority"]="controlled-injection-truth";
+  n["contamination_authority"]="controlled-complete-contamination";
+  const auto &axis=t.parent->network(0).occurrence_axis();
+  for(int d=0;d<3;++d){
+    YAML::Node r;r["channel"]=d;r["occurrence"]=t.parent->network(0).detector(d).detector_occurrence_id;
+    r["stable_segments"]=YAML::Load("[["+std::to_string(axis.first_native_row())+","+std::to_string(axis.past_last_native_row())+"]]");
+    r["contaminated"]=YAML::Node(YAML::NodeType::Sequence);n["detectors"].push_back(r);
+  }
+  const auto event=t.event_at(500);YAML::Node e;e["event"]=event;e["channel"]=0;
+  e["seed_earlier_row"]=t.spikes->candidates()[t.assessment->events()[event].seed].earlier_row;
+  e["disposition"]="accepted_isolated_event";e["affected"]=YAML::Load("[600,601]");
+  n["events"].push_back(e);
+  return n;
+}
+auto bind_review(const Trial &t,const YAML::Node &n,std::array<double,3> factors={1.,1.,1.}) {
+  return caller::read_review(n,"exact-controlled-Learn",t.assessment,
+      std::array{0,1,2},factors,0,"sha256:controlled-prior-APT");
+}
+TEST(rtc_multidetector_caller, no_mask_authority_is_scoped_not_a_missing_metadata_fallback) {
+  EXPECT_NO_THROW(caller::require_no_mask_scope(NativeObservationScope{152390,0,2},std::string(caller::no_mask_authority)));
+  EXPECT_THROW(caller::require_no_mask_scope(NativeObservationScope{152391,0,2},std::string(caller::no_mask_authority)),std::invalid_argument);
+  EXPECT_THROW(caller::require_no_mask_scope(NativeObservationScope{152390,1,2},std::string(caller::no_mask_authority)),std::invalid_argument);
+  EXPECT_THROW(caller::require_no_mask_scope(NativeObservationScope{152390,0,3},std::string(caller::no_mask_authority)),std::invalid_argument);
+  EXPECT_THROW(caller::require_no_mask_scope(NativeObservationScope{152390,0,2},"unknown"),std::invalid_argument);
+}
+TEST(rtc_multidetector_caller, explicit_review_connects_factors_donors_and_complete_apply) {
+  Input in;in.spike();Trial t(in,10,RtcSpikeProtection::outside_source);
+  const auto selected=bind_review(t,explicit_review(t));
+  ASSERT_EQ(selected.events.size(),1);
+  auto d=RtcDonorFillPlan::consider(selected.events[0],selected.facts,t.transient,t.val,50);
+  ASSERT_EQ(d->cause(),RtcDonorFillCause::ready);
+  auto plans=complete_plans(t,{}, {d});
+  auto p=RtcPipelinePlan::consider(plans,t.joint->joint_handle(),60);
+  auto r=complete_apply(t,p);
+  EXPECT_TRUE(r->detector_results()[0]->representative_replaced(600));
+  EXPECT_TRUE(r->detector_results()[0]->requires_representative_exclusion(600));
+  EXPECT_FALSE(r->detector_results()[0]->coordinate_stage_available(NativeReadoutCoordinate::r,600,true));
+  EXPECT_DOUBLE_EQ(t.parent->network(0).value(NativeReadoutCoordinate::x,600,0),in.x(500,0));
+  for(int donor=1;donor<3;++donor){
+    EXPECT_FALSE(r->detector_results()[donor]->representative_replaced(600));
+    EXPECT_TRUE(r->detector_results()[donor]->coordinate_stage_available(NativeReadoutCoordinate::r,600,true));
+  }
+  EXPECT_EQ(selected.facts->find(0,1)->prior_flxscale,1.);
+  EXPECT_EQ(selected.facts->evidence_handle().get(),t.assessment.get());
+}
+TEST(rtc_multidetector_caller, unapproved_stale_or_foreign_review_cannot_authorize_apply) {
+  Input in;in.spike();Trial t(in,10,RtcSpikeProtection::outside_source);
+  auto n=explicit_review(t);n["approved"]=false;EXPECT_THROW(bind_review(t,n),std::invalid_argument);
+  n=explicit_review(t);n["learning_binding"]="another-Learn";EXPECT_THROW(bind_review(t,n),std::invalid_argument);
+  n=explicit_review(t);n["VAL_generation"]=1;EXPECT_THROW(bind_review(t,n),std::invalid_argument);
+  n=explicit_review(t);n["authority"]="";EXPECT_THROW(bind_review(t,n),std::invalid_argument);
+  n=explicit_review(t);n["detectors"][1]["occurrence"]="another-occurrence";EXPECT_THROW(bind_review(t,n),std::invalid_argument);
+  n=explicit_review(t);n["detectors"][1]["channel"]=2;EXPECT_THROW(bind_review(t,n),std::invalid_argument);
+}
+TEST(rtc_multidetector_caller, candidates_and_event_ordinals_are_not_acceptance) {
+  Input in;in.spike();Trial t(in,10,RtcSpikeProtection::outside_source);
+  auto n=explicit_review(t);n["events"][0]["disposition"]="recovered_candidate";
+  EXPECT_THROW(bind_review(t,n),std::invalid_argument);
+  n=explicit_review(t);n["events"][0]["seed_earlier_row"]=123;EXPECT_THROW(bind_review(t,n),std::invalid_argument);
+  n=explicit_review(t);n["events"].push_back(YAML::Clone(n["events"][0]));EXPECT_THROW(bind_review(t,n),std::invalid_argument);
+  n=explicit_review(t);n["events"][0]["channel"]=1;EXPECT_THROW(bind_review(t,n),std::invalid_argument);
+  n=explicit_review(t);n["events"]=YAML::Node(YAML::NodeType::Sequence);
+  EXPECT_TRUE(bind_review(t,n).events.empty());
+}
+TEST(rtc_multidetector_caller, missing_stable_support_and_factor_stay_unavailable) {
+  Input in;in.spike();Trial t(in,10,RtcSpikeProtection::outside_source);
+  auto n=explicit_review(t);n["detectors"][0].remove("stable_segments");
+  EXPECT_THROW(bind_review(t,n),std::invalid_argument);
+  n=explicit_review(t);n["detectors"][0]["stable_segments"]=YAML::Node(YAML::NodeType::Sequence);
+  auto selection=bind_review(t,n);
+  EXPECT_EQ(RtcDonorFillPlan::consider(selection.events[0],selection.facts,t.transient,t.val,50)->cause(),RtcDonorFillCause::boundary_unavailable);
+  n=explicit_review(t);selection=bind_review(t,n,{NAN,1.,1.});
+  EXPECT_FALSE(selection.facts->find(0,0)->prior_flxscale.has_value());
+  EXPECT_EQ(RtcDonorFillPlan::consider(selection.events[0],selection.facts,t.transient,t.val,50)->cause(),RtcDonorFillCause::target_transfer_unavailable);
+}
+TEST(rtc_multidetector_caller, actual_static_factor_ratio_and_contamination_reach_donor_owner) {
+  Input in;in.spike();Trial t(in,10,RtcSpikeProtection::outside_source);
+  auto n=explicit_review(t);auto selection=bind_review(t,n,{2.,4.,4.});
+  auto d=RtcDonorFillPlan::consider(selection.events[0],selection.facts,t.transient,t.val,50);
+  ASSERT_EQ(d->cause(),RtcDonorFillCause::ready);
+  ASSERT_FALSE(d->medians().empty());const auto &m=d->medians().front();
+  EXPECT_DOUBLE_EQ(m.value,(t.parent->network(0).value(NativeReadoutCoordinate::x,m.row,1)+
+                           t.parent->network(0).value(NativeReadoutCoordinate::x,m.row,2)));
+  n["detectors"][1]["contaminated"]=YAML::Load("[[599,602]]");
+  n["detectors"][2]["contaminated"]=YAML::Load("[[599,602]]");selection=bind_review(t,n);
+  EXPECT_EQ(RtcDonorFillPlan::consider(selection.events[0],selection.facts,t.transient,t.val,50)->cause(),RtcDonorFillCause::no_usable_donor);
+}
+TEST(rtc_multidetector_caller, scan_binding_is_explicit_native_support_not_acquisition_scan_number) {
+  Input in;in.spike();Trial t(in,10,RtcSpikeProtection::outside_source);
+  auto n=explicit_review(t);EXPECT_FALSE(bind_review(t,n).scans);
+  n["existing_scans"]=YAML::Load("{state: unavailable, processing_generation: fake}");
+  EXPECT_THROW(bind_review(t,n),std::invalid_argument);
+  n["existing_scans"]=YAML::Load("{state: conservative_native_support_bound, processing_generation: fixture-scans, native_relation_authority: fixture-exact-native, timing_uncertainty_authority: fixture-exact-timing, support: [{scan: 77, rows: [100,1200]}]}");
+  auto selection=bind_review(t,n);ASSERT_TRUE(selection.scans);ASSERT_EQ(selection.scans->supports().size(),1);
+  EXPECT_EQ(selection.scans->supports()[0].scan,77);
+  EXPECT_EQ(selection.scans->parent_handle().get(),t.parent.get());
 }
 } // namespace

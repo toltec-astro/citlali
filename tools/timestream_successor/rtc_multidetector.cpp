@@ -1,0 +1,455 @@
+// Bounded representative RTC caller. Scientific owners remain the existing
+// typed components; YAML and file checks live only at this offline boundary.
+#define main unused_identity_acceptance_main
+#include "identity_route_acceptance.cpp"
+#undef main
+#include "rtc_multidetector_bindings.h"
+#include <bit>
+
+namespace {
+using namespace citlali::pipeline;
+namespace caller = citlali::rtc_multidetector_tool;
+fs::path checked_file(const YAML::Node &n) {
+  const fs::path p=n["path"].as<std::string>();
+  require(citlali::utils::sha256_file(p)==n["sha256"].as<std::string>(),"input digest mismatch: "+p.string());
+  return p;
+}
+double field(const auto &row,const std::string &name) {
+  auto it=row.fields.find(name);if(it==row.fields.end()) return NAN;
+  if(auto value=std::get_if<double>(&it->second)) return *value;
+  if(auto value=std::get_if<std::int64_t>(&it->second)) return *value;
+  return NAN;
+}
+void write_yaml(const fs::path &p,const YAML::Node &node) {
+  YAML::Emitter serialized;serialized.SetDoublePrecision(17);serialized<<node;
+  std::ofstream out(p);out<<serialized.c_str()<<'\n';out.close();require(bool(out),"required output failed: "+p.string());
+}
+YAML::Node range(RtcEventRange r) {YAML::Node n;n.push_back(r.first);n.push_back(r.past_last);return n;}
+void write_matrix(const fs::path &p,const auto &m) {
+  std::ofstream out(p,std::ios::binary);
+  for(Eigen::Index i=0;i<m.rows();++i)for(Eigen::Index j=0;j<m.cols();++j){double v=m(i,j);out.write(reinterpret_cast<const char*>(&v),8);}
+  out.close();require(bool(out),"required matrix output failed");
+}
+}
+int main(int argc,char **argv) {
+  try {
+    const auto began=std::chrono::steady_clock::now();
+    require(argc==3 || argc==4,"expected input JSON, NEW output directory, optional explicit reviewed-selection YAML");
+    require(std::endian::native==std::endian::little,"native binary audit requires little endian");
+    const auto cfg=YAML::LoadFile(argv[1]);
+    require(cfg["schema"].as<std::string>()=="rtc-multidetector-experiment-v1","unexpected caller profile");
+    const fs::path output=argv[2];require(!fs::exists(output),"preserve previous output");
+    auto checked=[&](const std::string &key){return checked_file(cfg[key]);};
+    const auto raw_path = checked("raw"), tune_path = checked("tune"),
+               manifest = checked("manifest");
+    const auto prior_receipt_path = checked("audit_receipt");
+    const auto prior = YAML::LoadFile(prior_receipt_path.string());
+    require(prior["raw_sha256"].as<std::string>() ==
+                    citlali::utils::sha256_file(raw_path) &&
+                prior["tune_sha256"].as<std::string>() ==
+                    citlali::utils::sha256_file(tune_path) &&
+                prior["manifest_sha256"].as<std::string>() ==
+                    citlali::utils::sha256_file(manifest),
+            "audit raw/Tune/APT binding mismatch");
+    auto [logger, logs] = configure_logging();
+    const auto verified = apt::verify_bundle_filesystem(manifest, true);
+    const auto relation =
+        pipeline::admit_canonical_apt_detector_relation_v2(verified);
+    netCDF::NcFile raw_file(raw_path.string(), netCDF::NcFile::read);
+    const auto nw =
+        read_netcdf_scalar<int>(raw_file, "Header.Toltec.RoachIndex");
+    const auto obs = read_netcdf_scalar<int>(raw_file, "Header.Toltec.ObsNum");
+    const auto sub =
+        read_netcdf_scalar<int>(raw_file, "Header.Toltec.SubObsNum");
+    const auto scan =
+        read_netcdf_scalar<int>(raw_file, "Header.Toltec.ScanNum");
+    require(obs == relation.observation().observation &&
+                sub == relation.observation().subobservation &&
+                scan == relation.observation().scan,
+            "raw observation differs from exact APT relation");
+    const auto found = std::find_if(
+        relation.raw_sources().begin(), relation.raw_sources().end(),
+        [&](const auto &s) { return s.network == nw; });
+    require(found != relation.raw_sources().end(),
+            "APT does not bind input network");
+    const auto source = *found;
+    verify_raw_file(raw_path, source);
+    const auto rows = static_cast<std::int64_t>(
+        raw_file.getVar("Data.Toltec.Is").getDim(0).getSize());
+    const auto tune_digest = "sha256:" + citlali::utils::sha256_file(tune_path);
+    const auto kmp = std::find_if(
+        verified.sources.begin(), verified.sources.end(), [&](const auto &s) {
+          return s.role == apt::SourceRole::kmp && s.network == nw;
+        });
+    require(kmp != verified.sources.end() &&
+                kmp->content_sha256 == tune_digest &&
+                kmp->byte_count == fs::file_size(tune_path),
+            "Tune report differs from exact APT KMP source binding");
+    const auto tune = read_tune_facts(tune_path, source.channel_count);
+    require(tune.observation ==
+                    read_netcdf_scalar<int>(raw_file,
+                                            "Header.Toltec.TargSweepObsNum") &&
+                tune.subobservation ==
+                    read_netcdf_scalar<int>(
+                        raw_file, "Header.Toltec.TargSweepSubObsNum") &&
+                tune.scan == read_netcdf_scalar<int>(
+                                 raw_file, "Header.Toltec.TargSweepScanNum") &&
+                tune.network == nw,
+            "Tune report differs from raw header's calibration relation");
+    double fpga = 0, hz = 0;
+    std::int64_t accum = 0;
+    auto ts = read_timestamp_slice(raw_path, 0, rows, fpga, hz, accum);
+    require(fpga > 0 && hz > 0 && accum > 0 && tune.accumulation_length > 0,
+            "invalid producer cadence");
+    const double duration = static_cast<double>(accum) / fpga;
+    require(std::abs(duration - 1 / hz) <=
+                8 * std::numeric_limits<double>::epsilon() * duration,
+            "producer cadence fields disagree");
+    // Native producer clock only; no telescope synchronization or cross-network
+    // timing claim.
+    auto timing = std::make_shared<const pipeline::NativeNetworkAlignment>(
+        pipeline::make_native_network_alignment(nw, 0, ts, fpga, 0.0));
+    NetworkInput input{
+        source,     raw_path, tune_path, citlali::utils::sha256_file(tune_path),
+        fpga,       hz,       accum,     tune.accumulation_length,
+        tune.valid, timing};
+    require(obs == 152390 && sub == 0 && scan == 2 && nw == 12,
+            "bounded caller requires NGC4449/152390/0/2 network 12");
+    require(rows == prior["rows"].as<std::int64_t>() &&
+                nw == prior["network"].as<int>() &&
+                source.channel_count == prior["channels"].as<int>(),
+            "audit shape/scope mismatch");
+    std::vector<int> channels;
+    std::vector<std::string> sample_hashes;
+    require(cfg["detectors"].IsSequence() && cfg["detectors"].size() >= 2,
+            "multi-detector caller requires explicit simultaneous columns");
+    NativePairedReadoutMatrix x(rows, cfg["detectors"].size()), r(rows, cfg["detectors"].size());
+    std::vector<NativeReadoutCoordinateState> xs(rows*x.cols(),
+        NativeReadoutCoordinateState::measured(true,false,true,false)), rs(xs);
+    for (std::size_t d=0; d<cfg["detectors"].size(); ++d) {
+      const auto entry=cfg["detectors"][d];
+      const int channel=entry["channel"].as<int>();
+      require(channel>=0 && channel<source.channel_count &&
+                  (channels.empty() || channel>channels.back()),
+              "projected channels must be unique and sorted native channels");
+      const auto path=checked_file(entry["samples"]);
+      require(path.filename()=="samples-"+std::to_string(channel)+".f64" &&
+                  fs::file_size(path)==static_cast<std::uintmax_t>(rows)*32,
+              "audit column filename or size mismatch");
+      channels.push_back(channel);
+      sample_hashes.push_back(citlali::utils::sha256_file(path));
+      std::ifstream stream(path,std::ios::binary);
+      for(std::int64_t row=0; row<rows; ++row) {
+        std::array<double,4> a;
+        stream.read(reinterpret_cast<char*>(a.data()),32);
+        require(bool(stream),"audit sample read failed");
+        x(row,d)=a[0];r(row,d)=a[1];
+        require((a[2]==0 || a[2]==1) && (a[3]==0 || a[3]==1),"audit state malformed");
+        const auto cell=static_cast<std::size_t>(row*x.cols()+d);
+        xs[cell]=NativeReadoutCoordinateState::measured(true,tune.valid[channel] && std::isfinite(a[0]),true,std::isfinite(a[0]));
+        rs[cell]=NativeReadoutCoordinateState::measured(true,tune.valid[channel] && std::isfinite(a[1]),true,std::isfinite(a[1]));
+        require(xs[cell].valid()==(a[2]!=0) && rs[cell].valid()==(a[3]!=0),
+                "export differs from exact producer state convention");
+      }
+    }
+    const auto original_x=x, original_r=r;
+    auto config = load_runtime_config(checked("effective_config"));
+    require(config.interface_offset_present[nw] &&
+                config.interface_offsets_sec[nw] == 0,
+            "audit and AST timing require the accepted zero network offset");
+    auto mapping = std::make_shared<pipeline::NativeReadoutMappingAuthority>(
+        *mapping_identity(input, config));
+    mapping->applicability_domain_id =
+        "observation=" + std::to_string(obs) + ":network=" + std::to_string(nw);
+    mapping->event_time_epoch_meaning_id =
+        "producer-native-clock+exact-effective-zero-interface-offset:accepted-"
+        "AST-mapping";
+    std::string projection;
+    for(std::size_t d=0;d<channels.size();++d)
+      projection+=std::to_string(channels[d])+":"+sample_hashes[d]+"\n";
+    mapping->paired_xr_record_id += ":exact-simultaneous-column-projection:sha256:"+
+        citlali::utils::sha256(projection);
+    mapping->timing_uncertainty_state_id =
+        "unquantified:uniform-average-center-trial:rtc-native-readout-uniform-"
+        "average-assumption-v1";
+    // The owner-approved uniform-average assumption remains provisional.
+    // AST uses the recovered effective zero interface offset; the readout
+    // midpoint/boxcar remains the explicit provisional owner assumption.
+    auto axis = occurrence_axis(input, 0, rows,
+                                NativeEventTimeRole::integration_center);
+    const auto runs = axis->contiguous_runs();
+    const auto all_detectors=detector_axis(relation,input);
+    std::vector<NativeReadoutDetectorBinding> detectors;
+    std::vector<double> factors;
+    std::vector<bool> peer_good;
+    for(std::size_t d=0;d<channels.size();++d) {
+      auto binding=all_detectors.at(channels[d]);binding.storage_column=d;
+      detectors.push_back(std::move(binding));
+      const auto aptrow=std::find_if(verified.apt.rows.begin(),verified.apt.rows.end(),
+          [&](const auto &a){return a.network==nw && a.channel==channels[d];});
+      require(aptrow!=verified.apt.rows.end() && aptrow->array==2,"projection must bind exact a2000 APT rows");
+      factors.push_back(field(*aptrow,"flxscale"));
+      peer_good.push_back(field(*aptrow,"flag")==0 && field(*aptrow,"flag2")==0);
+    }
+    std::vector<NativePairedReadoutNetwork> networks;
+    networks.push_back(NativePairedReadoutNetwork::admit(axis,detectors,mapping,
+        std::move(x),std::move(r),std::move(xs),std::move(rs)));
+    auto parent = std::make_shared<const NativePairedReadoutObservation>(
+        NativePairedReadoutObservation::admit(
+            NativeObservationScope{obs, sub, scan}, {nw}, std::move(networks)));
+    auto val=ValSnapshot::initial(parent);
+    auto view=NativePairedReadoutView::full(parent);
+    const auto protection_authority=cfg["source_protection_authority"].as<std::string>();
+    caller::require_no_mask_scope(parent->scope(),protection_authority);
+    auto protection=RtcSpikeSourceProtection::admit(parent,protection_authority,
+                                                   RtcSpikeProtection::outside_source);
+    const auto ingress_finished=std::chrono::steady_clock::now();
+    auto spikes=learn_rtc_spike_candidates(view,val,protection,1);
+    std::vector<RtcEventPeerEligibility> peers;
+    for(std::uint32_t d=0;d<channels.size();++d)
+      peers.push_back({nw,d,detectors[d].detector_occurrence_id,
+                       peer_good[d] && tune.valid[channels[d]]});
+    auto peer=RtcEventPeerPopulation::admit(spikes,
+        "exact-projected-APT-population:flag=flag2=0:Tune-valid:sha256:"+
+        citlali::utils::sha256_file(manifest),std::move(peers));
+    auto events=RtcEventAssessmentDecision::consider(learn_rtc_event_assessment(spikes,peer,2),val,3);
+    auto amplitude=RtcJumpAmplitudeDecision::consider(events,val,4);
+    auto consistency=RtcJumpConsistencyDecision::consider(RtcJumpConsistencyEvidence::learn(amplitude,5),val,6);
+    auto transition=RtcJumpTransitionEvidence::learn(RtcJumpTransitionRequest::consider(consistency,val,7),8);
+    auto support=RtcJumpSupportEvidence::learn(transition,9);
+    auto refit=RtcJumpRefitEvidence::learn(RtcJumpRefitRequest::consider(support,val,10),11);
+    auto remeasurement=RtcJumpReassessmentEvidence::learn(RtcJumpRemeasureRequest::consider(refit,val,12),13);
+    auto admitted=RtcJumpAdmissionDecision::consider(RtcJumpReassessmentDecision::consider(remeasurement,val,14),val,15);
+    const auto transients_finished=std::chrono::steady_clock::now();
+    auto native=ValNativeRealization::create(parent,{ValProducer::align,1},1,ValNativeProductRole::original_input,nw);
+    auto identity=RtcSpectralInputIdentity::bind(native,val,view->span(nw),
+        RtcSpectralInputStage::original_reference,"exact-simultaneous-audit-original-projection",1);
+    const std::vector<RtcSpectralCadenceDomain> cadence{{nw,"audit-four-epoch-ULP-arithmetic-envelope",
+        duration,prior["roundoff_bound_fraction"].as<double>()}};
+    auto spectral=RtcNativeSpectralEvidence::learn_initial(spikes,{identity},cadence,18);
+    auto lines=RtcLinePowerEvidence::learn(spectral,val,RtcLinePowerProfile::initial_2_hz,19);
+    auto joint=RtcLinePowerConsideration::rank(lines,
+        RtcSpectralTransientConsideration::consider(spectral,val,events,val,20),21);
+    const auto learn_finished=std::chrono::steady_clock::now();
+    // The immutable configuration includes exact content hashes for every
+    // scientific input. A changed code/config/VAL requires a new selection.
+    const auto binding=citlali::utils::sha256(std::string(CITLALI_GIT_REVISION)+"\n"+
+        citlali::utils::sha256_file(argv[1])+"\nVAL-generation=0\n"+mapping->paired_xr_record_id);
+    fs::create_directories(output);
+    std::ofstream native_times(output/"native-time.f64",std::ios::binary);
+    for(auto row=axis->first_native_row();row<axis->past_last_native_row();++row){
+      double t=axis->native_identity(row).reconstructed_time_unix_sec();
+      native_times.write(reinterpret_cast<const char*>(&t),8);
+    }
+    native_times.close();require(bool(native_times),"native time export failed");
+    YAML::Node receipt;
+    receipt["schema"]="rtc-multidetector-learning-v1";
+    receipt["source_revision"]=std::string(CITLALI_GIT_REVISION);
+    receipt["configuration_sha256"]=citlali::utils::sha256_file(argv[1]);
+    receipt["learning_binding"]=binding;receipt["VAL_generation"]=0;
+    receipt["observation"]=obs;receipt["network"]=nw;receipt["rows"]=rows;
+    receipt["source_protection_authority"]=protection_authority;
+    receipt["source_protection"]="explicit-empty-protected-region";
+    receipt["astronomical_signal_retained"]=true;
+    receipt["original_parent"]=mapping->paired_xr_record_id;
+    receipt["automatic_spike_admission"]=false;receipt["production_filtering_active"]=false;
+    receipt["Apply_performed"]=false;
+    receipt["candidate_count"]=spikes->candidates().size();
+    receipt["event_count"]=events->evidence_handle()->events().size();
+    std::size_t jump_count=0;
+    for(const auto &g:admitted->groups())jump_count+=g.admitted();
+    receipt["admitted_jump_groups"]=jump_count;
+    receipt["existing_scan_binding_required"]=jump_count!=0;
+    receipt["event_selection_state"]="unavailable-until-explicit-review";
+    receipt["stable_support_state"]="unavailable-until-explicit-review";
+    receipt["spectral_estimator"]=std::string(RtcInitialSpectralPolicy::estimator);
+    receipt["spectral_conventions"]=std::string(RtcInitialSpectralPolicy::conventions);
+    receipt["cadence_interval_seconds"]=spectral->network(nw).interval_seconds;
+    receipt["physical_runs"]=runs.size();
+    receipt["native_time_sha256"]=citlali::utils::sha256_file(output/"native-time.f64");
+    for(const auto &run:runs)receipt["native_runs"].push_back(range({run.first_native_row,run.past_last_native_row}));
+    for(std::size_t d=0;d<channels.size();++d){
+      YAML::Node entry;entry["detector"]=d;entry["channel"]=channels[d];
+      entry["occurrence"]=detectors[d].detector_occurrence_id;
+      entry["array_association"]=detectors[d].detector_association_record_id;
+      entry["samples_sha256"]=sample_hashes[d];entry["peer_eligible"]=peer->eligible(nw,d);
+      entry["prior_flxscale"]=factors[d];entry["factor_authority"]="sha256:"+citlali::utils::sha256_file(manifest);
+      entry["factor_unit"]="mJy/beam/xs";
+      receipt["detectors"].push_back(entry);
+    }
+    YAML::Node event_table(YAML::NodeType::Sequence);
+    for(std::size_t i=0;i<events->evidence_handle()->events().size();++i){
+      const auto &e=events->evidence_handle()->events()[i];const auto &review=events->event_reviews()[i];
+      const auto &seed=spikes->candidates()[e.seed];YAML::Node entry;
+      entry["event"]=i;entry["channel"]=channels[e.detector];entry["detector"]=e.detector;
+      entry["seed_earlier_row"]=seed.earlier_row;entry["trial_exclusion"]=range(e.trial_exclusion);
+      entry["origin_unix_seconds"]=e.origin;entry["time_scale_seconds"]=e.time_scale;
+      entry["review_disposition"]=static_cast<int>(review.disposition);
+      entry["health_concern"]=review.health_concern;entry["refinement_limited"]=e.refinement_limited;
+      entry["hard_spike_accepted"]=false;entry["jump_admitted"]=admitted->groups().at(i).admitted();
+      for(const auto &r:e.neighbor_exclusions)entry["neighbor_exclusions"].push_back(range(r));
+      for(std::size_t c=0;c<2;++c){
+        const auto &b=e.background[c];const auto &recovery=e.recovery[c];const auto &context=e.peers[c];
+        YAML::Node coordinate;coordinate["seeded"]=e.seeded[c];coordinate["background_available"]=b.available();
+        coordinate["background_cause"]=static_cast<int>(b.support_cause);
+        coordinate["recovery_cause"]=static_cast<int>(recovery.cause);
+        coordinate["affected"]=range(recovery.affected);coordinate["confirmation"]=range(recovery.confirmation);
+        coordinate["examined"]=range(recovery.examined);coordinate["scale"]=b.cubic.scale;
+        for(auto v:b.cubic.coefficients)coordinate["cubic"].push_back(v);
+        for(auto v:b.cubic_with_offset.coefficients)coordinate["cubic_with_offset"].push_back(v);
+        coordinate["offset"]=b.cubic_with_offset.offset;
+        for(const auto &side:b.support){YAML::Node s;s["usable"]=side.usable;
+          s["rows"]=range({side.first_used,side.last_used+1});coordinate["fit_support"].push_back(s);}
+        coordinate["usable_peers"]=context.usable_peers;
+        coordinate["strongest_peer_channel"]=channels.at(context.strongest_peer);
+        coordinate["strongest_level_correlation"]=context.strongest_level_correlation;
+        coordinate["strongest_difference_correlation"]=context.strongest_difference_correlation;
+        entry["coordinates"].push_back(coordinate);
+      }
+      event_table.push_back(entry);
+    }
+    write_yaml(output/"events.yaml",event_table);
+    receipt["events_sha256"]=citlali::utils::sha256_file(output/"events.yaml");
+    std::ofstream psd(output/"original-psd.f64",std::ios::binary);
+    for(const auto &s:spectral->spectra()){
+      psd.write(reinterpret_cast<const char*>(s.psd.data()),s.psd.size()*8);
+      YAML::Node entry;entry["channel"]=channels[s.detector];entry["coordinate"]=static_cast<int>(s.coordinate);
+      entry["available"]=s.available();entry["cause"]=static_cast<int>(s.cause);entry["bins"]=s.psd.size();
+      for(const auto &window:s.windows)entry["windows"].push_back(range(window.rows));
+      receipt["spectra"].push_back(entry);
+    }
+    psd.close();require(bool(psd),"original spectrum output failed");
+    // Preserve the learning product even if subsequent explicit Consider
+    // refuses missing required scan/support bindings. This is not Apply success.
+    write_yaml(output/"learning-receipt.yaml",receipt);
+    if(argc==4){
+      const auto selections=YAML::LoadFile(argv[3]);
+      const auto selected=caller::read_review(selections,binding,events->evidence_handle(),channels,factors,nw,
+                                             "sha256:"+citlali::utils::sha256_file(manifest));
+      // This call intentionally refuses missing scan support when any jump is
+      // admitted. Acquisition ScanNum is never used as the processing scan.
+      auto jumps=RtcJumpExclusionPlan::consider(admitted,selected.scans,val,22);
+      auto transient=RtcTransientExclusionPlan::consider(events->original_screening_handle(),jumps,val,23);
+      std::vector<std::vector<std::shared_ptr<const RtcDonorFillPlan>>> donors(channels.size());
+      for(const auto &event:selected.events){
+        auto donor=RtcDonorFillPlan::consider(event,selected.facts,transient,val,24+event.event);
+        donors[donor->event().detector].push_back(donor);
+      }
+      const auto telescope=load_telescope(checked("telescope"),parent->scope());
+      auto ast=build_ast_scan_motion_product(telescope.source,ast_identity_binding);
+      const auto accepted_ast=YAML::LoadFile(checked("ast_acceptance").string());
+      require(accepted_ast["source_revision"].as<std::string>()=="adbc013e2d4287fb5a32db8bc7f2b0112c1c88d7" &&
+          accepted_ast["authority_policy_id"].as<std::string>()==std::string(ast_scan_motion_policy_id) &&
+          accepted_ast["observation"].as<int>()==obs &&
+          accepted_ast["telescope"]["sha256"].as<std::string>()==telescope.sha256,
+          "AST acceptance differs from exact telescope/policy/scope");
+      auto motion=AstScanMotionNetworkView::admit(ast,timing);
+      std::vector<std::shared_ptr<const RtcNotchRecoveryPlan>> plans;
+      for(std::uint32_t d=0;d<channels.size();++d){
+        RtcLineTransferSpecification s;s.identity="multidetector-explicit-finite-plan";
+        s.lowpass_identity=cfg["lowpass_identity"].as<std::string>();
+        s.state_support_identity="two-centered-finite-FIRs;complete-native-footprints;no-padding;ordered-binary64-FMA;fixed-native-phase0";
+        s.input_interval_seconds=spectral->network(nw).interval_seconds;s.factor=2;
+        s.centered_lowpass=cfg["fir"].as<std::vector<double>>();
+        const auto operation=cfg["detectors"][d]["filter"].as<std::string>();
+        require(operation=="lowpass" || operation=="w1-t3","unapproved experiment design");
+        if(operation=="w1-t3"){
+          s.finite_notch_identity=cfg["finite_notch_identity"].as<std::string>();
+          s.centered_notch=cfg["finite_notch"].as<std::vector<double>>();
+        }
+        RtcNotchRecoveryDomain domain;domain.identity="152390-a2000-235arcsec-s-experiment-only";
+        domain.detector_array_association=detectors[d].detector_association_record_id;
+        domain.motion=motion;domain.array=RtcOpticalArray::a2000;
+        domain.speed_ceiling_arcsec_per_sec=235;domain.nominal_interval_seconds=duration;
+        auto candidate=RtcLineTransferCandidate::bind(lines,nw,d,s);
+        auto assessment=RtcLineTransferAssessment::consider(candidate,joint,val,100+d);
+        plans.push_back(RtcNotchRecoveryPlan::consider(assessment,transient,val,domain,200+d,donors[d]));
+      }
+      const auto complete=RtcPipelinePlan::consider(plans,joint->joint_handle(),1000);
+      const std::array partitions{view};
+      const auto applied_at=std::chrono::steady_clock::now();
+      auto result=RtcPipelineResult::apply(complete,view,val,partitions);
+      receipt["Apply_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-applied_at).count();
+      receipt["Apply_performed"]=true;receipt["review_sha256"]=citlali::utils::sha256_file(argv[3]);
+      receipt["event_selection_state"]="explicit-reviewed-selection";
+      receipt["stable_support_state"]="explicit-reviewed-support";
+      receipt["transient_excluded_pair_cells"]=transient->counts().union_pair_cells;
+      for(std::size_t d=0;d<channels.size();++d){
+        const auto &r=*result->detector_results()[d];const auto stem=std::to_string(channels[d]);
+        write_matrix(output/(stem+"-conditioned.f64"),r.conditioned_native_pair());
+        write_matrix(output/(stem+"-filtered.f64"),r.filtered_native_pair());
+        std::ofstream states(output/(stem+"-state.u8"),std::ios::binary);
+        std::size_t replaced=0,excluded=0;
+        for(auto row=axis->first_native_row();row<axis->past_last_native_row();++row){
+          std::uint8_t b=0;
+          if(r.coordinate_stage_available(NativeReadoutCoordinate::x,row,true))b|=1;
+          if(r.coordinate_stage_available(NativeReadoutCoordinate::r,row,true))b|=2;
+          if(r.representative_replaced(row)){b|=4;++replaced;}
+          if(r.requires_representative_exclusion(row)){b|=8;++excluded;}
+          if(r.replacement_influence(row,true))b|=16;
+          if(r.unrepaired_influence(row,true))b|=32;
+          states.write(reinterpret_cast<const char*>(&b),1);
+        }
+        states.close();require(bool(states),"state output failed");
+        std::ofstream causes(output/(stem+"-causes.u8"),std::ios::binary);
+        for(auto cause:r.causes()){const auto c=static_cast<std::uint8_t>(cause);causes.write(reinterpret_cast<const char*>(&c),1);}
+        causes.close();require(bool(causes),"cause output failed");
+        std::ofstream selected_rows(output/(stem+"-rows.i64"),std::ios::binary);
+        for(auto row:r.output_native_rows())selected_rows.write(reinterpret_cast<const char*>(&row),8);
+        selected_rows.close();require(bool(selected_rows),"selected native row output failed");
+        YAML::Node record;record["channel"]=channels[d];record["replaced_rows"]=replaced;
+        record["representative_excluded_rows"]=excluded;
+        record["output_rows"]=r.output_native_rows().size();record["factor"]=2;record["phase_native_rows"]=0;
+        const auto &spec=plans[d]->assessment_handle()->candidate_handle()->specification();
+        record["lowpass_FIR"]=spec.centered_lowpass;record["finite_notch_FIR"]=spec.centered_notch;
+        record["sampling_speed_limit_arcsec_per_sec"]=plans[d]->sampling_speed_limit_arcsec_per_sec();
+        record["AST_source"]=telescope.source->metadata().source_artifact_identity;
+        for(const auto &run:plans[d]->runs())record["admitted_runs"].push_back(range(run));
+        for(const auto &donor:donors[d]){YAML::Node dr;dr["event"]=donor->selection().event;
+          dr["cause"]=static_cast<int>(donor->cause());dr["affected"]=range(donor->selection().affected);
+          for(const auto &m:donor->medians()){YAML::Node cell;cell["native_row"]=m.row;cell["value"]=m.value;
+            for(auto id:m.eligible)cell["eligible_channels"].push_back(channels[id]);
+            for(std::size_t i=0;i<m.central_count;++i)cell["central_channels"].push_back(channels[m.central[i]]);
+            dr["median_population"].push_back(cell);}
+          record["donors"].push_back(dr);}
+        receipt["realized_detectors"].push_back(record);
+      }
+      for(bool lowpass:{false,true}){
+        auto conditioned=RtcNativeSpectralEvidence::learn_conditioned(result->native_product(lowpass,val),val,cadence,1100+lowpass);
+        auto considered=RtcSpectralTransientConsideration::consider(conditioned,val,events,val,1200+lowpass);
+        const auto reassessment=RtcPipelineReassessment::consider(result,considered,1300+lowpass);
+        YAML::Node stage;stage["after_lowpass"]=lowpass;stage["producer_attempt"]=complete->attempt();
+        const auto stage_path=output/(lowpass ? "post-lowpass-psd.f64" : "post-notch-psd.f64");
+        std::ofstream stage_psd(stage_path,std::ios::binary);
+        stage["classification_authorized"]=reassessment->classification_authorized;
+        for(const auto &s:conditioned->spectra()){YAML::Node c;c["channel"]=channels[s.detector];
+          c["coordinate"]=static_cast<int>(s.coordinate);c["available"]=s.available();c["cause"]=static_cast<int>(s.cause);
+          c["bins"]=s.psd.size();stage_psd.write(reinterpret_cast<const char*>(s.psd.data()),s.psd.size()*8);
+          for(const auto &w:s.windows){YAML::Node win;win["rows"]=range(w.rows);
+            win["representative_replacements"]=w.representative_replacements;
+            win["replacement_influenced_samples"]=w.replacement_influenced_samples;
+            win["unrepaired_influenced_samples"]=w.unrepaired_influenced_samples;
+            win["representative_exclusions"]=w.representative_exclusions;
+            c["windows"].push_back(win);}
+          stage["spectra"].push_back(c);}
+        stage_psd.close();require(bool(stage_psd),"conditioned spectrum output failed");
+        stage["numerical_psd_sha256"]=citlali::utils::sha256_file(stage_path);
+        receipt["relearned"].push_back(stage);
+      }
+    }
+    const auto &net=parent->network(nw);
+    for(std::uint32_t d=0;d<channels.size();++d)for(std::int64_t row=0;row<rows;++row){
+      require(std::bit_cast<std::uint64_t>(original_x(row,d))==std::bit_cast<std::uint64_t>(net.value(NativeReadoutCoordinate::x,row,d)) &&
+          std::bit_cast<std::uint64_t>(original_r(row,d))==std::bit_cast<std::uint64_t>(net.value(NativeReadoutCoordinate::r,row,d)),"original pair changed");
+    }
+    receipt["original_pair_unchanged"]=true;
+    receipt["ingress_seconds"]=std::chrono::duration<double>(ingress_finished-began).count();
+    receipt["transient_seconds"]=std::chrono::duration<double>(transients_finished-ingress_finished).count();
+    receipt["spectral_seconds"]=std::chrono::duration<double>(learn_finished-transients_finished).count();
+    receipt["total_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-began).count();
+    receipt["status"]=argc==4 ? "PASS-explicit-reviewed-Apply" : "PASS-Learn-awaiting-explicit-selections";
+    write_yaml(output/"receipt.yaml",receipt);
+    std::cout<<receipt["status"].as<std::string>()<<" detectors="<<channels.size()<<" events="<<event_table.size()<<" jumps="<<jump_count<<'\n';
+    return 0;
+  } catch(const std::exception &e){std::cerr<<"RTC multi-detector caller FAIL: "<<e.what()<<'\n';return 1;}
+}

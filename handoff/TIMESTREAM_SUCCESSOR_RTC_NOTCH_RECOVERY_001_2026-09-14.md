@@ -1,5 +1,56 @@
 # TIMESTREAM-SUCCESSOR-RTC-NOTCH-RECOVERY-001
 
+## Multi-detector RTC caller preflight — 2026-09-15
+
+Owner authorization: "Okay, let's do it then", following the approved initial
+152390 no-mask choice. `TIMESTREAM-SUCCESSOR-RTC-MULTIDETECTOR-001`, Tier 2,
+continues the existing RTC module worktree and branch. Literal clean base is
+`0c9f3e9288b0c6e010f8eea652d0d31c94e80a84`; freshly queried canonical remains
+`0f52e1a421416eadaf7d8d99d64f537132395c0c`, an ancestor. Published topic is
+`becccce85816379e578ac1a325e8c9fe156defbe`; the no-mask receipt is local.
+No additional branch, integration, push, cleanup or activation is authorized.
+
+AGENTS, toltec-context routing, Engineering Governance, Timestream Successor
+Governance and Review And Conformance were read. Effective governance remains
+accepted `06a3ade51c1b3f38887295433d913811bf25cd14`, incorporation
+`77507836325eff9f469062d5884481ea37599594`, with the three recorded digests
+unchanged. WP-7.1 scientific source/closure and ADR0017--0023 remain unchanged.
+Current status, S2, SCI-RTC r0.12 REQ-013--020/050--052/057/064/095/121/124/
+131--132, accepted event/donor rules and the scoped no-mask decision govern.
+
+Implement a bounded offline caller using a simultaneous projection of the
+existing 152390 native detector population. Preserve exact raw/Tune/verified
+APT, occurrence, sample, cadence and VAL bindings. Runtime Learn runs the
+accepted original transient/spectral components on the shared parent; RTC
+Consider consumes explicit selections and complete existing plans; Apply
+replays original x/r and retains replacement/exclusion history. Engineering
+workflow does not substitute for these runtime boundaries. Bind prior static
+APT flxscale directly; do not derive it from run-averaged or atmospheric FCF.
+Reuse the saved finite notch/LPF and accepted AST relation when Apply is ready.
+Do not invent a new processing-scan partition or an automatic admission rule.
+
+Prerequisite reassessment: no-mask supplies source-protection state only.
+Existing event review deliberately leaves isolated-event acceptance and stable
+donor support unresolved; accepted jump treatment also requires its existing
+scan/native relation. The caller must expose missing inputs and withhold
+dependent Apply. Owner discussion of a small explicitly reviewed event/support
+set versus automatic admission is pending. Input, selection-validation and
+review-preparation work can proceed independently; no real candidate is
+promoted while that choice is pending.
+
+Expected paths: bounded tool/private input adapter, focused tests, CMake target,
+small preparation/inspection tools if needed, status/ledger/this handoff.
+Focused gates cover exact population and observation, input/VAL/review bindings,
+missing selections/support, preserved originals and multi-detector composition.
+Broad gates are CTest/check, baseline tools, require-all config and exact CLI;
+new source and closure receive independent fresh-context exact-SHA review.
+Measure the selected native population's local time/memory; any real replay
+uses new evidence directories and preserves sealed predecessors. Local
+AppleClang/Homebrew evidence is supplemental; Unity/Spack V2 is not reproduced.
+Production, automatic event/notch/factor/stopping rules, FRUIT/PTC/CAL/MAP and
+new scientific thresholds remain excluded. Missing science, stale inputs,
+unavailable required support or ownership/scope changes trigger reassessment.
+
 ## Initial 152390 pass: owner-selected absence of a spatial mask — 2026-09-15
 
 Owner: "I don't think we should start with a mask given that this is a single
