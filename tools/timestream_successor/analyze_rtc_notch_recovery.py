@@ -140,10 +140,16 @@ def analyze(a):
     import matplotlib.pyplot as plt
 
     results = []
-    fig, axes = plt.subplots(3, 2, figsize=(13, 10))
-    sourcefig, srcax = plt.subplots(3, 2, figsize=(13, 10))
-    for ci, (name, nw, d, _) in enumerate(CASES):
+    cases = getattr(a, "cases", None) or [c[0] for c in CASES]
+    fig, axes = plt.subplots(
+        len(cases), 2, figsize=(13, 3.5 * len(cases)), squeeze=False
+    )
+    sourcefig, srcax = plt.subplots(
+        len(cases), 2, figsize=(13, 3.5 * len(cases)), squeeze=False
+    )
+    for ci, name in enumerate(cases):
         cfg = json.loads((a.plans / f"{name}.json").read_text())
+        nw, d = cfg["network"], cfg["channel"]
         root = a.campaign / name
         receipt = json.loads((root / "receipt.json").read_text())
         n = receipt["rows"]
@@ -370,4 +376,5 @@ if __name__ == "__main__":
     p.add_argument("--plans", type=Path, required=True)
     p.add_argument("--campaign", type=Path, required=True)
     p.add_argument("--output", type=Path, required=True)
+    p.add_argument("--case", action="append", dest="cases")
     analyze(p.parse_args())

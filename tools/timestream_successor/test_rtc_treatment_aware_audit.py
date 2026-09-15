@@ -1,4 +1,7 @@
 import unittest
+import tempfile
+from pathlib import Path
+from rtc_disturbance_burden import digest
 
 import numpy as np
 from prepare_rtc_population_replay import cross_spectrum
@@ -11,10 +14,36 @@ from rtc_treatment_aware_audit import (
     rows_for_intervals,
     simultaneous,
     split_runs,
+    sealed_verifier,
 )
 
 
 class PopulationAccounting(unittest.TestCase):
+    def test_reused_weight_and_native_cell_files_require_the_accepted_seal(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            weights, cells = root / "weights.json", root / "cells.json"
+            weights.write_text('{"sens": 3}')
+            cells.write_text("[[0, 1, 2, 3]]")
+            seal = root / "SUMS"
+            seal.write_text(
+                "".join(f"{digest(p)}  {p.name}\n" for p in (weights, cells))
+            )
+            accepted = digest(seal)
+            verify, checked = sealed_verifier(root, "SUMS", accepted)
+            verify(weights)
+            verify(cells)
+            self.assertEqual(len(checked), 3)
+            for path in (weights, cells):
+                original = path.read_bytes()
+                path.write_bytes(original + b" ")
+                with self.assertRaises(ValueError):
+                    verify(path)
+                path.write_bytes(original)
+            seal.write_text(seal.read_text() + "\n")
+            with self.assertRaises(ValueError):
+                sealed_verifier(root, "SUMS", accepted)
+
     def test_matched_coherence_known_phase_and_scale(self):
         rng = np.random.default_rng(831)
         left = rng.normal(size=(80, 12)) + 1j * rng.normal(size=(80, 12))

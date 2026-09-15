@@ -106,11 +106,55 @@ def fixed_weight(apt_good, sensitivity):
     return None
 
 
+def sealed_verifier(root, manifest_name, expected_manifest_digest):
+    """Bind reused evidence to its recorded accepted seal before consuming it."""
+    manifest = root / manifest_name
+    if digest(manifest) != expected_manifest_digest:
+        raise ValueError("changed accepted evidence seal: " + str(manifest))
+    sealed = {
+        line[66:].removeprefix("./"): line[:64]
+        for line in manifest.read_text().splitlines()
+    }
+    checked = {manifest_name: expected_manifest_digest}
+
+    def verify(path):
+        rel = str(path.relative_to(root))
+        actual = digest(path)
+        if actual != sealed.get(rel):
+            raise ValueError("changed or unsealed evidence: " + rel)
+        checked[rel] = actual
+
+    return verify, checked
+
+
 def main(a):
     started = time.monotonic()
     a.output.mkdir(parents=True, exist_ok=False)
+    # Exact accepted audit/short-trial/census seals recorded in their handoffs.
+    verify, checked = sealed_verifier(
+        a.audit,
+        "AUDIT_SHA256SUMS",
+        "6b631e36bb1532c7bf21c3eb51a2395acd7f30de20495f31ba13861321fa286b",
+    )
+    verify_short, short_bindings = sealed_verifier(
+        a.short,
+        "EVIDENCE_SHA256SUMS",
+        "c14769f45b56ed4eb1b65bee86b3cbdddb0454d686fcb82bb65518ab50abf8a5",
+    )
+    verify_burden, burden_bindings = sealed_verifier(
+        a.burden,
+        "SHA256SUMS",
+        "e8156f63a96b21f045e571ff784d1c246994acd83f8e1cf0647e4c4ef33b95b4",
+    )
+    for name in (
+        "analysis-final/summary.json",
+        "analysis-final/detectors.jsonl.gz",
+        "campaign-01/invocations.jsonl",
+    ):
+        verify(a.audit / name)
     audit_summary = json.loads((a.audit / "analysis-final/summary.json").read_text())
     burden_path = a.burden / "detector-accounting.jsonl.gz"
+    verify_burden(burden_path)
     if digest(burden_path) != audit_summary["bindings"]["burden_accounting_sha256"]:
         raise ValueError("wrong prior transient accounting")
     burden = {
@@ -120,34 +164,8 @@ def main(a):
         (r["observation"], r["network"], r["detector"]): r
         for r in records(a.audit / "analysis-final/detectors.jsonl.gz")
     }
-    sealed = {
-        line[66:].removeprefix("./"): line[:64]
-        for line in (a.audit / "AUDIT_SHA256SUMS").read_text().splitlines()
-    }
-    checked = {}
-
-    def verify(p):
-        rel = str(p.relative_to(a.audit))
-        actual = digest(p)
-        if actual != sealed[rel]:
-            raise ValueError("changed sealed audit evidence: " + rel)
-        checked[rel] = actual
-
     # Geometry is reused only for its exact original network/time authority.
     # Other population rows retain unavailable motion/filter applicability.
-    short_seal = {
-        line[66:].removeprefix("./"): line[:64]
-        for line in (a.short / "EVIDENCE_SHA256SUMS").read_text().splitlines()
-    }
-    short_bindings = {}
-
-    def verify_short(path):
-        rel = str(path.relative_to(a.short))
-        actual = digest(path)
-        if actual != short_seal[rel]:
-            raise ValueError("changed shorter-notch evidence: " + rel)
-        short_bindings[rel] = actual
-
     geometry = {}
     for case, nw in [("inband", 11), ("quiet", 12)]:
         for path in (
@@ -210,9 +228,9 @@ def main(a):
                 mode="r",
                 shape=(receipt["window_records"], 14),
             )
-            with gzip.open(
-                a.burden / "native-time" / f"{obs}-{nw:02d}.jsonl.gz", "rt"
-            ) as stream:
+            native_cells = a.burden / "native-time" / f"{obs}-{nw:02d}.jsonl.gz"
+            verify_burden(native_cells)
+            with gzip.open(native_cells, "rt") as stream:
                 clock = json.loads(next(stream))
                 cells = np.array([json.loads(line) for line in stream], dtype=np.int64)
             if (
@@ -565,6 +583,7 @@ def main(a):
             burden_accounting_sha256=digest(burden_path),
             wall_seconds=time.monotonic() - started,
             short_evidence_bindings=short_bindings,
+            burden_evidence_bindings=burden_bindings,
             original_estimators_unchanged=True,
             filtering_executed=False,
             assumptions="x10 exploratory screen unchanged; six-second footprint potential is not candidate coverage; actual AST/filter domain only where exact prior geometry binds; no pooled cross-array sensitivity",
