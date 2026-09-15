@@ -1,5 +1,87 @@
 # TIMESTREAM-SUCCESSOR-RTC-NOTCH-RECOVERY-001
 
+## Multi-detector RTC source result and closure — 2026-09-15
+
+Disposition: locally verified source candidate with real Learn complete;
+real-data Apply prerequisites remain unavailable. This does not claim owner
+acceptance, canonical integration or production qualification.
+
+Exact source `99db334f219985a75186167c4de083b7b3b7d189`, tree
+`dc3b1e5ad67ae6dbaa9a2705097e964ff427dddb`, parent/literal base
+`0c9f3e9288b0c6e010f8eea652d0d31c94e80a84`. Work order and effective authority
+are the preflight below; unchanged governance/WP-7.1/SCI-RTC and existing donor,
+jump, source-protection and complete-plan decisions govern. Eight changed
+paths and their SHA256 digests are in external `source-binding.json` and the
+independent review. The existing excluded-from-default-build offline target
+lane owns the new caller; core science/public pipeline owners remain unchanged.
+
+Delivered: simultaneous twelve-detector original native parent with exact
+raw/Tune/APT, occurrence, timing, producer validity, initial VAL and prior
+static flxscale. Explicit no-mask profile requires 152390/0/2 and the recorded
+owner authority. Runtime Learn runs the accepted original transient/spectral
+owners. Consider consumes explicit reviewed event/support/contamination facts
+and actual processing-scan support before freezing existing complete plans.
+Apply remains fresh-original, with flagged x-only donor reconstruction,
+optional saved notch, LPF/decimation and explicit native conditioned relearning.
+Engineering learn/consider/apply does not substitute for these runtime owners.
+
+Reviewed input is bound to exact source/configuration/Learn/VAL, full ordered
+occurrences, and each event's index/channel/seed row. Missing support is
+unavailable; repeated/stale/foreign/unapproved selections fail. The preparation
+and plotting tools make no selections. `review-template.yaml` remains
+unapproved, with empty stable support and no accepted events. Controlled tests
+exercise the private adapter through donor and complete Apply, including
+factor ratios, contamination, original preservation and replacement flags.
+
+The exact-source real run uses the existing twelve 152390/n12 cases. It finds
+52 candidate edges/44 groups over 151,537 rows, with three admitted jumps
+(channels 402/406/438 near native row 108078). All 24 original spectra have
+621 contributing windows and are byte-identical to their preceding assembly
+counterparts. Original x/r and all 19 referenced input file hashes are unchanged.
+Wall time is 9.307 s, child CPU 8.895 s, peak RSS 259,407,872 bytes; internal
+ingress/transient/spectral times are 8.154/0.104/0.594 s. This is one local
+Learn workload, not complete Apply or production throughput. Four inspected
+review rows show a brief isolated-looking feature, shared disturbance,
+ambiguous excursion and admitted persistent jump without promoting candidates.
+
+Reassessment: the accepted three jumps require exact existing processing-scan
+support for full-scan exclusion. Read-only local reduction provenance/logs
+contain 124 scans with counts/digests and a truncated index matrix, not the
+needed native interval relation and uncertainty authority. No scan partition
+is inferred. Scope stays bounded: finish caller, tests and original Learn;
+withhold dependent real Apply. Recover this engineering binding and obtain an
+explicit reviewed event/stable/contamination set before running real donor
+reconstruction. The owner discussion of a small reviewed set versus automatic
+admission remains pending. No new scientific policy is inferred from that gap.
+
+Local gates pass: 1,154 runnable CTests (one established disabled), RTC Python
+91 plus 38 subtests, baseline 207 plus 137 subtests, require-all config, exact
+CLI and changed Python lint. Independent source review repeats 22 focused
+C++ and 3 Python tests and verifies the sealed preparation/input identities.
+Verdict: PASS WITH RECORDED LIMITATIONS, no actionable findings on all three
+axes; SHA256 `c9c96943a780c4a5425a138101d6e1cdebe22dcd39d9026806756016ec36f9b5`.
+The environment is supplemental AppleClang 21 arm64/C++20/Homebrew with
+existing kids `04088da-dirty`, not Unity/Spack V2. Final gates and Learn have
+no unexpected error-level output. Development failures remain explicitly
+separate in the evidence and report.
+
+Evidence root: `/private/tmp/citlali-rtc-multidetector-2026-09-15`.
+`REPORT.md`, `source-binding.json`, `independent-source-review.md`,
+`learn-99db334f2/receipt.yaml`, `review-99db334f2.png` and the gate logs are
+sealed by `EVIDENCE_SHA256SUMS`: 35 files, 4,588,240 bytes, digest
+`f1de4f0095cd3344f1de75ccab0e08a2b9d8658acb659e320ed60246f7785397`.
+Renderer caches are excluded. Prior sealed evidence is untouched. The separate
+documentation closure's identity, clean state and fresh independent exact-SHA
+review are recorded in external `closure-binding.json` without circular
+self-identification or mutation of the computational manifest.
+
+Existing topic remains local beyond pushed `becccce85816379e578ac1a325e8c9fe156defbe`;
+canonical at preflight remains ancestor `0f52e1a421416eadaf7d8d99d64f537132395c0c`.
+No integration, push, cleanup or production activation occurs. No global
+defaults, automatic admission/selection/stopping rules, FRUIT/PTC/CAL/MAP or
+new scientific thresholds are introduced. The fixed 1 Hz/~3 s baseline and
+its prior measured fast-source loss up to 2.19% remain unchanged.
+
 ## Multi-detector RTC caller preflight — 2026-09-15
 
 Owner authorization: "Okay, let's do it then", following the approved initial

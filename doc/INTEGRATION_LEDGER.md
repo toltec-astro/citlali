@@ -1,5 +1,40 @@
 # Citlali Integration Ledger
 
+## Simultaneous RTC caller and initial no-mask Learn — 2026-09-15
+
+- Work order `TIMESTREAM-SUCCESSOR-RTC-MULTIDETECTOR-001`, Tier 2; existing
+  topic/worktree only. Literal base `0c9f3e9288b0c6e010f8eea652d0d31c94e80a84`;
+  exact source `99db334f219985a75186167c4de083b7b3b7d189`, tree
+  `dc3b1e5ad67ae6dbaa9a2705097e964ff427dddb`. Eight source/test/preflight paths,
+  hashed in the external source binding and independent review.
+- Fresh preflight canonical `0f52e1a421416eadaf7d8d99d64f537132395c0c` remains
+  an ancestor; published topic `becccce85816379e578ac1a325e8c9fe156defbe`.
+  No reconciliation, integration, push, activation or cleanup is performed.
+- Original simultaneous Learn, explicit reviewed-input adapter and existing
+  complete-plan Consider/Apply connection preserve original x/r, native time,
+  occurrence/VAL identity, prior static flxscale, replacement/exclusion history
+  and conditioned relearning. Observation-specific no-mask choice is executable;
+  no new automatic event, stable-support, notch or stopping policy.
+- Real Learn only: twelve detector columns, 151,537 rows, 52 edges/44 groups,
+  three admitted jumps, 24 original spectra byte-identical to sealed prior
+  results. Wall time 9.307 s; peak RSS 259,407,872 bytes. Real Apply is withheld
+  for missing explicit event/donor support and existing processing-scan/native
+  relation. Controlled tests establish the connected donor/complete-Apply path.
+- Gates: 1,154 runnable CTests; RTC Python 91 plus 38 subtests; baseline 207
+  plus 137 subtests; require-all config and exact CLI. One established disabled
+  CTest remains. Supplemental local AppleClang 21 arm64/C++20/Homebrew; existing
+  kids `04088da-dirty` disclosed, no Unity/Spack V2 qualification.
+- Fresh-context source review: PASS WITH RECORDED LIMITATIONS, no actionable
+  findings; independently repeated 22 focused C++ and 3 Python tests, verified
+  sealed preparation chain and all 19 input file hashes. Review SHA256:
+  `c9c96943a780c4a5425a138101d6e1cdebe22dcd39d9026806756016ec36f9b5`.
+- Evidence `/private/tmp/citlali-rtc-multidetector-2026-09-15`: 35 sealed files,
+  4,588,240 bytes; manifest SHA256
+  `f1de4f0095cd3344f1de75ccab0e08a2b9d8658acb659e320ed60246f7785397`.
+  Renderer caches are excluded. Earlier sealed evidence is preserved. This
+  documentation-only closure receives its own exact-SHA independent review
+  recorded externally, without changing or re-attributing source evidence.
+
 ## Initial 152390 source-protection choice — 2026-09-15
 
 - Owner selects no spatial source mask for the initial NGC4449/152390 RTC

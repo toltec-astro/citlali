@@ -1,5 +1,52 @@
 # Citlali Refactor Status
 
+## Simultaneous RTC caller and initial no-mask Learn — 2026-09-15
+
+The bounded offline multi-detector caller is implemented at exact source
+`99db334f219985a75186167c4de083b7b3b7d189`, tree
+`dc3b1e5ad67ae6dbaa9a2705097e964ff427dddb`, directly following the no-mask
+decision receipt `0c9f3e9288b0c6e010f8eea652d0d31c94e80a84`. The twelve existing
+152390/n12 cases now share one native parent, verified static APT flxscale,
+exact timing/occurrences and VAL. The owner-selected empty protection region
+is explicitly scoped to 152390/0/2, retaining astronomical signal.
+
+Runtime Learn runs accepted transient and spectral components on original x/r.
+The caller connects explicit reviewed event/stable/contamination facts and
+existing processing-scan support to the established complete-plan Consider
+and Apply owners. Controlled tests exercise donor reconstruction through the
+assembled plan; conditioned relearning keeps exact stage/support history.
+No candidate is automatically accepted and no absent support is assumed stable.
+These runtime boundaries are separate from the engineering workflow.
+
+The real observation completes Learn only: 151,537 rows across twelve detectors,
+52 candidate edges, 44 event groups and three admitted jump groups. All 24
+original spectra are byte-identical to the preceding sealed assembly outputs;
+original x/r remains unchanged. Local wall time is 9.307 s and peak child RSS
+about 247 MiB; internal transient/spectral learning takes 0.104/0.594 s, with
+8.154 s input verification/loading. This is not production scaling evidence.
+
+Real Apply remains unavailable pending explicitly reviewed isolated events,
+stable donor/contamination support, and the existing exact processing-scan
+relation to native time. Local serialized provenance exposes counts/digests
+but not that interval relation; the three admitted jumps require it for the
+accepted full-scan exclusion. Do not replace it with acquisition ScanNum or a
+new partition. The mask decision is settled; these are separate inputs.
+
+All 1,154 runnable CTests pass (one established disabled), RTC Python 91 plus
+38 subtests, baseline 207 plus 137 subtests, require-all config and exact CLI.
+Independent exact-source review passes with recorded limitations and no
+actionable findings; it independently repeats 22 focused C++ and 3 Python
+tests. Evidence is supplemental AppleClang/Homebrew, not Unity/Spack V2.
+The [existing handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_NOTCH_RECOVERY_001_2026-09-14.md)
+binds the report, review plots, sealed evidence and separate closure review.
+
+Production filtering remains inactive; FRUIT/PTC/CAL/MAP and automatic policies
+remain deferred. The fixed notch baseline and prior measured source loss are
+unchanged. Existing topic only, no integration, push or cleanup. Canonical at
+preflight remains `0f52e1a421416eadaf7d8d99d64f537132395c0c`; the published topic
+is `becccce85816379e578ac1a325e8c9fe156defbe`. Later work is local. Historical
+statements below about the caller not yet existing retain their original scope.
+
 ## Initial 152390 pass without a spatial source mask — 2026-09-15
 
 The owner selects no spatial source-protection mask for the initial RTC pass
