@@ -63,7 +63,8 @@ struct Trial : Fixture {
     domain.speed_ceiling_arcsec_per_sec = 20;
     domain.nominal_interval_seconds = .008192;
   }
-  auto plan(bool notch = false, bool reject = false) const {
+  auto plan(bool notch = false, bool reject = false,
+            std::vector<double> finite = {}) const {
     RtcLineTransferSpecification s;
     s.identity = "controlled-plan";
     s.lowpass_identity = "test-only-centered3";
@@ -72,6 +73,10 @@ struct Trial : Fixture {
         lines->spectral_handle()->network(0).interval_seconds;
     s.factor = 2;
     s.centered_lowpass = {.25, .5, .25};
+    if (!finite.empty()) {
+      s.finite_notch_identity = "finite-control";
+      s.centered_notch = std::move(finite);
+    }
     auto d = domain;
     d.reject = reject;
     if (notch) {
@@ -302,4 +307,85 @@ TEST(rtc_notch_recovery,
   EXPECT_FALSE(ordinary.plan(true)->finite_five_second_footprint());
 }
 
+TEST(rtc_notch_recovery, finite_two_stage_impulse_has_exact_support_and_phase) {
+  Input in(6000);
+  Trial t(in);
+  auto p = t.plan(false, false, {.25, .5, .25});
+  auto a = t.apply(p);
+  RtcRecoveryInjection inj{
+      p, "finite-impulse",
+      Eigen::Matrix<double, Eigen::Dynamic, 2>::Zero(6000, 2)};
+  inj.delta(3000, 0) = 1;
+  inj.delta(3000, 1) = 2;
+  auto b = t.apply(p, &inj);
+  const std::array expected{.0625, .25, .375, .25, .0625};
+  for (int i = 2990; i <= 3010; ++i)
+    for (int c = 0; c < 2; ++c) {
+      const auto wanted =
+          i >= 2998 && i <= 3002 ? expected[i - 2998] * (c + 1) : 0;
+      EXPECT_NEAR(b->filtered_native_pair()(i, c) -
+                      a->filtered_native_pair()(i, c),
+                  wanted, 1e-12);
+    }
+  EXPECT_TRUE(p->finite_five_second_footprint());
+  EXPECT_EQ(a->causes(), b->causes());
+  EXPECT_EQ(a->output_native_rows(), b->output_native_rows());
+}
+TEST(rtc_notch_recovery, finite_notch_dc_and_tone_follow_frozen_response) {
+  Input in(6000);
+  Trial t(in);
+  const double dt = t.lines->spectral_handle()->network(0).interval_seconds;
+  const double outer = 1 / (2 * (1 - std::cos(2 * std::numbers::pi * 11 * dt)));
+  auto p = t.plan(false, false, {outer, 1 - 2 * outer, outer});
+  auto a = t.apply(p);
+  RtcRecoveryInjection inj{
+      p, "finite-dc-and-line",
+      Eigen::Matrix<double, Eigen::Dynamic, 2>::Zero(6000, 2)};
+  for (int i = 0; i < 6000; ++i) {
+    inj.delta(i, 0) = std::sin(2 * std::numbers::pi * 11 * dt * i);
+    inj.delta(i, 1) = 2;
+  }
+  auto b = t.apply(p, &inj);
+  EXPECT_NEAR(
+      std::abs(
+          p->assessment_handle()->candidate_handle()->combined_response(11)),
+      0, 1e-12);
+  for (auto row : a->output_native_rows()) {
+    auto i = row - 100;
+    EXPECT_NEAR(b->filtered_native_pair()(i, 0) -
+                    a->filtered_native_pair()(i, 0),
+                0, 1e-10);
+    EXPECT_NEAR(b->filtered_native_pair()(i, 1) -
+                    a->filtered_native_pair()(i, 1),
+                2, 1e-12);
+  }
+}
+TEST(rtc_notch_recovery,
+     finite_chain_never_bridges_exclusions_or_uses_padding) {
+  Input in(6000);
+  in.xs[3000 * 3] =
+      NativeReadoutCoordinateState::measured(true, false, true, true);
+  Trial t(in);
+  auto a = t.apply(t.plan(false, false, {.25, .5, .25}));
+  EXPECT_EQ(a->causes()[3000], RtcNotchRecoveryCause::producer_invalid);
+  for (int i : {2998, 2999, 3001, 3002})
+    EXPECT_EQ(a->causes()[i], RtcNotchRecoveryCause::boundary_guard);
+  EXPECT_TRUE(std::isnan(a->conditioned_native_pair()(2999, 0)));
+  EXPECT_TRUE(std::isfinite(a->conditioned_native_pair()(2998, 0)));
+  EXPECT_TRUE(std::isfinite(a->filtered_native_pair()(2997, 0)));
+  EXPECT_TRUE(std::isfinite(a->filtered_native_pair()(3003, 0)));
+}
+TEST(rtc_notch_recovery,
+     finite_trials_reject_mixed_invalid_or_overlong_operators) {
+  Input in(6000);
+  Trial t(in);
+  EXPECT_THROW(t.plan(true, false, {.25, .5, .25}), std::invalid_argument);
+  EXPECT_THROW(t.plan(false, false, {.5, .5}), std::invalid_argument);
+  EXPECT_THROW(t.plan(false, false, {.25, .5, .2}), std::invalid_argument);
+  EXPECT_THROW(t.plan(false, false, {.25, NAN, .25}), std::invalid_argument);
+  EXPECT_THROW(t.plan(false, false, {.25, 1., .25}), std::invalid_argument);
+  std::vector<double> long_filter(1301, 0);
+  long_filter[650] = 1;
+  EXPECT_THROW(t.plan(false, false, long_filter), std::invalid_argument);
+}
 } // namespace

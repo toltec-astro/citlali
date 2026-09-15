@@ -304,6 +304,70 @@ def run(a):
             raise RuntimeError(f"failed {name}; inspect preserved log")
 
 
+def shorter(a):
+    """Three fixed-duration finite notches; no depth fitting or width search.
+
+    Reuse the prior exact cases, source overlays, AST and exclusion authorities.
+    Requested band width stays 0.5 Hz; actual attenuation depends on length.
+    """
+    a.output.mkdir(parents=True, exist_ok=False)
+    for name, _, _, _ in CASES:
+        prior = a.prior / f"{name}.json"
+        cfg = json.loads(prior.read_text())
+        for value in cfg.values():
+            if isinstance(value, dict) and "path" in value and "sha256" in value:
+                assert digest(value["path"]) == value["sha256"]
+        for value in cfg["injections"]:
+            assert digest(value["path"]) == value["sha256"]
+            assert (
+                digest(value["geometry_binding"]["path"])
+                == value["geometry_binding"]["sha256"]
+            )
+        cfg["prior_exact_trial_manifest"] = binding(prior)
+        cfg["injection_selection"] = (
+            "unchanged ten full-sky paired fixtures from prior experiment; includes retained113arcsec/s and excluded221arcsec/s crossings"
+        )
+        cfg["science"]["notch_has_finite_five_second_footprint"] = True
+        cfg["trials"] = [dict(id="lowpass", notch=False, reject=False)]
+        dt = cfg["measured_interval"]
+        fs = 1 / dt
+        center = cfg["notch_hz"]
+        for seconds in (1, 3, 6):
+            half = int(np.floor(seconds / (2 * dt)))
+            taps = 2 * half + 1
+            h = signal.firwin(
+                taps,
+                [center - 0.25, center + 0.25],
+                pass_zero="bandstop",
+                window="hann",
+                fs=fs,
+                scale=True,
+            )
+            h = (h + h[::-1]) / 2
+            h /= sum(h)
+            total_half = (half + len(cfg["fir"]) // 2) * dt
+            assert total_half <= 5 and abs(sum(h) - 1) < 1e-12
+            k = np.arange(-half, half + 1)
+            response = float(np.dot(h, np.cos(2 * np.pi * center * dt * k)))
+            cfg["trials"].append(
+                dict(
+                    id=f"finite-{seconds}s",
+                    notch=False,
+                    reject=False,
+                    finite_notch_identity=f"explicit-Hann-bandstop-width0.5Hz-span{seconds}s",
+                    finite_notch=h.tolist(),
+                    requested_span_seconds=seconds,
+                    actual_span_seconds=2 * half * dt,
+                    requested_width_hz=0.5,
+                    actual_center_amplitude=response,
+                    cumulative_half_seconds=total_half,
+                    operation="centered finite notch then unchanged centered low-pass; complete support; no padding",
+                )
+            )
+        cfg["trials"].append(dict(id="reject", notch=False, reject=True))
+        write_json(a.output / f"{name}.json", cfg)
+
+
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__)
     sub = p.add_subparsers(dest="action", required=True)
@@ -317,6 +381,8 @@ if __name__ == "__main__":
     q = sub.add_parser("run")
     q.add_argument("--plans", type=Path, required=True)
     q.add_argument("--executable", type=Path, required=True)
+    q = sub.add_parser("shorter")
+    q.add_argument("--prior", type=Path, required=True)
     for q in sub.choices.values():
         q.add_argument("--output", type=Path, required=True)
     a = p.parse_args()

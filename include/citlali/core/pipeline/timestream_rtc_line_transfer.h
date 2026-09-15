@@ -31,6 +31,10 @@ struct RtcLineTransferSpecification {
   // Centered, odd-length, exactly symmetric FIR. No normalization or design.
   std::vector<double> centered_lowpass{1};
   std::optional<RtcTransferScienceDomain> science_domain;
+  // Optional single finite, centered notch preceding the low-pass. Exact
+  // supplied coefficients, not an automatic design or an IIR settling guard.
+  std::string finite_notch_identity;
+  std::vector<double> centered_notch;
 };
 struct RtcLineTransferBin {
   double input_hz = NAN, folded_output_hz = NAN;
@@ -86,6 +90,17 @@ inline void validate(const RtcLineTransferSpecification &s) {
             s.centered_lowpass[s.centered_lowpass.size() - 1 - i])
       throw std::invalid_argument(
           "RTC trial FIR must be finite and exactly symmetric");
+  if (s.centered_notch.empty() != s.finite_notch_identity.empty() ||
+      (!s.centered_notch.empty() &&
+       (s.centered_notch.size() % 2 != 1 || !s.notches.empty())))
+    throw std::invalid_argument("RTC finite notch requires one identified odd "
+                                "FIR, without IIR sections");
+  for (std::size_t i = 0; i < s.centered_notch.size(); ++i)
+    if (!std::isfinite(s.centered_notch[i]) ||
+        s.centered_notch[i] !=
+            s.centered_notch[s.centered_notch.size() - 1 - i])
+      throw std::invalid_argument(
+          "RTC finite notch must be finite and exactly symmetric");
   for (std::size_t i = 0; i < s.notches.size(); ++i) {
     const auto &n = s.notches[i];
     if (n.identity.empty() || n.a[0] != 1 ||
@@ -128,6 +143,13 @@ response(const RtcLineTransferSpecification &s, double hz) {
   const double w = 2 * std::numbers::pi * (hz * s.input_interval_seconds);
   const std::complex<double> z{std::cos(w), -std::sin(w)};
   std::complex<double> notch{1, 0};
+  if (!s.centered_notch.empty()) {
+    const auto half = s.centered_notch.size() / 2;
+    long double h = s.centered_notch[half];
+    for (std::size_t j = 1; j <= half; ++j)
+      h += 2.L * s.centered_notch[half + j] * std::cos(w * j);
+    notch = {static_cast<double>(h), 0};
+  }
   for (const auto &n : s.notches) {
     const auto denominator = n.a[0] + n.a[1] * z + n.a[2] * z * z;
     if (!finite(denominator) || std::abs(denominator) == 0)

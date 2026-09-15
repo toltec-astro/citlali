@@ -165,16 +165,15 @@ def analyze(a):
         )
         measured = np.fromfile(root / "initial-psd.f64", "<f8").reshape(2, pr["bins"])
         assert np.allclose(measured, prior[d, :, 0, :], rtol=1e-12, atol=0)
-        cause = {
-            k: np.fromfile(root / f"{k}-causes.u8", "u1")
-            for k in ("lowpass", "notch", "reject")
-        }
+        trial_ids = [t["id"] for t in cfg["trials"]]
+        active_ids = [t["id"] for t in cfg["trials"] if not t["reject"]]
+        cause = {k: np.fromfile(root / f"{k}-causes.u8", "u1") for k in trial_ids}
         output = {
             k: np.fromfile(root / f"{k}-native.f64", "<f8").reshape(n, 2) for k in cause
         }
         selected = {k: np.fromfile(root / f"{k}-rows.i64", "<i8") for k in cause}
         assert all(np.all(v % 2 == 0) for v in selected.values())
-        common = (cause["lowpass"] == 0) & (cause["notch"] == 0)
+        common = np.logical_and.reduce([cause[k] == 0 for k in active_ids])
         conditional = cfg["conditional_transient_accounting"]["intervals_us"]["direct"]
         acct = cfg["conditional_transient_accounting"]
         eligible = n * dt
@@ -193,7 +192,11 @@ def analyze(a):
             cost={},
             coordinates=[],
             injections=[],
-            bindings=[binding(root / "receipt.json")],
+            bindings=[
+                binding(root / "receipt.json"),
+                binding(a.plans / f"{name}.json"),
+            ],
+            treatment_trials=active_ids,
         )
         for k in cause:
             retained = cause[k] == 0
@@ -221,29 +224,30 @@ def analyze(a):
         # Report both coordinates separately on the identical admitted support.
         for c in range(2):
             freq, raw, support = measured_psd(original[:, c], common, mdt)
-            _, lp, _ = measured_psd(output["lowpass"][:, c], common, mdt)
-            _, notch, _ = measured_psd(output["notch"][:, c], common, mdt)
+            spectra = {
+                k: measured_psd(output[k][:, c], common, mdt)[1] for k in active_ids
+            }
             center = cfg["notch_hz"]
             fold = abs((center + 0.25 / mdt) % (0.5 / mdt) - 0.25 / mdt)
             target = {
                 k: band_measure(freq, p, center)
-                for k, p in [("original", raw), ("lowpass", lp), ("notch", notch)]
+                for k, p in {"original": raw, **spectra}.items()
             }
             native_common = common[::2]
             outfreq, lpout, outsupport = measured_psd(
                 output["lowpass"][::2, c], native_common, 2 * mdt
             )
-            _, notchout, _ = measured_psd(
-                output["notch"][::2, c], native_common, 2 * mdt
-            )
+            output_spectra = {
+                k: measured_psd(output[k][::2, c], native_common, 2 * mdt)[1]
+                for k in active_ids
+            }
             record = dict(
                 coordinate="x" if c == 0 else "r",
                 native_target_hz=center,
                 folded_target_hz=fold,
                 native_target=target,
                 output_folded_band={
-                    k: band_measure(outfreq, p, fold)
-                    for k, p in [("lowpass", lpout), ("notch", notchout)]
+                    k: band_measure(outfreq, p, fold) for k, p in output_spectra.items()
                 },
                 actual_common_native_seconds=float(common.sum() * dt),
                 predicted_whole_original_support={
@@ -256,18 +260,18 @@ def analyze(a):
                         ]
                         .sum()
                     )
-                    for k in ("lowpass", "notch")
+                    for k in active_ids
                 },
                 output_first_difference_covariance={
                     k: difference_covariance(output[k][::2, c], native_common)
-                    for k in ("lowpass", "notch")
+                    for k in active_ids
                 },
                 covariance_lag_seconds=2 * mdt,
                 prediction_support="whole original accepted spectrum; bin-center steady-state proxy; finite measured comparison uses common retained support",
                 native_windows=support,
                 output_windows=outsupport,
             )
-            for k in ("lowpass", "notch"):
+            for k in active_ids:
                 record[k + "_native_band_power_ratio"] = (
                     target[k]["stored_power"] / target["original"]["stored_power"]
                 )
@@ -275,8 +279,8 @@ def analyze(a):
             axes[ci, c].semilogy(
                 freq, raw, label="original on common support", alpha=0.6
             )
-            axes[ci, c].semilogy(freq, lp, label="low-pass alone")
-            axes[ci, c].semilogy(freq, notch, label="notch + same low-pass")
+            for k, ps in spectra.items():
+                axes[ci, c].semilogy(freq, ps, label=k)
             axes[ci, c].axvline(center, color="k", lw=0.5)
             axes[ci, c].set_title(
                 f"{name}: 152390 / n{nw} ch{d} / " + record["coordinate"]
@@ -327,7 +331,7 @@ def analyze(a):
                         label="injected original",
                     )
                     srcax[ci, c].set_title(
-                        f"{name} / {'x' if c == 0 else 'r'}: fastest crossing {inj['measured_speed_arcsec_per_sec']:.1f} arcsec/s"
+                        f"{name} / {'x' if c == 0 else 'r'}: fixed crossing {inj['measured_speed_arcsec_per_sec']:.1f} arcsec/s"
                     )
                     srcax[ci, c].set_xlabel("Seconds from injected crossing")
                     srcax[ci, c].legend(fontsize=8)

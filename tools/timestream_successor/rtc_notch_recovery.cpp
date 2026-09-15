@@ -289,6 +289,14 @@ int main(int argc, char **argv) {
       s.factor = 2;
       s.centered_lowpass = cfg["fir"].as<std::vector<double>>();
       std::size_t guard = 0;
+      if (trial["finite_notch"]) {
+        s.finite_notch_identity =
+            trial["finite_notch_identity"].as<std::string>();
+        s.centered_notch = trial["finite_notch"].as<std::vector<double>>();
+        s.state_support_identity =
+            "two-centered-finite-FIRs;complete-native-footprints;no-padding;"
+            "ordered-binary64-FMA;fixed-native-phase0";
+      }
       if (trial["notch"].as<bool>()) {
         timestream::Filter f;
         f.w0s = {cfg["notch_hz"].as<double>()};
@@ -357,7 +365,8 @@ int main(int argc, char **argv) {
         summary << ',';
       summary << "{\"id\":" << std::quoted(stem)
               << ",\"guard_samples_each_end\":"
-              << guard + s.centered_lowpass.size() / 2
+              << guard + s.centered_notch.size() / 2 +
+                     s.centered_lowpass.size() / 2
               << ",\"output_rows\":" << result->output_native_rows().size()
               << ",\"runs\":" << plan->runs().size() << "}";
       YAML::Node frozen;
@@ -375,6 +384,11 @@ int main(int argc, char **argv) {
       frozen["phase_native_rows"] = 0;
       frozen["state_support"] = s.state_support_identity;
       frozen["FIR"] = s.centered_lowpass;
+      if (!s.centered_notch.empty()) {
+        frozen["finite_notch_identity"] = s.finite_notch_identity;
+        frozen["finite_notch_FIR"] = s.centered_notch;
+        frozen["finite_notch_half_samples"] = s.centered_notch.size() / 2;
+      }
       frozen["notch_guard_each_end"] = guard;
       frozen["reject"] = domain.reject;
       frozen["minimum_speed_arcsec_per_sec"] = 1.;
@@ -383,12 +397,16 @@ int main(int argc, char **argv) {
       frozen["finite_five_second_footprint"] =
           plan->finite_five_second_footprint();
       frozen["production_eligible"] = false;
-      frozen["notch_footprint"] = s.notches.empty()
-                                      ? "none"
-                                      : "whole named admissible run; guard is "
-                                        "not exact finite footprint";
+      frozen["notch_footprint"] =
+          s.notches.empty() ? (s.centered_notch.empty()
+                                   ? "none"
+                                   : "exact centered finite FIR footprint")
+                            : "whole named admissible run; guard is "
+                              "not exact finite footprint";
       frozen["cumulative_guard_seconds"] =
-          (guard + s.centered_lowpass.size() / 2) * s.input_interval_seconds;
+          (guard + s.centered_notch.size() / 2 +
+           s.centered_lowpass.size() / 2) *
+          s.input_interval_seconds;
       frozen["FIR_arithmetic"] =
           "binary64 increasing-source-occurrence std::fma; no reassociation";
       frozen["plan_seconds"] =

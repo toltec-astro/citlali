@@ -91,6 +91,12 @@ public:
             s.centered_lowpass.size() / 2)
       throw std::invalid_argument(
           "RTC recovery guard exceeds representable native support");
+    const auto finite_half = s.centered_notch.size() / 2;
+    if (finite_half >
+        static_cast<std::size_t>(std::numeric_limits<Eigen::Index>::max()) -
+            s.centered_lowpass.size() / 2)
+      throw std::invalid_argument(
+          "RTC finite notch support exceeds index range");
     const auto optical =
         rtc_optical_scale(domain.array, domain.speed_ceiling_arcsec_per_sec);
     if (optical.temporal_support_hz >=
@@ -103,6 +109,18 @@ public:
       dc += h;
     if (std::abs(dc - 1) > 1e-12)
       throw std::invalid_argument("RTC recovery centered FIR must preserve DC");
+    if (!s.centered_notch.empty()) {
+      double notch_dc = 0;
+      for (double h : s.centered_notch)
+        notch_dc += h;
+      if (std::abs(notch_dc - 1) > 1e-12)
+        throw std::invalid_argument("RTC finite notch must preserve DC");
+      if ((finite_half + s.centered_lowpass.size() / 2) *
+              s.input_interval_seconds >
+          5.)
+        throw std::invalid_argument(
+            "RTC finite chain exceeds five-second half-support");
+    }
     auto out = std::shared_ptr<RtcNotchRecoveryPlan>(new RtcNotchRecoveryPlan);
     out->assessment_ = std::move(assessment);
     out->transients_ = std::move(transients);
@@ -193,7 +211,9 @@ public:
   bool finite_five_second_footprint() const noexcept {
     const auto &s = assessment_->candidate_handle()->specification();
     return s.notches.empty() &&
-           (s.centered_lowpass.size() / 2) * s.input_interval_seconds <= 5.;
+           (s.centered_lowpass.size() / 2 + s.centered_notch.size() / 2) *
+                   s.input_interval_seconds <=
+               5.;
   }
   static constexpr bool production_authorized = false;
 
@@ -255,7 +275,9 @@ public:
     const auto first = out->plan_->first_native_row();
     const auto &net = original->network(candidate.network());
     const auto half = s.centered_lowpass.size() / 2;
-    const auto guard = half + out->plan_->domain().notch_guard_samples;
+    const auto notch_half = s.centered_notch.size() / 2;
+    const auto guard =
+        half + notch_half + out->plan_->domain().notch_guard_samples;
     for (auto run : out->plan_->runs()) {
       const auto size = run.past_last - run.first;
       Eigen::MatrixXd values(size, 2);
@@ -285,6 +307,23 @@ public:
       if (!values.allFinite())
         throw std::overflow_error(
             "RTC recovery finite notch arithmetic failed");
+      if (!s.centered_notch.empty()) {
+        // Both centered stages use only complete real input support. The
+        // first-stage edges are unavailable, never padded or renormalized.
+        Eigen::MatrixXd finite = Eigen::MatrixXd::Constant(size, 2, NAN);
+        for (Eigen::Index i = notch_half;
+             i + static_cast<Eigen::Index>(notch_half) < size; ++i)
+          for (int c = 0; c < 2; ++c) {
+            double v = 0;
+            for (std::size_t j = 0; j < s.centered_notch.size(); ++j)
+              v = std::fma(s.centered_notch[j], values(i + j - notch_half, c),
+                           v);
+            if (!std::isfinite(v))
+              throw std::overflow_error("RTC finite notch arithmetic failed");
+            finite(i, c) = v;
+          }
+        values = std::move(finite);
+      }
       out->conditioned_.middleRows(run.first - first, size) = values;
       for (Eigen::Index i = 0; i < size; ++i) {
         const auto row = run.first + i, local = row - first;
