@@ -1,5 +1,129 @@
 # TIMESTREAM-SUCCESSOR-RTC-NOTCH-RECOVERY-001
 
+## Shorter finite-duration continuation — 2026-09-15
+
+The owner requests: “Let's try some shorter duration notch filters.” This
+continues the same bounded module branch from reviewed/pushed closure
+`a4f3234cf4a4cb77b64a6aa5716c3632baafe4c5`; no second branch or WIP slot is
+opened. Live remote verification confirms that closure and canonical
+`0f52e1a421416eadaf7d8d99d64f537132395c0c` are published. No new canonical
+integration, push, policy waiver or production activation is authorized by
+this continuation. Earlier publication-pending notes below are historical.
+
+Exact source: `dcf40780e582d24f7a09fc387f9e8598b63b0a5c`.
+Tree: `85985c65a5820099f8247bff1762b9703cc750f3`.
+Parent: `a4f3234cf4a4cb77b64a6aa5716c3632baafe4c5`.
+Worktree/branch remain the existing notch-recovery worktree/branch below.
+The documentation-only closure has its own external exact-SHA review receipt.
+
+The effective governance and SCI-RTC/ADR authority map are unchanged; their
+exact identities and the new preflight are under
+`/private/tmp/citlali-rtc-short-notch-2026-09-15/preflight.json`.
+Runtime Learn retains accepted original spectra and transient evidence.
+Runtime Consider's existing trial specification gains one optional identified
+finite centered notch vector; its response composes with the existing LPF.
+Frozen Apply executes the two centered stages using ordered binary64 FMA,
+with full summed footprints, exact native timing/row phase and paired
+exclusions. Finite and IIR notches cannot be mixed in this bounded operator.
+The old IIR path and default low-pass behavior are preserved; no Engine or
+production route is changed. The engineering development workflow does not
+substitute for these implemented runtime responsibilities.
+
+Three explicit Hann band-stop designs use a fixed requested 0.5 Hz band and
+unity DC, with no depth optimization or width search. End-to-end spans are
+approximately 1, 3 and 6 s (123, 367 and 733 taps). The same 307-tap FIR/F2
+follows each notch. Complete half-supports are 1.7531, 2.7525 and 4.2517 s,
+meeting the retained five-second limit. These are exact finite dependencies,
+not truncated IIR guards. Every valid output has complete real input support;
+no padding, renormalization, gap joining or new donor values are used.
+
+The same 152390/a2000 in-band, higher-frequency and independently selected
+quiet spectral-control pairs and ten exact previous full-sky source overlays
+are reused. There are 165 Apply calls across five plans/case, plus a separate
+uninjected timing/determinism repeat. Original x/r, initial VAL, producer
+validity, Tune/APT/array association, actual AST/telescope relation, provisional
+centered readout averaging and the preserved motion/sampling bounds remain
+exactly bound. The F2 raw-speed ceiling remains 123.277762 arcsec/s. Source
+fixtures extend to about 113.1 arcsec/s on retained support; the original
+221.4 arcsec/s maximum and boundary challenges lose their principal crossings.
+Tiny remaining Airy-tail ratios are not source recovery. The fixed fixture
+set does not qualify all newly retained crossings or phases near the ceiling.
+
+| In-band treatment | Retained seconds | x target-band power removed | Largest tested peak change | Largest waveform error |
+|---|---:|---:|---:|---:|
+| FIR alone | 795.394 | approximately 0% | 0.041% | 0.067% |
+| 1 s finite + FIR | 683.729 | 43.23% | 0.833% | 1.588% |
+| 3 s finite + FIR | 495.190 | 88.82% | 0.784% | 2.401% |
+| 6 s finite + FIR | 310.657 | 99.794% | 0.780% | 2.908% |
+| Reject | 0 | unavailable | unavailable | unavailable |
+
+Power measurements use identical support across the new non-rejection
+trials: 123 complete native/output diagnostic windows for contaminated cases,
+132 for the quiet control. Exact windows and averaging conventions are
+recorded. Six-second native target-band powers are 6.586e-14 x and 5.980e-14 r,
+including noise and sky. Negative sideband-subtracted descriptors indicate a
+spectral hole, not negative physical contamination or validated classification.
+Compared with the prior IIR, retained duration increases about 10.5-fold and
+peak distortion decreases, but the old/new spectral window sets differ.
+
+The 54 Hz case still receives about 114 dB native-band suppression from FIR
+alone; extra finite notches change the folded output band by only about one
+part per million. The quiet control supplies no notch rationale. Retained
+native-cell duration is not qualified recovery or sensitivity: existing
+screening excludes 1.384448 s per pair, prior conditional direct support has
+no retained overlap, and full source-bound transient/PCA-scan admission is
+still unavailable. No scan relation is invented. Mapped 1% response budgets
+and a wider phase/speed domain remain unqualified.
+
+Recommendation: retain the six-second trial as the provisional in-band
+recovery candidate from this fixed comparison, keep the selected high-frequency
+case on the FIR-only path, and leave the quiet control unnotched. The
+six-second chain still loses 60.9% of FIR-retained support and changes the
+waveform by up to 2.9%. The new scientific decision before broader line use
+remains the residual narrow-line allowance and bound cleaned-noise reference;
+the existing broadband 1% rule does not answer it. Existing source-preservation
+policy still needs conformance evidence, not a waiver or a new threshold.
+Production filtering remains inactive.
+
+Local supplemental AppleClang 21 arm64 Release/C++20 gates pass: 1,128 runnable
+CTests out of 1,129 registered (same disabled lifecycle test), 34 focused native
+checks, four Python controls, 211 baseline/Python tests plus 137 subtests,
+required config and exact CLI source binding. Preserved dependency revisions
+and all nine patches are unchanged. No unexpected error output occurred in
+completed final gates/campaign. No Spack/Unity V2 reproduction is claimed.
+The temporary gate `build` symlink was removed; the source worktree was clean.
+
+Independent fresh-context exact-source review: PASS WITH RECORDED LIMITATIONS,
+no findings on any axis. Report
+`/private/tmp/rtc-short-notch-review-dcf40780e.md`, SHA256
+`25c3cbcc89cb6430f7473bdc2c9f2c575e2e7bbb4be325a79867ffb462b6fb48`.
+Independent witnesses check 87 exact input/injection bindings, all 15 plans'
+run/support/phase relations, 150 injected masks, 360 ordered-FMA values and
+7,350 response-power cells. All 99 original/LPF/rejection baseline artifacts
+match prior evidence, and all 84 repeated base artifacts are deterministic.
+Prior 870-file evidence re-verifies intact.
+
+Per-pair Apply costs are approximately 33–34 ms for FIR alone, 43–45 ms for
+1 s, 60–61 ms for 3 s and 68–71 ms for 6 s. Plan construction is 1.7–2.0 ms.
+These runs process different retained support and do not establish whole-array
+or complete-pipeline throughput.
+
+Full report/plots: `/private/tmp/citlali-rtc-short-notch-2026-09-15/REPORT.md`.
+New evidence seal: 458 files, 575,244,280 bytes; `EVIDENCE_SHA256SUMS` SHA256
+`c14769f45b56ed4eb1b65bee86b3cbdddb0454d686fcb82bb65518ab50abf8a5`.
+Source, environment, inputs, coefficient manifests, commands, output data,
+window support, source responses, timings, reviews and witness code are bound
+there. Closure review/completion is sealed separately to avoid circular SHA
+claims. No automatic selection, new bank, map qualification, subsequent
+RTC/PTC work, new canonical admission, push or cleanup occurs.
+
+The owner's eventual continuation push is:
+
+```sh
+git -C /private/tmp/citlali-timestream-successor-rtc-notch-recovery-001 push git@github.com:toltec-astro/citlali.git refs/heads/codex/timestream-successor-rtc-notch-recovery-001:refs/heads/codex/timestream-successor-rtc-notch-recovery-001
+```
+
+
 ## Completed canonical admission
 
 The owner explicitly authorized completed-assessment canonical integration,

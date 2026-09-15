@@ -1,5 +1,50 @@
 # Citlali Refactor Status
 
+## RTC shorter finite-notch continuation completed locally — 2026-09-15
+
+The owner requested shorter-duration notches after the preceding experiment.
+Fresh live refs verify canonical `0f52e1a421416eadaf7d8d99d64f537132395c0c`
+and experiment closure `a4f3234cf4a4cb77b64a6aa5716c3632baafe4c5` are pushed.
+The same module branch continues at exact source
+`dcf40780e582d24f7a09fc387f9e8598b63b0a5c`, tree
+`85985c65a5820099f8247bff1762b9703cc750f3`. Canonical is unchanged.
+
+Exactly three supplied finite Hann notches, with approximately 1, 3 and 6 s
+end-to-end span and the same requested 0.5 Hz band, run through existing RTC
+Consider/frozen Apply followed by the unchanged FIR/F2. Their complete
+half-supports are 1.753, 2.753 and 4.252 s, all within the retained five-second
+rule. Initial VAL, original x/r, native AST and motion/sampling admission,
+paired exclusions and exact previous source-injection fixtures are preserved.
+There is no automatic selection, policy change, new bank or route activation.
+
+For the audited 11 Hz case, the three trials retain 683.729, 495.190 and
+310.657 native-cell seconds and remove 43.23%, 88.82% and 99.794% of measured
+x target-band power. Their largest tested source-peak changes are 0.833%,
+0.784% and 0.780%; waveform errors reach 1.588%, 2.401% and 2.908%.
+The six-second finite notch is the provisional in-band recovery candidate,
+retaining about 10.5 times the previous IIR's 29.639 s. It still loses 60.9%
+of FIR-only retained support. The 54 Hz case continues to favor FIR alone,
+and the quiet spectral control gives no reason to notch.
+
+These are candidate retained durations and finite timestream diagnostics,
+not qualified recovery, map sensitivity or mapped 1% response acceptance.
+Broader use still needs a residual narrow-line allowance with a bound
+cleaned-noise reference, and conformance evidence for the wider phase/speed
+and source-response domain. Settled scientific policy remains unchanged.
+
+Final supplemental local gates pass: 1,128 runnable CTests (1,129 registered,
+one unchanged disabled), 34 focused native tests, four Python controls,
+211 baseline/Python tests plus 137 subtests, config require-all and CLI
+source binding. Independent exact-source review passes with recorded
+limitations and no findings; documentation closure is separately reviewed.
+The 870-file prior seal remains intact, 99 prior baseline artifacts reproduce
+byte-for-byte, and 84 repeat-run artifacts are deterministic. The new 458-file
+seal and exact reviews are recorded in the
+[existing notch-recovery handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_NOTCH_RECOVERY_001_2026-09-14.md).
+This continuation remains unpushed and unintegrated; production filtering is
+inactive. No Unity, map qualification, cleanup or subsequent RTC/PTC work.
+
+
 ## RTC canonical integration complete; bounded notch experiment — 2026-09-14
 
 The owner-authorized assessment integration is complete on local canonical
