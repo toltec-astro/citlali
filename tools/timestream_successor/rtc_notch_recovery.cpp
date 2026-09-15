@@ -4,6 +4,7 @@
 #undef main
 #include <bit>
 #include <citlali/core/pipeline/timestream_rtc_notch_recovery.h>
+#include <citlali/core/pipeline/timestream_rtc_pipeline.h>
 namespace {
 using namespace citlali::pipeline;
 void write_pair(const fs::path &p, const auto &v) {
@@ -311,6 +312,9 @@ int main(int argc, char **argv) {
     learning_receipt.close();
     require(bool(learning_receipt), "learning provenance output failed");
     int trial_index = 0;
+    const bool assembly = cfg["rtc_assembly"] && cfg["rtc_assembly"].as<bool>();
+    std::shared_ptr<const RtcPipelineResult> previous_attempt;
+    std::shared_ptr<const RtcPipelinePlan> complete_plan;
     for (const auto &trial : cfg["trials"]) {
       RtcLineTransferSpecification s;
       s.identity = trial["id"].as<std::string>();
@@ -375,13 +379,115 @@ int main(int argc, char **argv) {
                                                  domain, 23 + trial_index);
       const auto apply_started = std::chrono::steady_clock::now();
       const std::array partitions{view};
-      auto result = RtcNotchRecoveryResult::apply(plan, view, val, partitions);
+      std::shared_ptr<const RtcNotchRecoveryResult> result;
+      const auto cadence = std::vector<RtcSpectralCadenceDomain>{{nw,"same-explicit-producer-cadence",duration,1e-4}};
+      YAML::Node assembly_receipt;
+      double assembly_learn_seconds = 0, assembly_consider_seconds = 0, assembly_apply_seconds = 0;
+      if (assembly) {
+        const auto attempt = 100U + static_cast<unsigned>(trial_index);
+        auto considered_at = std::chrono::steady_clock::now();
+        if (previous_attempt) {
+          const auto learned = RtcNativeSpectralEvidence::learn_conditioned(
+              previous_attempt->native_product(false,val),val,cadence,200+attempt);
+          const auto learned_at = std::chrono::steady_clock::now();
+          assembly_learn_seconds = std::chrono::duration<double>(learned_at-considered_at).count();
+          considered_at = learned_at;
+          const auto considered = RtcSpectralTransientConsideration::consider(
+              learned,val,joint->joint_handle()->transient_handle(),val,300+attempt);
+          const auto reassessment = RtcPipelineReassessment::consider(previous_attempt,considered,400+attempt);
+          complete_plan = RtcPipelinePlan::reconsider(reassessment,{plan},attempt);
+          assembly_receipt["previous_attempt"] = previous_attempt->plan_handle()->attempt();
+          assembly_receipt["reconsidered_conditioned_spectral_attempt"] = learned->attempt();
+        } else complete_plan = RtcPipelinePlan::consider({plan},joint->joint_handle(),attempt);
+        const auto replay_started = std::chrono::steady_clock::now();
+        assembly_consider_seconds = std::chrono::duration<double>(replay_started-considered_at).count();
+        previous_attempt = RtcPipelineResult::apply(complete_plan,view,val,partitions);
+        assembly_apply_seconds = std::chrono::duration<double>(std::chrono::steady_clock::now()-replay_started).count();
+        result = previous_attempt->detector_results().front();
+        assembly_receipt["attempt"] = attempt;
+        assembly_receipt["original_pair_replay"] = true;
+        assembly_receipt["automatic_selection"] = false;
+        assembly_receipt["classification_from_treatment_outcome"] = false;
+        assembly_receipt["donor_admission"] = "unavailable-no-new-real-event-selection";
+        assembly_receipt["reconsider_Learn_seconds"] = assembly_learn_seconds;
+        assembly_receipt["complete_Consider_seconds"] = assembly_consider_seconds;
+        assembly_receipt["complete_Apply_seconds"] = assembly_apply_seconds;
+      } else result = RtcNotchRecoveryResult::apply(plan, view, val, partitions);
       const auto apply_finished = std::chrono::steady_clock::now();
       const auto stem = s.identity;
-      write_pair(output / (stem + "-native.f64"),
-                 result->filtered_native_pair());
-      write_pair(output / (stem + "-conditioned.f64"),
-                 result->conditioned_native_pair());
+      write_pair(output / (stem + "-native.f64"), result->filtered_native_pair());
+      write_pair(output / (stem + "-conditioned.f64"), result->conditioned_native_pair());
+      if (assembly) {
+        const auto started = std::chrono::steady_clock::now();
+        for (bool after_lowpass : {false,true}) {
+          const auto product_started = std::chrono::steady_clock::now();
+          const auto product = previous_attempt->native_product(after_lowpass,val);
+          const auto learn_started = std::chrono::steady_clock::now();
+          const auto learned = RtcNativeSpectralEvidence::learn_conditioned(product,val,cadence,
+              500+2*complete_plan->attempt()+after_lowpass);
+          const auto learn_finished = std::chrono::steady_clock::now();
+          const std::string stage = after_lowpass ? "post-lowpass" : "post-notch";
+          std::ofstream spectra_out(output/(stem+"-"+stage+"-psd.f64"),std::ios::binary);
+          YAML::Node detail;
+          detail["use_policy"] = std::string(learned->use_policy());
+          detail["native_product_seconds"] = std::chrono::duration<double>(learn_started-product_started).count();
+          detail["spectral_Learn_seconds"] = std::chrono::duration<double>(learn_finished-learn_started).count();
+          detail["processing_stage"] = product->identities()[0]->processing_stage();
+          detail["producer_attempt"] = product->producer_attempt();
+          detail["spectral_attempt"] = learned->attempt();
+          detail["VAL_generation"] = product->snapshot_handle()->generation().value;
+          detail["estimator"] = std::string(RtcInitialSpectralPolicy::estimator);
+          detail["conventions"] = std::string(RtcInitialSpectralPolicy::conventions);
+          detail["independent_measurements"] = false;
+          const auto numerical_parent = stem + (after_lowpass ? "-native.f64" : "-conditioned.f64");
+          detail["numerical_parent"] = numerical_parent;
+          detail["numerical_parent_sha256"] = citlali::utils::sha256_file(output/numerical_parent);
+          detail["fft_samples"] = learned->network(nw).fft_samples;
+          detail["interval_seconds"] = learned->network(nw).interval_seconds;
+          detail["spectrum_bytes"] = learned->logical_owned_bytes();
+          detail["peak_scratch_samples"] = learned->peak_scratch_samples();
+          for (const auto &coordinate : learned->spectra()) {
+            spectra_out.write(reinterpret_cast<const char *>(coordinate.psd.data()),coordinate.psd.size()*8);
+            YAML::Node c;
+            c["coordinate"] = coordinate.coordinate == NativeReadoutCoordinate::x ? "x" : "r";
+            c["available"] = coordinate.available();c["cause"] = static_cast<int>(coordinate.cause);
+            c["windows"] = coordinate.windows.size();c["bins"] = coordinate.psd.size();
+            for (const auto &support : coordinate.centering_support) {
+              YAML::Node range;range.push_back(support.first);range.push_back(support.past_last);
+              c["centering_support"].push_back(range);
+            }
+            for (const auto &run : coordinate.runs) {
+              YAML::Node r;r["first_row"]=run.rows.first;r["past_last_row"]=run.rows.past_last;
+              r["cause"]=static_cast<int>(run.cause);r["admitted_samples"]=run.admitted_samples;
+              r["declared_invalid_samples"]=run.declared_invalid_samples;
+              r["unexpected_nonfinite_samples"]=run.unexpected_nonfinite_samples;
+              c["physical_runs"].push_back(r);
+            }
+            for (const auto &window : coordinate.windows) {
+              YAML::Node win;
+              win["first_row"] = window.rows.first;win["past_last_row"] = window.rows.past_last;
+              win["begin_unix_sec"] = window.support_begin_unix_sec;win["end_unix_sec"] = window.support_end_unix_sec;
+              win["padded_samples"] = window.padded_samples;
+              win["representative_replacements"] = window.representative_replacements;
+              win["replacement_influenced_samples"] = window.replacement_influenced_samples;
+              win["unrepaired_influenced_samples"] = window.unrepaired_influenced_samples;
+              win["representative_exclusions"] = window.representative_exclusions;
+              win["source_outside_samples"] = window.source_counts[0];
+              win["source_protected_samples"] = window.source_counts[1];
+              win["source_unknown_samples"] = window.source_counts[2];
+              c["contributing_windows"].push_back(win);
+            }
+            detail["coordinates"].push_back(c);
+          }
+          spectra_out.close(); require(bool(spectra_out),"conditioned spectral export failed");
+          assembly_receipt[stage] = detail;
+        }
+        assembly_receipt["post_apply_Learn_seconds"] = std::chrono::duration<double>(
+            std::chrono::steady_clock::now()-started).count();
+        YAML::Emitter emitter;emitter.SetDoublePrecision(17);emitter<<assembly_receipt;
+        std::ofstream report(output/(stem+"-assembly.yaml"));report<<emitter.c_str()<<'\n';
+        report.close();require(bool(report),"RTC assembly receipt failed");
+      }
       std::ofstream causes(output / (stem + "-causes.u8"), std::ios::binary);
       for (auto c : result->causes()) {
         auto u = static_cast<std::uint8_t>(c);
@@ -445,7 +551,7 @@ int main(int argc, char **argv) {
       frozen["plan_seconds"] =
           std::chrono::duration<double>(apply_started - plan_started).count();
       frozen["Apply_seconds"] =
-          std::chrono::duration<double>(apply_finished - apply_started).count();
+          assembly ? assembly_apply_seconds : std::chrono::duration<double>(apply_finished - apply_started).count();
       for (auto r : plan->runs()) {
         YAML::Node range;
         range.push_back(r.first);
@@ -488,7 +594,8 @@ int main(int argc, char **argv) {
           for (int c = 0; c < 2; ++c)
             f.read(reinterpret_cast<char *>(&delta.delta(i, c)), 8);
         require(bool(f), "injection read");
-        auto paired =
+        auto paired = assembly ? RtcPipelineResult::apply(complete_plan,view,val,partitions,
+            std::span<const RtcRecoveryInjection>{&delta,1})->detector_results().front() :
             RtcNotchRecoveryResult::apply(plan, view, val, partitions, &delta);
         require(paired->causes() == result->causes() &&
                     paired->output_native_rows() ==

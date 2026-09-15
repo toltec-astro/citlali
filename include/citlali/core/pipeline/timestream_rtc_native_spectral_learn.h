@@ -23,7 +23,7 @@ enum class RtcSpectralInputStage : std::uint8_t { original_reference, native_int
 
 // Identity only: this descriptor neither supplies a numerical product nor
 // authorizes a use. Its snapshot is explicit and need not be generation zero.
-// Future intermediate/conditioned producers must additionally retain their
+// Intermediate/conditioned producers must additionally retain their
 // actual numerical parent and replacement/support history in their evidence;
 // a descriptor alone cannot publish such a spectrum through learn_initial().
 class RtcSpectralInputIdentity {
@@ -63,6 +63,52 @@ private:
     std::uint64_t producer_attempt_;
 };
 
+class RtcNotchRecoveryResult;
+class RtcPipelineResult;
+
+// A concrete RTC product, created only by completed frozen-plan Apply. Numeric
+// planes alias their immutable result owners; no copied original or replacement
+// masquerades as an independent measurement. Native rows are never compacted.
+class RtcConditionedNativeProduct {
+public:
+    struct Column {
+        TimestreamNetworkId network;
+        std::uint32_t detector;
+        TimestreamNativeRow first;
+        std::shared_ptr<const Eigen::Matrix<double, Eigen::Dynamic, 2>> values;
+        // Coordinate availability (bits 0/1), representative replacement (2),
+        // nonlocal/representative replacement influence (3), unrepaired donor
+        // influence (4), representative independent-use exclusion (5). Eligibility is a
+        // separate downstream decision; finite x does not invent available r.
+        std::vector<std::uint8_t> state;
+        std::shared_ptr<const RtcNotchRecoveryResult> source;
+    };
+    const auto &original_spike_handle() const noexcept { return original_; }
+    const auto &snapshot_handle() const noexcept { return snapshot_; }
+    const auto &identities() const noexcept { return identities_; }
+    const auto &columns() const noexcept { return columns_; }
+    auto producer_attempt() const noexcept { return attempt_; }
+    bool after_lowpass() const noexcept { return after_lowpass_; }
+    const Column &column(TimestreamNetworkId n, std::uint32_t d) const {
+        const auto it = std::lower_bound(columns_.begin(), columns_.end(), std::pair{n,d},
+            [](const auto &c, auto key) { return std::pair{c.network,c.detector} < key; });
+        if (it == columns_.end() || it->network != n || it->detector != d)
+            throw std::out_of_range("RTC conditioned detector absent");
+        return *it;
+    }
+    static constexpr std::string_view use_policy = "rtc-conditioned-native-spectral-review-v1";
+    static constexpr bool independent_measurements = false, classification_authorized = false;
+private:
+    friend class RtcPipelineResult;
+    RtcConditionedNativeProduct() = default;
+    std::shared_ptr<const RtcSpikeEvidence> original_;
+    std::shared_ptr<const ValSnapshot> snapshot_;
+    std::vector<std::shared_ptr<const RtcSpectralInputIdentity>> identities_;
+    std::vector<Column> columns_;
+    std::uint64_t attempt_ = 0;
+    bool after_lowpass_ = false;
+};
+
 // Same explicit cadence-domain prerequisite as D2: no locally invented jitter
 // tolerance. This owner-supplied bound is checked against original native time.
 struct RtcSpectralCadenceDomain {
@@ -85,6 +131,8 @@ struct RtcSpectralWindow {
     double centered_chunk_median = NAN;
     // Counts annotate original input; source status never excludes this profile.
     std::array<std::size_t, 3> source_counts{}; // outside, protected, unknown
+    std::size_t representative_replacements = 0, replacement_influenced_samples = 0;
+    std::size_t unrepaired_influenced_samples = 0, representative_exclusions = 0;
 };
 struct RtcSpectralRun {
     RtcEventRange rows;
@@ -145,16 +193,33 @@ public:
         std::shared_ptr<const RtcSpikeEvidence> original,
         std::vector<std::shared_ptr<const RtcSpectralInputIdentity>> inputs,
         std::vector<RtcSpectralCadenceDomain> cadence, std::uint64_t attempt) {
+        return learn(std::move(original), std::move(inputs), std::move(cadence), attempt, nullptr);
+    }
+    static std::shared_ptr<const RtcNativeSpectralEvidence> learn_conditioned(
+        std::shared_ptr<const RtcConditionedNativeProduct> product,
+        std::shared_ptr<const ValSnapshot> snapshot,
+        std::vector<RtcSpectralCadenceDomain> cadence, std::uint64_t attempt) {
+        if (!product || !snapshot || product->snapshot_handle().get() != snapshot.get())
+            throw std::invalid_argument("RTC conditioned Learn requires exact numerical product and VAL snapshot");
+        return learn(product->original_spike_handle(), product->identities(), std::move(cadence), attempt, product);
+    }
+private:
+    static std::shared_ptr<const RtcNativeSpectralEvidence> learn(
+        std::shared_ptr<const RtcSpikeEvidence> original,
+        std::vector<std::shared_ptr<const RtcSpectralInputIdentity>> inputs,
+        std::vector<RtcSpectralCadenceDomain> cadence, std::uint64_t attempt,
+        std::shared_ptr<const RtcConditionedNativeProduct> conditioned) {
         if (!original || !attempt || inputs.size() != original->input_handle()->network_count() || cadence.size() != inputs.size())
             throw std::invalid_argument("RTC spectral Learn requires complete original references and attempt");
         auto out = std::shared_ptr<RtcNativeSpectralEvidence>(new RtcNativeSpectralEvidence{original, attempt});
+        out->conditioned_ = std::move(conditioned);
         for (std::size_t ni = 0; ni < inputs.size(); ++ni) {
             const auto &binding = inputs[ni]; const auto span = original->input_handle()->spans()[ni];
-            if (!binding || binding->subject_handle()->paired_handle().get() != original->input_handle()->parent_handle().get() ||
+            if (!out->conditioned_ && (!binding || binding->subject_handle()->paired_handle().get() != original->input_handle()->parent_handle().get() ||
                 binding->snapshot_handle().get() != original->val_snapshot_handle().get() ||
                 binding->snapshot_handle()->generation().value != 0 || binding->support() != span ||
                 binding->stage() != RtcSpectralInputStage::original_reference ||
-                binding->producer_attempt() != original->attempt())
+                binding->producer_attempt() != original->attempt()))
                 throw std::invalid_argument("RTC initial spectrum requires exact original stage, initial VAL and learning attempt");
             const auto &domain = cadence[ni];
             if (domain.network != span.network_id || domain.authority.empty() ||
@@ -207,9 +272,11 @@ public:
         }
         return out;
     }
+public:
     const auto &original_spike_handle() const noexcept { return original_; }
+    const auto &conditioned_handle() const noexcept { return conditioned_; }
     std::uint64_t attempt() const noexcept { return attempt_; }
-    static constexpr auto use_policy() noexcept { return RtcInitialSpectralPolicy::identity; }
+    auto use_policy() const noexcept { return conditioned_ ? RtcConditionedNativeProduct::use_policy : RtcInitialSpectralPolicy::identity; }
     const auto &networks() const noexcept { return networks_; }
     const auto &spectra() const noexcept { return spectra_; }
     // Conservative bound on visible scalar scratch; FFT internals/allocator are excluded.
@@ -238,14 +305,23 @@ private:
         using namespace rtc_native_spectral_detail;
         RtcNativeSpectrum s; s.network = n.input->support().network_id; s.detector = detector; s.coordinate = coordinate;
         const auto &net = original_->input_handle()->network(s.network); const auto &axis = net.occurrence_axis();
+        const auto *derived = conditioned_ ? &conditioned_->column(s.network,detector) : nullptr;
+        const auto admitted = [&](auto row) {
+            return derived ? (derived->state.at(row-derived->first) & (1U << static_cast<unsigned>(coordinate))) != 0
+                           : net.state(coordinate,row,detector).valid();
+        };
+        const auto value = [&](auto row) {
+            return derived ? (*derived->values)(row-derived->first,static_cast<unsigned>(coordinate))
+                           : net.value(coordinate,row,detector);
+        };
         std::vector<double> population;
         std::size_t longest = 0; bool input_failure = false;
         for (const auto &run : axis.contiguous_runs()) {
             RtcSpectralRun r; r.rows = {run.first_native_row, run.past_last_native_row};
             for (auto row = r.rows.first; row < r.rows.past_last; ++row) {
-                if (!net.state(coordinate, row, detector).valid()) { ++r.declared_invalid_samples; continue; }
+                if (!admitted(row)) { ++r.declared_invalid_samples; continue; }
                 ++r.admitted_samples;
-                if (!std::isfinite(net.value(coordinate, row, detector))) {
+                if (!std::isfinite(value(row))) {
                     ++r.unexpected_nonfinite_samples;
                     if (r.first_unexpected_nonfinite < 0) r.first_unexpected_nonfinite = row;
                 }
@@ -254,10 +330,10 @@ private:
             else {
                 auto row = r.rows.first;
                 while (row < r.rows.past_last) {
-                    if (!net.state(coordinate, row, detector).valid()) { ++row; continue; }
+                    if (!admitted(row)) { ++row; continue; }
                     auto first = row;
-                    while (row < r.rows.past_last && net.state(coordinate, row, detector).valid()) {
-                        population.push_back(net.value(coordinate, row, detector)); ++row;
+                    while (row < r.rows.past_last && admitted(row)) {
+                        population.push_back(value(row)); ++row;
                     }
                     s.centering_support.push_back({first, row}); longest = std::max(longest, static_cast<std::size_t>(row-first));
                 }
@@ -292,11 +368,17 @@ private:
                 for (auto first : starts) {
                     const auto last = std::min(stretch.past_last, first+static_cast<TimestreamNativeRow>(n.fft_samples));
                     std::vector<double> samples;
-                    for (auto row = first; row < last; ++row) samples.push_back(net.value(coordinate, row, detector)-s.population_median);
+                    for (auto row = first; row < last; ++row) samples.push_back(value(row)-s.population_median);
                     const double center = median(samples);
                     RtcSpectralWindow info{ri, {first,last}, axis.occurrence(first).integration_support.begin_unix_sec,
                         axis.occurrence(last-1).integration_support.end_unix_sec, n.fft_samples-samples.size(), center, {}};
                     for (auto row = first; row < last; ++row) ++info.source_counts[source_index(original_->protection_handle()->state(s.network, detector, row))];
+                    if (derived) for (auto row = first; row < last; ++row) {
+                        info.representative_replacements += (derived->state[row-derived->first] & 4U) != 0;
+                        info.replacement_influenced_samples += (derived->state[row-derived->first] & 8U) != 0;
+                        info.unrepaired_influenced_samples += (derived->state[row-derived->first] & 16U) != 0;
+                        info.representative_exclusions += (derived->state[row-derived->first] & 32U) != 0;
+                    }
                     for (auto &value : samples) value -= center;
                     samples.resize(n.fft_samples, 0.);
                     for (std::size_t i = 0; i < samples.size(); ++i) { samples[i] *= window[i]; arithmetic_failure |= !std::isfinite(samples[i]); }
@@ -331,6 +413,7 @@ private:
         return s;
     }
     std::shared_ptr<const RtcSpikeEvidence> original_;
+    std::shared_ptr<const RtcConditionedNativeProduct> conditioned_;
     std::uint64_t attempt_;
     std::vector<RtcSpectralNetwork> networks_;
     std::vector<RtcNativeSpectrum> spectra_;
@@ -339,8 +422,8 @@ private:
 
 // A concrete RTC Consider input product. Retains both evidence generations;
 // does not rewrite the older review's spectral-unavailable field or promote a
-// candidate. Future conditioned spectra need a named producer/use policy and
-// their own exact snapshot checks, not a rewrite of this initial evidence.
+// candidate. Conditioned spectra retain their numerical product and review use;
+// their exact snapshot checks never rewrite the initial evidence.
 class RtcSpectralTransientConsideration {
 public:
     static std::shared_ptr<const RtcSpectralTransientConsideration> consider(

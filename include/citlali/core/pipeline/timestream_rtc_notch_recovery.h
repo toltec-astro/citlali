@@ -3,6 +3,7 @@
 #include <citlali/core/pipeline/ast_scan_motion_alignment.h>
 #include <citlali/core/pipeline/timestream_rtc_line_transfer.h>
 #include <citlali/core/pipeline/timestream_rtc_transient_exclusion.h>
+#include <citlali/core/pipeline/timestream_rtc_donor_fill.h>
 #include <citlali/core/timestream/rtc/filter.h>
 
 namespace citlali::pipeline {
@@ -21,6 +22,8 @@ struct RtcNotchRecoveryDomain {
 };
 
 enum class RtcNotchRecoveryCause : std::uint8_t {
+  // Pair-domain disposition, separate from coordinate availability and donor
+  // influence. Retained does not imply two available independent values.
   retained,
   producer_invalid,
   transient_excluded,
@@ -41,7 +44,8 @@ public:
   consider(std::shared_ptr<const RtcLineTransferAssessment> assessment,
            std::shared_ptr<const RtcTransientExclusionPlan> transients,
            std::shared_ptr<const ValSnapshot> snapshot,
-           RtcNotchRecoveryDomain domain, std::uint64_t id) {
+           RtcNotchRecoveryDomain domain, std::uint64_t id,
+           std::vector<std::shared_ptr<const RtcDonorFillPlan>> donors = {}) {
     if (!assessment || !transients || !snapshot || !id ||
         assessment->snapshot_handle().get() != snapshot.get() ||
         transients->val_snapshot_handle().get() != snapshot.get())
@@ -60,6 +64,20 @@ public:
     const auto &net = transients->input_handle()->network(candidate.network());
     const auto &axis = net.occurrence_axis();
     const auto &s = candidate.specification();
+    std::sort(donors.begin(), donors.end(), [](const auto &a, const auto &b) {
+      if (!a || !b) throw std::invalid_argument("RTC donor plan is absent");
+      return a->selection().affected.first < b->selection().affected.first;
+    });
+    TimestreamNativeRow donor_end = axis.first_native_row();
+    for (const auto &donor : donors) {
+      if (!donor || donor->exclusions_handle().get() != transients.get() ||
+          donor->event().network != candidate.network() ||
+          donor->event().detector != candidate.detector() ||
+          donor->selection().affected.first < donor_end ||
+          !s.notches.empty())
+        throw std::invalid_argument("RTC finite chain requires exact, disjoint donor plans for its detector");
+      donor_end = donor->selection().affected.past_last;
+    }
     if (domain.identity.empty() || !domain.motion ||
         domain.motion->network_timing_handle().get() !=
             axis.native_timing_handle().get() ||
@@ -124,6 +142,7 @@ public:
     auto out = std::shared_ptr<RtcNotchRecoveryPlan>(new RtcNotchRecoveryPlan);
     out->assessment_ = std::move(assessment);
     out->transients_ = std::move(transients);
+    out->donors_ = std::move(donors);
     out->domain_ = std::move(domain);
     out->id_ = id;
     out->sampling_speed_limit_ =
@@ -199,6 +218,7 @@ public:
     return transients_->val_snapshot_handle();
   }
   const auto &domain() const noexcept { return domain_; }
+  const auto &donor_plans() const noexcept { return donors_; }
   const auto &runs() const noexcept { return runs_; }
   const auto &input_causes() const noexcept { return causes_; }
   auto first_native_row() const noexcept { return first_; }
@@ -230,10 +250,26 @@ public:
   // endpoint guard is not proof of a five-second finite source footprint.
   bool finite_five_second_footprint() const noexcept {
     const auto &s = assessment_->candidate_handle()->specification();
-    return s.notches.empty() &&
-           (s.centered_lowpass.size() / 2 + s.centered_notch.size() / 2) *
-                   s.input_interval_seconds <=
-               5.;
+    const auto half = static_cast<TimestreamNativeRow>(s.centered_lowpass.size()/2+s.centered_notch.size()/2);
+    if (!s.notches.empty() || half*s.input_interval_seconds > 5.) return false;
+    // Frozen donor values retain numerical dependence on their original local
+    // background and donor samples. Short filter taps do not erase that reach.
+    const auto &axis=input_handle()->network(assessment_->candidate_handle()->network()).occurrence_axis();
+    for(const auto &d:donors_) if(d->cause()==RtcDonorFillCause::ready) {
+      auto first=d->donor_support().first,last=d->donor_support().past_last-1;
+      for(const auto &side:d->event().background[0].support) if(side.usable) {
+        first=std::min(first,side.first_used);last=std::max(last,side.last_used);
+      }
+      const auto affected=d->selection().affected;
+      for(const auto &run:runs_) {
+        const auto begin=std::max(run.first+half,affected.first-half);
+        const auto end=std::min(run.past_last-half-1,affected.past_last-1+half);
+        if(begin>end)continue;
+        const auto time=[&](auto row){return axis.native_identity(row).reconstructed_time_unix_sec();};
+        if(time(last)-time(begin)>5. || time(end)-time(first)>5.)return false;
+      }
+    }
+    return true;
   }
   static constexpr bool production_authorized = false;
 
@@ -241,6 +277,7 @@ private:
   RtcNotchRecoveryPlan() = default;
   std::shared_ptr<const RtcLineTransferAssessment> assessment_;
   std::shared_ptr<const RtcTransientExclusionPlan> transients_;
+  std::vector<std::shared_ptr<const RtcDonorFillPlan>> donors_;
   RtcNotchRecoveryDomain domain_;
   std::vector<RtcNotchRecoveryCause> causes_;
   std::vector<RtcEventRange> runs_;
@@ -284,7 +321,14 @@ public:
     out->plan_ = std::move(plan);
     out->retained_ = std::move(retained);
     out->injection_identity_ = injection ? injection->identity : "none";
+    // A donor plan freezes its original-data fit/median. Injecting into that
+    // already selected support would require an explicit donor-response model.
+    if (injection && !out->plan_->donor_plans().empty())
+      throw std::invalid_argument("RTC paired injection with donors requires separately bound donor response");
+    for (const auto &donor : out->plan_->donor_plans())
+      out->donors_.push_back(RtcDonorFillResult::apply(donor, original, snapshot, partitions));
     out->causes_ = out->plan_->input_causes();
+    out->native_state_.assign(n, 0);
     out->conditioned_.resize(n, 2);
     out->conditioned_.setConstant(NAN);
     out->filtered_.resize(n, 2);
@@ -300,6 +344,7 @@ public:
     for (auto run : out->plan_->runs()) {
       const auto size = run.past_last - run.first;
       Eigen::MatrixXd values(size, 2);
+      std::vector<std::uint8_t> influence(size, 0);
       for (Eigen::Index i = 0; i < size; ++i)
         for (int c = 0; c < 2; ++c) {
           const auto row = run.first + i;
@@ -311,6 +356,17 @@ public:
       if (!values.allFinite())
         throw std::overflow_error(
             "RTC recovery original plus injection overflow");
+      for (const auto &donor : out->donors_) {
+        const auto affected = donor->plan_handle()->selection().affected;
+        for (auto row = std::max(run.first, affected.first);
+             row < std::min(run.past_last, affected.past_last); ++row) {
+          values(row - run.first, 0) = donor->value_for_conditioning(
+              NativeReadoutCoordinate::x, candidate.network(), row,
+              candidate.detector()).value_or(NAN);
+          values(row - run.first, 1) = NAN; // accepted x-only donor exception
+          influence[row-run.first] = donor->filled() ? 1 : 2;
+        }
+      }
       if (!s.notches.empty()) {
         // Reuse the mature finite kernel unchanged: odd reflection of
         // min(9,N-1), constant endpoint initialization, then reverse.
@@ -323,29 +379,44 @@ public:
             Eigen::Map<const Eigen::Vector3d>(section.b.data()));
         filter.iir(values);
       }
-      if (!values.allFinite())
+      if (out->donors_.empty() && !values.allFinite())
         throw std::overflow_error(
             "RTC recovery finite notch arithmetic failed");
       if (!s.centered_notch.empty()) {
         // Both centered stages use only complete real input support. The
         // first-stage edges are unavailable, never padded or renormalized.
         Eigen::MatrixXd finite = Eigen::MatrixXd::Constant(size, 2, NAN);
+        std::vector<std::uint8_t> finite_influence(size, 0);
         for (Eigen::Index i = notch_half;
              i + static_cast<Eigen::Index>(notch_half) < size; ++i)
           for (int c = 0; c < 2; ++c) {
             double v = 0;
-            for (std::size_t j = 0; j < s.centered_notch.size(); ++j)
+            bool unavailable = false;
+            for (std::size_t j = 0; j < s.centered_notch.size(); ++j) {
+              if (!out->donors_.empty() && s.centered_notch[j] == 0) continue;
+              unavailable |= !std::isfinite(values(i+j-notch_half,c));
               v = std::fma(s.centered_notch[j], values(i + j - notch_half, c),
                            v);
-            if (!std::isfinite(v))
+              if (s.centered_notch[j] != 0) finite_influence[i] |= influence[i+j-notch_half];
+            }
+            if (!unavailable && !std::isfinite(v))
               throw std::overflow_error("RTC finite notch arithmetic failed");
-            finite(i, c) = v;
+            finite(i, c) = std::isfinite(v) ? v : NAN;
           }
         values = std::move(finite);
+        influence = std::move(finite_influence);
       }
       out->conditioned_.middleRows(run.first - first, size) = values;
       for (Eigen::Index i = 0; i < size; ++i) {
         const auto row = run.first + i, local = row - first;
+        const auto native_guard = notch_half + out->plan_->domain().notch_guard_samples;
+        if (!out->plan_->domain().reject && i >= static_cast<Eigen::Index>(native_guard) &&
+            i+static_cast<Eigen::Index>(native_guard) < size) {
+          for (int c = 0; c < 2; ++c)
+            if (std::isfinite(values(i,c))) out->native_state_[local] |= 1U << c;
+          if (influence[i] & 1U) out->native_state_[local] |= 4U;
+          if (influence[i] & 2U) out->native_state_[local] |= 64U;
+        }
         if (out->plan_->domain().reject)
           out->causes_[local] = RtcNotchRecoveryCause::rejection;
         else if (i < static_cast<Eigen::Index>(guard) ||
@@ -354,11 +425,20 @@ public:
         else {
           for (int c = 0; c < 2; ++c) {
             double v = 0;
-            for (std::size_t j = 0; j < s.centered_lowpass.size(); ++j)
+            bool unavailable = false;
+            std::uint8_t influenced = 0;
+            for (std::size_t j = 0; j < s.centered_lowpass.size(); ++j) {
+              if (!out->donors_.empty() && s.centered_lowpass[j] == 0) continue;
+              unavailable |= !std::isfinite(values(i+j-half,c));
               v = std::fma(s.centered_lowpass[j], values(i + j - half, c), v);
-            out->filtered_(local, c) = static_cast<double>(v);
-            if (!std::isfinite(out->filtered_(local, c)))
+              if (s.centered_lowpass[j] != 0) influenced |= influence[i+j-half];
+            }
+            out->filtered_(local, c) = std::isfinite(v) ? v : NAN;
+            if (!unavailable && !std::isfinite(v))
               throw std::overflow_error("RTC recovery FIR arithmetic failed");
+            if (!unavailable) out->native_state_[local] |= 8U << c;
+            if (influenced & 1U) out->native_state_[local] |= 32U;
+            if (influenced & 2U) out->native_state_[local] |= 128U;
           }
           if (local % s.factor == 0)
             out->output_rows_.push_back(row);
@@ -368,6 +448,54 @@ public:
     return out;
   }
   const auto &plan_handle() const noexcept { return plan_; }
+  const auto &donor_results() const noexcept { return donors_; }
+  // Support facts, not downstream eligibility. Nonrepresentative donor
+  // influence never silently becomes universal rejection (SCI-RTC-REQ-020).
+  bool representative_replaced(TimestreamNativeRow row) const {
+    (void)native_state_.at(row-plan_->first_native_row());
+    for (const auto &d : donors_) {
+      const auto r = d->plan_handle()->selection().affected;
+      if (d->filled() && row >= r.first && row < r.past_last) return true;
+    }
+    return false;
+  }
+  bool requires_representative_exclusion(TimestreamNativeRow row) const {
+    (void)native_state_.at(row-plan_->first_native_row());
+    for (const auto &d : donors_) {
+      const auto r=d->plan_handle()->selection().affected;
+      if (row >= r.first && row < r.past_last) return true;
+    }
+    return false;
+  }
+  bool replacement_influence(TimestreamNativeRow row, bool after_lowpass) const {
+    return (native_state_.at(row-plan_->first_native_row()) & (after_lowpass ? 32U : 4U)) != 0;
+  }
+  bool unrepaired_influence(TimestreamNativeRow row, bool after_lowpass) const {
+    return (native_state_.at(row-plan_->first_native_row()) & (after_lowpass ? 128U : 64U)) != 0;
+  }
+  bool native_stage_admitted(TimestreamNativeRow row, bool after_lowpass) const {
+    const auto local = row - plan_->first_native_row();
+    if (local < 0 || static_cast<std::size_t>(local) >= causes_.size())
+      throw std::out_of_range("RTC native stage row outside original support");
+    if (after_lowpass) return causes_[local] == RtcNotchRecoveryCause::retained;
+    if (plan_->domain().reject) return false;
+    const auto &s = plan_->assessment_handle()->candidate_handle()->specification();
+    const auto half = static_cast<TimestreamNativeRow>(s.centered_notch.size()/2 + plan_->domain().notch_guard_samples);
+    auto run = std::upper_bound(plan_->runs().begin(),plan_->runs().end(),row,
+        [](auto r, const auto &span) { return r < span.first; });
+    if (run != plan_->runs().begin()) {
+      --run;
+      if (row >= run->first+half && row < run->past_last-half) return true;
+    }
+    return false;
+  }
+  bool coordinate_stage_available(NativeReadoutCoordinate c, TimestreamNativeRow row,
+                                  bool after_lowpass) const {
+    if (c != NativeReadoutCoordinate::x && c != NativeReadoutCoordinate::r)
+      throw std::invalid_argument("RTC conditioned stage requires x or r");
+    const auto shift = static_cast<unsigned>(c) + (after_lowpass ? 3 : 0);
+    return (native_state_.at(row-plan_->first_native_row()) & (1U << shift)) != 0;
+  }
   const auto &injection_identity() const noexcept {
     return injection_identity_;
   }
@@ -382,8 +510,10 @@ private:
   RtcNotchRecoveryResult() = default;
   std::shared_ptr<const RtcNotchRecoveryPlan> plan_;
   std::shared_ptr<const RtcTransientExclusionResult> retained_;
+  std::vector<std::shared_ptr<const RtcDonorFillResult>> donors_;
   Eigen::Matrix<double, Eigen::Dynamic, 2> conditioned_, filtered_;
   std::vector<RtcNotchRecoveryCause> causes_;
+  std::vector<std::uint8_t> native_state_;
   std::vector<TimestreamNativeRow> output_rows_;
   std::string injection_identity_;
 };
