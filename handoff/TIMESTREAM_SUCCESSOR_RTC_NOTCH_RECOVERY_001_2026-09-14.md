@@ -1,5 +1,46 @@
 # TIMESTREAM-SUCCESSOR-RTC-NOTCH-RECOVERY-001
 
+## Bounded r-continuity test — 2026-09-16
+
+The owner-supplied discussion explicitly requests a test of paired continuity.
+Work order `TIMESTREAM-SUCCESSOR-RTC-R-CONTINUITY-DIAGNOSTIC-001`, Tier 2,
+base `e96a8c3e2c148a84f6b1ef348618dec6b5618229`. The prior retention audit
+has independent exact-SHA PASS WITH RECORDED LIMITATIONS, no candidate findings;
+its external review digest is
+`5bc1da63e1fb22ef229c3fab9d6df350a0ae46e75685692b6ced9c40dd75b03d`.
+No new branch, runtime change, accepted-contract amendment or activation.
+
+Diagnostic script and standalone fixed-FIR replay helper compare three
+explicit estimates: immediate target bracketing, target cubic alone, and
+cubic plus median r-specific peer-residual transfers. Use existing eleven
+peers, two-second flanks, 50 ms guard and quartic residual taper; no x or
+flxscale transfer to r, fit ranking, parameter search or hidden target access.
+The cubic-only control isolates whether the donor earns its complexity.
+
+Keep existing controlled ch269/row19340 x reconstruction byte-fixed. Six extra
+r-only holdouts use ch193/269/307 at support-selected rows44348 and112526,
+one and three native samples respectively. Every estimate uses488 original
+flank samples. The replay matches original runtime r values and availability
+bit-for-bit for three target channels and both controlled arms; original
+samples remain unchanged. All21 trials restore reference numerical support.
+
+Controlled paired support gains334 original-centered neighbors relative to
+x-only continuity, while one direct replaced occurrence remains excluded.
+Their x error is unchanged. Neighbor r RMS: bracketing3.7117e-9,
+cubic6.4620e-10, donor6.8163e-10. Donor benefit over cubic is negligible and
+holdout rankings are mixed. The largest local x/r-correlation change is
+0.000668; descriptive only, not an acceptance tolerance. Retain induced
+correlations and reconstruction history; filled r cannot validate itself.
+
+Report, plots, full numerical trials, fit/support history and final gates:
+`/private/tmp/citlali-rtc-r-continuity-test-2026-09-16/REPORT.md`.
+External source/manifest/fresh-review bindings govern the exact candidate.
+No new consumer eligibility or r-quality tolerance, natural-event admission,
+FRUIT, PTC/CAL/MAP, production, integration, cleanup or push. Recommendation
+is to consider a narrowly amended simple r-continuity policy, not broaden the
+cross-detector method. Owner has authorized this test, not runtime adoption.
+Natural48.4523% retention has no donor fills and is unaffected by this result.
+
 ## Retention audit — 2026-09-16
 
 Owner accepts preceding connection closure

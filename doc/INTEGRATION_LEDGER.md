@@ -1,5 +1,25 @@
 # Citlali Integration Ledger
 
+## RTC r-continuity diagnostic — 2026-09-16
+
+- Owner-requested Tier 2 inert experiment, literal base
+  `e96a8c3e2c148a84f6b1ef348618dec6b5618229`; existing topic/worktree only.
+  No application implementation slot, runtime/contract amendment or policy
+  selection. Retention audit independently passes at that exact base.
+- Seven predefined cases compare target bracketing, target cubic and a bounded
+  r-specific donor proposal under identical masks, timing and coefficients.
+  Existing controlled x stays fixed; hidden-r checks keep original x.
+- Controlled r fill restores 334 neighboring numerical pairs plus the direct
+  representative (still excluded). Errors are measured separately. Donor
+  complexity shows little advantage over the cubic; no acceptance tolerance
+  follows from this small support-selected test.
+- External report `/private/tmp/citlali-rtc-r-continuity-test-2026-09-16/REPORT.md`
+  binds methods, untouched references, errors/correlations and evidence.
+  Runtime r replay is bitwise exact; all 21 candidate trials, hidden-value
+  guards, original checksums and local compile/lint checks pass.
+- SCI-RTC r0.12, natural admission, production, FRUIT and consumer policy remain
+  unchanged. Source/review identities recorded externally; no push or cleanup.
+
 ## RTC retention accounting — 2026-09-16
 
 - Owner accepts connection closure `1130d51ee8c9af4d543589e3b639f04993389d56`.

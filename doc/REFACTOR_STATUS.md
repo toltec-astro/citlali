@@ -1,5 +1,30 @@
 # Citlali Refactor Status
 
+## Inert r-continuity comparison — 2026-09-16
+
+The owner authorizes a bounded test of reconstructing r for numerical filter
+support. Accepted SCI-RTC v0.1/r0.12 and its x-only runtime donor exception
+remain unchanged. The same controlled event and existing x fill are compared
+with r-specific donors, target-only bracketing and a target-cubic control;
+six predefined one-/three-sample hidden-r cases use the existing cohort.
+Originals, masks, filters, thresholds and motion rules remain fixed.
+
+All three estimates restore 334 original-centered paired neighbors in the
+controlled case; the directly replaced occurrence remains excluded. Neighbor
+r RMS errors are 3.7117e-9 (bracketing), 6.4620e-10 (cubic), 6.8163e-10
+(donor); x errors are unchanged. Holdout performance is mixed and r donors
+add little over the cubic. Finite support is not scientific qualification;
+reconstructed r cannot independently validate its own treatment. No method,
+error tolerance or consumer eligibility is adopted by this diagnostic.
+
+Evidence: `/private/tmp/citlali-rtc-r-continuity-test-2026-09-16/REPORT.md`.
+Exact runtime replay parity, seven cases with hidden-value guards, original
+hashes, strict floating-point checks and helper compilation/lint pass. Source
+and fresh independent review are externally bound. This is not a runtime LCA
+component or a change to its ownership. No natural admission, production,
+FRUIT, integration or push. The retention audit at e96a8c3e2 independently
+passes with recorded limitations; its small adapter defect remains unfixed.
+
 ## RTC support-retention audit and acceptance — 2026-09-16
 
 The owner accepts closure `1130d51ee8c9af4d543589e3b639f04993389d56` as a
