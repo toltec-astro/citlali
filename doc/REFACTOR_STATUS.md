@@ -1,5 +1,38 @@
 # Citlali Refactor Status
 
+## RTC support-retention audit and acceptance — 2026-09-16
+
+The owner accepts closure `1130d51ee8c9af4d543589e3b639f04993389d56` as a
+successful bounded connection. Natural-event admission is deferred, not the
+next task. Same twelve 152390/n12 detectors, masks, timing and coefficients:
+873,069/909,228 scheduled positions pass directly (96.0231%), 585,110 retain
+LPF-only support (64.3524%), and 440,542 retain current support (48.4523%).
+All selected positions and 5,424 run/stage counts match independent accounting.
+
+Repeated crossings of the fixed speed boundaries, expanded by the 153- or
+336-sample half-footprint, dominate loss. Internal processing boundaries do
+not reset filters. A small existing adapter defect conflates legacy endpoint
+science selection with numerical-support availability: a masks-only diagnostic
+attributes 712 current positions (0.0783 percentage points) to it. No excluded
+values were filtered, and no runtime repair is part of this audit.
+
+Controlled donor accounting distinguishes 334 additional original-centered x
+outputs with donor influence from the one directly replaced/excluded output.
+Those 334 x outputs remain available, with RMS reference error 2.1766e-9 and
+maximum 1.1816e-8 in original units; propagated r unavailability is not an x
+failure or universal exclusion. SCI-RTC v0.1/r0.12 and its named consumer
+eligibility boundary are verified unchanged. The +2 paired count alone does
+not measure the purpose or benefit of x continuity.
+
+Evidence: `/private/tmp/citlali-rtc-retention-audit-2026-09-16/REPORT.md`.
+Existing d92cd3a51 runtime reused; six diagnostic tests, 1,165 runnable CTests,
+67 RTC Python tests, 207 baseline tests, require-all config and lint pass.
+One established CTest remains disabled. Local supplemental environment only.
+Exact diagnostic candidate and independent review are bound externally.
+No runtime policy changes, integration, push, cleanup, production or FRUIT.
+The subsequent owner request authorizes a bounded inert r-continuity test,
+not an amendment of the accepted runtime contract.
+
 ## Real-data RTC decisions and complete Apply — 2026-09-16
 
 The bounded connection is implemented at exact source
@@ -38,8 +71,8 @@ existing kids dirt, not Unity/Spack V2. Evidence seal: 348 files, digest
 `1b5d0a0e4c45b7c09be7fa4d8d53c9ba1668518a931441b54c88cae788f6dcfb`.
 Details: current notch-recovery handoff, integration ledger and sealed evidence.
 
-This is a locally verified source candidate; owner acceptance/push and the
-isolated-admission decision remain pending. Production filtering stays inactive;
+The owner accepted the bounded connection on 2026-09-16; push remains pending
+and isolated admission is deferred. Production filtering stays inactive;
 no integration, cleanup, FRUIT, PTC, CAL or MAP extension. Runtime
 Learn/Consider/Apply boundaries are implemented independently of the development
 workflow. Stop after this bounded pass.

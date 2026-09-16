@@ -1,9 +1,61 @@
 # TIMESTREAM-SUCCESSOR-RTC-NOTCH-RECOVERY-001
 
+## Retention audit — 2026-09-16
+
+Owner accepts preceding connection closure
+`1130d51ee8c9af4d543589e3b639f04993389d56`; this is the exact audit base.
+Work order `TIMESTREAM-SUCCESSOR-RTC-RETENTION-AUDIT-001`, Tier 2, read-only
+runtime audit with one diagnostic script and focused tests on the same clean
+topic/worktree. No second branch or application implementation slot. Effective
+engineering/successor/review governance and SCI-RTC r0.12 were read; normative
+RTC core/ledger match WP-7.1 closure and live canonical byte-for-byte. Current
+canonical and published topic remain 0f52e1a421416eadaf7d8d99d64f537132395c0c
+and becccce85816379e578ac1a325e8c9fe156defbe. Original seals remain intact.
+
+Scope: same twelve detectors; direct phase-zero eligibility, true LPF-only
+replay and current fixed-filter support; raw and expanded cause sets with
+overlap accounting; physical/processing/storage boundary audit; existing
+controlled donor's x/r availability and numerical errors. Runtime source,
+thresholds, coefficients, motion, paired validity and donor method unchanged.
+No natural admission, FRUIT, production, canonical integration, push or cleanup.
+
+Results: 96.0231% direct, 64.3524% LPF-only, 48.4523% current paired support;
+every output and 5,424 run/stage counts independently reproduced. The fixed
+1 and 123.277761887 arcsec/s motion boundaries plus 153/336-sample filter
+half-support dominate loss. Internal processing boundaries are crossed by
+retained footprints, not reset points. One existing adapter defect maps
+legacy science-window endpoint omission to unavailable numerical input;
+its isolated masks-only cost is 712 current outputs (0.0783 percentage points).
+It is preserved for a bounded repair, not silently fixed or used as authority
+to process excluded input in this audit.
+
+The controlled donor adds 334 available original-centered x neighbors with
+no universal exclusion, one direct representative replacement/exclusion,
+and two uninfluenced paired outputs. Neighbor error RMS/max against untouched
+filtered x is 2.1766e-9/1.1816e-8. Missing conditioned r is not failure of x;
+unselected consumer eligibility and numerical support remain distinct under
+REQ-020/052 and OWNER-086/099--101. The prior paired-gain statistic alone
+cannot assess useful neighboring x continuity.
+
+Evidence `/private/tmp/citlali-rtc-retention-audit-2026-09-16/REPORT.md` includes
+per-cause tables, exact overlaps, representative plots, hand-checkable runs and
+the defect trace. Existing exact d92cd3a51 executable is reused. Six diagnostic
+tests, 1165 runnable CTests (one established disabled), 67 RTC Python, 207
+baseline, config and lint pass. Supplemental local environment, no Unity.
+The diagnostic candidate, manifest and fresh exact-SHA review are bound in
+external records without rewriting earlier evidence. Review of the audit
+does not repair the recorded runtime defect or select a consumer policy.
+
+The owner subsequently requested a bounded diagnostic r-continuity test.
+Keep the existing x result fixed, compare r-specific estimation to target-only
+bracketing, retain hidden references and provenance, and report neighboring
+errors separately from numerical support. This is permission for an inert
+test, not for production r reconstruction or reopening natural admission.
+
 ## Real-data RTC Consider to Apply connection — 2026-09-16
 
-Disposition: locally verified, independently reviewed source candidate;
-owner acceptance/push and natural isolated-event policy remain unselected.
+Disposition: owner-accepted bounded connection on 2026-09-16;
+push remains pending and natural isolated-event policy is deferred.
 Work order `TIMESTREAM-SUCCESSOR-RTC-DECISION-APPLY-001`, Tier 2, remains on
 the existing RTC module topic. Exact source `d92cd3a5184bf9189a8b90739647a746e26d4f11`, tree
 `223243d41da7484480be8e3afd5faf54d5289edb`, parent

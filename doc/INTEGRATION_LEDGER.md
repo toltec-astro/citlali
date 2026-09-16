@@ -1,5 +1,28 @@
 # Citlali Integration Ledger
 
+## RTC retention accounting — 2026-09-16
+
+- Owner accepts connection closure `1130d51ee8c9af4d543589e3b639f04993389d56`.
+  `TIMESTREAM-SUCCESSOR-RTC-RETENTION-AUDIT-001` is an evidence-only Tier 2
+  audit on the existing topic; no application-implementation slot is opened.
+- Same exact d92cd3a51 runtime, data, masks, timing and coefficients. Direct,
+  LPF-only and current scheduled paired availability are 96.0231%, 64.3524%
+  and 48.4523%; overlaps remain cause sets, not double-counted losses.
+- Most loss is required speed/support cost. Legacy processing science-window
+  trims incorrectly becoming numerical-support boundaries cost 712 current
+  positions. Defect demonstrated, no repair or excluded-data filtering.
+- 334 donor-influenced original x representatives retain numerical support;
+  missing r and unselected downstream eligibility do not universally exclude
+  them. Their reference residuals are measured separately. SCI-RTC r0.12 is
+  unchanged; the previous +2 paired statistic is not an x-benefit verdict.
+- Evidence: `/private/tmp/citlali-rtc-retention-audit-2026-09-16/REPORT.md`.
+  Six diagnostic tests, CTest 1165, RTC Python 67, baseline 207, config and
+  lint pass. Exact source/review and evidence identities are bound externally.
+- Live canonical `0f52e1a421416eadaf7d8d99d64f537132395c0c` and published topic
+  `becccce85816379e578ac1a325e8c9fe156defbe` verified unchanged. Natural
+  admission deferred. No integration, push, cleanup, production or FRUIT.
+  Subsequent owner-requested r-continuity comparison remains diagnostic only.
+
 ## RTC real-data decision / Apply candidate — 2026-09-16
 
 - Work order `TIMESTREAM-SUCCESSOR-RTC-DECISION-APPLY-001`, Tier 2; same
@@ -36,7 +59,8 @@
   `1b5d0a0e4c45b7c09be7fa4d8d53c9ba1668518a931441b54c88cae788f6dcfb`.
   This documentation-only closure is independently reviewed at its own exact
   SHA and bound externally without rewriting the computational manifest.
-- Owner acceptance/push and natural isolated-admission policy remain pending;
+- Owner accepts this connection on 2026-09-16; push remains pending and
+  natural isolated-admission policy is deferred;
   no production, FRUIT/PTC/CAL/MAP qualification or donor-method expansion.
 
 ## Simultaneous RTC caller and initial no-mask Learn — 2026-09-15
