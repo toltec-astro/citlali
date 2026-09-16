@@ -56,6 +56,7 @@ def prepare(config_path, reference, output):
         native_row=row,
         x_delta=float(30 * scale[0]),
         r_delta=float(30 * scale[1]),
+        reference_configuration=dict(path=str(config_path), sha256=digest(config_path)),
         reference_receipt=dict(path=str(receipt_path), sha256=digest(receipt_path)),
         placement_rule="earliest center with five seconds of paired output support on each side for all 12 cohort detectors",
         model="one native occurrence: additive 30 local difference-MAD scales independently in x and r; no peers changed; test truth only",

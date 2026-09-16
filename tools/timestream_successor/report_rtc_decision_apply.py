@@ -120,7 +120,9 @@ def report(config_path, natural, injected, output):
             x_comparison=compare(a, b),
             r_comparison=compare(a, b, 1),
         )
-    summary["denominator_detector_seconds"] = summary["denominator_pair_cells"] * receipt["native_integration_seconds"]
+    summary["denominator_detector_seconds"] = (
+        summary["denominator_pair_cells"] * receipt["native_integration_seconds"]
+    )
     fixture_receipt = load(injected / "receipt.yaml")
     model = fixture_receipt["declared_contaminant"]
     ch, row = model["channel"], model["native_row"]
@@ -280,12 +282,18 @@ def report(config_path, natural, injected, output):
             }
     (output / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     lines = [
-        "| Event | Ch | Native row | Class | Paired extent | Operation unavailable | Background / target domain | Cohort coincidences |",
-        "|---:|---:|---:|---|---|---|---|---|",
+        "| Event | Ch | Native row | Class | Paired extent | Operation unavailable | Background / target domain | Cohort coincidences | Treatment / donor reason |",
+        "|---:|---:|---:|---|---|---|---|---|---|",
     ]
+    treatments = {
+        "admitted-level-shift": "Full existing processing-scan exclusion; shift, never donor-fill",
+        "no-resolved-excursion": "Guarded operation unavailable; no seeded extent to admit",
+        "unresolved-extent": "Physical-run operation unavailable; no finite extent",
+        "isolated-admission-unavailable": "Paired guarded/affected operation unavailable; isolated-admission predicate missing",
+    }
     for d in decisions:
         lines.append(
-            f"| {d['event']} | {d['channel']} | {d['seed_earlier_row']} | {d['class']} | {d['affected']} | {d['operation_unavailable']} | {d['background_available']} / {d['target_domain_available']} | {d['cohort_coincident_events']} |"
+            f"| {d['event']} | {d['channel']} | {d['seed_earlier_row']} | {d['class']} | {d['affected']} | {d['operation_unavailable']} | {d['background_available']} / {d['target_domain_available']} | {d['cohort_coincident_events']} | {treatments[d['class']]} |"
         )
     (output / "EVENTS.md").write_text("\n".join(lines) + "\n")
     import matplotlib.pyplot as plt

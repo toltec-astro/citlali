@@ -24,7 +24,7 @@ inline ProcessingScanNativeProjection project_processing_scans_to_native(
     std::shared_ptr<const NativePairedReadoutObservation> parent,
     TimestreamNetworkId network, const Eigen::VectorXd &common_times,
     const std::vector<NativeSlotAssociation> &associations,
-    const auto &inclusive_indices, double association_tolerance,
+    const Eigen::Matrix<Eigen::Index,Eigen::Dynamic,Eigen::Dynamic> &inclusive_indices, double association_tolerance,
     std::string generation, std::string relation_authority) {
     if (!parent || common_times.size() != static_cast<Eigen::Index>(associations.size()) ||
         common_times.size() == 0 || inclusive_indices.rows() != 4 || inclusive_indices.cols() == 0 ||

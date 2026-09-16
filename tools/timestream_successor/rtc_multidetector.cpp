@@ -220,6 +220,12 @@ int main(int argc,char **argv) {
       const auto d=std::find(channels.begin(),channels.end(),m["channel"].as<int>())-channels.begin();
       const auto reference=checked_file(m["reference_receipt"]);
       const auto ref=YAML::LoadFile(reference.string());
+      const auto reference_configuration=checked_file(m["reference_configuration"]);
+      auto unmodified_config=YAML::Clone(cfg);unmodified_config.remove("declared_contaminant");
+      require(ref["source_revision"].as<std::string>()==std::string(CITLALI_GIT_REVISION) &&
+        ref["configuration_sha256"].as<std::string>()==citlali::utils::sha256_file(reference_configuration) &&
+        YAML::Dump(unmodified_config)==YAML::Dump(YAML::LoadFile(reference_configuration.string())),
+        "declared contaminant may not alter the untouched reference configuration");
       require(ref["Apply_performed"].as<bool>() && ref["original_pair_unchanged"].as<bool>() &&
         ref["original_parent"].as<std::string>()+":declared-contaminant:"+citlali::utils::sha256_file(argv[1])==mapping->paired_xr_record_id,
         "contaminant does not identify its untouched applied reference");

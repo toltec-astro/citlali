@@ -46,6 +46,7 @@ public:
         std::optional<RtcDeclaredContaminant> truth=std::nullopt) {
         if(!events || !transients || !snapshot || !id ||
             events->original_screening_handle()->evidence_handle().get()!=transients->screening_handle()->evidence_handle().get() ||
+            events->evidence_handle().get()!=&transients->jump_plan_handle()->admission_handle()->assessment() ||
             transients->val_snapshot_handle().get()!=snapshot.get())
             throw std::invalid_argument("RTC event treatment requires exact original evidence, exclusions and VAL");
         const auto evidence=events->evidence_handle();const auto &spikes=*evidence->spike_handle();

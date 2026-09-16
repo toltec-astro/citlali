@@ -60,6 +60,7 @@ def test_contaminant_placement_requires_real_common_paired_support(tmp_path):
     output = tmp_path / "injected.json"
     prepare(path, reference, output)
     result = json.loads(output.read_text())["declared_contaminant"]
+    assert result["reference_configuration"]["sha256"] == digest(path)
     assert result["native_row"] == 500
     assert result["x_delta"] > 0 and result["r_delta"] > 0
     assert digest(samples) == config["detectors"][0]["samples"]["sha256"]

@@ -1054,3 +1054,15 @@ TEST(processing_scan_native, consecutive_native_rows_across_physical_gap_remain_
   EXPECT_EQ(out.scans[0].science_native[0].past_last,200);EXPECT_EQ(out.scans[0].science_native[1].first,200);
 }
 }
+
+namespace {
+TEST(rtc_event_treatment, same_spikes_do_not_authorize_mixing_event_generations) {
+  Input in;in.spike();Trial t(in,10,RtcSpikeProtection::outside_source);
+  auto other=learn_rtc_event_assessment(t.spikes,t.assessment->population_handle(),5000);
+  auto other_review=RtcEventAssessmentDecision::consider(other,t.val,5001);
+  ASSERT_EQ(other->spike_handle().get(),t.assessment->spike_handle().get());
+  ASSERT_NE(other.get(),t.assessment.get());
+  EXPECT_THROW(RtcEventTreatmentDecision::consider(other_review,t.transient,resolved_factors(t),
+    "known-prior","same-units",{},t.val,5002),std::invalid_argument);
+}
+}
