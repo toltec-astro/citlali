@@ -1,5 +1,11 @@
 # WP-7 RTC Occurrence-Level Upper-Speed Admission Authority
 
+> Bounded 2026-09-16 amendment: the fixed finite RTC filters now distinguish
+> original numerical support from direct output-center admission. See
+> [the owner decision](TIMESTREAM_SUCCESSOR_RTC_SPEED_SUPPORT_OWNER_AUTHORITY_2026-09-16.md).
+> Only the speed-only complete-footprint restriction below is superseded for
+> that comparison; thresholds and other restrictions remain in force.
+
 Date: 2026-08-30
 
 Scientific owner: Grant Wilson

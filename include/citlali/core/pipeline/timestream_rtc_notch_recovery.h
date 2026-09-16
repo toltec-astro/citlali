@@ -9,6 +9,18 @@
 
 namespace citlali::pipeline {
 
+// The selected finite-filter policy and three bounded comparison treatments.
+// These do not select production modes or change either speed threshold.
+enum class RtcSpeedSupportTreatment : std::uint8_t {
+  original_paired_measurements,
+  comparison_reject_both,
+  comparison_low_only,
+  comparison_high_only
+};
+enum class RtcSpeedRestriction : std::uint8_t {
+  none = 0, below_minimum = 1, above_output_sampling_limit = 2
+};
+
 // Explicit experiment domain, not a production filter-bank entry or an
 // automatic admission policy. The AST handle supplies actual native support.
 struct RtcNotchRecoveryDomain {
@@ -20,6 +32,8 @@ struct RtcNotchRecoveryDomain {
   double nominal_interval_seconds = NAN;
   std::size_t notch_guard_samples = 0;
   bool reject = false;
+  RtcSpeedSupportTreatment speed_support =
+      RtcSpeedSupportTreatment::original_paired_measurements;
 };
 
 enum class RtcNotchRecoveryCause : std::uint8_t {
@@ -70,6 +84,14 @@ public:
     const auto &net = transients->input_handle()->network(candidate.network());
     const auto &axis = net.occurrence_axis();
     const auto &s = candidate.specification();
+    if (domain.speed_support != RtcSpeedSupportTreatment::original_paired_measurements &&
+        domain.speed_support != RtcSpeedSupportTreatment::comparison_reject_both &&
+        domain.speed_support != RtcSpeedSupportTreatment::comparison_low_only &&
+        domain.speed_support != RtcSpeedSupportTreatment::comparison_high_only)
+      throw std::invalid_argument("RTC unknown speed-support disposition");
+    if (!s.notches.empty() && domain.speed_support !=
+        RtcSpeedSupportTreatment::comparison_reject_both)
+      throw std::invalid_argument("RTC speed-support correction is bound to finite filters");
     if(event_decisions && (event_decisions->transient_handle().get()!=transients.get() ||
         (!donor_continuity && !donors.empty())))
       throw std::invalid_argument("RTC event decisions must bind the exact exclusions and treatment arm");
@@ -172,12 +194,21 @@ public:
     out->first_ = axis.first_native_row();
     out->causes_.resize(axis.occurrence_count(),
                         RtcNotchRecoveryCause::retained);
+    out->support_causes_ = out->causes_;
+    out->speed_restrictions_.resize(axis.occurrence_count(), RtcSpeedRestriction::none);
     const auto &d = out->domain_;
     for (const auto &run : axis.contiguous_runs()) {
       TimestreamNativeRow start = run.first_native_row;
       for (auto row = run.first_native_row; row < run.past_last_native_row;
            ++row) {
         auto &cause = out->causes_[row - out->first_];
+        const auto v = d.motion->scalar_speed_arcsec_per_sec(row);
+        if (v) {
+          if (!ast_scan_motion_speed_admitted(*v))
+            out->speed_restrictions_[row-out->first_] = RtcSpeedRestriction::below_minimum;
+          else if (*v > out->sampling_speed_limit_)
+            out->speed_restrictions_[row-out->first_] = RtcSpeedRestriction::above_output_sampling_limit;
+        }
         if (!net.state(NativeReadoutCoordinate::x, row, candidate.detector())
                  .valid() ||
             !net.state(NativeReadoutCoordinate::r, row, candidate.detector())
@@ -204,7 +235,6 @@ public:
                 (!out->donor_continuity_ || !dec.donor_ready(candidate.network(),candidate.detector(),row)))
               cause=RtcNotchRecoveryCause::accepted_event_excluded;
           }
-          const auto v = d.motion->scalar_speed_arcsec_per_sec(row);
           if (cause !=
               RtcNotchRecoveryCause::retained) { /* retain the upstream cause */
           } else if (!v)
@@ -217,6 +247,21 @@ public:
                    d.speed_ceiling_arcsec_per_sec)
             cause = RtcNotchRecoveryCause::motion_outside_domain;
         }
+        // Keep the original center/adaptive-use disposition and raw speed
+        // evidence even when a speed-only measurement supplies finite support.
+        auto &support = out->support_causes_[row-out->first_];
+        support = cause;
+        const bool admit_low = d.speed_support == RtcSpeedSupportTreatment::original_paired_measurements ||
+            d.speed_support == RtcSpeedSupportTreatment::comparison_low_only;
+        const bool admit_high = d.speed_support == RtcSpeedSupportTreatment::original_paired_measurements ||
+            d.speed_support == RtcSpeedSupportTreatment::comparison_high_only;
+        if ((cause == RtcNotchRecoveryCause::below_minimum_speed && admit_low) ||
+            (cause == RtcNotchRecoveryCause::insufficient_output_sampling && admit_high)) {
+          support = RtcNotchRecoveryCause::retained;
+          // A coincident non-speed optical-domain restriction retains force.
+          if (v && *v * (1+d.speed_margin_fraction) > d.speed_ceiling_arcsec_per_sec)
+            support = RtcNotchRecoveryCause::motion_outside_domain;
+        }
         if (row > run.first_native_row) {
           const auto t =
               axis.native_identity(row).reconstructed_time_unix_sec();
@@ -228,7 +273,7 @@ public:
             throw std::invalid_argument(
                 "RTC recovery native cadence outside explicit domain");
         }
-        if (cause != RtcNotchRecoveryCause::retained) {
+        if (support != RtcNotchRecoveryCause::retained) {
           if (start < row)
             out->runs_.push_back({start, row});
           start = row + 1;
@@ -236,6 +281,15 @@ public:
       }
       if (start < run.past_last_native_row)
         out->runs_.push_back({start, run.past_last_native_row});
+      // Existing donor/adaptive-learning policies do not inherit the new
+      // permission to supply original samples to the fixed filters.
+      start = run.first_native_row;
+      for (auto row=start; row<run.past_last_native_row; ++row)
+        if (out->causes_[row-out->first_] != RtcNotchRecoveryCause::retained) {
+          if (start<row) out->learning_runs_.push_back({start,row});
+          start=row+1;
+        }
+      if (start<run.past_last_native_row) out->learning_runs_.push_back({start,run.past_last_native_row});
     }
     // A standalone donor fit predates this motion/pair-domain resolution.
     // Reusing it must not carry excluded x samples (including rows whose r
@@ -253,12 +307,16 @@ public:
       const auto support = donor->donor_support();
       if (support.first < run->first || support.past_last > run->past_last)
         throw std::invalid_argument("RTC donor support crosses its resolved target run");
+      for (auto row=support.first;row<support.past_last;++row)
+        if (out->causes_.at(row-out->first_) != RtcNotchRecoveryCause::retained)
+          throw std::invalid_argument("RTC fixed-filter support permission does not admit donor fit support");
       const auto &event = donor->event();
       for (const auto &side : event.background[0].support) if (side.usable)
         for (auto row = side.first_used; row <= side.last_used; ++row)
           if (net.state(NativeReadoutCoordinate::x, row, event.detector).valid() &&
               !rtc_event_assessment_detail::contains(event.neighbor_exclusions, row) &&
-              (row < run->first || row >= run->past_last))
+              (row < run->first || row >= run->past_last ||
+               out->causes_.at(row-out->first_) != RtcNotchRecoveryCause::retained))
             throw std::invalid_argument("RTC donor background crosses its resolved target run");
     }
     return out;
@@ -277,6 +335,12 @@ public:
   bool donor_continuity() const noexcept { return donor_continuity_; }
   const auto &runs() const noexcept { return runs_; }
   const auto &input_causes() const noexcept { return causes_; }
+  const auto &support_causes() const noexcept { return support_causes_; }
+  const auto &speed_restrictions() const noexcept { return speed_restrictions_; }
+  const auto &learning_runs() const noexcept { return learning_runs_; }
+  bool center_admitted(TimestreamNativeRow row) const {
+    return causes_.at(row-first_) == RtcNotchRecoveryCause::retained;
+  }
   auto first_native_row() const noexcept { return first_; }
   auto consideration() const noexcept { return id_; }
   std::size_t full_support_half_samples() const noexcept {
@@ -294,9 +358,15 @@ public:
       return out;
     const auto half =
         static_cast<TimestreamNativeRow>(full_support_half_samples());
-    for (const auto &run : runs_)
-      if (run.past_last - run.first > 2 * half)
-        out.push_back({run.first + half, run.past_last - half});
+    for (const auto &run : runs_) {
+      auto start=run.first+half;
+      for (auto row=start;row<run.past_last-half;++row)
+        if (!center_admitted(row)) {
+          if (start<row) out.push_back({start,row});
+          start=row+1;
+        }
+      if (start<run.past_last-half) out.push_back({start,run.past_last-half});
+    }
     return out;
   }
   double sampling_speed_limit_arcsec_per_sec() const noexcept {
@@ -338,6 +408,9 @@ private:
   bool donor_continuity_=true;
   RtcNotchRecoveryDomain domain_;
   std::vector<RtcNotchRecoveryCause> causes_;
+  std::vector<RtcNotchRecoveryCause> support_causes_;
+  std::vector<RtcSpeedRestriction> speed_restrictions_;
+  std::vector<RtcEventRange> learning_runs_;
   std::vector<RtcEventRange> runs_;
   TimestreamNativeRow first_ = 0;
   std::uint64_t id_ = 0;
@@ -385,7 +458,7 @@ public:
       throw std::invalid_argument("RTC paired injection with donors requires separately bound donor response");
     for (const auto &donor : out->plan_->donor_plans())
       out->donors_.push_back(RtcDonorFillResult::apply(donor, original, snapshot, partitions));
-    out->causes_ = out->plan_->input_causes();
+    out->causes_ = out->plan_->support_causes();
     out->native_state_.assign(n, 0);
     out->conditioned_.resize(n, 2);
     out->conditioned_.setConstant(NAN);
@@ -507,6 +580,25 @@ public:
   }
   const auto &plan_handle() const noexcept { return plan_; }
   const auto &donor_results() const noexcept { return donors_; }
+  // Necessary direct-map restrictions, not authorization of a MAP route,
+  // weight, or named scientific use. Numerical rows remain available even
+  // when their registered center fails this independent decision.
+  bool map_center_admitted(TimestreamNativeRow row) const {
+    const auto &s=plan_->assessment_handle()->candidate_handle()->specification();
+    return (row-plan_->first_native_row())%s.factor==0 && plan_->center_admitted(row) &&
+        !requires_representative_exclusion(row) &&
+        coordinate_stage_available(NativeReadoutCoordinate::x,row,true) &&
+        coordinate_stage_available(NativeReadoutCoordinate::r,row,true);
+  }
+  bool spectral_review_admitted(TimestreamNativeRow row, bool after_lowpass) const {
+    const auto &s=plan_->assessment_handle()->candidate_handle()->specification();
+    const auto half=static_cast<TimestreamNativeRow>(s.centered_notch.size()/2+
+        plan_->domain().notch_guard_samples+(after_lowpass?s.centered_lowpass.size()/2:0));
+    const auto &runs=plan_->learning_runs();
+    auto it=std::upper_bound(runs.begin(),runs.end(),row,[](auto q,const auto &r){return q<r.first;});
+    if (it==runs.begin()) return false;
+    --it;return row>=it->first+half && row<it->past_last-half;
+  }
   // Support facts, not downstream eligibility. Nonrepresentative donor
   // influence never silently becomes universal rejection (SCI-RTC-REQ-020).
   bool representative_replaced(TimestreamNativeRow row) const {

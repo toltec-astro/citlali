@@ -82,6 +82,12 @@ public:
         // separate downstream decision; finite x does not invent available r.
         std::vector<std::uint8_t> state;
         std::shared_ptr<const RtcNotchRecoveryResult> source;
+        // Numerical availability above remains truthful. This existing named
+        // review use separately retains its pre-correction support population.
+        std::vector<bool> review_use_admitted;
+        // Original AST speed evidence: bit0 below minimum, bit1 above output
+        // sampling limit, including overlaps with other restrictions.
+        std::vector<std::uint8_t> speed_restrictions;
     };
     const auto &original_spike_handle() const noexcept { return original_; }
     const auto &snapshot_handle() const noexcept { return snapshot_; }
@@ -307,7 +313,8 @@ private:
         const auto &net = original_->input_handle()->network(s.network); const auto &axis = net.occurrence_axis();
         const auto *derived = conditioned_ ? &conditioned_->column(s.network,detector) : nullptr;
         const auto admitted = [&](auto row) {
-            return derived ? (derived->state.at(row-derived->first) & (1U << static_cast<unsigned>(coordinate))) != 0
+            return derived ? derived->review_use_admitted.at(row-derived->first) &&
+                (derived->state.at(row-derived->first) & (1U << static_cast<unsigned>(coordinate))) != 0
                            : net.state(coordinate,row,detector).valid();
         };
         const auto value = [&](auto row) {

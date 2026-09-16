@@ -374,6 +374,8 @@ int main(int argc, char **argv) {
       domain.nominal_interval_seconds = duration;
       domain.notch_guard_samples = guard;
       domain.reject = trial["reject"].as<bool>();
+      // Historical standalone experiment remains its explicitly frozen control.
+      domain.speed_support = RtcSpeedSupportTreatment::comparison_reject_both;
       const auto plan_started = std::chrono::steady_clock::now();
       auto plan = RtcNotchRecoveryPlan::consider(assessment, transients, val,
                                                  domain, 23 + trial_index);

@@ -89,6 +89,7 @@ struct Trial : Fixture {
           parent->network(0).detector(detector).detector_association_record_id;
     d.reject = reject;
     if (notch) {
+      d.speed_support = RtcSpeedSupportTreatment::comparison_reject_both;
       timestream::Filter f;
       f.w0s = {11};
       f.qs = {22};
@@ -423,16 +424,21 @@ TEST(rtc_notch_recovery,
   Input in(6000);
   Trial slow(in, .5);
   auto low = slow.apply(slow.plan());
-  EXPECT_TRUE(low->output_native_rows().empty());
-  EXPECT_EQ(low->causes()[3000], RtcNotchRecoveryCause::below_minimum_speed);
+  EXPECT_FALSE(low->output_native_rows().empty());
+  EXPECT_FALSE(low->map_center_admitted(3100));
+  EXPECT_EQ(low->plan_handle()->input_causes()[3000], RtcNotchRecoveryCause::below_minimum_speed);
+  EXPECT_EQ(low->causes()[3000], RtcNotchRecoveryCause::retained);
   Trial fast(in, 150);
   fast.domain.speed_ceiling_arcsec_per_sec = 235;
   auto plan = fast.plan();
   auto high = fast.apply(plan);
   EXPECT_NEAR(plan->sampling_speed_limit_arcsec_per_sec(), 123.277762, 1e-5);
-  EXPECT_TRUE(high->output_native_rows().empty());
-  EXPECT_EQ(high->causes()[3000],
+  EXPECT_FALSE(high->output_native_rows().empty());
+  EXPECT_FALSE(high->map_center_admitted(3100));
+  EXPECT_EQ(plan->input_causes()[3000],
             RtcNotchRecoveryCause::insufficient_output_sampling);
+  fast.domain.speed_support=RtcSpeedSupportTreatment::comparison_reject_both;
+  EXPECT_TRUE(fast.apply(fast.plan())->output_native_rows().empty());
   Trial ordinary(in);
   EXPECT_TRUE(ordinary.plan()->finite_five_second_footprint());
   EXPECT_FALSE(ordinary.plan(true)->finite_five_second_footprint());
@@ -798,6 +804,7 @@ TEST(rtc_pipeline, donor_background_cannot_bridge_a_new_ast_speed_boundary) {
 }
 TEST(rtc_pipeline, unadmitted_selected_support_is_not_a_realized_replacement) {
   Input in;in.spike();Trial t(in,.5,RtcSpikeProtection::outside_source);
+  t.domain.speed_support=RtcSpeedSupportTreatment::comparison_reject_both;
   auto donor=explicit_donor(t);ASSERT_EQ(donor->cause(),RtcDonorFillCause::ready);
   // Standalone donor selection remains evidence; the numerical recovery did
   // not use it because the entire target run fails the AST speed admission.
@@ -1065,4 +1072,106 @@ TEST(rtc_event_treatment, same_spikes_do_not_authorize_mixing_event_generations)
   EXPECT_THROW(RtcEventTreatmentDecision::consider(other_review,t.transient,resolved_factors(t),
     "known-prior","same-units",{},t.val,5002),std::invalid_argument);
 }
+}
+
+namespace {
+void isolated_speed_excursions(Trial &t) {
+  auto times=Eigen::VectorXd::LinSpaced(5000,999,1098.98);
+  Eigen::VectorXd ra(times.size()),dec=Eigen::VectorXd::Zero(times.size());
+  double position=0;
+  for(Eigen::Index i=0;i<times.size();++i){
+    const double v=times[i]>=1010 && times[i]<1010.5 ? .5 :
+        times[i]>=1018 && times[i]<1018.5 ? 150. : 10.;
+    if(i)position+=v*(times[i]-times[i-1]);
+    ra[i]=position*std::numbers::pi/(180*3600);
+  }
+  AstScanMotionSourceMetadata m{AstScanMotionProducerKind::real_toltec,"Science","Lissajous",1,2000,0,50,
+      AstScanMotionFieldRegistry::source_ra_act_source_dec_act_j2000_radians,"isolated-low-and-high-speed-test"};
+  auto source=AstScanMotionSource::admit(t.parent->scope(),t.parent->scope(),0,m,times,ra,dec);
+  t.domain.motion=AstScanMotionNetworkView::admit(build_ast_scan_motion_product(source,{1,2,3,4}),
+      t.parent->network(0).occurrence_axis().native_timing_handle());
+  t.domain.speed_ceiling_arcsec_per_sec=235;
+}
+}
+TEST(rtc_notch_recovery, speed_support_is_separate_from_centers_and_all_nonspeed_blockers) {
+  Input in(4000);
+  in.rs[1240*3]=NativeReadoutCoordinateState::measured(true,false,true,true);
+  Trial t(in);isolated_speed_excursions(t);
+  const auto first=t.parent->network(0).occurrence_axis().first_native_row();
+  std::size_t low=0,high=0,overlap=0;
+  for(auto treatment:{RtcSpeedSupportTreatment::comparison_reject_both,
+      RtcSpeedSupportTreatment::comparison_low_only,RtcSpeedSupportTreatment::comparison_high_only,
+      RtcSpeedSupportTreatment::original_paired_measurements}) {
+    t.domain.speed_support=treatment;
+    auto plan=t.plan(false,false,{.25,.5,.25});auto out=t.apply(plan);
+    for(std::size_t i=0;i<in.times.size();++i){
+      const auto speed=plan->speed_restrictions()[i];const auto cause=plan->input_causes()[i];
+      low+=speed==RtcSpeedRestriction::below_minimum;high+=speed==RtcSpeedRestriction::above_output_sampling_limit;
+      if(cause==RtcNotchRecoveryCause::producer_invalid){
+        EXPECT_EQ(plan->support_causes()[i],cause);overlap+=speed!=RtcSpeedRestriction::none;
+      }
+      bool support=cause==RtcNotchRecoveryCause::retained;
+      support |= cause==RtcNotchRecoveryCause::below_minimum_speed && (treatment==RtcSpeedSupportTreatment::comparison_low_only || treatment==RtcSpeedSupportTreatment::original_paired_measurements);
+      support |= cause==RtcNotchRecoveryCause::insufficient_output_sampling && (treatment==RtcSpeedSupportTreatment::comparison_high_only || treatment==RtcSpeedSupportTreatment::original_paired_measurements);
+      EXPECT_EQ(plan->support_causes()[i]==RtcNotchRecoveryCause::retained,support);
+      if(speed!=RtcSpeedRestriction::none)EXPECT_FALSE(out->map_center_admitted(first+i));
+      if(i<2 || i+2>=in.times.size())continue;
+      bool complete=true;
+      for(std::size_t k=i-2;k<=i+2;++k)complete &= plan->support_causes()[k]==RtcNotchRecoveryCause::retained;
+      EXPECT_EQ(out->coordinate_stage_available(NativeReadoutCoordinate::x,first+i,true),complete);
+      EXPECT_EQ(out->coordinate_stage_available(NativeReadoutCoordinate::r,first+i,true),complete);
+      EXPECT_EQ(out->map_center_admitted(first+i),complete && i%2==0 && cause==RtcNotchRecoveryCause::retained);
+      if(complete){
+        // Exact two-stage operator, including speed-excluded intermediate centers.
+        double expected=0;
+        for(int j=-1;j<=1;++j){
+          double intermediate=0;
+          for(int k=-1;k<=1;++k)intermediate=std::fma(k==0?.5:.25,in.x(i+j+k,0),intermediate);
+          expected=std::fma(j==0?.5:.25,intermediate,expected);
+        }
+        EXPECT_DOUBLE_EQ(out->filtered_native_pair()(i,0),expected);
+      }
+    }
+  }
+  EXPECT_GT(low,0);EXPECT_GT(high,0);EXPECT_GT(overlap,0);
+  EXPECT_DOUBLE_EQ(t.parent->network(0).value(NativeReadoutCoordinate::x,first+1240,0),in.x(1240,0));
+}
+TEST(rtc_pipeline, numerical_speed_support_does_not_expand_existing_spectral_use) {
+  Input in(4000);Trial t(in);isolated_speed_excursions(t);
+  std::vector<std::shared_ptr<const RtcPipelineResult>> results;
+  for(auto treatment:{RtcSpeedSupportTreatment::comparison_reject_both,RtcSpeedSupportTreatment::original_paired_measurements}){
+    t.domain.speed_support=treatment;std::vector<std::shared_ptr<const RtcNotchRecoveryPlan>> plans;
+    for(int d=0;d<3;++d)plans.push_back(t.plan(false,false,{.25,.5,.25},d));
+    auto complete=RtcPipelinePlan::consider(plans,t.joint->joint_handle(),500+results.size());
+    const std::array parts{t.spikes->input_handle()};
+    results.push_back(RtcPipelineResult::apply(complete,t.spikes->input_handle(),t.val,parts));
+  }
+  for(bool lowpass:{false,true}){
+    auto old=results[0]->native_product(lowpass,t.val),now=results[1]->native_product(lowpass,t.val);
+    std::size_t new_numeric=0;
+    for(std::size_t d=0;d<3;++d){
+      EXPECT_EQ(old->columns()[d].review_use_admitted,now->columns()[d].review_use_admitted);
+      EXPECT_EQ(old->columns()[d].speed_restrictions,now->columns()[d].speed_restrictions);
+      for(std::size_t i=0;i<in.times.size();++i)new_numeric+=(now->columns()[d].state[i]&3)==3 && (old->columns()[d].state[i]&3)!=3;
+    }
+    EXPECT_GT(new_numeric,0);
+    const std::vector<RtcSpectralCadenceDomain> cadence{{0,"unchanged-cadence",.008192,1e-7}};
+    auto a=RtcNativeSpectralEvidence::learn_conditioned(old,t.val,cadence,600),b=RtcNativeSpectralEvidence::learn_conditioned(now,t.val,cadence,601);
+    ASSERT_EQ(a->spectra().size(),b->spectra().size());
+    for(std::size_t i=0;i<a->spectra().size();++i)EXPECT_EQ(a->spectra()[i].psd,b->spectra()[i].psd);
+  }
+}
+
+TEST(rtc_notch_recovery, speed_permission_preserves_coincident_optical_domain_restriction) {
+  Input in; Trial t(in,250);
+  t.domain.speed_ceiling_arcsec_per_sec=235;
+  const auto plan=t.plan();
+  for(std::size_t i=0;i<plan->input_causes().size();++i) {
+    EXPECT_EQ(plan->input_causes()[i],RtcNotchRecoveryCause::insufficient_output_sampling);
+    EXPECT_EQ(plan->speed_restrictions()[i],RtcSpeedRestriction::above_output_sampling_limit);
+    EXPECT_EQ(plan->support_causes()[i],RtcNotchRecoveryCause::motion_outside_domain);
+  }
+  const std::array parts{t.spikes->input_handle()};
+  const auto result=RtcNotchRecoveryResult::apply(plan,t.spikes->input_handle(),t.val,parts);
+  EXPECT_TRUE(result->output_native_rows().empty());
 }

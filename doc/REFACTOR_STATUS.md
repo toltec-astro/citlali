@@ -1,5 +1,41 @@
 # Citlali Refactor Status
 
+## RTC fixed-filter speed support — 2026-09-16
+
+The owner selects original x/r support through speed-only excursions while
+retaining the existing exclusions at scheduled output centers. The
+[bounded authority](TIMESTREAM_SUCCESSOR_RTC_SPEED_SUPPORT_OWNER_AUTHORITY_2026-09-16.md)
+narrowly supersedes the complete-speed-footprint restriction for these fixed
+finite filters. Runtime Consider now separates support and center dispositions;
+Apply retains finite intermediate support. Existing donor/adaptive spectral
+populations, paired validity, non-speed exclusions, phase and original inputs
+remain unchanged. Production filtering remains inactive.
+
+The fixed twelve-detector 152390 replay reconciles exactly: control 440,542,
+low-only 556,356, high-only 640,512, both 851,646 out of 909,228 scheduled paired
+positions. All 411,104 predicted positions recover. Direct exclusions remain
+36,159; additional support loss falls to 21,423. The control, unaffected
+outputs, event decisions and existing learned spectral numerics reproduce the
+prior results. No new donor, natural-event admission, mask or filter selection.
+
+Source probes retain sky signal during excluded intervals. The fastest crossing
+exposes real fixed-notch ringing in eligible neighbors (2.88% of the injected
+peak); its excluded peak is not recovered. Low-boundary and high-boundary
+maximum errors are 0.148% and 0.947% of the injected peak, respectively, with
+incomplete principal coverage explicitly recorded. Native sampling tests use
+fine telescope-knot trajectory truth and provisional uniform integration;
+unknown hardware response remains a limitation. Retention alone is not science
+qualification. Recommend original low-speed support; high-speed support remains
+useful but carries the quantified notch/source-response limitation before any
+production qualification. Do not reinstate a false missing-measurement rule.
+
+Evidence and exact source/gates/review binding:
+`/private/tmp/citlali-rtc-speed-support-2026-09-16/REPORT.md` and
+[work-order handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_SPEED_SUPPORT_001_2026-09-16.md).
+Local supplemental environment, not Unity/Spack reproduction. The known legacy
+endpoint support defect is preserved. No canonical integration, push, cleanup,
+FRUIT, PCA changes or production activation.
+
 ## Inert r-continuity comparison — 2026-09-16
 
 The owner authorizes a bounded test of reconstructing r for numerical filter

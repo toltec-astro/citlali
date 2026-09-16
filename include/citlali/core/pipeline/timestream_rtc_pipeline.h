@@ -153,6 +153,8 @@ public:
           r->plan_handle()->first_native_row(),
           {r, &values}, {}, r};
       column.state.reserve(values.rows());
+      column.review_use_admitted.reserve(values.rows());
+      column.speed_restrictions.reserve(values.rows());
       for (Eigen::Index i = 0; i < values.rows(); ++i) {
         const auto row = column.first + i;
         std::uint8_t bits = 0;
@@ -163,6 +165,8 @@ public:
         if (r->unrepaired_influence(row, after_lowpass)) bits |= 16U;
         if (r->requires_representative_exclusion(row)) bits |= 32U;
         column.state.push_back(bits);
+        column.review_use_admitted.push_back(r->spectral_review_admitted(row,after_lowpass));
+        column.speed_restrictions.push_back(static_cast<std::uint8_t>(r->plan_handle()->speed_restrictions().at(i)));
       }
       out->columns_.push_back(std::move(column));
     }

@@ -132,7 +132,10 @@ int main(int argc, char **argv) {
       save(out / "apt.f64", fields);
       // Export own-detector tangent-plane coordinates in radians, actual native
       // rows.
+      const auto channels = c["channels"] ? c["channels"].as<std::vector<int>>() : std::vector<int>{};
+      for (auto d : channels) require(d >= 0 && d < 491, "geometry channel out of range");
       for (int d = 0; d < 491; ++d) {
+        if (!channels.empty() && std::find(channels.begin(), channels.end(), d) == channels.end()) continue;
         auto tcopy = tel, ocopy = offsets;
         auto [lat, lon] = engine_utils::calc_det_pointing(
             tcopy, fields(d, 0), fields(d, 1), "radec", ocopy, "array");

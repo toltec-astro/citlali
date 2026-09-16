@@ -482,6 +482,14 @@ int main(int argc,char **argv) {
         domain.detector_array_association=detectors[d].detector_association_record_id;
         domain.motion=motion;domain.array=RtcOpticalArray::a2000;
         domain.speed_ceiling_arcsec_per_sec=235;domain.nominal_interval_seconds=duration;
+        const auto speed_comparison=cfg["speed_support_comparison"] ? cfg["speed_support_comparison"].as<std::string>() : "both";
+        require(speed_comparison=="control" || speed_comparison=="low-only" || speed_comparison=="high-only" || speed_comparison=="both","unknown bounded speed-support comparison");
+        domain.speed_support = speed_comparison=="control" ? RtcSpeedSupportTreatment::comparison_reject_both :
+            speed_comparison=="low-only" ? RtcSpeedSupportTreatment::comparison_low_only :
+            speed_comparison=="high-only" ? RtcSpeedSupportTreatment::comparison_high_only :
+            RtcSpeedSupportTreatment::original_paired_measurements;
+        arm["speed_support_comparison"]=speed_comparison;
+        arm["speed_support_authority"]="rtc-fixed-filter-original-speed-support-2026-09-16";
         auto candidate=RtcLineTransferCandidate::bind(lines,nw,d,s);
         auto assessment=RtcLineTransferAssessment::consider(candidate,joint,val,100+d);
         plans.push_back(RtcNotchRecoveryPlan::consider(assessment,transient,val,domain,200+d,continuity ? donors[d] : std::vector<std::shared_ptr<const RtcDonorFillPlan>>{},decision,continuity));
@@ -493,6 +501,34 @@ int main(int argc,char **argv) {
       auto result=RtcPipelineResult::apply(complete,view,val,partitions);
       arm["Apply_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-applied_at).count();
       receipt["Apply_performed"]=true;
+      // Diagnostic overlays bind to this already frozen complete plan. They
+      // never enter Learn/Consider or modify its masks/coefficients/decisions.
+      for(const auto &probe:cfg["fixed_plan_injections"]){
+        const auto id=probe["identity"].as<std::string>();
+        require(!id.empty() && id.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_")==std::string::npos,"invalid fixed-plan injection identity");
+        require(probe["detectors"].size()==channels.size(),"injection must bind complete paired cohort");
+        std::vector<RtcRecoveryInjection> injections;
+        for(std::size_t d=0;d<channels.size();++d){
+          const auto bound=probe["detectors"][d];
+          require(bound["channel"].as<int>()==channels[d],"injection detector order differs");
+          const auto path=checked_file(bound);
+          require(fs::file_size(path)==std::uintmax_t(rows)*16,"injection paired shape differs");
+          RtcRecoveryInjection injection{plans[d],id,Eigen::Matrix<double,Eigen::Dynamic,2>(rows,2)};
+          std::ifstream stream(path,std::ios::binary);
+          for(Eigen::Index i=0;i<rows;++i)for(int c=0;c<2;++c)stream.read(reinterpret_cast<char*>(&injection.delta(i,c)),8);
+          require(bool(stream)&&injection.delta.allFinite(),"invalid paired injection");
+          injections.push_back(std::move(injection));
+        }
+        const auto injected=RtcPipelineResult::apply(complete,view,val,partitions,injections);
+        const auto directory=output/("injection-"+id);fs::create_directories(directory);
+        for(std::size_t d=0;d<channels.size();++d){
+          const auto &a=*injected->detector_results()[d];const auto &b=*result->detector_results()[d];
+          require(a.output_native_rows()==b.output_native_rows()&&a.causes()==b.causes(),"paired injection changed frozen support");
+          const auto difference=(a.filtered_native_pair()-b.filtered_native_pair()).eval();
+          write_matrix(directory/(std::to_string(channels[d])+"-delta.f64"),difference);
+        }
+        arm["fixed_plan_injections"].push_back(probe);
+      }
       if(argc==4)receipt["review_sha256"]=citlali::utils::sha256_file(argv[3]);
       for(std::size_t d=0;d<channels.size();++d){
         const auto &r=*result->detector_results()[d];const auto stem=std::to_string(channels[d]);
@@ -511,6 +547,19 @@ int main(int argc,char **argv) {
           states.write(reinterpret_cast<const char*>(&b),1);
         }
         states.close();require(bool(states),"state output failed");
+        std::ofstream center(output/(stem+"-map-center.u8"),std::ios::binary);
+        for(auto row=axis->first_native_row();row<axis->past_last_native_row();++row){
+          const std::uint8_t admitted=r.map_center_admitted(row);center.write(reinterpret_cast<const char*>(&admitted),1);
+        }
+        center.close();require(bool(center),"center disposition output failed");
+        for(const auto &name:{std::string("support-causes"),std::string("speed-evidence")}){
+          std::ofstream stream(output/(stem+"-"+name+".u8"),std::ios::binary);
+          for(std::size_t i=0;i<plans[d]->input_causes().size();++i){
+            const std::uint8_t value=name=="support-causes" ? static_cast<std::uint8_t>(plans[d]->support_causes()[i]) : static_cast<std::uint8_t>(plans[d]->speed_restrictions()[i]);
+            stream.write(reinterpret_cast<const char*>(&value),1);
+          }
+          stream.close();require(bool(stream),"support/speed evidence output failed");
+        }
         std::ofstream causes(output/(stem+"-causes.u8"),std::ios::binary);
         for(auto cause:r.causes()){const auto c=static_cast<std::uint8_t>(cause);causes.write(reinterpret_cast<const char*>(&c),1);}
         causes.close();require(bool(causes),"cause output failed");
@@ -520,6 +569,9 @@ int main(int argc,char **argv) {
         YAML::Node record;record["channel"]=channels[d];record["replaced_rows"]=replaced;
         record["representative_excluded_rows"]=excluded;
         record["output_rows"]=r.output_native_rows().size();record["factor"]=2;record["phase_native_rows"]=0;
+        std::size_t center_count=0;for(auto row:r.output_native_rows())center_count+=r.map_center_admitted(row);
+        record["direct_map_center_admitted_rows"]=center_count;
+        record["map_route_authorized"]=false;
         const auto &spec=plans[d]->assessment_handle()->candidate_handle()->specification();
         record["lowpass_FIR"]=spec.centered_lowpass;record["finite_notch_FIR"]=spec.centered_notch;
         record["sampling_speed_limit_arcsec_per_sec"]=plans[d]->sampling_speed_limit_arcsec_per_sec();

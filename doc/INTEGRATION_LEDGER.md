@@ -1,5 +1,30 @@
 # Citlali Integration Ledger
 
+## RTC speed-support correction — 2026-09-16
+
+- Owner-authorized `TIMESTREAM-SUCCESSOR-RTC-SPEED-SUPPORT-001`, Tier 2,
+  one existing RTC spine increment. Literal base
+  `4899a65270d05a8e10432f6b1cf818375df28f37`; existing topic/worktree only.
+- Canonical `0f52e1a421416eadaf7d8d99d64f537132395c0c` and published topic
+  `becccce85816379e578ac1a325e8c9fe156defbe` verified live during preflight.
+  No reconciliation or ref movement is part of this work order.
+- The owner decision in
+  [the bounded authority](TIMESTREAM_SUCCESSOR_RTC_SPEED_SUPPORT_OWNER_AUTHORITY_2026-09-16.md)
+  narrowly changes fixed finite-filter use of speed-only original samples;
+  it does not amend engineering governance, thresholds, donor/r policy or
+  production authority. Original speed evidence and all non-speed force remain.
+- Four-arm actual runtime replay recovers the predicted 411,104 positions:
+  48.4523% becomes 93.6669%; direct exclusions remain fixed. Control and common
+  numerical outputs are exact, with existing adaptive spectra unchanged.
+- Retention is not source qualification: fixed-notch ringing from the rejected
+  fastest source peak reaches 2.88% in eligible neighbors. Low/high results,
+  fine trajectory/integration assumptions, residual line/noise and bounded
+  existing map diagnostics remain separately recorded.
+- Exact candidate, tree, tests, evidence seal and fresh independent three-axis
+  review are bound externally at
+  `/private/tmp/citlali-rtc-speed-support-2026-09-16/REPORT.md` and the handoff.
+  No push, cleanup, canonical integration, FRUIT or production activation.
+
 ## RTC r-continuity diagnostic — 2026-09-16
 
 - Owner-requested Tier 2 inert experiment, literal base
