@@ -88,9 +88,10 @@ struct Case {
 TEST(RtcCommonMode, FreeSignedGainsOffsetsCalibrationAndSelfExclusion) {
   Case c;
   c.bind();
+  c.domain.members[3].reference_eligible = true;
   const auto ev = c.learn();
   ASSERT_EQ(ev->intervals().size(), 2);
-  ASSERT_EQ(ev->intervals()[0].contributors, 4);
+  ASSERT_EQ(ev->intervals()[0].contributors, 5);
   for (const auto &f : ev->fits())
     if (f.available()) {
       const double g = std::array{1., 2., .5, -1., 1.}[f.detector];
@@ -254,4 +255,19 @@ TEST(RtcCommonMode,
                std::invalid_argument);
 }
 
+TEST(RtcCommonMode, NegativeRawGainWithMatchingSignedCalibrationIsNotAnomaly) {
+  Case c;
+  c.bind();
+  c.domain.members[3].reference_eligible = true;
+  c.domain.members[3].flxscale = -1.;
+  const auto ev = c.learn();
+  std::size_t checked = 0;
+  for (const auto &f : ev->fits())
+    if (f.detector == 3 && f.available()) {
+      EXPECT_LT(f.gain, -.95);
+      EXPECT_NEAR(f.calibrated_relative_gain, 1., .035);
+      ++checked;
+    }
+  EXPECT_GE(checked, 2);
+}
 } // namespace

@@ -486,6 +486,13 @@ RtcCommonModeConsideration RtcCommonModeConsideration::compare(
       },
       true);
   select([](const auto &s) { return -s.residual_scatter; }, false);
+  // Missing calibration must not hide a conspicuous signed response from
+  // inspection. Its physical interpretation remains unavailable, not rejected.
+  select(
+      [](const auto &s) {
+        return std::isfinite(s.correlation) ? s.correlation : 1.;
+      },
+      false);
   std::erase_if(order, [&](auto d) {
     return !ev.domain().members[d].reference_eligible;
   });
@@ -499,7 +506,7 @@ RtcCommonModeConsideration RtcCommonModeConsideration::compare(
     return out.detectors_[a].residual_scatter <
            out.detectors_[b].residual_scatter;
   });
-  for (auto numerator : {2, 4, 6})
+  for (auto numerator : {2, 4})
     if (!order.empty())
       add(order[(order.size() - 1) * numerator / 8]);
   return out;

@@ -61,8 +61,11 @@ def main():
     compact.to_csv(args.output / "inspection-table.csv")
 
     fig, axes = plt.subplots(3, 1, figsize=(12, 8), layout="constrained")
-    axes[0].plot(time, reference[:, 1], linewidth=.5)
-    axes[0].set(ylabel="Common-mode candidate (native x)", title=f"152390 / network {parent.get('network', 12)} / all {len(table)} detectors — original SCIENCE")
+    display_reference = reference[:, 1].copy()
+    for interval in intervals:
+        display_reference[interval["rows"][0]] = np.nan
+    axes[0].plot(time, display_reference, linewidth=.5)
+    axes[0].set(ylabel="Interval-centered reference (native x)", title=f"152390 / network {parent.get('network', 12)} / all {len(table)} detectors — original SCIENCE")
     centers = [time[min(len(time)-1, (s["rows"][0]+s["rows"][1])//2)] for s in intervals]
     axes[1].step(centers, contributors, where="mid")
     axes[1].set(ylabel="Fixed reference contributors")
