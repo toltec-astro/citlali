@@ -1,5 +1,66 @@
 # TIMESTREAM-SUCCESSOR-RTC-NOTCH-RECOVERY-001
 
+## Reproducible real-data Consider to Apply preflight — 2026-09-16
+
+Owner directive: complete the bounded real-data RTC Consider to Apply connection
+on the existing twelve 152390 detectors, without manual event/interval curation.
+The attached directive supersedes the pending manual-review approach below.
+Work order `TIMESTREAM-SUCCESSOR-RTC-DECISION-APPLY-001`, Tier 2, continues the
+same RTC module branch/worktree. Literal clean base is
+`7ab626d4760e6bb92f59a1f302deeab834b35310`; fresh canonical remains ancestor
+`0f52e1a421416eadaf7d8d99d64f537132395c0c`; published topic remains
+`becccce85816379e578ac1a325e8c9fe156defbe`. No second branch, integration, push,
+cleanup or activation. Owner alone performs GitHub pushes.
+
+Read AGENTS, toltec-context routing, current status and all three effective
+governance documents. Accepted/effective governance remains 06a3ade51/775078363
+with the recorded unchanged SHA256 digests; WP-7.1 source/closure remains
+170ecea9/20ba6ae5 and SCI-RTC r0.12 governs. In particular REQ-013--020,
+021--027, 032, 041, 050--057, 094--099, 106, 110, 115--126 and 131--132,
+the existing event/jump/donor owner decisions and scoped no-mask decision apply.
+
+Connect the existing telescope processing-interval and native timing owners,
+RTC segmentation/support, all-event Consider dispositions, complete-plan Apply
+and conditioned relearning. Preserve detection/cubic/recovery/median/taper,
+source rules, fixed saved notch/LPF and native phase. Runtime ownership stays
+with typed RTC/ALIGN products; private offline adapters handle YAML/files.
+No new Engine state or orchestration science. Physical runs, processing scans,
+learning windows and storage partitions remain separate identities.
+
+Recover exact processing support from the configured existing scan generator
+and timestamp relations, not counts or equality of row indices. Bound it to
+the original parent and report relative association versus absolute-epoch
+uncertainty distinctly. Resolve operation-specific stable domains around
+accepted and unresolved boundaries, preserving signal-plus-background and the
+earlier background-exclusion repair. Reuse exact static APT flxscale authority.
+
+Every current event receives a reproducible disposition. Existing sufficient
+rules execute; absent hard-spike policy remains explicitly unavailable, with
+one narrow proposed predicate and current-set consequences. No manual accepted
+IDs or drawn support intervals; successful recovery alone is not acceptance.
+Continue independent timing, segmentation and exclusion Apply. Unresolved
+support must not silently become clean numerical/filter input.
+
+Run fixed exclusion-only and donor-continuity paths on matched/unique support,
+retaining paired schedule, x-only repair, r unavailability and all replacement
+causes. Add one bounded declared-contaminant injection on originally usable
+real samples through actual Learn/Consider/Apply; known injected truth is test
+authority, not acceptance of natural events or a physical sky injection.
+Retain existing source-injection tests and their limited scope. Report all-event
+table, pair-counted loss categories, numerical continuity, propagated effects,
+input/Learn/Consider/Apply/relearning time and memory.
+
+Expected paths: narrow RTC decision/support and timing adapter boundaries,
+existing offline caller/preparer/reporting, meaningful focused and isolated
+header tests, CMake, status/ledger/this handoff. Full CTest/check, baseline tools,
+require-all config, exact CLI and fresh independent exact-SHA source/closure
+review remain gates. Local AppleClang/Homebrew evidence is supplemental;
+representative Unity/Spack is not reproduced. Preserve all earlier seals.
+Reassess missing policy, unavailable timing, new cross-stage reach-through or
+numeric/gate failures; withhold only dependent actions. No donor redesign,
+parameter campaign, automatic notch/stopping rules, FRUIT/PTC/CAL/MAP or
+production activation; stop after this bounded pass.
+
 ## Multi-detector RTC source result and closure — 2026-09-15
 
 Disposition: locally verified source candidate with real Learn complete;

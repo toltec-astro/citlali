@@ -4,6 +4,7 @@
 #include <citlali/core/pipeline/timestream_rtc_pipeline.h>
 #include "../tools/timestream_successor/rtc_multidetector_bindings.h"
 #include <gtest/gtest.h>
+#include <citlali/core/pipeline/timestream_processing_scan_native.h>
 
 namespace {
 using namespace citlali::pipeline;
@@ -911,3 +912,145 @@ TEST(rtc_multidetector_caller, scan_binding_is_explicit_native_support_not_acqui
   EXPECT_EQ(selection.scans->parent_handle().get(),t.parent.get());
 }
 } // namespace
+
+namespace {
+auto resolved_factors(const Trial &t) {
+  std::vector<RtcDonorDetectorFacts> out;
+  for(std::uint32_t d=0;d<3;++d){
+    RtcDonorDetectorFacts f;f.network=0;f.detector=d;
+    f.detector_occurrence_id=t.parent->network(0).detector(d).detector_occurrence_id;
+    f.factor_identity="known-prior";f.factor_convention="same-units";f.prior_flxscale=1.;
+    f.factor_support={100,1200};out.push_back(f);
+  }
+  return out;
+}
+auto resolve_events(const Trial &t, bool truth=false) {
+  std::optional<RtcDeclaredContaminant> model;
+  if(truth)model=RtcDeclaredContaminant{t.parent,0,0,{600,601},"retained-unmodified-fixture","paired-additive-contaminant"};
+  return RtcEventTreatmentDecision::consider(t.review,t.transient,resolved_factors(t),
+    "known-prior","same-units",{},t.val,2000,model);
+}
+auto decision_plan(const Trial &t,std::shared_ptr<const RtcEventTreatmentDecision> d,bool continuity) {
+  std::vector<std::shared_ptr<const RtcDonorFillPlan>> donors;
+  if(continuity)for(const auto &r:d->records())if(r.donor && r.donor->cause()==RtcDonorFillCause::ready)donors.push_back(r.donor);
+  auto base=t.plan();
+  return RtcNotchRecoveryPlan::consider(base->assessment_handle(),t.transient,t.val,t.domain,3000,
+    std::move(donors),std::move(d),continuity);
+}
+TEST(rtc_event_treatment, recovered_natural_candidate_is_unavailable_not_accepted) {
+  Input in;in.spike();Trial t(in,10,RtcSpikeProtection::outside_source);
+  auto d=resolve_events(t);ASSERT_EQ(d->records().size(),t.assessment->events().size());
+  const auto &r=d->records()[t.event_at(500)];
+  EXPECT_EQ(r.disposition,RtcEventTreatmentClass::isolated_admission_unavailable);
+  EXPECT_TRUE(r.proposed_isolation_prerequisites);EXPECT_FALSE(r.donor);
+  auto result=t.apply(decision_plan(t,d,true));
+  EXPECT_EQ(result->causes().at(500),RtcNotchRecoveryCause::event_policy_unavailable);
+  EXPECT_FALSE(result->representative_replaced(600));
+  EXPECT_FALSE(result->coordinate_stage_available(NativeReadoutCoordinate::x,599,true));
+  EXPECT_TRUE(result->coordinate_stage_available(NativeReadoutCoordinate::x,500,true));
+}
+TEST(rtc_event_treatment, declared_pair_disturbance_exercises_genuine_exclusion_and_donor_paths) {
+  Input in;in.spike();in.paired_identity="declared-contaminant:known-test-copy";
+  Trial t(in,10,RtcSpikeProtection::outside_source);auto d=resolve_events(t,true);
+  const auto &r=d->records()[t.event_at(500)];
+  ASSERT_EQ(r.disposition,RtcEventTreatmentClass::accepted_declared_contaminant);
+  ASSERT_TRUE(r.donor);ASSERT_EQ(r.donor->cause(),RtcDonorFillCause::ready);
+  auto control=t.apply(decision_plan(t,d,false)),donor=t.apply(decision_plan(t,d,true));
+  EXPECT_EQ(control->causes().at(500),RtcNotchRecoveryCause::accepted_event_excluded);
+  EXPECT_FALSE(control->representative_replaced(600));
+  EXPECT_TRUE(control->requires_representative_exclusion(600));
+  EXPECT_TRUE(donor->representative_replaced(600));EXPECT_TRUE(donor->requires_representative_exclusion(600));
+  EXPECT_TRUE(donor->coordinate_stage_available(NativeReadoutCoordinate::x,600,true));
+  EXPECT_FALSE(donor->coordinate_stage_available(NativeReadoutCoordinate::r,600,true));
+  EXPECT_TRUE(donor->replacement_influence(599,true));
+  EXPECT_FALSE(donor->requires_representative_exclusion(599));
+  EXPECT_FALSE(control->coordinate_stage_available(NativeReadoutCoordinate::x,599,true));
+  EXPECT_DOUBLE_EQ(t.parent->network(0).value(NativeReadoutCoordinate::x,600,0),in.x(500,0));
+}
+TEST(rtc_event_treatment, shared_or_protected_disturbance_is_not_admitted_by_test_truth) {
+  Input in;in.spike();in.paired_identity="declared-contaminant:shared";
+  in.x(500,1)+=40;in.r(500,1)+=25;
+  Trial shared(in,10,RtcSpikeProtection::outside_source);auto d=resolve_events(shared,true);
+  for(const auto &r:d->records())EXPECT_FALSE(r.donor);
+  Trial protected_t(in,10,RtcSpikeProtection::protected_source);d=resolve_events(protected_t,true);
+  for(const auto &r:d->records())EXPECT_FALSE(r.donor);
+}
+TEST(rtc_event_treatment, undeclared_parent_and_manual_support_are_refused) {
+  Input in;in.spike();Trial t(in,10,RtcSpikeProtection::outside_source);
+  EXPECT_THROW(resolve_events(t,true),std::invalid_argument);
+  auto f=resolved_factors(t);f[0].stable_segments={{100,1200}};
+  EXPECT_THROW(RtcEventTreatmentDecision::consider(t.review,t.transient,f,"known-prior","same-units",{},t.val,2000),std::invalid_argument);
+}
+TEST(rtc_event_treatment, later_excluded_fit_support_cannot_supply_continuity) {
+  Input in;in.spike();in.paired_identity="declared-contaminant:known-test-copy";
+  Trial t(in,10,RtcSpikeProtection::outside_source);
+  RtcDeclaredContaminant truth{t.parent,0,0,{600,601},"reference","model"};
+  auto d=RtcEventTreatmentDecision::consider(t.review,t.transient,resolved_factors(t),"prior","same-units",{{0,{{400,401}}}},t.val,2000,truth);
+  ASSERT_TRUE(d->records()[t.event_at(500)].donor);
+  EXPECT_NE(d->records()[t.event_at(500)].donor->cause(),RtcDonorFillCause::ready);
+  auto out=t.apply(decision_plan(t,d,true));EXPECT_FALSE(out->representative_replaced(600));
+  EXPECT_EQ(out->causes()[500],RtcNotchRecoveryCause::accepted_event_excluded);
+}
+TEST(processing_scan_native, exact_offset_support_and_missing_slots_do_not_compact_native_time) {
+  Input in;auto parent=in.freeze();Eigen::VectorXd common(5);
+  std::vector<NativeSlotAssociation> associations;
+  for(int i=0;i<5;++i){common[i]=in.times[i+10];associations.push_back({110+i});}
+  Eigen::MatrixXI scans(4,1);scans<<1,3,0,4;
+  auto out=project_processing_scans_to_native(parent,0,common,associations,scans,.004096,"existing-generation","existing-relation");
+  ASSERT_EQ(out.scans[0].science_native.size(),1);EXPECT_EQ(out.scans[0].science_native[0].first,111);
+  EXPECT_EQ(out.scans[0].science_native[0].past_last,114);
+  associations[2]=NativeSlotAssociation{};
+  out=project_processing_scans_to_native(parent,0,common,associations,scans,.004096,"existing-generation","existing-relation");
+  EXPECT_EQ(out.scans[0].unmapped_science_slots,1);EXPECT_EQ(out.scans[0].science_native.size(),2);
+  associations[2]={110};
+  EXPECT_THROW(project_processing_scans_to_native(parent,0,common,associations,scans,.004096,"g","r"),std::invalid_argument);
+  associations[2]={112};common[2]+=.01;
+  EXPECT_THROW(project_processing_scans_to_native(parent,0,common,associations,scans,.004096,"g","r"),std::invalid_argument);
+}
+}
+
+namespace {
+TEST(rtc_event_treatment, unavailable_paired_donor_support_remains_an_exclusion) {
+  Input in;in.spike();in.paired_identity="declared-contaminant:missing-paired-donors";
+  for(int d=1;d<3;++d)in.rs[500*3+d]=NativeReadoutCoordinateState::measured(true,false,true,true);
+  Trial t(in,10,RtcSpikeProtection::outside_source);auto decision=resolve_events(t,true);
+  const auto &r=decision->records()[t.event_at(500)];
+  ASSERT_TRUE(r.donor);EXPECT_EQ(r.donor->cause(),RtcDonorFillCause::no_usable_donor);
+  auto result=t.apply(decision_plan(t,decision,true));
+  EXPECT_FALSE(result->representative_replaced(600));
+  EXPECT_EQ(result->causes()[500],RtcNotchRecoveryCause::accepted_event_excluded);
+}
+TEST(rtc_event_treatment, decided_ready_donor_cannot_be_omitted_from_continuity_arm) {
+  Input in;in.spike();in.paired_identity="declared-contaminant:exact-decision";
+  Trial t(in,10,RtcSpikeProtection::outside_source);auto decision=resolve_events(t,true);
+  EXPECT_THROW(RtcNotchRecoveryPlan::consider(t.plan()->assessment_handle(),t.transient,t.val,t.domain,3000,{},decision,true),std::invalid_argument);
+}
+TEST(rtc_event_treatment, admitted_shift_excludes_its_existing_scan_and_never_fills) {
+  Input in;in.step();Fixture t(in);
+  auto support=RtcJumpSupportEvidence::learn(t.transition,9);
+  auto refit=RtcJumpRefitEvidence::learn(RtcJumpRefitRequest::consider(support,t.val,10),11);
+  auto measured=RtcJumpReassessmentEvidence::learn(RtcJumpRemeasureRequest::consider(refit,t.val,12),13);
+  auto admitted=RtcJumpAdmissionDecision::consider(RtcJumpReassessmentDecision::consider(measured,t.val,14),t.val,15);
+  auto scans=RtcExistingScanBinding::admit(t.parent,"fixture-processing","exact-native-membership","exact-test-clock",
+    RtcExistingScanSupportState::conservative_native_support_bound,{{0,{0,100,500}},{1,{0,500,900}},{2,{0,900,1200}}});
+  auto jumps=RtcJumpExclusionPlan::consider(admitted,scans,t.val,16);
+  auto transient=RtcTransientExclusionPlan::consider(t.review->original_screening_handle(),jumps,t.val,17);
+  std::vector<RtcDonorDetectorFacts> factors;
+  for(std::uint32_t d=0;d<3;++d){RtcDonorDetectorFacts f;f.network=0;f.detector=d;
+    f.detector_occurrence_id=t.parent->network(0).detector(d).detector_occurrence_id;factors.push_back(f);}
+  auto decision=RtcEventTreatmentDecision::consider(t.review,transient,factors,"unavailable-factors","same-units",{},t.val,100);
+  const auto &r=decision->records()[t.event_at(500)];
+  ASSERT_EQ(r.disposition,RtcEventTreatmentClass::admitted_level_shift);EXPECT_FALSE(r.donor);
+  EXPECT_TRUE(transient->excludes(0,550,0));EXPECT_TRUE(transient->excludes(0,850,0));
+  for(auto s:decision->facts_handle()->find(0,0)->stable_segments)EXPECT_FALSE(s.first<600 && s.past_last>600);
+}
+TEST(processing_scan_native, consecutive_native_rows_across_physical_gap_remain_separate) {
+  Input in;for(std::size_t i=100;i<in.times.size();++i){in.times[i]+=.25;in.counters[i]+=30;}
+  auto parent=in.freeze();Eigen::VectorXd common(4);std::vector<NativeSlotAssociation> associations;
+  for(int i=0;i<4;++i){common[i]=in.times[i+98];associations.push_back({198+i});}
+  Eigen::MatrixXI scans(4,1);scans<<0,3,0,3;
+  const auto out=project_processing_scans_to_native(parent,0,common,associations,scans,.004096,"existing-generation","existing-relation");
+  ASSERT_EQ(out.scans[0].science_native.size(),2);
+  EXPECT_EQ(out.scans[0].science_native[0].past_last,200);EXPECT_EQ(out.scans[0].science_native[1].first,200);
+}
+}

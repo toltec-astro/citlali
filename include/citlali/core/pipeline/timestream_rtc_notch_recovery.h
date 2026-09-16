@@ -4,6 +4,7 @@
 #include <citlali/core/pipeline/timestream_rtc_line_transfer.h>
 #include <citlali/core/pipeline/timestream_rtc_transient_exclusion.h>
 #include <citlali/core/pipeline/timestream_rtc_donor_fill.h>
+#include <citlali/core/pipeline/timestream_rtc_event_treatment.h>
 #include <citlali/core/timestream/rtc/filter.h>
 
 namespace citlali::pipeline {
@@ -32,7 +33,10 @@ enum class RtcNotchRecoveryCause : std::uint8_t {
   boundary_guard,
   rejection,
   below_minimum_speed,
-  insufficient_output_sampling
+  insufficient_output_sampling,
+  event_policy_unavailable,
+  accepted_event_excluded,
+  processing_support_unavailable
 };
 
 // Consider freezes one complete *experimental* sequence: existing transient
@@ -45,7 +49,9 @@ public:
            std::shared_ptr<const RtcTransientExclusionPlan> transients,
            std::shared_ptr<const ValSnapshot> snapshot,
            RtcNotchRecoveryDomain domain, std::uint64_t id,
-           std::vector<std::shared_ptr<const RtcDonorFillPlan>> donors = {}) {
+           std::vector<std::shared_ptr<const RtcDonorFillPlan>> donors = {},
+           std::shared_ptr<const RtcEventTreatmentDecision> event_decisions = {},
+           bool donor_continuity = true) {
     if (!assessment || !transients || !snapshot || !id ||
         assessment->snapshot_handle().get() != snapshot.get() ||
         transients->val_snapshot_handle().get() != snapshot.get())
@@ -64,6 +70,18 @@ public:
     const auto &net = transients->input_handle()->network(candidate.network());
     const auto &axis = net.occurrence_axis();
     const auto &s = candidate.specification();
+    if(event_decisions && (event_decisions->transient_handle().get()!=transients.get() ||
+        (!donor_continuity && !donors.empty())))
+      throw std::invalid_argument("RTC event decisions must bind the exact exclusions and treatment arm");
+    if(event_decisions){
+      std::vector<const RtcDonorFillPlan*> expected,actual;
+      if(donor_continuity)for(const auto &r:event_decisions->records())
+        if(r.network==candidate.network() && r.detector==candidate.detector() && r.donor && r.donor->cause()==RtcDonorFillCause::ready)
+          expected.push_back(r.donor.get());
+      for(const auto &d:donors)actual.push_back(d.get());
+      std::sort(expected.begin(),expected.end());std::sort(actual.begin(),actual.end());
+      if(expected!=actual)throw std::invalid_argument("RTC Apply arm must use exactly its decided available donor plans");
+    }
     std::sort(donors.begin(), donors.end(), [](const auto &a, const auto &b) {
       if (!a || !b) throw std::invalid_argument("RTC donor plan is absent");
       return a->selection().affected.first < b->selection().affected.first;
@@ -143,6 +161,7 @@ public:
     out->assessment_ = std::move(assessment);
     out->transients_ = std::move(transients);
     out->donors_ = std::move(donors);
+    out->event_decisions_=std::move(event_decisions);out->donor_continuity_=donor_continuity;
     out->domain_ = std::move(domain);
     out->id_ = id;
     out->sampling_speed_limit_ =
@@ -173,6 +192,17 @@ public:
           if (out->transients_->excludes(candidate.network(), row,
                                          candidate.detector())) {
             cause = RtcNotchRecoveryCause::transient_excluded;
+          }
+          if(cause==RtcNotchRecoveryCause::retained && out->event_decisions_) {
+            const auto &dec=*out->event_decisions_;
+            const auto timing=dec.timing_unavailable().find(candidate.network());
+            if(timing!=dec.timing_unavailable().end() && rtc_event_assessment_detail::contains(timing->second,row))
+              cause=RtcNotchRecoveryCause::processing_support_unavailable;
+            else if(dec.pending(candidate.network(),candidate.detector(),row))
+              cause=RtcNotchRecoveryCause::event_policy_unavailable;
+            else if(dec.accepted_support(candidate.network(),candidate.detector(),row) &&
+                (!out->donor_continuity_ || !dec.donor_ready(candidate.network(),candidate.detector(),row)))
+              cause=RtcNotchRecoveryCause::accepted_event_excluded;
           }
           const auto v = d.motion->scalar_speed_arcsec_per_sec(row);
           if (cause !=
@@ -243,6 +273,8 @@ public:
   }
   const auto &domain() const noexcept { return domain_; }
   const auto &donor_plans() const noexcept { return donors_; }
+  const auto &event_decisions() const noexcept { return event_decisions_; }
+  bool donor_continuity() const noexcept { return donor_continuity_; }
   const auto &runs() const noexcept { return runs_; }
   const auto &input_causes() const noexcept { return causes_; }
   auto first_native_row() const noexcept { return first_; }
@@ -302,6 +334,8 @@ private:
   std::shared_ptr<const RtcLineTransferAssessment> assessment_;
   std::shared_ptr<const RtcTransientExclusionPlan> transients_;
   std::vector<std::shared_ptr<const RtcDonorFillPlan>> donors_;
+  std::shared_ptr<const RtcEventTreatmentDecision> event_decisions_;
+  bool donor_continuity_=true;
   RtcNotchRecoveryDomain domain_;
   std::vector<RtcNotchRecoveryCause> causes_;
   std::vector<RtcEventRange> runs_;
@@ -487,6 +521,10 @@ public:
   }
   bool requires_representative_exclusion(TimestreamNativeRow row) const {
     (void)native_state_.at(row-plan_->first_native_row());
+    if(plan_->event_decisions()) {
+      const auto &candidate=*plan_->assessment_handle()->candidate_handle();
+      if(plan_->event_decisions()->accepted_support(candidate.network(),candidate.detector(),row))return true;
+    }
     for (const auto &d : donors_) {
       const auto r=d->plan_handle()->selection().affected;
       if (row >= r.first && row < r.past_last) return true;

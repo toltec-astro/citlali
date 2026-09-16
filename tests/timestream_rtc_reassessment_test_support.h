@@ -10,6 +10,7 @@ struct Input {
     NativePairedReadoutMatrix x, r;
     std::vector<NativeReadoutCoordinateState> xs, rs;
     double integration_half=.004096;
+    std::string paired_identity="jump-test";
     explicit Input(std::size_t n=1100, double cadence=.008192) : times(n), counters(n), x(n,3), r(n,3),
         xs(support::valid_states(3*n)), rs(xs) {
         integration_half=cadence/2;
@@ -34,7 +35,7 @@ struct Input {
         auto axis=std::make_shared<const NativePairedReadoutOccurrenceAxis>(timing,100,std::move(occurrences));
         std::vector<NativePairedReadoutNetwork> networks;
         networks.push_back(NativePairedReadoutNetwork::admit(axis,support::detector_axis(0,3),
-            support::mapping_authority(0,"jump-test"),x,r,xs,rs));
+            support::mapping_authority(0,paired_identity),x,r,xs,rs));
         return support::make_observation(std::move(networks),{0});
     }
 };

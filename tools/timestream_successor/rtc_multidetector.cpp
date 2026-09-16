@@ -31,6 +31,7 @@ void write_matrix(const fs::path &p,const auto &m) {
   out.close();require(bool(out),"required matrix output failed");
 }
 }
+#include "rtc_processing_scan_input.h"
 int main(int argc,char **argv) {
   try {
     const auto began=std::chrono::steady_clock::now();
@@ -152,6 +153,20 @@ int main(int argc,char **argv) {
                 "export differs from exact producer state convention");
       }
     }
+    YAML::Node contaminant_record;
+    if(cfg["declared_contaminant"]){
+      const auto model=cfg["declared_contaminant"];
+      const int channel=model["channel"].as<int>();
+      const auto it=std::find(channels.begin(),channels.end(),channel);
+      require(it!=channels.end(),"contaminant target outside cohort");
+      const auto d=it-channels.begin();const auto row=model["native_row"].as<std::int64_t>();
+      require(row>0 && row+1<rows && xs[row*x.cols()+d].valid() && rs[row*x.cols()+d].valid(),
+        "contaminant requires originally usable paired support");
+      const double dx=model["x_delta"].as<double>(),dr=model["r_delta"].as<double>();
+      require(std::isfinite(dx) && std::isfinite(dr) && dx!=0 && dr!=0,"invalid declared paired contaminant");
+      contaminant_record=YAML::Clone(model);contaminant_record["original_x"]=x(row,d);contaminant_record["original_r"]=r(row,d);
+      x(row,d)+=dx;r(row,d)+=dr;
+    }
     const auto original_x=x, original_r=r;
     auto config = load_runtime_config(checked("effective_config"));
     require(config.interface_offset_present[nw] &&
@@ -169,6 +184,8 @@ int main(int argc,char **argv) {
       projection+=std::to_string(channels[d])+":"+sample_hashes[d]+"\n";
     mapping->paired_xr_record_id += ":exact-simultaneous-column-projection:sha256:"+
         citlali::utils::sha256(projection);
+    if(cfg["declared_contaminant"])mapping->paired_xr_record_id+=":declared-contaminant:"+
+        citlali::utils::sha256_file(argv[1]);
     mapping->timing_uncertainty_state_id =
         "unquantified:uniform-average-center-trial:rtc-native-readout-uniform-"
         "average-assumption-v1";
@@ -197,14 +214,43 @@ int main(int argc,char **argv) {
     auto parent = std::make_shared<const NativePairedReadoutObservation>(
         NativePairedReadoutObservation::admit(
             NativeObservationScope{obs, sub, scan}, {nw}, std::move(networks)));
+    std::optional<RtcDeclaredContaminant> declared_contaminant;
+    if(cfg["declared_contaminant"]){
+      const auto m=cfg["declared_contaminant"];const auto row=m["native_row"].as<std::int64_t>();
+      const auto d=std::find(channels.begin(),channels.end(),m["channel"].as<int>())-channels.begin();
+      const auto reference=checked_file(m["reference_receipt"]);
+      const auto ref=YAML::LoadFile(reference.string());
+      require(ref["Apply_performed"].as<bool>() && ref["original_pair_unchanged"].as<bool>() &&
+        ref["original_parent"].as<std::string>()+":declared-contaminant:"+citlali::utils::sha256_file(argv[1])==mapping->paired_xr_record_id,
+        "contaminant does not identify its untouched applied reference");
+      declared_contaminant=RtcDeclaredContaminant{parent,nw,static_cast<std::uint32_t>(d),{row,row+1},
+        "sha256:"+citlali::utils::sha256_file(reference),"one-occurrence-additive-x-and-r-test-contaminant;not-a-sky-injection"};
+    }
     auto val=ValSnapshot::initial(parent);
     auto view=NativePairedReadoutView::full(parent);
+    std::optional<RecoveredProcessingScans> recovered_scans;
+    if(cfg["decision_apply"]) recovered_scans=recover_processing_scans(cfg,parent,verified,nw);
     const auto protection_authority=cfg["source_protection_authority"].as<std::string>();
     caller::require_no_mask_scope(parent->scope(),protection_authority);
     auto protection=RtcSpikeSourceProtection::admit(parent,protection_authority,
                                                    RtcSpikeProtection::outside_source);
+    std::shared_ptr<const AstScanMotionNetworkView> motion;
+    if(argc==4 || recovered_scans){
+      const auto telescope=load_telescope(checked("telescope"),parent->scope());
+      auto ast=build_ast_scan_motion_product(telescope.source,ast_identity_binding);
+      const auto accepted_ast=YAML::LoadFile(checked("ast_acceptance").string());
+      require(accepted_ast["source_revision"].as<std::string>()=="adbc013e2d4287fb5a32db8bc7f2b0112c1c88d7" &&
+          accepted_ast["authority_policy_id"].as<std::string>()==std::string(ast_scan_motion_policy_id) &&
+          accepted_ast["observation"].as<int>()==obs &&
+          accepted_ast["telescope"]["sha256"].as<std::string>()==telescope.sha256,
+          "AST acceptance differs from exact telescope/policy/scope");
+      motion=AstScanMotionNetworkView::admit(ast,timing);
+    }
     const auto ingress_finished=std::chrono::steady_clock::now();
-    auto spikes=learn_rtc_spike_candidates(view,val,protection,1);
+    double learn_seconds=0,consider_seconds=0;
+    auto measure=[](double &seconds,auto operation){const auto at=std::chrono::steady_clock::now();
+      auto result=operation();seconds+=std::chrono::duration<double>(std::chrono::steady_clock::now()-at).count();return result;};
+    auto spikes=measure(learn_seconds,[&]{return learn_rtc_spike_candidates(view,val,protection,1);});
     std::vector<RtcEventPeerEligibility> peers;
     for(std::uint32_t d=0;d<channels.size();++d)
       peers.push_back({nw,d,detectors[d].detector_occurrence_id,
@@ -212,30 +258,37 @@ int main(int argc,char **argv) {
     auto peer=RtcEventPeerPopulation::admit(spikes,
         "exact-projected-APT-population:flag=flag2=0:Tune-valid:sha256:"+
         citlali::utils::sha256_file(manifest),std::move(peers));
-    auto events=RtcEventAssessmentDecision::consider(learn_rtc_event_assessment(spikes,peer,2),val,3);
-    auto amplitude=RtcJumpAmplitudeDecision::consider(events,val,4);
-    auto consistency=RtcJumpConsistencyDecision::consider(RtcJumpConsistencyEvidence::learn(amplitude,5),val,6);
-    auto transition=RtcJumpTransitionEvidence::learn(RtcJumpTransitionRequest::consider(consistency,val,7),8);
-    auto support=RtcJumpSupportEvidence::learn(transition,9);
-    auto refit=RtcJumpRefitEvidence::learn(RtcJumpRefitRequest::consider(support,val,10),11);
-    auto remeasurement=RtcJumpReassessmentEvidence::learn(RtcJumpRemeasureRequest::consider(refit,val,12),13);
-    auto admitted=RtcJumpAdmissionDecision::consider(RtcJumpReassessmentDecision::consider(remeasurement,val,14),val,15);
+    auto event_evidence=measure(learn_seconds,[&]{return learn_rtc_event_assessment(spikes,peer,2);});
+    auto events=measure(consider_seconds,[&]{return RtcEventAssessmentDecision::consider(event_evidence,val,3);});
+    auto amplitude=measure(consider_seconds,[&]{return RtcJumpAmplitudeDecision::consider(events,val,4);});
+    auto short_evidence=measure(learn_seconds,[&]{return RtcJumpConsistencyEvidence::learn(amplitude,5);});
+    auto consistency=measure(consider_seconds,[&]{return RtcJumpConsistencyDecision::consider(short_evidence,val,6);});
+    auto transition_request=measure(consider_seconds,[&]{return RtcJumpTransitionRequest::consider(consistency,val,7);});
+    auto transition=measure(learn_seconds,[&]{return RtcJumpTransitionEvidence::learn(transition_request,8);});
+    auto support=measure(learn_seconds,[&]{return RtcJumpSupportEvidence::learn(transition,9);});
+    auto refit_request=measure(consider_seconds,[&]{return RtcJumpRefitRequest::consider(support,val,10);});
+    auto refit=measure(learn_seconds,[&]{return RtcJumpRefitEvidence::learn(refit_request,11);});
+    auto remeasure_request=measure(consider_seconds,[&]{return RtcJumpRemeasureRequest::consider(refit,val,12);});
+    auto remeasurement=measure(learn_seconds,[&]{return RtcJumpReassessmentEvidence::learn(remeasure_request,13);});
+    auto reassessment=measure(consider_seconds,[&]{return RtcJumpReassessmentDecision::consider(remeasurement,val,14);});
+    auto admitted=measure(consider_seconds,[&]{return RtcJumpAdmissionDecision::consider(reassessment,val,15);});
     const auto transients_finished=std::chrono::steady_clock::now();
     auto native=ValNativeRealization::create(parent,{ValProducer::align,1},1,ValNativeProductRole::original_input,nw);
     auto identity=RtcSpectralInputIdentity::bind(native,val,view->span(nw),
         RtcSpectralInputStage::original_reference,"exact-simultaneous-audit-original-projection",1);
     const std::vector<RtcSpectralCadenceDomain> cadence{{nw,"audit-four-epoch-ULP-arithmetic-envelope",
         duration,prior["roundoff_bound_fraction"].as<double>()}};
-    auto spectral=RtcNativeSpectralEvidence::learn_initial(spikes,{identity},cadence,18);
-    auto lines=RtcLinePowerEvidence::learn(spectral,val,RtcLinePowerProfile::initial_2_hz,19);
-    auto joint=RtcLinePowerConsideration::rank(lines,
-        RtcSpectralTransientConsideration::consider(spectral,val,events,val,20),21);
+    auto spectral=measure(learn_seconds,[&]{return RtcNativeSpectralEvidence::learn_initial(spikes,{identity},cadence,18);});
+    auto lines=measure(learn_seconds,[&]{return RtcLinePowerEvidence::learn(spectral,val,RtcLinePowerProfile::initial_2_hz,19);});
+    auto joint=measure(consider_seconds,[&]{return RtcLinePowerConsideration::rank(lines,
+        RtcSpectralTransientConsideration::consider(spectral,val,events,val,20),21);});
     const auto learn_finished=std::chrono::steady_clock::now();
     // The immutable configuration includes exact content hashes for every
     // scientific input. A changed code/config/VAL requires a new selection.
     const auto binding=citlali::utils::sha256(std::string(CITLALI_GIT_REVISION)+"\n"+
         citlali::utils::sha256_file(argv[1])+"\nVAL-generation=0\n"+mapping->paired_xr_record_id);
     fs::create_directories(output);
+    if(recovered_scans) write_yaml(output/"processing-scans.yaml",recovered_scans->receipt);
     std::ofstream native_times(output/"native-time.f64",std::ios::binary);
     for(auto row=axis->first_native_row();row<axis->past_last_native_row();++row){
       double t=axis->native_identity(row).reconstructed_time_unix_sec();
@@ -243,6 +296,7 @@ int main(int argc,char **argv) {
     }
     native_times.close();require(bool(native_times),"native time export failed");
     YAML::Node receipt;
+    if(declared_contaminant)receipt["declared_contaminant"]=contaminant_record;
     receipt["schema"]="rtc-multidetector-learning-v1";
     receipt["source_revision"]=std::string(CITLALI_GIT_REVISION);
     receipt["configuration_sha256"]=citlali::utils::sha256_file(argv[1]);
@@ -264,6 +318,7 @@ int main(int argc,char **argv) {
     receipt["stable_support_state"]="unavailable-until-explicit-review";
     receipt["spectral_estimator"]=std::string(RtcInitialSpectralPolicy::estimator);
     receipt["spectral_conventions"]=std::string(RtcInitialSpectralPolicy::conventions);
+    receipt["native_integration_seconds"]=duration;
     receipt["cadence_interval_seconds"]=spectral->network(nw).interval_seconds;
     receipt["physical_runs"]=runs.size();
     receipt["native_time_sha256"]=citlali::utils::sha256_file(output/"native-time.f64");
@@ -322,10 +377,19 @@ int main(int argc,char **argv) {
     // Preserve the learning product even if subsequent explicit Consider
     // refuses missing required scan/support bindings. This is not Apply success.
     write_yaml(output/"learning-receipt.yaml",receipt);
-    if(argc==4){
+    if(argc==4 || recovered_scans){
+      const auto considered_at=std::chrono::steady_clock::now();
+      require(!(argc==4 && recovered_scans),"automatic decisions cannot consume manual selections");
+      caller::ReviewedInputs selected;
+      if(argc==4){
       const auto selections=YAML::LoadFile(argv[3]);
-      const auto selected=caller::read_review(selections,binding,events->evidence_handle(),channels,factors,nw,
+      selected=caller::read_review(selections,binding,events->evidence_handle(),channels,factors,nw,
                                              "sha256:"+citlali::utils::sha256_file(manifest));
+      } else {
+        require(cfg["decision_apply"]["policy"].as<std::string>()==
+            "existing-authorities-with-unavailable-isolated-admission-v1","unknown decision policy");
+        selected.scans=recovered_scans->projection.binding;
+      }
       // This call intentionally refuses missing scan support when any jump is
       // admitted. Acquisition ScanNum is never used as the processing scan.
       auto jumps=RtcJumpExclusionPlan::consider(admitted,selected.scans,val,22);
@@ -335,15 +399,66 @@ int main(int argc,char **argv) {
         auto donor=RtcDonorFillPlan::consider(event,selected.facts,transient,val,24+event.event);
         donors[donor->event().detector].push_back(donor);
       }
-      const auto telescope=load_telescope(checked("telescope"),parent->scope());
-      auto ast=build_ast_scan_motion_product(telescope.source,ast_identity_binding);
-      const auto accepted_ast=YAML::LoadFile(checked("ast_acceptance").string());
-      require(accepted_ast["source_revision"].as<std::string>()=="adbc013e2d4287fb5a32db8bc7f2b0112c1c88d7" &&
-          accepted_ast["authority_policy_id"].as<std::string>()==std::string(ast_scan_motion_policy_id) &&
-          accepted_ast["observation"].as<int>()==obs &&
-          accepted_ast["telescope"]["sha256"].as<std::string>()==telescope.sha256,
-          "AST acceptance differs from exact telescope/policy/scope");
-      auto motion=AstScanMotionNetworkView::admit(ast,timing);
+      std::shared_ptr<const RtcEventTreatmentDecision> decision;
+      if(recovered_scans){
+        std::vector<RtcDonorDetectorFacts> factor_facts;
+        const auto authority="sha256:"+citlali::utils::sha256_file(manifest);
+        for(std::uint32_t d=0;d<channels.size();++d){
+          RtcDonorDetectorFacts f;f.network=nw;f.detector=d;
+          f.detector_occurrence_id=detectors[d].detector_occurrence_id;
+          f.factor_identity=authority+":channel="+std::to_string(channels[d]);
+          f.factor_convention="mJy/beam/xs";
+          if(std::isfinite(factors[d]) && factors[d]!=0)f.prior_flxscale=factors[d];
+          f.factor_support={axis->first_native_row(),axis->past_last_native_row()};
+          factor_facts.push_back(std::move(f));
+        }
+        decision=RtcEventTreatmentDecision::consider(events,transient,std::move(factor_facts),authority,
+          "mJy/beam/xs",{{nw,recovered_scans->projection.native_outside_processing}},val,2000,declared_contaminant);
+        selected.facts=decision->facts_handle();
+        YAML::Node decisions(YAML::NodeType::Sequence);
+        for(const auto &r:decision->records()){
+          YAML::Node n;n["event"]=r.event;n["channel"]=channels[r.detector];n["network"]=r.network;
+          n["seed_earlier_row"]=spikes->candidates()[events->evidence_handle()->events()[r.event].seed].earlier_row;
+          n["origin_unix_seconds"]=events->evidence_handle()->events()[r.event].origin;
+          constexpr std::array names{"isolated-admission-unavailable","admitted-level-shift",
+            "no-resolved-excursion","unresolved-extent","accepted-declared-contaminant"};
+          n["class"]=names.at(static_cast<std::size_t>(r.disposition));
+          n["affected"]=range(r.affected);n["operation_unavailable"]=range(r.operation_unavailable);
+          n["seeded_excursion"]=r.seeded_excursion;n["recovered"]=r.recovered;n["background_available"]=r.background_available;
+          n["source_outside"]=r.source_outside;n["target_domain_available"]=r.target_domain_available;
+          n["cohort_coincident_events"]=r.cohort_coincident_events;
+          n["proposed_isolation_prerequisites"]=r.proposed_isolation_prerequisites;
+          n["donor_admission_available"]=bool(r.donor);
+          if(r.donor){n["donor_cause"]=static_cast<int>(r.donor->cause());
+            if(r.donor->cause()==RtcDonorFillCause::ready)donors[r.detector].push_back(r.donor);}
+          decisions.push_back(n);
+        }
+        write_yaml(output/"event-decisions.yaml",decisions);
+        YAML::Node domains;
+        for(const auto &f:selected.facts->detectors()){
+          YAML::Node d;d["channel"]=channels[f.detector];d["factor_identity"]=f.factor_identity;
+          for(auto r:f.stable_segments)d["stable_domains"].push_back(range(r));
+          for(auto r:f.contaminated)d["donor_contaminated"].push_back(range(r));
+          domains["detectors"].push_back(d);
+        }
+        domains["authority"]=selected.facts->segmentation_authority();
+        for(const auto &d:transient->detectors()){
+          YAML::Node n;n["channel"]=channels[d.detector];
+          for(auto r:d.rows)n["excluded"].push_back(range(r));
+          domains["transient_exclusions"].push_back(n);
+        }
+        write_yaml(output/"support-decisions.yaml",domains);
+      }
+      receipt["event_selection_state"]=decision ? "runtime-all-event-dispositions;natural-isolated-policy-unavailable" : "explicit-reviewed-selection";
+      receipt["stable_support_state"]=decision ? "runtime-original-evidence-boundary-and-support-resolution" : "explicit-reviewed-support";
+      receipt["transient_excluded_pair_cells"]=transient->counts().union_pair_cells;
+      receipt["Consider_connection_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-considered_at).count();
+      const auto root_output=output;
+      for(bool continuity : (decision ? std::vector<bool>{false,true} : std::vector<bool>{true})){
+      const auto output=decision ? root_output/(continuity ? "donor-continuity" : "exclusion-control") : root_output;
+      fs::create_directories(output);
+      YAML::Node arm;
+      const auto planning_at=std::chrono::steady_clock::now();
       std::vector<std::shared_ptr<const RtcNotchRecoveryPlan>> plans;
       for(std::uint32_t d=0;d<channels.size();++d){
         RtcLineTransferSpecification s;s.identity="multidetector-explicit-finite-plan";
@@ -363,17 +478,16 @@ int main(int argc,char **argv) {
         domain.speed_ceiling_arcsec_per_sec=235;domain.nominal_interval_seconds=duration;
         auto candidate=RtcLineTransferCandidate::bind(lines,nw,d,s);
         auto assessment=RtcLineTransferAssessment::consider(candidate,joint,val,100+d);
-        plans.push_back(RtcNotchRecoveryPlan::consider(assessment,transient,val,domain,200+d,donors[d]));
+        plans.push_back(RtcNotchRecoveryPlan::consider(assessment,transient,val,domain,200+d,continuity ? donors[d] : std::vector<std::shared_ptr<const RtcDonorFillPlan>>{},decision,continuity));
       }
-      const auto complete=RtcPipelinePlan::consider(plans,joint->joint_handle(),1000);
+      const auto complete=RtcPipelinePlan::consider(plans,joint->joint_handle(),1000+continuity);
+      arm["Consider_plan_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-planning_at).count();
       const std::array partitions{view};
       const auto applied_at=std::chrono::steady_clock::now();
       auto result=RtcPipelineResult::apply(complete,view,val,partitions);
-      receipt["Apply_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-applied_at).count();
-      receipt["Apply_performed"]=true;receipt["review_sha256"]=citlali::utils::sha256_file(argv[3]);
-      receipt["event_selection_state"]="explicit-reviewed-selection";
-      receipt["stable_support_state"]="explicit-reviewed-support";
-      receipt["transient_excluded_pair_cells"]=transient->counts().union_pair_cells;
+      arm["Apply_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-applied_at).count();
+      receipt["Apply_performed"]=true;
+      if(argc==4)receipt["review_sha256"]=citlali::utils::sha256_file(argv[3]);
       for(std::size_t d=0;d<channels.size();++d){
         const auto &r=*result->detector_results()[d];const auto stem=std::to_string(channels[d]);
         write_matrix(output/(stem+"-conditioned.f64"),r.conditioned_native_pair());
@@ -403,17 +517,21 @@ int main(int argc,char **argv) {
         const auto &spec=plans[d]->assessment_handle()->candidate_handle()->specification();
         record["lowpass_FIR"]=spec.centered_lowpass;record["finite_notch_FIR"]=spec.centered_notch;
         record["sampling_speed_limit_arcsec_per_sec"]=plans[d]->sampling_speed_limit_arcsec_per_sec();
-        record["AST_source"]=telescope.source->metadata().source_artifact_identity;
+        record["AST_source"]=motion->raw_product_handle()->source_handle()->metadata().source_artifact_identity;
         for(const auto &run:plans[d]->runs())record["admitted_runs"].push_back(range(run));
         for(const auto &donor:donors[d]){YAML::Node dr;dr["event"]=donor->selection().event;
-          dr["cause"]=static_cast<int>(donor->cause());dr["affected"]=range(donor->selection().affected);
+          dr["included_in_arm"]=continuity;dr["cause"]=static_cast<int>(donor->cause());dr["affected"]=range(donor->selection().affected);
           for(const auto &m:donor->medians()){YAML::Node cell;cell["native_row"]=m.row;cell["value"]=m.value;
             for(auto id:m.eligible)cell["eligible_channels"].push_back(channels[id]);
             for(std::size_t i=0;i<m.central_count;++i)cell["central_channels"].push_back(channels[m.central[i]]);
             dr["median_population"].push_back(cell);}
           record["donors"].push_back(dr);}
-        receipt["realized_detectors"].push_back(record);
+        std::ofstream inputs(output/(stem+"-input-causes.u8"),std::ios::binary);
+        for(auto cause:plans[d]->input_causes()){const auto c=static_cast<std::uint8_t>(cause);inputs.write(reinterpret_cast<const char*>(&c),1);}
+        inputs.close();require(bool(inputs),"input cause output failed");
+        arm["realized_detectors"].push_back(record);
       }
+      const auto relearn_at=std::chrono::steady_clock::now();
       for(bool lowpass:{false,true}){
         auto conditioned=RtcNativeSpectralEvidence::learn_conditioned(result->native_product(lowpass,val),val,cadence,1100+lowpass);
         auto considered=RtcSpectralTransientConsideration::consider(conditioned,val,events,val,1200+lowpass);
@@ -434,7 +552,12 @@ int main(int argc,char **argv) {
           stage["spectra"].push_back(c);}
         stage_psd.close();require(bool(stage_psd),"conditioned spectrum output failed");
         stage["numerical_psd_sha256"]=citlali::utils::sha256_file(stage_path);
-        receipt["relearned"].push_back(stage);
+        arm["relearned"].push_back(stage);
+      }
+      arm["conditioned_relearning_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-relearn_at).count();
+      arm["attempt"]=complete->attempt();arm["original_parent"]=mapping->paired_xr_record_id;
+      write_yaml(output/"apply-receipt.yaml",arm);
+      receipt[continuity ? "donor_continuity" : "exclusion_control"]=arm;
       }
     }
     const auto &net=parent->network(nw);
@@ -442,12 +565,13 @@ int main(int argc,char **argv) {
       require(std::bit_cast<std::uint64_t>(original_x(row,d))==std::bit_cast<std::uint64_t>(net.value(NativeReadoutCoordinate::x,row,d)) &&
           std::bit_cast<std::uint64_t>(original_r(row,d))==std::bit_cast<std::uint64_t>(net.value(NativeReadoutCoordinate::r,row,d)),"original pair changed");
     }
-    receipt["original_pair_unchanged"]=true;
+    receipt["original_pair_unchanged"]=true;receipt["admitted_parent_unchanged"]=true;
     receipt["ingress_seconds"]=std::chrono::duration<double>(ingress_finished-began).count();
+    receipt["Learn_seconds"]=learn_seconds;receipt["Consider_evidence_seconds"]=consider_seconds;
     receipt["transient_seconds"]=std::chrono::duration<double>(transients_finished-ingress_finished).count();
     receipt["spectral_seconds"]=std::chrono::duration<double>(learn_finished-transients_finished).count();
     receipt["total_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-began).count();
-    receipt["status"]=argc==4 ? "PASS-explicit-reviewed-Apply" : "PASS-Learn-awaiting-explicit-selections";
+    receipt["status"]=recovered_scans ? "PASS-runtime-decision-Apply;natural-isolated-policy-unavailable" : argc==4 ? "PASS-explicit-reviewed-Apply" : "PASS-Learn-awaiting-explicit-selections";
     write_yaml(output/"receipt.yaml",receipt);
     std::cout<<receipt["status"].as<std::string>()<<" detectors="<<channels.size()<<" events="<<event_table.size()<<" jumps="<<jump_count<<'\n';
     return 0;
