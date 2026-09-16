@@ -1,5 +1,44 @@
 # Citlali Integration Ledger
 
+## RTC real-data decision / Apply candidate — 2026-09-16
+
+- Work order `TIMESTREAM-SUCCESSOR-RTC-DECISION-APPLY-001`, Tier 2; same
+  branch/worktree, initially clean at literal base
+  `7ab626d4760e6bb92f59a1f302deeab834b35310`. First candidate
+  `cfc1f5456adcc63ce1c9dff0b2c37058eea636ad` was repaired following independent
+  exact-event-generation finding. Final source
+  `d92cd3a5184bf9189a8b90739647a746e26d4f11`, tree
+  `223243d41da7484480be8e3afd5faf54d5289edb`, parent cfc1f5456. Fifteen changed
+  source/test/preflight paths have exact digests in external source-binding.json.
+- Current canonical `0f52e1a421416eadaf7d8d99d64f537132395c0c` and published
+  topic `becccce85816379e578ac1a325e8c9fe156defbe` re-verified after final runs;
+  both remain ancestors. No integration, push, cleanup or activation.
+- Existing processing/timing owners and typed RTC decision/support connect all
+  44 natural events to complete original-replay plans. Three jumps retain their
+  scan exclusions; 41 other groups remain unavailable under their explicit
+  reasons. Missing isolated admission is a single unapproved policy proposal,
+  not an owner-curated list. Stable/factor/source/donor checks remain enforced.
+- Natural arms byte-identical with zero replacements; original spectra/time and
+  sample identities preserved. A declared contaminant executes one x fill,
+  propagates r unavailability, and yields +337 finite x / +2 paired-available
+  outputs, with explicit representative/nonrepresentative distinctions. All
+  experimental filter choices and scientific limitations remain unchanged.
+- Final gates: CTest 1165 runnable + one established disabled; RTC Python
+  94 + 38 subtests, baseline 207 + 137, require-all config, exact CLI,
+  isolated headers and lint pass. Supplemental local environment only; no V2
+  Spack reproduction. Prior failed development runs are not acceptance evidence.
+- Fresh exact-source independent verdict PASS WITH RECORDED LIMITATIONS,
+  no actionable findings on three axes. Reproduces 18 C++ + three Python tests;
+  verifies 300 numerical/support artifacts unchanged by the binding repair.
+  Review SHA256 `480e27eb0868e4511e53732ff7c00212c0c5da5c78ffff343e2ad618cf304089`.
+- Evidence `/private/tmp/citlali-rtc-decision-apply-2026-09-16`: 348 files,
+  308370217 bytes; manifest SHA256
+  `1b5d0a0e4c45b7c09be7fa4d8d53c9ba1668518a931441b54c88cae788f6dcfb`.
+  This documentation-only closure is independently reviewed at its own exact
+  SHA and bound externally without rewriting the computational manifest.
+- Owner acceptance/push and natural isolated-admission policy remain pending;
+  no production, FRUIT/PTC/CAL/MAP qualification or donor-method expansion.
+
 ## Simultaneous RTC caller and initial no-mask Learn — 2026-09-15
 
 - Work order `TIMESTREAM-SUCCESSOR-RTC-MULTIDETECTOR-001`, Tier 2; existing

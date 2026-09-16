@@ -1,5 +1,108 @@
 # TIMESTREAM-SUCCESSOR-RTC-NOTCH-RECOVERY-001
 
+## Real-data RTC Consider to Apply connection — 2026-09-16
+
+Disposition: locally verified, independently reviewed source candidate;
+owner acceptance/push and natural isolated-event policy remain unselected.
+Work order `TIMESTREAM-SUCCESSOR-RTC-DECISION-APPLY-001`, Tier 2, remains on
+the existing RTC module topic. Exact source `d92cd3a5184bf9189a8b90739647a746e26d4f11`, tree
+`223243d41da7484480be8e3afd5faf54d5289edb`, parent
+`cfc1f5456adcc63ce1c9dff0b2c37058eea636ad`, literal work-order base
+`7ab626d4760e6bb92f59a1f302deeab834b35310`. The owner directive supersedes
+manual event IDs and hand-drawn stable intervals as the next runtime approach.
+
+Runtime Learn remains original-data transient/spectral evidence. Typed RTC
+Consider now resolves all-event dispositions and operation-specific support;
+Apply executes the complete existing fixed plan afresh on the admitted pair.
+Conditioned relearning retains parent/attempt/plan/VAL/support bindings. These
+runtime responsibilities are separate from the engineering workflow.
+
+The existing processing generation is recovered from its exact configuration,
+provenance and eleven verified timestamp inputs through existing scan/context
+and alignment owners. All 124 inner/outer interval counts agree with recorded
+provenance. Native membership uses actual associations, not equal indices or
+scan counts. The common reference grid does not resample or compact native time.
+First/last science ranges are `[33,1221)` / `[150061,151249)`; context, physical
+runs and learning windows remain distinct. Maximum relative association residual
+2.460 ms is within the existing 4.096 ms tolerance. Absolute epoch/readout
+integration uncertainty remains unquantified and the provisional averaging
+assumption is unchanged.
+
+All 44 original groups have reproducible dispositions: 38 recovered candidates
+with isolated admission unavailable, three without a resolved seeded-coordinate
+excursion, and three admitted jumps. The jumps retain full processing-scan 88
+exclusion `[107361,108581)` on channels 402/406/438; no plateau correction,
+stitching or jump filling. Stable signal-plus-background domains use physical
+and shift boundaries, exclusions, paired validity and actual processing support;
+target fits/boundaries and every donor must still pass their existing checks.
+Missing admission makes the guarded/affected operation unavailable, not clean
+input or a new production classification. Natural donor execution is zero.
+
+One missing scientific predicate remains: promotion to accepted isolated
+continuity treatment (SCI-RTC REQ-012/017; approved donor treatment explicitly
+left admission unresolved). The **unapproved proposal** is the existing 5-sigma
+candidate with seeded finite extent, paired cubic/recovery and source checks,
+no refinement/health or admitted/unresolved shift concern, and no overlapping
+candidate guard on another cohort detector; then require existing donor/factor/
+support checks. Eleven current events would advance to donor checking, not
+become guaranteed fills; 27 overlap another cohort candidate. Twelve detectors
+are not a full-network census, and this rule does not identify physical origin.
+No new threshold, donor method, source mask, notch selection or stopping rule is
+selected. The detailed proposal and ambiguous-case limitation are in the report.
+
+Both natural exclusion/control and donor-continuity arms run and are byte-
+identical. Original native clock, 24 original spectra and input sample files
+remain unchanged. Pair-counted denominator is 1,818,444 cells / 14,896.693248
+detector-seconds. Disjoint direct losses: 5,688 existing transient exclusions
+(3,660 jump cells + 2,028 failed-screen tail), 959 pending event cells, 1,824
+additional processing-support cells and 63,893 motion/sampling cells; another
+865,036 native cells lose complete filter support. The resulting phase-zero
+schedule has 440,542 paired-available outputs / 909,228 possible representatives.
+Replacements and replacement influences are zero in natural data. Do not mix
+native-rate loss counts with downsampled output counts.
+
+The known one-occurrence paired contaminant at channel 269/native row 19340
+runs actual Learn/Consider/Apply on a copied originally usable interval. Exact
+untouched source/configuration is required. One x value is donor-filled; r stays
+unavailable. Donor continuity adds 337 finite x outputs against true segmented
+exclusion, but only two paired-available outputs. One representative is replaced
+and excluded; 334 other representatives retain replacement influence. Local
+outside-fill x residual RMS/max are 1.61e-9 / 1.18e-8 in original units. This
+shows numerical continuity and propagated costs, not independent exposure or
+map benefit. The original source-transfer tests and their bounded scope remain.
+
+Final gates pass: 1,165 runnable CTests (one established disabled), RTC Python
+94 plus 38 subtests, baseline 207 plus 137, require-all configuration, exact CLI,
+public-header isolation and changed Python lint. Source review found and repaired
+an event-generation identity gap; the final new-SHA review passes all three
+axes with recorded limitations, no actionable findings, and independently repeats
+18 C++ / three Python tests. Source review SHA256:
+`480e27eb0868e4511e53732ff7c00212c0c5da5c78ffff343e2ad618cf304089`.
+
+Natural loading/verification / Learn take 105.314 / 0.751 s; support Consider
+0.014 s, per-arm plan freeze about 0.10 s, Apply 1.342 / 1.311 s and conditioned
+relearning 0.810 / 0.821 s. Actual process wall is 112.384 s; the driver reports
+peak child RSS separately (cumulative maximum across sequential children).
+The first run overlaps the remaining build, so these are workload observations,
+not isolated throughput benchmarks. Local AppleClang 21 arm64/C++20/Homebrew,
+existing kids `04088da-dirty`; no Unity/Spack V2 reproduction. Final successful
+gates/runs have zero unexpected error-level output. Intentional negative tests,
+development failures and the superseded review remain distinct evidence.
+
+Evidence: `/private/tmp/citlali-rtc-decision-apply-2026-09-16`, including
+`REPORT.md`, all-event table, original/controlled plots, exact-D2 comparison,
+stage timing, immutable bindings and independent reviews. Seal: 348 files,
+308,370,217 bytes; `EVIDENCE_SHA256SUMS` SHA256
+`1b5d0a0e4c45b7c09be7fa4d8d53c9ba1668518a931441b54c88cae788f6dcfb`.
+The documentation closure has its own exact-SHA independent review and external
+binding; the computational seal is not changed by closure.
+
+Fresh live canonical remains `0f52e1a421416eadaf7d8d99d64f537132395c0c`, an
+ancestor, and published topic remains `becccce85816379e578ac1a325e8c9fe156defbe`.
+No integration, push, cleanup, FRUIT/PTC/CAL/MAP or production activation occurs.
+Owner alone pushes. Stop this bounded pass; the next decision is the isolated
+admission predicate, not manual curation or a donor redesign.
+
 ## Reproducible real-data Consider to Apply preflight — 2026-09-16
 
 Owner directive: complete the bounded real-data RTC Consider to Apply connection

@@ -1,5 +1,49 @@
 # Citlali Refactor Status
 
+## Real-data RTC decisions and complete Apply — 2026-09-16
+
+The bounded connection is implemented at exact source
+`d92cd3a5184bf9189a8b90739647a746e26d4f11`, tree
+`223243d41da7484480be8e3afd5faf54d5289edb`, following the reviewed binding repair.
+The existing twelve-detector 152390 cohort runs Learn, all-event Consider, true
+segmented exclusion control, donor-continuity Apply and conditioned relearning.
+Existing scan/timing owners recover 124 processing intervals from exact input
+identities; support comes from physical/shift boundaries, exclusions and actual
+native membership. Manual event IDs or drawn intervals are not the runtime path.
+Originals, settled cubic/recovery/donor method and fixed filter plans are preserved.
+
+Natural result: all 44 groups receive decisions; three admitted jumps keep their
+full-scan exclusions, 38 recovered candidates retain unavailable isolated
+admission, and three lack a resolved seeded-coordinate excursion. No natural
+isolated event is accepted or donor-filled. One narrow **unapproved** admission
+predicate would advance 11 candidates to existing donor checks; it does not
+assert full-network isolation or physical origin. The report states the rule,
+scientific rationale, ambiguity and exact consequences. No manual curation is
+requested. The scoped no-mask decision retains astronomical signal.
+
+The declared paired contaminant in a copied usable real interval exercises one
+actual x donor replacement, leaves r unavailable and preserves full propagation.
+It adds 337 finite x outputs but only two paired-available outputs versus true
+exclusion. This is continuity, not demonstrated independent exposure or map gain.
+Natural loss is dominated by the already-fixed motion/sampling and filter-support
+limits. Full table, pair-counted losses, plots and separated stage timings are
+in `/private/tmp/citlali-rtc-decision-apply-2026-09-16/REPORT.md`.
+
+Final local gates: 1,165 runnable CTests, RTC Python 94 + 38 subtests,
+baseline 207 + 137, require-all config, exact CLI and header/lint checks pass.
+Independent exact-source review: PASS WITH RECORDED LIMITATIONS, no actionable
+findings on all three axes; the earlier event-generation binding finding is
+repaired and re-reviewed. Supplemental AppleClang/Homebrew with disclosed
+existing kids dirt, not Unity/Spack V2. Evidence seal: 348 files, digest
+`1b5d0a0e4c45b7c09be7fa4d8d53c9ba1668518a931441b54c88cae788f6dcfb`.
+Details: current notch-recovery handoff, integration ledger and sealed evidence.
+
+This is a locally verified source candidate; owner acceptance/push and the
+isolated-admission decision remain pending. Production filtering stays inactive;
+no integration, cleanup, FRUIT, PTC, CAL or MAP extension. Runtime
+Learn/Consider/Apply boundaries are implemented independently of the development
+workflow. Stop after this bounded pass.
+
 ## Simultaneous RTC caller and initial no-mask Learn — 2026-09-15
 
 The bounded offline multi-detector caller is implemented at exact source
