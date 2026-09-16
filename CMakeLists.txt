@@ -69,6 +69,7 @@ target_sources(citlali
     "src/citlali/core/config/timestream_enums.cpp"
     "src/citlali/core/pipeline/ast_scan_motion.cpp"
     "src/citlali/core/pipeline/ast_scan_motion_alignment.cpp"
+    "src/citlali/core/pipeline/timestream_rtc_common_mode.cpp"
     "src/citlali/core/pipeline/timestream_identity_route_context.cpp"
     "src/citlali/core/pipeline/output_root_lease.cpp"
     "src/citlali/core/pipeline/reduction_restart_checkpoint.cpp"
@@ -92,6 +93,10 @@ if (CITLALI_USE_WIENER_FILTER_OMP)
     endif()
 endif()
 add_library(citlali::citlali ALIAS citlali)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    set_source_files_properties(src/citlali/core/pipeline/timestream_rtc_common_mode.cpp
+        PROPERTIES COMPILE_OPTIONS "-fno-fast-math;-ffp-contract=off")
+endif()
 
 ## optional targets
 option(CITLALI_BUILD_CLI "Build CLI" ON)

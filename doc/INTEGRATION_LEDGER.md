@@ -1,5 +1,20 @@
 # Citlali Integration Ledger
 
+## RTC common-mode health implementation candidate — 2026-09-16
+
+- Owner-authorized Tier 2 `TIMESTREAM-SUCCESSOR-RTC-COMMON-MODE-HEALTH-001`,
+  literal base `46c3de155bdf36c9bf01e59a4db0cccdf3626acc`, existing RTC worktree
+  and branch. Canonical/topic verified at preflight; no ancestry changes.
+- Runtime Learn owns exact original, initial VAL, membership, AST/processing
+  support, reference, signed fit and lazy residual products. Consider owns
+  descriptive comparisons. No detector rejection or Plan/Apply authority.
+- Nine focused controls pass; preliminary broader gates pass in the local
+  AppleClang/Homebrew environment. The final case is owner-identified
+  152390/network0, replacing the explicitly labeled network12 development proxy.
+- Exact source, final gates/replay and independent three-axis review are to be
+  bound at `/private/tmp/citlali-rtc-common-mode-health-2026-09-16`.
+  No integration, activation, push or cleanup; completion pending final evidence.
+
 ## RTC speed-support correction — 2026-09-16
 
 - Owner-authorized `TIMESTREAM-SUCCESSOR-RTC-SPEED-SUPPORT-001`, Tier 2,

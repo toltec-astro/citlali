@@ -1,5 +1,24 @@
 # Citlali Refactor Status
 
+## RTC common-mode detector-health diagnostic — 2026-09-16
+
+The owner authorizes one early runtime Learn diagnostic and bounded replay,
+without a rejection rule or science subtraction. A fixed time-wise median of
+baseline-centered original x supplies free signed affine response fits;
+Consider compares those with calibration and existing original transient and
+spectral evidence. Plan/Apply do not consume the diagnostic. Initial paired VAL,
+physical gaps, unresolved edges and existing adaptive speed restrictions remain.
+
+The implementation candidate has focused controlled evidence and a full-network
+12 development proxy. The owner then identifies the intended negative-gain
+example as **152390/network 0**; that 630-detector a1100 network is the final
+bounded case. No cross-network reference or pooled bands. Final exact-source
+replay, evidence and fresh independent review are bound externally at
+`/private/tmp/citlali-rtc-common-mode-health-2026-09-16` and in the
+[work-order handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_COMMON_MODE_HEALTH_001_2026-09-16.md).
+Completion is pending those gates. No production policy, canonical integration,
+push, FRUIT connection, recalibration or common-mode subtraction is authorized.
+
 ## RTC fixed-filter speed support — 2026-09-16
 
 The owner selects original x/r support through speed-only excursions while

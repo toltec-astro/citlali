@@ -5,6 +5,7 @@
 #include "../tools/timestream_successor/rtc_multidetector_bindings.h"
 #include <gtest/gtest.h>
 #include <citlali/core/pipeline/timestream_processing_scan_native.h>
+#include <citlali/core/pipeline/timestream_rtc_common_mode.h>
 
 namespace {
 using namespace citlali::pipeline;
@@ -1174,4 +1175,32 @@ TEST(rtc_notch_recovery, speed_permission_preserves_coincident_optical_domain_re
   const std::array parts{t.spikes->input_handle()};
   const auto result=RtcNotchRecoveryResult::apply(plan,t.spikes->input_handle(),t.val,parts);
   EXPECT_TRUE(result->output_native_rows().empty());
+}
+
+TEST(rtc_common_mode, diagnostic_does_not_change_frozen_plan_flags_or_science_output) {
+  Input in; Trial t(in);const auto plan=t.plan();const auto before=t.apply(plan);
+  RtcCommonModeDomain domain;domain.network=0;domain.motion=t.domain.motion;
+  domain.nominal_interval_seconds=.008192;domain.output_factor=2;domain.speed_ceiling_arcsec_per_sec=20;
+  domain.population_authority="controlled-three-original-peers";
+  domain.scans=RtcExistingScanBinding::admit(t.parent,"existing-controlled-scan","exact-native","known",
+      RtcExistingScanSupportState::conservative_native_support_bound,{{0,{0,100,1200}}});
+  for(std::uint32_t d=0;d<3;++d)domain.members.push_back({t.parent->network(0).detector(d).detector_occurrence_id,true,1.});
+  auto diagnostic=RtcCommonModeEvidence::learn(t.spikes,domain,100);
+  auto review=RtcCommonModeConsideration::compare(diagnostic,t.lines);
+  auto after=t.apply(plan);
+  EXPECT_EQ(before->causes(),after->causes());
+  EXPECT_EQ(before->output_native_rows(),after->output_native_rows());
+  for(auto row=100;row<1200;++row)for(auto coordinate:{NativeReadoutCoordinate::x,NativeReadoutCoordinate::r})for(bool stage:{false,true})
+    EXPECT_EQ(before->coordinate_stage_available(coordinate,row,stage),after->coordinate_stage_available(coordinate,row,stage));
+  const auto &a=before->filtered_native_pair(),&b=after->filtered_native_pair();
+  ASSERT_EQ(a.size(),b.size());
+  for(Eigen::Index i=0;i<a.size();++i)EXPECT_TRUE(a.data()[i]==b.data()[i] || (std::isnan(a.data()[i]) && std::isnan(b.data()[i])));
+  EXPECT_EQ(t.val->generation().value,0);
+  EXPECT_FALSE(review.rejection_authorized);
+  for(std::size_t i=0;i<in.times.size();++i)for(std::size_t d=0;d<3;++d){
+    EXPECT_EQ(t.parent->network(0).value(NativeReadoutCoordinate::x,100+i,d),in.x(i,d));
+    EXPECT_EQ(t.parent->network(0).value(NativeReadoutCoordinate::r,100+i,d),in.r(i,d));
+    EXPECT_EQ(t.parent->network(0).state(NativeReadoutCoordinate::x,100+i,d).valid(),in.xs[i*3+d].valid());
+    EXPECT_EQ(t.parent->network(0).state(NativeReadoutCoordinate::r,100+i,d).valid(),in.rs[i*3+d].valid());
+  }
 }

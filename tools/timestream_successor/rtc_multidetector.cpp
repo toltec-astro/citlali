@@ -32,6 +32,7 @@ void write_matrix(const fs::path &p,const auto &m) {
 }
 }
 #include "rtc_processing_scan_input.h"
+#include "rtc_common_mode_output.h"
 int main(int argc,char **argv) {
   try {
     const auto began=std::chrono::steady_clock::now();
@@ -114,8 +115,10 @@ int main(int argc,char **argv) {
         source,     raw_path, tune_path, citlali::utils::sha256_file(tune_path),
         fpga,       hz,       accum,     tune.accumulation_length,
         tune.valid, timing};
-    require(obs == 152390 && sub == 0 && scan == 2 && nw == 12,
-            "bounded caller requires NGC4449/152390/0/2 network 12");
+    const bool full_health=cfg["common_mode_health"] && cfg["common_mode_health"].as<std::string>()=="full-network-learn-only";
+    require(obs == 152390 && sub == 0 && scan == 2 && (nw == 12 || (full_health && nw == 0)),
+            "bounded caller requires NGC4449/152390/0/2: network12 Apply or network0 diagnostic only");
+    const int health_array=nw==0 ? 0 : 2;
     require(rows == prior["rows"].as<std::int64_t>() &&
                 nw == prior["network"].as<int>() &&
                 source.channel_count == prior["channels"].as<int>(),
@@ -204,7 +207,7 @@ int main(int argc,char **argv) {
       detectors.push_back(std::move(binding));
       const auto aptrow=std::find_if(verified.apt.rows.begin(),verified.apt.rows.end(),
           [&](const auto &a){return a.network==nw && a.channel==channels[d];});
-      require(aptrow!=verified.apt.rows.end() && aptrow->array==2,"projection must bind exact a2000 APT rows");
+      require(aptrow!=verified.apt.rows.end() && aptrow->array==health_array,"projection must bind exact within-network APT array rows");
       factors.push_back(field(*aptrow,"flxscale"));
       peer_good.push_back(field(*aptrow,"flag")==0 && field(*aptrow,"flag2")==0);
     }
@@ -257,6 +260,37 @@ int main(int argc,char **argv) {
     auto measure=[](double &seconds,auto operation){const auto at=std::chrono::steady_clock::now();
       auto result=operation();seconds+=std::chrono::duration<double>(std::chrono::steady_clock::now()-at).count();return result;};
     auto spikes=measure(learn_seconds,[&]{return learn_rtc_spike_candidates(view,val,protection,1);});
+    std::shared_ptr<const RtcCommonModeEvidence> health;
+    double health_seconds=0;
+    if(cfg["common_mode_health"]) {
+      require(recovered_scans.has_value() && motion,"health needs the existing processing and motion binding");
+      RtcCommonModeDomain domain;domain.network=nw;domain.scans=recovered_scans->projection.binding;
+      domain.motion=motion;domain.population_authority="exact-APT-flag=flag2=0-and-Tune-valid:sha256:"+citlali::utils::sha256_file(manifest);
+      domain.array=nw==0 ? RtcOpticalArray::a1100 : RtcOpticalArray::a2000;domain.nominal_interval_seconds=duration;
+      domain.speed_ceiling_arcsec_per_sec=235;domain.output_factor=2;
+      for(std::size_t d=0;d<channels.size();++d)domain.members.push_back({detectors[d].detector_occurrence_id,peer_good[d] && tune.valid[channels[d]],factors[d]});
+      health=measure(health_seconds,[&]{return RtcCommonModeEvidence::learn(spikes,std::move(domain),30);});
+      if(cfg["common_mode_health"].as<std::string>()=="full-network-learn-only") {
+        require(channels.size()==static_cast<std::size_t>(source.channel_count),"health replay requires full network");
+        auto native=ValNativeRealization::create(parent,{ValProducer::align,1},1,ValNativeProductRole::original_input,nw);
+        auto identity=RtcSpectralInputIdentity::bind(native,val,view->span(nw),RtcSpectralInputStage::original_reference,"exact-simultaneous-audit-original-projection",1);
+        auto spectra=measure(learn_seconds,[&]{return RtcNativeSpectralEvidence::learn_initial(spikes,{identity},{{nw,"audit-four-epoch-ULP-arithmetic-envelope",duration,prior["roundoff_bound_fraction"].as<double>()}},18);});
+        auto lines=RtcLinePowerEvidence::learn(spectra,val,RtcLinePowerProfile::initial_2_hz,19);
+        export_health(output/"health",health,lines,channels,cfg,argv[1],health_seconds);
+        write_yaml(output/"processing-scans.yaml",recovered_scans->receipt);
+        const auto &net=parent->network(nw);
+        for(std::uint32_t d=0;d<channels.size();++d)for(std::int64_t row=0;row<rows;++row)
+          require(std::bit_cast<std::uint64_t>(original_x(row,d))==std::bit_cast<std::uint64_t>(net.value(NativeReadoutCoordinate::x,row,d)) &&
+            std::bit_cast<std::uint64_t>(original_r(row,d))==std::bit_cast<std::uint64_t>(net.value(NativeReadoutCoordinate::r,row,d)),"health changed original pair");
+        YAML::Node receipt;receipt["source_revision"]=std::string(CITLALI_GIT_REVISION);receipt["configuration_sha256"]=citlali::utils::sha256_file(argv[1]);
+        receipt["original_pair_unchanged"]=true;receipt["Apply_performed"]=false;receipt["production_filtering_active"]=false;
+        receipt["status"]="PASS-full-network-diagnostic-only";receipt["rows"]=rows;receipt["detectors"]=channels.size();receipt["network"]=nw;receipt["native_integration_seconds"]=duration;
+        receipt["ingress_seconds"]=std::chrono::duration<double>(ingress_finished-began).count();receipt["existing_learn_seconds"]=learn_seconds;
+        receipt["total_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-began).count();write_yaml(output/"receipt.yaml",receipt);
+        std::cout<<"PASS-full-network-diagnostic-only"<<std::endl;return 0;
+      }
+      require(cfg["common_mode_health"].as<std::string>()=="report-and-continue","unknown bounded health mode");
+    }
     std::vector<RtcEventPeerEligibility> peers;
     for(std::uint32_t d=0;d<channels.size();++d)
       peers.push_back({nw,d,detectors[d].detector_occurrence_id,
@@ -289,6 +323,7 @@ int main(int argc,char **argv) {
     auto joint=measure(consider_seconds,[&]{return RtcLinePowerConsideration::rank(lines,
         RtcSpectralTransientConsideration::consider(spectral,val,events,val,20),21);});
     const auto learn_finished=std::chrono::steady_clock::now();
+    if(health)export_health(output/"health",health,lines,channels,cfg,argv[1],health_seconds);
     // The immutable configuration includes exact content hashes for every
     // scientific input. A changed code/config/VAL requires a new selection.
     const auto binding=citlali::utils::sha256(std::string(CITLALI_GIT_REVISION)+"\n"+
