@@ -1,6 +1,6 @@
 # Citlali Integration Ledger
 
-## RTC common-mode health implementation candidate — 2026-09-16
+## RTC common-mode health bounded completion — 2026-09-16
 
 - Owner-authorized Tier 2 `TIMESTREAM-SUCCESSOR-RTC-COMMON-MODE-HEALTH-001`,
   literal base `46c3de155bdf36c9bf01e59a4db0cccdf3626acc`, existing RTC worktree
@@ -8,12 +8,27 @@
 - Runtime Learn owns exact original, initial VAL, membership, AST/processing
   support, reference, signed fit and lazy residual products. Consider owns
   descriptive comparisons. No detector rejection or Plan/Apply authority.
-- Nine focused controls pass; preliminary broader gates pass in the local
-  AppleClang/Homebrew environment. The final case is owner-identified
-  152390/network0, replacing the explicitly labeled network12 development proxy.
-- Exact source, final gates/replay and independent three-axis review are to be
-  bound at `/private/tmp/citlali-rtc-common-mode-health-2026-09-16`.
-  No integration, activation, push or cleanup; completion pending final evidence.
+- Runtime candidate `9a47dd8d30c844ac2838827c438486f3a53a58d7`, tree
+  `e784b9e437a70071755383f028eea9470f9d61fe`, parent
+  `987f9cc3d415271968c10ec681b89b79a9cf5bee`. The final case is owner-identified
+  152390/network0: 630 targets, 548 initial reference contributors, 622 fitted.
+  Earlier network12 evidence remains a labeled development proxy only.
+- Ten focused controls, 1,178 runnable CTests, 207 baseline Python, 67 RTC
+  Python and full required config preflight pass. Local AppleClang/Homebrew
+  supplemental environment; no Unity/Spack qualification. All 370 compared
+  science/support/decision files are bit-identical with the diagnostic enabled
+  and disabled; original pairs and frozen-plan receipt semantics are unchanged.
+- Negative-response episodes in channel426 overlap prior APT/calibration
+  concerns. Channels221/445 add useful response/calibration questions;
+  channel236 is already identified by spectral evidence. Recommend retaining
+  diagnostic-only status; no new rejection, mask, weight or calibration rule.
+- Exact source, gates/replay, final evidence seal and independent three-axis
+  review are bound at `/private/tmp/citlali-rtc-common-mode-health-2026-09-16`.
+  Runtime review: pass with recorded limitations, no remaining material
+  findings; scientific/behavioral, architecture/ownership and repository/evidence
+  dispositions are separately recorded in `INDEPENDENT_REVIEW.md`.
+  Closure edits documentation only and has a separate exact-source-equivalence
+  and review record. No integration, activation, push or cleanup.
 
 ## RTC speed-support correction — 2026-09-16
 

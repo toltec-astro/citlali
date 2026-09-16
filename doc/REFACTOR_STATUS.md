@@ -9,15 +9,32 @@ Consider compares those with calibration and existing original transient and
 spectral evidence. Plan/Apply do not consume the diagnostic. Initial paired VAL,
 physical gaps, unresolved edges and existing adaptive speed restrictions remain.
 
-The implementation candidate has focused controlled evidence and a full-network
-12 development proxy. The owner then identifies the intended negative-gain
-example as **152390/network 0**; that 630-detector a1100 network is the final
-bounded case. No cross-network reference or pooled bands. Final exact-source
-replay, evidence and fresh independent review are bound externally at
+Final runtime candidate `9a47dd8d30c844ac2838827c438486f3a53a58d7` has a complete
+owner-identified **152390/network0** replay: 630 targets, 548 initial reference
+contributors and 622 targets with fits. Channel426 has sustained negative
+episodes and prior APT flags/invalid calibration; it is not a new fully
+qualified inverted detector. Channels221/445 add response-stability and
+calibration-consistency information; channel236's oscillation is already
+conspicuous in original spectra. Recommend diagnostic-only status; no new
+rejection threshold is established. Network12 remains a development proxy
+and twelve-column unchanged-output control, not a pooled reference.
+
+Ten focused controls, 1,178 runnable CTests, 207 baseline Python tests, 67 RTC
+Python tests and required config preflight pass locally. The final control
+preserves 370 science/support/decision files bitwise and both frozen-plan arm
+receipts semantically. Learn takes 8.817 s and six self-exclusion checks
+2.793 s; logical diagnostic products occupy about 44 MB plus 7.3 MB of check
+references, excluding shared parents/allocator overhead. This is supplemental
+AppleClang/Homebrew evidence, not Unity/Spack qualification.
+
+Exact-source replay, evidence and independent review are bound externally at
 `/private/tmp/citlali-rtc-common-mode-health-2026-09-16` and in the
 [work-order handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_COMMON_MODE_HEALTH_001_2026-09-16.md).
-Completion is pending those gates. No production policy, canonical integration,
-push, FRUIT connection, recalibration or common-mode subtraction is authorized.
+Fresh independent review of the runtime candidate passes with recorded
+limitations and no remaining material findings across all three axes. The
+documentation-only closure has its own exact identity and review binding.
+No production policy, canonical integration, push, FRUIT connection,
+recalibration or common-mode subtraction is authorized.
 
 ## RTC fixed-filter speed support — 2026-09-16
 
