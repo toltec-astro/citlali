@@ -1321,7 +1321,7 @@ TEST(processing_scan_native, exact_offset_support_and_missing_slots_do_not_compa
   Input in;auto parent=in.freeze();Eigen::VectorXd common(5);
   std::vector<NativeSlotAssociation> associations;
   for(int i=0;i<5;++i){common[i]=in.times[i+10];associations.push_back({110+i});}
-  Eigen::MatrixXI scans(4,1);scans<<1,3,0,4;
+  Eigen::Matrix<Eigen::Index,Eigen::Dynamic,Eigen::Dynamic> scans(4,1);scans<<1,3,0,4;
   auto out=project_processing_scans_to_native(parent,0,common,associations,scans,.004096,"existing-generation","existing-relation");
   ASSERT_EQ(out.scans[0].science_native.size(),1);EXPECT_EQ(out.scans[0].science_native[0].first,111);
   EXPECT_EQ(out.scans[0].science_native[0].past_last,114);
@@ -1374,7 +1374,7 @@ TEST(processing_scan_native, consecutive_native_rows_across_physical_gap_remain_
   Input in;for(std::size_t i=100;i<in.times.size();++i){in.times[i]+=.25;in.counters[i]+=30;}
   auto parent=in.freeze();Eigen::VectorXd common(4);std::vector<NativeSlotAssociation> associations;
   for(int i=0;i<4;++i){common[i]=in.times[i+98];associations.push_back({198+i});}
-  Eigen::MatrixXI scans(4,1);scans<<0,3,0,3;
+  Eigen::Matrix<Eigen::Index,Eigen::Dynamic,Eigen::Dynamic> scans(4,1);scans<<0,3,0,3;
   const auto out=project_processing_scans_to_native(parent,0,common,associations,scans,.004096,"existing-generation","existing-relation");
   ASSERT_EQ(out.scans[0].science_native.size(),2);
   EXPECT_EQ(out.scans[0].science_native[0].past_last,200);EXPECT_EQ(out.scans[0].science_native[1].first,200);

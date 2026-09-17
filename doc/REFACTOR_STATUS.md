@@ -1,5 +1,34 @@
 # Citlali Refactor Status
 
+## RTC output test portability repair — 2026-09-17
+
+Owner-run Unity job `64547738` confirms the preceding Spack linkage repair:
+the offline RTC caller links, the CLI reports exact `8bcaa7edc`, GNU 13.3.0 and
+C++23, and the source/float-option prechecks pass. The gate then stops while
+compiling the RTC test translation unit, before CTest runs. Two processing-scan
+fixtures used `Eigen::MatrixXI`, a Tula shorthand imported implicitly by the
+local precompiled header. Compiling the complete unchanged test file locally
+without that header reproduces both missing-type errors and their cascades.
+
+The bounded repair replaces those two declarations with the identical explicit
+`Eigen::Matrix<Eigen::Index,Eigen::Dynamic,Eigen::Dynamic>` type used by the
+production interface. It also disables precompiled headers for this test file
+in the shared test CMake, so both build entry points exercise its declared
+include dependencies. No production code, test input/assertion, scientific
+policy, Spack library fix or dependency realization changes.
+
+The full test-file compile without PCH now passes, and the rebuilt RTC test
+executable passes 24 focused processing-scan/grid/terminal/VAL controls. Required
+config preflight and 280 build-tool/baseline tests plus 137 subtests pass locally.
+Exact repair identity, broader local CTest, independent review and the new
+owner-run Unity packet are recorded in the continuing
+[RTC handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_TREATMENT_OUTCOME_001_2026-09-17.md)
+and `/private/tmp/citlali-rtc-output-test-portability-2026-09-17`.
+Unity compilation/test completion is still pending; prior failed source and
+packets remain preserved. No activation, integration, cleanup or scientific
+change follows from this portability repair.
+
+
 ## RTC output Unity build repair — 2026-09-17
 
 Owner-run Unity job `64545779` tested the pushed RTC checkpoint

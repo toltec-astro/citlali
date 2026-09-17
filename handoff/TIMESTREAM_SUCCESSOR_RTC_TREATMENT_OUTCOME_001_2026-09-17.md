@@ -596,3 +596,63 @@ three-axis review are recorded in
 installation, reconcretization, canonical integration, cleanup or activation
 is performed by Codex. The next owner action is to push the reviewed repair
 and submit the replacement gate; Unity success is still pending.
+
+
+## Unity test compilation and explicit-index repair — 2026-09-17
+
+Owner inspection at `2026-09-17T19:30:07+00:00` reports job `64547738`
+FAILED `1:0`, elapsed `00:15:35`, four CPUs / 32 GB, MaxRSS 19,310,372 KiB.
+Exact source/tree are `8bcaa7edc4fa6c1ce4adf2a26d20e64f96868b42` /
+`0001be874d54cda83df8366a650a9a27d4248f94`. The RTC caller compiled and linked,
+safety target built, source-graph/compile-option checks passed, and CLI version
+matched `8bcaa7edc`, GNU13.3.0/C++23 and Spack DAG
+`ryu6zhjvp5sh7fsbwrzyykbkgkglzkkx`. Deployment remains unmanaged. Thus the
+preceding missing-library-source repair is verified through caller linkage,
+without claiming the still-unreached CTest acceptance.
+
+The `check` target stopped during `test_timestream_rtc_notch_recovery.cpp`
+compilation. Two scan-projection fixtures at parent lines1324/1377 use Tula's
+`Eigen::MatrixXI` alias, defined in `tula/eigen.h`. The local build's generated
+PCH imported that header, masking the undeclared dependency; the explicit
+Spack compilation did not. A local syntax-only compile of the *whole* test
+translation unit using its existing flags but no PCH reproduced the two missing
+alias errors and all cascades. Replacing both declarations with the existing
+production interface's exact Eigen::Index matrix type produces a clean compile.
+The repair keeps dimensions, index width, values, inputs, assertions and test
+names identical. The shared CMake disables PCH for this test file, providing
+ongoing compilation coverage of its real include dependencies.
+
+The continuation starts clean on the same RTC branch at `8bcaa7edc`; live remote
+topic is that same SHA, canonical remains
+`0f52e1a421416eadaf7d8d99d64f537132395c0c`. AGENTS, toltec-context and the effective
+governance/review requirements remain binding. Reassessment: repair within the
+owner-requested build gate; no new scientific decision or implementation scope.
+Only the test translation unit, its CMake property, status and this handoff
+change. Production `src/`/`include/`, scientific contracts, dependency pins and
+Spack build definitions are preserved exactly.
+
+Local evidence records the before/after no-PCH reproduction, rebuilt RTC target,
+24 passing processing-scan/grid/terminal/VAL controls, required config preflight
+and 280 build-tool/baseline tests plus137 subtests. Full CTest and exact-SHA
+independent review are recorded in the final external completion record. This
+is supplemental AppleClang/Homebrew evidence, not a substitute for GCC13/Spack.
+No new observation replay is needed for two equivalent test type declarations.
+
+The replacement packet at
+`/private/tmp/citlali-rtc-output-unity-portability-20260917` retains fresh
+source/build/evidence isolation and four CPUs/32GB/two-hour allocation. It
+requires the test translation unit's compile command to exclude PCH, builds
+that RTC test target early, retains full1217-runnable-test acceptance, and adds
+the two repaired processing-scan cases to the explicit focused rerun (24 total).
+No existing test is disabled. The inspector reports compiler errors from the
+failed check log as well as the traceback. Previous jobs/packets remain intact.
+
+The supplied transcript is preserved verbatim under
+`/private/tmp/citlali-rtc-output-test-portability-2026-09-17/owner-transcript.txt`.
+Final-status SHA-256 `006ad3957c0e5f315217e22c4e1c192399f95ed6fd0226f057c20e0dd70f143d`;
+archive-manifest SHA-256 `eea4fc8b0f7f714a9109f3229d76677cfeab5a31e0f78d53577c138b2223b87e`.
+Full Unity logs remain owner-held; no direct Unity access or downloaded-archive
+verification is claimed. Exact candidate/tree/path digests and independent
+review are in the same local evidence directory. Owner push and Unity rerun are
+the next actions; no integration, activation, installation, reconcretization,
+cleanup or Codex push occurs here.
