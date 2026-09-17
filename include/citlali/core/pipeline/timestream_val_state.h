@@ -11,6 +11,7 @@
 #include <optional>
 #include <span>
 #include <stdexcept>
+#include <tuple>
 #include <utility>
 #include <variant>
 #include <vector>
@@ -308,6 +309,48 @@ private:
     NativeReadoutCoordinate coordinate_;
 };
 
+class RtcOutputGrid;
+
+// An RTC output occurrence is a distinct VAL subject, even when its selected
+// representative has the same time/value as an original native occurrence.
+// Only the immutable RTC grid can construct this relation. VAL preserves it;
+// it does not derive a grid, pointing or scientific-use policy from the address.
+class ValRtcOutputTarget {
+public:
+    const auto &grid_handle() const noexcept { return grid_; }
+    const auto &input_snapshot_handle() const noexcept { return input_snapshot_; }
+    ValAddress address() const;
+    std::size_t slot() const noexcept { return slot_; }
+    NativeReadoutCoordinate coordinate() const noexcept { return coordinate_; }
+    friend bool operator==(const ValRtcOutputTarget &, const ValRtcOutputTarget &) = default;
+    friend bool operator<(const ValRtcOutputTarget &a, const ValRtcOutputTarget &b) noexcept {
+        if (a.grid_.get() != b.grid_.get())
+            return std::less<const RtcOutputGrid *>{}(a.grid_.get(), b.grid_.get());
+        return std::tie(a.network_, a.detector_, a.slot_, a.row_, a.coordinate_) <
+               std::tie(b.network_, b.detector_, b.slot_, b.row_, b.coordinate_);
+    }
+private:
+    friend class RtcOutputGrid;
+    ValRtcOutputTarget(std::shared_ptr<const RtcOutputGrid> grid,
+                       std::shared_ptr<const ValSnapshot> input_snapshot,
+                       ValAddress representative, std::size_t slot,
+                       NativeReadoutCoordinate coordinate)
+        : grid_{std::move(grid)}, input_snapshot_{std::move(input_snapshot)},
+          row_{representative.sample_identity().native_row()}, slot_{slot},
+          network_{representative.sample_identity().network_id()},
+          detector_{static_cast<std::uint32_t>(*representative.detector_index())},
+          coordinate_{coordinate} {}
+    std::shared_ptr<const RtcOutputGrid> grid_;
+    std::shared_ptr<const ValSnapshot> input_snapshot_;
+    // Compact indices are interpreted only through these exact immutable
+    // parents. This avoids enlarging every existing native VAL finding.
+    TimestreamNativeRow row_;
+    std::size_t slot_;
+    TimestreamNetworkId network_;
+    std::uint32_t detector_;
+    NativeReadoutCoordinate coordinate_;
+};
+
 class ValFindingKey {
 public:
     ValFindingKey(ValProducerProductIdentity product, ValAddress address,
@@ -316,16 +359,23 @@ public:
     ValFindingKey(ValProducerProductIdentity product, ValNativeTarget target,
                   ValFactCode fact)
         : product_{product}, subject_{std::move(target)}, fact_{fact} {}
+    ValFindingKey(ValProducerProductIdentity product, ValRtcOutputTarget target,
+                  ValFactCode fact)
+        : product_{product}, subject_{std::move(target)}, fact_{fact} {}
 
     const ValProducerProductIdentity &product() const noexcept {
         return product_;
     }
-    const ValAddress &address() const noexcept {
+    ValAddress address() const {
         if (const auto *target = native_target()) return target->address();
+        if (const auto *target = rtc_output_target()) return target->address();
         return std::get<ValAddress>(subject_);
     }
     const ValNativeTarget *native_target() const noexcept {
         return std::get_if<ValNativeTarget>(&subject_);
+    }
+    const ValRtcOutputTarget *rtc_output_target() const noexcept {
+        return std::get_if<ValRtcOutputTarget>(&subject_);
     }
     ValFactCode fact() const noexcept { return fact_; }
 
@@ -344,7 +394,7 @@ private:
     ValProducerProductIdentity product_;
     // Unqualified and coordinate-qualified facts are disjoint domains. There
     // is no implicit pair-wide meaning, coordinate broadcast or fallback.
-    std::variant<ValAddress, ValNativeTarget> subject_;
+    std::variant<ValAddress, ValNativeTarget, ValRtcOutputTarget> subject_;
     ValFactCode fact_;
 };
 
@@ -412,6 +462,7 @@ struct ValSnapshotMemoryEvidence {
     std::size_t referenced_parent_generation_count = 0;
     // Counts handle references in this delta, not unique descriptor objects.
     std::size_t referenced_native_target_count = 0;
+    std::size_t referenced_rtc_output_target_count = 0;
 
     std::size_t logical_owned_bytes() const noexcept {
         return owned_finding_bytes;
@@ -521,6 +572,18 @@ public:
                contains(target.address());
     }
 
+    bool contains(const ValRtcOutputTarget &target) const noexcept {
+        if (!target.grid_handle() || !target.input_snapshot_handle() ||
+            !target.address().detector_bound() || !contains(target.address()) ||
+            (target.coordinate() != NativeReadoutCoordinate::x &&
+             target.coordinate() != NativeReadoutCoordinate::r)) return false;
+        // A later immutable generation may attach facts to the same output;
+        // an unrelated generation with identical native values may not.
+        for (auto current = this; current; current = current->parent_.get())
+            if (current == target.input_snapshot_handle().get()) return true;
+        return false;
+    }
+
     const NativeReadoutDetectorBinding &detector_binding(
         const ValAddress &address) const {
         if (!contains(address) || !address.detector_index()) {
@@ -561,6 +624,9 @@ public:
                     findings_.begin(), findings_.end(),
                     [](const ValFinding &finding) {
                         return finding.key().native_target() != nullptr;
+                    })), static_cast<std::size_t>(std::count_if(
+                    findings_.begin(), findings_.end(), [](const ValFinding &finding) {
+                        return finding.key().rtc_output_target() != nullptr;
                     }))};
     }
 
@@ -580,6 +646,12 @@ private:
     std::shared_ptr<const ValSnapshot> parent_;
     std::vector<ValFinding> findings_;
 };
+
+inline ValAddress ValRtcOutputTarget::address() const {
+    if (!grid_ || !input_snapshot_)
+        throw std::invalid_argument("VAL RTC output target has no retained parent");
+    return input_snapshot_->address(network_, row_, detector_);
+}
 
 // The builder is the only mutable VAL object. It is producer-scoped, local to
 // one phase, and cannot change the immutable base snapshot. Freeze sorts by
@@ -608,6 +680,11 @@ public:
         return propose_key(
             ValFindingKey{producer_product_, std::move(target), fact}, state,
             cause);
+    }
+    ValDeltaBuilder &propose(ValRtcOutputTarget target, ValFactCode fact,
+                             ValFactState state, ValFactCause cause) {
+        return propose_key(
+            ValFindingKey{producer_product_, std::move(target), fact}, state, cause);
     }
 
     ValDelta freeze() {
@@ -642,6 +719,10 @@ private:
             target && !base_snapshot_->contains(*target)) {
             throw std::invalid_argument(
                 "VAL finding target differs from the base snapshot");
+        }
+        if (const auto *target = key.rtc_output_target();
+            target && !base_snapshot_->contains(*target)) {
+            throw std::invalid_argument("VAL RTC output target differs from the base snapshot lineage");
         }
         findings_.push_back(ValFinding{std::move(key), state, cause});
         return *this;

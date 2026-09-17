@@ -4,6 +4,7 @@
 #include "identity_route_acceptance.cpp"
 #undef main
 #include "rtc_multidetector_bindings.h"
+#include <citlali/core/pipeline/timestream_rtc_output_grid.h>
 #include <bit>
 
 namespace {
@@ -587,6 +588,41 @@ int main(int argc,char **argv) {
       auto result=RtcPipelineResult::apply(complete,view,val,partitions);
       arm["Apply_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-applied_at).count();
       receipt["Apply_performed"]=true;
+      if(cfg["prepare_output_grid"] && cfg["prepare_output_grid"].as<bool>()) {
+        const auto start=std::chrono::steady_clock::now();
+        auto ast_views=AstScanMotionNetworkViews::admit(parent->scope(),
+            motion->raw_product_handle(),{axis->native_timing_handle()});
+        auto align=IdentityRouteAlignContext::admit(parent,ast_views,val);
+        auto grid=RtcOutputGrid::prepare(result,align);
+        YAML::Node record;
+        record["state"]="prepared-RTC-occurrences-only";
+        record["terminal_publication_performed"]=false;
+        record["CAL_admission_performed"]=false;
+        record["AST_detector_coordinate_parent"]="unavailable-not-bound-by-this-diagnostic";
+        record["output_VAL_target_binding"]="exact-RTC-grid-slot-and-coordinate";
+        record["output_VAL_publication"]="not-performed-before-complete-handoff";
+        record["descriptor_bytes"]=grid->owned_descriptor_bytes();
+        for(std::size_t d=0;d<grid->detectors().size();++d){
+          YAML::Node column;const auto &g=grid->detectors()[d];
+          column["channel"]=channels[d];column["scheduled_slots"]=g.scheduled_count;
+          std::size_t x_available=0,r_available=0,replaced=0,influence=0;
+          for(std::size_t slot=0;slot<g.scheduled_count;++slot){
+            auto fact=grid->occurrence(d,slot);
+            require(val->contains(RtcOutputGrid::val_target(grid,d,slot,NativeReadoutCoordinate::x)) &&
+                val->contains(RtcOutputGrid::val_target(grid,d,slot,NativeReadoutCoordinate::r)),
+                "prepared output does not bind the exact VAL parent");
+            x_available+=fact.x_available;r_available+=fact.r_available;
+            replaced+=fact.representative_replaced;influence+=fact.replacement_influence;
+            require(fact.representative.network_occurrence.native_row()==g.first+static_cast<TimestreamNativeRow>(slot*g.factor),
+                "prepared output occurrence changed native phase");
+          }
+          column["x_available"]=x_available;column["r_available"]=r_available;
+          column["representative_replaced"]=replaced;column["replacement_influence"]=influence;
+          record["detectors"].push_back(column);
+        }
+        record["prepare_and_inspect_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-start).count();
+        arm["output_grid"]=record;
+      }
       // Diagnostic overlays bind to this already frozen complete plan. They
       // never enter Learn/Consider or modify its masks/coefficients/decisions.
       for(const auto &probe:cfg["fixed_plan_injections"]){

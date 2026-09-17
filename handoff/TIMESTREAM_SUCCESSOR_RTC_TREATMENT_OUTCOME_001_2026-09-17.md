@@ -319,3 +319,73 @@ local links, unchanged executable/contract content and exact-SHA documentation
 conformance. Runtime/build/Unity gates are not rerun for prose-only changes;
 the preceding sealed experiment and its environment limitations remain intact.
 No push, merge, reconciliation, activation or cleanup is authorized here.
+
+## RTC output handoff continuation and prerequisite reassessment — 2026-09-17
+
+Owner approval: complete the RTC output boundary against the accepted horizontal
+audit, including ALIGN/AST/VAL inputs and AST/VAL/CAL-facing outputs; then
+`Pushed. Please proceed`. Exact initial/pushed topic
+`3cd941974844b1ba25c829dc1c2bbe51e8f3cf6c`, tree
+`f9a4de42808971daead71cd5a8ad0a78bb663e38`; live canonical remains
+`0f52e1a421416eadaf7d8d99d64f537132395c0c`. Existing clean branch/worktree,
+spine slot, no additional module or branch. Tier 2; all three effective governance
+sources read and their canonical ancestry/digests verified. No scientific or
+numerical policy is selected by this continuation.
+
+Authority: SCI-RTC r0.12 REQ006–007,026–029,037–054,136–143; SCI-AST r0.3
+REQ006–012,073–079; the approved RTC→AST sample-grid and detector-geometry/
+field-rotation boundaries; accepted WP7.1 clean-room interface matrix and
+scenarios IS009–012,018,035–037,041. Existing native-axis and midpoint owner
+bindings, AST motion v2 and September16 speed-support decision are preserved.
+
+**Reassessment:** a full conformant success cannot be obtained by connecting
+existing producers alone. `IdentityRouteAlignContext` supplies the exact native
+occurrence assignment and AST motion. It is not a detector direction/tangent
+parent. ADR0021's boresight-field binding is scoped to the motion role. Existing
+`NativePointingPlan` uses one numerical interpolation path across telescope
+fields; `NativeScienceProjection` requires PTC/map-facing state and includes
+legacy geometry fallback. Neither is adopted as the successor AST producer.
+The diagnostic `rtc_science_reference` coordinates are not promoted to authority.
+
+For 152390, recoverable evidence includes exact matched-APT and field/association
+artifacts, all twelve row identities, configured correction endpoint values/MJD
+support, and the accepted native timing and AST motion records. The ordinary
+coordinate registry/composition, geometry gauge/pivot and selected rotation
+binding, correction parent/sign/basis/application history, and immutable AST
+coordinate realization remain unestablished at this boundary. Equality of all
+twelve `x_t/y_t` values with their `*_derot` fields is an observation, not proof of
+portable geometry or rotation authority. The general contracts remain settled;
+this is an observation-instance/implementation gap. A narrowly scoped owner
+question on explicit V2 convention compatibility is pending; it is not approval
+by elapsed time. No new owner policy is inferred from legacy calculations.
+
+**Independent work implemented:** `RtcOutputGrid` prepares RTC-owned occurrence
+facts from an exact immutable Apply and admitted native ALIGN context. It keeps
+all scheduled phase-zero positions, including those lacking numerical output,
+without compressing time or converting guards into new boundaries. Slot identity
+is scoped to the exact grid; a source native row is only its representative.
+Readout parent keys, integration support and selected-point time remain intact.
+The product references original x/r, full plans/results and donor dependencies;
+its finite filter footprint is explicitly not claimed as total donor support.
+No pointing plane is manufactured or angularly filtered.
+
+VAL now has a distinct `ValRtcOutputTarget`, created only through the RTC grid.
+An output x fact cannot alias output r, an original/native residual coordinate,
+a different output realization or another snapshot lineage. Later generations
+retain prior immutable facts. This adds identity/storage capability; it does not
+select a named-use policy, publish all output facts or turn availability into
+eligibility. It creates no calibrated quantity. The offline twelve-detector
+caller can inspect this preparation with `prepare_output_grid`; production
+configuration and routes are unchanged.
+
+The full approved output task is **not closed**. Successful terminal publication
+and CAL admission require the missing AST parent plus output-fact publication
+and finalization. No fake identity CAL, permissive AST factory, or successful
+placeholder terminal is added. The next prerequisite is the bounded AST-owned
+coordinate realization using exact recovered/approved runtime bindings, not a
+filter change, scientific census, full downstream pipeline or FRUIT connection.
+
+Evidence: `/private/tmp/citlali-rtc-output-handoff-2026-09-17`, including exact
+preflight, runtime-parent recovery, prerequisite review, source/gates, real replay
+and independent candidate review. Local AppleClang21/Homebrew/C++20 evidence is
+supplemental; no Unity/Spack campaign or successful full handoff is claimed.

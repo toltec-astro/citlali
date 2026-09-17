@@ -2,6 +2,7 @@
 #include <citlali/core/pipeline/timestream_rtc_line_population.h>
 #include <citlali/core/pipeline/timestream_rtc_notch_recovery.h>
 #include <citlali/core/pipeline/timestream_rtc_pipeline.h>
+#include <citlali/core/pipeline/timestream_rtc_output_grid.h>
 #include "../tools/timestream_successor/rtc_multidetector_bindings.h"
 #include <gtest/gtest.h>
 #include <citlali/core/pipeline/timestream_processing_scan_native.h>
@@ -536,6 +537,13 @@ std::vector<std::shared_ptr<const RtcNotchRecoveryPlan>> complete_plans(
 auto complete_apply(const Trial &t, std::shared_ptr<const RtcPipelinePlan> p) {
   const std::array parts{t.spikes->input_handle()};
   return RtcPipelineResult::apply(p,t.spikes->input_handle(),t.val,parts);
+}
+auto output_align(const Trial &t, std::shared_ptr<const ValSnapshot> snapshot = {},
+                  std::shared_ptr<const AstScanMotionProduct> motion = {}) {
+  auto views = AstScanMotionNetworkViews::admit(t.parent->scope(),
+      motion ? motion : t.domain.motion->raw_product_handle(),
+      {t.parent->network(0).occurrence_axis().native_timing_handle()});
+  return IdentityRouteAlignContext::admit(t.parent, views, snapshot ? snapshot : t.val);
 }
 auto conditioned_learn(const Trial &t, const std::shared_ptr<const RtcPipelineResult> &r,
                        bool after_lowpass = false) {
@@ -1619,4 +1627,106 @@ TEST(rtc_purpose_consequence, declared_window_counts_schedule_relative_to_odd_na
     for(auto row:r.rows)EXPECT_EQ((row-101)%2,0);
     EXPECT_NEAR(r.measured.projection,1,1e-12);
   }
+}
+
+TEST(rtc_output_grid, exact_output_slots_keep_unavailable_positions_and_original_parent) {
+  for (auto origin : {100, 101}) {
+    Input in(1600); in.first_native_row=origin; Trial t(in);
+    auto result=complete_apply(t,RtcPipelinePlan::consider(complete_plans(t,{.25,.5,.25}),t.joint->joint_handle(),31));
+    const auto before=t.parent->network(0).value(NativeReadoutCoordinate::x,origin+700,0);
+    auto g=RtcOutputGrid::prepare(result,output_align(t));
+    EXPECT_EQ(g->applied_handle(),result);EXPECT_EQ(g->input_val_snapshot_handle(),t.val);
+    ASSERT_EQ(g->detectors().size(),3);EXPECT_EQ(g->detectors()[0].scheduled_count,800);
+    auto edge=g->occurrence(0,0);EXPECT_FALSE(edge.x_available);EXPECT_FALSE(edge.filter_footprint);
+    EXPECT_EQ(edge.representative.network_occurrence.native_row(),origin);
+    for(std::size_t slot=0;slot<800;++slot) {
+      const auto fact=g->occurrence(0,slot);const auto row=origin+2*slot;
+      EXPECT_EQ(fact.slot,slot);EXPECT_EQ(fact.representative.network_occurrence.native_row(),row);
+      EXPECT_DOUBLE_EQ(fact.representative.assigned_time_unix_sec,t.parent->network(0).occurrence_axis().native_identity(row).reconstructed_time_unix_sec());
+      if(fact.x_available) {
+        EXPECT_DOUBLE_EQ(*g->value(0,slot,NativeReadoutCoordinate::x),result->detector_results()[0]->filtered_native_pair()(2*slot,0));
+        ASSERT_TRUE(fact.filter_footprint);EXPECT_EQ(fact.filter_footprint->first,row-2);
+        EXPECT_EQ(fact.filter_footprint->past_last,row+3);
+      }
+    }
+    EXPECT_DOUBLE_EQ(before,t.parent->network(0).value(NativeReadoutCoordinate::x,origin+700,0));
+    EXPECT_LT(g->owned_descriptor_bytes(),1024);
+    EXPECT_THROW(g->occurrence(0,800),std::out_of_range);
+    EXPECT_THROW(g->occurrence(3,0),std::out_of_range);
+  }
+}
+TEST(rtc_output_grid, foreign_parent_snapshot_and_motion_cannot_be_relabelled) {
+  Input in(1600);Trial t(in),foreign(in);
+  auto result=complete_apply(t,RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31));
+  EXPECT_THROW(RtcOutputGrid::prepare(result,output_align(foreign)),std::invalid_argument);
+  EXPECT_THROW(RtcOutputGrid::prepare(result,output_align(t,ValSnapshot::initial(t.parent))),std::invalid_argument);
+  auto other=build_ast_scan_motion_product(t.domain.motion->raw_product_handle()->source_handle(),{9,8,7,6});
+  EXPECT_THROW(RtcOutputGrid::prepare(result,output_align(t,t.val,other)),std::invalid_argument);
+  EXPECT_THROW(RtcOutputGrid::prepare(result,nullptr),std::invalid_argument);
+}
+TEST(rtc_output_grid, chunking_does_not_change_grid_and_physical_gap_has_no_footprint) {
+  Input in(1600);for(std::size_t i=800;i<in.times.size();++i){in.times[i]+=.5;in.counters[i]+=4;}Trial t(in);
+  auto plan=RtcPipelinePlan::consider(complete_plans(t,{.25,.5,.25}),t.joint->joint_handle(),31);
+  auto one=complete_apply(t,plan);
+  const std::array parts{NativePairedReadoutView::admit(t.parent,{{0,100,513}}),
+      NativePairedReadoutView::admit(t.parent,{{0,513,1001}}),
+      NativePairedReadoutView::admit(t.parent,{{0,1001,1700}})};
+  auto many=RtcPipelineResult::apply(plan,t.spikes->input_handle(),t.val,parts);
+  auto align=output_align(t);auto a=RtcOutputGrid::prepare(one,align),b=RtcOutputGrid::prepare(many,align);
+  EXPECT_EQ(a->detectors()[0].scheduled_count,b->detectors()[0].scheduled_count);
+  for(std::size_t slot=0;slot<800;++slot) {
+    auto x=a->occurrence(0,slot),y=b->occurrence(0,slot);
+    EXPECT_EQ(x.representative,y.representative);EXPECT_EQ(x.x_available,y.x_available);
+    EXPECT_EQ(x.realized_cause,y.realized_cause);
+    EXPECT_EQ(a->value(0,slot,NativeReadoutCoordinate::x),b->value(0,slot,NativeReadoutCoordinate::x));
+    if(x.filter_footprint)EXPECT_FALSE(x.filter_footprint->first<900 && x.filter_footprint->past_last>900);
+  }
+  EXPECT_FALSE(a->occurrence(0,400).filter_footprint);
+}
+TEST(rtc_output_grid, donor_numerical_support_is_distinct_from_replacement_and_r_availability) {
+  Input in;in.spike();Trial t(in,10,RtcSpikeProtection::outside_source);
+  auto plan=RtcPipelinePlan::consider(complete_plans(t,{.25,.5,.25},{explicit_donor(t)}),t.joint->joint_handle(),31);
+  auto g=RtcOutputGrid::prepare(complete_apply(t,plan),output_align(t));
+  auto replaced=g->occurrence(0,250),neighbor=g->occurrence(0,249);
+  EXPECT_TRUE(replaced.representative_replaced);EXPECT_TRUE(replaced.representative_excluded);
+  EXPECT_TRUE(neighbor.x_available);EXPECT_FALSE(neighbor.r_available);
+  EXPECT_TRUE(neighbor.replacement_influence);EXPECT_FALSE(neighbor.representative_excluded);
+  EXPECT_TRUE(g->value(0,249,NativeReadoutCoordinate::x));EXPECT_FALSE(g->value(0,249,NativeReadoutCoordinate::r));
+  EXPECT_EQ(g->applied_handle()->detector_results()[0]->donor_results().size(),1);
+}
+TEST(rtc_output_grid, injected_diagnostic_cannot_become_original_conditioned_output) {
+  Input in(1600);Trial t(in);auto plan=RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31);
+  std::vector<RtcRecoveryInjection> overlays;
+  for(const auto &p:plan->detector_plans())overlays.push_back({p,"diagnostic-overlay",Eigen::Matrix<double,Eigen::Dynamic,2>::Zero(1600,2)});
+  const std::array parts{t.spikes->input_handle()};
+  auto diagnostic=RtcPipelineResult::apply(plan,t.spikes->input_handle(),t.val,parts,overlays);
+  EXPECT_THROW(RtcOutputGrid::prepare(diagnostic,output_align(t)),std::invalid_argument);
+}
+
+TEST(rtc_output_grid, val_outputs_are_disjoint_from_native_coordinates_and_other_realizations) {
+  Input in(1600);Trial t(in);auto plan=RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31);
+  auto result=complete_apply(t,plan);auto align=output_align(t);
+  auto a=RtcOutputGrid::prepare(result,align),b=RtcOutputGrid::prepare(result,align);
+  auto x=RtcOutputGrid::val_target(a,0,100,NativeReadoutCoordinate::x);
+  auto r=RtcOutputGrid::val_target(a,0,100,NativeReadoutCoordinate::r);
+  auto other=RtcOutputGrid::val_target(b,0,100,NativeReadoutCoordinate::x);
+  const ValProducerProductIdentity producer{ValProducer::rtc,31};
+  const ValFactCode code{1};const ValFactState state{1};const ValFactCause cause{1};
+  ValDeltaBuilder delta(t.val,producer);delta.propose(x,code,state,cause);
+  auto next=ValSnapshot::commit(delta.freeze());
+  ASSERT_TRUE(next->find({producer,x,code}));EXPECT_FALSE(next->find({producer,r,code}));
+  EXPECT_FALSE(next->find({producer,other,code}));EXPECT_FALSE(next->find({producer,x.address(),code}));
+  EXPECT_FALSE(t.val->find({producer,x,code}));EXPECT_TRUE(next->contains(x));
+  auto native=ValNativeRealization::create(t.parent,producer,1,ValNativeProductRole::derived_residual,0);
+  auto native_target=t.val->native_target(native,x.address(),NativeReadoutCoordinate::x);
+  EXPECT_FALSE(next->find({producer,native_target,code}));
+  auto foreign=ValSnapshot::initial(t.parent);ValDeltaBuilder bad(foreign,producer);
+  EXPECT_THROW(bad.propose(x,code,state,cause),std::invalid_argument);
+  auto moved=std::move(other);(void)moved;ValDeltaBuilder moved_from(t.val,producer);
+  EXPECT_THROW(moved_from.propose(other,code,state,cause),std::invalid_argument);
+  EXPECT_EQ(next->generation().value,1);EXPECT_EQ(a->input_val_snapshot_handle()->generation().value,0);
+  EXPECT_EQ(next->memory_evidence().referenced_rtc_output_target_count,1);
+  EXPECT_EQ(next->memory_evidence().referenced_native_target_count,0);
+  RecordProperty("rtc_output_target_bytes",sizeof(ValRtcOutputTarget));
+  RecordProperty("finding_key_bytes",sizeof(ValFindingKey));
 }

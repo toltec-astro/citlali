@@ -1,5 +1,43 @@
 # Citlali Refactor Status
 
+## RTC output handoff: prepared grid and prerequisite finding — 2026-09-17
+
+The owner confirmed the push of `3cd941974844b1ba25c829dc1c2bbe51e8f3cf6c`
+and approved the complete RTC handoff against the accepted horizontal audit:
+ALIGN/AST/VAL inputs and AST/VAL/CAL-facing output boundaries. Live GitHub
+topic equality and unchanged canonical `0f52e1a421416eadaf7d8d99d64f537132395c0c`
+were verified before editing. This occupies the spine slot on the existing
+clean RTC branch; preceding module work remains preserved.
+
+Preflight and independent read-only prerequisite review found that the current
+successor provides exact native time and AST scalar motion, but no AST-owned
+detector direction/tangent parent with the required geometry, observing-state,
+correction and rotation history. The accepted horizontal audit supplies the
+contract; it does not supply those observation-instance records. Existing
+diagnostic pointing arrays and the PTC/map-facing predecessor are not substitute
+authorities. Exact 152390 APT/association artifacts and correction endpoints
+were recovered; ordinary-coordinate compatibility binding remains unestablished.
+An owner question is pending on explicitly binding the existing accepted V2
+convention for this fixture. No answer or new scientific authority is inferred.
+
+The independent RTC/VAL portion proceeds as `RtcOutputGrid`: exact Apply,
+native ALIGN context, AST motion and frozen input-VAL bindings; stable scheduled
+slots including unavailable positions; original occurrence times; coordinate
+availability; separate direct exclusion, replacement influence, speed and
+support causes; physical/support segments and explicitly filter-local
+footprints. Heavy values and donor dependencies remain referenced. Exact RTC
+output/slot/coordinate VAL targets are distinct from native targets and other
+realizations, and accept only the input snapshot or its immutable descendants.
+This is preparation, not completed scientific output or downstream admission.
+
+Six focused controls pass locally. Full gates, exact-source review and real
+replay are recorded in the continuing
+[RTC handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_TREATMENT_OUTCOME_001_2026-09-17.md).
+Full AST coordinate realization, output-fact publication, logical finalization
+and CAL-facing admission remain open. No permissive placeholder publisher,
+CAL numerical processing, new filter/scientific policy, production activation,
+integration, push, cleanup, FRUIT or MAP is introduced.
+
 ## Scientific goals and RTC stopping judgment — 2026-09-17
 
 The owner's September 17 goals are recorded in
