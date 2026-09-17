@@ -17,12 +17,21 @@ history, coordinate-local availability and physical gaps remain explicit.
 Stored PSD powers and optional ratios are descriptive; they are neither a
 noise estimate nor retrospective event classification or a stopping rule.
 Initial spectra, complete plans, filtering/support/validity and fresh-original
-execution remain unchanged. Focused controls pass; exact-source replay, broad
-gates and independent review are being bound in
-`/private/tmp/citlali-rtc-treatment-outcome-2026-09-17`.
+execution remain unchanged. Exact runtime candidate
+`cae0ebdc0de91e1d952593e2a32526e7a74a0602` passes nine focused tests,
+1,189 runnable CTests, 207 baseline Python, 82 RTC Python and required config
+preflight. Independent exact-SHA review passes all three axes with recorded
+local-environment limits and no actionable findings. The twelve-detector replay
+preserves all 370 earlier science/support/injection files and both frozen plans.
+Notched x retains 1.634–2.893% of the original stored power in the existing
+11 Hz feature band on matched support; this is descriptive, not a noise gain
+or acceptance threshold. Added comparison costs about 1.3 s per full arm.
 
-This completes the numerical outcome-evidence connection within S2 once those
-gates close. The next RTC responsibility is an explicit complete-plan
+Evidence: `/private/tmp/citlali-rtc-treatment-outcome-2026-09-17` and
+[completion handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_TREATMENT_OUTCOME_001_2026-09-17.md).
+AppleClang/Homebrew evidence is supplemental, not Unity/Spack qualification.
+The shorter adaptive spectral-review support does not change output retention.
+This completes the numerical outcome-evidence connection within S2. The next RTC responsibility is an explicit complete-plan
 accept/revise/unavailable decision consuming these outcomes and original
 evidence, followed by replay from the original pair. Automatic stopping and
 scientific admission thresholds remain unselected; this does not complete all
