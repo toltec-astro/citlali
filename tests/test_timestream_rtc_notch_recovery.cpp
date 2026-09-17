@@ -1513,3 +1513,97 @@ TEST(rtc_common_mode, diagnostic_does_not_change_frozen_plan_flags_or_science_ou
     EXPECT_EQ(t.parent->network(0).state(NativeReadoutCoordinate::r,100+i,d).valid(),in.rs[i*3+d].valid());
   }
 }
+
+struct ConsequenceFixture {
+  Input input{6000};
+  Trial trial{input};
+  std::shared_ptr<const RtcPipelineResult> base=complete_apply(trial,RtcPipelinePlan::consider(complete_plans(trial),trial.joint->joint_handle(),31));
+  std::vector<RtcRecoveryInjection> source;
+  std::vector<RtcConsequenceEvidence::Positions> positions;
+  RtcConsequenceDomain domain;
+  ConsequenceFixture() {
+    domain.identity="controlled-source";domain.source_model="constant algebra control";
+    domain.regime="native fixture units";domain.geometry_identity="declared-linear-fixture-arcsec";
+    domain.units="native x;arcsec";domain.purposes={citlali::config::ReductionType::science,citlali::config::ReductionType::pointing};
+    domain.injected_identity="source-probe";domain.required_unavailable={"purpose-specific acceptance limit","two-dimensional pointing fit"};
+    for(const auto &plan:base->plan_handle()->detector_plans()) {
+      source.push_back({plan,"source-probe",Eigen::Matrix<double,Eigen::Dynamic,2>::Ones(6000,2)});
+      RtcConsequenceEvidence::Positions xy(6000,2);
+      for(int i=0;i<6000;++i){xy(i,0)=.1*i;xy(i,1)=0;}positions.push_back(xy);
+      domain.windows.push_back({1000,1200});domain.ringing_windows.push_back({950,1250});
+    }
+  }
+  auto apply(const std::vector<RtcRecoveryInjection> &s) {
+    const std::array parts{trial.spikes->input_handle()};
+    return RtcPipelineResult::apply(base->plan_handle(),trial.spikes->input_handle(),trial.val,parts,s);
+  }
+  auto learn(const std::shared_ptr<const RtcPipelineResult> &value,std::shared_ptr<const RtcPipelineResult> no_line={}) {
+    return RtcConsequenceEvidence::learn(base,base,value,no_line,source,positions,domain,trial.val,70);
+  }
+};
+TEST(rtc_purpose_consequence, final_scheduled_unit_response_keeps_purpose_and_missing_requirements) {
+  ConsequenceFixture f;auto injected=f.apply(f.source);auto e=f.learn(injected);
+  ASSERT_EQ(e->records().size(),3);EXPECT_FALSE(e->acceptance_requirement_selected);
+  EXPECT_EQ(e->domain().purposes.size(),2);EXPECT_EQ(e->domain().required_unavailable.size(),2);
+  for(const auto &r:e->records()) {
+    ASSERT_TRUE(r.available);EXPECT_EQ(r.rows.size(),100);EXPECT_EQ(r.expected,100);
+    for(auto row:r.rows)EXPECT_EQ(row%2,0);
+    EXPECT_NEAR(r.measured.projection,1,1e-12);EXPECT_NEAR(r.measured.peak_ratio,1,1e-12);
+    EXPECT_NEAR(r.measured.centroid_x_arcsec,0,1e-10);EXPECT_NEAR(r.measured.waveform_error,0,1e-12);
+  }
+  auto spectral=conditioned_learn(f.trial,f.base,true);
+  auto conditioned=RtcSpectralTransientConsideration::consider(spectral,f.trial.val,f.trial.review,f.trial.val,72);
+  auto outcome=RtcTreatmentOutcomeEvidence::learn(f.trial.lines->spectral_handle(),spectral,73);
+  auto reassess=RtcPipelineReassessment::consider(f.base,conditioned,74,outcome,{e});
+  auto selection=retain_selection(reassess);auto decision=RtcPipelineDecision::consider(reassess,f.trial.val,selection,75);
+  EXPECT_EQ(decision->disposition(),RtcPipelineDisposition::retain);
+  EXPECT_EQ(decision->reassessment_handle()->consequence_handles()[0],e);EXPECT_FALSE(decision->scientifically_qualified);
+  selection.intent=RtcPipelineSelectionIntent::require_scientific_qualification;
+  EXPECT_EQ(RtcPipelineDecision::consider(reassess,f.trial.val,selection,76)->disposition(),RtcPipelineDisposition::unavailable);
+}
+TEST(rtc_purpose_consequence, line_parameter_error_does_not_cancel_like_paired_source_transfer) {
+  ConsequenceFixture f;auto absent=f.source,present=f.source;
+  f.domain.line_free_identity="same-sky-noise-no-line";f.domain.injected_identity="same-sky-noise-plus-line";
+  for(std::size_t d=0;d<3;++d){
+    absent[d].identity=f.domain.line_free_identity;present[d].identity=f.domain.injected_identity;
+    for(int i=0;i<6000;++i){
+      const double sky=std::exp(-.5*std::pow((i-1000.)/30,2));
+      f.source[d].delta(i,0)=sky;f.source[d].delta(i,1)=.2*sky;
+      const double noise=.01*std::sin(.63*i),line=.2*std::sin(.09*i+.2*d);
+      absent[d].delta(i,0)=sky+noise;absent[d].delta(i,1)=.2*sky;
+      present[d].delta.row(i)=absent[d].delta.row(i);present[d].delta(i,0)+=line;
+    }
+  }
+  auto a=f.apply(absent),p=f.apply(present);auto e=f.learn(p,a);
+  double largest=0;
+  for(const auto &r:e->records()) {
+    ASSERT_TRUE(r.available);ASSERT_TRUE(r.line_free);double dot=0,energy=0;
+    for(auto row:r.rows){auto i=row-100;double s=f.source[r.detector].delta(i,0);
+      dot+=s*(p->detector_results()[r.detector]->filtered_native_pair()(i,0)-a->detector_results()[r.detector]->filtered_native_pair()(i,0));energy+=s*s;}
+    EXPECT_NEAR(r.measured.projection-r.line_free->projection,dot/energy,1e-12);
+    largest=std::max(largest,std::abs(dot/energy));
+  }
+  EXPECT_GT(largest,.001);
+}
+TEST(rtc_purpose_consequence, incomplete_crossing_and_absent_model_remain_unavailable) {
+  ConsequenceFixture f;auto y=f.apply(f.source);
+  f.domain.windows[0]={100,300};f.domain.ringing_windows[0]={100,350};
+  f.domain.window_unavailable={"","no principal crossing","OOF defocused fixture missing"};
+  auto e=f.learn(y);for(const auto &r:e->records()){EXPECT_FALSE(r.available);EXPECT_FALSE(r.unavailable.empty());}
+}
+TEST(rtc_purpose_consequence, foreign_plan_VAL_geometry_and_overlay_cannot_bind) {
+  ConsequenceFixture f;auto y=f.apply(f.source);
+  auto original=f.source[0].plan;f.source[0].plan=f.trial.plan(false,false,{},0);
+  EXPECT_THROW(f.learn(y),std::invalid_argument);f.source[0].plan=original;
+  f.domain.injected_identity="other-overlay";EXPECT_THROW(f.learn(y),std::invalid_argument);f.domain.injected_identity="source-probe";
+  f.positions[0](1,0)=NAN;EXPECT_THROW(f.learn(y),std::invalid_argument);f.positions[0](1,0)=.1;
+  ValDeltaBuilder b{f.trial.val,{ValProducer::rtc,80}};b.propose(f.trial.val->address(0,100,0),ValFactCode{1},ValFactState{1},ValFactCause{1});auto later=ValSnapshot::commit(b.freeze());
+  EXPECT_THROW(RtcConsequenceEvidence::learn(f.base,f.base,y,nullptr,f.source,f.positions,f.domain,later,81),std::invalid_argument);
+  f.domain.purposes.clear();EXPECT_THROW(f.learn(y),std::invalid_argument);
+}
+TEST(rtc_purpose_consequence, foreign_Apply_cannot_reuse_consequences_in_reassessment) {
+  ConsequenceFixture f;auto e=f.learn(f.apply(f.source));auto other=complete_apply(f.trial,f.base->plan_handle());
+  auto spectral=conditioned_learn(f.trial,other,true);
+  auto c=RtcSpectralTransientConsideration::consider(spectral,f.trial.val,f.trial.review,f.trial.val,72);
+  EXPECT_THROW(RtcPipelineReassessment::consider(other,c,74,nullptr,{e}),std::invalid_argument);
+}

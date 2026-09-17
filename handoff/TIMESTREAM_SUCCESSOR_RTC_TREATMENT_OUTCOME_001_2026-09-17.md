@@ -182,3 +182,34 @@ independently reproduced all 35 focused tests, verified 382-file parity, both
 exact learning-binding formulas, source/log/binary identities and the compact
 report. Final documentation closure receives a separate exact binding; see
 `INDEPENDENT_REVIEW.md` and `CLOSURE.json` in the continuation evidence root.
+
+## Continuation: bounded purpose-aware treatment consequences
+
+Owner directive SHA256 `dec5bb0fcc4c6e02b3aea0dbdc4936288a4b3bac1c327efaeb929d8d3f07f83f`
+is preserved with preflight and preregistered design under
+`/private/tmp/citlali-rtc-purpose-consequence-2026-09-17`. Literal clean base
+`2661fcb2f40801f79bd9879beba64072fdb9aaf7`; existing lane and effective governance
+unchanged. Fresh canonical ref `0f52e1a421416eadaf7d8d99d64f537132395c0c`, remote
+RTC topic `becccce85816379e578ac1a325e8c9fe156defbe`; no reconciliation.
+
+Learn compares paired frozen-plan diagnostic overlays at actual phase-zero F2
+outputs, using common estimator rows and separately retaining each treatment's
+full support. Existing unrenormalized template projection and sampled centroid
+are diagnostic surrogates; no downstream fit/calibration is introduced.
+Source-only transfer differs explicitly from line-present/absent parameter
+error with identical sky/noise. Existing source/exposure/geometry and paired r
+probe conventions remain conditional, not a measured physical optical r model.
+Purpose/model/regime/geometry/units, complete plans, original parent, exact VAL,
+source/overlay content identities and actual estimator rows survive into the
+existing reassessment/decision. Missing quantities and missing acceptance limits
+remain distinct from measured facts. Retain still requires positive authority.
+
+The fixed design uses six source cases and24 shared/independent line-phase
+cases, four phases and one declared noise realization. It supports bounded
+compact/extended response and contamination questions; full pointing fit and
+repeatability, OOF focus/wavefront and beam wings/calibrated normalization remain
+unavailable. No population uncertainty or universal mode ranking is claimed.
+All existing coefficients/event/donor/support/validity policies are fixed;
+no production, natural-event expansion, filter search, common-mode science,
+CAL/PTC/FRUIT/MAP, push/merge/reconciliation or cleanup. Exact gates, unchanged
+baseline replay, report, review and closure are completed in the evidence root.

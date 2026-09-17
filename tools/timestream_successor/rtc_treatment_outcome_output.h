@@ -90,6 +90,18 @@ YAML::Node write_reassessment_decision(const fs::path &output,
     out["outcome_stage"]=e.outcome_handle()->conditioned_handle()->conditioned_handle()->after_lowpass() ?
         "post-lowpass-native-before-decimation" : "post-notch-native";
   }
+  for(const auto &c:e.consequence_handles()) {
+    YAML::Node n;n["domain"]=c->domain().identity;n["source_model"]=c->domain().source_model;
+    n["measured_plan_attempt"]=c->baseline_handle()->plan_handle()->attempt();
+    n["stage"]="scheduled-final-output-F2-phase0";
+    std::size_t available=0,centroids=0;for(const auto &r:c->records()){available+=r.available;centroids+=std::isfinite(r.measured.centroid_x_arcsec)&&std::isfinite(r.measured.centroid_y_arcsec);}
+    n["projection_available_detectors"]=available;n["projection_unavailable_detectors"]=c->records().size()-available;
+    n["centroid_available_detectors"]=centroids;
+    n["required_unavailable"]=c->domain().required_unavailable;
+    for(auto p:c->domain().purposes)n["purposes"].push_back(std::string(citlali::config::to_string(p)));
+    n["missing_acceptance_requirement"]="purpose-specific limits unselected";
+    out["purpose_consequences"].push_back(n);
+  }
   for(const auto &issue:d.issues()) {
     YAML::Node n;n["missing_requirement"]=rtc_pipeline_decision_cause_name(issue.cause);
     if(issue.scope){n["network"]=issue.scope->network;n["detector_local_column"]=issue.scope->detector;

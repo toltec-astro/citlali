@@ -1,5 +1,28 @@
 # Citlali Refactor Status
 
+## RTC purpose-aware treatment consequences — 2026-09-17
+
+The owner authorizes a bounded diagnostic comparison on the same twelve-detector
+152390/network12 fixture: existing lowpass-only versus the selected1Hz/3s finite
+notch plus that lowpass, with existing support, validity, donor/event, motion
+and F2 scheduling fixed. No coefficients or acceptance thresholds are selected.
+RTC Learn now measures source projection/centroid/waveform consequences at actual
+scheduled final outputs, with exact frozen Apply, original/VAL, source/geometry,
+purpose, estimator rows and overlay bindings. Reassessment and the existing
+decision retain measured versus unavailable requirements alongside the explicit
+missing purpose-specific acceptance requirement. No qualification is inferred.
+
+Six source-transfer cases and24 controlled line-phase cases are preregistered:
+existing slow/fast compact crossings at faint/bright scales, two apparent
+extended Gaussian sizes; controlled source+fixed-noise with/without the existing
+studied11Hz line at measured-fixture levels, shared/independent phases. These
+are diagnostic surrogates, not POINT/OOF/BEAM or broad SCIENCE qualification.
+OOF model/evaluator, full pointing fit, beam wings and calibrated normalization
+remain unavailable. Runtime/source tests and exact replay/review evidence are
+being bound at `/private/tmp/citlali-rtc-purpose-consequence-2026-09-17`.
+Production, common-mode science, CAL/PTC/FRUIT/MAP, push, merge and cleanup remain
+outside. This is the next continuation of the existing RTC outcome handoff.
+
 ## RTC explicit reassessment execution — 2026-09-17
 
 The owner authorizes the next bounded runtime connection: matched-support

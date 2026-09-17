@@ -1,4 +1,5 @@
 #pragma once
+#include <citlali/core/config/runtime_config.h>
 #include <citlali/core/pipeline/timestream_rtc_treatment_outcome.h>
 
 #include <citlali/core/pipeline/timestream_rtc_notch_recovery.h>
@@ -190,6 +191,162 @@ private:
   std::vector<std::shared_ptr<const RtcNotchRecoveryResult>> results_;
 };
 
+// Diagnostic consequences belong to RTC Learn, not a downstream qualification
+// or calibration owner. Domains describe tests; purposes do not select policy.
+struct RtcConsequenceDomain {
+  std::string identity, source_model, regime, geometry_identity, units;
+  std::vector<citlali::config::ReductionType> purposes;
+  std::string injected_identity, line_free_identity;
+  std::vector<RtcEventRange> windows, ringing_windows;
+  std::vector<std::string> required_unavailable, window_unavailable;
+};
+struct RtcConsequenceMetrics {
+  double projection = NAN, peak_ratio = NAN, waveform_error = NAN;
+  double centroid_x_arcsec = NAN, centroid_y_arcsec = NAN;
+  double negative_ringing_fraction = NAN;
+};
+struct RtcConsequenceRecord {
+  TimestreamNetworkId network;
+  std::uint32_t detector;
+  std::size_t own_total = 0, peer_total = 0, common_total = 0, expected = 0;
+  std::vector<std::int64_t> rows, ringing_rows;
+  bool available = false;
+  double source_energy = 0, added_line_rms = NAN;
+  std::string unavailable;
+  RtcConsequenceMetrics measured;
+  std::optional<RtcConsequenceMetrics> line_free;
+};
+class RtcConsequenceEvidence {
+public:
+  using Positions = Eigen::Matrix<double,Eigen::Dynamic,2>;
+  static std::shared_ptr<const RtcConsequenceEvidence> learn(
+      std::shared_ptr<const RtcPipelineResult> baseline,
+      std::shared_ptr<const RtcPipelineResult> peer,
+      const std::shared_ptr<const RtcPipelineResult> &injected,
+      const std::shared_ptr<const RtcPipelineResult> &line_free,
+      std::span<const RtcRecoveryInjection> source,
+      std::span<const Positions> positions,
+      RtcConsequenceDomain domain,
+      std::shared_ptr<const ValSnapshot> snapshot, std::uint64_t attempt) {
+    if(!baseline || !peer || !injected || !snapshot || !attempt || domain.identity.empty() ||
+       domain.source_model.empty() || domain.regime.empty() || domain.geometry_identity.empty() ||
+       domain.units.empty() || domain.purposes.empty() || domain.injected_identity.empty())
+      throw std::invalid_argument("RTC consequence requires explicit purpose/model/domain and exact Apply");
+    for(auto purpose:domain.purposes)
+      if(purpose!=citlali::config::ReductionType::science && purpose!=citlali::config::ReductionType::pointing &&
+         purpose!=citlali::config::ReductionType::beammap && purpose!=citlali::config::ReductionType::oof)
+        throw std::invalid_argument("unknown consequence purpose");
+    const auto &p=baseline->plan_handle();const auto &q=peer->plan_handle();
+    if(p->input_handle().get()!=q->input_handle().get() || p->snapshot_handle().get()!=snapshot.get() ||
+       q->snapshot_handle().get()!=snapshot.get() || injected->plan_handle().get()!=p.get() ||
+       (line_free && line_free->plan_handle().get()!=p.get()) ||
+       bool(line_free)!=!domain.line_free_identity.empty())
+      throw std::invalid_argument("RTC consequence foreign input/plan/VAL/overlay");
+    const auto count=baseline->detector_results().size();
+    if(source.size()!=count || positions.size()!=count || peer->detector_results().size()!=count ||
+       domain.windows.size()!=count || domain.ringing_windows.size()!=count ||
+       (!domain.window_unavailable.empty() && domain.window_unavailable.size()!=count))
+      throw std::invalid_argument("RTC consequence requires complete paired cohort");
+    auto out=std::shared_ptr<RtcConsequenceEvidence>(new RtcConsequenceEvidence);
+    out->baseline_=std::move(baseline);out->peer_=std::move(peer);out->domain_=std::move(domain);out->attempt_=attempt;
+    for(std::size_t d=0;d<count;++d) {
+      const auto &b=*out->baseline_->detector_results()[d], &other=*out->peer_->detector_results()[d];
+      const auto &z=*injected->detector_results()[d];const auto &plan=*b.plan_handle();
+      const auto &candidate=*plan.assessment_handle()->candidate_handle();
+      const auto &peer_candidate=*other.plan_handle()->assessment_handle()->candidate_handle();
+      const auto first=plan.first_native_row();const auto n=b.filtered_native_pair().rows();
+      if(source[d].plan.get()!=b.plan_handle().get() || source[d].delta.rows()!=n ||
+         positions[d].rows()!=n || !source[d].delta.allFinite() || !positions[d].allFinite() ||
+         candidate.network()!=peer_candidate.network() || candidate.detector()!=peer_candidate.detector() ||
+         candidate.specification().factor!=peer_candidate.specification().factor ||
+         candidate.specification().input_interval_seconds!=peer_candidate.specification().input_interval_seconds ||
+         plan.transient_handle().get()!=other.plan_handle()->transient_handle().get() ||
+         plan.event_decisions().get()!=other.plan_handle()->event_decisions().get() ||
+         plan.donor_plans()!=other.plan_handle()->donor_plans() ||
+         plan.input_causes()!=other.plan_handle()->input_causes() ||
+         plan.support_causes()!=other.plan_handle()->support_causes() ||
+         plan.speed_restrictions()!=other.plan_handle()->speed_restrictions() ||
+         b.injection_identity()!="none" || other.injection_identity()!="none" ||
+         z.injection_identity()!=out->domain_.injected_identity ||
+         z.output_native_rows()!=b.output_native_rows() || z.causes()!=b.causes())
+        throw std::invalid_argument("RTC consequence changed cadence, support, template or injection identity");
+      if(line_free && (line_free->detector_results()[d]->injection_identity()!=out->domain_.line_free_identity ||
+          line_free->detector_results()[d]->output_native_rows()!=b.output_native_rows() ||
+          line_free->detector_results()[d]->causes()!=b.causes()))
+        throw std::invalid_argument("RTC consequence line-free pair differs from frozen plan");
+      RtcConsequenceRecord record{candidate.network(),candidate.detector()};
+      const auto window=out->domain_.windows[d], ring=out->domain_.ringing_windows[d];
+      if(window.first<first || window.past_last>first+n || window.first>=window.past_last ||
+         ring.first<first || ring.past_last>first+n || ring.first>window.first || ring.past_last<window.past_last)
+        throw std::invalid_argument("RTC consequence invalid estimator domain");
+      const auto factor=candidate.specification().factor;
+      // This current diagnostic uses existing phase-zero scheduled output and
+      // necessary independent-center restrictions; it authorizes no map input.
+      double added_power=0;
+      for(auto row:b.output_native_rows()) if(b.map_center_admitted(row)) {
+        ++record.own_total;
+        if(std::binary_search(other.output_native_rows().begin(),other.output_native_rows().end(),row) && other.map_center_admitted(row)) {
+          ++record.common_total;
+          if(line_free){const auto i=row-first;const double delta=z.filtered_native_pair()(i,0)-line_free->detector_results()[d]->filtered_native_pair()(i,0);
+            if(!std::isfinite(delta))throw std::invalid_argument("nonfinite admitted line consequence");added_power+=delta*delta;}
+
+          if(window.first<=row && row<window.past_last)record.rows.push_back(row);
+          if(ring.first<=row && row<ring.past_last)record.ringing_rows.push_back(row);
+        }
+      }
+      if(line_free && record.common_total)record.added_line_rms=std::sqrt(added_power/record.common_total);
+      for(auto row:record.rows){const double value=source[d].delta(row-first,0);record.source_energy+=value*value;}
+      for(auto row:other.output_native_rows())record.peer_total+=other.map_center_admitted(row);
+      for(auto row=window.first;row<window.past_last;++row)record.expected+=(row%factor)==0;
+      if(!out->domain_.window_unavailable.empty() && !out->domain_.window_unavailable[d].empty())
+        record.unavailable=out->domain_.window_unavailable[d];
+      else if(record.rows.size()!=record.expected || record.expected<4)record.unavailable="incomplete declared crossing on common scheduled support";
+      else {
+        auto evaluate=[&](const RtcPipelineResult &value) {
+          RtcConsequenceMetrics m;double energy=0,dot=0,error=0,peak=0,got_peak=-INFINITY;
+          double area=0,refarea=0,xx=0,yy=0,rx=0,ry=0;
+          for(auto row:record.rows) {
+            const auto i=row-first;
+            const double s=source[d].delta(i,0), y=value.detector_results()[d]->filtered_native_pair()(i,0)-b.filtered_native_pair()(i,0);
+            if(!std::isfinite(y))throw std::invalid_argument("nonfinite admitted consequence sample");
+            energy+=s*s;dot+=s*y;error+=(y-s)*(y-s);peak=std::max(peak,s);got_peak=std::max(got_peak,y);
+            area+=y;refarea+=s;xx+=positions[d](i,0)*y;yy+=positions[d](i,1)*y;
+            rx+=positions[d](i,0)*s;ry+=positions[d](i,1)*s;
+          }
+          if(!(energy>0) || !(peak>0) || !(refarea>0))return m;
+          m.projection=dot/energy;m.peak_ratio=got_peak/peak;m.waveform_error=std::sqrt(error/energy);
+          if(area>0){m.centroid_x_arcsec=xx/area-rx/refarea;m.centroid_y_arcsec=yy/area-ry/refarea;}
+          double minimum=0;
+          for(auto row:record.ringing_rows) {
+            const auto i=row-first;
+            const double y=value.detector_results()[d]->filtered_native_pair()(i,0)-b.filtered_native_pair()(i,0);
+            if(!std::isfinite(y))throw std::invalid_argument("nonfinite admitted ringing sample");
+            minimum=std::min(minimum,y);
+          }
+          m.negative_ringing_fraction=-minimum/peak;return m;
+        };
+        record.measured=evaluate(*injected);
+        if(line_free)record.line_free=evaluate(*line_free);
+        record.available=std::isfinite(record.measured.projection) && (!record.line_free || std::isfinite(record.line_free->projection));
+        if(!record.available)record.unavailable="source energy or arithmetic unavailable";
+      }
+      out->records_.push_back(std::move(record));
+    }
+    return out;
+  }
+  const auto &baseline_handle() const noexcept{return baseline_;}
+  const auto &peer_handle() const noexcept{return peer_;}
+  const auto &domain() const noexcept{return domain_;}
+  const auto &records() const noexcept{return records_;}
+  auto attempt() const noexcept{return attempt_;}
+  static constexpr bool acceptance_requirement_selected=false, science_qualified=false;
+private:
+  std::shared_ptr<const RtcPipelineResult> baseline_,peer_;
+  RtcConsequenceDomain domain_;
+  std::vector<RtcConsequenceRecord> records_;
+  std::uint64_t attempt_=0;
+};
+
 // Treatment outcomes are considered alongside unchanged original transient
 // evidence. Disappearance after filtering cannot retrospectively classify an
 // event or admit its treatment. No automatic convergence/fallback is supplied.
@@ -199,7 +356,8 @@ public:
       std::shared_ptr<const RtcPipelineResult> previous,
       std::shared_ptr<const RtcSpectralTransientConsideration> conditioned,
       std::uint64_t attempt,
-      std::shared_ptr<const RtcTreatmentOutcomeEvidence> outcome = nullptr) {
+      std::shared_ptr<const RtcTreatmentOutcomeEvidence> outcome = nullptr,
+      std::vector<std::shared_ptr<const RtcConsequenceEvidence>> consequences = {}) {
     if (!previous || !conditioned || !attempt ||
         conditioned->transient_handle().get() !=
             previous->plan_handle()->original_consideration()->transient_handle().get())
@@ -214,23 +372,30 @@ public:
     if (outcome && (outcome->original_handle().get() != previous->plan_handle()->original_consideration()->spectral_handle().get() ||
                     outcome->conditioned_handle().get() != conditioned->spectral_handle().get()))
       throw std::invalid_argument("RTC outcome must bind exact original reference and conditioned stage/VAL/Apply evidence");
+    for(const auto &e:consequences)
+      if(!e || (e->baseline_handle().get()!=previous.get() && e->peer_handle().get()!=previous.get()) ||
+         product->snapshot_handle().get()!=previous->plan_handle()->snapshot_handle().get())
+        throw std::invalid_argument("RTC consequence must bind exact previous Apply and VAL");
     return std::shared_ptr<const RtcPipelineReassessment>(new RtcPipelineReassessment{
-        std::move(previous), std::move(conditioned), attempt, std::move(outcome)});
+        std::move(previous), std::move(conditioned), attempt, std::move(outcome), std::move(consequences)});
   }
   const auto &previous_handle() const noexcept { return previous_; }
   const auto &conditioned_consideration() const noexcept { return conditioned_; }
   const auto &outcome_handle() const noexcept { return outcome_; }
+  const auto &consequence_handles() const noexcept { return consequences_; }
   const auto &original_consideration() const noexcept { return previous_->plan_handle()->original_consideration(); }
   auto attempt() const noexcept { return attempt_; }
   static constexpr bool classification_authorized = false, stopping_rule_selected = false;
 private:
   RtcPipelineReassessment(std::shared_ptr<const RtcPipelineResult> p,
       std::shared_ptr<const RtcSpectralTransientConsideration> c, std::uint64_t a,
-      std::shared_ptr<const RtcTreatmentOutcomeEvidence> o)
-      : previous_{std::move(p)}, conditioned_{std::move(c)}, outcome_{std::move(o)}, attempt_{a} {}
+      std::shared_ptr<const RtcTreatmentOutcomeEvidence> o,
+      std::vector<std::shared_ptr<const RtcConsequenceEvidence>> e)
+      : previous_{std::move(p)}, conditioned_{std::move(c)}, outcome_{std::move(o)}, consequences_{std::move(e)}, attempt_{a} {}
   std::shared_ptr<const RtcPipelineResult> previous_;
   std::shared_ptr<const RtcSpectralTransientConsideration> conditioned_;
   std::shared_ptr<const RtcTreatmentOutcomeEvidence> outcome_;
+  std::vector<std::shared_ptr<const RtcConsequenceEvidence>> consequences_;
   std::uint64_t attempt_;
 };
 

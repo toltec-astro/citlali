@@ -34,6 +34,7 @@ void write_matrix(const fs::path &p,const auto &m) {
 #include "rtc_processing_scan_input.h"
 #include "rtc_common_mode_output.h"
 #include "rtc_treatment_outcome_output.h"
+#include "rtc_consequence_study.h"
 int main(int argc,char **argv) {
   try {
     const auto began=std::chrono::steady_clock::now();
@@ -674,6 +675,11 @@ int main(int argc,char **argv) {
         inputs.close();require(bool(inputs),"input cause output failed");
         arm["realized_detectors"].push_back(record);
       }
+      std::vector<std::shared_ptr<const RtcConsequenceEvidence>> consequences;
+      if(cfg["consequence_study"]) {
+        consequences=run_consequence_study(cfg["consequence_study"],output/"purpose-study",channels,result);
+        arm["purpose_consequence_evidence_products"]=consequences.size();
+      }
       const auto relearn_at=std::chrono::steady_clock::now();
       for(bool lowpass:{false,true}){
         auto conditioned=RtcNativeSpectralEvidence::learn_conditioned(result->native_product(lowpass,val),val,cadence,1100+lowpass);
@@ -681,7 +687,8 @@ int main(int argc,char **argv) {
         const auto outcome_started=std::chrono::steady_clock::now();
         const auto outcome=RtcTreatmentOutcomeEvidence::learn(spectral,conditioned,1250+lowpass);
         const auto outcome_seconds=std::chrono::duration<double>(std::chrono::steady_clock::now()-outcome_started).count();
-        const auto reassessment=RtcPipelineReassessment::consider(result,considered,1300+lowpass,outcome);
+        const auto reassessment=RtcPipelineReassessment::consider(result,considered,(consequences.empty()?1300:9000)+lowpass,outcome,
+            lowpass?consequences:std::vector<std::shared_ptr<const RtcConsequenceEvidence>>{});
         YAML::Node stage;stage["after_lowpass"]=lowpass;stage["producer_attempt"]=complete->attempt();
         const auto stage_path=output/(lowpass ? "post-lowpass-psd.f64" : "post-notch-psd.f64");
         std::ofstream stage_psd(stage_path,std::ios::binary);
@@ -718,7 +725,7 @@ int main(int argc,char **argv) {
                 supplied["authority"].as<std::string>(),supplied["purpose"].as<std::string>(),
                 supplied["positive_rationale"].as<std::string>(),{},0};
           }
-          const auto disposition=RtcPipelineDecision::consider(reassessment,val,selection,1400);
+          const auto disposition=RtcPipelineDecision::consider(reassessment,val,selection,consequences.empty()?1400:9100);
           const auto decision_seconds=std::chrono::duration<double>(std::chrono::steady_clock::now()-decision_started).count();
           const auto advance_started=std::chrono::steady_clock::now();
           const auto advanced=RtcPipelineResult::advance(result,disposition,view,val,partitions);
