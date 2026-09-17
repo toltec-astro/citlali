@@ -53,9 +53,10 @@ For the [reviewed compact-source RTC case](../handoff/TIMESTREAM_SUCCESSOR_RTC_T
 Worst controlled additional template-amplitude error fell from 2.304% to
 0.052%; relative timestream waveform RMS error rose from 0.059% to 0.095%,
 normalized by the injected waveform's RMS on the common crossing support.
-Eligible paired-output retention fell by 1.155 percentage points. These are
-one-detector-crossing results, not total calibration accuracy, final PSF
-accuracy or sensitivity. The measured trade supports proceeding in this
+Eligible paired-output retention fell by 1.155 percentage points. The
+source-error measurements have one supported detector crossing; the support
+count covers the twelve-detector cohort. These quantities are not total
+calibration accuracy, final PSF accuracy or sensitivity. The measured trade supports proceeding in this
 bounded compact-source domain; it identifies no goal-relevant reason for
 another notch sweep. Missing fast/extended and POINT/OOF/BEAM evidence remains
 a limitation, not a prerequisite for this next development step.
