@@ -1,5 +1,29 @@
 # Citlali Refactor Status
 
+## RTC common-mode repeatability census — 2026-09-16
+
+Owner authorizes one bounded validation/reporting follow-up from reviewed
+closure6bb881fbfde13b415f83602ce14319f2ee3fa89d/runtime9a47dd8d3. The estimator,
+reference eligibility, adaptive speed support and Plan/Apply remain unchanged.
+Before new health results, the observation set is frozen to152390 and152392,
+the only suitable nearby NGC4449 SCIENCE network0/a1100 pair in the local
+validation corpus. Full630-target inventories remain visible. All six follow-up
+identities use unique accepted relations through the same exact baseline APT.
+Recovered producer semantics distinguish 426's bad seed-health flag from its
+accepted matching identity; prior calibration restrictions remain intact.
+
+Offline adapters export the followed-target self-exclusions and one fixed,
+disjoint two-subset reference check per observation. Reports retain the exact
+runtime q definition and distinguish duration-weighted/matched-support checks.
+No correlation, gain or rejection threshold is selected. Source membership
+for152392 stays unknown;152390's no-mask authority remains scope-bound.
+
+Gates, exact source/replay, conclusions and independent review are pending at
+`/private/tmp/citlali-rtc-common-mode-repeatability-2026-09-16`; see the
+[work-order handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_COMMON_MODE_REPEATABILITY_001_2026-09-16.md).
+This census does not become a prerequisite for the planned treatment-outcome
+comparison. No canonical integration, push, production, FRUIT or cleanup.
+
 ## RTC common-mode detector-health diagnostic — 2026-09-16
 
 The owner authorizes one early runtime Learn diagnostic and bounded replay,

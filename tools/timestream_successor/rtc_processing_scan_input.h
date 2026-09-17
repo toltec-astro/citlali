@@ -30,7 +30,21 @@ RecoveredProcessingScans recover_processing_scans(const YAML::Node &cfg,
       !effective["timestream"]["polarimetry"]["enabled"].as<bool>(),
       "bounded timing adapter requires the recorded gap-grid and no HWPR time participation");
   std::map<int,std::string> expected;
-  for (const auto &entry:effective["inputs"][0]["data_items"]) {
+  std::size_t input_index = 0;
+  if (cfg["common_mode_census"]) {
+    const auto scope = parent->scope();
+    const auto name = std::to_string(scope.observation) + "_" +
+                      std::to_string(scope.subobservation) + "_" +
+                      std::to_string(scope.scan);
+    std::size_t matches = 0;
+    for (std::size_t i = 0; i < effective["inputs"].size(); ++i)
+      if (effective["inputs"][i]["meta"]["name"].as<std::string>() == name) {
+        input_index = i;
+        ++matches;
+      }
+    require(matches == 1, "census needs one exact effective-config observation");
+  }
+  for (const auto &entry:effective["inputs"][input_index]["data_items"]) {
     auto interface=entry["meta"]["interface"].as<std::string>();
     if(interface.starts_with("toltec")) expected.emplace(std::stoi(interface.substr(6)),
         fs::path(entry["filepath"].as<std::string>()).filename().string());

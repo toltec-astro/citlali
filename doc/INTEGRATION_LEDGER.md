@@ -1,5 +1,20 @@
 # Citlali Integration Ledger
 
+## RTC common-mode repeatability validation candidate — 2026-09-16
+
+- Owner-authorized Tier2 bounded census, literal base
+  `6bb881fbfde13b415f83602ce14319f2ee3fa89d`; existing RTC branch/worktree.
+- Runtime common-mode source/header remain byte-identical to9a47dd8d3.
+  Offline replay/export/reporting changes admit only the fixed faint-source
+  SCIENCE152390/152392 network0 pair. No matching or estimator redesign.
+- Preserve full populations, qualified occurrence-scoped matching, distinct
+  initial/LOO references, duration/support and unavailable-state accounting.
+ 426 has a unique accepted match with a flagged seed; no channel-number substitution.
+  Pre-replay metadata correction is recorded in SELECTION_REASSESSMENT.md.
+- Exact-source gates, parity, observations and independent three-axis review
+  will be bound in `/private/tmp/citlali-rtc-common-mode-repeatability-2026-09-16`.
+  No science policy, production, canonical integration, push or cleanup.
+
 ## RTC common-mode health bounded completion — 2026-09-16
 
 - Owner-authorized Tier 2 `TIMESTREAM-SUCCESSOR-RTC-COMMON-MODE-HEALTH-001`,

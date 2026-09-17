@@ -18,16 +18,18 @@ void health_fit_csv(const fs::path &path,
   f.close();
   require(bool(f), "health fit export failed");
 }
-void export_health(const fs::path &output,
-                   std::shared_ptr<const RtcCommonModeEvidence> health,
-                   std::shared_ptr<const RtcLinePowerEvidence> lines,
-                   const std::vector<int> &channels, const YAML::Node &cfg,
-                   const fs::path &config_path, double learning_seconds) {
+void export_health(
+    const fs::path &output, std::shared_ptr<const RtcCommonModeEvidence> health,
+    std::shared_ptr<const RtcLinePowerEvidence> lines,
+    const std::vector<int> &channels, const YAML::Node &cfg,
+    const fs::path &config_path, double learning_seconds,
+    const std::vector<std::uint32_t> *fixed_inspections = nullptr) {
   const auto start = std::chrono::steady_clock::now();
   auto consideration = RtcCommonModeConsideration::compare(health, lines);
   const auto considered = std::chrono::steady_clock::now();
-  const auto checks =
-      health->self_excluded_checks(consideration.inspection_targets());
+  const auto checks = health->self_excluded_checks(
+      fixed_inspections ? *fixed_inspections
+                        : consideration.inspection_targets());
   const auto checked = std::chrono::steady_clock::now();
   fs::create_directories(output);
   health_fit_csv(output / "fits.csv", health->fits());
@@ -120,7 +122,13 @@ void export_health(const fs::path &output,
       "offset;selected-targets-also-materialized";
   receipt["rejection_authorized"] = false;
   receipt["science_path_changed"] = false;
-  receipt["observation_role"] = (health->domain().network==0 ? "SCIENCE-NGC4449-owner-identified-network0-example" : "SCIENCE-NGC4449-development-proxy-network12");
+  receipt["observation_role"] =
+      (health->domain().network == 0
+           ? "SCIENCE-NGC4449-owner-identified-network0-example"
+           : "SCIENCE-NGC4449-development-proxy-network12");
+  if (cfg["common_mode_census"])
+    receipt["observation_role"] =
+        "SCIENCE-NGC4449-bounded-repeatability-census";
   receipt["source_protection_authority"] =
       health->original_handle()->protection_handle()->authority_id();
   receipt["learn_seconds"] = learning_seconds;
@@ -157,5 +165,47 @@ void export_health(const fs::path &output,
       std::chrono::duration<double>(std::chrono::steady_clock::now() - checked)
           .count();
   write_yaml(output / "receipt.yaml", receipt);
+}
+
+// Validation-only composition check: the existing RTC owner still constructs
+// every reference and fit. No runtime state or estimator variant is introduced.
+void export_census_reference_checks(
+    const fs::path &output, std::shared_ptr<const RtcCommonModeEvidence> health,
+    std::shared_ptr<const RtcLinePowerEvidence> lines,
+    const std::vector<int> &channels, const YAML::Node &cfg,
+    const fs::path &config_path, const std::vector<std::uint32_t> &targets) {
+  std::vector<std::uint32_t> peers;
+  for (std::uint32_t d = 0; d < channels.size(); ++d)
+    if (health->domain().members[d].reference_eligible &&
+        std::find(targets.begin(), targets.end(), d) == targets.end())
+      peers.push_back(d);
+  const std::vector<std::uint32_t> no_checks;
+  for (std::size_t half = 0; half < 2; ++half) {
+    auto domain = health->domain();
+    for (auto &member : domain.members)
+      member.reference_eligible = false;
+    YAML::Node partition;
+    for (std::size_t i = half; i < peers.size(); i += 2) {
+      domain.members[peers[i]].reference_eligible = true;
+      partition["eligible_channels"].push_back(channels[peers[i]]);
+    }
+    domain.population_authority +=
+        ":bounded-census-alternating-rank-half=" + std::to_string(half);
+    const auto started = std::chrono::steady_clock::now();
+    auto evidence = RtcCommonModeEvidence::learn(health->original_handle(),
+                                                 std::move(domain), 31 + half);
+    const auto path = output / ("partition-" + std::to_string(half));
+    export_health(path, evidence, lines, channels, cfg, config_path,
+                  std::chrono::duration<double>(
+                      std::chrono::steady_clock::now() - started)
+                      .count(),
+                  &no_checks);
+    partition["method"] =
+        "alternating-rank-in-initial-eligible-sorted-channel-inventory";
+    partition["full_network_leave_one_out"] = false;
+    for (const auto d : targets)
+      partition["excluded_targets"].push_back(channels[d]);
+    write_yaml(path / "partition.yaml", partition);
+  }
 }
 } // namespace

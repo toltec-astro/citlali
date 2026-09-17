@@ -270,4 +270,74 @@ TEST(RtcCommonMode, NegativeRawGainWithMatchingSignedCalibrationIsNotAnomaly) {
     }
   EXPECT_GE(checked, 2);
 }
+
+TEST(RtcCommonMode, WeakerSharedSignalDoesNotCreateARejectionDecision) {
+  Case strong, weak;
+  for (std::size_t i = 0; i < weak.n; ++i) {
+    const double c =
+        2 * std::sin(.008192 * i * 3.2) + .3 * std::cos(.008192 * i * 1.2);
+    for (std::size_t d = 0; d < weak.nd; ++d)
+      weak.x(i, d) -= .98 * std::array{1., 2., .5, -1., 1.}[d] * c;
+  }
+  strong.bind();
+  weak.bind();
+  strong.domain.members[0].reference_eligible = false;
+  weak.domain.members[0].reference_eligible = false;
+  const auto a = strong.learn(), b = weak.learn();
+  std::vector<double> ac, bc, ar, br;
+  for (const auto &f : a->fits())
+    if (f.detector == 0 && f.available()) {
+      ac.push_back(f.correlation);
+      ar.push_back(f.reference_scatter);
+    }
+  for (const auto &f : b->fits())
+    if (f.detector == 0 && f.available()) {
+      bc.push_back(f.correlation);
+      br.push_back(f.reference_scatter);
+    }
+  ASSERT_FALSE(ac.empty());
+  ASSERT_FALSE(bc.empty());
+  EXPECT_LT(rtc_spike_detail::median(bc), rtc_spike_detail::median(ac) - .05);
+  EXPECT_LT(rtc_spike_detail::median(br), .1 * rtc_spike_detail::median(ar));
+  EXPECT_FALSE(RtcCommonModeConsideration::rejection_authorized);
+  EXPECT_FALSE(RtcCommonModeConsideration::formal_uncertainty_available);
+  EXPECT_EQ(weak.parent->network(0).value(NativeReadoutCoordinate::x, 150, 0),
+            weak.x(50, 0));
+}
+
+TEST(RtcCommonMode,
+     LargerIndependentNoiseReducesCorrelationWithoutChangingReference) {
+  Case quiet, noisy;
+  for (std::size_t i = 0; i < noisy.n; ++i) {
+    const double c =
+        2 * std::sin(.008192 * i * 3.2) + .3 * std::cos(.008192 * i * 1.2);
+    noisy.x(i, 0) = c + 100 * (noisy.x(i, 0) - c);
+  }
+  quiet.bind();
+  noisy.bind();
+  quiet.domain.members[0].reference_eligible = false;
+  noisy.domain.members[0].reference_eligible = false;
+  const auto a = quiet.learn(), b = noisy.learn();
+  for (std::size_t i = 0; i < a->reference().size(); ++i)
+    if (std::isfinite(a->reference()[i]))
+      EXPECT_EQ(a->reference()[i], b->reference()[i]);
+  std::vector<double> ac, bc, ar, br, bg;
+  for (const auto &f : a->fits())
+    if (f.detector == 0 && f.available()) {
+      ac.push_back(f.correlation);
+      ar.push_back(f.residual_scatter);
+    }
+  for (const auto &f : b->fits())
+    if (f.detector == 0 && f.available()) {
+      bc.push_back(f.correlation);
+      br.push_back(f.residual_scatter);
+      bg.push_back(f.gain);
+    }
+  ASSERT_FALSE(ac.empty());
+  ASSERT_FALSE(bc.empty());
+  EXPECT_LT(rtc_spike_detail::median(bc), rtc_spike_detail::median(ac) - .2);
+  EXPECT_GT(rtc_spike_detail::median(br), 20 * rtc_spike_detail::median(ar));
+  EXPECT_NEAR(rtc_spike_detail::median(bg), 1., .25);
+  EXPECT_FALSE(RtcCommonModeConsideration::rejection_authorized);
+}
 } // namespace

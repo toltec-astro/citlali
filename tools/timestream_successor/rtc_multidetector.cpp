@@ -116,7 +116,24 @@ int main(int argc,char **argv) {
         fpga,       hz,       accum,     tune.accumulation_length,
         tune.valid, timing};
     const bool full_health=cfg["common_mode_health"] && cfg["common_mode_health"].as<std::string>()=="full-network-learn-only";
-    require(obs == 152390 && sub == 0 && scan == 2 && (nw == 12 || (full_health && nw == 0)),
+    const bool census = bool(cfg["common_mode_census"]);
+    if (census) {
+      require(full_health && nw == 0 && (obs == 152390 || obs == 152392) && argc == 3 &&
+                  !cfg["declared_contaminant"], "census is bounded original network0 Learn-only");
+      const auto selection = YAML::LoadFile(checked_file(cfg["common_mode_census"]["selection"]).string());
+      require(selection["schema"].as<std::string>() == "rtc-common-mode-repeatability-selection-v1" &&
+                  selection["selected_before_new_health_results"].as<bool>(), "census selection was not frozen");
+      std::size_t matches=0;
+      for (const auto &entry : selection["observations"])
+        if (entry["observation"].as<int>() == obs) {
+          ++matches;
+          for (const auto &key : {"raw", "tune", "manifest", "telescope"})
+            require(entry[key]["sha256"].as<std::string>() == cfg[key]["sha256"].as<std::string>(),
+                    "census input differs from frozen selection");
+        }
+      require(matches==1,"census observation absent or duplicated in selection");
+    }
+    require((obs == 152390 || (census && obs == 152392)) && sub == 0 && scan == 2 && (nw == 12 || (full_health && nw == 0)),
             "bounded caller requires NGC4449/152390/0/2: network12 Apply or network0 diagnostic only");
     const int health_array=nw==0 ? 0 : 2;
     require(rows == prior["rows"].as<std::int64_t>() &&
@@ -240,15 +257,31 @@ int main(int argc,char **argv) {
     std::optional<RecoveredProcessingScans> recovered_scans;
     if(cfg["decision_apply"]) recovered_scans=recover_processing_scans(cfg,parent,verified,nw);
     const auto protection_authority=cfg["source_protection_authority"].as<std::string>();
-    caller::require_no_mask_scope(parent->scope(),protection_authority);
+    if (obs == 152390) caller::require_no_mask_scope(parent->scope(),protection_authority);
+    else require(census && protection_authority == "rtc-census-source-membership-unavailable",
+                 "repeat source membership must remain unavailable");
     auto protection=RtcSpikeSourceProtection::admit(parent,protection_authority,
-                                                   RtcSpikeProtection::outside_source);
+                        obs==152390 ? RtcSpikeProtection::outside_source : RtcSpikeProtection::unavailable);
     std::shared_ptr<const AstScanMotionNetworkView> motion;
     if(argc==4 || recovered_scans){
       const auto telescope=load_telescope(checked("telescope"),parent->scope());
       auto ast=build_ast_scan_motion_product(telescope.source,ast_identity_binding);
       const auto accepted_ast=YAML::LoadFile(checked("ast_acceptance").string());
-      require(accepted_ast["source_revision"].as<std::string>()=="adbc013e2d4287fb5a32db8bc7f2b0112c1c88d7" &&
+      if (census && obs == 152392) {
+        require(accepted_ast["schema"].as<std::string>() == "wp7-rtc-filter-fixture-census-v3" &&
+                    accepted_ast["source_revision"].as<std::string>() == "adbc013e2d4287fb5a32db8bc7f2b0112c1c88d7" &&
+                    accepted_ast["observation"].as<int>() == obs &&
+                    accepted_ast["telescope_ast"]["policy_id"].as<std::string>() == std::string(ast_scan_motion_policy_id),
+                "repeat AST evidence differs from accepted scope/policy");
+        std::size_t matches=0;
+        for (const auto &entry : accepted_ast["inputs"])
+          if (entry["role"].as<std::string>() == "telescope") {
+            ++matches;
+            require(entry["sha256"].as<std::string>() == telescope.sha256,
+                    "repeat telescope differs from accepted motion census");
+          }
+        require(matches==1,"repeat AST requires one exact telescope input");
+      } else require(accepted_ast["source_revision"].as<std::string>()=="adbc013e2d4287fb5a32db8bc7f2b0112c1c88d7" &&
           accepted_ast["authority_policy_id"].as<std::string>()==std::string(ast_scan_motion_policy_id) &&
           accepted_ast["observation"].as<int>()==obs &&
           accepted_ast["telescope"]["sha256"].as<std::string>()==telescope.sha256,
@@ -276,7 +309,20 @@ int main(int argc,char **argv) {
         auto identity=RtcSpectralInputIdentity::bind(native,val,view->span(nw),RtcSpectralInputStage::original_reference,"exact-simultaneous-audit-original-projection",1);
         auto spectra=measure(learn_seconds,[&]{return RtcNativeSpectralEvidence::learn_initial(spikes,{identity},{{nw,"audit-four-epoch-ULP-arithmetic-envelope",duration,prior["roundoff_bound_fraction"].as<double>()}},18);});
         auto lines=RtcLinePowerEvidence::learn(spectra,val,RtcLinePowerProfile::initial_2_hz,19);
-        export_health(output/"health",health,lines,channels,cfg,argv[1],health_seconds);
+        std::vector<std::uint32_t> fixed_targets;
+        if (census) {
+          const auto selection=YAML::LoadFile(checked_file(cfg["common_mode_census"]["selection"]).string());
+          for (const auto &target:selection["follow_targets"]) {
+            const auto channel=target[obs==152390 ? "baseline_channel" : "repeat_channel"];
+            if (channel.IsNull()) continue;
+            const auto it=std::find(channels.begin(),channels.end(),channel.as<int>());
+            require(it!=channels.end(),"follow target absent from exact inventory");
+            fixed_targets.push_back(it-channels.begin());
+          }
+        }
+        export_health(output/"health",health,lines,channels,cfg,argv[1],health_seconds,
+                      census ? &fixed_targets : nullptr);
+        if (census) export_census_reference_checks(output,health,lines,channels,cfg,argv[1],fixed_targets);
         write_yaml(output/"processing-scans.yaml",recovered_scans->receipt);
         const auto &net=parent->network(nw);
         for(std::uint32_t d=0;d<channels.size();++d)for(std::int64_t row=0;row<rows;++row)
