@@ -47,8 +47,11 @@ Cross-observation reporting retains existing runtime q aggregation and labels
 additional duration-weighted summaries separately. Self-excluded raw gains
 are not combined with initial-reference peer normalization. Pair-specific
 common usable support compares the same reference's frozen target/control
-fits; coefficients are not refitted in reporting. Correlation/residuals are
-evaluated on each intersection, with a64-sample metric availability guard.
+fits; coefficients are not refitted in reporting. Gain ratios require identical
+target/control fit spans, and composition conclusions use the exact spans
+shared by all three references for that pair. Correlation/residuals are also
+evaluated on broader pair intersections, clearly separated from those matched
+fit ratios, with a64-sample metric availability guard.
 No unrelated detector reduces that pair's support. Gain ratios cancel the
 reference's arbitrary scale/sign. Missing/weak support is inconclusive. Gain
 MAD and interval history describe variation, not significance or uncertainty.

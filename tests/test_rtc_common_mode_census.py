@@ -44,14 +44,29 @@ class CensusTests(unittest.TestCase):
         result, pieces = census.matched_comparison(a, b, 10+2*c, -5+4*c, c, .01)
         self.assertAlmostEqual(result['common_fit_seconds'], .6)
         self.assertEqual(pieces[['first', 'past_last']].values.tolist(), [[40, 100]])
-        self.assertAlmostEqual(result['gain_ratio_duration_weighted_median'], .5)
+        self.assertTrue(np.isnan(result['gain_ratio_duration_weighted_median']))
+        self.assertEqual(result['identical_fit_seconds'], 0.)
+        self.assertAlmostEqual(pieces.frozen_coefficient_ratio.iloc[0], .5)
         # Common metric overlap is shorter than the inherited64-sample guard.
         self.assertTrue(np.isnan(result['target_correlation_duration_weighted_median']))
         a2, b2 = a.copy(), b.copy()
         a2['gain'] /= -7
         b2['gain'] /= -7
-        result2, _ = census.matched_comparison(a2, b2, 10+2*c, -5+4*c, -7*c, .01)
-        self.assertEqual(result2['gain_ratio_duration_weighted_median'], result['gain_ratio_duration_weighted_median'])
+        _, pieces2 = census.matched_comparison(a2, b2, 10+2*c, -5+4*c, -7*c, .01)
+        self.assertEqual(pieces2.frozen_coefficient_ratio.iloc[0], pieces.frozen_coefficient_ratio.iloc[0])
+
+    def test_gain_ratios_require_identical_fits_under_all_references(self):
+        a = fits([[d, 0, lo, hi, 0, gain, 0., 1., 0., 1., gain]
+                  for d, gain in [(0, 2.), (1, 4.)] for lo, hi in [(0, 100), (100, 200)]])
+        b = a.copy()
+        b.loc[(b.detector == 1) & (b['first'] == 100), 'first'] = 120
+        shared = census.same_support_fits({'a': a, 'b': b}, 0, 1)
+        c = np.sin(np.arange(200)*.1)
+        for frame in shared.values():
+            self.assertEqual(frame['first'].tolist(), [0, 0])
+            result, _ = census.matched_comparison(frame[frame.detector == 0], frame[frame.detector == 1], 2*c, 4*c, c, .01)
+            self.assertEqual(result['identical_fit_seconds'], 1.)
+            self.assertAlmostEqual(result['gain_ratio_duration_weighted_median'], .5)
 
     def test_common_support_metrics_ignore_a_feature_outside_overlap(self):
         a = fits([[0, 0, 0, 200, 0, 2., 0., 1., 0., 1., 2.]])

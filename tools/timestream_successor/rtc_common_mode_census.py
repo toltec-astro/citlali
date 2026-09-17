@@ -188,8 +188,12 @@ def matched_comparison(target_fits, control_fits, target_x, control_x, reference
     pieces = []
     for lo, hi, target, control in overlap_fits(target_fits, control_fits):
         n = hi-lo
+        exact = target.first == control.first and target.past_last == control.past_last
+        ratio = float(target.gain/control.gain) if control.gain != 0 else float('nan')
         row = {'interval': int(target.interval), 'first': lo, 'past_last': hi,
-               'seconds': float(n*dt), 'gain_ratio': float(target.gain/control.gain) if control.gain != 0 else float('nan')}
+               'seconds': float(n*dt), 'identical_fit_support': exact,
+               'frozen_coefficient_ratio': ratio,
+               'gain_ratio': ratio if exact else float('nan')}
         for name, fit, x in [('target', target, target_x), ('control', control, control_x)]:
             c, y = reference[lo:hi], x[lo:hi]
             assert np.isfinite(c).all() and np.isfinite(y).all()
@@ -203,11 +207,24 @@ def matched_comparison(target_fits, control_fits, target_x, control_x, reference
     result = {'common_fit_seconds': float(frame.seconds.sum()) if len(frame) else 0.,
               'common_interval_count': int(frame.interval.nunique()) if len(frame) else 0,
               'common_piece_count': len(frame),
+              'identical_fit_seconds': float(frame.loc[frame.identical_fit_support, 'seconds'].sum()) if len(frame) else 0.,
               'minimum_metric_samples': 64,
               'metric_seconds': float(frame.loc[(frame.past_last-frame['first']) >= 64, 'seconds'].sum()) if len(frame) else 0.}
     for field in ['gain_ratio', 'target_correlation', 'control_correlation', 'target_residual_mad', 'control_residual_mad', 'reference_mad']:
         result[field+'_duration_weighted_median'] = weighted_median(frame[field], frame.seconds) if len(frame) else float('nan')
     return result, frame
+
+
+def same_support_fits(fits_by_reference, detector, control):
+    """Keep only exact pair fit spans shared by every reference being compared."""
+    keys = ['interval', 'first', 'past_last']
+    common = None
+    for fits in fits_by_reference.values():
+        a = set(map(tuple, fits.loc[(fits.detector == detector) & (fits.cause == 0), keys].values))
+        b = set(map(tuple, fits.loc[(fits.detector == control) & (fits.cause == 0), keys].values))
+        common = a & b if common is None else common & a & b
+    return {name: fits.loc[fits[keys].apply(tuple, axis=1).isin(common)].copy()
+            for name, fits in fits_by_reference.items()}
 
 
 def prepare(selection_path, output):
@@ -303,9 +320,11 @@ def report(selection_path, evidence, output):
                 r.update(observation=obs, baseline_channel=base_channel, channel=channel, reference='target-self-excluded')
                 histories.append(r)
         raw = {base: np.memmap(cfg['detectors'][d]['samples']['path'], dtype='<f8', mode='r', shape=(receipt['rows'], 4))[:, 0] for base, (channel, d) in target_map.items()}
+        reference_fits, reference_values = {}, {}
         for name in ['health', 'partition-0', 'partition-1']:
             reference = np.fromfile(replay/name/'reference.f64', dtype='<f8').reshape(-1, 3)
             ff = fits if name == 'health' else pd.read_csv(replay/name/'fits.csv')
+            reference_fits[name], reference_values[name] = ff, reference[:, 1]
             fi = {d: group for d, group in ff.groupby('detector')}
             rr = load_yaml(replay/name/'intervals.yaml')
             for index, r in enumerate(rr):
@@ -323,6 +342,20 @@ def report(selection_path, evidence, output):
                     control_d = target_map[control][1]
                     result, pieces = matched_comparison(fi.get(d, empty), fi.get(control_d, empty), raw[base_channel], raw[control], reference[:, 1], dt)
                     keys = {'observation': obs, 'reference': name, 'baseline_channel': base_channel, 'control_baseline_channel': control}
+                    result.update(keys)
+                    pair_rows.append(result)
+                    for k, v in keys.items():
+                        pieces[k] = v
+                    pair_pieces.append(pieces)
+        for base_channel, (_, d) in target_map.items():
+            for control in [301, 492]:
+                if base_channel == control or (base_channel == 492 and control == 301) or control not in target_map:
+                    continue
+                control_d = target_map[control][1]
+                shared = same_support_fits(reference_fits, d, control_d)
+                for name, ff in shared.items():
+                    result, pieces = matched_comparison(ff[ff.detector == d], ff[ff.detector == control_d], raw[base_channel], raw[control], reference_values[name], dt)
+                    keys = {'observation': obs, 'reference': 'composition-common-' + name, 'baseline_channel': base_channel, 'control_baseline_channel': control}
                     result.update(keys)
                     pair_rows.append(result)
                     for k, v in keys.items():
