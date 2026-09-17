@@ -10,6 +10,7 @@ struct Input {
     NativePairedReadoutMatrix x, r;
     std::vector<NativeReadoutCoordinateState> xs, rs;
     double integration_half=.004096;
+    TimestreamNativeRow first_native_row=100;
     std::string paired_identity="jump-test";
     explicit Input(std::size_t n=1100, double cadence=.008192) : times(n), counters(n), x(n,3), r(n,3),
         xs(support::valid_states(3*n)), rs(xs) {
@@ -28,11 +29,11 @@ struct Input {
     }
     void spike(std::size_t at=500,double dx=40,double dr=25) { x(at,0)+=dx; r(at,0)+=dr; }
     auto freeze() const {
-        auto timing=std::make_shared<const NativeNetworkAlignment>(0,100,support::time_vector(times),counters);
+        auto timing=std::make_shared<const NativeNetworkAlignment>(0,first_native_row,support::time_vector(times),counters);
         std::vector<NativePairedReadoutOccurrenceBinding> occurrences;
         for (std::size_t i=0;i<times.size();++i)
             occurrences.push_back({static_cast<std::int64_t>(i+10000),static_cast<std::int64_t>(i+20000),{times[i]-integration_half,times[i]+integration_half}});
-        auto axis=std::make_shared<const NativePairedReadoutOccurrenceAxis>(timing,100,std::move(occurrences));
+        auto axis=std::make_shared<const NativePairedReadoutOccurrenceAxis>(timing,first_native_row,std::move(occurrences));
         std::vector<NativePairedReadoutNetwork> networks;
         networks.push_back(NativePairedReadoutNetwork::admit(axis,support::detector_axis(0,3),
             support::mapping_authority(0,paired_identity),x,r,xs,rs));

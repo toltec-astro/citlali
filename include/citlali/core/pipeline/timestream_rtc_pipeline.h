@@ -297,7 +297,7 @@ public:
       if(line_free && record.common_total)record.added_line_rms=std::sqrt(added_power/record.common_total);
       for(auto row:record.rows){const double value=source[d].delta(row-first,0);record.source_energy+=value*value;}
       for(auto row:other.output_native_rows())record.peer_total+=other.map_center_admitted(row);
-      for(auto row=window.first;row<window.past_last;++row)record.expected+=(row%factor)==0;
+      for(auto row=window.first;row<window.past_last;++row)record.expected+=((row-first)%factor)==0;
       if(!out->domain_.window_unavailable.empty() && !out->domain_.window_unavailable[d].empty())
         record.unavailable=out->domain_.window_unavailable[d];
       else if(record.rows.size()!=record.expected || record.expected<4)record.unavailable="incomplete declared crossing on common scheduled support";

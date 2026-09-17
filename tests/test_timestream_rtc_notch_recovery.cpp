@@ -1514,14 +1514,15 @@ TEST(rtc_common_mode, diagnostic_does_not_change_frozen_plan_flags_or_science_ou
   }
 }
 
+Input consequence_input(TimestreamNativeRow first) {Input in(6000);in.first_native_row=first;return in;}
 struct ConsequenceFixture {
-  Input input{6000};
+  Input input;
   Trial trial{input};
   std::shared_ptr<const RtcPipelineResult> base=complete_apply(trial,RtcPipelinePlan::consider(complete_plans(trial),trial.joint->joint_handle(),31));
   std::vector<RtcRecoveryInjection> source;
   std::vector<RtcConsequenceEvidence::Positions> positions;
   RtcConsequenceDomain domain;
-  ConsequenceFixture() {
+  explicit ConsequenceFixture(TimestreamNativeRow first=100):input(consequence_input(first)) {
     domain.identity="controlled-source";domain.source_model="constant algebra control";
     domain.regime="native fixture units";domain.geometry_identity="declared-linear-fixture-arcsec";
     domain.units="native x;arcsec";domain.purposes={citlali::config::ReductionType::science,citlali::config::ReductionType::pointing};
@@ -1606,4 +1607,16 @@ TEST(rtc_purpose_consequence, foreign_Apply_cannot_reuse_consequences_in_reasses
   auto spectral=conditioned_learn(f.trial,other,true);
   auto c=RtcSpectralTransientConsideration::consider(spectral,f.trial.val,f.trial.review,f.trial.val,72);
   EXPECT_THROW(RtcPipelineReassessment::consider(other,c,74,nullptr,{e}),std::invalid_argument);
+}
+
+TEST(rtc_purpose_consequence, declared_window_counts_schedule_relative_to_odd_native_origin) {
+  ConsequenceFixture f(101);
+  for(std::size_t d=0;d<3;++d){f.domain.windows[d]={1001,1202};f.domain.ringing_windows[d]={951,1252};}
+  auto e=f.learn(f.apply(f.source));
+  for(const auto &r:e->records()) {
+    ASSERT_TRUE(r.available);EXPECT_EQ(r.expected,101);EXPECT_EQ(r.rows.size(),101);
+    EXPECT_EQ(r.rows.front(),1001);EXPECT_EQ(r.rows.back(),1201);
+    for(auto row:r.rows)EXPECT_EQ((row-101)%2,0);
+    EXPECT_NEAR(r.measured.projection,1,1e-12);
+  }
 }
