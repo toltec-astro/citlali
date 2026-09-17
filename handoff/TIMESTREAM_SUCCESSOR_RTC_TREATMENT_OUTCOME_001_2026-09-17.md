@@ -389,3 +389,36 @@ Evidence: `/private/tmp/citlali-rtc-output-handoff-2026-09-17`, including exact
 preflight, runtime-parent recovery, prerequisite review, source/gates, real replay
 and independent candidate review. Local AppleClang21/Homebrew/C++20 evidence is
 supplemental; no Unity/Spack campaign or successful full handoff is claimed.
+
+### Verified output-preparation checkpoint
+
+Runtime candidate `c1651ef36430debb480ec6cfc1cd9b7b68807c5a`, tree
+`2c4af7243e1fb0cba8177b6532738ee6b6515c91`, parent the pushed `3cd941974...`
+above. Eight changed paths are bound by `SOURCE.json` in the evidence directory.
+The exact candidate builds the CLI/offline caller and passes all 1,211 runnable
+CTests (1,212 registered; existing MapFitterLifecycle disable unchanged), six
+new output-grid controls, ten VAL regression controls, public-header isolation,
+required config preflight, and 207 baseline Python tests plus 137 subtests.
+The first VAL layout failed the unchanged native-memory bound; the compact
+repair passes and preserves 112-byte finding keys, with 64-byte output targets.
+No test bound was relaxed. Fresh-context read-only review independently
+reproduced focused/VAL controls and reports no actionable findings on any of
+the three axes; verdict PASS WITH RECORDED LIMITATIONS for preparation only.
+
+The exact-commit twelve-detector 152390 replay completes in 113.52 seconds,
+with 870,858,752 bytes peak process RSS. It uses the same input/policy/filter
+configuration, omitting the prior injection study and adding output-grid
+inspection. All 230 current numerical/support artifacts match the preceding
+accepted replay byte-for-byte. Each arm retains 909,228 scheduled positions,
+of which 882,766 have each numerical coordinate available; that count is not
+independent/map eligibility or sensitivity. Natural-event replacement remains
+absent, so donor behavior is exercised by focused controlled tests. New grid
+descriptors occupy 480 bytes and preparation plus inspection takes 0.224–0.225
+seconds per arm. No unexpected application error-level output occurred.
+
+These are a reviewed local preparation checkpoint, not full task closure.
+Final output facts, AST detector coordinates, terminal publication and CAL
+admission remain pending the explicit geometry/pointing compatibility binding
+and its bounded implementation. The owner question remains unanswered; no
+dependent scientific choice has been made. No integration, push, production
+activation, cleanup or downstream processing occurs in this checkpoint.

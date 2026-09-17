@@ -30,8 +30,15 @@ output/slot/coordinate VAL targets are distinct from native targets and other
 realizations, and accept only the input snapshot or its immutable descendants.
 This is preparation, not completed scientific output or downstream admission.
 
-Six focused controls pass locally. Full gates, exact-source review and real
-replay are recorded in the continuing
+Runtime candidate `c1651ef36430debb480ec6cfc1cd9b7b68807c5a` passes six new
+focused controls, ten VAL regressions, 1,211 runnable CTests, 207 baseline tests
+plus 137 subtests, and required config preflight. Independent exact-SHA review
+passes with the full-handoff limitation recorded. The exact twelve-detector
+replay preserves all 230 existing numerical/support artifacts byte-for-byte;
+grid preparation/inspection takes 0.224–0.225 seconds per arm and retains 480
+descriptor bytes. Existing VAL key memory remains 112 bytes. These local
+AppleClang/Homebrew results are supplemental, not Unity/Spack qualification.
+Detailed gates, exact-source review and replay are recorded in the continuing
 [RTC handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_TREATMENT_OUTCOME_001_2026-09-17.md).
 Full AST coordinate realization, output-fact publication, logical finalization
 and CAL-facing admission remain open. No permissive placeholder publisher,
