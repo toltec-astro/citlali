@@ -264,8 +264,11 @@ int main(int argc,char **argv) {
                         obs==152390 ? RtcSpikeProtection::outside_source : RtcSpikeProtection::unavailable);
     std::shared_ptr<const AstScanMotionNetworkView> motion;
     if(argc==4 || recovered_scans){
-      const auto telescope=load_telescope(checked("telescope"),parent->scope());
-      auto ast=build_ast_scan_motion_product(telescope.source,ast_identity_binding);
+      const auto telescope=load_telescope(checked("telescope"),parent->scope(),census && obs==152392);
+      const auto motion_identity = census && obs==152392
+          ? AstScanMotionIdentityBinding{1523920001,1523920002,1523920003,1523920004}
+          : ast_identity_binding;
+      auto ast=build_ast_scan_motion_product(telescope.source,motion_identity);
       const auto accepted_ast=YAML::LoadFile(checked("ast_acceptance").string());
       if (census && obs == 152392) {
         require(accepted_ast["schema"].as<std::string>() == "wp7-rtc-filter-fixture-census-v3" &&

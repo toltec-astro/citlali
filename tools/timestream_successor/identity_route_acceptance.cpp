@@ -438,15 +438,27 @@ struct TelescopeInput {
 
 TelescopeInput load_telescope(
     const fs::path &path,
-    const pipeline::NativeObservationScope &scope) {
-    require(path.filename() == telescope_filename,
+    const pipeline::NativeObservationScope &scope,
+    bool bounded_repeat_census = false) {
+    // One explicitly selected repeat for the offline common-mode census.
+    // Existing acceptance callers retain every original artifact guard.
+    require(!bounded_repeat_census ||
+                (scope.observation == 152392 && scope.subobservation == 0 && scope.scan == 2),
+            "repeat telescope binding is outside the fixed census scope");
+    const std::string_view expected_filename = bounded_repeat_census
+        ? "tel_toltec_2026-02-19_152392_00_0002.nc" : telescope_filename;
+    const std::string_view expected_digest = bounded_repeat_census
+        ? "cf991624411d7f7582977351a5ab4cc228977bc8680578cb74e0ec1ae71d8e47" : telescope_sha256;
+    const auto expected_bytes = bounded_repeat_census ? 24247112u : telescope_byte_count;
+    const auto expected_records = bounded_repeat_census ? 62339u : telescope_record_count;
+    require(path.filename() == expected_filename,
             "telescope filename is not the approved artifact");
     std::error_code error;
     const auto byte_count = fs::file_size(path, error);
-    require(!error && byte_count == telescope_byte_count,
+    require(!error && byte_count == expected_bytes,
             "telescope byte count is not approved");
     const auto digest = citlali::utils::sha256_file(path);
-    require(digest == telescope_sha256,
+    require(digest == expected_digest,
             "telescope SHA-256 is not approved");
 
     netCDF::NcFile file(path.string(), netCDF::NcFile::read);
@@ -481,17 +493,17 @@ TelescopeInput load_telescope(
     require(!time_variable.isNull() &&
                 time_variable.getDimCount() == 1 &&
                 time_variable.getDim(0).getSize() ==
-                    telescope_record_count,
+                    expected_records,
             "telescope time cardinality is not approved");
     auto times = read_vector(
         file, std::string{pipeline::ast_scan_motion_time_field},
-        telescope_record_count, "sec");
+        expected_records, "sec");
     auto ra = read_vector(
         file, std::string{pipeline::ast_scan_motion_ra_field},
-        telescope_record_count, "rad");
+        expected_records, "rad");
     auto dec = read_vector(
         file, std::string{pipeline::ast_scan_motion_dec_field},
-        telescope_record_count, "rad");
+        expected_records, "rad");
     auto source = pipeline::AstScanMotionSource::admit(
         scope, scope, 0, std::move(metadata), std::move(times),
         std::move(ra), std::move(dec));

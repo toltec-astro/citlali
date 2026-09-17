@@ -84,3 +84,8 @@ Stop after the compact observation/target table, full-network census, support
 and identity bindings, bounded checks and diagnostic-role recommendation. No
 new cut, masks, weights, calibration, treatment-outcome prerequisite, broader
 campaign, canonical integration, push, production activation, FRUIT or cleanup.
+
+The first repeat invocation stopped at the inherited single-observation telescope
+artifact guard. TELESCOPE_ADAPTER_REASSESSMENT.md records its failure and bounded
+repair: opt-in exact152392 scope/name/hash/bytes/cardinality binding, preserving
+the default152390 adapter and existing AST policy. Fresh replay/review required.
