@@ -492,3 +492,44 @@ real replay gates, memory/timing, exact candidates and independent review are
 recorded below when complete. Evidence is supplemental local AppleClang/
 Homebrew/C++20 with the existing dirty KIDs dependency, not Unity/Spack or
 production qualification.
+
+### Verified RTC-only terminal candidate
+
+Runtime `8d738132f5ee2e3036f73aaa5eb8b58a4116d00f`, tree
+`4c9ddfb4b423c3b1ce33395972c5164d82451a3c`, parent
+`5a4bc7d576813bcc893ba59cd9ef4656d737bf4a`. Thirteen changed paths and exact
+content digests are in the continuation evidence's `SOURCE.json`. The exact
+CLI/caller build passes all 1,217 runnable tests (1,218 registered, established
+MapFitterLifecycle disable unchanged). Twelve RTC grid/terminal tests and ten
+VAL regressions independently reproduce; three new public headers compile in
+isolation. Required config preflight and 207 baseline tests plus 137 subtests
+pass. An ordinary-science terminal request is rejected before input processing
+and creates no output directory, proving no automatic RTC-only fallback.
+
+Fresh-context read-only exact-SHA review reports PASS WITH RECORDED LIMITATIONS,
+with no actionable findings on scientific/behavioral, ownership/architecture,
+or repository/evidence axes. Environment remains supplemental local
+AppleClang/Homebrew/C++20 with existing kids04088da-dirty. No Unity/Spack,
+ordinary-science admission or production qualification is inferred.
+
+Exact replay adds only `terminal_request: rtc-only` to the preceding bound
+twelve-detector config. All 230 numerical/support artifacts are byte-identical.
+Both arms publish 909,228 scheduled positions, including 882,766 numerically
+available x and r coordinates each; availability is not scientific eligibility
+or sensitivity. The final decision is exactly retained, input VAL generation0
+is unchanged, and output generation1 contains a 16-byte producer fact block
+referencing the complete grid. No new per-sample finding allocation is needed.
+Finalization/publication/CAL-source binding takes 0.154707292/0.155022166 seconds
+per arm. Whole replay is 117.43 seconds with peak process RSS842,350,592 bytes.
+The fixture has no admitted natural replacements; controlled focused tests
+exercise donor support and x/r availability separately. No unexpected
+application error-level output occurred; the negative request gate's failure
+is intentional and separately recorded.
+
+This completes the bounded RTC-only logical-output connection with VAL facts,
+finalization and a CAL-facing source interface. It does not complete or admit
+ordinary CAL/science output. The latter must request and obtain its exact AST
+detector-coordinate, factor, atmosphere, response and named-use authorities.
+The owner's V2 fixture compatibility permission is retained for that future
+coordinate role. Integration, push, activation, cleanup and FRUIT remain
+unperformed; local reviewed source is preserved on the existing RTC branch.

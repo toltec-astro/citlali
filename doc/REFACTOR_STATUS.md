@@ -32,8 +32,16 @@ there is no fallback from that failure to a successful RTC-only request.
 The offline twelve-detector caller publishes only after its final exact
 reassessment decision. Required file failures propagate to the CLI.
 
-Local focused verification, full gates, representative replay and independent
-exact-SHA review are recorded in the continuing
+Runtime `8d738132f5ee2e3036f73aaa5eb8b58a4116d00f` passes 12 grid/terminal
+controls, 10 VAL regressions, all 1,217 runnable CTests, required config
+preflight and 207 baseline tests plus 137 subtests. Independent exact-SHA
+review passes with recorded scope/environment limitations and no actionable
+findings. The exact twelve-detector replay completes both RTC-only terminals
+and preserves all 230 numerical/support artifacts byte-for-byte. Each VAL
+fact block is 16 bytes, retaining the existing grid; finalization/publication/
+CAL-source binding costs 0.155 seconds per arm. These are supplemental local
+AppleClang/Homebrew results, not Unity/Spack or ordinary-science qualification.
+Detailed verification and review are recorded in the continuing
 [RTC handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_TREATMENT_OUTCOME_001_2026-09-17.md).
 No filters, scientific thresholds, donor policy, timing, production route,
 CAL/PTC/MAP numerics, FRUIT, canonical integration, push or cleanup are changed.
