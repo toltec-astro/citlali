@@ -405,6 +405,9 @@ def make_plots(full, compact, pairs, refs, history, output):
             series = group.set_index('interval').gain.reindex(range(int(group.interval.max())+1))
             ax.plot(series.index, series, marker='.', markersize=2, label=str(obs))
         ax.set(title=f'Baseline target {base}', xlabel='Existing interval (within each observation)', ylabel='Signed self-excluded gain')
+        if base == 221:
+            ax.set_yscale('symlog', linthresh=1)
+            ax.set_ylabel('Signed self-excluded gain (symlog; linear within ±1)')
         ax.axhline(0, color='black', lw=.5)
         ax.grid(alpha=.2)
         ax.legend(fontsize=8)

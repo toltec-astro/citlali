@@ -89,3 +89,52 @@ The first repeat invocation stopped at the inherited single-observation telescop
 artifact guard. TELESCOPE_ADAPTER_REASSESSMENT.md records its failure and bounded
 repair: opt-in exact152392 scope/name/hash/bytes/cardinality binding, preserving
 the default152390 adapter and existing AST policy. Fresh replay/review required.
+
+## Completed bounded evidence
+
+Both final observations succeeded with original x/r unchanged and Apply absent.
+Baseline and enabled/disabled control source is
+`4162c2b18bd4c7d39608e25205fbeabf859106fa`; repeat source is
+`14b67cccf7c638d91d7e7a3aa13b5be4bcf0d44a`. The sole source difference is the
+repeat-only accepted motion-census schema prefix. Baseline eleven health/support
+artifacts are bit-identical to accepted 9a47dd8d3. All 370 science/support files
+match disabled/enabled/prior output; both frozen-plan arms match semantically.
+The final continuity commit adds only these results and a labelled symmetric-log
+axis for 221, so its extreme early repeat gains do not hide the rest of its history.
+Its exact SHA, tree and independent review are external closure bindings.
+
+The full 1,260-row census retains 622/623 targets with fits, 548 initially eligible
+reference members and 82 unavailable calibrated q values per observation. All six
+followed targets have fits in all 124 intervals; short unavailable segments are
+retained. Exact target/control spans shared by all reference variants retain
+962--999 s. No entire-network intersection or new fit is used for those checks.
+
+221 maps to repeat218 and changes q 0.101 to 4.192, LOO correlation 0.033 to 0.312,
+and original transient candidates 2 to 335. It is state-dependent, not a consistently
+weak detector. 445 retains high q 6.206 to 4.394 with unchanged calibration binding;
+its discrepancy is not a measured point-source calibration-error factor. 426 has
+618.08 s versus 2.38 s negative fitted response; sustained negative episodes are
+not persistent inversion, and its prior bad flags/zero calibration remain. 236's
+baseline spectral excess 0.957 at 58.533 Hz and reference-dependent slopes preclude
+an isolated calibration inference. Its repeat still has substantial original
+spectral excess at 29.767 Hz. Controls301/492 are comparatively stable.
+
+Each followed target has 1,238.761 s of original paired support inside the recovered
+processing domain; adaptive speed-eligible support is 1,015.898/1,032.544 s. For a
+good APT/Tune target this is 0.1825% of the corresponding equal-detector eligible
+time. Net extra loss beyond existing treatment is unmeasured, not sensitivity;
+426 is already outside that good population. No full Apply campaign was added.
+
+Final local results: 11 common-mode controls, 8 reporting tests, 1,180 runnable
+CTests, 207 baseline Python tests, 67 RTC Python tests and required config preflight.
+Later ingress-only repairs are covered by exact rebuilds and successful replays;
+core/tests remain unchanged. Review identified and repaired the identical-fit
+support issue; exact source/replay, report, figures and three-axis review are in
+REPORT.md, SOURCE.json, GATES.json, verification.json and INDEPENDENT_REVIEW.md at
+the external evidence root. Failures and metadata/ingress reassessments are retained.
+No remaining owner scientific decision is needed to complete this census.
+
+Recommendation: keep common-mode response as useful early Learn/Consider evidence.
+Stop this census without thresholds, rejection, calibration changes or scope growth.
+The already planned treatment-outcome comparison remains the next separate work;
+this diagnostic follow-up creates no new prerequisite.

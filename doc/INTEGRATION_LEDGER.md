@@ -1,19 +1,29 @@
 # Citlali Integration Ledger
 
-## RTC common-mode repeatability validation candidate — 2026-09-16
+## RTC common-mode repeatability bounded completion — 2026-09-16
 
-- Owner-authorized Tier2 bounded census, literal base
-  `6bb881fbfde13b415f83602ce14319f2ee3fa89d`; existing RTC branch/worktree.
-- Runtime common-mode source/header remain byte-identical to9a47dd8d3.
-  Offline replay/export/reporting changes admit only the fixed faint-source
-  SCIENCE152390/152392 network0 pair. No matching or estimator redesign.
-- Preserve full populations, qualified occurrence-scoped matching, distinct
-  initial/LOO references, duration/support and unavailable-state accounting.
- 426 has a unique accepted match with a flagged seed; no channel-number substitution.
-  Pre-replay metadata correction is recorded in SELECTION_REASSESSMENT.md.
-- Exact-source gates, parity, observations and independent three-axis review
-  will be bound in `/private/tmp/citlali-rtc-common-mode-repeatability-2026-09-16`.
-  No science policy, production, canonical integration, push or cleanup.
+- Owner-authorized Tier 2 census; literal base
+  `6bb881fbfde13b415f83602ce14319f2ee3fa89d`, existing RTC branch/worktree.
+- Full 630-target observations 152390/152392, all six accepted matched identities,
+  exact initial/LOO reference separation, duration-aware and identical-fit-span
+  comparisons, and two deterministic disjoint reference subsets. Core common-mode
+  source/header remain byte-identical to accepted `9a47dd8d3`.
+- Runtime sources: baseline/parity `4162c2b18bd4c7d39608e25205fbeabf859106fa`;
+  repeat `14b67cccf7c638d91d7e7a3aa13b5be4bcf0d44a`. Their only difference is a
+  repeat-only schema literal correction. Final plot/continuity source and review
+  are separately bound externally; no numerical output change.
+- 221 changes substantially; 445's calibration-relative discrepancy persists;
+  426's negative episodes largely disappear; 236's baseline gain is sensitive to
+  reference composition. Retain diagnostic evidence, not a rejection policy.
+- Eleven focused C++ tests, eight report tests, 1,180 runnable CTests, 207 baseline
+  and 67 RTC Python tests, config preflight and final local adapter replays pass.
+  370 science/support files and two frozen-plan arms preserve previous behavior.
+  Local fallback build is supplemental. Exact source, full inventories, failed
+  attempts/reassessments, independent review and seals are retained at
+  `/private/tmp/citlali-rtc-common-mode-repeatability-2026-09-16`.
+- No estimator, thresholds, calibration, Plan/Apply, flags/weights/masks,
+  production, canonical integration, push, FRUIT or cleanup authorization.
+  Census is complete and does not delay the planned treatment-outcome comparison.
 
 ## RTC common-mode health bounded completion — 2026-09-16
 

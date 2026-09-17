@@ -2,27 +2,39 @@
 
 ## RTC common-mode repeatability census — 2026-09-16
 
-Owner authorizes one bounded validation/reporting follow-up from reviewed
-closure6bb881fbfde13b415f83602ce14319f2ee3fa89d/runtime9a47dd8d3. The estimator,
-reference eligibility, adaptive speed support and Plan/Apply remain unchanged.
-Before new health results, the observation set is frozen to152390 and152392,
-the only suitable nearby NGC4449 SCIENCE network0/a1100 pair in the local
-validation corpus. Full630-target inventories remain visible. All six follow-up
-identities use unique accepted relations through the same exact baseline APT.
-Recovered producer semantics distinguish 426's bad seed-health flag from its
-accepted matching identity; prior calibration restrictions remain intact.
+The owner-approved bounded census is complete for NGC4449 SCIENCE observations
+152390/152392, network 0/a1100, with all 630 targets retained in each. Only one
+suitable local repeat was available. All six followed identities use accepted
+unique matching paths through the same exact baseline calibration artifact.
+Recovered producer semantics distinguish 426's flagged seed from its accepted
+identity; prior flags and unavailable calibration remain intact.
 
-Offline adapters export the followed-target self-exclusions and one fixed,
-disjoint two-subset reference check per observation. Reports retain the exact
-runtime q definition and distinguish duration-weighted/matched-support checks.
-No correlation, gain or rejection threshold is selected. Source membership
-for152392 stays unknown;152390's no-mask authority remains scope-bound.
+221 changes from weak coupling to a larger, noisy response in the repeat
+(counterpart channel 218); 445 retains high calibration-relative q (6.206 to
+4.394). Both changes survive exact fitted-support matching and two fixed,
+disjoint reference subsets. 426's negative fitted duration falls from 618.08 s
+to 2.38 s; a stable physical inversion is not established. 236's baseline gain
+is reference-dependent amid strong existing spectral contamination. Controls
+301/492 are comparatively stable. Retain the diagnostic as useful early
+evidence; no rejection threshold or calibration correction is selected.
 
-Gates, exact source/replay, conclusions and independent review are pending at
+Baseline/parity source `4162c2b18bd4c7d39608e25205fbeabf859106fa` and repeat
+source `14b67cccf7c638d91d7e7a3aa13b5be4bcf0d44a` differ only in a repeat-only
+AST schema literal. Core common-mode source/header remain byte-identical to
+accepted `9a47dd8d3`. Final original pairs are unchanged; 370 science/support
+files and both frozen-plan arms match the disabled and accepted earlier output.
+Eleven focused common-mode tests, eight reporting tests, 1,180 runnable CTests,
+207 baseline Python tests, 67 RTC Python tests and required config preflight
+pass locally. Final adapter builds/replays cover later bounded ingress repairs;
+local AppleClang/Homebrew evidence is supplemental, not Unity/Spack qualification.
+
+Full report, 1,260-row census, identity/support bindings, preserved failures and
+reassessments, source/seals and fresh independent exact-SHA review reside at
 `/private/tmp/citlali-rtc-common-mode-repeatability-2026-09-16`; see the
 [work-order handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_COMMON_MODE_REPEATABILITY_001_2026-09-16.md).
-This census does not become a prerequisite for the planned treatment-outcome
-comparison. No canonical integration, push, production, FRUIT or cleanup.
+The final continuity/plot commit has its own exact external review binding.
+This census adds no prerequisite before the planned treatment-outcome comparison.
+No canonical integration, push, production, masks, weights, FRUIT or cleanup.
 
 ## RTC common-mode detector-health diagnostic — 2026-09-16
 
