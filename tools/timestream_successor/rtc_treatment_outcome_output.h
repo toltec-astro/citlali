@@ -59,3 +59,43 @@ YAML::Node write_treatment_outcome(const fs::path &output, const std::string &na
   out["conditioned_psd_sha256"]=citlali::utils::sha256_file(after_path);
   write_yaml(output/(name+".yaml"),out);return out;
 }
+
+YAML::Node write_reassessment_decision(const fs::path &output,
+    const citlali::pipeline::RtcPipelineAdvanceResult &step) {
+  using namespace citlali::pipeline;
+  const auto &d=*step.decision;const auto &e=*d.reassessment_handle();
+  YAML::Node out;out["schema"]="rtc-reassessment-execution-decision-v1";
+  out["execution_disposition"]=rtc_pipeline_disposition_name(d.disposition());
+  out["reason"]=rtc_pipeline_decision_cause_name(d.cause());
+  out["decision_attempt"]=d.attempt();out["reassessment_attempt"]=e.attempt();
+  out["evaluated_plan_attempt"]=e.previous_handle()->plan_handle()->attempt();
+  out["selected_candidate_attempt"]=step.candidate->plan_handle()->attempt();
+  out["scientific_qualification"]="unresolved";
+  out["missing_qualification"]=d.missing_qualification;
+  out["scientifically_qualified"]=d.scientifically_qualified;
+  out["downstream_admission_authorized"]=d.downstream_admission_authorized;
+  out["production_authorized"]=d.production_authorized;out["stopping_rule_selected"]=d.stopping_rule_selected;
+  out["revision_executed"]=step.revision_executed;out["maximum_revisions"]=1;
+  out["VAL_generation"]=d.snapshot_handle()->generation().value;
+  out["original_parent_preserved"]=step.candidate->plan_handle()->input_handle().get()==e.previous_handle()->plan_handle()->input_handle().get();
+  if(d.selection()) {
+    out["authority"]=d.selection()->authority;out["purpose"]=d.selection()->purpose;
+    out["positive_rationale"]=d.selection()->positive_rationale;
+  }
+  if(e.outcome_handle()) {
+    out["outcome_attempt"]=e.outcome_handle()->attempt();
+    out["coordinate_outcomes"]=e.outcome_handle()->records().size();
+    std::size_t available=0;for(const auto &r:e.outcome_handle()->records())available+=r.available();
+    out["available_coordinate_outcomes"]=available;
+    out["outcome_stage"]=e.outcome_handle()->conditioned_handle()->conditioned_handle()->after_lowpass() ?
+        "post-lowpass-native-before-decimation" : "post-notch-native";
+  }
+  for(const auto &issue:d.issues()) {
+    YAML::Node n;n["missing_requirement"]=rtc_pipeline_decision_cause_name(issue.cause);
+    if(issue.scope){n["network"]=issue.scope->network;n["detector_local_column"]=issue.scope->detector;
+      n["coordinate"]=static_cast<int>(issue.scope->coordinate);}
+    else n["scope"]="complete-original-paired-view";
+    out["unavailable_requirements"].push_back(n);
+  }
+  write_yaml(output/"reassessment-decision.yaml",out);return out;
+}

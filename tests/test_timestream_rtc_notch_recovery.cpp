@@ -1050,6 +1050,184 @@ TEST(rtc_treatment_outcome, later_VAL_is_explicit_and_cannot_rebind_original_or_
   auto reassess=RtcPipelineReassessment::consider(result,considered,48,e);
   EXPECT_THROW(RtcPipelinePlan::reconsider(reassess,complete_plans(t),49),StaleRtcValGeneration);
 }
+
+auto decision_evidence(const Trial &t,const std::shared_ptr<const RtcPipelineResult> &r,
+                       std::uint64_t base=40,bool lowpass=true,bool matched=true,
+                       std::shared_ptr<const ValSnapshot> snapshot={}) {
+  if(!snapshot)snapshot=t.val;
+  auto spectral=RtcNativeSpectralEvidence::learn_conditioned(r->native_product(lowpass,snapshot),snapshot,
+      {{0,"control-cadence",.008192,1e-7}},base);
+  auto joint=RtcSpectralTransientConsideration::consider(spectral,snapshot,t.review,t.val,base+1);
+  auto outcome=matched ? RtcTreatmentOutcomeEvidence::learn(t.lines->spectral_handle(),spectral,base+2) : nullptr;
+  return RtcPipelineReassessment::consider(r,joint,base+3,outcome);
+}
+RtcPipelineSelection retain_selection(std::shared_ptr<const RtcPipelineReassessment> e) {
+  return {std::move(e),RtcPipelineSelectionIntent::retain_development_candidate,
+    "explicit-test-authority", "bounded-development-replay", "retain the explicitly frozen fixture for inspection",{},0};
+}
+auto advance_trial(const Trial &t,std::shared_ptr<const RtcPipelineResult> current,
+                   std::shared_ptr<const RtcPipelineDecision> d) {
+  const std::array parts{t.spikes->input_handle()};
+  return RtcPipelineResult::advance(current,d,t.spikes->input_handle(),t.val,parts);
+}
+TEST(rtc_reassessment_decision, authorized_retain_keeps_exact_candidate_without_qualification) {
+  Input in(6000);Trial t(in);
+  auto current=complete_apply(t,RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31));
+  auto e=decision_evidence(t,current);auto selection=retain_selection(e);
+  auto d=RtcPipelineDecision::consider(e,t.val,selection,44);
+  auto step=advance_trial(t,current,d);
+  EXPECT_EQ(d->disposition(),RtcPipelineDisposition::retain);EXPECT_EQ(d->selected_plan(),current->plan_handle());
+  EXPECT_EQ(step.candidate,current);EXPECT_FALSE(step.revision_executed);
+  EXPECT_EQ(d->qualification,RtcPipelineQualification::unresolved);EXPECT_FALSE(d->scientifically_qualified);
+  EXPECT_FALSE(d->downstream_admission_authorized);EXPECT_FALSE(d->production_authorized);EXPECT_FALSE(d->stopping_rule_selected);
+  EXPECT_EQ(d->selection()->positive_rationale,selection.positive_rationale);
+  selection.authority="mutated caller request";EXPECT_EQ(d->selection()->authority,"explicit-test-authority");
+  std::cout<<"decision_trace retain plan=31 next_apply=false qualification=unresolved authority=explicit-test-authority\n";
+}
+TEST(rtc_reassessment_decision, prescribed_revision_executes_complete_plan_afresh_and_differs_from_cumulative) {
+  Input in(6000);const double f=44./(488*.008192);
+  for(Eigen::Index i=0;i<in.x.rows();++i)for(int c=0;c<3;++c){
+    in.x(i,c)=std::sin(2*std::numbers::pi*f*i*.008192);
+    in.r(i,c)=.2*std::cos(2*std::numbers::pi*f*i*.008192);
+  }
+  Trial t(in);auto first=complete_apply(t,RtcPipelinePlan::consider(complete_plans(t,{.25,.5,.25}),t.joint->joint_handle(),31));
+  auto e=decision_evidence(t,first);auto selection=retain_selection(e);
+  selection.intent=RtcPipelineSelectionIntent::prescribed_finite_revision;
+  selection.positive_rationale="test-only prescribed lowpass-only complete alternative; no optimization";
+  selection.complete_revision=complete_plans(t);selection.next_attempt=45;
+  auto d=RtcPipelineDecision::consider(e,t.val,selection,44);auto step=advance_trial(t,first,d);
+  ASSERT_TRUE(step.revision_executed);EXPECT_EQ(d->disposition(),RtcPipelineDisposition::revise);
+  auto direct=complete_apply(t,RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),46));
+  double cumulative_difference=0;
+  for(std::size_t detector=0;detector<3;++detector){
+    const auto &actual=*step.candidate->detector_results()[detector],&expected=*direct->detector_results()[detector];
+    EXPECT_EQ(actual.output_native_rows(),expected.output_native_rows());EXPECT_EQ(actual.causes(),expected.causes());
+    for(Eigen::Index row=0;row<in.x.rows();++row)for(int c=0;c<2;++c)
+      EXPECT_EQ(std::bit_cast<std::uint64_t>(actual.filtered_native_pair()(row,c)),std::bit_cast<std::uint64_t>(expected.filtered_native_pair()(row,c)));
+    const auto &prior=first->detector_results()[detector]->filtered_native_pair();
+    for(auto row:actual.output_native_rows()){
+      const auto i=row-100;
+      if(i>10&&i+10<in.x.rows())for(int c=0;c<2;++c){
+        const double wrong=.25*prior(i-1,c)+.5*prior(i,c)+.25*prior(i+1,c);
+        if(std::isfinite(wrong))cumulative_difference=std::max(cumulative_difference,std::abs(actual.filtered_native_pair()(i,c)-wrong));
+      }
+    }
+  }
+  EXPECT_GT(cumulative_difference,.05);EXPECT_EQ(step.candidate->plan_handle()->input_handle(),first->plan_handle()->input_handle());
+  EXPECT_EQ(step.candidate->plan_handle()->reassessment_handle(),e);EXPECT_FALSE(d->scientifically_qualified);
+  std::cout<<"decision_trace revise plan=31->45 direct_original=bitwise_equal cumulative_max_difference="<<cumulative_difference<<" qualification=unresolved\n";
+}
+TEST(rtc_reassessment_decision, missing_authority_rationale_and_required_qualification_never_pass) {
+  Input in(6000);Trial t(in);auto current=complete_apply(t,RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31));
+  auto e=decision_evidence(t,current);
+  for(int which=0;which<4;++which){
+    std::optional<RtcPipelineSelection> selection=retain_selection(e);
+    if(which==0)selection.reset();else if(which==1)selection->authority.clear();
+    else if(which==2)selection->positive_rationale.clear();else selection->intent=RtcPipelineSelectionIntent::require_scientific_qualification;
+    auto d=RtcPipelineDecision::consider(e,t.val,selection,44);auto step=advance_trial(t,current,d);
+    EXPECT_EQ(d->disposition(),RtcPipelineDisposition::unavailable);EXPECT_FALSE(d->selected_plan());
+    EXPECT_EQ(d->cause(),which==3?RtcPipelineDecisionCause::qualification_unavailable:RtcPipelineDecisionCause::missing_authority);
+    EXPECT_EQ(step.candidate,current);EXPECT_FALSE(step.revision_executed);EXPECT_FALSE(d->scientifically_qualified);
+  }
+  std::cout<<"decision_trace unavailable reason=residual-line-acceptance-policy-unselected candidate_preserved=true next_apply=false\n";
+}
+TEST(rtc_reassessment_decision, missing_or_insufficient_outcome_names_affected_scope_and_preserves_product) {
+  for(bool missing:{false,true}){
+    Input in(missing?6000:490);Trial t(in);auto current=complete_apply(t,RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31));
+    auto e=decision_evidence(t,current,40,true,!missing);
+    auto d=RtcPipelineDecision::consider(e,t.val,retain_selection(e),44);auto step=advance_trial(t,current,d);
+    EXPECT_EQ(d->disposition(),RtcPipelineDisposition::unavailable);ASSERT_FALSE(d->issues().empty());
+    EXPECT_EQ(d->cause(),missing?RtcPipelineDecisionCause::missing_outcome:RtcPipelineDecisionCause::unavailable_outcome);
+    EXPECT_EQ(d->issues()[0].scope.has_value(),!missing);EXPECT_EQ(step.candidate,current);EXPECT_FALSE(step.revision_executed);
+  }
+}
+TEST(rtc_reassessment_decision, foreign_stage_apply_parent_and_stale_attempt_are_rejected) {
+  Input in(6000);Trial t(in),foreign(in);auto plan=RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31);
+  auto current=complete_apply(t,plan);auto e=decision_evidence(t,current),other_stage=decision_evidence(t,current,50,false);
+  auto choice=retain_selection(e);
+  EXPECT_THROW(RtcPipelineDecision::consider(other_stage,t.val,choice,54),std::invalid_argument);
+  EXPECT_THROW(RtcPipelineDecision::consider(e,t.val,choice,43),std::invalid_argument);
+  auto d=RtcPipelineDecision::consider(e,t.val,choice,44);const std::array parts{t.spikes->input_handle()};
+  EXPECT_THROW(RtcPipelineResult::advance(complete_apply(t,plan),d,t.spikes->input_handle(),t.val,parts),std::invalid_argument);
+  EXPECT_THROW(RtcPipelineResult::advance(current,d,foreign.spikes->input_handle(),t.val,parts),std::invalid_argument);
+  auto wrong=RtcNativeSpectralEvidence::learn_conditioned(current->native_product(true,t.val),t.val,{{0,"foreign-cadence",.008192,1e-7}},50);
+  EXPECT_THROW(RtcTreatmentOutcomeEvidence::learn(t.lines->spectral_handle(),wrong,51),std::invalid_argument);
+}
+TEST(rtc_reassessment_decision, changed_VAL_invalidates_old_decision_and_later_bound_evidence_cannot_select_old_plan) {
+  Input in(6000);Trial t(in);auto current=complete_apply(t,RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31));
+  auto e=decision_evidence(t,current);ValDeltaBuilder builder{t.val,{ValProducer::rtc,60}};
+  builder.propose(t.val->address(0,100,0),ValFactCode{1},ValFactState{1},ValFactCause{1});auto later=ValSnapshot::commit(builder.freeze());
+  EXPECT_THROW(RtcPipelineDecision::consider(e,later,retain_selection(e),44),StaleRtcValGeneration);
+  auto d=RtcPipelineDecision::consider(e,t.val,retain_selection(e),44);const std::array parts{t.spikes->input_handle()};
+  EXPECT_THROW(RtcPipelineResult::advance(current,d,t.spikes->input_handle(),later,parts),std::invalid_argument);
+  auto later_e=decision_evidence(t,current,60,true,true,later);
+  EXPECT_THROW(RtcPipelineDecision::consider(later_e,later,retain_selection(later_e),64),StaleRtcValGeneration);
+}
+TEST(rtc_reassessment_decision, no_op_repeated_plan_and_second_revision_terminate_without_false_success) {
+  Input in(6000);Trial t(in);auto first=complete_apply(t,RtcPipelinePlan::consider(complete_plans(t,{.25,.5,.25}),t.joint->joint_handle(),31));
+  auto e=decision_evidence(t,first);auto selection=retain_selection(e);
+  selection.intent=RtcPipelineSelectionIntent::prescribed_finite_revision;selection.next_attempt=45;
+  selection.complete_revision=complete_plans(t,{.25,.5,.25}); // new objects/ids, same execution
+  auto noop=RtcPipelineDecision::consider(e,t.val,selection,44);
+  EXPECT_EQ(noop->cause(),RtcPipelineDecisionCause::no_op_revision);EXPECT_FALSE(advance_trial(t,first,noop).revision_executed);
+  selection.complete_revision=complete_plans(t);
+  auto revised=advance_trial(t,first,RtcPipelineDecision::consider(e,t.val,selection,44));ASSERT_TRUE(revised.revision_executed);
+  auto after=decision_evidence(t,revised.candidate,60);selection=retain_selection(after);
+  selection.intent=RtcPipelineSelectionIntent::prescribed_finite_revision;selection.next_attempt=65;
+  for(bool repeat:{true,false}){
+    selection.complete_revision=complete_plans(t,repeat?std::vector<double>{.25,.5,.25}:std::vector<double>{.2,.6,.2});
+    auto d=RtcPipelineDecision::consider(after,t.val,selection,64);auto step=advance_trial(t,revised.candidate,d);
+    EXPECT_EQ(d->cause(),repeat?RtcPipelineDecisionCause::repeated_plan:RtcPipelineDecisionCause::revision_budget_exhausted);
+    EXPECT_EQ(d->disposition(),RtcPipelineDisposition::unavailable);EXPECT_EQ(step.candidate,revised.candidate);
+    EXPECT_FALSE(step.revision_executed);EXPECT_FALSE(d->scientifically_qualified);
+  }
+  selection.complete_revision=complete_plans(t,{1});
+  auto identity=RtcPipelineDecision::consider(after,t.val,selection,64);
+  EXPECT_EQ(identity->cause(),RtcPipelineDecisionCause::no_op_revision);
+  // Exhausted revision budget does not prevent an explicitly authorized retain.
+  auto retained=RtcPipelineDecision::consider(after,t.val,retain_selection(after),64);
+  EXPECT_EQ(retained->disposition(),RtcPipelineDisposition::retain);
+}
+TEST(rtc_reassessment_decision, partial_plan_or_unapproved_control_change_cannot_be_revised) {
+  Input in(6000);Trial t(in);auto current=complete_apply(t,RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31));
+  auto e=decision_evidence(t,current);auto s=retain_selection(e);s.intent=RtcPipelineSelectionIntent::prescribed_finite_revision;s.next_attempt=45;
+  s.complete_revision=complete_plans(t,{.25,.5,.25});s.complete_revision.pop_back();
+  EXPECT_THROW(RtcPipelineDecision::consider(e,t.val,s,44),std::invalid_argument);
+  s.complete_revision=complete_plans(t,{.25,.5,.25});s.complete_revision[0]=t.plan(false,true,{},0);
+  EXPECT_THROW(RtcPipelineDecision::consider(e,t.val,s,44),std::invalid_argument);
+  s.complete_revision=complete_plans(t,{.25,.5,.25});
+  auto spec=s.complete_revision[0]->assessment_handle()->candidate_handle()->specification();
+  spec.science_domain=RtcTransferScienceDomain{"unapproved-response-context",RtcOpticalArray::a2000,10};
+  s.complete_revision[0]=RtcNotchRecoveryPlan::consider(RtcLineTransferAssessment::consider(
+      RtcLineTransferCandidate::bind(t.lines,0,0,spec),t.joint,t.val,50),t.transient,t.val,t.domain,51);
+  EXPECT_THROW(RtcPipelineDecision::consider(e,t.val,s,44),std::invalid_argument);
+}
+TEST(rtc_reassessment_decision, retained_donor_support_keeps_original_r_absence_and_history) {
+  Input in(6000);in.spike();Trial t(in,10,RtcSpikeProtection::outside_source);auto donor=explicit_donor(t);
+  auto first=complete_apply(t,RtcPipelinePlan::consider(complete_plans(t,{}, {donor}),t.joint->joint_handle(),31));
+  auto e=decision_evidence(t,first);auto d=RtcPipelineDecision::consider(e,t.val,retain_selection(e),44);
+  auto step=advance_trial(t,first,d);ASSERT_EQ(d->disposition(),RtcPipelineDisposition::retain);
+  EXPECT_EQ(step.candidate,first);
+  EXPECT_TRUE(step.candidate->detector_results()[0]->coordinate_stage_available(NativeReadoutCoordinate::x,599,true));
+  EXPECT_FALSE(step.candidate->detector_results()[0]->coordinate_stage_available(NativeReadoutCoordinate::r,599,true));
+  EXPECT_TRUE(step.candidate->detector_results()[0]->replacement_influence(599,true));
+  EXPECT_TRUE(step.candidate->detector_results()[0]->requires_representative_exclusion(600));
+}
+
+
+TEST(rtc_reassessment_decision, diagnostic_overlay_is_preserved_but_not_silently_replayed_as_original) {
+  Input in(6000);Trial t(in);auto plan=RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31);
+  std::vector<RtcRecoveryInjection> overlays;
+  for(const auto &p:plan->detector_plans()) {
+    RtcRecoveryInjection overlay{p,"diagnostic-overlay",Eigen::Matrix<double,Eigen::Dynamic,2>::Zero(6000,2)};
+    overlay.delta(700,0)=.01;overlays.push_back(std::move(overlay));
+  }
+  const std::array parts{t.spikes->input_handle()};
+  auto current=RtcPipelineResult::apply(plan,t.spikes->input_handle(),t.val,parts,overlays);
+  auto e=decision_evidence(t,current);auto d=RtcPipelineDecision::consider(e,t.val,retain_selection(e),44);
+  EXPECT_EQ(d->cause(),RtcPipelineDecisionCause::diagnostic_overlay_unbound);
+  auto step=advance_trial(t,current,d);EXPECT_EQ(step.candidate,current);EXPECT_FALSE(step.revision_executed);
+}
 } // namespace
 
 namespace {

@@ -1,5 +1,29 @@
 # Citlali Refactor Status
 
+## RTC explicit reassessment execution — 2026-09-17
+
+The owner authorizes the next bounded runtime connection: matched-support
+outcomes now feed an explicit retain/revise/unavailable decision, and
+`RtcPipelineResult::advance` acts on it. Retain requires a positive, exact-bound
+authority/purpose/rationale for a provisional development candidate. It is
+separate from scientific qualification, which remains unresolved because no
+residual-line acceptance policy is selected. Missing authority/outcomes or a
+request for unavailable qualification preserve the inspection candidate and
+report the affected scope; they do not authorize rejection or downstream use.
+
+A prescribed complete finite-filter alternative may execute once from original
+x/r under explicit selection authority. Existing event/donor/support/motion/
+sampling controls cannot change in this increment. No-op, repeated-plan and
+second-revision requests terminate unresolved. The computational bound is not
+convergence. The twelve-detector real replay explicitly selects retain and uses
+the unchanged filters. Common-mode science remains separate.
+
+Focused tests pass; exact-source replay, broader gates and independent review
+are being bound at `/private/tmp/citlali-rtc-reassessment-decision-2026-09-17`.
+The [existing RTC handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_TREATMENT_OUTCOME_001_2026-09-17.md)
+records this continuation and exact owner-directive digest. No merge, push,
+reconciliation, cleanup, CAL/PTC/FRUIT/map integration or production activation.
+
 ## RTC matched-support treatment outcomes — 2026-09-17
 
 The owner accepts the bounded common-mode diagnostic and census as complete

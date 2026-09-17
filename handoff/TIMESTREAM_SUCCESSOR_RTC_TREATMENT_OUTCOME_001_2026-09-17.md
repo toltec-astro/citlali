@@ -88,3 +88,45 @@ Automatic admission/stopping thresholds remain unselected. Common-mode science,
 natural-event admission and donor expansion are not the next task. Filtering,
 support, paired validity, coefficients, motion, calibration and weights remain
 unchanged; FRUIT, map work and production remain deferred.
+
+
+## Continuation: explicit execution decision and bounded replay
+
+The next owner directive authorizes connecting the measured outcomes to actual
+retain/revise/unavailable execution, while separating candidate retention from
+scientific qualification. Directive SHA256:
+`118900eee27f0c6dafa23e61a9064d161e583b31b045e7aa1181b4db4cab187f`, preserved at
+`/private/tmp/citlali-rtc-reassessment-decision-2026-09-17/OWNER_DIRECTIVE.md`.
+Literal continuation base `7671988c9e43f23cf8662699f9216f9cd67d61a6`, initially
+clean in the same owned RTC lane. The effective governance and contract
+requirements above remain, adding particular implementation coverage of
+SCI-RTC REQ056–058 and 140. No authority is inferred from a small power ratio.
+
+`RtcPipelineDecision::consider` consumes the exact reassessment, current VAL
+and explicit selection. That reassessment retains original transient/spectral,
+previous complete plan/Apply, conditioned/matched evidence and existing source,
+support and replacement facts. It requires available matched outcomes over the
+complete paired-cohort review; unavailable coordinates are named, not rejected.
+Retain preserves the exact candidate for the stated development purpose.
+Revision accepts only a prescribed complete finite alternative with unchanged
+scientific controls; labels/new plan allocations are not numerical revisions.
+Missing authority, outcomes, support or required qualification is unavailable.
+Stale/foreign identities and incompatible VAL bindings are rejected by the
+existing typed failure boundaries rather than being silently combined.
+
+`RtcPipelineResult::advance` now executes the disposition: retain/unavailable
+return the existing candidate, while an authorized revision invokes the existing
+Apply from the original pair. There is at most one revision in a lineage.
+No-op, repeated and budget-exhausted requests cannot loop or qualify a product.
+No general policy engine, new Engine state, classification rule, optimizer,
+residual tolerance, production stopping criterion or scientific certification.
+The offline real-data boundary requires an explicit selection entry; absent
+configuration produces unavailable, never default retain.
+
+The real fixture retains its unchanged twelve-detector development baseline;
+controlled fixtures demonstrate a specified alternative. The common-mode study,
+natural-event admission and donor expansion remain outside. Exact source,
+gates, real-data parity, timing, compact report and final review/seal are bound
+in the continuation evidence root. The prior outcome evidence remains sealed
+and unchanged. This continuation implements the prior next runtime
+responsibility; it does not resolve residual-line qualification or all RTC S2.

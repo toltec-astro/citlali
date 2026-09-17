@@ -6,6 +6,8 @@
 namespace citlali::pipeline {
 
 class RtcPipelineReassessment;
+class RtcPipelineDecision;
+struct RtcPipelineAdvanceResult;
 
 // One explicit complete RTC attempt. Scientific selections are supplied by
 // their existing owners; this boundary adds no classifier, selector or stop
@@ -102,6 +104,14 @@ private:
 
 class RtcPipelineResult {
 public:
+  // Execute a considered disposition. Retain/unavailable preserve this exact
+  // candidate; one prescribed revision reuses apply on the original pair.
+  static RtcPipelineAdvanceResult advance(
+      std::shared_ptr<const RtcPipelineResult> current,
+      std::shared_ptr<const RtcPipelineDecision> decision,
+      std::shared_ptr<const NativePairedReadoutView> original,
+      std::shared_ptr<const ValSnapshot> snapshot,
+      std::span<const std::shared_ptr<const NativePairedReadoutView>> partitions);
   static std::shared_ptr<const RtcPipelineResult> apply(
       std::shared_ptr<const RtcPipelinePlan> plan,
       std::shared_ptr<const NativePairedReadoutView> original,
@@ -242,6 +252,227 @@ inline std::shared_ptr<const RtcPipelinePlan> RtcPipelinePlan::reconsider(
       checked->detector_plans(), checked->original_consideration(), attempt});
   out->reassessment_ = std::move(evidence);
   return out;
+}
+
+
+// Execution selection is distinct from scientific qualification. This bounded
+// owner-approved development use has no residual-line acceptance policy.
+enum class RtcPipelineDisposition { retain, revise, unavailable };
+enum class RtcPipelineQualification { unresolved };
+enum class RtcPipelineSelectionIntent {
+  retain_development_candidate, prescribed_finite_revision,
+  require_scientific_qualification
+};
+enum class RtcPipelineDecisionCause {
+  authorized_candidate, prescribed_revision, missing_authority,
+  missing_outcome, unavailable_outcome, qualification_unavailable,
+  no_op_revision, repeated_plan, revision_budget_exhausted,
+  diagnostic_overlay_unbound
+};
+inline const char *rtc_pipeline_disposition_name(RtcPipelineDisposition d) {
+  switch(d) {
+  case RtcPipelineDisposition::retain:return "retain";
+  case RtcPipelineDisposition::revise:return "revise";
+  case RtcPipelineDisposition::unavailable:return "unavailable";
+  }
+  throw std::invalid_argument("unknown RTC disposition");
+}
+inline const char *rtc_pipeline_decision_cause_name(RtcPipelineDecisionCause c) {
+  switch(c) {
+  case RtcPipelineDecisionCause::authorized_candidate:return "explicitly-authorized-development-candidate";
+  case RtcPipelineDecisionCause::prescribed_revision:return "explicitly-prescribed-complete-revision";
+  case RtcPipelineDecisionCause::missing_authority:return "decision-authority-purpose-or-positive-rationale-missing";
+  case RtcPipelineDecisionCause::missing_outcome:return "matched-support-outcome-required";
+  case RtcPipelineDecisionCause::unavailable_outcome:return "required-coordinate-outcome-unavailable";
+  case RtcPipelineDecisionCause::qualification_unavailable:return "residual-line-acceptance-policy-unselected";
+  case RtcPipelineDecisionCause::no_op_revision:return "prescribed-plan-does-not-change-execution";
+  case RtcPipelineDecisionCause::repeated_plan:return "prescribed-plan-repeats-an-earlier-attempt";
+  case RtcPipelineDecisionCause::revision_budget_exhausted:return "one-revision-operational-budget-exhausted";
+  case RtcPipelineDecisionCause::diagnostic_overlay_unbound:return "diagnostic-overlay-replay-authority-unavailable";
+  }
+  throw std::invalid_argument("unknown RTC decision cause");
+}
+
+// A supplied selection, not an inferred policy. The caller supplies its owner
+// authority and exact evidence subject; Consider freezes a copy. The only
+// revision scope in this increment is explicitly supplied finite coefficients,
+// with existing event/support/motion/sampling/donor controls unchanged.
+struct RtcPipelineSelection {
+  std::shared_ptr<const RtcPipelineReassessment> subject;
+  RtcPipelineSelectionIntent intent = RtcPipelineSelectionIntent::retain_development_candidate;
+  std::string authority, purpose, positive_rationale;
+  std::vector<std::shared_ptr<const RtcNotchRecoveryPlan>> complete_revision;
+  std::uint64_t next_attempt = 0;
+};
+struct RtcPipelineDecisionScope {
+  TimestreamNetworkId network;
+  std::uint32_t detector;
+  NativeReadoutCoordinate coordinate;
+};
+struct RtcPipelineDecisionIssue {
+  RtcPipelineDecisionCause cause;
+  // Absent means the complete original paired view, not detector rejection.
+  std::optional<RtcPipelineDecisionScope> scope;
+};
+
+class RtcPipelineDecision {
+public:
+  static std::shared_ptr<const RtcPipelineDecision> consider(
+      std::shared_ptr<const RtcPipelineReassessment> evidence,
+      std::shared_ptr<const ValSnapshot> current_snapshot,
+      std::optional<RtcPipelineSelection> selection, std::uint64_t attempt) {
+    if(!evidence || attempt<=evidence->attempt() ||
+        evidence->attempt()<=evidence->previous_handle()->plan_handle()->attempt())
+      throw std::invalid_argument("RTC decision requires a distinct later reassessment/decision attempt");
+    const auto previous=evidence->previous_handle();const auto plan=previous->plan_handle();
+    const auto spectral=evidence->conditioned_consideration()->spectral_handle();
+    if(!current_snapshot || current_snapshot.get()!=plan->snapshot_handle().get() ||
+        current_snapshot.get()!=spectral->conditioned_handle()->snapshot_handle().get())
+      throw StaleRtcValGeneration("RTC decision must reassess changed VAL; it cannot reuse the old plan binding");
+    if(selection && selection->subject.get()!=evidence.get())
+      throw std::invalid_argument("RTC selection cannot authorize a foreign or stale reassessment/stage/Apply");
+    auto out=std::shared_ptr<RtcPipelineDecision>(new RtcPipelineDecision);
+    out->evidence_=std::move(evidence);out->snapshot_=std::move(current_snapshot);
+    out->selection_=std::move(selection);out->attempt_=attempt;
+    auto unavailable=[&](RtcPipelineDecisionCause cause){
+      out->cause_=cause;out->issues_.push_back({cause,std::nullopt});return out;
+    };
+    if(!out->selection_ || out->selection_->authority.empty() || out->selection_->purpose.empty() ||
+        out->selection_->positive_rationale.empty())
+      return unavailable(RtcPipelineDecisionCause::missing_authority);
+    const auto &s=*out->selection_;
+    if(s.intent!=RtcPipelineSelectionIntent::retain_development_candidate &&
+        s.intent!=RtcPipelineSelectionIntent::prescribed_finite_revision &&
+        s.intent!=RtcPipelineSelectionIntent::require_scientific_qualification)
+      throw std::invalid_argument("unknown RTC selection intent");
+    if(s.intent!=RtcPipelineSelectionIntent::prescribed_finite_revision &&
+        (!s.complete_revision.empty() || s.next_attempt))
+      throw std::invalid_argument("RTC retain/qualification request cannot hide a revised plan");
+    const auto &outcome=out->evidence_->outcome_handle();
+    if(!outcome)return unavailable(RtcPipelineDecisionCause::missing_outcome);
+    // Completeness and identity are guaranteed by existing Learn/Consider.
+    // Inspect every coordinate for this complete paired-cohort review. Never
+    // turn absent r or insufficient support into a zero or a passing ratio.
+    for(const auto &r:outcome->records())if(!r.available())
+      out->issues_.push_back({RtcPipelineDecisionCause::unavailable_outcome,
+                             RtcPipelineDecisionScope{r.network,r.detector,r.coordinate}});
+    if(!out->issues_.empty()){out->cause_=RtcPipelineDecisionCause::unavailable_outcome;return out;}
+    for(const auto &r:previous->detector_results())if(r->injection_identity()!="none")
+      return unavailable(RtcPipelineDecisionCause::diagnostic_overlay_unbound);
+    if(s.intent==RtcPipelineSelectionIntent::require_scientific_qualification)
+      return unavailable(RtcPipelineDecisionCause::qualification_unavailable);
+    if(s.intent==RtcPipelineSelectionIntent::retain_development_candidate) {
+      out->disposition_=RtcPipelineDisposition::retain;
+      out->cause_=RtcPipelineDecisionCause::authorized_candidate;
+      out->selected_=plan;return out;
+    }
+    if(s.next_attempt<=attempt)
+      throw std::invalid_argument("RTC prescribed revision needs a distinct later plan attempt");
+    auto next=RtcPipelinePlan::reconsider(out->evidence_,s.complete_revision,s.next_attempt);
+    if(!same_controls(*plan,*next))
+      throw std::invalid_argument("RTC bounded revision cannot change event/donor/validity/motion/sampling controls");
+    if(same_execution(*plan,*next))return unavailable(RtcPipelineDecisionCause::no_op_revision);
+    // Inspect lineage for a repeated plan before reporting the operational
+    // bound. Neither outcome is scientific convergence or permission to reject.
+    auto ancestor=plan->reassessment_handle();
+    while(ancestor) {
+      const auto prior=ancestor->previous_handle()->plan_handle();
+      if(same_execution(*prior,*next))return unavailable(RtcPipelineDecisionCause::repeated_plan);
+      ancestor=prior->reassessment_handle();
+    }
+    if(plan->reassessment_handle())return unavailable(RtcPipelineDecisionCause::revision_budget_exhausted);
+    out->selected_=std::move(next);out->disposition_=RtcPipelineDisposition::revise;
+    out->cause_=RtcPipelineDecisionCause::prescribed_revision;return out;
+  }
+  const auto &reassessment_handle() const noexcept{return evidence_;}
+  const auto &snapshot_handle() const noexcept{return snapshot_;}
+  const auto &selection() const noexcept{return selection_;}
+  const auto &selected_plan() const noexcept{return selected_;}
+  const auto &issues() const noexcept{return issues_;}
+  auto attempt() const noexcept{return attempt_;}
+  auto disposition() const noexcept{return disposition_;}
+  auto cause() const noexcept{return cause_;}
+  static constexpr auto qualification=RtcPipelineQualification::unresolved;
+  static constexpr const char *missing_qualification="residual-line acceptance policy unselected; existing qualification limits remain";
+  static constexpr bool scientifically_qualified=false, downstream_admission_authorized=false,
+                        production_authorized=false, stopping_rule_selected=false;
+private:
+  RtcPipelineDecision()=default;
+  static bool same_ranges(const std::vector<RtcEventRange> &a,const std::vector<RtcEventRange> &b) {
+    return a.size()==b.size() && std::equal(a.begin(),a.end(),b.begin(),[](auto x,auto y){return x.first==y.first&&x.past_last==y.past_last;});
+  }
+  static bool same_controls(const RtcPipelinePlan &a,const RtcPipelinePlan &b) {
+    if(a.input_handle().get()!=b.input_handle().get() || a.snapshot_handle().get()!=b.snapshot_handle().get() ||
+       a.original_consideration().get()!=b.original_consideration().get() || a.detector_plans().size()!=b.detector_plans().size())return false;
+    for(std::size_t i=0;i<a.detector_plans().size();++i) {
+      const auto &p=*a.detector_plans()[i],&q=*b.detector_plans()[i];const auto &x=p.domain(),&y=q.domain();
+      const auto &s=p.assessment_handle()->candidate_handle()->specification(),&t=q.assessment_handle()->candidate_handle()->specification();
+      if(s.science_domain.has_value()!=t.science_domain.has_value())return false;
+      if(s.science_domain && (s.science_domain->identity!=t.science_domain->identity ||
+          s.science_domain->array!=t.science_domain->array ||
+          s.science_domain->trial_speed_arcsec_per_sec!=t.science_domain->trial_speed_arcsec_per_sec))return false;
+      if(p.transient_handle()!=q.transient_handle() || p.event_decisions()!=q.event_decisions() ||
+         p.assessment_handle()->joint_handle()!=q.assessment_handle()->joint_handle() ||
+         p.assessment_handle()->candidate_handle()->line_handle()!=q.assessment_handle()->candidate_handle()->line_handle() ||
+         p.donor_plans()!=q.donor_plans() || p.donor_continuity()!=q.donor_continuity() ||
+         p.input_causes()!=q.input_causes() || p.support_causes()!=q.support_causes() ||
+         p.speed_restrictions()!=q.speed_restrictions() || !same_ranges(p.runs(),q.runs()) ||
+         !same_ranges(p.learning_runs(),q.learning_runs()) || p.first_native_row()!=q.first_native_row() ||
+         x.identity!=y.identity || x.motion!=y.motion || x.detector_array_association!=y.detector_array_association || x.array!=y.array ||
+         x.speed_ceiling_arcsec_per_sec!=y.speed_ceiling_arcsec_per_sec || x.speed_margin_fraction!=y.speed_margin_fraction ||
+         x.cadence_margin_fraction!=y.cadence_margin_fraction || x.nominal_interval_seconds!=y.nominal_interval_seconds ||
+         x.notch_guard_samples!=y.notch_guard_samples || x.reject!=y.reject || x.speed_support!=y.speed_support ||
+         s.input_interval_seconds!=t.input_interval_seconds || s.factor!=t.factor ||
+         s.state_support_identity!=t.state_support_identity || !s.notches.empty() || !t.notches.empty())return false;
+    }
+    return true;
+  }
+  static bool same_execution(const RtcPipelinePlan &a,const RtcPipelinePlan &b) {
+    if(!same_controls(a,b))return false;
+    for(std::size_t i=0;i<a.detector_plans().size();++i) {
+      const auto &s=a.detector_plans()[i]->assessment_handle()->candidate_handle()->specification();
+      const auto &t=b.detector_plans()[i]->assessment_handle()->candidate_handle()->specification();
+      const auto identity_notch=[](const auto &v){return v.empty() || (v.size()==1 && v.front()==1.);};
+      if(s.centered_lowpass!=t.centered_lowpass ||
+         (s.centered_notch!=t.centered_notch && !(identity_notch(s.centered_notch)&&identity_notch(t.centered_notch))))return false;
+    }
+    // Reallocated plans/new labels or attempt IDs are not numerical revisions.
+    return true;
+  }
+  std::shared_ptr<const RtcPipelineReassessment> evidence_;
+  std::shared_ptr<const ValSnapshot> snapshot_;
+  std::optional<RtcPipelineSelection> selection_;
+  std::shared_ptr<const RtcPipelinePlan> selected_;
+  std::vector<RtcPipelineDecisionIssue> issues_;
+  RtcPipelineDisposition disposition_=RtcPipelineDisposition::unavailable;
+  RtcPipelineDecisionCause cause_=RtcPipelineDecisionCause::missing_authority;
+  std::uint64_t attempt_=0;
+};
+
+struct RtcPipelineAdvanceResult {
+  std::shared_ptr<const RtcPipelineDecision> decision;
+  // Available for authorized inspection even when the reassessment is unresolved.
+  std::shared_ptr<const RtcPipelineResult> candidate;
+  bool revision_executed=false;
+};
+inline RtcPipelineAdvanceResult RtcPipelineResult::advance(
+    std::shared_ptr<const RtcPipelineResult> current,
+    std::shared_ptr<const RtcPipelineDecision> decision,
+    std::shared_ptr<const NativePairedReadoutView> original,
+    std::shared_ptr<const ValSnapshot> snapshot,
+    std::span<const std::shared_ptr<const NativePairedReadoutView>> partitions) {
+  if(!current || !decision || decision->reassessment_handle()->previous_handle().get()!=current.get() ||
+     !original || original.get()!=current->plan_handle()->input_handle().get() ||
+     !snapshot || snapshot.get()!=decision->snapshot_handle().get())
+    throw std::invalid_argument("RTC advance requires exact current attempt, decision, original pair and VAL");
+  require_exact_native_partition_schedule(*original,partitions);
+  if(decision->disposition()!=RtcPipelineDisposition::revise)
+    return {std::move(decision),std::move(current),false};
+  if(current->plan_handle()->reassessment_handle() || !decision->selected_plan() ||
+     decision->selected_plan()->reassessment_handle().get()!=decision->reassessment_handle().get())
+    throw std::invalid_argument("RTC advance cannot exceed one revision or substitute its complete plan");
+  auto next=apply(decision->selected_plan(),original,snapshot,partitions);
+  return {std::move(decision),std::move(next),true};
 }
 
 } // namespace citlali::pipeline

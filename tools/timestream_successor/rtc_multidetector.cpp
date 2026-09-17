@@ -703,9 +703,40 @@ int main(int argc,char **argv) {
         stage_psd.close();require(bool(stage_psd),"conditioned spectrum output failed");
         stage["numerical_psd_sha256"]=citlali::utils::sha256_file(stage_path);
         arm["relearned"].push_back(stage);
+        if(lowpass) {
+          // Explicit offline owner selection. No config entry means unavailable,
+          // never an implicit retain based on a scalar residual or empty list.
+          const auto decision_started=std::chrono::steady_clock::now();
+          std::optional<RtcPipelineSelection> selection;
+          if(const auto supplied=cfg["reassessment_selection"]) {
+            const auto intent=supplied["intent"].as<std::string>();
+            require(intent=="retain-development-candidate" || intent=="require-scientific-qualification",
+                    "real-data replay does not authorize an automatic revision");
+            selection=RtcPipelineSelection{reassessment,
+                intent=="retain-development-candidate" ? RtcPipelineSelectionIntent::retain_development_candidate :
+                                                        RtcPipelineSelectionIntent::require_scientific_qualification,
+                supplied["authority"].as<std::string>(),supplied["purpose"].as<std::string>(),
+                supplied["positive_rationale"].as<std::string>(),{},0};
+          }
+          const auto disposition=RtcPipelineDecision::consider(reassessment,val,selection,1400);
+          const auto decision_seconds=std::chrono::duration<double>(std::chrono::steady_clock::now()-decision_started).count();
+          const auto advance_started=std::chrono::steady_clock::now();
+          const auto advanced=RtcPipelineResult::advance(result,disposition,view,val,partitions);
+          const auto advance_seconds=std::chrono::duration<double>(std::chrono::steady_clock::now()-advance_started).count();
+          result=advanced.candidate;
+          receipt["RTC_scientific_qualification"]="unresolved";
+          std::cout<<"RTC reassessment plan="<<complete->attempt()<<" disposition="
+                   <<rtc_pipeline_disposition_name(disposition->disposition())
+                   <<" qualification=unresolved revision_executed="<<advanced.revision_executed<<'\n';
+          arm["reassessment"]=write_reassessment_decision(output,advanced);
+          arm["reassessment"]["Consider_decision_seconds"]=decision_seconds;
+          arm["reassessment"]["advance_seconds"]=advance_seconds;
+          require(!advanced.revision_executed && result->plan_handle().get()==complete.get(),
+                  "bounded real-data disposition must preserve the frozen baseline");
+        }
       }
       arm["conditioned_relearning_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-relearn_at).count();
-      arm["attempt"]=complete->attempt();arm["original_parent"]=mapping->paired_xr_record_id;
+      arm["attempt"]=result->plan_handle()->attempt();arm["original_parent"]=mapping->paired_xr_record_id;
       write_yaml(output/"apply-receipt.yaml",arm);
       receipt[continuity ? "donor_continuity" : "exclusion_control"]=arm;
       }
