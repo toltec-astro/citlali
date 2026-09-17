@@ -18,8 +18,32 @@ extended Gaussian sizes; controlled source+fixed-noise with/without the existing
 studied11Hz line at measured-fixture levels, shared/independent phases. These
 are diagnostic surrogates, not POINT/OOF/BEAM or broad SCIENCE qualification.
 OOF model/evaluator, full pointing fit, beam wings and calibrated normalization
-remain unavailable. Runtime/source tests and exact replay/review evidence are
-being bound at `/private/tmp/citlali-rtc-purpose-consequence-2026-09-17`.
+remain unavailable. Exact runtime `1b5feb3e74689d4bcbf02373ece86b47f529954e`
+passes six new consequence controls (41 focused total), 1,205 runnable CTests,
+207 baseline Python tests, 89 RTC Python tests plus eight subtests, four focused
+Python controls and required config preflight. The existing disabled test is
+unchanged. The local AppleClang/Homebrew result is supplemental, not Unity/Spack
+qualification. Exact replay preserves all 382 prior numerical/support/outcome
+artifacts and existing receipt semantics; both diagnostic arms agree.
+
+Only channel269 supplies complete source-estimator crossings in this fixed
+design. At its quiet faint compact crossing, maximum additional line projection
+error over the eight controlled phase/population cases falls from 2.304034% to
+0.052025%; source-only projection error is +0.003115% versus +0.002999%.
+The selected notch retains 851,646/909,228 scheduled paired positions, versus
+862,148 for lowpass alone: 1.155 percentage points of extra loss. Fast compact
+and larger extended source measurements remain unavailable under existing
+support. The noise calculation is conditional on the fixed white-noise probe;
+no population sensitivity or purpose qualification is inferred. The proposed
+acceptance form is additional source-estimator error plus separate transfer and
+support limits, with numerical limits unselected.
+
+Report, exact source/gates, replay, independent review and closure are bound at
+`/private/tmp/citlali-rtc-purpose-consequence-2026-09-17`. The reviewer found an
+odd-native-origin diagnostic scheduling defect; it was repaired and covered by
+an executable control before the final replay. No existing filter/support
+policy changed. This completes scoped consequence evidence through RTC Learn
+and reassessment; purpose-specific acceptance authority remains to be selected.
 Production, common-mode science, CAL/PTC/FRUIT/MAP, push, merge and cleanup remain
 outside. This is the next continuation of the existing RTC outcome handoff.
 

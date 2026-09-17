@@ -213,3 +213,67 @@ All existing coefficients/event/donor/support/validity policies are fixed;
 no production, natural-event expansion, filter search, common-mode science,
 CAL/PTC/FRUIT/MAP, push/merge/reconciliation or cleanup. Exact gates, unchanged
 baseline replay, report, review and closure are completed in the evidence root.
+
+### Purpose-consequence completion
+
+Runtime `1b5feb3e74689d4bcbf02373ece86b47f529954e`, tree
+`9a4b4a6f7c4830b2c825c93e4102e3d1701f6c82`, parent
+`a450d82360a2fbdeae9e62ae42b774dd97ebaad4`, retains the literal base above.
+The independent reviewer identified expected-count phase accounting relative
+to row zero; the repair counts relative to the exact native origin and has an
+odd-origin executable control. The interrupted initial candidate replay is
+preserved separately. Only repaired `replay-final/` supports the report.
+
+All 382 prior numerical/support/injection/outcome artifacts are byte-identical;
+existing receipt semantics match after exact source/config bindings, timings,
+new diagnostic fields and explicit diagnostic attempt IDs are accounted for.
+Original paired data, coefficients, event/donor decisions, validity and support
+remain unchanged. Both exclusion/donor arms have identical consequences; no
+natural donor is admitted. The prior 421-file sealed evidence remains intact.
+
+The lead table in `REPORT.md` separates source-only transfer, controlled added
+line error, own/common scheduled support, runtime and qualification limits.
+Only channel 269 has complete quiet compact and smaller extended crossings.
+Faint compact maximum added line projection error is 2.304034% lowpass-only
+versus 0.052025% selected notch+lowpass; source-only error is +0.003115% versus
++0.002999%. For the apparent 25.45 arcsec Gaussian, maximum additional error is
+0.145025% versus 0.003106%. Real 11 Hz stored feature-power ratios are
+0.016079--0.028505 across eight treated channels on identical final-rate windows;
+these powers include unknown signal/background and are not known line excess.
+Lowpass retains 862,148/909,228 scheduled paired positions and the selected
+treatment 851,646 (also common support), an extra 10,502 positions / 1.155 percentage points lost.
+
+Fast compact and larger extended crossings remain unavailable. POINT fitted
+offset/repeatability, OOF model/evaluator, BEAM width/wings/calibrated response,
+general extended morphology and population sensitivity remain unresolved.
+Conditional noise error uses the fixed native white-noise sigma 1e-6 probe and
+exact correlated-output covariance; it is not measured observation sensitivity.
+Four relative phases per line population do not establish a population error
+distribution. No response renormalization or numerical acceptance limit is used.
+
+Six new C++ controls/41 focused tests, 1,205 runnable CTests, 207 baseline Python,
+89 RTC Python plus eight subtests, four focused Python controls, required config
+preflight and isolated header compilation pass. Existing disabled
+MapFitterLifecycle is unchanged. Exact CLI/caller/test rebuild binds 1b5feb3e7.
+Local AppleClang21/Homebrew/C++20 with existing kids04088da-dirty is supplemental,
+not Unity/Spack. Replay has no unexpected error-level messages. Whole caller
+532.85 seconds / 1120 MB; one 12-detector Apply costs about 0.82--0.86 seconds lowpass,
+2.17--2.28 seconds selected, with consequence Learn about 0.067--0.069 seconds.
+The study includes 216 diagnostic Applies; it is not a single processing pass.
+
+`SOURCE.json`, `GATES.json`, `REPLAY.json`, `verification.json`,
+`analysis/results.json`, independent review, closure and evidence seal retain
+the exact identities. Review and final documentation closure are independently
+bound in the evidence root. Runtime Learn and reassessment now expose measured,
+unavailable and missing-acceptance consequences in a declared purpose/domain.
+Development retain still requires positive authority; qualification stays
+unresolved. The next decision is the purpose-specific source-error budget (or
+smallest missing fixture), before Consider can qualify treatment in that domain.
+
+Independent fresh-context exact-runtime review: PASS WITH RECORDED LIMITATIONS,
+no remaining actionable findings on scientific/behavioral, architecture/ownership
+or repository/evidence axes. The reviewer reproduced41 focused tests and four
+Python controls, verified207 input bindings,382 baseline artifacts, both60-case
+arms, all24 final-rate spectra and support accounting, and independently
+recomputed every available first-arm projection within9.61e-13. Final
+documentation closure and the report receive their own exact binding.
