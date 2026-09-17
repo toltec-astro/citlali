@@ -18,8 +18,25 @@ second-revision requests terminate unresolved. The computational bound is not
 convergence. The twelve-detector real replay explicitly selects retain and uses
 the unchanged filters. Common-mode science remains separate.
 
-Focused tests pass; exact-source replay, broader gates and independent review
-are being bound at `/private/tmp/citlali-rtc-reassessment-decision-2026-09-17`.
+Exact runtime `ed59ba0697312241341e2adcdb23136841e3be3f` passes ten new
+executable decision tests (35 focused total), 1,199 runnable CTests, 207 baseline
+Python tests, 82 RTC Python tests and required config preflight. The existing
+MapFitterLifecycle test remains disabled. The exact-source twelve-detector replay
+retains both complete plans with 24/24 available outcomes per arm and preserves
+all 370 prior science/support/injection files plus 12 outcome artifacts, byte
+for byte. Decision costs about 8 microseconds per arm; the retention action is
+under 1 microsecond in this run. Controlled revision equals a standalone Apply
+of the prescribed plan to original x/r bit for bit; the intentionally cumulative
+comparison differs by 0.138351 fixture units.
+
+Independent fresh-context exact-SHA review passes scientific/behavioral,
+architecture/ownership and repository/evidence axes with no actionable findings
+and recorded environment/qualification limits.
+Evidence is bound at `/private/tmp/citlali-rtc-reassessment-decision-2026-09-17`.
+Local AppleClang/Homebrew validation is supplemental, not Unity/Spack
+qualification. The next unresolved scientific decision is a purpose-specific
+residual-contamination acceptance requirement; this increment neither selects
+that requirement nor qualifies real treatment or automatic stopping.
 The [existing RTC handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_TREATMENT_OUTCOME_001_2026-09-17.md)
 records this continuation and exact owner-directive digest. No merge, push,
 reconciliation, cleanup, CAL/PTC/FRUIT/map integration or production activation.

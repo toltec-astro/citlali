@@ -130,3 +130,55 @@ gates, real-data parity, timing, compact report and final review/seal are bound
 in the continuation evidence root. The prior outcome evidence remains sealed
 and unchanged. This continuation implements the prior next runtime
 responsibility; it does not resolve residual-line qualification or all RTC S2.
+
+### Decision-and-replay completion
+
+Runtime `ed59ba0697312241341e2adcdb23136841e3be3f`, tree
+`6b980066148727ffddeada52031e873e022c2fe4`, parent
+`7671988c9e43f23cf8662699f9216f9cd67d61a6`, in the unchanged RTC lane.
+`REPORT.md` in the continuation evidence root provides the compact three-path
+trace. The real replay retains plans 1000/1001 with 24/24 available post-low-pass
+native coordinate outcomes each, explicit owner authority and positive purpose.
+Scientific qualification remains unresolved and all downstream/production/
+stopping authority flags remain false. No second real-data Apply runs.
+
+All 370 prior numerical/support/decision/injection files and 12 matched-outcome
+artifacts are byte-identical. Existing receipt semantics match after verified
+source/config-derived binding changes, timings and new decision metadata.
+Original x/r, filter coefficients, validity/support policy and paired output
+retention remain unchanged. The prior sealed evidence passes its 421-file
+manifest. No natural donor is present; controlled fixtures preserve donor x
+support and coordinate-local r unavailability without new policy.
+
+The prescribed controlled revision starts from original x/r and equals direct
+standalone revised-plan Apply bit for bit. Cumulative filtering would differ
+by 0.138351 fixture units. Missing authority/support/qualification, stale or
+foreign bindings, no-op/repeated plans, exhausted revision budget and unbound
+diagnostic overlays cannot authorize another Apply or scientific qualification.
+Ten new decision tests pass, 35 focused tests total; 1,199 runnable CTests,
+207 baseline Python, 82 RTC Python, required config preflight and isolated
+header compilation pass. The existing MapFitterLifecycle disabled test is
+unchanged. Exact-source CLI and caller are rebuilt. AppleClang21/Homebrew/C++20
+with existing kids04088da-dirty is supplemental, not Unity/Spack qualification.
+The successful replay contains no unexpected error-level messages.
+
+Decision/binding costs 8.041/7.834 microseconds; retention action costs
+0.250/0.416 microseconds, separately from 1.313/1.311 seconds of matched-outcome
+learning across both stages per arm. Whole caller elapsed 139.98 seconds,
+peak RSS 915 MB. These are single-run measurements. `SOURCE.json`, `GATES.json`,
+`REPLAY.json`, `verification.json`, `PRIOR_SEAL_CHECK.json`, the independent
+review, final closure and seal record exact identities without self-reference.
+
+This completes the bounded runtime reassessment decision and original-input
+execution connection, not all S2. A purpose-specific residual-contamination
+acceptance requirement remains the smallest scientific decision before real
+treatment can be qualified or automatic real-data revision selected. Common-mode
+science is not a prerequisite; CAL/PTC/FRUIT/maps, new filters or scientific
+thresholds, production, push, merge, reconciliation and cleanup remain outside.
+
+Independent fresh-context exact-runtime review: PASS WITH RECORDED LIMITATIONS,
+no actionable findings on any of the three required axes. The reviewer
+independently reproduced all 35 focused tests, verified 382-file parity, both
+exact learning-binding formulas, source/log/binary identities and the compact
+report. Final documentation closure receives a separate exact binding; see
+`INDEPENDENT_REVIEW.md` and `CLOSURE.json` in the continuation evidence root.
