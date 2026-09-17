@@ -5,6 +5,7 @@
 #undef main
 #include "rtc_multidetector_bindings.h"
 #include <citlali/core/pipeline/timestream_rtc_output_grid.h>
+#include <citlali/core/pipeline/timestream_cal_rtc_source.h>
 #include <bit>
 
 namespace {
@@ -42,6 +43,9 @@ int main(int argc,char **argv) {
     require(argc==3 || argc==4,"expected input JSON, NEW output directory, optional explicit reviewed-selection YAML");
     require(std::endian::native==std::endian::little,"native binary audit requires little endian");
     const auto cfg=YAML::LoadFile(argv[1]);
+    const bool terminal_requested=bool(cfg["terminal_request"]);
+    if(terminal_requested) require(cfg["terminal_request"].as<std::string>()=="rtc-only" && cfg["decision_apply"],
+        "this bounded caller supports only an explicit RTC-only terminal, never a downstream fallback");
     require(cfg["schema"].as<std::string>()=="rtc-multidetector-experiment-v1","unexpected caller profile");
     const fs::path output=argv[2];require(!fs::exists(output),"preserve previous output");
     auto checked=[&](const std::string &key){return checked_file(cfg[key]);};
@@ -586,6 +590,7 @@ int main(int argc,char **argv) {
       const std::array partitions{view};
       const auto applied_at=std::chrono::steady_clock::now();
       auto result=RtcPipelineResult::apply(complete,view,val,partitions);
+      std::shared_ptr<const RtcPipelineDecision> final_decision;
       arm["Apply_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-applied_at).count();
       receipt["Apply_performed"]=true;
       if(cfg["prepare_output_grid"] && cfg["prepare_output_grid"].as<bool>()) {
@@ -767,6 +772,7 @@ int main(int argc,char **argv) {
           const auto advanced=RtcPipelineResult::advance(result,disposition,view,val,partitions);
           const auto advance_seconds=std::chrono::duration<double>(std::chrono::steady_clock::now()-advance_started).count();
           result=advanced.candidate;
+          final_decision=advanced.decision;
           receipt["RTC_scientific_qualification"]="unresolved";
           std::cout<<"RTC reassessment plan="<<complete->attempt()<<" disposition="
                    <<rtc_pipeline_disposition_name(disposition->disposition())
@@ -779,6 +785,38 @@ int main(int argc,char **argv) {
         }
       }
       arm["conditioned_relearning_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-relearn_at).count();
+      if(terminal_requested) {
+        const auto started=std::chrono::steady_clock::now();
+        require(bool(final_decision),"requested terminal requires the final reassessment decision");
+        auto ast_views=AstScanMotionNetworkViews::admit(parent->scope(),motion->raw_product_handle(),{axis->native_timing_handle()});
+        auto align=IdentityRouteAlignContext::admit(parent,ast_views,val);
+        auto grid=RtcOutputGrid::prepare(result,align);
+        RtcPipelineTerminalSlot slot;
+        auto terminal=finalize_rtc_only({complete->attempt()},grid,slot,final_decision);
+        require(terminal.complete(),"required RTC terminal failed: "+terminal.reason);
+        const auto cal_source=CalRtcSource::bind(terminal.product);
+        const auto &f=terminal.product->finalization();
+        YAML::Node record;
+        record["request"]="rtc-only";record["state"]="complete-logical-RTC-terminal";
+        record["scheduled_slots"]=f.scheduled_slots;record["x_available"]=f.x_available;record["r_available"]=f.r_available;
+        record["directly_excluded"]=f.directly_excluded;record["replacement_influenced"]=f.replacement_influenced;
+        record["input_VAL_generation"]=val->generation().value;
+        record["output_VAL_generation"]=terminal.product->val_snapshot_handle()->generation().value;
+        record["VAL_fact_block_bytes"]=terminal.product->val_snapshot_handle()->committed_rtc_output_facts_handle()->owned_bytes();
+        record["VAL_facts"]="complete-exact-RTC-grid-producer-facts;immutable-reference";
+        record["AST_motion"]="consumed-exact-input";record["AST_detector_coordinates"]="not-requested";
+        record["complete_x_response"]="unavailable-complete-conditioned-response-not-realized";
+        record["complete_r_response"]="unavailable-complete-conditioned-response-not-realized";
+        record["covariance"]="unavailable-no-admitted-covariance";
+        record["CAL_source"]="bound-exact-conditioned-x-and-RTC-parents";
+        record["CAL_science_admission"]="not-requested";record["CAL_executed"]=false;
+        record["PTC_executed"]=false;record["MAP_executed"]=false;
+        record["science_qualified"]=false;record["production_authorized"]=false;
+        record["final_decision_attempt"]=terminal.product->final_decision_handle()->attempt();
+        record["calibration_applied"]=cal_source.calibrated;
+        record["finalize_publish_bind_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-started).count();
+        arm["terminal"]=record;
+      }
       arm["attempt"]=result->plan_handle()->attempt();arm["original_parent"]=mapping->paired_xr_record_id;
       write_yaml(output/"apply-receipt.yaml",arm);
       receipt[continuity ? "donor_continuity" : "exclusion_control"]=arm;

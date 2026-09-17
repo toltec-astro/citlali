@@ -1,49 +1,42 @@
 # Citlali Refactor Status
 
-## RTC output handoff: prepared grid and prerequisite finding — 2026-09-17
+## RTC-only output completion and boresight clarification — 2026-09-17
 
-The owner confirmed the push of `3cd941974844b1ba25c829dc1c2bbe51e8f3cf6c`
-and approved the complete RTC handoff against the accepted horizontal audit:
-ALIGN/AST/VAL inputs and AST/VAL/CAL-facing output boundaries. Live GitHub
-topic equality and unchanged canonical `0f52e1a421416eadaf7d8d99d64f537132395c0c`
-were verified before editing. This occupies the spine slot on the existing
-clean RTC branch; preceding module work remains preserved.
+The owner permitted the bounded V2 geometry/pointing binding for the twelve-
+detector 152390 fixture, then asked why telescope boresight positions were not
+enough. Independent prerequisite review found that the preceding checkpoint
+had over-required detector geometry for **RTC-only** terminal completion. The
+approved D004 terminal addendum §4, horizontal IS009–012, RTC EQ022/REQ048–053,
+and AST REQ057–060/074 distinguish RTC-owned logical content from requested
+ordinary science coordinates. This corrects an implementation interpretation;
+no contract is reopened. Existing accepted AST boresight-motion facts suffice
+for the selected filter operation. Detector geometry remains AST-owned and is
+required when that coordinate role or ordinary science handoff is requested.
+The owner's fixture permission remains available for that later binding.
 
-Preflight and independent read-only prerequisite review found that the current
-successor provides exact native time and AST scalar motion, but no AST-owned
-detector direction/tangent parent with the required geometry, observing-state,
-correction and rotation history. The accepted horizontal audit supplies the
-contract; it does not supply those observation-instance records. Existing
-diagnostic pointing arrays and the PTC/map-facing predecessor are not substitute
-authorities. Exact 152390 APT/association artifacts and correction endpoints
-were recovered; ordinary-coordinate compatibility binding remains unestablished.
-An owner question is pending on explicitly binding the existing accepted V2
-convention for this fixture. No answer or new scientific authority is inferred.
+The continuation on the same clean RTC spine branch adds logical finalization
+and atomic RTC-only publication, an immutable complete RTC producer-fact block
+attached to a new VAL generation, and a CAL-facing conditioned-x source object.
+The block references the exact output grid, retaining every scheduled slot and
+separate coordinate availability, direct exclusions, replacement influence,
+speed restrictions and support causes without allocating a finding per cell.
+Final decisions, full plans, original x/r, ALIGN/AST motion and donor support
+remain referenced. Complete numerical response/covariance are truthfully
+unavailable; partial filter coefficients are not claimed as the full response.
 
-The independent RTC/VAL portion proceeds as `RtcOutputGrid`: exact Apply,
-native ALIGN context, AST motion and frozen input-VAL bindings; stable scheduled
-slots including unavailable positions; original occurrence times; coordinate
-availability; separate direct exclusion, replacement influence, speed and
-support causes; physical/support segments and explicitly filter-local
-footprints. Heavy values and donor dependencies remain referenced. Exact RTC
-output/slot/coordinate VAL targets are distinct from native targets and other
-realizations, and accept only the input snapshot or its immutable descendants.
-This is preparation, not completed scientific output or downstream admission.
+The request is explicitly RTC-only before execution. Detector direction/tangent
+and CAL science admission are not requested; source-content completeness does
+not imply CAL admission, eligibility, calibration or production qualification.
+Missing **required** pointing still halts a requested science handoff, and
+there is no fallback from that failure to a successful RTC-only request.
+The offline twelve-detector caller publishes only after its final exact
+reassessment decision. Required file failures propagate to the CLI.
 
-Runtime candidate `c1651ef36430debb480ec6cfc1cd9b7b68807c5a` passes six new
-focused controls, ten VAL regressions, 1,211 runnable CTests, 207 baseline tests
-plus 137 subtests, and required config preflight. Independent exact-SHA review
-passes with the full-handoff limitation recorded. The exact twelve-detector
-replay preserves all 230 existing numerical/support artifacts byte-for-byte;
-grid preparation/inspection takes 0.224–0.225 seconds per arm and retains 480
-descriptor bytes. Existing VAL key memory remains 112 bytes. These local
-AppleClang/Homebrew results are supplemental, not Unity/Spack qualification.
-Detailed gates, exact-source review and replay are recorded in the continuing
+Local focused verification, full gates, representative replay and independent
+exact-SHA review are recorded in the continuing
 [RTC handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_TREATMENT_OUTCOME_001_2026-09-17.md).
-Full AST coordinate realization, output-fact publication, logical finalization
-and CAL-facing admission remain open. No permissive placeholder publisher,
-CAL numerical processing, new filter/scientific policy, production activation,
-integration, push, cleanup, FRUIT or MAP is introduced.
+No filters, scientific thresholds, donor policy, timing, production route,
+CAL/PTC/MAP numerics, FRUIT, canonical integration, push or cleanup are changed.
 
 ## Scientific goals and RTC stopping judgment — 2026-09-17
 

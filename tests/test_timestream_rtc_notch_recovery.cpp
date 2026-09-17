@@ -3,6 +3,7 @@
 #include <citlali/core/pipeline/timestream_rtc_notch_recovery.h>
 #include <citlali/core/pipeline/timestream_rtc_pipeline.h>
 #include <citlali/core/pipeline/timestream_rtc_output_grid.h>
+#include <citlali/core/pipeline/timestream_cal_rtc_source.h>
 #include "../tools/timestream_successor/rtc_multidetector_bindings.h"
 #include <gtest/gtest.h>
 #include <citlali/core/pipeline/timestream_processing_scan_native.h>
@@ -1682,6 +1683,12 @@ TEST(rtc_output_grid, chunking_does_not_change_grid_and_physical_gap_has_no_foot
     if(x.filter_footprint)EXPECT_FALSE(x.filter_footprint->first<900 && x.filter_footprint->past_last>900);
   }
   EXPECT_FALSE(a->occurrence(0,400).filter_footprint);
+  RtcPipelineTerminalSlot slot_a,slot_b;
+  auto terminal_a=finalize_rtc_only({11},a,slot_a),terminal_b=finalize_rtc_only({12},b,slot_b);
+  ASSERT_TRUE(terminal_a.complete());ASSERT_TRUE(terminal_b.complete());
+  EXPECT_EQ(terminal_a.product->finalization().scheduled_slots,terminal_b.product->finalization().scheduled_slots);
+  EXPECT_EQ(terminal_a.product->finalization().x_available,terminal_b.product->finalization().x_available);
+  EXPECT_EQ(terminal_a.product->finalization().r_available,terminal_b.product->finalization().r_available);
 }
 TEST(rtc_output_grid, donor_numerical_support_is_distinct_from_replacement_and_r_availability) {
   Input in;in.spike();Trial t(in,10,RtcSpikeProtection::outside_source);
@@ -1729,4 +1736,123 @@ TEST(rtc_output_grid, val_outputs_are_disjoint_from_native_coordinates_and_other
   EXPECT_EQ(next->memory_evidence().referenced_native_target_count,0);
   RecordProperty("rtc_output_target_bytes",sizeof(ValRtcOutputTarget));
   RecordProperty("finding_key_bytes",sizeof(ValFindingKey));
+}
+
+TEST(rtc_terminal, complete_without_unrequested_detector_pointing_or_calibration) {
+  Input in(1600); Trial t(in);
+  auto result=complete_apply(t,RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31));
+  auto grid=RtcOutputGrid::prepare(result,output_align(t));
+  RtcPipelineTerminalSlot slot;
+  auto outcome=finalize_rtc_only({10},grid,slot);
+  ASSERT_TRUE(outcome.complete())<<outcome.reason;
+  EXPECT_EQ(slot.snapshot(),outcome.product);
+  EXPECT_EQ(outcome.product->finalization().scheduled_slots,2400);
+  EXPECT_EQ(outcome.product->detector_coordinate_role,RtcTerminalCoordinateRole::not_requested);
+  EXPECT_EQ(outcome.product->x_response,RtcTerminalResponseStatus::unavailable_complete_conditioned_response_not_realized);
+  EXPECT_EQ(outcome.product->uncertainty,RtcTerminalUncertaintyStatus::unavailable_no_admitted_covariance);
+  auto val=outcome.product->val_snapshot_handle();
+  EXPECT_EQ(val->generation().value,1);EXPECT_EQ(val->parent_snapshot_handle(),t.val);
+  EXPECT_FALSE(t.val->committed_rtc_output_facts_handle());
+  EXPECT_EQ(val->committed_rtc_output_facts_handle()->grid_handle(),grid);
+  EXPECT_EQ(val->memory_evidence().owned_finding_bytes,0);
+  EXPECT_EQ(val->memory_evidence().referenced_rtc_output_fact_block_count,1);
+  EXPECT_LE(val->committed_rtc_output_facts_handle()->owned_bytes(),32);
+  const auto source=CalRtcSource::bind(outcome.product);
+  EXPECT_EQ(source.admission,CalRtcAdmissionState::not_requested);
+  EXPECT_FALSE(source.calibrated);EXPECT_FALSE(source.r_is_calibration_input);
+  EXPECT_EQ(source.conditioned_x(0,300),grid->value(0,300,NativeReadoutCoordinate::x));
+  EXPECT_EQ(source.rtc_terminal_handle()->grid_handle()->align_handle()->paired_handle(),t.parent);
+  EXPECT_THROW(CalRtcSource::bind(nullptr),std::invalid_argument);
+}
+
+TEST(rtc_terminal, val_publishes_all_slots_without_aliasing_or_stale_generation) {
+  Input in(1600);Trial t(in);
+  auto result=complete_apply(t,RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31));
+  auto a=RtcOutputGrid::prepare(result,output_align(t)),b=RtcOutputGrid::prepare(result,output_align(t));
+  auto facts=ValRtcOutputFacts::preserve(a);
+  auto next=ValSnapshot::commit_rtc_output(t.val,facts);
+  auto x=RtcOutputGrid::val_target(a,0,0,NativeReadoutCoordinate::x);
+  auto r=RtcOutputGrid::val_target(a,0,0,NativeReadoutCoordinate::r);
+  EXPECT_FALSE(facts->at(x).numerical_available);EXPECT_FALSE(facts->at(r).numerical_available);
+  EXPECT_EQ(facts->at(x).coordinate,NativeReadoutCoordinate::x);
+  EXPECT_EQ(facts->at(r).coordinate,NativeReadoutCoordinate::r);
+  EXPECT_EQ(facts->at(x).occurrence.representative,facts->at(r).occurrence.representative);
+  EXPECT_THROW(facts->at(RtcOutputGrid::val_target(b,0,0,NativeReadoutCoordinate::x)),std::invalid_argument);
+  EXPECT_THROW(ValSnapshot::commit_rtc_output(next,facts),std::invalid_argument);
+  EXPECT_THROW(ValSnapshot::commit_rtc_output(ValSnapshot::initial(t.parent),facts),std::invalid_argument);
+  ValDeltaBuilder delta(next,{ValProducer::rtc,32});
+  delta.propose(x,ValFactCode{100},ValFactState{2},ValFactCause{3});
+  auto later=ValSnapshot::commit(delta.freeze());
+  EXPECT_EQ(later->generation().value,2);
+  EXPECT_EQ(later->parent_snapshot_handle()->committed_rtc_output_facts_handle(),facts);
+  EXPECT_FALSE(next->find({{ValProducer::rtc,32},x,ValFactCode{100}}));
+}
+
+TEST(rtc_terminal, donor_support_and_coordinate_local_facts_survive_publication) {
+  Input in;in.spike();Trial t(in,10,RtcSpikeProtection::outside_source);
+  auto donor=explicit_donor(t);
+  auto plan=RtcPipelinePlan::consider(complete_plans(t,{.25,.5,.25},{donor}),t.joint->joint_handle(),31);
+  auto grid=RtcOutputGrid::prepare(complete_apply(t,plan),output_align(t));
+  RtcPipelineTerminalSlot slot;auto outcome=finalize_rtc_only({10},grid,slot);
+  ASSERT_TRUE(outcome.complete())<<outcome.reason;
+  const auto facts=outcome.product->val_snapshot_handle()->committed_rtc_output_facts_handle();
+  auto x=facts->at(RtcOutputGrid::val_target(grid,0,249,NativeReadoutCoordinate::x));
+  auto r=facts->at(RtcOutputGrid::val_target(grid,0,249,NativeReadoutCoordinate::r));
+  EXPECT_TRUE(x.numerical_available);EXPECT_FALSE(r.numerical_available);
+  EXPECT_TRUE(x.occurrence.replacement_influence);EXPECT_FALSE(x.occurrence.representative_excluded);
+  auto support=outcome.product->support(0,249);ASSERT_EQ(support.donors.size(),1);
+  EXPECT_EQ(support.donors[0],donor);EXPECT_EQ(support.plan,plan->detector_plans()[0]);
+  EXPECT_FALSE(support.donors[0]->medians().empty());
+  EXPECT_EQ(support.donors[0]->input_handle()->parent_handle(),t.parent);
+  EXPECT_TRUE(outcome.product->support(1,249).donors.empty());
+}
+
+TEST(rtc_terminal, failure_is_atomic_and_occupied_slot_preserves_prior_completion) {
+  RtcPipelineTerminalSlot slot;
+  EXPECT_FALSE(finalize_rtc_only({10},nullptr,slot).complete());EXPECT_FALSE(slot.snapshot());
+  Input in(1600);Trial t(in);
+  auto result=complete_apply(t,RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31));
+  auto grid=RtcOutputGrid::prepare(result,output_align(t));
+  auto invalid=finalize_rtc_only({0},grid,slot);
+  EXPECT_EQ(invalid.state,RtcOnlyTerminalState::finalization_failed);EXPECT_FALSE(slot.snapshot());
+  EXPECT_EQ(invalid.failure_cause,RtcOnlyFailureCause::invalid_run_identity);
+  auto first=finalize_rtc_only({10},grid,slot);ASSERT_TRUE(first.complete());
+  auto second=finalize_rtc_only({11},grid,slot);
+  EXPECT_EQ(second.state,RtcOnlyTerminalState::publication_failed);EXPECT_FALSE(second.product);
+  EXPECT_EQ(second.failure_cause,RtcOnlyFailureCause::publication_slot_occupied);
+  EXPECT_EQ(slot.snapshot(),first.product);EXPECT_EQ(slot.snapshot()->finalization().run.run,10);
+}
+
+TEST(rtc_terminal, unavailable_values_are_complete_facts_and_do_not_compress_schedule) {
+  Input in(1600);Trial t(in,250);
+  auto result=complete_apply(t,RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31));
+  auto grid=RtcOutputGrid::prepare(result,output_align(t));
+  RtcPipelineTerminalSlot slot;auto outcome=finalize_rtc_only({10},grid,slot);
+  ASSERT_TRUE(outcome.complete())<<outcome.reason;
+  EXPECT_EQ(outcome.product->finalization().scheduled_slots,2400);
+  auto facts=outcome.product->val_snapshot_handle()->committed_rtc_output_facts_handle();
+  for(std::size_t d=0;d<3;++d)for(std::size_t s=0;s<800;++s) {
+    auto target=RtcOutputGrid::val_target(grid,d,s,NativeReadoutCoordinate::x);
+    EXPECT_EQ(facts->at(target).occurrence.representative.network_occurrence.native_row(),100+2*s);
+    EXPECT_EQ(facts->at(target).numerical_available,grid->occurrence(d,s).x_available);
+  }
+}
+
+TEST(rtc_terminal, unresolved_or_foreign_final_decision_cannot_publish) {
+  Input in(1600);Trial t(in);
+  auto result=complete_apply(t,RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31));
+  auto evidence=decision_evidence(t,result);
+  auto unavailable=RtcPipelineDecision::consider(evidence,t.val,std::nullopt,44);
+  auto retained=RtcPipelineDecision::consider(evidence,t.val,retain_selection(evidence),44);
+  auto grid=RtcOutputGrid::prepare(result,output_align(t));
+  RtcPipelineTerminalSlot slot;
+  EXPECT_FALSE(finalize_rtc_only({10},grid,slot,unavailable).complete());EXPECT_FALSE(slot.snapshot());
+  auto good=finalize_rtc_only({11},grid,slot,retained);
+  ASSERT_TRUE(good.complete())<<good.reason;EXPECT_EQ(good.product->final_decision_handle(),retained);
+  auto other=complete_apply(t,RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),32));
+  RtcPipelineTerminalSlot other_slot;
+  EXPECT_FALSE(finalize_rtc_only({12},RtcOutputGrid::prepare(other,output_align(t)),other_slot,retained).complete());
+  EXPECT_FALSE(other_slot.snapshot());
+  auto replay=complete_apply(t,result->plan_handle());
+  EXPECT_FALSE(finalize_rtc_only({13},RtcOutputGrid::prepare(replay,output_align(t)),other_slot,retained).complete());
 }

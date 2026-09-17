@@ -7,9 +7,10 @@ namespace citlali::pipeline {
 
 // RTC-owned preparation for the scientific output boundary, NOT a completed
 // terminal product. The available ALIGN context supplies native occurrence
-// assignments and AST motion, not an AST detector-direction parent. Publication
-// and CAL admission still require that parent, output VAL facts and finalization.
-// No diagnostic coordinate array or motion record is promoted to pointing here.
+// assignments and AST motion, not an AST detector-direction parent. RTC-only
+// completion requires output VAL facts and finalization; detector coordinates
+// are additionally required when that role is requested. Motion is not promoted
+// to detector pointing, and RTC filtering does not acquire an APT dependency.
 class RtcOutputGrid {
 public:
     struct DetectorGrid {

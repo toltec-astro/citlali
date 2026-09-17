@@ -122,6 +122,7 @@ private:
 };
 
 class ValSnapshot;
+class ValRtcOutputFacts;
 
 // An address is compact because its exact immutable Paired-D1 handle is owned
 // once by the snapshot. Network/native-row plus the occurrence keys and an
@@ -463,6 +464,7 @@ struct ValSnapshotMemoryEvidence {
     // Counts handle references in this delta, not unique descriptor objects.
     std::size_t referenced_native_target_count = 0;
     std::size_t referenced_rtc_output_target_count = 0;
+    std::size_t referenced_rtc_output_fact_block_count = 0;
 
     std::size_t logical_owned_bytes() const noexcept {
         return owned_finding_bytes;
@@ -474,6 +476,15 @@ struct ValSnapshotMemoryEvidence {
 // duplicate a large state container merely to claim parallel membership.
 class ValSnapshot {
 public:
+    // Defined at the concrete RTC producer boundary. The immutable fact block
+    // references the exact producer product instead of duplicating every cell.
+    static std::shared_ptr<const ValSnapshot> commit_rtc_output(
+        std::shared_ptr<const ValSnapshot> base,
+        std::shared_ptr<const ValRtcOutputFacts> facts);
+
+    const auto &committed_rtc_output_facts_handle() const noexcept {
+        return rtc_output_facts_;
+    }
     static std::shared_ptr<const ValSnapshot> initial(
         std::shared_ptr<const NativePairedReadoutObservation> paired) {
         if (!paired) {
@@ -627,7 +638,7 @@ public:
                     })), static_cast<std::size_t>(std::count_if(
                     findings_.begin(), findings_.end(), [](const ValFinding &finding) {
                         return finding.key().rtc_output_target() != nullptr;
-                    }))};
+                    })), rtc_output_facts_ ? 1U : 0U};
     }
 
 private:
@@ -636,15 +647,18 @@ private:
         : generation_{0}, paired_{std::move(paired)} {}
 
     ValSnapshot(std::shared_ptr<const ValSnapshot> parent,
-                std::vector<ValFinding> findings)
+                std::vector<ValFinding> findings,
+                std::shared_ptr<const ValRtcOutputFacts> rtc_output_facts = {})
         : generation_{parent->generation_.value + 1},
           paired_{parent->paired_}, parent_{std::move(parent)},
-          findings_{std::move(findings)} {}
+          findings_{std::move(findings)},
+          rtc_output_facts_{std::move(rtc_output_facts)} {}
 
     ValGeneration generation_;
     std::shared_ptr<const NativePairedReadoutObservation> paired_;
     std::shared_ptr<const ValSnapshot> parent_;
     std::vector<ValFinding> findings_;
+    std::shared_ptr<const ValRtcOutputFacts> rtc_output_facts_;
 };
 
 inline ValAddress ValRtcOutputTarget::address() const {

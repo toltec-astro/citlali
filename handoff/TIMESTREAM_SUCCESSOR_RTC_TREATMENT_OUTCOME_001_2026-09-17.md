@@ -422,3 +422,73 @@ admission remain pending the explicit geometry/pointing compatibility binding
 and its bounded implementation. The owner question remains unanswered; no
 dependent scientific choice has been made. No integration, push, production
 activation, cleanup or downstream processing occurs in this checkpoint.
+
+### Owner compatibility permission and boresight distinction
+
+The owner answered the preceding fixture-scoped compatibility question:
+"You may but I do question the need to tie in the APT. Why aren't telescope
+boresight positions enough?" This permits the explicit existing V2 geometry/
+pointing convention for the twelve-detector 152390 fixture; it does not authorize
+new coordinate mathematics or broader observation/mode qualification. The
+previous sealed checkpoint correctly records the question as pending at its
+own close; it is not rewritten.
+
+Boresight/motion and detector pointing are distinct roles. Existing accepted
+scan-motion/filtering decisions consume AST motion and do not acquire a new
+APT geometry dependency. AST owns composition of detector geometry, selected
+rotation and pointing for a requested detector-coordinate output. RTC consumes
+that typed coordinate role only where required; it does not read or interpret
+APT geometry to execute the current filters. CAL calibration factors remain a
+separate role. Independent read-only review at `5a4bc7d576813bcc893ba59cd9ef4656d737bf4a`
+found the earlier blanket publication prerequisite too broad. The approved
+D004 terminal addendum §4, horizontal IS009–012 and AST REQ057–060/074 permit
+RTC-only completion without an unrequested detector-coordinate role. The
+missing-required-pointing hard failure for ordinary science remains intact.
+The owner's compatibility permission is preserved for the later requested
+coordinate adapter. The earlier sealed checkpoint is historical evidence,
+not the current sequencing conclusion.
+
+### RTC-only terminal continuation
+
+The same approved spine work proceeds from local checkpoint
+`5a4bc7d576813bcc893ba59cd9ef4656d737bf4a`; live canonical remains
+`0f52e1a421416eadaf7d8d99d64f537132395c0c` and live topic remains pushed
+`3cd941974844b1ba25c829dc1c2bbe51e8f3cf6c`. No new branch, integration or push.
+All three effective governance sources were read; exact digests and owner
+scope are recorded in `/private/tmp/citlali-rtc-output-handoff-ast-2026-09-17`.
+Despite that evidence-directory locator, this continuation adds no detector
+geometry adapter or new AST coordinate calculation.
+
+RTC owns finalization and atomic in-memory publication over the full admitted
+observation domain. Unavailable scheduled positions remain complete typed
+facts. Exact final reassessment decisions are retained when selected; an
+unavailable or foreign decision cannot finalize the stream. Original-pair,
+plan, scalar motion, ALIGN, donor dependencies and separate input/support/
+realized causes remain recoverable. Complete conditioned responses and
+covariance are explicitly unavailable, distinct from known finite coefficients
+and numerical support. No uncertainty or scientific-use policy is invented.
+
+VAL attaches one immutable exact-grid RTC fact block to its next generation,
+with the previous snapshot retained. The block preserves the producer record
+and reconstructs coordinate-specific facts for every scheduled target without
+per-cell finding allocation. Existing sparse findings and their queries are
+unchanged; producer block queries explicitly name the output target. This is
+not a named CAL/PTC/MAP use evaluation. CAL receives a concrete conditioned-x
+source interface retaining the complete RTC terminal and final VAL snapshot.
+Its science admission is `not_requested`; no calibration value or r-calibration
+path is emitted. The source object is not described as admitted CAL science.
+
+The offline caller accepts only the explicit `terminal_request: rtc-only`
+choice before processing. It finalizes after the final Learn/Consider decision,
+reports complete logical RTC output and the unrequested coordinate/CAL roles,
+and propagates any required output write failure. It cannot switch an ordinary
+science request to RTC-only after a missing-coordinate failure.
+
+Focused gates exercise coordinate-local/donor facts and dependencies, immutable
+VAL generations, foreign targets/decisions, unavailable slots, missing input,
+invalid run, occupied-slot atomicity, CAL source meaning, chunk invariance and
+isolated public headers. Numerical filters and masks are unchanged. Full and
+real replay gates, memory/timing, exact candidates and independent review are
+recorded below when complete. Evidence is supplemental local AppleClang/
+Homebrew/C++20 with the existing dirty KIDs dependency, not Unity/Spack or
+production qualification.
