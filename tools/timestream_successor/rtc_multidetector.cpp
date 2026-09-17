@@ -271,7 +271,7 @@ int main(int argc,char **argv) {
       auto ast=build_ast_scan_motion_product(telescope.source,motion_identity);
       const auto accepted_ast=YAML::LoadFile(checked("ast_acceptance").string());
       if (census && obs == 152392) {
-        require(accepted_ast["schema"].as<std::string>() == "wp7-rtc-filter-fixture-census-v3" &&
+        require(accepted_ast["schema"].as<std::string>() == "citlali-wp7-rtc-filter-fixture-census-v3" &&
                     accepted_ast["source_revision"].as<std::string>() == "adbc013e2d4287fb5a32db8bc7f2b0112c1c88d7" &&
                     accepted_ast["observation"].as<int>() == obs &&
                     accepted_ast["telescope_ast"]["policy_id"].as<std::string>() == std::string(ast_scan_motion_policy_id),
