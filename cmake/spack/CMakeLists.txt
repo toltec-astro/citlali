@@ -176,12 +176,19 @@ target_sources(
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/mapmaking/map.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/ast_scan_motion.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/ast_scan_motion_alignment.cpp"
+        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_rtc_common_mode.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_identity_route_context.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/output_root_lease.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/reduction_restart_checkpoint.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/timestream/ptc/sensitivity.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/utils/gauss_models.cpp"
 )
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    set_source_files_properties(
+        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_rtc_common_mode.cpp"
+        PROPERTIES COMPILE_OPTIONS "-fno-fast-math;-ffp-contract=off"
+    )
+endif()
 target_include_directories(
     citlali
     PUBLIC
@@ -257,6 +264,18 @@ add_dependencies(
     citlali_timestream_successor_identity_acceptance
     gitversion_header_citlali
 )
+
+# The existing offline RTC caller is a non-default validation executable.
+# Keep its numerical options aligned with the established build entry point.
+add_executable(citlali_rtc_multidetector EXCLUDE_FROM_ALL
+    "${CITLALI_SOURCE_ROOT}/tools/timestream_successor/rtc_multidetector.cpp"
+)
+target_link_libraries(citlali_rtc_multidetector PRIVATE citlali::citlali)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(citlali_rtc_multidetector
+        PRIVATE -fno-fast-math -ffp-contract=off)
+endif()
+add_dependencies(citlali_rtc_multidetector gitversion_header_citlali)
 
 option(CITLALI_BUILD_TESTS "Build the full Citlali test suite" OFF)
 if(CITLALI_BUILD_TESTS)

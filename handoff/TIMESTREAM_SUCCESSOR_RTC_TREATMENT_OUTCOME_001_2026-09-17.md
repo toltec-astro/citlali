@@ -533,3 +533,66 @@ detector-coordinate, factor, atmosphere, response and named-use authorities.
 The owner's V2 fixture compatibility permission is retained for that future
 coordinate role. Integration, push, activation, cleanup and FRUIT remain
 unperformed; local reviewed source is preserved on the existing RTC branch.
+
+
+## Unity caller-link failure and bounded Spack repair — 2026-09-17
+
+The owner supplied the inspection retrieved at `2026-09-17T18:19:11+00:00`
+and the subsequent linker-error tail. Job `64545779` failed `1:0` after
+`00:14:05`, with four CPUs, 32 GB and batch MaxRSS 19,639,060 KiB. Source
+`58a539af2b3bb8e52c582bfc43e6711ab247538b`, tree
+`075f808515c454b78a41c69207828a9ae3c5cf41`, was clean at entry. The default
+build completed; `rtc_multidetector.cpp` compiled but its link could not resolve
+`RtcCommonModeEvidence::{learn,self_excluded_checks,logical_owned_bytes}` or
+`RtcCommonModeConsideration::compare`. No version/test acceptance was reached.
+The source list in `cmake/spack/CMakeLists.txt` omitted the existing common-mode
+translation unit, whereas the established build included it. The existing
+`SpackSourceGraphTest` reproduced precisely that missing path before repair.
+
+This exposed a build-gate coverage error: the prior local selection omitted
+that parity test, and the independent packet review did not catch the missing
+library source. The prior scientific/architectural review is not relabeled as
+Unity qualification. The owner reported all 20 archive members passing checksum
+verification; the full archive has not been downloaded or directly inspected.
+Archive: `/work/toltec/wilson/citlali_testing/citlali-rtc-output-unity-58a539af2/evidence/unity-gcc13-sbatch-64545779`.
+Final-status SHA-256 `a949851621228637b79b4a8aa6525a04192790e25851fb770eda8483273b8f93`;
+manifest SHA-256 `cb722f96f1b1ad5bfd3c61b9ed3d80d8d83c200c2de212b2b63f5104c13fe427`.
+
+Reassessment under the same owner-requested build check: repair within scope.
+AGENTS, toltec-context, all three effective governance documents and Spack
+Adapt authority were read. Initial worktree is clean at the failed/pushed SHA.
+Live GitHub topic is that exact SHA; canonical remains
+`0f52e1a421416eadaf7d8d99d64f537132395c0c`. No reconciliation or ref movement is
+part of this repair. The existing RTC spine owns the bounded continuation.
+
+The repair adds the unchanged common-mode translation unit to the Spack library
+with the same `-fno-fast-math -ffp-contract=off` options as the established build,
+and registers the existing offline caller as a non-default, non-installed
+Spack executable. The temporary external CMake hook is no longer necessary.
+The existing source-parity test retains its cross-entry-point set comparison;
+its historical expected count advances from 14 to 15. All C++ implementation,
+headers, compiled test cases, contracts, coefficients, thresholds, validity,
+original-input execution, and production state are unchanged.
+
+Local results: the pre-repair parity control fails on the exact missing file;
+all 73 build-tool controls now pass. Required config preflight passes, and
+207 baseline tests plus 137 subtests pass. These are local tooling results.
+The Unity GCC13 environment is not reproduced here; rebuilding the unchanged
+compatibility entry point would not exercise this repair, so the owner-run
+fresh GCC13/Spack gate remains the compilation/link and full-test authority.
+No observation replay is triggered by this build-definition-only change.
+
+The replacement packet at `/private/tmp/citlali-rtc-output-unity-repair-20260917`
+uses a new isolated source/build/evidence directory and retains the prior
+packet/archive. It checks source-graph parity before configuring, verifies the
+common-mode and caller compile commands and final strict floating-point options,
+builds the ordinary library/CLI plus caller and safety targets, runs the full
+`check` target, verifies the same 1,218 registered / 1,217 runnable inventory,
+and reruns 22 grid/terminal/VAL controls plus the ordinary-science rejection
+check. The inspector now includes failure details. Resource allocation remains
+four CPUs / 32 GB / two hours. Exact repair/source/packet digests and independent
+three-axis review are recorded in
+`/private/tmp/citlali-rtc-output-spack-repair-2026-09-17`. No push, Unity access,
+installation, reconcretization, canonical integration, cleanup or activation
+is performed by Codex. The next owner action is to push the reviewed repair
+and submit the replacement gate; Unity success is still pending.

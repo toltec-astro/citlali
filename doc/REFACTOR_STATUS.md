@@ -1,5 +1,37 @@
 # Citlali Refactor Status
 
+## RTC output Unity build repair — 2026-09-17
+
+Owner-run Unity job `64545779` tested the pushed RTC checkpoint
+`58a539af2b3bb8e52c582bfc43e6711ab247538b` and failed while linking the
+offline RTC caller, before version binding or CTest. The caller compiled, but
+the Spack library source list omitted the existing
+`timestream_rtc_common_mode.cpp`. The ordinary local build included it. The
+existing source-graph parity test reproduces this exact omission; it was
+missing from the preceding gate selection and the build-packet review did
+not catch it. Prior local results and contract reviews remain their scoped
+evidence, not a passing Unity result.
+
+This bounded repair adds that unchanged source to the Spack library with its
+existing strict floating-point settings and declares the existing RTC caller
+as a non-default Spack target. The temporary external target hook is retired
+from the replacement gate. No C++ implementation, header, scientific policy,
+filter, source/VAL binding, package realization or production route changes.
+The shared build-graph test's expected source count advances from 14 to 15.
+All 73 build-tool tests, required config preflight and 207 baseline tests plus
+137 subtests pass locally. Full compilation and the 1,217-runnable-test Unity
+check remain pending at the repaired exact source; the Unity GCC13 linker
+gate has not been reproduced on this Mac.
+
+The owner-requested build check continues on the same RTC branch, with the
+failed source/packet/archive preserved. A new packet adds the source-graph
+precheck and compiled-source/float-option binding, and reports failure details
+directly. It requests the same four CPUs / 32 GB / two hours. Exact repair SHA,
+independent review, and packet identities are in the continuing
+[RTC handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_TREATMENT_OUTCOME_001_2026-09-17.md)
+and `/private/tmp/citlali-rtc-output-spack-repair-2026-09-17`.
+
+
 ## RTC-only output completion and boresight clarification — 2026-09-17
 
 The owner permitted the bounded V2 geometry/pointing binding for the twelve-
