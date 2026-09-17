@@ -1,4 +1,5 @@
 #pragma once
+#include <citlali/core/pipeline/timestream_rtc_treatment_outcome.h>
 
 #include <citlali/core/pipeline/timestream_rtc_notch_recovery.h>
 
@@ -187,7 +188,8 @@ public:
   static std::shared_ptr<const RtcPipelineReassessment> consider(
       std::shared_ptr<const RtcPipelineResult> previous,
       std::shared_ptr<const RtcSpectralTransientConsideration> conditioned,
-      std::uint64_t attempt) {
+      std::uint64_t attempt,
+      std::shared_ptr<const RtcTreatmentOutcomeEvidence> outcome = nullptr) {
     if (!previous || !conditioned || !attempt ||
         conditioned->transient_handle().get() !=
             previous->plan_handle()->original_consideration()->transient_handle().get())
@@ -199,20 +201,26 @@ public:
     for (std::size_t i = 0; i < product->columns().size(); ++i)
       if (product->columns()[i].source.get() != previous->detector_results()[i].get())
         throw std::invalid_argument("RTC reassessment cannot substitute another realization of Apply");
+    if (outcome && (outcome->original_handle().get() != previous->plan_handle()->original_consideration()->spectral_handle().get() ||
+                    outcome->conditioned_handle().get() != conditioned->spectral_handle().get()))
+      throw std::invalid_argument("RTC outcome must bind exact original reference and conditioned stage/VAL/Apply evidence");
     return std::shared_ptr<const RtcPipelineReassessment>(new RtcPipelineReassessment{
-        std::move(previous), std::move(conditioned), attempt});
+        std::move(previous), std::move(conditioned), attempt, std::move(outcome)});
   }
   const auto &previous_handle() const noexcept { return previous_; }
   const auto &conditioned_consideration() const noexcept { return conditioned_; }
+  const auto &outcome_handle() const noexcept { return outcome_; }
   const auto &original_consideration() const noexcept { return previous_->plan_handle()->original_consideration(); }
   auto attempt() const noexcept { return attempt_; }
   static constexpr bool classification_authorized = false, stopping_rule_selected = false;
 private:
   RtcPipelineReassessment(std::shared_ptr<const RtcPipelineResult> p,
-      std::shared_ptr<const RtcSpectralTransientConsideration> c, std::uint64_t a)
-      : previous_{std::move(p)}, conditioned_{std::move(c)}, attempt_{a} {}
+      std::shared_ptr<const RtcSpectralTransientConsideration> c, std::uint64_t a,
+      std::shared_ptr<const RtcTreatmentOutcomeEvidence> o)
+      : previous_{std::move(p)}, conditioned_{std::move(c)}, outcome_{std::move(o)}, attempt_{a} {}
   std::shared_ptr<const RtcPipelineResult> previous_;
   std::shared_ptr<const RtcSpectralTransientConsideration> conditioned_;
+  std::shared_ptr<const RtcTreatmentOutcomeEvidence> outcome_;
   std::uint64_t attempt_;
 };
 

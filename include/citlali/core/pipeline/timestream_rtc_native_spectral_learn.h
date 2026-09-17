@@ -305,9 +305,11 @@ public:
         return bytes;
     }
 private:
+    friend class RtcTreatmentOutcomeEvidence;
     RtcNativeSpectralEvidence(std::shared_ptr<const RtcSpikeEvidence> o, std::uint64_t a) : original_{std::move(o)}, attempt_{a} {}
     RtcNativeSpectrum measure(const RtcSpectralNetwork &n, const std::vector<double> &window,
-        std::uint32_t detector, NativeReadoutCoordinate coordinate) {
+        std::uint32_t detector, NativeReadoutCoordinate coordinate,
+        const std::vector<RtcEventRange> *comparison_support = nullptr) {
         using namespace rtc_native_spectral_detail;
         RtcNativeSpectrum s; s.network = n.input->support().network_id; s.detector = detector; s.coordinate = coordinate;
         const auto &net = original_->input_handle()->network(s.network); const auto &axis = net.occurrence_axis();
@@ -320,6 +322,16 @@ private:
         const auto value = [&](auto row) {
             return derived ? (*derived->values)(row-derived->first,static_cast<unsigned>(coordinate))
                            : net.value(coordinate,row,detector);
+        };
+        // Comparison selection is an evidence-use restriction, never a change
+        // to acquisition validity. Check nonfinites on the full admitted run
+        // below before applying this restriction to the measurement population.
+        const auto selected = [&](auto row) {
+            if (!admitted(row)) return false;
+            if (!comparison_support) return true;
+            const auto it = std::upper_bound(comparison_support->begin(), comparison_support->end(), row,
+                [](auto r, const auto &span) { return r < span.first; });
+            return it != comparison_support->begin() && row < std::prev(it)->past_last;
         };
         std::vector<double> population;
         std::size_t longest = 0; bool input_failure = false;
@@ -337,9 +349,9 @@ private:
             else {
                 auto row = r.rows.first;
                 while (row < r.rows.past_last) {
-                    if (!admitted(row)) { ++row; continue; }
+                    if (!selected(row)) { ++row; continue; }
                     auto first = row;
-                    while (row < r.rows.past_last && admitted(row)) {
+                    while (row < r.rows.past_last && selected(row)) {
                         population.push_back(value(row)); ++row;
                     }
                     s.centering_support.push_back({first, row}); longest = std::max(longest, static_cast<std::size_t>(row-first));

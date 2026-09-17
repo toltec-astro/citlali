@@ -33,6 +33,7 @@ void write_matrix(const fs::path &p,const auto &m) {
 }
 #include "rtc_processing_scan_input.h"
 #include "rtc_common_mode_output.h"
+#include "rtc_treatment_outcome_output.h"
 int main(int argc,char **argv) {
   try {
     const auto began=std::chrono::steady_clock::now();
@@ -677,11 +678,18 @@ int main(int argc,char **argv) {
       for(bool lowpass:{false,true}){
         auto conditioned=RtcNativeSpectralEvidence::learn_conditioned(result->native_product(lowpass,val),val,cadence,1100+lowpass);
         auto considered=RtcSpectralTransientConsideration::consider(conditioned,val,events,val,1200+lowpass);
-        const auto reassessment=RtcPipelineReassessment::consider(result,considered,1300+lowpass);
+        const auto outcome_started=std::chrono::steady_clock::now();
+        const auto outcome=RtcTreatmentOutcomeEvidence::learn(spectral,conditioned,1250+lowpass);
+        const auto outcome_seconds=std::chrono::duration<double>(std::chrono::steady_clock::now()-outcome_started).count();
+        const auto reassessment=RtcPipelineReassessment::consider(result,considered,1300+lowpass,outcome);
         YAML::Node stage;stage["after_lowpass"]=lowpass;stage["producer_attempt"]=complete->attempt();
         const auto stage_path=output/(lowpass ? "post-lowpass-psd.f64" : "post-notch-psd.f64");
         std::ofstream stage_psd(stage_path,std::ios::binary);
         stage["classification_authorized"]=reassessment->classification_authorized;
+        const auto outcome_name=lowpass ? "post-lowpass-outcome" : "post-notch-outcome";
+        write_treatment_outcome(output,outcome_name,*reassessment->outcome_handle(),channels);
+        stage["matched_outcome_file"]=std::string(outcome_name)+".yaml";
+        stage["matched_outcome_seconds"]=outcome_seconds;
         for(const auto &s:conditioned->spectra()){YAML::Node c;c["channel"]=channels[s.detector];
           c["coordinate"]=static_cast<int>(s.coordinate);c["available"]=s.available();c["cause"]=static_cast<int>(s.cause);
           c["bins"]=s.psd.size();stage_psd.write(reinterpret_cast<const char*>(s.psd.data()),s.psd.size()*8);

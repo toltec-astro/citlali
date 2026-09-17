@@ -919,6 +919,137 @@ TEST(rtc_multidetector_caller, scan_binding_is_explicit_native_support_not_acqui
   EXPECT_EQ(selection.scans->supports()[0].scan,77);
   EXPECT_EQ(selection.scans->parent_handle().get(),t.parent.get());
 }
+
+TEST(rtc_treatment_outcome, identity_stage_is_exact_on_same_windows_and_keeps_source) {
+  Input in(6000); Trial t(in,10,RtcSpikeProtection::protected_source);
+  auto p=RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31);
+  auto result=complete_apply(t,p);auto conditioned=conditioned_learn(t,result);
+  auto e=RtcTreatmentOutcomeEvidence::learn(t.lines->spectral_handle(),conditioned,41);
+  for(const auto &r:e->records()) {
+    ASSERT_TRUE(r.available());EXPECT_EQ(r.original_matched.psd,r.conditioned_matched.psd);
+    EXPECT_EQ(r.window_union_samples,r.common_eligible_samples);
+    EXPECT_LE(r.window_union_seconds,6000*.008192+1e-8);
+    for(const auto &w:r.conditioned_matched.windows)EXPECT_EQ(w.source_counts[1],w.rows.past_last-w.rows.first);
+  }
+  EXPECT_FALSE(e->classification_authorized);EXPECT_FALSE(e->stopping_rule_selected);
+  EXPECT_FALSE(e->independent_noise_estimate);
+  EXPECT_EQ(e->original_handle(),t.lines->spectral_handle());
+}
+TEST(rtc_treatment_outcome, analytic_line_power_uses_matched_footprints_and_preserves_inputs) {
+  Input in(6000);const double f=44./(488*.008192);
+  for(Eigen::Index i=0;i<in.x.rows();++i)for(int d=0;d<3;++d) {
+    in.x(i,d)=std::sin(2*std::numbers::pi*f*i*.008192);
+    in.r(i,d)=.2*std::cos(2*std::numbers::pi*f*i*.008192);
+  }
+  Trial t(in);auto p=RtcPipelinePlan::consider(complete_plans(t,{.25,.5,.25}),t.joint->joint_handle(),31);
+  auto result=complete_apply(t,p);auto original=t.lines->spectral_handle();const auto before=original->spectra()[0].psd;
+  auto e=RtcTreatmentOutcomeEvidence::learn(original,conditioned_learn(t,result,true),41);
+  const double h=.5+.5*std::cos(2*std::numbers::pi*f*.008192);
+  auto band=e->band(0,0,NativeReadoutCoordinate::x,43,46);
+  ASSERT_TRUE(band.conditioned_over_original);EXPECT_NEAR(*band.conditioned_over_original,std::pow(h,4),1e-10);
+  EXPECT_LT(e->records()[0].common_eligible_samples,e->records()[0].original_eligible_samples);
+  EXPECT_EQ(before,original->spectra()[0].psd);
+  for(Eigen::Index i=0;i<in.x.rows();++i)for(int d=0;d<3;++d) {
+    EXPECT_EQ(t.parent->network(0).value(NativeReadoutCoordinate::x,100+i,d),in.x(i,d));
+    EXPECT_EQ(t.parent->network(0).value(NativeReadoutCoordinate::r,100+i,d),in.r(i,d));
+  }
+}
+TEST(rtc_treatment_outcome, unequal_masks_gaps_and_window_overlap_keep_exact_native_support) {
+  Input in(6000);
+  in.x(1000,0)=NAN;in.xs[3000]=NativeReadoutCoordinateState::measured(true,false,true,false);
+  for(std::size_t i=3000;i<in.times.size();++i){in.times[i]+=.5;in.counters[i]+=30;}
+  Trial t(in);auto p=RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31);
+  auto result=complete_apply(t,p);auto e=RtcTreatmentOutcomeEvidence::learn(t.lines->spectral_handle(),conditioned_learn(t,result,true),41);
+  const auto &r=e->record(0,0,NativeReadoutCoordinate::x);ASSERT_TRUE(r.available());
+  EXPECT_LT(r.common_eligible_samples,r.original_eligible_samples);
+  std::size_t overlapped=0;
+  for(std::size_t i=0;i<r.original_matched.windows.size();++i) {
+    const auto &a=r.original_matched.windows[i],&b=r.conditioned_matched.windows[i];
+    EXPECT_EQ(a.rows.first,b.rows.first);EXPECT_EQ(a.rows.past_last,b.rows.past_last);
+    EXPECT_TRUE(a.rows.past_last<=1100||a.rows.first>1100);
+    EXPECT_TRUE(a.rows.past_last<=3100||a.rows.first>=3100);
+    overlapped+=a.rows.past_last-a.rows.first;
+  }
+  EXPECT_GT(overlapped,r.window_union_samples);
+  for(auto span:r.window_union)EXPECT_TRUE(span.past_last<=3100||span.first>=3100);
+  EXPECT_EQ(r.original_matched.runs[0].unexpected_nonfinite_samples,0);
+}
+TEST(rtc_treatment_outcome, unexpected_nonfinite_outside_shared_support_is_not_hidden) {
+  Input in(6000);Trial t(in);auto p=RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31);
+  auto result=complete_apply(t,p);auto conditioned=conditioned_learn(t,result,true);
+  // First row is outside the finite filtered footprint, but was admitted raw.
+  auto *cell=const_cast<double*>(t.parent->network(0).values(NativeReadoutCoordinate::x).data());
+  const double saved=*cell;*cell=NAN;
+  auto e=RtcTreatmentOutcomeEvidence::learn(t.lines->spectral_handle(),conditioned,41);*cell=saved;
+  const auto &r=e->record(0,0,NativeReadoutCoordinate::x);
+  EXPECT_FALSE(r.available());EXPECT_EQ(r.original_matched.cause,RtcSpectralCause::input_consistency_failure);
+  EXPECT_EQ(r.original_matched.runs[0].first_unexpected_nonfinite,100);
+  EXPECT_TRUE(e->record(0,0,NativeReadoutCoordinate::r).available());
+}
+TEST(rtc_treatment_outcome, unavailable_support_is_not_zero_residual_power) {
+  Input in(6000);Trial t(in);
+  auto plans=complete_plans(t);plans[0]=t.plan(false,true,{},0);
+  auto p=RtcPipelinePlan::consider(plans,t.joint->joint_handle(),31);auto result=complete_apply(t,p);
+  auto e=RtcTreatmentOutcomeEvidence::learn(t.lines->spectral_handle(),conditioned_learn(t,result,true),41);
+  EXPECT_FALSE(e->record(0,0,NativeReadoutCoordinate::x).available());
+  EXPECT_FALSE(e->band(0,0,NativeReadoutCoordinate::x,1,10).conditioned_over_original);
+  const auto &r=e->record(0,1,NativeReadoutCoordinate::x);ASSERT_TRUE(r.available());
+  EXPECT_GT(r.power.original,0);EXPECT_GT(r.power.conditioned,0);
+  EXPECT_THROW(e->band(0,1,NativeReadoutCoordinate::x,10,1),std::invalid_argument);
+}
+TEST(rtc_treatment_outcome, donor_history_and_local_r_unavailability_survive_comparison) {
+  Input in(6000);in.spike();Trial t(in,10,RtcSpikeProtection::outside_source);auto donor=explicit_donor(t);
+  auto p=RtcPipelinePlan::consider(complete_plans(t,{}, {donor}),t.joint->joint_handle(),31);
+  auto result=complete_apply(t,p);auto e=RtcTreatmentOutcomeEvidence::learn(t.lines->spectral_handle(),conditioned_learn(t,result,true),41);
+  const auto &x=e->record(0,0,NativeReadoutCoordinate::x),&r=e->record(0,0,NativeReadoutCoordinate::r);
+  ASSERT_TRUE(x.available());ASSERT_TRUE(r.available());
+  EXPECT_GT(x.common_eligible_samples,r.common_eligible_samples);
+  std::size_t replaced=0,influenced=0;
+  for(const auto &w:x.conditioned_matched.windows){replaced+=w.representative_replacements;influenced+=w.replacement_influenced_samples;}
+  EXPECT_GT(replaced,0);EXPECT_GT(influenced,0);
+  for(const auto &w:r.conditioned_matched.windows)EXPECT_TRUE(w.rows.past_last<=599||w.rows.first>=602);
+  EXPECT_TRUE(result->detector_results()[0]->requires_representative_exclusion(600));
+}
+TEST(rtc_treatment_outcome, reassessment_rejects_foreign_apply_stage_and_cadence_binding) {
+  Input in(6000);Trial t(in),other(in);auto p=RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31);
+  auto result=complete_apply(t,p);auto conditioned=conditioned_learn(t,result),later=conditioned_learn(t,result,true);
+  auto e=RtcTreatmentOutcomeEvidence::learn(t.lines->spectral_handle(),conditioned,41);
+  auto considered=RtcSpectralTransientConsideration::consider(conditioned,t.val,t.review,t.val,42);
+  auto c=RtcPipelineReassessment::consider(result,considered,43,e);EXPECT_EQ(c->outcome_handle(),e);
+  auto other_stage=RtcTreatmentOutcomeEvidence::learn(t.lines->spectral_handle(),later,44);
+  EXPECT_THROW(RtcPipelineReassessment::consider(result,considered,45,other_stage),std::invalid_argument);
+  EXPECT_THROW(RtcTreatmentOutcomeEvidence::learn(other.lines->spectral_handle(),conditioned,46),std::invalid_argument);
+  EXPECT_THROW(RtcTreatmentOutcomeEvidence::learn(t.lines->spectral_handle(),conditioned,0),std::invalid_argument);
+  auto wrong=RtcNativeSpectralEvidence::learn_conditioned(result->native_product(false,t.val),t.val,{{0,"other-cadence",.008192,1e-7}},40);
+  EXPECT_THROW(RtcTreatmentOutcomeEvidence::learn(t.lines->spectral_handle(),wrong,47),std::invalid_argument);
+  auto other_apply=complete_apply(t,p);EXPECT_THROW(RtcPipelineReassessment::consider(other_apply,considered,48,e),std::invalid_argument);
+}
+
+
+TEST(rtc_treatment_outcome, too_few_shared_windows_is_unavailable_not_suppression) {
+  Input in(490);Trial t(in);
+  auto p=RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31);
+  auto result=complete_apply(t,p);auto conditioned=conditioned_learn(t,result,true);
+  auto e=RtcTreatmentOutcomeEvidence::learn(t.lines->spectral_handle(),conditioned,41);
+  const auto &r=e->record(0,0,NativeReadoutCoordinate::x);
+  EXPECT_FALSE(r.available());EXPECT_FALSE(r.power.conditioned_over_original);
+  EXPECT_LT(r.conditioned_matched.windows.size(),2);
+}
+TEST(rtc_treatment_outcome, later_VAL_is_explicit_and_cannot_rebind_original_or_select_old_plan) {
+  Input in(6000);Trial t(in);auto p=RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31);
+  auto result=complete_apply(t,p);
+  ValDeltaBuilder b{t.val,{ValProducer::rtc,44}};
+  b.propose(t.val->address(0,100,0),ValFactCode{1},ValFactState{1},ValFactCause{1});
+  auto later=ValSnapshot::commit(b.freeze());auto product=result->native_product(true,later);
+  auto spectral=RtcNativeSpectralEvidence::learn_conditioned(product,later,{{0,"control-cadence",.008192,1e-7}},45);
+  auto e=RtcTreatmentOutcomeEvidence::learn(t.lines->spectral_handle(),spectral,46);
+  EXPECT_EQ(e->original_handle()->network(0).input->snapshot_handle(),t.val);
+  EXPECT_EQ(e->conditioned_handle()->network(0).input->snapshot_handle(),later);
+  EXPECT_THROW(RtcNativeSpectralEvidence::learn_conditioned(product,t.val,{{0,"control-cadence",.008192,1e-7}},45),std::invalid_argument);
+  auto considered=RtcSpectralTransientConsideration::consider(spectral,later,t.review,t.val,47);
+  auto reassess=RtcPipelineReassessment::consider(result,considered,48,e);
+  EXPECT_THROW(RtcPipelinePlan::reconsider(reassess,complete_plans(t),49),StaleRtcValGeneration);
+}
 } // namespace
 
 namespace {

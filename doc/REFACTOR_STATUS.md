@@ -1,5 +1,33 @@
 # Citlali Refactor Status
 
+## RTC matched-support treatment outcomes — 2026-09-17
+
+The owner accepts the bounded common-mode diagnostic and census as complete
+for their present RTC purpose. The separate
+[detector-response investigation handoff](../handoff/DETECTOR_RESPONSE_INVESTIGATION_2026-09-17.md)
+retains verified identities and evidence, and records tune dependence as an
+untested hypothesis. That investigation is not an RTC prerequisite; no health
+rejection, calibration, or weighting policy is introduced.
+
+Runtime Learn now reuses the accepted D2 estimator to measure original and
+conditioned native spectra on identical intersected support and windows.
+Consider binds the outcome to the exact prior Apply, original transient evidence,
+stage, attempt and VAL. Full admitted-run nonfinite checks, source and donor
+history, coordinate-local availability and physical gaps remain explicit.
+Stored PSD powers and optional ratios are descriptive; they are neither a
+noise estimate nor retrospective event classification or a stopping rule.
+Initial spectra, complete plans, filtering/support/validity and fresh-original
+execution remain unchanged. Focused controls pass; exact-source replay, broad
+gates and independent review are being bound in
+`/private/tmp/citlali-rtc-treatment-outcome-2026-09-17`.
+
+This completes the numerical outcome-evidence connection within S2 once those
+gates close. The next RTC responsibility is an explicit complete-plan
+accept/revise/unavailable decision consuming these outcomes and original
+evidence, followed by replay from the original pair. Automatic stopping and
+scientific admission thresholds remain unselected; this does not complete all
+S2 or authorize CAL/PTC, FRUIT, production, integration, push or cleanup.
+
 ## RTC common-mode repeatability census — 2026-09-16
 
 The owner-approved bounded census is complete for NGC4449 SCIENCE observations
