@@ -1,5 +1,34 @@
 # Citlali Refactor Status
 
+## Scientific goals and RTC stopping judgment — 2026-09-17
+
+The owner's September 17 goals are recorded in
+[Scientific goals](SCIENTIFIC_GOALS.md): timely useful PI delivery, aspirational
+SCIENCE calibration/PSF and BEAM PSF performance, tentative BEAM amplitude
+precision, empirical OOF modeling reference, and recovered POINT scope with
+unrecovered numerical accuracy/stopping targets explicitly marked. These are
+development guidance, not new scientific requirements or runtime thresholds.
+
+For the reviewed compact-source case, retain the selected 1 Hz / 3 s notch and
+stop further optimization. The 2.304% to 0.052% controlled added amplitude-error
+reduction, 0.059% to 0.095% waveform RMS change and 1.155-point support cost are
+good enough to proceed in that bounded domain. They do not measure final PSF,
+total calibration error or sensitivity. The one-crossing limitation remains.
+This supersedes the earlier recommendation to make a new numerical error
+budget the next development task; existing contracts and integrity rules hold.
+
+The single recommended next increment is the S2 connection from assembled
+nonidentity RTC treatment to the existing RTC-only completion/publication
+boundary, using an explicitly selected frozen plan and preserving paired data,
+output timing, exclusions, support and failure semantics. Learn/Consider/Apply
+already exist; this fills the terminal connection beyond the experiment
+caller, not another scientific selector or framework. Focused boundary checks
+and one existing representative compact-science fixture should demonstrate
+the connection. Full POINT/OOF/BEAM, fast-source and extended-source
+qualification do not gate that bounded step. No implementation, experiment
+rerun, new policy, production activation, downstream connection or push occurs
+in this documentation increment.
+
 ## RTC purpose-aware treatment consequences — 2026-09-17
 
 The owner authorizes a bounded diagnostic comparison on the same twelve-detector

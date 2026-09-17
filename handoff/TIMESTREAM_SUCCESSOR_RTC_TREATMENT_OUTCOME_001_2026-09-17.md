@@ -277,3 +277,45 @@ Python controls, verified207 input bindings,382 baseline artifacts, both60-case
 arms, all24 final-rate spectra and support accounting, and independently
 recomputed every available first-arm projection within9.61e-13. Final
 documentation closure and the report receive their own exact binding.
+
+## Scientific-goals continuation — 2026-09-17
+
+The owner directive “Establish scientific goals and use them to decide what is
+good enough,” SHA256
+`6c5acf3fe7fe1ffc9d11eca184c924fb10a006a8afab62c4291eeb4b53fb0122`,
+is preserved under `/private/tmp/citlali-scientific-goals-2026-09-17`.
+The durable, concise reference is [Scientific goals](../doc/SCIENTIFIC_GOALS.md).
+No existing cross-purpose goals document was found. Recovered POINT owner
+decisions are linked; its numerical accuracy target and adopted stopping rule
+were not recovered. Historical 0.1-arcsec diagnostic criteria are not promoted.
+
+Documentation-only base `681329c87a01c8668f0678d055481d10efbffb20`, same clean
+RTC lane. Fresh read-only canonical/topic refs remain `0f52e1a421416eadaf7d8d99d64f537132395c0c`
+and `becccce85816379e578ac1a325e8c9fe156defbe`. Effective governance documents
+are unchanged. No runtime or frozen-contract edits and no experiment rerun.
+
+The current recommendation is **good enough to proceed for the tested compact
+SCIENCE case**: retain the selected notch and stop its optimization. This
+development judgment uses the existing reviewed evidence, not a claim that
+waveform error equals PSF error or that controlled line bias is total
+calibration error. Support retention is not sensitivity. Broader mode/scale
+qualification and a complete error-budget exercise need not block progress.
+
+The remaining practical gap is the nonidentity RTC-only terminal connection:
+the complete frozen plan, Apply and reassessment exist in
+`timestream_rtc_pipeline.h` and the multi-detector experiment caller, while
+`timestream_identity_rtc_only_route.h` publishes the identity witness.
+Recommend one bounded S2 implementation connecting the assembled result to
+RTC-only completion/publication, preserving final paired data, output relations,
+support/VAL/replacement history and failure semantics. Use existing owners and
+an explicitly supplied plan; focused tests and one existing representative
+compact-science fixture should support it. No automatic scientific selection,
+new framework or all-mode qualification campaign is implied. This replaces
+the earlier “choose the error budget next” development recommendation, without
+waiving scientific contracts or authorizing production/downstream use.
+
+Review is limited to source recovery, accurate goal/evidence interpretation,
+local links, unchanged executable/contract content and exact-SHA documentation
+conformance. Runtime/build/Unity gates are not rerun for prose-only changes;
+the preceding sealed experiment and its environment limitations remain intact.
+No push, merge, reconciliation, activation or cleanup is authorized here.
