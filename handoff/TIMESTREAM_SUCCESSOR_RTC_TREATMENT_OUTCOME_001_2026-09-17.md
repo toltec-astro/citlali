@@ -656,3 +656,81 @@ verification is claimed. Exact candidate/tree/path digests and independent
 review are in the same local evidence directory. Owner push and Unity rerun are
 the next actions; no integration, activation, installation, reconcretization,
 cleanup or Codex push occurs here.
+
+
+## Successful Unity verification receipt — 2026-09-17
+
+The owner supplied inspection retrieved at `2026-09-17T20:56:42+00:00`:
+job `64548643`, `citlali-rtc-output`, partition `toltec-cpu`, COMPLETED `0:0`,
+elapsed `00:17:39`, four CPUs / 32 GB, batch MaxRSS 19,348,564 KiB. Gate
+completion is `2026-09-17T20:03:49.054300+00:00`. Exact tested source is
+`165684816cad61705540049975665baeb23661c2`, tree
+`1661cef0fc9649dfb0427e03706682662dd449f6`, parent
+`8bcaa7edc4fa6c1ce4adf2a26d20e64f96868b42`. GitHub topic was independently
+read-verified equal to that source; canonical remains
+`0f52e1a421416eadaf7d8d99d64f537132395c0c` and is its ancestor. No ref moves
+or integration occurred.
+
+The CLI reports exact `g165684816`, kids 3.1.0 (spack-package), GNU 13.3.0,
+C++23, Release with OpenMP/Wiener OpenMP, and Spack root DAG
+`ryu6zhjvp5sh7fsbwrzyykbkgkglzkkx`. Deployment provenance remains explicitly
+`profile=unmanaged lock=unavailable binding=unmanaged`. This is a successful
+fresh GCC13/Spack build and regression gate, not a managed installation or
+proof of the historical V2 lock realization.
+
+All 1,217 runnable CTests pass in 53.71 seconds; 1,218 are registered with only
+the established `citlali::MapFitterLifecycle.ExactProductSequence` disabled.
+The exact reviewed gate also passes 24 focused processing-scan/grid/terminal/
+VAL controls, library/CLI/caller/safety builds, source-graph parity, strict
+floating-point bindings, no-PCH RTC test compilation, CLI source binding,
+explicit ordinary-science request rejection before output creation, and clean
+source/dependency/environment after-checks. No tests were newly disabled.
+Slurm stderr is zero bytes. The negative request's expected diagnostic remains
+separate from unexpected failures; full individual logs were not downloaded.
+
+Owner-held evidence archive:
+`/work/toltec/wilson/citlali_testing/citlali-rtc-output-unity-portability-20260917/evidence/unity-gcc13-sbatch-64548643`.
+The supplied inspector reports every archive member checksum OK. Reported
+SHA-256 identities are:
+
+| Artifact | SHA-256 |
+| --- | --- |
+| `gate.py` | `0f32fa61d0053b56911a203b664ae387b4ff1e1170bd5bf7beee3a4b3545a633` |
+| `run.sbatch` | `7afd8cb23f608dcbf8a2a28f091e653afbf6f55bcce36fa4c82dc14362e5783e` |
+| `final-status.txt` | `1d005d0996cd118bf1ce1c7a9ce42dc4c1a81283aeab529045daeb9c021b94cd` |
+| `SHA256SUMS` | `e75d3f5aeda3ffcb5239876946387092737e441bcfce91afc3f1805726004c2f` |
+
+The script hashes match the sealed, independently reviewed local packet, and
+reconstructing the reported final-status fields reproduces its digest exactly.
+This is owner-supplied evidence, not a claim that Codex accessed Unity or
+downloaded and rechecked the full archive. The new local receipt and closure
+preflight are under `/private/tmp/citlali-rtc-output-unity-closure-20260917`.
+Prior sealed records remain unchanged; their pending statuses describe their
+own time of creation. Failed jobs `64545779` and `64547738` retain their
+distinct linkage and test-portability diagnoses.
+
+The tested source's independent exact-SHA review passed with no actionable
+scientific/behavioral, architecture/ownership, or repository/evidence findings.
+It also passed the supplemental local CLI/caller/check build, all 1,217 runnable
+tests, 24 focused tests, required config preflight, and 280 Python tests plus
+137 subtests. Source-review and packet identities remain in
+`/private/tmp/citlali-rtc-output-test-portability-2026-09-17`.
+
+This continuation reads AGENTS, toltec-context and all three effective
+governance documents, whose digests match accepted `06a3ade51...` and canonical
+effectiveness `775078363...`. Initial source is clean. Scope is only status and
+this handoff on the existing RTC branch. Gate selection is proportionate to a
+documentation-only receipt: source/tree/script/hash/ancestry checks, diff and
+link checks, then fresh-context independent review at the new exact SHA. The
+full passing Unity gate belongs to the immutable parent; no new executable
+test result is attributed to the receipt commit.
+
+Disposition: the requested RTC-only output compilation and regression gate is
+complete. This advances build evidence only. Ordinary CAL/science admission,
+AST detector-coordinate binding when requested, downstream processing,
+canonical integration, production activation and FRUIT remain outside this
+closure. No policy, filter, timing, support, validity, runtime behavior or
+scientific contract changes. No new observation replay is triggered. The next
+owner action is the documentation-record push after its exact-SHA review;
+another Unity run is unnecessary for these two documentation files. Further
+implementation or integration needs its own bounded owner disposition.

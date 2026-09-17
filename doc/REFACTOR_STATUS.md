@@ -1,5 +1,36 @@
 # Citlali Refactor Status
 
+## RTC output Unity gate passed — 2026-09-17
+
+Owner-run Unity job `64548643` completed `0:0` on exact source
+`165684816cad61705540049975665baeb23661c2`, tree
+`1661cef0fc9649dfb0427e03706682662dd449f6`. The GNU 13.3.0 / C++23 Spack
+build passes all 1,217 runnable tests (1,218 registered; the established
+MapFitterLifecycle disable is unchanged) and 24 focused scan/grid/terminal/VAL
+controls. CLI source binding, source-graph parity, strict floating-point and
+no-PCH compilation checks, caller/safety build, explicit ordinary-science
+request rejection, and source/dependency/environment preservation gates pass.
+Elapsed time is 17m39s with four CPUs / 32 GB; batch MaxRSS is 19,348,564 KiB
+and Slurm stderr is empty.
+
+The owner supplied the inspection at `2026-09-17T20:56:42+00:00`, with all
+archive member checksums reported OK. Exact script digests match the reviewed
+local packet; the full Unity archive has not been downloaded. This closes the
+pending build/test gate below and verifies both bounded repairs. Failed jobs
+`64545779` and `64547738` and their packets remain historical evidence.
+Independent exact-source review passed with no actionable findings; the
+documentation-only receipt is separately reviewed at its exact commit.
+
+Live GitHub topic matches the tested source; canonical remains
+`0f52e1a421416eadaf7d8d99d64f537132395c0c`. This record changes no executable
+content and requires no new compilation. It closes the requested RTC-only
+output build verification, not ordinary CAL/science admission, managed
+deployment, historical V2-lock reproduction or production activation. Further
+integration or implementation remains a separate owner disposition. Full
+receipt, limitations and archive hashes are in the continuing
+[RTC handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_TREATMENT_OUTCOME_001_2026-09-17.md)
+and `/private/tmp/citlali-rtc-output-unity-closure-20260917`.
+
 ## RTC output test portability repair — 2026-09-17
 
 Owner-run Unity job `64547738` confirms the preceding Spack linkage repair:
