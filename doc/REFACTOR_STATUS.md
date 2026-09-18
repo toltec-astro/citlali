@@ -36,6 +36,15 @@ only for its exact earlier RTC revision. Review and regression gates precede
 canonical promotion; the owner performs pushes. There is no production
 scientific-qualification claim or change to the frozen comparison baseline.
 
+The exact implementation `6ee33211bfd449954a2fab0330160215275f9683` passed
+independent review and 1253 runnable CTests. The ordinary twelve-detector run
+retains 833,599 of 882,766 eligible entries with 5 explicitly failed fits; all 152
+upstream numerical/support files are unchanged. The414-detector RTC attempt
+stops before CAL/PTC because 102 required coordinate outcomes lack qualifying
+spectral support. Synthetic400-detector costs remain provisional. See the
+[compact completion/cost handoff](../handoff/TIMESTREAM_SUCCESSOR_PTC_001_2026-09-18.md).
+No upstream guard or cohort was changed to manufacture network qualification.
+
 The next pipeline responsibility is the typed MAP-facing consumption of PTC
 values, retained CAL classification, support and response limitations under
 MAP's own named-use contract. Rank optimization and complete-chain response
