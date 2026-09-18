@@ -938,3 +938,27 @@ twelve-detector default invocation compares every prior RTC numeric/support
 file while testing newly available CAL values. Local gates remain supplemental;
 no new Unity or general POINT/OOF/BEAM run is claimed. The next connected
 implementation responsibility remains PTC; MAP and FRUIT remain deferred.
+
+
+## PTC continuation started — 2026-09-18
+
+Owner confirmed the push and directed continuation after exact CAL correction
+`35b05ba91c761646dd08340906c7e2e05e8d2587`; live canonical equality verified.
+The clean completed worktree now owns branch
+`codex/timestream-successor-ptc-001`. `PtcCalSource` provides an exact typed
+binding to actual CAL values and their committed VAL generation, preserving
+all parent facts. This is prerequisite input preparation, not runtime Learn,
+Consider, Apply, or an eligibility decision.
+
+Recovered frozen PTC r0.5 specifies the ordinary operation and existing 152390
+configuration supplies network grouping/rank 10. A concrete basis-fit
+missing-data family still needs explicit selection. Owner question pending:
+learn the SVD basis only on complete admitted group-time rows, then apply
+through the approved full-rank masked operator. The legacy pairwise estimator
+is not silently reused as scientific authority. Source boundary tests proceed
+independently; dependent fitting and route activation do not proceed before
+that decision. The supported route still ends at CAL. No MAP, FRUIT, new
+coefficients, cleanup or GitHub push is implied.
+
+Preflight and verification: `/private/tmp/citlali-successor-ptc-001-20260918`.
+The living status records the current boundary and the exact pending choice.

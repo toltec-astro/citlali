@@ -5,6 +5,7 @@
 #include <citlali/core/pipeline/timestream_rtc_output_grid.h>
 #include <citlali/core/pipeline/timestream_cal_rtc_source.h>
 #include <citlali/core/pipeline/timestream_cal_pipeline.h>
+#include <citlali/core/pipeline/timestream_ptc_cal_source.h>
 #include "../tools/timestream_successor/rtc_multidetector_bindings.h"
 #include <gtest/gtest.h>
 #include <citlali/core/pipeline/timestream_processing_scan_native.h>
@@ -1899,6 +1900,53 @@ struct CalFixture {
   auto evidence() const {return CalEvidence::learn(source(),ast,wvr,CalAtmosphereSurface::frozen(),"controlled-APT",factors);}
   auto plan() const {return CalPlan::consider(evidence(),terminal->val_snapshot_handle(),1);}
 };
+}
+TEST(ptc_cal_source, exact_cal_and_VAL_binding_preserves_values_occurrences_and_lineage) {
+  CalFixture f;
+  auto signal=CalAppliedSignal::apply(f.plan(),f.source(),f.terminal->val_snapshot_handle());
+  auto val=ValSnapshot::commit_cal_output(f.terminal->val_snapshot_handle(),ValCalOutputFacts::preserve(signal));
+  auto source=PtcCalSource::bind(signal,val);
+  EXPECT_EQ(source.signal_handle().get(),signal.get());
+  EXPECT_EQ(source.val_snapshot_handle().get(),val.get());
+  EXPECT_EQ(source.grid_handle().get(),f.terminal->grid_handle().get());
+  EXPECT_EQ(source.value(0,300),signal->value(0,300));
+  EXPECT_EQ(source.causes(0,300),signal->causes(0,300));
+  EXPECT_EQ(source.occurrence(0,300).representative,
+            f.terminal->grid_handle()->occurrence(0,300).representative);
+  EXPECT_EQ(source.detector_factors()[0].selected_row_identity,f.factors[0].selected_row_identity);
+  EXPECT_EQ(source.opacity_quality().classification,signal->plan_handle()->evidence_handle()->opacity_quality().classification);
+  EXPECT_FALSE(source.ptc_use_admitted);
+  EXPECT_THROW(source.value(0,99999),std::out_of_range);
+}
+TEST(ptc_cal_source, foreign_replay_or_pre_CAL_snapshot_cannot_impersonate_exact_parent) {
+  CalFixture f,other;auto plan=f.plan();
+  auto signal=CalAppliedSignal::apply(plan,f.source(),f.terminal->val_snapshot_handle());
+  auto replay=CalAppliedSignal::apply(plan,f.source(),f.terminal->val_snapshot_handle());
+  auto val=ValSnapshot::commit_cal_output(f.terminal->val_snapshot_handle(),ValCalOutputFacts::preserve(signal));
+  auto foreign=CalAppliedSignal::apply(other.plan(),other.source(),other.terminal->val_snapshot_handle());
+  EXPECT_THROW(PtcCalSource::bind(nullptr,val),std::invalid_argument);
+  EXPECT_THROW(PtcCalSource::bind(signal,nullptr),std::invalid_argument);
+  EXPECT_THROW(PtcCalSource::bind(signal,f.terminal->val_snapshot_handle()),std::invalid_argument);
+  EXPECT_THROW(PtcCalSource::bind(replay,val),std::invalid_argument);
+  EXPECT_THROW(PtcCalSource::bind(foreign,val),std::invalid_argument);
+}
+TEST(ptc_cal_source, donor_replacements_and_missing_CAL_remain_unavailable_without_time_collapse) {
+  CalFixture f(true);
+  auto signal=CalAppliedSignal::apply(f.plan(),f.source(),f.terminal->val_snapshot_handle());
+  auto val=ValSnapshot::commit_cal_output(f.terminal->val_snapshot_handle(),ValCalOutputFacts::preserve(signal));
+  auto source=PtcCalSource::bind(signal,val);
+  EXPECT_FALSE(source.value(0,250));
+  EXPECT_NE(source.causes(0,250)&cal_direct_replacement_or_exclusion,0);
+  EXPECT_TRUE(source.occurrence(0,250).representative_replaced);
+  EXPECT_EQ(source.value(0,300),signal->value(0,300));
+  EXPECT_EQ(source.grid_handle()->detectors()[0].scheduled_count,f.terminal->grid_handle()->detectors()[0].scheduled_count);
+  f.wvr=CalWvrEvidence::learn(f.trial.parent->scope(),"controlled-constant-motion","controlled-ALIGN-Unix",{});
+  auto absent=CalAppliedSignal::apply(f.plan(),f.source(),f.terminal->val_snapshot_handle());
+  auto absent_val=ValSnapshot::commit_cal_output(f.terminal->val_snapshot_handle(),ValCalOutputFacts::preserve(absent));
+  auto unsupported=PtcCalSource::bind(absent,absent_val);
+  EXPECT_FALSE(unsupported.value(0,300));
+  EXPECT_EQ(unsupported.causes(0,300),cal_outside_supported_calibration);
+  EXPECT_EQ(unsupported.occurrence(0,300).representative,source.occurrence(0,300).representative);
 }
 TEST(cal_pipeline, actual_conditioned_x_gets_selected_factor_and_atmosphere_once_without_calibrating_r) {
   CalFixture f;const auto x=f.source().conditioned_x(0,300);ASSERT_TRUE(x);

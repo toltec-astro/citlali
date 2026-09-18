@@ -1,5 +1,41 @@
 # Citlali Refactor Status
 
+## Connected PTC continuation: exact CAL input boundary — 2026-09-18
+
+The owner pushed CAL correction `35b05ba91c761646dd08340906c7e2e05e8d2587`
+and directed continuation. Live canonical equality was verified. The one
+active spine is `codex/timestream-successor-ptc-001`, reusing the clean
+completed CAL worktree. The accepted default still completes through CAL;
+this preparation does not claim PTC learning or cleaning.
+
+`PtcCalSource` binds the immutable `CalAppliedSignal` to its exact CAL output
+VAL generation. It retains scheduled positions, detector/APT identity,
+CAL classification, unavailable causes, and complete RTC/ALIGN/AST lineage
+by reference. A foreign realization, replay substituted under another
+realization's VAL, or pre-CAL snapshot is rejected. This establishes input
+identity, not PTC named-use eligibility; no numerical data are duplicated.
+
+Frozen SCI-PTC v0.1/r0.5 already selects arithmetic-mean centering without
+restoration, identity scaling, one configured network or array grouping,
+explicit positive rank, one immutable-parent fit, and frozen detector-right
+full-rank masked Apply. The existing 152390 request explicitly selects network
+grouping and 10 modes. No new rank or grouping default is inferred.
+
+One realization choice remains pending: the basis-fit missing-data method
+required by SCI-PTC-REQ-008/013/014/019/026/029. Legacy pairwise covariance is
+not authority for that choice. The proposed bounded method learns an SVD
+basis on complete admitted group-time support, then uses the accepted masked
+operator for application. The owner has been asked to select it; it is not
+implemented or selected by this record. In the preserved twelve-detector
+CAL output, 68,479 of 75,769 scheduled times (90.38%) have all twelve values.
+This is an input-support count, not predicted output retention or performance.
+
+Exact-parent, timing/value, and replacement/unavailable-support tests and the
+pending decision are bound under `/private/tmp/citlali-successor-ptc-001-20260918`.
+PCA implementation and default PTC activation await the named choice. MAP,
+FRUIT and coefficient-family selection remain outside this increment. No
+push or cleanup occurred.
+
 ## CAL single-opacity owner correction — 2026-09-18
 
 The owner confirmed the telescope file has one tau225 reading and explicitly
