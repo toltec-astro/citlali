@@ -2098,3 +2098,102 @@ TEST(ptc_pipeline, donor_centers_excluded_original_neighbors_retained_and_rank_f
     EXPECT_EQ(signal->available_count(),0);EXPECT_EQ(failed->groups().front().fit.stopping_reason,"requested-rank-exceeds-shape");
     EXPECT_EQ(failed->groups().front().fit.request.rank,1000);
 }
+
+TEST(rtc_partial_completion, empty_detector_stays_unavailable_without_blocking_terminal) {
+    Input in(1600);Trial t(in);auto plans=complete_plans(t);plans[1]=t.plan(false,true,{},1);
+    auto current=complete_apply(t,RtcPipelinePlan::consider(plans,t.joint->joint_handle(),31));
+    auto e=decision_evidence(t,current);auto s=retain_selection(e);
+    EXPECT_EQ(RtcPipelineDecision::consider(e,t.val,s,44)->disposition(),RtcPipelineDisposition::unavailable);
+    s.outcome_requirement=RtcOutcomeRequirement::available_detector_outputs;
+    auto d=RtcPipelineDecision::consider(e,t.val,s,44);
+    ASSERT_EQ(d->disposition(),RtcPipelineDisposition::retain);
+    EXPECT_EQ(d->cause(),RtcPipelineDecisionCause::authorized_partial_candidate);
+    ASSERT_EQ(d->issues().size(),2);for(const auto &issue:d->issues())EXPECT_EQ(issue.scope->detector,1);
+    auto step=advance_trial(t,current,d);EXPECT_EQ(step.candidate,current);EXPECT_FALSE(step.revision_executed);
+    RtcPipelineTerminalSlot slot;auto grid=RtcOutputGrid::prepare(current,output_align(t));
+    auto terminal=finalize_rtc_only({45},grid,slot,d);ASSERT_TRUE(terminal.complete());
+    EXPECT_EQ(terminal.product->grid_handle()->detectors().size(),3);
+    EXPECT_FALSE(current->detector_results()[1]->coordinate_stage_available(NativeReadoutCoordinate::x,900,true));
+    EXPECT_TRUE(current->detector_results()[0]->coordinate_stage_available(NativeReadoutCoordinate::x,900,true));
+    EXPECT_FALSE(d->scientifically_qualified);
+    s.intent=RtcPipelineSelectionIntent::require_scientific_qualification;
+    EXPECT_EQ(RtcPipelineDecision::consider(e,t.val,s,44)->disposition(),RtcPipelineDisposition::unavailable);
+}
+TEST(rtc_partial_completion, usable_but_unassessed_intermediate_missing_and_all_empty_still_stop) {
+    for(int which=0;which<4;++which) {
+        Input in(which==0?490:1600);Trial t(in);auto plans=complete_plans(t);
+        if(which==1)for(std::uint32_t d=0;d<3;++d)plans[d]=t.plan(false,true,{},d);
+        if(which==2)plans[1]=t.plan(false,true,{},1);
+        auto current=complete_apply(t,RtcPipelinePlan::consider(plans,t.joint->joint_handle(),31));
+        auto e=decision_evidence(t,current,40,which!=2,which!=3);auto s=retain_selection(e);
+        s.outcome_requirement=RtcOutcomeRequirement::available_detector_outputs;
+        auto d=RtcPipelineDecision::consider(e,t.val,s,44);
+        EXPECT_EQ(d->disposition(),RtcPipelineDisposition::unavailable)<<which;
+        EXPECT_FALSE(d->selected_plan());EXPECT_EQ(advance_trial(t,current,d).candidate,current);
+    }
+}
+TEST(ptc_partial_completion, zero_support_omission_is_prefit_shared_and_output_identity_is_complete) {
+    CalFixture f;f.factors[1].flxscale_mJy_beam_per_x.reset();
+    auto cal=CalAppliedSignal::apply(f.plan(),f.source(),f.terminal->val_snapshot_handle());
+    auto val=ValSnapshot::commit_cal_output(f.terminal->val_snapshot_handle(),ValCalOutputFacts::preserve(cal));
+    auto source=PtcCalSource::bind(cal,val);PtcSolverRequest request;request.rank=1;
+    std::vector<std::vector<std::size_t>> memberships;
+    for(auto method:{PtcMethod::observed_als,PtcMethod::pairwise_covariance}) {
+        request.method=method;auto evidence=PtcEvidence::learn(source,ptc_segments(f),request);
+        auto plan=PtcPlan::consider(evidence,val,1);auto signal=PtcAppliedSignal::apply(plan,source,val);
+        auto facts=ValPtcOutputFacts::preserve(signal);EXPECT_GT(signal->available_count(),0);
+        for(std::size_t g=0;g<evidence->groups().size();++g) {
+            const auto &group=evidence->groups()[g];memberships.push_back(group.fit_columns);
+            EXPECT_EQ(group.detectors,(std::vector<std::size_t>{0,1,2}));
+            EXPECT_EQ(group.fit_columns,(std::vector<std::size_t>{0,2}));EXPECT_EQ(group.eligible_per_detector[1],0);
+            EXPECT_EQ(group.input.centered.cols(),2);EXPECT_EQ(signal->groups()[g].values.cols(),3);
+            auto direct=ptc_apply(group.input,group.fit);
+            for(Eigen::Index t=0;t<direct.values.rows();++t) {
+                EXPECT_EQ(signal->groups()[g].values(t,2),direct.values(t,1));
+                EXPECT_EQ(facts->at(signal,g,t,1),17);EXPECT_EQ(signal->groups()[g].values(t,1),0);
+            }
+            PtcMatrix response=PtcMatrix::Ones(group.slots.size(),3);response.col(1).setConstant(NAN);
+            auto applied=signal->response(g,source,response);
+            EXPECT_EQ(applied.retained,signal->groups()[g].retained);EXPECT_TRUE(applied.values.allFinite());
+            EXPECT_TRUE((applied.causes.col(1)==17).all());
+            EXPECT_THROW(signal->response(g,source,PtcMatrix::Ones(group.slots.size(),2)),std::invalid_argument);
+        }
+    }
+    EXPECT_EQ(memberships[0],memberships[2]);EXPECT_EQ(memberships[1],memberships[3]);
+    EXPECT_FALSE(source.value(1,300));EXPECT_TRUE(source.value(0,300));
+}
+TEST(ptc_partial_completion, no_or_single_admitted_detector_publishes_unavailable_full_domain) {
+    for(int supported:{0,1}) {
+        CalFixture f;for(int d=supported;d<3;++d)f.factors[d].flxscale_mJy_beam_per_x.reset();
+        auto cal=CalAppliedSignal::apply(f.plan(),f.source(),f.terminal->val_snapshot_handle());
+        auto val=ValSnapshot::commit_cal_output(f.terminal->val_snapshot_handle(),ValCalOutputFacts::preserve(cal));
+        auto source=PtcCalSource::bind(cal,val);PtcSolverRequest request;request.rank=1;
+        auto evidence=PtcEvidence::learn(source,ptc_segments(f),request);
+        auto signal=PtcAppliedSignal::apply(PtcPlan::consider(evidence,val,1),source,val);
+        EXPECT_EQ(signal->available_count(),0);ASSERT_EQ(evidence->groups().size(),2);
+        for(std::size_t g=0;g<2;++g) {
+            EXPECT_EQ(evidence->groups()[g].fit_columns.size(),supported);
+            EXPECT_EQ(evidence->groups()[g].fit.stopping_reason,"fewer-than-two-admitted-detectors");
+            EXPECT_EQ(signal->groups()[g].values.cols(),3);EXPECT_TRUE((signal->groups()[g].causes!=0).all());
+        }
+    }
+}
+TEST(rtc_partial_completion, an_active_donor_dependency_prevents_empty_detector_bypass) {
+    Input in(1100);in.spike();Trial t(in,10,RtcSpikeProtection::outside_source);
+    auto donor=explicit_donor(t);ASSERT_EQ(donor->cause(),RtcDonorFillCause::ready);
+    auto plans=complete_plans(t,{}, {donor});
+    auto baseline=complete_apply(t,RtcPipelinePlan::consider(plans,t.joint->joint_handle(),31));
+    auto first=decision_evidence(t,baseline);auto selected=retain_selection(first);
+    selected.outcome_requirement=RtcOutcomeRequirement::available_detector_outputs;
+    ASSERT_EQ(RtcPipelineDecision::consider(first,t.val,selected,44)->disposition(),RtcPipelineDisposition::retain);
+    // Detector 1 remains valid as an original donor but its own wider finite
+    // filter has no final support. A dependency must not be silently isolated.
+    plans[1]=t.plan(false,false,std::vector<double>(1201,1./1201),1);
+    auto result=complete_apply(t,RtcPipelinePlan::consider(plans,t.joint->joint_handle(),31));
+    auto evidence=decision_evidence(t,result);selected=retain_selection(evidence);
+    selected.outcome_requirement=RtcOutcomeRequirement::available_detector_outputs;
+    auto decision=RtcPipelineDecision::consider(evidence,t.val,selected,44);
+    ASSERT_EQ(decision->issues().size(),2);
+    for(const auto &issue:decision->issues())EXPECT_EQ(issue.scope->detector,1);
+    EXPECT_EQ(decision->disposition(),RtcPipelineDisposition::unavailable);
+}

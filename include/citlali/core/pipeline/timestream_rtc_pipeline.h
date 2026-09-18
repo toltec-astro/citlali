@@ -1,4 +1,5 @@
 #pragma once
+#include <set>
 #include <citlali/core/config/runtime_config.h>
 #include <citlali/core/pipeline/timestream_rtc_treatment_outcome.h>
 
@@ -429,7 +430,7 @@ enum class RtcPipelineSelectionIntent {
   require_scientific_qualification
 };
 enum class RtcPipelineDecisionCause {
-  authorized_candidate, prescribed_revision, missing_authority,
+  authorized_candidate, authorized_partial_candidate, prescribed_revision, missing_authority,
   missing_outcome, unavailable_outcome, qualification_unavailable,
   no_op_revision, repeated_plan, revision_budget_exhausted,
   diagnostic_overlay_unbound
@@ -445,6 +446,7 @@ inline const char *rtc_pipeline_disposition_name(RtcPipelineDisposition d) {
 inline const char *rtc_pipeline_decision_cause_name(RtcPipelineDecisionCause c) {
   switch(c) {
   case RtcPipelineDecisionCause::authorized_candidate:return "explicitly-authorized-development-candidate";
+  case RtcPipelineDecisionCause::authorized_partial_candidate:return "explicitly-authorized-development-candidate-with-empty-detectors";
   case RtcPipelineDecisionCause::prescribed_revision:return "explicitly-prescribed-complete-revision";
   case RtcPipelineDecisionCause::missing_authority:return "decision-authority-purpose-or-positive-rationale-missing";
   case RtcPipelineDecisionCause::missing_outcome:return "matched-support-outcome-required";
@@ -462,12 +464,14 @@ inline const char *rtc_pipeline_decision_cause_name(RtcPipelineDecisionCause c) 
 // authority and exact evidence subject; Consider freezes a copy. The only
 // revision scope in this increment is explicitly supplied finite coefficients,
 // with existing event/support/motion/sampling/donor controls unchanged.
+enum class RtcOutcomeRequirement { every_coordinate, available_detector_outputs };
 struct RtcPipelineSelection {
   std::shared_ptr<const RtcPipelineReassessment> subject;
   RtcPipelineSelectionIntent intent = RtcPipelineSelectionIntent::retain_development_candidate;
   std::string authority, purpose, positive_rationale;
   std::vector<std::shared_ptr<const RtcNotchRecoveryPlan>> complete_revision;
   std::uint64_t next_attempt = 0;
+  RtcOutcomeRequirement outcome_requirement = RtcOutcomeRequirement::every_coordinate;
 };
 struct RtcPipelineDecisionScope {
   TimestreamNetworkId network;
@@ -521,14 +525,20 @@ public:
     for(const auto &r:outcome->records())if(!r.available())
       out->issues_.push_back({RtcPipelineDecisionCause::unavailable_outcome,
                              RtcPipelineDecisionScope{r.network,r.detector,r.coordinate}});
-    if(!out->issues_.empty()){out->cause_=RtcPipelineDecisionCause::unavailable_outcome;return out;}
+    if(s.outcome_requirement!=RtcOutcomeRequirement::every_coordinate &&
+        s.outcome_requirement!=RtcOutcomeRequirement::available_detector_outputs)
+      throw std::invalid_argument("unknown RTC outcome requirement");
+    if(!out->issues_.empty() && !out->empty_detector_completion_allowed()) {
+      out->cause_=RtcPipelineDecisionCause::unavailable_outcome;return out;
+    }
     for(const auto &r:previous->detector_results())if(r->injection_identity()!="none")
       return unavailable(RtcPipelineDecisionCause::diagnostic_overlay_unbound);
     if(s.intent==RtcPipelineSelectionIntent::require_scientific_qualification)
       return unavailable(RtcPipelineDecisionCause::qualification_unavailable);
     if(s.intent==RtcPipelineSelectionIntent::retain_development_candidate) {
       out->disposition_=RtcPipelineDisposition::retain;
-      out->cause_=RtcPipelineDecisionCause::authorized_candidate;
+      out->cause_=out->issues_.empty()?RtcPipelineDecisionCause::authorized_candidate:
+                                      RtcPipelineDecisionCause::authorized_partial_candidate;
       out->selected_=plan;return out;
     }
     if(s.next_attempt<=attempt)
@@ -563,6 +573,45 @@ public:
                         production_authorized=false, stopping_rule_selected=false;
 private:
   RtcPipelineDecision()=default;
+  bool empty_detector_completion_allowed() const {
+    if(selection_->outcome_requirement!=RtcOutcomeRequirement::available_detector_outputs ||
+       selection_->intent!=RtcPipelineSelectionIntent::retain_development_candidate ||
+       !evidence_->outcome_handle()->conditioned_handle()->conditioned_handle()->after_lowpass())return false;
+    using Key=std::pair<TimestreamNetworkId,std::uint32_t>;
+    std::set<Key> empty;
+    const auto &results=evidence_->previous_handle()->detector_results();
+    for(const auto &r:results) {
+      const auto &p=*r->plan_handle();const auto &c=*p.assessment_handle()->candidate_handle();
+      bool present=false;
+      for(Eigen::Index i=0;i<r->filtered_native_pair().rows() && !present;++i) {
+        const auto row=p.first_native_row()+i;
+        present=r->coordinate_stage_available(NativeReadoutCoordinate::x,row,true) ||
+                r->coordinate_stage_available(NativeReadoutCoordinate::r,row,true);
+      }
+      if(!present)empty.insert({c.network(),c.detector()});
+    }
+    if(empty.empty() || empty.size()==results.size())return false;
+    const auto &outcome=*evidence_->outcome_handle();
+    for(const auto &issue:issues_) {
+      if(!issue.scope || !empty.contains({issue.scope->network,issue.scope->detector}))return false;
+      const auto &s=*issue.scope;
+      const auto &original=outcome.original_handle()->spectrum(s.network,s.detector,s.coordinate);
+      const auto &conditioned=outcome.conditioned_handle()->spectrum(s.network,s.detector,s.coordinate);
+      if(!original.available() || conditioned.cause!=RtcSpectralCause::insufficient_windows ||
+         !conditioned.centering_support.empty())return false;
+      // A partially available original spectrum can still record an input failure.
+      for(const auto &run:original.runs)
+        if(run.cause==RtcSpectralRunCause::input_consistency_failure ||
+           run.cause==RtcSpectralRunCause::arithmetic_nonfinite)return false;
+    }
+    for(const auto &p:evidence_->previous_handle()->plan_handle()->detector_plans()) {
+      const auto &c=*p->assessment_handle()->candidate_handle();
+      if(empty.contains({c.network(),c.detector()}))continue;
+      for(const auto &donor:p->donor_plans())for(const auto &sample:donor->medians())
+        for(auto detector:sample.eligible)if(empty.contains({donor->event().network,detector}))return false;
+    }
+    return true;
+  }
   static bool same_ranges(const std::vector<RtcEventRange> &a,const std::vector<RtcEventRange> &b) {
     return a.size()==b.size() && std::equal(a.begin(),a.end(),b.begin(),[](auto x,auto y){return x.first==y.first&&x.past_last==y.past_last;});
   }

@@ -81,6 +81,9 @@ YAML::Node write_reassessment_decision(const fs::path &output,
   if(d.selection()) {
     out["authority"]=d.selection()->authority;out["purpose"]=d.selection()->purpose;
     out["positive_rationale"]=d.selection()->positive_rationale;
+    out["outcome_requirement"]=d.selection()->outcome_requirement==RtcOutcomeRequirement::every_coordinate ?
+        "every-coordinate" : "rtc-available-detector-completion-2026-09-18-v1";
+    out["completion_policy_authority"]="doc/SCI_RTC_PTC_PARTIAL_COMPLETION_OWNER_BINDING_2026-09-18.md";
   }
   if(e.outcome_handle()) {
     out["outcome_attempt"]=e.outcome_handle()->attempt();

@@ -792,6 +792,7 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
                                                         RtcPipelineSelectionIntent::require_scientific_qualification,
                 supplied["authority"].as<std::string>(),supplied["purpose"].as<std::string>(),
                 supplied["positive_rationale"].as<std::string>(),{},0};
+            if(development)selection->outcome_requirement=RtcOutcomeRequirement::available_detector_outputs;
           }
           const auto disposition=RtcPipelineDecision::consider(reassessment,val,selection,consequences.empty()?1400:9100);
           const auto decision_seconds=std::chrono::duration<double>(std::chrono::steady_clock::now()-decision_started).count();

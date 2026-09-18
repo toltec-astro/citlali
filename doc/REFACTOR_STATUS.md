@@ -1,5 +1,16 @@
 # Citlali Refactor Status
 
+## Scoped RTC/PTC completion — 2026-09-18
+
+The owner directs completion with the good detectors while preserving the 51
+fully excluded detectors and all existing scientific controls. The
+[partial-completion binding](SCI_RTC_PTC_PARTIAL_COMPLETION_OWNER_BINDING_2026-09-18.md)
+authorizes scoped RTC completion and explicit zero-support PTC admission before
+fitting. Work starts from pushed canonical `cb5361f7425ba7d211e284ee57a9a3a67cf393b5`
+on `codex/timestream-successor-partial-completion-001`. The same full-network
+ordinary invocation, focused/regression checks and exact independent review
+will establish completion; prior failed-run evidence remains preserved.
+
 ## Connected observed-entry PTC development — 2026-09-18
 
 The owner resolved the missing-data choice in the

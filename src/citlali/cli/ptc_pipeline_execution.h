@@ -27,7 +27,7 @@ YAML::Node execute_connected_ptc(const PtcCalSource &source,const ProcessingScan
     const auto signal=PtcAppliedSignal::apply(plan,source,source.val_snapshot_handle());
     const auto val=ValSnapshot::commit_ptc_output(source.val_snapshot_handle(),ValPtcOutputFacts::preserve(signal));
     const auto destination=output/"ptc";fs::create_directory(destination);
-    YAML::Node record;record["schema"]="citlali-ptc-output-v1";record["unit"]=std::string(PtcCalSource::unit);
+    YAML::Node record;record["schema"]="citlali-ptc-output-v2";record["unit"]=std::string(PtcCalSource::unit);
     record["method"]=requested.method;record["rank"]=request.rank;
     record["use_policy"]=std::string(PtcEvidence::use_policy);record["source_CAL_receipt_sha256"]=citlali::utils::sha256_file(output/"cal"/"receipt.yaml");
     record["input_VAL_generation"]=source.val_snapshot_handle()->generation().value;record["output_VAL_generation"]=val->generation().value;
@@ -46,7 +46,14 @@ YAML::Node execute_connected_ptc(const PtcCalSource &source,const ProcessingScan
     for(std::size_t g=0;g<evidence->groups().size();++g) {
         const auto &group=evidence->groups()[g];const auto &fit=group.fit;const auto &applied=signal->groups()[g];const auto &p=group.input;
         YAML::Node r;r["scan"]=group.scan;r["network"]=group.network;r["native_interval"]=range(group.native);
-        r["detector_indices"]=group.detectors;r["scheduled_times"]=p.centered.rows();r["detectors"]=p.centered.cols();
+        std::vector<std::size_t> admitted;
+        for(auto d:group.fit_columns)admitted.push_back(group.detectors[d]);
+        r["detector_indices"]=admitted;r["scheduled_times"]=p.centered.rows();r["detectors"]=p.centered.cols();
+        r["output_detector_indices"]=group.detectors;r["output_detectors"]=group.detectors.size();
+        r["fit_columns_in_output"]=group.fit_columns;r["eligible_per_output_detector"]=group.eligible_per_detector;
+        r["zero_support_detectors_omitted_before_fit"]=group.detectors.size()-group.fit_columns.size();
+        r["input_and_basis_domain"]="admitted-detector_indices";
+        r["cleaned_and_causes_domain"]="full-output_detector_indices";
         r["eligible"]=p.eligible_count;r["complete_time_fraction"]=double(p.complete_times)/p.centered.rows();
         r["time_mask_patterns"]=p.time_patterns.size();r["detector_mask_patterns"]=p.detector_patterns.size();
         r["converged"]=fit.converged;r["stopping_reason"]=fit.stopping_reason;r["iterations"]=fit.iterations;
@@ -61,8 +68,8 @@ YAML::Node execute_connected_ptc(const PtcCalSource &source,const ProcessingScan
         // Preserve exact CAL input bits for replay; centered+mean is not a
         // lossless inverse in floating point. Masked storage is not consumed.
         PtcMatrix original=PtcMatrix::Zero(p.centered.rows(),p.centered.cols());
-        for(std::size_t t=0;t<group.slots.size();++t)for(std::size_t d=0;d<group.detectors.size();++d)
-            if(p.eligible(t,d))original(t,d)=*source.value(group.detectors[d],group.slots[t]);
+        for(std::size_t t=0;t<group.slots.size();++t)for(std::size_t d=0;d<group.fit_columns.size();++d)
+            if(p.eligible(t,d))original(t,d)=*source.value(group.detectors[group.fit_columns[d]],group.slots[t]);
         write_matrix(destination/(prefix+"-input.f64"),original);
         write_matrix(destination/(prefix+"-centered.f64"),p.centered);write_matrix(destination/(prefix+"-mean.f64"),p.mean);
         write_matrix(destination/(prefix+"-basis.f64"),fit.basis);write_matrix(destination/(prefix+"-cleaned.f64"),applied.values);
@@ -74,7 +81,7 @@ YAML::Node execute_connected_ptc(const PtcCalSource &source,const ProcessingScan
         for(const auto *suffix:{"-input.f64","-centered.f64","-mean.f64","-basis.f64","-cleaned.f64","-eligible.u8","-causes.u8","-slots.i64"})
             r["files"][prefix+suffix]=citlali::utils::sha256_file(destination/(prefix+suffix));
         r["output_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-writing).count();
-        record["segments"].push_back(r);failed+=!fit.converged;scheduled+=p.centered.size();eligible+=p.eligible_count;
+        record["segments"].push_back(r);failed+=!fit.converged;scheduled+=group.slots.size()*group.detectors.size();eligible+=p.eligible_count;
     }
     record["failed_fits"]=failed;record["available"]=signal->available_count();record["scheduled_in_processing_segments"]=scheduled;record["eligible"]=eligible;
     std::size_t all_scheduled=0;for(const auto &d:source.grid_handle()->detectors())all_scheduled+=d.scheduled_count;

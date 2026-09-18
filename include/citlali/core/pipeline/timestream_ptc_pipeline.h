@@ -9,7 +9,8 @@ struct PtcGroupEvidence {
     std::uint64_t scan=0;
     TimestreamNetworkId network=0;
     RtcEventRange native;
-    std::vector<std::size_t> detectors, slots;
+    // Full requested output domain; fit_columns indexes detectors before fitting.
+    std::vector<std::size_t> detectors, slots, fit_columns, eligible_per_detector;
     PtcPrepared input;
     PtcFit fit;
 };
@@ -21,7 +22,7 @@ public:
     const auto &groups() const noexcept{return groups_;}
     const auto &processing_binding() const noexcept{return processing_;}
     // Versioned realization of the existing five PTC named-use profiles.
-    static constexpr std::string_view use_policy="ptc-cal-observed-entry-use-2026-09-18-v1";
+    static constexpr std::string_view use_policy="ptc-cal-observed-entry-use-2026-09-18-v2";
 private:
     explicit PtcEvidence(PtcCalSource source):source_(std::move(source)){}
     PtcCalSource source_;

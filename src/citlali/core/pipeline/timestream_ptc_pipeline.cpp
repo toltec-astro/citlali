@@ -2,6 +2,19 @@
 #include <set>
 #include <chrono>
 namespace citlali::pipeline {
+namespace {
+PtcApplied publish_requested_domain(const PtcGroupEvidence &g,PtcApplied compact) {
+    PtcApplied out=std::move(compact);
+    auto values=std::move(out.values);auto causes=std::move(out.causes);
+    out.values=PtcMatrix::Zero(g.slots.size(),g.detectors.size());
+    out.causes=PtcMask::Constant(g.slots.size(),g.detectors.size(),17); // excluded + no eligible segment input
+    for(std::size_t d=0;d<g.fit_columns.size();++d) {
+        out.values.col(g.fit_columns[d])=values.col(d);
+        out.causes.col(g.fit_columns[d])=causes.col(d);
+    }
+    return out;
+}
+} // namespace
 std::shared_ptr<const PtcEvidence> PtcEvidence::learn(PtcCalSource source,
     const ProcessingScanNativeProjection &projection,PtcSolverRequest request) {
     const auto grid=source.grid_handle();
@@ -50,7 +63,19 @@ std::shared_ptr<const PtcEvidence> PtcEvidence::learn(PtcCalSource source,
                 values(t,d)=*value;mask(t,d)=1;
             }
         }
-        group.input=PtcPrepared::prepare(values,mask);
+        // Admission is upstream of either estimator, fixed for the whole fit.
+        // Never remove a partially observed column because a fit dislikes it.
+        for(std::size_t d=0;d<detectors.size();++d) {
+            const auto count=static_cast<std::size_t>((mask.col(d)!=0).count());
+            group.eligible_per_detector.push_back(count);
+            if(count)group.fit_columns.push_back(d);
+        }
+        PtcMatrix admitted(values.rows(),group.fit_columns.size());
+        PtcMask admitted_mask(values.rows(),group.fit_columns.size());
+        for(std::size_t d=0;d<group.fit_columns.size();++d) {
+            admitted.col(d)=values.col(group.fit_columns[d]);admitted_mask.col(d)=mask.col(group.fit_columns[d]);
+        }
+        group.input=PtcPrepared::prepare(admitted,admitted_mask);
         group.input.preparation_seconds=std::chrono::duration<double>(std::chrono::steady_clock::now()-preparing).count();
         group.fit=ptc_learn(group.input,request);out->groups_.push_back(std::move(group));
     }
@@ -70,7 +95,7 @@ std::shared_ptr<const PtcAppliedSignal> PtcAppliedSignal::apply(std::shared_ptr<
         throw std::invalid_argument("PTC Apply requires frozen plan and exact CAL/VAL realization");
     auto out=std::shared_ptr<PtcAppliedSignal>(new PtcAppliedSignal);out->plan_=std::move(plan);
     for(const auto &g:out->plan_->evidence_handle()->groups()) {
-        out->groups_.push_back(ptc_apply(g.input,g.fit));out->available_+=out->groups_.back().retained;
+        out->groups_.push_back(publish_requested_domain(g,ptc_apply(g.input,g.fit)));out->available_+=out->groups_.back().retained;
     }
     return out;
 }
@@ -78,7 +103,11 @@ PtcApplied PtcAppliedSignal::response(std::size_t group,const PtcCalSource &sour
     if(source.signal_handle().get()!=plan_->evidence_handle()->source().signal_handle().get() ||
        source.val_snapshot_handle().get()!=plan_->snapshot_handle().get())throw std::invalid_argument("PTC response requires exact CAL input binding");
     const auto &g=plan_->evidence_handle()->groups().at(group);
-    auto result=ptc_response(g.input,g.fit,response);
+    if(response.rows()!=static_cast<Eigen::Index>(g.slots.size()) || response.cols()!=static_cast<Eigen::Index>(g.detectors.size()))
+        throw std::invalid_argument("PTC response differs from full requested CAL grid");
+    PtcMatrix compact(response.rows(),g.fit_columns.size());
+    for(std::size_t d=0;d<g.fit_columns.size();++d)compact.col(d)=response.col(g.fit_columns[d]);
+    auto result=publish_requested_domain(g,ptc_response(g.input,g.fit,compact));
     const auto &data=groups_.at(group);
     for(Eigen::Index t=0;t<result.values.rows();++t)for(Eigen::Index d=0;d<result.values.cols();++d)
         if(data.causes(t,d)) {

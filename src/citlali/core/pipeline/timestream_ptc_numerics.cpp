@@ -118,7 +118,7 @@ PtcApplied apply(const PtcPrepared &p,const PtcFit &fit,const PtcMatrix &values)
 }
 PtcPrepared PtcPrepared::prepare(const PtcMatrix &values,const PtcMask &mask) {
     const auto start=Clock::now();
-    if(values.rows()<1 || values.cols()<2 || mask.rows()!=values.rows() || mask.cols()!=values.cols() || (mask>1).any())
+    if(values.rows()<1 || mask.rows()!=values.rows() || mask.cols()!=values.cols() || (mask>1).any())
         throw std::invalid_argument("PTC requires rectangular CAL values and explicit binary eligibility");
     PtcPrepared p;p.eligible=mask;p.centered=PtcMatrix::Zero(values.rows(),values.cols());p.mean=Eigen::VectorXd::Zero(values.cols());
     for(Eigen::Index d=0;d<values.cols();++d) {
@@ -131,7 +131,7 @@ PtcPrepared PtcPrepared::prepare(const PtcMatrix &values,const PtcMask &mask) {
         p.eligible_count+=count;
         for(Eigen::Index t=0;t<values.rows();++t)if(mask(t,d))p.centered(t,d)=values(t,d)-p.mean[d];
     }
-    for(Eigen::Index t=0;t<values.rows();++t)if(mask.row(t).all())++p.complete_times;
+    for(Eigen::Index t=0;t<values.rows();++t)if(values.cols()>0 && mask.row(t).all())++p.complete_times;
     p.time_patterns=patterns(mask,false);p.detector_patterns=patterns(mask,true);p.preparation_seconds=seconds(start);return p;
 }
 PtcFit ptc_learn(const PtcPrepared &p,PtcSolverRequest request) {
@@ -141,6 +141,7 @@ PtcFit ptc_learn(const PtcPrepared &p,PtcSolverRequest request) {
         throw std::invalid_argument("PTC numerical request is invalid");
     const auto started=Clock::now();PtcFit out;out.request=request;
     try {
+        if(p.centered.cols()<2)throw std::runtime_error("fewer-than-two-admitted-detectors");
         if(request.rank>std::min(p.centered.cols(),p.centered.rows()-1))throw std::runtime_error("requested-rank-exceeds-shape");
         auto at=Clock::now();initialize(p,out);out.initialization_seconds=seconds(at);
         at=Clock::now();auto a=coefficients(p,out.basis,out);out.coefficient_seconds+=seconds(at);

@@ -39,7 +39,8 @@ struct PtcFit {
 struct PtcApplied {
     PtcMatrix values;
     // 0 retained; 1 excluded input; 2 failed fit; 4 deficient application;
-    // 8 nonfinite application. Causes are operation-local, not CAL facts.
+    // 8 nonfinite application; 16 no eligible segment input (pipeline publication).
+    // Causes are operation-local, not CAL facts.
     PtcMask causes;
     std::size_t retained=0, failed_times=0, factorizations=0, factor_reuses=0;
     double seconds=0;
