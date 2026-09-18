@@ -80,6 +80,12 @@ class SuccessorDefaultCli(unittest.TestCase):
         config["input"]["path"] = "input.json"
         self.rejected(self.invoke(config), "successor.path_binding")
 
+    def test_fixed_plan_injection_trials_are_not_default_reductions(self):
+        config = self.request(dict(schema="rtc-multidetector-experiment-v1",
+            terminal_request="rtc-only", decision_apply={},
+            fixed_plan_injections=[dict(amplitude=1.0)]))
+        self.rejected(self.invoke(config), "successor.unsupported_experiment")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

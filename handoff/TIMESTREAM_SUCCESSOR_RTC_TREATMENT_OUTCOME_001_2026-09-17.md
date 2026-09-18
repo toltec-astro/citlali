@@ -806,6 +806,13 @@ and admitted-parent unchanged checks pass. Final exact-commit results are
 separately recorded in the completion record, not inferred from this preliminary
 working-tree run. No unexpected error-level output appears on the successful run.
 
+Independent candidate review found one omitted experiment guard: the ordinary
+entry could still accept the comparison tool's `fixed_plan_injections`. The
+bounded repair rejects that field before input admission/output creation and
+adds a direct executable regression. The failed-review candidate is retained;
+its verdict does not transfer to the repaired exact SHA. No RTC scientific
+owner, fixture, filter or original-data operation changes.
+
 ### Next connected responsibility: CAL
 
 The prerequisite review recovered **SCI-CAL scientific r0.5 / engineering r0.4**,

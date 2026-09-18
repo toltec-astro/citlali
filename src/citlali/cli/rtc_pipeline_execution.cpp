@@ -58,7 +58,8 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
     if(development) {
       require(terminal_requested && cfg["decision_apply"] && !reviewed_selection,
           "successor.RTC_plan_incomplete: RTC-only completion and existing decision bindings are required");
-      require(!cfg["declared_contaminant"] && !cfg["common_mode_census"] && !cfg["consequence_study"] &&
+      require(!cfg["declared_contaminant"] && !cfg["fixed_plan_injections"] &&
+          !cfg["common_mode_census"] && !cfg["consequence_study"] &&
           (!cfg["common_mode_health"] || cfg["common_mode_health"].as<std::string>()!="full-network-learn-only"),
           "successor.unsupported_experiment: injections and census-only branches are not development reductions");
       require(!cfg["speed_support_comparison"] || cfg["speed_support_comparison"].as<std::string>()=="both",
