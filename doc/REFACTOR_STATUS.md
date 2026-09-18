@@ -1,5 +1,33 @@
 # Citlali Refactor Status
 
+## CAL single-opacity owner correction — 2026-09-18
+
+The owner confirmed the telescope file has one tau225 reading and explicitly
+corrected the contract: one observation-associated reading is constant over
+the observation; multiple readings retain interpolation. The
+[versioned owner amendment](SCI_CAL_SINGLE_OPACITY_OWNER_CORRECTION_2026-09-18.md)
+supersedes the earlier singleton/header prohibition. Frozen earlier authority
+and evidence remain intact. No new freshness threshold or multi-record endpoint
+hold is introduced.
+
+The pushed/live canonical base is `d07dab475e145b005376e4ebd061a53d215e4972`.
+The bounded continuation is `codex/timestream-successor-cal-single-opacity-001`,
+reusing the clean completed CAL worktree. CAL Learn preserves the one source
+reading and exact original observation bounds; Consider freezes constant-opacity,
+varying-elevation multipliers; Apply uses actual RTC output and publishes VAL
+facts. Missing/invalid inputs remain explicit. The ordinary 152390 run now
+uses the supplied tau225=0.018; real-data calibration is no longer blocked solely
+by absence of an opacity time series. Within-observation variability and WVR
+uncertainty remain unmeasured.
+
+Focused tests, the same ordinary twelve-detector run and unchanged RTC byte
+comparison, broader local gates, exact-source review and canonical promotion
+are bound in `/private/tmp/citlali-successor-cal-single-opacity-001-20260918`.
+The historical all-unavailable result below remains valid for its earlier
+policy/source. This correction is not a new Unity or full four-mode qualification.
+PTC DC/common-mode processing remains the next connected implementation owner;
+MAP and FRUIT remain deferred. The owner performs all pushes.
+
 ## Connected CAL development increment — 2026-09-17
 
 Owner continuation: “pushed. Let's move on to CAL.” Live canonical was verified

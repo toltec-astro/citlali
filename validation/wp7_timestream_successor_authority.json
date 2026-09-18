@@ -35,7 +35,8 @@
     "scientific_conventions": "doc/SCIENTIFIC_CONVENTIONS.md",
     "adr_index": "doc/adr/README.md",
     "living_status": "doc/REFACTOR_STATUS.md",
-    "workstream_authority": "doc/INTEGRATION_LEDGER.md"
+    "workstream_authority": "doc/INTEGRATION_LEDGER.md",
+    "cal_opacity_owner_correction": "doc/SCI_CAL_SINGLE_OPACITY_OWNER_CORRECTION_2026-09-18.md"
   },
   "rtc_scan_array_numerical_policy": {
     "policy_id": "wp7-rtc-scan-array-numerical-policy-v2",
@@ -501,6 +502,14 @@
       "source_sha256": "635680c05cbc7445f52aae53bab4e81ff5567d47545da4ef3b4bcee956c37cbc",
       "canonical_sha256": "635680c05cbc7445f52aae53bab4e81ff5567d47545da4ef3b4bcee956c37cbc",
       "transformation": "canonical_adr_reference_renumbering_where_present_plus_explicit_canonical_status_and_locator_notes"
+    }
+  ],
+  "scientific_owner_amendments": [
+    {
+      "policy_id": "SCI-CAL-WVR-owner-2026-09-18-r1",
+      "path": "doc/SCI_CAL_SINGLE_OPACITY_OWNER_CORRECTION_2026-09-18.md",
+      "sha256": "9c3c0f62abfffc67434cc638609af32fd3c66df51b9e0db2c0818b575a295fcc",
+      "supersession": "WP7 2026-08-25 addendum 2.1/2.2 singleton prohibition and dependent quality coverage only"
     }
   ]
 }

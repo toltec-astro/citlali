@@ -83,14 +83,39 @@ YAML::Node execute_connected_cal(const CalRtcSource &source,const YAML::Node &cf
     auto ast=AstRtcCoordinates::realize_v2(grid,scope,telescope_identity,
         std::make_shared<const RawTelescopeTrajectory>(std::move(data)),ra0,dec0,
         "sha256:"+citlali::utils::sha256_file(effective_path)+":inputs:"+input_name+":astrometry",offsets,std::move(geometry));
-    // The current verified telescope artifact supplies no time-series WVR
-    // producer interface. Its scalar header is deliberately not substituted.
+    // Owner 2026-09-18: one observation-associated reading is constant over
+    // that observation. Preserve the header's actual update text; do not
+    // manufacture a sampled series or assert an unverified time conversion.
     // Fail explicitly if a new layout arrives rather than silently ignoring it.
     for(const auto &[name,var]:tel.getVars())
         require(!name.starts_with("Data.Radiometer.") && !name.starts_with("Data.WVR."),
                 "CAL WVR producer series layout requires an explicit time/validity adapter: "+name);
+    double observation_first=std::numeric_limits<double>::infinity(),observation_last=-observation_first;
+    for(auto network:grid->align_handle()->participant_network_ids()) {
+        const auto &axis=grid->align_handle()->paired_handle()->network(network).occurrence_axis();
+        observation_first=std::min(observation_first,grid->align_handle()->occurrence_assignment(network,axis.first_native_row()).assigned_time_unix_sec);
+        observation_last=std::max(observation_last,grid->align_handle()->occurrence_assignment(network,axis.past_last_native_row()-1).assigned_time_unix_sec);
+    }
+    std::vector<CalWvrRecord> opacity_records;
+    const auto tau_header=tel.getVar("Header.Radiometer.Tau");
+    std::string update_text;
+    if(!tel.getVar("Header.Radiometer.UpdateDate").isNull())update_text=read_netcdf_text(tel,"Header.Radiometer.UpdateDate");
+    if(!tau_header.isNull()) {
+        require(tau_header.getDimCount()==0,"CAL scalar WVR header has a non-scalar layout");
+        const double tau=read_netcdf_scalar<double>(tel,"Header.Radiometer.Tau");
+        opacity_records.push_back({telescope_identity+":Header.Radiometer.Tau",std::nullopt,tau,true,NAN,NAN});
+    }
+    // Tau2 with a populated update record is not the known unused placeholder.
+    // A real second source must be bound explicitly, never ignored as singleton.
+    if(!tel.getVar("Header.Radiometer.UpdateDate2").isNull())
+        require(read_netcdf_text(tel,"Header.Radiometer.UpdateDate2").find_first_not_of(" \t\r\n")==std::string::npos,
+                "CAL second WVR header reading requires an explicit source-time adapter");
+    if(!tel.getVar("Header.Radiometer.Tau2").isNull())
+        require(read_netcdf_scalar<double>(tel,"Header.Radiometer.Tau2")==0.,
+                "CAL non-placeholder second WVR value requires an explicit source-time adapter");
     auto wvr=CalWvrEvidence::learn(scope,telescope_identity,
-        "ALIGN:exact-RTC-occurrence-integration-midpoint:Unix-seconds",{});
+        "ALIGN:exact-RTC-occurrence-integration-midpoint:Unix-seconds",std::move(opacity_records),
+        CalWvrObservationInterval{observation_first,observation_last});
     auto evidence=CalEvidence::learn(source,ast,wvr,CalAtmosphereSurface::frozen(),apt_identity,std::move(factors));
     const auto learned=std::chrono::steady_clock::now();
     auto plan=CalPlan::consider(evidence,source.val_snapshot_handle(),1);
@@ -115,14 +140,32 @@ YAML::Node execute_connected_cal(const CalRtcSource &source,const YAML::Node &cf
     record["atmosphere_contract_sha256"]=std::string(CalAtmosphereSurface::contract_sha256);
     record["atmosphere_nodes_sha256"]=std::string(CalAtmosphereSurface::nodes_sha256);
     record["passband_sha256"]=std::string(CalAtmosphereSurface::passband_sha256);
-    record["WVR_source"]=wvr->source_identity();record["WVR_method"]=std::string(wvr->method);
-    record["WVR_records"]=0;record["WVR_cause"]="wvr_tau225_absent";
-    record["WVR_input_limitation"]="scalar Header.Radiometer.Tau is not a time-stamped, source-valid WVR series; no header fallback";
-    if(!tel.getVar("Header.Radiometer.Tau").isNull())record["unadmitted_header_tau225"]=read_netcdf_scalar<double>(tel,"Header.Radiometer.Tau");
+    record["WVR_source"]=wvr->source_identity();record["WVR_method"]=std::string(wvr->method_id());
+    record["WVR_policy"]=std::string(wvr->policy);record["WVR_records"]=wvr->records().size();
+    record["WVR_cause"]=std::string(cal_wvr_cause_name(wvr->at(observation_first).cause));
+    record["WVR_single_reading_constant"]=wvr->single_reading();
+    record["WVR_observation_first_unix_sec"]=observation_first;record["WVR_observation_last_unix_sec"]=observation_last;
+    record["WVR_source_update_text"]=update_text;
+    record["WVR_source_time_mapping"]=wvr->single_reading()?"not-required-for-singleton;raw-header-update-preserved":"unavailable-no-reading";
+    record["WVR_variability_measured"]=false;
+    record["WVR_input_limitation"]=wvr->single_reading()?
+        "one observation-associated opacity reading; within-observation variability is unmeasured; atmosphere correction still uses each sample's elevation":
+        "no opacity reading supplied; CAL remains unavailable";
+    if(wvr->single_reading()) {
+        record["WVR_record_identity"]=wvr->records().front().identity;
+        record["WVR_constant_tau225"]=wvr->records().front().tau225;
+        record["WVR_admission"]="owner-approved-observation-header;no-producer-invalid-flag-supplied;numeric-validity-checked-by-CAL";
+    }
     record["opacity_quality_method"]=std::string(wvr->quality_method);
     record["opacity_quality"]=std::string(cal_opacity_quality_name(evidence->opacity_quality().classification));
     record["quality_window_first_unix_sec"]=evidence->opacity_quality().first;record["quality_window_last_unix_sec"]=evidence->opacity_quality().last;
     record["quality_cause"]=evidence->opacity_quality().cause;
+    record["quality_summary_available"]=evidence->opacity_quality().summary_available;
+    if(evidence->opacity_quality().summary_available) {
+        record["quality_mean_tau225"]=evidence->opacity_quality().mean;
+        record["quality_min_tau225"]=evidence->opacity_quality().minimum;
+        record["quality_max_tau225"]=evidence->opacity_quality().maximum;
+    }
     record["AST_role"]=std::string(ast->role);record["AST_method"]=std::string(ast->method);
     record["AST_telescope"]=ast->telescope_identity();record["AST_pointing_offset"]=ast->offset_identity();
     record["AST_coordinate_unit"]="degree";record["AST_frame"]="J2000-radec-gnomonic-tangent";

@@ -1927,6 +1927,31 @@ TEST(cal_pipeline, absent_opacity_preserves_upstream_values_and_publishes_exact_
   EXPECT_THROW(facts->at(replay,0,300),std::invalid_argument);
   EXPECT_THROW(ValSnapshot::commit_cal_output(f.trial.val,facts),std::invalid_argument);
 }
+TEST(cal_pipeline, single_observation_reading_matches_constant_series_with_varying_elevation) {
+  CalFixture f;
+  f.telescope["TelElAct"]=Eigen::VectorXd::LinSpaced(100,.6,1.1);
+  f.ast=f.pointing(f.terminal->grid_handle(),f.telescope);
+  auto reference_plan=f.plan();auto reference=CalAppliedSignal::apply(reference_plan,f.source(),f.terminal->val_snapshot_handle());
+  f.wvr=CalWvrEvidence::learn(f.trial.parent->scope(),"controlled-constant-motion","controlled-ALIGN-Unix",
+      {{"header",std::nullopt,.1,true,NAN,NAN}},CalWvrObservationInterval{f.input.times.front(),f.input.times.back()});
+  auto plan=f.plan();auto result=CalAppliedSignal::apply(plan,f.source(),f.terminal->val_snapshot_handle());
+  EXPECT_GT(result->available_count(),0);EXPECT_EQ(result->available_count(),reference->available_count());
+  for(std::size_t d=0;d<plan->entries().size();++d)for(std::size_t s=0;s<plan->entries()[d].size();++s) {
+    EXPECT_EQ(result->value(d,s),reference->value(d,s));EXPECT_EQ(result->causes(d,s),reference->causes(d,s));
+  }
+  EXPECT_NE(*plan->entries()[0][100].multiplier,*plan->entries()[0][700].multiplier);
+  EXPECT_EQ(plan->evidence_handle()->opacity_quality().cause,"single-reading-observation-constant");
+  auto val=ValSnapshot::commit_cal_output(f.terminal->val_snapshot_handle(),ValCalOutputFacts::preserve(result));
+  EXPECT_EQ(val->generation().value,f.terminal->val_snapshot_handle()->generation().value+1);
+}
+TEST(cal_pipeline, single_reading_cannot_be_bound_to_a_shortened_or_extended_observation) {
+  CalFixture f;
+  for(double start:{f.input.times.front()-1,f.input.times.front()+1}) {
+    f.wvr=CalWvrEvidence::learn(f.trial.parent->scope(),"controlled-constant-motion","controlled-ALIGN-Unix",
+        {{"header",std::nullopt,.1,true,NAN,NAN}},CalWvrObservationInterval{start,f.input.times.back()});
+    EXPECT_THROW(f.evidence(),std::invalid_argument);
+  }
+}
 TEST(cal_pipeline, unsupported_samples_do_not_erase_supported_neighbors_or_collapse_native_time) {
   CalFixture f;
   f.wvr=CalWvrEvidence::learn(f.trial.parent->scope(),"controlled-constant-motion","controlled-ALIGN-Unix",

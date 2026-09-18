@@ -914,3 +914,27 @@ support files remain byte-identical to the accepted development-default run;
 CAL publishes 909,228 slot causes, no calibrated values and VAL generation 2.
 Exact committed-source binding and the independent verdict follow in the
 external completion record; pre-review results alone do not claim acceptance.
+
+## Owner correction: one opacity reading — 2026-09-18
+
+The owner pushed CAL base `d07dab475e145b005376e4ebd061a53d215e4972`, independently
+confirmed one reading in the file, and corrected the contract: use one reading
+as constant throughout its observation; interpolate multiple readings. The
+[versioned amendment](../doc/SCI_CAL_SINGLE_OPACITY_OWNER_CORRECTION_2026-09-18.md)
+is governing for this narrow change. The former no-header rule and resulting
+zero-CAL-output run above are preserved as superseded-policy evidence.
+
+The continuation branch `codex/timestream-successor-cal-single-opacity-001`
+reuses the clean CAL worktree. Runtime Learn binds one source reading and exact
+original observation support, Consider freezes the multipliers at actual AST
+elevations, and Apply calibrates supported RTC x once. Source update text is
+preserved; no endpoint records, uncertainty or atmospheric variability are
+invented. Invalid/missing values and multi-record gaps remain explicit.
+RTC filters, validity, original-input execution and donor policies are unchanged.
+
+Evidence and the final exact-source review are under
+`/private/tmp/citlali-successor-cal-single-opacity-001-20260918`. The same
+twelve-detector default invocation compares every prior RTC numeric/support
+file while testing newly available CAL values. Local gates remain supplemental;
+no new Unity or general POINT/OOF/BEAM run is claimed. The next connected
+implementation responsibility remains PTC; MAP and FRUIT remain deferred.

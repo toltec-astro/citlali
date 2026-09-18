@@ -34,6 +34,11 @@ std::shared_ptr<const CalEvidence> CalEvidence::learn(CalRtcSource source,
         first=std::min(first,grid->align_handle()->occurrence_assignment(network,axis.first_native_row()).assigned_time_unix_sec);
         last=std::max(last,grid->align_handle()->occurrence_assignment(network,axis.past_last_native_row()-1).assigned_time_unix_sec);
     }
+    if(out->wvr_->single_reading()) {
+        const auto &interval=out->wvr_->observation_interval();
+        if(!interval || interval->first_unix_sec!=first || interval->last_unix_sec!=last)
+            throw std::invalid_argument("single WVR reading requires the exact full original RTC observation interval");
+    }
     out->quality_=out->wvr_->quality(first,last);return out;
 }
 std::shared_ptr<const CalPlan> CalPlan::consider(std::shared_ptr<const CalEvidence> evidence,

@@ -8,7 +8,7 @@
 using namespace citlali::pipeline;
 namespace {
 auto wvr(std::vector<CalWvrRecord> r,std::string mapping="ALIGN-controlled-Unix") {
-    return CalWvrEvidence::learn(NativeObservationScope{1,0,0},"controlled-TEL",std::move(mapping),std::move(r));
+    return CalWvrEvidence::learn(NativeObservationScope{1,0,0},"controlled-TEL",std::move(mapping),std::move(r),CalWvrObservationInterval{0,100});
 }
 CalWvrRecord record(std::string id,double time,double tau,bool valid=true,double first=0,double last=100) {
     return {std::move(id),time,tau,valid,first,last};
@@ -50,6 +50,48 @@ TEST(cal_wvr, exact_records_and_separately_rounded_linear_interpolation_preserve
     EXPECT_EQ(mid.first_record,0);EXPECT_EQ(mid.last_record,1);EXPECT_FALSE(mid.exact_match);
     EXPECT_EQ(e->at(-1).cause,CalWvrCause::unbracketed);EXPECT_EQ(e->at(11).cause,CalWvrCause::unbracketed);
 }
+TEST(cal_wvr, one_reading_is_constant_only_across_its_bound_observation) {
+    auto e=wvr({record("header",-49,.018)});
+    EXPECT_TRUE(e->single_reading());EXPECT_EQ(e->method_id(),CalWvrEvidence::constant_method);
+    for(double t:{0.,23.5,100.}) {
+        const auto s=e->at(t);ASSERT_TRUE(s.tau225);EXPECT_DOUBLE_EQ(*s.tau225,.018);
+        EXPECT_TRUE(s.observation_constant);EXPECT_FALSE(s.exact_match);
+        EXPECT_EQ(s.first_record,0);EXPECT_EQ(s.last_record,0);EXPECT_DOUBLE_EQ(s.weight,0);
+    }
+    EXPECT_EQ(e->at(-.001).cause,CalWvrCause::unbracketed);
+    EXPECT_EQ(e->at(100.001).cause,CalWvrCause::unbracketed);
+    EXPECT_EQ(e->records().front().time_unix_sec,-49.);
+    auto q=e->quality(0,100);ASSERT_TRUE(q.summary_available);
+    EXPECT_DOUBLE_EQ(q.mean,.018);EXPECT_DOUBLE_EQ(q.minimum,.018);EXPECT_DOUBLE_EQ(q.maximum,.018);
+    EXPECT_EQ(q.cause,"single-reading-observation-constant");EXPECT_EQ(q.excursions.size(),0);
+    EXPECT_FALSE(e->quality(0,101).summary_available);
+}
+TEST(cal_wvr, singleton_without_timestamp_does_not_fabricate_measurement_times) {
+    auto e=wvr({{"header",std::nullopt,.2,true,NAN,NAN}});
+    ASSERT_TRUE(e->at(70).tau225);EXPECT_DOUBLE_EQ(*e->at(70).tau225,.2);
+    EXPECT_FALSE(e->at(70).exact_match);EXPECT_FALSE(e->records()[0].time_unix_sec);
+    auto q=e->quality(0,100);ASSERT_TRUE(q.summary_available);
+    EXPECT_EQ(q.classification,CalOpacityQuality::engineering_only);
+    EXPECT_DOUBLE_EQ(q.mean,.2);EXPECT_DOUBLE_EQ(q.excursion_duration,100);
+    ASSERT_EQ(q.excursions.size(),1);EXPECT_DOUBLE_EQ(q.excursions[0].first,0);
+    EXPECT_THROW(CalWvrEvidence::learn(NativeObservationScope{1,0,0},"TEL","ALIGN",
+        {{"header",std::nullopt,.1,true,NAN,NAN}}),std::invalid_argument);
+    EXPECT_THROW(wvr({{"unknown",std::nullopt,.1,true,0,100},record("other",50,.2)}),std::invalid_argument);
+}
+TEST(cal_wvr, singleton_never_rescues_invalid_or_conflicting_measurements) {
+    EXPECT_EQ(wvr({record("bad",-10,NAN)})->at(50).cause,CalWvrCause::nonfinite);
+    EXPECT_EQ(wvr({record("bad",-10,INFINITY)})->at(50).cause,CalWvrCause::nonfinite);
+    EXPECT_EQ(wvr({record("bad",-10,-.1)})->at(50).cause,CalWvrCause::negative);
+    EXPECT_EQ(wvr({record("bad",-10,.1,false)})->at(50).cause,CalWvrCause::gap_outside_source_validity);
+    auto duplicate=wvr({record("a",0,.1),record("copy",0,.1)});
+    ASSERT_TRUE(duplicate->at(50).tau225);EXPECT_DOUBLE_EQ(*duplicate->at(50).tau225,.1);
+    EXPECT_EQ(duplicate->records().size(),2);
+    auto conflict=wvr({record("a",0,.1),record("conflict",0,.2)});
+    EXPECT_EQ(conflict->at(50).cause,CalWvrCause::conflicting_duplicate);
+    auto multiple=wvr({record("bad",0,.1,false),record("valid",50,.2)});
+    EXPECT_FALSE(multiple->single_reading());EXPECT_FALSE(multiple->at(25).tau225);
+    EXPECT_FALSE(multiple->at(75).tau225);EXPECT_TRUE(multiple->at(50).tau225);
+}
 TEST(cal_wvr, declared_gaps_invalid_records_and_duplicate_conflicts_are_not_skipped) {
     auto gap=wvr({record("a",0,.1,true,0,4),record("b",10,.2,true,6,10)});
     EXPECT_TRUE(gap->at(0).tau225);EXPECT_TRUE(gap->at(10).tau225);
@@ -71,6 +113,7 @@ TEST(cal_wvr, declared_gaps_invalid_records_and_duplicate_conflicts_are_not_skip
 }
 TEST(cal_wvr, absent_nonfinite_negative_mapping_and_long_valid_gap_have_distinct_dispositions) {
     EXPECT_EQ(wvr({})->at(1).cause,CalWvrCause::absent);
+    EXPECT_EQ(wvr({})->method_id(),CalWvrEvidence::unavailable_method);
     EXPECT_EQ(wvr({record("a",0,NAN)})->at(0).cause,CalWvrCause::nonfinite);
     EXPECT_EQ(wvr({record("a",0,-.1)})->at(0).cause,CalWvrCause::negative);
     EXPECT_EQ(wvr({record("a",0,.1)},"")->at(0).cause,CalWvrCause::time_mapping_unavailable);

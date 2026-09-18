@@ -1,5 +1,28 @@
 # Citlali Integration Ledger
 
+## CAL single-opacity owner correction — 2026-09-18
+
+- Explicit owner correction, recorded in
+  [the r1 amendment](SCI_CAL_SINGLE_OPACITY_OWNER_CORRECTION_2026-09-18.md):
+  constant tau225 for one observation reading; existing interpolation for
+  multiple readings. This intentionally supersedes the former single-header
+  prohibition; scientific epoch and content binding are in the science-change
+  ledger and canonical authority router.
+- Exact pushed base `d07dab475e145b005376e4ebd061a53d215e4972`; one spine branch
+  `codex/timestream-successor-cal-single-opacity-001`, clean reused worktree
+  `/private/tmp/citlali-timestream-successor-cal-001`. No unrelated work or
+  historical files are repurposed or removed.
+- CAL owns the opacity representation and exact observation support; the
+  private application adapter owns TEL parsing. RTC values/support, source
+  factors, AST elevation, numerical atmosphere authority and VAL meaning are
+  preserved. PTC/MAP/FRUIT are not activated.
+- Exact source, gates, independent three-axis verdict, default real-data
+  result and any local canonical movement are retained under
+  `/private/tmp/citlali-successor-cal-single-opacity-001-20260918`. Canonical
+  promotion follows final exact-SHA review and live ancestry verification
+  under the continuing owner default-development direction; pushes remain
+  owner-run. Earlier Unity evidence is not transferred to this revision.
+
 ## Connected CAL continuation — 2026-09-17
 
 - Owner-authorized continuation of the default development route; verified

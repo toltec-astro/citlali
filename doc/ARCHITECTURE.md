@@ -18,8 +18,12 @@ the immutable result once in a new VAL generation, without a finding per cell
 or copying observation provenance. There is no ownership cycle: signal ->
 plan -> evidence -> RTC input VAL; the new output VAL references the signal.
 
-The current 152390/network12 input has no admitted time-series WVR records and
-therefore produces explicit no-calibrated-output, preserving RTC. General
+Under the 2026-09-18 owner correction, a single observation-associated WVR
+reading defines constant opacity over the exact original observation interval;
+multiple readings retain their source-time interpolation. The WVR owner retains
+which representation was used, and the input adapter preserves raw header
+update metadata. Constant opacity still uses each sample's AST elevation.
+Missing or invalid opacity produces explicit unavailable CAL support. General
 legacy-input conversion and PTC/MAP remain unavailable. Missing required
 pointing stops the requested CAL handoff; neither input failure selects a
 successful RTC-only fallback. See `data/development/README.md` and status.

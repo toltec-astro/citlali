@@ -32,14 +32,16 @@ old pipeline. Existing
 filter coefficients, scientific thresholds and original-input execution policies
 are unchanged. Each run requires a fresh output directory.
 
-The current 152390 telescope file has only a scalar radiometer header. The
-approved WVR contract forbids using that as an observation-wide correction.
-The default run therefore executes CAL, publishes `cal/receipt.yaml` and
-complete support causes with `no-calibrated-output`, preserves RTC values,
-and exits 2. It does not publish zero or unity as a substitute calibrated
-signal. This is a missing producer-input binding, not an open calibration
-policy question. A newly supplied WVR series needs its actual source-time and
-validity layout bound at ingress; unknown layouts fail explicitly.
+The current 152390 telescope file has one opacity reading, tau225=0.018.
+The [2026-09-18 owner correction](../../doc/SCI_CAL_SINGLE_OPACITY_OWNER_CORRECTION_2026-09-18.md)
+uses it as constant opacity over the observation. The atmospheric correction
+still varies with AST elevation. CAL publishes supported values, exact support
+causes, source update metadata and the constant-opacity assumption in
+`donor-continuity/cal/receipt.yaml`. It does not claim measured atmospheric
+stability. Absent/invalid opacity remains unavailable; a fully unsupported
+CAL run preserves RTC and exits 2. Multiple actual readings use the existing
+interpolator; a new file layout still needs its actual source-time/validity
+adapter, and is never silently ignored in favor of the scalar.
 
 Conditional covariance, nuisance uncertainty and the complete conditioned
 response remain unavailable. Otherwise supported CAL signal is a development
