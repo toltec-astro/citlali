@@ -1,0 +1,17 @@
+{
+  "source": "0f52e1a421416eadaf7d8d99d64f537132395c0c",
+  "tree": "a95619bd7b24b032b562b6dfb4498aeba79d3d43",
+  "ref": "refs/heads/codex/baseline-before-successor-default-2026-09-17",
+  "bundle": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-baselines/pre-successor-default-20260917/pre-successor-default.bundle",
+  "bundle_sha256": "c67b839e820dd7e123c342def81875e225215c4cf12107f4257f16d1d7fdb496",
+  "executable": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-baselines/pre-successor-default-20260917/bin/citlali-baseline",
+  "executable_sha256": "feed416327b1f6a97b22d336c78ebdade13f498cde4e9c9f419a18e7665030e1",
+  "environment": "Frozen current local dependency source realization; AppleClang/Homebrew/C++20 supplemental comparison build",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin\n",
+  "dependency_sources": "dependencies/ complete copies including current modifications; dependencies.json records original identities",
+  "comparison_status": "Exact old canonical CLI built, --version and --dump_config passed; no new observation reduction",
+  "Spack": "Accepted package declarations and existing V2 provenance record retained; missing historical V2 lock bytes not invented; Unity64548643 belongs to successor165684816, not this old baseline",
+  "purpose": "Frozen comparison baseline only, no maintenance workflow",
+  "frozen_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-baselines/pre-successor-default-20260917",
+  "rebuild": "Create a worktree/checkout from the bundled baseline ref and use local-configure-arguments.json, replacing original frozen dependency prefixes with this directory/dependencies. Existing dynamic Homebrew runtime dependencies are inventoried in linked-libraries.txt."
+}

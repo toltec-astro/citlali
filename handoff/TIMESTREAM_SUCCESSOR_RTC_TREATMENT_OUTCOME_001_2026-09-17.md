@@ -734,3 +734,122 @@ scientific contract changes. No new observation replay is triggered. The next
 owner action is the documentation-record push after its exact-SHA review;
 another Unity run is unnecessary for these two documentation files. Further
 implementation or integration needs its own bounded owner disposition.
+
+
+## Owner-authorized default development path — 2026-09-17
+
+Work order `TIMESTREAM-SUCCESSOR-DEVELOPMENT-DEFAULT-001`, Tier2 integration/
+spine. Owner direction explicitly permits freezing the old canonical,
+integrating the reviewed RTC ancestry and activating the implemented successor
+as the ordinary development default. This supersedes the earlier no-activation
+and legacy-default restrictions for this sole-user development codebase. It
+neither amends scientific contracts nor authorizes production qualification.
+All three effective governance documents remain byte-identical to accepted
+`06a3ade51...`; fresh exact-SHA review and owner-controlled pushes remain required.
+
+Literal start: reviewed RTC closure `af716d166447624c7efbc0575c83b9272e7b472f`;
+verified old canonical `0f52e1a421416eadaf7d8d99d64f537132395c0c`. The new owned
+worktree is `/private/tmp/citlali-timestream-successor-development-default-001`
+on its same-named `codex/` branch. The frozen baseline ref points to the old
+canonical and its self-contained bundle, local executable and complete copied
+dependency-source realization were preserved **before** canonical movement.
+The durable locator and digests are in
+`validation/timestream_successor_development_baseline.json`. The comparison
+executable uses the inventoried local Homebrew dynamic libraries; it is not a
+portable release or reconstruction of unavailable historical Spack lock bytes.
+
+The ordinary application now reads `citlali-development-v1` from its normal
+configuration arguments and invokes the connected successor implementation.
+The request binds an exact input record and a new output directory.
+`src/citlali/cli/rtc_pipeline_execution.cpp` is the shared application owner;
+`tools/timestream_successor/rtc_multidetector.cpp` is its comparison wrapper.
+Existing private data-binding/export helpers are reused, not copied into a new
+scientific framework. Library RTC owners and every numerical implementation
+remain unchanged. Default execution selects only the accepted donor-continuity
+arm; existing Learn/Consider/Apply, original-input replay, output grid, terminal
+and VAL products run for the actual twelve-detector 152390 case. APT machine
+protocol commands retain their existing separate dispatch. Legacy standard
+reduction code remains as historical/validation code, with no default entry or
+fallback. Development example and limitations are in `data/development/README.md`.
+
+Development execution is bounded to the currently implemented input adapter
+(152390/0/2 network12, exact original-pair exports and plan/motion/scan bindings).
+It rejects unsupported ordinary-science/CAL/PTC/MAP requests, alternate support
+masks and injection/census-only branches. It does not infer a notch selection,
+source mask, isolated-event admission or calibrated number from the new default.
+Reconstructed samples remain identifiable and non-independent. The terminal
+receipt states `completed_through=RTC`, `next_stage=CAL`, and no legacy fallback.
+
+Reassessment: the first ordinary invocation exposed duplicate named-logger
+registration inherited from the standalone comparison tool. The bounded repair
+lets the normal CLI retain its existing logger/lifetime and initializes the
+standalone logger only for the comparison wrapper. The failed attempt remains
+in the evidence directory. No scientific behavior changed. Earlier Python
+protocol failures were a missing local build-path alias, and their rerun after
+binding the actual executable passes. This is not a test assertion relaxation.
+
+Verification belongs to the new exact candidate and is recorded externally at
+`/private/tmp/citlali-successor-development-default-20260917`: source/version
+binding; real ordinary invocation against the same inputs; byte comparison of
+shared numerical/support artifacts; original pair unchanged; focused default
+and unsupported-path tests; public-header/no-PCH checks; source-graph parity;
+required config, baseline/build-tool and CTest gates. Independent review must
+separately report scientific/behavioral, architecture/ownership and repository/
+evidence dispositions before the authorized canonical fast-forward. The Unity
+64548643 result above is retained only at its exact tested parent. No new Unity
+run or GCC13 result is claimed for default-wiring changes.
+
+The preliminary ordinary invocation completed RTC in109.1seconds. All116
+shared numerical/support files are byte-identical to the prior accepted replay;
+882766 x/r values remain available on909228 scheduled slots. Both original-pair
+and admitted-parent unchanged checks pass. Final exact-commit results are
+separately recorded in the completion record, not inferred from this preliminary
+working-tree run. No unexpected error-level output appears on the successful run.
+
+### Next connected responsibility: CAL
+
+The prerequisite review recovered **SCI-CAL scientific r0.5 / engineering r0.4**,
+approved WP3-D002 through D008 and the WP7 scientific-authority addendum. The
+latest clean-room closure under
+`doc/scientific_contracts/audits/WP7_TIMESTREAM_CLEAN_ROOM_170ECEA9D/INDEPENDENT_RESULTS/`
+supersedes historical horizontal-audit open items. No new calibration science
+choice is required for the smallest extension. The immutable `CalRtcSource`
+already binds actual RTC conditioned x, output grid and VAL facts. It neither
+calibrates nor grants scientific-use admission.
+
+The next increment connects, in this same default route:
+
+1. The already owner-permitted bounded AST geometry/pointing adapter for the
+   twelve detectors. RTC boresight speed is sufficient for its existing motion
+   use, but CAL needs AST's detector coordinates on the exact representative
+   RTC occurrences, including geometry, rotation/correction parents and validity.
+   Missing required pointing is an explicit stop (CAL-IS-018; AST-REQ-073--079).
+2. A CAL-owned association to the verified matched APT and one exact detector
+   row, with finite nonzero `flxscale` applied once. Negative factors are not
+   silently rejected or flipped. Canonical identity admission is already
+   implemented; numerical calibration/geometry are separate responsibilities
+   (CAL-REQ-006--020; WP3-D003/D005).
+3. The contracted operator `Y = x_RTC * flxscale * C`, with no extra baseline
+   subtraction or invented factor. Reuse the recovered node table/passband
+   authority under
+   `doc/scientific_contracts/audits/WP7_TIMESTREAM_CLEAN_ROOM_F01E22F5F/REPAIR_AND_CLOSURE/RECOVERED_CAL_NUMERICAL_AUTHORITY_2026-08-25/`.
+   The frozen PCHIP/node rules and domains (tau225 0--0.25, elevation25--80deg,
+   spectral index in {-1,0,2,4}) apply without clamping, interpolation between
+   unapproved indices or legacy formula substitution.
+4. Exact same-observation WVR record/bracket and time bindings. The legacy
+   telescope scalar `Header.Radiometer.Tau[0]` is not sufficient provenance.
+   Preserve r through its RTC parent; CAL acts on x only. Carry typed unavailable
+   response/uncertainty where required: missing full response/covariance blocks
+   dependent claims, not all otherwise valid calibrated signal (WP3-D005--D008;
+   CAL-REQ-034--039/042--049; CAL-IS-029--034).
+
+This is direct concrete stage ownership, independent of `Engine`, not a new
+framework. Do not wire legacy `timestream/rtc/calibrate.h`: its q-profile/scalar
+opacity calculation is not the recovered CAL authority. Focused checks must
+cover actual RTC parent continuity, row permutation and invalid factor cases,
+exactly-once application, node/digest/domain behavior, WVR brackets/duplicates,
+missing AST failure, x/r distinction and unchanged RTC bytes. Runtime Learn
+continues to produce evidence, Consider freezes choices, Apply executes afresh
+from original x/r; following the engineering workflow alone is not runtime
+conformance. PTC/MAP, FRUIT and the separate detector-response investigation
+remain outside this extension.

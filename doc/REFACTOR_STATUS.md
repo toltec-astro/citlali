@@ -1,5 +1,56 @@
 # Citlali Refactor Status
 
+## Successor is the development default — owner direction 2026-09-17
+
+The owner identifies this as a development-only codebase with one user and
+explicitly authorizes canonical integration plus default activation of the
+implemented successor. This supersedes earlier requirements to keep the old
+processing route as the default or to wait for production qualification before
+running development code. Scientific contracts, explicit treatment selection,
+and truthful unsupported-case failures remain binding. The operating model is:
+run the new code, compare with frozen old code, fix material differences, and
+extend the same connected route.
+
+Before canonical movement, old canonical
+`0f52e1a421416eadaf7d8d99d64f537132395c0c` was preserved as
+`codex/baseline-before-successor-default-2026-09-17`, with a complete Git bundle,
+built comparison CLI, exact copied dependency sources, compiler/link inventory
+and existing Spack provenance. The durable owner-local copy is under
+`~/work_toltec/local_data/citlali-validation/development-baselines/pre-successor-default-20260917`;
+[the baseline record](../validation/timestream_successor_development_baseline.json)
+binds its exact identities. This is a frozen comparison, not another maintained
+route. The unrelated scientific-authoring checkout and historical worktrees
+remain untouched.
+
+Ordinary `citlali development.yaml` now dispatches directly to the successor.
+`--dump_config` describes that request; no feature switch or alternate executable
+is needed. Existing RTC Learn, Consider, frozen-plan Apply, matched-support
+outcome comparison/reassessment, and RTC output/VAL completion execute through
+one shared application implementation. Each Apply starts from the admitted
+original pair. A single selected donor-continuity plan executes; comparison
+arms remain confined to the optional comparison tool. Filter coefficients,
+thresholds, motion rules, source treatment, paired validity and reconstruction
+semantics are unchanged. CAL receives the existing immutable `CalRtcSource`
+binding, but **calibration is not executed yet**.
+
+Current input coverage is the existing exact-bound native-pair request for
+152390/0/2 network12 and its reviewed twelve detectors. General legacy
+`data_items` conversion and other unimplemented cases fail with a specific
+limitation, without invoking the old reduction. The output is an explicitly
+requested RTC-only terminal, not a completed science reduction. The next
+connected increment is the approved AST detector-coordinate binding and the
+contracted CAL operator consuming this actual RTC output. Missing final
+scientific qualification does not keep this development route inactive.
+
+Unity job `64548643` remains evidence for exact source `165684816...` only.
+Changed CLI/build/routing verification is separately bound under
+`/private/tmp/citlali-successor-development-default-20260917`, including the
+ordinary real-data invocation, numerical/support parity, focused failure cases,
+local regression gates and independent exact-SHA review. The continuing
+[RTC handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_TREATMENT_OUTCOME_001_2026-09-17.md)
+records final evidence and the recovered CAL requirements. All pushes remain
+owner-run. No scientific-production release, PTC/MAP or FRUIT work is implied.
+
 ## RTC output Unity gate passed — 2026-09-17
 
 Owner-run Unity job `64548643` completed `0:0` on exact source

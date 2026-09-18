@@ -228,6 +228,14 @@ if(CITLALI_USE_WIENER_FILTER_OMP)
     )
 endif()
 
+add_library(citlali_rtc_execution STATIC
+    "${CITLALI_SOURCE_ROOT}/src/citlali/cli/rtc_pipeline_execution.cpp")
+target_link_libraries(citlali_rtc_execution PUBLIC citlali::citlali)
+target_include_directories(citlali_rtc_execution PRIVATE "${CITLALI_SOURCE_ROOT}/tools/timestream_successor")
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(citlali_rtc_execution PRIVATE -fno-fast-math -ffp-contract=off)
+endif()
+
 option(CITLALI_BUILD_CLI "Build the Citlali reduction CLI" ON)
 if(CITLALI_BUILD_CLI)
     add_executable(citlali_cli)
@@ -241,7 +249,7 @@ if(CITLALI_BUILD_CLI)
     set_target_properties(citlali_cli PROPERTIES OUTPUT_NAME citlali)
     tula_cmake_target_defaults(TARGET citlali_cli)
     target_link_libraries(
-        citlali_cli PRIVATE citlali::citlali tula::cli
+        citlali_cli PRIVATE citlali::citlali citlali_rtc_execution tula::cli
     )
     install(TARGETS citlali_cli RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
 endif()
@@ -270,7 +278,7 @@ add_dependencies(
 add_executable(citlali_rtc_multidetector EXCLUDE_FROM_ALL
     "${CITLALI_SOURCE_ROOT}/tools/timestream_successor/rtc_multidetector.cpp"
 )
-target_link_libraries(citlali_rtc_multidetector PRIVATE citlali::citlali)
+target_link_libraries(citlali_rtc_multidetector PRIVATE citlali_rtc_execution)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(citlali_rtc_multidetector
         PRIVATE -fno-fast-math -ffp-contract=off)

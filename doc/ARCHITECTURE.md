@@ -1,5 +1,23 @@
 # Citlali Architecture
 
+## Current development entry — owner direction 2026-09-17
+
+The ordinary `citlali <configuration>` entry now selects the implemented
+Timestream Successor. `default_development_execution.h` owns request loading and
+exact input binding; `src/citlali/cli/rtc_pipeline_execution.cpp` owns the direct
+application sequence using the existing typed Learn/Consider/Apply, RTC grid,
+VAL terminal and `CalRtcSource` owners. The separate comparison executable is
+a thin wrapper around that same application implementation. There is no legacy
+fallback. The currently bound 152390/network12 adapter completes RTC-only;
+CAL execution, general legacy-input conversion and downstream stages are
+explicitly unavailable. See `data/development/README.md` and current status.
+
+This is an active development path, not a scientific-production qualification.
+Earlier standard-reduction descriptions below document the retained historical
+and validation implementation, not the new default. The old canonical is a
+frozen comparison, with no parallel maintenance route. Existing scientific
+owners, thresholds, input identities and validity rules remain unchanged.
+
 ## APT-PROD-003 compact v2 repair boundary
 
 All APT-dependent validation and new baseline issuance are suspended until the
@@ -153,17 +171,18 @@ targets:
 
 | Target | Role | Active implementation |
 | --- | --- | --- |
-| `citlali` / `citlali::citlali` | Static library and shared include/dependency boundary | Eight compiled implementation files plus the header-defined numerical and orchestration graph |
-| `citlali_cli` | Production executable, emitted as `citlali` | Three CLI translation units: the two versioned canonical-APT protocol adapters and `src/citlali/cli/main.cpp`, linked to `citlali::citlali` |
+| `citlali` / `citlali::citlali` | Static library and shared include/dependency boundary | Twelve compiled implementation files plus the header-defined numerical and orchestration graph |
+| `citlali_rtc_execution` | Shared application-boundary execution library | Direct successor RTC sequence, used by the ordinary CLI and comparison wrapper |
+| `citlali_cli` | Development executable, emitted as `citlali` | Three CLI translation units: the two versioned canonical-APT protocol adapters and `src/citlali/cli/main.cpp`, linked to `citlali::citlali` and `citlali_rtc_execution` |
 
-The eight compiled library sources currently cover timestream enum
+The compiled library sources cover timestream enum
 definitions, output-root leasing, restart-checkpoint publication, calibration,
 telescope data, Gaussian models, PTC sensitivity, and map primitives. Mode
 engines, much of pipeline orchestration, and mature numerical code remain
 template- or header-defined. This is the current physical build shape, not the
 desired final compilation boundary.
 
-The only supported production executable entry is
+The ordinary executable entry is
 `src/citlali/cli/main.cpp`. It:
 
 1. dispatches the explicit versioned canonical-APT contract protocol, when
@@ -172,7 +191,7 @@ The only supported production executable entry is
 3. initializes logging and parses process arguments;
 4. applies process-control policy such as dry-run handling;
 5. configures and restores the CLI run environment; and
-6. invokes the standard reduction session, reports diagnostics, and returns
+6. invokes the successor development execution boundary, reports diagnostics, and returns
    the selected process exit code.
 
 The contract protocol is a strict JSON request/response control boundary. It
@@ -184,8 +203,9 @@ exit code.
 
 ## Component Map
 
-The following map combines the active control path with the intended direction
-for new dependencies.
+The following historical standard-reduction map describes the retained
+implementation. The successor entry and its current stop are stated above;
+the ownership direction and Engine restrictions continue to govern new work.
 
 ```mermaid
 flowchart TD
@@ -727,6 +747,12 @@ rollback, and release-composition disposition is explicit.
 ### Active And Supported
 
 - `src/citlali/cli/main.cpp` and the `citlali_cli` target;
+- `citlali_rtc_execution` and the existing concrete successor RTC owners,
+  reached without an opt-in switch from the ordinary development invocation;
+- canonical-APT protocol dispatch and the RTC-only output/VAL terminal.
+
+### Retained Historical And Validation Paths
+
 - `citlali::session::ReductionSession` and `ReductionResult`;
 - the standard science, pointing/OOF, and Beammap processor variant;
 - the reduction, iteration, observation, output, provenance, and profiling
@@ -735,7 +761,7 @@ rollback, and release-composition disposition is explicit.
   domains; and
 - point, OOF, science, and Beammap validation profiles.
 
-### Active But Transitional
+### Retained Transitional Implementation
 
 - `Engine` and the mode classes that inherit it;
 - one-way adapters from typed/effective plans to legacy numerical fields;

@@ -628,3 +628,13 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 endif()
 add_dependencies(check citlali_rtc_common_mode_test)
 gtest_discover_tests(citlali_rtc_common_mode_test WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR} TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
+# The development default must execute the successor through the ordinary CLI.
+# This gate also proves unsupported requests never select the legacy route.
+if(TARGET citlali_cli)
+    find_package(Python3 REQUIRED COMPONENTS Interpreter)
+    add_dependencies(check citlali_cli)
+    add_test(NAME citlali::successor_default_cli
+        COMMAND "${Python3_EXECUTABLE}"
+            "${CMAKE_CURRENT_LIST_DIR}/test_successor_default_cli.py"
+            --cli "$<TARGET_FILE:citlali_cli>")
+endif()

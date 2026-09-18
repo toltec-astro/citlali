@@ -99,6 +99,14 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 endif()
 
 ## optional targets
+add_library(citlali_rtc_execution STATIC
+    "src/citlali/cli/rtc_pipeline_execution.cpp")
+target_link_libraries(citlali_rtc_execution PUBLIC citlali::citlali)
+target_include_directories(citlali_rtc_execution PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/tools/timestream_successor")
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(citlali_rtc_execution PRIVATE -fno-fast-math -ffp-contract=off)
+endif()
+
 option(CITLALI_BUILD_CLI "Build CLI" ON)
 if (CITLALI_BUILD_CLI)
 
@@ -114,7 +122,7 @@ if (CITLALI_BUILD_CLI)
             "src/citlali/cli/canonical_apt_contract_protocol_v2.cpp"
             "src/citlali/cli/main.cpp"
             )
-    target_link_libraries(citlali_cli PRIVATE ${dep_libs})
+    target_link_libraries(citlali_cli PRIVATE ${dep_libs} citlali_rtc_execution)
     target_include_directories(citlali_cli PUBLIC "include")
     set_property(TARGET citlali_cli PROPERTY RULE_LAUNCH_COMPILE "\"${CMAKE_COMMAND}\" -E time")
     set_property(TARGET citlali_cli PROPERTY OUTPUT_NAME citlali)
@@ -157,7 +165,7 @@ if (CITLALI_STANDALONE)
         target_compile_options(citlali_rtc_notch_recovery PRIVATE -fno-fast-math -ffp-contract=off)
     endif()
     add_executable(citlali_rtc_multidetector EXCLUDE_FROM_ALL "tools/timestream_successor/rtc_multidetector.cpp")
-    target_link_libraries(citlali_rtc_multidetector PRIVATE citlali::citlali)
+    target_link_libraries(citlali_rtc_multidetector PRIVATE citlali_rtc_execution)
     target_include_directories(citlali_rtc_multidetector PRIVATE "include")
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         target_compile_options(citlali_rtc_multidetector PRIVATE -fno-fast-math -ffp-contract=off)

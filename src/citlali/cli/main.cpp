@@ -13,7 +13,7 @@
 #include <citlali/core/cli/exception_reporting.h>
 #include <citlali/core/cli/process_control.h>
 #include <citlali/core/cli/run_environment.h>
-#include <citlali/core/cli/standard_reduction_execution.h>
+#include <citlali/core/cli/default_development_execution.h>
 #include <citlali/core/provenance/deployment_identity.h>
 
 using rc_t = citlali::cli::RuntimeConfig;
@@ -27,8 +27,7 @@ int run(const rc_t &rc) {
     //spdlog::set_pattern("[%H:%M:%S %z] [%s] %v");
 
     // start the main process
-    auto exitcode = citlali::cli::load_and_run_default_citlali_reduction(
-        rc, logger, std::cerr);
+    auto exitcode = citlali::cli::load_and_run_successor_development(rc, logger);
 
     // re-enable default logger
     citlali::cli::restore_citlali_cli_run_environment(run_environment);
@@ -55,7 +54,7 @@ int main(int argc, char *argv[]) {
     // to go first
     if (citlali::cli::dump_default_config_if_requested(
             argc, argv, CITLALI_GIT_VERSION, CITLALI_BUILD_TIMESTAMP,
-            citlali::citlali_default_config_content)) {
+            citlali::cli::successor_default_config)) {
         return EXIT_SUCCESS;
     }
     // now with normal CLI interface

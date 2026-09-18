@@ -1,5 +1,31 @@
 # Citlali Integration Ledger
 
+## Successor development-default integration — 2026-09-17
+
+- Explicit owner disposition: freeze old canonical, integrate reviewed RTC,
+  and make successor the ordinary development path. This development-only
+  activation is authorized now; it is distinct from scientific qualification.
+- Prior canonical `0f52e1a421416eadaf7d8d99d64f537132395c0c`; preserved reference
+  `codex/baseline-before-successor-default-2026-09-17`, complete history bundle,
+  runnable old CLI, dependency sources and build/provenance inventory. See
+  `validation/timestream_successor_development_baseline.json`.
+- Reviewed RTC closure `af716d166447624c7efbc0575c83b9272e7b472f` descends from
+  that canonical. Its Unity-tested parent `165684816cad61705540049975665baeb23661c2`
+  retains job64548643/1217-test acceptance. Changed default executable has its
+  own local gates and fresh independent exact-SHA review; Unity acceptance is
+  not relabeled as testing these changes.
+- One new spine `codex/timestream-successor-development-default-001` succeeds
+  the completed RTC topic. Ordinary CLI and comparison tool share application
+  execution; no duplicated scientific processor, Engine growth or fallback.
+- Canonical advancement is a compare-and-swap fast-forward after exact-source
+  review. Final candidate/tree/ref observation, three review dispositions and
+  gate artifacts are in `/private/tmp/citlali-successor-development-default-20260917`.
+  The missing registered canonical checkout is not recreated or pruned, and
+  unrelated worktrees/dirt/stashes are not altered. User controls remote pushes.
+- Current stop: complete RTC-only output. Next: actual RTC -> AST-bound CAL,
+  using recovered approved authority, not the legacy calibration formula.
+  PTC/MAP, FRUIT and production qualification remain separate.
+
 ## RTC common-mode repeatability bounded completion — 2026-09-16
 
 - Owner-authorized Tier 2 census; literal base
