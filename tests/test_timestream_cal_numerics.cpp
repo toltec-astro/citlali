@@ -4,6 +4,10 @@
 #include <bit>
 #include <cmath>
 #include <limits>
+#include <filesystem>
+#include <chrono>
+#include <tuple>
+#include "../src/citlali/cli/cal_opacity_header.h"
 
 using namespace citlali::pipeline;
 namespace {
@@ -13,6 +17,42 @@ auto wvr(std::vector<CalWvrRecord> r,std::string mapping="ALIGN-controlled-Unix"
 CalWvrRecord record(std::string id,double time,double tau,bool valid=true,double first=0,double last=100) {
     return {std::move(id),time,tau,valid,first,last};
 }
+}
+
+TEST(cal_wvr, header_ingress_rejects_arrays_and_real_second_sources_without_scalar_overread) {
+    struct Temporary {
+        std::filesystem::path path=std::filesystem::temp_directory_path()/
+            ("citlali-cal-header-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count())+".nc");
+        ~Temporary(){std::error_code ec;std::filesystem::remove(path,ec);}
+    } temporary;
+    auto read=[&](int primary_shape,int secondary_shape,double secondary,std::string update2,bool series=false,double tau=.018) {
+        {
+            netCDF::NcFile file(temporary.path.string(),netCDF::NcFile::replace);
+            const auto n=file.addDim("n",2),text_n=file.addDim("text",20);
+            for(const auto &[name,shape,value]:std::vector<std::tuple<std::string,int,double>>{
+                {"Header.Radiometer.Tau",primary_shape,tau},{"Header.Radiometer.Tau2",secondary_shape,secondary}}) {
+                if(shape<0)continue;
+                auto variable=file.addVar(name,netCDF::ncDouble,shape?std::vector<netCDF::NcDim>{n}:std::vector<netCDF::NcDim>{});
+                double values[2]={value,value};variable.putVar(values);
+            }
+            std::string update="19-02-2026 06:39:44  ";
+            file.addVar("Header.Radiometer.UpdateDate",netCDF::ncChar,{text_n}).putVar(update.data());
+            update2.resize(20,' ');file.addVar("Header.Radiometer.UpdateDate2",netCDF::ncChar,{text_n}).putVar(update2.data());
+            if(series)file.addVar("Data.WVR.Tau",netCDF::ncDouble,{n});
+        }
+        netCDF::NcFile file(temporary.path.string(),netCDF::NcFile::read);
+        return citlali::cli::detail::read_cal_opacity_header(file);
+    };
+    const auto good=read(0,0,0,"");ASSERT_TRUE(good.tau225);EXPECT_DOUBLE_EQ(*good.tau225,.018);
+    EXPECT_EQ(good.update_text,"19-02-2026 06:39:44");
+    EXPECT_FALSE(read(-1,-1,0,"").tau225);
+    EXPECT_TRUE(std::isnan(*read(0,0,0,"",false,NAN).tau225));
+    EXPECT_THROW(read(1,0,0,""),std::invalid_argument);
+    EXPECT_THROW(read(0,1,0,""),std::invalid_argument);
+    EXPECT_THROW(read(0,0,.02,""),std::invalid_argument);
+    EXPECT_THROW(read(0,0,0,"19-02-2026 06:44:44"),std::invalid_argument);
+    EXPECT_THROW(read(0,0,NAN,""),std::invalid_argument);
+    EXPECT_THROW(read(0,0,0,"",true),std::invalid_argument);
 }
 
 TEST(cal_atmosphere, every_frozen_node_and_analytic_zero_in_all_reference_spectra) {

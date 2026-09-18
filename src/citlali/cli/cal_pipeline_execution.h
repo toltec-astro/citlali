@@ -1,5 +1,6 @@
 // Private application adapter. YAML/NetCDF/APT parsing stays outside CAL/AST.
 #include <citlali/core/pipeline/timestream_cal_pipeline.h>
+#include "cal_opacity_header.h"
 
 namespace {
 YAML::Node execute_connected_cal(const CalRtcSource &source,const YAML::Node &cfg,
@@ -86,10 +87,7 @@ YAML::Node execute_connected_cal(const CalRtcSource &source,const YAML::Node &cf
     // Owner 2026-09-18: one observation-associated reading is constant over
     // that observation. Preserve the header's actual update text; do not
     // manufacture a sampled series or assert an unverified time conversion.
-    // Fail explicitly if a new layout arrives rather than silently ignoring it.
-    for(const auto &[name,var]:tel.getVars())
-        require(!name.starts_with("Data.Radiometer.") && !name.starts_with("Data.WVR."),
-                "CAL WVR producer series layout requires an explicit time/validity adapter: "+name);
+    const auto opacity_header=citlali::cli::detail::read_cal_opacity_header(tel);
     double observation_first=std::numeric_limits<double>::infinity(),observation_last=-observation_first;
     for(auto network:grid->align_handle()->participant_network_ids()) {
         const auto &axis=grid->align_handle()->paired_handle()->network(network).occurrence_axis();
@@ -97,22 +95,8 @@ YAML::Node execute_connected_cal(const CalRtcSource &source,const YAML::Node &cf
         observation_last=std::max(observation_last,grid->align_handle()->occurrence_assignment(network,axis.past_last_native_row()-1).assigned_time_unix_sec);
     }
     std::vector<CalWvrRecord> opacity_records;
-    const auto tau_header=tel.getVar("Header.Radiometer.Tau");
-    std::string update_text;
-    if(!tel.getVar("Header.Radiometer.UpdateDate").isNull())update_text=read_netcdf_text(tel,"Header.Radiometer.UpdateDate");
-    if(!tau_header.isNull()) {
-        require(tau_header.getDimCount()==0,"CAL scalar WVR header has a non-scalar layout");
-        const double tau=read_netcdf_scalar<double>(tel,"Header.Radiometer.Tau");
-        opacity_records.push_back({telescope_identity+":Header.Radiometer.Tau",std::nullopt,tau,true,NAN,NAN});
-    }
-    // Tau2 with a populated update record is not the known unused placeholder.
-    // A real second source must be bound explicitly, never ignored as singleton.
-    if(!tel.getVar("Header.Radiometer.UpdateDate2").isNull())
-        require(read_netcdf_text(tel,"Header.Radiometer.UpdateDate2").find_first_not_of(" \t\r\n")==std::string::npos,
-                "CAL second WVR header reading requires an explicit source-time adapter");
-    if(!tel.getVar("Header.Radiometer.Tau2").isNull())
-        require(read_netcdf_scalar<double>(tel,"Header.Radiometer.Tau2")==0.,
-                "CAL non-placeholder second WVR value requires an explicit source-time adapter");
+    if(opacity_header.tau225)
+        opacity_records.push_back({telescope_identity+":Header.Radiometer.Tau",std::nullopt,*opacity_header.tau225,true,NAN,NAN});
     auto wvr=CalWvrEvidence::learn(scope,telescope_identity,
         "ALIGN:exact-RTC-occurrence-integration-midpoint:Unix-seconds",std::move(opacity_records),
         CalWvrObservationInterval{observation_first,observation_last});
@@ -145,7 +129,7 @@ YAML::Node execute_connected_cal(const CalRtcSource &source,const YAML::Node &cf
     record["WVR_cause"]=std::string(cal_wvr_cause_name(wvr->at(observation_first).cause));
     record["WVR_single_reading_constant"]=wvr->single_reading();
     record["WVR_observation_first_unix_sec"]=observation_first;record["WVR_observation_last_unix_sec"]=observation_last;
-    record["WVR_source_update_text"]=update_text;
+    record["WVR_source_update_text"]=opacity_header.update_text;
     record["WVR_source_time_mapping"]=wvr->single_reading()?"not-required-for-singleton;raw-header-update-preserved":"unavailable-no-reading";
     record["WVR_variability_measured"]=false;
     record["WVR_input_limitation"]=wvr->single_reading()?
