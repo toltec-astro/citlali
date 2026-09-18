@@ -66,4 +66,8 @@ promotion, owner push, and cleanup remain separate exact operations; no push
 or deletion is performed by the agent.
 
 Evidence directory: `/private/tmp/citlali-rtc-performance-001-20260918`.
-Completion and exact review will be recorded after measurements and gates.
+The [completion handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_PERFORMANCE_001_2026-09-18.md)
+records the exact implementation, independent review, same-data comparison,
+timing and storage audit. Durable evidence preserves both the original strict
+YAML comparator result and the explicit verification of its two changed
+derived CAL references. No scientific difference remains unexplained.

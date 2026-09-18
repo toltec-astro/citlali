@@ -8,10 +8,21 @@ from live canonical `fe448860741c543b731faaa76c0eea5194e7599f`, on the one
 spine branch `codex/timestream-successor-rtc-performance-001`. The completed
 RTC/CAL/PTC route and all scientific policies remain the baseline. Work covers
 measured repeated identity/event queries, shared timing/pointing calculations,
-allocation lifetimes, and streamed evidence publication. Focused boundary
-checks precede the identical full-network numerical/support comparison and
-independent exact-SHA review. No canonical promotion or new scientific
-qualification is implied by this active performance work.
+allocation lifetimes, and streamed evidence publication.
+
+The exact implementation `f34f9d9d896132b4ba6bb9d30380b9d34e94d867`
+passes independent review, 43 focused tests and all 1,261 runnable CTests.
+The identical full-network run completes through PTC/VAL in 311.27 seconds
+versus 631.43 seconds at the preserved baseline. CAL's pre-publication subtotal
+falls from 57.56 to 1.33 seconds; comparable polled peak RSS falls from 13.84
+to 7.29 GB (candidate internal high-water 7.31 GB). All 5,968 binary products
+are identical; all 12 existing YAML documents retain their scientific contents,
+with explicitly verified changed runtime/provenance fields. The same 363
+detectors and 27,157,906 eligible samples remain. See the
+[completion and storage handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_PERFORMANCE_001_2026-09-18.md).
+This is one local AppleClang measurement, not new Unity or scientific
+qualification. Canonical promotion and owner push remain pending; the candidate
+default still executes RTC → CAL → PTC → VAL and stops before MAP.
 
 ## Scoped RTC/PTC completion — 2026-09-18
 
