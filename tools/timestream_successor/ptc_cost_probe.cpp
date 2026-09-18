@@ -29,8 +29,18 @@ int main(int argc,char **argv) {
         record["source"]="synthetic-independent-400-detector-population-seed-20260918;610-post-F2-samples-about-10s";
     } else {
         const fs::path root=input;const auto receipt=YAML::LoadFile((root/"receipt.yaml").string());
-        if(receipt["schema"].as<std::string>()!="citlali-ptc-output-v1")throw std::invalid_argument("unsupported preserved input");
+        const auto schema=receipt["schema"].as<std::string>();
+        if(schema!="citlali-ptc-output-v1" && schema!="citlali-ptc-output-v2")throw std::invalid_argument("unsupported preserved input");
         const auto g=receipt["segments"][segment];const auto n=g["scheduled_times"].as<int>(),d=g["detectors"].as<int>();
+        // Both schemas preserve fit input on detector_indices. V2 additionally
+        // publishes full-domain cleaned values/causes, never consumed as input.
+        if(n<1 || d<0 || g["detector_indices"].size()!=static_cast<std::size_t>(d))
+            throw std::invalid_argument("preserved fit membership shape mismatch");
+        record["source_schema"]=schema;record["detector_indices"]=g["detector_indices"];
+        if(schema=="citlali-ptc-output-v2") {
+            record["fit_columns_in_output"]=g["fit_columns_in_output"];
+            record["output_detector_indices"]=g["output_detector_indices"];
+        }
         values.resize(n,d);mask.resize(n,d);const auto prefix="segment-"+std::to_string(segment);
         auto read=[&](const std::string &suffix,auto *data,std::size_t size){const auto name=prefix+suffix;
             if(citlali::utils::sha256_file(root/name)!=g["files"][name].as<std::string>())throw std::invalid_argument("preserved input checksum mismatch");
