@@ -31,13 +31,13 @@ int main(int argc,char **argv) {
         const fs::path root=input;const auto receipt=YAML::LoadFile((root/"receipt.yaml").string());
         if(receipt["schema"].as<std::string>()!="citlali-ptc-output-v1")throw std::invalid_argument("unsupported preserved input");
         const auto g=receipt["segments"][segment];const auto n=g["scheduled_times"].as<int>(),d=g["detectors"].as<int>();
-        values.resize(n,d);mask.resize(n,d);Eigen::VectorXd mean(d);const auto prefix="segment-"+std::to_string(segment);
+        values.resize(n,d);mask.resize(n,d);const auto prefix="segment-"+std::to_string(segment);
         auto read=[&](const std::string &suffix,auto *data,std::size_t size){const auto name=prefix+suffix;
             if(citlali::utils::sha256_file(root/name)!=g["files"][name].as<std::string>())throw std::invalid_argument("preserved input checksum mismatch");
             if(fs::file_size(root/name)!=size)throw std::invalid_argument("preserved input shape mismatch");
             std::ifstream file(root/name,std::ios::binary);file.read(reinterpret_cast<char*>(data),size);if(!file)throw std::runtime_error("input read failed");};
-        read("-centered.f64",values.data(),values.size()*8);read("-mean.f64",mean.data(),mean.size()*8);read("-eligible.u8",mask.data(),mask.size());
-        for(int t=0;t<n;++t)for(int j=0;j<d;++j)values(t,j)=mask(t,j)?values(t,j)+mean[j]:NAN;
+        read("-input.f64",values.data(),values.size()*8);read("-eligible.u8",mask.data(),mask.size());
+        for(int t=0;t<n;++t)for(int j=0;j<d;++j)if(!mask(t,j))values(t,j)=NAN;
         record["source_receipt_sha256"]=citlali::utils::sha256_file(root/"receipt.yaml");record["source_CAL_receipt_sha256"]=receipt["source_CAL_receipt_sha256"];
         record["source"]=root.string();record["segment"]=segment;record["network"]=g["network"];record["scan"]=g["scan"];
     }

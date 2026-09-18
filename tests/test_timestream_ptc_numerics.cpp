@@ -76,3 +76,13 @@ TEST(PtcNumerics, UnsupportedLargeRankAndOneTimeRemainBoundedFailures) {
     auto x=fixture(1);auto p=PtcPrepared::prepare(x,PtcMask::Ones(x.rows(),x.cols()));auto r=request();r.rank=100000000;
     auto f=ptc_learn(p,r);EXPECT_FALSE(f.converged);auto a=ptc_apply(p,f);EXPECT_EQ(a.retained,0);EXPECT_EQ(a.causes(0,0),2);
 }
+
+TEST(PtcNumerics, UnresolvedCutoffDegeneracyDoesNotChooseArbitrarySubspace) {
+    PtcMatrix x(6,3);x<<1,0,0,-1,0,0,0,1,0,0,-1,0,0,0,1,0,0,-1;
+    auto p=PtcPrepared::prepare(x,PtcMask::Ones(6,3));auto r=request();r.rank=2;
+    for(auto method:{PtcMethod::observed_als,PtcMethod::pairwise_covariance}) {
+        r.method=method;auto f=ptc_learn(p,r);EXPECT_FALSE(f.converged);
+        EXPECT_EQ(f.stopping_reason,"unresolved-eigenspace-cutoff-degeneracy");EXPECT_EQ(ptc_apply(p,f).retained,0);
+    }
+    r.rank=3;EXPECT_TRUE(ptc_learn(p,r).converged);
+}

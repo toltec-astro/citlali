@@ -74,6 +74,10 @@ void initialize(const PtcPrepared &p,PtcFit &out) {
     const auto &values=eig.eigenvalues();
     if(values[values.size()-out.request.rank]<=std::max(0.,values.maxCoeff())*out.request.relative_rank_tolerance)
         throw std::runtime_error("requested-basis-rank-unavailable");
+    if(out.request.rank<values.size() &&
+       values[values.size()-out.request.rank]-values[values.size()-out.request.rank-1]
+            <=std::max(0.,values.maxCoeff())*out.request.relative_rank_tolerance)
+        throw std::runtime_error("unresolved-eigenspace-cutoff-degeneracy");
     // Pairwise covariance need not be PSD. Negative trailing eigenvalues are
     // retained as a known limitation; every selected mode must be positive.
     out.basis=eig.eigenvectors().rightCols(out.request.rank).rowwise().reverse();

@@ -58,6 +58,12 @@ YAML::Node execute_connected_ptc(const PtcCalSource &source,const ProcessingScan
         r["apply_factorizations"]=applied.factorizations;r["apply_factor_reuses"]=applied.factor_reuses;
         r["working_matrix_bytes"]=p.centered.size()*sizeof(double)+p.eligible.size()+p.mean.size()*sizeof(double)+fit.basis.size()*sizeof(double)+applied.values.size()*sizeof(double)+applied.causes.size();
         const auto writing=std::chrono::steady_clock::now();const auto prefix="segment-"+std::to_string(g);
+        // Preserve exact CAL input bits for replay; centered+mean is not a
+        // lossless inverse in floating point. Masked storage is not consumed.
+        PtcMatrix original=PtcMatrix::Zero(p.centered.rows(),p.centered.cols());
+        for(std::size_t t=0;t<group.slots.size();++t)for(std::size_t d=0;d<group.detectors.size();++d)
+            if(p.eligible(t,d))original(t,d)=*source.value(group.detectors[d],group.slots[t]);
+        write_matrix(destination/(prefix+"-input.f64"),original);
         write_matrix(destination/(prefix+"-centered.f64"),p.centered);write_matrix(destination/(prefix+"-mean.f64"),p.mean);
         write_matrix(destination/(prefix+"-basis.f64"),fit.basis);write_matrix(destination/(prefix+"-cleaned.f64"),applied.values);
         auto bytes=[&](const std::string &suffix,const auto &matrix){std::ofstream stream(destination/(prefix+suffix),std::ios::binary);
@@ -65,7 +71,7 @@ YAML::Node execute_connected_ptc(const PtcCalSource &source,const ProcessingScan
         bytes("-eligible.u8",p.eligible);bytes("-causes.u8",applied.causes);
         std::ofstream slots(destination/(prefix+"-slots.i64"),std::ios::binary);
         for(auto s:group.slots){const auto value=static_cast<std::int64_t>(s);slots.write(reinterpret_cast<const char*>(&value),8);}slots.close();require(bool(slots),"required PTC occurrence output failed");
-        for(const auto *suffix:{"-centered.f64","-mean.f64","-basis.f64","-cleaned.f64","-eligible.u8","-causes.u8","-slots.i64"})
+        for(const auto *suffix:{"-input.f64","-centered.f64","-mean.f64","-basis.f64","-cleaned.f64","-eligible.u8","-causes.u8","-slots.i64"})
             r["files"][prefix+suffix]=citlali::utils::sha256_file(destination/(prefix+suffix));
         r["output_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-writing).count();
         record["segments"].push_back(r);failed+=!fit.converged;scheduled+=p.centered.size();eligible+=p.eligible_count;

@@ -8,8 +8,8 @@ exact input binding; `src/citlali/cli/rtc_pipeline_execution.cpp` owns the direc
 application sequence using the existing typed Learn/Consider/Apply, RTC grid,
 VAL terminal and `CalRtcSource` owners. The separate comparison executable is
 a thin wrapper around that same application implementation. There is no legacy
-fallback. The default endpoint is now CAL; an explicit `rtc-only` request stops
-earlier. The private `cal_pipeline_execution.h` adapter resolves selected
+fallback. The default endpoint is now PTC/VAL; explicit `cal` or `rtc-only`
+requests stop earlier. The private `cal_pipeline_execution.h` adapter resolves selected
 APT/TEL/config inputs, while `AstRtcCoordinates` owns the existing bounded V2
 geometry on the exact RTC schedule. `CalEvidence`, `CalPlan` and
 `CalAppliedSignal` implement Learn, Consider and Apply; the frozen atmosphere
@@ -24,9 +24,20 @@ multiple readings retain their source-time interpolation. The WVR owner retains
 which representation was used, and the input adapter preserves raw header
 update metadata. Constant opacity still uses each sample's AST elevation.
 Missing or invalid opacity produces explicit unavailable CAL support. General
-legacy-input conversion and PTC/MAP remain unavailable. Missing required
+legacy-input conversion and MAP/FRUIT remain unavailable. Missing required
 pointing stops the requested CAL handoff; neither input failure selects a
 successful RTC-only fallback. See `data/development/README.md` and status.
+
+`PtcCalSource` binds the immutable calibrated realization and its exact VAL
+snapshot. `PtcEvidence` learns an observed-entry configured-rank basis per
+network/physical processing segment; `PtcPlan` freezes it; `PtcAppliedSignal`
+executes full-rank masked application. `ValPtcOutputFacts` references that
+result in one subsequent VAL generation. No `Engine` state or cross-stage
+policy is added. The private PTC adapter recovers explicit configuration and
+publishes artifacts; the numerical owner implements ALS and the explicitly
+selectable pairwise covariance comparator. Parent values and memberships stay
+fixed. Exact local response action is available, but an absent complete
+upstream response is not manufactured. See the 2026-09-18 owner binding.
 
 This is an active development path, not a scientific-production qualification.
 Earlier standard-reduction descriptions below document the retained historical

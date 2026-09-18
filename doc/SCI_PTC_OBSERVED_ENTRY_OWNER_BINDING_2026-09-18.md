@@ -37,7 +37,12 @@ not a pair-specific mean. Every pair must have at least two observations.
 Insufficient overlap is an explicit unavailable fit, including for the ALS
 initializer; it is not a zero covariance or complete-case fallback. Pairwise
 covariance may be indefinite. The requested largest modes must be positive
-above the declared relative tolerance; unselected negative eigenvalues are
+above the declared relative tolerance. A selected/unselected cutoff gap at or
+below that same scale is unresolved degeneracy and fails explicitly, rather
+than selecting an arbitrary tied subspace. For ALS this is an explicitly
+unavailable initializer, not proof the final observed-entry problem is
+nonunique; alternate initialization remains outside this increment. Rotations wholly within the selected
+subspace are a gauge and do not change the operator. Unselected negative eigenvalues are
 not clipped into an invented covariance qualification.
 
 ALS starts with that eigenspace, solves time coefficients on observed detector
