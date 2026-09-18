@@ -2,14 +2,26 @@
 
 ## Scoped RTC/PTC completion — 2026-09-18
 
-The owner directs completion with the good detectors while preserving the 51
+The owner directed completion with good detectors while preserving the 51
 fully excluded detectors and all existing scientific controls. The
 [partial-completion binding](SCI_RTC_PTC_PARTIAL_COMPLETION_OWNER_BINDING_2026-09-18.md)
 authorizes scoped RTC completion and explicit zero-support PTC admission before
-fitting. Work starts from pushed canonical `cb5361f7425ba7d211e284ee57a9a3a67cf393b5`
-on `codex/timestream-successor-partial-completion-001`. The same full-network
-ordinary invocation, focused/regression checks and exact independent review
-will establish completion; prior failed-run evidence remains preserved.
+fitting. The one branch is `codex/timestream-successor-partial-completion-001`,
+based on pushed canonical `cb5361f7425ba7d211e284ee57a9a3a67cf393b5`.
+
+The ordinary full-network invocation now completes RTC → CAL → PTC → VAL
+with exit 0: 363 detectors provide output, all 124 fits converge, and all
+27,157,906 eligible samples remain. All 414 output identities and the same
+51 unavailable detectors are preserved. All 3,734 prior RTC binary files match
+exactly. Pipeline execution 96247c943 and reviewed source 4690f9747 differ only
+in the repaired comparison-tool reader. Both methods pass all 124 matched
+replays. All 1,258 runnable CTests, configuration/Python gates and independent
+exact-SHA review pass. The full run took 618.69 seconds; PTC took 32.96 seconds,
+including 3.62 seconds of fitting. See the
+[completion handoff](../handoff/TIMESTREAM_SUCCESSOR_PARTIAL_COMPLETION_001_2026-09-18.md)
+for membership, timing, rank probes and exact bindings. The prior failed run
+remains preserved. No threshold, scientific qualification, MAP/FRUIT or Unity
+status changed. The default remains active through PTC/VAL.
 
 ## Connected observed-entry PTC development — 2026-09-18
 
