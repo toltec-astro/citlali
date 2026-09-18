@@ -1970,6 +1970,7 @@ TEST(cal_pipeline, invalid_atmosphere_and_numeric_overflow_are_not_ordinary_cali
 }
 TEST(ast_rtc_coordinates, exact_RTC_schedule_uses_existing_pointing_rotation_without_filtering_angles) {
   CalFixture f;auto p=f.ast->at(0,300);ASSERT_TRUE(p);
+  EXPECT_EQ(AstRtcCoordinates::role,"SCI-AST:rtc_output_grid_coordinates@1");
   EXPECT_NEAR(p->tangent_lon_deg,-std::sqrt(.5)/3600,1e-15);
   EXPECT_NEAR(p->tangent_lat_deg,std::sqrt(.5)/3600,1e-15);EXPECT_DOUBLE_EQ(p->telescope_elevation_deg,45);
   EXPECT_EQ(f.ast->grid_handle(),f.terminal->grid_handle());

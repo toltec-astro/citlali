@@ -65,6 +65,7 @@ private:
     std::vector<CalWvrRecord> records_;
     struct Group { std::size_t first, last; bool conflict; };
     std::vector<Group> groups_;
+    CalWvrCause support_cause(const Group &,const Group &,double first,double last) const;
 };
 
 } // namespace citlali::pipeline

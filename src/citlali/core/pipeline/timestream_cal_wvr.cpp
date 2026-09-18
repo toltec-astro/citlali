@@ -56,6 +56,17 @@ std::shared_ptr<const CalWvrEvidence> CalWvrEvidence::learn(NativeObservationSco
     }
     return out;
 }
+CalWvrCause CalWvrEvidence::support_cause(const Group &lo,const Group &hi,double first,double last) const {
+    if(lo.conflict || hi.conflict)return CalWvrCause::conflicting_duplicate;
+    const auto &a=records_[lo.first],&b=records_[hi.first];
+    if(!a.producer_valid || !b.producer_valid ||
+        std::max(a.valid_first_unix_sec,b.valid_first_unix_sec)>first ||
+        std::min(a.valid_last_unix_sec,b.valid_last_unix_sec)<last)
+        return CalWvrCause::gap_outside_source_validity;
+    if(!std::isfinite(a.tau225) || !std::isfinite(b.tau225))return CalWvrCause::nonfinite;
+    if(a.tau225<0 || b.tau225<0)return CalWvrCause::negative;
+    return CalWvrCause::available;
+}
 CalWvrSample CalWvrEvidence::at(double t) const {
     CalWvrSample out;out.mapped_time_unix_sec=t;
     if(mapping_.empty() || !std::isfinite(t) || std::fegetround()!=FE_TONEAREST){out.cause=CalWvrCause::time_mapping_unavailable;return out;}
@@ -65,15 +76,9 @@ CalWvrSample CalWvrEvidence::at(double t) const {
     if(!exact && (hi==groups_.begin() || hi==groups_.end())){out.cause=CalWvrCause::unbracketed;return out;}
     const auto &lo=exact?*hi:*(hi-1);
     out.first_record=lo.first;out.last_record=hi->first;out.exact_match=exact;
-    if(lo.conflict || hi->conflict){out.cause=CalWvrCause::conflicting_duplicate;return out;}
     const auto &a=records_[lo.first],&b=records_[hi->first];
-    if(!a.producer_valid || !b.producer_valid ||
-        std::max(a.valid_first_unix_sec,b.valid_first_unix_sec)>(exact?t:a.time_unix_sec) ||
-        std::min(a.valid_last_unix_sec,b.valid_last_unix_sec)<(exact?t:b.time_unix_sec)) {
-        out.cause=CalWvrCause::gap_outside_source_validity;return out;
-    }
-    if(!std::isfinite(a.tau225) || !std::isfinite(b.tau225)){out.cause=CalWvrCause::nonfinite;return out;}
-    if(a.tau225<0 || b.tau225<0){out.cause=CalWvrCause::negative;return out;}
+    out.cause=support_cause(lo,*hi,exact?t:a.time_unix_sec,exact?t:b.time_unix_sec);
+    if(out.cause!=CalWvrCause::available)return out;
     out.weight=exact?0:(t-a.time_unix_sec)/(b.time_unix_sec-a.time_unix_sec);
     const double value=exact?a.tau225:a.tau225+out.weight*(b.tau225-a.tau225);
     if(!std::isfinite(value)){out.cause=CalWvrCause::nonfinite;return out;}
@@ -88,15 +93,22 @@ CalWvrQuality CalWvrEvidence::quality(double first,double last) const {
     for(const auto &g:groups_) {const auto t=records_[g.first].time_unix_sec;if(t>first && t<last)times.push_back(t);}
     times.push_back(last);q.breakpoint_count=times.size();
     std::vector<double> values;bool missing=false,invalid=false;
-    auto observe=[&](CalWvrSample sample){
-        if(sample.cause==CalWvrCause::negative || sample.cause==CalWvrCause::nonfinite) {
-            invalid=true;q.cause=std::string(cal_wvr_cause_name(sample.cause));
-        } else if(!sample.tau225) {missing=true;if(!invalid)q.cause=std::string(cal_wvr_cause_name(sample.cause));}
+    auto observe=[&](CalWvrCause cause){
+        if(cause==CalWvrCause::negative || cause==CalWvrCause::nonfinite) {
+            invalid=true;q.cause=std::string(cal_wvr_cause_name(cause));
+        } else if(cause!=CalWvrCause::available) {missing=true;if(!invalid)q.cause=std::string(cal_wvr_cause_name(cause));}
     };
     for(std::size_t i=0;i<times.size();++i){
-        const auto sample=at(times[i]);observe(sample);values.push_back(sample.tau225.value_or(0));
-        // Exact valid endpoints do not authorize bridging a disallowed interval.
-        if(i)observe(at(times[i-1]+(times[i]-times[i-1])/2));
+        const auto sample=at(times[i]);observe(sample.cause);values.push_back(sample.tau225.value_or(0));
+        // Inspect the source bracket itself: a midpoint can round onto an
+        // endpoint when source times are adjacent representable binary64s.
+        // Exact valid endpoint values alone never authorize an open interval.
+        if(i) {
+            auto hi=std::upper_bound(groups_.begin(),groups_.end(),times[i-1],
+                [&](double time,auto g){return time<records_[g.first].time_unix_sec;});
+            if(hi==groups_.begin() || hi==groups_.end())observe(groups_.empty()?CalWvrCause::absent:CalWvrCause::unbracketed);
+            else observe(support_cause(*(hi-1),*hi,records_[(hi-1)->first].time_unix_sec,records_[hi->first].time_unix_sec));
+        }
     }
     if(invalid){q.classification=CalOpacityQuality::invalid_opacity_input;return q;}
     if(missing)return q;

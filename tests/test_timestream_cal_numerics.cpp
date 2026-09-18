@@ -55,6 +55,11 @@ TEST(cal_wvr, declared_gaps_invalid_records_and_duplicate_conflicts_are_not_skip
     EXPECT_TRUE(gap->at(0).tau225);EXPECT_TRUE(gap->at(10).tau225);
     EXPECT_EQ(gap->at(5).cause,CalWvrCause::gap_outside_source_validity);
     EXPECT_FALSE(gap->quality(0,10).summary_available);
+    const double adjacent=std::nextafter(1.,2.);
+    auto tiny_gap=wvr({record("a",1,.1,true,1,1),record("b",adjacent,.1,true,adjacent,adjacent)});
+    EXPECT_TRUE(tiny_gap->at(1).tau225);EXPECT_TRUE(tiny_gap->at(adjacent).tau225);
+    EXPECT_EQ(tiny_gap->quality(1,adjacent).cause,"wvr_tau225_gap_outside_source_validity");
+    EXPECT_FALSE(tiny_gap->quality(1,adjacent).summary_available);
     auto invalid=wvr({record("a",0,.1),record("b",5,.15,false),record("c",10,.2)});
     EXPECT_EQ(invalid->at(2).cause,CalWvrCause::gap_outside_source_validity);
     EXPECT_EQ(invalid->at(7).cause,CalWvrCause::gap_outside_source_validity);

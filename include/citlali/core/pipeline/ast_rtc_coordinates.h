@@ -31,7 +31,7 @@ public:
     const auto &geometry() const noexcept { return geometry_; }
     const auto &trajectory_handle() const noexcept { return trajectory_; }
     std::optional<Direction> at(std::size_t detector, std::size_t slot) const;
-    static constexpr std::string_view role = "AST-RTC-grid-detector-tangent";
+    static constexpr std::string_view role = "SCI-AST:rtc_output_grid_coordinates@1";
     static constexpr std::string_view method = "bounded-v2-radec-gnomonic-detector-offset-v1";
 private:
     std::shared_ptr<const RtcOutputGrid> grid_;
