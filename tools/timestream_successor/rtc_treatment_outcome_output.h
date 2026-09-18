@@ -1,6 +1,6 @@
 #pragma once
 // Offline serialization only. Numerical comparison and support belong to RTC.
-YAML::Node write_treatment_outcome(const fs::path &output, const std::string &name,
+void write_treatment_outcome(const fs::path &output, const std::string &name,
     const citlali::pipeline::RtcTreatmentOutcomeEvidence &e, const std::vector<int> &channels) {
   YAML::Node out;out["schema"]="rtc-treatment-outcome-v1";out["use_policy"]=e.use_policy;
   out["attempt"]=e.attempt();out["original_evidence_attempt"]=e.original_handle()->attempt();
@@ -14,6 +14,8 @@ YAML::Node write_treatment_outcome(const fs::path &output, const std::string &na
   out["logical_owned_bytes"]=e.logical_owned_bytes();out["peak_scratch_samples"]=e.peak_scratch_samples();
   const auto before_path=output/(name+"-original-psd.f64"),after_path=output/(name+"-conditioned-psd.f64");
   std::ofstream before(before_path,std::ios::binary),after(after_path,std::ios::binary);
+  std::ofstream document(output/(name+".yaml"));
+  rtc_yaml_node(document,out);document<<"records:\n"<<std::setprecision(17);
   for(const auto &r:e.records()) {
     const auto &n=e.original_handle()->network(r.network),&m=e.conditioned_handle()->network(r.network);
     YAML::Node row;row["channel"]=channels.at(r.detector);row["network"]=r.network;row["coordinate"]=static_cast<int>(r.coordinate);
@@ -40,24 +42,28 @@ YAML::Node write_treatment_outcome(const fs::path &output, const std::string &na
     if(r.available()) {
       row["original_stored_power"]=r.power.original;row["conditioned_stored_power"]=r.power.conditioned;
       if(r.power.conditioned_over_original)row["conditioned_over_original"]=*r.power.conditioned_over_original;
+    }
+    document<<"-\n";rtc_yaml_node(document,row,2);
+    if(r.available() && !r.original_matched.windows.empty()) {
+      document<<"  windows:\n";
       for(std::size_t i=0;i<r.original_matched.windows.size();++i) {
         const auto &a=r.original_matched.windows[i],&b=r.conditioned_matched.windows[i];
-        YAML::Node win;win["rows"]=range(a.rows);win["run_index"]=a.run_index;
-        win["begin_unix_sec"]=a.support_begin_unix_sec;win["end_unix_sec"]=a.support_end_unix_sec;
-        win["padded_samples"]=a.padded_samples;win["original_chunk_median"]=a.centered_chunk_median;
-        win["conditioned_chunk_median"]=b.centered_chunk_median;
-        for(auto count:a.source_counts)win["source_counts_outside_protected_unknown"].push_back(count);
-        win["representative_replacements"]=b.representative_replacements;win["replacement_influenced_samples"]=b.replacement_influenced_samples;
-        win["unrepaired_influenced_samples"]=b.unrepaired_influenced_samples;win["representative_exclusions"]=b.representative_exclusions;
-        row["windows"].push_back(win);
+        document<<"    - {rows: ["<<a.rows.first<<", "<<a.rows.past_last<<"], run_index: "<<a.run_index
+          <<", begin_unix_sec: "<<a.support_begin_unix_sec<<", end_unix_sec: "<<a.support_end_unix_sec
+          <<", padded_samples: "<<a.padded_samples<<", original_chunk_median: "<<a.centered_chunk_median
+          <<", conditioned_chunk_median: "<<b.centered_chunk_median
+          <<", source_counts_outside_protected_unknown: ["<<a.source_counts[0]<<", "<<a.source_counts[1]<<", "<<a.source_counts[2]
+          <<"], representative_replacements: "<<b.representative_replacements
+          <<", replacement_influenced_samples: "<<b.replacement_influenced_samples
+          <<", unrepaired_influenced_samples: "<<b.unrepaired_influenced_samples
+          <<", representative_exclusions: "<<b.representative_exclusions<<"}\n";
       }
     }
-    out["records"].push_back(row);
   }
   before.close();after.close();require(bool(before)&&bool(after),"outcome spectrum output failed");
-  out["original_psd_sha256"]=citlali::utils::sha256_file(before_path);
-  out["conditioned_psd_sha256"]=citlali::utils::sha256_file(after_path);
-  write_yaml(output/(name+".yaml"),out);return out;
+  YAML::Node hashes;hashes["original_psd_sha256"]=citlali::utils::sha256_file(before_path);
+  hashes["conditioned_psd_sha256"]=citlali::utils::sha256_file(after_path);
+  rtc_yaml_node(document,hashes);document.close();require(bool(document),"outcome metadata output failed");
 }
 
 YAML::Node write_reassessment_decision(const fs::path &output,

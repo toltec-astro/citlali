@@ -153,6 +153,21 @@ public:
                 r.donor=RtcDonorFillPlan::consider({evidence,truth->model_identity,RtcDonorSelectionState::accepted_isolated_event,r.event,r.affected},
                     out->facts_,out->transients_,snapshot,id+r.event+1);
         }
+        // Freeze sparse per-detector intervals once. Sample loops query the
+        // established detector axis, never scan other detectors' event records.
+        for(const auto &r:out->records_) {
+            auto &s=out->support_[{r.network,r.detector}];
+            if(r.operation_unavailable.present())s.pending.push_back(r.operation_unavailable);
+            if(r.disposition==RtcEventTreatmentClass::accepted_declared_contaminant && r.affected.present())
+                s.accepted.push_back(r.affected);
+            if(r.donor && r.donor->cause()==RtcDonorFillCause::ready && r.affected.present())
+                s.ready.push_back(r.affected);
+        }
+        for(auto &[key,s]:out->support_) {
+            s.pending=rtc_event_assessment_detail::merge(std::move(s.pending));
+            s.accepted=rtc_event_assessment_detail::merge(std::move(s.accepted));
+            s.ready=rtc_event_assessment_detail::merge(std::move(s.ready));
+        }
         return out;
     }
     const auto &records()const noexcept{return records_;}
@@ -161,16 +176,16 @@ public:
     const auto &events_handle()const noexcept{return events_;}
     const auto &timing_unavailable()const noexcept{return timing_unavailable_;}
     bool pending(TimestreamNetworkId n,std::uint32_t d,TimestreamNativeRow row)const {
-        for(const auto &r:records_)if(r.network==n && r.detector==d && inside(r.operation_unavailable,row))return true;
-        return false;
+        const auto it=support_.find({n,d});
+        return it!=support_.end() && rtc_event_assessment_detail::contains(it->second.pending,row);
     }
     bool accepted_support(TimestreamNetworkId n,std::uint32_t d,TimestreamNativeRow row)const {
-        for(const auto &r:records_)if(r.network==n && r.detector==d && r.disposition==RtcEventTreatmentClass::accepted_declared_contaminant && inside(r.affected,row))return true;
-        return false;
+        const auto it=support_.find({n,d});
+        return it!=support_.end() && rtc_event_assessment_detail::contains(it->second.accepted,row);
     }
     bool donor_ready(TimestreamNetworkId n,std::uint32_t d,TimestreamNativeRow row)const {
-        for(const auto &r:records_)if(r.network==n && r.detector==d && r.donor && r.donor->cause()==RtcDonorFillCause::ready && inside(r.affected,row))return true;
-        return false;
+        const auto it=support_.find({n,d});
+        return it!=support_.end() && rtc_event_assessment_detail::contains(it->second.ready,row);
     }
     static bool overlaps(RtcEventRange a,RtcEventRange b){return a.present()&&b.present()&&a.first<b.past_last&&b.first<a.past_last;}
     static bool covers(RtcEventRange a,RtcEventRange b){return a.present()&&b.present()&&a.first<=b.first&&a.past_last>=b.past_last;}
@@ -181,6 +196,8 @@ private:
     std::shared_ptr<const RtcTransientExclusionPlan> transients_;
     std::shared_ptr<const RtcDonorFillFacts> facts_;
     std::vector<RtcEventTreatmentRecord> records_;
+    struct DetectorSupport { std::vector<RtcEventRange> pending,accepted,ready; };
+    std::map<std::pair<TimestreamNetworkId,std::uint32_t>,DetectorSupport> support_;
     std::map<TimestreamNetworkId,std::vector<RtcEventRange>> timing_unavailable_;
     std::uint64_t id_=0;
 };

@@ -31,6 +31,10 @@ public:
     const auto &geometry() const noexcept { return geometry_; }
     const auto &trajectory_handle() const noexcept { return trajectory_; }
     std::optional<Direction> at(std::size_t detector, std::size_t slot) const;
+    std::size_t logical_owned_numeric_bytes() const noexcept {
+        std::size_t n=0;for(const auto &d:directions_)n+=d.size()*sizeof(double);
+        for(const auto &e:elevations_)n+=e.size()*sizeof(double);return n;
+    }
     static constexpr std::string_view role = "SCI-AST:rtc_output_grid_coordinates@1";
     static constexpr std::string_view method = "bounded-v2-radec-gnomonic-detector-offset-v1";
 private:
@@ -40,7 +44,8 @@ private:
     std::shared_ptr<const NativePointingOffsetModel> offsets_;
     double center_ra_, center_dec_;
     std::vector<AstRtcDetectorGeometry> geometry_;
-    std::vector<std::vector<std::optional<Direction>>> directions_;
+    std::vector<Eigen::Matrix<double,Eigen::Dynamic,2>> directions_;
+    std::vector<std::vector<double>> elevations_;
 };
 
 } // namespace citlali::pipeline

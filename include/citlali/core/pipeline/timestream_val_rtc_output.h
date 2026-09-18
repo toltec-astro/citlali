@@ -29,16 +29,26 @@ public:
         if (target.grid_handle().get() != grid_.get() ||
             !input_snapshot_handle()->contains(target))
             throw std::invalid_argument("VAL output query differs from its exact producer grid");
-        const auto address = target.address();
-        const auto &columns = grid_->detectors();
-        const auto it = std::find_if(columns.begin(), columns.end(), [&](const auto &g) {
-            return g.network == address.sample_identity().network_id() &&
-                   g.detector == *address.detector_index();
-        });
-        if (it == columns.end()) throw std::invalid_argument("VAL output detector absent");
-        auto occurrence = grid_->occurrence(static_cast<std::size_t>(it - columns.begin()), target.slot());
+        auto occurrence = grid_->occurrence(target.detector_grid_index(), target.slot());
         return {target.coordinate(), target.coordinate() == NativeReadoutCoordinate::x
             ? occurrence.x_available : occurrence.r_available, std::move(occurrence)};
+    }
+    // Bind once at the consumer boundary. Indices are meaningful inside this
+    // exact retained product; no identity object or VAL lookup per sample.
+    class DetectorFacts {
+    public:
+        auto at(std::size_t slot) const { return grid_->state(detector_,slot); }
+        const auto &times() const { return grid_->times(detector_); }
+    private:
+        friend class ValRtcOutputFacts;
+        DetectorFacts(std::shared_ptr<const RtcOutputGrid> g,std::size_t d):grid_{std::move(g)},detector_{d} {}
+        std::shared_ptr<const RtcOutputGrid> grid_;
+        std::size_t detector_;
+    };
+    DetectorFacts bind_detector(const std::shared_ptr<const RtcOutputGrid> &exact,std::size_t d) const {
+        if(exact.get()!=grid_.get())throw std::invalid_argument("VAL detector facts require the exact RTC grid");
+        (void)grid_->detectors().at(d);
+        return DetectorFacts{grid_,d};
     }
     static constexpr bool evaluates_scientific_use = false;
     std::size_t owned_bytes() const noexcept { return sizeof(*this); }

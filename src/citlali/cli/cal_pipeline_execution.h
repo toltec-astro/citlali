@@ -7,7 +7,8 @@ namespace {
 struct ConnectedCal { YAML::Node receipt; PtcCalSource source; };
 ConnectedCal execute_connected_cal(const CalRtcSource &source,const YAML::Node &cfg,
     const apt::VerifiedBundle &verified,const pipeline::CanonicalAptDetectorRelationV2 &relation,
-    const std::vector<int> &channels,const fs::path &output) {
+    const std::vector<int> &channels,const fs::path &output,RtcPerformanceTrace &performance) {
+    performance.mark("CAL_start");
     const auto started=std::chrono::steady_clock::now();
     const auto grid=source.rtc_terminal_handle()->grid_handle();const auto scope=grid->align_handle()->scope();
     const auto telescope_path=checked_file(cfg["telescope"]);
@@ -83,9 +84,12 @@ ConnectedCal execute_connected_cal(const CalRtcSource &source,const YAML::Node &
     }
     require(time_records==1,"AST pointing offset time support absent or duplicated");
     auto offsets=std::make_shared<const NativePointingOffsetModel>(std::move(offset_values),std::move(offset_times));
+    performance.mark("CAL_AST_start");
     auto ast=AstRtcCoordinates::realize_v2(grid,scope,telescope_identity,
         std::make_shared<const RawTelescopeTrajectory>(std::move(data)),ra0,dec0,
         "sha256:"+citlali::utils::sha256_file(effective_path)+":inputs:"+input_name+":astrometry",offsets,std::move(geometry));
+    performance.mark("CAL_AST_complete");
+    performance.array("AST_output_pointing_and_shared_elevation",ast->logical_owned_numeric_bytes(),1,grid->detectors().size()+grid->time_axes().size());
     // Owner 2026-09-18: one observation-associated reading is constant over
     // that observation. Preserve the header's actual update text; do not
     // manufacture a sampled series or assert an unverified time conversion.
@@ -103,11 +107,16 @@ ConnectedCal execute_connected_cal(const CalRtcSource &source,const YAML::Node &
         "ALIGN:exact-RTC-occurrence-integration-midpoint:Unix-seconds",std::move(opacity_records),
         CalWvrObservationInterval{observation_first,observation_last});
     auto evidence=CalEvidence::learn(source,ast,wvr,CalAtmosphereSurface::frozen(),apt_identity,std::move(factors));
+    performance.mark("CAL_learn_complete");
     const auto learned=std::chrono::steady_clock::now();
     auto plan=CalPlan::consider(evidence,source.val_snapshot_handle(),1);
+    performance.mark("CAL_plan_complete");
+    performance.array("CAL_plan_entries",source.rtc_terminal_handle()->finalization().scheduled_slots,sizeof(CalPlan::Entry),grid->detectors().size());
     const auto considered=std::chrono::steady_clock::now();
     auto signal=CalAppliedSignal::apply(plan,source,source.val_snapshot_handle());
     auto val=ValSnapshot::commit_cal_output(source.val_snapshot_handle(),ValCalOutputFacts::preserve(signal));
+    performance.mark("CAL_apply_complete");
+    performance.array("CAL_output_cells",signal->logical_owned_cell_bytes(),1,grid->detectors().size());
     const auto applied=std::chrono::steady_clock::now();
     const auto destination=output/"cal";fs::create_directory(destination);
     YAML::Node record;record["schema"]="citlali-cal-output-v1";
@@ -184,6 +193,7 @@ ConnectedCal execute_connected_cal(const CalRtcSource &source,const YAML::Node &
     record["Learn_seconds"]=std::chrono::duration<double>(learned-started).count();
     record["Consider_seconds"]=std::chrono::duration<double>(considered-learned).count();
     record["Apply_VAL_seconds"]=std::chrono::duration<double>(applied-considered).count();
-    write_yaml(destination/"receipt.yaml",record);return {record,PtcCalSource::bind(signal,val)};
+    write_yaml(destination/"receipt.yaml",record);
+    performance.mark("CAL_publication_complete");return {record,PtcCalSource::bind(signal,val)};
 }
 } // namespace

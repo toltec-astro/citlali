@@ -47,29 +47,41 @@ std::shared_ptr<const CalPlan> CalPlan::consider(std::shared_ptr<const CalEviden
         throw std::invalid_argument("CAL Consider requires exact frozen RTC output VAL and nonzero plan identity");
     auto out=std::shared_ptr<CalPlan>(new CalPlan);out->evidence_=std::move(evidence);out->instance_=instance;
     const auto &e=*out->evidence_;const auto &grid=e.source().rtc_terminal_handle()->grid_handle();
+    struct AtmosphereEntry { CalWvrCause cause; bool has_tau; std::optional<double> correction; };
+    // This cache belongs to one frozen CAL consideration. Equal array and
+    // exact RTC time-axis bindings have identical telescope elevation and WVR.
+    std::map<std::pair<int,std::size_t>,std::vector<AtmosphereEntry>> atmosphere;
     for(std::size_t d=0;d<grid->detectors().size();++d) {
         out->entries_.emplace_back();auto &entries=out->entries_.back();entries.reserve(grid->detectors()[d].scheduled_count);
         const auto &factor=e.factors()[d];
         const bool good_factor=factor.uniquely_matched && factor.flxscale_mJy_beam_per_x &&
             std::isfinite(*factor.flxscale_mJy_beam_per_x) && *factor.flxscale_mJy_beam_per_x!=0;
+        const auto facts=val->committed_rtc_output_facts_handle()->bind_detector(grid,d);
+        auto [shared,new_axis]=atmosphere.try_emplace({factor.array,grid->detectors()[d].time_axis});
+        if(new_axis) {
+            shared->second.reserve(facts.times().size());
+            for(std::size_t s=0;s<facts.times().size();++s) {
+                const auto wvr=e.wvr_handle()->at(facts.times()[s]);
+                const auto direction=e.ast_handle()->at(d,s);
+                const auto correction=wvr.tau225 && direction ?
+                    e.atmosphere_handle()->correction(factor.array,*wvr.tau225,direction->telescope_elevation_deg):std::nullopt;
+                shared->second.push_back({wvr.cause,wvr.tau225.has_value(),correction});
+            }
+        }
         for(std::size_t s=0;s<grid->detectors()[d].scheduled_count;++s) {
-            const auto fact=val->committed_rtc_output_facts_handle()->at(RtcOutputGrid::val_target(grid,d,s,NativeReadoutCoordinate::x));
-            const auto &occ=fact.occurrence;Entry entry;
-            if(!fact.numerical_available)entry.causes|=cal_rtc_unavailable;
+            const auto occ=facts.at(s);Entry entry;
+            if(!occ.x_available)entry.causes|=cal_rtc_unavailable;
             if(occ.representative_replaced || occ.representative_excluded)entry.causes|=cal_direct_replacement_or_exclusion;
             if(!good_factor)entry.causes|=cal_invalid_factor;
             const auto direction=e.ast_handle()->at(d,s);
             if(!direction)entry.causes|=cal_pointing_unavailable;
-            const auto wvr=e.wvr_handle()->at(occ.representative.assigned_time_unix_sec);entry.wvr_cause=wvr.cause;
-            if(!wvr.tau225)entry.causes|=(wvr.cause==CalWvrCause::negative || wvr.cause==CalWvrCause::nonfinite)?
+            const auto &a=shared->second[s];entry.wvr_cause=a.cause;
+            if(!a.has_tau)entry.causes|=(a.cause==CalWvrCause::negative || a.cause==CalWvrCause::nonfinite)?
                 cal_invalid_atmosphere:cal_outside_supported_calibration;
-            std::optional<double> correction;
-            if(wvr.tau225 && direction) {
-                correction=e.atmosphere_handle()->correction(factor.array,*wvr.tau225,direction->telescope_elevation_deg);
-                if(!correction)entry.causes|=cal_outside_supported_calibration;
-            }
+            else if(direction && !a.correction)
+                entry.causes|=cal_outside_supported_calibration;
             if(!entry.causes) {
-                const double multiplier=*factor.flxscale_mJy_beam_per_x**correction;
+                const double multiplier=*factor.flxscale_mJy_beam_per_x**a.correction;
                 if(std::isfinite(multiplier) && multiplier!=0)entry.multiplier=multiplier;
                 else entry.causes|=cal_numeric_failure;
             }

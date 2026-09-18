@@ -75,6 +75,9 @@ public:
     std::optional<double> value(std::size_t detector,std::size_t slot) const;
     std::uint16_t causes(std::size_t detector,std::size_t slot) const;
     std::size_t available_count() const noexcept { return available_; }
+    std::size_t logical_owned_cell_bytes() const noexcept {
+        std::size_t n=0;for(const auto &c:cells_)n+=c.size()*sizeof(Cell);return n;
+    }
     static constexpr std::string_view unit = "mJy/nominal-beam";
     static constexpr std::string_view observable = "ordinary-xs:delta_f/f_res:positive-optical-loading";
     static constexpr bool r_calibrated = false, literal_peak_response_qualified = false;

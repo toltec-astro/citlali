@@ -1278,6 +1278,27 @@ TEST(rtc_event_treatment, recovered_natural_candidate_is_unavailable_not_accepte
   EXPECT_FALSE(result->coordinate_stage_available(NativeReadoutCoordinate::x,599,true));
   EXPECT_TRUE(result->coordinate_stage_available(NativeReadoutCoordinate::x,500,true));
 }
+TEST(rtc_event_treatment, indexed_intervals_equal_record_scan_for_every_detector_and_boundary) {
+  Input in;in.spike();in.paired_identity="declared-contaminant:known-test-copy";
+  in.x(700,1)+=40;in.r(700,1)+=25;
+  Trial t(in,10,RtcSpikeProtection::outside_source);
+  for(bool truth:{false,true}) {
+    auto decision=resolve_events(t,truth);
+    for(std::uint32_t d=0;d<3;++d)for(auto row=99;row<=1200;++row) {
+      bool pending=false,accepted=false,ready=false;
+      for(const auto &record:decision->records())if(record.network==0 && record.detector==d) {
+        auto inside=[&](auto r){return r.present() && row>=r.first && row<r.past_last;};
+        pending|=inside(record.operation_unavailable);
+        accepted|=record.disposition==RtcEventTreatmentClass::accepted_declared_contaminant && inside(record.affected);
+        ready|=record.donor && record.donor->cause()==RtcDonorFillCause::ready && inside(record.affected);
+      }
+      EXPECT_EQ(decision->pending(0,d,row),pending);
+      EXPECT_EQ(decision->accepted_support(0,d,row),accepted);
+      EXPECT_EQ(decision->donor_ready(0,d,row),ready);
+      EXPECT_FALSE(decision->pending(1,d,row));
+    }
+  }
+}
 TEST(rtc_event_treatment, declared_pair_disturbance_exercises_genuine_exclusion_and_donor_paths) {
   Input in;in.spike();in.paired_identity="declared-contaminant:known-test-copy";
   Trial t(in,10,RtcSpikeProtection::outside_source);auto d=resolve_events(t,true);
@@ -1667,6 +1688,56 @@ TEST(rtc_output_grid, foreign_parent_snapshot_and_motion_cannot_be_relabelled) {
   auto other=build_ast_scan_motion_product(t.domain.motion->raw_product_handle()->source_handle(),{9,8,7,6});
   EXPECT_THROW(RtcOutputGrid::prepare(result,output_align(t,t.val,other)),std::invalid_argument);
   EXPECT_THROW(RtcOutputGrid::prepare(result,nullptr),std::invalid_argument);
+}
+TEST(rtc_output_grid, bound_array_facts_match_full_occurrences_with_gaps_and_odd_origin) {
+  Input in(1600);in.first_native_row=101;
+  for(std::size_t i=800;i<in.times.size();++i){in.times[i]+=.5;in.counters[i]+=4;}
+  Trial t(in);auto plans=complete_plans(t,{.25,.5,.25});
+  std::reverse(plans.begin(),plans.end()); // Plan admission establishes order once.
+  auto result=complete_apply(t,RtcPipelinePlan::consider(plans,t.joint->joint_handle(),31));
+  auto grid=RtcOutputGrid::prepare(result,output_align(t));
+  auto other=RtcOutputGrid::prepare(result,output_align(t));
+  auto facts=ValRtcOutputFacts::preserve(grid);
+  ASSERT_EQ(grid->time_axes().size(),1);
+  EXPECT_EQ(&grid->times(0),&grid->times(2));
+  EXPECT_THROW(facts->bind_detector(other,0),std::invalid_argument);
+  EXPECT_THROW(facts->bind_detector(grid,3),std::out_of_range);
+  for(std::size_t d=0;d<3;++d) {
+    auto column=facts->bind_detector(grid,d);
+    EXPECT_THROW(column.at(800),std::out_of_range);
+    for(std::size_t s=0;s<800;++s) {
+      const auto a=column.at(s),b=grid->state(d,s);const auto full=grid->occurrence(d,s);
+      EXPECT_EQ(a.x_available,full.x_available);EXPECT_EQ(a.r_available,full.r_available);
+      EXPECT_EQ(a.representative_replaced,full.representative_replaced);
+      EXPECT_EQ(a.representative_excluded,full.representative_excluded);
+      EXPECT_EQ(a.replacement_influence,full.replacement_influence);
+      EXPECT_EQ(a.unrepaired_influence,full.unrepaired_influence);
+      EXPECT_EQ(b.x_available,a.x_available);
+      EXPECT_EQ(column.times()[s],full.representative.assigned_time_unix_sec);
+      auto target=RtcOutputGrid::val_target(grid,d,s,NativeReadoutCoordinate::x);
+      EXPECT_EQ(target.detector_grid_index(),d);
+      EXPECT_EQ(facts->at(target).occurrence.representative,full.representative);
+      EXPECT_EQ(grid->value(d,s,NativeReadoutCoordinate::x).has_value(),full.x_available);
+    }
+  }
+}
+TEST(rtc_output_grid, different_factors_keep_distinct_shared_time_axes) {
+  Input in(1600);in.first_native_row=101;Trial t(in);
+  auto plans=complete_plans(t);
+  auto spec=plans[1]->assessment_handle()->candidate_handle()->specification();spec.factor=3;
+  auto candidate=RtcLineTransferCandidate::bind(t.lines,0,1,spec);
+  plans[1]=RtcNotchRecoveryPlan::consider(
+      RtcLineTransferAssessment::consider(candidate,t.joint,t.val,400),t.transient,t.val,plans[1]->domain(),401);
+  auto result=complete_apply(t,RtcPipelinePlan::consider(plans,t.joint->joint_handle(),31));
+  auto grid=RtcOutputGrid::prepare(result,output_align(t));
+  ASSERT_EQ(grid->time_axes().size(),2);
+  EXPECT_EQ(&grid->times(0),&grid->times(2));EXPECT_NE(&grid->times(0),&grid->times(1));
+  EXPECT_EQ(grid->times(0).size(),800);EXPECT_EQ(grid->times(1).size(),534);
+  for(std::size_t d=0;d<3;++d)for(std::size_t s=0;s<grid->times(d).size();++s) {
+    const auto fact=grid->occurrence(d,s);
+    EXPECT_EQ(grid->times(d)[s],fact.representative.assigned_time_unix_sec);
+    EXPECT_EQ(grid->state(d,s).x_available,fact.x_available);
+  }
 }
 TEST(rtc_output_grid, chunking_does_not_change_grid_and_physical_gap_has_no_footprint) {
   Input in(1600);for(std::size_t i=800;i<in.times.size();++i){in.times[i]+=.5;in.counters[i]+=4;}Trial t(in);

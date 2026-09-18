@@ -19,6 +19,21 @@ public:
         TimestreamNativeRow first, past_last;
         std::uint32_t factor;
         std::size_t scheduled_count;
+        std::size_t time_axis;
+    };
+
+    // Time belongs to a schedule, not each detector/sample. Different network,
+    // phase, factor or extent creates a distinct axis, including physical gaps.
+    struct TimeAxis {
+        TimestreamNetworkId network;
+        TimestreamNativeRow first, past_last;
+        std::uint32_t factor;
+        std::vector<double> assigned_unix_sec;
+    };
+    struct State {
+        bool x_available, r_available;
+        bool representative_replaced, representative_excluded;
+        bool replacement_influence, unrepaired_influence;
     };
 
     // A slot is stable within this exact grid/result, including unavailable
@@ -72,9 +87,21 @@ public:
             }
             const auto count = static_cast<std::size_t>(
                 span.past_last_native_row - span.first_native_row);
+            auto timeline=std::find_if(out->times_.begin(),out->times_.end(),[&](const auto &t) {
+                return t.network==candidate.network() && t.first==span.first_native_row &&
+                    t.past_last==span.past_last_native_row && t.factor==spec.factor;
+            });
+            const auto time_axis=static_cast<std::size_t>(timeline-out->times_.begin());
+            if(timeline==out->times_.end()) {
+                TimeAxis t{candidate.network(),span.first_native_row,span.past_last_native_row,spec.factor,{}};
+                t.assigned_unix_sec.reserve(1+(count-1)/spec.factor);
+                for(auto row=t.first;row<t.past_last;row+=t.factor)
+                    t.assigned_unix_sec.push_back(out->align_->occurrence_assignment(t.network,row).assigned_time_unix_sec);
+                out->times_.push_back(std::move(t));
+            }
             out->detectors_.push_back({candidate.network(), candidate.detector(),
                 span.first_native_row, span.past_last_native_row, spec.factor,
-                1 + (count - 1) / spec.factor});
+                1 + (count - 1) / spec.factor,time_axis});
             // The retained schedule is a subset of the frozen phase-zero grid.
             // Availability does not create a new grid or compress native time.
             auto previous = span.first_native_row - 1;
@@ -103,6 +130,23 @@ public:
         return applied_->plan_handle()->snapshot_handle();
     }
     const auto &detectors() const noexcept { return detectors_; }
+    const auto &time_axes() const noexcept { return times_; }
+    const auto &times(std::size_t d) const { return times_.at(detectors_.at(d).time_axis).assigned_unix_sec; }
+    TimestreamNativeRow native_row(std::size_t d,std::size_t slot) const {
+        const auto &g=detectors_.at(d);
+        if(slot>=g.scheduled_count)throw std::out_of_range("RTC output slot outside declared grid");
+        return g.first+static_cast<TimestreamNativeRow>(slot*g.factor);
+    }
+    State state(std::size_t d,std::size_t slot) const {
+        const auto row=native_row(d,slot);
+        const auto &r=*applied_->detector_results()[d];
+        // Apply sets numerical bits only inside complete support. This view's
+        // phase-zero row relation selects the schedule without searching it.
+        return {r.coordinate_stage_available(NativeReadoutCoordinate::x,row,true),
+            r.coordinate_stage_available(NativeReadoutCoordinate::r,row,true),
+            r.representative_replaced(row),r.requires_representative_exclusion(row),
+            r.replacement_influence(row,true),r.unrepaired_influence(row,true)};
+    }
 
     static ValRtcOutputTarget val_target(std::shared_ptr<const RtcOutputGrid> grid,
         std::size_t detector_grid, std::size_t slot, NativeReadoutCoordinate coordinate) {
@@ -110,12 +154,12 @@ public:
                       coordinate != NativeReadoutCoordinate::r))
             throw std::invalid_argument("VAL RTC target requires exact grid and coordinate");
         const auto &g = grid->detectors_.at(detector_grid);
-        const auto fact = grid->occurrence(detector_grid, slot);
+        const auto row = grid->native_row(detector_grid, slot);
         auto snapshot = grid->input_val_snapshot_handle();
         auto address = snapshot->address(g.network,
-            fact.representative.network_occurrence.native_row(), g.detector);
+            row, g.detector);
         return ValRtcOutputTarget{std::move(grid), std::move(snapshot),
-                                  std::move(address), slot, coordinate};
+                                  std::move(address), slot, coordinate,detector_grid};
     }
 
     Occurrence occurrence(std::size_t detector_grid, std::size_t slot) const {
@@ -157,12 +201,13 @@ public:
                                 NativeReadoutCoordinate coordinate) const {
         if (coordinate != NativeReadoutCoordinate::x && coordinate != NativeReadoutCoordinate::r)
             throw std::invalid_argument("RTC output coordinate must be x or r");
-        const auto fact = occurrence(detector_grid, slot);
-        if (!(coordinate == NativeReadoutCoordinate::x ? fact.x_available : fact.r_available))
+        const auto row=native_row(detector_grid,slot);
+        const auto &r=*applied_->detector_results()[detector_grid];
+        if (!r.coordinate_stage_available(coordinate,row,true))
             return std::nullopt;
         const auto &g = detectors_.at(detector_grid);
-        return applied_->detector_results().at(detector_grid)->filtered_native_pair()(
-            fact.representative.network_occurrence.native_row() - g.first,
+        return r.filtered_native_pair()(
+            row - g.first,
             static_cast<int>(coordinate));
     }
 
@@ -171,12 +216,18 @@ public:
     std::size_t owned_descriptor_bytes() const noexcept {
         return detectors_.size() * sizeof(DetectorGrid);
     }
+    std::size_t owned_time_bytes() const noexcept {
+        std::size_t n=times_.size()*sizeof(TimeAxis);
+        for(const auto &t:times_)n+=t.assigned_unix_sec.size()*sizeof(double);
+        return n;
+    }
 
 private:
     RtcOutputGrid() = default;
     std::shared_ptr<const RtcPipelineResult> applied_;
     std::shared_ptr<const IdentityRouteAlignContext> align_;
     std::vector<DetectorGrid> detectors_;
+    std::vector<TimeAxis> times_;
 };
 
 } // namespace citlali::pipeline

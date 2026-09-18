@@ -33,7 +33,14 @@ void write_matrix(const fs::path &p,const auto &m) {
   for(Eigen::Index i=0;i<m.rows();++i)for(Eigen::Index j=0;j<m.cols();++j){double v=m(i,j);out.write(reinterpret_cast<const char*>(&v),8);}
   out.close();require(bool(out),"required matrix output failed");
 }
+std::string native_plane_digest(const NativePairedReadoutMatrix &m) {
+  citlali::utils::Sha256 hash;
+  hash.update(reinterpret_cast<const std::uint8_t*>(m.data()),m.size()*sizeof(double));
+  return hash.finish();
 }
+}
+#include "rtc_receipt_stream.h"
+#include "rtc_performance_trace.h"
 #include "rtc_processing_scan_input.h"
 #include "rtc_common_mode_output.h"
 #include "rtc_treatment_outcome_output.h"
@@ -71,6 +78,7 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
           "successor.selection_unavailable: explicit frozen-plan development selection is required");
     }
     const fs::path output=argv[2];require(!fs::exists(output),"preserve previous output");
+    RtcPerformanceTrace performance(output);
     auto checked=[&](const std::string &key){return checked_file(cfg[key]);};
     const auto raw_path = checked("raw"), tune_path = checked("tune"),
                manifest = checked("manifest");
@@ -86,9 +94,11 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
     // The ordinary CLI already owns its logger and run lifetime. Only the
     // standalone comparison entry needs the historical logging setup.
     if (!development) (void)configure_logging();
+    performance.mark("input_digests_verified");
     const auto verified = apt::verify_bundle_filesystem(manifest, true);
     const auto relation =
         pipeline::admit_canonical_apt_detector_relation_v2(verified);
+    performance.mark("APT_verified_and_bound");
     netCDF::NcFile raw_file(raw_path.string(), netCDF::NcFile::read);
     const auto nw =
         read_netcdf_scalar<int>(raw_file, "Header.Toltec.RoachIndex");
@@ -207,6 +217,7 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
                 "export differs from exact producer state convention");
       }
     }
+    performance.mark("native_samples_loaded");
     YAML::Node contaminant_record;
     if(cfg["declared_contaminant"]){
       const auto model=cfg["declared_contaminant"];
@@ -221,7 +232,10 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
       contaminant_record=YAML::Clone(model);contaminant_record["original_x"]=x(row,d);contaminant_record["original_r"]=r(row,d);
       x(row,d)+=dx;r(row,d)+=dr;
     }
-    const auto original_x=x, original_r=r;
+    const auto original_x_digest=native_plane_digest(x),original_r_digest=native_plane_digest(r);
+    performance.array("original_xr_values",2*x.size(),sizeof(double),2);
+    performance.array("original_coordinate_states",2*xs.size(),sizeof(NativeReadoutCoordinateState),2);
+    performance.array("verification_xr_digests",2*64,sizeof(char),2);
     auto config = load_runtime_config(checked("effective_config"));
     require(config.interface_offset_present[nw] &&
                 config.interface_offsets_sec[nw] == 0,
@@ -325,6 +339,8 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
           "AST acceptance differs from exact telescope/policy/scope");
       motion=AstScanMotionNetworkView::admit(ast,timing);
     }
+    performance.array("shared_native_occurrence_axis",axis->occurrence_count(),sizeof(NativePairedReadoutOccurrenceBinding),1);
+    performance.mark("ingress_complete");
     const auto ingress_finished=std::chrono::steady_clock::now();
     double learn_seconds=0,consider_seconds=0;
     auto measure=[](double &seconds,auto operation){const auto at=std::chrono::steady_clock::now();
@@ -361,11 +377,12 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
                       census ? &fixed_targets : nullptr);
         if (census) export_census_reference_checks(output,health,lines,channels,cfg,argv[1],fixed_targets);
         write_yaml(output/"processing-scans.yaml",recovered_scans->receipt);
+        performance.mark("health_exports_written");
         const auto &net=parent->network(nw);
-        for(std::uint32_t d=0;d<channels.size();++d)for(std::int64_t row=0;row<rows;++row)
-          require(std::bit_cast<std::uint64_t>(original_x(row,d))==std::bit_cast<std::uint64_t>(net.value(NativeReadoutCoordinate::x,row,d)) &&
-            std::bit_cast<std::uint64_t>(original_r(row,d))==std::bit_cast<std::uint64_t>(net.value(NativeReadoutCoordinate::r,row,d)),"health changed original pair");
+        require(original_x_digest==native_plane_digest(net.values(NativeReadoutCoordinate::x)) &&
+            original_r_digest==native_plane_digest(net.values(NativeReadoutCoordinate::r)),"health changed original pair");
         YAML::Node receipt;receipt["source_revision"]=std::string(CITLALI_GIT_REVISION);receipt["configuration_sha256"]=citlali::utils::sha256_file(argv[1]);
+        performance.mark("original_pair_verified_unchanged");
         receipt["original_pair_unchanged"]=true;receipt["Apply_performed"]=false;receipt["production_filtering_active"]=false;
         receipt["status"]="PASS-full-network-diagnostic-only";receipt["rows"]=rows;receipt["detectors"]=channels.size();receipt["network"]=nw;receipt["native_integration_seconds"]=duration;
         receipt["ingress_seconds"]=std::chrono::duration<double>(ingress_finished-began).count();receipt["existing_learn_seconds"]=learn_seconds;
@@ -405,6 +422,13 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
     auto lines=measure(learn_seconds,[&]{return RtcLinePowerEvidence::learn(spectral,val,RtcLinePowerProfile::initial_2_hz,19);});
     auto joint=measure(consider_seconds,[&]{return RtcLinePowerConsideration::rank(lines,
         RtcSpectralTransientConsideration::consider(spectral,val,events,val,20),21);});
+    performance.mark("initial_learn_complete");
+    performance.array("spike_evidence",spikes->logical_owned_bytes(),1,0);
+    if(motion) {
+      performance.array("AST_shared_motion",motion->raw_product_handle()->memory_evidence().logical_owned_bytes(),1,0);
+      performance.array("ALIGN_mapped_motion",motion->memory_evidence().logical_owned_bytes(),1,0);
+    }
+    performance.array("initial_spectral_evidence",spectral->logical_owned_bytes(),1,0);
     const auto learn_finished=std::chrono::steady_clock::now();
     if(health)export_health(output/"health",health,lines,channels,cfg,argv[1],health_seconds);
     // The immutable configuration includes exact content hashes for every
@@ -489,18 +513,18 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
     }
     write_yaml(output/"events.yaml",event_table);
     receipt["events_sha256"]=citlali::utils::sha256_file(output/"events.yaml");
+    std::vector<std::pair<std::string,fs::path>> receipt_sections{{"spectra",output/"original-spectra.yaml"}};
+    std::ofstream original_spectra(receipt_sections.front().second);
     std::ofstream psd(output/"original-psd.f64",std::ios::binary);
     for(const auto &s:spectral->spectra()){
       psd.write(reinterpret_cast<const char*>(s.psd.data()),s.psd.size()*8);
-      YAML::Node entry;entry["channel"]=channels[s.detector];entry["coordinate"]=static_cast<int>(s.coordinate);
-      entry["available"]=s.available();entry["cause"]=static_cast<int>(s.cause);entry["bins"]=s.psd.size();
-      for(const auto &window:s.windows)entry["windows"].push_back(range(window.rows));
-      receipt["spectra"].push_back(entry);
+      rtc_spectrum_record(original_spectra,s,channels[s.detector],false);
     }
     psd.close();require(bool(psd),"original spectrum output failed");
+    original_spectra.close();require(bool(original_spectra),"original spectrum metadata output failed");
     // Preserve the learning product even if subsequent explicit Consider
     // refuses missing required scan/support bindings. This is not Apply success.
-    write_yaml(output/"learning-receipt.yaml",receipt);
+    rtc_yaml_map(output/"learning-receipt.yaml",receipt,receipt_sections);
     if(argc==4 || recovered_scans){
       const auto considered_at=std::chrono::steady_clock::now();
       require(!(argc==4 && recovered_scans),"automatic decisions cannot consume manual selections");
@@ -612,20 +636,27 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
         auto assessment=RtcLineTransferAssessment::consider(candidate,joint,val,100+d);
         plans.push_back(RtcNotchRecoveryPlan::consider(assessment,transient,val,domain,200+d,continuity ? donors[d] : std::vector<std::shared_ptr<const RtcDonorFillPlan>>{},decision,continuity));
       }
+      performance.mark("detector_plans_complete");
       const auto complete=RtcPipelinePlan::consider(plans,joint->joint_handle(),1000+continuity);
       arm["Consider_plan_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-planning_at).count();
       const std::array partitions{view};
       const auto applied_at=std::chrono::steady_clock::now();
       auto result=RtcPipelineResult::apply(complete,view,val,partitions);
+      performance.mark("RTC_apply_complete");
+      performance.array("RTC_conditioned_and_filtered_xr",4*rows*channels.size(),sizeof(double),2*channels.size());
+      performance.array("RTC_plan_cause_and_speed_planes",3*rows*channels.size(),sizeof(std::uint8_t),3*channels.size());
+      performance.array("RTC_result_cause_and_state_planes",2*rows*channels.size(),sizeof(std::uint8_t),2*channels.size());
       std::shared_ptr<const RtcPipelineDecision> final_decision;
       arm["Apply_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-applied_at).count();
       receipt["Apply_performed"]=true;
+      std::shared_ptr<const RtcOutputGrid> prepared_grid;
       if(cfg["prepare_output_grid"] && cfg["prepare_output_grid"].as<bool>()) {
         const auto start=std::chrono::steady_clock::now();
         auto ast_views=AstScanMotionNetworkViews::admit(parent->scope(),
             motion->raw_product_handle(),{axis->native_timing_handle()});
         auto align=IdentityRouteAlignContext::admit(parent,ast_views,val);
         auto grid=RtcOutputGrid::prepare(result,align);
+        prepared_grid=grid;
         YAML::Node record;
         record["state"]="prepared-RTC-occurrences-only";
         record["terminal_publication_performed"]=false;
@@ -639,13 +670,10 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
           column["channel"]=channels[d];column["scheduled_slots"]=g.scheduled_count;
           std::size_t x_available=0,r_available=0,replaced=0,influence=0;
           for(std::size_t slot=0;slot<g.scheduled_count;++slot){
-            auto fact=grid->occurrence(d,slot);
-            require(val->contains(RtcOutputGrid::val_target(grid,d,slot,NativeReadoutCoordinate::x)) &&
-                val->contains(RtcOutputGrid::val_target(grid,d,slot,NativeReadoutCoordinate::r)),
-                "prepared output does not bind the exact VAL parent");
+            auto fact=grid->state(d,slot);
             x_available+=fact.x_available;r_available+=fact.r_available;
             replaced+=fact.representative_replaced;influence+=fact.replacement_influence;
-            require(fact.representative.network_occurrence.native_row()==g.first+static_cast<TimestreamNativeRow>(slot*g.factor),
+            require(grid->native_row(d,slot)==g.first+static_cast<TimestreamNativeRow>(slot*g.factor),
                 "prepared output occurrence changed native phase");
           }
           column["x_available"]=x_available;column["r_available"]=r_available;
@@ -654,6 +682,11 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
         }
         record["prepare_and_inspect_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-start).count();
         arm["output_grid"]=record;
+      }
+      performance.mark("output_grid_inspection_complete");
+      if(prepared_grid) {
+        performance.array("RTC_grid_descriptors",prepared_grid->detectors().size(),sizeof(RtcOutputGrid::DetectorGrid),1);
+        performance.array("RTC_grid_shared_time_axes",prepared_grid->owned_time_bytes(),1,prepared_grid->time_axes().size());
       }
       // Diagnostic overlays bind to this already frozen complete plan. They
       // never enter Learn/Consider or modify its masks/coefficients/decisions.
@@ -743,17 +776,26 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
         inputs.close();require(bool(inputs),"input cause output failed");
         arm["realized_detectors"].push_back(record);
       }
+      performance.mark("RTC_arrays_exported");
       std::vector<std::shared_ptr<const RtcConsequenceEvidence>> consequences;
       if(cfg["consequence_study"]) {
         consequences=run_consequence_study(cfg["consequence_study"],output/"purpose-study",channels,result);
         arm["purpose_consequence_evidence_products"]=consequences.size();
       }
+      const auto relearned_path=output/"relearned-stages.yaml";
+      std::ofstream relearned_stream(relearned_path);
       const auto relearn_at=std::chrono::steady_clock::now();
       for(bool lowpass:{false,true}){
         auto conditioned=RtcNativeSpectralEvidence::learn_conditioned(result->native_product(lowpass,val),val,cadence,1100+lowpass);
+        performance.mark(lowpass?"post_lowpass_learned":"post_notch_learned");
+        performance.array(lowpass?"post_lowpass_spectral_evidence":"post_notch_spectral_evidence",conditioned->logical_owned_bytes(),1,0);
+        performance.array("conditioned_review_state_and_speed",2*rows*channels.size(),sizeof(std::uint8_t),2*channels.size());
+        performance.array("conditioned_review_admission_bits",(rows*channels.size()+7)/8,1,channels.size());
         auto considered=RtcSpectralTransientConsideration::consider(conditioned,val,events,val,1200+lowpass);
         const auto outcome_started=std::chrono::steady_clock::now();
         const auto outcome=RtcTreatmentOutcomeEvidence::learn(spectral,conditioned,1250+lowpass);
+        performance.mark(lowpass?"post_lowpass_matched_outcome":"post_notch_matched_outcome");
+        performance.array(lowpass?"post_lowpass_matched_evidence":"post_notch_matched_evidence",outcome->logical_owned_bytes(),1,0);
         const auto outcome_seconds=std::chrono::duration<double>(std::chrono::steady_clock::now()-outcome_started).count();
         const auto reassessment=RtcPipelineReassessment::consider(result,considered,(consequences.empty()?1300:9000)+lowpass,outcome,
             lowpass?consequences:std::vector<std::shared_ptr<const RtcConsequenceEvidence>>{});
@@ -763,21 +805,19 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
         stage["classification_authorized"]=reassessment->classification_authorized;
         const auto outcome_name=lowpass ? "post-lowpass-outcome" : "post-notch-outcome";
         write_treatment_outcome(output,outcome_name,*reassessment->outcome_handle(),channels);
+        performance.mark(lowpass?"post_lowpass_outcome_exported":"post_notch_outcome_exported");
         stage["matched_outcome_file"]=std::string(outcome_name)+".yaml";
         stage["matched_outcome_seconds"]=outcome_seconds;
-        for(const auto &s:conditioned->spectra()){YAML::Node c;c["channel"]=channels[s.detector];
-          c["coordinate"]=static_cast<int>(s.coordinate);c["available"]=s.available();c["cause"]=static_cast<int>(s.cause);
-          c["bins"]=s.psd.size();stage_psd.write(reinterpret_cast<const char*>(s.psd.data()),s.psd.size()*8);
-          for(const auto &w:s.windows){YAML::Node win;win["rows"]=range(w.rows);
-            win["representative_replacements"]=w.representative_replacements;
-            win["replacement_influenced_samples"]=w.replacement_influenced_samples;
-            win["unrepaired_influenced_samples"]=w.unrepaired_influenced_samples;
-            win["representative_exclusions"]=w.representative_exclusions;
-            c["windows"].push_back(win);}
-          stage["spectra"].push_back(c);}
-        stage_psd.close();require(bool(stage_psd),"conditioned spectrum output failed");
+        const auto spectra_path=output/(lowpass?"post-lowpass-spectra.yaml":"post-notch-spectra.yaml");
+        std::ofstream metadata(spectra_path);
+        for(const auto &s:conditioned->spectra()) {
+          stage_psd.write(reinterpret_cast<const char*>(s.psd.data()),s.psd.size()*8);
+          rtc_spectrum_record(metadata,s,channels[s.detector],true);
+        }
+        metadata.close();stage_psd.close();require(bool(metadata)&&bool(stage_psd),"conditioned spectrum output failed");
         stage["numerical_psd_sha256"]=citlali::utils::sha256_file(stage_path);
-        arm["relearned"].push_back(stage);
+        relearned_stream<<"-\n";rtc_yaml_node(relearned_stream,stage,2);
+        relearned_stream<<"  spectra:\n";rtc_yaml_file(relearned_stream,spectra_path,4);
         if(lowpass) {
           // Explicit offline owner selection. No config entry means unavailable,
           // never an implicit retain based on a scalar residual or empty list.
@@ -812,25 +852,33 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
                   "bounded real-data disposition must preserve the frozen baseline");
         }
       }
+      performance.mark("relearning_complete");
+      relearned_stream.close();require(bool(relearned_stream),"relearning metadata output failed");
       arm["conditioned_relearning_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-relearn_at).count();
       if(terminal_requested) {
         const auto started=std::chrono::steady_clock::now();
         require(bool(final_decision),"requested terminal requires the final reassessment decision");
-        auto ast_views=AstScanMotionNetworkViews::admit(parent->scope(),motion->raw_product_handle(),{axis->native_timing_handle()});
-        auto align=IdentityRouteAlignContext::admit(parent,ast_views,val);
-        auto grid=RtcOutputGrid::prepare(result,align);
+        if(!prepared_grid || prepared_grid->applied_handle().get()!=result.get()) {
+          auto ast_views=AstScanMotionNetworkViews::admit(parent->scope(),motion->raw_product_handle(),{axis->native_timing_handle()});
+          auto align=IdentityRouteAlignContext::admit(parent,ast_views,val);
+          prepared_grid=RtcOutputGrid::prepare(result,align);
+        }
+        auto grid=prepared_grid;
         RtcPipelineTerminalSlot slot;
         auto terminal=finalize_rtc_only({complete->attempt()},grid,slot,final_decision);
         require(terminal.complete(),"required RTC terminal failed: "+terminal.reason);
+        performance.mark("RTC_finalized");
         const auto cal_source=CalRtcSource::bind(terminal.product);
         if(development && endpoint!=DevelopmentTerminal::rtc_only) {
-          const auto cal=execute_connected_cal(cal_source,cfg,verified,relation,channels,output);
+          const auto cal=execute_connected_cal(cal_source,cfg,verified,relation,channels,output,performance);
           receipt["CAL"]=cal.receipt;
           if(endpoint==DevelopmentTerminal::ptc) {
             require(bool(recovered_scans),"successor.PTC_scan_binding_unavailable");
+            performance.mark("PTC_start");
             receipt["PTC"]=execute_connected_ptc(cal.source,recovered_scans->projection,cfg,ptc_request,output);
           }
         }
+        performance.mark("downstream_complete");
         const auto &f=terminal.product->finalization();
         YAML::Node record;
         record["request"]="rtc-only";record["state"]="complete-logical-RTC-terminal";
@@ -854,15 +902,16 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
         arm["terminal"]=record;
       }
       arm["attempt"]=result->plan_handle()->attempt();arm["original_parent"]=mapping->paired_xr_record_id;
-      write_yaml(output/"apply-receipt.yaml",arm);
+      rtc_yaml_map(output/"apply-receipt.yaml",arm,{{"relearned",relearned_path}});
+      receipt_sections.emplace_back(continuity?"donor_continuity":"exclusion_control",output/"apply-receipt.yaml");
       receipt[continuity ? "donor_continuity" : "exclusion_control"]=arm;
       }
     }
+    performance.mark("arm_receipts_written");
     const auto &net=parent->network(nw);
-    for(std::uint32_t d=0;d<channels.size();++d)for(std::int64_t row=0;row<rows;++row){
-      require(std::bit_cast<std::uint64_t>(original_x(row,d))==std::bit_cast<std::uint64_t>(net.value(NativeReadoutCoordinate::x,row,d)) &&
-          std::bit_cast<std::uint64_t>(original_r(row,d))==std::bit_cast<std::uint64_t>(net.value(NativeReadoutCoordinate::r,row,d)),"original pair changed");
-    }
+    require(original_x_digest==native_plane_digest(net.values(NativeReadoutCoordinate::x)) &&
+        original_r_digest==native_plane_digest(net.values(NativeReadoutCoordinate::r)),"original pair changed");
+    performance.mark("original_pair_verified_unchanged");
     receipt["original_pair_unchanged"]=true;receipt["admitted_parent_unchanged"]=true;
     receipt["ingress_seconds"]=std::chrono::duration<double>(ingress_finished-began).count();
     receipt["Learn_seconds"]=learn_seconds;receipt["Consider_evidence_seconds"]=consider_seconds;
@@ -886,7 +935,8 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
     if(development && endpoint==DevelopmentTerminal::ptc &&
         (receipt["PTC"]["failed_fits"].as<std::size_t>() || !receipt["PTC"]["available"].as<std::size_t>()))
       receipt["status"]="UNAVAILABLE-PTC-fit-or-output;upstream-preserved";
-    write_yaml(output/"receipt.yaml",receipt);
+    rtc_yaml_map(output/"receipt.yaml",receipt,receipt_sections);
+    performance.mark("root_receipt_written");
     std::cout<<receipt["status"].as<std::string>()<<" detectors="<<channels.size()<<" events="<<event_table.size()<<" jumps="<<jump_count<<'\n';
     if(development && endpoint!=DevelopmentTerminal::rtc_only && receipt["CAL"]["available"].as<std::size_t>()==0) {
       std::cerr<<"successor.CAL_no_calibrated_output: no sample has supported calibration; inspect cal/receipt.yaml. RTC preserved; no legacy fallback.\n";

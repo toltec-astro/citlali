@@ -324,6 +324,7 @@ public:
     const auto &input_snapshot_handle() const noexcept { return input_snapshot_; }
     ValAddress address() const;
     std::size_t slot() const noexcept { return slot_; }
+    std::size_t detector_grid_index() const noexcept { return detector_grid_; }
     NativeReadoutCoordinate coordinate() const noexcept { return coordinate_; }
     friend bool operator==(const ValRtcOutputTarget &, const ValRtcOutputTarget &) = default;
     friend bool operator<(const ValRtcOutputTarget &a, const ValRtcOutputTarget &b) noexcept {
@@ -337,12 +338,12 @@ private:
     ValRtcOutputTarget(std::shared_ptr<const RtcOutputGrid> grid,
                        std::shared_ptr<const ValSnapshot> input_snapshot,
                        ValAddress representative, std::size_t slot,
-                       NativeReadoutCoordinate coordinate)
+                       NativeReadoutCoordinate coordinate,std::size_t detector_grid)
         : grid_{std::move(grid)}, input_snapshot_{std::move(input_snapshot)},
           row_{representative.sample_identity().native_row()}, slot_{slot},
           network_{representative.sample_identity().network_id()},
           detector_{static_cast<std::uint32_t>(*representative.detector_index())},
-          coordinate_{coordinate} {}
+          coordinate_{coordinate},detector_grid_{detector_grid} {}
     std::shared_ptr<const RtcOutputGrid> grid_;
     std::shared_ptr<const ValSnapshot> input_snapshot_;
     // Compact indices are interpreted only through these exact immutable
@@ -352,6 +353,7 @@ private:
     TimestreamNetworkId network_;
     std::uint32_t detector_;
     NativeReadoutCoordinate coordinate_;
+    std::size_t detector_grid_;
 };
 
 class ValFindingKey {

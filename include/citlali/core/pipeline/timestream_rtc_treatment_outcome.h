@@ -98,9 +98,17 @@ public:
           record.common_support =
               intersect(a.centering_support, b.centering_support);
           record.common_eligible_samples = count(record.common_support);
-          record.original_matched =
+          const auto same_population=[&](const auto &support) {
+            return support.size()==record.common_support.size() &&
+                std::equal(support.begin(),support.end(),record.common_support.begin(),
+                    [](auto x,auto y){return x.first==y.first && x.past_last==y.past_last;});
+          };
+          // Exact same input/profile/VAL and complete centering population:
+          // reuse its already measured spectrum, including nonfinite/run
+          // dispositions. No evidence from a different support is substituted.
+          record.original_matched = same_population(a.centering_support) ? a :
               before.measure(n, window, d, c, &record.common_support);
-          record.conditioned_matched =
+          record.conditioned_matched = same_population(b.centering_support) ? b :
               after.measure(m, window, d, c, &record.common_support);
           if (a.available() && b.available()) {
             const auto &x = record.original_matched,

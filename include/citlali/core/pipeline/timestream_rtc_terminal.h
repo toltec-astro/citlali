@@ -133,7 +133,7 @@ inline RtcPipelineTerminalOutcome finalize_rtc_only(
             throw std::invalid_argument("RTC terminal detector domain is incomplete");
         for (std::size_t d = 0; d < grid->detectors().size(); ++d) {
             for (std::size_t s = 0; s < grid->detectors()[d].scheduled_count; ++s) {
-                const auto fact = grid->occurrence(d, s);
+                const auto fact = grid->state(d, s);
                 ++final.scheduled_slots;
                 final.x_available += fact.x_available; final.r_available += fact.r_available;
                 final.directly_excluded += fact.representative_excluded;

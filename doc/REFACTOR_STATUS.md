@@ -1,5 +1,18 @@
 # Citlali Refactor Status
 
+## RTC-wide performance and storage repair — 2026-09-18
+
+The owner authorized the bounded
+[performance repair](TIMESTREAM_SUCCESSOR_RTC_PERFORMANCE_001_2026-09-18.md)
+from live canonical `fe448860741c543b731faaa76c0eea5194e7599f`, on the one
+spine branch `codex/timestream-successor-rtc-performance-001`. The completed
+RTC/CAL/PTC route and all scientific policies remain the baseline. Work covers
+measured repeated identity/event queries, shared timing/pointing calculations,
+allocation lifetimes, and streamed evidence publication. Focused boundary
+checks precede the identical full-network numerical/support comparison and
+independent exact-SHA review. No canonical promotion or new scientific
+qualification is implied by this active performance work.
+
 ## Scoped RTC/PTC completion — 2026-09-18
 
 The owner directed completion with good detectors while preserving the 51
