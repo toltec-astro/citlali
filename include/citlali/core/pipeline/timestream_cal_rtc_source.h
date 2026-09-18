@@ -7,8 +7,9 @@ namespace citlali::pipeline {
 enum class CalRtcAdmissionState : std::uint8_t { not_requested };
 
 // CAL-facing source content, not CAL scientific admission or a calibrated
-// product. The future requested CAL operation must admit its factor/atmosphere,
-// AST coordinate, response and VAL named-use requirements before producing data.
+// product. A requested CAL operation separately admits its factor/atmosphere,
+// AST coordinates and VAL use. Missing complete response/covariance blocks the
+// dependent qualification/uncertainty claim, not otherwise supported signal.
 class CalRtcSource {
 public:
     static CalRtcSource bind(std::shared_ptr<const RtcPipelineTerminal> terminal) {

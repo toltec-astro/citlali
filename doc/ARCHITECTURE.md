@@ -8,9 +8,21 @@ exact input binding; `src/citlali/cli/rtc_pipeline_execution.cpp` owns the direc
 application sequence using the existing typed Learn/Consider/Apply, RTC grid,
 VAL terminal and `CalRtcSource` owners. The separate comparison executable is
 a thin wrapper around that same application implementation. There is no legacy
-fallback. The currently bound 152390/network12 adapter completes RTC-only;
-CAL execution, general legacy-input conversion and downstream stages are
-explicitly unavailable. See `data/development/README.md` and current status.
+fallback. The default endpoint is now CAL; an explicit `rtc-only` request stops
+earlier. The private `cal_pipeline_execution.h` adapter resolves selected
+APT/TEL/config inputs, while `AstRtcCoordinates` owns the existing bounded V2
+geometry on the exact RTC schedule. `CalEvidence`, `CalPlan` and
+`CalAppliedSignal` implement Learn, Consider and Apply; the frozen atmosphere
+and WVR owners contain their numerical rules. `ValCalOutputFacts` references
+the immutable result once in a new VAL generation, without a finding per cell
+or copying observation provenance. There is no ownership cycle: signal ->
+plan -> evidence -> RTC input VAL; the new output VAL references the signal.
+
+The current 152390/network12 input has no admitted time-series WVR records and
+therefore produces explicit no-calibrated-output, preserving RTC. General
+legacy-input conversion and PTC/MAP remain unavailable. Missing required
+pointing stops the requested CAL handoff; neither input failure selects a
+successful RTC-only fallback. See `data/development/README.md` and status.
 
 This is an active development path, not a scientific-production qualification.
 Earlier standard-reduction descriptions below document the retained historical

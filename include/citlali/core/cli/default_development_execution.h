@@ -28,10 +28,11 @@ int load_and_run_successor_development(const RuntimeConfig &runtime,
         if (!entry.first.IsScalar() || !keys.contains(entry.first.as<std::string>()))
             throw std::invalid_argument("successor.unsupported_configuration: unknown development request field");
     }
-    if (!config["terminal"] || config["terminal"].as<std::string>() != "rtc-only")
+    const auto terminal = config["terminal"] ? config["terminal"].as<std::string>() : "cal";
+    if (terminal != "rtc-only" && terminal != "cal")
         throw std::invalid_argument(
-            "successor.CAL_not_implemented: current development endpoint is RTC-only; "
-            "CAL/PTC/MAP execution is unavailable, with no legacy substitution");
+            "successor.PTC_not_implemented: current development endpoint is CAL; "
+            "PTC/MAP execution is unavailable, with no legacy substitution");
     const YAML::Node input = config["input"];
     if (!input || !input.IsMap() || input.size() != 2 ||
         !input["path"] || !input["sha256"] || !config["output"])
@@ -42,7 +43,8 @@ int load_and_run_successor_development(const RuntimeConfig &runtime,
         throw std::invalid_argument("successor.path_binding: input and output must be absolute paths");
     if (citlali::utils::sha256_file(path) != input["sha256"].as<std::string>())
         throw std::invalid_argument("successor.input_digest_mismatch: input record has changed");
-    return run_successor_rtc(path, output, RtcInvocation::development_default);
+    return run_successor_rtc(path, output, RtcInvocation::development_default, {},
+        terminal == "cal" ? DevelopmentTerminal::cal : DevelopmentTerminal::rtc_only);
 }
 
 } // namespace citlali::cli

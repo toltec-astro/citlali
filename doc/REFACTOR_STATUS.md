@@ -1,5 +1,40 @@
 # Citlali Refactor Status
 
+## Connected CAL development increment — 2026-09-17
+
+Owner continuation: “pushed. Let's move on to CAL.” Live canonical was verified
+at `e633dd3e529897defa8d38d6f189f27289401492`; the owned continuation is
+`codex/timestream-successor-cal-001`. The preceding RTC/default work and frozen
+old-route baseline are preserved.
+
+The ordinary default now continues from the actual RTC terminal through the
+bounded, previously permitted AST V2 detector-coordinate adapter and CAL.
+Runtime Learn binds exact RTC/VAL, selected child APT rows, AST output-grid
+pointing, WVR support and the frozen atmosphere authority. Consider freezes
+sample admission and the once-only `flxscale * C` multiplier. Apply consumes
+conditioned x and retains the immutable RTC pair, exclusions, replacement and
+support history. CAL-owned facts enter a new VAL generation. No r calibration,
+additive baseline operation, implicit weighting or response qualification is
+introduced. Engineering Learn/Consider/Apply remains the development workflow;
+it does not substitute for these executable runtime boundaries.
+
+The real 152390 telescope artifact lacks a time-series WVR input: its scalar
+`Header.Radiometer.Tau` is not eligible under the approved WP7 no-fallback rule.
+The default executes CAL and reports `no-calibrated-output` with explicit
+per-slot causes and exit 2, preserving the RTC result. Supported controlled
+fixtures exercise the actual calibrated-signal path. The next required input
+work is to bind the genuine same-observation WVR record times and source
+validity, then run that same connected path on supported real samples. PTC is
+the next unimplemented processing responsibility (DC/common-mode removal),
+but is not activated here. FRUIT remains deferred.
+
+Scientific authority is SCI-CAL scientificr0.5/engineeringr0.4, WP3-D002--D008
+and the approved WP7 2026-08-25 addendum. Exact existing atmosphere/passband
+bytes are checked at configuration and retained in the operator. No new
+scientific choice is made. Evidence and exact-source independent review are
+bound in `/private/tmp/citlali-successor-cal-001-20260917`; this increment has
+its own local gates and does not inherit the earlier Unity result.
+
 ## Successor is the development default — owner direction 2026-09-17
 
 The owner identifies this as a development-only codebase with one user and

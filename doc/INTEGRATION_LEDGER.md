@@ -1,5 +1,24 @@
 # Citlali Integration Ledger
 
+## Connected CAL continuation — 2026-09-17
+
+- Owner-authorized continuation of the default development route; verified
+  literal/live canonical base `e633dd3e529897defa8d38d6f189f27289401492`.
+  Owned worktree `/private/tmp/citlali-timestream-successor-cal-001`, branch
+  `codex/timestream-successor-cal-001`; initially clean.
+- New CAL evidence, frozen consideration and Apply own only calibration;
+  AST owns the exact RTC-grid coordinates, and VAL preserves CAL facts.
+  Existing RTC numerics and original-input execution remain unchanged.
+- The scalar WVR header in the current fixture cannot supply the approved
+  time series. This is recorded input unavailability, not permission to
+  change opacity policy or substitute a legacy result.
+- Focused/operator, default invocation, scientific support parity and broad
+  local gates, candidate/tree identities and fresh independent review are
+  retained in `/private/tmp/citlali-successor-cal-001-20260917`.
+  Canonical promotion requires the final exact-source review and live-ref
+  ancestry check under the continuing owner development direction. User
+  performs all pushes; no historical cleanup or direct Unity access.
+
 ## Successor development-default integration — 2026-09-17
 
 - Explicit owner disposition: freeze old canonical, integrate reviewed RTC,

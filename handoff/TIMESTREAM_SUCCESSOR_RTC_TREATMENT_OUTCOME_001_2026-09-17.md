@@ -860,3 +860,57 @@ continues to produce evidence, Consider freezes choices, Apply executes afresh
 from original x/r; following the engineering workflow alone is not runtime
 conformance. PTC/MAP, FRUIT and the separate detector-response investigation
 remain outside this extension.
+
+## Connected CAL implementation — 2026-09-17
+
+Owner “pushed. Let's move on to CAL” authorizes the continuation from verified
+live canonical `e633dd3e529897defa8d38d6f189f27289401492`, in owned worktree
+`/private/tmp/citlali-timestream-successor-cal-001`, branch
+`codex/timestream-successor-cal-001`. The ordinary request now defaults to
+terminal `cal`; explicit `rtc-only` remains a requested early stop. No legacy
+fallback or new RTC scientific policy is introduced.
+
+AST realizes the previously permitted V2 J2000 tangent/selected-APT geometry
+on the exact representative RTC times, retaining TEL and pointing-offset
+parents. Required missing pointing fails the CAL handoff. CAL Learn binds
+that product, the complete RTC/VAL source, exact selected child rows, frozen
+atmosphere/passband authority and WVR evidence. Consider freezes supported
+multipliers and overlapping unavailable causes; Apply realizes conditioned
+x times selected `flxscale` times target correction once. It preserves r,
+RTC occurrence/support and donor history by reference. A new VAL generation
+holds the CAL fact block, without allocating one finding per output cell.
+Covariance, nuisance uncertainty and full conditioned response remain
+explicitly unavailable; they do not become zero or an achieved peak-response
+qualification.
+
+The actual 152390 TEL bytes have scalar `Header.Radiometer.Tau=0.018` and an
+update header, but no time-series WVR records with declared support. The
+approved WP7 interpolation rule forbids a scalar-header fallback. The same
+default route therefore executes CAL and publishes complete causes with
+`no-calibrated-output`, preserving RTC values and returning exit 2. Controlled
+supported inputs exercise the actual positive CAL Apply path. This is an
+input omission, not a newly reopened scientific decision. The owner has been
+asked for the genuine same-observation WVR history. A new source layout must
+be bound to its times/validity before it can produce calibrated samples.
+
+Evidence under `/private/tmp/citlali-successor-cal-001-20260917` binds focused
+frozen-node/SciPy-oracle, WVR, AST, CAL arithmetic/identity/support, donor and
+VAL checks, the ordinary real-data invocation, unchanged RTC bytes, broader
+local gates and fresh exact-SHA review. Earlier Unity64548643 remains evidence
+only for `165684816...`. No new Unity run or production qualification is
+claimed. PTC DC/common-mode processing is the next implementation owner after
+this calibration boundary; its connection, MAP and FRUIT are not activated.
+
+Local pre-review evidence: all 1,234 runnable CTests pass (1,235 registered;
+the one established MapFitterLifecycle test remains disabled), including 16
+new CAL/AST tests and the expanded 11-control ordinary-CLI group. Python
+baseline/RTC/build-graph gates pass 315 tests and 175 subtests; required config
+preflight passes. The ordinary twelve-detector run takes 111.07 seconds with
+838,369,280-byte peak RSS; CAL Learn/Consider/Apply plus VAL cost respectively
+0.463/0.132/0.002 seconds for this all-unavailable WVR case. These are not
+timings of a fully populated real WVR run. All 116 existing RTC numeric and
+support files remain byte-identical to the accepted development-default run;
+909,228 scheduled slots and 882,766 available x/r samples are preserved.
+CAL publishes 909,228 slot causes, no calibrated values and VAL generation 2.
+Exact committed-source binding and the independent verdict follow in the
+external completion record; pre-review results alone do not claim acceptance.

@@ -177,15 +177,25 @@ target_sources(
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/ast_scan_motion.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/ast_scan_motion_alignment.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_rtc_common_mode.cpp"
+        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_cal_atmosphere.cpp"
+        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_cal_wvr.cpp"
+        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/ast_rtc_coordinates.cpp"
+        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_cal_pipeline.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_identity_route_context.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/output_root_lease.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/reduction_restart_checkpoint.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/timestream/ptc/sensitivity.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/utils/gauss_models.cpp"
 )
+include("${CITLALI_SOURCE_ROOT}/cmake/citlali_cal_authority.cmake")
+citlali_bind_cal_authority("${CITLALI_SOURCE_ROOT}")
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     set_source_files_properties(
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_rtc_common_mode.cpp"
+        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_cal_atmosphere.cpp"
+        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_cal_wvr.cpp"
+        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/ast_rtc_coordinates.cpp"
+        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_cal_pipeline.cpp"
         PROPERTIES COMPILE_OPTIONS "-fno-fast-math;-ffp-contract=off"
     )
 endif()
@@ -302,6 +312,7 @@ if(CITLALI_BUILD_TESTS)
             citlali_timestream_successor_ast_scan_motion_test
             citlali_timestream_successor_identity_test
             citlali_timestream_successor_identity_route_context_test
+            citlali_cal_numerics_test
         PROPERTY EXCLUDE_FROM_ALL FALSE
     )
 endif()

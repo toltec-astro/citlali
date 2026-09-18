@@ -38,8 +38,9 @@ void write_matrix(const fs::path &p,const auto &m) {
 #include "rtc_common_mode_output.h"
 #include "rtc_treatment_outcome_output.h"
 #include "rtc_consequence_study.h"
+#include "cal_pipeline_execution.h"
 int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &output_path,
-    RtcInvocation invocation, std::optional<fs::path> reviewed_selection) {
+    RtcInvocation invocation, std::optional<fs::path> reviewed_selection, DevelopmentTerminal endpoint) {
   const bool development = invocation == RtcInvocation::development_default;
   std::array<std::string,4> arguments{"citlali",input_path.string(),output_path.string(),
                                    reviewed_selection ? reviewed_selection->string() : ""};
@@ -820,6 +821,8 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
         auto terminal=finalize_rtc_only({complete->attempt()},grid,slot,final_decision);
         require(terminal.complete(),"required RTC terminal failed: "+terminal.reason);
         const auto cal_source=CalRtcSource::bind(terminal.product);
+        if(development && endpoint==DevelopmentTerminal::cal)
+          receipt["CAL"]=execute_connected_cal(cal_source,cfg,verified,relation,channels,output);
         const auto &f=terminal.product->finalization();
         YAML::Node record;
         record["request"]="rtc-only";record["state"]="complete-logical-RTC-terminal";
@@ -864,14 +867,21 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
       receipt["development_route"]="timestream-successor";
       receipt["development_Apply_performed"]=true;
       receipt["legacy_fallback_performed"]=false;
-      receipt["completed_through"]="RTC";
-      receipt["next_stage"]="CAL";
-      receipt["next_stage_state"]="unavailable-contract-implementation-and-input-bindings-required";
-      std::cout<<"Timestream Successor: RTC complete; CAL not implemented. No legacy fallback.\n";
+      receipt["completed_through"]=endpoint==DevelopmentTerminal::cal?"CAL":"RTC";
+      receipt["next_stage"]=endpoint==DevelopmentTerminal::cal?"PTC":"CAL";
+      receipt["next_stage_state"]=endpoint==DevelopmentTerminal::cal?"not-implemented":"not-requested";
+      std::cout<<"Timestream Successor: RTC complete; "<<(endpoint==DevelopmentTerminal::cal?
+          "CAL executed (see CAL availability); PTC not implemented.":"CAL not requested.")<<" No legacy fallback.\n";
     }
     receipt["status"]=recovered_scans ? "PASS-runtime-decision-Apply;natural-isolated-policy-unavailable" : argc==4 ? "PASS-explicit-reviewed-Apply" : "PASS-Learn-awaiting-explicit-selections";
+    if(development && endpoint==DevelopmentTerminal::cal && receipt["CAL"]["available"].as<std::size_t>()==0)
+      receipt["status"]="UNAVAILABLE-no-calibrated-output;RTC-complete";
     write_yaml(output/"receipt.yaml",receipt);
     std::cout<<receipt["status"].as<std::string>()<<" detectors="<<channels.size()<<" events="<<event_table.size()<<" jumps="<<jump_count<<'\n';
+    if(development && endpoint==DevelopmentTerminal::cal && receipt["CAL"]["available"].as<std::size_t>()==0) {
+      std::cerr<<"successor.CAL_no_calibrated_output: no sample has supported calibration; inspect cal/receipt.yaml. RTC preserved; no legacy fallback.\n";
+      return 2;
+    }
     return 0;
   } catch(const std::exception &e){std::cerr<<"RTC multi-detector caller FAIL: "<<e.what()<<'\n';return 1;}
 }

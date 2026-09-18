@@ -4,6 +4,7 @@
 #include <citlali/core/pipeline/timestream_rtc_pipeline.h>
 #include <citlali/core/pipeline/timestream_rtc_output_grid.h>
 #include <citlali/core/pipeline/timestream_cal_rtc_source.h>
+#include <citlali/core/pipeline/timestream_cal_pipeline.h>
 #include "../tools/timestream_successor/rtc_multidetector_bindings.h"
 #include <gtest/gtest.h>
 #include <citlali/core/pipeline/timestream_processing_scan_native.h>
@@ -1855,4 +1856,127 @@ TEST(rtc_terminal, unresolved_or_foreign_final_decision_cannot_publish) {
   EXPECT_FALSE(other_slot.snapshot());
   auto replay=complete_apply(t,result->plan_handle());
   EXPECT_FALSE(finalize_rtc_only({13},RtcOutputGrid::prepare(replay,output_align(t)),other_slot,retained).complete());
+}
+
+namespace {
+struct CalFixture {
+  Input input;
+  Trial trial;
+  std::shared_ptr<const RtcPipelineTerminal> terminal;
+  std::shared_ptr<const AstRtcCoordinates> ast;
+  std::shared_ptr<const CalWvrEvidence> wvr;
+  std::vector<CalDetectorFactor> factors;
+  NativeTelescopeData telescope;
+  std::shared_ptr<const NativePointingOffsetModel> offsets;
+  std::vector<AstRtcDetectorGeometry> geometry;
+  static Input make_input(bool donor) {Input in(1600);if(donor)in.spike();return in;}
+  explicit CalFixture(bool donor=false):input{make_input(donor)},
+      trial{input,10,donor?RtcSpikeProtection::outside_source:RtcSpikeProtection::unavailable} {
+    const auto plans=donor?complete_plans(trial,{.25,.5,.25},{explicit_donor(trial)}):complete_plans(trial);
+    const auto result=complete_apply(trial,RtcPipelinePlan::consider(plans,trial.joint->joint_handle(),31));
+    auto grid=RtcOutputGrid::prepare(result,output_align(trial));RtcPipelineTerminalSlot slot;
+    const auto outcome=finalize_rtc_only({44},grid,slot);if(!outcome.complete())throw std::runtime_error(outcome.reason);
+    terminal=outcome.product;
+    telescope["TelTime"]=Eigen::VectorXd::LinSpaced(100,999,1100);
+    for(const auto *name:{"TelRa","TelDec","TelAzAct","TelElCor","ActParAng"})telescope[name]=Eigen::VectorXd::Zero(100);
+    telescope["TelElAct"]=Eigen::VectorXd::Constant(100,std::numbers::pi/4);
+    NativePointingOffsetsArcsec off{{"az",Eigen::VectorXd::Zero(1)},{"alt",Eigen::VectorXd::Zero(1)}};
+    Eigen::VectorXd support(2);support<<999,1100;
+    offsets=std::make_shared<const NativePointingOffsetModel>(off,support);
+    for(std::size_t d=0;d<grid->detectors().size();++d) {
+      const auto b=trial.parent->network(0).detector(d);const auto row="controlled-APT:row="+std::to_string(d);
+      geometry.push_back({b,row,1.,0.,0});factors.push_back({b,row,0,true,d==1?-2.:2.});
+    }
+    ast=pointing(grid,telescope);
+    wvr=CalWvrEvidence::learn(trial.parent->scope(),"controlled-constant-motion","controlled-ALIGN-Unix",
+        {{"a",999,.1,true,999,1100},{"b",1100,.1,true,999,1100}});
+  }
+  std::shared_ptr<const AstRtcCoordinates> pointing(std::shared_ptr<const RtcOutputGrid> grid,const NativeTelescopeData &data) const {
+    return AstRtcCoordinates::realize_v2(grid,trial.parent->scope(),"controlled-constant-motion",
+        std::make_shared<const RawTelescopeTrajectory>(data),0,0,"controlled-offset-model",offsets,geometry);
+  }
+  auto source() const {return CalRtcSource::bind(terminal);}
+  auto evidence() const {return CalEvidence::learn(source(),ast,wvr,CalAtmosphereSurface::frozen(),"controlled-APT",factors);}
+  auto plan() const {return CalPlan::consider(evidence(),terminal->val_snapshot_handle(),1);}
+};
+}
+TEST(cal_pipeline, actual_conditioned_x_gets_selected_factor_and_atmosphere_once_without_calibrating_r) {
+  CalFixture f;const auto x=f.source().conditioned_x(0,300);ASSERT_TRUE(x);
+  const auto raw_before=f.trial.parent->network(0).value(NativeReadoutCoordinate::x,700,0);
+  const auto r_before=f.terminal->grid_handle()->value(0,300,NativeReadoutCoordinate::r);
+  auto p=f.plan();auto y=CalAppliedSignal::apply(p,f.source(),f.terminal->val_snapshot_handle());
+  const double c=*CalAtmosphereSurface::frozen()->correction(0,.1,45);
+  ASSERT_TRUE(y->value(0,300));EXPECT_DOUBLE_EQ(*y->value(0,300),*x*(2*c));
+  EXPECT_DOUBLE_EQ(*y->value(1,300),*f.source().conditioned_x(1,300)*(-2*c));
+  EXPECT_EQ(f.terminal->grid_handle()->value(0,300,NativeReadoutCoordinate::r),r_before);
+  EXPECT_EQ(f.trial.parent->network(0).value(NativeReadoutCoordinate::x,700,0),raw_before);
+  EXPECT_FALSE(y->r_calibrated);EXPECT_FALSE(y->literal_peak_response_qualified);
+  EXPECT_DOUBLE_EQ(p->evidence_handle()->opacity_quality().last,f.input.times.back());
+  EXPECT_EQ(p->entries()[0].size(),800);EXPECT_FALSE(y->value(0,0));
+}
+TEST(cal_pipeline, absent_opacity_preserves_upstream_values_and_publishes_exact_CAL_VAL_facts) {
+  CalFixture f;f.wvr=CalWvrEvidence::learn(f.trial.parent->scope(),"controlled-constant-motion","controlled-ALIGN-Unix",{});
+  auto p=f.plan();auto y=CalAppliedSignal::apply(p,f.source(),f.terminal->val_snapshot_handle());
+  EXPECT_EQ(y->available_count(),0);EXPECT_TRUE(f.source().conditioned_x(0,300));
+  EXPECT_EQ(p->entries()[0][300].wvr_cause,CalWvrCause::absent);
+  EXPECT_EQ(y->causes(0,300),cal_outside_supported_calibration);
+  auto facts=ValCalOutputFacts::preserve(y);auto v=ValSnapshot::commit_cal_output(f.terminal->val_snapshot_handle(),facts);
+  EXPECT_EQ(v->generation().value,f.terminal->val_snapshot_handle()->generation().value+1);
+  EXPECT_EQ(v->committed_cal_output_facts_handle()->at(y,0,300),cal_outside_supported_calibration);
+  auto replay=CalAppliedSignal::apply(p,f.source(),f.terminal->val_snapshot_handle());
+  EXPECT_THROW(facts->at(replay,0,300),std::invalid_argument);
+  EXPECT_THROW(ValSnapshot::commit_cal_output(f.trial.val,facts),std::invalid_argument);
+}
+TEST(cal_pipeline, unsupported_samples_do_not_erase_supported_neighbors_or_collapse_native_time) {
+  CalFixture f;
+  f.wvr=CalWvrEvidence::learn(f.trial.parent->scope(),"controlled-constant-motion","controlled-ALIGN-Unix",
+      {{"a",1001,.1,true,1001,1005},{"b",1005,.1,true,1001,1005}});
+  auto p=f.plan();auto y=CalAppliedSignal::apply(p,f.source(),f.terminal->val_snapshot_handle());
+  EXPECT_FALSE(y->value(0,20));EXPECT_TRUE(y->value(0,100));EXPECT_FALSE(y->value(0,500));
+  EXPECT_GT(y->available_count(),0);EXPECT_LT(y->available_count(),f.terminal->finalization().x_available);
+  EXPECT_EQ(p->entries()[0].size(),800);
+  EXPECT_EQ(p->evidence_handle()->opacity_quality().classification,CalOpacityQuality::opacity_quality_unavailable);
+}
+TEST(cal_pipeline, zero_missing_and_ambiguous_factors_are_local_failures_not_unity_fallbacks) {
+  CalFixture f;f.factors[0].flxscale_mJy_beam_per_x=0;f.factors[1].flxscale_mJy_beam_per_x.reset();f.factors[2].uniquely_matched=false;
+  auto p=f.plan();auto y=CalAppliedSignal::apply(p,f.source(),f.terminal->val_snapshot_handle());
+  EXPECT_EQ(y->available_count(),0);for(int d=0;d<3;++d)EXPECT_EQ(y->causes(d,300),cal_invalid_factor);
+  EXPECT_TRUE(f.source().conditioned_x(0,300));
+}
+TEST(cal_pipeline, foreign_pointing_factors_VAL_and_original_RTC_realizations_are_rejected) {
+  CalFixture f,other;auto p=f.plan();
+  EXPECT_THROW(CalAppliedSignal::apply(p,other.source(),f.terminal->val_snapshot_handle()),std::invalid_argument);
+  EXPECT_THROW(CalPlan::consider(f.evidence(),f.trial.val,2),std::invalid_argument);
+  EXPECT_THROW(CalEvidence::learn(f.source(),other.ast,f.wvr,CalAtmosphereSurface::frozen(),"controlled-APT",f.factors),std::invalid_argument);
+  f.factors[0].selected_row_identity="foreign-row";EXPECT_THROW(f.evidence(),std::invalid_argument);
+}
+TEST(cal_pipeline, donor_neighbors_keep_conditioned_x_and_history_but_replacements_never_become_independent_samples) {
+  CalFixture f(true);auto p=f.plan();auto y=CalAppliedSignal::apply(p,f.source(),f.terminal->val_snapshot_handle());
+  const auto &grid=f.terminal->grid_handle();
+  EXPECT_TRUE(grid->occurrence(0,249).replacement_influence);EXPECT_FALSE(grid->occurrence(0,249).r_available);
+  EXPECT_TRUE(y->value(0,249));EXPECT_FALSE(y->value(0,250));
+  EXPECT_NE(y->causes(0,250)&cal_direct_replacement_or_exclusion,0);
+  EXPECT_EQ(y->plan_handle()->evidence_handle()->source().rtc_terminal_handle(),f.terminal);
+  EXPECT_FALSE(y->plan_handle()->evidence_handle()->source().rtc_terminal_handle()->support(0,249).donors.empty());
+}
+TEST(cal_pipeline, invalid_atmosphere_and_numeric_overflow_are_not_ordinary_calibrated_values) {
+  CalFixture f;f.wvr=CalWvrEvidence::learn(f.trial.parent->scope(),"controlled-constant-motion","controlled-ALIGN-Unix",
+      {{"a",999,-.1,true,999,1100},{"b",1100,-.1,true,999,1100}});
+  auto p=f.plan();auto y=CalAppliedSignal::apply(p,f.source(),f.terminal->val_snapshot_handle());
+  EXPECT_EQ(y->causes(0,300),cal_invalid_atmosphere);EXPECT_FALSE(y->value(0,300));
+  CalFixture huge;huge.factors[0].flxscale_mJy_beam_per_x=std::numeric_limits<double>::max();
+  p=huge.plan();y=CalAppliedSignal::apply(p,huge.source(),huge.terminal->val_snapshot_handle());
+  EXPECT_EQ(y->causes(0,300),cal_numeric_failure);EXPECT_TRUE(y->value(1,300));
+}
+TEST(ast_rtc_coordinates, exact_RTC_schedule_uses_existing_pointing_rotation_without_filtering_angles) {
+  CalFixture f;auto p=f.ast->at(0,300);ASSERT_TRUE(p);
+  EXPECT_NEAR(p->tangent_lon_deg,-std::sqrt(.5)/3600,1e-15);
+  EXPECT_NEAR(p->tangent_lat_deg,std::sqrt(.5)/3600,1e-15);EXPECT_DOUBLE_EQ(p->telescope_elevation_deg,45);
+  EXPECT_EQ(f.ast->grid_handle(),f.terminal->grid_handle());
+  auto missing=f.telescope;missing.erase("ActParAng");
+  EXPECT_THROW(f.pointing(f.terminal->grid_handle(),missing),std::invalid_argument);
+  auto short_support=f.telescope;short_support["TelTime"]=Eigen::VectorXd::LinSpaced(100,1005,1010);
+  EXPECT_THROW(f.pointing(f.terminal->grid_handle(),short_support),std::invalid_argument);
+  f.geometry[0].detector.detector_occurrence_id="wrong-detector";
+  EXPECT_THROW(f.pointing(f.terminal->grid_handle(),f.telescope),std::invalid_argument);
 }

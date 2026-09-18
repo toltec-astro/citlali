@@ -123,6 +123,7 @@ private:
 
 class ValSnapshot;
 class ValRtcOutputFacts;
+class ValCalOutputFacts;
 
 // An address is compact because its exact immutable Paired-D1 handle is owned
 // once by the snapshot. Network/native-row plus the occurrence keys and an
@@ -481,6 +482,12 @@ public:
     static std::shared_ptr<const ValSnapshot> commit_rtc_output(
         std::shared_ptr<const ValSnapshot> base,
         std::shared_ptr<const ValRtcOutputFacts> facts);
+    static std::shared_ptr<const ValSnapshot> commit_cal_output(
+        std::shared_ptr<const ValSnapshot> base,
+        std::shared_ptr<const ValCalOutputFacts> facts);
+    const auto &committed_cal_output_facts_handle() const noexcept {
+        return cal_output_facts_;
+    }
 
     const auto &committed_rtc_output_facts_handle() const noexcept {
         return rtc_output_facts_;
@@ -648,17 +655,20 @@ private:
 
     ValSnapshot(std::shared_ptr<const ValSnapshot> parent,
                 std::vector<ValFinding> findings,
-                std::shared_ptr<const ValRtcOutputFacts> rtc_output_facts = {})
+                std::shared_ptr<const ValRtcOutputFacts> rtc_output_facts = {},
+                std::shared_ptr<const ValCalOutputFacts> cal_output_facts = {})
         : generation_{parent->generation_.value + 1},
           paired_{parent->paired_}, parent_{std::move(parent)},
           findings_{std::move(findings)},
-          rtc_output_facts_{std::move(rtc_output_facts)} {}
+          rtc_output_facts_{std::move(rtc_output_facts)},
+          cal_output_facts_{std::move(cal_output_facts)} {}
 
     ValGeneration generation_;
     std::shared_ptr<const NativePairedReadoutObservation> paired_;
     std::shared_ptr<const ValSnapshot> parent_;
     std::vector<ValFinding> findings_;
     std::shared_ptr<const ValRtcOutputFacts> rtc_output_facts_;
+    std::shared_ptr<const ValCalOutputFacts> cal_output_facts_;
 };
 
 inline ValAddress ValRtcOutputTarget::address() const {
