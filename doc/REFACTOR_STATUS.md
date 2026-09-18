@@ -1,40 +1,46 @@
 # Citlali Refactor Status
 
-## Connected PTC continuation: exact CAL input boundary — 2026-09-18
+## Connected observed-entry PTC development — 2026-09-18
 
-The owner pushed CAL correction `35b05ba91c761646dd08340906c7e2e05e8d2587`
-and directed continuation. Live canonical equality was verified. The one
-active spine is `codex/timestream-successor-ptc-001`, reusing the clean
-completed CAL worktree. The accepted default still completes through CAL;
-this preparation does not claim PTC learning or cleaning.
+The owner resolved the missing-data choice in the
+[observed-entry realization](SCI_PTC_OBSERVED_ENTRY_OWNER_BINDING_2026-09-18.md).
+The one active spine is `codex/timestream-successor-ptc-001`, based on pushed
+canonical `35b05ba91c761646dd08340906c7e2e05e8d2587`, with exact CAL-input
+prerequisite `52288eb835d5dee674dc6e059b269b0bad7c36c8`. The frozen old-route
+comparison and accepted RTC/CAL remain unchanged.
 
-`PtcCalSource` binds the immutable `CalAppliedSignal` to its exact CAL output
-VAL generation. It retains scheduled positions, detector/APT identity,
-CAL classification, unavailable causes, and complete RTC/ALIGN/AST lineage
-by reference. A foreign realization, replay substituted under another
-realization's VAL, or pre-CAL snapshot is rejected. This establishes input
-identity, not PTC named-use eligibility; no numerical data are duplicated.
+The candidate ordinary development route now runs RTC → CAL → PTC → VAL.
+PTC Learn fits observed-entry fixed-rank least squares by alternating least
+squares, using a recorded pairwise-covariance initializer. Consider freezes
+the exact CAL/VAL source, segment, group, means, masks, metric and configured
+rank. Apply uses the frozen full-rank time-local masked operator. An explicit
+`ptc.method: pairwise-covariance` uses the same input and Apply. Rank comes
+from the bound effective request, or an explicit positive `ptc.rank`.
+Direct replacements cannot influence fitting or retained output. Admitted
+original neighbors remain eligible; no complete-case restriction is added.
 
-Frozen SCI-PTC v0.1/r0.5 already selects arithmetic-mean centering without
-restoration, identity scaling, one configured network or array grouping,
-explicit positive rank, one immutable-parent fit, and frozen detector-right
-full-rank masked Apply. The existing 152390 request explicitly selects network
-grouping and 10 modes. No new rank or grouping default is inferred.
+The connected scope is existing 152390/0/2 network12 ingress and explicit
+network grouping within one array. Processing-scan supports and physical
+native runs delimit fits. Missing or unsupported fits remain unavailable,
+with no method substitution, detector removal or rank reduction. CAL
+classification, uncertainty, timing and RTC/AST/ALIGN lineage remain retained.
+The exact PTC-local response operator is supported; absent upstream complete
+response is not invented. MAP and FRUIT remain outside the route.
 
-One realization choice remains pending: the basis-fit missing-data method
-required by SCI-PTC-REQ-008/013/014/019/026/029. Legacy pairwise covariance is
-not authority for that choice. The proposed bounded method learns an SVD
-basis on complete admitted group-time support, then uses the accepted masked
-operator for application. The owner has been asked to select it; it is not
-implemented or selected by this record. In the preserved twelve-detector
-CAL output, 68,479 of 75,769 scheduled times (90.38%) have all twelve values.
-This is an input-support count, not predicted output retention or performance.
+Focused tests cover SVD agreement, masked learning, excluded nonfinite donor
+storage, full-rank and nonconvergence failure, exact CAL/VAL and local response.
+Evidence and preserved CAL inputs for the real and controlled cost probes are
+under `/private/tmp/citlali-successor-ptc-001-20260918`. Current development
+verification is AppleClang/Homebrew; the earlier Unity PASS remains evidence
+only for its exact earlier RTC revision. Review and regression gates precede
+canonical promotion; the owner performs pushes. There is no production
+scientific-qualification claim or change to the frozen comparison baseline.
 
-Exact-parent, timing/value, and replacement/unavailable-support tests and the
-pending decision are bound under `/private/tmp/citlali-successor-ptc-001-20260918`.
-PCA implementation and default PTC activation await the named choice. MAP,
-FRUIT and coefficient-family selection remain outside this increment. No
-push or cleanup occurred.
+The next pipeline responsibility is the typed MAP-facing consumption of PTC
+values, retained CAL classification, support and response limitations under
+MAP's own named-use contract. Rank optimization and complete-chain response
+qualification remain separate decisions; this increment prices ranks rather
+than selecting a new astronomical objective.
 
 ## CAL single-opacity owner correction — 2026-09-18
 

@@ -74,6 +74,8 @@ target_sources(citlali
     "src/citlali/core/pipeline/timestream_cal_wvr.cpp"
     "src/citlali/core/pipeline/ast_rtc_coordinates.cpp"
     "src/citlali/core/pipeline/timestream_cal_pipeline.cpp"
+    "src/citlali/core/pipeline/timestream_ptc_numerics.cpp"
+    "src/citlali/core/pipeline/timestream_ptc_pipeline.cpp"
     "src/citlali/core/pipeline/timestream_identity_route_context.cpp"
     "src/citlali/core/pipeline/output_root_lease.cpp"
     "src/citlali/core/pipeline/reduction_restart_checkpoint.cpp"
@@ -105,6 +107,8 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         src/citlali/core/pipeline/timestream_cal_wvr.cpp
         src/citlali/core/pipeline/ast_rtc_coordinates.cpp
         src/citlali/core/pipeline/timestream_cal_pipeline.cpp
+        src/citlali/core/pipeline/timestream_ptc_numerics.cpp
+        src/citlali/core/pipeline/timestream_ptc_pipeline.cpp
         PROPERTIES COMPILE_OPTIONS "-fno-fast-math;-ffp-contract=off")
 endif()
 
@@ -227,3 +231,10 @@ add_custom_target(default_config_header_citlali DEPENDS
     ${output_path}
 )
 add_dependencies(citlali default_config_header_citlali)
+
+# Diagnostic replay uses the same PTC numerical owner; never a CAL producer.
+add_executable(citlali_ptc_cost EXCLUDE_FROM_ALL tools/timestream_successor/ptc_cost_probe.cpp)
+target_link_libraries(citlali_ptc_cost PRIVATE citlali::citlali)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(citlali_ptc_cost PRIVATE -fno-fast-math -ffp-contract=off)
+endif()

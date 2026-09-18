@@ -181,6 +181,8 @@ target_sources(
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_cal_wvr.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/ast_rtc_coordinates.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_cal_pipeline.cpp"
+        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_ptc_numerics.cpp"
+        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_ptc_pipeline.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_identity_route_context.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/output_root_lease.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/reduction_restart_checkpoint.cpp"
@@ -196,6 +198,8 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_cal_wvr.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/ast_rtc_coordinates.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_cal_pipeline.cpp"
+        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_ptc_numerics.cpp"
+        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_ptc_pipeline.cpp"
         PROPERTIES COMPILE_OPTIONS "-fno-fast-math;-ffp-contract=off"
     )
 endif()
@@ -337,3 +341,9 @@ tula_cmake_install_package(
     TARGETS citlali citlali_config
     CONFIG_TEMPLATE "${CMAKE_CURRENT_LIST_DIR}/citlaliConfig.cmake.in"
 )
+
+add_executable(citlali_ptc_cost EXCLUDE_FROM_ALL "${CITLALI_SOURCE_ROOT}/tools/timestream_successor/ptc_cost_probe.cpp")
+target_link_libraries(citlali_ptc_cost PRIVATE citlali::citlali)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(citlali_ptc_cost PRIVATE -fno-fast-math -ffp-contract=off)
+endif()

@@ -40,7 +40,7 @@ class SuccessorDefaultCli(unittest.TestCase):
         result = subprocess.run([CLI, "--dump_config"], text=True, capture_output=True, timeout=30)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("schema: citlali-development-v1", result.stdout)
-        self.assertIn("terminal: cal", result.stdout)
+        self.assertIn("terminal: ptc", result.stdout)
         self.assertNotIn("mapmaking:", result.stdout)
 
     def test_legacy_config_cannot_silently_reach_old_processing(self):
@@ -50,7 +50,7 @@ class SuccessorDefaultCli(unittest.TestCase):
     def test_downstream_request_does_not_fall_back_to_rtc_completion(self):
         config = self.request({})
         config["terminal"] = "ordinary-science"
-        self.rejected(self.invoke(config), "successor.PTC_not_implemented")
+        self.rejected(self.invoke(config), "successor.endpoint_not_implemented")
 
     def test_bound_request_tamper_is_rejected_before_execution(self):
         config = self.request({})
@@ -64,12 +64,20 @@ class SuccessorDefaultCli(unittest.TestCase):
 
     def test_merged_configuration_uses_the_same_default(self):
         config = self.request({})
-        self.rejected(self.invoke(config, dict(terminal="PTC")), "successor.PTC_not_implemented")
+        self.rejected(self.invoke(config, dict(terminal="PTC")), "successor.endpoint_not_implemented")
 
-    def test_missing_terminal_defaults_to_cal_and_enters_the_existing_rtc_parent(self):
+    def test_missing_terminal_defaults_to_ptc_and_enters_the_existing_rtc_parent(self):
         config = self.request(dict(schema="rtc-multidetector-experiment-v1"))
         del config["terminal"]
         self.rejected(self.invoke(config), "successor.RTC_plan_incomplete")
+
+    def test_unknown_ptc_method_and_nonpositive_rank_fail_before_ingress(self):
+        config = self.request({})
+        config["terminal"] = "ptc"
+        config["ptc"] = dict(method="magic")
+        self.rejected(self.invoke(config), "successor.PTC_method_unknown")
+        config["ptc"] = dict(rank=0)
+        self.rejected(self.invoke(config), "successor.PTC_rank_must_be_positive")
 
     def test_actual_rtc_boundary_refuses_missing_frozen_plan(self):
         config = self.request(dict(schema="rtc-multidetector-experiment-v1"))

@@ -1,9 +1,11 @@
 // Private application adapter. YAML/NetCDF/APT parsing stays outside CAL/AST.
 #include <citlali/core/pipeline/timestream_cal_pipeline.h>
 #include "cal_opacity_header.h"
+#include <citlali/core/pipeline/timestream_ptc_cal_source.h>
 
 namespace {
-YAML::Node execute_connected_cal(const CalRtcSource &source,const YAML::Node &cfg,
+struct ConnectedCal { YAML::Node receipt; PtcCalSource source; };
+ConnectedCal execute_connected_cal(const CalRtcSource &source,const YAML::Node &cfg,
     const apt::VerifiedBundle &verified,const pipeline::CanonicalAptDetectorRelationV2 &relation,
     const std::vector<int> &channels,const fs::path &output) {
     const auto started=std::chrono::steady_clock::now();
@@ -182,6 +184,6 @@ YAML::Node execute_connected_cal(const CalRtcSource &source,const YAML::Node &cf
     record["Learn_seconds"]=std::chrono::duration<double>(learned-started).count();
     record["Consider_seconds"]=std::chrono::duration<double>(considered-learned).count();
     record["Apply_VAL_seconds"]=std::chrono::duration<double>(applied-considered).count();
-    write_yaml(destination/"receipt.yaml",record);return record;
+    write_yaml(destination/"receipt.yaml",record);return {record,PtcCalSource::bind(signal,val)};
 }
 } // namespace

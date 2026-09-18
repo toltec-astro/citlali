@@ -962,3 +962,19 @@ coefficients, cleanup or GitHub push is implied.
 
 Preflight and verification: `/private/tmp/citlali-successor-ptc-001-20260918`.
 The living status records the current boundary and the exact pending choice.
+
+
+## Owner-authorized iterative PTC continuation — 2026-09-18
+
+The later owner directive supersedes the preceding pending complete-support
+proposal. Default basis learning is observed-entry ALS; pairwise covariance
+is an explicit comparison. See `doc/SCI_PTC_OBSERVED_ENTRY_OWNER_BINDING_2026-09-18.md`
+and the current status entry for numerical and named-use bindings. The same
+branch/worktree consumes actual CAL output and publishes PTC-owned VAL facts.
+No CAL rerun is required per cost-probe rank. The twelve-detector regression,
+a full network request and independent 400-detector synthetic overlapping and
+staggered masks are kept distinct. Rank, support and membership stay fixed
+through each fit, and failures cannot silently change methods. The ordinary
+candidate endpoint is PTC/VAL; MAP and FRUIT stay outside this increment.
+Exact candidate review and validation are recorded in
+`/private/tmp/citlali-successor-ptc-001-20260918` before canonical promotion.

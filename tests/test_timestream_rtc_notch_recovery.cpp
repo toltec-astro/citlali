@@ -6,6 +6,7 @@
 #include <citlali/core/pipeline/timestream_cal_rtc_source.h>
 #include <citlali/core/pipeline/timestream_cal_pipeline.h>
 #include <citlali/core/pipeline/timestream_ptc_cal_source.h>
+#include <citlali/core/pipeline/timestream_ptc_pipeline.h>
 #include "../tools/timestream_successor/rtc_multidetector_bindings.h"
 #include <gtest/gtest.h>
 #include <citlali/core/pipeline/timestream_processing_scan_native.h>
@@ -2053,4 +2054,47 @@ TEST(ast_rtc_coordinates, exact_RTC_schedule_uses_existing_pointing_rotation_wit
   EXPECT_THROW(f.pointing(f.terminal->grid_handle(),short_support),std::invalid_argument);
   f.geometry[0].detector.detector_occurrence_id="wrong-detector";
   EXPECT_THROW(f.pointing(f.terminal->grid_handle(),f.telescope),std::invalid_argument);
+}
+
+namespace {
+ProcessingScanNativeProjection ptc_segments(const CalFixture &f) {
+    ProcessingScanNativeProjection out;
+    out.binding=RtcExistingScanBinding::admit(f.trial.parent,"controlled-PTC-scan","controlled-native-relation","controlled-clock",
+        RtcExistingScanSupportState::conservative_native_support_bound,{{0,{0,100,900}},{1,{0,900,1700}}});return out;
+}
+}
+TEST(ptc_pipeline, exact_CAL_to_PTC_VAL_and_frozen_response_preserve_parents) {
+    CalFixture f;auto cal=CalAppliedSignal::apply(f.plan(),f.source(),f.terminal->val_snapshot_handle());
+    auto val=ValSnapshot::commit_cal_output(f.terminal->val_snapshot_handle(),ValCalOutputFacts::preserve(cal));
+    auto source=PtcCalSource::bind(cal,val);auto scans=ptc_segments(f);PtcSolverRequest request;request.rank=1;
+    auto evidence=PtcEvidence::learn(source,scans,request);ASSERT_EQ(evidence->groups().size(),2);
+    auto plan=PtcPlan::consider(evidence,val,1);auto result=PtcAppliedSignal::apply(plan,source,val);
+    auto committed=ValSnapshot::commit_ptc_output(val,ValPtcOutputFacts::preserve(result));
+    EXPECT_EQ(committed->parent_snapshot_handle(),val);EXPECT_EQ(committed->generation().value,val->generation().value+1);
+    EXPECT_EQ(plan->evidence_handle()->source().signal_handle(),cal);
+    EXPECT_GT(result->available_count(),0);
+    for(std::size_t g=0;g<result->groups().size();++g) {
+        const auto &input=evidence->groups()[g].input;
+        auto h=PtcMatrix::Ones(input.centered.rows(),input.centered.cols()).eval();
+        auto response=result->response(g,source,h);EXPECT_EQ(response.retained,result->groups()[g].retained);
+        EXPECT_EQ(committed->committed_ptc_output_facts_handle()->at(result,g,0,0),result->groups()[g].causes(0,0));
+    }
+    EXPECT_THROW(PtcPlan::consider(evidence,f.terminal->val_snapshot_handle(),2),std::invalid_argument);
+    EXPECT_THROW(PtcAppliedSignal::apply(plan,source,f.terminal->val_snapshot_handle()),std::invalid_argument);
+    auto replay=PtcAppliedSignal::apply(plan,source,val);
+    EXPECT_THROW(committed->committed_ptc_output_facts_handle()->at(replay,0,0,0),std::invalid_argument);
+    EXPECT_THROW(ValSnapshot::commit_ptc_output(f.terminal->val_snapshot_handle(),ValPtcOutputFacts::preserve(result)),std::invalid_argument);
+    CalFixture other;EXPECT_THROW(PtcEvidence::learn(source,ptc_segments(other),request),std::invalid_argument);
+}
+TEST(ptc_pipeline, donor_centers_excluded_original_neighbors_retained_and_rank_failure_published) {
+    CalFixture f(true);auto cal=CalAppliedSignal::apply(f.plan(),f.source(),f.terminal->val_snapshot_handle());
+    auto val=ValSnapshot::commit_cal_output(f.terminal->val_snapshot_handle(),ValCalOutputFacts::preserve(cal));auto source=PtcCalSource::bind(cal,val);
+    PtcSolverRequest request;request.rank=1;auto evidence=PtcEvidence::learn(source,ptc_segments(f),request);
+    const auto &g=evidence->groups().front();auto local=[&](std::size_t s){return std::find(g.slots.begin(),g.slots.end(),s)-g.slots.begin();};
+    ASSERT_LT(local(250),g.slots.size());EXPECT_EQ(g.input.eligible(local(250),0),0);
+    EXPECT_EQ(g.input.eligible(local(300),0),1);
+    request.rank=1000;auto failed=PtcEvidence::learn(source,ptc_segments(f),request);
+    auto plan=PtcPlan::consider(failed,val,1);auto signal=PtcAppliedSignal::apply(plan,source,val);
+    EXPECT_EQ(signal->available_count(),0);EXPECT_EQ(failed->groups().front().fit.stopping_reason,"requested-rank-exceeds-shape");
+    EXPECT_EQ(failed->groups().front().fit.request.rank,1000);
 }

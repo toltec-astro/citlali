@@ -124,6 +124,7 @@ private:
 class ValSnapshot;
 class ValRtcOutputFacts;
 class ValCalOutputFacts;
+class ValPtcOutputFacts;
 
 // An address is compact because its exact immutable Paired-D1 handle is owned
 // once by the snapshot. Network/native-row plus the occurrence keys and an
@@ -482,6 +483,10 @@ public:
     static std::shared_ptr<const ValSnapshot> commit_rtc_output(
         std::shared_ptr<const ValSnapshot> base,
         std::shared_ptr<const ValRtcOutputFacts> facts);
+    static std::shared_ptr<const ValSnapshot> commit_ptc_output(
+        std::shared_ptr<const ValSnapshot> base,
+        std::shared_ptr<const ValPtcOutputFacts> facts);
+    const auto &committed_ptc_output_facts_handle() const noexcept {return ptc_output_facts_;}
     static std::shared_ptr<const ValSnapshot> commit_cal_output(
         std::shared_ptr<const ValSnapshot> base,
         std::shared_ptr<const ValCalOutputFacts> facts);
@@ -656,12 +661,14 @@ private:
     ValSnapshot(std::shared_ptr<const ValSnapshot> parent,
                 std::vector<ValFinding> findings,
                 std::shared_ptr<const ValRtcOutputFacts> rtc_output_facts = {},
-                std::shared_ptr<const ValCalOutputFacts> cal_output_facts = {})
+                std::shared_ptr<const ValCalOutputFacts> cal_output_facts = {},
+                std::shared_ptr<const ValPtcOutputFacts> ptc_output_facts = {})
         : generation_{parent->generation_.value + 1},
           paired_{parent->paired_}, parent_{std::move(parent)},
           findings_{std::move(findings)},
           rtc_output_facts_{std::move(rtc_output_facts)},
-          cal_output_facts_{std::move(cal_output_facts)} {}
+          cal_output_facts_{std::move(cal_output_facts)},
+          ptc_output_facts_{std::move(ptc_output_facts)} {}
 
     ValGeneration generation_;
     std::shared_ptr<const NativePairedReadoutObservation> paired_;
@@ -669,6 +676,7 @@ private:
     std::vector<ValFinding> findings_;
     std::shared_ptr<const ValRtcOutputFacts> rtc_output_facts_;
     std::shared_ptr<const ValCalOutputFacts> cal_output_facts_;
+    std::shared_ptr<const ValPtcOutputFacts> ptc_output_facts_;
 };
 
 inline ValAddress ValRtcOutputTarget::address() const {

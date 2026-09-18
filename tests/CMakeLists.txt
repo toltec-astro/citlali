@@ -607,11 +607,11 @@ gtest_discover_tests(citlali_rtc_line_transfer_test
 )
 
 add_executable(citlali_rtc_notch_recovery_test EXCLUDE_FROM_ALL
-    timestream_cal_pipeline_header.cpp timestream_ptc_cal_source_header.cpp ast_rtc_coordinates_header.cpp
+    timestream_cal_pipeline_header.cpp timestream_ptc_pipeline_header.cpp timestream_ptc_cal_source_header.cpp ast_rtc_coordinates_header.cpp
     test_timestream_rtc_notch_recovery.cpp timestream_val_rtc_output_header.cpp timestream_rtc_terminal_header.cpp timestream_cal_rtc_source_header.cpp timestream_rtc_output_grid_header.cpp timestream_rtc_notch_recovery_header.cpp timestream_rtc_line_population_header.cpp timestream_rtc_pipeline_header.cpp timestream_rtc_treatment_outcome_header.cpp timestream_processing_scan_native_header.cpp timestream_rtc_event_treatment_header.cpp)
 # Exercise the RTC test translation unit's own include dependencies in both builds.
 set_source_files_properties(test_timestream_rtc_notch_recovery.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
-set_source_files_properties(timestream_cal_pipeline_header.cpp timestream_ptc_cal_source_header.cpp ast_rtc_coordinates_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+set_source_files_properties(timestream_cal_pipeline_header.cpp timestream_ptc_pipeline_header.cpp timestream_ptc_cal_source_header.cpp ast_rtc_coordinates_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
 set_source_files_properties(timestream_val_rtc_output_header.cpp timestream_rtc_terminal_header.cpp timestream_cal_rtc_source_header.cpp timestream_rtc_output_grid_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
 set_source_files_properties(timestream_rtc_notch_recovery_header.cpp timestream_rtc_line_population_header.cpp timestream_rtc_pipeline_header.cpp timestream_rtc_treatment_outcome_header.cpp timestream_processing_scan_native_header.cpp timestream_rtc_event_treatment_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
 target_link_libraries(citlali_rtc_notch_recovery_test PRIVATE citlali::citlali GTest::gtest_main)
@@ -649,3 +649,13 @@ if(TARGET citlali_cli)
             "${CMAKE_CURRENT_LIST_DIR}/test_successor_default_cli.py"
             --cli "$<TARGET_FILE:citlali_cli>")
 endif()
+
+add_executable(citlali_ptc_numerics_test EXCLUDE_FROM_ALL
+    test_timestream_ptc_numerics.cpp timestream_ptc_numerics_header.cpp)
+set_source_files_properties(timestream_ptc_numerics_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+target_link_libraries(citlali_ptc_numerics_test PRIVATE citlali::citlali GTest::gtest_main)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(citlali_ptc_numerics_test PRIVATE -fno-fast-math -ffp-contract=off)
+endif()
+add_dependencies(check citlali_ptc_numerics_test)
+gtest_discover_tests(citlali_ptc_numerics_test WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR} TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
