@@ -1,5 +1,30 @@
 # Citlali Integration Ledger
 
+## RTC performance integration and bounded cleanup — 2026-09-18
+
+- Owner accepted the cleanup proposal after pushing reviewed performance
+  closure `4bb7091443b8fa71b165bd14219af451973b6b9e`. Live canonical was
+  reverified at `fe448860741c543b731faaa76c0eea5194e7599f`; local canonical
+  advanced by compare-and-swap fast-forward. No merge or executable change.
+- Exact implementation `f34f9d9d896132b4ba6bb9d30380b9d34e94d867` retains its
+  1,261-test local PASS, 5,968 identical binary products and independent review.
+  Closure review covers the documentation-only performance completion. This
+  integration record requires its own bounded exact-SHA documentation review.
+- Worktree inventory found 38 stale registrations, but only 15 paths were
+  absent. Only those 15 registrations were removed; their metadata was archived
+  and every ref was verified unchanged before canonical promotion. All existing
+  directories, other refs, stashes, bundles and owner-dirty work remain retained.
+  Cleanup receipts: `/private/tmp/citlali-rtc-cleanup-20260918`.
+- The owner clarified that the desired Unity observation test means **all
+  TolTEC networks**. The present input adapter only accepts network12. Extending
+  native ingress and verifying each network's existing RTC/CAL/PTC bindings is
+  the next bounded implementation responsibility; no network12 profile may be
+  silently applied to other arrays. The prepared exact-4bb709144 Unity packet
+  is a build/regression gate only, not that observation test.
+- Source, filters, policy and scientific qualification are unchanged. No new
+  local build or observation run is needed for this record. Unity execution and
+  GitHub pushes remain human-mediated.
+
 ## CAL single-opacity owner correction — 2026-09-18
 
 - Explicit owner correction, recorded in

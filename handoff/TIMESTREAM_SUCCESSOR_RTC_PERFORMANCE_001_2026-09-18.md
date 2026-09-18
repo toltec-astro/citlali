@@ -1,5 +1,35 @@
 # TIMESTREAM-SUCCESSOR-RTC-PERFORMANCE-001 — 2026-09-18
 
+## Subsequent owner-approved integration and restart point
+
+The owner pushed closure `4bb7091443b8fa71b165bd14219af451973b6b9e` and
+approved bounded cleanup. Local canonical advanced from verified `fe4488607`
+to that exact reviewed closure; its executable source remains identical to
+the tested implementation below. The canonical remote push is owner-run.
+Fifteen absent-worktree registrations were removed after preserving their
+metadata and proving all refs unchanged. Twenty-three stale registrations with
+existing directories, and all other worktrees/branches, remain untouched.
+
+Active checkout: `/private/tmp/citlali-timestream-successor-cal-001`.
+Build to retain: `/private/tmp/citlali-successor-cal-001-20260917/build`.
+Durable performance evidence is the directory named below; cleanup/restart
+receipts are under `/private/tmp/citlali-rtc-cleanup-20260918`.
+
+Next requested observation test is **all TolTEC networks on Unity**, explicitly
+not just the 414-detector network12 product. First extend the bounded native
+input adapter and verify existing per-network/array RTC, CAL, PTC and VAL
+bindings; the current ordinary route rejects other networks. Preserve accepted
+policies rather than treating network12 settings as universal. No new MAP or
+FRUIT work is implied by this next input-scope responsibility.
+
+Meanwhile `/private/tmp/citlali-rtc-performance-unity-4bb709144` is prepared
+for owner-run GCC13/Spack compilation and all 1,261 runnable tests, with 43
+focused controls. It binds the already pushed exact closure. Resources are one
+node, 4 CPUs, 32 GB and two hours. This packet has no real-data replay; build
+success must not be reported as the requested all-network observation run.
+
+## Preserved exact implementation evidence
+
 Owner direction: repair performance RTC-wide and inspect storage/lifetimes,
 using bound arrays and shared axes without changing scientific processing.
 The [work order](../doc/TIMESTREAM_SUCCESSOR_RTC_PERFORMANCE_001_2026-09-18.md)
@@ -90,8 +120,9 @@ the comparison scripts preserve the result. `performance.jsonl` in the
 candidate output holds per-stage RSS, allocator live bytes/block counts and
 logical payload counters. Unknown allocation multiplicities are explicit.
 
-Canonical promotion and owner push remain pending; verify live canonical
-before promotion rather than assuming the base has not moved. Any executable
+At the original performance closure, canonical promotion and owner push were
+pending; the subsequent owner disposition is recorded above. Verify live
+canonical before any further promotion. Any executable
 reconciliation needs its own exact tests/review. The implementation default
 continues through PTC/VAL with unchanged filters, masks, timing, validity,
 donors, source protection, method/rank and qualification limits. No MAP,

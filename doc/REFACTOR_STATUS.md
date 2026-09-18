@@ -21,8 +21,21 @@ with explicitly verified changed runtime/provenance fields. The same 363
 detectors and 27,157,906 eligible samples remain. See the
 [completion and storage handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_PERFORMANCE_001_2026-09-18.md).
 This is one local AppleClang measurement, not new Unity or scientific
-qualification. Canonical promotion and owner push remain pending; the candidate
-default still executes RTC → CAL → PTC → VAL and stops before MAP.
+qualification. On owner approval, local canonical was fast-forwarded from
+`fe448860741c543b731faaa76c0eea5194e7599f` to reviewed, pushed performance
+closure `4bb7091443b8fa71b165bd14219af451973b6b9e`; the canonical remote push
+remains owner-run. The default executes RTC → CAL → PTC → VAL and stops before
+MAP. Fifteen absent-worktree registrations were removed with exact refs retained;
+23 other stale registrations still have directories and were left untouched.
+
+The next owner-requested task is an **all-TolTEC-network Unity observation**.
+Current ingress explicitly supports only 152390/0/2 network12, so this requires
+a bounded multi-network input/binding extension before it can be claimed as a
+test of the connected route. Do not substitute the 414-detector network12 run
+or a build gate for that request. A current-source Unity GCC13 build/regression
+packet is ready at `/private/tmp/citlali-rtc-performance-unity-4bb709144`:
+4 CPUs, 32 GB, two hours; 1,261 runnable tests and 43 focused controls. It is
+owner-run and has not executed. No observation replay is included in that packet.
 
 ## Scoped RTC/PTC completion — 2026-09-18
 
