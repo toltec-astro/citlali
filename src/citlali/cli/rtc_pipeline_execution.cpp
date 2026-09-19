@@ -41,6 +41,7 @@ std::string native_plane_digest(const NativePairedReadoutMatrix &m) {
 }
 #include "rtc_receipt_stream.h"
 #include "rtc_performance_trace.h"
+#include "rtc_array_filter_input.h"
 #include "rtc_processing_scan_input.h"
 #include "rtc_common_mode_output.h"
 #include "rtc_treatment_outcome_output.h"
@@ -107,8 +108,9 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
         read_netcdf_scalar<int>(raw_file, "Header.Toltec.SubObsNum");
     const auto scan =
         read_netcdf_scalar<int>(raw_file, "Header.Toltec.ScanNum");
-    if(development) require(obs==152390 && sub==0 && scan==2 && nw==12,
-        "successor.unsupported_native_domain: current connected RTC input adapter supports 152390/0/2 network12; no legacy fallback");
+    if(development) require(obs==152390 && sub==0 && scan==2 && nw>=0 && nw<13 &&
+        (nw==12 || cfg["filter_plan"]),
+        "successor.unsupported_native_domain: 152390/0/2 requires an explicit array plan outside the preserved network12 input; no legacy fallback");
     require(obs == relation.observation().observation &&
                 sub == relation.observation().subobservation &&
                 scan == relation.observation().scan,
@@ -177,9 +179,18 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
         }
       require(matches==1,"census observation absent or duplicated in selection");
     }
-    require((obs == 152390 || (census && obs == 152392)) && sub == 0 && scan == 2 && (nw == 12 || (full_health && nw == 0)),
+    require((obs == 152390 || (census && obs == 152392)) && sub == 0 && scan == 2 &&
+            (nw == 12 || (full_health && nw == 0) || (development && cfg["filter_plan"])),
             "bounded caller requires NGC4449/152390/0/2: network12 Apply or network0 diagnostic only");
-    const int health_array=nw==0 ? 0 : 2;
+    const auto network_binding=std::find_if(relation.bindings().begin(),relation.bindings().end(),
+        [&](const auto &b){return b.network==nw;});
+    require(network_binding!=relation.bindings().end(),"native network has no exact APT array binding");
+    const int health_array=network_binding->array;
+    std::optional<citlali::cli::detail::RtcArrayFilterInput> filter_input;
+    if(cfg["filter_plan"]) {
+      require(!cfg["fir"] && !cfg["lowpass_identity"],"explicit filter artifact and inline coefficients are competing authorities");
+      filter_input=citlali::cli::detail::read_rtc_array_filter(YAML::LoadFile(checked_file(cfg["filter_plan"]).string()),health_array);
+    }
     require(rows == prior["rows"].as<std::int64_t>() &&
                 nw == prior["network"].as<int>() &&
                 source.channel_count == prior["channels"].as<int>(),
@@ -352,8 +363,8 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
       require(recovered_scans.has_value() && motion,"health needs the existing processing and motion binding");
       RtcCommonModeDomain domain;domain.network=nw;domain.scans=recovered_scans->projection.binding;
       domain.motion=motion;domain.population_authority="exact-APT-flag=flag2=0-and-Tune-valid:sha256:"+citlali::utils::sha256_file(manifest);
-      domain.array=nw==0 ? RtcOpticalArray::a1100 : RtcOpticalArray::a2000;domain.nominal_interval_seconds=duration;
-      domain.speed_ceiling_arcsec_per_sec=235;domain.output_factor=2;
+      domain.array=static_cast<RtcOpticalArray>(health_array);domain.nominal_interval_seconds=duration;
+      domain.speed_ceiling_arcsec_per_sec=235;domain.output_factor=filter_input ? filter_input->factor : 2;
       for(std::size_t d=0;d<channels.size();++d)domain.members.push_back({detectors[d].detector_occurrence_id,peer_good[d] && tune.valid[channels[d]],factors[d]});
       health=measure(health_seconds,[&]{return RtcCommonModeEvidence::learn(spikes,std::move(domain),30);});
       if(cfg["common_mode_health"].as<std::string>()=="full-network-learn-only") {
@@ -448,6 +459,12 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
     receipt["schema"]="rtc-multidetector-learning-v1";
     receipt["source_revision"]=std::string(CITLALI_GIT_REVISION);
     receipt["configuration_sha256"]=citlali::utils::sha256_file(argv[1]);
+    if(filter_input) {
+      receipt["explicit_array_lowpass"]=YAML::Clone(cfg["filter_plan"]);
+      receipt["explicit_array_lowpass"]["array"]=health_array;
+      receipt["explicit_array_lowpass"]["factor"]=filter_input->factor;
+      receipt["explicit_array_lowpass"]["production_certified"]=false;
+    }
     receipt["learning_binding"]=binding;receipt["VAL_generation"]=0;
     receipt["observation"]=obs;receipt["network"]=nw;receipt["rows"]=rows;
     receipt["source_protection_authority"]=protection_authority;
@@ -610,20 +627,23 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
       std::vector<std::shared_ptr<const RtcNotchRecoveryPlan>> plans;
       for(std::uint32_t d=0;d<channels.size();++d){
         RtcLineTransferSpecification s;s.identity="multidetector-explicit-finite-plan";
-        s.lowpass_identity=cfg["lowpass_identity"].as<std::string>();
+        if(filter_input) filter_input->require_cadence(duration,spectral->network(nw).interval_seconds);
+        s.lowpass_identity=filter_input ? filter_input->identity : cfg["lowpass_identity"].as<std::string>();
         s.state_support_identity="two-centered-finite-FIRs;complete-native-footprints;no-padding;ordered-binary64-FMA;fixed-native-phase0";
-        s.input_interval_seconds=spectral->network(nw).interval_seconds;s.factor=2;
-        s.centered_lowpass=cfg["fir"].as<std::vector<double>>();
+        s.input_interval_seconds=spectral->network(nw).interval_seconds;s.factor=filter_input ? filter_input->factor : 2;
+        s.centered_lowpass=filter_input ? filter_input->coefficients : cfg["fir"].as<std::vector<double>>();
         const auto operation=cfg["detectors"][d]["filter"].as<std::string>();
         require(operation=="lowpass" || operation=="w1-t3","unapproved experiment design");
+        require(!filter_input || filter_input->array==RtcOpticalArray::a2000 || operation=="lowpass",
+                "new-array development plans authorize low-pass only; no notch is selected");
         if(operation=="w1-t3"){
           s.finite_notch_identity=cfg["finite_notch_identity"].as<std::string>();
           s.centered_notch=cfg["finite_notch"].as<std::vector<double>>();
         }
-        RtcNotchRecoveryDomain domain;domain.identity="152390-a2000-235arcsec-s-experiment-only";
+        RtcNotchRecoveryDomain domain;domain.identity=filter_input ? filter_input->identity : "152390-a2000-235arcsec-s-experiment-only";
         domain.detector_array_association=detectors[d].detector_association_record_id;
-        domain.motion=motion;domain.array=RtcOpticalArray::a2000;
-        domain.speed_ceiling_arcsec_per_sec=235;domain.nominal_interval_seconds=duration;
+        domain.motion=motion;domain.array=filter_input ? filter_input->array : RtcOpticalArray::a2000;
+        domain.speed_ceiling_arcsec_per_sec=filter_input ? filter_input->speed_ceiling : 235;domain.nominal_interval_seconds=duration;
         const auto speed_comparison=cfg["speed_support_comparison"] ? cfg["speed_support_comparison"].as<std::string>() : "both";
         require(speed_comparison=="control" || speed_comparison=="low-only" || speed_comparison=="high-only" || speed_comparison=="both","unknown bounded speed-support comparison");
         domain.speed_support = speed_comparison=="control" ? RtcSpeedSupportTreatment::comparison_reject_both :
@@ -755,7 +775,7 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
         selected_rows.close();require(bool(selected_rows),"selected native row output failed");
         YAML::Node record;record["channel"]=channels[d];record["replaced_rows"]=replaced;
         record["representative_excluded_rows"]=excluded;
-        record["output_rows"]=r.output_native_rows().size();record["factor"]=2;record["phase_native_rows"]=0;
+        record["output_rows"]=r.output_native_rows().size();record["factor"]=filter_input ? filter_input->factor : 2;record["phase_native_rows"]=0;
         std::size_t center_count=0;for(auto row:r.output_native_rows())center_count+=r.map_center_admitted(row);
         record["direct_map_center_admitted_rows"]=center_count;
         record["map_route_authorized"]=false;

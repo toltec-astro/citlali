@@ -1,5 +1,50 @@
 # TIMESTREAM-SUCCESSOR-RTC-PERFORMANCE-001 — 2026-09-18
 
+## Approved multi-network continuation — preflight 2026-09-19
+
+The owner confirmed the reviewed closure was pushed and approved the proposed
+shared observation preparation, per-network ingress/per-array plan bindings,
+and controlled 1/2/4-worker comparison. Live read-only verification finds
+canonical `e32c4584dec07617d6caa857d39bf13047b6c4b0` and pushed prerequisite
+`868c911f6ed4e1d66eb4b945af5987a6654ae721`. The one new spine is
+`codex/timestream-successor-multinetwork-001`, based exactly on that prerequisite
+in `/private/tmp/citlali-timestream-successor-cal-001`, initially clean. The
+residency increment is closed and retained; no canonical ref movement is implied.
+
+Engineering, successor and review/conformance governance read; their accepted
+incorporation remains the existing exact ledger authority. This Tier 2 increment
+uses the current RTC native/spectral/transient/notch/output, speed-support,
+CAL singleton-opacity, PTC observed-entry/partial-completion contracts, and
+ADRs 0018–0022. Preserve exact native clocks, physical runs, per-network detector
+ensembles, paired validity, source/donor policy and frozen-original execution.
+Application observation ownership may share immutable APT/configuration,
+timing/processing relations and telescope preparation; network numerical owners
+and published products remain distinct. No Engine growth or generic cache.
+
+Expected changes: existing ordinary development request/application adapters,
+concrete shared observation preparation, explicit array/factor configuration,
+bounded native-input preparation and worker execution, focused tests. Gate:
+unchanged network12 numerical/support output, explicit invalid binding/failure
+controls, complete network groups at each worker count, focused and broad local
+build/config/Python tests, exact source review. Local measurements are
+AppleClang/Homebrew supplemental evidence; Unity remains owner-run. Record
+wall/CPU/memory and shared versus active-worker costs; do not extrapolate whole
+process peaks. No cross-network PCA, auto rank/notch/factor selection, new
+thresholds, MAP/FRUIT, cleanup or push. Scientific gaps, changed support or
+thread-unsafe dependencies trigger bounded reassessment.
+
+The owner subsequently selected **develop the a1100/a1400 low-pass plans first**,
+rather than an unfiltered first replay. This prerequisite stays on the same
+spine: precompute explicit finite coefficients offline using the accepted
+beam/motion/cadence and existing conservative Kaiser design; test transfer and
+finite support, retain the exact a2000 coefficients. At the retained 235 arcsec/s
+design ceiling, the two shorter arrays require factor1 to contain their optical
+bands; filtering and decimation are separate operations. No new speed threshold,
+automatic factor search, runtime filter synthesis, MAP/FRUIT certification or
+new notch is authorized. Share/preparation and worker implementation follows
+the tested low-pass binding. Missing final qualification does not disable the
+implemented development route. Owner controls integration and pushes.
+
 ## Residency and processing-scope result — 2026-09-19
 
 Implementation `ba173150fc8bba3d20b0c307ab19e23fe3700e95`, tree

@@ -8,6 +8,8 @@
 #include <citlali/core/pipeline/timestream_ptc_cal_source.h>
 #include <citlali/core/pipeline/timestream_ptc_pipeline.h>
 #include "../tools/timestream_successor/rtc_multidetector_bindings.h"
+#include "../src/citlali/cli/rtc_array_filter_input.h"
+#include <filesystem>
 #include <gtest/gtest.h>
 #include <citlali/core/pipeline/timestream_processing_scan_native.h>
 #include <citlali/core/pipeline/timestream_rtc_common_mode.h>
@@ -76,7 +78,8 @@ struct Trial : Fixture {
   }
   auto plan(bool notch = false, bool reject = false,
             std::vector<double> finite = {}, std::uint32_t detector = 0,
-            std::vector<std::shared_ptr<const RtcDonorFillPlan>> donors = {}) const {
+            std::vector<std::shared_ptr<const RtcDonorFillPlan>> donors = {},
+            const citlali::cli::detail::RtcArrayFilterInput *profile = nullptr) const {
     RtcLineTransferSpecification s;
     s.identity = "controlled-plan";
     s.lowpass_identity = "test-only-centered3";
@@ -90,6 +93,11 @@ struct Trial : Fixture {
       s.centered_notch = std::move(finite);
     }
     auto d = domain;
+    if(profile) {
+      profile->require_cadence(.008192,s.input_interval_seconds);
+      s.centered_lowpass=profile->coefficients;s.lowpass_identity=profile->identity;s.factor=profile->factor;
+      d.array=profile->array;d.speed_ceiling_arcsec_per_sec=profile->speed_ceiling;
+    }
     if (detector != 0)
       d.detector_array_association =
           parent->network(0).detector(detector).detector_association_record_id;
@@ -122,6 +130,54 @@ struct Trial : Fixture {
                                          inj);
   }
 };
+
+YAML::Node fixed_array_lowpass(int array) {
+  const std::array names{"a1100.json","a1400.json","a2000.json"};
+  const auto path=std::filesystem::path(__FILE__).parent_path().parent_path()/
+      "validation/rtc_development_lowpass_2026-09-19"/names.at(array);
+  return YAML::LoadFile(path.string());
+}
+
+TEST(rtc_array_lowpass, explicit_binding_rejects_wrong_array_cadence_and_changed_coefficients) {
+  using citlali::cli::detail::read_rtc_array_filter;
+  for(int array=0;array<3;++array) {
+    auto node=fixed_array_lowpass(array);auto p=read_rtc_array_filter(node,array);
+    EXPECT_NO_THROW(p.require_cadence(.008192,.008192));
+    EXPECT_THROW(p.require_cadence(.016384,.016384),std::invalid_argument);
+    EXPECT_THROW(read_rtc_array_filter(node,(array+1)%3),std::invalid_argument);
+    auto modified=YAML::Clone(node);modified["coefficients_sha256"]="changed";
+    EXPECT_THROW(read_rtc_array_filter(modified,array),std::invalid_argument);
+    modified=YAML::Clone(node);modified["factor"]=4;
+    EXPECT_THROW(read_rtc_array_filter(modified,array),std::invalid_argument);
+  }
+}
+
+TEST(rtc_array_lowpass, actual_short_array_filters_preserve_native_phase_and_physical_support) {
+  Input in(6000);
+  in.rs[1700*3]=NativeReadoutCoordinateState::measured(true,false,true,true);
+  for(std::size_t i=3000;i<in.times.size();++i){in.times[i]+=1;in.counters[i]+=122;}
+  Trial t(in);
+  for(int array=0;array<2;++array) {
+    auto profile=citlali::cli::detail::read_rtc_array_filter(fixed_array_lowpass(array),array);
+    auto plan=t.plan(false,false,{},0,{},&profile);auto result=t.apply(plan);
+    const auto half=profile.coefficients.size()/2;
+    EXPECT_EQ(plan->assessment_handle()->candidate_handle()->specification().factor,1);
+    EXPECT_EQ(result->causes()[1700],RtcNotchRecoveryCause::producer_invalid);
+    for(std::size_t i=3000-half;i<3000+half;++i)
+      EXPECT_EQ(result->causes()[i],RtcNotchRecoveryCause::boundary_guard);
+    for(std::size_t row:{1200U,4500U}) {
+      const auto native=in.first_native_row+row;
+      ASSERT_TRUE(std::find(result->output_native_rows().begin(),result->output_native_rows().end(),native)!=result->output_native_rows().end());
+      for(auto c:{NativeReadoutCoordinate::x,NativeReadoutCoordinate::r}) {
+        double expected=0;
+        for(std::size_t j=0;j<profile.coefficients.size();++j)
+          expected=std::fma(profile.coefficients[j],t.parent->network(0).value(c,native+j-half,0),expected);
+        EXPECT_DOUBLE_EQ(result->filtered_native_pair()(row,static_cast<int>(c)),expected);
+        EXPECT_DOUBLE_EQ(t.parent->network(0).value(c,native,0),c==NativeReadoutCoordinate::x?in.x(row,0):in.r(row,0));
+      }
+    }
+  }
+}
 
 auto population_members(const Trial &t) {
   std::vector<RtcLinePopulationMember> members;
