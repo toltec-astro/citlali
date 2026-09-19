@@ -1,5 +1,82 @@
 # TIMESTREAM-SUCCESSOR-RTC-PERFORMANCE-001 — 2026-09-18
 
+## Low-pass prerequisite completion — 2026-09-19
+
+Candidate implementation `530743ec54670647a88c36452c80898e241e4575`, tree
+`6328ad561072f1636cad7cb83c758c0973fd17af`, is a direct child of pushed
+`868c911f6ed4e1d66eb4b945af5987a6654ae721`. Canonical and prerequisite refs were
+reverified live and remain as recorded in the preflight below. No ref was moved,
+no GitHub push was performed, and unrelated main-checkout changes were untouched.
+This is completion of the owner's low-pass-first prerequisite; the approved
+shared-preparation/worker continuation remains on the same spine.
+
+The offline producer and three immutable artifacts preserve the a2000
+coefficient bytes and add actual 67-tap a1100 / 33-tap a1400 filters. At the
+unchanged 235 arcsec/s design ceiling their full optical bands are
+51.68457/40.66360 Hz, above factor2 Nyquist. Explicit factor1 retains native
+122.0703125-Hz output; no new speed cut or automatic factor algorithm is used.
+Half-support is 0.270336/0.131072 seconds. Maximum passband errors are
+0.00851%/0.01155%; actual near-Nyquist amplitude bounds are 7.060e-5/2.268e-4.
+The 80-dB order estimate is not represented as measured attenuation. These
+fixed development profiles do not qualify a production bank. Existing
+ADR0020 map/OOF/cleaned-noise gates remain outside this increment; no FRUIT or
+MAP work was performed. The provisional uniform readout average remains.
+
+Runtime Learn keeps original spectral/transient evidence. RTC Consider binds
+exact profile/array/cadence with existing AST and VAL facts. Apply runs the
+frozen complete plan on original x/r. CAL consumes its actual RTC grid and
+VAL generation. No scientific code was added to Engine, no new stage framework
+was introduced, and new-array notches are explicitly rejected. Ordinary
+network12 requests retain their previous inline binding.
+
+Twelve independently selected APT-good channel identities from each of
+networks0 and7, observation152390/0/2, complete ordinary RTC → CAL invocations
+with exit 0. A1100 retains 1,652,666/1,818,444 scheduled detector-slots (11/12
+members with output); a1400 retains 903,073/1,818,444 (6/12). Wholly unavailable
+members retain the existing event-policy-unavailable support disposition; no
+scientific requirement was called passed and no flag was relaxed. These are
+small interface checks, not a census or full-network performance result.
+Every emitted paired value matches direct convolution of untouched original
+samples within a 64-epsilon absolute-sum arithmetic bound; phase, factor,
+coefficient realization and input immutability were independently checked.
+
+The explicit-artifact network12 request completes RTC → CAL → PTC for all
+414 requested identities, with the existing scoped availability. All 5,968
+binary products / 3,862,256,724 bytes match the accepted ba173150f replay,
+including masks/support, calibrated data and PTC results. All sixteen YAML
+scientific payloads also match: thirteen under existing explicit normalizations,
+three with independently verified request/profile or run-local CAL receipt
+hash changes. The strict comparator's exit 1 is retained and explained by
+`FINAL_COMPARISON.json`; no unexplained metadata change is ignored. Wall times were
+42.73/39.71/243.39 seconds, respectively, with about 0.769/0.769/7.293 GB polled
+RSS peaks. Some checks overlapped; these are functional measurements and do not
+constitute a 1/2/4-worker benchmark. Library thread limits were explicitly one.
+
+Gates: 119 RTC tests; 3 low-pass numerical tests; 1,264 runnable CTests; 130
+configuration tests plus audits; 89 successor and 207 baseline Python tests;
+4 source-graph tests PASS. Existing disabled MapFitterLifecycle test remains.
+No unexpected error-level messages occurred in the successful data runs.
+An initial test's floating Nyquist endpoint mask was empty; the corrected
+conservative stopband mask passes, and both logs are retained. Independent
+fresh-context review of the exact implementation passes scientific/behavioral,
+architecture/ownership and repository/evidence axes with no findings. Review
+SHA256 `019a9220e10465182b06cf0716fc2a76c172a9e01478ef7907b36617db40c924`.
+
+Environment: Release AppleClang 21, C++20/Homebrew; the prior kids 04088da-dirty
+realization is unchanged. No new Unity claim: owner-supplied 64573248 remains
+bound only to its earlier exact source. Working evidence:
+`/private/tmp/citlali-multinetwork-001-20260919`; durable copy:
+`/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-array-lowpass-530743ec5-20260919`.
+`RESULT.md`, `SOURCE_AND_GATES.json`, `SHORT_ARRAY_VERIFICATION.json`, immutable
+profile artifacts, replay inputs/outputs, executable copies, gate logs and the
+independent review retain provenance. The durable copy verifies 6,487 files /
+5,865,747,161 bytes; its manifest SHA256 is
+`ea60c0e29b36592943c1f6a97fc322b703424b721e7b2e792c4b5d3567c45919`.
+All-array execution and shared-worker
+measurements remain the next concrete responsibility, with no new owner
+scientific question required by this low-pass prerequisite. Owner retains
+canonical integration and all GitHub pushes.
+
 ## Approved multi-network continuation — preflight 2026-09-19
 
 The owner confirmed the reviewed closure was pushed and approved the proposed

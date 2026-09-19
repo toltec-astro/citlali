@@ -1,5 +1,35 @@
 # Citlali Refactor Status
 
+## Short-array low-pass prerequisite — 2026-09-19
+
+The owner selected development of the a1100/a1400 low-pass plans before the
+all-network replay. Exact implementation `530743ec54670647a88c36452c80898e241e4575`
+on the one spine `codex/timestream-successor-multinetwork-001` adds explicit
+67- and 33-tap finite profiles. At the retained 235 arcsec/s design ceiling,
+the 51.68/40.66-Hz optical bands require native factor1 output. The accepted
+307-tap a2000/factor2 coefficients are unchanged. Runtime selection checks the
+exact coefficient, APT array and cadence binding; there is no automatic factor
+or notch selection. See the [profile record](../validation/rtc_development_lowpass_2026-09-19/README.md).
+
+Ordinary development invocations on twelve fixed detector identities each from
+networks0 and7 of observation152390 complete RTC → CAL with the new plans.
+Original x/r is unchanged, and every emitted paired value agrees with direct
+convolution. Existing unavailable detector dispositions remain explicit. The
+full 414-detector network12 invocation completes through PTC; all 5,968 binary
+products remain bit-for-bit identical to the accepted residency replay.
+Independent source review, 119 focused RTC tests, 1,264 runnable broad tests,
+and the numerical/configuration/Python/source-graph gates pass. These are
+local AppleClang/Homebrew checks, not a new Unity or production qualification.
+
+The pushed prerequisite is `868c911f6ed4e1d66eb4b945af5987a6654ae721`; live
+canonical remains `e32c4584dec07617d6caa857d39bf13047b6c4b0`. No canonical
+movement or push is implied. The approved continuation remains shared
+observation preparation, complete per-network ingress, and an eleven-network
+1/2/4-worker comparison. This prerequisite does not claim those runs are done.
+Default development continues through PTC/VAL where requested; MAP and FRUIT
+remain outside this task. Details and retained limitations are in the
+[existing handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_PERFORMANCE_001_2026-09-18.md).
+
 ## Observation residency and preparation reuse — 2026-09-19
 
 The authorized reset continuation is implemented on the single spine
