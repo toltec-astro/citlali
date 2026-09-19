@@ -2205,6 +2205,11 @@ TEST(ast_rtc_coordinates, missing_detector_geometry_is_local_and_cannot_poison_s
     EXPECT_EQ(result->causes(d,slot),reference->causes(d,slot));
     EXPECT_EQ(result->value(d,slot),reference->value(d,slot));
   }
+  f.wvr=CalWvrEvidence::learn(f.trial.parent->scope(),"controlled-constant-motion","controlled-ALIGN-Unix",
+      {{"a",999,.3,true,999,1100},{"b",1100,.3,true,999,1100}});
+  const auto outside=CalAppliedSignal::apply(f.plan(),f.source(),f.terminal->val_snapshot_handle());
+  EXPECT_EQ(outside->causes(0,300),cal_pointing_unavailable|cal_outside_supported_calibration);
+  EXPECT_EQ(outside->causes(1,300),cal_outside_supported_calibration);
   f.geometry[0].detector.detector_occurrence_id="foreign";
   EXPECT_THROW(f.pointing(f.terminal->grid_handle(),f.telescope),std::invalid_argument);
 }

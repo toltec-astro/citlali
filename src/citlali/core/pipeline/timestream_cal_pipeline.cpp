@@ -78,7 +78,7 @@ std::shared_ptr<const CalPlan> CalPlan::consider(std::shared_ptr<const CalEviden
             const auto &a=shared->second[s];entry.wvr_cause=a.cause;
             if(!a.has_tau)entry.causes|=(a.cause==CalWvrCause::negative || a.cause==CalWvrCause::nonfinite)?
                 cal_invalid_atmosphere:cal_outside_supported_calibration;
-            else if(direction && !a.correction)
+            else if(!a.correction)
                 entry.causes|=cal_outside_supported_calibration;
             if(!entry.causes) {
                 const double multiplier=*factor.flxscale_mJy_beam_per_x**a.correction;
