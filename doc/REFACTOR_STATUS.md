@@ -1,5 +1,30 @@
 # Citlali Refactor Status
 
+## Bounded PTC frequency/time learning diagnostic — 2026-09-19
+
+The owner-authorized SPOD module probe consumes preserved CAL inputs from the
+reviewed short-array closure `0ef1c6e626630962a41ebab0cdd3b5833ee6b039`.
+The full network12 population (363 usable of 414 requested) and existing
+small network0/7 cohorts pass the same diagnostic path without RTC/CAL reruns.
+Complex spectral correlations support a broadly shared ~11-Hz pattern;
+several larger peaks instead concentrate power in individual detectors.
+Local low-frequency evolution is not established beyond sampling uncertainty.
+
+Retain the current observed-entry ALS10 baseline. A bounded rank5 comparison
+leaves more contamination with little computing benefit, while the conditional
+source probe shows the expected response tradeoff. The recommended separate
+next experiment is longer learning of the specific ~11-Hz pattern with held-out
+data and both frozen/relearned source injections. No cleaner/default, membership,
+filter or scientific policy changes. See the [scientific report and exact
+limitations](TIMESTREAM_SUCCESSOR_PTC_SPOD_001_2026-09-19.md).
+
+This occupies only the module-probe slot; the shared-preparation/multi-network
+spine remains intact and pending. Other networks need the already planned
+connected CAL ingress before they can enter this diagnostic. Production and
+MAP/FRUIT remain outside scope. Independent exact-SHA closure follows local
+focused, Python/configuration and immutable-input gates.
+
+
 ## Short-array low-pass prerequisite — 2026-09-19
 
 The owner selected development of the a1100/a1400 low-pass plans before the

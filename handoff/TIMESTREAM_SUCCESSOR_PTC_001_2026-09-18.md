@@ -48,3 +48,30 @@ Exact-source CTest: 1253/1253 runnable passed of 1254 registered; the establishe
 This completes the initial connected fixed-rank PTC operation and PTC/VAL publication. The next downstream implementation owner is MAP, consuming transformed calibrated x and its actual support/classification/response limits. Before treating performance as representative of a real network, the immediate bounded prerequisite is resolving why an RTC cohort with unavailable coordinate outcomes cannot publish a usable terminal under the existing contracts. This is not permission to change transient, filter, source, rank or rejection policy. Complete-chain response/covariance, generic ingress, array grouping, rank optimization and FRUIT remain outside this increment.
 
 Machine-readable evidence: `CONNECTED_VERIFICATION.json`, `FINAL_COST_RESULTS.json`, `NETWORK_LIMITATION.json`, exact build/check logs and independent-review records under `/private/tmp/citlali-successor-ptc-001-20260918`.
+
+
+## September 19: bounded frequency/time diagnostic
+
+The authorized SPOD probe is `codex/timestream-successor-ptc-spod-001`, based
+on exact low-pass closure `0ef1c6e626630962a41ebab0cdd3b5833ee6b039`.
+The existing ALS and pairwise numerical owners, all support/validity policies
+and the default connected route are unchanged. Read
+`doc/TIMESTREAM_SUCCESSOR_PTC_SPOD_001_2026-09-19.md` for the scientific result,
+coverage, commands and costs; this is advisory evidence, not a treatment plan.
+
+Network12's fixed 363-detector CAL population shows a shared residual near
+11 Hz and several separately concentrated detector peaks. The small saved
+network0/7 cohorts also support a stable 11-Hz pattern. Finite support limits
+local network12 8-second estimates to 3–11 realizations per 120-second pool;
+no atmospheric-evolution or gain/health conclusion is justified. Nine bounded
+existing-solver trials preserve exact CAL input and masks; three ALS10
+baseline outputs are bitwise equal. ALS5 leaves more contamination and is not
+selected. Frozen toy response is explicitly distinct from relearned or full
+astronomical response.
+
+Evidence: `/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-ptc-spod-20260919`.
+All input digests are verified after use. No Unity access or push occurred.
+The recommended one scientific follow-up is an explicit held-out ~11-Hz
+longer-learning treatment comparison with paired injections. The separate
+implementation responsibility remains the existing shared-preparation and
+multi-network ingress spine; no alternative ingestion was constructed.
