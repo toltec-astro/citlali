@@ -1,5 +1,25 @@
 # Citlali Refactor Status
 
+## RTC performance Unity build/regression PASS — 2026-09-19
+
+The owner supplied the inspection of Slurm job **64573248** at
+`2026-09-19T13:44:23+00:00`. The gate completed on September 18 at
+`18:55:35.128125+00:00` with PASS / exit 0, testing exact source
+`4bb7091443b8fa71b165bd14219af451973b6b9e`, tree
+`c2f31ae4f51543476334eb61d6fea24fd44231c5`. GNU 13.3.0 / Spack / C++23
+Release passed all 1,261 runnable tests and the 43 focused controls; the one
+previously disabled MapFitterLifecycle test remains disabled. Source binding,
+source-graph parity and the successor-default CLI check passed. The supplied
+inspection reports all evidence checksums OK and empty Slurm stderr.
+
+This closes the outstanding representative build/regression check for that
+exact source. It does not measure all-network data processing or replace the
+separately recorded local performance comparison. See the
+[existing handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_PERFORMANCE_001_2026-09-18.md)
+for the evidence path, digests and resource accounting. The scheduled
+residency/scope/all-network increment remains separate; no implementation or
+scientific policy changes are made by this receipt.
+
 ## RTC-wide performance and storage repair — 2026-09-18
 
 The owner authorized the bounded
@@ -35,7 +55,8 @@ test of the connected route. Do not substitute the 414-detector network12 run
 or a build gate for that request. A current-source Unity GCC13 build/regression
 packet is ready at `/private/tmp/citlali-rtc-performance-unity-4bb709144`:
 4 CPUs, 32 GB, two hours; 1,261 runnable tests and 43 focused controls. It is
-owner-run and has not executed. No observation replay is included in that packet.
+owner-run; its subsequent PASS is recorded above. No observation replay is
+included in that packet.
 
 ## Scoped RTC/PTC completion — 2026-09-18
 

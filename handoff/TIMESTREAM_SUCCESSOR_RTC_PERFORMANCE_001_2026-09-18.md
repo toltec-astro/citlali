@@ -1,5 +1,54 @@
 # TIMESTREAM-SUCCESSOR-RTC-PERFORMANCE-001 — 2026-09-18
 
+## Owner-supplied Unity result — 2026-09-19
+
+The owner supplied the inspection at `2026-09-19T13:44:23+00:00` for job
+`64573248`: COMPLETED / exit `0:0`, gate PASS, completed
+`2026-09-18T18:55:35.128125+00:00`. Exact tested source:
+`4bb7091443b8fa71b165bd14219af451973b6b9e`; tree:
+`c2f31ae4f51543476334eb61d6fea24fd44231c5`. Environment: GNU 13.3.0,
+Spack DAG `ryu6zhjvp5sh7fsbwrzyykbkgkglzkkx`, C++23 Release, OpenMP and
+Wiener OpenMP, kids 3.1.0 (Spack package). The CLI reports matching revision
+`4bb709144`; deployment profile and binding remain unmanaged.
+
+All 1,261 runnable tests passed out of 1,262 registered; the existing
+`citlali::MapFitterLifecycle.ExactProductSequence` remains disabled. The gate
+passed its 43 focused controls, compile/source-graph/source-binding checks,
+unsupported-request rejection and successor-default CLI test. The owner
+reported all manifest entries OK and zero-byte Slurm stderr. Job resources:
+4 allocated CPUs, 32G requested memory, 20m09s elapsed; batch MaxRSS
+15,127,820K (about 14.4 GiB). CTest elapsed was 133.73 seconds. These are
+build/test resource measurements, not reduction-runtime or all-network costs.
+
+Evidence remains on Unity at
+`/work/toltec/wilson/citlali_testing/citlali-rtc-performance-unity-4bb709144/evidence/unity-gcc13-sbatch-64573248`.
+Owner-supplied SHA-256 identities:
+
+| File | SHA-256 |
+|---|---|
+| `gate.py` | `790d44614fbb31e5c930fdd51924fff9444295ddaab1c1cb58a7f8019b8d322d` |
+| `run.sbatch` | `7afd8cb23f608dcbf8a2a28f091e653afbf6f55bcce36fa4c82dc14362e5783e` |
+| `final-status.txt` | `8d6569d2c3e905d57ec35262a15bb79b803e28e934db1eceb885ad08837951f0` |
+| `SHA256SUMS` | `ece6b895fadc3c6309762aafee7d64cf44f10537bea8ef5c58430734b8afa629` |
+
+Both script digests match the local prepared packet. This receipt uses
+human-retrieved evidence; Codex did not connect to Unity or retrieve its logs.
+It closes the exact-source representative build/regression gate, not the
+requested all-network observation replay or scientific qualification.
+
+Documentation-only preflight: engineering, Timestream Successor and review
+governance read; exact clean base `e32c4584dec07617d6caa857d39bf13047b6c4b0`,
+on the existing performance branch/worktree named below. Only this handoff
+and `doc/REFACTOR_STATUS.md` change. Verification checks source/tree and
+script identities against the existing packet and checks the documentation
+diff. No executable, environment, scientific, architecture or interface
+change; numerical reruns are unnecessary. Scientific/behavioral and
+architecture/ownership dispositions are unchanged; repository/evidence
+disposition retains exact tested identities and the owner-supplied scope.
+Independent exact-SHA review precedes closure of this receipt. Canonical was
+verified pushed at the above base on September 19; this new receipt is local
+until owner-controlled integration/push. No refs or prior evidence are removed.
+
 ## Subsequent owner-approved integration and restart point
 
 The owner pushed closure `4bb7091443b8fa71b165bd14219af451973b6b9e` and
