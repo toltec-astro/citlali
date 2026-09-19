@@ -1,5 +1,37 @@
 # Citlali Refactor Status
 
+## Observation residency and preparation reuse — 2026-09-19
+
+The authorized reset continuation is implemented on the single spine
+`codex/timestream-successor-observation-residency-001`, from reviewed receipt
+`4ef390456fc7c64c616a1f4507f36b2987e01f5e` above live canonical
+`e32c4584dec07617d6caa857d39bf13047b6c4b0`. Exact implementation
+`ba173150fc8bba3d20b0c307ab19e23fe3700e95` removes measured repeated
+full-observation boundary reconstruction and adds preparation/CPU diagnostics.
+The same full-network run falls from 306.62 to 237.42 seconds, chiefly ingress
+127.08 to 63.44 seconds. All 5,968 binary products and the scientific contents
+of all 16 YAML products are unchanged. Memory remains approximately 7.3 GB;
+this is one local comparison with recorded baseline profiling/overlap limitations.
+
+Full-observation native residency is currently per network; numerical scope
+remains physical finite filter support and independent PTC processing intervals.
+PTC's configured rank 10 is not an established optimum. Three existing saved-CAL
+PTC replays match exactly and take 0.24–0.59 seconds without repeating RTC/CAL.
+The twelve-detector development fixture takes 48.74 seconds, retaining its
+known five unavailable fits and explicit partial-result exit 2. Independent
+implementation review passes all three axes; 51 focused and 1,262 runnable broad
+tests pass with configuration/Python/source-graph gates. See the updated
+[existing handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_PERFORMANCE_001_2026-09-18.md)
+for accounting, evidence and exact limitations.
+
+The next responsibility is one observation request sharing preparation across
+the eleven available networks, with connected paired ingress and explicit
+per-array filter/factor bindings. The present application binds network12 to
+a2000/factor2; those settings cannot simply be copied to the other arrays.
+Consequently no all-network or 1/2/4-worker result is claimed yet. Canonical
+promotion/push remain owner-controlled; the default development route still
+executes RTC → CAL → PTC → VAL and stops before MAP. FRUIT remains deferred.
+
 ## RTC performance Unity build/regression PASS — 2026-09-19
 
 The owner supplied the inspection of Slurm job **64573248** at

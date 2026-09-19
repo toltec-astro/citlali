@@ -1,5 +1,136 @@
 # TIMESTREAM-SUCCESSOR-RTC-PERFORMANCE-001 — 2026-09-18
 
+## Residency and processing-scope result — 2026-09-19
+
+Implementation `ba173150fc8bba3d20b0c307ab19e23fe3700e95`, tree
+`60c5b8a8d56162334c628ecb83930c9d28e821ca`, has sole parent
+`4ef390456fc7c64c616a1f4507f36b2987e01f5e`. It retains the spine and
+canonical base recorded below. A baseline stack capture found all 166
+main-thread samples in repeated reconstruction of the complete physical native
+partition inside per-sample processing-scan projection. The repair constructs
+that immutable partition once per projection and reuses it; PTC likewise reuses
+one partition across its groups. There is no persistent cache or boundary change.
+Application diagnostics now separate preparation steps and record cumulative CPU
+time. The new regression covers overlapping contexts, packet gaps, missing
+associations and nonzero native indexing.
+
+The matched ordinary 414-detector invocation preserves the exact input digest
+`bbb85e2b943c0f6d21ebebf990aef1286906fab8f6971c3026020603e9dcd8e3`.
+Reference executable is the preserved `f34f9d9d8` implementation; its subsequent
+changes through the candidate parent are documentation only. Both invocations
+use explicit OMP/OpenBLAS/vecLib thread limits of one.
+
+| Wall-time component | Reference seconds | Candidate seconds |
+|---|---:|---:|
+| Entire invocation | 306.62 | 237.42 |
+| Input/timing preparation | 127.08 | 63.44 |
+| Initial Learn and plan construction | 40.33 | 39.56 |
+| RTC numerical Apply | 26.16 | 25.84 |
+| Conditioned relearning, matched outcomes and their exports | 66.93 | 62.88 |
+| CAL through Apply, including AST preparation | 1.25 | 1.26 |
+| CAL publication | 11.83 | 9.85 |
+| PTC including publication | 18.61 | 21.20 |
+
+Candidate native projection takes 0.0075 seconds. Remaining ingress includes
+28.07 seconds loading/constructing paired native input and 25.34 seconds
+recovering eleven networks' raw timing; these substages still combine I/O,
+verification and construction. Candidate PTC spends 4.22 seconds preparing,
+3.79 fitting, 0.106 applying, and 12.76 publishing. Candidate cumulative CPU
+time is 217.85 seconds at the final receipt; it is effectively a single-worker
+measurement. One-second RSS peaks are 7.015 and 7.259 GB; internal high-water
+values are 7.032 and 7.270 GB. This is a speed repair, not a demonstrated memory
+reduction. Baseline includes a two-second profile capture and some late overlap
+with build/gate work; candidate had no concurrent heavy build/test. This single
+local comparison is not a scaling benchmark.
+
+**Residency is distinct from scientific scope.** The successor retains one
+network's entire original x/r pair and immutable parent chain through RTC,
+CAL and PTC publication. Timing preparation reads the eleven networks available
+in observation 152390; there is not yet a shared multi-network worker owner.
+The retained OG route instead loads scan/context chunks through its ScanCursor
+and pipeline farm, while retaining observation-level context. No matched OG
+runtime or memory claim is made here.
+
+The largest successor payloads remain original x/r 1.004 GB, original states
+0.251 GB, conditioned/filtered pairs 2.008 GB, RTC mask planes 0.314 GB,
+AST pointing/elevation 0.503 GB, CAL plans 0.753 GB and CAL outputs 0.502 GB.
+PTC retains another 0.532 GB of group matrices through publication. Axis/grid
+descriptors are shared within this network. Allocator-live storage is 6.470 GB
+after CAL Apply and 1.788 GB after the RTC arm is released; RSS can retain freed
+pages. Earlier detailed storage accounting below still applies.
+
+RTC noise estimation uses ten-second blocks anchored to physical native runs;
+event backgrounds remain local and spectra use the accepted four-second Hann
+windows. Filtering uses actual finite support, not arbitrary processing-chunk
+edges. Original residency serves frozen-original replay, conditioned relearning,
+matched outcomes, downstream lineage and final unchanged-input verification.
+This invocation retains one RTC attempt and examines post-notch/post-lowpass
+evidence; it does not execute a revised attempt. Published products/diagnostics
+are retained for inspection; process residency alone does not speed a new command.
+
+CAL uses scheduled samples' actual elevation and the accepted constant singleton
+tau225. PTC fits one network ensemble within one array, independently on roughly
+ten-second processing science intervals intersected with physical native runs.
+Rank 10 comes from `timestream.processed_time_chunk.clean.standard_pca.n_eig_to_cut`
+in the bound `citlali_o152390_0_2_c2.yaml` (a2000); no explicit rank override is used.
+Observed ALS stops after two successive small relative improvements (1e-5), or
+its existing energy floor, with cap 100 and rank tolerance 1e-10. All 124 fits
+converge in 2–43 iterations. Rank 10 remains a configured test choice. Original
+grouping, support, masks, calibration, response limitations and policies are
+unchanged; 363 detectors supply 27,157,906 retained entries, with all 414
+identities and the same 51 unavailable detectors preserved.
+
+**All-network stopping point:** the observation has networks 0–5, 7–9, 11–12
+(6 and 10 are absent). The connected application still accepts network12
+prepared paired input and freezes a2000/factor2/235 arcsec/s. Missing pieces are
+ordinary per-network paired ingress, explicit per-array frozen filter/factor
+bindings, and one observation owner sharing preparation across network workers.
+Simply removing the guard is incorrect: at the same speed the approved optical
+support calculation gives 51.68/40.66/28.50 Hz for a1100/a1400/a2000, whereas
+the current factor-2 output Nyquist is 30.52 Hz. No new array policy is inferred
+from network12 and no 1/2/4-worker result is claimed. Next: connect these existing
+authorities and inputs under one observation request, then measure complete
+network workers at 1/2/4 with explicit nested-thread limits.
+
+The existing checksummed preserved-CAL-input tool, `citlali_ptc_cost`, provides
+cross-invocation reuse without another cache or production route. Same-rank,
+fresh-fit replays of segments 0/73/7 (first, least complete-time support, most
+iterations) take 0.59/0.24/0.30 seconds including process startup and the existing
+local response probe, using about 108 MB each. Basis, cleaned admitted columns,
+membership, objective and stopping outcomes match the connected output exactly.
+These are diagnostic replays, not new VAL products or complete astronomical
+response. The retained twelve-detector ordinary development fixture takes
+48.74 seconds and 0.775 GB; it preserves the previously recorded partial result:
+119/124 converged fits, five unavailable, 833,599/882,766 entries retained and
+exit 2. It is not relabeled an all-pass run.
+
+All 5,968 numerical/timing/support binary products (3,862,256,724 bytes) match
+the full reference bit-for-bit. All 16 YAML products retain scientific contents;
+only enumerated timing/provenance/load-entropy fields are normalized. Both
+changed downstream CAL-receipt hashes resolve to their independently rehashed
+run-local files. The initial strict comparison exit 1 is preserved and its two
+derived-reference differences are explicitly disposed. No unexpected error-level
+run messages occurred. Focused gates: 51 exact-source tests. Broader gates:
+1,262 runnable CTests, configuration preflight, 311 Python tests plus 175
+subtests, and four source-graph checks. One pre-existing CTest stays disabled.
+Two mistyped auxiliary build target names are preserved in the logs; the correct
+CLI, RTC test and `citlali_ptc_cost` targets subsequently build successfully.
+
+Independent fresh-context review of exact `ba173150fc8bba3d20b0c307ab19e23fe3700e95`
+passes all three conformance axes with these measurement/scope limitations and
+no findings. Local environment is AppleClang 21.0.0.21000334, Release C++20,
+Homebrew, the existing kids `04088da-dirty` realization; no dependency change.
+Unity job 64573248 remains evidence only for its earlier exact source. Evidence,
+comparison scripts, stage/CPU/storage accounting and implementation review are
+preserved under
+`/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-observation-residency-ba173150f-20260919`
+(working measurement paths remain `/private/tmp/citlali-rtc-residency-001-20260919`).
+See `MEASUREMENTS.json`, `FINAL_COMPARISON.json`, `PTC_REUSE.json` and
+`SCOPE_ACCOUNTING.json`. The live canonical ref was rechecked at `e32c4584d`;
+no integration, remote push, new Unity result, MAP/FRUIT, automatic selection or
+scientific qualification is implied. A separate documentation-only closure
+records these results; owner controls integration and pushes.
+
 ## Authorized residency continuation — preflight 2026-09-19
 
 The owner's observation-wide residency/appropriate-scope directive is now
