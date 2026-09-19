@@ -4,6 +4,7 @@ import argparse
 import json
 from pathlib import Path
 import yaml
+from ptc_spod import digest, require
 
 
 def read_yaml(path):
@@ -13,8 +14,14 @@ def read_yaml(path):
 def summarize(root,inventory):
     inv=json.loads(inventory.read_text());campaign=json.loads((root/'CAMPAIGN.json').read_text())
     coverage=[];costs=[]
+    requests={n['network']:n for n in read_yaml(root/'workers-1/products/observation-receipt.yaml')['networks']}
+    for n in requests.values():require(digest(n['input']['path'])==n['input']['sha256'],'requested population binding changed')
     for network in inv['networks']:
         nw=network['network'];row={k:v for k,v in network.items() if k in ('network','array','raw_available','requested','requested_detectors','native_rows','output_sampling_hz','reason')}
+        row['supplied_detectors']=row.get('requested_detectors',0)
+        row['requested']=nw in requests
+        row['requested_detectors']=len(json.loads(Path(requests[nw]['input']['path']).read_text())['detectors']) if nw in requests else 0
+        row['execution_state']=requests[nw]['state'] if nw in requests else 'not-requested'
         product=root/'workers-1/products'/f'network{nw}';calpath=product/'donor-continuity/cal/receipt.yaml';ptcpath=product/'donor-continuity/ptc/receipt.yaml'
         if calpath.exists():
             cal=read_yaml(calpath);row.update(CAL_supported_detectors=sum(d['available']>0 for d in cal['detectors']),
@@ -45,7 +52,7 @@ def summarize(root,inventory):
             row['networks'].append(dict(n,stages=stages))
         costs.append(row)
     return dict(coverage=coverage,costs=costs,
-        scope='one observation; eleven supplied networks; missing 6 and 10 explicit; diagnostic support is not production loss',
+        scope='one observation; supplied, requested and available populations separate; diagnostic support is not production loss',
         accounting='per-network wall stages may overlap; CPU/RSS belong to whole process, not additive worker attribution',
         campaign_state=campaign.get('state','incomplete'))
 
