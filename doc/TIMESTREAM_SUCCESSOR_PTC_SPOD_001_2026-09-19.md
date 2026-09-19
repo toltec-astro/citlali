@@ -307,6 +307,38 @@ no warning suppression or input dropping was used.
 
 No C++ build changes are made, so a new representative Spack/Unity gate is not
 triggered. The earlier Unity result still applies only to its exact source.
-Independent fresh-context exact-SHA review is required before closure; it
-must cover scientific meaning, diagnostic ownership and evidence hygiene.
 Canonical integration, pushes and any later treatment remain owner-controlled.
+
+## Exact-source review and closure record
+
+The completed diagnostic implementation is
+`d4f13c13c1915665abf786cc074597e6360a969d`, tree
+`be18ab1455104a40d35302c4085200f1e60a4b32`, with literal base and parent
+`0ef1c6e626630962a41ebab0cdd3b5833ee6b039`.
+Independent fresh-context, read-only review is **PASS WITH RECORDED LIMITATIONS**:
+scientific/behavioral conformance passes with the limitations above;
+architecture/ownership and repository/evidence hygiene pass. No finding
+requires repair. The reviewer independently reproduced all six spectral
+profiles and retained complex mode arrays exactly, reproduced 10 focused and
+99 successor tests, verified all bound input hashes, and checked the nine
+solver artifacts, three exact baseline comparisons and frozen-response records.
+
+The original 61-file evidence packet remains immutable. Its `SHA256SUMS`
+digest is `6f71931d248cda59ad2bd823d3a873190d6c30e1d58e58d21b65be8f1d3bbb8f`.
+The same evidence root now also retains `SOURCE_BINDING.json` and
+`INDEPENDENT_REVIEW_d4f13c13c.md`; the latter's SHA-256 is
+`703bd3cafed864d75607d8bfd040d5f8ef48da84dd34b943a7937dbd5d033e8b`.
+These are supplemental records, not edits to the sealed evidence or its
+original report. A later documentation-only closure records this review;
+its exact identity and independent review are retained separately in
+`CLOSURE.json` and a supplemental manifest.
+
+Final live-ref verification finds canonical still at
+`e32c4584dec07617d6caa857d39bf13047b6c4b0`, and the prerequisite
+`codex/timestream-successor-multinetwork-001` now pushed at
+`0ef1c6e626630962a41ebab0cdd3b5833ee6b039` (it was absent at preflight).
+The diagnostic branch is unpushed and unintegrated. Its clean worktree is
+`/private/tmp/citlali-timestream-successor-ptc-spod-001`. The completed probe
+is retained for owner disposition; the existing multi-network spine remains
+the pending implementation responsibility. No treatment, rank or default
+change is implied by closure.

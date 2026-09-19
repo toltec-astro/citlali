@@ -75,3 +75,16 @@ The recommended one scientific follow-up is an explicit held-out ~11-Hz
 longer-learning treatment comparison with paired injections. The separate
 implementation responsibility remains the existing shared-preparation and
 multi-network ingress spine; no alternative ingestion was constructed.
+
+Exact diagnostic implementation `d4f13c13c1915665abf786cc074597e6360a969d`
+(tree `be18ab1455104a40d35302c4085200f1e60a4b32`, parent
+`0ef1c6e626630962a41ebab0cdd3b5833ee6b039`) received independent
+fresh-context **PASS WITH RECORDED LIMITATIONS**, with no required repairs
+on any review axis. Six real spectral profiles and complex mode arrays were
+independently reproduced exactly. The durable evidence root above preserves
+the original 61-file manifest unchanged and adds the exact source review and
+binding as supplemental records. The report records their full digests and
+the separate documentation-closure identity location. The probe is complete,
+unpushed and unintegrated; canonical remains
+`e32c4584dec07617d6caa857d39bf13047b6c4b0`. The prerequisite multi-network
+branch is verified pushed at `0ef1c6e626630962a41ebab0cdd3b5833ee6b039`.
