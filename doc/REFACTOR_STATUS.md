@@ -39,9 +39,19 @@ Existing [performance handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_PERFORMANCE_0
 records evidence and the pending boundary. Local evidence is under
 `/private/tmp/citlali-full-network-001-20260919`; staged Unity assets/scripts are
 under `/private/tmp/citlali-full-network-unity-20260919`. The packet is
-**not submission-ready** until full-population local readiness and exact-source
-review close. Production qualification, new treatment, MAP and FRUIT remain
-outside scope.
+**not submission-ready** until the completion decision and full-population
+local readiness close. Exact implementation checkpoint
+`98380090e770f960b0decb07ebe3cabc77993132` passes independent three-axis
+review with recorded limitations; this is not campaign readiness approval.
+Its clean executable also runs the copied Unity inputs through RTC/CAL/PTC
+on the fixed 32-channel networks0/7/11/12, retaining the same partial PTC
+outcomes (65.15s, 12.24GB sampled peak, four workers/internal threads1).
+Earlier reference/worker timings remain bound to their recorded development
+executables; they are not relabeled final-SHA population runs. The full broad
+gate precedes the final small CAL cause repair, which passes the exact-candidate
+15 focused tests. Durable checkpoint/evidence and provisional packet:
+`/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-full-network-checkpoint-98380090e-20260919`.
+Production qualification, new treatment, MAP and FRUIT remain outside scope.
 
 
 ## Bounded PTC frequency/time learning diagnostic — 2026-09-19

@@ -571,3 +571,70 @@ The next action is the pending owner completion decision, followed by full
 network0/7 runs, final source review and packet readiness. The concrete remaining
 rule is in `doc/SCI_RTC_PTC_PARTIAL_COMPLETION_OWNER_BINDING_2026-09-18.md`:
 "Its original spectrum must be available". No implementation has weakened it.
+
+### Reviewed implementation checkpoint and evidence limits
+
+Implementation `8332a80a09cfc1244bb9b53b5e095734b8713dc8` is followed by the
+population-reporting correction `8926795986d5bd2071df4b15adbebd9896581adf`
+and CAL cause repair `98380090e770f960b0decb07ebe3cabc77993132`, tree
+`6e0e40abe1b88e834d5b704c34ecfcb02ed655b3`. Independent review identified
+the latter defect: missing detector geometry must not hide a separate
+unsupported-atmosphere cause. Both causes are now retained and tested. The
+clean exact repair revision builds, identifies itself as `g98380090e`, and
+passes all 15 focused AST/CAL/completion/default-CLI tests.
+
+The timing and full-reference evidence above remains bound to its actual
+development executables: `RUN.json` records `g4bf470389-dirty`, with SHA256
+prefix `164f70058` for the reference/full-network0 attempts and `0d75badbd`
+for the repaired scheduling/failure-isolation tests. Do not relabel them as
+final-commit population replays. The original scheduling campaign receipt
+says `completed-equivalent`, but all three run receipts return code 2 and
+retain partial PTC outcomes. The final runner reports this as
+`completed-equivalent-with-partial-results`. Original evidence is preserved.
+The reporting repair separates 5,518 supplied channels from the 128 actually
+requested in this bounded scheduling test; it does not alter memberships.
+
+Independent verification rehashed all 5,968 reference binary pairs, totaling
+3,862,256,724 bytes per side, with exact agreement. The deliberate bad-header
+test preserved a completed network0 through PTC while network7 failed with
+an explicit retained cause. This demonstrates network failure isolation,
+not permission to bypass a detector-level scientific completion rule.
+
+`diagnostic-reference-final/result.json` binds the final diagnostic tool
+hashes. Its 363-detector reference has 471 matched 2-second windows; the two
+held-out pattern comparisons each evaluate 75 windows and retain approximately
+12–14% of input pattern power, above the conditional phase controls. The
+8-second matched analysis has only 14 windows. A single temporal-only
+327-detector supplement increases distinct 8-second Fourier support from
+415.760 to 675.611 seconds (70 to 130 CAL windows), without changing production
+membership or masks. This is a support gain with a representativeness limit,
+not a new cleaning result or evidence of stationary atmosphere. The diagnostic
+takes 73.62 seconds separately from the pipeline timing.
+
+Fresh-context independent review of exact `98380090e` passes scientific,
+architectural and repository/evidence axes with the limitations above and no
+remaining source finding. This is checkpoint acceptance only. The final
+portable-input replay subsequently finishes with the clean `g98380090e`
+executable SHA256
+`cc0d1a4a0166e72671b1a8a493b513f72deb63d4e242cb886e2db906d76eadeb`:
+four workers, 32 channels each on networks0/7/11/12, 65.147 seconds,
+12,240,502,784-byte sampled RSS peak and 1,407,192,795 output bytes. Network0
+completes; the other three retain explicit partial PTC outcomes (overall code2).
+One common preparation takes 27.179 seconds; the observation receipt reports
+Eigen's setting as 1. Other backend counts are not asserted. Requested library
+caps are recorded separately from observable settings.
+This verifies transferred inputs locally; it is not full-population evidence.
+
+Durable checkpoint location:
+`/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-full-network-checkpoint-98380090e-20260919`.
+`RESTART.md`, `CHECKPOINT.json` and `INDEPENDENT_REVIEW.json` preserve the exact
+source, remaining owner question and actual evidence identities. A sibling
+`unity-packet` preserves copied assets and provisional scripts. Its submission
+guard remains false. The current owner question is only whether already-invalid
+detectors with zero original admitted support and zero filtered output may
+remain explicitly unavailable without stopping useful detectors, provided no
+active donor depends on them. No sample rescue, threshold, filter, rank or
+scientific qualification change is proposed. After that decision, finish full
+network0/7 readiness and review the resulting exact candidate/packet before
+owner push and submission. Do not rerun completed investigations or connect to
+Unity. Canonical and remote spine remain at the verified refs recorded above.
