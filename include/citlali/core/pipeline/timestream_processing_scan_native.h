@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <citlali/core/pipeline/timestream_rtc_jump_exclusion.h>
 
 namespace citlali::pipeline {
@@ -31,6 +32,10 @@ inline ProcessingScanNativeProjection project_processing_scans_to_native(
         !std::isfinite(association_tolerance) || association_tolerance <= 0)
         throw std::invalid_argument("processing scan projection requires exact existing slots and native relation");
     const auto &axis = parent->network(network).occurrence_axis();
+    // The exact immutable native parent determines this partition once. Calling
+    // run_for(axis,row) in the slot loop rebuilt it by scanning the observation
+    // for every science/context occurrence (quadratic in observation length).
+    const auto physical_runs = axis.contiguous_runs();
     ProcessingScanNativeProjection out;
     std::vector<bool> selected(axis.occurrence_count(),false);
     std::set<TimestreamNativeRow> seen;
@@ -56,8 +61,12 @@ inline ProcessingScanNativeProjection project_processing_scans_to_native(
             const auto row=a.native_row;
             if (science) selected[row-axis.first_native_row()]=true;
             // Adjacent row numbers across a packet gap are not one interval.
-            const auto run=rtc_event_assessment_detail::run_for(axis,row);
-            if (!result.empty() && result.back().past_last==row && row!=run.first)
+            const auto boundary=std::lower_bound(physical_runs.begin(),physical_runs.end(),row,
+                [](const NativeContiguousRun &run,TimestreamNativeRow value) {
+                    return run.first_native_row<value;
+                });
+            const bool physical_start=boundary!=physical_runs.end() && boundary->first_native_row==row;
+            if (!result.empty() && result.back().past_last==row && !physical_start)
                 result.back().past_last=row+1;
             else result.push_back({row,row+1});
         }
@@ -77,7 +86,7 @@ inline ProcessingScanNativeProjection project_processing_scans_to_native(
         for (auto native:r.science_native) supports.push_back({r.scan,{network,native.first,native.past_last}});
         out.scans.push_back(std::move(r));
     }
-    for (const auto &run:axis.contiguous_runs()) {
+    for (const auto &run:physical_runs) {
         auto begin=run.first_native_row;
         for (auto row=begin;row<run.past_last_native_row;++row) if (selected[row-axis.first_native_row()]) {
             if (begin<row) out.native_outside_processing.push_back({begin,row});

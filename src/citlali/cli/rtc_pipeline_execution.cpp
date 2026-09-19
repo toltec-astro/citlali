@@ -303,7 +303,7 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
     auto val=ValSnapshot::initial(parent);
     auto view=NativePairedReadoutView::full(parent);
     std::optional<RecoveredProcessingScans> recovered_scans;
-    if(cfg["decision_apply"]) recovered_scans=recover_processing_scans(cfg,parent,verified,nw);
+    if(cfg["decision_apply"]) recovered_scans=recover_processing_scans(cfg,parent,verified,nw,performance);
     const auto protection_authority=cfg["source_protection_authority"].as<std::string>();
     if (obs == 152390) caller::require_no_mask_scope(parent->scope(),protection_authority);
     else require(census && protection_authority == "rtc-census-source-membership-unavailable",

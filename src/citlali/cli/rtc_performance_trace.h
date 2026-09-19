@@ -16,6 +16,8 @@ public:
         struct rusage usage{};getrusage(RUSAGE_SELF,&usage);
         out_<<std::setprecision(17)<<"{\"stage\":\""<<stage<<"\",\"seconds\":"
             <<std::chrono::duration<double>(std::chrono::steady_clock::now()-start_).count();
+        out_<<",\"process_user_seconds\":"<<usage.ru_utime.tv_sec+usage.ru_utime.tv_usec/1e6
+            <<",\"process_system_seconds\":"<<usage.ru_stime.tv_sec+usage.ru_stime.tv_usec/1e6;
 #if defined(__APPLE__)
         mach_task_basic_info_data_t info{};mach_msg_type_number_t count=MACH_TASK_BASIC_INFO_COUNT;
         if(task_info(mach_task_self(),MACH_TASK_BASIC_INFO,reinterpret_cast<task_info_t>(&info),&count)==KERN_SUCCESS)

@@ -1,5 +1,35 @@
 # TIMESTREAM-SUCCESSOR-RTC-PERFORMANCE-001 — 2026-09-18
 
+## Authorized residency continuation — preflight 2026-09-19
+
+The owner's observation-wide residency/appropriate-scope directive is now
+active after the explicitly scheduled reset restart (usage reset verified).
+The single spine is `codex/timestream-successor-observation-residency-001`,
+in the existing clean worktree below, starting at reviewed documentation
+receipt `4ef390456fc7c64c616a1f4507f36b2987e01f5e`, a direct child of live
+canonical `e32c4584dec07617d6caa857d39bf13047b6c4b0`. The previous
+performance branch is retained closed. All three effective governance
+documents and the current scientific goals/RTC/CAL/PTC owner bindings were
+read. This is Tier 2 performance/lifetime/application preparation work,
+requiring independent exact-source review and focused plus broad gates.
+
+Scope: account for full-observation residency versus scientific and numerical
+scope; measure preparation, numerical and publication costs; implement small
+demonstrated preparation/ownership/reuse improvements; recover the precise
+remaining all-network input/filter bindings. Share only exact unchanged input
+facts and preserve network axes, groups, masks, filters, calibration, response
+and frozen-original replay. Expected areas are the application input/timing
+adapters, measurement fields, bounded reuse tooling and focused tests.
+The existing retained binary and products provide a matched reference; keep
+a small development cohort and the 414-detector real-data comparison.
+All-network 1/2/4-worker timings are conditional on complete connected
+bindings, never extrapolated from single-network peaks. No new estimator,
+rank policy, generic cache, MAP, FRUIT or Unity access. No prior evidence or
+refs are deleted. Local implementation and commits are authorized; owner
+controls pushes, and canonical promotion remains a separate reviewed action.
+Stop/reassess for missing scientific authority or changed numerical/support
+results; no successful unsupported-network fallback is permitted.
+
 ## Owner-supplied Unity result — 2026-09-19
 
 The owner supplied the inspection at `2026-09-19T13:44:23+00:00` for job

@@ -32,9 +32,10 @@ std::shared_ptr<const PtcEvidence> PtcEvidence::learn(PtcCalSource source,
     }
     // The immutable binding is the authority, not a mutable projection mirror.
     std::vector<ProcessingScanNativeRecord> segments;
+    const auto physical_runs=grid->align_handle()->paired_handle()->network(first.network).occurrence_axis().contiguous_runs();
     for(const auto &support:projection.binding->supports()) {
         if(support.native.network_id!=first.network)continue;
-        for(const auto &run:grid->align_handle()->paired_handle()->network(first.network).occurrence_axis().contiguous_runs()) {
+        for(const auto &run:physical_runs) {
             RtcEventRange native{std::max(support.native.first_native_row,run.first_native_row),
                 std::min(support.native.past_last_native_row,run.past_last_native_row)};
             if(native.present()){ProcessingScanNativeRecord segment;segment.scan=support.scan;segment.science_native.push_back(native);segments.push_back(segment);}

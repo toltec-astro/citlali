@@ -1403,6 +1403,29 @@ TEST(processing_scan_native, consecutive_native_rows_across_physical_gap_remain_
   ASSERT_EQ(out.scans[0].science_native.size(),2);
   EXPECT_EQ(out.scans[0].science_native[0].past_last,200);EXPECT_EQ(out.scans[0].science_native[1].first,200);
 }
+TEST(processing_scan_native, overlapping_contexts_preserve_gaps_missing_slots_and_science_membership) {
+  Input in(16);
+  for(std::size_t i=5;i<in.times.size();++i){in.times[i]+=.25;in.counters[i]+=30;}
+  const auto parent=in.freeze();Eigen::VectorXd common(12);
+  std::vector<NativeSlotAssociation> associations;
+  for(int i=0;i<12;++i){common[i]=in.times[i];associations.push_back({100+i});}
+  associations[6]=NativeSlotAssociation{};
+  Eigen::Matrix<Eigen::Index,Eigen::Dynamic,Eigen::Dynamic> scans(4,2);
+  scans<<2,6, 5,9, 0,4, 7,11;
+  const auto out=project_processing_scans_to_native(parent,0,common,associations,scans,.004096,"g","r");
+  auto ranges=[](const auto &items){std::vector<std::pair<TimestreamNativeRow,TimestreamNativeRow>> result;
+    for(auto r:items)result.emplace_back(r.first,r.past_last);return result;};
+  using Ranges=std::vector<std::pair<TimestreamNativeRow,TimestreamNativeRow>>;
+  ASSERT_EQ(out.scans.size(),2);
+  EXPECT_EQ(ranges(out.scans[0].science_native),(Ranges{{102,105},{105,106}}));
+  EXPECT_EQ(ranges(out.scans[1].science_native),(Ranges{{107,110}}));
+  EXPECT_EQ(ranges(out.scans[0].context_native),(Ranges{{100,105},{105,106},{107,108}}));
+  EXPECT_EQ(ranges(out.scans[1].context_native),(Ranges{{104,105},{105,106},{107,112}}));
+  EXPECT_EQ(out.scans[0].unmapped_science_slots,0);
+  EXPECT_EQ(out.scans[1].unmapped_science_slots,1);
+  EXPECT_EQ(ranges(out.native_outside_processing),(Ranges{{100,102},{106,107},{110,116}}));
+  EXPECT_EQ(out.maximum_association_residual_seconds,0);
+}
 }
 
 namespace {

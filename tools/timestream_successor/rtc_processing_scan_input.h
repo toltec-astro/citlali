@@ -14,7 +14,7 @@ struct RecoveredProcessingScans {
 
 RecoveredProcessingScans recover_processing_scans(const YAML::Node &cfg,
     std::shared_ptr<const citlali::pipeline::NativePairedReadoutObservation> parent,
-    const auto &verified, int target_network) {
+    const auto &verified, int target_network, RtcPerformanceTrace &performance) {
   using namespace citlali::pipeline;
   const auto request=cfg["decision_apply"];
   const auto effective=YAML::LoadFile(checked_file(cfg["effective_config"]).string());
@@ -50,6 +50,7 @@ RecoveredProcessingScans recover_processing_scans(const YAML::Node &cfg,
         fs::path(entry["filepath"].as<std::string>()).filename().string());
   }
   require(request["timing_inputs"].size()==expected.size(),"incomplete processing timing population");
+  performance.mark("processing_generation_inputs_bound");
   std::vector<Eigen::VectorXd> times;std::set<int> seen;double rate=-1;
   for (const auto &entry:request["timing_inputs"]) {
     const int network=entry["network"].as<int>();const auto path=checked_file(entry);
@@ -73,6 +74,7 @@ RecoveredProcessingScans recover_processing_scans(const YAML::Node &cfg,
     times.push_back(network_time_from_timestream_matrix(ts.cast<double>(),fpga,runtime.interface_offsets_sec[network]));
   }
   const auto overlap=find_common_timestream_overlap(times,"RTC existing processing generation");
+  performance.mark("processing_network_times_recovered");
   const auto grid=build_common_gap_time_grid(overlap.max_start,overlap.min_end,1/rate,"RTC existing processing generation");
   const auto &axis=parent->network(target_network).occurrence_axis();
   std::vector<Eigen::VectorXd> target_times{axis.native_timing_handle()->reconstructed_times_unix_sec()};
@@ -114,10 +116,12 @@ RecoveredProcessingScans recover_processing_scans(const YAML::Node &cfg,
       "reconstructed processing intervals disagree with recorded inner/outer support");
   }
   const auto generation="sha256:"+request["processing_provenance"]["sha256"].as<std::string>();
+  performance.mark("processing_scan_relation_prepared");
   RecoveredProcessingScans out;
   out.projection=project_processing_scans_to_native(parent,target_network,grid,associations,telescope.scan_indices,
       .5/rate,generation,"existing-gap-grid-native-slot-associations+Telescope::calc_scan_indices;sha256:"+
       cfg["effective_config"]["sha256"].as<std::string>());
+  performance.mark("processing_scan_native_projection_complete");
   out.receipt["generation"]=generation;out.receipt["grid_rows"]=grid.size();
   out.receipt["grid_first_unix_seconds"]=grid[0];out.receipt["grid_last_unix_seconds"]=grid[grid.size()-1];
   out.receipt["association_tolerance_seconds"]=.5/rate;
