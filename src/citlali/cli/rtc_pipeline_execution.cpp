@@ -8,6 +8,11 @@
 #include <citlali/core/pipeline/timestream_rtc_output_grid.h>
 #include <citlali/core/pipeline/timestream_cal_rtc_source.h>
 #include <bit>
+#include <mutex>
+#include <thread>
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 namespace {
 using namespace citlali::pipeline;
@@ -48,8 +53,23 @@ std::string native_plane_digest(const NativePairedReadoutMatrix &m) {
 #include "rtc_consequence_study.h"
 #include "cal_pipeline_execution.h"
 #include "ptc_pipeline_execution.h"
-int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &output_path,
-    RtcInvocation invocation, std::optional<fs::path> reviewed_selection, DevelopmentTerminal endpoint, DevelopmentPtcRequest ptc_request) {
+namespace {
+// One observation lifetime, prepared before workers start; only the I/O mutex
+// is mutable. Numerical work and detector populations remain network-owned.
+struct SharedObservationPreparation {
+  apt::VerifiedBundle apt;
+  pipeline::CanonicalAptDetectorRelationV2 relation;
+  PreparedProcessingScans processing;
+  CalObservationInput cal;
+  TelescopeInput telescope;
+  std::shared_ptr<const AstScanMotionProduct> motion;
+  mutable std::mutex netcdf_io;
+};
+}
+static int execute_successor_network(const fs::path &input_path, const fs::path &output_path,
+    citlali::cli::RtcInvocation invocation, std::optional<fs::path> reviewed_selection, citlali::cli::DevelopmentTerminal endpoint, citlali::cli::DevelopmentPtcRequest ptc_request,
+    const SharedObservationPreparation *common=nullptr) {
+  using citlali::cli::RtcInvocation;using citlali::cli::DevelopmentTerminal;
   const bool development = invocation == RtcInvocation::development_default;
   std::array<std::string,4> arguments{"citlali",input_path.string(),output_path.string(),
                                    reviewed_selection ? reviewed_selection->string() : ""};
@@ -83,8 +103,13 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
     auto checked=[&](const std::string &key){return checked_file(cfg[key]);};
     const auto raw_path = checked("raw"), tune_path = checked("tune"),
                manifest = checked("manifest");
+    const bool direct=cfg["native_source"] && cfg["native_source"].as<std::string>()=="exact-raw-kids-v1";
+    require(!cfg["native_source"] || direct,"unsupported native producer input");
+    require(!direct || !cfg["audit_receipt"],"raw and sample receipt are competing input authorities");
+    YAML::Node prior;
+    if(!direct) {
     const auto prior_receipt_path = checked("audit_receipt");
-    const auto prior = YAML::LoadFile(prior_receipt_path.string());
+    prior = YAML::LoadFile(prior_receipt_path.string());
     require(prior["raw_sha256"].as<std::string>() ==
                     citlali::utils::sha256_file(raw_path) &&
                 prior["tune_sha256"].as<std::string>() ==
@@ -92,14 +117,22 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
                 prior["manifest_sha256"].as<std::string>() ==
                     citlali::utils::sha256_file(manifest),
             "audit raw/Tune/APT binding mismatch");
+    }
     // The ordinary CLI already owns its logger and run lifetime. Only the
     // standalone comparison entry needs the historical logging setup.
     if (!development) (void)configure_logging();
     performance.mark("input_digests_verified");
-    const auto verified = apt::verify_bundle_filesystem(manifest, true);
-    const auto relation =
-        pipeline::admit_canonical_apt_detector_relation_v2(verified);
+    std::optional<apt::VerifiedBundle> local_verified;
+    if(!common)local_verified=apt::verify_bundle_filesystem(manifest,true);
+    const auto &verified=common?common->apt:*local_verified;
+    std::optional<pipeline::CanonicalAptDetectorRelationV2> local_relation;
+    if(!common)local_relation=pipeline::admit_canonical_apt_detector_relation_v2(verified);
+    const auto &relation=common?common->relation:*local_relation;
     performance.mark("APT_verified_and_bound");
+    // NetCDF/HDF5 readers are serialized within this process. Once closed,
+    // each worker owns its numerical arrays and proceeds independently.
+    std::unique_lock<std::mutex> io_lock;
+    if(common)io_lock=std::unique_lock<std::mutex>(common->netcdf_io);
     netCDF::NcFile raw_file(raw_path.string(), netCDF::NcFile::read);
     const auto nw =
         read_netcdf_scalar<int>(raw_file, "Header.Toltec.RoachIndex");
@@ -108,6 +141,7 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
         read_netcdf_scalar<int>(raw_file, "Header.Toltec.SubObsNum");
     const auto scan =
         read_netcdf_scalar<int>(raw_file, "Header.Toltec.ScanNum");
+    require(cfg["network"].as<int>()==nw && cfg["observation"].as<int>()==obs,"requested raw scope mismatch");
     if(development) require(obs==152390 && sub==0 && scan==2 && nw>=0 && nw<13 &&
         (nw==12 || cfg["filter_plan"]),
         "successor.unsupported_native_domain: 152390/0/2 requires an explicit array plan outside the preserved network12 input; no legacy fallback");
@@ -146,17 +180,20 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
             "Tune report differs from raw header's calibration relation");
     double fpga = 0, hz = 0;
     std::int64_t accum = 0;
-    auto ts = read_timestamp_slice(raw_path, 0, rows, fpga, hz, accum);
-    require(fpga > 0 && hz > 0 && accum > 0 && tune.accumulation_length > 0,
-            "invalid producer cadence");
-    const double duration = static_cast<double>(accum) / fpga;
-    require(std::abs(duration - 1 / hz) <=
-                8 * std::numeric_limits<double>::epsilon() * duration,
+    std::shared_ptr<const pipeline::NativeNetworkAlignment> timing;
+    if(common) {
+      std::tie(fpga,hz,accum)=common->processing.cadence.at(nw);
+      timing=common->processing.native_timing.at(nw);
+    } else {
+      auto ts=read_timestamp_slice(raw_path,0,rows,fpga,hz,accum);
+      timing=std::make_shared<const pipeline::NativeNetworkAlignment>(
+          pipeline::make_native_network_alignment(nw,0,ts,fpga,0.0));
+    }
+    require(fpga>0 && hz>0 && accum>0 && tune.accumulation_length>0,"invalid producer cadence");
+    const double duration=static_cast<double>(accum)/fpga;
+    require(std::abs(duration-1/hz)<=8*std::numeric_limits<double>::epsilon()*duration,
             "producer cadence fields disagree");
-    // Native producer clock only; no telescope synchronization or cross-network
-    // timing claim.
-    auto timing = std::make_shared<const pipeline::NativeNetworkAlignment>(
-        pipeline::make_native_network_alignment(nw, 0, ts, fpga, 0.0));
+    raw_file.close();
     NetworkInput input{
         source,     raw_path, tune_path, citlali::utils::sha256_file(tune_path),
         fpga,       hz,       accum,     tune.accumulation_length,
@@ -191,7 +228,7 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
       require(!cfg["fir"] && !cfg["lowpass_identity"],"explicit filter artifact and inline coefficients are competing authorities");
       filter_input=citlali::cli::detail::read_rtc_array_filter(YAML::LoadFile(checked_file(cfg["filter_plan"]).string()),health_array);
     }
-    require(rows == prior["rows"].as<std::int64_t>() &&
+    if(!direct)require(rows == prior["rows"].as<std::int64_t>() &&
                 nw == prior["network"].as<int>() &&
                 source.channel_count == prior["channels"].as<int>(),
             "audit shape/scope mismatch");
@@ -202,6 +239,36 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
     NativePairedReadoutMatrix x(rows, cfg["detectors"].size()), r(rows, cfg["detectors"].size());
     std::vector<NativeReadoutCoordinateState> xs(rows*x.cols(),
         NativeReadoutCoordinateState::measured(true,false,true,false)), rs(xs);
+    if(direct) {
+      for(const auto &entry:cfg["detectors"])require(!entry["samples"],"raw ingress cannot accept substitute sample files");
+      auto raw=citlali::compat::kidscpp::read_raw_timestream_slice(raw_path,
+          tula::container_utils::IndexSlice{0,static_cast<Eigen::Index>(rows),std::nullopt});
+      if(io_lock.owns_lock())io_lock.unlock();
+      TemporaryDirectory tunes;
+      const auto normalized=normalized_tune_report(input,tunes.path());
+      kids::TimeStreamSolver solver(kids::TimeStreamSolver::Config{
+          {"fitreportfile",normalized.string()},{"exmode",std::string{"seq"}},{"extra_output",false}});
+      auto solved=solver(raw);
+      require(solved.data_out.xs.data.rows()==rows && solved.data_out.xs.data.cols()==source.channel_count &&
+          solved.data_out.rs.data.rows()==rows && solved.data_out.rs.data.cols()==source.channel_count,
+          "original paired solver shape mismatch");
+      for(std::size_t d=0;d<cfg["detectors"].size();++d) {
+        const int channel=cfg["detectors"][d]["channel"].as<int>();
+        require(channel>=0 && channel<source.channel_count && (channels.empty() || channel>channels.back()),
+                "projected channels must be unique and sorted native channels");
+        channels.push_back(channel);citlali::utils::Sha256 hash;
+        for(std::int64_t row=0;row<rows;++row) {
+          x(row,d)=solved.data_out.xs.data(row,channel);r(row,d)=solved.data_out.rs.data(row,channel);
+          const auto cell=static_cast<std::size_t>(row*x.cols()+d);
+          xs[cell]=NativeReadoutCoordinateState::measured(true,tune.valid[channel] && std::isfinite(x(row,d)),true,std::isfinite(x(row,d)));
+          rs[cell]=NativeReadoutCoordinateState::measured(true,tune.valid[channel] && std::isfinite(r(row,d)),true,std::isfinite(r(row,d)));
+          const std::array<double,4> a{x(row,d),r(row,d),double(xs[cell].valid()),double(rs[cell].valid())};
+          hash.update(reinterpret_cast<const std::uint8_t*>(a.data()),sizeof(a));
+        }
+        sample_hashes.push_back(hash.finish());
+      }
+    } else {
+      if(io_lock.owns_lock())io_lock.unlock();
     for (std::size_t d=0; d<cfg["detectors"].size(); ++d) {
       const auto entry=cfg["detectors"][d];
       const int channel=entry["channel"].as<int>();
@@ -227,6 +294,7 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
         require(xs[cell].valid()==(a[2]!=0) && rs[cell].valid()==(a[3]!=0),
                 "export differs from exact producer state convention");
       }
+    }
     }
     performance.mark("native_samples_loaded");
     YAML::Node contaminant_record;
@@ -274,6 +342,14 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
     auto axis = occurrence_axis(input, 0, rows,
                                 NativeEventTimeRole::integration_center);
     const auto runs = axis->contiguous_runs();
+    if(direct) {
+      double max_ulp=0;
+      for(std::int64_t row=0;row<rows;++row) {
+        const auto t=axis->native_identity(row).reconstructed_time_unix_sec();
+        max_ulp=std::max(max_ulp,std::nextafter(t,INFINITY)-t);
+      }
+      prior["roundoff_bound_fraction"]=4*max_ulp/duration;
+    }
     const auto all_detectors=detector_axis(relation,input);
     std::vector<NativeReadoutDetectorBinding> detectors;
     std::vector<double> factors;
@@ -314,7 +390,7 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
     auto val=ValSnapshot::initial(parent);
     auto view=NativePairedReadoutView::full(parent);
     std::optional<RecoveredProcessingScans> recovered_scans;
-    if(cfg["decision_apply"]) recovered_scans=recover_processing_scans(cfg,parent,verified,nw,performance);
+    if(cfg["decision_apply"]) recovered_scans=recover_processing_scans(cfg,parent,verified,nw,performance,common?&common->processing:nullptr);
     const auto protection_authority=cfg["source_protection_authority"].as<std::string>();
     if (obs == 152390) caller::require_no_mask_scope(parent->scope(),protection_authority);
     else require(census && protection_authority == "rtc-census-source-membership-unavailable",
@@ -323,11 +399,11 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
                         obs==152390 ? RtcSpikeProtection::outside_source : RtcSpikeProtection::unavailable);
     std::shared_ptr<const AstScanMotionNetworkView> motion;
     if(argc==4 || recovered_scans){
-      const auto telescope=load_telescope(checked("telescope"),parent->scope(),census && obs==152392);
+      const auto telescope=common?common->telescope:load_telescope(checked("telescope"),parent->scope(),census && obs==152392);
       const auto motion_identity = census && obs==152392
           ? AstScanMotionIdentityBinding{1523920001,1523920002,1523920003,1523920004}
           : ast_identity_binding;
-      auto ast=build_ast_scan_motion_product(telescope.source,motion_identity);
+      auto ast=common?common->motion:build_ast_scan_motion_product(telescope.source,motion_identity);
       const auto accepted_ast=YAML::LoadFile(checked("ast_acceptance").string());
       if (census && obs == 152392) {
         require(accepted_ast["schema"].as<std::string>() == "citlali-wp7-rtc-filter-fixture-census-v3" &&
@@ -890,7 +966,7 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
         performance.mark("RTC_finalized");
         const auto cal_source=CalRtcSource::bind(terminal.product);
         if(development && endpoint!=DevelopmentTerminal::rtc_only) {
-          const auto cal=execute_connected_cal(cal_source,cfg,verified,relation,channels,output,performance);
+          const auto cal=execute_connected_cal(cal_source,cfg,verified,relation,channels,output,performance,common?&common->cal:nullptr);
           receipt["CAL"]=cal.receipt;
           if(endpoint==DevelopmentTerminal::ptc) {
             require(bool(recovered_scans),"successor.PTC_scan_binding_unavailable");
@@ -966,4 +1042,98 @@ int citlali::cli::run_successor_rtc(const fs::path &input_path, const fs::path &
         (receipt["PTC"]["failed_fits"].as<std::size_t>() || !receipt["PTC"]["available"].as<std::size_t>()))return 2;
     return 0;
   } catch(const std::exception &e){std::cerr<<"RTC multi-detector caller FAIL: "<<e.what()<<'\n';return 1;}
+}
+
+namespace {
+int execute_successor_observation(const YAML::Node &request,const fs::path &output,
+    citlali::cli::DevelopmentTerminal terminal,citlali::cli::DevelopmentPtcRequest ptc,unsigned workers) {
+  require(workers>=1 && workers<=4,"successor.network_workers_must_be_1_to_4");
+  require(request["schema"].as<std::string>()=="citlali-observation-networks-v1" &&
+          request["observation"].as<int>()==152390 && request["subobservation"].as<int>()==0 &&
+          request["scan"].as<int>()==2,"successor.observation_scope_unsupported");
+  require(request["networks"].IsSequence() && request["networks"].size()>0,"successor.empty_network_request");
+  require(!fs::exists(output),"preserve previous output");
+  std::vector<fs::path> inputs;std::vector<int> ids;std::vector<YAML::Node> configs;
+  for(const auto &entry:request["networks"]) {
+    const int nw=entry["network"].as<int>();
+    require(nw>=0 && nw<13 && (ids.empty() || nw>ids.back()),"successor.network_order_duplicate_or_invalid");
+    const auto path=checked_file(entry["input"]);const auto cfg=YAML::LoadFile(path.string());
+    require(cfg["network"].as<int>()==nw && cfg["observation"].as<int>()==152390 &&
+            cfg["decision_apply"] && cfg["filter_plan"],"successor.network_binding_incomplete");
+    if(!configs.empty()) {
+      for(const auto *key:{"manifest","telescope","effective_config","ast_acceptance","decision_apply"})
+        require(YAML::Dump(cfg[key])==YAML::Dump(configs.front()[key]),std::string("successor.shared_input_mismatch: ")+key);
+    }
+    ids.push_back(nw);inputs.push_back(path);configs.push_back(cfg);
+  }
+  // Set once before concurrent work. No worker mutates library-wide controls.
+  Eigen::setNbThreads(1);
+#ifdef _OPENMP
+  omp_set_dynamic(0);omp_set_num_threads(1);
+#endif
+  const auto began=std::chrono::steady_clock::now();
+  RtcPerformanceTrace trace(output);
+  const auto &cfg=configs.front();const NativeObservationScope scope{152390,0,2};
+  auto verified=apt::verify_bundle_filesystem(checked_file(cfg["manifest"]),true);
+  auto relation=pipeline::admit_canonical_apt_detector_relation_v2(verified);
+  auto processing=prepare_processing_scans(cfg,scope,verified,trace);
+  auto telescope=load_telescope(checked_file(cfg["telescope"]),scope);
+  auto motion=build_ast_scan_motion_product(telescope.source,ast_identity_binding);
+  auto cal=prepare_cal_observation(cfg,scope);
+  SharedObservationPreparation common{std::move(verified),std::move(relation),std::move(processing),
+      std::move(cal),std::move(telescope),std::move(motion)};
+  trace.mark("shared_observation_preparation_complete");
+  const double preparation=std::chrono::duration<double>(std::chrono::steady_clock::now()-began).count();
+  std::vector<int> codes(ids.size(),-1);std::vector<double> seconds(ids.size());
+  std::vector<std::jthread> threads;
+  // Static round-robin assignment is deterministic; only scheduling changes.
+  for(unsigned w=0;w<std::min<std::size_t>(workers,ids.size());++w)threads.emplace_back([&,w]{
+#ifdef _OPENMP
+    omp_set_num_threads(1);
+#endif
+    for(std::size_t i=w;i<ids.size();i+=workers) {
+      const auto start=std::chrono::steady_clock::now();
+      codes[i]=execute_successor_network(inputs[i],output/("network"+std::to_string(ids[i])),
+          citlali::cli::RtcInvocation::development_default,{},terminal,ptc,&common);
+      seconds[i]=std::chrono::duration<double>(std::chrono::steady_clock::now()-start).count();
+    }
+  });
+  for(auto &thread:threads)thread.join();
+  trace.mark("all_networks_finished");
+  YAML::Node record;record["schema"]="citlali-observation-networks-result-v1";
+  record["source_revision"]=std::string(CITLALI_GIT_REVISION);
+  record["observation"]=152390;record["subobservation"]=0;record["scan"]=2;
+  record["requested_network_workers"]=workers;record["observed_Eigen_threads"]=Eigen::nbThreads();
+  record["requested_internal_threads"]=1;
+  record["numerical_backend_observation"]="Eigen reports its setting; other backend counts not asserted";
+  record["shared_preparation_count"]=1;record["shared_preparation_seconds"]=preparation;
+  record["assignment"]="sorted-network round-robin by worker index";
+  record["shared_state"]="read-only APT, native clocks, processing-slot grid, TEL trajectory, AST motion, CAL headers; per-network numerical ownership";
+  record["NetCDF_IO"]="serialized; numerical work concurrent; no shared open handles";
+  record["timing_scope"]="per-network wall intervals overlap; process CPU and memory reported only as aggregate";
+  int exit=0;
+  for(std::size_t i=0;i<ids.size();++i) {
+    YAML::Node n;n["network"]=ids[i];n["worker_index"]=i%workers;n["exit_code"]=codes[i];
+    n["wall_seconds"]=seconds[i];n["output"]=(output/("network"+std::to_string(ids[i]))).string();
+    n["input"]=request["networks"][i]["input"];
+    n["state"]=codes[i]==0?"completed":codes[i]==2?"partial-or-unavailable-preserved":"failed-preserved";
+    record["networks"].push_back(n);
+    if(codes[i]==1 || codes[i]<0)exit=1;else if(codes[i]==2 && !exit)exit=2;
+  }
+  record["wall_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-began).count();
+  record["exit_code"]=exit;
+  write_yaml(output/"observation-receipt.yaml",record);trace.mark("observation_receipt_written");
+  return exit;
+}
+}
+int citlali::cli::run_successor_rtc(const fs::path &input,const fs::path &output,
+    RtcInvocation invocation,std::optional<fs::path> reviewed_selection,
+    DevelopmentTerminal terminal,DevelopmentPtcRequest ptc,unsigned network_workers) {
+  const auto request=YAML::LoadFile(input.string());
+  if(request["schema"] && request["schema"].as<std::string>()=="citlali-observation-networks-v1") {
+    require(invocation==RtcInvocation::development_default && !reviewed_selection,"successor.observation_requires_development_route");
+    return execute_successor_observation(request,output,terminal,ptc,network_workers);
+  }
+  require(network_workers==1,"successor.network_workers_require_observation_request");
+  return execute_successor_network(input,output,invocation,reviewed_selection,terminal,ptc);
 }

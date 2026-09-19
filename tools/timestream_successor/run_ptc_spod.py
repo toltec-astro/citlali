@@ -53,6 +53,7 @@ def load_ptc(data,columns,ledger):
         if not set(columns).issubset(members):continue
         col=[g['detector_indices'].index(int(c)) for c in columns]
         basis=read('-basis.f64','<f8').reshape(g['basis_rows'],g['basis_columns'])
+        full_basis=orthonormal_span(basis)
         basis=orthonormal_span(basis[col]);bases.append(basis)
         out=read('-cleaned.f64','<f8').reshape(n,g['output_detectors'])
         causes=read('-causes.u8','u1').reshape(out.shape)
@@ -60,8 +61,24 @@ def load_ptc(data,columns,ledger):
         c=out[:,fullcols].copy();c[causes[:,fullcols]!=0]=np.nan
         cleaned[slots]=c
         segments.append(dict(index=i,first=int(slots[0]),past_last=int(slots[-1]+1),
-                             actual_native_interval=g['native_interval'],basis_index=len(bases)-1))
+                             actual_native_interval=g['native_interval'],basis_index=len(bases)-1,
+                             full_basis=full_basis,fit_members=members.tolist()))
     return cleaned,bases,segments
+
+
+def ptc_population_support(data,ledger):
+    """Production counts do not depend on the diagnostic common cohort."""
+    if data.ptc is None:return None
+    counts=np.zeros(len(data.identities),dtype=np.int64)
+    for i,g in enumerate(data.ptc['segments']):
+        name=f'segment-{i}-causes.u8'
+        if name not in g.get('files',{}):continue
+        causes=ledger.binary(data.root/'donor-continuity/ptc'/name,'u1',g['files'][name])
+        causes=causes.reshape(g['scheduled_times'],g['output_detectors'])
+        counts[g['output_detector_indices']]+=(causes==0).sum(axis=0)
+    require(int(counts.sum())==data.ptc['available'],'PTC production availability accounting')
+    return dict(available_by_detector=counts,represented_detectors=int((counts>0).sum()),
+                detector_seconds=float(counts.sum()*data.dt),failed_fits=data.ptc['failed_fits'])
 
 
 def context(data,ledger):
@@ -208,7 +225,11 @@ def profile(data,columns,seconds,pool,cleaned,bases,segments,ctx,cost,out):
                 ptc_compare=dict(local_SPOD_to_full_PTC_span=captures,windows=chosen,window_basis_indices=proj,mean_spectral_power_fraction_in_actual_PTC_span=np.mean(fractions,axis=0),
                                  matched_cleaned_to_CAL_power_ratio=after/before,
                                  comparison='same CAL windows, detectors and identity metric; actual saved ALS rank10; FFT demeaning on both')
-        info.update(state='available',frequency_hz=freq,probe_bins=probes,pooled=pooled,local=local,
+        residual=None
+        if cleaned is not None:
+            from ptc_spod_residual import matched_residual
+            residual=matched_residual(data,columns,windows,q,cleaned,segments,data.dt)
+        info.update(matched_residual=residual,state='available',frequency_hz=freq,probe_bins=probes,pooled=pooled,local=local,
                     pooled_separated_control=pooled_control,pairwise_pool_comparisons=comparisons,PTC=ptc_compare,
                     pooled_cross_frequency_comparisons=[dict(bins=[i,j],ranks={str(k):overlap(ref[i],ref[j],k) for k in (1,3,10)}) for z,i in enumerate(probes) for j in probes[z+1:]])
     with cost.stage('publication'):
@@ -251,7 +272,14 @@ def main():
         with cost.stage('input_preparation'):
             data=read_cal(args.input,args.config,ledger)
             columns=np.flatnonzero(data.valid.any(axis=0))
-            require(len(columns)>=2,'fewer than two usable detectors')
+            production_ptc=ptc_population_support(data,ledger)
+            if len(columns)<2:
+                ledger.unchanged()
+                write_json(args.output/'result.json',dict(schema='citlali-ptc-spod-diagnostic-v1',state='unavailable-fewer-than-two-CAL-supported-detectors',
+                    network=data.learning['network'],requested_detectors=len(data.identities),cohort_columns=columns,profiles=[],
+                    CAL_detector_seconds=float(data.valid.sum()*data.dt),PTC_support=production_ptc,
+                    diagnostic_support_is_not_production_loss=True,inputs_sha256=ledger.files,inputs_unchanged=True))
+                return
             cleaned,bases,segments=load_ptc(data,columns,ledger)
             ctx=context(data,ledger)
             upstream=original_spectra_context(data,ledger)
@@ -270,11 +298,28 @@ def main():
                     uncertainty='interleaved realizations separated by >=one full window; no shared samples, not proof of atmospheric independence',
                     scan_context='TEL actual RA/Dec tangent approximation for description only, no replacement AST speed authority',
                     input_classification='development signal; upstream complete response and total covariance unavailable',
-                    original_spectra_context=upstream,profiles=[])
+                    original_spectra_context=upstream,PTC_support=production_ptc,profiles=[])
         print(f'prepared network {result["network"]}: {len(columns)}/{len(data.identities)} detectors',flush=True)
         for seconds in args.fft_seconds:
             result['profiles'].append(profile(data,columns,seconds,args.pool_seconds,cleaned,bases,segments,ctx,cost,args.output))
             print(f'completed {seconds:g}s Fourier profile',flush=True)
+        from ptc_spod_residual import temporal_cohort
+        with cost.stage('support_assessment'):
+            support=temporal_cohort(data.valid,data.runs,data.dt)
+            result['support_assessment']=support
+            result['observation_seconds']=float(data.times[-1]-data.times[0]+data.dt)
+            result['CAL_detector_seconds']=float(data.valid.sum()*data.dt)
+            result['PTC_detector_seconds']=None if data.ptc is None else float(data.ptc['available']*data.dt)
+            result['matched_cleaned_cohort_detector_seconds']=None if cleaned is None else float(np.isfinite(cleaned).sum()*data.dt)
+            result['diagnostic_support_is_not_production_loss']=True
+        if support['selected_columns'] is not None:
+            supplemental=np.array(support['selected_columns'])
+            sc,sb,ss=load_ptc(data,supplemental,ledger)
+            destination=args.output/'temporal-supplement';destination.mkdir()
+            result['temporal_supplement']=dict(columns=supplemental,identities=[data.identities[i] for i in supplemental],
+                selection=support['selection'],profiles=[])
+            for seconds in args.fft_seconds:
+                result['temporal_supplement']['profiles'].append(profile(data,supplemental,seconds,args.pool_seconds,sc,sb,ss,ctx,cost,destination))
         with cost.stage('input_reverification'):ledger.unchanged()
         result['inputs_sha256']=ledger.files
         result['thread_libraries']=threadpool_info()
@@ -283,11 +328,14 @@ def main():
     with cost.stage('publication'):
         from plot_ptc_spod import plots
         plots(result,args.output)
+        if 'temporal_supplement' in result:
+            supplement=result['temporal_supplement']
+            plots(dict(result,profiles=supplement['profiles'],cohort_columns=supplement['columns']),args.output/'temporal-supplement')
     result['cost_seconds']=dict(cost.seconds);result['wall_seconds']=time.perf_counter()-wall
     result['cpu_seconds']=time.process_time()-cpu
     result['process_peak_rss_bytes']=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*(1 if sys.platform=='darwin' else 1024)
     result['inputs_unchanged']=True
-    result['tool_sources_sha256']={p.name:digest(p) for p in Path(__file__).parent.glob('*ptc_spod.py')}
+    result['tool_sources_sha256']={name:digest(Path(__file__).parent/name) for name in ('ptc_spod.py','run_ptc_spod.py','ptc_spod_residual.py','plot_ptc_spod.py')}
     write_json(args.output/'result.json',result)
     print(json.dumps({k:result[k] for k in ('network','wall_seconds','cpu_seconds','process_peak_rss_bytes','cost_seconds')}),flush=True)
 

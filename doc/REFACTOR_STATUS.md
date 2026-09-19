@@ -1,5 +1,49 @@
 # Citlali Refactor Status
 
+## Active eleven-network readiness — 2026-09-19
+
+Owner-authorized work continues on `codex/timestream-successor-multinetwork-001`
+in `/private/tmp/citlali-timestream-successor-cal-001`, fast-forwarded from
+`0ef1c6e626630962a41ebab0cdd3b5833ee6b039` to the reviewed SPOD closure
+`4bf470389fe7958f27bcda7a300baf3f31959b86`. Canonical remains
+`e32c4584dec07617d6caa857d39bf13047b6c4b0`; no push or Unity access occurred.
+
+The connected ordinary route now has one observation preparation and bounded
+network workers, with exact original KIDs ingress and each array's existing
+filter/cadence. The 414-channel reference reproduces all 5,968 binary products;
+scientific metadata agrees after verifying changed input/derived receipt
+bindings. A fixed 32-channel-per-network scheduling check on networks0/7/11/12
+is bitwise equivalent at1/2/4 workers (128.24/84.03/67.23s,
+6.06/9.54/13.86GB sampled process peaks). These are scheduling tests, not full
+population throughput estimates. All1,265 runnable CTests,15 focused boundary
+checks,17 spectral tests and the complete config preflight pass locally.
+
+SCI-AST-057's dependency-limited failure is repaired for missing detector
+positions; exact foreign bindings still fail. Shared telescope elevation is
+independent of missing detector offsets, avoiding contamination of other
+CAL plans. Matched residual diagnostics now distinguish the separately learned
+11Hz pattern from total-bin power and a frozen-operator phase control.
+
+**Full-population readiness remains blocked by an explicit completion-policy
+question.** The full630-channel network0 run reaches final RTC assessment but
+stops because eight producer-invalid channels lack original spectral support.
+The September18 partial-completion binding requires original spectral
+availability even for zero-output detectors. That rule is unchanged pending
+owner approval of the narrow zero-admitted-support extension. Full network7
+contains15 Tune-invalid channels and has not been claimed complete. The
+11-network inventory requests5,518 channels; networks6/10 remain unavailable.
+The previous414-channel network12 cohort is retained only as an exact reference
+(the raw network has491 channels,479 Tune-valid before other availability).
+
+Existing [performance handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_PERFORMANCE_001_2026-09-18.md)
+records evidence and the pending boundary. Local evidence is under
+`/private/tmp/citlali-full-network-001-20260919`; staged Unity assets/scripts are
+under `/private/tmp/citlali-full-network-unity-20260919`. The packet is
+**not submission-ready** until full-population local readiness and exact-source
+review close. Production qualification, new treatment, MAP and FRUIT remain
+outside scope.
+
+
 ## Bounded PTC frequency/time learning diagnostic — 2026-09-19
 
 The owner-authorized SPOD module probe consumes preserved CAL inputs from the

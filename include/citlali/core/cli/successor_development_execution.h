@@ -21,7 +21,7 @@ int run_successor_rtc(const std::filesystem::path &input,
                       RtcInvocation invocation,
                       std::optional<std::filesystem::path> reviewed_selection = {},
                       DevelopmentTerminal terminal = DevelopmentTerminal::rtc_only,
-                      DevelopmentPtcRequest ptc = {});
+                      DevelopmentPtcRequest ptc = {}, unsigned network_workers = 1);
 
 inline constexpr std::string_view successor_default_config = R"yaml(# Citlali development default: the implemented Timestream Successor.
 # Invoke with: citlali development.yaml

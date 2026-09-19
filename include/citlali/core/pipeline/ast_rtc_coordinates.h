@@ -5,6 +5,8 @@
 
 namespace citlali::pipeline {
 
+enum class AstRtcCoordinateCause { available, missing_detector_geometry, outside_telescope_support };
+
 struct AstRtcDetectorGeometry {
     NativeReadoutDetectorBinding detector;
     std::string selected_apt_row;
@@ -31,6 +33,8 @@ public:
     const auto &geometry() const noexcept { return geometry_; }
     const auto &trajectory_handle() const noexcept { return trajectory_; }
     std::optional<Direction> at(std::size_t detector, std::size_t slot) const;
+    AstRtcCoordinateCause cause(std::size_t detector, std::size_t slot) const;
+    std::optional<double> telescope_elevation_deg(std::size_t detector, std::size_t slot) const;
     std::size_t logical_owned_numeric_bytes() const noexcept {
         std::size_t n=0;for(const auto &d:directions_)n+=d.size()*sizeof(double);
         for(const auto &e:elevations_)n+=e.size()*sizeof(double);return n;

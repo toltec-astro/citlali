@@ -4,43 +4,15 @@
 #include <citlali/core/pipeline/timestream_ptc_cal_source.h>
 
 namespace {
-struct ConnectedCal { YAML::Node receipt; PtcCalSource source; };
-ConnectedCal execute_connected_cal(const CalRtcSource &source,const YAML::Node &cfg,
-    const apt::VerifiedBundle &verified,const pipeline::CanonicalAptDetectorRelationV2 &relation,
-    const std::vector<int> &channels,const fs::path &output,RtcPerformanceTrace &performance) {
-    performance.mark("CAL_start");
-    const auto started=std::chrono::steady_clock::now();
-    const auto grid=source.rtc_terminal_handle()->grid_handle();const auto scope=grid->align_handle()->scope();
+struct CalObservationInput {
+    std::shared_ptr<const RawTelescopeTrajectory> trajectory;
+    std::shared_ptr<const NativePointingOffsetModel> offsets;
+    double ra0,dec0;
+    std::string offset_identity;
+    citlali::cli::detail::CalOpacityHeader opacity;
+};
+CalObservationInput prepare_cal_observation(const YAML::Node &cfg,const NativeObservationScope &scope) {
     const auto telescope_path=checked_file(cfg["telescope"]);
-    const std::string telescope_identity="sha256:"+citlali::utils::sha256_file(telescope_path);
-    const std::string apt_identity="sha256:"+citlali::utils::sha256_file(checked_file(cfg["manifest"]));
-    require(scope.observation==relation.observation().observation &&
-            scope.subobservation==relation.observation().subobservation && scope.scan==relation.observation().scan,
-            "CAL selected APT belongs to another observation");
-    for(const auto &[name,unit]:std::array<std::pair<std::string,std::string>,3>{{
-        {"flxscale","mJy/beam/xs"},{"x_t","arcsec"},{"y_t","arcsec"}}}) {
-        const auto it=std::find_if(verified.fields.begin(),verified.fields.end(),[&](const auto &f){return f.name==name;});
-        require(it!=verified.fields.end() && it->unit==unit,"CAL/AST selected APT field convention differs: "+name);
-    }
-    std::vector<CalDetectorFactor> factors;std::vector<AstRtcDetectorGeometry> geometry;
-    for(std::size_t d=0;d<grid->detectors().size();++d) {
-        const auto &g=grid->detectors()[d];const auto channel=channels.at(d);
-        const auto &binding=grid->align_handle()->paired_handle()->network(g.network).detector(g.detector);
-        const auto &mapping=grid->align_handle()->paired_handle()->network(g.network).mapping_authority();
-        require(mapping.x.meaning_id=="kidscpp:gainlintrend:x:meaning" && mapping.x.unit_or_scale_id=="dimensionless" &&
-            mapping.producer_interface_id==native_paired_xr_producer_interface_id,
-            "CAL ordinary-xs admission does not support this producer's measured-channel convention");
-        const auto edge=std::find_if(relation.bindings().begin(),relation.bindings().end(),[&](const auto &b){return b.network==g.network && b.channel==channel;});
-        require(edge!=relation.bindings().end(),"CAL target-to-source relation absent");
-        const auto row=std::find_if(verified.apt.rows.begin(),verified.apt.rows.end(),[&](const auto &r){return r.uid==edge->output_uid;});
-        require(row!=verified.apt.rows.end() && row->network==g.network && row->channel==channel && row->array==edge->array,
-                "CAL selected child row identity differs from RTC acquisition");
-        const auto row_identity=apt_identity+":row="+std::to_string(row->uid);
-        const double f=field(*row,"flxscale");
-        factors.push_back({binding,row_identity,static_cast<int>(row->array),edge->disposition==apt::RelationDisposition::matched,
-                           std::isfinite(f)?std::optional<double>{f}:std::nullopt});
-        geometry.push_back({binding,row_identity,field(*row,"x_t"),field(*row,"y_t"),static_cast<int>(row->array)});
-    }
     netCDF::NcFile tel(telescope_path.string(),netCDF::NcFile::read);
     require(read_netcdf_scalar<int>(tel,"Header.Dcs.ObsNum")==scope.observation &&
         read_netcdf_scalar<int>(tel,"Header.Dcs.SubObsNum")==scope.subobservation &&
@@ -84,16 +56,62 @@ ConnectedCal execute_connected_cal(const CalRtcSource &source,const YAML::Node &
     }
     require(time_records==1,"AST pointing offset time support absent or duplicated");
     auto offsets=std::make_shared<const NativePointingOffsetModel>(std::move(offset_values),std::move(offset_times));
+    return {std::make_shared<const RawTelescopeTrajectory>(std::move(data)),offsets,ra0,dec0,
+        "sha256:"+citlali::utils::sha256_file(effective_path)+":inputs:"+input_name+":astrometry",
+        citlali::cli::detail::read_cal_opacity_header(tel)};
+}
+struct ConnectedCal { YAML::Node receipt; PtcCalSource source; };
+ConnectedCal execute_connected_cal(const CalRtcSource &source,const YAML::Node &cfg,
+    const apt::VerifiedBundle &verified,const pipeline::CanonicalAptDetectorRelationV2 &relation,
+    const std::vector<int> &channels,const fs::path &output,RtcPerformanceTrace &performance,
+    const CalObservationInput *common=nullptr) {
+    performance.mark("CAL_start");
+    const auto started=std::chrono::steady_clock::now();
+    const auto grid=source.rtc_terminal_handle()->grid_handle();const auto scope=grid->align_handle()->scope();
+    const auto telescope_path=checked_file(cfg["telescope"]);
+    const std::string telescope_identity="sha256:"+citlali::utils::sha256_file(telescope_path);
+    const std::string apt_identity="sha256:"+citlali::utils::sha256_file(checked_file(cfg["manifest"]));
+    require(scope.observation==relation.observation().observation &&
+            scope.subobservation==relation.observation().subobservation && scope.scan==relation.observation().scan,
+            "CAL selected APT belongs to another observation");
+    for(const auto &[name,unit]:std::array<std::pair<std::string,std::string>,3>{{
+        {"flxscale","mJy/beam/xs"},{"x_t","arcsec"},{"y_t","arcsec"}}}) {
+        const auto it=std::find_if(verified.fields.begin(),verified.fields.end(),[&](const auto &f){return f.name==name;});
+        require(it!=verified.fields.end() && it->unit==unit,"CAL/AST selected APT field convention differs: "+name);
+    }
+    std::vector<CalDetectorFactor> factors;std::vector<AstRtcDetectorGeometry> geometry;
+    for(std::size_t d=0;d<grid->detectors().size();++d) {
+        const auto &g=grid->detectors()[d];const auto channel=channels.at(d);
+        const auto &binding=grid->align_handle()->paired_handle()->network(g.network).detector(g.detector);
+        const auto &mapping=grid->align_handle()->paired_handle()->network(g.network).mapping_authority();
+        require(mapping.x.meaning_id=="kidscpp:gainlintrend:x:meaning" && mapping.x.unit_or_scale_id=="dimensionless" &&
+            mapping.producer_interface_id==native_paired_xr_producer_interface_id,
+            "CAL ordinary-xs admission does not support this producer's measured-channel convention");
+        const auto edge=std::find_if(relation.bindings().begin(),relation.bindings().end(),[&](const auto &b){return b.network==g.network && b.channel==channel;});
+        require(edge!=relation.bindings().end(),"CAL target-to-source relation absent");
+        const auto row=std::find_if(verified.apt.rows.begin(),verified.apt.rows.end(),[&](const auto &r){return r.uid==edge->output_uid;});
+        require(row!=verified.apt.rows.end() && row->network==g.network && row->channel==channel && row->array==edge->array,
+                "CAL selected child row identity differs from RTC acquisition");
+        const auto row_identity=apt_identity+":row="+std::to_string(row->uid);
+        const double f=field(*row,"flxscale");
+        factors.push_back({binding,row_identity,static_cast<int>(row->array),edge->disposition==apt::RelationDisposition::matched,
+                           std::isfinite(f)?std::optional<double>{f}:std::nullopt});
+        geometry.push_back({binding,row_identity,field(*row,"x_t"),field(*row,"y_t"),static_cast<int>(row->array)});
+    }
+    std::optional<CalObservationInput> local;
+    if(!common)local=prepare_cal_observation(cfg,scope);
+    const auto &observation=common?*common:*local;
+    const auto ra0=observation.ra0,dec0=observation.dec0;
+    const auto &offsets=observation.offsets;
+    const auto &opacity_header=observation.opacity;
     performance.mark("CAL_AST_start");
     auto ast=AstRtcCoordinates::realize_v2(grid,scope,telescope_identity,
-        std::make_shared<const RawTelescopeTrajectory>(std::move(data)),ra0,dec0,
-        "sha256:"+citlali::utils::sha256_file(effective_path)+":inputs:"+input_name+":astrometry",offsets,std::move(geometry));
+        observation.trajectory,ra0,dec0,observation.offset_identity,offsets,std::move(geometry));
     performance.mark("CAL_AST_complete");
     performance.array("AST_output_pointing_and_shared_elevation",ast->logical_owned_numeric_bytes(),1,grid->detectors().size()+grid->time_axes().size());
     // Owner 2026-09-18: one observation-associated reading is constant over
     // that observation. Preserve the header's actual update text; do not
     // manufacture a sampled series or assert an unverified time conversion.
-    const auto opacity_header=citlali::cli::detail::read_cal_opacity_header(tel);
     double observation_first=std::numeric_limits<double>::infinity(),observation_last=-observation_first;
     for(auto network:grid->align_handle()->participant_network_ids()) {
         const auto &axis=grid->align_handle()->paired_handle()->network(network).occurrence_axis();
@@ -177,6 +195,8 @@ ConnectedCal execute_connected_cal(const CalRtcSource &source,const YAML::Node &
         const auto stem="channel-"+std::to_string(channels[d]);
         std::ofstream values(destination/(stem+"-value.f64"),std::ios::binary),slots(destination/(stem+"-slot.i64"),std::ios::binary),causes(destination/(stem+"-causes.u16"),std::ios::binary);
         YAML::Node detector;detector["channel"]=channels[d];detector["selected_row"]=evidence->factors()[d].selected_row_identity;
+        if(!std::isfinite(ast->geometry()[d].x_t_arcsec) || !std::isfinite(ast->geometry()[d].y_t_arcsec))
+            detector["AST_coordinate_cause"]="missing-detector-geometry:selected-APT-offset-unavailable";
         detector["array"]=evidence->factors()[d].array;detector["uniquely_matched"]=evidence->factors()[d].uniquely_matched;
         if(evidence->factors()[d].flxscale_mJy_beam_per_x)detector["selected_flxscale"]=*evidence->factors()[d].flxscale_mJy_beam_per_x;
         std::map<std::uint16_t,std::size_t> counts;std::size_t available=0;

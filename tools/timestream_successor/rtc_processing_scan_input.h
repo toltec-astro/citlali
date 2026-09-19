@@ -12,9 +12,20 @@ struct RecoveredProcessingScans {
   YAML::Node receipt;
 };
 
-RecoveredProcessingScans recover_processing_scans(const YAML::Node &cfg,
-    std::shared_ptr<const citlali::pipeline::NativePairedReadoutObservation> parent,
-    const auto &verified, int target_network, RtcPerformanceTrace &performance) {
+struct PreparedProcessingScans {
+  Eigen::VectorXd grid;
+  Eigen::MatrixXI indices;
+  double rate;
+  int inner_context, outer_context;
+  std::string generation, configuration;
+  // Native clocks are kept by network; the common grid is only the accepted
+  // processing-slot relation, never a replacement for native physical runs.
+  std::map<int,std::shared_ptr<const citlali::pipeline::NativeNetworkAlignment>> native_timing;
+  std::map<int,std::tuple<double,double,std::int64_t>> cadence;
+};
+PreparedProcessingScans prepare_processing_scans(const YAML::Node &cfg,
+    const citlali::pipeline::NativeObservationScope &scope,
+    const auto &verified, RtcPerformanceTrace &performance) {
   using namespace citlali::pipeline;
   const auto request=cfg["decision_apply"];
   const auto effective=YAML::LoadFile(checked_file(cfg["effective_config"]).string());
@@ -23,16 +34,15 @@ RecoveredProcessingScans recover_processing_scans(const YAML::Node &cfg,
   require(provenance["canonical_run_identity"]["config_sources"][0]["sha256"].as<std::string>()==
       "sha256:"+cfg["effective_config"]["sha256"].as<std::string>(),"processing generation uses another configuration");
   const auto actual_scope=provenance["realized"]["native_cohort_provenance"]["value"]["observation_binding"]["observation"];
-  require(actual_scope["observation"].as<int>()==parent->scope().observation &&
-      actual_scope["subobservation"].as<int>()==parent->scope().subobservation &&
-      actual_scope["scan"].as<int>()==parent->scope().scan,"processing generation has another observation");
+  require(actual_scope["observation"].as<int>()==scope.observation &&
+      actual_scope["subobservation"].as<int>()==scope.subobservation &&
+      actual_scope["scan"].as<int>()==scope.scan,"processing generation has another observation");
   require(effective["runtime"]["interp_over_gaps"].as<bool>() &&
       !effective["timestream"]["polarimetry"]["enabled"].as<bool>(),
       "bounded timing adapter requires the recorded gap-grid and no HWPR time participation");
   std::map<int,std::string> expected;
   std::size_t input_index = 0;
   if (cfg["common_mode_census"]) {
-    const auto scope = parent->scope();
     const auto name = std::to_string(scope.observation) + "_" +
                       std::to_string(scope.subobservation) + "_" +
                       std::to_string(scope.scan);
@@ -51,6 +61,8 @@ RecoveredProcessingScans recover_processing_scans(const YAML::Node &cfg,
   }
   require(request["timing_inputs"].size()==expected.size(),"incomplete processing timing population");
   performance.mark("processing_generation_inputs_bound");
+  PreparedProcessingScans prepared;
+  const auto runtime=load_runtime_config(checked_file(cfg["effective_config"]));
   std::vector<Eigen::VectorXd> times;std::set<int> seen;double rate=-1;
   for (const auto &entry:request["timing_inputs"]) {
     const int network=entry["network"].as<int>();const auto path=checked_file(entry);
@@ -61,25 +73,23 @@ RecoveredProcessingScans recover_processing_scans(const YAML::Node &cfg,
     require(source!=verified.sources.end() && source->content_sha256=="sha256:"+entry["sha256"].as<std::string>() &&
         source->byte_count==fs::file_size(path),"processing timing source differs from exact APT raw identity");
     netCDF::NcFile f(path.string(),netCDF::NcFile::read);
-    require(read_netcdf_scalar<int>(f,"Header.Toltec.ObsNum")==parent->scope().observation &&
+    require(read_netcdf_scalar<int>(f,"Header.Toltec.ObsNum")==scope.observation &&
         read_netcdf_scalar<int>(f,"Header.Toltec.RoachIndex")==network &&
-        read_netcdf_scalar<int>(f,"Header.Toltec.SubObsNum")==parent->scope().subobservation &&
-        read_netcdf_scalar<int>(f,"Header.Toltec.ScanNum")==parent->scope().scan,"processing timestamp scope mismatch");
+        read_netcdf_scalar<int>(f,"Header.Toltec.SubObsNum")==scope.subobservation &&
+        read_netcdf_scalar<int>(f,"Header.Toltec.ScanNum")==scope.scan,"processing timestamp scope mismatch");
     const auto count=f.getVar("Data.Toltec.Ts").getDim(0).getSize();
     double fpga=0,hz=0;std::int64_t accum=0;
     auto ts=read_timestamp_slice(path,0,count,fpga,hz,accum);
     rate=reconcile_sample_rate_hz(rate,hz,network);
-    const auto runtime=load_runtime_config(checked_file(cfg["effective_config"]));
     require(runtime.interface_offset_present[network],"processing offset absent");
     times.push_back(network_time_from_timestream_matrix(ts.cast<double>(),fpga,runtime.interface_offsets_sec[network]));
+    prepared.native_timing.emplace(network,std::make_shared<const NativeNetworkAlignment>(
+        make_native_network_alignment(network,0,ts,fpga,0.0)));
+    prepared.cadence.emplace(network,std::tuple{fpga,hz,accum});
   }
   const auto overlap=find_common_timestream_overlap(times,"RTC existing processing generation");
   performance.mark("processing_network_times_recovered");
   const auto grid=build_common_gap_time_grid(overlap.max_start,overlap.min_end,1/rate,"RTC existing processing generation");
-  const auto &axis=parent->network(target_network).occurrence_axis();
-  std::vector<Eigen::VectorXd> target_times{axis.native_timing_handle()->reconstructed_times_unix_sec()};
-  const auto masks=build_common_time_grid_masks(target_times,grid,overlap.max_start,1/rate,0.5/rate,spdlog::default_logger());
-  auto associations=make_gap_native_slot_associations(*axis.native_timing_handle(),grid,masks[0],1/rate);
   citlali::config::TimestreamChunkingConfig chunking;
   const auto node=effective["timestream"]["chunking"];
   chunking.mode=node["chunk_mode"].as<std::string>();chunking.value=node["value"].as<double>();
@@ -117,8 +127,27 @@ RecoveredProcessingScans recover_processing_scans(const YAML::Node &cfg,
   }
   const auto generation="sha256:"+request["processing_provenance"]["sha256"].as<std::string>();
   performance.mark("processing_scan_relation_prepared");
+  prepared.grid=grid;prepared.indices=telescope.scan_indices;prepared.rate=rate;
+  prepared.inner_context=telescope.inner_scans_chunk;prepared.outer_context=telescope.outer_scans_chunk;
+  prepared.generation=generation;prepared.configuration=cfg["effective_config"]["sha256"].as<std::string>();
+  return prepared;
+}
+RecoveredProcessingScans recover_processing_scans(const YAML::Node &cfg,
+    std::shared_ptr<const citlali::pipeline::NativePairedReadoutObservation> parent,
+    const auto &verified, int target_network, RtcPerformanceTrace &performance,
+    const PreparedProcessingScans *common=nullptr) {
+  using namespace citlali::pipeline;
+  std::optional<PreparedProcessingScans> local;
+  if(!common)local=prepare_processing_scans(cfg,parent->scope(),verified,performance);
+  const auto &prepared=common?*common:*local;
+  const auto &grid=prepared.grid;const auto rate=prepared.rate;
+  const auto &generation=prepared.generation;
+  const auto &axis=parent->network(target_network).occurrence_axis();
+  std::vector<Eigen::VectorXd> target_times{axis.native_timing_handle()->reconstructed_times_unix_sec()};
+  const auto masks=build_common_time_grid_masks(target_times,grid,grid[0],1/rate,0.5/rate,spdlog::default_logger());
+  auto associations=make_gap_native_slot_associations(*axis.native_timing_handle(),grid,masks[0],1/rate);
   RecoveredProcessingScans out;
-  out.projection=project_processing_scans_to_native(parent,target_network,grid,associations,telescope.scan_indices,
+  out.projection=project_processing_scans_to_native(parent,target_network,grid,associations,prepared.indices,
       .5/rate,generation,"existing-gap-grid-native-slot-associations+Telescope::calc_scan_indices;sha256:"+
       cfg["effective_config"]["sha256"].as<std::string>());
   performance.mark("processing_scan_native_projection_complete");
@@ -128,9 +157,9 @@ RecoveredProcessingScans recover_processing_scans(const YAML::Node &cfg,
   out.receipt["maximum_association_residual_seconds"]=out.projection.maximum_association_residual_seconds;
   out.receipt["absolute_epoch_uncertainty"]="unquantified;not-required-for-existing-relative-slot-membership";
   out.receipt["readout_integration_assumption"]="preserved-provisional-uniform-average";
-  out.receipt["inner_context_samples"]=telescope.inner_scans_chunk;
-  out.receipt["outer_context_samples"]=telescope.outer_scans_chunk;
-  out.receipt["timing_inputs"]=request["timing_inputs"];
+  out.receipt["inner_context_samples"]=prepared.inner_context;
+  out.receipt["outer_context_samples"]=prepared.outer_context;
+  out.receipt["timing_inputs"]=cfg["decision_apply"]["timing_inputs"];
   for (const auto &scan:out.projection.scans) {
     YAML::Node s;s["scan"]=scan.scan;s["science_slots"]=range(scan.science_slots);s["context_slots"]=range(scan.context_slots);
     s["unmapped_science_slots"]=scan.unmapped_science_slots;

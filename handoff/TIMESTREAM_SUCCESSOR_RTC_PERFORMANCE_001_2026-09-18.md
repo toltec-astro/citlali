@@ -1,5 +1,42 @@
 # TIMESTREAM-SUCCESSOR-RTC-PERFORMANCE-001 — 2026-09-18
 
+
+### Full-population reassessment, 2026-09-19 (active, not closed)
+
+The requested 11-network inventory contains 5,518 raw channels, including
+491 on network12. The previously verified 414-channel network12 reference
+was a producer-valid selection. All 5,968 saved numerical/mask files from that
+reference are bitwise identical through the new direct-original/shared route;
+all scientific YAML subtrees match. The only new binding values are the exact
+input configuration (raw producer rather than prior exported pairs) and a
+verified derived CAL-receipt digest.
+
+The first full network0 run requests all 630 channels. It stops at RTC
+finalization after 302.21 s, sampled peak 8,846,163,968 bytes, retaining its
+5,275,448,615-byte evidence under `network0-first`. Eight channels
+(16,331,353,432,434,441,519,565) are Tune-invalid and have zero original spectral
+support; 61 other channels have no final filtered output. The September18
+completion binding explicitly requires an available original spectrum even
+for empty detectors. That requirement has **not** been changed. An owner
+question is pending for the narrow declared-invalid/zero-output/no-donor-
+dependency extension. No unavailable assessment is reported as passed.
+
+A separate full-membership prerequisite was demonstrated in the bounded
+four-network run: missing APT offsets aborted the whole AST product. SCI-AST
+requirement057 already requires dependency-limited failure. AST now retains
+such coordinates as explicitly unavailable, preserves shared telescope
+elevation independently, and CAL retains local pointing/factor causes.
+Foreign identities still fail. The first failed run is retained; the repair
+has a focused test that the first missing detector cannot poison the shared
+atmosphere calculation for other detectors.
+
+The active owner request and pending question are about this increment;
+there is no new scientific treatment, admission threshold or rank selection.
+Unity packet preparation under `/private/tmp/citlali-full-network-unity-20260919`
+is provisional until the population completion boundary is resolved and
+local readiness/review gates finish. Do not submit a known-blocked population
+campaign. The owner alone pushes and accesses Unity.
+
 ## Low-pass prerequisite completion — 2026-09-19
 
 Candidate implementation `530743ec54670647a88c36452c80898e241e4575`, tree
@@ -461,3 +498,76 @@ donors, source protection, method/rank and qualification limits. No MAP,
 FRUIT, detector rescue or new scientific qualification. The next pipeline
 owner remains typed MAP consumption under its own contract; remaining
 ingress/spectral performance work would be separately measured and bounded.
+# September 19 full available-network continuation — active preflight
+
+Owner directive `a1de99e5-194c-4486-9402-1cfc90a71bf7` authorizes completion
+of the existing multi-network spine, bounded local population runs and an
+owner-executable Unity packet. Effective engineering, successor and review
+governance, SCIENTIFIC_GOALS, RTC/CAL/PTC contracts and subsequent owner
+bindings govern unchanged scientific operations. Tier 2; one spine at
+`/private/tmp/citlali-timestream-successor-cal-001`, branch
+`codex/timestream-successor-multinetwork-001`, initially clean at
+`0ef1c6e626630962a41ebab0cdd3b5833ee6b039`. Live canonical is verified at
+`e32c4584dec07617d6caa857d39bf13047b6c4b0`; the remote spine matches its
+initial local tip. The authorized local fast-forward incorporates reviewed
+SPOD closure `4bf470389fe7958f27bcda7a300baf3f31959b86`; it does not move
+canonical or the diagnostic evidence ref.
+
+Scope: observation inventory, shared read-only preparation, bounded network
+scheduling, direct use of the existing paired KIDs producer, full network12
+equivalence and full network0/7 RTC/CAL/PTC readiness, matched spectral residual
+controls and temporal-support-only diagnostic accounting. Expected changes
+are application ingress/orchestration, focused tests and existing diagnostic
+and deployment tools. Numerical scientific owners, rank10, masks, physical
+boundaries, array-specific filter coefficients, and original-input frozen-plan
+execution stay fixed. No new spectral treatment, general cache, MAP or FRUIT.
+
+Local gates include the actual C++ build, focused and broad regressions,
+immutable-parent and worker-count equivalence, resource accounting, and
+independent fresh-context exact-SHA review on all three axes. A new Unity
+build and 11-network 1/2/4-worker replay remain required, with only owner-supplied
+results admitted as execution evidence. Owner retains pushes and submission;
+no Unity connection, remote execution or cleanup is authorized. Stop/reassess
+for a missing scientific binding or genuine resource/correctness limit, while
+finishing independent preparation and preserving explicit partial outcomes.
+
+### Implemented readiness and remaining owner boundary
+
+- Shared preparation owns verified APT/relation, exact per-network native clocks,
+  the accepted processing-slot generation, TEL/AST motion and CAL header/trajectory
+  inputs for one invocation. Workers have independent science products and output
+  directories; NetCDF reads are serialized, numerical work is concurrent.
+- Native raw ingress calls the existing KIDs producer and preserves the accepted
+  producer-validity convention. The former exported-column route remains available
+  for comparisons. Every admitted original column's four-value record hash matches
+  the former producer export in the414-detector reference.
+- One/two/four-worker local scheduling tests use the first32 Tune-valid channels
+  of networks0/7/11/12, selected without spectral ranking. Same build/environment,
+  full supplied duration, no concurrent heavy work during timed reductions.
+  Wall128.244/84.032/67.227s; sampled RSS6,061,932,544/9,542,582,272/
+  13,859,733,504bytes. All saved binary values/masks and semantic YAML agree.
+  Some small-cohort PTC fits remain unavailable under unchanged rank10 rules;
+  each scheduling variant retains exactly the same successful/failed segments.
+- Local checks:1,265 runnable CTests passed (one pre-existing disabled test),
+  15 focused AST/CAL/completion/CLI checks,17 SPOD tests, complete config preflight.
+  Prior failed population/geometry runs are preserved separately.
+- Reference SPOD now reports matched CAL/PTC power, disjoint pattern-learning
+  folds, fixed nearby frequencies, actual full-fit frozen-operator controls,
+  production detector-time separately from diagnostic common/Fourier support,
+  and at most one fixed temporal-only supplemental cohort. No cleaning is added.
+  The initial exploratory network12 check finds about12–14% of the separately
+  learned11Hz pattern power remains on the2s matched folds, above the conditional
+  phase controls. This is not the former53% total-bin fraction and is not a
+  model-independent instrumental line-removal efficiency. Final diagnostic
+  publication must bind the reviewed final tool files.
+- Unity assets were copied with exact hashes; inputs can be materialized locally
+  from those portable paths. The provisional packet includes exact-source build,
+  reference replay/cross-platform accounting, full1/2/4 network scheduling,
+  scientific comparisons, single diagnostic campaign and optional measured-cost
+  bounded repetitions. Allocation96GiB/4CPU/8h is provisional pending the complete
+  shorter-array population costs. Do not submit while the readiness record is false.
+
+The next action is the pending owner completion decision, followed by full
+network0/7 runs, final source review and packet readiness. The concrete remaining
+rule is in `doc/SCI_RTC_PTC_PARTIAL_COMPLETION_OWNER_BINDING_2026-09-18.md`:
+"Its original spectrum must be available". No implementation has weakened it.

@@ -2192,6 +2192,22 @@ TEST(cal_pipeline, invalid_atmosphere_and_numeric_overflow_are_not_ordinary_cali
   p=huge.plan();y=CalAppliedSignal::apply(p,huge.source(),huge.terminal->val_snapshot_handle());
   EXPECT_EQ(y->causes(0,300),cal_numeric_failure);EXPECT_TRUE(y->value(1,300));
 }
+TEST(ast_rtc_coordinates, missing_detector_geometry_is_local_and_cannot_poison_shared_atmosphere) {
+  CalFixture f;
+  const auto reference=CalAppliedSignal::apply(f.plan(),f.source(),f.terminal->val_snapshot_handle());
+  f.geometry[0].x_t_arcsec=NAN;
+  f.ast=f.pointing(f.terminal->grid_handle(),f.telescope);
+  EXPECT_EQ(f.ast->cause(0,300),AstRtcCoordinateCause::missing_detector_geometry);
+  EXPECT_FALSE(f.ast->at(0,300));EXPECT_DOUBLE_EQ(*f.ast->telescope_elevation_deg(0,300),45.);
+  const auto result=CalAppliedSignal::apply(f.plan(),f.source(),f.terminal->val_snapshot_handle());
+  EXPECT_FALSE(result->value(0,300));EXPECT_EQ(result->causes(0,300),cal_pointing_unavailable);
+  for(std::size_t d=1;d<3;++d)for(std::size_t slot=0;slot<800;++slot) {
+    EXPECT_EQ(result->causes(d,slot),reference->causes(d,slot));
+    EXPECT_EQ(result->value(d,slot),reference->value(d,slot));
+  }
+  f.geometry[0].detector.detector_occurrence_id="foreign";
+  EXPECT_THROW(f.pointing(f.terminal->grid_handle(),f.telescope),std::invalid_argument);
+}
 TEST(ast_rtc_coordinates, exact_RTC_schedule_uses_existing_pointing_rotation_without_filtering_angles) {
   CalFixture f;auto p=f.ast->at(0,300);ASSERT_TRUE(p);
   EXPECT_EQ(AstRtcCoordinates::role,"SCI-AST:rtc_output_grid_coordinates@1");

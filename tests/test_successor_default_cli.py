@@ -52,6 +52,33 @@ class SuccessorDefaultCli(unittest.TestCase):
         config["terminal"] = "ordinary-science"
         self.rejected(self.invoke(config), "successor.endpoint_not_implemented")
 
+    def test_network_worker_bounds_and_single_network_misuse(self):
+        config = self.request({})
+        for workers in (0, -1, 5):
+            config['network_workers'] = workers
+            self.rejected(self.invoke(config), 'successor.network_workers_must_be_1_to_4')
+        config['network_workers'] = 2
+        self.rejected(self.invoke(config), 'successor.network_workers_require_observation_request')
+
+    def test_observation_inventory_rejects_duplicate_network_before_preparation(self):
+        network = self.root / 'network.json'
+        network.write_text(json.dumps(dict(network=0, observation=152390, decision_apply={}, filter_plan={})))
+        entry = dict(network=0, input=dict(path=str(network), sha256=hashlib.sha256(network.read_bytes()).hexdigest()))
+        config = self.request(dict(schema='citlali-observation-networks-v1', observation=152390,
+                                   subobservation=0, scan=2, networks=[entry, entry]))
+        self.rejected(self.invoke(config), 'successor.network_order_duplicate_or_invalid')
+
+    def test_observation_cannot_silently_share_different_input_authorities(self):
+        entries = []
+        for nw in (0, 7):
+            network = self.root / f'network{nw}.json'
+            network.write_text(json.dumps(dict(network=nw, observation=152390, decision_apply={},
+                                               filter_plan={}, telescope=dict(sha256=str(nw)))))
+            entries.append(dict(network=nw, input=dict(path=str(network), sha256=hashlib.sha256(network.read_bytes()).hexdigest())))
+        config = self.request(dict(schema='citlali-observation-networks-v1', observation=152390,
+                                   subobservation=0, scan=2, networks=entries))
+        self.rejected(self.invoke(config), 'successor.shared_input_mismatch: telescope')
+
     def test_bound_request_tamper_is_rejected_before_execution(self):
         config = self.request({})
         Path(config["input"]["path"]).write_text("{\"changed\":true}")

@@ -23,7 +23,7 @@ int load_and_run_successor_development(const RuntimeConfig &runtime,
             "is not implemented. Use --dump_config for the current input contract. "
             "The legacy reduction was not run.");
     }
-    const std::set<std::string> keys{"schema", "input", "output", "terminal", "ptc"};
+    const std::set<std::string> keys{"schema", "input", "output", "terminal", "ptc", "network_workers"};
     for (const auto &entry : config) {
         if (!entry.first.IsScalar() || !keys.contains(entry.first.as<std::string>()))
             throw std::invalid_argument("successor.unsupported_configuration: unknown development request field");
@@ -55,8 +55,14 @@ int load_and_run_successor_development(const RuntimeConfig &runtime,
         throw std::invalid_argument("successor.path_binding: input and output must be absolute paths");
     if (citlali::utils::sha256_file(path) != input["sha256"].as<std::string>())
         throw std::invalid_argument("successor.input_digest_mismatch: input record has changed");
+    unsigned workers=1;
+    if(config["network_workers"]) {
+        const int n=config["network_workers"].as<int>();
+        if(n<1 || n>4)throw std::invalid_argument("successor.network_workers_must_be_1_to_4");
+        workers=static_cast<unsigned>(n);
+    }
     return run_successor_rtc(path, output, RtcInvocation::development_default, {},
-        terminal == "ptc" ? DevelopmentTerminal::ptc : terminal == "cal" ? DevelopmentTerminal::cal : DevelopmentTerminal::rtc_only,ptc);
+        terminal == "ptc" ? DevelopmentTerminal::ptc : terminal == "cal" ? DevelopmentTerminal::cal : DevelopmentTerminal::rtc_only,ptc,workers);
 }
 
 } // namespace citlali::cli

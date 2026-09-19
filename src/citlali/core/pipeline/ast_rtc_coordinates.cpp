@@ -66,7 +66,7 @@ std::shared_ptr<const AstRtcCoordinates> AstRtcCoordinates::realize_v2(
            geo.detector.detector_occurrence_id!=expected.detector_occurrence_id ||
            geo.detector.detector_association_record_id!=expected.detector_association_record_id ||
            geo.detector.tone_or_channel_id!=expected.tone_or_channel_id || geo.selected_apt_row.empty() ||
-           geo.array<0 || geo.array>2 || !std::isfinite(geo.x_t_arcsec) || !std::isfinite(geo.y_t_arcsec))
+           geo.array<0 || geo.array>2)
             throw std::invalid_argument("AST RTC detector geometry is missing or foreign");
         out->directions_.emplace_back(g.scheduled_count,2);
         auto &directions=out->directions_.back();directions.setConstant(NAN);
@@ -75,6 +75,9 @@ std::shared_ptr<const AstRtcCoordinates> AstRtcCoordinates::realize_v2(
             if(state.x_available || state.r_available)
                 throw std::invalid_argument("AST required RTC-grid pointing is outside telescope/offset support");
         }
+        // SCI-AST-057: absent detector offsets affect only this coordinate.
+        // Preserve the exact binding and shared telescope elevation; no zero offset.
+        if(!std::isfinite(geo.x_t_arcsec) || !std::isfinite(geo.y_t_arcsec))continue;
         auto &shared=scheduled[g.time_axis];if(shared.slots.empty())continue;
         auto [y,x]=engine_utils::calc_det_pointing(shared.evaluated,geo.x_t_arcsec,geo.y_t_arcsec,
                                                 "radec",shared.offsets,"array",true);
@@ -87,11 +90,20 @@ std::shared_ptr<const AstRtcCoordinates> AstRtcCoordinates::realize_v2(
     }
     return out;
 }
-std::optional<AstRtcCoordinates::Direction> AstRtcCoordinates::at(std::size_t detector,std::size_t slot) const {
-    const auto &values=directions_.at(detector);
+std::optional<double> AstRtcCoordinates::telescope_elevation_deg(std::size_t detector,std::size_t slot) const {
     const auto &g=grid_->detectors().at(detector);
-    const auto el=elevations_.at(g.time_axis).at(slot);
-    if(!std::isfinite(el))return std::nullopt;
-    return Direction{values(slot,0),values(slot,1),el};
+    const double el=elevations_.at(g.time_axis).at(slot);
+    return std::isfinite(el)?std::optional<double>{el}:std::nullopt;
+}
+AstRtcCoordinateCause AstRtcCoordinates::cause(std::size_t detector,std::size_t slot) const {
+    const auto elevation=telescope_elevation_deg(detector,slot); // validates exact slot
+    const auto &g=geometry_.at(detector);
+    if(!std::isfinite(g.x_t_arcsec) || !std::isfinite(g.y_t_arcsec))return AstRtcCoordinateCause::missing_detector_geometry;
+    return elevation?AstRtcCoordinateCause::available:AstRtcCoordinateCause::outside_telescope_support;
+}
+std::optional<AstRtcCoordinates::Direction> AstRtcCoordinates::at(std::size_t detector,std::size_t slot) const {
+    if(cause(detector,slot)!=AstRtcCoordinateCause::available)return std::nullopt;
+    const auto &values=directions_.at(detector);
+    return Direction{values(slot,0),values(slot,1),*telescope_elevation_deg(detector,slot)};
 }
 } // namespace citlali::pipeline

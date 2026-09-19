@@ -62,9 +62,9 @@ std::shared_ptr<const CalPlan> CalPlan::consider(std::shared_ptr<const CalEviden
             shared->second.reserve(facts.times().size());
             for(std::size_t s=0;s<facts.times().size();++s) {
                 const auto wvr=e.wvr_handle()->at(facts.times()[s]);
-                const auto direction=e.ast_handle()->at(d,s);
-                const auto correction=wvr.tau225 && direction ?
-                    e.atmosphere_handle()->correction(factor.array,*wvr.tau225,direction->telescope_elevation_deg):std::nullopt;
+                const auto elevation=e.ast_handle()->telescope_elevation_deg(d,s);
+                const auto correction=wvr.tau225 && elevation ?
+                    e.atmosphere_handle()->correction(factor.array,*wvr.tau225,*elevation):std::nullopt;
                 shared->second.push_back({wvr.cause,wvr.tau225.has_value(),correction});
             }
         }
