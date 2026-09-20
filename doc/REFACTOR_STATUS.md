@@ -24,12 +24,13 @@ independent of missing detector offsets, avoiding contamination of other
 CAL plans. Matched residual diagnostics now distinguish the separately learned
 11Hz pattern from total-bin power and a frozen-operator phase control.
 
-**Full-population readiness remains blocked by an explicit completion-policy
-question.** The full630-channel network0 run reaches final RTC assessment but
-stops because eight producer-invalid channels lack original spectral support.
-The September18 partial-completion binding requires original spectral
-availability even for zero-output detectors. That rule is unchanged pending
-owner approval of the narrow zero-admitted-support extension. Full network7
+**The owner approved the narrow completion extension on September19.** The
+initial full630-channel network0 run stopped because eight producer-invalid
+channels lacked original spectral support. The v2 owner binding permits only
+wholly declared-invalid original x/r pairs with zero filtered output and no
+active donor dependency to remain unavailable without blocking useful detectors.
+The implementation and focused guards are now under verification, followed by
+full network0/7 runs and exact-source review. Full network7
 contains15 Tune-invalid channels and has not been claimed complete. The
 11-network inventory requests5,518 channels; networks6/10 remain unavailable.
 The previous414-channel network12 cohort is retained only as an exact reference
@@ -39,7 +40,7 @@ Existing [performance handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_PERFORMANCE_0
 records evidence and the pending boundary. Local evidence is under
 `/private/tmp/citlali-full-network-001-20260919`; staged Unity assets/scripts are
 under `/private/tmp/citlali-full-network-unity-20260919`. The packet is
-**not submission-ready** until the completion decision and full-population
+**not submission-ready** until implementation verification and full-population
 local readiness close. Exact implementation checkpoint
 `98380090e770f960b0decb07ebe3cabc77993132` passes independent three-axis
 review with recorded limitations; this is not campaign readiness approval.

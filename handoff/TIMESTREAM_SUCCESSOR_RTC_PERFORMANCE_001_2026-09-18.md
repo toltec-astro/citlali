@@ -638,3 +638,33 @@ scientific qualification change is proposed. After that decision, finish full
 network0/7 readiness and review the resulting exact candidate/packet before
 owner push and submission. Do not rerun completed investigations or connect to
 Unity. Canonical and remote spine remain at the verified refs recorded above.
+
+### Owner-approved completion continuation — September19
+
+The owner explicitly approved the proposed narrow zero-original-support
+completion extension. This supersedes the pending-question status above.
+Continuation starts from clean checkpoint
+`66bc17af52f3b97afe64e408fa60e99de4a214b5` on the same multinetwork spine;
+live canonical and remote spine are reverified at `e32c4584...` and `0ef1c6e...`.
+Engineering, Timestream Successor, and Review/Conformance governance were read;
+their accepted ledger identities remain unchanged. Tier2 and one owned spine.
+
+Owned changes: RTC Consider's completion guard, explicit v2 decision-receipt
+identity, focused completion tests and the existing owner binding. Initial
+Learn must report zero admitted original support for both x/r with every
+physical run entirely declared-invalid; unexpected nonfinite/input failures,
+short nonempty support, asymmetric support, all-empty output, intermediate
+outcomes and active donor dependencies remain stops. Retained unavailable
+channels keep original values, causes, identities and VAL facts. Apply,
+scientific membership, rank, filters, cadence and physical boundaries do not
+change. This is completion scope, not a detector-rescue or filtering increment.
+
+Gates: focused completion/terminal checks, full local build/CTest and config
+preflight, full network0/7 through CAL/PTC, unchanged pre-existing RTC output,
+same residual diagnostic and support accounting, packet preparation and
+independent fresh-context exact-SHA review. Actual local AppleClang/Homebrew
+evidence remains supplemental; exact Unity build/replay is owner-executed.
+Finish locally available work and provide reviewed push/submission commands;
+do not push, connect to Unity, move canonical, enable new treatment, MAP or
+FRUIT, or delete evidence/unrelated work. Reassess any new scientific exception
+or shared dependency rather than broadening this approved rule.

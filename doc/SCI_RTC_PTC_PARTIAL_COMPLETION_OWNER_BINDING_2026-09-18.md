@@ -6,6 +6,31 @@ completion requirement only at the explicit development boundary, and the
 PTC prohibition on pre-fit omission only for columns with zero CAL eligibility.
 No detector is rescued, reclassified, or adaptively removed by fitting.
 
+## September 19 bounded extension, explicitly owner approved
+
+`rtc-available-detector-completion-2026-09-19-v2` preserves the v1 rule below
+and additionally permits an already-invalid detector whose original **x and r**
+both have zero admitted support to remain unavailable without stopping useful
+detectors. Both original spectra must explicitly report insufficient windows;
+every physical run must consist entirely of declared-invalid samples, with
+zero admitted or unexpected nonfinite samples. Missing cadence, missing evidence,
+arithmetic failures, short but nonempty support and asymmetric original support
+are not this exception. Both filtered coordinates must have zero output, and
+conditioned spectra must have zero admitted support and insufficient windows.
+An active detector must not depend on the unavailable detector as a donor.
+At least one detector must retain usable output and its required assessments.
+
+The owner approved this narrow scope after the full network0 run stopped on
+eight Tune-invalid channels despite useful output in other detectors. Runtime
+Consider changes only completion scope; Learn's unavailable spectra, original
+values, identities and VAL facts remain unchanged. Apply still executes the
+frozen plan from originals. No sample admission, threshold, filter, rank,
+calibration or scientific qualification is changed. The implementation records
+the v2 policy identity in its decision receipt. Existing v1 evidence remains
+bound to its original rule and source revision.
+
+## Original September 18 binding
+
 `rtc-available-detector-completion-2026-09-18-v1` permits an explicitly retained
 complete development plan whose missing final-stage outcome belongs to a
 detector with no numerical x or r output anywhere. Its original spectrum must

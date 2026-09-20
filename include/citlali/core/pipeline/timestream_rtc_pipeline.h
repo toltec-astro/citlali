@@ -597,8 +597,22 @@ private:
       const auto &s=*issue.scope;
       const auto &original=outcome.original_handle()->spectrum(s.network,s.detector,s.coordinate);
       const auto &conditioned=outcome.conditioned_handle()->spectrum(s.network,s.detector,s.coordinate);
-      if(!original.available() || conditioned.cause!=RtcSpectralCause::insufficient_windows ||
+      if(conditioned.cause!=RtcSpectralCause::insufficient_windows ||
          !conditioned.centering_support.empty())return false;
+      if(!original.available()) {
+        // Owner 2026-09-19: a wholly declared-invalid original pair stays
+        // unavailable without blocking other detectors. No short, unassessed,
+        // inconsistent or one-coordinate-only support is admitted here.
+        for(auto coordinate:{NativeReadoutCoordinate::x,NativeReadoutCoordinate::r}) {
+          const auto &pair=outcome.original_handle()->spectrum(s.network,s.detector,coordinate);
+          if(pair.cause!=RtcSpectralCause::insufficient_windows ||
+             !pair.centering_support.empty() || pair.runs.empty())return false;
+          for(const auto &run:pair.runs)
+            if(run.cause!=RtcSpectralRunCause::insufficient_support || run.admitted_samples ||
+               run.unexpected_nonfinite_samples || run.rows.past_last<=run.rows.first ||
+               run.declared_invalid_samples!=static_cast<std::size_t>(run.rows.past_last-run.rows.first))return false;
+        }
+      }
       // A partially available original spectrum can still record an input failure.
       for(const auto &run:original.runs)
         if(run.cause==RtcSpectralRunCause::input_consistency_failure ||

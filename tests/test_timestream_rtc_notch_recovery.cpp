@@ -2303,6 +2303,61 @@ TEST(rtc_partial_completion, usable_but_unassessed_intermediate_missing_and_all_
         EXPECT_FALSE(d->selected_plan());EXPECT_EQ(advance_trial(t,current,d).candidate,current);
     }
 }
+TEST(rtc_partial_completion, declared_invalid_original_pair_stays_unavailable_without_blocking_good_detectors) {
+    for(bool nonfinite_declared_invalid:{false,true}) {
+        Input in(1600);
+        for(std::size_t i=0;i<in.times.size();++i) {
+            in.xs[i*3+1]=in.rs[i*3+1]=NativeReadoutCoordinateState::measured(true,false,true,!nonfinite_declared_invalid);
+            if(nonfinite_declared_invalid)in.x(i,1)=in.r(i,1)=NAN;
+        }
+        Trial t(in);auto current=complete_apply(t,RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31));
+        auto e=decision_evidence(t,current);auto selection=retain_selection(e);
+        EXPECT_EQ(RtcPipelineDecision::consider(e,t.val,selection,44)->disposition(),RtcPipelineDisposition::unavailable);
+        selection.outcome_requirement=RtcOutcomeRequirement::available_detector_outputs;
+        auto d=RtcPipelineDecision::consider(e,t.val,selection,44);
+        ASSERT_EQ(d->disposition(),RtcPipelineDisposition::retain);
+        EXPECT_EQ(d->cause(),RtcPipelineDecisionCause::authorized_partial_candidate);
+        ASSERT_EQ(d->issues().size(),2);for(const auto &issue:d->issues())EXPECT_EQ(issue.scope->detector,1);
+        for(auto c:{NativeReadoutCoordinate::x,NativeReadoutCoordinate::r}) {
+            const auto &s=e->outcome_handle()->original_handle()->spectrum(0,1,c);
+            EXPECT_EQ(s.cause,RtcSpectralCause::insufficient_windows);EXPECT_TRUE(s.centering_support.empty());
+            EXPECT_EQ(s.runs.front().admitted_samples,0);EXPECT_EQ(s.runs.front().declared_invalid_samples,1600);
+            EXPECT_FALSE(current->detector_results()[1]->coordinate_stage_available(c,900,true));
+            EXPECT_FALSE(t.parent->network(0).state(c,900,1).valid());
+        }
+        auto step=advance_trial(t,current,d);EXPECT_EQ(step.candidate,current);EXPECT_FALSE(step.revision_executed);
+        RtcPipelineTerminalSlot slot;
+        auto terminal=finalize_rtc_only({45},RtcOutputGrid::prepare(current,output_align(t)),slot,d);
+        ASSERT_TRUE(terminal.complete());EXPECT_EQ(terminal.product->grid_handle()->detectors().size(),3);
+        EXPECT_TRUE(current->detector_results()[0]->coordinate_stage_available(NativeReadoutCoordinate::x,900,true));
+        EXPECT_FALSE(d->scientifically_qualified);
+    }
+}
+TEST(rtc_partial_completion, nonempty_inconsistent_asymmetric_and_all_invalid_originals_still_stop) {
+    for(int scenario=0;scenario<4;++scenario) {
+        Input in(1600);
+        for(std::size_t i=0;i<in.times.size();++i)for(std::size_t detector=0;detector<3;++detector) {
+            if(scenario!=3 && detector!=1)continue;
+            in.xs[i*3+detector]=NativeReadoutCoordinateState::measured(true,false,true,true);
+            if(scenario!=2)in.rs[i*3+detector]=in.xs[i*3+detector];
+        }
+        if(scenario<2) {
+            in.xs[301]=in.rs[301]=NativeReadoutCoordinateState::measured(true,true,true,true);
+            if(scenario==1) {
+                in.x(100,1)=NAN;
+                EXPECT_THROW(in.freeze(),std::invalid_argument);
+                continue; // Inconsistent declared payload cannot enter RTC.
+            }
+        }
+        Trial t(in);auto plans=complete_plans(t);plans[1]=t.plan(false,true,{},1);
+        auto current=complete_apply(t,RtcPipelinePlan::consider(plans,t.joint->joint_handle(),31));
+        auto e=decision_evidence(t,current);auto selection=retain_selection(e);
+        selection.outcome_requirement=RtcOutcomeRequirement::available_detector_outputs;
+        auto d=RtcPipelineDecision::consider(e,t.val,selection,44);
+        EXPECT_EQ(d->disposition(),RtcPipelineDisposition::unavailable)<<scenario;
+        EXPECT_FALSE(d->selected_plan());EXPECT_EQ(advance_trial(t,current,d).candidate,current);
+    }
+}
 TEST(ptc_partial_completion, zero_support_omission_is_prefit_shared_and_output_identity_is_complete) {
     CalFixture f;f.factors[1].flxscale_mJy_beam_per_x.reset();
     auto cal=CalAppliedSignal::apply(f.plan(),f.source(),f.terminal->val_snapshot_handle());
