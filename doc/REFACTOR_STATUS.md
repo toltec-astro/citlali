@@ -2,6 +2,38 @@
 
 ## Unity layout correction and extended parallelism — 2026-09-20
 
+The owner supplied the local mirror `/Users/gwilson/work_toltec/local_data/2026-refactor`
+and confirmed its Unity root `$HOME/c2025r/2026-refactor`. The revised test packet
+is `citlali-successor-all-networks-20260920` beneath that root. The saved project
+configuration binds the eleven raw filenames under
+`projects/SCI_ALIGN_STAGE7_NGC4449_152390/data`; the local TEL digest matches.
+Resident raw/TEL size and SHA256 checks run before submission and again before
+building. Local absence of raw files is not evidence of Unity absence. There is
+no NetCDF upload. Preserve the old sealed packet as historical evidence only.
+
+The older mirrored APT differs from the accepted comparison bundle. The revised
+packet carries the exact accepted auxiliary metadata (~28MB) plus the existing
+derived local comparison (~4.6GB), without changing their scientific identities.
+A local layout fixture using the accepted raw files reproduced all eleven
+requests and the414-channel reference exactly apart from locations. Seventeen
+staging/campaign/comparison checks pass, including missing/tampered resident
+inputs, path escape,8/12-worker coverage and honest failure reporting. No new
+scientific replay or Unity performance result is claimed.
+
+Allocation is12 CPU/192GiB/8h, build concurrency4,600GiB free-space preflight;
+internal numerical threads remain1. Eleven times the largest measured12.60GB
+representative peak is138.6GB, with remaining headroom for shared/runtime state.
+Five primary product sets and measured-headroom optional repeats are retained.
+Requested12 workers starts at most11. The established owner-tested GCC13 Spack
+checkout/dependencies remain under `$HOME/work_toltec`; all new builds/results
+belong in the owner's named testing directory. Packet `PREPARATION.json` and
+`INDEPENDENT_REVIEW.json` bind exact source and readiness after final review.
+Canonical remains `e32c4584dec07617d6caa857d39bf13047b6c4b0`; remote spine was
+verified at `310aa5134e8a8dc6e6ba8e2b00ae71b9489f8fb6`. Owner push and submission
+remain the next actions; no Unity connection or push was performed.
+
+The following records the initial correction before the owner supplied the mirror:
+
 The owner corrected the deployment plan: raw NetCDF inputs already exist on
 Unity and must be referenced there, not uploaded from the Mac. The previous
 packet's raw-data transfer instructions are superseded. Preserve that sealed

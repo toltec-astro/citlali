@@ -781,3 +781,62 @@ counts and single-network misuse. Eleven comparison/campaign tests pass, includi
 all five primary settings, equivalence comparisons for8/12, fastest12 repeat, and
 an8-worker failure that cannot become a success. No8/12 full-array performance or
 Unity execution has been claimed. Source and packet readiness remain distinct.
+
+
+## Owner-confirmed resident-input packet — 2026-09-20
+
+The owner identified the local mirror at
+`/Users/gwilson/work_toltec/local_data/2026-refactor`, mapping to Unity
+`$HOME/c2025r/2026-refactor`, and authorized tests there. This supersedes the
+previous request for a directory reminder and the old packet's upload location.
+Do not transfer raw NetCDF files. The new packet is the single child directory
+`citlali-successor-all-networks-20260920`; unrelated mirror content is retained.
+The mirrored SCI_ALIGN_STAGE7_NGC4449_152390 saved configuration names all eleven
+raw files under its `data` directory; the TEL matches the accepted checksum.
+Older embedded c2025t/commissioning prefixes are historical; use the owner's
+current c2025r root. Missing local raw files need not be downloaded.
+
+Continuation preflight: existing spine at clean `274c0aa8fe618241854583976c0820082c3b682b`,
+canonical live `e32c4584dec07617d6caa857d39bf13047b6c4b0`, remote spine live
+`310aa5134e8a8dc6e6ba8e2b00ae71b9489f8fb6`. AGENTS, toltec-context and all three
+effective governance documents were read; their accepted authorities remain
+unchanged. Tier2 continuation owns only exact input-path staging, test packet,
+focused verification and existing status/handoff. No numerical code, policy,
+filter, membership, threshold or source-data change. No second pipeline or
+scientific investigation. Independent fresh-context exact-SHA/packet review
+remains required before enabling submission.
+
+The existing staging helper now supports an explicit resident raw/TEL manifest
+with relative paths, byte counts and SHA256 bindings. It rejects missing,
+modified or unbound inputs and traversal; permitted symlink destinations are
+recorded and verified by content, not rewritten. Materialization still calls
+the same network-input preparation and ordinary successor route. The exact
+accepted auxiliary metadata are copied because the mirrored APT is an older
+bundle. Tune text is small and remains bound to the accepted APT KMP records.
+The existing derived local reference remains unchanged for platform comparison.
+
+Local fixture verification uses links to already accepted local originals in
+the mirrored relative layout. All11 full network requests plus the414-channel
+reference match prior materialization in every scientific field and content
+digest; only locations differ. This is not verification of Unity filesystem
+presence. Seventeen focused staging/comparison/campaign tests pass. Packet
+Python/shell syntax and config preflight are recorded in LOCAL_CHECKS.json.
+Existing reviewed C++ worker-cap and source-linked CLI evidence at274c0aa8f is
+retained; this continuation changes no C++ or numerical operations.
+
+The job requests12 CPU/192GiB/8h, builds with4 jobs and compares1/2/4/8/12 workers,
+internal threads1. The12 setting starts11 at most. Sizing uses11 times the largest
+measured representative12.60GB peak (138.6GB) plus shared/runtime headroom; this
+is an estimate, not a measured all-network peak. Require600GiB free for five
+primary product sets/build/diagnostics; optional repeats retain measured guards.
+Read-only raw/TEL preflight happens before Slurm and again before build. The
+owner-tested Spack checkout/environment remain at their existing work_toltec
+paths. New source worktrees, builds, evidence and return archives stay below the
+owner's named c2025r test root. The old sealed raw-copy packet remains unchanged.
+
+The new packet README contains complete owner push, transfer, submit, inspect
+and compact retrieval commands. PREPARATION.json gives final exact SHA/tree;
+INDEPENDENT_REVIEW.json and SHA256SUMS bind its review and contents. It is ready
+to execute only after that review passes and its readiness guard is enabled.
+Full1/2/4/8/12 data results remain pending owner execution. No Unity access,
+GitHub push, canonical integration, MAP, FRUIT or production claim occurred.
