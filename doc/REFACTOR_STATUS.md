@@ -1,58 +1,62 @@
 # Citlali Refactor Status
 
-## Active eleven-network readiness — 2026-09-19
+## Eleven-network Unity submission preparation — 2026-09-19
 
-Owner-authorized work continues on `codex/timestream-successor-multinetwork-001`
-in `/private/tmp/citlali-timestream-successor-cal-001`, fast-forwarded from
-`0ef1c6e626630962a41ebab0cdd3b5833ee6b039` to the reviewed SPOD closure
-`4bf470389fe7958f27bcda7a300baf3f31959b86`. Canonical remains
-`e32c4584dec07617d6caa857d39bf13047b6c4b0`; no push or Unity access occurred.
+The ordinary successor route now passes full-population local RTC → CAL → PTC
+readiness on networks0 and7. The owner-approved v2 completion rule keeps wholly
+producer-invalid original x/r pairs unavailable without blocking useful detectors;
+it does not rescue samples or relax filtering, donor, support or failure rules.
+Exact runtime `ae4842e89068e9bf83fa4ec0e3846fc108440ae0` passes independent
+three-axis review, all1,267 runnable CTests,52 focused boundary controls and
+config preflight. One pre-existing lifecycle test remains disabled.
 
-The connected ordinary route now has one observation preparation and bounded
-network workers, with exact original KIDs ingress and each array's existing
-filter/cadence. The 414-channel reference reproduces all 5,968 binary products;
-scientific metadata agrees after verifying changed input/derived receipt
-bindings. A fixed 32-channel-per-network scheduling check on networks0/7/11/12
-is bitwise equivalent at1/2/4 workers (128.24/84.03/67.23s,
-6.06/9.54/13.86GB sampled process peaks). These are scheduling tests, not full
-population throughput estimates. All1,265 runnable CTests,15 focused boundary
-checks,17 spectral tests and the complete config preflight pass locally.
+| Full local run | Requested | CAL/PTC-supported | PTC fits / failures | Wall | Sampled peak |
+|---|---:|---:|---:|---:|---:|
+| network0 / a1100 |630|498|124 /0|382.51s|12.44GB|
+| network7 / a1400 |420|184|124 /0|252.95s|11.45GB|
 
-SCI-AST-057's dependency-limited failure is repaired for missing detector
-positions; exact foreign bindings still fail. Shared telescope elevation is
-independent of missing detector offsets, avoiding contamination of other
-CAL plans. Matched residual diagnostics now distinguish the separately learned
-11Hz pattern from total-bin power and a frozen-operator phase control.
+All5,678 pre-existing network0 RTC binary products (4,320,067,532 bytes) are
+bitwise unchanged from its preserved stopped run. Newly available CAL/PTC
+products keep every requested identity and explicit unavailable causes. Missing
+calibration/geometry and RTC support are not converted into passed measurements.
+The existing414-channel network12 comparison and bounded mixed-cadence1/2/4
+worker equivalence remain preserved, with their actual executable identities;
+these are not relabeled full-array or final-runtime replays.
 
-**The owner approved the narrow completion extension on September19.** The
-initial full630-channel network0 run stopped because eight producer-invalid
-channels lacked original spectral support. The v2 owner binding permits only
-wholly declared-invalid original x/r pairs with zero filtered output and no
-active donor dependency to remain unavailable without blocking useful detectors.
-The implementation and focused guards are now under verification, followed by
-full network0/7 runs and exact-source review. Full network7
-contains15 Tune-invalid channels and has not been claimed complete. The
-11-network inventory requests5,518 channels; networks6/10 remain unavailable.
-The previous414-channel network12 cohort is retained only as an exact reference
-(the raw network has491 channels,479 Tune-valid before other availability).
+The same diagnostic now covers498/184 supported detectors on networks0/7.
+Their2-second matched comparisons have770/831 windows; the separately learned
+11Hz pattern remaining after ALS10 is approximately0.014–0.018% /0.00040–0.00041%
+of its matched input projection and below the conditional phase-control maxima.
+Network12 retains approximately12–14% in its earlier363-detector reference.
+These are pattern-specific evidence, not isolated-line removal efficiencies.
+Keep network patterns separate; the full eleven-network result must precede a
+new cleaning choice. Diagnostic common-support losses are not production loss.
 
-Existing [performance handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_PERFORMANCE_001_2026-09-18.md)
-records evidence and the pending boundary. Local evidence is under
-`/private/tmp/citlali-full-network-001-20260919`; staged Unity assets/scripts are
-under `/private/tmp/citlali-full-network-unity-20260919`. The packet is
-**not submission-ready** until implementation verification and full-population
-local readiness close. Exact implementation checkpoint
-`98380090e770f960b0decb07ebe3cabc77993132` passes independent three-axis
-review with recorded limitations; this is not campaign readiness approval.
-Its clean executable also runs the copied Unity inputs through RTC/CAL/PTC
-on the fixed 32-channel networks0/7/11/12, retaining the same partial PTC
-outcomes (65.15s, 12.24GB sampled peak, four workers/internal threads1).
-Earlier reference/worker timings remain bound to their recorded development
-executables; they are not relabeled final-SHA population runs. The full broad
-gate precedes the final small CAL cause repair, which passes the exact-candidate
-15 focused tests. Durable checkpoint/evidence and provisional packet:
-`/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-full-network-checkpoint-98380090e-20260919`.
-Production qualification, new treatment, MAP and FRUIT remain outside scope.
+The final reporting/verification continuation checks CAL/PTC receipt identities,
+VAL generations, physical intervals and detector mappings as well as arrays;
+cross-platform floating differences remain explicitly reported for review with
+no new tolerance. Array summaries preserve supplied/requested/assessed counts,
+optional-repeat costs and separate PTC preparation/fitting/application/publication.
+
+Existing spine: `codex/timestream-successor-multinetwork-001` in
+`/private/tmp/citlali-timestream-successor-cal-001`. Verified canonical remains
+`e32c4584dec07617d6caa857d39bf13047b6c4b0`; remote spine was `0ef1c6e...`.
+No push, canonical integration or Unity access was performed. Local builds are
+supplemental AppleClang/Homebrew evidence, not the Unity Spack qualification.
+
+Durable submission checkpoint:
+`/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-full-network-ready-ae4842e-20260919`.
+Its `RESTART.md`, final review, local checks and `unity-packet/PREPARATION.json`
+bind the final reporting revision and readiness verdict; the earlier
+`successor-full-network-checkpoint-98380090e-20260919` remains immutable.
+The owner packet builds its exact source then requests all5,518 supplied channels
+on11 networks, with6/10 explicitly absent, at1/2/4 workers/internal threads1.
+Allocation is4 CPU/96GiB/8h, with400GiB free-space preflight and conditional
+measured-headroom repeats. Review and manifest sealing must pass before the
+packet's submission guard is enabled. See the existing
+[performance handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_PERFORMANCE_001_2026-09-18.md)
+for evidence scope and exact provenance. Next: owner push/submission, then assess
+the broad-population result. No new treatment, MAP, FRUIT or production claim.
 
 
 ## Bounded PTC frequency/time learning diagnostic — 2026-09-19

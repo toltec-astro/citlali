@@ -668,3 +668,81 @@ Finish locally available work and provide reviewed push/submission commands;
 do not push, connect to Unity, move canonical, enable new treatment, MAP or
 FRUIT, or delete evidence/unrelated work. Reassess any new scientific exception
 or shared dependency rather than broadening this approved rule.
+
+### Completed representative populations and Unity handoff — September19
+
+The approved rule is implemented at exact
+`ae4842e89068e9bf83fa4ec0e3846fc108440ae0`, tree
+`252b5d2ee3f44c45736381f93e2267d48decfeff`; parent `66bc17af5...`.
+Fresh-context independent review passes all three axes with no remaining source
+finding. All1,267 runnable local tests,52 focused boundary checks and config
+preflight pass. The clean runtime SHA256 is
+`89044468546d4ee5a10ebac9de6cb323daf9cf8053ff916e72507061ef75238f`.
+Both full representative runs bind that executable. Later changes are Python
+verification/reporting and these existing continuity documents; runtime science
+is unchanged. Final exact source/build/review bindings are in the packet.
+
+- Network0:630 requested,498 CAL/PTC-supported,74,946,311 retained samples;
+ 124 PTC fits,zero failures.382.511s,12,438,421,504-byte sampled peak,
+ 12,602,753,024-byte internal peak,9,224,774,102 output bytes.
+- Network7:420 requested,184 CAL/PTC-supported,27,672,182 retained samples;
+ 124 fits,zero failures.252.949s,11,451,121,664-byte sampled peak,
+ 5,156,090,911 output bytes.
+- Each is a separately executed full-duration observation request with one
+ shared preparation and internal threads1. Do not add these timings and call
+ them one common-preparation campaign. Native122.070Hz output is preserved.
+- All5,678 old network0 scientific binary files,4,320,067,532 bytes, remain
+ exactly equal. The old failed run is retained. Only downstream completion
+ permits the new CAL/PTC publication. Declared exclusions stay exclusions.
+
+Separate diagnostics cost320.21s/8.01GB on0 and128.60s/3.63GB on7; they are not
+part of the pipeline timing. Full supported populations have770/831 matched
+2-second windows and34/36 matched8-second windows. Distinct8-second CAL Fourier
+support is776.004/919.880s. A single temporal-only supplement selects449/166
+members; full production populations and masks are unchanged. Exact windows,
+rank limits, frozen controls, absolute PSDs and per-detector filter histories
+remain in `diagnostic-networkN/result.json` and `MATCHED_RESIDUAL_SUMMARY.json`.
+
+At the fixed nearest11Hz2-second bin, the two held-out pattern comparisons leave
+0.01387–0.01841% of input-pattern power on0 and0.000400–0.000414% on7, below the
+respective conditional phase-control maxima. This contrasts with the retained
+network12 result (~12–14%, above its controls). It does not prove removal of an
+isolated instrumental line or source preservation: patterns and supporting
+populations differ, and the control is conditional on the saved cleaner.
+No new treatment is justified uniformly across these networks. Inspect the full
+supplied set first; low-frequency evolution remains bounded by finite support
+and estimator uncertainty, not a new atmospheric-method work order.
+
+Independent packet preclosure review found that the cross-platform comparator
+had not checked CAL/PTC receipt mappings. The repair now validates exact parent
+and artifact bindings, detector/row identities, VAL generations, units, physical
+intervals, masks and unavailable dispositions. Original numeric content hashes,
+float arrays and solver progress differences remain reported rather than silently
+accepted or converted into new tolerances. Eight mutation controls exercise
+metadata corruption, stale hashes, mask changes, valid relocation and reported
+floating differences. Packet reporting includes optional repetitions and sums
+PTC prepare/fit/apply/output without adding nested fit timers.
+
+Durable evidence root:
+`/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-full-network-ready-ae4842e-20260919`.
+The new packet is reviewed and sealed separately from the immutable older
+checkpoint. Its exact source/trees, final review, source bundle, local checks,
+input manifests, command README and restart record are authoritative for owner
+submission. The packet requests4 CPUs/96GiB/8h: four times the largest measured
+network peak is about50.4GB, leaving shared/build/environment headroom. The
+400GiB free-space check exceeds three times11 times the largest measured output
+(~304.4GB), with room for build/reference/diagnostics. Optional repetitions have
+additional measured time/disk guards. These are resource estimates, not measured
+Unity all-array performance. Eleven diagnostics may take longer than the original
+one-network diagnostic; repeat scheduling reserves an hour for that phase.
+
+Owner commands use local Mac SSH GitHub, full absolute repository and full branch
+refspec; Unity source fetch uses HTTPS. Transfers use `unity_toltec`. Codex does
+not push or connect. After the exact Unity build/tests, the packet replays the
+reference, runs all11 networks at1/2/4 workers, checks exact within-platform
+outputs, optionally repeats1 and the fastest, and diagnoses one verified product
+set. Partial states are preserved. A compact archive includes receipts, logs,
+costs, comparisons and figures; full arrays remain on Unity with a complete hash
+manifest. Inspection waits for archive finalization, rather than interpreting an
+incomplete integrity seal as a failed run. Readiness means prepared for that
+owner-run experiment, not that the eleven-network replay has already succeeded.
