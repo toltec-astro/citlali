@@ -54,11 +54,12 @@ class SuccessorDefaultCli(unittest.TestCase):
 
     def test_network_worker_bounds_and_single_network_misuse(self):
         config = self.request({})
-        for workers in (0, -1, 5):
+        for workers in (0, -1, 13):
             config['network_workers'] = workers
-            self.rejected(self.invoke(config), 'successor.network_workers_must_be_1_to_4')
-        config['network_workers'] = 2
-        self.rejected(self.invoke(config), 'successor.network_workers_require_observation_request')
+            self.rejected(self.invoke(config), 'successor.network_workers_must_be_1_to_12')
+        for workers in (2, 8, 12):
+            config['network_workers'] = workers
+            self.rejected(self.invoke(config), 'successor.network_workers_require_observation_request')
 
     def test_observation_inventory_rejects_duplicate_network_before_preparation(self):
         network = self.root / 'network.json'
@@ -66,7 +67,9 @@ class SuccessorDefaultCli(unittest.TestCase):
         entry = dict(network=0, input=dict(path=str(network), sha256=hashlib.sha256(network.read_bytes()).hexdigest()))
         config = self.request(dict(schema='citlali-observation-networks-v1', observation=152390,
                                    subobservation=0, scan=2, networks=[entry, entry]))
-        self.rejected(self.invoke(config), 'successor.network_order_duplicate_or_invalid')
+        for workers in (1, 8, 12):
+            config['network_workers'] = workers
+            self.rejected(self.invoke(config), 'successor.network_order_duplicate_or_invalid')
 
     def test_observation_cannot_silently_share_different_input_authorities(self):
         entries = []

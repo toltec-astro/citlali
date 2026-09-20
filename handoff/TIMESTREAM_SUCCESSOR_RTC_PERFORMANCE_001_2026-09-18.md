@@ -746,3 +746,38 @@ costs, comparisons and figures; full arrays remain on Unity with a complete hash
 manifest. Inspection waits for archive finalization, rather than interpreting an
 incomplete integrity seal as a failed run. Readiness means prepared for that
 owner-run experiment, not that the eleven-network replay has already succeeded.
+
+### Owner correction: existing Unity inputs and8/12 cores — September20
+
+Owner direction supersedes the prior raw-NetCDF transfer plan. Ask for the
+existing Unity testing, input and build layout, then bind and validate those
+paths; never copy raw observations as a substitute for knowing the environment.
+The old sealed packet/evidence remains historical and unchanged. Do not use its
+transfer command for the revised test. The owner still performs pushes and all
+Unity access/submission; no Unity connection is authorized.
+
+Preflight: clean existing spine at pushed `310aa5134e...`; live canonical still
+`e32c4584...`. AGENTS, all three effective governance documents, status, handoff
+and TolTEC Unity guidance were read. Tier2 because scheduler capacity and its
+receipt change. Included: raise the existing worker bound to12, extend the fixed
+campaign to1/2/4/8/12, distinguish requested from started workers, adjust focused
+CLI/campaign checks, and prepare a revised externally bound packet after the
+owner provides its directories. Excluded: scientific changes, new input route,
+new cleaners, MAP, FRUIT, raw upload and guessed Unity paths. Existing shared
+read-only preparation, original-input execution, physical support and internal
+thread limit1 remain unchanged. One supplied network per worker means the12-core
+setting starts at most11 network workers; it does not invent a twelfth network.
+
+Gates: actual default-CLI bounds/observation ingress, fixed campaign coverage and
+failure checks, bounded scheduling equivalence as needed, exact-source independent
+review. Preserve earlier full-population science/test evidence under its actual
+revision. Revised Unity allocation must account for up to11 resident network
+workers and five primary product sets; do not reuse the old4-core resource
+assumptions. Final submission remains pending the owner's environment reminder.
+
+Local source continuation builds with the supplemental AppleClang realization;
+default-CLI tests accept8/12 at the observation boundary and reject13, negative
+counts and single-network misuse. Eleven comparison/campaign tests pass, including
+all five primary settings, equivalence comparisons for8/12, fastest12 repeat, and
+an8-worker failure that cannot become a success. No8/12 full-array performance or
+Unity execution has been claimed. Source and packet readiness remain distinct.

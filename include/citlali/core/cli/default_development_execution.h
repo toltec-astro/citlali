@@ -58,7 +58,7 @@ int load_and_run_successor_development(const RuntimeConfig &runtime,
     unsigned workers=1;
     if(config["network_workers"]) {
         const int n=config["network_workers"].as<int>();
-        if(n<1 || n>4)throw std::invalid_argument("successor.network_workers_must_be_1_to_4");
+        if(n<1 || n>12)throw std::invalid_argument("successor.network_workers_must_be_1_to_12");
         workers=static_cast<unsigned>(n);
     }
     return run_successor_rtc(path, output, RtcInvocation::development_default, {},

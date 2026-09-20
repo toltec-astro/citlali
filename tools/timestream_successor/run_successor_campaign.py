@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Owner-run fixed 1/2/4 campaign; observations use the ordinary successor CLI."""
+"""Owner-run fixed 1/2/4/8/12 campaign; observations use the ordinary successor CLI."""
 import argparse
 import json
 import os
@@ -14,6 +14,7 @@ import yaml
 from run_successor_observation import run
 from ptc_spod import digest
 
+PRIMARY_WORKERS = (1, 2, 4, 8, 12)
 
 def write(p,x):p.write_text(json.dumps(x,indent=2,allow_nan=False)+'\n')
 
@@ -39,17 +40,18 @@ def main():
     record=dict(source_input_sha256=digest(a.input),host=platform.node(),platform=platform.platform(),
         affinity=sorted(os.sched_getaffinity(0)) if hasattr(os,'sched_getaffinity') else 'not-exposed',
         allocation={k:v for k,v in os.environ.items() if k.startswith('SLURM_')},
-        cache='OS file cache not flushed; fixed order 1,2,4; later runs may benefit from warm files',
+        requested_worker_settings=list(PRIMARY_WORKERS),internal_threads_per_worker=1,
+        cache='OS file cache not flushed; fixed order 1,2,4,8,12; later runs may benefit from warm files',
         cost_scope='fresh processes; build, verification and diagnostic outside timed reductions',runs=[],comparisons=[],diagnostics=[])
     write(a.output/'CAMPAIGN.json',record)
-    for w in (1,2,4):
+    for w in PRIMARY_WORKERS:
         dest=a.output/f'workers-{w}'
         code=run(a.binary,a.input,dest,w)
         row=json.loads((dest/'RUN.json').read_text());row.pop('samples');record['runs'].append(row)
         write(a.output/'CAMPAIGN.json',record)
         # A true execution failure is a preserved blocker, not a benchmark success.
         if code not in (0,2):raise RuntimeError(f'worker {w} execution failure; products and logs retained')
-    for w in (2,4):
+    for w in PRIMARY_WORKERS[1:]:
         started=time.monotonic();ok=compare(a.output/'workers-1',a.output/f'workers-{w}',a.output/f'equivalence-1-{w}',ids)
         record['comparisons'].append(dict(workers=w,pass_equivalence=ok,seconds=time.monotonic()-started))
         write(a.output/'CAMPAIGN.json',record)

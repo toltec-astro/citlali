@@ -1047,7 +1047,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
 namespace {
 int execute_successor_observation(const YAML::Node &request,const fs::path &output,
     citlali::cli::DevelopmentTerminal terminal,citlali::cli::DevelopmentPtcRequest ptc,unsigned workers) {
-  require(workers>=1 && workers<=4,"successor.network_workers_must_be_1_to_4");
+  require(workers>=1 && workers<=12,"successor.network_workers_must_be_1_to_12");
   require(request["schema"].as<std::string>()=="citlali-observation-networks-v1" &&
           request["observation"].as<int>()==152390 && request["subobservation"].as<int>()==0 &&
           request["scan"].as<int>()==2,"successor.observation_scope_unsupported");
@@ -1104,6 +1104,7 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
   record["source_revision"]=std::string(CITLALI_GIT_REVISION);
   record["observation"]=152390;record["subobservation"]=0;record["scan"]=2;
   record["requested_network_workers"]=workers;record["observed_Eigen_threads"]=Eigen::nbThreads();
+  record["started_network_workers"]=threads.size();
   record["requested_internal_threads"]=1;
   record["numerical_backend_observation"]="Eigen reports its setting; other backend counts not asserted";
   record["shared_preparation_count"]=1;record["shared_preparation_seconds"]=preparation;

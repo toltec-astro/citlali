@@ -80,6 +80,7 @@ def summarize(root,inventory):
         row=dict(run=run.name,repeat=run.name.startswith('repeat-'),workers=metrics['workers'],wall_seconds=metrics['wall_seconds'],peak_rss_bytes=metrics['polled_peak_rss_bytes'],
             output_bytes=metrics['output_bytes'],CPU_sampled_seconds=max((s['user_seconds']+s['system_seconds'] for s in metrics['samples']),default=0),
             OS_threads_max=max((s['os_threads'] for s in metrics['samples']),default=0),
+            started_network_workers=observation.get('started_network_workers'),
             observed_Eigen_threads=observation['observed_Eigen_threads'],shared_preparation_seconds=observation['shared_preparation_seconds'],networks=[])
         for n in observation['networks']:
             trace=run/'products'/f"network{n['network']}"/'performance.jsonl';stages=[];last=0.

@@ -1,5 +1,23 @@
 # Citlali Refactor Status
 
+## Unity layout correction and extended parallelism — 2026-09-20
+
+The owner corrected the deployment plan: raw NetCDF inputs already exist on
+Unity and must be referenced there, not uploaded from the Mac. The previous
+packet's raw-data transfer instructions are superseded. Preserve that sealed
+packet as historical evidence; do not submit it as the revised experiment.
+Unity testing/output, raw/Tune/TEL, APT/calibration/configuration and checkout/
+Spack locations are requested from the owner. Do not guess those bindings.
+
+The requested scheduling comparison is now1/2/4/8/12 cores, with one numerical
+thread per network worker. Eleven supplied networks cap actual simultaneous
+network workers at11; record requested and started counts separately. This is a
+scheduling/deployment continuation on the same clean spine from pushed
+`310aa5134e8a8dc6e6ba8e2b00ae71b9489f8fb6`, not a scientific-policy change.
+The revised executable builds, its ordinary default-CLI checks pass, and all11
+comparison/campaign unit tests pass. Extended full-data timings are pending Unity. Revised
+resource sizing and the final owner packet depend on the confirmed Unity layout.
+
 ## Eleven-network Unity submission preparation — 2026-09-19
 
 The ordinary successor route now passes full-population local RTC → CAL → PTC
