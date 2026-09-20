@@ -1,5 +1,37 @@
 # Citlali Refactor Status
 
+## Unity reference-comparison repair — 2026-09-20
+
+Owner-returned evidence for job 64619145 verifies the exact 5cd3e2839 build, all 1,267
+runnable tests (59 focused RTC/CAL controls), and a successful 414-channel reference
+replay in 595.35 s with 7.56 GB sampled peak RSS. The deployment stopped at the
+cross-platform comparator; no eleven-network run has started. Preserve that
+failed gate and reuse its completed verification at its actual source identity.
+
+The comparator incorrectly required an exact `original_parent` string although
+its final component hashes calculated x/r content already allowed to differ in
+the cross-platform report. The raw/Tune identities, full scientific input request,
+timing, initial VAL, detector population and spectral support match. All 4,099
+published timing/validity/support file digests match. CAL/PTC receipt semantics
+also agree after interpreting the declared numeric PTC tolerance fields: yaml-cpp
+spelling `1e-05` was read as text locally and as numeric 1e-5 on Unity.
+
+The bounded repair verifies each original-parent projection digest against its
+ordered detector/sample-hash records, requires exact raw/Tune/network identities,
+and reports derived content differences explicitly. Only the two declared numeric
+PTC tolerance fields are parsed numerically; their values still must agree exactly.
+No numerical tolerance, mask, support, scientific operation or runtime binary is
+changed. Fifteen comparator tests and 24 combined comparison/campaign/staging tests
+pass; Unity numerical magnitudes remain pending the corrected comparison.
+
+A continuation must reverify the preserved job artifacts and executable, run the
+corrected comparison, then execute the unchanged 1/2/4/8/12-worker campaign only if
+its exact checks pass. No repeated compilation or reference replay is needed.
+Temporary/cache directories must be explicitly under `work_toltec/wilson`.
+The owner's Python/pip repair remains owner-managed; the held bootstrap changes
+are not part of this continuation. Independent exact-SHA/packet review is required.
+
+
 ## Unity layout correction and extended parallelism — 2026-09-20
 
 The owner supplied the local mirror `/Users/gwilson/work_toltec/local_data/2026-refactor`

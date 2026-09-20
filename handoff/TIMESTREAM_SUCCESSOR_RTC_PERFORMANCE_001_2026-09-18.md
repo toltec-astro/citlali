@@ -840,3 +840,73 @@ INDEPENDENT_REVIEW.json and SHA256SUMS bind its review and contents. It is ready
 to execute only after that review passes and its readiness guard is enabled.
 Full1/2/4/8/12 data results remain pending owner execution. No Unity access,
 GitHub push, canonical integration, MAP, FRUIT or production claim occurred.
+
+
+## Job 64619145 comparison failure and bounded continuation — 2026-09-20
+
+Preflight: same spine/worktree, clean source 5cd3e28396a08917986f3ec73314a69d3605bd0d,
+tree ceeaa822c24681c99051feb703171af683d04bd1. Live canonical remains
+e32c4584dec07617d6caa857d39bf13047b6c4b0; live feature is 5cd3e2839. AGENTS,
+toltec-context and all three effective governance documents were read. Tier 2
+verification-tool repair within the existing full-available-network work order.
+No new module probe, C++ change, scientific operation, threshold, permissive
+support rule, raw transfer or pipeline. Runtime execution remains at the tested
+5cd3e2839; repaired comparison-tool source has its own exact committed identity.
+
+Owner evidence at 2026-09-20T17:25:16Z records a 28m20s failed deployment job, with
+failure at cross-platform-reference after a successful build/test/reference path.
+Returned archive digest and all 77 compact entries verify. The gate registered 1268
+tests, 1267 runnable, 59 focused controls; one existing lifecycle test is disabled.
+The 414-channel reference succeeded in 595.3515 s, sampled peak 7,563,329,536 bytes,
+output 4,603,549,720 bytes. Executable SHA256:
+85097cb63df0809174ce75e098f9863fb59da45e32d707c38925309f5c0bc747.
+The source-state/build/compiler/environment records remain bound to 5cd3e2839 and
+GNU 13.3.0/C++23/Spack DAG ryu6zhjvp5sh7fsbwrzyykbkgkglzkkx. This is not a full
+array performance result; the eleven-network campaign never started.
+
+The producer constructs `original_parent` from raw and Tune hashes plus network,
+then hashes ordered channel/sample hashes. Each sample hash includes solved x/r
+values and producer states. Local and Unity projection digests differ, with all 414
+sample digests different, while raw/Tune inputs, configuration meanings, channels,
+timing, physical runs, VAL generation and spectral-window metadata agree. The
+original comparator explicitly reported per-detector content differences but
+contradictorily rejected their enclosing composite digest. Repairing that check
+must not simply discard original provenance: validate each projection digest
+against its own ordered records, then require exact source bindings and detector
+semantics. Unknown identity forms, altered raw/Tune inputs, stale projection
+hashes and channel changes remain failures.
+
+All 4,099 nonfloating timing/validity/support binary digests agree. Sealed CAL/PTC
+metadata reveals one additional serialization-only difference: the PTC relative
+objective tolerance is parsed as string 1e-05 on Mac and double 1e-5 on Unity.
+Normalize only the two declared numeric PTC tolerance fields to finite double
+values; exact equality remains required. Report their original parsed forms.
+Do not normalize arbitrary science scalars, alter tolerances or infer scientific
+success from these bookkeeping repairs. Numerical-array magnitudes and nonfinite
+patterns still require the repaired direct comparison on existing Unity products.
+
+Local fifteen comparator tests cover these failures and retained exact masks,
+parent/artifact digests, calibration mappings, VAL generations and fit boundaries;
+all 24 related tests and config preflight pass. C++ is unchanged. Independent
+review must bind the final source and small continuation packet. The continuation
+reuses the completed source/build/reference only after checksum/source/environment
+verification, retains the failed evidence immutable, reruns the comparison and
+then the existing campaign/diagnostic path. Any remaining strict comparison
+failure stops before the campaign. No numerical-equivalence qualification is
+implied by allowing a report of floating-point differences.
+
+Owner-managed Python/pip repair is untouched. Unapplied launch/bootstrap repair
+candidates under `/private/tmp/citlali-unity-temp-repair-20260920` remain held.
+Continuation temporary/cache placement follows the owner's work_toltec/wilson
+requirement, and no shared scratch cleanup is attempted. The owner performs all
+pushes, transfers and Slurm submissions. No Unity access, canonical integration,
+MAP, FRUIT or production claim is authorized by this repair.
+
+Local continuation guard tests cover altered manifests/binary/source/environment,
+failed integrity or comparison/input stages, and immutable control snapshots.
+Nine tests pass without remote execution. The compact continuation package is
+`/Users/gwilson/work_toltec/local_data/2026-refactor/citlali-successor-continue-64619145`.
+Its PREPARATION and independent review bind the final comparator commit separately
+from the unchanged runtime. Checks, returned-evidence verification and metadata
+comparison are retained in the adjacent `citlali-successor-continue-64619145-review`
+evidence directory. The original packet and returned archive remain preserved.
