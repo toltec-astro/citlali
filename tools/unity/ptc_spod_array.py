@@ -117,6 +117,8 @@ def binding(meta, env):
 def prepare(meta, serial, attempt):
     networks, snapshots, inventory, accounting = serial.preflight()
     env = environment()
+    serial.stage('scheduling-tests', [sys.executable, '-W', 'error', '-m', 'unittest', 'discover',
+        '-s', ROOT, '-p', 'test_ptc_spod_array.py'], attempt)
     serial.stage('diagnostic-tests', [sys.executable, '-W', 'error', '-m', 'unittest', 'discover',
         '-s', serial.TOOLS, '-p', 'test_ptc_spod*.py'], attempt)
     data = dict(binding=binding(meta, env), networks=networks, inventory=str(inventory), accounting=accounting,
@@ -194,7 +196,39 @@ def run_network(meta, serial, data, number, attempt, generation):
     return dict(network=number, origin=record['origin'], output=record['output'])
 
 
+def task_outcomes(meta, data, attempt, generation):
+    jobs = json.loads((ROOT / 'submissions' / generation / 'JOBS.json').read_text())
+    array = jobs['networks']
+    expected = {n['network'] for n in data['networks']}
+    finals = {}
+    for path in (ROOT / 'attempts' / generation).glob('network-*/FINAL.json'):
+        final = json.loads(path.read_text())
+        n = final['network']
+        require(n in expected and n not in finals, 'unexpected or duplicate current task completion')
+        require(final['mode'] == 'network' and final['disposition'] == 'PASS' and
+                final['array_job'] == array and final['reporting_revision'] == meta['reporting_revision'] and
+                final['runtime_revision'] == meta['runtime_revision'], 'current task did not pass')
+        finals[n] = final
+    require(set(finals) == expected, 'missing current task success; checkpoints alone cannot establish campaign PASS')
+    # Slurm termination may precede accounting publication. Allow a bounded
+    # refresh, but never interpret missing/stale accounting as success.
+    rows = {}
+    for retry in range(6):
+        text = subprocess.check_output(['sacct', '--array', '--allocations', '--noheader', '--parsable2',
+            '--jobs=' + array, '--format=JobID,JobIDRaw,State,ExitCode'], text=True)
+        with (attempt / 'array-accounting.log').open('a') as stream:
+            stream.write(datetime.now(timezone.utc).isoformat() + '\n' + text)
+        rows = {parts[0]: parts[1:] for line in text.splitlines() if len(parts := line.strip().split('|')) == 4}
+        if all(rows.get(f'{array}_{n}') == [finals[n]['job'], 'COMPLETED', '0:0'] for n in expected):
+            write(attempt / 'array-outcomes.json', rows)
+            return
+        if retry < 5:
+            time.sleep(10)
+    raise RuntimeError('Slurm array task outcomes missing or not COMPLETED/0:0: ' + repr(rows))
+
+
 def finalize(meta, serial, data, attempt, generation):
+    task_outcomes(meta, data, attempt, generation)
     records = []
     for network in data['networks']:
         number = network['network']
@@ -340,11 +374,22 @@ def main():
         if args.mode == 'finalize':
             write(ROOT / 'STATUS.json', dict(state='FAIL', generation=args.generation, reason=reason))
     finally:
-        write(attempt / 'FINAL.json', dict(disposition='PASS' if code == 0 else 'FAIL', mode=args.mode,
+        final = dict(disposition='PASS' if code == 0 else 'FAIL', mode=args.mode,
             network=number if args.mode == 'network' else None, job=job,
-            reporting_revision=meta['reporting_revision'], runtime_revision=meta['runtime_revision']))
+            array_job=os.environ.get('SLURM_ARRAY_JOB_ID'),
+            reporting_revision=meta['reporting_revision'], runtime_revision=meta['runtime_revision'])
+        write(attempt / 'FINAL.json', final)
         if args.mode == 'finalize':
-            collect()
+            try:
+                collect()
+            except BaseException:
+                reason = traceback.format_exc()
+                (attempt / 'collection-failure.txt').write_text(reason)
+                final['disposition'] = 'FAIL'
+                final['collection_failure'] = reason
+                write(attempt / 'FINAL.json', final)
+                write(ROOT / 'STATUS.json', dict(state='FAIL', generation=args.generation, reason=reason))
+                raise
     raise SystemExit(code)
 
 

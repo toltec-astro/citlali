@@ -125,6 +125,20 @@ class ArrayPacket(unittest.TestCase):
         self.run_one(0)
         with self.assertRaises(FileNotFoundError):m.finalize({},self.serial,self.data,self.attempt,'trial')
         self.assertFalse((self.root/'STATUS.json').exists())
+        self.run_one(1)
+        m.write(self.root/'submissions/trial/JOBS.json',{'networks':'400'})
+        meta=dict(reporting_revision='source',runtime_revision='runtime')
+        with self.assertRaisesRegex(RuntimeError,'missing current task success'):
+            m.finalize(meta,self.serial,self.data,self.attempt,'trial')
+        for n in (0,1):
+            m.write(self.root/f'attempts/trial/network-{n}/FINAL.json',dict(mode='network',network=n,disposition='PASS',
+                job=str(401+n),array_job='400',**meta))
+        with patch.object(m.subprocess,'check_output',return_value='400_0|401|COMPLETED|0:0\n400_1|402|OUT_OF_MEMORY|0:9\n'),patch.object(m.time,'sleep'):
+            with self.assertRaisesRegex(RuntimeError,'Slurm array task outcomes'):
+                m.task_outcomes(meta,self.data,self.attempt,'trial')
+        with patch.object(m.subprocess,'check_output',return_value='400_0|401|COMPLETED|0:0\n400_1|402|COMPLETED|0:0\n'):
+            m.task_outcomes(meta,self.data,self.attempt,'trial')
+        self.assertTrue((self.attempt/'array-outcomes.json').exists())
 
     def test_submission_wires_prepare_array_and_finalizer(self):
         with patch.object(m.subprocess,'check_output',side_effect=['','101\n','102\n','103\n']) as call,contextlib.redirect_stdout(io.StringIO()):
@@ -154,6 +168,13 @@ class ArrayPacket(unittest.TestCase):
             names=archive.getnames()
         self.assertIn('diagnostics/network0/result.json',names)
         self.assertFalse(any(n.endswith('.npy') for n in names))
+        (self.prior/'diagnostics.lock').touch()
+        meta=dict(reporting_revision='source',runtime_revision='runtime')
+        with patch.object(m,'controls',return_value=meta),patch.object(m,'load_prior',return_value=self.serial),patch.object(m,'prepared',return_value={}),patch.object(m,'finalize',side_effect=lambda *a:m.write(self.root/'STATUS.json',{'state':'PASS'})),patch.object(m,'collect',side_effect=RuntimeError('collection failed')),patch.object(m.signal,'signal'),patch.dict(m.os.environ,SLURM_JOB_ID='123'),patch.object(m.sys,'argv',['runner','finalize','collectionfailure']):
+            with self.assertRaisesRegex(RuntimeError,'collection failed'):m.main()
+        final=json.loads(next(self.root.glob('attempts/collectionfailure/*/FINAL.json')).read_text())
+        self.assertEqual(final['disposition'],'FAIL');self.assertIn('collection failed',final['collection_failure'])
+        self.assertEqual(json.loads((self.root/'STATUS.json').read_text())['state'],'FAIL')
 
 
 if __name__=='__main__':unittest.main()

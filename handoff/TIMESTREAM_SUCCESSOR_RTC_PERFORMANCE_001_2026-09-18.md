@@ -1163,7 +1163,11 @@ Concurrency changes the failure lifecycle intentionally: a failing task records
 its failure and stops. Tasks that have not launched the diagnostic observe the
 failure marker and do not launch new work. Already executing independent tasks
 may finish and seal useful evidence. The finalizer runs after all array tasks
-terminate, verifies every network, and fails if any task failed or is missing.
+terminate, verifies every network and current-generation task FINAL, and requires
+Slurm COMPLETED/0:0 for every array member. Missing or stale accounting cannot
+pass; a bounded 50-second refresh precedes failure. A killed task cannot be hidden
+by an older valid checkpoint. Compact-publication failure also sets FINAL and
+STATUS to FAIL.
 An unavailable scientific estimate is still the existing explicit disposition,
 not a task exception or permission to change support. New submissions cannot
 overlap an active prior submission; a partially failed submission cancels only
