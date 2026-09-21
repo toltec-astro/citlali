@@ -1102,3 +1102,90 @@ commands. Durable receipt/review evidence is adjacent in
 transfers and execution. Completion of this diagnostic will support the original
 science report and one next scientific experiment; it is not a new processing
 route or activation decision. MAP/FRUIT and new treatment policies remain out.
+
+
+## Parallel diagnostic continuation — 2026-09-21
+
+Owner direction: break up the running saved-product diagnostic and parallelize
+across available TolTEC compute. The reported cluster context is seven nodes,
+32 cores and approximately 370 GB each; this does not assert current availability.
+Latest supplied serial snapshot is job 64668312 at 2026-09-21T15:41:17Z:
+20m22s elapsed, network 0 prepared with 498/630 CAL-supported detectors, both
+2s and 8s main profiles completed, no completion checkpoint or reported failure.
+
+Preflight: Tier 2 scheduling/lifecycle continuation under the existing full
+available-network work order and the new owner directive. AGENTS, toltec-context,
+ENGINEERING_GOVERNANCE, TIMESTREAM_SUCCESSOR_GOVERNANCE and REVIEW_AND_CONFORMANCE
+were read. Their canonical ledger effectiveness and accepted digests remain
+unchanged. Live canonical is e32c4584dec07617d6caa857d39bf13047b6c4b0; the owner
+pushed feature d631e8ea73a13bb1d654ed696eec45914fcefc2a, verified directly before
+editing. The existing worktree /private/tmp/citlali-timestream-successor-cal-001
+was clean on codex/timestream-successor-multinetwork-001. No new branch/probe,
+canonical movement, sibling edit, Unity access or cleanup is authorized here.
+
+Owned change: tools/unity/ptc_spod_array.py and its focused tests own submission,
+shared preflight, isolated network tasks, checkpoint import, failures and compact
+publication. The diagnostic and scientific owners remain byte-identical to
+runtime 5cd3e28396a08917986f3ec73314a69d3605bd0d. All actual scientific products,
+network cadences, intervals, support, populations, CAL/PTC histories, rank 10,
+2/8-second Fourier profiles, 120-second pooling, temporal-support supplement,
+matched residual/control logic and numerical thread limits are preserved.
+No MAP, FRUIT, new cleaner, threshold, rank sweep or full reduction is introduced.
+
+Deployment consists of one shared preparation job, eleven independent array
+tasks (networks 0–5, 7–9, 11–12, concurrency cap eleven), and one finalizer.
+Every job requests one CPU and 16 GiB. Network ceilings are eight hours;
+preparation and finalization ceilings are two hours. Array tasks may share a
+node or span nodes. Aggregate array reservation is at most 176 GiB, supported
+by representative local diagnostic peaks of 8.01/3.63 GB. Actual Unity costs
+remain unmeasured. Only scheduling changes; inner numerical libraries stay at
+one thread. Each task records its node, allocation, affinity and environment;
+cross-node bitwise equivalence is not asserted without measured evidence.
+
+The prior serial packet is an immutable dependency, bound by outer manifest
+9b9d873bda5376265ee3622acc8cd0a5750ee50d2af35ac7bc1744d204d6c0b1. This preserves
+the exact review/control files already launched by the owner; a later reviewer
+correction to a shell-script count is supplementary metadata and does not alter
+that packet. The new independent review covers the parallel controls separately.
+
+Only the owner cancels the serial job. A shared lock verifies its writer has
+stopped; the preparation waits up to 90 seconds and fails if it remains active.
+No old output is moved or edited. A prior completed network is eligible for
+reuse only after validating the sealed completion, exact original binding,
+current Python/package environment, complete output inventory and hashes, and
+all consumed scientific inputs against the verified snapshot. Unfinished serial
+work remains evidence and is restarted in a new directory. A parallel checkpoint
+has the same strict input/output checks. Per-network locks prevent duplicate
+writers; shared/exclusive campaign locks separate preparation/finalization from
+workers. No general caching framework is introduced.
+
+Concurrency changes the failure lifecycle intentionally: a failing task records
+its failure and stops. Tasks that have not launched the diagnostic observe the
+failure marker and do not launch new work. Already executing independent tasks
+may finish and seal useful evidence. The finalizer runs after all array tasks
+terminate, verifies every network, and fails if any task failed or is missing.
+An unavailable scientific estimate is still the existing explicit disposition,
+not a task exception or permission to change support. New submissions cannot
+overlap an active prior submission; a partially failed submission cancels only
+its own newly created jobs. A resumed generation rechecks shared preparation
+and reuses successful checkpoints without deleting failures.
+
+Focused gates: fourteen local scheduling tests cover concurrent fixture equality
+at both cadences, isolated assignment, preserved incomplete attempts, serial and
+parallel checkpoint reuse, input/output/environment mutation rejection, duplicate
+writers, failure propagation, exact Slurm dependencies and compact collection.
+The unchanged seventeen diagnostic tests and full config preflight also apply.
+Shell syntax is checked. No C++ or build change triggers a new compilation or
+reduction gate; prior exact-runtime Unity evidence remains separately labeled.
+Tests use the owner local tolteca Python, headless plotting and one numerical
+thread. Independent fresh-context review must bind the final exact source,
+packet controls and preparation core before owner delivery.
+
+Local packet:
+/Users/gwilson/work_toltec/local_data/2026-refactor/citlali-successor-diagnostics-parallel-64621061
+Unity packet:
+$HOME/work_toltec/wilson/citlali_testing/citlali-successor-diagnostics-parallel-64621061
+The README provides owner push/transfer/cancel/submit/inspect/return procedures.
+Inputs remain on Unity. Outputs, temporary/cache files and compact bundles remain
+under work_toltec/wilson. The existing owner Python environment is reused with
+no installation. No remote commands or GitHub pushes are performed by Codex.

@@ -1,5 +1,36 @@
 # Citlali Refactor Status
 
+## Parallel diagnostic scheduling — 2026-09-21
+
+The owner requested concurrent network diagnostics after serial job 64668312
+reported both network 0 Fourier profiles complete at 20m22s, with no completed
+network checkpoint yet. That is progress evidence, not a completed diagnostic.
+The former 1–2-hour estimate is unverified and must not be used as a gate.
+
+The bounded continuation uses a Slurm array for the eleven supplied networks,
+up to eleven concurrent one-core/16 GiB tasks. A shared preparation job verifies
+bindings once; a finalizer waits for all tasks and verifies every completion.
+The scheduler can place tasks on multiple nodes. Each scientific process remains
+single-threaded, with the exact runtime 5cd3e2839 diagnostic, original saved
+one-worker CAL/PTC inputs, 2/8-second profiles and 120-second pools unchanged.
+No build, reduction, new treatment or scientific policy is introduced.
+
+The old serial packet remains immutable. After the owner stops its writer,
+completed networks are rehashed and reused in place under identical scientific
+and environment bindings. Incomplete work restarts separately. Locks prevent
+serial/parallel and duplicate-network writers from overlapping. Failed tasks
+stop; not-yet-launched scientific tasks stop on the failure marker. Independent
+tasks already executing may finish and preserve their results. No campaign PASS
+is possible with missing or failed tasks. Resume retains successful checkpoints.
+
+Fourteen scheduling tests pass, including concurrent exact fixture outputs,
+checkpoint reuse, mutation rejection, failure propagation and Slurm dependency
+construction. The unchanged diagnostic tests and configuration gate are retained
+in the exact packet checks. Independent exact-SHA/packet review is required
+before delivery. Real Unity concurrency and scientific results remain pending.
+Owner controls pushes, transfer, cancellation of job 64668312 and submission.
+See the existing performance handoff for bindings, resource limits and commands.
+
 ## Unity worker equivalence complete; spectral diagnostics next — 2026-09-21
 
 Owner-returned job64656301 and all123 compact-manifest entries verify. All44
