@@ -993,3 +993,112 @@ remain the next pending campaign stage after exact comparison succeeds; size
 that stage from its existing measured requirements rather than assuming16GiB.
 The README, PREPARATION, EXPECTED_RUNS, LOCAL_CHECKS and independent review bind
 the handoff. All GitHub pushes, transfers and execution remain owner-run.
+
+
+## Verified worker equivalence and diagnostic continuation — 2026-09-21
+
+Preflight: existing full-available-network owner work order
+`a1de99e5-194c-4486-9402-1cfc90a71bf7`; Tier2 evidence/packet continuation on the
+same spine, initially clean at6f1d5a1722e6486dc67d8dcf70cda50179fc6cc4 / tree
+9cabdef59ddc2ce434f8fd0cb573987f9d8d5335. Effective AGENTS, toltec-context and all
+three governance documents read, canonical effectiveness checked against the
+ledger. Live canonical e32c4584dec07617d6caa857d39bf13047b6c4b0 and remote feature
+6f1d5a1722e6486dc67d8dcf70cda50179fc6cc4 reverified. No source rewrite, new module
+probe, ref movement, cleanup, Unity access or push. Original runtime, scientific
+contracts, rank10, filter/motion/paired-validity rules and failure scope persist.
+
+Returned archive:
+`results-verification-20260921T140312724409.tar.gz`, SHA256
+`738e445e44b0bce490fc0c4bcc10a9a678462c1defa48062be1a40bbe7a1c50f`.
+All123 compact entries verified. Source-before/after remains exactly runtime5cd
+and clean; verifier/reporting source6f1d5a172 is distinct from that executable.
+Job64656301 completed0:0 in2h15m28s. Verification STATUS and FINAL both PASS;
+all11 networks and44 comparisons complete with no reported failures. Each
+comparison's complete file list is equal. This establishes within-environment
+worker equivalence, not final scientific qualification. It preserves job64621061's
+original TIMEOUT and every completed reduction product.
+
+Measured verification cost7983.960693s, sampled process-family peak306,532,352B;
+accounting110.592207s, peak199,856,128B. Slurm batch MaxRSS16,776,000K is recorded
+separately; do not equate it with parser working-set memory or diagnose OOM.
+No cluster cgroup accounting setting was supplied. Verification runtime does not
+belong in RTC/CAL/PTC reduction timing.
+
+Coverage:5,518 requested detector identities,3,962 with nonzero CAL support;
+11 supplied networks0–5,7–9,11–12;6/10 absent. Total CAL detector-time
+4,882,136.850432s; PTC4,878,963.089408s. One of1,364 PTC fits fails: network4,
+scan121, native interval[147621,148841),1,220 native samples (~9.994s),319 admitted
+fit detectors from532 requested output identities,213 zero-support detectors
+omitted before fitting. It reaches100 iterations without convergence. The final
+relative objective change is about1.458e-5; the unchanged default tolerance is
+1e-5 with its existing convergence rule. The387,422 eligible but unavailable
+outputs equal the full CAL/PTC count difference. Loss3,173.761024 detector-seconds
+is0.806% of network4 CAL support and0.0650% of all CAL detector-time. No other
+network or interval is discarded as a consequence. Preserve this honest partial
+result and proceed with the successful products; do not change solver policy.
+
+Serial timing sums, with nonoverlapping intervals only: input/native preparation
+571.707420s; RTC including learning/relearning and its evidence/publication
+7765.043968s; CAL385.355500s; PTC980.321292s; final checks/publication266.997663s;
+shared preparation58.996967s; residual invocation overhead15.125796s. These sum
+to10043.548604s. PTC segment preparation312.760851s, fitting174.091068s,
+application7.977565s, publication460.078027s, plus its remaining orchestration.
+At12 requested/11 active workers the same scientific results take1507.325065s,
+6.663x throughput improvement and81.31GB sampled process peak. No optional
+repeat completed, so do not claim repeatability of the measured speedup.
+
+The first-captured cross-platform report remains supplementary, as stated by its
+provenance record. It reports exact identities/timing/support and receipt
+semantics, with1,716 floating-point files differing and matching special-value
+patterns. Largest reported relative RMS difference is8.64e-14 in a PTC basis;
+these small differences are consistent with floating-point variation, but no
+new tolerance or cross-platform science qualification is established here.
+This does not weaken the strict44 within-Unity comparisons, which pass exactly.
+
+Remaining scientific work is precisely the already-approved diagnostic campaign
+on one verified output set. It consumes saved CAL inputs, the actual PTC outputs
+and their masks, native timing, config/VAL/calibration/filter histories, and the
+existing TEL context. It compares2s/8s Fourier profiles with120s pooling, fixed
+all-supported populations and the existing support-selected supplement. The
+matched11Hz residual/control logic, phase controls, estimator, uncertainties and
+scientific limitations remain byte-identical to the accepted source5cd. It does
+not refit production PTC, apply a new operator, select ranks, reject detectors,
+merge network cadences or infer original absence from treatment outcomes.
+
+Packet ownership/lifecycle: one sequential diagnostic process at a time; record
+actual environment/thread observations and costs. Bind all44 prior comparison
+records, all55 verified snapshots used for accounting, exact parent configs,
+run/observation receipts, cost traces and the inventory. Recheck consumed raw-file
+hashes against verified parents and at diagnostic completion. Seal each completed
+network's input/output manifests; resume only under identical controls/environment
+and after rehashing both. Failed attempts remain in separate directories and do
+not erase completed networks. The old packets/products are read-only. Atomic
+progress and a separate compact collector survive an interrupted batch job.
+Full mode arrays stay on Unity; compact returns contain JSON, figures and hashes.
+
+Resource request1CPU/16GiB/8h uses the existing observed local full-population
+network0 diagnostic peak8,009,809,920B/320.21s and network7 peak3,634,659,328B/128.60s.
+Actual Unity time/memory is unmeasured; do not promise a completion time. Stop
+on a binding, source, scientific-output or resource failure, preserve it, and
+resume only unchanged successful inputs. No pip operation is performed; existing
+owner `.venv` is reused, and all new temp/cache/output directories are under
+`work_toltec/wilson/citlali_testing`.
+
+Local gates:17 unchanged diagnostic tests and10 packet guard/resume/collection
+checks pass, plus shell syntax. Current application C++ and configuration are
+unchanged; retain the earned exact5cd Unity1,267 runnable tests and6f1 config/
+comparison verification rather than repeating builds or data reductions.
+Independent fresh-context exact-SHA/document/packet review must precede handoff.
+Reporting source and reviewed controls are named by packet PREPARATION and
+INDEPENDENT_REVIEW, not relabeled as the executable used for the completed runs.
+
+Local packet:
+`/Users/gwilson/work_toltec/local_data/2026-refactor/citlali-successor-diagnostics-64621061`.
+Unity destination:
+`$HOME/work_toltec/wilson/citlali_testing/citlali-successor-diagnostics-64621061`.
+Its README gives exact submission, inspection, resumption and small-return
+commands. Durable receipt/review evidence is adjacent in
+`citlali-successor-diagnostics-64621061-review`. Owner performs all pushes,
+transfers and execution. Completion of this diagnostic will support the original
+science report and one next scientific experiment; it is not a new processing
+route or activation decision. MAP/FRUIT and new treatment policies remain out.

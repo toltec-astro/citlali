@@ -1,5 +1,47 @@
 # Citlali Refactor Status
 
+## Unity worker equivalence complete; spectral diagnostics next — 2026-09-21
+
+Owner-returned job64656301 and all123 compact-manifest entries verify. All44
+comparisons pass across11 networks for the1/2/4/8/12-worker runs: numerical arrays
+are bitwise equal and metadata has identical scientific meaning under the
+existing enumerated runtime/provenance normalizations. Verifier source is exact
+`6f1d5a1722e6486dc67d8dcf70cda50179fc6cc4`; reduction runtime remains
+`5cd3e28396a08917986f3ec73314a69d3605bd0d`. No reductions/builds were repeated.
+Verification took7983.96s, sampled process-family RSS306,532,352 bytes; accounting
+took110.59s. The Slurm batch memory figure is a different measurement and is not
+used as this process-memory estimate. Full scientific campaign closure remains
+pending the existing spectral/residual diagnostics.
+
+Of5,518 requested detectors on11 supplied networks,3,962 have nonzero CAL
+support. Networks6/10 were not supplied. The sole PTC failure is network4 scan121,
+native interval[147621,148841),319 fit detectors,100 iterations, stopping reason
+`iteration-limit-not-converged`. Its387,422 eligible samples exactly explain the
+entire CAL-to-PTC loss:3,173.761 detector-seconds,0.0650% of total CAL detector-time.
+All other fitted intervals and networks remain preserved. Do not relax the
+convergence rule or call the rejected fit successful.
+
+The fastest measured setting remains12 requested/11 active workers:25.1min,
+81.31GB sampled process peak, versus167.4min/15.88GB serial (6.66x speedup).
+These are single runs, without optional repeats. Serial interval accounting is
+9.53min input preparation,129.42min RTC including its evidence/publication,
+6.42min CAL,16.34min PTC,4.45min final checks/publication,0.98min shared preparation
+and0.25min remaining overhead. PTC numerical fitting plus application totals
+182.07s; preparation/output dominate its remaining time. Parallel per-network
+intervals overlap and must not be summed as elapsed runtime.
+
+Next: execute the unchanged fixed2s/8s,120s-pool SPOD/matched-residual diagnostic
+on the saved workers-1 outputs, one network at a time, one numerical thread,
+1CPU/16GiB/8h. Representative full local networks0/7 already measured8.01/3.63GB
+and320/129s; new Unity costs remain unknown. Each completed diagnostic is sealed
+and can resume without repeating prior successes. Existing source/config/input
+snapshots, inventory and cost traces are exact-bound. No new scientific settings,
+reduction, rank sweep, raw transfer, build, MAP or FRUIT. Current17 diagnostic
+unit checks and10 packet controls pass; exact-SHA/packet review is required.
+Live canonical remains e32c4584dec07617d6caa857d39bf13047b6c4b0 and feature6f1d5a172
+was verified pushed before this recording increment. See the existing
+[performance handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_PERFORMANCE_001_2026-09-18.md).
+
 ## Completed Unity reductions; verification recovery — 2026-09-21
 
 Owner-returned records confirm that all five fixed scheduling runs completed on
