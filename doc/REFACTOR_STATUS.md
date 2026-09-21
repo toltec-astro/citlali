@@ -1,5 +1,48 @@
 # Citlali Refactor Status
 
+## Completed Unity reductions; verification recovery — 2026-09-21
+
+Owner-returned records confirm that all five fixed scheduling runs completed on
+job64621061, using the unchanged tested runtime5cd3e2839. The job subsequently
+hit its8-hour limit during output comparison. It is not a successful campaign
+closure, and the timeout does not invalidate the completed reduction timings.
+
+| Requested workers | Started workers | Wall (min) | Sampled process peak (GB) |
+|---:|---:|---:|---:|
+|1|1|167.4|15.88|
+|2|2|116.5|27.25|
+|4|4|66.6|47.12|
+|8|8|41.1|67.41|
+|12|11|25.1|81.31|
+
+All five invocations report exit2 with network4 the only partial network. Keep
+its failed PTC fit and successful upstream/other-segment products explicit.
+Network0's complete1-versus2 comparison passes (8,560 exact binary files plus
+16 semantically equal YAML documents); network1's6,928 binary files match, but
+its metadata comparison was interrupted. The other equivalence checks and
+frequency/time diagnostics remain pending. No full campaign PASS is claimed.
+
+The bounded verification repair preserves the existing exact scientific rules,
+parses each product once, reuses the one-worker reference for four comparisons,
+and records atomic per-document checkpoints. Restart rehashes input content;
+changed inputs, parser/environment bindings or corrupted checkpoints fail.
+Six verification processes fit the owner's6-core/16GiB launch scope based on
+local parser measurements; actual Unity costs remain to be measured. A separate
+small packet reads the existing products and performs the unchanged cost summary;
+it runs no build, reduction, optional repeat or spectral diagnostic. No new raw
+or derived scientific arrays are uploaded. The spectral diagnostics follow this
+verification as a separate stage with their existing scientific settings.
+
+Local46 comparison/campaign tests,7 packet tests and config preflight pass.
+The192.6MB representative document retains its exact pre-repair semantic digest;
+parsing fell from38.0s/42.2MB peak to30.9s/45.4MB on the Mac. These are local
+verification-tool timings, not Unity processing timings. Batch MaxRSS is kept
+separate from process-family RSS; an out-of-memory failure was not demonstrated.
+An independent fresh-context exact-SHA/packet review is required before handoff.
+Canonical was reverified at e32c4584dec07617d6caa857d39bf13047b6c4b0 and the pushed
+spine at a3785432a6860eb7e516f0f48f918aee8ead457f before this repair. No integration,
+push, Unity access, scientific-policy change, MAP or FRUIT work was performed.
+
 ## Unity reference-comparison repair — 2026-09-20
 
 Owner-returned evidence for job 64619145 verifies the exact 5cd3e2839 build, all 1,267

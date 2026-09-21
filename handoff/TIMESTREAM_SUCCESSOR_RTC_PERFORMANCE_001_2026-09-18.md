@@ -910,3 +910,86 @@ Its PREPARATION and independent review bind the final comparator commit separate
 from the unchanged runtime. Checks, returned-evidence verification and metadata
 comparison are retained in the adjacent `citlali-successor-continue-64619145-review`
 evidence directory. The original packet and returned archive remain preserved.
+
+
+## Completed campaign runs and bounded verification recovery — 2026-09-21
+
+Preflight: Tier2, same spine/worktree, clean initial source
+`a3785432a6860eb7e516f0f48f918aee8ead457f` / tree
+`6759efb7d03283991fa670578c51a6fc2acb3d17`. Live canonical was reverified at
+`e32c4584dec07617d6caa857d39bf13047b6c4b0`, remote feature at a3785432a.
+Repository AGENTS, toltec-context and effective engineering/successor/review
+governance were read. This repairs verification within the already authorized
+full-network work order. No scientific-contract amendment is involved.
+
+The owner returned job64621061's TIMEOUT record (8h00m01s; batch0:15) and small
+campaign records to:
+`/Users/gwilson/work_toltec/local_data/2026-refactor/citlali-successor-all-networks-20260920-return/campaign-64621061`.
+Preserve that failed job and its original packet. Runtime remains exactly
+`5cd3e28396a08917986f3ec73314a69d3605bd0d`, tree
+`ceeaa822c24681c99051feb703171af683d04bd1`, binary digest85097cb6... already
+bound above. The successful build/test/reference gate is not repeated.
+
+Completed run wall seconds for1/2/4/8/12 requested workers:
+10043.548604,6989.174971,3998.432592,2463.896411,1507.325065.
+Sampled whole-process peaks in bytes:
+15880962048,27252670464,47116546048,67405934592,81309503488.
+All have exit2; every observation receipt identifies only network4 as partial.
+The12-worker request starts11 workers for the11 supplied networks. Shared
+preparation remains about59s; per-network numerical threads remain1. No repeat
+was attempted before timeout; no repeat result or clean all-network PASS exists.
+The empty CAMPAIGN comparison list was a coarse checkpoint, not evidence that
+nothing ran: network0 has a complete passing comparison and network1's binary
+comparison also passed before its metadata comparison was interrupted.
+
+Network0 comparison timestamps span roughly45min, with about41min after its
+binary checks. This identifies a verification cost; it does not attribute that
+cost to RTC algorithms. Local probing of192,553,470 bytes /12,680,464 YAML scalars
+used38.015s and42,237,952 bytes peak before the repair,30.944s and45,449,216 bytes
+after it. Semantic SHA256 remains
+`14f80a6d0e737de1920a0c7d4d0ff8464b7b301aeacc7dab8136fd1ea2324308`.
+Slurm's201,325,268K batch MaxRSS is not equated with parser resident memory;
+cgroup file-cache accounting is possible but Unity's accounting setting was not
+provided. The confirmed termination is TIMEOUT, not OOM.
+
+Ownership/lifecycle: the verification tool owns bounded scalar/key fingerprint
+reuse per document and clears it after parsing. Scientific normalizations and
+exact hash construction are unchanged. The campaign verifier owns atomic,
+checksum-protected verification records, bound to the input roots/inventory,
+raw-file hashes, CAL parent, tool hashes and Python/YAML environment. It hashes
+all data again on resume but does not reparse completed unchanged documents.
+Each of55 products is parsed once, instead of88 paired product parses; the
+one-worker semantic record feeds all four comparisons. Scientific products are
+read-only. No cache participates in Learn, Consider, Apply, CAL or PTC execution.
+
+Risks/gates: accidental scientific normalization is checked with pre-repair
+golden digests and exact mutation tests; stale/corrupt checkpoints and changed
+inputs/environment stop; concurrent writers are locked out; interrupted partial
+progress cannot become PASS. Per-document progress and per-network comparison
+records survive timeout, and the small-record collector works independently of
+job finalization. Output inventories, original path spelling, input population,
+partial dispositions, CAL-parent hashes and immutable runtime identity remain
+explicit. Any exact scientific mismatch stops that network's verification and
+is reported; other checks can complete without suppressing the failure.
+
+Local gates:46 related Python tests (22 new recovery checks),7 packet controls,
+config preflight and shell syntax pass. The parallel CLI fixture verifies all
+four comparisons, restart, detected scientific differences and preserved failure
+scope without executing the C++ runtime. C++/Spack gates are retained only at
+their tested source. Independent fresh-context review must bind the final source
+commit and packet; the previous a378 verdict is not transferred.
+
+Owner packet:
+`/Users/gwilson/work_toltec/local_data/2026-refactor/citlali-successor-verify-64621061`.
+Unity destination:
+`$HOME/work_toltec/wilson/citlali_testing/citlali-successor-verify-64621061`.
+The6-core/16GiB/8h batch launcher reuses the owner's existing packet venv, never
+installs packages, and places temporary/cache files under work_toltec/wilson.
+It reads the five original runs, verifies44 network comparisons, runs the
+unchanged population/cost summary in a separate view and returns failed PTC fit
+details plus the existing cross-platform report. It does not rerun reductions,
+reference replay, builds, optional repeats or spectral diagnostics. The latter
+remain the next pending campaign stage after exact comparison succeeds; size
+that stage from its existing measured requirements rather than assuming16GiB.
+The README, PREPARATION, EXPECTED_RUNS, LOCAL_CHECKS and independent review bind
+the handoff. All GitHub pushes, transfers and execution remain owner-run.

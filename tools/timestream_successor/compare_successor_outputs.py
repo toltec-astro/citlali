@@ -6,6 +6,7 @@ runtime/provenance differences are normalized; scientific durations remain.
 from pathlib import Path
 import argparse, collections, hashlib, json, math, re
 import yaml
+from functools import lru_cache
 from yaml.events import *
 from yaml.nodes import ScalarNode
 
@@ -26,9 +27,21 @@ def sha(path):
         return hashlib.file_digest(f, 'sha256').hexdigest()
 
 class Parser:
-    def __init__(self, path, root):
+    def __init__(self, path, root, retain_subtrees=True):
         self.path=path; self.root=root; self.ignored=[]; self.summaries={}; self.scalars=0
-        self.loader=yaml.SafeLoader(''); self.entropies={}
+        self.loader=yaml.SafeLoader(''); self.entropies={}; self.retain_subtrees=retain_subtrees
+        # This parser owns a small cache of repeated canonical scalar/key bytes.
+        # Normalization still runs for every occurrence before looking up a hash.
+        # Large scientific strings are never retained merely for reuse.
+        self._scalar_hash=lru_cache(maxsize=8192)(self._uncached_scalar_hash)
+        self._key_hash=lru_cache(maxsize=1024)(lambda key: hashlib.sha256(key.encode()).digest())
+    @staticmethod
+    def _uncached_scalar_hash(tag,value):
+        return hashlib.sha256(json.dumps([tag,value],ensure_ascii=False,separators=(',',':')).encode()).digest()
+    def scalar_hash(self,tag,value):
+        if isinstance(value,str) and len(value)>1024:
+            return self._uncached_scalar_hash(tag,value)
+        return self._scalar_hash(tag,value)
     def scalar(self,e):
         tag=e.tag or self.loader.resolve(ScalarNode,e.value,e.implicit)
         node=ScalarNode(tag,e.value)
@@ -54,13 +67,14 @@ class Parser:
             assert isinstance(next(self.events),DocumentEndEvent)
             assert isinstance(next(self.events),StreamEndEvent)
         self.loader.dispose()
+        self._scalar_hash.cache_clear();self._key_hash.cache_clear()
         return {'semantic_sha256':digest.hex(),'scalar_count':self.scalars,
                 'normalized_fields':self.ignored,'entropy_identity_count':len(self.entropies),
                 'subtrees':self.summaries}
     def node(self,e,path):
         if isinstance(e,ScalarEvent):
             tag,value=self.scalar(e)
-            result=hashlib.sha256(json.dumps([tag,value],ensure_ascii=False,separators=(',',':')).encode()).digest()
+            result=self.scalar_hash(tag,value)
         elif isinstance(e,SequenceStartEvent):
             h=hashlib.sha256(b'S'); n=0
             while not isinstance(e:=next(self.events),SequenceEndEvent):
@@ -85,11 +99,11 @@ class Parser:
                 else:values[k]=self.node(v,path+(key,))
             h=hashlib.sha256(b'M')
             for key,value in sorted(values.items()):
-                h.update(hashlib.sha256(key.encode()).digest());h.update(value)
+                h.update(self._key_hash(key) if len(key)<=1024 else hashlib.sha256(key.encode()).digest());h.update(value)
             result=h.digest()
         else:raise ValueError(('unsupported YAML event',e,path))
         # Enough structure to locate differences without retaining every window.
-        if len(path)<=3 or (len(path)<=5 and 'windows' not in path):
+        if self.retain_subtrees and (len(path)<=3 or (len(path)<=5 and 'windows' not in path)):
             self.summaries[json.dumps(path,separators=(',',':'))]=result.hex()
         return result
 
