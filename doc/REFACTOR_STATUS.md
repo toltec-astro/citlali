@@ -1,5 +1,45 @@
 # Citlali Refactor Status
 
+## First forward MAP increment: numerical core tested; real handoff blocked — 2026-09-21
+
+The owner parked timestream development and authorized ordinary forward MAP
+implementation, explicitly deferring FRUIT. Work is isolated on
+`codex/map-successor-first-forward-001`, based on reporting commit
+`686c280037762450b1870308c920e9191216dc16`; upstream numerical reference remains
+`5cd3e28396a08917986f3ec73314a69d3605bd0d`. The owner selected the accepted
+PTC-owned uniform family for this pass. It is not a default or inverse variance.
+
+The new compiled MAP numerical boundary implements one-hot half-open placement,
+positive-coefficient N/Q, exact science-support row selection, separate
+normalization/science support, immutable same-operator companion application,
+and original-footprint union arithmetic. Focused tests cover signed/zero values,
+constant/delta response, small-N thresholds, ordering, concurrency, nonfinite
+inputs, overflow/underflow, and original deduplication. This is **partial
+implementation**, not a complete successor MAP product/CLI route. PTC coefficient
+publication/QC, AST persistence, MAP/VAL admission and complete bundle publication
+remain unimplemented. The default executable still ends at PTC/VAL.
+
+Actual saved PTC arrays were inspected on local full networks 0, 7 and 12:
+74,946,311 / 27,672,182 / 27,157,906 retained entries, no failed fits in these
+specific earlier local runs. A separate bounded network-11 test has zero retained
+entries and 124 failed fits; it is not positive coverage evidence. These local
+results do not replace the exact 11-network Unity campaign or its network-4
+exclusion. The inspector verifies numerical components and selected parent links,
+not whole-chain scientific conformance, and returns MAP-blocked rather than PASS.
+
+The real base-map boundary cannot be resolved from the available inputs:
+`SourceRaAct/SourceDecAct` are labeled only J2000, without an authoritative
+reference-system declaration; the selected APT and recovered beammap provenance
+lack the originating fixed nominal-beam identity. SCI-AST-041 and SCI-MAP-002/044
+forbid guessing these facts. Owner questions remain open. These are required
+frame/calibration facts, unlike optional absent response, covariance or
+original-footprint exposure. No MAP product, WCS diagnostic, source-response
+measurement, NOI/FLT companion or FRUIT result was manufactured.
+
+See [the worklist and resumption record](../handoff/MAP_SUCCESSOR_FIRST_FORWARD_001_2026-09-21.md)
+for authority reconciliation, exact input evidence, tests, limits and commands.
+No integration, push, Unity access, upstream treatment change or FRUIT activation.
+
 ## Full available-network campaign complete — 2026-09-21
 
 Owner-returned parallel diagnostic evidence verifies PASS for all eleven

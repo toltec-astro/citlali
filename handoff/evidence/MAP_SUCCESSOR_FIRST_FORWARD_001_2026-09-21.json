@@ -1,0 +1,279 @@
+{
+  "schema": "map-successor-first-forward-evidence-v1",
+  "baseline": "686c280037762450b1870308c920e9191216dc16",
+  "scope": "partial numerical implementation and saved-PTC prerequisite inspection; no MAP bundle or real MAP pass",
+  "map_science_authority": "SCI-MAP v0.2/r0.4",
+  "shared_authority_sha256": "3b81ea8180dcc3f5f37964ac1177feb417fef6a1cdcc590b33f9431b54bc1e31",
+  "owner_selected_coefficient": "SCI-PTC:uniform_constant@draft-0.1",
+  "coefficient_published": false,
+  "MAP_executed": false,
+  "FRUIT_executed": false,
+  "Unity_accessed": false,
+  "input_inspections": [
+    {
+      "source_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-full-network-ready-ae4842e-20260919/local-evidence/network0-full/products/network0",
+      "observation": 152390,
+      "network": 0,
+      "arrays": [
+        0
+      ],
+      "upstream_build_identity": "v2-ngc4449-memory-repair-187df04b-422-gae4842e89",
+      "requested_detectors": 630,
+      "retained": 74946311,
+      "failed_fits": 0,
+      "method": "observed-als",
+      "rank": 10,
+      "unit": "mJy/nominal-beam",
+      "MAP_readiness": "blocked",
+      "verification_scope": "declared PTC component hashes, cleaned/causes/slots and selected parent links; not full upstream or scientific conformance",
+      "blockers": [
+        {
+          "requirement": "002/044",
+          "cause": "nominal_beam_identity_not_published",
+          "owner": "CAL/source APT"
+        },
+        {
+          "requirement": "005/044",
+          "cause": "complete_source_frame_not_published",
+          "owner": "AST",
+          "observed": "J2000-radec-gnomonic-tangent"
+        },
+        {
+          "requirement": "005/043",
+          "cause": "same_RTC_sample_AST_coordinates_not_persisted",
+          "owner": "AST"
+        },
+        {
+          "requirement": "006",
+          "cause": "selected_coefficient_publication_and_QC_not_present_in_v2",
+          "owner": "PTC"
+        },
+        {
+          "requirement": "004/010",
+          "cause": "MAP_occurrence_admission_not_evaluated",
+          "owner": "MAP/VAL"
+        }
+      ],
+      "cost": {
+        "wall_seconds": 3.4111027498729527,
+        "cpu_seconds": 2.513291,
+        "numerical_inspection_seconds": 1.680492540821433,
+        "peak_rss_bytes": 187957248,
+        "segment_numeric_and_mask_bytes": 7695760,
+        "scope": "input inspection only; no MAP or upstream processing cost"
+      },
+      "evidence_path": "/private/tmp/citlali-map-forward-evidence-20260921/network0-final-input-inspection.json",
+      "evidence_sha256": "58d3d7ae72ccd36c036cfdd6cef0fdb8af9586ba40cd192070867a8dde2c8f4d",
+      "verified_file_count": 995,
+      "PTC_receipt_sha256": "07e923e24eacffa851ffefef1b5128ea89e1118b9700f1ac130a9c3bd5c05e67"
+    },
+    {
+      "source_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-full-network-checkpoint-98380090e-20260919/bounded-campaign-repaired/workers-1/products/network11",
+      "observation": 152390,
+      "network": 11,
+      "arrays": [
+        2
+      ],
+      "upstream_build_identity": "v2-ngc4449-memory-repair-187df04b-417-g4bf470389-dirty",
+      "requested_detectors": 32,
+      "retained": 0,
+      "failed_fits": 124,
+      "method": "observed-als",
+      "rank": 10,
+      "unit": "mJy/nominal-beam",
+      "MAP_readiness": "blocked",
+      "verification_scope": "declared PTC component hashes, cleaned/causes/slots and selected parent links; not full upstream or scientific conformance",
+      "blockers": [
+        {
+          "requirement": "002/044",
+          "cause": "nominal_beam_identity_not_published",
+          "owner": "CAL/source APT"
+        },
+        {
+          "requirement": "005/044",
+          "cause": "complete_source_frame_not_published",
+          "owner": "AST",
+          "observed": "J2000-radec-gnomonic-tangent"
+        },
+        {
+          "requirement": "005/043",
+          "cause": "same_RTC_sample_AST_coordinates_not_persisted",
+          "owner": "AST"
+        },
+        {
+          "requirement": "006",
+          "cause": "selected_coefficient_publication_and_QC_not_present_in_v2",
+          "owner": "PTC"
+        },
+        {
+          "requirement": "004/010",
+          "cause": "MAP_occurrence_admission_not_evaluated",
+          "owner": "MAP/VAL"
+        }
+      ],
+      "cost": {
+        "wall_seconds": 0.4530142501462251,
+        "cpu_seconds": 0.195588,
+        "numerical_inspection_seconds": 0.28606195794418454,
+        "peak_rss_bytes": 44433408,
+        "segment_numeric_and_mask_bytes": 200080,
+        "scope": "input inspection only; no MAP or upstream processing cost"
+      },
+      "evidence_path": "/private/tmp/citlali-map-forward-evidence-20260921/network11-bounded-final-input-inspection.json",
+      "evidence_sha256": "cbb4d1c87cb940cf2b1509d1cb5de518a4f13d5bdc9b9cb3016f55e13d73db31",
+      "verified_file_count": 995,
+      "PTC_receipt_sha256": "f73f7520c24d63f3c340fdfdde17d1e2c70fe7120c376667a5490d21453aa503"
+    },
+    {
+      "source_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-array-lowpass-530743ec5-20260919/a2000-explicit/output",
+      "observation": 152390,
+      "network": 12,
+      "arrays": [
+        2
+      ],
+      "upstream_build_identity": "v2-ngc4449-memory-repair-187df04b-414-g530743ec5",
+      "requested_detectors": 414,
+      "retained": 27157906,
+      "failed_fits": 0,
+      "method": "observed-als",
+      "rank": 10,
+      "unit": "mJy/nominal-beam",
+      "MAP_readiness": "blocked",
+      "verification_scope": "declared PTC component hashes, cleaned/causes/slots and selected parent links; not full upstream or scientific conformance",
+      "blockers": [
+        {
+          "requirement": "002/044",
+          "cause": "nominal_beam_identity_not_published",
+          "owner": "CAL/source APT"
+        },
+        {
+          "requirement": "005/044",
+          "cause": "complete_source_frame_not_published",
+          "owner": "AST",
+          "observed": "J2000-radec-gnomonic-tangent"
+        },
+        {
+          "requirement": "005/043",
+          "cause": "same_RTC_sample_AST_coordinates_not_persisted",
+          "owner": "AST"
+        },
+        {
+          "requirement": "006",
+          "cause": "selected_coefficient_publication_and_QC_not_present_in_v2",
+          "owner": "PTC"
+        },
+        {
+          "requirement": "004/010",
+          "cause": "MAP_occurrence_admission_not_evaluated",
+          "owner": "MAP/VAL"
+        }
+      ],
+      "cost": {
+        "wall_seconds": 2.0375983340200037,
+        "cpu_seconds": 1.2048599999999998,
+        "numerical_inspection_seconds": 1.0573228751309216,
+        "peak_rss_bytes": 148144128,
+        "segment_numeric_and_mask_bytes": 2530280,
+        "scope": "input inspection only; no MAP or upstream processing cost"
+      },
+      "evidence_path": "/private/tmp/citlali-map-forward-evidence-20260921/network12-full-final-input-inspection.json",
+      "evidence_sha256": "97dd9dbead184083399fb5c5fc2eeaf9b7d55a18d0700d1433884e5061789005",
+      "verified_file_count": 995,
+      "PTC_receipt_sha256": "dc31382548a0867faa833f41f020512f4ccb81696e24b2356db68adf36ea07dd"
+    },
+    {
+      "source_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-full-network-ready-ae4842e-20260919/local-evidence/network7-full/products/network7",
+      "observation": 152390,
+      "network": 7,
+      "arrays": [
+        1
+      ],
+      "upstream_build_identity": "v2-ngc4449-memory-repair-187df04b-422-gae4842e89",
+      "requested_detectors": 420,
+      "retained": 27672182,
+      "failed_fits": 0,
+      "method": "observed-als",
+      "rank": 10,
+      "unit": "mJy/nominal-beam",
+      "MAP_readiness": "blocked",
+      "verification_scope": "declared PTC component hashes, cleaned/causes/slots and selected parent links; not full upstream or scientific conformance",
+      "blockers": [
+        {
+          "requirement": "002/044",
+          "cause": "nominal_beam_identity_not_published",
+          "owner": "CAL/source APT"
+        },
+        {
+          "requirement": "005/044",
+          "cause": "complete_source_frame_not_published",
+          "owner": "AST",
+          "observed": "J2000-radec-gnomonic-tangent"
+        },
+        {
+          "requirement": "005/043",
+          "cause": "same_RTC_sample_AST_coordinates_not_persisted",
+          "owner": "AST"
+        },
+        {
+          "requirement": "006",
+          "cause": "selected_coefficient_publication_and_QC_not_present_in_v2",
+          "owner": "PTC"
+        },
+        {
+          "requirement": "004/010",
+          "cause": "MAP_occurrence_admission_not_evaluated",
+          "owner": "MAP/VAL"
+        }
+      ],
+      "cost": {
+        "wall_seconds": 2.2770324170123786,
+        "cpu_seconds": 1.428235,
+        "numerical_inspection_seconds": 1.2460610421840101,
+        "peak_rss_bytes": 119046144,
+        "segment_numeric_and_mask_bytes": 5133760,
+        "scope": "input inspection only; no MAP or upstream processing cost"
+      },
+      "evidence_path": "/private/tmp/citlali-map-forward-evidence-20260921/network7-final-input-inspection.json",
+      "evidence_sha256": "d18d17a9b782136150297ea513eda014067878b904a68befd4d232c6500d60a0",
+      "verified_file_count": 995,
+      "PTC_receipt_sha256": "93f48cb8f0f6ca540651507be97e838e7f15293d7740010fc5bf17f1eccf307a"
+    }
+  ],
+  "tests": {
+    "forward_map_cases": 9,
+    "input_inspection_cases": 8,
+    "baseline_tool_cases": 207,
+    "config_preflight": "pass",
+    "complete_ctest": {
+      "registered": 1556,
+      "passed": 1555,
+      "disabled": [
+        "MapFitterLifecycle.ExactProductSequence"
+      ],
+      "failed": 0
+    }
+  },
+  "independent_candidate_review": "pending",
+  "gate_logs": {
+    "final-build.log": {
+      "path": "/private/tmp/citlali-map-forward-evidence-20260921/final-build.log",
+      "sha256": "d4842c2f0332b033339d3dca4fa5f2e7e420cf096dceae2b2e17d21ef8fe7116"
+    },
+    "final-ctest.log": {
+      "path": "/private/tmp/citlali-map-forward-evidence-20260921/final-ctest.log",
+      "sha256": "397676024dac3962cea66ed4cf2365fd77c34060fc079dc9488ef2fd18c9fb02"
+    },
+    "input-tests.log": {
+      "path": "/private/tmp/citlali-map-forward-evidence-20260921/input-tests.log",
+      "sha256": "6ac3835693d2b1331d6a7663fcf10062eb032338ea34cecc9473b4acefb870ea"
+    },
+    "baseline-tests-retry.log": {
+      "path": "/private/tmp/citlali-map-forward-evidence-20260921/baseline-tests-retry.log",
+      "sha256": "6298a976797c1f573002607a519b8a18e4e0d2e23202dcd5950439e9545e9eae"
+    },
+    "config-preflight.log": {
+      "path": "/private/tmp/citlali-map-forward-evidence-20260921/config-preflight.log",
+      "sha256": "a821ce6c646d0052c8c72af1db3aabe659ad509527db819e98dc61bcb682d074"
+    }
+  }
+}

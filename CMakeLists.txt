@@ -74,6 +74,7 @@ target_sources(citlali
     "src/citlali/core/pipeline/timestream_cal_wvr.cpp"
     "src/citlali/core/pipeline/ast_rtc_coordinates.cpp"
     "src/citlali/core/pipeline/timestream_cal_pipeline.cpp"
+    "src/citlali/core/mapmaking/forward_map.cpp"
     "src/citlali/core/pipeline/timestream_ptc_numerics.cpp"
     "src/citlali/core/pipeline/timestream_ptc_pipeline.cpp"
     "src/citlali/core/pipeline/timestream_identity_route_context.cpp"
