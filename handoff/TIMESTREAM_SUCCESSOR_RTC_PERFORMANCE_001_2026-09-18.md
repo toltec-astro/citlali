@@ -1160,14 +1160,17 @@ writers; shared/exclusive campaign locks separate preparation/finalization from
 workers. No general caching framework is introduced.
 
 Concurrency changes the failure lifecycle intentionally: a failing task records
-its failure and stops. Tasks that have not launched the diagnostic observe the
-failure marker and do not launch new work. Already executing independent tasks
-may finish and seal useful evidence. The finalizer runs after all array tasks
+its failure and stops. Each task checks the shared failure marker immediately before scientific
+launch and stops if the marker is present. This is a prelaunch check, not an
+atomic global barrier: independent tasks already past that check may finish
+and seal useful evidence. The finalizer runs after all array tasks
 terminate, verifies every network and current-generation task FINAL, and requires
 Slurm COMPLETED/0:0 for every array member. Missing or stale accounting cannot
 pass; a bounded 50-second refresh precedes failure. A killed task cannot be hidden
 by an older valid checkpoint. Compact-publication failure also sets FINAL and
-STATUS to FAIL.
+STATUS to FAIL. The archive is renamed into its discoverable final name only
+after temporary hashing and readiness-marker publication succeed. A marker alone
+is incomplete; returned evidence must match its digest and final dispositions.
 An unavailable scientific estimate is still the existing explicit disposition,
 not a task exception or permission to change support. New submissions cannot
 overlap an active prior submission; a partially failed submission cancels only

@@ -168,6 +168,13 @@ class ArrayPacket(unittest.TestCase):
             names=archive.getnames()
         self.assertIn('diagnostics/network0/result.json',names)
         self.assertFalse(any(n.endswith('.npy') for n in names))
+        published=set(self.root.glob('results-*.tar.gz'));original_write=m.write
+        def fail_ready(path,value):
+            if path.name.endswith('.ready.json'):raise OSError('ready publication failed')
+            original_write(path,value)
+        with patch.object(m,'write',side_effect=fail_ready),contextlib.redirect_stdout(io.StringIO()):
+            with self.assertRaisesRegex(OSError,'ready publication failed'):m.collect()
+        self.assertEqual(set(self.root.glob('results-*.tar.gz')),published)
         (self.prior/'diagnostics.lock').touch()
         meta=dict(reporting_revision='source',runtime_revision='runtime')
         with patch.object(m,'controls',return_value=meta),patch.object(m,'load_prior',return_value=self.serial),patch.object(m,'prepared',return_value={}),patch.object(m,'finalize',side_effect=lambda *a:m.write(self.root/'STATUS.json',{'state':'PASS'})),patch.object(m,'collect',side_effect=RuntimeError('collection failed')),patch.object(m.signal,'signal'),patch.dict(m.os.environ,SLURM_JOB_ID='123'),patch.object(m.sys,'argv',['runner','finalize','collectionfailure']):

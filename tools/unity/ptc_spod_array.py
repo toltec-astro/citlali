@@ -288,9 +288,13 @@ def collect():
             manifest.append(hashlib.sha256(content).hexdigest() + '  ./' + name + '\n')
         content = ''.join(manifest).encode(); item = tarfile.TarInfo('COMPACT_SHA256SUMS'); item.size = len(content)
         tar.addfile(item, io.BytesIO(content))
+    digest = sha(temp)
+    write(archive.with_suffix('.ready.json'), dict(archive=archive.name, sha256=digest,
+        scope='partial or complete evidence; require archive, matching digest, STATUS and FINAL'))
+    print('PUBLISHING ' + str(archive), flush=True)
+    # The archive is discoverable only after every other publication operation
+    # succeeds. A marker without its matching archive is incomplete evidence.
     temp.replace(archive)
-    write(archive.with_suffix('.ready.json'), dict(archive=archive.name, sha256=sha(archive)))
-    print('COLLECTED ' + str(archive), flush=True)
 
 
 def submit(meta):

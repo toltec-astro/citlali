@@ -19,8 +19,8 @@ The old serial packet remains immutable. After the owner stops its writer,
 completed networks are rehashed and reused in place under identical scientific
 and environment bindings. Incomplete work restarts separately. Locks prevent
 serial/parallel and duplicate-network writers from overlapping. Failed tasks
-stop; not-yet-launched scientific tasks stop on the failure marker. Independent
-tasks already executing may finish and preserve their results. No campaign PASS
+stop; other tasks stop if they observe a failure marker at their prelaunch
+check. Tasks already past that check may finish and preserve their results. No campaign PASS
 is possible with missing or failed tasks. Resume retains successful checkpoints.
 
 Fourteen scheduling tests pass, including concurrent exact fixture outputs,
