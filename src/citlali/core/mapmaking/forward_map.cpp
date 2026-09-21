@@ -21,6 +21,29 @@ void finite_sum(double &sum, double value) {
     if (!std::isfinite(next)) throw std::overflow_error("MAP aggregate is unrepresentable");
     sum = next;
 }
+bool exact_product(double a, double b, double product) {
+    // Scale into the normal range before testing the FMA residual. Testing
+    // a*b-product at the original scale could itself underflow to false zero.
+    int ae, be;
+    const double am=std::frexp(a,&ae), bm=std::frexp(b,&be);
+    return std::fma(am,bm,-std::ldexp(product,-ae-be))==0;
+}
+double checked_product(double a, double b) {
+    const double result=a*b;
+    if (!std::isfinite(result) ||
+        (a!=0 && b!=0 && std::abs(result)<=std::numeric_limits<double>::min() &&
+         (result==0 || !exact_product(a,b,result))))
+        throw std::overflow_error("MAP product has unrepresentable range or inexact underflow");
+    return result;
+}
+double checked_quotient(double a, double b) {
+    const double result=a/b;
+    if (!std::isfinite(result) ||
+        (a!=0 && std::abs(result)<=std::numeric_limits<double>::min() &&
+         (result==0 || !exact_product(result,b,a))))
+        throw std::overflow_error("MAP quotient has unrepresentable range or inexact underflow");
+    return result;
+}
 }
 
 std::optional<std::size_t> containing_pixel(const ForwardMapGrid &g, double x, double y) {
@@ -66,12 +89,8 @@ ForwardMapOperator ForwardMapOperator::resolve(ForwardMapGrid grid, std::string 
         const auto k=three_quarters/2+count/2+(three_quarters%2+count%2)/2;
         out.reference_index_=k; out.reference_=positive[k];
     }
-    const double science_threshold=out.reference_*out.support_.coverage_cut;
-    const double norm_threshold=science_threshold/10;
-    if (!std::isfinite(science_threshold) ||
-        (out.reference_>0 && out.support_.coverage_cut>0 &&
-         (science_threshold==0 || norm_threshold==0)))
-        throw std::overflow_error("MAP support threshold is unrepresentable");
+    const double science_threshold=checked_product(out.reference_,out.support_.coverage_cut);
+    const double norm_threshold=checked_quotient(science_threshold,10);
     for (std::size_t p=0;p<n;++p) {
         const auto q=out.normalization_[p];
         out.norm_support_[p]=q>0 && q>=norm_threshold;
@@ -89,16 +108,12 @@ ForwardMapValues ForwardMapOperator::apply(std::string_view domain, std::span<co
         throw std::invalid_argument("MAP admitted payload is nonfinite");
     ForwardMapValues out; out.numerator.assign(normalization_.size(),0);
     for (const auto &m:members_) {
-        const double term=m.coefficient*values[m.input_row];
-        if(!std::isfinite(term) || (values[m.input_row]!=0 && term==0))
-            throw std::overflow_error("MAP weighted signal is unrepresentable");
+        const double term=checked_product(m.coefficient,values[m.input_row]);
         finite_sum(out.numerator[m.pixel],term);
     }
     out.signal.reserve(output_rows_.size());
     for (auto p:output_rows_) {
-        const double value=out.numerator[p]/normalization_[p];
-        if(!std::isfinite(value) || (out.numerator[p]!=0 && value==0))
-            throw std::overflow_error("MAP normalized signal is unrepresentable");
+        const double value=checked_quotient(out.numerator[p],normalization_[p]);
         out.signal.push_back(value);
     }
     return out;

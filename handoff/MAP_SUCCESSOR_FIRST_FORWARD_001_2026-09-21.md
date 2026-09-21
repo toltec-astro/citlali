@@ -239,9 +239,9 @@ All three full inputs remain MAP-blocked despite intact PTC components.
 ### Verified implementation gates
 
 Final supplemental CLI/library build and public-header isolation pass. Final
-CTest: **1,555 runnable tests pass / 1,556 registered**, with the previously
+CTest: **1,557 runnable tests pass / 1,558 registered**, with the previously
 established `MapFitterLifecycle.ExactProductSequence` disabled; no newly skipped
-required test and no test failure. This includes all nine new numerical cases.
+required test and no test failure. This includes all eleven new numerical cases.
 Eight input-inspection tests, 207 baseline-tool tests and the full config
 preflight pass. Final logs/digests are recorded in the compact JSON evidence.
 The native source was repaired to reject coefficient-product or normalization
@@ -254,3 +254,26 @@ MAP are **blocked/not assessed**, not pass. Architecture keeps the owner below
 orchestration, with no Engine/legacy/upstream changes. Repository work is confined
 to one owned branch/worktree; generated build locator is untracked. Exact-candidate
 independent review follows the implementation commit and is separately bound.
+
+
+### Initial independent review and bounded repair
+
+Independent fresh-context review of implementation candidate
+`6fd2d8079867bae14faded35e650dd6505813f2a`, tree
+`e6e787626aa7a9e58b626207b9549ce6c38881c1`, required a numerical repair:
+nonzero underflow rounding could change a constant (coefficient `denorm_min()`,
+input 0.75 returned 1). The approved uniform family was unaffected, but the
+primitive's declared general positive-coefficient domain was affected.
+Architecture/ownership and repository/evidence dispositions passed with the
+recorded partial-scope limitations. The reviewer reproduced all then-current
+9 numerical and 8 inspector cases and verified the saved gate/report hashes.
+
+The repair scales the product relation to normal mantissas and checks its FMA
+residual whenever a product or quotient is at/below the minimum normal value.
+It detects inexact subnormal rounding, including rounding upward to minimum
+normal, without relying on wider `long double`. The same guard covers weighted
+signal, normalized signal and support thresholds. Exact subnormal arithmetic
+and true zero remain valid. Two added cases cover signed constant failures,
+normalization, support thresholds and exact-value preservation. Rebuilt CLI,
+public header and all 1,557 runnable CTests pass; the established lifecycle test
+remains disabled. Exact-SHA review of this repaired candidate follows its commit.

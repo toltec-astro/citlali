@@ -42,6 +42,8 @@ struct ForwardMapValues {
 // caller ordering and processing blocks do not alter accumulation order.
 // Positive coefficients are generic arithmetic here; selecting a scientific
 // coefficient family remains exclusively the PTC producer's responsibility.
+// Nonfinite arithmetic and inexact underflow fail explicitly; exact subnormal
+// products/quotients and true measured zero remain representable.
 class ForwardMapOperator {
 public:
     static ForwardMapOperator resolve(ForwardMapGrid, std::string input_domain,

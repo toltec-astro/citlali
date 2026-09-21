@@ -100,6 +100,39 @@ TEST(ForwardMap, OverflowIsFailureNotSanitizedZero) {
     EXPECT_THROW(b.apply(domain,half),std::overflow_error);
     EXPECT_THROW(op({{0,0,tiny}},0.5),std::overflow_error);
 }
+TEST(ForwardMap, NonzeroSubnormalRoundingCannotChangeConstantOrSupport) {
+    const double tiny=std::numeric_limits<double>::denorm_min();
+    const auto a=op({{0,0,tiny}});
+    // These used to return 1, 2, 2 (and their negatives) instead of failing.
+    for (double z:std::array<double,6>{0.75,1.5,2.5,-0.75,-1.5,-2.5}) {
+        const std::array<double,6> values{z,0,0,0,0,0};
+        EXPECT_THROW(a.apply(domain,values),std::overflow_error);
+    }
+    for (double z:std::array<double,5>{0,1,2,-1,-2}) {
+        const std::array<double,6> values{z,0,0,0,0,0};
+        EXPECT_EQ(a.apply(domain,values).signal,(std::vector<double>{z}));
+    }
+    // Reference*cut rounds to a nonzero subnormal, or threshold/10 does.
+    EXPECT_THROW(op({{0,0,100*tiny}},0.751),std::overflow_error);
+    EXPECT_THROW(op({{0,0,15*tiny}},1),std::overflow_error);
+    EXPECT_NO_THROW(op({{0,0,100*tiny}},0.5));
+    // Also catch an inexact result rounded up to the minimum normal value.
+    const double normal=std::numeric_limits<double>::min();
+    const auto edge=op({{0,0,normal}});
+    const std::array<double,6> almost_one{std::nextafter(1.,0.),0,0,0,0,0};
+    EXPECT_THROW(edge.apply(domain,almost_one),std::overflow_error);
+}
+TEST(ForwardMap, NormalizationRejectsInexactSubnormalButPreservesExact) {
+    const double tiny=std::numeric_limits<double>::denorm_min();
+    // Products and sums are exact: numerator=3*tiny, denominator=2.
+    const auto a=op({{0,0,1},{1,0,1}});
+    const std::array<double,6> inexact{tiny,2*tiny,0,0,0,0};
+    EXPECT_THROW(a.apply(domain,inexact),std::overflow_error);
+    const std::array<double,6> exact{tiny,tiny,0,0,0,0};
+    EXPECT_EQ(a.apply(domain,exact).signal,(std::vector<double>{tiny}));
+    const std::array<double,6> zero{tiny,-tiny,0,0,0,0};
+    EXPECT_EQ(a.apply(domain,zero).signal,(std::vector<double>{0}));
+}
 TEST(ForwardMap, OrderBlockAssemblyAndConcurrentReadOnlyApplication) {
     std::vector<ForwardMapMember> members{{0,0,1},{1,0,1},{2,0,1},{3,2,1}};
     auto a=op(members);std::reverse(members.begin(),members.end());auto b=op(members);

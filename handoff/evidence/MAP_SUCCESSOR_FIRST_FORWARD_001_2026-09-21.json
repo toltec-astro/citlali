@@ -240,20 +240,28 @@
     }
   ],
   "tests": {
-    "forward_map_cases": 9,
+    "forward_map_cases": 11,
     "input_inspection_cases": 8,
     "baseline_tool_cases": 207,
     "config_preflight": "pass",
     "complete_ctest": {
-      "registered": 1556,
-      "passed": 1555,
+      "registered": 1558,
+      "passed": 1557,
       "disabled": [
         "MapFitterLifecycle.ExactProductSequence"
       ],
       "failed": 0
     }
   },
-  "independent_candidate_review": "pending",
+  "independent_candidate_review": {
+    "initial_candidate": "6fd2d8079867bae14faded35e650dd6505813f2a",
+    "initial_tree": "e6e787626aa7a9e58b626207b9549ce6c38881c1",
+    "initial_verdict": "repair required",
+    "finding": "Nonzero inexact subnormal multiplication could violate constant preservation. Normalization and support arithmetic needed the same range-loss check.",
+    "repair": "Scaled frexp/FMA residual check for tiny products and quotients, including rounding up to minimum normal; exact subnormals and true zero preserved.",
+    "repair_test_cases": 2,
+    "repaired_candidate_verdict": "pending exact-SHA review"
+  },
   "gate_logs": {
     "final-build.log": {
       "path": "/private/tmp/citlali-map-forward-evidence-20260921/final-build.log",
@@ -274,6 +282,14 @@
     "config-preflight.log": {
       "path": "/private/tmp/citlali-map-forward-evidence-20260921/config-preflight.log",
       "sha256": "a821ce6c646d0052c8c72af1db3aabe659ad509527db819e98dc61bcb682d074"
+    },
+    "review-repair-build.log": {
+      "path": "/private/tmp/citlali-map-forward-evidence-20260921/review-repair-build.log",
+      "sha256": "ecbcb5ac4f263bb9c23b2fdb5cc6ff896c17341e3f7107fad455ae9bf5887b3b"
+    },
+    "review-repair-ctest.log": {
+      "path": "/private/tmp/citlali-map-forward-evidence-20260921/review-repair-ctest.log",
+      "sha256": "a3a7f51fc40269fb000464886deb3d8375c011a228adda5fea8de9fd5593f059"
     }
   }
 }
