@@ -36,6 +36,14 @@ frame/calibration facts, unlike optional absent response, covariance or
 original-footprint exposure. No MAP product, WCS diagnostic, source-response
 measurement, NOI/FLT companion or FRUIT result was manufactured.
 
+Independent review of repaired numerical candidate
+`b319544483645b3591fee70aa5d4ea2ea12e3569` passes with recorded partial-scope
+limitations. A discovered nonzero-subnormal rounding defect was repaired and
+regression-tested. All 1,557 runnable CTests (1,558 registered; one established
+disabled lifecycle test), 8 inspector tests, 207 baseline-tool tests and config
+preflight pass in the supplemental local environment. Review does not establish
+real-data MAP or complete-route conformance.
+
 See [the worklist and resumption record](../handoff/MAP_SUCCESSOR_FIRST_FORWARD_001_2026-09-21.md)
 for authority reconciliation, exact input evidence, tests, limits and commands.
 No integration, push, Unity access, upstream treatment change or FRUIT activation.

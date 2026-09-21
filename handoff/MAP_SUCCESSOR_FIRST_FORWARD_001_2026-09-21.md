@@ -277,3 +277,35 @@ and true zero remain valid. Two added cases cover signed constant failures,
 normalization, support thresholds and exact-value preservation. Rebuilt CLI,
 public header and all 1,557 runnable CTests pass; the established lifecycle test
 remains disabled. Exact-SHA review of this repaired candidate follows its commit.
+
+
+### Final independent numerical-candidate disposition
+
+Repaired implementation candidate **`b319544483645b3591fee70aa5d4ea2ea12e3569`**,
+tree `48bea1175ca707e599b0976d351c0b9419fdd1e2`, received independent
+**pass with recorded limitations**. The prior major finding is resolved;
+no remaining blocker, major or minor finding was identified in the implemented
+scope. Scientific/behavioral disposition passes the numerical primitives and
+bounded inspector. Architecture/ownership and repository/evidence dispositions
+pass with the existing partial-scope limitations. The reviewer independently
+reproduced 11 numerical and 8 inspector tests, verified repair-log hashes, and
+confirmed the refreshed CLI revision `gb31954448` matches this exact candidate.
+The recorded supplemental dependency identity remains `kids 04088da-dirty`;
+this is not a Spack or Unity validation claim.
+
+This review does not approve a complete MAP path, missing PTC/QC publication,
+MAP/VAL admission, frame/beam authority, bundle serialization/reload, real maps,
+response measurements, production readiness or integration. The subsequent
+closeout record changes documentation/evidence only; numerical implementation
+and test sources remain those of the reviewed candidate. Final closeout SHA,
+CLI identity and read-only documentation verification are also retained in
+`/private/tmp/citlali-map-forward-evidence-20260921/final-closeout.json`.
+
+The milestone remains blocked and incomplete. Required owner/source facts are
+(1) the authoritative celestial reference system and catalog/apparent semantics
+of `SourceRaAct/SourceDecAct`, and (2) the originating fixed nominal-beam
+definition for the APT calibration inherited from beammap 148670/redu00,
+revision `c31a60a0`. The explicit uniform-family selection is already settled.
+After those facts are bound through AST/CAL, the producer/admission/bundle work
+listed above and actual map execution remain required. No FRUIT decisions are
+requested before maps exist.

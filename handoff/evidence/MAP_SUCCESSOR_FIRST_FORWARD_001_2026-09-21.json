@@ -260,7 +260,18 @@
     "finding": "Nonzero inexact subnormal multiplication could violate constant preservation. Normalization and support arithmetic needed the same range-loss check.",
     "repair": "Scaled frexp/FMA residual check for tiny products and quotients, including rounding up to minimum normal; exact subnormals and true zero preserved.",
     "repair_test_cases": 2,
-    "repaired_candidate_verdict": "pending exact-SHA review"
+    "repaired_candidate_verdict": "pass with recorded limitations",
+    "repaired_candidate": "b319544483645b3591fee70aa5d4ea2ea12e3569",
+    "repaired_tree": "48bea1175ca707e599b0976d351c0b9419fdd1e2",
+    "scientific_behavioral": "pass for implemented numerical primitives and bounded inspector; no remaining finding",
+    "architecture_ownership": "pass with recorded partial-scope limitations",
+    "repository_evidence": "pass with recorded limitations; tracked clean, only untracked build locator",
+    "independent_reproduction": {
+      "forward_map_cases": 11,
+      "inspector_cases": 8
+    },
+    "CLI_revision": "b31954448",
+    "scope": "partial implementation only; no completed MAP route, science admission, product bundle, real maps, production readiness or integration authorization"
   },
   "gate_logs": {
     "final-build.log": {
@@ -290,6 +301,14 @@
     "review-repair-ctest.log": {
       "path": "/private/tmp/citlali-map-forward-evidence-20260921/review-repair-ctest.log",
       "sha256": "a3a7f51fc40269fb000464886deb3d8375c011a228adda5fea8de9fd5593f059"
+    },
+    "repaired-exact-candidate-build.log": {
+      "path": "/private/tmp/citlali-map-forward-evidence-20260921/repaired-exact-candidate-build.log",
+      "sha256": "0fd7c53e7a7601ee1f4733966c1facdd9944dce19b97afcd33f63fe63acdc643"
+    },
+    "repaired-exact-candidate-version.log": {
+      "path": "/private/tmp/citlali-map-forward-evidence-20260921/repaired-exact-candidate-version.log",
+      "sha256": "4e639dfe362c29e4659acd5e7f85a91aad2eeb81e12d34c4825e111deb92460b"
     }
   }
 }
