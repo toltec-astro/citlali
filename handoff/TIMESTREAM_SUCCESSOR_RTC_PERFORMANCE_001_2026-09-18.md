@@ -1196,3 +1196,76 @@ The README provides owner push/transfer/cancel/submit/inspect/return procedures.
 Inputs remain on Unity. Outputs, temporary/cache files and compact bundles remain
 under work_toltec/wilson. The existing owner Python environment is reused with
 no installation. No remote commands or GitHub pushes are performed by Codex.
+
+## Full available-network evidence closure — 2026-09-21
+
+Owner supplied the completed parallel inspection and copied the compact bundle.
+This Tier 2 reporting increment closes the authorized full available-network
+work order; it introduces no scientific executable, interface or policy change.
+Read AGENTS, toltec-context, effective governance, SCIENTIFIC_GOALS, existing
+PTC/SPOD authority and owner directive a1de99e5-194c-4486-9402-1cfc90a71bf7.
+Their previously recorded governance incorporation/digests remain effective.
+The producer is the unchanged saved-product diagnostic; consumers are this
+bounded interpretation and owner development decision. Diagnostic evidence
+does not become production validity or an automatic cleaning decision.
+
+Preflight: clean existing /private/tmp/citlali-timestream-successor-cal-001 on
+codex/timestream-successor-multinetwork-001, literal base
+f5d589c84fd75d2d4af95d06ed41b2c8af80ab45, tree
+701263b8d789ebfd519e12b3240bfb6fb50d469d. Live GitHub feature matched that SHA;
+canonical was reverified at e32c4584dec07617d6caa857d39bf13047b6c4b0. No branch
+creation, canonical movement, sibling mutation, cleanup, Unity access or push.
+Changed paths are this handoff, doc/REFACTOR_STATUS.md and the existing
+doc/TIMESTREAM_SUCCESSOR_PTC_SPOD_001_2026-09-19.md scientific report.
+
+Owner inspection at 2026-09-21T16:56:35Z: preparation 64671623 COMPLETED/0:0
+(27s), all eleven array 64671625 tasks COMPLETED/0:0, finalizer 64671626
+COMPLETED/0:0 (7m34s). Finalizer batch MaxRSS 15,391,260 KiB is kept separate
+from individual process measurements. Networks 0/1 were rehashed and reused
+from serial job 64668312; nine diagnostic tasks ran concurrently. STATUS is
+PASS, while accounting correctly remains completed-equivalent-with-partial-results
+because network 4's original failed PTC fit is preserved. All 44 earlier
+worker-count comparisons in job 64656301 remain PASS.
+
+Archive results-parallel-20260921T165411130692.tar.gz SHA256:
+228e9da61b343c1fd795014b2eda44c547828aa92aba66f7c5219d55ac353c96.
+It and its readiness marker remain in
+/Users/gwilson/work_toltec/local_data/2026-refactor/citlali-successor-all-networks-20260920-return.
+Local intake checked every one of 162 manifest entries, exact inventory, safe
+regular-file extraction, 12 sealed records, 13 current task FINALs, eleven
+Slurm outcomes and 77 returned result/PNG hashes. Forty-four NPZ outputs and
+original scientific arrays remain on Unity; local review uses recorded hashes,
+not a claim of fresh local array verification. Existing source before/after is
+clean 5cd3e28396a08917986f3ec73314a69d3605bd0d, tree
+ceeaa822c24681c99051feb703171af683d04bd1. All four per-network diagnostic tool
+hashes match that runtime and f5d589c84. The unchanged summary script is also
+byte-identical. Numerical libraries directly report one thread.
+
+Fourteen scheduling and seventeen diagnostic tests passed in the returned
+preparation logs. Local report verification independently recomputes array
+totals, matches every residual summary to the exact full JSON, and checks
+population/cadence, RTC attempt 1001, CAL plan 1, VAL generation 2, source and
+output bindings. Original input-unchanged receipts remain true. This reporting
+change requires no repeat build, numerical replay or broader test campaign.
+Risks reviewed: confusing total power with pickup; conditional controls with
+physical noise/significance; sparse diagnostic support with production loss;
+reuse with a new speedup; and partial availability with universal qualification.
+The scientific report names those limits explicitly.
+
+Durable report/evidence root:
+/Users/gwilson/work_toltec/local_data/2026-refactor/citlali-successor-full-array-result-20260921.
+INTAKE.json and audit_return.py bind the intake; SCIENCE_REVIEW.md and its
+extraction record bind independent scientific interpretation. PLOT_DATA.json
+and plot_summary.py reproduce eleven-network-residual.png/.pdf from the
+returned JSON only. No new numerical treatment was run. Exact reporting-SHA
+review and final commit identity are recorded externally in INDEPENDENT_REVIEW
+and FINALIZATION to avoid a self-referential commit.
+
+Scientific conclusion: retain observed-entry ALS10. Shared input near 11 Hz
+generalizes, but remaining conditional-control excess is network-specific;
+network 12 warrants one proposed paired source-injection comparison of a fixed
+longer-learned 11.006-Hz treatment, with held-out support and frozen/relearned
+response. No new atmospheric-method campaign is supported. This is the single
+next owner decision, not authorization or implementation. Source preservation,
+coverage and uncertainty remain separate from development execution success.
+MAP/FRUIT and automatic selection remain excluded. The owner performs pushes.

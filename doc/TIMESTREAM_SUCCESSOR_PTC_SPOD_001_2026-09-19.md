@@ -1,5 +1,227 @@
 # Bounded PTC frequency/time diagnostic — 2026-09-19
 
+## Full available-network result — 2026-09-21
+
+The bounded observation 152390/0/2 campaign is complete with preserved partial
+results. The unchanged observed-entry ALS10 baseline runs RTC → CAL → PTC on
+all eleven supplied networks; all 44 worker-count comparisons pass. The returned
+parallel diagnostic is PASS for all eleven networks. This establishes development
+coverage and reproducibility, not qualification of every observing mode or
+permission to change treatment. The original September 19 small-cohort result
+below remains historical evidence; this section supplies the broader census.
+
+**Decision: retain ALS10. One network-12-only source-preservation experiment is
+justified by remaining identifiable 11 Hz structure. No general atmospheric
+interval change or blanket extra spectral cleaning is justified by this run.**
+
+### Coverage and support
+
+The approximately 1,241.4-second SCIENCE observation requests 5,518 detectors;
+3,962 have nonzero CAL support and some PTC support. Networks 6 and 10 were not
+supplied. The accounting JSON groups those missing identities under `unbound`;
+its empty per-array missing lists do not mean complete thirteen-network coverage.
+Shorter-array output cadences remain 122.0703125 Hz, versus 61.03515625 Hz for
+networks 11/12. CAL/PTC values retain their mJy/nominal-beam convention.
+
+| Array | Supplied networks | Requested | CAL/PTC-supported | CAL detector-s | PTC detector-s |
+|---|---|---:|---:|---:|---:|
+|1.1 mm|0–5|3,173|2,296|2,831,134.253|2,827,960.492|
+|1.4 mm|7–9|1,368|932|1,151,820.644|1,151,820.644|
+|2.0 mm|11–12|977|734|899,181.953|899,181.953|
+
+Network 4 scan 121 retains its one failed ALS fit: native interval
+`[147621,148841)`, 319 fit detectors, 100 iterations, not converged. Its 387,422
+eligible CAL samples explain all CAL-to-PTC loss: 3,173.761 detector-seconds,
+0.0650% of all CAL detector-time (0.806% within network 4). Other intervals remain
+available. There are 1,364 fitted intervals and one failure; failure is not
+converted into success by the diagnostic PASS.
+
+| Network | Supported / requested | Full common s | Full distinct Fourier s, 2s / 8s | Full 8s windows | Supplement detectors | Supplement 8s distinct s / windows |
+|---:|---:|---:|---:|---:|---:|---:|
+|0|498 / 630|1098.2|1026.4 / 776.0|139|449|863.9 / 165|
+|1|406 / 494|1084.3|975.4 / 644.0|119|366|1059.7 / 228|
+|2|372 / 510|941.5|837.5 / 528.0|95|335|851.9 / 162|
+|3|382 / 533|1083.7|1031.4 / 855.9|166|344|979.9 / 194|
+|4|320 / 532|650.7|412.8 / 92.0|13|288|520.0 / 91|
+|5|318 / 474|1121.1|1064.4 / 859.9|168|287|955.8 / 193|
+|7|184 / 420|1168.6|1116.4 / 919.9|180|166|1003.8 / 203|
+|8|384 / 460|1162.4|1058.4 / 739.9|140|346|1099.7 / 240|
+|9|364 / 488|1139.7|1119.4 / 1031.7|225|328|1163.5 / 265|
+|11|371 / 486|843.2|786.5 / 583.7|103|334|779.6 / 150|
+|12|363 / 491|738.6|661.6 / 415.8|70|327|675.6 / 130|
+
+Every primary population contains all CAL-supported detectors. Every supplement
+uses the fixed 90% cohort selected solely by temporal availability under the
+existing full/90%/75% rule. This favors continuous support; it is not an unbiased
+replacement census. Diagnostic intersection/window losses are not production
+exclusions. Eight-second full-population coverage spans 7.4–83.1% of the
+observation; supplementation raises it to 41.9–93.7%, without changing any
+production mask. Window counts include overlap and are not independent counts.
+Per-pool realization/rank limits and exact memberships remain in the result JSON.
+
+### What the spectra establish
+
+The fixed near-11-Hz CAL feature generalizes across all three arrays. At the
+eight-second bin (10.9951 Hz on shorter arrays, 11.0063 Hz on 2 mm), most networks
+have a broadly distributed leading pattern and strong agreement between
+separated pooled halves. Network 4 is an exception: effective participation is
+only 2.6 detectors, with 13 windows and overlap 0.052. Its supplement improves
+time support but participation remains 2.4. Network 9 is more concentrated
+(14.6) than the other shared examples. Participation is a loading statistic,
+not a detector membership count. No inter-network phase coherence or single
+physical origin is inferred.
+
+| Network | Input leading power fraction | Phase-control range | Effective participation | Separated-half pattern overlap |
+|---:|---:|---:|---:|---:|
+|0|92.3%|7.3–8.3%|116.2|0.995|
+|1|51.3%|20.2–20.5%|123.5|0.857|
+|2|58.2%|16.8–17.4%|30.3|0.881|
+|3|92.8%|9.3–9.7%|93.1|0.996|
+|4|71.9%|52.4–55.0%|2.6|0.052|
+|5|86.4%|10.0–10.3%|127.2|0.987|
+|7|98.7%|7.2–7.9%|75.2|0.999|
+|8|91.5%|12.7–13.3%|67.4|0.990|
+|9|92.4%|20.7–21.2%|14.6|0.996|
+|11|95.3%|7.2–8.1%|133.9|0.995|
+|12|52.1%|8.7–9.1%|147.1|0.919|
+
+Remaining structure after PTC is network-specific. On full two-second support,
+projection of PTC output onto a separately learned CAL pattern exceeds all eight
+frozen-operator phase controls in both folds for networks 1, 2, 8 and 12. The
+90% supplement repeats that comparison for 1, 2 and 12, but not 8. Network 11
+is mixed; 0, 3, 4, 5, 7 and 9 do not exceed those controls in either full
+two-second fold. This is a descriptive comparison, not a detector rejection
+threshold or proof of zero contamination elsewhere. Absolute pattern PSD also
+matters: network 8's two-second full residual is only 823–839, versus
+104,300–220,730 (1), 58,032–67,741 (2), and 51,104–53,852 (12), with different
+populations and support. These are collective unit-norm-pattern PSDs, not
+per-detector sensitivity estimates.
+
+Network 12 gives the clearest consistent follow-up case. Exact matched-subset
+PSD in `(mJy/nominal-beam)^2/Hz` along the separately learned unit-norm pattern:
+
+| Profile / fold | CAL pattern PSD | PTC pattern PSD | Eight conditional controls | Controlled evaluation windows |
+|---|---:|---:|---:|---:|
+|Full 2s A|395,835|53,852|11,281–14,973|75|
+|Full 2s B|434,059|51,104|12,110–15,710|75|
+|Full 8s A|610,758|60,321|3,724–8,100|6|
+|90% 2s A|326,839|43,288|6,620–9,053|69|
+|90% 2s B|367,838|37,608|8,390–10,437|69|
+
+Full 2s uses 471 matched/controlled windows overall, with 90 separated training
+windows per fold. Full 8s has 14 matched/controlled windows; the available fold
+trains on 17 windows. Its opposite fold has no evaluation support. The supplement
+has 645 matched but 460 controlled 2s windows; the table uses only each fold's
+69 controlled evaluations. Supplement 8s has no fold with two controlled
+evaluations, so it supplies no confirming pattern-control result. These are
+important limits on repeatability, not reasons to substitute excluded samples.
+
+The controls preserve observed individual spectra, destroy input coherence and
+apply the actual frozen PTC operator, including its induced correlations. They
+are eight conditional realizations, not a physical noise estimate, confidence
+interval or astronomical transfer test. Separated pattern training/evaluation
+windows share no samples, but the production operator was learned from the
+saved data and slow variations can remain correlated. The former roughly 53%
+total-bin-power ratio is **not line-removal efficiency**. Two-second Hann
+resolution also blends shoulders; the eight-second 10.7562/11.0063-Hz leading
+patterns have overlap 0.00283 and must not be treated as one moving peak.
+Existing notches and all CAL/PTC preprocessing histories remain bound.
+
+Large individual-channel peaks recur on multiple networks: examples include
+network 0 channel 348, network 1 channel 492, network 5 channel 76, and network
+12 channels 74/121. At inspected 15.75/16.75/20-Hz bins, some leading fractions
+closely match the diagonal-preserving phase controls and participation is near
+one. They are not evidence that every detector shares a disturbance. Other
+features, including network 3 and 16.75-Hz examples on 7/8, are more distributed;
+this census does not assign all peaks the same mechanism or create new flags.
+
+Low-frequency uncertainty still limits the atmospheric conclusion. Full 8s
+local pools have at most 27 realizations (network 4 has only 0–7); their rank
+cannot be the full detector count. Supplemental support does not resolve
+fluctuations below approximately 0.125 Hz. Network 12's 0.5-Hz median
+between-pool/within-pool leading overlaps are 0.165/0.156 full and 0.258/0.132
+supplement: differences remain compatible with estimation uncertainty.
+Network 5 has a narrower indication of leading-direction change at 0.5 Hz in
+2s profiles (0.482/0.830 full; 0.470/0.862 supplement), while its three-mode span
+is more stable (0.827/0.855; 0.837/0.834). The 8s comparison does not reinforce
+a broad evolution claim. These descriptive overlaps cannot separate changing
+sky structure, atmosphere, gains or detector health. Failure to establish
+evolution does not establish stationarity.
+
+### Execution costs and next decision
+
+The eleven-network reduction timings remain 167.4, 116.5, 66.6, 41.1 and
+25.1 minutes for 1/2/4/8/12 requested workers. Twelve requests start eleven
+network workers, with measured peak process RSS 81.31 GB and 6.66x single-run
+speedup over one worker. All 44 exact worker comparisons passed separately in
+job 64656301. No optional timing repeats were performed. These are development
+processing costs with normal evidence/publication, not diagnostic costs.
+
+The parallel diagnostic continuation took approximately 36 minutes from
+submission, including its 7m34s finalizer. Networks 0/1 reused already completed
+serial results; nine new computations were concurrent. Their individual
+scientific-process times range 6.27–26.01 minutes. This is not a clean
+eleven-network serial/parallel speedup measurement.
+
+| Network | Diagnostic process min | Process peak RSS GB | Origin |
+|---:|---:|---:|---|
+|0|25.61|6.46|prior serial, reused|
+|1|19.03|5.52|prior serial, reused|
+|2|15.06|4.92|parallel|
+|3|22.15|5.23|parallel|
+|4|6.27|3.89|parallel|
+|5|21.08|4.42|parallel|
+|7|13.66|2.97|parallel|
+|8|23.29|5.32|parallel|
+|9|26.01|5.25|parallel|
+|11|9.89|2.62|parallel|
+|12|8.21|2.47|parallel|
+
+Across the eleven completed diagnostic computations, 85.2% of their summed
+190.26 process-wall minutes falls under `comparisons`: repeated phase controls,
+held-out patterns, subspace comparisons and matched residual decompositions.
+This includes numerical work, not merely comparing files. Individual input
+preparation took 59–93 seconds; publication 8–12 seconds, rounded. Summed
+process times are not campaign elapsed time. NumPy/SciPy OpenBLAS each report
+one thread on Unity. The finalizer's summary subprocess used 115.5 seconds and
+0.248 GB sampled process-family RSS; its whole Slurm batch MaxRSS was
+15,391,260 KiB. Those are distinct scopes/measurements and not interchangeable.
+
+**Proposed next experiment, requiring owner authorization:** compare ALS10
+against one fixed, longer-learned treatment of network 12's specific 11.006-Hz
+pattern, with separate learning/evaluation and paired astronomical injections.
+Measure residual structure and source amplitude/waveform/shape together using
+both frozen-state and relearned-state response. Preserve masks, existing
+notches, local broadband fits and rank; do not chase the 10.756-Hz feature,
+sweep intervals/ranks, or add other networks to this experiment. This can decide
+whether remaining contamination offers useful source-preserving recovery.
+It does not authorize treatment now. ALS10 stays the default development
+baseline; MAP, FRUIT and automatic selection remain outside this work order.
+
+### Evidence binding
+
+Owner-returned archive `results-parallel-20260921T165411130692.tar.gz` has SHA256
+`228e9da61b343c1fd795014b2eda44c547828aa92aba66f7c5219d55ac353c96`.
+All 162 compact manifest entries, 12 sealed records, 13 current task FINALs,
+eleven Slurm task outcomes and 77 returned result/plot hashes verify locally.
+Forty-four numerical NPZ products and original science arrays remain on Unity;
+their job-recorded hashes were not independently recomputed on the Mac.
+Fourteen scheduling and seventeen diagnostic tests passed in preparation.
+Before/after scientific source is clean at
+`5cd3e28396a08917986f3ec73314a69d3605bd0d`; scheduling/reporting source is
+`f5d589c84fd75d2d4af95d06ed41b2c8af80ab45`. All diagnostic code hashes match the
+runtime; CAL plan 1, RTC attempt 1001 and VAL generation 2 remain explicit.
+
+Durable intake, compact derivation, independently reviewed interpretation and
+summary figure are under
+`/Users/gwilson/work_toltec/local_data/2026-refactor/citlali-successor-full-array-result-20260921`.
+Original returned archive/marker remain in the sibling
+`citlali-successor-all-networks-20260920-return` directory. Exact per-network
+JSON metric paths and limitations are in `SCIENCE_REVIEW.md`; `INTAKE.json`
+records coverage/cost cross-checks. The existing
+[performance handoff](../handoff/TIMESTREAM_SUCCESSOR_RTC_PERFORMANCE_001_2026-09-18.md)
+records repository and review closure. No scientific executable changed here.
+
 ## Work order / preflight
 
 Owner: Grant Wilson, directive `4dad2fdb-901a-4483-b70e-66bca9346dde`.

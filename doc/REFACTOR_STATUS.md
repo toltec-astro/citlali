@@ -1,5 +1,41 @@
 # Citlali Refactor Status
 
+## Full available-network campaign complete — 2026-09-21
+
+Owner-returned parallel diagnostic evidence verifies PASS for all eleven
+supplied networks: preparation 64671623, array 64671625, finalizer 64671626.
+All 162 compact manifest entries and current completion records verify. Networks
+0/1 reused sealed serial results; the remaining nine ran concurrently. The
+continuation took about 36 minutes including 7m34s finalization. No reduction or
+scientific implementation was changed; runtime remains exact 5cd3e2839 and
+parallel scheduling source f5d589c84. Earlier pending statements below are
+historical. The 44 exact worker comparisons and five reduction timings remain
+valid at their original source identities.
+
+Coverage: 5,518 requested detectors, 3,962 with CAL and some PTC support across
+all three arrays; networks 6/10 absent. The sole network-4 fit failure remains
+explicit, accounting for 0.0650% of all CAL detector-time. Diagnostic time
+intersections and support-only 90% supplements do not change production masks.
+Twelve requested / eleven active workers remain the fastest tested development
+setting: 25.1 minutes, 81.31 GB sampled process peak, 6.66x serial speedup from
+single unrepeated runs. The diagnostic costs are separate; 85.2% of summed
+process-wall time is numerical residual/control comparison work.
+
+Science: shared near-11-Hz CAL structure generalizes across arrays, with
+concentrated-detector exceptions. Remaining identifiable output structure is
+network-specific. Network 12 is the clearest consistent case above conditional
+frozen-operator controls. Several large peaks chiefly reflect individual
+channels; low-frequency evidence does not justify changing atmospheric learning
+intervals. Controls are not physical noise estimates or source-transfer tests.
+
+Retain the existing ALS10 development baseline. The one proposed next experiment
+is a network-12-only held-out, paired-injection comparison against one fixed,
+longer-learned 11.006-Hz treatment, measuring residual suppression and source
+distortion together. This proposal requires owner authorization and has not been
+implemented. No automatic rank/cleaner selection, new flags, MAP or FRUIT.
+See the [full population/science/cost result](TIMESTREAM_SUCCESSOR_PTC_SPOD_001_2026-09-19.md#full-available-network-result--2026-09-21)
+and existing performance handoff for exact evidence and review bindings.
+
 ## Parallel diagnostic scheduling — 2026-09-21
 
 The owner requested concurrent network diagnostics after serial job 64668312
