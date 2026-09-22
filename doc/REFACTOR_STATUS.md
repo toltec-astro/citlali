@@ -1,5 +1,29 @@
 # Citlali Refactor Status
 
+## POINT 152389 maps produced; final review pending — 2026-09-22
+
+The requested central source is clearly visible in all three first-forward maps
+of 1146+399. Runtime `a42373f75` preserves no spatial mask, observed ALS rank 10,
+J2000 and the selected nominal beams/uniform MAP coefficients. Nine usable
+network publications contribute; RTC networks 2/11 failed on transitions without
+processing-scan support, and network 3 scan 5 failed ALS convergence. Those
+failures remain excluded and preserved: this is not an all-network upstream PASS.
+
+Final maps use 2 arcsec pixels and the previous 0.5 coverage cut. Measured
+major/minor FWHM is 5.8×5.1, 7.2×6.3, 9.5×8.5 arcsec, with consistent centroids
+near 4.4 arcsec east and 5.3 arcsec south. These are descriptive first-pass source
+fits, not a measured full-chain response. All bundles pass exact PTC/operator
+replay, WCS, support and provenance checks. Current gates: 1,284 runnable CTests,
+175 successor Python tests, two real-parent mutation checks and full config
+preflight pass. MAP cost 57.51 s wall / 34.40 s CPU / 1.465 GB peak RSS.
+
+Products, retained upstream failures and diagnostics are under
+`/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-forward-map-20260922`.
+See the existing MAP handoff and
+`handoff/evidence/MAP_POINT_152389_FORWARD_2026-09-22.json`. Independent final
+review remains pending. No FRUIT, Unity access, push or canonical integration.
+Earlier preparation/selection-pending entries below are historical.
+
 ## Owner-selected POINT 152389 follow-on in progress — 2026-09-22
 
 The owner requests POINT 152389 (1146+399) as the first recognizable-source

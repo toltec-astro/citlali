@@ -61,6 +61,7 @@ def replay_handoffs(root,plan,numerator,hits,verify_operator=True,probe_fwhm_arc
             path=(root/q[key+'_file']).resolve();require(path.is_relative_to(root),'handoff escapes bundle')
             paths[key]=checked(path,q[key+'_sha256'])
         pub,coef,ast,qc,decision=(read_yaml(paths[k]) for k in ('publication','coefficient','AST_binding','coefficient_QC','MAP_evaluation'))
+        require(pub['observation']==plan['observation'] and pub['array']==plan['array'],'PTC observation/array differs from MAP plan')
         require(q['MAP_evaluation_identity']=='sha256:'+q['MAP_evaluation_sha256'],'MAP decision immutable identity mismatch')
         require(all(decision[k]==v for k,v in EVALUATION_BINDINGS.items()),'MAP source tuple mismatch')
         n=q['input_rows'];support=q['support_reference']
@@ -156,6 +157,7 @@ def inspect(root, verify_operator=True):
     for name,sha in b['files'].items():require(digest(root/name)==sha,f'component digest mismatch: {name}')
     require(b['product_identity']=='SCI-MAP-base:'+b['plan_sha256']+':'+b['files']['map.fits'],'MAP product identity differs')
     p=read_yaml(root/'plan.yaml');require(digest(root/'plan.yaml')==b['plan_sha256'],'foreign plan')
+    require(p['observation']==b['observation'] and p['array']==b['array'],'MAP bundle observation/array differs from plan')
     rows=np.fromfile(root/'output-rows.u64',dtype='<u8')
     with fits.open(root/'map.fits',checksum=True,memmap=False) as h:
         signal=np.asarray(h[0].data,dtype=float);N=np.asarray(h['NUMERATOR'].data,dtype=float)
@@ -195,7 +197,7 @@ def inspect(root, verify_operator=True):
     response=replay_handoffs(root,p,N,hits,verify_operator,b['nominal_beam_fwhm_arcsec'] if verify_operator else None)
     probe_report=None if response is None else summarize_map_probe(response,Q,science,p['WCS'],b['nominal_beam_fwhm_arcsec'],hits)
     return {'schema':'citlali-forward-map-inspection-v1','bundle':str(root),'product_identity':b['product_identity'],
-            'array':b['array'],'shape_yx':list(signal.shape),'science_pixels':int(science.sum()),
+            'observation':b['observation'],'array':b['array'],'shape_yx':list(signal.shape),'science_pixels':int(science.sum()),
             'contributing_occurrences':int(hits.sum()),'positive_and_negative_science_pixels':[int(np.sum(signal[science]>0)),int(np.sum(signal[science]<0))],
             'signal_min_max_mJy_per_nominal_beam':[float(signal[science].min()),float(signal[science].max())],
             'wcs_comparison_population':len(points),'wcs_max_arcsec':max_arcsec,'sparse_operator_verified':verify_operator,'exact_PTC_numerator_replay':verify_operator,'measured_MAP_local_source_probe':probe_report,

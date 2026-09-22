@@ -1,0 +1,408 @@
+{
+  "schema": "citlali-point-forward-evidence-v1",
+  "observation": "152389/0/2",
+  "target": "1146+399",
+  "runtime_commit": "a42373f7576ea9b90f3a3b17393122f25a802735",
+  "executable_sha256": "ddda17cb86ae1d37adbf0d235edac056670df11fc01af487de758fc328f8aa64",
+  "result_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-forward-map-20260922",
+  "owner_source_protection": "owner-152389-first-MAP-no-spatial-mask-2026-09-22",
+  "MAP_products": "map-pass/products",
+  "pixel_arcsec": 2,
+  "coverage_cut": 0.5,
+  "PTC_method": "observed-als",
+  "PTC_rank": 10,
+  "network_results": [
+    {
+      "network": 0,
+      "exit_code": 0,
+      "state": "completed",
+      "PTC_retained": 3856977,
+      "failed_fits": 0,
+      "rank": 10,
+      "method": "observed-als"
+    },
+    {
+      "network": 1,
+      "exit_code": 0,
+      "state": "completed",
+      "PTC_retained": 2744999,
+      "failed_fits": 0,
+      "rank": 10,
+      "method": "observed-als"
+    },
+    {
+      "network": 2,
+      "exit_code": 1,
+      "state": "failed-preserved"
+    },
+    {
+      "network": 3,
+      "exit_code": 2,
+      "state": "partial-or-unavailable-preserved",
+      "PTC_retained": 2181963,
+      "failed_fits": 1,
+      "rank": 10,
+      "method": "observed-als"
+    },
+    {
+      "network": 4,
+      "exit_code": 0,
+      "state": "completed",
+      "PTC_retained": 2440642,
+      "failed_fits": 0,
+      "rank": 10,
+      "method": "observed-als"
+    },
+    {
+      "network": 5,
+      "exit_code": 0,
+      "state": "completed",
+      "PTC_retained": 2228540,
+      "failed_fits": 0,
+      "rank": 10,
+      "method": "observed-als"
+    },
+    {
+      "network": 7,
+      "exit_code": 0,
+      "state": "completed",
+      "PTC_retained": 1466000,
+      "failed_fits": 0,
+      "rank": 10,
+      "method": "observed-als"
+    },
+    {
+      "network": 8,
+      "exit_code": 0,
+      "state": "completed",
+      "PTC_retained": 2758344,
+      "failed_fits": 0,
+      "rank": 10,
+      "method": "observed-als"
+    },
+    {
+      "network": 9,
+      "exit_code": 0,
+      "state": "completed",
+      "PTC_retained": 2494810,
+      "failed_fits": 0,
+      "rank": 10,
+      "method": "observed-als"
+    },
+    {
+      "network": 11,
+      "exit_code": 1,
+      "state": "failed-preserved"
+    },
+    {
+      "network": 12,
+      "exit_code": 0,
+      "state": "completed",
+      "PTC_retained": 1402249,
+      "failed_fits": 0,
+      "rank": 10,
+      "method": "observed-als"
+    }
+  ],
+  "source_measurements": {
+    "schema": "citlali-point-source-description-v1",
+    "observation": 152389,
+    "arrays": [
+      {
+        "method": "unweighted elliptical Gaussian plus constant; 40 arcsec radius around AST center",
+        "search_and_centroid_domain": "20 arcsec around AST center; positive-amplitude descriptive fit",
+        "nominal_calibration_beam_fwhm_arcsec": 5.0,
+        "central_pixel_peak_mJy_per_nominal_beam": 732.3619282582574,
+        "fitted_amplitude_above_constant_mJy_per_nominal_beam": 830.2641203555588,
+        "fitted_constant_mJy_per_nominal_beam": -6.183028241886917,
+        "centroid_tangent_east_north_arcsec": [
+          4.5228203046545365,
+          -5.400503329828162
+        ],
+        "centroid_FK5_J2000_ra_dec_deg": [
+          176.7445473433294,
+          39.97469540419464
+        ],
+        "measured_fwhm_major_minor_arcsec": [
+          5.802161301880409,
+          5.072738756272115
+        ],
+        "measured_fwhm_geometric_mean_arcsec": 5.425204927575641,
+        "fit_pixels": 1257,
+        "fit_residual_rms_mJy_per_nominal_beam": 12.336620179762075,
+        "fit_constraint_active": false,
+        "interpretation": "first-pass source morphology only; no flux recovery, uncertainty, detection significance or full-chain transfer claim",
+        "array": "a1100",
+        "MAP_product_identity": "SCI-MAP-base:826c86450dbf6a9b44cb5e31e15fbaec3fc274ea8a2e66bfa1f41d121d4d160c:61e8317fbf8e3bdefae6d1adc343d7a77c0c9d0e52d22e68fcb7c0f70e24614f",
+        "map_sha256": "61e8317fbf8e3bdefae6d1adc343d7a77c0c9d0e52d22e68fcb7c0f70e24614f"
+      },
+      {
+        "method": "unweighted elliptical Gaussian plus constant; 40 arcsec radius around AST center",
+        "search_and_centroid_domain": "20 arcsec around AST center; positive-amplitude descriptive fit",
+        "nominal_calibration_beam_fwhm_arcsec": 7.5,
+        "central_pixel_peak_mJy_per_nominal_beam": 525.3492454735518,
+        "fitted_amplitude_above_constant_mJy_per_nominal_beam": 554.1512628929715,
+        "fitted_constant_mJy_per_nominal_beam": -1.5540001300123354,
+        "centroid_tangent_east_north_arcsec": [
+          4.377816219247622,
+          -5.404829421712671
+        ],
+        "centroid_FK5_J2000_ra_dec_deg": [
+          176.74449478238867,
+          39.97469420323102
+        ],
+        "measured_fwhm_major_minor_arcsec": [
+          7.164706516758785,
+          6.281779080166167
+        ],
+        "measured_fwhm_geometric_mean_arcsec": 6.708733376167631,
+        "fit_pixels": 1257,
+        "fit_residual_rms_mJy_per_nominal_beam": 11.469791224033099,
+        "fit_constraint_active": false,
+        "interpretation": "first-pass source morphology only; no flux recovery, uncertainty, detection significance or full-chain transfer claim",
+        "array": "a1400",
+        "MAP_product_identity": "SCI-MAP-base:d3606c697ca38bf3f80f0d9b4582794aa836a45879ac04121fd9c3bdfde87a3b:5a265e81239e8a80a686a22a27161f0f2abfec063e91e3480bb91c95ba22c4d5",
+        "map_sha256": "5a265e81239e8a80a686a22a27161f0f2abfec063e91e3480bb91c95ba22c4d5"
+      },
+      {
+        "method": "unweighted elliptical Gaussian plus constant; 40 arcsec radius around AST center",
+        "search_and_centroid_domain": "20 arcsec around AST center; positive-amplitude descriptive fit",
+        "nominal_calibration_beam_fwhm_arcsec": 10.0,
+        "central_pixel_peak_mJy_per_nominal_beam": 679.6354185807911,
+        "fitted_amplitude_above_constant_mJy_per_nominal_beam": 731.6442705446574,
+        "fitted_constant_mJy_per_nominal_beam": -5.816898623918679,
+        "centroid_tangent_east_north_arcsec": [
+          4.317733464880407,
+          -5.047802668698256
+        ],
+        "centroid_FK5_J2000_ra_dec_deg": [
+          176.7444730059331,
+          39.974793377623904
+        ],
+        "measured_fwhm_major_minor_arcsec": [
+          9.488418877140898,
+          8.459071144547055
+        ],
+        "measured_fwhm_geometric_mean_arcsec": 8.958973732018537,
+        "fit_pixels": 1140,
+        "fit_residual_rms_mJy_per_nominal_beam": 29.875657402966496,
+        "fit_constraint_active": false,
+        "interpretation": "first-pass source morphology only; no flux recovery, uncertainty, detection significance or full-chain transfer claim",
+        "array": "a2000",
+        "MAP_product_identity": "SCI-MAP-base:6e54944251d6c9f54ae81de69f16f256b5132c7780c9a610b821a75338080889:d5d595b69a0ab8165046a9b9e58365ed83850570b1dfb930b05f274c0a18b860",
+        "map_sha256": "d5d595b69a0ab8165046a9b9e58365ed83850570b1dfb930b05f274c0a18b860"
+      }
+    ],
+    "full_procedure_response": "unavailable; actual source fit is not a calibrated injection-recovery test"
+  },
+  "MAP_attempt": {
+    "schema": "citlali-forward-map-attempt-v1",
+    "request_identity": "sha256:a693ef7d39033f488c118ecafb63e04dd868ab805ac0cade55b87c00ca2b5efd",
+    "owner_binding": "sha256:219f6641b40a1cfc049eae24e320a14fe06f014bf804a87223a4b8772ea932aa",
+    "MAP_authority": "SCI-MAP-v0.2-r0.4",
+    "source_revision": "v2-ngc4449-memory-repair-187df04b-443-ga42373f75",
+    "outcome": "success",
+    "FRUIT_executed": false,
+    "upstream_science_reexecuted": false,
+    "reached_stages": [
+      "requested",
+      "effective"
+    ],
+    "input_loading_seconds": 31.415815042,
+    "array_lifecycle": {
+      "a1100": [
+        "requested",
+        "effective",
+        "observation_resolved",
+        "applied",
+        "realized"
+      ],
+      "a1400": [
+        "requested",
+        "effective",
+        "observation_resolved",
+        "applied",
+        "realized"
+      ],
+      "a2000": [
+        "requested",
+        "effective",
+        "observation_resolved",
+        "applied",
+        "realized"
+      ]
+    },
+    "products": {
+      "a1100": "239bce25b2d86ac692be261ae2d31dc1e1b2536b29e9801f9e2a7417a86acf3f",
+      "a1400": "8072090b2e9179431f3aa9043869ced248c53b38bd113fcde337ebe0114ebb7c",
+      "a2000": "8b94cfdd7e56612ea90c3dd38b475ef622db14ff7a0158169391b434cb0b719b"
+    },
+    "input_manifest_sha256": "89ccf3392007301c89e78e95988a20e3881b1f7a5564dc410b37fd6e91a8d383",
+    "lifecycle_scope": "root request/effective only; independent five-stage lifecycle per array",
+    "wall_seconds": 57.026619167,
+    "cpu_seconds": 34.399532,
+    "process_peak_rss_bytes": 1464582144
+  },
+  "upstream_cost": {
+    "wall_seconds": 82.24905962496996,
+    "cpu_seconds": 171.247552,
+    "peak_rss_bytes": 3735715840,
+    "workers": 4,
+    "logical_cpu_count": 14,
+    "exit_code": 1
+  },
+  "MAP_cost": {
+    "wall_seconds": 57.50749016716145,
+    "cpu_seconds": 34.399532,
+    "peak_rss_bytes": 1464582144,
+    "exit_code": 0
+  },
+  "validation": {
+    "CTests_passed": 1284,
+    "established_disabled": 1,
+    "successor_python": 175,
+    "baseline_python_preparation_checkpoint": 207,
+    "full_config_preflight": "pass",
+    "real_MAP_parent_mutations": 2,
+    "serial_four_worker_network0_numeric_files_bit_identical": 48,
+    "visual_inspection": "central source and all three signed-signal/normalization plots inspected"
+  },
+  "independent_review": "pending final exact diagnostic candidate",
+  "limitations": [
+    "RTC networks 2 and 11 failed: admitted transitions lack existing scan support; original records preserved",
+    "Network3 scan5 ALS iteration limit100 not converged:420413 eligible cells excluded; no solver change",
+    "Networks6 and10 not supplied",
+    "Full upstream response, covariance and original-footprint exposure unavailable",
+    "Descriptive Gaussian fits are not flux recovery, detection significance or measured full-chain transfer",
+    "Supplemental local AppleClang/Homebrew; dependency kids04088da-dirty as previously disclosed; no Unity/Spack qualification",
+    "No FRUIT, push, canonical integration or production activation"
+  ],
+  "bundle_inspections": {
+    "a1100": {
+      "schema": "citlali-forward-map-inspection-v1",
+      "bundle": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-forward-map-20260922/map-pass/products/a1100",
+      "product_identity": "SCI-MAP-base:826c86450dbf6a9b44cb5e31e15fbaec3fc274ea8a2e66bfa1f41d121d4d160c:61e8317fbf8e3bdefae6d1adc343d7a77c0c9d0e52d22e68fcb7c0f70e24614f",
+      "observation": "obs:152389_0_2",
+      "array": "a1100",
+      "shape_yx": [
+        207,
+        207
+      ],
+      "science_pixels": 10598,
+      "contributing_occurrences": 13453121,
+      "positive_and_negative_science_pixels": [
+        5019,
+        5579
+      ],
+      "signal_min_max_mJy_per_nominal_beam": [
+        -75.32730965967872,
+        732.3619282582574
+      ],
+      "wcs_comparison_population": 43677,
+      "wcs_max_arcsec": 1.5640237977967972e-10,
+      "sparse_operator_verified": true,
+      "exact_PTC_numerator_replay": true,
+      "measured_MAP_local_source_probe": {
+        "status": "measured",
+        "scope": "MAP-only fixed realized operator; synthetic source inserted AFTER PTC; no RTC/CAL/PTC attenuation or measured-PSF claim",
+        "input": "unit-peak circular Gaussian centered on declared tangent origin, truncated at 8 sigma",
+        "input_fwhm_arcsec": 5,
+        "input_peak_mJy_per_nominal_beam": 1,
+        "output_peak_mJy_per_nominal_beam": 0.9293230688975351,
+        "integrated_ratio_to_template": 0.998749821119415,
+        "output_centroid_tangent_arcsec": [
+          -0.03343180411145774,
+          0.009333630918697317
+        ],
+        "output_second_moment_equivalent_fwhm_arcsec": 5.179769119599856,
+        "constant_unit_response_max_error": 0.0,
+        "full_procedure_response": "unavailable: complete upstream source-response carrier not supplied"
+      },
+      "scope": "bundle/reload/operator/numerical and WCS representation checks; not full upstream source-response or production qualification"
+    },
+    "a1400": {
+      "schema": "citlali-forward-map-inspection-v1",
+      "bundle": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-forward-map-20260922/map-pass/products/a1400",
+      "product_identity": "SCI-MAP-base:d3606c697ca38bf3f80f0d9b4582794aa836a45879ac04121fd9c3bdfde87a3b:5a265e81239e8a80a686a22a27161f0f2abfec063e91e3480bb91c95ba22c4d5",
+      "observation": "obs:152389_0_2",
+      "array": "a1400",
+      "shape_yx": [
+        191,
+        203
+      ],
+      "science_pixels": 9780,
+      "contributing_occurrences": 6719154,
+      "positive_and_negative_science_pixels": [
+        4666,
+        5114
+      ],
+      "signal_min_max_mJy_per_nominal_beam": [
+        -59.31763254864996,
+        525.3492454735518
+      ],
+      "wcs_comparison_population": 39561,
+      "wcs_max_arcsec": 1.5639416699525066e-10,
+      "sparse_operator_verified": true,
+      "exact_PTC_numerator_replay": true,
+      "measured_MAP_local_source_probe": {
+        "status": "measured",
+        "scope": "MAP-only fixed realized operator; synthetic source inserted AFTER PTC; no RTC/CAL/PTC attenuation or measured-PSF claim",
+        "input": "unit-peak circular Gaussian centered on declared tangent origin, truncated at 8 sigma",
+        "input_fwhm_arcsec": 7.5,
+        "input_peak_mJy_per_nominal_beam": 1,
+        "output_peak_mJy_per_nominal_beam": 0.9686064657699369,
+        "integrated_ratio_to_template": 0.9981371934529109,
+        "output_centroid_tangent_arcsec": [
+          -0.014175462993745929,
+          -0.002358389612114972
+        ],
+        "output_second_moment_equivalent_fwhm_arcsec": 7.629639508672639,
+        "constant_unit_response_max_error": 0.0,
+        "full_procedure_response": "unavailable: complete upstream source-response carrier not supplied"
+      },
+      "scope": "bundle/reload/operator/numerical and WCS representation checks; not full upstream source-response or production qualification"
+    },
+    "a2000": {
+      "schema": "citlali-forward-map-inspection-v1",
+      "bundle": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-forward-map-20260922/map-pass/products/a2000",
+      "product_identity": "SCI-MAP-base:6e54944251d6c9f54ae81de69f16f256b5132c7780c9a610b821a75338080889:d5d595b69a0ab8165046a9b9e58365ed83850570b1dfb930b05f274c0a18b860",
+      "observation": "obs:152389_0_2",
+      "array": "a2000",
+      "shape_yx": [
+        211,
+        205
+      ],
+      "science_pixels": 8145,
+      "contributing_occurrences": 1402249,
+      "positive_and_negative_science_pixels": [
+        4090,
+        4055
+      ],
+      "signal_min_max_mJy_per_nominal_beam": [
+        -183.3477369426787,
+        679.6354185807911
+      ],
+      "wcs_comparison_population": 44087,
+      "wcs_max_arcsec": 1.564044442730631e-10,
+      "sparse_operator_verified": true,
+      "exact_PTC_numerator_replay": true,
+      "measured_MAP_local_source_probe": {
+        "status": "measured",
+        "scope": "MAP-only fixed realized operator; synthetic source inserted AFTER PTC; no RTC/CAL/PTC attenuation or measured-PSF claim",
+        "input": "unit-peak circular Gaussian centered on declared tangent origin, truncated at 8 sigma",
+        "input_fwhm_arcsec": 10,
+        "input_peak_mJy_per_nominal_beam": 1,
+        "output_peak_mJy_per_nominal_beam": 0.9813203212315528,
+        "integrated_ratio_to_template": 0.9968003163878939,
+        "output_centroid_tangent_arcsec": [
+          0.006878502810391614,
+          -0.006395338030074127
+        ],
+        "output_second_moment_equivalent_fwhm_arcsec": 10.09625545320455,
+        "constant_unit_response_max_error": 0.0,
+        "full_procedure_response": "unavailable: complete upstream source-response carrier not supplied"
+      },
+      "scope": "bundle/reload/operator/numerical and WCS representation checks; not full upstream source-response or production qualification"
+    }
+  }
+}

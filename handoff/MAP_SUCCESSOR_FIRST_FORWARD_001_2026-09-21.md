@@ -673,3 +673,84 @@ frame, coefficients and beams are unchanged. Run one-network smoke, then all
 11 supplied networks locally with bounded concurrent network ownership and one
 internal numerical thread. Complete actual MAP/reload/source diagnostics and
 exact-candidate independent review before reporting completion.
+
+## POINT 152389 first forward products — executed 2026-09-22
+
+Native runtime: `a42373f7576ea9b90f3a3b17393122f25a802735`. The selected
+no-mask treatment, existing per-array lowpass/F1,F1,F2, ALS rank 10, J2000
+frame, nominal beams and uniform MAP coefficients were used. The final MAP
+uses 2 arcsec pixels and coverage cut 0.5, matching the previous MAP pass.
+The preserved preliminary `map-run` used cut 0.1 and is superseded by
+`map-pass/products`; no parameter search or upstream numerical alteration.
+
+All 11 supplied networks were requested. Networks 2 and 11 stop in RTC because
+admitted jump transitions have no existing processing-scan support. Their
+learning/event/processing records are preserved. Admitted events occur in the
+unused tail beyond the six 10-second processing intervals: for example n2
+channel 246 seed 7448 (science ends 7289), and n11 several channels near 7366
+(science ends 7288). These observations identify the interface problem, not
+authority to waive admission or extrapolate processing support. No repair to
+that numerical policy is included. Network 3 scan 5 reaches the unchanged ALS
+100-iteration limit without convergence; its 420,413 eligible cells contribute
+no MAP samples. Other segments remain usable under the accepted partial-output
+contract. This is a failed/partial upstream observation attempt, not a successful
+all-network reduction. Network 4 succeeds on this POINT; the older 152390 failure
+does not transfer. Networks 6/10 are not supplied.
+
+MAP completes successfully from networks 0,1,3,4,5 / 7,8,9 / 12 for
+a1100/a1400/a2000 respectively, preserving all inherited causes. Contributions
+are 13,453,121 / 6,719,154 / 1,402,249; science pixels 10,598 / 9,780 / 8,145.
+All three complete bundles pass exact PTC-value/operator replay, parent/QC/VAL
+closure, WCS representation, checksums, support and signed-NaN semantics.
+The reader additionally rejects mismatched observation/array identities.
+The actual source is visually clear in all three bands. A separate descriptive
+unweighted elliptical Gaussian plus constant within 40 arcsec gives:
+
+| Array | Central pixel peak (mJy/nominal beam) | East, north offset (arcsec) | Measured major × minor FWHM (arcsec) |
+|---|---:|---:|---:|
+| a1100 | 732.36 | +4.523, −5.401 | 5.802 × 5.073 |
+| a1400 | 525.35 | +4.378, −5.405 | 7.165 × 6.282 |
+| a2000 | 679.64 | +4.318, −5.048 | 9.488 × 8.459 |
+
+Fitted amplitudes above the local constant are 830.26 / 554.15 / 731.64
+mJy/nominal beam. These descriptive source widths are separate from nominal
+calibration beams and do not establish full-chain PSF, flux recovery, uncertainty
+or detection significance. Signed residual structure remains visible, particularly
+in the lower-coverage a2000 map. No map values were altered for display or fit.
+
+All-network upstream attempt: 82.25 s wall, 171.25 s process CPU, 3.736 GB
+peak RSS, four workers with one internal thread each on 14 reported logical
+CPUs. Serial network 0 smoke took 31.44 s native wall and matches all 48 PTC
+numerical files bit-for-bit against the four-worker result (configuration paths
+were rebound; numerical settings/inputs were identical). Successful final MAP:
+57.51 s invocation wall, 34.40 s process CPU, 1.465 GB peak RSS.
+Per-array AST/handoff, projection, accumulation and serialization timings are
+in each bundle. Full response/covariance/original-footprint exposure remain
+explicitly unavailable. MAP-only Gaussian probe remains a conditional MAP test.
+
+Validation: 1,284 runnable CTests pass, one established disabled lifecycle case;
+175 successor Python tests pass, including known offset/elliptical-source/holes
+and observation-mismatch fixtures; two real-parent mutation checks pass; full
+required config preflight passes. The prior preparation checkpoint's 207 baseline
+Python tests remain applicable: no baseline-tool changes. The successful MAP
+run has zero unexpected errors; the two RTC failures and one PTC failure above
+remain failure evidence, not passing results. Initial smoke's missing descriptive
+`positive_rationale` field was repaired in the input preparer before the full run.
+Local AppleClang/Homebrew evidence is supplemental; no Unity/Spack certification.
+
+Durable result root:
+`/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-forward-map-20260922`.
+Final science products: `map-pass/products/{a1100,a1400,a2000}`; source view
+and fits: `diagnostics/final-source`; full-field/support diagnostics and exact
+replay reports: `diagnostics/final-bundles`. Upstream numerical parents, native
+failed-network records and digest-bound inputs are retained under the same root.
+External original raw/APT/TEL sources remain required for a from-raw rerun.
+Evidence index: `handoff/evidence/MAP_POINT_152389_FORWARD_2026-09-22.json`.
+Final independent exact-candidate review is pending; FRUIT remains deferred.
+
+Next MAP work: resolve out-of-scan jump handling and the nonconverged PTC segment
+under their own scientific owners; complete upstream response/noise evidence
+before stronger flux/PSF claims. FRUIT discussion should settle the inference
+model for the reconstructed total and its acceptance/stopping rules. The
+descriptive Gaussian here is not a selected feedback model; no recurrence,
+threshold, damping or terminal-selection policy has been activated.

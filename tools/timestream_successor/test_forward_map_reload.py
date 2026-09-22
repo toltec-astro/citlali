@@ -24,7 +24,7 @@ class ReloadTests(unittest.TestCase):
                  files={p.name:digest(p) for p in self.source.iterdir()})
         self.write(self.source/'receipt.yaml',dict(source_CAL_receipt_sha256=calsha,segments=[seg]));ptcsha=digest(self.source/'receipt.yaml')
         pub=dict(identity='sha256:'+ptcsha+':segment-0',support_reference='support',retained=5,CAL_parent='sha256:'+calsha,
-                 RTC_grid='rtc',source_PTC_root=str(self.source),source_PTC_receipt_sha256=ptcsha,source_segment=seg,
+                 observation='obs:152389_0_2',array='a1100',RTC_grid='rtc',source_PTC_root=str(self.source),source_PTC_receipt_sha256=ptcsha,source_segment=seg,
                  source_CAL_root=str(self.cal),source_CAL_receipt_sha256=calsha,RTC_scheduled_slots=2)
         self.q=dict(first_input_row=0,input_rows=5,PTC_publication=pub['identity'],support_reference='support')
         self.bind('publication',pub)
@@ -41,7 +41,7 @@ class ReloadTests(unittest.TestCase):
                       eligibility_sha256=self.q['MAP_eligibility_sha256'])
         for k in ('publication','coefficient','AST_binding','coefficient_QC'):decision[k+'_sha256']=self.q[k+'_sha256']
         decision.update(EVALUATION_BINDINGS);self.bind('MAP_evaluation',decision)
-        self.plan=dict(role='SCI-MAP:base_observation_map@1',ordered_column_domain=[self.q],
+        self.plan=dict(observation='obs:152389_0_2',array='a1100',role='SCI-MAP:base_observation_map@1',ordered_column_domain=[self.q],
                        WCS=dict(rows=1,columns=2,CRPIX1=1,CRPIX2=1,CDELT1=-1,CDELT2=1))
         self.pixels=np.array([0,-1,1,0,1],dtype='<i4');self.pixels.tofile(self.root/'operator-pixel.i32')
         self.N=np.array([[6.,16.]]);self.hits=np.array([[2,2]])
@@ -73,6 +73,12 @@ class ReloadTests(unittest.TestCase):
     def test_same_hit_counts_do_not_validate_permuted_operator(self):
         swapped=self.pixels.copy();swapped[[0,2]]=swapped[[2,0]];swapped.tofile(self.root/'operator-pixel.i32')
         with self.assertRaisesRegex(ValueError,'operator differs'):self.run_replay()
+    def test_foreign_observation_or_array_cannot_enter_base_map(self):
+        path=self.root/self.q['publication_file'];original=yaml.safe_load(path.read_text())
+        for key,value in [('observation','obs:152390_0_2'),('array','a2000')]:
+            publication=dict(original);publication[key]=value;self.bind('publication',publication)
+            with self.assertRaisesRegex(ValueError,'observation/array differs'):self.run_replay()
+
     def test_wrong_numerator_fails_exact_value_replay(self):
         self.N[0,0]+=1
         with self.assertRaisesRegex(ValueError,'PTC replay'):self.run_replay()
