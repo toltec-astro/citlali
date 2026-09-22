@@ -77,6 +77,7 @@ target_sources(citlali
     "src/citlali/core/mapmaking/forward_map.cpp"
     "src/citlali/core/pipeline/timestream_ptc_numerics.cpp"
     "src/citlali/core/pipeline/timestream_ptc_pipeline.cpp"
+    "src/citlali/core/pipeline/ptc_map_handoff.cpp"
     "src/citlali/core/pipeline/timestream_identity_route_context.cpp"
     "src/citlali/core/pipeline/output_root_lease.cpp"
     "src/citlali/core/pipeline/reduction_restart_checkpoint.cpp"

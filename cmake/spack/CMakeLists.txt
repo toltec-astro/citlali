@@ -184,6 +184,7 @@ target_sources(
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/mapmaking/forward_map.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_ptc_numerics.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_ptc_pipeline.cpp"
+    "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/ptc_map_handoff.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_identity_route_context.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/output_root_lease.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/reduction_restart_checkpoint.cpp"

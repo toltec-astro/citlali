@@ -14,6 +14,29 @@ struct AstRtcDetectorGeometry {
     int array;
 };
 
+// AST-owned numerical evaluation shared by live and verified saved RTC grids.
+// The caller binds exact stable slots and parent identities before supplying
+// their assigned UNIX times. This helper does not establish an identity join.
+struct AstRtcScheduleEvaluation {
+    NativeTelescopeData telescope;
+    NativePointingOffsetsArcsec offsets;
+    Eigen::VectorXd elevation_deg;
+    Eigen::Matrix<double,Eigen::Dynamic,2> detector_tangent_deg(double x_t_arcsec, double y_t_arcsec) const;
+};
+AstRtcScheduleEvaluation evaluate_ast_rtc_schedule(const RawTelescopeTrajectory &,
+    const NativePointingOffsetModel &, double center_ra_rad, double center_dec_rad,
+    const Eigen::VectorXd &exact_assigned_times_unix_sec);
+
+// Explicit centered TAN grid request for already declared FK5/J2000 tangent
+// coordinates. Axis1 runs toward decreasing RA; axis2 toward increasing Dec.
+struct AstRtcTanGrid {
+    std::size_t rows, columns;
+    double crpix1, crpix2, cdelt1_deg, cdelt2_deg, crval1_deg, crval2_deg;
+    static AstRtcTanGrid centered(double ra_rad,double dec_rad,double pixel_arcsec,
+                                 double max_abs_lon_deg,double max_abs_lat_deg);
+    std::pair<double,double> continuous_pixel(double lon_deg,double lat_deg) const;
+};
+
 // The bounded existing V2 radec tangent convention, evaluated on the exact
 // RTC schedule by AST. Coordinates are never processed by RTC filter taps.
 class AstRtcCoordinates {

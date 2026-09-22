@@ -29,10 +29,10 @@ int load_and_run_successor_development(const RuntimeConfig &runtime,
             throw std::invalid_argument("successor.unsupported_configuration: unknown development request field");
     }
     const auto terminal = config["terminal"] ? config["terminal"].as<std::string>() : "ptc";
-    if (terminal != "rtc-only" && terminal != "cal" && terminal != "ptc")
+    if (terminal != "rtc-only" && terminal != "cal" && terminal != "ptc" && terminal != "map")
         throw std::invalid_argument(
-            "successor.endpoint_not_implemented: current development endpoint is PTC/VAL; "
-            "MAP/FRUIT execution is unavailable, with no legacy substitution");
+            "successor.endpoint_not_implemented: supported terminals are RTC, CAL, PTC and saved MAP; "
+            "FRUIT execution is unavailable, with no legacy substitution");
     DevelopmentPtcRequest ptc;
     if(config["ptc"]) {
         const auto p=config["ptc"];
@@ -60,6 +60,10 @@ int load_and_run_successor_development(const RuntimeConfig &runtime,
         const int n=config["network_workers"].as<int>();
         if(n<1 || n>12)throw std::invalid_argument("successor.network_workers_must_be_1_to_12");
         workers=static_cast<unsigned>(n);
+    }
+    if(terminal=="map") {
+        if(workers!=1 || config["ptc"])throw std::invalid_argument("successor.saved_MAP_requires_serial_execution_and_no_PTC_override");
+        return run_successor_saved_map(path,output);
     }
     return run_successor_rtc(path, output, RtcInvocation::development_default, {},
         terminal == "ptc" ? DevelopmentTerminal::ptc : terminal == "cal" ? DevelopmentTerminal::cal : DevelopmentTerminal::rtc_only,ptc,workers);

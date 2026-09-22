@@ -348,3 +348,113 @@ explicitly selected. Required implementation work and real-data gates remain as
 listed above. The earlier “two source facts missing” disposition is historical:
 nominal beams are now selected, with only the narrower frame identity question
 remaining as an owner clarification. No actual MAP product exists yet.
+
+
+### Owner frame confirmation and resumed implementation — 2026-09-22
+
+The owner answered “yes, that's correct” to the explicit FK5/equinox J2000.0
+question, including that SourceRaAct/SourceDecAct already carry this frame.
+This resolves the remaining scientific input clarification; no frame transform
+is requested. The nominal beams and uniform coefficient selection above remain
+authoritative. Resume the original MAP work order on the same isolated branch.
+The resumed base is `fd3c1ff151c766cc44cafec247f99dc930447f66`; only the owned
+untracked build locator was present. No new branch, upstream treatment change,
+Unity access, push, or FRUIT work is introduced.
+
+The three governing engineering/review documents have been read. This remains
+the Tier-2 spine increment: PTC owns completed segment/coefficient publication;
+AST owns exact RTC-sample pointing; MAP owns admission, plan, arithmetic and
+bundle; application adapters own file parsing and orchestration. Saved-product
+reuse must prove the existing sample relation instead of matching timestamps.
+New schema/publication seams require focused negative and round-trip tests,
+whole active local gates, real-data measurements, and independent exact-SHA
+review. Local AppleClang/Homebrew evidence remains supplemental.
+
+
+### Connected saved-PTC implementation candidate — 2026-09-22
+
+The original owner work order now has an actual native `terminal: map` route.
+`prepare_forward_map.py` binds immutable original request and completed PTC
+receipt digests, explicit owner selection, pixel scale and coverage cut. The
+compiled application adapter verifies final/learning/RTC apply schedules and
+PTC→CAL→RTC ancestry, then publishes complete segment PTC and selected uniform
+coefficient handoffs. PTC owns gamma=1; VAL owns its named-use QC and separate
+sealed MAP decisions; MAP authors admission predicates; AST owns reconstructed
+same-slot detector pointing and WCS. The existing AST evaluator is shared with
+the live route. No Engine state or new upstream treatment is introduced.
+
+Every plan column block binds publication, coefficient payload, coefficient QC,
+AST payload/binding, exact MAP evaluation and packed eligibility bits. Decision
+identities use the complete immutable evaluation-file digest with the exact
+active Registry/register, allocation/manifest, shared core and boundary tuple.
+CAL causes remain available through exact source links; MAP rejection never
+rewrites PTC support. The required FITS/sidecar bundle preserves each array,
+signed N/Q, unsupported NaNs, normalization/science support, hits, output rows
+and the exact sparse local operator. Nominal calibration beams are not PSFs.
+Original-footprint exposure, covariance and full upstream response are explicitly
+unavailable; no NOI/FLT product was requested and no FRUIT feedback is executed.
+
+The reader independently checks every required handoff and evaluates exact CAL
+causes and retained PTC membership, checks AST half-open placement, then replays
+support-ordered cleaned values through the serialized operator. Its numerator
+comparison is exact, preserving operation order. WCS representation testing is
+preregistered over every pixel center and all outer-boundary vertices with a
+0.1 arcsec spherical separation bound. This tests representation agreement,
+not independent absolute astrometric truth or source recovery.
+
+Initial review found incomplete required handoff closure, insufficient schedule
+identity checks, incomplete admission identity and incidence-only operator
+verification. All were repaired with negative tests. A second review requested
+full content-addressed admission identity and remaining source tuple fields;
+those were added. Final independent exact-candidate review is still required.
+
+The three-array engineering run used local networks 0, 7 and 12, all 124
+segments each, observed-entry ALS rank 10, original factors 1/1/2, original
+2-arcsec grid scale and coverage cut 0.5. It produced 47,007 / 47,128 / 48,485
+science pixels in 156.77 s wall / 122.08 s CPU, peak RSS 4.95 GB. The run
+predates the final admission identity repair and is debugging evidence only;
+final scientific bundle/reload evidence must use the clean candidate.
+
+Local dependency recovery was necessary because files in the old temporary
+source snapshot disappeared. All surviving snapshot files compared identically
+to existing local dependency-cache files; the cache was copied to a new owned
+temporary snapshot and rebuilt offline. The evidence directory records the
+comparison, configure arguments and initial failures. This remains supplemental
+AppleClang/Homebrew Release evidence, not authoritative Spack/Unity qualification.
+The current CTest inventory has no missing prior named tests (the prior log
+contained repeated discovery numbering); report the actual current count.
+
+Reproduce the route with the tracked helper (repeat `--source` for each verified
+network, without relabeling missing local networks as included):
+
+```text
+/Users/gwilson/tolteca/bin/python tools/timestream_successor/prepare_forward_map.py \
+  --source ABSOLUTE_PTC_PRODUCT_ROOT ABSOLUTE_ORIGINAL_INPUT_JSON \
+  --owner-binding validation/map_first_forward_owner_binding_2026-09-22.json \
+  --pixel-size-arcsec 2 --coverage-cut 0.5 \
+  --request-dir ABSOLUTE_NEW_REQUEST_DIR --output ABSOLUTE_NEW_OUTPUT_DIR
+build/bin/citlali ABSOLUTE_NEW_REQUEST_DIR/development.yaml
+/Users/gwilson/tolteca/bin/python tools/timestream_successor/inspect_forward_map.py \
+  ABSOLUTE_NEW_OUTPUT_DIR/a1100 --report ABSOLUTE_NEW_REPORT.json --plot ABSOLUTE_NEW_IMAGE.png
+```
+
+The MAP route currently executes serially in stable occurrence order; it rejects
+`network_workers > 1` and PTC overrides rather than ignoring them. Coordinate,
+verification and file work dominate this local first pass; measured accumulation
+is subsecond. Shared compact per-segment geometry/causes and 1-bit admission avoid
+bulky per-sample records. Coaddition, new JINC behavior, stronger response/covariance
+roles, uncertainty/filter methods and production qualification remain outside
+this increment. Full upstream source response and absolute astrometry are not
+established by the constant/delta local-operator tests.
+
+
+A bounded real-operator source probe is part of final product inspection: a
+unit-peak circular Gaussian, with explicit test width equal to that array's
+nominal calibration width, is inserted AFTER PTC at the AST tangent origin and
+truncated at 8 sigma. The same persisted MAP membership/operator and science
+support produce measured peak, integrated ratio, centroid and second-moment
+width. A constant-input gain check accompanies it. These are MAP-only sampling
+response measurements, not a measured beam, PTC attenuation, complete upstream
+response or an authorization to restore astronomical signal. Full first-pass
+RTC/CAL/PTC source response remains unavailable with the present saved carrier;
+that explicitly limits source-recovery and final-chain 5% goal claims.

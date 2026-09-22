@@ -109,6 +109,13 @@ class SuccessorDefaultCli(unittest.TestCase):
         config["ptc"] = dict(rank=0)
         self.rejected(self.invoke(config), "successor.PTC_rank_must_be_positive")
 
+    def test_saved_map_rejects_raw_or_cal_and_parallel_override(self):
+        for schema in ('rtc-multidetector-experiment-v1','citlali-cal-output-v1'):
+            config=self.request(dict(schema=schema));config['terminal']='map'
+            self.rejected(self.invoke(config),'MAP requires an exact saved-PTC input request')
+        config=self.request({});config['terminal']='map';config['network_workers']=2
+        self.rejected(self.invoke(config),'successor.saved_MAP_requires_serial_execution')
+
     def test_actual_rtc_boundary_refuses_missing_frozen_plan(self):
         config = self.request(dict(schema="rtc-multidetector-experiment-v1"))
         self.rejected(self.invoke(config), "successor.RTC_plan_incomplete")

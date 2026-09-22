@@ -154,3 +154,63 @@ TEST(ForwardMap, OriginalFootprintsUnionAndDoNotFollowDescendantPixels) {
     EXPECT_THROW(accumulate_original_footprints(grid,"originals",originals,foreign),std::invalid_argument);
     EXPECT_THROW(accumulate_original_footprints(grid,"originals",originals,invalid),std::invalid_argument);
 }
+
+#include <citlali/core/pipeline/ptc_map_handoff.h>
+using namespace citlali::pipeline;
+namespace {
+auto published_segment(bool empty=false) {
+    PtcMapPublicationIdentity id{"q","application","CAL","RTC","processing","observation","segment","support",0,0,1,{"detector-A","detector-B"},{3,5}};
+    PtcMatrix values(2,2);values<<1,2,3,NAN;
+    PtcMask causes(2,2);causes<<0,0,0,1;if(empty)causes.setConstant(1);
+    return PtcMapPublication::bind_verified_segment(id,values,causes,true);
+}
+}
+TEST(PtcMapHandoff, ExplicitUniformSelectionExactSupportAndRequest) {
+    const auto q=published_segment();
+    const auto g=PtcUniformCoefficients::publish(q,{"owner-selection",std::string(PtcUniformCoefficients::family)},"g","support");
+    ASSERT_TRUE(g);EXPECT_EQ(q->retained(),3);
+    auto admitted=ValUniformHandoffEvaluator::evaluate(*g,q,0,0,true);EXPECT_TRUE(admitted.pass());EXPECT_EQ(g->value(admitted,0,0),1);
+    EXPECT_FALSE(g->value(admitted,0,1)); // a decision cannot move between occurrences
+    EXPECT_FALSE(ValUniformHandoffEvaluator::evaluate(*g,q,0,0,false).realized);
+    EXPECT_FALSE(ValUniformHandoffEvaluator::evaluate(*g,q,1,1,true).applicable);
+    EXPECT_FALSE(ValUniformHandoffEvaluator::evaluate(*g,published_segment(),0,0,true).structurally_bound);
+    EXPECT_FALSE(PtcUniformCoefficients::publish(published_segment(true),{"selection",std::string(PtcUniformCoefficients::family)},"empty","support"));
+    for(const auto &selection:std::vector<UniformSelection>{{"wrong","other-family"},{"missing",std::nullopt},{"conflicting",std::string(PtcUniformCoefficients::family),true}}) {
+        const auto bad=PtcUniformCoefficients::publish(q,selection,"g-other","support");
+        auto decision=ValUniformHandoffEvaluator::evaluate(*bad,q,0,0,true);EXPECT_TRUE(decision.realized);EXPECT_FALSE(decision.pass());
+        decision.restrictions.fill(UniformFact::true_value);EXPECT_FALSE(bad->value(decision,0,0));
+    }
+    const auto bad=PtcUniformCoefficients::publish(q,{"selection",std::string(PtcUniformCoefficients::family)},"bad","wrong-support");
+    EXPECT_FALSE(ValUniformHandoffEvaluator::evaluate(*bad,q,0,0,true).pass());
+}
+TEST(PtcMapHandoff, FourValuedFidelityAndStructuralFailures) {
+    using F=UniformFact;
+    EXPECT_EQ(uniform_all(std::array{F::conflict,F::unknown,F::false_value}),F::false_value);
+    EXPECT_EQ(uniform_all(std::array{F::conflict,F::unknown}),F::conflict);
+    EXPECT_EQ(uniform_all(std::array{F::true_value,F::unknown}),F::unknown);
+    const auto q=published_segment();auto id=q->identity();
+    id.slots={3,3};EXPECT_THROW(PtcMapPublication::bind_verified_segment(id,q->values(),q->causes(),true),std::invalid_argument);
+    id=q->identity();id.detectors={"same","same"};EXPECT_THROW(PtcMapPublication::bind_verified_segment(id,q->values(),q->causes(),true),std::invalid_argument);
+    id=q->identity();id.rank=0;EXPECT_THROW(PtcMapPublication::bind_verified_segment(id,q->values(),q->causes(),true),std::invalid_argument);
+    EXPECT_THROW(PtcMapPublication::bind_verified_segment(q->identity(),q->values(),q->causes(),false),std::invalid_argument);
+}
+
+#include <citlali/core/mapmaking/forward_map_admission.h>
+#include <citlali/core/pipeline/val_map_handoff.h>
+TEST(ForwardMapAdmission, ExactParentsAndSeparateProducerAndMapDecisions) {
+    const auto q=published_segment();const auto g=PtcUniformCoefficients::publish(q,{"selection",std::string(PtcUniformCoefficients::family)},"g","support");
+    MapCoordinateParent ast{q->identity().publication,q->identity().cal_parent,q->identity().rtc_grid,q->identity().detectors,q->identity().slots};
+    const auto use=ValMapAdmission::bind(q,g,ast);
+    EXPECT_TRUE(use.at(0,0,cal_available).pass());
+    auto rejected=use.at(0,0,cal_direct_replacement_or_exclusion);EXPECT_TRUE(rejected.coefficient_qc.pass());EXPECT_FALSE(rejected.pass());
+    rejected.eligible=true;EXPECT_FALSE(rejected.pass()); // public axes cannot forge evaluator seal
+    EXPECT_FALSE(use.at(1,1,cal_available).pass());EXPECT_FALSE(use.at(0,0,cal_available,false).realized);
+    ast.slots={3,6};EXPECT_THROW(ValMapAdmission::bind(q,g,ast),std::invalid_argument);
+    ast.slots=q->identity().slots;ast.rtc_grid="foreign";EXPECT_THROW(ValMapAdmission::bind(q,g,ast),std::invalid_argument);
+}
+TEST(ForwardMap, AstCenteredTanGridPreservesOrientationAndMargin) {
+    const auto w=AstRtcTanGrid::centered(1.,0.5,2.,4./3600,2./3600);
+    EXPECT_EQ(w.columns,7);EXPECT_EQ(w.rows,5);EXPECT_EQ(w.crpix1,4);EXPECT_EQ(w.crpix2,3);
+    auto [x,y]=w.continuous_pixel(2./3600,2./3600);EXPECT_DOUBLE_EQ(x,3);EXPECT_DOUBLE_EQ(y,4);
+    EXPECT_THROW(AstRtcTanGrid::centered(1,0.5,0,0,0),std::invalid_argument);
+}

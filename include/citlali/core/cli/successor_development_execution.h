@@ -16,6 +16,7 @@ struct DevelopmentPtcRequest {
     std::string method="observed-als";
     int rank=0; // zero means recover the explicitly configured effective rank
 };
+int run_successor_saved_map(const std::filesystem::path &input,const std::filesystem::path &output);
 int run_successor_rtc(const std::filesystem::path &input,
                       const std::filesystem::path &output,
                       RtcInvocation invocation,
@@ -25,7 +26,8 @@ int run_successor_rtc(const std::filesystem::path &input,
 
 inline constexpr std::string_view successor_default_config = R"yaml(# Citlali development default: the implemented Timestream Successor.
 # Invoke with: citlali development.yaml
-# Current endpoint is PTC/VAL. MAP and FRUIT are not connected.
+# terminal: map consumes an exact-bound citlali-map-saved-ptc-v1 input.
+# It reuses saved PTC and reconstructs only its exact AST coordinates. FRUIT is deferred.
 # Use terminal: cal or rtc-only for an explicit early stop.
 # PTC rank/grouping come from the bound effective configuration unless rank is explicit.
 # Supply the existing exact-bound native x/r and frozen-treatment input record.

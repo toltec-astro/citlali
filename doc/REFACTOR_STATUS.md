@@ -1,5 +1,37 @@
 # Citlali Refactor Status
 
+## Saved-PTC forward MAP candidate implemented — 2026-09-22
+
+The resumed first-pass implementation connects completed saved PTC segments to
+PTC-owned uniform coefficient publications, separate VAL coefficient-QC and
+MAP-admission evaluations, AST-owned same-RTC-slot coordinates and a frozen
+one-hot MAP plan. The native development entry accepts `terminal: map` with an
+explicit saved-PTC request; upstream numerical treatment is not rerun.
+Required bundles contain signed signal, numerator, normalization, incidence,
+two support planes, exact sparse operator/output rows, and digest-bound producer,
+AST/QC/admission records. Full upstream response, covariance and original-footprint
+exposure remain explicitly unavailable; FRUIT is deferred.
+
+An engineering run produced separate a1100/a1400/a2000 maps from available local
+networks 0/7/12 (74,946,311 / 27,672,182 / 27,157,906 contributions). This is not
+the September 21 eleven-network Unity campaign. Native binding mutation checks,
+15 focused numerical/interface tests, 10 reload/replay fixtures, 207 baseline-tool
+tests and required config preflight pass. Full current CTest passes with the
+established disabled lifecycle case. Exact-candidate rerun, complete real-product
+reload/visual inspection and final independent review remain pending. See the
+existing MAP handoff for bounded scope and reproducible invocation.
+
+## MAP frame confirmed; implementation resumed — 2026-09-22
+
+The owner confirms FK5/equinox J2000.0 and that SourceRaAct/SourceDecAct
+already carry this frame. Together with the selected 5/7.5/10 arcsec nominal
+beams and uniform coefficients, this resolves the outstanding scientific input
+questions. Their exact values are recorded in
+`validation/map_first_forward_owner_binding_2026-09-22.json`. The connected
+producer/admission/bundle implementation and real-data MAP pass remain work in
+progress on the existing isolated MAP branch. Earlier blockers below are
+historical. No FRUIT activation or upstream numerical change is implied.
+
 ## MAP owner follow-up: fixed nominal beams selected — 2026-09-21
 
 The owner selects fixed nominal calibration FWHM values of 5, 7.5 and
