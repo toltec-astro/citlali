@@ -43,6 +43,8 @@ def measure(signal, support, header, nominal):
     upper = [np.inf, 20, 20, 20, 20, np.pi, np.inf]
     fit = least_squares(lambda p: gaussian(p,x[roi],y[roi])-signal[roi],initial,
                         bounds=(lower,upper),x_scale='jac',max_nfev=3000,
+                        method='trf',jac='2-point',loss='linear',f_scale=1.,
+                        tr_solver='exact',tr_options={},diff_step=None,verbose=0,
                         ftol=1e-12,xtol=1e-12,gtol=1e-12)
     if not fit.success or not np.isfinite(fit.x).all():
         raise ValueError('POINT descriptive Gaussian fit did not converge')
