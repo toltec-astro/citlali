@@ -54,7 +54,16 @@ CalObservationInput prepare_cal_observation(const YAML::Node &cfg,const NativeOb
             offset_values[axis]=Eigen::Map<const Eigen::VectorXd>(values.data(),values.size());
         }
     }
-    require(time_records==1,"AST pointing offset time support absent or duplicated");
+    if(time_records==0 && scope.observation==152389 && scope.subobservation==0 && scope.scan==2) {
+        require(offset_values.contains("az") && offset_values.contains("alt") &&
+            offset_values.at("az").size()==1 && offset_values.at("alt").size()==1,
+            "POINT without offset epochs requires explicit constant axes");
+        // Existing AST owner treats one configured value as an observation-wide
+        // constant. TEL bounds identify the observation; no epoch is invented.
+        const auto &times=data.at("TelTime");
+        require(times.size()>1,"POINT constant offset needs telescope time support");
+        offset_times.resize(2);offset_times<<times[0],times[times.size()-1];
+    } else require(time_records==1,"AST pointing offset time support absent or duplicated");
     auto offsets=std::make_shared<const NativePointingOffsetModel>(std::move(offset_values),std::move(offset_times));
     return {std::make_shared<const RawTelescopeTrajectory>(std::move(data)),offsets,ra0,dec0,
         "sha256:"+citlali::utils::sha256_file(effective_path)+":inputs:"+input_name+":astrometry",

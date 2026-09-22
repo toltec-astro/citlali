@@ -563,3 +563,87 @@ Prioritized next owner discussion (no choices made here):
    transformation, any floor/gain/damping, convergence and terminal-iteration
    choice. Per-iteration PTC relearning and replacement inference from total are
    already accepted and are not reopened. No feedback recurrence is activated.
+
+## POINT 152389 follow-on — 2026-09-22 preflight
+
+The owner selected POINT 152389 (1146+399) after noting that the NGC4449
+pass was a poor first recognizable-source demonstration. The NGC products
+remain engineering evidence; their completion does not complete this follow-on.
+This continues the same Tier 2 spine increment from
+`2049d9e4e5d91f8590d6a2f82fab972ac72aff0b`, tree
+`d3b80ea87ebc6b466313d64114745adbd843366f`, on the same branch/worktree.
+Initial dirt: only the existing untracked build locator. All three governance
+documents were reread. No new WIP slot, integration, push, or Unity access.
+
+Bounded adapter repairs may bind this selected observation's actual raw, APT,
+telescope, native timing, processing support, constant POINT offset and PTC
+publication identities. The existing AST/ALIGN/RTC/CAL/PTC numerical owners,
+observed ALS rank 10, explicit array lowpass plans, MAP uniform coefficients,
+J2000 frame and nominal 5/7.5/10 arcsec beams are preserved. Historical NGC
+notches do not transfer to different detector occurrences. Older POINT maps
+are comparison evidence only. Their legacy provenance lacks native cohort
+lineage and cannot be relabeled as successor support.
+
+Expected changes: private native ingress/processing/CAL/MAP adapters, bounded
+input preparation, focused scope/lineage tests, POINT diagnostics and this
+status/handoff. Scientific identity, units and missing-state semantics remain
+with their existing owners. Memory is observation-shared metadata plus one
+network's numerical state per worker; run costs must be measured. Gates are
+focused adapter/CLI/MAP tests, broad CTest and Python/config gates, actual
+three-array POINT products and independent fresh-context exact-SHA review.
+The local AppleClang/Homebrew build remains supplemental; no representative
+Spack/Unity qualification is claimed.
+
+Reassessment: the existing no-spatial-mask directive is explicitly scoped to
+152390; the older POINT config uses 20 arcsec protection. The owner has been
+asked which treatment applies before POINT execution. No new treatment is
+authorized merely by copying an old configuration. Continue independent
+identity/interface preparation while that choice is pending. Stop for absent
+required scientific authority or a necessary upstream algorithm change.
+
+### Verified preparation; scientific selection still pending
+
+Local raw/Tune digests match the exact selected APT for all 11 supplied
+networks, comprising 5,518 detector channels and 7,698–7,700 native rows
+per network. Absent networks are 6 and 10. The actual telescope is POINT
+1146+399, Lissajous, Epoch 2000, CoordSys 0; SHA256
+`2aec5f1f2be8c365127fcf275a02eb0c780eeda9494cd225e50e50c4386a9392`.
+The new preparation tool selects the POINT input/constant offsets and retains
+the reference successor 10-second forced processing intervals, 32-sample
+context and array-specific lowpass artifacts. It creates a requested generation
+bound to exact raw/Tune/APT/TEL/config identities; it does not forge a previous
+realized cohort. Existing numerical owners construct and publish actual support.
+
+Build and 1,283 runnable CTests pass (one established disabled lifecycle test),
+207 baseline Python tests, 172 successor Python tests and full required config
+preflight pass. Three real-input negative checks pass: absent source-protection
+selection stops before Learn/Apply; foreign processing parents and invented
+realization are rejected. The preliminary native preparation reached shared
+APT/timing/AST/CAL preparation and then stopped at the expected source selection
+error. Deliberate negative-test errors are expected, not successful reductions.
+No POINT source amplitude, position, width, response or reduction cost has been
+measured. Independent review of this preparation candidate remains required;
+final observational review follows an actual authorized POINT run.
+
+Evidence is indexed in
+`handoff/evidence/MAP_POINT_152389_PREPARATION_2026-09-22.json`.
+Prepared inputs: `/private/tmp/citlali-point-152389-bound-preparation-20260922`.
+The preparation is deliberately non-runnable without an explicit selection.
+After the owner's answer, bind only the selected RTC treatment, complete its
+focused tests, run network 0 then all supplied networks, and build separate
+J2000 array maps from their actual PTC products. Inspect and report source
+centroid, peak and measured FWHM; do not confuse nominal calibration beams
+with measured response or transfer the 152390 network-4 failure to 152389.
+
+Reproduce input preparation from repository root (a new output path is required):
+
+```sh
+/Users/gwilson/tolteca/bin/python tools/timestream_successor/prepare_point_forward.py \
+  --point /Users/gwilson/work_toltec/local_data/citlali-validation/v2/point \
+  --reference-config /Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-full-network-checkpoint-98380090e-20260919/unity-packet/assets/effective_config/citlali_o152390_0_2_c2.yaml \
+  --output /private/tmp/citlali-point-152389-preparation-new
+```
+
+The outstanding question comes from the exact scope guard in
+`tools/timestream_successor/rtc_multidetector_bindings.h`, not from a missing
+file or a need to reconfirm J2000, beams, coefficients, or the observation.

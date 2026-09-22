@@ -143,9 +143,9 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     const auto scan =
         read_netcdf_scalar<int>(raw_file, "Header.Toltec.ScanNum");
     require(cfg["network"].as<int>()==nw && cfg["observation"].as<int>()==obs,"requested raw scope mismatch");
-    if(development) require(obs==152390 && sub==0 && scan==2 && nw>=0 && nw<13 &&
-        (nw==12 || cfg["filter_plan"]),
-        "successor.unsupported_native_domain: 152390/0/2 requires an explicit array plan outside the preserved network12 input; no legacy fallback");
+    if(development) require((obs==152390 || obs==152389) && sub==0 && scan==2 && nw>=0 && nw<13 &&
+        ((obs==152390 && nw==12) || cfg["filter_plan"]),
+        "successor.unsupported_native_domain: 152389 or 152390/0/2 requires an explicit array plan outside the preserved network12 input; no legacy fallback");
     require(obs == relation.observation().observation &&
                 sub == relation.observation().subobservation &&
                 scan == relation.observation().scan,
@@ -217,9 +217,9 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
         }
       require(matches==1,"census observation absent or duplicated in selection");
     }
-    require((obs == 152390 || (census && obs == 152392)) && sub == 0 && scan == 2 &&
+    require((obs == 152390 || (development && obs == 152389) || (census && obs == 152392)) && sub == 0 && scan == 2 &&
             (nw == 12 || (full_health && nw == 0) || (development && cfg["filter_plan"])),
-            "bounded caller requires NGC4449/152390/0/2: network12 Apply or network0 diagnostic only");
+            "bounded caller requires selected 152389/152390 development scope or preserved comparison scope");
     const auto network_binding=std::find_if(relation.bindings().begin(),relation.bindings().end(),
         [&](const auto &b){return b.network==nw;});
     require(network_binding!=relation.bindings().end(),"native network has no exact APT array binding");
@@ -392,6 +392,8 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     auto view=NativePairedReadoutView::full(parent);
     std::optional<RecoveredProcessingScans> recovered_scans;
     if(cfg["decision_apply"]) recovered_scans=recover_processing_scans(cfg,parent,verified,nw,performance,common?&common->processing:nullptr);
+    require(cfg["source_protection_authority"] && cfg["source_protection_authority"].IsScalar(),
+        "successor.source_protection_selection_required: no observation-specific treatment selected");
     const auto protection_authority=cfg["source_protection_authority"].as<std::string>();
     if (obs == 152390) caller::require_no_mask_scope(parent->scope(),protection_authority);
     else require(census && protection_authority == "rtc-census-source-membership-unavailable",
@@ -400,13 +402,20 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
                         obs==152390 ? RtcSpikeProtection::outside_source : RtcSpikeProtection::unavailable);
     std::shared_ptr<const AstScanMotionNetworkView> motion;
     if(argc==4 || recovered_scans){
-      const auto telescope=common?common->telescope:load_telescope(checked("telescope"),parent->scope(),census && obs==152392);
+      const auto telescope=common?common->telescope:load_telescope(checked("telescope"),parent->scope(),census && obs==152392,development && obs==152389);
       const auto motion_identity = census && obs==152392
           ? AstScanMotionIdentityBinding{1523920001,1523920002,1523920003,1523920004}
+          : obs==152389 ? AstScanMotionIdentityBinding{1523890001,1523890002,1523890003,1523890004}
           : ast_identity_binding;
       auto ast=common?common->motion:build_ast_scan_motion_product(telescope.source,motion_identity);
       const auto accepted_ast=YAML::LoadFile(checked("ast_acceptance").string());
-      if (census && obs == 152392) {
+      if (development && obs == 152389) {
+        require(accepted_ast["schema"].as<std::string>()=="citlali-ast-motion-source-binding-v1" &&
+          accepted_ast["authority_policy_id"].as<std::string>()==std::string(ast_scan_motion_policy_id) &&
+          accepted_ast["observation"].as<int>()==obs && accepted_ast["subobservation"].as<int>()==sub &&
+          accepted_ast["scan"].as<int>()==scan && accepted_ast["telescope"]["sha256"].as<std::string>()==telescope.sha256,
+          "POINT AST source binding differs from actual telescope/policy/scope");
+      } else if (census && obs == 152392) {
         require(accepted_ast["schema"].as<std::string>() == "citlali-wp7-rtc-filter-fixture-census-v3" &&
                     accepted_ast["source_revision"].as<std::string>() == "adbc013e2d4287fb5a32db8bc7f2b0112c1c88d7" &&
                     accepted_ast["observation"].as<int>() == obs &&
@@ -1050,7 +1059,7 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
     citlali::cli::DevelopmentTerminal terminal,citlali::cli::DevelopmentPtcRequest ptc,unsigned workers) {
   require(workers>=1 && workers<=12,"successor.network_workers_must_be_1_to_12");
   require(request["schema"].as<std::string>()=="citlali-observation-networks-v1" &&
-          request["observation"].as<int>()==152390 && request["subobservation"].as<int>()==0 &&
+          (request["observation"].as<int>()==152390 || request["observation"].as<int>()==152389) && request["subobservation"].as<int>()==0 &&
           request["scan"].as<int>()==2,"successor.observation_scope_unsupported");
   require(request["networks"].IsSequence() && request["networks"].size()>0,"successor.empty_network_request");
   require(!fs::exists(output),"preserve previous output");
@@ -1059,7 +1068,7 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
     const int nw=entry["network"].as<int>();
     require(nw>=0 && nw<13 && (ids.empty() || nw>ids.back()),"successor.network_order_duplicate_or_invalid");
     const auto path=checked_file(entry["input"]);const auto cfg=YAML::LoadFile(path.string());
-    require(cfg["network"].as<int>()==nw && cfg["observation"].as<int>()==152390 &&
+    require(cfg["network"].as<int>()==nw && cfg["observation"].as<int>()==request["observation"].as<int>() &&
             cfg["decision_apply"] && cfg["filter_plan"],"successor.network_binding_incomplete");
     if(!configs.empty()) {
       for(const auto *key:{"manifest","telescope","effective_config","ast_acceptance","decision_apply"})
@@ -1074,12 +1083,13 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
 #endif
   const auto began=std::chrono::steady_clock::now();
   RtcPerformanceTrace trace(output);
-  const auto &cfg=configs.front();const NativeObservationScope scope{152390,0,2};
+  const auto &cfg=configs.front();const NativeObservationScope scope{request["observation"].as<int>(),0,2};
   auto verified=apt::verify_bundle_filesystem(checked_file(cfg["manifest"]),true);
   auto relation=pipeline::admit_canonical_apt_detector_relation_v2(verified);
   auto processing=prepare_processing_scans(cfg,scope,verified,trace);
-  auto telescope=load_telescope(checked_file(cfg["telescope"]),scope);
-  auto motion=build_ast_scan_motion_product(telescope.source,ast_identity_binding);
+  auto telescope=load_telescope(checked_file(cfg["telescope"]),scope,false,scope.observation==152389);
+  auto motion=build_ast_scan_motion_product(telescope.source,scope.observation==152389
+      ? AstScanMotionIdentityBinding{1523890001,1523890002,1523890003,1523890004} : ast_identity_binding);
   auto cal=prepare_cal_observation(cfg,scope);
   SharedObservationPreparation common{std::move(verified),std::move(relation),std::move(processing),
       std::move(cal),std::move(telescope),std::move(motion)};
@@ -1103,7 +1113,7 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
   trace.mark("all_networks_finished");
   YAML::Node record;record["schema"]="citlali-observation-networks-result-v1";
   record["source_revision"]=std::string(CITLALI_GIT_REVISION);
-  record["observation"]=152390;record["subobservation"]=0;record["scan"]=2;
+  record["observation"]=scope.observation;record["subobservation"]=0;record["scan"]=2;
   record["requested_network_workers"]=workers;record["observed_Eigen_threads"]=Eigen::nbThreads();
   record["started_network_workers"]=threads.size();
   record["requested_internal_threads"]=1;

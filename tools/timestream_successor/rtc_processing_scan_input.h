@@ -29,20 +29,37 @@ PreparedProcessingScans prepare_processing_scans(const YAML::Node &cfg,
   using namespace citlali::pipeline;
   const auto request=cfg["decision_apply"];
   const auto effective=YAML::LoadFile(checked_file(cfg["effective_config"]).string());
-  const auto provenance_path=checked_file(request["processing_provenance"]);
-  const auto provenance=YAML::LoadFile(provenance_path.string());
-  require(provenance["canonical_run_identity"]["config_sources"][0]["sha256"].as<std::string>()==
-      "sha256:"+cfg["effective_config"]["sha256"].as<std::string>(),"processing generation uses another configuration");
-  const auto actual_scope=provenance["realized"]["native_cohort_provenance"]["value"]["observation_binding"]["observation"];
-  require(actual_scope["observation"].as<int>()==scope.observation &&
-      actual_scope["subobservation"].as<int>()==scope.subobservation &&
-      actual_scope["scan"].as<int>()==scope.scan,"processing generation has another observation");
+  const bool fresh=bool(request["processing_request"]);
+  require(!(fresh && request["processing_provenance"]),"competing processing request and realized provenance");
+  YAML::Node provenance,selection;
+  if(fresh) {
+    selection=YAML::LoadFile(checked_file(request["processing_request"]).string());
+    require(scope.observation==152389 && scope.subobservation==0 && scope.scan==2 &&
+        selection["schema"].as<std::string>()=="citlali-native-processing-request-v1" &&
+        selection["observation"].as<int>()==scope.observation &&
+        selection["subobservation"].as<int>()==scope.subobservation && selection["scan"].as<int>()==scope.scan &&
+        selection["effective_config_sha256"].as<std::string>()==cfg["effective_config"]["sha256"].as<std::string>() &&
+        selection["method"].as<std::string>()=="preserved-gap-grid-forced-10s-context32" &&
+        selection["realized"].as<bool>()==false,"unsupported fresh processing request");
+    require(YAML::Dump(selection["timing_inputs"])==YAML::Dump(request["timing_inputs"]) &&
+        YAML::Dump(selection["manifest"])==YAML::Dump(cfg["manifest"]) &&
+        YAML::Dump(selection["telescope"])==YAML::Dump(cfg["telescope"]),
+        "fresh processing request differs from exact source population");
+  } else {
+    provenance=YAML::LoadFile(checked_file(request["processing_provenance"]).string());
+    require(provenance["canonical_run_identity"]["config_sources"][0]["sha256"].as<std::string>()==
+        "sha256:"+cfg["effective_config"]["sha256"].as<std::string>(),"processing generation uses another configuration");
+    const auto actual_scope=provenance["realized"]["native_cohort_provenance"]["value"]["observation_binding"]["observation"];
+    require(actual_scope["observation"].as<int>()==scope.observation &&
+        actual_scope["subobservation"].as<int>()==scope.subobservation &&
+        actual_scope["scan"].as<int>()==scope.scan,"processing generation has another observation");
+  }
   require(effective["runtime"]["interp_over_gaps"].as<bool>() &&
       !effective["timestream"]["polarimetry"]["enabled"].as<bool>(),
       "bounded timing adapter requires the recorded gap-grid and no HWPR time participation");
   std::map<int,std::string> expected;
   std::size_t input_index = 0;
-  if (cfg["common_mode_census"]) {
+  if (cfg["common_mode_census"] || fresh) {
     const auto name = std::to_string(scope.observation) + "_" +
                       std::to_string(scope.subobservation) + "_" +
                       std::to_string(scope.scan);
@@ -101,21 +118,27 @@ PreparedProcessingScans prepare_processing_scans(const YAML::Node &cfg,
   // In the selected forced-duration branch Hold contributes cardinality only.
   // Its physical values are not used to define a new telescope/physical scan.
   telescope.tel_data["Hold"]=Eigen::VectorXd::Zero(grid.size());
-  const auto observation=provenance["observation"]["value"];
-  const auto inner=observation["filter_edge_guard_samples"],outer=observation["filter_outer_context_samples"];
-  require(inner["available"].as<bool>() && outer["available"].as<bool>(),"processing context unavailable");
+  int guard_samples=0,outer_context=32;
+  if(!fresh) {
+    const auto observation=provenance["observation"]["value"];
+    const auto inner=observation["filter_edge_guard_samples"],outer=observation["filter_outer_context_samples"];
+    require(inner["available"].as<bool>() && outer["available"].as<bool>(),"processing context unavailable");
+    guard_samples=inner["value"].as<int>();outer_context=outer["value"].as<int>();
+  }
   // Serialized guard_samples is NOT context_samples. Recover the latter
   // through its existing owner, from the exact enabled FIR configuration.
   const auto raw=effective["timestream"]["raw_time_chunk"];
-  require(!raw["IIR_filter"]["enabled"].as<bool>() && inner["value"].as<int>()==0,
+  require(!raw["IIR_filter"]["enabled"].as<bool>() && guard_samples==0,
       "unsupported historical edge-context policy");
   timestream::RTCProc rtc;
   rtc.run_tod_filter=raw["filter"]["enabled"].as<bool>();rtc.run_tod_iir_highpass=false;
   rtc.filter.n_terms=raw["filter"]["n_terms"].as<int>();rtc.filter_edge_guard.enabled=false;
   rtc.configure_filter_edge_guard(rate);
   telescope.inner_scans_chunk=rtc.filter_edge_guard.context_samples;
-  telescope.outer_scans_chunk=outer["value"].as<int>();
+  telescope.outer_scans_chunk=outer_context;
+  if(fresh)require(rtc.run_tod_filter && rtc.filter.n_terms==32,"fresh processing request must preserve the selected context");
   telescope.calc_scan_indices(chunking);
+  if(!fresh) {
   const auto recorded_scans=provenance["realized"]["native_cohort_provenance"]["value"]["scans"];
   require(recorded_scans.size()==static_cast<std::size_t>(telescope.scan_indices.cols()),"processing scan population differs from recorded generation");
   for(std::size_t i=0;i<recorded_scans.size();++i){
@@ -125,7 +148,9 @@ PreparedProcessingScans prepare_processing_scans(const YAML::Node &cfg,
       r["rtc"]["loaded_input_row_count"].as<int>()==telescope.scan_indices(3,i)-telescope.scan_indices(2,i)+1,
       "reconstructed processing intervals disagree with recorded inner/outer support");
   }
-  const auto generation="sha256:"+request["processing_provenance"]["sha256"].as<std::string>();
+  }
+  const auto generation=std::string(fresh ? "native-processing-request:sha256:" : "sha256:")+
+      request[fresh ? "processing_request" : "processing_provenance"]["sha256"].as<std::string>();
   performance.mark("processing_scan_relation_prepared");
   prepared.grid=grid;prepared.indices=telescope.scan_indices;prepared.rate=rate;
   prepared.inner_context=telescope.inner_scans_chunk;prepared.outer_context=telescope.outer_scans_chunk;
@@ -151,7 +176,8 @@ RecoveredProcessingScans recover_processing_scans(const YAML::Node &cfg,
       .5/rate,generation,"existing-gap-grid-native-slot-associations+Telescope::calc_scan_indices;sha256:"+
       cfg["effective_config"]["sha256"].as<std::string>());
   performance.mark("processing_scan_native_projection_complete");
-  out.receipt["generation"]=generation;out.receipt["grid_rows"]=grid.size();
+  out.receipt["generation"]=generation;
+  out.receipt["generation_kind"]=cfg["decision_apply"]["processing_request"] ? "fresh-realization-from-explicit-request" : "verified-existing-processing-generation";out.receipt["grid_rows"]=grid.size();
   out.receipt["grid_first_unix_seconds"]=grid[0];out.receipt["grid_last_unix_seconds"]=grid[grid.size()-1];
   out.receipt["association_tolerance_seconds"]=.5/rate;
   out.receipt["maximum_association_residual_seconds"]=out.projection.maximum_association_residual_seconds;

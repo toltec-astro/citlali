@@ -82,6 +82,31 @@ class SuccessorDefaultCli(unittest.TestCase):
                                    subobservation=0, scan=2, networks=entries))
         self.rejected(self.invoke(config), 'successor.shared_input_mismatch: telescope')
 
+    def test_point_inventory_cannot_import_science_observation_network(self):
+        network = self.root / 'network.json'
+        network.write_text(json.dumps(dict(network=0, observation=152390, decision_apply={}, filter_plan={})))
+        entry = dict(network=0, input=dict(path=str(network), sha256=hashlib.sha256(network.read_bytes()).hexdigest()))
+        config = self.request(dict(schema='citlali-observation-networks-v1', observation=152389,
+                                   subobservation=0, scan=2, networks=[entry]))
+        self.rejected(self.invoke(config), 'successor.network_binding_incomplete')
+
+    def test_point_scope_does_not_admit_other_observations_or_scans(self):
+        for obs, sub, scan in ((152388,0,2), (152389,1,2), (152389,0,1)):
+            config = self.request(dict(schema='citlali-observation-networks-v1', observation=obs,
+                                       subobservation=sub, scan=scan, networks=[]))
+            self.rejected(self.invoke(config), 'successor.observation_scope_unsupported')
+
+    def test_point_inventory_requires_matching_shared_parents(self):
+        entries = []
+        for nw in (0, 7):
+            network = self.root / f'network{nw}.json'
+            network.write_text(json.dumps(dict(network=nw, observation=152389, decision_apply={},
+                                               filter_plan={}, telescope=dict(sha256=str(nw)))))
+            entries.append(dict(network=nw, input=dict(path=str(network), sha256=hashlib.sha256(network.read_bytes()).hexdigest())))
+        config = self.request(dict(schema='citlali-observation-networks-v1', observation=152389,
+                                   subobservation=0, scan=2, networks=entries))
+        self.rejected(self.invoke(config), 'successor.shared_input_mismatch: telescope')
+
     def test_bound_request_tamper_is_rejected_before_execution(self):
         config = self.request({})
         Path(config["input"]["path"]).write_text("{\"changed\":true}")

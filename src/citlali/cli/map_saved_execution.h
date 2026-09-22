@@ -64,7 +64,7 @@ struct SavedMapNetwork {
     std::vector<std::vector<std::uint16_t>> cal_causes;
     std::vector<std::pair<double,double>> geometry;
     CalObservationInput observation;
-    int network,array,factor;
+    int network,array,factor,obsnum;
     std::int64_t first;
     std::size_t scheduled;
 };
@@ -105,7 +105,9 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
         out.cal["input_RTC_attempt"].as<std::uint64_t>()==out.apply["attempt"].as<std::uint64_t>(),"MAP PTC/CAL/RTC publication identity or method incompatible");
     require(YAML::Dump(final["PTC"])==YAML::Dump(out.ptc) && YAML::Dump(final["CAL"])==YAML::Dump(out.cal),"MAP final receipt differs from required child publication");
     out.network=out.learn["network"].as<int>();out.array=out.cal["detectors"][0]["array"].as<int>();
-    require(out.learn["observation"].as<int>()==152390 && out.array>=0 && out.array<3,"MAP owner binding requires selected observation and known array");
+    out.obsnum=out.learn["observation"].as<int>();
+    require((out.obsnum==152389 || out.obsnum==152390) && out.input["observation"].as<int>()==out.obsnum &&
+        out.array>=0 && out.array<3,"MAP owner binding requires selected observation and known array");
     const auto telescope=checked_file(out.input["telescope"]),effective=checked_file(out.input["effective_config"]),manifest=checked_file(out.input["manifest"]);
     ledger.bind(telescope);ledger.bind(effective);const auto aptsha=ledger.bind(manifest);
     require(out.cal["AST_telescope"].as<std::string>()=="sha256:"+citlali::utils::sha256_file(telescope) &&
@@ -115,10 +117,13 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
     for(const auto &entry:effective_cfg["interface_sync_offset"]){const auto offset=entry["toltec"+std::to_string(out.network)];
         if(offset){require(offset.as<double>()==0,"saved MAP adapter only supports verified zero interface offset");++offset_count;}}
     require(offset_count==1,"saved MAP interface offset absent or duplicated");
-    out.observation=prepare_cal_observation(out.input,NativeObservationScope{152390,0,2});
+    out.observation=prepare_cal_observation(out.input,NativeObservationScope{out.obsnum,0,2});
     require(out.cal["AST_center_ra_rad"].as<double>()==out.observation.ra0 && out.cal["AST_center_dec_rad"].as<double>()==out.observation.dec0 &&
         out.cal["AST_pointing_offset"].as<std::string>()==out.observation.offset_identity,"MAP AST center/offset generation differs");
     const auto verified=apt::verify_bundle_filesystem(manifest,true);
+    const auto apt_relation=pipeline::admit_canonical_apt_detector_relation_v2(verified);
+    require(apt_relation.observation().observation==out.obsnum && apt_relation.observation().subobservation==0 &&
+        apt_relation.observation().scan==2,"MAP selected APT observation differs from PTC source");
     for(const auto &[name,unit]:std::array<std::pair<std::string,std::string>,3>{{{"flxscale","mJy/beam/xs"},{"x_t","arcsec"},{"y_t","arcsec"}}}) {
         const auto f=std::find_if(verified.fields.begin(),verified.fields.end(),[&](const auto &v){return v.name==name;});
         require(f!=verified.fields.end() && f->unit==unit,"MAP selected APT field units differ");
@@ -171,7 +176,7 @@ std::shared_ptr<const PtcMapPublication> load_map_segment(const SavedMapNetwork 
     require(expected.empty(),"MAP required PTC component absent");
     PtcMapPublicationIdentity id;id.publication="sha256:"+n.ptc_sha+":"+stem;
     id.application="sha256:"+n.ptc_sha;id.cal_parent="sha256:"+n.cal_sha;id.rtc_grid=n.rtc_identity;
-    id.processing=n.ptc["processing_generation"].as<std::string>();id.observation="obs:152390_0_2";
+    id.processing=n.ptc["processing_generation"].as<std::string>();id.observation="obs:"+std::to_string(n.obsnum)+"_0_2";
     id.segment="scan="+s["scan"].as<std::string>()+":"+stem;id.network=n.network;id.array=n.array;id.rank=n.ptc["rank"].as<int>();
     id.support_reference=id.publication+":complete-retained-support:causes="+s["files"][stem+"-causes.u8"].as<std::string>();
     id.slots=map_read_array<std::int64_t>(n.ptcroot/(stem+"-slots.i64"),times);
@@ -255,6 +260,8 @@ int execute_saved_map(const fs::path &input,const fs::path &output) {
             networks.push_back(load_saved_map_network(n,ledger));require(seen.insert(networks.back().network).second,"MAP repeated network publication");
         }
         std::sort(networks.begin(),networks.end(),[](const auto &a,const auto &b){return a.network<b.network;});
+        for(const auto &n:networks)require(n.obsnum==networks.front().obsnum,"MAP cannot combine different observations in a base observation map");
+        const auto observation_identity="obs:"+std::to_string(networks.front().obsnum)+"_0_2";
         const auto loaded=std::chrono::steady_clock::now();
         attempt["input_loading_seconds"]=std::chrono::duration<double>(loaded-started).count();
         attempt["reached_stages"].push_back("effective");
@@ -411,7 +418,7 @@ int execute_saved_map(const fs::path &input,const fs::path &output) {
             const auto coordinates_done=std::chrono::steady_clock::now();
             const auto wcs=AstRtcTanGrid::centered(ra0,dec0,pixel,extent_x,extent_y);
             YAML::Node plan;plan["schema"]="citlali-forward-map-plan-v1";plan["role"]="SCI-MAP:base_observation_map@1";
-            plan["observation"]="obs:152390_0_2";plan["array"]=arrays[array];plan["sources"]=sources;
+            plan["observation"]=observation_identity;plan["array"]=arrays[array];plan["sources"]=sources;
             plan["request_identity"]="sha256:"+request_sha;plan["owner_binding"]="sha256:"+owner_sha;
             plan["coverage_cut"]=cut;plan["pixel_size_arcsec"]=pixel;plan["projection"]="SCI-MAP:one_hot_containing_pixel@1";
             plan["target_grid_policy"]="pre-accumulation centered odd grid enclosing all MAP-admitted valid AST coordinates with half-pixel margin";
@@ -490,7 +497,7 @@ int execute_saved_map(const fs::path &input,const fs::path &output) {
             bundle["base_parent"]=bundle["product_identity"].as<std::string>();bundle["plan_sha256"]=plan_sha;bundle["input_domain"]=domain;bundle["grid_identity"]=grid.identity;
             bundle["MAP_authority"]="SCI-MAP-v0.2-r0.4";bundle["MAP_shared_source_sha256"]="3b81ea8180dcc3f5f37964ac1177feb417fef6a1cdcc590b33f9431b54bc1e31";
             bundle["reached_stages"]=std::vector<std::string>{"requested","effective","observation_resolved","applied","realized"};
-            bundle["outcome"]="success";bundle["WCS"]=frame;bundle["observation"]="obs:152390_0_2";bundle["array"]=arrays[array];bundle["sources"]=sources;
+            bundle["outcome"]="success";bundle["WCS"]=frame;bundle["observation"]=observation_identity;bundle["array"]=arrays[array];bundle["sources"]=sources;
             bundle["signal_unit"]="mJy/beam";bundle["quantity"]="nonpolarimetric total-intensity-equivalent calibrated x; no Stokes-I claim";
             bundle["nominal_beam_parent"]="sha256:"+owner_sha+":"+arrays[array];bundle["nominal_beam_fwhm_arcsec"]=beams[array];
             bundle["measured_beam_or_full_response_inferred"]=false;bundle["coefficient_family"]=std::string(PtcUniformCoefficients::family);

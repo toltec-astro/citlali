@@ -439,18 +439,23 @@ struct TelescopeInput {
 TelescopeInput load_telescope(
     const fs::path &path,
     const pipeline::NativeObservationScope &scope,
-    bool bounded_repeat_census = false) {
+    bool bounded_repeat_census = false,
+    bool bounded_point_map = false) {
     // One explicitly selected repeat for the offline common-mode census.
     // Existing acceptance callers retain every original artifact guard.
     require(!bounded_repeat_census ||
                 (scope.observation == 152392 && scope.subobservation == 0 && scope.scan == 2),
             "repeat telescope binding is outside the fixed census scope");
-    const std::string_view expected_filename = bounded_repeat_census
+    require(!bounded_point_map || (!bounded_repeat_census && scope.observation == 152389 &&
+        scope.subobservation == 0 && scope.scan == 2), "POINT telescope binding outside selected scope");
+    const std::string_view expected_filename = bounded_point_map
+        ? "tel_toltec_2026-02-19_152389_00_0002.nc" : bounded_repeat_census
         ? "tel_toltec_2026-02-19_152392_00_0002.nc" : telescope_filename;
-    const std::string_view expected_digest = bounded_repeat_census
+    const std::string_view expected_digest = bounded_point_map
+        ? "2aec5f1f2be8c365127fcf275a02eb0c780eeda9494cd225e50e50c4386a9392" : bounded_repeat_census
         ? "cf991624411d7f7582977351a5ab4cc228977bc8680578cb74e0ec1ae71d8e47" : telescope_sha256;
-    const auto expected_bytes = bounded_repeat_census ? 24247112u : telescope_byte_count;
-    const auto expected_records = bounded_repeat_census ? 62339u : telescope_record_count;
+    const auto expected_bytes = bounded_point_map ? 1301180u : bounded_repeat_census ? 24247112u : telescope_byte_count;
+    const auto expected_records = bounded_point_map ? 3200u : bounded_repeat_census ? 62339u : telescope_record_count;
     require(path.filename() == expected_filename,
             "telescope filename is not the approved artifact");
     std::error_code error;

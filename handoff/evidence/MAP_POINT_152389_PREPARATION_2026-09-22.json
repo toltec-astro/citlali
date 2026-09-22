@@ -1,0 +1,29 @@
+{
+  "scope": "POINT 152389 preparation only; no completed RTC/CAL/PTC/MAP or source measurements",
+  "parent": "2049d9e4e5d91f8590d6a2f82fab972ac72aff0b",
+  "branch": "codex/map-successor-first-forward-001",
+  "worktree": "/private/tmp/citlali-map-successor-first-forward-001",
+  "input_preparation": "/private/tmp/citlali-point-152389-bound-preparation-20260922",
+  "evidence_root": "/private/tmp/citlali-point-evidence-20260922",
+  "tests": {
+    "ctest_passed": 1283,
+    "ctest_established_disabled": 1,
+    "baseline_python": 207,
+    "successor_python": 172,
+    "config_preflight": "pass",
+    "real_preparation_negative_cases": 3
+  },
+  "environment": "supplemental local AppleClang/Homebrew; no Spack or Unity run",
+  "source_protection": "owner selection pending; initial 152390 no-mask binding not extended",
+  "files": {
+    "build-all.log": "5fee92db0cb2ebb77b9ec1d2eee34277de1cb7d0dd4c27be07e89da94429a33a",
+    "build-adapters.log": "f2792ea074edae994ee1d089571c2430ae4339ba28ead7afc5e778d7e27c251b",
+    "ctest.log": "cccb05fe8680c88c6cdbb473fcecd9ef983432d2923a7880ad20241f8d023ab1",
+    "python-successor.log": "80629c3787cbd06da005a3d288fff55cc8d70cfff1cf55a9e7aaf8abc198ae09",
+    "python-baseline.log": "ae148e521e58952023be34e71f9a16e48b62e0bca937865cb07e3f13be1e7bd3",
+    "config-preflight.log": "19aca673acdeebf8e631738e6a52d501decf976e2913953879d7a7cab00910e7",
+    "input-inventory.json": "e7082650d0a8126b3f0d37740fd455543a28f59843370f1aa7b8aff45da0fc8d",
+    "preparation-checks/report.json": "22ca1499d54005a3f3ac49b433a9de8b75e5afabf6aa199797576d88ae433044"
+  },
+  "independent_review": "pending exact candidate commit"
+}

@@ -1,5 +1,19 @@
 # Citlali Refactor Status
 
+## Owner-selected POINT 152389 follow-on in progress — 2026-09-22
+
+The owner requests POINT 152389 (1146+399) as the first recognizable-source
+demonstration. The prior 152390 three-network MAP remains reviewed engineering
+evidence; it does not close this POINT request. All 11 supplied POINT networks
+and 5,518 detector channels have verified local raw/Tune/APT bindings.
+Bounded observation-identity, native processing-request and constant-pointing
+adapters are being validated on the existing MAP branch; scientific numerical
+owners and ALS rank 10 remain unchanged. The scoped 152390 no-spatial-mask
+decision cannot silently transfer: the owner choice between preserving that
+treatment and the older POINT 20 arcsec protection is pending. No POINT
+RTC/CAL/PTC completion, map, source fit or final observational review is claimed.
+See the current section of the existing MAP handoff.
+
 ## First real forward MAP pass complete and reviewed — 2026-09-22
 
 Separate base maps for a1100/a1400/a2000 now exist from saved observed-entry
