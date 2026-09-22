@@ -4,7 +4,7 @@ import tempfile
 import unittest
 import numpy as np
 import yaml
-from inspect_forward_map import digest, replay_handoffs, MAP_REGISTRY_SHA, MAP_REGISTER_SHA, EVALUATION_BINDINGS
+from inspect_forward_map import digest, replay_handoffs, MAP_REGISTRY_SHA, MAP_REGISTER_SHA, EVALUATION_BINDINGS, summarize_map_probe
 
 class ReloadTests(unittest.TestCase):
     def setUp(self):
@@ -57,8 +57,14 @@ class ReloadTests(unittest.TestCase):
         self.run_replay();self.assertEqual(self.pixels[1],-1);self.assertEqual(self.causes[0,1],0)
     def test_local_probe_uses_same_membership_and_operator(self):
         response=replay_handoffs(self.root,self.plan,self.N,self.hits,True,2.)
+        summary=summarize_map_probe(response,self.hits,np.ones_like(self.hits,dtype=bool),self.plan['WCS'],2.,self.hits)
+        self.assertEqual(summary['status'],'measured');self.assertEqual(summary['constant_unit_response_max_error'],0.)
         self.assertEqual(response[0,0],2.) # two admitted occurrences at origin
         self.assertEqual(response[0,1],0.) # distant template excluded by declared 8-sigma truncation
+    def test_absent_optional_probe_footprint_does_not_fail_base_inspection(self):
+        self.run_replay()
+        result=summarize_map_probe(np.zeros_like(self.N),self.hits,np.ones_like(self.hits,dtype=bool),self.plan['WCS'],2.,self.hits)
+        self.assertEqual(result['status'],'unavailable');self.assertEqual(result['cause'],'no supported probe footprint')
     def test_missing_required_ast_and_qc_never_pass(self):
         for key in ('AST_coordinate','AST_binding','coefficient_QC','MAP_evaluation','MAP_eligibility'):
             path=self.root/self.q[key+'_file'];saved=path.read_bytes();path.unlink()

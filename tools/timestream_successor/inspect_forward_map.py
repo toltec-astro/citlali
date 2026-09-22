@@ -126,6 +126,26 @@ def replay_handoffs(root,plan,numerator,hits,verify_operator=True,probe_fwhm_arc
     return None if probe is None else probe.reshape(numerator.shape)
 
 
+def summarize_map_probe(response,Q,science,wcs,fwhm_arcsec,hits):
+    response=np.divide(response,Q,out=np.zeros_like(response),where=science)
+    xx=(np.arange(Q.shape[1])+1-wcs['CRPIX1'])*wcs['CDELT1']*3600
+    yy=(np.arange(Q.shape[0])+1-wcs['CRPIX2'])*wcs['CDELT2']*3600
+    X,Y=np.meshgrid(xx,yy);mass=response.sum()
+    if not mass>0:
+        return dict(status='unavailable',cause='no supported probe footprint',
+                    scope='optional MAP-only source diagnostic; base bundle and operator verification unaffected')
+    cx=float((response*X).sum()/mass);cy=float((response*Y).sum()/mass)
+    variance=float((response*((X-cx)**2+(Y-cy)**2)).sum()/mass/2)
+    sigma=fwhm_arcsec/np.sqrt(8*np.log(2))
+    area=abs(wcs['CDELT1']*wcs['CDELT2'])*3600**2
+    return dict(status='measured',scope='MAP-only fixed realized operator; synthetic source inserted AFTER PTC; no RTC/CAL/PTC attenuation or measured-PSF claim',
+      input='unit-peak circular Gaussian centered on declared tangent origin, truncated at 8 sigma',
+      input_fwhm_arcsec=fwhm_arcsec,input_peak_mJy_per_nominal_beam=1,
+      output_peak_mJy_per_nominal_beam=float(response.max()),integrated_ratio_to_template=float(mass*area/(2*np.pi*sigma*sigma)),
+      output_centroid_tangent_arcsec=[cx,cy],output_second_moment_equivalent_fwhm_arcsec=float(np.sqrt(8*np.log(2)*variance)),
+      constant_unit_response_max_error=float(np.max(np.abs(hits[science]/Q[science]-1))),
+      full_procedure_response='unavailable: complete upstream source-response carrier not supplied')
+
 def inspect(root, verify_operator=True):
     root=Path(root).resolve();b=read_yaml(root/'bundle.yaml')
     require(b['schema']=='citlali-forward-map-bundle-v1' and b['outcome']=='success','not a complete MAP bundle')
@@ -171,23 +191,7 @@ def inspect(root, verify_operator=True):
     max_arcsec=float(np.max(2*np.arcsin(np.sqrt(np.clip(h,0,1))))*180/np.pi*3600)
     require(max_arcsec<=.1,'FITS representation exceeds 0.1 arcsec finite-population bound')
     response=replay_handoffs(root,p,N,hits,verify_operator,b['nominal_beam_fwhm_arcsec'] if verify_operator else None)
-    probe_report=None
-    if response is not None:
-        response=np.divide(response,Q,out=np.zeros_like(response),where=science)
-        xx=(np.arange(signal.shape[1])+1-p['WCS']['CRPIX1'])*p['WCS']['CDELT1']*3600
-        yy=(np.arange(signal.shape[0])+1-p['WCS']['CRPIX2'])*p['WCS']['CDELT2']*3600
-        X,Y=np.meshgrid(xx,yy);mass=response.sum();require(mass>0,'local response probe has no science support')
-        cx=float((response*X).sum()/mass);cy=float((response*Y).sum()/mass)
-        variance=float((response*((X-cx)**2+(Y-cy)**2)).sum()/mass/2)
-        sigma=b['nominal_beam_fwhm_arcsec']/np.sqrt(8*np.log(2))
-        area=abs(p['WCS']['CDELT1']*p['WCS']['CDELT2'])*3600**2
-        probe_report=dict(scope='MAP-only fixed realized operator; synthetic source inserted AFTER PTC; no RTC/CAL/PTC attenuation or measured-PSF claim',
-          input='unit-peak circular Gaussian centered on declared tangent origin, truncated at 8 sigma',
-          input_fwhm_arcsec=b['nominal_beam_fwhm_arcsec'],input_peak_mJy_per_nominal_beam=1,
-          output_peak_mJy_per_nominal_beam=float(response.max()),integrated_ratio_to_template=float(mass*area/(2*np.pi*sigma*sigma)),
-          output_centroid_tangent_arcsec=[cx,cy],output_second_moment_equivalent_fwhm_arcsec=float(np.sqrt(8*np.log(2)*variance)),
-          constant_unit_response_max_error=float(np.max(np.abs(hits[science]/Q[science]-1))),
-          full_procedure_response='unavailable: complete upstream source-response carrier not supplied')
+    probe_report=None if response is None else summarize_map_probe(response,Q,science,p['WCS'],b['nominal_beam_fwhm_arcsec'],hits)
     return {'schema':'citlali-forward-map-inspection-v1','bundle':str(root),'product_identity':b['product_identity'],
             'array':b['array'],'shape_yx':list(signal.shape),'science_pixels':int(science.sum()),
             'contributing_occurrences':int(hits.sum()),'positive_and_negative_science_pixels':[int(np.sum(signal[science]>0)),int(np.sum(signal[science]<0))],
