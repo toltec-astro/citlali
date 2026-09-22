@@ -1,6 +1,6 @@
 # Citlali Refactor Status
 
-## POINT 152389 maps produced; final review pending — 2026-09-22
+## POINT 152389 maps complete and independently reviewed — 2026-09-22
 
 The requested central source is clearly visible in all three first-forward maps
 of 1146+399. Runtime `a42373f75` preserves no spatial mask, observed ALS rank 10,
@@ -20,8 +20,9 @@ preflight pass. MAP cost 57.51 s wall / 34.40 s CPU / 1.465 GB peak RSS.
 Products, retained upstream failures and diagnostics are under
 `/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-forward-map-20260922`.
 See the existing MAP handoff and
-`handoff/evidence/MAP_POINT_152389_FORWARD_2026-09-22.json`. Independent final
-review remains pending. No FRUIT, Unity access, push or canonical integration.
+`handoff/evidence/MAP_POINT_152389_FORWARD_2026-09-22.json`. Independent review of `4c1aefac9` passes with recorded limitations and no
+findings; the reviewer independently reproduced all three bundle replays and
+source fits. No FRUIT, Unity access, push or canonical integration.
 Earlier preparation/selection-pending entries below are historical.
 
 ## Owner-selected POINT 152389 follow-on in progress — 2026-09-22

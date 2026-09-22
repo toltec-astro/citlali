@@ -754,3 +754,30 @@ before stronger flux/PSF claims. FRUIT discussion should settle the inference
 model for the reconstructed total and its acceptance/stopping rules. The
 descriptive Gaussian here is not a selected feedback model; no recurrence,
 threshold, damping or terminal-selection policy has been activated.
+
+### Final POINT review and disposition
+
+Independent fresh-context Tier 2 review passes with recorded limitations and
+no blocker, major or minor findings at
+`4c1aefac9ecacbdedeaaeffbe7a5038c2e564b88`, tree
+`11cb71f46cb319ecb08ff83ad29265e1f6e3d7c1`. Its direct parent is the exact
+executed native runtime `a42373f7576ea9b90f3a3b17393122f25a802735`; no native
+source changed after the runs. The reviewer independently replayed all three
+final MAP bundles and recomputed all three source fits with identical reports,
+visually inspected the source, and ran 15 focused tests successfully. Broader
+test logs were inspected rather than rerun by the reviewer.
+
+Scientific/behavioral disposition: pass with the explicitly retained upstream
+failures, missing optional stronger-role companions and descriptive-fit limits.
+Architecture/ownership: pass; existing owners and numerical treatment remain
+intact. Repository/evidence: pass with supplemental-local-environment limits;
+tracked source clean, only the existing build locator untracked. Failed RTC
+networks and the nonconverged PTC segment are not reclassified as success.
+
+The owner-requested POINT central-source demonstration is complete with those
+coverage exclusions. This does not establish all-network upstream conformance,
+full-chain flux/PSF goals, package-wide MAP conformance, canonical integration,
+activation or production authorization. The final evidence-only closure commit
+records this review without changing the reviewed implementation or products.
+Stop at this owner review point; FRUIT and upstream-policy repairs await the
+next work order.

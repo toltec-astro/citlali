@@ -267,7 +267,22 @@
     "serial_four_worker_network0_numeric_files_bit_identical": 48,
     "visual_inspection": "central source and all three signed-signal/normalization plots inspected"
   },
-  "independent_review": "pending final exact diagnostic candidate",
+  "independent_review": {
+    "reviewer": "fresh-context point_forward_review",
+    "candidate": "4c1aefac9ecacbdedeaaeffbe7a5038c2e564b88",
+    "disposition": "pass with recorded limitations; no blocker/major/minor findings",
+    "scientific_behavioral": "pass with limitations: successful MAP from admitted partial upstream products, not an all-network upstream pass",
+    "architecture": "pass: native scientific sources unchanged from runtime; bounded adapters and diagnostics",
+    "repository_evidence": "pass with limitations: local supplemental environment; only build locator untracked",
+    "independently_replayed_bundles": [
+      "a1100",
+      "a1400",
+      "a2000"
+    ],
+    "independently_recomputed_source_fits": 3,
+    "independently_run_focused_tests": 15,
+    "broader_logs": "inspected, not independently rerun"
+  },
   "limitations": [
     "RTC networks 2 and 11 failed: admitted transitions lack existing scan support; original records preserved",
     "Network3 scan5 ALS iteration limit100 not converged:420413 eligible cells excluded; no solver change",
@@ -404,5 +419,8 @@
       },
       "scope": "bundle/reload/operator/numerical and WCS representation checks; not full upstream source-response or production qualification"
     }
-  }
+  },
+  "reviewed_candidate": "4c1aefac9ecacbdedeaaeffbe7a5038c2e564b88",
+  "reviewed_tree": "11cb71f46cb319ecb08ff83ad29265e1f6e3d7c1",
+  "disposition": "POINT central-source MAP milestone complete with retained upstream exclusions; FRUIT deferred; not integrated or production-authorized"
 }
