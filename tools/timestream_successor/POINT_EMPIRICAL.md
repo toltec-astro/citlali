@@ -83,3 +83,74 @@ outcomes remain part of the preserved procedure; tests verify their accounting
 and nonconvergence handling. Model mismatch is measured separately using the
 noiseless fitted amplitude versus the true source peak. None of these map tests
 validates recovery through PTC.
+
+## Balanced reconstruction and local coverage extension
+
+`run_point_pairings.py` is the bounded follow-up. It preserves the initial
+companion outputs, but supersedes their partial-footprint split fits for
+comparisons requiring identical domains. It does not reinterpret the earlier
+split difference as a noise-only null or final flux uncertainty.
+
+```sh
+MPLBACKEND=Agg MPLCONFIGDIR=/private/tmp/point-pairings-mpl \
+XDG_CACHE_HOME=/private/tmp/point-pairings-cache \
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 \
+/Users/gwilson/tolteca/bin/python tools/timestream_successor/run_point_pairings.py \
+  --maps /absolute/path/to/map-pass/products \
+  --measurement /absolute/path/to/diagnostics/source/source-measurements.json \
+  --processing-request /absolute/path/to/inputs/processing-request.json \
+  --profile saved-descriptive-v1 \
+  --output /absolute/path/to/new-pairing-directory
+```
+
+The request is tied to the exact realized processing generation. Its adjacent
+`effective-point.yaml`, telescope file, native time hashes, per-network science
+intervals, PTC slots and original MAP operator are checked. Native sample ranges
+are zero-based and half-open; reported first/last UTC values are sample centers,
+not exposure boundaries. Absolute epoch uncertainty stays unquantified as in
+the parent. Raw telescope ScanNum and processing chunk IDs are distinct.
+
+For 152389 the bound configuration forces six approximately 10-second processing
+chunks (0..5) within raw observation 152389_0_2. Every complementary balanced
+partition is enumerated once (ten three-versus-three pairings), along with all
+six individual chunks. Nothing selects four of six chunks. No four-scan identity
+is found in the bound telescope/processing records; a separate owner definition
+would require a separately recorded grouping rather than silently relabeling
+these chunks. The generic partition function also tests all three balanced
+partitions of a four-element domain.
+
+Each subset is accumulated as sum(N)/sum(Q), preserving original admitted
+samples and unit coefficients. Its 0.5 coverage cut is evaluated from its own
+normalization. Exact original counts and roundoff-bounded numerator recovery
+must pass. No upstream operation is rerun. Complete 40-arcsec disk support is
+required before calling the unchanged saved seven-parameter fitter. Missing
+pixels make that fit unavailable. The fixed template and each aperture retain
+full-map centroid, shape and radii, each with their own complete-support gate.
+No fit on a shrunken common intersection is substituted.
+
+Per-region coverage includes core (one measured major FWHM), full template,
+40-arcsec fit, fit periphery outside the template, and each aperture. Quantiles
+are min/10th/median/90th/max and include zero coverage for each subset. Pair
+normalization ratios additionally state how many pixels have positive coverage
+on both sides; support completeness is a separate fact. The background constant
+is fitted jointly on the whole fit disk. Periphery statistics describe that
+local context; they are not a new annulus estimator. No arbitrary extra
+coverage-ratio acceptance threshold is added. Complete support alone does not
+establish equal precision, effective response or broader scientific adequacy.
+
+`groups.json` retains every source measurement, aperture, local support and
+normalization distribution, per-network and per-detector accepted contribution
+count, and missing parent segment. `replay-audit.json` binds detector occurrence
+identities once per network, all native time ranges, whole-segment detector
+cause-code histograms and MAP exclusions. Cause codes are preserved as codes;
+no new upstream reason is guessed. Excluded PTC samples have no serialized MAP
+position, so their whole-segment exclusion counts are not assigned fabricated
+source-region positions. Local populations are exact admitted contributions.
+
+Each subset FITS stores SIGNAL/NUMERATOR/NORMALIZATION/SCI_SUPPORT; with the
+verified uniform coefficient family, NORMALIZATION is also the hit count.
+Difference FITS store A_MINUS_B/COMMON_SUPPORT/Q_A/Q_B/Q_A_OVER_Q_B. Measurement
+masks, source table, timing, comparisons, overview figures, runtime and complete
+hash manifest are included. Reusing multiple balanced partitions does not turn
+them into additional independent observations. Inherited cleaning attenuation
+is unresolved; the command neither estimates it nor forces source agreement.
