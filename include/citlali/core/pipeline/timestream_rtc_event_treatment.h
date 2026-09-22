@@ -52,6 +52,10 @@ public:
         // A complete processing relation must remain the same operation domain
         // when filtering support is resolved. A caller cannot rescue an outside
         // jump and then silently use those same outside rows as filter inputs.
+        // Membership consumers use binary search: retain the canonical union,
+        // not merely a canonical copy used by the equality check.
+        for (auto &[network,ranges]:timing_unavailable)
+            ranges=rtc_event_assessment_detail::merge(std::move(ranges));
         const auto &binding=transients->jump_plan_handle()->scan_binding_handle();
         if (binding && binding->processing_domain()) {
             std::map<TimestreamNetworkId,std::vector<RtcEventRange>> expected;

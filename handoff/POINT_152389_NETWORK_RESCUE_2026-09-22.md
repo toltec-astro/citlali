@@ -83,3 +83,15 @@ measured cadence required by the existing transfer interface; corrected fixture
 uses the measured evidence. No algorithm was relaxed for that failure.
 175 successor Python tests, 207 baseline Python tests, and required full config
 preflight pass. Real-network recovery and final independent review remain pending.
+
+## Independent review repair
+
+Fresh-context review of `fa94788f7ef411c12c149d3e5a290a2693801229`
+found one typed-boundary defect: event treatment compared merged unavailable
+ranges but retained the original ordering, while downstream membership uses
+binary search. Normalize the stored ranges before comparison and use. The
+filter injection test now covers canonical, reversed, and overlapping equivalent
+ranges at both science boundaries. All 1,289 runnable CTests pass again.
+The initial actual run completed nw0/nw2/nw11, with all six PTC segments per
+network converged; it remains preliminary evidence under `upstream`. Final
+runtime and maps will bind the repaired committed source under `upstream-r2`.

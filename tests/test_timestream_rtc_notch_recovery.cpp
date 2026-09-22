@@ -2441,35 +2441,42 @@ TEST(rtc_partial_completion, an_active_donor_dependency_prevents_empty_detector_
 
 namespace {
 TEST(rtc_event_treatment, context_only_jump_keeps_full_filter_footprints_inside_science) {
-    Input in;in.step(500,4,0);
-    Trial t(in,10,RtcSpikeProtection::outside_source,{{1,{0,100,580}}},
-        RtcExistingProcessingDomain{{{1,{0,100,650}}},{{0,580,1200}}});
-    const auto &jump=t.transient->jump_plan_handle();ASSERT_FALSE(jump->processing_support().empty());
-    EXPECT_TRUE(jump->processing_support()[0].science_scans.empty());
-    EXPECT_EQ(jump->processing_support()[0].context_scans,(std::vector<std::uint64_t>{1}));
-    EXPECT_THROW(t.plan(),std::invalid_argument); // no filter may omit outside-domain facts
-    EXPECT_THROW(resolve_events(t),std::invalid_argument);
-    const auto decision=RtcEventTreatmentDecision::consider(t.review,t.transient,resolved_factors(t),
-        "known-prior","same-units",{{0,{{580,1200}}}},t.val,2000);
-    RtcLineTransferSpecification spec;spec.identity="controlled-context-test";
-    spec.lowpass_identity="centered3";spec.state_support_identity="complete-finite-footprints";
-    spec.input_interval_seconds=t.lines->spectral_handle()->network(0).interval_seconds;spec.factor=2;spec.centered_lowpass={.25,.5,.25};
-    auto assessment=RtcLineTransferAssessment::consider(
-        RtcLineTransferCandidate::bind(t.lines,0,0,spec),t.joint,t.val,22);
-    const auto plan=RtcNotchRecoveryPlan::consider(assessment,t.transient,t.val,t.domain,23,{},decision,true);
-    const auto result=t.apply(plan);ASSERT_FALSE(result->output_native_rows().empty());
-    RtcRecoveryInjection perturb{plan,"outside-science-injection",Eigen::Matrix<double,Eigen::Dynamic,2>::Zero(1100,2)};
-    perturb.delta.bottomRows(620).setConstant(1e8);
-    const auto injected=t.apply(plan,&perturb);
-    EXPECT_EQ(result->output_native_rows(),injected->output_native_rows());
-    for (auto row:result->output_native_rows()) {
-        EXPECT_LT(row+plan->full_support_half_samples(),580);
-        for(int c=0;c<2;++c)EXPECT_DOUBLE_EQ(result->filtered_native_pair()(row-100,c),injected->filtered_native_pair()(row-100,c));
+    for (const auto &timing:std::vector<std::vector<RtcEventRange>>{
+            {{100,200},{580,1200}}, {{580,1200},{100,200}},
+            {{700,1200},{150,200},{580,800},{100,175}}}) {
+        Input in;in.step(500,4,0);
+        Trial t(in,10,RtcSpikeProtection::outside_source,{{1,{0,200,580}}},
+            RtcExistingProcessingDomain{{{1,{0,200,650}}},{{0,100,200},{0,580,1200}}});
+        const auto &jump=t.transient->jump_plan_handle();ASSERT_FALSE(jump->processing_support().empty());
+        EXPECT_TRUE(jump->processing_support()[0].science_scans.empty());
+        EXPECT_EQ(jump->processing_support()[0].context_scans,(std::vector<std::uint64_t>{1}));
+        EXPECT_THROW(t.plan(),std::invalid_argument); // no filter may omit outside-domain facts
+        EXPECT_THROW(resolve_events(t),std::invalid_argument);
+        const auto decision=RtcEventTreatmentDecision::consider(t.review,t.transient,resolved_factors(t),
+            "known-prior","same-units",{{0,timing}},t.val,2000);
+        RtcLineTransferSpecification spec;spec.identity="controlled-context-test";
+        spec.lowpass_identity="centered3";spec.state_support_identity="complete-finite-footprints";
+        spec.input_interval_seconds=t.lines->spectral_handle()->network(0).interval_seconds;spec.factor=2;spec.centered_lowpass={.25,.5,.25};
+        auto assessment=RtcLineTransferAssessment::consider(
+            RtcLineTransferCandidate::bind(t.lines,0,0,spec),t.joint,t.val,22);
+        const auto plan=RtcNotchRecoveryPlan::consider(assessment,t.transient,t.val,t.domain,23,{},decision,true);
+        const auto result=t.apply(plan);ASSERT_FALSE(result->output_native_rows().empty());
+        RtcRecoveryInjection perturb{plan,"outside-science-injection",Eigen::Matrix<double,Eigen::Dynamic,2>::Zero(1100,2)};
+        perturb.delta.topRows(100).setConstant(1e8);
+        perturb.delta.bottomRows(620).setConstant(1e8);
+        const auto injected=t.apply(plan,&perturb);
+        EXPECT_EQ(result->output_native_rows(),injected->output_native_rows());
+        for (auto row:result->output_native_rows()) {
+            EXPECT_GE(row-plan->full_support_half_samples(),200);
+            EXPECT_LT(row+plan->full_support_half_samples(),580);
+            for(int c=0;c<2;++c)EXPECT_DOUBLE_EQ(result->filtered_native_pair()(row-100,c),injected->filtered_native_pair()(row-100,c));
+        }
+        EXPECT_EQ(plan->input_causes()[0],RtcNotchRecoveryCause::processing_support_unavailable);
+        EXPECT_EQ(plan->input_causes()[480],RtcNotchRecoveryCause::processing_support_unavailable);
+        EXPECT_FALSE(result->coordinate_stage_available(NativeReadoutCoordinate::x,580,true));
+        EXPECT_FALSE(result->coordinate_stage_available(NativeReadoutCoordinate::r,600,true));
+        for (const auto &r:jump->processing_support())for(auto outside:r.outside_science)
+            EXPECT_EQ(plan->input_causes()[outside.first-100],RtcNotchRecoveryCause::transient_excluded);
     }
-    EXPECT_EQ(plan->input_causes()[480],RtcNotchRecoveryCause::processing_support_unavailable);
-    EXPECT_FALSE(result->coordinate_stage_available(NativeReadoutCoordinate::x,580,true));
-    EXPECT_FALSE(result->coordinate_stage_available(NativeReadoutCoordinate::r,600,true));
-    for (const auto &r:jump->processing_support())for(auto outside:r.outside_science)
-        EXPECT_EQ(plan->input_causes()[outside.first-100],RtcNotchRecoveryCause::transient_excluded);
 }
 }
