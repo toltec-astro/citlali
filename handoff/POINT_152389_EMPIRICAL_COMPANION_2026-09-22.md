@@ -135,7 +135,7 @@ Final products: `companion-r2`, `synthetic-validation-r2`; `RESULTS.md` explains
 results and limitations, `final-source.json` binds verification. Initial
 `companion`/`synthetic-validation` directories preserve the earlier source run.
 Root manifest SHA256:
-`df36ef4e92dc5fb35eac97ced23544de2c11e89f43a111e4d40e33b8704f0b62`.
+`671d6d8e66f478c48929dad13cf8779acb35c3b606bed44983407f2cc03621ba`.
 
 The 38 final companion manifest entries and all 42 FITS HDU checksums verify.
 All three exact input map hashes remain unchanged. Each bundle passes existing
@@ -201,3 +201,11 @@ branch, only intended paths changed, unrelated shared ALIGN dirt untouched,
 original untracked build symlink retained. No push/integration/Unity/activation
 or cleanup. Final exact-SHA independent evidence review pending; closure will
 record its three separate dispositions. No owner FRUIT decision is made here.
+
+Independent final evidence review reproduced blank amplitudes/scatter, checked
+every blank/refit footprint, all runtime code/parent hashes, exact split counts,
+FITS checksums, synthetic records and representative plots. One prose-only
+rounding correction: a2000 trial coverage ratios span 0.727677–0.815917,
+rounded 0.73–0.82 (the initial RESULTS text said 0.75–0.81). Corrected the
+external report and rebound the root manifest above. Numerical products and
+runtime source are unchanged. No additional numerical rerun is warranted.
