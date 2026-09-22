@@ -161,3 +161,22 @@ nw3 scan 5 ALS failure remains separately unavailable; raw nw6/nw10 remain
 absent. No canonical integration, push, production activation or cleanup was
 performed. Final independent exact-evidence-candidate review follows; runtime
 code identity stays explicitly bound to e93e8861 rather than a later docs SHA.
+
+## Independent review closure
+
+Fresh-context read-only review accepts exact evidence candidate
+`38ab73d4437fbf14098d1d89d3424c6002fd2c36`, tree
+`e5ccf69d99c405442cf41cccb81987b184ee0564`, with no open findings.
+Scientific/behavioral conformance: pass with recorded limitations.
+Architecture/ownership: pass. Repository/branch/evidence hygiene: pass with
+recorded limitations. Full independent review is preserved in
+`POINT_152389_NETWORK_RESCUE_INDEPENDENT_REVIEW_2026-09-22.md`.
+
+The reviewer independently reproduced 42 focused tests, all-detector finite
+support and VAL generation checks, all 7,616 control binary comparisons,
+all three exact MAP replays, all a1400 numerical-plane comparisons, and every
+one of the 39,983 manifest digests. Existing scientific/production limitations
+remain as recorded above. This closure adds only review documentation and
+status; runtime code and the frozen artifact root remain unchanged. No further
+owner decision is needed to complete this bounded rescue. Integration, push,
+activation, nw3 repair and cleanup remain separate unperformed work.

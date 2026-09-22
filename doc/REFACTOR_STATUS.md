@@ -19,7 +19,9 @@ All 7,616 nw0 control binaries are bit-identical. Three rebuilt MAP bundles pass
 exact parent/operator replay and WCS/support checks; a1400 numerical planes are
 bit-identical. Existing nw3 scan 5 ALS failure remains separately unavailable.
 Fresh-context review found and verified repair of an interval-ordering boundary
-case; final evidence-candidate review is pending. See the linked handoff for
+case. Exact evidence candidate `38ab73d4437fbf14098d1d89d3424c6002fd2c36`
+passes independent science/behavior, architecture and repository/evidence
+review with recorded limitations and no open findings. See the linked handoff for
 artifact manifest, source positions, measured runtime/memory and limitations.
 Earlier completed MAP/audit entries below remain historical evidence.
 
