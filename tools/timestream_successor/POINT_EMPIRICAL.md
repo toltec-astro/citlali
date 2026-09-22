@@ -105,7 +105,12 @@ OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 \
 
 The request is tied to the exact realized processing generation. Its adjacent
 `effective-point.yaml`, telescope file, native time hashes, per-network science
-intervals, PTC slots and original MAP operator are checked. Native sample ranges
+intervals, PTC slots and original MAP operator are checked. The saved MAP attempt
+binds the bundle, request and input manifest; that manifest independently seals
+the native receipt and native-time bytes. Processing intervals must exactly match
+the bound PTC native intervals, including unavailable segments, and remain ordered
+and in bounds. This rejects self-consistent timing-file replacement and changes
+that would otherwise be hidden by RTC downsampling. Native sample ranges
 are zero-based and half-open; reported first/last UTC values are sample centers,
 not exposure boundaries. Absolute epoch uncertainty stays unquantified as in
 the parent. Raw telescope ScanNum and processing chunk IDs are distinct.

@@ -97,3 +97,16 @@ config preflight passes. New focused coverage/partition/replay tests number10.
 Source and measurement definitions remain unchanged except the explicitly
 requested complete-domain availability gate on these new comparisons. Final
 runtime must bind a committed source; fresh-context review follows.
+
+
+### Independent-review repair
+
+Initial runtime candidate `af9faee61251a050493ce1df475a63490191f17b`
+passed numerical/coverage reproduction, but review found that native receipt/time
+self-consistency alone did not bind timing to the saved MAP input ledger. Actual
+inputs match that ledger. Added attempt→bundle/request→manifest→native timing
+verification and exact ordered native interval matching against bound PTC segment
+records, including unavailable segments and factor2 endpoint changes. Regression
+tests reject paired receipt/time replacement, interval edits and reversed timing.
+All 215 successor tests and 111 subtests pass after repair. Initial artifacts are
+retained; the repaired committed run will be published separately as comparisons-r2.

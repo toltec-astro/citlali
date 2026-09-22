@@ -21,6 +21,29 @@ def scheduled_native_rows(ranges,factor,phase):
     return native[(native>=phase)&((native-phase)%factor==0)]
 
 
+def timing_manifest(root,plan):
+    bundle=read_yaml(root/'bundle.yaml');attempt_path=root.parent/'attempt.yaml';attempt=read_yaml(attempt_path)
+    require(attempt['products'][bundle['array']]==digest(root/'bundle.yaml') and
+            attempt['request_identity']==plan['request_identity'],'MAP attempt does not bind this bundle/request')
+    path=checked(root.parent/'input-manifest.yaml',attempt['input_manifest_sha256'])
+    return read_yaml(path),dict(path=str(path),sha256=digest(path),attempt_path=str(attempt_path),attempt_sha256=digest(attempt_path))
+
+
+def validate_processing_intervals(processing,segments,native_rows):
+    ids=[int(s['scan']) for s in processing['scans']]
+    require(len(set(ids))==len(ids) and ids==sorted(ids),'processing IDs not unique chronological order')
+    require(len(segments)==len(ids) and {s['scan'] for s in segments}==set(ids),'PTC/processing scan domain differs')
+    prior=0
+    for s in processing['scans']:
+        matching=[p for p in segments if p['scan']==s['scan']]
+        require(len(matching)==1 and s['science_native']==[matching[0]['native_interval']],
+                'processing science interval differs from bound PTC native interval')
+        for lo,hi in s['science_native']:
+            require(type(lo) is int and type(hi) is int and 0<=lo<hi<=native_rows and lo>=prior,'invalid or nonchronological native science interval')
+            prior=hi
+    return ids
+
+
 def reconcile_request(path):
     path=Path(path);request=json.loads(path.read_text());identity=digest(path)
     require(request['observation']==152389 and request['subobservation']==0 and request['scan']==2,'foreign processing request')
@@ -45,17 +68,21 @@ def reconcile_request(path):
 def replay_scans(root,plan,full,regions,reconciliation):
     """Caller must first run load_parent for complete MAP/PTC/VAL verification."""
     root=Path(root);operator=np.memmap(root/'operator-pixel.i32',dtype='<i4',mode='r')
+    sealed,manifest_binding=timing_manifest(root,plan)
     numerators={};counts={};networks={};members=[];missing=[];timing=[];artifact_hashes={};chunk_ids=None
     for q in plan['ordered_column_domain']:
         pub=read_yaml(root/q['publication_file']);segment=pub['source_segment'];network=int(pub['network']);scan=int(segment['scan'])
         source=Path(pub['source_PTC_root']);native=source.parent.parent
         if network not in networks:
+            for name in ['receipt.yaml','native-time.f64']:
+                path=(native/name).resolve();require(str(path) in sealed,'native timing input absent from saved MAP manifest')
+                checked(path,sealed[str(path)])
             processing=read_yaml(native/'processing-scans.yaml');receipt=read_yaml(native/'receipt.yaml')
             require(processing['generation']==pub['processing']==reconciliation['processing_generation'],'processing generation differs')
             checked(native/'native-time.f64',receipt['native_time_sha256'])
             t=np.fromfile(native/'native-time.f64',dtype='<f8');require(np.isfinite(t).all() and np.all(np.diff(t)>0),'invalid native time')
-            ids=[int(s['scan']) for s in processing['scans']]
-            require(len(set(ids))==len(ids) and ids==sorted(ids),'processing IDs not unique chronological order')
+            ptc=read_yaml(source/'receipt.yaml')
+            ids=validate_processing_intervals(processing,ptc['segments'],len(t))
             if chunk_ids is None:chunk_ids=ids
             require(ids==chunk_ids,'network processing scan identity mismatch')
             cal=read_yaml(Path(pub['source_CAL_root'])/'receipt.yaml');cols=segment['output_detector_indices']
@@ -70,7 +97,6 @@ def replay_scans(root,plan,full,regions,reconciliation):
                     first_sample_UTC=utc(t[rows[0]]),last_sample_UTC=utc(t[rows[-1]]),science_sample_count=len(rows),
                     absolute_epoch_uncertainty=processing['absolute_epoch_uncertainty'],
                     native_outside_processing=processing['native_outside_processing']))
-            ptc=read_yaml(source/'receipt.yaml')
             for s in ptc['segments']:
                 if not s.get('converged',False):missing.append(dict(network=network,scan=s['scan'],cause=s.get('stopping_reason','PTC unavailable'),scope='whole segment unavailable in parent',record=s))
             for name in ['processing-scans.yaml','receipt.yaml','native-time.f64']:artifact_hashes[str(native/name)]=digest(native/name)
@@ -109,5 +135,5 @@ def replay_scans(root,plan,full,regions,reconciliation):
     err=float(np.max(abs(n.sum(axis=0)-full['NUMERATOR'])));require(err<=1e-10*max(1.,np.max(abs(full['NUMERATOR']))),'numerator replay mismatch')
     inventory={str(k):{name:v for name,v in n.items() if name not in ['time','processing']} for k,n in networks.items()}
     return n,q,chunk_ids,dict(timing=timing,detector_inventory=inventory,members=members,missing_segments=missing,
-        timing_artifacts_sha256=artifact_hashes,counts_exact=True,maximum_numerator_roundoff_error=err,
+        timing_artifacts_sha256=artifact_hashes,parent_timing_manifest=manifest_binding,counts_exact=True,maximum_numerator_roundoff_error=err,
         exclusion_scope='PTC cause histograms apply to full segment/detector domains; excluded cells have no MAP positions and are not assigned fabricated source-region counts; admitted local populations use original operator pixels')

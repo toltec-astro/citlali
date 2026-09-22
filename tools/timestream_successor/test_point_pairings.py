@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 from point_pairings import balanced_partitions,footprints,normalized_sum,measured,compared,population_summary,population_comparison
-from point_pairings_io import replay_scans,scheduled_native_rows
+from point_pairings_io import replay_scans,scheduled_native_rows,validate_processing_intervals
 
 
 def test_native_science_intervals_are_projected_to_actual_RTC_lattice():
@@ -9,6 +9,17 @@ def test_native_science_intervals_are_projected_to_actual_RTC_lattice():
     np.testing.assert_array_equal(scheduled_native_rows([[32,38]],2,1),[33,35,37])
     np.testing.assert_array_equal(scheduled_native_rows([[32,35],[40,43]],2,0),[32,34,40,42])
     with pytest.raises(ValueError):scheduled_native_rows([[0,3]],0,0)
+
+
+def test_processing_intervals_reject_off_lattice_endpoint_changes_and_ordering():
+    segments=[dict(scan=0,native_interval=[32,38]),dict(scan=1,native_interval=[38,44])]
+    p=dict(scans=[dict(scan=s['scan'],science_native=[s['native_interval'].copy()]) for s in segments])
+    assert validate_processing_intervals(p,segments,50)==[0,1]
+    p['scans'][0]['science_native'][0][1]=37
+    with pytest.raises(ValueError,match='bound PTC'):validate_processing_intervals(p,segments,50)
+    segments=[dict(scan=0,native_interval=[38,44]),dict(scan=1,native_interval=[32,38])]
+    p=dict(scans=[dict(scan=s['scan'],science_native=[s['native_interval'].copy()]) for s in segments])
+    with pytest.raises(ValueError,match='nonchronological'):validate_processing_intervals(p,segments,50)
 from point_empirical import gaussian
 from validate_point_empirical import fixture
 
@@ -74,8 +85,12 @@ def test_saved_replay_preserves_slots_detector_occurrences_and_exclusions(tmp_pa
     save(native/'receipt.yaml',dict(native_time_sha256=hashlib.sha256((native/'native-time.f64').read_bytes()).hexdigest()))
     processing=dict(generation='test',absolute_epoch_uncertainty='unknown',native_outside_processing=[],scans=[dict(scan=i,science_slots=[2*i,2*i+2],science_native=[[2*i,2*i+2]]) for i in range(2)])
     save(native/'processing-scans.yaml',processing);save(cal/'receipt.yaml',dict(detectors=[dict(channel=7),dict(channel=9)]))
-    save(ptc/'receipt.yaml',dict(segments=[dict(scan=i,converged=True) for i in range(2)]))
-    pixels=np.array([4,4,-1,4,5,5],dtype='<i4');pixels.tofile(root/'operator-pixel.i32');plan={'ordered_column_domain':[]}
+    save(ptc/'receipt.yaml',dict(segments=[dict(scan=i,converged=True,native_interval=[2*i,2*i+2]) for i in range(2)]))
+    pixels=np.array([4,4,-1,4,5,5],dtype='<i4');pixels.tofile(root/'operator-pixel.i32');plan={'ordered_column_domain':[],'request_identity':'fixture'}
+    def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+    save(root/'bundle.yaml',dict(array='fixture'))
+    save(root.parent/'input-manifest.yaml',{str(native/n):sha(native/n) for n in ['receipt.yaml','native-time.f64']})
+    save(root.parent/'attempt.yaml',dict(request_identity='fixture',products={'fixture':sha(root/'bundle.yaml')},input_manifest_sha256=sha(root.parent/'input-manifest.yaml')))
     vals=[]
     for i in range(2):
         stem=f'segment-{i}';cause=np.array([[0,0],[1,0]],dtype='u1');v=np.array([[2,4],[99,6]],dtype='<f8')+i
@@ -98,3 +113,7 @@ def test_saved_replay_preserves_slots_detector_occurrences_and_exclusions(tmp_pa
     assert comparison['core']['networks']['0']['contributions_B']==3
     np.array([0,2],dtype='<i8').tofile(ptc/'segment-0-slots.i64')
     with pytest.raises(ValueError,match='slots'):replay_scans(root,plan,full,regions,dict(processing_generation='test'))
+    np.array([0,1],dtype='<i8').tofile(ptc/'segment-0-slots.i64')
+    (times+100).tofile(native/'native-time.f64')
+    save(native/'receipt.yaml',dict(native_time_sha256=sha(native/'native-time.f64')))
+    with pytest.raises(ValueError,match='digest differs'):replay_scans(root,plan,full,regions,dict(processing_generation='test'))
