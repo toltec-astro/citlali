@@ -110,3 +110,78 @@ records, including unavailable segments and factor2 endpoint changes. Regression
 tests reject paired receipt/time replacement, interval edits and reversed timing.
 All 215 successor tests and 111 subtests pass after repair. Initial artifacts are
 retained; the repaired committed run will be published separately as comparisons-r2.
+
+
+## Final runtime and conformance evidence
+
+Repaired runtime source `12e1fc80a489ed898dd78357d5b46c4ecd24a058`, tree
+`419d3227ddec3a8d30ff9883bfad01b96ada27ff`; unchanged task base above.
+Products are under
+`/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-balanced-pairings-20260922`.
+`RESULTS.md` is the compact owner report and `comparisons-r2/REPORT.md` contains
+all individual and paired values, local coverage/populations and FITS/figure links.
+Initial `comparisons` remains preserved evidence; `comparisons-r2` is final.
+
+Exact identities:
+
+- Root FILES_SHA256SUMS: `4cf91735b38ce78bb6e509d8e409e8062d33ef642d135640d33aece49b233d55`.
+- Final product FILES_SHA256SUMS: `174eb603fb07926ed99d442bf3438e675f9318f1b3197dbd601d867896ba3422`.
+- final-source.json: `85dffbbc90528e72adda5a4a252355a94aa05aca37a6768b4eac732c83ce1d73`.
+- final-source.json records every changed runtime-source path digest; product
+  provenance records environment/library versions, exact command and code hashes.
+
+Across all networks, native science sample centers span 2026-02-19
+06:34:47.581–06:35:47.022 UTC. Per-network boundaries differ by milliseconds;
+absolute epoch uncertainty remains unquantified. The runtime realizes six forced
+10-second chunks. The separate four-scan reference remains unidentified; all ten
+balanced partitions are produced without discarding or inventing identities.
+
+| Array | Complete 40″ paired fits / 10 | Complete paired templates / 10 | Complete individual 40″ fits / 6 |
+|---|---:|---:|---:|
+| a1100 | 8 | 10 | 0 |
+| a1400 | 1 | 8 | 0 |
+| a2000 | 0 | 3 | 0 |
+
+The alternating 024 versus135 fitted differences are −85.57/−133.50/unavailable
+mJy/nominal beam. Template differences are −63.18/−66.63/unavailable. Source-core
+contributing detectors A/B/common are 737/741/449,366/327/213,324/313/238.
+These are local admitted populations, not whole-network availability counts.
+Complete support alone does not assert comparable depth, background, or response.
+All source-shaped residuals remain first-pass reconstruction differences with
+inherited cleaning attenuation unresolved. The existing nw3 chunk5 ALS failure
+and unavailable raw nw6/nw10 remain explicit; no additional network is removed.
+
+Final companion wall73.197 s, CPU43.287 s, peakRSS950910976 bytes (906.9 MiB),
+previously accessed inputs. Initial companion wall39.884 s/CPU37.380 s; the guarded
+rerun also reads/verifies the saved input ledger. These are measured run timings,
+not a performance benchmark. No RTC/PTC/native execution or new learning occurs.
+All139 product-manifest entries and483 HDUs in111 FITS files verify. Every numeric
+FITS plane, group/comparison measurement and scan time equals the initial run.
+Allnine PNGs are bit-identical and visually inspected. Parent MAP hashes unchanged.
+
+Focused repaired tests:11 pass (independently reproduced). Full successor:
+215 pass/111 subtests. Baseline:207 pass/137 subtests. Required config preflight:
+pass. Evidence logs reside in root/evidence; postrepair successor and verification
+are explicitly suffixed r2. No unexpected error-level output in final gates/run.
+Native CTests/build and representative Spack/Unity are not triggered by this
+Python-only saved-product diagnostic; earlier native evidence is not claimed as
+new validation. This work adds no source-recovery-through-PTC validation.
+
+The independent reviewer reproduced all78 own-subset support masks, all30
+complementary normalizations, allavailable saved-profile fits and exact local
+population sums. Original parity maps have exactly identical Q and support;
+signal differences from summation reassociation are only2.84e−13–6.82e−13.
+Review found and verified the bounded timing-binding repair above. Final exact
+SHA disposition follows in the closure record.
+
+Changed implementation paths: point_pairings.py,point_pairings_io.py,
+run_point_pairings.py,test_point_pairings.py,POINT_EMPIRICAL.md, under
+`tools/timestream_successor`; this handoff and living status are evidence docs.
+Scientific source measurements, WCS, nominal beams, accepted coefficients and
+upstream algorithm owners remain unchanged. The diagnostic owns only grouping,
+local support availability, comparisons and separate artifact lifecycle. No
+Engine/core growth. No integration,push,activation,production qualification or
+cleanup. Worktree tracked files are committed; the pre-existing untracked build
+symlink remains. Stop at owner assessment of these diagnostics; a four-scan
+interpretation or source-response experiment would require a separately named
+next step, not an implicit continuation here.

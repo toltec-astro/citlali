@@ -1,5 +1,32 @@
 # Citlali Refactor Status
 
+## POINT 152389 balanced first-pass comparisons — 2026-09-22
+
+The companion now reconciles the saved runtime as six forced 10-second processing
+chunks within raw acquisition152389_0_2 and constructs all ten complementary
+three-versus-three partitions from original summed numerators/normalizations.
+The separate four-scan reference is not identified in the bound inputs; no chunks
+are discarded. Every measurement uses fixed original footprints and each subset's
+own coverage cut. Local depth, background context, detector/network populations
+and exclusions accompany measurements; unsupported footprints remain unavailable.
+
+Complete 40″ paired fits number8/1/0 and complete paired templates10/8/3 for
+a1100/a1400/a2000. No individual chunk fully supports the40″ fit. These are
+first-pass reconstruction differences; differential inherited cleaning response
+remains unresolved, and complete support alone is not response equivalence.
+No final uncertainty, calibration-instability diagnosis or FRUIT threshold follows.
+
+Runtime source`12e1fc80a489ed898dd78357d5b46c4ecd24a058` preserves all parent
+maps and processing state. Final run73.197 s, no upstream rerun. 215 successor
+tests (111 subtests),207 baseline tests (137 subtests),required config preflight,
+139 product hashes and483 FITS HDUs pass. Independent review identified and
+verified repair of the timing-input ledger binding. Detailed exact identities,
+results, figures, exclusions and final review are in
+`handoff/POINT_152389_BALANCED_PAIRINGS_2026-09-22.md`.
+No integration,push,activation or production qualification. Prior companion
+estimates below remain historical evidence; stricter complete-footprint rules
+here govern the new balanced comparisons.
+
 ## POINT 152389 empirical uncertainty companion — 2026-09-22
 
 The bounded reusable Python companion now reports per-array source-masked
