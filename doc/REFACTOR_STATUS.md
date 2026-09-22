@@ -1,5 +1,30 @@
 # Citlali Refactor Status
 
+## POINT 152389 empirical uncertainty companion — 2026-09-22
+
+The bounded reusable Python companion now reports per-array source-masked
+background statistics, coverage-matched raw template/aperture scatter,
+map-domain refit scatter and interleaved saved-PTC split maps. Exact saved
+seven-parameter descriptive POINT measurements are reused; separately
+unavailable SCI-POINT numerical methods are not invented or rebound.
+
+Runtime source `3e9b5512e42e47e67dbdfe06b4c4183d0c707f61` preserves all
+three six-HDU MAP files, cleaning, calibration, weights, source feedback and
+FRUIT state. Fixed-template scatter is 12.92/8.35/4.79 mJy/nominal beam;
+full 40-arcsec refit scatter is available only for a1100 (10.80). a1400/a2000
+have only 1/0 complete matched refit placements. a2000 compact scatter uses
+only five overlapping placements. Split source residuals remain an explicit
+separate diagnostic; no threshold or significance is chosen.
+
+204 successor tests (111 subtests), 207 baseline tests (137 subtests), required
+config preflight and 240 independent synthetic maps pass. Synthetic cases
+separate fit scatter from non-Gaussian model mismatch. Final companion runtime
+is 8.346 s with previously accessed inputs; no native/RTC/PTC reruns. Final
+products, definitions, exact artifact identities, review repair and retained
+limitations are in `handoff/POINT_152389_EMPIRICAL_COMPANION_2026-09-22.md`.
+Independent final evidence review is pending. The earlier upstream/network
+results below remain the immutable parent evidence.
+
 ## POINT 152389 network rescue validated — 2026-09-22
 
 Owner approved the bounded RTC processing-boundary/VAL repair after the offset

@@ -118,3 +118,86 @@ source and build configuration are untouched, and no native executable is used
 by this command. The parent native CTest gate remains preserved; current
 companion validation is Python/map-level evidence, not a new native run.
 Actual products and separate companion runtime will bind the committed source.
+
+## Final runtime and evidence candidate
+
+Implementation candidate 8b4b667c05a32d58184d31a4d9b4c2f3d2f812b4 was
+independently reviewed. The bounded review repair now rejects refit scatter
+when the source's 40-arcsec fit disk is incomplete, even if compact measurements
+remain usable; tests cover absent support and nonfinite data separately.
+Runtime source: 3e9b5512e42e47e67dbdfe06b4c4183d0c707f61, tree
+ da4a3e437be5227ef5cb788e1547e250c096ce4b. All actual source disks have
+1257/1257 finite pixels; repair leaves their numerical measurements unchanged.
+
+Durable root:
+`/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-empirical-companion-20260922`.
+Final products: `companion-r2`, `synthetic-validation-r2`; `RESULTS.md` explains
+results and limitations, `final-source.json` binds verification. Initial
+`companion`/`synthetic-validation` directories preserve the earlier source run.
+Root manifest SHA256:
+`df36ef4e92dc5fb35eac97ced23544de2c11e89f43a111e4d40e33b8704f0b62`.
+
+The 38 final companion manifest entries and all 42 FITS HDU checksums verify.
+All three exact input map hashes remain unchanged. Each bundle passes existing
+operator/parent/PTC replay checks. Counts of retained PTC contributions partition
+exactly into the two splits; numerator recombination differs only by reported
+floating-point reassociation. Current/native parent artifacts remain read-only.
+Nine real diagnostic figures and the synthetic validation figure inspected;
+shortened split titles and explicit pixel axes are verified in final renders.
+
+Final measurements, mJy/nominal beam:
+
+| Array | Fixed amplitude | Blank scatter | Fitted amplitude | Refit scatter / bias | Compact/refit locations |
+|---|---:|---:|---:|---|---:|
+| a1100 | 805.0 | 12.92 | 816.31 | 10.80 / +2.72 | 62 / 13 |
+| a1400 | 551.0 | 8.35 | 554.15 | unavailable | 28 / 1 |
+| a2000 | 583.5 | 4.79 | 593.40 | unavailable | 5 / 0 |
+
+Compact disjoint subset counts are 10/6/2 (descriptive scatter 18.34/10.72/5.84).
+Overlapping counts are not independent counts; the five-location a2000 result
+is weakly sampled. No fit-size/coverage relaxation creates missing refit errors.
+Apertures preserve raw enclosed brightness times pixel area; full values and
+blank scatter are in the ECSV and report. No unsupported beam-area conversion.
+
+Coverage-binned background SD spans 12.56–18.17 / 10.50–14.10 / 15.49–25.22.
+Changing the exclusion from three to four measured major FWHM raises overall
+SD by 0.33% / 0.57% / 1.12%. The companion scale has explicit support and
+coverage-bin validity; it is not a calibrated variance/covariance image.
+
+Split fitted amplitudes A/B are 780.96/866.53, 496.98/630.48 and 589.09/623.82.
+The A-B fixed-template source residual is -63.18/-66.63/unavailable. a2000 B
+has 1253 fit pixels versus 1257 in A, and missing common pixels in the compact
+fixed-template footprint; its source-shaped residual remains visible in the
+image, while that exact complete-footprint projection is unavailable. Split
+coverage 10/50/90 percentile A fractions are .443/.513/.590, .392/.493/.601,
+and .378/.500/.623. No independent/equal-depth scaling or significance claim.
+Existing nw3 scan 5 failure remains unavailable, unchanged from the parent.
+
+240 independent synthetic map realizations (48 in each of five cases) pass.
+Empirical/actual scatter ratios range .812–1.200; actual-SD Monte Carlo relative
+precision is about 10.3%. White noise, spatial correlation, nonzero background,
+incomplete coverage and non-Gaussian wings are covered. Wing-case actual versus
+empirical refit scatter is 8.483/8.484, while noiseless fitted peak differs from
+physical peak by -14.566: model mismatch is explicitly separate. Finite bound
+outcomes are retained/counted; no failed synthetic refits. This validates the
+map-domain companion only, not upstream PTC source recovery.
+
+Final run: 8.346 s wall, 6.178 s CPU, 460.3 MiB peak RSS, including parent
+verification, saved-PTC split replay, trials and plots. Previously accessed
+inputs; the initial source candidate took 40.763 s wall. Synthetic runtime
+separate. Python 3.13.2 in the prescribed venv; one math thread and Agg backend.
+No native executable or full RTC/PTC rerun used. Native source unchanged.
+
+Gates: 13 focused tests; 204 successor tests plus 111 subtests; earlier unchanged
+207 baseline tests plus 137 subtests; full required config preflight; compile
+and whitespace checks. No unexpected error output in successful final gates.
+An initial focused-test invocation named a nonexistent test file and collected
+nothing; corrected invocation passes. This was a command typo, not a test skip.
+
+Scientific/behavioral disposition: candidate pass with the named limitations.
+Architectural disposition: separate read-only companion; no Engine, upstream,
+MAP weighting, CAL or FRUIT changes. Repository disposition: existing isolated
+branch, only intended paths changed, unrelated shared ALIGN dirt untouched,
+original untracked build symlink retained. No push/integration/Unity/activation
+or cleanup. Final exact-SHA independent evidence review pending; closure will
+record its three separate dispositions. No owner FRUIT decision is made here.
