@@ -1,0 +1,33 @@
+{
+  "candidate": "7e34bcefc43bb7f1ff33eca1b1d92fdc0a61d0ab",
+  "tree": "07c4df8ce2d704bd21a92b17faeab62ff6485452",
+  "parent": "5af3c950d65baecfa4a9f692f2bbe250e8fc0442",
+  "investigation_source": "912787f62862132295e0dddab660a6fc398e28c7",
+  "reviewer": "independent fresh-context point_audit_review",
+  "verdict": "pass with recorded limitations; no remaining actionable findings",
+  "scientific_behavioral": "pass: independently reproduced corrected JSON and all nine numerical grids exactly; every variant bins all contributions; previous overstatement resolved; all original fits identical; native failure and context-influence conclusions supported",
+  "architecture_ownership": "pass: no application, interface, policy or scientific behavior changes; RTC facts and VAL uses remain distinct",
+  "repository_evidence": "pass: two intended documentation paths only; both 35-file manifests verify; first evidence unchanged; tracked clean with existing untracked build link",
+  "corrected_manifest_sha256": "959e51f3c028a36395b6ed85be95776fc4a2efb3abe15e5aeecacf5f67cb4fd1",
+  "independent_reproduction": "/private/tmp/point-audit-r2-independent-ofrfpsi0",
+  "environment": "local /Users/gwilson/tolteca/bin/python; diagnostic reproduction only",
+  "limitations": [
+    "network recovery not performed",
+    "no flux/PSF qualification",
+    "no representative Spack validation",
+    "no integration or production authorization",
+    "no broad tests rerun for documentation-only audit"
+  ],
+  "initial_finding": {
+    "candidate": "5af3c950d65baecfa4a9f692f2bbe250e8fc0442",
+    "severity": "minor",
+    "issue": "eligible contributions described as all binned despite clipping in older-coordinate variants beyond diagnostic grid",
+    "resolution": "expanded diagnostic grid to \u00b1500.5 arcsec; per-segment/variant complete-bin assertions; all fit floats unchanged; first evidence preserved"
+  },
+  "final_writer_checks": [
+    "restored tracked application source byte-for-byte",
+    "native build restored successfully at clean 5af3c950d (subsequent commits documentation only)",
+    "35 corrected artifact hashes verified by reviewer",
+    "original science products unchanged"
+  ]
+}
