@@ -1,5 +1,22 @@
 # Citlali Refactor Status
 
+## MAP owner follow-up: fixed nominal beams selected — 2026-09-21
+
+The owner selects fixed nominal calibration FWHM values of 5, 7.5 and
+10 arcsec for a1100, a1400 and a2000 respectively for the first forward pass.
+Measured beam widths and focus/deformation effects remain distinct; these
+numbers do not declare a measured PSF or realized transfer function. This
+resolves the nominal-beam definition question for this work order. Publication
+of that binding in actual CAL/MAP products remains to be implemented.
+
+The owner specifies J2000 celestial coordinates. The narrower FITS/WCS
+reference-system clarification (FK5/equinox J2000.0 versus another system,
+and whether source coordinates already carry that frame) remains pending under
+SCI-AST-041. The uniform coefficient family remains explicitly selected.
+No numerical changes or real MAP run follow from this record alone. See the
+owner-follow-up section of the existing MAP handoff; the prior blocked report
+below is retained as historical evidence.
+
 ## First forward MAP increment: numerical core tested; real handoff blocked — 2026-09-21
 
 The owner parked timestream development and authorized ordinary forward MAP

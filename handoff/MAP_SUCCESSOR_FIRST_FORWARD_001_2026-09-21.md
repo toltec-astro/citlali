@@ -309,3 +309,42 @@ revision `c31a60a0`. The explicit uniform-family selection is already settled.
 After those facts are bound through AST/CAL, the producer/admission/bundle work
 listed above and actual map execution remain required. No FRUIT decisions are
 requested before maps exist.
+
+
+### Owner follow-up: nominal beams and J2000 direction — 2026-09-21
+
+The owner supplied this explicit direction after the reviewed increment:
+
+> The celestial frame should be J2000. Take the fixed nominal beams to be 5,
+> 7.5, and 10 arcseconds FWHM for a1100, a1400, and a2000 respectively.
+> Telescope deformations and focus will lead to different values measured,
+> of course.
+
+For this first forward pass the selected fixed nominal calibration convention
+is therefore a1100 = 5 arcsec FWHM, a1400 = 7.5 arcsec FWHM, and a2000 =
+10 arcsec FWHM. This owner declaration resolves the missing nominal-beam
+selection/definition for the pass; it is not a claim that these values were
+recovered from the historical APT metadata. Measured widths, focus/deformation
+effects, and realized processing response remain separate. No signal rescaling,
+PSF measurement, Gaussian response model, or transfer-function qualification
+is implied. The upstream calibration values and PTC numerical treatment remain
+unchanged. Binding this convention into the CAL/MAP product metadata remains
+engineering work; the old receipts and their original inspection findings
+remain immutable.
+
+The owner also explicitly selected J2000. A narrow clarification is pending
+for its machine-readable WCS identity: whether this means FK5/equinox J2000.0
+and whether SourceRaAct/SourceDecAct already carry that frame, rather than ICRS
+or apparent place. This does not reopen the chosen J2000 direction. The exact
+remaining distinction follows SCI-AST-REQ-041: “AST shall not equate J2000,
+FK5, ICRS, apparent, observed, or unrefracted frames by name or default.” No
+RADESYS value or coordinate transformation has yet been invented. The question
+was sent while the PTC coefficient/publication boundary was inspected.
+
+Reassessment: continue within the same owned worktree and original MAP work
+order. The three governance documents were reread; this follow-up records owner
+authority only and changes no numerical source. The uniform family remains
+explicitly selected. Required implementation work and real-data gates remain as
+listed above. The earlier “two source facts missing” disposition is historical:
+nominal beams are now selected, with only the narrower frame identity question
+remaining as an owner clarification. No actual MAP product exists yet.

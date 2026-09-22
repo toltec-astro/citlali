@@ -310,5 +310,23 @@
       "path": "/private/tmp/citlali-map-forward-evidence-20260921/repaired-exact-candidate-version.log",
       "sha256": "4e639dfe362c29e4659acd5e7f85a91aad2eeb81e12d34c4825e111deb92460b"
     }
+  },
+  "owner_followup_2026_09_21": {
+    "source": "explicit project-owner message in this task",
+    "scope": "first forward MAP pass",
+    "celestial_frame_label": "J2000",
+    "nominal_beam_fwhm_arcsec": {
+      "a1100": 5.0,
+      "a1400": 7.5,
+      "a2000": 10.0
+    },
+    "nominal_beam_status": "owner-selected fixed calibration convention; source-metadata persistence pending",
+    "measured_beam_is_separate": true,
+    "realized_response_inferred": false,
+    "signal_rescaling_performed": false,
+    "WCS_reference_system": "pending clarification; no FK5/ICRS/apparent equivalence inferred",
+    "uniform_coefficient_selection": "unchanged: SCI-PTC:uniform_constant@draft-0.1",
+    "historical_input_inspections": "unchanged; saved receipts still lack publication fields",
+    "numerical_source_changed": false
   }
 }
