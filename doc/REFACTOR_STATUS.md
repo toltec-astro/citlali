@@ -7,7 +7,8 @@ demonstration. The prior 152390 three-network MAP remains reviewed engineering
 evidence; it does not close this POINT request. All 11 supplied POINT networks
 and 5,518 detector channels have verified local raw/Tune/APT bindings.
 Bounded observation-identity, native processing-request and constant-pointing
-adapters are being validated on the existing MAP branch; scientific numerical
+adapters are validated for preparation-only scope at `7aa0d73e1`, with
+independent review passing with recorded limitations. Scientific numerical
 owners and ALS rank 10 remain unchanged. The scoped 152390 no-spatial-mask
 decision cannot silently transfer: the owner choice between preserving that
 treatment and the older POINT 20 arcsec protection is pending. No POINT

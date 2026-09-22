@@ -11,7 +11,9 @@
     "baseline_python": 207,
     "successor_python": 172,
     "config_preflight": "pass",
-    "real_preparation_negative_cases": 3
+    "real_preparation_negative_cases": 3,
+    "exact_candidate_cli": 19,
+    "exact_candidate_preparation_negative_cases": 3
   },
   "environment": "supplemental local AppleClang/Homebrew; no Spack or Unity run",
   "source_protection": "owner selection pending; initial 152390 no-mask binding not extended",
@@ -23,7 +25,22 @@
     "python-baseline.log": "ae148e521e58952023be34e71f9a16e48b62e0bca937865cb07e3f13be1e7bd3",
     "config-preflight.log": "19aca673acdeebf8e631738e6a52d501decf976e2913953879d7a7cab00910e7",
     "input-inventory.json": "e7082650d0a8126b3f0d37740fd455543a28f59843370f1aa7b8aff45da0fc8d",
-    "preparation-checks/report.json": "22ca1499d54005a3f3ac49b433a9de8b75e5afabf6aa199797576d88ae433044"
+    "preparation-checks/report.json": "22ca1499d54005a3f3ac49b433a9de8b75e5afabf6aa199797576d88ae433044",
+    "candidate.json": "d8a1cbef49b0cf72b4338fabb4e7425c90038e27809440cb05bdc337a6e6d58c",
+    "build-candidate.log": "150ceb7e81485cbe9b9ab62b671767fe83ef6ede08e76bb4f6d1b054fb248acc",
+    "candidate-cli.log": "3264b7ef884c4eab1bd74672941f6f6b7f835fc8676209c17edb0d0b1e605041",
+    "preparation-checks/candidate-report.json": "374b4a82a98e40a029118cdf435cd4a96ee490f9a5b1092d1ae6f164e145a82b"
   },
-  "independent_review": "pending exact candidate commit"
+  "independent_review": {
+    "reviewer": "fresh-context point_preparation_review",
+    "candidate": "7aa0d73e145816e1f5807263e7d5c3458710a414",
+    "disposition": "pass with recorded limitations for preparation-only scope",
+    "findings": [],
+    "scientific_behavioral": "pass with limitations: post-source-selection execution unverified",
+    "architecture": "pass",
+    "repository_evidence": "pass with limitations: supplemental local environment; build locator untracked",
+    "independently_run_cli_tests": 19
+  },
+  "candidate": "7aa0d73e145816e1f5807263e7d5c3458710a414",
+  "tree": "b64e310109c59dbb24c8b036d459e268b89be8f2"
 }

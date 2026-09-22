@@ -647,3 +647,15 @@ Reproduce input preparation from repository root (a new output path is required)
 The outstanding question comes from the exact scope guard in
 `tools/timestream_successor/rtc_multidetector_bindings.h`, not from a missing
 file or a need to reconfirm J2000, beams, coefficients, or the observation.
+
+Preparation candidate `7aa0d73e145816e1f5807263e7d5c3458710a414`, tree
+`b64e310109c59dbb24c8b036d459e268b89be8f2`, received independent fresh-context
+Tier 2 review: no blocker/major/minor findings. Scientific/behavioral and
+repository/evidence dispositions pass with the recorded preparation-only and
+local-environment limitations; architecture/ownership passes. The reviewer
+independently ran 19 default CLI tests against the exact rebuilt candidate and
+verified indexed evidence digests. Three actual preparation rejection checks
+also pass on that exact candidate. Tracked worktree was clean; only the build
+locator was untracked. The following evidence-only commit records this review
+and does not change the reviewed runtime. Owner source-protection selection,
+POINT execution and subsequent observational review remain pending.
