@@ -28,7 +28,7 @@ class ReloadTests(unittest.TestCase):
                  source_CAL_root=str(self.cal),source_CAL_receipt_sha256=calsha,RTC_scheduled_slots=2)
         self.q=dict(first_input_row=0,input_rows=5,PTC_publication=pub['identity'],support_reference='support')
         self.bind('publication',pub)
-        self.bind('coefficient',dict(scalar=1,unit='1',stored_support_reference='support',PTC_publication_sha256=self.q['publication_sha256']))
+        self.bind('coefficient',dict(scalar=1,unit=1,stored_support_reference='support',PTC_publication_sha256=self.q['publication_sha256']))
         self.bind('coefficient_QC',dict(PTC_publication_sha256=self.q['publication_sha256'],payload_sha256=self.q['coefficient_sha256'],
                   logical_occurrence_domain='support',requested='requested',realization='realized',restrictions={f'UQ-{i:02}':'T' for i in range(1,8)}))
         xy=np.array([[0,0],[0,0],[-1,0],[0,0],[-1,0]],dtype='<f8');self.bind('AST_coordinate',xy)
@@ -76,6 +76,12 @@ class ReloadTests(unittest.TestCase):
     def test_wrong_numerator_fails_exact_value_replay(self):
         self.N[0,0]+=1
         with self.assertRaisesRegex(ValueError,'PTC replay'):self.run_replay()
+    def test_dimensionless_unit_accepts_native_scalar_one_only(self):
+        path=self.root/self.q['coefficient_file'];original=yaml.safe_load(path.read_text())
+        for unit in (1.0,True,False,'mJy','inverse_variance'):
+            coefficient=dict(original,unit=unit);self.bind('coefficient',coefficient)
+            with self.assertRaisesRegex(ValueError,'coefficient/support mismatch'):self.run_replay()
+        self.bind('coefficient',original);self.run_replay()
     def test_wrong_qc_parent_fails_even_when_own_hash_updated(self):
         path=self.root/self.q['coefficient_QC_file'];qc=yaml.safe_load(path.read_text());qc['PTC_publication_sha256']='foreign';self.bind('coefficient_QC',qc)
         with self.assertRaisesRegex(ValueError,'QC parent'):self.run_replay()

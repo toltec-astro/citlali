@@ -65,7 +65,9 @@ def replay_handoffs(root,plan,numerator,hits,verify_operator=True,probe_fwhm_arc
         require(all(decision[k]==v for k,v in EVALUATION_BINDINGS.items()),'MAP source tuple mismatch')
         n=q['input_rows'];support=q['support_reference']
         require(pub['identity']==q['PTC_publication'] and pub['support_reference']==support and pub['retained']==n,'PTC support mismatch')
-        require(coef['scalar']==1 and coef['unit']=='1' and coef['stored_support_reference']==support,'coefficient/support mismatch')
+        # yaml-cpp's logical unit spelling `1` is an unquoted scalar;
+        # accept exactly that spelling across YAML readers, never 1.0/True.
+        require(coef['scalar']==1 and str(coef['unit'])=='1' and coef['stored_support_reference']==support,'coefficient/support mismatch')
         require(coef['PTC_publication_sha256']==q['publication_sha256']==qc['PTC_publication_sha256'],'coefficient/QC parent mismatch')
         require(qc['payload_sha256']==q['coefficient_sha256'] and qc['logical_occurrence_domain']==support,'QC payload/domain mismatch')
         require(qc['requested']=='requested' and qc['realization']=='realized' and qc['restrictions']=={f'UQ-{i:02}':'T' for i in range(1,8)},'coefficient QC did not pass')
