@@ -1,5 +1,28 @@
 # Citlali Refactor Status
 
+## POINT 152389 offset/network audit — 2026-09-22
+
+Owner follow-up finds that the older POINT offsets are altaz, with a different
+APT and boresight coordinate calculation. A coordinate-only diagnostic retaining
+all successor signals and selected samples, but using the earlier geometry and
+altaz calculation, agrees with the earlier published offsets within 0.06–0.23
+arcsec. No science product, selected APT, frame or treatment was changed.
+
+RTC nw2/nw11 failure is now localized: respectively 2 and 15 admitted jump groups
+fall in the native tail outside the six processing science intervals. The jump
+planner treats known non-overlap as unavailable scan binding and throws before
+RTC Apply/downstream VAL decisions, aborting each network worker. This is not a
+VAL decision that every detector is unusable. The exact native replay reproduced
+both failures and bit-identical events/times. Repair must preserve outside-domain
+facts, local use/cause semantics, the existing per-detector jump-count rule, and
+full context/filter influence; no tail-event bypass was introduced.
+
+See `handoff/POINT_152389_OFFSET_NETWORK_AUDIT_2026-09-22.md` for the full comparison,
+source/input identities, evidence and bounded repair direction. Original MAP
+completion below remains a nine-network result. Network recovery and the
+separate nw3 scan-5 convergence failure remain open. This evidence-only follow-up
+changes no application source and claims no additional production qualification.
+
 ## POINT 152389 maps complete and independently reviewed — 2026-09-22
 
 The requested central source is clearly visible in all three first-forward maps
