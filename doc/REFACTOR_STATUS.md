@@ -1,5 +1,31 @@
 # Citlali Refactor Status
 
+## First real forward MAP pass complete and reviewed — 2026-09-22
+
+Separate base maps for a1100/a1400/a2000 now exist from saved observed-entry
+PTC networks 0/7/12 of observation 152390/0/2. Native runtime is `7d16b8019`;
+final inspector is `6bbb2b58b` (reader-only repairs; native source unchanged).
+All three complete bundles pass exact PTC/operator/numerator replay, required
+handoff closure, FITS/WCS/support checks and visual inspection. The owner-selected
+uniform family, FK5 J2000.0 and 5/7.5/10 arcsec fixed nominal beams are bound.
+Independent Tier-2 review passes with recorded limitations and no open findings.
+
+The pass took 146.45 s wall / 122.43 s CPU and 4.97 GB peak RSS. Current gates:
+1,283 runnable CTests pass (one established disabled), 207 baseline-tool tests,
+172 timestream-tool tests, two real-parent mutation checks and required config
+preflight pass. Local AppleClang/Homebrew evidence is supplemental. Full upstream
+response, covariance, original-footprint exposure and production qualification
+remain unavailable; the measured Gaussian probe is MAP-only, inserted after PTC.
+The three local networks do not stand in for the full Unity campaign or repair
+its network-4 exclusion. No FRUIT, upstream treatment change, Unity access,
+push or canonical integration occurred.
+
+Durable products/evidence: `/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-first-forward-map-20260922`.
+See the [existing handoff](../handoff/MAP_SUCCESSOR_FIRST_FORWARD_001_2026-09-21.md)
+and [machine-readable closeout](../handoff/evidence/MAP_SUCCESSOR_FIRST_FORWARD_REAL_2026-09-22.json)
+for commands, identities, scope, results and prioritized next MAP+/FRUIT questions.
+Earlier incomplete/blocked entries below are historical. Stop at owner review.
+
 ## Saved-PTC forward MAP candidate implemented — 2026-09-22
 
 The resumed first-pass implementation connects completed saved PTC segments to

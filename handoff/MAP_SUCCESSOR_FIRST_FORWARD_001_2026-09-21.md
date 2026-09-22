@@ -458,3 +458,108 @@ response measurements, not a measured beam, PTC attenuation, complete upstream
 response or an authorization to restore astronomical signal. Full first-pass
 RTC/CAL/PTC source response remains unavailable with the present saved carrier;
 that explicitly limits source-recovery and final-chain 5% goal claims.
+
+
+### First real ordinary base-MAP milestone complete — 2026-09-22
+
+Native implementation/run: `7d16b8019a1f733e325bd48f419e6078e4f4c430` (tree
+`811c7488b92b95f0cc2b69e6439f14b38f6dfed7`). Final reader:
+`6bbb2b58bda3928bf044ef08cfe5dfa5ef30156f` (tree
+`0a9c3c1969ee0c646d7b95b95653098462720001`). The two post-run repairs touch only reader/tests:
+optional absent probe footprint stays advisory; native YAML scalar `unit: 1`
+faithfully decodes as dimensionless one. Native source/build inputs are identical.
+The final report must preserve these distinct immutable identities.
+
+Durable results: `/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-first-forward-map-20260922`. `products/` contains complete per-array bundles;
+`evidence/` contains inspected PNGs, exact replay JSON and logs; `request/`
+contains the exact invocation input. Copy verification compared every byte-hash
+of **2,621 files / 2,754,612,660 bytes**. Original PTC/CAL parents
+remain required and linked by exact paths/hashes; this is not a raw-data archive.
+The machine-readable closeout is
+`handoff/evidence/MAP_SUCCESSOR_FIRST_FORWARD_REAL_2026-09-22.json`.
+
+Observation 152390/0/2 (NGC4449) was chosen because saved observed-entry products,
+pointing/APT context and all three array representatives were actually available.
+Each network contributes all 124 original processing segments with zero failed
+fits in these particular local parents. This is not the later eleven-network
+Unity campaign: locally absent networks are not claimed; that campaign's network-4
+scan-121 failure/exclusion remains unresolved here and is not filled or bypassed.
+
+| Array | Network | Detectors | Contributions | Science pixels | MAP-only probe peak | Probe integral ratio |
+|---|---:|---:|---:|---:|---:|---:|
+| a1100 | 0 | 630 | 74,946,311 | 47,007 | 0.930221 | 1.000344 |
+| a1400 | 7 | 420 | 27,672,182 | 47,128 | 0.967527 | 0.997431 |
+| a2000 | 12 | 414 | 27,157,906 | 48,485 | 0.982660 | 0.993499 |
+
+Source-probe peaks are relative to unit input inserted AFTER PTC; nominal-width
+Gaussian templates have explicit 8-sigma truncation. Their equivalent second-
+moment widths are 5.1970/7.6420/10.0590 arcsec, with centroid offsets below
+0.05 arcsec. Constant-response gain error is exactly zero. These measure the
+realized MAP sampling operator only; they neither measure actual beams nor
+establish RTC/CAL/PTC attenuation, source flux recovery or the final-chain 5%
+goals. The complete upstream source-response carrier is unavailable.
+
+Every real bundle passes exact cleaned-PTC numerator replay, exact retained
+column/order/AST placement and coefficient/VAL closure, FITS checksum/reload,
+N/Q, reference/support checks and all unsupported-sky NaNs. Finite WCS comparison
+populations are 172,077 / 170,663 / 174,599 points; maximum spherical difference
+is 1.145e-10 arcsec in each. This establishes stored WCS representation agreement,
+not independent absolute astrometric truth.
+
+All three signed-signal/normalization plots were visually inspected. RA increases
+leftward and Dec upward. Array/network-specific coverage footprints and holes
+remain visible; low-coverage pixels are unavailable, not zero. Signal is mainly
+fine-scale signed structure with mixed positive/negative pixels. No robust galaxy
+flux-recovery claim follows from these first-pass images. Normalization is never
+called inverse variance, sensitivity, significance or exposure. Plot limits use
+99.5-percentile absolute values for display only; FITS values are unchanged.
+
+Runtime: **146.454 s wall, 122.425 s CPU, 4.965 GB peak RSS**. Input loading took
+14.102 s. AST/handoff times were 30.672/17.280/13.516 s; projection/resolution
+23.470/10.832/9.183 s; accumulation 0.182/0.066/0.065 s; serialization
+1.502/0.620/0.602 s. End-of-run source nonmutation checks account for remaining
+wall time. No upstream reduction was rerun; no response/covariance companions
+were fabricated. Serial stable-order accumulation is a measured subsecond
+component, not evidence for a new parallel optimization project.
+
+Final gates: **1,283 runnable CTests pass / 1,284 registered**; one established
+disabled MapFitterLifecycle case remains disabled. **207 baseline-tool tests,
+172 timestream-tool tests (including 12 final reader fixtures), two real-parent
+identity mutation cases and required full config preflight pass.** Final real
+run has zero unexpected error-level messages. Initial compile/test/reader
+failures and their passing repairs remain in evidence; no required-data skip is
+claimed as pass. Reviewed tests cover the changed AST/live boundary as well as
+the saved route. Earlier inflated numbering contained duplicate test names;
+comparison finds no prior named test missing from the current inventory.
+
+Independent Tier-2 final review: scientific/behavioral **pass with recorded
+limitations**, architecture/ownership **pass**, repository/evidence **pass**
+subject to the now completed copy/provenance closeout. Reviewer independently
+reproduced focused tests, all 12 reader fixtures and the real a2000 replay, and
+inspected the three images. All findings were repaired; there are no remaining
+blocker/major/minor findings. Source and evidence review does not authorize
+integration, production use, full package conformance or Unity/Spack qualification.
+
+The current completed scope is one ordinary base observation MAP with explicit
+uniform coefficients. Coadd, stronger response/covariance-qualified roles,
+original-acquisition exposure, NOI/FLT numerical companions, general parallel MAP,
+complete upstream response, absolute astrometric qualification and production
+qualification remain unimplemented or unavailable as named above. FRUIT is
+still deferred. No push, canonical integration, Unity access or upstream treatment
+change occurred; the unrelated ALIGN checkout remains unchanged.
+
+Prioritized next owner discussion (no choices made here):
+
+1. **MAP evidence:** choose whether to extend the available-network observation
+   map and obtain full upstream source-response/uncertainty carriers before
+   quantitative flux/PSF or significance claims. These limit interpretation of
+   current maps, not validity of the base product. Do not use gamma or hits as
+   the missing uncertainty.
+2. **FRUIT sky inference:** select the actual inference/admission rule and its
+   required noise evidence, spatial/morphology and sign assumptions for deriving
+   a replacement sky model from the reconstructed total. Current noisy first-
+   pass maps do not supply a justified threshold or morphology rule by themselves.
+3. **FRUIT numerical feedback and stopping:** specify model-to-feedback flux
+   transformation, any floor/gain/damping, convergence and terminal-iteration
+   choice. Per-iteration PTC relearning and replacement inference from total are
+   already accepted and are not reopened. No feedback recurrence is activated.

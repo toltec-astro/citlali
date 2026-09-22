@@ -1,0 +1,317 @@
+{
+  "schema": "citlali-first-forward-map-closeout-v1",
+  "date": "2026-09-22",
+  "outcome": "implemented_exercised_reviewed_base_MAP",
+  "branch": "codex/map-successor-first-forward-001",
+  "native_revision": "7d16b8019a1f733e325bd48f419e6078e4f4c430",
+  "native_tree": "811c7488b92b95f0cc2b69e6439f14b38f6dfed7",
+  "inspector_revision": "6bbb2b58bda3928bf044ef08cfe5dfa5ef30156f",
+  "inspector_tree": "0a9c3c1969ee0c646d7b95b95653098462720001",
+  "native_source_unchanged_by_reader_repairs": true,
+  "durable_result_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-first-forward-map-20260922",
+  "owner_binding_sha256": "219f6641b40a1cfc049eae24e320a14fe06f014bf804a87223a4b8772ea932aa",
+  "request_sha256": "744f44344b10619ab5e20499cc9c8b382dc45bad8fcac8bd06fe006dbb749288",
+  "attempt": {
+    "schema": "citlali-forward-map-attempt-v1",
+    "request_identity": "sha256:744f44344b10619ab5e20499cc9c8b382dc45bad8fcac8bd06fe006dbb749288",
+    "owner_binding": "sha256:219f6641b40a1cfc049eae24e320a14fe06f014bf804a87223a4b8772ea932aa",
+    "MAP_authority": "SCI-MAP-v0.2-r0.4",
+    "source_revision": "v2-ngc4449-memory-repair-187df04b-437-g7d16b8019",
+    "outcome": "success",
+    "FRUIT_executed": false,
+    "upstream_science_reexecuted": false,
+    "reached_stages": [
+      "requested",
+      "effective"
+    ],
+    "input_loading_seconds": 14.101518709,
+    "array_lifecycle": {
+      "a1100": [
+        "requested",
+        "effective",
+        "observation_resolved",
+        "applied",
+        "realized"
+      ],
+      "a1400": [
+        "requested",
+        "effective",
+        "observation_resolved",
+        "applied",
+        "realized"
+      ],
+      "a2000": [
+        "requested",
+        "effective",
+        "observation_resolved",
+        "applied",
+        "realized"
+      ]
+    },
+    "products": {
+      "a1100": "143db0f0bcc9ab0402deda43e5e8a765065d0bf27f3cf64bdd22058e5f2b26b4",
+      "a1400": "b04c03a73a64bbf259ca5e2657f973dcdfd8663a02e587d2bbc280035249da4e",
+      "a2000": "fca9f0ecc629608c2b14bd41773d59638bd609617e1f3f96aae708a333b5b5d7"
+    },
+    "input_manifest_sha256": "7a74a4ec73636c987aa93a52fcb362ad333f20d2d986b4601dbf2529994effb0",
+    "lifecycle_scope": "root request/effective only; independent five-stage lifecycle per array",
+    "wall_seconds": 146.454358292,
+    "cpu_seconds": 122.425093,
+    "process_peak_rss_bytes": 4965171200
+  },
+  "inspection": {
+    "a1100": {
+      "schema": "citlali-forward-map-inspection-v1",
+      "bundle": "/private/tmp/citlali-map-forward-final-20260922/a1100",
+      "product_identity": "SCI-MAP-base:1ffce3f12119a712008bb64093e6bf9e1c33bcd2b07594bcbc8cc9f222dff630:9b724af44f57fe5621f8d6b77ea50fc1558119606c991fec60c7780f13a5912d",
+      "array": "a1100",
+      "shape_yx": [
+        401,
+        425
+      ],
+      "science_pixels": 47007,
+      "contributing_occurrences": 74946311,
+      "positive_and_negative_science_pixels": [
+        23519,
+        23488
+      ],
+      "signal_min_max_mJy_per_nominal_beam": [
+        -107.89586874075671,
+        98.78372077454512
+      ],
+      "wcs_comparison_population": 172077,
+      "wcs_max_arcsec": 1.1449996853268661e-10,
+      "sparse_operator_verified": true,
+      "exact_PTC_numerator_replay": true,
+      "measured_MAP_local_source_probe": {
+        "status": "measured",
+        "scope": "MAP-only fixed realized operator; synthetic source inserted AFTER PTC; no RTC/CAL/PTC attenuation or measured-PSF claim",
+        "input": "unit-peak circular Gaussian centered on declared tangent origin, truncated at 8 sigma",
+        "input_fwhm_arcsec": 5,
+        "input_peak_mJy_per_nominal_beam": 1,
+        "output_peak_mJy_per_nominal_beam": 0.9302211003919223,
+        "integrated_ratio_to_template": 1.0003444854178816,
+        "output_centroid_tangent_arcsec": [
+          -0.017473254943191654,
+          0.011461741378644547
+        ],
+        "output_second_moment_equivalent_fwhm_arcsec": 5.1970438861289425,
+        "constant_unit_response_max_error": 0.0,
+        "full_procedure_response": "unavailable: complete upstream source-response carrier not supplied"
+      },
+      "scope": "bundle/reload/operator/numerical and WCS representation checks; not full upstream source-response or production qualification"
+    },
+    "a1400": {
+      "schema": "citlali-forward-map-inspection-v1",
+      "bundle": "/private/tmp/citlali-map-forward-final-20260922/a1400",
+      "product_identity": "SCI-MAP-base:5abc70fa3a38eb42e59dffff5c0837bf4c8b091280a7987a454484b620ec13cc:3f5cdd215c3bfac67f6554f162a5d5ccd853f89595dfe12ff83d99e0fcdaf2f3",
+      "array": "a1400",
+      "shape_yx": [
+        385,
+        439
+      ],
+      "science_pixels": 47128,
+      "contributing_occurrences": 27672182,
+      "positive_and_negative_science_pixels": [
+        23639,
+        23489
+      ],
+      "signal_min_max_mJy_per_nominal_beam": [
+        -32.99148000361089,
+        26.110982712847726
+      ],
+      "wcs_comparison_population": 170663,
+      "wcs_max_arcsec": 1.1449996853268661e-10,
+      "sparse_operator_verified": true,
+      "exact_PTC_numerator_replay": true,
+      "measured_MAP_local_source_probe": {
+        "status": "measured",
+        "scope": "MAP-only fixed realized operator; synthetic source inserted AFTER PTC; no RTC/CAL/PTC attenuation or measured-PSF claim",
+        "input": "unit-peak circular Gaussian centered on declared tangent origin, truncated at 8 sigma",
+        "input_fwhm_arcsec": 7.5,
+        "input_peak_mJy_per_nominal_beam": 1,
+        "output_peak_mJy_per_nominal_beam": 0.9675269509891263,
+        "integrated_ratio_to_template": 0.9974306113097394,
+        "output_centroid_tangent_arcsec": [
+          -0.004068474688048363,
+          -0.00019167760590569846
+        ],
+        "output_second_moment_equivalent_fwhm_arcsec": 7.642047144320955,
+        "constant_unit_response_max_error": 0.0,
+        "full_procedure_response": "unavailable: complete upstream source-response carrier not supplied"
+      },
+      "scope": "bundle/reload/operator/numerical and WCS representation checks; not full upstream source-response or production qualification"
+    },
+    "a2000": {
+      "schema": "citlali-forward-map-inspection-v1",
+      "bundle": "/private/tmp/citlali-map-forward-final-20260922/a2000",
+      "product_identity": "SCI-MAP-base:2f65d2021c904b9a0b217b34c1c7acd9e0f035e5c116dd80f822e8f83b493f0d:b2f1002bf989b3ff8c6585252a37ff46ccca3d6cea12d569a0d49151a873aaec",
+      "array": "a2000",
+      "shape_yx": [
+        405,
+        427
+      ],
+      "science_pixels": 48485,
+      "contributing_occurrences": 27157906,
+      "positive_and_negative_science_pixels": [
+        24193,
+        24292
+      ],
+      "signal_min_max_mJy_per_nominal_beam": [
+        -64.47636601200476,
+        72.81753456835101
+      ],
+      "wcs_comparison_population": 174599,
+      "wcs_max_arcsec": 1.1449996853268661e-10,
+      "sparse_operator_verified": true,
+      "exact_PTC_numerator_replay": true,
+      "measured_MAP_local_source_probe": {
+        "status": "measured",
+        "scope": "MAP-only fixed realized operator; synthetic source inserted AFTER PTC; no RTC/CAL/PTC attenuation or measured-PSF claim",
+        "input": "unit-peak circular Gaussian centered on declared tangent origin, truncated at 8 sigma",
+        "input_fwhm_arcsec": 10,
+        "input_peak_mJy_per_nominal_beam": 1,
+        "output_peak_mJy_per_nominal_beam": 0.9826600412087201,
+        "integrated_ratio_to_template": 0.99349869881558,
+        "output_centroid_tangent_arcsec": [
+          -0.0401027405336474,
+          0.029161839380395065
+        ],
+        "output_second_moment_equivalent_fwhm_arcsec": 10.05895056121991,
+        "constant_unit_response_max_error": 0.0,
+        "full_procedure_response": "unavailable: complete upstream source-response carrier not supplied"
+      },
+      "scope": "bundle/reload/operator/numerical and WCS representation checks; not full upstream source-response or production qualification"
+    }
+  },
+  "bundles": {
+    "a1100": {
+      "bundle_sha256": "143db0f0bcc9ab0402deda43e5e8a765065d0bf27f3cf64bdd22058e5f2b26b4",
+      "product_identity": "SCI-MAP-base:1ffce3f12119a712008bb64093e6bf9e1c33bcd2b07594bcbc8cc9f222dff630:9b724af44f57fe5621f8d6b77ea50fc1558119606c991fec60c7780f13a5912d",
+      "sources": [
+        {
+          "network": 0,
+          "root": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-full-network-ready-ae4842e-20260919/local-evidence/network0-full/products/network0",
+          "PTC_receipt_sha256": "07e923e24eacffa851ffefef1b5128ea89e1118b9700f1ac130a9c3bd5c05e67",
+          "upstream_build": "v2-ngc4449-memory-repair-187df04b-422-gae4842e89",
+          "failed_fits": 0,
+          "detectors": 630
+        }
+      ],
+      "reference_normalization": 1601,
+      "AST_and_handoff_seconds": 30.672085834,
+      "projection_and_resolution_seconds": 23.470303958,
+      "accumulation_seconds": 0.182013542,
+      "serialization_seconds": 1.501822916
+    },
+    "a1400": {
+      "bundle_sha256": "b04c03a73a64bbf259ca5e2657f973dcdfd8663a02e587d2bbc280035249da4e",
+      "product_identity": "SCI-MAP-base:5abc70fa3a38eb42e59dffff5c0837bf4c8b091280a7987a454484b620ec13cc:3f5cdd215c3bfac67f6554f162a5d5ccd853f89595dfe12ff83d99e0fcdaf2f3",
+      "sources": [
+        {
+          "network": 7,
+          "root": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-full-network-ready-ae4842e-20260919/local-evidence/network7-full/products/network7",
+          "PTC_receipt_sha256": "93f48cb8f0f6ca540651507be97e838e7f15293d7740010fc5bf17f1eccf307a",
+          "upstream_build": "v2-ngc4449-memory-repair-187df04b-422-gae4842e89",
+          "failed_fits": 0,
+          "detectors": 420
+        }
+      ],
+      "reference_normalization": 586,
+      "AST_and_handoff_seconds": 17.279794584,
+      "projection_and_resolution_seconds": 10.832108541,
+      "accumulation_seconds": 0.0661675,
+      "serialization_seconds": 0.619656125
+    },
+    "a2000": {
+      "bundle_sha256": "fca9f0ecc629608c2b14bd41773d59638bd609617e1f3f96aae708a333b5b5d7",
+      "product_identity": "SCI-MAP-base:2f65d2021c904b9a0b217b34c1c7acd9e0f035e5c116dd80f822e8f83b493f0d:b2f1002bf989b3ff8c6585252a37ff46ccca3d6cea12d569a0d49151a873aaec",
+      "sources": [
+        {
+          "network": 12,
+          "root": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-array-lowpass-530743ec5-20260919/a2000-explicit/output",
+          "PTC_receipt_sha256": "dc31382548a0867faa833f41f020512f4ccb81696e24b2356db68adf36ea07dd",
+          "upstream_build": "v2-ngc4449-memory-repair-187df04b-414-g530743ec5",
+          "failed_fits": 0,
+          "detectors": 414
+        }
+      ],
+      "reference_normalization": 529,
+      "AST_and_handoff_seconds": 13.516415959,
+      "projection_and_resolution_seconds": 9.183012041,
+      "accumulation_seconds": 0.064623417,
+      "serialization_seconds": 0.602041417
+    }
+  },
+  "gates": {
+    "ctest_runnable_passed": 1283,
+    "ctest_registered": 1284,
+    "established_disabled": [
+      "citlali::MapFitterLifecycle.ExactProductSequence"
+    ],
+    "baseline_tests_passed": 207,
+    "timestream_tool_tests_passed": 172,
+    "reload_tests_included": 12,
+    "real_parent_mutation_cases_passed": 2,
+    "config_preflight": "require-all pass",
+    "unexpected_error_messages_in_real_run": 0
+  },
+  "review": {
+    "status": "pass_with_recorded_limitations",
+    "reviewer": "independent read-only map_candidate_review",
+    "native_revision": "7d16b8019a1f733e325bd48f419e6078e4f4c430",
+    "native_tree": "811c7488b92b95f0cc2b69e6439f14b38f6dfed7",
+    "inspector_revision": "6bbb2b58bda3928bf044ef08cfe5dfa5ef30156f",
+    "inspector_tree": "0a9c3c1969ee0c646d7b95b95653098462720001",
+    "scientific_behavior": "pass with recorded limitations",
+    "architecture_ownership": "pass",
+    "repository_evidence": "pass with final copy/provenance closeout obligations",
+    "remaining_findings": [],
+    "independently_reproduced": [
+      "20 focused CTest entries",
+      "12 final reader fixtures",
+      "real a2000 exact PTC/operator/numerator replay"
+    ],
+    "visual_review": "all three signed signal, normalization, support plots inspected",
+    "limitations": [
+      "networks0/7/12 only",
+      "supplemental AppleClang/Homebrew build",
+      "no Unity/Spack or production qualification",
+      "complete upstream response/covariance/original-footprint exposure unavailable",
+      "Gaussian probe is post-PTC MAP-only sampling response",
+      "reload requires retained exact external source parents"
+    ]
+  },
+  "evidence_sha256": {
+    "final-candidate-build.log": "984ad53817aadf8c41b8b9a4dda64b58a186a473b1df00c2e14ad0b1a99dce6d",
+    "final-candidate-version.log": "897cc898ab3333369de89d39d693cf4609d5231b79b1cb07f0f08dab0206358a",
+    "exact-candidate-ctest.log": "fa7c034533bd33034026696d411fcff75c19a25cb0cedc749b5b54aadd7ae668",
+    "resumed-baseline-tests.log": "76a79cf8000705be9c4f3200b01a5a8fdb5dfdfd2fd0d83039e467acd33bdd77",
+    "resumed-config-preflight.log": "7d5473bc7d5ea087a322d3b9a0fc0b8f0aa1900db24d000005cfd1abc3144e32",
+    "native-binding-negative.json": "feeb0f83f7c4b02eb2846e69d714fc5cea375eed2aa9d980a0a57e4b0e4eab44",
+    "native-yaml-reader-final-ctest.log": "19658175761b2c444f06994d07a1890418979f57443522ae9e34f9c42a52d966",
+    "final-timestream-tools-tests-2.log": "b6d3e8cf01c491c8899f953fd3f970ec900397a2110da3d29748efe46b35eeb8",
+    "final-map.log": "c572bbd8532757ba1b9fde48b86b3330296d0a587da5eac32e97d69ca962de52",
+    "final-inspector-head-build.log": "af781eff05af47ac88e69d6b1f048dfcb165aff24121e8e414e89fa1157af796",
+    "final-inspector-head-version.log": "d92a95ade5e79199b616eb3fcebf42b912cdf03978095b7ba498b5ccb26c7420",
+    "final-independent-review.json": "601d914de69b2e67206278c718878994cc609b5c4663a5b50379c7c4dd4834b9",
+    "durable-copy-verification.json": "6c6e904a3ca8f10edfffa118098182f307b8af1d472d042913b992644ee0d53e",
+    "final-a1100.json": "a17a64a4fe38b2f4f9174c002cc6c607ddac1def026b36604559557462c74f15",
+    "final-a1100.png": "6c54c5a07a516dc67d56781c74043155ebea746b83af31e240bfc11c018af367",
+    "final-a1400.json": "2c7fe07e165607e572100a611ea98ff0d6ad5c40d9720971d319d759def1eb67",
+    "final-a1400.png": "5760aab818bca53754cb7cd8e8ae1d82383b4fc04cb63342e42c5e0284af6a62",
+    "final-a2000.json": "2e5ed5cc52674fcd389f56df801a72f0dd1755b09a72708376caf16994746208",
+    "final-a2000.png": "d11f156385010f553901ebf15ec5f50919ace6c15e40c00d9cdb5e002cac35f6"
+  },
+  "full_upstream_source_response": "unavailable; no source recovery or final-chain five-percent claim",
+  "FRUIT": "deferred; not executed",
+  "no_push_or_integration": true,
+  "durable_copy": {
+    "schema": "citlali-map-durable-copy-verification-v1",
+    "source": "/private/tmp/citlali-map-forward-final-20260922",
+    "destination": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-first-forward-map-20260922/products",
+    "passed": true,
+    "files": 2621,
+    "bytes": 2754612660
+  }
+}
