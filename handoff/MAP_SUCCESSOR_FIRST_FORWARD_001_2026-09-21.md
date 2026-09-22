@@ -659,3 +659,17 @@ also pass on that exact candidate. Tracked worktree was clean; only the build
 locator was untracked. The following evidence-only commit records this review
 and does not change the reviewed runtime. Owner source-protection selection,
 POINT execution and subsequent observational review remain pending.
+
+### POINT source treatment selected; execution resumed
+
+Owner response on 2026-09-22: "let's keep the current treatment as you recommend".
+This explicitly selects no spatial source-protection mask for POINT 152389/0/2
+for this first pass. Its separate binding is
+`owner-152389-first-MAP-no-spatial-mask-2026-09-22`; the older 152390 authority
+remains scoped and cannot substitute for this selection. This continues the
+same approved Tier 2 MAP increment from preparation checkpoint
+`4b7515f22a1b8555b2e44854bd17635fbf577996`. Governed numerical owners, settings,
+frame, coefficients and beams are unchanged. Run one-network smoke, then all
+11 supplied networks locally with bounded concurrent network ownership and one
+internal numerical thread. Complete actual MAP/reload/source diagnostics and
+exact-candidate independent review before reporting completion.

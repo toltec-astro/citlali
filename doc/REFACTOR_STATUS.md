@@ -9,9 +9,9 @@ and 5,518 detector channels have verified local raw/Tune/APT bindings.
 Bounded observation-identity, native processing-request and constant-pointing
 adapters are validated for preparation-only scope at `7aa0d73e1`, with
 independent review passing with recorded limitations. Scientific numerical
-owners and ALS rank 10 remain unchanged. The scoped 152390 no-spatial-mask
-decision cannot silently transfer: the owner choice between preserving that
-treatment and the older POINT 20 arcsec protection is pending. No POINT
+owners and ALS rank 10 remain unchanged. The owner explicitly selected the current no-spatial-mask treatment for
+152389 on September 22, under its own observation-specific binding. Execution
+has resumed. No POINT
 RTC/CAL/PTC completion, map, source fit or final observational review is claimed.
 See the current section of the existing MAP handoff.
 

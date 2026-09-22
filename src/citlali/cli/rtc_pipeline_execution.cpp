@@ -395,11 +395,11 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     require(cfg["source_protection_authority"] && cfg["source_protection_authority"].IsScalar(),
         "successor.source_protection_selection_required: no observation-specific treatment selected");
     const auto protection_authority=cfg["source_protection_authority"].as<std::string>();
-    if (obs == 152390) caller::require_no_mask_scope(parent->scope(),protection_authority);
+    if (obs == 152390 || (development && obs == 152389)) caller::require_no_mask_scope(parent->scope(),protection_authority);
     else require(census && protection_authority == "rtc-census-source-membership-unavailable",
                  "repeat source membership must remain unavailable");
     auto protection=RtcSpikeSourceProtection::admit(parent,protection_authority,
-                        obs==152390 ? RtcSpikeProtection::outside_source : RtcSpikeProtection::unavailable);
+                        (obs==152390 || (development && obs==152389)) ? RtcSpikeProtection::outside_source : RtcSpikeProtection::unavailable);
     std::shared_ptr<const AstScanMotionNetworkView> motion;
     if(argc==4 || recovered_scans){
       const auto telescope=common?common->telescope:load_telescope(checked("telescope"),parent->scope(),census && obs==152392,development && obs==152389);

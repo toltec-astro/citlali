@@ -9,14 +9,18 @@ using namespace pipeline;
 inline constexpr std::string_view no_mask_authority =
     "owner-152390-initial-no-spatial-mask-2026-09-15";
 
+inline constexpr std::string_view point_no_mask_authority =
+    "owner-152389-first-MAP-no-spatial-mask-2026-09-22";
+
 inline void require(bool condition, const char *message) {
   if (!condition) throw std::invalid_argument(message);
 }
 inline void require_no_mask_scope(NativeObservationScope scope,
                                   const std::string &authority) {
-  require(scope.observation == 152390 && scope.subobservation == 0 && scope.scan == 2 &&
-              authority == no_mask_authority,
-          "initial no-mask choice requires exact 152390 scope and owner authority");
+  require(scope.subobservation == 0 && scope.scan == 2 &&
+              ((scope.observation == 152390 && authority == no_mask_authority) ||
+               (scope.observation == 152389 && authority == point_no_mask_authority)),
+          "no-mask choice requires exact selected observation and its owner authority");
 }
 inline RtcEventRange read_range(const YAML::Node &n) {
   require(n && n.IsSequence() && n.size() == 2, "native support requires two half-open row bounds");

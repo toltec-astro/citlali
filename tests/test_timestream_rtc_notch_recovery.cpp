@@ -915,6 +915,16 @@ TEST(rtc_multidetector_caller, no_mask_authority_is_scoped_not_a_missing_metadat
   EXPECT_THROW(caller::require_no_mask_scope(NativeObservationScope{152390,0,3},std::string(caller::no_mask_authority)),std::invalid_argument);
   EXPECT_THROW(caller::require_no_mask_scope(NativeObservationScope{152390,0,2},"unknown"),std::invalid_argument);
 }
+TEST(rtc_multidetector_caller, point_no_mask_requires_its_own_owner_selection) {
+  const std::string point(caller::point_no_mask_authority),science(caller::no_mask_authority);
+  EXPECT_NO_THROW(caller::require_no_mask_scope(NativeObservationScope{152389,0,2},point));
+  EXPECT_THROW(caller::require_no_mask_scope(NativeObservationScope{152389,0,2},science),std::invalid_argument);
+  EXPECT_THROW(caller::require_no_mask_scope(NativeObservationScope{152390,0,2},point),std::invalid_argument);
+  EXPECT_THROW(caller::require_no_mask_scope(NativeObservationScope{152389,1,2},point),std::invalid_argument);
+  EXPECT_THROW(caller::require_no_mask_scope(NativeObservationScope{152389,0,1},point),std::invalid_argument);
+  EXPECT_THROW(caller::require_no_mask_scope(NativeObservationScope{152391,0,2},point),std::invalid_argument);
+  EXPECT_THROW(caller::require_no_mask_scope(NativeObservationScope{152389,0,2},""),std::invalid_argument);
+}
 TEST(rtc_multidetector_caller, explicit_review_connects_factors_donors_and_complete_apply) {
   Input in;in.spike();Trial t(in,10,RtcSpikeProtection::outside_source);
   const auto selected=bind_review(t,explicit_review(t));
