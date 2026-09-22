@@ -95,3 +95,69 @@ ranges at both science boundaries. All 1,289 runnable CTests pass again.
 The initial actual run completed nw0/nw2/nw11, with all six PTC segments per
 network converged; it remains preliminary evidence under `upstream`. Final
 runtime and maps will bind the repaired committed source under `upstream-r2`.
+
+## Final observation evidence
+
+Runtime source `e93e8861be3b9d84049cc72d431fd72ab35d8959` on the
+existing isolated MAP branch; clean rebuild version
+`v2-ngc4449-memory-repair-187df04b-450-ge93e8861b`. Initial candidate
+`fa94788f7ef411c12c149d3e5a290a2693801229` is superseded by the reviewed
+interval canonicalization repair; its preliminary run is retained separately.
+
+Durable root:
+`~/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-network-rescue-20260922`.
+Final runs: `upstream-r2` and `map-pass`; initial run: `upstream`.
+`RESULTS.md` links the FITS maps and source preview. `FILES_SHA256SUMS`
+indexes 39,983 files, SHA-256
+`731c7c0ef9914d0238c31fa2fdc7cd64d5d32e2d5243d52170403d589a37b9d2`.
+The original MAP run and corrected offset audit remain immutable references.
+
+| Network | RTC output pairs | CAL / PTC retained samples | Converged segments | Whole-detector jump exclusions |
+|---|---:|---:|---:|---:|
+| nw0 control | 4,396,784 | 3,856,977 | 6 / 6 | 0 |
+| nw2 | 3,343,413 | 2,936,552 | 6 / 6 | 0 |
+| nw11 | 1,531,932 | 1,379,512 | 6 / 6 | 15 |
+
+All 7,616 original nw0 numerical binaries are bit-identical, including RTC,
+CAL and PTC. Original event evidence and native time remain byte-identical for
+all three networks. Admitted jump counts remain 0, 19, 74 respectively.
+nw2 preserves both tail groups, with channel 405 overlapping scan 5 context;
+nw11 preserves all 15 tail groups. The 15 whole-detector exclusions in nw11
+follow the existing >=3-group rule, including science and outside events.
+
+`evidence/upstream-r2-verification.json` checks all 1,626 detectors' emitted
+finite-filter footprints against admitted runs and outside-science boundaries,
+all outside inputs unavailable, every tail jump transition retaining its paired
+transient cause, unchanged jump counts and whole-detector policy, exact event/time
+identity, and CAL membership after mapping each scheduled slot to native row
+using its retained factor and phase. No unavailable tail sample becomes a
+science contribution. The control also verifies values and masks bit for bit.
+
+MAP combines original successful networks 0,1,3,4,5,7,8,9,12 with recovered
+2 and 11. All three exact PTC numerator/operator replays, checksums, support
+arithmetic, WCS representation checks and source inspections pass; both saved
+parent identity mutation checks reject the inconsistent metadata. All a1400
+numerical planes are bit-identical. Source image was visually inspected.
+
+| Array | Contributions | J2000 east / north centroid (arcsec) | Shift from previous (arcsec) | Measured FWHM major / minor (arcsec) |
+|---|---:|---:|---:|---:|
+| a1100 | 16,389,673 | +4.668 / -5.171 | 0.272 | 6.057 / 5.093 |
+| a1400 | 6,719,154 | +4.378 / -5.405 | 0.000 | 7.165 / 6.282 |
+| a2000 | 2,781,761 | +4.697 / -5.204 | 0.410 | 9.434 / 8.615 |
+
+Nominal calibration beams remain 5, 7.5 and 10 arcsec. The selected APT,
+boresight, CAL, filters, ALS rank 10, uniform gamma=1, J2000, 2 arcsec pixels,
+coverage cut 0.5 and no spatial mask remain unchanged. Fits describe the source;
+they do not establish uncertainty or full-chain source response.
+
+Measured single-worker upstream: 80.167 s, sampled peak RSS 1,445,904,384 bytes.
+MAP: 66.575 s, sampled peak RSS 1,744,420,864 bytes. Both exit 0 with zero
+unexpected error-level messages, no concurrent computational diagnostics during
+timing, and complete executable/thread/sampling records. This is supplemental
+local AppleClang/Homebrew evidence, not Unity/Spack production qualification.
+The existing unresolved RTC/CAL scientific qualification remains unchanged.
+
+nw3 scan 5 ALS failure remains separately unavailable; raw nw6/nw10 remain
+absent. No canonical integration, push, production activation or cleanup was
+performed. Final independent exact-evidence-candidate review follows; runtime
+code identity stays explicitly bound to e93e8861 rather than a later docs SHA.

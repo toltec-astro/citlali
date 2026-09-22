@@ -1,6 +1,6 @@
 # Citlali Refactor Status
 
-## POINT 152389 network rescue authorized and implemented — 2026-09-22
+## POINT 152389 network rescue validated — 2026-09-22
 
 Owner approved the bounded RTC processing-boundary/VAL repair after the offset
 and network-failure audit. The existing MAP branch now carries complete typed
@@ -12,8 +12,15 @@ stand in for a network-wide validity judgment. See
 `handoff/POINT_152389_NETWORK_RESCUE_2026-09-22.md` for work-order scope and gates.
 
 All 1,289 runnable rebuilt CTests, 175 successor Python tests, 207 baseline Python
-tests and required config preflight pass locally. Actual nw2/nw11 recovery,
-unaffected-network comparison, rebuilt MAPs and independent review are pending.
+tests and required config preflight pass locally. Final runtime source
+`e93e8861be3b9d84049cc72d431fd72ab35d8959` recovers 2,936,552 retained
+samples from nw2 and 1,379,512 from nw11; all six PTC segments converge in each.
+All 7,616 nw0 control binaries are bit-identical. Three rebuilt MAP bundles pass
+exact parent/operator replay and WCS/support checks; a1400 numerical planes are
+bit-identical. Existing nw3 scan 5 ALS failure remains separately unavailable.
+Fresh-context review found and verified repair of an interval-ordering boundary
+case; final evidence-candidate review is pending. See the linked handoff for
+artifact manifest, source positions, measured runtime/memory and limitations.
 Earlier completed MAP/audit entries below remain historical evidence.
 
 ## POINT 152389 offset/network audit — 2026-09-22
