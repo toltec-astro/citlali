@@ -22,8 +22,11 @@ separate fit scatter from non-Gaussian model mismatch. Final companion runtime
 is 8.346 s with previously accessed inputs; no native/RTC/PTC reruns. Final
 products, definitions, exact artifact identities, review repair and retained
 limitations are in `handoff/POINT_152389_EMPIRICAL_COMPANION_2026-09-22.md`.
-Independent final evidence review is pending. The earlier upstream/network
-results below remain the immutable parent evidence.
+Independent exact-SHA review of evidence candidate
+`5b8a8ff763b325dc42372b5a54f2bc65bb9a22f8` passes science/behavior with
+recorded limitations, architecture and repository/evidence, with no open
+findings. The earlier upstream/network results below remain immutable parent
+evidence. No integration, push, activation or production qualification.
 
 ## POINT 152389 network rescue validated — 2026-09-22
 

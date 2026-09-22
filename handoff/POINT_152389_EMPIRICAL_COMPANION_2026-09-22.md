@@ -209,3 +209,31 @@ rounding correction: a2000 trial coverage ratios span 0.727677–0.815917,
 rounded 0.73–0.82 (the initial RESULTS text said 0.75–0.81). Corrected the
 external report and rebound the root manifest above. Numerical products and
 runtime source are unchanged. No additional numerical rerun is warranted.
+
+## Independent exact-SHA review and closure
+
+Fresh-context reviewer `/root/point_empirical_review` approves evidence candidate
+`5b8a8ff763b325dc42372b5a54f2bc65bb9a22f8`, tree
+`1b0b6624f71a82122aeedef3c36a8fc03505fc4c`, parent
+`616b44b72ea697ff70a48424091aa070bd1c3de4`; runtime remains
+`3e9b5512e42e47e67dbdfe06b4c4183d0c707f61`.
+
+- Scientific and behavioral conformance: pass with recorded limitations.
+  Independently reran 13 focused tests; reproduced blank measurements, all
+  selected footprints, complete source fit domains, split count recovery,
+  difference projections and explicit a2000 unavailability. Checked all 240
+  saved synthetic records and representative figures. Conditional scatter,
+  dependence/sparse placements, missing refit errors, unequal split domains
+  and excluded upstream/calibration/model-mismatch uncertainties stay explicit.
+- Architectural conformity and ownership: pass. Separate read-only companion
+  preserves MAP, upstream processing, CAL, weights, FRUIT and Engine boundaries.
+- Repository, branch and evidence hygiene: pass. Exact code/measurement hashes,
+  three unchanged original MAP hashes, 38 companion entries, all FITS checksums
+  and 96 root artifact entries independently verified. Coverage rounding repair
+  resolved; final root digest matches above. Tracked tree clean, only original
+  build symlink untracked. No unresolved actionable findings.
+
+This closure changes documentation only and preserves the reviewed candidate
+and runtime identities. No integration/push/Unity/activation/production-use or
+cleanup authorization is inferred. Bounded empirical task complete; no FRUIT
+admission decision or upstream source-response qualification supplied.
