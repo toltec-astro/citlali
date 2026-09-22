@@ -23,6 +23,9 @@ tests (111 subtests),207 baseline tests (137 subtests),required config preflight
 verified repair of the timing-input ledger binding. Detailed exact identities,
 results, figures, exclusions and final review are in
 `handoff/POINT_152389_BALANCED_PAIRINGS_2026-09-22.md`.
+Independent review of evidence candidate
+`2995d2553c6cbecd2def033669229257854c8d40` passes science/behavior with
+recorded limitations, architecture and repository/evidence; no open findings.
 No integration,push,activation or production qualification. Prior companion
 estimates below remain historical evidence; stricter complete-footprint rules
 here govern the new balanced comparisons.

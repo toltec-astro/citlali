@@ -185,3 +185,41 @@ cleanup. Worktree tracked files are committed; the pre-existing untracked build
 symlink remains. Stop at owner assessment of these diagnostics; a four-scan
 interpretation or source-response experiment would require a separately named
 next step, not an implicit continuation here.
+
+
+## Independent exact-SHA closure
+
+Fresh-context read-only reviewer: `/root/point_balanced_review`.
+Candidate `2995d2553c6cbecd2def033669229257854c8d40`, tree
+`63cf141dd5837ee616496b9d55589c99e4240390`; runtime parent
+`12e1fc80a489ed898dd78357d5b46c4ecd24a058`; task base
+`4e8dcc37438559a44f7cab72b706a2ae1d50f6c0`.
+Verdict: **pass with recorded scientific limitations; no open findings**.
+
+Scientific and behavioral conformance: pass with recorded limitations.
+Reviewer independently reproduced 11 focused tests, all 78 subset support masks,
+30 complementary normalization closures, local population totals, every available
+saved-profile fit, native chronology, factor/phase membership and parity-map
+regression. Confirmed 8/1/0 supported fit pairs and 10/8/3 template pairs. Repaired
+timing guards bind native files through the saved MAP attempt/input manifest and
+reject altered intervals, including off-lattice endpoints. Final measurements,
+populations and timing facts match the independently checked initial run. Timing
+binding finding closed. Cleaning response, independent-observation interpretation
+and final uncertainties remain unresolved.
+
+Architectural conformity and ownership: pass. Changes remain in the separate
+saved-product diagnostic. Existing procedures and upstream numerical owners are
+preserved, with no core/Engine growth, relearning, coefficient or FRUIT change.
+
+Repository, branch and evidence hygiene: pass. Candidate adds only status/handoff
+evidence to reviewed runtime source. Accepted governance digests match integration
+ledger. Root/final product manifest digests match reported identities. Tracked tree
+clean; pre-existing untracked build remains. Reviewer made no edits, commits,
+pushes, branch changes or Unity access. Broader 215 successor/207 baseline/config
+results and FITS/visual checks inspected as supplied evidence; independent
+reproduction focused on affected behavior above. Native/Spack validation not
+triggered. Integration/push/activation/production decisions remain separate.
+
+This closure-only commit records the exact verdict and changes no runtime source,
+artifact or scientific disposition. Task complete at the requested diagnostic
+stop point; all evidence and the isolated branch/worktree are retained.
