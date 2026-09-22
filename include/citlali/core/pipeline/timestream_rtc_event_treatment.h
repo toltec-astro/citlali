@@ -49,6 +49,25 @@ public:
             events->evidence_handle().get()!=&transients->jump_plan_handle()->admission_handle()->assessment() ||
             transients->val_snapshot_handle().get()!=snapshot.get())
             throw std::invalid_argument("RTC event treatment requires exact original evidence, exclusions and VAL");
+        // A complete processing relation must remain the same operation domain
+        // when filtering support is resolved. A caller cannot rescue an outside
+        // jump and then silently use those same outside rows as filter inputs.
+        const auto &binding=transients->jump_plan_handle()->scan_binding_handle();
+        if (binding && binding->processing_domain()) {
+            std::map<TimestreamNetworkId,std::vector<RtcEventRange>> expected;
+            for (const auto &s:binding->supports()) expected[s.native.network_id];
+            for (const auto &s:binding->processing_domain()->outside_science)
+                expected[s.network_id].push_back({s.first_native_row,s.past_last_native_row});
+            for (auto &[network,ranges]:expected) {
+                const auto a=rtc_event_assessment_detail::merge(ranges);
+                const auto found=timing_unavailable.find(network);
+                const auto b=found==timing_unavailable.end()?std::vector<RtcEventRange>{}:
+                    rtc_event_assessment_detail::merge(found->second);
+                if (a.size()!=b.size() || !std::equal(a.begin(),a.end(),b.begin(),[](auto x,auto y){
+                    return x.first==y.first && x.past_last==y.past_last;}))
+                    throw std::invalid_argument("RTC event support differs from complete processing domain");
+            }
+        }
         const auto evidence=events->evidence_handle();const auto &spikes=*evidence->spike_handle();
         if(truth && (truth->modified_parent.get()!=spikes.input_handle()->parent_handle().get() ||
             !truth->rows.present() || truth->reference_identity.empty() || truth->model_identity.empty() ||

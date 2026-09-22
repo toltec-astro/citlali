@@ -255,4 +255,64 @@ TEST(rtc_jump_exclusion, source_brightness_does_not_select_a_clean_scan_for_reje
             }
     }
 }
+
+auto complete_domain(const Trial &t,TimestreamNativeRow end,TimestreamNativeRow context_end) {
+    const auto span=t.input->span(0);
+    RtcExistingProcessingDomain domain{{{71,{0,span.first_native_row,context_end}}},
+        {{0,end,span.past_last_native_row}}};
+    if(end==span.past_last_native_row)domain.outside_science.clear();
+    return RtcExistingScanBinding::admit(t.parent,"complete-generation","complete-relation","known-clock",
+        RtcExistingScanSupportState::conservative_native_support_bound,
+        {{71,{0,span.first_native_row,end}}},domain);
+}
+TEST(rtc_jump_exclusion, known_tail_preserves_transition_and_other_detectors_without_inventing_scan) {
+    Input in;in.step(500,4,0);Trial t(in);
+    ASSERT_EQ(t.admitted().size(),1);const auto affected=t.admitted()[0].coordinates[0].affected;
+    for (auto context_end:{580,650}) {
+        const auto p=t.plan(complete_domain(t,550,context_end));
+        ASSERT_EQ(p->processing_support().size(),1);
+        const auto &r=p->processing_support()[0];
+        EXPECT_TRUE(r.science_scans.empty());
+        EXPECT_EQ(r.context_scans,(context_end==650?std::vector<std::uint64_t>{71}:std::vector<std::uint64_t>{}));
+        ASSERT_EQ(r.outside_science.size(),1);
+        EXPECT_EQ(r.outside_science[0].first,affected.first);
+        EXPECT_EQ(r.outside_science[0].past_last,affected.past_last);
+        EXPECT_TRUE(p->detectors()[0].scans.empty());EXPECT_FALSE(p->detectors()[0].whole_observation);
+        auto applied=t.apply(p);
+        EXPECT_FALSE(applied->excluded(0,500,0));EXPECT_TRUE(applied->excluded(0,affected.first,0));
+        EXPECT_FALSE(applied->excluded(0,affected.first,1));
+        EXPECT_DOUBLE_EQ(*applied->value_if_retained(NativeReadoutCoordinate::x,0,500,0),in.x(400,0));
+    }
+}
+TEST(rtc_jump_exclusion, complete_relation_preserves_science_scan_rule_and_half_open_boundaries) {
+    Input in;in.step(500,4,0);Trial t(in);auto affected=t.admitted()[0].coordinates[0].affected;
+    const auto science=t.plan(complete_domain(t,1200,1200));
+    EXPECT_EQ(science->excluded_pair_cells(),t.plan(t.scans())->excluded_pair_cells());
+    const auto contact=t.plan(complete_domain(t,affected.first,1200));
+    EXPECT_TRUE(contact->detectors()[0].scans.empty());EXPECT_FALSE(contact->excludes(0,affected.first-1,0));
+    const auto cross=t.plan(complete_domain(t,affected.first+1,1200));
+    EXPECT_EQ(cross->detectors()[0].scans,(std::vector<std::uint64_t>{71}));
+    EXPECT_TRUE(cross->excludes(0,100,0));EXPECT_TRUE(cross->excludes(0,affected.past_last-1,0));
+    EXPECT_FALSE(cross->excludes(0,affected.past_last,0));
+}
+TEST(rtc_jump_exclusion, tail_groups_still_count_once_toward_detector_observation_rule) {
+    Trial t(repeated(3));ASSERT_EQ(t.admitted().size(),3);
+    auto p=t.plan(complete_domain(t,500,900));
+    ASSERT_EQ(p->detectors().size(),1);EXPECT_TRUE(p->detectors()[0].whole_observation);
+    EXPECT_EQ(p->detectors()[0].original_groups.size(),3);EXPECT_EQ(p->excluded_pair_cells(),6000);
+    EXPECT_TRUE(p->excludes(0,200,0));EXPECT_FALSE(p->excludes(0,200,1));
+}
+TEST(rtc_jump_exclusion, asserted_complete_domain_rejects_unknown_rows_overlaps_and_missing_context) {
+    Input in;in.step();Trial t(in);
+    auto bind=[&](RtcExistingProcessingDomain d){return RtcExistingScanBinding::admit(t.parent,"g","r","clock",
+        RtcExistingScanSupportState::conservative_native_support_bound,{{1,{0,100,550}}},std::move(d));};
+    EXPECT_THROW(bind((RtcExistingProcessingDomain{{{1,{0,100,650}}},{{0,551,1200}}})),std::invalid_argument);
+    EXPECT_THROW(bind((RtcExistingProcessingDomain{{{1,{0,100,650}}},{{0,549,1200}}})),std::invalid_argument);
+    EXPECT_THROW(bind((RtcExistingProcessingDomain{{{1,{0,100,650}}},{{0,550,1199}}})),std::invalid_argument);
+    EXPECT_THROW(bind((RtcExistingProcessingDomain{{{1,{0,101,650}}},{{0,550,1200}}})),std::invalid_argument);
+    EXPECT_THROW(bind((RtcExistingProcessingDomain{{{2,{0,100,650}}},{{0,550,1200}}})),std::invalid_argument);
+    EXPECT_THROW(bind((RtcExistingProcessingDomain{{{1,{0,100,650}}},{{0,550,1200},{0,600,650}}})),std::invalid_argument);
+    // Existing incomplete callers never acquire outside authority by omission.
+    EXPECT_THROW(t.plan(t.scans({{1,{0,100,550}}})),RtcJumpScanBindingUnavailable);
+}
 } // namespace

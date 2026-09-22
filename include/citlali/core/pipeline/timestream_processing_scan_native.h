@@ -73,6 +73,7 @@ inline ProcessingScanNativeProjection project_processing_scans_to_native(
         return result;
     };
     std::vector<RtcExistingScanNativeSupport> supports;
+    RtcExistingProcessingDomain domain;
     for (Eigen::Index s=0;s<inclusive_indices.cols();++s) {
         ProcessingScanNativeRecord r;r.scan=s;
         r.science_slots={inclusive_indices(0,s),inclusive_indices(1,s)+1};
@@ -84,6 +85,7 @@ inline ProcessingScanNativeProjection project_processing_scans_to_native(
         r.science_native=ranges(r.science_slots,true,r.unmapped_science_slots);
         std::size_t ignored=0;r.context_native=ranges(r.context_slots,false,ignored);
         for (auto native:r.science_native) supports.push_back({r.scan,{network,native.first,native.past_last}});
+        for (auto native:r.context_native) domain.contexts.push_back({r.scan,{network,native.first,native.past_last}});
         out.scans.push_back(std::move(r));
     }
     for (const auto &run:physical_runs) {
@@ -94,9 +96,10 @@ inline ProcessingScanNativeProjection project_processing_scans_to_native(
         }
         if (begin<run.past_last_native_row) out.native_outside_processing.push_back({begin,run.past_last_native_row});
     }
+    for (auto r:out.native_outside_processing) domain.outside_science.push_back({network,r.first,r.past_last});
     out.binding=RtcExistingScanBinding::admit(parent,std::move(generation),std::move(relation_authority),
         "exact-native-slot-association;inclusive-abs-residual<=dt/2;absolute-epoch-and-readout-integration-uncertainty-not-estimated",
-        RtcExistingScanSupportState::conservative_native_support_bound,std::move(supports));
+        RtcExistingScanSupportState::conservative_native_support_bound,std::move(supports),std::move(domain));
     return out;
 }
 

@@ -641,9 +641,36 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
             "existing-authorities-with-unavailable-isolated-admission-v1","unknown decision policy");
         selected.scans=recovered_scans->projection.binding;
       }
-      // This call intentionally refuses missing scan support when any jump is
-      // admitted. Acquisition ScanNum is never used as the processing scan.
+      // RTC distinguishes known outside-science support from an unavailable
+      // relation. Acquisition ScanNum never substitutes for a processing scan.
       auto jumps=RtcJumpExclusionPlan::consider(admitted,selected.scans,val,22);
+      YAML::Node jump_record;
+      jump_record["schema"]="rtc-jump-processing-support-v1";
+      jump_record["method"]=std::string(RtcJumpExclusionPlan::processing_support_method);
+      jump_record["exclusion_policy"]=std::string(RtcJumpAdmissionPolicy::identity);
+      jump_record["original_parent"]=mapping->paired_xr_record_id;
+      jump_record["VAL_generation"]=val->generation().value;
+      jump_record["native_rows"]="zero-based-half-open;exact-original-parent";
+      jump_record["complete_processing_domain"]=selected.scans && bool(selected.scans->processing_domain());
+      if(selected.scans)jump_record["processing_generation"]=selected.scans->processing_generation();
+      for(const auto &r:jumps->processing_support()) {
+        const auto &g=admitted->groups().at(r.original_group);YAML::Node n;
+        n["group"]=r.original_group;n["coordinate"]=r.coordinate;n["channel"]=channels.at(g.detector);
+        n["affected"]=range(g.coordinates[r.coordinate].affected);
+        n["science_scans"]=r.science_scans;n["context_scans"]=r.context_scans;
+        n["outside_science"]=YAML::Node(YAML::NodeType::Sequence);
+        for(auto rows:r.outside_science)n["outside_science"].push_back(range(rows));
+        jump_record["coordinates"].push_back(n);
+      }
+      for(const auto &d:jumps->detectors()) {
+        YAML::Node n;n["channel"]=channels.at(d.detector);n["whole_observation"]=d.whole_observation;
+        n["admitted_groups"]=d.original_groups;n["science_scans"]=d.scans;
+        for(auto rows:d.rows)n["paired_exclusions"].push_back(range(rows));
+        jump_record["detectors"].push_back(n);
+      }
+      write_yaml(output/"jump-exclusions.yaml",jump_record);
+      receipt["jump_processing_support_file"]="jump-exclusions.yaml";
+      receipt["jump_processing_support_sha256"]=citlali::utils::sha256_file(output/"jump-exclusions.yaml");
       auto transient=RtcTransientExclusionPlan::consider(events->original_screening_handle(),jumps,val,23);
       std::vector<std::vector<std::shared_ptr<const RtcDonorFillPlan>>> donors(channels.size());
       for(const auto &event:selected.events){

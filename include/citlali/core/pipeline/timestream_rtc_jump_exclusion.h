@@ -12,6 +12,15 @@ struct RtcExistingScanNativeSupport {
     NativeOccurrenceSpan native;
 };
 
+// Optional complete relation from the processing owner. Native rows remain
+// zero-based half-open occurrences of the exact parent, never output slots.
+// Context may overlap science or other scans; outside_science is the exact
+// complement of the union of science support on each represented network.
+struct RtcExistingProcessingDomain {
+    std::vector<RtcExistingScanNativeSupport> contexts;
+    std::vector<NativeOccurrenceSpan> outside_science;
+};
+
 enum class RtcExistingScanSupportState : std::uint8_t {
     unavailable, conservative_native_support_bound
 };
@@ -28,7 +37,8 @@ public:
         std::string processing_generation, std::string native_relation_authority,
         std::string timing_uncertainty_authority,
         RtcExistingScanSupportState state,
-        std::vector<RtcExistingScanNativeSupport> complete_support) {
+        std::vector<RtcExistingScanNativeSupport> complete_support,
+        std::optional<RtcExistingProcessingDomain> domain = std::nullopt) {
         // This explicit producer assertion includes the relation's timing
         // uncertainty. An authority name alone is not usable support. The
         // binding does not estimate uncertainty or reconstruct omitted rows.
@@ -52,24 +62,88 @@ public:
                 throw std::invalid_argument("RTC existing scan native support is invalid or repeated");
             previous = &s;
         }
+        if (domain) validate_domain(*parent, complete_support, *domain);
         return std::shared_ptr<const RtcExistingScanBinding>(new RtcExistingScanBinding{
             std::move(parent), std::move(processing_generation), std::move(native_relation_authority),
-            std::move(timing_uncertainty_authority), std::move(complete_support)});
+            std::move(timing_uncertainty_authority), std::move(complete_support), std::move(domain)});
     }
     const auto &parent_handle() const noexcept { return parent_; }
     const auto &processing_generation() const noexcept { return generation_; }
     const auto &native_relation_authority() const noexcept { return relation_; }
     const auto &timing_uncertainty_authority() const noexcept { return uncertainty_; }
     const auto &supports() const noexcept { return supports_; }
+    const auto &processing_domain() const noexcept { return domain_; }
 private:
+    static void validate_domain(const NativePairedReadoutObservation &parent,
+        const std::vector<RtcExistingScanNativeSupport> &science, RtcExistingProcessingDomain &domain) {
+        using Key = std::pair<TimestreamNetworkId, std::uint64_t>;
+        std::map<Key, std::vector<RtcEventRange>> science_by_scan, contexts;
+        std::map<TimestreamNetworkId, std::vector<RtcEventRange>> selected, outside;
+        for (const auto &s : science) {
+            science_by_scan[{s.native.network_id,s.scan}].push_back({s.native.first_native_row,s.native.past_last_native_row});
+            selected[s.native.network_id].push_back({s.native.first_native_row,s.native.past_last_native_row});
+        }
+        auto valid_span = [&](const NativeOccurrenceSpan &s) {
+            if (!selected.contains(s.network_id)) throw std::invalid_argument("RTC processing domain has foreign network");
+            const auto &axis = parent.network(s.network_id).occurrence_axis();
+            if (s.first_native_row < axis.first_native_row() || s.past_last_native_row > axis.past_last_native_row() ||
+                s.first_native_row >= s.past_last_native_row)
+                throw std::invalid_argument("RTC processing domain outside exact native parent");
+        };
+        for (const auto &s : domain.contexts) {
+            valid_span(s.native);
+            if (!science_by_scan.contains({s.native.network_id,s.scan}))
+                throw std::invalid_argument("RTC context has no corresponding science scan");
+            contexts[{s.native.network_id,s.scan}].push_back({s.native.first_native_row,s.native.past_last_native_row});
+        }
+        for (const auto &s : domain.outside_science) {
+            valid_span(s); outside[s.network_id].push_back({s.first_native_row,s.past_last_native_row});
+        }
+        auto nonoverlap = [](std::vector<RtcEventRange> ranges) {
+            std::sort(ranges.begin(),ranges.end(),[](auto a,auto b){return a.first<b.first;});
+            for (std::size_t i=1;i<ranges.size();++i) if (ranges[i].first<ranges[i-1].past_last)
+                throw std::invalid_argument("RTC processing domain repeats native support");
+            return ranges;
+        };
+        for (const auto &[key,ranges] : science_by_scan) {
+            const auto context=rtc_event_assessment_detail::merge(nonoverlap(contexts[key]));
+            for (auto r:ranges) if (!std::any_of(context.begin(),context.end(),[&](auto c){
+                return c.first<=r.first && r.past_last<=c.past_last;}))
+                throw std::invalid_argument("RTC complete domain lacks a science scan's context");
+        }
+        for (const auto &[network,ranges] : selected) {
+            auto partition=rtc_event_assessment_detail::merge(ranges);
+            const auto complement=nonoverlap(outside[network]);
+            partition.insert(partition.end(),complement.begin(),complement.end());
+            partition=nonoverlap(std::move(partition));
+            const auto &axis=parent.network(network).occurrence_axis();
+            auto cursor=axis.first_native_row();
+            for (auto r:partition) {
+                if (r.first!=cursor) throw std::invalid_argument("RTC complete processing domain has unknown native rows");
+                cursor=r.past_last;
+            }
+            if (cursor!=axis.past_last_native_row())
+                throw std::invalid_argument("RTC complete processing domain has unknown tail");
+        }
+    }
     RtcExistingScanBinding(std::shared_ptr<const NativePairedReadoutObservation> parent,
         std::string generation, std::string relation, std::string uncertainty,
-        std::vector<RtcExistingScanNativeSupport> supports)
+        std::vector<RtcExistingScanNativeSupport> supports, std::optional<RtcExistingProcessingDomain> domain)
         : parent_{std::move(parent)}, generation_{std::move(generation)}, relation_{std::move(relation)},
-          uncertainty_{std::move(uncertainty)}, supports_{std::move(supports)} {}
+          uncertainty_{std::move(uncertainty)}, supports_{std::move(supports)}, domain_{std::move(domain)} {}
     std::shared_ptr<const NativePairedReadoutObservation> parent_;
     std::string generation_, relation_, uncertainty_;
     std::vector<RtcExistingScanNativeSupport> supports_;
+    std::optional<RtcExistingProcessingDomain> domain_;
+};
+
+// Producer facts, not scientific-use admission. Original group/coordinate
+// identifies the immutable measured transition; scan and context relations
+// remain distinct from the actual paired exclusion operation.
+struct RtcJumpProcessingSupport {
+    std::size_t original_group = 0, coordinate = 0;
+    std::vector<std::uint64_t> science_scans, context_scans;
+    std::vector<RtcEventRange> outside_science;
 };
 
 struct RtcJumpDetectorExclusion {
@@ -108,21 +182,43 @@ public:
             std::set<std::uint64_t> scan_ids;
             for (auto group_index : selected) {
                 const auto &group = result->admission_->groups().at(group_index);
-                for (const auto &coordinate : group.coordinates) if (coordinate.admitted()) {
+                for (std::size_t c=0;c<group.coordinates.size();++c) if (group.coordinates[c].admitted()) {
+                    const auto &coordinate=group.coordinates[c];
+                    RtcJumpProcessingSupport support;support.original_group=group_index;support.coordinate=c;
                     bool bound = false;
                     for (const auto &s : result->scans_->supports()) {
                         if (s.native.network_id != out.network) continue;
                         if (coordinate.affected.first < s.native.past_last_native_row &&
                             s.native.first_native_row < coordinate.affected.past_last) {
-                            scan_ids.insert(s.scan); bound = true;
+                            scan_ids.insert(s.scan); support.science_scans.push_back(s.scan); bound = true;
                         }
                     }
+                    if (const auto &domain=result->scans_->processing_domain()) {
+                        for (const auto &s:domain->contexts) if (s.native.network_id==out.network &&
+                            coordinate.affected.first<s.native.past_last_native_row && s.native.first_native_row<coordinate.affected.past_last)
+                            support.context_scans.push_back(s.scan);
+                        for (const auto &s:domain->outside_science) if (s.network_id==out.network) {
+                            RtcEventRange r{std::max(s.first_native_row,coordinate.affected.first),
+                                std::min(s.past_last_native_row,coordinate.affected.past_last)};
+                            if (r.present()) support.outside_science.push_back(r);
+                        }
+                        // Preserve the paired transition cause outside science as
+                        // well. Context overlap does not invent a science scan;
+                        // the filter must still bind the complete outside-domain
+                        // unavailability and propagate its exact support guards.
+                        out.rows.insert(out.rows.end(),support.outside_science.begin(),support.outside_science.end());
+                        bound |= !support.outside_science.empty();
+                    }
                     if (!bound) throw RtcJumpScanBindingUnavailable("RTC admitted transition has no existing scan support");
+                    for (auto *ids:{&support.science_scans,&support.context_scans}) {
+                        std::sort(ids->begin(),ids->end());ids->erase(std::unique(ids->begin(),ids->end()),ids->end());
+                    }
+                    result->support_.push_back(std::move(support));
                 }
             }
             if (out.whole_observation) {
                 const auto &axis = result->input_handle()->network(out.network).occurrence_axis();
-                out.rows.push_back({axis.first_native_row(), axis.past_last_native_row()});
+                out.rows={{axis.first_native_row(), axis.past_last_native_row()}};
                 for (const auto &s : result->scans_->supports()) if (s.native.network_id == out.network) scan_ids.insert(s.scan);
             } else {
                 // Once a scan is selected, include every native interval of
@@ -143,12 +239,17 @@ public:
     const std::shared_ptr<const NativePairedReadoutView> &input_handle() const { return admission_->input_handle(); }
     const auto &val_snapshot_handle() const { return admission_->val_snapshot_handle(); }
     const auto &detectors() const noexcept { return detectors_; }
+    const auto &processing_support() const noexcept { return support_; }
+    static constexpr std::string_view processing_support_method = "rtc-jump-processing-support-2026-09-22-v1";
     std::uint64_t consideration() const noexcept { return id_; }
     std::size_t excluded_pair_cells() const noexcept { return excluded_cells_; }
     std::size_t logical_owned_bytes() const noexcept {
         std::size_t n = detectors_.size() * sizeof(RtcJumpDetectorExclusion);
         for (const auto &d : detectors_) n += d.original_groups.size() * sizeof(std::size_t) +
             d.scans.size() * sizeof(std::uint64_t) + d.rows.size() * sizeof(RtcEventRange);
+        n += support_.size()*sizeof(RtcJumpProcessingSupport);
+        for (const auto &s:support_) n += (s.science_scans.size()+s.context_scans.size())*sizeof(std::uint64_t)+
+            s.outside_science.size()*sizeof(RtcEventRange);
         return n;
     }
     bool excludes(TimestreamNetworkId network, TimestreamNativeRow row, std::uint32_t detector) const {
@@ -168,6 +269,7 @@ private:
     std::shared_ptr<const RtcJumpAdmissionDecision> admission_;
     std::shared_ptr<const RtcExistingScanBinding> scans_;
     std::vector<RtcJumpDetectorExclusion> detectors_;
+    std::vector<RtcJumpProcessingSupport> support_;
     std::uint64_t id_ = 0;
     std::size_t excluded_cells_ = 0;
 };

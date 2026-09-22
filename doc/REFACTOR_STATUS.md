@@ -1,5 +1,21 @@
 # Citlali Refactor Status
 
+## POINT 152389 network rescue authorized and implemented — 2026-09-22
+
+Owner approved the bounded RTC processing-boundary/VAL repair after the offset
+and network-failure audit. The existing MAP branch now carries complete typed
+science/context/outside-science relations into jump planning, preserves local
+transition causes and the three-group detector rule, and requires the same
+outside-domain restrictions when resolving filter support. No filter, detection,
+APT, CAL, PTC or MAP numerical method is changed. Native tail facts no longer
+stand in for a network-wide validity judgment. See
+`handoff/POINT_152389_NETWORK_RESCUE_2026-09-22.md` for work-order scope and gates.
+
+All 1,289 runnable rebuilt CTests, 175 successor Python tests, 207 baseline Python
+tests and required config preflight pass locally. Actual nw2/nw11 recovery,
+unaffected-network comparison, rebuilt MAPs and independent review are pending.
+Earlier completed MAP/audit entries below remain historical evidence.
+
 ## POINT 152389 offset/network audit — 2026-09-22
 
 Owner follow-up finds that the older POINT offsets are altaz, with a different

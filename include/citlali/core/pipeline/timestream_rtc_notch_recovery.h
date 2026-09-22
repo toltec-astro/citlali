@@ -95,6 +95,10 @@ public:
     if(event_decisions && (event_decisions->transient_handle().get()!=transients.get() ||
         (!donor_continuity && !donors.empty())))
       throw std::invalid_argument("RTC event decisions must bind the exact exclusions and treatment arm");
+    const auto &scan_binding=transients->jump_plan_handle()->scan_binding_handle();
+    if (scan_binding && scan_binding->processing_domain() &&
+        !scan_binding->processing_domain()->outside_science.empty() && !event_decisions)
+      throw std::invalid_argument("RTC filtering requires explicit complete processing-domain support");
     if(event_decisions){
       std::vector<const RtcDonorFillPlan*> expected,actual;
       if(donor_continuity)for(const auto &r:event_decisions->records())
