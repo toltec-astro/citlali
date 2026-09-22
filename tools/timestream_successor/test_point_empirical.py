@@ -65,6 +65,21 @@ def test_no_blank_support_is_explicitly_unavailable():
     assert r['refit']['error']['std'] is None
 
 
+@pytest.mark.parametrize('missing_kind',['support','nonfinite'])
+def test_incomplete_source_fit_withholds_refit_even_when_compact_measurement_valid(missing_kind):
+    h,x,y,p=fixture();s=np.hypot(x,y)<120;q=np.where(s,1000.,0.);d=gaussian(p,x,y)
+    hole=np.argwhere((np.hypot(x,y)>35)&(np.hypot(x,y)<39))[0]
+    if missing_kind=='support':s[tuple(hole)]=False
+    else:d[tuple(hole)]=np.nan
+    request=Request(maximum_blanks=6);bg=background(d,q,s,h,p[1:3],7,request)
+    r=source_experiment(d,q,s,h,6,p,bg['background_mask'],request)
+    assert r['fixed_template']['source'] is not None
+    assert not r['refit']['scatter_available'] and not r['refit_trials']
+    selection=r['refit']['selection']
+    assert selection['source_fit_pixels']==selection['expected_fit_pixels']-1
+    assert 'different pixel objective' in selection['unavailable_cause']
+
+
 def test_support_threshold_and_companion_fits(tmp_path):
     q=np.array([[0.,1.],[2.,8.]])
     s,r=threshold(q,.5);assert r==8 and s.sum()==1

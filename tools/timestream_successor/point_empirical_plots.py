@@ -13,6 +13,7 @@ def draw_background(path,array,data,bg,beam):
     fig.colorbar(im,ax=ax[0,0],label='mJy / nominal beam')
     im=ax[0,1].imshow(bg['scale'],origin='lower',cmap='viridis');ax[0,1].set_title('Background scatter pooled by coverage')
     fig.colorbar(im,ax=ax[0,1],label='Sample standard deviation (mJy / nominal beam)')
+    for panel in ax[0]:panel.set(xlabel='Pixel column',ylabel='Pixel row')
     for b in bg['records']:
         use=good&(bg['bin_index']==b['bin']);values=s[use]
         ax[1,0].hist(values,bins=50,histtype='step',density=True,label=f"bin {b['bin']}: n={b['n']}")
@@ -61,10 +62,10 @@ def draw_splits(path,array,splits,header):
         im=ax[i].imshow(s,origin='lower',extent=extent,cmap='RdBu_r',vmin=-limit,vmax=limit);ax[i].set_title(title)
         fig.colorbar(im,ax=ax[i],label='mJy / nominal beam',shrink=.8)
     d=splits['difference'];limit=np.nanpercentile(abs(d),99.5)
-    im=ax[2].imshow(d,origin='lower',extent=extent,cmap='RdBu_r',vmin=-limit,vmax=limit);ax[2].set_title('A − B on common science support')
+    im=ax[2].imshow(d,origin='lower',extent=extent,cmap='RdBu_r',vmin=-limit,vmax=limit);ax[2].set_title('A − B\ncommon science support',fontsize=11)
     fig.colorbar(im,ax=ax[2],label='mJy / nominal beam',shrink=.8)
     im=ax[3].imshow(splits['balance'],origin='lower',extent=extent,cmap='coolwarm',vmin=0,vmax=1);ax[3].set_title('Coverage fraction from A')
     fig.colorbar(im,ax=ax[3],label='A / (A + B)',shrink=.8)
     for a in ax[:3]:a.set(xlim=(30,-30),ylim=(-30,30),xlabel='East offset (arcsec)',ylabel='North offset (arcsec)')
     ax[3].set(xlabel='East offset (arcsec)',ylabel='North offset (arcsec)')
-    fig.suptitle(f'{array} · source zoom / full coverage · saved PTC split; no upstream relearning');fig.savefig(path,dpi=150);plt.close(fig)
+    fig.suptitle(f'{array} · source zoom / full coverage · saved PTC split; no upstream relearning',fontsize=12);fig.savefig(path,dpi=150);plt.close(fig)

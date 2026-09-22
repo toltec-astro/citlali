@@ -80,7 +80,9 @@ def split_maps(root,plan,full,header,beam,parameters):
         descriptions[i]['apertures']=aperture_measurements(a,valid,x,y,parameters[1:3],major,beam,abs(h['CDELT1']*3600)**2)
     summary=dict(split_definition={'A':'processing scans 0,2,4','B':'processing scans 1,3,5'},members=members,
         source_measurements=descriptions,difference_definition='A minus B; no equal-depth or independent-noise rescaling',
-        source_shaped_difference=residual,coverage_reference=references,
+        source_shaped_difference=residual,
+        source_shaped_difference_unavailable_cause='incomplete common support in fixed-template footprint' if residual is None else None,
+        coverage_reference=references,
         common_pixels=int(common.sum()),coverage_A_fraction_quantiles=np.quantile(balance[common],[0,.1,.5,.9,1]).tolist() if common.any() else None,
         maximum_numerator_roundoff_error=error,counts_exact=True,
         caveat='one conditional split of existing cleaned products; shared calibration/processing and unequal coverage remain; not a full uncertainty ensemble')

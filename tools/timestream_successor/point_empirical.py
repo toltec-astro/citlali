@@ -184,6 +184,15 @@ def source_experiment(signal,coverage,support,header,beam,parameters,bgmask,requ
         trials.append(dict(row=row,column=col,coverage_ratio=float(qmetric[row,col]/selection['source_template_squared_coverage']),
             fit_support_fraction=float(fractions[row,col]),fixed=fixed,apertures=apertures))
     refit_locations,refit_selection,qmetric,fractions=select_blanks(coverage,support,bgmask,template,roi,half,q,major,step,request)
+    source_fit_pixels=int(np.sum(roi & valid & np.isfinite(data)))
+    expected_fit_pixels=int(roi.sum())
+    complete_source_fit=source_fit_pixels==expected_fit_pixels
+    refit_selection.update(source_fit_pixels=source_fit_pixels,expected_fit_pixels=expected_fit_pixels,
+        source_fit_complete=complete_source_fit)
+    if not complete_source_fit:
+        refit_locations=[]
+        refit_selection.update(selected_count=0,fit_footprint_disjoint_subset_count=0,
+            nonoverlapping_subset=[],unavailable_cause='source fit footprint is incomplete; complete blank fits would use a different pixel objective')
     refits=[]
     for row,col in refit_locations:
         d=patch(signal,row,col,half);v=patch(support,row,col,half)&roi
@@ -211,7 +220,7 @@ def source_experiment(signal,coverage,support,header,beam,parameters,bgmask,requ
         fixed_template=dict(source=source_fixed,blank=fixedstats,scatter_available=available,
             disjoint_subset_blank=stats([t['fixed']['amplitude'] for t in trials if (t['row'],t['column']) in selection['nonoverlapping_subset'] and t['fixed'] is not None])),
         refit=dict(injected_amplitude=float(p[0]),error=errors,selection=refit_selection,
-            scatter_available=errors['n']>=request.minimum_blanks and len(refits)==errors['n'] ,
+            scatter_available=complete_source_fit and errors['n']>=request.minimum_blanks and len(refits)==errors['n'] ,
             failed=sum(t['status']!='success' for t in refits),constrained=sum(t.get('constraint_active',False) for t in refits),
             interpretation='complete 40 arcsec map-domain fit footprints; scatter/bias relative to injected fitted Gaussian; unavailable if too few patches, any failed refit; finite bound-limited outcomes stay included and counted; not observed-source truth or upstream recovery'),
         apertures=apresults,residual_radial=radial,source_residual=stats(residual[valid&roi]),trials=trials,refit_trials=refits)

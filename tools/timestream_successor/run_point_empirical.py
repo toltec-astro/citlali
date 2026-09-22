@@ -100,7 +100,12 @@ def run(args):
     report+=['','Scatter is a sample standard deviation, not a confidence interval or detection significance. Blank patches may overlap. The source-refit bias is relative to an injected copy of the fitted model; it does not measure bias relative to the true astronomical source. Apertures retain integrated brightness in mJy/nominal-beam arcsec²; no beam-area conversion, background subtraction or aperture correction is applied.','']
     for s in summaries:
         a=s['array'];sel=s['selection']
+        split=s['split'];parts=split['source_measurements'];difference=split['source_shaped_difference']
+        split_values=[f"{p['fitted_amplitude_above_constant_mJy_per_nominal_beam']:.3f} ({p['fit_pixels']} pixels)" if p['status']=='success' else 'unavailable' for p in parts]
+        residual_text=f"{difference['amplitude']:.3f} mJy/nominal beam" if difference else 'unavailable: incomplete common support in the fixed-template footprint'
+        balance=split['coverage_A_fraction_quantiles']
         report += [f'## {a}','',f"Selected {sel['selected_count']} locations from {sel['candidate_count']} coverage-matched candidates. A greedy subset has {sel['fit_footprint_disjoint_subset_count']} disjoint fixed-template footprints. These counts expose dependence; no effective independent sample count is claimed. The full 40 arcsec refit has {s['refit']['selection']['selected_count']} complete matched blank footprints.",'',
+            f"Split fitted amplitudes (mJy/nominal beam): A = {split_values[0]}; B = {split_values[1]}. A minus B projected onto the full-map fixed template: {residual_text}. Coverage fraction A/(A+B), 10th/50th/90th percentiles on common support: {balance[1]:.3f}/{balance[2]:.3f}/{balance[3]:.3f}. These split fits use their own finite science-support pixels; pixel counts expose unequal fit domains.",'',
             f"[Background]({out/a/'background.png'}) · [Measurement diagnostics]({out/a/'measurements.png'}) · [Split maps]({out/a/'splits.png'})",'',
             f"[Background FITS]({out/a/'background-companion.fits'}) · [Split FITS]({out/a/'split-maps.fits'}) · [Full blank/refit records]({out/a/'measurements.json'})",'']
     report += [f'Companion wall time: {elapsed:.3f} s. Full numerical settings, code digests, dependency versions and source identities are in provenance.json and request.json.','',
