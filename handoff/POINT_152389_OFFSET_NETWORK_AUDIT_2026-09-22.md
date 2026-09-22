@@ -61,7 +61,7 @@ Validation of the diagnostic:
   used for the successor description. Results (+5.078,+0.111),
   (+5.064,−0.205), (+4.803,−0.377) arcsec closely reproduce their published fits.
   The roughly 2 arcsec difference is not a fitter-coordinate indexing error.
-- Diagnostic regrids use 1 arcsec nearest-pixel bins and finite hit support;
+- Diagnostic regrids use a 1001×1001 grid of 1 arcsec nearest-pixel bins and finite hit support;
   the delivered MAP retains 2 arcsec pixels and its 0.5 normalization support cut.
   Signals, cleaning, calibration, network membership and coefficient family are
   frozen, but these regrids do not reproduce the legacy reduction's weights,
@@ -131,8 +131,7 @@ RTC jump plan, preserve known outside-domain events and their causes, and keep
 unaffected detector/scan uses available. It must retain the current per-detector
 jump-count rule and propagate any relevant FIR/state/donor influence before
 admitting downstream samples. In particular, ignoring a tail event merely because
-its center is outside science support is insufficient: nw2's nearer event could
-intersect context, and the exact realized influence must be checked. Genuinely
+its center is outside science support is insufficient: nw2's nearer event intersects scan-5 context, and the exact realized influence must be checked. Genuinely
 missing relations must remain distinguishable from known non-overlap. Do not
 swallow the exception, fabricate a scan, turn unknown into good, or label the
 whole network bad.
@@ -156,6 +155,19 @@ implementation evidence, not newly rerun audit gates. Exactly two expected
 network exceptions occurred in the failure replay. Independent review is recorded
 separately against the final evidence commit.
 
-Durable audit root: `/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-offset-network-audit-20260922`.
+## Independent-review repair
+
+The first evidence candidate `5af3c950d65baecfa4a9f692f2bbe250e8fc0442`
+used a ±200.5 arcsec diagnostic grid. Review found that earlier-geometry variants
+clipped some distant samples, while the report incorrectly described the full
+eligible population as binned. The corrected audit uses ±500.5 arcsec bounds and
+asserts for every segment and coordinate variant that every eligible finite-geometry
+sample is binned. All three variants now bin exactly 13,453,121 / 6,719,154 /
+1,402,249 samples. Every fitted centroid, amplitude and width is bit-identical
+to the earlier diagnostic: clipped samples were far outside the 40 arcsec fit ROI.
+The first audit directory is retained unchanged; the corrected evidence is in
+the sibling `successor-point-152389-offset-network-audit-20260922-r2` directory.
+
+Durable corrected audit root: `/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-offset-network-audit-20260922-r2`.
 35 files are indexed by `FILES_SHA256SUMS`, SHA-256
-`8b9bdc7799d71f052dd0a95807f3b9c8804df38c3101bb47ffd69945fbf785e6`.
+`959e51f3c028a36395b6ed85be95776fc4a2efb3abe15e5aeecacf5f67cb4fd1`.
