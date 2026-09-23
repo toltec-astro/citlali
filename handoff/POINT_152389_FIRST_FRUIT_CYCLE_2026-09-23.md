@@ -58,8 +58,12 @@ Six native execution logs have no unexpected error-level messages. All nine
 comparison/profile/footprint figures were inspected. Independent exact-SHA
 implementation and repair reviews pass scientific/behavioral,
 architecture/ownership and repository/evidence with recorded limitations.
-Completion-record review is the remaining documentation closure, not further
-scientific execution.
+Final completion-record review at `dc4eab09e772f9ab9ae95d0ecd2f6d44f2ebf7c6`
+(tree `9b294da44b42fd85feab06cbe64b5f7c438ca3a5`) passes all three categories
+with recorded limitations and no remaining findings. The reviewer independently
+verified the durable manifests, assessment hash, numerical completion fields,
+artifact links, repair binary identity, archived build/test logs and clean tree.
+See `validation/point_152389_fruit_first_cycle_2026-09-23/review-closure.md`.
 
 Recommendation: one further separately authorized bounded cycle with m1 under
 the same controls, then compare change magnitudes, widths and support. Do not

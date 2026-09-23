@@ -27,8 +27,9 @@ and three Python focused tests, 232 successor tests/111 subtests, 28 selected
 CTests, 207 baseline tests/137 subtests and required configuration preflight pass.
 The local AppleClang/cached-dependency build is supplemental, not Spack-backed V2.
 Independent implementation and diagnostic-repair reviews pass all three required
-categories with recorded scientific limitations; final completion-record review
-is tracked in the handoff. No second cycle, noise campaign, integration, push or
+categories with recorded scientific limitations. Final completion-record review
+of `dc4eab09e772f9ab9ae95d0ecd2f6d44f2ebf7c6` also passes all three categories
+with no remaining findings. No second cycle, noise campaign, integration, push or
 activation. Full assessment, source/input identities, runtime and figure links:
 `handoff/POINT_152389_FIRST_FRUIT_CYCLE_2026-09-23.md`.
 
