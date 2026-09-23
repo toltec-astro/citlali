@@ -7,19 +7,25 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     auto elapsed=[](auto t){return std::chrono::duration<double>(std::chrono::steady_clock::now()-t).count();};
     require(output.is_absolute() && !fs::exists(output),"FRUIT requires a fresh absolute output");
     MapFileLedger ledger;const auto request_sha=ledger.bind(input);const auto request=YAML::LoadFile(input.string());
-    const std::set<std::string> fields{"schema","method","mode","array","map_request","parent_plan","candidate","owner_binding","cycle_index","previous_state"};
+    const std::set<std::string> fields{"schema","method","mode","array","map_request","parent_plan","candidate","owner_binding","cycle_index","previous_state","branch","injection"};
     for(const auto &e:request)require(fields.contains(e.first.as<std::string>()),"FRUIT unknown request field");
+    const bool campaign=request["schema"].as<std::string>()=="citlali-point-fruit-cd-v1";
     const bool continuation=request["schema"].as<std::string>()=="citlali-point-fruit-continuation-v1";
-    require((continuation && request["method"].as<std::string>()=="point-152389-direct-ten-cycle-v1") ||
+    require((campaign && request["method"].as<std::string>()=="point-152389-response-robustness-cd-v1") || (continuation && request["method"].as<std::string>()=="point-152389-direct-ten-cycle-v1") ||
         (!continuation && request["schema"].as<std::string>()=="citlali-point-fruit-cycle-v1" && request["method"].as<std::string>()=="point-152389-direct-one-cycle-v1"),"FRUIT unsupported method");
     const auto mode=request["mode"].as<std::string>();require(mode=="zero" || mode=="reference","FRUIT unknown mode");
-    const int cycle=continuation?request["cycle_index"].as<int>():(mode=="zero"?0:1);
+    const int cycle=(continuation || campaign)?request["cycle_index"].as<int>():(mode=="zero"?0:1);
     require(!continuation || ((mode=="zero" && cycle==0) || (mode=="reference" && cycle>=2 && cycle<=10)),"FRUIT continuation limited to cycles 2 through 10");
+    const std::string branch=campaign?request["branch"].as<std::string>():"";
+    const std::set<std::string> branches{"REF","C-core-plus","C-core-minus","C-shoulder","D-seed-low","D-seed-high","D-seed-shoulder","D-threshold-5"};
+    require(!campaign || (branches.contains(branch) && cycle>=0 && cycle<=10 &&
+        ((cycle==0 && mode=="zero" && branch.rfind("D-",0)!=0) || (cycle>0 && mode=="reference"))),"FRUIT C+D branch/index/mode outside bound");
+    require(campaign || (!request["branch"] && !request["injection"]),"FRUIT foreign campaign fields");
     const auto owner_path=checked_file(request["owner_binding"]);const auto owner_sha=ledger.bind(owner_path);
     const auto owner=YAML::LoadFile(owner_path.string());
-    require(owner["identity"].as<std::string>()==(continuation?"POINT-152389-TEN-FRUIT-OWNER-2026-09-23":"POINT-152389-FIRST-FRUIT-OWNER-2026-09-23") &&
+    require(owner["identity"].as<std::string>()==(campaign?"POINT-152389-CD-OWNER-2026-09-23":continuation?"POINT-152389-TEN-FRUIT-OWNER-2026-09-23":"POINT-152389-FIRST-FRUIT-OWNER-2026-09-23") &&
         owner["outside_disk_no_feedback"].as<bool>() && owner["direct_identical_operand_rejoin"].as<bool>() &&
-        owner["gain"].as<double>()==1 && owner["nonzero_cycles"].as<int>()==(continuation?10:1),"FRUIT owner choices absent");
+        owner["gain"].as<double>()==1 && owner["nonzero_cycles"].as<int>()==((continuation || campaign)?10:1),"FRUIT owner choices absent");
     const auto map_path=checked_file(request["map_request"]);ledger.bind(map_path);const auto mr=YAML::LoadFile(map_path.string());
     const auto pp=checked_file(request["parent_plan"]);ledger.bind(pp);const auto parent=YAML::LoadFile(pp.string());
     const auto array=request["array"].as<std::string>();const std::array<std::string,3> arrays{"a1100","a1400","a2000"};
@@ -31,8 +37,8 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
         "8edea26bb5c5b5aca065a88c93a0a30fe5064f3cc3388f9423725ed6a63bc640",
         "a6e5a34d6251d3bb7b11b0bc4217fdd5a221e85d48fe08ec2fa5f4b82018d9ff",
         "aafe2afb4965bcd98bac1c1adf9a9dd889b606077af43b1486b2462c8f15d9ac"};
-    if(!continuation)require(candidate_sha==selected_hashes[ai],"FRUIT requires the exact reviewed threshold-3 candidate");
-    else {
+    if(!continuation && !campaign)require(candidate_sha==selected_hashes[ai],"FRUIT requires the exact reviewed threshold-3 candidate");
+    else if(!campaign || cycle>0) {
         const auto previous_path=checked_file(request["previous_state"]);ledger.bind(previous_path);
         const auto previous=YAML::LoadFile(previous_path.string());
         require(previous["schema"].as<std::string>()=="point-fruit-ready-state-v1" && previous["array"].as<std::string>()==array &&
@@ -41,10 +47,19 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
             "FRUIT predecessor candidate differs");
         require(previous["original_plan_sha256"].as<std::string>()==citlali::utils::sha256_file(pp) &&
             previous["original_map_request_sha256"].as<std::string>()==citlali::utils::sha256_file(map_path),"FRUIT original parent changed");
+        if(campaign)require(previous["branch"].as<std::string>()==branch && previous["owner_sha256"].as<std::string>()==owner_sha,
+            "FRUIT C+D predecessor branch/campaign mismatch");
         ledger.bind(checked_file(previous["total"]));ledger.bind(checked_file(previous["receipt"]));
-        if(cycle<=2)require(owner["seed_candidates"][array].as<std::string>()==candidate_sha,"FRUIT saved m1 differs");
+        if(!campaign && cycle<=2)require(owner["seed_candidates"][array].as<std::string>()==candidate_sha,"FRUIT saved m1 differs");
     }
-    fitsfile *f=nullptr;int status=0,any=0;fits_open_file(&f,candidate.c_str(),READONLY,&status);
+    if(campaign){
+        require(owner["parents"][array]["map_request"]["sha256"].as<std::string>()==citlali::utils::sha256_file(map_path) &&
+            owner["parents"][array]["parent_plan"]["sha256"].as<std::string>()==citlali::utils::sha256_file(pp),"FRUIT C+D foreign parent");
+        if(cycle==0)require(candidate_sha==selected_hashes[ai],"FRUIT M0 requires original candidate as unused grid control");
+        if(cycle==1 && branch.rfind("D-",0)==0)require(candidate_sha==owner["seeds"][array][branch]["sha256"].as<std::string>(),"FRUIT C+D first seed differs");
+    }
+    auto read_model=[&](const fs::path &path,const std::string &sha){
+    fitsfile *f=nullptr;int status=0,any=0;fits_open_file(&f,path.c_str(),READONLY,&status);
     long axes[2];int ndim=0;fits_get_img_dim(f,&ndim,&status);fits_get_img_size(f,2,axes,&status);require(!status && ndim==2 && axes[0]==41 && axes[1]==41,"FRUIT candidate geometry");
     auto key=[&](const char *name){double v=NAN;fits_read_key(f,TDOUBLE,name,&v,nullptr,&status);return v;};
     const double cx=key("CRPIX1"),cy=key("CRPIX2"),dx=key("CDELT1"),dy=key("CDELT2"),ra=key("CRVAL1"),dec=key("CRVAL2"),equinox=key("EQUINOX");
@@ -55,10 +70,20 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     std::vector<double> brightness(axes[0]*axes[1]);std::vector<std::uint8_t> valid(brightness.size());
     fits_read_img(f,TDOUBLE,1,brightness.size(),nullptr,brightness.data(),&any,&status);
     fits_movnam_hdu(f,IMAGE_HDU,const_cast<char*>("VALID"),0,&status);fits_read_img(f,TBYTE,1,valid.size(),nullptr,valid.data(),&any,&status);fits_close_file(f,&status);require(!status,"FRUIT candidate read failed");
-    FruitPointModel model("sha256:"+candidate_sha,{std::size_t(axes[1]),std::size_t(axes[0]),"candidate-grid"},cx,cy,dx,dy,std::move(brightness),std::move(valid));
+    return FruitPointModel("sha256:"+sha,{std::size_t(axes[1]),std::size_t(axes[0]),"candidate-grid"},cx,cy,dx,dy,std::move(brightness),std::move(valid));
+    };
+    auto model=read_model(candidate,candidate_sha);
+    std::unique_ptr<FruitPointModel> injection;
+    if(campaign && branch.rfind("C-",0)==0){
+        const auto ip=checked_file(request["injection"]);const auto ih=ledger.bind(ip);
+        require(ih==owner["injections"][array][branch]["sha256"].as<std::string>(),"FRUIT C+D foreign injection");
+        injection=std::make_unique<FruitPointModel>(read_model(ip,ih));
+    }else require(!request["injection"],"FRUIT injection forbidden on REF/D");
     fs::create_directories(output);YAML::Node record;record["schema"]="citlali-point-fruit-cycle-output-v1";record["outcome"]="incomplete";
     record["request_sha256"]=request_sha;record["owner_sha256"]=owner_sha;record["source_revision"]=std::string(CITLALI_GIT_VERSION);record["mode"]=mode;record["array"]=array;
-    record["cycle_index"]=cycle;if(continuation)record["previous_state"]=request["previous_state"];
+    record["cycle_index"]=cycle;if(continuation || (campaign && cycle>0))record["previous_state"]=request["previous_state"];
+    if(campaign){record["branch"]=branch;record["injection_identity"]=injection?injection->identity():"none";
+        record["injection_boundary"]="immutable post-RTC/CAL pre-PTC y; all eligible entries; never rejoined";}
     record["candidate_identity"]=model.identity();record["selected_model"]=mode=="zero"?"zero integration control":model.identity();record["unit"]="mJy/nominal-beam";
     record["reference"]="source-relative model; fitted constant excluded; newly learned detector means not restored; rejoined model modes are model-supported, not recovered measured modes";
     record["response"]="empirical post-RTC/CAL direct containing-pixel convention; no complete upstream response inferred";
@@ -99,8 +124,26 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
             }
             write_matrix(dir/"operand.f64",operand);map_write_array<std::uint8_t>(dir/"model-support.u8",{classes.data(),std::size_t(classes.size())});
             const auto residual_id="sha256:"+request_sha+":"+name+":y="+s["files"][stem+"-input.f64"].as<std::string>()+":operand="+citlali::utils::sha256_file(dir/"operand.f64")+":support="+citlali::utils::sha256_file(dir/"model-support.u8");
-            const auto residual=FruitResidual::subtract(residual_id,y,eligible,std::move(operand),std::move(supported));
+            PtcMatrix branch_y=y;double injection_error=0;std::array<std::size_t,4> injection_counts{};
+            if(injection){
+                PtcMatrix pi=PtcMatrix::Zero(nt,nd);PtcMask ps=PtcMask::Ones(nt,nd);
+                for(std::size_t t=0;t<nt;++t)for(std::size_t d=0;d<nd;++d)if(eligible(t,d)){
+                    const auto v=injection->at(xy(t,2*columns[d]),xy(t,2*columns[d]+1));
+                    ++injection_counts[std::uint8_t(v.support)];pi(t,d)=v.value;ps(t,d)=v.support!=FruitModelSupport::unavailable;
+                }
+                branch_y=fruit_injected_parent(y,eligible,pi,ps);
+                for(Eigen::Index k=0;k<y.size();++k)if(eligible.data()[k]){
+                    const double err=std::abs((branch_y.data()[k]-y.data()[k])-pi.data()[k]);
+                    injection_error=std::max(injection_error,err);
+                    require(err<=8*std::numeric_limits<double>::epsilon()*std::max({1.,std::abs(y.data()[k]),std::abs(pi.data()[k])}),"FRUIT injection identity failed");
+                }
+                write_matrix(dir/"injection.f64",pi);
+            }
+            const auto residual=FruitResidual::subtract(residual_id,branch_y,eligible,std::move(operand),std::move(supported));
             YAML::Node seg;seg["source_root"]=n.ptcroot.string();seg["source_receipt_sha256"]=n.ptc_sha;seg["source_segment"]=s;seg["residual_identity"]=residual_id;
+            if(campaign){seg["injection_identity_max_abs"]=injection_error;seg["injection_projection_support_counts"]=injection_counts;
+                seg["immutable_parent_reloaded"]=true;seg["invalid_parent_entries_unchanged"]=true;
+                if(injection)seg["files"]["injection.f64"]=citlali::utils::sha256_file(dir/"injection.f64");}
             seg["loading_projection_serialization_seconds"]=elapsed(ts);seg["projection_support_counts"]=counts;
             const auto learned=FruitLearned::learn(residual,solver);const auto applied=learned.apply(residual);const auto &fit=learned.fit();
             PtcMatrix clean=PtcMatrix::Zero(nt,no),total=clean,restore=clean;PtcMask causes=PtcMask::Constant(nt,no,17);
@@ -151,7 +194,8 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     const double beam=std::array<double,3>{5,7.5,10}[ai];map_fits(output/"total.fits",wcs,op,T,array,beam);map_fits(output/"residual.fits",wcs,op,R,array,beam);map_fits(output/"restored.fits",wcs,op,A,array,beam);
     std::vector<std::int32_t> pixels(totals.size(),-1);for(const auto &m:op.members())pixels[m.input_row]=m.pixel;
     map_write_array<std::int32_t>(output/"operator-pixel.i32",pixels);map_write_array<std::size_t>(output/"output-rows.u64",op.output_rows());
-    ledger.verify();YAML::Node manifest;for(const auto &[p,h]:ledger.files)manifest[p]=h;write_yaml(output/"input-manifest.yaml",manifest);
+    record["serialization_seconds"]=elapsed(serial);const auto verification=std::chrono::steady_clock::now();
+    ledger.verify();record["verification_seconds"]=elapsed(verification);YAML::Node manifest;for(const auto &[p,h]:ledger.files)manifest[p]=h;write_yaml(output/"input-manifest.yaml",manifest);
     for(const auto *file:{"total.fits","residual.fits","restored.fits","operator-pixel.i32","output-rows.u64","input-manifest.yaml"})record["files"][file]=citlali::utils::sha256_file(output/file);
     record["MAP_input_rows"]=totals.size();record["MAP_contributions"]=op.members().size();record["science_pixels"]=op.output_rows().size();record["coverage_cut"]=mr["coverage_cut"];record["reference_normalization"]=op.reference_normalization();
     record["MAP_policy"]="unchanged one-hot uniform coefficients and new eligibility; one operator for T1/R1/A1";

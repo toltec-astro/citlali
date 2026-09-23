@@ -23,6 +23,11 @@ private:
     std::string identity_;mapmaking::ForwardMapGrid grid_;
     double cx_,cy_,dx_,dy_;std::vector<double> values_;std::vector<std::uint8_t> valid_;
 };
+// Bounded response experiment: add a signed projected brightness operand only
+// on the immutable parent's eligible entries. Invalid entries remain bitwise
+// untouched; unavailable projection on an eligible entry is an error.
+PtcMatrix fruit_injected_parent(const PtcMatrix &original, const PtcMask &eligible,
+    const PtcMatrix &injection, const PtcMask &projection_supported);
 // Immutable residual owns the exact projected operand and input eligibility.
 // Matrix axes: scheduled RTC slots x admitted detector columns, row-major.
 // Missing model support excludes the affected input; never fills a sky value.

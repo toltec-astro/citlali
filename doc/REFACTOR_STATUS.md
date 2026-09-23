@@ -1,5 +1,15 @@
 # Citlali Refactor Status
 
+## POINT 152389 C+D response / robustness — active 2026-09-23
+
+Owner authorized the fixed eight-trajectory-per-array campaign: fresh REF,
+three signed/broad pre-PTC injections, three initial-candidate interventions,
+and one threshold5 comparison, each through at most T10. Original parents,
+measurements, admission scale and unapplied m10 remain immutable. See
+`handoff/POINT_152389_RESPONSE_ROBUSTNESS_CD_2026-09-23.md` and archived
+owner directive. No default adoption, flux correction, upstream-response claim,
+cycle11, integration, push or production activation.
+
 ## POINT 152389 post-FRUIT noise and uncertainty A+B — completed 2026-09-23
 
 Saved M0/T1/T3/T5/T10 maps were compared on fixed common support and a

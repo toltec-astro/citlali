@@ -54,3 +54,13 @@ TEST(FruitCycle, NumericalKnownSourceProjectionCleaningRejoinMap) {
     // Source removal changes the learned action, not just basis signs.
     EXPECT_GT((fit.basis*fit.basis.transpose()-learned.fit().basis*learned.fit().basis.transpose()).norm(),1e-4);
 }
+TEST(FruitCycle, SignedInjectionPreservesParentAndInvalidEntries) {
+    PtcMatrix y(2,3);y<<4,7,NAN,1,-2,8;
+    PtcMatrix i=PtcMatrix::Constant(2,3,-.25);PtcMask e=PtcMask::Ones(2,3),s=e;e(0,2)=0;s(0,2)=0;
+    auto result=fruit_injected_parent(y,e,i,s);
+    EXPECT_TRUE(std::isnan(result(0,2)));EXPECT_DOUBLE_EQ(y(0,0),4);
+    for(int k=0;k<6;++k)if(e.data()[k])EXPECT_DOUBLE_EQ(result.data()[k]-y.data()[k],-.25);
+    s(0,0)=0;EXPECT_THROW(fruit_injected_parent(y,e,i,s),std::invalid_argument);
+    s(0,0)=1;i(0,0)=NAN;EXPECT_THROW(fruit_injected_parent(y,e,i,s),std::invalid_argument);
+    i.setZero();result=fruit_injected_parent(y,e,i,s);EXPECT_DOUBLE_EQ(result(1,2),y(1,2));
+}

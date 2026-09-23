@@ -22,6 +22,19 @@ FruitOperand FruitPointModel::at(double lon,double lat) const {
     if(!valid_[*p])return {0,FruitModelSupport::unavailable};
     return {values_[*p],values_[*p]==0?FruitModelSupport::excluded:FruitModelSupport::admitted};
 }
+PtcMatrix fruit_injected_parent(const PtcMatrix &y,const PtcMask &e,const PtcMatrix &i,const PtcMask &s) {
+    if(y.rows()!=e.rows() || y.cols()!=e.cols() || y.rows()!=i.rows() || y.cols()!=i.cols() ||
+       y.rows()!=s.rows() || y.cols()!=s.cols())throw std::invalid_argument("FRUIT injection shape mismatch");
+    PtcMatrix result=y;
+    for(Eigen::Index k=0;k<y.size();++k){
+        if(e.data()[k]>1 || s.data()[k]>1)throw std::invalid_argument("FRUIT injection nonbinary support");
+        if(!e.data()[k])continue;
+        if(!s.data()[k] || !std::isfinite(y.data()[k]) || !std::isfinite(i.data()[k]))
+            throw std::invalid_argument("FRUIT injection unavailable/nonfinite parent or projection");
+        result.data()[k]+=i.data()[k];
+        if(!std::isfinite(result.data()[k]))throw std::invalid_argument("FRUIT injection overflow");
+    }return result;
+}
 std::shared_ptr<const FruitResidual> FruitResidual::subtract(std::string id,const PtcMatrix &y,const PtcMask &eligible,PtcMatrix operand,PtcMask supported) {
     if(id.empty() || y.rows()!=eligible.rows() || y.cols()!=eligible.cols() || y.rows()!=operand.rows() || y.cols()!=operand.cols() ||
         y.rows()!=supported.rows() || y.cols()!=supported.cols())throw std::invalid_argument("FRUIT residual identity/shape mismatch");
