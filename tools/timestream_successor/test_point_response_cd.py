@@ -94,6 +94,25 @@ class ResponseControls(unittest.TestCase):
                 with self.assertRaises(ValueError):campaign_request(p,owner,'a1100','REF',k,p,p)
             with self.assertRaises(ValueError):campaign_request(p,owner,'a1100','D-seed-low',0,p)
 
+    def test_stopped_fit_without_candidate_keeps_other_assessment_available(self):
+        from report_point_response_cd import candidate_comparison
+        failed=dict(measurement={'fit':{'status':'failed'}},total={'path':'preserved-total'},stop_reason='unusable fit/candidate')
+        result=candidate_comparison(failed,{},np.ones((2,2)))
+        self.assertEqual(result['candidate_status'],'unavailable')
+        self.assertIsNone(result['replacement_shoulder_projection'])
+        # Candidate unavailability does not prevent independent total-map response.
+        response=response_metrics(np.ones((2,2)),np.ones((2,2)),np.ones((2,2),bool))
+        self.assertEqual(response['g'],1)
+        self.assertEqual(failed['total']['path'],'preserved-total')
+
+    def test_shoulder_projection_with_supported_stamp_corners(self):
+        from point_response_cd import shape_projection
+        shape=np.where(self.v,np.exp(-(self.x**2+self.y**2)/100),np.nan)
+        signal=np.nan_to_num(shape)
+        p=shape_projection(signal,np.ones(shape.shape,bool),shape)
+        self.assertAlmostEqual(p['value'],1)
+        self.assertEqual(p['pixels'],self.v.sum())
+
     def test_ideal_map_addition_separates_estimator_response(self):
         from point_response_cd import measurement_response
         from point_fruit_trajectory import FixedMeasurements

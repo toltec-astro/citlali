@@ -202,3 +202,11 @@ def measurement_response(fixed,reference,branch,support,known):
             ideal_background_increment=float((i[8]-b[8])*roi.sum()*4)))
     result['raw_aperture_and_background_increments']=raw
     return result
+
+
+def shape_projection(signal, support, shape):
+    """Unweighted common finite shape-domain projection, retaining shape zeros."""
+    valid=support & np.isfinite(signal) & np.isfinite(shape)
+    norm=float(np.sum(shape[valid]**2))
+    return dict(value=float(np.sum(signal[valid]*shape[valid])/norm) if norm>0 else None,
+        pixels=int(valid.sum()),domain='common supported finite operand pixels; deliberate zero pixels retained')

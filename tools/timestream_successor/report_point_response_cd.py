@@ -5,7 +5,7 @@ from pathlib import Path
 import time
 import numpy as np
 from point_response_cd import (BRANCHES,injection_reference,response_metrics,measurement_response,
-                               vector_measurement,MEASUREMENT_NAMES)
+                               vector_measurement,MEASUREMENT_NAMES,shape_projection)
 from run_point_response_cd import json_read,recover,ARRAYS,source
 from point_fruit_trajectory import bound,verified,verify_manifest,manifest,load,selection_difference
 from point_fruit_diagnostics import patch_map
@@ -28,6 +28,19 @@ def aligned(a,ha,b,hb):
         out=np.full((nr,nc),np.nan);out[int(dy):int(dy)+v.shape[0],int(dx):int(dx)+v.shape[1]]=v
         return out
     return place(a,ha),place(b,hb),h,place
+
+
+def candidate_comparison(current, reference, shoulder):
+    """Failed/constrained fits can publish total maps without replacement models."""
+    if not current.get('candidate'):
+        return dict(candidate_status='unavailable',candidate_unavailable_reason=current.get('stop_reason'),
+                    candidate_vs_REF=None,candidate_area_arcsec2=None,replacement_shoulder_projection=None)
+    cs,_=load(verified(current['candidate']));rs,_=load(verified(reference['candidate']))
+    cv=cs['VALID'].astype(bool)&rs['VALID'].astype(bool)
+    cdiff=np.where(cv,cs['CANDIDATE']-rs['CANDIDATE'],np.nan)
+    p=shape_projection(cdiff,cv,shoulder)
+    return dict(candidate_status='available',candidate_vs_REF=selection_difference(cs,rs),
+        candidate_area_arcsec2=int(cs['ADMITTED'].sum())*4,replacement_shoulder_projection=p['value'])
 
 
 def assess(out):
@@ -69,7 +82,10 @@ def assess(out):
             dest=d/branch;dest.mkdir();rows=[];injection_hashes=None
             for c in summary['histories']:
                 k=c['cycle_index'];rc=refs[k]
-                if not c.get('total'):continue
+                if not c.get('total'):
+                    save_json(dest/f'cycle-{k:02d}-unavailable.json',dict(cycle=k,branch=branch,
+                        status='unavailable native product',stop_reason=c.get('stop_reason')))
+                    continue
                 bp=verified(c['total']);rp=verified(rc['total'])
                 b,bh=load(bp);r,rh=load(rp)
                 br,rr,h,place=aligned(b['PRIMARY'],bh,r['PRIMARY'],rh)
@@ -85,15 +101,11 @@ def assess(out):
                 vbase=vector_measurement(rc['measurement']);vbranch=vector_measurement(c['measurement'])
                 if vbase is not None and vbranch is not None:
                     row['measurement_increments']=dict(zip(MEASUREMENT_NAMES,vbranch-vbase))
-                cs,_=load(verified(c['candidate']));rs,_=load(verified(rc['candidate']))
-                row['candidate_vs_REF']=selection_difference(cs,rs)
-                row['candidate_area_arcsec2']=int(cs['ADMITTED'].sum())*4
-                cv=cs['VALID'].astype(bool)&rs['VALID'].astype(bool)
-                cdiff=np.where(cv,cs['CANDIDATE']-rs['CANDIDATE'],np.nan)
-                shoulder,ih=load(verified(owner['injections'][array]['C-shoulder']));sh=shoulder['INJECTION'];sv=np.isfinite(sh)&cv
-                row['replacement_shoulder_projection']=float(np.sum(sh[sv]*cdiff[sv])/np.sum(sh[sv]**2))
+                shoulder,ih=load(verified(owner['injections'][array]['C-shoulder']));sh=shoulder['INJECTION']
+                row.update(candidate_comparison(c,rc,sh))
                 ds,dv,_,dh,_=source_patch(delta,common,np.ones(delta.shape),h)
-                row['total_shoulder_projection']=float(np.sum(sh[dv]*ds[dv])/np.sum(sh[dv]**2))
+                row['total_shoulder_projection_domain']=shape_projection(ds,dv,sh)
+                row['total_shoulder_projection']=row['total_shoulder_projection_domain']['value']
                 row['profile_radius_arcsec']=((fixed.edges[:-1]+fixed.edges[1:])/2).tolist()
                 row['difference_profile']=[float(np.mean(ds[m])) if np.any(m) else None for m in
                     [dv&(fixed.radius>=lo)&(fixed.radius<hi) for lo,hi in zip(fixed.edges[:-1],fixed.edges[1:])]]
@@ -148,7 +160,7 @@ def assess(out):
             for row in rows:
                 if row['cycle'] not in (1,3,5,10):continue
                 q=row.get('measurement_increments',{})
-                texts.append(f"| {b} | {row['cycle']} | {fmt(q.get('peak'))} | {fmt(q.get('background'))} | {row['total_shoulder_projection']:.6f} | {row['replacement_shoulder_projection']:.6f} | {row['candidate_area_arcsec2']} |")
+                texts.append(f"| {b} | {row['cycle']} | {fmt(q.get('peak'))} | {fmt(q.get('background'))} | {row['total_shoulder_projection']:.6f} | {fmt(row['replacement_shoulder_projection'])} | {row['candidate_area_arcsec2']} |")
     save_json(report/'summary.json',dict(source_revision=revision,prospective=bound(out/'freeze/prospective.json'),
         status=status,arrays=allresults,runtime=runtime,report_seconds=time.perf_counter()-began))
     texts.extend(['','This is finite full-procedure response at the saved post-RTC/CAL boundary. Paired maps share observed noise; changes include altered cleaning of original source/background. g and η are unweighted diagnostics, not uncertainty or significance.',

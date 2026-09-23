@@ -73,3 +73,15 @@ baseline207/137, selected native28 and required config gates pass. Native
 signed-injection fixture includes unchanged invalid entries and unavailable
 projection rejection. Matching committed-source build and independent review
 remain required before response execution. No scientific runs yet.
+
+## Independent review repair before execution
+
+Read-only review of fc60fbfdb7100d74cdbfee96461ae9df4fca1390 found two
+report defects: supported map-stamp corners overlap unavailable operand pixels,
+producing NaN shoulder projections; and a stopped fit without a replacement
+candidate could abort unaffected assessment. Repair declares the common finite
+operand projection domain and keeps partial total-map diagnostics when a
+candidate is unavailable. Focused supported-corner and stopped-fit fixtures cover
+both. No scientific trajectory has run; prospective shapes/inputs were frozen
+before this report-only repair and remain unchanged. Full successor259/111,
+source-matched native28, baseline207/137 and config have passed at initial source.
