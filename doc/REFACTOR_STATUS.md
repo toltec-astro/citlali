@@ -1,5 +1,34 @@
 # Citlali Refactor Status
 
+## POINT 152389 conditional additive uncertainty — 2026-09-23
+
+A separate reusable saved-map companion now estimates full-observation additive
+scatter using source-masked, coverage-dependent amplitude and signed directional
+covariance. It reuses the exact saved seven-parameter Gaussian+constant fit,
+including the40″ radius footprint and original weights/initialization/bounds.
+Runtime source `d70233e1c22b96065f700d43ed65f952da3cf32a` changes no MAP, source
+measurement, upstream processing, calibration, feedback or FRUIT state.
+
+All256 refits per array succeed, with finite constrained fits retained. Additive
+SD is8.633/6.024/6.596 mJy/nominal beam. a1100/a1400 are provisional conditional
+estimates; a2000 remains an assumption-dependent calculation, with observational
+errorbar unsupported by the spatially varying background after coverage
+normalization. Monte Carlo precision4.4% excludes learned-model uncertainty.
+Sensitivity uses equal64-trial budgets and flags depth extrapolation separately.
+No Gaussian significance, calibration/attenuation uncertainty or admission rule.
+
+Final companion52.328s; independent synthetic192×16 across six cases32.164s.
+Synthetic challenge cases retain model-mismatch/long-range limitations even when
+sampling-aware scalar checks pass. 222 successor tests/111 subtests,7 focused
+tests,207 baseline tests/137 subtests and required config preflight pass. The
+missing native protocol binary was restored from current source and cached local
+dependencies solely for the baseline gate; no new Spack/Unity/native-science claim.
+Independent exact-source numerical review passes behavior with limitations,
+architecture and numerical evidence; completion-document review remains pending.
+Detailed products, applicability assessment, identities and gates:
+`handoff/POINT_152389_ADDITIVE_UNCERTAINTY_2026-09-23.md`.
+No integration,push,activation or broader scientific-method promotion.
+
 ## POINT 152389 balanced first-pass comparisons — 2026-09-22
 
 The companion now reconciles the saved runtime as six forced 10-second processing

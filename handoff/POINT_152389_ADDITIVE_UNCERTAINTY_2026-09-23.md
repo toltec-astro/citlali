@@ -164,3 +164,113 @@ build-system adaptation, upstream reduction or Spack-equivalence claim is allowe
 If that bounded restoration fails, retain the explicit incomplete-gate evidence;
 do not weaken tests or substitute an older binary. This is environment recovery,
 not a native scientific change or pipeline experiment.
+
+## Completed numerical run and assessment
+
+Runtime source `d70233e1c22b96065f700d43ed65f952da3cf32a`, tree
+`41e199fc4769c25fff9326d499a9797cb5b2ed6a`. Durable bundle:
+`/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-additive-uncertainty-20260923`.
+Use `RESULTS.md` for the owner assessment, `companion-r2` for final numerical
+products and `validation` for exact-source independent synthetic evidence.
+Initial `companion` and development48/192 validation results remain immutable.
+
+All three256-trial ensembles succeed;1/1/2 finite bound-limited fits remain
+included. Unchanged source peaks816.311/554.151/593.401 mJy/nominal beam;
+centered additive refit SD8.633/6.024/6.596, MC mean shifts+0.618/+0.196/+0.298.
+Fixed-template analytic/simulated SD12.083/12.678,7.910/7.851,5.935/5.730.
+Each analytic/simulation check passes its finite-MC interval. Base SD precision
+is approximately4.4%, conditional on the fitted model only. No bias correction.
+All base source depths are supported; no base negative PSD projection or missing
+lag cells; doubling generation domain leaves fixed variance unchanged.
+
+Scientific assessment is separate from those implementation checks. a1100 and
+a1400 are defensible **provisional conditional additive estimates**, with regional
+normalized second moments0.611–1.204 and0.834–1.182, limited independent blanks,
+Gaussian generation and finite synthetic calibration accuracy retained as limits.
+a2000's6.596 is **assumption-dependent only**, not an established observational
+error bar: regional second moments0.381–1.747 expose spatial amplitude variation
+remaining after coverage normalization. Network11 source/north/south fractions
+49.7/24.0/78.1% show different contributing populations without establishing a
+causal network attribution. North/south matched64-trial SD ratios1.188/0.749
+are material; only five overlapping fixed-template blanks and no complete refit
+blanks exist. More Monte Carlo draws cannot repair representativeness.
+
+Depth-supported sensitivity ranges using64 matched trials are8.258–8.943,
+5.913–6.236,7.271–8.640. These are not confidence bounds, nor proof of regional
+representativeness. The automatic full ranges/plots also show explicitly flagged
+unsupported variants: a1400 south(1 fit pixel), a2000 mask5(10), south(2).
+The owner report distinguishes them; do not use their endpoints as empirical
+uncertainty bounds. Paired-bootstrap intervals quantify MC comparison precision
+only. Lag48 changes the generation domain and weakens paired-noise coupling,
+leaving its comparison particularly sampling-limited. Base256 remains separate.
+
+Existing fixed-template blank observed/predicted RMS SD at their own locations:
+12.924/13.340 (62 overlapping placements),8.346/8.239 (28),4.786/6.552 (5).
+These are descriptive comparisons of different statistics with overlap and local
+means, not independent-placement significance. Same-estimator source-plus-noise
+refits cover four a1100 and one a1400 prior locations with32 trials apiece.
+Long-mode physical amplitudes remain unknown despite small/zero response to some
+unit perturbations. Covariance range projections do not establish a zero omitted
+long-scale variance. All original source/map/cleaning/calibration/weight/FRUIT
+state remains unchanged.
+
+Final synthetic192/16 run reproduces the development results above, now bound to
+exact runtime source. It includes1,152 independent observed fits and18,432 inner
+refits, with about5.1% actual-SD sampling precision. Long-range fixed variance
+underprediction19% and deliberate spatial misspecification remain limitations.
+Winged-source noiseless fitted amplitude235.434 versus physical peak250 isolates
+−14.566 model mismatch from approximately+0.106 noise-related mean shift.
+These tests do not validate PTC recovery; optional frozen-MAP detector-noise test
+was not performed, as explained above.
+
+Companion52.328 s wall, synthetic validation32.164 s, separately timed before
+native build/verification. Four workers, one math-library thread each. Recorded
+loading/inference/generation/fitting/plotting timings; peak parent472.3MB, peak
+individual child135.7MB (not simultaneous aggregate). Original six-plane MAP
+hashes and source-measurement hash preserved. Verified107 final companion files,
+3 validation files,30 companion FITS HDUs and18 unchanged parent HDUs. Regenerated
+trials0/127/255 per array reproduce all parameters and fixed amplitudes exactly.
+All768 base trial parameters agree exactly with the initial committed run.
+All seven scientific figures inspected visually.
+
+## Repository gates and supplemental native recovery
+
+Final successor suite222 tests/111 subtests passes. Focused additive suite7 tests
+passes, independently reproduced. Failure coverage tests aggregation/report helpers
+and the actual one_trial handler, not a fully mocked command end-to-end. Required
+config preflight passes without drift. Initial baseline failures were missing
+native executable environment failures, preserved in evidence.
+
+Restored exact runtime-source CLI in
+`/private/tmp/citlali-point-additive-build-20260923` from the preexisting4c31
+FetchContent source cache and documented AppleClang/Homebrew realization, with
+all dependency install switches off and fully disconnected FetchContent. First
+configure omitted cached FETCH switches, allowing a default Conan helper download
+attempt and failing before configuration; copied those existing switches and
+reran successfully. No dependency installation or repository build-system change.
+Cached dependency dirtiness predates this task and is recorded. Build completes
+with two preexisting glog deprecated-syscall warnings and duplicate-library linker
+warning, no compile errors. CLI version embedsd70233e1c. A temporary worktree
+build symlink supplies the existing protocol test path, then is removed.
+**All207 baseline tests/137 subtests now pass.** Binary, hash, configuration,
+compiler/dependency identities, logs and failed first attempt are archived under
+`evidence`. This is supplemental local protocol-gate evidence, not representative
+Spack/Unity qualification or a new native reduction. Full native CTest remains
+unchanged prior evidence, not newly rerun for this Python-only diagnostic.
+
+No native scientific code, Engine ownership, upstream product, source model,
+fit/MAP weights or FRUIT state changed. No integration, push or activation.
+
+## Independent numerical review
+
+Fresh-context reviewer independently reviewed initial0aaa and repaired runtime
+d70233e1c, verified all107/3 manifest entries and18 POINT source hashes, unchanged
+parents, reproduced trial scatters and direct dense pixel-pair qTCq, and reproduced
+matched-budget sensitivity ratios and7 focused tests. No remaining implementation
+finding. Scientific/behavioral pass with the per-array limitations above;
+architecture/ownership pass; numerical-artifact evidence pass. Broader closure
+requires review of this completion-document candidate and restored baseline gate.
+Final companion manifest SHA256
+`d650deddab4886d9ad386183a6425e5309643cab8effb82fd645106dde3f38c8`;
+validation manifest SHA256
+`b93cfbac6724a8cbbe97b2752d9782efc9fb1aa8d574b81b7fa7d5107b1b597c`.
