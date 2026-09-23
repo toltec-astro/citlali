@@ -23,8 +23,9 @@ sampling-aware scalar checks pass. 222 successor tests/111 subtests,7 focused
 tests,207 baseline tests/137 subtests and required config preflight pass. The
 missing native protocol binary was restored from current source and cached local
 dependencies solely for the baseline gate; no new Spack/Unity/native-science claim.
-Independent exact-source numerical review passes behavior with limitations,
-architecture and numerical evidence; completion-document review remains pending.
+Independent exact-source completion review of
+`3a544f3c93c1f5109765e0180e725992f3370154` passes scientific behavior with
+recorded limitations, architecture/ownership and repository/evidence; no open findings.
 Detailed products, applicability assessment, identities and gates:
 `handoff/POINT_152389_ADDITIVE_UNCERTAINTY_2026-09-23.md`.
 No integration,push,activation or broader scientific-method promotion.

@@ -274,3 +274,22 @@ Final companion manifest SHA256
 `d650deddab4886d9ad386183a6425e5309643cab8effb82fd645106dde3f38c8`;
 validation manifest SHA256
 `b93cfbac6724a8cbbe97b2752d9782efc9fb1aa8d574b81b7fa7d5107b1b597c`.
+
+
+## Final independent disposition and stop
+
+Evidence candidate `3a544f3c93c1f5109765e0180e725992f3370154`, tree
+`37a91cc66e3b2ef4f3ab84a884e4070b1931bf08`, received independent fresh-context
+review: **scientific/behavioral pass with recorded limitations; architecture and
+ownership pass; repository/evidence pass; no blocking or open findings.** Only
+completion handoff/status documents changed after reviewed runtime d70233e1c.
+The reviewer checked the owner report against artifacts, source snapshot digests,
+archived CLI hash/version, passing207/137 baseline and222/111 successor logs, and
+independently reran all four native protocol tests successfully. The failed initial
+configuration, preexisting cached dependency modifications, supplemental build
+scope and native CTest not rerun are explicitly disclosed. Owner report SHA256:
+`a6e8fd9c942d10abce851211e3f4cb794f7ed923f515a7ec0ce250f64849bf30`.
+This closure records review only; it changes no executable behavior or numerical
+product. Scope stops at companion plus assessment. No integration,push,activation,
+production qualification, FRUIT rule or response experiment is authorized by
+this review. Unrelated main-checkout work remains untouched.
