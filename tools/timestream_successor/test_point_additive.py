@@ -69,3 +69,25 @@ def test_original_support_and_actual_estimator_reference():
     with pytest.raises(ValueError,match='incomplete'):make_context(d,q,s,h,6.,p,model)
     a,ta=experiment(c,4,91,1);b,tb=experiment(c,4,91,1)
     assert [r['parameters'] for r in ta]==[r['parameters'] for r in tb]
+
+
+def test_all_failed_sensitivity_and_null_report_are_preserved():
+    from run_point_additive import sensitivity_range,report_row
+    failed=[dict(status='failed',fixed_noise_amplitude=v) for v in [-1.,1.,-.5,.5]]
+    s=aggregate(failed,200.,1.)
+    r=[dict(name='base',experiment=s),dict(name='mask4',status='unavailable')]
+    assert sensitivity_range(r) is None
+    s.update(array='a1100',unchanged_measured_amplitude=200.,sensitivity_scatter_range=None,amplitude_supported=True)
+    row=report_row(s)
+    assert row.count('unavailable')==3 and '4 / 4 / 0' in row
+    unavailable=report_row(dict(array='a2000',status='unavailable',cause='unsupported model',unchanged_measured_amplitude=600.))
+    assert 'unsupported model' in unavailable
+
+
+def test_one_trial_records_failure(monkeypatch):
+    import point_additive as m
+    def failed(*args,**kwargs):raise ValueError('deliberate fit failure')
+    monkeypatch.setattr(m,'measure',failed)
+    c=dict(psd=np.ones((16,16)),scale=np.ones((5,5)),support=np.ones((5,5),bool),baseline=np.zeros((5,5)),q=np.ones((5,5))/25,header={},beam=5.)
+    r=m.one_trial((c,(9,1100,0),0))
+    assert r['status']=='failed' and r['cause']=='deliberate fit failure' and np.isfinite(r['fixed_noise_amplitude'])

@@ -60,7 +60,9 @@ model instability or authorize Gaussian observational tail probabilities.
 
 Prespecified sensitivity: source masks3/4/5 measured major FWHM; lag16/32/48 pixels;
 cosine-taper powers0.7/1/1.4; north/south training. Base256 trials, others64 using
-common array/trial random streams. Region/coverage diagnostics compare unaveraged
+common array/trial random streams. Sensitivity comparisons use the matched64
+base prefix; paired-bootstrap ratio intervals describe finite Monte Carlo
+precision only. The full256 base estimate remains separately reported. Region/coverage diagnostics compare unaveraged
 2D covariance and directional slices; source/background network/chunk populations
 come from original admitted MAP operator positions. Hit matching alone does not
 establish exchangeability. Signed cumulative lag contributions are diagnostic

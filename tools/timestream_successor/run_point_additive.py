@@ -7,8 +7,25 @@ import scipy,astropy
 from point_empirical_io import load_parent,write_fits
 from inspect_forward_map import digest,require,read_yaml
 from point_empirical import patch,coordinates
-from point_additive import NoiseRequest,learn,make_context,variance,experiment,influence,projected_ranges,broad_mode_response,draw_noise,METHOD
+from point_additive import NoiseRequest,learn,make_context,variance,experiment,influence,projected_ranges,broad_mode_response,draw_noise,aggregate,METHOD
 from point_additive_diagnostics import save_json,verify_companion,regional_summary,populations,blank_checks,draw
+
+
+def sensitivity_range(records):
+    values=[r.get('matched_budget_experiment',r.get('experiment',{})).get('candidate_refit_scatter') for r in records]
+    values=[v for v in values if v is not None]
+    return [min(values),max(values)] if values else None
+
+
+def number(value):
+    return 'unavailable' if value is None else f'{value:.3f}'
+
+
+def report_row(s):
+    if s.get('status')=='unavailable':
+        return f"| {s['array']} | {number(s['unchanged_measured_amplitude'])} | unavailable: {s['cause']} | — | — | — | — | — |"
+    span=s['sensitivity_scatter_range'];span_text='unavailable' if span is None else f'{span[0]:.3f}–{span[1]:.3f}'
+    return f"| {s['array']} | {s['unchanged_measured_amplitude']:.3f} | {number(s['candidate_refit_scatter'])} | {number(s['mean_shift_from_A0'])} | {number(s['fixed_analytic_scatter'])} / {number(s['fixed_simulated_scatter'])} | {s['trial_count']} / {s['failures']} / {s['bound_limited']} | {span_text} | {s['amplitude_supported']} |"
 
 
 def run(args):
@@ -35,13 +52,22 @@ def run(args):
         data,h,bundle,plan,desc,p,verification=load_parent(args.maps/array,saved[array]);save_json(ar/'parent-verification.json',verification)
         profile['loading_verification_wall_seconds']=time.perf_counter()-t
         sig=data['PRIMARY'];cov=data['NORMALIZATION'];support=data['SCI_SUPPORT'].astype(bool);beam=bundle['nominal_beam_fwhm_arcsec'];t=time.perf_counter()
-        model=learn(sig,cov,support,h,p,request);context=make_context(sig,cov,support,h,beam,p,model)
+        try:
+            model=learn(sig,cov,support,h,p,request);context=make_context(sig,cov,support,h,beam,p,model)
+        except ValueError as exc:
+            # Scientific model/footprint unavailability is per array. Parent
+            # verification above remains fatal; corrupt input is not tolerated.
+            unavailable=dict(array=array,status='unavailable',cause=str(exc),unchanged_measured_amplitude=float(p[0]))
+            save_json(ar/'summary.json',unavailable);summaries.append(unavailable)
+            profile.update(array=array,covariance_inference_wall_seconds=time.perf_counter()-t)
+            profiles.append(profile);continue
         prior_measure=json.loads((args.empirical/array/'measurements.json').read_text())
         require(np.allclose(p,prior_measure['source_parameters'],rtol=1e-10,atol=1e-10),'saved seven-parameter binding differs')
         require(np.isclose(context['source_fixed'],prior_measure['fixed_template']['source']['amplitude'],rtol=1e-10,atol=1e-10),'fixed-template saved measurement differs')
         profile['covariance_inference_wall_seconds']=time.perf_counter()-t
         t=time.perf_counter();summary,trials=experiment(context,args.trials,args.seed,int(array[1:]),args.workers)
         profile['base_experiment_wall_seconds']=time.perf_counter()-t
+        save_json(ar/'trials.json',trials);save_json(ar/'base-experiment.json',summary)
         profile.update({k:summary[k] for k in ['worker_cpu_seconds','generation_worker_wall_seconds','fitting_worker_wall_seconds']})
         variants=[('base',request)]+[(name,replace(request,**change)) for name,change in [
             ('mask4',dict(mask_fwhm=4.)),('mask5',dict(mask_fwhm=5.)),('lag16',dict(lag_pixels=16)),('lag48',dict(lag_pixels=48)),
@@ -54,7 +80,19 @@ def run(args):
                     m=learn(sig,cov,support,h,p,req);c=make_context(sig,cov,support,h,beam,p,m)
                     exp,records=experiment(c,args.sensitivity_trials,args.seed,int(array[1:]),args.workers)
                 except ValueError as e:sensitivities.append(dict(name=name,status='unavailable',cause=str(e)));continue
-            rec=dict(name=name,request=asdict(req),amplitude_supported=c['complete_amplitude_support'],outside_amplitude_range_fit_pixels=c['outside_amplitude_range_fit_pixels'],model=m['summary'],experiment=exp)
+            matched_count=min(args.trials,args.sensitivity_trials)
+            matched=aggregate(records[:matched_count],c['A0'],variance(c['psd'],c['scale'],c['q']))
+            base_matched=aggregate(trials[:matched_count],context['A0'],variance(context['psd'],context['scale'],context['q']))
+            paired=None
+            if not matched['failures'] and not base_matched['failures']:
+                a=np.array([r['amplitude'] for r in records[:matched_count]])
+                b=np.array([r['amplitude'] for r in trials[:matched_count]])
+                indices=np.random.default_rng([args.seed,int(array[1:]),9001]).integers(0,matched_count,(1000,matched_count))
+                ratios=a[indices].std(axis=1,ddof=1)/b[indices].std(axis=1,ddof=1)
+                paired=dict(scatter_ratio=matched['candidate_refit_scatter']/base_matched['candidate_refit_scatter'],
+                    paired_bootstrap_MC95_ratio_interval=np.quantile(ratios,[.025,.975]),
+                    interpretation='finite Monte Carlo comparison with common trial streams only; not a model or observational confidence interval')
+            rec=dict(name=name,matched_budget_experiment=matched,matched_base_scatter=base_matched['candidate_refit_scatter'],paired_MC_comparison=paired,request=asdict(req),amplitude_supported=c['complete_amplitude_support'],outside_amplitude_range_fit_pixels=c['outside_amplitude_range_fit_pixels'],model=m['summary'],experiment=exp)
             sensitivities.append(rec)
             if name!='base':
                 save_json(ar/f'trials-{name}.json',records)
@@ -79,7 +117,8 @@ def run(args):
             fixed_lag_projection=projected_ranges(context,context['q']),local_linear_refit_lag_projection=projected_ranges(context,w),
             broad_mode_response=broad_mode_response(context),
             long_mode_limit='model beyond trained lags is unconstrained; listed mode responses have no inferred physical mode amplitudes',
-            sensitivity_scatter_range=[min(r['experiment']['candidate_refit_scatter'] for r in sensitivities if r.get('experiment',{}).get('candidate_refit_scatter') is not None),max(r['experiment']['candidate_refit_scatter'] for r in sensitivities if r.get('experiment',{}).get('candidate_refit_scatter') is not None)])
+            sensitivity_scatter_range=sensitivity_range(sensitivities),
+            sensitivity_scatter_unavailable_cause='no variant has a complete successful trial ensemble' if sensitivity_range(sensitivities) is None else None)
         save_json(ar/'summary.json',summary);save_json(ar/'trials.json',trials);save_json(ar/'sensitivity.json',sensitivities);save_json(ar/'model.json',model['summary']);save_json(ar/'regions.json',regions)
         save_json(ar/'source-depth.json',depth);save_json(ar/'contributions.json',pop);save_json(ar/'blank-comparison.json',blanks)
         save_json(ar/'regeneration.json',dict(header={k:v for k,v in context['header'].items() if k not in ['COMMENT','HISTORY','']},nominal_beam=beam,source_parameters=p,reference_parameters=context['reference_parameters'],A0=context['A0'],seed=args.seed,array_id=int(array[1:]),trial_seed='[seed, array_id, zero-based trial]',noise_model='model.npz',trial_count=args.trials))
@@ -104,11 +143,11 @@ def run(args):
         '| Array | Measured peak | Candidate refit SD | MC mean shift from A0 | Fixed analytic / simulated SD | Trials / failures / bounds | Model-sensitivity SD range | Amplitude-depth support |',
         '|---|---:|---:|---:|---:|---:|---:|---|']
     for s in summaries:
-        report.append(f"| {s['array']} | {s['unchanged_measured_amplitude']:.3f} | {s['candidate_refit_scatter']} | {s['mean_shift_from_A0']:.3f} | {s['fixed_analytic_scatter']:.3f} / {s['fixed_simulated_scatter']:.3f} | {s['trial_count']} / {s['failures']} / {s['bound_limited']} | {s['sensitivity_scatter_range'][0]:.3f}–{s['sensitivity_scatter_range'][1]:.3f} | {s['amplitude_supported']} |")
+        report.append(report_row(s))
     report+=['','All amplitudes/scatters are mJy/nominal beam. The fit footprint is a40″ RADIUS. SD uses ddof1 and is not divided by sqrt(trials). MC mean shift is not applied to the published amplitude. Failed trials withhold primary aggregate; bound-limited finite trials remain included.','',
-        f'Base MC relative precision on SD is approximately {1/np.sqrt(2*(args.trials-1)):.1%}; this excludes model-learning uncertainty. Sensitivity trials number{args.sensitivity_trials} per variant with shared deterministic seeds. Model-sensitivity ranges are not confidence intervals.','',
+        f'Base MC relative precision on SD is approximately {1/np.sqrt(2*(args.trials-1)):.1%}; this excludes model-learning uncertainty. Sensitivity trials number{args.sensitivity_trials} per variant with shared deterministic seeds; ranges compare equal-budget prefixes including the base. Paired Monte Carlo ratio intervals are recorded separately. Model-sensitivity ranges are not confidence intervals.','',
         'Five coverage bins use second moments about one ordinary training-background mean; no clipping, per-bin mean or gradient removal. Correlation uses observed pair counts in both directions; a tapered lag model is projected to a nonnegative spectrum. Projection magnitude, missing pairs, tails, quadrant/coverage differences and depth extrapolation are recorded. Gaussian draws are cropped from a padded domain then amplitude-modulated. Long modes remain unknown.','']
-    for a in arrays:report +=[f"## {a}",'',f"[Noise model]({out/a/'noise-model.png'}) · [Sampling and sensitivity]({out/a/'measurement-and-sensitivity.png'}) · [Full numerical result]({out/a/'summary.json'})",'',f"[Background regions]({out/a/'regions.json'}) · [Depth support]({out/a/'source-depth.json'}) · [Network/chunk contributions]({out/a/'contributions.json'}) · [Existing blank comparisons]({out/a/'blank-comparison.json'})",'']
+    for a in [s['array'] for s in summaries if s.get('status')!='unavailable']:report +=[f"## {a}",'',f"[Noise model]({out/a/'noise-model.png'}) · [Sampling and sensitivity]({out/a/'measurement-and-sensitivity.png'}) · [Full numerical result]({out/a/'summary.json'})",'',f"[Background regions]({out/a/'regions.json'}) · [Depth support]({out/a/'source-depth.json'}) · [Network/chunk contributions]({out/a/'contributions.json'}) · [Existing blank comparisons]({out/a/'blank-comparison.json'})",'']
     report += [f'Companion wall time {runtime["wall_seconds"]:.3f} s. No RTC/PTC or native execution. Runtime profiles, parent hashes, seeds, model arrays, representative realizations and every trial are retained. Original maps and measurements unchanged.','',
         'Numerical reference: [SciPy chi-square distribution](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.chi2.html) supplies the stated finite Gaussian Monte Carlo variance comparison. The model is not an uncorrected masked periodogram.']
     (out/'REPORT.md').write_text('\n'.join(report)+'\n');manifest=out/'FILES_SHA256SUMS';manifest.write_text(''.join(f'{digest(f)}  {f.relative_to(out)}\n' for f in sorted(out.rglob('*')) if f.is_file() and f!=manifest))

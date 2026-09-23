@@ -108,15 +108,15 @@ def draw(out,array,signal,header,model,context,trials,sensitivities,regions):
     L=(model['empirical'].shape[0]-1)//2;rho=np.fft.ifft2(model['psd']).real;lags=np.arange(-L,L+1)
     axs[1,1].plot(lags*2,model['empirical'][L,:],label='empirical east');axs[1,1].plot(lags*2,model['empirical'][:,L],label='empirical north')
     axs[1,1].plot(lags*2,rho[0,lags%len(rho)],'--',label='model east');axs[1,1].plot(lags*2,rho[lags%len(rho),0],'--',label='model north');axs[1,1].legend(fontsize=8);axs[1,1].set(xlabel='Lag (arcsec)',ylabel='Correlation',title='Both directions; negative values retained')
-    noise=draw_noise(model['psd'],context['scale'],[23152389,int(array[1:]),0]);noise=np.where(context['support'],noise,np.nan)
+    noise=draw_noise(model['psd'],context['scale'],[model['summary']['request']['seed'],int(array[1:]),0]);noise=np.where(context['support'],noise,np.nan)
     im=axs[1,2].imshow(noise,origin='lower',cmap='RdBu_r');fig.colorbar(im,ax=axs[1,2],shrink=.75);axs[1,2].set_title('One noise patch at actual source depth')
     fig.suptitle(array+' · conditional additive-noise model · amplitude image is not fitted-amplitude uncertainty')
     fig.savefig(out/'noise-model.png',dpi=140);plt.close(fig)
     fig,axs=plt.subplots(2,2,figsize=(12,8),layout='constrained')
     amps=[r['amplitude']-context['A0'] for r in trials if r['status']=='success'];axs[0,0].hist(amps,bins=24);axs[0,0].set(title='All successful refits, including bound-limited',xlabel='Fitted amplitude − A0 (mJy/nominal beam)')
     z=model['z'][model['background_mask']];axs[0,1].hist(z,bins=60,density=True,histtype='step');v=np.linspace(min(z),max(z),200);axs[0,1].plot(v,np.exp(-v*v/2)/np.sqrt(2*np.pi),label='unit Gaussian');axs[0,1].set(yscale='log',title='Background tails: no clipping',xlabel='Normalized residual');axs[0,1].legend()
-    labels=[r['name'] for r in sensitivities if 'experiment' in r];vals=[r['experiment']['candidate_refit_scatter'] for r in sensitivities if 'experiment' in r]
-    axs[1,0].plot(range(len(vals)),vals,'o');axs[1,0].set_xticks(range(len(vals)),labels,rotation=45,ha='right');axs[1,0].set(title='Prespecified noise-model sensitivity',ylabel='Conditional refit scatter')
+    labels=[r['name'] for r in sensitivities if 'experiment' in r];vals=[r.get('matched_budget_experiment',r['experiment'])['candidate_refit_scatter'] for r in sensitivities if 'experiment' in r]
+    axs[1,0].plot(range(len(vals)),vals,'o');axs[1,0].set_xticks(range(len(vals)),labels,rotation=45,ha='right');axs[1,0].set(title='Sensitivity: equal trial budgets, paired seeds',ylabel='Conditional refit scatter')
     for r in regions:
         c=np.asarray(r['correlation']);ll=c.shape[0]//2;axs[1,1].plot(np.arange(-ll,ll+1)*2,c[ll,:],label=r['name'])
     axs[1,1].legend(fontsize=8);axs[1,1].set(title='Disjoint region / coverage comparisons',xlabel='East lag (arcsec)',ylabel='Normalized correlation')

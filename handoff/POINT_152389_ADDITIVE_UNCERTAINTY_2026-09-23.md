@@ -133,3 +133,34 @@ fits retained. The revised anisotropic result resolves the small-ensemble concer
 Long-range fixed variance remains underestimated19%; misspecified regional
 correlation differences persist despite a close scalar refit variance. These
 are limitations, not reasons to tune the generator/model to this sample.
+
+## Exact-source review and bounded repairs
+
+Candidate0aaa11a67d8d6ce158a1d46feb9566d25f8d5d2b is the initial committed
+real run. Independent review verified its complete104-file manifest, exact source
+amplitudes, parent hashes, nonnegative/unit-normalized spectra and direct dense
+pixel-pair qTCq matching the spectral calculation. All three256-trial ensembles
+have no failures. Source-depth interpolation is supported in the base models.
+
+Review found an all-failed-ensemble reporting defect: min/max over empty valid
+sensitivity scatters and formatting a null mean could abort before retaining
+trial failures. Repair preserves base trials immediately, uses explicit null
+sensitivity ranges and null-safe report rows. Model/footprint unavailability is
+per array after fatal parent verification. Added all-failed and actual trial
+failure regressions. Also fixed representative plot seed for nondefault requests.
+
+Review correctly noted that comparing256-trial base SD with64-trial sensitivity
+SD confounds model changes with finite Monte Carlo variation. Now compare matched
+prefixes of the same64 seeds, retaining the full256 base result separately. Each
+variant reports a paired-bootstrap finite-Monte-Carlo ratio interval, explicitly
+not a model or observational confidence interval. Unsupported sensitivity depth
+endpoints remain flagged; they are not empirical sensitivity bounds. No source
+model, input, fitting method, covariance inference or generated trial changed.
+
+Native baseline gate remains required separately from Python scope. Attempt a
+supplemental exact-candidate CLI rebuild using the already documented frozen local
+FetchContent sources and Homebrew/AppleClang realization. No dependency download,
+build-system adaptation, upstream reduction or Spack-equivalence claim is allowed.
+If that bounded restoration fails, retain the explicit incomplete-gate evidence;
+do not weaken tests or substitute an older binary. This is environment recovery,
+not a native scientific change or pipeline experiment.
