@@ -670,3 +670,9 @@ add_test(NAME citlali::forward_map_reload
     COMMAND ${Python3_EXECUTABLE} -m unittest discover
         -s ${CMAKE_CURRENT_LIST_DIR}/../tools/timestream_successor
         -p test_forward_map_reload.py)
+
+add_executable(citlali_fruit_cycle_test EXCLUDE_FROM_ALL test_fruit_cycle.cpp fruit_cycle_header.cpp)
+set_source_files_properties(fruit_cycle_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+target_link_libraries(citlali_fruit_cycle_test PRIVATE citlali::citlali GTest::gtest_main)
+add_dependencies(check citlali_fruit_cycle_test)
+gtest_discover_tests(citlali_fruit_cycle_test TEST_PREFIX "citlali::fruit::" DISCOVERY_MODE PRE_TEST)

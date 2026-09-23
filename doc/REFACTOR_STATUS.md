@@ -8,9 +8,10 @@ prior task's no-FRUIT stop. Original MAPs, candidate/additive manifests, saved
 measurements and PTC restart components verify across all three arrays (11
 networks, 66 processing segments, unchanged observed-entry ALS rank 10).
 
-Execution awaits two explicit method details: no-feedback behavior outside the
+The owner has now explicitly accepted both proposed method details: no-feedback behavior outside the
 candidate's40″ definition disk, and a bound model-to-post-RTC/CAL removal/rejoin
-operator with its reference/response convention. Existing MAP members outside
+operator with its reference/response convention. Implementation and required
+controls are in progress. Existing MAP members outside
 that disk comprise86–87%; their missing candidate support cannot silently become
 zero or a new data exclusion. A concrete direct-route proposal, exact input
 evidence and compact implementation plan are recorded in

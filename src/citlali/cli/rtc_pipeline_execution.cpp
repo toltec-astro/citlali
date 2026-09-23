@@ -54,6 +54,7 @@ std::string native_plane_digest(const NativePairedReadoutMatrix &m) {
 #include "cal_pipeline_execution.h"
 #include "ptc_pipeline_execution.h"
 #include "map_saved_execution.h"
+#include "fruit_saved_execution.h"
 namespace {
 // One observation lifetime, prepared before workers start; only the I/O mutex
 // is mutable. Numerical work and detector populations remain network-owned.
@@ -1178,6 +1179,9 @@ int citlali::cli::run_successor_rtc(const fs::path &input,const fs::path &output
 }
 
 namespace citlali::cli {
+int run_successor_saved_fruit(const std::filesystem::path &input,const std::filesystem::path &output) {
+    return execute_saved_fruit(input,output);
+}
 int run_successor_saved_map(const std::filesystem::path &input,const std::filesystem::path &output) {
     return execute_saved_map(input,output);
 }

@@ -1,6 +1,15 @@
 # POINT 152389 first FRUIT cycle — input preflight and boundary decisions
 
-## Current disposition
+## Owner continuation and implementation
+
+The owner subsequently answered **“I agree with these choices”**, explicitly
+accepting both proposed outside-disk and direct identical-operand conventions.
+They are recorded in the owner-binding.json beside the preflight evidence.
+The prerequisite questions below are historical and resolved; the authorized
+implementation and one-cycle execution now proceed on the same branch.
+No additional approval is required for those choices.
+
+## Historical preflight disposition
 
 **Authorized work is incomplete. No zero-feedback replay or nonzero feedback
 cycle has run.** The September 23 owner directive authorizes exactly one cycle

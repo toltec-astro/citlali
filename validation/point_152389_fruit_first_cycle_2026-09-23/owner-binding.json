@@ -1,0 +1,17 @@
+{
+  "identity": "POINT-152389-FIRST-FRUIT-OWNER-2026-09-23",
+  "owner": "Grant Wilson",
+  "disposition": "I agree with these choices",
+  "approved_choices": [
+    "Outside the 40 arcsec disk, explicitly apply no feedback while preserving original data and eligibility; this is not zero sky or extrapolated noise.",
+    "Sample the exact candidate at each AST containing pixel, subtract before PTC, and restore that identical operand afterward, without additional filtering, convolution, or response correction."
+  ],
+  "outside_disk_no_feedback": true,
+  "direct_identical_operand_rejoin": true,
+  "gain": 1,
+  "nonzero_cycles": 1,
+  "candidate": "reviewed threshold-3 reference, original pixel-noise scale",
+  "reference": "source-relative empirical model; fitted background excluded; PTC removes newly learned detector means; restored mean modes remain model-supported",
+  "iteration_stop": "infer m1 but do not apply it",
+  "production_authorized": false
+}
