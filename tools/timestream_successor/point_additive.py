@@ -76,11 +76,13 @@ def spectrum_from_pairs(cov,lag,stamp_size,power=1.,domain_factor=1):
         missing_lags='zero only in the computational model; unconstrained physical correlations are unknown')
 
 
-def learn(signal,coverage,support,header,parameters,request=NoiseRequest(),stamp_size=41):
+def learn(signal,coverage,support,header,parameters,request=NoiseRequest(),stamp_size=41,*,source_mask=None):
     x,y=coordinates(signal.shape,header);p=np.asarray(parameters)
     major=max(p[3:5])*np.sqrt(8*np.log(2));r=np.hypot(x-p[1],y-p[2])
     good=support & np.isfinite(signal) & np.isfinite(coverage) & (coverage>0)
-    source=r<=request.mask_fwhm*major;bg=good & ~source
+    source=r<=request.mask_fwhm*major if source_mask is None else np.asarray(source_mask,dtype=bool)
+    if source.shape!=signal.shape:raise ValueError('source mask shape differs from map')
+    bg=good & ~source
     if request.region!='all':
         direction={'north':y>=p[2],'south':y<p[2],'east':x>=p[1],'west':x<p[1]}[request.region];bg &=direction
     if bg.sum()<max(request.minimum_pixels,request.minimum_pairs):raise ValueError('insufficient training background')
@@ -114,7 +116,8 @@ def learn(signal,coverage,support,header,parameters,request=NoiseRequest(),stamp
             covariance=np.where(np.isfinite(cv),cv,np.nan),pairs=ct,correlation=cor,
             histogram=stats(z[mask]),bins=[stats(z[mask&(index==b)]) for b in range(len(edges)-1)]))
     values=z[bg];hist,hedges=np.histogram(values,bins=40)
-    summary=dict(method=METHOD,request=asdict(request),mask_radius_arcsec=float(request.mask_fwhm*major),
+    summary=dict(method=METHOD,request=asdict(request),mask_radius_arcsec=float(request.mask_fwhm*major) if source_mask is None else None,
+        source_mask_policy='parameter-centered circle' if source_mask is None else 'explicit externally frozen source mask',
         mean_removed=mean,mean_policy='single ordinary mean of selected background; no gradient, per-bin mean or source-fit subtraction',
         mean_estimation_limitation='finite background mean removal biases unconstrained long modes; not corrected by pair-count normalization',
         background_pixels=int(bg.sum()),coverage_range=[float(edges[0]),float(edges[-1])],bins=records,

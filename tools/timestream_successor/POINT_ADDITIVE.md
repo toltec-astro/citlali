@@ -113,3 +113,35 @@ Implementation review and model applicability are separate dispositions. A
 numerically valid covariance plus passing tests is insufficient to establish that
 background statistics represent the source. Read the per-array assessment before
 using a candidate value as an observational error bar.
+
+## Post-FRUIT saved-map A+B extension (2026-09-23)
+
+`run_point_post_fruit.py --ten <verified ten-cycle bundle> --output <fresh path>`
+reuses this learner, generator, fitter and original fixed measurement weights.
+It requires clean committed source. M0/T1/T3/T5/T10 have identical common masks:
+union of four major-FWHM circles from saved fits, larger union five FWHM.
+All use a100×100 generation grid (41×41 measurement stamp). Source and noise
+training domains remain distinct. Each selected cycle learns separately.
+Four prespecified T10 variants: larger mask, north, south, lag48 instead of32.
+Base256 and matched64 variants share explicit array/cycle/trial random keys.
+
+Original frozen template and1/1.5/2 original-major-FWHM apertures use the same
+trial's free fitted constant. The clean T10 Gaussian+constant baseline has its
+own noiseless reference for each estimator. The joint five-measurement covariance
+and raw/background/cross-term variance identity are saved. A failed refit
+withholds complete-ensemble source statistics; independent fixed-background
+linear measurements survive. Finite constrained fits remain included.
+
+qTCq, independent dense-pair evaluation and Gaussian finite-MC checks apply to
+fixed-background linear operators only. The larger grid embeds identical
+frequency modes at the same frequencies, retaining exactly the same scientific
+covariance; periodic model limitations remain. Source-domain normalized pixel
+second moments are checked after modulation with spatially dependent MC error.
+Pair counts, unsupported lags, spectral repair, spatial/coverage/mixture
+applicability and raw blank-placement overlap are retained. Per-network maps
+are checked separately against each selected cycle's saved operator.
+
+This is conditional on transferring the learned background model to the source.
+It is not an exact detector-noise law of a frozen cleaner or adaptive-FRUIT
+repeatability; neither response nor calibration is characterized. No upstream
+execution, feedback application, source/weight change or SCI-NOI redefinition.
