@@ -1,0 +1,26 @@
+{
+  "identity": "POINT-152389-TEN-FRUIT-OWNER-2026-09-23",
+  "owner": "Grant Wilson",
+  "disposition": "Owner directive: extend through ten total feedback cycles",
+  "approved_choices": [
+    "Outside the 40 arcsec disk, explicitly apply no feedback while preserving original data and eligibility; this is not zero sky or extrapolated noise.",
+    "Sample the exact candidate at each AST containing pixel, subtract before PTC, and restore that identical operand afterward, without additional filtering, convolution, or response correction."
+  ],
+  "outside_disk_no_feedback": true,
+  "direct_identical_operand_rejoin": true,
+  "gain": 1,
+  "nonzero_cycles": 10,
+  "candidate": "reviewed threshold-3 reference, original pixel-noise scale",
+  "reference": "source-relative empirical model; fitted background excluded; PTC removes newly learned detector means; restored mean modes remain model-supported",
+  "iteration_stop": "stop after T10 and save unapplied m10, or affected-array validity failure",
+  "production_authorized": false,
+  "first_cycle": 1,
+  "directive_sha256": "2bf099d037b2b7e64f22446880f59fd9393caf1e1ee179e5d018897aec54e3cd",
+  "first_cycle_manifest_sha256": "b98267bac1cecfd9000ed11446e71ba3472ea2b072443fee59e86d54dea7e006",
+  "corrected_manifest_sha256": "15f7469c14aa8324258727ff67cf74f7bd3f4174f9cf3669c036555f2386fa77",
+  "seed_candidates": {
+    "a1100": "11e05225fe504f3081edf55191aabe1543a0d32a9e014852762d8eae5c989f71",
+    "a1400": "d9835a705637cf879ff7ea45445086aa2ae419b8c9da88e3a2eec9a4072b315f",
+    "a2000": "ad7d76858a73fa1c77c0477cac88a45e8a0f6bc6f98383c00c3c5954ff166289"
+  }
+}

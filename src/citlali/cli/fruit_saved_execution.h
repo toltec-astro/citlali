@@ -7,15 +7,19 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     auto elapsed=[](auto t){return std::chrono::duration<double>(std::chrono::steady_clock::now()-t).count();};
     require(output.is_absolute() && !fs::exists(output),"FRUIT requires a fresh absolute output");
     MapFileLedger ledger;const auto request_sha=ledger.bind(input);const auto request=YAML::LoadFile(input.string());
-    const std::set<std::string> fields{"schema","method","mode","array","map_request","parent_plan","candidate","owner_binding"};
+    const std::set<std::string> fields{"schema","method","mode","array","map_request","parent_plan","candidate","owner_binding","cycle_index","previous_state"};
     for(const auto &e:request)require(fields.contains(e.first.as<std::string>()),"FRUIT unknown request field");
-    require(request["schema"].as<std::string>()=="citlali-point-fruit-cycle-v1" && request["method"].as<std::string>()=="point-152389-direct-one-cycle-v1","FRUIT unsupported method");
-    const auto mode=request["mode"].as<std::string>();require(mode=="zero" || mode=="reference","FRUIT only zero control or first reference cycle");
+    const bool continuation=request["schema"].as<std::string>()=="citlali-point-fruit-continuation-v1";
+    require((continuation && request["method"].as<std::string>()=="point-152389-direct-ten-cycle-v1") ||
+        (!continuation && request["schema"].as<std::string>()=="citlali-point-fruit-cycle-v1" && request["method"].as<std::string>()=="point-152389-direct-one-cycle-v1"),"FRUIT unsupported method");
+    const auto mode=request["mode"].as<std::string>();require(mode=="zero" || mode=="reference","FRUIT unknown mode");
+    const int cycle=continuation?request["cycle_index"].as<int>():(mode=="zero"?0:1);
+    require(!continuation || ((mode=="zero" && cycle==0) || (mode=="reference" && cycle>=2 && cycle<=10)),"FRUIT continuation limited to cycles 2 through 10");
     const auto owner_path=checked_file(request["owner_binding"]);const auto owner_sha=ledger.bind(owner_path);
     const auto owner=YAML::LoadFile(owner_path.string());
-    require(owner["identity"].as<std::string>()=="POINT-152389-FIRST-FRUIT-OWNER-2026-09-23" &&
+    require(owner["identity"].as<std::string>()==(continuation?"POINT-152389-TEN-FRUIT-OWNER-2026-09-23":"POINT-152389-FIRST-FRUIT-OWNER-2026-09-23") &&
         owner["outside_disk_no_feedback"].as<bool>() && owner["direct_identical_operand_rejoin"].as<bool>() &&
-        owner["gain"].as<double>()==1 && owner["nonzero_cycles"].as<int>()==1,"FRUIT owner choices absent");
+        owner["gain"].as<double>()==1 && owner["nonzero_cycles"].as<int>()==(continuation?10:1),"FRUIT owner choices absent");
     const auto map_path=checked_file(request["map_request"]);ledger.bind(map_path);const auto mr=YAML::LoadFile(map_path.string());
     const auto pp=checked_file(request["parent_plan"]);ledger.bind(pp);const auto parent=YAML::LoadFile(pp.string());
     const auto array=request["array"].as<std::string>();const std::array<std::string,3> arrays{"a1100","a1400","a2000"};
@@ -27,7 +31,19 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
         "8edea26bb5c5b5aca065a88c93a0a30fe5064f3cc3388f9423725ed6a63bc640",
         "a6e5a34d6251d3bb7b11b0bc4217fdd5a221e85d48fe08ec2fa5f4b82018d9ff",
         "aafe2afb4965bcd98bac1c1adf9a9dd889b606077af43b1486b2462c8f15d9ac"};
-    require(candidate_sha==selected_hashes[ai],"FRUIT requires the exact reviewed threshold-3 candidate");
+    if(!continuation)require(candidate_sha==selected_hashes[ai],"FRUIT requires the exact reviewed threshold-3 candidate");
+    else {
+        const auto previous_path=checked_file(request["previous_state"]);ledger.bind(previous_path);
+        const auto previous=YAML::LoadFile(previous_path.string());
+        require(previous["schema"].as<std::string>()=="point-fruit-ready-state-v1" && previous["array"].as<std::string>()==array &&
+            previous["cycle_index"].as<int>()==(mode=="zero"?1:cycle-1) && previous["ready"].as<bool>(),"FRUIT predecessor unavailable or index mismatch");
+        require(previous["candidate"]["sha256"].as<std::string>()==candidate_sha && checked_file(previous["candidate"])==candidate,
+            "FRUIT predecessor candidate differs");
+        require(previous["original_plan_sha256"].as<std::string>()==citlali::utils::sha256_file(pp) &&
+            previous["original_map_request_sha256"].as<std::string>()==citlali::utils::sha256_file(map_path),"FRUIT original parent changed");
+        ledger.bind(checked_file(previous["total"]));ledger.bind(checked_file(previous["receipt"]));
+        if(cycle<=2)require(owner["seed_candidates"][array].as<std::string>()==candidate_sha,"FRUIT saved m1 differs");
+    }
     fitsfile *f=nullptr;int status=0,any=0;fits_open_file(&f,candidate.c_str(),READONLY,&status);
     long axes[2];int ndim=0;fits_get_img_dim(f,&ndim,&status);fits_get_img_size(f,2,axes,&status);require(!status && ndim==2 && axes[0]==41 && axes[1]==41,"FRUIT candidate geometry");
     auto key=[&](const char *name){double v=NAN;fits_read_key(f,TDOUBLE,name,&v,nullptr,&status);return v;};
@@ -42,6 +58,7 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     FruitPointModel model("sha256:"+candidate_sha,{std::size_t(axes[1]),std::size_t(axes[0]),"candidate-grid"},cx,cy,dx,dy,std::move(brightness),std::move(valid));
     fs::create_directories(output);YAML::Node record;record["schema"]="citlali-point-fruit-cycle-output-v1";record["outcome"]="incomplete";
     record["request_sha256"]=request_sha;record["owner_sha256"]=owner_sha;record["source_revision"]=std::string(CITLALI_GIT_VERSION);record["mode"]=mode;record["array"]=array;
+    record["cycle_index"]=cycle;if(continuation)record["previous_state"]=request["previous_state"];
     record["candidate_identity"]=model.identity();record["selected_model"]=mode=="zero"?"zero integration control":model.identity();record["unit"]="mJy/nominal-beam";
     record["reference"]="source-relative model; fitted constant excluded; newly learned detector means not restored; rejoined model modes are model-supported, not recovered measured modes";
     record["response"]="empirical post-RTC/CAL direct containing-pixel convention; no complete upstream response inferred";

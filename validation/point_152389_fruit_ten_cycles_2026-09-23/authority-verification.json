@@ -1,0 +1,54 @@
+{
+  "/private/tmp/citlali-point-additive-20260923/doc/governance/ENGINEERING_GOVERNANCE.md": {
+    "expected": "70769787ce2ef4b7323cd2a38e221ade4af3310e0ad6b7b682e08cb4e4d61e76",
+    "actual": "70769787ce2ef4b7323cd2a38e221ade4af3310e0ad6b7b682e08cb4e4d61e76"
+  },
+  "/private/tmp/citlali-point-additive-20260923/doc/governance/TIMESTREAM_SUCCESSOR_GOVERNANCE.md": {
+    "expected": "29fae6f789bb6133c1f5bcdaf0f15437f2eb8c4110f338d3a8de9a4d98ba88dc",
+    "actual": "29fae6f789bb6133c1f5bcdaf0f15437f2eb8c4110f338d3a8de9a4d98ba88dc"
+  },
+  "/private/tmp/citlali-point-additive-20260923/doc/governance/REVIEW_AND_CONFORMANCE.md": {
+    "expected": "691e6d6250102ef2f4a504397581ee67c5707d898ab20fb8dd9e874c47f99bb1",
+    "actual": "691e6d6250102ef2f4a504397581ee67c5707d898ab20fb8dd9e874c47f99bb1"
+  },
+  "/private/tmp/citlali-point-additive-20260923/doc/SCI_PTC_OBSERVED_ENTRY_OWNER_BINDING_2026-09-18.md": {
+    "expected": "bc99994299a7bcece5d7778954b206edce614dce135c6effc702bdc046bb9b39",
+    "actual": "bc99994299a7bcece5d7778954b206edce614dce135c6effc702bdc046bb9b39"
+  },
+  "/private/tmp/citlali-point-additive-20260923/tools/timestream_successor/point_admission.py": {
+    "expected": "785ef372b42937c20611b32380f46c2591e6671ece486cb9f168164f513af24a",
+    "actual": "785ef372b42937c20611b32380f46c2591e6671ece486cb9f168164f513af24a"
+  },
+  "/private/tmp/citlali-point-additive-20260923/include/citlali/core/pipeline/ast_rtc_coordinates.h": {
+    "expected": "00131936032397ff54f57d902b17502810aca0a7f51808683dbdc660964ea047",
+    "actual": "00131936032397ff54f57d902b17502810aca0a7f51808683dbdc660964ea047"
+  },
+  "/private/tmp/citlali-point-additive-20260923/include/citlali/core/pipeline/timestream_ptc_cal_source.h": {
+    "expected": "59f44f65a7afa4c41c43eba3856e7da4dd818bc43087bd44c32e9b1b2dbb1ab8",
+    "actual": "59f44f65a7afa4c41c43eba3856e7da4dd818bc43087bd44c32e9b1b2dbb1ab8"
+  },
+  "/private/tmp/citlali-point-additive-20260923/include/citlali/core/mapmaking/forward_map.h": {
+    "expected": "6cd83f3663b3efe9a40468544452dcf18dd11ca250743594aa2c03c047fac4b2",
+    "actual": "6cd83f3663b3efe9a40468544452dcf18dd11ca250743594aa2c03c047fac4b2"
+  },
+  "/Users/gwilson/.codex/worktrees/346d/citlali-refactor/doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/stage_b_from_r0.4_amended/r0.4/identities/CORE_SOURCES.sha256": {
+    "expected": "3dc912d9f6a58d9f92561ad10b9442485c5b47232e5327389d2fb3b89c296e92",
+    "actual": "3dc912d9f6a58d9f92561ad10b9442485c5b47232e5327389d2fb3b89c296e92"
+  },
+  "/Users/gwilson/.codex/worktrees/346d/citlali-refactor/doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/stage_b_from_r0.4_amended/r0.4/src/common/equations.tex": {
+    "expected": "ff1f4556c2bc84a429b077b220a6435b225873b1c3df069580552ae3afa3ba19",
+    "actual": "ff1f4556c2bc84a429b077b220a6435b225873b1c3df069580552ae3afa3ba19"
+  },
+  "/Users/gwilson/.codex/worktrees/346d/citlali-refactor/doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/stage_b_from_r0.4_amended/r0.4/src/common/definitions.tex": {
+    "expected": "4859e093b2cf241f3ce928487a91af9733c1f47e502e186f3956f63d50fb3957",
+    "actual": "4859e093b2cf241f3ce928487a91af9733c1f47e502e186f3956f63d50fb3957"
+  },
+  "/Users/gwilson/.codex/worktrees/346d/citlali-refactor/doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/stage_b_from_r0.4_amended/r0.4/src/common/requirements.tex": {
+    "expected": "5b32ac6622262d3d678fee268b6ba40deb8429ff737b656837e3fe1d281097fe",
+    "actual": "5b32ac6622262d3d678fee268b6ba40deb8429ff737b656837e3fe1d281097fe"
+  },
+  "/Users/gwilson/.codex/worktrees/346d/citlali-refactor/doc/scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/SCI_FRUIT_STAGE_B_R0.4_OWNER_CONDITIONAL_FREEZE_2026-09-08.md": {
+    "expected": "4ec91dfd4d6c6ff8092537263e6aa7ea6c1662415901b431e84452706c088980",
+    "actual": "4ec91dfd4d6c6ff8092537263e6aa7ea6c1662415901b431e84452706c088980"
+  }
+}

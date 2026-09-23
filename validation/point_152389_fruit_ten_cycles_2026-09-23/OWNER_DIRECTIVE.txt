@@ -1,0 +1,48 @@
+Directive: POINT 152389 — extend FRUIT through ten total feedback cycles
+Objective and authorization
+Continue the existing bright-source POINT 152389 experiment through ten total nonzero feedback cycles per array, preserving every intermediate so we can assess the iteration’s trajectory.
+The existing T1 is cycle 1. Run nine additional cycles, producing T2 through T10, for a1100, a1400, and a2000. Begin with each array’s saved, unapplied replacement candidate m1.
+This supersedes the previous single-cycle stop instruction. Do not pause for authorization at each cycle or at cycle 5. Continue through cycle 10 unless a validity guard trips.
+The purpose is to determine whether the current method stabilizes, drifts, oscillates, or develops undesirable structure. This is not authorization to declare calibrated flux recovery, choose a scientifically best map, or activate unrestricted iteration.
+1. Continue the existing experiment without changing its method
+Read the first-cycle handoff, owner binding, completion record, and authoritative corrected diagnostics. Verify the exact original inputs, T1 products, and m1 candidates before proceeding. Preserve the existing first-cycle products unchanged.
+Retain the approved threshold-3 selection, frozen first-pass additive-noise scale and validity domain, unity feedback gain, AST-centered 40″ feedback boundary, projection/restoration convention, and per-network/segment rank-10 PTC recipe.
+Keep the existing source fitter and candidate-construction rule. Candidates contain selected map brightness above the fitted constant, not a replacement Gaussian. Valid excluded pixels, unsupported pixels, and the outside-disk no-feedback region must retain their existing distinct semantics.
+Do not introduce damping, threshold tuning, rank optimization, response corrections, a new uncertainty ensemble, or a broader faint-source/extended-emission experiment.
+2. Execute each cycle from the original data
+For cycle \(k=2,\ldots,10\):
+\[
+m_{k-1}\ \longrightarrow\ T_k\ \longrightarrow\ m_k.
+\]Start from the immutable original post-RTC/CAL timestreams. Project and subtract \(m_{k-1}\), learn and apply PTC afresh on the residual, restore the identical projected operand, and construct the total map \(T_k\). Then infer the complete replacement candidate \(m_k\).
+Do not cumulatively clean the preceding residual, use the preceding map as the observational input, or add the new candidate to the old candidate. The processing recipe stays fixed; the residual-dependent learned PTC state is renewed each cycle.
+Save m10 but leave it unapplied. Applying m10 would begin cycle 11, which is outside this authorization.
+Before nonzero continuation, verify zero-feedback replay through the actual execution path used for this run. Zero controls must reproduce the original maps and source measurements under the established requirements. These controls do not count toward the ten cycles. Do not rerun the first nonzero cycle merely to restart the series.
+3. Preserve every intermediate and its lineage
+For each completed cycle, save the total map, residual map, restored-model map, replacement candidate, candidate selection/support information, source measurements, and processing receipts.
+Each cycle must identify its exact input candidate, original-data references, configuration, executable/source identity, and output products. Verify subtraction/restoration accounting and coverage/eligibility invariants at every cycle.
+Use a new output location. Do not overwrite earlier evidence. Reference shared immutable inputs rather than unnecessarily duplicating them for every cycle.
+Retain efficient independent-array execution and controlled numerical-library threading. Record per-cycle and whole-run timing; do not turn this into a separate optimization project.
+4. Measure the trajectory using unchanged diagnostic definitions
+Retain the original measurement footprints, frozen template, aperture definitions, and background diagnostic regions. The feedback selection may evolve; the comparison definitions must not evolve with it. The descriptive fitter may continue to fit its existing free parameters.
+Track these quantities at every cycle:
+Diagnostic	Required comparison
+Source brightness	Fitted amplitude, frozen-template projection, and existing fixed-aperture brightness sums
+Shape and position	Major/minor FWHM, centroid, and source profiles
+Feedback candidate	Selected pixel count, additions/removals, and brightness changes on retained pixels
+Background	Fitted constant, signed bowl/profile behavior, and statistics on fixed background regions
+Processing	Coverage, normalization, eligibility, PTC convergence/failure states, and runtime
+
+
+Keep the existing aperture-sum units; do not relabel them integrated flux.
+Include successive-cycle and two-cycle-separated differences in source amplitudes, maps, and candidate selections so an alternating trajectory is visible. State the domains and normalization used for any difference metric.
+The frozen selection scale remains a provisional admission control, not a recalibrated post-FRUIT uncertainty or significance. Preserve the a2000 spatial-noise qualification.
+5. Stop only when continuation becomes invalid
+Do not stop merely because changes become small, amplitudes continue rising, selection grows modestly, or an early-cycle change exceeds 5%. Observing those behaviors is part of the experiment.
+Stop an affected array before its next feedback application if there is an unusable fit/candidate, unsupported admitted feedback or prohibited boundary contact, broken accounting, unexpected coverage/normalization/eligibility changes, or a new processing failure that invalidates the comparison.
+Preserve the triggering products and report the exact reason. Do not silently change parameters, shrink footprints, discard problematic data, or skip a failed cycle to continue.
+Track the inherited network 3/scan 5 condition explicitly. Its unchanged persistence is not a new failure, and this experiment does not authorize repairing or rescuing it. Unaffected arrays may continue independently.
+6. Deliver the trajectory and stop
+Provide a compact per-array table and trajectory plots covering M0, the existing T1, and every newly completed cycle. Include consistently scaled visual comparisons of M0, T1, T2, T3, T5, and T10, with all other intermediates available.
+Assess whether brightness, shape, selection, and background behavior are stabilizing together, drifting, or oscillating. Distinguish a stable peak from a growing pedestal or expanding feedback footprint. Do not automatically favor the latest or highest-amplitude map.
+Add focused tests for iteration indexing, original-input reuse, complete candidate replacement, preservation of intermediates, failure handling, and the ten-cycle limit. Run the applicable existing validation and review gates.
+Stop after T10 and construction of unapplied m10, or at an explicitly reported validity failure. No cycle 11, automatic best-map selection, production activation, integration, or push.
