@@ -1,5 +1,30 @@
 # Citlali Refactor Status
 
+## Bright POINT152389 admission prototype — 2026-09-23
+
+The owner-authorized read-only candidate experiment now compares four controls:
+threshold3 reference,2,5, and3 with doubled pixel-noise scale (equivalent6).
+Measured-centroid eight-connected support retains source-relative map brightness,
+with invalid support distinct from valid zero exclusions. The original40″ radius
+fit, weights, upstream products and FRUIT state remain unchanged.
+
+Recommend retaining reference threshold3 in all arrays for a first separately
+authorized bounded FRUIT experiment. Actual candidate amplitude changes
++0.36/+0.95/+0.25%; width changes at most1.23%; no boundary/invalid-support contact.
+All32 deterministic source-plus-correlated-noise trials retain each source in
+every case; all384 candidate fits succeed without constraints. Reference median
+paired amplitude changes+0.88/+1.30/+2.20% remain a clipping-related limitation;
+a2000 stress width changes reach9.76%, so certain admission is not shape invariance.
+A2000 inherited spatial-model caveat persists; no new noise investigation.
+
+Runtime source `b9d455af113d46d42b83ba2ac7087de017e121ab`, companion36.891s.
+Seven focused tests,229 successor tests/111 subtests,207 baseline tests/137
+subtests and required config preflight pass. Exact-source independent numerical
+review passes scientific behavior with limitations, architecture and numerical
+evidence; completion assessment/document review pending. Full products and scope:
+`handoff/POINT_152389_ADMISSION_PROTOTYPE_2026-09-23.md`.
+No FRUIT iteration, upstream reprocessing, integration,push or activation.
+
 ## POINT 152389 conditional additive uncertainty — 2026-09-23
 
 A separate reusable saved-map companion now estimates full-observation additive
