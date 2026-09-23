@@ -1,6 +1,6 @@
 # Citlali Refactor Status
 
-## POINT 152389 C+D response / robustness — active 2026-09-23
+## POINT 152389 C+D response / robustness — completed 2026-09-23
 
 Owner authorized the fixed eight-trajectory-per-array campaign: fresh REF,
 three signed/broad pre-PTC injections, three initial-candidate interventions,
@@ -9,6 +9,19 @@ measurements, admission scale and unapplied m10 remain immutable. See
 `handoff/POINT_152389_RESPONSE_ROBUSTNESS_CD_2026-09-23.md` and archived
 owner directive. No default adoption, flux correction, upstream-response claim,
 cycle11, integration, push or production activation.
+
+All24 prescribed trajectories reachedT10 (252 native invocations). REF exactly
+reproduces original products; independent native artifact audits pass. Compact
+T10 projection gains span0.997439–1.015367. Broad shoulder gains are
+0.974365/0.911071/0.849881, with spatial residuals larger than gain loss alone.
+Initialization residuals are tiny atT10 (maximum peak departure0.000334631
+mJy/nominal beam); threshold5 separately shifts peak/shape/aperture measurements.
+No default is adopted. Runtime source26af74ac5; report source698e5eea5.
+Final assessment and independent artifact review pass with stated limitations;
+five constrained a1100 shoulder ideal fit controls are retained and qualified.
+Allm10 remain unapplied.
+Final report262 successor/111 subtests,207 baseline/137 subtests,28 targeted native and
+required config gates pass locally; supplemental, not Spack V2 evidence.
 
 ## POINT 152389 post-FRUIT noise and uncertainty A+B — completed 2026-09-23
 

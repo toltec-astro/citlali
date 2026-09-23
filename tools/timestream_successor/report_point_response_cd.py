@@ -49,6 +49,26 @@ MEASUREMENT_UNITS=['mJy/nominal beam','arcsec','arcsec','arcsec','arcsec',
     'mJy/nominal beam × arcsec²','mJy/nominal beam × arcsec²','mJy/nominal beam × arcsec²']
 
 
+def fit_control_notes(results):
+    """Expose retained failed/constrained measurement controls without refitting."""
+    lines=['### Measurement-control fit flags','',
+           'Successful constrained fits remain reported, with their original values and bounds. '
+           'Their measurement comparisons are qualified; map-response diagnostics are independent.','',
+           '| Branch | Cycle | Control | Status | Constrained |',
+           '|---|---:|---|---|---|']
+    found=False
+    for branch,rows in results.items():
+        for row in rows:
+            for name,measurement in row.get('measurement_response',{}).items():
+                if name not in ('reference','actual','ideal_map_addition'):continue
+                fit=measurement['fit']
+                if fit['status']!='success' or fit.get('constrained',False):
+                    found=True
+                    lines.append(f"| {branch} | {row['cycle']} | {name} | {fit['status']} | {fit.get('constrained','unavailable')} |")
+    if not found:lines.append('| All available controls | — | — | success | False |')
+    return lines
+
+
 def measurement_tables(out, array, results):
     lines=[f'# {array}: measurement response and remaining drift','',
         'All values retain the original fit, template, aperture centers/radii and background definitions. '
@@ -63,6 +83,10 @@ def measurement_tables(out, array, results):
         lines.extend([f'## {branch} at T10',''])
         if branch.startswith('C-'):
             comparisons=final['measurement_response']['comparisons']
+            for control in ('reference','actual','ideal_map_addition'):
+                fit=final['measurement_response'][control]['fit']
+                lines.append(f"{control}: status={fit['status']}; constrained={fit.get('constrained','unavailable')}.")
+            lines.append('')
             lines.extend(['| Measurement | Unit | Actual increment | Ideal increment | Actual − ideal | Ratio |',
                           '|---|---|---:|---:|---:|---:|'])
             for row in comparisons or []:
@@ -78,6 +102,7 @@ def measurement_tables(out, array, results):
             for name in MEASUREMENT_NAMES:
                 lines.append(f"| {name} | {units[name]} | {fmt(final.get('measurement_increments',{}).get(name))} | {fmt(final.get('previous_cycle_measurement_drift',{}).get(name))} |")
         lines.append('')
+    lines.extend(fit_control_notes(results))
     (out/'MEASUREMENTS.md').write_text('\n'.join(lines)+'\n')
 
 
@@ -203,10 +228,11 @@ def assess(out):
                 if row['cycle'] not in (1,3,5,10):continue
                 q=row.get('measurement_increments',{})
                 texts.append(f"| {b} | {row['cycle']} | {fmt(q.get('peak'))} | {fmt(q.get('background'))} | {row['total_shoulder_projection']:.6f} | {fmt(row['replacement_shoulder_projection'])} | {row['candidate_area_arcsec2']} |")
+        texts.extend(['']+fit_control_notes(results))
     save_json(report/'summary.json',dict(source_revision=revision,prospective=bound(out/'freeze/prospective.json'),
         status=status,arrays=allresults,runtime=runtime,report_seconds=time.perf_counter()-began))
     texts.extend(['','This is finite full-procedure response at the saved post-RTC/CAL boundary. Paired maps share observed noise; changes include altered cleaning of original source/background. g and η are unweighted diagnostics, not uncertainty or significance.',
-        'The ideal final-map addition is a measurement control only. Ratios with ideal increments ≤1e−8 in their native units are unavailable. Ellipse tensor and eigenwidths avoid position-angle gauge ambiguity. Raw aperture and fitted-background increments are separate in each cycle JSON.',
+        'The ideal final-map addition is a measurement control only. Ratios with |ideal increment| ≤1e−8 in their native units are unavailable. Ellipse tensor and eigenwidths avoid position-angle gauge ambiguity. Raw aperture and fitted-background increments are separate in each cycle JSON.',
         'Seed endpoint spread and remaining drift are not an uncertainty distribution or evidence of asymptotic fixed points. Threshold5 remains a separate method comparison. Original and experimental m10 remain unapplied.'])
     (report/'REPORT.md').write_text('\n'.join(texts)+'\n');manifest(report)
 

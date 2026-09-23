@@ -21,6 +21,18 @@ class ResponseControls(unittest.TestCase):
         self.x,self.y=coordinates((41,41),H);self.v=np.hypot(self.x,self.y)<=40
         self.p=np.array([100.,3.,-4.,2.,3.,.4,7.])
 
+    def test_report_retains_constrained_and_failed_control_flags(self):
+        from report_point_response_cd import fit_control_notes
+        rows={'C-shoulder':[dict(cycle=10,measurement_response={
+            'reference':dict(fit=dict(status='success',constrained=False)),
+            'actual':dict(fit=dict(status='failed')),
+            'ideal_map_addition':dict(fit=dict(status='success',constrained=True))})]}
+        notes='\n'.join(fit_control_notes(rows))
+        self.assertIn('| C-shoulder | 10 | actual | failed | unavailable |',notes)
+        self.assertIn('| C-shoulder | 10 | ideal_map_addition | success | True |',notes)
+        self.assertNotIn('All available controls',notes)
+        self.assertTrue(rows['C-shoulder'][0]['measurement_response']['ideal_map_addition']['fit']['constrained'])
+
     def test_shapes_signed_taper_physical_east_and_unavailable(self):
         r,info=shapes(self.p,7.,H,self.v)
         np.testing.assert_array_equal(r['C-core-plus'],-r['C-core-minus'])
