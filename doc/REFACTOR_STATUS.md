@@ -1,26 +1,36 @@
 # Citlali Refactor Status
 
-## POINT 152389 first FRUIT cycle — boundary preflight 2026-09-23
+## POINT 152389 first FRUIT cycle — completed 2026-09-23
 
-The owner now authorizes one threshold-3, unity-gain feedback cycle per array,
-with fresh PTC zero control and unapplied replacement m1. This supersedes the
-prior task's no-FRUIT stop. Original MAPs, candidate/additive manifests, saved
-measurements and PTC restart components verify across all three arrays (11
-networks, 66 processing segments, unchanged observed-entry ALS rank 10).
+Exactly one nonzero threshold-3, unity-gain cycle per array completed after
+fresh-PTC zero controls exactly reproduced all six parent MAP planes and source
+fits. The owner-approved outside-disk no-feedback and direct identical-operand
+removal/rejoin choices are bound explicitly. Original RTC/CAL products and
+per-network/segment observed-entry ALS rank 10 recipe remain unchanged.
 
-The owner has now explicitly accepted both proposed method details: no-feedback behavior outside the
-candidate's40″ definition disk, and a bound model-to-post-RTC/CAL removal/rejoin
-operator with its reference/response convention. Implementation and required
-controls are in progress. Existing MAP members outside
-that disk comprise86–87%; their missing candidate support cannot silently become
-zero or a new data exclusion. A concrete direct-route proposal, exact input
-evidence and compact implementation plan are recorded in
+M0 → T1 fitted amplitudes are 816.311 → 919.123, 554.151 → 643.449,
+593.401 → 761.964 mJy/nominal beam (+12.59/+16.11/+28.41%). Coverage,
+normalization, input eligibility and output causes remain unchanged in all 66
+segments. Only inherited network 3/scan 5 remains nonconverged. T1=R1+A1
+holds within 1.81e-11 mJy/nominal beam. Replacement m1 adds 4/6/2 pixels,
+removes none, and remains unapplied. This is not convergence or calibrated
+source recovery; restored source content is not independent confirmation.
+
+Scientific runtime source `dfc10ef5fd8ad880958c57278b6b07d36d841242`;
+diagnostic repair `46bbeb182bb5e973c8356b51b2c8b509f7186c1b`. A saved-basis
+layout defect affected only a projector comparison; corrected diagnostics-r2
+preserves identical maps/m1, with no scientific rerun. Original receipts remain
+preserved and explicitly superseded for that one comparison.
+
+Whole bounded workflow 75.764 s; report-only correction 6.681 s. Three native
+and three Python focused tests, 232 successor tests/111 subtests, 28 selected
+CTests, 207 baseline tests/137 subtests and required configuration preflight pass.
+The local AppleClang/cached-dependency build is supplemental, not Spack-backed V2.
+Independent implementation and diagnostic-repair reviews pass all three required
+categories with recorded scientific limitations; final completion-record review
+is tracked in the handoff. No second cycle, noise campaign, integration, push or
+activation. Full assessment, source/input identities, runtime and figure links:
 `handoff/POINT_152389_FIRST_FRUIT_CYCLE_2026-09-23.md`.
-No zero-feedback PTC replay or nonzero cycle has run; this milestone is incomplete.
-Independent exact-SHA review of evidence checkpoint `bd4563f4ac9506a861bea8377dd2ba9c5b0620e9`
-passes science with limitations, architecture and repository/evidence, with no
-repair-required findings. The reviewer reproduced the diagnostic and confirmed
-both narrow method choices remain unresolved; this is not route conformance.
 
 ## Bright POINT152389 admission prototype — 2026-09-23
 

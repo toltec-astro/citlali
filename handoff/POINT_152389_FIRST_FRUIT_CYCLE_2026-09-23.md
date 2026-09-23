@@ -1,4 +1,69 @@
-# POINT 152389 first FRUIT cycle — input preflight and boundary decisions
+# POINT 152389 first FRUIT cycle — completed bounded experiment
+
+## Completion disposition — 2026-09-23
+
+The historical preflight below is superseded by owner approval and successful
+execution. Exactly one nonzero cycle per array is complete; all fresh zero
+controls reproduce their parents exactly. Stop reason: authorized single cycle
+complete, not convergence. m1 is saved and has not been projected or applied.
+
+Owner-facing [ASSESSMENT.md](/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-fruit-one-cycle-20260923/ASSESSMENT.md) includes all five map/model
+measurements, figures, total/residual/restored FITS, zero controls, m1, full
+support comparisons, PTC convergence/state changes, exact provenance and runtime.
+
+Compact repository evidence is
+`validation/point_152389_fruit_first_cycle_2026-09-23/completion.json`.
+The original 1,015-file cycle and corrected 23-file diagnostic manifests verify;
+their hashes and assessment hash are in that record. Original parent products,
+this branch's unrelated main-checkout changes and all original receipts remain
+untouched. No integration, push, production activation or Unity access occurred.
+
+Runtime implementation: `dfc10ef5fd8ad880958c57278b6b07d36d841242`, tree
+`902c48d507f46b3d0d52d66fcab241289ca024b6`. Diagnostic repair:
+`46bbeb182bb5e973c8356b51b2c8b509f7186c1b`, tree
+`45934f7c42ea997a0c60a989f4dbb2a301a3df50`. Exact runtime binary and build
+cache/source snapshots/logs are preserved in the product evidence directory.
+Current repair binary builds successfully and identifies 46bbeb182. Local cached
+AppleClang evidence remains supplemental, not a Spack V2 reproduction.
+
+| Array | M0 amplitude | T1 amplitude | Change | m1 admitted pixels |
+|---|---:|---:|---:|---:|
+| a1100 |816.311|919.123|+12.59%|32 (+4,−0)|
+| a1400 |554.151|643.449|+16.11%|44 (+6,−0)|
+| a2000 |593.401|761.964|+28.41%|59 (+2,−0)|
+
+Amplitudes are mJy/nominal beam above the fitted constant. All five-product
+fits succeed without active constraints; all 40″ fit/noise domains remain
+complete. Coverage, normalization and input/output causes remain unchanged.
+Inherited network 3/scan 5 nonconvergence remains visible; no new failure or
+network rescue. Maximum decomposition error 1.81e-11 mJy/nominal beam.
+Shallower negative bowls and increased amplitudes are descriptive processing
+changes, not independent proof of recovered flux. The frozen original selection
+scale is not post-FRUIT uncertainty; a2000 spatial-model caveat persists.
+
+One diagnostic defect was corrected after the authorized run: saved row-major
+basis bytes had been read column-major in the projector-distance comparison.
+That comparison never feeds scientific PTC learning or application. Original
+receipts remain preserved; diagnostics-r2 is authoritative for the corrected
+ranges 0–0.424,0–1.423,0.058–1.410. Report-only regeneration verifies immutable
+cycle hashes and identical m1 arrays; no second scientific cycle was run.
+
+Validation: three native focused tests cover numerical source projection/PTC/
+rejoin/MAP, signs/missing support/stale-state rejection and pixel association.
+Three Python tests cover replacement/removal and saved-basis layout. After the
+repair 232 successor tests/111 subtests and 28 selected CTests pass. Before the
+repair 207 baseline tests/137 subtests and full required config preflight passed;
+the diagnostic-only change does not invalidate those unchanged-scope gates.
+Six native execution logs have no unexpected error-level messages. All nine
+comparison/profile/footprint figures were inspected. Independent exact-SHA
+implementation and repair reviews pass scientific/behavioral,
+architecture/ownership and repository/evidence with recorded limitations.
+Completion-record review is the remaining documentation closure, not further
+scientific execution.
+
+Recommendation: one further separately authorized bounded cycle with m1 under
+the same controls, then compare change magnitudes, widths and support. Do not
+automatically select the latest/highest-amplitude result as scientifically best.
 
 ## Owner continuation and implementation
 
@@ -6,7 +71,7 @@ The owner subsequently answered **“I agree with these choices”**, explicitly
 accepting both proposed outside-disk and direct identical-operand conventions.
 They are recorded in the owner-binding.json beside the preflight evidence.
 The prerequisite questions below are historical and resolved; the authorized
-implementation and one-cycle execution now proceed on the same branch.
+implementation and one-cycle execution completed on the same branch.
 No additional approval is required for those choices.
 
 ## Historical preflight disposition

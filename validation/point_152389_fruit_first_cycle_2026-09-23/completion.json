@@ -1,0 +1,1285 @@
+{
+  "scientific_source": "dfc10ef5fd8ad880958c57278b6b07d36d841242",
+  "diagnostic_source": "46bbeb182bb5e973c8356b51b2c8b509f7186c1b",
+  "product_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-fruit-one-cycle-20260923",
+  "cycle_manifest_sha256": "b98267bac1cecfd9000ed11446e71ba3472ea2b072443fee59e86d54dea7e006",
+  "diagnostics_manifest_sha256": "15f7469c14aa8324258727ff67cf74f7bd3f4174f9cf3669c036555f2386fa77",
+  "assessment_sha256": "3050cd1d3966076b86cc5399104f19de9db3c3090c8fc27624abe6630e9b0502",
+  "runtime_binary_sha256": "344523c21763b4b0f12a3ab5267153194cb1d221f4c84f9b73d5083ba5c55329",
+  "stop_reason": "authorized single nonzero feedback cycle completed; not convergence",
+  "m1_applied": false,
+  "arrays": {
+    "a1100": {
+      "array": "a1100",
+      "measurements": {
+        "M0": {
+          "fit": {
+            "status": "success",
+            "parameters": [
+              816.3113586194066,
+              4.668417271604746,
+              -5.170562611668168,
+              2.162660525867864,
+              2.5723563851306603,
+              -0.7143974318775002,
+              -5.653389339210907
+            ],
+            "description": {
+              "method": "unweighted elliptical Gaussian plus constant; 40 arcsec radius around AST center",
+              "search_and_centroid_domain": "20 arcsec around AST center; positive-amplitude descriptive fit",
+              "nominal_calibration_beam_fwhm_arcsec": 5,
+              "central_pixel_peak_mJy_per_nominal_beam": 707.301480236796,
+              "fitted_amplitude_above_constant_mJy_per_nominal_beam": 816.3113586194066,
+              "fitted_constant_mJy_per_nominal_beam": -5.653389339210907,
+              "centroid_tangent_east_north_arcsec": [
+                4.668417271604746,
+                -5.170562611668168
+              ],
+              "centroid_FK5_J2000_ra_dec_deg": [
+                176.74460012073075,
+                39.97475927586087
+              ],
+              "measured_fwhm_major_minor_arcsec": [
+                6.057436378669031,
+                5.092676356910821
+              ],
+              "measured_fwhm_geometric_mean_arcsec": 5.5541482721601225,
+              "fit_pixels": 1257,
+              "fit_residual_rms_mJy_per_nominal_beam": 13.155995885970997,
+              "fit_constraint_active": false,
+              "interpretation": "first-pass source morphology only; no flux recovery, uncertainty, detection significance or full-chain transfer claim"
+            },
+            "constrained": false
+          },
+          "frozen_template_projection": 816.3113585676928,
+          "fixed_template_definition": "original unit-peak template q=t/sum(t\u00b2), original 3-major-FWHM footprint; subtract own fitted constant for science maps; candidates already source-relative",
+          "template_unit": "mJy/nominal-beam",
+          "apertures": [
+            {
+              "radius_measured_fwhm": 1.0,
+              "radius_arcsec": 6.057436378669031,
+              "value_mJy_per_beam_arcsec2": 27263.068942921516,
+              "available": true,
+              "aperture_pixels": 30,
+              "expected_pixels": 30
+            },
+            {
+              "radius_measured_fwhm": 1.5,
+              "radius_arcsec": 9.086154568003547,
+              "value_mJy_per_beam_arcsec2": 27924.20441510576,
+              "available": true,
+              "aperture_pixels": 64,
+              "expected_pixels": 64
+            },
+            {
+              "radius_measured_fwhm": 2.0,
+              "radius_arcsec": 12.114872757338063,
+              "value_mJy_per_beam_arcsec2": 26698.03683983786,
+              "available": true,
+              "aperture_pixels": 117,
+              "expected_pixels": 117
+            }
+          ],
+          "aperture_definition": "fixed original centroid/radii, sum source-relative brightness times 4 arcsec\u00b2; no missing-area or aperture correction; not integrated flux"
+        },
+        "zero": {
+          "fit": {
+            "status": "success",
+            "parameters": [
+              816.3113586194066,
+              4.668417271604746,
+              -5.170562611668168,
+              2.162660525867864,
+              2.5723563851306603,
+              -0.7143974318775002,
+              -5.653389339210907
+            ],
+            "description": {
+              "method": "unweighted elliptical Gaussian plus constant; 40 arcsec radius around AST center",
+              "search_and_centroid_domain": "20 arcsec around AST center; positive-amplitude descriptive fit",
+              "nominal_calibration_beam_fwhm_arcsec": 5,
+              "central_pixel_peak_mJy_per_nominal_beam": 707.301480236796,
+              "fitted_amplitude_above_constant_mJy_per_nominal_beam": 816.3113586194066,
+              "fitted_constant_mJy_per_nominal_beam": -5.653389339210907,
+              "centroid_tangent_east_north_arcsec": [
+                4.668417271604746,
+                -5.170562611668168
+              ],
+              "centroid_FK5_J2000_ra_dec_deg": [
+                176.74460012073075,
+                39.97475927586087
+              ],
+              "measured_fwhm_major_minor_arcsec": [
+                6.057436378669031,
+                5.092676356910821
+              ],
+              "measured_fwhm_geometric_mean_arcsec": 5.5541482721601225,
+              "fit_pixels": 1257,
+              "fit_residual_rms_mJy_per_nominal_beam": 13.155995885970997,
+              "fit_constraint_active": false,
+              "interpretation": "first-pass source morphology only; no flux recovery, uncertainty, detection significance or full-chain transfer claim"
+            },
+            "constrained": false
+          },
+          "frozen_template_projection": 816.3113585676928,
+          "fixed_template_definition": "original unit-peak template q=t/sum(t\u00b2), original 3-major-FWHM footprint; subtract own fitted constant for science maps; candidates already source-relative",
+          "template_unit": "mJy/nominal-beam",
+          "apertures": [
+            {
+              "radius_measured_fwhm": 1.0,
+              "radius_arcsec": 6.057436378669031,
+              "value_mJy_per_beam_arcsec2": 27263.068942921516,
+              "available": true,
+              "aperture_pixels": 30,
+              "expected_pixels": 30
+            },
+            {
+              "radius_measured_fwhm": 1.5,
+              "radius_arcsec": 9.086154568003547,
+              "value_mJy_per_beam_arcsec2": 27924.20441510576,
+              "available": true,
+              "aperture_pixels": 64,
+              "expected_pixels": 64
+            },
+            {
+              "radius_measured_fwhm": 2.0,
+              "radius_arcsec": 12.114872757338063,
+              "value_mJy_per_beam_arcsec2": 26698.03683983786,
+              "available": true,
+              "aperture_pixels": 117,
+              "expected_pixels": 117
+            }
+          ],
+          "aperture_definition": "fixed original centroid/radii, sum source-relative brightness times 4 arcsec\u00b2; no missing-area or aperture correction; not integrated flux"
+        },
+        "T1": {
+          "fit": {
+            "status": "success",
+            "parameters": [
+              919.1230795687508,
+              4.637493375489846,
+              -5.149289816835831,
+              2.6599062903287876,
+              2.290430271094569,
+              -2.3431604465771083,
+              -2.6198116223788337
+            ],
+            "description": {
+              "method": "unweighted elliptical Gaussian plus constant; 40 arcsec radius around AST center",
+              "search_and_centroid_domain": "20 arcsec around AST center; positive-amplitude descriptive fit",
+              "nominal_calibration_beam_fwhm_arcsec": 5,
+              "central_pixel_peak_mJy_per_nominal_beam": 825.7193154290875,
+              "fitted_amplitude_above_constant_mJy_per_nominal_beam": 919.1230795687508,
+              "fitted_constant_mJy_per_nominal_beam": -2.6198116223788337,
+              "centroid_tangent_east_north_arcsec": [
+                4.637493375489846,
+                -5.149289816835831
+              ],
+              "centroid_FK5_J2000_ra_dec_deg": [
+                176.7445889116076,
+                39.97476518513297
+              ],
+              "measured_fwhm_major_minor_arcsec": [
+                6.263600650370141,
+                5.3935511141191625
+              ],
+              "measured_fwhm_geometric_mean_arcsec": 5.8123188372801255,
+              "fit_pixels": 1257,
+              "fit_residual_rms_mJy_per_nominal_beam": 12.891424513428225,
+              "fit_constraint_active": false,
+              "interpretation": "first-pass source morphology only; no flux recovery, uncertainty, detection significance or full-chain transfer claim"
+            },
+            "constrained": false
+          },
+          "frozen_template_projection": 960.6837817826877,
+          "fixed_template_definition": "original unit-peak template q=t/sum(t\u00b2), original 3-major-FWHM footprint; subtract own fitted constant for science maps; candidates already source-relative",
+          "template_unit": "mJy/nominal-beam",
+          "apertures": [
+            {
+              "radius_measured_fwhm": 1.0,
+              "radius_arcsec": 6.057436378669031,
+              "value_mJy_per_beam_arcsec2": 33358.403218010375,
+              "available": true,
+              "aperture_pixels": 30,
+              "expected_pixels": 30
+            },
+            {
+              "radius_measured_fwhm": 1.5,
+              "radius_arcsec": 9.086154568003547,
+              "value_mJy_per_beam_arcsec2": 35895.341916718404,
+              "available": true,
+              "aperture_pixels": 64,
+              "expected_pixels": 64
+            },
+            {
+              "radius_measured_fwhm": 2.0,
+              "radius_arcsec": 12.114872757338063,
+              "value_mJy_per_beam_arcsec2": 36192.136097164526,
+              "available": true,
+              "aperture_pixels": 117,
+              "expected_pixels": 117
+            }
+          ],
+          "aperture_definition": "fixed original centroid/radii, sum source-relative brightness times 4 arcsec\u00b2; no missing-area or aperture correction; not integrated flux"
+        },
+        "m0": {
+          "fit": {
+            "status": "success",
+            "parameters": [
+              819.2539945915557,
+              4.662902555386912,
+              -5.168115600343194,
+              2.5687925534329192,
+              2.14730352125325,
+              -2.3178320026751065,
+              -0.19261198080995726
+            ],
+            "description": {
+              "method": "unweighted elliptical Gaussian plus constant; 40 arcsec radius around AST center",
+              "search_and_centroid_domain": "20 arcsec around AST center; positive-amplitude descriptive fit",
+              "nominal_calibration_beam_fwhm_arcsec": 5,
+              "central_pixel_peak_mJy_per_nominal_beam": 712.9548695760069,
+              "fitted_amplitude_above_constant_mJy_per_nominal_beam": 819.2539945915557,
+              "fitted_constant_mJy_per_nominal_beam": -0.19261198080995726,
+              "centroid_tangent_east_north_arcsec": [
+                4.662902555386912,
+                -5.168115600343194
+              ],
+              "centroid_FK5_J2000_ra_dec_deg": [
+                176.74459812177776,
+                39.974759955615276
+              ],
+              "measured_fwhm_major_minor_arcsec": [
+                6.049044196350074,
+                5.056513374612694
+              ],
+              "measured_fwhm_geometric_mean_arcsec": 5.5305580986431595,
+              "fit_pixels": 1257,
+              "fit_residual_rms_mJy_per_nominal_beam": 5.111127197464511,
+              "fit_constraint_active": false,
+              "interpretation": "first-pass source morphology only; no flux recovery, uncertainty, detection significance or full-chain transfer claim"
+            },
+            "constrained": false
+          },
+          "frozen_template_projection": 815.3615219731444,
+          "fixed_template_definition": "original unit-peak template q=t/sum(t\u00b2), original 3-major-FWHM footprint; subtract own fitted constant for science maps; candidates already source-relative",
+          "template_unit": "mJy/nominal-beam",
+          "apertures": [
+            {
+              "radius_measured_fwhm": 1.0,
+              "radius_arcsec": 6.057436378669031,
+              "value_mJy_per_beam_arcsec2": 27027.87790468648,
+              "available": true,
+              "aperture_pixels": 30,
+              "expected_pixels": 30
+            },
+            {
+              "radius_measured_fwhm": 1.5,
+              "radius_arcsec": 9.086154568003547,
+              "value_mJy_per_beam_arcsec2": 27425.176121447446,
+              "available": true,
+              "aperture_pixels": 64,
+              "expected_pixels": 64
+            },
+            {
+              "radius_measured_fwhm": 2.0,
+              "radius_arcsec": 12.114872757338063,
+              "value_mJy_per_beam_arcsec2": 27425.176121447446,
+              "available": true,
+              "aperture_pixels": 117,
+              "expected_pixels": 117
+            }
+          ],
+          "aperture_definition": "fixed original centroid/radii, sum source-relative brightness times 4 arcsec\u00b2; no missing-area or aperture correction; not integrated flux"
+        },
+        "m1": {
+          "fit": {
+            "status": "success",
+            "parameters": [
+              926.1802444429957,
+              4.6299912736677244,
+              -5.147924841107565,
+              2.635288746334582,
+              2.2717101479276396,
+              -2.3420650071313966,
+              -0.15388593392681507
+            ],
+            "description": {
+              "method": "unweighted elliptical Gaussian plus constant; 40 arcsec radius around AST center",
+              "search_and_centroid_domain": "20 arcsec around AST center; positive-amplitude descriptive fit",
+              "nominal_calibration_beam_fwhm_arcsec": 5,
+              "central_pixel_peak_mJy_per_nominal_beam": 828.3391270514663,
+              "fitted_amplitude_above_constant_mJy_per_nominal_beam": 926.1802444429957,
+              "fitted_constant_mJy_per_nominal_beam": -0.15388593392681507,
+              "centroid_tangent_east_north_arcsec": [
+                4.6299912736677244,
+                -5.147924841107565
+              ],
+              "centroid_FK5_J2000_ra_dec_deg": [
+                176.74458619226095,
+                39.97476556433215
+              ],
+              "measured_fwhm_major_minor_arcsec": [
+                6.205630764313155,
+                5.349468592840229
+              ],
+              "measured_fwhm_geometric_mean_arcsec": 5.761668757613226,
+              "fit_pixels": 1257,
+              "fit_residual_rms_mJy_per_nominal_beam": 5.653716171548962,
+              "fit_constraint_active": false,
+              "interpretation": "first-pass source morphology only; no flux recovery, uncertainty, detection significance or full-chain transfer claim"
+            },
+            "constrained": false
+          },
+          "frozen_template_projection": 959.6054397618011,
+          "fixed_template_definition": "original unit-peak template q=t/sum(t\u00b2), original 3-major-FWHM footprint; subtract own fitted constant for science maps; candidates already source-relative",
+          "template_unit": "mJy/nominal-beam",
+          "apertures": [
+            {
+              "radius_measured_fwhm": 1.0,
+              "radius_arcsec": 6.057436378669031,
+              "value_mJy_per_beam_arcsec2": 33192.67315684924,
+              "available": true,
+              "aperture_pixels": 30,
+              "expected_pixels": 30
+            },
+            {
+              "radius_measured_fwhm": 1.5,
+              "radius_arcsec": 9.086154568003547,
+              "value_mJy_per_beam_arcsec2": 34064.525619156906,
+              "available": true,
+              "aperture_pixels": 64,
+              "expected_pixels": 64
+            },
+            {
+              "radius_measured_fwhm": 2.0,
+              "radius_arcsec": 12.114872757338063,
+              "value_mJy_per_beam_arcsec2": 34064.5256191569,
+              "available": true,
+              "aperture_pixels": 117,
+              "expected_pixels": 117
+            }
+          ],
+          "aperture_definition": "fixed original centroid/radii, sum source-relative brightness times 4 arcsec\u00b2; no missing-area or aperture correction; not integrated flux"
+        }
+      },
+      "m1_status": {
+        "status": "retained",
+        "anchor_row_column": [
+          17,
+          18
+        ],
+        "anchor_ratio": 65.87685719170425,
+        "pixels": 32,
+        "area_arcsec2": 128.0,
+        "extent_east_north_arcsec": [
+          [
+            -0.0,
+            10.0
+          ],
+          [
+            -10.0,
+            2.0
+          ]
+        ],
+        "boundary_contact": false,
+        "unsupported_contact": false,
+        "unsupported_domain_pixels": 0,
+        "unassociated_above_threshold_pixels": 1,
+        "threshold": 3.0,
+        "noise_scale_multiplier": 1.0,
+        "equivalent_original_scale_threshold": 3.0
+      },
+      "replacement_changes": {
+        "added": 4,
+        "removed": 0
+      },
+      "pixel_scale": "frozen first-pass additive companion-r2; selection control only, not post-FRUIT uncertainty or calibrated significance",
+      "source_support": {
+        "lost": 0,
+        "added": 0
+      },
+      "projected_remapped_model_maximum_difference": 1.921307557495311e-11,
+      "decomposition_error": 1.807620719773695e-11,
+      "source_masked_background_in_40arcsec_stamp": {
+        "M0": {
+          "n": 997,
+          "median": -4.899470366864642,
+          "mean": -4.6829424026394,
+          "std": 11.881119548538335,
+          "robust_scale": 11.54143749421008
+        },
+        "zero": {
+          "n": 997,
+          "median": -4.899470366864642,
+          "mean": -4.6829424026394,
+          "std": 11.881119548538335,
+          "robust_scale": 11.54143749421008
+        },
+        "T1": {
+          "n": 997,
+          "median": -2.7118636680925143,
+          "mean": -2.784111293529404,
+          "std": 11.576987423040265,
+          "robust_scale": 11.306601876125836
+        }
+      },
+      "full_map_support": {
+        "original_pixels": 9829,
+        "new_pixels": 9829,
+        "lost": 0,
+        "added": 0,
+        "coverage_changed_pixels": 0,
+        "maximum_coverage_difference": 0
+      }
+    },
+    "a1400": {
+      "array": "a1400",
+      "measurements": {
+        "M0": {
+          "fit": {
+            "status": "success",
+            "parameters": [
+              554.1512628929715,
+              4.377816219247622,
+              -5.404829421712671,
+              3.042570718674437,
+              2.6676259586891726,
+              0.7662748464739604,
+              -1.5540001300123354
+            ],
+            "description": {
+              "method": "unweighted elliptical Gaussian plus constant; 40 arcsec radius around AST center",
+              "search_and_centroid_domain": "20 arcsec around AST center; positive-amplitude descriptive fit",
+              "nominal_calibration_beam_fwhm_arcsec": 7.5,
+              "central_pixel_peak_mJy_per_nominal_beam": 525.3492454735518,
+              "fitted_amplitude_above_constant_mJy_per_nominal_beam": 554.1512628929715,
+              "fitted_constant_mJy_per_nominal_beam": -1.5540001300123354,
+              "centroid_tangent_east_north_arcsec": [
+                4.377816219247622,
+                -5.404829421712671
+              ],
+              "centroid_FK5_J2000_ra_dec_deg": [
+                176.74449478238867,
+                39.97469420323102
+              ],
+              "measured_fwhm_major_minor_arcsec": [
+                7.164706516758785,
+                6.281779080166167
+              ],
+              "measured_fwhm_geometric_mean_arcsec": 6.708733376167631,
+              "fit_pixels": 1257,
+              "fit_residual_rms_mJy_per_nominal_beam": 11.469791224033099,
+              "fit_constraint_active": false,
+              "interpretation": "first-pass source morphology only; no flux recovery, uncertainty, detection significance or full-chain transfer claim"
+            },
+            "constrained": false
+          },
+          "frozen_template_projection": 554.1512629060675,
+          "fixed_template_definition": "original unit-peak template q=t/sum(t\u00b2), original 3-major-FWHM footprint; subtract own fitted constant for science maps; candidates already source-relative",
+          "template_unit": "mJy/nominal-beam",
+          "apertures": [
+            {
+              "radius_measured_fwhm": 1.0,
+              "radius_arcsec": 7.164706516758785,
+              "value_mJy_per_beam_arcsec2": 27192.809584411047,
+              "available": true,
+              "aperture_pixels": 40,
+              "expected_pixels": 40
+            },
+            {
+              "radius_measured_fwhm": 1.5,
+              "radius_arcsec": 10.747059775138178,
+              "value_mJy_per_beam_arcsec2": 28123.671585794506,
+              "available": true,
+              "aperture_pixels": 93,
+              "expected_pixels": 93
+            },
+            {
+              "radius_measured_fwhm": 2.0,
+              "radius_arcsec": 14.32941303351757,
+              "value_mJy_per_beam_arcsec2": 29011.531029681268,
+              "available": true,
+              "aperture_pixels": 160,
+              "expected_pixels": 160
+            }
+          ],
+          "aperture_definition": "fixed original centroid/radii, sum source-relative brightness times 4 arcsec\u00b2; no missing-area or aperture correction; not integrated flux"
+        },
+        "zero": {
+          "fit": {
+            "status": "success",
+            "parameters": [
+              554.1512628929715,
+              4.377816219247622,
+              -5.404829421712671,
+              3.042570718674437,
+              2.6676259586891726,
+              0.7662748464739604,
+              -1.5540001300123354
+            ],
+            "description": {
+              "method": "unweighted elliptical Gaussian plus constant; 40 arcsec radius around AST center",
+              "search_and_centroid_domain": "20 arcsec around AST center; positive-amplitude descriptive fit",
+              "nominal_calibration_beam_fwhm_arcsec": 7.5,
+              "central_pixel_peak_mJy_per_nominal_beam": 525.3492454735518,
+              "fitted_amplitude_above_constant_mJy_per_nominal_beam": 554.1512628929715,
+              "fitted_constant_mJy_per_nominal_beam": -1.5540001300123354,
+              "centroid_tangent_east_north_arcsec": [
+                4.377816219247622,
+                -5.404829421712671
+              ],
+              "centroid_FK5_J2000_ra_dec_deg": [
+                176.74449478238867,
+                39.97469420323102
+              ],
+              "measured_fwhm_major_minor_arcsec": [
+                7.164706516758785,
+                6.281779080166167
+              ],
+              "measured_fwhm_geometric_mean_arcsec": 6.708733376167631,
+              "fit_pixels": 1257,
+              "fit_residual_rms_mJy_per_nominal_beam": 11.469791224033099,
+              "fit_constraint_active": false,
+              "interpretation": "first-pass source morphology only; no flux recovery, uncertainty, detection significance or full-chain transfer claim"
+            },
+            "constrained": false
+          },
+          "frozen_template_projection": 554.1512629060675,
+          "fixed_template_definition": "original unit-peak template q=t/sum(t\u00b2), original 3-major-FWHM footprint; subtract own fitted constant for science maps; candidates already source-relative",
+          "template_unit": "mJy/nominal-beam",
+          "apertures": [
+            {
+              "radius_measured_fwhm": 1.0,
+              "radius_arcsec": 7.164706516758785,
+              "value_mJy_per_beam_arcsec2": 27192.809584411047,
+              "available": true,
+              "aperture_pixels": 40,
+              "expected_pixels": 40
+            },
+            {
+              "radius_measured_fwhm": 1.5,
+              "radius_arcsec": 10.747059775138178,
+              "value_mJy_per_beam_arcsec2": 28123.671585794506,
+              "available": true,
+              "aperture_pixels": 93,
+              "expected_pixels": 93
+            },
+            {
+              "radius_measured_fwhm": 2.0,
+              "radius_arcsec": 14.32941303351757,
+              "value_mJy_per_beam_arcsec2": 29011.531029681268,
+              "available": true,
+              "aperture_pixels": 160,
+              "expected_pixels": 160
+            }
+          ],
+          "aperture_definition": "fixed original centroid/radii, sum source-relative brightness times 4 arcsec\u00b2; no missing-area or aperture correction; not integrated flux"
+        },
+        "T1": {
+          "fit": {
+            "status": "success",
+            "parameters": [
+              643.4491193552188,
+              4.393125411296044,
+              -5.337376103796102,
+              3.106117845103639,
+              2.867876070409633,
+              0.7143401633316898,
+              0.7109042679743092
+            ],
+            "description": {
+              "method": "unweighted elliptical Gaussian plus constant; 40 arcsec radius around AST center",
+              "search_and_centroid_domain": "20 arcsec around AST center; positive-amplitude descriptive fit",
+              "nominal_calibration_beam_fwhm_arcsec": 7.5,
+              "central_pixel_peak_mJy_per_nominal_beam": 603.4768932491082,
+              "fitted_amplitude_above_constant_mJy_per_nominal_beam": 643.4491193552188,
+              "fitted_constant_mJy_per_nominal_beam": 0.7109042679743092,
+              "centroid_tangent_east_north_arcsec": [
+                4.393125411296044,
+                -5.337376103796102
+              ],
+              "centroid_FK5_J2000_ra_dec_deg": [
+                176.74450033208336,
+                39.97471294018796
+              ],
+              "measured_fwhm_major_minor_arcsec": [
+                7.3143485638783865,
+                6.753332057265194
+              ],
+              "measured_fwhm_geometric_mean_arcsec": 7.028244776219134,
+              "fit_pixels": 1257,
+              "fit_residual_rms_mJy_per_nominal_beam": 11.32578297495536,
+              "fit_constraint_active": false,
+              "interpretation": "first-pass source morphology only; no flux recovery, uncertainty, detection significance or full-chain transfer claim"
+            },
+            "constrained": false
+          },
+          "frozen_template_projection": 673.0418627444486,
+          "fixed_template_definition": "original unit-peak template q=t/sum(t\u00b2), original 3-major-FWHM footprint; subtract own fitted constant for science maps; candidates already source-relative",
+          "template_unit": "mJy/nominal-beam",
+          "apertures": [
+            {
+              "radius_measured_fwhm": 1.0,
+              "radius_arcsec": 7.164706516758785,
+              "value_mJy_per_beam_arcsec2": 33974.109545952524,
+              "available": true,
+              "aperture_pixels": 40,
+              "expected_pixels": 40
+            },
+            {
+              "radius_measured_fwhm": 1.5,
+              "radius_arcsec": 10.747059775138178,
+              "value_mJy_per_beam_arcsec2": 36688.76347257091,
+              "available": true,
+              "aperture_pixels": 93,
+              "expected_pixels": 93
+            },
+            {
+              "radius_measured_fwhm": 2.0,
+              "radius_arcsec": 14.32941303351757,
+              "value_mJy_per_beam_arcsec2": 38483.8170558455,
+              "available": true,
+              "aperture_pixels": 160,
+              "expected_pixels": 160
+            }
+          ],
+          "aperture_definition": "fixed original centroid/radii, sum source-relative brightness times 4 arcsec\u00b2; no missing-area or aperture correction; not integrated flux"
+        },
+        "m0": {
+          "fit": {
+            "status": "success",
+            "parameters": [
+              559.4298326983509,
+              4.378680056955546,
+              -5.403600977507504,
+              3.0052577158986353,
+              2.6415953571372683,
+              0.7273995630074659,
+              -0.1623490032144365
+            ],
+            "description": {
+              "method": "unweighted elliptical Gaussian plus constant; 40 arcsec radius around AST center",
+              "search_and_centroid_domain": "20 arcsec around AST center; positive-amplitude descriptive fit",
+              "nominal_calibration_beam_fwhm_arcsec": 7.5,
+              "central_pixel_peak_mJy_per_nominal_beam": 526.9032456035642,
+              "fitted_amplitude_above_constant_mJy_per_nominal_beam": 559.4298326983509,
+              "fitted_constant_mJy_per_nominal_beam": -0.1623490032144365,
+              "centroid_tangent_east_north_arcsec": [
+                4.378680056955546,
+                -5.403600977507504
+              ],
+              "centroid_FK5_J2000_ra_dec_deg": [
+                176.74449509551948,
+                39.974694544461244
+              ],
+              "measured_fwhm_major_minor_arcsec": [
+                7.076841109882032,
+                6.220481697847529
+              ],
+              "measured_fwhm_geometric_mean_arcsec": 6.634859501345614,
+              "fit_pixels": 1257,
+              "fit_residual_rms_mJy_per_nominal_beam": 4.649586082574535,
+              "fit_constraint_active": false,
+              "interpretation": "first-pass source morphology only; no flux recovery, uncertainty, detection significance or full-chain transfer claim"
+            },
+            "constrained": false
+          },
+          "frozen_template_projection": 552.9027151913629,
+          "fixed_template_definition": "original unit-peak template q=t/sum(t\u00b2), original 3-major-FWHM footprint; subtract own fitted constant for science maps; candidates already source-relative",
+          "template_unit": "mJy/nominal-beam",
+          "apertures": [
+            {
+              "radius_measured_fwhm": 1.0,
+              "radius_arcsec": 7.164706516758785,
+              "value_mJy_per_beam_arcsec2": 26948.734261843434,
+              "available": true,
+              "aperture_pixels": 40,
+              "expected_pixels": 40
+            },
+            {
+              "radius_measured_fwhm": 1.5,
+              "radius_arcsec": 10.747059775138178,
+              "value_mJy_per_beam_arcsec2": 27088.161598517137,
+              "available": true,
+              "aperture_pixels": 93,
+              "expected_pixels": 93
+            },
+            {
+              "radius_measured_fwhm": 2.0,
+              "radius_arcsec": 14.32941303351757,
+              "value_mJy_per_beam_arcsec2": 27088.161598517137,
+              "available": true,
+              "aperture_pixels": 160,
+              "expected_pixels": 160
+            }
+          ],
+          "aperture_definition": "fixed original centroid/radii, sum source-relative brightness times 4 arcsec\u00b2; no missing-area or aperture correction; not integrated flux"
+        },
+        "m1": {
+          "fit": {
+            "status": "success",
+            "parameters": [
+              650.6192667618997,
+              4.393720667160395,
+              -5.341806557388515,
+              3.067829417853363,
+              2.829744816406304,
+              0.742978752653268,
+              -0.16849859398984549
+            ],
+            "description": {
+              "method": "unweighted elliptical Gaussian plus constant; 40 arcsec radius around AST center",
+              "search_and_centroid_domain": "20 arcsec around AST center; positive-amplitude descriptive fit",
+              "nominal_calibration_beam_fwhm_arcsec": 7.5,
+              "central_pixel_peak_mJy_per_nominal_beam": 602.7659889811339,
+              "fitted_amplitude_above_constant_mJy_per_nominal_beam": 650.6192667618997,
+              "fitted_constant_mJy_per_nominal_beam": -0.16849859398984549,
+              "centroid_tangent_east_north_arcsec": [
+                4.393720667160395,
+                -5.341806557388515
+              ],
+              "centroid_FK5_J2000_ra_dec_deg": [
+                176.74450054782238,
+                39.974711709503445
+              ],
+              "measured_fwhm_major_minor_arcsec": [
+                7.224186207896728,
+                6.663539815995988
+              ],
+              "measured_fwhm_geometric_mean_arcsec": 6.938202392153815,
+              "fit_pixels": 1257,
+              "fit_residual_rms_mJy_per_nominal_beam": 4.756420068967628,
+              "fit_constraint_active": false,
+              "interpretation": "first-pass source morphology only; no flux recovery, uncertainty, detection significance or full-chain transfer claim"
+            },
+            "constrained": false
+          },
+          "frozen_template_projection": 671.8336445378798,
+          "fixed_template_definition": "original unit-peak template q=t/sum(t\u00b2), original 3-major-FWHM footprint; subtract own fitted constant for science maps; candidates already source-relative",
+          "template_unit": "mJy/nominal-beam",
+          "apertures": [
+            {
+              "radius_measured_fwhm": 1.0,
+              "radius_arcsec": 7.164706516758785,
+              "value_mJy_per_beam_arcsec2": 33848.50640541865,
+              "available": true,
+              "aperture_pixels": 40,
+              "expected_pixels": 40
+            },
+            {
+              "radius_measured_fwhm": 1.5,
+              "radius_arcsec": 10.747059775138178,
+              "value_mJy_per_beam_arcsec2": 34641.095045612106,
+              "available": true,
+              "aperture_pixels": 93,
+              "expected_pixels": 93
+            },
+            {
+              "radius_measured_fwhm": 2.0,
+              "radius_arcsec": 14.32941303351757,
+              "value_mJy_per_beam_arcsec2": 34641.095045612106,
+              "available": true,
+              "aperture_pixels": 160,
+              "expected_pixels": 160
+            }
+          ],
+          "aperture_definition": "fixed original centroid/radii, sum source-relative brightness times 4 arcsec\u00b2; no missing-area or aperture correction; not integrated flux"
+        }
+      },
+      "m1_status": {
+        "status": "retained",
+        "anchor_row_column": [
+          17,
+          18
+        ],
+        "anchor_ratio": 57.425212169859726,
+        "pixels": 44,
+        "area_arcsec2": 176.0,
+        "extent_east_north_arcsec": [
+          [
+            -2.0,
+            10.0
+          ],
+          [
+            -12.0,
+            4.0
+          ]
+        ],
+        "boundary_contact": false,
+        "unsupported_contact": false,
+        "unsupported_domain_pixels": 0,
+        "unassociated_above_threshold_pixels": 1,
+        "threshold": 3.0,
+        "noise_scale_multiplier": 1.0,
+        "equivalent_original_scale_threshold": 3.0
+      },
+      "replacement_changes": {
+        "added": 6,
+        "removed": 0
+      },
+      "pixel_scale": "frozen first-pass additive companion-r2; selection control only, not post-FRUIT uncertainty or calibrated significance",
+      "source_support": {
+        "lost": 0,
+        "added": 0
+      },
+      "projected_remapped_model_maximum_difference": 8.185452315956354e-12,
+      "decomposition_error": 8.185452315956354e-12,
+      "source_masked_background_in_40arcsec_stamp": {
+        "M0": {
+          "n": 894,
+          "median": -1.359087260946694,
+          "mean": -1.0190798299814419,
+          "std": 10.635407176401698,
+          "robust_scale": 10.276569470253198
+        },
+        "zero": {
+          "n": 894,
+          "median": -1.359087260946694,
+          "mean": -1.0190798299814419,
+          "std": 10.635407176401698,
+          "robust_scale": 10.276569470253198
+        },
+        "T1": {
+          "n": 894,
+          "median": 0.22267810560219697,
+          "mean": 0.5139717414640212,
+          "std": 10.525075848866837,
+          "robust_scale": 10.033026022377369
+        }
+      },
+      "full_map_support": {
+        "original_pixels": 9780,
+        "new_pixels": 9780,
+        "lost": 0,
+        "added": 0,
+        "coverage_changed_pixels": 0,
+        "maximum_coverage_difference": 0
+      }
+    },
+    "a2000": {
+      "array": "a2000",
+      "measurements": {
+        "M0": {
+          "fit": {
+            "status": "success",
+            "parameters": [
+              593.4009279452124,
+              4.697033840420085,
+              -5.203524112320467,
+              4.006323993878732,
+              3.6586550824732926,
+              -2.198052908019762,
+              -4.9751465440168525
+            ],
+            "description": {
+              "method": "unweighted elliptical Gaussian plus constant; 40 arcsec radius around AST center",
+              "search_and_centroid_domain": "20 arcsec around AST center; positive-amplitude descriptive fit",
+              "nominal_calibration_beam_fwhm_arcsec": 10,
+              "central_pixel_peak_mJy_per_nominal_beam": 527.7283005767052,
+              "fitted_amplitude_above_constant_mJy_per_nominal_beam": 593.4009279452124,
+              "fitted_constant_mJy_per_nominal_beam": -4.9751465440168525,
+              "centroid_tangent_east_north_arcsec": [
+                4.697033840420085,
+                -5.203524112320467
+              ],
+              "centroid_FK5_J2000_ra_dec_deg": [
+                176.74461049341303,
+                39.97475011973717
+              ],
+              "measured_fwhm_major_minor_arcsec": [
+                9.434172047674089,
+                8.61547432606247
+              ],
+              "measured_fwhm_geometric_mean_arcsec": 9.0155347630849,
+              "fit_pixels": 1257,
+              "fit_residual_rms_mJy_per_nominal_beam": 17.18565091665758,
+              "fit_constraint_active": false,
+              "interpretation": "first-pass source morphology only; no flux recovery, uncertainty, detection significance or full-chain transfer claim"
+            },
+            "constrained": false
+          },
+          "frozen_template_projection": 593.4009278549014,
+          "fixed_template_definition": "original unit-peak template q=t/sum(t\u00b2), original 3-major-FWHM footprint; subtract own fitted constant for science maps; candidates already source-relative",
+          "template_unit": "mJy/nominal-beam",
+          "apertures": [
+            {
+              "radius_measured_fwhm": 1.0,
+              "radius_arcsec": 9.434172047674089,
+              "value_mJy_per_beam_arcsec2": 51552.55133874029,
+              "available": true,
+              "aperture_pixels": 72,
+              "expected_pixels": 72
+            },
+            {
+              "radius_measured_fwhm": 1.5,
+              "radius_arcsec": 14.151258071511133,
+              "value_mJy_per_beam_arcsec2": 49997.54976094201,
+              "available": true,
+              "aperture_pixels": 157,
+              "expected_pixels": 157
+            },
+            {
+              "radius_measured_fwhm": 2.0,
+              "radius_arcsec": 18.868344095348178,
+              "value_mJy_per_beam_arcsec2": 48684.07083719902,
+              "available": true,
+              "aperture_pixels": 278,
+              "expected_pixels": 278
+            }
+          ],
+          "aperture_definition": "fixed original centroid/radii, sum source-relative brightness times 4 arcsec\u00b2; no missing-area or aperture correction; not integrated flux"
+        },
+        "zero": {
+          "fit": {
+            "status": "success",
+            "parameters": [
+              593.4009279452124,
+              4.697033840420085,
+              -5.203524112320467,
+              4.006323993878732,
+              3.6586550824732926,
+              -2.198052908019762,
+              -4.9751465440168525
+            ],
+            "description": {
+              "method": "unweighted elliptical Gaussian plus constant; 40 arcsec radius around AST center",
+              "search_and_centroid_domain": "20 arcsec around AST center; positive-amplitude descriptive fit",
+              "nominal_calibration_beam_fwhm_arcsec": 10,
+              "central_pixel_peak_mJy_per_nominal_beam": 527.7283005767052,
+              "fitted_amplitude_above_constant_mJy_per_nominal_beam": 593.4009279452124,
+              "fitted_constant_mJy_per_nominal_beam": -4.9751465440168525,
+              "centroid_tangent_east_north_arcsec": [
+                4.697033840420085,
+                -5.203524112320467
+              ],
+              "centroid_FK5_J2000_ra_dec_deg": [
+                176.74461049341303,
+                39.97475011973717
+              ],
+              "measured_fwhm_major_minor_arcsec": [
+                9.434172047674089,
+                8.61547432606247
+              ],
+              "measured_fwhm_geometric_mean_arcsec": 9.0155347630849,
+              "fit_pixels": 1257,
+              "fit_residual_rms_mJy_per_nominal_beam": 17.18565091665758,
+              "fit_constraint_active": false,
+              "interpretation": "first-pass source morphology only; no flux recovery, uncertainty, detection significance or full-chain transfer claim"
+            },
+            "constrained": false
+          },
+          "frozen_template_projection": 593.4009278549014,
+          "fixed_template_definition": "original unit-peak template q=t/sum(t\u00b2), original 3-major-FWHM footprint; subtract own fitted constant for science maps; candidates already source-relative",
+          "template_unit": "mJy/nominal-beam",
+          "apertures": [
+            {
+              "radius_measured_fwhm": 1.0,
+              "radius_arcsec": 9.434172047674089,
+              "value_mJy_per_beam_arcsec2": 51552.55133874029,
+              "available": true,
+              "aperture_pixels": 72,
+              "expected_pixels": 72
+            },
+            {
+              "radius_measured_fwhm": 1.5,
+              "radius_arcsec": 14.151258071511133,
+              "value_mJy_per_beam_arcsec2": 49997.54976094201,
+              "available": true,
+              "aperture_pixels": 157,
+              "expected_pixels": 157
+            },
+            {
+              "radius_measured_fwhm": 2.0,
+              "radius_arcsec": 18.868344095348178,
+              "value_mJy_per_beam_arcsec2": 48684.07083719902,
+              "available": true,
+              "aperture_pixels": 278,
+              "expected_pixels": 278
+            }
+          ],
+          "aperture_definition": "fixed original centroid/radii, sum source-relative brightness times 4 arcsec\u00b2; no missing-area or aperture correction; not integrated flux"
+        },
+        "T1": {
+          "fit": {
+            "status": "success",
+            "parameters": [
+              761.9635244247087,
+              4.624578968380292,
+              -5.2067584337531265,
+              3.847092192753213,
+              4.045863289038139,
+              -0.7144173054437419,
+              -0.8634776569729493
+            ],
+            "description": {
+              "method": "unweighted elliptical Gaussian plus constant; 40 arcsec radius around AST center",
+              "search_and_centroid_domain": "20 arcsec around AST center; positive-amplitude descriptive fit",
+              "nominal_calibration_beam_fwhm_arcsec": 10,
+              "central_pixel_peak_mJy_per_nominal_beam": 734.1170098219108,
+              "fitted_amplitude_above_constant_mJy_per_nominal_beam": 761.9635244247087,
+              "fitted_constant_mJy_per_nominal_beam": -0.8634776569729493,
+              "centroid_tangent_east_north_arcsec": [
+                4.624578968380292,
+                -5.2067584337531265
+              ],
+              "centroid_FK5_J2000_ra_dec_deg": [
+                176.74458423001195,
+                39.97474922169581
+              ],
+              "measured_fwhm_major_minor_arcsec": [
+                9.527279972481855,
+                9.059209810577334
+              ],
+              "measured_fwhm_geometric_mean_arcsec": 9.290297529940824,
+              "fit_pixels": 1257,
+              "fit_residual_rms_mJy_per_nominal_beam": 15.858305924318431,
+              "fit_constraint_active": false,
+              "interpretation": "first-pass source morphology only; no flux recovery, uncertainty, detection significance or full-chain transfer claim"
+            },
+            "constrained": false
+          },
+          "frozen_template_projection": 784.5620526922993,
+          "fixed_template_definition": "original unit-peak template q=t/sum(t\u00b2), original 3-major-FWHM footprint; subtract own fitted constant for science maps; candidates already source-relative",
+          "template_unit": "mJy/nominal-beam",
+          "apertures": [
+            {
+              "radius_measured_fwhm": 1.0,
+              "radius_arcsec": 9.434172047674089,
+              "value_mJy_per_beam_arcsec2": 70348.0682894325,
+              "available": true,
+              "aperture_pixels": 72,
+              "expected_pixels": 72
+            },
+            {
+              "radius_measured_fwhm": 1.5,
+              "radius_arcsec": 14.151258071511133,
+              "value_mJy_per_beam_arcsec2": 72492.33961577593,
+              "available": true,
+              "aperture_pixels": 157,
+              "expected_pixels": 157
+            },
+            {
+              "radius_measured_fwhm": 2.0,
+              "radius_arcsec": 18.868344095348178,
+              "value_mJy_per_beam_arcsec2": 73352.8921745396,
+              "available": true,
+              "aperture_pixels": 278,
+              "expected_pixels": 278
+            }
+          ],
+          "aperture_definition": "fixed original centroid/radii, sum source-relative brightness times 4 arcsec\u00b2; no missing-area or aperture correction; not integrated flux"
+        },
+        "m0": {
+          "fit": {
+            "status": "success",
+            "parameters": [
+              594.8655634112304,
+              4.6921501773604435,
+              -5.225690874230173,
+              3.9895595538937147,
+              3.6634406580528642,
+              -2.126800272102655,
+              -0.7351553215184087
+            ],
+            "description": {
+              "method": "unweighted elliptical Gaussian plus constant; 40 arcsec radius around AST center",
+              "search_and_centroid_domain": "20 arcsec around AST center; positive-amplitude descriptive fit",
+              "nominal_calibration_beam_fwhm_arcsec": 10,
+              "central_pixel_peak_mJy_per_nominal_beam": 532.7034471207221,
+              "fitted_amplitude_above_constant_mJy_per_nominal_beam": 594.8655634112304,
+              "fitted_constant_mJy_per_nominal_beam": -0.7351553215184087,
+              "centroid_tangent_east_north_arcsec": [
+                4.6921501773604435,
+                -5.225690874230173
+              ],
+              "centroid_FK5_J2000_ra_dec_deg": [
+                176.74460872303388,
+                39.97474396232919
+              ],
+              "measured_fwhm_major_minor_arcsec": [
+                9.394694808353652,
+                8.626743495364256
+              ],
+              "measured_fwhm_geometric_mean_arcsec": 9.002534217035624,
+              "fit_pixels": 1257,
+              "fit_residual_rms_mJy_per_nominal_beam": 8.374363599753186,
+              "fit_constraint_active": false,
+              "interpretation": "first-pass source morphology only; no flux recovery, uncertainty, detection significance or full-chain transfer claim"
+            },
+            "constrained": false
+          },
+          "frozen_template_projection": 592.5164744518889,
+          "fixed_template_definition": "original unit-peak template q=t/sum(t\u00b2), original 3-major-FWHM footprint; subtract own fitted constant for science maps; candidates already source-relative",
+          "template_unit": "mJy/nominal-beam",
+          "apertures": [
+            {
+              "radius_measured_fwhm": 1.0,
+              "radius_arcsec": 9.434172047674089,
+              "value_mJy_per_beam_arcsec2": 50931.32577589268,
+              "available": true,
+              "aperture_pixels": 72,
+              "expected_pixels": 72
+            },
+            {
+              "radius_measured_fwhm": 1.5,
+              "radius_arcsec": 14.151258071511133,
+              "value_mJy_per_beam_arcsec2": 50931.32577589268,
+              "available": true,
+              "aperture_pixels": 157,
+              "expected_pixels": 157
+            },
+            {
+              "radius_measured_fwhm": 2.0,
+              "radius_arcsec": 18.868344095348178,
+              "value_mJy_per_beam_arcsec2": 50931.32577589268,
+              "available": true,
+              "aperture_pixels": 278,
+              "expected_pixels": 278
+            }
+          ],
+          "aperture_definition": "fixed original centroid/radii, sum source-relative brightness times 4 arcsec\u00b2; no missing-area or aperture correction; not integrated flux"
+        },
+        "m1": {
+          "fit": {
+            "status": "success",
+            "parameters": [
+              774.6897088876035,
+              4.630526087572169,
+              -5.220262078032494,
+              3.965169275651989,
+              3.7778990838718265,
+              -2.266448717488962,
+              -0.8623209587758847
+            ],
+            "description": {
+              "method": "unweighted elliptical Gaussian plus constant; 40 arcsec radius around AST center",
+              "search_and_centroid_domain": "20 arcsec around AST center; positive-amplitude descriptive fit",
+              "nominal_calibration_beam_fwhm_arcsec": 10,
+              "central_pixel_peak_mJy_per_nominal_beam": 734.9804874788837,
+              "fitted_amplitude_above_constant_mJy_per_nominal_beam": 774.6897088876035,
+              "fitted_constant_mJy_per_nominal_beam": -0.8623209587758847,
+              "centroid_tangent_east_north_arcsec": [
+                4.630526087572169,
+                -5.220262078032494
+              ],
+              "centroid_FK5_J2000_ra_dec_deg": [
+                176.7445863856264,
+                39.97474547065245
+              ],
+              "measured_fwhm_major_minor_arcsec": [
+                9.337260092246154,
+                8.896272490805437
+              ],
+              "measured_fwhm_geometric_mean_arcsec": 9.114099522067164,
+              "fit_pixels": 1257,
+              "fit_residual_rms_mJy_per_nominal_beam": 8.455536051113018,
+              "fit_constraint_active": false,
+              "interpretation": "first-pass source morphology only; no flux recovery, uncertainty, detection significance or full-chain transfer claim"
+            },
+            "constrained": false
+          },
+          "frozen_template_projection": 781.1229356430676,
+          "fixed_template_definition": "original unit-peak template q=t/sum(t\u00b2), original 3-major-FWHM footprint; subtract own fitted constant for science maps; candidates already source-relative",
+          "template_unit": "mJy/nominal-beam",
+          "apertures": [
+            {
+              "radius_measured_fwhm": 1.0,
+              "radius_arcsec": 9.434172047674089,
+              "value_mJy_per_beam_arcsec2": 68579.7304144829,
+              "available": true,
+              "aperture_pixels": 72,
+              "expected_pixels": 72
+            },
+            {
+              "radius_measured_fwhm": 1.5,
+              "radius_arcsec": 14.151258071511133,
+              "value_mJy_per_beam_arcsec2": 68579.73041448288,
+              "available": true,
+              "aperture_pixels": 157,
+              "expected_pixels": 157
+            },
+            {
+              "radius_measured_fwhm": 2.0,
+              "radius_arcsec": 18.868344095348178,
+              "value_mJy_per_beam_arcsec2": 68579.7304144829,
+              "available": true,
+              "aperture_pixels": 278,
+              "expected_pixels": 278
+            }
+          ],
+          "aperture_definition": "fixed original centroid/radii, sum source-relative brightness times 4 arcsec\u00b2; no missing-area or aperture correction; not integrated flux"
+        }
+      },
+      "m1_status": {
+        "status": "retained",
+        "anchor_row_column": [
+          17,
+          18
+        ],
+        "anchor_ratio": 47.43899903132251,
+        "pixels": 59,
+        "area_arcsec2": 236.0,
+        "extent_east_north_arcsec": [
+          [
+            -4.0,
+            12.0
+          ],
+          [
+            -14.0,
+            2.0
+          ]
+        ],
+        "boundary_contact": false,
+        "unsupported_contact": false,
+        "unsupported_domain_pixels": 0,
+        "unassociated_above_threshold_pixels": 2,
+        "threshold": 3.0,
+        "noise_scale_multiplier": 1.0,
+        "equivalent_original_scale_threshold": 3.0
+      },
+      "replacement_changes": {
+        "added": 2,
+        "removed": 0
+      },
+      "pixel_scale": "frozen first-pass additive companion-r2; selection control only, not post-FRUIT uncertainty or calibrated significance",
+      "source_support": {
+        "lost": 0,
+        "added": 0
+      },
+      "projected_remapped_model_maximum_difference": 4.547473508864641e-12,
+      "decomposition_error": 4.206412995699793e-12,
+      "source_masked_background_in_40arcsec_stamp": {
+        "M0": {
+          "n": 627,
+          "median": -2.056269823919295,
+          "mean": -2.045631280717141,
+          "std": 15.612978408303292,
+          "robust_scale": 14.62757024741778
+        },
+        "zero": {
+          "n": 627,
+          "median": -2.056269823919295,
+          "mean": -2.045631280717141,
+          "std": 15.612978408303292,
+          "robust_scale": 14.62757024741778
+        },
+        "T1": {
+          "n": 627,
+          "median": -0.1170031637457188,
+          "mean": -0.051516196832676414,
+          "std": 15.473995412153792,
+          "robust_scale": 14.651965503743922
+        }
+      },
+      "full_map_support": {
+        "original_pixels": 10601,
+        "new_pixels": 10601,
+        "lost": 0,
+        "added": 0,
+        "coverage_changed_pixels": 0,
+        "maximum_coverage_difference": 0
+      }
+    }
+  }
+}
