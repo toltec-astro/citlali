@@ -1,9 +1,11 @@
 """Bounded continuation controls, lineage and failure behavior."""
 import tempfile
+import json
+import yaml
 import unittest
 from pathlib import Path
 import numpy as np
-from run_point_fruit_ten import continue_array, make_request
+from run_point_fruit_ten import continue_array, make_request, original_parents
 from point_fruit_trajectory import candidate_guard, selection_difference, verified, bound, manifest, verify_manifest, difference
 from point_admission import admit
 
@@ -48,6 +50,20 @@ class TenCycleControls(unittest.TestCase):
             with self.assertRaises(ValueError):make_request('a1100',11,r/'m2',r/'state2',parents,r/'owner')
             ref=bound(r/'m1');(r/'m1').write_text('mutated')
             with self.assertRaises(ValueError):verified(ref)
+
+    def test_original_request_and_external_ledger_mutation_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);(root/'cycle/reference/a1100/products').mkdir(parents=True)
+            for n in ['request','plan','original-y']:(root/n).write_text(n)
+            refs=dict(map_request=bound(root/'request'),parent_plan=bound(root/'plan'))
+            (root/'cycle/reference-a1100.json').write_text(json.dumps(refs))
+            ledger=root/'cycle/reference/a1100/products/input-manifest.yaml'
+            ledger.write_text(yaml.safe_dump({str(root/'original-y'):bound(root/'original-y')['sha256']}))
+            self.assertEqual(original_parents(root,'a1100'),refs)
+            (root/'request').write_text('changed config')
+            with self.assertRaises(ValueError):original_parents(root,'a1100')
+            (root/'request').write_text('request');(root/'original-y').write_text('changed input')
+            with self.assertRaises(ValueError):original_parents(root,'a1100')
 
     def test_manifest_preserves_intermediates_and_detects_mutation(self):
         with tempfile.TemporaryDirectory() as tmp:

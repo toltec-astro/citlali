@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 import numpy as np
-from point_fruit_trajectory import verify_manifest, manifest, load, selection_difference, bound
+from point_fruit_trajectory import verify_manifest, manifest, load, selection_difference, bound, difference
 from point_fruit_diagnostics import patch_map
 from point_additive_diagnostics import save_json
 
@@ -28,6 +28,20 @@ def report(run, output):
         pixels = [int(c['ADMITTED'].sum()) if c is not None else np.nan for c in candidates]
         fixed = [m['frozen_template_projection'] for m in measures]
         apertures = np.array([[x['value_mJy_per_beam_arcsec2'] for x in m['apertures']] for m in measures])
+        # Include T1-M0, which predates the continuation's per-cycle diagnostics.
+        if 1 in histories and 'differences' not in histories[1]:
+            current, _ = load(Path(histories[1]['total']['path']))
+            original, _ = load(Path(histories[0]['total']['path']))
+            newpatch, _, _, h = patch_map(Path(histories[1]['total']['path']))
+            oldpatch, _, _, _ = patch_map(Path(histories[0]['total']['path']))
+            x,y=coordinates(newpatch.shape,h);disk=np.hypot(x,y)<=40
+            a0,a1=pars[0,0],pars[1,0]
+            histories[1]['differences']={'1':dict(from_cycle=0,fitted_amplitude=a1-a0,
+                fitted_amplitude_fraction=(a1-a0)/a0,
+                full_map=difference(current['PRIMARY'],original['PRIMARY'],current['SCI_SUPPORT'].astype(bool),a0),
+                fixed_disk=difference(newpatch,oldpatch,disk,a0),
+                fixed_disk_background_subtracted=difference(newpatch-pars[1,6],oldpatch-pars[0,6],disk,a0),
+                selection=selection_difference(candidates[1],candidates[0]))}
         rows[array] = []
         for j,k in enumerate(indices):
             d = histories[k].get('differences', {})
@@ -56,6 +70,16 @@ def report(run, output):
         for ax in axes.flat:ax.set_xlabel('Feedback cycle (0 = M0)');ax.set_xticks(indices);ax.grid(alpha=.2)
         fig.suptitle(array+' — fixed-definition trajectory; no post-FRUIT error bars')
         fig.savefig(dest/'trajectory.png',dpi=150);plt.close(fig)
+        fig,axes=plt.subplots(1,3,figsize=(15,4),constrained_layout=True)
+        for lag in (1,2):
+            ks=[k for k in indices if str(lag) in histories[k].get('differences',{})]
+            entries=[histories[k]['differences'][str(lag)]['selection'] for k in ks]
+            axes[0].plot(ks,[e['added'] for e in entries],'o-',label=f'Added vs k−{lag}')
+            axes[1].plot(ks,[e['removed'] for e in entries],'o-',label=f'Removed vs k−{lag}')
+            axes[2].plot(ks,[e['retained_brightness_rms_change'] for e in entries],'o-',label=f'Retained vs k−{lag}')
+        for ax in axes:ax.set_xlabel('Cycle');ax.legend();ax.grid(alpha=.2)
+        axes[0].set_ylabel('Pixels added');axes[1].set_ylabel('Pixels removed');axes[2].set_ylabel('Retained brightness RMS [mJy/nominal beam]')
+        fig.suptitle(array+' — replacement support and retained brightness changes');fig.savefig(dest/'selection-changes.png',dpi=150);plt.close(fig)
         shown=[k for k in (0,1,2,3,5,10) if k in histories]
         images={k:patch_map(Path(histories[k]['total']['path']))[0] for k in indices}
         _,_,_,h=patch_map(Path(histories[0]['total']['path']));x,y=coordinates(images[0].shape,h)
@@ -98,7 +122,7 @@ def report(run, output):
         for r in table:
             pair=lambda v:' / '.join(f'{x:.3f}' for x in v)
             lines.append(f'| {"M0" if r["cycle"]==0 else "T"+str(r["cycle"])} | {r["amplitude"]:.3f} | {r['frozen_template'] if r['frozen_template'] is not None else 'unavailable'} | {pair(r["widths_arcsec"])} | {pair(r["east_north_arcsec"])} | {r["constant"]:.3f} | {r["selected_pixels"]} |')
-        lines+=['','Figures: '+', '.join(f'[{label}]({output/a/name})' for label,name in [('trajectory','trajectory.png'),('M0/T1/T2/T3/T5/T10','selected-maps.png'),('profiles','profiles.png'),('candidate support','candidate-support.png')])+'.','',f'All cycle products and receipts: [{a}]({run/a}).','']
+        lines+=['','Figures: '+', '.join(f'[{label}]({output/a/name})' for label,name in [('trajectory','trajectory.png'),('M0/T1/T2/T3/T5/T10','selected-maps.png'),('profiles','profiles.png'),('candidate support','candidate-support.png'),('selection changes','selection-changes.png')])+'.','',f'All cycle products and receipts: [{a}]({run/a}).','']
     lines+=['## Execution and evidence','',f'Whole execution wall time: {result["wall_seconds"]:.3f} s; {result["array_workers"]} array workers, one numerical-library thread each. Per-cycle native/diagnostic wall, native CPU, stage timing and peak memory are preserved in the receipts and RUN files. Shared original inputs are referenced. No RTC/CAL rerun, threshold/rank tuning, uncertainty campaign, cycle 11 or best-map selection.','',f'Numerical trajectory and all fixed-aperture/background/difference values: [trajectory-table.json]({output/"trajectory-table.json"}). Full lineage and guards: [RUN.json]({run/"RUN.json"}).','',
     'T contains the restored feedback model; increased amplitude, source presence or a shallower bowl is not independent evidence of calibrated recovery. The authorized stop is ten cycles completed with m10 unapplied, or the recorded array-specific validity failure.']
     (output/'REPORT.md').write_text('\n'.join(lines)+'\n')

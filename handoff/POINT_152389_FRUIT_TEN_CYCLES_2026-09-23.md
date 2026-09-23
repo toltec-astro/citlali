@@ -43,3 +43,19 @@ one numerical-library thread. Shared original inputs are referenced, not copied.
 
 No second branch, Unity, rank/threshold/response changes, uncertainty campaign,
 cycle11, best-map selection, integration, push, activation or cleanup authority.
+
+## Pre-execution review and bounded repair
+
+Independent fresh-context review of9b363175c1b8e595b02b6845784292bc9fba9af1
+found a missing enforced ancestry check: current original request/plan bindings
+were freshly hashed instead of verified against the archived T1 request. All
+current files did match; no changed scientific inputs were observed. Repair
+recovers exactly those archived bindings, follows the original external input
+ledger, and rejects mutations. A focused mutation test covers request and y.
+This is within the authorized exact-input/lineage scope, with no numerical change.
+The report now explicitly includes T1−M0 lag metrics and candidate additions,
+removals and retained-brightness plots. Source-independent saved-product smoke
+passes. Repaired successor suite:239 tests/111 subtests. Broader baseline207/137,
+selected CTest28 and full required configuration preflight passed; native
+continuation explicitly rejects indices1 and11 before loading scientific data.
+No new zero or nonzero observation execution has occurred at this checkpoint.

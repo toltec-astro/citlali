@@ -23,6 +23,18 @@ def make_request(array, cycle, candidate, previous, parents, owner, zero=False):
                 map_request=parents['map_request'], parent_plan=parents['parent_plan'], owner_binding=bound(owner))
 
 
+def original_parents(first, array):
+    """Recover immutable references from the already manifest-verified T1 request."""
+    request = json.loads((first/f'cycle/reference-{array}.json').read_text())
+    for key in ('map_request', 'parent_plan'):
+        verified(request[key])
+    # Follow the original native ledger, not just hashes of the ledger document.
+    ledger = read_yaml(first/f'cycle/reference/{array}/products/input-manifest.yaml')
+    for path, sha in ledger.items():
+        verified(dict(path=path, sha256=sha))
+    return {key:request[key] for key in ('map_request', 'parent_plan')}
+
+
 def continue_array(seed, execute, first=2, last=10):
     """Explicit bounded sequencing: callback owns execution/guards, never implicit retry."""
     require(first == 2 and last == 10, 'this experiment requires nine additional cycles only')
@@ -77,7 +89,8 @@ def run(args):
         root = args.output/a
         root.mkdir()
         fixed = FixedMeasurements(maps/a, admission/a, additive/a)
-        parents = dict(map_request=bound(Path(req['map_request'])), parent_plan=bound(maps/a/'plan.yaml'))
+        parents = original_parents(args.first, a)
+        require(Path(parents['parent_plan']['path']) == maps/a/'plan.yaml', 'original plan locator changed')
         candidate = args.first/f'diagnostics-r2/{a}/m1.fits'
         require(digest(candidate) == owner['seed_candidates'][a], 'saved m1 differs')
         c, h = load(candidate)
