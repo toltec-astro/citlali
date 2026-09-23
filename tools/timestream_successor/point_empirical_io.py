@@ -90,12 +90,12 @@ def split_maps(root,plan,full,header,beam,parameters):
                 difference=difference,balance=balance,report=summary)
 
 
-def write_fits(path,header,planes):
+def write_fits(path,header,planes,companion='POINT-EMPIRICAL'):
     hdus=[]
     for i,(name,values,unit) in enumerate(planes):
         h=header.copy()
         for key in ['CHECKSUM','DATASUM']:h.remove(key,ignore_missing=True)
-        h['BUNIT']=unit;h['EXTNAME']=name;h['COMPAN']='POINT-EMPIRICAL'
+        h['BUNIT']=unit;h['EXTNAME']=name;h['COMPAN']=companion
         hdu=(fits.PrimaryHDU if i==0 else fits.ImageHDU)(values,header=h)
         hdus.append(hdu)
     fits.HDUList(hdus).writeto(path,checksum=True,overwrite=False)
