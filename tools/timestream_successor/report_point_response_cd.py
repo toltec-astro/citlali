@@ -43,6 +43,44 @@ def candidate_comparison(current, reference, shoulder):
         candidate_area_arcsec2=int(cs['ADMITTED'].sum())*4,replacement_shoulder_projection=p['value'])
 
 
+MEASUREMENT_UNITS=['mJy/nominal beam','arcsec','arcsec','arcsec','arcsec',
+    'arcsec² (shape tensor)','arcsec² (shape tensor)','arcsec² (shape tensor)',
+    'mJy/nominal beam','mJy/nominal beam',
+    'mJy/nominal beam × arcsec²','mJy/nominal beam × arcsec²','mJy/nominal beam × arcsec²']
+
+
+def measurement_tables(out, array, results):
+    lines=[f'# {array}: measurement response and remaining drift','',
+        'All values retain the original fit, template, aperture centers/radii and background definitions. '
+        'Shape tensor is the Gaussian squared-width tensor, not an uncertainty covariance. '
+        'Peak/template/background are mJy/nominal beam; aperture integrals are brightness times angular area.',
+        'Ratios are secondary deterministic diagnostics; unavailable if the ideal increment is too small. '
+        'No signed-difference positive-source fit, uncertainty conversion or flux correction is used.','']
+    units=dict(zip(MEASUREMENT_NAMES,MEASUREMENT_UNITS))
+    for branch,rows in results.items():
+        final=next((r for r in rows if r['cycle']==10),None)
+        if final is None:continue
+        lines.extend([f'## {branch} at T10',''])
+        if branch.startswith('C-'):
+            comparisons=final['measurement_response']['comparisons']
+            lines.extend(['| Measurement | Unit | Actual increment | Ideal increment | Actual − ideal | Ratio |',
+                          '|---|---|---:|---:|---:|---:|'])
+            for row in comparisons or []:
+                lines.append(f"| {row['name']} | {units[row['name']]} | {fmt(row['actual_increment'])} | {fmt(row['ideal_increment'])} | {fmt(row['absolute_discrepancy'])} | {fmt(row['ratio'])} |")
+            lines.extend(['','| Fixed aperture | Actual raw increment | Ideal raw increment | Actual background term | Ideal background term |',
+                          '|---|---:|---:|---:|---:|'])
+            for row in final['measurement_response'].get('raw_aperture_and_background_increments',[]):
+                if row['available']:lines.append(f"| {row['factor']} × M0 major FWHM | {fmt(row['actual_raw_increment'])} | {fmt(row['ideal_raw_increment'])} | {fmt(row['actual_background_increment'])} | {fmt(row['ideal_background_increment'])} |")
+            lines.append('Raw minus fitted-background term is the reported source-relative aperture increment; no missing-area/aperture correction.')
+        else:
+            lines.extend(['| Measurement | Unit | T10 − REF T10 | T10 − T9 within branch |',
+                          '|---|---|---:|---:|'])
+            for name in MEASUREMENT_NAMES:
+                lines.append(f"| {name} | {units[name]} | {fmt(final.get('measurement_increments',{}).get(name))} | {fmt(final.get('previous_cycle_measurement_drift',{}).get(name))} |")
+        lines.append('')
+    (out/'MEASUREMENTS.md').write_text('\n'.join(lines)+'\n')
+
+
 def assess(out):
     began=time.perf_counter();revision=source();freeze=json_read(out/'FREEZE.json')
     verify_manifest(out/'freeze',freeze['manifest']['sha256']);owner=json_read(verified(freeze['prospective']))
@@ -97,7 +135,8 @@ def assess(out):
                     support=dict(common=int(common.sum()),lost=int(lost.sum()),gained=int(gained.sum()),
                         changed_normalization=int(norm_changed.sum())),
                     map_difference_rms=float(np.sqrt(np.mean(delta[common]**2))),
-                    map_difference_max_abs=float(np.max(abs(delta[common]))),candidate_turnover=c.get('candidate_turnover'))
+                    map_difference_max_abs=float(np.max(abs(delta[common]))),candidate_turnover=c.get('candidate_turnover'),native_receipt=c.get('receipt'),
+                    PTC_states=c.get('PTC_segments',rc.get('PTC_segments',[])))
                 vbase=vector_measurement(rc['measurement']);vbranch=vector_measurement(c['measurement'])
                 if vbase is not None and vbranch is not None:
                     row['measurement_increments']=dict(zip(MEASUREMENT_NAMES,vbranch-vbase))
@@ -107,6 +146,7 @@ def assess(out):
                 row['total_shoulder_projection_domain']=shape_projection(ds,dv,sh)
                 row['total_shoulder_projection']=row['total_shoulder_projection_domain']['value']
                 row['profile_radius_arcsec']=((fixed.edges[:-1]+fixed.edges[1:])/2).tolist()
+                if branch.startswith('D-') and k==10:map_images[branch,k]=(ds,None,None)
                 row['difference_profile']=[float(np.mean(ds[m])) if np.any(m) else None for m in
                     [dv&(fixed.radius>=lo)&(fixed.radius<hi) for lo,hi in zip(fixed.edges[:-1],fixed.edges[1:])]]
                 planes=[('DELTA',delta,'mJy/nominal beam'),('COMMON',common.astype('u1'),'1'),
@@ -123,7 +163,8 @@ def assess(out):
                     bs,bsv,_,_=patch_map(bp);rsig,rsv,_,_=patch_map(rp)
                     isg,iv,_,_,_=source_patch(known,kv,np.ones(known.shape),kh)
                     row['measurement_response']=measurement_response(fixed,rsig,bs,bsv&rsv&iv,isg)
-                    row['state_transition']=bool(lost.any() or gained.any() or norm_changed.any())
+                    row['state_transition']=bool(lost.any() or gained.any() or norm_changed.any() or
+                        any(p.get('output_cause_changed',0) or p['converged']!=p['parent_converged'] for p in row['PTC_states']))
                     if row['state_transition']:
                         row['response_qualification']='common-support diagnostic with downstream state change; not brightness-only response'
                     if k in (0,10):map_images[branch,k]=(ds,isg,ds-isg)
@@ -144,9 +185,10 @@ def assess(out):
             valid=pv&mv&rv;v=np.where(valid,ps+ms-2*rs,np.nan)
             even.append(dict(cycle=k,rms=float(np.sqrt(np.mean(v[valid]**2))),max_abs=float(np.max(abs(v[valid])))))
             write_fits(d/f'even-{k:02d}.fits',h,[('EVEN',v,'mJy/nominal beam'),('VALID',valid.astype('u1'),'1')],companion='POINT-CD-EVEN')
-        allresults[array]=dict(branches=results,even=even)
+        allresults[array]=dict(branches=results,even=even,measurement_units=dict(zip(MEASUREMENT_NAMES,MEASUREMENT_UNITS)),even_domain='common supported pixels in the 41x41 source stamp')
+        measurement_tables(d,array,results)
         save_json(d/'results.json',allresults[array]);draw(d,array,results,map_images,even,fixed)
-        texts.extend(['',f'## {array}', '',f'[Map response and profiles]({d}/response.png) · [Signed source-region maps]({d}/maps.png) · [Seed and threshold comparisons]({d}/robustness.png) · [All numerical records]({d}/results.json)',
+        texts.extend(['',f'## {array}', '',f'[Map response and profiles]({d}/response.png) · [Signed source-region maps]({d}/maps.png) · [Seed and threshold comparisons]({d}/robustness.png) · [Unthresholded D difference maps]({d}/D-difference-maps.png) · [Measurement comparison tables]({d}/MEASUREMENTS.md) · [All numerical records]({d}/results.json)',
             '', '| Intervention | Cycle | g | η | Actual peak increment | Ideal peak increment | Peak discrepancy |','|---|---:|---:|---:|---:|---:|---:|'])
         for b,rows in results.items():
             if not b.startswith('C-'):continue
@@ -169,7 +211,7 @@ def assess(out):
     (report/'REPORT.md').write_text('\n'.join(texts)+'\n');manifest(report)
 
 
-def fmt(v):return 'unavailable' if v is None else f'{v:.6f}'
+def fmt(v):return 'unavailable' if v is None or not np.isfinite(v) else f'{v:.6g}'
 
 
 def draw(out,array,results,images,even,fixed):
@@ -183,9 +225,10 @@ def draw(out,array,results,images,even,fixed):
         axs[0,1].plot(k,[r['map_response']['eta'] for r in rows],'.-',label=branch)
         for row in rows:
             if row['cycle'] in (0,10):axs[1,0].plot(row['profile_radius_arcsec'],row['difference_profile'],label=f'{branch} T{row["cycle"]}')
+    axs[0,0].set_xlabel('cycle (0 = M0)');axs[0,1].set_xlabel('cycle (0 = M0)')
     axs[0,0].axhline(1,color='k',lw=.7);axs[0,0].set_ylabel('shape projection g');axs[0,1].set_ylabel('relative residual norm η')
     axs[1,0].set(xlabel='radius from original centroid [arcsec]',ylabel='signed Δ brightness [mJy/nominal beam]')
-    axs[1,1].plot([r['cycle'] for r in even],[r['rms'] for r in even],'.-');axs[1,1].set(xlabel='cycle (0 = M0)',ylabel='even response RMS [mJy/nominal beam]')
+    axs[1,1].plot([r['cycle'] for r in even],[r['rms'] for r in even],'.-');axs[1,1].set(xlabel='cycle (0 = M0)',ylabel='even response RMS, 41×41 stamp [mJy/nominal beam]')
     for ax in axs.flat:ax.grid(alpha=.2)
     axs[0,0].legend(fontsize=8);axs[1,0].legend(fontsize=7);fig.suptitle(array+' — finite paired map response')
     fig.savefig(out/'response.png',dpi=150);plt.close(fig)
@@ -214,9 +257,22 @@ def draw(out,array,results,images,even,fixed):
     c=results.get('C-shoulder',[])
     axs[0,1].plot([r['cycle'] for r in c],[r['total_shoulder_projection'] for r in c],'.-',label='data shoulder: total')
     labels=['seed peak − REF [mJy/nominal beam]','projection onto shoulder raster','candidate area [arcsec²]','threshold5 peak − REF [mJy/nominal beam]']
-    for ax,label in zip(axs.flat,labels):ax.set(xlabel='cycle (0 = M0)',ylabel=label);ax.legend(fontsize=8);ax.grid(alpha=.2)
+    for ax,label in zip(axs.flat,labels):
+        ax.set(xlabel='cycle (0 = M0)',ylabel=label);ax.grid(alpha=.2)
+        if ax.get_legend_handles_labels()[0]:ax.legend(fontsize=8)
     fig.suptitle(array+' — initialization memory separate from threshold sensitivity')
     fig.savefig(out/'robustness.png',dpi=150);plt.close(fig)
+    fig,axs=plt.subplots(1,4,figsize=(14,4.5),constrained_layout=True)
+    for ax,b in zip(axs,BRANCHES[4:]):
+        v=images.get((b,10),(None,))[0]
+        ax.set_title(b+'\nT10 − REF T10',fontsize=10)
+        if v is None:ax.text(.5,.5,'unavailable',ha='center',transform=ax.transAxes);continue
+        vmax=max(float(np.nanmax(abs(v))),1e-12)
+        im=ax.imshow(v,origin='lower',extent=extent,cmap='RdBu_r',vmin=-vmax,vmax=vmax)
+        fig.colorbar(im,ax=ax,shrink=.8);ax.set_xlabel('east [arcsec]');ax.set_ylabel('north [arcsec]')
+    fig.suptitle(array+' — unthresholded map differences; independent color scales [mJy/nominal beam]')
+    fig.savefig(out/'D-difference-maps.png',dpi=150);plt.close(fig)
+
 
 
 if __name__=='__main__':
