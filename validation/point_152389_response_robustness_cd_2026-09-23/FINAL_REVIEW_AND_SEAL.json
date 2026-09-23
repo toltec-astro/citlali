@@ -1,0 +1,23 @@
+{
+  "reviewed_candidate": "cc509e74c663d45f4a00a398b4ec1ca4364546e9",
+  "reviewed_tree": "6888df2a770a35d2cef7c4b146e5c4838959178b",
+  "reviewer": "/root/point_cd_review",
+  "verdict": "pass with recorded scientific limitations",
+  "scientific_behavioral": "pass; finite response boundary and five constrained ideal controls explicit",
+  "architecture_ownership": "pass; reporting/tests/docs/evidence closure only",
+  "repository_evidence": "pass; repaired committed links and all eight completion artifact hashes verified",
+  "focused_tests_independently_passed": 13,
+  "remaining_findings": [],
+  "assessment_sha256": "82cfed0390993be27dc748184fc6e376439e33fed4ac01123007009a884b5eea",
+  "report_manifest_sha256": "bf50cfb509fa83eed3c1d50a8b7b91aaab3a30ac878f934c2778886ca6b4a54b",
+  "metadata_only_closure": "Root sealing and recording this verdict require no additional numerical audit; native products and fits unchanged",
+  "bundle": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-response-robustness-cd-20260923",
+  "root_manifest": {
+    "manifest_sha256": "d18b0de1585baa96bdf1c047b695b3ec6f971a546ad340e3457116478207d061",
+    "entries": 45142,
+    "reused_independently_verified_entries": 45087,
+    "freshly_hashed_entries": 55
+  },
+  "final_review_sha256": "fc230d6a15aa276f336dd20383e99df760649bf04a13b76d5f78e82d753321e4",
+  "closure_note": "This receipt is metadata only after the exact-SHA pass; no scientific product or implementation changed."
+}
