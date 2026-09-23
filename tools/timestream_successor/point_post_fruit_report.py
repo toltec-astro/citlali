@@ -3,13 +3,19 @@ import numpy as np
 from point_empirical import coordinates
 
 
+def sensitivity_plot_values(variants,index):
+    available=[v for v in variants if v['status']=='calculated' and v['comparison'].get('scatter_ratio') is not None]
+    return [v['comparison']['scatter_ratio'][index] for v in available],[v['name'] for v in available]
+
+
 def figures(out,array,cycles,models,rows,summary,variants,checks,context):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     labels=['M0','T1','T3','T5','T10']; colors=plt.cm.viridis(np.linspace(.05,.95,5))
     h=cycles[0]['header'];x,y=coordinates(cycles[0]['data']['PRIMARY'].shape,h)
-    extent=(x[0,0]-1,x[0,-1]+1,y[0,0]-1,y[-1,0]+1)
+    dx=h['CDELT1']*3600;dy=h['CDELT2']*3600
+    extent=(x[0,0]-dx/2,x[0,-1]+dx/2,y[0,0]-dy/2,y[-1,0]+dy/2)
     lim=np.quantile(abs(cycles[0]['data']['PRIMARY'][models[0]['background_mask']]),.98)
     fig,axs=plt.subplots(2,5,figsize=(18,7),layout='constrained')
     for j,(rec,m,label) in enumerate(zip(cycles,models,labels)):
@@ -34,7 +40,7 @@ def figures(out,array,cycles,models,rows,summary,variants,checks,context):
     axs[0,2].set(xlabel='North lag (arcsec)',ylabel='Signed correlation',title='Pair-count corrected')
     for ax in axs[0,1:]:ax.axhline(0,color='grey',lw=.7);ax.set_ylim(-.25,1.05)
     for j,name in enumerate(['Template','Aperture 1 FWHM','Aperture 1.5 FWHM','Aperture 2 FWHM']):
-        val=np.array([r['fixed_background_scatter'][j] for r in rows]);diag=np.array([r['diagonal_scatter'][j] for r in rows]);large=np.array([r['larger_mask_fixed_background_scatter'][j] for r in rows])
+        val=np.array([r['fixed_background_scatter'][j] for r in rows]);diag=np.array([r['diagonal_scatter'][j] for r in rows]);large=np.array([r['larger_mask_fixed_background_scatter'][j] for r in rows],dtype=float)
         axs[1,0].plot(range(5),val/val[0],'.-',label=name)
         axs[1,1].plot(range(5),val/diag,'.-',label=name)
         axs[1,2].plot(range(5),large/val,'.-',label=name)
@@ -62,8 +68,7 @@ def figures(out,array,cycles,models,rows,summary,variants,checks,context):
     axs[1,0].set(xlabel='Network',ylabel='Fraction of accepted contributions',title='Contribution mixture, not noise attribution');axs[1,0].legend(fontsize=8)
     for j,name in enumerate(['peak','template','aperture2']):
         idx=summary['order'].index(name)
-        vals=[v['comparison']['variant']['measurements'][idx]['scatter']/v['comparison']['base']['measurements'][idx]['scatter'] for v in variants if v['status']=='calculated' and v['comparison']['variant']['measurements'][idx]['scatter'] is not None]
-        names=[v['name'] for v in variants if v['status']=='calculated' and v['comparison']['variant']['measurements'][idx]['scatter'] is not None]
+        vals,names=sensitivity_plot_values(variants,idx)
         axs[1,1].plot(names,vals,'o-',label=name)
     axs[1,1].axhline(1,color='grey',lw=.7);axs[1,1].set(ylabel='Variant / matched base64 scatter',title='Model sensitivity, not confidence interval');axs[1,1].legend(fontsize=8)
     im=axs[1,2].imshow(summary['correlation'] if summary['correlation'] is not None else np.full((5,5),np.nan),vmin=-1,vmax=1,cmap='RdBu_r');fig.colorbar(im,ax=axs[1,2],shrink=.7)
@@ -92,6 +97,8 @@ def report(out,results,runtime):
         '|---|---|---:|---:|---:|---:|---:|---:|']
     for r in results:
         for row in r['cycle_comparison']:
+            if row.get('status')=='unavailable':
+                lines.append(f"| {r['array']} | T{row['cycle']} | unavailable: {row['cause']} | — | — | — | — | — |");continue
             b=row['background'];vals=[b[k] for k in ['mean','median','std','robust_scale']]+[row['fixed_background_scatter'][0],row['fixed_background_scatter'][-1]]
             lines.append(f"| {r['array']} | {'M0' if row['cycle']==0 else 'T'+str(row['cycle'])} | "+' | '.join(f'{v:.5g}' for v in vals)+' |')
     lines+=['','Linear template units: mJy/nominal beam; linear aperture2: mJy/nominal beam arcsec². These analytic projections hold the background fixed and are narrower than the true T10 estimators above. Diagonal comparisons, second moments about zero/training mean, coverage bins, pair counts, mask sensitivity and regional correlations are in the machine-readable tables. Same-data cycle differences are not independent realizations or evidence of improved source response.','',
@@ -100,7 +107,7 @@ def report(out,results,runtime):
     for r in results:
         a=r['array'];s=r['source'];checks=r['propagation_checks'];root=out/a
         lines += [f'### {a}','',f"256 trials: {s['failures']} failures, {s['bound_limited']} finite bound-limited fits. Pixel-amplitude modulation check: {checks['modulation_second_moment']:.5f} against1 (MC SE {checks['second_moment_MC_SE']:.5f}).",
-            '',f"[Comparable backgrounds]({root/'background-cycles.png'}) · [Noise evolution]({root/'noise-evolution.png'}) · [T10 applicability]({root/'T10-applicability.png'})",
+            '',f"[Comparable backgrounds]({root/'background-cycles.png'}) · [Noise evolution]({root/'noise-evolution.png'}) · [T10 applicability]({root/'T10-applicability.png'})" if (root/'background-cycles.png').exists() else "Cycle comparison figures unavailable; see retained per-cycle diagnostics.",
             '',f"[All source statistics]({root/'source-uncertainty.json'}) · [Trials]({root/'trials.json'}) · [Background cross-covariance]({root/'background-coupling.json'}) · [Analytic/dense/generation checks]({root/'propagation-checks.json'}) · [Sensitivity]({root/'sensitivity.json'})",'',
             '| Variant | Peak SD / matched base64 | Source depth supported | Status |','|---|---:|---|---|']
         for v in r['sensitivity']:
@@ -114,5 +121,5 @@ def report(out,results,runtime):
         'Blank positions are remeasured on each actual saved cycle only when fully supported by the new exclusion. Their raw linear estimator matches the earlier empirical diagnostic; it does not include a bright-source fitted background. Placement overlaps and local depth/predictions are retained.','',
         f"Companion runtime: {runtime['wall_seconds']:.3f}s; four workers by default, numerical-library threads recorded in RUN.json. Inputs verified before and after. No native RTC/PTC/MAP/FRUIT execution. Independent synthetic validation is reported separately. Model arrays, masks, trials, representative FITS realizations, source/parent identities and checksums permit regeneration."]
     for r in unavailable:
-        lines += ['',f"{r['array']}: unavailable — {r['cause']}. Other arrays remain independent."]
+        lines += ['',f"{r['array']}: unavailable — {r['cause']}. Other arrays remain independent.", f"[Preserved cycle diagnostics]({out/r['array']/'cycle-comparison.json'})"]
     (out/'REPORT.md').write_text('\n'.join(lines)+'\n')

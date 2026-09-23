@@ -72,3 +72,11 @@ existing local native build at the exact candidate and run the protocol gate;
 no observation execution or dependency/build-policy change. Native CTest may
 then be repeated as supplemental exact-build evidence. The independently
 reviewed Spack-backed V2 campaign remains a separate inherited evidence axis.
+
+Independent review of9d95916ca found bounded failure-path repairs: optional
+larger-mask insufficiency must not suppress base work; scientific measurement
+support failures need per-array/cycle availability, and a failed base64 prefix
+must not divide a successful variant by unavailable scatter. These are repaired
+with focused tests. Review also corrected signed east-axis plot pixel edges.
+Local operator smoke exposed zero-retained segments with no MAP interval;
+verification now skips only explicitly zero-retained segments and tests it.

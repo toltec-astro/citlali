@@ -268,6 +268,8 @@ def verify_cycle_contributions(product, original):
     receipt=read_yaml(product/'receipt.yaml');shape=next(iter(original.values())).shape
     op=np.memmap(product/'operator-pixel.i32',dtype='<i4',mode='r');maps={}
     for s in receipt['segments']:
+        if s['retained']==0:
+            continue  # no MAP row interval is published for the inherited failed segment
         n=str(s['source_segment']['network']);start=s['MAP_first_input_row']
         p=op[start:start+s['retained']];p=p[p>=0]
         maps.setdefault(n,np.zeros(shape,np.int64))

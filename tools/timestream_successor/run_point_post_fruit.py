@@ -41,6 +41,23 @@ def learned(*args, **kwargs):
         raise ModelUnavailable(str(exc)) from exc
 
 
+def contextual(*args, **kwargs):
+    try:
+        return context_for(*args, **kwargs)
+    except ValueError as exc:
+        raise ModelUnavailable(str(exc)) from exc
+
+
+def larger_comparison(signal, coverage, common, support, header, fixed, parameters, request, source_mask, weights):
+    try:
+        m=learned(signal,coverage,common,header,fixed.parameters,replace(request,mask_fwhm=5.),stamp_size=49,source_mask=source_mask)
+        c=contextual(signal,coverage,support,header,fixed,parameters,m)
+        return dict(status='available',background=stats(signal[m['background_mask']]),
+                    scatters=[np.sqrt(variance(m['psd'],c['scale'],w)) for w in weights])
+    except ModelUnavailable as exc:
+        return dict(status='unavailable',cause=str(exc),background=None,scatters=[None]*4)
+
+
 def read(path):
     return json.loads(Path(path).read_text())
 
@@ -140,24 +157,29 @@ def analyze_array(array,ten,parents,out,workers,seed):
     profile['contribution_diagnostics_seconds']=time.perf_counter()-t
     prior=read(parents['empirical']/array/'measurements.json');rows=[];models=[]
     request=NoiseRequest(mask_fwhm=4.,seed=seed)
+    base=context=None
     for record in cycles:
         k=record['cycle'];root=ar/('M0' if k==0 else f'T{k}');root.mkdir()
         d=record['data'];p=record['measurement']['fit']['parameters'];t=time.perf_counter()
-        m=learned(d['PRIMARY'],d['NORMALIZATION'],common,h,fixed.parameters,request,stamp_size=49,source_mask=source)
-        c=context_for(d['PRIMARY'],d['NORMALIZATION'],d['SCI_SUPPORT'].astype(bool),h,fixed,p,m)
+        try:
+            m=learned(d['PRIMARY'],d['NORMALIZATION'],common,h,fixed.parameters,request,stamp_size=49,source_mask=source)
+            c=contextual(d['PRIMARY'],d['NORMALIZATION'],d['SCI_SUPPORT'].astype(bool),h,fixed,p,m)
+        except ModelUnavailable as exc:
+            row=dict(cycle=k,status='unavailable',cause=str(exc),inference_seconds=time.perf_counter()-t,diagnostics_seconds=0.)
+            save_json(root/'comparison.json',row);rows.append(row)
+            continue
         inference=time.perf_counter()-t;t=time.perf_counter()
         ap=applicability(d['PRIMARY'],d['NORMALIZATION'],h,fixed.parameters,m,contributions,c['weights'])
         blanks=blank_remeasure(d['PRIMARY'],d['NORMALIZATION'],common,m,c,prior)
         b=d['PRIMARY'][m['background_mask']]
-        large_m=learned(d['PRIMARY'],d['NORMALIZATION'],common,h,fixed.parameters,replace(request,mask_fwhm=5.),stamp_size=49,source_mask=large)
-        large_c=context_for(d['PRIMARY'],d['NORMALIZATION'],d['SCI_SUPPORT'].astype(bool),h,fixed,p,large_m)
+        larger=larger_comparison(d['PRIMARY'],d['NORMALIZATION'],common,d['SCI_SUPPORT'].astype(bool),h,fixed,p,request,large,c['weights'])
         row=dict(cycle=k,background=stats(b),second_moment_about_zero=float(np.mean(b*b)),
             second_moment_about_training_mean=float(np.mean((b-b.mean())**2)),
             source_measurement=measurement_values(record['measurement']),
             fixed_background_scatter=[np.sqrt(variance(m['psd'],c['scale'],w)) for w in c['weights']],
             diagonal_scatter=[np.sqrt(np.sum((w*c['scale'])**2)) for w in c['weights']],
-            larger_mask_background=stats(d['PRIMARY'][large_m['background_mask']]),
-            larger_mask_fixed_background_scatter=[np.sqrt(variance(large_m['psd'],large_c['scale'],w)) for w in c['weights']],
+            larger_mask_background=larger['background'],larger_mask_fixed_background_scatter=larger['scatters'],
+            larger_mask_status=larger,
             model=m['summary'],applicability=ap,analytic_scope='fixed background only; true source background refitted in T10 trials',
             inference_seconds=inference,diagnostics_seconds=time.perf_counter()-t)
         save_model(root,m,c,h);save_json(root/'comparison.json',row);save_json(root/'blank-measurements.json',blanks)
@@ -165,6 +187,9 @@ def analyze_array(array,ten,parents,out,workers,seed):
         if k==10:base,context=m,c
     profile['cycle_inference_seconds']=sum(r['inference_seconds'] for r in rows)
     profile['cycle_diagnostics_seconds']=sum(r['diagnostics_seconds'] for r in rows)
+    save_json(ar/'cycle-comparison.json',rows)
+    if context is None:
+        return dict(array=array,status='unavailable',cause='T10 model or measurement domain unavailable; see preserved cycle comparisons',cycle_comparison=rows,profile=profile)
     observed=measurement_values(cycles[-1]['measurement']);t=time.perf_counter()
     records=ensemble(context,256,seed,array,'base',workers)
     summary=joint_summary(records,context['noiseless'],observed)
@@ -178,7 +203,7 @@ def analyze_array(array,ten,parents,out,workers,seed):
         root=ar/name;root.mkdir()
         try:
             m=learned(d['PRIMARY'],d['NORMALIZATION'],common,h,fixed.parameters,req,stamp_size=49,source_mask=mask)
-            c=context_for(d['PRIMARY'],d['NORMALIZATION'],d['SCI_SUPPORT'].astype(bool),h,fixed,p,m)
+            c=contextual(d['PRIMARY'],d['NORMALIZATION'],d['SCI_SUPPORT'].astype(bool),h,fixed,p,m)
             trials=ensemble(c,64,seed,array,name,workers);allrecords.extend(trials)
             comparison=paired_comparison(records[:64],trials,c['noiseless'],[seed,int(array[1:]),1001])
             a=applicability(d['PRIMARY'],d['NORMALIZATION'],h,fixed.parameters,m,contributions,c['weights'])
@@ -219,7 +244,8 @@ def analyze_array(array,ten,parents,out,workers,seed):
         profile['summed_worker_'+key]=sum(r[key] for r in allrecords)
     t=time.perf_counter()
     from point_post_fruit_report import figures
-    figures(ar,array,cycles,models,rows,summary,variants,checks,context)
+    if len(models)==len(cycles):
+        figures(ar,array,cycles,models,rows,summary,variants,checks,context)
     profile['plotting_seconds']=time.perf_counter()-t
     print(array,'scatters',[r['scatter'] for r in summary['measurements']],flush=True)
     return dict(array=array,source=summary,cycle_comparison=rows,sensitivity=variants,propagation_checks=checks,profile=profile)

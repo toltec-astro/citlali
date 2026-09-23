@@ -97,3 +97,27 @@ def test_new_blank_mask_filters_locations_and_cycle_values_recomputed():
     assert not a['locations'][0]['available'] and a['locations'][1]['available']
     va=np.array(a['locations'][1]['values']);vb=np.array(b['locations'][1]['values'])
     assert np.allclose(vb-va,10*c['weights'].sum(axis=(1,2)))
+
+
+def test_zero_retained_receipt_has_no_map_row_interval(tmp_path,monkeypatch):
+    import point_post_fruit as m
+    np.array([0,1,1],dtype='<i4').tofile(tmp_path/'operator-pixel.i32')
+    receipt=dict(segments=[dict(retained=0,source_segment=dict(network=3)),
+        dict(retained=3,source_segment=dict(network=3),MAP_first_input_row=0)])
+    monkeypatch.setattr(m,'read_yaml',lambda path:receipt)
+    assert m.verify_cycle_contributions(tmp_path,{'3':np.array([[1,2]])})['per_pixel_network_contributions_exact']
+
+
+def test_optional_larger_mask_unavailability_is_local(monkeypatch):
+    import run_point_post_fruit as r
+    monkeypatch.setattr(r,'learned',lambda *a,**k:(_ for _ in ()).throw(r.ModelUnavailable('not enough background')))
+    x=r.larger_comparison(None,None,None,None,None,SimpleNamespace(parameters=None),None,NoiseRequest(),None,None)
+    assert x['status']=='unavailable' and x['scatters']==[None]*4
+    monkeypatch.setattr(r,'context_for',lambda *a,**k:(_ for _ in ()).throw(ValueError('missing measurement domain')))
+    with pytest.raises(r.ModelUnavailable,match='measurement'):r.contextual()
+
+
+def test_failed_base_prefix_has_no_sensitivity_plot_ratio():
+    from point_post_fruit_report import sensitivity_plot_values
+    variants=[dict(name='north',status='calculated',comparison=dict(MC_ratio=None))]
+    assert sensitivity_plot_values(variants,0)==([],[])
