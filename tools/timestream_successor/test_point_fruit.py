@@ -1,9 +1,21 @@
 import unittest
 import numpy as np
+import tempfile
+from pathlib import Path
 from point_admission import admit
-from point_fruit_diagnostics import replacement
+from point_fruit_diagnostics import replacement,basis_distance
 
 class FruitReplacement(unittest.TestCase):
+    def test_saved_basis_row_major_and_sign_invariance(self):
+        # Non-square bases expose the previous column-major reinterpretation.
+        q,_=np.linalg.qr(np.array([[1.,2.],[3.,-1.],[2.,7.],[4.,1.]]))
+        with tempfile.TemporaryDirectory() as tmp:
+            a=Path(tmp)/'a';b=Path(tmp)/'b';q.astype('<f8').tofile(a)
+            (-q[:,::-1]).astype('<f8').tofile(b)
+            self.assertLess(basis_distance(a,b,4,2),1e-14)
+            wrong=q.ravel(order='F').reshape(4,2);wrong.astype('<f8').tofile(b)
+            with self.assertRaises(ValueError):basis_distance(a,b,4,2)
+
     def test_replacement_discards_previous_pixels(self):
         h=dict(CRPIX1=21.,CRPIX2=21.,CDELT1=-2/3600,CDELT2=2/3600)
         p=np.array([10.,0,0,2.,2.,0,0.]);s=np.zeros((41,41));s[20,20]=10;s[20,21]=5

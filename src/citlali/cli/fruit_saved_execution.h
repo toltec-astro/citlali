@@ -94,7 +94,9 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
             seg["input_eligibility_changed"]=std::size_t((residual->eligible()!=eligible).count());seg["output_cause_changed"]=std::size_t((causes!=old->causes()).count());
             seg["zero_replay_maximum_cleaned_difference"]=(clean-old->values()).cwiseAbs().maxCoeff();
             const auto oldbasis=map_read_array<double>(n.ptcroot/(stem+"-basis.f64"),s["basis_rows"].as<std::size_t>()*s["basis_columns"].as<std::size_t>());
-            const Eigen::Map<const Eigen::MatrixXd> b(oldbasis.data(),s["basis_rows"].as<int>(),s["basis_columns"].as<int>());
+            // write_matrix serializes rows explicitly, regardless of Eigen's
+            // in-memory basis layout. This is a diagnostic, never learned state.
+            const Eigen::Map<const PtcMatrix> b(oldbasis.data(),s["basis_rows"].as<int>(),s["basis_columns"].as<int>());
             if(b.rows()==fit.basis.rows() && b.cols()==fit.basis.cols() && b.size())seg["basis_projector_Frobenius_difference"]=(b*b.transpose()-fit.basis*fit.basis.transpose()).norm();
             write_matrix(dir/"mean.f64",learned.prepared().mean);write_matrix(dir/"basis.f64",fit.basis);write_matrix(dir/"cleaned.f64",clean);
             map_write_array<std::uint8_t>(dir/"causes.u8",{causes.data(),std::size_t(causes.size())});

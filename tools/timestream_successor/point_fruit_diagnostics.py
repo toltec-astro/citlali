@@ -6,7 +6,32 @@ from point_empirical import coordinates,source_patch,aperture_measurements,stats
 from point_admission import admit,fit_diagnostic,projection
 from point_empirical_io import write_fits
 from point_additive_diagnostics import save_json
-from inspect_forward_map import require,read_yaml
+from inspect_forward_map import require,read_yaml,digest
+
+
+def basis_distance(old_path,new_path,rows,columns):
+    """Saved native matrices are row-major, including column-major Eigen bases."""
+    if not rows or not columns:return None
+    old=np.fromfile(old_path,dtype='<f8').reshape(rows,columns)
+    new=np.fromfile(new_path,dtype='<f8').reshape(rows,columns)
+    for b in [old,new]:
+        require(np.isfinite(b).all() and np.allclose(np.einsum('ij,ik->jk',b,b),np.eye(columns),rtol=0,atol=1e-10),'saved basis is not the declared orthonormal column matrix')
+    return float(np.linalg.norm(np.einsum('ik,jk->ij',old,old)-np.einsum('ik,jk->ij',new,new)))
+
+
+def learned_state(cycle,receipt):
+    rows=[]
+    for s in receipt['segments']:
+        source=s['source_segment'];name=next(n for n in source['files'] if n.endswith('-basis.f64'))
+        index=name.split('-')[1];old=Path(s['source_root'])/name;new=cycle/f"network-{source['network']}-segment-{index}"/'basis.f64'
+        require(digest(old)==source['files'][name] and digest(new)==s['files']['basis.f64'],'saved basis identity changed')
+        row={k:s.get(k) for k in ['converged','stopping_reason','rank','iterations','retained','output_cause_changed','input_eligibility_changed','projection_support_counts']}
+        row.update(network=source['network'],scan=source['scan'],parent_converged=source['converged'],
+            basis_projector_Frobenius_difference=basis_distance(old,new,source['basis_rows'],source['basis_columns']),
+            comparison_definition='Frobenius norm of BB^T difference; verified row-major saved orthonormal bases; not raw eigenvector difference',
+            native_diagnostic_value=s.get('basis_projector_Frobenius_difference'))
+        rows.append(row)
+    return rows
 
 
 def load(path):
@@ -79,7 +104,7 @@ def diagnose(array,maps,admission,additive,zero,cycle,out):
         source_support=dict(lost=int((vo&~vt).sum()),added=int((vt&~vo).sum())),
         projected_remapped_model_maximum_difference=remap_error,decomposition_error=receipt['decomposition_max_abs_mJy_per_nominal_beam'],
         source_masked_background_in_40arcsec_stamp={n:stats(s[v&bgdomain]) for n,(s,v) in planes.items() if n in ['M0','zero','T1']},
-        PTC_segments=[{k:s.get(k) for k in ['converged','stopping_reason','rank','iterations','retained','output_cause_changed','input_eligibility_changed','basis_projector_Frobenius_difference','projection_support_counts']}|{'network':s['source_segment']['network'],'scan':s['source_segment']['scan'],'parent_converged':s['source_segment']['converged']} for s in receipt['segments']])
+        PTC_segments=learned_state(cycle,receipt))
     save_json(out/'measurements.json',report)
     write_fits(out/'comparison.fits',h,[('T1_MINUS_M0',delta,'mJy/nominal beam'),('SOURCE_COMMON',common.astype('u1'),'1'),('M0_SUPPORT',vo.astype('u1'),'1'),('T1_SUPPORT',vt.astype('u1'),'1'),('COVERAGE_DIFFERENCE',ct-coverage,'count')],companion='FRUIT-COMPARISON')
     figures(out,array,planes,r,a,delta,coverage,ct,h,m0,m1,p)
