@@ -52,8 +52,14 @@ Independent fresh-context exact-source review of 1c1393b4d passes all three
 categories after repairing enforced parent ancestry verification; no remaining
 implementation findings. Completed-evidence audit also passes all three,
 independently verifying original/external manifests, all 27 cycles, zero controls,
-lineage, support/accounting and unapplied m10. Final completion-document review
-will bind this closure at its exact SHA; no further scientific execution remains.
+lineage, support/accounting and unapplied m10. Final completion-document review of
+`e1fe84d3faf438c0382d219930aacf40341737b4`, tree
+`b1f4ce1590d59d225f35993ea4dbb14ed50586a0`, passes all three categories
+with recorded limitations and no remaining findings. The reviewer verified the
+report manifest, assessment digest, all 51 links and numerical values, inspected
+all 15 figures and checked the final 28/28 CTest result. No further scientific
+execution remains. See the validation directory review-closure.md and product
+REVIEW.md for the full disposition.
 
 ## Work order / preflight
 
