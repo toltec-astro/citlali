@@ -1,5 +1,22 @@
 # Citlali Refactor Status
 
+## POINT 152389 first FRUIT cycle — boundary preflight 2026-09-23
+
+The owner now authorizes one threshold-3, unity-gain feedback cycle per array,
+with fresh PTC zero control and unapplied replacement m1. This supersedes the
+prior task's no-FRUIT stop. Original MAPs, candidate/additive manifests, saved
+measurements and PTC restart components verify across all three arrays (11
+networks, 66 processing segments, unchanged observed-entry ALS rank 10).
+
+Execution awaits two explicit method details: no-feedback behavior outside the
+candidate's40″ definition disk, and a bound model-to-post-RTC/CAL removal/rejoin
+operator with its reference/response convention. Existing MAP members outside
+that disk comprise86–87%; their missing candidate support cannot silently become
+zero or a new data exclusion. A concrete direct-route proposal, exact input
+evidence and compact implementation plan are recorded in
+`handoff/POINT_152389_FIRST_FRUIT_CYCLE_2026-09-23.md`.
+No zero-feedback PTC replay or nonzero cycle has run; this milestone is incomplete.
+
 ## Bright POINT152389 admission prototype — 2026-09-23
 
 The owner-authorized read-only candidate experiment now compares four controls:

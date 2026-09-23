@@ -1,0 +1,933 @@
+{
+  "scope": "identity verification and existing-MAP support inventory only; no feedback or zero-model PTC replay",
+  "admission": "42e656d6fedefc1a47599333983bc5a7db31acb42e78be0ec3449a80fe577f71",
+  "additive": "d650deddab4886d9ad386183a6425e5309643cab8effb82fd645106dde3f38c8",
+  "measurement_sha256": "f37903af9ac2d17554d4f747cb676d191b8da374f9b30ec5cac260b136b6abcb",
+  "arrays": {
+    "a1100": {
+      "map_sha256": "4e585b8c60dd03ed1cc48100a9b5d8103edb946d3e7291cf989a736634f84119",
+      "candidate_sha256": "8edea26bb5c5b5aca065a88c93a0a30fe5064f3cc3388f9423725ed6a63bc640",
+      "shape": [
+        41,
+        41
+      ],
+      "valid_pixels": 1257,
+      "nonzero_admitted_pixels": 28,
+      "intentional_zero_pixels": 1229,
+      "unavailable_pixels_in_stored_square": 424,
+      "no_model_definition_beyond_stored_square": true,
+      "networks": {
+        "0": {
+          "map_members": 3856977,
+          "inside_candidate_disk": 283629,
+          "outside_candidate_disk": 3573348
+        },
+        "1": {
+          "map_members": 2744999,
+          "inside_candidate_disk": 417161,
+          "outside_candidate_disk": 2327838
+        },
+        "2": {
+          "map_members": 2936552,
+          "inside_candidate_disk": 486876,
+          "outside_candidate_disk": 2449676
+        },
+        "3": {
+          "map_members": 2181963,
+          "inside_candidate_disk": 360360,
+          "outside_candidate_disk": 1821603
+        },
+        "4": {
+          "map_members": 2440642,
+          "inside_candidate_disk": 342240,
+          "outside_candidate_disk": 2098402
+        },
+        "5": {
+          "map_members": 2228540,
+          "inside_candidate_disk": 299104,
+          "outside_candidate_disk": 1929436
+        }
+      },
+      "parent_verification": {
+        "schema": "citlali-forward-map-inspection-v1",
+        "bundle": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-network-rescue-20260922/map-pass/products/a1100",
+        "product_identity": "SCI-MAP-base:9b61d5166e25d2df6661dbbef0aa863f73fda07f2a659e62639603897088c6e2:4e585b8c60dd03ed1cc48100a9b5d8103edb946d3e7291cf989a736634f84119",
+        "observation": "obs:152389_0_2",
+        "array": "a1100",
+        "shape_yx": [
+          207,
+          207
+        ],
+        "science_pixels": 9829,
+        "contributing_occurrences": 16389673,
+        "positive_and_negative_science_pixels": [
+          4555,
+          5274
+        ],
+        "signal_min_max_mJy_per_nominal_beam": [
+          -107.31641741485363,
+          707.301480236796
+        ],
+        "wcs_comparison_population": 43677,
+        "wcs_max_arcsec": 1.5640237977967972e-10,
+        "sparse_operator_verified": true,
+        "exact_PTC_numerator_replay": true,
+        "measured_MAP_local_source_probe": {
+          "status": "measured",
+          "scope": "MAP-only fixed realized operator; synthetic source inserted AFTER PTC; no RTC/CAL/PTC attenuation or measured-PSF claim",
+          "input": "unit-peak circular Gaussian centered on declared tangent origin, truncated at 8 sigma",
+          "input_fwhm_arcsec": 5,
+          "input_peak_mJy_per_nominal_beam": 1,
+          "output_peak_mJy_per_nominal_beam": 0.9310302679188631,
+          "integrated_ratio_to_template": 0.9999353418505811,
+          "output_centroid_tangent_arcsec": [
+            -0.020083891154224223,
+            0.005192395733324683
+          ],
+          "output_second_moment_equivalent_fwhm_arcsec": 5.183856667525751,
+          "constant_unit_response_max_error": 0.0,
+          "full_procedure_response": "unavailable: complete upstream source-response carrier not supplied"
+        },
+        "scope": "bundle/reload/operator/numerical and WCS representation checks; not full upstream source-response or production qualification"
+      },
+      "source_measurement": {
+        "method": "unweighted elliptical Gaussian plus constant; 40 arcsec radius around AST center",
+        "search_and_centroid_domain": "20 arcsec around AST center; positive-amplitude descriptive fit",
+        "nominal_calibration_beam_fwhm_arcsec": 5,
+        "central_pixel_peak_mJy_per_nominal_beam": 707.301480236796,
+        "fitted_amplitude_above_constant_mJy_per_nominal_beam": 816.3113586194066,
+        "fitted_constant_mJy_per_nominal_beam": -5.653389339210907,
+        "centroid_tangent_east_north_arcsec": [
+          4.668417271604746,
+          -5.170562611668168
+        ],
+        "centroid_FK5_J2000_ra_dec_deg": [
+          176.74460012073075,
+          39.97475927586087
+        ],
+        "measured_fwhm_major_minor_arcsec": [
+          6.057436378669031,
+          5.092676356910821
+        ],
+        "measured_fwhm_geometric_mean_arcsec": 5.5541482721601225,
+        "fit_pixels": 1257,
+        "fit_residual_rms_mJy_per_nominal_beam": 13.155995885970997,
+        "fit_constraint_active": false,
+        "interpretation": "first-pass source morphology only; no flux recovery, uncertainty, detection significance or full-chain transfer claim"
+      }
+    },
+    "a1400": {
+      "map_sha256": "4a90dcad4b88d9f9e592edfaaaef4040cc434ae41c7e83247ab35631db97840c",
+      "candidate_sha256": "a6e5a34d6251d3bb7b11b0bc4217fdd5a221e85d48fe08ec2fa5f4b82018d9ff",
+      "shape": [
+        41,
+        41
+      ],
+      "valid_pixels": 1257,
+      "nonzero_admitted_pixels": 38,
+      "intentional_zero_pixels": 1219,
+      "unavailable_pixels_in_stored_square": 424,
+      "no_model_definition_beyond_stored_square": true,
+      "networks": {
+        "7": {
+          "map_members": 1466000,
+          "inside_candidate_disk": 144333,
+          "outside_candidate_disk": 1321667
+        },
+        "8": {
+          "map_members": 2758344,
+          "inside_candidate_disk": 408209,
+          "outside_candidate_disk": 2350135
+        },
+        "9": {
+          "map_members": 2494810,
+          "inside_candidate_disk": 367440,
+          "outside_candidate_disk": 2127370
+        }
+      },
+      "parent_verification": {
+        "schema": "citlali-forward-map-inspection-v1",
+        "bundle": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-network-rescue-20260922/map-pass/products/a1400",
+        "product_identity": "SCI-MAP-base:54e263e06f5c37a8aaf7af0edc62fd44ecec695499eb6db2f9e3b56090016fb3:4a90dcad4b88d9f9e592edfaaaef4040cc434ae41c7e83247ab35631db97840c",
+        "observation": "obs:152389_0_2",
+        "array": "a1400",
+        "shape_yx": [
+          191,
+          203
+        ],
+        "science_pixels": 9780,
+        "contributing_occurrences": 6719154,
+        "positive_and_negative_science_pixels": [
+          4666,
+          5114
+        ],
+        "signal_min_max_mJy_per_nominal_beam": [
+          -59.31763254864996,
+          525.3492454735518
+        ],
+        "wcs_comparison_population": 39561,
+        "wcs_max_arcsec": 1.5639416699525066e-10,
+        "sparse_operator_verified": true,
+        "exact_PTC_numerator_replay": true,
+        "measured_MAP_local_source_probe": {
+          "status": "measured",
+          "scope": "MAP-only fixed realized operator; synthetic source inserted AFTER PTC; no RTC/CAL/PTC attenuation or measured-PSF claim",
+          "input": "unit-peak circular Gaussian centered on declared tangent origin, truncated at 8 sigma",
+          "input_fwhm_arcsec": 7.5,
+          "input_peak_mJy_per_nominal_beam": 1,
+          "output_peak_mJy_per_nominal_beam": 0.9686064657699369,
+          "integrated_ratio_to_template": 0.9981371934529109,
+          "output_centroid_tangent_arcsec": [
+            -0.014175462993745929,
+            -0.002358389612114972
+          ],
+          "output_second_moment_equivalent_fwhm_arcsec": 7.629639508672639,
+          "constant_unit_response_max_error": 0.0,
+          "full_procedure_response": "unavailable: complete upstream source-response carrier not supplied"
+        },
+        "scope": "bundle/reload/operator/numerical and WCS representation checks; not full upstream source-response or production qualification"
+      },
+      "source_measurement": {
+        "method": "unweighted elliptical Gaussian plus constant; 40 arcsec radius around AST center",
+        "search_and_centroid_domain": "20 arcsec around AST center; positive-amplitude descriptive fit",
+        "nominal_calibration_beam_fwhm_arcsec": 7.5,
+        "central_pixel_peak_mJy_per_nominal_beam": 525.3492454735518,
+        "fitted_amplitude_above_constant_mJy_per_nominal_beam": 554.1512628929715,
+        "fitted_constant_mJy_per_nominal_beam": -1.5540001300123354,
+        "centroid_tangent_east_north_arcsec": [
+          4.377816219247622,
+          -5.404829421712671
+        ],
+        "centroid_FK5_J2000_ra_dec_deg": [
+          176.74449478238867,
+          39.97469420323102
+        ],
+        "measured_fwhm_major_minor_arcsec": [
+          7.164706516758785,
+          6.281779080166167
+        ],
+        "measured_fwhm_geometric_mean_arcsec": 6.708733376167631,
+        "fit_pixels": 1257,
+        "fit_residual_rms_mJy_per_nominal_beam": 11.469791224033099,
+        "fit_constraint_active": false,
+        "interpretation": "first-pass source morphology only; no flux recovery, uncertainty, detection significance or full-chain transfer claim"
+      }
+    },
+    "a2000": {
+      "map_sha256": "d27fa69adc3cf5d93575613ecf828923c050d32680d99873a9c7cae6b65b5e7e",
+      "candidate_sha256": "aafe2afb4965bcd98bac1c1adf9a9dd889b606077af43b1486b2462c8f15d9ac",
+      "shape": [
+        41,
+        41
+      ],
+      "valid_pixels": 1257,
+      "nonzero_admitted_pixels": 57,
+      "intentional_zero_pixels": 1200,
+      "unavailable_pixels_in_stored_square": 424,
+      "no_model_definition_beyond_stored_square": true,
+      "networks": {
+        "11": {
+          "map_members": 1379512,
+          "inside_candidate_disk": 174638,
+          "outside_candidate_disk": 1204874
+        },
+        "12": {
+          "map_members": 1402249,
+          "inside_candidate_disk": 176429,
+          "outside_candidate_disk": 1225820
+        }
+      },
+      "parent_verification": {
+        "schema": "citlali-forward-map-inspection-v1",
+        "bundle": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-network-rescue-20260922/map-pass/products/a2000",
+        "product_identity": "SCI-MAP-base:13ef42194b438c3ba9dd2bad6aff4bd55c5812350048246c68f9e881120dc52d:d27fa69adc3cf5d93575613ecf828923c050d32680d99873a9c7cae6b65b5e7e",
+        "observation": "obs:152389_0_2",
+        "array": "a2000",
+        "shape_yx": [
+          211,
+          205
+        ],
+        "science_pixels": 10601,
+        "contributing_occurrences": 2781761,
+        "positive_and_negative_science_pixels": [
+          4943,
+          5658
+        ],
+        "signal_min_max_mJy_per_nominal_beam": [
+          -112.18882787057414,
+          527.7283005767052
+        ],
+        "wcs_comparison_population": 44087,
+        "wcs_max_arcsec": 1.564044442730631e-10,
+        "sparse_operator_verified": true,
+        "exact_PTC_numerator_replay": true,
+        "measured_MAP_local_source_probe": {
+          "status": "measured",
+          "scope": "MAP-only fixed realized operator; synthetic source inserted AFTER PTC; no RTC/CAL/PTC attenuation or measured-PSF claim",
+          "input": "unit-peak circular Gaussian centered on declared tangent origin, truncated at 8 sigma",
+          "input_fwhm_arcsec": 10,
+          "input_peak_mJy_per_nominal_beam": 1,
+          "output_peak_mJy_per_nominal_beam": 0.9838692650484717,
+          "integrated_ratio_to_template": 0.9985803529015719,
+          "output_centroid_tangent_arcsec": [
+            0.007207105667327314,
+            -0.004663894563220913
+          ],
+          "output_second_moment_equivalent_fwhm_arcsec": 10.092268341586458,
+          "constant_unit_response_max_error": 0.0,
+          "full_procedure_response": "unavailable: complete upstream source-response carrier not supplied"
+        },
+        "scope": "bundle/reload/operator/numerical and WCS representation checks; not full upstream source-response or production qualification"
+      },
+      "source_measurement": {
+        "method": "unweighted elliptical Gaussian plus constant; 40 arcsec radius around AST center",
+        "search_and_centroid_domain": "20 arcsec around AST center; positive-amplitude descriptive fit",
+        "nominal_calibration_beam_fwhm_arcsec": 10,
+        "central_pixel_peak_mJy_per_nominal_beam": 527.7283005767052,
+        "fitted_amplitude_above_constant_mJy_per_nominal_beam": 593.4009279452124,
+        "fitted_constant_mJy_per_nominal_beam": -4.9751465440168525,
+        "centroid_tangent_east_north_arcsec": [
+          4.697033840420085,
+          -5.203524112320467
+        ],
+        "centroid_FK5_J2000_ra_dec_deg": [
+          176.74461049341303,
+          39.97475011973717
+        ],
+        "measured_fwhm_major_minor_arcsec": [
+          9.434172047674089,
+          8.61547432606247
+        ],
+        "measured_fwhm_geometric_mean_arcsec": 9.0155347630849,
+        "fit_pixels": 1257,
+        "fit_residual_rms_mJy_per_nominal_beam": 17.18565091665758,
+        "fit_constraint_active": false,
+        "interpretation": "first-pass source morphology only; no flux recovery, uncertainty, detection significance or full-chain transfer claim"
+      }
+    }
+  },
+  "PTC_parents": {
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-forward-map-20260922/upstream/products/network0/donor-continuity/ptc": {
+      "receipt_sha256": "251c84cb04c6205681b61e20fb1d5ac79d706a2ed58616291f74986d476fea0c",
+      "method": "observed-als",
+      "rank": 10,
+      "centering": "per-detector-eligible-arithmetic-mean-not-restored",
+      "segments": [
+        {
+          "network": 0,
+          "scan": 0,
+          "scheduled_times": 1188,
+          "output_detectors": 630,
+          "converged": true,
+          "retained": 620140
+        },
+        {
+          "network": 0,
+          "scan": 1,
+          "scheduled_times": 1220,
+          "output_detectors": 630,
+          "converged": true,
+          "retained": 655276
+        },
+        {
+          "network": 0,
+          "scan": 2,
+          "scheduled_times": 1220,
+          "output_detectors": 630,
+          "converged": true,
+          "retained": 663118
+        },
+        {
+          "network": 0,
+          "scan": 3,
+          "scheduled_times": 1220,
+          "output_detectors": 630,
+          "converged": true,
+          "retained": 636680
+        },
+        {
+          "network": 0,
+          "scan": 4,
+          "scheduled_times": 1220,
+          "output_detectors": 630,
+          "converged": true,
+          "retained": 663600
+        },
+        {
+          "network": 0,
+          "scan": 5,
+          "scheduled_times": 1188,
+          "output_detectors": 630,
+          "converged": true,
+          "retained": 618163
+        }
+      ]
+    },
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-forward-map-20260922/upstream/products/network1/donor-continuity/ptc": {
+      "receipt_sha256": "a7abf3d4eb1a66423ebef74ad1ea3665728615b1f4f005783a1a9e24868080a7",
+      "method": "observed-als",
+      "rank": 10,
+      "centering": "per-detector-eligible-arithmetic-mean-not-restored",
+      "segments": [
+        {
+          "network": 1,
+          "scan": 0,
+          "scheduled_times": 1188,
+          "output_detectors": 494,
+          "converged": true,
+          "retained": 441994
+        },
+        {
+          "network": 1,
+          "scan": 1,
+          "scheduled_times": 1220,
+          "output_detectors": 494,
+          "converged": true,
+          "retained": 468873
+        },
+        {
+          "network": 1,
+          "scan": 2,
+          "scheduled_times": 1220,
+          "output_detectors": 494,
+          "converged": true,
+          "retained": 473243
+        },
+        {
+          "network": 1,
+          "scan": 3,
+          "scheduled_times": 1220,
+          "output_detectors": 494,
+          "converged": true,
+          "retained": 443290
+        },
+        {
+          "network": 1,
+          "scan": 4,
+          "scheduled_times": 1220,
+          "output_detectors": 494,
+          "converged": true,
+          "retained": 471882
+        },
+        {
+          "network": 1,
+          "scan": 5,
+          "scheduled_times": 1188,
+          "output_detectors": 494,
+          "converged": true,
+          "retained": 445717
+        }
+      ]
+    },
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-network-rescue-20260922/upstream-r2/products/network2/donor-continuity/ptc": {
+      "receipt_sha256": "9cdc419103995cd1bf98d9f733653632f348ac83885ed3fae9e5c0638070a4d5",
+      "method": "observed-als",
+      "rank": 10,
+      "centering": "per-detector-eligible-arithmetic-mean-not-restored",
+      "segments": [
+        {
+          "network": 2,
+          "scan": 0,
+          "scheduled_times": 1188,
+          "output_detectors": 510,
+          "converged": true,
+          "retained": 475575
+        },
+        {
+          "network": 2,
+          "scan": 1,
+          "scheduled_times": 1220,
+          "output_detectors": 510,
+          "converged": true,
+          "retained": 497574
+        },
+        {
+          "network": 2,
+          "scan": 2,
+          "scheduled_times": 1220,
+          "output_detectors": 510,
+          "converged": true,
+          "retained": 502442
+        },
+        {
+          "network": 2,
+          "scan": 3,
+          "scheduled_times": 1220,
+          "output_detectors": 510,
+          "converged": true,
+          "retained": 488267
+        },
+        {
+          "network": 2,
+          "scan": 4,
+          "scheduled_times": 1220,
+          "output_detectors": 510,
+          "converged": true,
+          "retained": 502087
+        },
+        {
+          "network": 2,
+          "scan": 5,
+          "scheduled_times": 1188,
+          "output_detectors": 510,
+          "converged": true,
+          "retained": 470607
+        }
+      ]
+    },
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-forward-map-20260922/upstream/products/network3/donor-continuity/ptc": {
+      "receipt_sha256": "061c4b452a2a887ee5d913e72dce2b9858a5433050309bef3da59aa2953a1948",
+      "method": "observed-als",
+      "rank": 10,
+      "centering": "per-detector-eligible-arithmetic-mean-not-restored",
+      "segments": [
+        {
+          "network": 3,
+          "scan": 0,
+          "scheduled_times": 1188,
+          "output_detectors": 533,
+          "converged": true,
+          "retained": 422101
+        },
+        {
+          "network": 3,
+          "scan": 1,
+          "scheduled_times": 1220,
+          "output_detectors": 533,
+          "converged": true,
+          "retained": 442558
+        },
+        {
+          "network": 3,
+          "scan": 2,
+          "scheduled_times": 1220,
+          "output_detectors": 533,
+          "converged": true,
+          "retained": 445060
+        },
+        {
+          "network": 3,
+          "scan": 3,
+          "scheduled_times": 1220,
+          "output_detectors": 533,
+          "converged": true,
+          "retained": 430750
+        },
+        {
+          "network": 3,
+          "scan": 4,
+          "scheduled_times": 1220,
+          "output_detectors": 533,
+          "converged": true,
+          "retained": 441494
+        },
+        {
+          "network": 3,
+          "scan": 5,
+          "scheduled_times": 1188,
+          "output_detectors": 533,
+          "converged": false,
+          "retained": 0
+        }
+      ]
+    },
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-forward-map-20260922/upstream/products/network4/donor-continuity/ptc": {
+      "receipt_sha256": "317aac6bb6990af5faae75e3670f72797483a2d57d06bb1310e06a7ea23e4d87",
+      "method": "observed-als",
+      "rank": 10,
+      "centering": "per-detector-eligible-arithmetic-mean-not-restored",
+      "segments": [
+        {
+          "network": 4,
+          "scan": 0,
+          "scheduled_times": 1188,
+          "output_detectors": 532,
+          "converged": true,
+          "retained": 392022
+        },
+        {
+          "network": 4,
+          "scan": 1,
+          "scheduled_times": 1220,
+          "output_detectors": 532,
+          "converged": true,
+          "retained": 416855
+        },
+        {
+          "network": 4,
+          "scan": 2,
+          "scheduled_times": 1220,
+          "output_detectors": 532,
+          "converged": true,
+          "retained": 416920
+        },
+        {
+          "network": 4,
+          "scan": 3,
+          "scheduled_times": 1220,
+          "output_detectors": 532,
+          "converged": true,
+          "retained": 405804
+        },
+        {
+          "network": 4,
+          "scan": 4,
+          "scheduled_times": 1220,
+          "output_detectors": 532,
+          "converged": true,
+          "retained": 415838
+        },
+        {
+          "network": 4,
+          "scan": 5,
+          "scheduled_times": 1188,
+          "output_detectors": 532,
+          "converged": true,
+          "retained": 393203
+        }
+      ]
+    },
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-forward-map-20260922/upstream/products/network5/donor-continuity/ptc": {
+      "receipt_sha256": "744cb2aebd534c0e489664d759c2e5410806405ecd841e5ed6212428b6c8f49a",
+      "method": "observed-als",
+      "rank": 10,
+      "centering": "per-detector-eligible-arithmetic-mean-not-restored",
+      "segments": [
+        {
+          "network": 5,
+          "scan": 0,
+          "scheduled_times": 1188,
+          "output_detectors": 474,
+          "converged": true,
+          "retained": 361849
+        },
+        {
+          "network": 5,
+          "scan": 1,
+          "scheduled_times": 1220,
+          "output_detectors": 474,
+          "converged": true,
+          "retained": 382512
+        },
+        {
+          "network": 5,
+          "scan": 2,
+          "scheduled_times": 1220,
+          "output_detectors": 474,
+          "converged": true,
+          "retained": 382668
+        },
+        {
+          "network": 5,
+          "scan": 3,
+          "scheduled_times": 1220,
+          "output_detectors": 474,
+          "converged": true,
+          "retained": 358622
+        },
+        {
+          "network": 5,
+          "scan": 4,
+          "scheduled_times": 1220,
+          "output_detectors": 474,
+          "converged": true,
+          "retained": 382689
+        },
+        {
+          "network": 5,
+          "scan": 5,
+          "scheduled_times": 1188,
+          "output_detectors": 474,
+          "converged": true,
+          "retained": 360200
+        }
+      ]
+    },
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-forward-map-20260922/upstream/products/network7/donor-continuity/ptc": {
+      "receipt_sha256": "d352610fdeadb5b0e592706ef2656df518b57cdfc028261bf1fdbc9eb789d232",
+      "method": "observed-als",
+      "rank": 10,
+      "centering": "per-detector-eligible-arithmetic-mean-not-restored",
+      "segments": [
+        {
+          "network": 7,
+          "scan": 0,
+          "scheduled_times": 1188,
+          "output_detectors": 420,
+          "converged": true,
+          "retained": 239680
+        },
+        {
+          "network": 7,
+          "scan": 1,
+          "scheduled_times": 1220,
+          "output_detectors": 420,
+          "converged": true,
+          "retained": 249930
+        },
+        {
+          "network": 7,
+          "scan": 2,
+          "scheduled_times": 1220,
+          "output_detectors": 420,
+          "converged": true,
+          "retained": 250100
+        },
+        {
+          "network": 7,
+          "scan": 3,
+          "scheduled_times": 1220,
+          "output_detectors": 420,
+          "converged": true,
+          "retained": 235930
+        },
+        {
+          "network": 7,
+          "scan": 4,
+          "scheduled_times": 1220,
+          "output_detectors": 420,
+          "converged": true,
+          "retained": 250100
+        },
+        {
+          "network": 7,
+          "scan": 5,
+          "scheduled_times": 1188,
+          "output_detectors": 420,
+          "converged": true,
+          "retained": 240260
+        }
+      ]
+    },
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-forward-map-20260922/upstream/products/network8/donor-continuity/ptc": {
+      "receipt_sha256": "b91fc37b3dca00f48e2298c9755850d8e7ee556f001851124aae9e5282ee4234",
+      "method": "observed-als",
+      "rank": 10,
+      "centering": "per-detector-eligible-arithmetic-mean-not-restored",
+      "segments": [
+        {
+          "network": 8,
+          "scan": 0,
+          "scheduled_times": 1188,
+          "output_detectors": 460,
+          "converged": true,
+          "retained": 447704
+        },
+        {
+          "network": 8,
+          "scan": 1,
+          "scheduled_times": 1220,
+          "output_detectors": 460,
+          "converged": true,
+          "retained": 465994
+        },
+        {
+          "network": 8,
+          "scan": 2,
+          "scheduled_times": 1220,
+          "output_detectors": 460,
+          "converged": true,
+          "retained": 466004
+        },
+        {
+          "network": 8,
+          "scan": 3,
+          "scheduled_times": 1220,
+          "output_detectors": 460,
+          "converged": true,
+          "retained": 464898
+        },
+        {
+          "network": 8,
+          "scan": 4,
+          "scheduled_times": 1220,
+          "output_detectors": 460,
+          "converged": true,
+          "retained": 466040
+        },
+        {
+          "network": 8,
+          "scan": 5,
+          "scheduled_times": 1188,
+          "output_detectors": 460,
+          "converged": true,
+          "retained": 447704
+        }
+      ]
+    },
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-forward-map-20260922/upstream/products/network9/donor-continuity/ptc": {
+      "receipt_sha256": "1b3b38ef7df4af56b8d4f24c0b89ab9dc71dab78186ece8145843a52c3e660df",
+      "method": "observed-als",
+      "rank": 10,
+      "centering": "per-detector-eligible-arithmetic-mean-not-restored",
+      "segments": [
+        {
+          "network": 9,
+          "scan": 0,
+          "scheduled_times": 1188,
+          "output_detectors": 488,
+          "converged": true,
+          "retained": 405045
+        },
+        {
+          "network": 9,
+          "scan": 1,
+          "scheduled_times": 1220,
+          "output_detectors": 488,
+          "converged": true,
+          "retained": 421931
+        },
+        {
+          "network": 9,
+          "scan": 2,
+          "scheduled_times": 1220,
+          "output_detectors": 488,
+          "converged": true,
+          "retained": 422074
+        },
+        {
+          "network": 9,
+          "scan": 3,
+          "scheduled_times": 1220,
+          "output_detectors": 488,
+          "converged": true,
+          "retained": 418239
+        },
+        {
+          "network": 9,
+          "scan": 4,
+          "scheduled_times": 1220,
+          "output_detectors": 488,
+          "converged": true,
+          "retained": 422009
+        },
+        {
+          "network": 9,
+          "scan": 5,
+          "scheduled_times": 1188,
+          "output_detectors": 488,
+          "converged": true,
+          "retained": 405512
+        }
+      ]
+    },
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-network-rescue-20260922/upstream-r2/products/network11/donor-continuity/ptc": {
+      "receipt_sha256": "a1153e62bd32f3ad0f624510a9eb38d5599ef1b362c8d7aad650b66ca1e4ed6f",
+      "method": "observed-als",
+      "rank": 10,
+      "centering": "per-detector-eligible-arithmetic-mean-not-restored",
+      "segments": [
+        {
+          "network": 11,
+          "scan": 0,
+          "scheduled_times": 594,
+          "output_detectors": 486,
+          "converged": true,
+          "retained": 207375
+        },
+        {
+          "network": 11,
+          "scan": 1,
+          "scheduled_times": 610,
+          "output_detectors": 486,
+          "converged": true,
+          "retained": 244610
+        },
+        {
+          "network": 11,
+          "scan": 2,
+          "scheduled_times": 610,
+          "output_detectors": 486,
+          "converged": true,
+          "retained": 244983
+        },
+        {
+          "network": 11,
+          "scan": 3,
+          "scheduled_times": 610,
+          "output_detectors": 486,
+          "converged": true,
+          "retained": 233365
+        },
+        {
+          "network": 11,
+          "scan": 4,
+          "scheduled_times": 610,
+          "output_detectors": 486,
+          "converged": true,
+          "retained": 242780
+        },
+        {
+          "network": 11,
+          "scan": 5,
+          "scheduled_times": 594,
+          "output_detectors": 486,
+          "converged": true,
+          "retained": 206399
+        }
+      ]
+    },
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-forward-map-20260922/upstream/products/network12/donor-continuity/ptc": {
+      "receipt_sha256": "617409799957818876fba8088f93ca28d4ac04963bf12b93666284d9d70cae34",
+      "method": "observed-als",
+      "rank": 10,
+      "centering": "per-detector-eligible-arithmetic-mean-not-restored",
+      "segments": [
+        {
+          "network": 12,
+          "scan": 0,
+          "scheduled_times": 594,
+          "output_detectors": 491,
+          "converged": true,
+          "retained": 209044
+        },
+        {
+          "network": 12,
+          "scan": 1,
+          "scheduled_times": 610,
+          "output_detectors": 491,
+          "converged": true,
+          "retained": 247539
+        },
+        {
+          "network": 12,
+          "scan": 2,
+          "scheduled_times": 610,
+          "output_detectors": 491,
+          "converged": true,
+          "retained": 247010
+        },
+        {
+          "network": 12,
+          "scan": 3,
+          "scheduled_times": 610,
+          "output_detectors": 491,
+          "converged": true,
+          "retained": 244902
+        },
+        {
+          "network": 12,
+          "scan": 4,
+          "scheduled_times": 610,
+          "output_detectors": 491,
+          "converged": true,
+          "retained": 244655
+        },
+        {
+          "network": 12,
+          "scan": 5,
+          "scheduled_times": 594,
+          "output_detectors": 491,
+          "converged": true,
+          "retained": 209099
+        }
+      ]
+    }
+  },
+  "runtime": {
+    "wall_seconds": 42.654481208001016,
+    "cpu_seconds": 11.261956999999999,
+    "peak_rss_bytes": 437780480
+  },
+  "script_sha256": "0125fd4201cb8e89f393bfe88d4f84ce7c1604cc2a4dd5ba1430fdafae501a4d"
+}

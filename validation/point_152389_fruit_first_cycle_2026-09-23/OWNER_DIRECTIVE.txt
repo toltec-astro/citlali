@@ -1,0 +1,91 @@
+Codex directive: first bounded FRUIT feedback cycle for POINT 152389
+Objective and authorization
+Implement and execute the first complete successor FRUIT feedback cycle for POINT observation 152389, separately for a1100, a1400, and a2000.
+For this experiment, I authorize applying the reviewed threshold-3 reference candidate with the existing pixel-noise scale, at unity gain, in each array. This is experimental authorization for this observation—not adoption of a production admission rule.
+The authorized sequence is:
+Saved candidate → projection and subtraction → fresh PTC learning and application → reconstruction of the total map → replacement-candidate inference → stop.
+Run exactly one nonzero-feedback cycle per array, together with the zero-feedback control and bounded implementation tests described below. Do not automatically execute a second cycle, optimize thresholds, introduce damping, or expand into other observations or observing modes.
+This is implementation of the intended MAP+/FRUIT successor, not a temporary legacy integration. Recover the governing boundaries, make a compact implementation plan, and proceed. Do not stop at another architectural survey.
+1. Bind the existing products and the correct starting data
+Recover the latest reviewed POINT admission handoff, its ASSESSMENT.md, and the final companion-r2 products. Verify their source and input identities rather than assuming that a temporary worktree or historical path remains current.
+Use these names consistently in the report:
+Symbol	Meaning
+\(M_0\)	Existing unthresholded first-pass map
+\(m_0\)	Reviewed threshold-3 feedback candidate actually selected for this experiment
+\(y\)	Immutable original data at the authorized pre-PTC input boundary
+\(T_1\)	Reconstructed total map after applying \(m_0\) in one feedback cycle
+\(m_1\)	Newly inferred replacement candidate, saved but not applied
+
+
+Recover the accepted SCI-FRUIT, PTC-input/rejoin, AST/projection, MAP, and validation requirements relevant to this route. Preserve the existing distinction between candidate, accepted, and actually applied model objects.
+The subtraction parent must be the original authorized pre-PTC data, not the already-cleaned PTC output. Do not attempt to undo the first-pass cleaning or repeatedly clean its residual.
+Reuse verified RTC/CAL products or restart intermediates where available. If the required parent must be regenerated, use the existing authorized method and identical inputs/settings, and report that cost separately. Do not change RTC, calibration, timing, detector selection, or upstream scientific treatment.
+Retain the parent’s actual network/scan exclusions. This task does not authorize another network-rescue investigation.
+This directive supersedes the previous task’s “no FRUIT execution” stop point for the bounded experiment specified here. It does not waive mandatory scientific compatibility requirements. A genuinely unresolved removal/rejoin boundary is a specific blocker to identify—not permission to invent a convenient route.
+2. Implement the complete feedback cycle
+Project the exact selected model. Use the accepted AST/MAP projection machinery, detector pointing, sample association, calibration, units, and response conventions to obtain the operand removed from \(y\).
+Do not replace \(m_0\) with its fitted Gaussian, alter its admitted brightness, apply another beam convolution, or introduce an unapproved flux conversion. Record how the compact model’s intentional zeros are distinguished from unavailable map/noise support. Do not silently convert all NaNs into zero or allow interpolation to conceal unsupported model inputs.
+Subtract from the immutable parent. Construct the current sky-subtracted input from \(y\) and the projected \(m_0\). Preserve the exact applied operand, or a compact reproducible representation sufficient to establish identical subtraction and rejoin.
+Relearn and apply PTC. Keep the current PTC numerical recipe and its configured scientific controls unchanged, but relearn all input-dependent state required by that recipe from the sky-subtracted input. In particular, relearn the correlated detector subspace; merely recomputing coefficients in the original subspace is not sufficient.
+Preserve the existing observation-wide learning and scan/block-local application behavior where those are the accepted method. Keep the resolved state fixed during its corresponding application.
+Do not introduce a new cleaner, mode-count optimization, source-masking recipe, or x/r leakage treatment. Preserve the accepted paired-channel semantics; an astronomical model in the science channel does not by itself authorize subtraction of that model from \(r\).
+Rejoin through the accepted route. Restore the model contribution after residual cleaning, using the declared output-domain transformation and support. Do not inadvertently clean the restored model again.
+Where the input and rejoin spaces are the same, the conceptual calculation is
+\[
+\rho_0=y-Pm_0,
+\qquad
+c_1=\operatorname{PTC}_{\text{relearned}}(\rho_0),
+\qquad
+T_1=\mathcal B_1[c_1+Pm_0].
+\]Use the actual contracted route when additional transformations are required. This equation does not override reference, calibration, response, or support conventions.
+Do not substitute “residual map plus the original candidate image” unless the necessary projection–mapping identity has been established on the actual support. The existing FRUIT direction explicitly distinguishes \(\mathcal B_1Pm_0\) from \(m_0\). SCI-FRUIT-owner-directive-2026-…
+Publish the reconstructed total as an unthresholded map. Preserve signed structure, including negative residuals and bowls. Thresholding belongs to feedback-model construction, not to the science-map product.
+Keep the chosen MAP coefficient policy unchanged. Where that policy or the accepted validation procedure requires new input-dependent coefficients or eligibility decisions, resolve them normally and record the changes. Do not freeze stale state or manufacture old coverage to make the comparison look cleaner.
+3. Establish that the integration behaves correctly
+Before interpreting the nonzero-feedback result, complete these bounded checks.
+Zero-feedback replay. Run the new route with a zero model, including PTC learning/application and MAP publication. It should reproduce the original first-pass result under the same inputs, method, and reproducibility conventions.
+Compare numerical map values, support, relevant coefficients/normalization, and source measurements—not merely the peak. Explain discrepancies against justified tolerances. A material unexplained mismatch blocks interpretation of the nonzero-feedback result.
+This is an integration control, not a no-source observation or a false-positive test.
+Subtraction/rejoin accounting. With residual processing bypassed in a suitable fixture, removal and rejoin must recover the original input on the declared support. Test signs, units, sample alignment, and missing-support behavior.
+Also characterize the actual projected-and-remapped model contribution. Do not assume that projection followed by mapping leaves the input candidate image unchanged.
+PTC relearning. Verify that learning consumes the current residual parent and that stale first-pass state cannot be reused accidentally. Compare the relevant cleaning action or subspace, not raw eigenvector signs or ordering. The real observation need not show a large subspace change for the implementation to be correct.
+Replacement semantics. A small fixture must demonstrate that previously admitted content can be removed when it is absent from the new reconstructed total. The implementation must not union old and new masks or retain rejected pixels through an implicit carry-forward operation.
+Include a small known-source synthetic case exercising the numerical projection/PTC/rejoin/MAP route, rather than relying only on bookkeeping mocks. Keep it small and interpretable; this is not a broad injection campaign or a requirement to establish final calibration accuracy.
+Follow the existing test and independent-review requirements for the actual changed scope.
+4. Infer \(m_1\), but do not apply it
+After producing \(T_1\), rerun the existing descriptive POINT measurement on the unmasked reconstructed total, using the same saved method profile and original analysis disk.
+Use its newly measured centroid and constant background to construct \(m_1\). Preserve the tested rule: threshold 3, the centroid-associated eight-connected component, copied source-relative brightness, no smoothing, dilation, fitted-source replacement, amplitude rescaling, or damping.
+The next candidate is a complete replacement inferred from \(T_1\). It is not
+\[
+m_0+\text{selected residual increments}.
+\]Allow its extent and brightness to change, including removal of previously admitted pixels. Retain missing, constrained, or failed measurement states honestly; do not silently reduce the fit footprint or substitute a different peak.
+For this one-cycle experiment, use the existing first-pass pixel-noise scale as a frozen, provisional selection control for \(m_1\). Apply its validity restrictions together with the new map support. Do not extrapolate it into newly available coverage.
+This deliberately holds the selection scale fixed while we inspect the first feedback response. It does not establish post-FRUIT uncertainty, calibrated significance, or readiness to apply \(m_1\). Label the inherited scale and its original processing generation explicitly.
+Do not rerun the 256-realization uncertainty campaign or repeat the four-threshold admission study. Simple source-masked background comparisons are appropriate diagnostics, but they do not replace a new uncertainty model.
+Save \(m_1\) and stop before projecting or subtracting it.
+5. Return evidence that separates processing changes from model restoration
+Produce an owner-facing comparison for each array covering \(M_0\), the zero-feedback replay, \(T_1\), \(m_0\), and \(m_1\).
+Source measurements: use the unchanged descriptive fitter to report fitted amplitude, both widths, centroid, constant background, and fit status. Include source profiles and the existing aperture or frozen-template diagnostics where supported, with their exact units and definitions. Do not call an unconverted brightness sum integrated flux.
+Map and support changes: show the reconstructed total, its difference from \(M_0\), the source outskirts and negative bowls, coverage/eligibility changes, and added/removed feedback support. Use comparable display ranges so changes are not artifacts of plotting choices.
+Residual and restored-model contributions: where the resolved MAP operation permits the decomposition, save
+\[
+R_1=\mathcal B_1c_1,
+\qquad
+A_1=\mathcal B_1Pm_0,
+\]and verify that their sum reproduces \(T_1\) on the declared support. Use the same resolved mapping coefficients, support, and normalization for this accounting; do not independently reweight the two components.
+These products should make clear how much of the total comes through residual processing and how much through the model-rejoin path. They are not independent measurements of the source.
+PTC behavior: report relevant learned-state changes, actual rank under the unchanged policy, fit/convergence failures, detector/sample eligibility changes, and whether any source-region support was lost. A failed network or changed support must remain visible rather than disappearing into an apparently improved coadd.
+The assessment should answer:
+Does the zero-model route reproduce the parent? What changes after the first nonzero-feedback cycle? Does \(m_1\) remain a plausible candidate, or does the result expose a specific problem that should be addressed before another cycle?
+Do not declare successful astronomical recovery merely because the peak increases, the residual looks cleaner, or the old source reappears in the total. The reconstructed total explicitly contains the restored model, so its presence is not independent confirmation. SCI-FRUIT-owner-directive-2026-…
+6. Keep execution efficient and the scope bounded
+Exercise all three arrays with their actual available contributing networks. A one-network smoke test is appropriate preparation, but is not completion of this observation-level milestone.
+Reuse immutable inputs and shared geometry. Use compact arrays and the established parallel execution path, with workers and numerical-library threads matched to the actual allocation. Avoid unnecessary upstream reruns, nested-thread oversubscription, and bulky per-sample provenance duplication.
+Record loading, projection, PTC learning/application, MAP, candidate inference, serialization, wall/CPU time, and peak memory separately where practical.
+Use the existing development branch/worktree and review workflow. Preserve unrelated changes and all original products. Make the new cycle reproducible through the intended successor entry point, not solely an untracked plotting script.
+Do not push, integrate into a production route, or activate unrestricted iteration.
+Completion and stop point
+Deliver the implemented route, tests and review results, exact source/input/configuration identities, zero-feedback control, first-cycle products, unapplied replacement candidates, inspected figures, and updated existing handoff/status records.
+Record the stop reason as completion of the authorized single feedback cycle, not convergence. Do not automatically select the latest or highest-flux map as scientifically best.
+The approximately 5% final-chain goals are not a demand that this first feedback cycle already achieve final performance, and they must not be used to excuse incorrect arithmetic or support handling.
+Finish with a recommendation about the next bounded action, supported by these results. Do not execute that next action. The milestone is one correctly implemented, interpretable feedback cycle—not proof that FRUIT has converged or that the source flux is now correct.
