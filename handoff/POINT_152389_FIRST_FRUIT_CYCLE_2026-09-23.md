@@ -1,5 +1,12 @@
 # POINT 152389 first FRUIT cycle — completed bounded experiment
 
+## Subsequent bounded continuation
+
+The owner subsequently authorized cycles2–10, now completed under
+`handoff/POINT_152389_FRUIT_TEN_CYCLES_2026-09-23.md`. The first-cycle products
+and the historical single-cycle stop below remain preserved. The continuation
+applied saved m1 through m9 and stops with m10 unapplied.
+
 ## Completion disposition — 2026-09-23
 
 The historical preflight below is superseded by owner approval and successful

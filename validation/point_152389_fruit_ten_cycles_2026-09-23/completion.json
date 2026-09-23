@@ -1,0 +1,615 @@
+{
+  "runtime_source": "1c1393b4df31ae721597dabc82498eb000c02f59",
+  "runtime_tree": "061dd4b4257aaf93a91c4fe503a160c5679acea0",
+  "product_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-fruit-ten-cycles-20260923",
+  "run_manifest_sha256": "d87564759cb76315ed23e1a6aaeb48dd95447d7ff2fa2f7cf8d60e685e9114eb",
+  "report_manifest_sha256": "0d8a847f91c9bbb36a634e40009dc186d81adfebbfb63309d09f1a901e95f420",
+  "assessment_sha256": "cb1fb4b20a9f4771e187241f9d0b2b51c23ec9f5b133e697db28d9c82aad46b1",
+  "wall_seconds": 270.2970647500006,
+  "m10_applied": false,
+  "new_cycles_per_array": 9,
+  "zero_controls_exact": true,
+  "validity_failures": [],
+  "arrays": {
+    "a1100": {
+      "M0": {
+        "cycle": 0,
+        "amplitude": 816.3113586194066,
+        "frozen_template": 816.3113585676928,
+        "widths_arcsec": [
+          6.057436378669031,
+          5.092676356910821
+        ],
+        "east_north_arcsec": [
+          4.668417271604746,
+          -5.170562611668168
+        ],
+        "constant": -5.653389339210907,
+        "selected_pixels": 28,
+        "apertures": [
+          27263.068942921516,
+          27924.20441510576,
+          26698.03683983786
+        ],
+        "background": {
+          "n": 997,
+          "median": -4.899470366864642,
+          "mean": -4.6829424026394,
+          "std": 11.881119548538335,
+          "robust_scale": 11.54143749421008
+        },
+        "differences": {},
+        "fit_status": "success",
+        "valid": true
+      },
+      "T1": {
+        "cycle": 1,
+        "amplitude": 919.1230795687508,
+        "frozen_template": 960.6837817826877,
+        "widths_arcsec": [
+          6.263600650370141,
+          5.3935511141191625
+        ],
+        "east_north_arcsec": [
+          4.637493375489846,
+          -5.149289816835831
+        ],
+        "constant": -2.6198116223788337,
+        "selected_pixels": 32,
+        "apertures": [
+          33358.403218010375,
+          35895.341916718404,
+          36192.136097164526
+        ],
+        "background": {
+          "n": 997,
+          "median": -2.7118636680925143,
+          "mean": -2.784111293529404,
+          "std": 11.576987423040265,
+          "robust_scale": 11.306601876125836
+        },
+        "differences": {
+          "1": {
+            "from_cycle": 0,
+            "fitted_amplitude": 102.81172094934414,
+            "fitted_amplitude_fraction": 0.12594669896940466,
+            "full_map": {
+              "pixels": 9829,
+              "mean": 0.7535104149654172,
+              "rms": 3.807475363896192,
+              "max_abs": 118.41783519229148,
+              "rms_over_M0_fitted_amplitude": 0.004664244008971793
+            },
+            "fixed_disk": {
+              "pixels": 1257,
+              "mean": 4.356135671286521,
+              "rms": 10.436212427844623,
+              "max_abs": 118.41783519229148,
+              "rms_over_M0_fitted_amplitude": 0.01278459783469748
+            },
+            "fixed_disk_background_subtracted": {
+              "pixels": 1257,
+              "mean": 1.3225579544544466,
+              "rms": 9.575373172641077,
+              "max_abs": 115.38425747545944,
+              "rms_over_M0_fitted_amplitude": 0.011730050147575439
+            },
+            "selection": {
+              "added": 4,
+              "removed": 0,
+              "retained": 28,
+              "retained_brightness_mean_change": 52.747695482688265,
+              "retained_brightness_rms_change": 59.27178067569911,
+              "retained_brightness_max_abs_change": 115.38425747545944
+            }
+          }
+        },
+        "fit_status": "success",
+        "valid": true
+      },
+      "T10": {
+        "cycle": 10,
+        "amplitude": 937.4216858608636,
+        "frozen_template": 996.6496786299383,
+        "widths_arcsec": [
+          6.353092697365881,
+          5.513475595966599
+        ],
+        "east_north_arcsec": [
+          4.627744474064495,
+          -5.140084595255484
+        ],
+        "constant": -1.5835157760283884,
+        "selected_pixels": 35,
+        "apertures": [
+          35101.390496874345,
+          38366.457787886524,
+          39184.31684046418
+        ],
+        "background": {
+          "n": 997,
+          "median": -2.1329464252672117,
+          "mean": -2.133494631061109,
+          "std": 11.527716189275937,
+          "robust_scale": 11.12032619550274
+        },
+        "differences": {
+          "1": {
+            "from_cycle": 9,
+            "fitted_amplitude": 5.204760498145333e-05,
+            "fitted_amplitude_fraction": 5.55220864380239e-08,
+            "full_map": {
+              "pixels": 9829,
+              "mean": 9.90204402998977e-07,
+              "rms": 4.314065571945254e-06,
+              "max_abs": 9.136460118952527e-05,
+              "rms_over_M0_fitted_amplitude": 5.284828547824512e-09
+            },
+            "fixed_disk": {
+              "pixels": 1257,
+              "mean": 5.679837512699107e-06,
+              "rms": 1.1796049385822966e-05,
+              "max_abs": 9.136460118952527e-05,
+              "rms_over_M0_fitted_amplitude": 1.4450429068845903e-08
+            },
+            "fixed_disk_background_subtracted": {
+              "pixels": 1257,
+              "mean": 1.6080543288216713e-06,
+              "rms": 1.0462889931816586e-05,
+              "max_abs": 8.729281807973166e-05,
+              "rms_over_M0_fitted_amplitude": 1.281727838445374e-08
+            },
+            "selection": {
+              "added": 0,
+              "removed": 0,
+              "retained": 35,
+              "retained_brightness_mean_change": 5.412916821602006e-05,
+              "retained_brightness_rms_change": 5.642583202286684e-05,
+              "retained_brightness_max_abs_change": 8.729281807973166e-05
+            }
+          },
+          "2": {
+            "from_cycle": 8,
+            "fitted_amplitude": 0.0002685485394522402,
+            "fitted_amplitude_fraction": 2.864757882556111e-07,
+            "full_map": {
+              "pixels": 9829,
+              "mean": 5.609755795858361e-06,
+              "rms": 2.443535654508155e-05,
+              "max_abs": 0.0005171760357143285,
+              "rms_over_M0_fitted_amplitude": 2.9933868109354805e-08
+            },
+            "fixed_disk": {
+              "pixels": 1257,
+              "mean": 3.2179614118077786e-05,
+              "rms": 6.681475700982826e-05,
+              "max_abs": 0.0005171760357143285,
+              "rms_over_M0_fitted_amplitude": 8.184959856840566e-08
+            },
+            "fixed_disk_background_subtracted": {
+              "pixels": 1257,
+              "mean": 9.210671136627064e-06,
+              "rms": 5.927495805429537e-05,
+              "max_abs": 0.0004942070927427267,
+              "rms_over_M0_fitted_amplitude": 7.26131731825276e-08
+            },
+            "selection": {
+              "added": 0,
+              "removed": 0,
+              "retained": 35,
+              "retained_brightness_mean_change": 0.000306742932702418,
+              "retained_brightness_rms_change": 0.00031967957564599237,
+              "retained_brightness_max_abs_change": 0.0004942070927427267
+            }
+          }
+        },
+        "fit_status": "success",
+        "valid": true
+      },
+      "support_unchanged_from": 2,
+      "max_accounting": 3.6834535421803594e-11,
+      "max_remap": 3.751665644813329e-11,
+      "centroid_shift_from_M0_arcsec": 0.050825052328571714
+    },
+    "a1400": {
+      "M0": {
+        "cycle": 0,
+        "amplitude": 554.1512628929715,
+        "frozen_template": 554.1512629060675,
+        "widths_arcsec": [
+          7.164706516758785,
+          6.281779080166167
+        ],
+        "east_north_arcsec": [
+          4.377816219247622,
+          -5.404829421712671
+        ],
+        "constant": -1.5540001300123354,
+        "selected_pixels": 38,
+        "apertures": [
+          27192.809584411047,
+          28123.671585794506,
+          29011.531029681268
+        ],
+        "background": {
+          "n": 894,
+          "median": -1.359087260946694,
+          "mean": -1.0190798299814419,
+          "std": 10.635407176401698,
+          "robust_scale": 10.276569470253198
+        },
+        "differences": {},
+        "fit_status": "success",
+        "valid": true
+      },
+      "T1": {
+        "cycle": 1,
+        "amplitude": 643.4491193552188,
+        "frozen_template": 673.0418627444486,
+        "widths_arcsec": [
+          7.3143485638783865,
+          6.753332057265194
+        ],
+        "east_north_arcsec": [
+          4.393125411296044,
+          -5.337376103796102
+        ],
+        "constant": 0.7109042679743092,
+        "selected_pixels": 44,
+        "apertures": [
+          33974.109545952524,
+          36688.76347257091,
+          38483.8170558455
+        ],
+        "background": {
+          "n": 894,
+          "median": 0.22267810560219697,
+          "mean": 0.5139717414640212,
+          "std": 10.525075848866837,
+          "robust_scale": 10.033026022377369
+        },
+        "differences": {
+          "1": {
+            "from_cycle": 0,
+            "fitted_amplitude": 89.2978564622473,
+            "fitted_amplitude_fraction": 0.16114346829431342,
+            "full_map": {
+              "pixels": 9780,
+              "mean": 0.7762598714594187,
+              "rms": 3.7019683303347213,
+              "max_abs": 109.45433213417556,
+              "rms_over_M0_fitted_amplitude": 0.006680429294717167
+            },
+            "fixed_disk": {
+              "pixels": 1257,
+              "mean": 3.8070638320191628,
+              "rms": 9.87472811943555,
+              "max_abs": 109.45433213417556,
+              "rms_over_M0_fitted_amplitude": 0.017819553577996177
+            },
+            "fixed_disk_background_subtracted": {
+              "pixels": 1257,
+              "mean": 1.5421594340325187,
+              "rms": 9.240929397613545,
+              "max_abs": 107.18942773618892,
+              "rms_over_M0_fitted_amplitude": 0.016675824844954532
+            },
+            "selection": {
+              "added": 6,
+              "removed": 0,
+              "retained": 38,
+              "retained_brightness_mean_change": 43.549707210565394,
+              "retained_brightness_rms_change": 50.736201808163415,
+              "retained_brightness_max_abs_change": 107.18942773618892
+            }
+          }
+        },
+        "fit_status": "success",
+        "valid": true
+      },
+      "T10": {
+        "cycle": 10,
+        "amplitude": 664.7340776999814,
+        "frozen_template": 706.2391766379785,
+        "widths_arcsec": [
+          7.388247359861711,
+          6.916466544501001
+        ],
+        "east_north_arcsec": [
+          4.393584120474171,
+          -5.297994554505708
+        ],
+        "constant": 1.712264623324025,
+        "selected_pixels": 49,
+        "apertures": [
+          36040.18279613505,
+          39446.1371970552,
+          41590.586661424655
+        ],
+        "background": {
+          "n": 894,
+          "median": 1.0085793435265686,
+          "mean": 1.2333807751484458,
+          "std": 10.493580610550799,
+          "robust_scale": 10.213173745629842
+        },
+        "differences": {
+          "1": {
+            "from_cycle": 9,
+            "fitted_amplitude": 7.847229835533653e-05,
+            "fitted_amplitude_fraction": 1.1805067658117243e-07,
+            "full_map": {
+              "pixels": 9780,
+              "mean": 1.7983489543750356e-06,
+              "rms": 7.680897688784983e-06,
+              "max_abs": 0.00025744484869960615,
+              "rms_over_M0_fitted_amplitude": 1.386065178068261e-08
+            },
+            "fixed_disk": {
+              "pixels": 1257,
+              "mean": 9.213037169234323e-06,
+              "rms": 2.0238819699805667e-05,
+              "max_abs": 0.00025744484869960615,
+              "rms_over_M0_fitted_amplitude": 3.652219358690622e-08
+            },
+            "fixed_disk_background_subtracted": {
+              "pixels": 1257,
+              "mean": 3.3073184676724953e-06,
+              "rms": 1.832124789485302e-05,
+              "max_abs": 0.0002515391300050851,
+              "rms_over_M0_fitted_amplitude": 3.3061817452523924e-08
+            },
+            "selection": {
+              "added": 0,
+              "removed": 0,
+              "retained": 49,
+              "retained_brightness_mean_change": 7.415777303419548e-05,
+              "retained_brightness_rms_change": 8.866640454751179e-05,
+              "retained_brightness_max_abs_change": 0.0002515391300050851
+            }
+          },
+          "2": {
+            "from_cycle": 8,
+            "fitted_amplitude": 0.00044817589673584735,
+            "fitted_amplitude_fraction": 6.742187800197779e-07,
+            "full_map": {
+              "pixels": 9780,
+              "mean": 9.740244104939355e-06,
+              "rms": 4.123874375854266e-05,
+              "max_abs": 0.0013395524823351934,
+              "rms_over_M0_fitted_amplitude": 7.441784675045934e-08
+            },
+            "fixed_disk": {
+              "pixels": 1257,
+              "mean": 4.984760668487254e-05,
+              "rms": 0.00010884123893719366,
+              "max_abs": 0.0013395524823351934,
+              "rms_over_M0_fitted_amplitude": 1.9641070268248256e-07
+            },
+            "fixed_disk_background_subtracted": {
+              "pixels": 1257,
+              "mean": 1.7699062042395118e-05,
+              "rms": 9.836100954420886e-05,
+              "max_abs": 0.001307403937687468,
+              "rms_over_M0_fitted_amplitude": 1.7749848485539994e-07
+            },
+            "selection": {
+              "added": 0,
+              "removed": 0,
+              "retained": 49,
+              "retained_brightness_mean_change": 0.00040027648552836,
+              "retained_brightness_rms_change": 0.000475669218513331,
+              "retained_brightness_max_abs_change": 0.001307403937687468
+            }
+          }
+        },
+        "fit_status": "success",
+        "valid": true
+      },
+      "support_unchanged_from": 3,
+      "max_accounting": 1.3415046851150692e-11,
+      "max_remap": 1.3642420526593924e-11,
+      "centroid_shift_from_M0_arcsec": 0.10799220138611706
+    },
+    "a2000": {
+      "M0": {
+        "cycle": 0,
+        "amplitude": 593.4009279452124,
+        "frozen_template": 593.4009278549014,
+        "widths_arcsec": [
+          9.434172047674089,
+          8.61547432606247
+        ],
+        "east_north_arcsec": [
+          4.697033840420085,
+          -5.203524112320467
+        ],
+        "constant": -4.9751465440168525,
+        "selected_pixels": 57,
+        "apertures": [
+          51552.55133874029,
+          49997.54976094201,
+          48684.07083719902
+        ],
+        "background": {
+          "n": 627,
+          "median": -2.056269823919295,
+          "mean": -2.045631280717141,
+          "std": 15.612978408303292,
+          "robust_scale": 14.62757024741778
+        },
+        "differences": {},
+        "fit_status": "success",
+        "valid": true
+      },
+      "T1": {
+        "cycle": 1,
+        "amplitude": 761.9635244247087,
+        "frozen_template": 784.5620526922993,
+        "widths_arcsec": [
+          9.527279972481855,
+          9.059209810577334
+        ],
+        "east_north_arcsec": [
+          4.624578968380292,
+          -5.2067584337531265
+        ],
+        "constant": -0.8634776569729493,
+        "selected_pixels": 59,
+        "apertures": [
+          70348.0682894325,
+          72492.33961577593,
+          73352.8921745396
+        ],
+        "background": {
+          "n": 627,
+          "median": -0.1170031637457188,
+          "mean": -0.051516196832676414,
+          "std": 15.473995412153792,
+          "robust_scale": 14.651965503743922
+        },
+        "differences": {
+          "1": {
+            "from_cycle": 0,
+            "fitted_amplitude": 168.56259647949628,
+            "fitted_amplitude_fraction": 0.28406190240245016,
+            "full_map": {
+              "pixels": 10601,
+              "mean": 1.3264215075651484,
+              "rms": 7.441783021203198,
+              "max_abs": 251.98271918873291,
+              "rms_over_M0_fitted_amplitude": 0.01254090223109709
+            },
+            "fixed_disk": {
+              "pixels": 1257,
+              "mean": 8.062889923753925,
+              "rms": 20.629258767128288,
+              "max_abs": 251.98271918873291,
+              "rms_over_M0_fitted_amplitude": 0.03476445316417326
+            },
+            "fixed_disk_background_subtracted": {
+              "pixels": 1257,
+              "mean": 3.9512210367100207,
+              "rms": 19.39505790245305,
+              "max_abs": 247.87105030168897,
+              "rms_over_M0_fitted_amplitude": 0.03268457629416407
+            },
+            "selection": {
+              "added": 2,
+              "removed": 0,
+              "retained": 57,
+              "retained_brightness_mean_change": 74.98055243468362,
+              "retained_brightness_rms_change": 87.13973003446206,
+              "retained_brightness_max_abs_change": 247.87105030168897
+            }
+          }
+        },
+        "fit_status": "success",
+        "valid": true
+      },
+      "T10": {
+        "cycle": 10,
+        "amplitude": 813.6176996671275,
+        "frozen_template": 857.6398601327505,
+        "widths_arcsec": [
+          9.679321261104484,
+          9.372077280010245
+        ],
+        "east_north_arcsec": [
+          4.604352540001943,
+          -5.200117851788103
+        ],
+        "constant": 1.4325950965482868,
+        "selected_pixels": 68,
+        "apertures": [
+          78397.76126375362,
+          82694.9132348979,
+          84754.23287089054
+        ],
+        "background": {
+          "n": 627,
+          "median": 1.3118650554332962,
+          "mean": 1.1533097111896193,
+          "std": 15.41660808220137,
+          "robust_scale": 14.743674762565943
+        },
+        "differences": {
+          "1": {
+            "from_cycle": 9,
+            "fitted_amplitude": 0.0017699741122214618,
+            "fitted_amplitude_fraction": 2.1754418118255002e-06,
+            "full_map": {
+              "pixels": 10601,
+              "mean": 3.3844285720136545e-05,
+              "rms": 0.00013642350576222623,
+              "max_abs": 0.0027040549933303737,
+              "rms_over_M0_fitted_amplitude": 2.2990106576783437e-07
+            },
+            "fixed_disk": {
+              "pixels": 1257,
+              "mean": 0.0001877333709490109,
+              "rms": 0.0003840871137094234,
+              "max_abs": 0.0027040549933303737,
+              "rms_over_M0_fitted_amplitude": 6.472640935015279e-07
+            },
+            "fixed_disk_background_subtracted": {
+              "pixels": 1257,
+              "mean": 8.477890780561245e-05,
+              "rms": 0.00034563934318530983,
+              "max_abs": 0.002601100530171152,
+              "rms_over_M0_fitted_amplitude": 5.824718616166742e-07
+            },
+            "selection": {
+              "added": 0,
+              "removed": 0,
+              "retained": 68,
+              "retained_brightness_mean_change": 0.0013067839729334243,
+              "retained_brightness_rms_change": 0.0014004875775513845,
+              "retained_brightness_max_abs_change": 0.002601100530171152
+            }
+          },
+          "2": {
+            "from_cycle": 8,
+            "fitted_amplitude": 0.007885289876639945,
+            "fitted_amplitude_fraction": 9.691733970386609e-06,
+            "full_map": {
+              "pixels": 10601,
+              "mean": 0.00015229850458380154,
+              "rms": 0.000612653710055667,
+              "max_abs": 0.011971574918106853,
+              "rms_over_M0_fitted_amplitude": 1.032444812948173e-06
+            },
+            "fixed_disk": {
+              "pixels": 1257,
+              "mean": 0.0008447291502954542,
+              "rms": 0.0017247895663394476,
+              "max_abs": 0.011971574918106853,
+              "rms_over_M0_fitted_amplitude": 2.9066175752571357e-06
+            },
+            "fixed_disk_background_subtracted": {
+              "pixels": 1257,
+              "mean": 0.00038274285224374984,
+              "rms": 0.0015517164050580013,
+              "max_abs": 0.011509588620015165,
+              "rms_over_M0_fitted_amplitude": 2.6149544633022015e-06
+            },
+            "selection": {
+              "added": 0,
+              "removed": 0,
+              "retained": 68,
+              "retained_brightness_mean_change": 0.005874123278986666,
+              "retained_brightness_rms_change": 0.006285213616114756,
+              "retained_brightness_max_abs_change": 0.011509588620015165
+            }
+          }
+        },
+        "fit_status": "success",
+        "valid": true
+      },
+      "support_unchanged_from": 4,
+      "max_accounting": 8.526512829121202e-12,
+      "max_remap": 7.844391802791506e-12,
+      "centroid_shift_from_M0_arcsec": 0.09274387342575346
+    }
+  }
+}

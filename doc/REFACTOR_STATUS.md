@@ -1,5 +1,36 @@
 # Citlali Refactor Status
 
+## POINT 152389 FRUIT through ten cycles — completed 2026-09-23
+
+The owner superseded the one-cycle stop and authorized nine further cycles per
+array, reusing existing T1 and saved m1. All arrays completed T2–T10 after fresh
+zero controls exactly reproduced all six parent planes and source fits. Every
+cycle reused immutable original post-RTC/CAL data, learned PTC afresh under the
+unchanged rank-10 recipe and restored the identical applied operand. No guard
+tripped; coverage, normalization and eligibility remain unchanged. The inherited
+network 3 / scan 5 failure persists without rescue or new failure.
+
+T10 fitted amplitudes are 937.421686 /664.734078 /813.617700 mJy/nominal beam
+(+14.836/+19.955/+37.111% relative to M0). Final amplitude steps are 0.00005205 /
+0.00007847 /0.00176997. Widths, fixed apertures, profiles and background settle
+together; candidate supports remain 35/49/68 pixels from m2/m3/m4 respectively.
+No persistent period-two signature or late expanding footprint/pedestal is
+observed. This is descriptive stabilization, not calibrated recovery or a
+mathematical convergence claim. Stop: ten total cycles completed; m10 unapplied.
+
+Runtime/report source `1c1393b4df31ae721597dabc82498eb000c02f59`, tree
+`061dd4b4257aaf93a91c4fe503a160c5679acea0`; new workflow 270.297s. Ten focused
+Python tests independently pass; 239 successor tests/111 subtests, 207 baseline
+/137 subtests, 28 selected CTests and full required configuration preflight pass.
+The native continuation rejects indices 1/11 before scientific input loading.
+Local cached AppleClang evidence is supplemental, not Spack-backed V2.
+Independent exact-source implementation review and completed-run audit pass all
+three required categories, with recorded limitations. Final completion-record
+review is recorded in the handoff. No cycle 11, integration, push or activation.
+
+Products, all 15 inspected figures, exact identities and scope:
+`handoff/POINT_152389_FRUIT_TEN_CYCLES_2026-09-23.md`.
+
 ## POINT 152389 first FRUIT cycle — completed 2026-09-23
 
 Exactly one nonzero threshold-3, unity-gain cycle per array completed after
