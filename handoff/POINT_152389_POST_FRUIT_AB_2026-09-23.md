@@ -80,3 +80,23 @@ must not divide a successful variant by unavailable scatter. These are repaired
 with focused tests. Review also corrected signed east-axis plot pixel edges.
 Local operator smoke exposed zero-retained segments with no MAP interval;
 verification now skips only explicitly zero-retained segments and tests it.
+
+## Completed base execution and stochastic-check reassessment
+
+Source6b1e59c9e passed independent review in all three categories with scientific
+limitations. All three256 refit ensembles completed, no failures; finite
+constrained1/3/3 retained. Exact-source independent192×16 validation passed,
+matching CLI baseline207/137,28 selected CTests and config passed. All selected
+per-pixel network contribution maps are unchanged from M0.
+
+One of24 fixed-background propagation sampling checks missed its prespecified
+99.9% interval: a1100 double-domain largest aperture variance ratio0.711317
+versus[0.734003,1.317320], two-sided Gaussian MC tail0.000307. The corresponding
+analytic/dense/double-grid variance identities remain exact. Preserve this
+failure, do not retune tolerances or rerun source ensembles. Before inspecting
+new samples, prescribe a single4096-draw linear-only check of both existing
+representations with independent seed9234096, same99.9% tolerance, no learning,
+no fits and no changed scientific covariance. This bounded diagnostic resolves
+an unexpected numerical result under the authorized generation-validation scope;
+its outcome and the original anomaly must both be reported. It is not additional
+observational calibration evidence or an opportunity to tune the model.
