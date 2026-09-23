@@ -20,8 +20,9 @@ A2000 inherited spatial-model caveat persists; no new noise investigation.
 Runtime source `b9d455af113d46d42b83ba2ac7087de017e121ab`, companion36.891s.
 Seven focused tests,229 successor tests/111 subtests,207 baseline tests/137
 subtests and required config preflight pass. Exact-source independent numerical
-review passes scientific behavior with limitations, architecture and numerical
-evidence; completion assessment/document review pending. Full products and scope:
+and completion review of `c4583af71e21ed4140bce01488c4ccbeaa5f0e03` passes
+scientific behavior with limitations, architecture and repository/evidence; no
+remaining findings. Full products and scope:
 `handoff/POINT_152389_ADMISSION_PROTOTYPE_2026-09-23.md`.
 No FRUIT iteration, upstream reprocessing, integration,push or activation.
 

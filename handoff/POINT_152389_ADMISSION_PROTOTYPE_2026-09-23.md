@@ -155,3 +155,21 @@ immutable parent data, relearn input-dependent PTC state after sky subtraction,
 reconstruct the total, and infer a replacement model that remains revisable or
 removable. This task implements none of that loop, and performs no integration,
 push, activation, production qualification, cleanup or final calibration claim.
+
+
+## Final independent completion disposition
+
+Exact candidate `c4583af71e21ed4140bce01488c4ccbeaa5f0e03`, tree
+`92c50fa4de8ab1d7ea59a037750642517a4c381b`, received fresh-context independent
+completion review: scientific/behavioral pass with recorded limitations;
+architecture/ownership pass; repository/evidence pass; no remaining findings.
+Only documentation changed after reviewed runtime b9d455af1. The reviewer verified
+23 archived source hashes, verbatim directive, numerical/figure evidence, owner
+assessment and broader gates, and archived binary hash/version. The recommendation
+is a provisional first candidate with explicit clipping/spatial/morphology limits,
+not subsequent execution authority. Owner assessment SHA256:
+`b3a779e1ee31ee92079fd293a9ab516b38e6a0e2c4d03089fa5c05cd917f6a47`.
+Binary SHA256:
+`f7ec068df89d81e71d62c16392fc67450b5674060d0d933942cd42f78a15f38f`.
+Closure changes only review documentation. No integration,push,activation or
+production qualification. Worktree clean after closure; main checkout unchanged.
