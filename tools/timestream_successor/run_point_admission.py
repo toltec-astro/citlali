@@ -44,7 +44,7 @@ def run(args):
         require(np.allclose(parameters,reg['source_parameters'],rtol=1e-10,atol=1e-10),'noise/source parameter mismatch')
         row=int(round(h['CRPIX2']-1));column=int(round(h['CRPIX1']-1))
         scale=patch(model['scale'],row,column,half);valid=patch(model['amplitude_valid'],row,column,half).astype(bool)
-        require(np.array_equal(support,model['source_support']) and np.array_equal(scale,model['source_scale']),'saved source support/scale mismatch')
+        require(np.array_equal(support,model['source_support']) and np.array_equal(np.where(np.isfinite(scale),scale,0.),model['source_scale']),'saved source support/scale mismatch')
         q=model['weights'];beam=bundle['nominal_beam_fwhm_arcsec'];profile=dict(array=array,loading_verification_seconds=time.perf_counter()-t)
         t=time.perf_counter();reference,outputs=evaluate(signal,support,scale,valid,header,parameters,beam,q)
         records=dict(array=array,saved_parameters=parameters,reference=reference,cases={n:r['summary'] for n,r in outputs.items()})

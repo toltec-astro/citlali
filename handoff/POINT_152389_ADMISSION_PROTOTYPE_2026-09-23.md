@@ -62,3 +62,17 @@ no FRUIT loop, timestream subtraction, PTC relearning, rejoin, integration, push
 activation or cleanup. A2000 caveat is carried forward, not a prerequisite to
 this authorized bright-source comparison. Consequential method/ownership/scope
 conflict triggers reassessment; routine numerical/reporting choices remain here.
+
+
+## Bounded input-binding repair
+
+The first committed run stopped before candidate generation: the full saved
+amplitude crop contains NaNs outside noise support, whereas additive make_context
+stores zeros there solely for numeric noise generation, with separate validity.
+The initial equality check compared these representations directly. Match the
+already accepted finite-or-zero generator representation for that binding only;
+retain the original scale/validity for admission so unsupported pixels remain
+invalid and cannot receive zero uncertainty. No inference or candidate method
+changes. Preserve the failed attempt; rerun exactly the same32 identities. Focused
+invalid-support tests cover zero/NaN scale exclusion. This is an input-adapter
+repair within the owner-authorized boundary, not a new scientific choice.
