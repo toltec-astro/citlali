@@ -1,5 +1,46 @@
 # Citlali Refactor Status
 
+## POINT 152389 post-FRUIT noise and uncertainty A+B — completed 2026-09-23
+
+Saved M0/T1/T3/T5/T10 maps were compared on fixed common support and a
+conservative four-major-FWHM union source mask; a larger five-FWHM union and
+north/south/lag sensitivity were retained. No native observation execution,
+feedback/source/weights/calibration change, m10 application or cycle11 occurred.
+All15 saved peak/template/aperture measurements reproduce exactly; input hashes
+and per-pixel network contributions verify before/after and across cycles.
+
+T10 conditional additive peak SDs are7.905909/5.680591/6.628750 mJy/nominal beam,
+from256 trials per array with no failed fits and finite constraints1/3/3 retained.
+Original fixed template and all three apertures use the trial-refitted constant;
+their joint covariance and raw/background cross terms are saved. a1100/a1400
+are provisional model-based conditional estimates. a1100 has substantial regional
+aperture covariance sensitivity; a1400's17 overlapping blanks fall below model
+predictions. a2000 remains assumption-dependent: matched-depth north/south
+background second moments differ markedly and no old blank survives the mask.
+Background-to-source transfer after feedback remains an explicit assumption.
+
+Matched fixed-background template noise changes−2.83/−0.89/+0.60% fromM0 toT10;
+largest-aperture changes−3.18/−1.70/+5.62%. No fitted-peak M0→T10 uncertainty
+claim is made from unmatched legacy models. Source response, calibration and
+adaptive-FRUIT repeatability remain unmeasured.
+
+Runtime source6b1e59c9e7032dcfe8181b85fed264ff805cbca4, companion52.164s;
+independent192×16×6 synthetic validation30.496s. One of24 original linear
+sampling checks failed; a prospectively fixed4096-draw linear-only follow-up at
+5f5853bff67ff2f330400702461cb1afcd01fdb5 passed all8 checks while preserving
+the anomaly. Numerical propagation is distinct from model representativeness.
+Gates249 successor/111 subtests,207 baseline/137 subtests,28 selected native
+fixture/CLI tests and full required config passed. Local native evidence is
+supplemental AppleClang/cached dependencies, not Spack V2 reproduction.
+Independent exact-source/artifact review passes all three categories with the
+recorded limitations. No integration, push or production activation.
+
+[Owner assessment](/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-post-fruit-ab-20260923/ASSESSMENT.md),
+[full linked tables/figures](/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-post-fruit-ab-20260923/companion/REPORT.md),
+`handoff/POINT_152389_POST_FRUIT_AB_2026-09-23.md`, and
+`validation/point_152389_post_fruit_ab_2026-09-23/completion.json`.
+
+
 ## POINT 152389 FRUIT through ten cycles — completed 2026-09-23
 
 The owner superseded the one-cycle stop and authorized nine further cycles per

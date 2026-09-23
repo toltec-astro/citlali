@@ -100,3 +100,42 @@ no fits and no changed scientific covariance. This bounded diagnostic resolves
 an unexpected numerical result under the authorized generation-validation scope;
 its outcome and the original anomaly must both be reported. It is not additional
 observational calibration evidence or an opportunity to tune the model.
+
+## Completion / conformance
+
+Candidate evidence complete; owner decisions for integration/push/activation
+remain absent. Primary runtime6b1e59c9e7032dcfe8181b85fed264ff805cbca4/tree
+2894cd1fb52d6afc458b06fb8ba29d02ea94e51b; linear follow-up
+5f5853bff67ff2f330400702461cb1afcd01fdb5/tree
+c06eed4a5dc88c778e68ec0cfe965235cfd51c92. Exact base remains94297bf1f.
+Changed paths: compact Python companion, tests and documentation/evidence only.
+No core/Engine, upstream, source-measurement or feedback mutation.
+
+A+B companion52.164s; source-bound synthetic192×16×6 validation30.496s,
+ordinary cases pass unchanged tolerances. Source peak scatters7.905909/5.680591/
+6.628750 mJy/nominal beam; zero failures, finite constraints1/3/3 retained.
+All measurements include coupled trial backgrounds. Provisional conditional
+estimates for a1100/a1400; assumption-dependent a2000. Source-support depth
+interpolation is complete but spatial transfer is not demonstrated. See owner
+assessment for every aperture and all five requested scientific answers.
+
+All15 saved measurements reproduce with zero difference;212 companion files
+verify. All12 selected per-pixel network contribution comparisons match M0.
+23/24 initial fixed-background sampling checks pass; one independent4096-draw
+linear-only follow-up passes8/8 while retaining original failed0.711317 flag.
+No noise/source-model tuning or new source ensemble followed the anomaly.
+
+Focused10 tests independently reproduced; complete successor249/111,
+baseline207/137,28 selected native fixture/CLI CTests and full required config
+passed. Native build matched primary source6b1e59c9e; local AppleClang/cached
+dependencies are supplemental, not Spack V2. Baseline's initial missing-binary
+failures are retained with repaired gate log. No unexpected error-level output
+in successful scientific companion execution; inherited PTC condition unchanged.
+The independent reviewer checked source, all artifacts, exact regeneration and
+all9 figures, passing scientific/behavioral with limitations, architecture and
+repository/evidence hygiene. Final document review is recorded in validation.
+
+All prior input hashes/manifests unchanged before and after. Published source
+values, fixed admission scale and m10 state unchanged. Source response/adaptive
+uncertainty remain excluded. No new Unity/dependency/build-policy work, automatic
+integration/push/production or cleanup. Source/worktree retained for review.

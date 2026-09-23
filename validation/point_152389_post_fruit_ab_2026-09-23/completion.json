@@ -1,0 +1,713 @@
+{
+  "runtime_source": "6b1e59c9e7032dcfe8181b85fed264ff805cbca4",
+  "followup_source": "5f5853bff67ff2f330400702461cb1afcd01fdb5",
+  "parent_base": "94297bf1fdbc60a91478b18cb4479cf99f19bfa3",
+  "product_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-post-fruit-ab-20260923",
+  "companion_manifest": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-post-fruit-ab-20260923/companion/FILES_SHA256SUMS",
+    "sha256": "2a26bc5c7ecf50b291ae5c2628976ea34de0ade1a65e9ee237285f8f05653406"
+  },
+  "validation_manifest": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-post-fruit-ab-20260923/validation/FILES_SHA256SUMS",
+    "sha256": "ed84dc375dd51630befe7bd73beee9b8a2ec1eb65f76c7f9f66d8f0595c0b4c4"
+  },
+  "followup_manifest": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-post-fruit-ab-20260923/generation-followup/FILES_SHA256SUMS",
+    "sha256": "73a1b8254c57e7101e23cd3d3127f5c6b1f4d4e2f2c0d8e69d245ddadc410a15"
+  },
+  "assessment": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-post-fruit-ab-20260923/ASSESSMENT.md",
+    "sha256": "e3f302bf0c696ee66866b1de277d45e9121312c2900dd5cbbd612257dedf6eeb"
+  },
+  "dispositions": {
+    "a1100": "provisional model-based conditional estimate",
+    "a1400": "provisional model-based conditional estimate",
+    "a2000": "assumption-dependent calculation"
+  },
+  "source_results": {
+    "a1100": {
+      "trials": 256,
+      "failures": 0,
+      "bound_limited": 1,
+      "primary_available": true,
+      "measurements": [
+        {
+          "name": "peak",
+          "units": "mJy/nominal beam",
+          "observed": 937.4216858608636,
+          "noiseless_reference": 937.4216858608635,
+          "scatter": 7.90590884721239,
+          "relative_scatter": 0.008433673944668933,
+          "partial_survivor_scatter": null,
+          "mean_shift": -0.18276939066595332,
+          "partial_survivor_mean_shift": null,
+          "quantiles": [
+            920.8408709161282,
+            930.2064717098493,
+            936.5521150751699,
+            945.7436915326593,
+            952.7707628119058
+          ],
+          "quantile_scope": "complete conditional model distribution",
+          "MC_SE_mean": 0.4941193029507744,
+          "approximate_MC_relative_SE_scatter": 0.04428074427700476
+        },
+        {
+          "name": "template",
+          "units": "mJy/nominal beam",
+          "observed": 996.6496786299383,
+          "noiseless_reference": 996.5861101829469,
+          "scatter": 10.919654015241587,
+          "relative_scatter": 0.010956361346799889,
+          "partial_survivor_scatter": null,
+          "mean_shift": -0.8562257122222263,
+          "partial_survivor_mean_shift": null,
+          "quantiles": [
+            972.1462928266457,
+            985.5054785297887,
+            995.8958067762375,
+            1006.199616659976,
+            1015.5431927060714
+          ],
+          "quantile_scope": "complete conditional model distribution",
+          "MC_SE_mean": 0.6824783759525992,
+          "approximate_MC_relative_SE_scatter": 0.04428074427700476
+        },
+        {
+          "name": "aperture1",
+          "units": "mJy/nominal beam arcsec^2",
+          "observed": 35101.390496874345,
+          "noiseless_reference": 35223.338498741185,
+          "scatter": 599.2629252011207,
+          "relative_scatter": 0.017072341486143772,
+          "partial_survivor_scatter": null,
+          "mean_shift": -41.07830080536951,
+          "partial_survivor_mean_shift": null,
+          "quantiles": [
+            33977.569340016424,
+            34570.658950989615,
+            35248.15728558558,
+            35761.306086972065,
+            36248.44941144871
+          ],
+          "quantile_scope": "complete conditional model distribution",
+          "MC_SE_mean": 37.45393282507004,
+          "approximate_MC_relative_SE_scatter": 0.04428074427700476
+        },
+        {
+          "name": "aperture1.5",
+          "units": "mJy/nominal beam arcsec^2",
+          "observed": 38366.457787886524,
+          "noiseless_reference": 37132.77866576715,
+          "scatter": 1134.559643400691,
+          "relative_scatter": 0.029571654742620166,
+          "partial_survivor_scatter": null,
+          "mean_shift": -98.19729731368716,
+          "partial_survivor_mean_shift": null,
+          "quantiles": [
+            34744.64797285741,
+            35924.40140100565,
+            37061.82085715291,
+            38199.358990418434,
+            39132.767757168695
+          ],
+          "quantile_scope": "complete conditional model distribution",
+          "MC_SE_mean": 70.90997771254318,
+          "approximate_MC_relative_SE_scatter": 0.04428074427700476
+        },
+        {
+          "name": "aperture2",
+          "units": "mJy/nominal beam arcsec^2",
+          "observed": 39184.31684046418,
+          "noiseless_reference": 37205.238744693976,
+          "scatter": 1782.5671672632197,
+          "relative_scatter": 0.045491852633817755,
+          "partial_survivor_scatter": null,
+          "mean_shift": -173.71804282917583,
+          "partial_survivor_mean_shift": null,
+          "quantiles": [
+            33278.12525333131,
+            35339.26999073246,
+            36986.90479217038,
+            38799.70593761536,
+            40200.37932380516
+          ],
+          "quantile_scope": "complete conditional model distribution",
+          "MC_SE_mean": 111.41044795395123,
+          "approximate_MC_relative_SE_scatter": 0.04428074427700476
+        }
+      ],
+      "covariance": [
+        [
+          62.503394700431144,
+          43.548768037350165,
+          953.9316809577349,
+          726.219116814915,
+          918.1531171670744
+        ],
+        [
+          43.548768037350165,
+          119.23884381258169,
+          6126.541899301513,
+          10734.381115484925,
+          16096.509344633841
+        ],
+        [
+          953.9316809577349,
+          6126.541899301513,
+          359116.053520604,
+          636035.0166376698,
+          960593.7744297703
+        ],
+        [
+          726.219116814915,
+          10734.381115484925,
+          636035.0166376698,
+          1287225.5844335028,
+          1943870.3012632246
+        ],
+        [
+          918.1531171670744,
+          16096.509344633841,
+          960593.7744297703,
+          1943870.3012632246,
+          3177545.7058048192
+        ]
+      ],
+      "correlation": [
+        [
+          1.0,
+          0.5044465924997565,
+          0.20134834290330214,
+          0.08096336363721485,
+          0.06515044811060719
+        ],
+        [
+          0.5044465924997565,
+          1.0,
+          0.9362441561988999,
+          0.8664446028760658,
+          0.8269455696687555
+        ],
+        [
+          0.20134834290330214,
+          0.9362441561988999,
+          1.0,
+          0.9354838294485169,
+          0.899241734637612
+        ],
+        [
+          0.08096336363721485,
+          0.8664446028760658,
+          0.935483829448517,
+          0.9999999999999998,
+          0.9611563731961913
+        ],
+        [
+          0.0651504481106072,
+          0.8269455696687554,
+          0.8992417346376119,
+          0.9611563731961912,
+          0.9999999999999999
+        ]
+      ],
+      "order": [
+        "peak",
+        "template",
+        "aperture1",
+        "aperture1.5",
+        "aperture2"
+      ],
+      "covariance_units": "outer product of listed measurement units",
+      "scope": "conditional additive scatter; no bias correction; sensitivity intervals are MC precision only"
+    },
+    "a1400": {
+      "trials": 256,
+      "failures": 0,
+      "bound_limited": 3,
+      "primary_available": true,
+      "measurements": [
+        {
+          "name": "peak",
+          "units": "mJy/nominal beam",
+          "observed": 664.7340776999814,
+          "noiseless_reference": 664.7340776999814,
+          "scatter": 5.680591296113072,
+          "relative_scatter": 0.008545659815979718,
+          "partial_survivor_scatter": null,
+          "mean_shift": -0.5676997231382757,
+          "partial_survivor_mean_shift": null,
+          "quantiles": [
+            652.6095256250867,
+            658.1448142925842,
+            664.6360182851855,
+            669.3056637679016,
+            674.2808479459181
+          ],
+          "quantile_scope": "complete conditional model distribution",
+          "MC_SE_mean": 0.355036956007067,
+          "approximate_MC_relative_SE_scatter": 0.04428074427700476
+        },
+        {
+          "name": "template",
+          "units": "mJy/nominal beam",
+          "observed": 706.2391766379785,
+          "noiseless_reference": 706.2275933926401,
+          "scatter": 7.399329788837012,
+          "relative_scatter": 0.010477087697203668,
+          "partial_survivor_scatter": null,
+          "mean_shift": -0.27858652421798524,
+          "partial_survivor_mean_shift": null,
+          "quantiles": [
+            690.6245162104246,
+            699.1222501831564,
+            705.759303449147,
+            714.3749843008467,
+            719.9410044582587
+          ],
+          "quantile_scope": "complete conditional model distribution",
+          "MC_SE_mean": 0.4624581118023133,
+          "approximate_MC_relative_SE_scatter": 0.04428074427700476
+        },
+        {
+          "name": "aperture1",
+          "units": "mJy/nominal beam arcsec^2",
+          "observed": 36040.18279613505,
+          "noiseless_reference": 36072.66312954553,
+          "scatter": 523.483497201554,
+          "relative_scatter": 0.014524995618437661,
+          "partial_survivor_scatter": null,
+          "mean_shift": -1.8150621107852203,
+          "partial_survivor_mean_shift": null,
+          "quantiles": [
+            35044.03849572452,
+            35569.47795497217,
+            36067.22935757511,
+            36621.17618762272,
+            37086.76810217759
+          ],
+          "quantile_scope": "complete conditional model distribution",
+          "MC_SE_mean": 32.71771857509712,
+          "approximate_MC_relative_SE_scatter": 0.04428074427700476
+        },
+        {
+          "name": "aperture1.5",
+          "units": "mJy/nominal beam arcsec^2",
+          "observed": 39446.1371970552,
+          "noiseless_reference": 38423.572620643936,
+          "scatter": 986.8819555244506,
+          "relative_scatter": 0.025018468870460782,
+          "partial_survivor_scatter": null,
+          "mean_shift": 44.270068036763405,
+          "partial_survivor_mean_shift": null,
+          "quantiles": [
+            36500.220012282814,
+            37468.87287154109,
+            38474.241804372534,
+            39469.099011364575,
+            40361.76130375466
+          ],
+          "quantile_scope": "complete conditional model distribution",
+          "MC_SE_mean": 61.680122220278164,
+          "approximate_MC_relative_SE_scatter": 0.04428074427700476
+        },
+        {
+          "name": "aperture2",
+          "units": "mJy/nominal beam arcsec^2",
+          "observed": 41590.586661424655,
+          "noiseless_reference": 38488.46119766482,
+          "scatter": 1432.6614531544344,
+          "relative_scatter": 0.03444677192984225,
+          "partial_survivor_scatter": null,
+          "mean_shift": 76.306380878661,
+          "partial_survivor_mean_shift": null,
+          "quantiles": [
+            35797.24673931705,
+            37155.77037929784,
+            38573.79913553743,
+            40108.82535078944,
+            41279.80092911022
+          ],
+          "quantile_scope": "complete conditional model distribution",
+          "MC_SE_mean": 89.54134082215215,
+          "approximate_MC_relative_SE_scatter": 0.04428074427700476
+        }
+      ],
+      "covariance": [
+        [
+          32.26911747347558,
+          25.606130938062268,
+          936.4966610126049,
+          1242.449925861248,
+          1490.4628149779496
+        ],
+        [
+          25.606130938062268,
+          54.75008132397079,
+          3601.7701285892167,
+          6385.712465622557,
+          8709.98869554676
+        ],
+        [
+          936.4966610126049,
+          3601.7701285892167,
+          274034.9718423694,
+          473081.3923040686,
+          652082.8187935817
+        ],
+        [
+          1242.449925861248,
+          6385.712465622557,
+          473081.3923040686,
+          973935.9941397635,
+          1350443.504332582
+        ],
+        [
+          1490.4628149779496,
+          8709.98869554676,
+          652082.8187935817,
+          1350443.504332582,
+          2052518.8393545754
+        ]
+      ],
+      "correlation": [
+        [
+          0.9999999999999999,
+          0.60919738944101,
+          0.3149268535422908,
+          0.2216257111670828,
+          0.18314034390910747
+        ],
+        [
+          0.6091973894410099,
+          1.0,
+          0.9298665229065606,
+          0.8744837965369122,
+          0.82164010804795
+        ],
+        [
+          0.3149268535422908,
+          0.9298665229065606,
+          1.0,
+          0.9157304653270154,
+          0.8694731723174282
+        ],
+        [
+          0.2216257111670828,
+          0.8744837965369122,
+          0.9157304653270155,
+          1.0,
+          0.9551413257945458
+        ],
+        [
+          0.18314034390910744,
+          0.82164010804795,
+          0.869473172317428,
+          0.9551413257945457,
+          0.9999999999999999
+        ]
+      ],
+      "order": [
+        "peak",
+        "template",
+        "aperture1",
+        "aperture1.5",
+        "aperture2"
+      ],
+      "covariance_units": "outer product of listed measurement units",
+      "scope": "conditional additive scatter; no bias correction; sensitivity intervals are MC precision only"
+    },
+    "a2000": {
+      "trials": 256,
+      "failures": 0,
+      "bound_limited": 3,
+      "primary_available": true,
+      "measurements": [
+        {
+          "name": "peak",
+          "units": "mJy/nominal beam",
+          "observed": 813.6176996671275,
+          "noiseless_reference": 813.6176996671275,
+          "scatter": 6.628750374462895,
+          "relative_scatter": 0.008147254388854731,
+          "partial_survivor_scatter": null,
+          "mean_shift": -0.2867337426989707,
+          "partial_survivor_mean_shift": null,
+          "quantiles": [
+            801.7262211012821,
+            807.1825438903204,
+            812.9488751293509,
+            819.938135852633,
+            827.9983075588578
+          ],
+          "quantile_scope": "complete conditional model distribution",
+          "MC_SE_mean": 0.4142968984039309,
+          "approximate_MC_relative_SE_scatter": 0.04428074427700476
+        },
+        {
+          "name": "template",
+          "units": "mJy/nominal beam",
+          "observed": 857.6398601327505,
+          "noiseless_reference": 857.6835227458262,
+          "scatter": 5.667918363894708,
+          "relative_scatter": 0.006608739434075971,
+          "partial_survivor_scatter": null,
+          "mean_shift": -0.19331031805904786,
+          "partial_survivor_mean_shift": null,
+          "quantiles": [
+            847.1551170675469,
+            852.1668597062984,
+            857.418696045523,
+            862.8107804651378,
+            868.9707101475608
+          ],
+          "quantile_scope": "complete conditional model distribution",
+          "MC_SE_mean": 0.3542448977434193,
+          "approximate_MC_relative_SE_scatter": 0.04428074427700476
+        },
+        {
+          "name": "aperture1",
+          "units": "mJy/nominal beam arcsec^2",
+          "observed": 78397.76126375362,
+          "noiseless_reference": 78505.16605993884,
+          "scatter": 642.9576159533426,
+          "relative_scatter": 0.008201224187897918,
+          "partial_survivor_scatter": null,
+          "mean_shift": 13.227331069501815,
+          "partial_survivor_mean_shift": null,
+          "quantiles": [
+            77430.29430901597,
+            77870.8864391998,
+            78489.37543975035,
+            79129.80749707091,
+            80008.71891592689
+          ],
+          "quantile_scope": "complete conditional model distribution",
+          "MC_SE_mean": 40.18485099708391,
+          "approximate_MC_relative_SE_scatter": 0.04428074427700476
+        },
+        {
+          "name": "aperture1.5",
+          "units": "mJy/nominal beam arcsec^2",
+          "observed": 82694.9132348979,
+          "noiseless_reference": 83445.51817842433,
+          "scatter": 999.2876960349237,
+          "relative_scatter": 0.01208402859310597,
+          "partial_survivor_scatter": null,
+          "mean_shift": -16.127022635628236,
+          "partial_survivor_mean_shift": null,
+          "quantiles": [
+            81531.04586700589,
+            82460.84485265438,
+            83378.92901155882,
+            84414.30977683923,
+            85394.25053580647
+          ],
+          "quantile_scope": "complete conditional model distribution",
+          "MC_SE_mean": 62.45548100218273,
+          "approximate_MC_relative_SE_scatter": 0.04428074427700476
+        },
+        {
+          "name": "aperture2",
+          "units": "mJy/nominal beam arcsec^2",
+          "observed": 84754.23287089054,
+          "noiseless_reference": 83628.87199350505,
+          "scatter": 1401.2253855157664,
+          "relative_scatter": 0.016532807130120664,
+          "partial_survivor_scatter": null,
+          "mean_shift": -55.35992568079382,
+          "partial_survivor_mean_shift": null,
+          "quantiles": [
+            80603.1552373847,
+            82258.43134667618,
+            83543.12181854613,
+            85026.95882926739,
+            86444.24364694727
+          ],
+          "quantile_scope": "complete conditional model distribution",
+          "MC_SE_mean": 87.5765865947354,
+          "approximate_MC_relative_SE_scatter": 0.04428074427700476
+        }
+      ],
+      "covariance": [
+        [
+          43.94033152694196,
+          28.133579764362523,
+          1335.4571187555985,
+          1130.920508940056,
+          1385.384688937253
+        ],
+        [
+          28.133579764362523,
+          32.125298579774864,
+          3038.5597674360833,
+          3824.815776593127,
+          4741.5496479326
+        ],
+        [
+          1335.4571187555985,
+          3038.5597674360833,
+          413394.4959124061,
+          483902.0767940582,
+          598463.4061166616
+        ],
+        [
+          1130.920508940056,
+          3824.815776593127,
+          483902.0767940582,
+          998575.8994467859,
+          1178824.9553702113
+        ],
+        [
+          1385.384688937253,
+          4741.5496479326,
+          598463.4061166616,
+          1178824.9553702113,
+          1963432.5810138078
+        ]
+      ],
+      "correlation": [
+        [
+          0.9999999999999999,
+          0.7488067402853308,
+          0.3133400712412983,
+          0.17073001371038343,
+          0.1491525635704883
+        ],
+        [
+          0.7488067402853307,
+          0.9999999999999999,
+          0.8337999251646778,
+          0.6752994493401638,
+          0.5970197788830262
+        ],
+        [
+          0.3133400712412983,
+          0.8337999251646778,
+          1.0,
+          0.7531554115582199,
+          0.6642740062131676
+        ],
+        [
+          0.1707300137103834,
+          0.675299449340164,
+          0.7531554115582199,
+          0.9999999999999999,
+          0.8418811475933791
+        ],
+        [
+          0.1491525635704883,
+          0.5970197788830262,
+          0.6642740062131676,
+          0.8418811475933792,
+          1.0
+        ]
+      ],
+      "order": [
+        "peak",
+        "template",
+        "aperture1",
+        "aperture1.5",
+        "aperture2"
+      ],
+      "covariance_units": "outer product of listed measurement units",
+      "scope": "conditional additive scatter; no bias correction; sensitivity intervals are MC precision only"
+    }
+  },
+  "runtime": {
+    "wall_seconds": 52.163988791999145,
+    "parent_cpu_seconds": 20.343598,
+    "child_cpu_seconds": 56.950605,
+    "peak_parent_rss_bytes": 788381696,
+    "peak_child_rss_bytes": 137216000,
+    "memory_scope": "macOS per-process high-water marks; child maximum, not simultaneous aggregate",
+    "workers": 4,
+    "library_threads": {
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "VECLIB_MAXIMUM_THREADS": "1"
+    },
+    "before_verification_seconds": 10.902120583999931,
+    "after_verification_seconds": 9.64189483300288,
+    "inputs_unchanged": true,
+    "source_revision": "6b1e59c9e7032dcfe8181b85fed264ff805cbca4",
+    "profiles": {
+      "a1100": {
+        "loading_measurement_reproduction_seconds": 0.08428045899927383,
+        "contribution_diagnostics_seconds": 0.9453483749966836,
+        "cycle_inference_seconds": 0.17144799899688223,
+        "cycle_diagnostics_seconds": 0.4828412089991616,
+        "base_ensemble_wall_seconds": 1.7945088329979626,
+        "variant_ensemble_wall_seconds": 5.87746770800004,
+        "propagation_checks_seconds": 0.528112833002524,
+        "summed_worker_cpu_seconds": 2.6938040000000014,
+        "summed_worker_generation_wall_seconds": 0.1066009129754093,
+        "summed_worker_fitting_wall_seconds": 2.5832257549554924,
+        "plotting_seconds": 1.332859042002383
+      },
+      "a1400": {
+        "loading_measurement_reproduction_seconds": 0.08289195800171001,
+        "contribution_diagnostics_seconds": 0.4483355420015869,
+        "cycle_inference_seconds": 0.13640650099841878,
+        "cycle_diagnostics_seconds": 0.31702645900077187,
+        "base_ensemble_wall_seconds": 1.5744488329983142,
+        "variant_ensemble_wall_seconds": 5.8216009580028185,
+        "propagation_checks_seconds": 0.5419262499999604,
+        "summed_worker_cpu_seconds": 2.5357680000000014,
+        "summed_worker_generation_wall_seconds": 0.10759529300412396,
+        "summed_worker_fitting_wall_seconds": 2.4238622990196745,
+        "plotting_seconds": 0.9296005829964997
+      },
+      "a2000": {
+        "loading_measurement_reproduction_seconds": 0.0855786669999361,
+        "contribution_diagnostics_seconds": 0.35574049999922863,
+        "cycle_inference_seconds": 0.16935641599775408,
+        "cycle_diagnostics_seconds": 0.3378947080018406,
+        "base_ensemble_wall_seconds": 1.5727359160009655,
+        "variant_ensemble_wall_seconds": 5.722549999998591,
+        "propagation_checks_seconds": 0.5478953339988948,
+        "summed_worker_cpu_seconds": 2.296586,
+        "summed_worker_generation_wall_seconds": 0.1057206300283724,
+        "summed_worker_fitting_wall_seconds": 2.1867875759489834,
+        "plotting_seconds": 0.94255695800166
+      }
+    },
+    "scope": "map companion only; no native science execution"
+  },
+  "gates": {
+    "successor_tests": 249,
+    "successor_subtests": 111,
+    "baseline_tests": 207,
+    "baseline_subtests": 137,
+    "selected_ctest": 28,
+    "config_required": "passed",
+    "source": "6b1e59c9e7032dcfe8181b85fed264ff805cbca4",
+    "native_environment": "local supplemental AppleClang/cached dependencies; not Spack V2"
+  },
+  "original_linear_sampling_checks_passed": 23,
+  "original_linear_sampling_checks_total": 24,
+  "followup_checks_passed": 8,
+  "no_native_observation_execution": true,
+  "m10_applied": false,
+  "inputs_unchanged": true,
+  "integration_push_production": false,
+  "source_archives": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-post-fruit-ab-20260923/evidence/companion-source-6b1e59c9e.tar",
+      "sha256": "8830f3bdeaffc7f7402337589672134c2b03da44723bfa60d3990f36b91fc020"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-post-fruit-ab-20260923/evidence/followup-source-5f5853bff.tar",
+      "sha256": "f2d1189e5c46574a1cc88b616d4c7c41fccd6551a14260d62be6945d4df2ef7d"
+    }
+  ],
+  "independent_review": {
+    "reviewer": "fresh-context read-only point_post_fruit_ab_review",
+    "source": "6b1e59c9e7032dcfe8181b85fed264ff805cbca4",
+    "followup": "5f5853bff67ff2f330400702461cb1afcd01fdb5",
+    "scientific": "pass with recorded limitations",
+    "architectural": "pass",
+    "repository_artifacts": "pass",
+    "completion_document_review": "pending"
+  }
+}
