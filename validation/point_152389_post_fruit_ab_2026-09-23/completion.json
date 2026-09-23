@@ -708,6 +708,19 @@
     "scientific": "pass with recorded limitations",
     "architectural": "pass",
     "repository_artifacts": "pass",
-    "completion_document_review": "pending"
+    "completion_document_review": {
+      "candidate": "570dca932495774c5b99ccbf9ca394381172087c",
+      "tree": "d3c8e1f9096ca3e32a8447fb2b41af74f3f110dc",
+      "verdict": "pass with recorded limitations; no open findings",
+      "scientific": "pass with recorded limitations",
+      "architecture": "pass",
+      "repository_evidence": "pass",
+      "reviewed_root_manifest": "a57f4d5d0ea28192c5705e97cbd9ca610b2866d809c0cb70f4f51e49f33d1a74",
+      "reviewed_root_files": 235,
+      "assessment_links": 20,
+      "cli_source": "6b1e59c9e",
+      "cli_sha256": "a4ce48a12cebc66b3c387c8ce8e7da36c5fe7e0c38d32547618ed578764367b6",
+      "closure_scope": "receipt only; reviewed numbers, assessment and numerical source unchanged"
+    }
   }
 }

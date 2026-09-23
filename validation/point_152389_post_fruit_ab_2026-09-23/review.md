@@ -34,3 +34,19 @@ with position/coverage. Source-depth support does not establish representativene
 
 Broader gate totals were supplied by the writer and not rerun during the artifact
 audit. Final assessment/completion-document check is recorded separately below.
+
+## Final exact-SHA document review
+
+Candidate570dca932495774c5b99ccbf9ca394381172087c,
+treed3c8e1f9096ca3e32a8447fb2b41af74f3f110dc: **pass with recorded
+limitations; no open findings**. Scientific/behavioral passes with the published
+qualifications; architecture and repository/evidence hygiene pass. Independent
+review verified235 root-manifest entries, all20 assessment links and both source
+archive identities; repository/external completion copies and embedded results
+match. All five owner questions, original23/24 versus follow-up8/8 and each
+array's scientific limitations are correctly represented. Logs substantiate
+249/111 successor,207/137 baseline,28/28 selected CTests and full required config.
+The CLI independently reports6b1e59c9e, SHA
+ a4ce48a12cebc66b3c387c8ce8e7da36c5fe7e0c38d32547618ed578764367b6.
+No further numerical execution or science changes remain. This final addition
+is a receipt of that review, not a new scientific candidate or integration.
