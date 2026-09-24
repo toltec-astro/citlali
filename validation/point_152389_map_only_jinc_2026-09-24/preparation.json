@@ -1,0 +1,16 @@
+{
+  "status": "preparation complete; scientific comparison gated, not completed",
+  "source": "f95324778fd1abaab22f91362483584c0de6d2c0",
+  "baseline_states": 15,
+  "baseline_replayed": 15,
+  "authentic_inputs": 8863,
+  "signal_max_abs_mJy_per_nominal_beam": 0.0,
+  "numerator_rejoin_max_abs": 6.938353180885315e-08,
+  "JINC_primary_maps": 0,
+  "phase_maps": 0,
+  "noise_trials": 0,
+  "recovery_wall_seconds": 72.79774683400319,
+  "peak_rss_bytes": 472498176,
+  "next_action": "owner numerical kernel and adequacy-profile binding",
+  "integration_push_production": "not authorized or performed"
+}

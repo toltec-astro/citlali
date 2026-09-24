@@ -1,0 +1,24 @@
+{
+  "source": "f95324778fd1abaab22f91362483584c0de6d2c0",
+  "JINC_frozen_revision": "a9f43877e01a661db13bd85b2e7f34ea5ac82fb7",
+  "JINC_frozen_tag": "sci-jinc-v0.1-r0.3",
+  "PTC_boundary_admitted_revision": "867879b992598484e1bc5b481e5e14ff91c04dab",
+  "files": {
+    "doc/scientific_contracts/packages/SCI-JINC/v0.1/NUMERICAL_ADEQUACY_DISPOSITION_R0.2.md": "b2440248306850aec0f5e6a2070e900fe916ddf1eb01b8b525c721b83d9047ec",
+    "doc/scientific_contracts/packages/SCI-JINC/v0.1/PRIOR_WORK.md": "543fac87c7f65b9e7482b2017064634bf4584b406aa01c81e4f1eb0b89f9594c",
+    "doc/scientific_contracts/packages/SCI-JINC/v0.1/PHASE_LATTICE_OWNER_DISPOSITION_R0.3.md": "0026111ff3c36bb5aea3ad1a1e8a2d0b99d09d288eb5c91488a5a1abf85b1bbd",
+    "doc/scientific_contracts/packages/SCI-JINC/v0.1/SCIENTIFIC_OWNER_ODQ_102B_DECISION_2026-08-28.md": "63f8eb45d599a369cdf12bc6637d22396fee6a1b4bda775c622d2dbee0ecc811",
+    "doc/scientific_contracts/packages/SCI-JINC/v0.1/FREEZE_AUTHORITY_MANIFEST_R0.3.md": "ff4b79e7cca3950831eda95a16ec6a535597f543c4676378d2fc2f01d50faed2",
+    "doc/scientific_contracts/packages/SCI-JINC/v0.1/src/common/notation.tex": "fed76501dfc57540a4f383bf329d35118508f1e96a143b1cde8e09078d6dade1",
+    "doc/scientific_contracts/packages/SCI-JINC/v0.1/src/common/requirements.tex": "207a85acb31a4f381b289781706c9f14058d330ff847e99023e9e5714c4d4dff",
+    "doc/scientific_contracts/packages/SCI-JINC/v0.1/src/common/assumptions.tex": "15b811ab6ace92aa2d1713ae19b92454cb865e8862b82a599f94eca1003a1765",
+    "doc/scientific_contracts/packages/SCI-JINC/v0.1/src/common/definitions.tex": "9e6f3ff015c753c879ff03be65fe981ac4f6ad2fc572d4a2f13f8a5240a12e1e",
+    "doc/scientific_contracts/packages/SCI-JINC/v0.1/src/common/edge_cases.tex": "815c70e925f103d989e4ec015a64d69ac0710c1a0c57789a4dfe754bdb81bd2d",
+    "doc/scientific_contracts/packages/SCI-JINC/v0.1/src/common/equations.tex": "2b1870e92f9a0e6141fdda1a8865babae41208aafb73fc233f4befc0e1b665c1",
+    "doc/scientific_contracts/packages/SCI-PTC/v0.1/SCI-PTC_TO_SCI-JINC_BOUNDARY_UNIFORM_R0.4_2026-09-06.md": "e1bc8fc0c1d88f63c958442bba88ff781fda84793ee6f46ed27a5b8d799fa5d4"
+  },
+  "numerical_kernel_authorization": null,
+  "numerical_adequacy_profile": null,
+  "certificate": null,
+  "uniform_JINC_permission": "granted r0.4 UFC-OD-009; not a missing permission"
+}

@@ -1,13 +1,21 @@
 # Citlali Refactor Status
 
-## POINT 152389 map-only JINC comparison — preflight 2026-09-24
+## POINT 152389 map-only JINC — preparation complete, science gated 2026-09-24
 
-The new owner directive parks further shoulder/counterfactual work and compares
-only final gridding of fifteen saved original adaptive C+D states. Numerical
-JINC parameters and adequacy authority must be recovered before observation
-execution; existing defaults are not authority. Uniform-family JINC permission
-is already granted by its r0.4 successor. See
-handoff/POINT_152389_MAP_ONLY_JINC_2026-09-24.md.
+All15 original adaptive C+D states replay exactly in ordinary total signal,
+normalization/hits and support rows;8,863 original identities reverify. New
+explicit-input signed JINC arithmetic passes six independent-oracle fixtures,
+without selecting observation parameters or certified science support.
+Recovery source f95324778;72.798s wall,0.440GiB peak RSS.273successor/111subtests,
+207baseline/137subtests,34native/CLI tests and required config pass locally.
+
+The directive's numerical stop applies: one kernel tuple per array and an exact
+numerical-adequacy profile/certificate remain unapproved. Uniform-family JINC
+permission is already resolved. No JINC observation map, comparison, phase map
+or noise ensemble has run. This is not completion of the scientific comparison.
+See handoff/POINT_152389_MAP_ONLY_JINC_2026-09-24.md and
+validation/point_152389_map_only_jinc_2026-09-24/DECISIONS_NEEDED.md.
+Further shoulder/REFSEQ work remains parked; their evidence is preserved.
 
 ## POINT 152389 a2000 REF basis sequence — completed 2026-09-24
 

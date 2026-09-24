@@ -1,0 +1,20 @@
+{
+  "recovery_source": "f95324778fd1abaab22f91362483584c0de6d2c0",
+  "native_source": "8164d828e3c246db14d6cc775abb8c36ffd64178",
+  "native_source_delta": "only Python provenance repair at recovery source; native source unchanged",
+  "cli": {
+    "path": "/private/tmp/citlali-point-additive-build-20260923/bin/citlali",
+    "sha256": "e4bf980c5b1782c047aebc7319608a3e6a5ec9a5325b926777ed624a8231120f",
+    "version": "** logging ** Configured with level=trace; available levels: [\"trace\", \"debug\", \"info\", \"warning\", \"error\", \"critical\", \"off\"].\nv2-ngc4449-memory-repair-187df04b-505-g8164d828e (2026-09-24T12:13:42)\nkids 04088da-dirty (2026-09-24T12:13:39)\n"
+  },
+  "fixture": {
+    "path": "/private/tmp/citlali-point-additive-build-20260923/bin/citlali_jinc_discrete_test",
+    "sha256": "96869cd22c28c8178eba130d31e4d792e4faf6bd483fafa70d3b67051fff7e2c"
+  },
+  "python": "/Users/gwilson/tolteca/bin/python",
+  "environment": "local AppleClang/cached dependencies; supplemental, not Spack V2 or Unity",
+  "host_logical_cpus": 14,
+  "host_memory_bytes": 51539607552,
+  "runtime_policy": "serial baseline recovery, one numerical-library thread; no observation ensembles",
+  "source_archive_sha256": "f5fa2df9c3f97ac087f053874db59c2598fbf8b6f8c66a842a5cdca2b211993d"
+}
