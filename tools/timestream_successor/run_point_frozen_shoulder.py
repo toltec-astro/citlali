@@ -157,7 +157,7 @@ def run_pair(pair,work,out,binary):
 
 
 def run(out,binary):
-    start=time.perf_counter();revision=source();require(not (out/'pairs').exists(),'fresh execution required');freeze=json.loads((out/'FREEZE.json').read_text());work=json.loads(verified(freeze['prospective']).read_text())
+    start=time.perf_counter();cpu_start=time.process_time();revision=source();require(not (out/'pairs').exists(),'fresh execution required');freeze=json.loads((out/'FREEZE.json').read_text());work=json.loads(verified(freeze['prospective']).read_text())
     from point_fruit_trajectory import verify_manifest
     verify_manifest(out/'freeze',freeze['manifest']['sha256']);version=subprocess.check_output([str(binary),'--version'],text=True).strip();require(revision[:9] in version and 'dirty' not in version,'native/source mismatch')
     auth=Auth()
@@ -167,7 +167,7 @@ def run(out,binary):
     for n in ('OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','VECLIB_MAXIMUM_THREADS'):require(os.environ.get(n)=='1','set numerical threads to1')
     def array_run(a):return [run_pair(p,work,out,binary) for p in work['pairs'] if p['array']==a]
     with ThreadPoolExecutor(max_workers=3) as pool:results=sum(list(pool.map(array_run,ARRAYS)),[])
-    after=auth.verify_all();verify_manifest(out/'freeze',freeze['manifest']['sha256']);save_json(out/'RUN.json',dict(source_revision=revision,binary=bound(binary),version=version,workers=3,library_threads=1,available_logical_cpus=os.cpu_count(),before_verification_seconds=before,after_verification_seconds=after,wall_seconds=time.perf_counter()-start,passed=sum(r['status']=='pass' for r in results),unavailable=[dict(array=r['array'],cycle=r['cycle'],reason=r.get('reason')) for r in results if r['status']!='pass'],native_learn_calls=0,admission_updates=0,source_fits=0,all_snapshots_independent=True,original_m10_unapplied=True,parent_peak_rss_native_units=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,parent_peak_rss_unit='bytes on macOS; KiB on Linux',memory_scope='individual native process and parent high-water marks separately; aggregate memory not measured'))
+    after=auth.verify_all();verify_manifest(out/'freeze',freeze['manifest']['sha256']);save_json(out/'RUN.json',dict(source_revision=revision,binary=bound(binary),version=version,workers=3,library_threads=1,available_logical_cpus=os.cpu_count(),before_verification_seconds=before,after_verification_seconds=after,wall_seconds=time.perf_counter()-start,parent_cpu_seconds=time.process_time()-cpu_start,passed=sum(r['status']=='pass' for r in results),unavailable=[dict(array=r['array'],cycle=r['cycle'],reason=r.get('reason')) for r in results if r['status']!='pass'],native_learn_calls=0,admission_updates=0,source_fits=0,all_snapshots_independent=True,original_m10_unapplied=True,parent_peak_rss_native_units=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,parent_peak_rss_unit='bytes on macOS; KiB on Linux',memory_scope='individual native process and parent high-water marks separately; aggregate memory not measured'))
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('action',choices=['freeze','run']);p.add_argument('--output',type=Path,required=True);p.add_argument('--binary',type=Path);args=p.parse_args()
