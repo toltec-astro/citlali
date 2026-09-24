@@ -191,7 +191,8 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
                 }return v;
             };
             auto future=std::make_shared<std::future<Stage>>(std::async(refseq?std::launch::async:std::launch::deferred,std::move(task)));
-            auto publish=[&,future,seg,nt,nd,no,columns,detectors,dir,residual,residual_id,old,s,stem,xy,ts]() mutable {
+            auto publish=[future,seg,nt,nd,no,columns,detectors,dir,residual,residual_id,old,s,stem,xy,ts,eligible,refseq,
+                &n,&solver,&record,&totals,&residuals,&operands,&coords,&extent_x,&extent_y,&owner_sha,&elapsed]() mutable {
             auto stage=future->get();const auto &applied=stage.applied;const auto &fit=stage.fit;
             const bool state_available=refseq?true:fit.converged;
             PtcMatrix clean=PtcMatrix::Zero(nt,no),total=clean,restore=clean;PtcMask causes=PtcMask::Constant(nt,no,17);

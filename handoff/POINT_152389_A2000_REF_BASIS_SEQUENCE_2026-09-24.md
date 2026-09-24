@@ -55,3 +55,12 @@ Stop after pair, bounded diagnostics, assessment/review. No other array/injectio
 new Learn/ALS, m10 apply/cycle11, threshold/seed/basis sweep, noise ensemble,
 upstream/rank/weights/source-policy change or new default. Recommend one next
 bounded action, do not execute it.
+
+## Pre-execution independent review repair
+
+Review ofa0935ff identified a queued-publication lambda implicitly borrowing a
+segment-local eligibility matrix after its scope ended. No observation execution
+had started. Repair captures that matrix by value and enumerates all captures;
+remaining borrowed network/accumulator state outlives the drained queue. This is
+a bounded lifecycle repair, no scientific or tolerance change. Native rebuild
+and exact-SHA follow-up review required before reference execution.
