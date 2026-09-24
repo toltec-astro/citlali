@@ -67,7 +67,7 @@ def report(out):
    for j,k in enumerate((0,10)):
     v,h=read_map(out,key(a,'REF',k),operator=op);sp,su,_,sh,_=source_patch(v['PRIMARY'],v['SCI_SUPPORT'].astype(bool),v['HITS'],h);im=show(axes[i,j],sp,sh,f'{op} '+('M0' if k==0 else 'T10'),-.04*peak,peak);fig.colorbar(im,ax=axes[i,j],label='mJy/nominal beam',shrink=.8)
    v,h=read_map(out,key(a,'REF',10),operator=op);im=show(axes[i,2],v['PRIMARY'],h,f'{op} T10 · full support',-.04*peak,.04*peak);fig.colorbar(im,ax=axes[i,2],label='mJy/nominal beam',shrink=.8)
-  fig.suptitle(f'{a}: same processed samples · fixed nominal beam · gray = unavailable',fontsize=13);path=dest/(a+'-maps.png');fig.savefig(path);plt.close(fig);figures.append(path)
+  fig.suptitle(f'{a}: same processed samples · fixed nominal beam · gray = unavailable',fontsize=13);path=dest/(a+'-maps.png');fig.savefig(path,bbox_inches="tight",pad_inches=0.15);plt.close(fig);figures.append(path)
   fig,axes=plt.subplots(2,3,figsize=(12,7),layout='constrained');raster={}
   for op in ('MAP','JINC'):
    d,h=load(out/'science'/a/('C-shoulder-'+op)/'response.fits');raster[op]=(d,h)
@@ -77,7 +77,7 @@ def report(out):
    d,h=raster[op]
    for j,name in enumerate(('H','DELTA','RESIDUAL')):
     sp,_,_,sh,_=source_patch(d[name],d['NATIVE'].astype(bool),np.ones(d[name].shape),h);v=rmax if name=='RESIDUAL' else vmax;im=show(axes[i,j],sp,sh,f'{op} '+{'H':'H: original injection reference','DELTA':'Delta: completed-history increment','RESIDUAL':'Delta − H'}[name],-v,v);fig.colorbar(im,ax=axes[i,j],label='mJy/nominal beam',shrink=.8)
-  fig.suptitle(f'{a}: shoulder benchmark · displayed-stamp scales shared across operators',fontsize=13);path=dest/(a+'-shoulder.png');fig.savefig(path);plt.close(fig);figures.append(path)
+  fig.suptitle(f'{a}: shoulder benchmark · displayed-stamp scales shared across operators',fontsize=13);path=dest/(a+'-shoulder.png');fig.savefig(path,bbox_inches="tight",pad_inches=0.15);plt.close(fig);figures.append(path)
   fig,axes=plt.subplots(2,3,figsize=(12,7),layout='constrained')
   for i,op in enumerate(('MAP','JINC')):
    d=out/'noise'/a/op/'T10';rec=read(d/'BACKGROUND.json')
@@ -87,7 +87,7 @@ def report(out):
    z=np.load(d/'model.npz');v,h=read_map(out,key(a,'REF',10),operator=op);bg=z['background_mask'];mean=rec['model']['mean_removed'];scale=z['scale'];norm=np.divide(v['PRIMARY']-mean,scale,out=np.full(scale.shape,np.nan),where=scale>0);im=show(axes[i,0],np.where(bg,norm,np.nan),h,op+' · training residual / fitted scale',-3,3);fig.colorbar(im,ax=axes[i,0],shrink=.8)
    cor=z['empirical'];L=(len(cor)-1)//2;im=axes[i,1].imshow(cor,origin='lower',extent=[(-L-.5)*h['CDELT1']*3600,(L+.5)*h['CDELT1']*3600,(-L-.5)*h['CDELT2']*3600,(L+.5)*h['CDELT2']*3600],norm=TwoSlopeNorm(vmin=-.4,vcenter=0.,vmax=1),cmap='RdBu_r');axes[i,1].set(title=op+' · empirical directional correlation',xlabel='East lag (arcsec)',ylabel='North lag (arcsec)');fig.colorbar(im,ax=axes[i,1],shrink=.8)
    hist=rec['model']['histogram'];edges=np.array(hist['edges']);density=np.array(hist['counts'])/(np.sum(hist['counts'])*np.diff(edges));axes[i,2].stairs(density,edges,color=COLORS[op]);xx=np.linspace(-5,5,200);axes[i,2].plot(xx,np.exp(-xx**2/2)/np.sqrt(2*np.pi),color='gray',ls='--',label='unit Gaussian');axes[i,2].set(xlabel='Centered residual / fitted scale',ylabel='Density',title=op+f" · excess kurtosis {hist['excess_kurtosis']:.2f}");axes[i,2].legend(fontsize=8)
-  fig.suptitle(a+': empirical T10 background · transferred covariance remains qualified',fontsize=13);path=dest/(a+'-noise.png');fig.savefig(path);plt.close(fig);figures.append(path)
+  fig.suptitle(a+': empirical T10 background · transferred covariance remains qualified',fontsize=13);path=dest/(a+'-noise.png');fig.savefig(path,bbox_inches="tight",pad_inches=0.15);plt.close(fig);figures.append(path)
  fig,axes=plt.subplots(3,3,figsize=(13,10),layout='constrained')
  for i,a in enumerate(ARRAYS):
   for op in ('MAP','JINC'):
@@ -98,7 +98,7 @@ def report(out):
   axes[i,0].set(title=a+' · fitted peak / input normalization',ylabel='Ratio',xlabel='Phase index (x varies fastest)');axes[i,1].set(title=a+' · centroid error',ylabel='Arcsec',xlabel='Phase index (x varies fastest)')
   axes[i,2].set(title=a+' · core shape',ylabel='FWHM (arcsec)',xlabel='Phase index (x varies fastest)')
   for ax in axes[i]:ax.legend();ax.grid(alpha=.2);ax.set_xticks(range(9))
- fig.suptitle('Continuous profile: nine offsets, identical sampled values for MAP and JINC',fontsize=13);path=dest/'phases.png';fig.savefig(path);plt.close(fig);figures.append(path)
+ fig.suptitle('Continuous profile: nine offsets, identical sampled values for MAP and JINC',fontsize=13);path=dest/'phases.png';fig.savefig(path,bbox_inches="tight",pad_inches=0.15);plt.close(fig);figures.append(path)
  figures.extend(summary_figures(out,dest,p,s,n))
  control_tables(out,dest,s)
  for path in figures:
@@ -136,7 +136,7 @@ def summary_figures(out,dest,p,s,n):
      axes[i,j].plot([r['radius_arcsec'] for r in pr],[np.nan if r[name] is None else r[name] for r in pr],style,color=COLORS[op],label=op+(' +' if branch.endswith('plus') else ' −'))
   for j,name in enumerate(('H: injection reference','Delta: history increment','Delta − H')):
    axes[i,j].set(title=a+' · '+name,xlabel='Radius from frozen M0 center (arcsec)',ylabel='mJy/nominal beam',xlim=(0,60));axes[i,j].axhline(0,color='gray',lw=.5);axes[i,j].legend(fontsize=8)
- fig.suptitle('Compact ± benchmarks: signed profiles on native supported annuli',fontsize=13);path=dest/'compact-response.png';fig.savefig(path);plt.close(fig);paths.append(path)
+ fig.suptitle('Compact ± benchmarks: signed profiles on native supported annuli',fontsize=13);path=dest/'compact-response.png';fig.savefig(path,bbox_inches="tight",pad_inches=0.15);plt.close(fig);paths.append(path)
  fig,axes=plt.subplots(3,3,figsize=(13,10),layout='constrained');names=['Peak','Template','Aperture1','Aperture1.5','Aperture2']
  for i,a in enumerate(ARRAYS):
   for op in ('MAP','JINC'):
@@ -149,7 +149,7 @@ def summary_figures(out,dest,p,s,n):
     else:axes[i,j].plot(range(5),vals,'o-',color=COLORS[op],label=op)
   for j,(title,unit) in enumerate([('raw relative scatter','Percent of observed measurement'),('compact fractional response','Slope × original peak / observed'),('response-referenced scatter','mJy/nominal beam of tested input')]):
    axes[i,j].set(title=a+' · '+title,ylabel=unit);axes[i,j].set_xticks(range(5),names,rotation=35,ha='right');axes[i,j].legend();axes[i,j].grid(alpha=.2)
- fig.suptitle('Conditional precision · bars: approximate MC standard error only',fontsize=13);path=dest/'response-referenced-scatter.png';fig.savefig(path);plt.close(fig);paths.append(path)
+ fig.suptitle('Conditional precision · bars: approximate MC standard error only',fontsize=13);path=dest/'response-referenced-scatter.png';fig.savefig(path,bbox_inches="tight",pad_inches=0.15);plt.close(fig);paths.append(path)
  fig,axes=plt.subplots(3,3,figsize=(12,10),layout='constrained')
  for i,a in enumerate(ARRAYS):
   d=out/'grids'/key(a,'REF',10)/'total';v,h=read_map(out,key(a,'REF',10));c,_=load(d/'certificate.fits');ordinary,_=read_map(out,key(a,'REF',10),operator='MAP');js=c['SCI_SUPPORT'].astype(bool);ms=ordinary['SCI_SUPPORT'].astype(bool)
@@ -157,7 +157,7 @@ def summary_figures(out,dest,p,s,n):
   bit=c['CAUSES'].astype('u1');failure=(bit!=0)&(bit!=16);diag=np.where(bit==16,0,np.where(failure,3,np.where(v['NORMALIZATION']<0,2,1)));im=axes[i,1].imshow(diag,origin='lower',extent=extent(h,diag.shape),cmap=ListedColormap(['#d9d9d9','#4a6f9c','#cf8c46','#b84040']),vmin=-.5,vmax=3.5);bar=fig.colorbar(im,ax=axes[i,1],ticks=range(4),shrink=.7);bar.ax.set_yticklabels(['No members','C positive','C negative','Bound failure']);axes[i,1].set_title(a+f' · failures {failure.sum()}')
   fraction=np.divide(c['ERROR_M'],c['TOLERANCE_LOWER'],out=np.full(js.shape,np.nan),where=js);positive=js&(fraction>0);axes[i,2].hist(np.log10(fraction[positive]),bins=35,color='#4a6f9c');axes[i,2].axvline(0,color='#b84040',ls='--',label='acceptance ceiling');axes[i,2].set(title=a+' · componentwise certificate',xlabel='log10(bound / allowed tolerance)',ylabel='Accepted pixels');axes[i,2].legend()
   for ax in axes[i,:2]:ax.set_xlabel('East offset (arcsec)');ax.set_ylabel('North offset (arcsec)')
- fig.suptitle('REF T10 support: arithmetic validity does not imply background precision',fontsize=13);path=dest/'numerical-support.png';fig.savefig(path);plt.close(fig);paths.append(path)
+ fig.suptitle('REF T10 support: arithmetic validity does not imply background precision',fontsize=13);path=dest/'numerical-support.png';fig.savefig(path,bbox_inches="tight",pad_inches=0.15);plt.close(fig);paths.append(path)
  return paths
 
 if __name__=='__main__':
