@@ -1,25 +1,20 @@
 # Citlali Refactor Status
 
-## POINT 152389 map-only JINC — preparation complete, science gated 2026-09-24
+## POINT 152389 map-only JINC — full execution authorized 2026-09-24
 
-All15 original adaptive C+D states replay exactly in ordinary total signal,
-normalization/hits and support rows;8,863 original identities reverify. New
-explicit-input signed JINC arithmetic passes six independent-oracle fixtures,
-without selecting observation parameters or certified science support.
-Recovery source f95324778;72.798s wall,0.440GiB peak RSS.273successor/111subtests,
-207baseline/137subtests,34native/CLI tests and required config pass locally.
+The consolidated owner execution order explicitly resolves rmax3/nsub16 for
+all three arrays and POINT-152389-JINC-NUMERICAL-ADEQUACY-v1. It supersedes
+pending selections in the earlier preparation record without rewriting the
+sealed evidence. Numerical certificate engineering and the complete bounded
+30-map/18-reference/54-phase experiment are authorized. No new PTC learning,
+feedback, kernel tuning, production activation or push.
 
-Owner continuation supplies the per-pixel exact-discrete error criterion
-abs(m_hat-m_star)<=1e-6P_a+1e-6abs(m_hat), with original REF T10 peaks frozen
-at937.4216858608636/664.7340776999814/813.6176996671275mJy/nominal beam.
-Scales and shapes are explicit; rmax3/nsub16 specified for a1100/a1400.
-a2000's rmax/nsub remain unanswered. Conservative certificate implementation
-and validation remain required. Uniform-family JINC permission is resolved.
-No JINC observation comparison/phase map/noise ensemble has run. See
-handoff/POINT_152389_MAP_ONLY_JINC_2026-09-24.md and
-validation/point_152389_map_only_jinc_2026-09-24/DECISIONS_NEEDED.md.
-Independent review passed the sealed preparation; subsequent owner binding is
-documentation only. Further shoulder/REFSEQ work remains parked.
+Native certificate implementation, Decimal interval argument and fixtures
+passed independent review at a5c45cd7e38c9e48b0b37a73ba260859a3f52700.
+Current work prepares/authenticates native AST, exact uniform payloads,
+original ordinary replay, full finite-cache enclosures and frozen masks.
+Observation accumulation and scientific assessment are still pending.
+See handoff/POINT_152389_MAP_ONLY_JINC_FULL_2026-09-24.md.
 
 ## POINT 152389 a2000 REF basis sequence — completed 2026-09-24
 

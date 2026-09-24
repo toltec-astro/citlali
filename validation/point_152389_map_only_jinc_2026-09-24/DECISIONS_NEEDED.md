@@ -1,3 +1,13 @@
+# Superseded by the full execution order, 2026-09-24
+
+The owner explicitly selects rmax=3 and nsub=16 for a2000 as well as a1100
+and a1400. The complete numerical profile and engineering execution authority
+are in ../point_152389_map_only_jinc_full_2026-09-24/OWNER_DIRECTIVE.md.
+There is no remaining owner selection here. The older sealed external
+preparation retains its original historical decision record.
+
+The following is historical only:
+
 # POINT 152389 JINC — current numerical binding
 
 Owner responses after preparation supply the kernel values below and the exact
