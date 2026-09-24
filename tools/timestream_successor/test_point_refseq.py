@@ -30,6 +30,13 @@ class RefSequenceControls(unittest.TestCase):
         self.assertFalse(trajectory_complete(h))
         self.assertFalse(trajectory_complete(h[:10]))
 
+    def test_failed_saved_terminal_candidate_is_not_revalidated(self):
+        from report_point_refseq import new_candidate_evidence
+        stage=dict(ready=False,candidate_available=True,candidate={'path':'must-not-open'},stop_reason='anchor below threshold')
+        candidate,record=new_candidate_evidence(stage,None)
+        self.assertIsNone(candidate);self.assertEqual(record['status'],'unavailable')
+        self.assertEqual(record['preserved_candidate'],stage['candidate'])
+
     def test_centered_history_noop_simple_and_exact_protection(self):
         rng=np.random.default_rng(152389);u=rng.normal(size=12);dold=rng.normal(size=12);dnew=rng.normal(size=12)
         j=np.ones((12,12))/12;c=np.eye(12)-j;b=np.eye(12)[:,:2];q=np.eye(12)-b@b.T

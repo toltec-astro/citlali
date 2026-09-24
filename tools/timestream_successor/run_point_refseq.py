@@ -193,7 +193,10 @@ def execute(out,binary,branch):
             if prior:rec['candidate_vs_previous']=selection_difference(newcand,load(verified(prior['candidate']))[0])
             state=ready_state('a2000',k,candpath,p/'total.fits',p/'receipt.yaml',w['parents']['a2000'],True);state.update(branch=branch,owner_sha256=digest(path))
             save_json(dest/'state.json',state);rec.update(ready=True,state_path=str(dest/'state.json'))
-        except (ValueError,KeyError,OSError,RuntimeError,AssertionError) as exc:rec.update(stop_reason=str(exc))
+        except (ValueError,KeyError,OSError,RuntimeError,AssertionError) as exc:
+            rec.update(stop_reason=str(exc))
+            if rec['numerical_passed'] and 'measurement' not in rec:
+                rec['measurement']=dict(fit=dict(status='unavailable',reason=str(exc)))
         rec['wall_seconds']=time.perf_counter()-t;save_json(dest/'stage.json',rec);history.append(rec);prior=rec
         print(json.dumps(dict(branch=branch,stage=k,ready=rec['ready'],reason=rec.get('stop_reason'),seconds=rec['wall_seconds'])),flush=True)
         if not rec['ready']:break

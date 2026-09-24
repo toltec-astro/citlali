@@ -22,6 +22,15 @@ def candidate_evidence(candidate,stage,ctx):
         selected_pixels=int(m.sum()),area_arcsec2=int(m.sum())*4,fitted_constant=float(p[6]),source_anchor=[row,col],source_component=anchor,ratio_check=check,membership_exact=True)
 
 
+def new_candidate_evidence(stage,ctx):
+    if not stage.get('ready') or not stage.get('candidate_available'):
+        return None,dict(status='unavailable',reason=stage.get('stop_reason'),
+                         preserved_candidate=stage.get('candidate'),selected_pixels=None,area_arcsec2=None)
+    c,record=candidate_evidence(stage['candidate'],stage,ctx)
+    record['continuation_ready']=True
+    return c,record
+
+
 def pair_candidates(new,old,ctx):
     require(np.array_equal(new['VALID'],old['VALID']),'candidate comparison support transition')
     result=selection_difference(new,old);a=new['ADMITTED'].astype(bool);b=old['ADMITTED'].astype(bool);pixels=[]
@@ -52,10 +61,7 @@ def report(out):
             for name,actual,previous,ideal in zip(MEASUREMENT_NAMES,hv-bv,av-ov,iv-ov):
                 row['estimator_response'].append(dict(name=name,sequence_increment=float(actual),adaptive_increment=float(previous),ideal_increment=float(ideal),sequence_minus_ideal=float(actual-ideal),sequence_minus_adaptive=float(actual-previous),ratio=float(actual/ideal) if np.isfinite(actual+ideal) and abs(ideal)>1e-8 else None))
         for branch in BRANCHES:
-            new=None;nr=dict(status='unavailable',reason=stages[branch].get('stop_reason'),selected_pixels=None,area_arcsec2=None)
-            if stages[branch].get('candidate_available'):
-                new,nr=candidate_evidence(stages[branch]['candidate'],stages[branch],ctx)
-                nr['continuation_ready']=stages[branch]['ready'];nr['terminal_failure']=stages[branch].get('stop_reason')
+            new,nr=new_candidate_evidence(stages[branch],ctx)
             prev=w['old_stages'][branch]['histories'][k];oldc,orr=candidate_evidence(prev['candidate'],prev,ctx)
             row['candidates'][branch]=dict(new=nr,old=orr);row['candidate_changes'][branch]=pair_candidates(new,oldc,ctx) if new is not None else dict(retained=None,added=None,removed=None,retained_brightness_rms_change=None,status='unavailable')
             candall[(branch,k)]=(new,oldc)
