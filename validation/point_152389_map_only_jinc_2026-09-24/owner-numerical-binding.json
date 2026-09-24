@@ -1,0 +1,89 @@
+{
+  "identity": "POINT-152389-JINC-owner-numerical-binding-2026-09-24",
+  "status": "owner acceptance requirement recorded; implementation/certificate pending; a2000 kernel tuple incomplete",
+  "requirement": "abs(m_hat-m_star) <= 1e-6*P_a + 1e-6*abs(m_hat)",
+  "reference": "exact-real-arithmetic selected discrete operator",
+  "units": "mJy/nominal beam",
+  "absolute_coefficient_exact_decimal": "0.000001",
+  "relative_coefficient_exact_decimal": "0.000001",
+  "domain": "every numerically accepted JINC signal pixel in the bounded array comparison",
+  "P_lifecycle": "freeze from saved original REF T10 fitted amplitude; same P for every snapshot, branch and gridding diagnostic for that array; never replace with newly measured JINC peak",
+  "P": {
+    "a1100": {
+      "P_mJy_per_nominal_beam": 937.4216858608636,
+      "P_binary64_hex": "0x1.d4b5f9cd62cc2p+9",
+      "source_measurement": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-fruit-ten-cycles-20260923/run/a1100/cycle-10/diagnostics/measurements.json",
+        "sha256": "f7628ed583780b22afb32f0b493a9e7438a943110a31eb6c9d436575546b70ec"
+      },
+      "source_field": "measurement.fit.parameters[0] (Gaussian amplitude above fitted constant)",
+      "source_total": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-fruit-ten-cycles-20260923/run/a1100/cycle-10/native/products/total.fits",
+        "sha256": "c9cbe3f84265a8571338f548b56ef803ae82c5aaeffb500744d7fe8a997a306c"
+      },
+      "CD_original_reference_agrees": true
+    },
+    "a1400": {
+      "P_mJy_per_nominal_beam": 664.7340776999814,
+      "P_binary64_hex": "0x1.4c5df64211125p+9",
+      "source_measurement": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-fruit-ten-cycles-20260923/run/a1400/cycle-10/diagnostics/measurements.json",
+        "sha256": "974d302de7b0d965d855d1da8ba848c915fca6893848416e886cc8ce48bd827a"
+      },
+      "source_field": "measurement.fit.parameters[0] (Gaussian amplitude above fitted constant)",
+      "source_total": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-fruit-ten-cycles-20260923/run/a1400/cycle-10/native/products/total.fits",
+        "sha256": "696b0fc951f70b085203bf18717a7842e432dbcec6b3a59838137a4fc7f0fa1c"
+      },
+      "CD_original_reference_agrees": true
+    },
+    "a2000": {
+      "P_mJy_per_nominal_beam": 813.6176996671275,
+      "P_binary64_hex": "0x1.96cf10c85e880p+9",
+      "source_measurement": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-fruit-ten-cycles-20260923/run/a2000/cycle-10/diagnostics/measurements.json",
+        "sha256": "7fd481f9e4cb8102708bf3b9ce2e142ffbaa92c8e79f6b4d34a1689cf6426d40"
+      },
+      "source_field": "measurement.fit.parameters[0] (Gaussian amplitude above fitted constant)",
+      "source_total": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-fruit-ten-cycles-20260923/run/a2000/cycle-10/native/products/total.fits",
+        "sha256": "4c6fbfa5b2bec02874f3c7691538c2f4d7438ce9b1ca123ff317e8957905b35a"
+      },
+      "CD_original_reference_agrees": true
+    }
+  },
+  "kernel_selections": {
+    "a1100": {
+      "scale_rad_exact_formula": "(1.1/1000)/45",
+      "a": 1.1,
+      "b": 1.67,
+      "c": 2,
+      "rmax": 3,
+      "nsub": 16
+    },
+    "a1400": {
+      "scale_rad_exact_formula": "(1.4/1000)/45",
+      "a": 1.1,
+      "b": 2.17,
+      "c": 2,
+      "rmax": 3,
+      "nsub": 16
+    },
+    "a2000": {
+      "scale_rad_exact_formula": "(2.0/1000)/45",
+      "a": 1.1,
+      "b": 3.17,
+      "c": 2,
+      "rmax": null,
+      "nsub": null
+    }
+  },
+  "numerical_acceptance_semantics": "must certify full computed signal error including signed numerator/denominator and final normalization; algebraic support alone is insufficient. An unestablished bound means numerical support is unestablished, not a certified pass.",
+  "scientific_response_separate": "phase quantization and selected kernel response are properties of the discrete target; differences from a continuous ideal or source recovery are assessed separately. Incorrect implementation of phase/geometry remains numerical/operator error.",
+  "certificate": "not implemented or issued; no observation JINC execution",
+  "remaining_owner_input": "a2000 rmax and nsub blank in owner table; previous clarification pending",
+  "authenticated_reference_freeze": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-response-robustness-cd-20260923/freeze/prospective.json",
+    "sha256": "b4507bf832841b2ee6047deacfa2e98fc43a07eaad5dea12e88de58afc199983"
+  }
+}

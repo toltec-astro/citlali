@@ -9,15 +9,17 @@ without selecting observation parameters or certified science support.
 Recovery source f95324778;72.798s wall,0.440GiB peak RSS.273successor/111subtests,
 207baseline/137subtests,34native/CLI tests and required config pass locally.
 
-The directive's numerical stop applies: one kernel tuple per array and an exact
-numerical-adequacy profile/certificate remain unapproved. Uniform-family JINC
-permission is already resolved. No JINC observation map, comparison, phase map
-or noise ensemble has run. This is not completion of the scientific comparison.
-See handoff/POINT_152389_MAP_ONLY_JINC_2026-09-24.md and
+Owner continuation supplies the per-pixel exact-discrete error criterion
+abs(m_hat-m_star)<=1e-6P_a+1e-6abs(m_hat), with original REF T10 peaks frozen
+at937.4216858608636/664.7340776999814/813.6176996671275mJy/nominal beam.
+Scales and shapes are explicit; rmax3/nsub16 specified for a1100/a1400.
+a2000's rmax/nsub remain unanswered. Conservative certificate implementation
+and validation remain required. Uniform-family JINC permission is resolved.
+No JINC observation comparison/phase map/noise ensemble has run. See
+handoff/POINT_152389_MAP_ONLY_JINC_2026-09-24.md and
 validation/point_152389_map_only_jinc_2026-09-24/DECISIONS_NEEDED.md.
-Independent exact-source/artifact review passes in all three categories with
-the stated scientific limitation; no open findings. Further shoulder/REFSEQ
-work remains parked; their evidence is preserved.
+Independent review passed the sealed preparation; subsequent owner binding is
+documentation only. Further shoulder/REFSEQ work remains parked.
 
 ## POINT 152389 a2000 REF basis sequence — completed 2026-09-24
 

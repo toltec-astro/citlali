@@ -106,3 +106,23 @@ The scientific comparison remains incomplete. All15 JINC primary-map cells,
 comparison figure, changed published source value or feedback readiness claim
 is justified. One next action: resolve the bounded numerical binding. No
 integration, push, production activation, new default or Unity operation.
+
+## Owner numerical-binding continuation
+
+After the sealed preparation record, owner supplied scales/a/b/c for allarrays
+and rmax3/nsub16 explicitly for a1100/a1400; a2000's two cells remain blank.
+Owner then supplied abs(m_hat-m_star)<=1e-6P_a+1e-6abs(m_hat) for every
+numerically accepted signal pixel of the selected discrete operator. This is
+separate from scientific response tests. Freeze P_a from authenticated saved
+original ten-cycle REF T10 measurement.fit.parameters[0] (amplitude above
+constant), not a new JINC fit:937.4216858608636,664.7340776999814,
+813.6176996671275mJy/nominal beam for a1100/a1400/a2000. Source values agree
+exactly with C+D's archived original reference; consumed identities rechecked.
+Full values/hex encodings/hashes in owner-numerical-binding.json. No new fits,
+science execution or certificate; no sealed preparation evidence was modified.
+
+The acceptance requirement is now recorded. Per-pixel conservative certificate
+implementation/validation remains engineering work. The only current unanswered
+owner parameter question is whether a2000 also usesrmax3/nsub16. Do not infer
+that answer from the separate inequality message. This continuation changes
+only binding evidence/docs; no numerical code, existing maps or feedback.
