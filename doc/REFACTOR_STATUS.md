@@ -24,7 +24,8 @@ fixed covariance/generation checks and seven figures. A minor availability
 label was corrected. Local gates pass:293 successor/111 subtests,
 207 baseline/137 subtests,34 native/CLI tests and required config. Exact native
 source ee54efb6d; validation0a651e88a; BASEbdd3d5645; final report1371640d6.
-Provenance/seal completion is recorded in the associated validation directory.
+The 5,327-file root seal passed; all 29,474 consumed originals remain unchanged.
+Exact seal completion is recorded in the associated validation directory.
 Recommend only a bounded investigation of inherited blank-scene fit failures
 and a reviewed absence/candidate-outcome rule before new calibration; not
 executed. No defaults, contracts, MAP weights, source fit, Unity or push changed.

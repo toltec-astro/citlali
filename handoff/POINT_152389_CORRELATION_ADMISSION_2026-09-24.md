@@ -34,7 +34,9 @@ figures were inspected. Report-first-render preserves the initial artifacts.
 Exact source revisions, frozen executable, runtime, raw trials, failed attempts,
 reviews and regeneration commands are retained in the fresh bundle:
 /Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-correlation-admission-20260924.
-The associated validation COMPLETION.json records the final root seal.
+The associated validation COMPLETION.json records the verified 5,327-file root
+seal8d3d1b3af74166e4850d42816e1313c4eb4425fc85dc681a57d3872d94ff9303.
+All 29,474 consumed original hashes remain unchanged after execution and at seal.
 
 Recommendation only: investigate inherited POINT solver failures on blank
 scenes and separately review the absence/candidate-outcome rule before repeating

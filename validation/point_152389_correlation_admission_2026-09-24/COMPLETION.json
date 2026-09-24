@@ -1,0 +1,68 @@
+{
+  "status": "complete: six new-policy gates unavailable; new trajectories blocked",
+  "source_revision": "b85bc07cf03b6a675e43dd55ea4fef9fa554c076",
+  "sources": {
+    "revisions": {
+      "native_and_calibration": "ee54efb6d32759003d4249f3a4ad90dbeb9c10d9",
+      "validation": "0a651e88a07cccd3431d54bc76d7b457df640e84",
+      "BASE_and_screen": "bdd3d5645dc294fcaf84dbcc84d84e8c360f2aa2",
+      "report": "1371640d6a596099a55cb1014f6cc55236549ffb",
+      "closeout": "1371640d6a596099a55cb1014f6cc55236549ffb"
+    },
+    "binary": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-correlation-admission-20260924/provenance/bin/citlali",
+      "sha256": "5823281906ab4aed249469d387f4d433bcbac7a4837036b9c371ac6ac2b8ad06"
+    },
+    "version": "** logging ** Configured with level=trace; available levels: [\"trace\", \"debug\", \"info\", \"warning\", \"error\", \"critical\", \"off\"].\nv2-ngc4449-memory-repair-187df04b-530-gee54efb6d (2026-09-24T17:17:10)\nkids 04088da-dirty (2026-09-24T13:56:42)\n",
+    "native_tree_diff": "",
+    "archive_scope": "Exact source snapshots; clean Git metadata is needed by execution commands."
+  },
+  "assessment": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-correlation-admission-20260924/ASSESSMENT.md",
+    "sha256": "e2403b2d1c949e58427bee4e34cbe7994fd91c1ede99007212018f623dbabbe2"
+  },
+  "review": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-correlation-admission-20260924/FINAL_REVIEW.md",
+    "sha256": "690de7867858d53663bfa241a6cc30564c6f060feef3d2f7cbca43287c5f1788"
+  },
+  "matrix": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-correlation-admission-20260924/MATRIX.json",
+    "sha256": "a6a6bbfb46c53f74d4c4468624081cc51167f0989bf702b780ac23b8544ce80b"
+  },
+  "authentication": {
+    "original_files": 29474,
+    "original_hashes_unchanged": true,
+    "stage_manifest_files": {
+      "freeze": 7,
+      "calibration": 4,
+      "calibration-disposition": 1,
+      "validation": 4,
+      "screen": 106,
+      "report": 12,
+      "run/BASE/REF/a1100": 2686,
+      "run/BASE/REF/a1400": 1426,
+      "run/BASE/REF/a2000": 1006
+    },
+    "wall_seconds": 44.5138866250054
+  },
+  "independent_fields": 6144,
+  "stress_field_reuses": 768,
+  "BASE_replay_trajectories": 3,
+  "BASE_feedback_applications": 30,
+  "new_policy_feedback_applications": 0,
+  "stop": "No new thresholds, solver change, additional draws, new-policy feedback, m10 application, cycle 11, production/default change, Unity, integration or push.",
+  "product_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-correlation-admission-20260924",
+  "root_manifest": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-correlation-admission-20260924/FILES_SHA256SUMS",
+    "sha256": "8d3d1b3af74166e4850d42816e1313c4eb4425fc85dc681a57d3872d94ff9303"
+  },
+  "sealed_completion": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-correlation-admission-20260924/COMPLETION.json",
+    "sha256": "b95b2b0c79220e46c73f1667d335b91e1c232a7b7416bd0031b83cc5519d0122"
+  },
+  "provenance_manifest": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-correlation-admission-20260924/provenance/FILES_SHA256SUMS",
+    "sha256": "7fb27701df17238421523a860dc391eaf1b478fa13e36bb8a76730bb3a81585a"
+  },
+  "sealed_files": 5327
+}
