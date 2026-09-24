@@ -45,7 +45,7 @@ def patch_map(path):
     return s,v,n,ch
 
 
-def compare_zero(original,replay,beam):
+def compare_zero(original,replay,beam,*,precomputed_fits=None):
     a,ha=load(original);b,hb=load(replay)
     require(a['PRIMARY'].shape==b['PRIMARY'].shape,'zero MAP shape changed')
     for key in ['CRPIX1','CRPIX2','CRVAL1','CRVAL2','CDELT1','CDELT2','RADESYS','EQUINOX']:
@@ -55,7 +55,10 @@ def compare_zero(original,replay,beam):
     mask=a['SCI_SUPPORT'].astype(bool);error=float(np.max(np.abs(a['PRIMARY'][mask]-b['PRIMARY'][mask])))
     require(np.allclose(a['PRIMARY'],b['PRIMARY'],rtol=1e-11,atol=1e-9,equal_nan=True),'zero signal mismatch')
     require(np.allclose(a['NUMERATOR'],b['NUMERATOR'],rtol=1e-11,atol=1e-7),'zero numerator mismatch')
-    fa=fit_diagnostic(a['PRIMARY'],mask,ha,beam);fb=fit_diagnostic(b['PRIMARY'],mask,hb,beam)
+    if precomputed_fits is None:
+        fa=fit_diagnostic(a['PRIMARY'],mask,ha,beam);fb=fit_diagnostic(b['PRIMARY'],mask,hb,beam)
+    else:
+        fa,fb=precomputed_fits
     require(fa['status']==fb['status']=='success','zero source fit unavailable')
     require(np.allclose(fa['parameters'],fb['parameters'],rtol=1e-8,atol=1e-8),'zero source fit changed')
     return dict(pass_control=True,maximum_signal_difference=error,support_hits_normalization_exact=True,

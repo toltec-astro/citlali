@@ -1,12 +1,30 @@
 # Citlali Refactor Status
 
-## POINT 152389 a2000 REF basis sequence — active 2026-09-24
+## POINT 152389 a2000 REF basis sequence — completed 2026-09-24
 
-Owner authorizes one paired a2000 diagnostic trajectory throughT10, using each
-stage’s saved REF basis, fresh means/coefficients and ordinary replacement
-candidates. Full regenerated REF replay gates shoulder. No new basis learning,
-m10 apply, extra array or default change. See
-handoff/POINT_152389_A2000_REF_BASIS_SEQUENCE_2026-09-24.md.
+Both a2000 branches completed M0 plus T1–T10. Regenerated REF replay is exact;
+all 132 stage/segment bases and 3,401 consumed original identities authenticate.
+Fresh branch means and own-candidate replacement pass independent review; no
+observation Learn, support transition or m10 application. T10 g improves from
+0.849880964 to 0.938558431, eta from 0.221172508 to 0.125459182, and rho from
+0.162423992 to 0.109384368. Avoided old subspace +0.081198791 and changed history
++0.007478676 close within 3.051e-12 mJy/nominal beam. No default is adopted.
+
+Execution/report source 6ac6b9dc7. REF/shoulder walls 115.419/103.084 s;
+M0/T10 diagnostics 4.126 s; report 17.179 s. Three independent segment workers,
+ordered publication, one numerical thread. 271 successor tests/111 subtests,
+207 baseline/137 subtests, 28 native tests and required config pass. Local
+validation remains supplemental, not Spack V2/Unity.
+
+Scope deviation: inherited replay tooling performed 22 unnecessary control fits
+(11 old REF, 11 redundant new REF) with no effect on candidates or scientific
+state. This is disclosed, not retroactively waived; the reusable command now
+reuses saved/required fits, with a no-fit regression fixture. No trajectory rerun.
+Independent numerical and four-figure reviews pass with this qualification;
+final metadata/source verdict is preserved in the validation receipt. One
+sign-reversed a2000 shoulder comparison is recommended only, not executed.
+See handoff/POINT_152389_A2000_REF_BASIS_SEQUENCE_2026-09-24.md and
+validation/point_152389_a2000_ref_basis_sequence_2026-09-24/COMPLETION.json.
 
 
 ## POINT 152389 frozen-PTC shoulder decomposition — completed 2026-09-24

@@ -2,11 +2,25 @@
 import tempfile
 from pathlib import Path
 import unittest
+from unittest.mock import patch
 import numpy as np
 from run_point_refseq import stage_request,BRANCHES,trajectory_complete,check_native_version
 from point_frozen_shoulder import close
 
 class RefSequenceControls(unittest.TestCase):
+    def test_replay_reuses_saved_and_required_measurements_without_fit(self):
+        import run_point_response_cd as cd
+        plane=np.ones((2,2));data={n:plane for n in ('PRIMARY','NUMERATOR','SCI_SUPPORT','NORM_SUPPORT','NORMALIZATION','HITS')}
+        header={k:0 for k in ('CRPIX1','CRPIX2','CRVAL1','CRVAL2','CDELT1','CDELT2','RADESYS','EQUINOX')}
+        candidate={n:plane for n in ('CANDIDATE','ADMITTED','VALID','RATIO')}
+        measurement=dict(fit=dict(status='success',parameters=[1,2,3,4,5,6,7]),frozen_template_projection=1.,apertures={})
+        original=dict(total={},candidate={},measurement=measurement)
+        with patch.object(cd,'verified',return_value=Path('saved')), patch.object(cd,'load',return_value=(candidate,header)), patch('point_fruit_diagnostics.load',return_value=(data,header)), patch('point_fruit_diagnostics.fit_diagnostic',side_effect=AssertionError('unnecessary fit')):
+            r=cd.replay_check(original,Path('new'),measurement,Path('candidate'),10.,reuse_fits=True)
+            self.assertTrue(r['measurements_candidates_exact'])
+            bad=dict(measurement,fit=dict(status='success',parameters=[2,2,3,4,5,6,7]))
+            with self.assertRaises(ValueError):cd.replay_check(original,Path('new'),bad,Path('candidate'),10.,reuse_fits=True)
+
     def test_native_version_separates_dependency_provenance(self):
         check_native_version('** logging ** configured\nv1-g123456789\nkids abc-dirty','123456789abcdef')
         for v in ('v1-g123456789-dirty\nkids abc','v1-g987654321\nkids 123456789',''):

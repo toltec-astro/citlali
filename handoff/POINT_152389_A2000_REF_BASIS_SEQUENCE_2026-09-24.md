@@ -83,3 +83,61 @@ A second pre-stage stop exposed the CLI logger preamble on stdout before that
 version line. The parser now selects the single version-prefixed Citlali line,
 with a fixture using the actual logger/dependency layout. Both failed launches
 remain archived. No native observation stage was invoked in either attempt.
+
+## Completed experiment and bounded tooling repair
+
+Both prescribed branches completed M0 and T1–T10 using clean execution/report
+source 6ac6b9dc7709fc71e9c4c0cd54d9f24e8fdb71c9 (tree
+9c607c6fcb06aee7560de14fa47449d8dbb94f89). The complete REF replay passed
+before SHOULDER started. All map planes, means, cleaned residuals, applied
+operands, candidates, support and discrete operators exactly reproduce REF;
+maximum numerical difference zero. Both new branches use freshly computed means
+and own prior candidates, with no observation Learn. Independent review checked
+all 264 trajectory segment applications and 22 candidate reconstructions.
+
+T10 sequence/adaptive g = 0.938558430758088 / 0.8498809640331733;
+eta = 0.12545918182046037 / 0.22117250778172431;
+rho = 0.10938436758582393 / 0.16242399218972384.
+Avoided old subspace +0.08119879115371748 and changed history
++0.007478675571200081 reinforce in net projection. The latter partitions into
+retained brightness +0.0027401814534211864 and added support
++0.0047384941177788945; removed and reference-history pieces are zero.
+T10 closure is 3.051e-12 mJy/nominal beam; direct/feedback closure 9.312e-12.
+M0 feedback/history are exactly zero. T10 uses actual m9; both m10 are unapplied.
+All 3,401 original identities remain unchanged. The prospective freeze contains
+all 132 bases; shoulder parent equality includes 2,781,761 eligible entries.
+
+Execution qualification: the inherited replay helper performed 22 unnecessary
+control fits (11 old REF and 11 redundant new REF), in addition to 22 required
+new-branch fits. They influence only the replay guard, not candidate/mean/basis/
+admission state or saved ideal comparators. Pre-execution source review missed
+this transitive call. This is an explicit deviation from directive sections 9/11,
+not waived by review or retrospectively cured. Numerical artifacts remain useful
+with that qualification. No trajectory was repeated. The successor now passes
+saved-original and already-required-new fits into the existing replay helper;
+its default behavior elsewhere is unchanged. A fixture forbids any fitter call
+in this route and checks that mismatched fit values still fail the control.
+
+271 successor tests plus 111 subtests pass after repair; 207 baseline tests plus
+137 subtests, 28 native CTests and required configuration gate pass. No native
+numerical changes followed the matched build. Validation is local supplemental
+AppleClang/Homebrew/cached dependencies, not Spack V2/Unity. Four figures visually
+inspected and independently reviewed. Separate execution/source archives, two
+pre-stage launch stops, phase/CPU/RSS receipts, all-stage tables and six-part
+assessment are retained in the new external bundle.
+
+Walls: REF 115.419 s, shoulder 103.084 s, endpoint diagnostics 4.126 s,
+report 17.179 s, prospective freeze 18.265 s. Three segment workers, one numerical
+thread and ordered publication; 14 logical CPUs/48 GiB. Individual process peaks
+are recorded; aggregate memory and report-parent CPU were not measured.
+
+The result improves this finite positive shoulder response in gain and spatial
+fidelity while retaining the a2000 background qualification. It is not a flux
+correction, uncertainty budget or deployable REF-basis selection rule. One next
+bounded sign-reversed shoulder comparison is recommended only, not run. No new
+array/injection, extra cycles, policy/default change, integration or push.
+
+Bundle: /Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/
+successor-point-152389-a2000-ref-basis-sequence-20260924
+See ASSESSMENT.md, report/REPORT.md, RUNTIME.json and REGENERATION.md; final exact
+review and manifest seal are recorded in the matching validation directory.

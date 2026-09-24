@@ -123,9 +123,10 @@ def campaign_request(owner_path,owner,array,branch,k,candidate,previous=None):
     return request
 
 
-def replay_check(original,products,measurement,candidate,beam):
-    result=compare_zero(verified(original['total']),products/'total.fits',beam)
+def replay_check(original,products,measurement,candidate,beam,*,reuse_fits=False):
     expected=original['measurement']
+    fits=(expected['fit'],measurement['fit']) if reuse_fits else None
+    result=compare_zero(verified(original['total']),products/'total.fits',beam,precomputed_fits=fits)
     require(np.array_equal(measurement['fit']['parameters'],expected['fit']['parameters']), 'deterministic REF fit differs')
     require(measurement['frozen_template_projection']==expected['frozen_template_projection'] and
         measurement['apertures']==expected['apertures'],'deterministic REF measurement differs')

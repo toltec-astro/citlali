@@ -194,7 +194,7 @@ def execute(out,binary,branch):
             candidate=admit(signal,support,fixed.scale,fixed.noise_valid,fixed.header,np.asarray(fit['parameters']),3.,1.)
             candpath=dest/f'm{k}.fits';save_candidate(candpath,header,candidate);rec.update(candidate=bound(candpath),candidate_available=True,candidate_summary=candidate['summary'],fit_admission_seconds=time.perf_counter()-tfit)
             require(candidate['summary']['status']=='retained','candidate unavailable');candidate_guard(load(candpath)[0],header)
-            if branch==BRANCHES[0]:rec['replay']=replay_check(w['old_stages'][branch]['histories'][k],p,measurement,candpath,10.)
+            if branch==BRANCHES[0]:rec['replay']=replay_check(w['old_stages'][branch]['histories'][k],p,measurement,candpath,10.,reuse_fits=True)
             oldcand,_=load(w['old_stages'][branch]['histories'][k]['candidate']['path']);newcand,_=load(candpath)
             rec['candidate_vs_old']=selection_difference(newcand,oldcand)
             if prior:rec['candidate_vs_previous']=selection_difference(newcand,load(verified(prior['candidate']))[0])
