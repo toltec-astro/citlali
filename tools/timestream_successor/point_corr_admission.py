@@ -90,7 +90,7 @@ class Neighborhood:
             z=np.divide(e,np.sqrt(np.maximum(v,0)),out=np.full_like(e,np.nan),where=ok)
             zs=np.full(self.shape,np.nan);vs=zs.copy();av=np.zeros(self.shape,bool)
             zs.ravel()[ai]=z;vs.ravel()[ai]=v;av.ravel()[ai]=ok
-            fields['policies'][name]=dict(score=zs,variance=vs,available=av)
+            fields['policies'][name]=dict(score=zs,variance=vs,available=av,numerical_failures=int(np.sum(available&~(np.isfinite(e)&np.isfinite(v)&(v>0)))))
         fields['eligible_anchors']=int(anchor.sum());return fields
 
 

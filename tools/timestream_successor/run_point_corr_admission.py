@@ -1,10 +1,11 @@
 """Reproducible frozen preparation and paired null calibration/validation stages."""
-import argparse,json,os,platform,resource,shutil,subprocess,time
+import argparse,json,os,platform,resource,shutil,subprocess,time,sys
 from pathlib import Path
 from concurrent.futures import ProcessPoolExecutor
 from types import SimpleNamespace
 import numpy as np
-import psutil
+import psutil,scipy,astropy
+from threadpoolctl import threadpool_info
 from point_frozen_shoulder import ancestors,CD,ARRAYS,saved_context
 from point_fruit_trajectory import bound,verified,manifest,verify_manifest,FixedMeasurements
 from point_fruit_diagnostics import patch_map,load
@@ -32,12 +33,18 @@ def fixed_from(ctx):
 
 def prepare(out,binary):
  start=time.perf_counter();revision=source();require(not out.exists(),'fresh destination required')
+ require(all(os.environ.get(n)=='1' for n in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','VECLIB_MAXIMUM_THREADS')),'explicit one-thread libraries required')
  version=subprocess.check_output([str(binary),'--version'],text=True);require(revision[:9] in version,'build/source mismatch')
- auth,owner=ancestors();jc=read(REPO/'validation/point_152389_map_only_jinc_full_2026-09-24/COMPLETION.json');jp=Path(jc['product_root']);auth.manifest(jp,jc['root_manifest']['sha256'])
+ auth,owner=ancestors()
+ for a in ARRAYS:
+  for state in owner['original_cycles'][a]:
+   for name in ('total','candidate'):
+    r=state[name];auth.bind(r['path'],r['sha256'])
+ jc=read(REPO/'validation/point_152389_map_only_jinc_full_2026-09-24/COMPLETION.json');jp=Path(jc['product_root']);auth.manifest(jp,jc['root_manifest']['sha256'])
  for n in ('ASSESSMENT.md','FINAL_REVIEW.md','COMPLETION.json'):auth.check(jp/n)
  out.mkdir();dest=out/'freeze';dest.mkdir();shutil.copy2(V/'OWNER_DIRECTIVE.md',out/'OWNER_DIRECTIVE.md')
  methods=dict(inherited='BASE threshold ratio>=3, own fitted constant and nearest fitted-centroid anchor, 8-connected; constrained fit retained numerically but no candidate; source association absence has no supplement',new='CORR-NEIGHBOR-v1/DIAG, center/K0/current B exclusion, positive b, strict score threshold, full circular footprint, neff_weights>=3, noniterative connection then exact original b',C0='reused original A+B REF M0 model, original four-FWHM union source/bowl exclusion and settings; distinct from additive-r2 BASE admission scale',covariance='ifft2(saved PSD), original padded generator and amplitude continuation flags, no new fitting or PSD repair',limits='no source-flux ensemble; thresholds frozen before validation/real scores; six6144 fields total; first256validation reused1.25; gate fail cannot retune')
- record=dict(identity='POINT-152389-CORR-NEIGHBOR-PROSPECTIVE-2026-09-24',source_revision=revision,binary=bound(binary),version=version,directive=bound(out/'OWNER_DIRECTIVE.md'),methods=methods,original_owner=owner,arrays={},seeds={a:{ph:[str(trial_seed(a,ph,i)) for i in range(1024)] for ph in ('calibration','validation')} for a in ARRAYS},generator='point_additive.draw_noise; numpy.default_rng(seed integer)/PCG64, real normal field, FFT multiply sqrt(saved PSD), centered crop, amplitude multiplication',calibration_fields=1024,validation_fields=1024,stress_fields=256,stress_multiplier=1.25,order_statistic_one_based=1015,threshold_floor=3.,launch_upper95_limit=.02,workers=min(12,max(1,os.cpu_count()-2)),threads_per_worker=1,host=dict(platform=platform.platform(),cpus=os.cpu_count(),memory_bytes=psutil.virtual_memory().total),trajectory_matrix=dict(policies=['CORR','DIAG'],branches=['REF','C-core-plus','C-core-minus','C-shoulder','D-seed-shoulder'],cycles=10,BASE_REF_replays=3,maximum_feedback_applications=330),tolerances=owner['reference_tolerances'])
+ record=dict(identity='POINT-152389-CORR-NEIGHBOR-PROSPECTIVE-2026-09-24',source_revision=revision,binary=bound(binary),version=version,directive=bound(out/'OWNER_DIRECTIVE.md'),methods=methods,original_owner=owner,arrays={},seeds={a:{ph:[str(trial_seed(a,ph,i)) for i in range(1024)] for ph in ('calibration','validation')} for a in ARRAYS},generator='point_additive.draw_noise; numpy.default_rng(seed integer)/PCG64, real normal field, FFT multiply sqrt(saved PSD), centered crop, amplitude multiplication',calibration_fields=1024,validation_fields=1024,stress_fields=256,stress_multiplier=1.25,order_statistic_one_based=1015,threshold_floor=3.,launch_upper95_limit=.02,workers=min(12,max(1,os.cpu_count()-2)),threads_per_worker=1,host=dict(platform=platform.platform(),cpus=os.cpu_count(),memory_bytes=psutil.virtual_memory().total,python=sys.version,numpy=np.__version__,scipy=scipy.__version__,astropy=astropy.__version__,thread_libraries=threadpool_info(),thread_environment={n:os.environ.get(n) for n in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','VECLIB_MAXIMUM_THREADS')} ),trajectory_matrix=dict(policies=['CORR','DIAG'],branches=['REF','C-core-plus','C-core-minus','C-shoulder','D-seed-shoulder'],cycles=10,BASE_REF_replays=3,maximum_feedback_applications=330),tolerances=owner['reference_tolerances'])
  for a in ARRAYS:
   d=dest/a;d.mkdir();ctx=saved_context(auth,owner,a);ctx['beam']={'a1100':5.,'a1400':7.5,'a2000':10.}[a];f=fixed_from(ctx)
   c0=AB/'companion'/a/'M0';model_path=auth.check(c0/'model.npz');meta=auth.json(c0/'model.json')
@@ -47,6 +54,11 @@ def prepare(out,binary):
   original,sv,_,h=patch_map(auth.check(owner['original_cycles'][a][0]['total']['path']))
   require(original.shape==model['source_scale'].shape==k0.shape,'C0 source shape')
   require(np.array_equal(model['source_support'],sv),'C0 original M0 support mismatch')
+  neighborhood=Neighborhood(f.header,original.shape,f.beam,model['source_scale'],model['psd'],k0,empirical=model['empirical'])
+  covtest=neighborhood.scores(dict(selected=k0,valid=f.disk&sv,brightness=np.zeros(original.shape)))
+  covcheck=dict(lags_supported=neighborhood.lags_supported,source_amplitude_complete=bool(np.all(np.isfinite(model['source_scale'][f.disk])&(model['source_scale'][f.disk]>0))),psd_nonnegative=bool(np.all(model['psd']>=0)),zero_lag=neighborhood.zero,policies={pol:dict(available_tests=int(covtest['policies'][pol]['available'].sum()),numerical_failures=covtest['policies'][pol]['numerical_failures']) for pol in POLICIES})
+  covcheck['pass']=bool(covcheck['lags_supported'] and covcheck['source_amplitude_complete'] and abs(neighborhood.zero-1)<1e-12 and all(r['available_tests']>0 and r['numerical_failures']==0 for r in covcheck['policies'].values()))
+  require(covcheck['pass'],'original C0 numerical preflight unavailable')
   p0=np.asarray(owner['original_cycles'][a][0]['measurement']['fit']['parameters']);blank=np.full(original.shape,p0[6]);unit=p0.copy();unit[6]=0;core=blank+np.where(k0,gaussian(unit,ctx['x'],ctx['y']),0.)
   np.savez(d/'inputs.npz',original=original,support=sv,psd=model['psd'],scale=model['source_scale'],empirical=model['empirical'],pairs=model['pairs'],k0=k0,blank=blank,core=core,parameters=ctx['p'],x=ctx['x'],y=ctx['y'],radius=ctx['radius'],q=ctx['q'],base_scale=ctx['scale'],noise_valid=ctx['noise_valid'])
   headers={k:v for k,v in h.items() if k not in ('COMMENT','HISTORY','')};save_json(d/'geometry.json',dict(header=headers,beam=f.beam,major=f.major,model=meta))
@@ -67,7 +79,7 @@ def prepare(out,binary):
    prefix=str((CD/'run'/branch/a).resolve())+os.sep
    for name in list(auth.expected):
     if name.startswith(prefix):auth.check(name)
-  record['arrays'][a]=dict(inputs=bound(d/'inputs.npz'),geometry=bound(d/'geometry.json'),C0=auth.ref(model_path),C0_metadata=auth.ref(c0/'model.json'),K0=auth.ref(owner['original_cycles'][a][0]['candidate']['path']),K0_pixels=int(k0.sum()),candidate_replay=replay,covariance_reconstructed=False)
+  record['arrays'][a]=dict(inputs=bound(d/'inputs.npz'),geometry=bound(d/'geometry.json'),C0=auth.ref(model_path),C0_metadata=auth.ref(c0/'model.json'),K0=auth.ref(owner['original_cycles'][a][0]['candidate']['path']),K0_pixels=int(k0.sum()),covariance_preflight=covcheck,candidate_replay=replay,covariance_reconstructed=False)
  record['consumed_inputs']=auth.consumed;record['authentication_seconds']=auth.seconds;record['final_authentication_seconds']=auth.verify_all();record['wall_seconds']=time.perf_counter()-start;record['process_peak_rss_bytes']=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
  save_json(dest/'prospective.json',record);manifest(dest);save_json(out/'PREPARED.json',dict(prospective=bound(dest/'prospective.json'),manifest=bound(dest/'FILES_SHA256SUMS')))
 
@@ -87,12 +99,13 @@ def init_worker(out,a):
 
 def scene(c,data,tau,source_mask=None):
  fit,base,fields=infer(data,c['support'],c['fixed'],c['neighborhood'])
- valid=fit['status']=='success' and np.isfinite(fit['parameters']).all()
- rec=dict(fit=fit,numerically_valid=bool(valid),candidate_status='fit_unavailable' if not valid else 'finite_constrained_no_candidate' if fit.get('constrained') else base['summary']['status'],BASE_pixels=int(base['selected'].sum()) if base is not None else 0,BASE_brightness_area=float(np.sum(base['candidate'][base['selected']])*4) if base is not None else 0,policies={})
+ absence=fit['status']=='failed' and fit.get('cause')=='no positive central peak above local median'
+ valid=absence or (fit['status']=='success' and np.isfinite(fit['parameters']).all())
+ rec=dict(fit=fit,numerically_valid=bool(valid),candidate_status='legitimate_source_absence' if absence else 'fit_unavailable' if not valid else 'finite_constrained_no_candidate' if fit.get('constrained') else base['summary']['status'],BASE_pixels=int(base['selected'].sum()) if base is not None else 0,BASE_brightness_area=float(np.sum(base['candidate'][base['selected']])*4) if base is not None else 0,policies={})
  false=(base['selected']&~source_mask) if base is not None and source_mask is not None else (base['selected'] if base is not None else np.zeros(c['support'].shape,bool))
  rec['BASE_false_pixels']=int(false.sum());rec['BASE_false_brightness_area']=float(np.sum(base['brightness'][false])*4) if base is not None else 0
  for pol in POLICIES:
-  r=dict(max_score=maximum(base,fields,pol))
+  r=dict(max_score=maximum(base,fields,pol),numerical_failures=fields['policies'][pol]['numerical_failures'] if fields is not None else 0)
   if tau is not None:
    selected=select(base,fields,c['k0'],pol,tau[pol]);r['summary']=selected['summary'] if selected is not None else None
    r['added_pixels']=int(selected['added'].sum()) if selected is not None else 0
@@ -113,6 +126,7 @@ def trial(payload):
 
 def simulate(out,phase,review):
  revision=source();p=read(out/'freeze/prospective.json');verify_manifest(out/'freeze');require(review.is_file(),'independent exact-source preflight review required')
+ rv=read(review);require(rv['disposition']=='pass' and rv['source_revision']==revision==p['source_revision'],'current source/frozen source/approved preflight mismatch')
  dest=out/phase;require(not dest.exists(),'no replacement trials');dest.mkdir();start=time.perf_counter();allrows={};taus=None
  if phase=='validation':taus=read(verified(read(out/'CALIBRATION.json')['thresholds']))['thresholds']
  for a in ARRAYS:
@@ -130,11 +144,11 @@ def simulate(out,phase,review):
   for a,rows in allrows.items():
    c=context(out,a);controls={name:scene(c,np.where(c['support'],c[name],np.nan),taus[a],c['k0'] if name=='core' else None) for name in ('blank','core')};gates[a]={}
    calibration=read(out/'calibration'/(a+'-trials.json'))
-   complete=all(s['numerically_valid'] for rr in (rows,calibration) for r in rr for s in r['scenes'].values())
+   complete=all(s['numerically_valid'] and all(s['policies'][pol]['numerical_failures']==0 for pol in POLICIES) for rr in (rows,calibration) for r in rr for s in r['scenes'].values())
    for pol in POLICIES:
     k=sum(r['maxima'][pol] is not None and r['maxima'][pol]>taus[a][pol] for r in rows);u=binomial_upper(k);false=sum(any(s['policies'][pol]['added_pixels']>0 for s in r['scenes'].values()) for r in rows)
     clean=all(s['numerically_valid'] and s['policies'][pol]['added_pixels']==0 for s in controls.values())
-    gates[a][pol]=dict(pass_gate=bool(complete and u<=.02 and clean),**{'pass':bool(complete and u<=.02 and clean)},threshold=taus[a][pol],preconnectivity_exceedances=k,upper95=u,final_false_admission_events=false,complete_numerical_outcomes=complete,noiseless_controls=controls,qualifications='conditional frozen M0 covariance/scene model; retained observational limitations; not a ten-cycle false-feedback guarantee')
+    gates[a][pol]=dict(pass_gate=bool(complete and p['arrays'][a]['covariance_preflight']['pass'] and u<=.02 and clean),**{'pass':bool(complete and p['arrays'][a]['covariance_preflight']['pass'] and u<=.02 and clean)},threshold=taus[a][pol],preconnectivity_exceedances=k,upper95=u,final_false_admission_events=false,complete_numerical_outcomes=complete,noiseless_controls=controls,qualifications='conditional frozen M0 covariance/scene model; retained observational limitations; not a ten-cycle false-feedback guarantee')
   save_json(dest/'gates.json',dict(policies=gates));result['gates']=bound(dest/'gates.json')
  manifest(dest);save_json(out/(phase.upper()+'.json'),result)
 

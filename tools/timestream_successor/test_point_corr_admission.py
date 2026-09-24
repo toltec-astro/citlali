@@ -101,3 +101,16 @@ def test_nonzero_background_operand():
  shifted=base_from_fit(data+offset,np.ones((41,41),bool),f,{**fit,'parameters':[10,0,0,2,2,0,offset]})
  assert np.array_equal(shifted['selected'],b['selected'])
  assert np.allclose(n.scores(shifted)['evidence'],n.scores(b)['evidence'],equal_nan=True)
+
+
+def test_blank_absence_is_not_solver_failure(monkeypatch):
+ import run_point_corr_admission as run
+ n,data,f,fit,b,psd=fixture()
+ c=dict(support=np.ones((41,41),bool),fixed=f,neighborhood=n,k0=n.k0)
+ # Exact accepted no-source cause is distinct; no fit/candidate fabricated.
+ monkeypatch.setattr(run,'infer',lambda *args:(dict(status='failed',cause='no positive central peak above local median'),None,None))
+ r=run.scene(c,data,dict(CORR=3,DIAG=3))
+ assert r['numerically_valid'] and r['candidate_status']=='legitimate_source_absence'
+ assert all(p['added_pixels']==0 for p in r['policies'].values())
+ monkeypatch.setattr(run,'infer',lambda *args:(dict(status='failed',cause='POINT descriptive Gaussian fit did not converge'),None,None))
+ assert not run.scene(c,data,dict(CORR=3,DIAG=3))['numerically_valid']
