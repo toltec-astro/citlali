@@ -88,7 +88,7 @@ def render(out):
  fig,axes=plt.subplots(3,3,figsize=(11,10),layout='constrained')
  for row,a in enumerate(ARRAYS):
   images,_=load(out/'screen'/f'{a}-00-CORR'/'admission.fits');ratio=np.divide(images['CORR_VAR'],images['DIAG_VAR'],out=np.full((41,41),np.nan),where=images['CORR_VALID'].astype(bool)&images['DIAG_VALID'].astype(bool));c=context(out,a)
-  for col,(data,title,cm) in enumerate([(images['CORR_VALID'],a+' full-footprint tests','gray'),(ratio,'CORR / DIAG variance','viridis'),(np.where(c['support']&(c['scale']>0),c['scale'],np.nan),'Frozen M0 amplitude (mJy/beam)','viridis')]):
+  for col,(data,title,cm) in enumerate([(images['CORR_VALID'],a+' available supplemental tests','gray'),(ratio,'CORR / DIAG variance','viridis'),(np.where(c['support']&(c['scale']>0),c['scale'],np.nan),'Frozen M0 amplitude (mJy/beam)','viridis')]):
    im=axes[row,col].imshow(data,origin='lower',extent=[41,-41,-41,41],cmap=cm);axes[row,col].set(title=title,xlabel='East (arcsec)',ylabel='North (arcsec)');fig.colorbar(im,ax=axes[row,col],shrink=.75)
  fig.suptitle('Numerically supported original-M0 covariance · full footprints precede core/center exclusions');save(fig,'covariance-and-support.png')
  save_json(dest/'NULL_SUMMARY.json',stats)
