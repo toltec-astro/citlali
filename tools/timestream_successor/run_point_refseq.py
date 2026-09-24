@@ -168,8 +168,9 @@ def trajectory_complete(history):
 
 
 def check_native_version(version,revision):
-    # Citlali owns the first version line; dependency provenance is separate.
-    native=version.splitlines()[0] if version else ''
+    # Logger preambles and dependency versions are separate provenance.
+    versions=[line for line in version.splitlines() if line.startswith('v')]
+    native=versions[0] if len(versions)==1 else ''
     require(revision[:9] in native and 'dirty' not in native,'native/source mismatch')
 
 

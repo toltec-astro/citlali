@@ -78,3 +78,8 @@ version line (exact source and clean marker); full dependency version remains
 recorded. Added fixture rejects dirty/wrong Citlali and accepts independently
 reported dependency provenance. Failed launch preserved; no scientific result
 or tolerance was inspected/changed, and no observation rerun occurred.
+
+A second pre-stage stop exposed the CLI logger preamble on stdout before that
+version line. The parser now selects the single version-prefixed Citlali line,
+with a fixture using the actual logger/dependency layout. Both failed launches
+remain archived. No native observation stage was invoked in either attempt.

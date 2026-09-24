@@ -8,7 +8,7 @@ from point_frozen_shoulder import close
 
 class RefSequenceControls(unittest.TestCase):
     def test_native_version_separates_dependency_provenance(self):
-        check_native_version('v1-g123456789\nkids abc-dirty','123456789abcdef')
+        check_native_version('** logging ** configured\nv1-g123456789\nkids abc-dirty','123456789abcdef')
         for v in ('v1-g123456789-dirty\nkids abc','v1-g987654321\nkids 123456789',''):
             with self.assertRaises(ValueError):check_native_version(v,'123456789abcdef')
 
