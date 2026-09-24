@@ -93,7 +93,10 @@ failed log is preserved, no tolerance relaxed or external self-hash substituted.
 Subsequent successful replay has no unexpected error-level messages.
 
 Three-category independent source reviews pass with recorded scientific limits;
-final artifact review is required before closure. Reproducible recovery command,
+final artifact review also passes at35f6fedb64da5d542696b807ab263e54d676fb5f
+with no findings. Reviewer verified43 bundle entries,12 authority hashes,
+source/binary/archive identities and all15 replay aggregates; did not rerun
+the full recovery or second8,863-input rehash. See the validation review record. Reproducible recovery command,
 exact source archive, authority hashes, scope call inventory, test/build logs,
 and decision-ready report are in the separate bundle:
 /Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-map-only-jinc-20260924.

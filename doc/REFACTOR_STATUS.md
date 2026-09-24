@@ -15,7 +15,9 @@ permission is already resolved. No JINC observation map, comparison, phase map
 or noise ensemble has run. This is not completion of the scientific comparison.
 See handoff/POINT_152389_MAP_ONLY_JINC_2026-09-24.md and
 validation/point_152389_map_only_jinc_2026-09-24/DECISIONS_NEEDED.md.
-Further shoulder/REFSEQ work remains parked; their evidence is preserved.
+Independent exact-source/artifact review passes in all three categories with
+the stated scientific limitation; no open findings. Further shoulder/REFSEQ
+work remains parked; their evidence is preserved.
 
 ## POINT 152389 a2000 REF basis sequence — completed 2026-09-24
 
