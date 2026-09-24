@@ -9,7 +9,7 @@ from point_additive_diagnostics import save_json
 from inspect_forward_map import digest,require
 
 V=REPO/'validation/point_152389_map_only_jinc_full_2026-09-24'
-LOGS=['point-jinc-full-build-a5.log','point-jinc-full-configure-a5.log','point-jinc-full-prepare.log','point-jinc-full-prepare-r2.log','point-jinc-full-prepare-r3.log','point-jinc-full-prepare-r4.log','point-jinc-freeze.log','point-jinc-grids.log','point-jinc-science.log','point-jinc-wcs-repair.log','point-jinc-science-r2.log','point-jinc-noise.log','point-jinc-report.log','point-jinc-report-r2.log','point-jinc-successor-tests-closeout.log','point-jinc-baseline-tests.log','point-jinc-ctest.log','point-jinc-config.log']
+LOGS=['point-jinc-full-build-a5.log','point-jinc-full-configure-a5.log','point-jinc-full-prepare.log','point-jinc-full-prepare-r2.log','point-jinc-full-prepare-r3.log','point-jinc-full-prepare-r4.log','point-jinc-freeze.log','point-jinc-grids.log','point-jinc-science.log','point-jinc-wcs-repair.log','point-jinc-science-r2.log','point-jinc-noise.log','point-jinc-report.log','point-jinc-report-r2.log','point-jinc-report-r3.log','point-jinc-successor-tests-closeout.log','point-jinc-baseline-tests.log','point-jinc-ctest.log','point-jinc-config.log']
 
 def matrix(out):
  p=read(out/'PREPARED.json');s=read(out/'SCIENCE.json');n=read(out/'NOISE.json');rows=[]
@@ -58,7 +58,7 @@ def inventory(out):
  for name in ('helper','cli'):shutil.copy2(verified(p[name]),bins/Path(p[name]['path']).name)
  for label,rev in [('final',revision),('native','a5c45cd7e38c9e48b0b37a73ba260859a3f52700')]:subprocess.run(['git','archive','--format=tar.gz','--output='+str(d/('source-'+label+'.tar.gz')),rev],cwd=REPO,check=True)
  version=subprocess.check_output([p['cli']['path'],'--version'],text=True,stderr=subprocess.STDOUT);save_json(d/'SOURCE_AND_BINARY.json',dict(code_source=revision,native_source='a5c45cd7e38c9e48b0b37a73ba260859a3f52700',cli_version=version,cli=bound(bins/Path(p['cli']['path']).name),helper=bound(bins/Path(p['helper']['path']).name),native_tree_diff=subprocess.check_output(['git','diff','a5c45cd7e38c9e48b0b37a73ba260859a3f52700',revision,'--','src','include','CMakeLists.txt'],cwd=REPO,text=True),grid_source=read(out/'freeze/prospective.json')['source_revision'],science_source=read(out/'SCIENCE.json')['source_revision'],noise_source=read(out/'NOISE.json')['source_revision']))
- successful_logs=['point-jinc-full-prepare-r4.log','point-jinc-freeze.log','point-jinc-grids.log','point-jinc-wcs-repair.log','point-jinc-science-r2.log','point-jinc-noise.log','point-jinc-report-r2.log']
+ successful_logs=['point-jinc-full-prepare-r4.log','point-jinc-freeze.log','point-jinc-grids.log','point-jinc-wcs-repair.log','point-jinc-science-r2.log','point-jinc-noise.log','point-jinc-report-r3.log']
  error_lines={name:[line for line in (d/'logs'/name).read_text().splitlines() if re.search(r'(?i)\[(?:error|critical)\]|^Traceback \(most recent call last\)|^\w*Error:',line)] for name in successful_logs}
  require(not any(error_lines.values()),'unexpected runtime errors in successful execution logs')
  save_json(d/'SUCCESSFUL_LOG_SCAN.json',dict(pattern='error/critical severity, traceback, terminal exception',logs=error_lines,excludes='preserved failed attempts are separately retained'))
