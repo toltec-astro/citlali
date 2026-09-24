@@ -683,6 +683,7 @@ target_link_libraries(citlali_jinc_discrete_test PRIVATE citlali::citlali GTest:
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(citlali_jinc_discrete_test PRIVATE -fno-fast-math -ffp-contract=off)
 endif()
+add_dependencies(check citlali_jinc_discrete_test)
 gtest_discover_tests(citlali_jinc_discrete_test TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
 
 set_source_files_properties(jinc_discrete_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
