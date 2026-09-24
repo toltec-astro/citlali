@@ -14,9 +14,10 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     const std::set<std::string> fields{"schema","method","mode","array","map_request","parent_plan","candidate","owner_binding","cycle_index","previous_state","branch","injection"};
     for(const auto &e:request)require(fields.contains(e.first.as<std::string>()),"FRUIT unknown request field");
     const bool refseq=request["schema"].as<std::string>()=="citlali-point-fruit-refseq-v1";
-    const bool campaign=refseq || request["schema"].as<std::string>()=="citlali-point-fruit-cd-v1";
+    const bool corr=request["schema"].as<std::string>()=="citlali-point-fruit-corr-neighbor-v1";
+    const bool campaign=corr || refseq || request["schema"].as<std::string>()=="citlali-point-fruit-cd-v1";
     const bool continuation=request["schema"].as<std::string>()=="citlali-point-fruit-continuation-v1";
-    require((refseq && request["method"].as<std::string>()=="point-152389-a2000-ref-basis-sequence-v1") || (campaign && !refseq && request["method"].as<std::string>()=="point-152389-response-robustness-cd-v1") || (continuation && request["method"].as<std::string>()=="point-152389-direct-ten-cycle-v1") ||
+    require((corr && request["method"].as<std::string>()=="point-152389-corr-neighbor-v1") || (refseq && request["method"].as<std::string>()=="point-152389-a2000-ref-basis-sequence-v1") || (campaign && !refseq && !corr && request["method"].as<std::string>()=="point-152389-response-robustness-cd-v1") || (continuation && request["method"].as<std::string>()=="point-152389-direct-ten-cycle-v1") ||
         (!continuation && request["schema"].as<std::string>()=="citlali-point-fruit-cycle-v1" && request["method"].as<std::string>()=="point-152389-direct-one-cycle-v1"),"FRUIT unsupported method");
     const auto mode=request["mode"].as<std::string>();require(mode=="zero" || mode=="reference","FRUIT unknown mode");
     const int cycle=(continuation || campaign)?request["cycle_index"].as<int>():(mode=="zero"?0:1);
@@ -28,7 +29,7 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     require(campaign || (!request["branch"] && !request["injection"]),"FRUIT foreign campaign fields");
     const auto owner_path=checked_file(request["owner_binding"]);const auto owner_sha=ledger.bind(owner_path);
     const auto owner=YAML::LoadFile(owner_path.string());
-    require(owner["identity"].as<std::string>()==(refseq?"POINT-152389-A2000-REFSEQ-OWNER-2026-09-24":campaign?"POINT-152389-CD-OWNER-2026-09-23":continuation?"POINT-152389-TEN-FRUIT-OWNER-2026-09-23":"POINT-152389-FIRST-FRUIT-OWNER-2026-09-23") &&
+    require(owner["identity"].as<std::string>()==(corr?"POINT-152389-CORR-NEIGHBOR-OWNER-2026-09-24":refseq?"POINT-152389-A2000-REFSEQ-OWNER-2026-09-24":campaign?"POINT-152389-CD-OWNER-2026-09-23":continuation?"POINT-152389-TEN-FRUIT-OWNER-2026-09-23":"POINT-152389-FIRST-FRUIT-OWNER-2026-09-23") &&
         owner["outside_disk_no_feedback"].as<bool>() && owner["direct_identical_operand_rejoin"].as<bool>() &&
         owner["gain"].as<double>()==1 && owner["nonzero_cycles"].as<int>()==((continuation || campaign)?10:1),"FRUIT owner choices absent");
     const auto map_path=checked_file(request["map_request"]);ledger.bind(map_path);const auto mr=YAML::LoadFile(map_path.string());
@@ -38,6 +39,18 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     require(!refseq || (array=="a2000" && owner["workers"].as<int>()==3 && owner["basis_schedule"].size()==11),"FRUIT reference sequence scope/resources");
     require(mr["schema"].as<std::string>()=="citlali-map-saved-ptc-v1" && mr["coverage_cut"].as<double>()==parent["coverage_cut"].as<double>() && mr["pixel_size_arcsec"].as<double>()==2,"FRUIT MAP policy differs");
     const auto mo=checked_file(mr["owner_binding"]);ledger.bind(mo);require(parent["owner_binding"].as<std::string>()=="sha256:"+citlali::utils::sha256_file(mo),"FRUIT MAP owner differs");
+    if(corr) {
+        const auto policy=owner["policy"].as<std::string>();
+        require(policy=="BASE" || policy=="CORR" || policy=="DIAG","FRUIT unknown neighborhood policy");
+        require(branch=="REF" || (policy!="BASE" && (branch=="C-core-plus" || branch=="C-core-minus" || branch=="C-shoulder" || branch=="D-seed-shoulder")),"FRUIT neighborhood branch outside matrix");
+        require(cycle>=1,"FRUIT neighborhood reuses authenticated M0");
+        ledger.bind(checked_file(owner["prospective"]));
+        if(policy!="BASE") {
+            const auto gate_path=checked_file(owner["launch_gate"]);ledger.bind(gate_path);
+            const auto gate=YAML::LoadFile(gate_path.string());
+            require(gate["policies"][array][policy]["pass"].as<bool>(),"FRUIT neighborhood launch gate failed");
+        }
+    }
     const auto candidate=checked_file(request["candidate"]);const auto candidate_sha=ledger.bind(candidate);
     const std::array<std::string,3> selected_hashes{
         "8edea26bb5c5b5aca065a88c93a0a30fe5064f3cc3388f9423725ed6a63bc640",
