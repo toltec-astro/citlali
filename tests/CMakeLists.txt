@@ -676,3 +676,13 @@ set_source_files_properties(fruit_cycle_header.cpp PROPERTIES SKIP_PRECOMPILE_HE
 target_link_libraries(citlali_fruit_cycle_test PRIVATE citlali::citlali GTest::gtest_main)
 add_dependencies(check citlali_fruit_cycle_test)
 gtest_discover_tests(citlali_fruit_cycle_test TEST_PREFIX "citlali::fruit::" DISCOVERY_MODE PRE_TEST)
+
+# Explicit-input SCI-JINC discrete arithmetic; no observation certification.
+add_executable(citlali_jinc_discrete_test EXCLUDE_FROM_ALL test_jinc_discrete.cpp jinc_discrete_header.cpp)
+target_link_libraries(citlali_jinc_discrete_test PRIVATE citlali::citlali GTest::gtest_main)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(citlali_jinc_discrete_test PRIVATE -fno-fast-math -ffp-contract=off)
+endif()
+gtest_discover_tests(citlali_jinc_discrete_test TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
+
+set_source_files_properties(jinc_discrete_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)

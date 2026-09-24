@@ -1,5 +1,14 @@
 # Citlali Refactor Status
 
+## POINT 152389 map-only JINC comparison — preflight 2026-09-24
+
+The new owner directive parks further shoulder/counterfactual work and compares
+only final gridding of fifteen saved original adaptive C+D states. Numerical
+JINC parameters and adequacy authority must be recovered before observation
+execution; existing defaults are not authority. Uniform-family JINC permission
+is already granted by its r0.4 successor. See
+handoff/POINT_152389_MAP_ONLY_JINC_2026-09-24.md.
+
 ## POINT 152389 a2000 REF basis sequence — completed 2026-09-24
 
 Both a2000 branches completed M0 plus T1–T10. Regenerated REF replay is exact;
