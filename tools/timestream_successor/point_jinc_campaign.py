@@ -36,6 +36,9 @@ def measure_full(data,header,fixed):
   roi=fixed.radius<=factor*fixed.major;good=bool(v[roi].all() and np.isfinite(s[roi]).all())
   raw.append(dict(factor=factor,pixels=int(roi.sum()),raw_brightness_area=float(s[roi].sum()*4) if good else None,units='mJy/nominal beam arcsec^2',available=good))
  m['raw_apertures']=raw
+ if m['fit']['status']=='success':
+  from point_response_cd import ellipse
+  par=m['fit']['parameters'];m['shape']=dict(ellipse_arcsec2=ellipse(par),minor_major_sigma_ratio=min(par[3:5])/max(par[3:5]),angle_interpretation='ellipse tensor is gauge-safe; fitted angle becomes undefined at circularity and weakly determined as axis ratio approaches1; no added threshold or rejection')
  if m['fit']['status']!='success':
   m['frozen_template_projection']=None
   for aperture in m['apertures']:

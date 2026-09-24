@@ -33,3 +33,14 @@ def test_response_full_domain_is_not_silently_shrunk():
  assert response(d,h,full,partial)['status']=='unavailable'
  q=response(d,h,partial,partial);assert abs(q['g']-1.2)<1e-14 and abs(q['rho'])<1e-14
  assert response(d,h,np.zeros(3,bool),partial)['status']=='unavailable'
+
+def test_signed_plot_zero_handedness_and_empty_scale():
+ import matplotlib
+ matplotlib.use('Agg')
+ import matplotlib.pyplot as plt
+ from report_point_jinc_full import show,finite_max
+ h=fits.Header(dict(CRPIX1=2.,CRPIX2=2.,CDELT1=-2/3600,CDELT2=2/3600))
+ fig,ax=plt.subplots();im=show(ax,np.full((3,3),np.nan),h,'Unavailable',-.4,1.)
+ assert im.norm(0.)==.5 and im.get_extent()[0]>im.get_extent()[1]
+ assert finite_max([np.full((3,3),np.nan)])==1.
+ plt.close(fig)

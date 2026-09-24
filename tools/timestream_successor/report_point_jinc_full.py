@@ -3,7 +3,7 @@ import argparse,time
 from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.colors import Normalize
+from matplotlib.colors import TwoSlopeNorm,ListedColormap
 from point_jinc_full import read,ARRAYS,key
 from point_jinc_campaign import read_map,fixed_for
 from point_fruit_diagnostics import load
@@ -18,7 +18,11 @@ def extent(h,shape):
  x,y=coordinates(shape,h);dx=h['CDELT1']*3600;dy=h['CDELT2']*3600
  return [x[0,0]-dx/2,x[0,-1]+dx/2,y[0,0]-dy/2,y[-1,0]+dy/2]
 def show(ax,v,h,title,lo,hi,cmap='RdBu_r'):
- cm=plt.get_cmap(cmap).copy();cm.set_bad('#d9d9d9');im=ax.imshow(v,origin='lower',extent=extent(h,v.shape),cmap=cm,vmin=lo,vmax=hi,interpolation='nearest');ax.set_title(title,fontsize=10);ax.set_xlabel('East offset (arcsec)');ax.set_ylabel('North offset (arcsec)');return im
+ cm=plt.get_cmap(cmap).copy();cm.set_bad('#d9d9d9');im=ax.imshow(v,origin='lower',extent=extent(h,v.shape),cmap=cm,norm=TwoSlopeNorm(vmin=lo,vcenter=0.,vmax=hi),interpolation='nearest');ax.set_title(title,fontsize=10);ax.set_xlabel('East offset (arcsec)');ax.set_ylabel('North offset (arcsec)');return im
+
+def finite_max(arrays):
+ values=[float(abs(v[np.isfinite(v)]).max()) for v in arrays if np.isfinite(v).any()]
+ return max(values+[np.finfo(float).eps]) if values else 1.
 
 def report(out):
  start=time.perf_counter();p=read(out/'PREPARED.json');s=read(out/'SCIENCE.json');n=read(out/'NOISE.json');g=read(out/'GRIDS.json');dest=out/'report';dest.mkdir();figures=[];plt.rcParams.update({'font.size':9,'axes.titlesize':10,'figure.dpi':140})
@@ -30,7 +34,7 @@ def report(out):
   for op in ('MAP','JINC'):
    m=read(out/'science'/(key(a,'REF',10)+'-'+op+'-measurement.json'));f=m['fit'];par=f.get('parameters');vals=[None]*6 if par is None else [par[0],par[1],par[2],*sorted(np.array(par[3:5])*np.sqrt(8*np.log(2)),reverse=True),par[6]]
    lines.append('| '+a+' | '+op+' | '+' | '.join(map(fmt,vals))+f" | {f['status']}/{f.get('constrained','—')} |")
- lines+=['','Centroids and widths are arcseconds; ellipse tensors and angle-degeneracy/constraint details remain in the measurement JSON. All apertures retain their original centers/radii and four-square-arcsecond pixel area.','', '## Response to the archived perturbations','', '| Array | Perturbation | Operator | Original full-domain g | eta | rho | Lost original pixels | Paired-common g |','|---|---|---|---:|---:|---:|---:|---:|']
+ lines+=['','Centroids and widths are arcseconds; ellipse tensors, axis ratios and constraint details remain in the measurement JSON. Fitted angle becomes weakly determined as the axis ratio approaches circularity. All apertures retain their original centers/radii and four-square-arcsecond pixel area.','', '## Response to the archived perturbations','', '| Array | Perturbation | Operator | Original full-domain g | eta | rho | Lost original pixels | Paired-common g |','|---|---|---|---:|---:|---:|---:|---:|']
  for a in ARRAYS:
   for r in s['arrays'][a]['responses']:
    q=r['original_benchmark'];pc=r['paired_common'];lines.append(f"| {a} | {r['branch']} | {r['operator']} | {fmt(q.get('g'))} | {fmt(q.get('eta'))} | {fmt(q.get('rho'))} | {r['support']['lost_original']} | {fmt(pc.get('g'))} |")
@@ -62,8 +66,8 @@ def report(out):
   fig,axes=plt.subplots(2,3,figsize=(12,7),layout='constrained');raster={}
   for op in ('MAP','JINC'):
    d,h=load(out/'science'/a/('C-shoulder-'+op)/'response.fits');raster[op]=(d,h)
-  vmax=max(np.nanmax(abs(d[n])) for d,h in raster.values() for n in ('H','DELTA'))
-  rmax=max(np.nanmax(abs(d['RESIDUAL'])) for d,h in raster.values())
+  vmax=finite_max([d[n] for d,h in raster.values() for n in ('H','DELTA')])
+  rmax=finite_max([d['RESIDUAL'] for d,h in raster.values()])
   for i,op in enumerate(('MAP','JINC')):
    d,h=raster[op]
    for j,name in enumerate(('H','DELTA','RESIDUAL')):
@@ -76,19 +80,57 @@ def report(out):
     for ax in axes[i]:ax.text(.5,.5,rec.get('cause','unavailable'),ha='center',va='center',wrap=True,transform=ax.transAxes);ax.set_axis_off()
     continue
    z=np.load(d/'model.npz');v,h=read_map(out,key(a,'REF',10),operator=op);bg=z['background_mask'];mean=rec['model']['mean_removed'];scale=z['scale'];norm=np.divide(v['PRIMARY']-mean,scale,out=np.full(scale.shape,np.nan),where=scale>0);im=show(axes[i,0],np.where(bg,norm,np.nan),h,op+' · training residual / fitted scale',-3,3);fig.colorbar(im,ax=axes[i,0],shrink=.8)
-   cor=z['empirical'];L=(len(cor)-1)//2;im=axes[i,1].imshow(cor,origin='lower',extent=[-2*L-1,2*L+1,-2*L-1,2*L+1],vmin=-.4,vmax=1,cmap='RdBu_r');axes[i,1].set(title=op+' · empirical directional correlation',xlabel='East lag (arcsec)',ylabel='North lag (arcsec)');fig.colorbar(im,ax=axes[i,1],shrink=.8)
+   cor=z['empirical'];L=(len(cor)-1)//2;im=axes[i,1].imshow(cor,origin='lower',extent=[(-L-.5)*h['CDELT1']*3600,(L+.5)*h['CDELT1']*3600,(-L-.5)*h['CDELT2']*3600,(L+.5)*h['CDELT2']*3600],norm=TwoSlopeNorm(vmin=-.4,vcenter=0.,vmax=1),cmap='RdBu_r');axes[i,1].set(title=op+' · empirical directional correlation',xlabel='East lag (arcsec)',ylabel='North lag (arcsec)');fig.colorbar(im,ax=axes[i,1],shrink=.8)
    hist=rec['model']['histogram'];edges=np.array(hist['edges']);density=np.array(hist['counts'])/(np.sum(hist['counts'])*np.diff(edges));axes[i,2].stairs(density,edges,color=COLORS[op]);xx=np.linspace(-5,5,200);axes[i,2].plot(xx,np.exp(-xx**2/2)/np.sqrt(2*np.pi),color='gray',ls='--',label='unit Gaussian');axes[i,2].set(xlabel='Centered residual / fitted scale',ylabel='Density',title=op+f" · excess kurtosis {hist['excess_kurtosis']:.2f}");axes[i,2].legend(fontsize=8)
   fig.suptitle(a+': empirical T10 background · transferred covariance remains qualified',fontsize=13);path=dest/(a+'-noise.png');fig.savefig(path);plt.close(fig);figures.append(path)
- fig,axes=plt.subplots(3,2,figsize=(11,10),layout='constrained')
+ fig,axes=plt.subplots(3,3,figsize=(13,10),layout='constrained')
  for i,a in enumerate(ARRAYS):
   for op in ('MAP','JINC'):
    rows=[r for r in s['arrays'][a]['phases'] if r['operator']==op and r['measurement']['fit']['status']=='success'];idx=[r['phase'] for r in rows];peaks=[r['measurement']['fit']['parameters'][0]/r['normalization'] for r in rows];err=[np.linalg.norm(r['centroid_error_arcsec']) for r in rows];axes[i,0].plot(idx,peaks,'o-',label=op,color=COLORS[op]);axes[i,1].plot(idx,err,'o-',label=op,color=COLORS[op])
+   widths=[sorted(np.array(r['measurement']['fit']['parameters'][3:5])*np.sqrt(8*np.log(2)),reverse=True) for r in rows]
+   if widths:
+    axes[i,2].plot(idx,np.array(widths)[:,0],'o-',color=COLORS[op],label=op+' major');axes[i,2].plot(idx,np.array(widths)[:,1],'x--',color=COLORS[op],label=op+' minor')
   axes[i,0].set(title=a+' · fitted peak / input normalization',ylabel='Ratio',xlabel='Phase index (x varies fastest)');axes[i,1].set(title=a+' · centroid error',ylabel='Arcsec',xlabel='Phase index (x varies fastest)')
+  axes[i,2].set(title=a+' · core shape',ylabel='FWHM (arcsec)',xlabel='Phase index (x varies fastest)')
   for ax in axes[i]:ax.legend();ax.grid(alpha=.2);ax.set_xticks(range(9))
  fig.suptitle('Continuous profile: nine offsets, identical sampled values for MAP and JINC',fontsize=13);path=dest/'phases.png';fig.savefig(path);plt.close(fig);figures.append(path)
+ figures.extend(summary_figures(out,dest,p,s,n))
  for path in figures:lines+=['!['+path.stem+']('+str(path)+')','']
  lines+=['## Detailed reproducible records','',f"[All numerical diagnostics]({out/'SCIENCE.json'}) · [Noise and complete-ensemble results]({out/'NOISE.json'}) · [Map certificates]({out/'GRIDS.json'}) · [Prospective profile and seeds]({out/'freeze/prospective.json'})",'', 'The finite experiment stops here. No source model, FRUIT admission, feedback history, map weights, kernel settings, optical beam or production default has changed.']
  (dest/'RESULTS.md').write_text('\n'.join(lines)+'\n');save_json(dest/'FIGURES.json',dict(figures=[bound(p) for p in figures],report=bound(dest/'RESULTS.md'),wall_seconds=time.perf_counter()-start));manifest(dest)
+
+def summary_figures(out,dest,p,s,n):
+ paths=[]
+ fig,axes=plt.subplots(3,3,figsize=(12,10),layout='constrained')
+ for i,a in enumerate(ARRAYS):
+  for op in ('MAP','JINC'):
+   for branch,style in [('C-core-plus','-'),('C-core-minus','--')]:
+    row=next(r for r in s['arrays'][a]['responses'] if r['operator']==op and r['branch']==branch);pr=row['profiles']
+    for j,name in enumerate(('H','delta','residual')):
+     axes[i,j].plot([r['radius_arcsec'] for r in pr],[np.nan if r[name] is None else r[name] for r in pr],style,color=COLORS[op],label=op+(' +' if branch.endswith('plus') else ' −'))
+  for j,name in enumerate(('H: injection reference','Delta: history increment','Delta − H')):
+   axes[i,j].set(title=a+' · '+name,xlabel='Radius from frozen M0 center (arcsec)',ylabel='mJy/nominal beam',xlim=(0,60));axes[i,j].axhline(0,color='gray',lw=.5);axes[i,j].legend(fontsize=8)
+ fig.suptitle('Compact ± benchmarks: signed profiles on native supported annuli',fontsize=13);path=dest/'compact-response.png';fig.savefig(path);plt.close(fig);paths.append(path)
+ fig,axes=plt.subplots(3,3,figsize=(13,10),layout='constrained');names=['Peak','Template','Aperture1','Aperture1.5','Aperture2']
+ for i,a in enumerate(ARRAYS):
+  for op in ('MAP','JINC'):
+   row=next(r for r in n['results'] if r['array']==a and r['operator']==op)
+   if not row.get('response_referenced'):continue
+   ratios=row['response_referenced'];observed=[r['observed'] for r in row['uncertainty']['measurements']];peak=p['arrays'][a]['peak']['P_mJy_per_nominal_beam']
+   rel=[100*r['output_scatter']/abs(o) if r['output_scatter'] is not None and o else np.nan for r,o in zip(ratios,observed)];resp=[r['slope']*peak/o if r['slope'] is not None and o else np.nan for r,o in zip(ratios,observed)];sc=[r['input_referenced_scatter'] if r['input_referenced_scatter'] is not None else np.nan for r in ratios]
+   for j,vals in enumerate((rel,resp,sc)):axes[i,j].plot(range(5),vals,'o-',color=COLORS[op],label=op)
+  for j,(title,unit) in enumerate([('raw relative scatter','Percent of observed measurement'),('compact fractional response','Slope × original peak / observed'),('response-referenced scatter','mJy/nominal beam of tested input')]):
+   axes[i,j].set(title=a+' · '+title,ylabel=unit);axes[i,j].set_xticks(range(5),names,rotation=35,ha='right');axes[i,j].legend();axes[i,j].grid(alpha=.2)
+ fig.suptitle('Conditional additive precision: transferred covariance + Gaussian baseline',fontsize=13);path=dest/'response-referenced-scatter.png';fig.savefig(path);plt.close(fig);paths.append(path)
+ fig,axes=plt.subplots(3,3,figsize=(12,10),layout='constrained')
+ for i,a in enumerate(ARRAYS):
+  d=out/'grids'/key(a,'REF',10)/'total';v,h=read_map(out,key(a,'REF',10));c,_=load(d/'certificate.fits');ordinary,_=read_map(out,key(a,'REF',10),operator='MAP');js=c['SCI_SUPPORT'].astype(bool);ms=ordinary['SCI_SUPPORT'].astype(bool)
+  state=np.where(ms&js,1,np.where(js,2,np.where(ms,3,0)));im=axes[i,0].imshow(state,origin='lower',extent=extent(h,state.shape),cmap=ListedColormap(['#d9d9d9','#4a6f9c','#cf8c46','#b84040']),vmin=-.5,vmax=3.5);bar=fig.colorbar(im,ax=axes[i,0],ticks=range(4),shrink=.7);bar.ax.set_yticklabels(['Neither','Common','JINC only','MAP only']);axes[i,0].set_title(a+' · native signal support')
+  bit=c['CAUSES'].astype('u1');failure=(bit!=0)&(bit!=16);diag=np.where(bit==16,0,np.where(failure,3,np.where(v['NORMALIZATION']<0,2,1)));im=axes[i,1].imshow(diag,origin='lower',extent=extent(h,diag.shape),cmap=ListedColormap(['#d9d9d9','#4a6f9c','#cf8c46','#b84040']),vmin=-.5,vmax=3.5);bar=fig.colorbar(im,ax=axes[i,1],ticks=range(4),shrink=.7);bar.ax.set_yticklabels(['No members','C positive','C negative','Bound failure']);axes[i,1].set_title(a+f' · failures {failure.sum()}')
+  fraction=np.divide(c['ERROR_M'],c['TOLERANCE_LOWER'],out=np.full(js.shape,np.nan),where=js);positive=js&(fraction>0);axes[i,2].hist(np.log10(fraction[positive]),bins=35,color='#4a6f9c');axes[i,2].axvline(0,color='#b84040',ls='--',label='acceptance ceiling');axes[i,2].set(title=a+' · componentwise certificate',xlabel='log10(bound / allowed tolerance)',ylabel='Accepted pixels');axes[i,2].legend()
+  for ax in axes[i,:2]:ax.set_xlabel('East offset (arcsec)');ax.set_ylabel('North offset (arcsec)')
+ fig.suptitle('REF T10 support: arithmetic validity does not imply background precision',fontsize=13);path=dest/'numerical-support.png';fig.savefig(path);plt.close(fig);paths.append(path)
+ return paths
 
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True);a=p.parse_args();report(a.output)
