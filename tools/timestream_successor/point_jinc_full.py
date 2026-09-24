@@ -29,6 +29,7 @@ HALF={'a1100':8,'a1400':10,'a2000':14}
 PHASES=[(x,y) for y in (-1/3,0.,1/3) for x in (-1/3,0.,1/3)]
 
 def read(p):return json.loads(Path(p).read_text())
+def header_record(h):return {k:v for k,v in h.items() if k not in ('COMMENT','HISTORY','')}
 def key(a,b,k):return f'{a}-{b}-{k:02d}'
 def original_context(auth,owner,array):
     ctx=saved_context(auth,owner,array);f=FixedMeasurements.__new__(FixedMeasurements)
@@ -70,7 +71,7 @@ def prepare(out,cli,helper):
         for n in ('source_measurement','source_total'):auth.check(binding['P'][a][n]['path'])
         ad=out/'prepared'/a;ad.mkdir();ctx,f=original_context(auth,owner,a)
         np.savez(ad/'fixed.npz',parameters=f.parameters,x=f.x,y=f.y,radius=f.radius,weights=f.weights,scale=f.scale,noise_valid=f.noise_valid)
-        save_json(ad/'fixed.json',dict(major=f.major,beam=f.beam,header=dict(f.header),measurement_definition='saved seven-parameter Gaussian plus constant; original search/bounds/weights; original M0 template/apertures; 40arcsec physical fit disk'))
+        save_json(ad/'fixed.json',dict(major=f.major,beam=f.beam,header=header_record(f.header),measurement_definition='saved seven-parameter Gaussian plus constant; original search/bounds/weights; original M0 template/apertures; 40arcsec physical fit disk'))
         ab=CD.parent/'successor-point-152389-post-fruit-ab-20260923'/f'companion/{a}'
         domains=auth.check(ab/'frozen-domains.npz');geometry=auth.json(ab/'frozen-domains.json')
         with np.load(domains) as z:
@@ -84,9 +85,9 @@ def prepare(out,cli,helper):
             require(cf['scalar']==1 and cf['unit']==1 and cf['family']=='SCI-PTC:uniform_constant@draft-0.1' and cf['profile']=='SCI-PTC:uniform_coefficient_handoff@draft-0.1','uniform payload differs')
             require(cf['PTC_publication_sha256']==entry['publication_sha256'] and cf['stored_support_reference']==entry['support_reference'],'coefficient occurrence association differs')
             uniform[Path(entry['coefficient_file']).name.removesuffix('-coefficient.yaml')]=dict(payload=auth.ref(cp),occurrence=entry,scalar=cf['scalar'])
-        ar=dict(schema='point-152389-jinc-ast-v1',map_request=parents['map_request'],parent_plan=parents['parent_plan'],archived_input_manifest=r['input_manifest'],array_index=ARRAYS.index(a),WCS=dict(h))
+        ar=dict(schema='point-152389-jinc-ast-v1',map_request=parents['map_request'],parent_plan=parents['parent_plan'],archived_input_manifest=r['input_manifest'],array_index=ARRAYS.index(a),WCS=plan['WCS'],saved_FITS_WCS=header_record(h))
         save_json(out/'ast'/(a+'.json'),ar)
-        arrays[a]=dict(uniform_payloads=uniform,header=dict(h),peak=binding['P'][a],mask_source=auth.ref(domains),mask_geometry=geometry,dilation_half_width=HALF[a]+1,compact_profile=owner['geometry'][a]['C-core-plus'],ast_request=bound(out/'ast'/(a+'.json')))
+        arrays[a]=dict(uniform_payloads=uniform,header=header_record(h),peak=binding['P'][a],mask_source=auth.ref(domains),mask_geometry=geometry,dilation_half_width=HALF[a]+1,compact_profile=owner['geometry'][a]['C-core-plus'],ast_request=bound(out/'ast'/(a+'.json')))
     save_json(out/'freeze/profile.json',dict(profile=PROFILE,authority=bound(out/'OWNER_DIRECTIVE.md'),argument=bound(out/'NUMERICAL_ARGUMENT.md'),frozen_peaks=binding['P'],parameters={a:dict(scale=['(1.1/1000)/45','(1.4/1000)/45','(2.0/1000)/45'][i],a='1.1',b=['1.67','2.17','3.17'][i],c='2',rmax='3',nsub=16) for i,a in enumerate(ARRAYS)},exact_tolerance_decimals=['0.000001','0.000001'],ancillary_relative_tolerance='0.000001',input_arithmetic='fixed authenticated binary64 sample/omega/frequency/native AST inputs',numerical_scope='all used JINC signal and Q/T values; local cause bits enforce separation/bounds/range',source=revision,helper=bound(helper),cli=bound(cli)))
     # Independent native AST exports run across arrays, each with one library thread.
     with ThreadPoolExecutor(max_workers=3) as pool:
