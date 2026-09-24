@@ -167,9 +167,15 @@ def trajectory_complete(history):
             and all(r['ready'] for r in history[:-1]))
 
 
+def check_native_version(version,revision):
+    # Citlali owns the first version line; dependency provenance is separate.
+    native=version.splitlines()[0] if version else ''
+    require(revision[:9] in native and 'dirty' not in native,'native/source mismatch')
+
+
 def execute(out,binary,branch):
     start=time.perf_counter();cpu=time.process_time();revision=source();fr=json.loads((out/'FREEZE.json').read_text());path=verified(fr['prospective']);w=json.loads(path.read_text());verify_manifest(out/'freeze',fr['manifest']['sha256'])
-    require(branch in BRANCHES,'foreign branch');version=subprocess.check_output([str(binary),'--version'],text=True).strip();require(revision[:9] in version and 'dirty' not in version,'native/source mismatch')
+    require(branch in BRANCHES,'foreign branch');version=subprocess.check_output([str(binary),'--version'],text=True).strip();check_native_version(version,revision)
     for n in ('OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','VECLIB_MAXIMUM_THREADS'):require(os.environ.get(n)=='1','numerical thread setting')
     if branch==BRANCHES[1]:
         control=json.loads((out/'run'/BRANCHES[0]/'SUMMARY.json').read_text());require(control['complete'] and all(p.get('replay',{}).get('measurements_candidates_exact',False) for p in control['stages']),'full REF replay must gate shoulder')

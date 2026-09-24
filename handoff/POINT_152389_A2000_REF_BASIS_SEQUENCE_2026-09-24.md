@@ -70,3 +70,11 @@ blocking otherwise completed-map reporting. Map/numerical completion is now
 separate from terminal candidate readiness; missing terminal candidates and fit
 measurements remain explicitly unavailable. The dependent shoulder run still
 requires every REF replay/candidate check. No science data had been executed.
+
+The first launch at2033 stopped before creating any observation stage: the
+version guard incorrectly applied the Citlali dirty check to the separately
+reported cached kids dependency provenance. Repair checks the first Citlali
+version line (exact source and clean marker); full dependency version remains
+recorded. Added fixture rejects dirty/wrong Citlali and accepts independently
+reported dependency provenance. Failed launch preserved; no scientific result
+or tolerance was inspected/changed, and no observation rerun occurred.

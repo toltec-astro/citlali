@@ -10,7 +10,7 @@ from run_point_refseq import *
 
 
 def endpoints(out,binary):
-    start=time.perf_counter();revision=source();version=subprocess.check_output([str(binary),'--version'],text=True).strip();require(revision[:9] in version and 'dirty' not in version,'endpoint binary/source mismatch')
+    start=time.perf_counter();revision=source();version=subprocess.check_output([str(binary),'--version'],text=True).strip();check_native_version(version,revision)
     fr=json.loads((out/'FREEZE.json').read_text());w=json.loads(verified(fr['prospective']).read_text());auth=auth_work(w)
     oldwork=auth.json(FROZEN/'freeze/prospective.json');owner=auth.json(CD/'freeze/prospective.json');ctx,_=contexts(auth,owner)
     new={b:json.loads((out/'run'/b/'SUMMARY.json').read_text()) for b in BRANCHES};require(all(r['complete'] for r in new.values()),'both trajectories required')

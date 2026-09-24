@@ -3,10 +3,15 @@ import tempfile
 from pathlib import Path
 import unittest
 import numpy as np
-from run_point_refseq import stage_request,BRANCHES,trajectory_complete
+from run_point_refseq import stage_request,BRANCHES,trajectory_complete,check_native_version
 from point_frozen_shoulder import close
 
 class RefSequenceControls(unittest.TestCase):
+    def test_native_version_separates_dependency_provenance(self):
+        check_native_version('v1-g123456789\nkids abc-dirty','123456789abcdef')
+        for v in ('v1-g123456789-dirty\nkids abc','v1-g987654321\nkids 123456789',''):
+            with self.assertRaises(ValueError):check_native_version(v,'123456789abcdef')
+
     def test_stage_index_and_current_candidate(self):
         with tempfile.TemporaryDirectory() as d:
             p=Path(d)/'owner.json';p.write_text('{}');state=Path(d)/'state.json';state.write_text('{}')
