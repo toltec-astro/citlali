@@ -19,7 +19,9 @@ All six ensembles remain conditional, qualified model calculations.
 
 Numerical artifacts, WCS repair, realized science/uncertainty, assessment and
 all 13 corrected rendered figures passed independent review at 0c8d54c1b.
-The review authorizes the final evidence seal; its receipt is recorded separately. Current local checks:283 successor tests,
+The final 4,149-file bundle seal passed; all 8,254 original input hashes remain
+unchanged. Root manifest and exact source bindings are recorded in the associated
+validation COMPLETION.json. Current local checks:283 successor tests,
 207 baseline tests,34 native/CLI tests and required config pass. No Unity,
 production/default change or push. Recommend only a future correlation-aware
 admission experiment on established ordinary MAP; not executed.

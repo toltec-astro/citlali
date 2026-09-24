@@ -1,0 +1,46 @@
+{
+  "status": "complete with scientific qualifications",
+  "source_revision": "0fb997ecefd55f56e1ef86173393a2ed27252f91",
+  "inventory_source": "0c8d54c1b227e69abcf99a9188daa6d5f3c93675",
+  "product_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-map-only-jinc-full-20260924-r4",
+  "matrix": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-map-only-jinc-full-20260924-r4/MATRIX.json",
+    "sha256": "58bee4779b860c76596ca44ea91d0757fadda8475bea3ce1d4cac06b5cfe3ebd"
+  },
+  "assessment": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-map-only-jinc-full-20260924-r4/ASSESSMENT.md",
+    "sha256": "d96f9114519829aa4e4ffe174068fd18520250844328a9f57b7fc0f073fd6269"
+  },
+  "review": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-map-only-jinc-full-20260924-r4/FINAL_REVIEW.md",
+    "sha256": "7fbd4eea62a26d1f0c036b230ac8c00b965f6e0534a97b646888af44fb8d8118"
+  },
+  "authentication": {
+    "original_files": 8254,
+    "wall_seconds": 48.63266937500157,
+    "all_original_and_current_consumed_hashes_unchanged": true
+  },
+  "primary_maps": 30,
+  "logical_references": 18,
+  "phase_maps": 54,
+  "actual_native_accumulations": 75,
+  "independent_trials": 1536,
+  "failed_trials": 0,
+  "retained_constrained_trials": 20,
+  "stop": "no new science action, source model, map weights, feedback, production/default, integration or push",
+  "root_manifest": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-map-only-jinc-full-20260924-r4/FILES_SHA256SUMS",
+    "sha256": "8a16e92f31cdb1a053c35230fccc068e46ff9e7ad269d95f037cbb02e4aa2235"
+  },
+  "sealed_files": 4149,
+  "external_completion": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-map-only-jinc-full-20260924-r4/COMPLETION.json",
+    "sha256": "f81178763f13eb777ac325a3b7107a61fe5f236b54badfc8418491fe20dbca4f"
+  },
+  "seal_command_passed": true,
+  "final_review": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-map-only-jinc-full-20260924-r4/FINAL_REVIEW.md",
+    "sha256": "7fbd4eea62a26d1f0c036b230ac8c00b965f6e0534a97b646888af44fb8d8118"
+  },
+  "closure": "Root manifest created and fully verified; no writes to external bundle after seal. This repository receipt is a documentation-only descendant of reviewed source."
+}

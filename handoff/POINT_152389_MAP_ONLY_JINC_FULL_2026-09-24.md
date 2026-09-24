@@ -65,3 +65,12 @@ Current checks:283successor/111subtests,207baseline/137subtests,34native/CLI,
 required config preflight pass. Six focused campaign tests pass after final
 report fixes. Local build remains AppleClang/cached-dependency supplemental
 validation, not a new Spack V2 or Unity result. No push/integration/default.
+
+## Final sealed closure
+
+The external bundle is immutable and its complete 4,149-file manifest verified.
+Root manifest SHA-256: 8a16e92f31cdb1a053c35230fccc068e46ff9e7ad269d95f037cbb02e4aa2235.
+All 8,254 consumed original file identities reauthenticate. Reviewed source
+0c8d54c1b; review-record/seal source 0fb997ecefd55f56e1ef86173393a2ed27252f91.
+The repository COMPLETION.json binds the external completion and manifest.
+No work remains in the authorized experiment; no proposed next action executed.
