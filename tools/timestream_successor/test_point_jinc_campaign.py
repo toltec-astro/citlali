@@ -26,3 +26,10 @@ def test_failed_fit_withholds_background_dependent_measurements():
  m=measure_full(v,h,Fixed());assert m['frozen_template_projection'] is None
  assert all(x['value_mJy_per_beam_arcsec2'] is None for x in m['apertures'])
  assert all(x['available'] for x in m['raw_apertures'])
+
+def test_response_full_domain_is_not_silently_shrunk():
+ from point_jinc_science import response
+ h=np.array([1.,2.,0.]);d=1.2*h;full=np.ones(3,bool);partial=np.array([True,True,False])
+ assert response(d,h,full,partial)['status']=='unavailable'
+ q=response(d,h,partial,partial);assert abs(q['g']-1.2)<1e-14 and abs(q['rho'])<1e-14
+ assert response(d,h,np.zeros(3,bool),partial)['status']=='unavailable'

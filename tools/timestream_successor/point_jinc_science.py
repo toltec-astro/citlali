@@ -5,7 +5,7 @@ import numpy as np
 from scipy.signal import convolve2d
 from astropy.io import fits
 from point_jinc_campaign import read_map,fixed_for,measure_full,SEEDS
-from point_jinc_full import read,ARRAYS,key,HALF
+from point_jinc_full import read,ARRAYS,key,HALF,source
 from point_response_cd import vector_measurement,MEASUREMENT_NAMES,RATIO_FLOOR,ellipse
 from point_post_fruit import (measurement_values,context_for,ensemble,joint_summary,propagation_checks,applicability,trial)
 from point_additive import learn,NoiseRequest,variance
@@ -28,7 +28,7 @@ def response(delta,known,domain,available):
  return dict(status='available',pixels=len(h),g=g,eta=eta,rho=rho,identity_error=eta**2-(g-1)**2-rho**2,reference_norm=float(norm),residual_rms=float(np.sqrt(np.mean((d-h)**2))))
 
 def science(out):
- start=time.perf_counter();p=read(out/'PREPARED.json');freeze=read(out/'freeze/prospective.json');verify_manifest(out/'ordinary');verify_manifest(out/'grids');dest=out/'science';dest.mkdir();measurements={};replay=[]
+ start=time.perf_counter();revision=source();p=read(out/'PREPARED.json');freeze=read(out/'freeze/prospective.json');verify_manifest(out/'ordinary');verify_manifest(out/'grids');dest=out/'science';dest.mkdir();measurements={};replay=[]
  # Exactly one accepted real-map fit per primary state/operator.
  for s in p['states']:
   a=s['array'];fixed=fixed_for(out,a)
@@ -68,7 +68,7 @@ def science(out):
     v,vh=read_map(out,refkey,f"phase-{ph['phase']}",op);m=measure_full(v,vh,fixed);fit=m['fit'];expected=p0[1:3]+ph['offset_tangent_arcsec'];use=v['SCI_SUPPORT'].astype(bool);signed=v['PRIMARY'][use];record=dict(array=a,operator=op,phase=ph['phase'],offset_pixels=ph['offset_pixels'],true_centroid=expected,measurement=m,centroid_error_arcsec=np.array(fit['parameters'][1:3])-expected if fit['status']=='success' else None,ellipse=ellipse(fit['parameters']) if fit['status']=='success' else None,minimum=float(signed.min()) if signed.size else None,negative_brightness_area=float(signed[signed<0].sum()*4),negative_pixels=int((signed<0).sum()),support_pixels=int(use.sum()),normalization=p0[0],taper='same saved30..36arcsec taper shifted with continuous profile; full destination; no renormalization')
     phases.append(record)
   save_json(ad/'PHASES.json',phases);save_json(ad/'EVEN.json',even);results[a]=dict(responses=rows,phases=phases,even=even)
- record=dict(arrays=results,ordinary_replay=replay,source_fits=30,ideal_control_fits=18,phase_fits=54,wall_seconds=time.perf_counter()-start);save_json(out/'SCIENCE.json',record);manifest(dest);return record
+ record=dict(source_revision=revision,ordinary_manifest=bound(out/'ordinary/FILES_SHA256SUMS'),jinc_manifest=bound(out/'grids/FILES_SHA256SUMS'),arrays=results,ordinary_replay=replay,source_fits=30,ideal_control_fits=18,phase_fits=54,wall_seconds=time.perf_counter()-start);save_json(out/'SCIENCE.json',record);manifest(dest);return record
 
 def contributions(out,p,a,operator):
  s=next(s for s in p['states'] if s['key']==key(a,'REF',10));g=np.fromfile(verified(s['geometry']),dtype='<f8').reshape(-1,4);net=np.fromfile(out/'prepared'/a/s['key']/'network.i16',dtype='<i2');shape=(p['arrays'][a]['header']['NAXIS2'],p['arrays'][a]['header']['NAXIS1']);pixel=np.floor(g[:,1]-.5).astype('i8')*shape[1]+np.floor(g[:,0]-.5).astype('i8');result={}
@@ -79,7 +79,7 @@ def contributions(out,p,a,operator):
  actual,_=read_map(out,s['key'],operator=operator);require(np.array_equal(sum(result.values()),actual['HITS']),'network footprint membership mismatch');return result
 
 def noise(out):
- start=time.perf_counter();p=read(out/'PREPARED.json');frozen=read(out/'freeze/prospective.json');science=read(out/'SCIENCE.json');dest=out/'noise';dest.mkdir();allresults=[]
+ start=time.perf_counter();revision=source();p=read(out/'PREPARED.json');frozen=read(out/'freeze/prospective.json');science=read(out/'SCIENCE.json');verify_manifest(out/'science');verified(science['ordinary_manifest']);verified(science['jinc_manifest']);dest=out/'noise';dest.mkdir();allresults=[]
  for a in ARRAYS:
   fixed=fixed_for(out,a);maps={(op,k):read_map(out,key(a,'REF',k),operator=op)[0] for op in OPERATORS for k in (0,10)};h=read_map(out,key(a,'REF',10))[1];common=np.logical_and.reduce([v['SCI_SUPPORT'].astype(bool) for v in maps.values()]);masks=np.load(out/'prepared'/a/'noise-masks.npz');ad=dest/a;ad.mkdir();np.savez(ad/'domains.npz',common_support=common,base=masks['base'],larger=masks['larger']);summary=[]
   for op in OPERATORS:
@@ -114,7 +114,7 @@ def noise(out):
    save_json(od/'background-coupling.json',coupling)
    allresults.append(dict(array=a,operator=op,status='complete' if joint['primary_available'] else 'complete trials; primary nonlinear aggregates unavailable',trials=256,uncertainty=joint,response_referenced=ratios,background=summary[-2:],propagation=checks,ensemble_wall_seconds=ensemble_seconds,trial_cpu_seconds=sum(r['cpu_seconds'] for r in records),regeneration_exact=True,source_baseline='fitted seven-parameter Gaussian plus constant; non-Gaussian signed JINC structure not represented; conditional additive model, no full-FRUIT variance'))
   save_json(ad/'BACKGROUND.json',summary)
- result=dict(results=allresults,trial_count=sum(r['trials'] for r in allresults),wall_seconds=time.perf_counter()-start,interpretation='conditional additive scatter under transferred empirical covariance; no physical cross-map covariance, absolute calibration, correction or feedback admission claim');save_json(out/'NOISE.json',result);manifest(dest);return result
+ result=dict(source_revision=revision,science=bound(out/'SCIENCE.json'),prospective=bound(out/'freeze/prospective.json'),results=allresults,trial_count=sum(r['trials'] for r in allresults),wall_seconds=time.perf_counter()-start,interpretation='conditional additive scatter under transferred empirical covariance; no physical cross-map covariance, absolute calibration, correction or feedback admission claim');save_json(out/'NOISE.json',result);manifest(dest);return result
 
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('stage',choices=['science','noise']);p.add_argument('--output',type=Path,required=True);a=p.parse_args();science(a.output) if a.stage=='science' else noise(a.output)
