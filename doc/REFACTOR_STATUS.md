@@ -1,6 +1,6 @@
 # Citlali Refactor Status
 
-## POINT 152389 map-only JINC — experiment executed 2026-09-24
+## POINT 152389 map-only JINC — completed with qualifications 2026-09-24
 
 The complete owner-selected all-array rmax3/nsub16 experiment ran on the
 original adaptive C+D histories. All 15 ordinary signal/numerator and source
@@ -17,9 +17,9 @@ variation, retains the shoulder response deficit and adds unstable edge
 support. All a2000 JINC source-fit pixels require noise-amplitude extrapolation.
 All six ensembles remain conditional, qualified model calculations.
 
-Numerical artifacts, WCS repair and realized science/uncertainty passed
-independent review. Final assessment/rendered-figure review and evidence seal
-are the remaining closeout steps. Current local checks:283 successor tests,
+Numerical artifacts, WCS repair, realized science/uncertainty, assessment and
+all 13 corrected rendered figures passed independent review at 0c8d54c1b.
+The review authorizes the final evidence seal; its receipt is recorded separately. Current local checks:283 successor tests,
 207 baseline tests,34 native/CLI tests and required config pass. No Unity,
 production/default change or push. Recommend only a future correlation-aware
 admission experiment on established ordinary MAP; not executed.

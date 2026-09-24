@@ -41,10 +41,11 @@ scientific use; final independent numerical/table/rendered-figure review.
 Fresh successful bundle:
 /Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-map-only-jinc-full-20260924-r4.
 Run source729e60c09 (grid), nativea5c45cd7e, science/noise41e82b2ca,
-final reportingf879e304e. Native code is identical to reviewed a5 through
+final reporting b3c65a4a7 (label margins corrected; earlier renders preserved). Native code is identical to reviewed a5 through
 current reporting. Intermediate preparation attempts and header/render repairs
 remain preserved; no original ancestor changed. Numerical and realized science
-reviews pass; final assessment/figure review is pending closure.
+reviews pass; final assessment, all 13 figures and closure provenance pass
+independent review at 0c8d54c1b. See the associated FINAL_REVIEW.md.
 
 30primary/18logical references/54phase maps complete;75actual native
 accumulations including controls.1536trials,0failed,20constrained retained.
