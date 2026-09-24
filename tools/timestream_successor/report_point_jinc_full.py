@@ -34,10 +34,10 @@ def report(out):
   for op in ('MAP','JINC'):
    m=read(out/'science'/(key(a,'REF',10)+'-'+op+'-measurement.json'));f=m['fit'];par=f.get('parameters');vals=[None]*6 if par is None else [par[0],par[1],par[2],*sorted(np.array(par[3:5])*np.sqrt(8*np.log(2)),reverse=True),par[6]]
    lines.append('| '+a+' | '+op+' | '+' | '.join(map(fmt,vals))+f" | {f['status']}/{f.get('constrained','—')} |")
- lines+=['','Centroids and widths are arcseconds; ellipse tensors, axis ratios and constraint details remain in the measurement JSON. Fitted angle becomes weakly determined as the axis ratio approaches circularity. All apertures retain their original centers/radii and four-square-arcsecond pixel area.','', '## Response to the archived perturbations','', '| Array | Perturbation | Operator | Original full-domain g | eta | rho | Lost original pixels | Paired-common g |','|---|---|---|---:|---:|---:|---:|---:|']
+ lines+=['','Centroids and widths are arcseconds; ellipse tensors, axis ratios and constraint details remain in the measurement JSON. Fitted angle becomes weakly determined as the axis ratio approaches circularity. All apertures retain their original centers/radii and four-square-arcsecond pixel area.','', '## Response to the archived perturbations','', '| Array | Perturbation | Operator | Original full-domain g | eta | rho | Lost original pixels | Paired-common g | Native eta |','|---|---|---|---:|---:|---:|---:|---:|---:|']
  for a in ARRAYS:
   for r in s['arrays'][a]['responses']:
-   q=r['original_benchmark'];pc=r['paired_common'];lines.append(f"| {a} | {r['branch']} | {r['operator']} | {fmt(q.get('g'))} | {fmt(q.get('eta'))} | {fmt(q.get('rho'))} | {r['support']['lost_original']} | {fmt(pc.get('g'))} |")
+   q=r['original_benchmark'];pc=r['paired_common'];lines.append(f"| {a} | {r['branch']} | {r['operator']} | {fmt(q.get('g'))} | {fmt(q.get('eta'))} | {fmt(q.get('rho'))} | {r['support']['lost_original']} | {fmt(pc.get('g'))} | {fmt(r['native'].get('eta'))} |")
  lines+=['','Original domains are the authenticated full-map C+D COMMON masks. Native and paired-common metrics are separate records. rho is orthogonal response distortion. H, Delta, Delta−H and numerical bounds are preserved in response FITS. These compare finished adaptive histories, not a fixed cleaner or JINC feedback.','', '## Endpoint additive uncertainty and compact-response reference','', '| Array | Operator | Measurement | Output scatter | Compact slope | Input-referenced scatter | Complete nonlinear ensemble |','|---|---|---|---:|---:|---:|---|']
  for r in n['results']:
   for q in r.get('response_referenced',[]):lines.append(f"| {r['array']} | {r['operator']} | {q['measurement']} | {fmt(q['output_scatter'])} | {fmt(q['slope'])} | {fmt(q['input_referenced_scatter'])} | {r['uncertainty']['primary_available']} |")
@@ -49,6 +49,11 @@ def report(out):
   for op in ('MAP','JINC'):
    rows=[r for r in s['arrays'][a]['phases'] if r['operator']==op];good=[r for r in rows if r['measurement']['fit']['status']=='success'];peaks=[r['measurement']['fit']['parameters'][0] for r in good];err=[np.linalg.norm(r['centroid_error_arcsec']) for r in good];negative=[r['negative_brightness_area'] for r in rows]
    lines.append(f"| {a} | {op} | {fmt(min(peaks)) if peaks else '—'} / {fmt(max(peaks)) if peaks else '—'} | {fmt(max(err)) if err else '—'} | {fmt(min(negative))} / {fmt(max(negative))} | {len(good)} / {sum(r['measurement']['fit'].get('constrained',False) for r in good)} |")
+ lines+=['','## Background transfer and ensemble qualification','', '| Array | Operator | T10 centered background scatter | Fit pixels outside training depth range /1257 | Retained constrained trials /256 | Larger-mask model |','|---|---|---:|---:|---:|---|']
+ for r in n['results']:
+  if not r.get('uncertainty'):continue
+  bg=r['background'][-1];lines.append(f"| {r['array']} | {r['operator']} | {fmt(bg['background']['std'])} | {bg['outside_source_range_pixels']} | {r['uncertainty']['bound_limited']} | {bg['larger_mask']['status']} |")
+ lines+=['','All six ensembles are completed with qualification: endpoint amplitude continuation is computational extrapolation where source depth lies outside training support. The a2000 JINC calculation extrapolates over the entire fit footprint. Approximate Monte Carlo relative standard error of a scatter is4.4%; independent-scatter ratio precision is about6.3%, before model uncertainty. These are not physical cross-map error bars.','']
  lines+=['','The saved compact normalization/shape and its declared taper were sampled directly at native continuous coordinates. This fixture does not replace the original raster-projected injection references. Signed-area integrals retain original brightness-area units; no flux correction.','', '## Numerical support and runtime','', '| Array | Primary JINC accepted pixels | Negative-C accepted | Largest signal bound | Largest bound/tolerance |','|---|---:|---:|---:|---:|']
  for a in ARRAYS:
   rows=[r for r in g['JINC'] if r['array']==a and r['role']=='total'];lines.append(f"| {a} | {min(r['accepted_pixels'] for r in rows)}–{max(r['accepted_pixels'] for r in rows)} | {max(r['negative_C_accepted'] for r in rows)} | {fmt(max(r['max_error_m'] for r in rows))} | {fmt(max(r['max_error_fraction'] for r in rows))} |")
@@ -66,13 +71,13 @@ def report(out):
   fig,axes=plt.subplots(2,3,figsize=(12,7),layout='constrained');raster={}
   for op in ('MAP','JINC'):
    d,h=load(out/'science'/a/('C-shoulder-'+op)/'response.fits');raster[op]=(d,h)
-  vmax=finite_max([d[n] for d,h in raster.values() for n in ('H','DELTA')])
-  rmax=finite_max([d['RESIDUAL'] for d,h in raster.values()])
+  vmax=finite_max([source_patch(d[n],d['NATIVE'].astype(bool),np.ones(d[n].shape),h)[0] for d,h in raster.values() for n in ('H','DELTA')])
+  rmax=finite_max([source_patch(d['RESIDUAL'],d['NATIVE'].astype(bool),np.ones(d['RESIDUAL'].shape),h)[0] for d,h in raster.values()])
   for i,op in enumerate(('MAP','JINC')):
    d,h=raster[op]
    for j,name in enumerate(('H','DELTA','RESIDUAL')):
     sp,_,_,sh,_=source_patch(d[name],d['NATIVE'].astype(bool),np.ones(d[name].shape),h);v=rmax if name=='RESIDUAL' else vmax;im=show(axes[i,j],sp,sh,f'{op} '+{'H':'H: original injection reference','DELTA':'Delta: completed-history increment','RESIDUAL':'Delta − H'}[name],-v,v);fig.colorbar(im,ax=axes[i,j],label='mJy/nominal beam',shrink=.8)
-  fig.suptitle(f'{a}: shoulder benchmark · shared scales across operators',fontsize=13);path=dest/(a+'-shoulder.png');fig.savefig(path);plt.close(fig);figures.append(path)
+  fig.suptitle(f'{a}: shoulder benchmark · displayed-stamp scales shared across operators',fontsize=13);path=dest/(a+'-shoulder.png');fig.savefig(path);plt.close(fig);figures.append(path)
   fig,axes=plt.subplots(2,3,figsize=(12,7),layout='constrained')
   for i,op in enumerate(('MAP','JINC')):
    d=out/'noise'/a/op/'T10';rec=read(d/'BACKGROUND.json')
@@ -95,9 +100,30 @@ def report(out):
   for ax in axes[i]:ax.legend();ax.grid(alpha=.2);ax.set_xticks(range(9))
  fig.suptitle('Continuous profile: nine offsets, identical sampled values for MAP and JINC',fontsize=13);path=dest/'phases.png';fig.savefig(path);plt.close(fig);figures.append(path)
  figures.extend(summary_figures(out,dest,p,s,n))
- for path in figures:lines+=['!['+path.stem+']('+str(path)+')','']
- lines+=['## Detailed reproducible records','',f"[All numerical diagnostics]({out/'SCIENCE.json'}) · [Noise and complete-ensemble results]({out/'NOISE.json'}) · [Map certificates]({out/'GRIDS.json'}) · [Prospective profile and seeds]({out/'freeze/prospective.json'})",'', 'The finite experiment stops here. No source model, FRUIT admission, feedback history, map weights, kernel settings, optical beam or production default has changed.']
+ control_tables(out,dest,s)
+ for path in figures:
+  lines+=(['!['+path.stem+']('+str(path)+')',''] if path.name in ('phases.png','response-referenced-scatter.png','numerical-support.png') else ['['+path.stem+']('+str(path)+')',''])
+ lines+=['Core images share original-P limits across operators; full-field images use tighter ±0.04P limits and saturate edge extremes. Signed colors are zero-centered; source panels have asymmetric positive/negative ranges. Shoulder H/Delta limits come from the displayed41-pixel stamps and are shared between operators; residuals use their own shared signed scale. No map values or numerical domains are changed by plotting.','']
+ lines+=['## Detailed reproducible records','',*[f'[Full {a} measurement controls]({dest / (a+"-measurement-controls.md")})' for a in ARRAYS],'',f"[All numerical diagnostics]({out/'SCIENCE.json'}) · [Noise and complete-ensemble results]({out/'NOISE.json'}) · [Map certificates]({out/'GRIDS.json'}) · [Prospective profile and seeds]({out/'freeze/prospective.json'})",'', 'The finite experiment stops here. No source model, FRUIT admission, feedback history, map weights, kernel settings, optical beam or production default has changed.']
  (dest/'RESULTS.md').write_text('\n'.join(lines)+'\n');save_json(dest/'FIGURES.json',dict(figures=[bound(p) for p in figures],report=bound(dest/'RESULTS.md'),wall_seconds=time.perf_counter()-start));manifest(dest)
+
+def control_tables(out,dest,science):
+ units=['mJy/nominal beam','arcsec','arcsec','arcsec','arcsec','arcsec²','arcsec²','arcsec²','mJy/nominal beam','mJy/nominal beam','mJy/nominal beam arcsec²','mJy/nominal beam arcsec²','mJy/nominal beam arcsec²']
+ for a in ARRAYS:
+  lines=[f'# {a}: full saved measurement controls','', 'All rows retain the original fit, template, aperture geometry and fitted-constant subtraction. No signed-difference fit or flux correction.','']
+  for r in science['arrays'][a]['responses']:
+   lines+=[f"## {r['operator']} / {r['branch']}",'', '| Measurement | Units | Actual increment | Ideal addition increment | Actual−ideal | Ratio |','|---|---|---:|---:|---:|---:|']
+   for row,unit in zip(r.get('measurement_comparison') or [],units):lines.append(f"| {row['name']} | {unit} | {fmt(row['actual_increment'])} | {fmt(row['ideal_increment'])} | {fmt(row['discrepancy'])} | {fmt(row['ratio'])} |")
+   for role in ('reference','actual','ideal_map_addition'):
+    f=r[role]['fit'];lines.append(f"{role}: {f['status']}, constrained={f.get('constrained','unavailable')}.")
+   lines+=['','| Aperture factor | Actual raw increment | Ideal raw increment | Actual background term | Ideal background term |','|---:|---:|---:|---:|---:|']
+   for i in range(3):
+    base=r['reference']['raw_apertures'][i];actual=r['actual']['raw_apertures'][i];ideal=r['ideal_map_addition']['raw_apertures'][i];area=base['pixels']*4;good=base['available'] and actual['available'] and ideal['available'];fitsgood=all(r[k]['fit']['status']=='success' for k in ('reference','actual','ideal_map_addition'))
+    vals=[actual['raw_brightness_area']-base['raw_brightness_area'],ideal['raw_brightness_area']-base['raw_brightness_area']] if good else [None,None]
+    vals+=[(r['actual']['fit']['parameters'][6]-r['reference']['fit']['parameters'][6])*area,(r['ideal_map_addition']['fit']['parameters'][6]-r['reference']['fit']['parameters'][6])*area] if fitsgood else [None,None]
+    lines.append('| '+str(base['factor'])+' | '+' | '.join(map(fmt,vals))+' |')
+   lines+=['','Raw and background terms have units mJy/nominal beam arcsec².','']
+  (dest/(a+'-measurement-controls.md')).write_text('\n'.join(lines)+'\n')
 
 def summary_figures(out,dest,p,s,n):
  paths=[]
@@ -118,10 +144,12 @@ def summary_figures(out,dest,p,s,n):
    if not row.get('response_referenced'):continue
    ratios=row['response_referenced'];observed=[r['observed'] for r in row['uncertainty']['measurements']];peak=p['arrays'][a]['peak']['P_mJy_per_nominal_beam']
    rel=[100*r['output_scatter']/abs(o) if r['output_scatter'] is not None and o else np.nan for r,o in zip(ratios,observed)];resp=[r['slope']*peak/o if r['slope'] is not None and o else np.nan for r,o in zip(ratios,observed)];sc=[r['input_referenced_scatter'] if r['input_referenced_scatter'] is not None else np.nan for r in ratios]
-   for j,vals in enumerate((rel,resp,sc)):axes[i,j].plot(range(5),vals,'o-',color=COLORS[op],label=op)
+   for j,vals in enumerate((rel,resp,sc)):
+    if j in (0,2):axes[i,j].errorbar(range(5),vals,yerr=np.array(vals)/np.sqrt(510),fmt='o-',capsize=3,color=COLORS[op],label=op)
+    else:axes[i,j].plot(range(5),vals,'o-',color=COLORS[op],label=op)
   for j,(title,unit) in enumerate([('raw relative scatter','Percent of observed measurement'),('compact fractional response','Slope × original peak / observed'),('response-referenced scatter','mJy/nominal beam of tested input')]):
    axes[i,j].set(title=a+' · '+title,ylabel=unit);axes[i,j].set_xticks(range(5),names,rotation=35,ha='right');axes[i,j].legend();axes[i,j].grid(alpha=.2)
- fig.suptitle('Conditional additive precision: transferred covariance + Gaussian baseline',fontsize=13);path=dest/'response-referenced-scatter.png';fig.savefig(path);plt.close(fig);paths.append(path)
+ fig.suptitle('Conditional precision · bars: approximate MC standard error only',fontsize=13);path=dest/'response-referenced-scatter.png';fig.savefig(path);plt.close(fig);paths.append(path)
  fig,axes=plt.subplots(3,3,figsize=(12,10),layout='constrained')
  for i,a in enumerate(ARRAYS):
   d=out/'grids'/key(a,'REF',10)/'total';v,h=read_map(out,key(a,'REF',10));c,_=load(d/'certificate.fits');ordinary,_=read_map(out,key(a,'REF',10),operator='MAP');js=c['SCI_SUPPORT'].astype(bool);ms=ordinary['SCI_SUPPORT'].astype(bool)
