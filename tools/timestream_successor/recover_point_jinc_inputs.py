@@ -79,6 +79,12 @@ def audit_snapshot(auth,array,branch,k,stage,out):
 def recover(out):
     start=time.perf_counter();cpu=time.process_time();revision=source();require(not out.exists(),'fresh recovery bundle required')
     auth,owner=ancestors();records={};stages=[]
+    # A+B's product manifest predates its closeout. Its immutable completion
+    # expectation is the identical tracked copy in this clean source lineage,
+    # not a hash inferred from the external file being authenticated.
+    ab_completion=Path(__file__).resolve().parents[2]/'validation/point_152389_post_fruit_ab_2026-09-23/completion.json'
+    auth.bind(ab_completion,digest(ab_completion));auth.check(ab_completion)
+    auth.bind(CD.parent/'successor-point-152389-post-fruit-ab-20260923/COMPLETION.json',digest(ab_completion))
     for root in (CD,CD.parent/'successor-point-152389-post-fruit-ab-20260923',CD.parent/'successor-point-152389-fruit-ten-cycles-20260923'):
         for n in ('COMPLETION.json','REVIEW.md','REGENERATION.md'):
             if (root/n).exists():auth.check(root/n)
