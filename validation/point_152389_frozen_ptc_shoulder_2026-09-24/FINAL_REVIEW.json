@@ -1,0 +1,38 @@
+{
+  "schema": "point-frozen-ptc-shoulder-final-review-v1",
+  "candidate": "948dfb487caf162b62a00ed6a3592b08f2e0a467",
+  "tree": "8210f6377669f40b0aa1d4b7b6c2c08fd635391e",
+  "base": "d488b0afc3f468bc394abd75dbe5dbcef5a04782",
+  "reviewer": "/root/point_frozen_review",
+  "scientific_behavioral": "pass with recorded scientific limitations",
+  "architecture_ownership": "pass",
+  "repository_evidence": "pass",
+  "remaining_findings": [],
+  "scope": "Exact closure metadata review after independent numerical/source/artifact and nine-figure review; no reruns",
+  "runtime_source": "6f00d638b804b897f5a626097e90f4e60bd85b24",
+  "report_source": "ccddaf2e319ac0fa2860e7c4bf60eac115a6f861",
+  "worktree_clean_at_review": true,
+  "changed_paths_sha256": {
+    "CMakeLists.txt": "ca0134b7ea34cf9049b6b161266a557be56a28d5e662c2244b83b7d42b4faaaf",
+    "doc/REFACTOR_STATUS.md": "6a909b1103c39896f5e409914e2565e6b990674d8beb96db4f0cdd806521a21e",
+    "handoff/POINT_152389_FROZEN_PTC_SHOULDER_2026-09-24.md": "efd8333b27f83314257678b51b201cf819842cc1b1ea879c75f523f0ce41fa3f",
+    "tools/timestream_successor/point_frozen_apply.cpp": "cfee4d10f0edc7d05e6d84546dbe3fec6a9986679285b14520d6ac6d72f1782e",
+    "tools/timestream_successor/point_frozen_shoulder.py": "e6adfec999c0e90f51428344e6120adea3e877686a9f1b99d89664d6f78f8f04",
+    "tools/timestream_successor/report_point_frozen_shoulder.py": "09c5c97ec560c3897a219b234ef7c4eebf0e017d508af6ca8a60ca0a110e3ab9",
+    "tools/timestream_successor/run_point_frozen_shoulder.py": "e61c1478bed5482f2714699eccdc80c2eb5ba598661066979674c5791bbfd35d",
+    "tools/timestream_successor/test_point_frozen_shoulder.py": "b67400100c11b4b34b9dfc551bcfabb8ba9c5d5e5b7c2ab9ee0aa155a6df79f6",
+    "validation/point_152389_frozen_ptc_shoulder_2026-09-24/COMPLETION.json": "a8f06d17c16e832cc9a4f1b0e288507ca23c7d30651f59da0a72fd4ef57e8dde",
+    "validation/point_152389_frozen_ptc_shoulder_2026-09-24/OWNER_DIRECTIVE.md": "f1864fe4e7eedd47abbed1ed75245164ea0faab7672ed8e5d1607e0cd973699c",
+    "validation/point_152389_frozen_ptc_shoulder_2026-09-24/REVIEW.md": "e35f69e399034807d7d3c6b91168c2bb4f6424e3821e467c03489acf88c16cd3"
+  },
+  "artifacts_sha256": {
+    "COMPLETION.json": "a8f06d17c16e832cc9a4f1b0e288507ca23c7d30651f59da0a72fd4ef57e8dde",
+    "REVIEW.md": "e35f69e399034807d7d3c6b91168c2bb4f6424e3821e467c03489acf88c16cd3",
+    "ASSESSMENT.md": "f44256a64815376c0a096561a7e13e641ef4aabe2a008859c76b55b7ce6f9651",
+    "REGENERATION.md": "351e1babc43b624505b9a124da560b098bb170f22fe04feff6eb2f3d6b89a5c7",
+    "report/FILES_SHA256SUMS": "d35a840bf88d1d62ebaff87150b509912871bc88e14b79d7940939ce296fb4b9",
+    "RUN.json": "6a1ef6ab55a2056344fb052747862d7085c50bec7e0325e422e4ad7372ed8980"
+  },
+  "stop_boundary": "Analysis complete; recommended a2000 counterfactual not executed; no m10/cycle11/Learn/admission/source fits/weights/production/merge/push",
+  "receipt_rule": "Subsequent repository commit records this verdict and sealed root manifest only; no numerical/report changes"
+}

@@ -1,0 +1,9 @@
+{
+  "schema": "point-frozen-ptc-shoulder-bundle-seal-v1",
+  "bundle": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-frozen-ptc-shoulder-20260924",
+  "reviewed_candidate": "948dfb487caf162b62a00ed6a3592b08f2e0a467",
+  "root_manifest_sha256": "254894c94b4cc5b2fccbe33bd02cb248740fe6f8ce0eadb69d6bbc0b1e7140b7",
+  "files": 1420,
+  "final_review_sha256": "834c1bf77085428a9abd690d1c90eed1f401c682fab7b1b50059f142d0d5e9c8",
+  "all_entries_verified": true
+}
