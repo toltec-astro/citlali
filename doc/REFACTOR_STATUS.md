@@ -1,5 +1,15 @@
 # Citlali Refactor Status
 
+## POINT 152389 frozen-PTC shoulder decomposition — active 2026-09-24
+
+Owner authorized fifteen saved REF/C-shoulder pairs M0/T1/T3/T5/T10,
+with T10-only reverse anchor. Native saved Apply and original mean functional
+only; no Learn/admission/source fits/new adaptive trajectory. Primary four-term
+and mean-aware accounting, applied-candidate partition, native self replay and
+independent closure are required. Same clean continuation base d488b0afc.
+See handoff/POINT_152389_FROZEN_PTC_SHOULDER_2026-09-24.md.
+
+
 ## POINT 152389 C+D response / robustness — completed 2026-09-23
 
 Owner authorized the fixed eight-trajectory-per-array campaign: fresh REF,

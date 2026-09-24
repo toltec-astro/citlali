@@ -242,3 +242,10 @@ target_link_libraries(citlali_ptc_cost PRIVATE citlali::citlali)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(citlali_ptc_cost PRIVATE -fno-fast-math -ffp-contract=off)
 endif()
+
+# Read-only saved-state POINT diagnostic; ordinary reduction is unchanged.
+add_executable(citlali_point_frozen_apply EXCLUDE_FROM_ALL tools/timestream_successor/point_frozen_apply.cpp)
+target_link_libraries(citlali_point_frozen_apply PRIVATE citlali::citlali)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(citlali_point_frozen_apply PRIVATE -fno-fast-math -ffp-contract=off)
+endif()
