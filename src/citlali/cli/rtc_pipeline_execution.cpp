@@ -55,6 +55,7 @@ std::string native_plane_digest(const NativePairedReadoutMatrix &m) {
 #include "ptc_pipeline_execution.h"
 #include "map_saved_execution.h"
 #include "fruit_saved_execution.h"
+#include "jinc_ast_execution.h"
 namespace {
 // One observation lifetime, prepared before workers start; only the I/O mutex
 // is mutable. Numerical work and detector populations remain network-owned.
@@ -1183,6 +1184,8 @@ int run_successor_saved_fruit(const std::filesystem::path &input,const std::file
     return execute_saved_fruit(input,output);
 }
 int run_successor_saved_map(const std::filesystem::path &input,const std::filesystem::path &output) {
+    const auto request=YAML::LoadFile(input.string());
+    if(request["schema"] && request["schema"].as<std::string>()=="point-152389-jinc-ast-v1")return execute_jinc_ast(input,output);
     return execute_saved_map(input,output);
 }
 }

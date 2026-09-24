@@ -27,6 +27,14 @@ struct JincDiscreteAccumulation {
     std::vector<double> algebraic_value;
     std::vector<std::uint8_t> algebraic_support;
 };
+struct JincCertifiedAccumulation {
+    JincDiscreteAccumulation sums;
+    // N,C,Q,T absolute bounds and full signal bound; diagnostic, not base roles.
+    std::array<std::vector<double>,5> error;
+    std::vector<double> tolerance_lower;
+    // 1 range/FP path,2 denominator,4 ancillary,8 signal,16 no members.
+    std::vector<std::uint8_t> causes;
+};
 // Compact phase cache, no sample-to-pixel matrix. One immutable realization can
 // be shared across independent accumulations. Worker-local planes are combined
 // in fixed contiguous-block order; results promise tolerance, not bit invariance.
@@ -35,6 +43,9 @@ public:
     explicit JincDiscreteKernel(JincDiscreteSpec);
     JincDiscreteAccumulation accumulate(std::span<const JincDiscreteSample>,
                                        std::size_t workers) const;
+    // Caller must bind proved cache-error bounds to this exact realization.
+    JincCertifiedAccumulation accumulate_certified(std::span<const JincDiscreteSample>,
+        std::span<const double> coefficient_errors, std::size_t workers, double frozen_peak) const;
     double coefficient(std::size_t qx, std::size_t qy, int dx, int dy) const;
     std::size_t half_width() const noexcept {return half_;}
     const JincDiscreteSpec &spec() const noexcept {return spec_;}

@@ -76,6 +76,7 @@ target_sources(citlali
     "src/citlali/core/pipeline/timestream_cal_pipeline.cpp"
     "src/citlali/core/mapmaking/forward_map.cpp"
     "src/citlali/core/mapmaking/jinc_discrete.cpp"
+    "src/citlali/core/mapmaking/jinc_certified.cpp"
     "src/citlali/core/pipeline/timestream_ptc_numerics.cpp"
     "src/citlali/core/pipeline/fruit_cycle.cpp"
     "src/citlali/core/pipeline/timestream_ptc_pipeline.cpp"
@@ -113,6 +114,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         src/citlali/core/pipeline/timestream_cal_pipeline.cpp
         src/citlali/core/pipeline/timestream_ptc_numerics.cpp
         src/citlali/core/mapmaking/jinc_discrete.cpp
+        src/citlali/core/mapmaking/jinc_certified.cpp
         src/citlali/core/pipeline/fruit_cycle.cpp
         src/citlali/core/pipeline/timestream_ptc_pipeline.cpp
         PROPERTIES COMPILE_OPTIONS "-fno-fast-math;-ffp-contract=off")
@@ -251,3 +253,12 @@ target_link_libraries(citlali_point_frozen_apply PRIVATE citlali::citlali)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(citlali_point_frozen_apply PRIVATE -fno-fast-math -ffp-contract=off)
 endif()
+
+# Explicit bounded diagnostic consumer; never selected as a reduction default.
+add_executable(citlali_jinc_diagnostic EXCLUDE_FROM_ALL src/citlali/cli/jinc_diagnostic.cpp)
+target_link_libraries(citlali_jinc_diagnostic PRIVATE citlali::citlali)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(citlali_jinc_diagnostic PRIVATE -fno-fast-math -ffp-contract=off)
+endif()
+
+add_dependencies(check citlali_jinc_diagnostic)

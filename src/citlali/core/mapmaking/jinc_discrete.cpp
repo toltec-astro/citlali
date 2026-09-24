@@ -60,7 +60,9 @@ JincDiscreteAccumulation JincDiscreteKernel::accumulate(std::span<const JincDisc
     auto block=[&](std::size_t first,std::size_t last){auto r=empty(n);
         for(std::size_t i=first;i<last;++i){const auto &s=samples[i];if(!s.admitted)continue;
             require(std::isfinite(s.x)&&std::isfinite(s.y)&&std::isfinite(s.value)&&positive(s.coefficient)&&positive(s.frequency_hz),"invalid admitted JINC occurrence");
-            const double cx=std::floor(s.x+.5),cy=std::floor(s.y+.5);
+            if(s.x<.5||s.y<.5||s.x>=spec_.columns+.5||s.y>=spec_.rows+.5)continue;
+            const double fx=std::floor(s.x),fy=std::floor(s.y);
+            const double cx=fx+(s.x-fx>=.5),cy=fy+(s.y-fy>=.5);
             if(cx<1||cx>spec_.columns||cy<1||cy>spec_.rows)continue;
             const auto qx=static_cast<std::size_t>(std::floor(spec_.phases*(s.x-cx+.5))),qy=static_cast<std::size_t>(std::floor(spec_.phases*(s.y-cy+.5)));
             require(qx<spec_.phases&&qy<spec_.phases,"JINC phase out of half-open range");
