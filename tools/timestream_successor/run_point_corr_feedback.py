@@ -15,7 +15,7 @@ from point_empirical_io import write_fits
 from point_jinc_campaign import exact_header
 from run_point_fruit_ten import ready_state
 from run_successor_observation import run as invoke
-from inspect_forward_map import require,read_yaml
+from inspect_forward_map import require,read_yaml,digest
 
 BRANCHES=('REF','C-core-plus','C-core-minus','C-shoulder','D-seed-shoulder')
 
@@ -65,6 +65,19 @@ def history_source(p,a,branch):
  return read(path)
 
 
+def upstream_replay(original,products,receipt):
+ expected=read_yaml(verified(original['receipt']));require(len(expected['segments'])==len(receipt['segments']),'BASE segment count changed')
+ records=[]
+ for old,new in zip(expected['segments'],receipt['segments']):
+  for name in ('source_segment','source_receipt_sha256','projection_support_counts','rank','converged','stopping_reason','iterations','objective','retained','application_failed_times','input_eligibility_changed','output_cause_changed'):
+   require(old[name]==new[name],'BASE same-stage PTC outcome differs: '+name)
+  source=new['source_segment'];stem=next(n[:-len('-input.f64')] for n in source['files'] if n.endswith('-input.f64'));directory=products/f"network-{source['network']}-{stem}"
+  for name in ('operand.f64','model-support.u8','mean.f64','basis.f64','cleaned.f64','causes.u8'):
+   require(digest(directory/name)==new['files'][name]==old['files'][name],'BASE same-stage numerical state differs: '+name)
+  records.append(dict(network=source['network'],scan=source['scan'],exact_files=6,exact_outcomes=True))
+ return dict(archived_same_stage_receipt=original['receipt'],segments=records,all_numerical_files_exact=True)
+
+
 def execute_branch(out,binary,p,a,pol,branch):
  start=time.perf_counter();c=context(out,a);dest=out/'run'/pol/branch/a;dest.mkdir(parents=True);tau=read(out/'calibration-disposition/thresholds.json')['thresholds'][a].get(pol)
  original=p['original_owner'];initial=history_source(p,a,branch if branch.startswith('C-') else 'REF')['histories'][0]
@@ -95,7 +108,9 @@ def execute_branch(out,binary,p,a,pol,branch):
    rec.update(total=bound(products/'total.fits'),receipt=bound(products/'receipt.yaml'),measurement=measurement,admission=summary,guards=processing_guard(products,receipt),PTC_segments=learned_state(products,receipt))
    require(path is not None and summary['candidate']['status']=='retained','unavailable source candidate')
    candidate_guard(load(path)[0],c['header']);rec['candidate']=bound(path)
-   if pol=='BASE':rec['replay']=replay_check(original['original_cycles'][a][k],products,measurement,path,c['beam'],reuse_fits=True)
+   if pol=='BASE':
+    rec['replay']=replay_check(original['original_cycles'][a][k],products,measurement,path,c['beam'],reuse_fits=True)
+    archived=history_source(p,a,'REF')['histories'][k];rec['upstream_replay']=upstream_replay(archived,products,receipt)
    old,_=load(verified(prior['candidate']));new,_=load(path);rec['candidate_turnover']=selection_difference(new,old)
    restore,rv,_,_=patch_map(products/'restored.fits');use=rv&old['VALID'].astype(bool);err=float(np.max(abs((restore-old['CANDIDATE'])[use])));require(err<1e-8,'applied operand remap mismatch');rec['guards']['operand_remap_max_abs']=err
    state=ready_state(a,k,path,products/'total.fits',products/'receipt.yaml',original['parents'][a],True);state.update(branch=branch,owner_sha256=bound(op)['sha256']);sp=d/'state.json';save_json(sp,state)
