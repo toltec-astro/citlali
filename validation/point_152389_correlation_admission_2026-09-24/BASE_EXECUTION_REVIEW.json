@@ -1,0 +1,12 @@
+{
+  "disposition": "pass",
+  "reviewer": "/root/corr_admission_review",
+  "source_revision": "bdd3d5645dc294fcaf84dbcc84d84e8c360f2aa2",
+  "scope": "saved-map scores/BASE screen and three exact BASE REF10-cycle replays; new-policy feedback blocked; realized checks pending",
+  "native_source_revision": "ee54efb6d32759003d4249f3a4ad90dbeb9c10d9",
+  "checks": [
+    "exact same-stage operand/model-support/mean/basis/cleaned/causes and outcomes required",
+    "failed comparisons prevent continuation",
+    "m10 remains unapplied"
+  ]
+}

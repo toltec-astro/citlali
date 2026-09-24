@@ -1,5 +1,36 @@
 # Citlali Refactor Status
 
+## POINT 152389 correlation-aware admission — failed launch gates 2026-09-24
+
+The fixed ordinary-MAP CORR-NEIGHBOR-v1/DIAG screening campaign completed all
+6,144 independent fields and 768 prescribed amplitude-stress reuses. Blank-scene
+POINT solver failures make the joint search maxima incomplete: calibration
+125/165/233, validation126/173/226, stress38/50/53 for a1100/a1400/a2000.
+All core-scene outcomes are numerically valid. Finite constrained fits retain
+the inherited no-candidate outcome; solver failures are not source absence.
+All six thresholds and confidence bounds are unavailable. No CORR/DIAG
+feedback, response, seed-persistence or endpoint-covariance trajectory ran.
+
+All three BASE REF controls completed ten feedback cycles with exact original
+maps, measurements, candidates, applied operands and same-stage PTC state:
+660 segments and 3,960 numerical files. Thirty applications total; m10 remains
+unapplied. Fifteen exact BASE saved-map screens and 30 nominal evidence screens
+retain the distinction between unavailable admission and zero admitted pixels.
+Original A+B M0 covariance and K0 were reused, distinct from BASE additive-r2
+admission scale; no covariance refitting or scientific retuning occurred.
+
+Independent science review passed the realized accounting, all BASE replays,
+fixed covariance/generation checks and seven figures. A minor availability
+label was corrected. Local gates pass:293 successor/111 subtests,
+207 baseline/137 subtests,34 native/CLI tests and required config. Exact native
+source ee54efb6d; validation0a651e88a; BASEbdd3d5645; final report1371640d6.
+Provenance/seal completion is recorded in the associated validation directory.
+Recommend only a bounded investigation of inherited blank-scene fit failures
+and a reviewed absence/candidate-outcome rule before new calibration; not
+executed. No defaults, contracts, MAP weights, source fit, Unity or push changed.
+See handoff/POINT_152389_CORRELATION_ADMISSION_2026-09-24.md and
+validation/point_152389_correlation_admission_2026-09-24/ASSESSMENT.md.
+
 ## POINT 152389 map-only JINC — completed with qualifications 2026-09-24
 
 The complete owner-selected all-array rmax3/nsub16 experiment ran on the

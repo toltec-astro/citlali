@@ -1,0 +1,17 @@
+{
+  "disposition": "pass",
+  "reviewer": "/root/corr_admission_review",
+  "source_revision": "ee54efb6d32759003d4249f3a4ad90dbeb9c10d9",
+  "prospective_sha256": "38679fdec952fc9f6905484a33b23697a1694ca5495f08fed869f86765cb0253",
+  "freeze_manifest_sha256": "368d711a1699022ea63c7eddf833bbdd028308dda9049dd1e4ad8a7456d805f7",
+  "binary_sha256": "5823281906ab4aed249469d387f4d433bcbac7a4837036b9c371ac6ac2b8ad06",
+  "checks": [
+    "all29474 consumed originals independently compared to archived digests",
+    "162 candidate calculations independently reproduced;3 first-seed exceptions authenticated",
+    "C0/K0 source-depth/means/geometry and positive supported covariance verified",
+    "6144 prescribed seeds independently reproduced",
+    "source and prepared-artifact conformance pass"
+  ],
+  "qualification": "Apple Accelerate actual internal thread count unobservable; explicit requested limits recorded",
+  "scope": "permits prescribed calibration and validation; not realized launch gates or new trajectories"
+}

@@ -1,0 +1,13 @@
+{
+  "disposition": "pass",
+  "reviewer": "/root/corr_admission_review",
+  "source_revision": "0a651e88a07cccd3431d54bc76d7b457df640e84",
+  "prospective_sha256": "38679fdec952fc9f6905484a33b23697a1694ca5495f08fed869f86765cb0253",
+  "calibration_unknown_maxima": [
+    125,
+    165,
+    233
+  ],
+  "scope": "failure-accounting amendment; prescribed validation fields and stress reuse allowed, threshold-dependent results unavailable, six feedback cells blocked",
+  "changes": "no replacement draws/recalibration/solver changes; raw calibration evidence preserved, failed zero placeholders excluded from quantitative claims"
+}
