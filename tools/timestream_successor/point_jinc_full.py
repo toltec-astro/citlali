@@ -79,6 +79,7 @@ def prepare(out,cli,helper):
             larger=maximum_filter(z['larger_source_mask'].astype('u1'),size=2*(HALF[a]+1)+1,mode='constant',cval=0)>0
         np.savez(ad/'noise-masks.npz',base=base,larger=larger)
         parents=owner['parents'][a]
+        for ref in parents.values():auth.bind(ref['path'],ref['sha256']);auth.check(ref['path'])
         plan=auth.yaml(parents['parent_plan']['path']);uniform={}
         for entry in plan['ordered_column_domain']:
             cp=Path(parents['parent_plan']['path']).parent/entry['coefficient_file'];auth.bind(cp,entry['coefficient_sha256']);cf=auth.yaml(cp)
