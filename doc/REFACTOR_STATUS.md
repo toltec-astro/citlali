@@ -1,13 +1,32 @@
 # Citlali Refactor Status
 
-## POINT 152389 frozen-PTC shoulder decomposition — active 2026-09-24
+## POINT 152389 frozen-PTC shoulder decomposition — completed 2026-09-24
 
-Owner authorized fifteen saved REF/C-shoulder pairs M0/T1/T3/T5/T10,
-with T10-only reverse anchor. Native saved Apply and original mean functional
-only; no Learn/admission/source fits/new adaptive trajectory. Primary four-term
-and mean-aware accounting, applied-candidate partition, native self replay and
-independent closure are required. Same clean continuation base d488b0afc.
-See handoff/POINT_152389_FROZEN_PTC_SHOULDER_2026-09-24.md.
+All15 authorized saved pairs M0/T1/T3/T5/T10 pass:330 native segment
+applications, exact own-state means and cleaned residuals, primary map closure
+within3.294e-12 and mean-aware closure within3.394e-11 mJy/nominal beam.
+T10 uses savedm9; reverse anchor onlyT10. No Learn/admission/source fits or new
+adaptive trajectory. All4,713 consumed original files authenticated.
+
+T10 direct/feedback/mean/subspace projections are
+0.909387/+0.081071/-0.005896/-0.010196 (a1100),
+0.920764/+0.050269/-0.025895/-0.034067 (a1400), and
+0.933620/+0.038435/-0.040975/-0.081199 (a2000), reproducing saved
+g0.974365/0.911071/0.849881. Mean-aware DC is0.837154/0.830512/0.819027,
+with FC0.147407/0.114627/0.112053. These are signed conditional allocations,
+not a unique causal budget or uncertainty estimate. Retained-brightness changes
+provide most feedback effect; geometry alone does not quantify protection.
+
+Native execution6f00d638b; reportccddaf2e3;78.333s execution and6.854s final
+report. Three array workers, one numerical thread each.265 successor/111
+subtests,207 baseline/137 subtests,28 native tests and required config pass.
+Local cached AppleClang validation remains supplemental, not Spack V2/Unity.
+Independent source and numerical artifact audits pass; final figure/assessment
+review is recorded in the completion evidence. One a2000 paired saved-REF-basis
+sequence counterfactual is recommended, not executed. No production/default
+change, integration, push, m10 application or cycle11.
+See handoff/POINT_152389_FROZEN_PTC_SHOULDER_2026-09-24.md and
+validation/point_152389_frozen_ptc_shoulder_2026-09-24/COMPLETION.json.
 
 
 ## POINT 152389 C+D response / robustness — completed 2026-09-23
