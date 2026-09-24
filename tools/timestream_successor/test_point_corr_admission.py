@@ -113,4 +113,9 @@ def test_blank_absence_is_not_solver_failure(monkeypatch):
  assert r['numerically_valid'] and r['candidate_status']=='legitimate_source_absence'
  assert all(p['added_pixels']==0 for p in r['policies'].values())
  monkeypatch.setattr(run,'infer',lambda *args:(dict(status='failed',cause='POINT descriptive Gaussian fit did not converge'),None,None))
- assert not run.scene(c,data,dict(CORR=3,DIAG=3))['numerically_valid']
+ bad=run.scene(c,data,dict(CORR=3,DIAG=3));assert not bad['numerically_valid']
+ assert bad['BASE_pixels'] is None
+ assert all(p['added_pixels'] is None and not p['maximum_known'] for p in bad['policies'].values())
+ monkeypatch.setattr(run,'infer',lambda *args:(dict(status='failed',cause='no positive central peak above local median'),None,None))
+ unknown=run.scene(c,data,dict(CORR=None,DIAG=None));assert unknown['numerically_valid']
+ assert all(p['added_pixels'] is None and p['maximum_known'] for p in unknown['policies'].values())

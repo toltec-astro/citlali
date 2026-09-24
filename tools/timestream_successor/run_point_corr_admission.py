@@ -103,14 +103,19 @@ def scene(c,data,tau,source_mask=None):
  valid=absence or (fit['status']=='success' and np.isfinite(fit['parameters']).all())
  rec=dict(fit=fit,numerically_valid=bool(valid),candidate_status='legitimate_source_absence' if absence else 'fit_unavailable' if not valid else 'finite_constrained_no_candidate' if fit.get('constrained') else base['summary']['status'],BASE_pixels=int(base['selected'].sum()) if base is not None else 0,BASE_brightness_area=float(np.sum(base['candidate'][base['selected']])*4) if base is not None else 0,policies={})
  false=(base['selected']&~source_mask) if base is not None and source_mask is not None else (base['selected'] if base is not None else np.zeros(c['support'].shape,bool))
- rec['BASE_false_pixels']=int(false.sum());rec['BASE_false_brightness_area']=float(np.sum(base['brightness'][false])*4) if base is not None else 0
+ rec['BASE_false_pixels']=int(false.sum()) if valid else None;rec['BASE_false_brightness_area']=(float(np.sum(base['brightness'][false])*4) if base is not None else 0) if valid else None
+ if not valid:rec['BASE_pixels']=None;rec['BASE_brightness_area']=None
  for pol in POLICIES:
   r=dict(max_score=maximum(base,fields,pol),numerical_failures=fields['policies'][pol]['numerical_failures'] if fields is not None else 0)
-  if tau is not None:
+  r['maximum_known']=bool(valid and r['numerical_failures']==0)
+  if tau is not None and tau.get(pol) is not None and r['maximum_known']:
    selected=select(base,fields,c['k0'],pol,tau[pol]);r['summary']=selected['summary'] if selected is not None else None
    r['added_pixels']=int(selected['added'].sum()) if selected is not None else 0
    r['extra_brightness_area']=float(np.sum(selected['candidate'][selected['added']])*4) if selected is not None else 0
    r['total_pixels']=int(selected['selected'].sum()) if selected is not None else 0
+   r['thresholded_available']=True
+  else:
+   r.update(summary=None,added_pixels=None,extra_brightness_area=None,total_pixels=None,thresholded_available=False)
   rec['policies'][pol]=r
  return rec
 
@@ -119,7 +124,8 @@ def trial(payload):
  a,phase,index,tau=payload;c=_GLOBAL;start=time.perf_counter();cpu=time.process_time();seed=trial_seed(a,phase,index);noise=draw_noise(c['psd'],c['scale'],seed)
  rec=dict(array=a,phase=phase,trial=index,seed=str(seed),scenes={})
  for name in ('blank','core'):rec['scenes'][name]=scene(c,np.where(c['support'],c[name]+noise,np.nan),tau,c['k0'] if name=='core' else None)
- rec['maxima']={pol:max([r['policies'][pol]['max_score'] for r in rec['scenes'].values() if r['policies'][pol]['max_score'] is not None],default=None) for pol in POLICIES}
+ rec['maxima_known']={pol:all(r['policies'][pol]['maximum_known'] for r in rec['scenes'].values()) for pol in POLICIES}
+ rec['maxima']={pol:(max([r['policies'][pol]['max_score'] for r in rec['scenes'].values() if r['policies'][pol]['max_score'] is not None],default=None) if rec['maxima_known'][pol] else None) for pol in POLICIES}
  if phase=='validation' and index<256:rec['stress']={name:scene(c,np.where(c['support'],c[name]+1.25*noise,np.nan),tau,c['k0'] if name=='core' else None) for name in ('blank','core')}
  rec.update(wall_seconds=time.perf_counter()-start,cpu_seconds=time.process_time()-cpu,peak_rss_bytes=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss);return rec
 
@@ -127,9 +133,9 @@ def trial(payload):
 def simulate(out,phase,review):
  revision=source();p=read(out/'freeze/prospective.json');verify_manifest(out/'freeze');require(review.is_file(),'independent exact-source preflight review required')
  require(all(os.environ.get(n)=='1' for n in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','VECLIB_MAXIMUM_THREADS')),'explicit one-thread libraries required')
- rv=read(review);require(rv['disposition']=='pass' and rv['source_revision']==revision==p['source_revision'],'current source/frozen source/approved preflight mismatch')
+ rv=read(review);require(rv['disposition']=='pass' and rv['source_revision']==revision and rv['prospective_sha256']==digest(out/'freeze/prospective.json'),'current source/immutable prospective/approved review mismatch')
  dest=out/phase;require(not dest.exists(),'no replacement trials');dest.mkdir();start=time.perf_counter();allrows={};taus=None
- if phase=='validation':taus=read(verified(read(out/'CALIBRATION.json')['thresholds']))['thresholds']
+ if phase=='validation':taus=read(verified(read(out/'CALIBRATION_DISPOSITION.json')['thresholds']))['thresholds']
  for a in ARRAYS:
   tau=None if taus is None else taus[a];rows=[]
   with ProcessPoolExecutor(max_workers=p['workers'],initializer=init_worker,initargs=(str(out),a)) as pool:
@@ -138,7 +144,7 @@ def simulate(out,phase,review):
   print(json.dumps(dict(phase=phase,array=a,trials=len(rows),failed=sum(not s['numerically_valid'] for r in rows for s in r['scenes'].values()))),flush=True)
  result=dict(source_revision=revision,prospective=bound(out/'freeze/prospective.json'),review=bound(review),wall_seconds=time.perf_counter()-start,independent_fields=3072,workers=p['workers'],numeric_threads=1,CPU_seconds=sum(r['cpu_seconds'] for rows in allrows.values() for r in rows),maximum_worker_highwater_bytes=max(r['peak_rss_bytes'] for rows in allrows.values() for r in rows))
  if phase=='calibration':
-  ts={a:{pol:threshold([r['maxima'][pol] for r in rows]) for pol in POLICIES} for a,rows in allrows.items()}
+  ts={a:{pol:(threshold([r['maxima'][pol] for r in rows]) if all(r['maxima_known'][pol] for r in rows) else None) for pol in POLICIES} for a,rows in allrows.items()}
   save_json(dest/'thresholds.json',dict(thresholds=ts,order_statistic=1015,strict_exceedance=True,frozen_before_validation=True));result['thresholds']=bound(dest/'thresholds.json')
  else:
   gates={}
@@ -148,13 +154,32 @@ def simulate(out,phase,review):
    fits_complete=all(s['numerically_valid'] for rr in (rows,calibration) for r in rr for s in r['scenes'].values())
    for pol in POLICIES:
     complete=fits_complete and all(s['policies'][pol]['numerical_failures']==0 for rr in (rows,calibration) for r in rr for s in r['scenes'].values())
-    k=sum(r['maxima'][pol] is not None and r['maxima'][pol]>taus[a][pol] for r in rows);u=binomial_upper(k);false=sum(any(s['policies'][pol]['added_pixels']>0 for s in r['scenes'].values()) for r in rows)
-    clean=all(s['numerically_valid'] and s['policies'][pol]['numerical_failures']==0 and s['policies'][pol]['added_pixels']==0 for s in controls.values())
-    gates[a][pol]=dict(pass_gate=bool(complete and p['arrays'][a]['covariance_preflight']['pass'] and u<=.02 and clean),**{'pass':bool(complete and p['arrays'][a]['covariance_preflight']['pass'] and u<=.02 and clean)},threshold=taus[a][pol],preconnectivity_exceedances=k,upper95=u,final_false_admission_events=false,complete_numerical_outcomes=complete,noiseless_controls=controls,qualifications='conditional frozen M0 covariance/scene model; retained observational limitations; not a ten-cycle false-feedback guarantee')
+    known=[r for r in rows if r['maxima_known'][pol]];tau=taus[a][pol]
+    partial=sum(r['maxima'][pol] is not None and r['maxima'][pol]>tau for r in known) if tau is not None else None
+    k=partial if len(known)==1024 else None;u=binomial_upper(k) if k is not None and tau is not None else None
+    false=sum(any(s['policies'][pol]['added_pixels']>0 for s in r['scenes'].values()) for r in known) if u is not None else None
+    clean=all(s['numerically_valid'] and s['policies'][pol]['numerical_failures']==0 and s['policies'][pol]['added_pixels']==0 for s in controls.values()) if tau is not None else None
+    passed=bool(complete and p['arrays'][a]['covariance_preflight']['pass'] and u is not None and u<=.02 and clean)
+    gates[a][pol]=dict(pass_gate=passed,**{'pass':passed},threshold=tau,threshold_available=tau is not None,preconnectivity_exceedances=k,upper95=u,partial_known_exceedances=partial,unknown_validation_maxima=1024-len(known),final_false_admission_events=false,complete_numerical_outcomes=complete,noiseless_controls=controls,cause=None if passed else 'incomplete calibration/validation or selected numerical/null gate',qualifications='conditional frozen M0 covariance/scene model; retained observational limitations; not a ten-cycle false-feedback guarantee')
   save_json(dest/'gates.json',dict(policies=gates));result['gates']=bound(dest/'gates.json')
  manifest(dest);save_json(out/(phase.upper()+'.json'),result)
 
+def calibration_disposition(out):
+ """No new draws or calibration: expose unknown maxima in completed raw trials."""
+ revision=source();dest=out/'calibration-disposition';dest.mkdir();old=read(out/'CALIBRATION.json');ts={};records={}
+ for a in ARRAYS:
+  rows=read(out/'calibration'/(a+'-trials.json'));ts[a]={};records[a]={}
+  for pol in POLICIES:
+   bad=[r['trial'] for r in rows if not all(s['numerically_valid'] and s['policies'][pol]['numerical_failures']==0 for s in r['scenes'].values())]
+   value=read(verified(old['thresholds']))['thresholds'][a][pol]
+   ts[a][pol]=value if not bad else None
+   records[a][pol]=dict(unknown_joint_maxima=bad,available=not bad,prior_computed_value=value,prior_value_disposition='valid' if not bad else 'invalid diagnostic; unknown failed-scene maximum was omitted by earlier source',reason=None if not bad else 'solver/numerical failures are not empty eligible searches')
+ save_json(dest/'thresholds.json',dict(thresholds=ts,records=records,source_revision=revision,original_calibration=bound(out/'CALIBRATION.json'),new_draws=0,recalibrated=False,frozen_before_validation=True))
+ manifest(dest);save_json(out/'CALIBRATION_DISPOSITION.json',dict(thresholds=bound(dest/'thresholds.json'),manifest=bound(dest/'FILES_SHA256SUMS')))
+
+
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('stage',choices=['prepare','calibration','validation']);p.add_argument('--output',type=Path,required=True);p.add_argument('--binary',type=Path);p.add_argument('--review',type=Path);a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('stage',choices=['prepare','calibration','calibration-disposition','validation']);p.add_argument('--output',type=Path,required=True);p.add_argument('--binary',type=Path);p.add_argument('--review',type=Path);a=p.parse_args()
  if a.stage=='prepare':prepare(a.output,a.binary)
+ elif a.stage=='calibration-disposition':calibration_disposition(a.output)
  else:simulate(a.output,a.stage,a.review)
