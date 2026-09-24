@@ -16,3 +16,13 @@ def test_ordinary_missing_support_and_constant():
  m=ordinary(g,np.array([17.,17.]),h);s=m['SCI_SUPPORT'].astype(bool)
  assert s.sum()==2 and np.isnan(m['PRIMARY'][~s]).all()
  np.testing.assert_array_equal(m['PRIMARY'][s],17.)
+
+def test_failed_fit_withholds_background_dependent_measurements():
+ from point_jinc_campaign import measure_full
+ class Fixed:
+  radius=np.zeros((41,41));major=3.
+  def measure(self,s,v):return dict(fit=dict(status='unavailable'),frozen_template_projection=99.,apertures=[dict(value_mJy_per_beam_arcsec2=88.) for _ in range(3)])
+ h=fits.Header(dict(NAXIS1=45,NAXIS2=45,CRPIX1=23.,CRPIX2=23.,CDELT1=-2/3600,CDELT2=2/3600));v=dict(PRIMARY=np.ones((45,45)),SCI_SUPPORT=np.ones((45,45),'u1'),HITS=np.ones((45,45)))
+ m=measure_full(v,h,Fixed());assert m['frozen_template_projection'] is None
+ assert all(x['value_mJy_per_beam_arcsec2'] is None for x in m['apertures'])
+ assert all(x['available'] for x in m['raw_apertures'])

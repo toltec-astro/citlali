@@ -35,7 +35,14 @@ def measure_full(data,header,fixed):
  for factor in (1.,1.5,2.):
   roi=fixed.radius<=factor*fixed.major;good=bool(v[roi].all() and np.isfinite(s[roi]).all())
   raw.append(dict(factor=factor,pixels=int(roi.sum()),raw_brightness_area=float(s[roi].sum()*4) if good else None,units='mJy/nominal beam arcsec^2',available=good))
- m['raw_apertures']=raw;return m
+ m['raw_apertures']=raw
+ if m['fit']['status']!='success':
+  m['frozen_template_projection']=None
+  for aperture in m['apertures']:
+   aperture['value_mJy_per_beam_arcsec2']=None
+   aperture['background_status']='unavailable fitted constant'
+   aperture['available']=False
+ return m
 
 def ordinary(g,t,h):
  shape=(h['NAXIS2'],h['NAXIS1']);pixel=np.floor(g[:,1]-.5).astype('i8')*shape[1]+np.floor(g[:,0]-.5).astype('i8');n=np.zeros(np.prod(shape));c=np.zeros(n.size);ab=np.zeros(n.size)
