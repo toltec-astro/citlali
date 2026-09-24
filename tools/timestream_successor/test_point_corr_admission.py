@@ -119,3 +119,15 @@ def test_blank_absence_is_not_solver_failure(monkeypatch):
  monkeypatch.setattr(run,'infer',lambda *args:(dict(status='failed',cause='no positive central peak above local median'),None,None))
  unknown=run.scene(c,data,dict(CORR=None,DIAG=None));assert unknown['numerically_valid']
  assert all(p['added_pixels'] is None and p['maximum_known'] for p in unknown['policies'].values())
+
+
+def test_unavailable_policy_screen_preserves_scores_not_false_mask(tmp_path):
+ from run_point_corr_feedback import publish_policy
+ from point_fruit_diagnostics import load
+ n,data,f,fit,b,psd=fixture();fields=n.scores(b)
+ c=dict(header=f.header,fixed=f,neighborhood=n,k0=n.k0)
+ path,summary=publish_policy(tmp_path,c,data,np.ones(data.shape,bool),fit,'CORR',None,prepared=(fit,b,fields))
+ assert path is None and summary['candidate'] is None
+ images,_=load(tmp_path/'admission.fits')
+ assert 'CORR_SCORE' in images and 'ADMITTED' not in images
+ assert np.array_equal(images['BASE'],b['selected'])
