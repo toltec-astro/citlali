@@ -126,6 +126,7 @@ def trial(payload):
 
 def simulate(out,phase,review):
  revision=source();p=read(out/'freeze/prospective.json');verify_manifest(out/'freeze');require(review.is_file(),'independent exact-source preflight review required')
+ require(all(os.environ.get(n)=='1' for n in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','VECLIB_MAXIMUM_THREADS')),'explicit one-thread libraries required')
  rv=read(review);require(rv['disposition']=='pass' and rv['source_revision']==revision==p['source_revision'],'current source/frozen source/approved preflight mismatch')
  dest=out/phase;require(not dest.exists(),'no replacement trials');dest.mkdir();start=time.perf_counter();allrows={};taus=None
  if phase=='validation':taus=read(verified(read(out/'CALIBRATION.json')['thresholds']))['thresholds']
@@ -144,10 +145,11 @@ def simulate(out,phase,review):
   for a,rows in allrows.items():
    c=context(out,a);controls={name:scene(c,np.where(c['support'],c[name],np.nan),taus[a],c['k0'] if name=='core' else None) for name in ('blank','core')};gates[a]={}
    calibration=read(out/'calibration'/(a+'-trials.json'))
-   complete=all(s['numerically_valid'] and all(s['policies'][pol]['numerical_failures']==0 for pol in POLICIES) for rr in (rows,calibration) for r in rr for s in r['scenes'].values())
+   fits_complete=all(s['numerically_valid'] for rr in (rows,calibration) for r in rr for s in r['scenes'].values())
    for pol in POLICIES:
+    complete=fits_complete and all(s['policies'][pol]['numerical_failures']==0 for rr in (rows,calibration) for r in rr for s in r['scenes'].values())
     k=sum(r['maxima'][pol] is not None and r['maxima'][pol]>taus[a][pol] for r in rows);u=binomial_upper(k);false=sum(any(s['policies'][pol]['added_pixels']>0 for s in r['scenes'].values()) for r in rows)
-    clean=all(s['numerically_valid'] and s['policies'][pol]['added_pixels']==0 for s in controls.values())
+    clean=all(s['numerically_valid'] and s['policies'][pol]['numerical_failures']==0 and s['policies'][pol]['added_pixels']==0 for s in controls.values())
     gates[a][pol]=dict(pass_gate=bool(complete and p['arrays'][a]['covariance_preflight']['pass'] and u<=.02 and clean),**{'pass':bool(complete and p['arrays'][a]['covariance_preflight']['pass'] and u<=.02 and clean)},threshold=taus[a][pol],preconnectivity_exceedances=k,upper95=u,final_false_admission_events=false,complete_numerical_outcomes=complete,noiseless_controls=controls,qualifications='conditional frozen M0 covariance/scene model; retained observational limitations; not a ten-cycle false-feedback guarantee')
   save_json(dest/'gates.json',dict(policies=gates));result['gates']=bound(dest/'gates.json')
  manifest(dest);save_json(out/(phase.upper()+'.json'),result)
