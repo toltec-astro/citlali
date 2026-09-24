@@ -72,7 +72,16 @@ def freeze(out,review):
  prepared=read(out/'PREPARED.json');require(not (out/'freeze/prospective.json').exists(),'prospective exists');rev=source()
  for n in ('prepared','ast','cache'):verify_manifest(out/n)
  require(Path(review).is_file(),'independent preflight review required');sh=bound(review)
- record=dict(schema='point-152389-jinc-prospective-v1',prepared=bound(out/'PREPARED.json'),profile=bound(out/'freeze/profile.json'),source_revision=rev,native_source_revision='a5c45cd7e38c9e48b0b37a73ba260859a3f52700',native_source_compatibility='subsequent commits before preparation change only Python orchestration/documentation; native helper/AST identical to reviewed a5',native_binary=prepared['helper'],cli=prepared['cli'],independent_review=sh,ordinary_replay='all15 states and exact same-sample membership passed during preparation',measurement='saved unweighted seven-parameter Gaussian plus constant; 40arcsec original disk; original M0 template and apertures; finite constrained fits retained',ratio_floor=RATIO_FLOOR,seeds=SEEDS,generator='point_post_fruit.ensemble/point_additive.draw_noise; numpy default_rng PCG64; [master_by_operator,integer_wavelength,10,0,trial]',trial_count=256,matrix=[dict(branch=b,stage=k) for b,k in MATRIX],injection_references=['C-core-plus','C-core-minus','C-shoulder'],phase_offsets=prepared['arrays']['a1100']['phases'],noise_mask='bound prepared exact A+B exclusions square dilated h+1 once, unchanged both maps/M0T10',covariate='ordinary HITS or JINC positive footprint membership counts; learned empirical amplitude relation, no precision interpretation',domains='original benchmark full physical40arcsec disk; native/full/common support separately; no shrink to conceal unavailable source footprint',native_workers_per_job=1,max_simultaneous_jobs=WORKERS,library_threads=1,upstream_scope='zero upstream calls structurally: campaign invokes only standalone gridding helper; consumes historical z and applied m9',uniform_grant='original MAP payload grant is lineage; separate owner SCI-PTC/JINC r0.4 UFC-OD-009 grants same gamma1 into diagnostic rejoined-descendant; no new production grant',rejoin_arithmetic='triangle of full map bounds plus fixed-input fl(z+v) bound gamma1*maxabs(total)*sumabs(k)/separated_C and rounded subtraction; M0 exact-zero operand reused',resource_policy='12 independent map processes, one native worker and one BLAS thread each; 14logical CPUs/48GiB host')
+ from point_frozen_shoulder import ancestors,CD
+ auth,owner=ancestors();benchmark={}
+ for a in ARRAYS:
+  domains={};refs={}
+  for b in ('C-core-plus','C-core-minus','C-shoulder'):
+   path=CD/f'report/{a}/{b}/cycle-10.fits';v,h=auth.fits(path);domains[b]=v['COMMON'].astype(bool);refs[b]=auth.ref(path)
+   require(v['COMMON'].shape==(prepared['arrays'][a]['header']['NAXIS2'],prepared['arrays'][a]['header']['NAXIS1']),'benchmark target shape')
+   for k in ('CRPIX1','CRPIX2','CRVAL1','CRVAL2','CDELT1','CDELT2'):require(h[k]==prepared['arrays'][a]['header'][k],'benchmark WCS differs')
+  np.savez(out/'freeze'/(a+'-benchmark-domains.npz'),**domains);benchmark[a]=dict(original_report_maps=refs,realized_masks=bound(out/'freeze'/(a+'-benchmark-domains.npz')))
+ record=dict(schema='point-152389-jinc-prospective-v1',benchmark_domains=benchmark,prepared=bound(out/'PREPARED.json'),profile=bound(out/'freeze/profile.json'),source_revision=rev,native_source_revision='a5c45cd7e38c9e48b0b37a73ba260859a3f52700',native_source_compatibility='subsequent commits before preparation change only Python orchestration/documentation; native helper/AST identical to reviewed a5',native_binary=prepared['helper'],cli=prepared['cli'],independent_review=sh,ordinary_replay='all15 states and exact same-sample membership passed during preparation',measurement='saved unweighted seven-parameter Gaussian plus constant; 40arcsec original disk; original M0 template and apertures; finite constrained fits retained',ratio_floor=RATIO_FLOOR,seeds=SEEDS,generator='point_post_fruit.ensemble/point_additive.draw_noise; numpy default_rng PCG64; [master_by_operator,integer_wavelength,10,0,trial]',trial_count=256,matrix=[dict(branch=b,stage=k) for b,k in MATRIX],injection_references=['C-core-plus','C-core-minus','C-shoulder'],phase_offsets=prepared['arrays']['a1100']['phases'],noise_mask='bound prepared exact A+B exclusions square dilated h+1 once, unchanged both maps/M0T10',covariate='ordinary HITS or JINC positive footprint membership counts; learned empirical amplitude relation, no precision interpretation',domains='original benchmark complete common SCI_SUPPORT over original full destination, recovered exact masks from C+D report; source fits retain40arcsec disk; operator-native and paired common response domains separately',native_workers_per_job=1,max_simultaneous_jobs=WORKERS,library_threads=1,upstream_scope='zero upstream calls structurally: campaign invokes only standalone gridding helper; consumes historical z and applied m9',uniform_grant='original MAP payload grant is lineage; separate owner SCI-PTC/JINC r0.4 UFC-OD-009 grants same gamma1 into diagnostic rejoined-descendant; no new production grant',rejoin_arithmetic='triangle of full map bounds plus fixed-input fl(z+v) bound gamma1*maxabs(total)*sumabs(k)/separated_C and rounded subtraction; M0 exact-zero operand reused',resource_policy='12 independent map processes, one native worker and one BLAS thread each; 14logical CPUs/48GiB host')
  save_json(out/'freeze/prospective.json',record);manifest(out/'freeze');return record
 
 def grid(out):
@@ -118,5 +127,21 @@ def grid(out):
  record=dict(status='matrix accumulated and certificate checked',primary_maps=30,logical_injection_references=18,phase_maps=54,actual_native_accumulations=len(results),JINC=results,wall_seconds=time.perf_counter()-start,worker_jobs=WORKERS,native_workers_per_job=1,library_threads=1)
  save_json(out/'GRIDS.json',record);manifest(out/'ordinary');manifest(out/'grids');return record
 
+def measured_grid(out):
+ stop=threading.Event();samples=[];process=psutil.Process();start=time.perf_counter()
+ def monitor():
+  while not stop.is_set():
+   members=[]
+   for p in [process,*process.children(recursive=True)]:
+    try:
+     cpu=p.cpu_times();members.append(dict(pid=p.pid,rss=p.memory_info().rss,cpu=cpu.user+cpu.system,threads=p.num_threads()))
+    except (psutil.NoSuchProcess,psutil.AccessDenied):pass
+   samples.append(dict(seconds=time.perf_counter()-start,processes=members,aggregate_rss=sum(p['rss'] for p in members)))
+   stop.wait(1.)
+ thread=threading.Thread(target=monitor,daemon=True);thread.start()
+ try:return grid(out)
+ finally:
+  stop.set();thread.join();save_json(out/'GRID_RESOURCES.json',dict(samples=samples,wall_seconds=time.perf_counter()-start,sampled_aggregate_rss_max=max((s['aggregate_rss'] for s in samples),default=0),meaning='one-second sampled process RSS sum; distinct from per-process high-water marks; CPU totals from native receipts'))
+
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('stage',choices=['freeze','grid']);p.add_argument('--output',type=Path,required=True);p.add_argument('--review',type=Path);a=p.parse_args();freeze(a.output,a.review) if a.stage=='freeze' else grid(a.output)
+ p=argparse.ArgumentParser();p.add_argument('stage',choices=['freeze','grid']);p.add_argument('--output',type=Path,required=True);p.add_argument('--review',type=Path);a=p.parse_args();freeze(a.output,a.review) if a.stage=='freeze' else measured_grid(a.output)
