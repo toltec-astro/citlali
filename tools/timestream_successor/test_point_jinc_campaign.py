@@ -44,3 +44,13 @@ def test_signed_plot_zero_handedness_and_empty_scale():
  assert im.norm(0.)==.5 and im.get_extent()[0]>im.get_extent()[1]
  assert finite_max([np.full((3,3),np.nan)])==1.
  plt.close(fig)
+
+def test_WCS_binary64_roundtrip_preserves_original_stamp(tmp_path):
+ from point_jinc_campaign import exact_header
+ from point_empirical_io import write_fits
+ from point_empirical import source_patch
+ record=dict(CRPIX1=24.,CRPIX2=24.,CRVAL1=176.7429079166667,CRVAL2=39.97619555555556,CDELT1=-2/3600,CDELT2=2/3600,EQUINOX=2000.)
+ header=exact_header(record);v=np.ones((47,47));path=tmp_path/'exact.fits';write_fits(path,header,[('PRIMARY',v,'1')])
+ with fits.open(path) as f:
+  for k,value in record.items():assert float(f[0].header[k]).hex()==float(value).hex()
+  patch=source_patch(v,v.astype(bool),v,f[0].header)[0];assert patch.shape==(41,41)

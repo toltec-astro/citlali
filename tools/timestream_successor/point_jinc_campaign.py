@@ -3,7 +3,7 @@
 No upstream science call: native entry is only jinc_diagnostic. Frozen saved
 rejoined-descendant operands and geometry are the entire observation input.
 """
-import argparse,time,subprocess,os,threading
+import argparse,time,subprocess,os,threading,shutil
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 import numpy as np
@@ -21,9 +21,18 @@ from inspect_forward_map import require,read_yaml,digest
 WORKERS=12
 SEEDS={'MAP':241523890,'JINC':241523891}
 
+def exact_header(record):
+ """Avoid Astropy's short fixed-decimal formatting of small WCS increments."""
+ h=fits.Header(record)
+ for k in ('CRPIX1','CRPIX2','CRVAL1','CRVAL2','CDELT1','CDELT2','EQUINOX'):
+  if k in record:
+   h.remove(k,remove_all=True,ignore_missing=True)
+   h.append(fits.Card.fromstring(f'{k:<8}= {float(record[k]):.17E}'))
+ return h
+
 def fixed_for(out,a):
  d=out/'prepared'/a;info=read(d/'fixed.json');f=FixedMeasurements.__new__(FixedMeasurements)
- f.header=fits.Header(info['header']);f.major=info['major'];f.beam=info['beam']
+ f.header=exact_header(info['header']);f.major=info['major'];f.beam=info['beam']
  with np.load(d/'fixed.npz') as z:
   for name in z.files:setattr(f,name,z[name].copy())
  f.disk=np.hypot(f.x,f.y)<=40;f.background=f.disk&(f.radius>3*f.major);f.edges=np.arange(0,42,2)
@@ -69,7 +78,7 @@ def map_job(job):
   lower=np.nextafter(v[n]-v[f'error-{i}'],-np.inf);tol=np.nextafter(np.nextafter(1e-6,-np.inf)*lower,-np.inf)
   require(np.all(lower[good]>0) and np.all(v[f'error-{i}'][good]<=tol[good]),'ancillary certificate mismatch')
  require(np.all(abs(v['C'][good])>v['error-1'][good]),'denominator separation mismatch')
- header=fits.Header(ar['header']);write_fits(d/'map.fits',header,[('PRIMARY',np.where(good,v['m'],np.nan),'mJy/nominal beam'),('NUMERATOR',v['N'],'mJy/nominal beam'),('NORMALIZATION',v['C'],'1'),('QUADRATIC',v['Q'],'1'),('COEFFICIENT_SQUARED_TIME',v['T'],'s')],companion='POINT-JINC-DIAGNOSTIC')
+ header=exact_header(ar['header']);write_fits(d/'map.fits',header,[('PRIMARY',np.where(good,v['m'],np.nan),'mJy/nominal beam'),('NUMERATOR',v['N'],'mJy/nominal beam'),('NORMALIZATION',v['C'],'1'),('QUADRATIC',v['Q'],'1'),('COEFFICIENT_SQUARED_TIME',v['T'],'s')],companion='POINT-JINC-DIAGNOSTIC')
  write_fits(d/'certificate.fits',header,[('SCI_SUPPORT',good.astype('u1'),'1'),('CAUSES',causes,'bitmask'),('MEMBERS',counts.astype('f8'),'1'),('ABS_C',v['absolute-C'],'1'),('ERROR_N',v['error-0'],'mJy/nominal beam'),('ERROR_C',v['error-1'],'1'),('ERROR_Q',v['error-2'],'1'),('ERROR_T',v['error-3'],'s'),('ERROR_M',v['error-4'],'mJy/nominal beam'),('TOLERANCE_LOWER',v['tolerance-lower'],'mJy/nominal beam')],companion='POINT-JINC-NUMERICAL-CERTIFICATE')
  record=dict(state=s['key'],role=role,array=a,map=bound(d/'map.fits'),diagnostics=bound(d/'certificate.fits'),request=bound(d/'request.json'),native_receipt=bound(d/'native/receipt.yaml'),profile=PROFILE,accepted_pixels=int(good.sum()),negative_C_accepted=int((good&(v['C']<0)).sum()),no_members=int((counts==0).sum()),causes={str(i):int((causes==i).sum()) for i in np.unique(causes)},max_error_m=float(v['error-4'][good].max(initial=0)),max_error_fraction=float((v['error-4'][good]/v['tolerance-lower'][good]).max(initial=0)),wall_seconds=time.perf_counter()-start,native=r,lifecycle='certificate checked; only cause0 signal released')
  save_json(d/'CERTIFICATE.json',record);manifest(d);return record
@@ -98,7 +107,7 @@ def grid(out):
  start=time.perf_counter();p=read(out/'PREPARED.json');f=read(out/'freeze/prospective.json');require(bound(out/'PREPARED.json')==f['prepared'],'prepared changed');helper=verified(p['helper']);verified(f['independent_review']);states=p['states'];results=[];(out/'ordinary').mkdir();(out/'grids').mkdir()
  # Same inputs, same occurrence order; primary ordinary signal replay and saved support.
  for s in states:
-  a=s['array'];h=fits.Header(p['arrays'][a]['header']);g=np.fromfile(verified(s['geometry']),dtype='<f8').reshape(-1,4);d=out/'ordinary'/s['key'];d.mkdir();old,_=load(verified(s['archived_total']));support=old['SCI_SUPPORT'].astype(bool)
+  a=s['array'];h=exact_header(p['arrays'][a]['header']);g=np.fromfile(verified(s['geometry']),dtype='<f8').reshape(-1,4);d=out/'ordinary'/s['key'];d.mkdir();old,_=load(verified(s['archived_total']));support=old['SCI_SUPPORT'].astype(bool)
   controls={}
   for role in ('total','clean','operand'):
    t=np.fromfile(verified(s[role]),dtype='<f8');v=ordinary(g,t,h);v['SCI_SUPPORT']=support.astype('u1');v['PRIMARY'][~support]=np.nan;controls[role]=v
@@ -128,7 +137,7 @@ def grid(out):
   if s['stage']==0:
    save_json(d/'REJOIN.json',dict(status='exact reuse',identity='M0 operand is identically zero; cleaned payload identical total',zero_operand=bool(np.all(np.fromfile(verified(s['operand']),dtype='<f8')==0)),clean_total_identical=s['clean']['sha256']==s['total']['sha256']));continue
   maps=[read_map(out,s['key'],role)[0] for role in ('total','clean','operand')];m,z,v=maps;use=np.logical_and.reduce([x['SCI_SUPPORT'].astype(bool) for x in maps]);den=np.nextafter(abs(m['NORMALIZATION'])-m['ERROR_C'],-np.inf)
-  maxt=float(abs(np.fromfile(verified(s['total']),dtype='<f8')).max());source_add=np.nextafter((2.**-53/(1-2.**-53))*maxt*np.nextafter(m['ABS_C']+m['ERROR_C'],np.inf)/den,np.inf)
+  maxt=float(abs(np.fromfile(verified(s['total']),dtype='<f8')).max());source_n=(2.**-53/(1-2.**-53))*maxt*np.nextafter(m['ABS_C']+m['ERROR_C'],np.inf);source_add=np.nextafter(np.divide(source_n,den,out=np.full(den.shape,np.inf),where=use),np.inf)
   # ABS_C error is bounded by relative accumulation gamma plus coefficient EC;
   # the additional directed factor encloses that positive sum's own rounding.
   gamma=(m['HITS']+7)*2.**-53/(1-(m['HITS']+7)*2.**-53);source_add=np.nextafter(source_add/(1-gamma),np.inf)
@@ -136,6 +145,37 @@ def grid(out):
   save_json(d/'REJOIN.json',dict(status='passed',pixels=int(use.sum()),unavailable_pixels=int((~use).sum()),max_abs=float(delta[use].max()),max_bound=float(b[use].max()),max_fraction=float((delta[use]/b[use]).max()),arithmetic='triangle of three certificates + sample rejoin rounding + subtraction rounding'))
  record=dict(status='matrix accumulated and certificate checked',primary_maps=30,logical_injection_references=18,phase_maps=54,actual_native_accumulations=len(results),JINC=results,wall_seconds=time.perf_counter()-start,worker_jobs=WORKERS,native_workers_per_job=1,library_threads=1)
  save_json(out/'GRIDS.json',record);manifest(out/'ordinary');manifest(out/'grids');return record
+
+def repair_wcs(out):
+ """Bounded header-only republication; preserve every pre-repair product."""
+ start=time.perf_counter();revision=source();p=read(out/'PREPARED.json');grids=read(out/'GRIDS.json');backup=out/'failures/wcs-serialization';backup.mkdir(parents=True,exist_ok=False)
+ for name in ('ordinary','grids'):
+  verify_manifest(out/name);shutil.copytree(out/name,backup/name)
+ shutil.copy2(out/'GRIDS.json',backup/'GRIDS.json')
+ if (out/'science').exists():shutil.move(out/'science',backup/'science-attempt')
+ records=[]
+ for root in ('ordinary','grids'):
+  for path in sorted((out/root).rglob('*.fits')):
+   state=path.relative_to(out/root).parts[0];a=state.split('-')[0];reference=p['arrays'][a]['header'];before=bound(path)
+   with fits.open(path,memmap=False,checksum=True) as hdus:
+    arrays=[h.data.copy() for h in hdus]
+    for hdu in hdus:
+     for k in ('CRPIX1','CRPIX2','CRVAL1','CRVAL2','CDELT1','CDELT2','EQUINOX'):
+      hdu.header.remove(k,remove_all=True,ignore_missing=True);hdu.header.append(fits.Card.fromstring(f'{k:<8}= {float(reference[k]):.17E}'))
+     for k in ('CHECKSUM','DATASUM'):hdu.header.remove(k,ignore_missing=True)
+    hdus.writeto(path.with_suffix('.repair.fits'),checksum=True)
+   with fits.open(path.with_suffix('.repair.fits'),checksum=True,memmap=False) as check:
+    for original,hdu in zip(arrays,check):
+     require(original.dtype==hdu.data.dtype and original.shape==hdu.data.shape and original.tobytes()==hdu.data.tobytes(),'header repair changed image plane bytes/dtype/shape')
+     for k in ('CRPIX1','CRPIX2','CRVAL1','CRVAL2','CDELT1','CDELT2','EQUINOX'):require(float(hdu.header[k]).hex()==float(reference[k]).hex(),'WCS precision repair failed')
+   path.with_suffix('.repair.fits').replace(path);records.append(dict(before=before,after=bound(path),planes_bitwise_values_identical=True,WCS_binary64_exact=True))
+ for certificate in (out/'grids').glob('*/*/CERTIFICATE.json'):
+  c=read(certificate);c['pre_WCS_repair_certificate']=bound(backup/certificate.relative_to(out));c['map']=bound(certificate.parent/'map.fits');c['diagnostics']=bound(certificate.parent/'certificate.fits');c['WCS_serialization']='exact original header binary64 values; scientific notation; image planes unchanged';save_json(certificate,c);manifest(certificate.parent)
+ for c in grids['JINC']:
+  for name,sha in c['native']['files'].items():require(digest(out/'grids'/c['state']/c['role']/'native'/name)==sha,'header repair changed native output')
+ grids['JINC']=[read(out/'grids'/r['state']/r['role']/'CERTIFICATE.json') for r in grids['JINC']];grids['header_republication']=dict(source_revision=revision,reason='preserve exact original WCS; initial writer shortened small CDELT decimal and changed stamp selection',backup=str(backup),native_accumulation_unchanged=True);save_json(out/'GRIDS.json',grids)
+ for name in ('ordinary','grids'):manifest(out/name)
+ manifest(backup);save_json(out/'WCS_REPAIR.json',dict(source_revision=revision,records=records,wall_seconds=time.perf_counter()-start,backup_manifest=bound(backup/'FILES_SHA256SUMS'),new_grids=bound(out/'GRIDS.json'),native_data_and_certified_errors_unchanged=True))
 
 def measured_grid(out):
  stop=threading.Event();samples=[];process=psutil.Process();start=time.perf_counter()
@@ -154,4 +194,4 @@ def measured_grid(out):
   stop.set();thread.join();save_json(out/'GRID_RESOURCES.json',dict(samples=samples,wall_seconds=time.perf_counter()-start,sampled_aggregate_rss_max=max((s['aggregate_rss'] for s in samples),default=0),meaning='one-second sampled process RSS sum; distinct from per-process high-water marks; CPU totals from native receipts'))
 
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('stage',choices=['freeze','grid']);p.add_argument('--output',type=Path,required=True);p.add_argument('--review',type=Path);a=p.parse_args();freeze(a.output,a.review) if a.stage=='freeze' else measured_grid(a.output)
+ p=argparse.ArgumentParser();p.add_argument('stage',choices=['freeze','grid','repair-wcs']);p.add_argument('--output',type=Path,required=True);p.add_argument('--review',type=Path);a=p.parse_args();freeze(a.output,a.review) if a.stage=='freeze' else (repair_wcs(a.output) if a.stage=='repair-wcs' else measured_grid(a.output))
