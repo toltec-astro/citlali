@@ -35,3 +35,32 @@ CLI/config tests. Local AppleClang/cached dependencies are supplemental, not
 Spack V2. Use available14 logical CPUs/48GiB without nested BLAS oversubscription.
 Source review before observation accumulation; per-map certificate before
 scientific use; final independent numerical/table/rendered-figure review.
+
+## Completed execution snapshot
+
+Fresh successful bundle:
+/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-map-only-jinc-full-20260924-r4.
+Run source729e60c09 (grid), nativea5c45cd7e, science/noise41e82b2ca,
+final reportingf879e304e. Native code is identical to reviewed a5 through
+current reporting. Intermediate preparation attempts and header/render repairs
+remain preserved; no original ancestor changed. Numerical and realized science
+reviews pass; final assessment/figure review is pending closure.
+
+30primary/18logical references/54phase maps complete;75actual native
+accumulations including controls.1536trials,0failed,20constrained retained.
+All15ordinary signal/numerator/measurement replays exact. All contributing
+JINCpixels certified, no-member pixels unavailable; maximum bound fraction
+0.03521. All3M0/12T10rejoins passed, maximum2.774e-11.
+
+JINC smooths background but shows no consistent response-referenced precision
+gain, increases phase variation, leaves shoulder gains effectively unchanged,
+and expands into unstable low-denominator edges. All1257a2000JINC source-fit
+pixels need covariance-amplitude extrapolation. Detailed owner assessment:
+validation/point_152389_map_only_jinc_full_2026-09-24/ASSESSMENT.md.
+Recommend one future action only: correlation-aware admission on established
+ordinary MAP. Not executed.
+
+Current checks:283successor/111subtests,207baseline/137subtests,34native/CLI,
+required config preflight pass. Six focused campaign tests pass after final
+report fixes. Local build remains AppleClang/cached-dependency supplemental
+validation, not a new Spack V2 or Unity result. No push/integration/default.

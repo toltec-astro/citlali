@@ -1,20 +1,30 @@
 # Citlali Refactor Status
 
-## POINT 152389 map-only JINC — full execution authorized 2026-09-24
+## POINT 152389 map-only JINC — experiment executed 2026-09-24
 
-The consolidated owner execution order explicitly resolves rmax3/nsub16 for
-all three arrays and POINT-152389-JINC-NUMERICAL-ADEQUACY-v1. It supersedes
-pending selections in the earlier preparation record without rewriting the
-sealed evidence. Numerical certificate engineering and the complete bounded
-30-map/18-reference/54-phase experiment are authorized. No new PTC learning,
-feedback, kernel tuning, production activation or push.
+The complete owner-selected all-array rmax3/nsub16 experiment ran on the
+original adaptive C+D histories. All 15 ordinary signal/numerator and source
+measurement replays are exact. All 75 native accumulations pass the selected
+componentwise certificate; no-member pixels remain unavailable. Three M0 and
+12 T10 rejoin controls pass (maximum2.774e-11). Native sourcea5c45cd7e;
+science/noise41e82b2ca. Header-only WCS repair preserved1,692 plane byte
+sequences; failed attempts and the original sealed preparation are preserved.
 
-Native certificate implementation, Decimal interval argument and fixtures
-passed independent review at a5c45cd7e38c9e48b0b37a73ba260859a3f52700.
-Current work prepares/authenticates native AST, exact uniform payloads,
-original ordinary replay, full finite-cache enclosures and frozen masks.
-Observation accumulation and scientific assessment are still pending.
-See handoff/POINT_152389_MAP_ONLY_JINC_FULL_2026-09-24.md.
+30 primary maps,18 references,54 phases and1,536 T10 trials completed.
+Zero trial failures;20 constrained trials retained. JINC lowers pixel scatter
+but has no consistent response-referenced precision gain, increases phase
+variation, retains the shoulder response deficit and adds unstable edge
+support. All a2000 JINC source-fit pixels require noise-amplitude extrapolation.
+All six ensembles remain conditional, qualified model calculations.
+
+Numerical artifacts, WCS repair and realized science/uncertainty passed
+independent review. Final assessment/rendered-figure review and evidence seal
+are the remaining closeout steps. Current local checks:283 successor tests,
+207 baseline tests,34 native/CLI tests and required config pass. No Unity,
+production/default change or push. Recommend only a future correlation-aware
+admission experiment on established ordinary MAP; not executed.
+See handoff/POINT_152389_MAP_ONLY_JINC_FULL_2026-09-24.md and the associated
+validation/point_152389_map_only_jinc_full_2026-09-24/ASSESSMENT.md.
 
 ## POINT 152389 a2000 REF basis sequence — completed 2026-09-24
 
