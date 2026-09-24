@@ -3,7 +3,7 @@ import tempfile
 from pathlib import Path
 import unittest
 import numpy as np
-from run_point_refseq import stage_request,BRANCHES
+from run_point_refseq import stage_request,BRANCHES,trajectory_complete
 from point_frozen_shoulder import close
 
 class RefSequenceControls(unittest.TestCase):
@@ -19,6 +19,16 @@ class RefSequenceControls(unittest.TestCase):
             with self.assertRaises(ValueError):stage_request(w,p,BRANCHES[0],11,prior)
             prior['cycle_index']=2
             with self.assertRaises(ValueError):stage_request(w,p,BRANCHES[0],10,prior)
+
+    def test_terminal_candidate_failure_preserves_completed_maps(self):
+        h=[dict(numerical_passed=True,ready=True) for k in range(11)]
+        h[10]['ready']=False
+        self.assertTrue(trajectory_complete(h))
+        h[9]['ready']=False
+        self.assertFalse(trajectory_complete(h))
+        h[9]['ready']=True;h[10]['numerical_passed']=False
+        self.assertFalse(trajectory_complete(h))
+        self.assertFalse(trajectory_complete(h[:10]))
 
     def test_centered_history_noop_simple_and_exact_protection(self):
         rng=np.random.default_rng(152389);u=rng.normal(size=12);dold=rng.normal(size=12);dnew=rng.normal(size=12)

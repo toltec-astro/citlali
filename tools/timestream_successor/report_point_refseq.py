@@ -52,20 +52,23 @@ def report(out):
             for name,actual,previous,ideal in zip(MEASUREMENT_NAMES,hv-bv,av-ov,iv-ov):
                 row['estimator_response'].append(dict(name=name,sequence_increment=float(actual),adaptive_increment=float(previous),ideal_increment=float(ideal),sequence_minus_ideal=float(actual-ideal),sequence_minus_adaptive=float(actual-previous),ratio=float(actual/ideal) if np.isfinite(actual+ideal) and abs(ideal)>1e-8 else None))
         for branch in BRANCHES:
-            new,nr=candidate_evidence(stages[branch]['candidate'],stages[branch],ctx)
+            new=None;nr=dict(status='unavailable',reason=stages[branch].get('stop_reason'),selected_pixels=None,area_arcsec2=None)
+            if stages[branch].get('candidate_available'):
+                new,nr=candidate_evidence(stages[branch]['candidate'],stages[branch],ctx)
+                nr['continuation_ready']=stages[branch]['ready'];nr['terminal_failure']=stages[branch].get('stop_reason')
             prev=w['old_stages'][branch]['histories'][k];oldc,orr=candidate_evidence(prev['candidate'],prev,ctx)
-            row['candidates'][branch]=dict(new=nr,old=orr);row['candidate_changes'][branch]=pair_candidates(new,oldc,ctx)
+            row['candidates'][branch]=dict(new=nr,old=orr);row['candidate_changes'][branch]=pair_candidates(new,oldc,ctx) if new is not None else dict(retained=None,added=None,removed=None,retained_brightness_rms_change=None,status='unavailable')
             candall[(branch,k)]=(new,oldc)
-        row['paired_new_candidates']=pair_candidates(candall[(BRANCHES[1],k)][0],candall[(BRANCHES[0],k)][0],ctx)
-        cb=stages[BRANCHES[1]]['measurement']['fit']['parameters'][6]-stages[BRANCHES[0]]['measurement']['fit']['parameters'][6]
+        row['paired_new_candidates']=pair_candidates(candall[(BRANCHES[1],k)][0],candall[(BRANCHES[0],k)][0],ctx) if all(candall[(b,k)][0] is not None for b in BRANCHES) else dict(status='unavailable')
+        cb=hv[8]-bv[8] if hv is not None else None
         for name,raw in measures['SEQ']['linear'].items():
-            if name=='template':weight=float(ctx['q'].sum());actual=hv[9]-bv[9]
+            if name=='template':weight=float(ctx['q'].sum());actual=hv[9]-bv[9] if hv is not None else None
             else:
-                i=['aperture_1','aperture_1p5','aperture_2'].index(name);weight=float(np.count_nonzero(ctx['radius']<=[1,1.5,2][i]*ctx['major'])*4);actual=hv[10+i]-bv[10+i]
-            row['raw_background'][name]=dict(raw=raw,background=-weight*cb,source_relative=float(actual),check=close(raw-weight*cb,actual,'new raw/background '+name))
+                i=['aperture_1','aperture_1p5','aperture_2'].index(name);weight=float(np.count_nonzero(ctx['radius']<=[1,1.5,2][i]*ctx['major'])*4);actual=hv[10+i]-bv[10+i] if hv is not None else None
+            row['raw_background'][name]=dict(raw=raw,background=-weight*cb if cb is not None else None,source_relative=float(actual) if actual is not None else None,check=close(raw-weight*cb,actual,'new raw/background '+name) if actual is not None else 'unavailable fitted background')
         if k:
             prior=rows[-1];row['previous_stage_drift']={n:measures['SEQ'][n]-prior['measurements']['SEQ'][n] for n in ('g','eta','orthogonal_distortion')}
-            row['branch_estimator_drift']={b:{n:float(x) for n,x in zip(MEASUREMENT_NAMES,vector_measurement(stages[b]['measurement'])-vector_measurement(branches[b]['stages'][k-1]['measurement']))} for b in BRANCHES}
+            row['branch_estimator_drift']={b:{n:float(x) for n,x in zip(MEASUREMENT_NAMES,vector_measurement(stages[b]['measurement'])-vector_measurement(branches[b]['stages'][k-1]['measurement']))} for b in BRANCHES if vector_measurement(stages[b]['measurement']) is not None and vector_measurement(branches[b]['stages'][k-1]['measurement']) is not None}
         planes=dict(KNOWN=known,ADAPTIVE=adaptive,SEQUENCE=delta,E=e,ADAPTIVE_RESIDUAL=adaptive-known,SEQUENCE_RESIDUAL=delta-known,
             ADAPTIVE_ORTHOGONAL=adaptive-measures['ADAPTIVE']['g']*known,SEQUENCE_ORTHOGONAL=delta-measures['SEQ']['g']*known)
         write_fits(dest/f'stage-{k:02d}.fits',header,[(n,v,'mJy/nominal beam') for n,v in planes.items()]+[('COMMON',domain.astype('u1'),'1')],companion='POINT-REFSEQ-RESPONSE')
@@ -86,7 +89,7 @@ def report(out):
         lines += [f"Stage{ep['stage']}",'',table(['Term','Projection','Raw template','Raw aperture2'],[[n,fmt(ep['measurements'][n]['g']),fmt(ep['measurements'][n]['linear']['template']),fmt(ep['measurements'][n]['linear']['aperture_2'])] for n in ('DC','FC','AVOIDED','HISTORY','E','HISTORY_H_RETAIN','HISTORY_H_ADD','HISTORY_H_REMOVE','HISTORY_R_RETAIN','HISTORY_R_ADD','HISTORY_R_REMOVE')]),'',f"Closure checks: {ep['checks']}",'']
     lines += ['## Original estimator response at every stage','', 'Fits are only on full new branch maps. Ideal comparators are the saved C+D map-addition controls. Failed/constrained flags remain in stage JSON. Width eigenvalues and ellipse tensors are gauge safe; no signed component is fitted. Peak/template/background: mJy/nominal beam; centroid/FWHM: arcsec; ellipse tensor: arcsec²; apertures: mJy/nominal-beam arcsec². Ratios are unavailable when the ideal denominator is ≤1e−8 in its native units.','']
     for row in rows:
-        lines += [f"### Stage{row['stage']}",'',table(['Measurement','New paired increment','Old adaptive increment','Saved ideal increment','New − ideal','New − old','Ratio'],[[q['name']]+[fmt(q[n]) for n in ('sequence_increment','adaptive_increment','ideal_increment','sequence_minus_ideal','sequence_minus_adaptive','ratio')] for q in row['estimator_response']]),'',table(['Linear measurement','Raw increment','Fitted-background term','Source-relative increment'],[[n]+[fmt(q[j]) for j in ('raw','background','source_relative')] for n,q in row['raw_background'].items()]),'']
+        lines += [f"### Stage{row['stage']}",'',f"Fit status/constraints: { {b:(m['fit']['status'],m['fit'].get('constrained',False)) for b,m in row['branch_measurements'].items()} }; ideal: {row['original_ideal']['fit']['status']}, constrained={row['original_ideal']['fit'].get('constrained',False)}",'',table(['Measurement','New paired increment','Old adaptive increment','Saved ideal increment','New − ideal','New − old','Ratio'],[[q['name']]+[fmt(q[n]) for n in ('sequence_increment','adaptive_increment','ideal_increment','sequence_minus_ideal','sequence_minus_adaptive','ratio')] for q in row['estimator_response']]),'',table(['Linear measurement','Raw increment','Fitted-background term','Source-relative increment'],[[n]+[fmt(q[j]) for j in ('raw','background','source_relative')] for n,q in row['raw_background'].items()]),'']
     lines += ['## Scope and runtime','', 'Original a2000 background-model qualification persists. Paired deterministic differences are not independent noise realizations. No A+B errors, significance, quadrature combination or total uncertainty budget is attached. eta/rho are not PSF broadening or validation of the final5% photometry/PSF goals.','']
     for b,s in branches.items():lines.append(f"{b}: {s['maps_completed']} maps, {s['candidates_available']} candidates, wall{s['wall_seconds']:.3f}s, parentCPU{s['parent_cpu_seconds']:.3f}s. Three segment Apply workers; publication/MAP accumulation ordered, one library thread. Aggregate memory not measured.")
     (dest/'REPORT.md').write_text('\n'.join(lines)+'\n')

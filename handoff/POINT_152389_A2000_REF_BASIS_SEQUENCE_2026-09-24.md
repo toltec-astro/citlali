@@ -64,3 +64,9 @@ had started. Repair captures that matrix by value and enumerates all captures;
 remaining borrowed network/accumulator state outlives the drained queue. This is
 a bounded lifecycle repair, no scientific or tolerance change. Native rebuild
 and exact-SHA follow-up review required before reference execution.
+
+The same review identified terminal m10 optional-fit/candidate failure incorrectly
+blocking otherwise completed-map reporting. Map/numerical completion is now
+separate from terminal candidate readiness; missing terminal candidates and fit
+measurements remain explicitly unavailable. The dependent shoulder run still
+requires every REF replay/candidate check. No science data had been executed.

@@ -161,21 +161,27 @@ def support_guard(p,r,old,w,k,reference):
     return checks
 
 
+def trajectory_complete(history):
+    # m10 is terminal/unapplied; its optional fit/candidate cannot erase T10.
+    return (len(history)==11 and all(r['numerical_passed'] for r in history)
+            and all(r['ready'] for r in history[:-1]))
+
+
 def execute(out,binary,branch):
     start=time.perf_counter();cpu=time.process_time();revision=source();fr=json.loads((out/'FREEZE.json').read_text());path=verified(fr['prospective']);w=json.loads(path.read_text());verify_manifest(out/'freeze',fr['manifest']['sha256'])
     require(branch in BRANCHES,'foreign branch');version=subprocess.check_output([str(binary),'--version'],text=True).strip();require(revision[:9] in version and 'dirty' not in version,'native/source mismatch')
     for n in ('OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','VECLIB_MAXIMUM_THREADS'):require(os.environ.get(n)=='1','numerical thread setting')
     if branch==BRANCHES[1]:
-        control=json.loads((out/'run'/BRANCHES[0]/'SUMMARY.json').read_text());require(control['complete'] and all(p['replay']['measurements_candidates_exact'] for p in control['stages']),'full REF replay must gate shoulder')
+        control=json.loads((out/'run'/BRANCHES[0]/'SUMMARY.json').read_text());require(control['complete'] and all(p.get('replay',{}).get('measurements_candidates_exact',False) for p in control['stages']),'full REF replay must gate shoulder')
     auth=auth_work(w);before=time.perf_counter()-start;owner=auth.json(CD/'freeze/prospective.json');ctx,fixed=contexts(auth,owner)
     root=out/'run'/branch;root.mkdir(parents=True);history=[];prior=None
     for k in range(11):
-        dest=root/f'cycle-{k:02d}';dest.mkdir();t=time.perf_counter();rec=dict(branch=branch,cycle_index=k,ready=False,map_completed=False,candidate_available=False)
+        dest=root/f'cycle-{k:02d}';dest.mkdir();t=time.perf_counter();rec=dict(branch=branch,cycle_index=k,ready=False,map_completed=False,numerical_passed=False,candidate_available=False)
         req=stage_request(w,path,branch,k,prior);save_json(dest/'request.json',req);rec['request']=bound(dest/'request.json')
         try:
             require(invoke(binary,dest/'request.json',dest/'native',1,'point-fruit')==0,'native stage failed; retained log')
             p=dest/'native/products';receipt=read_yaml(p/'receipt.yaml');rec.update(map_completed=True,total=bound(p/'total.fits'),receipt=bound(p/'receipt.yaml'))
-            rec['support_checks']=support_guard(p,receipt,w['old_stages'][BRANCHES[0]]['histories'][k],w,k,branch==BRANCHES[0])
+            rec['support_checks']=support_guard(p,receipt,w['old_stages'][BRANCHES[0]]['histories'][k],w,k,branch==BRANCHES[0]);rec['numerical_passed']=True
             tfit=time.perf_counter();signal,support,_,header=patch_map(p/'total.fits');measurement=fixed.measure(signal,support);rec['measurement']=measurement
             fit=measurement['fit'];require(fit['status']=='success' and not fit.get('constrained',False),'required branch fit unavailable/constrained')
             candidate=admit(signal,support,fixed.scale,fixed.noise_valid,fixed.header,np.asarray(fit['parameters']),3.,1.)
@@ -192,7 +198,8 @@ def execute(out,binary,branch):
         print(json.dumps(dict(branch=branch,stage=k,ready=rec['ready'],reason=rec.get('stop_reason'),seconds=rec['wall_seconds'])),flush=True)
         if not rec['ready']:break
     after=auth.verify_all();verify_manifest(out/'freeze',fr['manifest']['sha256'])
-    summary=dict(branch=branch,source_revision=revision,binary=bound(binary),version=version,stages=history,complete=len(history)==11 and all(r['ready'] for r in history),
+    summary=dict(branch=branch,source_revision=revision,binary=bound(binary),version=version,stages=history,complete=trajectory_complete(history),
+        terminal_candidate_ready=bool(history and history[-1]['cycle_index']==10 and history[-1]['ready']),
         maps_completed=sum(r['map_completed'] for r in history),candidates_available=sum(r['candidate_available'] for r in history),
         workers=3,library_threads=1,available_logical_cpus=os.cpu_count(),wall_seconds=time.perf_counter()-start,parent_cpu_seconds=time.process_time()-cpu,
         loading_verification_seconds=before,final_verification_seconds=after,parent_peak_rss=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,parent_peak_rss_units='bytes macOS; KiB Linux',aggregate_memory='not measured',
