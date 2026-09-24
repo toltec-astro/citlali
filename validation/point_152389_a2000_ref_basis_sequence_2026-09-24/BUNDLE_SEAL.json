@@ -1,0 +1,9 @@
+{
+  "schema": "point-a2000-refseq-bundle-seal-v1",
+  "bundle": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-a2000-ref-basis-sequence-20260924",
+  "reviewed_candidate": "5e52338ec1241585f32914912460e1fdde2c13f3",
+  "root_manifest_sha256": "163dee91ac47c5bf1f52441886df8fde7b10ae94b24d00253d6ab362a4829bd4",
+  "files": 2473,
+  "final_review_sha256": "af2aa708b9d9d10f1929d961878be90005950aa0ec0d4c6b9457cf23ef3a0608",
+  "all_entries_verified": true
+}
