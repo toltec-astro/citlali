@@ -56,7 +56,7 @@ def cache_prepare(args):
 def save_array(p,a,dtype='<f8'):
     np.asarray(a,dtype=dtype).tofile(p);return bound(p)
 
-def prepare(out,cli,helper):
+def prepare(out,cli,helper,reuse_preflight=None):
     began=time.perf_counter();revision=source();require(not out.exists(),'fresh full-run bundle required')
     auth,owner=ancestors();auth.manifest(PREP,PREP_HASH);old=auth.json(PREP/'RECOVERY.json')
     binding=read(REPO/'validation/point_152389_map_only_jinc_2026-09-24/owner-numerical-binding.json')
@@ -91,10 +91,28 @@ def prepare(out,cli,helper):
         arrays[a]=dict(uniform_payloads=uniform,header=header_record(h),peak=binding['P'][a],mask_source=auth.ref(domains),mask_geometry=geometry,dilation_half_width=HALF[a]+1,compact_profile=owner['geometry'][a]['C-core-plus'],ast_request=bound(out/'ast'/(a+'.json')))
     save_json(out/'freeze/profile.json',dict(profile=PROFILE,authority=bound(out/'OWNER_DIRECTIVE.md'),argument=bound(out/'NUMERICAL_ARGUMENT.md'),frozen_peaks=binding['P'],parameters={a:dict(scale=['(1.1/1000)/45','(1.4/1000)/45','(2.0/1000)/45'][i],a='1.1',b=['1.67','2.17','3.17'][i],c='2',rmax='3',nsub=16) for i,a in enumerate(ARRAYS)},exact_tolerance_decimals=['0.000001','0.000001'],ancillary_relative_tolerance='0.000001',input_arithmetic='fixed authenticated binary64 sample/omega/frequency/native AST inputs',numerical_scope='all used JINC signal and Q/T values; local cause bits enforce separation/bounds/range',source=revision,helper=bound(helper),cli=bound(cli)))
     # Independent native AST exports run across arrays, each with one library thread.
-    with ThreadPoolExecutor(max_workers=3) as pool:
-        jobs={a:pool.submit(invoke,cli,out/'ast'/(a+'.json'),out/'ast'/a,1,'map') for a in ARRAYS}
-        for a,j in jobs.items():require(j.result()==0,'native AST export failed '+a)
-    with ProcessPoolExecutor(max_workers=3) as pool:cache=list(pool.map(cache_prepare,[(a,headers[a],helper,out) for a in ARRAYS]))
+    if reuse_preflight:
+        cache=[]
+        for a in ARRAYS:
+            require(digest(out/'ast'/(a+'.json'))==digest(reuse_preflight/'ast'/(a+'.json')),'reused AST request differs')
+            run0=read(reuse_preflight/'ast'/a/'RUN.json');require(run0['executable_sha256']==digest(cli) and run0['exit_code']==0,'reused AST binary/result differs')
+            ar0=read_yaml(reuse_preflight/'ast'/a/'products/receipt.yaml')
+            require(ar0['request_sha256']==digest(out/'ast'/(a+'.json')),'reused AST receipt differs')
+            for seg in ar0['segments']:
+                verified(seg['coordinates']);verified(seg['CAL_causes'])
+            for path,sha in read_yaml(reuse_preflight/'ast'/a/'products/input-manifest.yaml').items():auth.bind(path,sha);auth.check(path)
+            shutil.copytree(reuse_preflight/'ast'/a,out/'ast'/a)
+            verify_manifest(reuse_preflight/'cache'/a);cc=read(reuse_preflight/'cache'/a/'CERTIFICATE.json')
+            require(cc['helper']==bound(helper) and cc['method']==bound(REPO/'validation/point_152389_map_only_jinc_full_2026-09-24/JINC_NUMERICAL_ARGUMENT.md'),'reused cache code/method differs')
+            require(cc['spec']['pixel_matrix_rad']==[headers[a]['CDELT1']*np.pi/180,0.,0.,headers[a]['CDELT2']*np.pi/180],'reused cache grid differs')
+            for name in ('cache','coefficient_errors','lower','upper'):verified(cc[name])
+            shutil.copytree(reuse_preflight/'cache'/a,out/'cache'/a);cache.append(cc)
+        save_json(out/'freeze/reused-preflight.json',dict(parent=str(reuse_preflight),reason='prior attempt stopped on empty inherited nw3/scan5 segment after successful AST/cache; exact requests/binaries/profile/grid and all artifact hashes rechecked',reused_stage_wall_seconds=sum(c['wall_seconds'] for c in cache)))
+    else:
+        with ThreadPoolExecutor(max_workers=3) as pool:
+            jobs={a:pool.submit(invoke,cli,out/'ast'/(a+'.json'),out/'ast'/a,1,'map') for a in ARRAYS}
+            for a,j in jobs.items():require(j.result()==0,'native AST export failed '+a)
+        with ProcessPoolExecutor(max_workers=3) as pool:cache=list(pool.map(cache_prepare,[(a,headers[a],helper,out) for a in ARRAYS]))
     cache={c['array']:c for c in cache};states=[];geometries={}
     for a in ARRAYS:
         h=headers[a];shape=(h['NAXIS2'],h['NAXIS1']);ast=read_yaml(out/'ast'/a/'products/receipt.yaml');seg_ast={s['name']:s for s in ast['segments']}
@@ -121,7 +139,7 @@ def prepare(out,cli,helper):
                 require(np.array_equal(actual,expected),'continuous AST ordinary membership replay failed '+name)
                 require(eligible.sum()==use.sum(),'saved full grid does not contain every eligible occurrence')
                 require(np.isfinite(clean[eligible]).all() and np.isfinite(v[eligible]).all(),'invalid same-sample values')
-                require(name in arrays[a]['uniform_payloads'],'missing coefficient parent')
+                require(not eligible.any() or name in arrays[a]['uniform_payloads'],'missing coefficient parent for admitted occurrences')
                 if branch=='REF' and k==10:tangents.append(co[...,2:4][eligible]*3600)
                 g=np.column_stack([co[...,0][eligible],co[...,1][eligible],np.ones(int(eligible.sum())),np.full(int(eligible.sum()),astseg['frequency_hz'])])
                 gs.append(g);zs.append(clean[eligible]);vs.append(v[eligible]);nets.append(np.full(len(g),original['network'],dtype='i2'))
@@ -151,7 +169,11 @@ def prepare(out,cli,helper):
                         nt,no,nd=(sr[x] for x in ('scheduled_times','output_detectors','detectors'));ca=np.fromfile(auth.check(products/name0/'causes.u8'),dtype='u1').reshape(nt,no);ac=seg_ast[name0];cal=np.fromfile(verified(ac['CAL_causes']),dtype='<u2').reshape(nt,no);co=np.fromfile(verified(ac['coordinates']),dtype='<f8').reshape(nt,no,4)
                         pi_path=ip/name0/'injection.f64';pi=np.fromfile(auth.check(pi_path),dtype='<f8').reshape(nt,nd);full=np.zeros((nt,no));full[:,sr['fit_columns_in_output']]=pi
                         eligible=(ca==0)&(cal==0)&np.isfinite(co[...,:2]).all(axis=-1);pieces.append(full[eligible]);originals.append(auth.ref(pi_path))
-                    u=np.concatenate(pieces);require(len(u)==len(g),'injection REF occurrence count');refs[pert]=dict(values=save_array(sd/(pert+'-injection.f64'),u),parents=originals)
+                    u=np.concatenate(pieces);require(len(u)==len(g),'injection REF occurrence count')
+                    from point_response_cd import direct_raster
+                    raster,rh=auth.fits(owner['injections'][a][pert]['path']);direct=direct_raster(raster['INJECTION'],rh,shape,h).ravel()
+                    projection_check=close(u,direct[pixel],'saved native injection correspondence',1e-10,0)
+                    refs[pert]=dict(values=save_array(sd/(pert+'-injection.f64'),u),parents=originals,original_raster=owner['injections'][a][pert],correspondence=projection_check)
                 arrays[a]['injection_references']=refs
                 p=np.array(owner['geometry'][a]['C-core-plus']['parameters']);require(p[0]==.1*binding['P'][a]['P_mJy_per_nominal_beam'],'original compact amplitude differs')
                 tangent=np.concatenate(tangents);tx,ty=tangent.T;arrays[a]['phase_native_tangent_arcsec']=save_array(sd/'tangent-arcsec.f64',tangent)
@@ -166,4 +188,4 @@ def prepare(out,cli,helper):
     save_json(out/'PREPARED.json',record);manifest(out/'prepared');manifest(out/'ast');manifest(out/'cache');return record
 
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('command',choices=['prepare']);p.add_argument('--output',type=Path,required=True);p.add_argument('--cli',type=Path,required=True);p.add_argument('--helper',type=Path,required=True);a=p.parse_args();prepare(a.output,a.cli,a.helper)
+ p=argparse.ArgumentParser();p.add_argument('command',choices=['prepare']);p.add_argument('--output',type=Path,required=True);p.add_argument('--cli',type=Path,required=True);p.add_argument('--helper',type=Path,required=True);p.add_argument('--reuse-preflight',type=Path);a=p.parse_args();prepare(a.output,a.cli,a.helper,a.reuse_preflight)
