@@ -131,3 +131,19 @@ def test_unavailable_policy_screen_preserves_scores_not_false_mask(tmp_path):
  images,_=load(tmp_path/'admission.fits')
  assert 'CORR_SCORE' in images and 'ADMITTED' not in images
  assert np.array_equal(images['BASE'],b['selected'])
+
+
+def test_same_stage_upstream_replay_detects_changed_operand(tmp_path):
+ import yaml
+ from run_point_corr_feedback import upstream_replay
+ from point_fruit_trajectory import bound
+ source=dict(network=0,scan=0,files={'segment-0-input.f64':'parent'})
+ segment=dict(source_segment=source,source_receipt_sha256='parent',projection_support_counts=[0,1,1,0],rank=10,converged=True,stopping_reason='done',iterations=2,objective=[2.,1.],retained=2,application_failed_times=0,input_eligibility_changed=0,output_cause_changed=0,files={})
+ directory=tmp_path/'network-0-segment-0';directory.mkdir()
+ for name in ('operand.f64','model-support.u8','mean.f64','basis.f64','cleaned.f64','causes.u8'):
+  path=directory/name;path.write_bytes(b'fixed bytes '+name.encode());segment['files'][name]=bound(path)['sha256']
+ receipt=dict(segments=[segment]);rp=tmp_path/'receipt.yaml';rp.write_text(yaml.safe_dump(receipt))
+ assert upstream_replay(dict(receipt=bound(rp)),tmp_path,receipt)['all_numerical_files_exact']
+ (directory/'operand.f64').write_bytes(b'changed')
+ with pytest.raises(ValueError,match='same-stage numerical state'):
+  upstream_replay(dict(receipt=bound(rp)),tmp_path,receipt)
