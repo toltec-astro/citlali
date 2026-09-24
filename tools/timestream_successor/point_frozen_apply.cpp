@@ -85,6 +85,22 @@ int main(int argc,char **argv) {try {
         auto dp=Q(H,u);PtcMatrix fp=d-Q(H,d),mp=-Q(H,broadcast(mh-mr)),qp=Q(H,center(xr,mr))-ar;
         close("reverse_closure",dp+fp+mp+qp,(ah+vh)-(ar+vr));mapped("REV_D",dp);mapped("REV_F",fp);mapped("REV_CMU",mp);mapped("REV_CQ",qp);
     }
+    if(inputs["oldvr"] || inputs["oldvh"]){
+        check(inputs["oldvr"] && inputs["oldvh"],"both old operand branches required");
+        const auto oldr=matrix(inputs["oldvr"],nt,nd),oldh=matrix(inputs["oldvh"],nt,nd);
+        const PtcMatrix change=(vh-vr)-(oldh-oldr);
+        const PtcMatrix history=change-Q(R,center(change,J(change)));mapped("HISTORY",history);
+        PtcMatrix partition=PtcMatrix::Zero(nt,nd);
+        for(int branch=0;branch<2;++branch){const auto &now=branch?vh:vr;const auto &old=branch?oldh:oldr;
+            for(const auto &name:{"RETAIN","ADD","REMOVE"}){PtcMatrix piece=PtcMatrix::Zero(nt,nd);
+                for(Eigen::Index i=0;i<piece.size();++i){check(old.data()[i]>=0&&now.data()[i]>=0,"history candidate positive semantics");const bool a=old.data()[i]!=0,b=now.data()[i]!=0;
+                    if((std::string(name)=="RETAIN"&&a&&b)||(std::string(name)=="ADD"&&!a&&b)||(std::string(name)=="REMOVE"&&a&&!b))piece.data()[i]=now.data()[i]-old.data()[i];}
+                const PtcMatrix effect=piece-Q(R,center(piece,J(piece)));
+                mapped(std::string("HISTORY_")+(branch?"H_":"R_")+name,effect);
+                partition+=(branch?1.:-1.)*effect;
+            }
+        }close("paired_history_partition",partition,history);
+    }
     record["injection_identity_max_abs"]=injection_error;record["native_learn_calls"]=0;record["admission_updates"]=0;record["apply_calls"]=calls;
     record["source_revision"]=std::string(CITLALI_GIT_VERSION);record["request_sha256"]=citlali::utils::sha256_file(argv[1]);
     const auto serial=Clock::now();std::ofstream file(out/"numerators.f64",std::ios::binary);

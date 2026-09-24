@@ -64,3 +64,45 @@ TEST(FruitCycle, SignedInjectionPreservesParentAndInvalidEntries) {
     s(0,0)=1;i(0,0)=NAN;EXPECT_THROW(fruit_injected_parent(y,e,i,s),std::invalid_argument);
     i.setZero();result=fruit_injected_parent(y,e,i,s);EXPECT_DOUBLE_EQ(result(1,2),y(1,2));
 }
+TEST(FruitCycle, ReferenceSequenceFreshMeansMaskedApplyAndRankFailure) {
+    PtcMatrix y(5,3);y<<10,21,30,12,25,37,14,20,35,18,22,33,11,29,31;
+    PtcMask e=PtcMask::Ones(5,3);e(0,1)=e(0,2)=0;e(1,0)=0;
+    PtcMatrix operand=PtcMatrix::Constant(5,3,.75);operand(0,1)=operand(0,2)=operand(1,0)=0;
+    auto r=FruitResidual::subtract("masked-refseq",y,e,operand,PtcMask::Ones(5,3));
+    Eigen::MatrixXd b(3,1);b<<1,0,0;PtcSolverRequest req;req.rank=1;
+    auto x=fruit_apply_reference_basis(r,req,b,"saved-ref-stage-0");
+    EXPECT_EQ(x.cleaned.failed_times,1);EXPECT_EQ(x.cleaned.causes(1,1),4);
+    EXPECT_EQ(x.cleaned.causes(1,0),1);EXPECT_DOUBLE_EQ(x.cleaned.values(1,1),0);
+    for(int d=0;d<3;++d){long double sum=0;int count=0;for(int t=0;t<5;++t)if(e(t,d)){sum+=y(t,d)-operand(t,d);++count;}
+        EXPECT_DOUBLE_EQ(x.prepared.mean[d],double(sum/count));}
+    for(int t=0;t<5;++t)for(int d=0;d<3;++d)if(x.cleaned.causes(t,d)==0){
+        const double expected=d==0?0:y(t,d)-operand(t,d)-x.prepared.mean[d];
+        EXPECT_DOUBLE_EQ(x.cleaned.values(t,d),expected);EXPECT_DOUBLE_EQ(x.total(t,d),expected+operand(t,d));}
+    // Distinct application/MAP masks: deficient row excluded; valid row2 also
+    // excluded by MAP alone. PTC means must still include row2's observed data.
+    std::vector<ForwardMapMember> members;std::vector<double> values;
+    for(int t=0;t<5;++t)for(int d=0;d<3;++d)if(x.cleaned.causes(t,d)==0){auto i=values.size();values.push_back(x.total(t,d));if(t!=2)members.push_back({i,0,1});}
+    auto op=ForwardMapOperator::resolve({1,1,"sky"},"domain",values.size(),members,{0,{}});
+    double sum=0;for(auto m:members)sum+=values[m.input_row];
+    EXPECT_DOUBLE_EQ(op.apply("domain",values).signal[0],sum/members.size());
+    EXPECT_THROW(fruit_apply_reference_basis(r,req,b,""),std::invalid_argument);
+}
+TEST(FruitCycle, ReferenceSequenceStageOrderingAndAutonomousReplacement) {
+    PtcMatrix y(4,3);y<<11,24,32,14,20,35,19,27,30,12,25,39;
+    const PtcMask mask=PtcMask::Ones(4,3);PtcSolverRequest req;req.rank=1;
+    auto execute=[&](const PtcMatrix &parent){
+        PtcMatrix candidate=PtcMatrix::Zero(4,3);std::vector<PtcMatrix> outputs;
+        for(int k=0;k<3;++k){Eigen::MatrixXd b=Eigen::MatrixXd::Zero(3,1);b(k,0)=1;
+            const auto applied=candidate;auto residual=FruitResidual::subtract("stage-"+std::to_string(k),parent,mask,applied,mask);
+            auto result=fruit_apply_reference_basis(residual,req,b,"REF-stage-"+std::to_string(k));
+            // Independent coordinate-projector oracle with freshly computed means.
+            PtcMatrix expected=parent-applied;const Eigen::RowVectorXd mean=expected.colwise().mean();expected.rowwise()-=mean;expected.col(k).setZero();expected+=applied;
+            EXPECT_LT((result.total-expected).norm(),1e-13);
+            candidate=result.total.cwiseMax(0); // complete replacement, no accumulation
+            outputs.push_back(result.total);
+        }return outputs;
+    };
+    const auto r=execute(y),zero=execute(y+PtcMatrix::Zero(4,3));
+    for(int k=0;k<3;++k)EXPECT_DOUBLE_EQ((r[k]-zero[k]).norm(),0);
+    EXPECT_GT((r[0]-r[1]).norm(),1);EXPECT_GT((r[1]-r[2]).norm(),1);
+}

@@ -54,4 +54,17 @@ public:
 private:
     std::shared_ptr<const FruitResidual> residual_;PtcPrepared prepared_;PtcFit fit_;
 };
+// Owner-authorized POINT152389 offline control only. Imported basis provenance
+// is explicit; no learned-state lineage or convergence claim is manufactured.
+// Means and masked application coefficients are freshly computed for this exact
+// residual. Values/causes retain the original PTC rules; total rejoins its operand.
+struct FruitReferenceBasisResult {
+    PtcPrepared prepared;
+    PtcApplied cleaned;
+    PtcMatrix total;
+    std::string basis_identity;
+};
+FruitReferenceBasisResult fruit_apply_reference_basis(
+    const std::shared_ptr<const FruitResidual> &,PtcSolverRequest,
+    const Eigen::MatrixXd &basis,std::string authenticated_basis_identity);
 } // namespace citlali::pipeline

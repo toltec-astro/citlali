@@ -1,5 +1,14 @@
 # Citlali Refactor Status
 
+## POINT 152389 a2000 REF basis sequence — active 2026-09-24
+
+Owner authorizes one paired a2000 diagnostic trajectory throughT10, using each
+stage’s saved REF basis, fresh means/coefficients and ordinary replacement
+candidates. Full regenerated REF replay gates shoulder. No new basis learning,
+m10 apply, extra array or default change. See
+handoff/POINT_152389_A2000_REF_BASIS_SEQUENCE_2026-09-24.md.
+
+
 ## POINT 152389 frozen-PTC shoulder decomposition — completed 2026-09-24
 
 All15 authorized saved pairs M0/T1/T3/T5/T10 pass:330 native segment

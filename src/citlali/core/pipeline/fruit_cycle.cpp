@@ -61,4 +61,26 @@ FruitLearned::Result FruitLearned::apply(const std::shared_ptr<const FruitResidu
         if(!std::isfinite(total.data()[i]))throw std::invalid_argument("FRUIT nonfinite rejoin");
     }return {std::move(c),std::move(total)};
 }
+FruitReferenceBasisResult fruit_apply_reference_basis(
+    const std::shared_ptr<const FruitResidual> &r,PtcSolverRequest request,
+    const Eigen::MatrixXd &basis,std::string identity) {
+    if(!r || identity.empty() || request.rank<=0 || basis.rows()!=r->values().cols() ||
+       basis.cols()!=request.rank || !basis.allFinite())
+        throw std::invalid_argument("FRUIT reference basis identity/design unavailable");
+    FruitReferenceBasisResult result;
+    result.basis_identity=std::move(identity);
+    result.prepared=PtcPrepared::prepare(r->values(),r->eligible());
+    PtcFit imported;imported.request=request;imported.basis=basis;
+    // ptc_apply's existing fit-valid bit means this authenticated design may be
+    // applied. It is not evidence that the current residual was learned. Never
+    // publish this internal adapter as a new learned/converged PTC state.
+    imported.converged=true;
+    result.cleaned=ptc_apply(result.prepared,imported);
+    result.total=result.cleaned.values;
+    for(Eigen::Index i=0;i<result.total.size();++i)if(result.cleaned.causes.data()[i]==0){
+        result.total.data()[i]+=r->operand().data()[i];
+        if(!std::isfinite(result.total.data()[i]))throw std::invalid_argument("FRUIT nonfinite reference-basis rejoin");
+    }
+    return result;
+}
 } // namespace citlali::pipeline

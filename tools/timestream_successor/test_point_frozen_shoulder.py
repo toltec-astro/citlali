@@ -58,7 +58,7 @@ class FrozenControls(unittest.TestCase):
                     p=root/n;a.tofile(p);inputs[n]=bound(p)
                 def expand(a,fill):
                     out=np.full((nt,no),fill,dtype=a.dtype);out[:,columns]=a;return out
-                for n,a in dict(y=y,u=u,vr=vr,vh=vh,mr=mr,mh=mh,br=br,bh=bh,cleanr=expand(r,0),cleanh=expand(h,0)).items():save(n,np.asarray(a,dtype='<f8'))
+                for n,a in dict(y=y,u=u,vr=vr,vh=vh,mr=mr,mh=mh,br=br,bh=bh,oldvr=.8*vr,oldvh=.7*vh,cleanr=expand(r,0),cleanh=expand(h,0)).items():save(n,np.asarray(a,dtype='<f8'))
                 for n,a in dict(mask=mask,causer=expand(cr,17),causeh=expand(ch,17)).items():save(n,a)
                 pix=np.full(y.shape,-1,dtype='<i4');pix[cr==0]=np.arange(np.count_nonzero(cr==0))%npix;pix[2]=-1;save('pixel',pix)
                 request=dict(schema='point-frozen-apply-v1',nt=nt,nd=nd,no=no,pixels=npix,rank=2,columns=columns,rank_tolerance=1e-10,converged_R=converged,converged_H=converged,reverse=True,inputs=inputs)
@@ -67,6 +67,9 @@ class FrozenControls(unittest.TestCase):
                 maps=dict(zip(receipt['components'],np.fromfile(root/'out/numerators.f64',dtype='<f8').reshape(-1,npix)))
                 def mapped(v):return np.bincount(pix[pix>=0],weights=v[pix>=0],minlength=npix)
                 close(maps['D'],mapped(masked_q(u,br,mask,converged)[0]),'native masked Q fixture',1e-12)
+                change=(vh-vr)-(.7*vh-.8*vr);centered=np.where(mask,change-mean(change),0)
+                expected_history=change-masked_q(centered,br,mask,converged)[0]
+                close(maps['HISTORY'],mapped(expected_history),'independent native history',1e-12)
                 close(sum(maps[n] for n in ['D','F','CMU','CQ']),mapped((h+vh)-(r+vr)),'independent mapped closure',1e-12)
 
 if __name__=='__main__':unittest.main()
