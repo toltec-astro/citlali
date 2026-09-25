@@ -1,5 +1,6 @@
 """Assess the fixed guarded matrix without native execution or adaptive inference."""
 import argparse,time,json
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import numpy as np
 from run_point_guarded_feedback import authenticated,ctx,read,ARRAYS,POLICIES,BRANCHES
@@ -17,6 +18,7 @@ from point_corr_admission import Neighborhood
 from point_post_fruit import applicability,operators
 from point_additive_diagnostics import save_json
 from inspect_forward_map import require,read_yaml
+from point_jinc_campaign import exact_header
 
 SNAPS=(0,1,3,5,10)
 
@@ -77,7 +79,7 @@ def endpoint(out,p,c,a,pol,state,identity):
     for policy in ('CORR','DIAG'):
         x,y=fields['policies'][policy],newfields['policies'][policy];use=x['available']&y['available'];rat=np.full(sig.shape,np.nan);rat[use]=y['variance'][use]/x['variance'][use]
         comp[policy]=dict(matched_pixels=int(use.sum()),ratio_quantiles=np.quantile(rat[use],[0,.1,.5,.9,1]) if use.any() else None,anchor_amplitude_interpolation_valid_pixels=int((use&pv).sum()),full_footprint_amplitude_valid_pixels=int((use&footprint_valid).sum()),nonzero_weight_amplitude_valid_pixels=int((use&weighted_valid).sum()),amplitude_validity_note='coverage interpolation flags only; background-to-source covariance transfer still unvalidated',frozen_numerical_failures=x['numerical_failures'],endpoint_numerical_failures=y['numerical_failures'])
-        write_fits(out/f'{policy}-matched-variance.fits',c['header'],[(n,v,u) for n,v,u in [('FROZEN',x['variance'],'(mJy/nominal beam)^2'),('ENDPOINT',y['variance'],'(mJy/nominal beam)^2'),('RATIO',rat,'1'),('MATCHED',use.astype('u1'),'1')]],companion='POINT-GUARDED-ENDPOINT')
+        write_fits(out/f'{policy}-matched-variance.fits',exact_header(c['header']),[(n,v,u) for n,v,u in [('FROZEN',x['variance'],'(mJy/nominal beam)^2'),('ENDPOINT',y['variance'],'(mJy/nominal beam)^2'),('RATIO',rat,'1'),('MATCHED',use.astype('u1'),'1')]],companion='POINT-GUARDED-ENDPOINT')
     receipt=read_yaml(prod/'receipt.yaml');op=np.memmap(prod/'operator-pixel.i32',dtype='<i4',mode='r');contributions={}
     for s in receipt['segments']:
         if not s['retained']:continue
@@ -101,12 +103,20 @@ def assess(root):
     start=time.perf_counter();revision=source();p=authenticated(root);out=root/'report';out.mkdir(exist_ok=True)
     summaries={};matrix=[];runtime=[];attempted=list((root/'run').glob('*/*/*/cycle-*/request.json'));receipts=list((root/'run').glob('*/*/*/cycle-*/native/products/receipt.yaml'))
     require(len(attempted)<=450 and len(receipts)<=len(attempted),'feedback bound')
+    # Same complete payload verification, bounded independent read concurrency.
+    # The first serial pass exceeded 450 s before diagnostics; no check is skipped.
+    auth_start=time.perf_counter();paths=sorted((root/'run').glob('*/*/*/SUMMARY.json'))
+    with ThreadPoolExecutor(max_workers=min(12,len(paths) or 1)) as pool:
+        counts=list(pool.map(lambda f:verify_manifest(f.parent),paths))
+    save_json(out/'TRAJECTORY_AUTHENTICATION.json',dict(source_revision=revision,
+        branches=[dict(summary=bound(f),manifest=bound(f.parent/'FILES_SHA256SUMS'),verified_files=n) for f,n in zip(paths,counts)],
+        all_payloads_rehashed=True,workers=min(12,len(paths) or 1),wall_seconds=time.perf_counter()-auth_start))
     for a in ARRAYS:
       for pol in POLICIES:
        for b in BRANCHES:
         f=root/'run'/pol/b/a/'SUMMARY.json'
         if f.exists():
-            verify_manifest(f.parent);s=read(f);summaries[a,pol,b]=s
+            s=read(f);summaries[a,pol,b]=s
             matrix.append(dict(array=a,policy=pol,branch=b,status='T10 complete' if s['ready'] and s['completed_cycle']==10 else 'stopped',cycle=s['completed_cycle'],reason=s['stop_reason']))
         else:
             blocked=[r for phase in ('profile','REF','compact','shoulder') for r in read(root/f'FEEDBACK-{phase}.json')['blocked'] if (r['array'],r['policy'],r['branch'])==(a,pol,b)]
@@ -131,6 +141,12 @@ def assess(root):
             endpoint_identity=dict(map=st['total'],masks=bound(AB/'companion'/a/'frozen-domains.npz'),request=bound(AB/'companion'/a/'M0/model.json'),frozen_context=bound(Path(p['correlation_root'])/'freeze'/a/'inputs.npz'))
             if (ed/'RESULTS.json').exists():
                 results['endpoint']=read(ed/'RESULTS.json');require(results['endpoint']['identity']==endpoint_identity,'cached endpoint result identity')
+                if results['endpoint']['status']!='available' and (ed/'learned.json').exists():
+                    # A completed model may finish serialization after a report
+                    # failure. endpoint() validates and loads it; never learns again.
+                    save_json(ed/'PRESERVED_OUTPUT_FAILURE.json',results['endpoint'])
+                    results['endpoint']=endpoint(ed,p,c,a,pol,st,endpoint_identity)
+                    results['endpoint']['recovered_from_saved_model']=True;save_json(ed/'RESULTS.json',results['endpoint'])
             else:
                 try:results['endpoint']=endpoint(ed,p,c,a,pol,st,endpoint_identity)
                 except Exception as exc:
@@ -180,7 +196,7 @@ def assess(root):
                     ideal_count+=1
                     if ideal is not None:row['ideal_measurement']=ideal_comparison(c,rs['measurement'],s['measurement'],ideal)
                     else:row['ideal_control_unavailable']=cached['failure']
-                    write_fits(bd/'ideal-T10.fits',c['header'],[('SIGNAL',rpatch+ideal_known,'mJy/nominal beam'),('VALID',(rvalid&ideal_support).astype('u1'),'1')],companion='POINT-GUARDED-UNAPPLIED-IDEAL')
+                    write_fits(bd/'ideal-T10.fits',exact_header(c['header']),[('SIGNAL',rpatch+ideal_known,'mJy/nominal beam'),('VALID',(rvalid&ideal_support).astype('u1'),'1')],companion='POINT-GUARDED-UNAPPLIED-IDEAL')
             write_fits(bd/f'cycle-{k:02d}.fits',h,planes,companion='POINT-GUARDED-RESPONSE');save_json(bd/f'cycle-{k:02d}.json',row);rows.append(row)
           results['branches'][b]=rows
         plus={s['cycle_index']:s for s in summaries.get((a,pol,'C-core-plus'),{}).get('histories',[])};minus={s['cycle_index']:s for s in summaries.get((a,pol,'C-core-minus'),{}).get('histories',[])}
