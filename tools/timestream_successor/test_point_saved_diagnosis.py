@@ -65,7 +65,7 @@ def test_membership_transitions_use_saved_records():
     prev=dict(BASE_POINT=np.array([1,0,0],bool),ADDED=np.array([0,1,0],bool),ADMITTED=np.array([1,1,0],bool))
     now=dict(BASE_POINT=np.array([0,1,0],bool),ADDED=np.array([0,0,0],bool),PROPOSED=np.array([0,0,1],bool),ADMITTED=np.array([0,1,0],bool))
     r=memberships(now,prev)
-    assert np.array_equal(r['supplement_to_baseline'],[0,1,0]) and np.array_equal(r['rejected_connectivity'],[0,0,1]) and r['dropped'].sum()==1
+    assert np.array_equal(r['normal_admission_supplement_to_baseline'],[0,1,0]) and np.array_equal(r['rejected_connectivity'],[0,0,1]) and r['dropped'].sum()==1
 
 
 def test_no_unbound_cache_fallback_or_scientific_execution_import():
@@ -78,3 +78,19 @@ def test_no_unbound_cache_fallback_or_scientific_execution_import():
                 mod=node.module or ''
                 if mod.startswith(('point_','run_point_','report_point_','inspect_point_')):assert mod=='point_saved_diagnosis'
             if isinstance(node,ast.Call) and isinstance(node.func,ast.Attribute):assert node.func.attr not in ('fit','least_squares','scores','svd','infer','select','learn')
+
+
+def test_imposed_seed_turnover_uses_actual_previous_candidate():
+    ad=dict(BASE_POINT=np.array([1,0,0],bool),ADDED=np.array([0,0,0],bool),PROPOSED=np.array([0,0,0],bool),ADMITTED=np.array([1,0,0],bool))
+    r=memberships(ad,ad,ad['ADMITTED'],np.array([1,1,1],bool))
+    assert r['dropped'].tolist()==[False,True,True]
+    assert r['shared_selected'].tolist()==[True,False,False]
+
+
+def test_own_candidate_drift_preserves_support_and_nonzero_shared_drift():
+    from diagnose_point_saved_a2000 import own_change
+    a=dict(candidate=dict(CANDIDATE=np.array([4.,5.,np.nan]),VALID=np.array([1,1,0],bool)))
+    b=dict(candidate=dict(CANDIDATE=np.array([1.,1.,8.]),VALID=np.array([1,0,1],bool)))
+    r=own_change(a,b,'candidate')
+    assert r['support']==dict(common=1,lost=1,gained=1)
+    assert r['magnitude']['norm']==3 and r['magnitude']['maximum_absolute']==3

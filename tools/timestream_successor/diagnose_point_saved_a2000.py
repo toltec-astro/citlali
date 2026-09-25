@@ -69,7 +69,7 @@ def prepare(out):
                 if state['cycle_index']:
                     bind(state['request']['path']);products=Path(state['total']['path']).parent
                     for name in ('residual.fits','restored.fits'):bind(products/name)
-                    rec=yaml.safe_load(Path(state['receipt']['path']).read_text())
+                    rec=yaml.load(Path(state['receipt']['path']).read_text(),Loader=yaml.CSafeLoader)
                     for seg in rec['segments']:bind(mean_path(products,seg))
         for f in (PARENT/'report/a2000'/pol).rglob('*'):
             if f.is_file() and ('endpoint' not in f.parts) and f.suffix in ('.json','.fits'):bind(f)
@@ -87,7 +87,7 @@ def prepare(out):
 
 
 class Cached:
-    def __init__(self,p):self.p=p;self.images={};self.jsons={};self.used=set()
+    def __init__(self,p):self.p=p;self.images={};self.jsons={};self.yamls={};self.used=set()
     def path(self,path):
         path=Path(path).resolve();require(str(path) in self.p['inputs'],'unbound input '+str(path));self.used.add(str(path));return path
     def json(self,path):
@@ -99,7 +99,10 @@ class Cached:
         if path not in self.images:
             with fits.open(path,memmap=False) as h:self.images[path]=({x.name:np.array(x.data) for x in h if x.data is not None},dict(h[0].header))
         return self.images[path]
-    def yaml(self,path):return yaml.safe_load(self.path(path).read_text())
+    def yaml(self,path):
+        path=self.path(path)
+        if path not in self.yamls:self.yamls[path]=yaml.load(path.read_text(),Loader=yaml.CSafeLoader)
+        return self.yamls[path]
     def array(self,path):return np.fromfile(self.path(path),dtype='<f8')
 
 
@@ -143,6 +146,14 @@ def compare_measurements(a,b):
     out['cached_flags']=dict(branch=a['fit'],REF=b['fit']);return out
 
 
+def own_change(current,previous,kind):
+    if kind=='map':
+        compatible(current['header'],previous['header']);a,b=current['image'],previous['image'];value,mask='PRIMARY','SCI_SUPPORT'
+    else:a,b=current['candidate'],previous['candidate'];value,mask='CANDIDATE','VALID'
+    delta,valid,support=difference(a[value],a[mask].astype(bool),b[value],b[mask].astype(bool))
+    return dict(magnitude=magnitude(delta,valid),support=support,comparison='current minus previous stage of this same branch')
+
+
 def run(out):
     rev=revision();p=json.loads((out/'PROSPECTIVE.json').read_text());require(rev==p['source_revision'],'prospective code changed')
     require(not (out/'RESULTS.json').exists(),'completed diagnosis cannot rerun');before=authenticate(p);rd=Cached(p);start=time.perf_counter()
@@ -161,13 +172,15 @@ def run(out):
             require(np.array_equal(crop(image['PRIMARY'],h),ad['MEASURED'],equal_nan=True),'saved measurement image mismatch')
             entry=dict(state=state,image=image,header=h,candidate=c,ad=ad,meta=meta);states[pol,b,k]=entry
             for q in ('CORR','DIAG'):audits.append(dict(policy=pol,branch=b,stage=k,evidence_policy=q,**score_audit(ad,q)))
-            previous=states.get((pol,b,k-1));mm=memberships(ad,previous['ad'] if previous else None)
+            previous=states.get((pol,b,k-1));mm=memberships(ad,previous['ad'] if previous else None,c['ADMITTED'],previous['candidate']['ADMITTED'] if previous else None)
             selection.append(dict(policy=pol,branch=b,**timing(k),imposed_seed=(b=='D-seed-shoulder' and k==0),masks={n:annotation(n,v) for n,v in mm.items()},
                 actual_selected=annotation('actual',c['ADMITTED'].astype(bool)),normal_admission_summary=state['admission']))
             for n,a in ad.items():arrays[f'{pol}/{b}/{k}/evidence/{n}']=a
             arrays[f'{pol}/{b}/{k}/candidate']=c['CANDIDATE'];arrays[f'{pol}/{b}/{k}/actual_selected']=c['ADMITTED']
             # Cached guard measurements are copied; no descriptive fit is called.
             allrows.append(dict(policy=pol,branch=b,**timing(k),measurement=state['measurement'],admission=state['admission'],
+                previous_own_map_change=own_change(entry,previous,'map') if previous else None,
+                previous_own_candidate_change=own_change(entry,previous,'candidate') if previous else None,
                 previous_own_measurement_change=compare_measurements(state['measurement'],previous['state']['measurement']) if previous else None))
     aggregate_errors=[];response=[];evenrows=[]
     for pol in POLICIES:
@@ -237,6 +250,7 @@ def run(out):
             st=states[pol,b,k];ref=states[pol,'REF',k];paired(st['state'],ref['state']);compatible(st['header'],ref['header']);compatible(h,st['header'])
             dd,dv,_=difference(st['image']['PRIMARY'],st['image']['SCI_SUPPORT'].astype(bool),ref['image']['PRIMARY'],ref['image']['SCI_SUPPORT'].astype(bool));require(np.allclose(dd[domain],im['DELTA'][domain],rtol=1e-11,atol=1e-9),'saved branch difference changed')
             response.append(dict(policy=pol,branch=b,**timing(k),response=measured,native_response=old['native_response'],benchmark_complete=old['benchmark_complete'],
+                original_benchmark_pixels=old['original_benchmark_pixels'],benchmark_supported_pixels=old['benchmark_supported_pixels'],support=old['support'],benchmark_domain=old['benchmark_domain'],
                 measurement_difference=compare_measurements(st['state']['measurement'],ref['state']['measurement']),ideal=old.get('ideal_measurement')))
             for n in ('DELTA','KNOWN','RESIDUAL','COMMON'):arrays[f'{pol}/response/{b}/{k}/{n}']=crop(im[n],h)
             known[b]=crop(im['KNOWN'],h);deltas[b]=crop(im['DELTA'],h);domains[b]=crop(im['COMMON'].astype(bool),h)
@@ -404,12 +418,16 @@ def guarded_run(out):
             require(not ((name in protected or name.startswith(str(PARENT)+'/')) and flags&(os.O_WRONLY|os.O_RDWR|os.O_CREAT|os.O_TRUNC)),'parent write attempted')
         if event=='subprocess.Popen':require(Path(str(args[0])).name=='git','non-Git subprocess forbidden')
     sys.addaudithook(audit);sys.setprofile(trace)
-    try:run(out)
+    completed=False;error=None
+    try:
+        run(out);completed=True
+    except BaseException as exc:
+        error=dict(type=type(exc).__name__,message=str(exc));raise
     finally:
         sys.setprofile(None);sys.meta_path.remove(blocker)
-        save(out/'EXECUTION_ROUTE.json',dict(repository_calls=calls,allowed_repository_files=[str(x) for x in sorted(allowed)],
+        save(out/'EXECUTION_ROUTE.json',dict(execution_completed=completed,error=error,repository_calls=calls,allowed_repository_files=[str(x) for x in sorted(allowed)],
             scientific_route_imports='blocked',non_Git_subprocesses='blocked',parent_writes='blocked',
-            conclusion='Only cached reads, arithmetic, serialization and figures executed. No fits, candidate/policy evaluation, projection, mapmaking, cleaning, fields or feedback are reachable through this route.'))
+            conclusion=('Completed cached-only diagnosis.' if completed else 'Diagnosis aborted; consult error and recorded calls, not a successful completion.')+' No fits, candidate/policy evaluation, projection, mapmaking, cleaning, fields or feedback are reachable through this route.'))
 
 
 if __name__=='__main__':

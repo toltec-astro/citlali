@@ -71,12 +71,12 @@ def split_candidate(seed,ref,seed_ad,ref_ad,bs,br,k):
     return dict(masks=masks,terms=terms,background=bg,measured=measured,valid=valid,delta=delta,error=err)
 
 
-def memberships(ad,previous=None):
-    b=ad['BASE_POINT'].astype(bool);p=ad['PROPOSED'].astype(bool);e=ad['ADDED'].astype(bool);m=ad['ADMITTED'].astype(bool)
+def memberships(ad,previous=None,actual=None,previous_actual=None):
+    b=ad['BASE_POINT'].astype(bool);p=ad['PROPOSED'].astype(bool);e=ad['ADDED'].astype(bool);m=(ad['ADMITTED'] if actual is None else actual).astype(bool)
     masks=dict(baseline=b,supplement=e,proposed=p,rejected_connectivity=p&~e,final=m)
     if previous is not None:
-        pm=previous['ADMITTED'].astype(bool);pb=previous['BASE_POINT'].astype(bool);pe=previous['ADDED'].astype(bool)
-        masks.update(newly_selected=m&~pm,dropped=pm&~m,shared_selected=m&pm,supplement_to_baseline=pe&b,baseline_to_supplement=pb&e)
+        pm=(previous['ADMITTED'] if previous_actual is None else previous_actual).astype(bool);pb=previous['BASE_POINT'].astype(bool);pe=previous['ADDED'].astype(bool)
+        masks.update(newly_selected=m&~pm,dropped=pm&~m,shared_selected=m&pm,normal_admission_supplement_to_baseline=pe&b,normal_admission_baseline_to_supplement=pb&e)
     return masks
 
 
