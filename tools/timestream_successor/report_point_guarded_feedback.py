@@ -1,5 +1,5 @@
 """Assess the fixed guarded matrix without native execution or adaptive inference."""
-import argparse,time,json
+import argparse,time,json,shutil
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import numpy as np
@@ -21,6 +21,33 @@ from inspect_forward_map import require,read_yaml
 from point_jinc_campaign import exact_header
 
 SNAPS=(0,1,3,5,10)
+
+def publication_directory(root):
+    """Preserve partial output; carry only identity-checked scientific fit caches.
+
+    FITS publication is intentionally non-overwriting. Recreating derived maps
+    does not repeat a fit: successful caches or terminal attempt markers survive.
+    This recovery is local to this report, never a feedback/reduction cache.
+    """
+    out=root/'report'
+    if not out.exists():out.mkdir();return out
+    require(not (out/'SUMMARY.json').exists(),'completed report already exists')
+    provenance=root/'provenance';provenance.mkdir(exist_ok=True);number=1
+    while (provenance/f'report-publication-attempt-{number}').exists():number+=1
+    prior=provenance/f'report-publication-attempt-{number}';out.rename(prior);out.mkdir()
+    copies=[]
+    for f in prior.glob('*/*/endpoint/*'):
+        if f.name not in ('FIT_ATTEMPT.json','learned.json','learned.npz'):continue
+        copies.append(f)
+    for f in prior.glob('*/*/endpoint/RESULTS.json'):
+        if not (f.parent/'learned.json').exists():copies.append(f)
+    copies.extend(prior.glob('*/*/*/ideal-measurement.json'))
+    for f in copies:
+        dest=out/f.relative_to(prior);dest.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(f,dest)
+        require(bound(f)['sha256']==bound(dest)['sha256'],'publication cache copy differs')
+    save_json(out/'PUBLICATION_RECOVERY.json',dict(preserved_directory=str(prior),
+        copied_fit_caches=[bound(out/f.relative_to(prior)) for f in copies],scientific_fits_repeated=0))
+    return out
 
 def increments(a,b):
     av,bv=vector_measurement(a),vector_measurement(b)
@@ -100,7 +127,7 @@ def endpoint(out,p,c,a,pol,state,identity):
     return result
 
 def assess(root):
-    start=time.perf_counter();revision=source();p=authenticated(root);out=root/'report';out.mkdir(exist_ok=True)
+    start=time.perf_counter();revision=source();p=authenticated(root);out=publication_directory(root)
     summaries={};matrix=[];runtime=[];attempted=list((root/'run').glob('*/*/*/cycle-*/request.json'));receipts=list((root/'run').glob('*/*/*/cycle-*/native/products/receipt.yaml'))
     require(len(attempted)<=450 and len(receipts)<=len(attempted),'feedback bound')
     # Same complete payload verification, bounded independent read concurrency.

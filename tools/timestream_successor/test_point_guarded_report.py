@@ -1,6 +1,7 @@
 """Deterministic signed-response and missing-domain checks; no new random fields."""
 import numpy as np
 from report_point_guarded_feedback import metrics
+from report_point_guarded_feedback import publication_directory
 from report_point_response_cd import aligned
 
 def test_signed_response_preserves_zero_truth_background():
@@ -18,3 +19,14 @@ def test_archived_extent_is_not_silently_cropped():
     assert now.shape==(5,5) and np.isnan(now).sum()==16 and np.isfinite(old).sum()==25
     benchmark=old==1;native=np.isfinite(now)
     assert benchmark.sum()==25 and (benchmark&native).sum()==9
+
+def test_publication_recovery_preserves_fit_budget_and_nonoverwriting(tmp_path):
+    out=tmp_path/'report';d=out/'a1100/BASE-POINT/endpoint';d.mkdir(parents=True)
+    for name in ('learned.json','learned.npz','FIT_ATTEMPT.json'):(d/name).write_bytes(name.encode())
+    (d/'RESULTS.json').write_text('failed publication');(d/'partial.fits').write_bytes(b'partial')
+    ideal=out/'a1100/BASE-POINT/C-core-plus/ideal-measurement.json';ideal.parent.mkdir();ideal.write_text('saved fit')
+    recovered=publication_directory(tmp_path)
+    assert (recovered/'a1100/BASE-POINT/endpoint/learned.npz').read_bytes()==b'learned.npz'
+    assert (recovered/'a1100/BASE-POINT/C-core-plus/ideal-measurement.json').read_text()=='saved fit'
+    assert not (d/'partial.fits').exists() and not (d/'RESULTS.json').exists()
+    assert (tmp_path/'provenance/report-publication-attempt-1/a1100/BASE-POINT/endpoint/partial.fits').read_bytes()==b'partial'
