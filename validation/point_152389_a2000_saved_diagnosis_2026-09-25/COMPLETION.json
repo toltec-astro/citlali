@@ -1,0 +1,81 @@
+{
+  "status": "completed bounded saved-product diagnosis",
+  "source_revisions": {
+    "analysis": "f5e02f9c40a4372e91210cc082dff948f3047130",
+    "publication": "257f6dbc1574f8f7d7108cf285b4f118d4061243",
+    "assessment": "0ce7c527ca440687616540dba6f54d0e4bc990b3"
+  },
+  "parent_manifest": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-guarded-feedback-comparison-20260925/FILES_SHA256SUMS",
+    "sha256": "5f6bf979f4e4ee2f4e2d249512c9107e73ed7f8fab8c58ccc257db27c65265a9"
+  },
+  "review": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-a2000-saved-product-diagnosis-20260925/FINAL_REVIEW.md",
+    "sha256": "6a05a514bfdee34d9bb10af2f6354d518a3772cf6fa72884e421802102264d93"
+  },
+  "assessment": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-a2000-saved-product-diagnosis-20260925/ASSESSMENT.md",
+    "sha256": "a2caef76d7680b9a6c41c9da10c39bdc17bbf6523b90e4aee39dc556574ceecd"
+  },
+  "product_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-a2000-saved-product-diagnosis-20260925",
+  "census": {
+    "histories": 15,
+    "states": 165,
+    "seed_pairs": 33,
+    "post_M0_partitions": 30,
+    "signed_responses": 99,
+    "even_controls": 33,
+    "cross_candidates_unapplied": 9,
+    "paired_cleaning_records": 120,
+    "paired_segment_records": 1440,
+    "implicated_pixels": 100,
+    "pixel_records": 16500
+  },
+  "checks": {
+    "focused_tests": 10,
+    "input_files": 3424,
+    "input_bytes": 937841216,
+    "all_bound_inputs_unchanged": true,
+    "initial_failure_preserved": true
+  },
+  "execution": {
+    "new_scientific_fits": 0,
+    "new_covariance_fits": 0,
+    "new_candidate_evaluations": 0,
+    "new_scientific_processing": 0,
+    "new_feedback_applications": 0,
+    "evidence": "Source reachability review and successful EXECUTION_ROUTE/FIGURE_EXECUTION_ROUTE; JSON-only tabulation."
+  },
+  "limitations": [
+    "Individual neighbor weights and separate unavailable full-footprint reasons not serialized",
+    "No causal isolation of cleaning versus selection",
+    "No endpoint source-location noise transfer validation or new uncertainty/significance",
+    "No asymptotic inference"
+  ],
+  "stop": "No adoption/default/weight/threshold change; m10 and cross-candidates unapplied; no cycle11, Unity, merge or push. One unexecuted next-action recommendation.",
+  "root_manifest": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-a2000-saved-product-diagnosis-20260925/FILES_SHA256SUMS",
+    "sha256": "0c2f915a5ed6d93b52c6a4ed0c8324b12fb70d67474e4e49787ae45308146462"
+  },
+  "seal": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-a2000-saved-product-diagnosis-20260925/SEAL.json",
+    "sha256": "574e1796877e4a87a51bfc21aac7cce399a8013bb7ee300c5e9d759d61b75b6a"
+  },
+  "seal_summary": {
+    "root_manifest": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-a2000-saved-product-diagnosis-20260925/FILES_SHA256SUMS",
+      "sha256": "0c2f915a5ed6d93b52c6a4ed0c8324b12fb70d67474e4e49787ae45308146462"
+    },
+    "payload_files": 42,
+    "payload_bytes": 54709814,
+    "all_derivative_payloads_rehashed": true,
+    "full_parent_not_rehashed": true,
+    "reverified_bound_inputs": 3424,
+    "workers": 8,
+    "seconds": 2.3790676670032553,
+    "exclusions": [
+      "FILES_SHA256SUMS: root ledger",
+      "SEAL.json: detached seal receipt; its hash is recorded in repository COMPLETION.json"
+    ]
+  }
+}
