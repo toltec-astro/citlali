@@ -1,5 +1,39 @@
 # Citlali Refactor Status
 
+## POINT 152389 expected-source guard — completed 2026-09-25
+
+Owner-selected POINT-EXPECTED-v1 implements one bounded Gaussian+constant fit,
+sigma>=1.5arcsec during optimization, strict width/SNR>10 acceptance, positive
+peak and inclusive20arcsec radial position. Amplitude uncertainty propagates
+allseven nuisance columns through the original full frozen M0 covariance.
+Ordinary rejection/nonconvergence gives complete empty selection; computational
+failure remains unavailable. This diagnostic route leaves the historic fitter,
+production defaults and normative SCI-POINT contract unchanged.
+
+All18 archived diagnosis outcomes and15 real-map fits/candidates replay exactly
+on the historical route. Newguard retains every bright control and rejects all
+diagnosed/noiseless blanks; old9failed cases converge and reject onwidth. New
+brightcandidate membership is unchanged; maximumpeakdelta1.37e−5mJy/beam.
+All6144replayed fields+768stressreuses complete, everycore accepted/everyblank
+rejected, zero computational errors. Remaining finite blank nonconvergence is
+explicit and yields empty selections. Six thresholds now defined and allsix
+replayed statistical screens pass:jointcounts9/6/6per1024 for bothpolicies,
+U95=.01529/.01153/.01153; zero final validation supplemental events. StressCORR
+finalevents0/1/2per256,DIAGzero. Validation fields were previously examined.
+Validationempirical/predicted amplitudeerrors .982/.990/.957 withoutrescaling.
+UnappliedT10 extrasCORR0/1/19 andDIAG0/0/11. No newfeedback/map/endpoint results.
+
+Independent implementation/control review preceded calibration; final numerical,
+ownership/evidence andfivefigure review passes. Focused17,successor300+111subtests,
+baseline207+137subtests,requiredconfig and38available frozen-native/CLI checks
+pass. Initial broad CTest could not run unrelated unbuilt targets; no fullsuite
+pass claim or binaryrebuild. Exactcampaign0441f293e,report110fab8d2; closure/seal
+identities in validation/point_152389_expected_source_guard_2026-09-25/COMPLETION.json.
+Preserve original-C0/regional/source-depth qualifications. Stop: no newtrajectory,
+production/default, Unity, merge orpush. Recommend only separatelyauthorized
+BASE-POINT/CORR/DIAG trajectorycomparison. See associatedassessment and
+handoff/POINT_152389_EXPECTED_SOURCE_GUARD_2026-09-25.md.
+
 ## POINT 152389 blank-fit diagnosis — completed 2026-09-25
 
 The owner-requested bounded diagnosis reproduced 18 archived outcomes exactly
