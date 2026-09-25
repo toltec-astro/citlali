@@ -22,6 +22,17 @@ def gaussian(parameters, x, y):
     return background + amp*np.exp(-.5*((u/sx)**2+(v/sy)**2))
 
 
+def solve_gaussian(signal, roi, x, y, initial, *, sigma_floor=.5):
+    """Shared bounded numerical attempt; historical defaults remain unchanged."""
+    lower = [0, -20, -20, sigma_floor, sigma_floor, -np.pi, -np.inf]
+    upper = [np.inf, 20, 20, 20, 20, np.pi, np.inf]
+    return least_squares(lambda p: gaussian(p,x[roi],y[roi])-signal[roi],initial,
+                        bounds=(lower,upper),x_scale='jac',max_nfev=3000,
+                        method='trf',jac='2-point',loss='linear',f_scale=1.,
+                        tr_solver='exact',tr_options={},diff_step=None,verbose=0,
+                        ftol=1e-12,xtol=1e-12,gtol=1e-12)
+
+
 def measure(signal, support, header, nominal):
     yy, xx = np.indices(signal.shape)
     x = (xx+1-header['CRPIX1'])*header['CDELT1']*3600
@@ -39,13 +50,7 @@ def measure(signal, support, header, nominal):
         raise ValueError('no positive central peak above local median')
     initial = [peak-background, x.flat[peak_index], y.flat[peak_index],
                nominal/np.sqrt(8*np.log(2)), nominal/np.sqrt(8*np.log(2)), 0, background]
-    lower = [0, -20, -20, .5, .5, -np.pi, -np.inf]
-    upper = [np.inf, 20, 20, 20, 20, np.pi, np.inf]
-    fit = least_squares(lambda p: gaussian(p,x[roi],y[roi])-signal[roi],initial,
-                        bounds=(lower,upper),x_scale='jac',max_nfev=3000,
-                        method='trf',jac='2-point',loss='linear',f_scale=1.,
-                        tr_solver='exact',tr_options={},diff_step=None,verbose=0,
-                        ftol=1e-12,xtol=1e-12,gtol=1e-12)
+    fit = solve_gaussian(signal, roi, x, y, initial)
     if not fit.success or not np.isfinite(fit.x).all():
         raise ValueError('POINT descriptive Gaussian fit did not converge')
     p=fit.x
