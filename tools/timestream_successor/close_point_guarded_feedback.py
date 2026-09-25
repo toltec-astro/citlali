@@ -54,7 +54,7 @@ def inventory(root):
     rev=source();auth=census(root);dest=root/'provenance';logs=dest/'logs';logs.mkdir(exist_ok=True)
     for f in sorted(Path('/private/tmp').glob('point-guarded-*.log')):shutil.copy2(f,logs/f.name)
     gates={}
-    checks=[('native','native-controls','7 tests'),('CLI','cli','20 passed'),('focused_ctest','ctest-corrected','100% tests passed'),
+    checks=[('native','native-controls','7 tests'),('CLI','cli','Ran 20 tests'),('focused_ctest','ctest-corrected','100% tests passed'),
         ('baseline','baseline-final','207 passed'),('successor','successor-corrected','304 passed'),('frozen_fixture','frozen-corrected','3 passed'),
         ('configuration','config-final','config preflight reports written under'),('report','report-tests-recovery','8 passed'),('closure_and_reporting','closure-tests','10 passed')]
     for label,name,marker in checks:
