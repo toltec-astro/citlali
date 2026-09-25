@@ -72,6 +72,8 @@ def test_constant_map_rejected_empty_and_state_cleared():
     rejected=expected.measure_expected(constant,support,f,n.scale,psd)
     assert rejected['complete'] and not rejected['accepted'] and rejected['optimizer_calls']==1
     assert rejected['accepted_parameters'] is None and rejected['pointing_correction'] is None
+    assert accepted['pointing_correction'] is None and accepted['accepted_centroid_tangent_arcsec'] is not None
+    assert rejected['accepted_centroid_tangent_arcsec'] is None
     empty=expected.candidate(constant,support,f,rejected)
     assert not empty['selected'].any()
     assert np.all(empty['candidate'][empty['valid']]==0)
@@ -110,3 +112,19 @@ def test_acceptance_uses_amplitude_above_constant_and_common_empty_supplement():
     assert np.array_equal(b['candidate'][b['selected']],(data-a['accepted_parameters'][6])[b['selected']])
     a,b,fields=expected.infer_expected(np.full(data.shape,19.),support,f,n,n.scale,psd)
     assert not a['accepted'] and not b['selected'].any() and fields is None
+
+
+def test_failed_statistical_or_numerical_screen_never_publishes_candidate(tmp_path):
+    from run_point_expected import screen_eligibility,publish
+    from point_fruit_diagnostics import load
+    n,data,f,psd,p=setup();support=np.ones(data.shape,bool)
+    prepared=expected.infer_expected(data,support,f,n,n.scale,psd)
+    c=dict(header=f.header,k0=n.k0)
+    screens={'a1100':{'CORR':dict(comparison_usable=False)}}
+    cause=screen_eligibility('CORR','a1100',screens)
+    assert cause and screen_eligibility('BASE-POINT','a1100',screens) is None
+    product=publish(tmp_path/'failed',c,data,prepared,'CORR',3.,blocked_cause=cause)
+    images,_=load(product['path']);assert 'CANDIDATE' not in images and 'ADMITTED' not in images
+    prepared[2]['policies']['CORR']['numerical_failures']=1
+    product=publish(tmp_path/'error',c,data,prepared,'CORR',3.)
+    images,_=load(product['path']);assert 'CANDIDATE' not in images

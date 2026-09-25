@@ -39,7 +39,8 @@ def amplitude_sensitivity(J):
     U,s,Vt=np.linalg.svd(J,full_matrices=False)
     tol=np.finfo(float).eps*max(J.shape)*s[0]
     rank=int(np.sum(s>tol)); ident_tol=100*np.finfo(float).eps*max(J.shape)
-    null_projection=float(np.linalg.norm(Vt[rank:,0]))
+    unit=np.eye(7)[0]
+    null_projection=float(np.linalg.norm(unit-np.einsum('ij,i->j',Vt[:rank],Vt[:rank,0],optimize=False)))
     info=dict(rank=rank,rank_tolerance=float(tol),singular_values=s.tolist(),
               amplitude_null_projection=null_projection,identifiability_tolerance=ident_tol)
     if null_projection>ident_tol:return None,info
@@ -70,6 +71,7 @@ def measure_expected(signal,support,fixed,scale,psd):
     central=np.hypot(x,y)<=20
     result=dict(method=METHOD,status='failed',accepted=False,complete=True,cause=None,
                 accepted_parameters=None,pointing_correction=None,
+                accepted_centroid_tangent_arcsec=None,
                 expected_origin_tangent_arcsec=[0.,0.],fit_pixels=int(roi.sum()),
                 expected_origin_sky=dict(ra_deg=fixed.header.get('CRVAL1'),dec_deg=fixed.header.get('CRVAL2'),
                     frame=fixed.header.get('RADESYS'),equinox=fixed.header.get('EQUINOX')),
@@ -119,7 +121,7 @@ def measure_expected(signal,support,fixed,scale,psd):
     cause=snr_rejection(p[0],result['sigma_A'])
     if cause:return reject(cause)
     result.update(status='accepted',accepted=True,accepted_parameters=p.tolist(),
-                  pointing_correction=p[1:3].tolist(),cause=None,message='Expected POINT source accepted.')
+                  accepted_centroid_tangent_arcsec=p[1:3].tolist(),cause=None,message='Expected POINT source accepted.')
     return result
 
 

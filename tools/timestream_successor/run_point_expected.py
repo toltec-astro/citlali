@@ -65,9 +65,11 @@ def compare(guard,base,oldfit,oldcandidate,data):
     return r
 
 
-def publish(dest,c,data,prepared,pol,tau):
+def publish(dest,c,data,prepared,pol,tau,blocked_cause=None):
     dest.mkdir(parents=True);guard,base,fields=prepared
-    result=base if pol=='BASE-POINT' else select(base,fields,c['k0'],pol,tau) if tau is not None and guard['complete'] else None
+    numerical_bad=fields['policies'][pol]['numerical_failures'] if fields is not None and pol in POLICIES else 0
+    computationally_known=guard['complete'] and numerical_bad==0
+    result=base if pol=='BASE-POINT' else select(base,fields,c['k0'],pol,tau) if tau is not None and computationally_known and blocked_cause is None else None
     planes=[('MEASURED',data,'mJy/nominal beam'),('BASE_POINT',base['selected'].astype('u1'),'1'),
         ('K0',c['k0'].astype('u1'),'1'),('VALID',base['valid'].astype('u1'),'1'),('BRIGHTNESS',base['brightness'],'mJy/nominal beam')]
     if result is not None:
@@ -80,7 +82,8 @@ def publish(dest,c,data,prepared,pol,tau):
     write_fits(dest/'selection.fits',exact_header(c['header']),planes,companion='POINT-EXPECTED-UNAPPLIED')
     save_json(dest/'selection.json',dict(method=METHOD,guard=guard,policy=pol,threshold=tau,applied=False,
         candidate_summary=None if result is None else result['summary'],source_mask_definition='BASE-POINT threshold-3 source-connected mask; empty on source rejection',
-        screen_status='unavailable' if result is None else 'complete' if guard['complete'] else 'computationally unavailable with outward empty product'))
+        blocked_cause=blocked_cause,neighborhood_numerical_failures=numerical_bad,
+        screen_status='unavailable' if result is None else 'complete' if computationally_known else 'computationally unavailable with outward empty product'))
     return bound(dest/'selection.fits')
 
 
@@ -131,14 +134,16 @@ def prepare(out):
             old,_=load(verified(state['candidate']));historical=base_from_fit(data,support,c['fixed'],oldfit)
             for key,field in [('CANDIDATE','candidate'),('ADMITTED','selected'),('VALID','valid'),('RATIO','z')]:
                 require(np.array_equal(old[key],historical[field],equal_nan=True),'historical candidate changed')
-            result,prepared=outcome(c,data);comparison=compare(prepared[0],prepared[1],oldfit,old,data)
+            result,prepared=outcome({**c,'support':support},data);comparison=compare(prepared[0],prepared[1],oldfit,old,data)
             record=dict(array=a,stage=k,result=result,comparison=comparison,total=state['total'],historical_candidate=state['candidate'],historical_exact=True)
             record['product']=publish(checks/f'{a}-REF-{k:02d}',c,data,prepared,'BASE-POINT',3.);bright.append(record)
         controls[a]={}
         for name in ('blank','core'):
             data=np.where(c['support'],c[name],np.nan);result,prepared=outcome(c,data)
             controls[a][name]=result;publish(checks/f'{a}-noiseless-{name}',c,data,prepared,'BASE-POINT',3.)
-        usable=original['arrays'][a]['covariance_preflight']['pass'] and all(r['result']['guard']['complete'] for r in bright if r['array']==a)
+        usable=(original['arrays'][a]['covariance_preflight']['pass'] and all(r['result']['guard']['complete'] for r in bright if r['array']==a)
+                and all(r['new']['guard']['complete'] for r in cases if r['array']==a)
+                and all(r['guard']['complete'] for r in controls[a].values()))
         passed=usable and all(r['result']['guard']['accepted'] for r in bright if r['array']==a) and controls[a]['core']['guard']['accepted'] and controls[a]['blank']['guard']['complete'] and not controls[a]['blank']['guard']['accepted']
         repair[a]=dict(usable=bool(usable),source_retention_check_pass=bool(passed))
         print(json.dumps(dict(array=a,repair=repair[a],core_SNR=controls[a]['core']['guard']['SNR_A'])),flush=True)
@@ -222,9 +227,17 @@ def simulate(out,phase,review):
     inputs(out);manifest(dest);save_json(out/(phase.upper()+'.json'),result)
 
 
+def screen_eligibility(pol,array,screens):
+    if pol=='BASE-POINT':return None
+    state=screens.get(array,{}).get(pol)
+    if state is None:return 'statistical screen unavailable'
+    if not state['comparison_usable']:return 'statistical or source-retention screen failed; dependent comparison blocked'
+    return None
+
+
 def screen(out):
-    rev=source();p=inputs(out);verify_manifest(out/'calibration');verify_manifest(out/'validation')
-    ts=read(out/'calibration/thresholds.json')['thresholds'];checks=read(out/'checks/RESULTS.json');dest=out/'screen';dest.mkdir();rows=[]
+    rev=source();p=inputs(out);verify_manifest(out/'freeze');verify_manifest(out/'checks');verify_manifest(out/'calibration');verify_manifest(out/'validation')
+    ts=read(out/'calibration/thresholds.json')['thresholds'];screens=read(out/'validation/screens.json')['policies'];checks=read(out/'checks/RESULTS.json');dest=out/'screen';dest.mkdir();rows=[]
     for saved in checks['bright']:
         a=saved['array'];k=saved['stage'];c=ctx(out,a);data,support,_,_=patch_map(verified(saved['total']))
         # Reuse the already-executed new guard on exactly this authenticated map.
@@ -232,9 +245,10 @@ def screen(out):
         g=saved['result']['guard'];b=candidate(data,support,c['fixed'],g);fields=c['neighborhood'].scores(b) if g['accepted'] and b['selected'].any() else None
         for pol in ('BASE-POINT',*POLICIES):
             tau=3. if pol=='BASE-POINT' else ts.get(a,{}).get(pol)
-            product=publish(dest/f'{a}-{k:02d}-{pol}',c,data,(g,b,fields),pol,tau)
-            rows.append(dict(array=a,stage=k,policy=pol,product=product,threshold=tau,guard_reused=True,source_accepted=g['accepted'],source_retention_check_pass=checks['repair'][a]['source_retention_check_pass']))
-    save_json(dest/'RESULTS.json',dict(source_revision=rev,rows=rows,new_fits=0,applied=False));manifest(dest)
+            blocked=screen_eligibility(pol,a,screens)
+            product=publish(dest/f'{a}-{k:02d}-{pol}',c,data,(g,b,fields),pol,tau,blocked_cause=blocked)
+            rows.append(dict(array=a,stage=k,policy=pol,product=product,threshold=tau,blocked_cause=blocked,guard_reused=True,source_accepted=g['accepted'],source_retention_check_pass=checks['repair'][a]['source_retention_check_pass']))
+    inputs(out);save_json(dest/'RESULTS.json',dict(source_revision=rev,rows=rows,new_fits=0,applied=False));manifest(dest)
 
 
 if __name__=='__main__':
