@@ -358,7 +358,7 @@ def draw(out,s,a):
     fig,ax=plt.subplots(2,3,figsize=(13,7),constrained_layout=True)
     labels=list(POLICIES);positions=np.arange(3)
     seed=[next(r for r in s['seed'] if r['policy']==pol and r['map_stage']==10) for pol in POLICIES]
-    for j,(name,title) in enumerate([('peak_percent_own_REF','Seed fitted peak / REF peak [%]'),('east','Seed fitted east shift [arcsec]'),('background','Seed fitted constant shift [mJy/beam]')]):ax[0,j].bar(positions,[r['measurement_difference'][name] for r in seed],color=list(colors.values()));ax[0,j].set(title=title,xticks=positions,xticklabels=labels)
+    for j,(name,title) in enumerate([('peak_percent_own_REF','Seed-induced fitted-peak change [% of REF]'),('east','Seed fitted east shift [arcsec]'),('background','Seed fitted constant shift [mJy/beam]')]):ax[0,j].bar(positions,[r['measurement_difference'][name] for r in seed],color=list(colors.values()));ax[0,j].set(title=title,xticks=positions,xticklabels=labels)
     for j,b in enumerate(BRANCHES[1:4]):
         for n,shift in [('peak',-.23),('fixed_template',0),('aperture_2',.23)]:
             vals=[]
@@ -396,7 +396,18 @@ def tables(out,s):
     (out/'NUMERICAL_REPORT.md').write_text('\n'.join(lines)+'\n')
 
 
-def guarded_run(out):
+def render_saved(out):
+    """Regenerate figures/tables solely from serialized completed arithmetic."""
+    rev=revision();p=json.loads((out/'PROSPECTIVE.json').read_text());before=authenticate(p)
+    names=('RESULTS.json','ARRAYS.npz');bindings={n:sha(out/n) for n in names}
+    save(out/'FIGURE_PROSPECTIVE.json',dict(source_revision=rev,input_sha256=bindings,original_analysis_revision=p['source_revision'],command='figures --output '+str(out)))
+    start=time.perf_counter();r=json.loads((out/'RESULTS.json').read_text());a=dict(np.load(out/'ARRAYS.npz'))
+    draw(out,r,a);tables(out,r)
+    require(bindings=={n:sha(out/n) for n in names},'cached arithmetic mutated while rendering')
+    save(out/'FIGURE_RUNTIME.json',dict(render_seconds=time.perf_counter()-start,input_verification_before=before,input_verification_after=authenticate(p)))
+
+
+def guarded_run(out,action=run,record='EXECUTION_ROUTE.json'):
     """Observe actual repository calls; reject any imported execution route."""
     import importlib.abc
     allowed={Path(__file__).resolve(),Path(__file__).with_name('point_saved_diagnosis.py').resolve()};calls={}
@@ -420,16 +431,19 @@ def guarded_run(out):
     sys.addaudithook(audit);sys.setprofile(trace)
     completed=False;error=None
     try:
-        run(out);completed=True
+        action(out);completed=True
     except BaseException as exc:
         error=dict(type=type(exc).__name__,message=str(exc));raise
     finally:
         sys.setprofile(None);sys.meta_path.remove(blocker)
-        save(out/'EXECUTION_ROUTE.json',dict(execution_completed=completed,error=error,repository_calls=calls,allowed_repository_files=[str(x) for x in sorted(allowed)],
+        save(out/record,dict(execution_completed=completed,error=error,repository_calls=calls,allowed_repository_files=[str(x) for x in sorted(allowed)],
             scientific_route_imports='blocked',non_Git_subprocesses='blocked',parent_writes='blocked',
             conclusion=('Completed cached-only diagnosis.' if completed else 'Diagnosis aborted; consult error and recorded calls, not a successful completion.')+' No fits, candidate/policy evaluation, projection, mapmaking, cleaning, fields or feedback are reachable through this route.'))
 
 
 if __name__=='__main__':
-    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('stage',choices=['prepare','analyze']);ap.add_argument('--output',required=True,type=Path);args=ap.parse_args()
-    prepare(args.output.resolve()) if args.stage=='prepare' else guarded_run(args.output.resolve())
+    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('stage',choices=['prepare','analyze','figures']);ap.add_argument('--output',required=True,type=Path);args=ap.parse_args()
+    out=args.output.resolve()
+    if args.stage=='prepare':prepare(out)
+    elif args.stage=='figures':guarded_run(out,render_saved,'FIGURE_EXECUTION_ROUTE.json')
+    else:guarded_run(out)
