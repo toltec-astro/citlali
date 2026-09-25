@@ -161,6 +161,44 @@ class SuccessorDefaultCli(unittest.TestCase):
             fixed_plan_injections=[dict(amplitude=1.0)]))
         self.rejected(self.invoke(config), "successor.unsupported_experiment")
 
+    def test_guarded_feedback_matrix_and_frozen_gates_before_execution(self):
+        # Stop at a deliberately invalid candidate digest after the new gate;
+        # no detector inputs or observation processing occur in these fixtures.
+        def bound(name, value):
+            p=self.root/name;p.write_text(json.dumps(value))
+            return dict(path=str(p),sha256=hashlib.sha256(p.read_bytes()).hexdigest())
+        mo=bound('map-owner.json',{})
+        parent=bound('parent.json',dict(array='a1100',observation='obs:152389_0_2',coverage_cut=.1,owner_binding='sha256:'+mo['sha256']))
+        mr=bound('map.json',dict(schema='citlali-map-saved-ptc-v1',coverage_cut=.1,pixel_size_arcsec=2,owner_binding=mo))
+        checks=dict(repair=dict(a1100=dict(usable=True,source_retention_check_pass=True)))
+        gate=dict(policies=dict(a1100={p:dict(comparison_usable=True,threshold=4.) for p in ('CORR','DIAG')}))
+        owner=dict(identity='POINT-152389-GUARDED-OWNER-2026-09-25',outside_disk_no_feedback=True,
+                   direct_identical_operand_rejoin=True,gain=1,nonzero_cycles=10,source_method='POINT-EXPECTED-v1',
+                   prospective=bound('prospective.json',{}),threshold=4.,
+                   thresholds=bound('thresholds.json',dict(thresholds=dict(a1100=dict(CORR=4.,DIAG=4.)))))
+        bad=bound('bad-candidate.json',{});bad['sha256']='0'*64
+        def invoke(policy,branch='REF',cycle=1,reason='input digest mismatch:'):
+            owner.update(policy=policy,source_checks=bound('checks.json',checks),launch_gate=bound('gate.json',gate))
+            req=dict(schema='citlali-point-fruit-guarded-v1',method='point-152389-guarded-feedback-v1',
+                     mode='zero' if cycle==0 else 'reference',array='a1100',branch=branch,cycle_index=cycle,
+                     map_request=mr,parent_plan=parent,owner_binding=bound('owner.json',owner),candidate=bad)
+            config=self.request(req);config['terminal']='point-fruit'
+            self.rejected(self.invoke(config),reason)
+        for policy in ('BASE-POINT','CORR','DIAG'):
+            for branch in ('REF','C-core-plus','C-core-minus','C-shoulder','D-seed-shoulder'):
+                with self.subTest(policy=policy,branch=branch):invoke(policy,branch)
+        invoke('BASE',reason='FRUIT unknown guarded policy')
+        for branch in ('D-seed-low','D-seed-high','D-threshold-5'):
+            invoke('BASE-POINT',branch,reason='FRUIT guarded matrix outside bound')
+        invoke('CORR',cycle=0,reason='FRUIT guarded matrix outside bound')
+        invoke('CORR',cycle=11,reason='FRUIT C+D branch/index/mode outside bound')
+        gate['policies']['a1100']['CORR']['comparison_usable']=False
+        invoke('CORR',reason='FRUIT guarded launch gate failed')
+        owner['threshold']=3.
+        invoke('DIAG',reason='FRUIT guarded frozen threshold differs')
+        checks['repair']['a1100']['source_retention_check_pass']=False
+        invoke('BASE-POINT',reason='FRUIT guarded source checks failed')
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

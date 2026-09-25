@@ -15,9 +15,10 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     for(const auto &e:request)require(fields.contains(e.first.as<std::string>()),"FRUIT unknown request field");
     const bool refseq=request["schema"].as<std::string>()=="citlali-point-fruit-refseq-v1";
     const bool corr=request["schema"].as<std::string>()=="citlali-point-fruit-corr-neighbor-v1";
-    const bool campaign=corr || refseq || request["schema"].as<std::string>()=="citlali-point-fruit-cd-v1";
+    const bool guarded=request["schema"].as<std::string>()=="citlali-point-fruit-guarded-v1";
+    const bool campaign=guarded || corr || refseq || request["schema"].as<std::string>()=="citlali-point-fruit-cd-v1";
     const bool continuation=request["schema"].as<std::string>()=="citlali-point-fruit-continuation-v1";
-    require((corr && request["method"].as<std::string>()=="point-152389-corr-neighbor-v1") || (refseq && request["method"].as<std::string>()=="point-152389-a2000-ref-basis-sequence-v1") || (campaign && !refseq && !corr && request["method"].as<std::string>()=="point-152389-response-robustness-cd-v1") || (continuation && request["method"].as<std::string>()=="point-152389-direct-ten-cycle-v1") ||
+    require((guarded && request["method"].as<std::string>()=="point-152389-guarded-feedback-v1") || (corr && request["method"].as<std::string>()=="point-152389-corr-neighbor-v1") || (refseq && request["method"].as<std::string>()=="point-152389-a2000-ref-basis-sequence-v1") || (campaign && !refseq && !corr && !guarded && request["method"].as<std::string>()=="point-152389-response-robustness-cd-v1") || (continuation && request["method"].as<std::string>()=="point-152389-direct-ten-cycle-v1") ||
         (!continuation && request["schema"].as<std::string>()=="citlali-point-fruit-cycle-v1" && request["method"].as<std::string>()=="point-152389-direct-one-cycle-v1"),"FRUIT unsupported method");
     const auto mode=request["mode"].as<std::string>();require(mode=="zero" || mode=="reference","FRUIT unknown mode");
     const int cycle=(continuation || campaign)?request["cycle_index"].as<int>():(mode=="zero"?0:1);
@@ -29,7 +30,7 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     require(campaign || (!request["branch"] && !request["injection"]),"FRUIT foreign campaign fields");
     const auto owner_path=checked_file(request["owner_binding"]);const auto owner_sha=ledger.bind(owner_path);
     const auto owner=YAML::LoadFile(owner_path.string());
-    require(owner["identity"].as<std::string>()==(corr?"POINT-152389-CORR-NEIGHBOR-OWNER-2026-09-24":refseq?"POINT-152389-A2000-REFSEQ-OWNER-2026-09-24":campaign?"POINT-152389-CD-OWNER-2026-09-23":continuation?"POINT-152389-TEN-FRUIT-OWNER-2026-09-23":"POINT-152389-FIRST-FRUIT-OWNER-2026-09-23") &&
+    require(owner["identity"].as<std::string>()==(guarded?"POINT-152389-GUARDED-OWNER-2026-09-25":corr?"POINT-152389-CORR-NEIGHBOR-OWNER-2026-09-24":refseq?"POINT-152389-A2000-REFSEQ-OWNER-2026-09-24":campaign?"POINT-152389-CD-OWNER-2026-09-23":continuation?"POINT-152389-TEN-FRUIT-OWNER-2026-09-23":"POINT-152389-FIRST-FRUIT-OWNER-2026-09-23") &&
         owner["outside_disk_no_feedback"].as<bool>() && owner["direct_identical_operand_rejoin"].as<bool>() &&
         owner["gain"].as<double>()==1 && owner["nonzero_cycles"].as<int>()==((continuation || campaign)?10:1),"FRUIT owner choices absent");
     const auto map_path=checked_file(request["map_request"]);ledger.bind(map_path);const auto mr=YAML::LoadFile(map_path.string());
@@ -49,6 +50,25 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
             const auto gate_path=checked_file(owner["launch_gate"]);ledger.bind(gate_path);
             const auto gate=YAML::LoadFile(gate_path.string());
             require(gate["policies"][array][policy]["pass"].as<bool>(),"FRUIT neighborhood launch gate failed");
+        }
+    }
+    if(guarded) {
+        const auto policy=owner["policy"].as<std::string>();
+        require(policy=="BASE-POINT" || policy=="CORR" || policy=="DIAG","FRUIT unknown guarded policy");
+        require(cycle>=1 && (branch=="REF" || branch=="C-core-plus" || branch=="C-core-minus" || branch=="C-shoulder" || branch=="D-seed-shoulder"),"FRUIT guarded matrix outside bound");
+        require(owner["source_method"].as<std::string>()=="POINT-EXPECTED-v1","FRUIT guarded source method differs");
+        ledger.bind(checked_file(owner["prospective"]));
+        const auto checks_path=checked_file(owner["source_checks"]);ledger.bind(checks_path);
+        const auto checks=YAML::LoadFile(checks_path.string());
+        require(checks["repair"][array]["usable"].as<bool>() && checks["repair"][array]["source_retention_check_pass"].as<bool>(),"FRUIT guarded source checks failed");
+        if(policy!="BASE-POINT") {
+            const auto gate_path=checked_file(owner["launch_gate"]);ledger.bind(gate_path);
+            const auto gate=YAML::LoadFile(gate_path.string());
+            require(gate["policies"][array][policy]["comparison_usable"].as<bool>(),"FRUIT guarded launch gate failed");
+            const auto thresholds_path=checked_file(owner["thresholds"]);ledger.bind(thresholds_path);
+            const auto thresholds=YAML::LoadFile(thresholds_path.string());
+            require(owner["threshold"].as<double>()==thresholds["thresholds"][array][policy].as<double>() &&
+                    owner["threshold"].as<double>()==gate["policies"][array][policy]["threshold"].as<double>(),"FRUIT guarded frozen threshold differs");
         }
     }
     const auto candidate=checked_file(request["candidate"]);const auto candidate_sha=ledger.bind(candidate);
@@ -152,7 +172,7 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
                     const auto v=injection->at(xy(t,2*columns[d]),xy(t,2*columns[d]+1));
                     ++injection_counts[std::uint8_t(v.support)];pi(t,d)=v.value;ps(t,d)=v.support!=FruitModelSupport::unavailable;
                 }
-                if(refseq){
+                if(refseq || guarded){
                     const auto saved_pi=checked_file(owner["injection_operands"][name]);ledger.bind(saved_pi);
                     const auto exact_pi=map_read_array<double>(saved_pi,nt*nd);
                     require(std::equal(exact_pi.begin(),exact_pi.end(),pi.data()),"FRUIT saved injection operand differs");
