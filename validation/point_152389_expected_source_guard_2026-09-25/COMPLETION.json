@@ -1,0 +1,79 @@
+{
+  "status": "complete bounded expected-source guard; six replayed screens pass",
+  "source_revision": "c702483454ceb54932431165b609af4f2d4fa04b",
+  "sources": {
+    "revisions": {
+      "campaign": "0441f293e3daa5bab853efd43e278cb445fdec3c",
+      "report": "110fab8d2325346eec20fe0e9b2a000ac2ffd27a",
+      "closure": "c702483454ceb54932431165b609af4f2d4fa04b"
+    },
+    "regression_binaries": {
+      "citlali": {
+        "path": "/private/tmp/citlali-point-additive-build-20260923/bin/citlali",
+        "sha256": "5823281906ab4aed249469d387f4d433bcbac7a4837036b9c371ac6ac2b8ad06"
+      },
+      "citlali_point_frozen_apply": {
+        "path": "/private/tmp/citlali-point-additive-build-20260923/bin/citlali_point_frozen_apply",
+        "sha256": "804db52d9d930f8674f58760efe7920ed741917d8e1700a13d89a5c1f07c2a59"
+      },
+      "citlali_jinc_diagnostic": {
+        "path": "/private/tmp/citlali-point-additive-build-20260923/bin/citlali_jinc_diagnostic",
+        "sha256": "6e7f3e0ec896da9b4fbde0d87e56dbdaa9d1280425fe212f694e4d47bdedb494"
+      }
+    },
+    "native_source": "ee54efb6d32759003d4249f3a4ad90dbeb9c10d9",
+    "scientific_native_invocations": 0,
+    "native_diff_from_work_order_base": "",
+    "source_archive_note": "Archives require Git metadata for clean-source execution checks; exact campaign/report sources remain distinct."
+  },
+  "review": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-expected-source-guard-20260925-r2/FINAL_REVIEW.md",
+    "sha256": "f33b7f3d05c266f53cd7ea0bfcced6ff443ca7da3584c051c837b64470584980"
+  },
+  "assessment": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-expected-source-guard-20260925-r2/ASSESSMENT.md",
+    "sha256": "a3d663d03eb0e645eecb3c59d404f57b0abc94672cd8d19b3050372ffaacce59"
+  },
+  "authentication": {
+    "consumed_originals": 49,
+    "consumed_originals_unchanged": true,
+    "stage_manifest_files": {
+      "freeze": 1,
+      "checks": 79,
+      "calibration": 4,
+      "validation": 4,
+      "screen": 91,
+      "report": 10
+    },
+    "wall_seconds": 0.27913216600427404,
+    "independent_new_fields": 0,
+    "feedback_applications": 0
+  },
+  "calibration_reused_fields": 3072,
+  "validation_reused_fields": 3072,
+  "stress_reuses": 768,
+  "independent_new_fields": 0,
+  "feedback_applications": 0,
+  "stop": "No trajectories, endpoint uncertainty, RTC/CAL/PTC/MAP/JINC rerun, m10 application, production default, Unity, merge or push.",
+  "product_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-expected-source-guard-20260925-r2",
+  "root_manifest": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-expected-source-guard-20260925-r2/FILES_SHA256SUMS",
+    "sha256": "87c1c948a1b95abe17c4ca17cfaf97d55471edbed2bec5d09bc09b186611cea0"
+  },
+  "sealed_files": 232,
+  "closure_review": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-expected-source-guard-20260925-r2/CLOSURE_REVIEW.md",
+    "sha256": "a37d47363bb6747d3a77d81e635f334b2c2c668b817b83d8c884a5440a35a6d5"
+  },
+  "tests": {
+    "focused": 17,
+    "successor": 300,
+    "successor_subtests": 111,
+    "baseline": 207,
+    "baseline_subtests": 137,
+    "available_frozen_native_CLI": 38,
+    "config_require_all": true
+  },
+  "push": false,
+  "production_default": false
+}
