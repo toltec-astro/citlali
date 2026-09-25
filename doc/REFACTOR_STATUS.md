@@ -1,5 +1,33 @@
 # Citlali Refactor Status
 
+## POINT 152389 a2000 saved-product diagnosis — completed 2026-09-25
+
+Cached-only analysis covers 15 histories/165 states, 33 seed differences,
+30 exact candidate partitions, 99 signed responses and nine unapplied
+same-map cross-candidates. No new fits, candidate evaluations or processing.
+Policy-dependent seed divergence first appears in m1, affecting T2;
+compact policy differences first appear in m2, affecting T3. CORR retains
+nine late seed-only supplemental pixels, with nearly stationary but still
+decreasing recorded late differences. This is not an asymptotic conclusion.
+
+CORR T10 seed coefficient0.010234 is artificial-shoulder normalized: sampled
+parallel peak0.412740mJy/beam, orthogonal norm8.99952 versus parallel2.98448,
+full-map max4.70609. Fitted peak changes−0.103601mJy/beam (−0.0127448% ownREF),
+large aperture+173.555 (.203416% ownREF). CORR compact-plus aperture discrepancy
+is+776.465 (9.284% of ideal compact increment), while fitted-peak discrepancy
+is−.851772 (−1.047%). Shoulder aperture recovery improves substantially.
+Overlapping admission pixels support a related sensitivity, not a proven
+common cause; DIAG compact asymmetry persists without late seed dependence.
+
+Focused ten tests and independent arithmetic/figure/interpretation review
+bind the isolated reporting lane. All3424bound inputs (~.938GB) authenticate;
+no125GBparent rehash. Initial plotting/font-discovery guard failure remains
+explicit; successful arithmetic matches it. Five inspected figures, full
+pixel/measurement ledgers, limits and one unexecuted three-pixel m1 intervention
+recommendation are in validation/point_152389_a2000_saved_diagnosis_2026-09-25.
+Exact revisions and derivative seal are recorded in its COMPLETION.json.
+Stop: no adoption, new science, appliedm10/cycle11, Unity, merge or push.
+
 ## POINT 152389 guarded feedback comparison — completed 2026-09-25
 
 The authorized BASE-POINT/CORR/DIAG five-branch comparison completed all 45
