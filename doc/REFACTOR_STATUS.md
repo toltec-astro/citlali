@@ -1,5 +1,44 @@
 # Citlali Refactor Status
 
+## POINT 152389 guarded feedback comparison — completed 2026-09-25
+
+The authorized BASE-POINT/CORR/DIAG five-branch comparison completed all 45
+trajectories and 450 native feedback applications. Twelve physical M0s were
+reused; no new initial PTC/MAP, RTC/CAL, calibration fields or JINC execution.
+The unchanged POINT-EXPECTED guard accepted all 495 stages. Minimum frozen-C0
+S/N is 79.97 including M0, and 98.13 across feedback outputs. T10 consumed m9;
+m10 and 27 same-map cross-candidates remain unapplied. Full histories, 297
+response controls, 27 ideal-addition fits and nine endpoint diagnostics are sealed.
+
+a1100 policies coincide (shoulder g=0.97437, eta=0.07571). a1400 shoulder g/eta
+improves from BASE-POINT 0.91107/0.14559 to CORR 0.96444/0.09561 and DIAG
+0.92774/0.12821, with tiny seed-only persistence. a2000 improves from
+0.84988/0.22117 to CORR 0.99210/0.11327 and DIAG 1.00450/0.13126, but CORR
+retains seed projection 0.010234 versus about 6e-6 for the others and worsens
+compact-plus distortion. Both supplements increase compact sign asymmetry in
+a2000. No blanket adoption follows. Endpoint background scales remain close
+to C0; source-location transfer remains unvalidated and sigma_A is conditional,
+not a new endpoint uncertainty.
+
+All 9,900 segment records preserve the native recipe and known a1100 network-3/
+scan-5 condition; no new processing failure. Subtract/rejoin and remap errors
+are below 4.30e-11 versus the 1e-8 tolerance. Two a1400 compact-minus T6
+angle-bound fits are retained. Independent numerical, ownership, figure and
+closure review passes. Tests cover native 7, CLI 20, focused CTest 9, baseline
+207 plus 137 subtests, all 305 successor tests through corrected broad/fixture
+runs with 111 subtests, reporting/closure 10, and required configuration gates.
+Unbuilt unrelated CTest targets and initial setup/report writer failures remain
+explicit; saved fit caches avoided repeated inference. Local cached-dependency
+validation is not Unity/Spack evidence.
+
+Campaign source a30509934; numerical report 908f71d30; figures 49e5c4771;
+closure code acbf5ed18. Exact roots, final seal, revisions and independent reviews
+are in validation/point_152389_guarded_feedback_comparison_2026-09-25/COMPLETION.json.
+See its ASSESSMENT.md and handoff/POINT_152389_GUARDED_FEEDBACK_COMPARISON_2026-09-25.md.
+Only recommendation: inspect existing a2000 CORR seed-path products without new
+fits, trajectories or retuning. Recommendation not executed. Stop: no production
+change, cycle 11, applied m10, Unity, merge or push.
+
 ## POINT 152389 expected-source guard — completed 2026-09-25
 
 Owner-selected POINT-EXPECTED-v1 implements one bounded Gaussian+constant fit,
