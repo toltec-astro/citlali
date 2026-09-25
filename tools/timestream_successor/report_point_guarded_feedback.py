@@ -324,7 +324,7 @@ def draw(out,a,data,c):
     fig,ax=plt.subplots(2,2,figsize=(11,8),constrained_layout=True)
     for b in BRANCHES:
         rows=[q for q in data['historical']['BASE_POINT_minus_BASE'] if q['branch']==b]
-        for z,key in zip(ax[0],('peak','background')):z.plot([q['cycle'] for q in rows],[(q['measurement_delta'] or {}).get(key,np.nan) for q in rows],'.-',label=b);z.set(xlabel='cycle',ylabel=key+' BASE-POINT − historical BASE [mJy/beam]');z.grid(alpha=.2)
+        for z,key in zip(ax[0],('peak','background')):z.plot([q['cycle'] for q in rows],[(q['measurement_delta'] or {}).get(key,np.nan) for q in rows],'.-',label=b);z.set(xlabel='cycle',ylabel=key+' difference [mJy/beam]');z.grid(alpha=.2)
     for b in BRANCHES[1:4]:
         rows=data['policies']['BASE-POINT']['branches'].get(b,[]);old=data['historical']['response_and_seed']['branches'].get(b,[])
         oldby={q['cycle']:q for q in old}
@@ -333,7 +333,7 @@ def draw(out,a,data,c):
     ax[1,1].plot([q['cycle'] for q in rows],[q['shoulder_projection']['value'] for q in rows],'.-',label='BASE-POINT');ax[1,1].plot([q['cycle'] for q in old],[q['total_shoulder_projection'] for q in old],'--',label='historical BASE')
     ax[1,0].set(xlabel='cycle',ylabel='response g change');ax[1,1].set(xlabel='cycle',ylabel='seed-only shoulder projection')
     for z in ax.flat:z.legend(fontsize=7);z.grid(alpha=.2)
-    fig.suptitle(a+' guard/fit change separated from supplemental admission');fig.savefig(out/'historical.png',dpi=140);plt.close(fig)
+    fig.suptitle(a+' BASE-POINT minus historical BASE: guard/fit change');fig.savefig(out/'historical.png',dpi=140);plt.close(fig)
 
     fig,ax=plt.subplots(3,3,figsize=(14,11),constrained_layout=True)
     keys=['peak','east','north','FWHM_major','FWHM_minor','background','fixed_template','aperture_2','pixels']
@@ -385,12 +385,13 @@ def draw(out,a,data,c):
                 known,_,_,_,_=source_patch(im['KNOWN'],im['COMMON'].astype(bool),np.ones(im['DELTA'].shape),h)
             else:images.append(None)
         images=[known if any(v is not None for v in images) else None,*images]
-        vmax=max([float(np.nanmax(abs(v))) for v in images if v is not None]+[1e-8])
+        vmax=max([float(np.nanmax(abs(v))) for v in images[1:] if v is not None]+[1e-8])
         for j,(label,v) in enumerate(zip(('known injection',*POLICIES),images)):
             z=ax[i,j];z.set(title=b+' '+label,xlabel='east [arcsec]',ylabel='north [arcsec]')
             if v is None:z.text(.5,.5,'unavailable',transform=z.transAxes,ha='center');continue
-            im=z.imshow(v,origin='lower',extent=[41,-41,-41,41],cmap='RdBu_r',vmin=-vmax,vmax=vmax);fig.colorbar(im,ax=z,shrink=.7)
-    fig.suptitle(a+' known injection and T10 response residual; matched scales per row [mJy/beam]');fig.savefig(out/'residuals.png',dpi=140);plt.close(fig)
+            limit=max(float(np.nanmax(abs(v))),1e-8) if j==0 else vmax
+            im=z.imshow(v,origin='lower',extent=[41,-41,-41,41],cmap='RdBu_r',vmin=-limit,vmax=limit);fig.colorbar(im,ax=z,shrink=.7)
+    fig.suptitle(a+' T10: known injection has own scale; three residuals share row scale [mJy/beam]');fig.savefig(out/'residuals.png',dpi=140);plt.close(fig)
     fig,ax=plt.subplots(2,3,figsize=(14,8),constrained_layout=True)
     radii=(c['fixed'].edges[:-1]+c['fixed'].edges[1:])/2
     for j,b in enumerate(BRANCHES[1:4]):
@@ -427,5 +428,21 @@ def draw(out,a,data,c):
     for z in ax:z.legend(fontsize=8);z.grid(alpha=.2)
     fig.suptitle(a+' diagnostic endpoint covariance; never fed back');fig.savefig(out/'endpoint.png',dpi=140);plt.close(fig)
 
+def figures_only(root):
+    """Republish plots from saved numerical results, without any inference."""
+    rev=source();out=root/'report';verify_manifest(out);p=authenticated(root)
+    prior=root/'provenance/figures-before-display-review'
+    require(not prior.exists(),'figure review already published');prior.mkdir()
+    shutil.copy2(out/'FILES_SHA256SUMS',prior/'REPORT_FILES_SHA256SUMS')
+    for f in out.glob('*/*.png'):
+        dest=prior/f.relative_to(out);dest.parent.mkdir(exist_ok=True);shutil.copy2(f,dest)
+    start=time.perf_counter();summary=read(out/'SUMMARY.json')
+    for a,data in summary['arrays'].items():draw(out/a,a,data,ctx(p,a))
+    save_json(out/'FIGURE_REVIEW.json',dict(source_revision=rev,scientific_fits=0,
+        saved_summary=bound(out/'SUMMARY.json'),prior_figures=str(prior),
+        changes='Shorter historical labels; known injection uses own scale while three policy residuals share a residual-only scale per row.',wall_seconds=time.perf_counter()-start))
+    manifest(out)
+
+
 if __name__=='__main__':
-    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--output',type=Path,required=True);assess(ap.parse_args().output.resolve())
+    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--output',type=Path,required=True);ap.add_argument('--figures-only',action='store_true');args=ap.parse_args();(figures_only if args.figures_only else assess)(args.output.resolve())
