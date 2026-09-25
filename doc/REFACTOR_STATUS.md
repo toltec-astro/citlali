@@ -1,5 +1,21 @@
 # Citlali Refactor Status
 
+## POINT 152389 blank-fit diagnosis — completed 2026-09-25
+
+The owner-requested bounded diagnosis reproduced 18 archived outcomes exactly
+and ran three isolated budget-only probes, using existing fields. All nine
+sampled failures exhaust max_nfev3000 with finite data, parameters and residuals;
+all three probes still fail at6000. Failed-fit minor FWHM is below the2arcsec
+pixel spacing. Coupled amplitude/width drift with little cost improvement is
+consistent with poorly determined subpixel noise peaks, not proof of the cause
+of every archived failure. Paired core controls converge in15/17/15 evaluations.
+The inherited pre-fit absence rule admits all archived blank trials to fitting;
+convergence and bound flags do not establish source presence. No fitter repair,
+absence rule, threshold recalibration or feedback was adopted. Six gates remain
+unavailable. Ten focused tests and exact archived-outcome/input checks pass.
+See validation/point_152389_blank_fit_diagnosis_2026-09-25/ASSESSMENT.md and its
+completion/review records. Runtime14.547s;18replays+3probes;zero new fields.
+
 ## POINT 152389 correlation-aware admission — failed launch gates 2026-09-24
 
 The fixed ordinary-MAP CORR-NEIGHBOR-v1/DIAG screening campaign completed all
