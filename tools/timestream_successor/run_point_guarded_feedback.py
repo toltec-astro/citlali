@@ -88,6 +88,9 @@ def prepare(out,binary):
                 path,summary=publish(checks/f'{a}-{k:02d}-{pol}',c,signal,prepared,pol,3. if pol=='BASE-POINT' else thresholds[a][pol])
                 old,_=auth.fits(guardroot/'screen'/f'{a}-{k:02d}-{pol}'/'selection.fits');new,_=load(path)
                 for n in ('CANDIDATE','ADMITTED','VALID'):require(np.array_equal(old[n],new[n],equal_nan=True),'guarded policy replay differs '+n)
+                ratio=np.full(signal.shape,np.nan);v=old['VALID'].astype(bool)
+                ratio[v]=old['BRIGHTNESS'][v]/c['base_scale'][v]
+                require(np.array_equal(ratio,new['RATIO'],equal_nan=True),'guarded ratio replay differs')
                 control_rows.append(dict(array=a,cycle=k,policy=pol,exact=True,guard_accepted=prepared[0]['accepted'],candidate=bound(path)))
         for branch in BRANCHES:
             summary=auth.json(CD/'run'/branch/a/'SUMMARY.json');p['originals'][a][branch]=auth.ref(CD/'run'/branch/a/'SUMMARY.json')

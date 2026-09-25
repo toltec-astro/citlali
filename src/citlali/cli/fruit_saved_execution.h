@@ -179,8 +179,12 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
                     const auto parent_path=checked_file(owner["injected_parents"][name]);ledger.bind(parent_path);
                     const auto parent_values=map_read_array<double>(parent_path,nt*nd);
                     branch_y=Eigen::Map<const PtcMatrix>(parent_values.data(),nt,nd);
-                    const auto expected=fruit_injected_parent(y,eligible,pi,ps);
-                    require(std::memcmp(branch_y.data(),expected.data(),std::size_t(expected.size())*sizeof(double))==0,"FRUIT immutable shoulder parent differs");
+                    if(guarded)branch_y=fruit_verified_injected_parent(y,eligible,pi,ps,
+                        Eigen::Map<const PtcMatrix>(exact_pi.data(),nt,nd),branch_y);
+                    else {
+                        const auto expected=fruit_injected_parent(y,eligible,pi,ps);
+                        require(std::memcmp(branch_y.data(),expected.data(),std::size_t(expected.size())*sizeof(double))==0,"FRUIT immutable shoulder parent differs");
+                    }
                 }else branch_y=fruit_injected_parent(y,eligible,pi,ps);
                 for(Eigen::Index k=0;k<y.size();++k)if(eligible.data()[k]){
                     const double err=std::abs((branch_y.data()[k]-y.data()[k])-pi.data()[k]);

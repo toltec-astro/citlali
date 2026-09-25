@@ -1,5 +1,6 @@
 #include <citlali/core/pipeline/fruit_cycle.h>
 #include <cmath>
+#include <cstring>
 #include <stdexcept>
 namespace citlali::pipeline {
 FruitPointModel::FruitPointModel(std::string id,mapmaking::ForwardMapGrid g,double cx,double cy,double dx,double dy,
@@ -34,6 +35,16 @@ PtcMatrix fruit_injected_parent(const PtcMatrix &y,const PtcMask &e,const PtcMat
         result.data()[k]+=i.data()[k];
         if(!std::isfinite(result.data()[k]))throw std::invalid_argument("FRUIT injection overflow");
     }return result;
+}
+PtcMatrix fruit_verified_injected_parent(const PtcMatrix &y,const PtcMask &e,
+    const PtcMatrix &i,const PtcMask &s,const PtcMatrix &saved_i,const PtcMatrix &saved_y) {
+    if(saved_i.rows()!=i.rows() || saved_i.cols()!=i.cols() ||
+       saved_y.rows()!=y.rows() || saved_y.cols()!=y.cols() || !(saved_i.array()==i.array()).all())
+        throw std::invalid_argument("FRUIT saved injection operand differs");
+    const auto expected=fruit_injected_parent(y,e,i,s);
+    if(std::memcmp(saved_y.data(),expected.data(),std::size_t(expected.size())*sizeof(double))!=0)
+        throw std::invalid_argument("FRUIT immutable injected parent differs");
+    return saved_y;
 }
 std::shared_ptr<const FruitResidual> FruitResidual::subtract(std::string id,const PtcMatrix &y,const PtcMask &eligible,PtcMatrix operand,PtcMask supported) {
     if(id.empty() || y.rows()!=eligible.rows() || y.cols()!=eligible.cols() || y.rows()!=operand.rows() || y.cols()!=operand.cols() ||

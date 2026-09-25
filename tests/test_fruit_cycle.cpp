@@ -1,6 +1,7 @@
 #include <citlali/core/pipeline/fruit_cycle.h>
 #include <gtest/gtest.h>
 #include <cmath>
+#include <cstring>
 using namespace citlali::pipeline;
 using namespace citlali::mapmaking;
 TEST(FruitCycle, PixelProjectionSupportAndExactBrightness) {
@@ -86,6 +87,24 @@ TEST(FruitCycle, ReferenceSequenceFreshMeansMaskedApplyAndRankFailure) {
     double sum=0;for(auto m:members)sum+=values[m.input_row];
     EXPECT_DOUBLE_EQ(op.apply("domain",values).signal[0],sum/members.size());
     EXPECT_THROW(fruit_apply_reference_basis(r,req,b,""),std::invalid_argument);
+}
+TEST(FruitCycle, GuardedFrozenInterventionSignedZeroMaskedAndTamper) {
+    PtcMatrix y(2,3);y<<4,7,NAN,1,-2,8;
+    PtcMask e=PtcMask::Ones(2,3),s=e;e(0,2)=0;s(0,2)=0;
+    for(double amplitude:{0.,.25,-.25}) {
+        PtcMatrix i=PtcMatrix::Constant(2,3,amplitude);i(0,2)=0;
+        const auto saved=fruit_injected_parent(y,e,i,s);
+        const auto verified=fruit_verified_injected_parent(y,e,i,s,i,saved);
+        EXPECT_EQ(std::memcmp(verified.data(),saved.data(),std::size_t(saved.size())*sizeof(double)),0);
+        EXPECT_EQ(std::memcmp(&verified(0,2),&y(0,2),sizeof(double)),0);
+        EXPECT_DOUBLE_EQ(verified(0,0)-y(0,0),amplitude);
+        auto wrong=saved;wrong(0,0)+=.125;
+        EXPECT_THROW(fruit_verified_injected_parent(y,e,i,s,i,wrong),std::invalid_argument);
+        auto wrong_i=i;wrong_i(0,0)+=.125;
+        EXPECT_THROW(fruit_verified_injected_parent(y,e,i,s,wrong_i,saved),std::invalid_argument);
+        wrong=saved;wrong(0,2)=0;
+        EXPECT_THROW(fruit_verified_injected_parent(y,e,i,s,i,wrong),std::invalid_argument);
+    }
 }
 TEST(FruitCycle, ReferenceSequenceStageOrderingAndAutonomousReplacement) {
     PtcMatrix y(4,3);y<<11,24,32,14,20,35,19,27,30,12,25,39;

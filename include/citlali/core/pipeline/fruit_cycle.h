@@ -28,6 +28,12 @@ private:
 // untouched; unavailable projection on an eligible entry is an error.
 PtcMatrix fruit_injected_parent(const PtcMatrix &original, const PtcMask &eligible,
     const PtcMatrix &injection, const PtcMask &projection_supported);
+// Verify a frozen intervention against its current native projection, then use
+// the saved parent verbatim. Same axes/units/support as fruit_injected_parent;
+// numerical operand equality and bytewise parent equality include invalid data.
+PtcMatrix fruit_verified_injected_parent(const PtcMatrix &original, const PtcMask &eligible,
+    const PtcMatrix &injection, const PtcMask &projection_supported,
+    const PtcMatrix &saved_injection, const PtcMatrix &saved_parent);
 // Immutable residual owns the exact projected operand and input eligibility.
 // Matrix axes: scheduled RTC slots x admitted detector columns, row-major.
 // Missing model support excludes the affected input; never fills a sky value.
