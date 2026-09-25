@@ -1,0 +1,56 @@
+{
+  "status": "complete bounded diagnosis; no repair or admission change",
+  "reviewed_source": "1761e943ff26ceb9998f3c2687e7a37bddc6808a",
+  "closure_source": "4a9beb9fbd23e4b88fd8e790d0ff9fc8017f70c1",
+  "diagnosis_source": "970a86dbcb1ad8a86b6025c91cfcecbf0f15b986",
+  "review": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-blank-fit-diagnosis-20260925/FINAL_REVIEW.md",
+    "sha256": "8bb8d979af7157b028d5ed07c55010c75106b15e295a6a3d2d1c04da39ce00e2"
+  },
+  "assessment": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-blank-fit-diagnosis-20260925/ASSESSMENT.md",
+    "sha256": "3a5a47af4e959063452d0dc0c8a2abf43cfb4f966210b7865934c51a1d829b71"
+  },
+  "parent_manifest": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-correlation-admission-20260924/FILES_SHA256SUMS",
+    "sha256": "8d3d1b3af74166e4850d42816e1313c4eb4425fc85dc681a57d3872d94ff9303"
+  },
+  "consumed_originals": 13,
+  "consumed_originals_unchanged": true,
+  "original_fits_replayed": 18,
+  "budget_only_probes": 3,
+  "new_independent_fields": 0,
+  "focused_tests_passed": 10,
+  "three_review_categories": "pass with recorded scope limitations",
+  "new_policy_gates": "unchanged unavailable",
+  "runtime": {
+    "source_revision": "970a86dbcb1ad8a86b6025c91cfcecbf0f15b986",
+    "wall_seconds": 14.546895958992536,
+    "process_peak_RSS_bytes": 226738176,
+    "replay_fits": 18,
+    "budget_only_fits": 3,
+    "independent_new_draws": 0,
+    "consumed_originals_unchanged": true,
+    "consumed_files": 13,
+    "parent_manifest": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-correlation-admission-20260924/FILES_SHA256SUMS",
+      "sha256": "8d3d1b3af74166e4850d42816e1313c4eb4425fc85dc681a57d3872d94ff9303"
+    },
+    "command": [
+      "tools/timestream_successor/diagnose_point_blank_fits.py",
+      "--parent",
+      "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-correlation-admission-20260924",
+      "--output",
+      "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-blank-fit-diagnosis-20260925"
+    ]
+  },
+  "source_fitter_changes": false,
+  "push": false,
+  "production": false,
+  "product_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-blank-fit-diagnosis-20260925",
+  "root_manifest": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-blank-fit-diagnosis-20260925/FILES_SHA256SUMS",
+    "sha256": "5717ff40f32c51d139d423411b6738d2c328c9e784747f95777abc909876ae5a"
+  },
+  "sealed_files": 24
+}
