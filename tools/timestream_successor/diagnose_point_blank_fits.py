@@ -154,9 +154,83 @@ def run(parent, out):
     verify_manifest(out)
 
 
+def report(parent, out):
+    """Summarize recorded fits; no optimizer calls or new field realizations."""
+    import matplotlib.pyplot as plt
+    revision = source()
+    verify_manifest(out)
+    rows = read(out/'CASES.json')
+    census = read(out/'CENSUS.json')
+    dest = out/'report'
+    dest.mkdir()
+    failed = [r for r in rows if r['role']=='failed']
+    require(len(failed)==9 and all(r['original']['status']==0 and r['original']['nfev']==3000 for r in failed), 'diagnostic conclusion no longer matches')
+    require(all(r['original']['nonfinite_residual_calls']==0 for r in rows), 'unexpected nonfinite objective')
+    factor = np.sqrt(8*np.log(2))
+    fig, axes = plt.subplots(3, 3, figsize=(13, 10), layout='constrained')
+    summaries = []
+    for i, a in enumerate(ARRAYS):
+        first = next(r for r in failed if r['array']==a)
+        base, probe = first['original'], first['budget_probe']
+        for record, label, color in ((base, 'Original budget 3000', '#315b89'), (probe, 'Probe budget 6000', '#bc5b32')):
+            trace = record['trace']
+            x = np.array([t['residual_call'] for t in trace])
+            best = np.array([t['best_cost'] for t in trace])
+            params = np.array([t['parameters'] for t in trace])
+            axes[i,0].plot(x, (best-record['cost'])/record['constant_only_cost'], label=label, color=color)
+            axes[i,1].plot(x, params[:,0], label=label, color=color)
+            axes[i,2].plot(x, np.min(params[:,3:5],axis=1)*factor, label=label, color=color)
+        axes[i,0].set(yscale='symlog', ylabel='Cost above own terminal / constant-only cost', title=f'{a}: first failure, trial {first["trial"]}')
+        axes[i,0].set_yscale('symlog', linthresh=1e-9)
+        axes[i,1].set(ylabel='Fitted amplitude (mJy/nominal beam)', title='Noise-peak amplitude')
+        axes[i,2].axhline(2, color='black', ls='--', label='2 arcsec pixel spacing')
+        axes[i,2].axhline(.5*factor, color='gray', ls=':', label='Inherited width lower bound')
+        axes[i,2].set(ylabel='Minor FWHM (arcsec)', title='Narrowing noise feature')
+        for ax in axes[i]: ax.set_xlabel('Residual calls, including numerical Jacobian')
+        summaries.append(dict(array=a, trial=first['trial'], original_nfev=base['nfev'], probe_nfev=probe['nfev'],
+            original_amplitude=base['parameters'][0], probe_amplitude=probe['parameters'][0],
+            relative_cost_decrease=(base['cost']-probe['cost'])/base['cost'],
+            original_minor_FWHM_arcsec=min(base['parameters'][3:5])*factor,
+            probe_minor_FWHM_arcsec=min(probe['parameters'][3:5])*factor))
+    axes[0,0].legend(fontsize=8); axes[0,2].legend(fontsize=8)
+    fig.suptitle('Existing blank-fit diagnosis: all three budget probes still hit their limit\nEvaluation traces include finite-difference calls; they are not accepted-iteration histories')
+    fig.savefig(dest/'blank-fit-traces.png', dpi=150, bbox_inches='tight', pad_inches=.15)
+    plt.close(fig)
+    lines = ['# POINT 152389: bounded blank-fit diagnosis', '',
+        '**The sampled failures exhaust the iteration budget while fitting narrow noise peaks.** All nine exact-setting failed replays return optimizer status0, “The maximum number of function evaluations is exceeded,” at nfev3000. All1257 fit pixels, terminal parameters and residual evaluations are finite. There is no sampled NaN, missing-coverage or solver-exception failure.', '',
+        'All18 archived outcomes reproduce exactly. The three isolated6000-evaluation probes still fail. They use the original start, data, objective, bounds and tolerances; only the budget differs. These are diagnostic fits, not replacement calibration outcomes.', '',
+        '| Array | Probe trial | Amplitude at3000 | Amplitude at6000 | Relative cost decrease | Minor FWHM at3000 /6000 (arcsec) |',
+        '|---|---:|---:|---:|---:|---:|']
+    for r in summaries:
+        lines.append(f"| {r['array']} | {r['trial']} | {r['original_amplitude']:.5f} | {r['probe_amplitude']:.5f} | {r['relative_cost_decrease']:.5g} | {r['original_minor_FWHM_arcsec']:.4f} / {r['probe_minor_FWHM_arcsec']:.4f} |")
+    lines.extend(['', 'Amplitudes are mJy/nominal beam. Relative cost decrease is `(cost3000-cost6000)/cost3000`, not a fractional amplitude error or detection statistic.', '',
+        'The nine failed fits have minor FWHM below the2arcsec pixel spacing. Several approach the inherited sigma lower bound of0.5arcsec (FWHM1.1774arcsec). The two larger amplitude drifts accompany narrowing widths and little objective improvement. This is consistent with weakly determined subpixel noise peaks and slow progress along coupled amplitude/shape directions. It is a diagnosis of the selected cases, not proof of a unique cause for every archived failure.', '',
+        'The paired core controls converge in15/17/15 evaluations for a1100/a1400/a2000. The successful blank controls converge in30–562 evaluations but can also fit narrow or bound-limited noise structures. In particular, one successful a1100 control sits extremely near the width bound without an active-bound flag. Neither numerical success nor that flag is a scientific source-presence test.', '',
+        '## Why blank scenes enter the positive-source fitter', '',
+        'The inherited initializer searches for the largest pixel within20arcsec, subtracts the median within40arcsec, then fits a positive elliptical Gaussian plus constant. Its pre-fit absence check is only whether that maximum exceeds the median. This is not a noise-aware association or significance test. No archived blank outcome satisfies that absence check; noise peaks enter the seven-parameter optimizer. The strict1e-12 tolerances and broad shape freedom are inherited descriptive-fit choices. Their individual causal contributions have not been isolated, and this task does not select replacements.', '',
+        '## Scope and preserved failures', '',
+        '| Array | Calibration blank failures /1024 | Validation blank failures /1024 | Stress blank failures /256 |',
+        '|---|---:|---:|---:|'])
+    for a in ARRAYS:
+        counts = [sum(v for k,v in census[a][phase]['blank']['causes'].items() if k!='success') for phase in ('calibration-scenes','validation-scenes','validation-stress')]
+        lines.append(f'| {a} | {counts[0]} | {counts[1]} | {counts[2]} |')
+    lines.extend(['',
+        'The full archived census reports only the generic nonconvergence cause for failures; optimizer termination details were not originally saved. Evaluation-limit exhaustion is established for these nine replayed failures, not retrospectively for all failures. The sample is deterministic (first three failed calibration IDs per array), small and not randomly representative.', '',
+        'No NaN/input repair, automatic source-absence relabeling, larger-budget adoption, threshold from surviving draws, source-model change or feedback rerun is justified by this diagnosis. All six launch gates remain unavailable. No source fitter, admission rule, map, original trial record or sealed parent was changed.', '',
+        '**Recommended next action:** separately define and review the source-association/no-candidate behavior for these known-bright-source null controls, keeping optimizer failure distinct from absence. Preserve detailed optimizer diagnostics in any later implementation. A blanket budget increase is not supported by the three probes. No rule or repair is selected here.', '',
+        f"Runtime: {read(out/'RUN.json')['wall_seconds']:.3f}s for18 replays and3 budget probes; zero new independent noise fields, zero upstream reductions. Ten focused correlation-admission tests pass in the existing local Python environment. This does not claim Unity/Spack validation.", '',
+        f"![Fixed diagnostic traces]({dest/'blank-fit-traces.png'})", '',
+        f"[Every recorded case and optimizer result]({out/'CASES.json'})", f"[Full archived outcome census]({out/'CENSUS.json'})", f"[Fixed selection, input hashes and environment]({out/'PLAN.json'})"])
+    (dest/'ASSESSMENT.md').write_text('\n'.join(lines)+'\n')
+    save_json(dest/'SUMMARY.json', dict(source_revision=revision, probes=summaries, sampled_failures=9,
+        exact_outcome_replays=18, new_independent_fields=0, covariance_or_fit_setting_changes_adopted=False))
+    manifest(dest)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--parent', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--report-only', action='store_true')
     args = parser.parse_args()
-    run(args.parent, args.output)
+    report(args.parent, args.output) if args.report_only else run(args.parent, args.output)
