@@ -1,5 +1,26 @@
 # Citlali Refactor Status
 
+## POINT 152389 approved duplicate cleanup — completed 2026-09-26
+
+Owner approved the three exact targets in the recovery cleanup proposal.
+All 7,039 target/retained pairs were freshly SHA256 verified before removal;
+only the enumerated duplicates were deleted. All three target directories are
+absent, preserved copies remain unchanged, and eight selected checkpoint
+bindings authenticate before and after. Packet-specific records and the
+unfinished CUT3 work are preserved. The old ready packet has a visible
+retirement/restore notice; original scientific manifests were not rewritten.
+
+Deleted logical payload is 11.925 GiB. Measured available-space increase was
+1.296 GiB, to 173.180 GiB; do not equate logical deletion with physical recovery.
+The filesystem accounting difference is recorded without assigning an unproven
+specific cause. See validation/point_152389_recovery_cleanup_2026-09-26/
+EXECUTION_COMPLETE.md and the exact execution receipt/deletion ledger.
+
+The earlier approval-pending inventory below is historical and is superseded
+for these three targets only. No larger deletion batch, scientific application,
+Unity access, merge or push occurred. The unfinished bounded m1 replay/CUT3
+implementation and independent pre-execution review remain the next science work.
+
 ## POINT 152389 recovery and cleanup inventory — 2026-09-26
 
 Owner requested state recovery, generated-product cleanup and next-step planning

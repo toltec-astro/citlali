@@ -1,0 +1,34 @@
+{
+  "status": "completed",
+  "owner_authorization": "User: yes, go ahead and delete those files",
+  "started_utc": "2026-09-26T11:24:44.342619+00:00",
+  "proposal_sha256": "47d9ea6deeab053a907bfebf2144623aff032cccafeb32507a865b1235b7de8e",
+  "script_sha256": "2ae970b6871eccd53de210162bbdef377a362c7c5e4906614b4445b0d60055c9",
+  "free_space_before": "Filesystem   1024-blocks       Used Available Capacity iused      ifree %iused  Mounted on\n/dev/disk3s5  1948455240 1747011472 180233264    91% 3905814 1802332640    0%   /System/Volumes/Data\n",
+  "targets": [
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-full-network-ready-ae4842e-20260919/unity-packet/assets",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-full-network-ready-ae4842e-20260919/unity-packet/local-reference",
+    "/private/tmp/point-fruit-one-cycle-20260923"
+  ],
+  "retained": [
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-full-network-checkpoint-98380090e-20260919/unity-packet/assets",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-full-network-checkpoint-98380090e-20260919/unity-packet/local-reference",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-fruit-one-cycle-20260923/cycle"
+  ],
+  "checkpoint_checks_before": 8,
+  "deleted_files": 7039,
+  "deleted_logical_bytes": 12804081472,
+  "fresh_pairs_verified": 7039,
+  "verification_seconds": 5.805533334001666,
+  "checkpoint_checks_after": 8,
+  "completed_utc": "2026-09-26T11:24:52.744425+00:00",
+  "seconds": 8.401842249993933,
+  "free_space_after": "Filesystem   1024-blocks       Used Available Capacity iused      ifree %iused  Mounted on\n/dev/disk3s5  1948455240 1745652188 181592548    91% 3898618 1815925480    0%   /System/Volumes/Data\n",
+  "all_targets_absent": true,
+  "retained_file_stats_unchanged": true,
+  "original_packet_metadata_unchanged": true,
+  "unfinished_patch_unchanged": true,
+  "retirement_notice": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-full-network-ready-ae4842e-20260919/unity-packet/CLEANUP_RETIREMENT_2026-09-26.md",
+  "retirement_notice_sha256": "2b5fa7dcf6513cc0090047cccd879b2c1868d043b9a72c308f7d17b723330b04",
+  "deletion_log_sha256": "983b9aa15b27cdb266de86132300f4b6897c3da0c1bb93ec14ea8686b961db5d"
+}
