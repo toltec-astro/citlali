@@ -13,7 +13,7 @@ Park effects comfortably below the relevant scale and scientific goals when no
 consequential instability or correctness issue is demonstrated. Retain material
 coherent response questions; report unmatched scales as unresolved without
 automatically starting another experiment. There is no universal sub-mJy/sigma
-cutoff, combined score, or new numerical replay tolerance. The approximately5%
+cutoff, combined score, or new numerical replay tolerance. The approximately 5%
 calibration/PSF aspirations remain context, not partial-boundary acceptance tests.
 
 Compact scientific evidence and exact reproduction records are durable. Large
@@ -25,7 +25,7 @@ historical and compact representations receive their own index. Protected
 observations, indispensable inputs and inaccessible/unique evidence are retained.
 Do not keep a large array indefinitely solely because it might be useful later.
 
-The September26 POINT importance/compaction task parks the unexecuted three-pixel
+The September 26 POINT importance/compaction task parks the unexecuted three-pixel
 counterfactual and proposed second-observation comparison. Its closeout records
 the actual retained footprint and concrete producer-specific recovery exceptions.
 

@@ -1,5 +1,60 @@
 # Citlali Refactor Status
 
+## POINT 152389 importance and archive compaction — completed 2026-09-26
+
+The owner's September 26 directive supersedes the earlier proposed science next
+step: the unfinished three-pixel CUT3 experiment and second-observation comparison
+are parked. The untested CUT3 hook was removed using its preserved recovery patch;
+its directive, draft preflight and parked status remain in validation. No new
+scientific processing, source/covariance fits, candidates or synthetic trials ran.
+
+Authenticated cached extraction covers 729 measurement effects and 24 source
+records. The a2000 CORR seed peak change is -0.103601 mJy/nominal beam,
+-0.0127448% of its own REF peak and 0.0159702 of the affected branch's conditional
+POINT-EXPECTED guard scale. This is practical size, not significance of a paired
+difference or empirical endpoint noise. Park the isolated seed/peak/late-drift
+investigations; retain the coherent shoulder-policy tradeoff as consequential
+evidence. Current endpoint aperture/template, parameter and local-extreme scales
+remain unresolved. No new science experiment is recommended from the small effects.
+The 9.28448% compact-plus aperture discrepancy is relative to the injected increment;
+it is 0.910059% of the REF source aperture and 0.554133 historical aperture scatters.
+
+Reviewed duplicate compaction removed exactly 48,151 files, 110,330,864,284 logical
+bytes (110.331 GB), with 6,287 directly retained counterparts. All 54,438 target and
+canonical files were freshly hashed before removal; six confined byte restorations
+passed. Post-removal checks confirm targets absent, 198,590 original retained file
+identities unchanged, all original manifests unchanged, and cached report extraction
+identical. Eight focused tests and seven existing FRUIT tests pass; independent
+scientific, dependency, exact-manifest and post-removal reviews bind the evidence.
+Two initial sandbox/Python startup probes aborted before copying or numerical work;
+the later native-copy proof passed and its temporary arrays were removed.
+
+Observed free-space gain was 110,390,718,464 bytes (110.391 GB / 102.809 GiB),
+with 274.409 GiB available immediately after removal. This operation is separate
+from the earlier 7,039-file cleanup below. The 27 original bundles retain 120.581 GB
+of original payload; notices and the approximately 50 MB closeout bring the current
+combined footprint to about 120.631 GB. This includes 7.303 GB of shared processing
+parents and about 113.328 GB of derived evidence/producer-specific exceptions.
+**The provisional 25 GB derived-evidence target was not met.** Historical C+D,
+injected guarded, JINC and frozen/basis routes require distinct retained-only
+producer checks before deleting unique states. The optional numerical replay/trial
+allowances were unused; one ordinary REF route cannot establish them all.
+
+Original full-payload seals remain historical; the two affected layouts are
+intentionally incomplete until explicit restoration. A new compact archive index,
+retained-file representations and seal bind current evidence and recovery pairs.
+Readers fail explicitly for intentionally compacted paths and never regenerate
+while reading. Source code, maps, small evidence, unique state, originals and
+indispensable inputs remain. No merge, push or production/default change.
+
+See validation/point_152389_importance_compaction_2026-09-26/COMPLETION.json,
+handoff/POINT_152389_IMPORTANCE_AND_ARCHIVE_COMPACTION_2026-09-26.md and the external
+successor-point-152389-importance-and-archive-compaction-20260926/ASSESSMENT.md.
+The future reporting/retention convention is in doc/SCIENTIFIC_GOALS.md.
+Stop: the bounded assessment and supported compaction are complete; no next
+scientific experiment is launched or recommended from these small effects.
+
+
 ## POINT 152389 approved duplicate cleanup — completed 2026-09-26
 
 Owner approved the three exact targets in the recovery cleanup proposal.

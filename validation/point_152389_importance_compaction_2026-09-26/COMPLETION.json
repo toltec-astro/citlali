@@ -1,0 +1,86 @@
+{
+  "status": "completed; supported partial compaction, provisional storage target not met",
+  "date": "2026-09-26",
+  "output_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-importance-and-archive-compaction-20260926",
+  "owned_worktree": "/private/tmp/citlali-point-additive-20260923",
+  "branch": "codex/map-successor-first-forward-001",
+  "execution_source_revision": "8f214e06c4e01722194e7bc8ea9a1d991974ddf4",
+  "final_publisher_sha256": "86d5209c16a793ecefbb865a6de3b14ed328a0bc37058e56a7c664fea539d179",
+  "final_publisher_patch_sha256": "23e5de3f1519f3e5f49d55141c0b57ce3defe701e6c723cc5c410d109f99499e",
+  "seal_sha256": "0bafac7a4d10ab94bc27f75ff377c0e83a211d05594b0b8141d33fa32a93f3bf",
+  "manifest_sha256": "737e72ad60db225a6036839c54c53b24c580b0aeb4625569dd699388d9be5083",
+  "sealed_payload_files": 51,
+  "closeout_total_bytes": 49981249,
+  "removed_files": 48151,
+  "canonical_replacements": 6287,
+  "removed_logical_bytes": 110330864284,
+  "observed_free_space_increase_bytes": 110390718464,
+  "available_immediately_after_bytes": 294644191232,
+  "original_27_remaining_bytes_including_notices": 120581041144,
+  "combined_final_logical_bytes": 120631022393,
+  "shared_processing_cache_bytes": 7303308491,
+  "derived_including_closeout_bytes": 113327713902,
+  "provisional_derived_target_bytes": 25000000000,
+  "target_met": false,
+  "science_disposition": "Park isolated small seed/peak/terminal-drift investigations and unfinished CUT3/second observation; preserve coherent shoulder-policy question; unmatched endpoint/parameter/local scales unresolved; no next experiment recommended from small effects.",
+  "scientific_applications": 0,
+  "scientific_fits": 0,
+  "covariance_fits": 0,
+  "candidate_evaluations": 0,
+  "synthetic_trials": 0,
+  "assessment_rows": 729,
+  "authenticated_scientific_sources": 24,
+  "focused_archive_tests": 8,
+  "existing_fruit_tests": 7,
+  "confined_byte_restoration_checks": 6,
+  "infrastructure_startup_aborts_before_copy": 2,
+  "successful_verification_scratch_removed": true,
+  "all_removed_targets_absent": true,
+  "retained_original_inventory_files_unchanged": 198590,
+  "report_reextraction_exact": true,
+  "tests_scope": "Small fixtures and cached-only report access; no new scientific replay or broad campaign.",
+  "review_records": {
+    "MANIFEST_REVIEW.md": "010a0ab532122819104488cbc5c00670d287a8339101b0f10b51ab17754c18b0",
+    "POST_REMOVAL_REVIEW.md": "b59b3efc55a578415cd7d8c3005e8d91ed68bc925abe76df061f56e0f05debc8",
+    "FINAL_PUBLICATION_REVIEW.md": "ca4669b29a55b09451c5cc51a686d9b53cd3a723f9e13bb0db16b01cb8462136",
+    "FINAL_SEAL_REVIEW.md": "5466cdee0d77abc48949a46d24b4beae29ac55006802be2f2697b1195add06ef"
+  },
+  "external_owner_assessment": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-importance-and-archive-compaction-20260926/ASSESSMENT.md",
+    "sha256": "98e8b5219ad5e9f37f26f35599b1f36c78fc4763fc844c7a2006aded63ab6ec5"
+  },
+  "limitations": [
+    {
+      "roots": [
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-guarded-feedback-comparison-20260925",
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-response-robustness-cd-20260923"
+      ],
+      "reason": "Unique ordinary/injected guarded and historical C+D numerical state retained. No isolated full producer/dependency proof authorizes discarding unique bytes. One a2000 CORR REF replay would not validate every historical fitter/injected route; allowance unused in this duplicate-only pass."
+    },
+    {
+      "roots": [
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-map-only-jinc-20260924",
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-map-only-jinc-full-20260924",
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-map-only-jinc-full-20260924-r2",
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-map-only-jinc-full-20260924-r3",
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-map-only-jinc-full-20260924-r4"
+      ],
+      "reason": "Distinct JINC producer and numerical certificates; no ordinary-MAP replay extrapolation. Retained complete."
+    },
+    {
+      "roots": [
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-a2000-ref-basis-sequence-20260924",
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-frozen-ptc-shoulder-20260924"
+      ],
+      "reason": "Saved basis schedules and distinct frozen operators are operational state. Retained complete."
+    },
+    {
+      "roots": [
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-forward-map-20260922",
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-network-rescue-20260922"
+      ],
+      "reason": "Native parent loader hashes all original PTC components and reads original cleaned/basis diagnostics; retain shared complete parent cache. Recovery starts from retained original boundaries; no RTC/CAL rebuild authorized."
+    }
+  ],
+  "stop": "No experiment launch, tuning, policy/default adoption, merge, push, Unity or external storage service. Original seals historical; new retained representation has separate seal; explicit byte restoration only."
+}
