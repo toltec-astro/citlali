@@ -1,5 +1,29 @@
 # Citlali Refactor Status
 
+## POINT 152389 recovery and cleanup inventory — 2026-09-26
+
+Owner requested state recovery, generated-product cleanup and next-step planning
+after the interrupted session. The last completed scientific checkpoint remains
+the September 25 saved-product diagnosis below. The authorized a2000 three-pixel
+m1 continuation stopped in preparation: one untested 20-line logging hook and
+directive/preflight drafts, no new experiment output or live scientific process.
+Implementation, tests and independent pre-execution review remain unfinished;
+no new science application is recorded against the 18-application ceiling.
+
+Eight selected checkpoint identity bindings authenticate. Recovery snapshots,
+disk/dependency inventories and the exact proposed cleanup are recorded in
+validation/point_152389_recovery_cleanup_2026-09-26 and
+handoff/POINT_152389_RECOVERY_AND_CLEANUP_2026-09-26.md. Independent preservation
+review passes with limitations for three redundant trees: 7,039 files,
+11.925 GiB logical, all identical to retained copies. Exact deletion approval
+is pending; nothing has been deleted. Current POINT products, raw originals,
+the earlier immutable checkpoint and ready/local-evidence remain retained.
+
+Next: approve/execute the bounded duplicate cleanup, then finish/review the
+existing CUT3 implementation. Run the unchanged m1 replay T2–T10 first; only
+after replay passes run the three-pixel intervention T2–T10. No new scientific
+result, policy adoption, Unity access, merge or push is claimed by this recovery.
+
 ## POINT 152389 a2000 saved-product diagnosis — completed 2026-09-25
 
 Cached-only analysis covers 15 histories/165 states, 33 seed differences,

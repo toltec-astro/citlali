@@ -1,0 +1,26 @@
+{
+  "successor-point-152389-guarded-feedback-comparison-20260925": {
+    "record": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-guarded-feedback-comparison-20260925/freeze/prospective.json",
+    "reference_occurrence_counts": {
+      "successor-point-152389-guarded-feedback-comparison-20260925": 199,
+      "successor-point-152389-expected-source-guard-20260925-r2": 60,
+      "successor-point-152389-correlation-admission-20260924": 14,
+      "successor-point-152389-response-robustness-cd-20260923": 2994,
+      "successor-point-152389-network-rescue-20260922": 1121,
+      "successor-point-152389-admission-prototype-20260923": 7,
+      "successor-point-152389-fruit-one-cycle-20260923": 15,
+      "successor-point-152389-fruit-ten-cycles-20260923": 66,
+      "successor-point-152389-additive-uncertainty-20260923": 1,
+      "successor-point-152389-post-fruit-ab-20260923": 18,
+      "successor-point-152389-forward-map-20260922": 5021
+    }
+  },
+  "successor-point-152389-a2000-saved-product-diagnosis-20260925": {
+    "record": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-a2000-saved-product-diagnosis-20260925/PROSPECTIVE.json",
+    "reference_occurrence_counts": {
+      "successor-point-152389-guarded-feedback-comparison-20260925": 3413,
+      "successor-point-152389-response-robustness-cd-20260923": 14,
+      "successor-point-152389-correlation-admission-20260924": 4
+    }
+  }
+}

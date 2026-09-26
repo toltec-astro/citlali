@@ -1,0 +1,62 @@
+{
+  "head": "11b4d2c07a81cc5876bd3da833c4168731e34aea",
+  "checks": [
+    {
+      "item": "point_152389_a2000_saved_diagnosis_2026-09-25/root_manifest",
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-a2000-saved-product-diagnosis-20260925/FILES_SHA256SUMS",
+      "expected": "0c2f915a5ed6d93b52c6a4ed0c8324b12fb70d67474e4e49787ae45308146462",
+      "actual": "0c2f915a5ed6d93b52c6a4ed0c8324b12fb70d67474e4e49787ae45308146462",
+      "match": true
+    },
+    {
+      "item": "point_152389_a2000_saved_diagnosis_2026-09-25/review",
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-a2000-saved-product-diagnosis-20260925/FINAL_REVIEW.md",
+      "expected": "6a05a514bfdee34d9bb10af2f6354d518a3772cf6fa72884e421802102264d93",
+      "actual": "6a05a514bfdee34d9bb10af2f6354d518a3772cf6fa72884e421802102264d93",
+      "match": true
+    },
+    {
+      "item": "point_152389_a2000_saved_diagnosis_2026-09-25/assessment",
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-a2000-saved-product-diagnosis-20260925/ASSESSMENT.md",
+      "expected": "a2caef76d7680b9a6c41c9da10c39bdc17bbf6523b90e4aee39dc556574ceecd",
+      "actual": "a2caef76d7680b9a6c41c9da10c39bdc17bbf6523b90e4aee39dc556574ceecd",
+      "match": true
+    },
+    {
+      "item": "diagnosis/seal",
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-a2000-saved-product-diagnosis-20260925/SEAL.json",
+      "expected": "574e1796877e4a87a51bfc21aac7cce399a8013bb7ee300c5e9d759d61b75b6a",
+      "actual": "574e1796877e4a87a51bfc21aac7cce399a8013bb7ee300c5e9d759d61b75b6a",
+      "match": true
+    },
+    {
+      "item": "point_152389_guarded_feedback_comparison_2026-09-25/root_manifest",
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-guarded-feedback-comparison-20260925/FILES_SHA256SUMS",
+      "expected": "5f6bf979f4e4ee2f4e2d249512c9107e73ed7f8fab8c58ccc257db27c65265a9",
+      "actual": "5f6bf979f4e4ee2f4e2d249512c9107e73ed7f8fab8c58ccc257db27c65265a9",
+      "match": true
+    },
+    {
+      "item": "point_152389_guarded_feedback_comparison_2026-09-25/review",
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-guarded-feedback-comparison-20260925/FINAL_REVIEW.md",
+      "expected": "edee8c7b33c67fee7a4849ae5898f48ee5e5df0cd847d364c9cc5f3bc0b3e6a6",
+      "actual": "edee8c7b33c67fee7a4849ae5898f48ee5e5df0cd847d364c9cc5f3bc0b3e6a6",
+      "match": true
+    },
+    {
+      "item": "point_152389_guarded_feedback_comparison_2026-09-25/assessment",
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-guarded-feedback-comparison-20260925/ASSESSMENT.md",
+      "expected": "7bec515c9ca69afa735746e21040a8a2848c886b8eef2aefd3800411bb9d1228",
+      "actual": "7bec515c9ca69afa735746e21040a8a2848c886b8eef2aefd3800411bb9d1228",
+      "match": true
+    },
+    {
+      "item": "guarded/native",
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-guarded-feedback-comparison-20260925/provenance/citlali",
+      "expected": "72d8f2c2ee224014b5f97754afaf3cc17ab30544d565965297b85a520d4e6277",
+      "actual": "72d8f2c2ee224014b5f97754afaf3cc17ab30544d565965297b85a520d4e6277",
+      "match": true
+    }
+  ],
+  "scope": "Ledger, review, assessment, detached diagnosis seal and required native binary only; not a full parent payload rehash."
+}

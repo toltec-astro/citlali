@@ -1,0 +1,32 @@
+[
+  {
+    "category": "validation_area",
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation",
+    "allocated_KiB": 417693088,
+    "allocated_GiB": 398.3431701660156
+  },
+  {
+    "category": "older_fruit_development",
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development",
+    "allocated_KiB": 34163680,
+    "allocated_GiB": 32.581024169921875
+  },
+  {
+    "category": "legacy_refactor",
+    "path": "/Users/gwilson/work_toltec/local_data/2026-refactor",
+    "allocated_KiB": 109973084,
+    "allocated_GiB": 104.87850570678711
+  },
+  {
+    "category": "git_worktrees",
+    "path": "/Users/gwilson/.codex/worktrees",
+    "allocated_KiB": 5423368,
+    "allocated_GiB": 5.172126770019531
+  },
+  {
+    "category": "preserved_scratch_duplicate",
+    "path": "/private/tmp/point-fruit-one-cycle-20260923",
+    "allocated_KiB": 1360752,
+    "allocated_GiB": 1.2977142333984375
+  }
+]

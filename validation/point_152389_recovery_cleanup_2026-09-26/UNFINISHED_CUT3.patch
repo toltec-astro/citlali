@@ -1,0 +1,31 @@
+diff --git a/tools/timestream_successor/point_corr_admission.py b/tools/timestream_successor/point_corr_admission.py
+index 8edc9fc5d..e41ff6f85 100644
+--- a/tools/timestream_successor/point_corr_admission.py
++++ b/tools/timestream_successor/point_corr_admission.py
+@@ -91,6 +91,26 @@ class Neighborhood:
+             zs=np.full(self.shape,np.nan);vs=zs.copy();av=np.zeros(self.shape,bool)
+             zs.ravel()[ai]=z;vs.ravel()[ai]=v;av.ravel()[ai]=ok
+             fields['policies'][name]=dict(score=zs,variance=vs,available=av,numerical_failures=int(np.sum(available&~(np.isfinite(e)&np.isfinite(v)&(v>0)))))
++        # Optional bounded observer of operands from this already-required call.
++        # It neither changes fields nor evaluates a policy/score on another state.
++        audit_ids=getattr(self,'audit_pixel_ids',())
++        if audit_ids:
++            rows=[]
++            for pixel in audit_ids:
++                pos=np.flatnonzero(ai==pixel)
++                require(pos.size==1,'audit pixel outside fixed anchor domain')
++                j=int(pos[0]);rc=tuple(self.anchors[j])
++                rows.append(dict(pixel_id=int(pixel),row=int(rc[0]),column=int(rc[1]),
++                    neighbor_ids=ii[j].copy(),normalized_weights=q[j].copy(),
++                    signed_brightness_contributions=(q[j]*np.nan_to_num(b.ravel()[ii[j]])).copy(),
++                    neighbor_brightness=b.ravel()[ii[j]].copy(),neighbor_excluded=excluded.ravel()[ii[j]].copy(),
++                    center_excluded=self.center.copy(),weight_normalizer=float(norm[j]),
++                    numerator=float(e[j]),variance=float(vc[j]),score=fields['policies']['CORR']['score'][rc],
++                    available=bool(fields['policies']['CORR']['available'][rc]),full_footprint=bool(full[j]),
++                    anchor_available=bool(anchor[j]),neff_weights=float(neff[j]),
++                    baseline=bool(B[rc]),K0=bool(self.k0[rc]),brightness=float(b[rc]),
++                    scope='observed operands from existing scores call; normalized signed numerator; no additional test'))
++            fields['operand_audit']=rows
+         fields['eligible_anchors']=int(anchor.sum());return fields
+ 
+ 

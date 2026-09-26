@@ -1,0 +1,43 @@
+{
+  "schema": "citlali-cleanup-proposal-v1",
+  "status": "proposed; awaiting exact owner approval; nothing deleted",
+  "source_revision": "11b4d2c07a81cc5876bd3da833c4168731e34aea",
+  "total_files": 7039,
+  "total_logical_bytes": 12804081472,
+  "total_logical_GiB": 11.924730122089386,
+  "targets": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-full-network-ready-ae4842e-20260919/unity-packet/assets",
+      "retained_path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-full-network-checkpoint-98380090e-20260919/unity-packet/assets",
+      "files": 38,
+      "bytes": 6809587215
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-full-network-ready-ae4842e-20260919/unity-packet/local-reference",
+      "retained_path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-full-network-checkpoint-98380090e-20260919/unity-packet/local-reference",
+      "files": 5985,
+      "bytes": 4603256446
+    },
+    {
+      "path": "/private/tmp/point-fruit-one-cycle-20260923",
+      "retained_path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-fruit-one-cycle-20260923/cycle",
+      "files": 1016,
+      "bytes": 1391237811
+    }
+  ],
+  "pre_execution": "Reverify every target and preservation hash, exact relative inventories, regular files and no symlink traversal; abort on mismatch/new path. Check for active consumers. Delete only enumerated files, then empty directories. Record deletion receipt and free space.",
+  "packet_ledger_sha256": "719434e1a7f0552095b9631732da43eeaed108d7452cbb9c30274ffd82cd6786",
+  "packet_ledger_gzip_sha256": "6fb12117c621749d365407d372440278bfb4d0f6b3301530b81d7cfc3834aa0b",
+  "scratch_ledger_sha256": "c441a2dc5b9eb7579bc322a027489aa0cf79bd159e6a6690fc02040ba560f883",
+  "retirement": "Only the ready-ae4842e historical unity-packet becomes non-self-contained; keep its scripts, manifests, reviews and PREPARATION unchanged. Add an explicit retirement notice after approval; never claim its old full payload verification still passes. Restore through exact pair ledger if needed.",
+  "exclusions": [
+    "Retained checkpoint counterparts",
+    "ready/local-evidence",
+    "all current POINT campaign products and inputs",
+    "raw originals outside duplicate packet",
+    "all Git refs and worktrees",
+    "all build trees",
+    "main-checkout changes",
+    "Unity and remote state"
+  ]
+}

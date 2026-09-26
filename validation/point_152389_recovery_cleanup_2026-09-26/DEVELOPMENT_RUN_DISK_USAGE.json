@@ -1,0 +1,217 @@
+[
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-guarded-feedback-comparison-20260925",
+    "allocated_KiB": 122708324,
+    "allocated_GiB": 117.02377700805664
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-response-robustness-cd-20260923",
+    "allocated_KiB": 64485032,
+    "allocated_GiB": 61.497718811035156
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-full-network-checkpoint-98380090e-20260919",
+    "allocated_KiB": 29790764,
+    "allocated_GiB": 28.410686492919922
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-full-network-ready-ae4842e-20260919",
+    "allocated_KiB": 25333672,
+    "allocated_GiB": 24.160072326660156
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-map-only-jinc-full-20260924-r4",
+    "allocated_KiB": 10145252,
+    "allocated_GiB": 9.67526626586914
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-observation-residency-ba173150f-20260919",
+    "allocated_KiB": 9978912,
+    "allocated_GiB": 9.516632080078125
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-rtc-performance-f34f9d9d8-20260918",
+    "allocated_KiB": 9596096,
+    "allocated_GiB": 9.15155029296875
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-correlation-admission-20260924",
+    "allocated_KiB": 7245036,
+    "allocated_GiB": 6.909404754638672
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-fruit-ten-cycles-20260923",
+    "allocated_KiB": 6821668,
+    "allocated_GiB": 6.505649566650391
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-array-lowpass-530743ec5-20260919",
+    "allocated_KiB": 5734668,
+    "allocated_GiB": 5.469005584716797
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-partial-completion-4690f9747-20260918",
+    "allocated_KiB": 4975652,
+    "allocated_GiB": 4.745151519775391
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-forward-map-20260922",
+    "allocated_KiB": 4277208,
+    "allocated_GiB": 4.079063415527344
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-network-rescue-20260922",
+    "allocated_KiB": 2994136,
+    "allocated_GiB": 2.8554306030273438
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-first-forward-map-20260922",
+    "allocated_KiB": 2707156,
+    "allocated_GiB": 2.581745147705078
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-a2000-ref-basis-sequence-20260924",
+    "allocated_KiB": 2543068,
+    "allocated_GiB": 2.4252586364746094
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-fruit-one-cycle-20260923",
+    "allocated_KiB": 1373428,
+    "allocated_GiB": 1.3098030090332031
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-map-only-jinc-full-20260924-r3",
+    "allocated_KiB": 1249580,
+    "allocated_GiB": 1.1916923522949219
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-frozen-ptc-shoulder-20260924",
+    "allocated_KiB": 905536,
+    "allocated_GiB": 0.86358642578125
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-balanced-pairings-20260922",
+    "allocated_KiB": 300260,
+    "allocated_GiB": 0.2863502502441406
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-expected-source-guard-20260925-r2",
+    "allocated_KiB": 295592,
+    "allocated_GiB": 0.28189849853515625
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-ptc-cb5361f74-20260918",
+    "allocated_KiB": 262416,
+    "allocated_GiB": 0.2502593994140625
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-cal-single-opacity-35b05ba91-20260918",
+    "allocated_KiB": 175640,
+    "allocated_GiB": 0.16750335693359375
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-cal-d07dab475-20260917",
+    "allocated_KiB": 162512,
+    "allocated_GiB": 0.1549835205078125
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-blank-fit-diagnosis-20260925",
+    "allocated_KiB": 156132,
+    "allocated_GiB": 0.14889907836914062
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-map-only-jinc-20260924",
+    "allocated_KiB": 102600,
+    "allocated_GiB": 0.09784698486328125
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-default-e633dd3e5-20260917",
+    "allocated_KiB": 97632,
+    "allocated_GiB": 0.093109130859375
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-additive-uncertainty-20260923",
+    "allocated_KiB": 73416,
+    "allocated_GiB": 0.07001495361328125
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-post-fruit-ab-20260923",
+    "allocated_KiB": 68732,
+    "allocated_GiB": 0.06554794311523438
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-a2000-saved-product-diagnosis-20260925",
+    "allocated_KiB": 53528,
+    "allocated_GiB": 0.05104827880859375
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-a2000-saved-product-diagnosis-20260925-aborted-font-discovery",
+    "allocated_KiB": 50180,
+    "allocated_GiB": 0.047855377197265625
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-ptc-spod-20260919",
+    "allocated_KiB": 50176,
+    "allocated_GiB": 0.0478515625
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-empirical-companion-20260922",
+    "allocated_KiB": 26328,
+    "allocated_GiB": 0.02510833740234375
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-offset-network-audit-20260922-r2",
+    "allocated_KiB": 24488,
+    "allocated_GiB": 0.02335357666015625
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-offset-network-audit-20260922",
+    "allocated_KiB": 24292,
+    "allocated_GiB": 0.023166656494140625
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-admission-prototype-20260923",
+    "allocated_KiB": 15520,
+    "allocated_GiB": 0.014801025390625
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-ptc-input-52288eb83-20260918",
+    "allocated_KiB": 11944,
+    "allocated_GiB": 0.01139068603515625
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/rtc-population-audit-cb5361f74-20260918",
+    "allocated_KiB": 8412,
+    "allocated_GiB": 0.008022308349609375
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-rtc-cleanup-e32c4584d-20260918",
+    "allocated_KiB": 6708,
+    "allocated_GiB": 0.006397247314453125
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-expected-source-guard-20260925",
+    "allocated_KiB": 5716,
+    "allocated_GiB": 0.005451202392578125
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-a2000-saved-product-diagnosis-20260925-preparation-ed0",
+    "allocated_KiB": 1416,
+    "allocated_GiB": 0.00135040283203125
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-map-only-jinc-full-20260924-r2",
+    "allocated_KiB": 220,
+    "allocated_GiB": 0.000209808349609375
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152389-map-only-jinc-full-20260924",
+    "allocated_KiB": 128,
+    "allocated_GiB": 0.0001220703125
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-unity-layout-workers-274c0aa8f-20260920",
+    "allocated_KiB": 64,
+    "allocated_GiB": 6.103515625e-05
+  }
+]

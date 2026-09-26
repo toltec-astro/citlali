@@ -1,0 +1,244 @@
+worktree /Users/gwilson/GitHub/citlali
+HEAD ffc6b9070f4744f9778f3db71cdc468846d1da89
+branch refs/heads/gw_dev
+
+worktree /private/tmp/citlali-cti-od-002-coefficient-authority-2026-09-05
+HEAD 867879b992598484e1bc5b481e5e14ff91c04dab
+branch refs/heads/codex/cti-od-002-coefficient-authority-2026-09-05
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-integrate-map-profile-admission-2026-09-08
+HEAD 3efd079bb5c28f28f6f2d49296a29e966bde050b
+branch refs/heads/codex/integrate-map-profile-admission-2026-09-08
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-integrate-map-space-conformance-001-2026-09-05
+HEAD 00b974c9039d4c3025dcce18f26bca69d36af9c3
+branch refs/heads/codex/integrate-map-space-conformance-001-2026-09-05
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-integrate-map-v02-r04-2026-09-08
+HEAD b675bb64a7054f7b24403c79898965e8765cfd02
+branch refs/heads/codex/integrate-map-v02-r04-2026-09-08
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-integrate-timestream-rtc-assessment-001
+HEAD 0f52e1a421416eadaf7d8d99d64f537132395c0c
+branch refs/heads/codex/integrate-timestream-rtc-assessment-001
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-map-contract-reconciliation-2026-09-07
+HEAD b972d2850c2521662af59bba31d71a3ee525033c
+branch refs/heads/codex/map-contract-reconciliation-2026-09-07
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-map-successor-first-forward-001
+HEAD 11b4d2c07a81cc5876bd3da833c4168731e34aea
+branch refs/heads/codex/map-successor-first-forward-001
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-noi-coefficient-nonmutation-work-order-2026-09-06
+HEAD 34a378e7298b2ee69cc2a81a56f8bebc2f835657
+branch refs/heads/codex/noi-coefficient-nonmutation-work-order-2026-09-06
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-point-additive-20260923
+HEAD 11b4d2c07a81cc5876bd3da833c4168731e34aea
+branch refs/heads/codex/map-successor-first-forward-001
+
+worktree /private/tmp/citlali-refactor-mainline-after-map-space-repair-2026-09-04
+HEAD e32c4584dec07617d6caa857d39bf13047b6c4b0
+branch refs/heads/codex/refactor-mainline
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-rtc-disturbance-burden-census-001
+HEAD e7ccd3da4bf2ac3412508dd07118f136272655c5
+branch refs/heads/codex/rtc-disturbance-burden-census-001
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-rtc-real-data-audit-001
+HEAD 4a7e7775d3d8350519d75b05a8b8dc0bdf017641
+branch refs/heads/codex/rtc-real-data-audit-001
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-sci-fruit-method-scope-20260908
+HEAD 5fc4ce839a5deb0d44096f17d0b7c2dbddcaedc2
+branch refs/heads/codex/sci-fruit-historical-control-method-scope-r0.1
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-spack-release-contract-reconciliation
+HEAD a586fd2cb11d427053205109bf5d7a9a617a5a58
+branch refs/heads/codex/spack-release-contract-reconciliation
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-timestream-successor-cal-001
+HEAD 686c280037762450b1870308c920e9191216dc16
+branch refs/heads/codex/timestream-successor-multinetwork-001
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-timestream-successor-d2-canonical-admission
+HEAD 218988dc21cfc279cdfe7a4318b574f070cd45f9
+branch refs/heads/codex/timestream-successor-d2-canonical-admission
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-timestream-successor-d2-canonical-admission-002
+HEAD 5244e04638db5aa92180feab52acd782229cfa32
+branch refs/heads/codex/timestream-successor-d2-canonical-admission-002
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-timestream-successor-development-default-001
+HEAD e633dd3e529897defa8d38d6f189f27289401492
+branch refs/heads/codex/timestream-successor-development-default-001
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-timestream-successor-identity-route
+HEAD 655160ba59a8abcddb5984d3241857c4ae969589
+branch refs/heads/codex/timestream-successor-identity-route
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-timestream-successor-ptc-spod-001
+HEAD 4bf470389fe7958f27bcda7a300baf3f31959b86
+branch refs/heads/codex/timestream-successor-ptc-spod-001
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-timestream-successor-rtc-donor-fill-001
+HEAD 5de31ec52cb3b079b22e47fee95b0725662c69a8
+branch refs/heads/codex/timestream-successor-rtc-donor-fill-001
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-timestream-successor-rtc-event-background-001
+HEAD 8fff882dd0e8891512b01e6065cdb442981b1e5d
+branch refs/heads/codex/timestream-successor-rtc-event-background-001
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-timestream-successor-rtc-jump-apply-001
+HEAD 4d609306c868338e2f5c6b7920b81a4d39ebf967
+branch refs/heads/codex/timestream-successor-rtc-jump-apply-001
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-timestream-successor-rtc-line-power-001
+HEAD 4c066f1e771b904ae78ed030c232f055dbc8dd16
+branch refs/heads/codex/timestream-successor-rtc-line-power-001
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-timestream-successor-rtc-line-transfer-001
+HEAD 0bcb132df284257418c6d5196b50c549b9775673
+branch refs/heads/codex/timestream-successor-rtc-line-transfer-001
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-timestream-successor-rtc-native-spectral-learn-001
+HEAD 77cc29503ae54484cb6f128744f7d32aef0dd8f2
+branch refs/heads/codex/timestream-successor-rtc-native-spectral-learn-001
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-timestream-successor-rtc-notch-recovery-001
+HEAD af716d166447624c7efbc0575c83b9272e7b472f
+branch refs/heads/codex/timestream-successor-rtc-notch-recovery-001
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-timestream-successor-rtc-spike-learn-001
+HEAD 2d41532ce3493ef329e35f438fe433a69c7c93a2
+branch refs/heads/codex/timestream-successor-rtc-spike-learn-001
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-timestream-successor-rtc-transient-apply-001
+HEAD d1e9bab76dadded53e8dd107947d508142e2b8ed
+branch refs/heads/codex/timestream-successor-rtc-transient-apply-001
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-timestream-successor-unity-gcc13-abi-conformance
+HEAD 2f59ef8b9906b2912c4980fbcf9c7ab3a28c310a
+branch refs/heads/codex/timestream-successor-unity-gcc13-abi-conformance
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-timestream-successor-val-d2-prerequisite-001
+HEAD 080df2a1431487e8cabc255beb9ddc59c0721b59
+branch refs/heads/codex/timestream-successor-val-d2-prerequisite-001
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-timestream-successor-val-native-admission-001
+HEAD 8eccf8990027b8f65febb5f20d9a415829152322
+branch refs/heads/codex/timestream-successor-val-native-admission-001
+prunable gitdir file points to non-existent location
+
+worktree /private/tmp/citlali-timestream-successor-val-native-target-001
+HEAD 37e6fb6ce50acba644f04b6b6b546762bf07f384
+branch refs/heads/codex/timestream-successor-val-native-target-001
+prunable gitdir file points to non-existent location
+
+worktree /Users/gwilson/.codex/worktrees/0473/citlali-refactor
+HEAD abb33fdb9e45352190d2e55592cc5eba967993f2
+detached
+
+worktree /Users/gwilson/.codex/worktrees/166d/citlali-refactor
+HEAD 37c2adfa84762cb8cef5dc66d5b1fbc6753331f6
+detached
+
+worktree /Users/gwilson/.codex/worktrees/22e8/citlali-refactor
+HEAD a983e3e31ca6422ade8f081585f5ef6babcfe5d0
+detached
+
+worktree /Users/gwilson/.codex/worktrees/346d/citlali-refactor
+HEAD 6c997638d3e554db089790e8113b7ee03ac50a13
+branch refs/heads/codex/sci-fruit-v0.1-stage-b-r0.1
+
+worktree /Users/gwilson/.codex/worktrees/4a5a/citlali-refactor
+HEAD c7582052d48c991e0caec6f2b56ab63d2d44afcd
+detached
+
+worktree /Users/gwilson/.codex/worktrees/4c31/citlali-refactor
+HEAD 6d7eec2f47c0af8b47907a8a446f225c3685915a
+branch refs/heads/codex/sci-fruit-v0.1-empirical-lane
+
+worktree /Users/gwilson/.codex/worktrees/6130/citlali-refactor
+HEAD 93de2cd9ca37f3740ceab98bf994ed684e9281ee
+detached
+
+worktree /Users/gwilson/.codex/worktrees/7920/citlali-refactor
+HEAD 590d3e58ff99772c97a5e933518aef85192197a2
+branch refs/heads/codex/map-space-shared-conventions-repair-001
+
+worktree /Users/gwilson/.codex/worktrees/884f/citlali-refactor
+HEAD ae953ed4d87d1f693d2bbf42aebbc25ef730c771
+detached
+
+worktree /Users/gwilson/.codex/worktrees/8bf8/citlali-refactor
+HEAD 93c2b4591bb5d0cf8efe4491975c31e5f8fb5903
+branch refs/heads/codex/map-space-contract-to-implementation-conformance-001
+
+worktree /Users/gwilson/.codex/worktrees/9448/citlali-refactor
+HEAD f28d7a2617160febca85c1c40e6f7ba7494e266e
+branch refs/heads/codex/sci-noi-v0.1-stage-b
+
+worktree /Users/gwilson/.codex/worktrees/c1e1/citlali-refactor
+HEAD 9a2780aa3bd8343fea87ac0b28b390384118c883
+detached
+
+worktree /Users/gwilson/.codex/worktrees/dc94/citlali-refactor
+HEAD cd55752e716051383da54356833ef0fac20b083a
+branch refs/heads/codex/sci-flt-v0.1-stage-a
+
+worktree /Users/gwilson/.codex/worktrees/f739/citlali-refactor
+HEAD 50fd98d7f5b57738ef265080bff223feee6c4e92
+detached
+
+worktree /Users/gwilson/.codex/worktrees/f797/citlali-refactor
+HEAD 7f9307ff4e1cda0f112f2398bb72f52a3f4f01d5
+branch refs/heads/codex/sci-flt-fixed-v0.1-stage-b
+
+worktree /Users/gwilson/.codex/worktrees/fab4/citlali-refactor
+HEAD 0b977a90a0bae6a68dadcf7824c9b7a0c80a7f45
+branch refs/heads/codex/sci-flt-inf-stage-a
+
+worktree /Users/gwilson/.codex/worktrees/fddf/citlali-refactor
+HEAD 5f0fc20042b88fb6cd883c92d1b59b7f22832901
+detached
+
+worktree /Users/gwilson/GitHub/citlali-perf
+HEAD d01ffa5981551345eeb1c765c24125200b896847
+branch refs/heads/codex/perf-map-accumulation-noise-lifecycle
+
+worktree /Users/gwilson/GitHub/citlali-refactor
+HEAD 353b11887ff04dfd7bca12915917495f81a587fa
+branch refs/heads/codex/sci-align-001-lissajous-timestream-fit
+
