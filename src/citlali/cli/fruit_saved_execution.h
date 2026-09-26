@@ -16,11 +16,12 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     const bool refseq=request["schema"].as<std::string>()=="citlali-point-fruit-refseq-v1";
     const bool corr=request["schema"].as<std::string>()=="citlali-point-fruit-corr-neighbor-v1";
     const bool reference=request["schema"].as<std::string>()=="citlali-bright-point-reference-v1";
-    const bool independent=reference || request["schema"].as<std::string>()=="citlali-point-fruit-independent-v1";
+    const bool rank_experiment=request["schema"].as<std::string>()=="citlali-point-ptc-rank-v1";
+    const bool independent=rank_experiment || reference || request["schema"].as<std::string>()=="citlali-point-fruit-independent-v1";
     const bool guarded=independent || request["schema"].as<std::string>()=="citlali-point-fruit-guarded-v1";
     const bool campaign=guarded || corr || refseq || request["schema"].as<std::string>()=="citlali-point-fruit-cd-v1";
     const bool continuation=request["schema"].as<std::string>()=="citlali-point-fruit-continuation-v1";
-    require((guarded && request["method"].as<std::string>()==(reference?"bright-point-base-v1":independent?"point-152430-no-upper-coverage-veto-v1":"point-152389-guarded-feedback-v1")) || (corr && request["method"].as<std::string>()=="point-152389-corr-neighbor-v1") || (refseq && request["method"].as<std::string>()=="point-152389-a2000-ref-basis-sequence-v1") || (campaign && !refseq && !corr && !guarded && request["method"].as<std::string>()=="point-152389-response-robustness-cd-v1") || (continuation && request["method"].as<std::string>()=="point-152389-direct-ten-cycle-v1") ||
+    require((guarded && request["method"].as<std::string>()==(rank_experiment?"point-ptc-rank-v1":reference?"bright-point-base-v1":independent?"point-152430-no-upper-coverage-veto-v1":"point-152389-guarded-feedback-v1")) || (corr && request["method"].as<std::string>()=="point-152389-corr-neighbor-v1") || (refseq && request["method"].as<std::string>()=="point-152389-a2000-ref-basis-sequence-v1") || (campaign && !refseq && !corr && !guarded && request["method"].as<std::string>()=="point-152389-response-robustness-cd-v1") || (continuation && request["method"].as<std::string>()=="point-152389-direct-ten-cycle-v1") ||
         (!continuation && request["schema"].as<std::string>()=="citlali-point-fruit-cycle-v1" && request["method"].as<std::string>()=="point-152389-direct-one-cycle-v1"),"FRUIT unsupported method");
     const auto mode=request["mode"].as<std::string>();require(mode=="zero" || mode=="reference","FRUIT unknown mode");
     const int cycle=(continuation || campaign)?request["cycle_index"].as<int>():(mode=="zero"?0:1);
@@ -32,7 +33,7 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     require(campaign || (!request["branch"] && !request["injection"]),"FRUIT foreign campaign fields");
     const auto owner_path=checked_file(request["owner_binding"]);const auto owner_sha=ledger.bind(owner_path);
     const auto owner=YAML::LoadFile(owner_path.string());
-    require(owner["identity"].as<std::string>()==(reference?"BRIGHT-POINT-BASE-v1":independent?"POINT-152430-NO-UPPER-COVERAGE-VETO-2026-09-26":guarded?"POINT-152389-GUARDED-OWNER-2026-09-25":corr?"POINT-152389-CORR-NEIGHBOR-OWNER-2026-09-24":refseq?"POINT-152389-A2000-REFSEQ-OWNER-2026-09-24":campaign?"POINT-152389-CD-OWNER-2026-09-23":continuation?"POINT-152389-TEN-FRUIT-OWNER-2026-09-23":"POINT-152389-FIRST-FRUIT-OWNER-2026-09-23") &&
+    require(owner["identity"].as<std::string>()==(rank_experiment?"POINT-PTC-RANK-v1":reference?"BRIGHT-POINT-BASE-v1":independent?"POINT-152430-NO-UPPER-COVERAGE-VETO-2026-09-26":guarded?"POINT-152389-GUARDED-OWNER-2026-09-25":corr?"POINT-152389-CORR-NEIGHBOR-OWNER-2026-09-24":refseq?"POINT-152389-A2000-REFSEQ-OWNER-2026-09-24":campaign?"POINT-152389-CD-OWNER-2026-09-23":continuation?"POINT-152389-TEN-FRUIT-OWNER-2026-09-23":"POINT-152389-FIRST-FRUIT-OWNER-2026-09-23") &&
         owner["outside_disk_no_feedback"].as<bool>() && owner["direct_identical_operand_rejoin"].as<bool>() &&
         owner["gain"].as<double>()==1 && owner["nonzero_cycles"].as<int>()==((continuation || campaign)?10:1),"FRUIT owner choices absent");
     const auto map_path=checked_file(request["map_request"]);ledger.bind(map_path);const auto mr=YAML::LoadFile(map_path.string());
@@ -75,7 +76,17 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
         }
         } else {
             const auto prospective=YAML::LoadFile(checked_file(owner["prospective"]).string());
-            if(reference) {
+            if(rank_experiment) {
+                const int rank=prospective["ptc"]["rank"].as<int>();
+                require(prospective["schema"].as<std::string>()=="citlali-point-ptc-rank-v1" &&
+                    prospective["profile"].as<std::string>()=="point-152430-ptc-rank-"+std::to_string(rank) &&
+                    (rank==5 || rank==10 || rank==15) && prospective["ptc"]["method"].as<std::string>()=="observed-als" &&
+                    prospective["observation"].as<int>()==152430 && prospective["subobservation"].as<int>()==0 && prospective["scan"].as<int>()==2 &&
+                    prospective["array"].as<std::string>()=="a2000" && prospective["networks"].as<std::vector<int>>()==std::vector<int>({11,12}) &&
+                    prospective["coverage_policy"].as<std::string>()=="high-coverage-informational" && prospective["cycles"].as<int>()==10 &&
+                    policy=="BASE-POINT" && owner["threshold"].as<double>()==3 && branch.rfind("D-",0)!=0,
+                    "FRUIT bounded rank experiment scope");
+            } else if(reference) {
                 require(prospective["schema"].as<std::string>()=="citlali-bright-point-reference-v1" && prospective["observation"].as<int>()==owner["observation"].as<int>() && prospective["subobservation"].as<int>()==0 && prospective["scan"].as<int>()==2 && prospective["array"].as<std::string>()==array && prospective["coverage_policy"].as<std::string>()=="high-coverage-informational" && prospective["cycles"].as<int>()==10 && policy=="BASE-POINT" && owner["threshold"].as<double>()==3 && branch=="REF" && cycle>=1,"FRUIT frozen bright-POINT scope");
             } else require(prospective["observation"].as<int>()==152430 && prospective["coverage_policy"].as<std::string>()=="high-coverage-informational" && prospective["maximum_feedback_applications"].as<int>()==150 && prospective["maximum_trajectories"].as<int>()==15 && prospective["maximum_initial_physical_inputs"].as<int>()==4 && prospective["cycles"].as<int>()==10 && prospective["array"].as<std::string>()=="a2000" && (cycle>0 || branch.rfind("C-",0)==0), "FRUIT independent prospective scope");
             if(policy!="BASE-POINT") {
@@ -158,7 +169,15 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
         require(bound,"FRUIT foreign network parent");
         PtcSolverRequest solver;solver.rank=n.ptc["rank"].as<int>();solver.iteration_limit=n.ptc["iteration_limit"].as<int>();
         solver.relative_objective_tolerance=n.ptc["relative_objective_tolerance"].as<double>();solver.relative_rank_tolerance=n.ptc["relative_rank_tolerance"].as<double>();
-        require((reference?solver.rank==YAML::LoadFile(checked_file(owner["prospective"]).string())["ptc"]["rank"].as<int>():solver.rank==10) && n.ptc["method"].as<std::string>()=="observed-als","FRUIT changed PTC recipe");
+        // The shared post-CAL carrier was produced with rank 10. Its saved basis
+        // is diagnostic only: every experiment M0/residual learns from original y.
+        if(rank_experiment) {
+            const auto config=YAML::LoadFile(checked_file(owner["prospective"]).string());
+            require(solver.rank==10 && solver.iteration_limit==100 && solver.relative_objective_tolerance==1e-5 && solver.relative_rank_tolerance==1e-10,
+                "FRUIT rank experiment changed parent solver recipe");
+            solver.rank=config["ptc"]["rank"].as<int>();
+        }
+        require((rank_experiment || (reference?solver.rank==YAML::LoadFile(checked_file(owner["prospective"]).string())["ptc"]["rank"].as<int>():solver.rank==10)) && n.ptc["method"].as<std::string>()=="observed-als","FRUIT changed PTC recipe");
         std::deque<std::function<void()>> pending;
         for(std::size_t si=0;si<n.ptc["segments"].size();++si) {
             const auto ts=std::chrono::steady_clock::now();const auto old=load_map_segment(n,si,ledger);const auto s=n.ptc["segments"][si];
@@ -252,6 +271,7 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
             if(!refseq){seg["converged"]=fit.converged;seg["stopping_reason"]=fit.stopping_reason;seg["iterations"]=fit.iterations;seg["objective"]=fit.objective;}
             else {seg["application_outcome"]=applied.cleaned.failed_times?"failed-times":"success";seg["application_factorizations"]=applied.cleaned.factorizations;seg["application_factor_reuses"]=applied.cleaned.factor_reuses;}
             seg["rank"]=solver.rank;
+            seg["realized_rank"]=fit.basis.cols();seg["learning_performed"]=!refseq;
             seg["preparation_seconds"]=stage.prepared.preparation_seconds;seg["learning_seconds"]=fit.fit_seconds;seg["application_seconds"]=applied.cleaned.seconds;
             seg["retained"]=applied.cleaned.retained;seg["application_failed_times"]=applied.cleaned.failed_times;
             seg["input_eligibility_changed"]=std::size_t((residual->eligible()!=eligible).count());seg["output_cause_changed"]=std::size_t((causes!=old->causes()).count());

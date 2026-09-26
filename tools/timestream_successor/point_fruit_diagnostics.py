@@ -9,13 +9,13 @@ from point_additive_diagnostics import save_json
 from inspect_forward_map import require,read_yaml,digest
 
 
-def basis_distance(old_path,new_path,rows,columns):
+def basis_distance(old_path,new_path,rows,columns,new_columns=None):
     """Saved native matrices are row-major, including column-major Eigen bases."""
     if not rows or not columns:return None
     old=np.fromfile(old_path,dtype='<f8').reshape(rows,columns)
-    new=np.fromfile(new_path,dtype='<f8').reshape(rows,columns)
+    new=np.fromfile(new_path,dtype='<f8').reshape(rows,columns if new_columns is None else new_columns)
     for b in [old,new]:
-        require(np.isfinite(b).all() and np.allclose(np.einsum('ij,ik->jk',b,b),np.eye(columns),rtol=0,atol=1e-10),'saved basis is not the declared orthonormal column matrix')
+        require(np.isfinite(b).all() and np.allclose(np.einsum('ij,ik->jk',b,b),np.eye(b.shape[1]),rtol=0,atol=1e-10),'saved basis is not the declared orthonormal column matrix')
     return float(np.linalg.norm(np.einsum('ik,jk->ij',old,old)-np.einsum('ik,jk->ij',new,new)))
 
 
@@ -27,7 +27,7 @@ def learned_state(cycle,receipt):
         require(digest(old)==source['files'][name] and digest(new)==s['files']['basis.f64'],'saved basis identity changed')
         row={k:s.get(k) for k in ['converged','stopping_reason','rank','iterations','retained','output_cause_changed','input_eligibility_changed','projection_support_counts']}
         row.update(network=source['network'],scan=source['scan'],parent_converged=source['converged'],
-            basis_projector_Frobenius_difference=basis_distance(old,new,source['basis_rows'],source['basis_columns']),
+            basis_projector_Frobenius_difference=basis_distance(old,new,source['basis_rows'],source['basis_columns'],s['rank']),
             comparison_definition='Frobenius norm of BB^T difference; verified row-major saved orthonormal bases; not raw eigenvector difference',
             native_diagnostic_value=s.get('basis_projector_Frobenius_difference'))
         rows.append(row)

@@ -190,3 +190,24 @@ checkpoint restoration or hidden recomputation is part of reporting.
 See `validation/fruit_pipeline_freeze_2026-09-26` for the exact isolated regression,
 limits and cleanup record; the retained reference is linked in place under
 `validation/point_152430_no_upper_coverage_veto_2026-09-26/compact`, not duplicated.
+
+## Bounded PTC rank experiment (2026-09-26)
+
+The owner-authorized rank 5/10/15 comparison uses the same entry point and shared
+processing owners, with explicit `citlali-point-ptc-rank-v1` identity. The reference
+configuration above remains unchanged. On the experiment branch, with the same
+thread/build environment and a fresh `RANK_OUTPUT` under local validation:
+
+```sh
+$HOME/tolteca/bin/python "$POINT_REPO/tools/timestream_successor/point_pipeline.py" rank-preflight \
+  --input-root "$INPUT_ROOT" --output "$RANK_OUTPUT"
+$HOME/tolteca/bin/python "$POINT_REPO/tools/timestream_successor/point_pipeline.py" rank-run \
+  --output "$RANK_OUTPUT" --binary "$POINT_BINARY" --review "$RANK_REVIEW"
+$HOME/tolteca/bin/python "$POINT_REPO/tools/timestream_successor/point_pipeline.py" rank-report \
+  --output "$RANK_OUTPUT"
+```
+
+`RANK_REVIEW` is the independent preflight JSON binding the exact clean source SHA
+and `verdict: pass`. Reporting reads compact products, never restarts science.
+Attempt counters forbid implicit retries. Rank10 REF and injection regression gates
+precede dependent work. See [experiment record](../validation/ptc_rank_response_2026-09-26/PREFLIGHT.md).

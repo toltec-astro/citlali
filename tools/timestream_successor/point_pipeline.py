@@ -72,10 +72,19 @@ def inspect_saved(out):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('mode',choices=['preflight','forward','feedback','report'])
+    p.add_argument('mode',choices=['preflight','forward','feedback','report','rank-preflight','rank-run','rank-report'])
     p.add_argument('--output',type=Path,required=True,help='explicit run root, fresh for preflight')
     p.add_argument('--config',type=Path);p.add_argument('--input-root',type=Path);p.add_argument('--binary',type=Path)
+    p.add_argument('--review',type=Path)
     a=p.parse_args();out=a.output.resolve()
+    if a.mode.startswith('rank-'):
+        import point_rank_experiment as experiment
+        if a.mode=='rank-preflight':
+            require(a.input_root is not None,'input-root required');experiment.preflight(out,a.input_root.resolve());return 0
+        if a.mode=='rank-run':
+            require(a.binary is not None and a.review is not None,'binary and independent review required');return experiment.run(out,a.binary.resolve(),a.review.resolve())
+        from report_point_rank import report
+        report(out);return 0
     if a.mode=='report':print(json.dumps(inspect_saved(out),indent=2,allow_nan=False));return 0
     require(a.config is not None and a.input_root is not None and a.binary is not None,'config, input-root and binary required')
     require(a.binary.is_file() and os.access(a.binary,os.X_OK),'missing executable')

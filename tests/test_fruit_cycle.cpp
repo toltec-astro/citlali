@@ -125,3 +125,25 @@ TEST(FruitCycle, ReferenceSequenceStageOrderingAndAutonomousReplacement) {
     for(int k=0;k<3;++k)EXPECT_DOUBLE_EQ((r[k]-zero[k]).norm(),0);
     EXPECT_GT((r[0]-r[1]).norm(),1);EXPECT_GT((r[1]-r[2]).norm(),1);
 }
+TEST(FruitCycle, ExperimentalRanksLearnIndependentlyOnEachResidual) {
+    PtcMatrix y(96,24),m(96,24);PtcMask e=PtcMask::Ones(96,24);
+    for(int t=0;t<96;++t)for(int d=0;d<24;++d){
+        y(t,d)=0;for(int k=0;k<20;++k)y(t,d)+=(20-k)*std::sin((t+.5)*(k+1)*.17)*std::cos((d+.5)*(k+1)*.13);
+        m(t,d)=3*std::exp(-std::pow((t-45.-d)/8.,2));
+    }
+    const auto saved=y;
+    for(int rank:{5,10,15}) {
+        PtcSolverRequest req;req.rank=rank;
+        auto zero=FruitResidual::subtract("M0-"+std::to_string(rank),y,e,PtcMatrix::Zero(96,24),e);
+        auto residual=FruitResidual::subtract("T1-"+std::to_string(rank),y,e,m,e);
+        const auto initial=FruitLearned::learn(zero,req),feedback=FruitLearned::learn(residual,req);
+        ASSERT_TRUE(initial.fit().converged);ASSERT_TRUE(feedback.fit().converged);
+        EXPECT_EQ(initial.fit().basis.cols(),rank);EXPECT_EQ(feedback.fit().basis.cols(),rank);
+        EXPECT_GT((initial.fit().basis*initial.fit().basis.transpose()-feedback.fit().basis*feedback.fit().basis.transpose()).norm(),1e-6);
+        EXPECT_THROW(initial.apply(residual),std::invalid_argument);
+        const auto out=feedback.apply(residual);
+        EXPECT_LT((out.total-out.cleaned.values-m).norm(),1e-10);
+        EXPECT_EQ((residual->eligible()!=e).count(),0);
+    }
+    EXPECT_DOUBLE_EQ((y-saved).norm(),0);
+}

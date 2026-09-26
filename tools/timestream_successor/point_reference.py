@@ -54,10 +54,18 @@ def initialize(path,dest,beam=10.):
     c=context(dest);return c,guard
 
 
-def context(dest):
+def context(dest, measurement_geometry=None):
     import json
-    g=json.loads((dest/'geometry.json').read_text());beam=g['beam'];c=dict(np.load(dest/'context.npz'));p=c['parameters'];h=g['header'];x,y=coordinates(c['original'].shape,h);r=np.hypot(x-p[1],y-p[2])
-    f=SimpleNamespace(header=h,beam=beam,parameters=p,x=x,y=y,radius=r,major=g['major'],weights=c['q'],scale=c['base_scale'],noise_valid=c['noise_valid'],disk=np.hypot(x,y)<=40,background=(np.hypot(x,y)<=40)&(r>3*g['major']),edges=np.arange(0,42,2))
+    g=json.loads((dest/'geometry.json').read_text());beam=g['beam'];c=dict(np.load(dest/'context.npz'));p=c['parameters'];h=g['header']
+    geometry_path=dest/'measurement-geometry.json'
+    mg=measurement_geometry or (json.loads(geometry_path.read_text()) if geometry_path.exists() else None)
+    major=g['major'];q=c['q']
+    if mg is not None:
+        require(all(h[k]==mg['header'][k] for k in ('CRPIX1','CRPIX2','CRVAL1','CRVAL2','CDELT1','CDELT2')),'measurement geometry WCS differs')
+        p=np.asarray(mg['parameters']);major=mg['major'];q=np.asarray(mg['weights'])
+        require(q.shape==c['original'].shape,'measurement template shape differs')
+    x,y=coordinates(c['original'].shape,h);r=np.hypot(x-p[1],y-p[2])
+    f=SimpleNamespace(header=h,beam=beam,parameters=p,x=x,y=y,radius=r,major=major,weights=q,scale=c['base_scale'],noise_valid=c['noise_valid'],disk=np.hypot(x,y)<=40,background=(np.hypot(x,y)<=40)&(r>3*major),edges=np.arange(0,42,2))
     require(json.loads((dest/'BASE.json').read_text())['request']['high_coverage_usable'] and json.loads((dest/'C0.json').read_text())['request']['high_coverage_usable'],'wrong saved high-coverage semantics')
     fullh=g['full_WCS'];cy,cx=int(round(fullh['CRPIX2']-1)),int(round(fullh['CRPIX1']-1))
     c['noise_high_extrapolated']=patch(np.load(dest/'BASE.npz')['coverage_extrapolated'],cy,cx,20)

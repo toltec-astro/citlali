@@ -1,5 +1,13 @@
 # Citlali Refactor Status
 
+## Bounded PTC rank-response/noise probe — active 2026-09-26
+
+The owner released ranks 5/10/15 on POINT 152430/a2000 through the frozen ordinary
+MAP + BASE-POINT endpoint. This supersedes the rank-comparison deferral below only.
+The [bounded work order](../validation/ptc_rank_response_2026-09-26/PREFLIGHT.md)
+preserves RTC/CAL, injection definitions and all downstream scientific settings.
+No reference/default promotion, RTC change, integration or push is authorized.
+
 ## Bright-POINT downstream reference frozen — 2026-09-26
 
 FRUIT method testing is parked. The next lane is RTC/PTC evaluation through the
