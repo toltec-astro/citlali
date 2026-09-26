@@ -1,0 +1,17 @@
+{
+  "epoch": 1790432332.549112,
+  "command": "/usr/sbin/lsof -nP -F pfn",
+  "returncode": 0,
+  "stderr": "",
+  "incomplete": false,
+  "local_data_open_paths": [
+    {
+      "pid": "2995",
+      "descriptor": "cwd",
+      "path": "/Users/gwilson/work_toltec/local_data/beammaps"
+    }
+  ],
+  "target_open_paths": [],
+  "all_open_output_sha256": "770cd8abb58da9dc7e21665c784837d5096e539b8eb2217bceb1abaca7554a3e",
+  "scope": "Current-host open descriptor census; only local_data entries retained in record. No processes stopped."
+}

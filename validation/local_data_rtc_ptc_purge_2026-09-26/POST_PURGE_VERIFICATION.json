@@ -1,0 +1,221 @@
+{
+  "status": "pass",
+  "files_before": 550386,
+  "files_after": 330451,
+  "directories_after": 40224,
+  "symlinks_after": 20,
+  "traversal_errors": [],
+  "removed_files_absent": 221249,
+  "all_original_non_target_files_unchanged": 329137,
+  "protected_original_netcdf_files_unchanged": 20171,
+  "all_original_symlinks_unchanged": true,
+  "retained_mixed_companions_verified": 1311,
+  "new_metadata_paths": [
+    "LOCAL_DATA_PURGE_2026-09-26_PATHS.json.gz",
+    "LOCAL_DATA_PURGE_2026-09-26.json",
+    "citlali-validation/development-runs/successor-point-152389-importance-and-archive-compaction-20260926/CURRENT_ARCHIVE_INDEX.json"
+  ],
+  "before_logical_bytes": 970753985023,
+  "deleted_logical_bytes": 356819904701,
+  "new_retained_companion_and_index_bytes": 5194858513,
+  "after_logical_bytes": 619128938835,
+  "net_logical_reduction_bytes": 351625046188,
+  "after_allocated_file_blocks_bytes": 619891007488,
+  "observed_purge_free_space_gain_bytes": 353300783104,
+  "free_immediately_after_bytes": 643759407104,
+  "by_top_level": [
+    {
+      "path": "citlali-validation",
+      "bytes": 133308092311,
+      "blocks": 133573570560
+    },
+    {
+      "path": "2025-C1-COM-01",
+      "bytes": 120140454963,
+      "blocks": 120177201152
+    },
+    {
+      "path": "2026-refactor",
+      "bytes": 84296323048,
+      "blocks": 84316164096
+    },
+    {
+      "path": "2026-ENG-hero-multiyear-pointings-v1",
+      "bytes": 74328089606,
+      "blocks": 74426376192
+    },
+    {
+      "path": "beammaps",
+      "bytes": 41970705151,
+      "blocks": 41980145664
+    },
+    {
+      "path": "tone-match-lab",
+      "bytes": 39686342318,
+      "blocks": 39745261568
+    },
+    {
+      "path": "2025-C1-COM-21",
+      "bytes": 22733968340,
+      "blocks": 22737825792
+    },
+    {
+      "path": "fruit-development",
+      "bytes": 20324444991,
+      "blocks": 20356374528
+    },
+    {
+      "path": "2025-C1-COM-06",
+      "bytes": 18211451645,
+      "blocks": 18212769792
+    },
+    {
+      "path": "sci_cal_001_tau025_engineering_extension_002_root",
+      "bytes": 17193594616,
+      "blocks": 17374371840
+    },
+    {
+      "path": "2024-C1-COM-06",
+      "bytes": 12011575399,
+      "blocks": 12011663360
+    },
+    {
+      "path": "2026-ENG-citlali-MAP",
+      "bytes": 11343592184,
+      "blocks": 11356925952
+    },
+    {
+      "path": "OOF",
+      "bytes": 6459003824,
+      "blocks": 6488117248
+    },
+    {
+      "path": "AM",
+      "bytes": 4667788116,
+      "blocks": 4672086016
+    },
+    {
+      "path": "citlali-reference-data",
+      "bytes": 4540097659,
+      "blocks": 4542935040
+    },
+    {
+      "path": "2025-C1-COM-04",
+      "bytes": 1779744595,
+      "blocks": 1780756480
+    },
+    {
+      "path": "2025-C1-COM-24",
+      "bytes": 1463442761,
+      "blocks": 1463480320
+    },
+    {
+      "path": "2025-ENG-pointing-152388-152389",
+      "bytes": 1325431432,
+      "blocks": 1325912064
+    },
+    {
+      "path": "2026-ENG-ABA-2-18",
+      "bytes": 1261326174,
+      "blocks": 1262972928
+    },
+    {
+      "path": "_apt_library_260612",
+      "bytes": 675401984,
+      "blocks": 675647488
+    },
+    {
+      "path": "_apt_library",
+      "bytes": 491448726,
+      "blocks": 491773952
+    },
+    {
+      "path": "2025-C1-COM-18",
+      "bytes": 196073992,
+      "blocks": 196247552
+    },
+    {
+      "path": "2025-C1-COM-05",
+      "bytes": 194103739,
+      "blocks": 194154496
+    },
+    {
+      "path": "tolteca-vna-validation-lab",
+      "bytes": 166560783,
+      "blocks": 167137280
+    },
+    {
+      "path": "doc",
+      "bytes": 131284334,
+      "blocks": 131289088
+    },
+    {
+      "path": "focus",
+      "bytes": 78923353,
+      "blocks": 79118336
+    },
+    {
+      "path": "2026-ENG-ABA",
+      "bytes": 57333500,
+      "blocks": 57708544
+    },
+    {
+      "path": "foo",
+      "bytes": 34973412,
+      "blocks": 35053568
+    },
+    {
+      "path": "pointings",
+      "bytes": 29985538,
+      "blocks": 30117888
+    },
+    {
+      "path": "ABA-2-12",
+      "bytes": 10539229,
+      "blocks": 10768384
+    },
+    {
+      "path": "sc",
+      "bytes": 8399569,
+      "blocks": 8404992
+    },
+    {
+      "path": "photogrammetry",
+      "bytes": 7313358,
+      "blocks": 7503872
+    },
+    {
+      "path": "LOCAL_DATA_PURGE_2026-09-26_PATHS.json.gz",
+      "bytes": 666041,
+      "blocks": 667648
+    },
+    {
+      "path": "sci_cal_001_tau025_engineering_extension_001_root",
+      "bytes": 349719,
+      "blocks": 352256
+    },
+    {
+      "path": "toltec-lineage-pilot-manifest-20260724",
+      "bytes": 71431,
+      "blocks": 90112
+    },
+    {
+      "path": ".DS_Store",
+      "bytes": 32772,
+      "blocks": 36864
+    },
+    {
+      "path": "unity",
+      "bytes": 7093,
+      "blocks": 20480
+    },
+    {
+      "path": "LOCAL_DATA_PURGE_2026-09-26.json",
+      "bytes": 1129,
+      "blocks": 4096
+    }
+  ],
+  "post_purge_readers": "direct purge and prior deduplication canonical path both explicitly require reprocessing; no automatic recovery",
+  "seconds": 62.400929124996765,
+  "qualification": "No raw payload hash or numerical rerun. All original non-target stat identities including size/mtime/ctime/inode unchanged; mixed companions freshly hashed. df delta measures deletion interval; companion preservation and committed records consumed space before that interval."
+}

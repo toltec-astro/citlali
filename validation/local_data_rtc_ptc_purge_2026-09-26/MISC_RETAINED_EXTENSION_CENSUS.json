@@ -1,0 +1,139 @@
+{
+  ".pkl": {
+    "files": 131,
+    "bytes": 24203379367,
+    "top_projects": {
+      "tone-match-lab": 24203379367
+    },
+    "largest": [
+      {
+        "path": "tone-match-lab/v2_kids_context_medium_v1/native/obs131221/network7/attempt01/network7/data/toltec7_131221_000_0001_2025_03_19_08_11_01_vnasweep_ctx.pkl",
+        "bytes": 219654836
+      },
+      {
+        "path": "tone-match-lab/v2_kids_context_medium_v1/native/obs150794/network7/attempt01/network7/data/toltec7_150794_000_0001_2026_02_04_11_28_59_vnasweep_ctx.pkl",
+        "bytes": 217748797
+      },
+      {
+        "path": "tone-match-lab/v2_kids_context_medium_v1/native/obs113801/network7/attempt01/network7/data/toltec7_113801_000_0001_2024_03_23_03_44_08_vnasweep_ctx.pkl",
+        "bytes": 196084087
+      },
+      {
+        "path": "tone-match-lab/v2_kids_context_medium_v1/native/obs129662/network7/attempt01/network7/data/toltec7_129662_000_0001_2025_03_08_08_22_38_vnasweep_ctx.pkl",
+        "bytes": 194076732
+      },
+      {
+        "path": "tone-match-lab/v2_kids_context_medium_v1/native/obs131221/network3/attempt01/network3/data/toltec3_131221_000_0001_2025_03_19_08_11_01_vnasweep_ctx.pkl",
+        "bytes": 190311108
+      },
+      {
+        "path": "tone-match-lab/v2_kids_context_medium_v1/native/obs148430/network0/attempt01/network0/data/toltec0_148430_000_0001_2026_01_10_05_45_29_vnasweep_ctx.pkl",
+        "bytes": 190154005
+      },
+      {
+        "path": "tone-match-lab/v2_kids_context_medium_v1/native/obs134618/network3/attempt01/network3/data/toltec3_134618_000_0001_2025_04_28_05_16_57_vnasweep_ctx.pkl",
+        "bytes": 189356636
+      },
+      {
+        "path": "tone-match-lab/v2_kids_context_medium_v1/native/obs134618/network4/attempt01/network4/data/toltec4_134618_000_0001_2025_04_28_05_16_57_vnasweep_ctx.pkl",
+        "bytes": 189228502
+      }
+    ],
+    "disposition": "Retained. Filename/project context is inventory evidence, not proof of contents or permission to delete; no pickle execution or full payload reads."
+  },
+  ".dat": {
+    "files": 2824,
+    "bytes": 6115411310,
+    "top_projects": {
+      "AM": 2983517161,
+      "citlali-reference-data": 2983517161,
+      "OOF": 136423350,
+      "tone-match-lab": 11839347,
+      "citlali-validation": 114291
+    },
+    "largest": [
+      {
+        "path": "AM/Big_Atmosphere/LMT_am_outputs/LMT_JJA_95_80.dat",
+        "bytes": 3315754
+      },
+      {
+        "path": "citlali-reference-data/sets/atmosphere/am12-lmt-raw-grids-v1--sha256-1eaec038656fa4a35aae84eb939f0b693516b0d2316054927017faf3f09d4f88/payload/LMT_JJA_95_80.dat",
+        "bytes": 3315754
+      },
+      {
+        "path": "AM/Big_Atmosphere/LMT_am_outputs/LMT_SON_95_80.dat",
+        "bytes": 3315746
+      },
+      {
+        "path": "citlali-reference-data/sets/atmosphere/am12-lmt-raw-grids-v1--sha256-1eaec038656fa4a35aae84eb939f0b693516b0d2316054927017faf3f09d4f88/payload/LMT_SON_95_80.dat",
+        "bytes": 3315746
+      },
+      {
+        "path": "AM/Big_Atmosphere/LMT_am_outputs/LMT_annual_95_80.dat",
+        "bytes": 3315697
+      },
+      {
+        "path": "citlali-reference-data/sets/atmosphere/am12-lmt-raw-grids-v1--sha256-1eaec038656fa4a35aae84eb939f0b693516b0d2316054927017faf3f09d4f88/payload/LMT_annual_95_80.dat",
+        "bytes": 3315697
+      },
+      {
+        "path": "AM/Big_Atmosphere/LMT_am_outputs/LMT_MAM_95_80.dat",
+        "bytes": 3315664
+      },
+      {
+        "path": "citlali-reference-data/sets/atmosphere/am12-lmt-raw-grids-v1--sha256-1eaec038656fa4a35aae84eb939f0b693516b0d2316054927017faf3f09d4f88/payload/LMT_MAM_95_80.dat",
+        "bytes": 3315664
+      }
+    ],
+    "disposition": "Retained. Filename/project context is inventory evidence, not proof of contents or permission to delete; no pickle execution or full payload reads."
+  },
+  ".txt": {
+    "files": 45410,
+    "bytes": 8733007081,
+    "top_projects": {
+      "sci_cal_001_tau025_engineering_extension_002_root": 4508619597,
+      "citlali-validation": 2269019959,
+      "tone-match-lab": 1910957699,
+      "2025-C1-COM-01": 22457919,
+      "photogrammetry": 6714538,
+      "beammaps": 3696491,
+      "2026-refactor": 3380246,
+      "OOF": 2502635
+    },
+    "largest": [
+      {
+        "path": "citlali-validation/development-baselines/pre-successor-default-20260917/dependencies/ceres-src/data/problem-16-22106-pre.txt",
+        "bytes": 4783974
+      },
+      {
+        "path": "sci_cal_001_tau025_engineering_extension_002_root/raw_outputs/tau025e001__construction__LMT_MAM_95__tau025__el25__f5536d4a4da86c06e4792827.txt",
+        "bytes": 3315236
+      },
+      {
+        "path": "sci_cal_001_tau025_engineering_extension_002_root/raw_outputs/tau025e001__construction__LMT_JJA_95__tau025__el25__2ffebe5c1339d5cf0ce3f0ec.txt",
+        "bytes": 3315209
+      },
+      {
+        "path": "sci_cal_001_tau025_engineering_extension_002_root/raw_outputs/tau025e001__construction__LMT_SON_95__tau025__el25__7267d8a9518447c694a5a9b7.txt",
+        "bytes": 3315206
+      },
+      {
+        "path": "sci_cal_001_tau025_engineering_extension_002_root/raw_outputs/tau025e001__construction__LMT_annual_95__tau025__el25__d741ae19f69cdb3558032ac9.txt",
+        "bytes": 3315205
+      },
+      {
+        "path": "sci_cal_001_tau025_engineering_extension_002_root/raw_outputs/tau025e001__construction__LMT_JJA_75__tau025__el25__f5fe5783c772a45b799137b5.txt",
+        "bytes": 3315204
+      },
+      {
+        "path": "sci_cal_001_tau025_engineering_extension_002_root/raw_outputs/tau025e001__construction__LMT_DJF_95__tau025__el25__44f4ccc248eb49adf571a2c5.txt",
+        "bytes": 3315200
+      },
+      {
+        "path": "sci_cal_001_tau025_engineering_extension_002_root/raw_outputs/tau025e001__construction__LMT_SON_75__tau025__el25__b06ae00db3201ba4b5af0076.txt",
+        "bytes": 3315194
+      }
+    ],
+    "disposition": "Retained. Filename/project context is inventory evidence, not proof of contents or permission to delete; no pickle execution or full payload reads."
+  }
+}

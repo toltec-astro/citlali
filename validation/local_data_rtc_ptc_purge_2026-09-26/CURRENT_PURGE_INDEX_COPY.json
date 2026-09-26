@@ -1,0 +1,15 @@
+{
+  "status": "completed",
+  "directive": "2026-09-26 local_data inventory and RTC/PTC purge",
+  "files": 221249,
+  "logical_bytes": 356819904701,
+  "paths_file": "LOCAL_DATA_PURGE_2026-09-26_PATHS.json.gz",
+  "paths_sha256": "94cd655230ba5abe1d9c4903ed633f6d2bfb438ded33941b88d5589d61c80a93",
+  "durable_repository": "/Users/gwilson/GitHub/citlali",
+  "durable_git_record": "refs/heads/codex/map-successor-first-forward-001:validation/local_data_rtc_ptc_purge_2026-09-26/RECOVERY_AND_DISPOSITION.md",
+  "pre_deletion_commit": "6a0b75236c8880e0ae588f9b21c8766ebaa4eb9c",
+  "target_manifest_sha256": "a8abbc47030a2783ce06d154ff2697c9216645cb2b1d9fa43fc2084ce1bf43dd",
+  "disposition": "Saved RTC/PTC restart state deliberately discarded; useful results remain; explicit reprocessing from documented upstream acquisition/tune/calibration required. No automatic regeneration.",
+  "historical_seals": "Unchanged original seals are historical; referenced deleted RTC/PTC payloads intentionally absent.",
+  "non_targets": "Original raw/tune/calibration/team inputs, source, maps, fit/basis/PSD and independent diagnostics unchanged."
+}

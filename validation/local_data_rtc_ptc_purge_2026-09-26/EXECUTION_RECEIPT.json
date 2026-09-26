@@ -1,0 +1,25 @@
+{
+  "status": "completed",
+  "source_revision": "6a0b75236c8880e0ae588f9b21c8766ebaa4eb9c",
+  "target_sha256": "a8abbc47030a2783ce06d154ff2697c9216645cb2b1d9fa43fc2084ce1bf43dd",
+  "review_sha256": "2960332e72a68640f9aa4d926a2e8678d3eccb4ed393fcb1cfdba933c021ad2d",
+  "files": 221249,
+  "logical_bytes": 356819904701,
+  "before_df": "Filesystem   1024-blocks       Used Available Capacity iused      ifree %iused  Mounted on\n/dev/disk3s5  1948455240 1643593736 283651000    86% 3851949 2836510000    0%   /System/Volumes/Data\n",
+  "started_epoch": 1790432349.434467,
+  "removed_files": 221249,
+  "failures": [],
+  "removed_empty_directories": [
+    "citlali-validation/development-runs/successor-point-152389-guarded-feedback-comparison-20260925/freeze/a2000/C-shoulder",
+    "citlali-validation/development-runs/successor-point-152389-guarded-feedback-comparison-20260925/freeze/a1100/C-shoulder",
+    "citlali-validation/development-runs/successor-point-152389-guarded-feedback-comparison-20260925/freeze/a2000/C-core-minus",
+    "citlali-validation/development-runs/successor-point-152389-guarded-feedback-comparison-20260925/freeze/a1400/C-core-minus",
+    "citlali-validation/development-runs/successor-point-152389-guarded-feedback-comparison-20260925/freeze/a1100/C-core-plus",
+    "citlali-validation/development-runs/successor-point-152389-guarded-feedback-comparison-20260925/freeze/a2000/C-core-plus",
+    "citlali-validation/development-runs/successor-point-152389-guarded-feedback-comparison-20260925/freeze/a1100/C-core-minus",
+    "citlali-validation/development-runs/successor-point-152389-guarded-feedback-comparison-20260925/freeze/a1400/C-shoulder",
+    "citlali-validation/development-runs/successor-point-152389-guarded-feedback-comparison-20260925/freeze/a1400/C-core-plus"
+  ],
+  "after_df": "Filesystem   1024-blocks       Used Available Capacity iused      ifree %iused  Mounted on\n/dev/disk3s5  1948455240 1298573440 628671296    68% 3630776 6286712960    0%   /System/Volumes/Data\n",
+  "seconds": 69.4324209690094
+}

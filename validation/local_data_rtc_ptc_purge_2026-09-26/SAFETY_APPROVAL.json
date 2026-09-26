@@ -1,0 +1,51 @@
+{
+  "status": "pass",
+  "reviewer": "independent local_purge_safety_review",
+  "source_revision": "6a0b75236c8880e0ae588f9b21c8766ebaa4eb9c",
+  "target_sha256": "a8abbc47030a2783ce06d154ff2697c9216645cb2b1d9fa43fc2084ce1bf43dd",
+  "target_files": 221249,
+  "target_logical_bytes": 356819904701,
+  "review_epoch": 1790432292.205526,
+  "audit": {
+    "status": "pass",
+    "targets": 221249,
+    "logical_bytes": 356819904701,
+    "all_target_stat_identities_unchanged": true,
+    "all_in_original_inventory": true,
+    "symlink_hardlink_mount_targets": 0,
+    "producer_prefix_bindings_verified": 13237,
+    "mixed_companions_hashed": 1311,
+    "representative_mixed_payloads": [
+      "2026-ENG-citlali-MAP/SCI-MAP-001-POINT-SOURCE/pointings/reduced/redu00/152389/raw/toltec_commissioning_pointing_152389_rtc_timestream.nc",
+      "citlali-validation/v2/science/pointings/reduced/redu00/152434/raw/toltec_commissioning_pointing_152434_rtc_timestream.nc",
+      "2026-ENG-citlali-MAP/SCI-MAP-001-POINT-SOURCE/pointings/reduced/redu00/152389/raw/toltec_commissioning_pointing_152389_ptc_timestream.nc",
+      "beammaps/3c273/152307_redu50/152307/raw/source_crossing_tod/toltec_commissioning_beammap_152307_ptc_timestream.nc",
+      "citlali-validation/v1/beammaps/3c273/reduced/redu02/148670/raw/source_crossing_tod/toltec_commissioning_beammap_148670_ptc_detector_tod.nc",
+      "citlali-validation/v2/beammaps/3c273/reduced/redu00/148670/raw/source_crossing_tod/toltec_commissioning_beammap_148670_ptc_detector_tod.nc"
+    ],
+    "durable_archive_parts_verified": 4,
+    "seconds": 28.05218505859375
+  },
+  "findings": [
+    "Every target is unchanged regular single-link inventory file resolved inside local_data on original device.",
+    "All observed native target classes have producer/source evidence; maps, bases, summaries, original ingress audit inputs and diagnostic statistical arrays are excluded.",
+    "All1311 NetCDF containers preserve every non-sample variable plus complete original schema; all companion hashes verified, six representative sources compared variable-by-variable.",
+    "All13237 distinct producer metadata prefix identities verified; no whole target payload rehash.",
+    "All four durable recovery archive parts verified and reachable in committed permanent repository history.",
+    "Six focused purge tests pass independently.",
+    "Staged and unstaged tracked changes rejected; char auto conversion disabled; original discarded-variable attributes preserved.",
+    "Fresh complete active-use census is mandatory immediately before apply and enforced by reviewed code; precheck found no open target."
+  ],
+  "blocking_findings": [],
+  "execution_requirements": [
+    "Use this exact committed source and exact target manifest.",
+    "Refresh ACTIVE_USE_CHECK.json immediately before apply; do not proceed if target open paths, incomplete scan or stale record.",
+    "No scientific regeneration, original-input deletion, remote action, or broad filesystem sweep.",
+    "After execution verify target absence and protected inventory identities; publish additive current purge/POINT indexes while leaving old seals/manifests unchanged."
+  ],
+  "limitations": [
+    "This approves bounded local purge scope and preservation, not scientific validity or complete recovery of abandoned trajectories.",
+    "No full target payload hashes or numerical reproduction were requested or performed.",
+    "Original old full-payload seals will no longer validate post-purge layout; current index must identify deliberate absence."
+  ]
+}

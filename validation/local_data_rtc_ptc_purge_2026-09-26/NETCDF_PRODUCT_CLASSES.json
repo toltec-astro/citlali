@@ -1,0 +1,37 @@
+[
+  {
+    "product_class": "RTC/PTC mixed timestream original (purge target)",
+    "files": 1311,
+    "bytes": 178913312053
+  },
+  {
+    "product_class": "original sky detector acquisition",
+    "files": 453,
+    "bytes": 104119170696
+  },
+  {
+    "product_class": "RTC/PTC scan diagnostics (retained)",
+    "files": 3978,
+    "bytes": 95400846010
+  },
+  {
+    "product_class": "other NetCDF diagnostics/input; retained",
+    "files": 12267,
+    "bytes": 58639257522
+  },
+  {
+    "product_class": "original tune/VNA detector acquisition",
+    "files": 1060,
+    "bytes": 14510245728
+  },
+  {
+    "product_class": "telescope/HWPR/housekeeping including processed variants",
+    "files": 1398,
+    "bytes": 10296000416
+  },
+  {
+    "product_class": "processed tune/KIDS input product",
+    "files": 1015,
+    "bytes": 2045655920
+  }
+]

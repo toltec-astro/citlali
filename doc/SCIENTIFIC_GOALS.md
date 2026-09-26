@@ -29,6 +29,14 @@ The September 26 POINT importance/compaction task parks the unexecuted three-pix
 counterfactual and proposed second-observation comparison. Its closeout records
 the actual retained footprint and concrete producer-specific recovery exceptions.
 
+The later September 26 whole-local-data purge directive supersedes the preceding
+retention exceptions specifically for identified inactive Citlali RTC/PTC streams:
+those outputs and solely associated axes/masks have been deliberately removed,
+including unique processing parents. Compact evidence and upstream inputs remain;
+reprocessing is explicit, and instant restart is no longer promised. This bounded
+execution does not establish an automatic future deletion policy or disk quota.
+See `validation/local_data_rtc_ptc_purge_2026-09-26/REPORT.md`.
+
 Source: Grant Wilson's owner statements of **September 17, 2026**,
 “Establish scientific goals and use them to decide what is good enough.”
 These goals guide development judgment; they are not new requirements,

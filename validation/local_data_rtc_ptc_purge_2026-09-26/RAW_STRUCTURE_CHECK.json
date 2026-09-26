@@ -1,0 +1,7 @@
+{
+  "raw_acquisition_files": 1513,
+  "header_open_errors": 0,
+  "structural_empty_or_IQ_mismatch": [],
+  "duplicate_group_structure_conflicts": [],
+  "qualification": "Lightweight header/IQ shape and saved endpoint checks. No full sample integrity, internal loss/gap, checksum or scientific quality claim; absence of known truncation does not prove full archival completeness."
+}
