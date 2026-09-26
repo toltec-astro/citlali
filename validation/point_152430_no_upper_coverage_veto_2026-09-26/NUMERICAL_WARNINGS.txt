@@ -1,0 +1,11 @@
+base
+/private/tmp/citlali-point-additive-20260923/tools/timestream_successor/point_independent.py:73: RuntimeWarning: divide by zero encountered in matmul
+/private/tmp/citlali-point-additive-20260923/tools/timestream_successor/point_independent.py:73: RuntimeWarning: overflow encountered in matmul
+/private/tmp/citlali-point-additive-20260923/tools/timestream_successor/point_independent.py:73: RuntimeWarning: invalid value encountered in matmul
+
+references
+/private/tmp/citlali-point-additive-20260923/tools/timestream_successor/point_independent.py:73: RuntimeWarning: divide by zero encountered in matmul
+/private/tmp/citlali-point-additive-20260923/tools/timestream_successor/point_independent.py:73: RuntimeWarning: overflow encountered in matmul
+/private/tmp/citlali-point-additive-20260923/tools/timestream_successor/point_independent.py:73: RuntimeWarning: invalid value encountered in matmul
+
+Saved operators and sigmas independently verified in OPERATOR_CHECK.json; no source refit or covariance relearning.

@@ -10,7 +10,7 @@ All 15 trajectories completed M0–T10; no source rejection, failed native call,
 | CORR | T10 complete | T10 complete | T10 complete | T10 complete | T10 complete |
 | DIAG | T10 complete | T10 complete | T10 complete | T10 complete | T10 complete |
 
-Each cell includes M0 and ten feedback applications; m10 is saved and unapplied. Detailed M0/T1/T3/T5/T10 rows and all seven fit parameters, gauge-safe shapes, templates, apertures and admission changes are in [MEASUREMENTS.md](compact/report/MEASUREMENTS.md) and [histories.json](compact/report/histories.json).
+Each cell includes M0 and ten feedback applications; m10 is saved and unapplied. Selected M0/T1/T3/T5/T10 rows, gauge-safe shapes, templates, apertures and admission changes are in [MEASUREMENTS.md](compact/report/MEASUREMENTS.md) and [histories.json](compact/report/histories.json). Each branch’s `compact/run/<policy>/<branch>/a2000/SUMMARY.json` retains all seven raw fit parameters for every stage.
 
 ## Leading measurement effects
 
