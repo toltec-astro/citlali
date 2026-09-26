@@ -16,6 +16,9 @@ def bound(path):
 
 def verified(ref):
     path = Path(ref['path'])
+    if not path.exists():
+        from point_archive_compaction import explain_missing
+        explain_missing(path)
     require(digest(path) == ref['sha256'], 'changed bound artifact: ' + str(path))
     return path
 

@@ -1,5 +1,34 @@
 # Scientific goals
 
+## Measurement importance and retention — owner direction 2026-09-26
+
+Future experiment proposals must lead with the affected measurement and units,
+the best supported matching noise/uncertainty scale, the expected practical
+consequence, and the decision that the experiment could change. State source
+versus injected-increment denominators. Label endpoint, conditional-model,
+historical-context and unavailable scales separately. Ratios describe practical
+size, not significance of paired reductions that share observed noise.
+
+Park effects comfortably below the relevant scale and scientific goals when no
+consequential instability or correctness issue is demonstrated. Retain material
+coherent response questions; report unmatched scales as unresolved without
+automatically starting another experiment. There is no universal sub-mJy/sigma
+cutoff, combined score, or new numerical replay tolerance. The approximately5%
+calibration/PSF aspirations remain context, not partial-boundary acceptance tests.
+
+Compact scientific evidence and exact reproduction records are durable. Large
+intermediate arrays are temporary unless tied to a named near-term use or a
+specific recovery limitation. Regeneration/restoration is an explicit operation,
+never a side effect of reading a report. Byte-verified retained counterparts may
+replace duplicate payloads through a reviewed manifest; original seals remain
+historical and compact representations receive their own index. Protected
+observations, indispensable inputs and inaccessible/unique evidence are retained.
+Do not keep a large array indefinitely solely because it might be useful later.
+
+The September26 POINT importance/compaction task parks the unexecuted three-pixel
+counterfactual and proposed second-observation comparison. Its closeout records
+the actual retained footprint and concrete producer-specific recovery exceptions.
+
 Source: Grant Wilson's owner statements of **September 17, 2026**,
 “Establish scientific goals and use them to decide what is good enough.”
 These goals guide development judgment; they are not new requirements,
