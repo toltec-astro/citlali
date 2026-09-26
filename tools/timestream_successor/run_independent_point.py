@@ -140,13 +140,29 @@ def initial_injections(out,binary):
         except (ValueError,RuntimeError,KeyError,OSError) as exc:
             save_json(out/'initial'/branch/'INITIAL.json',dict(available=False,reason=str(exc)))
 
+def initial_control(reference,injected,raster,c,dest):
+    """M0 control for the aligned containing-pixel, uniform-gamma MAP.
+
+    No fit or PTC: identical grid makes normalized gridding of P(I) equal I
+    at each supported output pixel. T1–T10 additionally audit native streams.
+    """
+    ref,h=load(reference);actual,ah=load(injected);z,zh=load(raster)
+    require(all(h[k]==ah[k] for k in ('CRPIX1','CRPIX2','CDELT1','CDELT2','CRVAL1','CRVAL2')),'M0 control grid mismatch')
+    require(np.array_equal(ref['HITS'],ref['NORMALIZATION']),'M0 nonuniform coefficient')
+    known=direct_raster(z['INJECTION'],zh,ref['PRIMARY'].shape,h)
+    common=ref['SCI_SUPPORT'].astype(bool)&actual['SCI_SUPPORT'].astype(bool)
+    delta=actual['PRIMARY']-ref['PRIMARY'];known[~ref['SCI_SUPPORT'].astype(bool)]=np.nan
+    ks,vs,_,_,_=source_patch(known,ref['SCI_SUPPORT'].astype(bool),ref['NORMALIZATION'],h)
+    ds,dv,_,_,_=source_patch(delta,common,ref['NORMALIZATION'],h)
+    write_fits(dest/'response.fits',h,[('DELTA',delta,'mJy/nominal beam'),('CONTROL',known,'mJy/nominal beam'),('RESIDUAL',delta-known,'mJy/nominal beam'),('VALID',common.astype('u1'),'1')],companion='POINT-INDEPENDENT-M0-CONTROL')
+    return dict(audit=dict(definition='aligned containing-pixel ordinary MAP of injection on original M0 support; uniform gamma=1, no PTC/centering',REF_counts_normalization_exact=True,native_stream_audit='performed separately for every T1–T10 control'),full=response_metrics(delta,known,common),source_disk=response_metrics(ds,ks,c['fixed'].disk&dv&vs))
+
+
 def initial_injection(out,binary,branch,base,c):
         dest=out/'initial'/branch;dest.mkdir(parents=True);op=dest/'owner.json';save_json(op,owner(out,'BASE-POINT',branch));q=dest/'request.json';save_json(q,request(out,op,'BASE-POINT',branch,0,verified(base['histories'][0]['candidate'])))
         require(call(out,binary,q,dest/'native')==0,'injected M0 native failure')
         products=dest/'native/products';receipt=read_yaml(products/'receipt.yaml');guards=processing_guard(products,receipt,allow_historical_failure=False)
-        s,v,_,_=patch_map(products/'total.fits');m,_=infer(c,s,v);save_json(dest/'INITIAL.json',dict(available=True,total=bound(products/'total.fits'),receipt=bound(products/'receipt.yaml'),measurement=m,guards=guards))
-        # Initial unmodified ordinary MAP has no FRUIT stream ledger; controls
-        # for injected M0 are its direct one-hot map, verified in every T stage.
+        s,v,_,_=patch_map(products/'total.fits');m,_=infer(c,s,v);response=initial_control(out/'M0/products/a2000/map.fits',products/'total.fits',out/f'freeze/shapes/{branch}.fits',c,dest);save_json(dest/'INITIAL.json',dict(available=True,total=bound(products/'total.fits'),receipt=bound(products/'receipt.yaml'),measurement=m,guards=guards,response=response))
         cleanup_cycle(out,products,keep_projection=False,keep_injected=True)
 
 
@@ -164,7 +180,9 @@ def execute_branch(out,binary,pol,branch):
         require(all(np.array_equal(orig[n],current[n],equal_nan=True) for n in ('CANDIDATE','VALID','ADMITTED','RATIO')),'seed not own REF candidate')
         z,_=load(out/'freeze/shapes/C-shoulder.fits');seed=seed_candidate(orig,branch,z['INJECTION']);cp=init/'seed.fits';write_fits(cp,exact_header(c['header']),[(n,seed[n],'mJy/nominal beam' if n=='CANDIDATE' else '1') for n in ('CANDIDATE','ADMITTED','VALID','RATIO')],companion='POINT-INDEPENDENT-SEED');cause,reason=continuation_reason(g,summary,seed,c['header'])
     o['seeds']={'a2000':{branch:bound(cp)}};op=dest/'owner.json';save_json(op,o)
-    prior=ready_state('a2000',0,cp,total,receipt,parents(out),cause is None,reason);prior.update(branch=branch,policy=pol,owner_sha256=digest(op),measurement=m,admission=summary,stop_kind=cause);sp=init/'state.json';save_json(sp,prior);prior['state_path']=str(sp);history=[prior]
+    prior=ready_state('a2000',0,cp,total,receipt,parents(out),cause is None,reason);prior.update(branch=branch,policy=pol,owner_sha256=digest(op),measurement=m,admission=summary,stop_kind=cause);sp=init/'state.json';save_json(sp,prior);prior['state_path']=str(sp)
+    if physical:prior['response']=r['response']
+    history=[prior]
     for k in range(1,11):
         if not prior['ready']:break
         d=dest/f'cycle-{k:02d}';d.mkdir();q=d/'request.json';save_json(q,request(out,op,pol,branch,k,verified(prior['candidate']),Path(prior['state_path'])))

@@ -73,3 +73,19 @@ def test_failed_native_attempt_is_counted_and_cannot_be_retried(tmp_path,monkeyp
     (tmp_path/'execution-attempts.jsonl').write_text('\n'.join(json.dumps(r) for r in rows)+'\n')
     with pytest.raises(ValueError,match='hard application attempt limit'):run.call(tmp_path,tmp_path/'binary',req,tmp_path/'native')
     assert len(calls)==1
+
+
+def test_M0_control_uses_REF_support_and_preserves_signed_injection(tmp_path):
+    from run_independent_point import initial_control
+    from types import SimpleNamespace
+    h=dict(CRPIX1=21.,CRPIX2=21.,CDELT1=-2/3600,CDELT2=2/3600,CRVAL1=0.,CRVAL2=0.,RADESYS='FK5',EQUINOX=2000.)
+    x,y=coordinates((41,41),h);z=-5*np.exp(-(x*x+y*y)/32);z[np.hypot(x,y)>36]=0
+    valid=np.ones(z.shape,dtype='u1');valid[0,0]=0;hits=valid*5
+    ref=np.full(z.shape,12.);actual=ref+z
+    for name,a in [('ref',ref),('actual',actual)]:write_fits(tmp_path/(name+'.fits'),exact_header(h),[('PRIMARY',a,'mJy/nominal beam'),('HITS',hits,'1'),('NORMALIZATION',hits,'1'),('SCI_SUPPORT',valid,'1')])
+    write_fits(tmp_path/'raster.fits',exact_header(h),[('INJECTION',z,'mJy/nominal beam')])
+    c=dict(fixed=SimpleNamespace(disk=np.hypot(x,y)<=40))
+    r=initial_control(tmp_path/'ref.fits',tmp_path/'actual.fits',tmp_path/'raster.fits',c,tmp_path)
+    assert abs(r['full']['g']-1)<1e-14 and r['full']['eta']<1e-14
+    q,_=load(tmp_path/'response.fits');assert q['VALID'][0,0]==0 and np.isnan(q['CONTROL'][0,0])
+    assert q['CONTROL'][20,20]==-5
