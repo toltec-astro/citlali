@@ -1,0 +1,124 @@
+{
+  "schema": "citlali-bright-point-reference-v1",
+  "mode": "POINT",
+  "observation": 152430,
+  "subobservation": 0,
+  "scan": 2,
+  "tune": [
+    152430,
+    0,
+    1
+  ],
+  "array": "a2000",
+  "networks": [
+    11,
+    12
+  ],
+  "effective_config": "point_152430.yaml",
+  "input_manifest": "point_152430_inputs.json",
+  "map_owner": "map-owner.json",
+  "rtc_plans": {
+    "a1100": "a1100-rtc.json",
+    "a1400": "a1400-rtc.json",
+    "a2000": "a2000-rtc.json"
+  },
+  "ptc": {
+    "method": "observed-als",
+    "rank": 10
+  },
+  "cycles": 10,
+  "threshold": 3,
+  "coverage_policy": "high-coverage-informational",
+  "reference_tolerances": {
+    "signal_atol": 1e-09,
+    "signal_rtol": 1e-11,
+    "numerator_atol": 1e-07,
+    "fit_atol_rtol": 1e-08,
+    "deterministic_measurements_candidates": "exact",
+    "support_normalization": "exact"
+  },
+  "scientific_recipe": {
+    "guard": {
+      "method": "POINT-EXPECTED-v1",
+      "optimizer_calls": 1,
+      "sigma_floor_arcsec": 1.5,
+      "centroid_radius_arcsec": 20,
+      "strict_amplitude_snr": 10,
+      "weights": "identity",
+      "bootstrap": "one geometry-valid attempt, then C0, then complete same fit acceptance"
+    },
+    "C0": {
+      "request": {
+        "mask_fwhm": 4.0,
+        "lag_pixels": 32,
+        "taper_power": 1.0,
+        "bins": 5,
+        "minimum_pixels": 100,
+        "minimum_pairs": 200,
+        "region": "all",
+        "domain_factor": 1,
+        "seed": 23152389,
+        "high_coverage_usable": true
+      },
+      "stamp_size": 49,
+      "geometry": "singleton available M0 fit; freeze full mask/support and WCS"
+    },
+    "BASE_amplitude": {
+      "request": {
+        "mask_fwhm": 3.0,
+        "lag_pixels": 32,
+        "taper_power": 1.0,
+        "bins": 5,
+        "minimum_pixels": 100,
+        "minimum_pairs": 200,
+        "region": "all",
+        "domain_factor": 1,
+        "seed": 23152389,
+        "high_coverage_usable": true
+      },
+      "zero_lag_normalization": "mean squared standardized background; no second spatial covariance"
+    },
+    "PTC": {
+      "rank": 10,
+      "max_iterations": 100,
+      "relative_objective_tolerance": 1e-05,
+      "relative_rank_tolerance": 1e-10,
+      "method": "observed-entry ALS, fresh residual-specific per-network segment; no historical failure exceptions"
+    },
+    "MAP": {
+      "pixel_arcsec": 2,
+      "nominal_beam_arcsec": 10,
+      "frame": "FK5 J2000",
+      "uniform_gamma": 1,
+      "coverage_cut": 0.5,
+      "projection": "native containing pixel"
+    },
+    "feedback": {
+      "radius_arcsec": 40,
+      "gain": 1,
+      "replacement": true,
+      "brightness": "measured minus own fitted constant",
+      "boundary": "inherited candidate_guard"
+    },
+    "endpoint": {
+      "maximum": 1,
+      "source_mask": "frozen M0 full mask and support intersect actual support",
+      "propagation": "seven-parameter local sensitivity with fitted-constant response for template/apertures",
+      "unsupported": "unresolved"
+    },
+    "stops": [
+      "missing dependency",
+      "unsupported required covariance or projection",
+      "new PTC failure",
+      "accounting mismatch",
+      "nonfinite required operand",
+      "expected-source rejection",
+      "inherited feedback boundary"
+    ]
+  },
+  "resource_limits": {
+    "network_workers": 2,
+    "free_space_reserve_bytes": 2000000000,
+    "maximum_retained_bytes": 1000000000
+  }
+}

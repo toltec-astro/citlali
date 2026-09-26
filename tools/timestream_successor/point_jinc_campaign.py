@@ -21,14 +21,7 @@ from inspect_forward_map import require,read_yaml,digest
 WORKERS=12
 SEEDS={'MAP':241523890,'JINC':241523891}
 
-def exact_header(record):
- """Avoid Astropy's short fixed-decimal formatting of small WCS increments."""
- h=fits.Header(record)
- for k in ('CRPIX1','CRPIX2','CRVAL1','CRVAL2','CDELT1','CDELT2','EQUINOX'):
-  if k in record:
-   h.remove(k,remove_all=True,ignore_missing=True)
-   h.append(fits.Card.fromstring(f'{k:<8}= {float(record[k]):.17E}'))
- return h
+from point_empirical_io import exact_header
 
 def fixed_for(out,a):
  d=out/'prepared'/a;info=read(d/'fixed.json');f=FixedMeasurements.__new__(FixedMeasurements)

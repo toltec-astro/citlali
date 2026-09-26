@@ -197,3 +197,11 @@ def diagnose_cycle(array, index, fixed, products, out, previous, histories):
         report.update(ready=False, stop_reason=str(e))
     save_json(out/'measurements.json', report)
     return report
+
+
+def ready_state(array, index, candidate, total, receipt, parents, ready, reason=None):
+    return dict(schema='point-fruit-ready-state-v1', array=array, cycle_index=index, ready=ready,
+                candidate=bound(candidate) if candidate and Path(candidate).exists() else None,
+                total=bound(total), receipt=bound(receipt),
+                original_plan_sha256=parents['parent_plan']['sha256'],
+                original_map_request_sha256=parents['map_request']['sha256'], stop_reason=reason)

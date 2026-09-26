@@ -12,7 +12,7 @@ from point_fruit_trajectory import bound,verified,manifest,verify_manifest
 from point_fruit_diagnostics import patch_map,load
 from point_empirical_io import write_fits
 from point_additive_diagnostics import save_json
-from point_jinc_campaign import exact_header
+from point_empirical_io import exact_header
 from inspect_forward_map import require,digest
 
 V=REPO/'validation/point_152389_expected_source_guard_2026-09-25'

@@ -17,7 +17,7 @@ from point_fruit_diagnostics import patch_map,compare_zero
 from point_response_cd import save_candidate
 from point_admission import admit
 from run_point_response_cd import source,replay_check
-from run_point_fruit_ten import ready_state
+from point_fruit_trajectory import ready_state
 from run_successor_observation import run as invoke
 
 FROZEN=CD.parent/'successor-point-152389-frozen-ptc-shoulder-20260924'

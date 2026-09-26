@@ -8,7 +8,7 @@ from point_corr_admission import Neighborhood,select
 from point_fruit_trajectory import candidate_guard
 from point_empirical import coordinates,patch
 from point_empirical_io import write_fits
-from point_jinc_campaign import exact_header
+from point_empirical_io import exact_header
 from point_independent import initialize,context
 
 

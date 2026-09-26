@@ -11,12 +11,13 @@ import yaml
 from ptc_spod import digest
 
 
-def run(binary,input_path,output,workers,terminal='ptc'):
+def run(binary,input_path,output,workers,terminal='ptc',ptc=None):
     output.mkdir(parents=True,exist_ok=False)
     env=dict(os.environ,OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='1',
              VECLIB_MAXIMUM_THREADS='1',BLIS_NUM_THREADS='1',OMP_DYNAMIC='FALSE')
     request=dict(schema='citlali-development-v1',input=dict(path=str(input_path.resolve()),sha256=digest(input_path)),
                  output=str(output/'products'),terminal=terminal,network_workers=workers)
+    if ptc is not None:request['ptc']=ptc
     config=output/'development.yaml';config.write_text(yaml.safe_dump(request))
     result=dict(command=[str(binary.resolve()),str(config)],executable_sha256=digest(binary),
                 version=subprocess.check_output([str(binary),'--version'],text=True,stderr=subprocess.STDOUT),

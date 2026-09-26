@@ -12,9 +12,9 @@ from point_response_cd import processing_guard,seed_candidate,injection_referenc
 from point_expected import METHOD
 from point_fruit_trajectory import bound,verified,manifest,verify_manifest,selection_difference
 from point_fruit_diagnostics import load,patch_map,learned_state
-from run_point_fruit_ten import ready_state
+from point_fruit_trajectory import ready_state
 from point_empirical_io import write_fits
-from point_jinc_campaign import exact_header
+from point_empirical_io import exact_header
 from point_additive_diagnostics import save_json
 from run_successor_observation import run as invoke
 from inspect_forward_map import require,digest,read_yaml

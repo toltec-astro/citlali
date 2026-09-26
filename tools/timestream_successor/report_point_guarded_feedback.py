@@ -18,7 +18,7 @@ from point_corr_admission import Neighborhood
 from point_post_fruit import applicability,operators
 from point_additive_diagnostics import save_json
 from inspect_forward_map import require,read_yaml
-from point_jinc_campaign import exact_header
+from point_empirical_io import exact_header
 
 SNAPS=(0,1,3,5,10)
 

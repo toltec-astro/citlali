@@ -103,3 +103,13 @@ def write_fits(path,header,planes,companion='POINT-EMPIRICAL'):
 
 def dump(path,obj):
     Path(path).write_text(json.dumps(obj,indent=2,allow_nan=False)+'\n')
+
+
+def exact_header(record):
+ """Avoid Astropy's short fixed-decimal formatting of small WCS increments."""
+ h=fits.Header(record)
+ for k in ('CRPIX1','CRPIX2','CRVAL1','CRVAL2','CDELT1','CDELT2','EQUINOX'):
+  if k in record:
+   h.remove(k,remove_all=True,ignore_missing=True)
+   h.append(fits.Card.fromstring(f'{k:<8}= {float(record[k]):.17E}'))
+ return h

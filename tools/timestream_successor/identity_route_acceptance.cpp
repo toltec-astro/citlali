@@ -440,13 +440,16 @@ TelescopeInput load_telescope(
     const fs::path &path,
     const pipeline::NativeObservationScope &scope,
     bool bounded_repeat_census = false,
-    bool bounded_point_map = false) {
+    bool bounded_point_map = false,
+    const std::string &configured_digest = "") {
+    const bool configured_point = !configured_digest.empty();
+    require(!configured_point || (bounded_point_map && !bounded_repeat_census),"configured telescope requires POINT route");
     // One explicitly selected repeat for the offline common-mode census.
     // Existing acceptance callers retain every original artifact guard.
     require(!bounded_repeat_census ||
                 (scope.observation == 152392 && scope.subobservation == 0 && scope.scan == 2),
             "repeat telescope binding is outside the fixed census scope");
-    require(!bounded_point_map || (!bounded_repeat_census && (scope.observation == 152389 || scope.observation == 152430) &&
+    require(!bounded_point_map || (!bounded_repeat_census && (configured_point || scope.observation == 152389 || scope.observation == 152430) &&
         scope.subobservation == 0 && scope.scan == 2), "POINT telescope binding outside selected scope");
     const bool independent_point = bounded_point_map && scope.observation == 152430;
     const std::string_view expected_filename = independent_point
@@ -458,15 +461,15 @@ TelescopeInput load_telescope(
         ? "2aec5f1f2be8c365127fcf275a02eb0c780eeda9494cd225e50e50c4386a9392" : bounded_repeat_census
         ? "cf991624411d7f7582977351a5ab4cc228977bc8680578cb74e0ec1ae71d8e47" : telescope_sha256;
     const auto expected_bytes = independent_point ? 1320968u : bounded_point_map ? 1301180u : bounded_repeat_census ? 24247112u : telescope_byte_count;
-    const auto expected_records = independent_point ? 3251u : bounded_point_map ? 3200u : bounded_repeat_census ? 62339u : telescope_record_count;
-    require(path.filename() == expected_filename,
+    auto expected_records = independent_point ? 3251u : bounded_point_map ? 3200u : bounded_repeat_census ? 62339u : telescope_record_count;
+    require(configured_point || path.filename() == expected_filename,
             "telescope filename is not the approved artifact");
     std::error_code error;
     const auto byte_count = fs::file_size(path, error);
-    require(!error && byte_count == expected_bytes,
+    require(!error && (configured_point || byte_count == expected_bytes),
             "telescope byte count is not approved");
     const auto digest = citlali::utils::sha256_file(path);
-    require(digest == expected_digest,
+    require(digest == (configured_point ? configured_digest : expected_digest),
             "telescope SHA-256 is not approved");
 
     netCDF::NcFile file(path.string(), netCDF::NcFile::read);
@@ -498,6 +501,11 @@ TelescopeInput load_telescope(
 
     const auto time_variable =
         file.getVar(std::string{pipeline::ast_scan_motion_time_field});
+    if(configured_point) {
+        require(metadata.dcs_observation_goal=="Pointing" || metadata.dcs_observation_program=="Pointing", "configured reference requires POINT acquisition");
+        require(!time_variable.isNull() && time_variable.getDimCount()==1 && time_variable.getDim(0).getSize()>1,"configured telescope time cardinality");
+        expected_records=time_variable.getDim(0).getSize();
+    }
     require(!time_variable.isNull() &&
                 time_variable.getDimCount() == 1 &&
                 time_variable.getDim(0).getSize() ==

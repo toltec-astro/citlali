@@ -46,7 +46,7 @@ def test_signed_plot_zero_handedness_and_empty_scale():
  plt.close(fig)
 
 def test_WCS_binary64_roundtrip_preserves_original_stamp(tmp_path):
- from point_jinc_campaign import exact_header
+ from point_empirical_io import exact_header
  from point_empirical_io import write_fits
  from point_empirical import source_patch
  record=dict(CRPIX1=24.,CRPIX2=24.,CRVAL1=176.7429079166667,CRVAL2=39.97619555555556,CDELT1=-2/3600,CDELT2=2/3600,EQUINOX=2000.)

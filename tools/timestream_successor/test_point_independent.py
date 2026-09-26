@@ -7,7 +7,7 @@ from test_point_expected import setup
 from point_empirical import coordinates
 from point_fruit_diagnostics import load
 from point_empirical_io import write_fits
-from point_jinc_campaign import exact_header
+from point_empirical_io import exact_header
 from run_independent_point import cleanup_cycle
 
 
@@ -56,13 +56,13 @@ def test_temporary_cleanup_preserves_shared_injection_and_compact_records(tmp_pa
 
 def test_failed_native_attempt_is_counted_and_cannot_be_retried(tmp_path,monkeypatch):
     import json
-    import run_independent_point as run
+    import point_processing as run
     from point_fruit_trajectory import bound
     (tmp_path/'freeze').mkdir();(tmp_path/'freeze/budget.json').write_text(json.dumps(dict(native_cells=1,peak_ceiling_bytes=1000000,free_space_reserve_bytes=0)))
     own=tmp_path/'owner.json';own.write_text(json.dumps(dict(policy='BASE-POINT')))
     req=tmp_path/'request.json';req.write_text(json.dumps(dict(owner_binding=bound(own),cycle_index=1,branch='REF')))
     calls=[]
-    def fail(*args):calls.append(args);raise RuntimeError('failed native call')
+    def fail(*args,**kwargs):calls.append(args);raise RuntimeError('failed native call')
     monkeypatch.setattr(run,'invoke',fail)
     with pytest.raises(RuntimeError,match='failed native'):run.call(tmp_path,tmp_path/'binary',req,tmp_path/'native')
     rows=[json.loads(x) for x in (tmp_path/'execution-attempts.jsonl').read_text().splitlines()]

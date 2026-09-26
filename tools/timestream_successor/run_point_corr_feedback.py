@@ -12,8 +12,8 @@ from point_response_cd import processing_guard,seed_candidate,save_candidate
 from point_corr_admission import infer,select,POLICIES
 from point_additive_diagnostics import save_json
 from point_empirical_io import write_fits
-from point_jinc_campaign import exact_header
-from run_point_fruit_ten import ready_state
+from point_empirical_io import exact_header
+from point_fruit_trajectory import ready_state
 from run_successor_observation import run as invoke
 from inspect_forward_map import require,read_yaml,digest
 

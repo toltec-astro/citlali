@@ -11,7 +11,7 @@ from point_empirical import aperture_measurements, stats
 from point_response_cd import save_candidate, vector_measurement, MEASUREMENT_NAMES, RATIO_FLOOR
 from point_fruit_trajectory import bound, candidate_guard
 from point_empirical_io import write_fits
-from point_jinc_campaign import exact_header
+from point_empirical_io import exact_header
 from point_additive_diagnostics import save_json
 from inspect_forward_map import require
 
@@ -97,3 +97,11 @@ def ideal_comparison(c,reference,actual,ideal):
             ideal_background_increment=bg[2]-bg[0] if bg[0] is not None and bg[2] is not None else None))
     return dict(comparisons=rows,reference=reference,actual=actual,ideal_map_addition=ideal,
                 raw_aperture_and_background_increments=raw,ratio_floor_native_units=RATIO_FLOOR)
+
+
+def infer_base(c, signal, support):
+    """Same accepted fit and BASE candidate; no parked supplemental scores."""
+    from point_expected import measure_expected, candidate
+    guard = measure_expected(signal, support, c['fixed'], c['scale'], c['psd'])
+    prepared = (guard, candidate(signal, support, c['fixed'], guard), None)
+    return measurement(c, signal, support, guard), prepared
