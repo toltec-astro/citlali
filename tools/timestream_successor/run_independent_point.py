@@ -52,12 +52,24 @@ def call(out,binary,request,dest,terminal='point-fruit',workers=1,allowance=None
     with _LOCK:
         current=size(out);require(current+_RESERVED+allowance<=budget['peak_ceiling_bytes'],'reserved campaign storage ceiling')
         require(shutil.disk_usage(out).free>_RESERVED+allowance+budget['free_space_reserve_bytes'],'free-space reserve')
+        if terminal=='point-fruit':record_attempt(out,request)
         _RESERVED+=allowance
     try:return invoke(binary,request,dest,workers,terminal)
     finally:
         with _LOCK:
             _RESERVED-=allowance
             with (out/'storage.jsonl').open('a') as f:f.write(json.dumps(dict(epoch=time.time(),stage=str(dest.relative_to(out)),bytes=size(out),reserved=_RESERVED,ceiling=budget['peak_ceiling_bytes']))+'\n')
+
+
+def record_attempt(out,request):
+    """Called under the reservation lock before invocation; failures still count."""
+    q=read(request);owner_record=read(verified(q['owner_binding']));k=q['cycle_index']
+    kind='feedback' if k else 'injected_initial'
+    row=dict(kind=kind,policy=owner_record['policy'],branch=q['branch'],cycle=k,request=bound(request))
+    path=out/'execution-attempts.jsonl';previous=[json.loads(line) for line in path.read_text().splitlines()] if path.exists() else []
+    require(not any((r['kind'],r['policy'],r['branch'],r['cycle'])==(kind,row['policy'],row['branch'],k) for r in previous),'duplicate logical application attempt')
+    require(sum(r['kind']==kind for r in previous)<(150 if k else 3),'hard application attempt limit')
+    with path.open('a') as f:f.write(json.dumps(row)+'\n');f.flush()
 
 
 def parents(out):return read(out/'freeze/parents.json')
@@ -82,7 +94,7 @@ def upstream(out,binary):
 
 
 def owner(out,pol,branch,initial=None):
-    p=read(out/'freeze/prospective.json');o=dict(identity='POINT-152430-FROZEN-OWNER-2026-09-26',outside_disk_no_feedback=True,direct_identical_operand_rejoin=True,gain=1,nonzero_cycles=10,policy=pol,source_method='POINT-EXPECTED-v1',threshold=3. if pol=='BASE-POINT' else p['thresholds'][pol],prospective=bound(out/'freeze/prospective.json'),thresholds=bound(out/'freeze/thresholds.json'),parents={'a2000':parents(out)},injections={'a2000':{b:bound(out/f'freeze/shapes/{b}.fits') for b in BRANCHES[1:4]}} if (out/'SHAPES.json').exists() else {})
+    p=read(out/'freeze/prospective.json');o=dict(identity='POINT-152430-NO-UPPER-COVERAGE-VETO-2026-09-26',outside_disk_no_feedback=True,direct_identical_operand_rejoin=True,gain=1,nonzero_cycles=10,policy=pol,source_method='POINT-EXPECTED-v1',threshold=3. if pol=='BASE-POINT' else p['thresholds'][pol],prospective=bound(out/'freeze/prospective.json'),thresholds=bound(out/'freeze/thresholds.json'),parents={'a2000':parents(out)},injections={'a2000':{b:bound(out/f'freeze/shapes/{b}.fits') for b in BRANCHES[1:4]}} if (out/'SHAPES.json').exists() else {})
     if branch.startswith('C-') and initial:
         o['injected_parents']={};o['injection_operands']={}
         for s in read_yaml(initial/'receipt.yaml')['segments']:
@@ -93,7 +105,7 @@ def owner(out,pol,branch,initial=None):
 
 def request(out,op,pol,branch,k,cp,previous=None):
     require(pol in POLICIES and branch in BRANCHES and 0<=k<=10,'matrix outside bound')
-    q=dict(schema='citlali-point-fruit-independent-v1',method='point-152430-frozen-method-v1',mode='zero' if k==0 else 'reference',array='a2000',branch=branch,cycle_index=k,candidate=bound(cp),owner_binding=bound(op),**parents(out))
+    q=dict(schema='citlali-point-fruit-independent-v1',method='point-152430-no-upper-coverage-veto-v1',mode='zero' if k==0 else 'reference',array='a2000',branch=branch,cycle_index=k,candidate=bound(cp),owner_binding=bound(op),**parents(out))
     if k:q['previous_state']=bound(previous)
     if branch.startswith('C-'):q['injection']=bound(out/f'freeze/shapes/{branch}.fits')
     return q

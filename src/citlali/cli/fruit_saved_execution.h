@@ -19,7 +19,7 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     const bool guarded=independent || request["schema"].as<std::string>()=="citlali-point-fruit-guarded-v1";
     const bool campaign=guarded || corr || refseq || request["schema"].as<std::string>()=="citlali-point-fruit-cd-v1";
     const bool continuation=request["schema"].as<std::string>()=="citlali-point-fruit-continuation-v1";
-    require((guarded && request["method"].as<std::string>()==(independent?"point-152430-frozen-method-v1":"point-152389-guarded-feedback-v1")) || (corr && request["method"].as<std::string>()=="point-152389-corr-neighbor-v1") || (refseq && request["method"].as<std::string>()=="point-152389-a2000-ref-basis-sequence-v1") || (campaign && !refseq && !corr && !guarded && request["method"].as<std::string>()=="point-152389-response-robustness-cd-v1") || (continuation && request["method"].as<std::string>()=="point-152389-direct-ten-cycle-v1") ||
+    require((guarded && request["method"].as<std::string>()==(independent?"point-152430-no-upper-coverage-veto-v1":"point-152389-guarded-feedback-v1")) || (corr && request["method"].as<std::string>()=="point-152389-corr-neighbor-v1") || (refseq && request["method"].as<std::string>()=="point-152389-a2000-ref-basis-sequence-v1") || (campaign && !refseq && !corr && !guarded && request["method"].as<std::string>()=="point-152389-response-robustness-cd-v1") || (continuation && request["method"].as<std::string>()=="point-152389-direct-ten-cycle-v1") ||
         (!continuation && request["schema"].as<std::string>()=="citlali-point-fruit-cycle-v1" && request["method"].as<std::string>()=="point-152389-direct-one-cycle-v1"),"FRUIT unsupported method");
     const auto mode=request["mode"].as<std::string>();require(mode=="zero" || mode=="reference","FRUIT unknown mode");
     const int cycle=(continuation || campaign)?request["cycle_index"].as<int>():(mode=="zero"?0:1);
@@ -31,7 +31,7 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     require(campaign || (!request["branch"] && !request["injection"]),"FRUIT foreign campaign fields");
     const auto owner_path=checked_file(request["owner_binding"]);const auto owner_sha=ledger.bind(owner_path);
     const auto owner=YAML::LoadFile(owner_path.string());
-    require(owner["identity"].as<std::string>()==(independent?"POINT-152430-FROZEN-OWNER-2026-09-26":guarded?"POINT-152389-GUARDED-OWNER-2026-09-25":corr?"POINT-152389-CORR-NEIGHBOR-OWNER-2026-09-24":refseq?"POINT-152389-A2000-REFSEQ-OWNER-2026-09-24":campaign?"POINT-152389-CD-OWNER-2026-09-23":continuation?"POINT-152389-TEN-FRUIT-OWNER-2026-09-23":"POINT-152389-FIRST-FRUIT-OWNER-2026-09-23") &&
+    require(owner["identity"].as<std::string>()==(independent?"POINT-152430-NO-UPPER-COVERAGE-VETO-2026-09-26":guarded?"POINT-152389-GUARDED-OWNER-2026-09-25":corr?"POINT-152389-CORR-NEIGHBOR-OWNER-2026-09-24":refseq?"POINT-152389-A2000-REFSEQ-OWNER-2026-09-24":campaign?"POINT-152389-CD-OWNER-2026-09-23":continuation?"POINT-152389-TEN-FRUIT-OWNER-2026-09-23":"POINT-152389-FIRST-FRUIT-OWNER-2026-09-23") &&
         owner["outside_disk_no_feedback"].as<bool>() && owner["direct_identical_operand_rejoin"].as<bool>() &&
         owner["gain"].as<double>()==1 && owner["nonzero_cycles"].as<int>()==((continuation || campaign)?10:1),"FRUIT owner choices absent");
     const auto map_path=checked_file(request["map_request"]);ledger.bind(map_path);const auto mr=YAML::LoadFile(map_path.string());
@@ -74,7 +74,7 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
         }
         } else {
             const auto prospective=YAML::LoadFile(checked_file(owner["prospective"]).string());
-            require(prospective["observation"].as<int>()==152430 && prospective["maximum_feedback_applications"].as<int>()==150 && prospective["maximum_trajectories"].as<int>()==15 && prospective["maximum_initial_physical_inputs"].as<int>()==4 && prospective["cycles"].as<int>()==10 && prospective["array"].as<std::string>()=="a2000" && (cycle>0 || branch.rfind("C-",0)==0), "FRUIT independent prospective scope");
+            require(prospective["observation"].as<int>()==152430 && prospective["coverage_policy"].as<std::string>()=="high-coverage-informational" && prospective["maximum_feedback_applications"].as<int>()==150 && prospective["maximum_trajectories"].as<int>()==15 && prospective["maximum_initial_physical_inputs"].as<int>()==4 && prospective["cycles"].as<int>()==10 && prospective["array"].as<std::string>()=="a2000" && (cycle>0 || branch.rfind("C-",0)==0), "FRUIT independent prospective scope");
             if(policy!="BASE-POINT") {
                 const auto tp=checked_file(owner["thresholds"]);ledger.bind(tp);
                 const auto thresholds=YAML::LoadFile(tp.string());

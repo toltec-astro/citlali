@@ -1,0 +1,167 @@
+{
+  "observation": 152430,
+  "array": "a2000",
+  "maximum_trajectories": 15,
+  "maximum_feedback_applications": 150,
+  "maximum_initial_physical_inputs": 4,
+  "maximum_ideal_controls": 9,
+  "maximum_endpoint_covariances": 3,
+  "cycles": 10,
+  "policies": [
+    "BASE-POINT",
+    "CORR",
+    "DIAG"
+  ],
+  "branches": [
+    "REF",
+    "C-core-plus",
+    "C-core-minus",
+    "C-shoulder",
+    "D-seed-shoulder"
+  ],
+  "thresholds": {
+    "CORR": 3.689982959208037,
+    "DIAG": 4.686076304689278
+  },
+  "threshold_file": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/freeze/thresholds.json",
+    "sha256": "e068bda489308aa726540d4e1f353fd134a753fddc17d85d1a112385f882c143"
+  },
+  "reference_tolerances": {
+    "signal_atol": 1e-09,
+    "signal_rtol": 1e-11,
+    "numerator_atol": 1e-07,
+    "fit_atol_rtol": 1e-08,
+    "deterministic_measurements_candidates": "exact",
+    "support_normalization": "exact"
+  },
+  "accounting_atol": 1e-08,
+  "dependencies": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/freeze/dependencies.json",
+    "sha256": "794f6bfe2121648ed9b53a09d35aaa451b145bca225c713f02bcff4d5389856c"
+  },
+  "budget": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/freeze/budget.json",
+    "sha256": "95d764405534315222db74634e73bfaa79c0fe341b1c0e27d642e4ea5a95a059"
+  },
+  "selection_reason": "independent later acquisition and own tune, canonicalv2 ready, prior source summary bright; shared calibration errors may remain",
+  "environment": {
+    "python": "/Users/gwilson/tolteca/bin/python",
+    "platform": "macOS-26.7-arm64-arm-64bit-Mach-O",
+    "packages": {
+      "numpy": "2.2.3",
+      "scipy": "1.15.2",
+      "astropy": "7.0.1",
+      "netCDF4": "1.7.2",
+      "PyYAML": "6.0.2",
+      "psutil": "7.0.0"
+    },
+    "numeric_threads": 1,
+    "native_network_workers": 2
+  },
+  "method": "same scientific owners; new M0 operands frozen once; no transferred noise/covariance/masks or pixelIDs; fixed thresholds portability does not calibrate false admission rate",
+  "stage": "input preflight only; realized M0 operands pending",
+  "coverage_policy": "high-coverage-informational",
+  "method_change": "owner-authorized removal of upper coverage validity veto for this diagnostic route; numerical amplitude continuation unchanged; not unchanged-method replay",
+  "preparation_base_revision": "cf9cfee12d41c12e494fa904b6065b87cb503b41",
+  "generated_inputs": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/freeze/generated-inputs.json",
+    "sha256": "cdd5588704d924dbd1b41659cd88ca932800d914293a956b942575404d8b3aa6"
+  },
+  "scientific_recipe": {
+    "guard": {
+      "method": "POINT-EXPECTED-v1",
+      "optimizer_calls": 1,
+      "sigma_floor_arcsec": 1.5,
+      "centroid_radius_arcsec": 20,
+      "strict_amplitude_snr": 10,
+      "weights": "identity",
+      "bootstrap": "one geometry-valid attempt, then C0, then complete same fit acceptance"
+    },
+    "C0": {
+      "request": {
+        "mask_fwhm": 4.0,
+        "lag_pixels": 32,
+        "taper_power": 1.0,
+        "bins": 5,
+        "minimum_pixels": 100,
+        "minimum_pairs": 200,
+        "region": "all",
+        "domain_factor": 1,
+        "seed": 23152389,
+        "high_coverage_usable": true
+      },
+      "stamp_size": 49,
+      "geometry": "singleton available M0 fit; freeze full mask/support and WCS"
+    },
+    "BASE_amplitude": {
+      "request": {
+        "mask_fwhm": 3.0,
+        "lag_pixels": 32,
+        "taper_power": 1.0,
+        "bins": 5,
+        "minimum_pixels": 100,
+        "minimum_pairs": 200,
+        "region": "all",
+        "domain_factor": 1,
+        "seed": 23152389,
+        "high_coverage_usable": true
+      },
+      "zero_lag_normalization": "mean squared standardized background; no second spatial covariance"
+    },
+    "PTC": {
+      "rank": 10,
+      "max_iterations": 100,
+      "relative_objective_tolerance": 1e-05,
+      "relative_rank_tolerance": 1e-10,
+      "method": "observed-entry ALS, fresh residual-specific per-network segment; no historical failure exceptions"
+    },
+    "MAP": {
+      "pixel_arcsec": 2,
+      "nominal_beam_arcsec": 10,
+      "frame": "FK5 J2000",
+      "uniform_gamma": 1,
+      "coverage_cut": 0.5,
+      "projection": "native containing pixel"
+    },
+    "feedback": {
+      "radius_arcsec": 40,
+      "gain": 1,
+      "replacement": true,
+      "brightness": "measured minus own fitted constant",
+      "boundary": "inherited candidate_guard"
+    },
+    "shapes": {
+      "authority": "point_response_cd.shapes",
+      "reference": "BASE-POINT T10",
+      "M0_major": true,
+      "amplitudes": [
+        0.1,
+        -0.1,
+        0.05
+      ],
+      "shoulder_width_factor": 2,
+      "shoulder_positive_east_offset_M0_major": 0.5,
+      "taper_radii_arcsec": [
+        30,
+        36
+      ]
+    },
+    "endpoint": {
+      "maximum": 3,
+      "source_mask": "frozen M0 full mask and support intersect actual support",
+      "propagation": "seven-parameter local sensitivity with fitted-constant response for template/apertures",
+      "unsupported": "unresolved"
+    },
+    "stops": [
+      "missing dependency",
+      "unsupported required covariance or projection",
+      "new PTC failure",
+      "accounting mismatch",
+      "nonfinite required operand",
+      "expected-source rejection",
+      "inherited feedback boundary"
+    ]
+  },
+  "execution_identity": "clean exact commit and rebuilt native binary SHA are authenticated by independent review JSON before every stage"
+}

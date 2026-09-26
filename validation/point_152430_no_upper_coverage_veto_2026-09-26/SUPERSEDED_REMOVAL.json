@@ -1,0 +1,25 @@
+{
+  "removed_roots": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926",
+      "files": 177,
+      "bytes": 10995281
+    },
+    {
+      "path": "/private/tmp/citlali-point-additive-20260923/validation/point_152430_independent_a2000_2026-09-26",
+      "files": 207,
+      "bytes": 11197259
+    },
+    {
+      "path": "/private/tmp/citlali-point-additive-20260923/handoff/POINT_152430_INDEPENDENT_A2000_2026-09-26.md",
+      "files": 1,
+      "bytes": 2307
+    }
+  ],
+  "attempt_owned_scratch_items": 31,
+  "scratch_bytes": 487808,
+  "total_removed_bytes": 22682655,
+  "protected_inputs_verified": 31,
+  "other_worktree_copies_found": 0,
+  "scope": "owner-authorized superseded attempt products only; shared source/build/inputs retained; no backup, quarantine, Git-history rewrite or remote operation"
+}

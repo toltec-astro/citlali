@@ -60,6 +60,8 @@ def publish(dest,c,signal,prepared,policy,tau):
         extra_brightness_area=float(np.sum(result['candidate'][result.get('added',np.zeros_like(selected))])*4))
     planes=[('MEASURED',signal,'mJy/nominal beam'),('BASE_POINT',base['selected'].astype('u1'),'1'),('K0',c['k0'].astype('u1'),'1'),('BRIGHTNESS',base['brightness'],'mJy/nominal beam'),('VALID',valid.astype('u1'),'1'),('ADMITTED',selected.astype('u1'),'1')]
     for name,key in [('PROPOSED','proposed_extra'),('ADDED','added')]:planes.append((name,result.get(key,np.zeros_like(selected)).astype('u1'),'1'))
+    if 'noise_high_extrapolated' in c:
+        planes.extend([('NOISE_EXTRAP',c['noise_high_extrapolated'].astype('u1'),'1'),('COV_EXTRAP',c['covariance_high_extrapolated'].astype('u1'),'1')])
     if fields is not None:
         planes.extend([('NEFF_W',fields['neff_weights'],'1'),('EVIDENCE',fields['evidence'],'mJy/nominal beam')])
         for pol in ('CORR','DIAG'):

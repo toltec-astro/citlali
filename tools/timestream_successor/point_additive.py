@@ -28,6 +28,7 @@ class NoiseRequest:
     region: str='all'
     domain_factor: int=1
     seed: int=23152389
+    high_coverage_usable: bool=False
     def __post_init__(self):
         if self.mask_fwhm<=0 or self.lag_pixels<2 or self.taper_power<=0 or self.bins<1 or self.minimum_pixels<2 or self.minimum_pairs<2 or self.domain_factor<1:
             raise ValueError('invalid additive model request')
@@ -98,20 +99,23 @@ def learn(signal,coverage,support,header,parameters,request=NoiseRequest(),stamp
         use=good & (index==b)
         if moment is not None and moment>0:
             scale[use]=np.sqrt(moment)
-            valid[use]=(coverage[use]>=edges[0])&(coverage[use]<edges[-1])
+            valid[use]=(coverage[use]>=edges[0]) & (True if request.high_coverage_usable else coverage[use]<edges[-1])
         records.append(dict(bin=b,coverage_min=float(edges[b]),coverage_max_exclusive=float(edges[b+1]),
             n=n,second_moment_about_global_mean=moment,**{k:v for k,v in s.items() if k!='n'}))
     if not np.isfinite(scale[bg]).all():raise ValueError('a training coverage bin is unsupported')
+    valid &= np.isfinite(scale)&(scale>0)
+    extrapolated=good & (coverage>np.max(coverage[bg]))
+    transfer=dict(training_coverage_range=[float(np.min(coverage[bg])),float(np.max(coverage[bg]))],maximum_applied_coverage=float(np.max(coverage[good])),high_coverage_pixels=int(extrapolated.sum()),high_coverage_usable=request.high_coverage_usable,continuation='unchanged clipped coverage-bin index and bin scale times sqrt(zero-lag moment); high tail is the existing last-bin prediction',interpretation='model-based conditional transfer; extrapolation metadata is not empirical calibration')
     z=np.divide(residual,scale,out=np.zeros(signal.shape),where=np.isfinite(scale))
     if amplitude_only:
         # Same amplitude/zero-lag normalization as the existing full learner,
         # without constructing a second spatial covariance for M0 admission.
         c0=float(np.mean(z[bg]**2))
         if not np.isfinite(c0) or c0<=0:raise ValueError('invalid amplitude zero lag')
-        return dict(scale=scale*np.sqrt(c0),valid=valid,source_mask=source,
+        return dict(scale=scale*np.sqrt(c0),valid=valid,coverage_extrapolated=extrapolated,source_mask=source,
                     background_mask=bg,summary=dict(request=asdict(request),
                     bins=records,mean_removed=mean,zero_lag_before_normalization=c0,
-                    spatial_covariance_learned=False))
+                    spatial_covariance_learned=False,coverage_transfer=transfer))
     empirical,pairs=pair_covariance(z,bg,request.lag_pixels,request.minimum_pairs)
     psd,fit=spectrum_from_pairs(empirical,request.lag_pixels,stamp_size,request.taper_power,request.domain_factor)
     c0=fit['zero_lag_before_normalization'];scale*=np.sqrt(c0)
@@ -125,16 +129,16 @@ def learn(signal,coverage,support,header,parameters,request=NoiseRequest(),stamp
             covariance=np.where(np.isfinite(cv),cv,np.nan),pairs=ct,correlation=cor,
             histogram=stats(z[mask]),bins=[stats(z[mask&(index==b)]) for b in range(len(edges)-1)]))
     values=z[bg];hist,hedges=np.histogram(values,bins=40)
-    summary=dict(method=METHOD,request=asdict(request),mask_radius_arcsec=float(request.mask_fwhm*major) if source_mask is None else None,
+    summary=dict(method=METHOD,request=asdict(request),coverage_transfer=transfer,mask_radius_arcsec=float(request.mask_fwhm*major) if source_mask is None else None,
         source_mask_policy='parameter-centered circle' if source_mask is None else 'explicit externally frozen source mask',
         mean_removed=mean,mean_policy='single ordinary mean of selected background; no gradient, per-bin mean or source-fit subtraction',
         mean_estimation_limitation='finite background mean removal biases unconstrained long modes; not corrected by pair-count normalization',
         background_pixels=int(bg.sum()),coverage_range=[float(edges[0]),float(edges[-1])],bins=records,
         histogram=dict(counts=hist.tolist(),edges=hedges.tolist(),skew=float(skew(values)),excess_kurtosis=float(kurtosis(values)),
                        fraction_abs_over_3=float(np.mean(abs(values)>3)),robust_scale=stats(values)['robust_scale']),spectrum_fit=fit,
-        validity='coverage-bin interpolation within observed range; endpoint continuation outside range is computational only and flagged invalid',
+        validity=('finite positive high-coverage prediction usable; lower-coverage bound unchanged' if request.high_coverage_usable else 'coverage-bin interpolation within observed range; endpoint continuation outside range is computational only and flagged invalid'),
         assumptions='Gaussian generator; separable amplitude modulation times shared stationary normalized anisotropic covariance')
-    return dict(scale=scale,valid=valid,source_mask=source,background_mask=bg,z=z,psd=psd,
+    return dict(scale=scale,valid=valid,coverage_extrapolated=extrapolated,source_mask=source,background_mask=bg,z=z,psd=psd,
                 empirical=empirical/c0,pairs=pairs,regions=regions,summary=summary)
 
 

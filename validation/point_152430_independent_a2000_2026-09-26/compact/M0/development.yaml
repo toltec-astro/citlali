@@ -1,7 +1,0 @@
-input:
-  path: /Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/inputs/map-request.json
-  sha256: d05fe6a45cf1e70bb8f7803e6fbb27b0685cca6e1d907fbee0ae4482f61a6c45
-network_workers: 1
-output: /Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/M0/products
-schema: citlali-development-v1
-terminal: map

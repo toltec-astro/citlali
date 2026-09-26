@@ -1,7 +1,0 @@
-input:
-  path: /Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/inputs/observation.json
-  sha256: 0ac8266714bf182a3cc8ae5d98804c87387809fc55259f84202f3b0cee291230
-network_workers: 2
-output: /Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/upstream/products
-schema: citlali-development-v1
-terminal: ptc
