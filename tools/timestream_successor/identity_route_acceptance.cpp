@@ -446,16 +446,19 @@ TelescopeInput load_telescope(
     require(!bounded_repeat_census ||
                 (scope.observation == 152392 && scope.subobservation == 0 && scope.scan == 2),
             "repeat telescope binding is outside the fixed census scope");
-    require(!bounded_point_map || (!bounded_repeat_census && scope.observation == 152389 &&
+    require(!bounded_point_map || (!bounded_repeat_census && (scope.observation == 152389 || scope.observation == 152430) &&
         scope.subobservation == 0 && scope.scan == 2), "POINT telescope binding outside selected scope");
-    const std::string_view expected_filename = bounded_point_map
+    const bool independent_point = bounded_point_map && scope.observation == 152430;
+    const std::string_view expected_filename = independent_point
+        ? "tel_toltec_2026-02-19_152430_00_0002.nc" : bounded_point_map
         ? "tel_toltec_2026-02-19_152389_00_0002.nc" : bounded_repeat_census
         ? "tel_toltec_2026-02-19_152392_00_0002.nc" : telescope_filename;
-    const std::string_view expected_digest = bounded_point_map
+    const std::string_view expected_digest = independent_point
+        ? "f6ac27248692af558a16af94f267a84b344e93f30d2248516d4388b9b25e5f19" : bounded_point_map
         ? "2aec5f1f2be8c365127fcf275a02eb0c780eeda9494cd225e50e50c4386a9392" : bounded_repeat_census
         ? "cf991624411d7f7582977351a5ab4cc228977bc8680578cb74e0ec1ae71d8e47" : telescope_sha256;
-    const auto expected_bytes = bounded_point_map ? 1301180u : bounded_repeat_census ? 24247112u : telescope_byte_count;
-    const auto expected_records = bounded_point_map ? 3200u : bounded_repeat_census ? 62339u : telescope_record_count;
+    const auto expected_bytes = independent_point ? 1320968u : bounded_point_map ? 1301180u : bounded_repeat_census ? 24247112u : telescope_byte_count;
+    const auto expected_records = independent_point ? 3251u : bounded_point_map ? 3200u : bounded_repeat_census ? 62339u : telescope_record_count;
     require(path.filename() == expected_filename,
             "telescope filename is not the approved artifact");
     std::error_code error;

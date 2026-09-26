@@ -1,0 +1,21 @@
+Test project /private/tmp/citlali-point-guarded-build-20260925
+    Start 27: citlali::PtcNumerics.CompleteDataMatchesSvdAndDoesNotRestoreMean
+1/8 Test #27: citlali::PtcNumerics.CompleteDataMatchesSvdAndDoesNotRestoreMean .................   Passed    0.02 sec
+    Start 28: citlali::PtcNumerics.IncompleteRowsAndGoodPartsOfFlaggedDetectorsContribute
+2/8 Test #28: citlali::PtcNumerics.IncompleteRowsAndGoodPartsOfFlaggedDetectorsContribute ......   Passed    0.02 sec
+    Start 29: citlali::PtcNumerics.ExcludedDonorValuesIncludingNonfiniteNeverEnterArithmetic
+3/8 Test #29: citlali::PtcNumerics.ExcludedDonorValuesIncludingNonfiniteNeverEnterArithmetic ...   Passed    0.02 sec
+    Start 30: citlali::PtcNumerics.NonconvergenceAndDeficiencyDoNotSwitchMethodsOrReduceRank
+4/8 Test #30: citlali::PtcNumerics.NonconvergenceAndDeficiencyDoNotSwitchMethodsOrReduceRank ...   Passed    0.03 sec
+    Start 31: citlali::PtcNumerics.FrozenMaskedResponseIsSameLocalLinearOperator
+5/8 Test #31: citlali::PtcNumerics.FrozenMaskedResponseIsSameLocalLinearOperator ...............   Passed    0.02 sec
+    Start 32: citlali::PtcNumerics.PairwiseUsesDetectorMeansAndOverlapMinusOne
+6/8 Test #32: citlali::PtcNumerics.PairwiseUsesDetectorMeansAndOverlapMinusOne .................   Passed    0.02 sec
+    Start 33: citlali::PtcNumerics.UnsupportedLargeRankAndOneTimeRemainBoundedFailures
+7/8 Test #33: citlali::PtcNumerics.UnsupportedLargeRankAndOneTimeRemainBoundedFailures .........   Passed    0.01 sec
+    Start 34: citlali::PtcNumerics.UnresolvedCutoffDegeneracyDoesNotChooseArbitrarySubspace
+8/8 Test #34: citlali::PtcNumerics.UnresolvedCutoffDegeneracyDoesNotChooseArbitrarySubspace ....   Passed    0.01 sec
+
+100% tests passed, 0 tests failed out of 8
+
+Total Test time (real) =   0.41 sec

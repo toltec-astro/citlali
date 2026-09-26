@@ -19,7 +19,8 @@ inline void require_no_mask_scope(NativeObservationScope scope,
                                   const std::string &authority) {
   require(scope.subobservation == 0 && scope.scan == 2 &&
               ((scope.observation == 152390 && authority == no_mask_authority) ||
-               (scope.observation == 152389 && authority == point_no_mask_authority)),
+               (scope.observation == 152389 && authority == point_no_mask_authority) ||
+               (scope.observation == 152430 && authority == "owner-152430-frozen-POINT-no-spatial-mask-2026-09-26")),
           "no-mask choice requires exact selected observation and its owner authority");
 }
 inline RtcEventRange read_range(const YAML::Node &n) {

@@ -1,0 +1,51 @@
+Test project /private/tmp/citlali-point-guarded-build-20260925
+      Start 35: citlali::forward_map::ForwardMap.HalfOpenCentersEdgesAndOrientation
+ 1/23 Test #35: citlali::forward_map::ForwardMap.HalfOpenCentersEdgesAndOrientation ........................   Passed    0.02 sec
+      Start 36: citlali::forward_map::ForwardMap.IndependentUnequalCoefficientCalculation
+ 2/23 Test #36: citlali::forward_map::ForwardMap.IndependentUnequalCoefficientCalculation ..................   Passed    0.01 sec
+      Start 37: citlali::forward_map::ForwardMap.ConstantAndDeltaSameLinearCompanionOperator
+ 3/23 Test #37: citlali::forward_map::ForwardMap.ConstantAndDeltaSameLinearCompanionOperator ...............   Passed    0.01 sec
+      Start 38: citlali::forward_map::ForwardMap.ExplicitSupportSeparatesNormalizationAndScience
+ 4/23 Test #38: citlali::forward_map::ForwardMap.ExplicitSupportSeparatesNormalizationAndScience ...........   Passed    0.01 sec
+      Start 39: citlali::forward_map::ForwardMap.SmallPopulationSelectorAndEmptySupport
+ 5/23 Test #39: citlali::forward_map::ForwardMap.SmallPopulationSelectorAndEmptySupport ....................   Passed    0.01 sec
+      Start 40: citlali::forward_map::ForwardMap.BadPlanAndPayloadNeverMutateResolvedOperator
+ 6/23 Test #40: citlali::forward_map::ForwardMap.BadPlanAndPayloadNeverMutateResolvedOperator ..............   Passed    0.01 sec
+      Start 41: citlali::forward_map::ForwardMap.OverflowIsFailureNotSanitizedZero
+ 7/23 Test #41: citlali::forward_map::ForwardMap.OverflowIsFailureNotSanitizedZero .........................   Passed    0.01 sec
+      Start 42: citlali::forward_map::ForwardMap.NonzeroSubnormalRoundingCannotChangeConstantOrSupport
+ 8/23 Test #42: citlali::forward_map::ForwardMap.NonzeroSubnormalRoundingCannotChangeConstantOrSupport .....   Passed    0.01 sec
+      Start 43: citlali::forward_map::ForwardMap.NormalizationRejectsInexactSubnormalButPreservesExact
+ 9/23 Test #43: citlali::forward_map::ForwardMap.NormalizationRejectsInexactSubnormalButPreservesExact .....   Passed    0.01 sec
+      Start 44: citlali::forward_map::ForwardMap.OrderBlockAssemblyAndConcurrentReadOnlyApplication
+10/23 Test #44: citlali::forward_map::ForwardMap.OrderBlockAssemblyAndConcurrentReadOnlyApplication ........   Passed    0.01 sec
+      Start 45: citlali::forward_map::ForwardMap.OriginalFootprintsUnionAndDoNotFollowDescendantPixels
+11/23 Test #45: citlali::forward_map::ForwardMap.OriginalFootprintsUnionAndDoNotFollowDescendantPixels .....   Passed    0.01 sec
+      Start 46: citlali::forward_map::ForwardMap.AstCenteredTanGridPreservesOrientationAndMargin
+12/23 Test #46: citlali::forward_map::ForwardMap.AstCenteredTanGridPreservesOrientationAndMargin ...........   Passed    0.01 sec
+      Start 47: citlali::forward_map::PtcMapHandoff.ExplicitUniformSelectionExactSupportAndRequest
+13/23 Test #47: citlali::forward_map::PtcMapHandoff.ExplicitUniformSelectionExactSupportAndRequest .........   Passed    0.01 sec
+      Start 48: citlali::forward_map::PtcMapHandoff.FourValuedFidelityAndStructuralFailures
+14/23 Test #48: citlali::forward_map::PtcMapHandoff.FourValuedFidelityAndStructuralFailures ................   Passed    0.01 sec
+      Start 49: citlali::forward_map::ForwardMapAdmission.ExactParentsAndSeparateProducerAndMapDecisions
+15/23 Test #49: citlali::forward_map::ForwardMapAdmission.ExactParentsAndSeparateProducerAndMapDecisions ...   Passed    0.01 sec
+      Start 50: citlali::fruit::FruitCycle.PixelProjectionSupportAndExactBrightness
+16/23 Test #50: citlali::fruit::FruitCycle.PixelProjectionSupportAndExactBrightness ........................   Passed    0.01 sec
+      Start 51: citlali::fruit::FruitCycle.BypassAccountingMissingnessAndStaleState
+17/23 Test #51: citlali::fruit::FruitCycle.BypassAccountingMissingnessAndStaleState ........................   Passed    0.01 sec
+      Start 52: citlali::fruit::FruitCycle.NumericalKnownSourceProjectionCleaningRejoinMap
+18/23 Test #52: citlali::fruit::FruitCycle.NumericalKnownSourceProjectionCleaningRejoinMap .................   Passed    0.01 sec
+      Start 53: citlali::fruit::FruitCycle.SignedInjectionPreservesParentAndInvalidEntries
+19/23 Test #53: citlali::fruit::FruitCycle.SignedInjectionPreservesParentAndInvalidEntries .................   Passed    0.01 sec
+      Start 54: citlali::fruit::FruitCycle.ReferenceSequenceFreshMeansMaskedApplyAndRankFailure
+20/23 Test #54: citlali::fruit::FruitCycle.ReferenceSequenceFreshMeansMaskedApplyAndRankFailure ............   Passed    0.01 sec
+      Start 55: citlali::fruit::FruitCycle.GuardedFrozenInterventionSignedZeroMaskedAndTamper
+21/23 Test #55: citlali::fruit::FruitCycle.GuardedFrozenInterventionSignedZeroMaskedAndTamper ..............   Passed    0.01 sec
+      Start 56: citlali::fruit::FruitCycle.ReferenceSequenceStageOrderingAndAutonomousReplacement
+22/23 Test #56: citlali::fruit::FruitCycle.ReferenceSequenceStageOrderingAndAutonomousReplacement ..........   Passed    0.01 sec
+      Start 60: citlali::forward_map_reload
+23/23 Test #60: citlali::forward_map_reload ................................................................   Passed    1.22 sec
+
+100% tests passed, 0 tests failed out of 23
+
+Total Test time (real) =   2.46 sec

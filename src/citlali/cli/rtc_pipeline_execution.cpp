@@ -145,9 +145,9 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     const auto scan =
         read_netcdf_scalar<int>(raw_file, "Header.Toltec.ScanNum");
     require(cfg["network"].as<int>()==nw && cfg["observation"].as<int>()==obs,"requested raw scope mismatch");
-    if(development) require((obs==152390 || obs==152389) && sub==0 && scan==2 && nw>=0 && nw<13 &&
+    if(development) require((obs==152390 || obs==152389 || (obs==152430 && (nw==11 || nw==12))) && sub==0 && scan==2 && nw>=0 && nw<13 &&
         ((obs==152390 && nw==12) || cfg["filter_plan"]),
-        "successor.unsupported_native_domain: 152389 or 152390/0/2 requires an explicit array plan outside the preserved network12 input; no legacy fallback");
+        "successor.unsupported_native_domain: selected POINT or 152390/0/2 requires an explicit array plan outside the preserved network12 input; no legacy fallback");
     require(obs == relation.observation().observation &&
                 sub == relation.observation().subobservation &&
                 scan == relation.observation().scan,
@@ -219,7 +219,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
         }
       require(matches==1,"census observation absent or duplicated in selection");
     }
-    require((obs == 152390 || (development && obs == 152389) || (census && obs == 152392)) && sub == 0 && scan == 2 &&
+    require((obs == 152390 || (development && (obs == 152389 || obs == 152430)) || (census && obs == 152392)) && sub == 0 && scan == 2 &&
             (nw == 12 || (full_health && nw == 0) || (development && cfg["filter_plan"])),
             "bounded caller requires selected 152389/152390 development scope or preserved comparison scope");
     const auto network_binding=std::find_if(relation.bindings().begin(),relation.bindings().end(),
@@ -397,21 +397,22 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     require(cfg["source_protection_authority"] && cfg["source_protection_authority"].IsScalar(),
         "successor.source_protection_selection_required: no observation-specific treatment selected");
     const auto protection_authority=cfg["source_protection_authority"].as<std::string>();
-    if (obs == 152390 || (development && obs == 152389)) caller::require_no_mask_scope(parent->scope(),protection_authority);
+    if (obs == 152390 || (development && (obs == 152389 || obs == 152430))) caller::require_no_mask_scope(parent->scope(),protection_authority);
     else require(census && protection_authority == "rtc-census-source-membership-unavailable",
                  "repeat source membership must remain unavailable");
     auto protection=RtcSpikeSourceProtection::admit(parent,protection_authority,
-                        (obs==152390 || (development && obs==152389)) ? RtcSpikeProtection::outside_source : RtcSpikeProtection::unavailable);
+                        (obs==152390 || (development && (obs==152389 || obs==152430))) ? RtcSpikeProtection::outside_source : RtcSpikeProtection::unavailable);
     std::shared_ptr<const AstScanMotionNetworkView> motion;
     if(argc==4 || recovered_scans){
-      const auto telescope=common?common->telescope:load_telescope(checked("telescope"),parent->scope(),census && obs==152392,development && obs==152389);
+      const auto telescope=common?common->telescope:load_telescope(checked("telescope"),parent->scope(),census && obs==152392,development && (obs==152389 || obs==152430));
       const auto motion_identity = census && obs==152392
           ? AstScanMotionIdentityBinding{1523920001,1523920002,1523920003,1523920004}
+          : obs==152430 ? AstScanMotionIdentityBinding{1524300001,1524300002,1524300003,1524300004}
           : obs==152389 ? AstScanMotionIdentityBinding{1523890001,1523890002,1523890003,1523890004}
           : ast_identity_binding;
       auto ast=common?common->motion:build_ast_scan_motion_product(telescope.source,motion_identity);
       const auto accepted_ast=YAML::LoadFile(checked("ast_acceptance").string());
-      if (development && obs == 152389) {
+      if (development && (obs == 152389 || obs == 152430)) {
         require(accepted_ast["schema"].as<std::string>()=="citlali-ast-motion-source-binding-v1" &&
           accepted_ast["authority_policy_id"].as<std::string>()==std::string(ast_scan_motion_policy_id) &&
           accepted_ast["observation"].as<int>()==obs && accepted_ast["subobservation"].as<int>()==sub &&
@@ -1088,14 +1089,14 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
     citlali::cli::DevelopmentTerminal terminal,citlali::cli::DevelopmentPtcRequest ptc,unsigned workers) {
   require(workers>=1 && workers<=12,"successor.network_workers_must_be_1_to_12");
   require(request["schema"].as<std::string>()=="citlali-observation-networks-v1" &&
-          (request["observation"].as<int>()==152390 || request["observation"].as<int>()==152389) && request["subobservation"].as<int>()==0 &&
+          (request["observation"].as<int>()==152390 || request["observation"].as<int>()==152389 || request["observation"].as<int>()==152430) && request["subobservation"].as<int>()==0 &&
           request["scan"].as<int>()==2,"successor.observation_scope_unsupported");
   require(request["networks"].IsSequence() && request["networks"].size()>0,"successor.empty_network_request");
   require(!fs::exists(output),"preserve previous output");
   std::vector<fs::path> inputs;std::vector<int> ids;std::vector<YAML::Node> configs;
   for(const auto &entry:request["networks"]) {
     const int nw=entry["network"].as<int>();
-    require(nw>=0 && nw<13 && (ids.empty() || nw>ids.back()),"successor.network_order_duplicate_or_invalid");
+    require((request["observation"].as<int>()!=152430 || nw==11 || nw==12) && nw>=0 && nw<13 && (ids.empty() || nw>ids.back()),"successor.network_order_duplicate_or_invalid");
     const auto path=checked_file(entry["input"]);const auto cfg=YAML::LoadFile(path.string());
     require(cfg["network"].as<int>()==nw && cfg["observation"].as<int>()==request["observation"].as<int>() &&
             cfg["decision_apply"] && cfg["filter_plan"],"successor.network_binding_incomplete");
@@ -1116,8 +1117,9 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
   auto verified=apt::verify_bundle_filesystem(checked_file(cfg["manifest"]),true);
   auto relation=pipeline::admit_canonical_apt_detector_relation_v2(verified);
   auto processing=prepare_processing_scans(cfg,scope,verified,trace);
-  auto telescope=load_telescope(checked_file(cfg["telescope"]),scope,false,scope.observation==152389);
-  auto motion=build_ast_scan_motion_product(telescope.source,scope.observation==152389
+  auto telescope=load_telescope(checked_file(cfg["telescope"]),scope,false,scope.observation==152389 || scope.observation==152430);
+  auto motion=build_ast_scan_motion_product(telescope.source,scope.observation==152430
+      ? AstScanMotionIdentityBinding{1524300001,1524300002,1524300003,1524300004} : scope.observation==152389
       ? AstScanMotionIdentityBinding{1523890001,1523890002,1523890003,1523890004} : ast_identity_binding);
   auto cal=prepare_cal_observation(cfg,scope);
   SharedObservationPreparation common{std::move(verified),std::move(relation),std::move(processing),

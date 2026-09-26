@@ -61,7 +61,7 @@ def snr_rejection(amplitude,sigma):
     return None if amplitude/sigma>10 else 'fitted amplitude S/N does not strictly exceed 10'
 
 
-def measure_expected(signal,support,fixed,scale,psd):
+def measure_expected(signal,support,fixed,scale,psd,*,initialize_covariance=None):
     """One attempt, fresh accepted state; ordinary rejection != unknown input.
 
     Invalid covariance/input and nonfinite numerical results are computationally
@@ -82,14 +82,15 @@ def measure_expected(signal,support,fixed,scale,psd):
                       message=('POINT computation unavailable.' if computational else FAILURE)+' '+cause)
         return result
 
-    if support.shape!=signal.shape or scale.shape!=signal.shape:
+    if support.shape!=signal.shape or (initialize_covariance is None and scale.shape!=signal.shape):
         return reject('input/covariance shape mismatch',True)
     if np.any(roi&~(support&np.isfinite(signal))) or roi.sum()<30 or central.sum()<10:
         return reject('incomplete or nonfinite original fit support',True)
-    if np.any(~np.isfinite(scale[roi])) or np.any(scale[roi]<=0):
-        return reject('missing or invalid frozen covariance amplitude',True)
-    if psd.ndim!=2 or not np.isfinite(psd).all() or np.any(psd<0) or not psd.mean()>0 or max(signal.shape)>=min(psd.shape)/2+1:
-        return reject('invalid or insufficiently padded frozen covariance spectrum',True)
+    if initialize_covariance is None:
+        if np.any(~np.isfinite(scale[roi])) or np.any(scale[roi]<=0):
+            return reject('missing or invalid frozen covariance amplitude',True)
+        if psd.ndim!=2 or not np.isfinite(psd).all() or np.any(psd<0) or not psd.mean()>0 or max(signal.shape)>=min(psd.shape)/2+1:
+            return reject('invalid or insufficiently padded frozen covariance spectrum',True)
     if not np.isfinite(fixed.beam) or fixed.beam<=0:return reject('invalid nominal initialization scale',True)
     ix=np.argmax(np.where(central,signal,-np.inf));background=float(np.median(signal[roi]))
     initial=[max(0.,float(signal.flat[ix])-background),float(x.flat[ix]),float(y.flat[ix]),
@@ -107,6 +108,21 @@ def measure_expected(signal,support,fixed,scale,psd):
     if not fit.success:return reject('finite optimizer nonconvergence: '+fit.message)
     cause=geometry_rejection(p,fit.active_mask)
     if cause:return reject(cause)
+    if initialize_covariance is not None:
+        # One M0 numerical attempt supplies mask geometry before covariance
+        # exists. Complete this same fit's guard; never retry or relax it.
+        if scale is not None or psd is not None:
+            return reject('competing initialized and supplied covariance',True)
+        try:
+            scale,psd=initialize_covariance(p.copy())
+        except ValueError as exc:
+            return reject('initial covariance unavailable: '+str(exc),True)
+        if scale.shape!=signal.shape:
+            return reject('initialized covariance shape mismatch',True)
+    if np.any(~np.isfinite(scale[roi])) or np.any(scale[roi]<=0):
+        return reject('missing or invalid frozen covariance amplitude',True)
+    if psd.ndim!=2 or not np.isfinite(psd).all() or np.any(psd<0) or not psd.mean()>0 or max(signal.shape)>=min(psd.shape)/2+1:
+        return reject('invalid or insufficiently padded frozen covariance spectrum',True)
     try:
         q,info=amplitude_sensitivity(jacobian(p,x[roi],y[roi]))
         result['amplitude_sensitivity']=info

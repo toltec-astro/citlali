@@ -34,7 +34,7 @@ PreparedProcessingScans prepare_processing_scans(const YAML::Node &cfg,
   YAML::Node provenance,selection;
   if(fresh) {
     selection=YAML::LoadFile(checked_file(request["processing_request"]).string());
-    require(scope.observation==152389 && scope.subobservation==0 && scope.scan==2 &&
+    require((scope.observation==152389 || scope.observation==152430) && scope.subobservation==0 && scope.scan==2 &&
         selection["schema"].as<std::string>()=="citlali-native-processing-request-v1" &&
         selection["observation"].as<int>()==scope.observation &&
         selection["subobservation"].as<int>()==scope.subobservation && selection["scan"].as<int>()==scope.scan &&

@@ -76,7 +76,7 @@ def spectrum_from_pairs(cov,lag,stamp_size,power=1.,domain_factor=1):
         missing_lags='zero only in the computational model; unconstrained physical correlations are unknown')
 
 
-def learn(signal,coverage,support,header,parameters,request=NoiseRequest(),stamp_size=41,*,source_mask=None):
+def learn(signal,coverage,support,header,parameters,request=NoiseRequest(),stamp_size=41,*,source_mask=None,amplitude_only=False):
     x,y=coordinates(signal.shape,header);p=np.asarray(parameters)
     major=max(p[3:5])*np.sqrt(8*np.log(2));r=np.hypot(x-p[1],y-p[2])
     good=support & np.isfinite(signal) & np.isfinite(coverage) & (coverage>0)
@@ -103,6 +103,15 @@ def learn(signal,coverage,support,header,parameters,request=NoiseRequest(),stamp
             n=n,second_moment_about_global_mean=moment,**{k:v for k,v in s.items() if k!='n'}))
     if not np.isfinite(scale[bg]).all():raise ValueError('a training coverage bin is unsupported')
     z=np.divide(residual,scale,out=np.zeros(signal.shape),where=np.isfinite(scale))
+    if amplitude_only:
+        # Same amplitude/zero-lag normalization as the existing full learner,
+        # without constructing a second spatial covariance for M0 admission.
+        c0=float(np.mean(z[bg]**2))
+        if not np.isfinite(c0) or c0<=0:raise ValueError('invalid amplitude zero lag')
+        return dict(scale=scale*np.sqrt(c0),valid=valid,source_mask=source,
+                    background_mask=bg,summary=dict(request=asdict(request),
+                    bins=records,mean_removed=mean,zero_lag_before_normalization=c0,
+                    spatial_covariance_learned=False))
     empirical,pairs=pair_covariance(z,bg,request.lag_pixels,request.minimum_pairs)
     psd,fit=spectrum_from_pairs(empirical,request.lag_pixels,stamp_size,request.taper_power,request.domain_factor)
     c0=fit['zero_lag_before_normalization'];scale*=np.sqrt(c0)

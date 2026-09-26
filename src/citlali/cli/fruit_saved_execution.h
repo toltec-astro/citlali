@@ -15,10 +15,11 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     for(const auto &e:request)require(fields.contains(e.first.as<std::string>()),"FRUIT unknown request field");
     const bool refseq=request["schema"].as<std::string>()=="citlali-point-fruit-refseq-v1";
     const bool corr=request["schema"].as<std::string>()=="citlali-point-fruit-corr-neighbor-v1";
-    const bool guarded=request["schema"].as<std::string>()=="citlali-point-fruit-guarded-v1";
+    const bool independent=request["schema"].as<std::string>()=="citlali-point-fruit-independent-v1";
+    const bool guarded=independent || request["schema"].as<std::string>()=="citlali-point-fruit-guarded-v1";
     const bool campaign=guarded || corr || refseq || request["schema"].as<std::string>()=="citlali-point-fruit-cd-v1";
     const bool continuation=request["schema"].as<std::string>()=="citlali-point-fruit-continuation-v1";
-    require((guarded && request["method"].as<std::string>()=="point-152389-guarded-feedback-v1") || (corr && request["method"].as<std::string>()=="point-152389-corr-neighbor-v1") || (refseq && request["method"].as<std::string>()=="point-152389-a2000-ref-basis-sequence-v1") || (campaign && !refseq && !corr && !guarded && request["method"].as<std::string>()=="point-152389-response-robustness-cd-v1") || (continuation && request["method"].as<std::string>()=="point-152389-direct-ten-cycle-v1") ||
+    require((guarded && request["method"].as<std::string>()==(independent?"point-152430-frozen-method-v1":"point-152389-guarded-feedback-v1")) || (corr && request["method"].as<std::string>()=="point-152389-corr-neighbor-v1") || (refseq && request["method"].as<std::string>()=="point-152389-a2000-ref-basis-sequence-v1") || (campaign && !refseq && !corr && !guarded && request["method"].as<std::string>()=="point-152389-response-robustness-cd-v1") || (continuation && request["method"].as<std::string>()=="point-152389-direct-ten-cycle-v1") ||
         (!continuation && request["schema"].as<std::string>()=="citlali-point-fruit-cycle-v1" && request["method"].as<std::string>()=="point-152389-direct-one-cycle-v1"),"FRUIT unsupported method");
     const auto mode=request["mode"].as<std::string>();require(mode=="zero" || mode=="reference","FRUIT unknown mode");
     const int cycle=(continuation || campaign)?request["cycle_index"].as<int>():(mode=="zero"?0:1);
@@ -30,13 +31,13 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     require(campaign || (!request["branch"] && !request["injection"]),"FRUIT foreign campaign fields");
     const auto owner_path=checked_file(request["owner_binding"]);const auto owner_sha=ledger.bind(owner_path);
     const auto owner=YAML::LoadFile(owner_path.string());
-    require(owner["identity"].as<std::string>()==(guarded?"POINT-152389-GUARDED-OWNER-2026-09-25":corr?"POINT-152389-CORR-NEIGHBOR-OWNER-2026-09-24":refseq?"POINT-152389-A2000-REFSEQ-OWNER-2026-09-24":campaign?"POINT-152389-CD-OWNER-2026-09-23":continuation?"POINT-152389-TEN-FRUIT-OWNER-2026-09-23":"POINT-152389-FIRST-FRUIT-OWNER-2026-09-23") &&
+    require(owner["identity"].as<std::string>()==(independent?"POINT-152430-FROZEN-OWNER-2026-09-26":guarded?"POINT-152389-GUARDED-OWNER-2026-09-25":corr?"POINT-152389-CORR-NEIGHBOR-OWNER-2026-09-24":refseq?"POINT-152389-A2000-REFSEQ-OWNER-2026-09-24":campaign?"POINT-152389-CD-OWNER-2026-09-23":continuation?"POINT-152389-TEN-FRUIT-OWNER-2026-09-23":"POINT-152389-FIRST-FRUIT-OWNER-2026-09-23") &&
         owner["outside_disk_no_feedback"].as<bool>() && owner["direct_identical_operand_rejoin"].as<bool>() &&
         owner["gain"].as<double>()==1 && owner["nonzero_cycles"].as<int>()==((continuation || campaign)?10:1),"FRUIT owner choices absent");
     const auto map_path=checked_file(request["map_request"]);ledger.bind(map_path);const auto mr=YAML::LoadFile(map_path.string());
     const auto pp=checked_file(request["parent_plan"]);ledger.bind(pp);const auto parent=YAML::LoadFile(pp.string());
     const auto array=request["array"].as<std::string>();const std::array<std::string,3> arrays{"a1100","a1400","a2000"};
-    const auto ai=std::find(arrays.begin(),arrays.end(),array)-arrays.begin();require(ai<3 && parent["array"].as<std::string>()==array && parent["observation"].as<std::string>()=="obs:152389_0_2","FRUIT foreign array/observation");
+    const auto ai=std::find(arrays.begin(),arrays.end(),array)-arrays.begin();require(ai<3 && parent["array"].as<std::string>()==array && parent["observation"].as<std::string>()==(independent?"obs:152430_0_2":"obs:152389_0_2") && (!independent || array=="a2000"),"FRUIT foreign array/observation");
     require(!refseq || (array=="a2000" && owner["workers"].as<int>()==3 && owner["basis_schedule"].size()==11),"FRUIT reference sequence scope/resources");
     require(mr["schema"].as<std::string>()=="citlali-map-saved-ptc-v1" && mr["coverage_cut"].as<double>()==parent["coverage_cut"].as<double>() && mr["pixel_size_arcsec"].as<double>()==2,"FRUIT MAP policy differs");
     const auto mo=checked_file(mr["owner_binding"]);ledger.bind(mo);require(parent["owner_binding"].as<std::string>()=="sha256:"+citlali::utils::sha256_file(mo),"FRUIT MAP owner differs");
@@ -55,9 +56,10 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     if(guarded) {
         const auto policy=owner["policy"].as<std::string>();
         require(policy=="BASE-POINT" || policy=="CORR" || policy=="DIAG","FRUIT unknown guarded policy");
-        require(cycle>=1 && (branch=="REF" || branch=="C-core-plus" || branch=="C-core-minus" || branch=="C-shoulder" || branch=="D-seed-shoulder"),"FRUIT guarded matrix outside bound");
+        require((cycle>=1 || independent) && (branch=="REF" || branch=="C-core-plus" || branch=="C-core-minus" || branch=="C-shoulder" || branch=="D-seed-shoulder"),"FRUIT guarded matrix outside bound");
         require(owner["source_method"].as<std::string>()=="POINT-EXPECTED-v1","FRUIT guarded source method differs");
         ledger.bind(checked_file(owner["prospective"]));
+        if(!independent) {
         const auto checks_path=checked_file(owner["source_checks"]);ledger.bind(checks_path);
         const auto checks=YAML::LoadFile(checks_path.string());
         require(checks["repair"][array]["usable"].as<bool>() && checks["repair"][array]["source_retention_check_pass"].as<bool>(),"FRUIT guarded source checks failed");
@@ -69,6 +71,15 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
             const auto thresholds=YAML::LoadFile(thresholds_path.string());
             require(owner["threshold"].as<double>()==thresholds["thresholds"][array][policy].as<double>() &&
                     owner["threshold"].as<double>()==gate["policies"][array][policy]["threshold"].as<double>(),"FRUIT guarded frozen threshold differs");
+        }
+        } else {
+            const auto prospective=YAML::LoadFile(checked_file(owner["prospective"]).string());
+            require(prospective["observation"].as<int>()==152430 && prospective["maximum_feedback_applications"].as<int>()==150 && prospective["maximum_trajectories"].as<int>()==15 && prospective["maximum_initial_physical_inputs"].as<int>()==4 && prospective["cycles"].as<int>()==10 && prospective["array"].as<std::string>()=="a2000" && (cycle>0 || branch.rfind("C-",0)==0), "FRUIT independent prospective scope");
+            if(policy!="BASE-POINT") {
+                const auto tp=checked_file(owner["thresholds"]);ledger.bind(tp);
+                const auto thresholds=YAML::LoadFile(tp.string());
+                require(owner["threshold"].as<double>()==thresholds["thresholds"][array][policy].as<double>(),"FRUIT independent frozen threshold differs");
+            }
         }
     }
     const auto candidate=checked_file(request["candidate"]);const auto candidate_sha=ledger.bind(candidate);
@@ -94,7 +105,7 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     if(campaign){
         require(owner["parents"][array]["map_request"]["sha256"].as<std::string>()==citlali::utils::sha256_file(map_path) &&
             owner["parents"][array]["parent_plan"]["sha256"].as<std::string>()==citlali::utils::sha256_file(pp),"FRUIT C+D foreign parent");
-        if(cycle==0)require(candidate_sha==selected_hashes[ai],"FRUIT M0 requires original candidate as unused grid control");
+        if(cycle==0 && !independent)require(candidate_sha==selected_hashes[ai],"FRUIT M0 requires original candidate as unused grid control");
         if(cycle==1 && branch.rfind("D-",0)==0)require(candidate_sha==owner["seeds"][array][branch]["sha256"].as<std::string>(),"FRUIT C+D first seed differs");
     }
     auto read_model=[&](const fs::path &path,const std::string &sha){
@@ -137,7 +148,7 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
         ledger.bind(fs::path(nr["root"].as<std::string>())/"donor-continuity/ptc/receipt.yaml",nr["ptc_receipt_sha256"].as<std::string>());
         const auto cal=YAML::LoadFile((fs::path(nr["root"].as<std::string>())/"donor-continuity/cal/receipt.yaml").string());
         if(cal["detectors"][0]["array"].as<int>()!=int(ai))continue;
-        auto n=load_saved_map_network(nr,ledger);require(n.obsnum==152389 && seen.insert(n.network).second,"FRUIT network selection");
+        auto n=load_saved_map_network(nr,ledger);require(n.obsnum==(independent?152430:152389) && seen.insert(n.network).second,"FRUIT network selection");
         if(std::isfinite(ra0))require(ra0==n.observation.ra0 && dec0==n.observation.dec0,"FRUIT AST center changed");
         else {ra0=n.observation.ra0;dec0=n.observation.dec0;}
         bool bound=false;for(const auto &p:parent["sources"])if(p["network"].as<int>()==n.network && p["PTC_receipt_sha256"].as<std::string>()==n.ptc_sha)bound=true;
@@ -172,7 +183,7 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
                     const auto v=injection->at(xy(t,2*columns[d]),xy(t,2*columns[d]+1));
                     ++injection_counts[std::uint8_t(v.support)];pi(t,d)=v.value;ps(t,d)=v.support!=FruitModelSupport::unavailable;
                 }
-                if(refseq || guarded){
+                if(refseq || (guarded && (!independent || cycle>0))){
                     const auto saved_pi=checked_file(owner["injection_operands"][name]);ledger.bind(saved_pi);
                     const auto exact_pi=map_read_array<double>(saved_pi,nt*nd);
                     require(std::equal(exact_pi.begin(),exact_pi.end(),pi.data()),"FRUIT saved injection operand differs");
@@ -192,6 +203,7 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
                     require(err<=8*std::numeric_limits<double>::epsilon()*std::max({1.,std::abs(y.data()[k]),std::abs(pi.data()[k])}),"FRUIT injection identity failed");
                 }
                 write_matrix(dir/"injection.f64",pi);
+                if(independent && cycle==0)write_matrix(dir/"injected-parent.f64",branch_y);
             }
             const auto residual=FruitResidual::subtract(residual_id,branch_y,eligible,std::move(operand),std::move(supported));
             YAML::Node seg;seg["source_root"]=n.ptcroot.string();seg["source_receipt_sha256"]=n.ptc_sha;seg["source_segment"]=s;seg["residual_identity"]=residual_id;

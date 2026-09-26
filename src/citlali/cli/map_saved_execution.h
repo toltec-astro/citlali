@@ -106,7 +106,7 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
     require(YAML::Dump(final["PTC"])==YAML::Dump(out.ptc) && YAML::Dump(final["CAL"])==YAML::Dump(out.cal),"MAP final receipt differs from required child publication");
     out.network=out.learn["network"].as<int>();out.array=out.cal["detectors"][0]["array"].as<int>();
     out.obsnum=out.learn["observation"].as<int>();
-    require((out.obsnum==152389 || out.obsnum==152390) && out.input["observation"].as<int>()==out.obsnum &&
+    require((out.obsnum==152389 || out.obsnum==152390 || (out.obsnum==152430 && out.array==2 && (out.network==11 || out.network==12))) && out.input["observation"].as<int>()==out.obsnum &&
         out.array>=0 && out.array<3,"MAP owner binding requires selected observation and known array");
     const auto telescope=checked_file(out.input["telescope"]),effective=checked_file(out.input["effective_config"]),manifest=checked_file(out.input["manifest"]);
     ledger.bind(telescope);ledger.bind(effective);const auto aptsha=ledger.bind(manifest);

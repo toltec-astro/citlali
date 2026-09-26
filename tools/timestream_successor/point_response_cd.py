@@ -69,7 +69,7 @@ def seed_candidate(original,branch,shoulder):
     return c
 
 
-def processing_guard(products,receipt):
+def processing_guard(products,receipt,*,allow_historical_failure=True):
     """Actual downstream changes are retained. Only new failures stop a branch."""
     data,h=load(products/'total.fits');v=data['SCI_SUPPORT'].astype(bool)
     require(np.isfinite(data['PRIMARY'][v]).all(),'nonfinite supported total')
@@ -81,7 +81,7 @@ def processing_guard(products,receipt):
     require(err<1e-8,'remove/rejoin accounting failed')
     transitions=[]
     for s in receipt['segments']:
-        old=s['source_segment'];inherited=old['network']==3 and old['scan']==5 and not old['converged']
+        old=s['source_segment'];inherited=allow_historical_failure and old['network']==3 and old['scan']==5 and not old['converged']
         require(s['rank']==10 and s['input_eligibility_changed']==0,'rank/upstream validity changed')
         require(s['projection_support_counts'][0]==0,'unsupported feedback projection')
         require(s.get('injection_projection_support_counts',[0])[0]==0,'unsupported injection projection')
