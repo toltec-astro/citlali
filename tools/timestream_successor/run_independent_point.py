@@ -180,7 +180,14 @@ def execute_branch(out,binary,pol,branch):
     result=dict(array='a2000',policy=pol,branch=branch,ready=history[-1]['ready'],completed_cycle=history[-1]['cycle_index'],stop_reason=history[-1].get('stop_reason'),histories=history,actual_feedback_applications=len(history)-1,wall_seconds=time.perf_counter()-start,m10_applied=False)
     save_json(dest/'SUMMARY.json',result)
     if branch=='REF' and result['ready'] and result['completed_cycle']==10:
-        result['endpoint_uncertainty']=endpoint(verified(history[-1]['total']),c,history[-1]['measurement'],dest/'endpoint');save_json(dest/'SUMMARY.json',result)
+        save_json(dest/'ENDPOINT-ATTEMPT.json',dict(status='started',diagnostic_only=True,maximum_attempts=1))
+        try:
+            result['endpoint_uncertainty']=endpoint(verified(history[-1]['total']),c,history[-1]['measurement'],dest/'endpoint')
+            result['endpoint_status']='completed'
+        except (ValueError,RuntimeError,KeyError,OSError,np.linalg.LinAlgError) as exc:
+            result['endpoint_status']='unavailable';result['endpoint_reason']=str(exc)
+        save_json(dest/'ENDPOINT-ATTEMPT.json',dict(status=result['endpoint_status'],reason=result.get('endpoint_reason'),diagnostic_only=True,maximum_attempts=1))
+        save_json(dest/'SUMMARY.json',result)
     return result
 
 
