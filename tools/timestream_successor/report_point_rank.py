@@ -62,7 +62,7 @@ def report(root):
                 eq,why=equivalent(sigma,g,eta,branch)
                 effects.append(dict(rank=rank,branch=branch,measurement=n,units=units(n),own_REF=float(full),**q,fraction_of_source=q['absolute_discrepancy']/full if abs(full)>1e-8 else None,conditional_sigma=sigma,effect_over_sigma=q['absolute_discrepancy']/sigma if sigma else None,sigma_equiv=eq,sigma_equiv_scope=why,spatial_response=h['response']))
         plus=summaries.get((rank,'C-core-plus'));minus=summaries.get((rank,'C-core-minus'))
-        if plus and minus and all(s['completed_cycle']==10 for s in (plus,minus,ref)):
+        if plus and minus and all(s.get('ready') and s['completed_cycle']==10 and 'measurement' in s['histories'][-1] for s in (plus,minus,ref)):
             a,b,r=[vector_measurement(s['histories'][-1]['measurement']) for s in (plus,minus,ref)]
             if all(x is not None for x in (a,b,r)):asymmetry.append(dict(rank=rank,definition='plus increment plus minus increment; zero for odd signed response',values=dict(zip(MEASUREMENT_NAMES,(a+b-2*r).tolist()))))
         for stage,file in [('M0','M0-PTC.json'),('last','LAST-PTC.json')]:
@@ -77,7 +77,7 @@ def report(root):
     resources=dict(wall_seconds=execution.get('seconds'),maximum_native_process_sampled_RSS=max((r.get('polled_peak_rss_bytes',0) for r in runs),default=0),maximum_stage_storage=max((r['bytes'] for r in storage),default=0),storage_ceiling=read(root/'PREFLIGHT.json')['resource_budget']['peak_ceiling_bytes'],branch_workers_maximum=3,numeric_library_threads=1,scope='per-native-process sampled RSS; stage storage snapshots plus allocation reservations, not continuous system or filesystem high water')
     drift=[]
     for (rank,branch),r in summaries.items():
-        if r['completed_cycle']==10:
+        if r.get('ready') and r['completed_cycle']==10 and len(r['histories'])>=2 and all('measurement' in h for h in r['histories'][-2:]):
             a,b=[vector_measurement(h['measurement']) for h in r['histories'][-2:]]
             if a is not None and b is not None:drift.append(dict(rank=rank,branch=branch,T9_to_T10=dict(zip(MEASUREMENT_NAMES,(b-a).tolist()))))
     for name,value in [('matrix',execution['matrix']),('histories',histories),('REF',ref_rows),('effects',effects),('support',support),('network-PTC',network),('compact-asymmetry',asymmetry),('drift',drift),('counts',counts),('resources',resources)]:save_json(d/(name+'.json'),value)

@@ -67,3 +67,15 @@ def test_equivalent_uncertainty_preserves_sign_and_distortion_warnings():
     assert equivalent(4.,.8,.1,'C-core-plus')[0]==5.
     for sigma,g,eta,branch in [(4.,-1.,.1,'C-core-minus'),(4.,1.,1.2,'C-core-plus'),(4.,0.,0.,'C-core-plus'),(None,1.,0.,'C-core-plus'),(4.,1.,0.,'C-shoulder')]:
         assert equivalent(sigma,g,eta,branch)[0] is None
+
+
+def test_saved_report_survives_failed_T10_without_measurement(tmp_path,monkeypatch):
+    import report_point_rank as reporting
+    monkeypatch.setattr(reporting,'figures',lambda *a:None)
+    matrix=[dict(rank=5,branch='C-core-plus',status='processing_failed',completed_cycle=10,reason='solver failed')]
+    save_json(tmp_path/'EXECUTION.json',dict(status='completed_matrix',matrix=matrix,seconds=1.))
+    save_json(tmp_path/'PREFLIGHT.json',dict(resource_budget=dict(peak_ceiling_bytes=10000)))
+    p=tmp_path/'rank-5/run/BASE-POINT/C-core-plus/a2000/SUMMARY.json';p.parent.mkdir(parents=True)
+    save_json(p,dict(ready=False,completed_cycle=10,histories=[dict(cycle_index=9),dict(cycle_index=10,ready=False,stop_kind='computation_or_processing')]))
+    assert reporting.report(tmp_path)['counts']['feedback']==0
+    assert json.loads((tmp_path/'report/matrix.json').read_text())==matrix
