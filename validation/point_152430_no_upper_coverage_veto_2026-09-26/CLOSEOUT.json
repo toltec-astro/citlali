@@ -18,5 +18,13 @@
   },
   "combined_output_and_repo_compact_bytes": 469640430,
   "combined_scope": "two explicit compact product copies: output root and tracked repo record; neither contains native numeric restart payloads",
-  "local_data_compact_product_bytes": 234820215
+  "local_data_compact_product_bytes": 234820215,
+  "final_review": "pass with recorded limitations; no actionable findings",
+  "final_review_candidate": "c2481f0811f02969b7d891d42aabbdc556b82d39",
+  "task_scratch_cleanup": {
+    "items": 41,
+    "files": 41,
+    "bytes": 1262001,
+    "scope": "exact task-owned /private/tmp/point152430noveto-* items; shared worktree/build and retained results untouched"
+  }
 }

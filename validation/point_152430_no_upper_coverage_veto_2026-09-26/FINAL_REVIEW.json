@@ -1,0 +1,55 @@
+{
+  "disposition": "pass with recorded limitations",
+  "reviewed_commit": "c2481f0811f02969b7d891d42aabbdc556b82d39",
+  "reviewed_tree": "ce6d624eb6e9d1e11a9b3f8c0595618fa3d9f051",
+  "parent_commit": "90a95c20de18fd41a64c78b6ac23960762b0e35a",
+  "scientific_execution_commit": "ac2bee1febaab82b808f7f751374b797de033c6a",
+  "reviewer": "Independent fresh-context Codex subagent /root/point152430_no_veto_final",
+  "reviewed_at_utc": "2026-09-26T17:22:33.013418+00:00",
+  "scope": "One bounded final read-only review of completed POINT 152430 a2000 replacement, reporting/cleanup source and saved evidence. No source fit, covariance learn, admission reevaluation, native numerical execution, deletion, source edit, Unity access, push or promotion.",
+  "findings": [],
+  "categories": {
+    "scientific_and_behavioral_conformance": "pass within owner-defined diagnostic scope; limitations retained",
+    "architectural_conformity_and_ownership": "pass; final changes are saved-product reporting and scoped compaction, without numerical-owner or Engine changes",
+    "repository_branch_and_evidence_hygiene": "pass; clean exact candidate, tracked compact products and source preserved in permanent common Git; authorized superseded roots absent"
+  },
+  "authority_read": [
+    "AGENTS.md",
+    "doc/governance/ENGINEERING_GOVERNANCE.md",
+    "doc/governance/TIMESTREAM_SUCCESSOR_GOVERNANCE.md",
+    "doc/governance/REVIEW_AND_CONFORMANCE.md",
+    "doc/INTEGRATION_LEDGER.md governance-effectiveness record",
+    "validation/point_152430_no_upper_coverage_veto_2026-09-26/OWNER_DIRECTIVE.md",
+    "validation/point_152430_no_upper_coverage_veto_2026-09-26/EXPERIMENT_DEFINITION.md"
+  ],
+  "independent_saved_checks": [
+    "Governance document SHA256 values match the canonical effectiveness record.",
+    "15 SUMMARY records accepted and complete; exactly 11 ordered histories each, 10 feedback applications each, m10_applied=false.",
+    "150 unique feedback journal identities; three injected-initial attempts plus shared ordinary M0; nine saved ideal controls; three endpoint-attempt records; 155 native RUN records.",
+    "All 330 historical total/candidate bindings verified against retained files with decompressed FITS hashes; 11 realized frozen bindings and all four shape-source/raster bindings match.",
+    "BASE and CORR all map/candidate planes equal (including NaN placement) at 55 paired stages; CORR added zero pixels.",
+    "All nine report numerical-table digests match RETAINED_REPORT_CHECK.json.",
+    "Leading own-policy shoulder aperture mismatches and fractions/noise ratios checked against saved effects; BASE/CORR -2017.792006, DIAG -1842.174305 brightness-area units.",
+    "Protected dependency input hashes unchanged; all three named superseded roots absent; no bulk native numeric suffix products in compact tree.",
+    "Compressed large YAML decompressed hashes match cleanup records; every retained FITS gzip decompresses successfully.",
+    "4,332 compact files tracked, totaling 234,820,215 bytes. Exact source, assessment and shape blobs readable directly by candidate SHA from /Users/gwilson/GitHub/citlali/.git.",
+    "Final successor diff inspected: only raw-fit-parameter location clarification and warning text preservation; candidate worktree clean."
+  ],
+  "inspected_existing_evidence": [
+    "Independent preflight: 52 focused Python tests passed, source ac2bee1febaab82b808f7f751374b797de033c6a",
+    "Native 31-test and require-all config passing records; supplemental local cached/Homebrew build",
+    "NUMERICAL_AUDIT.json accounting max 6.37e-12 and remapped operand max 6.60e-12; native projection/control discrepancy zero; native returns zero and no unexpected error logs",
+    "RETAINED_REPORT_CHECK.json: original-run reads denied, nine numerical tables byte-identical, no science calls",
+    "OPERATOR_CHECK.json: finite saved operators, independent contraction/pseudoinverse and sigma matches despite recorded matmul warnings"
+  ],
+  "conclusion": "The negative portability conclusion is supported: CORR exactly reproduces BASE, and DIAG modestly reduces shoulder aperture mismatch from -2.5498% to -2.3219% of its corresponding full REF source. The +175.618 brightness-area improvement is approximately 0.064 matching conditional aperture scales; it does not establish useful full-covariance benefit. Coherent shoulder suppression remains reported, while isolated seed/drift effects are appropriately parked.",
+  "limitations": [
+    "No independent scientific rerun or additional fitting/learning was performed or authorized. Existing execution and preflight records are used where stated.",
+    "Endpoint uncertainty and high-coverage transfer are conditional model scales, not false-admission calibration or significance of paired differences. Aperture values are brightness-area, not integrated flux.",
+    "Post-RTC/CAL experiment excludes upstream optical/absolute calibration and wider observation/array generalization.",
+    "Local supplemental build is not Spack-backed V2/Unity evidence. Storage high-water estimate is sampled, not continuous.",
+    "Permanent Git preservation is local and recoverable through exact candidate/branch ancestry; no push, integration or production authorization is implied. Superseded committed history is intentionally not rewritten."
+  ],
+  "permanent_git_common_dir": "/Users/gwilson/GitHub/citlali/.git",
+  "next_action": "Stop numerical work; retain the negative portability result for owner review."
+}
