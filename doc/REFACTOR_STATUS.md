@@ -7,7 +7,10 @@ at reviewed science source e3cbf1eeadda256e4d9f400a834f9f7d462c1ae2. Rank10 REF 
 exactly equal to the frozen M0–T10 reference; all three rank10 injection regressions
 pass. One raw-derived RTC/CAL parent, three noise packages/endpoints and nine ideal
 controls; no replacement attempts or native errors. All 132 maps have equal full
-coverage/support. The original frozen profile/tag remain unchanged.
+coverage/support. The original frozen profile/tag remain unchanged. Final independent review passed
+exact candidate e67cf6c4303ca4516e5a5c0947e6df70e41242f2 with recorded scientific and
+local-environment limitations; implementation and evidence hygiene pass. Compact
+evidence is committed and native scratch cleanup is verified.
 
 Rank15 improves compact response-normalized conditional uncertainties (about 12%
 peak, 31% template, 41% aperture), with lower residual power in both networks. It

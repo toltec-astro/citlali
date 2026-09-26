@@ -1,5 +1,5 @@
 {
-  "disposition": "completed local scientific comparison; independent final review pending",
+  "disposition": "completed local scientific comparison; independently reviewed candidate, not integrated or production-qualified",
   "base": "5435bdbdb4e6708e884ae4cb2b0fd93e74102ce5",
   "science_source": "e3cbf1eeadda256e4d9f400a834f9f7d462c1ae2",
   "branch": "codex/ptc-rank-response-20260926",
@@ -69,5 +69,17 @@
   ],
   "decision": "retain rank10 reference; rank15 promising compact-source alternative with worse broad response",
   "next_action": "recommend one independent-observation rank15-versus-rank10 confirmation; not executed",
-  "final_review": "science/ownership/retention pass; CLI failure propagation repaired and awaiting exact-SHA recheck; original completed science unchanged"
+  "final_review": {
+    "candidate": "e67cf6c4303ca4516e5a5c0947e6df70e41242f2",
+    "tree": "b541f60bb714e054ff7e40cff3dd96958d9695c4",
+    "science_source": "e3cbf1eeadda256e4d9f400a834f9f7d462c1ae2",
+    "scientific_behavioral_conformance": "pass with recorded scientific/environment limitations",
+    "architectural_conformity_ownership": "pass; incomplete matrices propagate nonzero status, preserving completed cells",
+    "repository_evidence_hygiene": "pass; all 15642 targets absent, all 3797 compact hashes and 31 protected input hashes unchanged",
+    "independent_tests": "10 experiment tests passed, including both mocked native-failure cases",
+    "remaining_blockers": 0,
+    "reviewed_worktree_state": "clean",
+    "science_rerun": false,
+    "closure_record": "Subsequent documentation-only commit records this exact-candidate review; numerical evidence remains bound to science_source."
+  }
 }

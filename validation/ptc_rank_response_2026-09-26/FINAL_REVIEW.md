@@ -32,3 +32,28 @@ HEAD. For this exact operation, the executor additionally required HEAD=d32c0f8.
 a completely clean tree, and no live rank-run/native process before invoking it.
 CLEANUP.json records successful removal, compact preservation and protected-input
 postchecks. A recheck of the new exact repair candidate is required before closure.
+
+## Final recheck: pass with recorded limitations
+
+Exact repaired candidate: **e67cf6c4303ca4516e5a5c0947e6df70e41242f2**.
+Tree: **b541f60bb714e054ff7e40cff3dd96958d9695c4**.
+
+Scientific and behavioral conformance: **pass with recorded scientific/environment
+limitations**. Successful science remains unchanged at
+ e3cbf1eeadda256e4d9f400a834f9f7d462c1ae2. Keeping rank10 as reference and proposing
+one independent-observation confirmation remain justified.
+
+Architectural conformity and ownership: **pass**. Incomplete matrices now return
+nonzero while retaining completed cells and blocking failed-REF dependents. The
+reviewer independently reran all 10 experiment tests, including both mocked native
+failures: all passed. The broader final focused record has 44 passing tests.
+
+Repository, branch and evidence hygiene: **pass**. Reviewer independently confirmed
+all 15,642 enumerated cleanup targets absent, all 3,797 compact hashes unchanged,
+and all 31 protected-input hashes unchanged. The actual cleanup receipt matches
+the reviewed manifest and binds pre-deletion preservation to d32c0f8. The reviewed
+worktree was clean. No remaining blockers, no science rerun, no push or integration.
+
+This documentation-only closure records the independent verdict for the exact
+candidate above; it does not rebind the completed scientific execution to a later
+commit. RTC and follow-on experiments remain deferred.

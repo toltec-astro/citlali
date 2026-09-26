@@ -31,8 +31,14 @@ rank15-versus-rank10 confirmation, not executed here.
 
 Scientific source/configuration, compact maps/masks/noise operands/measurements,
 matched-scale figures and native diagnostics are durable. Native detector-time
-payloads are scratch and are enumerated for removal only after compact preservation.
-See CLEANUP.json for actual completion. Saved reporting works without original
+scratch payloads were removed after committed compact preservation and independent
+verification; see CLEANUP.json for the enumerated operation and postchecks. Saved reporting works without original
 arrays and does not silently rerun science. RTC remains unchanged and deferred;
 no pre-RTC transfer test, alternate array, seed, scope/method change or further
 FRUIT development was launched. No Unity access, merge, push or production change.
+
+Final independent review passed candidate e67cf6c4303ca4516e5a5c0947e6df70e41242f2,
+tree b541f60bb714e054ff7e40cff3dd96958d9695c4: scientific conformance passes with
+recorded limitations, ownership passes, and repository/evidence hygiene passes.
+All 10 experiment tests passed independently, including the repaired later-rank
+failure status paths. No remaining blockers; completed science was not rerun.
