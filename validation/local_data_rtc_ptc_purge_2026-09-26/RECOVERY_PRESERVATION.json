@@ -1,0 +1,10 @@
+{
+  "files": 87940,
+  "unique_contents": 71969,
+  "original_logical_bytes": 2349689904,
+  "deduplicated_logical_bytes": 2080927442,
+  "compressed_bytes": 184019125,
+  "errors": [],
+  "seconds": 291.9207830840023,
+  "selection": "All compact <=2MB md/yaml/yml/toml/sh and selected JSON/table/manifest records except array/operator records and dependency/build trees; all original FILES_SHA256SUMS regardless size. Nonselected large diagnostics/maps/inputs remain in place and are not targeted. Exact per-path preservation index; duplicate contents stored once."
+}

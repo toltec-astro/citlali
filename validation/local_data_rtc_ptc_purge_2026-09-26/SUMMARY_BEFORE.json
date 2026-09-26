@@ -1,0 +1,1581 @@
+{
+  "root": "/Users/gwilson/work_toltec/local_data",
+  "files": 550386,
+  "directories": 40233,
+  "symlinks": 20,
+  "errors": 0,
+  "logical_bytes": 970753985023,
+  "allocated_file_blocks_bytes": 971802185728,
+  "unique_inode_logical_bytes": 970753985023,
+  "unique_inode_allocated_bytes": 971802185728,
+  "by_top_level": [
+    {
+      "path": "citlali-validation",
+      "bytes": 305365666476,
+      "blocks": 305913032704
+    },
+    {
+      "path": "2026-ENG-hero-multiyear-pointings-v1",
+      "bytes": 201940491570,
+      "blocks": 202038657024
+    },
+    {
+      "path": "2025-C1-COM-01",
+      "bytes": 122170739603,
+      "blocks": 122207494144
+    },
+    {
+      "path": "2026-refactor",
+      "bytes": 112588375143,
+      "blocks": 112612438016
+    },
+    {
+      "path": "beammaps",
+      "bytes": 45859549942,
+      "blocks": 45868986368
+    },
+    {
+      "path": "tone-match-lab",
+      "bytes": 39686342318,
+      "blocks": 39745261568
+    },
+    {
+      "path": "fruit-development",
+      "bytes": 34951547933,
+      "blocks": 34983608320
+    },
+    {
+      "path": "2025-C1-COM-21",
+      "bytes": 22733968340,
+      "blocks": 22737825792
+    },
+    {
+      "path": "2025-C1-COM-06",
+      "bytes": 18211451645,
+      "blocks": 18212769792
+    },
+    {
+      "path": "sci_cal_001_tau025_engineering_extension_002_root",
+      "bytes": 17193594616,
+      "blocks": 17374371840
+    },
+    {
+      "path": "2026-ENG-citlali-MAP",
+      "bytes": 13943844554,
+      "blocks": 13957185536
+    },
+    {
+      "path": "2024-C1-COM-06",
+      "bytes": 12011575399,
+      "blocks": 12011663360
+    },
+    {
+      "path": "OOF",
+      "bytes": 6459003824,
+      "blocks": 6488117248
+    },
+    {
+      "path": "AM",
+      "bytes": 4667788116,
+      "blocks": 4672086016
+    },
+    {
+      "path": "citlali-reference-data",
+      "bytes": 4540097659,
+      "blocks": 4542935040
+    },
+    {
+      "path": "2025-ENG-pointing-152388-152389",
+      "bytes": 1842631823,
+      "blocks": 1843118080
+    },
+    {
+      "path": "2025-C1-COM-04",
+      "bytes": 1779744595,
+      "blocks": 1780756480
+    },
+    {
+      "path": "2025-C1-COM-24",
+      "bytes": 1463442761,
+      "blocks": 1463480320
+    },
+    {
+      "path": "2026-ENG-ABA-2-18",
+      "bytes": 1261326174,
+      "blocks": 1262972928
+    },
+    {
+      "path": "_apt_library_260612",
+      "bytes": 675401984,
+      "blocks": 675647488
+    },
+    {
+      "path": "_apt_library",
+      "bytes": 491448726,
+      "blocks": 491773952
+    },
+    {
+      "path": "2025-C1-COM-18",
+      "bytes": 196073992,
+      "blocks": 196247552
+    },
+    {
+      "path": "2025-C1-COM-05",
+      "bytes": 194103739,
+      "blocks": 194154496
+    },
+    {
+      "path": "tolteca-vna-validation-lab",
+      "bytes": 166560783,
+      "blocks": 167137280
+    },
+    {
+      "path": "doc",
+      "bytes": 131284334,
+      "blocks": 131289088
+    },
+    {
+      "path": "focus",
+      "bytes": 78923353,
+      "blocks": 79118336
+    },
+    {
+      "path": "2026-ENG-ABA",
+      "bytes": 57333500,
+      "blocks": 57708544
+    },
+    {
+      "path": "foo",
+      "bytes": 34973412,
+      "blocks": 35053568
+    },
+    {
+      "path": "pointings",
+      "bytes": 29985538,
+      "blocks": 30117888
+    },
+    {
+      "path": "ABA-2-12",
+      "bytes": 10539229,
+      "blocks": 10768384
+    },
+    {
+      "path": "sc",
+      "bytes": 8399569,
+      "blocks": 8404992
+    },
+    {
+      "path": "photogrammetry",
+      "bytes": 7313358,
+      "blocks": 7503872
+    },
+    {
+      "path": "sci_cal_001_tau025_engineering_extension_001_root",
+      "bytes": 349719,
+      "blocks": 352256
+    },
+    {
+      "path": "toltec-lineage-pilot-manifest-20260724",
+      "bytes": 71431,
+      "blocks": 90112
+    },
+    {
+      "path": ".DS_Store",
+      "bytes": 32772,
+      "blocks": 36864
+    },
+    {
+      "path": "unity",
+      "bytes": 7093,
+      "blocks": 20480
+    }
+  ],
+  "by_extension": [
+    [
+      ".nc",
+      463924488345
+    ],
+    [
+      ".fits",
+      212738826240
+    ],
+    [
+      ".f64",
+      147606395040
+    ],
+    [
+      ".pkl",
+      24203379367
+    ],
+    [
+      "",
+      18831682029
+    ],
+    [
+      ".gz",
+      17150263509
+    ],
+    [
+      ".yaml",
+      14259167437
+    ],
+    [
+      ".ecsv",
+      12685935883
+    ],
+    [
+      ".u8",
+      9233997238
+    ],
+    [
+      ".txt",
+      8733007081
+    ],
+    [
+      ".i64",
+      7861719152
+    ],
+    [
+      ".csv",
+      6262108322
+    ],
+    [
+      ".dat",
+      6115411310
+    ],
+    [
+      ".json",
+      5301437972
+    ],
+    [
+      ".i32",
+      3958408084
+    ],
+    [
+      ".npz",
+      3476616805
+    ],
+    [
+      ".log",
+      2378937057
+    ],
+    [
+      ".out",
+      1680148591
+    ],
+    [
+      ".u16",
+      1277903162
+    ],
+    [
+      ".bundle",
+      1098845077
+    ],
+    [
+      ".png",
+      443627363
+    ],
+    [
+      ".tar",
+      377272320
+    ],
+    [
+      ".pack",
+      372409400
+    ],
+    [
+      ".pdf",
+      152128392
+    ],
+    [
+      ".c",
+      121665550
+    ],
+    [
+      ".u64",
+      115743456
+    ],
+    [
+      ".sav",
+      67948552
+    ],
+    [
+      ".o",
+      58273056
+    ],
+    [
+      ".i16",
+      51781176
+    ],
+    [
+      ".jsonl",
+      35600240
+    ],
+    [
+      ".bits",
+      24852182
+    ],
+    [
+      ".html",
+      23561138
+    ],
+    [
+      ".0-3116-g0882c551_kids_04088da",
+      18119824
+    ],
+    [
+      ".1",
+      15030312
+    ],
+    [
+      ".h",
+      14248352
+    ],
+    [
+      ".zip",
+      13897053
+    ],
+    [
+      ".tsv",
+      10580868
+    ],
+    [
+      ".cc",
+      9687711
+    ],
+    [
+      ".md",
+      8789974
+    ],
+    [
+      ".py",
+      7507034
+    ],
+    [
+      ".idx",
+      7246400
+    ],
+    [
+      ".cpp",
+      4598643
+    ],
+    [
+      ".patch",
+      4001424
+    ],
+    [
+      ".js",
+      2367090
+    ],
+    [
+      ".amc",
+      2041757
+    ],
+    [
+      ".files",
+      1550158
+    ],
+    [
+      ".hpp",
+      1549989
+    ],
+    [
+      ".rev",
+      1033076
+    ],
+    [
+      ".cmake",
+      891369
+    ],
+    [
+      ".xlsx",
+      597346
+    ],
+    [
+      ".sha256",
+      570429
+    ],
+    [
+      ".sample",
+      542361
+    ],
+    [
+      ".bin",
+      521646
+    ],
+    [
+      ".rst",
+      521449
+    ],
+    [
+      ".sh",
+      462077
+    ],
+    [
+      ".pyc",
+      390716
+    ],
+    [
+      ".stdout",
+      372087
+    ],
+    [
+      ".svg",
+      290255
+    ],
+    [
+      ".in",
+      283079
+    ],
+    [
+      ".map",
+      219576
+    ],
+    [
+      ".txt#",
+      196884
+    ],
+    [
+      ".dylib",
+      168840
+    ],
+    [
+      ".bak",
+      161741
+    ],
+    [
+      ".nul",
+      151648
+    ],
+    [
+      ".c2",
+      142041
+    ],
+    [
+      ".cache-9",
+      141632
+    ],
+    [
+      ".tex",
+      137866
+    ],
+    [
+      ".cdl",
+      133709
+    ],
+    [
+      ".pgm",
+      125081
+    ],
+    [
+      ".yml",
+      102453
+    ],
+    [
+      ".developer",
+      101298
+    ],
+    [
+      ".yaml~",
+      99989
+    ],
+    [
+      ".r70",
+      93725
+    ],
+    [
+      ".css",
+      75317
+    ],
+    [
+      ".sublime-syntax",
+      72324
+    ],
+    [
+      ".xml",
+      67074
+    ],
+    [
+      ".wreck",
+      64485
+    ],
+    [
+      ".bazel",
+      62406
+    ],
+    [
+      ".err",
+      49457
+    ],
+    [
+      ".porcelain",
+      46848
+    ],
+    [
+      ".mini",
+      33728
+    ],
+    [
+      ".lock",
+      29226
+    ],
+    [
+      ".bzl",
+      23289
+    ],
+    [
+      ".reg",
+      22143
+    ],
+    [
+      ".py~",
+      21057
+    ],
+    [
+      ".diff",
+      19201
+    ],
+    [
+      ".old",
+      16385
+    ],
+    [
+      ".md5",
+      14176
+    ],
+    [
+      ".taco",
+      14076
+    ],
+    [
+      ".ac",
+      10892
+    ],
+    [
+      ".rtf",
+      8768
+    ],
+    [
+      ".am",
+      8089
+    ],
+    [
+      ".ui",
+      7417
+    ],
+    [
+      ".foe",
+      7181
+    ],
+    [
+      ".before-empirical-noise-products",
+      6087
+    ],
+    [
+      ".scss",
+      5942
+    ],
+    [
+      ".before_ngc4449",
+      5795
+    ],
+    [
+      ".reg~",
+      5740
+    ],
+    [
+      ".sb",
+      5321
+    ],
+    [
+      ".example",
+      4803
+    ],
+    [
+      ".f",
+      4802
+    ],
+    [
+      ".sbatch",
+      4640
+    ],
+    [
+      ".ed2",
+      4298
+    ],
+    [
+      ".bat",
+      4247
+    ],
+    [
+      ".gradle",
+      3616
+    ],
+    [
+      ".bzlmod",
+      3588
+    ],
+    [
+      ".yaml#",
+      3521
+    ],
+    [
+      ".sh~",
+      3457
+    ],
+    [
+      ".key",
+      3167
+    ],
+    [
+      ".tex~",
+      2652
+    ],
+    [
+      ".pl",
+      2448
+    ],
+    [
+      ".natvis",
+      2418
+    ],
+    [
+      ".r",
+      2356
+    ],
+    [
+      ".hook",
+      2329
+    ],
+    [
+      ".rej",
+      2142
+    ],
+    [
+      ".orig",
+      2142
+    ],
+    [
+      ".txt~",
+      1792
+    ],
+    [
+      ".m",
+      1727
+    ],
+    [
+      ".zonal",
+      1331
+    ],
+    [
+      ".la",
+      1133
+    ],
+    [
+      ".sites",
+      997
+    ],
+    [
+      ".x",
+      979
+    ],
+    [
+      ".pending",
+      973
+    ],
+    [
+      ".cu",
+      905
+    ],
+    [
+      ".build",
+      610
+    ],
+    [
+      ".env",
+      594
+    ],
+    [
+      ".rs",
+      572
+    ],
+    [
+      ".properties",
+      472
+    ],
+    [
+      ".tmp",
+      432
+    ],
+    [
+      ".pro",
+      413
+    ],
+    [
+      ".tag",
+      400
+    ],
+    [
+      ".template",
+      347
+    ],
+    [
+      ".symbols",
+      331
+    ],
+    [
+      ".darwin",
+      315
+    ],
+    [
+      ".mk",
+      299
+    ],
+    [
+      ".doc-base",
+      290
+    ],
+    [
+      ".awk",
+      259
+    ],
+    [
+      ".ds_store",
+      240
+    ],
+    [
+      ".pc",
+      220
+    ],
+    [
+      ".recipe",
+      162
+    ],
+    [
+      ".lintian-overrides",
+      154
+    ],
+    [
+      ".proto",
+      141
+    ],
+    [
+      ".install",
+      139
+    ],
+    [
+      ".toml",
+      80
+    ],
+    [
+      ".code-workspace",
+      60
+    ],
+    [
+      ".xkcd",
+      54
+    ],
+    [
+      ".ctd",
+      38
+    ],
+    [
+      ".hh",
+      21
+    ],
+    [
+      ".lds",
+      5
+    ],
+    [
+      ".stderr",
+      0
+    ]
+  ],
+  "largest_basenames": [
+    [
+      "cleaned.f64",
+      49403605600
+    ],
+    [
+      "toltec_commissioning_a1100_beammap_148670_citlali_flag0_good.fits",
+      40345660800
+    ],
+    [
+      "operand.f64",
+      36623698720
+    ],
+    [
+      "toltec_commissioning_a1400_beammap_148670_citlali_flag0_good.fits",
+      16044560640
+    ],
+    [
+      "toltec_commissioning_pointing_152389_ptc_timestream.nc",
+      15718395885
+    ],
+    [
+      "toltec_commissioning_pointing_152389_rtc_timestream.nc",
+      15078826365
+    ],
+    [
+      "toltec_commissioning_a2000_beammap_148670_citlali_flag0_good.fits",
+      12869758080
+    ],
+    [
+      "toltec_commissioning_science_152390_ptcdiag.nc",
+      8661049620
+    ],
+    [
+      "toltec_commissioning_science_152392_ptcdiag.nc",
+      8372821852
+    ],
+    [
+      "toltec_commissioning_science_152390_rtcdiag.nc",
+      7846764216
+    ],
+    [
+      "toltec_commissioning_science_152392_rtcdiag.nc",
+      7657629549
+    ],
+    [
+      "toltec_commissioning_a1100_beammap_148670_citlali_flag1_bad.fits",
+      6600257280
+    ],
+    [
+      "toltec_commissioning_beammap_148670_ptc_detector_tod.nc",
+      5008115923
+    ],
+    [
+      "toltec_commissioning_psd.nc",
+      3965514945
+    ],
+    [
+      "toltec_commissioning_science_152390_stats.nc",
+      3805950447
+    ],
+    [
+      "toltec_commissioning_a1100_citlali.fits",
+      3664851840
+    ],
+    [
+      "toltec_commissioning_a1400_citlali.fits",
+      3617357760
+    ],
+    [
+      "toltec_commissioning_a2000_citlali.fits",
+      3601526400
+    ],
+    [
+      "toltec_commissioning_science_152392_stats.nc",
+      3535758092
+    ],
+    [
+      "operator-pixel.i32",
+      3421993204
+    ],
+    [
+      "toltec_commissioning_science_152419_ptcdiag.nc",
+      3112629600
+    ],
+    [
+      "toltec0_152390_000_0002_2026_02_19_06_40_20.nc",
+      3079745120
+    ],
+    [
+      "toltec_commissioning_science_152433_ptcdiag.nc",
+      3042633132
+    ],
+    [
+      "toltec_commissioning_science_152433_rtcdiag.nc",
+      3013954427
+    ],
+    [
+      "toltec_commissioning_science_152419_rtcdiag.nc",
+      2997049998
+    ],
+    [
+      "receipt.yaml",
+      2934875126
+    ],
+    [
+      "toltec_commissioning_a1100_filtered_citlali.fits",
+      2839527360
+    ],
+    [
+      "toltec_commissioning_a2000_filtered_citlali.fits",
+      2771663040
+    ],
+    [
+      "toltec_commissioning_a1400_filtered_citlali.fits",
+      2771663040
+    ],
+    [
+      "post-notch-outcome.yaml",
+      2731671435
+    ],
+    [
+      "toltec_commissioning_science_152431_ptcdiag.nc",
+      2703714712
+    ],
+    [
+      "toltec_commissioning_science_152431_rtcdiag.nc",
+      2660973895
+    ],
+    [
+      "toltec3_152390_000_0002_2026_02_19_06_40_20.nc",
+      2609324832
+    ],
+    [
+      "toltec4_152390_000_0002_2026_02_19_06_40_20.nc",
+      2604457312
+    ],
+    [
+      "toltec2_152390_000_0002_2026_02_19_06_40_20.nc",
+      2497762016
+    ],
+    [
+      "toltec_commissioning_pointing_129081_ptc_timestream.nc",
+      2491263990
+    ],
+    [
+      "toltec1_152390_000_0002_2026_02_19_06_40_20.nc",
+      2420163040
+    ],
+    [
+      "toltec12_152390_000_0002_2026_02_19_06_40_20.nc",
+      2405620448
+    ],
+    [
+      "toltec9_152390_000_0002_2026_02_19_06_40_20.nc",
+      2391084416
+    ],
+    [
+      "toltec11_152390_000_0002_2026_02_19_06_40_20.nc",
+      2381366112
+    ],
+    [
+      "toltec_commissioning_pointing_152389_psd.nc",
+      2367738618
+    ],
+    [
+      "toltec5_152390_000_0002_2026_02_19_06_40_20.nc",
+      2323151104
+    ],
+    [
+      "toltec8_152390_000_0002_2026_02_19_06_40_20.nc",
+      2255274336
+    ],
+    [
+      "toltec_commissioning_science_148481_ptcdiag.nc",
+      2229421592
+    ],
+    [
+      "reduce.log",
+      2220411082
+    ],
+    [
+      "toltec_commissioning_a1100_pointing_152389_citlali.fits",
+      2193963840
+    ],
+    [
+      "toltec_commissioning_beammap_148670_ptcdiag.nc",
+      2179950515
+    ],
+    [
+      "post-lowpass-outcome.yaml",
+      2176391699
+    ],
+    [
+      "toltec_commissioning_a2000_noise_citlali.fits",
+      2169561600
+    ],
+    [
+      "toltec_commissioning_a1100_noise_citlali.fits",
+      2169561600
+    ],
+    [
+      "toltec_commissioning_a1400_noise_citlali.fits",
+      2169561600
+    ],
+    [
+      "toltec_commissioning_a1400_pointing_152389_citlali.fits",
+      2147071680
+    ],
+    [
+      "toltec_commissioning_a2000_pointing_152389_citlali.fits",
+      2131439040
+    ],
+    [
+      "toltec7_152390_000_0002_2026_02_19_06_40_20.nc",
+      2061288288
+    ],
+    [
+      "toltec_commissioning_pointing_152389_ptcdiag.nc",
+      1938938888
+    ],
+    [
+      "toltec0_148670_000_0002_2026_01_13_11_59_10.nc",
+      1927836040
+    ],
+    [
+      "toltec_commissioning_pointing_123426_ptc_timestream.nc",
+      1906711614
+    ],
+    [
+      "toltec_commissioning_science_148481_rtcdiag.nc",
+      1905710784
+    ],
+    [
+      "toltec0_152307_000_0002_2026_02_18_11_50_28.nc",
+      1903352088
+    ],
+    [
+      "toltec_commissioning_pointing_152389_rtcdiag.nc",
+      1903047463
+    ],
+    [
+      "toltec_commissioning_pointing_133410_ptc_timestream.nc",
+      1889573106
+    ],
+    [
+      "toltec_commissioning_pointing_130921_ptc_timestream.nc",
+      1884026180
+    ],
+    [
+      "toltec_commissioning_pointing_144176_ptc_timestream.nc",
+      1845677012
+    ],
+    [
+      "toltec_commissioning_pointing_123426_rtc_timestream.nc",
+      1808719934
+    ],
+    [
+      "toltec_commissioning_pointing_133410_rtc_timestream.nc",
+      1792720658
+    ],
+    [
+      "toltec_commissioning_pointing_130921_rtc_timestream.nc",
+      1787236426
+    ],
+    [
+      "toltec_commissioning_pointing_151951_ptc_timestream.nc",
+      1758762132
+    ],
+    [
+      "toltec_commissioning_pointing_133542_ptc_timestream.nc",
+      1755886272
+    ],
+    [
+      "toltec_commissioning_pointing_148434_ptc_timestream.nc",
+      1755247192
+    ],
+    [
+      "toltec_commissioning_pointing_133410_psd.nc",
+      1753488745
+    ]
+  ],
+  "largest_files": [
+    {
+      "path": "citlali-validation/v1/beammaps/3c273/reduced/redu00/148670/raw/toltec_commissioning_a1100_beammap_148670_citlali_flag0_good.fits",
+      "bytes": 6851039040,
+      "blocks": 6851039232,
+      "dev": 16777231,
+      "ino": 83876760,
+      "nlink": 1,
+      "mtime_ns": 1784822251000000000,
+      "ctime_ns": 1784892907704012993
+    },
+    {
+      "path": "citlali-validation/v1/beammaps/3c273/reduced/redu01/148670/raw/toltec_commissioning_a1100_beammap_148670_citlali_flag0_good.fits",
+      "bytes": 6638495040,
+      "blocks": 6638497792,
+      "dev": 16777231,
+      "ino": 104004005,
+      "nlink": 1,
+      "mtime_ns": 1787227681325068394,
+      "ctime_ns": 1787231831953650925
+    },
+    {
+      "path": "citlali-validation/v1/beammaps/3c273/reduced/redu02/148670/raw/toltec_commissioning_a1100_beammap_148670_citlali_flag0_good.fits",
+      "bytes": 6638495040,
+      "blocks": 6638497792,
+      "dev": 16777231,
+      "ino": 104446632,
+      "nlink": 1,
+      "mtime_ns": 1787245921950748166,
+      "ctime_ns": 1787247051157923892
+    },
+    {
+      "path": "2026-refactor/v1/beammap/citlali/reduced/redu01/148670/raw/toltec_commissioning_a1100_beammap_148670_citlali_flag0_good.fits",
+      "bytes": 6370416000,
+      "blocks": 6370418688,
+      "dev": 16777231,
+      "ino": 79158004,
+      "nlink": 1,
+      "mtime_ns": 1783445723000000000,
+      "ctime_ns": 1784213800549114031
+    },
+    {
+      "path": "2026-refactor/v1/beammap/citlali/reduced/redu00/148670/raw/toltec_commissioning_a1100_beammap_148670_citlali_flag0_good.fits",
+      "bytes": 6370416000,
+      "blocks": 6370418688,
+      "dev": 16777231,
+      "ino": 79046041,
+      "nlink": 1,
+      "mtime_ns": 1783373897000000000,
+      "ctime_ns": 1784213800547090495
+    },
+    {
+      "path": "2026-refactor/v1/beammap/refactor/reduced/redu18/148670/raw/toltec_commissioning_a1100_beammap_148670_citlali_flag0_good.fits",
+      "bytes": 6370416000,
+      "blocks": 6370418688,
+      "dev": 16777231,
+      "ino": 80704186,
+      "nlink": 1,
+      "mtime_ns": 1783904710000000000,
+      "ctime_ns": 1783944044734475540
+    },
+    {
+      "path": "citlali-validation/v1/beammaps/3c273/reduced/redu00/148670/raw/toltec_commissioning_a1400_beammap_148670_citlali_flag0_good.fits",
+      "bytes": 2800895040,
+      "blocks": 2800898048,
+      "dev": 16777231,
+      "ino": 83877688,
+      "nlink": 1,
+      "mtime_ns": 1784822252000000000,
+      "ctime_ns": 1784892907704189617
+    },
+    {
+      "path": "citlali-validation/v1/beammaps/3c273/reduced/redu01/148670/raw/toltec_commissioning_a1400_beammap_148670_citlali_flag0_good.fits",
+      "bytes": 2699346240,
+      "blocks": 2699350016,
+      "dev": 16777231,
+      "ino": 104004384,
+      "nlink": 1,
+      "mtime_ns": 1787227682539781293,
+      "ctime_ns": 1787232000722407964
+    },
+    {
+      "path": "citlali-validation/v1/beammaps/3c273/reduced/redu02/148670/raw/toltec_commissioning_a1400_beammap_148670_citlali_flag0_good.fits",
+      "bytes": 2699346240,
+      "blocks": 2699350016,
+      "dev": 16777231,
+      "ino": 104447996,
+      "nlink": 1,
+      "mtime_ns": 1787245922630952808,
+      "ctime_ns": 1787247224092766582
+    },
+    {
+      "path": "2026-refactor/v1/beammap/citlali/reduced/redu01/148670/raw/toltec_commissioning_a1400_beammap_148670_citlali_flag0_good.fits",
+      "bytes": 2614991040,
+      "blocks": 2614992896,
+      "dev": 16777231,
+      "ino": 79158566,
+      "nlink": 1,
+      "mtime_ns": 1783445726000000000,
+      "ctime_ns": 1784213800549477363
+    },
+    {
+      "path": "2026-refactor/v1/beammap/citlali/reduced/redu00/148670/raw/toltec_commissioning_a1400_beammap_148670_citlali_flag0_good.fits",
+      "bytes": 2614991040,
+      "blocks": 2614992896,
+      "dev": 16777231,
+      "ino": 79047327,
+      "nlink": 1,
+      "mtime_ns": 1783373904000000000,
+      "ctime_ns": 1784213800547321952
+    },
+    {
+      "path": "2026-refactor/v1/beammap/refactor/reduced/redu18/148670/raw/toltec_commissioning_a1400_beammap_148670_citlali_flag0_good.fits",
+      "bytes": 2614991040,
+      "blocks": 2614992896,
+      "dev": 16777231,
+      "ino": 80704989,
+      "nlink": 1,
+      "mtime_ns": 1783904712000000000,
+      "ctime_ns": 1783944044735336913
+    },
+    {
+      "path": "citlali-validation/v1/beammaps/3c273/reduced/redu00/148670/raw/toltec_commissioning_a2000_beammap_148670_citlali_flag0_good.fits",
+      "bytes": 2092415040,
+      "blocks": 2092417024,
+      "dev": 16777231,
+      "ino": 83877833,
+      "nlink": 1,
+      "mtime_ns": 1784822253000000000,
+      "ctime_ns": 1784892907704362909
+    },
+    {
+      "path": "citlali-validation/v1/beammaps/3c273/reduced/redu01/148670/raw/toltec_commissioning_a2000_beammap_148670_citlali_flag0_good.fits",
+      "bytes": 2066437440,
+      "blocks": 2066440192,
+      "dev": 16777231,
+      "ino": 104004519,
+      "nlink": 1,
+      "mtime_ns": 1787227683571824500,
+      "ctime_ns": 1787232111953150654
+    },
+    {
+      "path": "citlali-validation/v1/beammaps/3c273/reduced/redu02/148670/raw/toltec_commissioning_a2000_beammap_148670_citlali_flag0_good.fits",
+      "bytes": 2066437440,
+      "blocks": 2066440192,
+      "dev": 16777231,
+      "ino": 104448236,
+      "nlink": 1,
+      "mtime_ns": 1787245923529823989,
+      "ctime_ns": 1787247338243523673
+    },
+    {
+      "path": "2026-refactor/v1/beammap/citlali/reduced/redu01/148670/raw/toltec_commissioning_a2000_beammap_148670_citlali_flag0_good.fits",
+      "bytes": 1957956480,
+      "blocks": 1957957632,
+      "dev": 16777231,
+      "ino": 79158894,
+      "nlink": 1,
+      "mtime_ns": 1783445727000000000,
+      "ctime_ns": 1784213800549919654
+    },
+    {
+      "path": "2026-refactor/v1/beammap/citlali/reduced/redu00/148670/raw/toltec_commissioning_a2000_beammap_148670_citlali_flag0_good.fits",
+      "bytes": 1957956480,
+      "blocks": 1957957632,
+      "dev": 16777231,
+      "ino": 79047728,
+      "nlink": 1,
+      "mtime_ns": 1783373909000000000,
+      "ctime_ns": 1784213800547704868
+    },
+    {
+      "path": "2026-refactor/v1/beammap/refactor/reduced/redu18/148670/raw/toltec_commissioning_a2000_beammap_148670_citlali_flag0_good.fits",
+      "bytes": 1957956480,
+      "blocks": 1957957632,
+      "dev": 16777231,
+      "ino": 80705027,
+      "nlink": 1,
+      "mtime_ns": 1783904713000000000,
+      "ctime_ns": 1783944044735507162
+    },
+    {
+      "path": "citlali-validation/v1/beammaps/data/toltec0_148670_000_0002_2026_01_13_11_59_10.nc",
+      "bytes": 1927836040,
+      "blocks": 1927839744,
+      "dev": 16777231,
+      "ino": 83738160,
+      "nlink": 1,
+      "mtime_ns": 1768308705000000000,
+      "ctime_ns": 1784734180849605689
+    },
+    {
+      "path": "beammaps/data/toltec0_152307_000_0002_2026_02_18_11_50_28.nc",
+      "bytes": 1903352088,
+      "blocks": 1903353856,
+      "dev": 16777231,
+      "ino": 69365118,
+      "nlink": 1,
+      "mtime_ns": 1771418491000000000,
+      "ctime_ns": 1779118183996467383
+    },
+    {
+      "path": "beammaps/3c273/152307_redu50/152307/raw/source_crossing_tod/toltec_commissioning_beammap_152307_rtc_timestream.nc",
+      "bytes": 1680936364,
+      "blocks": 1680936960,
+      "dev": 16777231,
+      "ino": 72314331,
+      "nlink": 1,
+      "mtime_ns": 1779921386000000000,
+      "ctime_ns": 1779971811351276245
+    },
+    {
+      "path": "citlali-validation/v1/beammaps/data/toltec3_148670_000_0002_2026_01_13_11_59_10.nc",
+      "bytes": 1617789168,
+      "blocks": 1617793024,
+      "dev": 16777231,
+      "ino": 83738548,
+      "nlink": 1,
+      "mtime_ns": 1768308705000000000,
+      "ctime_ns": 1784734180853740165
+    },
+    {
+      "path": "beammaps/data/toltec3_152307_000_0002_2026_02_18_11_50_28.nc",
+      "bytes": 1596555192,
+      "blocks": 1596555264,
+      "dev": 16777231,
+      "ino": 69365741,
+      "nlink": 1,
+      "mtime_ns": 1771418491000000000,
+      "ctime_ns": 1779118475822904307
+    },
+    {
+      "path": "beammaps/data/toltec4_152307_000_0002_2026_02_18_11_50_28.nc",
+      "bytes": 1578683512,
+      "blocks": 1578684416,
+      "dev": 16777231,
+      "ino": 69365807,
+      "nlink": 1,
+      "mtime_ns": 1771418491000000000,
+      "ctime_ns": 1779118539305592315
+    },
+    {
+      "path": "citlali-validation/v1/beammaps/data/toltec4_148670_000_0002_2026_01_13_11_59_10.nc",
+      "bytes": 1553324248,
+      "blocks": 1553326080,
+      "dev": 16777231,
+      "ino": 83738589,
+      "nlink": 1,
+      "mtime_ns": 1768308705000000000,
+      "ctime_ns": 1784734180854425591
+    },
+    {
+      "path": "citlali-validation/v1/beammaps/data/toltec2_148670_000_0002_2026_01_13_11_59_10.nc",
+      "bytes": 1550254528,
+      "blocks": 1550258176,
+      "dev": 16777231,
+      "ino": 83738499,
+      "nlink": 1,
+      "mtime_ns": 1768308705000000000,
+      "ctime_ns": 1784734180852989904
+    },
+    {
+      "path": "beammaps/data/toltec2_152307_000_0002_2026_02_18_11_50_28.nc",
+      "bytes": 1531026072,
+      "blocks": 1531027456,
+      "dev": 16777231,
+      "ino": 69365680,
+      "nlink": 1,
+      "mtime_ns": 1771418491000000000,
+      "ctime_ns": 1779118412803845627
+    },
+    {
+      "path": "citlali-validation/v1/beammaps/data/toltec1_148670_000_0002_2026_01_13_11_59_10.nc",
+      "bytes": 1491928664,
+      "blocks": 1491931136,
+      "dev": 16777231,
+      "ino": 83738456,
+      "nlink": 1,
+      "mtime_ns": 1768308705000000000,
+      "ctime_ns": 1784734180852166226
+    },
+    {
+      "path": "beammaps/data/toltec9_152307_000_0002_2026_02_18_11_50_28.nc",
+      "bytes": 1465497560,
+      "blocks": 1465499648,
+      "dev": 16777231,
+      "ino": 69366644,
+      "nlink": 1,
+      "mtime_ns": 1771418491000000000,
+      "ctime_ns": 1779118795987912712
+    },
+    {
+      "path": "beammaps/data/toltec1_152307_000_0002_2026_02_18_11_50_28.nc",
+      "bytes": 1462517880,
+      "blocks": 1462521856,
+      "dev": 16777231,
+      "ino": 69365642,
+      "nlink": 1,
+      "mtime_ns": 1771418491000000000,
+      "ctime_ns": 1779118352801132115
+    },
+    {
+      "path": "citlali-validation/v1/beammaps/data/toltec5_148670_000_0002_2026_01_13_11_59_10.nc",
+      "bytes": 1458165000,
+      "blocks": 1458167808,
+      "dev": 16777231,
+      "ino": 83738653,
+      "nlink": 1,
+      "mtime_ns": 1768308705000000000,
+      "ctime_ns": 1784734180855092267
+    },
+    {
+      "path": "beammaps/data/toltec11_152307_000_0002_2026_02_18_11_50_28.nc",
+      "bytes": 1453586360,
+      "blocks": 1453588480,
+      "dev": 16777231,
+      "ino": 69365328,
+      "nlink": 1,
+      "mtime_ns": 1771418491000000000,
+      "ctime_ns": 1779118247673945802
+    },
+    {
+      "path": "citlali-validation/v1/beammaps/data/toltec9_148670_000_0002_2026_01_13_11_59_10.nc",
+      "bytes": 1452026760,
+      "blocks": 1452027904,
+      "dev": 16777231,
+      "ino": 83738819,
+      "nlink": 1,
+      "mtime_ns": 1768308705000000000,
+      "ctime_ns": 1784734180856953169
+    },
+    {
+      "path": "beammaps/data/toltec5_152307_000_0002_2026_02_18_11_50_28.nc",
+      "bytes": 1447624728,
+      "blocks": 1447628800,
+      "dev": 16777231,
+      "ino": 69366169,
+      "nlink": 1,
+      "mtime_ns": 1771418491000000000,
+      "ctime_ns": 1779118603350914336
+    },
+    {
+      "path": "citlali-validation/v1/beammaps/data/toltec11_148670_000_0002_2026_01_13_11_59_10.nc",
+      "bytes": 1439746984,
+      "blocks": 1439748096,
+      "dev": 16777231,
+      "ino": 83738342,
+      "nlink": 1,
+      "mtime_ns": 1768308705000000000,
+      "ctime_ns": 1784734180850580161
+    },
+    {
+      "path": "citlali-validation/v1/beammaps/data/toltec12_148670_000_0002_2026_01_13_11_59_10.nc",
+      "bytes": 1427465568,
+      "blocks": 1427468288,
+      "dev": 16777231,
+      "ino": 83738386,
+      "nlink": 1,
+      "mtime_ns": 1768308705000000000,
+      "ctime_ns": 1784734180851260338
+    },
+    {
+      "path": "beammaps/data/toltec12_152307_000_0002_2026_02_18_11_50_28.nc",
+      "bytes": 1423797880,
+      "blocks": 1423798272,
+      "dev": 16777231,
+      "ino": 69365597,
+      "nlink": 1,
+      "mtime_ns": 1771418491000000000,
+      "ctime_ns": 1779118300909255999
+    },
+    {
+      "path": "beammaps/data/toltec8_152307_000_0002_2026_02_18_11_50_28.nc",
+      "bytes": 1385079264,
+      "blocks": 1385082880,
+      "dev": 16777231,
+      "ino": 69366596,
+      "nlink": 1,
+      "mtime_ns": 1771418491000000000,
+      "ctime_ns": 1779118721986455493
+    },
+    {
+      "path": "2024-C1-COM-06/large/coadded/raw/toltec_commissioning_psd.nc",
+      "bytes": 1361067641,
+      "blocks": 1361068032,
+      "dev": 16777231,
+      "ino": 10885051,
+      "nlink": 1,
+      "mtime_ns": 1744633756774417844,
+      "ctime_ns": 1744633756774417844
+    },
+    {
+      "path": "citlali-validation/v1/beammaps/data/toltec8_148670_000_0002_2026_01_13_11_59_10.nc",
+      "bytes": 1341515368,
+      "blocks": 1341517824,
+      "dev": 16777231,
+      "ino": 83738768,
+      "nlink": 1,
+      "mtime_ns": 1768308705000000000,
+      "ctime_ns": 1784734180856326577
+    },
+    {
+      "path": "2024-C1-COM-06/large/coadded/filtered/toltec_commissioning_psd_filtered.nc",
+      "bytes": 1340194201,
+      "blocks": 1340194816,
+      "dev": 16777231,
+      "ino": 10884741,
+      "nlink": 1,
+      "mtime_ns": 1744633447929524955,
+      "ctime_ns": 1744633447929524955
+    },
+    {
+      "path": "beammaps/data/toltec7_152307_000_0002_2026_02_18_11_50_28.nc",
+      "bytes": 1271890456,
+      "blocks": 1271894016,
+      "dev": 16777231,
+      "ino": 69366494,
+      "nlink": 1,
+      "mtime_ns": 1771418491000000000,
+      "ctime_ns": 1779118659071064601
+    },
+    {
+      "path": "citlali-validation/v1/beammaps/3c273/reduced/redu03/148670/raw/toltec_commissioning_a1100_beammap_148670_citlali_flag0_good.fits",
+      "bytes": 1106383680,
+      "blocks": 1106386944,
+      "dev": 16777231,
+      "ino": 104784133,
+      "nlink": 1,
+      "mtime_ns": 1787328170069679304,
+      "ctime_ns": 1787329725262038395
+    },
+    {
+      "path": "citlali-validation/v1/beammaps/data/toltec7_148670_000_0002_2026_01_13_11_59_10.nc",
+      "bytes": 976215336,
+      "blocks": 976216064,
+      "dev": 16777231,
+      "ino": 83738715,
+      "nlink": 1,
+      "mtime_ns": 1768308705000000000,
+      "ctime_ns": 1784734180855611400
+    },
+    {
+      "path": "2025-C1-COM-01/data/toltec0_152431_000_0002_2026_02_19_10_14_10.nc",
+      "bytes": 775300760,
+      "blocks": 775303168,
+      "dev": 16777231,
+      "ino": 85447810,
+      "nlink": 1,
+      "mtime_ns": 1771497310075075032,
+      "ctime_ns": 1785420982093073796
+    },
+    {
+      "path": "citlali-validation/v1/science/data/toltec0_152392_000_0002_2026_02_19_07_09_55.nc",
+      "bytes": 771998760,
+      "blocks": 772001792,
+      "dev": 16777231,
+      "ino": 83739561,
+      "nlink": 1,
+      "mtime_ns": 1771486252000000000,
+      "ctime_ns": 1784734180887101556
+    },
+    {
+      "path": "2025-C1-COM-01/data/toltec0_152392_000_0002_2026_02_19_07_09_55.nc",
+      "bytes": 771998760,
+      "blocks": 772001792,
+      "dev": 16777231,
+      "ino": 85447782,
+      "nlink": 1,
+      "mtime_ns": 1771486252218466771,
+      "ctime_ns": 1785420932613614625
+    },
+    {
+      "path": "2025-C1-COM-01/data/toltec0_152433_000_0002_2026_02_19_10_46_29.nc",
+      "bytes": 770774480,
+      "blocks": 770777088,
+      "dev": 16777231,
+      "ino": 85447834,
+      "nlink": 1,
+      "mtime_ns": 1771499245881469048,
+      "ctime_ns": 1785421009238543363
+    },
+    {
+      "path": "2025-C1-COM-01/data/toltec0_152419_000_0002_2026_02_19_09_10_25.nc",
+      "bytes": 770342680,
+      "blocks": 770342912,
+      "dev": 16777231,
+      "ino": 85447796,
+      "nlink": 1,
+      "mtime_ns": 1771493483997667749,
+      "ctime_ns": 1785420956776327747
+    },
+    {
+      "path": "citlali-validation/v1/science/data/toltec0_152390_000_0002_2026_02_19_06_40_20.nc",
+      "bytes": 769936280,
+      "blocks": 769937408,
+      "dev": 16777231,
+      "ino": 83739409,
+      "nlink": 1,
+      "mtime_ns": 1771484475000000000,
+      "ctime_ns": 1784734180886211794
+    }
+  ],
+  "start_epoch": 1790430818.698509,
+  "seconds": 29.997028827667236
+}

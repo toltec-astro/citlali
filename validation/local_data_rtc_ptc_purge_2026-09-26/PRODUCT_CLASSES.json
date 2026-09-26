@@ -1,0 +1,107 @@
+[
+  {
+    "product_class": "maps",
+    "bytes": 212738826240,
+    "files": 18770
+  },
+  {
+    "product_class": "protected_tune_or_telescope_or_other_NetCDF",
+    "bytes": 166381759868,
+    "files": 18658
+  },
+  {
+    "product_class": "protected_raw_acquisition",
+    "bytes": 118629416424,
+    "files": 1513
+  },
+  {
+    "product_class": "citlali_ptc_mixed_timestream",
+    "bytes": 89968840127,
+    "files": 651
+  },
+  {
+    "product_class": "FRUIT_native_PTC_samples_and_masks",
+    "bytes": 87606539716,
+    "files": 29438
+  },
+  {
+    "product_class": "citlali_rtc_mixed_timestream",
+    "bytes": 83936356003,
+    "files": 644
+  },
+  {
+    "product_class": "other_or_unclassified",
+    "bytes": 83332135904,
+    "files": 191069
+  },
+  {
+    "product_class": "native_RTC_applied_samples_and_axes",
+    "bytes": 42203935716,
+    "files": 125424
+  },
+  {
+    "product_class": "compact_records_and_config",
+    "bytes": 19569959993,
+    "files": 87905
+  },
+  {
+    "product_class": "APT_matching_calibration_tables",
+    "bytes": 12685935883,
+    "files": 9383
+  },
+  {
+    "product_class": "native_PTC_samples_and_axes",
+    "bytes": 12242235716,
+    "files": 22860
+  },
+  {
+    "product_class": "compressed_final_PTC_occurrence_spool",
+    "bytes": 10129484630,
+    "files": 42
+  },
+  {
+    "product_class": "calibrated_RTC_cache_samples_and_axes",
+    "bytes": 7911682826,
+    "files": 39498
+  },
+  {
+    "product_class": "JINC_prepared_PTC_samples_and_axes",
+    "bytes": 6886896408,
+    "files": 90
+  },
+  {
+    "product_class": "citlali_ptc_detector_tod_mixed_timestream",
+    "bytes": 5008115923,
+    "files": 16
+  },
+  {
+    "product_class": "PTC_to_MAP_occurrence_axes",
+    "bytes": 3487785860,
+    "files": 905
+  },
+  {
+    "product_class": "PTC_MAP_handoff_sample_axes",
+    "bytes": 3181056560,
+    "files": 543
+  },
+  {
+    "product_class": "JINC_PTC_occurrence_axes",
+    "bytes": 2481595536,
+    "files": 264
+  },
+  {
+    "product_class": "frozen_PTC_parent_samples_and_axes",
+    "bytes": 1203515584,
+    "files": 540
+  },
+  {
+    "product_class": "figure",
+    "bytes": 596046010,
+    "files": 1839
+  },
+  {
+    "product_class": "PTC_solver_applied_samples",
+    "bytes": 571864096,
+    "files": 334
+  }
+]

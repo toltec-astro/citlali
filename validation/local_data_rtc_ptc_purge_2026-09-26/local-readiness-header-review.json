@@ -1,0 +1,6208 @@
+[
+  {
+    "identity": [
+      123424,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          123424,
+          0,
+          1
+        ],
+        "raw_tune_paths": []
+      },
+      "1": {
+        "target_id": [
+          123424,
+          0,
+          1
+        ],
+        "raw_tune_paths": []
+      },
+      "2": {
+        "target_id": [
+          123424,
+          0,
+          1
+        ],
+        "raw_tune_paths": []
+      },
+      "3": {
+        "target_id": [
+          123424,
+          0,
+          1
+        ],
+        "raw_tune_paths": []
+      },
+      "4": {
+        "target_id": [
+          123424,
+          0,
+          1
+        ],
+        "raw_tune_paths": []
+      },
+      "5": {
+        "target_id": [
+          123424,
+          0,
+          1
+        ],
+        "raw_tune_paths": []
+      },
+      "6": {
+        "target_id": [
+          123424,
+          0,
+          1
+        ],
+        "raw_tune_paths": []
+      },
+      "7": {
+        "target_id": [
+          123424,
+          0,
+          1
+        ],
+        "raw_tune_paths": []
+      },
+      "8": {
+        "target_id": [
+          123424,
+          0,
+          1
+        ],
+        "raw_tune_paths": []
+      },
+      "9": {
+        "target_id": [
+          123424,
+          0,
+          1
+        ],
+        "raw_tune_paths": []
+      },
+      "11": {
+        "target_id": [
+          123424,
+          0,
+          1
+        ],
+        "raw_tune_paths": []
+      },
+      "12": {
+        "target_id": [
+          123424,
+          0,
+          1
+        ],
+        "raw_tune_paths": []
+      }
+    },
+    "raw_tune_missing_networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "masks": [
+      7167
+    ],
+    "copies": 12,
+    "unique_raw_bytes": 358872776,
+    "sample_count_range": [
+      7493,
+      7495
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1732680597.3890846,
+          1732680658.7795844
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1732680597.3966744,
+          1732680658.7712343
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1732680597.3912055,
+          1732680658.7738438
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1732680597.391338,
+          1732680658.7739794
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1732680597.3929825,
+          1732680658.7756343
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1732680597.3939586,
+          1732680658.7683947
+        ]
+      },
+      "6": {
+        "Data.Toltec.RecvTime": [
+          1732680597.3977053,
+          1732680658.780359
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1732680597.3907015,
+          1732680658.7733061
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1732680597.393255,
+          1732680658.7676888
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1732680597.3893821,
+          1732680658.7720742
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1732680597.3952923,
+          1732680658.7697804
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1732680597.3904674,
+          1732680658.7731378
+        ]
+      }
+    },
+    "selected_paths": [
+      "fruit-development/point-123424/input/raw/toltec0_123424_000_0002_2024_11_27_04_09_50.nc",
+      "fruit-development/point-123424/input/raw/toltec1_123424_000_0002_2024_11_27_04_09_50.nc",
+      "fruit-development/point-123424/input/raw/toltec2_123424_000_0002_2024_11_27_04_09_50.nc",
+      "fruit-development/point-123424/input/raw/toltec3_123424_000_0002_2024_11_27_04_09_50.nc",
+      "fruit-development/point-123424/input/raw/toltec4_123424_000_0002_2024_11_27_04_09_50.nc",
+      "fruit-development/point-123424/input/raw/toltec5_123424_000_0002_2024_11_27_04_09_50.nc",
+      "fruit-development/point-123424/input/raw/toltec6_123424_000_0002_2024_11_27_04_09_50.nc",
+      "fruit-development/point-123424/input/raw/toltec7_123424_000_0002_2024_11_27_04_09_50.nc",
+      "fruit-development/point-123424/input/raw/toltec8_123424_000_0002_2024_11_27_04_09_50.nc",
+      "fruit-development/point-123424/input/raw/toltec9_123424_000_0002_2024_11_27_04_09_50.nc",
+      "fruit-development/point-123424/input/raw/toltec11_123424_000_0002_2024_11_27_04_09_50.nc",
+      "fruit-development/point-123424/input/raw/toltec12_123424_000_0002_2024_11_27_04_09_50.nc"
+    ]
+  },
+  {
+    "identity": [
+      148669,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          148669,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec0_148669_000_0001_2026_01_13_11_50_55_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          148669,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec1_148669_000_0001_2026_01_13_11_50_55_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          148669,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec2_148669_000_0001_2026_01_13_11_50_55_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          148669,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec3_148669_000_0001_2026_01_13_11_50_55_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          148669,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec4_148669_000_0001_2026_01_13_11_50_55_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          148669,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec5_148669_000_0001_2026_01_13_11_50_55_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          148669,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec7_148669_000_0001_2026_01_13_11_50_55_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          148669,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec8_148669_000_0001_2026_01_13_11_50_55_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          148669,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec9_148669_000_0001_2026_01_13_11_50_55_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          148669,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec11_148669_000_0001_2026_01_13_11_50_55_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          148669,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec12_148669_000_0001_2026_01_13_11_50_55_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      7103
+    ],
+    "copies": 11,
+    "unique_raw_bytes": 328409056,
+    "sample_count_range": [
+      7734,
+      7735
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1768305128.666305,
+          1768305192.0232263
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1768305128.6658275,
+          1768305192.0145428
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1768305128.6647458,
+          1768305192.0216856
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1768305128.6619747,
+          1768305192.0189905
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1768305128.6622722,
+          1768305192.0191853
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1768305128.664096,
+          1768305192.0210106
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1768305128.6653805,
+          1768305192.014136
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1768305128.6651719,
+          1768305192.0220451
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1768305128.660886,
+          1768305192.018172
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1768305128.6630578,
+          1768305192.019932
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1768305128.667716,
+          1768305192.0163414
+        ]
+      }
+    },
+    "selected_paths": [
+      "citlali-validation/v1/beammaps/data/toltec0_148669_000_0002_2026_01_13_11_52_01.nc",
+      "citlali-validation/v1/beammaps/data/toltec1_148669_000_0002_2026_01_13_11_52_01.nc",
+      "citlali-validation/v1/beammaps/data/toltec2_148669_000_0002_2026_01_13_11_52_01.nc",
+      "citlali-validation/v1/beammaps/data/toltec3_148669_000_0002_2026_01_13_11_52_01.nc",
+      "citlali-validation/v1/beammaps/data/toltec4_148669_000_0002_2026_01_13_11_52_01.nc",
+      "citlali-validation/v1/beammaps/data/toltec5_148669_000_0002_2026_01_13_11_52_01.nc",
+      "citlali-validation/v1/beammaps/data/toltec7_148669_000_0002_2026_01_13_11_52_01.nc",
+      "citlali-validation/v1/beammaps/data/toltec8_148669_000_0002_2026_01_13_11_52_01.nc",
+      "citlali-validation/v1/beammaps/data/toltec9_148669_000_0002_2026_01_13_11_52_01.nc",
+      "citlali-validation/v1/beammaps/data/toltec11_148669_000_0002_2026_01_13_11_52_01.nc",
+      "citlali-validation/v1/beammaps/data/toltec12_148669_000_0002_2026_01_13_11_52_01.nc"
+    ]
+  },
+  {
+    "identity": [
+      148670,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          148670,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec0_148670_000_0001_2026_01_13_11_58_00_tune.nc",
+          "tone-match-lab/tunes/toltec0_148670_000_0001_2026_01_13_11_58_00_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          148670,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec1_148670_000_0001_2026_01_13_11_58_00_tune.nc",
+          "tone-match-lab/tunes/toltec1_148670_000_0001_2026_01_13_11_58_00_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          148670,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec2_148670_000_0001_2026_01_13_11_58_00_tune.nc",
+          "tone-match-lab/tunes/toltec2_148670_000_0001_2026_01_13_11_58_00_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          148670,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec3_148670_000_0001_2026_01_13_11_58_00_tune.nc",
+          "tone-match-lab/tunes/toltec3_148670_000_0001_2026_01_13_11_58_00_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          148670,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec4_148670_000_0001_2026_01_13_11_58_00_tune.nc",
+          "tone-match-lab/tunes/toltec4_148670_000_0001_2026_01_13_11_58_00_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          148670,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec5_148670_000_0001_2026_01_13_11_58_00_tune.nc",
+          "tone-match-lab/tunes/toltec5_148670_000_0001_2026_01_13_11_58_00_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          148670,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec7_148670_000_0001_2026_01_13_11_58_00_tune.nc",
+          "tone-match-lab/tunes/toltec7_148670_000_0001_2026_01_13_11_58_00_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          148670,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec8_148670_000_0001_2026_01_13_11_58_00_tune.nc",
+          "tone-match-lab/tunes/toltec8_148670_000_0001_2026_01_13_11_58_00_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          148670,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec9_148670_000_0001_2026_01_13_11_58_00_tune.nc",
+          "tone-match-lab/tunes/toltec9_148670_000_0001_2026_01_13_11_58_00_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          148670,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec11_148670_000_0001_2026_01_13_11_58_00_tune.nc",
+          "tone-match-lab/tunes/toltec11_148670_000_0001_2026_01_13_11_58_00_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          148670,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec12_148670_000_0001_2026_01_13_11_58_00_tune.nc",
+          "tone-match-lab/tunes/toltec12_148670_000_0001_2026_01_13_11_58_00_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      7103
+    ],
+    "copies": 11,
+    "unique_raw_bytes": 16236267664,
+    "sample_count_range": [
+      383700,
+      383701
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1768305561.0468817,
+          1768308704.309179
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1768305561.0488317,
+          1768308704.3110535
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1768305561.0479317,
+          1768308704.310146
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1768305561.0454192,
+          1768308704.307712
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1768305561.0468924,
+          1768308704.3091063
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1768305561.0442767,
+          1768308704.3146384
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1768305561.048748,
+          1768308704.3191452
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1768305561.0447898,
+          1768308704.3151681
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1768305561.0470047,
+          1768308704.317411
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1768305561.0459373,
+          1768308704.316392
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1768305561.0508294,
+          1768308704.3130689
+        ]
+      }
+    },
+    "selected_paths": [
+      "citlali-validation/v1/beammaps/data/toltec0_148670_000_0002_2026_01_13_11_59_10.nc",
+      "citlali-validation/v1/beammaps/data/toltec1_148670_000_0002_2026_01_13_11_59_10.nc",
+      "citlali-validation/v1/beammaps/data/toltec2_148670_000_0002_2026_01_13_11_59_10.nc",
+      "citlali-validation/v1/beammaps/data/toltec3_148670_000_0002_2026_01_13_11_59_10.nc",
+      "citlali-validation/v1/beammaps/data/toltec4_148670_000_0002_2026_01_13_11_59_10.nc",
+      "citlali-validation/v1/beammaps/data/toltec5_148670_000_0002_2026_01_13_11_59_10.nc",
+      "citlali-validation/v1/beammaps/data/toltec7_148670_000_0002_2026_01_13_11_59_10.nc",
+      "citlali-validation/v1/beammaps/data/toltec8_148670_000_0002_2026_01_13_11_59_10.nc",
+      "citlali-validation/v1/beammaps/data/toltec9_148670_000_0002_2026_01_13_11_59_10.nc",
+      "citlali-validation/v1/beammaps/data/toltec11_148670_000_0002_2026_01_13_11_59_10.nc",
+      "citlali-validation/v1/beammaps/data/toltec12_148670_000_0002_2026_01_13_11_59_10.nc"
+    ]
+  },
+  {
+    "identity": [
+      148671,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          148671,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec0_148671_000_0001_2026_01_13_12_53_55_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          148671,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec1_148671_000_0001_2026_01_13_12_53_55_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          148671,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec2_148671_000_0001_2026_01_13_12_53_55_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          148671,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec3_148671_000_0001_2026_01_13_12_53_55_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          148671,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec4_148671_000_0001_2026_01_13_12_53_55_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          148671,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec5_148671_000_0001_2026_01_13_12_53_55_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          148671,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec7_148671_000_0001_2026_01_13_12_53_55_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          148671,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec8_148671_000_0001_2026_01_13_12_53_55_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          148671,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec9_148671_000_0001_2026_01_13_12_53_55_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          148671,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec11_148671_000_0001_2026_01_13_12_53_55_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          148671,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/beammaps/data/toltec12_148671_000_0001_2026_01_13_12_53_55_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      7103
+    ],
+    "copies": 11,
+    "unique_raw_bytes": 322760856,
+    "sample_count_range": [
+      7601,
+      7602
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1768308910.8227282,
+          1768308973.0901515
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1768308910.819796,
+          1768308973.0871737
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1768308910.828227,
+          1768308973.0874324
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1768308910.8252232,
+          1768308973.0844376
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1768308910.825109,
+          1768308973.084344
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1768308910.8266792,
+          1768308973.0858898
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1768308910.8209136,
+          1768308973.0883431
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1768308910.8257244,
+          1768308973.084943
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1768308910.8263357,
+          1768308973.0852242
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1768308910.828553,
+          1768308973.0877943
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1768308910.8265219,
+          1768308973.0857463
+        ]
+      }
+    },
+    "selected_paths": [
+      "citlali-validation/v1/beammaps/data/toltec0_148671_000_0002_2026_01_13_12_55_00.nc",
+      "citlali-validation/v1/beammaps/data/toltec1_148671_000_0002_2026_01_13_12_55_00.nc",
+      "citlali-validation/v1/beammaps/data/toltec2_148671_000_0002_2026_01_13_12_55_00.nc",
+      "citlali-validation/v1/beammaps/data/toltec3_148671_000_0002_2026_01_13_12_55_00.nc",
+      "citlali-validation/v1/beammaps/data/toltec4_148671_000_0002_2026_01_13_12_55_00.nc",
+      "citlali-validation/v1/beammaps/data/toltec5_148671_000_0002_2026_01_13_12_55_00.nc",
+      "citlali-validation/v1/beammaps/data/toltec7_148671_000_0002_2026_01_13_12_55_00.nc",
+      "citlali-validation/v1/beammaps/data/toltec8_148671_000_0002_2026_01_13_12_55_00.nc",
+      "citlali-validation/v1/beammaps/data/toltec9_148671_000_0002_2026_01_13_12_55_00.nc",
+      "citlali-validation/v1/beammaps/data/toltec11_148671_000_0002_2026_01_13_12_55_00.nc",
+      "citlali-validation/v1/beammaps/data/toltec12_148671_000_0002_2026_01_13_12_55_00.nc"
+    ]
+  },
+  {
+    "identity": [
+      152307,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          152307,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "beammaps/3c273/data/tune/toltec0_152307_000_0001_2026_02_18_11_49_17_tune.nc",
+          "beammaps/data/toltec0_152307_000_0001_2026_02_18_11_49_17_tune.nc",
+          "tone-match-lab/tunes/toltec0_152307_000_0001_2026_02_18_11_49_17_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          152307,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "beammaps/3c273/data/tune/toltec1_152307_000_0001_2026_02_18_11_49_17_tune.nc",
+          "beammaps/data/toltec1_152307_000_0001_2026_02_18_11_49_17_tune.nc",
+          "tone-match-lab/tunes/toltec1_152307_000_0001_2026_02_18_11_49_17_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          152307,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "beammaps/3c273/data/tune/toltec2_152307_000_0001_2026_02_18_11_49_17_tune.nc",
+          "beammaps/data/toltec2_152307_000_0001_2026_02_18_11_49_17_tune.nc",
+          "tone-match-lab/tunes/toltec2_152307_000_0001_2026_02_18_11_49_17_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          152307,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "beammaps/3c273/data/tune/toltec3_152307_000_0001_2026_02_18_11_49_17_tune.nc",
+          "beammaps/data/toltec3_152307_000_0001_2026_02_18_11_49_17_tune.nc",
+          "tone-match-lab/tunes/toltec3_152307_000_0001_2026_02_18_11_49_17_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          152307,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "beammaps/3c273/data/tune/toltec4_152307_000_0001_2026_02_18_11_49_17_tune.nc",
+          "beammaps/data/toltec4_152307_000_0001_2026_02_18_11_49_17_tune.nc",
+          "tone-match-lab/tunes/toltec4_152307_000_0001_2026_02_18_11_49_17_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          152307,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "beammaps/3c273/data/tune/toltec5_152307_000_0001_2026_02_18_11_49_17_tune.nc",
+          "beammaps/data/toltec5_152307_000_0001_2026_02_18_11_49_17_tune.nc",
+          "tone-match-lab/tunes/toltec5_152307_000_0001_2026_02_18_11_49_17_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          152307,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "beammaps/3c273/data/tune/toltec7_152307_000_0001_2026_02_18_11_49_17_tune.nc",
+          "beammaps/data/toltec7_152307_000_0001_2026_02_18_11_49_17_tune.nc",
+          "tone-match-lab/tunes/toltec7_152307_000_0001_2026_02_18_11_49_17_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          152307,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "beammaps/3c273/data/tune/toltec8_152307_000_0001_2026_02_18_11_49_17_tune.nc",
+          "beammaps/data/toltec8_152307_000_0001_2026_02_18_11_49_17_tune.nc",
+          "tone-match-lab/tunes/toltec8_152307_000_0001_2026_02_18_11_49_17_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          152307,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "beammaps/3c273/data/tune/toltec9_152307_000_0001_2026_02_18_11_49_17_tune.nc",
+          "beammaps/data/toltec9_152307_000_0001_2026_02_18_11_49_17_tune.nc",
+          "tone-match-lab/tunes/toltec9_152307_000_0001_2026_02_18_11_49_17_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          152307,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "beammaps/3c273/data/tune/toltec11_152307_000_0001_2026_02_18_11_49_17_tune.nc",
+          "beammaps/data/toltec11_152307_000_0001_2026_02_18_11_49_17_tune.nc",
+          "tone-match-lab/tunes/toltec11_152307_000_0001_2026_02_18_11_49_17_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          152307,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "beammaps/3c273/data/tune/toltec12_152307_000_0001_2026_02_18_11_49_17_tune.nc",
+          "beammaps/data/toltec12_152307_000_0001_2026_02_18_11_49_17_tune.nc",
+          "tone-match-lab/tunes/toltec12_152307_000_0001_2026_02_18_11_49_17_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      15295
+    ],
+    "copies": 11,
+    "unique_raw_bytes": 16519610992,
+    "sample_count_range": [
+      372305,
+      372306
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1771415438.5108123,
+          1771418488.4252326
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1771415438.5100927,
+          1771418488.424408
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1771415438.510725,
+          1771418488.425057
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1771415438.5085242,
+          1771418488.4229412
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1771415438.505804,
+          1771418488.4201634
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1771415438.50857,
+          1771418488.4229238
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1771415438.5128381,
+          1771418488.4271028
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1771415438.5046544,
+          1771418488.4272456
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1771415438.509451,
+          1771418488.4237635
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1771415438.5068166,
+          1771418488.4293077
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1771415438.5084865,
+          1771418488.4228249
+        ]
+      }
+    },
+    "selected_paths": [
+      "beammaps/data/toltec0_152307_000_0002_2026_02_18_11_50_28.nc",
+      "beammaps/data/toltec1_152307_000_0002_2026_02_18_11_50_28.nc",
+      "beammaps/data/toltec2_152307_000_0002_2026_02_18_11_50_28.nc",
+      "beammaps/data/toltec3_152307_000_0002_2026_02_18_11_50_28.nc",
+      "beammaps/data/toltec4_152307_000_0002_2026_02_18_11_50_28.nc",
+      "beammaps/data/toltec5_152307_000_0002_2026_02_18_11_50_28.nc",
+      "beammaps/data/toltec7_152307_000_0002_2026_02_18_11_50_28.nc",
+      "beammaps/data/toltec8_152307_000_0002_2026_02_18_11_50_28.nc",
+      "beammaps/data/toltec9_152307_000_0002_2026_02_18_11_50_28.nc",
+      "beammaps/data/toltec11_152307_000_0002_2026_02_18_11_50_28.nc",
+      "beammaps/data/toltec12_152307_000_0002_2026_02_18_11_50_28.nc"
+    ]
+  },
+  {
+    "identity": [
+      152385,
+      0,
+      1
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec0_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec1_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec2_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec3_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec4_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec5_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec7_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec8_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec9_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec11_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec12_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      15295
+    ],
+    "copies": 11,
+    "unique_raw_bytes": 351642632,
+    "sample_count_range": [
+      7860,
+      7862
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1771481883.1991966,
+          1771481947.5883322
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1771481883.195804,
+          1771481947.5931082
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1771481883.2068708,
+          1771481947.587836
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1771481883.1961021,
+          1771481947.5853345
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1771481883.19862,
+          1771481947.5878174
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1771481883.2026176,
+          1771481947.5917897
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1771481883.2046955,
+          1771481947.585589
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1771481883.1975098,
+          1771481947.5867102
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1771481883.2013795,
+          1771481947.5904162
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1771481883.2033784,
+          1771481947.5843909
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1771481883.2040253,
+          1771481947.5850036
+        ]
+      }
+    },
+    "selected_paths": [
+      "citlali-validation/v1/oof/data/toltec0_152385_000_0001_2026_02_19_06_17_55.nc",
+      "citlali-validation/v1/oof/data/toltec1_152385_000_0001_2026_02_19_06_17_55.nc",
+      "citlali-validation/v1/oof/data/toltec2_152385_000_0001_2026_02_19_06_17_55.nc",
+      "citlali-validation/v1/oof/data/toltec3_152385_000_0001_2026_02_19_06_17_55.nc",
+      "citlali-validation/v1/oof/data/toltec4_152385_000_0001_2026_02_19_06_17_55.nc",
+      "citlali-validation/v1/oof/data/toltec5_152385_000_0001_2026_02_19_06_17_55.nc",
+      "citlali-validation/v1/oof/data/toltec7_152385_000_0001_2026_02_19_06_17_55.nc",
+      "citlali-validation/v1/oof/data/toltec8_152385_000_0001_2026_02_19_06_17_55.nc",
+      "citlali-validation/v1/oof/data/toltec9_152385_000_0001_2026_02_19_06_17_55.nc",
+      "citlali-validation/v1/oof/data/toltec11_152385_000_0001_2026_02_19_06_17_55.nc",
+      "citlali-validation/v1/oof/data/toltec12_152385_000_0001_2026_02_19_06_17_55.nc"
+    ]
+  },
+  {
+    "identity": [
+      152386,
+      0,
+      1
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec0_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec1_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec2_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec3_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec4_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec5_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec7_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec8_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec9_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec11_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec12_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      15295
+    ],
+    "copies": 11,
+    "unique_raw_bytes": 352751216,
+    "sample_count_range": [
+      7885,
+      7886
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1771481982.7483466,
+          1771482047.334153
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1771481982.7450538,
+          1771482047.33893
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1771481982.7478926,
+          1771482047.333627
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1771481982.7453866,
+          1771482047.3392668
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1771481982.747865,
+          1771482047.3336325
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1771481982.743588,
+          1771482047.3375258
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1771481982.7456527,
+          1771482047.339574
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1771481982.746783,
+          1771482047.3406377
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1771481982.7506783,
+          1771482047.3363135
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1771481982.7444205,
+          1771482047.3382757
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1771481982.745031,
+          1771482047.3389251
+        ]
+      }
+    },
+    "selected_paths": [
+      "citlali-validation/v1/oof/data/toltec0_152386_000_0001_2026_02_19_06_19_32.nc",
+      "citlali-validation/v1/oof/data/toltec1_152386_000_0001_2026_02_19_06_19_32.nc",
+      "citlali-validation/v1/oof/data/toltec2_152386_000_0001_2026_02_19_06_19_32.nc",
+      "citlali-validation/v1/oof/data/toltec3_152386_000_0001_2026_02_19_06_19_32.nc",
+      "citlali-validation/v1/oof/data/toltec4_152386_000_0001_2026_02_19_06_19_32.nc",
+      "citlali-validation/v1/oof/data/toltec5_152386_000_0001_2026_02_19_06_19_32.nc",
+      "citlali-validation/v1/oof/data/toltec7_152386_000_0001_2026_02_19_06_19_32.nc",
+      "citlali-validation/v1/oof/data/toltec8_152386_000_0001_2026_02_19_06_19_32.nc",
+      "citlali-validation/v1/oof/data/toltec9_152386_000_0001_2026_02_19_06_19_32.nc",
+      "citlali-validation/v1/oof/data/toltec11_152386_000_0001_2026_02_19_06_19_32.nc",
+      "citlali-validation/v1/oof/data/toltec12_152386_000_0001_2026_02_19_06_19_32.nc"
+    ]
+  },
+  {
+    "identity": [
+      152387,
+      0,
+      1
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec0_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec1_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec2_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec3_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec4_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec5_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec7_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec8_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec9_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec11_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          152384,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/oof/data/toltec12_152384_000_0001_2026_02_19_06_16_38_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      15295
+    ],
+    "copies": 11,
+    "unique_raw_bytes": 352010712,
+    "sample_count_range": [
+      7868,
+      7870
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1771482071.1154833,
+          1771482135.5701313
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1771482071.1121514,
+          1771482135.5668204
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1771482071.115048,
+          1771482135.5696595
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1771482071.1124308,
+          1771482135.5670865
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1771482071.1150415,
+          1771482135.5696082
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1771482071.1107786,
+          1771482135.5654078
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1771482071.11276,
+          1771482135.5674758
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1771482071.113897,
+          1771482135.5685496
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1771482071.117611,
+          1771482135.5641277
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1771482071.1115155,
+          1771482135.5743697
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1771482071.1121213,
+          1771482135.5667677
+        ]
+      }
+    },
+    "selected_paths": [
+      "citlali-validation/v1/oof/data/toltec0_152387_000_0001_2026_02_19_06_21_06.nc",
+      "citlali-validation/v1/oof/data/toltec1_152387_000_0001_2026_02_19_06_21_06.nc",
+      "citlali-validation/v1/oof/data/toltec2_152387_000_0001_2026_02_19_06_21_06.nc",
+      "citlali-validation/v1/oof/data/toltec3_152387_000_0001_2026_02_19_06_21_06.nc",
+      "citlali-validation/v1/oof/data/toltec4_152387_000_0001_2026_02_19_06_21_06.nc",
+      "citlali-validation/v1/oof/data/toltec5_152387_000_0001_2026_02_19_06_21_06.nc",
+      "citlali-validation/v1/oof/data/toltec7_152387_000_0001_2026_02_19_06_21_06.nc",
+      "citlali-validation/v1/oof/data/toltec8_152387_000_0001_2026_02_19_06_21_06.nc",
+      "citlali-validation/v1/oof/data/toltec9_152387_000_0001_2026_02_19_06_21_06.nc",
+      "citlali-validation/v1/oof/data/toltec11_152387_000_0001_2026_02_19_06_21_06.nc",
+      "citlali-validation/v1/oof/data/toltec12_152387_000_0001_2026_02_19_06_21_06.nc"
+    ]
+  },
+  {
+    "identity": [
+      152388,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          152388,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-ENG-pointing-152388-152389/data/toltec0_152388_000_0001_2026_02_19_06_26_57_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          152388,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-ENG-pointing-152388-152389/data/toltec1_152388_000_0001_2026_02_19_06_26_57_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          152388,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-ENG-pointing-152388-152389/data/toltec2_152388_000_0001_2026_02_19_06_26_57_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          152388,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-ENG-pointing-152388-152389/data/toltec3_152388_000_0001_2026_02_19_06_26_57_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          152388,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-ENG-pointing-152388-152389/data/toltec4_152388_000_0001_2026_02_19_06_26_57_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          152388,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-ENG-pointing-152388-152389/data/toltec5_152388_000_0001_2026_02_19_06_26_57_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          152388,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-ENG-pointing-152388-152389/data/toltec7_152388_000_0001_2026_02_19_06_26_57_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          152388,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-ENG-pointing-152388-152389/data/toltec8_152388_000_0001_2026_02_19_06_26_57_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          152388,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-ENG-pointing-152388-152389/data/toltec9_152388_000_0001_2026_02_19_06_26_57_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          152388,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-ENG-pointing-152388-152389/data/toltec11_152388_000_0001_2026_02_19_06_26_57_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          152388,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-ENG-pointing-152388-152389/data/toltec12_152388_000_0001_2026_02_19_06_26_57_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      15295
+    ],
+    "copies": 11,
+    "unique_raw_bytes": 353316080,
+    "sample_count_range": [
+      7898,
+      7899
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1771482488.839339,
+          1771482553.5316014
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1771482488.8335748,
+          1771482553.5340006
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1771482488.8381865,
+          1771482553.538652
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1771482488.8320792,
+          1771482553.532588
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1771482488.8393571,
+          1771482553.531614
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1771482488.8394918,
+          1771482553.5318012
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1771482488.8437784,
+          1771482553.5360436
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1771482488.8416145,
+          1771482553.5339143
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1771482488.8439004,
+          1771482553.5361192
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1771482488.8429,
+          1771482553.5351515
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1771482488.8439722,
+          1771482553.536211
+        ]
+      }
+    },
+    "selected_paths": [
+      "2025-ENG-pointing-152388-152389/data/toltec0_152388_000_0002_2026_02_19_06_28_02.nc",
+      "2025-ENG-pointing-152388-152389/data/toltec1_152388_000_0002_2026_02_19_06_28_02.nc",
+      "2025-ENG-pointing-152388-152389/data/toltec2_152388_000_0002_2026_02_19_06_28_02.nc",
+      "2025-ENG-pointing-152388-152389/data/toltec3_152388_000_0002_2026_02_19_06_28_02.nc",
+      "2025-ENG-pointing-152388-152389/data/toltec4_152388_000_0002_2026_02_19_06_28_02.nc",
+      "2025-ENG-pointing-152388-152389/data/toltec5_152388_000_0002_2026_02_19_06_28_02.nc",
+      "2025-ENG-pointing-152388-152389/data/toltec7_152388_000_0002_2026_02_19_06_28_02.nc",
+      "2025-ENG-pointing-152388-152389/data/toltec8_152388_000_0002_2026_02_19_06_28_02.nc",
+      "2025-ENG-pointing-152388-152389/data/toltec9_152388_000_0002_2026_02_19_06_28_02.nc",
+      "2025-ENG-pointing-152388-152389/data/toltec11_152388_000_0002_2026_02_19_06_28_02.nc",
+      "2025-ENG-pointing-152388-152389/data/toltec12_152388_000_0002_2026_02_19_06_28_02.nc"
+    ]
+  },
+  {
+    "identity": [
+      152389,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          152389,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/point/data/toltec0_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v1/science/data/toltec0_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec0_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v2/point/data/toltec0_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2025-ENG-pointing-152388-152389/data/toltec0_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2025-C1-COM-01/data/toltec0_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2026-refactor/v1/point/data/toltec0_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2026-refactor/projects/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec0_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "fruit-development/point-152389/data/toltec0_152389_000_0001_2026_02_19_06_33_35_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          152389,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/point/data/toltec1_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v1/science/data/toltec1_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec1_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v2/point/data/toltec1_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2025-ENG-pointing-152388-152389/data/toltec1_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2025-C1-COM-01/data/toltec1_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2026-refactor/v1/point/data/toltec1_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "fruit-development/point-152389/data/toltec1_152389_000_0001_2026_02_19_06_33_35_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          152389,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/point/data/toltec2_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v1/science/data/toltec2_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec2_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v2/point/data/toltec2_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2025-ENG-pointing-152388-152389/data/toltec2_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2025-C1-COM-01/data/toltec2_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2026-refactor/v1/point/data/toltec2_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "fruit-development/point-152389/data/toltec2_152389_000_0001_2026_02_19_06_33_35_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          152389,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/point/data/toltec3_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v1/science/data/toltec3_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec3_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v2/point/data/toltec3_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2025-ENG-pointing-152388-152389/data/toltec3_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2025-C1-COM-01/data/toltec3_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2026-refactor/v1/point/data/toltec3_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "fruit-development/point-152389/data/toltec3_152389_000_0001_2026_02_19_06_33_35_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          152389,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/point/data/toltec4_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v1/science/data/toltec4_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec4_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v2/point/data/toltec4_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2025-ENG-pointing-152388-152389/data/toltec4_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2025-C1-COM-01/data/toltec4_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2026-refactor/v1/point/data/toltec4_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "fruit-development/point-152389/data/toltec4_152389_000_0001_2026_02_19_06_33_35_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          152389,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/point/data/toltec5_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v1/science/data/toltec5_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec5_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v2/point/data/toltec5_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2025-ENG-pointing-152388-152389/data/toltec5_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2025-C1-COM-01/data/toltec5_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2026-refactor/v1/point/data/toltec5_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "fruit-development/point-152389/data/toltec5_152389_000_0001_2026_02_19_06_33_35_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          152389,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/point/data/toltec7_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v1/science/data/toltec7_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec7_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v2/point/data/toltec7_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2025-ENG-pointing-152388-152389/data/toltec7_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2025-C1-COM-01/data/toltec7_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2026-refactor/v1/point/data/toltec7_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "fruit-development/point-152389/data/toltec7_152389_000_0001_2026_02_19_06_33_35_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          152389,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/point/data/toltec8_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v1/science/data/toltec8_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec8_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v2/point/data/toltec8_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2025-ENG-pointing-152388-152389/data/toltec8_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2025-C1-COM-01/data/toltec8_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2026-refactor/v1/point/data/toltec8_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "fruit-development/point-152389/data/toltec8_152389_000_0001_2026_02_19_06_33_35_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          152389,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/point/data/toltec9_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v1/science/data/toltec9_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec9_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v2/point/data/toltec9_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2025-ENG-pointing-152388-152389/data/toltec9_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2025-C1-COM-01/data/toltec9_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2026-refactor/v1/point/data/toltec9_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "fruit-development/point-152389/data/toltec9_152389_000_0001_2026_02_19_06_33_35_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          152389,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/point/data/toltec11_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v1/science/data/toltec11_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec11_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v2/point/data/toltec11_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2025-ENG-pointing-152388-152389/data/toltec11_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2025-C1-COM-01/data/toltec11_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2026-refactor/v1/point/data/toltec11_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "fruit-development/point-152389/data/toltec11_152389_000_0001_2026_02_19_06_33_35_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          152389,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/point/data/toltec12_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v1/science/data/toltec12_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec12_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "citlali-validation/v2/point/data/toltec12_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2025-ENG-pointing-152388-152389/data/toltec12_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2025-C1-COM-01/data/toltec12_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "2026-refactor/v1/point/data/toltec12_152389_000_0001_2026_02_19_06_33_35_tune.nc",
+          "fruit-development/point-152389/data/toltec12_152389_000_0001_2026_02_19_06_33_35_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      15295
+    ],
+    "copies": 89,
+    "unique_raw_bytes": 344432040,
+    "sample_count_range": [
+      7698,
+      7700
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1771482887.322701,
+          1771482950.3847473
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1771482887.3176606,
+          1771482950.3878608
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1771482887.3180754,
+          1771482950.3800697
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1771482887.3221738,
+          1771482950.384111
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1771482887.3174634,
+          1771482950.3795524
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1771482887.3191955,
+          1771482950.381174
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1771482887.3241327,
+          1771482950.3779454
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1771482887.321065,
+          1771482950.3830225
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1771482887.319991,
+          1771482950.3820508
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1771482887.3205535,
+          1771482950.3825252
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1771482887.3164017,
+          1771482950.3784952
+        ]
+      }
+    },
+    "selected_paths": [
+      "citlali-validation/v1/point/data/toltec0_152389_000_0002_2026_02_19_06_34_38.nc",
+      "citlali-validation/v1/point/data/toltec1_152389_000_0002_2026_02_19_06_34_38.nc",
+      "citlali-validation/v1/point/data/toltec2_152389_000_0002_2026_02_19_06_34_38.nc",
+      "citlali-validation/v1/point/data/toltec3_152389_000_0002_2026_02_19_06_34_38.nc",
+      "citlali-validation/v1/point/data/toltec4_152389_000_0002_2026_02_19_06_34_38.nc",
+      "citlali-validation/v1/point/data/toltec5_152389_000_0002_2026_02_19_06_34_38.nc",
+      "citlali-validation/v1/point/data/toltec7_152389_000_0002_2026_02_19_06_34_38.nc",
+      "citlali-validation/v1/point/data/toltec8_152389_000_0002_2026_02_19_06_34_38.nc",
+      "citlali-validation/v1/point/data/toltec9_152389_000_0002_2026_02_19_06_34_38.nc",
+      "citlali-validation/v1/point/data/toltec11_152389_000_0002_2026_02_19_06_34_38.nc",
+      "citlali-validation/v1/point/data/toltec12_152389_000_0002_2026_02_19_06_34_38.nc"
+    ]
+  },
+  {
+    "identity": [
+      152390,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          152390,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec0_152390_000_0001_2026_02_19_06_39_14_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec0_152390_000_0001_2026_02_19_06_39_14_tune.nc",
+          "2025-C1-COM-01/data/toltec0_152390_000_0001_2026_02_19_06_39_14_tune.nc",
+          "2026-refactor/projects/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec0_152390_000_0001_2026_02_19_06_39_14_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          152390,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec1_152390_000_0001_2026_02_19_06_39_14_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec1_152390_000_0001_2026_02_19_06_39_14_tune.nc",
+          "2025-C1-COM-01/data/toltec1_152390_000_0001_2026_02_19_06_39_14_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          152390,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec2_152390_000_0001_2026_02_19_06_39_14_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec2_152390_000_0001_2026_02_19_06_39_14_tune.nc",
+          "2025-C1-COM-01/data/toltec2_152390_000_0001_2026_02_19_06_39_14_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          152390,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec3_152390_000_0001_2026_02_19_06_39_14_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec3_152390_000_0001_2026_02_19_06_39_14_tune.nc",
+          "2025-C1-COM-01/data/toltec3_152390_000_0001_2026_02_19_06_39_14_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          152390,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec4_152390_000_0001_2026_02_19_06_39_14_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec4_152390_000_0001_2026_02_19_06_39_14_tune.nc",
+          "2025-C1-COM-01/data/toltec4_152390_000_0001_2026_02_19_06_39_14_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          152390,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec5_152390_000_0001_2026_02_19_06_39_14_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec5_152390_000_0001_2026_02_19_06_39_14_tune.nc",
+          "2025-C1-COM-01/data/toltec5_152390_000_0001_2026_02_19_06_39_14_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          152390,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec7_152390_000_0001_2026_02_19_06_39_14_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec7_152390_000_0001_2026_02_19_06_39_14_tune.nc",
+          "2025-C1-COM-01/data/toltec7_152390_000_0001_2026_02_19_06_39_14_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          152390,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec8_152390_000_0001_2026_02_19_06_39_14_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec8_152390_000_0001_2026_02_19_06_39_14_tune.nc",
+          "2025-C1-COM-01/data/toltec8_152390_000_0001_2026_02_19_06_39_14_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          152390,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec9_152390_000_0001_2026_02_19_06_39_14_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec9_152390_000_0001_2026_02_19_06_39_14_tune.nc",
+          "2025-C1-COM-01/data/toltec9_152390_000_0001_2026_02_19_06_39_14_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          152390,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec11_152390_000_0001_2026_02_19_06_39_14_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec11_152390_000_0001_2026_02_19_06_39_14_tune.nc",
+          "2025-C1-COM-01/data/toltec11_152390_000_0001_2026_02_19_06_39_14_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          152390,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec12_152390_000_0001_2026_02_19_06_39_14_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec12_152390_000_0001_2026_02_19_06_39_14_tune.nc",
+          "2025-C1-COM-01/data/toltec12_152390_000_0001_2026_02_19_06_39_14_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      15295
+    ],
+    "copies": 44,
+    "unique_raw_bytes": 6757309256,
+    "sample_count_range": [
+      151536,
+      151538
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1771483233.0702388,
+          1771484474.4531274
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1771483233.0733962,
+          1771484474.4562714
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1771483233.0673032,
+          1771484474.450175
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1771483233.0635786,
+          1771484474.454776
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1771483233.0691864,
+          1771484474.4520736
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1771483233.0756872,
+          1771484474.4503744
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1771483233.0756886,
+          1771484474.4586396
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1771483233.0744212,
+          1771484474.4573438
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1771483233.0684237,
+          1771484474.4595268
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1771483233.0730846,
+          1771484474.4559956
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1771483233.0699801,
+          1771484474.4529638
+        ]
+      }
+    },
+    "selected_paths": [
+      "citlali-validation/v1/science/data/toltec0_152390_000_0002_2026_02_19_06_40_20.nc",
+      "citlali-validation/v1/science/data/toltec1_152390_000_0002_2026_02_19_06_40_20.nc",
+      "citlali-validation/v1/science/data/toltec2_152390_000_0002_2026_02_19_06_40_20.nc",
+      "citlali-validation/v1/science/data/toltec3_152390_000_0002_2026_02_19_06_40_20.nc",
+      "citlali-validation/v1/science/data/toltec4_152390_000_0002_2026_02_19_06_40_20.nc",
+      "citlali-validation/v1/science/data/toltec5_152390_000_0002_2026_02_19_06_40_20.nc",
+      "citlali-validation/v1/science/data/toltec7_152390_000_0002_2026_02_19_06_40_20.nc",
+      "citlali-validation/v1/science/data/toltec8_152390_000_0002_2026_02_19_06_40_20.nc",
+      "citlali-validation/v1/science/data/toltec9_152390_000_0002_2026_02_19_06_40_20.nc",
+      "citlali-validation/v1/science/data/toltec11_152390_000_0002_2026_02_19_06_40_20.nc",
+      "citlali-validation/v1/science/data/toltec12_152390_000_0002_2026_02_19_06_40_20.nc"
+    ]
+  },
+  {
+    "identity": [
+      152391,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          152391,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec0_152391_000_0001_2026_02_19_07_03_07_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec0_152391_000_0001_2026_02_19_07_03_07_tune.nc",
+          "2025-C1-COM-01/data/toltec0_152391_000_0001_2026_02_19_07_03_07_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          152391,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec1_152391_000_0001_2026_02_19_07_03_07_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec1_152391_000_0001_2026_02_19_07_03_07_tune.nc",
+          "2025-C1-COM-01/data/toltec1_152391_000_0001_2026_02_19_07_03_07_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          152391,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec2_152391_000_0001_2026_02_19_07_03_07_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec2_152391_000_0001_2026_02_19_07_03_07_tune.nc",
+          "2025-C1-COM-01/data/toltec2_152391_000_0001_2026_02_19_07_03_07_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          152391,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec3_152391_000_0001_2026_02_19_07_03_07_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec3_152391_000_0001_2026_02_19_07_03_07_tune.nc",
+          "2025-C1-COM-01/data/toltec3_152391_000_0001_2026_02_19_07_03_07_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          152391,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec4_152391_000_0001_2026_02_19_07_03_07_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec4_152391_000_0001_2026_02_19_07_03_07_tune.nc",
+          "2025-C1-COM-01/data/toltec4_152391_000_0001_2026_02_19_07_03_07_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          152391,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec5_152391_000_0001_2026_02_19_07_03_07_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec5_152391_000_0001_2026_02_19_07_03_07_tune.nc",
+          "2025-C1-COM-01/data/toltec5_152391_000_0001_2026_02_19_07_03_07_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          152391,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec7_152391_000_0001_2026_02_19_07_03_07_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec7_152391_000_0001_2026_02_19_07_03_07_tune.nc",
+          "2025-C1-COM-01/data/toltec7_152391_000_0001_2026_02_19_07_03_07_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          152391,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec8_152391_000_0001_2026_02_19_07_03_07_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec8_152391_000_0001_2026_02_19_07_03_07_tune.nc",
+          "2025-C1-COM-01/data/toltec8_152391_000_0001_2026_02_19_07_03_07_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          152391,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec9_152391_000_0001_2026_02_19_07_03_07_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec9_152391_000_0001_2026_02_19_07_03_07_tune.nc",
+          "2025-C1-COM-01/data/toltec9_152391_000_0001_2026_02_19_07_03_07_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          152391,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec11_152391_000_0001_2026_02_19_07_03_07_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec11_152391_000_0001_2026_02_19_07_03_07_tune.nc",
+          "2025-C1-COM-01/data/toltec11_152391_000_0001_2026_02_19_07_03_07_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          152391,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec12_152391_000_0001_2026_02_19_07_03_07_tune.nc",
+          "citlali-validation/v1/SCI_ALIGN_STAGE7_NGC4449_152390/data/toltec12_152391_000_0001_2026_02_19_07_03_07_tune.nc",
+          "2025-C1-COM-01/data/toltec12_152391_000_0001_2026_02_19_07_03_07_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      15295
+    ],
+    "copies": 33,
+    "unique_raw_bytes": 348370280,
+    "sample_count_range": [
+      7787,
+      7788
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1771484670.286703,
+          1771484734.0696595
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1771484670.2837179,
+          1771484734.0743873
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1771484670.2863708,
+          1771484734.0774827
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1771484670.2901542,
+          1771484734.0730362
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1771484670.2908077,
+          1771484734.0737047
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1771484670.2897756,
+          1771484734.0726442
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1771484670.2872152,
+          1771484734.0782683
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1771484670.2895474,
+          1771484734.0724614
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1771484670.2907302,
+          1771484734.0735757
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1771484670.2841387,
+          1771484734.07525
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1771484670.2874622,
+          1771484734.0704036
+        ]
+      }
+    },
+    "selected_paths": [
+      "citlali-validation/v1/science/data/toltec0_152391_000_0002_2026_02_19_07_04_15.nc",
+      "citlali-validation/v1/science/data/toltec1_152391_000_0002_2026_02_19_07_04_15.nc",
+      "citlali-validation/v1/science/data/toltec2_152391_000_0002_2026_02_19_07_04_15.nc",
+      "citlali-validation/v1/science/data/toltec3_152391_000_0002_2026_02_19_07_04_15.nc",
+      "citlali-validation/v1/science/data/toltec4_152391_000_0002_2026_02_19_07_04_15.nc",
+      "citlali-validation/v1/science/data/toltec5_152391_000_0002_2026_02_19_07_04_15.nc",
+      "citlali-validation/v1/science/data/toltec7_152391_000_0002_2026_02_19_07_04_15.nc",
+      "citlali-validation/v1/science/data/toltec8_152391_000_0002_2026_02_19_07_04_15.nc",
+      "citlali-validation/v1/science/data/toltec9_152391_000_0002_2026_02_19_07_04_15.nc",
+      "citlali-validation/v1/science/data/toltec11_152391_000_0002_2026_02_19_07_04_15.nc",
+      "citlali-validation/v1/science/data/toltec12_152391_000_0002_2026_02_19_07_04_15.nc"
+    ]
+  },
+  {
+    "identity": [
+      152392,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          152392,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec0_152392_000_0001_2026_02_19_07_08_51_tune.nc",
+          "2025-C1-COM-01/data/toltec0_152392_000_0001_2026_02_19_07_08_51_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          152392,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec1_152392_000_0001_2026_02_19_07_08_51_tune.nc",
+          "2025-C1-COM-01/data/toltec1_152392_000_0001_2026_02_19_07_08_51_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          152392,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec2_152392_000_0001_2026_02_19_07_08_51_tune.nc",
+          "2025-C1-COM-01/data/toltec2_152392_000_0001_2026_02_19_07_08_51_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          152392,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec3_152392_000_0001_2026_02_19_07_08_51_tune.nc",
+          "2025-C1-COM-01/data/toltec3_152392_000_0001_2026_02_19_07_08_51_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          152392,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec4_152392_000_0001_2026_02_19_07_08_51_tune.nc",
+          "2025-C1-COM-01/data/toltec4_152392_000_0001_2026_02_19_07_08_51_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          152392,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec5_152392_000_0001_2026_02_19_07_08_51_tune.nc",
+          "2025-C1-COM-01/data/toltec5_152392_000_0001_2026_02_19_07_08_51_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          152392,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec7_152392_000_0001_2026_02_19_07_08_51_tune.nc",
+          "2025-C1-COM-01/data/toltec7_152392_000_0001_2026_02_19_07_08_51_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          152392,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec8_152392_000_0001_2026_02_19_07_08_51_tune.nc",
+          "2025-C1-COM-01/data/toltec8_152392_000_0001_2026_02_19_07_08_51_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          152392,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec9_152392_000_0001_2026_02_19_07_08_51_tune.nc",
+          "2025-C1-COM-01/data/toltec9_152392_000_0001_2026_02_19_07_08_51_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          152392,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec11_152392_000_0001_2026_02_19_07_08_51_tune.nc",
+          "2025-C1-COM-01/data/toltec11_152392_000_0001_2026_02_19_07_08_51_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          152392,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec12_152392_000_0001_2026_02_19_07_08_51_tune.nc",
+          "2025-C1-COM-01/data/toltec12_152392_000_0001_2026_02_19_07_08_51_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      15295
+    ],
+    "copies": 22,
+    "unique_raw_bytes": 6775377800,
+    "sample_count_range": [
+      151942,
+      151943
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1771485006.0134804,
+          1771486250.7223442
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1771485006.0151646,
+          1771486250.7240517
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1771485006.024214,
+          1771486250.7248662
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1771485006.0208454,
+          1771486250.7216132
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1771485006.0187845,
+          1771486250.7195032
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1771485006.0196972,
+          1771486250.7203817
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1771485006.0157864,
+          1771486250.7247274
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1771485006.0198994,
+          1771486250.720587
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1771485006.0187066,
+          1771486250.7195044
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1771485006.019618,
+          1771486250.720378
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1771485006.0164926,
+          1771486250.7254612
+        ]
+      }
+    },
+    "selected_paths": [
+      "citlali-validation/v1/science/data/toltec0_152392_000_0002_2026_02_19_07_09_55.nc",
+      "citlali-validation/v1/science/data/toltec1_152392_000_0002_2026_02_19_07_09_55.nc",
+      "citlali-validation/v1/science/data/toltec2_152392_000_0002_2026_02_19_07_09_55.nc",
+      "citlali-validation/v1/science/data/toltec3_152392_000_0002_2026_02_19_07_09_55.nc",
+      "citlali-validation/v1/science/data/toltec4_152392_000_0002_2026_02_19_07_09_55.nc",
+      "citlali-validation/v1/science/data/toltec5_152392_000_0002_2026_02_19_07_09_55.nc",
+      "citlali-validation/v1/science/data/toltec7_152392_000_0002_2026_02_19_07_09_55.nc",
+      "citlali-validation/v1/science/data/toltec8_152392_000_0002_2026_02_19_07_09_55.nc",
+      "citlali-validation/v1/science/data/toltec9_152392_000_0002_2026_02_19_07_09_55.nc",
+      "citlali-validation/v1/science/data/toltec11_152392_000_0002_2026_02_19_07_09_55.nc",
+      "citlali-validation/v1/science/data/toltec12_152392_000_0002_2026_02_19_07_09_55.nc"
+    ]
+  },
+  {
+    "identity": [
+      152393,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          152393,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec0_152393_000_0001_2026_02_19_07_32_33_tune.nc",
+          "2025-C1-COM-01/data/toltec0_152393_000_0001_2026_02_19_07_32_33_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          152393,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec1_152393_000_0001_2026_02_19_07_32_33_tune.nc",
+          "2025-C1-COM-01/data/toltec1_152393_000_0001_2026_02_19_07_32_33_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          152393,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec2_152393_000_0001_2026_02_19_07_32_33_tune.nc",
+          "2025-C1-COM-01/data/toltec2_152393_000_0001_2026_02_19_07_32_33_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          152393,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec3_152393_000_0001_2026_02_19_07_32_33_tune.nc",
+          "2025-C1-COM-01/data/toltec3_152393_000_0001_2026_02_19_07_32_33_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          152393,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec4_152393_000_0001_2026_02_19_07_32_33_tune.nc",
+          "2025-C1-COM-01/data/toltec4_152393_000_0001_2026_02_19_07_32_33_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          152393,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec5_152393_000_0001_2026_02_19_07_32_33_tune.nc",
+          "2025-C1-COM-01/data/toltec5_152393_000_0001_2026_02_19_07_32_33_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          152393,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec7_152393_000_0001_2026_02_19_07_32_33_tune.nc",
+          "2025-C1-COM-01/data/toltec7_152393_000_0001_2026_02_19_07_32_33_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          152393,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec8_152393_000_0001_2026_02_19_07_32_33_tune.nc",
+          "2025-C1-COM-01/data/toltec8_152393_000_0001_2026_02_19_07_32_33_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          152393,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec9_152393_000_0001_2026_02_19_07_32_33_tune.nc",
+          "2025-C1-COM-01/data/toltec9_152393_000_0001_2026_02_19_07_32_33_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          152393,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec11_152393_000_0001_2026_02_19_07_32_33_tune.nc",
+          "2025-C1-COM-01/data/toltec11_152393_000_0001_2026_02_19_07_32_33_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          152393,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "citlali-validation/v1/science/data/toltec12_152393_000_0001_2026_02_19_07_32_33_tune.nc",
+          "2025-C1-COM-01/data/toltec12_152393_000_0001_2026_02_19_07_32_33_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      15295
+    ],
+    "copies": 22,
+    "unique_raw_bytes": 349074800,
+    "sample_count_range": [
+      7802,
+      7804
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1771486424.0314212,
+          1771486487.9453971
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1771486424.0340319,
+          1771486487.9480076
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1771486424.0362828,
+          1771486487.9419858
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1771486424.0372164,
+          1771486487.9515305
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1771486424.0381474,
+          1771486487.9440079
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1771486424.0336468,
+          1771486487.9476652
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1771486424.0278854,
+          1771486487.950042
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1771486424.0336637,
+          1771486487.955828
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1771486424.0306332,
+          1771486487.9528718
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1771486424.0337353,
+          1771486487.9477246
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1771486424.0327506,
+          1771486487.9549375
+        ]
+      }
+    },
+    "selected_paths": [
+      "citlali-validation/v1/science/data/toltec0_152393_000_0002_2026_02_19_07_33_38.nc",
+      "citlali-validation/v1/science/data/toltec1_152393_000_0002_2026_02_19_07_33_38.nc",
+      "citlali-validation/v1/science/data/toltec2_152393_000_0002_2026_02_19_07_33_38.nc",
+      "citlali-validation/v1/science/data/toltec3_152393_000_0002_2026_02_19_07_33_38.nc",
+      "citlali-validation/v1/science/data/toltec4_152393_000_0002_2026_02_19_07_33_38.nc",
+      "citlali-validation/v1/science/data/toltec5_152393_000_0002_2026_02_19_07_33_38.nc",
+      "citlali-validation/v1/science/data/toltec7_152393_000_0002_2026_02_19_07_33_38.nc",
+      "citlali-validation/v1/science/data/toltec8_152393_000_0002_2026_02_19_07_33_38.nc",
+      "citlali-validation/v1/science/data/toltec9_152393_000_0002_2026_02_19_07_33_38.nc",
+      "citlali-validation/v1/science/data/toltec11_152393_000_0002_2026_02_19_07_33_38.nc",
+      "citlali-validation/v1/science/data/toltec12_152393_000_0002_2026_02_19_07_33_38.nc"
+    ]
+  },
+  {
+    "identity": [
+      152398,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          152398,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec0_152398_000_0001_2026_02_19_07_48_19_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          152398,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec1_152398_000_0001_2026_02_19_07_48_19_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          152398,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec2_152398_000_0001_2026_02_19_07_48_19_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          152398,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec3_152398_000_0001_2026_02_19_07_48_19_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          152398,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec4_152398_000_0001_2026_02_19_07_48_19_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          152398,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec5_152398_000_0001_2026_02_19_07_48_19_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          152398,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec7_152398_000_0001_2026_02_19_07_48_19_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          152398,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec8_152398_000_0001_2026_02_19_07_48_19_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          152398,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec9_152398_000_0001_2026_02_19_07_48_19_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          152398,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec11_152398_000_0001_2026_02_19_07_48_19_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          152398,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec12_152398_000_0001_2026_02_19_07_48_19_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      15295
+    ],
+    "copies": 11,
+    "unique_raw_bytes": 357031440,
+    "sample_count_range": [
+      7981,
+      7982
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1771487370.926901,
+          1771487436.299397
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1771487370.925731,
+          1771487436.3061135
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1771487370.9244447,
+          1771487436.30477
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1771487370.9271123,
+          1771487436.299314
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1771487370.9206307,
+          1771487436.3010004
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1771487370.9228537,
+          1771487436.3031297
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1771487370.9198534,
+          1771487436.3001797
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1771487370.9204683,
+          1771487436.3008647
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1771487370.920856,
+          1771487436.3012192
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1771487370.9280007,
+          1771487436.3001997
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1771487370.92921,
+          1771487436.301374
+        ]
+      }
+    },
+    "selected_paths": [
+      "2025-C1-COM-01/data/toltec0_152398_000_0002_2026_02_19_07_49_25.nc",
+      "2025-C1-COM-01/data/toltec1_152398_000_0002_2026_02_19_07_49_25.nc",
+      "2025-C1-COM-01/data/toltec2_152398_000_0002_2026_02_19_07_49_25.nc",
+      "2025-C1-COM-01/data/toltec3_152398_000_0002_2026_02_19_07_49_25.nc",
+      "2025-C1-COM-01/data/toltec4_152398_000_0002_2026_02_19_07_49_25.nc",
+      "2025-C1-COM-01/data/toltec5_152398_000_0002_2026_02_19_07_49_25.nc",
+      "2025-C1-COM-01/data/toltec7_152398_000_0002_2026_02_19_07_49_25.nc",
+      "2025-C1-COM-01/data/toltec8_152398_000_0002_2026_02_19_07_49_25.nc",
+      "2025-C1-COM-01/data/toltec9_152398_000_0002_2026_02_19_07_49_25.nc",
+      "2025-C1-COM-01/data/toltec11_152398_000_0002_2026_02_19_07_49_25.nc",
+      "2025-C1-COM-01/data/toltec12_152398_000_0002_2026_02_19_07_49_25.nc"
+    ]
+  },
+  {
+    "identity": [
+      152403,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          152403,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec0_152403_000_0001_2026_02_19_08_04_05_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          152403,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec1_152403_000_0001_2026_02_19_08_04_05_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          152403,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec2_152403_000_0001_2026_02_19_08_04_05_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          152403,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec3_152403_000_0001_2026_02_19_08_04_05_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          152403,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec4_152403_000_0001_2026_02_19_08_04_05_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          152403,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec5_152403_000_0001_2026_02_19_08_04_05_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          152403,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec7_152403_000_0001_2026_02_19_08_04_05_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          152403,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec8_152403_000_0001_2026_02_19_08_04_05_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          152403,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec9_152403_000_0001_2026_02_19_08_04_05_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          152403,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec11_152403_000_0001_2026_02_19_08_04_05_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          152403,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec12_152403_000_0001_2026_02_19_08_04_05_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      15295
+    ],
+    "copies": 11,
+    "unique_raw_bytes": 347699552,
+    "sample_count_range": [
+      7771,
+      7773
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1771488326.9549518,
+          1771488390.6232333
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1771488326.9632406,
+          1771488390.6232553
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1771488326.9547918,
+          1771488390.6230178
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1771488326.9585662,
+          1771488390.6185737
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1771488326.9554725,
+          1771488390.623699
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1771488326.9608283,
+          1771488390.6208315
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1771488326.9644578,
+          1771488390.624498
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1771488326.9643059,
+          1771488390.6243227
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1771488326.9546216,
+          1771488390.6227887
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1771488326.9603527,
+          1771488390.620461
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1771488326.9646778,
+          1771488390.6165361
+        ]
+      }
+    },
+    "selected_paths": [
+      "2025-C1-COM-01/data/toltec0_152403_000_0002_2026_02_19_08_05_11.nc",
+      "2025-C1-COM-01/data/toltec1_152403_000_0002_2026_02_19_08_05_11.nc",
+      "2025-C1-COM-01/data/toltec2_152403_000_0002_2026_02_19_08_05_11.nc",
+      "2025-C1-COM-01/data/toltec3_152403_000_0002_2026_02_19_08_05_11.nc",
+      "2025-C1-COM-01/data/toltec4_152403_000_0002_2026_02_19_08_05_11.nc",
+      "2025-C1-COM-01/data/toltec5_152403_000_0002_2026_02_19_08_05_11.nc",
+      "2025-C1-COM-01/data/toltec7_152403_000_0002_2026_02_19_08_05_11.nc",
+      "2025-C1-COM-01/data/toltec8_152403_000_0002_2026_02_19_08_05_11.nc",
+      "2025-C1-COM-01/data/toltec9_152403_000_0002_2026_02_19_08_05_11.nc",
+      "2025-C1-COM-01/data/toltec11_152403_000_0002_2026_02_19_08_05_11.nc",
+      "2025-C1-COM-01/data/toltec12_152403_000_0002_2026_02_19_08_05_11.nc"
+    ]
+  },
+  {
+    "identity": [
+      152408,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          152408,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec0_152408_000_0001_2026_02_19_08_25_33_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          152408,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec1_152408_000_0001_2026_02_19_08_25_33_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          152408,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec2_152408_000_0001_2026_02_19_08_25_33_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          152408,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec3_152408_000_0001_2026_02_19_08_25_33_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          152408,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec4_152408_000_0001_2026_02_19_08_25_33_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          152408,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec5_152408_000_0001_2026_02_19_08_25_33_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          152408,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec7_152408_000_0001_2026_02_19_08_25_33_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          152408,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec8_152408_000_0001_2026_02_19_08_25_33_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          152408,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec9_152408_000_0001_2026_02_19_08_25_33_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          152408,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec11_152408_000_0001_2026_02_19_08_25_33_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          152408,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec12_152408_000_0001_2026_02_19_08_25_33_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      15295
+    ],
+    "copies": 11,
+    "unique_raw_bytes": 350797584,
+    "sample_count_range": [
+      7841,
+      7842
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1771489613.9795089,
+          1771489678.2047791
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1771489613.9770858,
+          1771489678.210462
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1771489613.9777188,
+          1771489678.2111263
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1771489613.9737787,
+          1771489678.2071888
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1771489613.9801831,
+          1771489678.2053933
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1771489613.9730265,
+          1771489678.2064867
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1771489613.9745436,
+          1771489678.2079873
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1771489613.9751344,
+          1771489678.208623
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1771489613.9775817,
+          1771489678.2110615
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1771489613.9752145,
+          1771489678.208706
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1771489613.9712806,
+          1771489678.2047176
+        ]
+      }
+    },
+    "selected_paths": [
+      "2025-C1-COM-01/data/toltec0_152408_000_0002_2026_02_19_08_26_39.nc",
+      "2025-C1-COM-01/data/toltec1_152408_000_0002_2026_02_19_08_26_39.nc",
+      "2025-C1-COM-01/data/toltec2_152408_000_0002_2026_02_19_08_26_39.nc",
+      "2025-C1-COM-01/data/toltec3_152408_000_0002_2026_02_19_08_26_39.nc",
+      "2025-C1-COM-01/data/toltec4_152408_000_0002_2026_02_19_08_26_39.nc",
+      "2025-C1-COM-01/data/toltec5_152408_000_0002_2026_02_19_08_26_39.nc",
+      "2025-C1-COM-01/data/toltec7_152408_000_0002_2026_02_19_08_26_39.nc",
+      "2025-C1-COM-01/data/toltec8_152408_000_0002_2026_02_19_08_26_39.nc",
+      "2025-C1-COM-01/data/toltec9_152408_000_0002_2026_02_19_08_26_39.nc",
+      "2025-C1-COM-01/data/toltec11_152408_000_0002_2026_02_19_08_26_39.nc",
+      "2025-C1-COM-01/data/toltec12_152408_000_0002_2026_02_19_08_26_39.nc"
+    ]
+  },
+  {
+    "identity": [
+      152413,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          152413,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec0_152413_000_0001_2026_02_19_08_43_46_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          152413,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec1_152413_000_0001_2026_02_19_08_43_46_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          152413,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec2_152413_000_0001_2026_02_19_08_43_46_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          152413,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec3_152413_000_0001_2026_02_19_08_43_46_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          152413,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec4_152413_000_0001_2026_02_19_08_43_46_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          152413,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec5_152413_000_0001_2026_02_19_08_43_46_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          152413,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec7_152413_000_0001_2026_02_19_08_43_46_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          152413,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec8_152413_000_0001_2026_02_19_08_43_46_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          152413,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec9_152413_000_0001_2026_02_19_08_43_46_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          152413,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec11_152413_000_0001_2026_02_19_08_43_46_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          152413,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec12_152413_000_0001_2026_02_19_08_43_46_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      15295
+    ],
+    "copies": 11,
+    "unique_raw_bytes": 350328432,
+    "sample_count_range": [
+      7831,
+      7832
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1771490699.2433302,
+          1771490763.3866096
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1771490699.2453086,
+          1771490763.3886302
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1771490699.2368379,
+          1771490763.3883777
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1771490699.2407267,
+          1771490763.3841414
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1771490699.239885,
+          1771490763.3832161
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1771490699.2360053,
+          1771490763.3875418
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1771490699.2422895,
+          1771490763.3856556
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1771490699.2448828,
+          1771490763.3881955
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1771490699.23832,
+          1771490763.38987
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1771490699.2440038,
+          1771490763.3872879
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1771490699.2408156,
+          1771490763.3842797
+        ]
+      }
+    },
+    "selected_paths": [
+      "2025-C1-COM-01/data/toltec0_152413_000_0002_2026_02_19_08_44_50.nc",
+      "2025-C1-COM-01/data/toltec1_152413_000_0002_2026_02_19_08_44_50.nc",
+      "2025-C1-COM-01/data/toltec2_152413_000_0002_2026_02_19_08_44_50.nc",
+      "2025-C1-COM-01/data/toltec3_152413_000_0002_2026_02_19_08_44_50.nc",
+      "2025-C1-COM-01/data/toltec4_152413_000_0002_2026_02_19_08_44_50.nc",
+      "2025-C1-COM-01/data/toltec5_152413_000_0002_2026_02_19_08_44_50.nc",
+      "2025-C1-COM-01/data/toltec7_152413_000_0002_2026_02_19_08_44_50.nc",
+      "2025-C1-COM-01/data/toltec8_152413_000_0002_2026_02_19_08_44_50.nc",
+      "2025-C1-COM-01/data/toltec9_152413_000_0002_2026_02_19_08_44_50.nc",
+      "2025-C1-COM-01/data/toltec11_152413_000_0002_2026_02_19_08_44_50.nc",
+      "2025-C1-COM-01/data/toltec12_152413_000_0002_2026_02_19_08_44_50.nc"
+    ]
+  },
+  {
+    "identity": [
+      152418,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          152418,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec0_152418_000_0001_2026_02_19_08_59_26_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          152418,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec1_152418_000_0001_2026_02_19_08_59_26_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          152418,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec2_152418_000_0001_2026_02_19_08_59_26_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          152418,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec3_152418_000_0001_2026_02_19_08_59_26_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          152418,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec4_152418_000_0001_2026_02_19_08_59_26_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          152418,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec5_152418_000_0001_2026_02_19_08_59_26_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          152418,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec7_152418_000_0001_2026_02_19_08_59_26_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          152418,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec8_152418_000_0001_2026_02_19_08_59_26_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          152418,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec9_152418_000_0001_2026_02_19_08_59_26_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          152418,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec11_152418_000_0001_2026_02_19_08_59_26_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          152418,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec12_152418_000_0001_2026_02_19_08_59_26_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      15295
+    ],
+    "copies": 11,
+    "unique_raw_bytes": 352433192,
+    "sample_count_range": [
+      7878,
+      7879
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1771491645.5551934,
+          1771491710.0917454
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1771491645.5533526,
+          1771491710.0902994
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1771491645.5533087,
+          1771491710.0898921
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1771491645.557652,
+          1771491710.0859878
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1771491645.5557659,
+          1771491710.0923295
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1771491645.5590506,
+          1771491710.0874321
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1771491645.557231,
+          1771491710.0856097
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1771491645.5536416,
+          1771491710.0902267
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1771491645.5561876,
+          1771491710.0845702
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1771491645.5591512,
+          1771491710.087571
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1771491645.5578997,
+          1771491710.0862956
+        ]
+      }
+    },
+    "selected_paths": [
+      "2025-C1-COM-01/data/toltec0_152418_000_0002_2026_02_19_09_00_31.nc",
+      "2025-C1-COM-01/data/toltec1_152418_000_0002_2026_02_19_09_00_31.nc",
+      "2025-C1-COM-01/data/toltec2_152418_000_0002_2026_02_19_09_00_31.nc",
+      "2025-C1-COM-01/data/toltec3_152418_000_0002_2026_02_19_09_00_31.nc",
+      "2025-C1-COM-01/data/toltec4_152418_000_0002_2026_02_19_09_00_31.nc",
+      "2025-C1-COM-01/data/toltec5_152418_000_0002_2026_02_19_09_00_31.nc",
+      "2025-C1-COM-01/data/toltec7_152418_000_0002_2026_02_19_09_00_31.nc",
+      "2025-C1-COM-01/data/toltec8_152418_000_0002_2026_02_19_09_00_31.nc",
+      "2025-C1-COM-01/data/toltec9_152418_000_0002_2026_02_19_09_00_31.nc",
+      "2025-C1-COM-01/data/toltec11_152418_000_0002_2026_02_19_09_00_31.nc",
+      "2025-C1-COM-01/data/toltec12_152418_000_0002_2026_02_19_09_00_31.nc"
+    ]
+  },
+  {
+    "identity": [
+      152419,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          152419,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec0_152419_000_0001_2026_02_19_09_09_20_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          152419,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec1_152419_000_0001_2026_02_19_09_09_20_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          152419,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec2_152419_000_0001_2026_02_19_09_09_20_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          152419,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec3_152419_000_0001_2026_02_19_09_09_20_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          152419,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec4_152419_000_0001_2026_02_19_09_09_20_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          152419,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec5_152419_000_0001_2026_02_19_09_09_20_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          152419,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec7_152419_000_0001_2026_02_19_09_09_20_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          152419,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec8_152419_000_0001_2026_02_19_09_09_20_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          152419,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec9_152419_000_0001_2026_02_19_09_09_20_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          152419,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec11_152419_000_0001_2026_02_19_09_09_20_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          152419,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec12_152419_000_0001_2026_02_19_09_09_20_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      15295
+    ],
+    "copies": 11,
+    "unique_raw_bytes": 6760871800,
+    "sample_count_range": [
+      151615,
+      151618
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1771492238.852898,
+          1771493480.8910923
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1771492238.8488462,
+          1771493480.8953354
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1771492238.8490448,
+          1771493480.8954468
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1771492238.849985,
+          1771493480.8882859
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1771492238.8550177,
+          1771493480.893316
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1771492238.8557825,
+          1771493480.885818
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1771492238.8508575,
+          1771493480.8973832
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1771492238.8564646,
+          1771493480.894673
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1771492238.8545487,
+          1771493480.892833
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1771492238.8566341,
+          1771493480.8948984
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1771492238.856005,
+          1771493480.8942401
+        ]
+      }
+    },
+    "selected_paths": [
+      "2025-C1-COM-01/data/toltec0_152419_000_0002_2026_02_19_09_10_25.nc",
+      "2025-C1-COM-01/data/toltec1_152419_000_0002_2026_02_19_09_10_25.nc",
+      "2025-C1-COM-01/data/toltec2_152419_000_0002_2026_02_19_09_10_25.nc",
+      "2025-C1-COM-01/data/toltec3_152419_000_0002_2026_02_19_09_10_25.nc",
+      "2025-C1-COM-01/data/toltec4_152419_000_0002_2026_02_19_09_10_25.nc",
+      "2025-C1-COM-01/data/toltec5_152419_000_0002_2026_02_19_09_10_25.nc",
+      "2025-C1-COM-01/data/toltec7_152419_000_0002_2026_02_19_09_10_25.nc",
+      "2025-C1-COM-01/data/toltec8_152419_000_0002_2026_02_19_09_10_25.nc",
+      "2025-C1-COM-01/data/toltec9_152419_000_0002_2026_02_19_09_10_25.nc",
+      "2025-C1-COM-01/data/toltec11_152419_000_0002_2026_02_19_09_10_25.nc",
+      "2025-C1-COM-01/data/toltec12_152419_000_0002_2026_02_19_09_10_25.nc"
+    ]
+  },
+  {
+    "identity": [
+      152420,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          152420,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec0_152420_000_0001_2026_02_19_09_32_42_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          152420,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec1_152420_000_0001_2026_02_19_09_32_42_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          152420,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec2_152420_000_0001_2026_02_19_09_32_42_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          152420,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec3_152420_000_0001_2026_02_19_09_32_42_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          152420,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec4_152420_000_0001_2026_02_19_09_32_42_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          152420,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec5_152420_000_0001_2026_02_19_09_32_42_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          152420,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec7_152420_000_0001_2026_02_19_09_32_42_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          152420,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec8_152420_000_0001_2026_02_19_09_32_42_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          152420,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec9_152420_000_0001_2026_02_19_09_32_42_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          152420,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec11_152420_000_0001_2026_02_19_09_32_42_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          152420,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec12_152420_000_0001_2026_02_19_09_32_42_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      15295
+    ],
+    "copies": 11,
+    "unique_raw_bytes": 344070848,
+    "sample_count_range": [
+      7690,
+      7691
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1771493634.8505065,
+          1771493697.8470187
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1771493634.8540578,
+          1771493697.850479
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1771493634.8521,
+          1771493697.8486032
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1771493634.8566926,
+          1771493697.8531032
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1771493634.8564136,
+          1771493697.8528728
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1771493634.8548522,
+          1771493697.85133
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1771493634.8599713,
+          1771493697.8563874
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1771493634.8575008,
+          1771493697.8539693
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1771493634.8572593,
+          1771493697.8536658
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1771493634.8586104,
+          1771493697.846958
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1771493634.8550498,
+          1771493697.8515368
+        ]
+      }
+    },
+    "selected_paths": [
+      "2025-C1-COM-01/data/toltec0_152420_000_0002_2026_02_19_09_33_45.nc",
+      "2025-C1-COM-01/data/toltec1_152420_000_0002_2026_02_19_09_33_45.nc",
+      "2025-C1-COM-01/data/toltec2_152420_000_0002_2026_02_19_09_33_45.nc",
+      "2025-C1-COM-01/data/toltec3_152420_000_0002_2026_02_19_09_33_45.nc",
+      "2025-C1-COM-01/data/toltec4_152420_000_0002_2026_02_19_09_33_45.nc",
+      "2025-C1-COM-01/data/toltec5_152420_000_0002_2026_02_19_09_33_45.nc",
+      "2025-C1-COM-01/data/toltec7_152420_000_0002_2026_02_19_09_33_45.nc",
+      "2025-C1-COM-01/data/toltec8_152420_000_0002_2026_02_19_09_33_45.nc",
+      "2025-C1-COM-01/data/toltec9_152420_000_0002_2026_02_19_09_33_45.nc",
+      "2025-C1-COM-01/data/toltec11_152420_000_0002_2026_02_19_09_33_45.nc",
+      "2025-C1-COM-01/data/toltec12_152420_000_0002_2026_02_19_09_33_45.nc"
+    ]
+  },
+  {
+    "identity": [
+      152425,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          152425,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec0_152425_000_0001_2026_02_19_09_49_57_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          152425,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec1_152425_000_0001_2026_02_19_09_49_57_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          152425,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec2_152425_000_0001_2026_02_19_09_49_57_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          152425,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec3_152425_000_0001_2026_02_19_09_49_57_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          152425,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec4_152425_000_0001_2026_02_19_09_49_57_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          152425,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec5_152425_000_0001_2026_02_19_09_49_57_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          152425,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec7_152425_000_0001_2026_02_19_09_49_57_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          152425,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec8_152425_000_0001_2026_02_19_09_49_57_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          152425,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec9_152425_000_0001_2026_02_19_09_49_57_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          152425,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec11_152425_000_0001_2026_02_19_09_49_57_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          152425,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec12_152425_000_0001_2026_02_19_09_49_57_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      15295
+    ],
+    "copies": 11,
+    "unique_raw_bytes": 342825224,
+    "sample_count_range": [
+      7662,
+      7664
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1771494670.3198357,
+          1771494733.0783553
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1771494670.3082862,
+          1771494733.0835202
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1771494670.3120818,
+          1771494733.079196
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1771494670.3127756,
+          1771494733.0799317
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1771494670.312657,
+          1771494733.0797658
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1771494670.3183863,
+          1771494733.077309
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1771494670.3151617,
+          1771494733.0822217
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1771494670.3117614,
+          1771494733.0871167
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1771494670.3156428,
+          1771494733.0826652
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1771494670.3152938,
+          1771494733.0824249
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1771494670.317027,
+          1771494733.0840814
+        ]
+      }
+    },
+    "selected_paths": [
+      "2025-C1-COM-01/data/toltec0_152425_000_0002_2026_02_19_09_51_02.nc",
+      "2025-C1-COM-01/data/toltec1_152425_000_0002_2026_02_19_09_51_02.nc",
+      "2025-C1-COM-01/data/toltec2_152425_000_0002_2026_02_19_09_51_02.nc",
+      "2025-C1-COM-01/data/toltec3_152425_000_0002_2026_02_19_09_51_02.nc",
+      "2025-C1-COM-01/data/toltec4_152425_000_0002_2026_02_19_09_51_02.nc",
+      "2025-C1-COM-01/data/toltec5_152425_000_0002_2026_02_19_09_51_02.nc",
+      "2025-C1-COM-01/data/toltec7_152425_000_0002_2026_02_19_09_51_02.nc",
+      "2025-C1-COM-01/data/toltec8_152425_000_0002_2026_02_19_09_51_02.nc",
+      "2025-C1-COM-01/data/toltec9_152425_000_0002_2026_02_19_09_51_02.nc",
+      "2025-C1-COM-01/data/toltec11_152425_000_0002_2026_02_19_09_51_02.nc",
+      "2025-C1-COM-01/data/toltec12_152425_000_0002_2026_02_19_09_51_02.nc"
+    ]
+  },
+  {
+    "identity": [
+      152430,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          152430,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec0_152430_000_0001_2026_02_19_10_06_46_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          152430,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec1_152430_000_0001_2026_02_19_10_06_46_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          152430,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec2_152430_000_0001_2026_02_19_10_06_46_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          152430,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec3_152430_000_0001_2026_02_19_10_06_46_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          152430,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec4_152430_000_0001_2026_02_19_10_06_46_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          152430,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec5_152430_000_0001_2026_02_19_10_06_46_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          152430,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec7_152430_000_0001_2026_02_19_10_06_46_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          152430,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec8_152430_000_0001_2026_02_19_10_06_46_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          152430,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec9_152430_000_0001_2026_02_19_10_06_46_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          152430,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec11_152430_000_0001_2026_02_19_10_06_46_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          152430,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec12_152430_000_0001_2026_02_19_10_06_46_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      15295
+    ],
+    "copies": 11,
+    "unique_raw_bytes": 349859016,
+    "sample_count_range": [
+      7820,
+      7821
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1771495682.2302787,
+          1771495746.291683
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1771495682.2323265,
+          1771495746.2855926
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1771495682.2321117,
+          1771495746.2935655
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1771495682.2321124,
+          1771495746.2934833
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1771495682.2295074,
+          1771495746.290911
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1771495682.2331119,
+          1771495746.294517
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1771495682.23194,
+          1771495746.2933521
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1771495682.2367182,
+          1771495746.2900324
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1771495682.2332792,
+          1771495746.2947364
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1771495682.2328935,
+          1771495746.294367
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1771495682.2379448,
+          1771495746.291233
+        ]
+      }
+    },
+    "selected_paths": [
+      "2025-C1-COM-01/data/toltec0_152430_000_0002_2026_02_19_10_07_51.nc",
+      "2025-C1-COM-01/data/toltec1_152430_000_0002_2026_02_19_10_07_51.nc",
+      "2025-C1-COM-01/data/toltec2_152430_000_0002_2026_02_19_10_07_51.nc",
+      "2025-C1-COM-01/data/toltec3_152430_000_0002_2026_02_19_10_07_51.nc",
+      "2025-C1-COM-01/data/toltec4_152430_000_0002_2026_02_19_10_07_51.nc",
+      "2025-C1-COM-01/data/toltec5_152430_000_0002_2026_02_19_10_07_51.nc",
+      "2025-C1-COM-01/data/toltec7_152430_000_0002_2026_02_19_10_07_51.nc",
+      "2025-C1-COM-01/data/toltec8_152430_000_0002_2026_02_19_10_07_51.nc",
+      "2025-C1-COM-01/data/toltec9_152430_000_0002_2026_02_19_10_07_51.nc",
+      "2025-C1-COM-01/data/toltec11_152430_000_0002_2026_02_19_10_07_51.nc",
+      "2025-C1-COM-01/data/toltec12_152430_000_0002_2026_02_19_10_07_51.nc"
+    ]
+  },
+  {
+    "identity": [
+      152431,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          152431,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec0_152431_000_0001_2026_02_19_10_13_05_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          152431,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec1_152431_000_0001_2026_02_19_10_13_05_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          152431,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec2_152431_000_0001_2026_02_19_10_13_05_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          152431,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec3_152431_000_0001_2026_02_19_10_13_05_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          152431,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec4_152431_000_0001_2026_02_19_10_13_05_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          152431,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec5_152431_000_0001_2026_02_19_10_13_05_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          152431,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec7_152431_000_0001_2026_02_19_10_13_05_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          152431,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec8_152431_000_0001_2026_02_19_10_13_05_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          152431,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec9_152431_000_0001_2026_02_19_10_13_05_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          152431,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec11_152431_000_0001_2026_02_19_10_13_05_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          152431,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec12_152431_000_0001_2026_02_19_10_13_05_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      15295
+    ],
+    "copies": 11,
+    "unique_raw_bytes": 6804386264,
+    "sample_count_range": [
+      152587,
+      152595
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1771496058.7105896,
+          1771497308.7443092
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1771496058.7138782,
+          1771497308.747836
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1771496058.7100189,
+          1771497308.743783
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1771496058.7136157,
+          1771497308.747297
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1771496058.7128026,
+          1771497308.7464404
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1771496058.7103589,
+          1771497308.7521906
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1771496058.7104807,
+          1771497308.7522845
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1771496058.7088723,
+          1771497308.7506928
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1771496058.7119665,
+          1771497308.7538018
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1771496058.708045,
+          1771497308.74997
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1771496058.7058504,
+          1771497308.755938
+        ]
+      }
+    },
+    "selected_paths": [
+      "2025-C1-COM-01/data/toltec0_152431_000_0002_2026_02_19_10_14_10.nc",
+      "2025-C1-COM-01/data/toltec1_152431_000_0002_2026_02_19_10_14_10.nc",
+      "2025-C1-COM-01/data/toltec2_152431_000_0002_2026_02_19_10_14_10.nc",
+      "2025-C1-COM-01/data/toltec3_152431_000_0002_2026_02_19_10_14_10.nc",
+      "2025-C1-COM-01/data/toltec4_152431_000_0002_2026_02_19_10_14_10.nc",
+      "2025-C1-COM-01/data/toltec5_152431_000_0002_2026_02_19_10_14_10.nc",
+      "2025-C1-COM-01/data/toltec7_152431_000_0002_2026_02_19_10_14_10.nc",
+      "2025-C1-COM-01/data/toltec8_152431_000_0002_2026_02_19_10_14_10.nc",
+      "2025-C1-COM-01/data/toltec9_152431_000_0002_2026_02_19_10_14_10.nc",
+      "2025-C1-COM-01/data/toltec11_152431_000_0002_2026_02_19_10_14_10.nc",
+      "2025-C1-COM-01/data/toltec12_152431_000_0002_2026_02_19_10_14_10.nc"
+    ]
+  },
+  {
+    "identity": [
+      152432,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          152432,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec0_152432_000_0001_2026_02_19_10_36_50_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          152432,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec1_152432_000_0001_2026_02_19_10_36_50_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          152432,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec2_152432_000_0001_2026_02_19_10_36_50_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          152432,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec3_152432_000_0001_2026_02_19_10_36_50_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          152432,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec4_152432_000_0001_2026_02_19_10_36_50_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          152432,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec5_152432_000_0001_2026_02_19_10_36_50_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          152432,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec7_152432_000_0001_2026_02_19_10_36_50_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          152432,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec8_152432_000_0001_2026_02_19_10_36_50_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          152432,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec9_152432_000_0001_2026_02_19_10_36_50_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          152432,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec11_152432_000_0001_2026_02_19_10_36_50_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          152432,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec12_152432_000_0001_2026_02_19_10_36_50_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      15295
+    ],
+    "copies": 11,
+    "unique_raw_bytes": 348842264,
+    "sample_count_range": [
+      7797,
+      7799
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1771497482.0560987,
+          1771497545.9291596
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1771497482.0600948,
+          1771497545.9331002
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1771497482.0541635,
+          1771497545.9353626
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1771497482.0608616,
+          1771497545.9338458
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1771497482.0608053,
+          1771497545.9337652
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1771497482.0614998,
+          1771497545.934533
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1771497482.0645356,
+          1771497545.9292946
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1771497482.0608578,
+          1771497545.925682
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1771497482.062906,
+          1771497545.9358847
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1771497482.0578966,
+          1771497545.9309375
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1771497482.0583243,
+          1771497545.9313812
+        ]
+      }
+    },
+    "selected_paths": [
+      "2025-C1-COM-01/data/toltec0_152432_000_0002_2026_02_19_10_37_54.nc",
+      "2025-C1-COM-01/data/toltec1_152432_000_0002_2026_02_19_10_37_54.nc",
+      "2025-C1-COM-01/data/toltec2_152432_000_0002_2026_02_19_10_37_54.nc",
+      "2025-C1-COM-01/data/toltec3_152432_000_0002_2026_02_19_10_37_54.nc",
+      "2025-C1-COM-01/data/toltec4_152432_000_0002_2026_02_19_10_37_54.nc",
+      "2025-C1-COM-01/data/toltec5_152432_000_0002_2026_02_19_10_37_54.nc",
+      "2025-C1-COM-01/data/toltec7_152432_000_0002_2026_02_19_10_37_54.nc",
+      "2025-C1-COM-01/data/toltec8_152432_000_0002_2026_02_19_10_37_54.nc",
+      "2025-C1-COM-01/data/toltec9_152432_000_0002_2026_02_19_10_37_54.nc",
+      "2025-C1-COM-01/data/toltec11_152432_000_0002_2026_02_19_10_37_54.nc",
+      "2025-C1-COM-01/data/toltec12_152432_000_0002_2026_02_19_10_37_54.nc"
+    ]
+  },
+  {
+    "identity": [
+      152433,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          152433,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec0_152433_000_0001_2026_02_19_10_45_27_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          152433,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec1_152433_000_0001_2026_02_19_10_45_27_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          152433,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec2_152433_000_0001_2026_02_19_10_45_27_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          152433,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec3_152433_000_0001_2026_02_19_10_45_27_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          152433,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec4_152433_000_0001_2026_02_19_10_45_27_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          152433,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec5_152433_000_0001_2026_02_19_10_45_27_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          152433,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec7_152433_000_0001_2026_02_19_10_45_27_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          152433,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec8_152433_000_0001_2026_02_19_10_45_27_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          152433,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec9_152433_000_0001_2026_02_19_10_45_27_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          152433,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec11_152433_000_0001_2026_02_19_10_45_27_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          152433,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec12_152433_000_0001_2026_02_19_10_45_27_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      15295
+    ],
+    "copies": 11,
+    "unique_raw_bytes": 6764634704,
+    "sample_count_range": [
+      151696,
+      151703
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1771498002.0590887,
+          1771499244.7936697
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1771498002.0638602,
+          1771499244.7902675
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1771498002.0530343,
+          1771499244.795876
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1771498002.060203,
+          1771499244.7866156
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1771498002.0558805,
+          1771499244.7904892
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1771498002.060858,
+          1771499244.7954023
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1771498002.057726,
+          1771499244.792389
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1771498002.058314,
+          1771499244.7929726
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1771498002.056908,
+          1771499244.791564
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1771498002.0561705,
+          1771499244.7908075
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1771498002.0617626,
+          1771499244.7963355
+        ]
+      }
+    },
+    "selected_paths": [
+      "2025-C1-COM-01/data/toltec0_152433_000_0002_2026_02_19_10_46_29.nc",
+      "2025-C1-COM-01/data/toltec1_152433_000_0002_2026_02_19_10_46_29.nc",
+      "2025-C1-COM-01/data/toltec2_152433_000_0002_2026_02_19_10_46_29.nc",
+      "2025-C1-COM-01/data/toltec3_152433_000_0002_2026_02_19_10_46_29.nc",
+      "2025-C1-COM-01/data/toltec4_152433_000_0002_2026_02_19_10_46_29.nc",
+      "2025-C1-COM-01/data/toltec5_152433_000_0002_2026_02_19_10_46_29.nc",
+      "2025-C1-COM-01/data/toltec7_152433_000_0002_2026_02_19_10_46_29.nc",
+      "2025-C1-COM-01/data/toltec8_152433_000_0002_2026_02_19_10_46_29.nc",
+      "2025-C1-COM-01/data/toltec9_152433_000_0002_2026_02_19_10_46_29.nc",
+      "2025-C1-COM-01/data/toltec11_152433_000_0002_2026_02_19_10_46_29.nc",
+      "2025-C1-COM-01/data/toltec12_152433_000_0002_2026_02_19_10_46_29.nc"
+    ]
+  },
+  {
+    "identity": [
+      152434,
+      0,
+      2
+    ],
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "tune_associations": {
+      "0": {
+        "target_id": [
+          152434,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec0_152434_000_0001_2026_02_19_11_08_24_tune.nc"
+        ]
+      },
+      "1": {
+        "target_id": [
+          152434,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec1_152434_000_0001_2026_02_19_11_08_24_tune.nc"
+        ]
+      },
+      "2": {
+        "target_id": [
+          152434,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec2_152434_000_0001_2026_02_19_11_08_24_tune.nc"
+        ]
+      },
+      "3": {
+        "target_id": [
+          152434,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec3_152434_000_0001_2026_02_19_11_08_24_tune.nc"
+        ]
+      },
+      "4": {
+        "target_id": [
+          152434,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec4_152434_000_0001_2026_02_19_11_08_24_tune.nc"
+        ]
+      },
+      "5": {
+        "target_id": [
+          152434,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec5_152434_000_0001_2026_02_19_11_08_24_tune.nc"
+        ]
+      },
+      "7": {
+        "target_id": [
+          152434,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec7_152434_000_0001_2026_02_19_11_08_24_tune.nc"
+        ]
+      },
+      "8": {
+        "target_id": [
+          152434,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec8_152434_000_0001_2026_02_19_11_08_24_tune.nc"
+        ]
+      },
+      "9": {
+        "target_id": [
+          152434,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec9_152434_000_0001_2026_02_19_11_08_24_tune.nc"
+        ]
+      },
+      "11": {
+        "target_id": [
+          152434,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec11_152434_000_0001_2026_02_19_11_08_24_tune.nc"
+        ]
+      },
+      "12": {
+        "target_id": [
+          152434,
+          0,
+          1
+        ],
+        "raw_tune_paths": [
+          "2025-C1-COM-01/data/toltec12_152434_000_0001_2026_02_19_11_08_24_tune.nc"
+        ]
+      }
+    },
+    "raw_tune_missing_networks": [],
+    "masks": [
+      15295
+    ],
+    "copies": 11,
+    "unique_raw_bytes": 351799768,
+    "sample_count_range": [
+      7864,
+      7865
+    ],
+    "time_endpoints": {
+      "0": {
+        "Data.Toltec.RecvTime": [
+          1771499381.3841796,
+          1771499445.7979333
+        ]
+      },
+      "1": {
+        "Data.Toltec.RecvTime": [
+          1771499381.3880525,
+          1771499445.8016992
+        ]
+      },
+      "2": {
+        "Data.Toltec.RecvTime": [
+          1771499381.3841612,
+          1771499445.798139
+        ]
+      },
+      "3": {
+        "Data.Toltec.RecvTime": [
+          1771499381.3855908,
+          1771499445.7992609
+        ]
+      },
+      "4": {
+        "Data.Toltec.RecvTime": [
+          1771499381.3809223,
+          1771499445.8028233
+        ]
+      },
+      "5": {
+        "Data.Toltec.RecvTime": [
+          1771499381.3872344,
+          1771499445.8009052
+        ]
+      },
+      "7": {
+        "Data.Toltec.RecvTime": [
+          1771499381.38085,
+          1771499445.794543
+        ]
+      },
+      "8": {
+        "Data.Toltec.RecvTime": [
+          1771499381.3828714,
+          1771499445.8047702
+        ]
+      },
+      "9": {
+        "Data.Toltec.RecvTime": [
+          1771499381.3796194,
+          1771499445.8015192
+        ]
+      },
+      "11": {
+        "Data.Toltec.RecvTime": [
+          1771499381.3860323,
+          1771499445.7997708
+        ]
+      },
+      "12": {
+        "Data.Toltec.RecvTime": [
+          1771499381.38462,
+          1771499445.7983267
+        ]
+      }
+    },
+    "selected_paths": [
+      "2025-C1-COM-01/data/toltec0_152434_000_0002_2026_02_19_11_09_29.nc",
+      "2025-C1-COM-01/data/toltec1_152434_000_0002_2026_02_19_11_09_29.nc",
+      "2025-C1-COM-01/data/toltec2_152434_000_0002_2026_02_19_11_09_29.nc",
+      "2025-C1-COM-01/data/toltec3_152434_000_0002_2026_02_19_11_09_29.nc",
+      "2025-C1-COM-01/data/toltec4_152434_000_0002_2026_02_19_11_09_29.nc",
+      "2025-C1-COM-01/data/toltec5_152434_000_0002_2026_02_19_11_09_29.nc",
+      "2025-C1-COM-01/data/toltec7_152434_000_0002_2026_02_19_11_09_29.nc",
+      "2025-C1-COM-01/data/toltec8_152434_000_0002_2026_02_19_11_09_29.nc",
+      "2025-C1-COM-01/data/toltec9_152434_000_0002_2026_02_19_11_09_29.nc",
+      "2025-C1-COM-01/data/toltec11_152434_000_0002_2026_02_19_11_09_29.nc",
+      "2025-C1-COM-01/data/toltec12_152434_000_0002_2026_02_19_11_09_29.nc"
+    ]
+  }
+]

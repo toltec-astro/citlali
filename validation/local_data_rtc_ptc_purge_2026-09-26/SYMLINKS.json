@@ -1,0 +1,82 @@
+[
+  {
+    "path": "2025-C1-COM-04/GOODS-N/.#70_reduce.yaml",
+    "target": "gwilson@vl965-172-31-120-183.wireless.umass.edu.2074822878979409499"
+  },
+  {
+    "path": "focus/fg_129234/70_reduce.yaml",
+    "target": "/work/toltec/commissioning2025-C1/focus/wilson/01_scripts/70_reduce_me.yaml"
+  },
+  {
+    "path": "2026-ENG-citlali-MAP/SCI-MAP-001-SCIENCE-SOURCE/apts",
+    "target": "../apts"
+  },
+  {
+    "path": "2026-ENG-citlali-MAP/SCI-MAP-001-SCIENCE-SOURCE/data",
+    "target": "../data"
+  },
+  {
+    "path": "2026-ENG-citlali-MAP/apts",
+    "target": "/home/toltec_umass_edu/c2025t/2025-C1-COM-01/apts"
+  },
+  {
+    "path": "2026-ENG-citlali-MAP/naive-n-jinc/naive/SCI-MAP-001-SCIENCE-SOURCE/apts",
+    "target": "/home/toltec_umass_edu/c2025t/2025-C1-COM-01/apts"
+  },
+  {
+    "path": "2026-ENG-citlali-MAP/naive-n-jinc/naive/SCI-MAP-001-SCIENCE-SOURCE/data",
+    "target": "/home/toltec_umass_edu/c2025t/2025-C1-COM-01/data"
+  },
+  {
+    "path": "2026-ENG-citlali-MAP/naive-n-jinc/naive/SCI-MAP-001-POINT-SOURCE/apts",
+    "target": "/home/toltec_umass_edu/c2025t/2025-C1-COM-01/apts"
+  },
+  {
+    "path": "2026-ENG-citlali-MAP/naive-n-jinc/naive/SCI-MAP-001-POINT-SOURCE/data",
+    "target": "/home/toltec_umass_edu/c2025t/2025-C1-COM-01/data"
+  },
+  {
+    "path": "2026-ENG-citlali-MAP/data",
+    "target": "/home/toltec_umass_edu/c2025t/2025-C1-COM-01/data"
+  },
+  {
+    "path": "2026-ENG-citlali-MAP/SCI-MAP-001-POINT-SOURCE/apts",
+    "target": "../apts"
+  },
+  {
+    "path": "2026-ENG-citlali-MAP/SCI-MAP-001-POINT-SOURCE/data",
+    "target": "../data"
+  },
+  {
+    "path": "OOF/ooftest/LMTOOF",
+    "target": "/work/toltec/toltec_shared/lmt/LMTOOF"
+  },
+  {
+    "path": "OOF/ooftest/LMTOOF.dev",
+    "target": "/work/toltec/toltec_shared/lmt/LMTOOF.dev"
+  },
+  {
+    "path": "2025-C1-COM-01/NGC4449-student-guarded-20260729/.#82_science_products.yaml",
+    "target": "toltec_umass_edu@toltec-cpu001.2140439:1782234434"
+  },
+  {
+    "path": "2026-refactor/v1/science/data",
+    "target": "../../2025-C1-COM-01/data"
+  },
+  {
+    "path": "fruit-development/fruit-el-f6-off-source-penalty-counterfactual-r0.1/untouched-injected-sham/reduced/redu05",
+    "target": "redu00"
+  },
+  {
+    "path": "fruit-development/fruit-el-f6-off-source-penalty-counterfactual-r0.1/injected-without-uid4460/reduced/redu05",
+    "target": "redu00"
+  },
+  {
+    "path": "fruit-development/point-123424/fruit-injection-development/el-f3-penalty-counterfactual-r0.1/control-sham/reduced/redu05",
+    "target": "redu00"
+  },
+  {
+    "path": "fruit-development/point-123424/fruit-injection-development/el-f3-penalty-counterfactual-r0.1/injected-without-uid4460/reduced/redu05",
+    "target": "redu00"
+  }
+]

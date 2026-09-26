@@ -1,0 +1,31 @@
+{
+  "status": "pass",
+  "record_paths": 87940,
+  "unique_record_payloads": 71969,
+  "all_original_record_hashes_verified": true,
+  "archive_sha256": "5c628d1c842080eba4bed174dc5ded454419456816a6717d87e20819e0e26b24",
+  "parts": [
+    {
+      "path": "RECOVERY_RECORDS.tar.gz.part00",
+      "bytes": 50331648,
+      "sha256": "76e34beff85a95c677e2ae1bd32865eecdd0a6c05af8270666956d50766785f5"
+    },
+    {
+      "path": "RECOVERY_RECORDS.tar.gz.part01",
+      "bytes": 50331648,
+      "sha256": "7b69670c839b627b9c765ebf7234a939ac781081f7822825bcb2c9bfe5796a30"
+    },
+    {
+      "path": "RECOVERY_RECORDS.tar.gz.part02",
+      "bytes": 50331648,
+      "sha256": "f44a98c7dc67fae7f6e44027ebc98ffd0ef0ddd04851242cabe6bedf3dc2e191"
+    },
+    {
+      "path": "RECOVERY_RECORDS.tar.gz.part03",
+      "bytes": 33024181,
+      "sha256": "b277ccdc17d1c5d7e21211592bdfe8af98d6793e80e4c03825ea8bcf46dcf15b"
+    }
+  ],
+  "seconds": 2.8394798329973128,
+  "reassemble": "Concatenate parts in numeric order; original tar member sha256/<digest> is mapped to each relative local_data path by RECOVERY_RECORD_INDEX.json.gz. Do not extract into local_data automatically."
+}

@@ -1,0 +1,456 @@
+[
+  {
+    "identity": [
+      123424,
+      0,
+      2
+    ],
+    "original_telescope_count": 0,
+    "telescope_ranges": [],
+    "network_time_start_spread_sec": 0.008620738983154297,
+    "network_time_end_spread_sec": 0.012670278549194336,
+    "all_network_time_endpoints_within_any_original_telescope_range": false
+  },
+  {
+    "identity": [
+      148669,
+      0,
+      2
+    ],
+    "original_telescope_count": 1,
+    "telescope_ranges": [
+      [
+        1768305128.5288517,
+        1768305192.2585375
+      ]
+    ],
+    "network_time_start_spread_sec": 0.006829977035522461,
+    "network_time_end_spread_sec": 0.009090185165405273,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      148670,
+      0,
+      2
+    ],
+    "original_telescope_count": 1,
+    "telescope_ranges": [
+      [
+        1768305560.6974378,
+        1768308704.5416021
+      ]
+    ],
+    "network_time_start_spread_sec": 0.006552696228027344,
+    "network_time_end_spread_sec": 0.011433124542236328,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      148671,
+      0,
+      2
+    ],
+    "original_telescope_count": 1,
+    "telescope_ranges": [
+      [
+        1768308909.7886677,
+        1768308977.3568351
+      ]
+    ],
+    "network_time_start_spread_sec": 0.008756875991821289,
+    "network_time_end_spread_sec": 0.005807638168334961,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      152307,
+      0,
+      2
+    ],
+    "original_telescope_count": 1,
+    "telescope_ranges": [
+      [
+        1771415438.3238087,
+        1771418489.2476668
+      ]
+    ],
+    "network_time_start_spread_sec": 0.008183717727661133,
+    "network_time_end_spread_sec": 0.009144306182861328,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      152385,
+      0,
+      1
+    ],
+    "original_telescope_count": 1,
+    "telescope_ranges": [
+      [
+        1771481882.8944578,
+        1771481948.2843463
+      ]
+    ],
+    "network_time_start_spread_sec": 0.011066675186157227,
+    "network_time_end_spread_sec": 0.00871729850769043,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      152386,
+      0,
+      1
+    ],
+    "original_telescope_count": 1,
+    "telescope_ranges": [
+      [
+        1771481981.258836,
+        1771482048.2872684
+      ]
+    ],
+    "network_time_start_spread_sec": 0.007090330123901367,
+    "network_time_end_spread_sec": 0.007010698318481445,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      152387,
+      0,
+      1
+    ],
+    "original_telescope_count": 1,
+    "telescope_ranges": [
+      [
+        1771482070.8042028,
+        1771482136.0936215
+      ]
+    ],
+    "network_time_start_spread_sec": 0.0068323612213134766,
+    "network_time_end_spread_sec": 0.010241985321044922,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      152388,
+      0,
+      2
+    ],
+    "original_telescope_count": 1,
+    "telescope_ranges": [
+      [
+        1771482487.9764247,
+        1771482553.7662957
+      ]
+    ],
+    "network_time_start_spread_sec": 0.011893033981323242,
+    "network_time_end_spread_sec": 0.007050514221191406,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      152389,
+      0,
+      2
+    ],
+    "original_telescope_count": 9,
+    "telescope_ranges": [
+      [
+        1771482886.9915965,
+        1771482950.9609382
+      ]
+    ],
+    "network_time_start_spread_sec": 0.007730960845947266,
+    "network_time_end_spread_sec": 0.009915351867675781,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      152390,
+      0,
+      2
+    ],
+    "original_telescope_count": 5,
+    "telescope_ranges": [
+      [
+        1771483232.9354694,
+        1771484474.8937712
+      ]
+    ],
+    "network_time_start_spread_sec": 0.012109994888305664,
+    "network_time_end_spread_sec": 0.009351730346679688,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      152391,
+      0,
+      2
+    ],
+    "original_telescope_count": 4,
+    "telescope_ranges": [
+      [
+        1771484669.0220041,
+        1771484735.1709468
+      ]
+    ],
+    "network_time_start_spread_sec": 0.007089853286743164,
+    "network_time_end_spread_sec": 0.008608818054199219,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      152392,
+      0,
+      2
+    ],
+    "original_telescope_count": 2,
+    "telescope_ranges": [
+      [
+        1771485005.0269506,
+        1771486251.5848925
+      ]
+    ],
+    "network_time_start_spread_sec": 0.010733604431152344,
+    "network_time_end_spread_sec": 0.005958080291748047,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      152393,
+      0,
+      2
+    ],
+    "original_telescope_count": 2,
+    "telescope_ranges": [
+      [
+        1771486423.237069,
+        1771486490.6458876
+      ]
+    ],
+    "network_time_start_spread_sec": 0.010262012481689453,
+    "network_time_end_spread_sec": 0.013842105865478516,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      152398,
+      0,
+      2
+    ],
+    "original_telescope_count": 1,
+    "telescope_ranges": [
+      [
+        1771487370.6626878,
+        1771487437.5325966
+      ]
+    ],
+    "network_time_start_spread_sec": 0.009356498718261719,
+    "network_time_end_spread_sec": 0.006799459457397461,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      152403,
+      0,
+      2
+    ],
+    "original_telescope_count": 1,
+    "telescope_ranges": [
+      [
+        1771488326.7089956,
+        1771488391.2569816
+      ]
+    ],
+    "network_time_start_spread_sec": 0.010056257247924805,
+    "network_time_end_spread_sec": 0.007961750030517578,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      152408,
+      0,
+      2
+    ],
+    "original_telescope_count": 1,
+    "telescope_ranges": [
+      [
+        1771489613.5994995,
+        1771489678.6893835
+      ]
+    ],
+    "network_time_start_spread_sec": 0.008902549743652344,
+    "network_time_end_spread_sec": 0.00640869140625,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      152413,
+      0,
+      2
+    ],
+    "original_telescope_count": 1,
+    "telescope_ranges": [
+      [
+        1771490698.7640293,
+        1771490764.01282
+      ]
+    ],
+    "network_time_start_spread_sec": 0.00930333137512207,
+    "network_time_end_spread_sec": 0.006653785705566406,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      152418,
+      0,
+      2
+    ],
+    "original_telescope_count": 1,
+    "telescope_ranges": [
+      [
+        1771491644.3504925,
+        1771491710.6794462
+      ]
+    ],
+    "network_time_start_spread_sec": 0.005842447280883789,
+    "network_time_end_spread_sec": 0.0077593326568603516,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      152419,
+      0,
+      2
+    ],
+    "original_telescope_count": 1,
+    "telescope_ranges": [
+      [
+        1771492238.6939716,
+        1771493483.2317574
+      ]
+    ],
+    "network_time_start_spread_sec": 0.007787942886352539,
+    "network_time_end_spread_sec": 0.011565208435058594,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      152420,
+      0,
+      2
+    ],
+    "original_telescope_count": 1,
+    "telescope_ranges": [
+      [
+        1771493634.4472082,
+        1771493699.5556464
+      ]
+    ],
+    "network_time_start_spread_sec": 0.009464740753173828,
+    "network_time_end_spread_sec": 0.009429454803466797,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      152425,
+      0,
+      2
+    ],
+    "original_telescope_count": 1,
+    "telescope_ranges": [
+      [
+        1771494669.5389562,
+        1771494733.6877005
+      ]
+    ],
+    "network_time_start_spread_sec": 0.01154947280883789,
+    "network_time_end_spread_sec": 0.009807825088500977,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      152430,
+      0,
+      2
+    ],
+    "original_telescope_count": 1,
+    "telescope_ranges": [
+      [
+        1771495681.9337304,
+        1771495746.9221332
+      ]
+    ],
+    "network_time_start_spread_sec": 0.008437395095825195,
+    "network_time_end_spread_sec": 0.009143829345703125,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      152431,
+      0,
+      2
+    ],
+    "original_telescope_count": 1,
+    "telescope_ranges": [
+      [
+        1771496058.5716434,
+        1771497309.3278863
+      ]
+    ],
+    "network_time_start_spread_sec": 0.008027791976928711,
+    "network_time_end_spread_sec": 0.01215505599975586,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      152432,
+      0,
+      2
+    ],
+    "original_telescope_count": 1,
+    "telescope_ranges": [
+      [
+        1771497481.5194352,
+        1771497546.6498222
+      ]
+    ],
+    "network_time_start_spread_sec": 0.010372161865234375,
+    "network_time_end_spread_sec": 0.010202646255493164,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      152433,
+      0,
+      2
+    ],
+    "original_telescope_count": 1,
+    "telescope_ranges": [
+      [
+        1771498001.7952821,
+        1771499245.37234
+      ]
+    ],
+    "network_time_start_spread_sec": 0.010825872421264648,
+    "network_time_end_spread_sec": 0.0097198486328125,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  },
+  {
+    "identity": [
+      152434,
+      0,
+      2
+    ],
+    "original_telescope_count": 1,
+    "telescope_ranges": [
+      [
+        1771499380.4106357,
+        1771499446.219026
+      ]
+    ],
+    "network_time_start_spread_sec": 0.008433103561401367,
+    "network_time_end_spread_sec": 0.010227203369140625,
+    "all_network_time_endpoints_within_any_original_telescope_range": true
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "files": 221249,
+  "logical_bytes": 356819904701,
+  "allocated_file_blocks_bytes": 357108793344,
+  "classes": {
+    "citlali_rtc_mixed_timestream": 644,
+    "citlali_ptc_mixed_timestream": 651,
+    "citlali_ptc_detector_tod_mixed_timestream": 16,
+    "PTC_solver_applied_samples": 334,
+    "JINC_PTC_occurrence_axes": 264,
+    "JINC_prepared_PTC_samples_and_axes": 90,
+    "FRUIT_native_PTC_samples_and_masks": 29438,
+    "PTC_to_MAP_occurrence_axes": 905,
+    "frozen_PTC_parent_samples_and_axes": 540,
+    "native_RTC_applied_samples_and_axes": 125424,
+    "native_PTC_samples_and_axes": 22860,
+    "calibrated_RTC_cache_samples_and_axes": 39498,
+    "PTC_MAP_handoff_sample_axes": 543,
+    "compressed_final_PTC_occurrence_spool": 42
+  },
+  "sha256": "a8abbc47030a2783ce06d154ff2697c9216645cb2b1d9fa43fc2084ce1bf43dd",
+  "no_numerical_regeneration_required": true
+}

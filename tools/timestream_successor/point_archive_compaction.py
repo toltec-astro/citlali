@@ -74,6 +74,8 @@ def freeze(out=OUT):
     save(out/'FRESH_DUPLICATE_VERIFICATION.json',summary);print(json.dumps(summary),flush=True)
 
 def resolve(path,actions):
+    from local_data_purge import explain_purged
+    explain_purged(path)
     p=Path(path);by_path={a['path']:a for a in actions}
     if p.exists():
         identity(p)
@@ -87,7 +89,7 @@ def resolve(path,actions):
         require(digest(p)==h,'corrupt retained artifact')
         return dict(status='retained',path=str(p),sha256=h)
     if str(p) not in by_path:raise FileNotFoundError('missing/corrupt, not intentionally compacted: '+str(p))
-    a=by_path[str(p)];q=Path(a['retained']);require(q.is_file() and digest(q)==a['sha256'],'missing/corrupt retained counterpart')
+    a=by_path[str(p)];q=Path(a['retained']);explain_purged(q);require(q.is_file() and digest(q)==a['sha256'],'missing/corrupt retained counterpart')
     return dict(status='deduplicated; explicit restore required for historical layout',path=str(q),original_path=str(p),sha256=a['sha256'])
 
 def restore(path,actions):
@@ -99,6 +101,8 @@ def restore(path,actions):
 
 def explain_missing(path,actions=None):
     """Fail explicitly; never change a scientific reader into a generator."""
+    from local_data_purge import explain_purged
+    explain_purged(path)
     p=Path(path)
     if actions is None:
         if not any(p.is_relative_to(r) for r in ROOTS) or not (OUT/'ACTION_MANIFEST.json.gz').exists():
@@ -106,6 +110,7 @@ def explain_missing(path,actions=None):
         actions=read(OUT/'ACTION_MANIFEST.json.gz')
     row=next((a for a in actions if a['path']==str(p)),None)
     if row is None:raise FileNotFoundError('missing/corrupt artifact: '+str(p))
+    explain_purged(row['retained'])
     raise FileNotFoundError('INTENTIONALLY COMPACTED; explicit restoration required. '
         +'Use point_archive_compaction.py restore '+str(p)+'; retained exact bytes: '+row['retained'])
 
