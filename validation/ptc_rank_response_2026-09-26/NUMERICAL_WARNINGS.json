@@ -1,0 +1,9 @@
+{
+  "messages": [
+    "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_reference.py:88: RuntimeWarning: divide by zero encountered in matmul",
+    "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_reference.py:88: RuntimeWarning: invalid value encountered in matmul",
+    "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_reference.py:88: RuntimeWarning: overflow encountered in matmul"
+  ],
+  "occurrences": 3,
+  "scope": "same endpoint NumPy matmul warning class as frozen reference; supported returned conditional scales finite; logs retained"
+}

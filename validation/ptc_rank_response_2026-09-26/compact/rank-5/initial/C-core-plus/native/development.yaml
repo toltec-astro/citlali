@@ -1,0 +1,7 @@
+input:
+  path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-5/initial/C-core-plus/request.json
+  sha256: 0f8490227fce06f9e65936c1bd6b8fb0f0b95a77e998a7576b5a3d9399dec103
+network_workers: 1
+output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-5/initial/C-core-plus/native/products
+schema: citlali-development-v1
+terminal: point-fruit

@@ -1,0 +1,497 @@
+[
+  {
+    "rank": 5,
+    "cycle": 0,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 5,
+    "cycle": 1,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 5,
+    "cycle": 2,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 5,
+    "cycle": 3,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 5,
+    "cycle": 4,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 5,
+    "cycle": 5,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 5,
+    "cycle": 6,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 5,
+    "cycle": 7,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 5,
+    "cycle": 8,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 5,
+    "cycle": 9,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 5,
+    "cycle": 10,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 10,
+    "cycle": 0,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 10,
+    "cycle": 1,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 10,
+    "cycle": 2,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 10,
+    "cycle": 3,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 10,
+    "cycle": 4,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 10,
+    "cycle": 5,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 10,
+    "cycle": 6,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 10,
+    "cycle": 7,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 10,
+    "cycle": 8,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 10,
+    "cycle": 9,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 10,
+    "cycle": 10,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 15,
+    "cycle": 0,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 15,
+    "cycle": 1,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 15,
+    "cycle": 2,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 15,
+    "cycle": 3,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 15,
+    "cycle": 4,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 15,
+    "cycle": 5,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 15,
+    "cycle": 6,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 15,
+    "cycle": 7,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 15,
+    "cycle": 8,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 15,
+    "cycle": 9,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  },
+  {
+    "rank": 15,
+    "cycle": 10,
+    "same_grid": true,
+    "planes_equal": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "lost_pixels": 0,
+    "gained_pixels": 0,
+    "lost_yx": [],
+    "gained_yx": []
+  }
+]

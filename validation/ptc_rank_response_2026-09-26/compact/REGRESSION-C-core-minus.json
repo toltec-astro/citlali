@@ -1,0 +1,776 @@
+{
+  "pass_": true,
+  "rows": [
+    {
+      "cycle": 0,
+      "path": "run/BASE-POINT/C-core-minus/a2000/initial/candidate.fits",
+      "plane": "CANDIDATE",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 0,
+      "path": "run/BASE-POINT/C-core-minus/a2000/initial/candidate.fits",
+      "plane": "ADMITTED",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 0,
+      "path": "run/BASE-POINT/C-core-minus/a2000/initial/candidate.fits",
+      "plane": "VALID",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 0,
+      "path": "run/BASE-POINT/C-core-minus/a2000/initial/candidate.fits",
+      "plane": "RATIO",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 0,
+      "path": "initial/C-core-minus/native/products/total.fits",
+      "plane": "PRIMARY",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 0,
+      "path": "initial/C-core-minus/native/products/total.fits",
+      "plane": "NUMERATOR",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 0,
+      "path": "initial/C-core-minus/native/products/total.fits",
+      "plane": "NORMALIZATION",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 0,
+      "path": "initial/C-core-minus/native/products/total.fits",
+      "plane": "HITS",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 0,
+      "path": "initial/C-core-minus/native/products/total.fits",
+      "plane": "NORM_SUPPORT",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 0,
+      "path": "initial/C-core-minus/native/products/total.fits",
+      "plane": "SCI_SUPPORT",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 1,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-01/candidate.fits",
+      "plane": "CANDIDATE",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 1,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-01/candidate.fits",
+      "plane": "ADMITTED",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 1,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-01/candidate.fits",
+      "plane": "VALID",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 1,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-01/candidate.fits",
+      "plane": "RATIO",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 1,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-01/native/products/total.fits",
+      "plane": "PRIMARY",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 1,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-01/native/products/total.fits",
+      "plane": "NUMERATOR",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 1,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-01/native/products/total.fits",
+      "plane": "NORMALIZATION",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 1,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-01/native/products/total.fits",
+      "plane": "HITS",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 1,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-01/native/products/total.fits",
+      "plane": "NORM_SUPPORT",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 1,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-01/native/products/total.fits",
+      "plane": "SCI_SUPPORT",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 2,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-02/candidate.fits",
+      "plane": "CANDIDATE",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 2,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-02/candidate.fits",
+      "plane": "ADMITTED",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 2,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-02/candidate.fits",
+      "plane": "VALID",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 2,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-02/candidate.fits",
+      "plane": "RATIO",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 2,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-02/native/products/total.fits",
+      "plane": "PRIMARY",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 2,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-02/native/products/total.fits",
+      "plane": "NUMERATOR",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 2,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-02/native/products/total.fits",
+      "plane": "NORMALIZATION",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 2,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-02/native/products/total.fits",
+      "plane": "HITS",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 2,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-02/native/products/total.fits",
+      "plane": "NORM_SUPPORT",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 2,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-02/native/products/total.fits",
+      "plane": "SCI_SUPPORT",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 3,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-03/candidate.fits",
+      "plane": "CANDIDATE",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 3,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-03/candidate.fits",
+      "plane": "ADMITTED",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 3,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-03/candidate.fits",
+      "plane": "VALID",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 3,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-03/candidate.fits",
+      "plane": "RATIO",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 3,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-03/native/products/total.fits",
+      "plane": "PRIMARY",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 3,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-03/native/products/total.fits",
+      "plane": "NUMERATOR",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 3,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-03/native/products/total.fits",
+      "plane": "NORMALIZATION",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 3,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-03/native/products/total.fits",
+      "plane": "HITS",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 3,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-03/native/products/total.fits",
+      "plane": "NORM_SUPPORT",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 3,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-03/native/products/total.fits",
+      "plane": "SCI_SUPPORT",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 4,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-04/candidate.fits",
+      "plane": "CANDIDATE",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 4,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-04/candidate.fits",
+      "plane": "ADMITTED",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 4,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-04/candidate.fits",
+      "plane": "VALID",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 4,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-04/candidate.fits",
+      "plane": "RATIO",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 4,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-04/native/products/total.fits",
+      "plane": "PRIMARY",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 4,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-04/native/products/total.fits",
+      "plane": "NUMERATOR",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 4,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-04/native/products/total.fits",
+      "plane": "NORMALIZATION",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 4,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-04/native/products/total.fits",
+      "plane": "HITS",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 4,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-04/native/products/total.fits",
+      "plane": "NORM_SUPPORT",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 4,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-04/native/products/total.fits",
+      "plane": "SCI_SUPPORT",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 5,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-05/candidate.fits",
+      "plane": "CANDIDATE",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 5,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-05/candidate.fits",
+      "plane": "ADMITTED",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 5,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-05/candidate.fits",
+      "plane": "VALID",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 5,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-05/candidate.fits",
+      "plane": "RATIO",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 5,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-05/native/products/total.fits",
+      "plane": "PRIMARY",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 5,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-05/native/products/total.fits",
+      "plane": "NUMERATOR",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 5,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-05/native/products/total.fits",
+      "plane": "NORMALIZATION",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 5,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-05/native/products/total.fits",
+      "plane": "HITS",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 5,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-05/native/products/total.fits",
+      "plane": "NORM_SUPPORT",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 5,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-05/native/products/total.fits",
+      "plane": "SCI_SUPPORT",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 6,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-06/candidate.fits",
+      "plane": "CANDIDATE",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 6,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-06/candidate.fits",
+      "plane": "ADMITTED",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 6,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-06/candidate.fits",
+      "plane": "VALID",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 6,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-06/candidate.fits",
+      "plane": "RATIO",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 6,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-06/native/products/total.fits",
+      "plane": "PRIMARY",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 6,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-06/native/products/total.fits",
+      "plane": "NUMERATOR",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 6,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-06/native/products/total.fits",
+      "plane": "NORMALIZATION",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 6,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-06/native/products/total.fits",
+      "plane": "HITS",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 6,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-06/native/products/total.fits",
+      "plane": "NORM_SUPPORT",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 6,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-06/native/products/total.fits",
+      "plane": "SCI_SUPPORT",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 7,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-07/candidate.fits",
+      "plane": "CANDIDATE",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 7,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-07/candidate.fits",
+      "plane": "ADMITTED",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 7,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-07/candidate.fits",
+      "plane": "VALID",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 7,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-07/candidate.fits",
+      "plane": "RATIO",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 7,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-07/native/products/total.fits",
+      "plane": "PRIMARY",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 7,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-07/native/products/total.fits",
+      "plane": "NUMERATOR",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 7,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-07/native/products/total.fits",
+      "plane": "NORMALIZATION",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 7,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-07/native/products/total.fits",
+      "plane": "HITS",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 7,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-07/native/products/total.fits",
+      "plane": "NORM_SUPPORT",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 7,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-07/native/products/total.fits",
+      "plane": "SCI_SUPPORT",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 8,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-08/candidate.fits",
+      "plane": "CANDIDATE",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 8,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-08/candidate.fits",
+      "plane": "ADMITTED",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 8,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-08/candidate.fits",
+      "plane": "VALID",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 8,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-08/candidate.fits",
+      "plane": "RATIO",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 8,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-08/native/products/total.fits",
+      "plane": "PRIMARY",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 8,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-08/native/products/total.fits",
+      "plane": "NUMERATOR",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 8,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-08/native/products/total.fits",
+      "plane": "NORMALIZATION",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 8,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-08/native/products/total.fits",
+      "plane": "HITS",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 8,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-08/native/products/total.fits",
+      "plane": "NORM_SUPPORT",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 8,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-08/native/products/total.fits",
+      "plane": "SCI_SUPPORT",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 9,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-09/candidate.fits",
+      "plane": "CANDIDATE",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 9,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-09/candidate.fits",
+      "plane": "ADMITTED",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 9,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-09/candidate.fits",
+      "plane": "VALID",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 9,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-09/candidate.fits",
+      "plane": "RATIO",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 9,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-09/native/products/total.fits",
+      "plane": "PRIMARY",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 9,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-09/native/products/total.fits",
+      "plane": "NUMERATOR",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 9,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-09/native/products/total.fits",
+      "plane": "NORMALIZATION",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 9,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-09/native/products/total.fits",
+      "plane": "HITS",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 9,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-09/native/products/total.fits",
+      "plane": "NORM_SUPPORT",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 9,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-09/native/products/total.fits",
+      "plane": "SCI_SUPPORT",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 10,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-10/candidate.fits",
+      "plane": "CANDIDATE",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 10,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-10/candidate.fits",
+      "plane": "ADMITTED",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 10,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-10/candidate.fits",
+      "plane": "VALID",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 10,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-10/candidate.fits",
+      "plane": "RATIO",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 10,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-10/native/products/total.fits",
+      "plane": "PRIMARY",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 10,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-10/native/products/total.fits",
+      "plane": "NUMERATOR",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 10,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-10/native/products/total.fits",
+      "plane": "NORMALIZATION",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 10,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-10/native/products/total.fits",
+      "plane": "HITS",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 10,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-10/native/products/total.fits",
+      "plane": "NORM_SUPPORT",
+      "pass_": true,
+      "exact": true
+    },
+    {
+      "cycle": 10,
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-10/native/products/total.fits",
+      "plane": "SCI_SUPPORT",
+      "pass_": true,
+      "exact": true
+    }
+  ],
+  "failures": []
+}

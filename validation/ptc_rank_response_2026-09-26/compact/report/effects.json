@@ -1,0 +1,5033 @@
+[
+  {
+    "rank": 5,
+    "branch": "C-core-plus",
+    "measurement": "peak",
+    "units": "mJy/nominal beam",
+    "own_REF": 749.8023111384435,
+    "name": "peak",
+    "actual_increment": 75.19010242949287,
+    "ideal_increment": 75.07999291955457,
+    "absolute_discrepancy": 0.11010950993829738,
+    "ratio": 1.001466562604185,
+    "fraction_of_source": 0.0001468513877626162,
+    "conditional_sigma": 7.185670413675789,
+    "effect_over_sigma": 0.015323484601901118,
+    "sigma_equiv": 7.175147610510707,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9935970423560121,
+        "eta": 0.020580820620626616,
+        "difference_rms": 2.6597833661332344,
+        "residual_rms": 0.05508261256949876,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9935970423560119,
+        "eta": 0.01942568813255761,
+        "difference_rms": 7.691867562476173,
+        "residual_rms": 0.15035710277902603,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-plus",
+    "measurement": "east",
+    "units": "arcsec",
+    "own_REF": 4.019982897213739,
+    "name": "east",
+    "actual_increment": 0.004195537631326296,
+    "ideal_increment": 0.003252167332535194,
+    "absolute_discrepancy": 0.0009433702987911019,
+    "ratio": 1.290074341917612,
+    "fraction_of_source": 0.00023467022694175006,
+    "conditional_sigma": 0.04660231097586554,
+    "effect_over_sigma": 0.020242993942503316,
+    "sigma_equiv": 0.03612374067264544,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9935970423560121,
+        "eta": 0.020580820620626616,
+        "difference_rms": 2.6597833661332344,
+        "residual_rms": 0.05508261256949876,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9935970423560119,
+        "eta": 0.01942568813255761,
+        "difference_rms": 7.691867562476173,
+        "residual_rms": 0.15035710277902603,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-plus",
+    "measurement": "north",
+    "units": "arcsec",
+    "own_REF": 7.414125959235905,
+    "name": "north",
+    "actual_increment": -0.004186766763198513,
+    "ideal_increment": -0.003238050522337943,
+    "absolute_discrepancy": -0.0009487162408605698,
+    "ratio": 1.292989943892406,
+    "fraction_of_source": -0.0001279606316478529,
+    "conditional_sigma": 0.04286928454581843,
+    "effect_over_sigma": -0.022130442598046807,
+    "sigma_equiv": 0.03315515696646882,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9935970423560121,
+        "eta": 0.020580820620626616,
+        "difference_rms": 2.6597833661332344,
+        "residual_rms": 0.05508261256949876,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9935970423560119,
+        "eta": 0.01942568813255761,
+        "difference_rms": 7.691867562476173,
+        "residual_rms": 0.15035710277902603,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-plus",
+    "measurement": "FWHM_major",
+    "units": "arcsec",
+    "own_REF": 10.04382175622756,
+    "name": "FWHM_major",
+    "actual_increment": 0.004367764570968546,
+    "ideal_increment": 0.00806341486838491,
+    "absolute_discrepancy": -0.003695650297416364,
+    "ratio": 0.5416767761874323,
+    "fraction_of_source": -0.0003679525968414281,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9935970423560121,
+        "eta": 0.020580820620626616,
+        "difference_rms": 2.6597833661332344,
+        "residual_rms": 0.05508261256949876,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9935970423560119,
+        "eta": 0.01942568813255761,
+        "difference_rms": 7.691867562476173,
+        "residual_rms": 0.15035710277902603,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-plus",
+    "measurement": "FWHM_minor",
+    "units": "arcsec",
+    "own_REF": 9.263983930860693,
+    "name": "FWHM_minor",
+    "actual_increment": -0.003420359750769819,
+    "ideal_increment": 0.003944165031033009,
+    "absolute_discrepancy": -0.007364524781802828,
+    "ratio": -0.8671948876018505,
+    "fraction_of_source": -0.0007949630349929384,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9935970423560121,
+        "eta": 0.020580820620626616,
+        "difference_rms": 2.6597833661332344,
+        "residual_rms": 0.05508261256949876,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9935970423560119,
+        "eta": 0.01942568813255761,
+        "difference_rms": 7.691867562476173,
+        "residual_rms": 0.15035710277902603,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-plus",
+    "measurement": "ellipse_xx",
+    "units": "arcsec^2",
+    "own_REF": 17.11595439080169,
+    "name": "ellipse_xx",
+    "actual_increment": 0.012477961156388773,
+    "ideal_increment": 0.029945000809973976,
+    "absolute_discrepancy": -0.017467039653585203,
+    "ratio": 0.4166959699073595,
+    "fraction_of_source": -0.00102051216395927,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9935970423560121,
+        "eta": 0.020580820620626616,
+        "difference_rms": 2.6597833661332344,
+        "residual_rms": 0.05508261256949876,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9935970423560119,
+        "eta": 0.01942568813255761,
+        "difference_rms": 7.691867562476173,
+        "residual_rms": 0.15035710277902603,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-plus",
+    "measurement": "ellipse_xy",
+    "units": "arcsec^2",
+    "own_REF": -1.3281523069982515,
+    "name": "ellipse_xy",
+    "actual_increment": -0.01172848867299292,
+    "ideal_increment": -0.006325447350411961,
+    "absolute_discrepancy": -0.005403041322580959,
+    "ratio": 1.854175368676347,
+    "fraction_of_source": 0.004068088647748795,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9935970423560121,
+        "eta": 0.020580820620626616,
+        "difference_rms": 2.6597833661332344,
+        "residual_rms": 0.05508261256949876,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9935970423560119,
+        "eta": 0.01942568813255761,
+        "difference_rms": 7.691867562476173,
+        "residual_rms": 0.15035710277902603,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-plus",
+    "measurement": "ellipse_yy",
+    "units": "arcsec^2",
+    "own_REF": 16.552896716565847,
+    "name": "ellipse_yy",
+    "actual_increment": -0.008078361940206946,
+    "ideal_increment": 0.012458140253919225,
+    "absolute_discrepancy": -0.02053650219412617,
+    "ratio": -0.6484404393878582,
+    "fraction_of_source": -0.001240659115185175,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9935970423560121,
+        "eta": 0.020580820620626616,
+        "difference_rms": 2.6597833661332344,
+        "residual_rms": 0.05508261256949876,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9935970423560119,
+        "eta": 0.01942568813255761,
+        "difference_rms": 7.691867562476173,
+        "residual_rms": 0.15035710277902603,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-plus",
+    "measurement": "background",
+    "units": "mJy/nominal beam",
+    "own_REF": -2.9495623706641187,
+    "name": "background",
+    "actual_increment": -0.055257028223616445,
+    "ideal_increment": 0.0007342423639347118,
+    "absolute_discrepancy": -0.055991270587551156,
+    "ratio": -75.25720516520055,
+    "fraction_of_source": 0.018982907818607765,
+    "conditional_sigma": 2.307211304160036,
+    "effect_over_sigma": -0.02426794220650516,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "sign reversal",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9935970423560121,
+        "eta": 0.020580820620626616,
+        "difference_rms": 2.6597833661332344,
+        "residual_rms": 0.05508261256949876,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9935970423560119,
+        "eta": 0.01942568813255761,
+        "difference_rms": 7.691867562476173,
+        "residual_rms": 0.15035710277902603,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-plus",
+    "measurement": "fixed_template",
+    "units": "mJy/nominal beam",
+    "own_REF": 796.3256014161948,
+    "name": "fixed_template",
+    "actual_increment": 79.92197565432696,
+    "ideal_increment": 80.27449552917437,
+    "absolute_discrepancy": -0.35251987484741676,
+    "ratio": 0.9956085694151849,
+    "fraction_of_source": -0.000442683086190487,
+    "conditional_sigma": 8.839181709832697,
+    "effect_over_sigma": -0.039881505598563946,
+    "sigma_equiv": 8.878169575242593,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9935970423560121,
+        "eta": 0.020580820620626616,
+        "difference_rms": 2.6597833661332344,
+        "residual_rms": 0.05508261256949876,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9935970423560119,
+        "eta": 0.01942568813255761,
+        "difference_rms": 7.691867562476173,
+        "residual_rms": 0.15035710277902603,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-plus",
+    "measurement": "aperture_1",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 73979.55598003879,
+    "name": "aperture_1",
+    "actual_increment": 7425.2152101334505,
+    "ideal_increment": 7478.634397000176,
+    "absolute_discrepancy": -53.419186866725795,
+    "ratio": 0.9928570934169274,
+    "fraction_of_source": -0.0007220803931445519,
+    "conditional_sigma": 1151.8757722295036,
+    "effect_over_sigma": -0.04637582294428394,
+    "sigma_equiv": 1160.1627060600554,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9935970423560121,
+        "eta": 0.020580820620626616,
+        "difference_rms": 2.6597833661332344,
+        "residual_rms": 0.05508261256949876,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9935970423560119,
+        "eta": 0.01942568813255761,
+        "difference_rms": 7.691867562476173,
+        "residual_rms": 0.15035710277902603,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-plus",
+    "measurement": "aperture_1p5",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 76539.4728764444,
+    "name": "aperture_1p5",
+    "actual_increment": 7859.092279419943,
+    "ideal_increment": 8005.813597260392,
+    "absolute_discrepancy": -146.72131784044905,
+    "ratio": 0.9816731533831043,
+    "fraction_of_source": -0.0019169366122666837,
+    "conditional_sigma": 2096.9331657797097,
+    "effect_over_sigma": -0.06996947744202098,
+    "sigma_equiv": 2136.0807907938865,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9935970423560121,
+        "eta": 0.020580820620626616,
+        "difference_rms": 2.6597833661332344,
+        "residual_rms": 0.05508261256949876,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9935970423560119,
+        "eta": 0.01942568813255761,
+        "difference_rms": 7.691867562476173,
+        "residual_rms": 0.15035710277902603,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-plus",
+    "measurement": "aperture_2",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 77220.81806523244,
+    "name": "aperture_2",
+    "actual_increment": 7849.526204724025,
+    "ideal_increment": 8025.139281511845,
+    "absolute_discrepancy": -175.61307678782032,
+    "ratio": 0.978117130354062,
+    "fraction_of_source": -0.002274167526164652,
+    "conditional_sigma": 3036.0061314976324,
+    "effect_over_sigma": -0.05784345260896825,
+    "sigma_equiv": 3103.9290053111013,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9935970423560121,
+        "eta": 0.020580820620626616,
+        "difference_rms": 2.6597833661332344,
+        "residual_rms": 0.05508261256949876,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9935970423560119,
+        "eta": 0.01942568813255761,
+        "difference_rms": 7.691867562476173,
+        "residual_rms": 0.15035710277902603,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-minus",
+    "measurement": "peak",
+    "units": "mJy/nominal beam",
+    "own_REF": 749.8023111384435,
+    "name": "peak",
+    "actual_increment": -75.26916295542287,
+    "ideal_increment": -75.08401566040516,
+    "absolute_discrepancy": -0.185147295017714,
+    "ratio": 1.0024658683128391,
+    "fraction_of_source": -0.00024692814661587297,
+    "conditional_sigma": 7.185670413675789,
+    "effect_over_sigma": -0.025766182465778158,
+    "sigma_equiv": 7.167995081737146,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9911639974946587,
+        "eta": 0.02209748356356585,
+        "difference_rms": 2.6533101426877583,
+        "residual_rms": 0.059141816953249604,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9911639974946589,
+        "eta": 0.02104531266241654,
+        "difference_rms": 7.673149871184761,
+        "residual_rms": 0.16289318645532505,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-minus",
+    "measurement": "east",
+    "units": "arcsec",
+    "own_REF": 4.019982897213739,
+    "name": "east",
+    "actual_increment": -0.003637313077030413,
+    "ideal_increment": -0.003963240233047394,
+    "absolute_discrepancy": 0.00032592715601698075,
+    "ratio": 0.9177624527276332,
+    "fraction_of_source": 8.107675190431326e-05,
+    "conditional_sigma": 0.04660231097586554,
+    "effect_over_sigma": 0.006993798144168693,
+    "sigma_equiv": 0.05077818430832649,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9911639974946587,
+        "eta": 0.02209748356356585,
+        "difference_rms": 2.6533101426877583,
+        "residual_rms": 0.059141816953249604,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9911639974946589,
+        "eta": 0.02104531266241654,
+        "difference_rms": 7.673149871184761,
+        "residual_rms": 0.16289318645532505,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-minus",
+    "measurement": "north",
+    "units": "arcsec",
+    "own_REF": 7.414125959235905,
+    "name": "north",
+    "actual_increment": 0.0038868966703899943,
+    "ideal_increment": 0.0039692476986736835,
+    "absolute_discrepancy": -8.235102828368923e-05,
+    "ratio": 0.9792527364036246,
+    "fraction_of_source": -1.1107314434158368e-05,
+    "conditional_sigma": 0.04286928454581843,
+    "effect_over_sigma": -0.0019209797680591787,
+    "sigma_equiv": 0.043777548892289984,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9911639974946587,
+        "eta": 0.02209748356356585,
+        "difference_rms": 2.6533101426877583,
+        "residual_rms": 0.059141816953249604,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9911639974946589,
+        "eta": 0.02104531266241654,
+        "difference_rms": 7.673149871184761,
+        "residual_rms": 0.16289318645532505,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-minus",
+    "measurement": "FWHM_major",
+    "units": "arcsec",
+    "own_REF": 10.04382175622756,
+    "name": "FWHM_major",
+    "actual_increment": 0.0006728860282816385,
+    "ideal_increment": -0.009738534270381294,
+    "absolute_discrepancy": 0.010411420298662932,
+    "ratio": -0.0690952056643831,
+    "fraction_of_source": 0.0010365994689429297,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9911639974946587,
+        "eta": 0.02209748356356585,
+        "difference_rms": 2.6533101426877583,
+        "residual_rms": 0.059141816953249604,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9911639974946589,
+        "eta": 0.02104531266241654,
+        "difference_rms": 7.673149871184761,
+        "residual_rms": 0.16289318645532505,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-minus",
+    "measurement": "FWHM_minor",
+    "units": "arcsec",
+    "own_REF": 9.263983930860693,
+    "name": "FWHM_minor",
+    "actual_increment": 0.004469161713348768,
+    "ideal_increment": -0.004785724757574883,
+    "absolute_discrepancy": 0.009254886470923651,
+    "ratio": -0.9338526429617465,
+    "fraction_of_source": 0.0009990179754191136,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9911639974946587,
+        "eta": 0.02209748356356585,
+        "difference_rms": 2.6533101426877583,
+        "residual_rms": 0.059141816953249604,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9911639974946589,
+        "eta": 0.02104531266241654,
+        "difference_rms": 7.673149871184761,
+        "residual_rms": 0.16289318645532505,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-minus",
+    "measurement": "ellipse_xx",
+    "units": "arcsec^2",
+    "own_REF": 17.11595439080169,
+    "name": "ellipse_xx",
+    "actual_increment": 0.0003589314571463831,
+    "ideal_increment": -0.0361722231716719,
+    "absolute_discrepancy": 0.036531154628818285,
+    "ratio": -0.009922847579561503,
+    "fraction_of_source": 0.002134333487617293,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9911639974946587,
+        "eta": 0.02209748356356585,
+        "difference_rms": 2.6533101426877583,
+        "residual_rms": 0.059141816953249604,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9911639974946589,
+        "eta": 0.02104531266241654,
+        "difference_rms": 7.673149871184761,
+        "residual_rms": 0.16289318645532505,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-minus",
+    "measurement": "ellipse_xy",
+    "units": "arcsec^2",
+    "own_REF": -1.3281523069982515,
+    "name": "ellipse_xy",
+    "actual_increment": 0.0046424089968564175,
+    "ideal_increment": 0.0076445177166279965,
+    "absolute_discrepancy": -0.003002108719771579,
+    "ratio": 0.6072860537373688,
+    "fraction_of_source": 0.002260364796983733,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9911639974946587,
+        "eta": 0.02209748356356585,
+        "difference_rms": 2.6533101426877583,
+        "residual_rms": 0.059141816953249604,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9911639974946589,
+        "eta": 0.02104531266241654,
+        "difference_rms": 7.673149871184761,
+        "residual_rms": 0.16289318645532505,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-minus",
+    "measurement": "ellipse_yy",
+    "units": "arcsec^2",
+    "own_REF": 16.552896716565847,
+    "name": "ellipse_yy",
+    "actual_increment": 0.017015013092155584,
+    "ideal_increment": -0.015075229212801133,
+    "absolute_discrepancy": 0.03209024230495672,
+    "ratio": -1.128673591092551,
+    "fraction_of_source": 0.0019386481323744,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9911639974946587,
+        "eta": 0.02209748356356585,
+        "difference_rms": 2.6533101426877583,
+        "residual_rms": 0.059141816953249604,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9911639974946589,
+        "eta": 0.02104531266241654,
+        "difference_rms": 7.673149871184761,
+        "residual_rms": 0.16289318645532505,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-minus",
+    "measurement": "background",
+    "units": "mJy/nominal beam",
+    "own_REF": -2.9495623706641187,
+    "name": "background",
+    "actual_increment": 0.07884491717312248,
+    "ideal_increment": -0.000886378719205716,
+    "absolute_discrepancy": 0.07973129589232819,
+    "ratio": -88.95172623703715,
+    "fraction_of_source": -0.02703156803372699,
+    "conditional_sigma": 2.307211304160036,
+    "effect_over_sigma": 0.03455743119347935,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "sign reversal",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9911639974946587,
+        "eta": 0.02209748356356585,
+        "difference_rms": 2.6533101426877583,
+        "residual_rms": 0.059141816953249604,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9911639974946589,
+        "eta": 0.02104531266241654,
+        "difference_rms": 7.673149871184761,
+        "residual_rms": 0.16289318645532505,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-minus",
+    "measurement": "fixed_template",
+    "units": "mJy/nominal beam",
+    "own_REF": 796.3256014161948,
+    "name": "fixed_template",
+    "actual_increment": -79.78582489376947,
+    "ideal_increment": -80.27419125646395,
+    "absolute_discrepancy": 0.4883663626944781,
+    "ratio": 0.9939162717798773,
+    "fraction_of_source": 0.0006132747230855842,
+    "conditional_sigma": 8.839181709832697,
+    "effect_over_sigma": 0.05525017798324248,
+    "sigma_equiv": 8.893286045114987,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9911639974946587,
+        "eta": 0.02209748356356585,
+        "difference_rms": 2.6533101426877583,
+        "residual_rms": 0.059141816953249604,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9911639974946589,
+        "eta": 0.02104531266241654,
+        "difference_rms": 7.673149871184761,
+        "residual_rms": 0.16289318645532505,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-minus",
+    "measurement": "aperture_1",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 73979.55598003879,
+    "name": "aperture_1",
+    "actual_increment": -7393.385705438675,
+    "ideal_increment": -7478.590581729863,
+    "absolute_discrepancy": 85.20487629118725,
+    "ratio": 0.9886068270003519,
+    "fraction_of_source": 0.0011517354377495492,
+    "conditional_sigma": 1151.8757722295036,
+    "effect_over_sigma": 0.0739705429573101,
+    "sigma_equiv": 1165.1505338320849,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9911639974946587,
+        "eta": 0.02209748356356585,
+        "difference_rms": 2.6533101426877583,
+        "residual_rms": 0.059141816953249604,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9911639974946589,
+        "eta": 0.02104531266241654,
+        "difference_rms": 7.673149871184761,
+        "residual_rms": 0.16289318645532505,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-minus",
+    "measurement": "aperture_1p5",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 76539.4728764444,
+    "name": "aperture_1p5",
+    "actual_increment": -7808.126597670998,
+    "ideal_increment": -8005.715012902176,
+    "absolute_discrepancy": 197.58841523117735,
+    "ratio": 0.9753190795684408,
+    "fraction_of_source": 0.0025815230730702704,
+    "conditional_sigma": 2096.9331657797097,
+    "effect_over_sigma": 0.0942273308733268,
+    "sigma_equiv": 2149.9970724530076,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9911639974946587,
+        "eta": 0.02209748356356585,
+        "difference_rms": 2.6533101426877583,
+        "residual_rms": 0.059141816953249604,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9911639974946589,
+        "eta": 0.02104531266241654,
+        "difference_rms": 7.673149871184761,
+        "residual_rms": 0.16289318645532505,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-minus",
+    "measurement": "aperture_2",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 77220.81806523244,
+    "name": "aperture_2",
+    "actual_increment": -7790.211109017604,
+    "ideal_increment": -8024.964020430576,
+    "absolute_discrepancy": 234.75291141297203,
+    "ratio": 0.9707471696053316,
+    "fraction_of_source": 0.0030400210370040894,
+    "conditional_sigma": 3036.0061314976324,
+    "effect_over_sigma": 0.07732293718958028,
+    "sigma_equiv": 3127.4941885557655,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9911639974946587,
+        "eta": 0.02209748356356585,
+        "difference_rms": 2.6533101426877583,
+        "residual_rms": 0.059141816953249604,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9911639974946589,
+        "eta": 0.02104531266241654,
+        "difference_rms": 7.673149871184761,
+        "residual_rms": 0.16289318645532505,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-shoulder",
+    "measurement": "peak",
+    "units": "mJy/nominal beam",
+    "own_REF": 749.8023111384435,
+    "name": "peak",
+    "actual_increment": 20.482296667365063,
+    "ideal_increment": 19.821125390306406,
+    "absolute_discrepancy": 0.6611712770586564,
+    "ratio": 1.0333568989670991,
+    "fraction_of_source": 0.0008817941305819444,
+    "conditional_sigma": 7.185670413675789,
+    "effect_over_sigma": 0.09201246912192261,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8652145025290414,
+        "eta": 0.19840064011289452,
+        "difference_rms": 2.3478815068563708,
+        "residual_rms": 0.5309242942937881,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8652145025290413,
+        "eta": 0.186299558704975,
+        "difference_rms": 6.769470367337051,
+        "residual_rms": 1.4417735335511344,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-shoulder",
+    "measurement": "east",
+    "units": "arcsec",
+    "own_REF": 4.019982897213739,
+    "name": "east",
+    "actual_increment": 0.13202196826131996,
+    "ideal_increment": 0.13498591325543785,
+    "absolute_discrepancy": -0.0029639449941178952,
+    "ratio": 0.9780425607188423,
+    "fraction_of_source": -0.0007373028865799937,
+    "conditional_sigma": 0.04660231097586554,
+    "effect_over_sigma": -0.06360081575467076,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8652145025290414,
+        "eta": 0.19840064011289452,
+        "difference_rms": 2.3478815068563708,
+        "residual_rms": 0.5309242942937881,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8652145025290413,
+        "eta": 0.186299558704975,
+        "difference_rms": 6.769470367337051,
+        "residual_rms": 1.4417735335511344,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-shoulder",
+    "measurement": "north",
+    "units": "arcsec",
+    "own_REF": 7.414125959235905,
+    "name": "north",
+    "actual_increment": -0.008903408865380769,
+    "ideal_increment": -0.00409084899612111,
+    "absolute_discrepancy": -0.004812559869259658,
+    "ratio": 2.1764208050267473,
+    "fraction_of_source": -0.000649106839527668,
+    "conditional_sigma": 0.04286928454581843,
+    "effect_over_sigma": -0.1122612593199689,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8652145025290414,
+        "eta": 0.19840064011289452,
+        "difference_rms": 2.3478815068563708,
+        "residual_rms": 0.5309242942937881,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8652145025290413,
+        "eta": 0.186299558704975,
+        "difference_rms": 6.769470367337051,
+        "residual_rms": 1.4417735335511344,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-shoulder",
+    "measurement": "FWHM_major",
+    "units": "arcsec",
+    "own_REF": 10.04382175622756,
+    "name": "FWHM_major",
+    "actual_increment": 0.379876675207937,
+    "ideal_increment": 0.4121541219545133,
+    "absolute_discrepancy": -0.03227744674657629,
+    "ratio": 0.9216859785521239,
+    "fraction_of_source": -0.003213661844064787,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8652145025290414,
+        "eta": 0.19840064011289452,
+        "difference_rms": 2.3478815068563708,
+        "residual_rms": 0.5309242942937881,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8652145025290413,
+        "eta": 0.186299558704975,
+        "difference_rms": 6.769470367337051,
+        "residual_rms": 1.4417735335511344,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-shoulder",
+    "measurement": "FWHM_minor",
+    "units": "arcsec",
+    "own_REF": 9.263983930860693,
+    "name": "FWHM_minor",
+    "actual_increment": 0.317414074952854,
+    "ideal_increment": 0.35992318038939786,
+    "absolute_discrepancy": -0.04250910543654385,
+    "ratio": 0.8818939491739498,
+    "fraction_of_source": -0.00458864196589711,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8652145025290414,
+        "eta": 0.19840064011289452,
+        "difference_rms": 2.3478815068563708,
+        "residual_rms": 0.5309242942937881,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8652145025290413,
+        "eta": 0.186299558704975,
+        "difference_rms": 6.769470367337051,
+        "residual_rms": 1.4417735335511344,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-shoulder",
+    "measurement": "ellipse_xx",
+    "units": "arcsec^2",
+    "own_REF": 17.11595439080169,
+    "name": "ellipse_xx",
+    "actual_increment": 1.4033724893104953,
+    "ideal_increment": 1.548300395308459,
+    "absolute_discrepancy": -0.1449279059979638,
+    "ratio": 0.9063954860199525,
+    "fraction_of_source": -0.008467415996145077,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8652145025290414,
+        "eta": 0.19840064011289452,
+        "difference_rms": 2.3478815068563708,
+        "residual_rms": 0.5309242942937881,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8652145025290413,
+        "eta": 0.186299558704975,
+        "difference_rms": 6.769470367337051,
+        "residual_rms": 1.4417735335511344,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-shoulder",
+    "measurement": "ellipse_xy",
+    "units": "arcsec^2",
+    "own_REF": -1.3281523069982515,
+    "name": "ellipse_xy",
+    "actual_increment": -0.124750144805299,
+    "ideal_increment": -0.1080132985601272,
+    "absolute_discrepancy": -0.0167368462451718,
+    "ratio": 1.1549517186150462,
+    "fraction_of_source": 0.01260160160621837,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8652145025290414,
+        "eta": 0.19840064011289452,
+        "difference_rms": 2.3478815068563708,
+        "residual_rms": 0.5309242942937881,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8652145025290413,
+        "eta": 0.186299558704975,
+        "difference_rms": 6.769470367337051,
+        "residual_rms": 1.4417735335511344,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-shoulder",
+    "measurement": "ellipse_yy",
+    "units": "arcsec^2",
+    "own_REF": 16.552896716565847,
+    "name": "ellipse_yy",
+    "actual_increment": 1.0775080832127557,
+    "ideal_increment": 1.201343968941682,
+    "absolute_discrepancy": -0.12383588572892634,
+    "ratio": 0.8969188767493302,
+    "fraction_of_source": -0.0074812214350974335,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8652145025290414,
+        "eta": 0.19840064011289452,
+        "difference_rms": 2.3478815068563708,
+        "residual_rms": 0.5309242942937881,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8652145025290413,
+        "eta": 0.186299558704975,
+        "difference_rms": 6.769470367337051,
+        "residual_rms": 1.4417735335511344,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-shoulder",
+    "measurement": "background",
+    "units": "mJy/nominal beam",
+    "own_REF": -2.9495623706641187,
+    "name": "background",
+    "actual_increment": 0.5435625826730028,
+    "ideal_increment": 1.4366923485739844,
+    "absolute_discrepancy": -0.8931297659009816,
+    "ratio": 0.3783430622516546,
+    "fraction_of_source": 0.3028007730176887,
+    "conditional_sigma": 2.307211304160036,
+    "effect_over_sigma": -0.38710358444006265,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8652145025290414,
+        "eta": 0.19840064011289452,
+        "difference_rms": 2.3478815068563708,
+        "residual_rms": 0.5309242942937881,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8652145025290413,
+        "eta": 0.186299558704975,
+        "difference_rms": 6.769470367337051,
+        "residual_rms": 1.4417735335511344,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-shoulder",
+    "measurement": "fixed_template",
+    "units": "mJy/nominal beam",
+    "own_REF": 796.3256014161948,
+    "name": "fixed_template",
+    "actual_increment": 49.23326337228991,
+    "ideal_increment": 51.39079188325252,
+    "absolute_discrepancy": -2.1575285109626066,
+    "ratio": 0.9580172160829125,
+    "fraction_of_source": -0.0027093547000443443,
+    "conditional_sigma": 8.839181709832697,
+    "effect_over_sigma": -0.24408690552911408,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8652145025290414,
+        "eta": 0.19840064011289452,
+        "difference_rms": 2.3478815068563708,
+        "residual_rms": 0.5309242942937881,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8652145025290413,
+        "eta": 0.186299558704975,
+        "difference_rms": 6.769470367337051,
+        "residual_rms": 1.4417735335511344,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-shoulder",
+    "measurement": "aperture_1",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 73979.55598003879,
+    "name": "aperture_1",
+    "actual_increment": 6348.274598434815,
+    "ideal_increment": 6641.227659785058,
+    "absolute_discrepancy": -292.95306135024293,
+    "ratio": 0.955888718719255,
+    "fraction_of_source": -0.003959919162387075,
+    "conditional_sigma": 1151.8757722295036,
+    "effect_over_sigma": -0.254326958178155,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8652145025290414,
+        "eta": 0.19840064011289452,
+        "difference_rms": 2.3478815068563708,
+        "residual_rms": 0.5309242942937881,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8652145025290413,
+        "eta": 0.186299558704975,
+        "difference_rms": 6.769470367337051,
+        "residual_rms": 1.4417735335511344,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-shoulder",
+    "measurement": "aperture_1p5",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 76539.4728764444,
+    "name": "aperture_1p5",
+    "actual_increment": 9722.753229353693,
+    "ideal_increment": 10759.09390851116,
+    "absolute_discrepancy": -1036.340679157467,
+    "ratio": 0.9036776992588891,
+    "fraction_of_source": -0.013539950566819343,
+    "conditional_sigma": 2096.9331657797097,
+    "effect_over_sigma": -0.4942173151103369,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8652145025290414,
+        "eta": 0.19840064011289452,
+        "difference_rms": 2.3478815068563708,
+        "residual_rms": 0.5309242942937881,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8652145025290413,
+        "eta": 0.186299558704975,
+        "difference_rms": 6.769470367337051,
+        "residual_rms": 1.4417735335511344,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 5,
+    "branch": "C-shoulder",
+    "measurement": "aperture_2",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 77220.81806523244,
+    "name": "aperture_2",
+    "actual_increment": 11137.456150969083,
+    "ideal_increment": 12807.036286277798,
+    "absolute_discrepancy": -1669.5801353087154,
+    "ratio": 0.8696357144628691,
+    "fraction_of_source": -0.02162085532295623,
+    "conditional_sigma": 3036.0061314976324,
+    "effect_over_sigma": -0.5499264701699161,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8652145025290414,
+        "eta": 0.19840064011289452,
+        "difference_rms": 2.3478815068563708,
+        "residual_rms": 0.5309242942937881,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8652145025290413,
+        "eta": 0.186299558704975,
+        "difference_rms": 6.769470367337051,
+        "residual_rms": 1.4417735335511344,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-plus",
+    "measurement": "peak",
+    "units": "mJy/nominal beam",
+    "own_REF": 750.6036010362162,
+    "name": "peak",
+    "actual_increment": 75.31858250221217,
+    "ideal_increment": 75.06036516414395,
+    "absolute_discrepancy": 0.25821733806822067,
+    "ratio": 1.0034401289882289,
+    "fraction_of_source": 0.0003440129220160267,
+    "conditional_sigma": 6.1708873048991935,
+    "effect_over_sigma": 0.041844442348382645,
+    "sigma_equiv": 6.149731435518046,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9907490956641025,
+        "eta": 0.02375270037487772,
+        "difference_rms": 2.652292279407764,
+        "residual_rms": 0.06357184761221354,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9907490956641026,
+        "eta": 0.02292489194904462,
+        "difference_rms": 7.670232534744185,
+        "residual_rms": 0.17744135041494374,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-plus",
+    "measurement": "east",
+    "units": "arcsec",
+    "own_REF": 4.056265804958886,
+    "name": "east",
+    "actual_increment": -0.0001431274151340034,
+    "ideal_increment": -2.705585089302076e-09,
+    "absolute_discrepancy": -0.0001431247095489141,
+    "ratio": null,
+    "fraction_of_source": -3.5284844837816245e-05,
+    "conditional_sigma": 0.04044911223151746,
+    "effect_over_sigma": -0.0035383893898515047,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9907490956641025,
+        "eta": 0.02375270037487772,
+        "difference_rms": 2.652292279407764,
+        "residual_rms": 0.06357184761221354,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9907490956641026,
+        "eta": 0.02292489194904462,
+        "difference_rms": 7.670232534744185,
+        "residual_rms": 0.17744135041494374,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-plus",
+    "measurement": "north",
+    "units": "arcsec",
+    "own_REF": 7.378988589616708,
+    "name": "north",
+    "actual_increment": -0.00020869499389331025,
+    "ideal_increment": -9.629286701340334e-09,
+    "absolute_discrepancy": -0.00020868536460660891,
+    "ratio": null,
+    "fraction_of_source": -2.8281025518898222e-05,
+    "conditional_sigma": 0.03859198314452826,
+    "effect_over_sigma": -0.005407479678488542,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9907490956641025,
+        "eta": 0.02375270037487772,
+        "difference_rms": 2.652292279407764,
+        "residual_rms": 0.06357184761221354,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9907490956641026,
+        "eta": 0.02292489194904462,
+        "difference_rms": 7.670232534744185,
+        "residual_rms": 0.17744135041494374,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-plus",
+    "measurement": "FWHM_major",
+    "units": "arcsec",
+    "own_REF": 10.137608998302806,
+    "name": "FWHM_major",
+    "actual_increment": -0.009902633074000633,
+    "ideal_increment": -1.8309696869778236e-08,
+    "absolute_discrepancy": -0.009902614764303763,
+    "ratio": 540840.9076583785,
+    "fraction_of_source": -0.0009768195603087095,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9907490956641025,
+        "eta": 0.02375270037487772,
+        "difference_rms": 2.652292279407764,
+        "residual_rms": 0.06357184761221354,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9907490956641026,
+        "eta": 0.02292489194904462,
+        "difference_rms": 7.670232534744185,
+        "residual_rms": 0.17744135041494374,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-plus",
+    "measurement": "FWHM_minor",
+    "units": "arcsec",
+    "own_REF": 9.308915618186692,
+    "name": "FWHM_minor",
+    "actual_increment": -0.00895507795898709,
+    "ideal_increment": -1.0434005126569446e-07,
+    "absolute_discrepancy": -0.008954973618935824,
+    "ratio": 85825.89188291298,
+    "fraction_of_source": -0.0009619781708452296,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9907490956641025,
+        "eta": 0.02375270037487772,
+        "difference_rms": 2.652292279407764,
+        "residual_rms": 0.06357184761221354,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9907490956641026,
+        "eta": 0.02292489194904462,
+        "difference_rms": 7.670232534744185,
+        "residual_rms": 0.17744135041494374,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-plus",
+    "measurement": "ellipse_xx",
+    "units": "arcsec^2",
+    "own_REF": 17.46373237231376,
+    "name": "ellipse_xx",
+    "actual_increment": -0.037831281039615305,
+    "ideal_increment": -8.693496056366712e-08,
+    "absolute_discrepancy": -0.03783119410465474,
+    "ratio": 435167.63330109796,
+    "fraction_of_source": -0.00216627198001675,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9907490956641025,
+        "eta": 0.02375270037487772,
+        "difference_rms": 2.652292279407764,
+        "residual_rms": 0.06357184761221354,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9907490956641026,
+        "eta": 0.02292489194904462,
+        "difference_rms": 7.670232534744185,
+        "residual_rms": 0.17744135041494374,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-plus",
+    "measurement": "ellipse_xy",
+    "units": "arcsec^2",
+    "own_REF": -1.4015919851872711,
+    "name": "ellipse_xy",
+    "actual_increment": 0.001899116796285405,
+    "ideal_increment": -1.1360207730071181e-07,
+    "absolute_discrepancy": 0.0018992303983627057,
+    "ratio": -16717.27173842362,
+    "fraction_of_source": -0.0013550522680171745,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9907490956641025,
+        "eta": 0.02375270037487772,
+        "difference_rms": 2.652292279407764,
+        "residual_rms": 0.06357184761221354,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9907490956641026,
+        "eta": 0.02292489194904462,
+        "difference_rms": 7.670232534744185,
+        "residual_rms": 0.17744135041494374,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-plus",
+    "measurement": "ellipse_yy",
+    "units": "arcsec^2",
+    "own_REF": 16.696946539336228,
+    "name": "ellipse_yy",
+    "actual_increment": -0.02841076848531543,
+    "ideal_increment": -3.303318649727771e-07,
+    "absolute_discrepancy": -0.028410438153450457,
+    "ratio": 86006.74502793359,
+    "fraction_of_source": -0.0017015349535029348,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9907490956641025,
+        "eta": 0.02375270037487772,
+        "difference_rms": 2.652292279407764,
+        "residual_rms": 0.06357184761221354,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9907490956641026,
+        "eta": 0.02292489194904462,
+        "difference_rms": 7.670232534744185,
+        "residual_rms": 0.17744135041494374,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-plus",
+    "measurement": "background",
+    "units": "mJy/nominal beam",
+    "own_REF": -2.3141802523853525,
+    "name": "background",
+    "actual_increment": -0.07576303370667192,
+    "ideal_increment": 1.5359863647645966e-07,
+    "absolute_discrepancy": -0.0757631873053084,
+    "ratio": -493253.2960231276,
+    "fraction_of_source": 0.0327386715996799,
+    "conditional_sigma": 2.123092185664014,
+    "effect_over_sigma": -0.035685302699945104,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "sign reversal",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9907490956641025,
+        "eta": 0.02375270037487772,
+        "difference_rms": 2.652292279407764,
+        "residual_rms": 0.06357184761221354,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9907490956641026,
+        "eta": 0.02292489194904462,
+        "difference_rms": 7.670232534744185,
+        "residual_rms": 0.17744135041494374,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-plus",
+    "measurement": "fixed_template",
+    "units": "mJy/nominal beam",
+    "own_REF": 802.6205750345441,
+    "name": "fixed_template",
+    "actual_increment": 79.75438674958014,
+    "ideal_increment": 80.27596370670494,
+    "absolute_discrepancy": -0.5215769571248074,
+    "ratio": 0.9935027007706762,
+    "fraction_of_source": -0.0006498424951320981,
+    "conditional_sigma": 7.881515020008826,
+    "effect_over_sigma": -0.06617724584685539,
+    "sigma_equiv": 7.933058474722824,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9907490956641025,
+        "eta": 0.02375270037487772,
+        "difference_rms": 2.652292279407764,
+        "residual_rms": 0.06357184761221354,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9907490956641026,
+        "eta": 0.02292489194904462,
+        "difference_rms": 7.670232534744185,
+        "residual_rms": 0.17744135041494374,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-plus",
+    "measurement": "aperture_1",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 75000.99438593883,
+    "name": "aperture_1",
+    "actual_increment": 7388.452276265976,
+    "ideal_increment": 7478.845814564585,
+    "absolute_discrepancy": -90.3935382986092,
+    "ratio": 0.9879134373752466,
+    "fraction_of_source": -0.0012052311977820411,
+    "conditional_sigma": 1030.7956823121085,
+    "effect_over_sigma": -0.08769297335030889,
+    "sigma_equiv": 1043.4068849704022,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9907490956641025,
+        "eta": 0.02375270037487772,
+        "difference_rms": 2.652292279407764,
+        "residual_rms": 0.06357184761221354,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9907490956641026,
+        "eta": 0.02292489194904462,
+        "difference_rms": 7.670232534744185,
+        "residual_rms": 0.17744135041494374,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-plus",
+    "measurement": "aperture_1p5",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 77803.89555197855,
+    "name": "aperture_1p5",
+    "actual_increment": 7781.308434137871,
+    "ideal_increment": 8006.289286780302,
+    "absolute_discrepancy": -224.98085264243127,
+    "ratio": 0.9718994849444285,
+    "fraction_of_source": -0.0028916399499833273,
+    "conditional_sigma": 1884.9542536948766,
+    "effect_over_sigma": -0.11935613408199434,
+    "sigma_equiv": 1939.453907419917,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9907490956641025,
+        "eta": 0.02375270037487772,
+        "difference_rms": 2.652292279407764,
+        "residual_rms": 0.06357184761221354,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9907490956641026,
+        "eta": 0.02292489194904462,
+        "difference_rms": 7.670232534744185,
+        "residual_rms": 0.17744135041494374,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-plus",
+    "measurement": "aperture_2",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 79135.20146151357,
+    "name": "aperture_2",
+    "actual_increment": 7762.2229732331325,
+    "ideal_increment": 8025.984951769482,
+    "absolute_discrepancy": -263.7619785363495,
+    "ratio": 0.9671364972496992,
+    "fraction_of_source": -0.0033330549953123818,
+    "conditional_sigma": 2731.237195633844,
+    "effect_over_sigma": -0.09657234419551675,
+    "sigma_equiv": 2824.0452132670184,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9907490956641025,
+        "eta": 0.02375270037487772,
+        "difference_rms": 2.652292279407764,
+        "residual_rms": 0.06357184761221354,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9907490956641026,
+        "eta": 0.02292489194904462,
+        "difference_rms": 7.670232534744185,
+        "residual_rms": 0.17744135041494374,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-minus",
+    "measurement": "peak",
+    "units": "mJy/nominal beam",
+    "own_REF": 750.6036010362162,
+    "name": "peak",
+    "actual_increment": -75.14391862070227,
+    "ideal_increment": -75.0603567389968,
+    "absolute_discrepancy": -0.08356188170546375,
+    "ratio": 1.0011132625174701,
+    "fraction_of_source": -0.00011132624675675108,
+    "conditional_sigma": 6.1708873048991935,
+    "effect_over_sigma": -0.013541307364197409,
+    "sigma_equiv": 6.164025126768817,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9990988439730646,
+        "eta": 0.026100252979864506,
+        "difference_rms": 2.6749044012546683,
+        "residual_rms": 0.0698548492966754,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9990988439730646,
+        "eta": 0.024391966681337748,
+        "difference_rms": 7.735443293767789,
+        "residual_rms": 0.18879668077969963,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-minus",
+    "measurement": "east",
+    "units": "arcsec",
+    "own_REF": 4.056265804958886,
+    "name": "east",
+    "actual_increment": -0.0022046024812816256,
+    "ideal_increment": -3.8967939985923294e-10,
+    "absolute_discrepancy": -0.0022046020916022258,
+    "ratio": null,
+    "fraction_of_source": -0.0005435053316543124,
+    "conditional_sigma": 0.04044911223151746,
+    "effect_over_sigma": -0.05450310204544925,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9990988439730646,
+        "eta": 0.026100252979864506,
+        "difference_rms": 2.6749044012546683,
+        "residual_rms": 0.0698548492966754,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9990988439730646,
+        "eta": 0.024391966681337748,
+        "difference_rms": 7.735443293767789,
+        "residual_rms": 0.18879668077969963,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-minus",
+    "measurement": "north",
+    "units": "arcsec",
+    "own_REF": 7.378988589616708,
+    "name": "north",
+    "actual_increment": 0.0022065004914137987,
+    "ideal_increment": -7.643137678314815e-09,
+    "absolute_discrepancy": 0.002206508134551477,
+    "ratio": null,
+    "fraction_of_source": 0.0002990258228148434,
+    "conditional_sigma": 0.03859198314452826,
+    "effect_over_sigma": 0.05717529794434328,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9990988439730646,
+        "eta": 0.026100252979864506,
+        "difference_rms": 2.6749044012546683,
+        "residual_rms": 0.0698548492966754,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9990988439730646,
+        "eta": 0.024391966681337748,
+        "difference_rms": 7.735443293767789,
+        "residual_rms": 0.18879668077969963,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-minus",
+    "measurement": "FWHM_major",
+    "units": "arcsec",
+    "own_REF": 10.137608998302806,
+    "name": "FWHM_major",
+    "actual_increment": 0.0012965719630209094,
+    "ideal_increment": -4.0194080952460354e-08,
+    "absolute_discrepancy": 0.0012966121571018618,
+    "ratio": -32257.783541672045,
+    "fraction_of_source": 0.0001279011803788186,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9990988439730646,
+        "eta": 0.026100252979864506,
+        "difference_rms": 2.6749044012546683,
+        "residual_rms": 0.0698548492966754,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9990988439730646,
+        "eta": 0.024391966681337748,
+        "difference_rms": 7.735443293767789,
+        "residual_rms": 0.18879668077969963,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-minus",
+    "measurement": "FWHM_minor",
+    "units": "arcsec",
+    "own_REF": 9.308915618186692,
+    "name": "FWHM_minor",
+    "actual_increment": 0.0021201350665123186,
+    "ideal_increment": -6.256658657832759e-08,
+    "absolute_discrepancy": 0.002120197633098897,
+    "ratio": -33886.059356268466,
+    "fraction_of_source": 0.00022775989385452136,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9990988439730646,
+        "eta": 0.026100252979864506,
+        "difference_rms": 2.6749044012546683,
+        "residual_rms": 0.0698548492966754,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9990988439730646,
+        "eta": 0.024391966681337748,
+        "difference_rms": 7.735443293767789,
+        "residual_rms": 0.18879668077969963,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-minus",
+    "measurement": "ellipse_xx",
+    "units": "arcsec^2",
+    "own_REF": 17.46373237231376,
+    "name": "ellipse_xx",
+    "actual_increment": 0.022889966973991704,
+    "ideal_increment": -1.8060453754742412e-07,
+    "absolute_discrepancy": 0.022890147578529252,
+    "ratio": -126740.81883452753,
+    "fraction_of_source": 0.0013107248262014307,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9990988439730646,
+        "eta": 0.026100252979864506,
+        "difference_rms": 2.6749044012546683,
+        "residual_rms": 0.0698548492966754,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9990988439730646,
+        "eta": 0.024391966681337748,
+        "difference_rms": 7.735443293767789,
+        "residual_rms": 0.18879668077969963,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-minus",
+    "measurement": "ellipse_xy",
+    "units": "arcsec^2",
+    "own_REF": -1.4015919851872711,
+    "name": "ellipse_xy",
+    "actual_increment": 0.0059868360152057765,
+    "ideal_increment": -3.32814704684381e-08,
+    "absolute_discrepancy": 0.005986869296676245,
+    "ratio": -179884.9609389491,
+    "fraction_of_source": -0.004271477976435717,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9990988439730646,
+        "eta": 0.026100252979864506,
+        "difference_rms": 2.6749044012546683,
+        "residual_rms": 0.0698548492966754,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9990988439730646,
+        "eta": 0.024391966681337748,
+        "difference_rms": 7.735443293767789,
+        "residual_rms": 0.18879668077969963,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-minus",
+    "measurement": "ellipse_yy",
+    "units": "arcsec^2",
+    "own_REF": 16.696946539336228,
+    "name": "ellipse_yy",
+    "actual_increment": -0.011029792471870081,
+    "ideal_increment": -1.7642604532852602e-07,
+    "absolute_discrepancy": -0.011029616045824753,
+    "ratio": 62517.93748100691,
+    "fraction_of_source": -0.0006605768318081484,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9990988439730646,
+        "eta": 0.026100252979864506,
+        "difference_rms": 2.6749044012546683,
+        "residual_rms": 0.0698548492966754,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9990988439730646,
+        "eta": 0.024391966681337748,
+        "difference_rms": 7.735443293767789,
+        "residual_rms": 0.18879668077969963,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-minus",
+    "measurement": "background",
+    "units": "mJy/nominal beam",
+    "own_REF": -2.3141802523853525,
+    "name": "background",
+    "actual_increment": 0.015640774071646213,
+    "ideal_increment": 1.2040176411431958e-07,
+    "absolute_discrepancy": 0.0156406536698821,
+    "ratio": 129904.85801184396,
+    "fraction_of_source": -0.006758615131107622,
+    "conditional_sigma": 2.123092185664014,
+    "effect_over_sigma": 0.007366921594594047,
+    "sigma_equiv": 1.6343439484537547e-05,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9990988439730646,
+        "eta": 0.026100252979864506,
+        "difference_rms": 2.6749044012546683,
+        "residual_rms": 0.0698548492966754,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9990988439730646,
+        "eta": 0.024391966681337748,
+        "difference_rms": 7.735443293767789,
+        "residual_rms": 0.18879668077969963,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-minus",
+    "measurement": "fixed_template",
+    "units": "mJy/nominal beam",
+    "own_REF": 802.6205750345441,
+    "name": "fixed_template",
+    "actual_increment": -80.25355419498032,
+    "ideal_increment": -80.27596425470585,
+    "absolute_discrepancy": 0.022410059725530118,
+    "ratio": 0.9997208372402177,
+    "fraction_of_source": 2.792111294252033e-05,
+    "conditional_sigma": 7.881515020008826,
+    "effect_over_sigma": 0.002843369538551615,
+    "sigma_equiv": 7.883715859885611,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9990988439730646,
+        "eta": 0.026100252979864506,
+        "difference_rms": 2.6749044012546683,
+        "residual_rms": 0.0698548492966754,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9990988439730646,
+        "eta": 0.024391966681337748,
+        "difference_rms": 7.735443293767789,
+        "residual_rms": 0.18879668077969963,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-minus",
+    "measurement": "aperture_1",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 75000.99438593883,
+    "name": "aperture_1",
+    "actual_increment": -7500.240382039541,
+    "ideal_increment": -7478.845893476697,
+    "absolute_discrepancy": -21.394488562844344,
+    "ratio": 1.0028606671226512,
+    "fraction_of_source": -0.00028525606544298535,
+    "conditional_sigma": 1030.7956823121085,
+    "effect_over_sigma": -0.02075531449147692,
+    "sigma_equiv": 1027.855330361701,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9990988439730646,
+        "eta": 0.026100252979864506,
+        "difference_rms": 2.6749044012546683,
+        "residual_rms": 0.0698548492966754,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9990988439730646,
+        "eta": 0.024391966681337748,
+        "difference_rms": 7.735443293767789,
+        "residual_rms": 0.18879668077969963,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-minus",
+    "measurement": "aperture_1p5",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 77803.89555197855,
+    "name": "aperture_1p5",
+    "actual_increment": -7946.721976148634,
+    "ideal_increment": -8006.289464332571,
+    "absolute_discrepancy": 59.5674881839368,
+    "ratio": 0.9925599132470408,
+    "fraction_of_source": 0.0007656106132133381,
+    "conditional_sigma": 1884.9542536948766,
+    "effect_over_sigma": 0.03160155641293307,
+    "sigma_equiv": 1899.0836004332218,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9990988439730646,
+        "eta": 0.026100252979864506,
+        "difference_rms": 2.6749044012546683,
+        "residual_rms": 0.0698548492966754,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9990988439730646,
+        "eta": 0.024391966681337748,
+        "difference_rms": 7.735443293767789,
+        "residual_rms": 0.18879668077969963,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-minus",
+    "measurement": "aperture_2",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 79135.20146151357,
+    "name": "aperture_2",
+    "actual_increment": -7958.8915923432505,
+    "ideal_increment": -8025.985267417942,
+    "absolute_discrepancy": 67.09367507469142,
+    "ratio": 0.9916404437786519,
+    "fraction_of_source": 0.0008478360304335815,
+    "conditional_sigma": 2731.237195633844,
+    "effect_over_sigma": 0.024565305123241357,
+    "sigma_equiv": 2754.2616003301036,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9990988439730646,
+        "eta": 0.026100252979864506,
+        "difference_rms": 2.6749044012546683,
+        "residual_rms": 0.0698548492966754,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9990988439730646,
+        "eta": 0.024391966681337748,
+        "difference_rms": 7.735443293767789,
+        "residual_rms": 0.18879668077969963,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-shoulder",
+    "measurement": "peak",
+    "units": "mJy/nominal beam",
+    "own_REF": 750.6036010362162,
+    "name": "peak",
+    "actual_increment": 20.26198259767625,
+    "ideal_increment": 19.729669125223836,
+    "absolute_discrepancy": 0.5323134724524152,
+    "ratio": 1.0269803547679301,
+    "fraction_of_source": 0.0007091805471190797,
+    "conditional_sigma": 6.1708873048991935,
+    "effect_over_sigma": 0.08626206348474404,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8445591132369313,
+        "eta": 0.23414875925786632,
+        "difference_rms": 2.308126534029796,
+        "residual_rms": 0.6265870145278287,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8445591132369312,
+        "eta": 0.22107459093253598,
+        "difference_rms": 6.6483076626406445,
+        "residual_rms": 1.7108977410511828,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-shoulder",
+    "measurement": "east",
+    "units": "arcsec",
+    "own_REF": 4.056265804958886,
+    "name": "east",
+    "actual_increment": 0.1367842760481368,
+    "ideal_increment": 0.13904335088133202,
+    "absolute_discrepancy": -0.002259074833195207,
+    "ratio": 0.9837527302177632,
+    "fraction_of_source": -0.0005569346146974471,
+    "conditional_sigma": 0.04044911223151746,
+    "effect_over_sigma": -0.05584980012082844,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8445591132369313,
+        "eta": 0.23414875925786632,
+        "difference_rms": 2.308126534029796,
+        "residual_rms": 0.6265870145278287,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8445591132369312,
+        "eta": 0.22107459093253598,
+        "difference_rms": 6.6483076626406445,
+        "residual_rms": 1.7108977410511828,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-shoulder",
+    "measurement": "north",
+    "units": "arcsec",
+    "own_REF": 7.378988589616708,
+    "name": "north",
+    "actual_increment": -0.007917130332391054,
+    "ideal_increment": -0.004324778052504641,
+    "absolute_discrepancy": -0.0035923522798864127,
+    "ratio": 1.8306443096671625,
+    "fraction_of_source": -0.00048683532116330496,
+    "conditional_sigma": 0.03859198314452826,
+    "effect_over_sigma": -0.09308545421034554,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8445591132369313,
+        "eta": 0.23414875925786632,
+        "difference_rms": 2.308126534029796,
+        "residual_rms": 0.6265870145278287,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8445591132369312,
+        "eta": 0.22107459093253598,
+        "difference_rms": 6.6483076626406445,
+        "residual_rms": 1.7108977410511828,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-shoulder",
+    "measurement": "FWHM_major",
+    "units": "arcsec",
+    "own_REF": 10.137608998302806,
+    "name": "FWHM_major",
+    "actual_increment": 0.38772579586047407,
+    "ideal_increment": 0.4194153395279727,
+    "absolute_discrepancy": -0.031689543667498654,
+    "ratio": 0.9244435272606782,
+    "fraction_of_source": -0.003125938638272987,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8445591132369313,
+        "eta": 0.23414875925786632,
+        "difference_rms": 2.308126534029796,
+        "residual_rms": 0.6265870145278287,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8445591132369312,
+        "eta": 0.22107459093253598,
+        "difference_rms": 6.6483076626406445,
+        "residual_rms": 1.7108977410511828,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-shoulder",
+    "measurement": "FWHM_minor",
+    "units": "arcsec",
+    "own_REF": 9.308915618186692,
+    "name": "FWHM_minor",
+    "actual_increment": 0.30669478502722747,
+    "ideal_increment": 0.3609209185308071,
+    "absolute_discrepancy": -0.05422613350357963,
+    "ratio": 0.8497561911226515,
+    "fraction_of_source": -0.005825182623595688,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8445591132369313,
+        "eta": 0.23414875925786632,
+        "difference_rms": 2.308126534029796,
+        "residual_rms": 0.6265870145278287,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8445591132369312,
+        "eta": 0.22107459093253598,
+        "difference_rms": 6.6483076626406445,
+        "residual_rms": 1.7108977410511828,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-shoulder",
+    "measurement": "ellipse_xx",
+    "units": "arcsec^2",
+    "own_REF": 17.46373237231376,
+    "name": "ellipse_xx",
+    "actual_increment": 1.479291797762901,
+    "ideal_increment": 1.5802360505232187,
+    "absolute_discrepancy": -0.10094425276031771,
+    "ratio": 0.9361207759265492,
+    "fraction_of_source": -0.005780222154592241,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8445591132369313,
+        "eta": 0.23414875925786632,
+        "difference_rms": 2.308126534029796,
+        "residual_rms": 0.6265870145278287,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8445591132369312,
+        "eta": 0.22107459093253598,
+        "difference_rms": 6.6483076626406445,
+        "residual_rms": 1.7108977410511828,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-shoulder",
+    "measurement": "ellipse_xy",
+    "units": "arcsec^2",
+    "own_REF": -1.4015919851872711,
+    "name": "ellipse_xy",
+    "actual_increment": -0.1310212027171196,
+    "ideal_increment": -0.11524394807641869,
+    "absolute_discrepancy": -0.0157772546407009,
+    "ratio": 1.1369031077470457,
+    "fraction_of_source": 0.011256667280808437,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8445591132369313,
+        "eta": 0.23414875925786632,
+        "difference_rms": 2.308126534029796,
+        "residual_rms": 0.6265870145278287,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8445591132369312,
+        "eta": 0.22107459093253598,
+        "difference_rms": 6.6483076626406445,
+        "residual_rms": 1.7108977410511828,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-shoulder",
+    "measurement": "ellipse_yy",
+    "units": "arcsec^2",
+    "own_REF": 16.696946539336228,
+    "name": "ellipse_yy",
+    "actual_increment": 1.0121721643838413,
+    "ideal_increment": 1.2203010797823346,
+    "absolute_discrepancy": -0.20812891539849332,
+    "ratio": 0.82944461916266,
+    "fraction_of_source": -0.012465088446451198,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8445591132369313,
+        "eta": 0.23414875925786632,
+        "difference_rms": 2.308126534029796,
+        "residual_rms": 0.6265870145278287,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8445591132369312,
+        "eta": 0.22107459093253598,
+        "difference_rms": 6.6483076626406445,
+        "residual_rms": 1.7108977410511828,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-shoulder",
+    "measurement": "background",
+    "units": "mJy/nominal beam",
+    "own_REF": -2.3141802523853525,
+    "name": "background",
+    "actual_increment": 0.40404962911076425,
+    "ideal_increment": 1.4084178453125162,
+    "absolute_discrepancy": -1.004368216201752,
+    "ratio": 0.28688192957474845,
+    "fraction_of_source": 0.4340060438967512,
+    "conditional_sigma": 2.123092185664014,
+    "effect_over_sigma": -0.4730685850495125,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8445591132369313,
+        "eta": 0.23414875925786632,
+        "difference_rms": 2.308126534029796,
+        "residual_rms": 0.6265870145278287,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8445591132369312,
+        "eta": 0.22107459093253598,
+        "difference_rms": 6.6483076626406445,
+        "residual_rms": 1.7108977410511828,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-shoulder",
+    "measurement": "fixed_template",
+    "units": "mJy/nominal beam",
+    "own_REF": 802.6205750345441,
+    "name": "fixed_template",
+    "actual_increment": 48.71230567826046,
+    "ideal_increment": 51.447340889775205,
+    "absolute_discrepancy": -2.7350352115147416,
+    "ratio": 0.9468381618133677,
+    "fraction_of_source": -0.003407631571614057,
+    "conditional_sigma": 7.881515020008826,
+    "effect_over_sigma": -0.3470189683799751,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8445591132369313,
+        "eta": 0.23414875925786632,
+        "difference_rms": 2.308126534029796,
+        "residual_rms": 0.6265870145278287,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8445591132369312,
+        "eta": 0.22107459093253598,
+        "difference_rms": 6.6483076626406445,
+        "residual_rms": 1.7108977410511828,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-shoulder",
+    "measurement": "aperture_1",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 75000.99438593883,
+    "name": "aperture_1",
+    "actual_increment": 6240.593538678833,
+    "ideal_increment": 6649.37071672437,
+    "absolute_discrepancy": -408.77717804553686,
+    "ratio": 0.9385239302393852,
+    "fraction_of_source": -0.0054502901113825004,
+    "conditional_sigma": 1030.7956823121085,
+    "effect_over_sigma": -0.39656469760198865,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8445591132369313,
+        "eta": 0.23414875925786632,
+        "difference_rms": 2.308126534029796,
+        "residual_rms": 0.6265870145278287,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8445591132369312,
+        "eta": 0.22107459093253598,
+        "difference_rms": 6.6483076626406445,
+        "residual_rms": 1.7108977410511828,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-shoulder",
+    "measurement": "aperture_1p5",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 77803.89555197855,
+    "name": "aperture_1p5",
+    "actual_increment": 9545.425483515224,
+    "ideal_increment": 10777.41578662458,
+    "absolute_discrepancy": -1231.9903031093563,
+    "ratio": 0.8856877819784655,
+    "fraction_of_source": -0.015834558081816084,
+    "conditional_sigma": 1884.9542536948766,
+    "effect_over_sigma": -0.6535916193692319,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8445591132369313,
+        "eta": 0.23414875925786632,
+        "difference_rms": 2.308126534029796,
+        "residual_rms": 0.6265870145278287,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8445591132369312,
+        "eta": 0.22107459093253598,
+        "difference_rms": 6.6483076626406445,
+        "residual_rms": 1.7108977410511828,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "branch": "C-shoulder",
+    "measurement": "aperture_2",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 79135.20146151357,
+    "name": "aperture_2",
+    "actual_increment": 10821.816507898999,
+    "ideal_increment": 12839.608514035019,
+    "absolute_discrepancy": -2017.79200613602,
+    "ratio": 0.8428462983174008,
+    "fraction_of_source": -0.025498033351407445,
+    "conditional_sigma": 2731.237195633844,
+    "effect_over_sigma": -0.7387831453678438,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8445591132369313,
+        "eta": 0.23414875925786632,
+        "difference_rms": 2.308126534029796,
+        "residual_rms": 0.6265870145278287,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8445591132369312,
+        "eta": 0.22107459093253598,
+        "difference_rms": 6.6483076626406445,
+        "residual_rms": 1.7108977410511828,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-plus",
+    "measurement": "peak",
+    "units": "mJy/nominal beam",
+    "own_REF": 754.7225573554533,
+    "name": "peak",
+    "actual_increment": 75.38642852825706,
+    "ideal_increment": 75.09058310548653,
+    "absolute_discrepancy": 0.29584542277052606,
+    "ratio": 1.0039398471890266,
+    "fraction_of_source": 0.0003919922889374977,
+    "conditional_sigma": 5.4521781123673785,
+    "effect_over_sigma": 0.054261877853815685,
+    "sigma_equiv": 5.43078166250016,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9898785526132429,
+        "eta": 0.026042143114163377,
+        "difference_rms": 2.650094206010942,
+        "residual_rms": 0.06969932375773391,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.989878552613243,
+        "eta": 0.025296727278597296,
+        "difference_rms": 7.663877070540397,
+        "residual_rms": 0.1957996338377469,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-plus",
+    "measurement": "east",
+    "units": "arcsec",
+    "own_REF": 4.063279041430742,
+    "name": "east",
+    "actual_increment": -0.0006761901815330873,
+    "ideal_increment": -0.0005812060650463025,
+    "absolute_discrepancy": -9.498411648678484e-05,
+    "ratio": 1.1634258866159937,
+    "fraction_of_source": -2.33762228777031e-05,
+    "conditional_sigma": 0.033008764685364046,
+    "effect_over_sigma": -0.0028775422949681123,
+    "sigma_equiv": 0.02837203904872291,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9898785526132429,
+        "eta": 0.026042143114163377,
+        "difference_rms": 2.650094206010942,
+        "residual_rms": 0.06969932375773391,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.989878552613243,
+        "eta": 0.025296727278597296,
+        "difference_rms": 7.663877070540397,
+        "residual_rms": 0.1957996338377469,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-plus",
+    "measurement": "north",
+    "units": "arcsec",
+    "own_REF": 7.356386060120711,
+    "name": "north",
+    "actual_increment": 0.001378755128793152,
+    "ideal_increment": 0.0019807198181496233,
+    "absolute_discrepancy": -0.0006019646893564712,
+    "ratio": 0.6960879151909415,
+    "fraction_of_source": -8.182886058954246e-05,
+    "conditional_sigma": 0.031253033503460086,
+    "effect_over_sigma": -0.019261000353448136,
+    "sigma_equiv": 0.04489811246742759,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9898785526132429,
+        "eta": 0.026042143114163377,
+        "difference_rms": 2.650094206010942,
+        "residual_rms": 0.06969932375773391,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.989878552613243,
+        "eta": 0.025296727278597296,
+        "difference_rms": 7.663877070540397,
+        "residual_rms": 0.1957996338377469,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-plus",
+    "measurement": "FWHM_major",
+    "units": "arcsec",
+    "own_REF": 10.023346534065126,
+    "name": "FWHM_major",
+    "actual_increment": -0.0011981414309083505,
+    "ideal_increment": 0.009725846063245669,
+    "absolute_discrepancy": -0.01092398749415402,
+    "ratio": -0.12319148618197559,
+    "fraction_of_source": -0.0010898543173208663,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9898785526132429,
+        "eta": 0.026042143114163377,
+        "difference_rms": 2.650094206010942,
+        "residual_rms": 0.06969932375773391,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.989878552613243,
+        "eta": 0.025296727278597296,
+        "difference_rms": 7.663877070540397,
+        "residual_rms": 0.1957996338377469,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-plus",
+    "measurement": "FWHM_minor",
+    "units": "arcsec",
+    "own_REF": 9.282127591415176,
+    "name": "FWHM_minor",
+    "actual_increment": -0.007722493431767674,
+    "ideal_increment": 0.0021911126180444995,
+    "absolute_discrepancy": -0.009913606049812174,
+    "ratio": -3.5244621240234384,
+    "fraction_of_source": -0.0010680316503062334,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9898785526132429,
+        "eta": 0.026042143114163377,
+        "difference_rms": 2.650094206010942,
+        "residual_rms": 0.06969932375773391,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.989878552613243,
+        "eta": 0.025296727278597296,
+        "difference_rms": 7.663877070540397,
+        "residual_rms": 0.1957996338377469,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-plus",
+    "measurement": "ellipse_xx",
+    "units": "arcsec^2",
+    "own_REF": 17.19597767653213,
+    "name": "ellipse_xx",
+    "actual_increment": -0.018674117310101934,
+    "ideal_increment": 0.02242344792653128,
+    "absolute_discrepancy": -0.041097565236633216,
+    "ratio": -0.8327941970069125,
+    "fraction_of_source": -0.002389952232417718,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9898785526132429,
+        "eta": 0.026042143114163377,
+        "difference_rms": 2.650094206010942,
+        "residual_rms": 0.06969932375773391,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.989878552613243,
+        "eta": 0.025296727278597296,
+        "difference_rms": 7.663877070540397,
+        "residual_rms": 0.1957996338377469,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-plus",
+    "measurement": "ellipse_xy",
+    "units": "arcsec^2",
+    "own_REF": -1.2366037877307494,
+    "name": "ellipse_xy",
+    "actual_increment": -0.01227150770199903,
+    "ideal_increment": -0.014173947415230703,
+    "absolute_discrepancy": 0.001902439713231674,
+    "ratio": 0.8657791187240192,
+    "fraction_of_source": -0.0015384391768059986,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9898785526132429,
+        "eta": 0.026042143114163377,
+        "difference_rms": 2.650094206010942,
+        "residual_rms": 0.06969932375773391,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.989878552613243,
+        "eta": 0.025296727278597296,
+        "difference_rms": 7.663877070540397,
+        "residual_rms": 0.1957996338377469,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-plus",
+    "measurement": "ellipse_yy",
+    "units": "arcsec^2",
+    "own_REF": 16.459459004048583,
+    "name": "ellipse_yy",
+    "actual_increment": -0.011499856644800133,
+    "ideal_increment": 0.020090397671737037,
+    "absolute_discrepancy": -0.03159025431653717,
+    "ratio": -0.5724056254485202,
+    "fraction_of_source": -0.0019192765879344406,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9898785526132429,
+        "eta": 0.026042143114163377,
+        "difference_rms": 2.650094206010942,
+        "residual_rms": 0.06969932375773391,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.989878552613243,
+        "eta": 0.025296727278597296,
+        "difference_rms": 7.663877070540397,
+        "residual_rms": 0.1957996338377469,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-plus",
+    "measurement": "background",
+    "units": "mJy/nominal beam",
+    "own_REF": -2.1243101627307164,
+    "name": "background",
+    "actual_increment": -0.07776320884020782,
+    "ideal_increment": 0.0009069338844560626,
+    "absolute_discrepancy": -0.07867014272466388,
+    "ratio": -85.74297440308632,
+    "fraction_of_source": 0.03703326571838104,
+    "conditional_sigma": 1.0639603237594046,
+    "effect_over_sigma": -0.07394086129705502,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "sign reversal",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9898785526132429,
+        "eta": 0.026042143114163377,
+        "difference_rms": 2.650094206010942,
+        "residual_rms": 0.06969932375773391,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.989878552613243,
+        "eta": 0.025296727278597296,
+        "difference_rms": 7.663877070540397,
+        "residual_rms": 0.1957996338377469,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-plus",
+    "measurement": "fixed_template",
+    "units": "mJy/nominal beam",
+    "own_REF": 801.6683154557277,
+    "name": "fixed_template",
+    "actual_increment": 79.69635494849649,
+    "ideal_increment": 80.27415014613337,
+    "absolute_discrepancy": -0.577795197636874,
+    "ratio": 0.9928022259147554,
+    "fraction_of_source": -0.0007207409679256345,
+    "conditional_sigma": 5.448375562188852,
+    "effect_over_sigma": -0.106049076654464,
+    "sigma_equiv": 5.48787605423506,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9898785526132429,
+        "eta": 0.026042143114163377,
+        "difference_rms": 2.650094206010942,
+        "residual_rms": 0.06969932375773391,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.989878552613243,
+        "eta": 0.025296727278597296,
+        "difference_rms": 7.663877070540397,
+        "residual_rms": 0.1957996338377469,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-plus",
+    "measurement": "aperture_1",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 74397.90475779575,
+    "name": "aperture_1",
+    "actual_increment": 7377.059144726445,
+    "ideal_increment": 7478.584661842266,
+    "absolute_discrepancy": -101.52551711582055,
+    "ratio": 0.9864245011982239,
+    "fraction_of_source": -0.0013646287142942992,
+    "conditional_sigma": 680.0306356372656,
+    "effect_over_sigma": -0.14929550493071486,
+    "sigma_equiv": 689.3894411698236,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9898785526132429,
+        "eta": 0.026042143114163377,
+        "difference_rms": 2.650094206010942,
+        "residual_rms": 0.06969932375773391,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.989878552613243,
+        "eta": 0.025296727278597296,
+        "difference_rms": 7.663877070540397,
+        "residual_rms": 0.1957996338377469,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-plus",
+    "measurement": "aperture_1p5",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 77338.96240561867,
+    "name": "aperture_1p5",
+    "actual_increment": 7754.719953160718,
+    "ideal_increment": 8005.70169315509,
+    "absolute_discrepancy": -250.9817399943713,
+    "ratio": 0.9686496262771117,
+    "fraction_of_source": -0.003245217315924806,
+    "conditional_sigma": 1155.9057596067696,
+    "effect_over_sigma": -0.21712993287597546,
+    "sigma_equiv": 1193.3166836076264,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9898785526132429,
+        "eta": 0.026042143114163377,
+        "difference_rms": 2.650094206010942,
+        "residual_rms": 0.06969932375773391,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.989878552613243,
+        "eta": 0.025296727278597296,
+        "difference_rms": 7.663877070540397,
+        "residual_rms": 0.1957996338377469,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-plus",
+    "measurement": "aperture_2",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 78638.72312514916,
+    "name": "aperture_2",
+    "actual_increment": 7734.827769546115,
+    "ideal_increment": 8024.940340880203,
+    "absolute_discrepancy": -290.112571334088,
+    "ratio": 0.9638486320133481,
+    "fraction_of_source": -0.0036891821205233704,
+    "conditional_sigma": 1613.9598350225706,
+    "effect_over_sigma": -0.17975203907724932,
+    "sigma_equiv": 1674.4951244587326,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9898785526132429,
+        "eta": 0.026042143114163377,
+        "difference_rms": 2.650094206010942,
+        "residual_rms": 0.06969932375773391,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.989878552613243,
+        "eta": 0.025296727278597296,
+        "difference_rms": 7.663877070540397,
+        "residual_rms": 0.1957996338377469,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-minus",
+    "measurement": "peak",
+    "units": "mJy/nominal beam",
+    "own_REF": 754.7225573554533,
+    "name": "peak",
+    "actual_increment": -75.05054299317135,
+    "ideal_increment": -75.0968305310364,
+    "absolute_discrepancy": 0.04628753786505513,
+    "ratio": 0.9993836286093869,
+    "fraction_of_source": 6.133053453079048e-05,
+    "conditional_sigma": 5.4521781123673785,
+    "effect_over_sigma": 0.008489733260925461,
+    "sigma_equiv": 5.455540751606993,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9988106774882416,
+        "eta": 0.03497362189515316,
+        "difference_rms": 2.6748583382583435,
+        "residual_rms": 0.09360357881318565,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9988106774882415,
+        "eta": 0.032284423827003667,
+        "difference_rms": 7.734943672646726,
+        "residual_rms": 0.24988522405972133,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-minus",
+    "measurement": "east",
+    "units": "arcsec",
+    "own_REF": 4.063279041430742,
+    "name": "east",
+    "actual_increment": -0.0011111623582751307,
+    "ideal_increment": 0.0006963096427448079,
+    "absolute_discrepancy": -0.0018074720010199385,
+    "ratio": -1.5957876928071828,
+    "fraction_of_source": -0.0004448308822973429,
+    "conditional_sigma": 0.033008764685364046,
+    "effect_over_sigma": -0.054757335460704604,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "sign reversal",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9988106774882416,
+        "eta": 0.03497362189515316,
+        "difference_rms": 2.6748583382583435,
+        "residual_rms": 0.09360357881318565,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9988106774882415,
+        "eta": 0.032284423827003667,
+        "difference_rms": 7.734943672646726,
+        "residual_rms": 0.24988522405972133,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-minus",
+    "measurement": "north",
+    "units": "arcsec",
+    "own_REF": 7.356386060120711,
+    "name": "north",
+    "actual_increment": -0.0005544177917098381,
+    "ideal_increment": -0.0024024221184770767,
+    "absolute_discrepancy": 0.0018480043267672386,
+    "ratio": 0.23077451187524445,
+    "fraction_of_source": 0.0002512108950868349,
+    "conditional_sigma": 0.031253033503460086,
+    "effect_over_sigma": 0.059130398543957095,
+    "sigma_equiv": 0.1354267126360788,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9988106774882416,
+        "eta": 0.03497362189515316,
+        "difference_rms": 2.6748583382583435,
+        "residual_rms": 0.09360357881318565,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9988106774882415,
+        "eta": 0.032284423827003667,
+        "difference_rms": 7.734943672646726,
+        "residual_rms": 0.24988522405972133,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-minus",
+    "measurement": "FWHM_major",
+    "units": "arcsec",
+    "own_REF": 10.023346534065126,
+    "name": "FWHM_major",
+    "actual_increment": -0.010204900981122478,
+    "ideal_increment": -0.011719969001179109,
+    "absolute_discrepancy": 0.0015150680200566313,
+    "ratio": 0.8707276427178088,
+    "fraction_of_source": 0.00015115391001473952,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9988106774882416,
+        "eta": 0.03497362189515316,
+        "difference_rms": 2.6748583382583435,
+        "residual_rms": 0.09360357881318565,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9988106774882415,
+        "eta": 0.032284423827003667,
+        "difference_rms": 7.734943672646726,
+        "residual_rms": 0.24988522405972133,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-minus",
+    "measurement": "FWHM_minor",
+    "units": "arcsec",
+    "own_REF": 9.282127591415176,
+    "name": "FWHM_minor",
+    "actual_increment": -0.0037521629228116637,
+    "ideal_increment": -0.002618106358093897,
+    "absolute_discrepancy": -0.001134056564717767,
+    "ratio": 1.4331590889009616,
+    "fraction_of_source": -0.00012217636027397744,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9988106774882416,
+        "eta": 0.03497362189515316,
+        "difference_rms": 2.6748583382583435,
+        "residual_rms": 0.09360357881318565,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9988106774882415,
+        "eta": 0.032284423827003667,
+        "difference_rms": 7.734943672646726,
+        "residual_rms": 0.24988522405972133,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-minus",
+    "measurement": "ellipse_xx",
+    "units": "arcsec^2",
+    "own_REF": 17.19597767653213,
+    "name": "ellipse_xx",
+    "actual_increment": -0.02464871878281727,
+    "ideal_increment": -0.02692720051313202,
+    "absolute_discrepancy": 0.002278481730314752,
+    "ratio": 0.9153836385923755,
+    "fraction_of_source": 0.00013250085416337013,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9988106774882416,
+        "eta": 0.03497362189515316,
+        "difference_rms": 2.6748583382583435,
+        "residual_rms": 0.09360357881318565,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9988106774882415,
+        "eta": 0.032284423827003667,
+        "difference_rms": 7.734943672646726,
+        "residual_rms": 0.24988522405972133,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-minus",
+    "measurement": "ellipse_xy",
+    "units": "arcsec^2",
+    "own_REF": -1.2366037877307494,
+    "name": "ellipse_xy",
+    "actual_increment": 0.012710578248563031,
+    "ideal_increment": 0.017115595929149352,
+    "absolute_discrepancy": -0.004405017680586321,
+    "ratio": 0.7426313580420422,
+    "fraction_of_source": 0.003562190027470175,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9988106774882416,
+        "eta": 0.03497362189515316,
+        "difference_rms": 2.6748583382583435,
+        "residual_rms": 0.09360357881318565,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9988106774882415,
+        "eta": 0.032284423827003667,
+        "difference_rms": 7.734943672646726,
+        "residual_rms": 0.24988522405972133,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-minus",
+    "measurement": "ellipse_yy",
+    "units": "arcsec^2",
+    "own_REF": 16.459459004048583,
+    "name": "ellipse_yy",
+    "actual_increment": -0.02478385785872561,
+    "ideal_increment": -0.024181281865537585,
+    "absolute_discrepancy": -0.0006025759931880259,
+    "ratio": 1.024919108777554,
+    "fraction_of_source": -3.660970831664689e-05,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "unsupported or degenerate response",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9988106774882416,
+        "eta": 0.03497362189515316,
+        "difference_rms": 2.6748583382583435,
+        "residual_rms": 0.09360357881318565,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9988106774882415,
+        "eta": 0.032284423827003667,
+        "difference_rms": 7.734943672646726,
+        "residual_rms": 0.24988522405972133,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-minus",
+    "measurement": "background",
+    "units": "mJy/nominal beam",
+    "own_REF": -2.1243101627307164,
+    "name": "background",
+    "actual_increment": 0.014829010617831706,
+    "ideal_increment": -0.001093650109376565,
+    "absolute_discrepancy": 0.01592266072720827,
+    "ratio": -13.55919090639051,
+    "fraction_of_source": -0.007495450055532532,
+    "conditional_sigma": 1.0639603237594046,
+    "effect_over_sigma": 0.014965464756192254,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "sign reversal",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9988106774882416,
+        "eta": 0.03497362189515316,
+        "difference_rms": 2.6748583382583435,
+        "residual_rms": 0.09360357881318565,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9988106774882415,
+        "eta": 0.032284423827003667,
+        "difference_rms": 7.734943672646726,
+        "residual_rms": 0.24988522405972133,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-minus",
+    "measurement": "fixed_template",
+    "units": "mJy/nominal beam",
+    "own_REF": 801.6683154557277,
+    "name": "fixed_template",
+    "actual_increment": -80.21737058735698,
+    "ideal_increment": -80.27377671368345,
+    "absolute_discrepancy": 0.0564061263264648,
+    "ratio": 0.9992973281109265,
+    "fraction_of_source": 7.036092762927692e-05,
+    "conditional_sigma": 5.448375562188852,
+    "effect_over_sigma": 0.010352833735970282,
+    "sigma_equiv": 5.452206674552479,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9988106774882416,
+        "eta": 0.03497362189515316,
+        "difference_rms": 2.6748583382583435,
+        "residual_rms": 0.09360357881318565,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9988106774882415,
+        "eta": 0.032284423827003667,
+        "difference_rms": 7.734943672646726,
+        "residual_rms": 0.24988522405972133,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-minus",
+    "measurement": "aperture_1",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 74397.90475779575,
+    "name": "aperture_1",
+    "actual_increment": -7477.002050926138,
+    "ideal_increment": -7478.530887569505,
+    "absolute_discrepancy": 1.528836643366958,
+    "ratio": 0.9997955699232441,
+    "fraction_of_source": 2.054945832606609e-05,
+    "conditional_sigma": 680.0306356372656,
+    "effect_over_sigma": 0.002248187895144261,
+    "sigma_equiv": 680.1696827777229,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9988106774882416,
+        "eta": 0.03497362189515316,
+        "difference_rms": 2.6748583382583435,
+        "residual_rms": 0.09360357881318565,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9988106774882415,
+        "eta": 0.032284423827003667,
+        "difference_rms": 7.734943672646726,
+        "residual_rms": 0.24988522405972133,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-minus",
+    "measurement": "aperture_1p5",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 77338.96240561867,
+    "name": "aperture_1p5",
+    "actual_increment": -7969.257004038664,
+    "ideal_increment": -8005.580701041341,
+    "absolute_discrepancy": 36.32369700267736,
+    "ratio": 0.9954627030369012,
+    "fraction_of_source": 0.00046966879141940035,
+    "conditional_sigma": 1155.9057596067696,
+    "effect_over_sigma": 0.03142444503004675,
+    "sigma_equiv": 1161.1743524698593,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9988106774882416,
+        "eta": 0.03497362189515316,
+        "difference_rms": 2.6748583382583435,
+        "residual_rms": 0.09360357881318565,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9988106774882415,
+        "eta": 0.032284423827003667,
+        "difference_rms": 7.734943672646726,
+        "residual_rms": 0.24988522405972133,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-minus",
+    "measurement": "aperture_2",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 78638.72312514916,
+    "name": "aperture_2",
+    "actual_increment": -7988.351002441617,
+    "ideal_increment": -8024.7252437891,
+    "absolute_discrepancy": 36.374241347482894,
+    "ratio": 0.9954672290648661,
+    "fraction_of_source": 0.00046254872792880053,
+    "conditional_sigma": 1613.9598350225706,
+    "effect_over_sigma": 0.022537265524314745,
+    "sigma_equiv": 1621.3088566850276,
+    "sigma_equiv_scope": "input-equivalent conditional measurement uncertainty; not calibrated sensitivity",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.552713678800501e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.9988106774882416,
+        "eta": 0.03497362189515316,
+        "difference_rms": 2.6748583382583435,
+        "residual_rms": 0.09360357881318565,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.9988106774882415,
+        "eta": 0.032284423827003667,
+        "difference_rms": 7.734943672646726,
+        "residual_rms": 0.24988522405972133,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-shoulder",
+    "measurement": "peak",
+    "units": "mJy/nominal beam",
+    "own_REF": 754.7225573554533,
+    "name": "peak",
+    "actual_increment": 20.32879919004631,
+    "ideal_increment": 19.53373451506934,
+    "absolute_discrepancy": 0.7950646749769703,
+    "ratio": 1.0407021337555098,
+    "fraction_of_source": 0.0010534529109118929,
+    "conditional_sigma": 5.4521781123673785,
+    "effect_over_sigma": 0.14582514704967095,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8237244295253602,
+        "eta": 0.25528592045864296,
+        "difference_rms": 2.2590115936865853,
+        "residual_rms": 0.6831505033729789,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8237244295253601,
+        "eta": 0.24585605815044018,
+        "difference_rms": 6.511324762358175,
+        "residual_rms": 1.9026816819563803,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-shoulder",
+    "measurement": "east",
+    "units": "arcsec",
+    "own_REF": 4.063279041430742,
+    "name": "east",
+    "actual_increment": 0.1369623735904142,
+    "ideal_increment": 0.13770739297813428,
+    "absolute_discrepancy": -0.0007450193877200917,
+    "ratio": 0.9945898373964687,
+    "fraction_of_source": -0.0001833542269983405,
+    "conditional_sigma": 0.033008764685364046,
+    "effect_over_sigma": -0.022570350475745925,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8237244295253602,
+        "eta": 0.25528592045864296,
+        "difference_rms": 2.2590115936865853,
+        "residual_rms": 0.6831505033729789,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8237244295253601,
+        "eta": 0.24585605815044018,
+        "difference_rms": 6.511324762358175,
+        "residual_rms": 1.9026816819563803,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-shoulder",
+    "measurement": "north",
+    "units": "arcsec",
+    "own_REF": 7.356386060120711,
+    "name": "north",
+    "actual_increment": -0.0033353512557230403,
+    "ideal_increment": -0.0022270035759435203,
+    "absolute_discrepancy": -0.00110834767977952,
+    "ratio": 1.4976856309312137,
+    "fraction_of_source": -0.00015066469741003956,
+    "conditional_sigma": 0.031253033503460086,
+    "effect_over_sigma": -0.03546368321836063,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8237244295253602,
+        "eta": 0.25528592045864296,
+        "difference_rms": 2.2590115936865853,
+        "residual_rms": 0.6831505033729789,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8237244295253601,
+        "eta": 0.24585605815044018,
+        "difference_rms": 6.511324762358175,
+        "residual_rms": 1.9026816819563803,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-shoulder",
+    "measurement": "FWHM_major",
+    "units": "arcsec",
+    "own_REF": 10.023346534065126,
+    "name": "FWHM_major",
+    "actual_increment": 0.367736656052994,
+    "ideal_increment": 0.4176203525058657,
+    "absolute_discrepancy": -0.04988369645287172,
+    "ratio": 0.8805525253892623,
+    "fraction_of_source": -0.004976750657411482,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8237244295253602,
+        "eta": 0.25528592045864296,
+        "difference_rms": 2.2590115936865853,
+        "residual_rms": 0.6831505033729789,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8237244295253601,
+        "eta": 0.24585605815044018,
+        "difference_rms": 6.511324762358175,
+        "residual_rms": 1.9026816819563803,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-shoulder",
+    "measurement": "FWHM_minor",
+    "units": "arcsec",
+    "own_REF": 9.282127591415176,
+    "name": "FWHM_minor",
+    "actual_increment": 0.3066374157732774,
+    "ideal_increment": 0.3609929903624636,
+    "absolute_discrepancy": -0.05435557458918616,
+    "ratio": 0.8494276175983109,
+    "fraction_of_source": -0.005855939174921315,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8237244295253602,
+        "eta": 0.25528592045864296,
+        "difference_rms": 2.2590115936865853,
+        "residual_rms": 0.6831505033729789,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8237244295253601,
+        "eta": 0.24585605815044018,
+        "difference_rms": 6.511324762358175,
+        "residual_rms": 1.9026816819563803,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-shoulder",
+    "measurement": "ellipse_xx",
+    "units": "arcsec^2",
+    "own_REF": 17.19597767653213,
+    "name": "ellipse_xx",
+    "actual_increment": 1.4156383145715026,
+    "ideal_increment": 1.5620224412972448,
+    "absolute_discrepancy": -0.1463841267257422,
+    "ratio": 0.9062855162284534,
+    "fraction_of_source": -0.008512695787312926,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8237244295253602,
+        "eta": 0.25528592045864296,
+        "difference_rms": 2.2590115936865853,
+        "residual_rms": 0.6831505033729789,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8237244295253601,
+        "eta": 0.24585605815044018,
+        "difference_rms": 6.511324762358175,
+        "residual_rms": 1.9026816819563803,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-shoulder",
+    "measurement": "ellipse_xy",
+    "units": "arcsec^2",
+    "own_REF": -1.2366037877307494,
+    "name": "ellipse_xy",
+    "actual_increment": -0.08503871118646167,
+    "ideal_increment": -0.10207546949490953,
+    "absolute_discrepancy": 0.017036758308447864,
+    "ratio": 0.8330964491983308,
+    "fraction_of_source": -0.01377705492857292,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8237244295253602,
+        "eta": 0.25528592045864296,
+        "difference_rms": 2.2590115936865853,
+        "residual_rms": 0.6831505033729789,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8237244295253601,
+        "eta": 0.24585605815044018,
+        "difference_rms": 6.511324762358175,
+        "residual_rms": 1.9026816819563803,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-shoulder",
+    "measurement": "ellipse_yy",
+    "units": "arcsec^2",
+    "own_REF": 16.459459004048583,
+    "name": "ellipse_yy",
+    "actual_increment": 0.981698108811166,
+    "ideal_increment": 1.2112333958480193,
+    "absolute_discrepancy": -0.22953528703685322,
+    "ratio": 0.8104945852519622,
+    "fraction_of_source": -0.013945494015349698,
+    "conditional_sigma": null,
+    "effect_over_sigma": null,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8237244295253602,
+        "eta": 0.25528592045864296,
+        "difference_rms": 2.2590115936865853,
+        "residual_rms": 0.6831505033729789,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8237244295253601,
+        "eta": 0.24585605815044018,
+        "difference_rms": 6.511324762358175,
+        "residual_rms": 1.9026816819563803,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-shoulder",
+    "measurement": "background",
+    "units": "mJy/nominal beam",
+    "own_REF": -2.1243101627307164,
+    "name": "background",
+    "actual_increment": 0.3163977053240219,
+    "ideal_increment": 1.4236733862118451,
+    "absolute_discrepancy": -1.1072756808878232,
+    "ratio": 0.22224037366175878,
+    "fraction_of_source": 0.5212401184695479,
+    "conditional_sigma": 1.0639603237594046,
+    "effect_over_sigma": -1.0407114402305604,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8237244295253602,
+        "eta": 0.25528592045864296,
+        "difference_rms": 2.2590115936865853,
+        "residual_rms": 0.6831505033729789,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8237244295253601,
+        "eta": 0.24585605815044018,
+        "difference_rms": 6.511324762358175,
+        "residual_rms": 1.9026816819563803,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-shoulder",
+    "measurement": "fixed_template",
+    "units": "mJy/nominal beam",
+    "own_REF": 801.6683154557277,
+    "name": "fixed_template",
+    "actual_increment": 48.23895338715408,
+    "ideal_increment": 51.41682980797668,
+    "absolute_discrepancy": -3.1778764208225994,
+    "ratio": 0.9381938475652657,
+    "fraction_of_source": -0.003964078858494063,
+    "conditional_sigma": 5.448375562188852,
+    "effect_over_sigma": -0.583270441721515,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8237244295253602,
+        "eta": 0.25528592045864296,
+        "difference_rms": 2.2590115936865853,
+        "residual_rms": 0.6831505033729789,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8237244295253601,
+        "eta": 0.24585605815044018,
+        "difference_rms": 6.511324762358175,
+        "residual_rms": 1.9026816819563803,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-shoulder",
+    "measurement": "aperture_1",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 74397.90475779575,
+    "name": "aperture_1",
+    "actual_increment": 6179.205889314151,
+    "ideal_increment": 6644.977120945332,
+    "absolute_discrepancy": -465.77123163118085,
+    "ratio": 0.9299062700813454,
+    "fraction_of_source": -0.0062605423250494865,
+    "conditional_sigma": 680.0306356372656,
+    "effect_over_sigma": -0.6849268359721772,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8237244295253602,
+        "eta": 0.25528592045864296,
+        "difference_rms": 2.2590115936865853,
+        "residual_rms": 0.6831505033729789,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8237244295253601,
+        "eta": 0.24585605815044018,
+        "difference_rms": 6.511324762358175,
+        "residual_rms": 1.9026816819563803,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-shoulder",
+    "measurement": "aperture_1p5",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 77338.96240561867,
+    "name": "aperture_1p5",
+    "actual_increment": 9311.762162633226,
+    "ideal_increment": 10767.530196121821,
+    "absolute_discrepancy": -1455.7680334885954,
+    "ratio": 0.8648001902968496,
+    "fraction_of_source": -0.01882321650313263,
+    "conditional_sigma": 1155.9057596067696,
+    "effect_over_sigma": -1.2594175791492177,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8237244295253602,
+        "eta": 0.25528592045864296,
+        "difference_rms": 2.2590115936865853,
+        "residual_rms": 0.6831505033729789,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8237244295253601,
+        "eta": 0.24585605815044018,
+        "difference_rms": 6.511324762358175,
+        "residual_rms": 1.9026816819563803,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "branch": "C-shoulder",
+    "measurement": "aperture_2",
+    "units": "mJy/nominal beam arcsec^2",
+    "own_REF": 78638.72312514916,
+    "name": "aperture_2",
+    "actual_increment": 10465.951795552523,
+    "ideal_increment": 12822.034130918997,
+    "absolute_discrepancy": -2356.0823353664746,
+    "ratio": 0.8162473823334296,
+    "fraction_of_source": -0.029960841704116944,
+    "conditional_sigma": 1613.9598350225706,
+    "effect_over_sigma": -1.45981472663694,
+    "sigma_equiv": null,
+    "sigma_equiv_scope": "broader spatial response; no scalar noise correction",
+    "spatial_response": {
+      "audit": {
+        "native_vs_independent_P_max_abs": 0.0,
+        "normalized_map_max_abs": 3.481659405224491e-13,
+        "eligible_parent_entries": 2870933,
+        "non_MAP_nonzero_injected_entries": 0,
+        "REF_counts_normalization_exact": true,
+        "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+      },
+      "full": {
+        "pixels": 10513,
+        "g": 0.8237244295253602,
+        "eta": 0.25528592045864296,
+        "difference_rms": 2.2590115936865853,
+        "residual_rms": 0.6831505033729789,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "source_disk": {
+        "pixels": 1257,
+        "g": 0.8237244295253601,
+        "eta": 0.24585605815044018,
+        "difference_rms": 6.511324762358175,
+        "residual_rms": 1.9026816819563803,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      }
+    }
+  }
+]

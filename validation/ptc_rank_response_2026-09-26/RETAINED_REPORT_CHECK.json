@@ -1,0 +1,20 @@
+{
+  "pass_": true,
+  "command": [
+    "/usr/bin/sandbox-exec",
+    "-f",
+    "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/ptc_rank_response_2026-09-26/saved-report.sb",
+    "/Users/gwilson/tolteca/bin/python",
+    "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_pipeline.py",
+    "rank-report",
+    "--output",
+    "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/ptc_rank_response_2026-09-26/compact"
+  ],
+  "original_local_data_read_denied": true,
+  "denial_probe_returncode": 1,
+  "report_returncode": 0,
+  "all_retained_bytes_unchanged": true,
+  "retained_bytes": 203696940,
+  "native_arrays_absent_from_compact": true,
+  "science_rerun": false
+}

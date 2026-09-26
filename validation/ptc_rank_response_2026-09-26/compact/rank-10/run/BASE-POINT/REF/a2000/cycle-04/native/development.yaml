@@ -1,0 +1,7 @@
+input:
+  path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-10/run/BASE-POINT/REF/a2000/cycle-04/request.json
+  sha256: 0a022a1ddea9e694f630305be11e2487f6f5d9d5d99c5bd541f36881d1ca8017
+network_workers: 1
+output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-10/run/BASE-POINT/REF/a2000/cycle-04/native/products
+schema: citlali-development-v1
+terminal: point-fruit

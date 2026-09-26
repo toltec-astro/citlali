@@ -211,3 +211,6 @@ $HOME/tolteca/bin/python "$POINT_REPO/tools/timestream_successor/point_pipeline.
 and `verdict: pass`. Reporting reads compact products, never restarts science.
 Attempt counters forbid implicit retries. Rank10 REF and injection regression gates
 precede dependent work. See [experiment record](../validation/ptc_rank_response_2026-09-26/PREFLIGHT.md).
+
+The completed [rank assessment](../validation/ptc_rank_response_2026-09-26/ASSESSMENT.md)
+and [handoff](../handoff/PTC_RANK_RESPONSE_NOISE_2026-09-26.md) keep rank10 as the reference.

@@ -1,0 +1,8 @@
+{
+  "parent": 1,
+  "trajectory": 12,
+  "feedback": 120,
+  "noise": 3,
+  "endpoint": 3,
+  "ideal": 9
+}

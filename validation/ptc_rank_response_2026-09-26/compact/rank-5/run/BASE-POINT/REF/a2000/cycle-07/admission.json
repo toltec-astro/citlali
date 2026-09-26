@@ -1,0 +1,158 @@
+{
+  "method": "POINT-EXPECTED-v1",
+  "policy": "BASE-POINT",
+  "threshold": 3.0,
+  "guard": {
+    "method": "POINT-EXPECTED-v1",
+    "status": "accepted",
+    "accepted": true,
+    "complete": true,
+    "cause": null,
+    "accepted_parameters": [
+      749.7956356171975,
+      4.0199876118738045,
+      7.4141296857352055,
+      3.9340364176301694,
+      4.265207037358171,
+      -2.251759747136705,
+      -2.949879039893664
+    ],
+    "pointing_correction": null,
+    "accepted_centroid_tangent_arcsec": [
+      4.0199876118738045,
+      7.4141296857352055
+    ],
+    "expected_origin_tangent_arcsec": [
+      0.0,
+      0.0
+    ],
+    "fit_pixels": 1257,
+    "expected_origin_sky": {
+      "ra_deg": 176.7429079166667,
+      "dec_deg": 39.97619555555556,
+      "frame": "FK5",
+      "equinox": 2000.0
+    },
+    "sigma_A": 7.274493211929248,
+    "SNR_A": 103.0718723316186,
+    "diagnostic": {
+      "initial": [
+        707.7835395845426,
+        6.0,
+        8.0,
+        4.2466090014400955,
+        4.2466090014400955,
+        0.0,
+        -0.6757485741214074
+      ],
+      "parameters": [
+        749.7956356171975,
+        4.0199876118738045,
+        7.4141296857352055,
+        3.9340364176301694,
+        4.265207037358171,
+        -2.251759747136705,
+        -2.949879039893664
+      ],
+      "status": 2,
+      "message": "`ftol` termination condition is satisfied.",
+      "converged": true,
+      "finite": true,
+      "nfev": 15,
+      "njev": 13,
+      "cost": 191109.5832318287,
+      "optimality": 0.1311802388652756,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "sigma_floor_arcsec": 1.5,
+      "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+      "centroid_radius_arcsec": 8.433837762046343
+    },
+    "optimizer_calls": 1,
+    "amplitude_sensitivity": {
+      "rank": 7,
+      "rank_tolerance": 1.8638711040086658e-10,
+      "singular_values": [
+        667.7907087891855,
+        489.24198731561114,
+        467.60131946466504,
+        451.2549515827278,
+        220.2389811511941,
+        33.930736735276696,
+        2.566941304218459
+      ],
+      "amplitude_null_projection": 2.3444487711092073e-18,
+      "identifiability_tolerance": 2.7911006839076435e-11
+    },
+    "message": "Expected POINT source accepted."
+  },
+  "BASE": {
+    "status": "retained",
+    "anchor_row_column": [
+      24,
+      18
+    ],
+    "anchor_ratio": 41.2453559589142,
+    "pixels": 65,
+    "area_arcsec2": 260.0,
+    "extent_east_north_arcsec": [
+      [
+        -4.0,
+        12.0
+      ],
+      [
+        0.0,
+        16.0
+      ]
+    ],
+    "boundary_contact": false,
+    "unsupported_contact": false,
+    "unsupported_domain_pixels": 0,
+    "unassociated_above_threshold_pixels": 2,
+    "threshold": 3.0,
+    "noise_scale_multiplier": 1.0,
+    "equivalent_original_scale_threshold": 3.0
+  },
+  "candidate": {
+    "status": "retained",
+    "anchor_row_column": [
+      24,
+      18
+    ],
+    "anchor_ratio": 41.2453559589142,
+    "pixels": 65,
+    "area_arcsec2": 260.0,
+    "extent_east_north_arcsec": [
+      [
+        -4.0,
+        12.0
+      ],
+      [
+        0.0,
+        16.0
+      ]
+    ],
+    "boundary_contact": false,
+    "unsupported_contact": false,
+    "unsupported_domain_pixels": 0,
+    "unassociated_above_threshold_pixels": 2,
+    "threshold": 3.0,
+    "noise_scale_multiplier": 1.0,
+    "equivalent_original_scale_threshold": 3.0
+  },
+  "numerical_failures": 0,
+  "known": true,
+  "selected_pixels": 65,
+  "brightness_area": 73141.3944885342,
+  "baseline_pixels": 65,
+  "proposed_pixels": 0,
+  "added_pixels": 0,
+  "extra_brightness_area": 0.0
+}

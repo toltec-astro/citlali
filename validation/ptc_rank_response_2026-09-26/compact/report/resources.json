@@ -1,0 +1,9 @@
+{
+  "wall_seconds": 596.0447505830089,
+  "maximum_native_process_sampled_RSS": 1556201472,
+  "maximum_stage_storage": 2744225457,
+  "storage_ceiling": 8824001024,
+  "branch_workers_maximum": 3,
+  "numeric_library_threads": 1,
+  "scope": "per-native-process sampled RSS; stage storage snapshots plus allocation reservations, not continuous system or filesystem high water"
+}

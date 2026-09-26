@@ -1,0 +1,28 @@
+{
+  "schema": "citlali-point-ptc-rank-v1",
+  "method": "point-ptc-rank-v1",
+  "mode": "zero",
+  "array": "a2000",
+  "branch": "C-shoulder",
+  "cycle_index": 0,
+  "candidate": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-5/run/BASE-POINT/REF/a2000/initial/candidate.fits",
+    "sha256": "6ab69ad5469ea2c39b6b8620a5337cc4ae8c6d774b6cb48a8997cb5ddeb6957b"
+  },
+  "owner_binding": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-5/initial/C-shoulder/owner.json",
+    "sha256": "e865e89d25dad60ee45b0bbbfee9c7e46637224ad9aed32d99960d0f0a164958"
+  },
+  "map_request": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-10/inputs/map-request.json",
+    "sha256": "29d2b8f09b120f1f3c346396c489e93abaf8173d5c2bed201de7526e2519cf9b"
+  },
+  "parent_plan": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-10/M0/products/a2000/plan.yaml",
+    "sha256": "4ee53abc5c8e8aa44f117913f48977945925b68b6d55321c82a7b9005ca46ec3"
+  },
+  "injection": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-5/freeze/shapes/C-shoulder.fits",
+    "sha256": "93cb0db7371e16a8c714ebef38b606ea2ae2aab997aa274fec41f969851d5c96"
+  }
+}

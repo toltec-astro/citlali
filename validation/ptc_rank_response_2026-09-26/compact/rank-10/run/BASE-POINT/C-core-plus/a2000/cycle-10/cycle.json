@@ -1,0 +1,1380 @@
+{
+  "array": "a2000",
+  "policy": "BASE-POINT",
+  "branch": "C-core-plus",
+  "cycle_index": 10,
+  "ready": true,
+  "total": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-10/run/BASE-POINT/C-core-plus/a2000/cycle-10/native/products/total.fits",
+    "sha256": "263c74e35ae2a67462316a0809639173bda1c87c5afe4743bc7245c5535e7b9f"
+  },
+  "receipt": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-10/run/BASE-POINT/C-core-plus/a2000/cycle-10/native/products/receipt.yaml",
+    "sha256": "c80c03f6c9dd71a0076c91f6fe3316036d5caef40f4b4cf0f25f7333a544adc5"
+  },
+  "candidate": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-10/run/BASE-POINT/C-core-plus/a2000/cycle-10/candidate.fits",
+    "sha256": "e643a687a8f047a052c8ff044107296aa7317a96f8be4d830056d0257e744063"
+  },
+  "measurement": {
+    "fit": {
+      "status": "success",
+      "method": "POINT-EXPECTED-v1",
+      "cause": null,
+      "constrained": false,
+      "parameters": [
+        825.9221835384284,
+        4.056122677543752,
+        7.378779894622815,
+        3.9493296143168664,
+        4.300840901452279,
+        0.9175089467063876,
+        -2.3899432860920244
+      ]
+    },
+    "guard": {
+      "method": "POINT-EXPECTED-v1",
+      "status": "accepted",
+      "accepted": true,
+      "complete": true,
+      "cause": null,
+      "accepted_parameters": [
+        825.9221835384284,
+        4.056122677543752,
+        7.378779894622815,
+        3.9493296143168664,
+        4.300840901452279,
+        0.9175089467063876,
+        -2.3899432860920244
+      ],
+      "pointing_correction": null,
+      "accepted_centroid_tangent_arcsec": [
+        4.056122677543752,
+        7.378779894622815
+      ],
+      "expected_origin_tangent_arcsec": [
+        0.0,
+        0.0
+      ],
+      "fit_pixels": 1257,
+      "expected_origin_sky": {
+        "ra_deg": 176.7429079166667,
+        "dec_deg": 39.97619555555556,
+        "frame": "FK5",
+        "equinox": 2000.0
+      },
+      "sigma_A": 6.321571440390996,
+      "SNR_A": 130.651403899557,
+      "diagnostic": {
+        "initial": [
+          783.4670511526782,
+          4.0,
+          8.0,
+          4.2466090014400955,
+          4.2466090014400955,
+          0.0,
+          -0.2174827043133274
+        ],
+        "parameters": [
+          825.9221835384284,
+          4.056122677543752,
+          7.378779894622815,
+          3.9493296143168664,
+          4.300840901452279,
+          0.9175089467063876,
+          -2.3899432860920244
+        ],
+        "status": 2,
+        "message": "`ftol` termination condition is satisfied.",
+        "converged": true,
+        "finite": true,
+        "nfev": 9,
+        "njev": 9,
+        "cost": 153112.3627339518,
+        "optimality": 0.05474902133896771,
+        "active_mask": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "sigma_floor_arcsec": 1.5,
+        "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+        "centroid_radius_arcsec": 8.42012612189239
+      },
+      "optimizer_calls": 1,
+      "amplitude_sensitivity": {
+        "rank": 7,
+        "rank_tolerance": 2.0541698039051118e-10,
+        "singular_values": [
+          735.971230184788,
+          540.1123049679725,
+          514.7999836233917,
+          495.9684791750078,
+          257.52411071439377,
+          33.9123417137083,
+          2.5826503232612588
+        ],
+        "amplitude_null_projection": 2.7414952844810285e-18,
+        "identifiability_tolerance": 2.7911006839076435e-11
+      },
+      "message": "Expected POINT source accepted."
+    },
+    "frozen_template_projection": 882.3749617841243,
+    "apertures": [
+      {
+        "radius_measured_fwhm": 1.0,
+        "radius_arcsec": 9.591216543262947,
+        "value_mJy_per_beam_arcsec2": 82389.4466622048,
+        "available": true,
+        "aperture_pixels": 72,
+        "expected_pixels": 72
+      },
+      {
+        "radius_measured_fwhm": 1.5,
+        "radius_arcsec": 14.386824814894421,
+        "value_mJy_per_beam_arcsec2": 85585.20398611642,
+        "available": true,
+        "aperture_pixels": 162,
+        "expected_pixels": 162
+      },
+      {
+        "radius_measured_fwhm": 2.0,
+        "radius_arcsec": 19.182433086525894,
+        "value_mJy_per_beam_arcsec2": 86897.4244347467,
+        "available": true,
+        "aperture_pixels": 288,
+        "expected_pixels": 288
+      }
+    ],
+    "raw_apertures": [
+      {
+        "radius_measured_fwhm": 1.0,
+        "radius_arcsec": 9.591216543262947,
+        "value_mJy_per_beam_arcsec2": 81701.14299581031,
+        "available": true,
+        "aperture_pixels": 72,
+        "expected_pixels": 72
+      },
+      {
+        "radius_measured_fwhm": 1.5,
+        "radius_arcsec": 14.386824814894421,
+        "value_mJy_per_beam_arcsec2": 84036.52073672877,
+        "available": true,
+        "aperture_pixels": 162,
+        "expected_pixels": 162
+      },
+      {
+        "radius_measured_fwhm": 2.0,
+        "radius_arcsec": 19.182433086525894,
+        "value_mJy_per_beam_arcsec2": 84144.20976916871,
+        "available": true,
+        "aperture_pixels": 288,
+        "expected_pixels": 288
+      }
+    ],
+    "aperture_background_terms": [
+      -688.3036663944949,
+      -1548.6832493876573,
+      -2753.2146655779943
+    ],
+    "background": {
+      "n": 605,
+      "median": -2.5623518953413877,
+      "mean": -2.8055857245530778,
+      "std": 15.800932469238443,
+      "robust_scale": 15.377416076721747
+    },
+    "profile": [
+      773.8017730123062,
+      609.5591540202579,
+      393.79048874519265,
+      195.57992315832144,
+      67.9241051242706,
+      12.712096310006904,
+      -2.722123875376797,
+      0.9236396642463827,
+      2.3943605766264975,
+      -1.6111353174742924,
+      -4.346429082392664,
+      -1.8906335671145658,
+      1.1506770425531192,
+      0.42730379005179076,
+      -1.9244550404997862,
+      -2.2964935597197362,
+      1.740233136877688,
+      -1.0266754558399493,
+      -2.2757985160337566,
+      -4.982647661600918
+    ],
+    "uncertainty_scope": "guard conditional full frozen C0 reference-scale sigma_A; not endpoint empirical uncertainty"
+  },
+  "admission": {
+    "method": "POINT-EXPECTED-v1",
+    "policy": "BASE-POINT",
+    "threshold": 3.0,
+    "guard": {
+      "method": "POINT-EXPECTED-v1",
+      "status": "accepted",
+      "accepted": true,
+      "complete": true,
+      "cause": null,
+      "accepted_parameters": [
+        825.9221835384284,
+        4.056122677543752,
+        7.378779894622815,
+        3.9493296143168664,
+        4.300840901452279,
+        0.9175089467063876,
+        -2.3899432860920244
+      ],
+      "pointing_correction": null,
+      "accepted_centroid_tangent_arcsec": [
+        4.056122677543752,
+        7.378779894622815
+      ],
+      "expected_origin_tangent_arcsec": [
+        0.0,
+        0.0
+      ],
+      "fit_pixels": 1257,
+      "expected_origin_sky": {
+        "ra_deg": 176.7429079166667,
+        "dec_deg": 39.97619555555556,
+        "frame": "FK5",
+        "equinox": 2000.0
+      },
+      "sigma_A": 6.321571440390996,
+      "SNR_A": 130.651403899557,
+      "diagnostic": {
+        "initial": [
+          783.4670511526782,
+          4.0,
+          8.0,
+          4.2466090014400955,
+          4.2466090014400955,
+          0.0,
+          -0.2174827043133274
+        ],
+        "parameters": [
+          825.9221835384284,
+          4.056122677543752,
+          7.378779894622815,
+          3.9493296143168664,
+          4.300840901452279,
+          0.9175089467063876,
+          -2.3899432860920244
+        ],
+        "status": 2,
+        "message": "`ftol` termination condition is satisfied.",
+        "converged": true,
+        "finite": true,
+        "nfev": 9,
+        "njev": 9,
+        "cost": 153112.3627339518,
+        "optimality": 0.05474902133896771,
+        "active_mask": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "sigma_floor_arcsec": 1.5,
+        "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+        "centroid_radius_arcsec": 8.42012612189239
+      },
+      "optimizer_calls": 1,
+      "amplitude_sensitivity": {
+        "rank": 7,
+        "rank_tolerance": 2.0541698039051118e-10,
+        "singular_values": [
+          735.971230184788,
+          540.1123049679725,
+          514.7999836233917,
+          495.9684791750078,
+          257.52411071439377,
+          33.9123417137083,
+          2.5826503232612588
+        ],
+        "amplitude_null_projection": 2.7414952844810285e-18,
+        "identifiability_tolerance": 2.7911006839076435e-11
+      },
+      "message": "Expected POINT source accepted."
+    },
+    "BASE": {
+      "status": "retained",
+      "anchor_row_column": [
+        24,
+        18
+      ],
+      "anchor_ratio": 50.88673668654685,
+      "pixels": 69,
+      "area_arcsec2": 276.0,
+      "extent_east_north_arcsec": [
+        [
+          -4.0,
+          12.0
+        ],
+        [
+          -2.0,
+          16.0
+        ]
+      ],
+      "boundary_contact": false,
+      "unsupported_contact": false,
+      "unsupported_domain_pixels": 0,
+      "unassociated_above_threshold_pixels": 2,
+      "threshold": 3.0,
+      "noise_scale_multiplier": 1.0,
+      "equivalent_original_scale_threshold": 3.0
+    },
+    "candidate": {
+      "status": "retained",
+      "anchor_row_column": [
+        24,
+        18
+      ],
+      "anchor_ratio": 50.88673668654685,
+      "pixels": 69,
+      "area_arcsec2": 276.0,
+      "extent_east_north_arcsec": [
+        [
+          -4.0,
+          12.0
+        ],
+        [
+          -2.0,
+          16.0
+        ]
+      ],
+      "boundary_contact": false,
+      "unsupported_contact": false,
+      "unsupported_domain_pixels": 0,
+      "unassociated_above_threshold_pixels": 2,
+      "threshold": 3.0,
+      "noise_scale_multiplier": 1.0,
+      "equivalent_original_scale_threshold": 3.0
+    },
+    "numerical_failures": 0,
+    "known": true,
+    "selected_pixels": 69,
+    "brightness_area": 82180.7806309538,
+    "baseline_pixels": 69,
+    "proposed_pixels": 0,
+    "added_pixels": 0,
+    "extra_brightness_area": 0.0
+  },
+  "guards": {
+    "accounting_max_abs": 4.661160346586257e-12,
+    "processing_states": [],
+    "uniform_gamma": 1,
+    "actual_support": true,
+    "unchanged_parent_eligibility": true,
+    "operand_remap_max_abs": 4.320099833421409e-12
+  },
+  "PTC_segments": [
+    {
+      "converged": true,
+      "stopping_reason": "two-small-relative-objective-decreases",
+      "rank": 10,
+      "iterations": 3,
+      "retained": 215737,
+      "output_cause_changed": 0,
+      "input_eligibility_changed": 0,
+      "projection_support_counts": [
+        0,
+        197260,
+        17465,
+        1012
+      ],
+      "network": 11,
+      "scan": 0,
+      "parent_converged": true,
+      "basis_projector_Frobenius_difference": 1.0479134076936392,
+      "comparison_definition": "Frobenius norm of BB^T difference; verified row-major saved orthonormal bases; not raw eigenvector difference",
+      "native_diagnostic_value": 1.047913407693639
+    },
+    {
+      "converged": true,
+      "stopping_reason": "two-small-relative-objective-decreases",
+      "rank": 10,
+      "iterations": 5,
+      "retained": 253892,
+      "output_cause_changed": 0,
+      "input_eligibility_changed": 0,
+      "projection_support_counts": [
+        0,
+        228824,
+        23632,
+        1436
+      ],
+      "network": 11,
+      "scan": 1,
+      "parent_converged": true,
+      "basis_projector_Frobenius_difference": 0.5222541125841995,
+      "comparison_definition": "Frobenius norm of BB^T difference; verified row-major saved orthonormal bases; not raw eigenvector difference",
+      "native_diagnostic_value": 0.522254112584201
+    },
+    {
+      "converged": true,
+      "stopping_reason": "two-small-relative-objective-decreases",
+      "rank": 10,
+      "iterations": 79,
+      "retained": 253014,
+      "output_cause_changed": 0,
+      "input_eligibility_changed": 0,
+      "projection_support_counts": [
+        0,
+        213156,
+        37123,
+        2735
+      ],
+      "network": 11,
+      "scan": 2,
+      "parent_converged": true,
+      "basis_projector_Frobenius_difference": 0.8568005910623628,
+      "comparison_definition": "Frobenius norm of BB^T difference; verified row-major saved orthonormal bases; not raw eigenvector difference",
+      "native_diagnostic_value": 0.8568005910623643
+    },
+    {
+      "converged": true,
+      "stopping_reason": "two-small-relative-objective-decreases",
+      "rank": 10,
+      "iterations": 2,
+      "retained": 254370,
+      "output_cause_changed": 0,
+      "input_eligibility_changed": 0,
+      "projection_support_counts": [
+        0,
+        214932,
+        36920,
+        2518
+      ],
+      "network": 11,
+      "scan": 3,
+      "parent_converged": true,
+      "basis_projector_Frobenius_difference": 0.6876350979930619,
+      "comparison_definition": "Frobenius norm of BB^T difference; verified row-major saved orthonormal bases; not raw eigenvector difference",
+      "native_diagnostic_value": 0.6876350979930634
+    },
+    {
+      "converged": true,
+      "stopping_reason": "two-small-relative-objective-decreases",
+      "rank": 10,
+      "iterations": 2,
+      "retained": 254370,
+      "output_cause_changed": 0,
+      "input_eligibility_changed": 0,
+      "projection_support_counts": [
+        0,
+        233063,
+        19962,
+        1345
+      ],
+      "network": 11,
+      "scan": 4,
+      "parent_converged": true,
+      "basis_projector_Frobenius_difference": 0.6712236494587805,
+      "comparison_definition": "Frobenius norm of BB^T difference; verified row-major saved orthonormal bases; not raw eigenvector difference",
+      "native_diagnostic_value": 0.6712236494587797
+    },
+    {
+      "converged": true,
+      "stopping_reason": "two-small-relative-objective-decreases",
+      "rank": 10,
+      "iterations": 3,
+      "retained": 215429,
+      "output_cause_changed": 0,
+      "input_eligibility_changed": 0,
+      "projection_support_counts": [
+        0,
+        199051,
+        15436,
+        942
+      ],
+      "network": 11,
+      "scan": 5,
+      "parent_converged": true,
+      "basis_projector_Frobenius_difference": 0.5825210593421724,
+      "comparison_definition": "Frobenius norm of BB^T difference; verified row-major saved orthonormal bases; not raw eigenvector difference",
+      "native_diagnostic_value": 0.582521059342173
+    },
+    {
+      "converged": true,
+      "stopping_reason": "two-small-relative-objective-decreases",
+      "rank": 10,
+      "iterations": 60,
+      "retained": 212167,
+      "output_cause_changed": 0,
+      "input_eligibility_changed": 0,
+      "projection_support_counts": [
+        0,
+        177745,
+        32470,
+        1952
+      ],
+      "network": 12,
+      "scan": 0,
+      "parent_converged": true,
+      "basis_projector_Frobenius_difference": 0.7217840672256673,
+      "comparison_definition": "Frobenius norm of BB^T difference; verified row-major saved orthonormal bases; not raw eigenvector difference",
+      "native_diagnostic_value": 0.7217840672256666
+    },
+    {
+      "converged": true,
+      "stopping_reason": "two-small-relative-objective-decreases",
+      "rank": 10,
+      "iterations": 83,
+      "retained": 249842,
+      "output_cause_changed": 0,
+      "input_eligibility_changed": 0,
+      "projection_support_counts": [
+        0,
+        214274,
+        33480,
+        2088
+      ],
+      "network": 12,
+      "scan": 1,
+      "parent_converged": true,
+      "basis_projector_Frobenius_difference": 0.16977163332673012,
+      "comparison_definition": "Frobenius norm of BB^T difference; verified row-major saved orthonormal bases; not raw eigenvector difference",
+      "native_diagnostic_value": 0.16977163332673006
+    },
+    {
+      "converged": true,
+      "stopping_reason": "two-small-relative-objective-decreases",
+      "rank": 10,
+      "iterations": 47,
+      "retained": 250298,
+      "output_cause_changed": 0,
+      "input_eligibility_changed": 0,
+      "projection_support_counts": [
+        0,
+        226339,
+        23206,
+        753
+      ],
+      "network": 12,
+      "scan": 2,
+      "parent_converged": true,
+      "basis_projector_Frobenius_difference": 0.12310653387893288,
+      "comparison_definition": "Frobenius norm of BB^T difference; verified row-major saved orthonormal bases; not raw eigenvector difference",
+      "native_diagnostic_value": 0.12310653387893268
+    },
+    {
+      "converged": true,
+      "stopping_reason": "two-small-relative-objective-decreases",
+      "rank": 10,
+      "iterations": 3,
+      "retained": 249368,
+      "output_cause_changed": 0,
+      "input_eligibility_changed": 0,
+      "projection_support_counts": [
+        0,
+        222651,
+        25448,
+        1269
+      ],
+      "network": 12,
+      "scan": 3,
+      "parent_converged": true,
+      "basis_projector_Frobenius_difference": 0.12244388529839993,
+      "comparison_definition": "Frobenius norm of BB^T difference; verified row-major saved orthonormal bases; not raw eigenvector difference",
+      "native_diagnostic_value": 0.1224438852984
+    },
+    {
+      "converged": true,
+      "stopping_reason": "two-small-relative-objective-decreases",
+      "rank": 10,
+      "iterations": 3,
+      "retained": 250320,
+      "output_cause_changed": 0,
+      "input_eligibility_changed": 0,
+      "projection_support_counts": [
+        0,
+        211350,
+        36856,
+        2114
+      ],
+      "network": 12,
+      "scan": 4,
+      "parent_converged": true,
+      "basis_projector_Frobenius_difference": 0.18972465776079997,
+      "comparison_definition": "Frobenius norm of BB^T difference; verified row-major saved orthonormal bases; not raw eigenvector difference",
+      "native_diagnostic_value": 0.18972465776079997
+    },
+    {
+      "converged": true,
+      "stopping_reason": "two-small-relative-objective-decreases",
+      "rank": 10,
+      "iterations": 21,
+      "retained": 212126,
+      "output_cause_changed": 0,
+      "input_eligibility_changed": 0,
+      "projection_support_counts": [
+        0,
+        176508,
+        33908,
+        1710
+      ],
+      "network": 12,
+      "scan": 5,
+      "parent_converged": true,
+      "basis_projector_Frobenius_difference": 0.1314178967888388,
+      "comparison_definition": "Frobenius norm of BB^T difference; verified row-major saved orthonormal bases; not raw eigenvector difference",
+      "native_diagnostic_value": 0.13141789678883903
+    }
+  ],
+  "candidate_turnover": {
+    "added": 0,
+    "removed": 0,
+    "retained": 69,
+    "retained_brightness_mean_change": 0.00151488383234606,
+    "retained_brightness_rms_change": 0.0016430222321739566,
+    "retained_brightness_max_abs_change": 0.0035974239456209034
+  },
+  "response": {
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9907490956641025,
+      "eta": 0.02375270037487772,
+      "difference_rms": 2.652292279407764,
+      "residual_rms": 0.06357184761221354,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9907490956641026,
+      "eta": 0.02292489194904462,
+      "difference_rms": 7.670232534744185,
+      "residual_rms": 0.17744135041494374,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  "ideal": {
+    "comparisons": [
+      {
+        "name": "peak",
+        "actual_increment": 75.31858250221217,
+        "ideal_increment": 75.06036516414395,
+        "absolute_discrepancy": 0.25821733806822067,
+        "ratio": 1.0034401289882289
+      },
+      {
+        "name": "east",
+        "actual_increment": -0.0001431274151340034,
+        "ideal_increment": -2.705585089302076e-09,
+        "absolute_discrepancy": -0.0001431247095489141,
+        "ratio": null
+      },
+      {
+        "name": "north",
+        "actual_increment": -0.00020869499389331025,
+        "ideal_increment": -9.629286701340334e-09,
+        "absolute_discrepancy": -0.00020868536460660891,
+        "ratio": null
+      },
+      {
+        "name": "FWHM_major",
+        "actual_increment": -0.009902633074000633,
+        "ideal_increment": -1.8309696869778236e-08,
+        "absolute_discrepancy": -0.009902614764303763,
+        "ratio": 540840.9076583785
+      },
+      {
+        "name": "FWHM_minor",
+        "actual_increment": -0.00895507795898709,
+        "ideal_increment": -1.0434005126569446e-07,
+        "absolute_discrepancy": -0.008954973618935824,
+        "ratio": 85825.89188291298
+      },
+      {
+        "name": "ellipse_xx",
+        "actual_increment": -0.037831281039615305,
+        "ideal_increment": -8.693496056366712e-08,
+        "absolute_discrepancy": -0.03783119410465474,
+        "ratio": 435167.63330109796
+      },
+      {
+        "name": "ellipse_xy",
+        "actual_increment": 0.001899116796285405,
+        "ideal_increment": -1.1360207730071181e-07,
+        "absolute_discrepancy": 0.0018992303983627057,
+        "ratio": -16717.27173842362
+      },
+      {
+        "name": "ellipse_yy",
+        "actual_increment": -0.02841076848531543,
+        "ideal_increment": -3.303318649727771e-07,
+        "absolute_discrepancy": -0.028410438153450457,
+        "ratio": 86006.74502793359
+      },
+      {
+        "name": "background",
+        "actual_increment": -0.07576303370667192,
+        "ideal_increment": 1.5359863647645966e-07,
+        "absolute_discrepancy": -0.0757631873053084,
+        "ratio": -493253.2960231276
+      },
+      {
+        "name": "fixed_template",
+        "actual_increment": 79.75438674958014,
+        "ideal_increment": 80.27596370670494,
+        "absolute_discrepancy": -0.5215769571248074,
+        "ratio": 0.9935027007706762
+      },
+      {
+        "name": "aperture_1",
+        "actual_increment": 7388.452276265976,
+        "ideal_increment": 7478.845814564585,
+        "absolute_discrepancy": -90.3935382986092,
+        "ratio": 0.9879134373752466
+      },
+      {
+        "name": "aperture_1p5",
+        "actual_increment": 7781.308434137871,
+        "ideal_increment": 8006.289286780302,
+        "absolute_discrepancy": -224.98085264243127,
+        "ratio": 0.9718994849444285
+      },
+      {
+        "name": "aperture_2",
+        "actual_increment": 7762.2229732331325,
+        "ideal_increment": 8025.984951769482,
+        "absolute_discrepancy": -263.7619785363495,
+        "ratio": 0.9671364972496992
+      }
+    ],
+    "reference": {
+      "fit": {
+        "status": "success",
+        "method": "POINT-EXPECTED-v1",
+        "cause": null,
+        "constrained": false,
+        "parameters": [
+          750.6036010362162,
+          4.056265804958886,
+          7.378988589616708,
+          4.3050461625272805,
+          3.9531324857837897,
+          -0.6518935065874296,
+          -2.3141802523853525
+        ]
+      },
+      "guard": {
+        "method": "POINT-EXPECTED-v1",
+        "status": "accepted",
+        "accepted": true,
+        "complete": true,
+        "cause": null,
+        "accepted_parameters": [
+          750.6036010362162,
+          4.056265804958886,
+          7.378988589616708,
+          4.3050461625272805,
+          3.9531324857837897,
+          -0.6518935065874296,
+          -2.3141802523853525
+        ],
+        "pointing_correction": null,
+        "accepted_centroid_tangent_arcsec": [
+          4.056265804958886,
+          7.378988589616708
+        ],
+        "expected_origin_tangent_arcsec": [
+          0.0,
+          0.0
+        ],
+        "fit_pixels": 1257,
+        "expected_origin_sky": {
+          "ra_deg": 176.7429079166667,
+          "dec_deg": 39.97619555555556,
+          "frame": "FK5",
+          "equinox": 2000.0
+        },
+        "sigma_A": 6.316758434799464,
+        "SNR_A": 118.82733981104747,
+        "diagnostic": {
+          "initial": [
+            709.5603798942324,
+            4.0,
+            8.0,
+            4.2466090014400955,
+            4.2466090014400955,
+            0.0,
+            -0.25684511330820964
+          ],
+          "parameters": [
+            750.6036010362162,
+            4.056265804958886,
+            7.378988589616708,
+            4.3050461625272805,
+            3.9531324857837897,
+            -0.6518935065874296,
+            -2.3141802523853525
+          ],
+          "status": 2,
+          "message": "`ftol` termination condition is satisfied.",
+          "converged": true,
+          "finite": true,
+          "nfev": 17,
+          "njev": 14,
+          "cost": 152756.70232277922,
+          "optimality": 0.06836342607987396,
+          "active_mask": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "sigma_floor_arcsec": 1.5,
+          "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+          "centroid_radius_arcsec": 8.42037795387905
+        },
+        "optimizer_calls": 1,
+        "amplitude_sensitivity": {
+          "rank": 7,
+          "rank_tolerance": 1.8668879312927305e-10,
+          "singular_values": [
+            668.8715824751326,
+            490.8613167215013,
+            467.8531032808513,
+            450.736123119116,
+            234.30762218864274,
+            33.90856135366312,
+            2.585152945818889
+          ],
+          "amplitude_null_projection": 3.3307248983811174e-16,
+          "identifiability_tolerance": 2.7911006839076435e-11
+        },
+        "message": "Expected POINT source accepted."
+      },
+      "frozen_template_projection": 802.6205750345441,
+      "apertures": [
+        {
+          "radius_measured_fwhm": 1.0,
+          "radius_arcsec": 9.591216543262947,
+          "value_mJy_per_beam_arcsec2": 75000.99438593883,
+          "available": true,
+          "aperture_pixels": 72,
+          "expected_pixels": 72
+        },
+        {
+          "radius_measured_fwhm": 1.5,
+          "radius_arcsec": 14.386824814894421,
+          "value_mJy_per_beam_arcsec2": 77803.89555197855,
+          "available": true,
+          "aperture_pixels": 162,
+          "expected_pixels": 162
+        },
+        {
+          "radius_measured_fwhm": 2.0,
+          "radius_arcsec": 19.182433086525894,
+          "value_mJy_per_beam_arcsec2": 79135.20146151357,
+          "available": true,
+          "aperture_pixels": 288,
+          "expected_pixels": 288
+        }
+      ],
+      "raw_apertures": [
+        {
+          "radius_measured_fwhm": 1.0,
+          "radius_arcsec": 9.591216543262947,
+          "value_mJy_per_beam_arcsec2": 74334.51047325185,
+          "available": true,
+          "aperture_pixels": 72,
+          "expected_pixels": 72
+        },
+        {
+          "radius_measured_fwhm": 1.5,
+          "radius_arcsec": 14.386824814894421,
+          "value_mJy_per_beam_arcsec2": 76304.30674843285,
+          "available": true,
+          "aperture_pixels": 162,
+          "expected_pixels": 162
+        },
+        {
+          "radius_measured_fwhm": 2.0,
+          "radius_arcsec": 19.182433086525894,
+          "value_mJy_per_beam_arcsec2": 76469.26581076565,
+          "available": true,
+          "aperture_pixels": 288,
+          "expected_pixels": 288
+        }
+      ],
+      "aperture_background_terms": [
+        -666.4839126869774,
+        -1499.5888035457028,
+        -2665.9356507479242
+      ],
+      "background": {
+        "n": 605,
+        "median": -2.50297561522736,
+        "mean": -2.7753387461987833,
+        "std": 15.800339143770472,
+        "robust_scale": 15.353290983371222
+      },
+      "profile": [
+        703.6689712368878,
+        553.0136163154328,
+        358.8702342417402,
+        178.49626372768992,
+        61.422352456963914,
+        11.010471653376161,
+        -2.9871345380171115,
+        1.0117475948069286,
+        2.5181066283556066,
+        -1.501215193364413,
+        -4.258742110657135,
+        -1.8187468969334555,
+        1.2138591309495275,
+        0.4820835417765934,
+        -1.8777056568746209,
+        -2.2546129784451505,
+        1.7775051183340358,
+        -0.9945380138185365,
+        -2.251312930601533,
+        -4.958457642775823
+      ],
+      "uncertainty_scope": "guard conditional full frozen C0 reference-scale sigma_A; not endpoint empirical uncertainty"
+    },
+    "actual": {
+      "fit": {
+        "status": "success",
+        "method": "POINT-EXPECTED-v1",
+        "cause": null,
+        "constrained": false,
+        "parameters": [
+          825.9221835384284,
+          4.056122677543752,
+          7.378779894622815,
+          3.9493296143168664,
+          4.300840901452279,
+          0.9175089467063876,
+          -2.3899432860920244
+        ]
+      },
+      "guard": {
+        "method": "POINT-EXPECTED-v1",
+        "status": "accepted",
+        "accepted": true,
+        "complete": true,
+        "cause": null,
+        "accepted_parameters": [
+          825.9221835384284,
+          4.056122677543752,
+          7.378779894622815,
+          3.9493296143168664,
+          4.300840901452279,
+          0.9175089467063876,
+          -2.3899432860920244
+        ],
+        "pointing_correction": null,
+        "accepted_centroid_tangent_arcsec": [
+          4.056122677543752,
+          7.378779894622815
+        ],
+        "expected_origin_tangent_arcsec": [
+          0.0,
+          0.0
+        ],
+        "fit_pixels": 1257,
+        "expected_origin_sky": {
+          "ra_deg": 176.7429079166667,
+          "dec_deg": 39.97619555555556,
+          "frame": "FK5",
+          "equinox": 2000.0
+        },
+        "sigma_A": 6.321571440390996,
+        "SNR_A": 130.651403899557,
+        "diagnostic": {
+          "initial": [
+            783.4670511526782,
+            4.0,
+            8.0,
+            4.2466090014400955,
+            4.2466090014400955,
+            0.0,
+            -0.2174827043133274
+          ],
+          "parameters": [
+            825.9221835384284,
+            4.056122677543752,
+            7.378779894622815,
+            3.9493296143168664,
+            4.300840901452279,
+            0.9175089467063876,
+            -2.3899432860920244
+          ],
+          "status": 2,
+          "message": "`ftol` termination condition is satisfied.",
+          "converged": true,
+          "finite": true,
+          "nfev": 9,
+          "njev": 9,
+          "cost": 153112.3627339518,
+          "optimality": 0.05474902133896771,
+          "active_mask": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "sigma_floor_arcsec": 1.5,
+          "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+          "centroid_radius_arcsec": 8.42012612189239
+        },
+        "optimizer_calls": 1,
+        "amplitude_sensitivity": {
+          "rank": 7,
+          "rank_tolerance": 2.0541698039051118e-10,
+          "singular_values": [
+            735.971230184788,
+            540.1123049679725,
+            514.7999836233917,
+            495.9684791750078,
+            257.52411071439377,
+            33.9123417137083,
+            2.5826503232612588
+          ],
+          "amplitude_null_projection": 2.7414952844810285e-18,
+          "identifiability_tolerance": 2.7911006839076435e-11
+        },
+        "message": "Expected POINT source accepted."
+      },
+      "frozen_template_projection": 882.3749617841243,
+      "apertures": [
+        {
+          "radius_measured_fwhm": 1.0,
+          "radius_arcsec": 9.591216543262947,
+          "value_mJy_per_beam_arcsec2": 82389.4466622048,
+          "available": true,
+          "aperture_pixels": 72,
+          "expected_pixels": 72
+        },
+        {
+          "radius_measured_fwhm": 1.5,
+          "radius_arcsec": 14.386824814894421,
+          "value_mJy_per_beam_arcsec2": 85585.20398611642,
+          "available": true,
+          "aperture_pixels": 162,
+          "expected_pixels": 162
+        },
+        {
+          "radius_measured_fwhm": 2.0,
+          "radius_arcsec": 19.182433086525894,
+          "value_mJy_per_beam_arcsec2": 86897.4244347467,
+          "available": true,
+          "aperture_pixels": 288,
+          "expected_pixels": 288
+        }
+      ],
+      "raw_apertures": [
+        {
+          "radius_measured_fwhm": 1.0,
+          "radius_arcsec": 9.591216543262947,
+          "value_mJy_per_beam_arcsec2": 81701.14299581031,
+          "available": true,
+          "aperture_pixels": 72,
+          "expected_pixels": 72
+        },
+        {
+          "radius_measured_fwhm": 1.5,
+          "radius_arcsec": 14.386824814894421,
+          "value_mJy_per_beam_arcsec2": 84036.52073672877,
+          "available": true,
+          "aperture_pixels": 162,
+          "expected_pixels": 162
+        },
+        {
+          "radius_measured_fwhm": 2.0,
+          "radius_arcsec": 19.182433086525894,
+          "value_mJy_per_beam_arcsec2": 84144.20976916871,
+          "available": true,
+          "aperture_pixels": 288,
+          "expected_pixels": 288
+        }
+      ],
+      "aperture_background_terms": [
+        -688.3036663944949,
+        -1548.6832493876573,
+        -2753.2146655779943
+      ],
+      "background": {
+        "n": 605,
+        "median": -2.5623518953413877,
+        "mean": -2.8055857245530778,
+        "std": 15.800932469238443,
+        "robust_scale": 15.377416076721747
+      },
+      "profile": [
+        773.8017730123062,
+        609.5591540202579,
+        393.79048874519265,
+        195.57992315832144,
+        67.9241051242706,
+        12.712096310006904,
+        -2.722123875376797,
+        0.9236396642463827,
+        2.3943605766264975,
+        -1.6111353174742924,
+        -4.346429082392664,
+        -1.8906335671145658,
+        1.1506770425531192,
+        0.42730379005179076,
+        -1.9244550404997862,
+        -2.2964935597197362,
+        1.740233136877688,
+        -1.0266754558399493,
+        -2.2757985160337566,
+        -4.982647661600918
+      ],
+      "uncertainty_scope": "guard conditional full frozen C0 reference-scale sigma_A; not endpoint empirical uncertainty"
+    },
+    "ideal_map_addition": {
+      "fit": {
+        "status": "success",
+        "method": "POINT-EXPECTED-v1",
+        "cause": null,
+        "constrained": false,
+        "parameters": [
+          825.6639662003602,
+          4.056265802253301,
+          7.378988579987421,
+          4.305046154751868,
+          3.9531324414746494,
+          2.4896991770805847,
+          -2.314180098786716
+        ]
+      },
+      "guard": {
+        "method": "POINT-EXPECTED-v1",
+        "status": "accepted",
+        "accepted": true,
+        "complete": true,
+        "cause": null,
+        "accepted_parameters": [
+          825.6639662003602,
+          4.056265802253301,
+          7.378988579987421,
+          4.305046154751868,
+          3.9531324414746494,
+          2.4896991770805847,
+          -2.314180098786716
+        ],
+        "pointing_correction": null,
+        "accepted_centroid_tangent_arcsec": [
+          4.056265802253301,
+          7.378988579987421
+        ],
+        "expected_origin_tangent_arcsec": [
+          0.0,
+          0.0
+        ],
+        "fit_pixels": 1257,
+        "expected_origin_sky": {
+          "ra_deg": 176.7429079166667,
+          "dec_deg": 39.97619555555556,
+          "frame": "FK5",
+          "equinox": 2000.0
+        },
+        "sigma_A": 6.31675846890484,
+        "SNR_A": 130.7100738875502,
+        "diagnostic": {
+          "initial": [
+            783.6524523173439,
+            4.0,
+            8.0,
+            4.2466090014400955,
+            4.2466090014400955,
+            0.0,
+            -0.15045536724894792
+          ],
+          "parameters": [
+            825.6639662003602,
+            4.056265802253301,
+            7.378988579987421,
+            4.305046154751868,
+            3.9531324414746494,
+            2.4896991770805847,
+            -2.314180098786716
+          ],
+          "status": 2,
+          "message": "`ftol` termination condition is satisfied.",
+          "converged": true,
+          "finite": true,
+          "nfev": 9,
+          "njev": 9,
+          "cost": 152756.7023188359,
+          "optimality": 0.0333300647267896,
+          "active_mask": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "sigma_floor_arcsec": 1.5,
+          "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+          "centroid_radius_arcsec": 8.420377944137329
+        },
+        "optimizer_calls": 1,
+        "amplitude_sensitivity": {
+          "rank": 7,
+          "rank_tolerance": 2.053531914262239e-10,
+          "singular_values": [
+            735.7426860672109,
+            539.9474542414358,
+            514.638091897847,
+            495.8097361389368,
+            257.7384127958003,
+            33.90927830247767,
+            2.585156329498314
+          ],
+          "amplitude_null_projection": 2.2206677540855177e-16,
+          "identifiability_tolerance": 2.7911006839076435e-11
+        },
+        "message": "Expected POINT source accepted."
+      },
+      "frozen_template_projection": 882.8965387412491,
+      "apertures": [
+        {
+          "radius_measured_fwhm": 1.0,
+          "radius_arcsec": 9.591216543262947,
+          "value_mJy_per_beam_arcsec2": 82479.84020050341,
+          "available": true,
+          "aperture_pixels": 72,
+          "expected_pixels": 72
+        },
+        {
+          "radius_measured_fwhm": 1.5,
+          "radius_arcsec": 14.386824814894421,
+          "value_mJy_per_beam_arcsec2": 85810.18483875885,
+          "available": true,
+          "aperture_pixels": 162,
+          "expected_pixels": 162
+        },
+        {
+          "radius_measured_fwhm": 2.0,
+          "radius_arcsec": 19.182433086525894,
+          "value_mJy_per_beam_arcsec2": 87161.18641328305,
+          "available": true,
+          "aperture_pixels": 288,
+          "expected_pixels": 288
+        }
+      ],
+      "raw_apertures": [
+        {
+          "radius_measured_fwhm": 1.0,
+          "radius_arcsec": 9.591216543262947,
+          "value_mJy_per_beam_arcsec2": 81813.35633205285,
+          "available": true,
+          "aperture_pixels": 72,
+          "expected_pixels": 72
+        },
+        {
+          "radius_measured_fwhm": 1.5,
+          "radius_arcsec": 14.386824814894421,
+          "value_mJy_per_beam_arcsec2": 84310.59613474505,
+          "available": true,
+          "aperture_pixels": 162,
+          "expected_pixels": 162
+        },
+        {
+          "radius_measured_fwhm": 2.0,
+          "radius_arcsec": 19.182433086525894,
+          "value_mJy_per_beam_arcsec2": 84495.25093948076,
+          "available": true,
+          "aperture_pixels": 288,
+          "expected_pixels": 288
+        }
+      ],
+      "aperture_background_terms": [
+        -666.4838684505667,
+        -1499.588704013804,
+        -2665.9354738022957
+      ],
+      "background": {
+        "n": 605,
+        "median": -2.50297561522736,
+        "mean": -2.7753387460158563,
+        "std": 15.800339143777947,
+        "robust_scale": 15.353290983371318
+      },
+      "profile": [
+        774.0667043232825,
+        609.8458232891447,
+        394.1121328849713,
+        195.98648277367818,
+        68.45255499870206,
+        13.311144231391767,
+        -2.385303333060406,
+        1.1264353039493828,
+        2.5380975211133756,
+        -1.49872258176335,
+        -4.258448913530006,
+        -1.8187211722714627,
+        1.2138606165543617,
+        0.4820836498850053,
+        -1.8777056532615182,
+        -2.254612978304197,
+        1.7775051183365567,
+        -0.9945380138185091,
+        -2.251312930601533,
+        -4.958457642775823
+      ],
+      "uncertainty_scope": "guard conditional full frozen C0 reference-scale sigma_A; not endpoint empirical uncertainty"
+    },
+    "raw_aperture_and_background_increments": [
+      {
+        "factor": 1.0,
+        "actual_raw_increment": 7366.632522558459,
+        "ideal_raw_increment": 7478.845858800996,
+        "actual_background_increment": -21.81975370751752,
+        "ideal_background_increment": 4.423641075845808e-05
+      },
+      {
+        "factor": 1.5,
+        "actual_raw_increment": 7732.213988295916,
+        "ideal_raw_increment": 8006.289386312201,
+        "actual_background_increment": -49.09444584195444,
+        "ideal_background_increment": 9.953189874067903e-05
+      },
+      {
+        "factor": 2.0,
+        "actual_raw_increment": 7674.943958403062,
+        "ideal_raw_increment": 8025.9851287151105,
+        "actual_background_increment": -87.27901483007008,
+        "ideal_background_increment": 0.00017694562848191708
+      }
+    ],
+    "ratio_floor_native_units": 1e-08
+  },
+  "stop_kind": null,
+  "stop_reason": null,
+  "state_path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-10/run/BASE-POINT/C-core-plus/a2000/cycle-10/state.json",
+  "wall_seconds": 10.544460499979323
+}

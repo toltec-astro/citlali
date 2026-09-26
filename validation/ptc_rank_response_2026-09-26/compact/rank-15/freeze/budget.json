@@ -1,0 +1,10 @@
+{
+  "native_cells": 7640626,
+  "shared_upstream_allowance": 1956000256,
+  "peak_ceiling_bytes": 8824001024,
+  "free_space_reserve_bytes": 2000000000,
+  "network_workers": 2,
+  "library_threads": 1,
+  "campaign_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926",
+  "maximum_branch_workers": 3
+}

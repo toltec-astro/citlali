@@ -1,0 +1,7 @@
+input:
+  path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-10/inputs/map-request.json
+  sha256: 29d2b8f09b120f1f3c346396c489e93abaf8173d5c2bed201de7526e2519cf9b
+network_workers: 1
+output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-10/M0/products
+schema: citlali-development-v1
+terminal: map

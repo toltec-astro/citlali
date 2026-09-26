@@ -1,0 +1,4 @@
+(version 1)
+(allow default)
+(deny network*)
+(deny file-read-data (subpath "/Users/gwilson/work_toltec/local_data"))

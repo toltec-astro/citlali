@@ -1,0 +1,11 @@
+{
+  "source_revision": "e3cbf1eeadda256e4d9f400a834f9f7d462c1ae2",
+  "tree": "50f7f68db40575986075951831b9e56fb4fa4b52",
+  "verdict": "pass",
+  "scientific_behavioral": "pass; failed-T10 report fixed; 14 focused tests reproduced",
+  "architecture_ownership": "pass",
+  "repository_evidence": "pass; clean bounded history",
+  "reviewer": "independent fresh-context preflight_review agent",
+  "initial_review": "cc5215609814d5a97a448ba04e8e382de8e19d56 repair required, no science",
+  "science_attempts_during_review": 0
+}

@@ -1,0 +1,151 @@
+{
+  "command": [
+    "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-10/run/BASE-POINT/C-shoulder/a2000/cycle-08/native/development.yaml"
+  ],
+  "executable_sha256": "9fd069164ec8bcec6bb5047aaf45cc8c4fc3b0e189ba09706151070b588dfa59",
+  "version": "** logging ** Configured with level=trace; available levels: [\"trace\", \"debug\", \"info\", \"warning\", \"error\", \"critical\", \"off\"].\nv2-ngc4449-memory-repair-187df04b-586-ge3cbf1eea (2026-09-26T16:29:31)\nkids 04088da-dirty (2026-09-26T16:14:08)\n",
+  "input_sha256": "4d42573e4dd64dc04fdc0d9b3bf91184b0eba4a8a716ab1ae0a4b71c10d155e0",
+  "workers": 1,
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "BLIS_NUM_THREADS": "1",
+    "OMP_DYNAMIC": "FALSE"
+  },
+  "measurement": "fresh process; whole-invocation CPU and sampled RSS; no concurrent diagnostic",
+  "samples": [
+    {
+      "seconds": 0.0051589999930001795,
+      "rss_bytes": 32768,
+      "user_seconds": 7.3041e-05,
+      "system_seconds": 0.000584916,
+      "os_threads": 1
+    },
+    {
+      "seconds": 0.5071657499938738,
+      "rss_bytes": 116998144,
+      "user_seconds": 0.47943424,
+      "system_seconds": 0.017670416,
+      "os_threads": 1
+    },
+    {
+      "seconds": 1.0172279579855967,
+      "rss_bytes": 205438976,
+      "user_seconds": 0.978496064,
+      "system_seconds": 0.027227084,
+      "os_threads": 1
+    },
+    {
+      "seconds": 1.5191419999755453,
+      "rss_bytes": 219693056,
+      "user_seconds": 1.474673792,
+      "system_seconds": 0.032108708,
+      "os_threads": 1
+    },
+    {
+      "seconds": 2.0292097499768715,
+      "rss_bytes": 301105152,
+      "user_seconds": 1.966847104,
+      "system_seconds": 0.046430416,
+      "os_threads": 3
+    },
+    {
+      "seconds": 2.539285207982175,
+      "rss_bytes": 334266368,
+      "user_seconds": 2.380791808,
+      "system_seconds": 0.092279872,
+      "os_threads": 3
+    },
+    {
+      "seconds": 3.0470744159829337,
+      "rss_bytes": 404553728,
+      "user_seconds": 2.816096,
+      "system_seconds": 0.122815544,
+      "os_threads": 3
+    },
+    {
+      "seconds": 3.555416832998162,
+      "rss_bytes": 454803456,
+      "user_seconds": 3.2501568,
+      "system_seconds": 0.154468624,
+      "os_threads": 3
+    },
+    {
+      "seconds": 4.060739624983398,
+      "rss_bytes": 412499968,
+      "user_seconds": 3.705208832,
+      "system_seconds": 0.18461912,
+      "os_threads": 3
+    },
+    {
+      "seconds": 4.570797207998112,
+      "rss_bytes": 426016768,
+      "user_seconds": 4.203336448,
+      "system_seconds": 0.196172208,
+      "os_threads": 3
+    },
+    {
+      "seconds": 5.080416832992341,
+      "rss_bytes": 426082304,
+      "user_seconds": 4.710915072,
+      "system_seconds": 0.197403248,
+      "os_threads": 3
+    },
+    {
+      "seconds": 5.59048170800088,
+      "rss_bytes": 470614016,
+      "user_seconds": 5.21018112,
+      "system_seconds": 0.207479456,
+      "os_threads": 3
+    },
+    {
+      "seconds": 6.099585999996634,
+      "rss_bytes": 476839936,
+      "user_seconds": 5.678253056,
+      "system_seconds": 0.224049504,
+      "os_threads": 3
+    },
+    {
+      "seconds": 6.602429040998686,
+      "rss_bytes": 494288896,
+      "user_seconds": 6.08599296,
+      "system_seconds": 0.26583,
+      "os_threads": 3
+    },
+    {
+      "seconds": 7.1107732910022605,
+      "rss_bytes": 511836160,
+      "user_seconds": 6.474753536,
+      "system_seconds": 0.282817984,
+      "os_threads": 2
+    },
+    {
+      "seconds": 7.620842749980511,
+      "rss_bytes": 636583936,
+      "user_seconds": 6.834207232,
+      "system_seconds": 0.315462944,
+      "os_threads": 2
+    },
+    {
+      "seconds": 8.130907040991588,
+      "rss_bytes": 727891968,
+      "user_seconds": 7.269925888,
+      "system_seconds": 0.358367264,
+      "os_threads": 2
+    },
+    {
+      "seconds": 8.63870370798395,
+      "rss_bytes": 727891968,
+      "user_seconds": 7.680695296,
+      "system_seconds": 0.397413824,
+      "os_threads": 2
+    }
+  ],
+  "exit_code": 0,
+  "wall_seconds": 9.144108332984615,
+  "polled_peak_rss_bytes": 727891968,
+  "output_bytes": 100279552
+}

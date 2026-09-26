@@ -71,6 +71,19 @@ def report(root):
             for nw in (11,12):
                 records=[r for r in read(p) if r['network']==nw];ss=[r['segment'] for r in records];old=[s.get('source_segment',s) for s in ss]
                 network.append(dict(rank=rank,network=nw,stage=stage,segments=len(ss),requested_ranks=sorted(set(r['requested_rank'] for r in records)),realized_ranks=sorted(set(r['realized_rank'] for r in records)),detectors=sorted(set(x for s in old for x in s['detector_indices'])),eligible_entries=sum(s['eligible'] for s in old),scheduled_times=sum(s['scheduled_times'] for s in old),retained_entries=sum(s['retained'] for s in ss),all_converged=all(s['converged'] for s in ss),terminations=[s['stopping_reason'] for s in ss],iterations=[s['iterations'] for s in ss],objectives=[s['objective'] for s in ss],power_diagnostic='existing final observed-entry residual objective per segment; before/after spectra/correlation not retained by this route'))
+    # Existing observed-entry solver objective is a residual sum of squares.
+    for n in network:
+        loss=sum(v[-1] for v in n['objectives'] if v)
+        n['final_residual_rms_mJy_per_nominal_beam']=(loss/n['eligible_entries'])**.5 if n['eligible_entries'] else None
+        n['objective_scope']='sum of squared observed-entry residuals after centering and rank fit; all eligible entries, not a new spectrum or map-noise estimate'
+    domains=[]
+    for rank in (5,10,15):
+        for name in ('C0','BASE'):
+            path=root/f'rank-{rank}/freeze/a2000/{name}.npz'
+            if not path.exists():continue
+            with np.load(path) as z,np.load(root/f'rank-10/freeze/a2000/{name}.npz') as ref:
+                domains.append(dict(rank=rank,model=name,counts={key:int(z[key].sum()) for key in ('valid','source_mask','background_mask','coverage_extrapolated')},differences_from_rank10={key:int(np.count_nonzero(z[key]!=ref[key])) for key in ('valid','source_mask','background_mask','coverage_extrapolated')},summary=read(path.with_suffix('.json'))))
+    save_json(d/'noise-domains.json',domains)
     attempts=[json.loads(s) for s in (root/'attempts.jsonl').read_text().splitlines()] if (root/'attempts.jsonl').exists() else []
     counts={kind:sum(r['kind']==kind for r in attempts) for kind in ('parent','trajectory','feedback','noise','endpoint','ideal')}
     runs=[read(p) for p in root.rglob('RUN.json')];storage=[json.loads(s) for p in root.glob('rank-*/storage.jsonl') for s in p.read_text().splitlines()]
@@ -109,7 +122,7 @@ def figures(root,d,summaries,refs,effects):
         for ax,key in zip(axes,('peak','fixed_template','aperture_2')):
             ax.plot([r['cycle'] for r in rows],[r['values'][key] for r in rows],'.-',label=f'rank {rank}');ax.set(title=key,xlabel='Application (0 = M0)',ylabel=units(key));ax.grid(alpha=.2)
     axes[0].legend();fig.tight_layout();fig.savefig(d/'REF-histories.png',dpi=160);plt.close(fig)
-    fig,axes=plt.subplots(3,3,figsize=(10,9),squeeze=False);images=[]
+    fig,axes=plt.subplots(3,3,figsize=(10,10),squeeze=False,layout='constrained');images=[]
     for i,rank in enumerate((5,10,15)):
         for j,branch in enumerate(BRANCHES[1:]):
             p=root/f'rank-{rank}/run/BASE-POINT/{branch}/a2000/cycle-10/response.fits'
@@ -120,6 +133,27 @@ def figures(root,d,summaries,refs,effects):
         plot=axes[i,j].imshow(z,origin='lower',cmap='RdBu_r',vmin=-limit,vmax=limit,extent=(41,-41,-41,41));axes[i,j].set(title=f'rank {(5,10,15)[i]} {BRANCHES[j+1]}',xlabel='East (arcsec)',ylabel='North (arcsec)')
     if images:fig.colorbar(plot,ax=axes.ravel().tolist(),label='actual − own REF − ideal injection (mJy/nominal beam)',shrink=.6)
     fig.savefig(d/'response-residuals.png',dpi=150,bbox_inches='tight');plt.close(fig)
+    # Evaluate already fitted models only; no new fit or uncertainty analysis.
+    from inspect_point_source import gaussian
+    from point_empirical import coordinates
+    fig,axes=plt.subplots(2,3,figsize=(11,7),squeeze=False,layout='constrained');panels=[]
+    for col,rank in enumerate((5,10,15)):
+        r=summaries.get((rank,'REF'))
+        if not r or not r.get('ready') or r['completed_cycle']!=10:continue
+        p=root/f'rank-{rank}/run/BASE-POINT/REF/a2000/cycle-10/native/products/total.fits'
+        signal,valid,_,h=patch_map(available(p));x,y=coordinates(signal.shape,h);fit=r['histories'][-1]['measurement']['fit']['parameters']
+        panels.append((col,rank,np.where(valid,signal,np.nan),np.where(valid,signal-gaussian(fit,x,y),np.nan)))
+    peak=max((float(np.nanmax(v)) for _,_,v,_ in panels),default=1)
+    residual=max((float(np.nanmax(abs(v))) for _,_,_,v in panels),default=1)
+    for col,rank,total,res in panels:
+        a=axes[0,col].imshow(total,origin='lower',extent=(41,-41,-41,41),vmin=-.05*peak,vmax=peak,cmap='viridis')
+        b=axes[1,col].imshow(res,origin='lower',extent=(41,-41,-41,41),vmin=-residual,vmax=residual,cmap='RdBu_r')
+        axes[0,col].set_title(f'Rank {rank}: REF T10');axes[1,col].set_title('Gaussian + constant residual',fontsize=10)
+        for row in (0,1):axes[row,col].set(xlabel='East (arcsec)',ylabel='North (arcsec)')
+    if panels:
+        fig.colorbar(a,ax=axes[0,:].tolist(),label='mJy/nominal beam',shrink=.7)
+        fig.colorbar(b,ax=axes[1,:].tolist(),label='mJy/nominal beam',shrink=.7)
+    fig.savefig(d/'REF-spatial.png',dpi=150,bbox_inches='tight');plt.close(fig)
     fig,axes=plt.subplots(1,3,figsize=(12,3.4))
     for ax,key in zip(axes,('peak','fixed_template','aperture_2')):
         for branch in BRANCHES[1:3]:

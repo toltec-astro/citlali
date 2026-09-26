@@ -1,0 +1,24 @@
+{
+  "schema": "point-fruit-ready-state-v1",
+  "array": "a2000",
+  "cycle_index": 9,
+  "ready": true,
+  "candidate": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-5/run/BASE-POINT/REF/a2000/cycle-09/candidate.fits",
+    "sha256": "e8f27db7d8d74c531cbdb92b72989add8315cf25f5ef5a2e0ed698fb103564c7"
+  },
+  "total": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-5/run/BASE-POINT/REF/a2000/cycle-09/native/products/total.fits",
+    "sha256": "9fb5e1ba72f193de2ffa689498f935041904b99c1777a1d39c24ec40e997b111"
+  },
+  "receipt": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-5/run/BASE-POINT/REF/a2000/cycle-09/native/products/receipt.yaml",
+    "sha256": "56c981a83b89a84912f246c63069b3a693ff806571a2b70b9c07deedb09dfde5"
+  },
+  "original_plan_sha256": "4ee53abc5c8e8aa44f117913f48977945925b68b6d55321c82a7b9005ca46ec3",
+  "original_map_request_sha256": "29d2b8f09b120f1f3c346396c489e93abaf8173d5c2bed201de7526e2519cf9b",
+  "stop_reason": null,
+  "branch": "REF",
+  "policy": "BASE-POINT",
+  "owner_sha256": "40f2c427b44dd5a6d504fc96753a13bf8974a99577bf7daba081c11b00cf3492"
+}

@@ -1,0 +1,86 @@
+[
+  {
+    "rank": 10,
+    "branch": "REF",
+    "status": "completed",
+    "completed_cycle": 10,
+    "reason": null
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-plus",
+    "status": "completed",
+    "completed_cycle": 10,
+    "reason": null
+  },
+  {
+    "rank": 10,
+    "branch": "C-core-minus",
+    "status": "completed",
+    "completed_cycle": 10,
+    "reason": null
+  },
+  {
+    "rank": 10,
+    "branch": "C-shoulder",
+    "status": "completed",
+    "completed_cycle": 10,
+    "reason": null
+  },
+  {
+    "rank": 5,
+    "branch": "REF",
+    "status": "completed",
+    "completed_cycle": 10,
+    "reason": null
+  },
+  {
+    "rank": 15,
+    "branch": "REF",
+    "status": "completed",
+    "completed_cycle": 10,
+    "reason": null
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-plus",
+    "status": "completed",
+    "completed_cycle": 10,
+    "reason": null
+  },
+  {
+    "rank": 5,
+    "branch": "C-core-minus",
+    "status": "completed",
+    "completed_cycle": 10,
+    "reason": null
+  },
+  {
+    "rank": 5,
+    "branch": "C-shoulder",
+    "status": "completed",
+    "completed_cycle": 10,
+    "reason": null
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-plus",
+    "status": "completed",
+    "completed_cycle": 10,
+    "reason": null
+  },
+  {
+    "rank": 15,
+    "branch": "C-core-minus",
+    "status": "completed",
+    "completed_cycle": 10,
+    "reason": null
+  },
+  {
+    "rank": 15,
+    "branch": "C-shoulder",
+    "status": "completed",
+    "completed_cycle": 10,
+    "reason": null
+  }
+]

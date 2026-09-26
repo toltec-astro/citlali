@@ -1,12 +1,23 @@
 # Citlali Refactor Status
 
-## Bounded PTC rank-response/noise probe — active 2026-09-26
+## Bounded PTC rank-response/noise comparison — completed 2026-09-26
 
-The owner released ranks 5/10/15 on POINT 152430/a2000 through the frozen ordinary
-MAP + BASE-POINT endpoint. This supersedes the rank-comparison deferral below only.
-The [bounded work order](../validation/ptc_rank_response_2026-09-26/PREFLIGHT.md)
-preserves RTC/CAL, injection definitions and all downstream scientific settings.
-No reference/default promotion, RTC change, integration or push is authorized.
+POINT152430/a2000 ranks 5/10/15 completed all 12 trajectories and 120 applications
+at reviewed science source e3cbf1eeadda256e4d9f400a834f9f7d462c1ae2. Rank10 REF is
+exactly equal to the frozen M0–T10 reference; all three rank10 injection regressions
+pass. One raw-derived RTC/CAL parent, three noise packages/endpoints and nine ideal
+controls; no replacement attempts or native errors. All 132 maps have equal full
+coverage/support. The original frozen profile/tag remain unchanged.
+
+Rank15 improves compact response-normalized conditional uncertainties (about 12%
+peak, 31% template, 41% aperture), with lower residual power in both networks. It
+also increases broad shoulder aperture loss: 81.6% recovery versus 84.3% at rank10.
+Keep rank10 as reference; rank15 is promising for one independent-observation
+confirmation, not a promoted default or universal optimum. No follow-on executed.
+See [assessment](../validation/ptc_rank_response_2026-09-26/ASSESSMENT.md) and
+[handoff](../handoff/PTC_RANK_RESPONSE_NOISE_2026-09-26.md). This supersedes only the
+older deferral of this rank comparison. RTC and other method development stay
+parked; no Unity access, merge, push or production activation.
 
 ## Bright-POINT downstream reference frozen — 2026-09-26
 

@@ -1,0 +1,944 @@
+[
+  {
+    "rank": 5,
+    "model": "C0",
+    "counts": {
+      "valid": 10513,
+      "source_mask": 1182,
+      "background_mask": 9331,
+      "coverage_extrapolated": 3
+    },
+    "differences_from_rank10": {
+      "valid": 0,
+      "source_mask": 24,
+      "background_mask": 24,
+      "coverage_extrapolated": 0
+    },
+    "summary": {
+      "method": "point-full-observation-conditional-additive-v1",
+      "request": {
+        "mask_fwhm": 4.0,
+        "lag_pixels": 32,
+        "taper_power": 1.0,
+        "bins": 5,
+        "minimum_pixels": 100,
+        "minimum_pairs": 200,
+        "region": "all",
+        "domain_factor": 1,
+        "seed": 23152389,
+        "high_coverage_usable": true
+      },
+      "coverage_transfer": {
+        "training_coverage_range": [
+          114.0,
+          456.0
+        ],
+        "maximum_applied_coverage": 493.0,
+        "high_coverage_pixels": 3,
+        "high_coverage_usable": true,
+        "continuation": "unchanged clipped coverage-bin index and bin scale times sqrt(zero-lag moment); high tail is the existing last-bin prediction",
+        "interpretation": "model-based conditional transfer; extrapolation metadata is not empirical calibration"
+      },
+      "mask_radius_arcsec": 38.79641893943117,
+      "source_mask_policy": "parameter-centered circle",
+      "mean_removed": -1.8239934538613292,
+      "mean_policy": "single ordinary mean of selected background; no gradient, per-bin mean or source-fit subtraction",
+      "mean_estimation_limitation": "finite background mean removal biases unconstrained long modes; not corrected by pair-count normalization",
+      "background_pixels": 9331,
+      "coverage_range": [
+        114.0,
+        456.00000000000006
+      ],
+      "bins": [
+        {
+          "bin": 0,
+          "coverage_min": 114.0,
+          "coverage_max_exclusive": 137.0,
+          "n": 1836,
+          "second_moment_about_global_mean": 616.083487356989,
+          "median": -0.1825794993617163,
+          "mean": -0.04375351240478609,
+          "std": 24.75706981841348,
+          "robust_scale": 18.707251045276983
+        },
+        {
+          "bin": 1,
+          "coverage_min": 137.0,
+          "coverage_max_exclusive": 163.0,
+          "n": 1867,
+          "second_moment_about_global_mean": 546.3314684567588,
+          "median": -1.190592976434115,
+          "mean": -1.5791282992965145,
+          "std": 23.37245124886348,
+          "robust_scale": 18.4137070789106
+        },
+        {
+          "bin": 2,
+          "coverage_min": 163.0,
+          "coverage_max_exclusive": 196.0,
+          "n": 1867,
+          "second_moment_about_global_mean": 373.33451502870616,
+          "median": -1.3172369132034876,
+          "mean": -2.438051861655956,
+          "std": 19.312101005012,
+          "robust_scale": 15.97563766183936
+        },
+        {
+          "bin": 3,
+          "coverage_min": 196.0,
+          "coverage_max_exclusive": 237.0,
+          "n": 1857,
+          "second_moment_about_global_mean": 316.0466017961821,
+          "median": -1.9631548414182605,
+          "mean": -1.9346612614443706,
+          "std": 17.777354916684086,
+          "robust_scale": 15.320218696033574
+        },
+        {
+          "bin": 4,
+          "coverage_min": 237.0,
+          "coverage_max_exclusive": 456.00000000000006,
+          "n": 1904,
+          "second_moment_about_global_mean": 294.23364881743356,
+          "median": -2.5089347823987906,
+          "mean": -3.0706986061998,
+          "std": 17.107850780602494,
+          "robust_scale": 14.952534912284602
+        }
+      ],
+      "histogram": {
+        "counts": [
+          1,
+          0,
+          0,
+          2,
+          1,
+          2,
+          3,
+          4,
+          11,
+          16,
+          22,
+          41,
+          80,
+          131,
+          209,
+          347,
+          564,
+          834,
+          1319,
+          1508,
+          1527,
+          1061,
+          682,
+          412,
+          216,
+          138,
+          87,
+          43,
+          30,
+          20,
+          8,
+          5,
+          3,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        "edges": [
+          -6.6429389034149136,
+          -6.305344167243088,
+          -5.967749431071263,
+          -5.630154694899437,
+          -5.292559958727612,
+          -4.954965222555786,
+          -4.61737048638396,
+          -4.279775750212135,
+          -3.942181014040309,
+          -3.6045862778684836,
+          -3.266991541696658,
+          -2.9293968055248323,
+          -2.5918020693530064,
+          -2.2542073331811814,
+          -1.9166125970093555,
+          -1.5790178608375305,
+          -1.2414231246657046,
+          -0.9038283884938787,
+          -0.5662336523220537,
+          -0.2286389161502278,
+          0.1089558200215972,
+          0.4465505561934231,
+          0.784145292365249,
+          1.121740028537074,
+          1.4593347647089008,
+          1.7969295008807258,
+          2.134524237052551,
+          2.472118973224376,
+          2.8097137093962026,
+          3.1473084455680276,
+          3.4849031817398526,
+          3.8224979179116794,
+          4.160092654083504,
+          4.497687390255329,
+          4.835282126427156,
+          5.172876862598981,
+          5.510471598770806,
+          5.848066334942633,
+          6.185661071114458,
+          6.523255807286283,
+          6.860850543458108
+        ],
+        "skew": -0.0964538872125304,
+        "excess_kurtosis": 2.2009562801012876,
+        "fraction_abs_over_3": 0.011467152502411317,
+        "robust_scale": 0.8202587282108689
+      },
+      "spectrum_fit": {
+        "domain_pixels": 100,
+        "negative_spectral_mass_fraction": 0.0,
+        "pair_to_model_rms": 0.022823624579829328,
+        "zero_lag_before_normalization": 0.9994641517522231,
+        "maximum_lag_pixels": 32,
+        "taper_power": 1.0,
+        "representation": "real inversion-symmetric nonnegative 2D discrete spectrum; mean=1; cosine-product lag taper then nonnegative spectral projection",
+        "unsupported_lag_cells": 0,
+        "missing_lags": "zero only in the computational model; unconstrained physical correlations are unknown"
+      },
+      "validity": "finite positive high-coverage prediction usable; lower-coverage bound unchanged",
+      "assumptions": "Gaussian generator; separable amplitude modulation times shared stationary normalized anisotropic covariance"
+    }
+  },
+  {
+    "rank": 5,
+    "model": "BASE",
+    "counts": {
+      "valid": 10513,
+      "source_mask": 664,
+      "background_mask": 9849,
+      "coverage_extrapolated": 3
+    },
+    "differences_from_rank10": {
+      "valid": 0,
+      "source_mask": 12,
+      "background_mask": 12,
+      "coverage_extrapolated": 0
+    },
+    "summary": {
+      "request": {
+        "mask_fwhm": 3.0,
+        "lag_pixels": 32,
+        "taper_power": 1.0,
+        "bins": 5,
+        "minimum_pixels": 100,
+        "minimum_pairs": 200,
+        "region": "all",
+        "domain_factor": 1,
+        "seed": 23152389,
+        "high_coverage_usable": true
+      },
+      "bins": [
+        {
+          "bin": 0,
+          "coverage_min": 114.0,
+          "coverage_max_exclusive": 138.0,
+          "n": 1901,
+          "second_moment_about_global_mean": 614.6176761843715,
+          "median": -0.19248344519017793,
+          "mean": -0.15406313503937066,
+          "std": 24.71979125666808,
+          "robust_scale": 18.724141277132112
+        },
+        {
+          "bin": 1,
+          "coverage_min": 138.0,
+          "coverage_max_exclusive": 166.0,
+          "n": 1990,
+          "second_moment_about_global_mean": 531.8652872815438,
+          "median": -1.1843916676311586,
+          "mean": -1.6241042316828314,
+          "std": 23.058495584088398,
+          "robust_scale": 18.19245135441739
+        },
+        {
+          "bin": 2,
+          "coverage_min": 166.0,
+          "coverage_max_exclusive": 202.0,
+          "n": 1984,
+          "second_moment_about_global_mean": 373.85460766124623,
+          "median": -1.1628599119713898,
+          "mean": -2.194336865317814,
+          "std": 19.33468464525991,
+          "robust_scale": 16.38445665997353
+        },
+        {
+          "bin": 3,
+          "coverage_min": 202.0,
+          "coverage_max_exclusive": 246.0,
+          "n": 1991,
+          "second_moment_about_global_mean": 312.27929402044754,
+          "median": -2.2547398198411774,
+          "mean": -2.3942927112189385,
+          "std": 17.66782396952591,
+          "robust_scale": 15.304285375303776
+        },
+        {
+          "bin": 4,
+          "coverage_min": 246.0,
+          "coverage_max_exclusive": 456.00000000000006,
+          "n": 1983,
+          "second_moment_about_global_mean": 293.79619735648293,
+          "median": -3.475639950159351,
+          "mean": -3.743281420828308,
+          "std": 17.055362697043627,
+          "robust_scale": 14.955954293448269
+        }
+      ],
+      "mean_removed": -2.0376047951151044,
+      "zero_lag_before_normalization": 0.9994923342471317,
+      "spatial_covariance_learned": false,
+      "coverage_transfer": {
+        "training_coverage_range": [
+          114.0,
+          456.0
+        ],
+        "maximum_applied_coverage": 493.0,
+        "high_coverage_pixels": 3,
+        "high_coverage_usable": true,
+        "continuation": "unchanged clipped coverage-bin index and bin scale times sqrt(zero-lag moment); high tail is the existing last-bin prediction",
+        "interpretation": "model-based conditional transfer; extrapolation metadata is not empirical calibration"
+      }
+    }
+  },
+  {
+    "rank": 10,
+    "model": "C0",
+    "counts": {
+      "valid": 10513,
+      "source_mask": 1158,
+      "background_mask": 9355,
+      "coverage_extrapolated": 3
+    },
+    "differences_from_rank10": {
+      "valid": 0,
+      "source_mask": 0,
+      "background_mask": 0,
+      "coverage_extrapolated": 0
+    },
+    "summary": {
+      "method": "point-full-observation-conditional-additive-v1",
+      "request": {
+        "mask_fwhm": 4.0,
+        "lag_pixels": 32,
+        "taper_power": 1.0,
+        "bins": 5,
+        "minimum_pixels": 100,
+        "minimum_pairs": 200,
+        "region": "all",
+        "domain_factor": 1,
+        "seed": 23152389,
+        "high_coverage_usable": true
+      },
+      "coverage_transfer": {
+        "training_coverage_range": [
+          114.0,
+          456.0
+        ],
+        "maximum_applied_coverage": 493.0,
+        "high_coverage_pixels": 3,
+        "high_coverage_usable": true,
+        "continuation": "unchanged clipped coverage-bin index and bin scale times sqrt(zero-lag moment); high tail is the existing last-bin prediction",
+        "interpretation": "model-based conditional transfer; extrapolation metadata is not empirical calibration"
+      },
+      "mask_radius_arcsec": 38.36486617305179,
+      "source_mask_policy": "parameter-centered circle",
+      "mean_removed": -1.5375873554798942,
+      "mean_policy": "single ordinary mean of selected background; no gradient, per-bin mean or source-fit subtraction",
+      "mean_estimation_limitation": "finite background mean removal biases unconstrained long modes; not corrected by pair-count normalization",
+      "background_pixels": 9355,
+      "coverage_range": [
+        114.0,
+        456.00000000000006
+      ],
+      "bins": [
+        {
+          "bin": 0,
+          "coverage_min": 114.0,
+          "coverage_max_exclusive": 137.0,
+          "n": 1836,
+          "second_moment_about_global_mean": 437.61028519442345,
+          "median": -0.08660857612813741,
+          "mean": -0.24063917931937995,
+          "std": 20.878871951350376,
+          "robust_scale": 17.122027278172624
+        },
+        {
+          "bin": 1,
+          "coverage_min": 137.0,
+          "coverage_max_exclusive": 163.0,
+          "n": 1867,
+          "second_moment_about_global_mean": 409.23756744354375,
+          "median": -0.9668943489925228,
+          "mean": -1.6990967136068236,
+          "std": 20.22897595508817,
+          "robust_scale": 16.20102020706931
+        },
+        {
+          "bin": 2,
+          "coverage_min": 163.0,
+          "coverage_max_exclusive": 196.0,
+          "n": 1869,
+          "second_moment_about_global_mean": 284.7720292017302,
+          "median": -0.6635202368106639,
+          "mean": -1.8138579340431116,
+          "std": 16.87292692183876,
+          "robust_scale": 13.930860930404044
+        },
+        {
+          "bin": 3,
+          "coverage_min": 196.0,
+          "coverage_max_exclusive": 238.0,
+          "n": 1902,
+          "second_moment_about_global_mean": 265.65771961162596,
+          "median": -0.7700698880742989,
+          "mean": -1.5555489408845584,
+          "std": 16.29899987187453,
+          "robust_scale": 14.154127615973588
+        },
+        {
+          "bin": 4,
+          "coverage_min": 238.0,
+          "coverage_max_exclusive": 456.00000000000006,
+          "n": 1881,
+          "second_moment_about_global_mean": 235.65787005979436,
+          "median": -1.7767526681471746,
+          "mean": -2.350530594732103,
+          "std": 15.329600184590054,
+          "robust_scale": 13.29474401797223
+        }
+      ],
+      "histogram": {
+        "counts": [
+          3,
+          0,
+          1,
+          3,
+          5,
+          4,
+          2,
+          9,
+          13,
+          21,
+          36,
+          59,
+          87,
+          110,
+          178,
+          218,
+          319,
+          402,
+          582,
+          765,
+          966,
+          1173,
+          1129,
+          963,
+          757,
+          507,
+          344,
+          243,
+          144,
+          114,
+          71,
+          46,
+          24,
+          18,
+          16,
+          10,
+          3,
+          5,
+          0,
+          5
+        ],
+        "edges": [
+          -5.366449977967667,
+          -5.11833616047379,
+          -4.870222342979912,
+          -4.622108525486034,
+          -4.373994707992157,
+          -4.12588089049828,
+          -3.877767073004402,
+          -3.6296532555105245,
+          -3.381539438016647,
+          -3.1334256205227695,
+          -2.885311803028892,
+          -2.6371979855350145,
+          -2.389084168041137,
+          -2.1409703505472595,
+          -1.892856533053382,
+          -1.6447427155595045,
+          -1.396628898065627,
+          -1.14851508057175,
+          -0.9004012630778719,
+          -0.652287445583994,
+          -0.4041736280901169,
+          -0.15605981059623986,
+          0.0920540068976381,
+          0.34016782439151605,
+          0.5882816418853931,
+          0.8363954593792702,
+          1.0845092768731481,
+          1.332623094367026,
+          1.5807369118609031,
+          1.8288507293547802,
+          2.076964546848658,
+          2.325078364342536,
+          2.573192181836413,
+          2.8213059993302902,
+          3.0694198168241673,
+          3.317533634318046,
+          3.565647451811923,
+          3.8137612693058003,
+          4.061875086799679,
+          4.309988904293556,
+          4.558102721787434
+        ],
+        "skew": -0.19856935768298115,
+        "excess_kurtosis": 1.5207513372413368,
+        "fraction_abs_over_3": 0.009941207910208444,
+        "robust_scale": 0.8338799949120158
+      },
+      "spectrum_fit": {
+        "domain_pixels": 100,
+        "negative_spectral_mass_fraction": 0.0,
+        "pair_to_model_rms": 0.024134727630413976,
+        "zero_lag_before_normalization": 0.9994655264564398,
+        "maximum_lag_pixels": 32,
+        "taper_power": 1.0,
+        "representation": "real inversion-symmetric nonnegative 2D discrete spectrum; mean=1; cosine-product lag taper then nonnegative spectral projection",
+        "unsupported_lag_cells": 0,
+        "missing_lags": "zero only in the computational model; unconstrained physical correlations are unknown"
+      },
+      "validity": "finite positive high-coverage prediction usable; lower-coverage bound unchanged",
+      "assumptions": "Gaussian generator; separable amplitude modulation times shared stationary normalized anisotropic covariance"
+    }
+  },
+  {
+    "rank": 10,
+    "model": "BASE",
+    "counts": {
+      "valid": 10513,
+      "source_mask": 652,
+      "background_mask": 9861,
+      "coverage_extrapolated": 3
+    },
+    "differences_from_rank10": {
+      "valid": 0,
+      "source_mask": 0,
+      "background_mask": 0,
+      "coverage_extrapolated": 0
+    },
+    "summary": {
+      "request": {
+        "mask_fwhm": 3.0,
+        "lag_pixels": 32,
+        "taper_power": 1.0,
+        "bins": 5,
+        "minimum_pixels": 100,
+        "minimum_pairs": 200,
+        "region": "all",
+        "domain_factor": 1,
+        "seed": 23152389,
+        "high_coverage_usable": true
+      },
+      "bins": [
+        {
+          "bin": 0,
+          "coverage_min": 114.0,
+          "coverage_max_exclusive": 138.0,
+          "n": 1901,
+          "second_moment_about_global_mean": 435.36148172768327,
+          "median": -0.15481437040475318,
+          "mean": -0.3742257530304833,
+          "std": 20.8230380576919,
+          "robust_scale": 17.03268301362721
+        },
+        {
+          "bin": 1,
+          "coverage_min": 138.0,
+          "coverage_max_exclusive": 166.0,
+          "n": 1990,
+          "second_moment_about_global_mean": 399.4367988414505,
+          "median": -0.7379877342702881,
+          "mean": -1.6266485868142604,
+          "std": 19.98577479638727,
+          "robust_scale": 15.886839291614812
+        },
+        {
+          "bin": 2,
+          "coverage_min": 166.0,
+          "coverage_max_exclusive": 202.0,
+          "n": 1985,
+          "second_moment_about_global_mean": 288.56146440326586,
+          "median": -0.5521525477347823,
+          "mean": -1.7641881940700113,
+          "std": 16.98698124568096,
+          "robust_scale": 14.092715225373325
+        },
+        {
+          "bin": 3,
+          "coverage_min": 202.0,
+          "coverage_max_exclusive": 246.0,
+          "n": 1993,
+          "second_moment_about_global_mean": 260.18062266846033,
+          "median": -1.2272189022307356,
+          "mean": -1.9214196587164767,
+          "std": 16.128615285433064,
+          "robust_scale": 14.229994127200099
+        },
+        {
+          "bin": 4,
+          "coverage_min": 246.0,
+          "coverage_max_exclusive": 456.00000000000006,
+          "n": 1992,
+          "second_moment_about_global_mean": 238.4831482667646,
+          "median": -2.271613626842968,
+          "mean": -2.76038857798153,
+          "std": 15.406535206030334,
+          "robust_scale": 13.447669385257624
+        }
+      ],
+      "mean_removed": -1.7014938481555062,
+      "zero_lag_before_normalization": 0.9994929520332624,
+      "spatial_covariance_learned": false,
+      "coverage_transfer": {
+        "training_coverage_range": [
+          114.0,
+          456.0
+        ],
+        "maximum_applied_coverage": 493.0,
+        "high_coverage_pixels": 3,
+        "high_coverage_usable": true,
+        "continuation": "unchanged clipped coverage-bin index and bin scale times sqrt(zero-lag moment); high tail is the existing last-bin prediction",
+        "interpretation": "model-based conditional transfer; extrapolation metadata is not empirical calibration"
+      }
+    }
+  },
+  {
+    "rank": 15,
+    "model": "C0",
+    "counts": {
+      "valid": 10513,
+      "source_mask": 1107,
+      "background_mask": 9406,
+      "coverage_extrapolated": 3
+    },
+    "differences_from_rank10": {
+      "valid": 0,
+      "source_mask": 51,
+      "background_mask": 51,
+      "coverage_extrapolated": 0
+    },
+    "summary": {
+      "method": "point-full-observation-conditional-additive-v1",
+      "request": {
+        "mask_fwhm": 4.0,
+        "lag_pixels": 32,
+        "taper_power": 1.0,
+        "bins": 5,
+        "minimum_pixels": 100,
+        "minimum_pairs": 200,
+        "region": "all",
+        "domain_factor": 1,
+        "seed": 23152389,
+        "high_coverage_usable": true
+      },
+      "coverage_transfer": {
+        "training_coverage_range": [
+          114.0,
+          456.0
+        ],
+        "maximum_applied_coverage": 493.0,
+        "high_coverage_pixels": 3,
+        "high_coverage_usable": true,
+        "continuation": "unchanged clipped coverage-bin index and bin scale times sqrt(zero-lag moment); high tail is the existing last-bin prediction",
+        "interpretation": "model-based conditional transfer; extrapolation metadata is not empirical calibration"
+      },
+      "mask_radius_arcsec": 37.54567057983729,
+      "source_mask_policy": "parameter-centered circle",
+      "mean_removed": -0.46084210931694525,
+      "mean_policy": "single ordinary mean of selected background; no gradient, per-bin mean or source-fit subtraction",
+      "mean_estimation_limitation": "finite background mean removal biases unconstrained long modes; not corrected by pair-count normalization",
+      "background_pixels": 9406,
+      "coverage_range": [
+        114.0,
+        456.00000000000006
+      ],
+      "bins": [
+        {
+          "bin": 0,
+          "coverage_min": 114.0,
+          "coverage_max_exclusive": 137.0,
+          "n": 1836,
+          "second_moment_about_global_mean": 347.79686709712723,
+          "median": 0.5744140766925463,
+          "mean": 0.9805170842457451,
+          "std": 18.593499364314795,
+          "robust_scale": 15.607959092524949
+        },
+        {
+          "bin": 1,
+          "coverage_min": 137.0,
+          "coverage_max_exclusive": 163.0,
+          "n": 1867,
+          "second_moment_about_global_mean": 297.0084776928946,
+          "median": -0.5448552230178421,
+          "mean": -0.5167855654771841,
+          "std": 17.233843052128545,
+          "robust_scale": 14.208370592948778
+        },
+        {
+          "bin": 2,
+          "coverage_min": 163.0,
+          "coverage_max_exclusive": 197.0,
+          "n": 1921,
+          "second_moment_about_global_mean": 219.29303254378422,
+          "median": -0.26084149351866487,
+          "mean": -0.5744226214232327,
+          "std": 14.808110118851307,
+          "robust_scale": 12.171536718112359
+        },
+        {
+          "bin": 3,
+          "coverage_min": 197.0,
+          "coverage_max_exclusive": 239.0,
+          "n": 1899,
+          "second_moment_about_global_mean": 202.65670018600906,
+          "median": -0.4223261383068971,
+          "mean": -0.6183927911029231,
+          "std": 14.234881976700283,
+          "robust_scale": 11.659414584750865
+        },
+        {
+          "bin": 4,
+          "coverage_min": 239.0,
+          "coverage_max_exclusive": 456.00000000000006,
+          "n": 1883,
+          "second_moment_about_global_mean": 166.45064554013123,
+          "median": -1.3547237138515669,
+          "mean": -1.5359945991003672,
+          "std": 12.85667447082304,
+          "robust_scale": 11.68183949770298
+        }
+      ],
+      "histogram": {
+        "counts": [
+          1,
+          0,
+          1,
+          0,
+          1,
+          1,
+          0,
+          4,
+          1,
+          8,
+          17,
+          22,
+          37,
+          65,
+          112,
+          149,
+          238,
+          364,
+          508,
+          744,
+          1009,
+          1269,
+          1220,
+          1166,
+          822,
+          577,
+          357,
+          247,
+          167,
+          124,
+          60,
+          47,
+          31,
+          14,
+          6,
+          6,
+          3,
+          5,
+          1,
+          2
+        ],
+        "edges": [
+          -6.229483657618551,
+          -5.948083958430459,
+          -5.666684259242366,
+          -5.385284560054274,
+          -5.103884860866182,
+          -4.82248516167809,
+          -4.541085462489997,
+          -4.2596857633019045,
+          -3.9782860641138127,
+          -3.6968863649257204,
+          -3.415486665737628,
+          -3.134086966549536,
+          -2.8526872673614436,
+          -2.5712875681733514,
+          -2.289887868985259,
+          -2.0084881697971673,
+          -1.7270884706090746,
+          -1.4456887714209818,
+          -1.16428907223289,
+          -0.8828893730447982,
+          -0.6014896738567055,
+          -0.3200899746686128,
+          -0.03869027548052095,
+          0.24270942370757087,
+          0.5241091228956636,
+          0.8055088220837563,
+          1.0869085212718481,
+          1.36830822045994,
+          1.6497079196480327,
+          1.9311076188361254,
+          2.2125073180242163,
+          2.493907017212309,
+          2.7753067164004017,
+          3.0567064155884944,
+          3.338106114776587,
+          3.619505813964678,
+          3.900905513152771,
+          4.1823052123408635,
+          4.463704911528954,
+          4.745104610717047,
+          5.02650430990514
+        ],
+        "skew": -0.00615593576621695,
+        "excess_kurtosis": 1.4932873084797498,
+        "fraction_abs_over_3": 0.009143100148841165,
+        "robust_scale": 0.8414046108234905
+      },
+      "spectrum_fit": {
+        "domain_pixels": 100,
+        "negative_spectral_mass_fraction": 0.0,
+        "pair_to_model_rms": 0.017466886698555915,
+        "zero_lag_before_normalization": 0.9994684244099505,
+        "maximum_lag_pixels": 32,
+        "taper_power": 1.0,
+        "representation": "real inversion-symmetric nonnegative 2D discrete spectrum; mean=1; cosine-product lag taper then nonnegative spectral projection",
+        "unsupported_lag_cells": 0,
+        "missing_lags": "zero only in the computational model; unconstrained physical correlations are unknown"
+      },
+      "validity": "finite positive high-coverage prediction usable; lower-coverage bound unchanged",
+      "assumptions": "Gaussian generator; separable amplitude modulation times shared stationary normalized anisotropic covariance"
+    }
+  },
+  {
+    "rank": 15,
+    "model": "BASE",
+    "counts": {
+      "valid": 10513,
+      "source_mask": 624,
+      "background_mask": 9889,
+      "coverage_extrapolated": 3
+    },
+    "differences_from_rank10": {
+      "valid": 0,
+      "source_mask": 28,
+      "background_mask": 28,
+      "coverage_extrapolated": 0
+    },
+    "summary": {
+      "request": {
+        "mask_fwhm": 3.0,
+        "lag_pixels": 32,
+        "taper_power": 1.0,
+        "bins": 5,
+        "minimum_pixels": 100,
+        "minimum_pairs": 200,
+        "region": "all",
+        "domain_factor": 1,
+        "seed": 23152389,
+        "high_coverage_usable": true
+      },
+      "bins": [
+        {
+          "bin": 0,
+          "coverage_min": 114.0,
+          "coverage_max_exclusive": 139.0,
+          "n": 1977,
+          "second_moment_about_global_mean": 352.1094475580785,
+          "median": 0.43500243499962565,
+          "mean": 0.8752767915670411,
+          "std": 18.70363779001357,
+          "robust_scale": 15.700121836794967
+        },
+        {
+          "bin": 1,
+          "coverage_min": 139.0,
+          "coverage_max_exclusive": 166.0,
+          "n": 1914,
+          "second_moment_about_global_mean": 280.679120491626,
+          "median": -0.39574409234985175,
+          "mean": -0.3851411751441863,
+          "std": 16.75161021340007,
+          "robust_scale": 13.834124154238808
+        },
+        {
+          "bin": 2,
+          "coverage_min": 166.0,
+          "coverage_max_exclusive": 203.0,
+          "n": 2036,
+          "second_moment_about_global_mean": 220.1229410569572,
+          "median": -0.33777274204186936,
+          "mean": -0.685013218763944,
+          "std": 14.836457833916038,
+          "robust_scale": 12.14501985637254
+        },
+        {
+          "bin": 3,
+          "coverage_min": 203.0,
+          "coverage_max_exclusive": 247.0,
+          "n": 1976,
+          "second_moment_about_global_mean": 200.39101531384895,
+          "median": -0.992500456682295,
+          "mean": -1.038527310080489,
+          "std": 14.150210005381762,
+          "robust_scale": 11.383321536289923
+        },
+        {
+          "bin": 4,
+          "coverage_min": 247.0,
+          "coverage_max_exclusive": 456.00000000000006,
+          "n": 1986,
+          "second_moment_about_global_mean": 174.53354755907986,
+          "median": -1.6604053759748634,
+          "mean": -1.9285916049361482,
+          "std": 13.147639729580106,
+          "robust_scale": 11.963695217238804
+        }
+      ],
+      "mean_removed": -0.6354270197010375,
+      "zero_lag_before_normalization": 0.999494387703509,
+      "spatial_covariance_learned": false,
+      "coverage_transfer": {
+        "training_coverage_range": [
+          114.0,
+          456.0
+        ],
+        "maximum_applied_coverage": 493.0,
+        "high_coverage_pixels": 3,
+        "high_coverage_usable": true,
+        "continuation": "unchanged clipped coverage-bin index and bin scale times sqrt(zero-lag moment); high tail is the existing last-bin prediction",
+        "interpretation": "model-based conditional transfer; extrapolation metadata is not empirical calibration"
+      }
+    }
+  }
+]

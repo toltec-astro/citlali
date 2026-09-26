@@ -1,0 +1,62 @@
+{
+  "disposition": "completed local scientific comparison; independent final review pending",
+  "base": "5435bdbdb4e6708e884ae4cb2b0fd93e74102ce5",
+  "science_source": "e3cbf1eeadda256e4d9f400a834f9f7d462c1ae2",
+  "branch": "codex/ptc-rank-response-20260926",
+  "scope": "POINT 152430/0/2, a2000, networks 11/12, ranks 5/10/15, four signal branches, frozen ordinary MAP+BASE-POINT",
+  "counts": {
+    "parent": 1,
+    "trajectory": 12,
+    "feedback": 120,
+    "noise": 3,
+    "endpoint": 3,
+    "ideal": 9
+  },
+  "resources": {
+    "wall_seconds": 596.0447505830089,
+    "maximum_native_process_sampled_RSS": 1556201472,
+    "maximum_stage_storage": 2744225457,
+    "storage_ceiling": 8824001024,
+    "branch_workers_maximum": 3,
+    "numeric_library_threads": 1,
+    "scope": "per-native-process sampled RSS; stage storage snapshots plus allocation reservations, not continuous system or filesystem high water"
+  },
+  "matrix_complete": true,
+  "ref_regression": "exact; maximum plane difference zero; deterministic records and endpoint exact",
+  "injection_regression": "all three rank10 branches pass",
+  "native_errors": 0,
+  "unexpected_native_error_messages": 0,
+  "tests": {
+    "focused_python": 42,
+    "native_ctest": 34,
+    "baseline": 207,
+    "full_config_preflight": "pass",
+    "post_reporting": 8
+  },
+  "native_learning_receipts_checked": 1572,
+  "full_map_support_checks": 132,
+  "retained_files": 3797,
+  "retained_bytes": 203696940,
+  "native_cleanup": {
+    "status": "enumerated; pending durable commit and deletion",
+    "files": 15642,
+    "bytes": 1480783820
+  },
+  "protected_inputs": "verified preflight and preservation; recheck after cleanup",
+  "reference_profile_unchanged": true,
+  "freeze_tag_unchanged": true,
+  "unity_spack": "not performed; local AppleClang/Homebrew only",
+  "source_guard_failures": 0,
+  "scientific_failures": 0,
+  "repair_replacements": 0,
+  "scope_exclusions": [
+    "RTC/CAL changes",
+    "new PTC method/scope",
+    "FRUIT development",
+    "other observations/arrays",
+    "pre-RTC injection",
+    "push/merge/production"
+  ],
+  "decision": "retain rank10 reference; rank15 promising compact-source alternative with worse broad response",
+  "next_action": "recommend one independent-observation rank15-versus-rank10 confirmation; not executed"
+}

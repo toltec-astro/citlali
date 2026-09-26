@@ -1,0 +1,148 @@
+{"kind": "parent", "identity": {"rank": 10}, "epoch": 1790454672.630094}
+{"kind": "trajectory", "identity": {"rank": 10, "branch": "REF", "cycle": 0}, "epoch": 1790454672.633288}
+{"kind": "noise", "identity": {"rank": 10}, "epoch": 1790454704.0932338}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "REF", "cycle": 1}, "epoch": 1790454704.4779751}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "REF", "cycle": 2}, "epoch": 1790454712.9551091}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "REF", "cycle": 3}, "epoch": 1790454721.499766}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "REF", "cycle": 4}, "epoch": 1790454730.046242}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "REF", "cycle": 5}, "epoch": 1790454738.7936692}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "REF", "cycle": 6}, "epoch": 1790454747.860095}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "REF", "cycle": 7}, "epoch": 1790454756.4781718}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "REF", "cycle": 8}, "epoch": 1790454765.066116}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "REF", "cycle": 9}, "epoch": 1790454773.636888}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "REF", "cycle": 10}, "epoch": 1790454782.7149959}
+{"kind": "endpoint", "identity": {"rank": 10}, "epoch": 1790454791.186217}
+{"kind": "trajectory", "identity": {"rank": 10, "branch": "C-shoulder", "cycle": 0}, "epoch": 1790454791.904064}
+{"kind": "trajectory", "identity": {"rank": 10, "branch": "C-core-minus", "cycle": 0}, "epoch": 1790454792.026597}
+{"kind": "trajectory", "identity": {"rank": 10, "branch": "C-core-plus", "cycle": 0}, "epoch": 1790454792.140982}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-shoulder", "cycle": 1}, "epoch": 1790454801.489015}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-core-minus", "cycle": 1}, "epoch": 1790454801.76311}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-core-plus", "cycle": 1}, "epoch": 1790454801.891007}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-core-minus", "cycle": 2}, "epoch": 1790454812.139261}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-core-plus", "cycle": 2}, "epoch": 1790454812.3421419}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-shoulder", "cycle": 2}, "epoch": 1790454812.476931}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-core-minus", "cycle": 3}, "epoch": 1790454822.60785}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-core-plus", "cycle": 3}, "epoch": 1790454822.852139}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-shoulder", "cycle": 3}, "epoch": 1790454822.9896839}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-shoulder", "cycle": 4}, "epoch": 1790454833.461289}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-core-minus", "cycle": 4}, "epoch": 1790454833.693253}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-core-plus", "cycle": 4}, "epoch": 1790454833.84967}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-shoulder", "cycle": 5}, "epoch": 1790454843.972246}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-core-minus", "cycle": 5}, "epoch": 1790454844.216347}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-core-plus", "cycle": 5}, "epoch": 1790454844.367746}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-shoulder", "cycle": 6}, "epoch": 1790454854.548318}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-core-minus", "cycle": 6}, "epoch": 1790454854.79885}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-core-plus", "cycle": 6}, "epoch": 1790454854.962743}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-core-minus", "cycle": 7}, "epoch": 1790454865.375239}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-shoulder", "cycle": 7}, "epoch": 1790454865.735276}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-core-plus", "cycle": 7}, "epoch": 1790454865.930746}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-core-minus", "cycle": 8}, "epoch": 1790454875.5902421}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-shoulder", "cycle": 8}, "epoch": 1790454876.275178}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-core-plus", "cycle": 8}, "epoch": 1790454876.574454}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-core-minus", "cycle": 9}, "epoch": 1790454885.489093}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-shoulder", "cycle": 9}, "epoch": 1790454886.250011}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-core-plus", "cycle": 9}, "epoch": 1790454887.045449}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-core-minus", "cycle": 10}, "epoch": 1790454895.8687842}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-shoulder", "cycle": 10}, "epoch": 1790454896.73155}
+{"kind": "feedback", "identity": {"rank": 10, "branch": "C-core-plus", "cycle": 10}, "epoch": 1790454897.573035}
+{"kind": "ideal", "identity": {"rank": 10, "branch": "C-core-minus"}, "epoch": 1790454905.53789}
+{"kind": "ideal", "identity": {"rank": 10, "branch": "C-shoulder"}, "epoch": 1790454906.4473321}
+{"kind": "ideal", "identity": {"rank": 10, "branch": "C-core-plus"}, "epoch": 1790454907.778068}
+{"kind": "trajectory", "identity": {"rank": 15, "branch": "REF", "cycle": 0}, "epoch": 1790454909.1804411}
+{"kind": "trajectory", "identity": {"rank": 5, "branch": "REF", "cycle": 0}, "epoch": 1790454909.405042}
+{"kind": "noise", "identity": {"rank": 5}, "epoch": 1790454917.8646688}
+{"kind": "noise", "identity": {"rank": 15}, "epoch": 1790454918.214844}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "REF", "cycle": 1}, "epoch": 1790454918.539965}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "REF", "cycle": 1}, "epoch": 1790454918.870174}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "REF", "cycle": 2}, "epoch": 1790454928.4747279}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "REF", "cycle": 2}, "epoch": 1790454928.710187}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "REF", "cycle": 3}, "epoch": 1790454937.932651}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "REF", "cycle": 3}, "epoch": 1790454938.182337}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "REF", "cycle": 4}, "epoch": 1790454946.746861}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "REF", "cycle": 4}, "epoch": 1790454948.061416}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "REF", "cycle": 5}, "epoch": 1790454955.671793}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "REF", "cycle": 5}, "epoch": 1790454957.44649}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "REF", "cycle": 6}, "epoch": 1790454964.428274}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "REF", "cycle": 6}, "epoch": 1790454966.849021}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "REF", "cycle": 7}, "epoch": 1790454973.237113}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "REF", "cycle": 7}, "epoch": 1790454976.635912}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "REF", "cycle": 8}, "epoch": 1790454982.110919}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "REF", "cycle": 8}, "epoch": 1790454986.530844}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "REF", "cycle": 9}, "epoch": 1790454990.995411}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "REF", "cycle": 9}, "epoch": 1790454995.9128819}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "REF", "cycle": 10}, "epoch": 1790454999.889517}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "REF", "cycle": 10}, "epoch": 1790455005.333486}
+{"kind": "endpoint", "identity": {"rank": 5}, "epoch": 1790455008.4788558}
+{"kind": "endpoint", "identity": {"rank": 15}, "epoch": 1790455014.517092}
+{"kind": "trajectory", "identity": {"rank": 5, "branch": "C-core-plus", "cycle": 0}, "epoch": 1790455014.9528909}
+{"kind": "trajectory", "identity": {"rank": 5, "branch": "C-shoulder", "cycle": 0}, "epoch": 1790455015.2515159}
+{"kind": "trajectory", "identity": {"rank": 5, "branch": "C-core-minus", "cycle": 0}, "epoch": 1790455015.54867}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-core-plus", "cycle": 1}, "epoch": 1790455025.1936}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-shoulder", "cycle": 1}, "epoch": 1790455025.642205}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-core-minus", "cycle": 1}, "epoch": 1790455025.942179}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-core-plus", "cycle": 2}, "epoch": 1790455036.222839}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-shoulder", "cycle": 2}, "epoch": 1790455036.67836}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-core-minus", "cycle": 2}, "epoch": 1790455036.987453}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-core-plus", "cycle": 3}, "epoch": 1790455047.2966442}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-shoulder", "cycle": 3}, "epoch": 1790455047.7969458}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-core-minus", "cycle": 3}, "epoch": 1790455048.1253839}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-core-plus", "cycle": 4}, "epoch": 1790455058.3741949}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-shoulder", "cycle": 4}, "epoch": 1790455058.8302631}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-core-minus", "cycle": 4}, "epoch": 1790455059.153007}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-shoulder", "cycle": 5}, "epoch": 1790455069.417205}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-core-plus", "cycle": 5}, "epoch": 1790455069.896954}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-core-minus", "cycle": 5}, "epoch": 1790455070.234302}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-shoulder", "cycle": 6}, "epoch": 1790455080.61883}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-core-plus", "cycle": 6}, "epoch": 1790455081.1035252}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-core-minus", "cycle": 6}, "epoch": 1790455081.4420018}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-shoulder", "cycle": 7}, "epoch": 1790455091.7905111}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-core-plus", "cycle": 7}, "epoch": 1790455092.292026}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-core-minus", "cycle": 7}, "epoch": 1790455092.6365561}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-core-plus", "cycle": 8}, "epoch": 1790455103.57894}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-shoulder", "cycle": 8}, "epoch": 1790455103.9938219}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-core-minus", "cycle": 8}, "epoch": 1790455104.352585}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-core-plus", "cycle": 9}, "epoch": 1790455114.781445}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-shoulder", "cycle": 9}, "epoch": 1790455115.3642838}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-core-minus", "cycle": 9}, "epoch": 1790455115.720326}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-core-plus", "cycle": 10}, "epoch": 1790455126.015538}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-shoulder", "cycle": 10}, "epoch": 1790455126.533844}
+{"kind": "feedback", "identity": {"rank": 5, "branch": "C-core-minus", "cycle": 10}, "epoch": 1790455126.908064}
+{"kind": "ideal", "identity": {"rank": 5, "branch": "C-core-plus"}, "epoch": 1790455135.855135}
+{"kind": "ideal", "identity": {"rank": 5, "branch": "C-shoulder"}, "epoch": 1790455136.4698088}
+{"kind": "ideal", "identity": {"rank": 5, "branch": "C-core-minus"}, "epoch": 1790455137.084966}
+{"kind": "trajectory", "identity": {"rank": 15, "branch": "C-core-plus", "cycle": 0}, "epoch": 1790455137.361166}
+{"kind": "trajectory", "identity": {"rank": 15, "branch": "C-core-minus", "cycle": 0}, "epoch": 1790455137.926889}
+{"kind": "trajectory", "identity": {"rank": 15, "branch": "C-shoulder", "cycle": 0}, "epoch": 1790455138.311784}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-core-plus", "cycle": 1}, "epoch": 1790455148.453863}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-core-minus", "cycle": 1}, "epoch": 1790455148.8254771}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-shoulder", "cycle": 1}, "epoch": 1790455149.399818}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-core-minus", "cycle": 2}, "epoch": 1790455160.196449}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-core-plus", "cycle": 2}, "epoch": 1790455160.748396}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-shoulder", "cycle": 2}, "epoch": 1790455161.1495528}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-core-plus", "cycle": 3}, "epoch": 1790455172.161717}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-core-minus", "cycle": 3}, "epoch": 1790455172.7201102}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-shoulder", "cycle": 3}, "epoch": 1790455173.123658}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-core-plus", "cycle": 4}, "epoch": 1790455184.202593}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-shoulder", "cycle": 4}, "epoch": 1790455184.683904}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-core-minus", "cycle": 4}, "epoch": 1790455185.100132}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-core-plus", "cycle": 5}, "epoch": 1790455196.196037}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-shoulder", "cycle": 5}, "epoch": 1790455196.758658}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-core-minus", "cycle": 5}, "epoch": 1790455197.179232}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-core-plus", "cycle": 6}, "epoch": 1790455208.155112}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-shoulder", "cycle": 6}, "epoch": 1790455208.7437491}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-core-minus", "cycle": 6}, "epoch": 1790455209.179569}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-core-plus", "cycle": 7}, "epoch": 1790455220.296082}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-core-minus", "cycle": 7}, "epoch": 1790455220.808411}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-shoulder", "cycle": 7}, "epoch": 1790455221.265166}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-core-plus", "cycle": 8}, "epoch": 1790455232.544736}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-shoulder", "cycle": 8}, "epoch": 1790455233.0605838}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-core-minus", "cycle": 8}, "epoch": 1790455233.519316}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-core-plus", "cycle": 9}, "epoch": 1790455244.6789398}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-shoulder", "cycle": 9}, "epoch": 1790455245.287346}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-core-minus", "cycle": 9}, "epoch": 1790455245.742532}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-core-plus", "cycle": 10}, "epoch": 1790455256.836229}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-shoulder", "cycle": 10}, "epoch": 1790455257.385876}
+{"kind": "feedback", "identity": {"rank": 15, "branch": "C-core-minus", "cycle": 10}, "epoch": 1790455257.869262}
+{"kind": "ideal", "identity": {"rank": 15, "branch": "C-core-plus"}, "epoch": 1790455267.301493}
+{"kind": "ideal", "identity": {"rank": 15, "branch": "C-core-minus"}, "epoch": 1790455267.946309}
+{"kind": "ideal", "identity": {"rank": 15, "branch": "C-shoulder"}, "epoch": 1790455268.606428}

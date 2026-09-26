@@ -1,0 +1,46 @@
+[
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-10/freeze/a2000/BASE.json",
+    "sha256": "ef6d0d450c6b53555c271e7722550f772d3f4beb408fd5c5e55f3a8c64c08b7d"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-10/freeze/a2000/BASE.npz",
+    "sha256": "b65f2bb8375ae80de5395f06b6275df516e83169a06e26c3601c88162a16be25"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-10/freeze/a2000/C0.json",
+    "sha256": "87dab3154809f790644ce2631089049039f5f23b6711eff2f6e528c1979f31e0"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-10/freeze/a2000/C0.npz",
+    "sha256": "99682c27acbb6d754283ea4b55eb9292e66a220ede39fbfbc3079a2c19201204"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-10/freeze/a2000/context.npz",
+    "sha256": "f1e4e1a835a99b10a0a631fd97bc4f87c331a97f8c5a9891b6f4502644854e6f"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-10/freeze/a2000/continuation-sanity.json",
+    "sha256": "9b06382fc332640c3b3aaef3d7fab75b3b7001335edfdd222ba7009cb066fed2"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-10/freeze/a2000/geometry.json",
+    "sha256": "e2067ffa46ddb933d6b92188c9e2fa5998b55d03e5be6c558bb1348ab3db093a"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-10/freeze/a2000/guard.json",
+    "sha256": "39486efc2020d9c6998b211f0a64f192932ea310eff7051a6b92f92c185cff5f"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-10/freeze/M0-measurement.json",
+    "sha256": "26504b1c2a58c40bcf04ba5babd1e91dfaeb742ab0cb4bbe445d8c27f2205f4a"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-10/freeze/parents.json",
+    "sha256": "6cf32aca9699532b6dcbd0228aed91d9cae2196657a1e5ed56db7b443a18d7c4"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/rank-10/inputs/map-request.json",
+    "sha256": "29d2b8f09b120f1f3c346396c489e93abaf8173d5c2bed201de7526e2519cf9b"
+  }
+]

@@ -1,0 +1,1193 @@
+[
+  {
+    "rank": 5,
+    "cycle": 0,
+    "values": {
+      "peak": 604.9998398686117,
+      "east": 4.107208960478735,
+      "north": 7.415097520360514,
+      "FWHM_major": 9.699104734857793,
+      "FWHM_minor": 8.709763806064206,
+      "ellipse_xx": 15.515094295890977,
+      "ellipse_xy": -1.6308803368696587,
+      "ellipse_yy": 15.130023902146378,
+      "background": -8.670106421855955,
+      "fixed_template": 613.770057031731,
+      "aperture_1": 55167.40333949663,
+      "aperture_1p5": 52554.18516501221,
+      "aperture_2": 50542.86902249298
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 7.575016907546682,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -6.318517229653255,
+      "mean": -6.300213582631993,
+      "std": 17.37947808902436,
+      "robust_scale": 16.490110848003724
+    }
+  },
+  {
+    "rank": 5,
+    "cycle": 1,
+    "values": {
+      "peak": 717.609652434902,
+      "east": 4.039118399183325,
+      "north": 7.419530614870998,
+      "FWHM_major": 9.92620099020425,
+      "FWHM_minor": 9.097843410362728,
+      "ellipse_xx": 16.60485359408602,
+      "ellipse_xy": -1.397449471340399,
+      "ellipse_yy": 16.090262591583333,
+      "background": -4.479198991496025,
+      "fixed_template": 751.59183444667,
+      "aperture_1": 69118.16437729221,
+      "aperture_1p5": 70195.8056842077,
+      "aperture_2": 70153.45119986641
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 7.364537733173147,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -4.145353254644582,
+      "mean": -4.140089465148193,
+      "std": 17.2782342068632,
+      "robust_scale": 16.467147138104757
+    }
+  },
+  {
+    "rank": 5,
+    "cycle": 2,
+    "values": {
+      "peak": 742.0446293625321,
+      "east": 4.02484427263879,
+      "north": 7.416504074972568,
+      "FWHM_major": 10.01456136599299,
+      "FWHM_minor": 9.22381638594717,
+      "ellipse_xx": 16.987835994917166,
+      "ellipse_xy": -1.3442005868285172,
+      "ellipse_yy": 16.441252601598368,
+      "background": -3.3144520334316634,
+      "fixed_template": 785.4389759713065,
+      "aperture_1": 72792.90699624756,
+      "aperture_1p5": 74995.64943205476,
+      "aperture_2": 75501.47029189629
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 7.29609557341179,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -3.5676479365196134,
+      "mean": -3.5253042945972752,
+      "std": 17.272634987295362,
+      "robust_scale": 16.472874340827566
+    }
+  },
+  {
+    "rank": 5,
+    "cycle": 3,
+    "values": {
+      "peak": 747.9161267303572,
+      "east": 4.021228620601823,
+      "north": 7.414884543945081,
+      "FWHM_major": 10.03654877418077,
+      "FWHM_minor": 9.254080995752433,
+      "ellipse_xx": 17.083895576732026,
+      "ellipse_xy": -1.3320894197852435,
+      "ellipse_yy": 16.525547626567935,
+      "background": -3.038321485594598,
+      "fixed_template": 793.663496986416,
+      "aperture_1": 73688.81615472492,
+      "aperture_1p5": 76161.36510149747,
+      "aperture_2": 76799.7518125398
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 7.279794394743878,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -3.3889814413732045,
+      "mean": -3.378298716834033,
+      "std": 17.271779035763686,
+      "robust_scale": 16.493828278913487
+    }
+  },
+  {
+    "rank": 5,
+    "cycle": 4,
+    "values": {
+      "peak": 749.3417319406027,
+      "east": 4.020297446028052,
+      "north": 7.4143410572974675,
+      "FWHM_major": 10.042020408756802,
+      "FWHM_minor": 9.261537601293561,
+      "ellipse_xx": 17.10798594040282,
+      "ellipse_xy": -1.329125664929336,
+      "ellipse_yy": 16.546167510691564,
+      "background": -2.9712800402303876,
+      "fixed_template": 795.6732757080049,
+      "aperture_1": 73908.22141072061,
+      "aperture_1p5": 76446.70297520059,
+      "aperture_2": 77117.51814041077
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 7.27578742241373,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -3.3567536942682774,
+      "mean": -3.3425414955042165,
+      "std": 17.271636909998083,
+      "robust_scale": 16.562455673739336
+    }
+  },
+  {
+    "rank": 5,
+    "cycle": 5,
+    "values": {
+      "peak": 749.68965289577,
+      "east": 4.020061320977284,
+      "north": 7.414183446476014,
+      "FWHM_major": 10.043376780547558,
+      "FWHM_minor": 9.263380483041002,
+      "ellipse_xx": 17.113983642121912,
+      "ellipse_xy": -1.3283921517763513,
+      "ellipse_yy": 16.5512393374373,
+      "background": -2.954885049799516,
+      "fixed_template": 796.1656658552595,
+      "aperture_1": 73962.05120138341,
+      "aperture_1p5": 76516.70625343999,
+      "aperture_2": 77195.46818212203
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 7.274797847766243,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -3.353968758257483,
+      "mean": -3.3337858831841207,
+      "std": 17.271603383842518,
+      "robust_scale": 16.57087146612859
+    }
+  },
+  {
+    "rank": 5,
+    "cycle": 6,
+    "values": {
+      "peak": 749.7747749952125,
+      "east": 4.020002258923688,
+      "north": 7.414140809913827,
+      "FWHM_major": 10.043712218978884,
+      "FWHM_minor": 9.263835666095327,
+      "ellipse_xx": 17.115469417237566,
+      "ellipse_xy": -1.328210936481396,
+      "ellipse_yy": 16.552489499378797,
+      "background": -2.950865592081623,
+      "fixed_template": 796.2864496084585,
+      "aperture_1": 73975.2682764472,
+      "aperture_1p5": 76533.89586986398,
+      "aperture_2": 77214.60841803363
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 7.274553459696214,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -3.353275241755418,
+      "mean": -3.331637703702609,
+      "std": 17.271595115926818,
+      "robust_scale": 16.568807808005577
+    }
+  },
+  {
+    "rank": 5,
+    "cycle": 7,
+    "values": {
+      "peak": 749.7956356171975,
+      "east": 4.0199876118738045,
+      "north": 7.4141296857352055,
+      "FWHM_major": 10.04379502777809,
+      "FWHM_minor": 9.26394781411727,
+      "ellipse_xx": 17.11583611487196,
+      "ellipse_xy": -1.3281665165339673,
+      "ellipse_yy": 16.552797491898126,
+      "background": -2.949879039893664,
+      "fixed_template": 796.3160962685886,
+      "aperture_1": 73978.51459385584,
+      "aperture_1p5": 76538.11830173939,
+      "aperture_2": 77219.30992877315
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 7.274493211929248,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -3.353103491469541,
+      "mean": -3.331110231885993,
+      "std": 17.27159306213874,
+      "robust_scale": 16.5683019245402
+    }
+  },
+  {
+    "rank": 5,
+    "cycle": 8,
+    "values": {
+      "peak": 749.8007512348568,
+      "east": 4.019984000074769,
+      "north": 7.414126846031583,
+      "FWHM_major": 10.043815467406796,
+      "FWHM_minor": 9.263975407481245,
+      "ellipse_xx": 17.11592656707362,
+      "ellipse_xy": -1.3281556839628557,
+      "ellipse_yy": 16.552873279828283,
+      "background": -2.949636603682422,
+      "fixed_template": 796.3233751412081,
+      "aperture_1": 73979.31199981755,
+      "aperture_1p5": 76539.15551561027,
+      "aperture_2": 77220.46474741101
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 7.274478371563751,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -3.3530610811398787,
+      "mean": -3.330980671704092,
+      "std": 17.27159255252056,
+      "robust_scale": 16.56817779344067
+    }
+  },
+  {
+    "rank": 5,
+    "cycle": 9,
+    "values": {
+      "peak": 749.8020066543575,
+      "east": 4.01998311121521,
+      "north": 7.414126132824153,
+      "FWHM_major": 10.043820462271446,
+      "FWHM_minor": 9.263982226382053,
+      "ellipse_xx": 17.11594873254119,
+      "ellipse_xy": -1.3281529210418013,
+      "ellipse_yy": 16.55289199228213,
+      "background": -2.949577011364883,
+      "fixed_template": 796.3251624881948,
+      "aperture_1": 73979.50786821656,
+      "aperture_1p5": 76539.41029255028,
+      "aperture_2": 77220.74839177786
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 7.274474719716349,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -3.353050627708261,
+      "mean": -3.3309488461460126,
+      "std": 17.271592426334877,
+      "robust_scale": 16.56814732369513
+    }
+  },
+  {
+    "rank": 5,
+    "cycle": 10,
+    "values": {
+      "peak": 749.8023111384435,
+      "east": 4.019982897213739,
+      "north": 7.414125959235905,
+      "FWHM_major": 10.04382175622756,
+      "FWHM_minor": 9.263983930860693,
+      "ellipse_xx": 17.11595439080169,
+      "ellipse_xy": -1.3281523069982515,
+      "ellipse_yy": 16.552896716565847,
+      "background": -2.9495623706641187,
+      "fixed_template": 796.3256014161948,
+      "aperture_1": 73979.55598003879,
+      "aperture_1p5": 76539.4728764444,
+      "aperture_2": 77220.81806523244
+    },
+    "conditional_sigmas": {
+      "peak": 7.185670413675789,
+      "cx": 0.04660231097586554,
+      "cy": 0.04286928454581843,
+      "sx": 0.04831864946584096,
+      "sy": 0.052868051472596204,
+      "angle": 0.08330918132058711,
+      "constant": 2.307211304160036,
+      "template": 8.839181709832697,
+      "aperture1": 1151.8757722295036,
+      "aperture1.5": 2096.9331657797097,
+      "aperture2": 3036.0061314976324
+    },
+    "M0_C0_guard_sigma": 7.274473793769677,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -3.353048054142951,
+      "mean": -3.330941028528052,
+      "std": 17.271592395147568,
+      "robust_scale": 16.5681398432742
+    }
+  },
+  {
+    "rank": 10,
+    "cycle": 0,
+    "values": {
+      "peak": 564.3026593026557,
+      "east": 4.208131069867596,
+      "north": 7.36774489147099,
+      "FWHM_major": 9.591216543262947,
+      "FWHM_minor": 8.552165426119467,
+      "ellipse_xx": 15.246000932944058,
+      "ellipse_xy": -1.66206434939796,
+      "ellipse_yy": 14.533202691976589,
+      "background": -8.380025538585617,
+      "fixed_template": 564.3026593127034,
+      "aperture_1": 50189.27402203619,
+      "aperture_1p5": 46680.498278750856,
+      "aperture_2": 44497.894048718605
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 6.695788446603807,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -5.813776529639821,
+      "mean": -5.5085992548921725,
+      "std": 15.880548278306419,
+      "robust_scale": 15.46116541604052
+    }
+  },
+  {
+    "rank": 10,
+    "cycle": 1,
+    "values": {
+      "peak": 701.1820171782456,
+      "east": 4.101642868139174,
+      "north": 7.386031727295142,
+      "FWHM_major": 9.89983946573094,
+      "FWHM_minor": 9.027931265523746,
+      "ellipse_xx": 16.58898660510088,
+      "ellipse_xy": -1.432517102999079,
+      "ellipse_yy": 15.783352455207195,
+      "background": -4.533888304294504,
+      "fixed_template": 731.0033981410506,
+      "aperture_1": 66992.6926474869,
+      "aperture_1p5": 67495.36256116343,
+      "aperture_2": 67679.72827802933
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 6.457543779690488,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -3.8320325667562734,
+      "mean": -3.9257088686589503,
+      "std": 15.817923984344695,
+      "robust_scale": 15.454162731575822
+    }
+  },
+  {
+    "rank": 10,
+    "cycle": 2,
+    "values": {
+      "peak": 736.5006851392698,
+      "east": 4.0662531681562415,
+      "north": 7.386544362394445,
+      "FWHM_major": 10.052765284954514,
+      "FWHM_minor": 9.215610952635144,
+      "ellipse_xx": 17.175812419781572,
+      "ellipse_xy": -1.3967201524297899,
+      "ellipse_yy": 16.364245940275282,
+      "background": -3.0722426686716755,
+      "fixed_template": 780.8315471500746,
+      "aperture_1": 72473.27447046762,
+      "aperture_1p5": 74528.2004324182,
+      "aperture_2": 75491.37908935374
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 6.363964142685469,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -2.9110830062702524,
+      "mean": -3.1960473873052866,
+      "std": 15.79946352687644,
+      "robust_scale": 15.429285837997243
+    }
+  },
+  {
+    "rank": 10,
+    "cycle": 3,
+    "values": {
+      "peak": 746.3894039515817,
+      "east": 4.059218476030067,
+      "north": 7.381755691183982,
+      "FWHM_major": 10.110637111982754,
+      "FWHM_minor": 9.275377013186677,
+      "ellipse_xx": 17.377195166344713,
+      "ellipse_xy": -1.403521069896253,
+      "ellipse_yy": 16.572593353835554,
+      "background": -2.5497144458828287,
+      "fixed_template": 795.8067893184452,
+      "aperture_1": 74189.77168662957,
+      "aperture_1p5": 76743.41945504883,
+      "aperture_2": 77944.65496570268
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 6.332846242598253,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -2.702199086060402,
+      "mean": -2.8944300587941862,
+      "std": 15.802236114640989,
+      "robust_scale": 15.5280654093429
+    }
+  },
+  {
+    "rank": 10,
+    "cycle": 4,
+    "values": {
+      "peak": 749.267844172492,
+      "east": 4.0572627723159265,
+      "north": 7.3799387478506615,
+      "FWHM_major": 10.129733092215217,
+      "FWHM_minor": 9.299891777223351,
+      "ellipse_xx": 17.4374732826007,
+      "ellipse_xy": -1.4014682510229168,
+      "ellipse_yy": 16.66413689686116,
+      "background": -2.3790427809657526,
+      "fixed_template": 800.5478802644618,
+      "aperture_1": 74761.43638844817,
+      "aperture_1p5": 77493.10586559455,
+      "aperture_2": 78788.50496855727
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 6.321198736917932,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -2.5765996176899364,
+      "mean": -2.808216483898388,
+      "std": 15.801182094656504,
+      "robust_scale": 15.398483859211746
+    }
+  },
+  {
+    "rank": 10,
+    "cycle": 5,
+    "values": {
+      "peak": 750.1929593942308,
+      "east": 4.056555760626115,
+      "north": 7.3793413969026345,
+      "FWHM_major": 10.135212414271084,
+      "FWHM_minor": 9.306276079340053,
+      "ellipse_xx": 17.455689132184418,
+      "ellipse_xy": -1.4014330706487468,
+      "ellipse_yy": 16.68736707168444,
+      "background": -2.333832958494844,
+      "fixed_template": 801.9894004994527,
+      "aperture_1": 74928.7536243976,
+      "aperture_1p5": 77709.74139240399,
+      "aperture_2": 79029.93074622529
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 6.318075954837235,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -2.5395632543327715,
+      "mean": -2.7851742676260756,
+      "std": 15.801162065147713,
+      "robust_scale": 15.395392662136775
+    }
+  },
+  {
+    "rank": 10,
+    "cycle": 6,
+    "values": {
+      "peak": 750.4716268118522,
+      "east": 4.056376690117231,
+      "north": 7.379107555762149,
+      "FWHM_major": 10.136960287195805,
+      "FWHM_minor": 9.308135443453976,
+      "ellipse_xx": 17.461537576092294,
+      "ellipse_xy": -1.4016379563370096,
+      "ellipse_yy": 16.694150171361727,
+      "background": -2.320249385120739,
+      "fixed_template": 802.4249727899642,
+      "aperture_1": 74978.93223532035,
+      "aperture_1p5": 77775.52642192558,
+      "aperture_2": 79103.50355205432
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 6.317133614901896,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -2.510693551919433,
+      "mean": -2.77831298668853,
+      "std": 15.800447641131768,
+      "robust_scale": 15.361444017110317
+    }
+  },
+  {
+    "rank": 10,
+    "cycle": 7,
+    "values": {
+      "peak": 750.5664065213177,
+      "east": 4.056298336452677,
+      "north": 7.379015883131764,
+      "FWHM_major": 10.137395253658251,
+      "FWHM_minor": 9.308678316930127,
+      "ellipse_xx": 17.463001909454576,
+      "ellipse_xy": -1.4015838189560612,
+      "ellipse_yy": 16.696098756575715,
+      "background": -2.3157971963469106,
+      "fixed_template": 802.5636174041792,
+      "aperture_1": 74994.47843424257,
+      "aperture_1p5": 77795.49011666884,
+      "aperture_2": 79125.90849194411
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 6.316876286741596,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -2.504142992960748,
+      "mean": -2.7761971785548125,
+      "std": 15.800319053941022,
+      "robust_scale": 15.354813366523823
+    }
+  },
+  {
+    "rank": 10,
+    "cycle": 8,
+    "values": {
+      "peak": 750.5933835337356,
+      "east": 4.056274687724547,
+      "north": 7.378995230692562,
+      "FWHM_major": 10.137546147382153,
+      "FWHM_minor": 9.308849129784177,
+      "ellipse_xx": 17.463515235656605,
+      "ellipse_xy": -1.401586011577108,
+      "ellipse_yy": 16.696710637722028,
+      "background": -2.3146328725975795,
+      "fixed_template": 802.6047233949093,
+      "aperture_1": 74999.17140623192,
+      "aperture_1p5": 77801.54219892292,
+      "aperture_2": 79132.59910915188
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 6.316792104106687,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -2.503289494956679,
+      "mean": -2.7755800687939725,
+      "std": 15.800333477933346,
+      "robust_scale": 15.353683377303648
+    }
+  },
+  {
+    "rank": 10,
+    "cycle": 9,
+    "values": {
+      "peak": 750.601272326321,
+      "east": 4.056267812508408,
+      "north": 7.37898999045158,
+      "FWHM_major": 10.137594135733721,
+      "FWHM_minor": 9.308900428661302,
+      "ellipse_xx": 17.46368076714888,
+      "ellipse_xy": -1.4015899600213133,
+      "ellipse_yy": 16.6968928029854,
+      "background": -2.31428435034135,
+      "fixed_template": 802.616940750512,
+      "aperture_1": 75000.57546962987,
+      "aperture_1p5": 77803.35455035522,
+      "aperture_2": 79134.6032017076
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 6.316766238836934,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -2.503046533533974,
+      "mean": -2.775394251027075,
+      "std": 15.800337836911027,
+      "robust_scale": 15.35337868958366
+    }
+  },
+  {
+    "rank": 10,
+    "cycle": 10,
+    "values": {
+      "peak": 750.6036010362162,
+      "east": 4.056265804958886,
+      "north": 7.378988589616708,
+      "FWHM_major": 10.137608998302806,
+      "FWHM_minor": 9.308915618186692,
+      "ellipse_xx": 17.46373237231376,
+      "ellipse_xy": -1.4015919851872711,
+      "ellipse_yy": 16.696946539336228,
+      "background": -2.3141802523853525,
+      "fixed_template": 802.6205750345441,
+      "aperture_1": 75000.99438593883,
+      "aperture_1p5": 77803.89555197855,
+      "aperture_2": 79135.20146151357
+    },
+    "conditional_sigmas": {
+      "peak": 6.1708873048991935,
+      "cx": 0.04044911223151746,
+      "cy": 0.03859198314452826,
+      "sx": 0.046767295232737226,
+      "sy": 0.04146838159719579,
+      "angle": 0.07044078012590711,
+      "constant": 2.123092185664014,
+      "template": 7.881515020008826,
+      "aperture1": 1030.7956823121085,
+      "aperture1.5": 1884.9542536948766,
+      "aperture2": 2731.237195633844
+    },
+    "M0_C0_guard_sigma": 6.316758434799464,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -2.50297561522736,
+      "mean": -2.7753387461987833,
+      "std": 15.800339143770472,
+      "robust_scale": 15.353290983371222
+    }
+  },
+  {
+    "rank": 15,
+    "cycle": 0,
+    "values": {
+      "peak": 515.7163195065503,
+      "east": 4.318266174648301,
+      "north": 7.3016623365968645,
+      "FWHM_major": 9.386417644959323,
+      "FWHM_minor": 8.252012956938712,
+      "ellipse_xx": 14.29448522885853,
+      "ellipse_xy": -1.791913122741694,
+      "ellipse_yy": 13.874235359621785,
+      "background": -7.941194308312008,
+      "fixed_template": 500.77432489421295,
+      "aperture_1": 43406.52852532491,
+      "aperture_1p5": 39278.609028057326,
+      "aperture_2": 36980.36906874018
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 6.0127871534738695,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -4.744165207439354,
+      "mean": -5.171257595897496,
+      "std": 13.74925376475654,
+      "robust_scale": 13.274678457889515
+    }
+  },
+  {
+    "rank": 15,
+    "cycle": 1,
+    "values": {
+      "peak": 677.1315636639936,
+      "east": 4.15096803837926,
+      "north": 7.350104673086096,
+      "FWHM_major": 9.70374633133893,
+      "FWHM_minor": 8.882561168861223,
+      "ellipse_xx": 15.927044659667184,
+      "ellipse_xy": -1.3379600296071095,
+      "ellipse_yy": 15.282522124137984,
+      "background": -4.7245488825883495,
+      "fixed_template": 693.7818628872495,
+      "aperture_1": 62598.33962215818,
+      "aperture_1p5": 62424.98986238497,
+      "aperture_2": 62205.84009391749
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 5.741611678912736,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -3.417387927304477,
+      "mean": -3.8214018337010622,
+      "std": 13.824412585181964,
+      "robust_scale": 13.156875353601292
+    }
+  },
+  {
+    "rank": 15,
+    "cycle": 2,
+    "values": {
+      "peak": 728.2442847215443,
+      "east": 4.092855617496227,
+      "north": 7.358831547987524,
+      "FWHM_major": 9.882080395205831,
+      "FWHM_minor": 9.125114111992932,
+      "ellipse_xx": 16.689395134088507,
+      "ellipse_xy": -1.241694827852138,
+      "ellipse_yy": 15.937733989492564,
+      "background": -3.1709297188991035,
+      "fixed_template": 762.3480037293593,
+      "aperture_1": 69957.81872024007,
+      "aperture_1p5": 71609.09508178633,
+      "aperture_2": 72303.64107738782
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 5.634672681470362,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -2.6540869894794357,
+      "mean": -3.107991248087274,
+      "std": 13.847484164196096,
+      "robust_scale": 13.631657755181703
+    }
+  },
+  {
+    "rank": 15,
+    "cycle": 3,
+    "values": {
+      "peak": 745.418990015995,
+      "east": 4.073366982847054,
+      "north": 7.359218654241321,
+      "FWHM_major": 9.966735783311035,
+      "FWHM_minor": 9.2213376466161,
+      "ellipse_xx": 16.983220853657976,
+      "ellipse_xy": -1.238692430567616,
+      "ellipse_yy": 16.265289588650464,
+      "background": -2.5181930848630687,
+      "fixed_template": 787.300559488649,
+      "aperture_1": 72764.44795789073,
+      "aperture_1p5": 75181.60318279185,
+      "aperture_2": 76250.23904884339
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 5.590385812867739,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -2.374619032748685,
+      "mean": -2.7943298562273458,
+      "std": 13.856924398059224,
+      "robust_scale": 13.428317180895023
+    }
+  },
+  {
+    "rank": 15,
+    "cycle": 4,
+    "values": {
+      "peak": 751.5652972676468,
+      "east": 4.066001446449905,
+      "north": 7.359158002602585,
+      "FWHM_major": 9.996644615083522,
+      "FWHM_minor": 9.254902127742943,
+      "ellipse_xx": 17.090182699165403,
+      "ellipse_xy": -1.2373346381064618,
+      "ellipse_yy": 16.37783862432486,
+      "background": -2.2958610935593367,
+      "fixed_template": 796.2363375162824,
+      "aperture_1": 73766.69661063136,
+      "aperture_1p5": 76450.14078220818,
+      "aperture_2": 77649.51128919695
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 5.575129585638683,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -2.324441194655435,
+      "mean": -2.6856419798793563,
+      "std": 13.861289153094384,
+      "robust_scale": 13.449341062389054
+    }
+  },
+  {
+    "rank": 15,
+    "cycle": 5,
+    "values": {
+      "peak": 753.5813673597175,
+      "east": 4.065274738010687,
+      "north": 7.3583313299367745,
+      "FWHM_major": 10.014199972456588,
+      "FWHM_minor": 9.268319209024051,
+      "ellipse_xx": 17.154800620352887,
+      "ellipse_xy": -1.2439180169071438,
+      "ellipse_yy": 16.421391289262026,
+      "background": -2.1950674907713292,
+      "fixed_template": 799.5688340914105,
+      "aperture_1": 74148.25730129142,
+      "aperture_1p5": 76981.87660258127,
+      "aperture_2": 78241.06770001905
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 5.567964231206522,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -2.33469985106242,
+      "mean": -2.6414076913572893,
+      "std": 13.863381137064422,
+      "robust_scale": 13.396210845425212
+    }
+  },
+  {
+    "rank": 15,
+    "cycle": 6,
+    "values": {
+      "peak": 754.340560645855,
+      "east": 4.0649219385186095,
+      "north": 7.357990644495205,
+      "FWHM_major": 10.020011074257448,
+      "FWHM_minor": 9.27312439089872,
+      "ellipse_xx": 17.175914155729522,
+      "ellipse_xy": -1.2457239140938556,
+      "ellipse_yy": 16.437339840836913,
+      "background": -2.1617194830520856,
+      "fixed_template": 800.7843452222058,
+      "aperture_1": 74288.10052725332,
+      "aperture_1p5": 77167.04582332284,
+      "aperture_2": 78446.1033037116
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 5.56549593816608,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -2.3316217424516004,
+      "mean": -2.6258366306847156,
+      "std": 13.864002429173338,
+      "robust_scale": 13.382594980183676
+    }
+  },
+  {
+    "rank": 15,
+    "cycle": 7,
+    "values": {
+      "peak": 754.6223644746925,
+      "east": 4.06475373947569,
+      "north": 7.357866983313414,
+      "FWHM_major": 10.02196682771476,
+      "FWHM_minor": 9.274851593165339,
+      "ellipse_xx": 17.182981566016572,
+      "ellipse_xy": -1.2462062640817628,
+      "ellipse_yy": 16.443118416895153,
+      "background": -2.1501860836024203,
+      "fixed_template": 801.2256596726112,
+      "aperture_1": 74338.74747599143,
+      "aperture_1p5": 77232.65987511887,
+      "aperture_2": 78518.61553287378
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 5.564635635887504,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -2.3296525006459188,
+      "mean": -2.620292484385895,
+      "std": 13.864206897818285,
+      "robust_scale": 13.38253359011334
+    }
+  },
+  {
+    "rank": 15,
+    "cycle": 8,
+    "values": {
+      "peak": 754.6540030363897,
+      "east": 4.063644997333812,
+      "north": 7.356734849121762,
+      "FWHM_major": 10.022786605328545,
+      "FWHM_minor": 9.280531568905865,
+      "ellipse_xx": 17.192706780794506,
+      "ellipse_xy": -1.2382122206359762,
+      "ellipse_yy": 16.455362988940944,
+      "background": -2.130118006105723,
+      "fixed_template": 801.5123192110871,
+      "aperture_1": 74377.82611562737,
+      "aperture_1p5": 77310.12193425797,
+      "aperture_2": 78606.6338920299
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 5.563006074792825,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -2.3154799389191107,
+      "mean": -2.6110284546659996,
+      "std": 13.86360031002661,
+      "robust_scale": 13.389741373891338
+    }
+  },
+  {
+    "rank": 15,
+    "cycle": 9,
+    "values": {
+      "peak": 754.6999588455262,
+      "east": 4.063356729771679,
+      "north": 7.356456490021648,
+      "FWHM_major": 10.023187628421748,
+      "FWHM_minor": 9.281802692818351,
+      "ellipse_xx": 17.195233068436053,
+      "ellipse_xy": -1.2368457844434897,
+      "ellipse_yy": 16.45854146473787,
+      "background": -2.1256197732118207,
+      "fixed_template": 801.6256987763451,
+      "aperture_1": 74392.64255593246,
+      "aperture_1p5": 77331.89035386477,
+      "aperture_2": 78630.88880889303
+    },
+    "conditional_sigmas": {},
+    "M0_C0_guard_sigma": 5.562594422586055,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -2.3139216452211215,
+      "mean": -2.6088173326360335,
+      "std": 13.86364033101481,
+      "robust_scale": 13.39267667445941
+    }
+  },
+  {
+    "rank": 15,
+    "cycle": 10,
+    "values": {
+      "peak": 754.7225573554533,
+      "east": 4.063279041430742,
+      "north": 7.356386060120711,
+      "FWHM_major": 10.023346534065126,
+      "FWHM_minor": 9.282127591415176,
+      "ellipse_xx": 17.19597767653213,
+      "ellipse_xy": -1.2366037877307494,
+      "ellipse_yy": 16.459459004048583,
+      "background": -2.1243101627307164,
+      "fixed_template": 801.6683154557277,
+      "aperture_1": 74397.90475779575,
+      "aperture_1p5": 77338.96240561867,
+      "aperture_2": 78638.72312514916
+    },
+    "conditional_sigmas": {
+      "peak": 5.4521781123673785,
+      "cx": 0.033008764685364046,
+      "cy": 0.031253033503460086,
+      "sx": 0.03449527663248168,
+      "sy": 0.031624991009980764,
+      "angle": 0.06802637956520441,
+      "constant": 1.0639603237594046,
+      "template": 5.448375562188852,
+      "aperture1": 680.0306356372656,
+      "aperture1.5": 1155.9057596067696,
+      "aperture2": 1613.9598350225706
+    },
+    "M0_C0_guard_sigma": 5.562476936894943,
+    "support_pixels": 10513,
+    "contributing_samples": 2870933,
+    "coverage": {
+      "min": 114.0,
+      "median": 189.0,
+      "max": 493.0
+    },
+    "background": {
+      "n": 605,
+      "median": -2.313493392221322,
+      "mean": -2.608158959160084,
+      "std": 13.863654752763546,
+      "robust_scale": 13.393335673016828
+    }
+  }
+]

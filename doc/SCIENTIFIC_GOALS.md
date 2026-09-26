@@ -1,5 +1,14 @@
 # Scientific goals
 
+## Bounded PTC rank comparison completed — 2026-09-26
+
+The [rank-response/noise assessment](../validation/ptc_rank_response_2026-09-26/ASSESSMENT.md)
+uses matched compact response and conditional measurement uncertainty to expose
+the tradeoff: rank15 improves compact scales but loses more broad shoulder response.
+Keep rank10 as reference pending one independent-observation confirmation. This
+completes the previously deferred 5/10/15 study only; no RTC or method expansion.
+
+
 ## Bright-POINT downstream reference frozen — 2026-09-26
 
 FRUIT method testing is parked. The next lane is RTC/PTC evaluation through the

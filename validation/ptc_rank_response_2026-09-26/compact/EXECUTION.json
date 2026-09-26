@@ -1,0 +1,123 @@
+{
+  "status": "completed_matrix",
+  "identities": [
+    {
+      "source_revision": "e3cbf1eeadda256e4d9f400a834f9f7d462c1ae2",
+      "binary": {
+        "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali",
+        "sha256": "9fd069164ec8bcec6bb5047aaf45cc8c4fc3b0e189ba09706151070b588dfa59"
+      },
+      "version": "** logging ** Configured with level=trace; available levels: [\"trace\", \"debug\", \"info\", \"warning\", \"error\", \"critical\", \"off\"].\nv2-ngc4449-memory-repair-187df04b-586-ge3cbf1eea (2026-09-26T16:29:31)\nkids 04088da-dirty (2026-09-26T16:14:08)\n",
+      "python": "/Users/gwilson/tolteca/bin/python"
+    },
+    {
+      "source_revision": "e3cbf1eeadda256e4d9f400a834f9f7d462c1ae2",
+      "binary": {
+        "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali",
+        "sha256": "9fd069164ec8bcec6bb5047aaf45cc8c4fc3b0e189ba09706151070b588dfa59"
+      },
+      "version": "** logging ** Configured with level=trace; available levels: [\"trace\", \"debug\", \"info\", \"warning\", \"error\", \"critical\", \"off\"].\nv2-ngc4449-memory-repair-187df04b-586-ge3cbf1eea (2026-09-26T16:29:31)\nkids 04088da-dirty (2026-09-26T16:14:08)\n",
+      "python": "/Users/gwilson/tolteca/bin/python"
+    },
+    {
+      "source_revision": "e3cbf1eeadda256e4d9f400a834f9f7d462c1ae2",
+      "binary": {
+        "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali",
+        "sha256": "9fd069164ec8bcec6bb5047aaf45cc8c4fc3b0e189ba09706151070b588dfa59"
+      },
+      "version": "** logging ** Configured with level=trace; available levels: [\"trace\", \"debug\", \"info\", \"warning\", \"error\", \"critical\", \"off\"].\nv2-ngc4449-memory-repair-187df04b-586-ge3cbf1eea (2026-09-26T16:29:31)\nkids 04088da-dirty (2026-09-26T16:14:08)\n",
+      "python": "/Users/gwilson/tolteca/bin/python"
+    }
+  ],
+  "preflight_review": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-152430-a2000-ptc-rank-20260926/PREFLIGHT-REVIEW.json",
+    "sha256": "736cdf44847434032184b4440405e0f2ee1fabecfdb11533b95c3f9827731d85"
+  },
+  "seconds": 596.0447505830089,
+  "matrix": [
+    {
+      "rank": 10,
+      "branch": "REF",
+      "status": "completed",
+      "completed_cycle": 10,
+      "reason": null
+    },
+    {
+      "rank": 10,
+      "branch": "C-core-plus",
+      "status": "completed",
+      "completed_cycle": 10,
+      "reason": null
+    },
+    {
+      "rank": 10,
+      "branch": "C-core-minus",
+      "status": "completed",
+      "completed_cycle": 10,
+      "reason": null
+    },
+    {
+      "rank": 10,
+      "branch": "C-shoulder",
+      "status": "completed",
+      "completed_cycle": 10,
+      "reason": null
+    },
+    {
+      "rank": 5,
+      "branch": "REF",
+      "status": "completed",
+      "completed_cycle": 10,
+      "reason": null
+    },
+    {
+      "rank": 15,
+      "branch": "REF",
+      "status": "completed",
+      "completed_cycle": 10,
+      "reason": null
+    },
+    {
+      "rank": 5,
+      "branch": "C-core-plus",
+      "status": "completed",
+      "completed_cycle": 10,
+      "reason": null
+    },
+    {
+      "rank": 5,
+      "branch": "C-core-minus",
+      "status": "completed",
+      "completed_cycle": 10,
+      "reason": null
+    },
+    {
+      "rank": 5,
+      "branch": "C-shoulder",
+      "status": "completed",
+      "completed_cycle": 10,
+      "reason": null
+    },
+    {
+      "rank": 15,
+      "branch": "C-core-plus",
+      "status": "completed",
+      "completed_cycle": 10,
+      "reason": null
+    },
+    {
+      "rank": 15,
+      "branch": "C-core-minus",
+      "status": "completed",
+      "completed_cycle": 10,
+      "reason": null
+    },
+    {
+      "rank": 15,
+      "branch": "C-shoulder",
+      "status": "completed",
+      "completed_cycle": 10,
+      "reason": null
+    }
+  ]
+}
