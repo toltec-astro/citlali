@@ -873,5 +873,7 @@
     "COMPACT_SEAL.json"
   ],
   "absent_numeric_payloads": "cleanup/manifest.json and cleanup/execution.json; raw-driven reprocessing required",
-  "all_science_complete": true
+  "bounded_execution_closed": true,
+  "requested_comparison_complete": false,
+  "outcome": "inherited BASE M0 support stop; 14 unavailable cells; zero feedback applications"
 }
