@@ -1,0 +1,8 @@
+{
+  "report_status": "completed",
+  "completed_cycle": 10,
+  "all_local_data_read_denied": true,
+  "report_sha256": "c6f87866fe98ccdbedc26910d5e54d1d7cfbcb8fa61a757e74d4521c07cdfc51",
+  "retained_comparison_exact": true,
+  "scope": "separate saved-product invocation, no original inputs or run-root access; no new fitting"
+}

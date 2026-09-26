@@ -1,0 +1,6448 @@
+detectors:
+  - channel: 0
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=0
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 1
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=1
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 2
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=2
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 3
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=3
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 4
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=4
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 5
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=5
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 6
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=6
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 7
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=7
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 8
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=8
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 9
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=9
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 10
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=10
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 11
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=11
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 12
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=12
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 13
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=13
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 14
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=14
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 15
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=15
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 16
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=16
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 17
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=17
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 18
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=18
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 19
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=19
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 20
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=20
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 21
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=21
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 22
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=22
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 23
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=23
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 24
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=24
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 25
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=25
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 26
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=26
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 27
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=27
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 28
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=28
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 29
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=29
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 30
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=30
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 31
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=31
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 32
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=32
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 33
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=33
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 34
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=34
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 35
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=35
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 36
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=36
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 37
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=37
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 38
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=38
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 39
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=39
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 40
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=40
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 41
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=41
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 42
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=42
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 43
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=43
+    donor_contaminated:
+      -
+        - 0
+        - 7820
+  - channel: 44
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=44
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 45
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=45
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 46
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=46
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 47
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=47
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 3971
+        - 3985
+      -
+        - 7288
+        - 7820
+  - channel: 48
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=48
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 49
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=49
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 1619
+        - 1633
+      -
+        - 4952
+        - 4966
+      -
+        - 6729
+        - 6743
+      -
+        - 7288
+        - 7820
+  - channel: 50
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=50
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 6751
+        - 6765
+      -
+        - 7288
+        - 7820
+  - channel: 51
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=51
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 52
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=52
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 53
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=53
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 54
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=54
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 6372
+        - 6386
+      -
+        - 7288
+        - 7820
+  - channel: 55
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=55
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 3283
+        - 3297
+      -
+        - 7288
+        - 7820
+  - channel: 56
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=56
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 57
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=57
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 58
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=58
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 59
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=59
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 60
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=60
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 2390
+        - 2404
+      -
+        - 7288
+        - 7820
+  - channel: 61
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=61
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 62
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=62
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 63
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=63
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 64
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=64
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 65
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=65
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 66
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=66
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 67
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=67
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 68
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=68
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 69
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=69
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 70
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=70
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 71
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=71
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 72
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=72
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 73
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=73
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 74
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=74
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 75
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=75
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 76
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=76
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 77
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=77
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 78
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=78
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 79
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=79
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 80
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=80
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 81
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=81
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 82
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=82
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 83
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=83
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 84
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=84
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 85
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=85
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 86
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=86
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 87
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=87
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 2304
+        - 2318
+      -
+        - 7288
+        - 7820
+  - channel: 88
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=88
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 89
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=89
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 90
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=90
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 91
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=91
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 92
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=92
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 93
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=93
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 94
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=94
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 95
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=95
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 96
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=96
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 97
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=97
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 98
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=98
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 99
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=99
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 100
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=100
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 101
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=101
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 102
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=102
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 103
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=103
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 104
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=104
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 105
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=105
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 106
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=106
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 107
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=107
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 108
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=108
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 109
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=109
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 110
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=110
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 111
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=111
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 112
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=112
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 113
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=113
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 114
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=114
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 115
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=115
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 116
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=116
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 117
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=117
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 118
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=118
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 119
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=119
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 120
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=120
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 121
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=121
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 122
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=122
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 123
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=123
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 6021
+        - 6035
+      -
+        - 7288
+        - 7820
+  - channel: 124
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=124
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 125
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=125
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 126
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=126
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 127
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=127
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 128
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=128
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 129
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=129
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 130
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=130
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 131
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=131
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 132
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=132
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 133
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=133
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 134
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=134
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 135
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=135
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 136
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=136
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 137
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=137
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 138
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=138
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 139
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=139
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 140
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=140
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 141
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=141
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 142
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=142
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 143
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=143
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 144
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=144
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 145
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=145
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 146
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=146
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 147
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=147
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 148
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=148
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 149
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=149
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 150
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=150
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 151
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=151
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 152
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=152
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 153
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=153
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 154
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=154
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 155
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=155
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 156
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=156
+    donor_contaminated:
+      -
+        - 0
+        - 7820
+  - channel: 157
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=157
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 158
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=158
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 159
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=159
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 160
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=160
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 161
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=161
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 162
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=162
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 163
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=163
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 6607
+        - 6621
+      -
+        - 7288
+        - 7820
+  - channel: 164
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=164
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 165
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=165
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 166
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=166
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 167
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=167
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 168
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=168
+    donor_contaminated:
+      -
+        - 0
+        - 7820
+  - channel: 169
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=169
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 170
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=170
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 171
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=171
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 172
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=172
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 173
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=173
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 174
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=174
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 175
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=175
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 176
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=176
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 177
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=177
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 178
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=178
+    donor_contaminated:
+      -
+        - 0
+        - 7820
+  - channel: 179
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=179
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 180
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=180
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 181
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=181
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 2167
+        - 2181
+      -
+        - 7288
+        - 7820
+  - channel: 182
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=182
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 6461
+        - 6475
+      -
+        - 7288
+        - 7820
+  - channel: 183
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=183
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 184
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=184
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 185
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=185
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 186
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=186
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 187
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=187
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 188
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=188
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 189
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=189
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 190
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=190
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 191
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=191
+    donor_contaminated:
+      -
+        - 0
+        - 7820
+  - channel: 192
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=192
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 193
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=193
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 194
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=194
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 3053
+        - 3067
+      -
+        - 7288
+        - 7820
+  - channel: 195
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=195
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 196
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=196
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 197
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=197
+    donor_contaminated:
+      -
+        - 0
+        - 7820
+  - channel: 198
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=198
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 199
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=199
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 200
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=200
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 201
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=201
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 202
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=202
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 203
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=203
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 204
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=204
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 205
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=205
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 206
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=206
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 207
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=207
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 208
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=208
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 755
+        - 769
+      -
+        - 2338
+        - 2352
+      -
+        - 7288
+        - 7820
+  - channel: 209
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=209
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 210
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=210
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 211
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=211
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 212
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=212
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 213
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=213
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 214
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=214
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 215
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=215
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 216
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=216
+    donor_contaminated:
+      -
+        - 0
+        - 7820
+  - channel: 217
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=217
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 218
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=218
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 219
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=219
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 220
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=220
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 221
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=221
+    donor_contaminated:
+      -
+        - 0
+        - 7820
+  - channel: 222
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=222
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 223
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=223
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 224
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=224
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 225
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=225
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 226
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=226
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 227
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=227
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 228
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=228
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 229
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=229
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 230
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=230
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 231
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=231
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 232
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=232
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 233
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=233
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 234
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=234
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 235
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=235
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 236
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=236
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 237
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=237
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 238
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=238
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 239
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=239
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 240
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=240
+    donor_contaminated:
+      -
+        - 0
+        - 7820
+  - channel: 241
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=241
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 242
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=242
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 243
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=243
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 244
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=244
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 245
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=245
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 246
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=246
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 247
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=247
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 248
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=248
+    donor_contaminated:
+      -
+        - 0
+        - 7820
+  - channel: 249
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=249
+    donor_contaminated:
+      -
+        - 0
+        - 7820
+  - channel: 250
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=250
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 251
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=251
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 252
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=252
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 253
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=253
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 254
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=254
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 255
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=255
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 256
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=256
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 257
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=257
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 258
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=258
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 259
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=259
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 260
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=260
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 261
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=261
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 262
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=262
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 263
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=263
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 264
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=264
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 265
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=265
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 266
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=266
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 267
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=267
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 268
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=268
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 269
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=269
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 270
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=270
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 271
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=271
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 272
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=272
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 273
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=273
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 274
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=274
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 275
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=275
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 276
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=276
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 277
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=277
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 278
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=278
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 279
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=279
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 280
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=280
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 281
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=281
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 282
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=282
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 283
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=283
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 284
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=284
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 285
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=285
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 286
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=286
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 287
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=287
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 288
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=288
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 289
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=289
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 290
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=290
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 291
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=291
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 292
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=292
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 293
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=293
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 294
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=294
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 295
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=295
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 296
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=296
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 297
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=297
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 298
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=298
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 299
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=299
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 300
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=300
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 301
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=301
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 302
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=302
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 303
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=303
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 304
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=304
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 305
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=305
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 306
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=306
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 307
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=307
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 308
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=308
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 309
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=309
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 310
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=310
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 311
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=311
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 312
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=312
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 313
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=313
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 314
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=314
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 315
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=315
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 316
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=316
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 317
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=317
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 318
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=318
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 1643
+        - 1657
+      -
+        - 3443
+        - 3457
+      -
+        - 7288
+        - 7820
+  - channel: 319
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=319
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 320
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=320
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 321
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=321
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 322
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=322
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 323
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=323
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 324
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=324
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 325
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=325
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 326
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=326
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 327
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=327
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 328
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=328
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 329
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=329
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 330
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=330
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 331
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=331
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 332
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=332
+    donor_contaminated:
+      -
+        - 0
+        - 7820
+  - channel: 333
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=333
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 334
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=334
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 335
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=335
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 336
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=336
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 337
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=337
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 338
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=338
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 339
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=339
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 340
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=340
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 341
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=341
+    donor_contaminated:
+      -
+        - 0
+        - 7820
+  - channel: 342
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=342
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 343
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=343
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 344
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=344
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 345
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=345
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 346
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=346
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 347
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=347
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 348
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=348
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 349
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=349
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 350
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=350
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 351
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=351
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 352
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=352
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 353
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=353
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 1989
+        - 2003
+      -
+        - 7288
+        - 7820
+  - channel: 354
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=354
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 355
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=355
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 356
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=356
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 357
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=357
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 358
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=358
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 359
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=359
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 360
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=360
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 361
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=361
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 362
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=362
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 363
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=363
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 364
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=364
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 365
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=365
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 366
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=366
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 367
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=367
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 368
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=368
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 369
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=369
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 370
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=370
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 371
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=371
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 4173
+        - 4187
+      -
+        - 7288
+        - 7820
+  - channel: 372
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=372
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 373
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=373
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 374
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=374
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 375
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=375
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 376
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=376
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 377
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=377
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 378
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=378
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 379
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=379
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 380
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=380
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 381
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=381
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 382
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=382
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 383
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=383
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 384
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=384
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 385
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=385
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 386
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=386
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 387
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=387
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 388
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=388
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 389
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=389
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 390
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=390
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 391
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=391
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 392
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=392
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 393
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=393
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 394
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=394
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 3991
+        - 4005
+      -
+        - 4173
+        - 4187
+      -
+        - 5945
+        - 5959
+      -
+        - 7288
+        - 7820
+  - channel: 395
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=395
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 396
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=396
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 397
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=397
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 398
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=398
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 399
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=399
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 400
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=400
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 4194
+        - 4208
+      -
+        - 7288
+        - 7820
+  - channel: 401
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=401
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 402
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=402
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 403
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=403
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 404
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=404
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 405
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=405
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 406
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=406
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 407
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=407
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 408
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=408
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 409
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=409
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 410
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=410
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 411
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=411
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 412
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=412
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 413
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=413
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 414
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=414
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 3989
+        - 4003
+      -
+        - 7288
+        - 7820
+  - channel: 415
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=415
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 416
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=416
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 3991
+        - 4005
+      -
+        - 4173
+        - 4187
+      -
+        - 7047
+        - 7061
+      -
+        - 7288
+        - 7820
+  - channel: 417
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=417
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 418
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=418
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 419
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=419
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 420
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=420
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 421
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=421
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 422
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=422
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 423
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=423
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 424
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=424
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 425
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=425
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 426
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=426
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 427
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=427
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 428
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=428
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 429
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=429
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 430
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=430
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 431
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=431
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 432
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=432
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 433
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=433
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 434
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=434
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 435
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=435
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 436
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=436
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 437
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=437
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 438
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=438
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 439
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=439
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 3989
+        - 4003
+      -
+        - 7047
+        - 7061
+      -
+        - 7288
+        - 7820
+  - channel: 440
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=440
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 710
+        - 724
+      -
+        - 7288
+        - 7820
+  - channel: 441
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=441
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 442
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=442
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 443
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=443
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 444
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=444
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 445
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=445
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 446
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=446
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 447
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=447
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 448
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=448
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 449
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=449
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 450
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=450
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 451
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=451
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 452
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=452
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 453
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=453
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 454
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=454
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 455
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=455
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 456
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=456
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 457
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=457
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 458
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=458
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 459
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=459
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 460
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=460
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 461
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=461
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 462
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=462
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 463
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=463
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 464
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=464
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 465
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=465
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 466
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=466
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 467
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=467
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 468
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=468
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 469
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=469
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 470
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=470
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 471
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=471
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 472
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=472
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 473
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=473
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 474
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=474
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 475
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=475
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 476
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=476
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 477
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=477
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 478
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=478
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 479
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=479
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 480
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=480
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 481
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=481
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 482
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=482
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 483
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=483
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 484
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=484
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 485
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=485
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 486
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=486
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 487
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=487
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 488
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=488
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 489
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=489
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+  - channel: 490
+    factor_identity: sha256:dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd:channel=490
+    stable_domains:
+      -
+        - 32
+        - 7288
+    donor_contaminated:
+      -
+        - 0
+        - 32
+      -
+        - 7288
+        - 7820
+authority: rtc-original-evidence-boundary-screening-support-v1:signal-plus-background;per-operation-fit-and-boundary-check-required
+transient_exclusions:
+  - channel: 43
+    excluded:
+      -
+        - 0
+        - 7820
+  - channel: 156
+    excluded:
+      -
+        - 0
+        - 7820
+  - channel: 178
+    excluded:
+      -
+        - 0
+        - 7820
+  - channel: 191
+    excluded:
+      -
+        - 0
+        - 7820
+  - channel: 197
+    excluded:
+      -
+        - 0
+        - 7820
+  - channel: 216
+    excluded:
+      -
+        - 0
+        - 7820
+  - channel: 221
+    excluded:
+      -
+        - 0
+        - 7820
+  - channel: 240
+    excluded:
+      -
+        - 0
+        - 7820
+  - channel: 248
+    excluded:
+      -
+        - 0
+        - 7820
+  - channel: 249
+    excluded:
+      -
+        - 0
+        - 7820
+  - channel: 332
+    excluded:
+      -
+        - 0
+        - 7820
+  - channel: 341
+    excluded:
+      -
+        - 0
+        - 7820

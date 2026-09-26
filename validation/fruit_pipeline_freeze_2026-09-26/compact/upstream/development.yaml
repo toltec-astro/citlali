@@ -1,0 +1,10 @@
+input:
+  path: /Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/inputs/observation.json
+  sha256: f89d209421c46786d5d3f43aa24306ab1eaaed4ebe1747f9806f20a49b2661a8
+network_workers: 2
+output: /Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/upstream/products
+ptc:
+  method: observed-als
+  rank: 10
+schema: citlali-development-v1
+terminal: ptc

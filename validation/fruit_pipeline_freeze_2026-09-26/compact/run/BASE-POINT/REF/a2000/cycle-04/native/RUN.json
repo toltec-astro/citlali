@@ -1,0 +1,137 @@
+{
+  "command": [
+    "/Users/gwilson/.codex/worktrees/fruit-pipeline-freeze/citlali-refactor/build/bin/citlali",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/run/BASE-POINT/REF/a2000/cycle-04/native/development.yaml"
+  ],
+  "executable_sha256": "18d8d481d11c6ad68b7745cc4e01a8d529b66504365991af19466579d6aec1f8",
+  "version": "** logging ** Configured with level=trace; available levels: [\"trace\", \"debug\", \"info\", \"warning\", \"error\", \"critical\", \"off\"].\nv2-ngc4449-memory-repair-187df04b-582-gb47c13e1f (2026-09-26T14:50:12)\nkids 04088da-dirty (2026-09-26T14:50:09)\n",
+  "input_sha256": "c9307345a242127f9226a7f81108511b6a5ac81ae35a5d713dc47242e04e06ad",
+  "workers": 1,
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "BLIS_NUM_THREADS": "1",
+    "OMP_DYNAMIC": "FALSE"
+  },
+  "measurement": "fresh process; whole-invocation CPU and sampled RSS; no concurrent diagnostic",
+  "samples": [
+    {
+      "seconds": 0.0029942500113975257,
+      "rss_bytes": 32768,
+      "user_seconds": 5.8458e-05,
+      "system_seconds": 0.000332125,
+      "os_threads": 1
+    },
+    {
+      "seconds": 0.5041432500001974,
+      "rss_bytes": 123731968,
+      "user_seconds": 0.474928512,
+      "system_seconds": 0.014539958,
+      "os_threads": 1
+    },
+    {
+      "seconds": 1.0142021670180839,
+      "rss_bytes": 201064448,
+      "user_seconds": 0.97241728,
+      "system_seconds": 0.020128958,
+      "os_threads": 1
+    },
+    {
+      "seconds": 1.524282124999445,
+      "rss_bytes": 247496704,
+      "user_seconds": 1.474880768,
+      "system_seconds": 0.026536,
+      "os_threads": 3
+    },
+    {
+      "seconds": 2.0343511670071166,
+      "rss_bytes": 341393408,
+      "user_seconds": 1.978048896,
+      "system_seconds": 0.033409084,
+      "os_threads": 3
+    },
+    {
+      "seconds": 2.544413750001695,
+      "rss_bytes": 384974848,
+      "user_seconds": 2.341206016,
+      "system_seconds": 0.083217504,
+      "os_threads": 3
+    },
+    {
+      "seconds": 3.0544801670184825,
+      "rss_bytes": 434749440,
+      "user_seconds": 2.723469824,
+      "system_seconds": 0.102670168,
+      "os_threads": 3
+    },
+    {
+      "seconds": 3.562310459004948,
+      "rss_bytes": 392478720,
+      "user_seconds": 3.104257536,
+      "system_seconds": 0.126418416,
+      "os_threads": 3
+    },
+    {
+      "seconds": 4.070688709005481,
+      "rss_bytes": 406044672,
+      "user_seconds": 3.612479744,
+      "system_seconds": 0.135636464,
+      "os_threads": 3
+    },
+    {
+      "seconds": 4.578924208995886,
+      "rss_bytes": 406929408,
+      "user_seconds": 4.11703808,
+      "system_seconds": 0.13689408,
+      "os_threads": 3
+    },
+    {
+      "seconds": 5.088989250012673,
+      "rss_bytes": 450838528,
+      "user_seconds": 4.61271552,
+      "system_seconds": 0.143687952,
+      "os_threads": 3
+    },
+    {
+      "seconds": 5.599051584023982,
+      "rss_bytes": 457015296,
+      "user_seconds": 5.044541952,
+      "system_seconds": 0.172920368,
+      "os_threads": 3
+    },
+    {
+      "seconds": 6.105318542016903,
+      "rss_bytes": 490848256,
+      "user_seconds": 5.433824768,
+      "system_seconds": 0.18941816,
+      "os_threads": 3
+    },
+    {
+      "seconds": 6.615415417007171,
+      "rss_bytes": 627605504,
+      "user_seconds": 5.837782528,
+      "system_seconds": 0.216588672,
+      "os_threads": 3
+    },
+    {
+      "seconds": 7.125479459005874,
+      "rss_bytes": 719175680,
+      "user_seconds": 6.180895744,
+      "system_seconds": 0.259406416,
+      "os_threads": 2
+    },
+    {
+      "seconds": 7.6355358340078965,
+      "rss_bytes": 719175680,
+      "user_seconds": 6.599708672,
+      "system_seconds": 0.291293632,
+      "os_threads": 2
+    }
+  ],
+  "exit_code": 0,
+  "wall_seconds": 8.14040720902267,
+  "polled_peak_rss_bytes": 719175680,
+  "output_bytes": 76208861
+}

@@ -1,3 +1,9 @@
+# Historical POINT FRUIT experiments
+
+The active route is [Bright-POINT pipeline](../../doc/BRIGHT_POINT_PIPELINE.md).
+The commands below describe historical comparison campaigns; do not use them as
+the ordinary RTC/PTC evaluation quickstart.
+
 # Bounded POINT 152389 first FRUIT cycle
 
 `run_point_fruit.py` binds the reviewed MAP, threshold-3 candidate and first-pass

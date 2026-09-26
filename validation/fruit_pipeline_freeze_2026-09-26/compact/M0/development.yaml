@@ -1,0 +1,7 @@
+input:
+  path: /Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/inputs/map-request.json
+  sha256: 9a58025181eb84cbcd54b9b87c8394d42c05cd4c52e7dff1d643a848a658940a
+network_workers: 1
+output: /Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/M0/products
+schema: citlali-development-v1
+terminal: map

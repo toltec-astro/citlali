@@ -1,0 +1,7 @@
+input:
+  path: /Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/run/BASE-POINT/REF/a2000/cycle-06/request.json
+  sha256: 9f3f7dd9186acc5bd1ecc850b3a904d7e15d296359f4d57fce5b258786e835f8
+network_workers: 1
+output: /Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/run/BASE-POINT/REF/a2000/cycle-06/native/products
+schema: citlali-development-v1
+terminal: point-fruit

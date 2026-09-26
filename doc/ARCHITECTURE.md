@@ -1,5 +1,11 @@
 # Citlali Architecture
 
+Current bright-POINT development execution and ownership are documented in
+[the consolidated pipeline](BRIGHT_POINT_PIPELINE.md). Its frozen ordinary MAP /
+BASE-POINT route supersedes historical statements below that MAP or FRUIT is
+unconnected. Other package unavailability and scientific boundaries remain.
+
+
 ## Current development entry — owner direction 2026-09-17
 
 The ordinary `citlali <configuration>` entry now selects the implemented

@@ -1,0 +1,7585 @@
+- event: 0
+  channel: 0
+  detector: 0
+  seed_earlier_row: 3109
+  trial_exclusion:
+    - 3103
+    - 3117
+  origin_unix_seconds: 1771495707.7057195
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 0
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 3103
+      - 3125
+    -
+      - 3164
+      - 3178
+  coordinates:
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 3110
+        - 3117
+      examined:
+        - 2866
+        - 3354
+      scale: 1.9714729122666105e-06
+      cubic:
+        - 5.3727622318712325e-05
+        - -8.194795721044578e-06
+        - -2.6736090636645615e-05
+        - 9.219594100628628e-06
+      cubic_with_offset:
+        - 5.5870843878405806e-05
+        - -1.0452520602774426e-06
+        - -2.6161485698693015e-05
+        - 3.35319840429284e-06
+      offset: -4.979293752980481e-06
+      fit_support:
+        - usable: 243
+          rows:
+            - 2859
+            - 3102
+        - usable: 222
+          rows:
+            - 3125
+            - 3361
+      usable_peers: 422
+      strongest_peer_channel: 5
+      strongest_level_correlation: 0.9802759184320341
+      strongest_difference_correlation: 0.7902220069190828
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 3105
+        - 3110
+      confirmation:
+        - 3110
+        - 3117
+      examined:
+        - 2866
+        - 3354
+      scale: 1.6460026275088499e-06
+      cubic:
+        - 0.00010043699704589562
+        - -1.6689733203906736e-07
+        - -7.315983708292689e-06
+        - -9.14276364773544e-08
+      cubic_with_offset:
+        - 9.736296066932914e-05
+        - -8.043986451421294e-06
+        - -7.240391773845825e-06
+        - 5.613472072122193e-06
+      offset: 6.068019448406316e-06
+      fit_support:
+        - usable: 243
+          rows:
+            - 2859
+            - 3102
+        - usable: 222
+          rows:
+            - 3125
+            - 3361
+      usable_peers: 422
+      strongest_peer_channel: 3
+      strongest_level_correlation: 0.7935310844885628
+      strongest_difference_correlation: 0.6200673401088717
+- event: 1
+  channel: 0
+  detector: 0
+  seed_earlier_row: 3116
+  trial_exclusion:
+    - 3110
+    - 3124
+  origin_unix_seconds: 1771495707.7630634
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 0
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 3103
+      - 3125
+    -
+      - 3164
+      - 3178
+  coordinates:
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 3117
+        - 3124
+      examined:
+        - 2873
+        - 3361
+      scale: 2.038431235632736e-06
+      cubic:
+        - 5.357735324475539e-05
+        - -1.0904536291170935e-05
+        - -2.6302379493212845e-05
+        - 1.1960416080004605e-05
+      cubic_with_offset:
+        - 5.490112048376553e-05
+        - -6.876652248430684e-06
+        - -2.613227124677009e-05
+        - 8.750252337510673e-06
+      offset: -2.8387729873720984e-06
+      fit_support:
+        - usable: 237
+          rows:
+            - 2866
+            - 3103
+        - usable: 229
+          rows:
+            - 3125
+            - 3368
+      usable_peers: 422
+      strongest_peer_channel: 5
+      strongest_level_correlation: 0.9804812715013427
+      strongest_difference_correlation: 0.7894519873976505
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 3117
+        - 3118
+      confirmation:
+        - 3118
+        - 3125
+      examined:
+        - 2873
+        - 3361
+      scale: 1.7157223272952074e-06
+      cubic:
+        - 0.00010038599137810809
+        - -4.896364983742055e-07
+        - -7.225741421038434e-06
+        - -2.4249944109277456e-07
+      cubic_with_offset:
+        - 9.725788847962948e-05
+        - -8.134248986092656e-06
+        - -6.9346634593394895e-06
+        - 5.268112866427639e-06
+      offset: 5.908930210349142e-06
+      fit_support:
+        - usable: 237
+          rows:
+            - 2866
+            - 3103
+        - usable: 229
+          rows:
+            - 3125
+            - 3368
+      usable_peers: 422
+      strongest_peer_channel: 3
+      strongest_level_correlation: 0.7962734573422466
+      strongest_difference_correlation: 0.6264656539319339
+- event: 2
+  channel: 0
+  detector: 0
+  seed_earlier_row: 3170
+  trial_exclusion:
+    - 3164
+    - 3178
+  origin_unix_seconds: 1771495708.2054315
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 3
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 3103
+      - 3125
+    -
+      - 3164
+      - 3178
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 3171
+        - 3178
+      examined:
+        - 2927
+        - 3415
+      scale: 2.4559405450098015e-06
+      cubic:
+        - 5.0780749313025e-05
+        - -2.6844534036529715e-05
+        - -1.946461133432646e-05
+        - 2.66848372292908e-05
+      cubic_with_offset:
+        - 5.332808852032227e-05
+        - -1.992342350778042e-05
+        - -1.9511494512778897e-05
+        - 2.1340408930412155e-05
+      offset: -5.024483484779603e-06
+      fit_support:
+        - usable: 221
+          rows:
+            - 2920
+            - 3163
+        - usable: 244
+          rows:
+            - 3178
+            - 3422
+      usable_peers: 422
+      strongest_peer_channel: 5
+      strongest_level_correlation: 0.9818652467898346
+      strongest_difference_correlation: 0.7777112203030558
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 3171
+        - 3178
+      examined:
+        - 2927
+        - 3415
+      scale: 2.3395909392067238e-06
+      cubic:
+        - 9.953420611902407e-05
+        - -3.337624040212826e-06
+        - -5.760811256501989e-06
+        - 7.1411451495351816e-09
+      cubic_with_offset:
+        - 9.644915145814217e-05
+        - -1.0884119004899877e-05
+        - -5.4395705537008475e-06
+        - 5.54008725377212e-06
+      offset: 5.760467318874947e-06
+      fit_support:
+        - usable: 221
+          rows:
+            - 2920
+            - 3163
+        - usable: 244
+          rows:
+            - 3178
+            - 3422
+      usable_peers: 422
+      strongest_peer_channel: 3
+      strongest_level_correlation: 0.8362636451352162
+      strongest_difference_correlation: 0.6119989879018968
+- event: 3
+  channel: 1
+  detector: 1
+  seed_earlier_row: 1991
+  trial_exclusion:
+    - 1985
+    - 1999
+  origin_unix_seconds: 1771495698.5470634
+  time_scale_seconds: 2.0573439598083496
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: true
+  neighbor_exclusions:
+    -
+      - 1985
+      - 1999
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 1991
+        - 2236
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 1748
+        - 2236
+      scale: 7.720735048884247e-07
+      cubic:
+        - 1.413820349819792e-05
+        - -9.073502178568451e-06
+        - -4.535720010850511e-06
+        - 5.827075693964536e-06
+      cubic_with_offset:
+        - 1.722909335811203e-05
+        - -1.908664599244882e-06
+        - -5.028226836779758e-06
+        - 4.890572249291455e-07
+      offset: -5.493685320531938e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 1741
+            - 1985
+        - usable: 244
+          rows:
+            - 1999
+            - 2243
+      usable_peers: 422
+      strongest_peer_channel: 5
+      strongest_level_correlation: 0.9823681819704334
+      strongest_difference_correlation: 0.6540504330044491
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 1945
+        - 2087
+      confirmation:
+        - 2087
+        - 2094
+      examined:
+        - 1748
+        - 2236
+      scale: 5.581374198365828e-07
+      cubic:
+        - 9.165236188498264e-05
+        - -2.424000153688946e-06
+        - -4.9079616078990065e-06
+        - 4.538664109891431e-07
+      cubic_with_offset:
+        - 9.063237350731646e-05
+        - -5.153834699197896e-06
+        - -4.941722292367317e-06
+        - 2.5711968879786893e-06
+      offset: 2.0248928819723237e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 1741
+            - 1985
+        - usable: 244
+          rows:
+            - 1999
+            - 2243
+      usable_peers: 422
+      strongest_peer_channel: 6
+      strongest_level_correlation: 0.9702872622245908
+      strongest_difference_correlation: 0.49434207874599484
+- event: 4
+  channel: 1
+  detector: 1
+  seed_earlier_row: 3008
+  trial_exclusion:
+    - 3002
+    - 3018
+  origin_unix_seconds: 1771495706.8865194
+  time_scale_seconds: 2.0655360221862793
+  review_disposition: 0
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 3002
+      - 3016
+    -
+      - 3027
+      - 3041
+    -
+      - 3054
+      - 3075
+    -
+      - 3110
+      - 3124
+    -
+      - 3160
+      - 3174
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 3009
+        - 3018
+      confirmation:
+        - 3018
+        - 3025
+      examined:
+        - 2765
+        - 3253
+      scale: 8.022269314108621e-07
+      cubic:
+        - 1.646748571711629e-05
+        - 1.3469670499132831e-05
+        - -7.956275774557497e-06
+        - -1.3070418762417888e-05
+      cubic_with_offset:
+        - 1.4687195295967986e-05
+        - 8.266802120113325e-06
+        - -8.48952866917128e-06
+        - -9.473852597952143e-06
+      offset: 4.232191247938009e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 2758
+            - 3002
+        - usable: 181
+          rows:
+            - 3018
+            - 3262
+      usable_peers: 422
+      strongest_peer_channel: 5
+      strongest_level_correlation: 0.9837011119699652
+      strongest_difference_correlation: 0.8722842441234737
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 3009
+        - 3016
+      examined:
+        - 2765
+        - 3253
+      scale: 6.665469701700275e-07
+      cubic:
+        - 9.576610746701964e-05
+        - 8.812354481985104e-06
+        - -6.869293696240178e-06
+        - -6.126267063040404e-06
+      cubic_with_offset:
+        - 9.637771940868993e-05
+        - 1.0702027903127144e-05
+        - -6.598303611866735e-06
+        - -7.399026236751005e-06
+      offset: -1.5697546127526115e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 2758
+            - 3002
+        - usable: 181
+          rows:
+            - 3018
+            - 3262
+      usable_peers: 422
+      strongest_peer_channel: 6
+      strongest_level_correlation: 0.9752258659960735
+      strongest_difference_correlation: 0.6426191718239522
+- event: 5
+  channel: 1
+  detector: 1
+  seed_earlier_row: 3033
+  trial_exclusion:
+    - 3027
+    - 3041
+  origin_unix_seconds: 1771495707.0831275
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 3002
+      - 3016
+    -
+      - 3027
+      - 3041
+    -
+      - 3054
+      - 3075
+    -
+      - 3110
+      - 3124
+    -
+      - 3160
+      - 3174
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 3009
+        - 3278
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 2790
+        - 3278
+      scale: 8.250546407863244e-07
+      cubic:
+        - 1.7240950270137668e-05
+        - 1.093368925713957e-05
+        - -1.0038782971243131e-05
+        - -1.1190332259866045e-05
+      cubic_with_offset:
+        - 1.4916195066657784e-05
+        - 4.6691302667139465e-06
+        - -1.0293353599522661e-05
+        - -6.765517604371954e-06
+      offset: 5.0086511747248545e-06
+      fit_support:
+        - usable: 230
+          rows:
+            - 2783
+            - 3027
+        - usable: 194
+          rows:
+            - 3042
+            - 3285
+      usable_peers: 422
+      strongest_peer_channel: 5
+      strongest_level_correlation: 0.9813474072339108
+      strongest_difference_correlation: 0.8717560937055038
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 3060
+        - 3278
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 2790
+        - 3278
+      scale: 6.608507075226712e-07
+      cubic:
+        - 9.648663978639306e-05
+        - 6.963817920575653e-06
+        - -8.382168494715363e-06
+        - -5.28925296935096e-06
+      cubic_with_offset:
+        - 9.768523740119454e-05
+        - 1.0419596460036445e-05
+        - -8.093159141639762e-06
+        - -7.712394649571215e-06
+      offset: -2.766424071871991e-06
+      fit_support:
+        - usable: 230
+          rows:
+            - 2783
+            - 3027
+        - usable: 194
+          rows:
+            - 3042
+            - 3285
+      usable_peers: 422
+      strongest_peer_channel: 6
+      strongest_level_correlation: 0.9706767378460133
+      strongest_difference_correlation: 0.6426824204353057
+- event: 6
+  channel: 2
+  detector: 2
+  seed_earlier_row: 813
+  trial_exclusion:
+    - 807
+    - 821
+  origin_unix_seconds: 1771495688.8968873
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 0
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 807
+      - 821
+    -
+      - 840
+      - 862
+  coordinates:
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 811
+        - 825
+      confirmation:
+        - 825
+        - 832
+      examined:
+        - 570
+        - 1058
+      scale: 2.9756431448580335e-06
+      cubic:
+        - 6.136541465059535e-05
+        - -2.6334492912203806e-05
+        - -5.536641459867143e-05
+        - 2.3879083125859274e-05
+      cubic_with_offset:
+        - 7.475477383608272e-05
+        - 1.6862451053633973e-05
+        - -5.379081624505929e-05
+        - -1.390501787158938e-05
+      offset: -2.8424126336828092e-05
+      fit_support:
+        - usable: 244
+          rows:
+            - 563
+            - 807
+        - usable: 221
+          rows:
+            - 822
+            - 1065
+      usable_peers: 423
+      strongest_peer_channel: 5
+      strongest_level_correlation: 0.9747204513527774
+      strongest_difference_correlation: 0.6621961745664748
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 813
+        - 814
+      confirmation:
+        - 814
+        - 821
+      examined:
+        - 570
+        - 1058
+      scale: 2.7251290089742757e-06
+      cubic:
+        - 7.894539363907178e-05
+        - 1.403586111055206e-05
+        - 5.445524323353254e-06
+        - -1.8056861034135987e-05
+      cubic_with_offset:
+        - 6.634261275700537e-05
+        - -2.1065090941242373e-05
+        - 3.850657333449239e-06
+        - 7.846514040371591e-06
+      offset: 2.702825758026375e-05
+      fit_support:
+        - usable: 244
+          rows:
+            - 563
+            - 807
+        - usable: 221
+          rows:
+            - 822
+            - 1065
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: -0.7211790621692108
+      strongest_difference_correlation: -0.2647033674706611
+- event: 7
+  channel: 2
+  detector: 2
+  seed_earlier_row: 846
+  trial_exclusion:
+    - 840
+    - 854
+  origin_unix_seconds: 1771495689.1672235
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 807
+      - 821
+    -
+      - 840
+      - 862
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 847
+        - 1091
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 603
+        - 1091
+      scale: 2.9877510887940384e-06
+      cubic:
+        - 5.843914961527549e-05
+        - -5.2716572782424255e-05
+        - -4.9911130964649e-05
+        - 5.3884755276745206e-05
+      cubic_with_offset:
+        - 7.37673441734623e-05
+        - -1.5317790800438912e-05
+        - -5.2137835058633345e-05
+        - 2.474530378418484e-05
+      offset: -2.7703177981169298e-05
+      fit_support:
+        - usable: 229
+          rows:
+            - 596
+            - 839
+        - usable: 236
+          rows:
+            - 862
+            - 1098
+      usable_peers: 423
+      strongest_peer_channel: 5
+      strongest_level_correlation: 0.9773718636457391
+      strongest_difference_correlation: 0.6659351356202375
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 839
+        - 1091
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 603
+        - 1091
+      scale: 2.6936763255614864e-06
+      cubic:
+        - 7.881678313266558e-05
+        - 1.644911469721721e-05
+        - 4.627842499057828e-06
+        - -2.0580739085612115e-05
+      cubic_with_offset:
+        - 6.279270709092901e-05
+        - -2.2590932779396684e-05
+        - 7.839930118668265e-06
+        - 1.0117694251934073e-05
+      offset: 2.9179609128379433e-05
+      fit_support:
+        - usable: 229
+          rows:
+            - 596
+            - 839
+        - usable: 236
+          rows:
+            - 862
+            - 1098
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: -0.7080911188766952
+      strongest_difference_correlation: -0.21118147157850747
+- event: 8
+  channel: 2
+  detector: 2
+  seed_earlier_row: 1552
+  trial_exclusion:
+    - 1502
+    - 1740
+  origin_unix_seconds: 1771495695.5078313
+  time_scale_seconds: 2.9748480319976807
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: true
+  neighbor_exclusions:
+    -
+      - 1546
+      - 1568
+    -
+      - 1595
+      - 1652
+    -
+      - 1970
+      - 1996
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 1496
+        - 1797
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 1309
+        - 1797
+      scale: 2.665006471892059e-06
+      cubic:
+        - 2.5036763575198966e-05
+        - 3.574982073978557e-05
+        - 8.783661315040449e-06
+        - -2.1302239780118046e-06
+      cubic_with_offset:
+        - 1.7467057550098405e-05
+        - 1.8665113552237395e-05
+        - 9.549900377367677e-06
+        - 9.616228062969227e-06
+      offset: 1.4545850656525169e-05
+      fit_support:
+        - usable: 244
+          rows:
+            - 1258
+            - 1502
+        - usable: 230
+          rows:
+            - 1740
+            - 1970
+      usable_peers: 423
+      strongest_peer_channel: 13
+      strongest_level_correlation: -0.9614213527450369
+      strongest_difference_correlation: -0.47631931984816933
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 1614
+        - 1797
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 1309
+        - 1797
+      scale: 2.05511884808224e-06
+      cubic:
+        - 8.637455483923904e-05
+        - -7.827229992623579e-06
+        - -1.0981378824900293e-05
+        - 1.4138525056661708e-07
+      cubic_with_offset:
+        - 0.00010689959233907835
+        - 3.826641131245509e-05
+        - -1.2899829762811483e-05
+        - -3.097443425095211e-05
+      offset: -3.946604218249044e-05
+      fit_support:
+        - usable: 244
+          rows:
+            - 1258
+            - 1502
+        - usable: 230
+          rows:
+            - 1740
+            - 1970
+      usable_peers: 423
+      strongest_peer_channel: 485
+      strongest_level_correlation: 0.6561985004440783
+      strongest_difference_correlation: 0.1295848839816799
+- event: 9
+  channel: 2
+  detector: 2
+  seed_earlier_row: 1976
+  trial_exclusion:
+    - 1970
+    - 1984
+  origin_unix_seconds: 1771495698.4241834
+  time_scale_seconds: 2.0573439598083496
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 1970
+      - 2013
+    -
+      - 2026
+      - 2051
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 1957
+        - 2221
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 1733
+        - 2221
+      scale: 3.710236578540965e-06
+      cubic:
+        - 4.2932564446809376e-05
+        - -4.010086941773956e-05
+        - -2.881376971115228e-05
+        - 2.165904114965265e-05
+      cubic_with_offset:
+        - 6.326952252326909e-05
+        - 2.117992715964442e-05
+        - -2.1937908696933058e-05
+        - -2.390724205413857e-05
+      offset: -4.853496863821257e-05
+      fit_support:
+        - usable: 244
+          rows:
+            - 1726
+            - 1970
+        - usable: 190
+          rows:
+            - 2013
+            - 2228
+      usable_peers: 423
+      strongest_peer_channel: 13
+      strongest_level_correlation: -0.9563238119685946
+      strongest_difference_correlation: -0.3832405308516389
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 1977
+        - 2221
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 1733
+        - 2221
+      scale: 2.5101403156094768e-06
+      cubic:
+        - 8.398897815521005e-05
+        - 1.933116264695189e-05
+        - -3.4052717399157984e-06
+        - -2.1920174239358378e-05
+      cubic_with_offset:
+        - 6.502007331543098e-05
+        - -3.609370465928284e-05
+        - -9.703754635874843e-06
+        - 1.6222666017590354e-05
+      offset: 4.567585698961152e-05
+      fit_support:
+        - usable: 244
+          rows:
+            - 1726
+            - 1970
+        - usable: 190
+          rows:
+            - 2013
+            - 2228
+      usable_peers: 423
+      strongest_peer_channel: 356
+      strongest_level_correlation: -0.7089510662542114
+      strongest_difference_correlation: -0.023233423764305084
+- event: 10
+  channel: 2
+  detector: 2
+  seed_earlier_row: 2973
+  trial_exclusion:
+    - 2967
+    - 2981
+  origin_unix_seconds: 1771495706.5916073
+  time_scale_seconds: 2.0573439598083496
+  review_disposition: 2
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 2967
+      - 3069
+    -
+      - 3103
+      - 3133
+    -
+      - 3138
+      - 3234
+  coordinates:
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 244
+          rows:
+            - 2723
+            - 2967
+        - usable: 39
+          rows:
+            - 3069
+            - 3138
+      usable_peers: 423
+      strongest_peer_channel: 485
+      strongest_level_correlation: 0.9589193697221491
+      strongest_difference_correlation: 0.4416615991294988
+    - seeded: false
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 244
+          rows:
+            - 2723
+            - 2967
+        - usable: 39
+          rows:
+            - 3069
+            - 3138
+      usable_peers: 423
+      strongest_peer_channel: 485
+      strongest_level_correlation: 0.7276303861843256
+      strongest_difference_correlation: 0.5030736835472865
+- event: 11
+  channel: 2
+  detector: 2
+  seed_earlier_row: 2981
+  trial_exclusion:
+    - 2975
+    - 2989
+  origin_unix_seconds: 1771495706.6571434
+  time_scale_seconds: 2.0573439598083496
+  review_disposition: 2
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 2967
+      - 3069
+    -
+      - 3103
+      - 3133
+    -
+      - 3138
+      - 3241
+  coordinates:
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 236
+          rows:
+            - 2731
+            - 2967
+        - usable: 39
+          rows:
+            - 3069
+            - 3138
+      usable_peers: 423
+      strongest_peer_channel: 485
+      strongest_level_correlation: 0.9576308708177494
+      strongest_difference_correlation: 0.4740052676697434
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 236
+          rows:
+            - 2731
+            - 2967
+        - usable: 39
+          rows:
+            - 3069
+            - 3138
+      usable_peers: 423
+      strongest_peer_channel: 485
+      strongest_level_correlation: 0.7332264972491871
+      strongest_difference_correlation: 0.5056568576379753
+- event: 12
+  channel: 2
+  detector: 2
+  seed_earlier_row: 2992
+  trial_exclusion:
+    - 2986
+    - 3000
+  origin_unix_seconds: 1771495706.7472553
+  time_scale_seconds: 2.0573439598083496
+  review_disposition: 2
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 2967
+      - 3069
+    -
+      - 3103
+      - 3133
+    -
+      - 3138
+      - 3249
+  coordinates:
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 225
+          rows:
+            - 2742
+            - 2967
+        - usable: 39
+          rows:
+            - 3069
+            - 3138
+      usable_peers: 423
+      strongest_peer_channel: 485
+      strongest_level_correlation: 0.9561388654785327
+      strongest_difference_correlation: 0.49261556110765503
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 225
+          rows:
+            - 2742
+            - 2967
+        - usable: 39
+          rows:
+            - 3069
+            - 3138
+      usable_peers: 423
+      strongest_peer_channel: 485
+      strongest_level_correlation: 0.7275607442367402
+      strongest_difference_correlation: 0.4939857296189073
+- event: 13
+  channel: 2
+  detector: 2
+  seed_earlier_row: 3000
+  trial_exclusion:
+    - 2994
+    - 3008
+  origin_unix_seconds: 1771495706.8127913
+  time_scale_seconds: 2.0573439598083496
+  review_disposition: 2
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 2967
+      - 3069
+    -
+      - 3103
+      - 3133
+    -
+      - 3138
+      - 3262
+  coordinates:
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 217
+          rows:
+            - 2750
+            - 2967
+        - usable: 39
+          rows:
+            - 3069
+            - 3138
+      usable_peers: 423
+      strongest_peer_channel: 13
+      strongest_level_correlation: -0.9537502090890514
+      strongest_difference_correlation: -0.46396264185594005
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 217
+          rows:
+            - 2750
+            - 2967
+        - usable: 39
+          rows:
+            - 3069
+            - 3138
+      usable_peers: 423
+      strongest_peer_channel: 485
+      strongest_level_correlation: 0.7335722201156231
+      strongest_difference_correlation: 0.4949708389100739
+- event: 14
+  channel: 2
+  detector: 2
+  seed_earlier_row: 3007
+  trial_exclusion:
+    - 3001
+    - 3015
+  origin_unix_seconds: 1771495706.8701353
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 2
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 2967
+      - 3069
+    -
+      - 3103
+      - 3133
+    -
+      - 3138
+      - 3262
+  coordinates:
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 210
+          rows:
+            - 2757
+            - 2967
+        - usable: 39
+          rows:
+            - 3069
+            - 3138
+      usable_peers: 423
+      strongest_peer_channel: 13
+      strongest_level_correlation: -0.9526370891719341
+      strongest_difference_correlation: -0.466869255629584
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 210
+          rows:
+            - 2757
+            - 2967
+        - usable: 39
+          rows:
+            - 3069
+            - 3138
+      usable_peers: 423
+      strongest_peer_channel: 485
+      strongest_level_correlation: 0.7328478930633596
+      strongest_difference_correlation: 0.497280115604805
+- event: 15
+  channel: 2
+  detector: 2
+  seed_earlier_row: 3015
+  trial_exclusion:
+    - 3009
+    - 3023
+  origin_unix_seconds: 1771495706.9356713
+  time_scale_seconds: 2.0573439598083496
+  review_disposition: 2
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 2967
+      - 3069
+    -
+      - 3103
+      - 3133
+    -
+      - 3138
+      - 3262
+  coordinates:
+    - seeded: false
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 202
+          rows:
+            - 2765
+            - 2967
+        - usable: 44
+          rows:
+            - 3069
+            - 3267
+      usable_peers: 423
+      strongest_peer_channel: 13
+      strongest_level_correlation: -0.9514986056459027
+      strongest_difference_correlation: -0.47514552576017266
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 202
+          rows:
+            - 2765
+            - 2967
+        - usable: 44
+          rows:
+            - 3069
+            - 3267
+      usable_peers: 423
+      strongest_peer_channel: 485
+      strongest_level_correlation: 0.7278879638805065
+      strongest_difference_correlation: 0.49418696386524485
+- event: 16
+  channel: 2
+  detector: 2
+  seed_earlier_row: 3025
+  trial_exclusion:
+    - 3019
+    - 3033
+  origin_unix_seconds: 1771495707.0175915
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 2
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 2967
+      - 3069
+    -
+      - 3103
+      - 3133
+    -
+      - 3138
+      - 3262
+  coordinates:
+    - seeded: false
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 192
+          rows:
+            - 2775
+            - 2967
+        - usable: 54
+          rows:
+            - 3069
+            - 3277
+      usable_peers: 423
+      strongest_peer_channel: 13
+      strongest_level_correlation: -0.949813244492174
+      strongest_difference_correlation: -0.4784597089024944
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 192
+          rows:
+            - 2775
+            - 2967
+        - usable: 54
+          rows:
+            - 3069
+            - 3277
+      usable_peers: 423
+      strongest_peer_channel: 485
+      strongest_level_correlation: 0.7284306874611879
+      strongest_difference_correlation: 0.49490974895194856
+- event: 17
+  channel: 2
+  detector: 2
+  seed_earlier_row: 3032
+  trial_exclusion:
+    - 3026
+    - 3040
+  origin_unix_seconds: 1771495707.0749354
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 2
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 2967
+      - 3069
+    -
+      - 3103
+      - 3133
+    -
+      - 3138
+      - 3262
+  coordinates:
+    - seeded: false
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 185
+          rows:
+            - 2782
+            - 2967
+        - usable: 61
+          rows:
+            - 3069
+            - 3284
+      usable_peers: 423
+      strongest_peer_channel: 13
+      strongest_level_correlation: -0.9491984124353069
+      strongest_difference_correlation: -0.4838952210710034
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 185
+          rows:
+            - 2782
+            - 2967
+        - usable: 61
+          rows:
+            - 3069
+            - 3284
+      usable_peers: 423
+      strongest_peer_channel: 485
+      strongest_level_correlation: 0.7248040932964239
+      strongest_difference_correlation: 0.489055282580857
+- event: 18
+  channel: 2
+  detector: 2
+  seed_earlier_row: 3041
+  trial_exclusion:
+    - 2969
+    - 3255
+  origin_unix_seconds: 1771495707.7221034
+  time_scale_seconds: 3.1714560985565186
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 2967
+      - 3069
+    -
+      - 3103
+      - 3133
+    -
+      - 3138
+      - 3262
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 2928
+        - 3286
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 2798
+        - 3286
+      scale: 3.6621903414262895e-06
+      cubic:
+        - 2.095348649857712e-05
+        - -2.053403247452624e-05
+        - -3.576652073620283e-05
+        - 2.4475390180064523e-05
+      cubic_with_offset:
+        - 5.4392331485701054e-05
+        - 5.400249114295996e-05
+        - -3.483635141827207e-05
+        - -2.163138113156954e-05
+      offset: -6.794599845670302e-05
+      fit_support:
+        - usable: 242
+          rows:
+            - 2725
+            - 2967
+        - usable: 237
+          rows:
+            - 3262
+            - 3499
+      usable_peers: 423
+      strongest_peer_channel: 13
+      strongest_level_correlation: -0.9482886092031199
+      strongest_difference_correlation: -0.49071858111963274
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 2997
+        - 3247
+      confirmation:
+        - 3247
+        - 3254
+      examined:
+        - 2798
+        - 3286
+      scale: 2.860012952212015e-06
+      cubic:
+        - 0.00011432139671627605
+        - -7.517426059763612e-06
+        - -3.772085472388989e-05
+        - 1.0029245755825248e-05
+      cubic_with_offset:
+        - 0.00012496798325716427
+        - 1.6007997771384487e-05
+        - -3.7775537287330414e-05
+        - -4.699543845714424e-06
+      offset: -2.1252524010272466e-05
+      fit_support:
+        - usable: 242
+          rows:
+            - 2725
+            - 2967
+        - usable: 237
+          rows:
+            - 3262
+            - 3499
+      usable_peers: 423
+      strongest_peer_channel: 485
+      strongest_level_correlation: 0.7261664228137099
+      strongest_difference_correlation: 0.4891780412617692
+- event: 19
+  channel: 2
+  detector: 2
+  seed_earlier_row: 5576
+  trial_exclusion:
+    - 5570
+    - 5584
+  origin_unix_seconds: 1771495727.9153833
+  time_scale_seconds: 2.0573439598083496
+  review_disposition: 0
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 5570
+      - 5605
+    -
+      - 5687
+      - 5701
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 5585
+        - 5592
+      examined:
+        - 5333
+        - 5821
+      scale: 3.933781003910203e-06
+      cubic:
+        - -3.996292913665468e-05
+        - -1.0207543802351543e-06
+        - -2.6207355923145958e-06
+        - 2.609868857418402e-07
+      cubic_with_offset:
+        - -4.0200928344267156e-05
+        - -1.7060285391579282e-06
+        - -2.6462127063472063e-06
+        - 7.750019424187044e-07
+      offset: 5.071494735344185e-07
+      fit_support:
+        - usable: 244
+          rows:
+            - 5326
+            - 5570
+        - usable: 209
+          rows:
+            - 5605
+            - 5828
+      usable_peers: 423
+      strongest_peer_channel: 5
+      strongest_level_correlation: 0.27182135564723764
+      strongest_difference_correlation: 0.20944143024033363
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 5577
+        - 5582
+      confirmation:
+        - 5582
+        - 5589
+      examined:
+        - 5333
+        - 5821
+      scale: 3.825471650697552e-06
+      cubic:
+        - 0.00011431861785854156
+        - 3.4957223189730068e-06
+        - -3.3735114667875755e-05
+        - 3.961135228127551e-06
+      cubic_with_offset:
+        - 0.00011406508962353708
+        - 2.679099481544737e-06
+        - -3.3794517497859034e-05
+        - 4.6229898238806835e-06
+      offset: 5.771558159722743e-07
+      fit_support:
+        - usable: 244
+          rows:
+            - 5326
+            - 5570
+        - usable: 209
+          rows:
+            - 5605
+            - 5828
+      usable_peers: 423
+      strongest_peer_channel: 5
+      strongest_level_correlation: 0.9215776084971063
+      strongest_difference_correlation: 0.5039755787972977
+- event: 20
+  channel: 2
+  detector: 2
+  seed_earlier_row: 5597
+  trial_exclusion:
+    - 5591
+    - 5615
+  origin_unix_seconds: 1771495728.1283753
+  time_scale_seconds: 2.098304033279419
+  review_disposition: 0
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 5570
+      - 5605
+    -
+      - 5687
+      - 5701
+  coordinates:
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 5598
+        - 5605
+      examined:
+        - 5354
+        - 5842
+      scale: 4.03837280775805e-06
+      cubic:
+        - -4.021262981996192e-05
+        - -2.379522408655167e-06
+        - -2.3716844061333175e-06
+        - 2.1552863057583394e-06
+      cubic_with_offset:
+        - -4.03965197697195e-05
+        - -2.8251574704110305e-06
+        - -2.345188668828841e-06
+        - 2.4847795621670037e-06
+      offset: 3.3418401133909496e-07
+      fit_support:
+        - usable: 223
+          rows:
+            - 5347
+            - 5570
+        - usable: 230
+          rows:
+            - 5615
+            - 5859
+      usable_peers: 423
+      strongest_peer_channel: 5
+      strongest_level_correlation: 0.29582189417420474
+      strongest_difference_correlation: 0.21136112489050268
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 5597
+        - 5615
+      confirmation:
+        - 5615
+        - 5622
+      examined:
+        - 5354
+        - 5842
+      scale: 3.945119131238393e-06
+      cubic:
+        - 0.00011331449085247673
+        - -1.0001564987764574e-05
+        - -3.013316526865532e-05
+        - 1.9653756021115577e-05
+      cubic_with_offset:
+        - 0.00011033577353216368
+        - -1.7742182423893693e-05
+        - -2.9930211484617744e-05
+        - 2.572212529818761e-05
+      offset: 5.589199969644559e-06
+      fit_support:
+        - usable: 223
+          rows:
+            - 5347
+            - 5570
+        - usable: 230
+          rows:
+            - 5615
+            - 5859
+      usable_peers: 423
+      strongest_peer_channel: 5
+      strongest_level_correlation: 0.9099782293128743
+      strongest_difference_correlation: 0.5040292614224946
+- event: 21
+  channel: 2
+  detector: 2
+  seed_earlier_row: 5693
+  trial_exclusion:
+    - 5687
+    - 5701
+  origin_unix_seconds: 1771495728.8738475
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 3
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 5570
+      - 5605
+    -
+      - 5687
+      - 5701
+  coordinates:
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 5694
+        - 5701
+      examined:
+        - 5450
+        - 5938
+      scale: 4.524114367710185e-06
+      cubic:
+        - -4.1187100948022637e-05
+        - -4.037631249342749e-06
+        - 4.853916221064882e-07
+        - 3.767749651405956e-06
+      cubic_with_offset:
+        - -4.0487575936895886e-05
+        - -2.0845112638928142e-06
+        - 4.794701750740129e-07
+        - 2.2573111014661763e-06
+      offset: -1.3955964638576757e-06
+      fit_support:
+        - usable: 209
+          rows:
+            - 5443
+            - 5687
+        - usable: 244
+          rows:
+            - 5701
+            - 5945
+      usable_peers: 423
+      strongest_peer_channel: 5
+      strongest_level_correlation: 0.3355991065194426
+      strongest_difference_correlation: 0.2553179016612276
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 5694
+        - 5701
+      examined:
+        - 5450
+        - 5938
+      scale: 5.241463685508273e-06
+      cubic:
+        - 0.00010814313974064619
+        - -2.839994451471429e-05
+        - -9.99485882024217e-06
+        - 2.7094773412503683e-05
+      cubic_with_offset:
+        - 0.00011387411174195532
+        - -1.2299953692571164e-05
+        - -9.988269576667543e-06
+        - 1.4410452262005867e-05
+      offset: -1.1474579647974515e-05
+      fit_support:
+        - usable: 209
+          rows:
+            - 5443
+            - 5687
+        - usable: 244
+          rows:
+            - 5701
+            - 5945
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.8905400422639667
+      strongest_difference_correlation: 0.5729034500730141
+- event: 22
+  channel: 3
+  detector: 3
+  seed_earlier_row: 1635
+  trial_exclusion:
+    - 1622
+    - 1752
+  origin_unix_seconds: 1771495696.0485034
+  time_scale_seconds: 2.532480001449585
+  review_disposition: 0
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 1629
+      - 1649
+    -
+      - 1986
+      - 2000
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 1630
+        - 1691
+      confirmation:
+        - 1691
+        - 1698
+      examined:
+        - 1392
+        - 1880
+      scale: 1.4695310980482368e-06
+      cubic:
+        - 8.671077334478762e-07
+        - 4.115118801612558e-06
+        - -1.7936220344303018e-06
+        - 1.1984782810924997e-05
+      cubic_with_offset:
+        - 5.259275716065267e-06
+        - 1.5350606555297912e-05
+        - -2.2061907853941537e-06
+        - 3.033285238349888e-06
+      offset: -8.399763449723257e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 1378
+            - 1622
+        - usable: 234
+          rows:
+            - 1752
+            - 1986
+      usable_peers: 422
+      strongest_peer_channel: 5
+      strongest_level_correlation: 0.9803595230501094
+      strongest_difference_correlation: 0.756840301659937
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 1636
+        - 1643
+      examined:
+        - 1392
+        - 1880
+      scale: 1.1173323342400278e-06
+      cubic:
+        - 0.00010271977390654259
+        - -7.75958970085086e-06
+        - -1.8172236085904432e-06
+        - 1.6579143147501948e-05
+      cubic_with_offset:
+        - 0.00011093126182567839
+        - 1.1970827766364775e-05
+        - -3.113197836478748e-06
+        - 1.3144177072305613e-06
+      offset: -1.5156505341849121e-05
+      fit_support:
+        - usable: 244
+          rows:
+            - 1378
+            - 1622
+        - usable: 234
+          rows:
+            - 1752
+            - 1986
+      usable_peers: 422
+      strongest_peer_channel: 5
+      strongest_level_correlation: 0.9534507270994412
+      strongest_difference_correlation: 0.49566468452140605
+- event: 23
+  channel: 3
+  detector: 3
+  seed_earlier_row: 1992
+  trial_exclusion:
+    - 1920
+    - 2009
+  origin_unix_seconds: 1771495698.3217835
+  time_scale_seconds: 2.364544153213501
+  review_disposition: 0
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 1986
+      - 2000
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 1920
+        - 2002
+      confirmation:
+        - 2002
+        - 2009
+      examined:
+        - 1749
+        - 2237
+      scale: 1.221475312976003e-06
+      cubic:
+        - -6.635345697381809e-07
+        - -1.3584382617124587e-05
+        - -5.045103501424623e-06
+        - 1.763278874703983e-06
+      cubic_with_offset:
+        - 1.4473192842277381e-06
+        - -7.732529522242413e-06
+        - -4.845581187183712e-06
+        - -2.6987201369439503e-06
+      offset: -4.440400243908255e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 1676
+            - 1920
+        - usable: 243
+          rows:
+            - 2010
+            - 2253
+      usable_peers: 422
+      strongest_peer_channel: 5
+      strongest_level_correlation: 0.9883270918608993
+      strongest_difference_correlation: 0.6976973447816628
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 1937
+        - 2237
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 1749
+        - 2237
+      scale: 1.2763122988909206e-06
+      cubic:
+        - 0.00010214269090602041
+        - 1.9408754606764056e-06
+        - -5.245544552294178e-06
+        - -7.218654801119598e-06
+      cubic_with_offset:
+        - 9.763331325301284e-05
+        - -1.1166089040710997e-05
+        - -6.277890787755187e-06
+        - 2.6322489410360763e-06
+      offset: 1.0173672550493467e-05
+      fit_support:
+        - usable: 244
+          rows:
+            - 1676
+            - 1920
+        - usable: 243
+          rows:
+            - 2010
+            - 2253
+      usable_peers: 422
+      strongest_peer_channel: 5
+      strongest_level_correlation: 0.9601011597970515
+      strongest_difference_correlation: 0.4535470053927579
+- event: 24
+  channel: 3
+  detector: 3
+  seed_earlier_row: 3008
+  trial_exclusion:
+    - 3002
+    - 3016
+  origin_unix_seconds: 1771495706.8783274
+  time_scale_seconds: 2.0573439598083496
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 3002
+      - 3020
+    -
+      - 3031
+      - 3045
+    -
+      - 3052
+      - 3069
+    -
+      - 3110
+      - 3129
+    -
+      - 3155
+      - 3193
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 3009
+        - 3253
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 2765
+        - 3253
+      scale: 1.748810563724956e-06
+      cubic:
+        - 6.324861783975839e-06
+        - 3.172638205878234e-05
+        - -1.7614786838732625e-05
+        - -3.1092107553552524e-05
+      cubic_with_offset:
+        - 2.2397630726705985e-06
+        - 1.9665086321555578e-05
+        - -1.8503683555737094e-05
+        - -2.224538445264126e-05
+      offset: 9.038048373144639e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 2758
+            - 3002
+        - usable: 152
+          rows:
+            - 3020
+            - 3260
+      usable_peers: 422
+      strongest_peer_channel: 5
+      strongest_level_correlation: 0.9836529210921208
+      strongest_difference_correlation: 0.8530461082203258
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 3050
+        - 3253
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 2765
+        - 3253
+      scale: 1.0286074818994218e-06
+      cubic:
+        - 0.00011082725749110555
+        - 1.0813187450368695e-05
+        - -1.0075656548704943e-05
+        - -4.233759971586958e-06
+      cubic_with_offset:
+        - 0.00011381269897302635
+        - 2.038358299485936e-05
+        - -8.176285862305774e-06
+        - -1.0266662276171032e-05
+      offset: -8.480913973320014e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 2758
+            - 3002
+        - usable: 152
+          rows:
+            - 3020
+            - 3260
+      usable_peers: 422
+      strongest_peer_channel: 5
+      strongest_level_correlation: 0.9725909966645414
+      strongest_difference_correlation: 0.7533081149804151
+- event: 25
+  channel: 4
+  detector: 4
+  seed_earlier_row: 1635
+  trial_exclusion:
+    - 1591
+    - 1703
+  origin_unix_seconds: 1771495695.7208233
+  time_scale_seconds: 2.458752155303955
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: true
+  neighbor_exclusions:
+    -
+      - 1629
+      - 1643
+    -
+      - 1651
+      - 1669
+    -
+      - 1674
+      - 1690
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 1589
+        - 1880
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 1392
+        - 1880
+      scale: 5.910595818712553e-07
+      cubic:
+        - -2.75843298582739e-05
+        - 6.715014266120546e-06
+        - 1.8764393243516644e-06
+        - -7.3257306799900104e-06
+      cubic_with_offset:
+        - -3.2636326626057205e-05
+        - -4.995356160427305e-06
+        - 2.4708808092230425e-06
+        - 1.150797016825539e-06
+      offset: 9.319137305275153e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 1347
+            - 1591
+        - usable: 244
+          rows:
+            - 1703
+            - 1947
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.7883697385537333
+      strongest_difference_correlation: 0.47872305040429847
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 1591
+        - 1703
+      confirmation:
+        - 1703
+        - 1710
+      examined:
+        - 1392
+        - 1880
+      scale: 9.41534151382662e-07
+      cubic:
+        - 0.00011455580236490559
+        - 8.098891774277655e-06
+        - -3.7370368193588296e-06
+        - 2.9250842892262313e-06
+      cubic_with_offset:
+        - 0.00011717535654644894
+        - 1.521344803235119e-05
+        - -3.567744790595429e-06
+        - -2.495251291905452e-06
+      offset: -5.498648465891022e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 1347
+            - 1591
+        - usable: 244
+          rows:
+            - 1703
+            - 1947
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9749647304031778
+      strongest_difference_correlation: 0.8261408530144903
+- event: 26
+  channel: 4
+  detector: 4
+  seed_earlier_row: 1972
+  trial_exclusion:
+    - 1900
+    - 2056
+  origin_unix_seconds: 1771495698.4323754
+  time_scale_seconds: 2.6389760971069336
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: true
+  neighbor_exclusions:
+    -
+      - 1651
+      - 1669
+    -
+      - 1674
+      - 1690
+    -
+      - 1966
+      - 1999
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 1924
+        - 2217
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 1729
+        - 2217
+      scale: 5.81032063493525e-07
+      cubic:
+        - -2.6324994739364163e-05
+        - -4.911393661184163e-06
+        - 3.19121884717159e-07
+        - 6.574693095956976e-06
+      cubic_with_offset:
+        - -2.3117179810293827e-05
+        - 4.091717118285633e-06
+        - 1.2280985901418949e-06
+        - -3.055335613466215e-07
+      offset: -7.113150832234067e-06
+      fit_support:
+        - usable: 215
+          rows:
+            - 1669
+            - 1900
+        - usable: 244
+          rows:
+            - 2056
+            - 2300
+      usable_peers: 423
+      strongest_peer_channel: 11
+      strongest_level_correlation: 0.7590200077956906
+      strongest_difference_correlation: 0.2669653870178967
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 1900
+        - 2010
+      confirmation:
+        - 2010
+        - 2017
+      examined:
+        - 1729
+        - 2217
+      scale: 1.1062868469126196e-06
+      cubic:
+        - 0.00011207677442259964
+        - -1.617396058945761e-05
+        - -3.340095386166521e-06
+        - 6.295862287698143e-06
+      cubic_with_offset:
+        - 0.00011578415646781914
+        - -6.426246434424497e-06
+        - -2.7599773176042865e-06
+        - -8.886417261304022e-07
+      offset: -7.828616228121028e-06
+      fit_support:
+        - usable: 215
+          rows:
+            - 1669
+            - 1900
+        - usable: 244
+          rows:
+            - 2056
+            - 2300
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9803888227598866
+      strongest_difference_correlation: 0.8405063846189991
+- event: 27
+  channel: 4
+  detector: 4
+  seed_earlier_row: 2996
+  trial_exclusion:
+    - 2990
+    - 3004
+  origin_unix_seconds: 1771495706.7800233
+  time_scale_seconds: 2.0573439598083496
+  review_disposition: 2
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 2990
+      - 3148
+    -
+      - 3152
+      - 3186
+    -
+      - 3191
+      - 3205
+    -
+      - 3212
+      - 3227
+  coordinates:
+    - seeded: false
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 244
+          rows:
+            - 2746
+            - 2990
+        - usable: 37
+          rows:
+            - 3148
+            - 3248
+      usable_peers: 423
+      strongest_peer_channel: 12
+      strongest_level_correlation: 0.8024233248452863
+      strongest_difference_correlation: 0.5346873763899309
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 244
+          rows:
+            - 2746
+            - 2990
+        - usable: 37
+          rows:
+            - 3148
+            - 3248
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9937824651729034
+      strongest_difference_correlation: 0.9232532046729736
+- event: 28
+  channel: 4
+  detector: 4
+  seed_earlier_row: 3004
+  trial_exclusion:
+    - 2998
+    - 3012
+  origin_unix_seconds: 1771495706.8455594
+  time_scale_seconds: 2.0573439598083496
+  review_disposition: 2
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 2990
+      - 3148
+    -
+      - 3152
+      - 3186
+    -
+      - 3191
+      - 3205
+    -
+      - 3212
+      - 3227
+  coordinates:
+    - seeded: false
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 236
+          rows:
+            - 2754
+            - 2990
+        - usable: 45
+          rows:
+            - 3148
+            - 3256
+      usable_peers: 423
+      strongest_peer_channel: 12
+      strongest_level_correlation: 0.7933977496965611
+      strongest_difference_correlation: 0.5372921764875374
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 236
+          rows:
+            - 2754
+            - 2990
+        - usable: 45
+          rows:
+            - 3148
+            - 3256
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9935597071656891
+      strongest_difference_correlation: 0.923121479893224
+- event: 29
+  channel: 4
+  detector: 4
+  seed_earlier_row: 3016
+  trial_exclusion:
+    - 3010
+    - 3024
+  origin_unix_seconds: 1771495706.9438634
+  time_scale_seconds: 2.0573439598083496
+  review_disposition: 2
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 2990
+      - 3148
+    -
+      - 3152
+      - 3186
+    -
+      - 3191
+      - 3205
+    -
+      - 3212
+      - 3227
+  coordinates:
+    - seeded: false
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 224
+          rows:
+            - 2766
+            - 2990
+        - usable: 57
+          rows:
+            - 3148
+            - 3268
+      usable_peers: 423
+      strongest_peer_channel: 12
+      strongest_level_correlation: 0.7795376427951501
+      strongest_difference_correlation: 0.5403533213002069
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 224
+          rows:
+            - 2766
+            - 2990
+        - usable: 57
+          rows:
+            - 3148
+            - 3268
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9931980049112116
+      strongest_difference_correlation: 0.9229342059345289
+- event: 30
+  channel: 4
+  detector: 4
+  seed_earlier_row: 3026
+  trial_exclusion:
+    - 2948
+    - 3262
+  origin_unix_seconds: 1771495707.6647594
+  time_scale_seconds: 3.2861440181732178
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 2990
+      - 3148
+    -
+      - 3152
+      - 3186
+    -
+      - 3191
+      - 3205
+    -
+      - 3212
+      - 3227
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 2948
+        - 3238
+      confirmation:
+        - 3238
+        - 3245
+      examined:
+        - 2783
+        - 3271
+      scale: 4.98324241209623e-07
+      cubic:
+        - -3.0113076087115684e-05
+        - 6.86375513574141e-07
+        - 4.919283409839769e-06
+        - -4.644619078159623e-07
+      cubic_with_offset:
+        - -3.0783708103722955e-05
+        - -7.595864272354715e-07
+        - 4.924213341350418e-06
+        - 4.131791735849202e-07
+      offset: 1.334691971083337e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 2704
+            - 2948
+        - usable: 244
+          rows:
+            - 3262
+            - 3506
+      usable_peers: 423
+      strongest_peer_channel: 12
+      strongest_level_correlation: 0.7697928799434983
+      strongest_difference_correlation: 0.539169073102708
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 2942
+        - 3271
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 2783
+        - 3271
+      scale: 8.077786548439435e-07
+      cubic:
+        - 0.00010736562817734236
+        - -3.590542391491795e-06
+        - -1.2057471612329687e-05
+        - 4.227514650515177e-06
+      cubic_with_offset:
+        - 0.00011397841975617375
+        - 1.1007769774565269e-05
+        - -1.1978598120593262e-05
+        - -4.818149798221523e-06
+      offset: -1.329871813107943e-05
+      fit_support:
+        - usable: 244
+          rows:
+            - 2704
+            - 2948
+        - usable: 244
+          rows:
+            - 3262
+            - 3506
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9929517632416854
+      strongest_difference_correlation: 0.9229301738512091
+- event: 31
+  channel: 4
+  detector: 4
+  seed_earlier_row: 4347
+  trial_exclusion:
+    - 4341
+    - 4355
+  origin_unix_seconds: 1771495717.8474154
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 0
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 4341
+      - 4355
+  coordinates:
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 4348
+        - 4355
+      examined:
+        - 4104
+        - 4592
+      scale: 4.929749610741714e-07
+      cubic:
+        - -3.0008436236597726e-05
+        - -7.573903880108564e-07
+        - 2.6481769864253144e-06
+        - -8.861779509504078e-08
+      cubic_with_offset:
+        - -3.0094697784733237e-05
+        - -9.897398518720694e-07
+        - 2.652282552608838e-06
+        - 8.9750709385646e-08
+      offset: 1.6681801238537238e-07
+      fit_support:
+        - usable: 243
+          rows:
+            - 4097
+            - 4340
+        - usable: 244
+          rows:
+            - 4355
+            - 4599
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.7520917592025497
+      strongest_difference_correlation: 0.18413404719440205
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 4347
+        - 4348
+      confirmation:
+        - 4348
+        - 4355
+      examined:
+        - 4104
+        - 4592
+      scale: 5.145370896165354e-07
+      cubic:
+        - 0.00010180197969346257
+        - -2.267341031260286e-06
+        - -5.921314460832558e-06
+        - 1.8082211781157626e-06
+      cubic_with_offset:
+        - 0.00010238313920137135
+        - -6.208246821061803e-07
+        - -5.9172891218505e-06
+        - 4.562291357968846e-07
+      offset: -1.1407876605159647e-06
+      fit_support:
+        - usable: 243
+          rows:
+            - 4097
+            - 4340
+        - usable: 244
+          rows:
+            - 4355
+            - 4599
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.951817478360616
+      strongest_difference_correlation: 0.491532959105607
+- event: 32
+  channel: 4
+  detector: 4
+  seed_earlier_row: 5016
+  trial_exclusion:
+    - 5010
+    - 5024
+  origin_unix_seconds: 1771495723.3278632
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: true
+  neighbor_exclusions:
+    -
+      - 5010
+      - 5024
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 5017
+        - 5261
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 4773
+        - 5261
+      scale: 4.467722849751038e-07
+      cubic:
+        - -3.01786722411474e-05
+        - -9.709746375737436e-06
+        - -8.479673358456677e-07
+        - 6.6939053435378515e-06
+      cubic_with_offset:
+        - -2.643786245025345e-05
+        - 1.5341817887764434e-07
+        - -6.715179582798387e-07
+        - -4.462996337896025e-07
+      offset: -7.685021436238376e-06
+      fit_support:
+        - usable: 243
+          rows:
+            - 4766
+            - 5009
+        - usable: 244
+          rows:
+            - 5024
+            - 5268
+      usable_peers: 423
+      strongest_peer_channel: 5
+      strongest_level_correlation: 0.9888526072678839
+      strongest_difference_correlation: 0.22875544572078793
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 5017
+        - 5261
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 4773
+        - 5261
+      scale: 3.902695655769853e-07
+      cubic:
+        - 9.295591018031173e-05
+        - -6.586547243479008e-06
+        - 2.2005837661661946e-07
+        - 5.273995014671487e-06
+      cubic_with_offset:
+        - 9.563764381242887e-05
+        - 3.1232292269835325e-07
+        - 1.6170848954429517e-07
+        - 1.8776578466537021e-07
+      offset: -5.271714846255644e-06
+      fit_support:
+        - usable: 243
+          rows:
+            - 4766
+            - 5009
+        - usable: 244
+          rows:
+            - 5024
+            - 5268
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9809997906663351
+      strongest_difference_correlation: 0.1555593384328708
+- event: 33
+  channel: 5
+  detector: 5
+  seed_earlier_row: 1635
+  trial_exclusion:
+    - 1610
+    - 1725
+  origin_unix_seconds: 1771495695.8887594
+  time_scale_seconds: 2.4710400104522705
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 1629
+      - 1648
+    -
+      - 1675
+      - 1689
+    -
+      - 1966
+      - 1980
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 1610
+        - 1706
+      confirmation:
+        - 1706
+        - 1713
+      examined:
+        - 1392
+        - 1880
+      scale: 1.207308144631786e-06
+      cubic:
+        - -6.4975202438105986e-06
+        - 9.016786005372842e-06
+        - -2.069755200326871e-06
+        - 5.183945203409226e-06
+      cubic_with_offset:
+        - -4.4497806781769415e-06
+        - 1.4331126761940118e-05
+        - -2.151650923356475e-06
+        - 1.0590096429707508e-06
+      offset: -4.059322038848818e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 1366
+            - 1610
+        - usable: 241
+          rows:
+            - 1725
+            - 1966
+      usable_peers: 422
+      strongest_peer_channel: 3
+      strongest_level_correlation: 0.9803595230501094
+      strongest_difference_correlation: 0.756840301659937
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 1669
+        - 1880
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 1392
+        - 1880
+      scale: 1.0268420704173672e-06
+      cubic:
+        - 0.00010512532446226787
+        - -6.369622198229921e-06
+        - -4.560089246399398e-06
+        - 1.560577093715651e-05
+      cubic_with_offset:
+        - 0.00011489790158838645
+        - 1.6852910181201235e-05
+        - -5.81679653333349e-06
+        - -1.9381265842148906e-06
+      offset: -1.8072273249679518e-05
+      fit_support:
+        - usable: 244
+          rows:
+            - 1366
+            - 1610
+        - usable: 241
+          rows:
+            - 1725
+            - 1966
+      usable_peers: 422
+      strongest_peer_channel: 1
+      strongest_level_correlation: 0.9643262585411052
+      strongest_difference_correlation: 0.6263992615532579
+- event: 34
+  channel: 5
+  detector: 5
+  seed_earlier_row: 1972
+  trial_exclusion:
+    - 1938
+    - 2075
+  origin_unix_seconds: 1771495698.6658473
+  time_scale_seconds: 2.5611519813537598
+  review_disposition: 0
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 1966
+      - 2003
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 1942
+        - 1996
+      confirmation:
+        - 1996
+        - 2003
+      examined:
+        - 1729
+        - 2217
+      scale: 1.3240672142539934e-06
+      cubic:
+        - -9.643183301830151e-06
+        - -2.1244937133469182e-05
+        - -2.8084268078958225e-06
+        - 1.2635962999851135e-05
+      cubic_with_offset:
+        - 1.861978432572506e-06
+        - 5.802184824347248e-06
+        - -3.41854742232633e-06
+        - -6.367403688181098e-06
+      offset: -2.1993048129426915e-05
+      fit_support:
+        - usable: 244
+          rows:
+            - 1694
+            - 1938
+        - usable: 244
+          rows:
+            - 2075
+            - 2319
+      usable_peers: 422
+      strongest_peer_channel: 3
+      strongest_level_correlation: 0.9869055571369623
+      strongest_difference_correlation: 0.6947155988432491
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 1938
+        - 2054
+      confirmation:
+        - 2054
+        - 2061
+      examined:
+        - 1729
+        - 2217
+      scale: 1.125093792510518e-06
+      cubic:
+        - 0.00010209692295416876
+        - -5.877845536890371e-06
+        - -4.946671423006679e-06
+        - 3.525771218109787e-07
+      cubic_with_offset:
+        - 0.00010368050763271955
+        - -1.871508214383919e-06
+        - -4.873050703191078e-06
+        - -2.4760237947711348e-06
+      offset: -3.237270895116092e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 1694
+            - 1938
+        - usable: 244
+          rows:
+            - 2075
+            - 2319
+      usable_peers: 422
+      strongest_peer_channel: 1
+      strongest_level_correlation: 0.9636276526552934
+      strongest_difference_correlation: 0.515035472702216
+- event: 35
+  channel: 5
+  detector: 5
+  seed_earlier_row: 2996
+  trial_exclusion:
+    - 2990
+    - 3004
+  origin_unix_seconds: 1771495706.7800233
+  time_scale_seconds: 2.0573439598083496
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 2990
+      - 3020
+    -
+      - 3023
+      - 3080
+    -
+      - 3093
+      - 3133
+    -
+      - 3152
+      - 3194
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 2997
+        - 3241
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 2753
+        - 3241
+      scale: 1.2176516097952522e-06
+      cubic:
+        - -4.271313640490983e-06
+        - 2.8072393971034583e-05
+        - -1.407277904131217e-05
+        - -2.5086081025943083e-05
+      cubic_with_offset:
+        - -7.248755123770893e-06
+        - 1.7998393966437923e-05
+        - -1.803612535363547e-05
+        - -2.0665290199148243e-05
+      offset: 1.1699360404494847e-05
+      fit_support:
+        - usable: 244
+          rows:
+            - 2746
+            - 2990
+        - usable: 89
+          rows:
+            - 3020
+            - 3248
+      usable_peers: 422
+      strongest_peer_channel: 1
+      strongest_level_correlation: 0.9848296274805933
+      strongest_difference_correlation: 0.8728711103977743
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 3043
+        - 3241
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 2753
+        - 3241
+      scale: 1.0122046927627596e-06
+      cubic:
+        - 0.00011479566316226748
+        - 2.1160596251195374e-05
+        - -1.2585897056064551e-05
+        - -1.3630528077917186e-05
+      cubic_with_offset:
+        - 0.00011676608145161524
+        - 2.818241585088732e-05
+        - -9.638664387464503e-06
+        - -1.6635503530393524e-05
+      offset: -8.176124311663883e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 2746
+            - 2990
+        - usable: 89
+          rows:
+            - 3020
+            - 3248
+      usable_peers: 422
+      strongest_peer_channel: 3
+      strongest_level_correlation: 0.9755698027738727
+      strongest_difference_correlation: 0.7564765035139919
+- event: 36
+  channel: 5
+  detector: 5
+  seed_earlier_row: 5016
+  trial_exclusion:
+    - 5010
+    - 5024
+  origin_unix_seconds: 1771495723.3278632
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: true
+  neighbor_exclusions:
+    -
+      - 5010
+      - 5024
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 5017
+        - 5261
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 4773
+        - 5261
+      scale: 6.944984373891307e-07
+      cubic:
+        - -3.275186526012347e-05
+        - -1.7141689205998994e-05
+        - -7.834114969697656e-07
+        - 1.2485814274907784e-05
+      cubic_with_offset:
+        - -2.5945082043463548e-05
+        - 6.061610106989805e-07
+        - -5.271103360618903e-07
+        - -4.779046136835905e-07
+      offset: -1.3772764282018349e-05
+      fit_support:
+        - usable: 243
+          rows:
+            - 4766
+            - 5009
+        - usable: 244
+          rows:
+            - 5024
+            - 5268
+      usable_peers: 422
+      strongest_peer_channel: 3
+      strongest_level_correlation: 0.9741014665922928
+      strongest_difference_correlation: 0.2203824729344478
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 5017
+        - 5261
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 4773
+        - 5261
+      scale: 6.531691553835185e-07
+      cubic:
+        - 9.323082314449769e-05
+        - 3.7027853656929425e-06
+        - 1.5125433044166147e-06
+        - -2.4565928961079696e-06
+      cubic_with_offset:
+        - 9.149874571470353e-05
+        - -1.3072366182028608e-06
+        - 1.3469009485699717e-06
+        - 1.3374719303702819e-06
+      offset: 3.6428611876148153e-06
+      fit_support:
+        - usable: 243
+          rows:
+            - 4766
+            - 5009
+        - usable: 244
+          rows:
+            - 5024
+            - 5268
+      usable_peers: 422
+      strongest_peer_channel: 8
+      strongest_level_correlation: -0.8517520296474798
+      strongest_difference_correlation: 0.11593704866533955
+- event: 37
+  channel: 6
+  detector: 6
+  seed_earlier_row: 1643
+  trial_exclusion:
+    - 1637
+    - 1651
+  origin_unix_seconds: 1771495695.6962473
+  time_scale_seconds: 2.0573439598083496
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: true
+  neighbor_exclusions:
+    -
+      - 1637
+      - 1651
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 1628
+        - 1888
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 1400
+        - 1888
+      scale: 2.0167361542642452e-06
+      cubic:
+        - 1.0770611400593626e-05
+        - 1.599951250408116e-05
+        - -1.0228631545221212e-05
+        - -6.727440838793756e-06
+      cubic_with_offset:
+        - 4.7982315283537515e-06
+        - -2.862189123114357e-06
+        - -1.2034115203656909e-05
+        - 8.059476338706359e-06
+      offset: 1.3912948177524463e-05
+      fit_support:
+        - usable: 244
+          rows:
+            - 1393
+            - 1637
+        - usable: 244
+          rows:
+            - 1651
+            - 1895
+      usable_peers: 422
+      strongest_peer_channel: 5
+      strongest_level_correlation: 0.9672081907021371
+      strongest_difference_correlation: 0.5615213905360372
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 1630
+        - 1667
+      confirmation:
+        - 1667
+        - 1674
+      examined:
+        - 1400
+        - 1888
+      scale: 1.994197716544885e-06
+      cubic:
+        - 0.0001432271953829335
+        - -3.5889254536099657e-06
+        - -1.5713608533723497e-05
+        - 1.4798275794784169e-05
+      cubic_with_offset:
+        - 0.00014650841926669607
+        - 6.317526039628596e-06
+        - -1.5224596008587131e-05
+        - 6.7910567452287245e-06
+      offset: -7.042918786148429e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 1393
+            - 1637
+        - usable: 244
+          rows:
+            - 1651
+            - 1895
+      usable_peers: 422
+      strongest_peer_channel: 1
+      strongest_level_correlation: 0.9522294617233739
+      strongest_difference_correlation: 0.5225920382174619
+- event: 38
+  channel: 6
+  detector: 6
+  seed_earlier_row: 1978
+  trial_exclusion:
+    - 1972
+    - 1986
+  origin_unix_seconds: 1771495698.4405675
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 1972
+      - 1999
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 1979
+        - 2223
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 1735
+        - 2223
+      scale: 2.2463660922814903e-06
+      cubic:
+        - 8.364770653352495e-06
+        - -2.2558457430934148e-05
+        - -9.399523446008358e-06
+        - 1.4129479204506844e-05
+      cubic_with_offset:
+        - 1.7601113762661844e-05
+        - 1.3990966634519738e-06
+        - -9.48252432521801e-06
+        - -4.037093137019515e-06
+      offset: -1.8024547693381298e-05
+      fit_support:
+        - usable: 244
+          rows:
+            - 1728
+            - 1972
+        - usable: 231
+          rows:
+            - 1999
+            - 2230
+      usable_peers: 422
+      strongest_peer_channel: 1
+      strongest_level_correlation: 0.9729105917548388
+      strongest_difference_correlation: 0.5516320858254686
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 1949
+        - 2052
+      confirmation:
+        - 2052
+        - 2059
+      examined:
+        - 1735
+        - 2223
+      scale: 2.2036337103789613e-06
+      cubic:
+        - 0.00014120943944744867
+        - -7.28055833952173e-06
+        - -1.6018467389943817e-05
+        - -3.1631206404334186e-07
+      cubic_with_offset:
+        - 0.0001397111217397589
+        - -1.1687528951822682e-05
+        - -1.6253693080292524e-05
+        - 3.120881366143626e-06
+      offset: 3.2678851728373066e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 1728
+            - 1972
+        - usable: 231
+          rows:
+            - 1999
+            - 2230
+      usable_peers: 422
+      strongest_peer_channel: 1
+      strongest_level_correlation: 0.9681633332800887
+      strongest_difference_correlation: 0.5018520532391021
+- event: 39
+  channel: 6
+  detector: 6
+  seed_earlier_row: 3008
+  trial_exclusion:
+    - 3002
+    - 3016
+  origin_unix_seconds: 1771495706.8783274
+  time_scale_seconds: 2.0573439598083496
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 3002
+      - 3041
+    -
+      - 3047
+      - 3074
+    -
+      - 3094
+      - 3130
+    -
+      - 3152
+      - 3185
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 3009
+        - 3253
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 2765
+        - 3253
+      scale: 1.8847385088542917e-06
+      cubic:
+        - 7.65668286434134e-06
+        - 2.8918598118916022e-05
+        - -1.4782970747856264e-05
+        - -3.0182892864141878e-05
+      cubic_with_offset:
+        - 2.596687374489129e-06
+        - 1.1813918153893696e-05
+        - -1.989382977818638e-05
+        - -2.0660723606331472e-05
+      offset: 1.7098296667934798e-05
+      fit_support:
+        - usable: 244
+          rows:
+            - 2758
+            - 3002
+        - usable: 123
+          rows:
+            - 3041
+            - 3260
+      usable_peers: 422
+      strongest_peer_channel: 1
+      strongest_level_correlation: 0.9663830705640297
+      strongest_difference_correlation: 0.8034852614462522
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 3064
+        - 3253
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 2765
+        - 3253
+      scale: 1.805632495416061e-06
+      cubic:
+        - 0.00015180992354177488
+        - 3.2287185309179186e-05
+        - -2.2786028215944245e-05
+        - -2.4717390736324844e-05
+      cubic_with_offset:
+        - 0.00015366596006931044
+        - 3.8146526861192725e-05
+        - -2.162260205615361e-05
+        - -2.836609963377769e-05
+      offset: -5.228265478749697e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 2758
+            - 3002
+        - usable: 123
+          rows:
+            - 3041
+            - 3260
+      usable_peers: 422
+      strongest_peer_channel: 1
+      strongest_level_correlation: 0.975225865996073
+      strongest_difference_correlation: 0.6426191718239522
+- event: 40
+  channel: 7
+  detector: 7
+  seed_earlier_row: 812
+  trial_exclusion:
+    - 806
+    - 820
+  origin_unix_seconds: 1771495688.8886952
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 0
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 806
+      - 820
+    -
+      - 844
+      - 869
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 809
+        - 814
+      confirmation:
+        - 814
+        - 821
+      examined:
+        - 569
+        - 1057
+      scale: 1.469772387167649e-06
+      cubic:
+        - 1.930623024216206e-05
+        - -8.597325108433482e-06
+        - -6.407551327420213e-06
+        - 7.17711740578426e-06
+      cubic_with_offset:
+        - 2.149403576718966e-05
+        - -2.4780803583595635e-06
+        - -6.1713458121576865e-06
+        - 2.6513943139929367e-06
+      offset: -4.63854948093709e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 562
+            - 806
+        - usable: 219
+          rows:
+            - 820
+            - 1064
+      usable_peers: 423
+      strongest_peer_channel: 1
+      strongest_level_correlation: 0.7857744395535154
+      strongest_difference_correlation: 0.37080775925082676
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 801
+        - 813
+      confirmation:
+        - 813
+        - 820
+      examined:
+        - 569
+        - 1057
+      scale: 1.888004437866771e-06
+      cubic:
+        - 0.0001250215495774831
+        - -1.7855919989053377e-05
+        - -3.384621877721228e-05
+        - 1.9028026300475037e-05
+      cubic_with_offset:
+        - 0.00013780028195525834
+        - 2.1532019938700586e-05
+        - -3.26715717745263e-05
+        - -1.4545630615133438e-05
+      offset: -2.6985817558551345e-05
+      fit_support:
+        - usable: 244
+          rows:
+            - 562
+            - 806
+        - usable: 219
+          rows:
+            - 820
+            - 1064
+      usable_peers: 423
+      strongest_peer_channel: 6
+      strongest_level_correlation: 0.9780100958148458
+      strongest_difference_correlation: 0.5792077011539077
+- event: 41
+  channel: 7
+  detector: 7
+  seed_earlier_row: 850
+  trial_exclusion:
+    - 844
+    - 858
+  origin_unix_seconds: 1771495689.1999912
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 806
+      - 820
+    -
+      - 844
+      - 869
+  coordinates:
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 838
+        - 871
+      confirmation:
+        - 871
+        - 878
+      examined:
+        - 607
+        - 1095
+      scale: 1.6356231887874566e-06
+      cubic:
+        - 1.8513275954338824e-05
+        - -1.0312400819280522e-05
+        - -5.5939787736318986e-06
+        - 7.009666119568677e-06
+      cubic_with_offset:
+        - 2.010961810566272e-05
+        - -6.392578548770169e-06
+        - -5.819096267744534e-06
+        - 4.0556465097230026e-06
+      offset: -2.955659514701874e-06
+      fit_support:
+        - usable: 229
+          rows:
+            - 600
+            - 843
+        - usable: 233
+          rows:
+            - 869
+            - 1102
+      usable_peers: 423
+      strongest_peer_channel: 1
+      strongest_level_correlation: 0.8338274521499103
+      strongest_difference_correlation: 0.37151848617965344
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 846
+        - 1095
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 607
+        - 1095
+      scale: 2.0448532177698595e-06
+      cubic:
+        - 0.00012332387581277763
+        - -3.6463151093339114e-05
+        - -2.933830302711702e-05
+        - 4.058678696971094e-05
+      cubic_with_offset:
+        - 0.00013552110006897767
+        - -8.685990149326757e-06
+        - -3.1874203756581194e-05
+        - 1.960726187606704e-05
+      offset: -2.1485858777355392e-05
+      fit_support:
+        - usable: 229
+          rows:
+            - 600
+            - 843
+        - usable: 233
+          rows:
+            - 869
+            - 1102
+      usable_peers: 423
+      strongest_peer_channel: 6
+      strongest_level_correlation: 0.9796598698851591
+      strongest_difference_correlation: 0.5859380322494617
+- event: 42
+  channel: 7
+  detector: 7
+  seed_earlier_row: 1631
+  trial_exclusion:
+    - 1484
+    - 1774
+  origin_unix_seconds: 1771495695.5733674
+  time_scale_seconds: 3.187839984893799
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 1625
+      - 1670
+    -
+      - 1966
+      - 2000
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 1624
+        - 1876
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 1388
+        - 1876
+      scale: 8.777533946482701e-07
+      cubic:
+        - 1.4617481295988333e-05
+        - 1.555554281806795e-05
+        - 1.3581233034849318e-07
+        - -8.847092507950739e-06
+      cubic_with_offset:
+        - 1.0346026693196634e-05
+        - 6.240635175519312e-06
+        - 9.800646463995304e-07
+        - -2.2349416202363567e-06
+      offset: 7.946046645892318e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 1240
+            - 1484
+        - usable: 210
+          rows:
+            - 1774
+            - 2018
+      usable_peers: 423
+      strongest_peer_channel: 6
+      strongest_level_correlation: 0.8056887923010669
+      strongest_difference_correlation: 0.41212831462612515
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 1492
+        - 1708
+      confirmation:
+        - 1708
+        - 1715
+      examined:
+        - 1388
+        - 1876
+      scale: 1.1296258645888812e-06
+      cubic:
+        - 0.00010354279972350581
+        - 1.8551644942385907e-05
+        - 7.936450519973654e-06
+        - -3.949167081824915e-07
+      cubic_with_offset:
+        - 0.0001097561522436459
+        - 3.215228508787672e-05
+        - 7.413952020761703e-06
+        - -9.301308662798828e-06
+      offset: -1.1929280972914672e-05
+      fit_support:
+        - usable: 244
+          rows:
+            - 1240
+            - 1484
+        - usable: 210
+          rows:
+            - 1774
+            - 2018
+      usable_peers: 423
+      strongest_peer_channel: 6
+      strongest_level_correlation: 0.9396321420634292
+      strongest_difference_correlation: 0.5912957137709892
+- event: 43
+  channel: 7
+  detector: 7
+  seed_earlier_row: 1972
+  trial_exclusion:
+    - 1932
+    - 2034
+  origin_unix_seconds: 1771495698.4733353
+  time_scale_seconds: 2.4177920818328857
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 1966
+      - 2000
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 1973
+        - 2217
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 1729
+        - 2217
+      scale: 1.3019667469256847e-06
+      cubic:
+        - 1.3741976877246415e-05
+        - -1.7266952198155695e-05
+        - 1.5184885585475233e-06
+        - 1.0342335037970429e-05
+      cubic_with_offset:
+        - 2.296668847439993e-05
+        - 4.945851103391836e-06
+        - 9.131182136504461e-07
+        - -5.386268718917207e-06
+      offset: -1.76561727253464e-05
+      fit_support:
+        - usable: 244
+          rows:
+            - 1688
+            - 1932
+        - usable: 244
+          rows:
+            - 2034
+            - 2278
+      usable_peers: 423
+      strongest_peer_channel: 300
+      strongest_level_correlation: -0.9504398793319782
+      strongest_difference_correlation: 0.017300074244536594
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 1932
+        - 2014
+      confirmation:
+        - 2014
+        - 2021
+      examined:
+        - 1729
+        - 2217
+      scale: 2.136184870726248e-06
+      cubic:
+        - 0.00010986751742354925
+        - -2.0220391739135884e-05
+        - -9.653094166167213e-06
+        - 7.243167088913243e-06
+      cubic_with_offset:
+        - 0.00011662079745156183
+        - -2.4346796630478703e-06
+        - -8.968109984391531e-06
+        - -5.866373862499666e-06
+      offset: -1.4036124374342635e-05
+      fit_support:
+        - usable: 244
+          rows:
+            - 1688
+            - 1932
+        - usable: 244
+          rows:
+            - 2034
+            - 2278
+      usable_peers: 423
+      strongest_peer_channel: 6
+      strongest_level_correlation: 0.9484331128155966
+      strongest_difference_correlation: 0.4891560751653027
+- event: 44
+  channel: 7
+  detector: 7
+  seed_earlier_row: 2977
+  trial_exclusion:
+    - 2971
+    - 2985
+  origin_unix_seconds: 1771495706.6243753
+  time_scale_seconds: 2.0573439598083496
+  review_disposition: 2
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 2971
+      - 3194
+    -
+      - 3216
+      - 3235
+  coordinates:
+    - seeded: false
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 244
+          rows:
+            - 2727
+            - 2971
+        - usable: 22
+          rows:
+            - 3194
+            - 3216
+      usable_peers: 423
+      strongest_peer_channel: 6
+      strongest_level_correlation: 0.7173657858849425
+      strongest_difference_correlation: 0.7572644440325457
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 244
+          rows:
+            - 2727
+            - 2971
+        - usable: 22
+          rows:
+            - 3194
+            - 3216
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9843439301508012
+      strongest_difference_correlation: 0.776455627552729
+- event: 45
+  channel: 7
+  detector: 7
+  seed_earlier_row: 2984
+  trial_exclusion:
+    - 2978
+    - 2992
+  origin_unix_seconds: 1771495706.6817193
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 2
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 2971
+      - 3194
+    -
+      - 3216
+      - 3235
+  coordinates:
+    - seeded: false
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 237
+          rows:
+            - 2734
+            - 2971
+        - usable: 23
+          rows:
+            - 3194
+            - 3236
+      usable_peers: 423
+      strongest_peer_channel: 6
+      strongest_level_correlation: 0.72057326111266
+      strongest_difference_correlation: 0.7545268990337242
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 237
+          rows:
+            - 2734
+            - 2971
+        - usable: 23
+          rows:
+            - 3194
+            - 3236
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9837804116113658
+      strongest_difference_correlation: 0.7801451882393362
+- event: 46
+  channel: 7
+  detector: 7
+  seed_earlier_row: 2995
+  trial_exclusion:
+    - 2989
+    - 3003
+  origin_unix_seconds: 1771495706.7718315
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 2
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 2971
+      - 3194
+    -
+      - 3216
+      - 3235
+  coordinates:
+    - seeded: false
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 226
+          rows:
+            - 2745
+            - 2971
+        - usable: 34
+          rows:
+            - 3194
+            - 3247
+      usable_peers: 423
+      strongest_peer_channel: 6
+      strongest_level_correlation: 0.7269822927952198
+      strongest_difference_correlation: 0.7523427602916702
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 226
+          rows:
+            - 2745
+            - 2971
+        - usable: 34
+          rows:
+            - 3194
+            - 3247
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9829146797085708
+      strongest_difference_correlation: 0.7822300042109324
+- event: 47
+  channel: 7
+  detector: 7
+  seed_earlier_row: 3003
+  trial_exclusion:
+    - 2997
+    - 3011
+  origin_unix_seconds: 1771495706.8373675
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 2
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 2971
+      - 3194
+    -
+      - 3216
+      - 3235
+  coordinates:
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 218
+          rows:
+            - 2753
+            - 2971
+        - usable: 42
+          rows:
+            - 3194
+            - 3255
+      usable_peers: 423
+      strongest_peer_channel: 6
+      strongest_level_correlation: 0.7348630985325588
+      strongest_difference_correlation: 0.751359351019646
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 218
+          rows:
+            - 2753
+            - 2971
+        - usable: 42
+          rows:
+            - 3194
+            - 3255
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.982366918058862
+      strongest_difference_correlation: 0.7841034009998924
+- event: 48
+  channel: 7
+  detector: 7
+  seed_earlier_row: 3011
+  trial_exclusion:
+    - 3005
+    - 3019
+  origin_unix_seconds: 1771495706.9029036
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 2
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 2971
+      - 3194
+    -
+      - 3216
+      - 3235
+  coordinates:
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 210
+          rows:
+            - 2761
+            - 2971
+        - usable: 50
+          rows:
+            - 3194
+            - 3263
+      usable_peers: 423
+      strongest_peer_channel: 6
+      strongest_level_correlation: 0.7413663361451917
+      strongest_difference_correlation: 0.7488679164999041
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 210
+          rows:
+            - 2761
+            - 2971
+        - usable: 50
+          rows:
+            - 3194
+            - 3263
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9817582174999363
+      strongest_difference_correlation: 0.7849011859297393
+- event: 49
+  channel: 7
+  detector: 7
+  seed_earlier_row: 3018
+  trial_exclusion:
+    - 3012
+    - 3026
+  origin_unix_seconds: 1771495706.9602475
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 2
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 2971
+      - 3194
+    -
+      - 3216
+      - 3235
+  coordinates:
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 203
+          rows:
+            - 2768
+            - 2971
+        - usable: 57
+          rows:
+            - 3194
+            - 3270
+      usable_peers: 423
+      strongest_peer_channel: 6
+      strongest_level_correlation: 0.7484970054636383
+      strongest_difference_correlation: 0.7484970381336729
+    - seeded: false
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 203
+          rows:
+            - 2768
+            - 2971
+        - usable: 57
+          rows:
+            - 3194
+            - 3270
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9811955718034739
+      strongest_difference_correlation: 0.7856206680235092
+- event: 50
+  channel: 7
+  detector: 7
+  seed_earlier_row: 3025
+  trial_exclusion:
+    - 2973
+    - 3235
+  origin_unix_seconds: 1771495707.6565673
+  time_scale_seconds: 3.0731520652770996
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 2971
+      - 3194
+    -
+      - 3216
+      - 3235
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 3009
+        - 3270
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 2782
+        - 3270
+      scale: 1.0277568780784814e-06
+      cubic:
+        - 2.3549617568280176e-06
+        - -1.189805794784152e-06
+        - 2.918390061466601e-06
+        - 4.267020594416511e-07
+      cubic_with_offset:
+        - -1.7023974298682222e-07
+        - -6.767210594116167e-06
+        - 2.9779527604999026e-06
+        - 3.918911260606923e-06
+      offset: 4.9711066331627595e-06
+      fit_support:
+        - usable: 242
+          rows:
+            - 2729
+            - 2971
+        - usable: 244
+          rows:
+            - 3235
+            - 3479
+      usable_peers: 423
+      strongest_peer_channel: 6
+      strongest_level_correlation: 0.7541743349412295
+      strongest_difference_correlation: 0.747827912955087
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 2948
+        - 3270
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 2782
+        - 3270
+      scale: 1.4376988477349325e-06
+      cubic:
+        - 0.00010794552208253225
+        - -5.902763586032973e-06
+        - -2.3803486477143764e-05
+        - 7.582243032992871e-06
+      cubic_with_offset:
+        - 0.0001148349330590508
+        - 9.699723962715207e-06
+        - -2.3486374133364993e-05
+        - -2.2640886173490552e-06
+      offset: -1.4123016182895527e-05
+      fit_support:
+        - usable: 242
+          rows:
+            - 2729
+            - 2971
+        - usable: 244
+          rows:
+            - 3235
+            - 3479
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9807062397516548
+      strongest_difference_correlation: 0.7857397041224068
+- event: 51
+  channel: 7
+  detector: 7
+  seed_earlier_row: 5016
+  trial_exclusion:
+    - 5010
+    - 5024
+  origin_unix_seconds: 1771495723.3278632
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: true
+  neighbor_exclusions:
+    -
+      - 5010
+      - 5024
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 5017
+        - 5261
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 4773
+        - 5261
+      scale: 8.206390311793513e-07
+      cubic:
+        - -1.992306934131731e-06
+        - -1.4569692274467085e-05
+        - -9.126671608173951e-07
+        - 9.554105085016984e-06
+      cubic_with_offset:
+        - 3.8450397077408554e-06
+        - 1.1533953601146844e-07
+        - -1.196210614519771e-06
+        - -1.0553314488020013e-06
+      offset: -1.1352593962765123e-05
+      fit_support:
+        - usable: 243
+          rows:
+            - 4766
+            - 5009
+        - usable: 244
+          rows:
+            - 5024
+            - 5268
+      usable_peers: 423
+      strongest_peer_channel: 5
+      strongest_level_correlation: 0.9858743967727174
+      strongest_difference_correlation: 0.1379094874677561
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 5017
+        - 5261
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 4773
+        - 5261
+      scale: 5.154989960233596e-07
+      cubic:
+        - 8.342510739416269e-05
+        - -5.126328461408969e-06
+        - 5.544695108856311e-07
+        - 4.181481671847332e-06
+      cubic_with_offset:
+        - 8.516206045089426e-05
+        - -5.660896029462928e-07
+        - 4.780947275627715e-07
+        - 7.526022901019503e-07
+      offset: -3.383902538145129e-06
+      fit_support:
+        - usable: 243
+          rows:
+            - 4766
+            - 5009
+        - usable: 244
+          rows:
+            - 5024
+            - 5268
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9485780784895448
+      strongest_difference_correlation: 0.278996182873878
+- event: 52
+  channel: 8
+  detector: 8
+  seed_earlier_row: 1635
+  trial_exclusion:
+    - 1629
+    - 1643
+  origin_unix_seconds: 1771495695.6307116
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 1629
+      - 1644
+  coordinates:
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 1622
+        - 1663
+      confirmation:
+        - 1663
+        - 1670
+      examined:
+        - 1392
+        - 1880
+      scale: 7.034075348789582e-07
+      cubic:
+        - -1.4383331543854265e-05
+        - 2.654283395936589e-06
+        - 4.583995066140729e-06
+        - -4.9653104120572745e-06
+      cubic_with_offset:
+        - -1.5560866151070124e-05
+        - -6.989116504785002e-07
+        - 4.4043466138083124e-06
+        - -2.3986822962159745e-06
+      offset: 2.523158951445563e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 1385
+            - 1629
+        - usable: 243
+          rows:
+            - 1644
+            - 1887
+      usable_peers: 422
+      strongest_peer_channel: 11
+      strongest_level_correlation: 0.9109508420933876
+      strongest_difference_correlation: 0.44263393372088267
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 1608
+        - 1880
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 1392
+        - 1880
+      scale: 7.150060069107875e-07
+      cubic:
+        - 0.00011166700743523017
+        - 8.08842300740182e-06
+        - -5.738374438914742e-06
+        - -2.7800044899621745e-06
+      cubic_with_offset:
+        - 0.00010944873869937122
+        - 6.416722023991566e-07
+        - -6.483190289776488e-06
+        - 3.2225644751063707e-06
+      offset: 5.3969048929379e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 1385
+            - 1629
+        - usable: 243
+          rows:
+            - 1644
+            - 1887
+      usable_peers: 422
+      strongest_peer_channel: 11
+      strongest_level_correlation: 0.9735673672635382
+      strongest_difference_correlation: 0.5875019649221619
+- event: 53
+  channel: 8
+  detector: 8
+  seed_earlier_row: 1984
+  trial_exclusion:
+    - 1896
+    - 2010
+  origin_unix_seconds: 1771495698.2275753
+  time_scale_seconds: 2.4669439792633057
+  review_disposition: 0
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 1978
+      - 1999
+  coordinates:
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 1928
+        - 2062
+      confirmation:
+        - 2062
+        - 2069
+      examined:
+        - 1741
+        - 2229
+      scale: 8.600188271509138e-07
+      cubic:
+        - -1.2054880379054014e-05
+        - -1.7806096158898418e-06
+        - 1.9672568709703918e-07
+        - 5.995116180318163e-06
+      cubic_with_offset:
+        - -1.1080503379039997e-05
+        - 1.0343123377839129e-06
+        - 4.270242475749758e-07
+        - 3.879051418616329e-06
+      offset: -2.2148211377113424e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 1652
+            - 1896
+        - usable: 244
+          rows:
+            - 2010
+            - 2254
+      usable_peers: 422
+      strongest_peer_channel: 11
+      strongest_level_correlation: 0.9338154906428706
+      strongest_difference_correlation: 0.35517051058323673
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 1896
+        - 2006
+      confirmation:
+        - 2006
+        - 2013
+      examined:
+        - 1741
+        - 2229
+      scale: 7.97842794763916e-07
+      cubic:
+        - 0.00010919051502399265
+        - -8.968065887588711e-06
+        - -1.6463760048450918e-06
+        - 8.817552612705625e-08
+      cubic_with_offset:
+        - 0.00010989573750123394
+        - -7.151127609060481e-06
+        - -1.629490292452491e-06
+        - -1.2226878635238669e-06
+      offset: -1.4425236449833273e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 1652
+            - 1896
+        - usable: 244
+          rows:
+            - 2010
+            - 2254
+      usable_peers: 422
+      strongest_peer_channel: 11
+      strongest_level_correlation: 0.9850106633610631
+      strongest_difference_correlation: 0.6934622591158799
+- event: 54
+  channel: 8
+  detector: 8
+  seed_earlier_row: 3008
+  trial_exclusion:
+    - 2967
+    - 3232
+  origin_unix_seconds: 1771495707.6197033
+  time_scale_seconds: 3.085440158843994
+  review_disposition: 0
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 3002
+      - 3041
+    -
+      - 3051
+      - 3090
+    -
+      - 3103
+      - 3129
+    -
+      - 3152
+      - 3186
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 3062
+        - 3122
+      confirmation:
+        - 3122
+        - 3129
+      examined:
+        - 2765
+        - 3253
+      scale: 8.491962547859723e-07
+      cubic:
+        - -1.3736416771730173e-05
+        - 1.4125044340720876e-06
+        - 7.491909568168231e-06
+        - -2.158147455307348e-06
+      cubic_with_offset:
+        - -1.7564169573493092e-05
+        - -7.186628826376364e-06
+        - 7.452293958976168e-06
+        - 3.292538592297628e-06
+      offset: 7.646492521115344e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 2723
+            - 2967
+        - usable: 244
+          rows:
+            - 3232
+            - 3476
+      usable_peers: 422
+      strongest_peer_channel: 11
+      strongest_level_correlation: 0.9469883411393718
+      strongest_difference_correlation: 0.6528052001265208
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 2967
+        - 3212
+      confirmation:
+        - 3212
+        - 3219
+      examined:
+        - 2765
+        - 3253
+      scale: 6.108247944125956e-07
+      cubic:
+        - 0.00010503084382012403
+        - -2.1555542665788213e-06
+        - -8.608473946991173e-06
+        - 2.376395681859886e-06
+      cubic_with_offset:
+        - 0.0001071908925687997
+        - 2.805562951313053e-06
+        - -8.513584446522373e-06
+        - -7.899809165796459e-07
+      offset: -4.427299338477404e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 2723
+            - 2967
+        - usable: 244
+          rows:
+            - 3232
+            - 3476
+      usable_peers: 422
+      strongest_peer_channel: 11
+      strongest_level_correlation: 0.9854911129655824
+      strongest_difference_correlation: 0.8377054181555557
+- event: 55
+  channel: 9
+  detector: 9
+  seed_earlier_row: 1636
+  trial_exclusion:
+    - 1614
+    - 1725
+  origin_unix_seconds: 1771495695.9051433
+  time_scale_seconds: 2.4546561241149902
+  review_disposition: 0
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 1630
+      - 1644
+  coordinates:
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 1632
+        - 1637
+      confirmation:
+        - 1637
+        - 1644
+      examined:
+        - 1393
+        - 1881
+      scale: 5.179727850183824e-07
+      cubic:
+        - -1.3850375098178737e-06
+        - 4.717545875691586e-06
+        - 5.63447147739789e-07
+        - -5.6383825969570524e-06
+      cubic_with_offset:
+        - -4.592790113381665e-06
+        - -2.855652639825968e-06
+        - 1.0066033389449735e-06
+        - -4.944906034330551e-08
+      offset: 5.9346244289062e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 1370
+            - 1614
+        - usable: 244
+          rows:
+            - 1725
+            - 1969
+      usable_peers: 423
+      strongest_peer_channel: 12
+      strongest_level_correlation: 0.754797946909829
+      strongest_difference_correlation: 0.18992249981556777
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 1628
+        - 1697
+      confirmation:
+        - 1697
+        - 1704
+      examined:
+        - 1393
+        - 1881
+      scale: 7.189664722757851e-07
+      cubic:
+        - 9.492196057117387e-05
+        - 2.171177684721215e-06
+        - -1.696586075194167e-06
+        - 5.41872165606489e-06
+      cubic_with_offset:
+        - 9.701298503679042e-05
+        - 7.603026358206137e-06
+        - -1.8081353797965892e-06
+        - 1.1905732765951668e-06
+      offset: -4.116344007000809e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 1370
+            - 1614
+        - usable: 244
+          rows:
+            - 1725
+            - 1969
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9685104667932761
+      strongest_difference_correlation: 0.7595956078554558
+- event: 56
+  channel: 9
+  detector: 9
+  seed_earlier_row: 3059
+  trial_exclusion:
+    - 3053
+    - 3067
+  origin_unix_seconds: 1771495707.2961192
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 3053
+      - 3090
+    -
+      - 3103
+      - 3128
+    -
+      - 3159
+      - 3178
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 3050
+        - 3304
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 2816
+        - 3304
+      scale: 6.338979296670828e-07
+      cubic:
+        - -3.983813115589558e-06
+        - -6.10509929180884e-07
+        - 3.255004533525908e-06
+        - 1.867118024326468e-07
+      cubic_with_offset:
+        - -5.11271439668717e-06
+        - -4.232156091762313e-06
+        - 2.641954459239772e-06
+        - 2.5959857096844403e-06
+      offset: 3.0533979541736115e-06
+      fit_support:
+        - usable: 243
+          rows:
+            - 2809
+            - 3052
+        - usable: 177
+          rows:
+            - 3090
+            - 3311
+      usable_peers: 423
+      strongest_peer_channel: 12
+      strongest_level_correlation: 0.6927400566685782
+      strongest_difference_correlation: 0.46465203923422155
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 3171
+        - 3178
+      examined:
+        - 2816
+        - 3304
+      scale: 8.509610078115344e-07
+      cubic:
+        - 9.878205868739104e-05
+        - 6.583429021859083e-06
+        - -1.3210482604873521e-05
+        - -7.081688960801602e-06
+      cubic_with_offset:
+        - 9.9136019964157e-05
+        - 7.629938751891462e-06
+        - -1.310646080995537e-05
+        - -7.824981351269906e-06
+      offset: -8.442243826618822e-07
+      fit_support:
+        - usable: 243
+          rows:
+            - 2809
+            - 3052
+        - usable: 177
+          rows:
+            - 3090
+            - 3311
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9849442112982252
+      strongest_difference_correlation: 0.8500677357560286
+- event: 57
+  channel: 10
+  detector: 10
+  seed_earlier_row: 1641
+  trial_exclusion:
+    - 1616
+    - 1728
+  origin_unix_seconds: 1771495695.9256234
+  time_scale_seconds: 2.458752155303955
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: true
+  neighbor_exclusions:
+    -
+      - 1635
+      - 1651
+    -
+      - 1675
+      - 1697
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 1677
+        - 1886
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 1398
+        - 1886
+      scale: 1.6380426906722658e-06
+      cubic:
+        - -2.2453712764525207e-06
+        - 1.419650477756105e-05
+        - 1.4374239973782455e-07
+        - -2.420683625522277e-05
+      cubic_with_offset:
+        - -1.6168132065567905e-05
+        - -1.8446987448660605e-05
+        - 2.8523450569395367e-06
+        - 1.1221712444309269e-06
+      offset: 2.5129610370738123e-05
+      fit_support:
+        - usable: 243
+          rows:
+            - 1372
+            - 1615
+        - usable: 244
+          rows:
+            - 1728
+            - 1972
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9132594912915533
+      strongest_difference_correlation: 0.4618343354285582
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 1616
+        - 1720
+      confirmation:
+        - 1720
+        - 1727
+      examined:
+        - 1398
+        - 1886
+      scale: 1.96822970993842e-06
+      cubic:
+        - 0.00012364658438607823
+        - 1.0689375338807293e-05
+        - -2.81263727542031e-06
+        - 1.4186353017627039e-05
+      cubic_with_offset:
+        - 0.0001276113601713769
+        - 2.105046378504618e-05
+        - -2.879587224081075e-06
+        - 6.12870403724776e-06
+      offset: -7.898953923009976e-06
+      fit_support:
+        - usable: 243
+          rows:
+            - 1372
+            - 1615
+        - usable: 244
+          rows:
+            - 1728
+            - 1972
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9806700548325348
+      strongest_difference_correlation: 0.7203324533666636
+- event: 58
+  channel: 10
+  detector: 10
+  seed_earlier_row: 1984
+  trial_exclusion:
+    - 1924
+    - 2006
+  origin_unix_seconds: 1771495698.3258796
+  time_scale_seconds: 2.335872173309326
+  review_disposition: 0
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 1675
+      - 1697
+    -
+      - 1978
+      - 2000
+  coordinates:
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 1934
+        - 2229
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 1741
+        - 2229
+      scale: 2.182631007108401e-06
+      cubic:
+        - -2.4011077937002125e-06
+        - -6.150782870368577e-06
+        - 5.381707899648775e-06
+        - 9.828061374677548e-06
+      cubic_with_offset:
+        - 5.474247779773018e-06
+        - 1.815228786707691e-05
+        - 8.454901904487848e-06
+        - -9.192123840190057e-06
+      offset: -1.8604893421339317e-05
+      fit_support:
+        - usable: 227
+          rows:
+            - 1697
+            - 1924
+        - usable: 243
+          rows:
+            - 2007
+            - 2250
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9200563136523049
+      strongest_difference_correlation: 0.39532229891517023
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 1924
+        - 1999
+      confirmation:
+        - 1999
+        - 2006
+      examined:
+        - 1741
+        - 2229
+      scale: 2.841791401481457e-06
+      cubic:
+        - 0.00012390936381162585
+        - -2.57265463753524e-05
+        - -1.306770393100466e-05
+        - 1.0595474787209202e-05
+      cubic_with_offset:
+        - 0.00012508347824532386
+        - -2.2426907550866464e-05
+        - -1.285442316001232e-05
+        - 7.970437719709437e-06
+      offset: -2.47170993807425e-06
+      fit_support:
+        - usable: 227
+          rows:
+            - 1697
+            - 1924
+        - usable: 243
+          rows:
+            - 2007
+            - 2250
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9877803438359696
+      strongest_difference_correlation: 0.7839906517693477
+- event: 59
+  channel: 10
+  detector: 10
+  seed_earlier_row: 3008
+  trial_exclusion:
+    - 2940
+    - 3236
+  origin_unix_seconds: 1771495707.5254955
+  time_scale_seconds: 3.212416172027588
+  review_disposition: 0
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 3002
+      - 3016
+    -
+      - 3020
+      - 3128
+    -
+      - 3152
+      - 3186
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 2940
+        - 3236
+      confirmation:
+        - 3236
+        - 3243
+      examined:
+        - 2765
+        - 3253
+      scale: 1.1610605628770843e-06
+      cubic:
+        - -7.388653205824165e-06
+        - -1.11481084736249e-06
+        - 1.1713880840304809e-05
+        - 7.98803222765845e-07
+      cubic_with_offset:
+        - -8.693992026188148e-06
+        - -3.989784969952801e-06
+        - 1.1684413373351554e-05
+        - 2.5459465264195677e-06
+      offset: 2.650873356608144e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 2696
+            - 2940
+        - usable: 243
+          rows:
+            - 3237
+            - 3480
+      usable_peers: 423
+      strongest_peer_channel: 484
+      strongest_level_correlation: -0.9112461196761216
+      strongest_difference_correlation: -0.2805979689691067
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 2942
+        - 3212
+      confirmation:
+        - 3212
+        - 3219
+      examined:
+        - 2765
+        - 3253
+      scale: 1.505600726141456e-06
+      cubic:
+        - 0.0001100885967082846
+        - -9.356508728746929e-07
+        - -1.8968248168770532e-05
+        - 1.4024812380795083e-06
+      cubic_with_offset:
+        - 0.00011580471464042506
+        - 1.168196509099583e-05
+        - -1.8834845477342362e-05
+        - -6.305540174306004e-06
+      offset: -1.1617106146586952e-05
+      fit_support:
+        - usable: 244
+          rows:
+            - 2696
+            - 2940
+        - usable: 243
+          rows:
+            - 3237
+            - 3480
+      usable_peers: 423
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9902746240463919
+      strongest_difference_correlation: 0.8854476482756909
+- event: 60
+  channel: 11
+  detector: 11
+  seed_earlier_row: 3045
+  trial_exclusion:
+    - 3039
+    - 3240
+  origin_unix_seconds: 1771495707.9473834
+  time_scale_seconds: 2.823296070098877
+  review_disposition: 0
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 3039
+      - 3053
+    -
+      - 3156
+      - 3174
+  coordinates:
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 3046
+        - 3053
+      examined:
+        - 2802
+        - 3290
+      scale: 1.5672330415183688e-06
+      cubic:
+        - 2.0857274190853724e-05
+        - 6.362840066241044e-06
+        - 9.048084901497983e-06
+        - -7.39220511457166e-06
+      cubic_with_offset:
+        - 1.580953398075244e-05
+        - -5.4238942508165634e-06
+        - 9.196603056471374e-06
+        - 4.482164636182488e-07
+      offset: 9.92909020410296e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 2795
+            - 3039
+        - usable: 243
+          rows:
+            - 3241
+            - 3484
+      usable_peers: 422
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.932299606785093
+      strongest_difference_correlation: 0.6599095940504712
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 3042
+        - 3126
+      confirmation:
+        - 3126
+        - 3133
+      examined:
+        - 2802
+        - 3290
+      scale: 1.2506505884380544e-06
+      cubic:
+        - 0.00010812957161826907
+        - -9.418147376014552e-06
+        - -1.2997797701283286e-05
+        - 9.820103837455149e-06
+      cubic_with_offset:
+        - 0.00011407113313536861
+        - 3.913869603742904e-06
+        - -1.317779364759298e-05
+        - 1.1330435661540559e-06
+      offset: -1.1596025779169876e-05
+      fit_support:
+        - usable: 244
+          rows:
+            - 2795
+            - 3039
+        - usable: 243
+          rows:
+            - 3241
+            - 3484
+      usable_peers: 422
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9834649794245975
+      strongest_difference_correlation: 0.8405264113374609
+- event: 61
+  channel: 11
+  detector: 11
+  seed_earlier_row: 3162
+  trial_exclusion:
+    - 3156
+    - 3170
+  origin_unix_seconds: 1771495708.1398954
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 3
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 3039
+      - 3053
+    -
+      - 3156
+      - 3174
+  coordinates:
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 3163
+        - 3170
+      examined:
+        - 2919
+        - 3407
+      scale: 2.004253441598196e-06
+      cubic:
+        - 2.0562076936842677e-05
+        - 7.583613579540269e-06
+        - 5.510567247250403e-06
+        - -6.210563584082089e-06
+      cubic_with_offset:
+        - 2.1902242550199487e-05
+        - 1.121060338023168e-05
+        - 5.475101691427708e-06
+        - -8.963342771730832e-06
+      offset: -2.64691559013296e-06
+      fit_support:
+        - usable: 229
+          rows:
+            - 2912
+            - 3155
+        - usable: 240
+          rows:
+            - 3174
+            - 3414
+      usable_peers: 422
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9400841490920857
+      strongest_difference_correlation: 0.6661069010311854
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 3167
+        - 3174
+      examined:
+        - 2919
+        - 3407
+      scale: 1.8937265133247773e-06
+      cubic:
+        - 0.00011371435272829448
+        - -1.7975142300004357e-05
+        - -1.5510495354072108e-05
+        - 1.715124578108478e-05
+      cubic_with_offset:
+        - 0.00011551164911298192
+        - -1.263072549700729e-05
+        - -1.534619716635356e-05
+        - 1.2880238387660883e-05
+      offset: -3.750544951859952e-06
+      fit_support:
+        - usable: 229
+          rows:
+            - 2912
+            - 3155
+        - usable: 240
+          rows:
+            - 3174
+            - 3414
+      usable_peers: 422
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9855996967715405
+      strongest_difference_correlation: 0.8402574558207504
+- event: 62
+  channel: 12
+  detector: 12
+  seed_earlier_row: 3113
+  trial_exclusion:
+    - 3107
+    - 3121
+  origin_unix_seconds: 1771495707.7384872
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 3
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 3107
+      - 3121
+    -
+      - 3153
+      - 3167
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 3114
+        - 3121
+      examined:
+        - 2870
+        - 3358
+      scale: 1.0836806483470648e-06
+      cubic:
+        - 1.9759411236522147e-06
+        - 2.4097456846899034e-06
+        - 4.077350501389253e-06
+        - -2.050842797898657e-06
+      cubic_with_offset:
+        - 2.763951321668238e-06
+        - 4.463707433294689e-06
+        - 4.058845304456695e-06
+        - -3.5644866698569167e-06
+      offset: -1.5527071206810416e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 2863
+            - 3107
+        - usable: 230
+          rows:
+            - 3121
+            - 3365
+      usable_peers: 422
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.8497828607638901
+      strongest_difference_correlation: 0.6062661275816611
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 3114
+        - 3121
+      examined:
+        - 2870
+        - 3358
+      scale: 1.090510153941036e-06
+      cubic:
+        - 9.552988364928725e-05
+        - -4.0501984806584345e-06
+        - -1.1675776270373806e-05
+        - 3.8441024842778025e-06
+      cubic_with_offset:
+        - 9.684333131235721e-05
+        - -3.2600879971722613e-07
+        - -1.1678076508190858e-05
+        - 8.261432421041408e-07
+      offset: -2.622310791903185e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 2863
+            - 3107
+        - usable: 230
+          rows:
+            - 3121
+            - 3365
+      usable_peers: 422
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.978855401210944
+      strongest_difference_correlation: 0.7874166765515306
+- event: 63
+  channel: 12
+  detector: 12
+  seed_earlier_row: 3159
+  trial_exclusion:
+    - 3153
+    - 3167
+  origin_unix_seconds: 1771495708.1153193
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 3
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 3107
+      - 3121
+    -
+      - 3153
+      - 3167
+  coordinates:
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 3160
+        - 3167
+      examined:
+        - 2916
+        - 3404
+      scale: 1.2623526789479076e-06
+      cubic:
+        - 2.5363701834225855e-06
+        - 3.814353552481749e-06
+        - 2.970408692270385e-06
+        - -2.3043458341386514e-06
+      cubic_with_offset:
+        - 3.2523481669006995e-06
+        - 5.649608046447322e-06
+        - 2.9112653258305906e-06
+        - -3.6924300247335094e-06
+      offset: -1.3584098846293853e-06
+      fit_support:
+        - usable: 230
+          rows:
+            - 2909
+            - 3153
+        - usable: 244
+          rows:
+            - 3167
+            - 3411
+      usable_peers: 422
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.8821918176029598
+      strongest_difference_correlation: 0.6122496329451735
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 3160
+        - 3167
+      examined:
+        - 2916
+        - 3404
+      scale: 1.2610227103186467e-06
+      cubic:
+        - 9.47068056085467e-05
+        - -1.1193317528919304e-05
+        - -9.727337665290499e-06
+        - 1.120569862804716e-05
+      cubic_with_offset:
+        - 9.56874399581939e-05
+        - -8.50587240735579e-06
+        - -9.710829862612717e-06
+        - 9.091789547737023e-06
+      offset: -1.9378092376297324e-06
+      fit_support:
+        - usable: 230
+          rows:
+            - 2909
+            - 3153
+        - usable: 244
+          rows:
+            - 3167
+            - 3411
+      usable_peers: 422
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.9812296895831082
+      strongest_difference_correlation: 0.781763241780735
+- event: 64
+  channel: 13
+  detector: 13
+  seed_earlier_row: 3061
+  trial_exclusion:
+    - 3055
+    - 3138
+  origin_unix_seconds: 1771495707.5951273
+  time_scale_seconds: 2.339967966079712
+  review_disposition: 0
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 3055
+      - 3069
+  coordinates:
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 3062
+        - 3069
+      examined:
+        - 2818
+        - 3306
+      scale: 1.3007995558074942e-06
+      cubic:
+        - 3.1897427542315336e-05
+        - 1.2627990290201776e-06
+        - 1.4496909614460996e-05
+        - -9.267184057062288e-07
+      cubic_with_offset:
+        - 3.2050772407402246e-05
+        - 1.6678030731903615e-06
+        - 1.4494523598218992e-05
+        - -1.2356031639738533e-06
+      offset: -3.043266456542919e-07
+      fit_support:
+        - usable: 244
+          rows:
+            - 2811
+            - 3055
+        - usable: 244
+          rows:
+            - 3138
+            - 3382
+      usable_peers: 422
+      strongest_peer_channel: 0
+      strongest_level_correlation: -0.9437955565244096
+      strongest_difference_correlation: -0.487157902055585
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 3060
+        - 3067
+      confirmation:
+        - 3067
+        - 3074
+      examined:
+        - 2818
+        - 3306
+      scale: 1.2873056629020574e-06
+      cubic:
+        - 0.00011853565524085615
+        - -5.147290322218886e-07
+        - -6.7040165307532005e-06
+        - 1.1684850654763139e-07
+      cubic_with_offset:
+        - 0.00011823537433237171
+        - -1.2777648514253337e-06
+        - -6.6843454009889856e-06
+        - 6.885116641895286e-07
+      offset: 5.823888177234702e-07
+      fit_support:
+        - usable: 244
+          rows:
+            - 2811
+            - 3055
+        - usable: 244
+          rows:
+            - 3138
+            - 3382
+      usable_peers: 422
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.93028363841845
+      strongest_difference_correlation: 0.6801018703749179
+- event: 65
+  channel: 53
+  detector: 53
+  seed_earlier_row: 3036
+  trial_exclusion:
+    - 3030
+    - 3044
+  origin_unix_seconds: 1771495707.1077032
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 0
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 3030
+      - 3044
+  coordinates:
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 3037
+        - 3044
+      examined:
+        - 2793
+        - 3281
+      scale: 9.763059427171767e-07
+      cubic:
+        - 2.7269471350246485e-05
+        - 1.4179638532137488e-06
+        - 5.288117443033681e-07
+        - -8.982635992217273e-07
+      cubic_with_offset:
+        - 2.7218426300475805e-05
+        - 1.2725728371531357e-06
+        - 5.259714960579707e-07
+        - -7.876252543376816e-07
+      offset: 1.0514230065692619e-07
+      fit_support:
+        - usable: 243
+          rows:
+            - 2786
+            - 3029
+        - usable: 244
+          rows:
+            - 3044
+            - 3288
+      usable_peers: 422
+      strongest_peer_channel: 223
+      strongest_level_correlation: 0.5736377038702628
+      strongest_difference_correlation: 0.2125672130534072
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 3036
+        - 3037
+      confirmation:
+        - 3037
+        - 3044
+      examined:
+        - 2793
+        - 3281
+      scale: 9.405678992200501e-07
+      cubic:
+        - 9.491777497608542e-05
+        - -1.4300176371647744e-07
+        - 4.57059807800045e-07
+        - -1.691597346773997e-08
+      cubic_with_offset:
+        - 9.490473271126509e-05
+        - -1.8053830830728728e-07
+        - 4.565160090788823e-07
+        - 1.2082432916685898e-08
+      offset: 2.681177039781917e-08
+      fit_support:
+        - usable: 243
+          rows:
+            - 2786
+            - 3029
+        - usable: 244
+          rows:
+            - 3044
+            - 3288
+      usable_peers: 422
+      strongest_peer_channel: 137
+      strongest_level_correlation: 0.1943369119261213
+      strongest_difference_correlation: 0.1417629867899497
+- event: 66
+  channel: 54
+  detector: 54
+  seed_earlier_row: 3055
+  trial_exclusion:
+    - 3049
+    - 3063
+  origin_unix_seconds: 1771495707.2633514
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 3
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 3049
+      - 3063
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 3056
+        - 3063
+      examined:
+        - 2812
+        - 3300
+      scale: 5.401458648731957e-07
+      cubic:
+        - 2.917887160841505e-06
+        - 1.9357298982548855e-06
+        - -3.2033647224216067e-07
+        - -1.6798695333907856e-06
+      cubic_with_offset:
+        - 2.8970624311311287e-06
+        - 1.878100020555498e-06
+        - -3.2138266566915927e-07
+        - -1.6361446055270436e-06
+      offset: 4.2352294088093976e-08
+      fit_support:
+        - usable: 243
+          rows:
+            - 2805
+            - 3048
+        - usable: 244
+          rows:
+            - 3063
+            - 3307
+      usable_peers: 422
+      strongest_peer_channel: 404
+      strongest_level_correlation: 0.8252420863332616
+      strongest_difference_correlation: 0.3461199929064539
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 3056
+        - 3063
+      examined:
+        - 2812
+        - 3300
+      scale: 3.777086577792303e-07
+      cubic:
+        - 0.00011490318104465094
+        - -2.260506662716163e-07
+        - 2.7610977578265313e-07
+        - 3.337567522214441e-07
+      cubic_with_offset:
+        - 0.00011487770587028444
+        - -2.9932609632712804e-07
+        - 2.7428058559384034e-07
+        - 3.9000764777426633e-07
+      offset: 5.278679437910806e-08
+      fit_support:
+        - usable: 243
+          rows:
+            - 2805
+            - 3048
+        - usable: 244
+          rows:
+            - 3063
+            - 3307
+      usable_peers: 422
+      strongest_peer_channel: 484
+      strongest_level_correlation: 0.24061668227022753
+      strongest_difference_correlation: 0.10142656640285258
+- event: 67
+  channel: 59
+  detector: 59
+  seed_earlier_row: 1163
+  trial_exclusion:
+    - 1157
+    - 1171
+  origin_unix_seconds: 1771495691.7640872
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 0
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 1157
+      - 1171
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 1164
+        - 1165
+      confirmation:
+        - 1165
+        - 1172
+      examined:
+        - 920
+        - 1408
+      scale: 9.121445127026584e-07
+      cubic:
+        - -1.3968282608115965e-05
+        - 7.030689038994618e-07
+        - -4.181512712405386e-07
+        - -7.708611141668898e-07
+      cubic_with_offset:
+        - -1.3766820320833022e-05
+        - 1.2586266228519558e-06
+        - -4.272746555223041e-07
+        - -1.1990603553276217e-06
+      offset: -3.959295759604184e-07
+      fit_support:
+        - usable: 243
+          rows:
+            - 913
+            - 1156
+        - usable: 244
+          rows:
+            - 1171
+            - 1415
+      usable_peers: 422
+      strongest_peer_channel: 372
+      strongest_level_correlation: 0.44448719319863195
+      strongest_difference_correlation: 0.08381916956270788
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 1164
+        - 1171
+      examined:
+        - 920
+        - 1408
+      scale: 9.006528294528364e-07
+      cubic:
+        - 9.956927179914841e-05
+        - 1.21886792466839e-08
+        - -1.6799878479777838e-07
+        - 1.0948474954146273e-07
+      cubic_with_offset:
+        - 9.947783587981358e-05
+        - -2.486287304326809e-07
+        - -1.7131786769707537e-07
+        - 3.1159307777781023e-07
+      offset: 1.8591377191897063e-07
+      fit_support:
+        - usable: 243
+          rows:
+            - 913
+            - 1156
+        - usable: 244
+          rows:
+            - 1171
+            - 1415
+      usable_peers: 422
+      strongest_peer_channel: 115
+      strongest_level_correlation: 0.1828102660674289
+      strongest_difference_correlation: 0.1793276837783488
+- event: 68
+  channel: 72
+  detector: 72
+  seed_earlier_row: 2386
+  trial_exclusion:
+    - 2380
+    - 2394
+  origin_unix_seconds: 1771495701.7829032
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 3
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 2380
+      - 2394
+  coordinates:
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 2387
+        - 2394
+      examined:
+        - 2143
+        - 2631
+      scale: 1.0520634816988806e-06
+      cubic:
+        - -2.2829933468826492e-05
+        - 1.4671761843509032e-06
+        - -2.521531956677342e-07
+        - -2.3169998844500673e-07
+      cubic_with_offset:
+        - -2.2640255225593196e-05
+        - 1.997785076816237e-06
+        - -2.531205871176953e-07
+        - -6.453421407572284e-07
+      offset: -3.7751688966697995e-07
+      fit_support:
+        - usable: 243
+          rows:
+            - 2136
+            - 2379
+        - usable: 244
+          rows:
+            - 2394
+            - 2638
+      usable_peers: 422
+      strongest_peer_channel: 158
+      strongest_level_correlation: 0.5760482844479762
+      strongest_difference_correlation: 0.1331289966063283
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 2387
+        - 2394
+      examined:
+        - 2143
+        - 2631
+      scale: 1.1013551215065425e-06
+      cubic:
+        - 0.00010385389653493162
+        - -3.1022512450322406e-07
+        - -6.107775577464185e-07
+        - 7.764135077774263e-07
+      cubic_with_offset:
+        - 0.00010391431489025438
+        - -1.4838915109109885e-07
+        - -6.143891416947394e-07
+        - 6.511622488432419e-07
+      offset: -1.1652275975632556e-07
+      fit_support:
+        - usable: 243
+          rows:
+            - 2136
+            - 2379
+        - usable: 244
+          rows:
+            - 2394
+            - 2638
+      usable_peers: 422
+      strongest_peer_channel: 88
+      strongest_level_correlation: 0.21079364969107367
+      strongest_difference_correlation: 0.1668073463942917
+- event: 69
+  channel: 154
+  detector: 154
+  seed_earlier_row: 1738
+  trial_exclusion:
+    - 1732
+    - 1746
+  origin_unix_seconds: 1771495696.4744873
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 3
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 1732
+      - 1746
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 1739
+        - 1746
+      examined:
+        - 1495
+        - 1983
+      scale: 6.341537048140492e-07
+      cubic:
+        - -2.40934457793984e-06
+        - -2.4045402513694686e-07
+        - -1.784166676316668e-08
+        - 9.264188411375707e-08
+      cubic_with_offset:
+        - -2.4898833403138124e-06
+        - -4.6597547996192725e-07
+        - -1.7260965137490646e-08
+        - 2.6735844654906884e-07
+      offset: 1.5994232666591982e-07
+      fit_support:
+        - usable: 244
+          rows:
+            - 1488
+            - 1732
+        - usable: 243
+          rows:
+            - 1747
+            - 1990
+      usable_peers: 422
+      strongest_peer_channel: 223
+      strongest_level_correlation: 0.3844802409060257
+      strongest_difference_correlation: 0.17444456886177134
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 1739
+        - 1746
+      examined:
+        - 1495
+        - 1983
+      scale: 5.02182999061995e-07
+      cubic:
+        - 0.00011109870086862549
+        - 2.7887433300951827e-07
+        - -1.677796539766997e-07
+        - -4.867518958050866e-07
+      cubic_with_offset:
+        - 0.0001110282427493479
+        - 8.453168754751365e-08
+        - -1.6976696611696474e-07
+        - -3.391540357557392e-07
+      offset: 1.425783531877343e-07
+      fit_support:
+        - usable: 244
+          rows:
+            - 1488
+            - 1732
+        - usable: 243
+          rows:
+            - 1747
+            - 1990
+      usable_peers: 422
+      strongest_peer_channel: 82
+      strongest_level_correlation: 0.22232124102485457
+      strongest_difference_correlation: 0.1717102776132507
+- event: 70
+  channel: 224
+  detector: 224
+  seed_earlier_row: 7295
+  trial_exclusion:
+    - 7289
+    - 7303
+  origin_unix_seconds: 1771495741.9974313
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 0
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 7289
+      - 7303
+  coordinates:
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 7296
+        - 7303
+      examined:
+        - 7052
+        - 7540
+      scale: 7.103311366422565e-07
+      cubic:
+        - 5.050829281701592e-06
+        - -2.959432503809767e-07
+        - -1.467492553566997e-07
+        - -1.9764645474669917e-07
+      cubic_with_offset:
+        - 5.215612657170818e-06
+        - 1.783570339423084e-07
+        - -1.473502722501206e-07
+        - -5.67906428676639e-07
+      offset: -3.3253802986489606e-07
+      fit_support:
+        - usable: 244
+          rows:
+            - 7045
+            - 7289
+        - usable: 243
+          rows:
+            - 7304
+            - 7547
+      usable_peers: 422
+      strongest_peer_channel: 249
+      strongest_level_correlation: 0.6807738752357316
+      strongest_difference_correlation: 0.22363885584317214
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 7295
+        - 7296
+      confirmation:
+        - 7296
+        - 7303
+      examined:
+        - 7052
+        - 7540
+      scale: 4.265098616654333e-07
+      cubic:
+        - 7.649269782487796e-05
+        - -1.219571541440669e-07
+        - -8.314541515214345e-08
+        - 4.488441793337452e-08
+      cubic_with_offset:
+        - 7.655323393138999e-05
+        - 4.615726501509572e-08
+        - -8.457812482593095e-08
+        - -8.701083580274794e-08
+      offset: -1.1894718852206422e-07
+      fit_support:
+        - usable: 244
+          rows:
+            - 7045
+            - 7289
+        - usable: 243
+          rows:
+            - 7304
+            - 7547
+      usable_peers: 422
+      strongest_peer_channel: 172
+      strongest_level_correlation: 0.17151430699399905
+      strongest_difference_correlation: 0.16162293838294142
+- event: 71
+  channel: 251
+  detector: 251
+  seed_earlier_row: 2037
+  trial_exclusion:
+    - 2031
+    - 2045
+  origin_unix_seconds: 1771495698.9238954
+  time_scale_seconds: 2.0573439598083496
+  review_disposition: 1
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 2031
+      - 2045
+    -
+      - 2231
+      - 2245
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 3
+      affected:
+        - 1995
+        - 2282
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - 1794
+        - 2282
+      scale: 2.478680480649627e-06
+      cubic:
+        - 9.754552878789386e-05
+        - 2.93716296282404e-05
+        - -3.0868984466793256e-06
+        - -1.5083677572041422e-05
+      cubic_with_offset:
+        - 8.94771992360164e-05
+        - 1.266329955033003e-05
+        - -1.3787399365706434e-06
+        - -3.83005948232927e-06
+      offset: 1.3839693651824684e-05
+      fit_support:
+        - usable: 244
+          rows:
+            - 1787
+            - 2031
+        - usable: 230
+          rows:
+            - 2045
+            - 2289
+      usable_peers: 423
+      strongest_peer_channel: 216
+      strongest_level_correlation: 0.9861073545108954
+      strongest_difference_correlation: 0.029183197713435673
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 2036
+        - 2041
+      confirmation:
+        - 2041
+        - 2048
+      examined:
+        - 1794
+        - 2282
+      scale: 1.1737459249128936e-06
+      cubic:
+        - 2.8833645821989918e-05
+        - -5.878045192017114e-06
+        - 8.719680519922199e-07
+        - 3.8142691337593085e-06
+      cubic_with_offset:
+        - 2.8804012059021693e-05
+        - -5.957346635591564e-06
+        - 8.730319420712952e-07
+        - 3.874956806408468e-06
+      offset: 5.793153598468998e-08
+      fit_support:
+        - usable: 244
+          rows:
+            - 1787
+            - 2031
+        - usable: 230
+          rows:
+            - 2045
+            - 2289
+      usable_peers: 423
+      strongest_peer_channel: 356
+      strongest_level_correlation: 0.8152374461835806
+      strongest_difference_correlation: 0.07756408528944378
+- event: 72
+  channel: 291
+  detector: 291
+  seed_earlier_row: 7798
+  trial_exclusion:
+    - 7792
+    - 7806
+  origin_unix_seconds: 1771495746.1180072
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 2
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 7792
+      - 7806
+  coordinates:
+    - seeded: true
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 243
+          rows:
+            - 7548
+            - 7791
+        - usable: 15
+          rows:
+            - 7806
+            - 7821
+      usable_peers: 422
+      strongest_peer_channel: 8
+      strongest_level_correlation: 0.6559122124576271
+      strongest_difference_correlation: 0.1964355412519754
+    - seeded: false
+      background_available: false
+      background_cause: 2
+      recovery_cause: 1
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - -1
+        - -1
+      examined:
+        - -1
+        - -1
+      scale: .nan
+      cubic:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      cubic_with_offset:
+        - .nan
+        - .nan
+        - .nan
+        - .nan
+      offset: .nan
+      fit_support:
+        - usable: 243
+          rows:
+            - 7548
+            - 7791
+        - usable: 15
+          rows:
+            - 7806
+            - 7821
+      usable_peers: 422
+      strongest_peer_channel: 361
+      strongest_level_correlation: 0.2361884737183922
+      strongest_difference_correlation: 0.26515200441688297
+- event: 73
+  channel: 350
+  detector: 350
+  seed_earlier_row: 425
+  trial_exclusion:
+    - 419
+    - 433
+  origin_unix_seconds: 1771495685.7183914
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 3
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 419
+      - 433
+  coordinates:
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 426
+        - 433
+      examined:
+        - 182
+        - 670
+      scale: 1.2458601139039665e-06
+      cubic:
+        - 1.9874010218545926e-05
+        - -7.98150688579698e-07
+        - -5.684057145158089e-07
+        - 2.325970397901661e-07
+      cubic_with_offset:
+        - 2.0482879418755636e-05
+        - 9.281730766244087e-07
+        - -5.681423755206549e-07
+        - -1.1126825311445972e-06
+      offset: -1.2233790904202295e-06
+      fit_support:
+        - usable: 243
+          rows:
+            - 175
+            - 418
+        - usable: 244
+          rows:
+            - 433
+            - 677
+      usable_peers: 422
+      strongest_peer_channel: 332
+      strongest_level_correlation: 0.804069075161951
+      strongest_difference_correlation: 0.6351383752511024
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 426
+        - 433
+      examined:
+        - 182
+        - 670
+      scale: 5.794338874607246e-07
+      cubic:
+        - 5.340221398045954e-05
+        - 1.2749512238821162e-07
+        - -6.676399353235673e-08
+        - -1.4994981901926926e-08
+      cubic_with_offset:
+        - 5.339191615805769e-05
+        - 9.974275705717998e-08
+        - -6.611916819727463e-08
+        - 6.464729647820707e-09
+      offset: 1.989406170483429e-08
+      fit_support:
+        - usable: 243
+          rows:
+            - 175
+            - 418
+        - usable: 244
+          rows:
+            - 433
+            - 677
+      usable_peers: 422
+      strongest_peer_channel: 467
+      strongest_level_correlation: 0.19096698676612398
+      strongest_difference_correlation: 0.23302411150961772
+- event: 74
+  channel: 351
+  detector: 351
+  seed_earlier_row: 6403
+  trial_exclusion:
+    - 6397
+    - 6411
+  origin_unix_seconds: 1771495734.6901674
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 0
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 6397
+      - 6411
+  coordinates:
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 6404
+        - 6411
+      examined:
+        - 6160
+        - 6648
+      scale: 5.236974424122671e-07
+      cubic:
+        - 1.0331487656672911e-05
+        - 6.395480696708114e-07
+        - 4.679282740486031e-07
+        - -1.3480383570735686e-06
+      cubic_with_offset:
+        - 1.0442439473320095e-05
+        - 9.55242319115591e-07
+        - 4.712928563191807e-07
+        - -1.5936476634124725e-06
+      offset: -2.2577251574068048e-07
+      fit_support:
+        - usable: 243
+          rows:
+            - 6153
+            - 6396
+        - usable: 244
+          rows:
+            - 6411
+            - 6655
+      usable_peers: 422
+      strongest_peer_channel: 275
+      strongest_level_correlation: 0.5858151355402024
+      strongest_difference_correlation: 0.11389601022890083
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - 6403
+        - 6404
+      confirmation:
+        - 6404
+        - 6411
+      examined:
+        - 6160
+        - 6648
+      scale: 4.4471248939970923e-07
+      cubic:
+        - 7.965169319567339e-05
+        - -3.6100598461704766e-08
+        - -3.258613181269179e-08
+        - -7.361941367751331e-08
+      cubic_with_offset:
+        - 7.963684826562652e-05
+        - -7.76609854643673e-08
+        - -3.2523772643811116e-08
+        - -4.1093129499846326e-08
+      offset: 2.9560209478148688e-08
+      fit_support:
+        - usable: 243
+          rows:
+            - 6153
+            - 6396
+        - usable: 244
+          rows:
+            - 6411
+            - 6655
+      usable_peers: 422
+      strongest_peer_channel: 53
+      strongest_level_correlation: 0.21186834633995583
+      strongest_difference_correlation: 0.23960022764087222
+- event: 75
+  channel: 462
+  detector: 462
+  seed_earlier_row: 1473
+  trial_exclusion:
+    - 1467
+    - 1481
+  origin_unix_seconds: 1771495694.3036075
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 3
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 1467
+      - 1481
+  coordinates:
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 1474
+        - 1481
+      examined:
+        - 1230
+        - 1718
+      scale: 4.452240230416717e-07
+      cubic:
+        - -1.605930786812104e-06
+        - 4.346629682689837e-07
+        - -2.74747234005715e-07
+        - -4.571913127975432e-07
+      cubic_with_offset:
+        - -1.8539425840108306e-06
+        - -2.511224538673349e-07
+        - -2.755433075275999e-07
+        - 7.340987472547635e-08
+      offset: 4.920091526974346e-07
+      fit_support:
+        - usable: 243
+          rows:
+            - 1223
+            - 1466
+        - usable: 244
+          rows:
+            - 1481
+            - 1725
+      usable_peers: 422
+      strongest_peer_channel: 441
+      strongest_level_correlation: 0.5076643075816821
+      strongest_difference_correlation: 0.24233104643304698
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 1474
+        - 1481
+      examined:
+        - 1230
+        - 1718
+      scale: 2.8936737824968474e-07
+      cubic:
+        - 0.00010966029214089034
+        - 3.281206498703643e-08
+        - -3.563038890269342e-08
+        - -6.940437375643181e-08
+      cubic_with_offset:
+        - 0.00010968966896733015
+        - 1.1268699954101394e-07
+        - -3.690365461090475e-08
+        - -1.314483251421686e-07
+      offset: -5.7222375751945344e-08
+      fit_support:
+        - usable: 243
+          rows:
+            - 1223
+            - 1466
+        - usable: 244
+          rows:
+            - 1481
+            - 1725
+      usable_peers: 422
+      strongest_peer_channel: 440
+      strongest_level_correlation: 0.1779790393776319
+      strongest_difference_correlation: 0.1389882621213479
+- event: 76
+  channel: 485
+  detector: 485
+  seed_earlier_row: 3117
+  trial_exclusion:
+    - 3111
+    - 3125
+  origin_unix_seconds: 1771495707.7712555
+  time_scale_seconds: 2.0573441982269287
+  review_disposition: 3
+  health_concern: false
+  refinement_limited: false
+  hard_spike_accepted: false
+  jump_admitted: false
+  neighbor_exclusions:
+    -
+      - 3111
+      - 3125
+  coordinates:
+    - seeded: false
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 3118
+        - 3125
+      examined:
+        - 2874
+        - 3362
+      scale: 8.968757619746774e-07
+      cubic:
+        - 9.470350002574003e-06
+        - -1.3910272367180739e-06
+        - -9.163702536629728e-06
+        - 1.0121929749175727e-06
+      cubic_with_offset:
+        - 9.312360871961882e-06
+        - -1.8707090397351054e-06
+        - -9.17484707884286e-06
+        - 1.4005023871744827e-06
+      offset: 3.3153530709047025e-07
+      fit_support:
+        - usable: 244
+          rows:
+            - 2867
+            - 3111
+        - usable: 244
+          rows:
+            - 3125
+            - 3369
+      usable_peers: 422
+      strongest_peer_channel: 3
+      strongest_level_correlation: 0.9533618502409459
+      strongest_difference_correlation: 0.6037629661014713
+    - seeded: true
+      background_available: true
+      background_cause: 0
+      recovery_cause: 0
+      affected:
+        - -1
+        - -1
+      confirmation:
+        - 3118
+        - 3125
+      examined:
+        - 2874
+        - 3362
+      scale: 6.931207727847376e-07
+      cubic:
+        - 8.838827749489534e-05
+        - 7.687542452766244e-07
+        - 2.8971927824015063e-07
+        - -8.842764788255826e-07
+      cubic_with_offset:
+        - 8.734714621510701e-05
+        - -1.8488100395956658e-06
+        - 4.0147775446239875e-07
+        - 1.0720227757594718e-06
+      offset: 1.9549446292940383e-06
+      fit_support:
+        - usable: 244
+          rows:
+            - 2867
+            - 3111
+        - usable: 244
+          rows:
+            - 3125
+            - 3369
+      usable_peers: 422
+      strongest_peer_channel: 483
+      strongest_level_correlation: 0.5868862396503045
+      strongest_difference_correlation: 0.35395081693339053

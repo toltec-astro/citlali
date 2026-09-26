@@ -1,0 +1,46 @@
+[
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/freeze/a2000/BASE.json",
+    "sha256": "ef6d0d450c6b53555c271e7722550f772d3f4beb408fd5c5e55f3a8c64c08b7d"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/freeze/a2000/BASE.npz",
+    "sha256": "b65f2bb8375ae80de5395f06b6275df516e83169a06e26c3601c88162a16be25"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/freeze/a2000/C0.json",
+    "sha256": "87dab3154809f790644ce2631089049039f5f23b6711eff2f6e528c1979f31e0"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/freeze/a2000/C0.npz",
+    "sha256": "99682c27acbb6d754283ea4b55eb9292e66a220ede39fbfbc3079a2c19201204"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/freeze/a2000/context.npz",
+    "sha256": "f1e4e1a835a99b10a0a631fd97bc4f87c331a97f8c5a9891b6f4502644854e6f"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/freeze/a2000/continuation-sanity.json",
+    "sha256": "9b06382fc332640c3b3aaef3d7fab75b3b7001335edfdd222ba7009cb066fed2"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/freeze/a2000/geometry.json",
+    "sha256": "237a0b62b245dfd3bf6893df6d310d4e767bc93ef670edf765ff3905ff0aec25"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/freeze/a2000/guard.json",
+    "sha256": "39486efc2020d9c6998b211f0a64f192932ea310eff7051a6b92f92c185cff5f"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/freeze/M0-measurement.json",
+    "sha256": "26504b1c2a58c40bcf04ba5babd1e91dfaeb742ab0cb4bbe445d8c27f2205f4a"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/freeze/parents.json",
+    "sha256": "33b1d41adecfce0b339bf82d9f261f049e75a4540c0df61e07c5b6433c39ff17"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/inputs/map-request.json",
+    "sha256": "9a58025181eb84cbcd54b9b87c8394d42c05cd4c52e7dff1d643a848a658940a"
+  }
+]

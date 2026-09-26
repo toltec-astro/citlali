@@ -1,5 +1,26 @@
 # Citlali Refactor Status
 
+## Bright-POINT downstream reference frozen — 2026-09-26
+
+FRUIT method testing is parked. The next lane is RTC/PTC evaluation through the
+ordinary MAP + BASE-POINT endpoint, using the single [pipeline quickstart](BRIGHT_POINT_PIPELINE.md)
+and [handoff](../handoff/RTC_PTC_MAP_FRUIT_BASELINE_2026-09-26.md). The isolated
+original-input POINT152430/a2000 regression completed M0 and ten applications on
+its first attempt at b47c13e1f5b745b94880218e347f77b4142686ff. Every compared MAP and
+candidate plane, measurement, initial noise field and conditional endpoint record
+is exactly equal to the retained reference; no tolerance relaxation. Temporary
+native arrays were removed after compact preservation. This is a bright-POINT
+development reference, not production/all-mode qualification.
+
+Fresh observations/upstream settings initialize their own M0/C0/BASE quantities;
+PTC relearns per network/processing segment on every residual. Ten cycles, measured
+brightness, unity gain, full replacement and unapplied m10 remain fixed. The
+existing high-coverage continuation is informational, with genuine guards intact.
+CORR/DIAG/JINC/CUT3/seed/extra-cycle studies, the proposed mode-count comparison,
+and a pre-RTC injection boundary are deferred. No upstream experiment starts in
+this closeout. Older next-step directions below are historical where superseded.
+
+
 ## POINT 152430 a2000 no-upper-coverage-veto comparison — completed 2026-09-26
 
 All 15 trajectories completed M0–T10 at science commit ac2bee1febaab82b808f7f751374b797de033c6a: 150 feedback attempts, four physical inputs, nine ideal controls and three endpoint covariance analyses, without native failure or retry. Source/binary/input bindings and the current assessment are in validation/point_152430_no_upper_coverage_veto_2026-09-26.

@@ -1,0 +1,30 @@
+{
+  "source_revision": "b47c13e1f5b745b94880218e347f77b4142686ff",
+  "run_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926",
+  "compact_root": "/Users/gwilson/.codex/worktrees/fruit-pipeline-freeze/citlali-refactor/validation/fruit_pipeline_freeze_2026-09-26/compact",
+  "before_bytes": 744327949,
+  "removed_native_files": 11113,
+  "removed_native_bytes": 533939116,
+  "after_bytes": 26183948,
+  "compact_bytes": 26183948,
+  "lossless_compressed_files": 106,
+  "max_recorded_stage_storage_bytes": 814240132,
+  "workspace_ceiling_bytes": 3322750304,
+  "peak_native_RSS_bytes": 1557626880,
+  "native_wall_seconds": 111.89305508503458,
+  "pipeline_seconds": 117.2125999169948,
+  "attempts": {
+    "raw_to_M0": 1,
+    "BASE_trajectories": 1,
+    "feedback": 10,
+    "endpoint": 1
+  },
+  "original_inputs_verified_unchanged": true,
+  "existing_reference_bundle_copied": false,
+  "iteration_limit_is_not_convergence": true,
+  "native_restart_available": false,
+  "input_transfers": 0,
+  "scope": "Only this task run; original/other products untouched. FITS and large YAML retained losslessly; no deletion of historical Git objects.",
+  "per_cycle_removed_files": 500,
+  "per_cycle_removed_bytes": 705046960
+}

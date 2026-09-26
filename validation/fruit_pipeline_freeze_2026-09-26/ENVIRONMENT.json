@@ -1,0 +1,22 @@
+{
+  "python": "/Users/gwilson/tolteca/bin/python",
+  "python_version": "3.13.2",
+  "platform": "macOS-26.7-arm64-arm-64bit-Mach-O",
+  "packages": {
+    "numpy": "2.2.3",
+    "scipy": "1.15.2",
+    "astropy": "7.0.1",
+    "netCDF4": "1.7.2",
+    "PyYAML": "6.0.2",
+    "psutil": "7.0.0"
+  },
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin\n",
+  "sdk": "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk",
+  "dependency_root": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps",
+  "kids_version": "04088da-dirty (unchanged existing cached source)",
+  "representative_environment": "supplemental local AppleClang/Homebrew; not Unity/Spack",
+  "binary": {
+    "path": "/Users/gwilson/.codex/worktrees/fruit-pipeline-freeze/citlali-refactor/build/bin/citlali",
+    "sha256": "18d8d481d11c6ad68b7745cc4e01a8d529b66504365991af19466579d6aec1f8"
+  }
+}

@@ -1,0 +1,10 @@
+(version 1)
+(allow default)
+(deny network*)
+(deny file-read-data
+  (subpath "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs")
+  (subpath "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/point")
+  (subpath "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/pointings")
+  (subpath "/private/tmp/citlali-point-additive-20260923")
+  (subpath "/private/tmp/citlali-point-guarded-build-20260925")
+  (regex #"/validation/.*\.(fits|gz|npz|npy|json|yaml|f64|u8|u64|i32)$"))

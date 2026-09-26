@@ -1,0 +1,137 @@
+{
+  "command": [
+    "/Users/gwilson/.codex/worktrees/fruit-pipeline-freeze/citlali-refactor/build/bin/citlali",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/run/BASE-POINT/REF/a2000/cycle-05/native/development.yaml"
+  ],
+  "executable_sha256": "18d8d481d11c6ad68b7745cc4e01a8d529b66504365991af19466579d6aec1f8",
+  "version": "** logging ** Configured with level=trace; available levels: [\"trace\", \"debug\", \"info\", \"warning\", \"error\", \"critical\", \"off\"].\nv2-ngc4449-memory-repair-187df04b-582-gb47c13e1f (2026-09-26T14:50:12)\nkids 04088da-dirty (2026-09-26T14:50:09)\n",
+  "input_sha256": "7f9aeec72c84b6dbcd1769c756f307aa73dbca7372d5a54e26fd34c46a3cbafd",
+  "workers": 1,
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "BLIS_NUM_THREADS": "1",
+    "OMP_DYNAMIC": "FALSE"
+  },
+  "measurement": "fresh process; whole-invocation CPU and sampled RSS; no concurrent diagnostic",
+  "samples": [
+    {
+      "seconds": 0.003150125005049631,
+      "rss_bytes": 32768,
+      "user_seconds": 6.0166e-05,
+      "system_seconds": 0.000373833,
+      "os_threads": 1
+    },
+    {
+      "seconds": 0.5132280830002856,
+      "rss_bytes": 125763584,
+      "user_seconds": 0.48182016,
+      "system_seconds": 0.014557166,
+      "os_threads": 1
+    },
+    {
+      "seconds": 1.023281958012376,
+      "rss_bytes": 201031680,
+      "user_seconds": 0.981819904,
+      "system_seconds": 0.020033458,
+      "os_threads": 1
+    },
+    {
+      "seconds": 1.5333434999920428,
+      "rss_bytes": 251002880,
+      "user_seconds": 1.482252928,
+      "system_seconds": 0.026710832,
+      "os_threads": 3
+    },
+    {
+      "seconds": 2.037511958013056,
+      "rss_bytes": 346259456,
+      "user_seconds": 1.97645248,
+      "system_seconds": 0.035137584,
+      "os_threads": 3
+    },
+    {
+      "seconds": 2.5475817499973346,
+      "rss_bytes": 367542272,
+      "user_seconds": 2.329553152,
+      "system_seconds": 0.085397456,
+      "os_threads": 3
+    },
+    {
+      "seconds": 3.057652874995256,
+      "rss_bytes": 446185472,
+      "user_seconds": 2.728069376,
+      "system_seconds": 0.109049792,
+      "os_threads": 3
+    },
+    {
+      "seconds": 3.567733041010797,
+      "rss_bytes": 404635648,
+      "user_seconds": 3.122444032,
+      "system_seconds": 0.138684128,
+      "os_threads": 3
+    },
+    {
+      "seconds": 4.077854458009824,
+      "rss_bytes": 418185216,
+      "user_seconds": 3.619143168,
+      "system_seconds": 0.151783952,
+      "os_threads": 3
+    },
+    {
+      "seconds": 4.587919125013286,
+      "rss_bytes": 419086336,
+      "user_seconds": 4.12145536,
+      "system_seconds": 0.155127376,
+      "os_threads": 3
+    },
+    {
+      "seconds": 5.097773375018733,
+      "rss_bytes": 463732736,
+      "user_seconds": 4.618838528,
+      "system_seconds": 0.163229872,
+      "os_threads": 3
+    },
+    {
+      "seconds": 5.605768208013615,
+      "rss_bytes": 470581248,
+      "user_seconds": 5.04728576,
+      "system_seconds": 0.190743952,
+      "os_threads": 3
+    },
+    {
+      "seconds": 6.112376833014423,
+      "rss_bytes": 494338048,
+      "user_seconds": 5.450507776,
+      "system_seconds": 0.207556048,
+      "os_threads": 3
+    },
+    {
+      "seconds": 6.620611457998166,
+      "rss_bytes": 631177216,
+      "user_seconds": 5.816258048,
+      "system_seconds": 0.232546624,
+      "os_threads": 2
+    },
+    {
+      "seconds": 7.130674000014551,
+      "rss_bytes": 722518016,
+      "user_seconds": 6.17498112,
+      "system_seconds": 0.27169072,
+      "os_threads": 2
+    },
+    {
+      "seconds": 7.640736208006274,
+      "rss_bytes": 722518016,
+      "user_seconds": 6.566580224,
+      "system_seconds": 0.309192192,
+      "os_threads": 2
+    }
+  ],
+  "exit_code": 0,
+  "wall_seconds": 8.147237625002163,
+  "polled_peak_rss_bytes": 722518016,
+  "output_bytes": 76208986
+}

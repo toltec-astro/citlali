@@ -1,0 +1,8 @@
+{
+  "native_cells": 7640626,
+  "shared_upstream_allowance": 1956000256,
+  "peak_ceiling_bytes": 3322750304,
+  "free_space_reserve_bytes": 2000000000,
+  "network_workers": 2,
+  "library_threads": 1
+}

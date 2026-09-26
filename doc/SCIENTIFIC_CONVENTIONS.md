@@ -1,5 +1,11 @@
 # Citlali Scientific Conventions
 
+Current bright-POINT development execution and ownership are documented in
+[the consolidated pipeline](BRIGHT_POINT_PIPELINE.md). Its frozen ordinary MAP /
+BASE-POINT route supersedes historical statements below that MAP or FRUIT is
+unconnected. Other package unavailability and scientific boundaries remain.
+
+
 ## Canonical compact APT v2 governing rule
 
 APT-PROD-003 compact v2 supersedes new canonical baseline and observation APT

@@ -1,0 +1,39 @@
+{
+  "command": [
+    "/Users/gwilson/tolteca/bin/python",
+    "/Users/gwilson/.codex/worktrees/fruit-pipeline-freeze/citlali-refactor/tools/timestream_successor/point_pipeline.py",
+    "feedback",
+    "--config",
+    "/Users/gwilson/.codex/worktrees/fruit-pipeline-freeze/citlali-refactor/data/development/bright_point_base_v1/reference.json",
+    "--input-root",
+    "/Users/gwilson/work_toltec/local_data",
+    "--output",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926",
+    "--binary",
+    "/Users/gwilson/.codex/worktrees/fruit-pipeline-freeze/citlali-refactor/build/bin/citlali"
+  ],
+  "denial_checks": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/fruit-pipeline-freeze/citlali-refactor/validation/point_152430_no_upper_coverage_veto_2026-09-26/compact/M0/products/a2000/map.fits.gz",
+      "denied": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/UPSTREAM.json",
+      "denied": true
+    }
+  ],
+  "profile_sha256": "ab8a6221f3f5ea6f7328429224bdafe59d1231a72eaa111f79fdc3115465b20c",
+  "source": "b47c13e1f5b745b94880218e347f77b4142686ff",
+  "initial_git_status": "",
+  "output_was_absent": true,
+  "attempt_number": 1,
+  "maximum_task_attempts": {
+    "M0": 2,
+    "trajectories": 2,
+    "feedback": 20,
+    "endpoint": 2
+  },
+  "return_code": 0,
+  "wall_seconds": 119.08089262500289,
+  "children_max_rss": 1558265856
+}

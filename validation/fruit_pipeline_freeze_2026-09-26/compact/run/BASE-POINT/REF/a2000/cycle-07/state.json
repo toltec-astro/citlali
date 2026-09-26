@@ -1,0 +1,24 @@
+{
+  "schema": "point-fruit-ready-state-v1",
+  "array": "a2000",
+  "cycle_index": 7,
+  "ready": true,
+  "candidate": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/run/BASE-POINT/REF/a2000/cycle-07/candidate.fits",
+    "sha256": "dad8f1d35593e767430034fcb34aefc4bc52cb5e75d669e01c6a81844cc8f97a"
+  },
+  "total": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/run/BASE-POINT/REF/a2000/cycle-07/native/products/total.fits",
+    "sha256": "2a5d5ebd4a9e8b21c206acc99bfa3619ac048b87664f621aea7604a010f191f8"
+  },
+  "receipt": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/run/BASE-POINT/REF/a2000/cycle-07/native/products/receipt.yaml",
+    "sha256": "b58b9877c457b3d1cae78dfa0c44f0feb7ff131390761429647d0f6426d29737"
+  },
+  "original_plan_sha256": "83b4555c974d0b9d25d01646dab9aa5cefd43a36e70250edcf94a8314d327973",
+  "original_map_request_sha256": "9a58025181eb84cbcd54b9b87c8394d42c05cd4c52e7dff1d643a848a658940a",
+  "stop_reason": null,
+  "branch": "REF",
+  "policy": "BASE-POINT",
+  "owner_sha256": "d97850ccf1caf709944415adfcf37ec5829b82716fc7ca5d9d2b2c6e523ec5a5"
+}

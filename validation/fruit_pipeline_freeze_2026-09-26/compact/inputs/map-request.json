@@ -1,0 +1,29 @@
+{
+  "schema": "citlali-map-saved-ptc-v1",
+  "owner_binding": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/inputs/map-owner.json",
+    "sha256": "219f6641b40a1cfc049eae24e320a14fe06f014bf804a87223a4b8772ea932aa"
+  },
+  "pixel_size_arcsec": 2.0,
+  "coverage_cut": 0.5,
+  "networks": [
+    {
+      "root": "/Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/upstream/products/network11",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/inputs/network11-input.json",
+        "sha256": "87b9fdca0f7907362854255b9742d8d54c5b906a14fbf22560c4c7560076d8f3"
+      },
+      "receipt_sha256": "122d6d32e650f097efc954a61847f2d603416d41d4cb4331f75a52548ed8cf29",
+      "ptc_receipt_sha256": "23ba4b6f458e4180bcf0e6de96cff6cfd9d05c677621030a7a9d15253f426b68"
+    },
+    {
+      "root": "/Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/upstream/products/network12",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/bright-point-freeze-20260926/inputs/network12-input.json",
+        "sha256": "ea11d9a245d7bd7989606f634cb85502c30ed1f014de7c8aa8c79ce4959e8d9a"
+      },
+      "receipt_sha256": "798c2470242f0f8fda5cb7861c4559cb452407a63002007b6c96fabbe51dca50",
+      "ptc_receipt_sha256": "3781075fc2e55b82e012ded5c21172e5f9e7c11f2fccc5e0c0fd78b0da63226e"
+    }
+  ]
+}
