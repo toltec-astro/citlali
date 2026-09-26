@@ -149,7 +149,7 @@ calibration, or an empirically validated adaptive uncertainty law.
 ## Execution, retention and decision
 
 Scientific source: e3cbf1eeadda256e4d9f400a834f9f7d462c1ae2, independently reviewed
-before launch; later changes only complete reporting and evidence. The matching
+before launch; later changes complete reporting, failure-status propagation and evidence. The matching
 binary, inputs, solver settings, original raster digests, common geometry and
 predeclared comparator tolerances are bound in the compact execution/preflight.
 The rank10 carrier was generated from originals once; no archived stream supplied
@@ -165,8 +165,12 @@ native error-level messages; the same endpoint NumPy matmul warning class as the
 frozen route is retained in RUN.txt, with supported returned scales finite. No
 scientific failure or replacement attempt was used.
 
-Compact preservation, manifest and subsequent exact native-payload cleanup are
-recorded beside this report. Protected inputs are rehashed before and after cleanup.
+Compact preservation retained 3,797 files / 203.697 MB, committed before deletion.
+The independently verified 15,642 remaining native files / 1.481 GB were removed;
+all compact hashes and 31 distinct protected input hashes remain unchanged.
+Per-cycle cleanup separately removed 7,210 files / 10.946 GB of transient writes.
+These logical totals are not simultaneous footprint or physical free-space gain.
+The final deletion interval gained 1.522 GB of free space; see CLEANUP.json.
 The existing 26.2 MB freeze and 235 MB comparison remain referenced in place. The
 frozen tag/profile and unrelated work are unchanged; no push, merge, RTC change,
 production promotion or new observation processing occurred.

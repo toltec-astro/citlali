@@ -6,7 +6,7 @@ Owned branch codex/ptc-rank-response-20260926, managed checkout
 `timestream-successor-bright-point-base-v1-20260926` remains at exact
 5435bdbdb4e6708e884ae4cb2b0fd93e74102ce5. Science source is
 **e3cbf1eeadda256e4d9f400a834f9f7d462c1ae2**, reviewed before execution; later commits
-complete reporting, evidence and cleanup only.
+complete reporting, failure-status propagation, evidence and cleanup only.
 
 Read [assessment](../validation/ptc_rank_response_2026-09-26/ASSESSMENT.md),
 [matrix](../validation/ptc_rank_response_2026-09-26/compact/report/matrix.json),

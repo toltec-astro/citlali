@@ -31,18 +31,28 @@
     "native_ctest": 34,
     "baseline": 207,
     "full_config_preflight": "pass",
-    "post_reporting": 8
+    "post_reporting": 8,
+    "final_focused_python": 44
   },
   "native_learning_receipts_checked": 1572,
   "full_map_support_checks": 132,
   "retained_files": 3797,
   "retained_bytes": 203696940,
   "native_cleanup": {
-    "status": "enumerated; pending durable commit and deletion",
+    "status": "completed",
     "files": 15642,
-    "bytes": 1480783820
+    "bytes": 1480783820,
+    "physical_free_space_delta": 1521565696,
+    "compact_commit": "d32c0f8eec545382ee09cc65156c73d0357cfbbc",
+    "all_targets_absent": true,
+    "compact_hashes_unchanged": true,
+    "prior_cycle_removals": {
+      "files": 7210,
+      "logical_bytes": 10945611896,
+      "manifest": "compact/rank-*/temporary-removals.jsonl"
+    }
   },
-  "protected_inputs": "verified preflight and preservation; recheck after cleanup",
+  "protected_inputs": "31 distinct original/configuration objects verified before and after cleanup",
   "reference_profile_unchanged": true,
   "freeze_tag_unchanged": true,
   "unity_spack": "not performed; local AppleClang/Homebrew only",
@@ -58,5 +68,6 @@
     "push/merge/production"
   ],
   "decision": "retain rank10 reference; rank15 promising compact-source alternative with worse broad response",
-  "next_action": "recommend one independent-observation rank15-versus-rank10 confirmation; not executed"
+  "next_action": "recommend one independent-observation rank15-versus-rank10 confirmation; not executed",
+  "final_review": "science/ownership/retention pass; CLI failure propagation repaired and awaiting exact-SHA recheck; original completed science unchanged"
 }

@@ -245,7 +245,7 @@ def run(root,binary,review):
         with ThreadPoolExecutor(max_workers=3) as pool:
             futures={(rank,branch):pool.submit(cell,rank,branch) for rank in (5,15) for branch in BRANCHES[1:] if results[f'{rank}/REF']['status']=='completed'}
             for (rank,branch),f in futures.items():results[f'{rank}/{branch}']=f.result()
-        record['status']='completed_matrix'
+        record['status']='completed_matrix' if len(results)==12 and all(row['status']=='completed' for row in results.values()) else 'incomplete_matrix'
     except Exception as exc:record.update(status='blocked_gate',reason=str(exc))
     for rank in (5,10,15):
         for branch in BRANCHES:results.setdefault(f'{rank}/{branch}',dict(rank=rank,branch=branch,status='blocked',reason='prerequisite REF/regression gate unavailable'))

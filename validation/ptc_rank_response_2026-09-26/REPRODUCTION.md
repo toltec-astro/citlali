@@ -50,6 +50,7 @@ $HOME/tolteca/bin/python "$POINT_REPO/validation/ptc_rank_response_2026-09-26/au
 
 The focused gate evidence records 42 Python tests, 34 CTests, 207 baseline-tool
 tests and full config preflight. Eight reporting-focused tests passed again after
-adding final saved-product diagnostics. These are local AppleClang/Homebrew results,
+adding final saved-product diagnostics; 44 focused tests passed after the final
+CLI failure-propagation repair (mocked failures only, no science rerun). These are local AppleClang/Homebrew results,
 not representative Unity/Spack qualification. The original reference profile and
 freeze tag remain untouched. No push or merge was performed.

@@ -79,3 +79,31 @@ def test_saved_report_survives_failed_T10_without_measurement(tmp_path,monkeypat
     save_json(p,dict(ready=False,completed_cycle=10,histories=[dict(cycle_index=9),dict(cycle_index=10,ready=False,stop_kind='computation_or_processing')]))
     assert reporting.report(tmp_path)['counts']['feedback']==0
     assert json.loads((tmp_path/'report/matrix.json').read_text())==matrix
+
+
+@pytest.mark.parametrize('failure',[(5,'REF'),(15,'C-core-plus')])
+def test_later_native_failure_propagates_exit_without_losing_other_cells(tmp_path,monkeypatch,failure):
+    import point_rank_experiment as experiment
+    import point_pipeline
+    save_json(tmp_path/'PREFLIGHT.json',dict(source_revision='source',operands=[],reference_tolerances={}))
+    review=tmp_path/'review.json';save_json(review,dict(source_revision='source',verdict='pass'))
+    monkeypatch.setattr(point_pipeline,'validate_environment',lambda *a:{})
+    monkeypatch.setattr(experiment,'compare',lambda *a:dict(pass_=True))
+    monkeypatch.setattr(experiment,'compare_injection',lambda *a:dict(pass_=True))
+    calls=[]
+    def result(rank,branch):
+        calls.append((rank,branch))
+        if (rank,branch)==failure:raise RuntimeError('native solver failed')
+        return dict(ready=True,completed_cycle=10,endpoint_status='completed')
+    monkeypatch.setattr(experiment,'run_ref',lambda root,binary,rank:result(rank,'REF'))
+    monkeypatch.setattr(experiment,'run_injection',lambda root,binary,rank,branch:result(rank,branch))
+    assert experiment.run(tmp_path,Path('binary'),review)==1
+    record=json.loads((tmp_path/'EXECUTION.json').read_text())
+    assert record['status']=='incomplete_matrix' and len(record['matrix'])==12
+    cells={(r['rank'],r['branch']):r for r in record['matrix']}
+    assert cells[failure]['status']=='processing_failed'
+    assert cells[10,'REF']['status']=='completed' and cells[15,'REF']['status']=='completed'
+    if failure==(5,'REF'):
+        assert all(cells[5,b]['status']=='blocked' for b in experiment.BRANCHES[1:])
+        assert all((5,b) not in calls for b in experiment.BRANCHES[1:])
+    else:assert cells[5,'C-shoulder']['status']=='completed'
