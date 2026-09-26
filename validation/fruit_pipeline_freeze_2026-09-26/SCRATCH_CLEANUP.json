@@ -1,0 +1,231 @@
+{
+  "files": [
+    {
+      "path": "/private/tmp/fruit_freeze_native_bindings.py",
+      "bytes": 5404,
+      "sha256": "78e41eff1bc070a2640ae78efbee6f9aa46abff40b7883683569c4ff8eb08106"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-cold.sb",
+      "bytes": 522,
+      "sha256": "ab8a6221f3f5ea6f7328429224bdafe59d1231a72eaa111f79fdc3115465b20c"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-native-tests.log",
+      "bytes": 7448,
+      "sha256": "c65d2e80f13e29c49227f99ed5687dc37a1ac5ad82703d7ba6ce51bd2c8cb240"
+    },
+    {
+      "path": "/private/tmp/fruit_freeze_edit.py",
+      "bytes": 15693,
+      "sha256": "ebbe263f524b7ada7d56c46a2aaba364c06d2ee3ed1f9f17138d1c79a20692b5"
+    },
+    {
+      "path": "/private/tmp/fruit_freeze_prepare.py",
+      "bytes": 6386,
+      "sha256": "60536553100f2ab01964015f4b8d4b4a10b813c8cc97d80fd496a27c72692fdd"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-quickstart.md",
+      "bytes": 11556,
+      "sha256": "1640ffffbcb94c0fa852318c6c1fb72ecb930e613ad8399aeb0a530390b02d11"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-configure.log",
+      "bytes": 84707,
+      "sha256": "16514baee10e2cc5b6ebb372300c4914194be86cdaf39bf77f54876982a603f0"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-python-tests.log",
+      "bytes": 99,
+      "sha256": "240a9628bea9ba2b961918963c300e49e0c04f70f86d4f16ccee0bfc6c88988a"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-candidate-build.log",
+      "bytes": 1459,
+      "sha256": "482151262fa98cd6c8488c0b0844174175fb8e6dd9e6bb8c7976c6acc197d8f6"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-isolation.json",
+      "bytes": 1502,
+      "sha256": "2e66a4f2dcff6b60a0487fac470cc764ea8fd56e157ce0cba1c4ad911985841e"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-preflight.log",
+      "bytes": 339,
+      "sha256": "cb72e35bd7377d63ea108dddaeb2964a77ea44bd7fe31c08d37b6cf20bab6c35"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-cold-launch.py",
+      "bytes": 1879,
+      "sha256": "412dca2126750f9e7c9da95cd2fdf1689107c5c3ef1fbb6d05d02150876a6378"
+    },
+    {
+      "path": "/private/tmp/fruit_freeze_build.py",
+      "bytes": 1284,
+      "sha256": "4d721c98957d6009ba125c8199a08e98d37e6b38151578210a468045e4b48dfe"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-build.log",
+      "bytes": 32226,
+      "sha256": "93f69881a31418d49f29668b6d1a950312066b85b8638a5d2f7068e98edded51"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-retained-regression.json",
+      "bytes": 27766,
+      "sha256": "fd9ebb699e603809e1a59218e60d377927776c2c977047c8a4e93c6d4664eb51"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-report.sb",
+      "bytes": 238,
+      "sha256": "7757f3df60365a5f489c7aac80bef7f5d8e0dccc02862dedc0fd9fc1f263d57e"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-cold-run.log",
+      "bytes": 12951,
+      "sha256": "22d1a601c4740ac3127fa9a360dd1fbcdaf29cea23d5cd269c2bcd43c6d1b2ba"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-saved-report.json",
+      "bytes": 238835,
+      "sha256": "c6f87866fe98ccdbedc26910d5e54d1d7cfbcb8fa61a757e74d4521c07cdfc51"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-candidate-configure.log",
+      "bytes": 75539,
+      "sha256": "ee58b5de47e633132d306fb2ea7323dbe83aeaf5c831cb5d459ad98621df34fe"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-regression.json",
+      "bytes": 27766,
+      "sha256": "fd9ebb699e603809e1a59218e60d377927776c2c977047c8a4e93c6d4664eb51"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-config-tests.log",
+      "bytes": 12052,
+      "sha256": "c6fbfff7146fa4bf5942d84c484957a120f13c16205ca7f1b51e5b17776af92f"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-report-figure.py",
+      "bytes": 5149,
+      "sha256": "05fda2b31863decb9f781843a503566380a01ab5027da4114debca0f80ee4b88"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-interface-tests.log",
+      "bytes": 6214,
+      "sha256": "e7af2fa080148f46f8b7390005a84e9e353f183b1ade03091fad7aff68cb6259"
+    },
+    {
+      "path": "/private/tmp/fruit_freeze_finish_helpers.py",
+      "bytes": 1452,
+      "sha256": "54fa802754b186e189046e07a3647c86202a1d9fff3f8cd42a0a9051fb935825"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-retain.py",
+      "bytes": 4416,
+      "sha256": "0eba95d6bd19c723995459b1b4253fad983f9db6d2414f50333a6f4eff90b8af"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-rtc-tests.log",
+      "bytes": 27515,
+      "sha256": "189466193d30be60f579c7654a6bc2c8d877791b080b2a05c21669f1cb84ee4f"
+    },
+    {
+      "path": "/private/tmp/fruit_freeze_build_recipe.py",
+      "bytes": 690,
+      "sha256": "f1c8f70a899d97ef8b5664556c051fd91d239bbfa87472a8d196cff52fcb7f37"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-native-tests-build.log",
+      "bytes": 6754,
+      "sha256": "45e9214e74ae06164a85600f7a20f85ca94e90e9f1569f38f43e4e00673e5c9a"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-baseline-tests.log",
+      "bytes": 289,
+      "sha256": "03b00a66ddcc29faebdd21ba5e3fd2faa3d8b0f3fd0db3c2b468790c65fa3b9b"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-wrapper-tests.log",
+      "bytes": 780,
+      "sha256": "0e071123d07945a4f3e864a4283842f587c52fb9fd6be1ff32e2e52e357a7ac4"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-preflight-check/ENVIRONMENT.json",
+      "bytes": 503,
+      "sha256": "ad5a24abb3f7038e3b386774e1733bacf9eb47012fba66af43731df3bd87c612"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-preflight-check/freeze/prospective.json",
+      "bytes": 4452,
+      "sha256": "bb9d96cb7730d497b5f1cb88c040213b8ffbad2498d89a26b410061b77814245"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-preflight-check/freeze/dependencies.json",
+      "bytes": 12848,
+      "sha256": "5af5a13602525e8baec92879bde29b47110e1bc3face35b20a136b7859753db2"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-preflight-check/freeze/budget.json",
+      "bytes": 199,
+      "sha256": "d2bf22bf2c9cea660e192c94bd45a973f2ea142f036a27b5ab5d8faf6ef16ab3"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-preflight-check/freeze/generated-inputs.json",
+      "bytes": 1224,
+      "sha256": "5abb0f43ad569d54960edd02729ec51d0ac4cbc872cba6e785ad74c9eaf12c80"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-preflight-check/inputs/effective-point.yaml",
+      "bytes": 13856,
+      "sha256": "cda373de73e2a2f45b138690434d25721b51be83a2428ff22af44838019e23ff"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-preflight-check/inputs/observation.json",
+      "bytes": 597,
+      "sha256": "dd80c1e9c50d483fd8d61fc9245eb382084b44da658af38b475bf2bfc39ef18b"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-preflight-check/inputs/ast-source-binding.json",
+      "bytes": 383,
+      "sha256": "a8aacdd5c0a31daf634c73257261ca563d2041ea1b9e9137889dac911e0a05e1"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-preflight-check/inputs/network11-input.json",
+      "bytes": 34818,
+      "sha256": "ac61864091c5afdb9a5e4b3e905433ae1a049c2357a6adc582bfcd782a0203a2"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-preflight-check/inputs/processing-request.json",
+      "bytes": 3891,
+      "sha256": "87273da62bdef6fac2bd6a3a9303b09b92e5a2724cd7f3c8f47de21578d52640"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-preflight-check/inputs/map-owner.json",
+      "bytes": 667,
+      "sha256": "219f6641b40a1cfc049eae24e320a14fe06f014bf804a87223a4b8772ea932aa"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-preflight-check/inputs/network12-input.json",
+      "bytes": 35123,
+      "sha256": "8be97e150960fd7ba0174fdbfaee80bf387a57927de0fff6321104e728f34332"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-mpl/fontlist-v390.json",
+      "bytes": 275833,
+      "sha256": "4f67036ca9388c9bcbf214c6d2f5059f9f17eb093e9ffa567bde3f433dcf47cb"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-cache/fontconfig/CACHEDIR.TAG",
+      "bytes": 200,
+      "sha256": "05e7633fb31bf1f6f8d89020c16b9f24587fdf7638e951c9745b192f5fc3b682"
+    },
+    {
+      "path": "/private/tmp/fruit-freeze-cache/fontconfig/5d9ddc72612bb959b1de2395187dbd62-le64.cache-9",
+      "bytes": 70816,
+      "sha256": "717fd676edd05fd549defa38ac7b10f5851e901b271ebb3860aeec16d3c49532"
+    }
+  ],
+  "total_bytes": 1074320,
+  "scope": "Exact task-created temporary files/cache/preflight-only directories; existing fruit-ten scratch and all other worktrees/builds untouched"
+}

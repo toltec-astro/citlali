@@ -1,0 +1,8 @@
+.........................                                                [100%]
+=============================== warnings summary ===============================
+../../../../tolteca/lib/python3.13/site-packages/_pytest/cacheprovider.py:475
+  /Users/gwilson/tolteca/lib/python3.13/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: cache could not write path /Users/gwilson/.codex/worktrees/fruit-pipeline-freeze/citlali-refactor/.pytest_cache/v/cache/nodeids: [Errno 1] Operation not permitted: '/Users/gwilson/.codex/worktrees/fruit-pipeline-freeze/citlali-refactor/.pytest_cache/v/cache/nodeids'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+25 passed, 1 warning in 1.49s

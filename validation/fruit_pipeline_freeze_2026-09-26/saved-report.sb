@@ -1,0 +1,7 @@
+(version 1)
+(allow default)
+(deny network*)
+(deny file-read-data
+ (subpath "/Users/gwilson/work_toltec/local_data")
+ (subpath "/private/tmp/citlali-point-additive-20260923")
+ (subpath "/private/tmp/citlali-point-guarded-build-20260925"))
