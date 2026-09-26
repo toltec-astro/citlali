@@ -1,0 +1,32 @@
+{
+  "schema": "point152430-publication-closeout-v1",
+  "reviewed_candidate_revision": "263aed9b37dad1af8d643be10e5396eb376e281f",
+  "science_revision": "54adaeebd2068cf827fe39f0aae8c3fbddcb03e0",
+  "bounded_execution_closed": true,
+  "requested_comparison_complete": false,
+  "final_review": "pass",
+  "sealed_payload_files": 173,
+  "sealed_payload_bytes": 10953748,
+  "seal_sha256": "550db60cefde0da1f2f11e68b6c393253ca31e6538c66a6960dd4c83cb5c7421",
+  "post_seal_records": [
+    {
+      "path": "provenance/final-review.json",
+      "bytes": 3927,
+      "sha256": "de2f09b5df9b9a427fb0f44b45b13dcb81bdfc1bcc86bccf3598298e06c11537"
+    },
+    {
+      "path": "provenance/final-review.md",
+      "bytes": 3559,
+      "sha256": "9fdf073e27c942d4c7a036b41b85e51d78b2d35c160bd46ef08b776dc71b7ba8"
+    }
+  ],
+  "all_sealed_payloads_verified_unchanged": true,
+  "raw_inputs_unchanged": true,
+  "temporary_removal_bytes": 682535646,
+  "feedback_applications": 0,
+  "unavailable_cells": 14,
+  "final_bundle_bytes_before_this_publication_record": 10993974,
+  "permanent_common_repository": "/Users/gwilson/GitHub/citlali/.git",
+  "branch": "codex/map-successor-first-forward-001",
+  "commit_scope": "publication of exact independent final review and this accounting only; no source or scientific change; no push"
+}
