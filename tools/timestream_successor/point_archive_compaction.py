@@ -111,6 +111,10 @@ def explain_missing(path,actions=None):
 
 def apply(out=OUT):
     actions=read(out/'ACTION_MANIFEST.json.gz');v=read(out/'FRESH_DUPLICATE_VERIFICATION.json');review=read(out/'MANIFEST_REVIEW.json')
+    repo=Path(__file__).resolve().parents[2]
+    revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()
+    require(review['source_revision']==revision,'unreviewed source revision')
+    require(not subprocess.check_output(['git','status','--porcelain'],cwd=repo,text=True).strip(),'source must remain clean before removal')
     require(digest(out/'ACTION_MANIFEST.json.gz')==v['action_manifest_sha256']==review['action_manifest_sha256'],'manifest binding changed')
     require(review['disposition']=='pass','independent manifest review required');validate_closure(actions)
     require(not (out/'REMOVAL_RECEIPT.json').exists(),'no automatic application retry')
@@ -118,6 +122,7 @@ def apply(out=OUT):
         changed_rejection(a['path'],a['identity']);changed_rejection(a['retained'],a['retained_identity'])
         require(a['identity']['nlink']==a['retained_identity']['nlink']==1,'hardlinked payload needs separate disposition')
     record=dict(status='applying owner-authorized reviewed manifest',files=0,logical_bytes=0,manifest_sha256=v['action_manifest_sha256'],free_space_before=subprocess.check_output(['df','-k',str(out)],text=True),started_epoch=time.time(),authorization='2026-09-26 owner scientific-importance/archive-compaction directive, section6; no routine additional approval')
+    record.update(source_revision=revision,review_sha256=digest(out/'MANIFEST_REVIEW.json'))
     save(out/'REMOVAL_RECEIPT.json',record)
     try:
         with (out/'REMOVAL_LOG.jsonl').open('x') as log:
