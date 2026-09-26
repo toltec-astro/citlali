@@ -1,22 +1,14 @@
 # Citlali Refactor Status
 
-## POINT152430 a2000 no-upper-coverage-veto replacement — active 2026-09-26
+## POINT 152430 a2000 no-upper-coverage-veto comparison — completed 2026-09-26
 
-The owner explicitly removes high coverage alone as admission-noise invalidity
-for this diagnostic route, retaining existing numerical continuation, lower
-coverage behavior, genuine support/covariance checks and geometric boundary.
-The same selected acquisition152430/0/2, tune152430/0/1 and networks11/12 are fixed.
-This is a named method change and a fresh full bounded15-trajectory rerun, not
-an unchanged-method replay. No production default or threshold change.
+All 15 trajectories completed M0–T10 at science commit ac2bee1febaab82b808f7f751374b797de033c6a: 150 feedback attempts, four physical inputs, nine ideal controls and three endpoint covariance analyses, without native failure or retry. Source/binary/input bindings and the current assessment are in validation/point_152430_no_upper_coverage_veto_2026-09-26.
 
-Superseded attempt products, repository record and handoff are erased under the
-owner's exact scoped authorization after preserving31input bindings and rechecking
-all input hashes. Shared source/build and retained152389 evidence remain. Existing
-Git commits are not rewritten. No maintained result is claimed for that attempt.
-New records: validation/point_152430_no_upper_coverage_veto_2026-09-26.
-One independent preflight, full authorized comparison, compact current assessment,
-final review and run-owned temporary cleanup are required. CUT3, JINC, other arrays,
-other observations and threshold/covariance tuning remain excluded. No push/merge.
+The owner-authorized high-coverage semantic change preserves existing numerical predictions, lower-coverage handling and real-defect guards. Fresh M0's three pixels above the training maximum remain usable, with separate extrapolation metadata. No production/default or threshold change.
+
+CORR equals BASE-POINT at all 55 paired map/candidate stages. The shoulder aperture mismatch remains −2.5498% of source; DIAG modestly improves it to −2.3219%, about 0.064 conditional aperture sigmas. The substantial 152389 supplement benefit does not recur; full covariance adds no demonstrated advantage here. Seed, compact and terminal-drift effects are small relative to matching conditional uncertainties. Keep the method/default decision parked.
+
+Superseded attempt products and tracked records were erased without a new failure archive or Git-history rewrite. This run's inactive numeric intermediates are removed; useful new maps/masks, controls, measurements, inputs/configuration and reproduction records are retained compactly in permanent Git. Protected inputs and retained 152389 evidence remain unchanged. No downloads, push, merge or follow-on numerical experiment.
 
 ## Whole local-data RTC/PTC purge — completed 2026-09-26
 

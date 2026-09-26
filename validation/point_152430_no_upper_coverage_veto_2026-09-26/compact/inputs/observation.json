@@ -1,0 +1,22 @@
+{
+  "schema": "citlali-observation-networks-v1",
+  "observation": 152430,
+  "subobservation": 0,
+  "scan": 2,
+  "networks": [
+    {
+      "network": 11,
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/inputs/network11-input.json",
+        "sha256": "05c5d2687adfdceab6c176732b4306fcc1fd9b5974bedcac96cfabd8c2cd2eff"
+      }
+    },
+    {
+      "network": 12,
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/inputs/network12-input.json",
+        "sha256": "297a8739051f4ebd02fdc597a166a47ff52c664a0dbe3fcd227293043442796f"
+      }
+    }
+  ]
+}

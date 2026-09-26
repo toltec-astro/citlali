@@ -1,0 +1,2420 @@
+{
+  "root": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926",
+  "files": 16026,
+  "bytes": 1202019404,
+  "scope": "only run-owned native numeric payload suffixes under upstream/M0/initial/run; no external input or retained map",
+  "applied": true,
+  "lossless_large_metadata": [
+    {
+      "path": "upstream/products/network11/donor-continuity/apply-receipt.yaml",
+      "sha256": "aa1e58616a82fe337edd484703b0ba83f1716ec4d4169d761e18c466e29eb6fd",
+      "bytes": 11321809,
+      "compressed_path": "upstream/products/network11/donor-continuity/apply-receipt.yaml.gz",
+      "compressed_bytes": 88186
+    },
+    {
+      "path": "upstream/products/network11/donor-continuity/cal/receipt.yaml",
+      "sha256": "26d0b024c3ab31625820a391cbe708b7dd49edbe73039d8b49e192d0324ff498",
+      "bytes": 277242,
+      "compressed_path": "upstream/products/network11/donor-continuity/cal/receipt.yaml.gz",
+      "compressed_bytes": 34277
+    },
+    {
+      "path": "upstream/products/network11/donor-continuity/post-lowpass-outcome.yaml",
+      "sha256": "3352c9fc00c8ad9141eaa9aa14aa78a914685e9a55511886d4c230292833965b",
+      "bytes": 13251435,
+      "compressed_path": "upstream/products/network11/donor-continuity/post-lowpass-outcome.yaml.gz",
+      "compressed_bytes": 535280
+    },
+    {
+      "path": "upstream/products/network11/donor-continuity/post-lowpass-spectra.yaml",
+      "sha256": "fd6b2f445ce0cc09267b835dda2811c0a89cc1981d59bf23215073e7e5162d05",
+      "bytes": 2432364,
+      "compressed_path": "upstream/products/network11/donor-continuity/post-lowpass-spectra.yaml.gz",
+      "compressed_bytes": 17273
+    },
+    {
+      "path": "upstream/products/network11/donor-continuity/post-notch-outcome.yaml",
+      "sha256": "5c15b7cc0ce03a55536488d5ff9689194133a4ef4a2c90b5c9143bcb9a35c865",
+      "bytes": 16946849,
+      "compressed_path": "upstream/products/network11/donor-continuity/post-notch-outcome.yaml.gz",
+      "compressed_bytes": 577463
+    },
+    {
+      "path": "upstream/products/network11/donor-continuity/post-notch-spectra.yaml",
+      "sha256": "b920d86361d1455ee9384fc19304f44bae5103de8c796d87c34344e9c041c57f",
+      "bytes": 3761790,
+      "compressed_path": "upstream/products/network11/donor-continuity/post-notch-spectra.yaml.gz",
+      "compressed_bytes": 24867
+    },
+    {
+      "path": "upstream/products/network11/donor-continuity/ptc/receipt.yaml",
+      "sha256": "8351151f0115130b209f1c75c0aef6d54e35c772fb5c44370a950e742756a285",
+      "bytes": 142983,
+      "compressed_path": "upstream/products/network11/donor-continuity/ptc/receipt.yaml.gz",
+      "compressed_bytes": 7840
+    },
+    {
+      "path": "upstream/products/network11/donor-continuity/relearned-stages.yaml",
+      "sha256": "86b73c3f78aa165d309d197db69eb9ea582d2172ec2ff512905ac20ecf3d58e7",
+      "bytes": 6394027,
+      "compressed_path": "upstream/products/network11/donor-continuity/relearned-stages.yaml.gz",
+      "compressed_bytes": 45845
+    },
+    {
+      "path": "upstream/products/network11/events.yaml",
+      "sha256": "d20a6c40de703da127371aad66c08ba13a05879d4fa04efb487c91023b2b2685",
+      "bytes": 172978,
+      "compressed_path": "upstream/products/network11/events.yaml.gz",
+      "compressed_bytes": 25081
+    },
+    {
+      "path": "upstream/products/network11/learning-receipt.yaml",
+      "sha256": "eea8dd8bd38cc016e1980bfb5c7753b5199446f1ab35ee7104ae9e2fb4849a43",
+      "bytes": 1187081,
+      "compressed_path": "upstream/products/network11/learning-receipt.yaml.gz",
+      "compressed_bytes": 40049
+    },
+    {
+      "path": "upstream/products/network11/original-spectra.yaml",
+      "sha256": "caf2ab539bd1950aba1e5048ed271a7de762f607918f66dd45998a14229f7b78",
+      "bytes": 653172,
+      "compressed_path": "upstream/products/network11/original-spectra.yaml.gz",
+      "compressed_bytes": 5463
+    },
+    {
+      "path": "upstream/products/network11/receipt.yaml",
+      "sha256": "a4e79ed1c21573571d62348e7d77dca5a58dcdf9f63dbe08f1ebe866b719a728",
+      "bytes": 13386039,
+      "compressed_path": "upstream/products/network11/receipt.yaml.gz",
+      "compressed_bytes": 174225
+    },
+    {
+      "path": "upstream/products/network11/support-decisions.yaml",
+      "sha256": "d2c73bcefad0f8de2452a40539d90b41d806ec4a3562cf5fc51fc0246ffc96b3",
+      "bytes": 132372,
+      "compressed_path": "upstream/products/network11/support-decisions.yaml.gz",
+      "compressed_bytes": 3608
+    },
+    {
+      "path": "upstream/products/network12/donor-continuity/apply-receipt.yaml",
+      "sha256": "2b4deb10d2616f5ee9a12bb3f64f82c365988fe03db37ff09415cf54b3f6687b",
+      "bytes": 11512158,
+      "compressed_path": "upstream/products/network12/donor-continuity/apply-receipt.yaml.gz",
+      "compressed_bytes": 90163
+    },
+    {
+      "path": "upstream/products/network12/donor-continuity/cal/receipt.yaml",
+      "sha256": "9d31c94b98c1e18d5ec823badbb47cd0dc3fc8ba6e8fac1d7c9d44cfb179ecc0",
+      "bytes": 280804,
+      "compressed_path": "upstream/products/network12/donor-continuity/cal/receipt.yaml.gz",
+      "compressed_bytes": 34743
+    },
+    {
+      "path": "upstream/products/network12/donor-continuity/post-lowpass-outcome.yaml",
+      "sha256": "2a701b9e2a1597d6ade147125a691400732d804425dea89caf1a4f8c1e92306d",
+      "bytes": 13464666,
+      "compressed_path": "upstream/products/network12/donor-continuity/post-lowpass-outcome.yaml.gz",
+      "compressed_bytes": 547866
+    },
+    {
+      "path": "upstream/products/network12/donor-continuity/post-lowpass-spectra.yaml",
+      "sha256": "1730363e043aa76c482b76895f64e93a50ae0bfc22620ec5cb4f246ae5a28e3b",
+      "bytes": 2483190,
+      "compressed_path": "upstream/products/network12/donor-continuity/post-lowpass-spectra.yaml.gz",
+      "compressed_bytes": 17769
+    },
+    {
+      "path": "upstream/products/network12/donor-continuity/post-notch-outcome.yaml",
+      "sha256": "9f21ce027e7b8b4f6d365894d75e662d8dc1e17ca95e5d13d6fd675039866e39",
+      "bytes": 17254077,
+      "compressed_path": "upstream/products/network12/donor-continuity/post-notch-outcome.yaml.gz",
+      "compressed_bytes": 591164
+    },
+    {
+      "path": "upstream/products/network12/donor-continuity/post-notch-spectra.yaml",
+      "sha256": "2bff099707527fc1d7f6657335bb86c35fc07a04ed1a7dd0b7cf630eac01f691",
+      "bytes": 3846390,
+      "compressed_path": "upstream/products/network12/donor-continuity/post-notch-spectra.yaml.gz",
+      "compressed_bytes": 25672
+    },
+    {
+      "path": "upstream/products/network12/donor-continuity/ptc/receipt.yaml",
+      "sha256": "03e73127c1d2c3a11e65ac2215b2008c6e14f9958172f5e27e844ff1522564d1",
+      "bytes": 146910,
+      "compressed_path": "upstream/products/network12/donor-continuity/ptc/receipt.yaml.gz",
+      "compressed_bytes": 9913
+    },
+    {
+      "path": "upstream/products/network12/donor-continuity/relearned-stages.yaml",
+      "sha256": "05df2af726a23f05fb42fbf09473e7559a0532dd6b7ef5d51eaf7258c2544eca",
+      "bytes": 6533412,
+      "compressed_path": "upstream/products/network12/donor-continuity/relearned-stages.yaml.gz",
+      "compressed_bytes": 47288
+    },
+    {
+      "path": "upstream/products/network12/learning-receipt.yaml",
+      "sha256": "c70ddc389a5ae12023ab81236409b955ab22d68368538f1b3987c5ff744f80fe",
+      "bytes": 1192411,
+      "compressed_path": "upstream/products/network12/learning-receipt.yaml.gz",
+      "compressed_bytes": 40322
+    },
+    {
+      "path": "upstream/products/network12/original-spectra.yaml",
+      "sha256": "022f585bb23368093964738d2cc66739b5b9e62eb07d28411288a1b7f2d5b639",
+      "bytes": 653882,
+      "compressed_path": "upstream/products/network12/original-spectra.yaml.gz",
+      "compressed_bytes": 5533
+    },
+    {
+      "path": "upstream/products/network12/receipt.yaml",
+      "sha256": "cda9ef5aad82c60910095e2052a10e343b1d2aa94b3ac153a67d0f1f7f1fc46c",
+      "bytes": 13594975,
+      "compressed_path": "upstream/products/network12/receipt.yaml.gz",
+      "compressed_bytes": 179488
+    },
+    {
+      "path": "upstream/products/network12/support-decisions.yaml",
+      "sha256": "3949c6329396a727bda07ecfaf7583cea98e6ade623837bfee9b6b1951411e21",
+      "bytes": 134757,
+      "compressed_path": "upstream/products/network12/support-decisions.yaml.gz",
+      "compressed_bytes": 3719
+    },
+    {
+      "path": "M0/products/a2000/handoff/network-11-segment-0-ptc.yaml",
+      "sha256": "5f420092a099f3d9577f33fef54cf3f4582cbc893007f66a87b61c57d56663fc",
+      "bytes": 321798,
+      "compressed_path": "M0/products/a2000/handoff/network-11-segment-0-ptc.yaml.gz",
+      "compressed_bytes": 7908
+    },
+    {
+      "path": "M0/products/a2000/handoff/network-11-segment-1-ptc.yaml",
+      "sha256": "820fa675d6e56e8307bdf138782cff96786e3b8662bc0b4dc31c2cb13b517b1b",
+      "bytes": 321850,
+      "compressed_path": "M0/products/a2000/handoff/network-11-segment-1-ptc.yaml.gz",
+      "compressed_bytes": 7940
+    },
+    {
+      "path": "M0/products/a2000/handoff/network-11-segment-2-ptc.yaml",
+      "sha256": "9ab2ebc31e11c6ec31cb903ecd5fbacbfcbf5f7de7a4fec50c58414f05e4af01",
+      "bytes": 322417,
+      "compressed_path": "M0/products/a2000/handoff/network-11-segment-2-ptc.yaml.gz",
+      "compressed_bytes": 8241
+    },
+    {
+      "path": "M0/products/a2000/handoff/network-11-segment-3-ptc.yaml",
+      "sha256": "f9a9b7743e8ed3a1419786e57bb7bbdcf3a3a861f78e2072c7601b008dd2c504",
+      "bytes": 321748,
+      "compressed_path": "M0/products/a2000/handoff/network-11-segment-3-ptc.yaml.gz",
+      "compressed_bytes": 7854
+    },
+    {
+      "path": "M0/products/a2000/handoff/network-11-segment-4-ptc.yaml",
+      "sha256": "fbdb937273c8a324aff23a224971d5990269b28a2d0593e2284bf87ed6118926",
+      "bytes": 321759,
+      "compressed_path": "M0/products/a2000/handoff/network-11-segment-4-ptc.yaml.gz",
+      "compressed_bytes": 7867
+    },
+    {
+      "path": "M0/products/a2000/handoff/network-11-segment-5-ptc.yaml",
+      "sha256": "e207f845f6cab937558cd05862bf3d1ce4dd5f6a2ffe1f095ad00614ffbed689",
+      "bytes": 321799,
+      "compressed_path": "M0/products/a2000/handoff/network-11-segment-5-ptc.yaml.gz",
+      "compressed_bytes": 7916
+    },
+    {
+      "path": "M0/products/a2000/handoff/network-12-segment-0-ptc.yaml",
+      "sha256": "64a80c3b15d47ed0bd354ddca83286f48df030aab2f400391b9da8a55c6be86e",
+      "bytes": 325661,
+      "compressed_path": "M0/products/a2000/handoff/network-12-segment-0-ptc.yaml.gz",
+      "compressed_bytes": 8428
+    },
+    {
+      "path": "M0/products/a2000/handoff/network-12-segment-1-ptc.yaml",
+      "sha256": "aa5eb1795880038080e9cfebb08a6e698abd5c299a2bf21930602a719d45db26",
+      "bytes": 326895,
+      "compressed_path": "M0/products/a2000/handoff/network-12-segment-1-ptc.yaml.gz",
+      "compressed_bytes": 9020
+    },
+    {
+      "path": "M0/products/a2000/handoff/network-12-segment-2-ptc.yaml",
+      "sha256": "7ac2f67bfd267e24e88b9f879e585d7f6f9fa29b701758405b73b28547ad4264",
+      "bytes": 326002,
+      "compressed_path": "M0/products/a2000/handoff/network-12-segment-2-ptc.yaml.gz",
+      "compressed_bytes": 8599
+    },
+    {
+      "path": "M0/products/a2000/handoff/network-12-segment-3-ptc.yaml",
+      "sha256": "944dace75dcc973c23282419944e07fd3cfa53a29d60f3abaa72badef00982e2",
+      "bytes": 324840,
+      "compressed_path": "M0/products/a2000/handoff/network-12-segment-3-ptc.yaml.gz",
+      "compressed_bytes": 8019
+    },
+    {
+      "path": "M0/products/a2000/handoff/network-12-segment-4-ptc.yaml",
+      "sha256": "550a7018dcccd850c41ec177df7d68594449d9223137588fdb5030e85c037324",
+      "bytes": 324830,
+      "compressed_path": "M0/products/a2000/handoff/network-12-segment-4-ptc.yaml.gz",
+      "compressed_bytes": 7993
+    },
+    {
+      "path": "M0/products/a2000/handoff/network-12-segment-5-ptc.yaml",
+      "sha256": "226bf9deb73bea48b3d0b29a3f12842f14294a2adf9e7217d39755274315e82d",
+      "bytes": 325320,
+      "compressed_path": "M0/products/a2000/handoff/network-12-segment-5-ptc.yaml.gz",
+      "compressed_bytes": 8261
+    },
+    {
+      "path": "M0/products/input-manifest.yaml",
+      "sha256": "9cb0db1a054848fba490bcce317247c6bd3bbf177949f6443ecb9933c69cccfe",
+      "bytes": 297032,
+      "compressed_path": "M0/products/input-manifest.yaml.gz",
+      "compressed_bytes": 11589
+    },
+    {
+      "path": "initial/C-core-minus/native/products/input-manifest.yaml",
+      "sha256": "04cde03f067d1583e6e1307a497e5a436a5bd0d2e351c4ce182f599f109f5145",
+      "bytes": 298436,
+      "compressed_path": "initial/C-core-minus/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 11968
+    },
+    {
+      "path": "initial/C-core-minus/native/products/receipt.yaml",
+      "sha256": "3c46404e89a15ca4cfd83de6f179a0acc75d6d555c164a49559ef78bf2436fbd",
+      "bytes": 382139,
+      "compressed_path": "initial/C-core-minus/native/products/receipt.yaml.gz",
+      "compressed_bytes": 28496
+    },
+    {
+      "path": "initial/C-core-plus/native/products/input-manifest.yaml",
+      "sha256": "389eb2d101ce285a881aefae9710e315391a177cdf37078e87636302f9031b46",
+      "bytes": 298433,
+      "compressed_path": "initial/C-core-plus/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 11965
+    },
+    {
+      "path": "initial/C-core-plus/native/products/receipt.yaml",
+      "sha256": "0a47c49c8c307916a6230b084e599149fab851d84abf21d0d5f585b91213da6a",
+      "bytes": 381485,
+      "compressed_path": "initial/C-core-plus/native/products/receipt.yaml.gz",
+      "compressed_bytes": 27492
+    },
+    {
+      "path": "initial/C-shoulder/native/products/input-manifest.yaml",
+      "sha256": "32e302eb8757b08a9b6408f8a4a1ef48d061950811fecb14f50864c4fb5e41e4",
+      "bytes": 298430,
+      "compressed_path": "initial/C-shoulder/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 11965
+    },
+    {
+      "path": "initial/C-shoulder/native/products/receipt.yaml",
+      "sha256": "7d94a0e63164a590bec4af597effed943f164c356b7e08c58f30de3c7e485db1",
+      "bytes": 381539,
+      "compressed_path": "initial/C-shoulder/native/products/receipt.yaml.gz",
+      "compressed_bytes": 27563
+    },
+    {
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-01/native/products/input-manifest.yaml",
+      "sha256": "04a0c9c5d0b1fedd88d500ca3d84fc15a7374581489789b01ed7a7839a895664",
+      "bytes": 305858,
+      "compressed_path": "run/BASE-POINT/C-core-minus/a2000/cycle-01/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13238
+    },
+    {
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-01/native/products/receipt.yaml",
+      "sha256": "7d8d2bf69529e4bcddfd60c678d4c1b9eb3398c42e861f4bbfb8b191c86c5c01",
+      "bytes": 382648,
+      "compressed_path": "run/BASE-POINT/C-core-minus/a2000/cycle-01/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29011
+    },
+    {
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-02/native/products/input-manifest.yaml",
+      "sha256": "165055ab3aa1f69828239bc1c911d628fc0fb156ca3018c4151995bfa6966ba5",
+      "bytes": 305904,
+      "compressed_path": "run/BASE-POINT/C-core-minus/a2000/cycle-02/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13239
+    },
+    {
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-02/native/products/receipt.yaml",
+      "sha256": "e966f811ff1e01265e9b3843db7ceb0b45bcb32900781677c10c882263374423",
+      "bytes": 383165,
+      "compressed_path": "run/BASE-POINT/C-core-minus/a2000/cycle-02/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29913
+    },
+    {
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-03/native/products/input-manifest.yaml",
+      "sha256": "e1711d9d8f1f54d1a2d40756740ee029a4cb99d706f9004f0d9725ec9d2dc07f",
+      "bytes": 305904,
+      "compressed_path": "run/BASE-POINT/C-core-minus/a2000/cycle-03/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13236
+    },
+    {
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-03/native/products/receipt.yaml",
+      "sha256": "0c78b4b10c890fdee4be0d6c4f6e552607bed267cc40b30f997f72abcc720134",
+      "bytes": 383838,
+      "compressed_path": "run/BASE-POINT/C-core-minus/a2000/cycle-03/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30292
+    },
+    {
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-04/native/products/input-manifest.yaml",
+      "sha256": "564b6328a004782b19da4d3b852d3102556400d5cda4a8f17949a810cdb554f5",
+      "bytes": 305904,
+      "compressed_path": "run/BASE-POINT/C-core-minus/a2000/cycle-04/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13236
+    },
+    {
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-04/native/products/receipt.yaml",
+      "sha256": "75dc78dd74729126f8f47d660b5bbe17a00ee745f405df3da4876535599c8276",
+      "bytes": 383846,
+      "compressed_path": "run/BASE-POINT/C-core-minus/a2000/cycle-04/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30487
+    },
+    {
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-05/native/products/input-manifest.yaml",
+      "sha256": "fe45a1d26d0c35df9bc35acea9d168ff0b1858b25b2083b55f38e863b38794ca",
+      "bytes": 305904,
+      "compressed_path": "run/BASE-POINT/C-core-minus/a2000/cycle-05/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13233
+    },
+    {
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-05/native/products/receipt.yaml",
+      "sha256": "8e24b3186472c2001928cac42d993c56653226549d61fd33db4b24b17f63125b",
+      "bytes": 383920,
+      "compressed_path": "run/BASE-POINT/C-core-minus/a2000/cycle-05/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30518
+    },
+    {
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-06/native/products/input-manifest.yaml",
+      "sha256": "09d144062da45466ad991419b87bfed5a5c16f467898cd05857648b1e043cd5e",
+      "bytes": 305904,
+      "compressed_path": "run/BASE-POINT/C-core-minus/a2000/cycle-06/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13232
+    },
+    {
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-06/native/products/receipt.yaml",
+      "sha256": "139bd4494477d4f817f4bae867b41f9af9fee4a0bc906813cceda27891ddc2fc",
+      "bytes": 383956,
+      "compressed_path": "run/BASE-POINT/C-core-minus/a2000/cycle-06/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30553
+    },
+    {
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-07/native/products/input-manifest.yaml",
+      "sha256": "86ec9093ab801f8f7cb5893b08859a4ff1798fc9cf8c9c56ddc148a3b0ce6bf8",
+      "bytes": 305904,
+      "compressed_path": "run/BASE-POINT/C-core-minus/a2000/cycle-07/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13238
+    },
+    {
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-07/native/products/receipt.yaml",
+      "sha256": "2e561db1ef19444e218516e25b730a0e20ef1c10ddecc9dc1dc45e51a288e369",
+      "bytes": 383946,
+      "compressed_path": "run/BASE-POINT/C-core-minus/a2000/cycle-07/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30508
+    },
+    {
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-08/native/products/input-manifest.yaml",
+      "sha256": "8b6d24d5f00d40a548ee18ab2347c8ed8b22419a8aa5295f327b432e0b321043",
+      "bytes": 305904,
+      "compressed_path": "run/BASE-POINT/C-core-minus/a2000/cycle-08/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13235
+    },
+    {
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-08/native/products/receipt.yaml",
+      "sha256": "ea1eff3deff0cb2da493b2f65e41fbd536e2e85e3c676d57c8fa608c47e910ec",
+      "bytes": 383919,
+      "compressed_path": "run/BASE-POINT/C-core-minus/a2000/cycle-08/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30524
+    },
+    {
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-09/native/products/input-manifest.yaml",
+      "sha256": "dff88e4ccac67f0f7787c6fc69e922bf415dafe50e8b6cd159870265d053a5bf",
+      "bytes": 305904,
+      "compressed_path": "run/BASE-POINT/C-core-minus/a2000/cycle-09/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13231
+    },
+    {
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-09/native/products/receipt.yaml",
+      "sha256": "0c250571044bcdf27635e9334bf30dbd86b1d502148a04454c038dd10a1c2be8",
+      "bytes": 383939,
+      "compressed_path": "run/BASE-POINT/C-core-minus/a2000/cycle-09/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30515
+    },
+    {
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-10/native/products/input-manifest.yaml",
+      "sha256": "160ebca199e379fd8f5edad785d18851b4abe0f2a77918f20eaca9159f68b539",
+      "bytes": 305904,
+      "compressed_path": "run/BASE-POINT/C-core-minus/a2000/cycle-10/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13236
+    },
+    {
+      "path": "run/BASE-POINT/C-core-minus/a2000/cycle-10/native/products/receipt.yaml",
+      "sha256": "350ccba7fa8a1fb9d58471cdafa26b6bfe2fc98a29bdf752d4d65459c7dabd4b",
+      "bytes": 383943,
+      "compressed_path": "run/BASE-POINT/C-core-minus/a2000/cycle-10/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30526
+    },
+    {
+      "path": "run/BASE-POINT/C-core-plus/a2000/cycle-01/native/products/input-manifest.yaml",
+      "sha256": "b5144051e984b0f3c335afc1ad734817c23d1387a4505052f53bec22a3e17d04",
+      "bytes": 305827,
+      "compressed_path": "run/BASE-POINT/C-core-plus/a2000/cycle-01/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13244
+    },
+    {
+      "path": "run/BASE-POINT/C-core-plus/a2000/cycle-01/native/products/receipt.yaml",
+      "sha256": "ac61c1694d6d3cfff1a27010787b770626c927d10e51e4fa43ac781decc879ce",
+      "bytes": 382605,
+      "compressed_path": "run/BASE-POINT/C-core-plus/a2000/cycle-01/native/products/receipt.yaml.gz",
+      "compressed_bytes": 28969
+    },
+    {
+      "path": "run/BASE-POINT/C-core-plus/a2000/cycle-02/native/products/input-manifest.yaml",
+      "sha256": "168901d909c1bae1cdb2359e4b5b0b57c655bdef746c3973f6b4207359440ee3",
+      "bytes": 305873,
+      "compressed_path": "run/BASE-POINT/C-core-plus/a2000/cycle-02/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13239
+    },
+    {
+      "path": "run/BASE-POINT/C-core-plus/a2000/cycle-02/native/products/receipt.yaml",
+      "sha256": "2d3db62c69bd3a3b9f04acdd37bd9808bdbcff0a96ca8380f87eb7863fb62804",
+      "bytes": 382970,
+      "compressed_path": "run/BASE-POINT/C-core-plus/a2000/cycle-02/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29808
+    },
+    {
+      "path": "run/BASE-POINT/C-core-plus/a2000/cycle-03/native/products/input-manifest.yaml",
+      "sha256": "2bd29df5bb231a45363b2fa1c5a215cab873c41243a4ea1d1d2f2d00dce6d3d5",
+      "bytes": 305873,
+      "compressed_path": "run/BASE-POINT/C-core-plus/a2000/cycle-03/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13242
+    },
+    {
+      "path": "run/BASE-POINT/C-core-plus/a2000/cycle-03/native/products/receipt.yaml",
+      "sha256": "c90cc6684ea3b2348c6f797be5c801156f012f0d433a34f9abe399537ea807ed",
+      "bytes": 383679,
+      "compressed_path": "run/BASE-POINT/C-core-plus/a2000/cycle-03/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30171
+    },
+    {
+      "path": "run/BASE-POINT/C-core-plus/a2000/cycle-04/native/products/input-manifest.yaml",
+      "sha256": "74d84ed222f9055397f31a104fa93d4cffb6cb2da920acec4325bc05a4a7fcc1",
+      "bytes": 305873,
+      "compressed_path": "run/BASE-POINT/C-core-plus/a2000/cycle-04/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13238
+    },
+    {
+      "path": "run/BASE-POINT/C-core-plus/a2000/cycle-04/native/products/receipt.yaml",
+      "sha256": "c2a16fec946d30584dcdecfec01db029dcd0d712d3d7e1b825c84186be7aaceb",
+      "bytes": 383749,
+      "compressed_path": "run/BASE-POINT/C-core-plus/a2000/cycle-04/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30454
+    },
+    {
+      "path": "run/BASE-POINT/C-core-plus/a2000/cycle-05/native/products/input-manifest.yaml",
+      "sha256": "d70c27748cfbb8ed347744c85b235ec68a2ef2c51cfa5d4328abf283c0f3c0b8",
+      "bytes": 305873,
+      "compressed_path": "run/BASE-POINT/C-core-plus/a2000/cycle-05/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13240
+    },
+    {
+      "path": "run/BASE-POINT/C-core-plus/a2000/cycle-05/native/products/receipt.yaml",
+      "sha256": "b9e10dade6ae6bd4ae4f2cb84bfc1aa628c9ee5248636177e4024ed3b6a2d244",
+      "bytes": 383849,
+      "compressed_path": "run/BASE-POINT/C-core-plus/a2000/cycle-05/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30482
+    },
+    {
+      "path": "run/BASE-POINT/C-core-plus/a2000/cycle-06/native/products/input-manifest.yaml",
+      "sha256": "dfb88e9ac7dbcfc7001ff4dff4822668a71c7b91ce36008e0b5cf227e4f777a7",
+      "bytes": 305873,
+      "compressed_path": "run/BASE-POINT/C-core-plus/a2000/cycle-06/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13243
+    },
+    {
+      "path": "run/BASE-POINT/C-core-plus/a2000/cycle-06/native/products/receipt.yaml",
+      "sha256": "85e3798e15a932a800ee5fee58a916e7a7cab86d39dfa1f721191f5a4828d9a0",
+      "bytes": 383841,
+      "compressed_path": "run/BASE-POINT/C-core-plus/a2000/cycle-06/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30489
+    },
+    {
+      "path": "run/BASE-POINT/C-core-plus/a2000/cycle-07/native/products/input-manifest.yaml",
+      "sha256": "d08ecf1c33a2afea38bbb37aedd201b87d24a04395133280cb0fa3493c922377",
+      "bytes": 305873,
+      "compressed_path": "run/BASE-POINT/C-core-plus/a2000/cycle-07/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13241
+    },
+    {
+      "path": "run/BASE-POINT/C-core-plus/a2000/cycle-07/native/products/receipt.yaml",
+      "sha256": "483a81a3f2328db9d6109ab4cd5134f92cb22579ede24117bb7ecaf74c84cd2b",
+      "bytes": 383822,
+      "compressed_path": "run/BASE-POINT/C-core-plus/a2000/cycle-07/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30483
+    },
+    {
+      "path": "run/BASE-POINT/C-core-plus/a2000/cycle-08/native/products/input-manifest.yaml",
+      "sha256": "0b70ee4b3bd267d158a48a9b70d74e412b4b595137d9c5c18de3d8f65d42badc",
+      "bytes": 305873,
+      "compressed_path": "run/BASE-POINT/C-core-plus/a2000/cycle-08/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13245
+    },
+    {
+      "path": "run/BASE-POINT/C-core-plus/a2000/cycle-08/native/products/receipt.yaml",
+      "sha256": "a69412af6dd7bc15d13ff9d7985b8784ebbdb72882f055c1399db42c823e27af",
+      "bytes": 383849,
+      "compressed_path": "run/BASE-POINT/C-core-plus/a2000/cycle-08/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30465
+    },
+    {
+      "path": "run/BASE-POINT/C-core-plus/a2000/cycle-09/native/products/input-manifest.yaml",
+      "sha256": "cc6b5cb9e6031576c8827b6cea3473cba529753edab56dccf9618649a9d098f5",
+      "bytes": 305873,
+      "compressed_path": "run/BASE-POINT/C-core-plus/a2000/cycle-09/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13238
+    },
+    {
+      "path": "run/BASE-POINT/C-core-plus/a2000/cycle-09/native/products/receipt.yaml",
+      "sha256": "45b916d4879f7007d638d3cecf37e72edc064b1de19f7a97ff79a175627cbc78",
+      "bytes": 383864,
+      "compressed_path": "run/BASE-POINT/C-core-plus/a2000/cycle-09/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30529
+    },
+    {
+      "path": "run/BASE-POINT/C-core-plus/a2000/cycle-10/native/products/input-manifest.yaml",
+      "sha256": "4cd2b2c29af9e7078dee2b4aa3e81b8493f7afce07ac13cec541162d610a471e",
+      "bytes": 305873,
+      "compressed_path": "run/BASE-POINT/C-core-plus/a2000/cycle-10/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13241
+    },
+    {
+      "path": "run/BASE-POINT/C-core-plus/a2000/cycle-10/native/products/receipt.yaml",
+      "sha256": "9238933d761b9c7127a74a26afb795e378890e0ce4479a2b2343f2bfa5a49abf",
+      "bytes": 383834,
+      "compressed_path": "run/BASE-POINT/C-core-plus/a2000/cycle-10/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30484
+    },
+    {
+      "path": "run/BASE-POINT/C-shoulder/a2000/cycle-01/native/products/input-manifest.yaml",
+      "sha256": "9e67ab6e410aa58b5f1dbae62018967736e7be76ba063744a52671a2823a1698",
+      "bytes": 305796,
+      "compressed_path": "run/BASE-POINT/C-shoulder/a2000/cycle-01/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13246
+    },
+    {
+      "path": "run/BASE-POINT/C-shoulder/a2000/cycle-01/native/products/receipt.yaml",
+      "sha256": "bc410f6b892041156f4f266d24f8b053d2ad28856f4d603ce8a459426c605257",
+      "bytes": 382596,
+      "compressed_path": "run/BASE-POINT/C-shoulder/a2000/cycle-01/native/products/receipt.yaml.gz",
+      "compressed_bytes": 28957
+    },
+    {
+      "path": "run/BASE-POINT/C-shoulder/a2000/cycle-02/native/products/input-manifest.yaml",
+      "sha256": "17ceecd35cce76d492f62dc73c90f4b02fd81777deed801208b1fe108207bbc2",
+      "bytes": 305842,
+      "compressed_path": "run/BASE-POINT/C-shoulder/a2000/cycle-02/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13246
+    },
+    {
+      "path": "run/BASE-POINT/C-shoulder/a2000/cycle-02/native/products/receipt.yaml",
+      "sha256": "b3edd9b3f5550a67675c6d69934062bf7eafe9349fbca927f16efce6a09792b3",
+      "bytes": 382887,
+      "compressed_path": "run/BASE-POINT/C-shoulder/a2000/cycle-02/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29785
+    },
+    {
+      "path": "run/BASE-POINT/C-shoulder/a2000/cycle-03/native/products/input-manifest.yaml",
+      "sha256": "0ee39ebf837e619d9d4f3cfd2c3bbeb051577c17b39f1d50030470dd2912861a",
+      "bytes": 305842,
+      "compressed_path": "run/BASE-POINT/C-shoulder/a2000/cycle-03/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13245
+    },
+    {
+      "path": "run/BASE-POINT/C-shoulder/a2000/cycle-03/native/products/receipt.yaml",
+      "sha256": "e7f7e6ef94c44ff6606c40d5dc2e3f1efd52be49ce62a7f5eb5d947a42029d8c",
+      "bytes": 383358,
+      "compressed_path": "run/BASE-POINT/C-shoulder/a2000/cycle-03/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29985
+    },
+    {
+      "path": "run/BASE-POINT/C-shoulder/a2000/cycle-04/native/products/input-manifest.yaml",
+      "sha256": "90e573145392499324e76dd55770bf924c5189732bb4d24024b5ccf3effc00d8",
+      "bytes": 305842,
+      "compressed_path": "run/BASE-POINT/C-shoulder/a2000/cycle-04/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13248
+    },
+    {
+      "path": "run/BASE-POINT/C-shoulder/a2000/cycle-04/native/products/receipt.yaml",
+      "sha256": "8fb3b7393c5a757e46c3b53ae00bf14dea244c653459aeece9b7de8e6cad4933",
+      "bytes": 383373,
+      "compressed_path": "run/BASE-POINT/C-shoulder/a2000/cycle-04/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30042
+    },
+    {
+      "path": "run/BASE-POINT/C-shoulder/a2000/cycle-05/native/products/input-manifest.yaml",
+      "sha256": "d134d87b87b9ca6ddbf555e439a78e9a63b28927e77bd422eb97c1b67fbc069b",
+      "bytes": 305842,
+      "compressed_path": "run/BASE-POINT/C-shoulder/a2000/cycle-05/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13245
+    },
+    {
+      "path": "run/BASE-POINT/C-shoulder/a2000/cycle-05/native/products/receipt.yaml",
+      "sha256": "7fbce298dfac76e38127a2f4d35a13b41df58947edd78dea4f65849ed4586d0c",
+      "bytes": 383411,
+      "compressed_path": "run/BASE-POINT/C-shoulder/a2000/cycle-05/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30019
+    },
+    {
+      "path": "run/BASE-POINT/C-shoulder/a2000/cycle-06/native/products/input-manifest.yaml",
+      "sha256": "087c79b1ce4d574ac69d6d90d090a1ba2c579c8d01b8560fbbba776d71ea2230",
+      "bytes": 305842,
+      "compressed_path": "run/BASE-POINT/C-shoulder/a2000/cycle-06/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13244
+    },
+    {
+      "path": "run/BASE-POINT/C-shoulder/a2000/cycle-06/native/products/receipt.yaml",
+      "sha256": "21de1b89f0c7f94d453dbc71d59e59974416f204a8839c4abd72d2cd5f7a5eb3",
+      "bytes": 383426,
+      "compressed_path": "run/BASE-POINT/C-shoulder/a2000/cycle-06/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29995
+    },
+    {
+      "path": "run/BASE-POINT/C-shoulder/a2000/cycle-07/native/products/input-manifest.yaml",
+      "sha256": "2089eb9afe84496ab274a7d5562603550dc4fd37104965045a724bad19d7871f",
+      "bytes": 305842,
+      "compressed_path": "run/BASE-POINT/C-shoulder/a2000/cycle-07/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13245
+    },
+    {
+      "path": "run/BASE-POINT/C-shoulder/a2000/cycle-07/native/products/receipt.yaml",
+      "sha256": "ebec12ed67ddbaf6d0a032603abfe7f78511980175d0f4e1a42226e02ab915dd",
+      "bytes": 383413,
+      "compressed_path": "run/BASE-POINT/C-shoulder/a2000/cycle-07/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30012
+    },
+    {
+      "path": "run/BASE-POINT/C-shoulder/a2000/cycle-08/native/products/input-manifest.yaml",
+      "sha256": "74181120888ba18ff38aed28c0ae7c4cbd01c7408a40d24ac972d84660620c27",
+      "bytes": 305842,
+      "compressed_path": "run/BASE-POINT/C-shoulder/a2000/cycle-08/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13243
+    },
+    {
+      "path": "run/BASE-POINT/C-shoulder/a2000/cycle-08/native/products/receipt.yaml",
+      "sha256": "3a1577816c6ac9a59e6015af6c8774a97383863d7a134225188edb41b3ad9dde",
+      "bytes": 383419,
+      "compressed_path": "run/BASE-POINT/C-shoulder/a2000/cycle-08/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30019
+    },
+    {
+      "path": "run/BASE-POINT/C-shoulder/a2000/cycle-09/native/products/input-manifest.yaml",
+      "sha256": "49c093846afb8bc31c908d019603f4abfa21d468fd2aef6cf4277abc9dd1a6d3",
+      "bytes": 305842,
+      "compressed_path": "run/BASE-POINT/C-shoulder/a2000/cycle-09/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13244
+    },
+    {
+      "path": "run/BASE-POINT/C-shoulder/a2000/cycle-09/native/products/receipt.yaml",
+      "sha256": "9c5fa07b481e6393ff7b7fccf399af3480fd3cde0df88faa8feff2f03677286c",
+      "bytes": 383410,
+      "compressed_path": "run/BASE-POINT/C-shoulder/a2000/cycle-09/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30025
+    },
+    {
+      "path": "run/BASE-POINT/C-shoulder/a2000/cycle-10/native/products/input-manifest.yaml",
+      "sha256": "f183e6cc64a2f31fd80879a1d0d3f8ef7efd27ce7f8df334f9d31892a4c8b7d2",
+      "bytes": 305842,
+      "compressed_path": "run/BASE-POINT/C-shoulder/a2000/cycle-10/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13237
+    },
+    {
+      "path": "run/BASE-POINT/C-shoulder/a2000/cycle-10/native/products/receipt.yaml",
+      "sha256": "8bb4b92171e9242bbe39569faeec02e5b98df77d0709535931c8e5cc40d2f090",
+      "bytes": 383406,
+      "compressed_path": "run/BASE-POINT/C-shoulder/a2000/cycle-10/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30017
+    },
+    {
+      "path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-01/native/products/input-manifest.yaml",
+      "sha256": "353d1d63e2c6ecea013eb54a37c01e90336a66cdf1c450da01e2161e610ab95e",
+      "bytes": 298962,
+      "compressed_path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-01/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12051
+    },
+    {
+      "path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-01/native/products/receipt.yaml",
+      "sha256": "f6c67f05c4757fa18cb478661102ac3d200607badb11b43d8657f40c60e4336b",
+      "bytes": 381254,
+      "compressed_path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-01/native/products/receipt.yaml.gz",
+      "compressed_bytes": 28191
+    },
+    {
+      "path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-02/native/products/input-manifest.yaml",
+      "sha256": "92496123ebd4799895e8fc09648030a70cb051df3a0177b46375cbaec295488d",
+      "bytes": 299065,
+      "compressed_path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-02/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12059
+    },
+    {
+      "path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-02/native/products/receipt.yaml",
+      "sha256": "4c3d5d464aa8785580bc222c33c5182104197926610673ce1eeca00b08316027",
+      "bytes": 381788,
+      "compressed_path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-02/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29058
+    },
+    {
+      "path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-03/native/products/input-manifest.yaml",
+      "sha256": "2e916f049ddb0402adc8f0b2414ce4bbb6778995c91ef0c7ed515519c2e26dd8",
+      "bytes": 299065,
+      "compressed_path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-03/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12060
+    },
+    {
+      "path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-03/native/products/receipt.yaml",
+      "sha256": "16452eed716e4d5abfccd9d6d497736764e40c9a4598c10a003ff6153da2c7b7",
+      "bytes": 382225,
+      "compressed_path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-03/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29306
+    },
+    {
+      "path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-04/native/products/input-manifest.yaml",
+      "sha256": "31a431bc9b123fa36a4e9e6cf7a21013fa2a83dcc2ec318070de15d647169fd2",
+      "bytes": 299065,
+      "compressed_path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-04/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12061
+    },
+    {
+      "path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-04/native/products/receipt.yaml",
+      "sha256": "f81d2a3f1506c91c9ce8b9dc92a4a0ac7278557bc9694c6af74cb0de129e1345",
+      "bytes": 382338,
+      "compressed_path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-04/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29335
+    },
+    {
+      "path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-05/native/products/input-manifest.yaml",
+      "sha256": "babdbf9ce1c184fd84176f0a0cad2e550a157c1c6e8665a4573dd3ca2cbcb293",
+      "bytes": 299065,
+      "compressed_path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-05/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12059
+    },
+    {
+      "path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-05/native/products/receipt.yaml",
+      "sha256": "27848e11745742fdf78a5a5d7c124e32761be4d633335352c1ec9c090ce3390f",
+      "bytes": 382413,
+      "compressed_path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-05/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29533
+    },
+    {
+      "path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-06/native/products/input-manifest.yaml",
+      "sha256": "2fcf28386800ec96134c2aeb7c65b080097613fffe7aa37c62c442454284434d",
+      "bytes": 299065,
+      "compressed_path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-06/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12058
+    },
+    {
+      "path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-06/native/products/receipt.yaml",
+      "sha256": "5fa07e00ea7b4bbda3ee1851c572fb42772e7e4ae81408abaf5774cd829ee4d5",
+      "bytes": 382371,
+      "compressed_path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-06/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29531
+    },
+    {
+      "path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-07/native/products/input-manifest.yaml",
+      "sha256": "e31da97a50a27773e92b42a81a2307d5b3f087a15b31d79f9bdd4763089069c2",
+      "bytes": 299065,
+      "compressed_path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-07/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12060
+    },
+    {
+      "path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-07/native/products/receipt.yaml",
+      "sha256": "3fae16919a761d52408579d2a66ee6cd98db5d0949be0edf83f162248e0fd47b",
+      "bytes": 382397,
+      "compressed_path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-07/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29502
+    },
+    {
+      "path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-08/native/products/input-manifest.yaml",
+      "sha256": "36d760ccc2bd743ecdcab3498504026c4024e4f65e037f5c8b5552e0496eca9e",
+      "bytes": 299065,
+      "compressed_path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-08/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12056
+    },
+    {
+      "path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-08/native/products/receipt.yaml",
+      "sha256": "158941e53d2c682b05bda6da4dbb1f74aec9accedb32223c7a32dfc91bbd8367",
+      "bytes": 382413,
+      "compressed_path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-08/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29531
+    },
+    {
+      "path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-09/native/products/input-manifest.yaml",
+      "sha256": "65c514246acf3a1e1b41c976596a1d48b27092940bddd7bb1d805062aa9b2fc5",
+      "bytes": 299065,
+      "compressed_path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-09/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12063
+    },
+    {
+      "path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-09/native/products/receipt.yaml",
+      "sha256": "36d0463b069708c39401282bc53f1b2cf0ed6676ad9b39eec42610ea15eeac25",
+      "bytes": 382380,
+      "compressed_path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-09/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29506
+    },
+    {
+      "path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-10/native/products/input-manifest.yaml",
+      "sha256": "d1ce8c05ecea5ac097d4df8f4ba9deb33ef18d30dd2c8a28d0e70bf726d3882e",
+      "bytes": 299065,
+      "compressed_path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-10/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12063
+    },
+    {
+      "path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-10/native/products/receipt.yaml",
+      "sha256": "67b4e6e31b1c5aac26cfd29cc716239fadb8015a0d13b1789a05fbc539358a81",
+      "bytes": 382406,
+      "compressed_path": "run/BASE-POINT/D-seed-shoulder/a2000/cycle-10/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29532
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-01/native/products/input-manifest.yaml",
+      "sha256": "4dec4ac5b0f427cfd460e92a6889b0aac36a73d24f6c19f0dd97e2c9f84cb67a",
+      "bytes": 298919,
+      "compressed_path": "run/BASE-POINT/REF/a2000/cycle-01/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12051
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-01/native/products/receipt.yaml",
+      "sha256": "ffaf7395548c440177a9447e80902185a73706205b314dacac72e8286d1489c2",
+      "bytes": 381098,
+      "compressed_path": "run/BASE-POINT/REF/a2000/cycle-01/native/products/receipt.yaml.gz",
+      "compressed_bytes": 28085
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-02/native/products/input-manifest.yaml",
+      "sha256": "8e63268ffb666d129a21388bfc010fd95120ce3cd302e54b0d6e5adc8e5a9df3",
+      "bytes": 298993,
+      "compressed_path": "run/BASE-POINT/REF/a2000/cycle-02/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12048
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-02/native/products/receipt.yaml",
+      "sha256": "5eef1d67afdcbb3fe0606155b586e71a1e96351702636ff4ad6815ab5275b8a8",
+      "bytes": 381513,
+      "compressed_path": "run/BASE-POINT/REF/a2000/cycle-02/native/products/receipt.yaml.gz",
+      "compressed_bytes": 28973
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-03/native/products/input-manifest.yaml",
+      "sha256": "3f3708a703104ba1799c6697c73e6cfeea31372329381681c30bceda13bf4fd9",
+      "bytes": 298993,
+      "compressed_path": "run/BASE-POINT/REF/a2000/cycle-03/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12052
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-03/native/products/receipt.yaml",
+      "sha256": "f1e395f3488dec30b5216b9d760c4009a2fda1333f58623079697b607197f214",
+      "bytes": 382200,
+      "compressed_path": "run/BASE-POINT/REF/a2000/cycle-03/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29313
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-04/native/products/input-manifest.yaml",
+      "sha256": "72a0bca8aa60a5da2ec4e90d02aa108e736a678304769e7be333e693dd1bd4a2",
+      "bytes": 298993,
+      "compressed_path": "run/BASE-POINT/REF/a2000/cycle-04/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12051
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-04/native/products/receipt.yaml",
+      "sha256": "0ac93546cae8cc7c1fa82657d472193a0b95df6c24bb1ec30b9a41fc7af45819",
+      "bytes": 382286,
+      "compressed_path": "run/BASE-POINT/REF/a2000/cycle-04/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29309
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-05/native/products/input-manifest.yaml",
+      "sha256": "07dd90f9eda5a80f4092bc41363c03b0a9ee0d471297e10f41189fab6a473e4e",
+      "bytes": 298993,
+      "compressed_path": "run/BASE-POINT/REF/a2000/cycle-05/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12057
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-05/native/products/receipt.yaml",
+      "sha256": "8a2800456461ee5dd7f64bef0f46cae205698235ffa764df8bfd0faac0727973",
+      "bytes": 382366,
+      "compressed_path": "run/BASE-POINT/REF/a2000/cycle-05/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29534
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-06/native/products/input-manifest.yaml",
+      "sha256": "d2ab8948cfe3eb59fe08cc7362bd58488e1d98e6c19181f4d71c3da20f9fec99",
+      "bytes": 298993,
+      "compressed_path": "run/BASE-POINT/REF/a2000/cycle-06/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12054
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-06/native/products/receipt.yaml",
+      "sha256": "edeb746ef39e253b17df5f8c998da1210d7372782331ed693393ad2471b0da40",
+      "bytes": 382357,
+      "compressed_path": "run/BASE-POINT/REF/a2000/cycle-06/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29501
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-07/native/products/input-manifest.yaml",
+      "sha256": "44aa9b5ff4f3d4eb0bd3ec397478827a5f12ab765af8bb4d3e2641cf14a38126",
+      "bytes": 298993,
+      "compressed_path": "run/BASE-POINT/REF/a2000/cycle-07/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12053
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-07/native/products/receipt.yaml",
+      "sha256": "e7480456fca8c47816b5eec5fcf710fcccd61c7dcaf106614b5636b2ee3ef478",
+      "bytes": 382395,
+      "compressed_path": "run/BASE-POINT/REF/a2000/cycle-07/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29562
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-08/native/products/input-manifest.yaml",
+      "sha256": "fa4cd7e6fea818bac3bbfd98b622a473cc1e7329ae6a05ba25d290e6ede1578e",
+      "bytes": 298993,
+      "compressed_path": "run/BASE-POINT/REF/a2000/cycle-08/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12053
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-08/native/products/receipt.yaml",
+      "sha256": "872b192ef4d681c27c046088fc3db268fd2814cb5645bfa69e1e6f298ab18ae3",
+      "bytes": 382397,
+      "compressed_path": "run/BASE-POINT/REF/a2000/cycle-08/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29542
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-09/native/products/input-manifest.yaml",
+      "sha256": "3f9efca4af5d5f276baa46f84d5b497d40c524c1efedf8e762228c678aa3f9c7",
+      "bytes": 298993,
+      "compressed_path": "run/BASE-POINT/REF/a2000/cycle-09/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12053
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-09/native/products/receipt.yaml",
+      "sha256": "8ac33ae3a756247e27224104b1920d404caf1b03e340f213b8e2f145184ec930",
+      "bytes": 382373,
+      "compressed_path": "run/BASE-POINT/REF/a2000/cycle-09/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29514
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-10/native/products/input-manifest.yaml",
+      "sha256": "76d83317253dd3789ec9ce24bf38a4339d579e87017f2fbc844475a44e6dd3c4",
+      "bytes": 298993,
+      "compressed_path": "run/BASE-POINT/REF/a2000/cycle-10/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12053
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-10/native/products/receipt.yaml",
+      "sha256": "3ea7a08a0f7ddc7dd28091114bd5ac7107c033d65dd6e7141b0c6717342bf96b",
+      "bytes": 382391,
+      "compressed_path": "run/BASE-POINT/REF/a2000/cycle-10/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29521
+    },
+    {
+      "path": "run/CORR/C-core-minus/a2000/cycle-01/native/products/input-manifest.yaml",
+      "sha256": "cea8d7f66a6f0ec97928e5f7f9f2f44e435071ef15313c3a9ac0dedc3c51d547",
+      "bytes": 306058,
+      "compressed_path": "run/CORR/C-core-minus/a2000/cycle-01/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13281
+    },
+    {
+      "path": "run/CORR/C-core-minus/a2000/cycle-01/native/products/receipt.yaml",
+      "sha256": "33c4c9511a2b7446353f2b6c14eb5963654522a4b630984f0f9a2551cf2ccdb1",
+      "bytes": 382641,
+      "compressed_path": "run/CORR/C-core-minus/a2000/cycle-01/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29003
+    },
+    {
+      "path": "run/CORR/C-core-minus/a2000/cycle-02/native/products/input-manifest.yaml",
+      "sha256": "91e65ad49527da321836394f4799fb68baca43c5e04733683c3e203901867149",
+      "bytes": 306092,
+      "compressed_path": "run/CORR/C-core-minus/a2000/cycle-02/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13283
+    },
+    {
+      "path": "run/CORR/C-core-minus/a2000/cycle-02/native/products/receipt.yaml",
+      "sha256": "a4f8d81db12f8ba663558df54f6a235951ccf43ecf783a68a2454e2bb2124b55",
+      "bytes": 383149,
+      "compressed_path": "run/CORR/C-core-minus/a2000/cycle-02/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29911
+    },
+    {
+      "path": "run/CORR/C-core-minus/a2000/cycle-03/native/products/input-manifest.yaml",
+      "sha256": "0c17c7472daa36d4dfb6dafd9131a6f7f3901cd460f5da543e7cc8bef8824bc3",
+      "bytes": 306092,
+      "compressed_path": "run/CORR/C-core-minus/a2000/cycle-03/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13277
+    },
+    {
+      "path": "run/CORR/C-core-minus/a2000/cycle-03/native/products/receipt.yaml",
+      "sha256": "772f23a3513d73ef0d6447aedda7e2598d794f73c76c3e78d045ac421ea23d9d",
+      "bytes": 383832,
+      "compressed_path": "run/CORR/C-core-minus/a2000/cycle-03/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30275
+    },
+    {
+      "path": "run/CORR/C-core-minus/a2000/cycle-04/native/products/input-manifest.yaml",
+      "sha256": "c3936c787c2c9a27da158810e364334d9e8e7dcc102f3bb38346e8f760e1ecce",
+      "bytes": 306092,
+      "compressed_path": "run/CORR/C-core-minus/a2000/cycle-04/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13282
+    },
+    {
+      "path": "run/CORR/C-core-minus/a2000/cycle-04/native/products/receipt.yaml",
+      "sha256": "f238740a2fc1720bdb797720fe18e7227e784218609e360008098a43afb1796c",
+      "bytes": 383840,
+      "compressed_path": "run/CORR/C-core-minus/a2000/cycle-04/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30478
+    },
+    {
+      "path": "run/CORR/C-core-minus/a2000/cycle-05/native/products/input-manifest.yaml",
+      "sha256": "bac677c49419554d0b39f856969a474f485acbccf3c699d7f1d7ffeba443d76c",
+      "bytes": 306092,
+      "compressed_path": "run/CORR/C-core-minus/a2000/cycle-05/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13278
+    },
+    {
+      "path": "run/CORR/C-core-minus/a2000/cycle-05/native/products/receipt.yaml",
+      "sha256": "dc095e790d385b15f88075a6bdd3dc31cc1d88627d9e7553478aa42098cc2379",
+      "bytes": 383910,
+      "compressed_path": "run/CORR/C-core-minus/a2000/cycle-05/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30489
+    },
+    {
+      "path": "run/CORR/C-core-minus/a2000/cycle-06/native/products/input-manifest.yaml",
+      "sha256": "0f52727dc3b4e33f91d7a6433e5280aadb3c566f22373563aeab356f32bebffc",
+      "bytes": 306092,
+      "compressed_path": "run/CORR/C-core-minus/a2000/cycle-06/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13280
+    },
+    {
+      "path": "run/CORR/C-core-minus/a2000/cycle-06/native/products/receipt.yaml",
+      "sha256": "4ed7e39298b4bf51fbf7a47fa5a5c4f6a5361fdd20f84c620110de9a71d72e95",
+      "bytes": 383954,
+      "compressed_path": "run/CORR/C-core-minus/a2000/cycle-06/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30532
+    },
+    {
+      "path": "run/CORR/C-core-minus/a2000/cycle-07/native/products/input-manifest.yaml",
+      "sha256": "1996125577af5149d7921b5bdb83e2a88bcac83c36aace2cf39ce67b97e02932",
+      "bytes": 306092,
+      "compressed_path": "run/CORR/C-core-minus/a2000/cycle-07/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13280
+    },
+    {
+      "path": "run/CORR/C-core-minus/a2000/cycle-07/native/products/receipt.yaml",
+      "sha256": "f502afac62eea599abe33704fd49d0c71e468cda164d5bd415057a04f519a048",
+      "bytes": 383947,
+      "compressed_path": "run/CORR/C-core-minus/a2000/cycle-07/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30510
+    },
+    {
+      "path": "run/CORR/C-core-minus/a2000/cycle-08/native/products/input-manifest.yaml",
+      "sha256": "5683581cc1dbea62ec392ef8f4cde7c3f66bc77aa0c5cffdfb370c1b5c965d87",
+      "bytes": 306092,
+      "compressed_path": "run/CORR/C-core-minus/a2000/cycle-08/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13281
+    },
+    {
+      "path": "run/CORR/C-core-minus/a2000/cycle-08/native/products/receipt.yaml",
+      "sha256": "0617f3880772ed445612fa32328b5bf7b31e7be9851de11fb1133e4b01c26292",
+      "bytes": 383924,
+      "compressed_path": "run/CORR/C-core-minus/a2000/cycle-08/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30503
+    },
+    {
+      "path": "run/CORR/C-core-minus/a2000/cycle-09/native/products/input-manifest.yaml",
+      "sha256": "024650240edacbd8ffc5dd1b3846ff51e3966f3d1a07e1cd7319b12a2b80154c",
+      "bytes": 306092,
+      "compressed_path": "run/CORR/C-core-minus/a2000/cycle-09/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13279
+    },
+    {
+      "path": "run/CORR/C-core-minus/a2000/cycle-09/native/products/receipt.yaml",
+      "sha256": "f2f9b03cb760431dd4879cee141cb006fbc32bc4a7378149864600de8e6f6bae",
+      "bytes": 383939,
+      "compressed_path": "run/CORR/C-core-minus/a2000/cycle-09/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30500
+    },
+    {
+      "path": "run/CORR/C-core-minus/a2000/cycle-10/native/products/input-manifest.yaml",
+      "sha256": "a49b961ca25f8e7774811d06183036ae9bda8993d88262ef74a10aae3581d16a",
+      "bytes": 306092,
+      "compressed_path": "run/CORR/C-core-minus/a2000/cycle-10/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13278
+    },
+    {
+      "path": "run/CORR/C-core-minus/a2000/cycle-10/native/products/receipt.yaml",
+      "sha256": "d3f34123e60d5e99784ef7a437dea14e9e4fbee95da08dd667d74097ff2b1296",
+      "bytes": 383934,
+      "compressed_path": "run/CORR/C-core-minus/a2000/cycle-10/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30529
+    },
+    {
+      "path": "run/CORR/C-core-plus/a2000/cycle-01/native/products/input-manifest.yaml",
+      "sha256": "a6593042a9e18b0afefe6262bee6c4aba64456f62cfaca88a208e472196745c0",
+      "bytes": 306027,
+      "compressed_path": "run/CORR/C-core-plus/a2000/cycle-01/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13286
+    },
+    {
+      "path": "run/CORR/C-core-plus/a2000/cycle-01/native/products/receipt.yaml",
+      "sha256": "0b54d2d2ec2f4d114368b6550dcf5f70e2040ffd4e8cc5bd2aeea7a58442f1ae",
+      "bytes": 382574,
+      "compressed_path": "run/CORR/C-core-plus/a2000/cycle-01/native/products/receipt.yaml.gz",
+      "compressed_bytes": 28936
+    },
+    {
+      "path": "run/CORR/C-core-plus/a2000/cycle-02/native/products/input-manifest.yaml",
+      "sha256": "7e338e33fd2b6929e5ce805ef776fe4633308a748c1b90768ec0cc2592b348e1",
+      "bytes": 306061,
+      "compressed_path": "run/CORR/C-core-plus/a2000/cycle-02/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13279
+    },
+    {
+      "path": "run/CORR/C-core-plus/a2000/cycle-02/native/products/receipt.yaml",
+      "sha256": "3010493f03db70bf0f99b5152d79775cd5c8ea6944963b7129d631f3319bbed7",
+      "bytes": 382977,
+      "compressed_path": "run/CORR/C-core-plus/a2000/cycle-02/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29843
+    },
+    {
+      "path": "run/CORR/C-core-plus/a2000/cycle-03/native/products/input-manifest.yaml",
+      "sha256": "f96f97bac709c4e4770e7f9a2170b9cf6475cc3d876dbc40ea6d5e9574a60bb8",
+      "bytes": 306061,
+      "compressed_path": "run/CORR/C-core-plus/a2000/cycle-03/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13285
+    },
+    {
+      "path": "run/CORR/C-core-plus/a2000/cycle-03/native/products/receipt.yaml",
+      "sha256": "64962a3bcdaf06975de08904c40cafb3fe23735146a91a65d1bb3325dfee4cf8",
+      "bytes": 383690,
+      "compressed_path": "run/CORR/C-core-plus/a2000/cycle-03/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30167
+    },
+    {
+      "path": "run/CORR/C-core-plus/a2000/cycle-04/native/products/input-manifest.yaml",
+      "sha256": "298a335a2fd79285d9c0084df19cbb3e7d5bc57e81bc93ff1354b4ac85b6a238",
+      "bytes": 306061,
+      "compressed_path": "run/CORR/C-core-plus/a2000/cycle-04/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13279
+    },
+    {
+      "path": "run/CORR/C-core-plus/a2000/cycle-04/native/products/receipt.yaml",
+      "sha256": "02b15294b5beb0baf81f8918a8527c79977c0fa98947d35657cba469d1810bbd",
+      "bytes": 383757,
+      "compressed_path": "run/CORR/C-core-plus/a2000/cycle-04/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30451
+    },
+    {
+      "path": "run/CORR/C-core-plus/a2000/cycle-05/native/products/input-manifest.yaml",
+      "sha256": "0b0026e570526336073ba88c6d5cdba1bacfb460a03a1f229734d1017c3b4e23",
+      "bytes": 306061,
+      "compressed_path": "run/CORR/C-core-plus/a2000/cycle-05/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13278
+    },
+    {
+      "path": "run/CORR/C-core-plus/a2000/cycle-05/native/products/receipt.yaml",
+      "sha256": "2a2a603ebbf8892c6243c63e5b681d5c2d6b0d31ee78b85a4850cdf912d46eb3",
+      "bytes": 383848,
+      "compressed_path": "run/CORR/C-core-plus/a2000/cycle-05/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30476
+    },
+    {
+      "path": "run/CORR/C-core-plus/a2000/cycle-06/native/products/input-manifest.yaml",
+      "sha256": "40a1724b116a321f381516a23d8607728772621a5f02ff12a855f1a0d8fb03e4",
+      "bytes": 306061,
+      "compressed_path": "run/CORR/C-core-plus/a2000/cycle-06/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13281
+    },
+    {
+      "path": "run/CORR/C-core-plus/a2000/cycle-06/native/products/receipt.yaml",
+      "sha256": "64cc294cd608f7e65269c338431210e4497dd70ab561c027234cc8054038a392",
+      "bytes": 383838,
+      "compressed_path": "run/CORR/C-core-plus/a2000/cycle-06/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30455
+    },
+    {
+      "path": "run/CORR/C-core-plus/a2000/cycle-07/native/products/input-manifest.yaml",
+      "sha256": "31ca020e1eed927041defc90c9aaaad85e1cf5164799a8a872c82f9646f70929",
+      "bytes": 306061,
+      "compressed_path": "run/CORR/C-core-plus/a2000/cycle-07/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13285
+    },
+    {
+      "path": "run/CORR/C-core-plus/a2000/cycle-07/native/products/receipt.yaml",
+      "sha256": "848dac85be6184019e7a95441a68a34ba9119834fcd583b99c42d4a86a741fb3",
+      "bytes": 383829,
+      "compressed_path": "run/CORR/C-core-plus/a2000/cycle-07/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30500
+    },
+    {
+      "path": "run/CORR/C-core-plus/a2000/cycle-08/native/products/input-manifest.yaml",
+      "sha256": "2d5395874e851af4f72a7517df601ff124b772512f46ee2c87ef0347b14a0907",
+      "bytes": 306061,
+      "compressed_path": "run/CORR/C-core-plus/a2000/cycle-08/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13277
+    },
+    {
+      "path": "run/CORR/C-core-plus/a2000/cycle-08/native/products/receipt.yaml",
+      "sha256": "87ce1858695289940377f62a576c4b48977bfb24a8deb704b03e4e1ee6a20d5b",
+      "bytes": 383840,
+      "compressed_path": "run/CORR/C-core-plus/a2000/cycle-08/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30441
+    },
+    {
+      "path": "run/CORR/C-core-plus/a2000/cycle-09/native/products/input-manifest.yaml",
+      "sha256": "366a2906795b3df770b754be37a8cdacbb7d458c18b0cf71c21e140ffddc30a6",
+      "bytes": 306061,
+      "compressed_path": "run/CORR/C-core-plus/a2000/cycle-09/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13280
+    },
+    {
+      "path": "run/CORR/C-core-plus/a2000/cycle-09/native/products/receipt.yaml",
+      "sha256": "cd561514ccd3366c34624f55a055848cceed9f23c9fe973597af7cb4012b809f",
+      "bytes": 383849,
+      "compressed_path": "run/CORR/C-core-plus/a2000/cycle-09/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30500
+    },
+    {
+      "path": "run/CORR/C-core-plus/a2000/cycle-10/native/products/input-manifest.yaml",
+      "sha256": "d7d6a353cf946239d1d9fd95635fb8eb384c07445e98829b6b43a479fc725e48",
+      "bytes": 306061,
+      "compressed_path": "run/CORR/C-core-plus/a2000/cycle-10/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13281
+    },
+    {
+      "path": "run/CORR/C-core-plus/a2000/cycle-10/native/products/receipt.yaml",
+      "sha256": "c3841005c3d1a06a34037490cbe52f652952b074758115c146b6446b9351a335",
+      "bytes": 383845,
+      "compressed_path": "run/CORR/C-core-plus/a2000/cycle-10/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30492
+    },
+    {
+      "path": "run/CORR/C-shoulder/a2000/cycle-01/native/products/input-manifest.yaml",
+      "sha256": "2f72bca75f9096c0f44727a8a3b1869ab730b2c5c2fa3a8110bbd4cb6f02642f",
+      "bytes": 305996,
+      "compressed_path": "run/CORR/C-shoulder/a2000/cycle-01/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13282
+    },
+    {
+      "path": "run/CORR/C-shoulder/a2000/cycle-01/native/products/receipt.yaml",
+      "sha256": "0437412af19bc0576025301d6a05334fdd9e0402b8023ac02e624d0f966b2a87",
+      "bytes": 382598,
+      "compressed_path": "run/CORR/C-shoulder/a2000/cycle-01/native/products/receipt.yaml.gz",
+      "compressed_bytes": 28963
+    },
+    {
+      "path": "run/CORR/C-shoulder/a2000/cycle-02/native/products/input-manifest.yaml",
+      "sha256": "7ba01a6c5975181a15ae154d778a4fb44110f7b65dddbd20871f34bdb8d1bb20",
+      "bytes": 306030,
+      "compressed_path": "run/CORR/C-shoulder/a2000/cycle-02/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13283
+    },
+    {
+      "path": "run/CORR/C-shoulder/a2000/cycle-02/native/products/receipt.yaml",
+      "sha256": "af81cff901f4a51b0d4afc88c3ea6a2f5174692b9ecc3181770ad54ed1bcd632",
+      "bytes": 382884,
+      "compressed_path": "run/CORR/C-shoulder/a2000/cycle-02/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29783
+    },
+    {
+      "path": "run/CORR/C-shoulder/a2000/cycle-03/native/products/input-manifest.yaml",
+      "sha256": "ffda3ad92af6926ebe8d3e6b0229a31646f809250c9236779ebe7f076185893e",
+      "bytes": 306030,
+      "compressed_path": "run/CORR/C-shoulder/a2000/cycle-03/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13283
+    },
+    {
+      "path": "run/CORR/C-shoulder/a2000/cycle-03/native/products/receipt.yaml",
+      "sha256": "030bed34dad748d11ffefbc651120062e4514116f1802119f2a7dd92ba1d74e9",
+      "bytes": 383361,
+      "compressed_path": "run/CORR/C-shoulder/a2000/cycle-03/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29973
+    },
+    {
+      "path": "run/CORR/C-shoulder/a2000/cycle-04/native/products/input-manifest.yaml",
+      "sha256": "04acb254e13fa2eaae12edf42ca1c71dbdab493443bc05e8fd5614d04afac06b",
+      "bytes": 306030,
+      "compressed_path": "run/CORR/C-shoulder/a2000/cycle-04/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13283
+    },
+    {
+      "path": "run/CORR/C-shoulder/a2000/cycle-04/native/products/receipt.yaml",
+      "sha256": "27a0b2e8c16ab3948780ec6f15a7b2cb1e780400f742b9c71a009b8f089964aa",
+      "bytes": 383366,
+      "compressed_path": "run/CORR/C-shoulder/a2000/cycle-04/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30043
+    },
+    {
+      "path": "run/CORR/C-shoulder/a2000/cycle-05/native/products/input-manifest.yaml",
+      "sha256": "510d606a673866bc2ffed83009ae2faae01385ba54d87ba1b1ad6feed9b7ab5f",
+      "bytes": 306030,
+      "compressed_path": "run/CORR/C-shoulder/a2000/cycle-05/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13281
+    },
+    {
+      "path": "run/CORR/C-shoulder/a2000/cycle-05/native/products/receipt.yaml",
+      "sha256": "233003a0b46a05761c0e58d91acc609da8e13900f08a75d444699b98eaea43a9",
+      "bytes": 383403,
+      "compressed_path": "run/CORR/C-shoulder/a2000/cycle-05/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30003
+    },
+    {
+      "path": "run/CORR/C-shoulder/a2000/cycle-06/native/products/input-manifest.yaml",
+      "sha256": "984e017e7964451432d875634456f37cd95ffa725abaf1c5e718a2534af94094",
+      "bytes": 306030,
+      "compressed_path": "run/CORR/C-shoulder/a2000/cycle-06/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13286
+    },
+    {
+      "path": "run/CORR/C-shoulder/a2000/cycle-06/native/products/receipt.yaml",
+      "sha256": "f8d7c9d9ef4c16962267228665e08e1c343405dfa10136b1544179c823f7e21b",
+      "bytes": 383418,
+      "compressed_path": "run/CORR/C-shoulder/a2000/cycle-06/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29979
+    },
+    {
+      "path": "run/CORR/C-shoulder/a2000/cycle-07/native/products/input-manifest.yaml",
+      "sha256": "830f4a2eaec24c329300a0d940f1234892fabc4ea57deee1eccd7d58d206aed9",
+      "bytes": 306030,
+      "compressed_path": "run/CORR/C-shoulder/a2000/cycle-07/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13291
+    },
+    {
+      "path": "run/CORR/C-shoulder/a2000/cycle-07/native/products/receipt.yaml",
+      "sha256": "0e3f11faed9808f342890c0bc1b91824b2636956355890c7032ccf423997a815",
+      "bytes": 383407,
+      "compressed_path": "run/CORR/C-shoulder/a2000/cycle-07/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30014
+    },
+    {
+      "path": "run/CORR/C-shoulder/a2000/cycle-08/native/products/input-manifest.yaml",
+      "sha256": "5a55c3783baa8b5e64395ea2182917455c5f35bff9d8d9b8b7b57f7c59d87a94",
+      "bytes": 306030,
+      "compressed_path": "run/CORR/C-shoulder/a2000/cycle-08/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13284
+    },
+    {
+      "path": "run/CORR/C-shoulder/a2000/cycle-08/native/products/receipt.yaml",
+      "sha256": "8133705bd9479ec2e9b2ce095237e0f12c076fffb077e4aefbb3c7083853e5c1",
+      "bytes": 383418,
+      "compressed_path": "run/CORR/C-shoulder/a2000/cycle-08/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30005
+    },
+    {
+      "path": "run/CORR/C-shoulder/a2000/cycle-09/native/products/input-manifest.yaml",
+      "sha256": "fba83cf2d1f010f56f04fea85a7e2b66c985514c0b05bfdad16efca958e43186",
+      "bytes": 306030,
+      "compressed_path": "run/CORR/C-shoulder/a2000/cycle-09/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13278
+    },
+    {
+      "path": "run/CORR/C-shoulder/a2000/cycle-09/native/products/receipt.yaml",
+      "sha256": "6aa5d069b2aa6c7c20d0b04703e49ff473720eef38b17487da0a90c4c8db03b1",
+      "bytes": 383400,
+      "compressed_path": "run/CORR/C-shoulder/a2000/cycle-09/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30014
+    },
+    {
+      "path": "run/CORR/C-shoulder/a2000/cycle-10/native/products/input-manifest.yaml",
+      "sha256": "81609ac785731270d16f10ea837a9e38db4e75e983ac981c99e95fb87b97cb2e",
+      "bytes": 306030,
+      "compressed_path": "run/CORR/C-shoulder/a2000/cycle-10/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13280
+    },
+    {
+      "path": "run/CORR/C-shoulder/a2000/cycle-10/native/products/receipt.yaml",
+      "sha256": "a37b2248325b47bb51ef467d5403ce3697090b328f9e4d3d54b04ccf3e5a32a2",
+      "bytes": 383427,
+      "compressed_path": "run/CORR/C-shoulder/a2000/cycle-10/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30030
+    },
+    {
+      "path": "run/CORR/D-seed-shoulder/a2000/cycle-01/native/products/input-manifest.yaml",
+      "sha256": "97656ca7683ace55e52ea84694ef9d766e0a2bceef2a6b29821758d2962a3410",
+      "bytes": 299162,
+      "compressed_path": "run/CORR/D-seed-shoulder/a2000/cycle-01/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12093
+    },
+    {
+      "path": "run/CORR/D-seed-shoulder/a2000/cycle-01/native/products/receipt.yaml",
+      "sha256": "e8025c09094c7ddbebb4ce74519f24240d418a85ebacdac58628908246481710",
+      "bytes": 381242,
+      "compressed_path": "run/CORR/D-seed-shoulder/a2000/cycle-01/native/products/receipt.yaml.gz",
+      "compressed_bytes": 28147
+    },
+    {
+      "path": "run/CORR/D-seed-shoulder/a2000/cycle-02/native/products/input-manifest.yaml",
+      "sha256": "128b16ee06530422928867aafd2e713a68716ebcff4b29f719df9bcf0d8370ce",
+      "bytes": 299253,
+      "compressed_path": "run/CORR/D-seed-shoulder/a2000/cycle-02/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12100
+    },
+    {
+      "path": "run/CORR/D-seed-shoulder/a2000/cycle-02/native/products/receipt.yaml",
+      "sha256": "f1de99457c77ef1010b81e1c24ddcb661c55f9d5f7efae0ebc598962d3fcb624",
+      "bytes": 381769,
+      "compressed_path": "run/CORR/D-seed-shoulder/a2000/cycle-02/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29043
+    },
+    {
+      "path": "run/CORR/D-seed-shoulder/a2000/cycle-03/native/products/input-manifest.yaml",
+      "sha256": "cd76228d1282a982f9a065a28f66fd49b674bbde5f26ed11d4b7fa27bac20fb3",
+      "bytes": 299253,
+      "compressed_path": "run/CORR/D-seed-shoulder/a2000/cycle-03/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12101
+    },
+    {
+      "path": "run/CORR/D-seed-shoulder/a2000/cycle-03/native/products/receipt.yaml",
+      "sha256": "289d5ce1f054d72e524b3d8421eba248f96efa9cef5e2e74063eb02e43fa76a8",
+      "bytes": 382229,
+      "compressed_path": "run/CORR/D-seed-shoulder/a2000/cycle-03/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29305
+    },
+    {
+      "path": "run/CORR/D-seed-shoulder/a2000/cycle-04/native/products/input-manifest.yaml",
+      "sha256": "22e60f6133afeb7cf73f57d273480bf73f7651d6dc8ff6505cad0f597482d707",
+      "bytes": 299253,
+      "compressed_path": "run/CORR/D-seed-shoulder/a2000/cycle-04/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12103
+    },
+    {
+      "path": "run/CORR/D-seed-shoulder/a2000/cycle-04/native/products/receipt.yaml",
+      "sha256": "bd77479c6585df922535e17e787dffe7d95c78545abb3995c7716a78ee2b310c",
+      "bytes": 382316,
+      "compressed_path": "run/CORR/D-seed-shoulder/a2000/cycle-04/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29314
+    },
+    {
+      "path": "run/CORR/D-seed-shoulder/a2000/cycle-05/native/products/input-manifest.yaml",
+      "sha256": "6ab55ac60d9cd5aaf9165a595306a07c6ac31d1e8ec6bd70b63f0a7fd3be4bb7",
+      "bytes": 299253,
+      "compressed_path": "run/CORR/D-seed-shoulder/a2000/cycle-05/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12099
+    },
+    {
+      "path": "run/CORR/D-seed-shoulder/a2000/cycle-05/native/products/receipt.yaml",
+      "sha256": "efb50183111b921700a717e32ad10786fb8942c50eaa030e146dda8ce6e29d8e",
+      "bytes": 382399,
+      "compressed_path": "run/CORR/D-seed-shoulder/a2000/cycle-05/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29515
+    },
+    {
+      "path": "run/CORR/D-seed-shoulder/a2000/cycle-06/native/products/input-manifest.yaml",
+      "sha256": "752ea61a0f35948299c3613d342c6b8d054d2902d11e26428fdf75a2b30720e1",
+      "bytes": 299253,
+      "compressed_path": "run/CORR/D-seed-shoulder/a2000/cycle-06/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12098
+    },
+    {
+      "path": "run/CORR/D-seed-shoulder/a2000/cycle-06/native/products/receipt.yaml",
+      "sha256": "4a9cb5bf010dc5dc428bee5ca42e1e983d4e0687351787dcf78f3ccaef8a2d87",
+      "bytes": 382373,
+      "compressed_path": "run/CORR/D-seed-shoulder/a2000/cycle-06/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29521
+    },
+    {
+      "path": "run/CORR/D-seed-shoulder/a2000/cycle-07/native/products/input-manifest.yaml",
+      "sha256": "ea6bc90365b977bc172dd908e9a87bf57c6fe9b73a5b0e7ca8da95014b49df8f",
+      "bytes": 299253,
+      "compressed_path": "run/CORR/D-seed-shoulder/a2000/cycle-07/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12101
+    },
+    {
+      "path": "run/CORR/D-seed-shoulder/a2000/cycle-07/native/products/receipt.yaml",
+      "sha256": "618483d96cd954aaba77d0e7660ecf45f753fff785482b042bd4d75ca7f166aa",
+      "bytes": 382407,
+      "compressed_path": "run/CORR/D-seed-shoulder/a2000/cycle-07/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29521
+    },
+    {
+      "path": "run/CORR/D-seed-shoulder/a2000/cycle-08/native/products/input-manifest.yaml",
+      "sha256": "a331171a4fd6f8fd438077695f0361142bd8e15ac09b15bd9df6c7946a83a71a",
+      "bytes": 299253,
+      "compressed_path": "run/CORR/D-seed-shoulder/a2000/cycle-08/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12098
+    },
+    {
+      "path": "run/CORR/D-seed-shoulder/a2000/cycle-08/native/products/receipt.yaml",
+      "sha256": "d6b041f0ca05593eaaee5c053c958e78f020c95ce7100686574967a2aea14bd5",
+      "bytes": 382412,
+      "compressed_path": "run/CORR/D-seed-shoulder/a2000/cycle-08/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29529
+    },
+    {
+      "path": "run/CORR/D-seed-shoulder/a2000/cycle-09/native/products/input-manifest.yaml",
+      "sha256": "b655a887bc541ca21211c80302362fafa75b167322494080e690406e724f551a",
+      "bytes": 299253,
+      "compressed_path": "run/CORR/D-seed-shoulder/a2000/cycle-09/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12098
+    },
+    {
+      "path": "run/CORR/D-seed-shoulder/a2000/cycle-09/native/products/receipt.yaml",
+      "sha256": "445ed593cd5ffd2e173ece1095025136be6b49017695f24a79a5878c74da15fb",
+      "bytes": 382371,
+      "compressed_path": "run/CORR/D-seed-shoulder/a2000/cycle-09/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29496
+    },
+    {
+      "path": "run/CORR/D-seed-shoulder/a2000/cycle-10/native/products/input-manifest.yaml",
+      "sha256": "2d721bef3cb2fd82d98ebc3655dae22a107599f1cbf82dbfceb6a4fd3e552892",
+      "bytes": 299253,
+      "compressed_path": "run/CORR/D-seed-shoulder/a2000/cycle-10/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12108
+    },
+    {
+      "path": "run/CORR/D-seed-shoulder/a2000/cycle-10/native/products/receipt.yaml",
+      "sha256": "1bfcdc0b2d35fc92219ca6cdd8becbdc2b3bb46cd3886e86bcead923ba5919c7",
+      "bytes": 382405,
+      "compressed_path": "run/CORR/D-seed-shoulder/a2000/cycle-10/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29526
+    },
+    {
+      "path": "run/CORR/REF/a2000/cycle-01/native/products/input-manifest.yaml",
+      "sha256": "f5bb7ad3122aad4f7eba266b478a5ecfb1845e7681bae145c5e9732ef3c0c553",
+      "bytes": 299119,
+      "compressed_path": "run/CORR/REF/a2000/cycle-01/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12094
+    },
+    {
+      "path": "run/CORR/REF/a2000/cycle-01/native/products/receipt.yaml",
+      "sha256": "14a2e06d28baaf1d9b91cfe4e22e26d9a527eb5d64332cf8be538ff3e971fe51",
+      "bytes": 381106,
+      "compressed_path": "run/CORR/REF/a2000/cycle-01/native/products/receipt.yaml.gz",
+      "compressed_bytes": 28080
+    },
+    {
+      "path": "run/CORR/REF/a2000/cycle-02/native/products/input-manifest.yaml",
+      "sha256": "9f32fc2199828b9e519966c46b4ecc1b29583fc312a95af63c47f4482667e3f3",
+      "bytes": 299181,
+      "compressed_path": "run/CORR/REF/a2000/cycle-02/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12095
+    },
+    {
+      "path": "run/CORR/REF/a2000/cycle-02/native/products/receipt.yaml",
+      "sha256": "bac975baac25e882da112947ff3c1cc8af2d45b5e12685cf6305d59f83f0157d",
+      "bytes": 381510,
+      "compressed_path": "run/CORR/REF/a2000/cycle-02/native/products/receipt.yaml.gz",
+      "compressed_bytes": 28958
+    },
+    {
+      "path": "run/CORR/REF/a2000/cycle-03/native/products/input-manifest.yaml",
+      "sha256": "1fcc6efb35e5f325461ba141a7ee9ea81e0207eb3f35ca49d1763e139b391dad",
+      "bytes": 299181,
+      "compressed_path": "run/CORR/REF/a2000/cycle-03/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12095
+    },
+    {
+      "path": "run/CORR/REF/a2000/cycle-03/native/products/receipt.yaml",
+      "sha256": "e1468549d3ff846730e83055623c1bed171905794389889b3884a669a4279780",
+      "bytes": 382196,
+      "compressed_path": "run/CORR/REF/a2000/cycle-03/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29292
+    },
+    {
+      "path": "run/CORR/REF/a2000/cycle-04/native/products/input-manifest.yaml",
+      "sha256": "648a2f84abf92e19e6a49fbfaf05f3d8fede16cc0c720a2e071f6b65ef4a177e",
+      "bytes": 299181,
+      "compressed_path": "run/CORR/REF/a2000/cycle-04/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12099
+    },
+    {
+      "path": "run/CORR/REF/a2000/cycle-04/native/products/receipt.yaml",
+      "sha256": "db9c785395927d7106e1498a83bedabe41f09ceca40c963f5f3b6a50e0f27529",
+      "bytes": 382281,
+      "compressed_path": "run/CORR/REF/a2000/cycle-04/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29276
+    },
+    {
+      "path": "run/CORR/REF/a2000/cycle-05/native/products/input-manifest.yaml",
+      "sha256": "fca526fe3bb8fb51b37c1e945313c050a9b81453df9a5975553c1a15730559a1",
+      "bytes": 299181,
+      "compressed_path": "run/CORR/REF/a2000/cycle-05/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12095
+    },
+    {
+      "path": "run/CORR/REF/a2000/cycle-05/native/products/receipt.yaml",
+      "sha256": "e50ff3a8849299545789748d8cc07e12defadd6b599823ffe5a75c204370f14d",
+      "bytes": 382348,
+      "compressed_path": "run/CORR/REF/a2000/cycle-05/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29501
+    },
+    {
+      "path": "run/CORR/REF/a2000/cycle-06/native/products/input-manifest.yaml",
+      "sha256": "a75b39d6ffe603efd9f525d91391ec457affbecbe3f44bb2cdd0c1ca7ab232c9",
+      "bytes": 299181,
+      "compressed_path": "run/CORR/REF/a2000/cycle-06/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12095
+    },
+    {
+      "path": "run/CORR/REF/a2000/cycle-06/native/products/receipt.yaml",
+      "sha256": "1b3e0efa6eb509782ba01ea6adef3c6b751608bac443dcc5b21ddde04e12f19c",
+      "bytes": 382346,
+      "compressed_path": "run/CORR/REF/a2000/cycle-06/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29473
+    },
+    {
+      "path": "run/CORR/REF/a2000/cycle-07/native/products/input-manifest.yaml",
+      "sha256": "ec34709e30f4240e963aa9dbc18cedc6d45aca1dcb4cd6560900e617439f2cfa",
+      "bytes": 299181,
+      "compressed_path": "run/CORR/REF/a2000/cycle-07/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12093
+    },
+    {
+      "path": "run/CORR/REF/a2000/cycle-07/native/products/receipt.yaml",
+      "sha256": "beb1cd3eebccb774e1b2606fabe26714ecdba49fc04f4de7fb9d65e5b634055f",
+      "bytes": 382370,
+      "compressed_path": "run/CORR/REF/a2000/cycle-07/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29523
+    },
+    {
+      "path": "run/CORR/REF/a2000/cycle-08/native/products/input-manifest.yaml",
+      "sha256": "17990657a0d69b09ed4078475911e187464f6fb7cbf4b770fa744bd9108a5f65",
+      "bytes": 299181,
+      "compressed_path": "run/CORR/REF/a2000/cycle-08/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12100
+    },
+    {
+      "path": "run/CORR/REF/a2000/cycle-08/native/products/receipt.yaml",
+      "sha256": "ce836ad3ca06d344bd31e5388f0e38d55611a4ea033cde0fd4bacc5cf68da642",
+      "bytes": 382380,
+      "compressed_path": "run/CORR/REF/a2000/cycle-08/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29521
+    },
+    {
+      "path": "run/CORR/REF/a2000/cycle-09/native/products/input-manifest.yaml",
+      "sha256": "54c9507726888ec3e654812979450effd94fe4bfe03ae78c753028fa65b0ccaa",
+      "bytes": 299181,
+      "compressed_path": "run/CORR/REF/a2000/cycle-09/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12096
+    },
+    {
+      "path": "run/CORR/REF/a2000/cycle-09/native/products/receipt.yaml",
+      "sha256": "c5cd7f4db2341b988baae04ef7c5271ef561e0917bc5c145e2ba1a3f6fce40e3",
+      "bytes": 382355,
+      "compressed_path": "run/CORR/REF/a2000/cycle-09/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29483
+    },
+    {
+      "path": "run/CORR/REF/a2000/cycle-10/native/products/input-manifest.yaml",
+      "sha256": "f77a527062086a382642121a353d2270dfa32df11213d5a0477af06cb873d423",
+      "bytes": 299181,
+      "compressed_path": "run/CORR/REF/a2000/cycle-10/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12099
+    },
+    {
+      "path": "run/CORR/REF/a2000/cycle-10/native/products/receipt.yaml",
+      "sha256": "d31de2946919eda857c2071718cd939c76249f0ca36fc015fba65375c7b3f2f4",
+      "bytes": 382393,
+      "compressed_path": "run/CORR/REF/a2000/cycle-10/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29517
+    },
+    {
+      "path": "run/DIAG/C-core-minus/a2000/cycle-01/native/products/input-manifest.yaml",
+      "sha256": "b8bdbcad301037f96566277f4d84c8238c695c92b501658f4f630c4fac6d3a0a",
+      "bytes": 306058,
+      "compressed_path": "run/DIAG/C-core-minus/a2000/cycle-01/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13287
+    },
+    {
+      "path": "run/DIAG/C-core-minus/a2000/cycle-01/native/products/receipt.yaml",
+      "sha256": "8aef8235a7aa457f3004df7025d0d5476fe8147ed62a3a53daef823c4cbf87c7",
+      "bytes": 382638,
+      "compressed_path": "run/DIAG/C-core-minus/a2000/cycle-01/native/products/receipt.yaml.gz",
+      "compressed_bytes": 28999
+    },
+    {
+      "path": "run/DIAG/C-core-minus/a2000/cycle-02/native/products/input-manifest.yaml",
+      "sha256": "56f70ceb32425e7516df5ab2a83198a87e82e19a5c6c4a17356d808075223f92",
+      "bytes": 306092,
+      "compressed_path": "run/DIAG/C-core-minus/a2000/cycle-02/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13288
+    },
+    {
+      "path": "run/DIAG/C-core-minus/a2000/cycle-02/native/products/receipt.yaml",
+      "sha256": "da70168f7f82d9266dde79d0f628b2389b8cf7f07d2308d8d03c622b45f63e4a",
+      "bytes": 383151,
+      "compressed_path": "run/DIAG/C-core-minus/a2000/cycle-02/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29914
+    },
+    {
+      "path": "run/DIAG/C-core-minus/a2000/cycle-03/native/products/input-manifest.yaml",
+      "sha256": "df525b49186d1ba0aada0a026ef29ca35022defb0b581009a6e87f0b3623d622",
+      "bytes": 306092,
+      "compressed_path": "run/DIAG/C-core-minus/a2000/cycle-03/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13287
+    },
+    {
+      "path": "run/DIAG/C-core-minus/a2000/cycle-03/native/products/receipt.yaml",
+      "sha256": "a97375fe5022de9f26c540678e65cbd733a68e42e2ad795461f69e70442c12e8",
+      "bytes": 383818,
+      "compressed_path": "run/DIAG/C-core-minus/a2000/cycle-03/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30277
+    },
+    {
+      "path": "run/DIAG/C-core-minus/a2000/cycle-04/native/products/input-manifest.yaml",
+      "sha256": "32bc47273db7ac23ea9bfa57e38af3b06d617668c6996a3382aa2bc4306b3b5f",
+      "bytes": 306092,
+      "compressed_path": "run/DIAG/C-core-minus/a2000/cycle-04/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13289
+    },
+    {
+      "path": "run/DIAG/C-core-minus/a2000/cycle-04/native/products/receipt.yaml",
+      "sha256": "953b4c45881fb306c00411d36d7204cf1956a4e94ebaebbe601fd606d6dd4266",
+      "bytes": 383841,
+      "compressed_path": "run/DIAG/C-core-minus/a2000/cycle-04/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30482
+    },
+    {
+      "path": "run/DIAG/C-core-minus/a2000/cycle-05/native/products/input-manifest.yaml",
+      "sha256": "5624230a47043e5d14950f575a7898cf3ab284fb7ebe548fbb1f96ea3013567b",
+      "bytes": 306092,
+      "compressed_path": "run/DIAG/C-core-minus/a2000/cycle-05/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13285
+    },
+    {
+      "path": "run/DIAG/C-core-minus/a2000/cycle-05/native/products/receipt.yaml",
+      "sha256": "2d86ed62412295f735cfe02ee670358593be78562f9e21de406b44ffbafef7e1",
+      "bytes": 383920,
+      "compressed_path": "run/DIAG/C-core-minus/a2000/cycle-05/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30507
+    },
+    {
+      "path": "run/DIAG/C-core-minus/a2000/cycle-06/native/products/input-manifest.yaml",
+      "sha256": "797275bdfc59b5e0c7699b26b7503ce8f295a76777d04e323898c03488810ed1",
+      "bytes": 306092,
+      "compressed_path": "run/DIAG/C-core-minus/a2000/cycle-06/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13289
+    },
+    {
+      "path": "run/DIAG/C-core-minus/a2000/cycle-06/native/products/receipt.yaml",
+      "sha256": "4b6f6dc5cb35c4e2531d0385d716bc5a5aade62252740e386638b78436d1c6a3",
+      "bytes": 383947,
+      "compressed_path": "run/DIAG/C-core-minus/a2000/cycle-06/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30532
+    },
+    {
+      "path": "run/DIAG/C-core-minus/a2000/cycle-07/native/products/input-manifest.yaml",
+      "sha256": "ac829eb32f9c611660cc870af38d07a28ccd81c8fcb9c5e219bc0ba4b8a50f06",
+      "bytes": 306092,
+      "compressed_path": "run/DIAG/C-core-minus/a2000/cycle-07/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13283
+    },
+    {
+      "path": "run/DIAG/C-core-minus/a2000/cycle-07/native/products/receipt.yaml",
+      "sha256": "889e3b0d0c08e0c9eadc66b5982950e170bdbd67c3d5dcce7da29d2879cae394",
+      "bytes": 383915,
+      "compressed_path": "run/DIAG/C-core-minus/a2000/cycle-07/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30495
+    },
+    {
+      "path": "run/DIAG/C-core-minus/a2000/cycle-08/native/products/input-manifest.yaml",
+      "sha256": "8b46b2267734c7d1f59378e39b67e091f9b1d08769082e839ed22bbad5ced0d8",
+      "bytes": 306092,
+      "compressed_path": "run/DIAG/C-core-minus/a2000/cycle-08/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13288
+    },
+    {
+      "path": "run/DIAG/C-core-minus/a2000/cycle-08/native/products/receipt.yaml",
+      "sha256": "0f033902cefbad67c6de21eec88e762ca7f00909d2da5801433836865bd3fb77",
+      "bytes": 383920,
+      "compressed_path": "run/DIAG/C-core-minus/a2000/cycle-08/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30519
+    },
+    {
+      "path": "run/DIAG/C-core-minus/a2000/cycle-09/native/products/input-manifest.yaml",
+      "sha256": "b5dacca93351f32383a6a66b96de147ebfc2fbc5a2e8b48c9f605ceb222329d5",
+      "bytes": 306092,
+      "compressed_path": "run/DIAG/C-core-minus/a2000/cycle-09/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13288
+    },
+    {
+      "path": "run/DIAG/C-core-minus/a2000/cycle-09/native/products/receipt.yaml",
+      "sha256": "850223acdc0507d722d092449a21636ca9df6445879caeb54080d05726e71330",
+      "bytes": 383924,
+      "compressed_path": "run/DIAG/C-core-minus/a2000/cycle-09/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30550
+    },
+    {
+      "path": "run/DIAG/C-core-minus/a2000/cycle-10/native/products/input-manifest.yaml",
+      "sha256": "3deefca0d4a1ce72e106e861e1849908b65ad6c59bddf98dbff75b85c522a4cd",
+      "bytes": 306092,
+      "compressed_path": "run/DIAG/C-core-minus/a2000/cycle-10/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13285
+    },
+    {
+      "path": "run/DIAG/C-core-minus/a2000/cycle-10/native/products/receipt.yaml",
+      "sha256": "9c9db7b9f0fad03b2d54f5d52693fd60c69433e8b12763e4fda2ae01ea380923",
+      "bytes": 383930,
+      "compressed_path": "run/DIAG/C-core-minus/a2000/cycle-10/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30534
+    },
+    {
+      "path": "run/DIAG/C-core-plus/a2000/cycle-01/native/products/input-manifest.yaml",
+      "sha256": "3e7126c498820a6f51adc35c472b2a677857b885f4dccdb7d39fe99e3f09959c",
+      "bytes": 306027,
+      "compressed_path": "run/DIAG/C-core-plus/a2000/cycle-01/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13284
+    },
+    {
+      "path": "run/DIAG/C-core-plus/a2000/cycle-01/native/products/receipt.yaml",
+      "sha256": "1021eaa2ab13882ffc64dde7924aa2b1687c4a96289de891e4664d57100ba510",
+      "bytes": 382584,
+      "compressed_path": "run/DIAG/C-core-plus/a2000/cycle-01/native/products/receipt.yaml.gz",
+      "compressed_bytes": 28952
+    },
+    {
+      "path": "run/DIAG/C-core-plus/a2000/cycle-02/native/products/input-manifest.yaml",
+      "sha256": "ef640b17b56b9ad20ec51d3d9b202d0bd7e578d096e39bb022a0aa83e1f1dfc7",
+      "bytes": 306061,
+      "compressed_path": "run/DIAG/C-core-plus/a2000/cycle-02/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13284
+    },
+    {
+      "path": "run/DIAG/C-core-plus/a2000/cycle-02/native/products/receipt.yaml",
+      "sha256": "4a59c7245861c363fdbb4d5952dab171f3dcbd4afe6ce4a77c36581a3296eae5",
+      "bytes": 382960,
+      "compressed_path": "run/DIAG/C-core-plus/a2000/cycle-02/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29829
+    },
+    {
+      "path": "run/DIAG/C-core-plus/a2000/cycle-03/native/products/input-manifest.yaml",
+      "sha256": "5d2b0679bd162006f9a246212c4031cd7c2fcd283d8c22ebe8a37093de950726",
+      "bytes": 306061,
+      "compressed_path": "run/DIAG/C-core-plus/a2000/cycle-03/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13276
+    },
+    {
+      "path": "run/DIAG/C-core-plus/a2000/cycle-03/native/products/receipt.yaml",
+      "sha256": "d0a4186457f82e45769764f72fa4bf59a8a982cfddbe920b35abd8fa39cc5c74",
+      "bytes": 383683,
+      "compressed_path": "run/DIAG/C-core-plus/a2000/cycle-03/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30172
+    },
+    {
+      "path": "run/DIAG/C-core-plus/a2000/cycle-04/native/products/input-manifest.yaml",
+      "sha256": "1f822ada9c939d94417399c6f869c0bc38c218f5b45a79f0833ceb3e36bc9f83",
+      "bytes": 306061,
+      "compressed_path": "run/DIAG/C-core-plus/a2000/cycle-04/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13282
+    },
+    {
+      "path": "run/DIAG/C-core-plus/a2000/cycle-04/native/products/receipt.yaml",
+      "sha256": "49907b94d4467542418e7063b3a30ecf4744edcecb9acbc3e630d977c15f2e7c",
+      "bytes": 383754,
+      "compressed_path": "run/DIAG/C-core-plus/a2000/cycle-04/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30415
+    },
+    {
+      "path": "run/DIAG/C-core-plus/a2000/cycle-05/native/products/input-manifest.yaml",
+      "sha256": "e06c9caaf0231f2259fefbf1f8a10024d451021335f196d26dbfb0afd87ad389",
+      "bytes": 306061,
+      "compressed_path": "run/DIAG/C-core-plus/a2000/cycle-05/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13280
+    },
+    {
+      "path": "run/DIAG/C-core-plus/a2000/cycle-05/native/products/receipt.yaml",
+      "sha256": "354834d694d70af6a1de888ed94886cd653c1be767c614507d2d81583335f503",
+      "bytes": 383793,
+      "compressed_path": "run/DIAG/C-core-plus/a2000/cycle-05/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30458
+    },
+    {
+      "path": "run/DIAG/C-core-plus/a2000/cycle-06/native/products/input-manifest.yaml",
+      "sha256": "26a351ad4d146c692de10574c6b703aa5ac33045b2f0ad4aaf550d162a390798",
+      "bytes": 306061,
+      "compressed_path": "run/DIAG/C-core-plus/a2000/cycle-06/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13281
+    },
+    {
+      "path": "run/DIAG/C-core-plus/a2000/cycle-06/native/products/receipt.yaml",
+      "sha256": "1d39c721284fa0b99254c8998c1629b03e382a2398ed513d5d70e6c7babab960",
+      "bytes": 383834,
+      "compressed_path": "run/DIAG/C-core-plus/a2000/cycle-06/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30468
+    },
+    {
+      "path": "run/DIAG/C-core-plus/a2000/cycle-07/native/products/input-manifest.yaml",
+      "sha256": "c02ad183d433591028e56d946bc243880259e62e0eb6c4d27d7350594e9e0168",
+      "bytes": 306061,
+      "compressed_path": "run/DIAG/C-core-plus/a2000/cycle-07/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13284
+    },
+    {
+      "path": "run/DIAG/C-core-plus/a2000/cycle-07/native/products/receipt.yaml",
+      "sha256": "5bf18dd8445b0cd79abc2dceec0fc51efd1fa684e8273a348cabf7ee30fa0cdd",
+      "bytes": 383856,
+      "compressed_path": "run/DIAG/C-core-plus/a2000/cycle-07/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30492
+    },
+    {
+      "path": "run/DIAG/C-core-plus/a2000/cycle-08/native/products/input-manifest.yaml",
+      "sha256": "11ce9582da34aa04d441f52f94f695d2b01931ef3a8b0cd55344691e37b0cf0f",
+      "bytes": 306061,
+      "compressed_path": "run/DIAG/C-core-plus/a2000/cycle-08/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13285
+    },
+    {
+      "path": "run/DIAG/C-core-plus/a2000/cycle-08/native/products/receipt.yaml",
+      "sha256": "02331736b1d9288ca5e2e671073508a44b9a3b5d93834912505f213ff34d32e3",
+      "bytes": 383856,
+      "compressed_path": "run/DIAG/C-core-plus/a2000/cycle-08/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30499
+    },
+    {
+      "path": "run/DIAG/C-core-plus/a2000/cycle-09/native/products/input-manifest.yaml",
+      "sha256": "03d2a9876b91cd350146eb2dbe0fa18c65e610db94746ae1d62ddb42439a2f23",
+      "bytes": 306061,
+      "compressed_path": "run/DIAG/C-core-plus/a2000/cycle-09/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13283
+    },
+    {
+      "path": "run/DIAG/C-core-plus/a2000/cycle-09/native/products/receipt.yaml",
+      "sha256": "058a2761fe7af699dd5cdca0fc5c275fc505c6b731c5e6c663c6ea4bec0abcbc",
+      "bytes": 383874,
+      "compressed_path": "run/DIAG/C-core-plus/a2000/cycle-09/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30502
+    },
+    {
+      "path": "run/DIAG/C-core-plus/a2000/cycle-10/native/products/input-manifest.yaml",
+      "sha256": "9414b17515071ab83ad5a6af087b414f14d5de2cf20800b76bcc2179f70395de",
+      "bytes": 306061,
+      "compressed_path": "run/DIAG/C-core-plus/a2000/cycle-10/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13286
+    },
+    {
+      "path": "run/DIAG/C-core-plus/a2000/cycle-10/native/products/receipt.yaml",
+      "sha256": "3286c67b62b7159415f6e6617c9d80683e47768269d738050eb0eb8e1f880395",
+      "bytes": 383853,
+      "compressed_path": "run/DIAG/C-core-plus/a2000/cycle-10/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30493
+    },
+    {
+      "path": "run/DIAG/C-shoulder/a2000/cycle-01/native/products/input-manifest.yaml",
+      "sha256": "6c99ff627a65a1dfadc0cd56b3191238e3cc04d69ab28536273b2034679fa32b",
+      "bytes": 305996,
+      "compressed_path": "run/DIAG/C-shoulder/a2000/cycle-01/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13285
+    },
+    {
+      "path": "run/DIAG/C-shoulder/a2000/cycle-01/native/products/receipt.yaml",
+      "sha256": "8b81ef3540741e2ea35b47609ec7e1c6e8c31d7652c6b9926ac3c5deebc0e804",
+      "bytes": 382595,
+      "compressed_path": "run/DIAG/C-shoulder/a2000/cycle-01/native/products/receipt.yaml.gz",
+      "compressed_bytes": 28972
+    },
+    {
+      "path": "run/DIAG/C-shoulder/a2000/cycle-02/native/products/input-manifest.yaml",
+      "sha256": "5c0119f27aebc98c908d18d5597ba49c700a2daaa143f8938388fb295add7619",
+      "bytes": 306030,
+      "compressed_path": "run/DIAG/C-shoulder/a2000/cycle-02/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13285
+    },
+    {
+      "path": "run/DIAG/C-shoulder/a2000/cycle-02/native/products/receipt.yaml",
+      "sha256": "2ee14c2f174bc21ec17a5b3aca148ff8cc4fd77ed219c0890c326fc4e4f6edf7",
+      "bytes": 382858,
+      "compressed_path": "run/DIAG/C-shoulder/a2000/cycle-02/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29723
+    },
+    {
+      "path": "run/DIAG/C-shoulder/a2000/cycle-03/native/products/input-manifest.yaml",
+      "sha256": "9113e75cb643ad0543b437dfcd27cee753a83d6e3206635c3dd3b2592076cbc2",
+      "bytes": 306030,
+      "compressed_path": "run/DIAG/C-shoulder/a2000/cycle-03/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13282
+    },
+    {
+      "path": "run/DIAG/C-shoulder/a2000/cycle-03/native/products/receipt.yaml",
+      "sha256": "8cbfaa6b0cee6af477a56beaadef0a3647cf5ecce00e22e0897d2ad4abd8717f",
+      "bytes": 383359,
+      "compressed_path": "run/DIAG/C-shoulder/a2000/cycle-03/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29989
+    },
+    {
+      "path": "run/DIAG/C-shoulder/a2000/cycle-04/native/products/input-manifest.yaml",
+      "sha256": "b80f58b89da195cb5a01a2b8b30a0ad0a1e3399e97059dfe7cb276e168713ece",
+      "bytes": 306030,
+      "compressed_path": "run/DIAG/C-shoulder/a2000/cycle-04/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13291
+    },
+    {
+      "path": "run/DIAG/C-shoulder/a2000/cycle-04/native/products/receipt.yaml",
+      "sha256": "e900cbc5f2a3accec905e944165006ae6af6a9e83837e24d207fe6a86869b339",
+      "bytes": 383358,
+      "compressed_path": "run/DIAG/C-shoulder/a2000/cycle-04/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29998
+    },
+    {
+      "path": "run/DIAG/C-shoulder/a2000/cycle-05/native/products/input-manifest.yaml",
+      "sha256": "c5339cbeb3b0d8e502b2c4a175a8806f599a60032799459cbde0ae0a9235d14d",
+      "bytes": 306030,
+      "compressed_path": "run/DIAG/C-shoulder/a2000/cycle-05/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13285
+    },
+    {
+      "path": "run/DIAG/C-shoulder/a2000/cycle-05/native/products/receipt.yaml",
+      "sha256": "6172f33165c3b5f6ea0c0bebd324a82e6d9d51856f863a9232f2c93511a456f4",
+      "bytes": 383441,
+      "compressed_path": "run/DIAG/C-shoulder/a2000/cycle-05/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30012
+    },
+    {
+      "path": "run/DIAG/C-shoulder/a2000/cycle-06/native/products/input-manifest.yaml",
+      "sha256": "c87a1f4a70dbf5d52908615b589fc847d7cf6a1248eee550362ceafddf8d7c9f",
+      "bytes": 306030,
+      "compressed_path": "run/DIAG/C-shoulder/a2000/cycle-06/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13285
+    },
+    {
+      "path": "run/DIAG/C-shoulder/a2000/cycle-06/native/products/receipt.yaml",
+      "sha256": "0417525903d849fd45e5ba03020d6f98c904008541347d663b053506e2b1de02",
+      "bytes": 383465,
+      "compressed_path": "run/DIAG/C-shoulder/a2000/cycle-06/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30026
+    },
+    {
+      "path": "run/DIAG/C-shoulder/a2000/cycle-07/native/products/input-manifest.yaml",
+      "sha256": "9b05ac853849dbcf67da766c9d8a96e262933560c9dff1b48c602a141af7c0ba",
+      "bytes": 306030,
+      "compressed_path": "run/DIAG/C-shoulder/a2000/cycle-07/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13286
+    },
+    {
+      "path": "run/DIAG/C-shoulder/a2000/cycle-07/native/products/receipt.yaml",
+      "sha256": "93e442db9989ffc3d25052b5352cd026cfcf91e8776ac36a08f31375f743ba55",
+      "bytes": 383466,
+      "compressed_path": "run/DIAG/C-shoulder/a2000/cycle-07/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30040
+    },
+    {
+      "path": "run/DIAG/C-shoulder/a2000/cycle-08/native/products/input-manifest.yaml",
+      "sha256": "ce08ebb7127af6398a9de0f668cd9f383c470a369bc35b696f61f1ba66d6fad9",
+      "bytes": 306030,
+      "compressed_path": "run/DIAG/C-shoulder/a2000/cycle-08/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13288
+    },
+    {
+      "path": "run/DIAG/C-shoulder/a2000/cycle-08/native/products/receipt.yaml",
+      "sha256": "251da0744b244b77464b8aca9bc3b6ac6ede6e557a24db3c2727573176cbd3bc",
+      "bytes": 383399,
+      "compressed_path": "run/DIAG/C-shoulder/a2000/cycle-08/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29996
+    },
+    {
+      "path": "run/DIAG/C-shoulder/a2000/cycle-09/native/products/input-manifest.yaml",
+      "sha256": "073f452bf48de7de53c9bc976be84a88202e81f290cda994ed0cb88a5f8f0580",
+      "bytes": 306030,
+      "compressed_path": "run/DIAG/C-shoulder/a2000/cycle-09/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13284
+    },
+    {
+      "path": "run/DIAG/C-shoulder/a2000/cycle-09/native/products/receipt.yaml",
+      "sha256": "0a18e41876a89c50a737d0954cde264ae0452209e9e5d5db3442431c706b92f5",
+      "bytes": 383479,
+      "compressed_path": "run/DIAG/C-shoulder/a2000/cycle-09/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30011
+    },
+    {
+      "path": "run/DIAG/C-shoulder/a2000/cycle-10/native/products/input-manifest.yaml",
+      "sha256": "da7ef9733abe1ae2cb6bfe0f2b63a66372dc74f0003691d958c710c9931c56b6",
+      "bytes": 306030,
+      "compressed_path": "run/DIAG/C-shoulder/a2000/cycle-10/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 13293
+    },
+    {
+      "path": "run/DIAG/C-shoulder/a2000/cycle-10/native/products/receipt.yaml",
+      "sha256": "30c6fa026e94e069c84db263efdc78c827ac07fc195c8694a0c1cf90786ed1cf",
+      "bytes": 383431,
+      "compressed_path": "run/DIAG/C-shoulder/a2000/cycle-10/native/products/receipt.yaml.gz",
+      "compressed_bytes": 30016
+    },
+    {
+      "path": "run/DIAG/D-seed-shoulder/a2000/cycle-01/native/products/input-manifest.yaml",
+      "sha256": "3dcde82ec79b26a035c9db064de8817e6de6216fa19d94a765ad692c65b6f055",
+      "bytes": 299162,
+      "compressed_path": "run/DIAG/D-seed-shoulder/a2000/cycle-01/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12093
+    },
+    {
+      "path": "run/DIAG/D-seed-shoulder/a2000/cycle-01/native/products/receipt.yaml",
+      "sha256": "49c13d2c1e67dd7cf4b83e64bf1984fcc335954dc3f7a50ef2f712070703a98f",
+      "bytes": 381245,
+      "compressed_path": "run/DIAG/D-seed-shoulder/a2000/cycle-01/native/products/receipt.yaml.gz",
+      "compressed_bytes": 28150
+    },
+    {
+      "path": "run/DIAG/D-seed-shoulder/a2000/cycle-02/native/products/input-manifest.yaml",
+      "sha256": "3fd2a319b58da90d70a19ac024200859d036ce3bf85ce2f0312dabd482894ec6",
+      "bytes": 299253,
+      "compressed_path": "run/DIAG/D-seed-shoulder/a2000/cycle-02/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12106
+    },
+    {
+      "path": "run/DIAG/D-seed-shoulder/a2000/cycle-02/native/products/receipt.yaml",
+      "sha256": "8f1479f0080741170b74a5c8fe7b872d385825e3d028ae86514f2909fe5509e9",
+      "bytes": 381771,
+      "compressed_path": "run/DIAG/D-seed-shoulder/a2000/cycle-02/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29045
+    },
+    {
+      "path": "run/DIAG/D-seed-shoulder/a2000/cycle-03/native/products/input-manifest.yaml",
+      "sha256": "5e54f5e1f22f1cca2dfe03995aee35ff928c7c2510eaac833f1a31be4f2dda40",
+      "bytes": 299253,
+      "compressed_path": "run/DIAG/D-seed-shoulder/a2000/cycle-03/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12104
+    },
+    {
+      "path": "run/DIAG/D-seed-shoulder/a2000/cycle-03/native/products/receipt.yaml",
+      "sha256": "406f70e3b2bf55a19eda44a35fe2c73818f9f8eb9e578e67b1620f03fdb183fd",
+      "bytes": 382229,
+      "compressed_path": "run/DIAG/D-seed-shoulder/a2000/cycle-03/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29324
+    },
+    {
+      "path": "run/DIAG/D-seed-shoulder/a2000/cycle-04/native/products/input-manifest.yaml",
+      "sha256": "f44851a3e80f358da8d9eb7e2a0f3764a6df3880dba6d4cbbc5a020f6fbcc36e",
+      "bytes": 299253,
+      "compressed_path": "run/DIAG/D-seed-shoulder/a2000/cycle-04/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12108
+    },
+    {
+      "path": "run/DIAG/D-seed-shoulder/a2000/cycle-04/native/products/receipt.yaml",
+      "sha256": "0a0328f39a15e862ca30d8aa97661ba26b921331665b210fab5f70bb9a31042d",
+      "bytes": 382325,
+      "compressed_path": "run/DIAG/D-seed-shoulder/a2000/cycle-04/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29521
+    },
+    {
+      "path": "run/DIAG/D-seed-shoulder/a2000/cycle-05/native/products/input-manifest.yaml",
+      "sha256": "0851a29cd93a4f1b4c97400f0e56071e7ab9f3484e3ffbbe7a42928fb92f51d4",
+      "bytes": 299253,
+      "compressed_path": "run/DIAG/D-seed-shoulder/a2000/cycle-05/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12104
+    },
+    {
+      "path": "run/DIAG/D-seed-shoulder/a2000/cycle-05/native/products/receipt.yaml",
+      "sha256": "82f095599871b9dd463e007b0914b88392d51966540de730c3ade91f042c7f77",
+      "bytes": 382398,
+      "compressed_path": "run/DIAG/D-seed-shoulder/a2000/cycle-05/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29539
+    },
+    {
+      "path": "run/DIAG/D-seed-shoulder/a2000/cycle-06/native/products/input-manifest.yaml",
+      "sha256": "dcfe953c4adb8e38caf3a2b1e8de05e927863a1372e6a92317eaf553b5d5f1de",
+      "bytes": 299253,
+      "compressed_path": "run/DIAG/D-seed-shoulder/a2000/cycle-06/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12104
+    },
+    {
+      "path": "run/DIAG/D-seed-shoulder/a2000/cycle-06/native/products/receipt.yaml",
+      "sha256": "8db3c5b5e8d8d056fb7d0df1488dc03b46bc6bb520a0f1df75634d09720af396",
+      "bytes": 382418,
+      "compressed_path": "run/DIAG/D-seed-shoulder/a2000/cycle-06/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29509
+    },
+    {
+      "path": "run/DIAG/D-seed-shoulder/a2000/cycle-07/native/products/input-manifest.yaml",
+      "sha256": "218de4f06b9b622b099c41a506100e6c73ecb396cfb1cc6b5ab6bb5b4df1a238",
+      "bytes": 299253,
+      "compressed_path": "run/DIAG/D-seed-shoulder/a2000/cycle-07/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12108
+    },
+    {
+      "path": "run/DIAG/D-seed-shoulder/a2000/cycle-07/native/products/receipt.yaml",
+      "sha256": "2466e7c134bb69f78714e4938db86c2625d17f18197f24bac8c56e325d9b8ccc",
+      "bytes": 382412,
+      "compressed_path": "run/DIAG/D-seed-shoulder/a2000/cycle-07/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29518
+    },
+    {
+      "path": "run/DIAG/D-seed-shoulder/a2000/cycle-08/native/products/input-manifest.yaml",
+      "sha256": "0e80c6c8ef2e7689966f0b60a04aec9b4b8a3473ebbed8778dee64e2b2f1d60d",
+      "bytes": 299253,
+      "compressed_path": "run/DIAG/D-seed-shoulder/a2000/cycle-08/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12106
+    },
+    {
+      "path": "run/DIAG/D-seed-shoulder/a2000/cycle-08/native/products/receipt.yaml",
+      "sha256": "cec5c60c05bac9c31196ff45dd9260a3577f05bccd427e06a02f1bdfca33acd7",
+      "bytes": 382430,
+      "compressed_path": "run/DIAG/D-seed-shoulder/a2000/cycle-08/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29523
+    },
+    {
+      "path": "run/DIAG/D-seed-shoulder/a2000/cycle-09/native/products/input-manifest.yaml",
+      "sha256": "8822ed28aeb37d5debfa8db627329ae2b0cdd79a180cdf6acde7e90dcfc7a052",
+      "bytes": 299253,
+      "compressed_path": "run/DIAG/D-seed-shoulder/a2000/cycle-09/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12100
+    },
+    {
+      "path": "run/DIAG/D-seed-shoulder/a2000/cycle-09/native/products/receipt.yaml",
+      "sha256": "f3474d89e13ea21e4f89fcbdd5a7ce44de526e05410cfd7105e1125b28b36941",
+      "bytes": 382384,
+      "compressed_path": "run/DIAG/D-seed-shoulder/a2000/cycle-09/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29511
+    },
+    {
+      "path": "run/DIAG/D-seed-shoulder/a2000/cycle-10/native/products/input-manifest.yaml",
+      "sha256": "dfc4c5c74d7604d9bf54fd554573dbd9b9afc104b68012eb852d0d015f767448",
+      "bytes": 299253,
+      "compressed_path": "run/DIAG/D-seed-shoulder/a2000/cycle-10/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12103
+    },
+    {
+      "path": "run/DIAG/D-seed-shoulder/a2000/cycle-10/native/products/receipt.yaml",
+      "sha256": "e1bf2dd9f25b4a7a5a784c02244977a1e4c472573d0190ce7ccb04742e9c4cd9",
+      "bytes": 382412,
+      "compressed_path": "run/DIAG/D-seed-shoulder/a2000/cycle-10/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29547
+    },
+    {
+      "path": "run/DIAG/REF/a2000/cycle-01/native/products/input-manifest.yaml",
+      "sha256": "7d2077f62d7b88c774d12cbd2b5d5b171ac0e7e444ea87955ffd620413002de0",
+      "bytes": 299119,
+      "compressed_path": "run/DIAG/REF/a2000/cycle-01/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12097
+    },
+    {
+      "path": "run/DIAG/REF/a2000/cycle-01/native/products/receipt.yaml",
+      "sha256": "7b28708906c3bec8129c1bbc1a209fb2a6ea392ba5ebe4902e7af27ccfdbcd4e",
+      "bytes": 381104,
+      "compressed_path": "run/DIAG/REF/a2000/cycle-01/native/products/receipt.yaml.gz",
+      "compressed_bytes": 28089
+    },
+    {
+      "path": "run/DIAG/REF/a2000/cycle-02/native/products/input-manifest.yaml",
+      "sha256": "007691c2c83c8d1fc465135573d51d516e45596721acc3a4b375ac994284bf3a",
+      "bytes": 299181,
+      "compressed_path": "run/DIAG/REF/a2000/cycle-02/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12099
+    },
+    {
+      "path": "run/DIAG/REF/a2000/cycle-02/native/products/receipt.yaml",
+      "sha256": "c3d13acf3d4ff6ab8e7c320d74a7371c9826d0316a7e516ed322292a80e572f9",
+      "bytes": 381520,
+      "compressed_path": "run/DIAG/REF/a2000/cycle-02/native/products/receipt.yaml.gz",
+      "compressed_bytes": 28956
+    },
+    {
+      "path": "run/DIAG/REF/a2000/cycle-03/native/products/input-manifest.yaml",
+      "sha256": "378f2cecd77c9074d1a8d4042f7cc3d2823b860f2bde2b2c1fd490625b021c6b",
+      "bytes": 299181,
+      "compressed_path": "run/DIAG/REF/a2000/cycle-03/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12097
+    },
+    {
+      "path": "run/DIAG/REF/a2000/cycle-03/native/products/receipt.yaml",
+      "sha256": "47402f9017c2faa0d6e71b5d3e786e81b5f3ea97162869fd89f059a6cde1d6ba",
+      "bytes": 382192,
+      "compressed_path": "run/DIAG/REF/a2000/cycle-03/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29298
+    },
+    {
+      "path": "run/DIAG/REF/a2000/cycle-04/native/products/input-manifest.yaml",
+      "sha256": "85baf7358be76e6f01fde56b1a75d7f5e93723bd28ecc3fa6c876bc666155505",
+      "bytes": 299181,
+      "compressed_path": "run/DIAG/REF/a2000/cycle-04/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12100
+    },
+    {
+      "path": "run/DIAG/REF/a2000/cycle-04/native/products/receipt.yaml",
+      "sha256": "abc5b9d439e8a0fc00990b272202cb57f4246c304ec8e5c61ae4229b688edb16",
+      "bytes": 382278,
+      "compressed_path": "run/DIAG/REF/a2000/cycle-04/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29311
+    },
+    {
+      "path": "run/DIAG/REF/a2000/cycle-05/native/products/input-manifest.yaml",
+      "sha256": "839d182cde84bc08ad14135ebb1f1790de4c3ad50f19ec707f493ef4f4fa181f",
+      "bytes": 299181,
+      "compressed_path": "run/DIAG/REF/a2000/cycle-05/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12101
+    },
+    {
+      "path": "run/DIAG/REF/a2000/cycle-05/native/products/receipt.yaml",
+      "sha256": "00c232733afaf05504e9d25dbce006c24dcc19925ef4e9af2e1f52ebe6685d65",
+      "bytes": 382356,
+      "compressed_path": "run/DIAG/REF/a2000/cycle-05/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29499
+    },
+    {
+      "path": "run/DIAG/REF/a2000/cycle-06/native/products/input-manifest.yaml",
+      "sha256": "17a454635bdb3df49edf9d3cb3584d4ad522038a5ff6d6fb61e03509aeeb2bb4",
+      "bytes": 299181,
+      "compressed_path": "run/DIAG/REF/a2000/cycle-06/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12102
+    },
+    {
+      "path": "run/DIAG/REF/a2000/cycle-06/native/products/receipt.yaml",
+      "sha256": "88ced318ff0601c08c67ac2d26acac60a30d892cb568d9d7641db1360363e4ce",
+      "bytes": 382387,
+      "compressed_path": "run/DIAG/REF/a2000/cycle-06/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29511
+    },
+    {
+      "path": "run/DIAG/REF/a2000/cycle-07/native/products/input-manifest.yaml",
+      "sha256": "002e7625b6f05c629e720182a1f97ad63a705f8a56c144dd26a4b2ec0ca2346a",
+      "bytes": 299181,
+      "compressed_path": "run/DIAG/REF/a2000/cycle-07/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12103
+    },
+    {
+      "path": "run/DIAG/REF/a2000/cycle-07/native/products/receipt.yaml",
+      "sha256": "a399d02ef23bb23ad1795331cdda6b63b7ac702e1eb7529da7bfe3265d6f61b9",
+      "bytes": 382401,
+      "compressed_path": "run/DIAG/REF/a2000/cycle-07/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29538
+    },
+    {
+      "path": "run/DIAG/REF/a2000/cycle-08/native/products/input-manifest.yaml",
+      "sha256": "8fd9638083e0395e570ff4d865eaf3484920b8a257a0c19d5f469ae72239dcdc",
+      "bytes": 299181,
+      "compressed_path": "run/DIAG/REF/a2000/cycle-08/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12101
+    },
+    {
+      "path": "run/DIAG/REF/a2000/cycle-08/native/products/receipt.yaml",
+      "sha256": "b0038eda3481efd53b57c26b936e4235c05dbc6a5df93ccf9ce81b58dd23906d",
+      "bytes": 382399,
+      "compressed_path": "run/DIAG/REF/a2000/cycle-08/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29501
+    },
+    {
+      "path": "run/DIAG/REF/a2000/cycle-09/native/products/input-manifest.yaml",
+      "sha256": "0a558709714089188fc00ca2f81c430b41af10bdb340fee8cc02e7ec51e1a9b0",
+      "bytes": 299181,
+      "compressed_path": "run/DIAG/REF/a2000/cycle-09/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12098
+    },
+    {
+      "path": "run/DIAG/REF/a2000/cycle-09/native/products/receipt.yaml",
+      "sha256": "7618bbe62320740129a8188a3cd63f2a5e4a7dbfd6d838a57e611451fd1318c6",
+      "bytes": 382393,
+      "compressed_path": "run/DIAG/REF/a2000/cycle-09/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29565
+    },
+    {
+      "path": "run/DIAG/REF/a2000/cycle-10/native/products/input-manifest.yaml",
+      "sha256": "de9e9342ba86b52c4404c9a6a12af9de746c0a8831ec46348c801310ab7205db",
+      "bytes": 299181,
+      "compressed_path": "run/DIAG/REF/a2000/cycle-10/native/products/input-manifest.yaml.gz",
+      "compressed_bytes": 12100
+    },
+    {
+      "path": "run/DIAG/REF/a2000/cycle-10/native/products/receipt.yaml",
+      "sha256": "e5e91d532f6b6882b52177529d3528e450a68a6abcfa04b3913276da50c83208",
+      "bytes": 382387,
+      "compressed_path": "run/DIAG/REF/a2000/cycle-10/native/products/receipt.yaml.gz",
+      "compressed_bytes": 29521
+    }
+  ],
+  "representation": "large current-run native YAML is lossless gzip at same path plus .gz; binary native numeric payloads intentionally removed; raw reprocessing required for restart",
+  "protected_inputs_unchanged": true,
+  "retained_bytes": 875864993
+}

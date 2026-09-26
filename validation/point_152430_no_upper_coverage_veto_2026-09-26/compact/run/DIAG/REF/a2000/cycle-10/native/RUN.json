@@ -1,0 +1,137 @@
+{
+  "command": [
+    "/private/tmp/citlali-point-guarded-build-20260925/bin/citlali",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/run/DIAG/REF/a2000/cycle-10/native/development.yaml"
+  ],
+  "executable_sha256": "5c489ea69784b43d66c22da8e000d5bb1ef575dfaa4054c15d1e9d1b55013566",
+  "version": "** logging ** Configured with level=trace; available levels: [\"trace\", \"debug\", \"info\", \"warning\", \"error\", \"critical\", \"off\"].\nv2-ngc4449-memory-repair-187df04b-578-gac2bee1fe (2026-09-26T12:58:12)\nkids 04088da-dirty (2026-09-25T13:58:35)\n",
+  "input_sha256": "9c32887e2cf0e2432daba9d5a629e7aa07b7f6f96c9fd6f9a4cdd427663dbc8b",
+  "workers": 1,
+  "thread_environment": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "BLIS_NUM_THREADS": "1",
+    "OMP_DYNAMIC": "FALSE"
+  },
+  "measurement": "fresh process; whole-invocation CPU and sampled RSS; no concurrent diagnostic",
+  "samples": [
+    {
+      "seconds": 0.0033355829946231097,
+      "rss_bytes": 32768,
+      "user_seconds": 5.65e-05,
+      "system_seconds": 0.000377458,
+      "os_threads": 1
+    },
+    {
+      "seconds": 0.513398082985077,
+      "rss_bytes": 110526464,
+      "user_seconds": 0.484785472,
+      "system_seconds": 0.014073083,
+      "os_threads": 1
+    },
+    {
+      "seconds": 1.0234995409846306,
+      "rss_bytes": 203472896,
+      "user_seconds": 0.982472896,
+      "system_seconds": 0.020230876,
+      "os_threads": 1
+    },
+    {
+      "seconds": 1.5335742909810506,
+      "rss_bytes": 218365952,
+      "user_seconds": 1.496194304,
+      "system_seconds": 0.022159584,
+      "os_threads": 1
+    },
+    {
+      "seconds": 2.0436385829816572,
+      "rss_bytes": 296943616,
+      "user_seconds": 1.990637568,
+      "system_seconds": 0.03116104,
+      "os_threads": 3
+    },
+    {
+      "seconds": 2.553701207973063,
+      "rss_bytes": 337936384,
+      "user_seconds": 2.37390464,
+      "system_seconds": 0.076343584,
+      "os_threads": 3
+    },
+    {
+      "seconds": 3.0637747079890687,
+      "rss_bytes": 428556288,
+      "user_seconds": 2.79222912,
+      "system_seconds": 0.096406832,
+      "os_threads": 3
+    },
+    {
+      "seconds": 3.5738368749734946,
+      "rss_bytes": 400719872,
+      "user_seconds": 3.229786112,
+      "system_seconds": 0.133056792,
+      "os_threads": 3
+    },
+    {
+      "seconds": 4.081328165979357,
+      "rss_bytes": 414253056,
+      "user_seconds": 3.725530112,
+      "system_seconds": 0.143939248,
+      "os_threads": 3
+    },
+    {
+      "seconds": 4.589376915973844,
+      "rss_bytes": 414384128,
+      "user_seconds": 4.2236736,
+      "system_seconds": 0.146922912,
+      "os_threads": 3
+    },
+    {
+      "seconds": 5.0903413749765605,
+      "rss_bytes": 437141504,
+      "user_seconds": 4.720758784,
+      "system_seconds": 0.151916784,
+      "os_threads": 3
+    },
+    {
+      "seconds": 5.600426749995677,
+      "rss_bytes": 464257024,
+      "user_seconds": 5.227078144,
+      "system_seconds": 0.155585248,
+      "os_threads": 3
+    },
+    {
+      "seconds": 6.100632957997732,
+      "rss_bytes": 495108096,
+      "user_seconds": 5.616886784,
+      "system_seconds": 0.192586,
+      "os_threads": 3
+    },
+    {
+      "seconds": 6.609952707978664,
+      "rss_bytes": 621281280,
+      "user_seconds": 6.064937472,
+      "system_seconds": 0.215644,
+      "os_threads": 3
+    },
+    {
+      "seconds": 7.120024457981344,
+      "rss_bytes": 724697088,
+      "user_seconds": 6.50033152,
+      "system_seconds": 0.24537616,
+      "os_threads": 2
+    },
+    {
+      "seconds": 7.630086958000902,
+      "rss_bytes": 724697088,
+      "user_seconds": 6.861248,
+      "system_seconds": 0.302939136,
+      "os_threads": 2
+    }
+  ],
+  "exit_code": 0,
+  "wall_seconds": 8.140213249978842,
+  "polled_peak_rss_bytes": 724697088,
+  "output_bytes": 76264295
+}

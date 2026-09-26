@@ -1,0 +1,15 @@
+{
+  "missing_input_bytes": 0,
+  "native_cells": 7640626,
+  "shared_upstream_allowance": 1956000256,
+  "initial_four_maps_and_injected_parents": 1467000192,
+  "reference_cycle_working_allowance": 7335000960,
+  "concurrent_cycle_allowance": 4401000576,
+  "retained_result_allowance": 1000000000,
+  "native_network_workers": 2,
+  "maximum_branch_workers": 12,
+  "library_threads": 1,
+  "peak_ceiling_bytes": 16159001984,
+  "free_space_reserve_bytes": 2000000000,
+  "qualification": "campaign-only ceiling derived from actual raw dimensions and conservative serialized arrays; not a global quota; first REF measured before parallel scheduling"
+}

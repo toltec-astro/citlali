@@ -1,0 +1,202 @@
+[
+  {
+    "policy": "CORR",
+    "branch": "REF",
+    "comparison": "policy_minus_BASE_POINT",
+    "measurement_difference": {
+      "peak": 0.0,
+      "east": 0.0,
+      "north": 0.0,
+      "FWHM_major": 0.0,
+      "FWHM_minor": 0.0,
+      "ellipse_xx": 0.0,
+      "ellipse_xy": 0.0,
+      "ellipse_yy": 0.0,
+      "background": 0.0,
+      "fixed_template": 0.0,
+      "aperture_1": 0.0,
+      "aperture_1p5": 0.0,
+      "aperture_2": 0.0
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-plus",
+    "comparison": "policy_minus_BASE_POINT",
+    "measurement_difference": {
+      "peak": 0.0,
+      "east": 0.0,
+      "north": 0.0,
+      "FWHM_major": 0.0,
+      "FWHM_minor": 0.0,
+      "ellipse_xx": 0.0,
+      "ellipse_xy": 0.0,
+      "ellipse_yy": 0.0,
+      "background": 0.0,
+      "fixed_template": 0.0,
+      "aperture_1": 0.0,
+      "aperture_1p5": 0.0,
+      "aperture_2": 0.0
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-minus",
+    "comparison": "policy_minus_BASE_POINT",
+    "measurement_difference": {
+      "peak": 0.0,
+      "east": 0.0,
+      "north": 0.0,
+      "FWHM_major": 0.0,
+      "FWHM_minor": 0.0,
+      "ellipse_xx": 0.0,
+      "ellipse_xy": 0.0,
+      "ellipse_yy": 0.0,
+      "background": 0.0,
+      "fixed_template": 0.0,
+      "aperture_1": 0.0,
+      "aperture_1p5": 0.0,
+      "aperture_2": 0.0
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-shoulder",
+    "comparison": "policy_minus_BASE_POINT",
+    "measurement_difference": {
+      "peak": 0.0,
+      "east": 0.0,
+      "north": 0.0,
+      "FWHM_major": 0.0,
+      "FWHM_minor": 0.0,
+      "ellipse_xx": 0.0,
+      "ellipse_xy": 0.0,
+      "ellipse_yy": 0.0,
+      "background": 0.0,
+      "fixed_template": 0.0,
+      "aperture_1": 0.0,
+      "aperture_1p5": 0.0,
+      "aperture_2": 0.0
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "D-seed-shoulder",
+    "comparison": "policy_minus_BASE_POINT",
+    "measurement_difference": {
+      "peak": 0.0,
+      "east": 0.0,
+      "north": 0.0,
+      "FWHM_major": 0.0,
+      "FWHM_minor": 0.0,
+      "ellipse_xx": 0.0,
+      "ellipse_xy": 0.0,
+      "ellipse_yy": 0.0,
+      "background": 0.0,
+      "fixed_template": 0.0,
+      "aperture_1": 0.0,
+      "aperture_1p5": 0.0,
+      "aperture_2": 0.0
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "REF",
+    "comparison": "policy_minus_BASE_POINT",
+    "measurement_difference": {
+      "peak": -0.2111977957166573,
+      "east": -0.004563787115113627,
+      "north": -0.000703129700888816,
+      "FWHM_major": 0.007377052736956102,
+      "FWHM_minor": 0.008452391795795933,
+      "ellipse_xx": 0.054177637915834964,
+      "ellipse_xy": 0.008250795331919303,
+      "ellipse_yy": 0.001197040950735584,
+      "background": 0.0621395610102593,
+      "fixed_template": 0.3685535347203768,
+      "aperture_1": 55.4189665109152,
+      "aperture_1p5": 179.8934229706938,
+      "aperture_2": 203.00275901054556
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-plus",
+    "comparison": "policy_minus_BASE_POINT",
+    "measurement_difference": {
+      "peak": -0.31924847901234443,
+      "east": -0.006160419858011856,
+      "north": -0.0014032829785719514,
+      "FWHM_major": 0.008741085678568794,
+      "FWHM_minor": 0.013431505901289498,
+      "ellipse_xx": 0.07006787840008144,
+      "ellipse_xy": 0.015773096378520313,
+      "ellipse_yy": 0.006960506010273093,
+      "background": 0.10754641997557846,
+      "fixed_template": 0.58048739326955,
+      "aperture_1": 89.4525299990346,
+      "aperture_1p5": 286.16838686782285,
+      "aperture_2": 327.9909597507649
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-minus",
+    "comparison": "policy_minus_BASE_POINT",
+    "measurement_difference": {
+      "peak": -0.08012682729963672,
+      "east": -0.0010404151448453192,
+      "north": 2.9571928131133518e-05,
+      "FWHM_major": 0.0023340646844776103,
+      "FWHM_minor": 0.0018049729918399038,
+      "ellipse_xx": 0.013456697978547538,
+      "ellipse_xy": 0.0004925352785019044,
+      "ellipse_yy": 0.0011417103823916364,
+      "background": 0.016821566693958623,
+      "fixed_template": 0.05385719158311986,
+      "aperture_1": 9.44344824939617,
+      "aperture_1p5": 41.30929275424569,
+      "aperture_2": 47.87169752754562
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-shoulder",
+    "comparison": "policy_minus_BASE_POINT",
+    "measurement_difference": {
+      "peak": -0.25481956015573815,
+      "east": -0.0053597454415497126,
+      "north": -0.0012332763576141659,
+      "FWHM_major": 0.008336228454430383,
+      "FWHM_minor": 0.01770553104869066,
+      "ellipse_xx": 0.07934912294869179,
+      "ellipse_xy": 0.0298311942181817,
+      "ellipse_yy": 0.013770556557329172,
+      "background": 0.11827154461024114,
+      "fixed_template": 0.7173715251537942,
+      "aperture_1": 106.17262819198368,
+      "aperture_1p5": 327.2287354847358,
+      "aperture_2": 381.4500525272306
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "D-seed-shoulder",
+    "comparison": "policy_minus_BASE_POINT",
+    "measurement_difference": {
+      "peak": -0.2867819127029634,
+      "east": -0.00518085953566505,
+      "north": -0.0011716639759660197,
+      "FWHM_major": 0.008097937447216097,
+      "FWHM_minor": 0.010986090717583608,
+      "ellipse_xx": 0.06234898496959218,
+      "ellipse_xy": 0.01208210423944589,
+      "ellipse_yy": 0.0041792663069415426,
+      "background": 0.07456555248541896,
+      "fixed_template": 0.41262637665749935,
+      "aperture_1": 64.75763298441598,
+      "aperture_1p5": 211.04103335668333,
+      "aperture_2": 239.04210644646082
+    }
+  }
+]

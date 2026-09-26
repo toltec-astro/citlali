@@ -1,0 +1,7 @@
+input:
+  path: /Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/run/CORR/C-core-plus/a2000/cycle-10/request.json
+  sha256: 66706998e8460c294e9b44395ce79c9e3c266bd01efeb391e66eb35bbffc92f2
+network_workers: 1
+output: /Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/run/CORR/C-core-plus/a2000/cycle-10/native/products
+schema: citlali-development-v1
+terminal: point-fruit

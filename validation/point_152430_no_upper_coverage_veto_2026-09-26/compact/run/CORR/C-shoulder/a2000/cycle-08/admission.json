@@ -1,0 +1,166 @@
+{
+  "method": "POINT-EXPECTED-v1",
+  "policy": "CORR",
+  "threshold": 3.689982959208037,
+  "guard": {
+    "method": "POINT-EXPECTED-v1",
+    "status": "accepted",
+    "accepted": true,
+    "complete": true,
+    "cause": null,
+    "accepted_parameters": [
+      770.8541142735982,
+      4.1930424710557315,
+      7.371084079202952,
+      4.083335792126239,
+      4.469650511699478,
+      0.9767387105601056,
+      -1.9107678241593613
+    ],
+    "pointing_correction": null,
+    "accepted_centroid_tangent_arcsec": [
+      4.1930424710557315,
+      7.371084079202952
+    ],
+    "expected_origin_tangent_arcsec": [
+      0.0,
+      0.0
+    ],
+    "fit_pixels": 1257,
+    "expected_origin_sky": {
+      "ra_deg": 176.7429079166667,
+      "dec_deg": 39.97619555555556,
+      "frame": "FK5",
+      "equinox": 2000.0
+    },
+    "sigma_A": 6.150212698553401,
+    "SNR_A": 125.33779757810844,
+    "diagnostic": {
+      "initial": [
+        739.5523638725026,
+        6.0,
+        8.0,
+        4.2466090014400955,
+        4.2466090014400955,
+        0.0,
+        0.4221819604622864
+      ],
+      "parameters": [
+        770.8541142735982,
+        4.1930424710557315,
+        7.371084079202952,
+        4.083335792126239,
+        4.469650511699478,
+        0.9767387105601056,
+        -1.9107678241593613
+      ],
+      "status": 2,
+      "message": "`ftol` termination condition is satisfied.",
+      "converged": true,
+      "finite": true,
+      "nfev": 12,
+      "njev": 12,
+      "cost": 153106.59353124828,
+      "optimality": 0.01586619399196637,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "sigma_floor_arcsec": 1.5,
+      "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+      "centroid_radius_arcsec": 8.48024089674087
+    },
+    "optimizer_calls": 1,
+    "amplitude_sensitivity": {
+      "rank": 7,
+      "rank_tolerance": 1.91850961883465e-10,
+      "singular_values": [
+        687.3666829348005,
+        505.39550268721223,
+        480.16206413418286,
+        461.7138498637678,
+        264.1811592447617,
+        33.794120653503086,
+        2.6771390277445115
+      ],
+      "amplitude_null_projection": 1.3689921700603597e-18,
+      "identifiability_tolerance": 2.7911006839076435e-11
+    },
+    "message": "Expected POINT source accepted."
+  },
+  "BASE": {
+    "status": "retained",
+    "anchor_row_column": [
+      24,
+      18
+    ],
+    "anchor_ratio": 47.96603294951622,
+    "pixels": 77,
+    "area_arcsec2": 308.0,
+    "extent_east_north_arcsec": [
+      [
+        -6.0,
+        14.0
+      ],
+      [
+        -2.0,
+        16.0
+      ]
+    ],
+    "boundary_contact": false,
+    "unsupported_contact": false,
+    "unsupported_domain_pixels": 0,
+    "unassociated_above_threshold_pixels": 2,
+    "threshold": 3.0,
+    "noise_scale_multiplier": 1.0,
+    "equivalent_original_scale_threshold": 3.0
+  },
+  "candidate": {
+    "status": "retained",
+    "anchor_row_column": [
+      24,
+      18
+    ],
+    "anchor_ratio": 47.96603294951622,
+    "pixels": 77,
+    "area_arcsec2": 308.0,
+    "extent_east_north_arcsec": [
+      [
+        -6.0,
+        14.0
+      ],
+      [
+        -2.0,
+        16.0
+      ]
+    ],
+    "boundary_contact": false,
+    "unsupported_contact": false,
+    "unsupported_domain_pixels": 0,
+    "unassociated_above_threshold_pixels": 2,
+    "threshold": 3.0,
+    "noise_scale_multiplier": 1.0,
+    "equivalent_original_scale_threshold": 3.0,
+    "policy": "CORR",
+    "threshold_supplement": 3.689982959208037,
+    "base_pixels": 77,
+    "proposed_extra_pixels": 0,
+    "added_pixels": 0,
+    "extra_brightness_area": 0.0,
+    "total_brightness_area": 82815.11569706294,
+    "unavailable_tests": 548
+  },
+  "numerical_failures": 0,
+  "known": true,
+  "selected_pixels": 77,
+  "brightness_area": 82815.11569706294,
+  "baseline_pixels": 77,
+  "proposed_pixels": 0,
+  "added_pixels": 0,
+  "extra_brightness_area": 0.0
+}

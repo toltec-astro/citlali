@@ -1,0 +1,166 @@
+{
+  "method": "POINT-EXPECTED-v1",
+  "policy": "CORR",
+  "threshold": 3.689982959208037,
+  "guard": {
+    "method": "POINT-EXPECTED-v1",
+    "status": "accepted",
+    "accepted": true,
+    "complete": true,
+    "cause": null,
+    "accepted_parameters": [
+      750.2941429529509,
+      4.056570444180246,
+      7.379213636910714,
+      4.304312447480857,
+      3.9522877464780093,
+      -0.6516802343909832,
+      -2.3286610732768716
+    ],
+    "pointing_correction": null,
+    "accepted_centroid_tangent_arcsec": [
+      4.056570444180246,
+      7.379213636910714
+    ],
+    "expected_origin_tangent_arcsec": [
+      0.0,
+      0.0
+    ],
+    "fit_pixels": 1257,
+    "expected_origin_sky": {
+      "ra_deg": 176.7429079166667,
+      "dec_deg": 39.97619555555556,
+      "frame": "FK5",
+      "equinox": 2000.0
+    },
+    "sigma_A": 6.317732947732355,
+    "SNR_A": 118.76002818736687,
+    "diagnostic": {
+      "initial": [
+        709.2074798381025,
+        4.0,
+        8.0,
+        4.2466090014400955,
+        4.2466090014400955,
+        0.0,
+        -0.26281129253711205
+      ],
+      "parameters": [
+        750.2941429529509,
+        4.056570444180246,
+        7.379213636910714,
+        4.304312447480857,
+        3.9522877464780093,
+        -0.6516802343909832,
+        -2.3286610732768716
+      ],
+      "status": 2,
+      "message": "`ftol` termination condition is satisfied.",
+      "converged": true,
+      "finite": true,
+      "nfev": 18,
+      "njev": 16,
+      "cost": 152756.42773053094,
+      "optimality": 0.07341708063264586,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "sigma_floor_arcsec": 1.5,
+      "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+      "centroid_radius_arcsec": 8.420721920819247
+    },
+    "optimizer_calls": 1,
+    "amplitude_sensitivity": {
+      "rank": 7,
+      "rank_tolerance": 1.8661283702016084e-10,
+      "singular_values": [
+        668.5994457172216,
+        490.6695593377926,
+        467.6577087456261,
+        450.54054755609087,
+        234.28512869314957,
+        33.90916495928101,
+        2.5846564320474275
+      ],
+      "amplitude_null_projection": 3.152180284738632e-18,
+      "identifiability_tolerance": 2.7911006839076435e-11
+    },
+    "message": "Expected POINT source accepted."
+  },
+  "BASE": {
+    "status": "retained",
+    "anchor_row_column": [
+      24,
+      18
+    ],
+    "anchor_ratio": 46.069957144302876,
+    "pixels": 69,
+    "area_arcsec2": 276.0,
+    "extent_east_north_arcsec": [
+      [
+        -4.0,
+        12.0
+      ],
+      [
+        -2.0,
+        16.0
+      ]
+    ],
+    "boundary_contact": false,
+    "unsupported_contact": false,
+    "unsupported_domain_pixels": 0,
+    "unassociated_above_threshold_pixels": 2,
+    "threshold": 3.0,
+    "noise_scale_multiplier": 1.0,
+    "equivalent_original_scale_threshold": 3.0
+  },
+  "candidate": {
+    "status": "retained",
+    "anchor_row_column": [
+      24,
+      18
+    ],
+    "anchor_ratio": 46.069957144302876,
+    "pixels": 69,
+    "area_arcsec2": 276.0,
+    "extent_east_north_arcsec": [
+      [
+        -4.0,
+        12.0
+      ],
+      [
+        -2.0,
+        16.0
+      ]
+    ],
+    "boundary_contact": false,
+    "unsupported_contact": false,
+    "unsupported_domain_pixels": 0,
+    "unassociated_above_threshold_pixels": 2,
+    "threshold": 3.0,
+    "noise_scale_multiplier": 1.0,
+    "equivalent_original_scale_threshold": 3.0,
+    "policy": "CORR",
+    "threshold_supplement": 3.689982959208037,
+    "base_pixels": 69,
+    "proposed_extra_pixels": 0,
+    "added_pixels": 0,
+    "extra_brightness_area": 0.0,
+    "total_brightness_area": 74796.02188979747,
+    "unavailable_tests": 548
+  },
+  "numerical_failures": 0,
+  "known": true,
+  "selected_pixels": 69,
+  "brightness_area": 74796.02188979747,
+  "baseline_pixels": 69,
+  "proposed_pixels": 0,
+  "added_pixels": 0,
+  "extra_brightness_area": 0.0
+}

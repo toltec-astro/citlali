@@ -1,0 +1,16 @@
+{
+  "original_run_reads_denied": true,
+  "all_nine_numerical_tables_byte_identical": true,
+  "numerical_table_sha256": {
+    "matrix.json": "4e8740223b5d187ff9572eb06c65a8693cf15173f80236891618c4ff50c73dd4",
+    "effects.json": "f54ee03fa66ad91d5e1856537a9134fec5f61d72edeb020b27d4f98f78c9529b",
+    "histories.json": "177d48381348ff4cd117e6bb4fd2fb546b65bd0d2b105b64ba73bafefc4ae1cc",
+    "responses.json": "ea4ef38bc7adf8e4c7ec3eebc5c1d77c7d83bf5bf1e7cc97a26df7aac3f162da",
+    "terminal-drift.json": "9a4d7927ce4b17b7174124eccc21a3806b4969d3302ef3938148c045299e7756",
+    "policy-contrasts.json": "9e994c01a4b278779cea01c0343fa9c2e3d9347a5b499eb765800fa4efda9073",
+    "background-absorption.json": "bf626509883f6ba2c88d206fb1facdf969c2c5aca0ded7659a03cf6f3155a840",
+    "compact-sign-asymmetry.json": "d0929f5d0404310116349522b1654c73621d8956f131626c5f00f5b50fd901c5",
+    "execution-counts.json": "cceca3815f6bbfaeb25a13632025e394c5b8cd3d32798a6e51c3aa6a4f8ea1af"
+  },
+  "additional_science_calls": 0
+}

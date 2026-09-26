@@ -1,0 +1,166 @@
+{
+  "method": "POINT-EXPECTED-v1",
+  "policy": "DIAG",
+  "threshold": 4.686076304689278,
+  "guard": {
+    "method": "POINT-EXPECTED-v1",
+    "status": "accepted",
+    "accepted": true,
+    "complete": true,
+    "cause": null,
+    "accepted_parameters": [
+      820.9826427000665,
+      4.058617591217023,
+      7.381484537480352,
+      3.938263026383966,
+      4.290915783103049,
+      0.921033114006869,
+      -2.5988215262126975
+    ],
+    "pointing_correction": null,
+    "accepted_centroid_tangent_arcsec": [
+      4.058617591217023,
+      7.381484537480352
+    ],
+    "expected_origin_tangent_arcsec": [
+      0.0,
+      0.0
+    ],
+    "fit_pixels": 1257,
+    "expected_origin_sky": {
+      "ra_deg": 176.7429079166667,
+      "dec_deg": 39.97619555555556,
+      "frame": "FK5",
+      "equinox": 2000.0
+    },
+    "sigma_A": 6.334636984053308,
+    "SNR_A": 129.60216106570783,
+    "diagnostic": {
+      "initial": [
+        778.0320798681669,
+        4.0,
+        8.0,
+        4.2466090014400955,
+        4.2466090014400955,
+        0.0,
+        -0.40637400329210904
+      ],
+      "parameters": [
+        820.9826427000665,
+        4.058617591217023,
+        7.381484537480352,
+        3.938263026383966,
+        4.290915783103049,
+        0.921033114006869,
+        -2.5988215262126975
+      ],
+      "status": 2,
+      "message": "`ftol` termination condition is satisfied.",
+      "converged": true,
+      "finite": true,
+      "nfev": 20,
+      "njev": 16,
+      "cost": 153043.34810251085,
+      "optimality": 0.04257240862690428,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "sigma_floor_arcsec": 1.5,
+      "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+      "centroid_radius_arcsec": 8.423698162256159
+    },
+    "optimizer_calls": 1,
+    "amplitude_sensitivity": {
+      "rank": 7,
+      "rank_tolerance": 2.0420118667387099e-10,
+      "singular_values": [
+        731.6152650859653,
+        537.0151704250281,
+        511.6896287569132,
+        492.8800976752666,
+        256.8179340735881,
+        33.92034568464312,
+        2.576051642613488
+      ],
+      "amplitude_null_projection": 2.2204679831191996e-16,
+      "identifiability_tolerance": 2.7911006839076435e-11
+    },
+    "message": "Expected POINT source accepted."
+  },
+  "BASE": {
+    "status": "retained",
+    "anchor_row_column": [
+      24,
+      18
+    ],
+    "anchor_ratio": 50.5360021851284,
+    "pixels": 69,
+    "area_arcsec2": 276.0,
+    "extent_east_north_arcsec": [
+      [
+        -4.0,
+        12.0
+      ],
+      [
+        -2.0,
+        16.0
+      ]
+    ],
+    "boundary_contact": false,
+    "unsupported_contact": false,
+    "unsupported_domain_pixels": 0,
+    "unassociated_above_threshold_pixels": 2,
+    "threshold": 3.0,
+    "noise_scale_multiplier": 1.0,
+    "equivalent_original_scale_threshold": 3.0
+  },
+  "candidate": {
+    "status": "retained",
+    "anchor_row_column": [
+      24,
+      18
+    ],
+    "anchor_ratio": 50.5360021851284,
+    "pixels": 75,
+    "area_arcsec2": 276.0,
+    "extent_east_north_arcsec": [
+      [
+        -4.0,
+        12.0
+      ],
+      [
+        -2.0,
+        16.0
+      ]
+    ],
+    "boundary_contact": false,
+    "unsupported_contact": false,
+    "unsupported_domain_pixels": 0,
+    "unassociated_above_threshold_pixels": 2,
+    "threshold": 3.0,
+    "noise_scale_multiplier": 1.0,
+    "equivalent_original_scale_threshold": 3.0,
+    "policy": "DIAG",
+    "threshold_supplement": 4.686076304689278,
+    "base_pixels": 69,
+    "proposed_extra_pixels": 6,
+    "added_pixels": 6,
+    "extra_brightness_area": 536.5385109450325,
+    "total_brightness_area": 81892.99725223858,
+    "unavailable_tests": 548
+  },
+  "numerical_failures": 0,
+  "known": true,
+  "selected_pixels": 75,
+  "brightness_area": 81892.99725223858,
+  "baseline_pixels": 69,
+  "proposed_pixels": 6,
+  "added_pixels": 6,
+  "extra_brightness_area": 536.5385109450325
+}

@@ -1,0 +1,118 @@
+{
+  "status": "completed",
+  "results": [
+    {
+      "policy": "BASE-POINT",
+      "branch": "D-seed-shoulder",
+      "ready": true,
+      "completed_cycle": 10,
+      "stop_reason": null,
+      "actual_feedback_applications": 10,
+      "wall_seconds": 138.1612969999842
+    },
+    {
+      "policy": "CORR",
+      "branch": "D-seed-shoulder",
+      "ready": true,
+      "completed_cycle": 10,
+      "stop_reason": null,
+      "actual_feedback_applications": 10,
+      "wall_seconds": 140.8327628330153
+    },
+    {
+      "policy": "DIAG",
+      "branch": "D-seed-shoulder",
+      "ready": true,
+      "completed_cycle": 10,
+      "stop_reason": null,
+      "actual_feedback_applications": 10,
+      "wall_seconds": 145.86331599997357
+    },
+    {
+      "policy": "BASE-POINT",
+      "branch": "C-core-plus",
+      "ready": true,
+      "completed_cycle": 10,
+      "stop_reason": null,
+      "actual_feedback_applications": 10,
+      "wall_seconds": 151.29641950002406
+    },
+    {
+      "policy": "DIAG",
+      "branch": "C-shoulder",
+      "ready": true,
+      "completed_cycle": 10,
+      "stop_reason": null,
+      "actual_feedback_applications": 10,
+      "wall_seconds": 153.37960933399154
+    },
+    {
+      "policy": "CORR",
+      "branch": "C-core-minus",
+      "ready": true,
+      "completed_cycle": 10,
+      "stop_reason": null,
+      "actual_feedback_applications": 10,
+      "wall_seconds": 154.22114262499963
+    },
+    {
+      "policy": "DIAG",
+      "branch": "C-core-minus",
+      "ready": true,
+      "completed_cycle": 10,
+      "stop_reason": null,
+      "actual_feedback_applications": 10,
+      "wall_seconds": 154.3465237079945
+    },
+    {
+      "policy": "BASE-POINT",
+      "branch": "C-shoulder",
+      "ready": true,
+      "completed_cycle": 10,
+      "stop_reason": null,
+      "actual_feedback_applications": 10,
+      "wall_seconds": 155.8590125000046
+    },
+    {
+      "policy": "CORR",
+      "branch": "C-core-plus",
+      "ready": true,
+      "completed_cycle": 10,
+      "stop_reason": null,
+      "actual_feedback_applications": 10,
+      "wall_seconds": 158.45686608398682
+    },
+    {
+      "policy": "CORR",
+      "branch": "C-shoulder",
+      "ready": true,
+      "completed_cycle": 10,
+      "stop_reason": null,
+      "actual_feedback_applications": 10,
+      "wall_seconds": 159.23627166700317
+    },
+    {
+      "policy": "BASE-POINT",
+      "branch": "C-core-minus",
+      "ready": true,
+      "completed_cycle": 10,
+      "stop_reason": null,
+      "actual_feedback_applications": 10,
+      "wall_seconds": 159.36816562502645
+    },
+    {
+      "policy": "DIAG",
+      "branch": "C-core-plus",
+      "ready": true,
+      "completed_cycle": 10,
+      "stop_reason": null,
+      "actual_feedback_applications": 10,
+      "wall_seconds": 160.7693051249953
+    }
+  ],
+  "workers": 12,
+  "numeric_threads": 1,
+  "seconds": 160.8016417500039,
+  "peak_family_rss_bytes": 7815839744,
+  "final_bytes": 2316660728
+}

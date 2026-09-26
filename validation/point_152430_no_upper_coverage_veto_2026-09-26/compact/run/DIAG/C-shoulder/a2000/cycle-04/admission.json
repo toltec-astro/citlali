@@ -1,0 +1,166 @@
+{
+  "method": "POINT-EXPECTED-v1",
+  "policy": "DIAG",
+  "threshold": 4.686076304689278,
+  "guard": {
+    "method": "POINT-EXPECTED-v1",
+    "status": "accepted",
+    "accepted": true,
+    "complete": true,
+    "cause": null,
+    "accepted_parameters": [
+      769.2050205175476,
+      4.187401235901453,
+      7.371060130686522,
+      4.083235472071915,
+      4.467037000270535,
+      0.9841499602212812,
+      -1.9135214575959938
+    ],
+    "pointing_correction": null,
+    "accepted_centroid_tangent_arcsec": [
+      4.187401235901453,
+      7.371060130686522
+    ],
+    "expected_origin_tangent_arcsec": [
+      0.0,
+      0.0
+    ],
+    "fit_pixels": 1257,
+    "expected_origin_sky": {
+      "ra_deg": 176.7429079166667,
+      "dec_deg": 39.97619555555556,
+      "frame": "FK5",
+      "equinox": 2000.0
+    },
+    "sigma_A": 6.152044448002804,
+    "SNR_A": 125.03242247660644,
+    "diagnostic": {
+      "initial": [
+        737.8066625791854,
+        6.0,
+        8.0,
+        4.2466090014400955,
+        4.2466090014400955,
+        0.0,
+        0.43733676866324084
+      ],
+      "parameters": [
+        769.2050205175476,
+        4.187401235901453,
+        7.371060130686522,
+        4.083235472071915,
+        4.467037000270535,
+        0.9841499602212812,
+        -1.9135214575959938
+      ],
+      "status": 2,
+      "message": "`ftol` termination condition is satisfied.",
+      "converged": true,
+      "finite": true,
+      "nfev": 11,
+      "njev": 11,
+      "cost": 153006.4156048887,
+      "optimality": 0.049610490616829234,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "sigma_floor_arcsec": 1.5,
+      "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+      "centroid_radius_arcsec": 8.477432191449568
+    },
+    "optimizer_calls": 1,
+    "amplitude_sensitivity": {
+      "rank": 7,
+      "rank_tolerance": 1.9142661711143016e-10,
+      "singular_values": [
+        685.8463337246073,
+        504.1730359195657,
+        479.1699119271953,
+        460.85519869306626,
+        261.8977225601178,
+        33.79513891530864,
+        2.676323268042622
+      ],
+      "amplitude_null_projection": 1.5482553611916933e-18,
+      "identifiability_tolerance": 2.7911006839076435e-11
+    },
+    "message": "Expected POINT source accepted."
+  },
+  "BASE": {
+    "status": "retained",
+    "anchor_row_column": [
+      24,
+      18
+    ],
+    "anchor_ratio": 47.86795896364432,
+    "pixels": 77,
+    "area_arcsec2": 308.0,
+    "extent_east_north_arcsec": [
+      [
+        -6.0,
+        14.0
+      ],
+      [
+        -2.0,
+        16.0
+      ]
+    ],
+    "boundary_contact": false,
+    "unsupported_contact": false,
+    "unsupported_domain_pixels": 0,
+    "unassociated_above_threshold_pixels": 2,
+    "threshold": 3.0,
+    "noise_scale_multiplier": 1.0,
+    "equivalent_original_scale_threshold": 3.0
+  },
+  "candidate": {
+    "status": "retained",
+    "anchor_row_column": [
+      24,
+      18
+    ],
+    "anchor_ratio": 47.86795896364432,
+    "pixels": 87,
+    "area_arcsec2": 308.0,
+    "extent_east_north_arcsec": [
+      [
+        -6.0,
+        14.0
+      ],
+      [
+        -2.0,
+        16.0
+      ]
+    ],
+    "boundary_contact": false,
+    "unsupported_contact": false,
+    "unsupported_domain_pixels": 0,
+    "unassociated_above_threshold_pixels": 2,
+    "threshold": 3.0,
+    "noise_scale_multiplier": 1.0,
+    "equivalent_original_scale_threshold": 3.0,
+    "policy": "DIAG",
+    "threshold_supplement": 4.686076304689278,
+    "base_pixels": 77,
+    "proposed_extra_pixels": 10,
+    "added_pixels": 10,
+    "extra_brightness_area": 890.5053989320586,
+    "total_brightness_area": 83457.19985361586,
+    "unavailable_tests": 548
+  },
+  "numerical_failures": 0,
+  "known": true,
+  "selected_pixels": 87,
+  "brightness_area": 83457.19985361586,
+  "baseline_pixels": 77,
+  "proposed_pixels": 10,
+  "added_pixels": 10,
+  "extra_brightness_area": 890.5053989320586
+}

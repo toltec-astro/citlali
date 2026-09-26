@@ -1,0 +1,56 @@
+[
+  {
+    "policy": "BASE-POINT",
+    "all_saved_operators_finite": true,
+    "jacobian_left_inverse_max_abs": 6.738239704589248e-14,
+    "independent_elementwise_pseudoinverse_max_abs": 0.0,
+    "saved_sigma_recomputed_max_abs": 0.0,
+    "singular_values": [
+      668.8715824751326,
+      490.8613167215013,
+      467.8531032808513,
+      450.736123119116,
+      234.30762218864274,
+      33.90856135366312,
+      2.585152945818889
+    ],
+    "independent_warnings": [],
+    "interpretation": "saved operators checked without any source refit or covariance relearning; finite and matching independent elementwise contraction"
+  },
+  {
+    "policy": "CORR",
+    "all_saved_operators_finite": true,
+    "jacobian_left_inverse_max_abs": 6.738239704589248e-14,
+    "independent_elementwise_pseudoinverse_max_abs": 0.0,
+    "saved_sigma_recomputed_max_abs": 0.0,
+    "singular_values": [
+      668.8715824751326,
+      490.8613167215013,
+      467.8531032808513,
+      450.736123119116,
+      234.30762218864274,
+      33.90856135366312,
+      2.585152945818889
+    ],
+    "independent_warnings": [],
+    "interpretation": "saved operators checked without any source refit or covariance relearning; finite and matching independent elementwise contraction"
+  },
+  {
+    "policy": "DIAG",
+    "all_saved_operators_finite": true,
+    "jacobian_left_inverse_max_abs": 3.329720852857573e-14,
+    "independent_elementwise_pseudoinverse_max_abs": 0.0,
+    "saved_sigma_recomputed_max_abs": 0.0,
+    "singular_values": [
+      668.668644219419,
+      490.67900288058144,
+      467.7319037581723,
+      450.64988967048106,
+      233.93683837760813,
+      33.905972792055586,
+      2.587267134551939
+    ],
+    "independent_warnings": [],
+    "interpretation": "saved operators checked without any source refit or covariance relearning; finite and matching independent elementwise contraction"
+  }
+]

@@ -1,0 +1,122 @@
+[
+  {
+    "policy": "BASE-POINT",
+    "branch": "REF",
+    "status": "complete",
+    "completed_cycle": 10,
+    "reason": null,
+    "feedback_attempts": 10
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-plus",
+    "status": "complete",
+    "completed_cycle": 10,
+    "reason": null,
+    "feedback_attempts": 10
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-minus",
+    "status": "complete",
+    "completed_cycle": 10,
+    "reason": null,
+    "feedback_attempts": 10
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-shoulder",
+    "status": "complete",
+    "completed_cycle": 10,
+    "reason": null,
+    "feedback_attempts": 10
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "D-seed-shoulder",
+    "status": "complete",
+    "completed_cycle": 10,
+    "reason": null,
+    "feedback_attempts": 10
+  },
+  {
+    "policy": "CORR",
+    "branch": "REF",
+    "status": "complete",
+    "completed_cycle": 10,
+    "reason": null,
+    "feedback_attempts": 10
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-plus",
+    "status": "complete",
+    "completed_cycle": 10,
+    "reason": null,
+    "feedback_attempts": 10
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-minus",
+    "status": "complete",
+    "completed_cycle": 10,
+    "reason": null,
+    "feedback_attempts": 10
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-shoulder",
+    "status": "complete",
+    "completed_cycle": 10,
+    "reason": null,
+    "feedback_attempts": 10
+  },
+  {
+    "policy": "CORR",
+    "branch": "D-seed-shoulder",
+    "status": "complete",
+    "completed_cycle": 10,
+    "reason": null,
+    "feedback_attempts": 10
+  },
+  {
+    "policy": "DIAG",
+    "branch": "REF",
+    "status": "complete",
+    "completed_cycle": 10,
+    "reason": null,
+    "feedback_attempts": 10
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-plus",
+    "status": "complete",
+    "completed_cycle": 10,
+    "reason": null,
+    "feedback_attempts": 10
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-minus",
+    "status": "complete",
+    "completed_cycle": 10,
+    "reason": null,
+    "feedback_attempts": 10
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-shoulder",
+    "status": "complete",
+    "completed_cycle": 10,
+    "reason": null,
+    "feedback_attempts": 10
+  },
+  {
+    "policy": "DIAG",
+    "branch": "D-seed-shoulder",
+    "status": "complete",
+    "completed_cycle": 10,
+    "reason": null,
+    "feedback_attempts": 10
+  }
+]

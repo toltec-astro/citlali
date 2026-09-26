@@ -1,0 +1,137 @@
+{
+  "command": [
+    "/private/tmp/citlali-point-guarded-build-20260925/bin/citlali",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/run/DIAG/REF/a2000/cycle-09/native/development.yaml"
+  ],
+  "executable_sha256": "5c489ea69784b43d66c22da8e000d5bb1ef575dfaa4054c15d1e9d1b55013566",
+  "version": "** logging ** Configured with level=trace; available levels: [\"trace\", \"debug\", \"info\", \"warning\", \"error\", \"critical\", \"off\"].\nv2-ngc4449-memory-repair-187df04b-578-gac2bee1fe (2026-09-26T12:58:12)\nkids 04088da-dirty (2026-09-25T13:58:35)\n",
+  "input_sha256": "7343d02c5fe2122a4d445d5005ce4f410d48e0493f8758b54e7cecdffed799b1",
+  "workers": 1,
+  "thread_environment": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "BLIS_NUM_THREADS": "1",
+    "OMP_DYNAMIC": "FALSE"
+  },
+  "measurement": "fresh process; whole-invocation CPU and sampled RSS; no concurrent diagnostic",
+  "samples": [
+    {
+      "seconds": 0.0030892500071786344,
+      "rss_bytes": 32768,
+      "user_seconds": 6.1208e-05,
+      "system_seconds": 0.000375583,
+      "os_threads": 1
+    },
+    {
+      "seconds": 0.5119828330061864,
+      "rss_bytes": 114360320,
+      "user_seconds": 0.485608864,
+      "system_seconds": 0.014889666,
+      "os_threads": 1
+    },
+    {
+      "seconds": 1.0145590830070432,
+      "rss_bytes": 203587584,
+      "user_seconds": 0.976360448,
+      "system_seconds": 0.020888958,
+      "os_threads": 1
+    },
+    {
+      "seconds": 1.524614207999548,
+      "rss_bytes": 217825280,
+      "user_seconds": 1.489442432,
+      "system_seconds": 0.022634584,
+      "os_threads": 1
+    },
+    {
+      "seconds": 2.0346650830178987,
+      "rss_bytes": 295878656,
+      "user_seconds": 1.983141632,
+      "system_seconds": 0.031924792,
+      "os_threads": 3
+    },
+    {
+      "seconds": 2.5447309580049478,
+      "rss_bytes": 353026048,
+      "user_seconds": 2.38637056,
+      "system_seconds": 0.072532,
+      "os_threads": 3
+    },
+    {
+      "seconds": 3.054800707992399,
+      "rss_bytes": 428605440,
+      "user_seconds": 2.79864448,
+      "system_seconds": 0.09223992,
+      "os_threads": 3
+    },
+    {
+      "seconds": 3.56485879101092,
+      "rss_bytes": 403030016,
+      "user_seconds": 3.229859072,
+      "system_seconds": 0.127545504,
+      "os_threads": 3
+    },
+    {
+      "seconds": 4.071279666008195,
+      "rss_bytes": 417120256,
+      "user_seconds": 3.724379136,
+      "system_seconds": 0.138487248,
+      "os_threads": 3
+    },
+    {
+      "seconds": 4.581350249995012,
+      "rss_bytes": 417234944,
+      "user_seconds": 4.2215872,
+      "system_seconds": 0.14244904,
+      "os_threads": 3
+    },
+    {
+      "seconds": 5.089553708006861,
+      "rss_bytes": 447479808,
+      "user_seconds": 4.728445952,
+      "system_seconds": 0.147957216,
+      "os_threads": 3
+    },
+    {
+      "seconds": 5.5912317910115235,
+      "rss_bytes": 468811776,
+      "user_seconds": 5.226725888,
+      "system_seconds": 0.151275792,
+      "os_threads": 3
+    },
+    {
+      "seconds": 6.097882000001846,
+      "rss_bytes": 496058368,
+      "user_seconds": 5.598741504,
+      "system_seconds": 0.1911632,
+      "os_threads": 3
+    },
+    {
+      "seconds": 6.607942708011251,
+      "rss_bytes": 622280704,
+      "user_seconds": 6.03911936,
+      "system_seconds": 0.211077248,
+      "os_threads": 3
+    },
+    {
+      "seconds": 7.118003665993456,
+      "rss_bytes": 725614592,
+      "user_seconds": 6.479169536,
+      "system_seconds": 0.24286392,
+      "os_threads": 2
+    },
+    {
+      "seconds": 7.627008708019275,
+      "rss_bytes": 725614592,
+      "user_seconds": 6.83774976,
+      "system_seconds": 0.296641952,
+      "os_threads": 2
+    }
+  ],
+  "exit_code": 0,
+  "wall_seconds": 8.13591362501029,
+  "polled_peak_rss_bytes": 725614592,
+  "output_bytes": 76264303
+}

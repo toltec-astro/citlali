@@ -1,0 +1,7 @@
+input:
+  path: /Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/inputs/observation.json
+  sha256: 8b9c123db769d0b610b450d439038c9399ff482d61eb0a5883244d47c676ccc6
+network_workers: 2
+output: /Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/upstream/products
+schema: citlali-development-v1
+terminal: ptc

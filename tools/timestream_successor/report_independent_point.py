@@ -1,73 +1,157 @@
-"""Saved-product closeout for the bounded POINT152430 initial admission stop.
-
-No fits, noise learning, policy evaluations, or scientific re-execution.
+"""Saved-product assessment for the bounded high-coverage POINT replacement.
+No fits, covariance learns, policy reevaluations, or native applications.
 """
-import argparse,json,gzip,hashlib,yaml
+import argparse,json,time
 from pathlib import Path
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from scipy.ndimage import binary_dilation
-from point_fruit_diagnostics import load,patch_map
-from point_empirical import coordinates
-from point_response_cd import vector_measurement,MEASUREMENT_NAMES
 from point_guarded_feedback import POLICIES,BRANCHES
+from point_response_cd import vector_measurement,MEASUREMENT_NAMES
+from point_fruit_diagnostics import load as native_load,patch_map as native_patch_map
 from point_additive_diagnostics import save_json
-from point_fruit_trajectory import bound
-from inspect_forward_map import require,read_yaml
 
+ROOT=None
+ORIGINAL_ROOT_NAME='successor-point-152430-a2000-no-upper-coverage-veto-20260926'
+def product_path(path):
+    p=Path(path)
+    if ORIGINAL_ROOT_NAME in p.parts:
+        p=ROOT.joinpath(*p.parts[p.parts.index(ORIGINAL_ROOT_NAME)+1:])
+    if not p.is_file() and p.suffix=='.fits' and p.with_suffix('.fits.gz').is_file():p=p.with_suffix('.fits.gz')
+    if not p.is_file():raise FileNotFoundError('Required retained product absent: '+str(p))
+    return p
+def load(path):return native_load(product_path(path))
+def patch_map(path):return native_patch_map(product_path(path))
+
+SIGMA_NAMES={'peak':'peak','east':'cx','north':'cy','background':'constant','fixed_template':'template','aperture_1':'aperture1','aperture_1p5':'aperture1.5','aperture_2':'aperture2'}
 def read(p):return json.loads(p.read_text())
-def retained_receipt(path,out):
-    if path.exists():return read_yaml(path)
-    manifest=read(out/'cleanup/manifest.json')
-    rows=[r for r in manifest.get('compressed_provenance',[]) if r['original']['path']==str(path.relative_to(out))]
-    require(len(rows)==1,'native receipt absent without exact compact representation')
-    row=rows[0];archive=out/row['archive']['path'];require(archive.resolve().is_relative_to(out.resolve()),'foreign archive')
-    data=archive.read_bytes();require(hashlib.sha256(data).hexdigest()==row['archive']['sha256'],'changed compact provenance')
-    original=gzip.decompress(data);require(hashlib.sha256(original).hexdigest()==row['original']['sha256'],'changed original receipt representation')
-    return yaml.safe_load(original)
-
+def unit(n):return 'mJy/nominal beam * arcsec^2' if n.startswith('aperture') else 'arcsec^2' if n.startswith('ellipse') else 'arcsec' if n in ('east','north','FWHM_major','FWHM_minor') else 'mJy/nominal beam'
+def num(x):return 'unresolved' if x is None else f'{x:.7g}'
 def report(out):
-    dest=out/'report';dest.mkdir(exist_ok=True)
-    initial=read(out/'UPSTREAM.json');summary=read(out/'run/BASE-POINT/REF/a2000/SUMMARY.json');state=summary['histories'][0]
-    require(summary['completed_cycle']==0 and summary['actual_feedback_applications']==0 and summary['stop_reason']=='candidate unsupported contact','this closeout requires the recorded initial admission stop')
-    require(not (out/'SHAPES.json').exists(),'unexpected downstream shape execution')
-    matrix=[dict(policy=p,branch=b,status='stopped at M0' if (p,b)==('BASE-POINT','REF') else 'unavailable',M0='common physical M0 source accepted' if b in ('REF','D-seed-shoulder') else 'not constructed',feedback_applications=0,reason=summary['stop_reason'] if (p,b)==('BASE-POINT','REF') else 'BASE REF stop blocks T10 shape construction and required execution order') for p in POLICIES for b in BRANCHES]
-    save_json(dest/'matrix.json',matrix)
-    c=dict(np.load(out/'freeze/a2000/context.npz'));base=dict(np.load(out/'freeze/a2000/BASE.npz'));noise=dict(np.load(out/'freeze/a2000/C0.npz'))
-    full,h=load(out/'M0/products/a2000/map.fits');s,v,n,ch=patch_map(out/'M0/products/a2000/map.fits');x,y=coordinates(s.shape,ch);fx,fy=coordinates(full['PRIMARY'].shape,h)
-    cand,_=load(out/'run/BASE-POINT/REF/a2000/initial/candidate.fits');selected=cand['ADMITTED'].astype(bool);valid=cand['VALID'].astype(bool);disk=np.hypot(x,y)<=40;unsupported=disk&~valid;touch=unsupported&binary_dilation(selected,structure=np.ones((3,3),bool))
-    bins=read(out/'freeze/a2000/BASE.json')['bins'];maxcov=bins[-1]['coverage_max_exclusive']
-    pixels=[dict(row=int(r),column=int(col),east_arcsec=float(x[r,col]),north_arcsec=float(y[r,col]),coverage=float(n[r,col]),signal=float(s[r,col]),map_valid=bool(v[r,col]),noise_amplitude_valid=bool(c['noise_valid'][r,col]),touches_candidate=bool(touch[r,col]),continued_scale=float(c['base_scale'][r,col]),continued_scale_admissible=False,above_exclusive_training_edge=float(n[r,col]-maxcov)) for r,col in zip(*np.where(unsupported))]
-    require(len(pixels)==3 and sum(r['touches_candidate'] for r in pixels)==2,'unexpected failure reconstruction')
-    p=np.asarray(initial['guard']['accepted_parameters']);m=state['measurement'];measure=dict(zip(MEASUREMENT_NAMES,vector_measurement(m)))
-    initial_checks=[]
-    for nw in (11,12):
-        receipt=retained_receipt(out/f'upstream/products/network{nw}/donor-continuity/ptc/receipt.yaml',out)
-        initial_checks.append(dict(network=nw,failed_fits=receipt['failed_fits'],segments=len(receipt['segments']),converged=sum(bool(s['converged']) for s in receipt['segments']),application_failed_times=sum(s.get('application_failed_times',0) for s in receipt['segments'])))
-    runtime=read(out/'upstream/RUN.json');mr=read(out/'M0/RUN.json');phase=read(out/'PHASE-base.json');storage=[json.loads(z) for z in (out/'storage.jsonl').read_text().splitlines()]
-    resources=dict(download_bytes=0,upstream_seconds=runtime['wall_seconds'],MAP_seconds=mr['wall_seconds'],upstream_plus_M0_initialization_seconds=initial['seconds'],BASE_attempt_seconds=phase['seconds'],summed_stage_wall_seconds=initial['seconds']+phase['seconds'],peak_native_process_rss_bytes=max(runtime['polled_peak_rss_bytes'],mr['polled_peak_rss_bytes']),BASE_family_peak_rss_bytes=phase['peak_family_rss_bytes'],science_product_end_bytes=phase['final_bytes'],storage_samples=storage,campaign_ceiling=read(out/'freeze/budget.json')['peak_ceiling_bytes'],numeric_threads=1,upstream_network_workers=2,BASE_workers=1,remaining_workers=0,qualification='RSS sampled; science output sizes grew monotonically before this stop, with no temporary removals; report/cleanup metadata growth tracked separately. No completed REF memory/runtime benchmark; remaining scheduling not launched.')
-    result=dict(observation=152430,array='a2000',conclusion='insufficient evidence for portability; inherited admission noise-transfer stop before T1',guard=initial['guard'],M0_measurements=measure,BASE_noise_bins=bins,unsupported_pixels=pixels,selected_pixels=int(selected.sum()),unsupported_pixels_count=int(unsupported.sum()),touching_unsupported_pixels=int(touch.sum()),initial_processing=initial_checks,counts=dict(upstream_observations=1,physical_M0_inputs=1,source_optimizer_attempts=1,spatial_covariance_initializations=1,BASE_amplitude_only_initializations=1,feedback_applications=0,ideal_addition_controls=0,endpoint_covariances=0,injection_rasters=0),resources=resources,matrix=matrix,source_bindings=[bound(out/'UPSTREAM.json'),bound(out/'PHASE-base.json'),bound(out/'run/BASE-POINT/REF/a2000/SUMMARY.json'),bound(out/'freeze/realized.json')])
-    save_json(dest/'RESULTS.json',result)
-    fig,axes=plt.subplots(2,3,figsize=(15,9),constrained_layout=True)
-    ax=axes[0,0];im=ax.pcolormesh(fx,fy,np.where(full['SCI_SUPPORT'],full['PRIMARY'],np.nan),shading='nearest',cmap='inferno',vmin=-40,vmax=570,rasterized=True);ax.set_title('Unperturbed M0: complete map');fig.colorbar(im,ax=ax,label='mJy / nominal beam')
-    ax=axes[0,1];im=ax.pcolormesh(x,y,s,shading='nearest',cmap='inferno',vmin=-40,vmax=570);ax.plot(p[1],p[2],'+',color='cyan',markersize=10);ax.set_title('Accepted M0 source fit');fig.colorbar(im,ax=ax,label='mJy / nominal beam')
-    ax=axes[0,2];im=ax.pcolormesh(x,y,selected.astype(float),shading='nearest',cmap='Greys',vmin=0,vmax=1);ax.scatter(x[unsupported],y[unsupported],facecolors='none',edgecolors='red',s=90,label='Unsupported noise transfer');ax.scatter(x[touch],y[touch],marker='x',c='red',s=35,label='Touches selection');ax.set_title('53 selected pixels; 2 unsupported contacts');ax.legend(fontsize=8,loc='lower left');ax.set_xlim(25,-30);ax.set_ylim(-8,28)
-    ax=axes[1,0];im=ax.pcolormesh(fx,fy,np.where(base['background_mask'],full['NORMALIZATION'],np.nan),shading='nearest',cmap='viridis',vmin=114,vmax=493,rasterized=True);ax.scatter(x[unsupported],y[unsupported],marker='x',color='red');ax.set_title('BASE training background: coverage ≤456');fig.colorbar(im,ax=ax,label='Uniform coefficient sum / sample count')
-    ax=axes[1,1];zero=read(out/'freeze/a2000/BASE.json')['zero_lag_before_normalization']
-    for b in bins:ax.plot([b['coverage_min'],b['coverage_max_exclusive']],[np.sqrt(b['second_moment_about_global_mean']*zero)]*2,color='navy',lw=3)
-    ax.axvline(maxcov,color='red',ls='--',label='Training upper edge');ax.scatter([r['coverage'] for r in pixels],[r['continued_scale'] for r in pixels],facecolors='none',edgecolors='red',label='Computable but inadmissible');ax.set_title('Frozen amplitude scale and validity');ax.set_xlabel('Coverage');ax.set_ylabel('Scale [mJy / nominal beam]');ax.legend(fontsize=8)
-    ax=axes[1,2];im=ax.imshow(noise['empirical'],origin='lower',extent=[65,-65,-65,65],vmin=-.3,vmax=1,cmap='RdBu_r');ax.set_title('Frozen C0 empirical normalized covariance');ax.set_xlabel('East lag [arcsec]');ax.set_ylabel('North lag [arcsec]');fig.colorbar(im,ax=ax,label='Dimensionless second product')
-    for ax in [*axes[0],axes[1,0]]:ax.set_xlabel('East [arcsec]');ax.set_ylabel('North [arcsec]');ax.set_aspect('equal');ax.set_xlim(max(ax.get_xlim()),min(ax.get_xlim()))
-    fig.suptitle('POINT 152430 • a2000 • frozen method stops before feedback',fontsize=16);fig.savefig(dest/'admission-stop.png',dpi=160);plt.close(fig)
-    lines=['# Independent POINT 152430: frozen-method result','','**The source and upstream processing passed, but the inherited feedback-admission guard stopped BASE-POINT at M0. No feedback applications ran. The requested policy comparison is unavailable, so the result is insufficient evidence about portability of the shoulder benefit or compact-response tradeoff.**','','Observation 152430/0/2, source 1146+399, uses its own 152430/0/1 tune and a2000 networks 11/12. Selection preceded reduction and policy evaluation. It is a distinct acquisition approximately 3.5 hours after152389, in the same session; shared calibration errors may remain. The complete required local input set was reused in place: **0 download bytes**. The independent input review retains the stale auxiliary Oof label alongside authoritative Pointing metadata.','','## Numerical result','','| Quantity | Value | Meaning / units |','|---|---:|---|',f'| Fitted peak | {p[0]:.6f} | mJy/nominal beam above own fitted constant |',f'| Conditional guard σA | {initial["guard"]["sigma_A"]:.6f} | mJy/nominal beam; frozen C0 reference, not validated source noise |',f'| Guard amplitude S/N | {initial["guard"]["SNR_A"]:.6f} | Strict >10 criterion passed |',f'| East / north centroid | {p[1]:.6f} / {p[2]:.6f} | arcsec from FK5/J2000 expected origin |',f'| Major / minor FWHM | {measure["FWHM_major"]:.6f} / {measure["FWHM_minor"]:.6f} | arcsec, gauge-safe sorted widths |',f'| Fitted constant | {p[6]:.6f} | mJy/nominal beam |',f'| Fixed template | {m["frozen_template_projection"]:.6f} | mJy/nominal beam; M0 unit-peak template, own constant removed |']
-    for a in m['apertures']:lines.append(f'| Aperture {a["radius_measured_fwhm"]} × M0 major | {a["value_mJy_per_beam_arcsec2"]:.6f} | mJy/nominal beam × arcsec²; fixed centroid/radius, not integrated flux |')
-    lines+=['','All seven fit parameters are finite, neither width bound is active, and one optimizer attempt was used. Both networks completed every initial rank-10 PTC segment without a fit or application failure. The full 40 arcsec fit disk has valid MAP data. The fixed-template equality to M0 peak is expected because the template is constructed from this same least-squares fit. No independent source-recovery or calibration accuracy follows.','','## Why admission stopped','','The BASE noise model was learned outside the source-centered 3-major-FWHM mask. Its training coverage spans 114–456. The unchanged amplitude routine provides finite numerical continuation beyond 456 but marks that continuation invalid for candidate admission. Three valid MAP pixels in the feedback disk exceed that limit; two neighbor the selected source component under the inherited 8-neighbor rule. This is **unsupported noise transfer**, not missing MAP samples, failed PTC, a rejected source fit, or contact with the 40 arcsec outer boundary.','','| East | North | Coverage | Touches candidate |','|---:|---:|---:|---|']
-    for r in pixels:lines.append(f'| {r["east_arcsec"]:g} | {r["north_arcsec"]:g} | {r["coverage"]:g} | {r["touches_candidate"]} |')
-    lines+=['','The continued scale is 15.438984 mJy/nominal beam, but its validity remains false. The 53-pixel candidate (212 arcsec²) is retained as an **unapplied diagnostic** with `ready=false`. It was never projected or applied to the timestream. The common source guard can use the conditional computational covariance continuation; that does not make the extrapolated BASE amplitude valid for admission. No uncertainty at T10 exists because T10 was not reached.','','![M0 and exact unsupported-contact diagnosis](admission-stop.png)','','## Full 15-cell execution matrix','','| Policy | Branch | Status | Feedback applications |','|---|---|---|---:|']
-    for r in matrix:lines.append(f'| {r["policy"]} | {r["branch"]} | {r["status"]} | 0 |')
-    lines+=['','The two other references were not launched under the required BASE-first / shape-freeze ordering. All 12 response/seed branches lack the BASE T10-derived shapes and their required references. No perturbed M0, injection raster, ideal-addition control, endpoint covariance, T1/T3/T5/T10 measurement or drift estimate exists. M0 is common physical input; unexecuted policy candidates are not represented as measured outcomes. No attempt was made to repair support, change thresholds, extrapolate validity, relax the boundary rule, swap observations, or launch a retry.','','## Comparison with 152389 and importance','','The retained 152389 assessment found an a2000 shoulder aperture discrepancy of −1951.1 brightness-area units for BASE, +100.890 for CORR and +100.971 for DIAG: −2.3021%, +0.11825% and +0.11885% of each full REF source aperture. These values remain historical evidence, not new-observation measurements or uncertainty denominators.','','Because 152430 never entered feedback, it cannot determine whether supplemental aggregation helps, whether full covariance improves on DIAG, or whether compact-response/seed effects matter relative to measurement noise. Its concrete new finding is a portability limitation of the existing admission-validity rule on a bright, valid source. The three missing BASE noise-valid pixels cannot be called measured source loss or a whole-source flux error. Fixed thresholds remain uncalibrated for false-admission probability on this observation.','','## Resources and reproducibility','',f'Upstream RTC/CAL/AST/PTC: {runtime["wall_seconds"]:.3f}s; ordinary MAP: {mr["wall_seconds"]:.3f}s. Complete upstream/M0 initialization: {initial["seconds"]:.3f}s. BASE admission attempt: {phase["seconds"]:.3f}s, with 0 feedback. Sampled largest native-process RSS: {resources["peak_native_process_rss_bytes"]/1e9:.3f}GB. Numeric libraries used 1 thread, upstream used 2 network workers, and BASE used 1 worker. No completed REF benchmark existed to schedule remaining workers.',f'The prospective campaign ceiling was {resources["campaign_ceiling"]/1e9:.3f}GB. Science products reached {resources["science_product_end_bytes"]:,}logical bytes before closeout metadata. No download, full RTC/PTC ensemble, historical cache reconstruction, or Unity operation occurred. Cleanup accounting is in `cleanup/execution.json`; final compact size is separately recorded.', '', 'Inputs, exact source/binary/prospective identities, tested commands, frozen M0 operands, matrix, numerical tables, receipts and reviews are preserved in this bundle and the permanent repository records. Tests: 42 focused Python, 23 MAP/FRUIT native/reload, 8 PTC native, plus required configuration preflight; all passed. Independent preflight and stop-condition review are recorded. Numerical owners and production defaults remain unchanged.','','**One next action recommended:** review the admission-noise validity contract for source pixels whose coverage exceeds the source-masked background range. This report proposes no new rule and executes no follow-up experiment.']
-    (dest/'ASSESSMENT.md').write_text('\n'.join(lines)+'\n');return result['counts']
+    global ROOT
+    ROOT=out.resolve()
+    start=time.perf_counter();d=out/'report';d.mkdir(exist_ok=True);matrix=[];summaries={};hist=[];effects=[];responses=[];drifts=[]
+    for pol in POLICIES:
+        for b in BRANCHES:
+            p=out/'run'/pol/b/'a2000/SUMMARY.json';r=read(p) if p.exists() else None
+            status='complete' if r and r['ready'] and r['completed_cycle']==10 else 'stopped' if r else 'not executed'
+            matrix.append(dict(policy=pol,branch=b,status=status,completed_cycle=r.get('completed_cycle') if r else None,reason=r.get('stop_reason') if r else 'dependent work unavailable',feedback_attempts=r.get('actual_feedback_applications',0) if r else 0))
+            if not r:continue
+            summaries[(pol,b)]=r
+            for h in r['histories']:
+                if 'measurement' not in h:continue
+                m=h['measurement'];v=vector_measurement(m);ad=h.get('admission',{})
+                hist.append(dict(policy=pol,branch=b,cycle=h['cycle_index'],values=dict(zip(MEASUREMENT_NAMES,v.tolist())) if v is not None else None,accepted=m['guard']['accepted'],selected_pixels=ad.get('selected_pixels'),added_pixels=ad.get('added_pixels'),raw_apertures=m.get('raw_apertures'),background_terms=m.get('aperture_background_terms')))
+                if 'response' in h:responses.append(dict(policy=pol,branch=b,cycle=h['cycle_index'],**h['response']))
+    for pol in POLICIES:
+        ref=summaries.get((pol,'REF'))
+        if not ref:continue
+        sig={r['name']:r['conditional_sigma'] for r in ref.get('endpoint_uncertainty',[])}
+        for b in BRANCHES:
+            r=summaries.get((pol,b))
+            if not r:continue
+            for h in r['histories']:
+                k=h['cycle_index'];rh=next((q for q in ref['histories'] if q['cycle_index']==k),None)
+                if not rh or 'measurement' not in h or 'measurement' not in rh:continue
+                a=vector_measurement(h['measurement']);v=vector_measurement(rh['measurement'])
+                if a is None or v is None:continue
+                comparisons=[('branch_minus_own_REF',a-v)] if b!='REF' else []
+                ideal=h.get('ideal',{}).get('comparisons')
+                if ideal:comparisons += [('actual_minus_ideal',np.array([q['absolute_discrepancy'] for q in ideal])),('ideal_increment',np.array([q['ideal_increment'] for q in ideal]))]
+                for label,z in comparisons:
+                    for name,value,full in zip(MEASUREMENT_NAMES,z,v):
+                        sigma=sig.get(SIGMA_NAMES.get(name)) if k==10 else None
+                        effects.append(dict(policy=pol,branch=b,cycle=k,comparison=label,measurement=name,effect=float(value),units=unit(name),own_REF=float(full),fraction_of_source=float(value/full) if abs(full)>1e-12 else None,conditional_endpoint_sigma=sigma,signed_effect_over_sigma=float(value/sigma) if sigma is not None and sigma>0 else None,scale_scope='own-policy REF T10 model-based conditional estimator sigma; practical comparison, not paired-difference significance' if k==10 else 'no endpoint scale applied to earlier cycles'))
+            if r['completed_cycle']==10 and len(r['histories'])==11:
+                a=vector_measurement(r['histories'][-1]['measurement']);z=vector_measurement(r['histories'][-2]['measurement'])
+                if a is not None and z is not None:drifts.append(dict(policy=pol,branch=b,T9_to_T10=dict(zip(MEASUREMENT_NAMES,(a-z).tolist()))))
+    cross=[];absorption=[];asymmetry=[]
+    for pol in ('CORR','DIAG'):
+        for b in BRANCHES:
+            a=summaries.get((pol,b));base=summaries.get(('BASE-POINT',b))
+            if a and base and a['completed_cycle']==base['completed_cycle']==10:
+                av=vector_measurement(a['histories'][-1]['measurement']);bv=vector_measurement(base['histories'][-1]['measurement'])
+                if av is not None and bv is not None:cross.append(dict(policy=pol,branch=b,comparison='policy_minus_BASE_POINT',measurement_difference=dict(zip(MEASUREMENT_NAMES,(av-bv).tolist()))))
+    for (pol,b),r in summaries.items():
+        if r['completed_cycle']!=10:continue
+        ideal=r['histories'][-1].get('ideal')
+        if ideal:absorption.append(dict(policy=pol,branch=b,rows=ideal['raw_aperture_and_background_increments']))
+    for pol in POLICIES:
+        plus=summaries.get((pol,'C-core-plus'));minus=summaries.get((pol,'C-core-minus'));ref=summaries.get((pol,'REF'))
+        if plus and minus and ref and all(r['completed_cycle']==10 for r in (plus,minus,ref)):
+            a,b,v=[vector_measurement(r['histories'][-1]['measurement']) for r in (plus,minus,ref)]
+            if all(z is not None for z in (a,b,v)):asymmetry.append(dict(policy=pol,definition='plus increment + minus increment; zero for an odd signed measurement response',signed_sum=dict(zip(MEASUREMENT_NAMES,(a+b-2*v).tolist()))))
+    save_json(d/'policy-contrasts.json',cross);save_json(d/'background-absorption.json',absorption);save_json(d/'compact-sign-asymmetry.json',asymmetry)
+    attempts=[json.loads(l) for l in (out/'execution-attempts.jsonl').read_text().splitlines()] if (out/'execution-attempts.jsonl').exists() else []
+    phases={p.stem:read(p) for p in out.glob('PHASE-*.json')};runs=[read(p) for p in out.rglob('RUN.json')]
+    storage=[json.loads(l) for l in (out/'storage.jsonl').read_text().splitlines()] if (out/'storage.jsonl').exists() else []
+    counts=dict(trajectories_started=len(summaries),trajectories_complete=sum(r['status']=='complete' for r in matrix),feedback_attempts=sum(r['kind']=='feedback' for r in attempts),initial_physical_inputs=1+sum(r['kind']=='injected_initial' for r in attempts),ideal_controls=sum('ideal' in h for r in summaries.values() for h in r['histories']),endpoint_attempts=len(list(out.rglob('ENDPOINT-ATTEMPT.json'))),native_invocations=len(runs),input_transfers=0,input_transfer_bytes=0)
+    assert counts['feedback_attempts']<=150 and counts['trajectories_started']<=15 and counts['initial_physical_inputs']<=4 and counts['ideal_controls']<=9 and counts['endpoint_attempts']<=3
+    resources=dict(native_wall_seconds_sum=sum(r['wall_seconds'] for r in runs),upstream_seconds=read(out/'UPSTREAM.json').get('seconds'),phase_wall_seconds={k:v.get('seconds') for k,v in phases.items()},phase_peak_family_rss_bytes={k:v.get('peak_family_rss_bytes') for k,v in phases.items()},native_max_sampled_rss_bytes=max((r.get('polled_peak_rss_bytes',0) for r in runs),default=0),largest_observed_stage_bytes=max((r['bytes'] for r in storage),default=0),ceiling_bytes=read(out/'freeze/budget.json')['peak_ceiling_bytes'],disk_measurement='stage snapshots plus enforced in-flight allocation reservations; not a continuous filesystem high-water measurement',numeric_threads=1,phase_workers={k:v.get('workers') for k,v in phases.items()})
+    for name,value in [('matrix',matrix),('histories',hist),('effects',effects),('responses',responses),('terminal-drift',drifts),('execution-counts',counts),('resources',resources)]:save_json(d/(name+'.json'),value)
+    lines=['# POINT 152430 a2000: replacement comparison','','New-run measurements only. High coverage alone is informational. All uncertainty scales are model-based conditional propagation, not an empirically calibrated false-admission probability or paired-difference significance. Apertures are brightness × angular area, not integrated flux.','','## Completion','','| Policy | Branch | Status | Last cycle | Feedback attempts | Reason |','|---|---|---|---:|---:|---|']
+    lines += [f"| {r['policy']} | {r['branch']} | {r['status']} | {r['completed_cycle']} | {r['feedback_attempts']} | {r['reason'] or ''} |" for r in matrix]
+    lines += ['','## Leading T10 measurement differences','','Source responses are compared to their own policy REF. Actual-minus-ideal isolates response mismatch against the single saved ideal map-addition control; seed-minus-REF is initialization sensitivity.','','| Policy | Branch | Comparison | Measurement | Signed effect | % whole REF | Conditional sigma | Effect / sigma |','|---|---|---|---|---:|---:|---:|---:|']
+    for e in effects:
+        if e['cycle']==10 and e['measurement'] in ('peak','fixed_template','aperture_2') and (e['comparison']=='actual_minus_ideal' or (e['branch']=='D-seed-shoulder' and e['comparison']=='branch_minus_own_REF')):
+            lines.append(f"| {e['policy']} | {e['branch']} | {e['comparison']} | {e['measurement']} | {num(e['effect'])} | {num(None if e['fraction_of_source'] is None else 100*e['fraction_of_source'])} | {num(e['conditional_endpoint_sigma'])} | {num(e['signed_effect_over_sigma'])} |")
+    lines += ['','## Measurement definitions','','POINT-EXPECTED-v1: seven-parameter Gaussian plus constant; W=I; one bounded fit per full map. Peak is amplitude above the fitted constant in mJy/nominal beam. Centroid is east/north arcsec. Major/minor FWHM are sorted principal widths; ellipse covariance components avoid angle gauge ambiguity. Fixed template uses the original M0 template and subtracts each map’s fitted constant. Apertures use fixed M0 centroid and radii 1, 1.5, 2 × M0 major FWHM with 4 arcsec² pixels. Raw aperture and fitted-background contributions are separately retained in histories. Endpoint sensitivity operators include refitted constant nuisance and spatial covariance. Angle/width errors are not substituted for sorted or tensor-shape uncertainties. Unsupported uncertainty scales remain unresolved.','','M0–T10 compact history is in histories.json; the stage summary table below selects M0/T1/T3/T5/T10. g and eta use the fixed own-REF ordinary-MAP injection controls and unweighted common support. Controls bypass PTC; this experiment tests post-RTC/CAL response and does not establish astronomical flux calibration.','','## Selected histories','','| Policy | Branch | Cycle | Peak | Major/minor FWHM | Template | Aperture 2 | Selected / added |','|---|---|---:|---:|---|---:|---:|---|']
+    for r in hist:
+        if r['cycle'] not in (0,1,3,5,10) or r['values'] is None:continue
+        v=r['values'];lines.append(f"| {r['policy']} | {r['branch']} | {r['cycle']} | {num(v['peak'])} | {num(v['FWHM_major'])}/{num(v['FWHM_minor'])} | {num(v['fixed_template'])} | {num(v['aperture_2'])} | {r['selected_pixels']}/{r['added_pixels']} |")
+    lines += ['','## Execution and resources','',f'Counts: `{json.dumps(counts)}`.', '',f'Resources: `{json.dumps(resources)}`.','', 'The native processing guards, subtract/restore checks, control audits, shape definitions, exact inputs and configuration remain in compact products. Numeric libraries use one thread; outer workers are in resources.json. No threshold/covariance retuning, extra cycles, other observations/arrays, or JINC.']
+    (d/'MEASUREMENTS.md').write_text('\n'.join(lines)+'\n')
+    # Matched scales: each column has one scale across policies.
+    fig,ax=plt.subplots(3,3,figsize=(11,10),constrained_layout=True)
+    data={}
+    for pi,pol in enumerate(POLICIES):
+        for bi,b in enumerate(('REF','C-shoulder','D-seed-shoulder')):
+            r=summaries.get((pol,b))
+            if r and r['completed_cycle']==10 and 'total' in r['histories'][-1]:
+                z,v,_,_=patch_map(r['histories'][-1]['total']['path']);ref=summaries.get((pol,'REF'));rz,rv,_,_=patch_map(ref['histories'][-1]['total']['path']);data[(pi,bi)]=(np.where(v,z if bi==0 else z-rz,np.nan))
+    for bi in range(3):
+        arrays=[v for (p,b),v in data.items() if b==bi];lim=max((np.nanmax(abs(z)) for z in arrays),default=1.)
+        for pi,pol in enumerate(POLICIES):
+            a=ax[pi,bi];z=data.get((pi,bi));a.set_title(pol+' '+('REF T10','shoulder − REF','seed − REF')[bi],fontsize=10)
+            if z is None:a.text(.5,.5,'Unavailable',ha='center',transform=a.transAxes);a.set_axis_off();continue
+            im=a.imshow(z,origin='lower',extent=[41,-41,-41,41],cmap='viridis' if bi==0 else 'RdBu_r',vmin=0 if bi==0 else -lim,vmax=lim);fig.colorbar(im,ax=a,shrink=.75,label='mJy/nominal beam');a.set_xlabel('east (arcsec)');a.set_ylabel('north (arcsec)')
+    fig.savefig(d/'matched-endpoints.png',dpi=160,bbox_inches='tight');plt.close(fig)
+    fig,ax=plt.subplots(1,2,figsize=(11,4),constrained_layout=True)
+    for pol in POLICIES:
+        r=[h for h in hist if h['policy']==pol and h['branch']=='REF' and h['values']]
+        for a,n in zip(ax,('peak','aperture_2')):a.plot([q['cycle'] for q in r],[q['values'][n] for q in r],'.-',label=pol);a.set_xlabel('Cycle');a.set_ylabel(n+' ('+unit(n)+')');a.legend()
+    fig.savefig(d/'reference-histories.png',dpi=160,bbox_inches='tight');plt.close(fig)
+    fig,ax=plt.subplots(1,3,figsize=(11,3.8),constrained_layout=True)
+    for a,pol in zip(ax,POLICIES):
+        r=summaries.get((pol,'REF'));a.set_title(pol+' T10 admission')
+        if not r or r['completed_cycle']!=10:a.set_axis_off();continue
+        path=Path(r['histories'][-1]['candidate']['path']).parent/'admission.fits';z,h=load(path)
+        mask=z['BASE_POINT']+2*z['ADDED'];im=a.imshow(mask,origin='lower',extent=[41,-41,-41,41],vmin=0,vmax=2,cmap='viridis')
+        ex=np.argwhere(z.get('NOISE_EXTRAP',np.zeros_like(mask)))
+        if len(ex):a.plot(40-2*ex[:,1],-40+2*ex[:,0],'rx',label='high coverage');a.legend(fontsize=7)
+        a.set_xlabel('east (arcsec)');a.set_ylabel('north (arcsec)')
+    
+    if any(r['completed_cycle']==10 for (pol,b),r in summaries.items() if b=='REF'):fig.colorbar(im,ax=ax,ticks=[0,1,2],label='0 excluded, 1 BASE, 2 supplement')
+    fig.savefig(d/'admission-masks.png',dpi=160,bbox_inches='tight');plt.close(fig)
+    # Common residual color scale makes policy differences visually comparable.
+    fig,ax=plt.subplots(3,3,figsize=(10,10),constrained_layout=True);residuals={}
+    for pi,pol in enumerate(POLICIES):
+        for bi,b in enumerate(BRANCHES[1:4]):
+            r=summaries.get((pol,b))
+            if r and r['completed_cycle']==10:
+                p=Path(r['histories'][-1]['total']['path']).parents[2]/'response.fits'
+                if product_path(p).exists():
+                    q,h=load(p);z,v,_,_,_=__import__('point_empirical').source_patch(q['RESIDUAL'],q['VALID'].astype(bool),np.ones(q['RESIDUAL'].shape),h);residuals[(pi,bi)]=np.where(v,z,np.nan)
+    lim=max((np.nanmax(abs(z)) for z in residuals.values()),default=1.)
+    for pi,pol in enumerate(POLICIES):
+        for bi,b in enumerate(BRANCHES[1:4]):
+            a=ax[pi,bi];a.set_title(pol+' '+b,fontsize=9);z=residuals.get((pi,bi))
+            if z is None:a.set_axis_off();continue
+            im=a.imshow(z,origin='lower',extent=[41,-41,-41,41],cmap='RdBu_r',vmin=-lim,vmax=lim);a.set_xlabel('east (arcsec)');a.set_ylabel('north (arcsec)')
+    if residuals:fig.colorbar(im,ax=ax,label='(branch − own REF) − control [mJy/nominal beam]',shrink=.65)
+    fig.savefig(d/'response-residuals.png',dpi=160,bbox_inches='tight');plt.close(fig)
+    save_json(d/'REPORT.json',dict(saved_product_only=True,seconds=time.perf_counter()-start,counts=counts))
+    print(json.dumps(counts))
 if __name__=='__main__':
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path,required=True);a=p.parse_args();print(json.dumps(report(a.output)))
+    p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True);report(p.parse_args().output)

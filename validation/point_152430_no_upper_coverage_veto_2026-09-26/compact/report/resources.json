@@ -1,0 +1,27 @@
+{
+  "native_wall_seconds_sum": 1499.3508748342574,
+  "upstream_seconds": 31.617487292009173,
+  "phase_wall_seconds": {
+    "PHASE-references": 86.70437337498879,
+    "PHASE-shapes": 26.244842707994394,
+    "PHASE-responses": 160.8016417500039,
+    "PHASE-base": 85.71239487500861
+  },
+  "phase_peak_family_rss_bytes": {
+    "PHASE-references": 1621819392,
+    "PHASE-shapes": null,
+    "PHASE-responses": 7815839744,
+    "PHASE-base": 888668160
+  },
+  "native_max_sampled_rss_bytes": 1556480000,
+  "largest_observed_stage_bytes": 2901191288,
+  "ceiling_bytes": 16159001984,
+  "disk_measurement": "stage snapshots plus enforced in-flight allocation reservations; not a continuous filesystem high-water measurement",
+  "numeric_threads": 1,
+  "phase_workers": {
+    "PHASE-references": 2,
+    "PHASE-shapes": null,
+    "PHASE-responses": 12,
+    "PHASE-base": 1
+  }
+}

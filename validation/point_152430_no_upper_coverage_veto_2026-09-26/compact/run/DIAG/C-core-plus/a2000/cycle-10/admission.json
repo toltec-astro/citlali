@@ -1,0 +1,166 @@
+{
+  "method": "POINT-EXPECTED-v1",
+  "policy": "DIAG",
+  "threshold": 4.686076304689278,
+  "guard": {
+    "method": "POINT-EXPECTED-v1",
+    "status": "accepted",
+    "accepted": true,
+    "complete": true,
+    "cause": null,
+    "accepted_parameters": [
+      825.602935059416,
+      4.04996225768574,
+      7.377376611644243,
+      4.3045528987647765,
+      3.955033449703197,
+      -0.6413086507203652,
+      -2.282396866116446
+    ],
+    "pointing_correction": null,
+    "accepted_centroid_tangent_arcsec": [
+      4.04996225768574,
+      7.377376611644243
+    ],
+    "expected_origin_tangent_arcsec": [
+      0.0,
+      0.0
+    ],
+    "fit_pixels": 1257,
+    "expected_origin_sky": {
+      "ra_deg": 176.7429079166667,
+      "dec_deg": 39.97619555555556,
+      "frame": "FK5",
+      "equinox": 2000.0
+    },
+    "sigma_A": 6.316351516913159,
+    "SNR_A": 130.70883291544442,
+    "diagnostic": {
+      "initial": [
+        783.7041200635595,
+        4.0,
+        8.0,
+        4.2466090014400955,
+        4.2466090014400955,
+        0.0,
+        -0.16851814321887604
+      ],
+      "parameters": [
+        825.602935059416,
+        4.04996225768574,
+        7.377376611644243,
+        4.3045528987647765,
+        3.955033449703197,
+        -0.6413086507203652,
+        -2.282396866116446
+      ],
+      "status": 2,
+      "message": "`ftol` termination condition is satisfied.",
+      "converged": true,
+      "finite": true,
+      "nfev": 13,
+      "njev": 11,
+      "cost": 153283.7044971584,
+      "optimality": 0.09688212253314463,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "sigma_floor_arcsec": 1.5,
+      "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+      "centroid_radius_arcsec": 8.415930130337019
+    },
+    "optimizer_calls": 1,
+    "amplitude_sensitivity": {
+      "rank": 7,
+      "rank_tolerance": 2.0532291338712403e-10,
+      "singular_values": [
+        735.6342054263138,
+        539.7468485187366,
+        514.6379185994149,
+        495.92068920237,
+        255.96271795599205,
+        33.90869935927909,
+        2.5856296921454884
+      ],
+      "amplitude_null_projection": 2.2204708788027544e-16,
+      "identifiability_tolerance": 2.7911006839076435e-11
+    },
+    "message": "Expected POINT source accepted."
+  },
+  "BASE": {
+    "status": "retained",
+    "anchor_row_column": [
+      24,
+      18
+    ],
+    "anchor_ratio": 50.89829748953782,
+    "pixels": 70,
+    "area_arcsec2": 280.0,
+    "extent_east_north_arcsec": [
+      [
+        -6.0,
+        12.0
+      ],
+      [
+        -2.0,
+        16.0
+      ]
+    ],
+    "boundary_contact": false,
+    "unsupported_contact": false,
+    "unsupported_domain_pixels": 0,
+    "unassociated_above_threshold_pixels": 2,
+    "threshold": 3.0,
+    "noise_scale_multiplier": 1.0,
+    "equivalent_original_scale_threshold": 3.0
+  },
+  "candidate": {
+    "status": "retained",
+    "anchor_row_column": [
+      24,
+      18
+    ],
+    "anchor_ratio": 50.89829748953782,
+    "pixels": 77,
+    "area_arcsec2": 280.0,
+    "extent_east_north_arcsec": [
+      [
+        -6.0,
+        12.0
+      ],
+      [
+        -2.0,
+        16.0
+      ]
+    ],
+    "boundary_contact": false,
+    "unsupported_contact": false,
+    "unsupported_domain_pixels": 0,
+    "unassociated_above_threshold_pixels": 2,
+    "threshold": 3.0,
+    "noise_scale_multiplier": 1.0,
+    "equivalent_original_scale_threshold": 3.0,
+    "policy": "DIAG",
+    "threshold_supplement": 4.686076304689278,
+    "base_pixels": 70,
+    "proposed_extra_pixels": 7,
+    "added_pixels": 7,
+    "extra_brightness_area": 711.357425646731,
+    "total_brightness_area": 83183.11269694938,
+    "unavailable_tests": 548
+  },
+  "numerical_failures": 0,
+  "known": true,
+  "selected_pixels": 77,
+  "brightness_area": 83183.11269694938,
+  "baseline_pixels": 70,
+  "proposed_pixels": 7,
+  "added_pixels": 7,
+  "extra_brightness_area": 711.357425646731
+}

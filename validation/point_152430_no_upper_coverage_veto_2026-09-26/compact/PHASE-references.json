@@ -1,0 +1,28 @@
+{
+  "status": "completed",
+  "results": [
+    {
+      "policy": "DIAG",
+      "branch": "REF",
+      "ready": true,
+      "completed_cycle": 10,
+      "stop_reason": null,
+      "actual_feedback_applications": 10,
+      "wall_seconds": 86.0220181249897
+    },
+    {
+      "policy": "CORR",
+      "branch": "REF",
+      "ready": true,
+      "completed_cycle": 10,
+      "stop_reason": null,
+      "actual_feedback_applications": 10,
+      "wall_seconds": 86.6261531659984
+    }
+  ],
+  "workers": 2,
+  "numeric_threads": 1,
+  "seconds": 86.70437337498879,
+  "peak_family_rss_bytes": 1621819392,
+  "final_bytes": 1486690716
+}

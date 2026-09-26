@@ -1,0 +1,2846 @@
+[
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-plus",
+    "cycle": 0,
+    "audit": {
+      "definition": "aligned containing-pixel ordinary MAP of injection on original M0 support; uniform gamma=1, no PTC/centering",
+      "REF_counts_normalization_exact": true,
+      "native_stream_audit": "performed separately for every T1\u2013T10 control"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.5825113754229398,
+      "eta": 0.507362745307122,
+      "difference_rms": 1.7395391570944632,
+      "residual_rms": 1.3579082217907477,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.5825113754229401,
+      "eta": 0.4537612728240831,
+      "difference_rms": 4.713992188414218,
+      "residual_rms": 3.5121654311336625,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-plus",
+    "cycle": 1,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8738591615702405,
+      "eta": 0.14894710732394287,
+      "difference_rms": 2.348388842079018,
+      "residual_rms": 0.39864279259349084,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8738591615702405,
+      "eta": 0.1447754099473107,
+      "difference_rms": 6.7860933704692545,
+      "residual_rms": 1.1205786402408087,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-plus",
+    "cycle": 2,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9551454484080882,
+      "eta": 0.059997895115391435,
+      "difference_rms": 2.5585797535128725,
+      "residual_rms": 0.16057867043038765,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9551454484080885,
+      "eta": 0.058148221504710655,
+      "difference_rms": 7.398483699470913,
+      "residual_rms": 0.450074049245546,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-plus",
+    "cycle": 3,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9840294667073837,
+      "eta": 0.030567159035017086,
+      "difference_rms": 2.634585073066373,
+      "residual_rms": 0.08181009929160132,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9840294667073834,
+      "eta": 0.028801162710122032,
+      "difference_rms": 7.6187622952739815,
+      "residual_rms": 0.22292437478718632,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-plus",
+    "cycle": 4,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9887705741000125,
+      "eta": 0.025030563200093177,
+      "difference_rms": 2.647027767841017,
+      "residual_rms": 0.06699192615115009,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9887705741000125,
+      "eta": 0.024067433163356414,
+      "difference_rms": 7.654973519069906,
+      "residual_rms": 0.1862847533161584,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-plus",
+    "cycle": 5,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9902779031464147,
+      "eta": 0.024163226028672085,
+      "difference_rms": 2.6510459822119055,
+      "residual_rms": 0.06467058055171215,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.990277903146415,
+      "eta": 0.02325879846408499,
+      "difference_rms": 7.666611589665031,
+      "residual_rms": 0.18002582597420935,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-plus",
+    "cycle": 6,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9907351060699852,
+      "eta": 0.023836870993027316,
+      "difference_rms": 2.6522599060899115,
+      "residual_rms": 0.06379712228102934,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9907351060699854,
+      "eta": 0.022950438209396396,
+      "difference_rms": 7.6701278431781645,
+      "residual_rms": 0.17763908146401242,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-plus",
+    "cycle": 7,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9907402713899061,
+      "eta": 0.023767182440299326,
+      "difference_rms": 2.6522693765692407,
+      "residual_rms": 0.06361060748547265,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9907402713899061,
+      "eta": 0.02293908297694992,
+      "difference_rms": 7.670166153044573,
+      "residual_rms": 0.1775511906340771,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-plus",
+    "cycle": 8,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9907466673044945,
+      "eta": 0.023755791925960203,
+      "difference_rms": 2.6522859193746133,
+      "residual_rms": 0.06358012185519218,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9907466673044945,
+      "eta": 0.022927918703621483,
+      "difference_rms": 7.67021410968333,
+      "residual_rms": 0.1774647778500953,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-plus",
+    "cycle": 9,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.990748551002085,
+      "eta": 0.02375330307512283,
+      "difference_rms": 2.652290847082066,
+      "residual_rms": 0.06357346068220276,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9907485510020853,
+      "eta": 0.022925482326071424,
+      "difference_rms": 7.6702283862980085,
+      "residual_rms": 0.17744592000232162,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-plus",
+    "cycle": 10,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9907490956641025,
+      "eta": 0.02375270037487772,
+      "difference_rms": 2.652292279407764,
+      "residual_rms": 0.06357184761221354,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9907490956641026,
+      "eta": 0.02292489194904462,
+      "difference_rms": 7.670232534744185,
+      "residual_rms": 0.17744135041494374,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-minus",
+    "cycle": 0,
+    "audit": {
+      "definition": "aligned containing-pixel ordinary MAP of injection on original M0 support; uniform gamma=1, no PTC/centering",
+      "REF_counts_normalization_exact": true,
+      "native_stream_audit": "performed separately for every T1\u2013T10 control"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.6062866866709431,
+      "eta": 0.549664337102999,
+      "difference_rms": 1.9201303988467182,
+      "residual_rms": 1.47112441636902,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.6062866866709435,
+      "eta": 0.44346069353323786,
+      "difference_rms": 4.951441721056184,
+      "residual_rms": 3.43243774022518,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-minus",
+    "cycle": 1,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8774088524065349,
+      "eta": 0.14891452359128854,
+      "difference_rms": 2.3591766627122754,
+      "residual_rms": 0.3985555853263486,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8774088524065349,
+      "eta": 0.14411652093894065,
+      "difference_rms": 6.816522530572797,
+      "residual_rms": 1.115478762096187,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-minus",
+    "cycle": 2,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9561274858883693,
+      "eta": 0.0600112440621878,
+      "difference_rms": 2.5613298854953297,
+      "residual_rms": 0.16061439761921792,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9561274858883698,
+      "eta": 0.05799794625724118,
+      "difference_rms": 7.406360913373322,
+      "residual_rms": 0.448910901218319,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-minus",
+    "cycle": 3,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9855801223525364,
+      "eta": 0.03222060955226555,
+      "difference_rms": 2.638938669076004,
+      "residual_rms": 0.08623540263218606,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9855801223525366,
+      "eta": 0.03049911693566935,
+      "difference_rms": 7.631341224400513,
+      "residual_rms": 0.23606673948812149,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-minus",
+    "cycle": 4,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9950082616973577,
+      "eta": 0.026061905789156757,
+      "difference_rms": 2.6639249927908137,
+      "residual_rms": 0.069752216681202,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9950082616973579,
+      "eta": 0.024569946136462382,
+      "difference_rms": 7.7037313192142935,
+      "residual_rms": 0.19017426262102854,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-minus",
+    "cycle": 5,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9977500764775079,
+      "eta": 0.026016113818745662,
+      "difference_rms": 2.671284206795513,
+      "residual_rms": 0.06962965881961604,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.997750076477508,
+      "eta": 0.024427425105236603,
+      "difference_rms": 7.724997017257883,
+      "residual_rms": 0.1890711331362989,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-minus",
+    "cycle": 6,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9985676499511715,
+      "eta": 0.02617522670294004,
+      "difference_rms": 2.6734867853887683,
+      "residual_rms": 0.0700555093489244,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9985676499511715,
+      "eta": 0.02442236370365948,
+      "difference_rms": 7.731333959927015,
+      "residual_rms": 0.1890319572949107,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-minus",
+    "cycle": 7,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9989455289074941,
+      "eta": 0.02610811838364487,
+      "difference_rms": 2.6744943562320094,
+      "residual_rms": 0.06987590030319853,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9989455289074942,
+      "eta": 0.02439555744476721,
+      "difference_rms": 7.734256487520649,
+      "residual_rms": 0.18882447370947048,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-minus",
+    "cycle": 8,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9990553620749898,
+      "eta": 0.026102287784556706,
+      "difference_rms": 2.674788100492004,
+      "residual_rms": 0.06986029525826172,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9990553620749898,
+      "eta": 0.02439290176655332,
+      "difference_rms": 7.735106704755873,
+      "residual_rms": 0.18880391844885736,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-minus",
+    "cycle": 9,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9990887105484544,
+      "eta": 0.02610075652882396,
+      "difference_rms": 2.6748772999484234,
+      "residual_rms": 0.06985619699766141,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9990887105484546,
+      "eta": 0.02439221191310441,
+      "difference_rms": 7.7353648584119306,
+      "residual_rms": 0.18879857890231402,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-minus",
+    "cycle": 10,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9990988439730646,
+      "eta": 0.026100252979864506,
+      "difference_rms": 2.6749044012546683,
+      "residual_rms": 0.0698548492966754,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9990988439730646,
+      "eta": 0.024391966681337748,
+      "difference_rms": 7.735443293767789,
+      "residual_rms": 0.18879668077969963,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-shoulder",
+    "cycle": 0,
+    "audit": {
+      "definition": "aligned containing-pixel ordinary MAP of injection on original M0 support; uniform gamma=1, no PTC/centering",
+      "REF_counts_normalization_exact": true,
+      "native_stream_audit": "performed separately for every T1\u2013T10 control"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.4703401125662138,
+      "eta": 0.6023434232807668,
+      "difference_rms": 1.4742370473930386,
+      "residual_rms": 1.6118836952636484,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.4703401125662139,
+      "eta": 0.5566219008264054,
+      "difference_rms": 3.873434052057218,
+      "residual_rms": 4.307700621434723,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-shoulder",
+    "cycle": 1,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.6834713380632913,
+      "eta": 0.37777367004462997,
+      "difference_rms": 1.9104159661046882,
+      "residual_rms": 1.0109303027303294,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.6834713380632913,
+      "eta": 0.3570401158185443,
+      "difference_rms": 5.441684752940376,
+      "residual_rms": 2.7631358494971154,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-shoulder",
+    "cycle": 2,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.7646826822241507,
+      "eta": 0.2992408145104777,
+      "difference_rms": 2.105248807666309,
+      "residual_rms": 0.8007747262179732,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.7646826822241508,
+      "eta": 0.2839081209604303,
+      "difference_rms": 6.044204790710751,
+      "residual_rms": 2.1971668510992104,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-shoulder",
+    "cycle": 3,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8158609025979005,
+      "eta": 0.2536412690959807,
+      "difference_rms": 2.2326031138822935,
+      "residual_rms": 0.678749381664985,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8158609025979003,
+      "eta": 0.23948347709183976,
+      "difference_rms": 6.424187366463715,
+      "residual_rms": 1.8533642344295769,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-shoulder",
+    "cycle": 4,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8347708861363003,
+      "eta": 0.24055556516912077,
+      "difference_rms": 2.282331848156954,
+      "residual_rms": 0.6437317621716594,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8347708861363002,
+      "eta": 0.22712009218507298,
+      "difference_rms": 6.571894631670348,
+      "residual_rms": 1.7576839157665034,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-shoulder",
+    "cycle": 5,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8415536766015494,
+      "eta": 0.23600601119345072,
+      "difference_rms": 2.300142763598258,
+      "residual_rms": 0.6315570598495819,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8415536766015494,
+      "eta": 0.22285737939329398,
+      "difference_rms": 6.624755928682513,
+      "residual_rms": 1.7246947528987082,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-shoulder",
+    "cycle": 6,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8436452079563811,
+      "eta": 0.2346667170844682,
+      "difference_rms": 2.3056664733936167,
+      "residual_rms": 0.6279730805879286,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.843645207956381,
+      "eta": 0.22158787771933933,
+      "difference_rms": 6.641094142990349,
+      "residual_rms": 1.7148700709347255,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-shoulder",
+    "cycle": 7,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8442571354653415,
+      "eta": 0.2343493620343623,
+      "difference_rms": 2.30733528804065,
+      "residual_rms": 0.6271238317854944,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8442571354653416,
+      "eta": 0.22126457607619357,
+      "difference_rms": 6.6459653738946,
+      "residual_rms": 1.712368037351386,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-shoulder",
+    "cycle": 8,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8444681379613738,
+      "eta": 0.2342093425169407,
+      "difference_rms": 2.30788828293331,
+      "residual_rms": 0.6267491366059217,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8444681379613739,
+      "eta": 0.22113209151205507,
+      "difference_rms": 6.647602593555075,
+      "residual_rms": 1.7113427384214974,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-shoulder",
+    "cycle": 9,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8445367330844801,
+      "eta": 0.23416369070116172,
+      "difference_rms": 2.3080679450714694,
+      "residual_rms": 0.6266269713847717,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8445367330844802,
+      "eta": 0.2210887914143203,
+      "difference_rms": 6.648134327926534,
+      "residual_rms": 1.7110076386748951,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-shoulder",
+    "cycle": 10,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8445591132369313,
+      "eta": 0.23414875925786632,
+      "difference_rms": 2.308126534029796,
+      "residual_rms": 0.6265870145278287,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8445591132369312,
+      "eta": 0.22107459093253598,
+      "difference_rms": 6.6483076626406445,
+      "residual_rms": 1.7108977410511828,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-plus",
+    "cycle": 0,
+    "audit": {
+      "definition": "aligned containing-pixel ordinary MAP of injection on original M0 support; uniform gamma=1, no PTC/centering",
+      "REF_counts_normalization_exact": true,
+      "native_stream_audit": "performed separately for every T1\u2013T10 control"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.5825113754229398,
+      "eta": 0.507362745307122,
+      "difference_rms": 1.7395391570944632,
+      "residual_rms": 1.3579082217907477,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.5825113754229401,
+      "eta": 0.4537612728240831,
+      "difference_rms": 4.713992188414218,
+      "residual_rms": 3.5121654311336625,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-plus",
+    "cycle": 1,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8738591615702405,
+      "eta": 0.14894710732394287,
+      "difference_rms": 2.348388842079018,
+      "residual_rms": 0.39864279259349084,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8738591615702405,
+      "eta": 0.1447754099473107,
+      "difference_rms": 6.7860933704692545,
+      "residual_rms": 1.1205786402408087,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-plus",
+    "cycle": 2,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9551454484080882,
+      "eta": 0.059997895115391435,
+      "difference_rms": 2.5585797535128725,
+      "residual_rms": 0.16057867043038765,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9551454484080885,
+      "eta": 0.058148221504710655,
+      "difference_rms": 7.398483699470913,
+      "residual_rms": 0.450074049245546,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-plus",
+    "cycle": 3,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9840294667073837,
+      "eta": 0.030567159035017086,
+      "difference_rms": 2.634585073066373,
+      "residual_rms": 0.08181009929160132,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9840294667073834,
+      "eta": 0.028801162710122032,
+      "difference_rms": 7.6187622952739815,
+      "residual_rms": 0.22292437478718632,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-plus",
+    "cycle": 4,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9887705741000125,
+      "eta": 0.025030563200093177,
+      "difference_rms": 2.647027767841017,
+      "residual_rms": 0.06699192615115009,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9887705741000125,
+      "eta": 0.024067433163356414,
+      "difference_rms": 7.654973519069906,
+      "residual_rms": 0.1862847533161584,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-plus",
+    "cycle": 5,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9902779031464147,
+      "eta": 0.024163226028672085,
+      "difference_rms": 2.6510459822119055,
+      "residual_rms": 0.06467058055171215,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.990277903146415,
+      "eta": 0.02325879846408499,
+      "difference_rms": 7.666611589665031,
+      "residual_rms": 0.18002582597420935,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-plus",
+    "cycle": 6,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9907351060699852,
+      "eta": 0.023836870993027316,
+      "difference_rms": 2.6522599060899115,
+      "residual_rms": 0.06379712228102934,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9907351060699854,
+      "eta": 0.022950438209396396,
+      "difference_rms": 7.6701278431781645,
+      "residual_rms": 0.17763908146401242,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-plus",
+    "cycle": 7,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9907402713899061,
+      "eta": 0.023767182440299326,
+      "difference_rms": 2.6522693765692407,
+      "residual_rms": 0.06361060748547265,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9907402713899061,
+      "eta": 0.02293908297694992,
+      "difference_rms": 7.670166153044573,
+      "residual_rms": 0.1775511906340771,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-plus",
+    "cycle": 8,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9907466673044945,
+      "eta": 0.023755791925960203,
+      "difference_rms": 2.6522859193746133,
+      "residual_rms": 0.06358012185519218,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9907466673044945,
+      "eta": 0.022927918703621483,
+      "difference_rms": 7.67021410968333,
+      "residual_rms": 0.1774647778500953,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-plus",
+    "cycle": 9,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.990748551002085,
+      "eta": 0.02375330307512283,
+      "difference_rms": 2.652290847082066,
+      "residual_rms": 0.06357346068220276,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9907485510020853,
+      "eta": 0.022925482326071424,
+      "difference_rms": 7.6702283862980085,
+      "residual_rms": 0.17744592000232162,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-plus",
+    "cycle": 10,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9907490956641025,
+      "eta": 0.02375270037487772,
+      "difference_rms": 2.652292279407764,
+      "residual_rms": 0.06357184761221354,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9907490956641026,
+      "eta": 0.02292489194904462,
+      "difference_rms": 7.670232534744185,
+      "residual_rms": 0.17744135041494374,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-minus",
+    "cycle": 0,
+    "audit": {
+      "definition": "aligned containing-pixel ordinary MAP of injection on original M0 support; uniform gamma=1, no PTC/centering",
+      "REF_counts_normalization_exact": true,
+      "native_stream_audit": "performed separately for every T1\u2013T10 control"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.6062866866709431,
+      "eta": 0.549664337102999,
+      "difference_rms": 1.9201303988467182,
+      "residual_rms": 1.47112441636902,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.6062866866709435,
+      "eta": 0.44346069353323786,
+      "difference_rms": 4.951441721056184,
+      "residual_rms": 3.43243774022518,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-minus",
+    "cycle": 1,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8774088524065349,
+      "eta": 0.14891452359128854,
+      "difference_rms": 2.3591766627122754,
+      "residual_rms": 0.3985555853263486,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8774088524065349,
+      "eta": 0.14411652093894065,
+      "difference_rms": 6.816522530572797,
+      "residual_rms": 1.115478762096187,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-minus",
+    "cycle": 2,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9561274858883693,
+      "eta": 0.0600112440621878,
+      "difference_rms": 2.5613298854953297,
+      "residual_rms": 0.16061439761921792,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9561274858883698,
+      "eta": 0.05799794625724118,
+      "difference_rms": 7.406360913373322,
+      "residual_rms": 0.448910901218319,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-minus",
+    "cycle": 3,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9855801223525364,
+      "eta": 0.03222060955226555,
+      "difference_rms": 2.638938669076004,
+      "residual_rms": 0.08623540263218606,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9855801223525366,
+      "eta": 0.03049911693566935,
+      "difference_rms": 7.631341224400513,
+      "residual_rms": 0.23606673948812149,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-minus",
+    "cycle": 4,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9950082616973577,
+      "eta": 0.026061905789156757,
+      "difference_rms": 2.6639249927908137,
+      "residual_rms": 0.069752216681202,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9950082616973579,
+      "eta": 0.024569946136462382,
+      "difference_rms": 7.7037313192142935,
+      "residual_rms": 0.19017426262102854,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-minus",
+    "cycle": 5,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9977500764775079,
+      "eta": 0.026016113818745662,
+      "difference_rms": 2.671284206795513,
+      "residual_rms": 0.06962965881961604,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.997750076477508,
+      "eta": 0.024427425105236603,
+      "difference_rms": 7.724997017257883,
+      "residual_rms": 0.1890711331362989,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-minus",
+    "cycle": 6,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9985676499511715,
+      "eta": 0.02617522670294004,
+      "difference_rms": 2.6734867853887683,
+      "residual_rms": 0.0700555093489244,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9985676499511715,
+      "eta": 0.02442236370365948,
+      "difference_rms": 7.731333959927015,
+      "residual_rms": 0.1890319572949107,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-minus",
+    "cycle": 7,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9989455289074941,
+      "eta": 0.02610811838364487,
+      "difference_rms": 2.6744943562320094,
+      "residual_rms": 0.06987590030319853,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9989455289074942,
+      "eta": 0.02439555744476721,
+      "difference_rms": 7.734256487520649,
+      "residual_rms": 0.18882447370947048,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-minus",
+    "cycle": 8,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9990553620749898,
+      "eta": 0.026102287784556706,
+      "difference_rms": 2.674788100492004,
+      "residual_rms": 0.06986029525826172,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9990553620749898,
+      "eta": 0.02439290176655332,
+      "difference_rms": 7.735106704755873,
+      "residual_rms": 0.18880391844885736,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-minus",
+    "cycle": 9,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9990887105484544,
+      "eta": 0.02610075652882396,
+      "difference_rms": 2.6748772999484234,
+      "residual_rms": 0.06985619699766141,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9990887105484546,
+      "eta": 0.02439221191310441,
+      "difference_rms": 7.7353648584119306,
+      "residual_rms": 0.18879857890231402,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-minus",
+    "cycle": 10,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9990988439730646,
+      "eta": 0.026100252979864506,
+      "difference_rms": 2.6749044012546683,
+      "residual_rms": 0.0698548492966754,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9990988439730646,
+      "eta": 0.024391966681337748,
+      "difference_rms": 7.735443293767789,
+      "residual_rms": 0.18879668077969963,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-shoulder",
+    "cycle": 0,
+    "audit": {
+      "definition": "aligned containing-pixel ordinary MAP of injection on original M0 support; uniform gamma=1, no PTC/centering",
+      "REF_counts_normalization_exact": true,
+      "native_stream_audit": "performed separately for every T1\u2013T10 control"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.4703401125662138,
+      "eta": 0.6023434232807668,
+      "difference_rms": 1.4742370473930386,
+      "residual_rms": 1.6118836952636484,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.4703401125662139,
+      "eta": 0.5566219008264054,
+      "difference_rms": 3.873434052057218,
+      "residual_rms": 4.307700621434723,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-shoulder",
+    "cycle": 1,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.6834713380632913,
+      "eta": 0.37777367004462997,
+      "difference_rms": 1.9104159661046882,
+      "residual_rms": 1.0109303027303294,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.6834713380632913,
+      "eta": 0.3570401158185443,
+      "difference_rms": 5.441684752940376,
+      "residual_rms": 2.7631358494971154,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-shoulder",
+    "cycle": 2,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.7646826822241507,
+      "eta": 0.2992408145104777,
+      "difference_rms": 2.105248807666309,
+      "residual_rms": 0.8007747262179732,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.7646826822241508,
+      "eta": 0.2839081209604303,
+      "difference_rms": 6.044204790710751,
+      "residual_rms": 2.1971668510992104,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-shoulder",
+    "cycle": 3,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8158609025979005,
+      "eta": 0.2536412690959807,
+      "difference_rms": 2.2326031138822935,
+      "residual_rms": 0.678749381664985,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8158609025979003,
+      "eta": 0.23948347709183976,
+      "difference_rms": 6.424187366463715,
+      "residual_rms": 1.8533642344295769,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-shoulder",
+    "cycle": 4,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8347708861363003,
+      "eta": 0.24055556516912077,
+      "difference_rms": 2.282331848156954,
+      "residual_rms": 0.6437317621716594,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8347708861363002,
+      "eta": 0.22712009218507298,
+      "difference_rms": 6.571894631670348,
+      "residual_rms": 1.7576839157665034,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-shoulder",
+    "cycle": 5,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8415536766015494,
+      "eta": 0.23600601119345072,
+      "difference_rms": 2.300142763598258,
+      "residual_rms": 0.6315570598495819,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8415536766015494,
+      "eta": 0.22285737939329398,
+      "difference_rms": 6.624755928682513,
+      "residual_rms": 1.7246947528987082,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-shoulder",
+    "cycle": 6,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8436452079563811,
+      "eta": 0.2346667170844682,
+      "difference_rms": 2.3056664733936167,
+      "residual_rms": 0.6279730805879286,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.843645207956381,
+      "eta": 0.22158787771933933,
+      "difference_rms": 6.641094142990349,
+      "residual_rms": 1.7148700709347255,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-shoulder",
+    "cycle": 7,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8442571354653415,
+      "eta": 0.2343493620343623,
+      "difference_rms": 2.30733528804065,
+      "residual_rms": 0.6271238317854944,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8442571354653416,
+      "eta": 0.22126457607619357,
+      "difference_rms": 6.6459653738946,
+      "residual_rms": 1.712368037351386,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-shoulder",
+    "cycle": 8,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8444681379613738,
+      "eta": 0.2342093425169407,
+      "difference_rms": 2.30788828293331,
+      "residual_rms": 0.6267491366059217,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8444681379613739,
+      "eta": 0.22113209151205507,
+      "difference_rms": 6.647602593555075,
+      "residual_rms": 1.7113427384214974,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-shoulder",
+    "cycle": 9,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8445367330844801,
+      "eta": 0.23416369070116172,
+      "difference_rms": 2.3080679450714694,
+      "residual_rms": 0.6266269713847717,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8445367330844802,
+      "eta": 0.2210887914143203,
+      "difference_rms": 6.648134327926534,
+      "residual_rms": 1.7110076386748951,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-shoulder",
+    "cycle": 10,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8445591132369313,
+      "eta": 0.23414875925786632,
+      "difference_rms": 2.308126534029796,
+      "residual_rms": 0.6265870145278287,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8445591132369312,
+      "eta": 0.22107459093253598,
+      "difference_rms": 6.6483076626406445,
+      "residual_rms": 1.7108977410511828,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-plus",
+    "cycle": 0,
+    "audit": {
+      "definition": "aligned containing-pixel ordinary MAP of injection on original M0 support; uniform gamma=1, no PTC/centering",
+      "REF_counts_normalization_exact": true,
+      "native_stream_audit": "performed separately for every T1\u2013T10 control"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.5825113754229398,
+      "eta": 0.507362745307122,
+      "difference_rms": 1.7395391570944632,
+      "residual_rms": 1.3579082217907477,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.5825113754229401,
+      "eta": 0.4537612728240831,
+      "difference_rms": 4.713992188414218,
+      "residual_rms": 3.5121654311336625,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-plus",
+    "cycle": 1,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8738591615702405,
+      "eta": 0.14894710732394287,
+      "difference_rms": 2.348388842079018,
+      "residual_rms": 0.39864279259349084,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8738591615702405,
+      "eta": 0.1447754099473107,
+      "difference_rms": 6.7860933704692545,
+      "residual_rms": 1.1205786402408087,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-plus",
+    "cycle": 2,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9551454484080882,
+      "eta": 0.059997895115391435,
+      "difference_rms": 2.5585797535128725,
+      "residual_rms": 0.16057867043038765,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9551454484080885,
+      "eta": 0.058148221504710655,
+      "difference_rms": 7.398483699470913,
+      "residual_rms": 0.450074049245546,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-plus",
+    "cycle": 3,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9850721920898523,
+      "eta": 0.02955983687591559,
+      "difference_rms": 2.6373363531302014,
+      "residual_rms": 0.0791140971619851,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9850721920898527,
+      "eta": 0.027761751289332677,
+      "difference_rms": 7.626726351653887,
+      "residual_rms": 0.21487920857434126,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-plus",
+    "cycle": 4,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9927813108197374,
+      "eta": 0.032243047692779706,
+      "difference_rms": 2.658415686318661,
+      "residual_rms": 0.0862954561851276,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9927813108197378,
+      "eta": 0.031020676720287986,
+      "difference_rms": 7.687790912691841,
+      "residual_rms": 0.24010367334632948,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-plus",
+    "cycle": 5,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9933455887040649,
+      "eta": 0.02330986512473008,
+      "difference_rms": 2.6592674096571973,
+      "residual_rms": 0.062386641105357694,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9933455887040652,
+      "eta": 0.02222645371345248,
+      "difference_rms": 7.690363230840143,
+      "residual_rms": 0.17203535661657102,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-plus",
+    "cycle": 6,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9934345191606881,
+      "eta": 0.023044888623536253,
+      "difference_rms": 2.6594904051496715,
+      "residual_rms": 0.06167745665521711,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9934345191606884,
+      "eta": 0.021966832208720127,
+      "difference_rms": 7.691011298462573,
+      "residual_rms": 0.1700258557430723,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-plus",
+    "cycle": 7,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9948989485118257,
+      "eta": 0.023169634650528244,
+      "difference_rms": 2.6634395709371113,
+      "residual_rms": 0.06201132755380982,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9948989485118257,
+      "eta": 0.02209227054395479,
+      "difference_rms": 7.702431570852559,
+      "residual_rms": 0.17099676315878945,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-plus",
+    "cycle": 8,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9950269269950014,
+      "eta": 0.024853881664759235,
+      "difference_rms": 2.6638924874264203,
+      "residual_rms": 0.06651905479493068,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9950269269950014,
+      "eta": 0.02375789337674491,
+      "difference_rms": 7.70372387631003,
+      "residual_rms": 0.1838888790906405,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-plus",
+    "cycle": 9,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9940658592942766,
+      "eta": 0.024526663130076377,
+      "difference_rms": 2.6612851985507358,
+      "residual_rms": 0.06564328545104793,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9940658592942768,
+      "eta": 0.023433693449697836,
+      "difference_rms": 7.69618678124739,
+      "residual_rms": 0.18137953366002632,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-plus",
+    "cycle": 10,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9950277342465645,
+      "eta": 0.026063064014308107,
+      "difference_rms": 2.6639774340303872,
+      "residual_rms": 0.06975531656086453,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9950277342465651,
+      "eta": 0.024903345627302086,
+      "difference_rms": 7.703946883561556,
+      "residual_rms": 0.19275481375355924,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-minus",
+    "cycle": 0,
+    "audit": {
+      "definition": "aligned containing-pixel ordinary MAP of injection on original M0 support; uniform gamma=1, no PTC/centering",
+      "REF_counts_normalization_exact": true,
+      "native_stream_audit": "performed separately for every T1\u2013T10 control"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.6062866866709431,
+      "eta": 0.549664337102999,
+      "difference_rms": 1.9201303988467182,
+      "residual_rms": 1.47112441636902,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.6062866866709435,
+      "eta": 0.44346069353323786,
+      "difference_rms": 4.951441721056184,
+      "residual_rms": 3.43243774022518,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-minus",
+    "cycle": 1,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8774088524065349,
+      "eta": 0.14891452359128854,
+      "difference_rms": 2.3591766627122754,
+      "residual_rms": 0.3985555853263486,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8774088524065349,
+      "eta": 0.14411652093894065,
+      "difference_rms": 6.816522530572797,
+      "residual_rms": 1.115478762096187,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-minus",
+    "cycle": 2,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9561274858883693,
+      "eta": 0.0600112440621878,
+      "difference_rms": 2.5613298854953297,
+      "residual_rms": 0.16061439761921792,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9561274858883698,
+      "eta": 0.05799794625724118,
+      "difference_rms": 7.406360913373322,
+      "residual_rms": 0.448910901218319,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-minus",
+    "cycle": 3,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9855801223525364,
+      "eta": 0.03222060955226555,
+      "difference_rms": 2.638938669076004,
+      "residual_rms": 0.08623540263218606,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9855801223525366,
+      "eta": 0.03049911693566935,
+      "difference_rms": 7.631341224400513,
+      "residual_rms": 0.23606673948812149,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-minus",
+    "cycle": 4,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.9961883965620026,
+      "eta": 0.025838739979384902,
+      "difference_rms": 2.6670808672762436,
+      "residual_rms": 0.06915493457739214,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.9961883965620029,
+      "eta": 0.02429265102904853,
+      "difference_rms": 7.712850762290596,
+      "residual_rms": 0.18802796599148122,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-minus",
+    "cycle": 5,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 1.0005589930805106,
+      "eta": 0.03339162116479514,
+      "difference_rms": 2.679391587841337,
+      "residual_rms": 0.08936950404419222,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 1.0005589930805108,
+      "eta": 0.0316941982158789,
+      "difference_rms": 7.74832707469466,
+      "residual_rms": 0.24531680865692465,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-minus",
+    "cycle": 6,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 1.0019355492120223,
+      "eta": 0.03642814382614396,
+      "difference_rms": 2.6833521710625448,
+      "residual_rms": 0.09749646867775734,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 1.0019355492120223,
+      "eta": 0.03469596116038326,
+      "difference_rms": 7.759732533922765,
+      "residual_rms": 0.268550805645102,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-minus",
+    "cycle": 7,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 1.0022811821585016,
+      "eta": 0.037260786969501886,
+      "difference_rms": 2.684356536896053,
+      "residual_rms": 0.09972495900473041,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 1.0022811821585018,
+      "eta": 0.03546798994304844,
+      "difference_rms": 7.7626095832021065,
+      "residual_rms": 0.2745263989024138,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-minus",
+    "cycle": 8,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 1.0040299874069694,
+      "eta": 0.0400612885135056,
+      "difference_rms": 2.6893075347657796,
+      "residual_rms": 0.10722023552417288,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 1.0040299874069696,
+      "eta": 0.0380581483578974,
+      "difference_rms": 7.7768281931952625,
+      "residual_rms": 0.2945745285922282,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-minus",
+    "cycle": 9,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 1.0055924980634703,
+      "eta": 0.04290446285128456,
+      "difference_rms": 2.6937798129286064,
+      "residual_rms": 0.11482972172505164,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 1.0055924980634705,
+      "eta": 0.040829907380070474,
+      "difference_rms": 7.789696698602798,
+      "residual_rms": 0.3160282682657839,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-minus",
+    "cycle": 10,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.552713678800501e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 1.0048205223633164,
+      "eta": 0.04061148412240877,
+      "difference_rms": 2.691471417282035,
+      "residual_rms": 0.10869278183907921,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 1.0048205223633166,
+      "eta": 0.0385363064030098,
+      "difference_rms": 7.783056716768924,
+      "residual_rms": 0.29827552790010275,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-shoulder",
+    "cycle": 0,
+    "audit": {
+      "definition": "aligned containing-pixel ordinary MAP of injection on original M0 support; uniform gamma=1, no PTC/centering",
+      "REF_counts_normalization_exact": true,
+      "native_stream_audit": "performed separately for every T1\u2013T10 control"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.4703401125662138,
+      "eta": 0.6023434232807668,
+      "difference_rms": 1.4742370473930386,
+      "residual_rms": 1.6118836952636484,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.4703401125662139,
+      "eta": 0.5566219008264054,
+      "difference_rms": 3.873434052057218,
+      "residual_rms": 4.307700621434723,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-shoulder",
+    "cycle": 1,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.6834713380632913,
+      "eta": 0.37777367004462997,
+      "difference_rms": 1.9104159661046882,
+      "residual_rms": 1.0109303027303294,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.6834713380632913,
+      "eta": 0.3570401158185443,
+      "difference_rms": 5.441684752940376,
+      "residual_rms": 2.7631358494971154,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-shoulder",
+    "cycle": 2,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.7727029795544667,
+      "eta": 0.29158219284668363,
+      "difference_rms": 2.1247441085058725,
+      "residual_rms": 0.7802800932379624,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.7727029795544665,
+      "eta": 0.2760822544715303,
+      "difference_rms": 6.101692074587073,
+      "residual_rms": 2.1366024178862006,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-shoulder",
+    "cycle": 3,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8248506611991959,
+      "eta": 0.24433532764179122,
+      "difference_rms": 2.2539041877860417,
+      "residual_rms": 0.6538464862081282,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8248506611991957,
+      "eta": 0.2312709257233938,
+      "difference_rms": 6.489643101973848,
+      "residual_rms": 1.7898072443418793,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-shoulder",
+    "cycle": 4,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8441697846101218,
+      "eta": 0.232737739585117,
+      "difference_rms": 2.305895582645839,
+      "residual_rms": 0.6228110961458981,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8441697846101217,
+      "eta": 0.21987784504956112,
+      "difference_rms": 6.642420767688243,
+      "residual_rms": 1.7016361166412624,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-shoulder",
+    "cycle": 5,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8503611601571841,
+      "eta": 0.22771798481148273,
+      "difference_rms": 2.3214815221863008,
+      "residual_rms": 0.6093781265788486,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8503611601571842,
+      "eta": 0.21480184881754041,
+      "difference_rms": 6.6881414470727565,
+      "residual_rms": 1.66235294777814,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-shoulder",
+    "cycle": 6,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8575930197400385,
+      "eta": 0.22197820940859242,
+      "difference_rms": 2.339736855685891,
+      "residual_rms": 0.594018366633264,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8575930197400387,
+      "eta": 0.20909293588241798,
+      "difference_rms": 6.741851559001515,
+      "residual_rms": 1.6181716323073831,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-shoulder",
+    "cycle": 7,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8596180802227009,
+      "eta": 0.2206868985975688,
+      "difference_rms": 2.3450540336522483,
+      "residual_rms": 0.5905627916882108,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8596180802227009,
+      "eta": 0.20783735035122897,
+      "difference_rms": 6.757498066597247,
+      "residual_rms": 1.6084546474655412,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-shoulder",
+    "cycle": 8,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8550276187100411,
+      "eta": 0.22469761585010528,
+      "difference_rms": 2.33373626401482,
+      "residual_rms": 0.6012955555830407,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.855027618710041,
+      "eta": 0.21141890330032254,
+      "difference_rms": 6.723380674116041,
+      "residual_rms": 1.636172309745099,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-shoulder",
+    "cycle": 9,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8552205797153454,
+      "eta": 0.2242582279995206,
+      "difference_rms": 2.3340256927164087,
+      "residual_rms": 0.6001197444346484,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.855220579715345,
+      "eta": 0.21098195324205427,
+      "difference_rms": 6.724277449957712,
+      "residual_rms": 1.6327907503153614,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-shoulder",
+    "cycle": 10,
+    "audit": {
+      "native_vs_independent_P_max_abs": 0.0,
+      "normalized_map_max_abs": 3.481659405224491e-13,
+      "eligible_parent_entries": 2870933,
+      "non_MAP_nonzero_injected_entries": 0,
+      "REF_counts_normalization_exact": true,
+      "definition": "fixed REF support/operator gamma1 normalization; no PTC/centering"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.8544345196215967,
+      "eta": 0.22517556037696446,
+      "difference_rms": 2.3322457453868353,
+      "residual_rms": 0.6025745452097371,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.8544345196215968,
+      "eta": 0.21182390426071163,
+      "difference_rms": 6.718859277565339,
+      "residual_rms": 1.6393066148922009,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  }
+]

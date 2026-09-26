@@ -1,0 +1,19 @@
+{
+  "status": "completed",
+  "results": [
+    {
+      "policy": "BASE-POINT",
+      "branch": "REF",
+      "ready": true,
+      "completed_cycle": 10,
+      "stop_reason": null,
+      "actual_feedback_applications": 10,
+      "wall_seconds": 85.60327437502565
+    }
+  ],
+  "workers": 1,
+  "numeric_threads": 1,
+  "seconds": 85.71239487500861,
+  "peak_family_rss_bytes": 888668160,
+  "final_bytes": 897320114
+}

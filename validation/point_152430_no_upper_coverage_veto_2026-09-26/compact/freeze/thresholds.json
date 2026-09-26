@@ -1,0 +1,19 @@
+{
+  "thresholds": {
+    "a1100": {
+      "CORR": 3.835489316366556,
+      "DIAG": 6.912567980457787
+    },
+    "a1400": {
+      "CORR": 3.709233808732087,
+      "DIAG": 7.16588145683096
+    },
+    "a2000": {
+      "CORR": 3.689982959208037,
+      "DIAG": 4.686076304689278
+    }
+  },
+  "order_statistic_one_based": 1015,
+  "frozen_before_validation": true,
+  "empty_maximum_serialization": "null represents minus infinity only when maximum_known is true"
+}

@@ -1,0 +1,245 @@
+[
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-plus",
+    "rows": [
+      {
+        "factor": 1.0,
+        "actual_raw_increment": 7366.632522558459,
+        "ideal_raw_increment": 7478.845858800996,
+        "actual_background_increment": -21.81975370751752,
+        "ideal_background_increment": 4.423641075845808e-05
+      },
+      {
+        "factor": 1.5,
+        "actual_raw_increment": 7732.213988295916,
+        "ideal_raw_increment": 8006.289386312201,
+        "actual_background_increment": -49.09444584195444,
+        "ideal_background_increment": 9.953189874067903e-05
+      },
+      {
+        "factor": 2.0,
+        "actual_raw_increment": 7674.943958403062,
+        "ideal_raw_increment": 8025.9851287151105,
+        "actual_background_increment": -87.27901483007008,
+        "ideal_background_increment": 0.00017694562848191708
+      }
+    ]
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-core-minus",
+    "rows": [
+      {
+        "factor": 1.0,
+        "actual_raw_increment": -7495.735839106914,
+        "ideal_raw_increment": -7478.845858800996,
+        "actual_background_increment": 4.504542932627373,
+        "ideal_background_increment": 3.467570059001446e-05
+      },
+      {
+        "factor": 1.5,
+        "actual_raw_increment": -7936.5867545502115,
+        "ideal_raw_increment": -8006.28938631223,
+        "actual_background_increment": 10.135221598422504,
+        "ideal_background_increment": 7.802034087944776e-05
+      },
+      {
+        "factor": 2.0,
+        "actual_raw_increment": -7940.873420612712,
+        "ideal_raw_increment": -8025.9851287151105,
+        "actual_background_increment": 18.018171730538597,
+        "ideal_background_increment": 0.0001387028314638883
+      }
+    ]
+  },
+  {
+    "policy": "BASE-POINT",
+    "branch": "C-shoulder",
+    "rows": [
+      {
+        "factor": 1.0,
+        "actual_raw_increment": 6356.959831862725,
+        "ideal_raw_increment": 7054.995056174361,
+        "actual_background_increment": 116.36629318389168,
+        "ideal_background_increment": 405.62433944999066
+      },
+      {
+        "factor": 1.5,
+        "actual_raw_increment": 9807.249643178991,
+        "ideal_raw_increment": 11690.0705503871,
+        "actual_background_increment": 261.8241596637672,
+        "ideal_background_increment": 912.654763762519
+      },
+      {
+        "factor": 2.0,
+        "actual_raw_increment": 11287.281680634595,
+        "ideal_raw_increment": 14462.10587183504,
+        "actual_background_increment": 465.46517273559584,
+        "ideal_background_increment": 1622.4973578000208
+      }
+    ]
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-plus",
+    "rows": [
+      {
+        "factor": 1.0,
+        "actual_raw_increment": 7366.632522558459,
+        "ideal_raw_increment": 7478.845858800996,
+        "actual_background_increment": -21.81975370751752,
+        "ideal_background_increment": 4.423641075845808e-05
+      },
+      {
+        "factor": 1.5,
+        "actual_raw_increment": 7732.213988295916,
+        "ideal_raw_increment": 8006.289386312201,
+        "actual_background_increment": -49.09444584195444,
+        "ideal_background_increment": 9.953189874067903e-05
+      },
+      {
+        "factor": 2.0,
+        "actual_raw_increment": 7674.943958403062,
+        "ideal_raw_increment": 8025.9851287151105,
+        "actual_background_increment": -87.27901483007008,
+        "ideal_background_increment": 0.00017694562848191708
+      }
+    ]
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-core-minus",
+    "rows": [
+      {
+        "factor": 1.0,
+        "actual_raw_increment": -7495.735839106914,
+        "ideal_raw_increment": -7478.845858800996,
+        "actual_background_increment": 4.504542932627373,
+        "ideal_background_increment": 3.467570059001446e-05
+      },
+      {
+        "factor": 1.5,
+        "actual_raw_increment": -7936.5867545502115,
+        "ideal_raw_increment": -8006.28938631223,
+        "actual_background_increment": 10.135221598422504,
+        "ideal_background_increment": 7.802034087944776e-05
+      },
+      {
+        "factor": 2.0,
+        "actual_raw_increment": -7940.873420612712,
+        "ideal_raw_increment": -8025.9851287151105,
+        "actual_background_increment": 18.018171730538597,
+        "ideal_background_increment": 0.0001387028314638883
+      }
+    ]
+  },
+  {
+    "policy": "CORR",
+    "branch": "C-shoulder",
+    "rows": [
+      {
+        "factor": 1.0,
+        "actual_raw_increment": 6356.959831862725,
+        "ideal_raw_increment": 7054.995056174361,
+        "actual_background_increment": 116.36629318389168,
+        "ideal_background_increment": 405.62433944999066
+      },
+      {
+        "factor": 1.5,
+        "actual_raw_increment": 9807.249643178991,
+        "ideal_raw_increment": 11690.0705503871,
+        "actual_background_increment": 261.8241596637672,
+        "ideal_background_increment": 912.654763762519
+      },
+      {
+        "factor": 2.0,
+        "actual_raw_increment": 11287.281680634595,
+        "ideal_raw_increment": 14462.10587183504,
+        "actual_background_increment": 465.46517273559584,
+        "ideal_background_increment": 1622.4973578000208
+      }
+    ]
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-plus",
+    "rows": [
+      {
+        "factor": 1.0,
+        "actual_raw_increment": 7413.7432614285935,
+        "ideal_raw_increment": 7478.845858800982,
+        "actual_background_increment": -8.742578325502109,
+        "ideal_background_increment": -0.019129596563288942
+      },
+      {
+        "factor": 1.5,
+        "actual_raw_increment": 7867.912596802576,
+        "ideal_raw_increment": 8006.289386312215,
+        "actual_background_increment": -19.6708012324234,
+        "ideal_background_increment": -0.04304159226012416
+      },
+      {
+        "factor": 2.0,
+        "actual_raw_increment": 7852.240860671314,
+        "ideal_raw_increment": 8025.985128715096,
+        "actual_background_increment": -34.97031330203754,
+        "ideal_background_increment": -0.07651838623860385
+      }
+    ]
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-core-minus",
+    "rows": [
+      {
+        "factor": 1.0,
+        "actual_raw_increment": -7554.762939731518,
+        "ideal_raw_increment": -7478.845858800996,
+        "actual_background_increment": -8.547039430457517,
+        "ideal_background_increment": 0.02295420346490573
+      },
+      {
+        "factor": 1.5,
+        "actual_raw_increment": -8104.53694508363,
+        "ideal_raw_increment": -8006.289386312215,
+        "actual_background_increment": -19.230838718547602,
+        "ideal_background_increment": 0.051646957799675874
+      },
+      {
+        "factor": 2.0,
+        "actual_raw_increment": -8148.21081154811,
+        "ideal_raw_increment": -8025.9851287151105,
+        "actual_background_increment": -34.18815772185917,
+        "ideal_background_increment": 0.09181681385962293
+      }
+    ]
+  },
+  {
+    "policy": "DIAG",
+    "branch": "C-shoulder",
+    "rows": [
+      {
+        "factor": 1.0,
+        "actual_raw_increment": 6423.879504820594,
+        "ideal_raw_increment": 7054.995056174361,
+        "actual_background_increment": 132.5323044606921,
+        "ideal_background_increment": 404.91694131035183
+      },
+      {
+        "factor": 1.5,
+        "actual_raw_increment": 9990.958481065813,
+        "ideal_raw_increment": 11690.070550387085,
+        "actual_background_increment": 298.1976850365463,
+        "ideal_background_increment": 911.0631179482589
+      },
+      {
+        "factor": 2.0,
+        "actual_raw_increment": 11530.393019258452,
+        "ideal_raw_increment": 14462.10587183504,
+        "actual_background_increment": 530.1292178427684,
+        "ideal_background_increment": 1619.6677652413346
+      }
+    ]
+  }
+]

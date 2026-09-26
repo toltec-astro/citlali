@@ -1,0 +1,154 @@
+{
+  "identity": "POINT-152430-NO-UPPER-COVERAGE-VETO-2026-09-26",
+  "outside_disk_no_feedback": true,
+  "direct_identical_operand_rejoin": true,
+  "gain": 1,
+  "nonzero_cycles": 10,
+  "policy": "DIAG",
+  "source_method": "POINT-EXPECTED-v1",
+  "threshold": 4.686076304689278,
+  "prospective": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/freeze/prospective.json",
+    "sha256": "2033b94e066af08bd6d466688e6a41d39a3dda205c96f92a09c411bfa4889723"
+  },
+  "thresholds": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/freeze/thresholds.json",
+    "sha256": "e068bda489308aa726540d4e1f353fd134a753fddc17d85d1a112385f882c143"
+  },
+  "parents": {
+    "a2000": {
+      "map_request": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/inputs/map-request.json",
+        "sha256": "906f486e487f93254e7eb1cef620309bb4ae3c36f062be68cd30c57f5dc44d68"
+      },
+      "parent_plan": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/M0/products/a2000/plan.yaml",
+        "sha256": "0e8768fb21113501d54aed82c99ecb073ee400c05e8b8eecce30ce06f8a0df85"
+      }
+    }
+  },
+  "injections": {
+    "a2000": {
+      "C-core-plus": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/freeze/shapes/C-core-plus.fits",
+        "sha256": "9969a524f3d9ac7306f2c0fc09aabb09a47f7a61fe2cac49ab83b430be48d607"
+      },
+      "C-core-minus": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/freeze/shapes/C-core-minus.fits",
+        "sha256": "978b48e01117b466cd54638b997896860447aa8819de0a3784e5d6a60debfb66"
+      },
+      "C-shoulder": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/freeze/shapes/C-shoulder.fits",
+        "sha256": "93cb0db7371e16a8c714ebef38b606ea2ae2aab997aa274fec41f969851d5c96"
+      }
+    }
+  },
+  "injected_parents": {
+    "network-11-segment-0": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-11-segment-0/injected-parent.f64",
+      "sha256": "6ca8c29bc361b290a9a1e23ec87ef97dd170ed3231b560d432250accb9a30775"
+    },
+    "network-11-segment-1": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-11-segment-1/injected-parent.f64",
+      "sha256": "1b5b258710a1ad22c6baeeadd3fe9c33187b2a972e687278535ea609d95507d9"
+    },
+    "network-11-segment-2": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-11-segment-2/injected-parent.f64",
+      "sha256": "2b42fb6a61845b0533c77cc22a78edb1f38044bb0a04182accf13bd1c0251d23"
+    },
+    "network-11-segment-3": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-11-segment-3/injected-parent.f64",
+      "sha256": "ddf2aa9f599a156a69d5b927f1da9c27610cbdab93470fd58380a71eac2f3ac7"
+    },
+    "network-11-segment-4": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-11-segment-4/injected-parent.f64",
+      "sha256": "335022c621b2c9588335dfb5ff596f16e6be8b43d0fb4313f9bb4271d65ab96a"
+    },
+    "network-11-segment-5": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-11-segment-5/injected-parent.f64",
+      "sha256": "c8a818f70c0d5468916db44371cc38c346956cd82eefa23e7b3106cf3568be58"
+    },
+    "network-12-segment-0": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-12-segment-0/injected-parent.f64",
+      "sha256": "9a7c705e559a8a127ab840c25c25c08b53c551225bc32d6a1e3eb618a875fb92"
+    },
+    "network-12-segment-1": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-12-segment-1/injected-parent.f64",
+      "sha256": "cb5293dec19efb2af147c71cf63140995ccd405f02288a28e75b6711eff84437"
+    },
+    "network-12-segment-2": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-12-segment-2/injected-parent.f64",
+      "sha256": "4a41cce22478775c3666391b6a0bad413592d2922467755769ef52b6e0aef9a4"
+    },
+    "network-12-segment-3": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-12-segment-3/injected-parent.f64",
+      "sha256": "a00f7f1c447344f3f9948e2aa075d042b713e47c6550d11c3631629d843fc0a2"
+    },
+    "network-12-segment-4": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-12-segment-4/injected-parent.f64",
+      "sha256": "edf8319ab55364716e36ea572561c69e6f7d2ab91f06d54b2b0acba27c37f832"
+    },
+    "network-12-segment-5": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-12-segment-5/injected-parent.f64",
+      "sha256": "8e77573f0a6af2935dd75cc829fdbb4224ed37f0878797a559fa9f7e8097ffdd"
+    }
+  },
+  "injection_operands": {
+    "network-11-segment-0": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-11-segment-0/injection.f64",
+      "sha256": "4817d8f6280cb72ddc9f599176068a1248c4d1c64cc593451dad4e317cf7ef01"
+    },
+    "network-11-segment-1": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-11-segment-1/injection.f64",
+      "sha256": "7e6c07a48f9ca98fd3e10717814846534ba0e05f4c97e95c2dbb54180f872f5b"
+    },
+    "network-11-segment-2": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-11-segment-2/injection.f64",
+      "sha256": "2a99f5521fa4ab9d369c1844c0e93041f7d2013e7471891d2f36668fb84505d3"
+    },
+    "network-11-segment-3": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-11-segment-3/injection.f64",
+      "sha256": "35549981d40bc42d68f6716c5b733a5c2254e923d0d3caae14ddf5516a4c6bf3"
+    },
+    "network-11-segment-4": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-11-segment-4/injection.f64",
+      "sha256": "b67cf541f1f2ac97ec1d3cadef7a8f9ccda2269dd81189c4ac2d401f000908fd"
+    },
+    "network-11-segment-5": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-11-segment-5/injection.f64",
+      "sha256": "2faee6729b99fa2187626bf3d7a1460727f7237e2e6631d599fe5e84e987cd2f"
+    },
+    "network-12-segment-0": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-12-segment-0/injection.f64",
+      "sha256": "9660241fa256dae18c03bff8973a9daae6cc2182e0480819748274d4cece6105"
+    },
+    "network-12-segment-1": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-12-segment-1/injection.f64",
+      "sha256": "7f89f041eb76bcc7bf605485662756dcc9455721b01c74aa147a9eaae173cca3"
+    },
+    "network-12-segment-2": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-12-segment-2/injection.f64",
+      "sha256": "17d5d349210000628d6327d37f172c3feda0f9fa170fd4b99e2502f54ff8cd51"
+    },
+    "network-12-segment-3": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-12-segment-3/injection.f64",
+      "sha256": "54c24ad04e53557fc5cf1a42ba4eda7dc12a65f87c854a27153774be26dc0d5a"
+    },
+    "network-12-segment-4": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-12-segment-4/injection.f64",
+      "sha256": "58fed5ddf6afe0735040acf67b8bceb26635fc045237aae0719d1cbf579d7a8f"
+    },
+    "network-12-segment-5": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-core-minus/native/products/network-12-segment-5/injection.f64",
+      "sha256": "c43be97fe87fa7c5274b09e426cd4c4bef7920679c72f52fcca07da0844d4b7c"
+    }
+  },
+  "seeds": {
+    "a2000": {
+      "C-core-minus": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/run/DIAG/C-core-minus/a2000/initial/candidate.fits",
+        "sha256": "801175ebabe8de6082cbfad3c4c3dabad5f635b3a9d3eacc1fc9bf99b7e81ac3"
+      }
+    }
+  }
+}

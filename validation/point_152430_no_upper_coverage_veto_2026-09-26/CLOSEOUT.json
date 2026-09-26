@@ -1,0 +1,22 @@
+{
+  "native_numeric_files_removed": 16026,
+  "native_numeric_bytes_removed": 1202019404,
+  "large_metadata_original_bytes": 250316063,
+  "large_metadata_gzip_bytes": 9790600,
+  "protected_inputs_unchanged": true,
+  "compact_product_bytes": 234820215,
+  "permanent_git_common_dir": "/Users/gwilson/GitHub/citlali/.git",
+  "science_revision": "ac2bee1febaab82b808f7f751374b797de033c6a",
+  "input_transfers": 0,
+  "scope": "New compact results copied to tracked validation record; source and record to be committed in permanent Git, no standalone backup/archive of erased attempt",
+  "lossless_FITS": {
+    "files": 889,
+    "original_bytes": 806924160,
+    "compressed_bytes": 165762798,
+    "representation": "lossless individual FITS gzip; all original decompressed bytes verified before removing uncompressed copy; original paths/hashes retained in producer bindings",
+    "numeric_values_changed": false
+  },
+  "combined_output_and_repo_compact_bytes": 469640430,
+  "combined_scope": "two explicit compact product copies: output root and tracked repo record; neither contains native numeric restart payloads",
+  "local_data_compact_product_bytes": 234820215
+}

@@ -1,0 +1,15 @@
+{
+  "saved_product_only": true,
+  "seconds": 1.9968815409811214,
+  "counts": {
+    "trajectories_started": 15,
+    "trajectories_complete": 15,
+    "feedback_attempts": 150,
+    "initial_physical_inputs": 4,
+    "ideal_controls": 9,
+    "endpoint_attempts": 3,
+    "native_invocations": 155,
+    "input_transfers": 0,
+    "input_transfer_bytes": 0
+  }
+}

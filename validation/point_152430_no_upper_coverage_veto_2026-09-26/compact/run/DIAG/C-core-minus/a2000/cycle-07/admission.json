@@ -1,0 +1,166 @@
+{
+  "method": "POINT-EXPECTED-v1",
+  "policy": "DIAG",
+  "threshold": 4.686076304689278,
+  "guard": {
+    "method": "POINT-EXPECTED-v1",
+    "status": "accepted",
+    "accepted": true,
+    "complete": true,
+    "cause": null,
+    "accepted_parameters": [
+      675.3500458644654,
+      4.053061155411593,
+      7.3812430596802585,
+      4.306481247029468,
+      3.9546986016053705,
+      -0.6436573712046925,
+      -2.283193707543965
+    ],
+    "pointing_correction": null,
+    "accepted_centroid_tangent_arcsec": [
+      4.053061155411593,
+      7.3812430596802585
+    ],
+    "expected_origin_tangent_arcsec": [
+      0.0,
+      0.0
+    ],
+    "fit_pixels": 1257,
+    "expected_origin_sky": {
+      "ra_deg": 176.7429079166667,
+      "dec_deg": 39.97619555555556,
+      "frame": "FK5",
+      "equinox": 2000.0
+    },
+    "sigma_A": 6.315295224331046,
+    "SNR_A": 106.93879254647237,
+    "diagnostic": {
+      "initial": [
+        640.7876376443022,
+        6.0,
+        8.0,
+        4.2466090014400955,
+        4.2466090014400955,
+        0.0,
+        -0.30313387413822407
+      ],
+      "parameters": [
+        675.3500458644654,
+        4.053061155411593,
+        7.3812430596802585,
+        4.306481247029468,
+        3.9546986016053705,
+        -0.6436573712046925,
+        -2.283193707543965
+      ],
+      "status": 2,
+      "message": "`ftol` termination condition is satisfied.",
+      "converged": true,
+      "finite": true,
+      "nfev": 18,
+      "njev": 15,
+      "cost": 152501.34715900614,
+      "optimality": 0.17121637648748025,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "sigma_floor_arcsec": 1.5,
+      "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+      "centroid_radius_arcsec": 8.42081075880371
+    },
+    "optimizer_calls": 1,
+    "amplitude_sensitivity": {
+      "rank": 7,
+      "rank_tolerance": 1.6797554948423265e-10,
+      "singular_values": [
+        601.8254749916822,
+        441.6349768462416,
+        420.95101152035477,
+        405.55923157881614,
+        210.7377752251505,
+        33.90643462418853,
+        2.586091276183135
+      ],
+      "amplitude_null_projection": 2.5833517096744826e-18,
+      "identifiability_tolerance": 2.7911006839076435e-11
+    },
+    "message": "Expected POINT source accepted."
+  },
+  "BASE": {
+    "status": "retained",
+    "anchor_row_column": [
+      24,
+      18
+    ],
+    "anchor_ratio": 41.28795175159005,
+    "pixels": 66,
+    "area_arcsec2": 264.0,
+    "extent_east_north_arcsec": [
+      [
+        -4.0,
+        12.0
+      ],
+      [
+        -2.0,
+        16.0
+      ]
+    ],
+    "boundary_contact": false,
+    "unsupported_contact": false,
+    "unsupported_domain_pixels": 0,
+    "unassociated_above_threshold_pixels": 2,
+    "threshold": 3.0,
+    "noise_scale_multiplier": 1.0,
+    "equivalent_original_scale_threshold": 3.0
+  },
+  "candidate": {
+    "status": "retained",
+    "anchor_row_column": [
+      24,
+      18
+    ],
+    "anchor_ratio": 41.28795175159005,
+    "pixels": 69,
+    "area_arcsec2": 264.0,
+    "extent_east_north_arcsec": [
+      [
+        -4.0,
+        12.0
+      ],
+      [
+        -2.0,
+        16.0
+      ]
+    ],
+    "boundary_contact": false,
+    "unsupported_contact": false,
+    "unsupported_domain_pixels": 0,
+    "unassociated_above_threshold_pixels": 2,
+    "threshold": 3.0,
+    "noise_scale_multiplier": 1.0,
+    "equivalent_original_scale_threshold": 3.0,
+    "policy": "DIAG",
+    "threshold_supplement": 4.686076304689278,
+    "base_pixels": 66,
+    "proposed_extra_pixels": 3,
+    "added_pixels": 3,
+    "extra_brightness_area": 157.05375973838602,
+    "total_brightness_area": 67041.42732138488,
+    "unavailable_tests": 548
+  },
+  "numerical_failures": 0,
+  "known": true,
+  "selected_pixels": 69,
+  "brightness_area": 67041.42732138488,
+  "baseline_pixels": 66,
+  "proposed_pixels": 3,
+  "added_pixels": 3,
+  "extra_brightness_area": 157.05375973838602
+}

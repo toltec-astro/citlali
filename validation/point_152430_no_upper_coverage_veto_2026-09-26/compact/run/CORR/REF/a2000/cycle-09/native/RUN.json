@@ -1,0 +1,137 @@
+{
+  "command": [
+    "/private/tmp/citlali-point-guarded-build-20260925/bin/citlali",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/run/CORR/REF/a2000/cycle-09/native/development.yaml"
+  ],
+  "executable_sha256": "5c489ea69784b43d66c22da8e000d5bb1ef575dfaa4054c15d1e9d1b55013566",
+  "version": "** logging ** Configured with level=trace; available levels: [\"trace\", \"debug\", \"info\", \"warning\", \"error\", \"critical\", \"off\"].\nv2-ngc4449-memory-repair-187df04b-578-gac2bee1fe (2026-09-26T12:58:12)\nkids 04088da-dirty (2026-09-25T13:58:35)\n",
+  "input_sha256": "2cc6692b6a3e752d779df8f840f12f8a36cecad99b8a298712f328f4a87efbf1",
+  "workers": 1,
+  "thread_environment": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "BLIS_NUM_THREADS": "1",
+    "OMP_DYNAMIC": "FALSE"
+  },
+  "measurement": "fresh process; whole-invocation CPU and sampled RSS; no concurrent diagnostic",
+  "samples": [
+    {
+      "seconds": 0.0026029169966932386,
+      "rss_bytes": 32768,
+      "user_seconds": 5.55e-05,
+      "system_seconds": 0.00035675,
+      "os_threads": 1
+    },
+    {
+      "seconds": 0.5126686669827905,
+      "rss_bytes": 119881728,
+      "user_seconds": 0.489057472,
+      "system_seconds": 0.013631666,
+      "os_threads": 1
+    },
+    {
+      "seconds": 1.0227182919916231,
+      "rss_bytes": 200933376,
+      "user_seconds": 0.986508864,
+      "system_seconds": 0.019194376,
+      "os_threads": 1
+    },
+    {
+      "seconds": 1.5327611250104383,
+      "rss_bytes": 224526336,
+      "user_seconds": 1.49361728,
+      "system_seconds": 0.024189292,
+      "os_threads": 3
+    },
+    {
+      "seconds": 2.039011707995087,
+      "rss_bytes": 302055424,
+      "user_seconds": 1.996841344,
+      "system_seconds": 0.0304825,
+      "os_threads": 3
+    },
+    {
+      "seconds": 2.549067832995206,
+      "rss_bytes": 354697216,
+      "user_seconds": 2.392919296,
+      "system_seconds": 0.073669664,
+      "os_threads": 3
+    },
+    {
+      "seconds": 3.059114582982147,
+      "rss_bytes": 424148992,
+      "user_seconds": 2.846181888,
+      "system_seconds": 0.097226496,
+      "os_threads": 3
+    },
+    {
+      "seconds": 3.562471999990521,
+      "rss_bytes": 416841728,
+      "user_seconds": 3.27303168,
+      "system_seconds": 0.12659696,
+      "os_threads": 3
+    },
+    {
+      "seconds": 4.072328499983996,
+      "rss_bytes": 430424064,
+      "user_seconds": 3.771611392,
+      "system_seconds": 0.137541168,
+      "os_threads": 3
+    },
+    {
+      "seconds": 4.57283279200783,
+      "rss_bytes": 431407104,
+      "user_seconds": 4.270215168,
+      "system_seconds": 0.13938416,
+      "os_threads": 3
+    },
+    {
+      "seconds": 5.082870707992697,
+      "rss_bytes": 477790208,
+      "user_seconds": 4.774605824,
+      "system_seconds": 0.14485904,
+      "os_threads": 3
+    },
+    {
+      "seconds": 5.589020042010816,
+      "rss_bytes": 482525184,
+      "user_seconds": 5.277361664,
+      "system_seconds": 0.148210416,
+      "os_threads": 3
+    },
+    {
+      "seconds": 6.098015499999747,
+      "rss_bytes": 496238592,
+      "user_seconds": 5.687457792,
+      "system_seconds": 0.185684128,
+      "os_threads": 3
+    },
+    {
+      "seconds": 6.6080793750006706,
+      "rss_bytes": 632995840,
+      "user_seconds": 6.129583616,
+      "system_seconds": 0.215004464,
+      "os_threads": 3
+    },
+    {
+      "seconds": 7.11052491699229,
+      "rss_bytes": 724353024,
+      "user_seconds": 6.52653312,
+      "system_seconds": 0.255487328,
+      "os_threads": 2
+    },
+    {
+      "seconds": 7.612412666989258,
+      "rss_bytes": 724353024,
+      "user_seconds": 6.907546112,
+      "system_seconds": 0.296158528,
+      "os_threads": 2
+    }
+  ],
+  "exit_code": 0,
+  "wall_seconds": 8.122553416993469,
+  "polled_peak_rss_bytes": 724353024,
+  "output_bytes": 76264226
+}

@@ -1,0 +1,17 @@
+{
+  "python": "/Users/gwilson/tolteca/bin/python",
+  "python_version": "3.13.2 (main, Feb  4 2025, 14:51:09) [Clang 16.0.0 (clang-1600.0.26.6)]",
+  "platform": "macOS-26.7-arm64-arm-64bit-Mach-O",
+  "packages": {
+    "numpy": "2.2.3",
+    "scipy": "1.15.2",
+    "astropy": "7.0.1",
+    "matplotlib": "3.10.0",
+    "psutil": "7.0.0",
+    "PyYAML": "6.0.2",
+    "netCDF4": "1.7.2"
+  },
+  "build_root": "/private/tmp/citlali-point-guarded-build-20260925",
+  "scope": "existing local cached Release environment; supplemental, not Spack V2 evidence",
+  "numeric_thread_cap": 1
+}

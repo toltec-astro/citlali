@@ -1,0 +1,13 @@
+{
+  "trajectories": 15,
+  "feedback_applications": 150,
+  "all_source_guards_accepted": true,
+  "all_native_return_codes_zero": true,
+  "unexpected_native_error_logs": [],
+  "accounting_max_abs": 6.366462912410498e-12,
+  "restored_operand_map_max_abs": 6.59383658785373e-12,
+  "native_projection_vs_control_max_abs": 0.0,
+  "BASE_CORR_all_map_and_candidate_planes_exact_equal_at_55_paired_stages": true,
+  "maximum_CORR_added_pixels": 0,
+  "all_input_hashes_unchanged": true
+}

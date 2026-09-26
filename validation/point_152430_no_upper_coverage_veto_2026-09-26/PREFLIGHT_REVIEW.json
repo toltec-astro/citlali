@@ -1,0 +1,57 @@
+{
+  "disposition": "pass",
+  "source_revision": "ac2bee1febaab82b808f7f751374b797de033c6a",
+  "source_tree": "3b6bc318c21e1f90111a5538ac5bc29f345ecb90",
+  "parent_revision": "9875aec4b2bea63e036d83691c0b35cbd9c6219e",
+  "preparation_base_revision": "cf9cfee12d41c12e494fa904b6065b87cb503b41",
+  "prospective_sha256": "2033b94e066af08bd6d466688e6a41d39a3dda205c96f92a09c411bfa4889723",
+  "binary_sha256": "5c489ea69784b43d66c22da8e000d5bb1ef575dfaa4054c15d1e9d1b55013566",
+  "binary_path": "/private/tmp/citlali-point-guarded-build-20260925/bin/citlali",
+  "binary_version": "** logging ** Configured with level=trace; available levels: [\"trace\", \"debug\", \"info\", \"warning\", \"error\", \"critical\", \"off\"].\nv2-ngc4449-memory-repair-187df04b-578-gac2bee1fe (2026-09-26T12:58:12)\nkids 04088da-dirty (2026-09-25T13:58:35)",
+  "reviewer": "Codex independent fresh-context subagent /root/point152430_no_veto_preflight",
+  "reviewed_at_utc": "2026-09-26T17:00:09.817975+00:00",
+  "worktree": "/private/tmp/citlali-point-additive-20260923",
+  "branch": "codex/map-successor-first-forward-001",
+  "worktree_clean": true,
+  "scope": "One bounded preflight of upper-coverage-only invalidity removal and same-acquisition 15-trajectory execution plan, including within-review M0 reporting repair.",
+  "categories": {
+    "scientific_and_behavioral_conformance": "pass for preflight",
+    "architectural_conformity_and_ownership": "pass",
+    "repository_branch_and_evidence_hygiene": "pass for preflight"
+  },
+  "findings": [],
+  "resolved_findings": [
+    {
+      "finding": "Injected M0 lacked explicit signed ordinary-MAP control and response diagnostics in trajectory history.",
+      "repair_revision": "ac2bee1febaab82b808f7f751374b797de033c6a",
+      "disposition": "resolved; direct containing-pixel control on original shared M0 support, no extra fit, PTC or native attempt"
+    }
+  ],
+  "validation": {
+    "independently_reproduced": "52 focused Python tests passed in 2.26 seconds under /Users/gwilson/tolteca/bin/python; one-thread numeric libraries, headless backend; seven relevant test modules",
+    "inspected_native": "31/31 MAP/FRUIT/PTC tests including signed projection and accounting passed in supplied current logs",
+    "inspected_config": "full require-all config preflight passes; 130 unit tests and 8 compatibility cases, no required skips",
+    "bindings": "43 prospective/input/generated/threshold bindings independently SHA256-verified; 360471761 unique bytes",
+    "build": "fresh Release Apple clang native CLI matches exact source short revision; cached/Homebrew dependencies; supplemental local execution"
+  },
+  "execution_controls": {
+    "logical_trajectories": 15,
+    "feedback_attempt_cap": 150,
+    "physical_inputs": 4,
+    "ideal_T10_controls_cap": 9,
+    "REF_endpoint_analyses_cap": 3,
+    "disk_ceiling_bytes": 16159001984,
+    "free_space_reserve_bytes": 2000000000,
+    "retry_policy": "attempt journal written before native feedback/injected-initial call; duplicate logical attempts forbidden; phase and destination guards prevent automatic retries",
+    "order": "upstream/M0; BASE-POINT REF T1-T10 and resource profile; frozen BASE-derived shapes; three shared injected M0 inputs; CORR/DIAG REF; own-REF responses and seeds",
+    "resource": "native-cell-derived reservations before launch, single-thread numeric libraries, initial two network workers, measured BASE family RSS limits later concurrency"
+  },
+  "limitations": [
+    "Preflight only: no observation science executed by reviewer; actual M0 continuation sanity, source acceptance and full matrix outcomes remain runtime gates.",
+    "Local cached dependency build is supplemental, not accepted Spack V2 or Unity reproduction. No Unity access or environment migration.",
+    "Model-based high-coverage transfer and measurement uncertainty are conditional, not empirical false-admission calibration or paired-difference significance.",
+    "Deleted prior-attempt products were not inspected, recreated, backed up or recovered; scoped removal receipt and preserved new input bindings only were reviewed.",
+    "No integration, push, production-default promotion or follow-on experiment authorized by this verdict.",
+    "Final report must retain all 15 cell dispositions, own-REF controls and noise-relative conclusions, and verify run-owned bulk cleanup."
+  ]
+}

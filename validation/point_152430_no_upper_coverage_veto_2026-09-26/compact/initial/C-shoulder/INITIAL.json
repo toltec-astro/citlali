@@ -1,0 +1,237 @@
+{
+  "available": true,
+  "total": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-shoulder/native/products/total.fits",
+    "sha256": "0de5f7aef5291dd36248f05ce4739c8f6672aa913ae2b68080104d4645adc69b"
+  },
+  "receipt": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-a2000-no-upper-coverage-veto-20260926/initial/C-shoulder/native/products/receipt.yaml",
+    "sha256": "7d94a0e63164a590bec4af597effed943f164c356b7e08c58f30de3c7e485db1"
+  },
+  "measurement": {
+    "fit": {
+      "status": "success",
+      "method": "POINT-EXPECTED-v1",
+      "cause": null,
+      "constrained": false,
+      "parameters": [
+        574.492611480201,
+        4.325211671906525,
+        7.3741263433078155,
+        3.7239258918964713,
+        4.193234369856911,
+        -2.2366921978623955,
+        -8.417972088204454
+      ]
+    },
+    "guard": {
+      "method": "POINT-EXPECTED-v1",
+      "status": "accepted",
+      "accepted": true,
+      "complete": true,
+      "cause": null,
+      "accepted_parameters": [
+        574.492611480201,
+        4.325211671906525,
+        7.3741263433078155,
+        3.7239258918964713,
+        4.193234369856911,
+        -2.2366921978623955,
+        -8.417972088204454
+      ],
+      "pointing_correction": null,
+      "accepted_centroid_tangent_arcsec": [
+        4.325211671906525,
+        7.3741263433078155
+      ],
+      "expected_origin_tangent_arcsec": [
+        0.0,
+        0.0
+      ],
+      "fit_pixels": 1257,
+      "expected_origin_sky": {
+        "ra_deg": 176.7429079166667,
+        "dec_deg": 39.97619555555556,
+        "frame": "FK5",
+        "equinox": 2000.0
+      },
+      "sigma_A": 6.5443370401326595,
+      "SNR_A": 87.78469201038514,
+      "diagnostic": {
+        "initial": [
+          559.3525652964792,
+          4.0,
+          6.0,
+          4.2466090014400955,
+          4.2466090014400955,
+          0.0,
+          -6.894563535498957
+        ],
+        "parameters": [
+          574.492611480201,
+          4.325211671906525,
+          7.3741263433078155,
+          3.7239258918964713,
+          4.193234369856911,
+          -2.2366921978623955,
+          -8.417972088204454
+        ],
+        "status": 2,
+        "message": "`ftol` termination condition is satisfied.",
+        "converged": true,
+        "finite": true,
+        "nfev": 12,
+        "njev": 12,
+        "cost": 169289.991557068,
+        "optimality": 0.007058991273881341,
+        "active_mask": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "sigma_floor_arcsec": 1.5,
+        "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+        "centroid_radius_arcsec": 8.548987971325186
+      },
+      "optimizer_calls": 1,
+      "amplitude_sensitivity": {
+        "rank": 7,
+        "rank_tolerance": 1.435969695014815e-10,
+        "singular_values": [
+          514.4815102135279,
+          382.02206168210614,
+          356.33814790561576,
+          339.26599881947726,
+          239.3603136410352,
+          34.035901685622186,
+          2.476280586329354
+        ],
+        "amplitude_null_projection": 2.22097033616697e-16,
+        "identifiability_tolerance": 2.7911006839076435e-11
+      },
+      "message": "Expected POINT source accepted."
+    },
+    "frozen_template_projection": 589.8722371941831,
+    "apertures": [
+      {
+        "radius_measured_fwhm": 1.0,
+        "radius_arcsec": 9.591216543262947,
+        "value_mJy_per_beam_arcsec2": 53595.52170552396,
+        "available": true,
+        "aperture_pixels": 72,
+        "expected_pixels": 72
+      },
+      {
+        "radius_measured_fwhm": 1.5,
+        "radius_arcsec": 14.386824814894421,
+        "value_mJy_per_beam_arcsec2": 52087.7964364021,
+        "available": true,
+        "aperture_pixels": 162,
+        "expected_pixels": 162
+      },
+      {
+        "radius_measured_fwhm": 2.0,
+        "radius_arcsec": 19.182433086525894,
+        "value_mJy_per_beam_arcsec2": 50538.51121776801,
+        "available": true,
+        "aperture_pixels": 288,
+        "expected_pixels": 288
+      }
+    ],
+    "raw_apertures": [
+      {
+        "radius_measured_fwhm": 1.0,
+        "radius_arcsec": 9.591216543262947,
+        "value_mJy_per_beam_arcsec2": 51171.14574412108,
+        "available": true,
+        "aperture_pixels": 72,
+        "expected_pixels": 72
+      },
+      {
+        "radius_measured_fwhm": 1.5,
+        "radius_arcsec": 14.386824814894421,
+        "value_mJy_per_beam_arcsec2": 46632.950523245614,
+        "available": true,
+        "aperture_pixels": 162,
+        "expected_pixels": 162
+      },
+      {
+        "radius_measured_fwhm": 2.0,
+        "radius_arcsec": 19.182433086525894,
+        "value_mJy_per_beam_arcsec2": 40841.007372156484,
+        "available": true,
+        "aperture_pixels": 288,
+        "expected_pixels": 288
+      }
+    ],
+    "aperture_background_terms": [
+      -2424.3759614028822,
+      -5454.845913156489,
+      -9697.503845611529
+    ],
+    "background": {
+      "n": 605,
+      "median": -6.314632044239412,
+      "mean": -5.951587628377855,
+      "std": 15.895380142752991,
+      "robust_scale": 15.554797895973598
+    },
+    "profile": [
+      529.1873116052249,
+      405.3904783452103,
+      253.9020747452254,
+      114.05824226771483,
+      28.47959536615028,
+      -11.102430044615707,
+      -17.813462789581735,
+      -11.965762723771144,
+      -9.469764775532688,
+      -11.70884188705145,
+      -13.093483841346226,
+      -10.25758009129484,
+      -6.323215815868465,
+      -5.95107181626448,
+      -7.272479609691048,
+      -6.667296852189936,
+      -1.8181719339514741,
+      -4.230881506870184,
+      -5.239955258153458,
+      -7.1292024877813045
+    ],
+    "uncertainty_scope": "guard conditional full frozen C0 reference-scale sigma_A; not endpoint empirical uncertainty"
+  },
+  "guards": {
+    "accounting_max_abs": 0.0,
+    "processing_states": [],
+    "uniform_gamma": 1,
+    "actual_support": true,
+    "unchanged_parent_eligibility": true
+  },
+  "response": {
+    "audit": {
+      "definition": "aligned containing-pixel ordinary MAP of injection on original M0 support; uniform gamma=1, no PTC/centering",
+      "REF_counts_normalization_exact": true,
+      "native_stream_audit": "performed separately for every T1\u2013T10 control"
+    },
+    "full": {
+      "pixels": 10513,
+      "g": 0.4703401125662138,
+      "eta": 0.6023434232807668,
+      "difference_rms": 1.4742370473930386,
+      "residual_rms": 1.6118836952636484,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "source_disk": {
+      "pixels": 1257,
+      "g": 0.4703401125662139,
+      "eta": 0.5566219008264054,
+      "difference_rms": 3.873434052057218,
+      "residual_rms": 4.307700621434723,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    }
+  }
+}

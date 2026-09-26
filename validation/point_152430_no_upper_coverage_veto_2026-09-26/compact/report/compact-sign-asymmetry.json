@@ -1,0 +1,59 @@
+[
+  {
+    "policy": "BASE-POINT",
+    "definition": "plus increment + minus increment; zero for an odd signed measurement response",
+    "signed_sum": {
+      "peak": 0.1746638815100141,
+      "east": -0.002347729896415629,
+      "north": 0.0019978054975204884,
+      "FWHM_major": -0.0086060611109815,
+      "FWHM_minor": -0.006834942892474771,
+      "ellipse_xx": -0.014941314065623601,
+      "ellipse_xy": 0.00788595281149096,
+      "ellipse_yy": -0.03944056095718196,
+      "background": -0.060122259635025266,
+      "fixed_template": -0.49916744540018954,
+      "aperture_1": -111.7881057735649,
+      "aperture_1p5": -165.4135420107632,
+      "aperture_2": -196.66861911010346
+    }
+  },
+  {
+    "policy": "CORR",
+    "definition": "plus increment + minus increment; zero for an odd signed measurement response",
+    "signed_sum": {
+      "peak": 0.1746638815100141,
+      "east": -0.002347729896415629,
+      "north": 0.0019978054975204884,
+      "FWHM_major": -0.0086060611109815,
+      "FWHM_minor": -0.006834942892474771,
+      "ellipse_xx": -0.014941314065623601,
+      "ellipse_xy": 0.00788595281149096,
+      "ellipse_yy": -0.03944056095718196,
+      "background": -0.060122259635025266,
+      "fixed_template": -0.49916744540018954,
+      "aperture_1": -111.7881057735649,
+      "aperture_1p5": -165.4135420107632,
+      "aperture_2": -196.66861911010346
+    }
+  },
+  {
+    "policy": "DIAG",
+    "definition": "plus increment + minus increment; zero for an odd signed measurement response",
+    "signed_sum": {
+      "peak": 0.1976841666312339,
+      "east": -0.00042099066904555116,
+      "north": 0.0020303538488573025,
+      "FWHM_major": -0.012285016221845524,
+      "FWHM_minor": -0.008503247590937235,
+      "ellipse_xx": -0.03977201351866455,
+      "ellipse_xy": 0.007649993804674793,
+      "ellipse_yy": -0.0337324264659955,
+      "background": -0.06003339498600724,
+      "fixed_template": -0.6019299299882732,
+      "aperture_1": -123.73006054694997,
+      "aperture_1p5": -197.72270833008224,
+      "aperture_2": -226.81147985288408
+    }
+  }
+]

@@ -1,0 +1,166 @@
+{
+  "method": "POINT-EXPECTED-v1",
+  "policy": "DIAG",
+  "threshold": 4.686076304689278,
+  "guard": {
+    "method": "POINT-EXPECTED-v1",
+    "status": "accepted",
+    "accepted": true,
+    "complete": true,
+    "cause": null,
+    "accepted_parameters": [
+      770.5302823200857,
+      4.187001633795948,
+      7.36968413817733,
+      4.4731560318233345,
+      4.091274854717385,
+      2.5613927497177915,
+      -1.7563405884694208
+    ],
+    "pointing_correction": null,
+    "accepted_centroid_tangent_arcsec": [
+      4.187001633795948,
+      7.36968413817733
+    ],
+    "expected_origin_tangent_arcsec": [
+      0.0,
+      0.0
+    ],
+    "fit_pixels": 1257,
+    "expected_origin_sky": {
+      "ra_deg": 176.7429079166667,
+      "dec_deg": 39.97619555555556,
+      "frame": "FK5",
+      "equinox": 2000.0
+    },
+    "sigma_A": 6.144580243341181,
+    "SNR_A": 125.3999869486775,
+    "diagnostic": {
+      "initial": [
+        739.7554288396947,
+        6.0,
+        8.0,
+        4.2466090014400955,
+        4.2466090014400955,
+        0.0,
+        0.5398668988229217
+      ],
+      "parameters": [
+        770.5302823200857,
+        4.187001633795948,
+        7.36968413817733,
+        4.4731560318233345,
+        4.091274854717385,
+        2.5613927497177915,
+        -1.7563405884694208
+      ],
+      "status": 2,
+      "message": "`ftol` termination condition is satisfied.",
+      "converged": true,
+      "finite": true,
+      "nfev": 11,
+      "njev": 11,
+      "cost": 153509.39561584647,
+      "optimality": 0.03329203843557109,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "sigma_floor_arcsec": 1.5,
+      "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+      "centroid_radius_arcsec": 8.476038401158437
+    },
+    "optimizer_calls": 1,
+    "amplitude_sensitivity": {
+      "rank": 7,
+      "rank_tolerance": 1.9174153845943563e-10,
+      "singular_values": [
+        686.9746389477804,
+        504.8906750182206,
+        480.03272985653354,
+        461.78727242862135,
+        261.0327904322366,
+        33.78947494780947,
+        2.680790864339866
+      ],
+      "amplitude_null_projection": 1.1102491536303695e-16,
+      "identifiability_tolerance": 2.7911006839076435e-11
+    },
+    "message": "Expected POINT source accepted."
+  },
+  "BASE": {
+    "status": "retained",
+    "anchor_row_column": [
+      24,
+      18
+    ],
+    "anchor_ratio": 47.98390991197101,
+    "pixels": 78,
+    "area_arcsec2": 312.0,
+    "extent_east_north_arcsec": [
+      [
+        -6.0,
+        14.0
+      ],
+      [
+        -2.0,
+        16.0
+      ]
+    ],
+    "boundary_contact": false,
+    "unsupported_contact": false,
+    "unsupported_domain_pixels": 0,
+    "unassociated_above_threshold_pixels": 2,
+    "threshold": 3.0,
+    "noise_scale_multiplier": 1.0,
+    "equivalent_original_scale_threshold": 3.0
+  },
+  "candidate": {
+    "status": "retained",
+    "anchor_row_column": [
+      24,
+      18
+    ],
+    "anchor_ratio": 47.98390991197101,
+    "pixels": 87,
+    "area_arcsec2": 312.0,
+    "extent_east_north_arcsec": [
+      [
+        -6.0,
+        14.0
+      ],
+      [
+        -2.0,
+        16.0
+      ]
+    ],
+    "boundary_contact": false,
+    "unsupported_contact": false,
+    "unsupported_domain_pixels": 0,
+    "unassociated_above_threshold_pixels": 2,
+    "threshold": 3.0,
+    "noise_scale_multiplier": 1.0,
+    "equivalent_original_scale_threshold": 3.0,
+    "policy": "DIAG",
+    "threshold_supplement": 4.686076304689278,
+    "base_pixels": 78,
+    "proposed_extra_pixels": 9,
+    "added_pixels": 9,
+    "extra_brightness_area": 781.127979755973,
+    "total_brightness_area": 83884.58090060866,
+    "unavailable_tests": 548
+  },
+  "numerical_failures": 0,
+  "known": true,
+  "selected_pixels": 87,
+  "brightness_area": 83884.58090060866,
+  "baseline_pixels": 78,
+  "proposed_pixels": 9,
+  "added_pixels": 9,
+  "extra_brightness_area": 781.127979755973
+}
