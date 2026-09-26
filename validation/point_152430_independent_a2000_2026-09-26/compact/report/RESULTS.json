@@ -1,0 +1,415 @@
+{
+  "observation": 152430,
+  "array": "a2000",
+  "conclusion": "insufficient evidence for portability; inherited admission noise-transfer stop before T1",
+  "guard": {
+    "method": "POINT-EXPECTED-v1",
+    "status": "accepted",
+    "accepted": true,
+    "complete": true,
+    "cause": null,
+    "accepted_parameters": [
+      564.3026593026557,
+      4.208131069867596,
+      7.36774489147099,
+      3.6317702680363695,
+      4.073014650738158,
+      0.8910145691996385,
+      -8.380025538585617
+    ],
+    "pointing_correction": null,
+    "accepted_centroid_tangent_arcsec": [
+      4.208131069867596,
+      7.36774489147099
+    ],
+    "expected_origin_tangent_arcsec": [
+      0.0,
+      0.0
+    ],
+    "fit_pixels": 1257,
+    "expected_origin_sky": {
+      "ra_deg": 176.7429079166667,
+      "dec_deg": 39.97619555555556,
+      "frame": "FK5",
+      "equinox": 2000.0
+    },
+    "sigma_A": 6.695788446603807,
+    "SNR_A": 84.2772533515269,
+    "diagnostic": {
+      "initial": [
+        543.893296967092,
+        4.0,
+        6.0,
+        4.2466090014400955,
+        4.2466090014400955,
+        0.0,
+        -6.678504728189261
+      ],
+      "parameters": [
+        564.3026593026557,
+        4.208131069867596,
+        7.36774489147099,
+        3.6317702680363695,
+        4.073014650738158,
+        0.8910145691996385,
+        -8.380025538585617
+      ],
+      "status": 2,
+      "message": "`ftol` termination condition is satisfied.",
+      "converged": true,
+      "finite": true,
+      "nfev": 13,
+      "njev": 13,
+      "cost": 176109.87308964072,
+      "optimality": 0.07120827227918501,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "sigma_floor_arcsec": 1.5,
+      "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+      "centroid_radius_arcsec": 8.484811835685095
+    },
+    "optimizer_calls": 1,
+    "amplitude_sensitivity": {
+      "rank": 7,
+      "rank_tolerance": 1.4095546329879224e-10,
+      "singular_values": [
+        505.0174797042771,
+        374.4905313503407,
+        350.2509698186168,
+        333.9206199940435,
+        221.02916383397246,
+        34.11187721036573,
+        2.4101387018020506
+      ],
+      "amplitude_null_projection": 1.1108528044981742e-16,
+      "identifiability_tolerance": 2.7911006839076435e-11
+    },
+    "message": "Expected POINT source accepted."
+  },
+  "M0_measurements": {
+    "peak": 564.3026593026557,
+    "east": 4.208131069867596,
+    "north": 7.36774489147099,
+    "FWHM_major": 9.591216543262947,
+    "FWHM_minor": 8.552165426119467,
+    "ellipse_xx": 15.246000932944058,
+    "ellipse_xy": -1.66206434939796,
+    "ellipse_yy": 14.533202691976589,
+    "background": -8.380025538585617,
+    "fixed_template": 564.3026593127034,
+    "aperture_1": 50189.27402203619,
+    "aperture_1p5": 46680.498278750856,
+    "aperture_2": 44497.894048718605
+  },
+  "BASE_noise_bins": [
+    {
+      "bin": 0,
+      "coverage_min": 114.0,
+      "coverage_max_exclusive": 138.0,
+      "n": 1901,
+      "second_moment_about_global_mean": 435.36148172768327,
+      "median": -0.15481437040475318,
+      "mean": -0.3742257530304833,
+      "std": 20.8230380576919,
+      "robust_scale": 17.03268301362721
+    },
+    {
+      "bin": 1,
+      "coverage_min": 138.0,
+      "coverage_max_exclusive": 166.0,
+      "n": 1990,
+      "second_moment_about_global_mean": 399.4367988414505,
+      "median": -0.7379877342702881,
+      "mean": -1.6266485868142604,
+      "std": 19.98577479638727,
+      "robust_scale": 15.886839291614812
+    },
+    {
+      "bin": 2,
+      "coverage_min": 166.0,
+      "coverage_max_exclusive": 202.0,
+      "n": 1985,
+      "second_moment_about_global_mean": 288.56146440326586,
+      "median": -0.5521525477347823,
+      "mean": -1.7641881940700113,
+      "std": 16.98698124568096,
+      "robust_scale": 14.092715225373325
+    },
+    {
+      "bin": 3,
+      "coverage_min": 202.0,
+      "coverage_max_exclusive": 246.0,
+      "n": 1993,
+      "second_moment_about_global_mean": 260.18062266846033,
+      "median": -1.2272189022307356,
+      "mean": -1.9214196587164767,
+      "std": 16.128615285433064,
+      "robust_scale": 14.229994127200099
+    },
+    {
+      "bin": 4,
+      "coverage_min": 246.0,
+      "coverage_max_exclusive": 456.00000000000006,
+      "n": 1992,
+      "second_moment_about_global_mean": 238.4831482667646,
+      "median": -2.271613626842968,
+      "mean": -2.76038857798153,
+      "std": 15.406535206030334,
+      "robust_scale": 13.447669385257624
+    }
+  ],
+  "unsupported_pixels": [
+    {
+      "row": 21,
+      "column": 18,
+      "east_arcsec": 4.0,
+      "north_arcsec": 2.0,
+      "coverage": 475.0,
+      "signal": 209.8487346756392,
+      "map_valid": true,
+      "noise_amplitude_valid": false,
+      "touches_candidate": true,
+      "continued_scale": 15.438983964993769,
+      "continued_scale_admissible": false,
+      "above_exclusive_training_edge": 18.999999999999943
+    },
+    {
+      "row": 28,
+      "column": 30,
+      "east_arcsec": -20.0,
+      "north_arcsec": 16.0,
+      "coverage": 493.0,
+      "signal": -12.302603512101,
+      "map_valid": true,
+      "noise_amplitude_valid": false,
+      "touches_candidate": false,
+      "continued_scale": 15.438983964993769,
+      "continued_scale_admissible": false,
+      "above_exclusive_training_edge": 36.99999999999994
+    },
+    {
+      "row": 29,
+      "column": 17,
+      "east_arcsec": 6.0,
+      "north_arcsec": 18.0,
+      "coverage": 458.0,
+      "signal": -24.65455686150966,
+      "map_valid": true,
+      "noise_amplitude_valid": false,
+      "touches_candidate": true,
+      "continued_scale": 15.438983964993769,
+      "continued_scale_admissible": false,
+      "above_exclusive_training_edge": 1.9999999999999432
+    }
+  ],
+  "selected_pixels": 53,
+  "unsupported_pixels_count": 3,
+  "touching_unsupported_pixels": 2,
+  "initial_processing": [
+    {
+      "network": 11,
+      "failed_fits": 0,
+      "segments": 6,
+      "converged": 6,
+      "application_failed_times": 0
+    },
+    {
+      "network": 12,
+      "failed_fits": 0,
+      "segments": 6,
+      "converged": 6,
+      "application_failed_times": 0
+    }
+  ],
+  "counts": {
+    "upstream_observations": 1,
+    "physical_M0_inputs": 1,
+    "source_optimizer_attempts": 1,
+    "spatial_covariance_initializations": 1,
+    "BASE_amplitude_only_initializations": 1,
+    "feedback_applications": 0,
+    "ideal_addition_controls": 0,
+    "endpoint_covariances": 0,
+    "injection_rasters": 0
+  },
+  "resources": {
+    "download_bytes": 0,
+    "upstream_seconds": 21.83227504201932,
+    "MAP_seconds": 8.138110416999552,
+    "upstream_plus_M0_initialization_seconds": 30.5045326249965,
+    "BASE_attempt_seconds": 0.09061887502321042,
+    "summed_stage_wall_seconds": 30.59515150001971,
+    "peak_native_process_rss_bytes": 1557413888,
+    "BASE_family_peak_rss_bytes": 137150464,
+    "science_product_end_bytes": 685302882,
+    "storage_samples": [
+      {
+        "epoch": 1790435998.609799,
+        "stage": "upstream",
+        "bytes": 621164300,
+        "reserved": 0,
+        "ceiling": 16159001984
+      },
+      {
+        "epoch": 1790436006.97837,
+        "stage": "M0",
+        "bytes": 684773065,
+        "reserved": 0,
+        "ceiling": 16159001984
+      }
+    ],
+    "campaign_ceiling": 16159001984,
+    "numeric_threads": 1,
+    "upstream_network_workers": 2,
+    "BASE_workers": 1,
+    "remaining_workers": 0,
+    "qualification": "RSS sampled; science output sizes grew monotonically before this stop, with no temporary removals; report/cleanup metadata growth tracked separately. No completed REF memory/runtime benchmark; remaining scheduling not launched."
+  },
+  "matrix": [
+    {
+      "policy": "BASE-POINT",
+      "branch": "REF",
+      "status": "stopped at M0",
+      "M0": "common physical M0 source accepted",
+      "feedback_applications": 0,
+      "reason": "candidate unsupported contact"
+    },
+    {
+      "policy": "BASE-POINT",
+      "branch": "C-core-plus",
+      "status": "unavailable",
+      "M0": "not constructed",
+      "feedback_applications": 0,
+      "reason": "BASE REF stop blocks T10 shape construction and required execution order"
+    },
+    {
+      "policy": "BASE-POINT",
+      "branch": "C-core-minus",
+      "status": "unavailable",
+      "M0": "not constructed",
+      "feedback_applications": 0,
+      "reason": "BASE REF stop blocks T10 shape construction and required execution order"
+    },
+    {
+      "policy": "BASE-POINT",
+      "branch": "C-shoulder",
+      "status": "unavailable",
+      "M0": "not constructed",
+      "feedback_applications": 0,
+      "reason": "BASE REF stop blocks T10 shape construction and required execution order"
+    },
+    {
+      "policy": "BASE-POINT",
+      "branch": "D-seed-shoulder",
+      "status": "unavailable",
+      "M0": "common physical M0 source accepted",
+      "feedback_applications": 0,
+      "reason": "BASE REF stop blocks T10 shape construction and required execution order"
+    },
+    {
+      "policy": "CORR",
+      "branch": "REF",
+      "status": "unavailable",
+      "M0": "common physical M0 source accepted",
+      "feedback_applications": 0,
+      "reason": "BASE REF stop blocks T10 shape construction and required execution order"
+    },
+    {
+      "policy": "CORR",
+      "branch": "C-core-plus",
+      "status": "unavailable",
+      "M0": "not constructed",
+      "feedback_applications": 0,
+      "reason": "BASE REF stop blocks T10 shape construction and required execution order"
+    },
+    {
+      "policy": "CORR",
+      "branch": "C-core-minus",
+      "status": "unavailable",
+      "M0": "not constructed",
+      "feedback_applications": 0,
+      "reason": "BASE REF stop blocks T10 shape construction and required execution order"
+    },
+    {
+      "policy": "CORR",
+      "branch": "C-shoulder",
+      "status": "unavailable",
+      "M0": "not constructed",
+      "feedback_applications": 0,
+      "reason": "BASE REF stop blocks T10 shape construction and required execution order"
+    },
+    {
+      "policy": "CORR",
+      "branch": "D-seed-shoulder",
+      "status": "unavailable",
+      "M0": "common physical M0 source accepted",
+      "feedback_applications": 0,
+      "reason": "BASE REF stop blocks T10 shape construction and required execution order"
+    },
+    {
+      "policy": "DIAG",
+      "branch": "REF",
+      "status": "unavailable",
+      "M0": "common physical M0 source accepted",
+      "feedback_applications": 0,
+      "reason": "BASE REF stop blocks T10 shape construction and required execution order"
+    },
+    {
+      "policy": "DIAG",
+      "branch": "C-core-plus",
+      "status": "unavailable",
+      "M0": "not constructed",
+      "feedback_applications": 0,
+      "reason": "BASE REF stop blocks T10 shape construction and required execution order"
+    },
+    {
+      "policy": "DIAG",
+      "branch": "C-core-minus",
+      "status": "unavailable",
+      "M0": "not constructed",
+      "feedback_applications": 0,
+      "reason": "BASE REF stop blocks T10 shape construction and required execution order"
+    },
+    {
+      "policy": "DIAG",
+      "branch": "C-shoulder",
+      "status": "unavailable",
+      "M0": "not constructed",
+      "feedback_applications": 0,
+      "reason": "BASE REF stop blocks T10 shape construction and required execution order"
+    },
+    {
+      "policy": "DIAG",
+      "branch": "D-seed-shoulder",
+      "status": "unavailable",
+      "M0": "common physical M0 source accepted",
+      "feedback_applications": 0,
+      "reason": "BASE REF stop blocks T10 shape construction and required execution order"
+    }
+  ],
+  "source_bindings": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/UPSTREAM.json",
+      "sha256": "afa92accf356f26d8d569659d75b9591d68aac3cd11876cc2960804c088f6b26"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/PHASE-base.json",
+      "sha256": "e1e2e1fb548a46862aecbbecc3c0e8f68970dcfef85ee4056082feee69450b7c"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/run/BASE-POINT/REF/a2000/SUMMARY.json",
+      "sha256": "2f966031564b84953b97b6cd74485ed72a5e13c4910f107bd5b484e9e3cf77e5"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/freeze/realized.json",
+      "sha256": "c12cbe13a5b31bdcbcfcbd1e7515bb2f8a5ad63fbc2d5674c99333554cf77083"
+    }
+  ]
+}

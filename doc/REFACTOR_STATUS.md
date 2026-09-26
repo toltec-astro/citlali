@@ -1,5 +1,37 @@
 # Citlali Refactor Status
 
+## Independent POINT152430 a2000 frozen-method validation — bounded stop 2026-09-26
+
+The owner released one new observation only. Exact input readiness selected
+152430/0/2 (1146+399), own tune152430/0/1, locally complete a2000 networks11/12;
+no downloads or Unity operations. Science source54adaeebd2068cf827fe39f0aae8c3fbddcb03e0
+passed independent exact-SHA preflight. Existing numerical owners and defaults
+remain unchanged; adapters are private and restricted to the named observation.
+
+Both initial rank10 PTC networks and the single POINT-EXPECTED fit passed.
+M0 peak564.302659mJy/nominal beam, centroid(+4.208131,+7.367745)arcsec,
+conditional frozen-C0 guard S/N84.2773. BASE's53-pixel candidate touches two
+noise-invalid pixels: coverage475 and458 exceeds source-masked training maximum456.
+These are valid MAP pixels with finite computational noise continuation, whose
+admission validity remains false under the inherited contract. The preserved
+candidate_guard stopped the branch at M0, before any FRUIT application.
+Independent saved-product review found no implementation bug or new PTC failure.
+
+Matrix: BASE REF stopped at M0;14cells unavailable under BASE-first/shape dependency.
+Actual feedback0/150, physical inputs1/4, ideal controls0/9, endpoint companions0/3.
+No shape construction, other policy endpoint, injection, seed, threshold/rank/noise
+retuning, observation replacement, or attempt to bypass the stop. Source acceptance
+is not feedback readiness. Evidence is insufficient to judge portability of the
+152389 shoulder benefit or compact-response tradeoff; it is not a negative policy
+comparison. CUT3, JINC, other arrays/observations and default promotion remain parked.
+
+Compact closeout, exact matrix, numerical results, diagnostics, provenance,
+independent reviews and enumerated own-campaign temporary-product cleanup are in
+validation/point_152430_independent_a2000_2026-09-26 and the dated handoff. The one
+recommended next decision is review of the admission-noise coverage-transfer
+validity contract; no replacement rule or follow-up experiment is authorized here.
+
+
 ## Whole local-data RTC/PTC purge — completed 2026-09-26
 
 The owner's later September 26 directive supersedes **all earlier saved RTC/PTC

@@ -1,0 +1,8 @@
+schema: rtc-jump-processing-support-v1
+method: rtc-jump-processing-support-2026-09-22-v1
+exclusion_policy: rtc-jump-exclusion-2026-09-13-v1
+original_parent: sha256:1289ac9fd40fdc1579387b0ac718099564f7a3da9938928989c05d78a60bfc41:network=12:tune=sha256:994f7597d66a4186fef9a25d3c206f826e4749ee90beb4f9b4d7ec5a90392bf8:paired-xr:exact-simultaneous-column-projection:sha256:0c90e39e09c981d77059392c2a52d28794e192d875a5b4b45a2081cb860dac89
+VAL_generation: 0
+native_rows: zero-based-half-open;exact-original-parent
+complete_processing_domain: true
+processing_generation: native-processing-request:sha256:12c76e2b0a8afc866a0e8d49c9f42d1e6f771433b55639b308af15c6dee314ac

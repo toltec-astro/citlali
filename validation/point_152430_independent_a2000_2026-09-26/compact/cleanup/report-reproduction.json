@@ -1,0 +1,20 @@
+{
+  "pass_report_reproduction": true,
+  "all_four_report_files_byte_identical": true,
+  "before": {
+    "ASSESSMENT.md": "dc747ded85be1f39219e2f34100b4c6e75d109ba01f4ac108905ef61b608e1a6",
+    "RESULTS.json": "69956e25f2ed65491694c84f3487afff79ecc3a4953d3582cc8d9f203d4a8dac",
+    "admission-stop.png": "d1689d2ff4f5dd5272f8d78d8f2c8b01624149da12e722386919b8a4f6b28cf7",
+    "matrix.json": "e51548b4cedfd65726f597842773062d29514dac282fded20b75dc63fd37ce59"
+  },
+  "after": {
+    "ASSESSMENT.md": "dc747ded85be1f39219e2f34100b4c6e75d109ba01f4ac108905ef61b608e1a6",
+    "RESULTS.json": "69956e25f2ed65491694c84f3487afff79ecc3a4953d3582cc8d9f203d4a8dac",
+    "admission-stop.png": "d1689d2ff4f5dd5272f8d78d8f2c8b01624149da12e722386919b8a4f6b28cf7",
+    "matrix.json": "e51548b4cedfd65726f597842773062d29514dac282fded20b75dc63fd37ce59"
+  },
+  "scientific_reruns": 0,
+  "fits": 0,
+  "covariance_learns": 0,
+  "metadata_only_gzip_reader": true
+}

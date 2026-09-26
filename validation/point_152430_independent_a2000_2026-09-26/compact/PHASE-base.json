@@ -1,0 +1,19 @@
+{
+  "status": "completed",
+  "results": [
+    {
+      "policy": "BASE-POINT",
+      "branch": "REF",
+      "ready": false,
+      "completed_cycle": 0,
+      "stop_reason": "candidate unsupported contact",
+      "actual_feedback_applications": 0,
+      "wall_seconds": 0.07636720800655894
+    }
+  ],
+  "workers": 1,
+  "numeric_threads": 1,
+  "seconds": 0.09061887502321042,
+  "peak_family_rss_bytes": 137150464,
+  "final_bytes": 685302882
+}

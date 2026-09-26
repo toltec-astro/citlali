@@ -1,0 +1,34 @@
+[
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/inputs/ast-source-binding.json",
+    "sha256": "a8aacdd5c0a31daf634c73257261ca563d2041ea1b9e9137889dac911e0a05e1"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/inputs/effective-point.yaml",
+    "sha256": "0865d8fa1588a26a69b19d1e1cf55f88be7421fcc202dc07b55696eba66218d9"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/inputs/map-owner.json",
+    "sha256": "219f6641b40a1cfc049eae24e320a14fe06f014bf804a87223a4b8772ea932aa"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/inputs/network11-input.json",
+    "sha256": "47e4f6650cfe428f2d1ee20ffb2670d1ca4c95b96a7662c62aa0219d7b17d4e9"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/inputs/network12-input.json",
+    "sha256": "d38badf232843a4e4279ac3182e8af1f91cb82a2a5c8b9074ce7e8f40cca302a"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/inputs/observation.json",
+    "sha256": "0ac8266714bf182a3cc8ae5d98804c87387809fc55259f84202f3b0cee291230"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/inputs/processing-request.json",
+    "sha256": "12c76e2b0a8afc866a0e8d49c9f42d1e6f771433b55639b308af15c6dee314ac"
+  },
+  {
+    "path": "/private/tmp/citlali-point-additive-20260923/validation/rtc_development_lowpass_2026-09-19/a2000.json",
+    "sha256": "d1e9dbefaaaa8832b4876ac34f23a604270b3bf35bc5d79125c37cddd3a32cab"
+  }
+]

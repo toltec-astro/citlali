@@ -1,0 +1,42 @@
+[
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/freeze/a2000/BASE.json",
+    "sha256": "57011d2d267f0c6751b0760f3c51860d15cff1756f37e46ff1811787a903972f"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/freeze/a2000/BASE.npz",
+    "sha256": "bb1a9d0b2b8037686c1550499933481d35bcf415b33a032557fdd8102cd4ce68"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/freeze/a2000/C0.json",
+    "sha256": "0f805a13ea44cca960c3de5f1b8ad1b0f2a31a31a43354727d177def1c56bd46"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/freeze/a2000/C0.npz",
+    "sha256": "0b1a1cf593243b88544fd844c571e480ec06054cfd1f7598e03af428a6ad3605"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/freeze/a2000/context.npz",
+    "sha256": "a5dcd68bc71a84359883cf79668f89e6d796a03879e6ad8de9d88cf946ebe1ab"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/freeze/a2000/geometry.json",
+    "sha256": "e9e373bbecd00b922831ca25a357a7d63dab136ad52f985493c9f4622b98af30"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/freeze/a2000/guard.json",
+    "sha256": "39486efc2020d9c6998b211f0a64f192932ea310eff7051a6b92f92c185cff5f"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/freeze/M0-measurement.json",
+    "sha256": "26504b1c2a58c40bcf04ba5babd1e91dfaeb742ab0cb4bbe445d8c27f2205f4a"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/freeze/parents.json",
+    "sha256": "dc3cbf128c366cbb0d37dc30d5fad8dfbadbf6891975917c60a33a1301e84377"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/development-runs/successor-point-152430-independent-a2000-20260926/inputs/map-request.json",
+    "sha256": "d05fe6a45cf1e70bb8f7803e6fbb27b0685cca6e1d907fbee0ae4482f61a6c45"
+  }
+]
