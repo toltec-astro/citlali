@@ -1,5 +1,17 @@
 # Citlali Refactor Status
 
+## Bounded RTC cost/source response — active 2026-09-27
+
+The owner [directive](../validation/rtc_cost_response_2026-09-27/OWNER_DIRECTIVE.md)
+selects warm initialized, fully resolved rank10 PTC with cold M0 and five feedback
+applications for development. Existing POINT152430/a2000 networks11/12 only.
+RTC cost/contamination audit, pre-RTC x-only response and measured bounded
+improvements supersede the earlier RTC deferral within this work order.
+Original cold rank10/T10 profile, tag and completed comparisons remain intact.
+See [preflight](../validation/rtc_cost_response_2026-09-27/PREFLIGHT.md). No science
+has run under this directive yet; B/C are unselected. No Unity, push or promotion.
+
+
 ## Bounded POINT latency/PCA comparison — completed 2026-09-27
 
 The [owner-authorized comparison](../validation/point_speed_pca_2026-09-27/OWNER_DIRECTIVE.md)

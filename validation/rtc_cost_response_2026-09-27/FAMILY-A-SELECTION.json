@@ -1,0 +1,18 @@
+{
+  "family": "A",
+  "endpoint": "warm-rank10-N5",
+  "rtc": "existing lowpass-only",
+  "changes": [
+    "run-owned storage accounting",
+    "lightweight native operation timing"
+  ],
+  "matrix": {
+    "REF": 3,
+    "pre_RTC_response": [
+      "C-core-plus",
+      "C-core-minus",
+      "C-shoulder"
+    ]
+  },
+  "rtc_only_diagnostic": 1
+}

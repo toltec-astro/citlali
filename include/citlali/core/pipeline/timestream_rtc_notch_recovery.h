@@ -1,4 +1,5 @@
 #pragma once
+#include <chrono>
 
 #include <citlali/core/pipeline/ast_scan_motion_alignment.h>
 #include <citlali/core/pipeline/timestream_rtc_line_transfer.h>
@@ -432,6 +433,10 @@ struct RtcRecoveryInjection {
 
 class RtcNotchRecoveryResult {
 public:
+  // Bounded aggregate instrumentation, never a processing/admission input.
+  struct OperationSeconds { double transient=0,allocation_and_donors=0,gather_notch=0,lowpass_support_output=0; };
+  const OperationSeconds &operation_seconds() const noexcept { return operation_seconds_; }
+
   static std::shared_ptr<const RtcNotchRecoveryResult>
   apply(std::shared_ptr<const RtcNotchRecoveryPlan> plan,
         std::shared_ptr<const NativePairedReadoutView> original,
@@ -442,8 +447,12 @@ public:
     if (!plan || !original || plan->input_handle().get() != original.get())
       throw std::invalid_argument("RTC recovery Apply requires exact original "
                                   "input; no cumulative replay");
+    const auto begin=std::chrono::steady_clock::now();
+    auto elapsed=[](auto t){return std::chrono::duration<double>(std::chrono::steady_clock::now()-t).count();};
     auto retained = RtcTransientExclusionResult::apply(
         plan->transient_handle(), original, snapshot, partitions);
+    const double transient_seconds=elapsed(begin);
+    const auto prepared_at=std::chrono::steady_clock::now();
     const auto n = plan->input_causes().size();
     if (injection &&
         (injection->plan.get() != plan.get() || injection->identity.empty() ||
@@ -476,7 +485,10 @@ public:
     const auto half = s.centered_lowpass.size() / 2;
     const auto notch_half = s.centered_notch.size() / 2;
     const auto guard = out->plan_->full_support_half_samples();
+    out->operation_seconds_.transient=transient_seconds;
+    out->operation_seconds_.allocation_and_donors=elapsed(prepared_at);
     for (auto run : out->plan_->runs()) {
+      const auto gather_at=std::chrono::steady_clock::now();
       const auto size = run.past_last - run.first;
       Eigen::MatrixXd values(size, 2);
       std::vector<std::uint8_t> influence(size, 0);
@@ -542,6 +554,8 @@ public:
         influence = std::move(finite_influence);
       }
       out->conditioned_.middleRows(run.first - first, size) = values;
+      out->operation_seconds_.gather_notch+=elapsed(gather_at);
+      const auto filter_at=std::chrono::steady_clock::now();
       for (Eigen::Index i = 0; i < size; ++i) {
         const auto row = run.first + i, local = row - first;
         const auto native_guard = notch_half + out->plan_->domain().notch_guard_samples;
@@ -579,6 +593,7 @@ public:
             out->output_rows_.push_back(row);
         }
       }
+      out->operation_seconds_.lowpass_support_output+=elapsed(filter_at);
     }
     return out;
   }
@@ -667,6 +682,7 @@ public:
                         map_input_authorized = false;
 
 private:
+  OperationSeconds operation_seconds_;
   RtcNotchRecoveryResult() = default;
   std::shared_ptr<const RtcNotchRecoveryPlan> plan_;
   std::shared_ptr<const RtcTransientExclusionResult> retained_;

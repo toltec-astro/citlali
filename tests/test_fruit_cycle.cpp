@@ -147,3 +147,17 @@ TEST(FruitCycle, ExperimentalRanksLearnIndependentlyOnEachResidual) {
     }
     EXPECT_DOUBLE_EQ((y-saved).norm(),0);
 }
+
+#include <citlali/core/pipeline/point_rtc_source_probe.h>
+TEST(PointRtcSourceProbe, SignedNativeUnitsCalibrationOnlyAndValidity) {
+    for(double multiplier:{2.,-7.,1e8})for(double brightness:{0.,10.,-10.}) {
+        auto q=point_rtc_source_probe(.125,true,{brightness,FruitModelSupport::admitted},multiplier);
+        EXPECT_DOUBLE_EQ(q.raw_increment*multiplier,brightness);
+        EXPECT_DOUBLE_EQ(q.x,.125+brightness/multiplier);
+    }
+    auto invalid=point_rtc_source_probe(NAN,false,{NAN,FruitModelSupport::unavailable},NAN);
+    EXPECT_TRUE(std::isnan(invalid.x));EXPECT_EQ(invalid.raw_increment,0);
+    EXPECT_THROW(point_rtc_source_probe(1,true,{1,FruitModelSupport::admitted},0),std::invalid_argument);
+    EXPECT_THROW(point_rtc_source_probe(1,true,{0,FruitModelSupport::unavailable},2),std::invalid_argument);
+    EXPECT_EQ(point_rtc_source_probe(1,true,{0,FruitModelSupport::outside},2).x,1);
+}

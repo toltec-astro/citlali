@@ -1,0 +1,34 @@
+{
+  "schema": "point-rtc-development-profile-v1",
+  "authority": "owner-RTC-cost-response-2026-09-27",
+  "frozen_reference": "../bright_point_base_v1/reference.json",
+  "observation": [
+    152430,
+    0,
+    2
+  ],
+  "tune": [
+    152430,
+    0,
+    1
+  ],
+  "array": "a2000",
+  "networks": [
+    11,
+    12
+  ],
+  "ptc": {
+    "method": "warm-initialized-fully-resolved-observed-ALS",
+    "rank": 10,
+    "cold_M0": true,
+    "max_iterations": 100,
+    "objective_tolerance": 1e-05,
+    "rank_tolerance": 1e-10
+  },
+  "feedback_applications": 5,
+  "last_applied_model": "m4",
+  "last_recorded_model": "m5",
+  "downstream": "ordinary-MAP BASE-POINT-v1, unchanged guard/noise",
+  "promotion": "development only",
+  "rtc": "existing lowpass-only scientific RTC; B/C unselected pending baseline"
+}

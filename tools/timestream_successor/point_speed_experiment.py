@@ -38,7 +38,8 @@ def prepare_run(root,name,rank,N,input_root,method='observed-als'):
     p['scientific_recipe']['PTC']['experimental_method']=method
     p['scientific_recipe']['PTC']['method']=('binary pair-overlap count covariance; positive algebraic eigenspace; validity-aware coefficients' if method=='masked-covariance-count-v1' else 'observed-entry ALS; previous own converged basis initializer; full current-residual solve' if method=='warm-observed-als' else p['scientific_recipe']['PTC']['method'])
     budget=read(out/'freeze/budget.json');cells=budget['native_cells']
-    budget.update(campaign_root=str(root),peak_ceiling_bytes=(26*256+9*16+320*16+48)*cells+2_000_000_000,maximum_branch_workers=1)
+    from point_storage import tree_bytes
+    budget.update(campaign_root=str(root),campaign_retained_bytes=tree_bytes(root)-tree_bytes(out),peak_ceiling_bytes=(26*256+9*16+320*16+48)*cells+2_000_000_000,maximum_branch_workers=1)
     require(shutil.disk_usage(root).free>budget['peak_ceiling_bytes']+budget['free_space_reserve_bytes'],'insufficient bounded campaign space')
     save_json(out/'freeze/budget.json',budget);p['budget']=bound(out/'freeze/budget.json')
     # Identical physical measurement operands, not transplanted noise or guard state.
@@ -81,13 +82,13 @@ def once(out,binary,entry_ns):
     return 0 if rec['status']=='completed' else 1
 
 
-def launch(root,out,binary,review,cache):
+def launch(root,out,binary,review,cache,*,attempt_consumer=None,child_mode='speed-once'):
     p=read(out/'freeze/prospective.json');rv=read(review)
     require(rv['source_revision']==p['source_revision'] and rv['verdict']=='pass','exact-source independent preflight required')
     require(not (out/'LAUNCH.json').exists(),'no launch retry')
-    identity=dict(run=out.name);consume(root,'parent',identity);consume(root,'trajectory',dict(**identity,branch='REF',cycle=0))
+    identity=dict(run=out.name);counter=attempt_consumer or consume;counter(root,'parent',identity);counter(root,'trajectory',dict(**identity,branch='REF',cycle=0))
     env=dict(os.environ,CITLALI_POINT_TIMING=str(out/'timing.jsonl'),OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',VECLIB_MAXIMUM_THREADS='1',MKL_NUM_THREADS='1',BLIS_NUM_THREADS='1',MPLBACKEND='Agg',MPLCONFIGDIR='/private/tmp/point-speed-mpl',XDG_CACHE_HOME='/private/tmp/point-speed-cache')
-    command=[sys.executable,str(REPO/'tools/timestream_successor/point_pipeline.py'),'speed-once','--output',str(out),'--binary',str(binary)]
+    command=[sys.executable,str(REPO/'tools/timestream_successor/point_pipeline.py'),child_mode,'--output',str(out),'--binary',str(binary)]
     rec=dict(command=command,cache=cache,policy=dict(independent_workloads=1,network_workers=2,feedback_segment_workers=1,numeric_threads=1),preflight_review=bound(review),scope='POINT152430 a2000 networks11/12 on local Mac; not full instrument or Unity')
     save_json(out/'LAUNCH.json',dict(**rec,status='starting'))
     before=resource.getrusage(resource.RUSAGE_CHILDREN);started=time.monotonic_ns();samples=[];seen={};ready_seen={}

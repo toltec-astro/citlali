@@ -56,6 +56,7 @@ std::string native_plane_digest(const NativePairedReadoutMatrix &m) {
 #include "map_saved_execution.h"
 #include "fruit_saved_execution.h"
 #include "jinc_ast_execution.h"
+#include "point_rtc_probe_execution.h"
 namespace {
 // One observation lifetime, prepared before workers start; only the I/O mutex
 // is mutable. Numerical work and detector populations remain network-owned.
@@ -315,7 +316,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
       contaminant_record=YAML::Clone(model);contaminant_record["original_x"]=x(row,d);contaminant_record["original_r"]=r(row,d);
       x(row,d)+=dx;r(row,d)+=dr;
     }
-    const auto original_x_digest=native_plane_digest(x),original_r_digest=native_plane_digest(r);
+    auto original_x_digest=native_plane_digest(x);const auto original_r_digest=native_plane_digest(r);
     performance.array("original_xr_values",2*x.size(),sizeof(double),2);
     performance.array("original_coordinate_states",2*xs.size(),sizeof(NativeReadoutCoordinateState),2);
     performance.array("verification_xr_digests",2*64,sizeof(char),2);
@@ -373,6 +374,20 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     auto parent = std::make_shared<const NativePairedReadoutObservation>(
         NativePairedReadoutObservation::admit(
             NativeObservationScope{obs, sub, scan}, {nw}, std::move(networks)));
+    YAML::Node source_probe_record;
+    if(cfg["rtc_source_probe"]) {
+      require(development && common && obs==152430 && sub==0 && scan==2 && (nw==11 || nw==12),
+          "pre-RTC source probe outside bounded original POINT route");
+      performance.mark("source_probe_start");
+      auto probe=execute_point_rtc_probe(parent,cfg,verified,relation,channels,common->cal,
+          common->motion,output);
+      parent=std::move(probe.parent);source_probe_record=probe.receipt;
+      mapping=std::make_shared<NativeReadoutMappingAuthority>(parent->network(nw).mapping_authority());
+      original_x_digest=native_plane_digest(parent->network(nw).values(NativeReadoutCoordinate::x));
+      require(original_r_digest==native_plane_digest(parent->network(nw).values(NativeReadoutCoordinate::r)),
+          "x-only probe changed original r");
+      performance.mark("source_probe_complete");
+    }
     std::optional<RtcDeclaredContaminant> declared_contaminant;
     if(cfg["declared_contaminant"]){
       const auto m=cfg["declared_contaminant"];const auto row=m["native_row"].as<std::int64_t>();
@@ -446,7 +461,9 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     double learn_seconds=0,consider_seconds=0;
     auto measure=[](double &seconds,auto operation){const auto at=std::chrono::steady_clock::now();
       auto result=operation();seconds+=std::chrono::duration<double>(std::chrono::steady_clock::now()-at).count();return result;};
+    performance.mark("spike_screen_start");
     auto spikes=measure(learn_seconds,[&]{return learn_rtc_spike_candidates(view,val,protection,1);});
+    performance.mark("spike_screen_complete");
     std::shared_ptr<const RtcCommonModeEvidence> health;
     double health_seconds=0;
     if(cfg["common_mode_health"]) {
@@ -513,6 +530,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     auto remeasurement=measure(learn_seconds,[&]{return RtcJumpReassessmentEvidence::learn(remeasure_request,13);});
     auto reassessment=measure(consider_seconds,[&]{return RtcJumpReassessmentDecision::consider(remeasurement,val,14);});
     auto admitted=measure(consider_seconds,[&]{return RtcJumpAdmissionDecision::consider(reassessment,val,15);});
+    performance.mark("transient_assessment_complete");
     const auto transients_finished=std::chrono::steady_clock::now();
     auto native=ValNativeRealization::create(parent,{ValProducer::align,1},1,ValNativeProductRole::original_input,nw);
     auto identity=RtcSpectralInputIdentity::bind(native,val,view->span(nw),
@@ -520,6 +538,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     const std::vector<RtcSpectralCadenceDomain> cadence{{nw,"audit-four-epoch-ULP-arithmetic-envelope",
         duration,prior["roundoff_bound_fraction"].as<double>()}};
     auto spectral=measure(learn_seconds,[&]{return RtcNativeSpectralEvidence::learn_initial(spikes,{identity},cadence,18);});
+    performance.mark("initial_spectra_complete");
     auto lines=measure(learn_seconds,[&]{return RtcLinePowerEvidence::learn(spectral,val,RtcLinePowerProfile::initial_2_hz,19);});
     auto joint=measure(consider_seconds,[&]{return RtcLinePowerConsideration::rank(lines,
         RtcSpectralTransientConsideration::consider(spectral,val,events,val,20),21);});
@@ -545,6 +564,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     }
     native_times.close();require(bool(native_times),"native time export failed");
     YAML::Node receipt;
+    if(source_probe_record)receipt["rtc_source_probe"]=source_probe_record;
     if(declared_contaminant)receipt["declared_contaminant"]=contaminant_record;
     receipt["schema"]="rtc-multidetector-learning-v1";
     receipt["source_revision"]=std::string(CITLALI_GIT_REVISION);
@@ -632,6 +652,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     // Preserve the learning product even if subsequent explicit Consider
     // refuses missing required scan/support bindings. This is not Apply success.
     rtc_yaml_map(output/"learning-receipt.yaml",receipt,receipt_sections);
+    performance.mark("initial_evidence_publication_complete");
     if(argc==4 || recovered_scans){
       const auto considered_at=std::chrono::steady_clock::now();
       require(!(argc==4 && recovered_scans),"automatic decisions cannot consume manual selections");
@@ -735,6 +756,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
       receipt["stable_support_state"]=decision ? "runtime-original-evidence-boundary-and-support-resolution" : "explicit-reviewed-support";
       receipt["transient_excluded_pair_cells"]=transient->counts().union_pair_cells;
       receipt["Consider_connection_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-considered_at).count();
+      performance.mark("transient_support_decisions_complete");
       const auto root_output=output;
       for(bool continuity : (decision && !development ? std::vector<bool>{false,true} : std::vector<bool>{true})){
       const auto output=decision ? root_output/(continuity ? "donor-continuity" : "exclusion-control") : root_output;
@@ -778,8 +800,22 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
       arm["Consider_plan_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-planning_at).count();
       const std::array partitions{view};
       const auto applied_at=std::chrono::steady_clock::now();
+      performance.mark("RTC_apply_start");
       auto result=RtcPipelineResult::apply(complete,view,val,partitions);
       performance.mark("RTC_apply_complete");
+      RtcNotchRecoveryResult::OperationSeconds operation_seconds;
+      for(const auto &detector:result->detector_results()) {
+        const auto &t=detector->operation_seconds();operation_seconds.transient+=t.transient;
+        operation_seconds.allocation_and_donors+=t.allocation_and_donors;
+        operation_seconds.gather_notch+=t.gather_notch;
+        operation_seconds.lowpass_support_output+=t.lowpass_support_output;
+      }
+      arm["Apply_operation_seconds"]["transient_partition_validation"]=operation_seconds.transient;
+      arm["Apply_operation_seconds"]["allocation_and_donors"]=operation_seconds.allocation_and_donors;
+      arm["Apply_operation_seconds"]["gather_and_notch"]=operation_seconds.gather_notch;
+      arm["Apply_operation_seconds"]["lowpass_support_output"]=operation_seconds.lowpass_support_output;
+      arm["Apply_operation_seconds"]["scope"]="sum over sequential detector applications within network; network intervals overlap";
+
       performance.array("RTC_conditioned_and_filtered_xr",4*rows*channels.size(),sizeof(double),2*channels.size());
       performance.array("RTC_plan_cause_and_speed_planes",3*rows*channels.size(),sizeof(std::uint8_t),3*channels.size());
       performance.array("RTC_result_cause_and_state_planes",2*rows*channels.size(),sizeof(std::uint8_t),2*channels.size());

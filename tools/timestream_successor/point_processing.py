@@ -37,25 +37,25 @@ def size(root):
 @timed("native_invocation_including_reservation_hashing_publication")
 def call(out,binary,request,dest,terminal='point-fruit',workers=1,allowance=None):
     global _RESERVED
-    budget=read(out/'freeze/budget.json');scope=Path(budget.get('campaign_root',out));allowance=allowance or 48*budget['native_cells']
+    from point_storage import RunStorage
+    budget=read(out/'freeze/budget.json');allowance=allowance or 48*budget['native_cells']
     with _LOCK:
-        current=size(scope);require(current+_RESERVED+allowance<=budget['peak_ceiling_bytes'],'reserved campaign storage ceiling')
-        require(shutil.disk_usage(out).free>_RESERVED+allowance+budget['free_space_reserve_bytes'],'free-space reserve')
+        storage=RunStorage(out,budget);storage.reserve(allowance,_RESERVED)
         if terminal=='point-fruit':record_attempt(out,request)
         _RESERVED+=allowance
     try:return invoke(binary,request,dest,workers,terminal,ptc=read(out/'freeze/prospective.json').get('ptc') if terminal=='ptc' else None)
     finally:
         with _LOCK:
             _RESERVED-=allowance
-            with (out/'storage.jsonl').open('a') as f:f.write(json.dumps(dict(epoch=time.time(),stage=str(dest.relative_to(out)),bytes=size(scope),reserved=_RESERVED,ceiling=budget['peak_ceiling_bytes']))+'\n')
+            accounting=RunStorage(out,budget).finish(dest,allowance)
+            with (out/'storage.jsonl').open('a') as f:f.write(json.dumps(dict(epoch=time.time(),stage=str(dest.relative_to(out)),accounting=accounting,reserved=_RESERVED,ceiling=budget['peak_ceiling_bytes']))+'\n')
 
 
 def record_attempt(out,request):
     """Called under the reservation lock before invocation; failures still count."""
     q=read(request);owner_record=read(verified(q['owner_binding']));k=q['cycle_index']
     if speed_experiment(out):
-        from point_speed_experiment import consume
-        consume(Path(read(out/'freeze/budget.json')['campaign_root']),'feedback' if k else 'trajectory',dict(run=out.name,branch=q['branch'],cycle=k))
+        experiment_consume(out,'feedback' if k else 'trajectory',dict(run=out.name,branch=q['branch'],cycle=k))
     elif rank_experiment(out):
         from point_rank_experiment import consume
         consume(Path(read(out/'freeze/budget.json')['campaign_root']),'feedback' if k else 'trajectory',dict(rank=expected_rank(out),branch=q['branch'],cycle=k))
@@ -72,6 +72,17 @@ def parents(out):return read(out/'freeze/parents.json')
 def speed_experiment(out):
     p=out/'freeze/prospective.json'
     return p.exists() and read(p).get('schema')=='citlali-point-speed-pca-v1'
+
+def rtc_experiment(out):
+    p=out/'freeze/prospective.json'
+    return p.exists() and read(p).get('campaign_scope')=='rtc-cost-response-v1'
+
+def experiment_consume(out,kind,identity):
+    if rtc_experiment(out):
+        from point_rtc_experiment import consume
+    else:
+        from point_speed_experiment import consume
+    return consume(Path(read(out/'freeze/budget.json')['campaign_root']),kind,identity)
 
 def feedback_count(out):
     return read(out/'freeze/prospective.json').get('feedback_count',10) if speed_experiment(out) else 10
@@ -108,13 +119,28 @@ def upstream(out,binary):
     if rank_experiment(out) and not speed_experiment(out):
         from point_rank_experiment import consume
         consume(Path(read(out/'freeze/budget.json')['campaign_root']),'noise',dict(rank=expected_rank(out)))
-    c,g=initialize(out/f'M0/products/{selected_array(out)}/map.fits',out/f'freeze/{selected_array(out)}',beam={'a1100':5.,'a1400':7.5,'a2000':10.}[selected_array(out)])
+    noise_reference=read(out/'freeze/prospective.json').get('noise_reference')
+    if rtc_experiment(out) and noise_reference:
+        # Same RTC variant's unperturbed M0 noise/guard conditioning only.
+        # Native parent and cold M0 fit remain branch-owned.
+        ref=Path(noise_reference['root']);verified(noise_reference['binding'])
+        require(read(ref/'freeze/prospective.json')['rtc_family']==read(out/'freeze/prospective.json')['rtc_family'],'foreign RTC noise variant')
+        for b in noise_reference['files']:verified(b)
+        shutil.copytree(ref/f'freeze/{selected_array(out)}',out/f'freeze/{selected_array(out)}')
+        c=context(out/f'freeze/{selected_array(out)}');signal,valid,_,_=patch_map(out/f'M0/products/{selected_array(out)}/map.fits')
+        injected_measurement,_=infer_base(c,signal,valid);g=injected_measurement['guard']
+        if not g['accepted']:
+            from point_response_cd import save_candidate
+            save_candidate(out/f'freeze/{selected_array(out)}/candidate.fits',exact_header(c['header']),candidate(signal,valid,c['fixed'],g))
+            save_json(out/f'freeze/{selected_array(out)}/injected-guard.json',g)
+    else:
+        c,g=initialize(out/f'M0/products/{selected_array(out)}/map.fits',out/f'freeze/{selected_array(out)}',beam={'a1100':5.,'a1400':7.5,'a2000':10.}[selected_array(out)])
     save_json(out/'UPSTREAM.json',dict(status='accepted' if g['accepted'] else 'source_or_covariance_failed',guard=g,seconds=time.perf_counter()-t,initial_physical_inputs=1,parent=p))
     if c is not None:
         if speed_experiment(out):
             shutil.copyfile(out/'freeze/measurement-geometry.json',out/f'freeze/{selected_array(out)}/measurement-geometry.json')
             c=context(out/f'freeze/{selected_array(out)}')
-        m=measurement(c,c['original'],c['support'],g);save_json(out/'freeze/M0-measurement.json',m)
+        m=injected_measurement if noise_reference else measurement(c,c['original'],c['support'],g);save_json(out/'freeze/M0-measurement.json',m)
         save_json(out/'freeze/realized.json',[bound(p) for p in sorted((out/f'freeze/{selected_array(out)}').iterdir()) if p.is_file()]+[bound(out/'freeze/M0-measurement.json'),bound(out/'freeze/parents.json'),bound(out/'inputs/map-request.json')])
 
 
@@ -216,7 +242,8 @@ def execute_branch(out,binary,pol,branch):
                     rs,rsv,_,_=patch_map(ref['total']['path']);ideal,_=infer_stage(c,rs+ks,rsv&vs);rec['ideal']=ideal_comparison(c,ref['measurement'],m,ideal)
             cause,reason=continuation_reason(prepared[0],summary,new,c['header']);rec.update(ready=cause is None,stop_kind=cause,stop_reason=reason)
             state=ready_state(array,k,cp,products/'total.fits',products/'receipt.yaml',parents(out),cause is None,reason);state.update(branch=branch,policy=pol,owner_sha256=digest(op));sp=d/'state.json';save_json(sp,state);rec['state_path']=str(sp)
-            cleanup_cycle(out,products,keep_projection=branch=='REF' and not reference(out))
+            if not (rtc_experiment(out) and k==5):
+                cleanup_cycle(out,products,keep_projection=branch=='REF' and not reference(out))
         except (ValueError,RuntimeError,KeyError,OSError) as e:rec.update(ready=False,stop_kind='computation_or_processing',stop_reason=str(e))
         rec['wall_seconds']=time.perf_counter()-tic;save_json(d/'cycle.json',rec);history.append(rec);prior=rec
         if 'measurement' in rec:
@@ -228,8 +255,7 @@ def execute_branch(out,binary,pol,branch):
     save_json(dest/'SUMMARY.json',result)
     if branch=='REF' and result['ready'] and result['completed_cycle']==feedback_count(out):
         if speed_experiment(out):
-            from point_speed_experiment import consume
-            consume(Path(read(out/'freeze/budget.json')['campaign_root']),'endpoint',dict(run=out.name,cycle=result['completed_cycle']))
+            experiment_consume(out,'endpoint',dict(run=out.name,cycle=result['completed_cycle']))
         elif rank_experiment(out):
             from point_rank_experiment import consume
             consume(Path(read(out/'freeze/budget.json')['campaign_root']),'endpoint',dict(rank=expected_rank(out)))

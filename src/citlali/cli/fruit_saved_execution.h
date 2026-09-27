@@ -85,7 +85,7 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
                     (speed_experiment?(rank==10 || rank==15):(rank==5 || rank==10 || rank==15)) && (!speed_experiment || (prospective["feedback_count"].as<int>()==owner["nonzero_cycles"].as<int>() && (prospective["experimental_method"].as<std::string>()=="observed-als" || prospective["experimental_method"].as<std::string>()=="warm-observed-als" || prospective["experimental_method"].as<std::string>()=="masked-covariance-count-v1"))) && (prospective["ptc"]["method"].as<std::string>()=="observed-als" || (speed_experiment && prospective["experimental_method"].as<std::string>()=="masked-covariance-count-v1" && prospective["ptc"]["method"].as<std::string>()=="masked-covariance-count-v1")) &&
                     prospective["observation"].as<int>()==152430 && prospective["subobservation"].as<int>()==0 && prospective["scan"].as<int>()==2 &&
                     prospective["array"].as<std::string>()=="a2000" && prospective["networks"].as<std::vector<int>>()==std::vector<int>({11,12}) &&
-                    prospective["coverage_policy"].as<std::string>()=="high-coverage-informational" && prospective["cycles"].as<int>()==10 &&
+                    prospective["coverage_policy"].as<std::string>()=="high-coverage-informational" && prospective["cycles"].as<int>()==((prospective["campaign_scope"] && prospective["campaign_scope"].as<std::string>()=="rtc-cost-response-v1")?5:10) &&
                     policy=="BASE-POINT" && owner["threshold"].as<double>()==3 && branch.rfind("D-",0)!=0,
                     "FRUIT bounded rank experiment scope");
             } else if(reference) {

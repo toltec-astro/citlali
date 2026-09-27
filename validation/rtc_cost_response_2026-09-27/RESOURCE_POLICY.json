@@ -1,0 +1,20 @@
+{
+  "peak_disk_ceiling_bytes": 20000000000,
+  "free_space_reserve_bytes": 2000000000,
+  "available_bytes_preflight": 641044873216,
+  "native_cells": 7640626,
+  "upstream_reservation_bytes": 1956000256,
+  "per_feedback_reservation_bytes": 366750048,
+  "metadata_reserve_bytes": 100000000,
+  "derivation": "observed original dimensions; existing conservative 256 bytes/cell upstream and48 bytes/cell per invocation; serial workload, bounded run retention;20GB hard campaign ceiling below available space",
+  "trajectory_limits": {
+    "planned": 15,
+    "absolute": 17,
+    "outer_feedback_planned": 75,
+    "outer_feedback_absolute": 85,
+    "rtc_only": 4
+  },
+  "capture": "Normal REF has unchanged RTC dumps and lightweight timing; final already-written PTC/operand arrays retained identically in A/B/C. Extra native-coordinate/raw-x/r capture in one counted RTC-only diagnostic per measured-response family, outside REF timing. Pre-RTC response branches include their own capture overhead and are not latency repetitions.",
+  "accounting": "prior campaign bytes reconciled outside timed process; run initial scan once, disjoint stage writes tallied, conservative no deletion credit; final run reconciliation included in command exit",
+  "CPU": "two network workers, one feedback worker, numeric libraries one thread; one observation at a time; no concurrent build/report/science"
+}
