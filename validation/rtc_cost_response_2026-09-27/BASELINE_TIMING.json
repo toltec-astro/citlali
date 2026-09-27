@@ -1,0 +1,971 @@
+[
+  {
+    "rep": 1,
+    "ready": 71.606881333,
+    "analysis": 71.699367958,
+    "exit": 71.9235265,
+    "cpu": {
+      "user": 66.728472,
+      "system": 5.351083999999999
+    },
+    "sampled_tree_RSS": 1702526976,
+    "networks": [
+      {
+        "network": 11,
+        "RTC_seconds": 11.478562,
+        "RTC_process_CPU_envelope": 20.483652,
+        "intervals": [
+          {
+            "stage": "input_digests_verified",
+            "seconds": 0.119013333
+          },
+          {
+            "stage": "APT_verified_and_bound",
+            "seconds": 0.00013295799999998859
+          },
+          {
+            "stage": "native_samples_loaded",
+            "seconds": 0.6880021669999999
+          },
+          {
+            "stage": "processing_scan_native_projection_complete",
+            "seconds": 0.23401562499999995
+          },
+          {
+            "stage": "ingress_complete",
+            "seconds": 0.00120529200000008
+          },
+          {
+            "stage": "spike_screen_start",
+            "seconds": 9.045800000007098e-05
+          },
+          {
+            "stage": "spike_screen_complete",
+            "seconds": 0.140028708
+          },
+          {
+            "stage": "transient_assessment_complete",
+            "seconds": 1.2154916669999998
+          },
+          {
+            "stage": "initial_spectra_complete",
+            "seconds": 1.2771086670000003
+          },
+          {
+            "stage": "initial_learn_complete",
+            "seconds": 0.03606987499999992
+          },
+          {
+            "stage": "initial_evidence_publication_complete",
+            "seconds": 0.10525675000000012
+          },
+          {
+            "stage": "transient_support_decisions_complete",
+            "seconds": 0.05645045800000004
+          },
+          {
+            "stage": "detector_plans_complete",
+            "seconds": 0.24959620799999982
+          },
+          {
+            "stage": "RTC_apply_start",
+            "seconds": 0.00039695899999969697
+          },
+          {
+            "stage": "RTC_apply_complete",
+            "seconds": 1.5677175410000004
+          },
+          {
+            "stage": "output_grid_inspection_complete",
+            "seconds": 0.05623412499999958
+          },
+          {
+            "stage": "RTC_arrays_exported",
+            "seconds": 1.6067870840000005
+          },
+          {
+            "stage": "post_notch_learned",
+            "seconds": 1.0765207079999994
+          },
+          {
+            "stage": "post_notch_matched_outcome",
+            "seconds": 1.0237122500000009
+          },
+          {
+            "stage": "post_notch_outcome_exported",
+            "seconds": 0.771274708
+          },
+          {
+            "stage": "post_lowpass_learned",
+            "seconds": 0.6872688339999993
+          },
+          {
+            "stage": "post_lowpass_matched_outcome",
+            "seconds": 0.6760204160000001
+          },
+          {
+            "stage": "post_lowpass_outcome_exported",
+            "seconds": 0.8588384169999994
+          },
+          {
+            "stage": "relearning_complete",
+            "seconds": 0.05580133300000156
+          },
+          {
+            "stage": "RTC_finalized",
+            "seconds": 0.017987291999999044
+          },
+          {
+            "stage": "CAL_start",
+            "seconds": 0.0005849169999994075
+          },
+          {
+            "stage": "CAL_AST_start",
+            "seconds": 0.014225250000000855
+          },
+          {
+            "stage": "CAL_AST_complete",
+            "seconds": 0.031390832999999674
+          },
+          {
+            "stage": "CAL_learn_complete",
+            "seconds": 0.002352957999999461
+          },
+          {
+            "stage": "CAL_plan_complete",
+            "seconds": 0.026989125000000058
+          },
+          {
+            "stage": "CAL_apply_complete",
+            "seconds": 0.007325834000001308
+          },
+          {
+            "stage": "CAL_publication_complete",
+            "seconds": 5.445371082999998
+          },
+          {
+            "stage": "PTC_start",
+            "seconds": 0.0008944170000013685
+          },
+          {
+            "stage": "downstream_complete",
+            "seconds": 1.157731666
+          },
+          {
+            "stage": "arm_receipts_written",
+            "seconds": 0.34879437500000066
+          },
+          {
+            "stage": "original_pair_verified_unchanged",
+            "seconds": 0.2246097089999992
+          },
+          {
+            "stage": "root_receipt_written",
+            "seconds": 0.11322787499999976
+          }
+        ]
+      },
+      {
+        "network": 12,
+        "RTC_seconds": 10.649234208,
+        "RTC_process_CPU_envelope": 19.554716000000003,
+        "intervals": [
+          {
+            "stage": "input_digests_verified",
+            "seconds": 0.122386458
+          },
+          {
+            "stage": "APT_verified_and_bound",
+            "seconds": 9.362499999999996e-05
+          },
+          {
+            "stage": "native_samples_loaded",
+            "seconds": 0.831244042
+          },
+          {
+            "stage": "processing_scan_native_projection_complete",
+            "seconds": 0.240059166
+          },
+          {
+            "stage": "ingress_complete",
+            "seconds": 0.00047083399999992004
+          },
+          {
+            "stage": "spike_screen_start",
+            "seconds": 8.574999999999555e-05
+          },
+          {
+            "stage": "spike_screen_complete",
+            "seconds": 0.145058833
+          },
+          {
+            "stage": "transient_assessment_complete",
+            "seconds": 0.08836291699999999
+          },
+          {
+            "stage": "initial_spectra_complete",
+            "seconds": 1.2957188330000002
+          },
+          {
+            "stage": "initial_learn_complete",
+            "seconds": 0.03423199999999982
+          },
+          {
+            "stage": "initial_evidence_publication_complete",
+            "seconds": 0.10785737500000003
+          },
+          {
+            "stage": "transient_support_decisions_complete",
+            "seconds": 0.06499145800000017
+          },
+          {
+            "stage": "detector_plans_complete",
+            "seconds": 0.23525608399999998
+          },
+          {
+            "stage": "RTC_apply_start",
+            "seconds": 0.00027891599999962935
+          },
+          {
+            "stage": "RTC_apply_complete",
+            "seconds": 1.5495187919999998
+          },
+          {
+            "stage": "output_grid_inspection_complete",
+            "seconds": 0.05602837500000035
+          },
+          {
+            "stage": "RTC_arrays_exported",
+            "seconds": 1.88394275
+          },
+          {
+            "stage": "post_notch_learned",
+            "seconds": 1.095974
+          },
+          {
+            "stage": "post_notch_matched_outcome",
+            "seconds": 1.0909455829999999
+          },
+          {
+            "stage": "post_notch_outcome_exported",
+            "seconds": 0.7990879589999995
+          },
+          {
+            "stage": "post_lowpass_learned",
+            "seconds": 0.7226193750000007
+          },
+          {
+            "stage": "post_lowpass_matched_outcome",
+            "seconds": 0.682480666
+          },
+          {
+            "stage": "post_lowpass_outcome_exported",
+            "seconds": 0.7411053340000002
+          },
+          {
+            "stage": "relearning_complete",
+            "seconds": 0.03959558299999877
+          },
+          {
+            "stage": "RTC_finalized",
+            "seconds": 0.016179375000000107
+          },
+          {
+            "stage": "CAL_start",
+            "seconds": 0.0004997920000011646
+          },
+          {
+            "stage": "CAL_AST_start",
+            "seconds": 0.013765082999999123
+          },
+          {
+            "stage": "CAL_AST_complete",
+            "seconds": 0.03002604200000114
+          },
+          {
+            "stage": "CAL_learn_complete",
+            "seconds": 0.0021567499999992634
+          },
+          {
+            "stage": "CAL_plan_complete",
+            "seconds": 0.024319458000000793
+          },
+          {
+            "stage": "CAL_apply_complete",
+            "seconds": 0.006267124999999041
+          },
+          {
+            "stage": "CAL_publication_complete",
+            "seconds": 5.773990916999999
+          },
+          {
+            "stage": "PTC_start",
+            "seconds": 0.0011591250000009268
+          },
+          {
+            "stage": "downstream_complete",
+            "seconds": 1.358271375000001
+          },
+          {
+            "stage": "arm_receipts_written",
+            "seconds": 0.34521941599999906
+          },
+          {
+            "stage": "original_pair_verified_unchanged",
+            "seconds": 0.23996350000000177
+          },
+          {
+            "stage": "root_receipt_written",
+            "seconds": 0.1019164169999982
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "rep": 2,
+    "ready": 72.35836625,
+    "analysis": 72.448665583,
+    "exit": 72.676304208,
+    "cpu": {
+      "user": 67.512362,
+      "system": 5.580049
+    },
+    "sampled_tree_RSS": 1904230400,
+    "networks": [
+      {
+        "network": 11,
+        "RTC_seconds": 11.835359041,
+        "RTC_process_CPU_envelope": 20.636619,
+        "intervals": [
+          {
+            "stage": "input_digests_verified",
+            "seconds": 0.121282541
+          },
+          {
+            "stage": "APT_verified_and_bound",
+            "seconds": 0.00012179200000000945
+          },
+          {
+            "stage": "native_samples_loaded",
+            "seconds": 0.837939
+          },
+          {
+            "stage": "processing_scan_native_projection_complete",
+            "seconds": 0.23960970800000014
+          },
+          {
+            "stage": "ingress_complete",
+            "seconds": 0.0005683340000000037
+          },
+          {
+            "stage": "spike_screen_start",
+            "seconds": 7.937499999988162e-05
+          },
+          {
+            "stage": "spike_screen_complete",
+            "seconds": 0.14294879100000002
+          },
+          {
+            "stage": "transient_assessment_complete",
+            "seconds": 1.257858959
+          },
+          {
+            "stage": "initial_spectra_complete",
+            "seconds": 1.2919390000000002
+          },
+          {
+            "stage": "initial_learn_complete",
+            "seconds": 0.03453862499999971
+          },
+          {
+            "stage": "initial_evidence_publication_complete",
+            "seconds": 0.10225008299999994
+          },
+          {
+            "stage": "transient_support_decisions_complete",
+            "seconds": 0.05321045800000057
+          },
+          {
+            "stage": "detector_plans_complete",
+            "seconds": 0.2455746249999997
+          },
+          {
+            "stage": "RTC_apply_start",
+            "seconds": 0.00042045899999987313
+          },
+          {
+            "stage": "RTC_apply_complete",
+            "seconds": 1.600893708
+          },
+          {
+            "stage": "output_grid_inspection_complete",
+            "seconds": 0.0590312079999995
+          },
+          {
+            "stage": "RTC_arrays_exported",
+            "seconds": 1.7588842500000004
+          },
+          {
+            "stage": "post_notch_learned",
+            "seconds": 1.0752725420000004
+          },
+          {
+            "stage": "post_notch_matched_outcome",
+            "seconds": 1.0479297919999997
+          },
+          {
+            "stage": "post_notch_outcome_exported",
+            "seconds": 0.7794787079999992
+          },
+          {
+            "stage": "post_lowpass_learned",
+            "seconds": 0.7107642500000004
+          },
+          {
+            "stage": "post_lowpass_matched_outcome",
+            "seconds": 0.6912872080000003
+          },
+          {
+            "stage": "post_lowpass_outcome_exported",
+            "seconds": 0.7487723339999999
+          },
+          {
+            "stage": "relearning_complete",
+            "seconds": 0.21415633300000003
+          },
+          {
+            "stage": "RTC_finalized",
+            "seconds": 0.020147707999999653
+          },
+          {
+            "stage": "CAL_start",
+            "seconds": 0.000773209000000108
+          },
+          {
+            "stage": "CAL_AST_start",
+            "seconds": 0.016025666000000882
+          },
+          {
+            "stage": "CAL_AST_complete",
+            "seconds": 0.031550083999999146
+          },
+          {
+            "stage": "CAL_learn_complete",
+            "seconds": 0.002222541000000078
+          },
+          {
+            "stage": "CAL_plan_complete",
+            "seconds": 0.028169958999999523
+          },
+          {
+            "stage": "CAL_apply_complete",
+            "seconds": 0.009611540999999946
+          },
+          {
+            "stage": "CAL_publication_complete",
+            "seconds": 3.8981062499999997
+          },
+          {
+            "stage": "PTC_start",
+            "seconds": 0.0011694589999997618
+          },
+          {
+            "stage": "downstream_complete",
+            "seconds": 1.3564484580000027
+          },
+          {
+            "stage": "arm_receipts_written",
+            "seconds": 0.3525518329999997
+          },
+          {
+            "stage": "original_pair_verified_unchanged",
+            "seconds": 0.22695587499999803
+          },
+          {
+            "stage": "root_receipt_written",
+            "seconds": 0.096275459000001
+          }
+        ]
+      },
+      {
+        "network": 12,
+        "RTC_seconds": 10.498334083,
+        "RTC_process_CPU_envelope": 19.403318000000002,
+        "intervals": [
+          {
+            "stage": "input_digests_verified",
+            "seconds": 0.12104050000000001
+          },
+          {
+            "stage": "APT_verified_and_bound",
+            "seconds": 0.0001704589999999978
+          },
+          {
+            "stage": "native_samples_loaded",
+            "seconds": 0.713230833
+          },
+          {
+            "stage": "processing_scan_native_projection_complete",
+            "seconds": 0.24207283300000004
+          },
+          {
+            "stage": "ingress_complete",
+            "seconds": 0.001207500000000028
+          },
+          {
+            "stage": "spike_screen_start",
+            "seconds": 9.095900000000157e-05
+          },
+          {
+            "stage": "spike_screen_complete",
+            "seconds": 0.14714854099999997
+          },
+          {
+            "stage": "transient_assessment_complete",
+            "seconds": 0.08557266699999988
+          },
+          {
+            "stage": "initial_spectra_complete",
+            "seconds": 1.3363589580000002
+          },
+          {
+            "stage": "initial_learn_complete",
+            "seconds": 0.036798499999999734
+          },
+          {
+            "stage": "initial_evidence_publication_complete",
+            "seconds": 0.09555070900000029
+          },
+          {
+            "stage": "transient_support_decisions_complete",
+            "seconds": 0.05923349999999994
+          },
+          {
+            "stage": "detector_plans_complete",
+            "seconds": 0.23877595800000018
+          },
+          {
+            "stage": "RTC_apply_start",
+            "seconds": 0.00027762499999983703
+          },
+          {
+            "stage": "RTC_apply_complete",
+            "seconds": 1.5485832079999997
+          },
+          {
+            "stage": "output_grid_inspection_complete",
+            "seconds": 0.055116792000000636
+          },
+          {
+            "stage": "RTC_arrays_exported",
+            "seconds": 1.6522834169999996
+          },
+          {
+            "stage": "post_notch_learned",
+            "seconds": 1.0946554160000002
+          },
+          {
+            "stage": "post_notch_matched_outcome",
+            "seconds": 1.1357166669999996
+          },
+          {
+            "stage": "post_notch_outcome_exported",
+            "seconds": 0.7977058330000002
+          },
+          {
+            "stage": "post_lowpass_learned",
+            "seconds": 0.7044079169999993
+          },
+          {
+            "stage": "post_lowpass_matched_outcome",
+            "seconds": 0.6976685420000006
+          },
+          {
+            "stage": "post_lowpass_outcome_exported",
+            "seconds": 0.7565665409999998
+          },
+          {
+            "stage": "relearning_complete",
+            "seconds": 0.03944037499999986
+          },
+          {
+            "stage": "RTC_finalized",
+            "seconds": 0.016472916999999754
+          },
+          {
+            "stage": "CAL_start",
+            "seconds": 0.0006536669999999134
+          },
+          {
+            "stage": "CAL_AST_start",
+            "seconds": 0.013677500000000009
+          },
+          {
+            "stage": "CAL_AST_complete",
+            "seconds": 0.02964591600000155
+          },
+          {
+            "stage": "CAL_learn_complete",
+            "seconds": 0.002426999999999069
+          },
+          {
+            "stage": "CAL_plan_complete",
+            "seconds": 0.025196000000001106
+          },
+          {
+            "stage": "CAL_apply_complete",
+            "seconds": 0.006687083999999288
+          },
+          {
+            "stage": "CAL_publication_complete",
+            "seconds": 5.555585165999998
+          },
+          {
+            "stage": "PTC_start",
+            "seconds": 0.0012905420000031143
+          },
+          {
+            "stage": "downstream_complete",
+            "seconds": 1.1314787499999994
+          },
+          {
+            "stage": "arm_receipts_written",
+            "seconds": 0.36842249999999765
+          },
+          {
+            "stage": "original_pair_verified_unchanged",
+            "seconds": 0.22962537500000124
+          },
+          {
+            "stage": "root_receipt_written",
+            "seconds": 0.09761854199999931
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "rep": 3,
+    "ready": 73.4877505,
+    "analysis": 73.575384417,
+    "exit": 73.7634575,
+    "cpu": {
+      "user": 67.89097699999999,
+      "system": 5.3134939999999995
+    },
+    "sampled_tree_RSS": 1702920192,
+    "networks": [
+      {
+        "network": 11,
+        "RTC_seconds": 11.717145042,
+        "RTC_process_CPU_envelope": 21.122735000000002,
+        "intervals": [
+          {
+            "stage": "input_digests_verified",
+            "seconds": 0.121656417
+          },
+          {
+            "stage": "APT_verified_and_bound",
+            "seconds": 0.00013187499999998964
+          },
+          {
+            "stage": "native_samples_loaded",
+            "seconds": 0.692884458
+          },
+          {
+            "stage": "processing_scan_native_projection_complete",
+            "seconds": 0.2380117920000001
+          },
+          {
+            "stage": "ingress_complete",
+            "seconds": 0.0009064579999999989
+          },
+          {
+            "stage": "spike_screen_start",
+            "seconds": 8.98329999998726e-05
+          },
+          {
+            "stage": "spike_screen_complete",
+            "seconds": 0.14510050000000008
+          },
+          {
+            "stage": "transient_assessment_complete",
+            "seconds": 1.2499687499999999
+          },
+          {
+            "stage": "initial_spectra_complete",
+            "seconds": 1.441034459
+          },
+          {
+            "stage": "initial_learn_complete",
+            "seconds": 0.036459083
+          },
+          {
+            "stage": "initial_evidence_publication_complete",
+            "seconds": 0.1139602080000004
+          },
+          {
+            "stage": "transient_support_decisions_complete",
+            "seconds": 0.061477958999999416
+          },
+          {
+            "stage": "detector_plans_complete",
+            "seconds": 0.2501155000000006
+          },
+          {
+            "stage": "RTC_apply_start",
+            "seconds": 0.0003968749999998522
+          },
+          {
+            "stage": "RTC_apply_complete",
+            "seconds": 1.6122780829999996
+          },
+          {
+            "stage": "output_grid_inspection_complete",
+            "seconds": 0.06177079199999991
+          },
+          {
+            "stage": "RTC_arrays_exported",
+            "seconds": 1.5773675000000003
+          },
+          {
+            "stage": "post_notch_learned",
+            "seconds": 1.0920585000000003
+          },
+          {
+            "stage": "post_notch_matched_outcome",
+            "seconds": 1.0642728330000004
+          },
+          {
+            "stage": "post_notch_outcome_exported",
+            "seconds": 0.78982025
+          },
+          {
+            "stage": "post_lowpass_learned",
+            "seconds": 0.7319506249999996
+          },
+          {
+            "stage": "post_lowpass_matched_outcome",
+            "seconds": 0.7030716249999998
+          },
+          {
+            "stage": "post_lowpass_outcome_exported",
+            "seconds": 0.7364877500000002
+          },
+          {
+            "stage": "relearning_complete",
+            "seconds": 0.03178304199999893
+          },
+          {
+            "stage": "RTC_finalized",
+            "seconds": 0.017770708000000468
+          },
+          {
+            "stage": "CAL_start",
+            "seconds": 0.0006865000000004784
+          },
+          {
+            "stage": "CAL_AST_start",
+            "seconds": 0.014428207999999998
+          },
+          {
+            "stage": "CAL_AST_complete",
+            "seconds": 0.03172845899999999
+          },
+          {
+            "stage": "CAL_learn_complete",
+            "seconds": 0.0022922909999998353
+          },
+          {
+            "stage": "CAL_plan_complete",
+            "seconds": 0.02673212500000055
+          },
+          {
+            "stage": "CAL_apply_complete",
+            "seconds": 0.006972583999999671
+          },
+          {
+            "stage": "CAL_publication_complete",
+            "seconds": 6.411890832999999
+          },
+          {
+            "stage": "PTC_start",
+            "seconds": 0.001202166999998866
+          },
+          {
+            "stage": "downstream_complete",
+            "seconds": 0.9121512500000009
+          },
+          {
+            "stage": "arm_receipts_written",
+            "seconds": 0.3421793750000006
+          },
+          {
+            "stage": "original_pair_verified_unchanged",
+            "seconds": 0.23567050000000123
+          },
+          {
+            "stage": "root_receipt_written",
+            "seconds": 0.09309241599999751
+          }
+        ]
+      },
+      {
+        "network": 12,
+        "RTC_seconds": 10.549066209,
+        "RTC_process_CPU_envelope": 19.650228999999996,
+        "intervals": [
+          {
+            "stage": "input_digests_verified",
+            "seconds": 0.122433209
+          },
+          {
+            "stage": "APT_verified_and_bound",
+            "seconds": 8.495799999999609e-05
+          },
+          {
+            "stage": "native_samples_loaded",
+            "seconds": 0.8414794999999999
+          },
+          {
+            "stage": "processing_scan_native_projection_complete",
+            "seconds": 0.24240141699999995
+          },
+          {
+            "stage": "ingress_complete",
+            "seconds": 0.0005025830000000564
+          },
+          {
+            "stage": "spike_screen_start",
+            "seconds": 9.083300000001238e-05
+          },
+          {
+            "stage": "spike_screen_complete",
+            "seconds": 0.14897054200000004
+          },
+          {
+            "stage": "transient_assessment_complete",
+            "seconds": 0.08711020799999991
+          },
+          {
+            "stage": "initial_spectra_complete",
+            "seconds": 1.3611441250000003
+          },
+          {
+            "stage": "initial_learn_complete",
+            "seconds": 0.09076624999999972
+          },
+          {
+            "stage": "initial_evidence_publication_complete",
+            "seconds": 0.11365045900000004
+          },
+          {
+            "stage": "transient_support_decisions_complete",
+            "seconds": 0.06884637500000013
+          },
+          {
+            "stage": "detector_plans_complete",
+            "seconds": 0.2725393330000001
+          },
+          {
+            "stage": "RTC_apply_start",
+            "seconds": 0.00031374999999966846
+          },
+          {
+            "stage": "RTC_apply_complete",
+            "seconds": 1.6008869999999997
+          },
+          {
+            "stage": "output_grid_inspection_complete",
+            "seconds": 0.056359417000000356
+          },
+          {
+            "stage": "RTC_arrays_exported",
+            "seconds": 1.41137975
+          },
+          {
+            "stage": "post_notch_learned",
+            "seconds": 1.1030098749999997
+          },
+          {
+            "stage": "post_notch_matched_outcome",
+            "seconds": 1.1435893330000004
+          },
+          {
+            "stage": "post_notch_outcome_exported",
+            "seconds": 0.8321679579999994
+          },
+          {
+            "stage": "post_lowpass_learned",
+            "seconds": 0.7256451669999997
+          },
+          {
+            "stage": "post_lowpass_matched_outcome",
+            "seconds": 0.718957875000001
+          },
+          {
+            "stage": "post_lowpass_outcome_exported",
+            "seconds": 0.762772416999999
+          },
+          {
+            "stage": "relearning_complete",
+            "seconds": 0.034469333000000546
+          },
+          {
+            "stage": "RTC_finalized",
+            "seconds": 0.01648704199999962
+          },
+          {
+            "stage": "CAL_start",
+            "seconds": 0.0006437909999998936
+          },
+          {
+            "stage": "CAL_AST_start",
+            "seconds": 0.01482445900000151
+          },
+          {
+            "stage": "CAL_AST_complete",
+            "seconds": 0.029861290999999568
+          },
+          {
+            "stage": "CAL_learn_complete",
+            "seconds": 0.0022619170000002242
+          },
+          {
+            "stage": "CAL_plan_complete",
+            "seconds": 0.026430124999999194
+          },
+          {
+            "stage": "CAL_apply_complete",
+            "seconds": 0.00785945800000043
+          },
+          {
+            "stage": "CAL_publication_complete",
+            "seconds": 4.059666875
+          },
+          {
+            "stage": "PTC_start",
+            "seconds": 0.0009769170000009098
+          },
+          {
+            "stage": "downstream_complete",
+            "seconds": 1.1530565829999997
+          },
+          {
+            "stage": "arm_receipts_written",
+            "seconds": 0.3566319170000014
+          },
+          {
+            "stage": "original_pair_verified_unchanged",
+            "seconds": 0.24047624999999684
+          },
+          {
+            "stage": "root_receipt_written",
+            "seconds": 0.09588270800000132
+          }
+        ]
+      }
+    ]
+  }
+]

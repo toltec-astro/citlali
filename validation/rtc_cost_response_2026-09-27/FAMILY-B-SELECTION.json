@@ -1,0 +1,29 @@
+{
+  "family": "B",
+  "endpoint": "warm-rank10-N5",
+  "changes": [
+    "batch contiguous matrix binary writes in the existing RTC/connected adapter",
+    "batch RTC state/support/cause/schedule binary writes; unchanged payloads"
+  ],
+  "measured_rationale": "A REF network11 RTC array export1.607s and outcome exports1.630s; same trace repeats below. RTC kernel1.568s, transient validation0.000071s: repeated validation hypothesis rejected. Preserve scientific work, reduce millions of tiny stream writes without dropping any files or fields.",
+  "expected_effect": "reduce synchronous binary serialization cost, identical arrays/plans/masks/measurements; no numerical or scheduling change",
+  "comparator": "three A unmodified references; exact native RTC .f64/.u8/.i64 + discrete realized choices and all M0/T5 map/candidate/noise/endpoint records",
+  "matrix": {
+    "REF": 3,
+    "response": "inherited only after exact unchanged-method gate"
+  },
+  "baseline_evidence": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/report/A/population-band-summary.json",
+      "sha256": "6d225b5b14328cd5f484e205304700f7135c1b1e8b9476c918ecafcbcd4a3953"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/report/A/population-support.json",
+      "sha256": "385a43b4af927b6c40ff152a8319dd9c2ab20d551ccc0cde65e8fe1e00910a99"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/report/A/source-responses.json",
+      "sha256": "1cb62cfb3b6e6ff7fcaaf2e9558fffa8160db114eee85e2a5aa1267400d69b3e"
+    }
+  ]
+}
