@@ -9,7 +9,7 @@ import point_processing as processing
 import point_speed_experiment as experiment
 
 @pytest.mark.parametrize('N',[0,1,3,5,10])
-@pytest.mark.parametrize('failed_guard',[False,True])
+@pytest.mark.parametrize('failed_guard',[False,'guard','cleanup'])
 def test_exact_short_termination_and_one_endpoint(tmp_path,monkeypatch,N,failed_guard):
     out=tmp_path/'run';(out/'freeze/shapes').mkdir(parents=True)
     p=out/'freeze/prospective.json';save_json(p,dict(schema='citlali-point-speed-pca-v1',observation=152430,array='a2000',feedback_count=N,ptc=dict(rank=10)))
@@ -30,13 +30,15 @@ def test_exact_short_termination_and_one_endpoint(tmp_path,monkeypatch,N,failed_
     monkeypatch.setattr(processing,'infer_base',lambda *a:(m,({},None,None)))
     monkeypatch.setattr(processing,'read_yaml',lambda *a:{})
     def check(*a,**k):
-        if failed_guard:raise ValueError('forced native support failure')
+        if failed_guard=='guard':raise ValueError('forced native support failure')
         return {}
     monkeypatch.setattr(processing,'processing_guard',check)
     monkeypatch.setenv('CITLALI_POINT_TIMING',str(out/'timing.jsonl'))
     monkeypatch.setattr(processing,'learned_state',lambda *a:[])
     monkeypatch.setattr(processing,'selection_difference',lambda *a:{})
-    monkeypatch.setattr(processing,'cleanup_cycle',lambda *a,**k:None)
+    def cleanup(*a,**k):
+        if failed_guard=='cleanup':raise OSError('forced cleanup I/O failure')
+    monkeypatch.setattr(processing,'cleanup_cycle',cleanup)
     def call(out,binary,q,d):
         calls.append(json.loads(q.read_text())['cycle_index']);d=d/'products';d.mkdir(parents=True)
         for n in ('total.fits','restored.fits','receipt.yaml'):(d/n).write_text('{}')

@@ -217,10 +217,10 @@ def execute_branch(out,binary,pol,branch):
             cause,reason=continuation_reason(prepared[0],summary,new,c['header']);rec.update(ready=cause is None,stop_kind=cause,stop_reason=reason)
             state=ready_state(array,k,cp,products/'total.fits',products/'receipt.yaml',parents(out),cause is None,reason);state.update(branch=branch,policy=pol,owner_sha256=digest(op));sp=d/'state.json';save_json(sp,state);rec['state_path']=str(sp)
             cleanup_cycle(out,products,keep_projection=branch=='REF' and not reference(out))
-        except (ValueError,RuntimeError,KeyError,OSError) as e:rec.update(stop_kind='computation_or_processing',stop_reason=str(e))
+        except (ValueError,RuntimeError,KeyError,OSError) as e:rec.update(ready=False,stop_kind='computation_or_processing',stop_reason=str(e))
         rec['wall_seconds']=time.perf_counter()-tic;save_json(d/'cycle.json',rec);history.append(rec);prior=rec
         if 'measurement' in rec:
-            if speed_experiment(out) and 'state_path' not in rec:
+            if speed_experiment(out) and rec.get('stop_kind')=='computation_or_processing':
                 sp=d/'state.json';save_json(sp,dict(cycle_index=k,ready=False,stop_kind=rec.get('stop_kind','processing_failed'),stop_reason=rec.get('stop_reason'),measurement=m));rec['state_path']=str(sp)
             ready(out,k,products/'total.fits',m,sp)
         print(json.dumps(dict(policy=pol,branch=branch,cycle=k,ready=rec['ready'],reason=rec.get('stop_reason'))),flush=True)
