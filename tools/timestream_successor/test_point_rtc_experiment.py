@@ -50,3 +50,29 @@ def test_rtc_limits_duplicates_and_defect_only_replacement(tmp_path):
 def test_rtc_only_cap_independent(tmp_path):
     for i in range(4):consume(tmp_path,'rtc_only',dict(run=i))
     with pytest.raises(ValueError):consume(tmp_path,'rtc_only',dict(run=4))
+
+
+@pytest.mark.parametrize('exit_code,overrun',[(1,False),(0,True),(1,True)])
+def test_diagnostic_accounts_writes_even_on_failure(tmp_path,exit_code,overrun):
+    from point_rtc_experiment import accounted_capture
+    budget=dict(peak_ceiling_bytes=10000,free_space_reserve_bytes=0,
+                metadata_reserve_bytes=1000,shared_upstream_allowance=100)
+    def invoke():
+        d=tmp_path/'native';d.mkdir();(d/'data').write_bytes(b'x'*(101 if overrun else 20))
+        return exit_code
+    if overrun:
+        with pytest.raises(ValueError,match='exceeded reserved'):accounted_capture(tmp_path,budget,invoke)
+    else:assert accounted_capture(tmp_path,budget,invoke)==exit_code
+    state=json.loads((tmp_path/'storage-ledger.json').read_text())
+    assert state['native_written_bytes']==(101 if overrun else 20)
+    assert state['completed_stages']==1
+
+
+def test_diagnostic_reserves_free_space_before_invocation(tmp_path):
+    from point_rtc_experiment import accounted_capture
+    from types import SimpleNamespace
+    budget=dict(peak_ceiling_bytes=10000,free_space_reserve_bytes=100,
+                metadata_reserve_bytes=1000,shared_upstream_allowance=100)
+    def invoke():raise AssertionError('must not run')
+    with patch('point_storage.shutil.disk_usage',return_value=SimpleNamespace(free=199)):
+        with pytest.raises(ValueError,match='free-space reserve'):accounted_capture(tmp_path,budget,invoke)

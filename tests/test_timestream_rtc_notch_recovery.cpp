@@ -10,6 +10,7 @@
 #include "../tools/timestream_successor/rtc_multidetector_bindings.h"
 #include "../src/citlali/cli/rtc_array_filter_input.h"
 #include <filesystem>
+#include <citlali/core/pipeline/point_rtc_source_probe.h>
 #include <gtest/gtest.h>
 #include <citlali/core/pipeline/timestream_processing_scan_native.h>
 #include <citlali/core/pipeline/timestream_rtc_common_mode.h>
@@ -2067,6 +2068,62 @@ struct CalFixture {
   auto plan() const {return CalPlan::consider(evidence(),terminal->val_snapshot_handle(),1);}
 };
 }
+
+TEST(point_rtc_source_probe, native_midpoints_AST_pixels_and_signed_CAL_preserve_original_pair) {
+  CalFixture f;
+  // Move 0.2 arcsec per native sample across the one-arcsec pixel edge.
+  // The one-arcsec detector offset rotates to (-sqrt(.5),sqrt(.5)).
+  const double rate=.2/.008192, center=f.input.times[700];
+  for(Eigen::Index i=0;i<f.telescope["TelTime"].size();++i)
+    f.telescope["TelRa"][i]=(.9+std::sqrt(.5)+rate*(f.telescope["TelTime"][i]-center))*std::numbers::pi/(180*3600);
+  auto align=output_align(f.trial);const auto &net=f.trial.parent->network(0);
+  Eigen::VectorXd times(net.occurrence_count());
+  for(Eigen::Index t=0;t<times.size();++t) {
+    times[t]=align->occurrence_assignment(0,100+t).assigned_time_unix_sec;
+    EXPECT_DOUBLE_EQ(times[t],f.input.times[t]);
+  }
+  auto schedule=evaluate_ast_rtc_schedule(RawTelescopeTrajectory(f.telescope),*f.offsets,0,0,times);
+  auto xy=schedule.detector_tangent_deg(1.,0.);
+  EXPECT_NEAR(xy(700,0)*3600,.9,1e-7);EXPECT_NEAR(xy(701,0)*3600,1.1,1e-7);
+  EXPECT_NEAR(xy(700,1)*3600,std::sqrt(.5),1e-7);
+  std::vector<double> brightness(1681,0);brightness[840]=12;brightness[839]=-3;
+  FruitPointModel sky("native-fixture",{41,41,"grid"},21,21,-2./3600,2./3600,
+      brightness,std::vector<std::uint8_t>(1681,1));
+  EXPECT_DOUBLE_EQ(sky.at(xy(700,0),xy(700,1)).value,12);
+  EXPECT_DOUBLE_EQ(sky.at(xy(701,0),xy(701,1)).value,-3);
+  EXPECT_EQ(sky.at(xy(0,0),xy(0,1)).support,FruitModelSupport::outside);
+  auto original_x=net.values(NativeReadoutCoordinate::x);
+  auto xs=std::vector<NativeReadoutCoordinateState>(net.states(NativeReadoutCoordinate::x).begin(),net.states(NativeReadoutCoordinate::x).end());
+  const auto rs=std::vector<NativeReadoutCoordinateState>(net.states(NativeReadoutCoordinate::r).begin(),net.states(NativeReadoutCoordinate::r).end());
+  xs[700*3+2]=NativeReadoutCoordinateState::measured(true,false,true,false);
+  original_x(700,2)=NAN;
+  auto mapping=std::make_shared<NativeReadoutMappingAuthority>(net.mapping_authority());
+  auto original=NativePairedReadoutNetwork::admit(net.occurrence_axis_handle(),net.detectors(),mapping,
+      original_x,net.values(NativeReadoutCoordinate::r),xs,rs);
+  auto injected=original_x;
+  for(Eigen::Index d=0;d<3;++d)for(Eigen::Index t=0;t<times.size();++t) {
+    const double multiplier=*f.factors[d].flxscale_mJy_beam_per_x *
+        *CalAtmosphereSurface::frozen()->correction(0,.1,schedule.elevation_deg[t]);
+    const auto operand=sky.at(xy(t,0),xy(t,1));
+    auto q=point_rtc_source_probe(original_x(t,d),original.state(NativeReadoutCoordinate::x,100+t,d).valid(),operand,multiplier);
+    injected(t,d)=q.x;
+    if(original.state(NativeReadoutCoordinate::x,100+t,d).valid()) {
+      EXPECT_NEAR(q.raw_increment*multiplier,operand.value,1e-13);
+      EXPECT_NEAR((q.x-original_x(t,d))*multiplier,operand.value,1e-11);
+    }
+  }
+  auto derived=NativePairedReadoutNetwork::admit(net.occurrence_axis_handle(),net.detectors(),mapping,
+      injected,original.values(NativeReadoutCoordinate::r),xs,rs);
+  EXPECT_TRUE(std::isnan(derived.value(NativeReadoutCoordinate::x,800,2)));
+  EXPECT_GT(derived.value(NativeReadoutCoordinate::x,800,0),original.value(NativeReadoutCoordinate::x,800,0));
+  EXPECT_LT(derived.value(NativeReadoutCoordinate::x,800,1),original.value(NativeReadoutCoordinate::x,800,1));
+  for(Eigen::Index d=0;d<3;++d)for(Eigen::Index t=0;t<times.size();++t) {
+    EXPECT_DOUBLE_EQ(derived.value(NativeReadoutCoordinate::r,100+t,d),original.value(NativeReadoutCoordinate::r,100+t,d));
+    for(auto coord:{NativeReadoutCoordinate::x,NativeReadoutCoordinate::r})
+      EXPECT_EQ(derived.state(coord,100+t,d).valid(),original.state(coord,100+t,d).valid());
+  }
+}
+
 TEST(ptc_cal_source, exact_cal_and_VAL_binding_preserves_values_occurrences_and_lineage) {
   CalFixture f;
   auto signal=CalAppliedSignal::apply(f.plan(),f.source(),f.terminal->val_snapshot_handle());

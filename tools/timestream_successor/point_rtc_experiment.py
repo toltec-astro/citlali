@@ -132,15 +132,21 @@ def capture_reference(root,ref,binary,family):
     """One separately counted RTC-only capture, outside REF timings."""
     from run_successor_observation import run
     dest=root/f'{family}-RTC-diagnostic';require(not dest.exists(),'no diagnostic retry')
-    require(tree_bytes(root)+read(ref/'freeze/budget.json')['shared_upstream_allowance']<=CEILING,'diagnostic disk ceiling')
+    budget=read(ref/'freeze/budget.json')
+    budget.update(campaign_retained_bytes=tree_bytes(root),peak_ceiling_bytes=CEILING)
     dest.mkdir();obs=read(ref/'inputs/observation.json')
     for e in obs['networks']:
         cfg=read(Path(e['input']['path']))
         cfg['rtc_source_probe']=dict(schema='point-rtc-source-probe-v1',authority='owner-RTC-cost-response-2026-09-27',branch='REF')
         path=dest/f"network{e['network']}.json";save_json(path,cfg);e['input']=bound(path)
     path=dest/'observation.json';save_json(path,obs)
-    consume(root,'rtc_only',dict(family=family,purpose='original-input native coordinate/calibration capture'))
-    code=run(binary,path,dest/'native',2,'rtc-only')
+    def invoke():
+        consume(root,'rtc_only',dict(family=family,purpose='original-input native coordinate/calibration capture'))
+        return run(binary,path,dest/'native',2,'rtc-only')
+    try:code=accounted_capture(dest,budget,invoke)
+    except Exception as exc:
+        save_json(dest/'DIAGNOSTIC.json',dict(status='failed',reason=str(exc)))
+        raise
     save_json(dest/'DIAGNOSTIC.json',dict(return_code=code,status='completed' if code==0 else 'failed',
         scope='extra RTC-only capture; no PTC or feedback; excluded from normal REF timing; all collection costs retained in RUN.json'))
     require(code==0,'RTC-only capture failed')
@@ -149,6 +155,16 @@ def capture_reference(root,ref,binary,family):
         a=dest/f'native/products/network{nw}/donor-continuity';b=ref/f'upstream/products/network{nw}/donor-continuity'
         for f in sorted(a.glob('*.f64')):
             same=digest(f)==digest(b/f.name);checks.append(dict(network=nw,file=f.name,exact=same));require(same,'diagnostic capture changed RTC output')
-        for f in sorted(a.glob('*.u8')):
+        for f in sorted([*a.glob('*.u8'),*a.glob('*.i64')]):
             same=digest(f)==digest(b/f.name);checks.append(dict(network=nw,file=f.name,exact=same));require(same,'diagnostic capture changed RTC support')
     save_json(dest/'EQUIVALENCE.json',checks)
+
+
+def accounted_capture(dest,budget,invoke):
+    """Apply the trajectory storage contract to an extra RTC-only execution."""
+    storage=RunStorage(dest,budget);allowance=budget['shared_upstream_allowance']
+    storage.reserve(allowance)
+    try:return invoke()
+    finally:
+        storage.finish(dest/'native',allowance)
+        storage.reconcile()
