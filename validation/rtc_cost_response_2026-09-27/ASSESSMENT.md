@@ -43,13 +43,23 @@ The observed high-frequency native residual suppression and deterministic finite
 
 ## Source transfer and final measurement costs
 
-All three exact retained sky rasters enter raw x once, at native ALIGN-assigned timestamps, divided only by selected flxscale×CAL atmosphere. Calibration-only reconstruction error is ≤1.43×10⁻¹⁴mJy/beam. r and immutable input validity are unchanged. Each branch executes its own RTC learning; plans/masks/decisions are retained. Own-REF M0 noise is shared within the family. This starts at RTC, not optical/IQ/ALIGN validation or an adaptive-noise ensemble.
+All three exact retained sky rasters enter mapping-available raw x once, at native ALIGN-assigned timestamps, divided only by selected flxscale×CAL atmosphere. Cells without the required CAL/geometry mapping stay unchanged: 453,618 of 3,801,006 native cells in network 11 and 586,500 of 3,839,620 in network 12 (the same counts in each branch). This is a transfer result for the calibrated science domain, not an injection measurement for those unavailable cells. All 2,870,933 own-REF MAP contributions have the required mapping; none is removed from the ideal control. Calibration-only reconstruction error is ≤1.43×10⁻¹⁴mJy/beam. r and immutable input validity are unchanged. Each branch executes its own RTC learning; plans/masks/decisions are retained. Own-REF M0 noise is shared within the family. This starts at RTC, not optical/IQ/ALIGN validation or an adaptive-noise ensemble.
 
 | Branch | RTC spatial gain / relative error norm | T5 peak increment gain | T5 template gain | T5 aperture2 gain | T5 spatial gain / error norm |
 |---|---|---:|---:|---:|---|
 | C-core-plus | 0.996307 / 0.005973 | 0.991949 | 0.986107 | 0.962218 | 0.984701 / 0.036220 |
 | C-core-minus | 0.996307 / 0.005973 | 0.991965 | 0.993690 | 0.988252 | 0.993262 / 0.025295 |
 | C-shoulder | 0.999117 / 0.001957 | 1.045857 | 0.940874 | 0.839454 | 0.841944 / 0.222338 |
+
+### Conditional RTC-only fitted effects
+
+These measurements add the projected RTC injected-minus-REF delta to the fixed own-REF M0 map. They isolate a conditional RTC transfer diagnostic; they are not independently reduced RTC sky maps or a separate uncertainty endpoint. Discrepancies are actual minus ideal addition. Percentages use the own-REF M0 peak, not the injected increment. No T5 noise scale is applied here.
+
+| Branch | Peak discrepancy (mJy/beam; % of own M0 peak) | East, north (arcsec) | Major, minor FWHM (arcsec) | Template (mJy/beam) | Aperture 2 (mJy/beam·arcsec²) |
+|---|---|---|---|---:|---:|
+| C-core-plus | -0.562658; -0.0997% | -0.000214, 0.000229 | 0.003567, 0.003412 | -0.322965 | 0.7828 |
+| C-core-minus | 0.561523; 0.0995% | 0.000247, -0.000312 | -0.004368, -0.004120 | 0.323761 | -0.3241 |
+| C-shoulder | -0.054524; -0.0097% | -0.000577, 0.000085 | -0.000406, -0.000365 | -0.079097 | -7.1425 |
 
 RTC delta is projected through own-REF MAP coefficients/support; its optional fitted diagnostic adds that delta to REF M0 and is explicitly conditional, not an independently reduced RTC sky map. Ideal sky is native-projected without RTC/PTC attenuation and independently agrees with the containing-pixel raster control. HITS, NORMALIZATION and science support remain exact for these branches; ideal support is never redefined by injection losses.
 

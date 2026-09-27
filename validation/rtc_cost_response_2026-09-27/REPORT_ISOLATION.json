@@ -1,6 +1,6 @@
 {
   "pass_": true,
-  "seconds": 1.905376041017007,
+  "seconds": 1.902077625039965,
   "denied_original_run_tree": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927",
   "denied_protected_files": 31,
   "positive_denial_control": true,
@@ -14,7 +14,7 @@
         "--root",
         "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_cost_response_2026-09-27/compact",
         "--output",
-        "/private/tmp/rtc-report-check-3mn8oyvu/report"
+        "/private/tmp/rtc-report-check-zlz179vy/report"
       ],
       "returncode": 0,
       "stderr": ""
