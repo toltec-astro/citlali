@@ -27,7 +27,11 @@ def timed(name):
 def ready(out,k,map_path,measurement,state_path):
     if not os.environ.get('CITLALI_POINT_TIMING'):return
     # Caller-visible file milestone after required synchronous publications.
-    row=dict(cycle=k,map=str(map_path),measurement=measurement,state=str(state_path))
+    state=json.loads(Path(state_path).read_text())
+    status='accepted' if state.get('ready') else state.get('stop_kind',state.get('status','processing_failed'))
+    row=dict(cycle=k,map=str(map_path),measurement=measurement,state=str(state_path),status=status)
     p=out/f'READY-{k:02d}.json'
-    with p.open('w') as f:json.dump(row,f);f.flush()
-    emit('ready',cycle=k,ready_file=str(p),source_accepted=measurement['guard']['accepted'])
+    pending=p.with_suffix('.pending')
+    with pending.open('w') as f:json.dump(row,f);f.flush()
+    os.replace(pending,p)
+    emit('ready',cycle=k,ready_file=str(p),status=status,source_accepted=measurement['guard']['accepted'])

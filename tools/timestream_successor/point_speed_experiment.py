@@ -8,7 +8,7 @@ from point_fruit_trajectory import bound,verified
 from point_processing import read,upstream,execute_branch,feedback_count
 from point_pipeline_inputs import prepare
 from point_rank_experiment import REFERENCE,OLD
-from point_timing import emit,span
+from point_timing import emit,span,ready
 
 REPO=Path(__file__).resolve().parents[2]
 RETAINED=REPO/'validation/ptc_rank_response_2026-09-26/compact'
@@ -61,7 +61,15 @@ def once(out,binary,entry_ns):
             rec['identity']=validate_environment(out,binary)
             for ref in p['experiment_operands']:verified(ref)
         upstream(out,binary)
-        require(read(out/'UPSTREAM.json')['status']=='accepted','M0 processing/source gate failed')
+        initial=read(out/'UPSTREAM.json')
+        if initial['status']!='accepted':
+            guard=initial.get('guard',{})
+            status='source_rejected' if guard.get('complete') and not guard.get('accepted') else 'processing_failed'
+            if guard and (out/'M0/products/a2000/map.fits').exists():
+                state=out/'M0-state.json';save_json(state,dict(cycle_index=0,ready=False,status=status,guard=guard))
+                ready(out,0,out/'M0/products/a2000/map.fits',dict(guard=guard),state)
+            rec.update(status=status,reason=guard.get('message','upstream processing failed'))
+            save_json(out/'EXECUTION.json',rec);emit('finalized',status=status);return 1
         result=execute_branch(out,binary,'BASE-POINT','REF')
         rec.update(status='completed' if result['ready'] and result['completed_cycle']==N and result.get('endpoint_status')=='completed' else 'processing_failed',completed_cycle=result['completed_cycle'],reason=result.get('stop_reason',result.get('endpoint_reason')))
     except Exception as exc:rec.update(status='processing_failed',reason=str(exc))
@@ -95,9 +103,10 @@ def launch(root,out,binary,review,cache):
         child.wait()
     ended=time.monotonic_ns();after=resource.getrusage(resource.RUSAGE_CHILDREN)
     events=[json.loads(s) for s in (out/'timing.jsonl').read_text().splitlines()] if (out/'timing.jsonl').exists() else []
-    readiness=[dict(cycle=e['cycle'],published_seconds=(e['monotonic_ns']-started)/1e9,caller_observed_seconds=ready_seen.get(Path(e['ready_file']).name)) for e in events if e['event']=='ready']
+    readiness=[dict(cycle=e['cycle'],status=e['status'],published_seconds=(e['monotonic_ns']-started)/1e9,caller_observed_seconds=ready_seen.get(Path(e['ready_file']).name)) for e in events if e['event']=='ready']
     complete=[(e['monotonic_ns']-started)/1e9 for e in events if e['event']=='analysis_complete']
-    rec['process_startups']=dict(outer_python=1,git_validation=2,version_queries=p['feedback_count']+3,native_processing=p['feedback_count']+2,total=8+2*p['feedback_count'],scope='explicit subprocess calls including validation, version and native processing; excludes preparation/comparison outside launch')
+    rec['process_startup_attempts']={'outer_python':1,**{kind:sum(e['event']=='process_start' and e['kind']==kind for e in events) for kind in ('git_revision','git_status','validation_version','native_version','native_processing')}}
+    rec['process_startup_attempts']['scope']='instrumented explicit attempts, including failures; no inference from planned N'
     rec.update(status='completed' if child.returncode==0 else 'failed',exit_code=child.returncode,start_monotonic_ns=started,exit_seconds=(ended-started)/1e9,analysis_complete_seconds=complete[-1] if complete else None,readiness=readiness,aggregate_tree_sampled_RSS=max((s['rss_bytes'] for s in samples),default=0),sampling_interval_seconds=.05,sampled_process_count=len(seen),cpu_seconds=dict(user=after.ru_utime-before.ru_utime,system=after.ru_stime-before.ru_stime),samples=samples)
     save_json(out/'LAUNCH.json',rec)
     return rec

@@ -21,8 +21,12 @@ REPO = Path(__file__).resolve().parents[2]
 
 
 def validate_environment(out, binary):
+    from point_timing import emit
+    emit('process_start',kind='git_revision')
     revision = subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()
+    emit('process_start',kind='git_status')
     require(not subprocess.check_output(['git','status','--porcelain'],cwd=REPO,text=True).strip(), 'clean committed candidate required')
+    emit('process_start',kind='validation_version')
     version = subprocess.check_output([str(binary),'--version'],text=True)
     require(revision[:9] in version, 'candidate/native revision mismatch')
     require(binary.resolve().is_relative_to(REPO/'build'), 'use this durable candidate build')

@@ -219,7 +219,10 @@ def execute_branch(out,binary,pol,branch):
             cleanup_cycle(out,products,keep_projection=branch=='REF' and not reference(out))
         except (ValueError,RuntimeError,KeyError,OSError) as e:rec.update(stop_kind='computation_or_processing',stop_reason=str(e))
         rec['wall_seconds']=time.perf_counter()-tic;save_json(d/'cycle.json',rec);history.append(rec);prior=rec
-        if 'measurement' in rec:ready(out,k,products/'total.fits',m,sp)
+        if 'measurement' in rec:
+            if speed_experiment(out) and 'state_path' not in rec:
+                sp=d/'state.json';save_json(sp,dict(cycle_index=k,ready=False,stop_kind=rec.get('stop_kind','processing_failed'),stop_reason=rec.get('stop_reason'),measurement=m));rec['state_path']=str(sp)
+            ready(out,k,products/'total.fits',m,sp)
         print(json.dumps(dict(policy=pol,branch=branch,cycle=k,ready=rec['ready'],reason=rec.get('stop_reason'))),flush=True)
     result=dict(array=array,policy=pol,branch=branch,ready=history[-1]['ready'],completed_cycle=history[-1]['cycle_index'],stop_reason=history[-1].get('stop_reason'),histories=history,actual_feedback_applications=len(history)-1,wall_seconds=time.perf_counter()-start,m10_applied=False)
     save_json(dest/'SUMMARY.json',result)

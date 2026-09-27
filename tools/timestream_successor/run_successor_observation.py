@@ -9,6 +9,7 @@ import time
 import psutil
 import yaml
 from ptc_spod import digest
+from point_timing import emit
 
 
 def run(binary,input_path,output,workers,terminal='ptc',ptc=None):
@@ -19,12 +20,14 @@ def run(binary,input_path,output,workers,terminal='ptc',ptc=None):
                  output=str(output/'products'),terminal=terminal,network_workers=workers)
     if ptc is not None:request['ptc']=ptc
     config=output/'development.yaml';config.write_text(yaml.safe_dump(request))
+    emit('process_start',kind='native_version')
     result=dict(command=[str(binary.resolve()),str(config)],executable_sha256=digest(binary),
                 version=subprocess.check_output([str(binary),'--version'],text=True,stderr=subprocess.STDOUT),
                 input_sha256=digest(input_path),workers=workers,thread_environment={k:env[k] for k in env if k.endswith('NUM_THREADS') or k in ('VECLIB_MAXIMUM_THREADS','OMP_DYNAMIC')},
                 measurement='fresh process; whole-invocation CPU and sampled RSS; no concurrent diagnostic',samples=[])
     started=time.monotonic()
     with (output/'run.log').open('w') as log:
+        emit('process_start',kind='native_processing')
         child=subprocess.Popen(result['command'],env=env,stdout=log,stderr=subprocess.STDOUT)
         process=psutil.Process(child.pid)
         while child.poll() is None:
