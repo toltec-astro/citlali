@@ -1,0 +1,26 @@
+{
+  "pass_": true,
+  "seconds": 3.3580565419979393,
+  "denied_original_run_tree": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-fixed11-20260927",
+  "denied_protected_files": 31,
+  "positive_denial_control": true,
+  "machine_readable_science_records_exact": true,
+  "figure_count": 6,
+  "commands": [
+    {
+      "command": [
+        "/Users/gwilson/tolteca/bin/python",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/report_point_fixed11.py",
+        "--root",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_fixed11_2026-09-27/compact",
+        "--old",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_cost_response_2026-09-27/compact",
+        "--output",
+        "/private/tmp/rtc-report-check-osw3cw54/report"
+      ],
+      "returncode": 0,
+      "stderr": ""
+    }
+  ],
+  "scope": "saved map/measurement reporting only; no native processing or extra uncertainty endpoints; native RTC population/source diagnostics extracted and preserved before cleanup"
+}

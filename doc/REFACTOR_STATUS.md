@@ -11028,3 +11028,12 @@ validation epoch and one profile per supported reduction family; validate it
 with `tools/baseline/validation_profiles.py --list`. Continue to update this
 document and the dated handoff note at phase gates and material validation
 checkpoints.
+
+### Fixed11 evidence closure
+
+Independent final review passed at `f3428f67f`; saved-only report reproduction
+passed before and after cleanup (six figures and three text/JSON artifacts exact).
+Retained compact evidence:236.8 MB/1,863 files. Guarded cleanup removed126,500
+enumerated native files/8.597 GB; all31 originals and1,608 prior compact objects
+verified unchanged. Remaining campaign metadata/FITS/logs are explicitly counted
+in `validation/rtc_fixed11_2026-09-27/CLOSEOUT.json`. No follow-on or push.

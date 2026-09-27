@@ -1,0 +1,33 @@
+{
+  "status": "complete",
+  "decision": "retain B; do not adopt C-fixed11 for this measured endpoint; stop",
+  "science_revision": "b3d997456a8b9762d9fc323e37827f96b4ec7b37",
+  "reviewed_compact_revision": "f3428f67f92605211b410fcd2081b43aa579493c",
+  "independent_final_review": "pass with recorded limitations; no actionable findings",
+  "compact_files": 1863,
+  "compact_bytes": 236800410,
+  "native_files_removed": 126500,
+  "native_bytes_removed": 8596539588,
+  "remaining_campaign_files": 2786,
+  "remaining_campaign_bytes": 1980043958,
+  "remaining_suffix_counts": {
+    ".json": 649,
+    ".jsonl": 70,
+    ".log": 74,
+    ".npz": 43,
+    ".yaml": 1667,
+    ".fits": 279,
+    ".gz": 4
+  },
+  "remaining_scope": "metadata, FITS, logs, compact diagnostic extraction files and receipts; campaign directory deliberately remains",
+  "protected_original_inputs": 31,
+  "prior_compact_files": 1608,
+  "protected_inputs_and_prior_compact_unchanged": true,
+  "post_cleanup_saved_only_report": "pass:3 text/JSON and6 PNG byte-exact; original root+31 files OS-denied",
+  "user_checkout_head": "353b11887ff04dfd7bca12915917495f81a587fa",
+  "frozen_tag_commit": "5435bdbdb4e6708e884ae4cb2b0fd93e74102ce5",
+  "pushed": false,
+  "Unity_used": false,
+  "production_defaults_changed": false,
+  "automatic_follow_on": false
+}

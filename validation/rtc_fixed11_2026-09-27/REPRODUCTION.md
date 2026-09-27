@@ -91,3 +91,8 @@ every enumerated inactive new native payload, and removes only those files.
 A reviewer does not repeat exhaustive scratch hashing. Metadata/FITS and logs
 left in the campaign root are recorded honestly. Cleanup is not a blanket directory
 removal. No push, merge, integration or automatic follow-on is authorized.
+
+Closure is complete. FINAL-REVIEW.json, CLEANUP.json,
+REPORT_ISOLATION_POST_CLEANUP.json and CLOSEOUT.json record the exact reviewed
+candidate, guarded removal, post-cleanup reproduction and remaining files.
+Do not rerun cleanup or observational extraction; use the saved-only command above.

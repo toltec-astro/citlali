@@ -1,0 +1,35 @@
+{
+  "verdict": "pass",
+  "source_revision": "f3428f67f92605211b410fcd2081b43aa579493c",
+  "tree": "a870567b4414626943e8275ed11044f6558c8923",
+  "science_revision": "b3d997456a8b9762d9fc323e37827f96b4ec7b37",
+  "reviewer": "/root/fixed11_final_review",
+  "scientific_behavioral": "pass",
+  "architecture_ownership": "pass",
+  "repository_evidence_cleanup": "pass",
+  "findings": [],
+  "independent_checks": [
+    "3 text/JSON and6 PNG artifacts reproduced byte-exact",
+    "10 bounded membership/cleanup fixtures passed",
+    "65 selected compact evidence hashes plus inherited B bindings verified",
+    "9 trajectories/45 applications/2 RTC-only captures reconciled",
+    "22 RTC Apply starts and completions checked from metadata",
+    "3 governance digests verified against accepted ledger",
+    "clean candidate and exact tree confirmed"
+  ],
+  "retained_files": 1863,
+  "retained_bytes": 236800410,
+  "planned_native_files": 126500,
+  "planned_native_bytes": 8596539588,
+  "limitations": [
+    "one observation/two networks",
+    "one-time selection, not production classifier",
+    "aggregate association does not localize individual window peak frequency",
+    "conditional scales are not paired significance",
+    "donor replacement and pathological gaps not exercised comprehensively",
+    "local AppleClang/Homebrew, not Unity/Spack qualification",
+    "local BLAS warnings disclosed with exact saved uncertainty verification"
+  ],
+  "cleanup_authorization": "specified enumerated guarded procedure only after exact review preservation",
+  "review_actions": "read-only; no science/build/ensemble/remote/repository edit/exhaustive native rehash"
+}

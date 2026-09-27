@@ -151,3 +151,12 @@ follow-on is started.
 ![T5 maps and shared-data difference](maps.png)
 
 ![Signed response residuals](response.png)
+
+## Closure
+
+Independent final review passed with no actionable findings at `f3428f67f`.
+Guarded cleanup removed all126,500 planned native files (8.597 GB), preserving
+all31 original dependencies and1,608 prior compact objects. The six figures and
+three report text/JSON artifacts reproduced exactly after cleanup with originals
+and the campaign tree denied. Compact evidence is236.8 MB. Remaining metadata,
+FITS and logs are counted in CLOSEOUT.json; the campaign directory was not deleted.
