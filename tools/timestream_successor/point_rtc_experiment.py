@@ -125,6 +125,7 @@ def run_family(root,binary,review,input_root,selection):
                 if reference!=PRIOR:require(comparison['endpoint_exact'],'own N5 endpoint uncertainty regression failed')
                 save_json(out/'REGRESSION.json',comparison)
                 require(comparison['pass_'],'warmN5 numerical regression failed')
+            if family=='B':compare_rtc_exact(out,root/'A-REF-rep1')
             if rep==1:ref=out
         if family in ('A','C'):
             capture_reference(root,ref,binary,family)
@@ -184,3 +185,24 @@ def accounted_capture(dest,budget,invoke):
     finally:
         storage.finish(dest/'native',allowance)
         storage.reconcile()
+
+
+def compare_rtc_exact(actual,reference):
+    from point_rtc_diagnostics import yread
+    checks=[]
+    for nw in (11,12):
+        a=actual/f'upstream/products/network{nw}';b=reference/f'upstream/products/network{nw}'
+        paths=sorted(p.relative_to(a) for p in a.rglob('*') if p.is_file() and p.suffix in ('.f64','.u8','.i64','.u16','.bits'))
+        require(paths==sorted(p.relative_to(b) for p in b.rglob('*') if p.is_file() and p.suffix in ('.f64','.u8','.i64','.u16','.bits')),'native payload inventory differs')
+        for rel in paths:
+            same=digest(a/rel)==digest(b/rel);checks.append(dict(network=nw,path=str(rel),exact=same))
+        aa=yread(a/'receipt.yaml');bb=yread(b/'receipt.yaml')
+        # Exclude version/identity and measured elapsed time, never scientific values.
+        for key in ('candidate_count','event_count','admitted_jump_groups','transient_excluded_pair_cells'):
+            checks.append(dict(network=nw,field=key,exact=aa[key]==bb[key]))
+        for key in ('realized_detectors','speed_support_comparison','speed_support_authority'):
+            checks.append(dict(network=nw,field=key,exact=aa['donor_continuity'][key]==bb['donor_continuity'][key]))
+        for file in ('events.yaml','event-decisions.yaml','support-decisions.yaml'):
+            checks.append(dict(network=nw,field=file,exact=(a/file).read_bytes()==(b/file).read_bytes()))
+    result=dict(pass_=all(x['exact'] for x in checks),checks=checks,scope='all native RTC/CAL/PTC binary payloads, realized filters/support and event decisions; source/version identities and timings differ')
+    save_json(actual/'NATIVE_REGRESSION.json',result);require(result['pass_'],'B scientific equivalence failed')

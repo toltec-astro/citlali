@@ -1,0 +1,48 @@
+{
+  "pass_": true,
+  "scope": "same saved endpoint covariance/parameters; independently contract SVD factors without BLAS matmul; no model learning or uncertainty ensemble",
+  "records": [
+    {
+      "run": "A-C-core-minus",
+      "operators_finite": true,
+      "operator_max_absolute_difference": 0.0,
+      "sigmas_finite": true,
+      "sigma_max_absolute_difference": 0.0
+    },
+    {
+      "run": "A-C-core-plus",
+      "operators_finite": true,
+      "operator_max_absolute_difference": 0.0,
+      "sigmas_finite": true,
+      "sigma_max_absolute_difference": 0.0
+    },
+    {
+      "run": "A-C-shoulder",
+      "operators_finite": true,
+      "operator_max_absolute_difference": 0.0,
+      "sigmas_finite": true,
+      "sigma_max_absolute_difference": 0.0
+    },
+    {
+      "run": "A-REF-rep1",
+      "operators_finite": true,
+      "operator_max_absolute_difference": 0.0,
+      "sigmas_finite": true,
+      "sigma_max_absolute_difference": 0.0
+    },
+    {
+      "run": "A-REF-rep2",
+      "operators_finite": true,
+      "operator_max_absolute_difference": 0.0,
+      "sigmas_finite": true,
+      "sigma_max_absolute_difference": 0.0
+    },
+    {
+      "run": "A-REF-rep3",
+      "operators_finite": true,
+      "operator_max_absolute_difference": 0.0,
+      "sigmas_finite": true,
+      "sigma_max_absolute_difference": 0.0
+    }
+  ]
+}

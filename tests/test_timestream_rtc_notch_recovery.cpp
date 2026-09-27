@@ -10,6 +10,8 @@
 #include "../tools/timestream_successor/rtc_multidetector_bindings.h"
 #include "../src/citlali/cli/rtc_array_filter_input.h"
 #include <filesystem>
+#include "../src/citlali/cli/rtc_binary_output.h"
+#include <bit>
 #include <citlali/core/pipeline/point_rtc_source_probe.h>
 #include <gtest/gtest.h>
 #include <citlali/core/pipeline/timestream_processing_scan_native.h>
@@ -2536,4 +2538,24 @@ TEST(rtc_event_treatment, context_only_jump_keeps_full_filter_footprints_inside_
             EXPECT_EQ(plan->input_causes()[outside.first-100],RtcNotchRecoveryCause::transient_excluded);
     }
 }
+}
+
+TEST(rtc_binary_output, contiguous_column_major_strided_and_nonfinite_bits_match_scalar_order) {
+  const auto dir=std::filesystem::temp_directory_path()/"citlali-rtc-binary-fixture";
+  std::filesystem::create_directories(dir);
+  PtcMatrix row(3,4);row<<1,2,3,4,5,-0.,7,8,9,10,11,12;
+  row(2,3)=std::bit_cast<double>(std::uint64_t{0x7ff8000000000123});
+  Eigen::MatrixXd column=row;
+  auto verify=[&](const auto &m,const std::string &name){
+    const auto path=dir/name;citlali::cli::detail::write_row_major_binary(path,m);
+    std::ifstream stream(path,std::ios::binary);
+    for(Eigen::Index i=0;i<m.rows();++i)for(Eigen::Index j=0;j<m.cols();++j){
+      std::uint64_t actual;stream.read(reinterpret_cast<char*>(&actual),8);
+      EXPECT_EQ(actual,std::bit_cast<std::uint64_t>(double(m(i,j))));
+    }
+    EXPECT_EQ(stream.peek(),std::char_traits<char>::eof());std::filesystem::remove(path);
+  };
+  verify(row,"row");verify(column,"column");verify(row.block(0,1,3,2),"strided");
+  EXPECT_THROW(citlali::cli::detail::write_row_major_binary(dir/"absent/file",row),std::runtime_error);
+  std::filesystem::remove(dir);
 }

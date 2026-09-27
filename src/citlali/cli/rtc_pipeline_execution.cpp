@@ -1,3 +1,4 @@
+#include "rtc_binary_output.h"
 // Shared application-boundary RTC execution. Scientific owners remain the
 // existing typed components; YAML and file checks stop at this boundary.
 #include <citlali/core/cli/successor_development_execution.h>
@@ -34,9 +35,7 @@ void write_yaml(const fs::path &p,const YAML::Node &node) {
 }
 YAML::Node range(RtcEventRange r) {YAML::Node n;n.push_back(r.first);n.push_back(r.past_last);return n;}
 void write_matrix(const fs::path &p,const auto &m) {
-  std::ofstream out(p,std::ios::binary);
-  for(Eigen::Index i=0;i<m.rows();++i)for(Eigen::Index j=0;j<m.cols();++j){double v=m(i,j);out.write(reinterpret_cast<const char*>(&v),8);}
-  out.close();require(bool(out),"required matrix output failed");
+  citlali::cli::detail::write_row_major_binary(p,m);
 }
 std::string native_plane_digest(const NativePairedReadoutMatrix &m) {
   citlali::utils::Sha256 hash;
@@ -894,7 +893,8 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
         const auto &r=*result->detector_results()[d];const auto stem=std::to_string(channels[d]);
         write_matrix(output/(stem+"-conditioned.f64"),r.conditioned_native_pair());
         write_matrix(output/(stem+"-filtered.f64"),r.filtered_native_pair());
-        std::ofstream states(output/(stem+"-state.u8"),std::ios::binary);
+        std::vector<std::uint8_t> states,centers,support,speed,causes;
+        states.reserve(rows);centers.reserve(rows);support.reserve(rows);speed.reserve(rows);causes.reserve(rows);
         std::size_t replaced=0,excluded=0;
         for(auto row=axis->first_native_row();row<axis->past_last_native_row();++row){
           std::uint8_t b=0;
@@ -904,28 +904,20 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
           if(r.requires_representative_exclusion(row)){b|=8;++excluded;}
           if(r.replacement_influence(row,true))b|=16;
           if(r.unrepaired_influence(row,true))b|=32;
-          states.write(reinterpret_cast<const char*>(&b),1);
+          states.push_back(b);centers.push_back(r.map_center_admitted(row));
         }
-        states.close();require(bool(states),"state output failed");
-        std::ofstream center(output/(stem+"-map-center.u8"),std::ios::binary);
-        for(auto row=axis->first_native_row();row<axis->past_last_native_row();++row){
-          const std::uint8_t admitted=r.map_center_admitted(row);center.write(reinterpret_cast<const char*>(&admitted),1);
+        for(std::size_t i=0;i<plans[d]->input_causes().size();++i){
+          support.push_back(static_cast<std::uint8_t>(plans[d]->support_causes()[i]));
+          speed.push_back(static_cast<std::uint8_t>(plans[d]->speed_restrictions()[i]));
         }
-        center.close();require(bool(center),"center disposition output failed");
-        for(const auto &name:{std::string("support-causes"),std::string("speed-evidence")}){
-          std::ofstream stream(output/(stem+"-"+name+".u8"),std::ios::binary);
-          for(std::size_t i=0;i<plans[d]->input_causes().size();++i){
-            const std::uint8_t value=name=="support-causes" ? static_cast<std::uint8_t>(plans[d]->support_causes()[i]) : static_cast<std::uint8_t>(plans[d]->speed_restrictions()[i]);
-            stream.write(reinterpret_cast<const char*>(&value),1);
-          }
-          stream.close();require(bool(stream),"support/speed evidence output failed");
-        }
-        std::ofstream causes(output/(stem+"-causes.u8"),std::ios::binary);
-        for(auto cause:r.causes()){const auto c=static_cast<std::uint8_t>(cause);causes.write(reinterpret_cast<const char*>(&c),1);}
-        causes.close();require(bool(causes),"cause output failed");
-        std::ofstream selected_rows(output/(stem+"-rows.i64"),std::ios::binary);
-        for(auto row:r.output_native_rows())selected_rows.write(reinterpret_cast<const char*>(&row),8);
-        selected_rows.close();require(bool(selected_rows),"selected native row output failed");
+        for(auto cause:r.causes())causes.push_back(static_cast<std::uint8_t>(cause));
+        using citlali::cli::detail::write_native_binary;
+        write_native_binary<std::uint8_t>(output/(stem+"-state.u8"),states);
+        write_native_binary<std::uint8_t>(output/(stem+"-map-center.u8"),centers);
+        write_native_binary<std::uint8_t>(output/(stem+"-support-causes.u8"),support);
+        write_native_binary<std::uint8_t>(output/(stem+"-speed-evidence.u8"),speed);
+        write_native_binary<std::uint8_t>(output/(stem+"-causes.u8"),causes);
+        write_native_binary<TimestreamNativeRow>(output/(stem+"-rows.i64"),r.output_native_rows());
         YAML::Node record;record["channel"]=channels[d];record["replaced_rows"]=replaced;
         record["representative_excluded_rows"]=excluded;
         record["output_rows"]=r.output_native_rows().size();record["factor"]=filter_input ? filter_input->factor : 2;record["phase_native_rows"]=0;

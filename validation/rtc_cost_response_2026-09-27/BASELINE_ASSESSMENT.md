@@ -7,7 +7,7 @@ references include exactly matching conditional T5 uncertainties. The nonzero
 first comparator stop and sealed-byte recovery remain recorded separately.
 
 Ready71.607–73.488s; analysis71.699–73.575s; exit71.924–73.763s. Network11 RTC spans
-13.63s in first run; overlapping network intervals must not be summed as latency.
+11.48s in first run; overlapping network intervals must not be summed as latency.
 Detailed per-network intervals and process-CPU envelopes are in BASELINE_TIMING.
 Process CPU counters span both worker threads; they are not exclusive worker CPU.
 Stage traces have relative clocks, so the RTC wall fraction is reported using
@@ -38,8 +38,9 @@ calibration-only error <=1.43e-14mJy/beam. T5 compact peak increment gains are
 0.841944. Preserve broad morphology/background terms rather than scalar correction.
 Final REF conditional peak sigma6.164mJy/beam, position0.0405/0.0385arcsec,
 aperture2 sigma2744.34mJy/beam arcsec². These are not paired-difference significance.
-All endpoint values are finite; numerical-library warning diagnostics remain to
-be crosschecked against saved operators before final closeout.
+All endpoint values are finite. Independent non-BLAS contraction reproduces every
+saved operator and uncertainty exactly in all six trajectories; the numerical-library
+warnings are retained and this crosscheck is in UNCERTAINTY_WARNING_CHECK.json.
 
 B selection: two byte-preserving serialization changes recorded in
 FAMILY-B-SELECTION. Hypothesized repeated transient validation is negligible and
