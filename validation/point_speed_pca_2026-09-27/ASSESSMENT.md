@@ -144,3 +144,12 @@ Phase C: **deliberately unselected**. One next bounded action: remove campaign-s
 Phase A science: e28f6630fffaba77f78fc2c2cb883c7345ad92f4, exact independent preflight pass. Its timing report was committed at b7746e3ca6f1615039a2b9d4a3aabe2df62a2a7f before candidate implementation. Phase B science:08f81382d96afb0aad6bc1ed40543322887729b9, tree09005e5f5d36be6ae00267e3341adab9ee080ac6, independent preflight pass. Both executables matched their clean source revisions. Original frozen tag/profile remain unchanged.
 
 The small comparison records, maps, all-cycle measurements, native diagnostics, timing/configuration hashes, figures and manifests are preserved locally. Redundant repeat arrays are unnecessary for reporting. Reporting scripts read saved maps/measurements; no original-input processing, new endpoint ensemble or native solver is run. Extraction of basis diagnostics happened before native cleanup, and its machine-readable result is retained. See [reproduction](REPRODUCTION.md) for exact saved-only commands, tests, cleanup and review boundaries.
+
+## Closeout
+
+Final independent review passed at cec7917ef57ac37ed48fceffec33bc95a32cd78a with
+explicit timing/local-environment limitations and no severity findings. Compact
+preservation163.8MB is committed. The exact244,212-file native scratch plan
+(13.22GB logical bytes) was reverified and removed; all31protected input hashes
+remain unchanged. See [review](FINAL_REVIEW.md), [cleanup](CLEANUP.json), and
+[saved-only reproduction check](REPORT_ISOLATION.json). No follow-on was executed.

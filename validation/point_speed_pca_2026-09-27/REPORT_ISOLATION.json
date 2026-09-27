@@ -1,6 +1,6 @@
 {
   "pass_": true,
-  "seconds": 12.015597291989252,
+  "seconds": 14.506024042028002,
   "denied_original_run_tree": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927",
   "denied_protected_files": 31,
   "positive_denial_control": true,
@@ -16,7 +16,7 @@
         "--retained",
         "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/ptc_rank_response_2026-09-26/compact",
         "--report-dir",
-        "/private/tmp/point-speed-report-check-ycbtdunm/report"
+        "/private/tmp/point-speed-report-check-nx_y8pfj/report"
       ],
       "returncode": 0,
       "stderr": ""
@@ -28,7 +28,7 @@
         "--root",
         "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/point_speed_pca_2026-09-27/compact",
         "--figure-dir",
-        "/private/tmp/point-speed-report-check-ycbtdunm/figures"
+        "/private/tmp/point-speed-report-check-nx_y8pfj/figures"
       ],
       "returncode": 0,
       "stderr": ""

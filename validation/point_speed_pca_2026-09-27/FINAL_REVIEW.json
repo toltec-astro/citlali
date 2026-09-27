@@ -1,0 +1,37 @@
+{
+  "source_revision": "cec7917ef57ac37ed48fceffec33bc95a32cd78a",
+  "tree": "13051947e1f35fab2d749405e50f51c50d3a8ae7",
+  "verdict": "pass",
+  "qualification": "Explicit measurement limitations; no intrinsic method-speed ordering or production promotion",
+  "scientific": "pass",
+  "architecture": "pass",
+  "evidence_scope_cleanup": "pass for exact committed operation with mandatory fail-closed helper checks",
+  "reviewer": "final_review",
+  "findings": [],
+  "compact_verified": {
+    "files": 4675,
+    "bytes": 163803552,
+    "source_encodings": true
+  },
+  "protected_input_hashes_verified": 31,
+  "native_inventory_verified": {
+    "files": 244212,
+    "bytes": 13223564416,
+    "authorized_roots": 20
+  },
+  "independent_tests": {
+    "python_cleanup": 28,
+    "native_synthetic": 12
+  },
+  "saved_report_exact": true,
+  "native_records_checked": 1320,
+  "full_support_records_checked": 132,
+  "exhaustive_native_rehash": {
+    "completed": false,
+    "deliberately_stopped_to_avoid_duplicate_cleanup_rehash": true,
+    "reader_exit_code": 130,
+    "reader_exited": true
+  },
+  "cleanup_authorized": true,
+  "required_postcleanup": "Receipt, all payloads absent, protected inputs unchanged; no science rerun"
+}

@@ -1,6 +1,6 @@
 # Citlali Refactor Status
 
-## Bounded POINT latency/PCA comparison — measured 2026-09-27
+## Bounded POINT latency/PCA comparison — completed 2026-09-27
 
 The [owner-authorized comparison](../validation/point_speed_pca_2026-09-27/OWNER_DIRECTIVE.md)
 completed26 trajectories/198 feedback calls,20 raw parents and26 endpoints with no
@@ -17,7 +17,9 @@ Keep the current rank10 reference. Next bounded recommendation: remove storage
 accounting/provenance overhead without scientific changes before a fresh matched
 latency comparison and subsequent independent-observation qualification. See
 [assessment](../validation/point_speed_pca_2026-09-27/ASSESSMENT.md). Final independent
-review and compact cleanup are the remaining closeout gates. No RTC change,
+review passed at cec7917ef with explicit timing limitations. Compact evidence164MB
+is committed; exact native cleanup13.22GB is verified, with31protected inputs
+unchanged. No RTC change,
 new observations/arrays, automatic stopping, push or production promotion.
 
 ## Bounded PTC rank-response/noise comparison — completed 2026-09-26

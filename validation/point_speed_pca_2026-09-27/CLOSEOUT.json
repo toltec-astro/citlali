@@ -1,0 +1,21 @@
+{
+  "status": "complete",
+  "reviewed_candidate": "cec7917ef57ac37ed48fceffec33bc95a32cd78a",
+  "science_A": "e28f6630fffaba77f78fc2c2cb883c7345ad92f4",
+  "science_B": "08f81382d96afb0aad6bc1ed40543322887729b9",
+  "counts": {
+    "trajectory": 26,
+    "feedback": 198,
+    "parent": 20,
+    "endpoint": 26
+  },
+  "phase_C": "deliberately_unselected",
+  "native_cleanup_verified": true,
+  "protected_inputs_unchanged": true,
+  "frozen_tag": "timestream-successor-bright-point-base-v1-20260926",
+  "frozen_commit": "5435bdbdb4e6708e884ae4cb2b0fd93e74102ce5",
+  "no_push": true,
+  "no_Unity": true,
+  "no_RTC_changes": true,
+  "no_promotion": true
+}

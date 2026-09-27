@@ -71,7 +71,7 @@ tune, APT, calibration and profile dependencies. Cleanup requires a clean exact
 committed tree, independent final-review pass at that SHA, no active campaign
 process, reverified compact hashes, reverified payload hashes and protected-input
 hashes. The cleanup code deletes only those files, never directories or inputs.
-`CLEANUP.json` will record the applied plan and post-deletion protection checks.
+`CLEANUP.json` records the applied plan and post-deletion protection checks.
 Non-array metadata outside the compact record is left in place; this is not a
 repository-wide purge.
 
@@ -80,4 +80,5 @@ all31 protected dependencies, a positive denial control confirmed enforcement,
 and the regenerated scientific records matched exactly. All four figures rendered.
 Compact evidence totals163,803,552bytes (164MB decimal); the exact native removal
 plan covers244,212files /13,223,564,416bytes. Six synthetic cleanup guard tests pass.
-No native payload has yet been deleted; final exact-SHA review precedes cleanup.
+Final exact-SHA review passed at cec7917ef; the exact native plan was then fully
+rehash-verified and removed. All31protected dependencies remain unchanged.
