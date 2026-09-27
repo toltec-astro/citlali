@@ -1,0 +1,69 @@
+{
+  "pass_": true,
+  "scope": "same saved endpoint covariance/parameters; independently contract SVD factors without BLAS matmul; no model learning or uncertainty ensemble",
+  "records": [
+    {
+      "run": "B-REF-rep1",
+      "operators_finite": true,
+      "operator_max_absolute_difference": 0.0,
+      "sigmas_finite": true,
+      "sigma_max_absolute_difference": 0.0
+    },
+    {
+      "run": "B-REF-rep2",
+      "operators_finite": true,
+      "operator_max_absolute_difference": 0.0,
+      "sigmas_finite": true,
+      "sigma_max_absolute_difference": 0.0
+    },
+    {
+      "run": "B-REF-rep3",
+      "operators_finite": true,
+      "operator_max_absolute_difference": 0.0,
+      "sigmas_finite": true,
+      "sigma_max_absolute_difference": 0.0
+    },
+    {
+      "run": "C-C-core-minus",
+      "operators_finite": true,
+      "operator_max_absolute_difference": 0.0,
+      "sigmas_finite": true,
+      "sigma_max_absolute_difference": 0.0
+    },
+    {
+      "run": "C-C-core-plus",
+      "operators_finite": true,
+      "operator_max_absolute_difference": 0.0,
+      "sigmas_finite": true,
+      "sigma_max_absolute_difference": 0.0
+    },
+    {
+      "run": "C-C-shoulder",
+      "operators_finite": true,
+      "operator_max_absolute_difference": 0.0,
+      "sigmas_finite": true,
+      "sigma_max_absolute_difference": 0.0
+    },
+    {
+      "run": "C-REF-rep1",
+      "operators_finite": true,
+      "operator_max_absolute_difference": 0.0,
+      "sigmas_finite": true,
+      "sigma_max_absolute_difference": 0.0
+    },
+    {
+      "run": "C-REF-rep2",
+      "operators_finite": true,
+      "operator_max_absolute_difference": 0.0,
+      "sigmas_finite": true,
+      "sigma_max_absolute_difference": 0.0
+    },
+    {
+      "run": "C-REF-rep3",
+      "operators_finite": true,
+      "operator_max_absolute_difference": 0.0,
+      "sigmas_finite": true,
+      "sigma_max_absolute_difference": 0.0
+    }
+  ]
+}

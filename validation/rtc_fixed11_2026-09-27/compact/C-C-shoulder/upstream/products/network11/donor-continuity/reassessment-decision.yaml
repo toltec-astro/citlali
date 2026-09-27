@@ -1,0 +1,179 @@
+schema: rtc-reassessment-execution-decision-v1
+execution_disposition: retain
+reason: explicitly-authorized-development-candidate-with-empty-detectors
+decision_attempt: 1400
+reassessment_attempt: 1301
+evaluated_plan_attempt: 1001
+selected_candidate_attempt: 1001
+scientific_qualification: unresolved
+missing_qualification: residual-line acceptance policy unselected; existing qualification limits remain
+scientifically_qualified: false
+downstream_admission_authorized: false
+production_authorized: false
+stopping_rule_selected: false
+revision_executed: false
+maximum_revisions: 1
+VAL_generation: 0
+original_parent_preserved: true
+authority: owner-bright-point-reference-2026-09-26
+purpose: frozen bright POINT downstream reference
+positive_rationale: accepted reference treatment on explicitly configured acquisition
+outcome_requirement: rtc-available-detector-completion-2026-09-19-v2
+completion_policy_authority: doc/SCI_RTC_PTC_PARTIAL_COMPLETION_OWNER_BINDING_2026-09-18.md
+outcome_attempt: 1251
+coordinate_outcomes: 972
+available_coordinate_outcomes: 934
+outcome_stage: post-lowpass-native-before-decimation
+unavailable_requirements:
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 1
+    coordinate: 0
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 1
+    coordinate: 1
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 2
+    coordinate: 0
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 2
+    coordinate: 1
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 3
+    coordinate: 0
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 3
+    coordinate: 1
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 4
+    coordinate: 0
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 4
+    coordinate: 1
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 5
+    coordinate: 0
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 5
+    coordinate: 1
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 6
+    coordinate: 0
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 6
+    coordinate: 1
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 7
+    coordinate: 0
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 7
+    coordinate: 1
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 8
+    coordinate: 0
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 8
+    coordinate: 1
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 9
+    coordinate: 0
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 9
+    coordinate: 1
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 10
+    coordinate: 0
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 10
+    coordinate: 1
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 217
+    coordinate: 0
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 217
+    coordinate: 1
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 251
+    coordinate: 0
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 251
+    coordinate: 1
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 273
+    coordinate: 0
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 273
+    coordinate: 1
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 281
+    coordinate: 0
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 281
+    coordinate: 1
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 287
+    coordinate: 0
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 287
+    coordinate: 1
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 291
+    coordinate: 0
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 291
+    coordinate: 1
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 325
+    coordinate: 0
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 325
+    coordinate: 1
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 331
+    coordinate: 0
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 331
+    coordinate: 1
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 337
+    coordinate: 0
+  - missing_requirement: required-coordinate-outcome-unavailable
+    network: 11
+    detector_local_column: 337
+    coordinate: 1

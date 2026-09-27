@@ -1,0 +1,2432 @@
+{
+  "schema": "rtc-multidetector-experiment-v1",
+  "development_reference": "bright-point-base-v1",
+  "observation": 152430,
+  "network": 11,
+  "raw": {
+    "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec11_152430_000_0002_2026_02_19_10_07_51.nc",
+    "sha256": "5536f00a12395909e9e1495e308fe04892411a5b44d73a97bac9d495c3bacde6"
+  },
+  "tune": {
+    "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec11_152430_000_0001_2026_02_19_10_06_46_tune.txt",
+    "sha256": "22022c5127646dbff33a12f3581748c24f90df0066759127a42a1b60e6877652"
+  },
+  "manifest": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152430_matched.apt-v2/manifest.ecsv",
+    "sha256": "dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd"
+  },
+  "telescope": {
+    "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/tel_toltec_2026-02-19_152430_00_0002.nc",
+    "sha256": "f6ac27248692af558a16af94f267a84b344e93f30d2248516d4388b9b25e5f19"
+  },
+  "effective_config": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-fixed11-20260927/C-REF-rep2/inputs/effective-point.yaml",
+    "sha256": "0907d1176b0e30bb2037304dc4d2dcca7cd221abfbf588d06ee59fa98d3f20c7"
+  },
+  "ast_acceptance": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-fixed11-20260927/C-REF-rep2/inputs/ast-source-binding.json",
+    "sha256": "a8aacdd5c0a31daf634c73257261ca563d2041ea1b9e9137889dac911e0a05e1"
+  },
+  "native_source": "exact-raw-kids-v1",
+  "terminal_request": "rtc-only",
+  "prepare_output_grid": true,
+  "speed_support_comparison": "both",
+  "reassessment_selection": {
+    "intent": "retain-development-candidate",
+    "authority": "owner-bright-point-reference-2026-09-26",
+    "purpose": "frozen bright POINT downstream reference",
+    "positive_rationale": "accepted reference treatment on explicitly configured acquisition"
+  },
+  "decision_apply": {
+    "policy": "existing-authorities-with-unavailable-isolated-admission-v1",
+    "timing_inputs": [
+      {
+        "network": 0,
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec0_152430_000_0002_2026_02_19_10_07_51.nc",
+        "sha256": "23fdea79ba77a16be582f1e5c71bf77172cc1496be97898ec955f89148e3fc76"
+      },
+      {
+        "network": 1,
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec1_152430_000_0002_2026_02_19_10_07_51.nc",
+        "sha256": "3e4f1848fc3c998eba60ba802443840615b347958383414e2cb31f9838252c67"
+      },
+      {
+        "network": 2,
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec2_152430_000_0002_2026_02_19_10_07_51.nc",
+        "sha256": "3e5cb06261306e59cfd474f42dc4278866f1abf379549ede83029d1dee51cd84"
+      },
+      {
+        "network": 3,
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec3_152430_000_0002_2026_02_19_10_07_51.nc",
+        "sha256": "af7cef4a93e6fdbdf1e97b3aa1d13c6a4e35c303efa5e3949a42a72f2619d537"
+      },
+      {
+        "network": 4,
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec4_152430_000_0002_2026_02_19_10_07_51.nc",
+        "sha256": "75b45cdc440b9c6ec92f5874603421735b6d8b872c8f4807469fa25401ec7c37"
+      },
+      {
+        "network": 5,
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec5_152430_000_0002_2026_02_19_10_07_51.nc",
+        "sha256": "ff0c86e7d2acb18a6888f2533f6bbf10c388bdf7f2ebdc8baf970464834b6f32"
+      },
+      {
+        "network": 7,
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec7_152430_000_0002_2026_02_19_10_07_51.nc",
+        "sha256": "45ae0e8aef261d68a6068490912fc7515b9cde56bb60b5eba93a07c81b9e82e6"
+      },
+      {
+        "network": 8,
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec8_152430_000_0002_2026_02_19_10_07_51.nc",
+        "sha256": "042e4e450210cb921212a2d5942a7e0f01d84dc358ed4468da089bbf75cc99d4"
+      },
+      {
+        "network": 9,
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec9_152430_000_0002_2026_02_19_10_07_51.nc",
+        "sha256": "dc680015f96ee362be50f13b6b465a12cfcfe6f0f72c71e8288e0ee03f1c5142"
+      },
+      {
+        "network": 11,
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec11_152430_000_0002_2026_02_19_10_07_51.nc",
+        "sha256": "5536f00a12395909e9e1495e308fe04892411a5b44d73a97bac9d495c3bacde6"
+      },
+      {
+        "network": 12,
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec12_152430_000_0002_2026_02_19_10_07_51.nc",
+        "sha256": "1289ac9fd40fdc1579387b0ac718099564f7a3da9938928989c05d78a60bfc41"
+      }
+    ],
+    "processing_request": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-fixed11-20260927/C-REF-rep2/inputs/processing-request.json",
+      "sha256": "4a91e501152e4a652d6713aab1f63b6c8f6c5d1c3abfdd09bda15a703d33938a"
+    }
+  },
+  "filter_plan": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/data/development/bright_point_base_v1/a2000-rtc.json",
+    "sha256": "d1e9dbefaaaa8832b4876ac34f23a604270b3bf35bc5d79125c37cddd3a32cab"
+  },
+  "detectors": [
+    {
+      "channel": 0,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 1,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 2,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 3,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 4,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 5,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 6,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 7,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 8,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 9,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 10,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 11,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 12,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 13,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 14,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 15,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 16,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 17,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 18,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 19,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 20,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 21,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 22,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 23,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 24,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 25,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 26,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 27,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 28,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 29,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 30,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 31,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 32,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 33,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 34,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 35,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 36,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 37,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 38,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 39,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 40,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 41,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 42,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 43,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 44,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 45,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 46,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 47,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 48,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 49,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 50,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 51,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 52,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 53,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 54,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 55,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 56,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 57,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 58,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 59,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 60,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 61,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 62,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 63,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 64,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 65,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 66,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 67,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 68,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 69,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 70,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 71,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 72,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 73,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 74,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 75,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 76,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 77,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 78,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 79,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 80,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 81,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 82,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 83,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 84,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 85,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 86,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 87,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 88,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 89,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 90,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 91,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 92,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 93,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 94,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 95,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 96,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 97,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 98,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 99,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 100,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 101,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 102,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 103,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 104,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 105,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 106,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 107,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 108,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 109,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 110,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 111,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 112,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 113,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 114,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 115,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 116,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 117,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 118,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 119,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 120,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 121,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 122,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 123,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 124,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 125,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 126,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 127,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 128,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 129,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 130,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 131,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 132,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 133,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 134,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 135,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 136,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 137,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 138,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 139,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 140,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 141,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 142,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 143,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 144,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 145,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 146,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 147,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 148,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 149,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 150,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 151,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 152,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 153,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 154,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 155,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 156,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 157,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 158,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 159,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 160,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 161,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 162,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 163,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 164,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 165,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 166,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 167,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 168,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 169,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 170,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 171,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 172,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 173,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 174,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 175,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 176,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 177,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 178,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 179,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 180,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 181,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 182,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 183,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 184,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 185,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 186,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 187,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 188,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 189,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 190,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 191,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 192,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 193,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 194,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 195,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 196,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 197,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 198,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 199,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 200,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 201,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 202,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 203,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 204,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 205,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 206,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 207,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 208,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 209,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 210,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 211,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 212,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 213,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 214,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 215,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 216,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 217,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 218,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 219,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 220,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 221,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 222,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 223,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 224,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 225,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 226,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 227,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 228,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 229,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 230,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 231,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 232,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 233,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 234,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 235,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 236,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 237,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 238,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 239,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 240,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 241,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 242,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 243,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 244,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 245,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 246,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 247,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 248,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 249,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 250,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 251,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 252,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 253,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 254,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 255,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 256,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 257,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 258,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 259,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 260,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 261,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 262,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 263,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 264,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 265,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 266,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 267,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 268,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 269,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 270,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 271,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 272,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 273,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 274,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 275,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 276,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 277,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 278,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 279,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 280,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 281,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 282,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 283,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 284,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 285,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 286,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 287,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 288,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 289,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 290,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 291,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 292,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 293,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 294,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 295,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 296,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 297,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 298,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 299,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 300,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 301,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 302,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 303,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 304,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 305,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 306,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 307,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 308,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 309,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 310,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 311,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 312,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 313,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 314,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 315,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 316,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 317,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 318,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 319,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 320,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 321,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 322,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 323,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 324,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 325,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 326,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 327,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 328,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 329,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 330,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 331,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 332,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 333,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 334,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 335,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 336,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 337,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 338,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 339,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 340,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 341,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 342,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 343,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 344,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 345,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 346,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 347,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 348,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 349,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 350,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 351,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 352,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 353,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 354,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 355,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 356,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 357,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 358,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 359,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 360,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 361,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 362,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 363,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 364,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 365,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 366,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 367,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 368,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 369,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 370,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 371,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 372,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 373,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 374,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 375,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 376,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 377,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 378,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 379,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 380,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 381,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 382,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 383,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 384,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 385,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 386,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 387,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 388,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 389,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 390,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 391,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 392,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 393,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 394,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 395,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 396,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 397,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 398,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 399,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 400,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 401,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 402,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 403,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 404,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 405,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 406,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 407,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 408,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 409,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 410,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 411,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 412,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 413,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 414,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 415,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 416,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 417,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 418,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 419,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 420,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 421,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 422,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 423,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 424,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 425,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 426,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 427,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 428,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 429,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 430,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 431,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 432,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 433,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 434,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 435,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 436,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 437,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 438,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 439,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 440,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 441,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 442,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 443,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 444,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 445,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 446,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 447,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 448,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 449,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 450,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 451,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 452,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 453,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 454,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 455,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 456,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 457,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 458,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 459,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 460,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 461,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 462,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 463,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 464,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 465,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 466,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 467,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 468,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 469,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 470,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 471,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 472,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 473,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 474,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 475,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 476,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 477,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 478,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 479,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 480,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 481,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 482,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 483,
+      "filter": "w1-t3"
+    },
+    {
+      "channel": 484,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 485,
+      "filter": "w1-t3"
+    }
+  ],
+  "source_protection_authority": "owner-bright-POINT-no-spatial-mask-2026-09-26",
+  "fixed11": {
+    "arm": "C-fixed11",
+    "applicability": {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_fixed11_2026-09-27/APPLICABILITY.json",
+      "sha256": "8c41c3946e87dc22a2baaaa6411122c14af47d32611f17a167ba644365962150"
+    }
+  },
+  "finite_notch_identity": "explicit-Hann-bandstop-width1Hz-span3s",
+  "finite_notch": [
+    -0.0,
+    -2.17363846503061e-07,
+    -4.387302995420055e-07,
+    3.000985848379459e-07,
+    2.6697420987291044e-06,
+    6.217847552098327e-06,
+    9.103759479532169e-06,
+    8.712115121849677e-06,
+    3.0039684604448663e-06,
+    -7.985194848431344e-06,
+    -2.130224351772312e-05,
+    -3.152294560885696e-05,
+    -3.260524995233723e-05,
+    -2.0594356644295462e-05,
+    3.90582493926288e-06,
+    3.469950044483646e-05,
+    6.11975057129231e-05,
+    7.180117347329488e-05,
+    5.8462028172999514e-05,
+    2.0721020212599366e-05,
+    -3.254502061405044e-05,
+    -8.478815750475314e-05,
+    -0.00011677103535472687,
+    -0.00011342293815722119,
+    -7.017391268787053e-05,
+    3.7562411598915217e-06,
+    8.678749178750123e-05,
+    0.00015119637303113838,
+    0.00017237240572043816,
+    0.00013801957845114315,
+    5.3896805506671496e-05,
+    -5.636504000420012e-05,
+    -0.00015787476004718566,
+    -0.00021570500737007906,
+    -0.0002070686905985038,
+    -0.00013014807829117865,
+    -6.1721781091248426e-06,
+    0.0001264548860870967,
+    0.00022438055640546865,
+    0.00025390932970740875,
+    0.00020293926898466214,
+    8.588836005048754e-05,
+    -6.041251755579686e-05,
+    -0.00018872693153024265,
+    -0.0002573143339187249,
+    -0.00024419731256875645,
+    -0.00015470766521653905,
+    -1.953588114602664e-05,
+    0.00011610326402740836,
+    0.0002083365021462364,
+    0.00022979673673506634,
+    0.00017857323754015856,
+    7.77213429388127e-05,
+    -3.435739612829585e-05,
+    -0.00011888910927894752,
+    -0.00015122368817639304,
+    -0.00012920671539554796,
+    -7.219507875035435e-05,
+    -1.1236525072818154e-05,
+    2.5432429994101204e-05,
+    2.5373001587230665e-05,
+    -2.329465918035472e-06,
+    -3.145358133514876e-05,
+    -3.1726394120957076e-05,
+    1.4777355599302407e-05,
+    0.0001012701503352648,
+    0.0001942421807508929,
+    0.0002442584934148886,
+    0.0002066409264369092,
+    6.433005299046524e-05,
+    -0.00015690124230699636,
+    -0.000388968310897096,
+    -0.0005404378228455862,
+    -0.0005293613945085796,
+    -0.00031893051312112197,
+    5.805432877011096e-05,
+    0.0004976900263198281,
+    0.0008510263914594635,
+    0.0009721822349350643,
+    0.0007736511186011671,
+    0.0002689265207487284,
+    -0.00041555477247906097,
+    -0.0010682313722356993,
+    -0.001455558082908043,
+    -0.001402377011597709,
+    -0.0008626885106426217,
+    4.601946908232362e-05,
+    0.0010619651008871704,
+    0.0018517513718453059,
+    0.002117366434201445,
+    0.0017038729288936343,
+    0.000670035692070165,
+    -0.0007070472850819718,
+    -0.0020022652103826913,
+    -0.0027714892635666223,
+    -0.0027008396314979633,
+    -0.0017268745804533978,
+    -8.348997709621898e-05,
+    0.0017477243670850368,
+    0.0031759618461809167,
+    0.0036896469923598926,
+    0.0030353901278945637,
+    0.0013259477531549423,
+    -0.000965503916776609,
+    -0.0031325267846758487,
+    -0.004451293999771581,
+    -0.004419845921402199,
+    -0.002942336529548813,
+    -0.0003923082577866231,
+    0.002475344403075554,
+    0.0047455900555522295,
+    0.00563363735037833,
+    0.004752803716929825,
+    0.002269344930732995,
+    -0.0011147898156730633,
+    -0.004357010310292468,
+    -0.006393998582275538,
+    -0.006488752408313723,
+    -0.004491951688639149,
+    -0.0009263042900078118,
+    0.0031444342122772875,
+    0.006431249699314474,
+    0.007827290450781198,
+    0.006778367720849095,
+    0.003493102621835546,
+    -0.0010846266261996696,
+    -0.0055443098931039735,
+    -0.008443004461690962,
+    -0.008771601599528155,
+    -0.0063026381141183556,
+    -0.00170067355975834,
+    0.0036517371245132664,
+    0.008068764758107642,
+    0.010092574494339344,
+    0.00897362227819621,
+    0.004941940091684493,
+    -0.0008271893614483474,
+    -0.00655433825422911,
+    -0.01040539322208397,
+    -0.01107953031672586,
+    -0.008247000006351939,
+    -0.0026897878959274177,
+    0.003910792902915788,
+    0.009483195694628412,
+    0.012217175950555484,
+    0.011152411211116436,
+    0.006512599069335889,
+    -0.00033037261785238996,
+    -0.007261737666869905,
+    -0.012079063603071769,
+    -0.013193853830769065,
+    -0.010155467783642588,
+    -0.0038244703503846986,
+    0.0038692001757112374,
+    0.010516007766865641,
+    0.013983873689903902,
+    0.013103891230886991,
+    0.008063574946679067,
+    0.00037551094778752144,
+    -0.00757736814319749,
+    -0.013282960936670035,
+    -0.014896293786634289,
+    -0.011837642919349396,
+    -0.004998077396574137,
+    0.0035197437628024597,
+    0.01105029378276599,
+    0.015202560620329894,
+    0.014622008628271111,
+    0.009433416297946973,
+    0.0012194896185989265,
+    -0.0074635950845339935,
+    -0.01388491682592167,
+    -0.01600121583264191,
+    -0.013109539367708924,
+    -0.0060808792820869146,
+    0.0029029186315532108,
+    0.011029284058416751,
+    0.015739194767519633,
+    0.015536407720290859,
+    0.010464686232213213,
+    0.002100212300609518,
+    -0.006940355127259305,
+    -0.01382198182886069,
+    0.9836160370102902,
+    -0.01382198182886069,
+    -0.006940355127259305,
+    0.002100212300609518,
+    0.010464686232213213,
+    0.015536407720290859,
+    0.015739194767519633,
+    0.011029284058416751,
+    0.0029029186315532108,
+    -0.0060808792820869146,
+    -0.013109539367708924,
+    -0.01600121583264191,
+    -0.01388491682592167,
+    -0.0074635950845339935,
+    0.0012194896185989265,
+    0.009433416297946973,
+    0.014622008628271111,
+    0.015202560620329894,
+    0.01105029378276599,
+    0.0035197437628024597,
+    -0.004998077396574137,
+    -0.011837642919349396,
+    -0.014896293786634289,
+    -0.013282960936670035,
+    -0.00757736814319749,
+    0.00037551094778752144,
+    0.008063574946679067,
+    0.013103891230886991,
+    0.013983873689903902,
+    0.010516007766865641,
+    0.0038692001757112374,
+    -0.0038244703503846986,
+    -0.010155467783642588,
+    -0.013193853830769065,
+    -0.012079063603071769,
+    -0.007261737666869905,
+    -0.00033037261785238996,
+    0.006512599069335889,
+    0.011152411211116436,
+    0.012217175950555484,
+    0.009483195694628412,
+    0.003910792902915788,
+    -0.0026897878959274177,
+    -0.008247000006351939,
+    -0.01107953031672586,
+    -0.01040539322208397,
+    -0.00655433825422911,
+    -0.0008271893614483474,
+    0.004941940091684493,
+    0.00897362227819621,
+    0.010092574494339344,
+    0.008068764758107642,
+    0.0036517371245132664,
+    -0.00170067355975834,
+    -0.0063026381141183556,
+    -0.008771601599528155,
+    -0.008443004461690962,
+    -0.0055443098931039735,
+    -0.0010846266261996696,
+    0.003493102621835546,
+    0.006778367720849095,
+    0.007827290450781198,
+    0.006431249699314474,
+    0.0031444342122772875,
+    -0.0009263042900078118,
+    -0.004491951688639149,
+    -0.006488752408313723,
+    -0.006393998582275538,
+    -0.004357010310292468,
+    -0.0011147898156730633,
+    0.002269344930732995,
+    0.004752803716929825,
+    0.00563363735037833,
+    0.0047455900555522295,
+    0.002475344403075554,
+    -0.0003923082577866231,
+    -0.002942336529548813,
+    -0.004419845921402199,
+    -0.004451293999771581,
+    -0.0031325267846758487,
+    -0.000965503916776609,
+    0.0013259477531549423,
+    0.0030353901278945637,
+    0.0036896469923598926,
+    0.0031759618461809167,
+    0.0017477243670850368,
+    -8.348997709621898e-05,
+    -0.0017268745804533978,
+    -0.0027008396314979633,
+    -0.0027714892635666223,
+    -0.0020022652103826913,
+    -0.0007070472850819718,
+    0.000670035692070165,
+    0.0017038729288936343,
+    0.002117366434201445,
+    0.0018517513718453059,
+    0.0010619651008871704,
+    4.601946908232362e-05,
+    -0.0008626885106426217,
+    -0.001402377011597709,
+    -0.001455558082908043,
+    -0.0010682313722356993,
+    -0.00041555477247906097,
+    0.0002689265207487284,
+    0.0007736511186011671,
+    0.0009721822349350643,
+    0.0008510263914594635,
+    0.0004976900263198281,
+    5.805432877011096e-05,
+    -0.00031893051312112197,
+    -0.0005293613945085796,
+    -0.0005404378228455862,
+    -0.000388968310897096,
+    -0.00015690124230699636,
+    6.433005299046524e-05,
+    0.0002066409264369092,
+    0.0002442584934148886,
+    0.0001942421807508929,
+    0.0001012701503352648,
+    1.4777355599302407e-05,
+    -3.1726394120957076e-05,
+    -3.145358133514876e-05,
+    -2.329465918035472e-06,
+    2.5373001587230665e-05,
+    2.5432429994101204e-05,
+    -1.1236525072818154e-05,
+    -7.219507875035435e-05,
+    -0.00012920671539554796,
+    -0.00015122368817639304,
+    -0.00011888910927894752,
+    -3.435739612829585e-05,
+    7.77213429388127e-05,
+    0.00017857323754015856,
+    0.00022979673673506634,
+    0.0002083365021462364,
+    0.00011610326402740836,
+    -1.953588114602664e-05,
+    -0.00015470766521653905,
+    -0.00024419731256875645,
+    -0.0002573143339187249,
+    -0.00018872693153024265,
+    -6.041251755579686e-05,
+    8.588836005048754e-05,
+    0.00020293926898466214,
+    0.00025390932970740875,
+    0.00022438055640546865,
+    0.0001264548860870967,
+    -6.1721781091248426e-06,
+    -0.00013014807829117865,
+    -0.0002070686905985038,
+    -0.00021570500737007906,
+    -0.00015787476004718566,
+    -5.636504000420012e-05,
+    5.3896805506671496e-05,
+    0.00013801957845114315,
+    0.00017237240572043816,
+    0.00015119637303113838,
+    8.678749178750123e-05,
+    3.7562411598915217e-06,
+    -7.017391268787053e-05,
+    -0.00011342293815722119,
+    -0.00011677103535472687,
+    -8.478815750475314e-05,
+    -3.254502061405044e-05,
+    2.0721020212599366e-05,
+    5.8462028172999514e-05,
+    7.180117347329488e-05,
+    6.11975057129231e-05,
+    3.469950044483646e-05,
+    3.90582493926288e-06,
+    -2.0594356644295462e-05,
+    -3.260524995233723e-05,
+    -3.152294560885696e-05,
+    -2.130224351772312e-05,
+    -7.985194848431344e-06,
+    3.0039684604448663e-06,
+    8.712115121849677e-06,
+    9.103759479532169e-06,
+    6.217847552098327e-06,
+    2.6697420987291044e-06,
+    3.000985848379459e-07,
+    -4.387302995420055e-07,
+    -2.17363846503061e-07,
+    -0.0
+  ]
+}

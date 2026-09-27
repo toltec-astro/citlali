@@ -1,0 +1,6 @@
+/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_fixed11_2026-09-27/extract_detail.py:18: RuntimeWarning: divide by zero encountered in matmul
+  def gain(h):return abs(np.exp(-2j*np.pi*freq[:,None]*dt*np.arange(len(h)))@h)
+/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_fixed11_2026-09-27/extract_detail.py:18: RuntimeWarning: overflow encountered in matmul
+  def gain(h):return abs(np.exp(-2j*np.pi*freq[:,None]*dt*np.arange(len(h)))@h)
+/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_fixed11_2026-09-27/extract_detail.py:18: RuntimeWarning: invalid value encountered in matmul
+  def gain(h):return abs(np.exp(-2j*np.pi*freq[:,None]*dt*np.arange(len(h)))@h)

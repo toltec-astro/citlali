@@ -1,0 +1,34 @@
+{
+  "C0": {
+    "training_coverage_range": [
+      110.0,
+      450.0
+    ],
+    "maximum_applied_coverage": 482.0,
+    "high_coverage_pixels": 2,
+    "high_coverage_usable": true,
+    "continuation": "unchanged clipped coverage-bin index and bin scale times sqrt(zero-lag moment); high tail is the existing last-bin prediction",
+    "interpretation": "model-based conditional transfer; extrapolation metadata is not empirical calibration",
+    "maximum_extrapolated_scale": 15.568562698350462,
+    "minimum_extrapolated_scale": 15.568562698350462,
+    "training_endpoint_scale": 15.568562698350462,
+    "upper_endpoint_jump": 0.0,
+    "reason": "same terminal bin applies on both sides of the training maximum; finite positive constant tail, no singularity or collapse; no additional clamp or noise law introduced"
+  },
+  "BASE": {
+    "training_coverage_range": [
+      110.0,
+      450.0
+    ],
+    "maximum_applied_coverage": 482.0,
+    "high_coverage_pixels": 2,
+    "high_coverage_usable": true,
+    "continuation": "unchanged clipped coverage-bin index and bin scale times sqrt(zero-lag moment); high tail is the existing last-bin prediction",
+    "interpretation": "model-based conditional transfer; extrapolation metadata is not empirical calibration",
+    "maximum_extrapolated_scale": 15.661800995272182,
+    "minimum_extrapolated_scale": 15.661800995272182,
+    "training_endpoint_scale": 15.661800995272184,
+    "upper_endpoint_jump": 0.0,
+    "reason": "same terminal bin applies on both sides of the training maximum; finite positive constant tail, no singularity or collapse; no additional clamp or noise law introduced"
+  }
+}

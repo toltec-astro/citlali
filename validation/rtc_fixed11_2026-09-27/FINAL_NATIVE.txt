@@ -1,0 +1,14 @@
+Running main() from /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = point_fixed11.*
+[==========] Running 2 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 2 tests from point_fixed11
+[ RUN      ] point_fixed11.exact_membership_identity_cadence_and_coefficients_fail_closed
+[       OK ] point_fixed11.exact_membership_identity_cadence_and_coefficients_fail_closed (94 ms)
+[ RUN      ] point_fixed11.historical_coefficients_preserve_unselected_pair_and_physical_gap_support
+[       OK ] point_fixed11.historical_coefficients_preserve_unselected_pair_and_physical_gap_support (60 ms)
+[----------] 2 tests from point_fixed11 (154 ms total)
+
+[----------] Global test environment tear-down
+[==========] 2 tests from 1 test suite ran. (154 ms total)
+[  PASSED  ] 2 tests.

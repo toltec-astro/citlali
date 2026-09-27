@@ -1,0 +1,10 @@
+input:
+  path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-fixed11-20260927/B-REF-rep1/inputs/observation.json
+  sha256: bccdbe026803817b141060011cb7b03c63edcfb25ae37e89362225f9b92dd4f4
+network_workers: 2
+output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-fixed11-20260927/B-REF-rep1/upstream/products
+ptc:
+  method: observed-als
+  rank: 10
+schema: citlali-development-v1
+terminal: ptc

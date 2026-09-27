@@ -1,0 +1,6 @@
+{
+  "pass_": true,
+  "identical_window_metric_keys": 599520,
+  "exact_raw_window_metrics": 143190,
+  "scope": "same network, physical start, processing segment, detector, stage, metric; raw values exact across both matched extractions"
+}

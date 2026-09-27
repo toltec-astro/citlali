@@ -240,3 +240,12 @@ No additional campaign is authorized by these commands. Whole-campaign storage
 accounting currently causes run-order-dependent overhead; preserve the published
 measurement limitation rather than interpreting recorded wall differences as
 intrinsic method performance. The original frozen profile/tag remain unchanged.
+
+## 2026-09-27 fixed-notch comparison
+
+The bounded fixed-applicability w1-t3 test on POINT152430 a2000/nw11,12 is
+complete: 9 trajectories/45 applications plus 2 RTC-only captures, source
+`b3d997456a8b9762d9fc323e37827f96b4ec7b37`. Spectral suppression did not
+improve final T5 sensitivity; B remains development reference and C-fixed11
+is experimental, not promoted. See `validation/rtc_fixed11_2026-09-27/ASSESSMENT.md`.
+No default, method, rank, feedback count or automatic follow-on changes.

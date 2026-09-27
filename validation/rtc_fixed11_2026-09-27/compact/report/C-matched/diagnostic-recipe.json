@@ -1,0 +1,13 @@
+{
+  "seconds": 21.896968249988277,
+  "source_exclusion": "B REF M0 centroid, radius4*majorFWHM, actual native detector pointing",
+  "matched_other_arm": "B",
+  "full_support_counts": "own-arm full domain before intersection; spectral windows only require both arms when matched_other_arm is set",
+  "spectra": "4s rounded to even native N;50% overlap; median centering; Hann; one-sided PSD dt*absFFT\u00b2/sumh\u00b2; complete contiguous matched windows only; no zero fill",
+  "native_units": "native x times accepted sample CAL multiplier; mJy\u00b2/nominalbeam\u00b2/Hz",
+  "cadence": "native full band; all-stage matched uses identical physical length and common bins up to output Nyquist; absent higher output frequencies not measured suppression",
+  "population": "all detectors included in support denominator; mapping-unavailable/source-overlap/incomplete-window detectors explicitly lack spectral estimate",
+  "line_recipe": "9.75\u201312.25Hz band, median continuum7\u20139.5/12.5\u201315Hz; nonnegative excess above continuum; maxbin/continuum>5 descriptive prominence only, not cleaning threshold",
+  "coherence": "all pairs with >=3 genuine common windows; bin nearest11Hz; not attribution",
+  "event_recipe": "adjacent absolute differences >8 raw matched-support MAD; retained edge within0.25s of unavailable sample; descriptive, not an independent event completeness claim"
+}

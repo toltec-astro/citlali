@@ -1,0 +1,7 @@
+input:
+  path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-fixed11-20260927/C-RTC-diagnostic/observation.json
+  sha256: abcf130b61d0783ebd1edf2d7101699e71031ff2e9f10b4658a2db81fa09784b
+network_workers: 2
+output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-fixed11-20260927/C-RTC-diagnostic/native/products
+schema: citlali-development-v1
+terminal: rtc-only

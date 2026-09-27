@@ -1,0 +1,218 @@
+[
+  {
+    "network": 11,
+    "stage": "raw",
+    "population": "treated",
+    "detectors": 331,
+    "n": 53847,
+    "median": 0.8782425767189742,
+    "p95": 0.9605613693335149,
+    "maximum": 0.9985964925346185,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 53847,
+      "median": 10.0,
+      "p95": 17.0,
+      "maximum": 25.0
+    }
+  },
+  {
+    "network": 11,
+    "stage": "RTC",
+    "population": "treated",
+    "detectors": 331,
+    "n": 53847,
+    "median": 0.6620180077413992,
+    "p95": 0.8790390361505244,
+    "maximum": 0.9990570243545469,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 53847,
+      "median": 10.0,
+      "p95": 17.0,
+      "maximum": 25.0
+    }
+  },
+  {
+    "network": 11,
+    "stage": "CAL",
+    "population": "treated",
+    "detectors": 331,
+    "n": 53573,
+    "median": 0.6852957498022455,
+    "p95": 0.8967985024100236,
+    "maximum": 0.9992758363572725,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 53573,
+      "median": 8.0,
+      "p95": 14.0,
+      "maximum": 19.0
+    }
+  },
+  {
+    "network": 11,
+    "stage": "PTC_M0",
+    "population": "treated",
+    "detectors": 331,
+    "n": 53573,
+    "median": 0.23253815849393603,
+    "p95": 0.7722426447977805,
+    "maximum": 0.9945973056207971,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 53573,
+      "median": 8.0,
+      "p95": 14.0,
+      "maximum": 19.0
+    }
+  },
+  {
+    "network": 11,
+    "stage": "T5_residual",
+    "population": "treated",
+    "detectors": 331,
+    "n": 53573,
+    "median": 0.2392706589345171,
+    "p95": 0.7948679985594967,
+    "maximum": 0.9909563981046745,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 53573,
+      "median": 8.0,
+      "p95": 14.0,
+      "maximum": 19.0
+    }
+  },
+  {
+    "network": 11,
+    "stage": "T5_total",
+    "population": "treated",
+    "detectors": 331,
+    "n": 53573,
+    "median": 0.2392706589345171,
+    "p95": 0.7948679985594967,
+    "maximum": 0.9909563981046745,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 53573,
+      "median": 8.0,
+      "p95": 14.0,
+      "maximum": 19.0
+    }
+  },
+  {
+    "network": 12,
+    "stage": "raw",
+    "population": "treated",
+    "detectors": 151,
+    "n": 10955,
+    "median": 0.8557537663573765,
+    "p95": 0.9648467053189727,
+    "maximum": 0.9979172989615523,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 10955,
+      "median": 8.0,
+      "p95": 16.0,
+      "maximum": 25.0
+    }
+  },
+  {
+    "network": 12,
+    "stage": "RTC",
+    "population": "treated",
+    "detectors": 151,
+    "n": 10955,
+    "median": 0.5888047469105206,
+    "p95": 0.8830462231721331,
+    "maximum": 0.9982939667444174,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 10955,
+      "median": 8.0,
+      "p95": 16.0,
+      "maximum": 25.0
+    }
+  },
+  {
+    "network": 12,
+    "stage": "CAL",
+    "population": "treated",
+    "detectors": 151,
+    "n": 10578,
+    "median": 0.5828364379768722,
+    "p95": 0.8964917979454956,
+    "maximum": 0.9983985652127926,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 10578,
+      "median": 6.0,
+      "p95": 12.0,
+      "maximum": 19.0
+    }
+  },
+  {
+    "network": 12,
+    "stage": "PTC_M0",
+    "population": "treated",
+    "detectors": 151,
+    "n": 10578,
+    "median": 0.8979715413390512,
+    "p95": 0.9837859272875752,
+    "maximum": 0.9998043348066682,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 10578,
+      "median": 6.0,
+      "p95": 12.0,
+      "maximum": 19.0
+    }
+  },
+  {
+    "network": 12,
+    "stage": "T5_residual",
+    "population": "treated",
+    "detectors": 151,
+    "n": 10578,
+    "median": 0.8997372216102647,
+    "p95": 0.9838514641870043,
+    "maximum": 0.9993518147035626,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 10578,
+      "median": 6.0,
+      "p95": 12.0,
+      "maximum": 19.0
+    }
+  },
+  {
+    "network": 12,
+    "stage": "T5_total",
+    "population": "treated",
+    "detectors": 151,
+    "n": 10578,
+    "median": 0.8997372216102647,
+    "p95": 0.9838514641870043,
+    "maximum": 0.9993518147035626,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 10578,
+      "median": 6.0,
+      "p95": 12.0,
+      "maximum": 19.0
+    }
+  }
+]

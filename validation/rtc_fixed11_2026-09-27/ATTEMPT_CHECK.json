@@ -1,0 +1,122 @@
+{
+  "pass_": true,
+  "trajectory_parents": 9,
+  "RTC_only_parents": 2,
+  "original_input_ingresses": 11,
+  "network_RTC_Apply_attempts": 22,
+  "network_RTC_Apply_completions": 22,
+  "scientific_revisions_executed": 0,
+  "scope": "Count actual start/complete markers; receipt attempt1001 is a plan identity, not1001 executions. Native route requires revision_executed false.",
+  "rows": [
+    {
+      "path": "B-REF-rep1/upstream/products/network11/performance.jsonl",
+      "RTC_apply_started": 1,
+      "RTC_apply_completed": 1
+    },
+    {
+      "path": "B-REF-rep1/upstream/products/network12/performance.jsonl",
+      "RTC_apply_started": 1,
+      "RTC_apply_completed": 1
+    },
+    {
+      "path": "B-REF-rep2/upstream/products/network11/performance.jsonl",
+      "RTC_apply_started": 1,
+      "RTC_apply_completed": 1
+    },
+    {
+      "path": "B-REF-rep2/upstream/products/network12/performance.jsonl",
+      "RTC_apply_started": 1,
+      "RTC_apply_completed": 1
+    },
+    {
+      "path": "B-REF-rep3/upstream/products/network11/performance.jsonl",
+      "RTC_apply_started": 1,
+      "RTC_apply_completed": 1
+    },
+    {
+      "path": "B-REF-rep3/upstream/products/network12/performance.jsonl",
+      "RTC_apply_started": 1,
+      "RTC_apply_completed": 1
+    },
+    {
+      "path": "B-RTC-diagnostic/native/products/network11/performance.jsonl",
+      "RTC_apply_started": 1,
+      "RTC_apply_completed": 1
+    },
+    {
+      "path": "B-RTC-diagnostic/native/products/network12/performance.jsonl",
+      "RTC_apply_started": 1,
+      "RTC_apply_completed": 1
+    },
+    {
+      "path": "C-C-core-minus/upstream/products/network11/performance.jsonl",
+      "RTC_apply_started": 1,
+      "RTC_apply_completed": 1
+    },
+    {
+      "path": "C-C-core-minus/upstream/products/network12/performance.jsonl",
+      "RTC_apply_started": 1,
+      "RTC_apply_completed": 1
+    },
+    {
+      "path": "C-C-core-plus/upstream/products/network11/performance.jsonl",
+      "RTC_apply_started": 1,
+      "RTC_apply_completed": 1
+    },
+    {
+      "path": "C-C-core-plus/upstream/products/network12/performance.jsonl",
+      "RTC_apply_started": 1,
+      "RTC_apply_completed": 1
+    },
+    {
+      "path": "C-C-shoulder/upstream/products/network11/performance.jsonl",
+      "RTC_apply_started": 1,
+      "RTC_apply_completed": 1
+    },
+    {
+      "path": "C-C-shoulder/upstream/products/network12/performance.jsonl",
+      "RTC_apply_started": 1,
+      "RTC_apply_completed": 1
+    },
+    {
+      "path": "C-REF-rep1/upstream/products/network11/performance.jsonl",
+      "RTC_apply_started": 1,
+      "RTC_apply_completed": 1
+    },
+    {
+      "path": "C-REF-rep1/upstream/products/network12/performance.jsonl",
+      "RTC_apply_started": 1,
+      "RTC_apply_completed": 1
+    },
+    {
+      "path": "C-REF-rep2/upstream/products/network11/performance.jsonl",
+      "RTC_apply_started": 1,
+      "RTC_apply_completed": 1
+    },
+    {
+      "path": "C-REF-rep2/upstream/products/network12/performance.jsonl",
+      "RTC_apply_started": 1,
+      "RTC_apply_completed": 1
+    },
+    {
+      "path": "C-REF-rep3/upstream/products/network11/performance.jsonl",
+      "RTC_apply_started": 1,
+      "RTC_apply_completed": 1
+    },
+    {
+      "path": "C-REF-rep3/upstream/products/network12/performance.jsonl",
+      "RTC_apply_started": 1,
+      "RTC_apply_completed": 1
+    },
+    {
+      "path": "C-RTC-diagnostic/native/products/network11/performance.jsonl",
+      "RTC_apply_started": 1,
+      "RTC_apply_completed": 1
+    },
+    {
+      "path": "C-RTC-diagnostic/native/products/network12/performance.jsonl",
+      "RTC_apply_started": 1,
+      "RTC_apply_completed": 1
+    }
+  ]
+}

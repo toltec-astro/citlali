@@ -1,0 +1,42 @@
+schema: citlali-val-map-occurrence-evaluation-v1
+registry: SCI-VAL_PROFILE_REGISTRY v0.1/r0.3-map-v0.2-r0.4-2026-09-08
+registry_sha256: ce027c3a5c0e71291e9ea509c3a2d1e2d9971fac64763e2afc676241df7d442b
+source_register: SCI-VAL_SOURCE_BINDING_REGISTER v0.1/r0.3-map-v0.2-r0.4-2026-09-08
+source_register_sha256: a30c1b71ada4793b6ae805699f9335e9f912399e066a4af6bb68ab81456d4555
+profile: SCI-MAP:map_upstream_admission@2
+binding: SCI-MAP-v0.2-r0.4-2026-09-08
+role: SCI-MAP:base_observation_map@1
+object_domain: sha256:a667e8dd17823caae374158e963d840162153b6cbfa6f7e220098d9422c3b0aa:segment-1:complete-retained-support:causes=7c6a4825384abcecd64098a0615e1dc419ebf8bcaf525fd9d7d2c1a68ad5b4f3
+object_rule: each exact (publication, detector occurrence, RTC slot) in retained row-major support; atomic_only
+publication_sha256: 4acacab22c84296f3d427e29c9ad271ff97c4fd08d5d115671ba543821b8d438
+coefficient_sha256: 5976956ac94ba273ce7564d81ff73360e535cf98d0a2318b72115a219a17d85b
+AST_binding_sha256: 5480028605147a841cbf2996e80a3c64b8223e05505ed56323b383e03bcbb1b5
+coefficient_QC_sha256: 60b97892bd0daff6c915a0ddc5bc18d4ce5217579623cb44420afee573cb51b2
+eligibility_file: network-12-segment-1-map-eligible.bits
+eligibility_sha256: f79b234a8d24f388f08257ce87b0c07294e95935e4397de65a465cd0ffd4588f
+requested: requested
+applicability: applicable
+realization: realized
+eligibility_encoding: "little-bit-order packed bits in exact retained support: 1 eligible, 0 ineligible; trailing padding zero"
+eligible: 249842
+ineligible: 0
+causes: exact source CAL u16 and PTC u8 causes retained through publication parent, detector columns and RTC slots; uniform QC restrictions retained separately
+response_covariance_and_engineering_classification: advisory; no veto or science-qualification promotion
+identity_convention: sha256 of complete immutable evaluation file; exact identity recorded in frozen MAP plan
+allocation_identity: SCI-MAP-PROFILE-IDENTITY-ALLOCATION/2026-09-08
+allocation_sha256: 2afbf10026784ac4528aa799b9f4362bf5f2bf328f77d3a3edb187c3221523f4
+manifest_identity: SCI-MAP-PROFILE-ADMISSION-MANIFEST/2026-09-08
+manifest_sha256: 57229670cd540ce2f8aeecf5d1a568414d0a85b6a9d6cf5a74b7e698b6ac5ec3
+shared_core_identity: SCI-MAP-v0.2-SHARED-AUTHORITY/r0.4
+shared_core_sha256: 3b81ea8180dcc3f5f37964ac1177feb417fef6a1cdcc590b33f9431b54bc1e31
+PTC_MAP_boundary_identity: SCI-PTC_TO_SCI-MAP_BOUNDARY v0.2-draft.1/r0.4
+PTC_MAP_boundary_sha256: 58291e1c879dc9116e81a9e3fd4323caf79a176c51e296d8119efb6937272ef8
+AST_original_footprint_boundary_sha256: f7be703d17320de6f6ecfc3a3974d54799540fff1d8b2d9491c941a7ea3b45a4
+MAP_reached_stages:
+  - requested
+  - effective
+evaluator_build: v2-ngc4449-memory-repair-187df04b-605-gb3d997456
+fixtures:
+  - tests/test_forward_map.cpp:PtcMapHandoff/ForwardMapAdmission
+  - tools/timestream_successor/test_forward_map_reload.py
+actual_evidence: bound q/g/QC/AST/CAL files and exact occurrence eligibility bits; native second-pass decision replay verifies artifact content before accumulation

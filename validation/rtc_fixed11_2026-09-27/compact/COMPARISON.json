@@ -1,0 +1,67 @@
+{
+  "status": "completed",
+  "applicability": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_fixed11_2026-09-27/APPLICABILITY.json",
+    "sha256": "8c41c3946e87dc22a2baaaa6411122c14af47d32611f17a167ba644365962150"
+  },
+  "order": [
+    "B1",
+    "C1",
+    "B2",
+    "C2",
+    "B3",
+    "C3"
+  ],
+  "runs": [
+    {
+      "name": "B-REF-rep1",
+      "status": "completed"
+    },
+    {
+      "name": "C-REF-rep1",
+      "status": "completed"
+    },
+    {
+      "name": "B-REF-rep2",
+      "status": "completed"
+    },
+    {
+      "name": "C-REF-rep2",
+      "status": "completed"
+    },
+    {
+      "name": "B-REF-rep3",
+      "status": "completed"
+    },
+    {
+      "name": "C-REF-rep3",
+      "status": "completed"
+    },
+    {
+      "name": "C-C-core-plus",
+      "status": "completed"
+    },
+    {
+      "name": "C-C-core-minus",
+      "status": "completed"
+    },
+    {
+      "name": "C-C-shoulder",
+      "status": "completed"
+    }
+  ],
+  "limits": {
+    "parent": 9,
+    "trajectory": 9,
+    "feedback": 45,
+    "endpoint": 9,
+    "rtc_only": 2
+  },
+  "resource_policy": {
+    "workloads": 1,
+    "network_workers": 2,
+    "feedback_workers": 1,
+    "numerical_threads": 1
+  },
+  "peak_disk_ceiling_bytes": 20000000000
+}

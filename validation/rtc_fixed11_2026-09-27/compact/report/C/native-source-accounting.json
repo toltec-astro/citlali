@@ -1,0 +1,74 @@
+[
+  {
+    "branch": "C-core-plus",
+    "network": 11,
+    "state_changed_cells": 0,
+    "map_center_changed_cells": 0,
+    "calibration_only_max_abs_error": 1.4210854715202004e-14,
+    "changed_cells": 318980,
+    "mapping_unavailable_cells": 453618,
+    "input_r_unchanged": true,
+    "input_validity_unchanged": true,
+    "own_RTC_learning": true
+  },
+  {
+    "branch": "C-core-plus",
+    "network": 12,
+    "state_changed_cells": 0,
+    "map_center_changed_cells": 0,
+    "calibration_only_max_abs_error": 1.4210854715202004e-14,
+    "changed_cells": 335152,
+    "mapping_unavailable_cells": 586500,
+    "input_r_unchanged": true,
+    "input_validity_unchanged": true,
+    "own_RTC_learning": true
+  },
+  {
+    "branch": "C-core-minus",
+    "network": 11,
+    "state_changed_cells": 0,
+    "map_center_changed_cells": 0,
+    "calibration_only_max_abs_error": 1.4210854715202004e-14,
+    "changed_cells": 318980,
+    "mapping_unavailable_cells": 453618,
+    "input_r_unchanged": true,
+    "input_validity_unchanged": true,
+    "own_RTC_learning": true
+  },
+  {
+    "branch": "C-core-minus",
+    "network": 12,
+    "state_changed_cells": 0,
+    "map_center_changed_cells": 0,
+    "calibration_only_max_abs_error": 1.4210854715202004e-14,
+    "changed_cells": 335152,
+    "mapping_unavailable_cells": 586500,
+    "input_r_unchanged": true,
+    "input_validity_unchanged": true,
+    "own_RTC_learning": true
+  },
+  {
+    "branch": "C-shoulder",
+    "network": 11,
+    "state_changed_cells": 0,
+    "map_center_changed_cells": 0,
+    "calibration_only_max_abs_error": 7.105427357601002e-15,
+    "changed_cells": 318980,
+    "mapping_unavailable_cells": 453618,
+    "input_r_unchanged": true,
+    "input_validity_unchanged": true,
+    "own_RTC_learning": true
+  },
+  {
+    "branch": "C-shoulder",
+    "network": 12,
+    "state_changed_cells": 0,
+    "map_center_changed_cells": 0,
+    "calibration_only_max_abs_error": 7.105427357601002e-15,
+    "changed_cells": 335152,
+    "mapping_unavailable_cells": 586500,
+    "input_r_unchanged": true,
+    "input_validity_unchanged": true,
+    "own_RTC_learning": true
+  }
+]

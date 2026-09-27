@@ -1,0 +1,308 @@
+[
+  {
+    "network": 11,
+    "population": "full",
+    "detectors": 486,
+    "native_cells": 3801006,
+    "fields": {
+      "filtered": {
+        "changed_cells": 2296697,
+        "byte_exact": false
+      },
+      "filtered_r": {
+        "changed_cells": 2296697,
+        "byte_exact": false
+      },
+      "state": {
+        "changed_cells": 124886,
+        "byte_exact": false
+      },
+      "center": {
+        "changed_cells": 62090,
+        "byte_exact": false
+      },
+      "speed": {
+        "changed_cells": 0,
+        "byte_exact": true
+      },
+      "causes": {
+        "changed_cells": 124886,
+        "byte_exact": false
+      }
+    },
+    "raw_x_r_identical": true,
+    "available": {
+      "B": 3241127,
+      "C": 3116241,
+      "lost": 124886,
+      "gained": 0,
+      "scheduled_B": 1620562,
+      "scheduled_C": 1558120,
+      "scheduled_lost": 62442
+    },
+    "map_center": {
+      "B": 1597680,
+      "C": 1535590,
+      "lost": 62090,
+      "gained": 0,
+      "scheduled_B": 1597680,
+      "scheduled_C": 1535590,
+      "scheduled_lost": 62090
+    }
+  },
+  {
+    "network": 11,
+    "population": "treated",
+    "detectors": 331,
+    "native_cells": 2588751,
+    "fields": {
+      "filtered": {
+        "changed_cells": 2296697,
+        "byte_exact": false
+      },
+      "filtered_r": {
+        "changed_cells": 2296697,
+        "byte_exact": false
+      },
+      "state": {
+        "changed_cells": 124886,
+        "byte_exact": false
+      },
+      "center": {
+        "changed_cells": 62090,
+        "byte_exact": false
+      },
+      "speed": {
+        "changed_cells": 0,
+        "byte_exact": true
+      },
+      "causes": {
+        "changed_cells": 124886,
+        "byte_exact": false
+      }
+    },
+    "raw_x_r_identical": true,
+    "available": {
+      "B": 2296697,
+      "C": 2171811,
+      "lost": 124886,
+      "gained": 0,
+      "scheduled_B": 1148348,
+      "scheduled_C": 1085906,
+      "scheduled_lost": 62442
+    },
+    "map_center": {
+      "B": 1132130,
+      "C": 1070040,
+      "lost": 62090,
+      "gained": 0,
+      "scheduled_B": 1132130,
+      "scheduled_C": 1070040,
+      "scheduled_lost": 62090
+    }
+  },
+  {
+    "network": 11,
+    "population": "untreated",
+    "detectors": 155,
+    "native_cells": 1212255,
+    "fields": {
+      "filtered": {
+        "changed_cells": 0,
+        "byte_exact": true
+      },
+      "filtered_r": {
+        "changed_cells": 0,
+        "byte_exact": true
+      },
+      "state": {
+        "changed_cells": 0,
+        "byte_exact": true
+      },
+      "center": {
+        "changed_cells": 0,
+        "byte_exact": true
+      },
+      "speed": {
+        "changed_cells": 0,
+        "byte_exact": true
+      },
+      "causes": {
+        "changed_cells": 0,
+        "byte_exact": true
+      }
+    },
+    "raw_x_r_identical": true,
+    "available": {
+      "B": 944430,
+      "C": 944430,
+      "lost": 0,
+      "gained": 0,
+      "scheduled_B": 472214,
+      "scheduled_C": 472214,
+      "scheduled_lost": 0
+    },
+    "map_center": {
+      "B": 465550,
+      "C": 465550,
+      "lost": 0,
+      "gained": 0,
+      "scheduled_B": 465550,
+      "scheduled_C": 465550,
+      "scheduled_lost": 0
+    }
+  },
+  {
+    "network": 12,
+    "population": "full",
+    "detectors": 491,
+    "native_cells": 3839620,
+    "fields": {
+      "filtered": {
+        "changed_cells": 1046044,
+        "byte_exact": false
+      },
+      "filtered_r": {
+        "changed_cells": 1046044,
+        "byte_exact": false
+      },
+      "state": {
+        "changed_cells": 58194,
+        "byte_exact": false
+      },
+      "center": {
+        "changed_cells": 28934,
+        "byte_exact": false
+      },
+      "speed": {
+        "changed_cells": 0,
+        "byte_exact": true
+      },
+      "causes": {
+        "changed_cells": 58194,
+        "byte_exact": false
+      }
+    },
+    "raw_x_r_identical": true,
+    "available": {
+      "B": 3312614,
+      "C": 3254420,
+      "lost": 58194,
+      "gained": 0,
+      "scheduled_B": 1656306,
+      "scheduled_C": 1627211,
+      "scheduled_lost": 29095
+    },
+    "map_center": {
+      "B": 1632941,
+      "C": 1604007,
+      "lost": 28934,
+      "gained": 0,
+      "scheduled_B": 1632941,
+      "scheduled_C": 1604007,
+      "scheduled_lost": 28934
+    }
+  },
+  {
+    "network": 12,
+    "population": "treated",
+    "detectors": 151,
+    "native_cells": 1180820,
+    "fields": {
+      "filtered": {
+        "changed_cells": 1046044,
+        "byte_exact": false
+      },
+      "filtered_r": {
+        "changed_cells": 1046044,
+        "byte_exact": false
+      },
+      "state": {
+        "changed_cells": 58194,
+        "byte_exact": false
+      },
+      "center": {
+        "changed_cells": 28934,
+        "byte_exact": false
+      },
+      "speed": {
+        "changed_cells": 0,
+        "byte_exact": true
+      },
+      "causes": {
+        "changed_cells": 58194,
+        "byte_exact": false
+      }
+    },
+    "raw_x_r_identical": true,
+    "available": {
+      "B": 1046044,
+      "C": 987850,
+      "lost": 58194,
+      "gained": 0,
+      "scheduled_B": 523021,
+      "scheduled_C": 493926,
+      "scheduled_lost": 29095
+    },
+    "map_center": {
+      "B": 515650,
+      "C": 486716,
+      "lost": 28934,
+      "gained": 0,
+      "scheduled_B": 515650,
+      "scheduled_C": 486716,
+      "scheduled_lost": 28934
+    }
+  },
+  {
+    "network": 12,
+    "population": "untreated",
+    "detectors": 340,
+    "native_cells": 2658800,
+    "fields": {
+      "filtered": {
+        "changed_cells": 0,
+        "byte_exact": true
+      },
+      "filtered_r": {
+        "changed_cells": 0,
+        "byte_exact": true
+      },
+      "state": {
+        "changed_cells": 0,
+        "byte_exact": true
+      },
+      "center": {
+        "changed_cells": 0,
+        "byte_exact": true
+      },
+      "speed": {
+        "changed_cells": 0,
+        "byte_exact": true
+      },
+      "causes": {
+        "changed_cells": 0,
+        "byte_exact": true
+      }
+    },
+    "raw_x_r_identical": true,
+    "available": {
+      "B": 2266570,
+      "C": 2266570,
+      "lost": 0,
+      "gained": 0,
+      "scheduled_B": 1133285,
+      "scheduled_C": 1133285,
+      "scheduled_lost": 0
+    },
+    "map_center": {
+      "B": 1117291,
+      "C": 1117291,
+      "lost": 0,
+      "gained": 0,
+      "scheduled_B": 1117291,
+      "scheduled_C": 1117291,
+      "scheduled_lost": 0
+    }
+  }
+]

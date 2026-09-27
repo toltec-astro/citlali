@@ -1,0 +1,744 @@
+{
+  "pass_": true,
+  "tolerances": {
+    "signal_atol": 1e-09,
+    "signal_rtol": 1e-11,
+    "numerator_atol": 1e-07,
+    "fit_atol_rtol": 1e-08,
+    "deterministic_measurements_candidates": "exact",
+    "support_normalization": "exact"
+  },
+  "planes": [
+    {
+      "path": "M0/products/a2000/map.fits",
+      "plane": "PRIMARY",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 1e-09,
+      "rtol": 1e-11,
+      "pass_": true
+    },
+    {
+      "path": "M0/products/a2000/map.fits",
+      "plane": "NUMERATOR",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 1e-07,
+      "rtol": 1e-11,
+      "pass_": true
+    },
+    {
+      "path": "M0/products/a2000/map.fits",
+      "plane": "NORMALIZATION",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "M0/products/a2000/map.fits",
+      "plane": "HITS",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "M0/products/a2000/map.fits",
+      "plane": "NORM_SUPPORT",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "M0/products/a2000/map.fits",
+      "plane": "SCI_SUPPORT",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/initial/candidate.fits",
+      "plane": "CANDIDATE",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/initial/candidate.fits",
+      "plane": "ADMITTED",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/initial/candidate.fits",
+      "plane": "VALID",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/initial/candidate.fits",
+      "plane": "RATIO",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-01/native/products/total.fits",
+      "plane": "PRIMARY",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 1e-09,
+      "rtol": 1e-11,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-01/native/products/total.fits",
+      "plane": "NUMERATOR",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 1e-07,
+      "rtol": 1e-11,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-01/native/products/total.fits",
+      "plane": "NORMALIZATION",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-01/native/products/total.fits",
+      "plane": "HITS",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-01/native/products/total.fits",
+      "plane": "NORM_SUPPORT",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-01/native/products/total.fits",
+      "plane": "SCI_SUPPORT",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-01/candidate.fits",
+      "plane": "CANDIDATE",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-01/candidate.fits",
+      "plane": "ADMITTED",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-01/candidate.fits",
+      "plane": "VALID",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-01/candidate.fits",
+      "plane": "RATIO",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-02/native/products/total.fits",
+      "plane": "PRIMARY",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 1e-09,
+      "rtol": 1e-11,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-02/native/products/total.fits",
+      "plane": "NUMERATOR",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 1e-07,
+      "rtol": 1e-11,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-02/native/products/total.fits",
+      "plane": "NORMALIZATION",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-02/native/products/total.fits",
+      "plane": "HITS",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-02/native/products/total.fits",
+      "plane": "NORM_SUPPORT",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-02/native/products/total.fits",
+      "plane": "SCI_SUPPORT",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-02/candidate.fits",
+      "plane": "CANDIDATE",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-02/candidate.fits",
+      "plane": "ADMITTED",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-02/candidate.fits",
+      "plane": "VALID",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-02/candidate.fits",
+      "plane": "RATIO",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-03/native/products/total.fits",
+      "plane": "PRIMARY",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 1e-09,
+      "rtol": 1e-11,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-03/native/products/total.fits",
+      "plane": "NUMERATOR",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 1e-07,
+      "rtol": 1e-11,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-03/native/products/total.fits",
+      "plane": "NORMALIZATION",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-03/native/products/total.fits",
+      "plane": "HITS",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-03/native/products/total.fits",
+      "plane": "NORM_SUPPORT",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-03/native/products/total.fits",
+      "plane": "SCI_SUPPORT",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-03/candidate.fits",
+      "plane": "CANDIDATE",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-03/candidate.fits",
+      "plane": "ADMITTED",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-03/candidate.fits",
+      "plane": "VALID",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-03/candidate.fits",
+      "plane": "RATIO",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-04/native/products/total.fits",
+      "plane": "PRIMARY",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 1e-09,
+      "rtol": 1e-11,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-04/native/products/total.fits",
+      "plane": "NUMERATOR",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 1e-07,
+      "rtol": 1e-11,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-04/native/products/total.fits",
+      "plane": "NORMALIZATION",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-04/native/products/total.fits",
+      "plane": "HITS",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-04/native/products/total.fits",
+      "plane": "NORM_SUPPORT",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-04/native/products/total.fits",
+      "plane": "SCI_SUPPORT",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-04/candidate.fits",
+      "plane": "CANDIDATE",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-04/candidate.fits",
+      "plane": "ADMITTED",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-04/candidate.fits",
+      "plane": "VALID",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-04/candidate.fits",
+      "plane": "RATIO",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-05/native/products/total.fits",
+      "plane": "PRIMARY",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 1e-09,
+      "rtol": 1e-11,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-05/native/products/total.fits",
+      "plane": "NUMERATOR",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 1e-07,
+      "rtol": 1e-11,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-05/native/products/total.fits",
+      "plane": "NORMALIZATION",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-05/native/products/total.fits",
+      "plane": "HITS",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-05/native/products/total.fits",
+      "plane": "NORM_SUPPORT",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-05/native/products/total.fits",
+      "plane": "SCI_SUPPORT",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-05/candidate.fits",
+      "plane": "CANDIDATE",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-05/candidate.fits",
+      "plane": "ADMITTED",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-05/candidate.fits",
+      "plane": "VALID",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a2000/cycle-05/candidate.fits",
+      "plane": "RATIO",
+      "exact": true,
+      "max_abs": 0.0,
+      "atol": 0,
+      "rtol": 0,
+      "pass_": true
+    }
+  ],
+  "decisions": [
+    {
+      "cycle": 0,
+      "field": "measurement",
+      "exact": true
+    },
+    {
+      "cycle": 0,
+      "field": "admission",
+      "exact": true
+    },
+    {
+      "cycle": 1,
+      "field": "measurement",
+      "exact": true
+    },
+    {
+      "cycle": 1,
+      "field": "admission",
+      "exact": true
+    },
+    {
+      "cycle": 2,
+      "field": "measurement",
+      "exact": true
+    },
+    {
+      "cycle": 2,
+      "field": "admission",
+      "exact": true
+    },
+    {
+      "cycle": 3,
+      "field": "measurement",
+      "exact": true
+    },
+    {
+      "cycle": 3,
+      "field": "admission",
+      "exact": true
+    },
+    {
+      "cycle": 4,
+      "field": "measurement",
+      "exact": true
+    },
+    {
+      "cycle": 4,
+      "field": "admission",
+      "exact": true
+    },
+    {
+      "cycle": 5,
+      "field": "measurement",
+      "exact": true
+    },
+    {
+      "cycle": 5,
+      "field": "admission",
+      "exact": true
+    },
+    {
+      "initialization": "context",
+      "field": "original",
+      "exact": true
+    },
+    {
+      "initialization": "context",
+      "field": "support",
+      "exact": true
+    },
+    {
+      "initialization": "context",
+      "field": "full_support",
+      "exact": true
+    },
+    {
+      "initialization": "context",
+      "field": "scale",
+      "exact": true
+    },
+    {
+      "initialization": "context",
+      "field": "psd",
+      "exact": true
+    },
+    {
+      "initialization": "context",
+      "field": "empirical",
+      "exact": true
+    },
+    {
+      "initialization": "context",
+      "field": "pairs",
+      "exact": true
+    },
+    {
+      "initialization": "context",
+      "field": "base_scale",
+      "exact": true
+    },
+    {
+      "initialization": "context",
+      "field": "noise_valid",
+      "exact": true
+    },
+    {
+      "initialization": "context",
+      "field": "parameters",
+      "exact": true
+    },
+    {
+      "initialization": "context",
+      "field": "q",
+      "exact": true
+    },
+    {
+      "initialization": "context",
+      "field": "k0",
+      "exact": true
+    },
+    {
+      "initialization": "C0",
+      "field": "scale",
+      "exact": true
+    },
+    {
+      "initialization": "C0",
+      "field": "valid",
+      "exact": true
+    },
+    {
+      "initialization": "C0",
+      "field": "coverage_extrapolated",
+      "exact": true
+    },
+    {
+      "initialization": "C0",
+      "field": "source_mask",
+      "exact": true
+    },
+    {
+      "initialization": "C0",
+      "field": "background_mask",
+      "exact": true
+    },
+    {
+      "initialization": "C0",
+      "field": "psd",
+      "exact": true
+    },
+    {
+      "initialization": "C0",
+      "field": "empirical",
+      "exact": true
+    },
+    {
+      "initialization": "C0",
+      "field": "pairs",
+      "exact": true
+    },
+    {
+      "initialization": "BASE",
+      "field": "scale",
+      "exact": true
+    },
+    {
+      "initialization": "BASE",
+      "field": "valid",
+      "exact": true
+    },
+    {
+      "initialization": "BASE",
+      "field": "coverage_extrapolated",
+      "exact": true
+    },
+    {
+      "initialization": "BASE",
+      "field": "source_mask",
+      "exact": true
+    },
+    {
+      "initialization": "BASE",
+      "field": "background_mask",
+      "exact": true
+    }
+  ],
+  "endpoint_exact": true,
+  "failures": [],
+  "maximum_absolute_plane_difference": 0.0,
+  "scope": "M0 and T1\u2013T5, all six MAP planes and candidate planes, accepted source/fit/template/apertures, initial covariance; conditional endpoint comparison=True; no science rerun"
+}

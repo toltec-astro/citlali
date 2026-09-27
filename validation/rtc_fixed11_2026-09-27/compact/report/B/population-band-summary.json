@@ -1,0 +1,2360 @@
+[
+  {
+    "network": 11,
+    "domain": "native-matched",
+    "stage": "RTC",
+    "metric": "above_output_nyquist_power",
+    "window_count": 7131,
+    "detector_mean": {
+      "n": 417,
+      "median": 6.007122522305283e-07,
+      "p95": 3.743633875821022e-06,
+      "maximum": 3.190888310975752e-05
+    },
+    "window_population": {
+      "n": 7131,
+      "median": 5.20355562150526e-07,
+      "p95": 4.0951343888607e-06,
+      "maximum": 8.91587718376102e-05
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "native-matched",
+    "stage": "RTC",
+    "metric": "high_power",
+    "window_count": 7131,
+    "detector_mean": {
+      "n": 417,
+      "median": 2036.2239406233323,
+      "p95": 10746.676668439692,
+      "maximum": 103239.74755167191
+    },
+    "window_population": {
+      "n": 7131,
+      "median": 1928.7932345656043,
+      "p95": 10502.062947982144,
+      "maximum": 147268.80270944285
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "native-matched",
+    "stage": "RTC",
+    "metric": "line_excess",
+    "window_count": 7131,
+    "detector_mean": {
+      "n": 417,
+      "median": 1975.713981785689,
+      "p95": 7888.484593760055,
+      "maximum": 1139296.5490966982
+    },
+    "window_population": {
+      "n": 7131,
+      "median": 1558.4125591505763,
+      "p95": 10042.013758549492,
+      "maximum": 1211556.1696698018
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "native-matched",
+    "stage": "RTC",
+    "metric": "line_power",
+    "window_count": 7131,
+    "detector_mean": {
+      "n": 417,
+      "median": 2591.493157249,
+      "p95": 10044.690086522569,
+      "maximum": 1141930.6339981544
+    },
+    "window_population": {
+      "n": 7131,
+      "median": 2180.710949238815,
+      "p95": 11972.702927659393,
+      "maximum": 1214212.9848480984
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "native-matched",
+    "stage": "RTC",
+    "metric": "line_prominence",
+    "window_count": 7131,
+    "detector_mean": {
+      "n": 417,
+      "median": 21.945511893785508,
+      "p95": 67.4383213947817,
+      "maximum": 3191.849605188162
+    },
+    "window_population": {
+      "n": 7131,
+      "median": 15.034039927624198,
+      "p95": 104.29477556027996,
+      "maximum": 6053.412322792596
+    },
+    "detector_prominent_window_fraction": {
+      "n": 417,
+      "median": 0.8947368421052632,
+      "p95": 1.0,
+      "maximum": 1.0
+    },
+    "prominent_gt5_fraction": 0.815313420277661
+  },
+  {
+    "network": 11,
+    "domain": "native-matched",
+    "stage": "RTC",
+    "metric": "low_power",
+    "window_count": 7131,
+    "detector_mean": {
+      "n": 417,
+      "median": 4755.274071764778,
+      "p95": 23539.163966198397,
+      "maximum": 241364.89454206923
+    },
+    "window_population": {
+      "n": 7131,
+      "median": 2520.8483605021775,
+      "p95": 33665.42545232706,
+      "maximum": 1257711.061508624
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "native-matched",
+    "stage": "raw",
+    "metric": "above_output_nyquist_power",
+    "window_count": 7131,
+    "detector_mean": {
+      "n": 417,
+      "median": 5530.801260634438,
+      "p95": 33354.304740531385,
+      "maximum": 329025.1371018965
+    },
+    "window_population": {
+      "n": 7131,
+      "median": 5388.149041628231,
+      "p95": 35547.23619285766,
+      "maximum": 391647.50445320684
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "native-matched",
+    "stage": "raw",
+    "metric": "high_power",
+    "window_count": 7131,
+    "detector_mean": {
+      "n": 417,
+      "median": 2036.1998492886212,
+      "p95": 10746.496655150844,
+      "maximum": 103238.57682145473
+    },
+    "window_population": {
+      "n": 7131,
+      "median": 1928.719005896328,
+      "p95": 10501.85182556864,
+      "maximum": 147266.14271017088
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "native-matched",
+    "stage": "raw",
+    "metric": "line_excess",
+    "window_count": 7131,
+    "detector_mean": {
+      "n": 417,
+      "median": 1975.7056735893345,
+      "p95": 7888.451242152596,
+      "maximum": 1139266.2937396264
+    },
+    "window_population": {
+      "n": 7131,
+      "median": 1558.4109876335538,
+      "p95": 10042.069291577882,
+      "maximum": 1211524.4266048048
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "native-matched",
+    "stage": "raw",
+    "metric": "line_power",
+    "window_count": 7131,
+    "detector_mean": {
+      "n": 417,
+      "median": 2591.479097172604,
+      "p95": 10044.655471155902,
+      "maximum": 1141900.3393299496
+    },
+    "window_population": {
+      "n": 7131,
+      "median": 2180.691818544123,
+      "p95": 11972.61753663415,
+      "maximum": 1214181.214575094
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "native-matched",
+    "stage": "raw",
+    "metric": "line_prominence",
+    "window_count": 7131,
+    "detector_mean": {
+      "n": 417,
+      "median": 21.945702537287453,
+      "p95": 67.43889803837746,
+      "maximum": 3191.7979636269615
+    },
+    "window_population": {
+      "n": 7131,
+      "median": 15.034286633882466,
+      "p95": 104.2960958307277,
+      "maximum": 6053.251403112282
+    },
+    "detector_prominent_window_fraction": {
+      "n": 417,
+      "median": 0.8947368421052632,
+      "p95": 1.0,
+      "maximum": 1.0
+    },
+    "prominent_gt5_fraction": 0.815313420277661
+  },
+  {
+    "network": 11,
+    "domain": "native-matched",
+    "stage": "raw",
+    "metric": "low_power",
+    "window_count": 7131,
+    "detector_mean": {
+      "n": 417,
+      "median": 4755.223704724597,
+      "p95": 23539.303768929632,
+      "maximum": 241358.7958811435
+    },
+    "window_population": {
+      "n": 7131,
+      "median": 2521.082494522776,
+      "p95": 33664.7723454013,
+      "maximum": 1257711.6312611576
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "CAL",
+    "metric": "above_output_nyquist_power",
+    "window_count": 0,
+    "detector_mean": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "window_population": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "CAL",
+    "metric": "high_power",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 2040.5036966456335,
+      "p95": 10939.367366206641,
+      "maximum": 106831.91297001884
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 1903.2572092361138,
+      "p95": 10677.649232199174,
+      "maximum": 146611.95273413497
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "CAL",
+    "metric": "line_excess",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 1987.215242710743,
+      "p95": 7958.163319609684,
+      "maximum": 1138603.1802194598
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 1434.537635087902,
+      "p95": 10297.194854213967,
+      "maximum": 1211948.9899208928
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "CAL",
+    "metric": "line_power",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 2550.877765513421,
+      "p95": 9992.071665722751,
+      "maximum": 1141122.63323676
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 2046.905715188313,
+      "p95": 12312.477226379655,
+      "maximum": 1213313.9096532797
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "CAL",
+    "metric": "line_prominence",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 21.940154034682998,
+      "p95": 64.7061652681166,
+      "maximum": 3348.4524498319643
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 13.676443793930288,
+      "p95": 102.68051907833298,
+      "maximum": 6195.536187727993
+    },
+    "detector_prominent_window_fraction": {
+      "n": 417,
+      "median": 0.8888888888888888,
+      "p95": 1.0,
+      "maximum": 1.0
+    },
+    "prominent_gt5_fraction": 0.8067212555441828
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "CAL",
+    "metric": "low_power",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 3913.839052983566,
+      "p95": 24393.156301420033,
+      "maximum": 277643.6803060394
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 2194.953501848515,
+      "p95": 28497.391869644995,
+      "maximum": 1575888.8110094282
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "PTC_M0",
+    "metric": "above_output_nyquist_power",
+    "window_count": 0,
+    "detector_mean": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "window_population": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "PTC_M0",
+    "metric": "high_power",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 1754.020158507076,
+      "p95": 8258.370178901494,
+      "maximum": 24170.82809211283
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 1663.6774831197768,
+      "p95": 7951.271413324712,
+      "maximum": 51363.75524168421
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "PTC_M0",
+    "metric": "line_excess",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 209.58289357139532,
+      "p95": 1190.7636721114432,
+      "maximum": 20954.626867610204
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 122.28606108632441,
+      "p95": 1379.4537251424908,
+      "maximum": 57347.59180032284
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "PTC_M0",
+    "metric": "line_power",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 575.9848170259182,
+      "p95": 2968.8968762905856,
+      "maximum": 24832.529061792768
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 521.3229792039217,
+      "p95": 2801.7794883861166,
+      "maximum": 62375.32993697351
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "PTC_M0",
+    "metric": "line_prominence",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 4.275364803012921,
+      "p95": 7.008545831303403,
+      "maximum": 119.34603387678393
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 3.65792574687278,
+      "p95": 11.223447906756565,
+      "maximum": 462.93897689987125
+    },
+    "detector_prominent_window_fraction": {
+      "n": 417,
+      "median": 0.29411764705882354,
+      "p95": 0.6,
+      "maximum": 1.0
+    },
+    "prominent_gt5_fraction": 0.3067212555441829
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "PTC_M0",
+    "metric": "low_power",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 771.1128935390923,
+      "p95": 3296.403228699663,
+      "maximum": 10698.386541436395
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 668.0780874811085,
+      "p95": 3519.2814924142867,
+      "maximum": 65527.2861676056
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "RTC_native",
+    "metric": "above_output_nyquist_power",
+    "window_count": 0,
+    "detector_mean": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "window_population": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "RTC_native",
+    "metric": "high_power",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 2040.8208597841235,
+      "p95": 10939.20475243624,
+      "maximum": 106825.26670474902
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 1903.9215988828819,
+      "p95": 10664.015469612092,
+      "maximum": 146247.96353714785
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "RTC_native",
+    "metric": "line_excess",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 1987.9924834163712,
+      "p95": 7967.426639809817,
+      "maximum": 1138435.6499562622
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 1433.3986710629626,
+      "p95": 10289.459469160955,
+      "maximum": 1211969.1014027891
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "RTC_native",
+    "metric": "line_power",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 2550.885638278679,
+      "p95": 10005.399250467899,
+      "maximum": 1140956.7524281568
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 2048.774412190799,
+      "p95": 12288.790986867816,
+      "maximum": 1213227.1234254874
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "RTC_native",
+    "metric": "line_prominence",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 21.9498627214567,
+      "p95": 64.73301366989641,
+      "maximum": 3358.281180452822
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 13.689098206820743,
+      "p95": 103.00659189573177,
+      "maximum": 6244.6103038908805
+    },
+    "detector_prominent_window_fraction": {
+      "n": 417,
+      "median": 0.8888888888888888,
+      "p95": 1.0,
+      "maximum": 1.0
+    },
+    "prominent_gt5_fraction": 0.8074036165131354
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "RTC_native",
+    "metric": "low_power",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 3911.654542914317,
+      "p95": 24453.697650134683,
+      "maximum": 277947.68898546934
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 2195.3870248362578,
+      "p95": 28557.03618567512,
+      "maximum": 1576881.3612261203
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "T5_input",
+    "metric": "above_output_nyquist_power",
+    "window_count": 0,
+    "detector_mean": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "window_population": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "T5_input",
+    "metric": "high_power",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 2040.5036966456335,
+      "p95": 10939.367366206641,
+      "maximum": 106831.91297001884
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 1903.2572092361138,
+      "p95": 10677.649232199174,
+      "maximum": 146611.95273413497
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "T5_input",
+    "metric": "line_excess",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 1987.215242710743,
+      "p95": 7958.163319609684,
+      "maximum": 1138603.1802194598
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 1434.537635087902,
+      "p95": 10297.194854213967,
+      "maximum": 1211948.9899208928
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "T5_input",
+    "metric": "line_power",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 2550.877765513421,
+      "p95": 9992.071665722751,
+      "maximum": 1141122.63323676
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 2046.905715188313,
+      "p95": 12312.477226379655,
+      "maximum": 1213313.9096532797
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "T5_input",
+    "metric": "line_prominence",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 21.940154034682998,
+      "p95": 64.7061652681166,
+      "maximum": 3348.4524498319643
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 13.676443793930288,
+      "p95": 102.68051907833298,
+      "maximum": 6195.536187727993
+    },
+    "detector_prominent_window_fraction": {
+      "n": 417,
+      "median": 0.8888888888888888,
+      "p95": 1.0,
+      "maximum": 1.0
+    },
+    "prominent_gt5_fraction": 0.8067212555441828
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "T5_input",
+    "metric": "low_power",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 3913.839052983566,
+      "p95": 24393.156301420033,
+      "maximum": 277643.6803060394
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 2194.953501848515,
+      "p95": 28497.391869644995,
+      "maximum": 1575888.8110094282
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "T5_residual",
+    "metric": "above_output_nyquist_power",
+    "window_count": 0,
+    "detector_mean": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "window_population": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "T5_residual",
+    "metric": "high_power",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 1756.5621945051357,
+      "p95": 8211.849621079855,
+      "maximum": 24325.89036692516
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 1655.184305672679,
+      "p95": 7962.262738892636,
+      "maximum": 51108.95936889405
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "T5_residual",
+    "metric": "line_excess",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 208.78936903960442,
+      "p95": 1288.9347265606618,
+      "maximum": 22905.50830393732
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 118.62317592207074,
+      "p95": 1352.0934227957723,
+      "maximum": 57284.47894706182
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "T5_residual",
+    "metric": "line_power",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 567.1367937862303,
+      "p95": 2841.693391052547,
+      "maximum": 26833.558334446694
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 516.1624959764833,
+      "p95": 2761.545689410973,
+      "maximum": 62256.95858482566
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "T5_residual",
+    "metric": "line_prominence",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 4.249018899443569,
+      "p95": 6.760795884094682,
+      "maximum": 75.02984779291043
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 3.643669976583304,
+      "p95": 10.699252895972071,
+      "maximum": 322.9695578103654
+    },
+    "detector_prominent_window_fraction": {
+      "n": 417,
+      "median": 0.2857142857142857,
+      "p95": 0.5905882352941175,
+      "maximum": 1.0
+    },
+    "prominent_gt5_fraction": 0.3014329580348004
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "T5_residual",
+    "metric": "low_power",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 744.4147132316745,
+      "p95": 3289.9451792525474,
+      "maximum": 10587.677437125865
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 656.7600170576388,
+      "p95": 3450.013142327435,
+      "maximum": 64692.728691255485
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "T5_total",
+    "metric": "above_output_nyquist_power",
+    "window_count": 0,
+    "detector_mean": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "window_population": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "T5_total",
+    "metric": "high_power",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 1756.5621945051357,
+      "p95": 8211.849621079855,
+      "maximum": 24325.89036692516
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 1655.184305672679,
+      "p95": 7962.262738892636,
+      "maximum": 51108.95936889405
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "T5_total",
+    "metric": "line_excess",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 208.78936903960442,
+      "p95": 1288.9347265606618,
+      "maximum": 22905.50830393732
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 118.62317592207074,
+      "p95": 1352.0934227957723,
+      "maximum": 57284.47894706182
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "T5_total",
+    "metric": "line_power",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 567.1367937862303,
+      "p95": 2841.693391052547,
+      "maximum": 26833.558334446694
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 516.1624959764833,
+      "p95": 2761.545689410973,
+      "maximum": 62256.95858482566
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "T5_total",
+    "metric": "line_prominence",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 4.249018899443569,
+      "p95": 6.760795884094682,
+      "maximum": 75.02984779291043
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 3.643669976583304,
+      "p95": 10.699252895972071,
+      "maximum": 322.9695578103654
+    },
+    "detector_prominent_window_fraction": {
+      "n": 417,
+      "median": 0.2857142857142857,
+      "p95": 0.5905882352941175,
+      "maximum": 1.0
+    },
+    "prominent_gt5_fraction": 0.3014329580348004
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "T5_total",
+    "metric": "low_power",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 744.4147132316745,
+      "p95": 3289.9451792525474,
+      "maximum": 10587.677437125865
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 656.7600170576388,
+      "p95": 3450.013142327435,
+      "maximum": 64692.728691255485
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "raw_native",
+    "metric": "above_output_nyquist_power",
+    "window_count": 0,
+    "detector_mean": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "window_population": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "raw_native",
+    "metric": "high_power",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 2040.7718368655767,
+      "p95": 10939.178021557847,
+      "maximum": 106824.11148288198
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 1903.9025161883142,
+      "p95": 10663.699779959123,
+      "maximum": 146245.33395767334
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "raw_native",
+    "metric": "line_excess",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 1987.9860334114614,
+      "p95": 7967.4139244349835,
+      "maximum": 1138405.4518543696
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 1433.3811088573643,
+      "p95": 10289.418016687798,
+      "maximum": 1211937.6228747
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "raw_native",
+    "metric": "line_power",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 2550.875162708475,
+      "p95": 10005.365156014117,
+      "maximum": 1140926.5352386562
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 2048.7593170911355,
+      "p95": 12288.800819746535,
+      "maximum": 1213195.6435032478
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "raw_native",
+    "metric": "line_prominence",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 21.950130767898848,
+      "p95": 64.73346671785471,
+      "maximum": 3358.2067819073472
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 13.689159160156507,
+      "p95": 103.00750253740819,
+      "maximum": 6244.453320915178
+    },
+    "detector_prominent_window_fraction": {
+      "n": 417,
+      "median": 0.8888888888888888,
+      "p95": 1.0,
+      "maximum": 1.0
+    },
+    "prominent_gt5_fraction": 0.8074036165131354
+  },
+  {
+    "network": 11,
+    "domain": "all-stage-matched",
+    "stage": "raw_native",
+    "metric": "low_power",
+    "window_count": 5862,
+    "detector_mean": {
+      "n": 417,
+      "median": 3911.7278772853383,
+      "p95": 24453.842251085818,
+      "maximum": 277925.2282129381
+    },
+    "window_population": {
+      "n": 5862,
+      "median": 2195.697118317262,
+      "p95": 28556.0678486352,
+      "maximum": 1576708.023506754
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "native-matched",
+    "stage": "RTC",
+    "metric": "above_output_nyquist_power",
+    "window_count": 7050,
+    "detector_mean": {
+      "n": 411,
+      "median": 2.4458614870649656e-06,
+      "p95": 4.512642738052557e-05,
+      "maximum": 0.004338536429071917
+    },
+    "window_population": {
+      "n": 7050,
+      "median": 2.16092117448383e-06,
+      "p95": 4.07552329343984e-05,
+      "maximum": 0.007375638258201578
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "native-matched",
+    "stage": "RTC",
+    "metric": "high_power",
+    "window_count": 7050,
+    "detector_mean": {
+      "n": 411,
+      "median": 7196.424894667097,
+      "p95": 115308.00121962474,
+      "maximum": 11792576.026662923
+    },
+    "window_population": {
+      "n": 7050,
+      "median": 7311.52567910409,
+      "p95": 116994.60530631803,
+      "maximum": 16768692.117991969
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "native-matched",
+    "stage": "RTC",
+    "metric": "line_excess",
+    "window_count": 7050,
+    "detector_mean": {
+      "n": 411,
+      "median": 2298.922819315881,
+      "p95": 15677.870354886734,
+      "maximum": 2721785.662370287
+    },
+    "window_population": {
+      "n": 7050,
+      "median": 1343.903861597256,
+      "p95": 18174.21074874359,
+      "maximum": 5970194.836318698
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "native-matched",
+    "stage": "RTC",
+    "metric": "line_power",
+    "window_count": 7050,
+    "detector_mean": {
+      "n": 411,
+      "median": 4162.773689602927,
+      "p95": 37392.61216657043,
+      "maximum": 5459331.281042064
+    },
+    "window_population": {
+      "n": 7050,
+      "median": 3716.8455220148744,
+      "p95": 37858.393768937356,
+      "maximum": 7268209.415072643
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "native-matched",
+    "stage": "RTC",
+    "metric": "line_prominence",
+    "window_count": 7050,
+    "detector_mean": {
+      "n": 411,
+      "median": 7.015637474604971,
+      "p95": 40.20503785252695,
+      "maximum": 4242.573865810303
+    },
+    "window_population": {
+      "n": 7050,
+      "median": 5.768311948567574,
+      "p95": 42.08103918270633,
+      "maximum": 8256.785391254092
+    },
+    "detector_prominent_window_fraction": {
+      "n": 411,
+      "median": 0.5789473684210527,
+      "p95": 1.0,
+      "maximum": 1.0
+    },
+    "prominent_gt5_fraction": 0.5638297872340425
+  },
+  {
+    "network": 12,
+    "domain": "native-matched",
+    "stage": "RTC",
+    "metric": "low_power",
+    "window_count": 7050,
+    "detector_mean": {
+      "n": 411,
+      "median": 7271.808621594575,
+      "p95": 47528.61270089144,
+      "maximum": 8625465.771267023
+    },
+    "window_population": {
+      "n": 7050,
+      "median": 5779.834857821283,
+      "p95": 48027.03831728435,
+      "maximum": 16913712.756483644
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "native-matched",
+    "stage": "raw",
+    "metric": "above_output_nyquist_power",
+    "window_count": 7050,
+    "detector_mean": {
+      "n": 411,
+      "median": 22623.218770805393,
+      "p95": 358296.22409307456,
+      "maximum": 47906097.30158064
+    },
+    "window_population": {
+      "n": 7050,
+      "median": 23211.74609169049,
+      "p95": 371204.4186758684,
+      "maximum": 74373546.40528294
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "native-matched",
+    "stage": "raw",
+    "metric": "high_power",
+    "window_count": 7050,
+    "detector_mean": {
+      "n": 411,
+      "median": 7196.340478269464,
+      "p95": 115306.7357886963,
+      "maximum": 11792413.18968605
+    },
+    "window_population": {
+      "n": 7050,
+      "median": 7311.4591408379965,
+      "p95": 116994.41859909306,
+      "maximum": 16768361.84260647
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "native-matched",
+    "stage": "raw",
+    "metric": "line_excess",
+    "window_count": 7050,
+    "detector_mean": {
+      "n": 411,
+      "median": 2298.9063980703763,
+      "p95": 15677.718743673624,
+      "maximum": 2721761.5392305977
+    },
+    "window_population": {
+      "n": 7050,
+      "median": 1343.9103369775758,
+      "p95": 18174.13628561046,
+      "maximum": 5970108.1537487935
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "native-matched",
+    "stage": "raw",
+    "metric": "line_power",
+    "window_count": 7050,
+    "detector_mean": {
+      "n": 411,
+      "median": 4162.755160744861,
+      "p95": 37392.16004886142,
+      "maximum": 5459281.898252374
+    },
+    "window_population": {
+      "n": 7050,
+      "median": 3716.8051598253014,
+      "p95": 37858.0886114898,
+      "maximum": 7268110.419034341
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "native-matched",
+    "stage": "raw",
+    "metric": "line_prominence",
+    "window_count": 7050,
+    "detector_mean": {
+      "n": 411,
+      "median": 7.015687154155785,
+      "p95": 40.20542110281738,
+      "maximum": 4242.5037780101775
+    },
+    "window_population": {
+      "n": 7050,
+      "median": 5.7683866182306,
+      "p95": 42.08151971247224,
+      "maximum": 8256.692962417028
+    },
+    "detector_prominent_window_fraction": {
+      "n": 411,
+      "median": 0.5789473684210527,
+      "p95": 1.0,
+      "maximum": 1.0
+    },
+    "prominent_gt5_fraction": 0.5638297872340425
+  },
+  {
+    "network": 12,
+    "domain": "native-matched",
+    "stage": "raw",
+    "metric": "low_power",
+    "window_count": 7050,
+    "detector_mean": {
+      "n": 411,
+      "median": 7272.053409245535,
+      "p95": 47529.31458515165,
+      "maximum": 8625272.048984386
+    },
+    "window_population": {
+      "n": 7050,
+      "median": 5779.542444228009,
+      "p95": 48026.26706166949,
+      "maximum": 16915223.825327866
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "CAL",
+    "metric": "above_output_nyquist_power",
+    "window_count": 0,
+    "detector_mean": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "window_population": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "CAL",
+    "metric": "high_power",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 7113.612589671753,
+      "p95": 114539.0622376694,
+      "maximum": 11395663.08910548
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 7254.1922793876465,
+      "p95": 117426.04854349644,
+      "maximum": 17418638.99784726
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "CAL",
+    "metric": "line_excess",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 2332.7904330996985,
+      "p95": 14687.6758278237,
+      "maximum": 3534285.021465125
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 1365.4063853397145,
+      "p95": 18193.07384881039,
+      "maximum": 5980697.533035411
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "CAL",
+    "metric": "line_power",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 4320.5040044264915,
+      "p95": 36314.34149778586,
+      "maximum": 5626120.528237808
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 3843.179530233219,
+      "p95": 37436.07248943327,
+      "maximum": 7803897.628199984
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "CAL",
+    "metric": "line_prominence",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 7.246725107134694,
+      "p95": 45.37275468675436,
+      "maximum": 4290.2485204909235
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 5.735432412145206,
+      "p95": 45.496302137534734,
+      "maximum": 8258.477789728264
+    },
+    "detector_prominent_window_fraction": {
+      "n": 411,
+      "median": 0.5625,
+      "p95": 1.0,
+      "maximum": 1.0
+    },
+    "prominent_gt5_fraction": 0.5611822289156626
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "CAL",
+    "metric": "low_power",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 7336.206332723853,
+      "p95": 45672.95775137689,
+      "maximum": 9580820.453157526
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 5906.3539316701035,
+      "p95": 49483.28189712088,
+      "maximum": 16881614.394517753
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "PTC_M0",
+    "metric": "above_output_nyquist_power",
+    "window_count": 0,
+    "detector_mean": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "window_population": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "PTC_M0",
+    "metric": "high_power",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 6952.035253359285,
+      "p95": 82793.49893119727,
+      "maximum": 329944.1777298329
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 7052.511951683052,
+      "p95": 86512.10482982901,
+      "maximum": 726269.7945584997
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "PTC_M0",
+    "metric": "line_excess",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 1058.4031221782222,
+      "p95": 9918.338675701729,
+      "maximum": 658320.0028638535
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 527.5152350948085,
+      "p95": 13724.86666928735,
+      "maximum": 705294.4730840172
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "PTC_M0",
+    "metric": "line_power",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 2537.702807097263,
+      "p95": 30609.467983267772,
+      "maximum": 660118.0426132231
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 2527.740923102566,
+      "p95": 29452.586718740957,
+      "maximum": 706566.1713560047
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "PTC_M0",
+    "metric": "line_prominence",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 4.8261875660421865,
+      "p95": 10.83071158420549,
+      "maximum": 3114.000153574349
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 4.033423585154057,
+      "p95": 14.448943560100153,
+      "maximum": 8215.719370311283
+    },
+    "detector_prominent_window_fraction": {
+      "n": 411,
+      "median": 0.35714285714285715,
+      "p95": 0.7638888888888888,
+      "maximum": 1.0
+    },
+    "prominent_gt5_fraction": 0.37481174698795183
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "PTC_M0",
+    "metric": "low_power",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 4397.530923610564,
+      "p95": 31640.31777043562,
+      "maximum": 100996.60758931599
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 3892.1938994184047,
+      "p95": 33342.77071928234,
+      "maximum": 210324.38103975874
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "RTC_native",
+    "metric": "above_output_nyquist_power",
+    "window_count": 0,
+    "detector_mean": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "window_population": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "RTC_native",
+    "metric": "high_power",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 7112.139830709012,
+      "p95": 114535.85773509418,
+      "maximum": 11394621.770632153
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 7253.704513684026,
+      "p95": 117380.49414115376,
+      "maximum": 17435378.125009242
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "RTC_native",
+    "metric": "line_excess",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 2334.448794069061,
+      "p95": 14731.754275538595,
+      "maximum": 3543316.318359272
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 1366.8182401407566,
+      "p95": 18197.235314713802,
+      "maximum": 5970194.836318698
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "RTC_native",
+    "metric": "line_power",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 4319.0376234450305,
+      "p95": 36336.11682078413,
+      "maximum": 5635368.966861651
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 3845.407294106559,
+      "p95": 37417.90883407374,
+      "maximum": 7818207.123074989
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "RTC_native",
+    "metric": "line_prominence",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 7.254336564518829,
+      "p95": 45.53561108392032,
+      "maximum": 4304.584199939703
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 5.740093297580255,
+      "p95": 45.59469367501448,
+      "maximum": 8256.785391254092
+    },
+    "detector_prominent_window_fraction": {
+      "n": 411,
+      "median": 0.5625,
+      "p95": 1.0,
+      "maximum": 1.0
+    },
+    "prominent_gt5_fraction": 0.5609939759036144
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "RTC_native",
+    "metric": "low_power",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 7337.87816442518,
+      "p95": 45677.01207017897,
+      "maximum": 9591513.532889923
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 5899.23962106633,
+      "p95": 49458.39445752533,
+      "maximum": 16913712.756483644
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "T5_input",
+    "metric": "above_output_nyquist_power",
+    "window_count": 0,
+    "detector_mean": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "window_population": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "T5_input",
+    "metric": "high_power",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 7113.612589671753,
+      "p95": 114539.0622376694,
+      "maximum": 11395663.08910548
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 7254.1922793876465,
+      "p95": 117426.04854349644,
+      "maximum": 17418638.99784726
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "T5_input",
+    "metric": "line_excess",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 2332.7904330996985,
+      "p95": 14687.6758278237,
+      "maximum": 3534285.021465125
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 1365.4063853397145,
+      "p95": 18193.07384881039,
+      "maximum": 5980697.533035411
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "T5_input",
+    "metric": "line_power",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 4320.5040044264915,
+      "p95": 36314.34149778586,
+      "maximum": 5626120.528237808
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 3843.179530233219,
+      "p95": 37436.07248943327,
+      "maximum": 7803897.628199984
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "T5_input",
+    "metric": "line_prominence",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 7.246725107134694,
+      "p95": 45.37275468675436,
+      "maximum": 4290.2485204909235
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 5.735432412145206,
+      "p95": 45.496302137534734,
+      "maximum": 8258.477789728264
+    },
+    "detector_prominent_window_fraction": {
+      "n": 411,
+      "median": 0.5625,
+      "p95": 1.0,
+      "maximum": 1.0
+    },
+    "prominent_gt5_fraction": 0.5611822289156626
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "T5_input",
+    "metric": "low_power",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 7336.206332723853,
+      "p95": 45672.95775137689,
+      "maximum": 9580820.453157526
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 5906.3539316701035,
+      "p95": 49483.28189712088,
+      "maximum": 16881614.394517753
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "T5_residual",
+    "metric": "above_output_nyquist_power",
+    "window_count": 0,
+    "detector_mean": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "window_population": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "T5_residual",
+    "metric": "high_power",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 6886.951039878127,
+      "p95": 82728.11665981312,
+      "maximum": 327670.8435669145
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 7036.546771294328,
+      "p95": 86518.90802954549,
+      "maximum": 730430.0129443875
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "T5_residual",
+    "metric": "line_excess",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 1062.2056134698664,
+      "p95": 9901.980068125533,
+      "maximum": 658267.0758719811
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 533.0781640297437,
+      "p95": 13751.294284271265,
+      "maximum": 704585.1206015643
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "T5_residual",
+    "metric": "line_power",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 2566.024056661843,
+      "p95": 30628.28703284888,
+      "maximum": 660053.4972494832
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 2536.0836057216293,
+      "p95": 29420.186277773257,
+      "maximum": 705808.9018116025
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "T5_residual",
+    "metric": "line_prominence",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 4.872036335582756,
+      "p95": 10.840742923657782,
+      "maximum": 3075.6363747649643
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 4.052859133738508,
+      "p95": 14.694664121294284,
+      "maximum": 7476.416412372721
+    },
+    "detector_prominent_window_fraction": {
+      "n": 411,
+      "median": 0.35714285714285715,
+      "p95": 0.7638888888888888,
+      "maximum": 1.0
+    },
+    "prominent_gt5_fraction": 0.3757530120481928
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "T5_residual",
+    "metric": "low_power",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 4333.3031825886965,
+      "p95": 31526.84541450488,
+      "maximum": 101119.44809470535
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 3873.7553930216436,
+      "p95": 33204.881783030956,
+      "maximum": 211223.88936567408
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "T5_total",
+    "metric": "above_output_nyquist_power",
+    "window_count": 0,
+    "detector_mean": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "window_population": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "T5_total",
+    "metric": "high_power",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 6886.951039878127,
+      "p95": 82728.11665981312,
+      "maximum": 327670.8435669145
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 7036.546771294328,
+      "p95": 86518.90802954549,
+      "maximum": 730430.0129443875
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "T5_total",
+    "metric": "line_excess",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 1062.2056134698664,
+      "p95": 9901.980068125533,
+      "maximum": 658267.0758719811
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 533.0781640297437,
+      "p95": 13751.294284271265,
+      "maximum": 704585.1206015643
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "T5_total",
+    "metric": "line_power",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 2566.024056661843,
+      "p95": 30628.28703284888,
+      "maximum": 660053.4972494832
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 2536.0836057216293,
+      "p95": 29420.186277773257,
+      "maximum": 705808.9018116025
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "T5_total",
+    "metric": "line_prominence",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 4.872036335582756,
+      "p95": 10.840742923657782,
+      "maximum": 3075.6363747649643
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 4.052859133738508,
+      "p95": 14.694664121294284,
+      "maximum": 7476.416412372721
+    },
+    "detector_prominent_window_fraction": {
+      "n": 411,
+      "median": 0.35714285714285715,
+      "p95": 0.7638888888888888,
+      "maximum": 1.0
+    },
+    "prominent_gt5_fraction": 0.3757530120481928
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "T5_total",
+    "metric": "low_power",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 4333.3031825886965,
+      "p95": 31526.84541450488,
+      "maximum": 101119.44809470535
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 3873.7553930216436,
+      "p95": 33204.881783030956,
+      "maximum": 211223.88936567408
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "raw_native",
+    "metric": "above_output_nyquist_power",
+    "window_count": 0,
+    "detector_mean": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "window_population": {
+      "n": 0,
+      "median": null,
+      "p95": null,
+      "maximum": null
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "raw_native",
+    "metric": "high_power",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 7112.054633842934,
+      "p95": 114534.51651564523,
+      "maximum": 11394416.231665947
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 7253.667345599485,
+      "p95": 117379.58765820066,
+      "maximum": 17434765.43884789
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "raw_native",
+    "metric": "line_excess",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 2334.4201265251313,
+      "p95": 14731.614537494504,
+      "maximum": 3543284.950668376
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 1366.8090097667225,
+      "p95": 18197.238021365483,
+      "maximum": 5970108.1537487935
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "raw_native",
+    "metric": "line_power",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 4319.016936281436,
+      "p95": 36335.44682211062,
+      "maximum": 5635321.870709081
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 3845.376556832928,
+      "p95": 37417.49564207139,
+      "maximum": 7818095.118240649
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "raw_native",
+    "metric": "line_prominence",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 7.25440810074307,
+      "p95": 45.53625038424993,
+      "maximum": 4304.502456346124
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 5.740102777832071,
+      "p95": 45.595583699872066,
+      "maximum": 8256.692962417028
+    },
+    "detector_prominent_window_fraction": {
+      "n": 411,
+      "median": 0.5625,
+      "p95": 1.0,
+      "maximum": 1.0
+    },
+    "prominent_gt5_fraction": 0.5609939759036144
+  },
+  {
+    "network": 12,
+    "domain": "all-stage-matched",
+    "stage": "raw_native",
+    "metric": "low_power",
+    "window_count": 5312,
+    "detector_mean": {
+      "n": 411,
+      "median": 7337.981968364464,
+      "p95": 45677.2654472186,
+      "maximum": 9591507.47984765
+    },
+    "window_population": {
+      "n": 5312,
+      "median": 5899.538285320864,
+      "p95": 49458.132708473415,
+      "maximum": 16915223.825327866
+    },
+    "detector_prominent_window_fraction": null,
+    "prominent_gt5_fraction": null
+  }
+]

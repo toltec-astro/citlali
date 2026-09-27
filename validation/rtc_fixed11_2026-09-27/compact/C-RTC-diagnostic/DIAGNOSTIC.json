@@ -1,0 +1,5 @@
+{
+  "return_code": 0,
+  "status": "completed",
+  "scope": "extra RTC-only capture; no PTC or feedback; excluded from normal REF timing; all collection costs retained in RUN.json"
+}

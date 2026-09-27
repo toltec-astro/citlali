@@ -1,0 +1,15 @@
+identity: sha256:fe8d98621b4a35427eb8843a348823901680cf76e1cf5840803ee1511b26f598:segment-3:uniform:selection=219f6641b40a1cfc049eae24e320a14fe06f014bf804a87223a4b8772ea932aa
+PTC_publication_sha256: 07b8a3bf4ba365a2b28f494ef0339a6a398ad7fe14bf1a11a6b20537efba24ae
+family: SCI-PTC:uniform_constant@draft-0.1
+registry: SCI-PTC:analysis_gridding_coefficients@draft-0.1
+admission: PTC-UNIFORM-ADMISSION r0.4/2026-09-06
+source_sha256: 8bc42deb69e23c757883834f7cdb82b94e89210015333f483d15c32377a56685
+profile: SCI-PTC:uniform_coefficient_handoff@draft-0.1
+scalar: 1
+unit: 1
+normalization: analytic-arithmetic-mean-to-one
+stored_support_reference: sha256:fe8d98621b4a35427eb8843a348823901680cf76e1cf5840803ee1511b26f598:segment-3:complete-retained-support:causes=c42674b21752df2f4dcd0d1eb58ac1ff620e58928221ae92a45d7f78c9357294
+consumer_permission: SCI-MAP:GRANTED:UFC-OD-008
+selection: sha256:219f6641b40a1cfc049eae24e320a14fe06f014bf804a87223a4b8772ea932aa
+fixed_coefficient_sampling_uncertainty: none
+interpretation: nonprecision gridding coefficient; no inverse variance, sensitivity or response meaning

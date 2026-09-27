@@ -1,15 +1,18 @@
 # Citlali Refactor Status
 
-## Fixed 11 Hz notch comparison — active 2026-09-27
+## 2026-09-27 — fixed 11 Hz comparison completed (local experimental evidence)
 
-The owner [work order](../validation/rtc_fixed11_2026-09-27/OWNER_DIRECTIVE.md)
-authorizes one evidence-supported fixed population in POINT152430/a2000 nw11/12.
-The one-time set and exact historical coefficient hashes are frozen before C;
-independent preflight precedes execution. Both arms retain B implementation,
-warm rank10/cold M0/five applications. Planned B1,C1,B2,C2,B3,C3 then three C
-pre-RTC sources:9 trajectories/45 applications, up to2 RTC-only captures.
-B remains the development reference. No production admission law, design search,
-new observation, Unity, push or follow-on. See [preflight](../validation/rtc_fixed11_2026-09-27/PREFLIGHT.md).
+The owner-authorized fixed population comparison completed at science source
+`b3d997456a8b9762d9fc323e37827f96b4ec7b37`: 9 trajectories, 45 feedback
+applications, 2 RTC-only captures, no replacement. Selected 331/486 nw11 and
+151/491 nw12. The notch suppresses treated line power but loses 3.1884% of MAP
+contributions, raises conditional peak uncertainty 3.32%, and increases median
+exit latency 12.39%. Recommendation: retain B development reference; C-fixed11
+remains experimental and is not adopted. No follow-on. Compact preservation,
+saved-only verification and independent final review govern cleanup. See
+`validation/rtc_fixed11_2026-09-27/ASSESSMENT.md` and
+`handoff/RTC_FIXED11_2026-09-27.md`.
+
 
 ## Bounded RTC cost/source response — completed 2026-09-27
 
@@ -27,9 +30,9 @@ B's exact serialization changes reduce network-11 publication median by 30% and
 command CPU by 3.81%; exit medians 72.676 s (A), 73.197 s (B) do not establish an
 end-to-end speedup. B response is inherited only after all three exact gates.
 
-C is deliberately unselected: the historical fixed-notch coefficients do not
-supply detector admission for this new population. The single next action is an
-owner decision on that exact applicability before one fixed-design proposal.
+At that closeout C was deliberately unselected because applicability was unresolved.
+The subsequent owner order and fixed11 comparison above resolve that decision;
+this historical next action is superseded.
 No new numerical threshold, observation, Unity access, push or promotion.
 Compact evidence is 90.6 MB. Saved-only reporting passed with original inputs
 denied; independent final review passed at ed388e84d. Guarded cleanup removed

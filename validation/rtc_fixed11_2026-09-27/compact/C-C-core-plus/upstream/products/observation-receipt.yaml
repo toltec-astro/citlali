@@ -1,0 +1,33 @@
+schema: citlali-observation-networks-result-v1
+source_revision: b3d997456
+observation: 152430
+subobservation: 0
+scan: 2
+requested_network_workers: 2
+observed_Eigen_threads: 1
+started_network_workers: 2
+requested_internal_threads: 1
+numerical_backend_observation: Eigen reports its setting; other backend counts not asserted
+shared_preparation_count: 1
+shared_preparation_seconds: 2.0742495
+assignment: sorted-network round-robin by worker index
+shared_state: read-only APT, native clocks, processing-slot grid, TEL trajectory, AST motion, CAL headers; per-network numerical ownership
+NetCDF_IO: serialized; numerical work concurrent; no shared open handles
+timing_scope: per-network wall intervals overlap; process CPU and memory reported only as aggregate
+networks:
+  - network: 11
+    worker_index: 0
+    exit_code: 0
+    wall_seconds: 22.792823917
+    output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-fixed11-20260927/C-C-core-plus/upstream/products/network11
+    input: {path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-fixed11-20260927/C-C-core-plus/inputs/network11-input.json, sha256: 869838eb8419d711ddbbdf1b786059be36245647869c5a2ac8274056193bc4fc}
+    state: completed
+  - network: 12
+    worker_index: 1
+    exit_code: 0
+    wall_seconds: 20.661742333
+    output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-fixed11-20260927/C-C-core-plus/upstream/products/network12
+    input: {path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-fixed11-20260927/C-C-core-plus/inputs/network12-input.json, sha256: a326e124c6b826e5db7d28e66360100b05d29eff0e1e0728f1625a74b6d7345c}
+    state: completed
+wall_seconds: 24.868101083
+exit_code: 0

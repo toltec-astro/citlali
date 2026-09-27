@@ -1,0 +1,8 @@
+{
+  "prior_compact_manifest": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_cost_response_2026-09-27/COMPACT_MANIFEST.json",
+  "sha256": "9b8e033f48ba701df0fcc51bef7b429b5381df3740c95a6a29e8200ef201050f",
+  "verified_files": 1608,
+  "verified_bytes": 90615958,
+  "old_closeout": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_cost_response_2026-09-27/CLOSEOUT.json",
+  "scope": "prior compact read-only; recheck through this manifest after new campaign cleanup"
+}

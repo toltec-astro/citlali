@@ -1,0 +1,56 @@
+[
+  {
+    "run": "B-REF-rep1",
+    "native_error_level_messages": 0,
+    "python_RuntimeWarnings": 3,
+    "uncertainty": "exactly matches own REF across repeats; all saved endpoint operators checked separately without BLAS contraction"
+  },
+  {
+    "run": "B-REF-rep2",
+    "native_error_level_messages": 0,
+    "python_RuntimeWarnings": 3,
+    "uncertainty": "exactly matches own REF across repeats; all saved endpoint operators checked separately without BLAS contraction"
+  },
+  {
+    "run": "B-REF-rep3",
+    "native_error_level_messages": 0,
+    "python_RuntimeWarnings": 3,
+    "uncertainty": "exactly matches own REF across repeats; all saved endpoint operators checked separately without BLAS contraction"
+  },
+  {
+    "run": "C-C-core-minus",
+    "native_error_level_messages": 0,
+    "python_RuntimeWarnings": 3,
+    "uncertainty": "exactly matches own REF across repeats; all saved endpoint operators checked separately without BLAS contraction"
+  },
+  {
+    "run": "C-C-core-plus",
+    "native_error_level_messages": 0,
+    "python_RuntimeWarnings": 3,
+    "uncertainty": "exactly matches own REF across repeats; all saved endpoint operators checked separately without BLAS contraction"
+  },
+  {
+    "run": "C-C-shoulder",
+    "native_error_level_messages": 0,
+    "python_RuntimeWarnings": 3,
+    "uncertainty": "exactly matches own REF across repeats; all saved endpoint operators checked separately without BLAS contraction"
+  },
+  {
+    "run": "C-REF-rep1",
+    "native_error_level_messages": 0,
+    "python_RuntimeWarnings": 3,
+    "uncertainty": "exactly matches own REF across repeats; all saved endpoint operators checked separately without BLAS contraction"
+  },
+  {
+    "run": "C-REF-rep2",
+    "native_error_level_messages": 0,
+    "python_RuntimeWarnings": 3,
+    "uncertainty": "exactly matches own REF across repeats; all saved endpoint operators checked separately without BLAS contraction"
+  },
+  {
+    "run": "C-REF-rep3",
+    "native_error_level_messages": 0,
+    "python_RuntimeWarnings": 3,
+    "uncertainty": "exactly matches own REF across repeats; all saved endpoint operators checked separately without BLAS contraction"
+  }
+]

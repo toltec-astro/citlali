@@ -48,10 +48,10 @@ def load_network(root,family,nw):
         for key,file in [('state','state'),('center','map-center'),('speed','speed-evidence'),('causes','causes')]:a[key][:,j]=arr(q/f'{c}-{file}.u8','u1')
     return a
 
-def population(root,family,dest,*,match_family=None,background_family=None):
+def population(root,family,dest,*,match_family=None,background_family=None,selected=None):
     started=time.monotonic();dest.mkdir(parents=True,exist_ok=True);ref=root/f'{family}-REF-rep1'
     summary=read(root/f'{background_family or family}-REF-rep1/run/BASE-POINT/REF/a2000/SUMMARY.json');params=np.asarray(summary['histories'][0]['measurement']['guard']['accepted_parameters']);radius=4*max(params[3:5])*np.sqrt(8*np.log(2))
-    output=[];allbands=[];psds={};rowids=[];freqs={};coherences=[];eventrows=[]
+    output=[];allbands=[];psds={};rowids=[];freqs={};coherences=[];eventrows=[];subset_coherences=[]
     for nw in (11,12):
         a=load_network(root,family,nw);n,d=a['shape'];dt=a['dt'];nfft=2*int(round(4/(2*dt)));freq=np.fft.rfftfreq(nfft,dt);freqs['native']=freq;freqs['output']=np.fft.rfftfreq(nfft//2,2*dt)
         bg=np.hypot(a['lon']*3600-params[1],a['lat']*3600-params[2])>radius
@@ -76,6 +76,7 @@ def population(root,family,dest,*,match_family=None,background_family=None):
         for i,stage in enumerate(('raw','RTC')):
             average=np.divide(totals[i],counts[None,:],out=np.full_like(totals[i],np.nan),where=counts[None,:]>0);psds[f'n{nw}_{stage}']=average
             coherences.append(dict(network=nw,stage=stage,**coherence(np.asarray(z[i]))))
+            if selected is not None:subset_coherences.append(dict(network=nw,stage=stage,population='treated',detectors=int(np.sum(selected[nw])),**coherence(np.asarray(z[i])[:,selected[nw]])))
         events=yread(a['base']/'events.yaml');decisions=yread(a['base']/'event-decisions.yaml');nativefirst=a['receipt']['native_runs'][0][0] if isinstance(a['receipt']['native_runs'][0],list) else 0
         for e in events:
             row=e['seed_earlier_row']-nativefirst;j=e['detector']
@@ -138,7 +139,9 @@ def population(root,family,dest,*,match_family=None,background_family=None):
             for stage,values in sums.items():psds[f'n{nw}_s{sid}_{stage}']=np.divide(values,segcount[None,:],out=np.full_like(values,np.nan),where=segcount[None,:]>0)
             segrows.append(dict(segment=sid,detectors_in_fit=nd,output_detectors=no,scheduled_times=nt,eligible_entries=int(elig.sum()),retained_entries=s['retained'],windows_by_full_population=segcount.tolist(),calibration_roundtrip_max_abs=float(np.max(abs(cal[elig]-calc[elig])))))
         support['segments']=segrows
-        for stage,zz in output_z.items():coherences.append(dict(network=nw,stage=stage,**coherence(np.asarray(zz))))
+        for stage,zz in output_z.items():
+            coherences.append(dict(network=nw,stage=stage,**coherence(np.asarray(zz))))
+            if selected is not None:subset_coherences.append(dict(network=nw,stage=stage,population='treated',detectors=int(np.sum(selected[nw])),**coherence(np.asarray(zz)[:,selected[nw]])))
         coeff=np.asarray(a['receipt']['donor_continuity']['realized_detectors'][0]['lowpass_FIR']);ff=np.linspace(0,.5/dt,4097);response=abs(np.sum(np.exp(-2j*np.pi*ff[:,None]*dt*np.arange(len(coeff)))*coeff,axis=1))
         psds[f'n{nw}_filter_frequency']=ff;psds[f'n{nw}_filter_amplitude']=response
         support['filter']=dict(taps=len(coeff),factor=2,output_nyquist_hz=.25/dt,amplitude_at_hz={str(f):float(abs(np.sum(np.exp(-2j*np.pi*f*dt*np.arange(len(coeff)))*coeff))) for f in (0,1,3,5,10,11,15,20,25,30,40,50)})
@@ -146,7 +149,7 @@ def population(root,family,dest,*,match_family=None,background_family=None):
     np.savez_compressed(dest/'population-spectra.npz',**psds,**{k+'_frequency':v for k,v in freqs.items()})
     import gzip
     (dest/'window-bands.json.gz').write_bytes(gzip.compress((json.dumps(allbands,separators=(',',':'))+'\n').encode(),mtime=0))
-    save_json(dest/'population-support.json',output);save_json(dest/'population-coherence.json',coherences);save_json(dest/'population-events.json',eventrows)
+    save_json(dest/'treated-coherence.json',subset_coherences);save_json(dest/'population-support.json',output);save_json(dest/'population-coherence.json',coherences);save_json(dest/'population-events.json',eventrows)
     grouped=[]
     for nw in (11,12):
         for domain in ('native-matched','all-stage-matched'):

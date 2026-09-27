@@ -1,0 +1,16 @@
+{
+  "retained_ceiling_bytes": 20000000000,
+  "free_space_reserve_bytes": 2000000000,
+  "native_cells": 7640626,
+  "upstream_reservation_bytes": 1956000256,
+  "feedback_reservation_bytes": 366750048,
+  "metadata_per_run_bytes": 100000000,
+  "diagnostic_RTC_executions": 2,
+  "planned_trajectories": 9,
+  "planned_feedback": 45,
+  "absolute_trajectories": 10,
+  "absolute_feedback": 50,
+  "parent_accounting": "9 trajectory raw-derived parents plus2 separately counted RTC-only raw-derived parents =11 planned original ingresses; internal RTC attempts retained per receipt",
+  "disk_free_before": 638227120128,
+  "runtime_accounting": "same run-local reservation/finish/reconcile as reviewed B; no campaignwide timing scans"
+}

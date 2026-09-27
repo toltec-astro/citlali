@@ -1,0 +1,74 @@
+{"kind": "parent", "identity": {"run": "B-REF-rep1"}, "epoch": 1790545885.90397}
+{"kind": "trajectory", "identity": {"run": "B-REF-rep1", "branch": "REF", "cycle": 0}, "epoch": 1790545885.9067001}
+{"kind": "feedback", "identity": {"run": "B-REF-rep1", "branch": "REF", "cycle": 1}, "epoch": 1790545920.183869}
+{"kind": "feedback", "identity": {"run": "B-REF-rep1", "branch": "REF", "cycle": 2}, "epoch": 1790545927.6120892}
+{"kind": "feedback", "identity": {"run": "B-REF-rep1", "branch": "REF", "cycle": 3}, "epoch": 1790545935.677711}
+{"kind": "feedback", "identity": {"run": "B-REF-rep1", "branch": "REF", "cycle": 4}, "epoch": 1790545943.630081}
+{"kind": "feedback", "identity": {"run": "B-REF-rep1", "branch": "REF", "cycle": 5}, "epoch": 1790545951.598818}
+{"kind": "endpoint", "identity": {"run": "B-REF-rep1", "cycle": 5}, "epoch": 1790545959.558282}
+{"kind": "parent", "identity": {"run": "C-REF-rep1"}, "epoch": 1790545977.7951622}
+{"kind": "trajectory", "identity": {"run": "C-REF-rep1", "branch": "REF", "cycle": 0}, "epoch": 1790545977.7979012}
+{"kind": "feedback", "identity": {"run": "C-REF-rep1", "branch": "REF", "cycle": 1}, "epoch": 1790546014.714066}
+{"kind": "feedback", "identity": {"run": "C-REF-rep1", "branch": "REF", "cycle": 2}, "epoch": 1790546023.629249}
+{"kind": "feedback", "identity": {"run": "C-REF-rep1", "branch": "REF", "cycle": 3}, "epoch": 1790546032.581024}
+{"kind": "feedback", "identity": {"run": "C-REF-rep1", "branch": "REF", "cycle": 4}, "epoch": 1790546041.5387762}
+{"kind": "feedback", "identity": {"run": "C-REF-rep1", "branch": "REF", "cycle": 5}, "epoch": 1790546050.502433}
+{"kind": "endpoint", "identity": {"run": "C-REF-rep1", "cycle": 5}, "epoch": 1790546059.402814}
+{"kind": "parent", "identity": {"run": "B-REF-rep2"}, "epoch": 1790546060.474483}
+{"kind": "trajectory", "identity": {"run": "B-REF-rep2", "branch": "REF", "cycle": 0}, "epoch": 1790546060.4784682}
+{"kind": "feedback", "identity": {"run": "B-REF-rep2", "branch": "REF", "cycle": 1}, "epoch": 1790546092.9967759}
+{"kind": "feedback", "identity": {"run": "B-REF-rep2", "branch": "REF", "cycle": 2}, "epoch": 1790546100.438373}
+{"kind": "feedback", "identity": {"run": "B-REF-rep2", "branch": "REF", "cycle": 3}, "epoch": 1790546108.4046268}
+{"kind": "feedback", "identity": {"run": "B-REF-rep2", "branch": "REF", "cycle": 4}, "epoch": 1790546116.370181}
+{"kind": "feedback", "identity": {"run": "B-REF-rep2", "branch": "REF", "cycle": 5}, "epoch": 1790546124.3543448}
+{"kind": "endpoint", "identity": {"run": "B-REF-rep2", "cycle": 5}, "epoch": 1790546132.226395}
+{"kind": "parent", "identity": {"run": "C-REF-rep2"}, "epoch": 1790546162.752874}
+{"kind": "trajectory", "identity": {"run": "C-REF-rep2", "branch": "REF", "cycle": 0}, "epoch": 1790546162.7563488}
+{"kind": "feedback", "identity": {"run": "C-REF-rep2", "branch": "REF", "cycle": 1}, "epoch": 1790546198.671936}
+{"kind": "feedback", "identity": {"run": "C-REF-rep2", "branch": "REF", "cycle": 2}, "epoch": 1790546208.1502888}
+{"kind": "feedback", "identity": {"run": "C-REF-rep2", "branch": "REF", "cycle": 3}, "epoch": 1790546217.6533508}
+{"kind": "feedback", "identity": {"run": "C-REF-rep2", "branch": "REF", "cycle": 4}, "epoch": 1790546227.150316}
+{"kind": "feedback", "identity": {"run": "C-REF-rep2", "branch": "REF", "cycle": 5}, "epoch": 1790546236.120082}
+{"kind": "endpoint", "identity": {"run": "C-REF-rep2", "cycle": 5}, "epoch": 1790546245.5060961}
+{"kind": "parent", "identity": {"run": "B-REF-rep3"}, "epoch": 1790546292.577986}
+{"kind": "trajectory", "identity": {"run": "B-REF-rep3", "branch": "REF", "cycle": 0}, "epoch": 1790546292.5813901}
+{"kind": "feedback", "identity": {"run": "B-REF-rep3", "branch": "REF", "cycle": 1}, "epoch": 1790546326.821849}
+{"kind": "feedback", "identity": {"run": "B-REF-rep3", "branch": "REF", "cycle": 2}, "epoch": 1790546334.773927}
+{"kind": "feedback", "identity": {"run": "B-REF-rep3", "branch": "REF", "cycle": 3}, "epoch": 1790546342.717161}
+{"kind": "feedback", "identity": {"run": "B-REF-rep3", "branch": "REF", "cycle": 4}, "epoch": 1790546350.6541069}
+{"kind": "feedback", "identity": {"run": "B-REF-rep3", "branch": "REF", "cycle": 5}, "epoch": 1790546358.61805}
+{"kind": "endpoint", "identity": {"run": "B-REF-rep3", "cycle": 5}, "epoch": 1790546366.507127}
+{"kind": "parent", "identity": {"run": "C-REF-rep3"}, "epoch": 1790546406.193592}
+{"kind": "trajectory", "identity": {"run": "C-REF-rep3", "branch": "REF", "cycle": 0}, "epoch": 1790546406.1986089}
+{"kind": "feedback", "identity": {"run": "C-REF-rep3", "branch": "REF", "cycle": 1}, "epoch": 1790546443.515195}
+{"kind": "feedback", "identity": {"run": "C-REF-rep3", "branch": "REF", "cycle": 2}, "epoch": 1790546453.008586}
+{"kind": "feedback", "identity": {"run": "C-REF-rep3", "branch": "REF", "cycle": 3}, "epoch": 1790546462.581912}
+{"kind": "feedback", "identity": {"run": "C-REF-rep3", "branch": "REF", "cycle": 4}, "epoch": 1790546472.049369}
+{"kind": "feedback", "identity": {"run": "C-REF-rep3", "branch": "REF", "cycle": 5}, "epoch": 1790546481.039522}
+{"kind": "endpoint", "identity": {"run": "C-REF-rep3", "cycle": 5}, "epoch": 1790546489.9382899}
+{"kind": "rtc_only", "identity": {"family": "B", "purpose": "original-input native coordinate/calibration capture"}, "epoch": 1790546540.388275}
+{"kind": "rtc_only", "identity": {"family": "C", "purpose": "original-input native coordinate/calibration capture"}, "epoch": 1790546582.4727192}
+{"kind": "parent", "identity": {"run": "C-C-core-plus"}, "epoch": 1790546628.544322}
+{"kind": "trajectory", "identity": {"run": "C-C-core-plus", "branch": "REF", "cycle": 0}, "epoch": 1790546628.5487418}
+{"kind": "feedback", "identity": {"run": "C-C-core-plus", "branch": "REF", "cycle": 1}, "epoch": 1790546671.095115}
+{"kind": "feedback", "identity": {"run": "C-C-core-plus", "branch": "REF", "cycle": 2}, "epoch": 1790546680.576267}
+{"kind": "feedback", "identity": {"run": "C-C-core-plus", "branch": "REF", "cycle": 3}, "epoch": 1790546690.055941}
+{"kind": "feedback", "identity": {"run": "C-C-core-plus", "branch": "REF", "cycle": 4}, "epoch": 1790546699.534917}
+{"kind": "feedback", "identity": {"run": "C-C-core-plus", "branch": "REF", "cycle": 5}, "epoch": 1790546709.171275}
+{"kind": "endpoint", "identity": {"run": "C-C-core-plus", "cycle": 5}, "epoch": 1790546718.577302}
+{"kind": "parent", "identity": {"run": "C-C-core-minus"}, "epoch": 1790546720.241359}
+{"kind": "trajectory", "identity": {"run": "C-C-core-minus", "branch": "REF", "cycle": 0}, "epoch": 1790546720.2457101}
+{"kind": "feedback", "identity": {"run": "C-C-core-minus", "branch": "REF", "cycle": 1}, "epoch": 1790546757.081365}
+{"kind": "feedback", "identity": {"run": "C-C-core-minus", "branch": "REF", "cycle": 2}, "epoch": 1790546766.529963}
+{"kind": "feedback", "identity": {"run": "C-C-core-minus", "branch": "REF", "cycle": 3}, "epoch": 1790546775.975988}
+{"kind": "feedback", "identity": {"run": "C-C-core-minus", "branch": "REF", "cycle": 4}, "epoch": 1790546785.476887}
+{"kind": "feedback", "identity": {"run": "C-C-core-minus", "branch": "REF", "cycle": 5}, "epoch": 1790546794.44317}
+{"kind": "endpoint", "identity": {"run": "C-C-core-minus", "cycle": 5}, "epoch": 1790546803.3532102}
+{"kind": "parent", "identity": {"run": "C-C-shoulder"}, "epoch": 1790546805.075775}
+{"kind": "trajectory", "identity": {"run": "C-C-shoulder", "branch": "REF", "cycle": 0}, "epoch": 1790546805.080317}
+{"kind": "feedback", "identity": {"run": "C-C-shoulder", "branch": "REF", "cycle": 1}, "epoch": 1790546845.952627}
+{"kind": "feedback", "identity": {"run": "C-C-shoulder", "branch": "REF", "cycle": 2}, "epoch": 1790546854.9101639}
+{"kind": "feedback", "identity": {"run": "C-C-shoulder", "branch": "REF", "cycle": 3}, "epoch": 1790546864.413109}
+{"kind": "feedback", "identity": {"run": "C-C-shoulder", "branch": "REF", "cycle": 4}, "epoch": 1790546873.898231}
+{"kind": "feedback", "identity": {"run": "C-C-shoulder", "branch": "REF", "cycle": 5}, "epoch": 1790546883.386452}
+{"kind": "endpoint", "identity": {"run": "C-C-shoulder", "cycle": 5}, "epoch": 1790546892.2587771}

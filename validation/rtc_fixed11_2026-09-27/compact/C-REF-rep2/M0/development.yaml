@@ -1,0 +1,7 @@
+input:
+  path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-fixed11-20260927/C-REF-rep2/inputs/map-request.json
+  sha256: 7f3c621313fd4096568ac0ba0f42774e6212d0d7b81b91d62b16a1262a8b0ccb
+network_workers: 1
+output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-fixed11-20260927/C-REF-rep2/M0/products
+schema: citlali-development-v1
+terminal: map

@@ -1,0 +1,85 @@
+schema: citlali-forward-map-bundle-v1
+role: SCI-MAP:base_observation_map@1
+product_identity: SCI-MAP-base:5ab7d405b92f2aa8965c1693fee20f6331d1778dc2e51aa2a23dda221cea3570:628eca74415790006ea4e8fb24f0e6243d6c565c6fc2e89c8e7ca04356d4c805
+base_parent: SCI-MAP-base:5ab7d405b92f2aa8965c1693fee20f6331d1778dc2e51aa2a23dda221cea3570:628eca74415790006ea4e8fb24f0e6243d6c565c6fc2e89c8e7ca04356d4c805
+plan_sha256: 5ab7d405b92f2aa8965c1693fee20f6331d1778dc2e51aa2a23dda221cea3570
+input_domain: sha256:5ab7d405b92f2aa8965c1693fee20f6331d1778dc2e51aa2a23dda221cea3570:ordered-PTC-support
+grid_identity: sha256:5ab7d405b92f2aa8965c1693fee20f6331d1778dc2e51aa2a23dda221cea3570:WCS
+MAP_authority: SCI-MAP-v0.2-r0.4
+MAP_shared_source_sha256: 3b81ea8180dcc3f5f37964ac1177feb417fef6a1cdcc590b33f9431b54bc1e31
+reached_stages:
+  - requested
+  - effective
+  - observation_resolved
+  - applied
+  - realized
+outcome: success
+WCS:
+  RADESYS: FK5
+  EQUINOX: 2000
+  CTYPE1: RA---TAN
+  CTYPE2: DEC--TAN
+  CUNIT1: deg
+  CUNIT2: deg
+  CRPIX1: 104
+  CRPIX2: 102
+  CRVAL1: 176.74290791666667
+  CRVAL2: 39.976195555555556
+  CDELT1: -0.0005555555555555556
+  CDELT2: 0.0005555555555555556
+  rows: 203
+  columns: 207
+  axis_order: x=RA,y=Dec;storage(y,x)
+  source_to_target_frame: identity;owner-declared source FK5/J2000.0
+  time_scale: UNIX UTC assigned RTC times; zero verified interface offset
+  site_model_state: no new celestial frame, EOP or refraction transform; existing telescope/pointing-offset realization retained
+observation: obs:152430_0_2
+array: a2000
+sources:
+  - network: 11
+    root: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-fixed11-20260927/C-C-core-plus/upstream/products/network11
+    PTC_receipt_sha256: a44fd2561a9d16b85313c445a0af5c95da0eab534664109ac5ad8e83cf257cce
+    upstream_build: v2-ngc4449-memory-repair-187df04b-605-gb3d997456
+    failed_fits: 0
+    detectors: 486
+  - network: 12
+    root: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-fixed11-20260927/C-C-core-plus/upstream/products/network12
+    PTC_receipt_sha256: 2fee69bf9b25eed4d4687c6dd84196b4801c466ae7b85419c34035d21b6e3649
+    upstream_build: v2-ngc4449-memory-repair-187df04b-605-gb3d997456
+    failed_fits: 0
+    detectors: 491
+signal_unit: mJy/beam
+quantity: nonpolarimetric total-intensity-equivalent calibrated x; no Stokes-I claim
+nominal_beam_parent: sha256:219f6641b40a1cfc049eae24e320a14fe06f014bf804a87223a4b8772ea932aa:a2000
+nominal_beam_fwhm_arcsec: 10
+measured_beam_or_full_response_inferred: false
+coefficient_family: SCI-PTC:uniform_constant@draft-0.1
+normalization_interpretation: sum of dimensionless gridding coefficients; not precision or significance
+PTC_additive_reference: per-detector eligible arithmetic means removed and not restored; source segment means/bases retained by exact parent links
+upstream_conditioned_response: "unavailable: complete RTC/CAL/PTC astronomical response not supplied"
+full_procedure_response: "unavailable: not measured"
+covariance: "unavailable: not zero and not independent"
+MAP_local_operator: "exact sparse one-hot operator: input columns from plan; pixel.i32=-1 means no contribution; coefficient=1; output rows from output-rows.u64; divide by NORMALIZATION"
+upstream_eligible_original_footprint_exposure: "unavailable: original ALIGN-grid coordinate/exposure carrier not published"
+retained_original_footprint_exposure: "unavailable: original ALIGN-grid coordinate/exposure carrier not published"
+NOI: not requested; unavailable
+FLT: not requested; unavailable
+FRUIT: deferred; not executed
+PTC_retained: 2779396
+MAP_route_admitted: 2779396
+AST_invalid_coordinates: 0
+contributing_occurrences: 2779396
+scientific_rows: 10549
+coverage_cut: 0.5
+reference_normalization: 220
+reference_index: 23016
+pixels_outside_science_support: unavailable (FITS NaN), distinct from measured zero
+files:
+  plan.yaml: 5ab7d405b92f2aa8965c1693fee20f6331d1778dc2e51aa2a23dda221cea3570
+  map.fits: 628eca74415790006ea4e8fb24f0e6243d6c565c6fc2e89c8e7ca04356d4c805
+  operator-pixel.i32: 74e600f295e0a478fec7adab5d60b4fc43312366281fb3b4f244169f73a4f280
+  output-rows.u64: c373be49860eabd008ac9fe8782d6e9aef6ea018f12498b6f840d840f97521f2
+AST_and_handoff_seconds: 1.609462584
+projection_and_resolution_seconds: 0.863460291
+accumulation_seconds: 0.006389292
+serialization_seconds: 0.103290667

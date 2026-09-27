@@ -1,5 +1,16 @@
 # Scientific goals
 
+## Fixed-notch final-map tradeoff measured — 2026-09-27
+
+The [fixed11 assessment](../validation/rtc_fixed11_2026-09-27/ASSESSMENT.md)
+completes the explicitly authorized applicability and fixed-design comparison.
+Treating 331/486 and 151/491 detectors suppresses the target line, but final
+conditional peak uncertainty rises 3.32%, MAP contributions fall 3.1884%, and
+median exit time rises 12.39%. Compact response stays near 0.992; broad aperture
+response slightly worsens. Retain B development reference; do not adopt C-fixed11
+for this endpoint. This resolves the prior admission decision and closes the test.
+No new threshold/design search, PTC/FRUIT optimization, or automatic follow-on.
+
 ## RTC cost/source response measured — 2026-09-27
 
 The [RTC assessment](../validation/rtc_cost_response_2026-09-27/ASSESSMENT.md)
@@ -11,8 +22,8 @@ Compact transfer loss is small; broader final aperture response remains about
 84%, with morphology and fitted-background terms retained. Conditional scales
 are not paired significance, and the approximately 5% final science aspiration
 is not a per-RTC threshold. Transient completeness and donor efficacy remain
-unestablished. Next: decide exact fixed-notch detector admission before proposing
-one bounded comparison. No further PTC/FRUIT optimization or science run starts.
+unestablished. The subsequent fixed11 work above resolved that historical next
+action; no further PTC/FRUIT optimization or science run starts.
 
 ## POINT latency/PCA comparison measured — 2026-09-27
 

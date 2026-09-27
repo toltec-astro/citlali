@@ -1,0 +1,194 @@
+[
+  {
+    "network": 11,
+    "stage": "raw",
+    "n": 85689,
+    "median": 0.8108300374883916,
+    "p95": 0.9539091636345913,
+    "maximum": 0.9985964925346185,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 85689,
+      "median": 10.0,
+      "p95": 18.0,
+      "maximum": 27.0
+    }
+  },
+  {
+    "network": 11,
+    "stage": "RTC",
+    "n": 85689,
+    "median": 0.5722602381109476,
+    "p95": 0.8601304999218975,
+    "maximum": 0.9990570243545469,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 85689,
+      "median": 10.0,
+      "p95": 18.0,
+      "maximum": 27.0
+    }
+  },
+  {
+    "network": 11,
+    "stage": "CAL",
+    "n": 85279,
+    "median": 0.5968336393761524,
+    "p95": 0.8801237876130779,
+    "maximum": 0.9992758363572725,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 85279,
+      "median": 9.0,
+      "p95": 15.0,
+      "maximum": 21.0
+    }
+  },
+  {
+    "network": 11,
+    "stage": "PTC_M0",
+    "n": 85279,
+    "median": 0.20086842453861384,
+    "p95": 0.7274546573524593,
+    "maximum": 0.9945973056207971,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 85279,
+      "median": 9.0,
+      "p95": 15.0,
+      "maximum": 21.0
+    }
+  },
+  {
+    "network": 11,
+    "stage": "T5_residual",
+    "n": 85279,
+    "median": 0.2024262681847065,
+    "p95": 0.7475284496496342,
+    "maximum": 0.9909563981046745,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 85279,
+      "median": 9.0,
+      "p95": 15.0,
+      "maximum": 21.0
+    }
+  },
+  {
+    "network": 11,
+    "stage": "T5_total",
+    "n": 85279,
+    "median": 0.2024262681847065,
+    "p95": 0.7475284496496342,
+    "maximum": 0.9909563981046745,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 85279,
+      "median": 9.0,
+      "p95": 15.0,
+      "maximum": 21.0
+    }
+  },
+  {
+    "network": 12,
+    "stage": "raw",
+    "n": 82983,
+    "median": 0.41681013780815196,
+    "p95": 0.8970538333226759,
+    "maximum": 0.9979172989615523,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 82983,
+      "median": 11.0,
+      "p95": 20.0,
+      "maximum": 27.0
+    }
+  },
+  {
+    "network": 12,
+    "stage": "RTC",
+    "n": 82983,
+    "median": 0.3203186436401539,
+    "p95": 0.7429852626165019,
+    "maximum": 0.9982939667444174,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 82983,
+      "median": 11.0,
+      "p95": 20.0,
+      "maximum": 27.0
+    }
+  },
+  {
+    "network": 12,
+    "stage": "CAL",
+    "n": 81299,
+    "median": 0.3551635703272844,
+    "p95": 0.7777578276660372,
+    "maximum": 0.9983985652127925,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 81299,
+      "median": 8.0,
+      "p95": 16.0,
+      "maximum": 21.0
+    }
+  },
+  {
+    "network": 12,
+    "stage": "PTC_M0",
+    "n": 81299,
+    "median": 0.20965954202679277,
+    "p95": 0.9295623509283593,
+    "maximum": 0.9998043348066682,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 81299,
+      "median": 8.0,
+      "p95": 16.0,
+      "maximum": 21.0
+    }
+  },
+  {
+    "network": 12,
+    "stage": "T5_residual",
+    "n": 81299,
+    "median": 0.20998533246310205,
+    "p95": 0.9320285841324785,
+    "maximum": 0.9993518147035626,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 81299,
+      "median": 8.0,
+      "p95": 16.0,
+      "maximum": 21.0
+    }
+  },
+  {
+    "network": 12,
+    "stage": "T5_total",
+    "n": 81299,
+    "median": 0.20998533246310205,
+    "p95": 0.9320285841324785,
+    "maximum": 0.9993518147035626,
+    "minimum_common_windows": 3,
+    "metric": "pairwise magnitude-squared coherence at nearest11Hz; same window pairs; descriptive, no electronics attribution",
+    "common_windows": {
+      "n": 81299,
+      "median": 8.0,
+      "p95": 16.0,
+      "maximum": 21.0
+    }
+  }
+]

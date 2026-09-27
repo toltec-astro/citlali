@@ -1,0 +1,21 @@
+{
+  "verdict": "pass",
+  "source_revision": "b3d997456a8b9762d9fc323e37827f96b4ec7b37",
+  "tree": "ff40c74129a45a9d4d5e00874dbf09255ecf98b2",
+  "reviewer": "/root/fixed11_preflight",
+  "applicability_sha256": "8c41c3946e87dc22a2baaaa6411122c14af47d32611f17a167ba644365962150",
+  "design_sha256": "32f786ab1081f6cd852e221e509fa2f8057ddc207b948f3705e490ecfc3689a3",
+  "findings": [],
+  "checks": [
+    "977 independent population decisions reproduced",
+    "historical notch and LPF hashes reproduced",
+    "3 independent Python fixtures pass",
+    "exact candidate native 2 fixture pass inspected",
+    "ownership/counters/control/source-response bindings pass"
+  ],
+  "limitations": [
+    "Window prominence does not localize each window peak.",
+    "One-time experimental selection, not production admission.",
+    "Supplemental local AppleClang/Homebrew evidence."
+  ]
+}
