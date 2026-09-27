@@ -6,6 +6,17 @@ reference, not an all-mode or production qualification. CORR, DIAG, JINC, CUT3,
 shoulder refinements, seeds and extra cycles are parked. Historical drivers and
 compact evidence remain for explicit reproduction only.
 
+## Current RTC development endpoint — 2026-09-27
+
+For the completed bounded RTC study, use the separate
+[development profile](../data/development/rtc_point_warm5_v1/profile.json): warm
+initialized, fully re-solved observed-entry ALS rank 10, cold M0 and exactly five
+applications. B retains only byte-preserving serialization changes; C was
+unselected. The [assessment](../validation/rtc_cost_response_2026-09-27/ASSESSMENT.md)
+and [saved-only reproduction](../validation/rtc_cost_response_2026-09-27/REPRODUCTION.md)
+record scope and limits. This is not production qualification. The build/run
+recipe below remains the unchanged original cold-rank10/T10 frozen reference.
+
 ## Build and run
 
 Use a durable checkout of `codex/fruit-pipeline-freeze-20260926` (or its final local

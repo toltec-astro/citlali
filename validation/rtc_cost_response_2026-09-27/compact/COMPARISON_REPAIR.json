@@ -1,0 +1,6 @@
+{
+  "no_science_reexecution": true,
+  "verdict": "sealed-reference byte recovery",
+  "reason": "T2/T4 FITS CHECKSUM metadata; all numerical arrays exact",
+  "original_candidate": "3bb6444ab5e97265cbcb8f197994a52603b481ae"
+}

@@ -1,0 +1,28 @@
+{
+  "schema": "citlali-point-speed-pca-v1",
+  "method": "point-speed-pca-v1",
+  "mode": "reference",
+  "array": "a2000",
+  "branch": "REF",
+  "cycle_index": 3,
+  "candidate": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-plus/run/BASE-POINT/REF/a2000/cycle-02/candidate.fits",
+    "sha256": "6293e738e821797cfb718e79e7200887112345f6e4ee94bad87f83d89cab1fd8"
+  },
+  "owner_binding": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-plus/run/BASE-POINT/REF/a2000/owner.json",
+    "sha256": "2fefc4bb805ec50c6f18ae4a3bc6946c0566ac2bd23e88478d660ddbcbd2bc66"
+  },
+  "map_request": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-plus/inputs/map-request.json",
+    "sha256": "7a4acffcf9c0efc1f0fec44ba26ca8583bf5f02c53f458bfd3d9b58e719ecc16"
+  },
+  "parent_plan": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-plus/M0/products/a2000/plan.yaml",
+    "sha256": "ae16a72e0e846e8ba1c02035fbe411c68bfa095f59ae7f586e85bf576a04a4ae"
+  },
+  "previous_state": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-plus/run/BASE-POINT/REF/a2000/cycle-02/state.json",
+    "sha256": "8f290dd100d83754d06b37663043a6fa6132d762a23cf73a3b3a07451eeedc9f"
+  }
+}

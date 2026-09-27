@@ -1,0 +1,73 @@
+{"kind": "parent", "identity": {"run": "A-REF-rep1"}, "epoch": 1790536420.028374}
+{"kind": "trajectory", "identity": {"run": "A-REF-rep1", "branch": "REF", "cycle": 0}, "epoch": 1790536420.030955}
+{"kind": "feedback", "identity": {"run": "A-REF-rep1", "branch": "REF", "cycle": 1}, "epoch": 1790536452.292724}
+{"kind": "feedback", "identity": {"run": "A-REF-rep1", "branch": "REF", "cycle": 2}, "epoch": 1790536460.2050781}
+{"kind": "feedback", "identity": {"run": "A-REF-rep1", "branch": "REF", "cycle": 3}, "epoch": 1790536468.098103}
+{"kind": "feedback", "identity": {"run": "A-REF-rep1", "branch": "REF", "cycle": 4}, "epoch": 1790536475.95214}
+{"kind": "feedback", "identity": {"run": "A-REF-rep1", "branch": "REF", "cycle": 5}, "epoch": 1790536483.842546}
+{"kind": "endpoint", "identity": {"run": "A-REF-rep1", "cycle": 5}, "epoch": 1790536491.6482282}
+{"kind": "parent", "identity": {"run": "A-REF-rep2"}, "epoch": 1790536775.762348}
+{"kind": "trajectory", "identity": {"run": "A-REF-rep2", "branch": "REF", "cycle": 0}, "epoch": 1790536775.7670631}
+{"kind": "feedback", "identity": {"run": "A-REF-rep2", "branch": "REF", "cycle": 1}, "epoch": 1790536807.54883}
+{"kind": "feedback", "identity": {"run": "A-REF-rep2", "branch": "REF", "cycle": 2}, "epoch": 1790536815.694484}
+{"kind": "feedback", "identity": {"run": "A-REF-rep2", "branch": "REF", "cycle": 3}, "epoch": 1790536824.089309}
+{"kind": "feedback", "identity": {"run": "A-REF-rep2", "branch": "REF", "cycle": 4}, "epoch": 1790536831.944202}
+{"kind": "feedback", "identity": {"run": "A-REF-rep2", "branch": "REF", "cycle": 5}, "epoch": 1790536840.345898}
+{"kind": "endpoint", "identity": {"run": "A-REF-rep2", "cycle": 5}, "epoch": 1790536848.137984}
+{"kind": "parent", "identity": {"run": "A-REF-rep3"}, "epoch": 1790536849.230274}
+{"kind": "trajectory", "identity": {"run": "A-REF-rep3", "branch": "REF", "cycle": 0}, "epoch": 1790536849.236799}
+{"kind": "feedback", "identity": {"run": "A-REF-rep3", "branch": "REF", "cycle": 1}, "epoch": 1790536883.191425}
+{"kind": "feedback", "identity": {"run": "A-REF-rep3", "branch": "REF", "cycle": 2}, "epoch": 1790536891.073122}
+{"kind": "feedback", "identity": {"run": "A-REF-rep3", "branch": "REF", "cycle": 3}, "epoch": 1790536898.938563}
+{"kind": "feedback", "identity": {"run": "A-REF-rep3", "branch": "REF", "cycle": 4}, "epoch": 1790536906.999425}
+{"kind": "feedback", "identity": {"run": "A-REF-rep3", "branch": "REF", "cycle": 5}, "epoch": 1790536914.905479}
+{"kind": "endpoint", "identity": {"run": "A-REF-rep3", "cycle": 5}, "epoch": 1790536922.7363358}
+{"kind": "rtc_only", "identity": {"family": "A", "purpose": "original-input native coordinate/calibration capture"}, "epoch": 1790536923.399445}
+{"kind": "parent", "identity": {"run": "A-C-core-plus"}, "epoch": 1790536964.389833}
+{"kind": "trajectory", "identity": {"run": "A-C-core-plus", "branch": "REF", "cycle": 0}, "epoch": 1790536964.396228}
+{"kind": "feedback", "identity": {"run": "A-C-core-plus", "branch": "REF", "cycle": 1}, "epoch": 1790536999.735729}
+{"kind": "feedback", "identity": {"run": "A-C-core-plus", "branch": "REF", "cycle": 2}, "epoch": 1790537007.632871}
+{"kind": "feedback", "identity": {"run": "A-C-core-plus", "branch": "REF", "cycle": 3}, "epoch": 1790537015.5311282}
+{"kind": "feedback", "identity": {"run": "A-C-core-plus", "branch": "REF", "cycle": 4}, "epoch": 1790537023.923105}
+{"kind": "feedback", "identity": {"run": "A-C-core-plus", "branch": "REF", "cycle": 5}, "epoch": 1790537031.8230941}
+{"kind": "endpoint", "identity": {"run": "A-C-core-plus", "cycle": 5}, "epoch": 1790537039.654943}
+{"kind": "parent", "identity": {"run": "A-C-core-minus"}, "epoch": 1790537040.922677}
+{"kind": "trajectory", "identity": {"run": "A-C-core-minus", "branch": "REF", "cycle": 0}, "epoch": 1790537040.9284558}
+{"kind": "feedback", "identity": {"run": "A-C-core-minus", "branch": "REF", "cycle": 1}, "epoch": 1790537075.709022}
+{"kind": "feedback", "identity": {"run": "A-C-core-minus", "branch": "REF", "cycle": 2}, "epoch": 1790537083.595822}
+{"kind": "feedback", "identity": {"run": "A-C-core-minus", "branch": "REF", "cycle": 3}, "epoch": 1790537091.484999}
+{"kind": "feedback", "identity": {"run": "A-C-core-minus", "branch": "REF", "cycle": 4}, "epoch": 1790537099.384146}
+{"kind": "feedback", "identity": {"run": "A-C-core-minus", "branch": "REF", "cycle": 5}, "epoch": 1790537107.291323}
+{"kind": "endpoint", "identity": {"run": "A-C-core-minus", "cycle": 5}, "epoch": 1790537115.113204}
+{"kind": "parent", "identity": {"run": "A-C-shoulder"}, "epoch": 1790537116.423021}
+{"kind": "trajectory", "identity": {"run": "A-C-shoulder", "branch": "REF", "cycle": 0}, "epoch": 1790537116.429441}
+{"kind": "feedback", "identity": {"run": "A-C-shoulder", "branch": "REF", "cycle": 1}, "epoch": 1790537149.808871}
+{"kind": "feedback", "identity": {"run": "A-C-shoulder", "branch": "REF", "cycle": 2}, "epoch": 1790537157.6680808}
+{"kind": "feedback", "identity": {"run": "A-C-shoulder", "branch": "REF", "cycle": 3}, "epoch": 1790537166.069182}
+{"kind": "feedback", "identity": {"run": "A-C-shoulder", "branch": "REF", "cycle": 4}, "epoch": 1790537173.941372}
+{"kind": "feedback", "identity": {"run": "A-C-shoulder", "branch": "REF", "cycle": 5}, "epoch": 1790537181.840605}
+{"kind": "endpoint", "identity": {"run": "A-C-shoulder", "cycle": 5}, "epoch": 1790537189.662784}
+{"kind": "parent", "identity": {"run": "B-REF-rep1"}, "epoch": 1790538322.693568}
+{"kind": "trajectory", "identity": {"run": "B-REF-rep1", "branch": "REF", "cycle": 0}, "epoch": 1790538322.700043}
+{"kind": "feedback", "identity": {"run": "B-REF-rep1", "branch": "REF", "cycle": 1}, "epoch": 1790538356.35647}
+{"kind": "feedback", "identity": {"run": "B-REF-rep1", "branch": "REF", "cycle": 2}, "epoch": 1790538364.294421}
+{"kind": "feedback", "identity": {"run": "B-REF-rep1", "branch": "REF", "cycle": 3}, "epoch": 1790538372.237062}
+{"kind": "feedback", "identity": {"run": "B-REF-rep1", "branch": "REF", "cycle": 4}, "epoch": 1790538379.6600661}
+{"kind": "feedback", "identity": {"run": "B-REF-rep1", "branch": "REF", "cycle": 5}, "epoch": 1790538387.735726}
+{"kind": "endpoint", "identity": {"run": "B-REF-rep1", "cycle": 5}, "epoch": 1790538395.6109061}
+{"kind": "parent", "identity": {"run": "B-REF-rep2"}, "epoch": 1790538443.004365}
+{"kind": "trajectory", "identity": {"run": "B-REF-rep2", "branch": "REF", "cycle": 0}, "epoch": 1790538443.010148}
+{"kind": "feedback", "identity": {"run": "B-REF-rep2", "branch": "REF", "cycle": 1}, "epoch": 1790538476.129806}
+{"kind": "feedback", "identity": {"run": "B-REF-rep2", "branch": "REF", "cycle": 2}, "epoch": 1790538483.5703812}
+{"kind": "feedback", "identity": {"run": "B-REF-rep2", "branch": "REF", "cycle": 3}, "epoch": 1790538491.6329181}
+{"kind": "feedback", "identity": {"run": "B-REF-rep2", "branch": "REF", "cycle": 4}, "epoch": 1790538500.103442}
+{"kind": "feedback", "identity": {"run": "B-REF-rep2", "branch": "REF", "cycle": 5}, "epoch": 1790538508.083818}
+{"kind": "endpoint", "identity": {"run": "B-REF-rep2", "cycle": 5}, "epoch": 1790538515.9720309}
+{"kind": "parent", "identity": {"run": "B-REF-rep3"}, "epoch": 1790538548.801572}
+{"kind": "trajectory", "identity": {"run": "B-REF-rep3", "branch": "REF", "cycle": 0}, "epoch": 1790538548.8071759}
+{"kind": "feedback", "identity": {"run": "B-REF-rep3", "branch": "REF", "cycle": 1}, "epoch": 1790538581.580485}
+{"kind": "feedback", "identity": {"run": "B-REF-rep3", "branch": "REF", "cycle": 2}, "epoch": 1790538589.025467}
+{"kind": "feedback", "identity": {"run": "B-REF-rep3", "branch": "REF", "cycle": 3}, "epoch": 1790538596.959826}
+{"kind": "feedback", "identity": {"run": "B-REF-rep3", "branch": "REF", "cycle": 4}, "epoch": 1790538604.922005}
+{"kind": "feedback", "identity": {"run": "B-REF-rep3", "branch": "REF", "cycle": 5}, "epoch": 1790538612.896487}
+{"kind": "endpoint", "identity": {"run": "B-REF-rep3", "cycle": 5}, "epoch": 1790538620.88927}

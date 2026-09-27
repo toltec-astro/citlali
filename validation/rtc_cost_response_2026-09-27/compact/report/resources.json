@@ -1,0 +1,21 @@
+{
+  "attempts": {
+    "endpoint": 9,
+    "parent": 9,
+    "feedback": 45,
+    "trajectory": 9,
+    "rtc_only": 1
+  },
+  "maximum": {
+    "trajectory": 17,
+    "feedback": 85,
+    "rtc_only": 4
+  },
+  "replacement_trajectories": 0,
+  "actual_campaign_bytes_before_compaction": 9677397627,
+  "peak_ceiling_bytes": 20000000000,
+  "conservative_max_reserved_bound": 9995551391,
+  "cumulative_native_write_bytes": 11604706008,
+  "free_space_reserve_bytes": 2000000000,
+  "storage_scope": "actual reconciled footprint vs conservative charged-stage upper bound; write volume not retained footprint; all planned reservation/free-space gates passed"
+}

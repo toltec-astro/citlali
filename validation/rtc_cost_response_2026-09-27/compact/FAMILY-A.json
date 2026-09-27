@@ -1,0 +1,54 @@
+{
+  "status": "completed",
+  "selection": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_cost_response_2026-09-27/FAMILY-A-SELECTION.json",
+    "sha256": "f970f7829624c5e804b4350df49161bb9b8a36805946a2c473d73f905e2b4007"
+  },
+  "cells": [
+    {
+      "name": "A-REF-rep1",
+      "branch": "REF",
+      "rep": 1,
+      "status": "completed"
+    },
+    {
+      "name": "A-REF-rep2",
+      "branch": "REF",
+      "rep": 2,
+      "status": "completed"
+    },
+    {
+      "name": "A-REF-rep3",
+      "branch": "REF",
+      "rep": 3,
+      "status": "completed"
+    },
+    {
+      "name": "A-C-core-plus",
+      "branch": "C-core-plus",
+      "status": "completed"
+    },
+    {
+      "name": "A-C-core-minus",
+      "branch": "C-core-minus",
+      "status": "completed"
+    },
+    {
+      "name": "A-C-shoulder",
+      "branch": "C-shoulder",
+      "status": "completed"
+    }
+  ],
+  "peak_disk_ceiling_bytes": 20000000000,
+  "resource_policy": {
+    "workloads": 1,
+    "network_workers": 2,
+    "feedback_workers": 1,
+    "numerical_threads": 1
+  },
+  "cache": "not flushed; first-use retained; preflight hashing can warm files",
+  "comparison_repair": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/COMPARISON_REPAIR.json",
+    "sha256": "3c5c26cc580a310716763f745130e411a15c5907e2e3a5d9ca3dd65b774c52f2"
+  }
+}

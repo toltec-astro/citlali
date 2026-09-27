@@ -1,16 +1,28 @@
 # Citlali Refactor Status
 
-## Bounded RTC cost/source response — active 2026-09-27
+## Bounded RTC cost/source response — measured 2026-09-27
 
-The owner [directive](../validation/rtc_cost_response_2026-09-27/OWNER_DIRECTIVE.md)
-selects warm initialized, fully resolved rank10 PTC with cold M0 and five feedback
-applications for development. Existing POINT152430/a2000 networks11/12 only.
-RTC cost/contamination audit, pre-RTC x-only response and measured bounded
-improvements supersede the earlier RTC deferral within this work order.
-Original cold rank10/T10 profile, tag and completed comparisons remain intact.
-See [preflight](../validation/rtc_cost_response_2026-09-27/PREFLIGHT.md). No science
-has run under this directive yet; B/C are unselected. No Unity, push or promotion.
+The [assessment](../validation/rtc_cost_response_2026-09-27/ASSESSMENT.md) completes
+A (three REF and three pre-RTC responses) and B (three exact-equivalent REF runs):
+9 trajectories, 45 feedback applications, one RTC-only capture, no replacements.
+Warm initialized, fully re-solved observed-entry ALS rank 10, cold M0 and exactly
+five applications are the development endpoint for POINT152430/a2000 networks
+11/12. m4 is applied; m5 is recorded only. The cold rank10/T10 freeze is unchanged.
 
+RTC occupies 15.88–18.77% of command wall time under explicit overlap bounds.
+It suppresses high-frequency power for antialiasing but leaves the consequential
+11 Hz line. Compact RTC projection gain is 0.996307; injection changes no support.
+B's exact serialization changes reduce network-11 publication median by 30% and
+command CPU by 3.81%; exit medians 72.676 s (A), 73.197 s (B) do not establish an
+end-to-end speedup. B response is inherited only after all three exact gates.
+
+C is deliberately unselected: the historical fixed-notch coefficients do not
+supply detector admission for this new population. The single next action is an
+owner decision on that exact applicability before one fixed-design proposal.
+No new numerical threshold, observation, Unity access, push or promotion.
+Compact evidence is 90.6 MB; saved-only reporting and independent final review
+are required before guarded native cleanup. See [reproduction](../validation/rtc_cost_response_2026-09-27/REPRODUCTION.md)
+and [handoff](../handoff/RTC_COST_RESPONSE_2026-09-27.md).
 
 ## Bounded POINT latency/PCA comparison — completed 2026-09-27
 

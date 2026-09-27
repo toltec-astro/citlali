@@ -1,0 +1,50 @@
+[
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-minus/freeze/a2000/BASE.json",
+    "sha256": "ef6d0d450c6b53555c271e7722550f772d3f4beb408fd5c5e55f3a8c64c08b7d"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-minus/freeze/a2000/BASE.npz",
+    "sha256": "b65f2bb8375ae80de5395f06b6275df516e83169a06e26c3601c88162a16be25"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-minus/freeze/a2000/C0.json",
+    "sha256": "87dab3154809f790644ce2631089049039f5f23b6711eff2f6e528c1979f31e0"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-minus/freeze/a2000/C0.npz",
+    "sha256": "99682c27acbb6d754283ea4b55eb9292e66a220ede39fbfbc3079a2c19201204"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-minus/freeze/a2000/context.npz",
+    "sha256": "f1e4e1a835a99b10a0a631fd97bc4f87c331a97f8c5a9891b6f4502644854e6f"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-minus/freeze/a2000/continuation-sanity.json",
+    "sha256": "9b06382fc332640c3b3aaef3d7fab75b3b7001335edfdd222ba7009cb066fed2"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-minus/freeze/a2000/geometry.json",
+    "sha256": "9d07e95dd47f7f2dec76bf2776ef9d69e7123d8ff92fff31764ebafcc3c185d6"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-minus/freeze/a2000/guard.json",
+    "sha256": "39486efc2020d9c6998b211f0a64f192932ea310eff7051a6b92f92c185cff5f"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-minus/freeze/a2000/measurement-geometry.json",
+    "sha256": "7dc3f57041d06367c03a6b9c8e900c8c2a9a799769f55ae6809231bd9904bbeb"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-minus/freeze/M0-measurement.json",
+    "sha256": "9266adf226327e69b59263a1cde8376fef4aa7a377aea0e6829d7822763903fb"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-minus/freeze/parents.json",
+    "sha256": "c15f37a8cb0603d7c05f6be20f97647214a07df711854e4127460ff13ce168d0"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-minus/inputs/map-request.json",
+    "sha256": "f69e357f317f709e8ed52e1e479c89a7acb50843b5edae24d71087442316064c"
+  }
+]

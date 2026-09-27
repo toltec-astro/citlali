@@ -1,0 +1,6 @@
+{
+  "status": "deliberately_unselected",
+  "reason": "Existing w1-t3 coefficients bind the previously tested case; no approved line/detector/cadence admission for this new977-detector cohort. Baseline establishes consequential11Hz residual but not a full-population admission policy.",
+  "required_owner_decision": "Authorize the fixed11.0062558446Hz/1Hz/approximately3s notch and exact detector applicability for152430 nw11/12, or specify an already approved admission rule. No threshold/width sweep.",
+  "authority": "INTEGRATION_LEDGER owner2026-09-15 plus directive section6C; independently reviewed boundary"
+}

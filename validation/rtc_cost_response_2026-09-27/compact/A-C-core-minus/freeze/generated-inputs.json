@@ -1,0 +1,30 @@
+[
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-minus/inputs/ast-source-binding.json",
+    "sha256": "a8aacdd5c0a31daf634c73257261ca563d2041ea1b9e9137889dac911e0a05e1"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-minus/inputs/effective-point.yaml",
+    "sha256": "9397ac8f63469438231cae1a16251eb7654c1a827687adfee976767c67f08cdd"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-minus/inputs/map-owner.json",
+    "sha256": "219f6641b40a1cfc049eae24e320a14fe06f014bf804a87223a4b8772ea932aa"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-minus/inputs/network11-input.json",
+    "sha256": "e273b1ed83986bcdd00f5d6dabdcdad1af3a4e733da0b9ddaf5f53fc7c9e18b2"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-minus/inputs/network12-input.json",
+    "sha256": "597940949cd93d7a31a7729bf0b546d8cf53aca09acf8cc7dc1c784fe8428b58"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-minus/inputs/observation.json",
+    "sha256": "ffeb6fe2d5b512762908a4585dd8808c830810249311dab0cb8a1fac36076aea"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-minus/inputs/processing-request.json",
+    "sha256": "645e4914172a4e55287d80040ebed37b178be4ea7f74f5960b71e21b53ed4c7f"
+  }
+]

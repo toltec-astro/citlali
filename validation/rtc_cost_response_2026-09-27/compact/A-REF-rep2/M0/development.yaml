@@ -1,0 +1,7 @@
+input:
+  path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-REF-rep2/inputs/map-request.json
+  sha256: 6cd36f16729d97137fcc025d0138ed980f9ad7279b854715a68484d668ded05d
+network_workers: 1
+output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-REF-rep2/M0/products
+schema: citlali-development-v1
+terminal: map

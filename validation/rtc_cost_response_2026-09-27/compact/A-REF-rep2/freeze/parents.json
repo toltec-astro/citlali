@@ -1,0 +1,10 @@
+{
+  "map_request": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-REF-rep2/inputs/map-request.json",
+    "sha256": "6cd36f16729d97137fcc025d0138ed980f9ad7279b854715a68484d668ded05d"
+  },
+  "parent_plan": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-REF-rep2/M0/products/a2000/plan.yaml",
+    "sha256": "60dab75e30b7faa89ce298423c344e274185c0f60314e9b2400c7e3cf123ce41"
+  }
+}

@@ -65,7 +65,7 @@ def compare(actual,reference,array,tolerances,cycles=10,compare_endpoint=True,re
             for key in x.files:
                 same=np.array_equal(x[key],y[key],equal_nan=True);decisions.append(dict(initialization=name,field=key,exact=bool(same)))
                 if not same:failures.append(dict(initialization=name,field=key,reason='M0 frozen numerical field differs'))
-    return dict(pass_=not failures,tolerances=tolerances,planes=rows,decisions=decisions,endpoint_exact=endpoint,failures=failures,maximum_absolute_plane_difference=max(r['max_abs'] for r in rows),scope='M0 and T1–T10, all six MAP planes and candidate planes, accepted source/fit/template/apertures, initial covariance and conditional endpoint; no science rerun')
+    return dict(pass_=not failures,tolerances=tolerances,planes=rows,decisions=decisions,endpoint_exact=endpoint,failures=failures,maximum_absolute_plane_difference=max(r['max_abs'] for r in rows),scope=f'M0 and T1–T{cycles}, all six MAP planes and candidate planes, accepted source/fit/template/apertures, initial covariance; conditional endpoint comparison={compare_endpoint}; no science rerun')
 
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)

@@ -1,0 +1,683 @@
+- event: 0
+  channel: 47
+  network: 12
+  seed_earlier_row: 3977
+  origin_unix_seconds: 1771495714.8214097
+  class: isolated-admission-unavailable
+  affected:
+    - 3977
+    - 3978
+  operation_unavailable:
+    - 3971
+    - 3985
+  seeded_excursion: true
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    []
+  proposed_isolation_prerequisites: true
+  donor_admission_available: false
+- event: 1
+  channel: 49
+  network: 12
+  seed_earlier_row: 1625
+  origin_unix_seconds: 1771495695.5538256
+  class: no-resolved-excursion
+  affected:
+    - -1
+    - -1
+  operation_unavailable:
+    - 1619
+    - 1633
+  seeded_excursion: false
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    []
+  proposed_isolation_prerequisites: false
+  donor_admission_available: false
+- event: 2
+  channel: 49
+  network: 12
+  seed_earlier_row: 4958
+  origin_unix_seconds: 1771495722.8577616
+  class: isolated-admission-unavailable
+  affected:
+    - 4958
+    - 4959
+  operation_unavailable:
+    - 4952
+    - 4966
+  seeded_excursion: true
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    []
+  proposed_isolation_prerequisites: true
+  donor_admission_available: false
+- event: 3
+  channel: 49
+  network: 12
+  seed_earlier_row: 6735
+  origin_unix_seconds: 1771495737.4149456
+  class: isolated-admission-unavailable
+  affected:
+    - 6733
+    - 6737
+  operation_unavailable:
+    - 6729
+    - 6743
+  seeded_excursion: true
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    []
+  proposed_isolation_prerequisites: true
+  donor_admission_available: false
+- event: 4
+  channel: 50
+  network: 12
+  seed_earlier_row: 6757
+  origin_unix_seconds: 1771495737.5951695
+  class: isolated-admission-unavailable
+  affected:
+    - 6752
+    - 6762
+  operation_unavailable:
+    - 6751
+    - 6765
+  seeded_excursion: true
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    []
+  proposed_isolation_prerequisites: true
+  donor_admission_available: false
+- event: 5
+  channel: 54
+  network: 12
+  seed_earlier_row: 6378
+  origin_unix_seconds: 1771495734.4904017
+  class: isolated-admission-unavailable
+  affected:
+    - 6378
+    - 6379
+  operation_unavailable:
+    - 6372
+    - 6386
+  seeded_excursion: true
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    []
+  proposed_isolation_prerequisites: true
+  donor_admission_available: false
+- event: 6
+  channel: 55
+  network: 12
+  seed_earlier_row: 3289
+  origin_unix_seconds: 1771495709.1853137
+  class: no-resolved-excursion
+  affected:
+    - -1
+    - -1
+  operation_unavailable:
+    - 3283
+    - 3297
+  seeded_excursion: false
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    []
+  proposed_isolation_prerequisites: false
+  donor_admission_available: false
+- event: 7
+  channel: 60
+  network: 12
+  seed_earlier_row: 2396
+  origin_unix_seconds: 1771495701.8698575
+  class: isolated-admission-unavailable
+  affected:
+    - 2396
+    - 2397
+  operation_unavailable:
+    - 2390
+    - 2404
+  seeded_excursion: true
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    []
+  proposed_isolation_prerequisites: true
+  donor_admission_available: false
+- event: 8
+  channel: 87
+  network: 12
+  seed_earlier_row: 2310
+  origin_unix_seconds: 1771495701.1653457
+  class: isolated-admission-unavailable
+  affected:
+    - 2311
+    - 2312
+  operation_unavailable:
+    - 2304
+    - 2318
+  seeded_excursion: true
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    []
+  proposed_isolation_prerequisites: true
+  donor_admission_available: false
+- event: 9
+  channel: 123
+  network: 12
+  seed_earlier_row: 6027
+  origin_unix_seconds: 1771495731.6150095
+  class: isolated-admission-unavailable
+  affected:
+    - 6028
+    - 6029
+  operation_unavailable:
+    - 6021
+    - 6035
+  seeded_excursion: true
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    []
+  proposed_isolation_prerequisites: true
+  donor_admission_available: false
+- event: 10
+  channel: 163
+  network: 12
+  seed_earlier_row: 6613
+  origin_unix_seconds: 1771495736.4155216
+  class: isolated-admission-unavailable
+  affected:
+    - 6614
+    - 6615
+  operation_unavailable:
+    - 6607
+    - 6621
+  seeded_excursion: true
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    []
+  proposed_isolation_prerequisites: true
+  donor_admission_available: false
+- event: 11
+  channel: 168
+  network: 12
+  seed_earlier_row: 7788
+  origin_unix_seconds: 1771495746.0411215
+  class: unresolved-extent
+  affected:
+    - -1
+    - -1
+  operation_unavailable:
+    - 0
+    - 7820
+  seeded_excursion: false
+  recovered: false
+  background_available: false
+  source_outside: true
+  target_domain_available: false
+  cohort_coincident_events:
+    []
+  proposed_isolation_prerequisites: false
+  donor_admission_available: false
+- event: 12
+  channel: 181
+  network: 12
+  seed_earlier_row: 2173
+  origin_unix_seconds: 1771495700.0430417
+  class: isolated-admission-unavailable
+  affected:
+    - 2174
+    - 2175
+  operation_unavailable:
+    - 2167
+    - 2181
+  seeded_excursion: true
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    []
+  proposed_isolation_prerequisites: true
+  donor_admission_available: false
+- event: 13
+  channel: 182
+  network: 12
+  seed_earlier_row: 6467
+  origin_unix_seconds: 1771495735.2194896
+  class: isolated-admission-unavailable
+  affected:
+    - 6468
+    - 6469
+  operation_unavailable:
+    - 6461
+    - 6475
+  seeded_excursion: true
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    []
+  proposed_isolation_prerequisites: true
+  donor_admission_available: false
+- event: 14
+  channel: 194
+  network: 12
+  seed_earlier_row: 3059
+  origin_unix_seconds: 1771495707.3011537
+  class: isolated-admission-unavailable
+  affected:
+    - 3060
+    - 3061
+  operation_unavailable:
+    - 3053
+    - 3067
+  seeded_excursion: true
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    []
+  proposed_isolation_prerequisites: true
+  donor_admission_available: false
+- event: 15
+  channel: 208
+  network: 12
+  seed_earlier_row: 761
+  origin_unix_seconds: 1771495688.4759376
+  class: isolated-admission-unavailable
+  affected:
+    - 761
+    - 762
+  operation_unavailable:
+    - 755
+    - 769
+  seeded_excursion: true
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    []
+  proposed_isolation_prerequisites: true
+  donor_admission_available: false
+- event: 16
+  channel: 208
+  network: 12
+  seed_earlier_row: 2344
+  origin_unix_seconds: 1771495701.4438734
+  class: isolated-admission-unavailable
+  affected:
+    - 2344
+    - 2345
+  operation_unavailable:
+    - 2338
+    - 2352
+  seeded_excursion: true
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    []
+  proposed_isolation_prerequisites: true
+  donor_admission_available: false
+- event: 17
+  channel: 318
+  network: 12
+  seed_earlier_row: 1649
+  origin_unix_seconds: 1771495695.7504334
+  class: isolated-admission-unavailable
+  affected:
+    - 1650
+    - 1651
+  operation_unavailable:
+    - 1643
+    - 1657
+  seeded_excursion: true
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    []
+  proposed_isolation_prerequisites: true
+  donor_admission_available: false
+- event: 18
+  channel: 318
+  network: 12
+  seed_earlier_row: 3449
+  origin_unix_seconds: 1771495710.4960337
+  class: isolated-admission-unavailable
+  affected:
+    - 3450
+    - 3451
+  operation_unavailable:
+    - 3443
+    - 3457
+  seeded_excursion: true
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    []
+  proposed_isolation_prerequisites: true
+  donor_admission_available: false
+- event: 19
+  channel: 353
+  network: 12
+  seed_earlier_row: 1995
+  origin_unix_seconds: 1771495698.5848656
+  class: isolated-admission-unavailable
+  affected:
+    - 1996
+    - 1997
+  operation_unavailable:
+    - 1989
+    - 2003
+  seeded_excursion: true
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    []
+  proposed_isolation_prerequisites: true
+  donor_admission_available: false
+- event: 20
+  channel: 371
+  network: 12
+  seed_earlier_row: 4179
+  origin_unix_seconds: 1771495716.4761934
+  class: no-resolved-excursion
+  affected:
+    - -1
+    - -1
+  operation_unavailable:
+    - 4173
+    - 4187
+  seeded_excursion: false
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    - 22
+    - 27
+  proposed_isolation_prerequisites: false
+  donor_admission_available: false
+- event: 21
+  channel: 394
+  network: 12
+  seed_earlier_row: 3997
+  origin_unix_seconds: 1771495714.9852495
+  class: isolated-admission-unavailable
+  affected:
+    - 3995
+    - 3998
+  operation_unavailable:
+    - 3991
+    - 4005
+  seeded_excursion: true
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    - 25
+    - 26
+    - 29
+  proposed_isolation_prerequisites: false
+  donor_admission_available: false
+- event: 22
+  channel: 394
+  network: 12
+  seed_earlier_row: 4179
+  origin_unix_seconds: 1771495716.4761934
+  class: no-resolved-excursion
+  affected:
+    - -1
+    - -1
+  operation_unavailable:
+    - 4173
+    - 4187
+  seeded_excursion: false
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    - 20
+    - 27
+  proposed_isolation_prerequisites: false
+  donor_admission_available: false
+- event: 23
+  channel: 394
+  network: 12
+  seed_earlier_row: 5951
+  origin_unix_seconds: 1771495730.9924176
+  class: no-resolved-excursion
+  affected:
+    - -1
+    - -1
+  operation_unavailable:
+    - 5945
+    - 5959
+  seeded_excursion: false
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    []
+  proposed_isolation_prerequisites: false
+  donor_admission_available: false
+- event: 24
+  channel: 400
+  network: 12
+  seed_earlier_row: 4200
+  origin_unix_seconds: 1771495716.6482255
+  class: no-resolved-excursion
+  affected:
+    - -1
+    - -1
+  operation_unavailable:
+    - 4194
+    - 4208
+  seeded_excursion: false
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    []
+  proposed_isolation_prerequisites: false
+  donor_admission_available: false
+- event: 25
+  channel: 414
+  network: 12
+  seed_earlier_row: 3995
+  origin_unix_seconds: 1771495714.9688656
+  class: isolated-admission-unavailable
+  affected:
+    - 3995
+    - 3996
+  operation_unavailable:
+    - 3989
+    - 4003
+  seeded_excursion: true
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    - 21
+    - 26
+    - 29
+  proposed_isolation_prerequisites: false
+  donor_admission_available: false
+- event: 26
+  channel: 416
+  network: 12
+  seed_earlier_row: 3997
+  origin_unix_seconds: 1771495714.9852495
+  class: no-resolved-excursion
+  affected:
+    - -1
+    - -1
+  operation_unavailable:
+    - 3991
+    - 4005
+  seeded_excursion: false
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    - 21
+    - 25
+    - 29
+  proposed_isolation_prerequisites: false
+  donor_admission_available: false
+- event: 27
+  channel: 416
+  network: 12
+  seed_earlier_row: 4179
+  origin_unix_seconds: 1771495716.4761934
+  class: no-resolved-excursion
+  affected:
+    - -1
+    - -1
+  operation_unavailable:
+    - 4173
+    - 4187
+  seeded_excursion: false
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    - 20
+    - 22
+  proposed_isolation_prerequisites: false
+  donor_admission_available: false
+- event: 28
+  channel: 416
+  network: 12
+  seed_earlier_row: 7053
+  origin_unix_seconds: 1771495740.0200014
+  class: isolated-admission-unavailable
+  affected:
+    - 7054
+    - 7055
+  operation_unavailable:
+    - 7047
+    - 7061
+  seeded_excursion: true
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: false
+  cohort_coincident_events:
+    - 30
+  proposed_isolation_prerequisites: false
+  donor_admission_available: false
+- event: 29
+  channel: 439
+  network: 12
+  seed_earlier_row: 3995
+  origin_unix_seconds: 1771495714.9688656
+  class: isolated-admission-unavailable
+  affected:
+    - 3995
+    - 3996
+  operation_unavailable:
+    - 3989
+    - 4003
+  seeded_excursion: true
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    - 21
+    - 25
+    - 26
+  proposed_isolation_prerequisites: false
+  donor_admission_available: false
+- event: 30
+  channel: 439
+  network: 12
+  seed_earlier_row: 7053
+  origin_unix_seconds: 1771495740.0200014
+  class: isolated-admission-unavailable
+  affected:
+    - 7054
+    - 7056
+  operation_unavailable:
+    - 7047
+    - 7061
+  seeded_excursion: true
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: false
+  cohort_coincident_events:
+    - 28
+  proposed_isolation_prerequisites: false
+  donor_admission_available: false
+- event: 31
+  channel: 440
+  network: 12
+  seed_earlier_row: 716
+  origin_unix_seconds: 1771495688.1072974
+  class: no-resolved-excursion
+  affected:
+    - -1
+    - -1
+  operation_unavailable:
+    - 710
+    - 724
+  seeded_excursion: false
+  recovered: true
+  background_available: true
+  source_outside: true
+  target_domain_available: true
+  cohort_coincident_events:
+    []
+  proposed_isolation_prerequisites: false
+  donor_admission_available: false

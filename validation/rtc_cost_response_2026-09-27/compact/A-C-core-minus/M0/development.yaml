@@ -1,0 +1,7 @@
+input:
+  path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-minus/inputs/map-request.json
+  sha256: f69e357f317f709e8ed52e1e479c89a7acb50843b5edae24d71087442316064c
+network_workers: 1
+output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-minus/M0/products
+schema: citlali-development-v1
+terminal: map

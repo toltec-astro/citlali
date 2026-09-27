@@ -1,0 +1,24 @@
+{
+  "status": "failed",
+  "selection": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_cost_response_2026-09-27/FAMILY-A-SELECTION.json",
+    "sha256": "f970f7829624c5e804b4350df49161bb9b8a36805946a2c473d73f905e2b4007"
+  },
+  "cells": [
+    {
+      "name": "A-REF-rep1",
+      "branch": "REF",
+      "rep": 1,
+      "status": "completed"
+    }
+  ],
+  "peak_disk_ceiling_bytes": 20000000000,
+  "resource_policy": {
+    "workloads": 1,
+    "network_workers": 2,
+    "feedback_workers": 1,
+    "numerical_threads": 1
+  },
+  "cache": "not flushed; first-use retained; preflight hashing can warm files",
+  "reason": "warmN5 numerical regression failed"
+}

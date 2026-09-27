@@ -1,0 +1,12 @@
+{
+  "native_cells": 7640626,
+  "shared_upstream_allowance": 1956000256,
+  "peak_ceiling_bytes": 20000000000,
+  "free_space_reserve_bytes": 2000000000,
+  "network_workers": 2,
+  "library_threads": 1,
+  "campaign_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927",
+  "campaign_retained_bytes": 540,
+  "metadata_reserve_bytes": 100000000,
+  "maximum_branch_workers": 1
+}

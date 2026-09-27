@@ -1,0 +1,35 @@
+{
+  "status": "completed",
+  "selection": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_cost_response_2026-09-27/FAMILY-B-SELECTION.json",
+    "sha256": "703baf0c5bf926a3447306ad869f91d9c2b66b5800a03b6d765be27cba69bd6a"
+  },
+  "cells": [
+    {
+      "name": "B-REF-rep1",
+      "branch": "REF",
+      "rep": 1,
+      "status": "completed"
+    },
+    {
+      "name": "B-REF-rep2",
+      "branch": "REF",
+      "rep": 2,
+      "status": "completed"
+    },
+    {
+      "name": "B-REF-rep3",
+      "branch": "REF",
+      "rep": 3,
+      "status": "completed"
+    }
+  ],
+  "peak_disk_ceiling_bytes": 20000000000,
+  "resource_policy": {
+    "workloads": 1,
+    "network_workers": 2,
+    "feedback_workers": 1,
+    "numerical_threads": 1
+  },
+  "cache": "not flushed; first-use retained; preflight hashing can warm files"
+}

@@ -30,5 +30,14 @@
   "last_recorded_model": "m5",
   "downstream": "ordinary-MAP BASE-POINT-v1, unchanged guard/noise",
   "promotion": "development only",
-  "rtc": "existing lowpass-only scientific RTC; B/C unselected pending baseline"
+  "rtc": "existing lowpass-only scientific RTC; B exact serialization retained; C deliberately unselected",
+  "validation": {
+    "record": "validation/rtc_cost_response_2026-09-27/ASSESSMENT.md",
+    "science_source_B": "a0f7345fc0c0501e34e877f91104c4a78e61daf3",
+    "trajectories": 9,
+    "feedback_applications": 45,
+    "extra_RTC_only": 1,
+    "end_to_end_speedup_established": false,
+    "next_owner_decision": "exact detector applicability/admission of historical fixed 11.0062558446 Hz, 1 Hz width, approximately 3 s notch"
+  }
 }

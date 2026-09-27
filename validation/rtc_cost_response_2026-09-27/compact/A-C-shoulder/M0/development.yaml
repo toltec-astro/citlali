@@ -1,0 +1,7 @@
+input:
+  path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-shoulder/inputs/map-request.json
+  sha256: 3be03613524acd638b70acabf67403ba7f3c9031e4ace111c7d3c6bb05286d4f
+network_workers: 1
+output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-shoulder/M0/products
+schema: citlali-development-v1
+terminal: map

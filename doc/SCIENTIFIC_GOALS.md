@@ -1,5 +1,19 @@
 # Scientific goals
 
+## RTC cost/source response measured — 2026-09-27
+
+The [RTC assessment](../validation/rtc_cost_response_2026-09-27/ASSESSMENT.md)
+supersedes the earlier RTC deferral for this bounded POINT observation. Keep the
+owner-selected warm rank-10/five-application endpoint for development. RTC earns
+its measured antialias work; the 11 Hz residual remains consequential. Equivalent
+serialization reduces CPU work, with no demonstrated whole-reduction speedup.
+Compact transfer loss is small; broader final aperture response remains about
+84%, with morphology and fitted-background terms retained. Conditional scales
+are not paired significance, and the approximately 5% final science aspiration
+is not a per-RTC threshold. Transient completeness and donor efficacy remain
+unestablished. Next: decide exact fixed-notch detector admission before proposing
+one bounded comparison. No further PTC/FRUIT optimization or science run starts.
+
 ## POINT latency/PCA comparison measured — 2026-09-27
 
 The [bounded comparison](../validation/point_speed_pca_2026-09-27/ASSESSMENT.md) keeps

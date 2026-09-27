@@ -1,0 +1,106 @@
+{
+  "status": "accepted",
+  "guard": {
+    "method": "POINT-EXPECTED-v1",
+    "status": "accepted",
+    "accepted": true,
+    "complete": true,
+    "cause": null,
+    "accepted_parameters": [
+      512.2482213757952,
+      4.1999560221730965,
+      7.365338627623163,
+      3.647787584273169,
+      4.083944739245475,
+      -2.242657348424834,
+      -7.735243180662752
+    ],
+    "pointing_correction": null,
+    "accepted_centroid_tangent_arcsec": [
+      4.1999560221730965,
+      7.365338627623163
+    ],
+    "expected_origin_tangent_arcsec": [
+      0.0,
+      0.0
+    ],
+    "fit_pixels": 1257,
+    "expected_origin_sky": {
+      "ra_deg": 176.7429079166667,
+      "dec_deg": 39.97619555555556,
+      "frame": "FK5",
+      "equinox": 2000.0
+    },
+    "sigma_A": 6.675667343193852,
+    "SNR_A": 76.73363501224424,
+    "diagnostic": {
+      "initial": [
+        492.2890769296367,
+        4.0,
+        6.0,
+        4.2466090014400955,
+        4.2466090014400955,
+        0.0,
+        -6.033938587916966
+      ],
+      "parameters": [
+        512.2482213757952,
+        4.1999560221730965,
+        7.365338627623163,
+        3.647787584273169,
+        4.083944739245475,
+        -2.242657348424834,
+        -7.735243180662752
+      ],
+      "status": 2,
+      "message": "`ftol` termination condition is satisfied.",
+      "converged": true,
+      "finite": true,
+      "nfev": 10,
+      "njev": 10,
+      "cost": 168487.65036323818,
+      "optimality": 0.1338128052128755,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "sigma_floor_arcsec": 1.5,
+      "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+      "centroid_radius_arcsec": 8.478669924448404
+    },
+    "optimizer_calls": 1,
+    "amplitude_sensitivity": {
+      "rank": 7,
+      "rank_tolerance": 1.2792276705524076e-10,
+      "singular_values": [
+        458.3237279571878,
+        339.6530822381246,
+        318.03101497824184,
+        303.3788103061477,
+        198.3172614593794,
+        34.10076943608669,
+        2.418680137350264
+      ],
+      "amplitude_null_projection": 7.287296122620481e-19,
+      "identifiability_tolerance": 2.7911006839076435e-11
+    },
+    "message": "Expected POINT source accepted."
+  },
+  "seconds": 33.224486667022575,
+  "initial_physical_inputs": 1,
+  "parent": {
+    "map_request": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-minus/inputs/map-request.json",
+      "sha256": "f69e357f317f709e8ed52e1e479c89a7acb50843b5edae24d71087442316064c"
+    },
+    "parent_plan": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-cost-response-20260927/A-C-core-minus/M0/products/a2000/plan.yaml",
+      "sha256": "3693e15a75c2f002506230c408c36b5ccc538d6081b47b2cdf7d0e74ae167814"
+    }
+  }
+}
