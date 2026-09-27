@@ -1,0 +1,12 @@
+{"epoch": 1790520422.9987369, "stage": "upstream", "bytes": 1517753069, "reserved": 0, "ceiling": 93443011968}
+{"epoch": 1790520431.568179, "stage": "M0", "bytes": 1581347393, "reserved": 0, "ceiling": 93443011968}
+{"epoch": 1790520440.800233, "stage": "run/BASE-POINT/REF/a2000/cycle-01/native", "bytes": 1658055807, "reserved": 0, "ceiling": 93443011968}
+{"epoch": 1790520449.510004, "stage": "run/BASE-POINT/REF/a2000/cycle-02/native", "bytes": 1679084954, "reserved": 0, "ceiling": 93443011968}
+{"epoch": 1790520458.297798, "stage": "run/BASE-POINT/REF/a2000/cycle-03/native", "bytes": 1700115329, "reserved": 0, "ceiling": 93443011968}
+{"epoch": 1790520467.528878, "stage": "run/BASE-POINT/REF/a2000/cycle-04/native", "bytes": 1721146041, "reserved": 0, "ceiling": 93443011968}
+{"epoch": 1790520476.3247712, "stage": "run/BASE-POINT/REF/a2000/cycle-05/native", "bytes": 1742176656, "reserved": 0, "ceiling": 93443011968}
+{"epoch": 1790520485.096349, "stage": "run/BASE-POINT/REF/a2000/cycle-06/native", "bytes": 1763207381, "reserved": 0, "ceiling": 93443011968}
+{"epoch": 1790520494.964672, "stage": "run/BASE-POINT/REF/a2000/cycle-07/native", "bytes": 1784238372, "reserved": 0, "ceiling": 93443011968}
+{"epoch": 1790520503.735299, "stage": "run/BASE-POINT/REF/a2000/cycle-08/native", "bytes": 1805269146, "reserved": 0, "ceiling": 93443011968}
+{"epoch": 1790520512.910662, "stage": "run/BASE-POINT/REF/a2000/cycle-09/native", "bytes": 1826299930, "reserved": 0, "ceiling": 93443011968}
+{"epoch": 1790520522.123562, "stage": "run/BASE-POINT/REF/a2000/cycle-10/native", "bytes": 1847330798, "reserved": 0, "ceiling": 93443011968}

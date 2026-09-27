@@ -1,0 +1,26 @@
+schema: citlali-forward-map-attempt-v1
+request_identity: sha256:aab53587afe9bf4fa91fe72415f4401bdd0b77e105f2cd69026bd1dac0250f2f
+owner_binding: sha256:219f6641b40a1cfc049eae24e320a14fe06f014bf804a87223a4b8772ea932aa
+MAP_authority: SCI-MAP-v0.2-r0.4
+source_revision: v2-ngc4449-memory-repair-187df04b-594-g08f81382d
+outcome: success
+FRUIT_executed: false
+upstream_science_reexecuted: false
+reached_stages:
+  - requested
+  - effective
+input_loading_seconds: 4.496394709
+array_lifecycle:
+  a2000:
+    - requested
+    - effective
+    - observation_resolved
+    - applied
+    - realized
+products:
+  a2000: 8d3e377b5f3723edf053ad577f976d1d19be720a7aa39b05030da1c8faa46a0e
+input_manifest_sha256: 415f9d7922f29760b57c57d7dc313b8d100451feae55598d96a2fbd148198fad
+lifecycle_scope: root request/effective only; independent five-stage lifecycle per array
+wall_seconds: 7.780314834
+cpu_seconds: 6.940904
+process_peak_rss_bytes: 530497536

@@ -1,0 +1,36 @@
+[
+  {
+    "network": 11,
+    "rows": 7821,
+    "first": 1771495682.2326953,
+    "last": 1771495746.2941353,
+    "elapsed_seconds": 64.06143999099731,
+    "sample_integration_seconds": 0.008192,
+    "duration_with_final_sample_seconds": 64.06963199099731,
+    "physical_runs": [
+      [
+        0,
+        7821
+      ]
+    ],
+    "native_time_sha256": "0fbd4064a2c3f410af28d7ed1a236be435d8e0c87b7b20ec44378724b2d3575a",
+    "scope": "network acquisition first-to-last native sample; not single-sample integration time"
+  },
+  {
+    "network": 12,
+    "rows": 7820,
+    "first": 1771495682.2377295,
+    "last": 1771495746.2909775,
+    "elapsed_seconds": 64.05324792861938,
+    "sample_integration_seconds": 0.008192,
+    "duration_with_final_sample_seconds": 64.06143992861938,
+    "physical_runs": [
+      [
+        0,
+        7820
+      ]
+    ],
+    "native_time_sha256": "115e18163004ff996f3a286dd98aa35e6683b9febc6ebc39dee0f2024dc9486b",
+    "scope": "network acquisition first-to-last native sample; not single-sample integration time"
+  }
+]

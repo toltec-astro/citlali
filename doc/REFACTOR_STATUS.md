@@ -1,15 +1,24 @@
 # Citlali Refactor Status
 
-## Bounded POINT latency/PCA comparison — active 2026-09-27
+## Bounded POINT latency/PCA comparison — measured 2026-09-27
 
-Owner authorized the [speed/PCA work order](../validation/point_speed_pca_2026-09-27/OWNER_DIRECTIVE.md)
-from completed 11b0c313c, on codex/point-speed-pca-20260927. Phase A adds monotonic
-timing and explicit N=0/1/3/5/10 limits under a new experimental identity. It must
-reproduce both retained control ranks and publish timing findings before warm-start
-or masked-covariance implementation. Maximum32 trajectories/258 feedback; two
-documented defect replacements only. No automatic stopping, RTC change, other
-observation/array, push, integration or production promotion. See the
-[preflight](../validation/point_speed_pca_2026-09-27/PREFLIGHT.md).
+The [owner-authorized comparison](../validation/point_speed_pca_2026-09-27/OWNER_DIRECTIVE.md)
+completed26 trajectories/198 feedback calls,20 raw parents and26 endpoints with no
+replacements. A science e28f6630f passed exact rank10/rank15 and shortened-prefix
+regressions. B science08f81382d passed all12 cells and full support checks.
+Recorded T10 median exits: current rank10 123.75s, warm145.80s, covariance163.63s.
+However, repeated whole-campaign storage scans grow with run order; wall times
+cannot establish intrinsic method speed ordering. Warm native fitting8.75→0.60s
+is promising but no end-to-end improvement is established. Phase C deliberately
+unselected. Current rank10 N5 completes in84.46s (single) with near-T10 compact
+and shoulder response; this is descriptive, not a new stopping rule.
+
+Keep the current rank10 reference. Next bounded recommendation: remove storage
+accounting/provenance overhead without scientific changes before a fresh matched
+latency comparison and subsequent independent-observation qualification. See
+[assessment](../validation/point_speed_pca_2026-09-27/ASSESSMENT.md). Final independent
+review and compact cleanup are the remaining closeout gates. No RTC change,
+new observations/arrays, automatic stopping, push or production promotion.
 
 ## Bounded PTC rank-response/noise comparison — completed 2026-09-26
 

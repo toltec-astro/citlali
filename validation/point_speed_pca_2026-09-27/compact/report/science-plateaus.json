@@ -1,0 +1,122 @@
+[
+  {
+    "family": "current10",
+    "quantity": "pointing",
+    "earliest_observed_N": 2,
+    "definition": "all later recorded values within0.25 own T10 conditional sigma; descriptive endpoint plateau only, not a stopping rule or truth test"
+  },
+  {
+    "family": "current10",
+    "quantity": "compact_peak",
+    "earliest_observed_N": 4,
+    "definition": "all later recorded values within0.25 own T10 conditional sigma; descriptive endpoint plateau only, not a stopping rule or truth test"
+  },
+  {
+    "family": "current10",
+    "quantity": "compact_template",
+    "earliest_observed_N": 5,
+    "definition": "all later recorded values within0.25 own T10 conditional sigma; descriptive endpoint plateau only, not a stopping rule or truth test"
+  },
+  {
+    "family": "current10",
+    "quantity": "widths",
+    "earliest_observed_N": 4,
+    "definition": "all later recorded values within0.25 own T10 conditional sigma; descriptive endpoint plateau only, not a stopping rule or truth test"
+  },
+  {
+    "family": "current10",
+    "quantity": "broader_aperture",
+    "earliest_observed_N": 4,
+    "definition": "all later recorded values within0.25 own T10 conditional sigma; descriptive endpoint plateau only, not a stopping rule or truth test"
+  },
+  {
+    "family": "current15",
+    "quantity": "pointing",
+    "earliest_observed_N": 4,
+    "definition": "all later recorded values within0.25 own T10 conditional sigma; descriptive endpoint plateau only, not a stopping rule or truth test"
+  },
+  {
+    "family": "current15",
+    "quantity": "compact_peak",
+    "earliest_observed_N": 5,
+    "definition": "all later recorded values within0.25 own T10 conditional sigma; descriptive endpoint plateau only, not a stopping rule or truth test"
+  },
+  {
+    "family": "current15",
+    "quantity": "compact_template",
+    "earliest_observed_N": 6,
+    "definition": "all later recorded values within0.25 own T10 conditional sigma; descriptive endpoint plateau only, not a stopping rule or truth test"
+  },
+  {
+    "family": "current15",
+    "quantity": "widths",
+    "earliest_observed_N": 5,
+    "definition": "all later recorded values within0.25 own T10 conditional sigma; descriptive endpoint plateau only, not a stopping rule or truth test"
+  },
+  {
+    "family": "current15",
+    "quantity": "broader_aperture",
+    "earliest_observed_N": 5,
+    "definition": "all later recorded values within0.25 own T10 conditional sigma; descriptive endpoint plateau only, not a stopping rule or truth test"
+  },
+  {
+    "family": "warm10",
+    "quantity": "pointing",
+    "earliest_observed_N": 3,
+    "definition": "all later recorded values within0.25 own T10 conditional sigma; descriptive endpoint plateau only, not a stopping rule or truth test"
+  },
+  {
+    "family": "warm10",
+    "quantity": "compact_peak",
+    "earliest_observed_N": 4,
+    "definition": "all later recorded values within0.25 own T10 conditional sigma; descriptive endpoint plateau only, not a stopping rule or truth test"
+  },
+  {
+    "family": "warm10",
+    "quantity": "compact_template",
+    "earliest_observed_N": 5,
+    "definition": "all later recorded values within0.25 own T10 conditional sigma; descriptive endpoint plateau only, not a stopping rule or truth test"
+  },
+  {
+    "family": "warm10",
+    "quantity": "widths",
+    "earliest_observed_N": 4,
+    "definition": "all later recorded values within0.25 own T10 conditional sigma; descriptive endpoint plateau only, not a stopping rule or truth test"
+  },
+  {
+    "family": "warm10",
+    "quantity": "broader_aperture",
+    "earliest_observed_N": 4,
+    "definition": "all later recorded values within0.25 own T10 conditional sigma; descriptive endpoint plateau only, not a stopping rule or truth test"
+  },
+  {
+    "family": "covariance10",
+    "quantity": "pointing",
+    "earliest_observed_N": 3,
+    "definition": "all later recorded values within0.25 own T10 conditional sigma; descriptive endpoint plateau only, not a stopping rule or truth test"
+  },
+  {
+    "family": "covariance10",
+    "quantity": "compact_peak",
+    "earliest_observed_N": 4,
+    "definition": "all later recorded values within0.25 own T10 conditional sigma; descriptive endpoint plateau only, not a stopping rule or truth test"
+  },
+  {
+    "family": "covariance10",
+    "quantity": "compact_template",
+    "earliest_observed_N": 5,
+    "definition": "all later recorded values within0.25 own T10 conditional sigma; descriptive endpoint plateau only, not a stopping rule or truth test"
+  },
+  {
+    "family": "covariance10",
+    "quantity": "widths",
+    "earliest_observed_N": 8,
+    "definition": "all later recorded values within0.25 own T10 conditional sigma; descriptive endpoint plateau only, not a stopping rule or truth test"
+  },
+  {
+    "family": "covariance10",
+    "quantity": "broader_aperture",
+    "earliest_observed_N": 4,
+    "definition": "all later recorded values within0.25 own T10 conditional sigma; descriptive endpoint plateau only, not a stopping rule or truth test"
+  }
+]

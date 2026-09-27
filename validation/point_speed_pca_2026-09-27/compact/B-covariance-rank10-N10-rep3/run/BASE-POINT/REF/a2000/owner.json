@@ -1,0 +1,51 @@
+{
+  "identity": "POINT-SPEED-PCA-v1",
+  "observation": 152430,
+  "outside_disk_no_feedback": true,
+  "direct_identical_operand_rejoin": true,
+  "gain": 1,
+  "nonzero_cycles": 10,
+  "policy": "BASE-POINT",
+  "source_method": "POINT-EXPECTED-v1",
+  "threshold": 3.0,
+  "prospective": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep3/freeze/prospective.json",
+    "sha256": "d04363d8147feef8f3c55f00f8a556ada02c6cb77ef50f6a0686ed791123eae6"
+  },
+  "parents": {
+    "a2000": {
+      "map_request": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep3/inputs/map-request.json",
+        "sha256": "8d7897459439b80501eaab69e50f40a3d8bd684cf879cfcda961eb9c53fed5d6"
+      },
+      "parent_plan": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep3/M0/products/a2000/plan.yaml",
+        "sha256": "23744acb4d878b9a497e7eb87fc953884a15709b1803e7647bbd796eec9a5552"
+      }
+    }
+  },
+  "injections": {
+    "a2000": {
+      "C-core-plus": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep3/freeze/shapes/C-core-plus.fits",
+        "sha256": "9969a524f3d9ac7306f2c0fc09aabb09a47f7a61fe2cac49ab83b430be48d607"
+      },
+      "C-core-minus": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep3/freeze/shapes/C-core-minus.fits",
+        "sha256": "978b48e01117b466cd54638b997896860447aa8819de0a3784e5d6a60debfb66"
+      },
+      "C-shoulder": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep3/freeze/shapes/C-shoulder.fits",
+        "sha256": "93cb0db7371e16a8c714ebef38b606ea2ae2aab997aa274fec41f969851d5c96"
+      }
+    }
+  },
+  "seeds": {
+    "a2000": {
+      "REF": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep3/run/BASE-POINT/REF/a2000/initial/candidate.fits",
+        "sha256": "48ce3e6936e3591e1aad7186a41cb77c9e67ae2647300b53e580c2fb64d2959d"
+      }
+    }
+  }
+}

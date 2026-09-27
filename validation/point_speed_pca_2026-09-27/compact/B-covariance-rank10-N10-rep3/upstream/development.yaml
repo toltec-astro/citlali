@@ -1,0 +1,10 @@
+input:
+  path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep3/inputs/observation.json
+  sha256: 2b657820a2c7fd92007737067c4be515ba6e2d4144d79e98766a6c95009a88b3
+network_workers: 2
+output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep3/upstream/products
+ptc:
+  method: masked-covariance-count-v1
+  rank: 10
+schema: citlali-development-v1
+terminal: ptc

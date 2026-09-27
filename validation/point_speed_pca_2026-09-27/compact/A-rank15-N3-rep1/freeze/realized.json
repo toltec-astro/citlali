@@ -1,0 +1,50 @@
+[
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank15-N3-rep1/freeze/a2000/BASE.json",
+    "sha256": "d35fbdae0aa28cddc049b249362562c6e1c7bada1ce4443de67d03fac9661076"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank15-N3-rep1/freeze/a2000/BASE.npz",
+    "sha256": "c68f63980783927daec47a425459ec5169cd768e54b0ae17cd334aef7f539be6"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank15-N3-rep1/freeze/a2000/C0.json",
+    "sha256": "dd21fc4e4a5725f1eb45cd61c4ca1324549d746cea17bbdbf67465a709401fda"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank15-N3-rep1/freeze/a2000/C0.npz",
+    "sha256": "9940393a6c7479797f2f91e1931b82131505ff90d88d6652cf0f8e5d4cdaabe0"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank15-N3-rep1/freeze/a2000/context.npz",
+    "sha256": "959fa7fcb38e081759772e753591f1ca7f1199a73a681020042ecde7a373b8a9"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank15-N3-rep1/freeze/a2000/continuation-sanity.json",
+    "sha256": "b2957c48b19b63dd9b623dacbf728ce8d18fbcd47c5ffb1dbaebe1063b00f19f"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank15-N3-rep1/freeze/a2000/geometry.json",
+    "sha256": "57d03155ca60606a92626611d7db77b9913ae0305610de78d8ee9337e8176276"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank15-N3-rep1/freeze/a2000/guard.json",
+    "sha256": "0f574a9f158fba4b392b7e26defaedeba418ce6115c3d31c0dbf0cc4a8842d0b"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank15-N3-rep1/freeze/a2000/measurement-geometry.json",
+    "sha256": "7dc3f57041d06367c03a6b9c8e900c8c2a9a799769f55ae6809231bd9904bbeb"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank15-N3-rep1/freeze/M0-measurement.json",
+    "sha256": "4f3eaf2b5b0ac738bea236711f88218eb0c7a9b9f46e560866f4e591b4c0f83f"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank15-N3-rep1/freeze/parents.json",
+    "sha256": "d1b52934eb789e66b0c55e98e63e5c11ba696d4997ec811484df7f6ebde3e9d9"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank15-N3-rep1/inputs/map-request.json",
+    "sha256": "0a928cb148b2f2f5889ef7bce9e8b331b80080dbd88ddc435855ad489803b264"
+  }
+]

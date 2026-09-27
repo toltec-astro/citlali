@@ -1,0 +1,38 @@
+{
+  "pass_": true,
+  "seconds": 12.015597291989252,
+  "denied_original_run_tree": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927",
+  "denied_protected_files": 31,
+  "positive_denial_control": true,
+  "machine_readable_science_records_exact": true,
+  "figure_count": 4,
+  "commands": [
+    {
+      "command": [
+        "/Users/gwilson/tolteca/bin/python",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/report_point_speed_science.py",
+        "--root",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/point_speed_pca_2026-09-27/compact",
+        "--retained",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/ptc_rank_response_2026-09-26/compact",
+        "--report-dir",
+        "/private/tmp/point-speed-report-check-ycbtdunm/report"
+      ],
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/Users/gwilson/tolteca/bin/python",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/plot_point_speed.py",
+        "--root",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/point_speed_pca_2026-09-27/compact",
+        "--figure-dir",
+        "/private/tmp/point-speed-report-check-ycbtdunm/figures"
+      ],
+      "returncode": 0,
+      "stderr": ""
+    }
+  ],
+  "scope": "saved map/measurement reporting only; no native processing or extra uncertainty endpoints; native basis diagnostics extracted and preserved before cleanup"
+}

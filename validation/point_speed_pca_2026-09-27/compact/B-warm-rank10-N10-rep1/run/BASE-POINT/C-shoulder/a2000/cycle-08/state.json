@@ -1,0 +1,24 @@
+{
+  "schema": "point-fruit-ready-state-v1",
+  "array": "a2000",
+  "cycle_index": 8,
+  "ready": true,
+  "candidate": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-warm-rank10-N10-rep1/run/BASE-POINT/C-shoulder/a2000/cycle-08/candidate.fits",
+    "sha256": "450006c57ee8ba334c147f7d23e4c03b47e7bb0e0d9259d75c1e25aebc1f48ca"
+  },
+  "total": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-warm-rank10-N10-rep1/run/BASE-POINT/C-shoulder/a2000/cycle-08/native/products/total.fits",
+    "sha256": "8c9cd36419ca998bfd06706ac73a20ad9f41378ed7d7d1a9cda0437a720d7d1d"
+  },
+  "receipt": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-warm-rank10-N10-rep1/run/BASE-POINT/C-shoulder/a2000/cycle-08/native/products/receipt.yaml",
+    "sha256": "615eca44b41933610f7a10fe5ffffe51660413dc2448af0741c499d2810e80fc"
+  },
+  "original_plan_sha256": "cbd9b0a428b6f56915d3fb1a18ba1b0ea03f53edb95697ebefae5d23db5a9e48",
+  "original_map_request_sha256": "aab53587afe9bf4fa91fe72415f4401bdd0b77e105f2cd69026bd1dac0250f2f",
+  "stop_reason": null,
+  "branch": "C-shoulder",
+  "policy": "BASE-POINT",
+  "owner_sha256": "7887db699676f5df20e1ea51c0333b151ff64716c5ad5785489d6310b6f21b1a"
+}

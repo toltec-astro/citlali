@@ -1,0 +1,10 @@
+{
+  "map_request": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank10-N0-rep1/inputs/map-request.json",
+    "sha256": "751e62140cf6c105995b57eaf53ddc12388fe4a139cdd4e1940b2b6be821d033"
+  },
+  "parent_plan": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank10-N0-rep1/M0/products/a2000/plan.yaml",
+    "sha256": "fb9552685cb7e871a7ff00f6e9bf6569b07157ab50e2a2dd112d75b1868f843b"
+  }
+}

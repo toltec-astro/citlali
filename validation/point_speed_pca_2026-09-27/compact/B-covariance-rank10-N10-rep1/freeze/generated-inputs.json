@@ -1,0 +1,30 @@
+[
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep1/inputs/ast-source-binding.json",
+    "sha256": "a8aacdd5c0a31daf634c73257261ca563d2041ea1b9e9137889dac911e0a05e1"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep1/inputs/effective-point.yaml",
+    "sha256": "2e763181dbd6c5999c5f0b7e1d555a9edd684acfa51c9a1b25cadab6ddf4902c"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep1/inputs/map-owner.json",
+    "sha256": "219f6641b40a1cfc049eae24e320a14fe06f014bf804a87223a4b8772ea932aa"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep1/inputs/network11-input.json",
+    "sha256": "b824b0258523d52265cd8c879d3d8c642b9258f96679be801ad9465d1492b877"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep1/inputs/network12-input.json",
+    "sha256": "879cd282b4f29252a910e20e6e0a30784dc1bdaa5344d90611349c76ddebe2b7"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep1/inputs/observation.json",
+    "sha256": "0289ea40f17ea29f05122f17fb7c0e1be3cbb9e49a38c1f4aa8fb98aa0ca1d2d"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep1/inputs/processing-request.json",
+    "sha256": "f93a97d04790f8341ff2cc3e28d98d98628ede5fe43ae69744cff3ffae664d63"
+  }
+]

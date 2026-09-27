@@ -1,0 +1,106 @@
+{
+  "status": "accepted",
+  "guard": {
+    "method": "POINT-EXPECTED-v1",
+    "status": "accepted",
+    "accepted": true,
+    "complete": true,
+    "cause": null,
+    "accepted_parameters": [
+      515.7163195065503,
+      4.318266174648301,
+      7.3016623365968645,
+      3.5043072502936234,
+      3.9860445662360404,
+      -2.297829582054954,
+      -7.941194308312008
+    ],
+    "pointing_correction": null,
+    "accepted_centroid_tangent_arcsec": [
+      4.318266174648301,
+      7.3016623365968645
+    ],
+    "expected_origin_tangent_arcsec": [
+      0.0,
+      0.0
+    ],
+    "fit_pixels": 1257,
+    "expected_origin_sky": {
+      "ra_deg": 176.7429079166667,
+      "dec_deg": 39.97619555555556,
+      "frame": "FK5",
+      "equinox": 2000.0
+    },
+    "sigma_A": 6.0127871534738695,
+    "SNR_A": 85.76992771290712,
+    "diagnostic": {
+      "initial": [
+        490.5769191915089,
+        4.0,
+        6.0,
+        4.2466090014400955,
+        4.2466090014400955,
+        0.0,
+        -6.1235636675764376
+      ],
+      "parameters": [
+        515.7163195065503,
+        4.318266174648301,
+        7.3016623365968645,
+        3.5043072502936234,
+        3.9860445662360404,
+        -2.297829582054954,
+        -7.941194308312008
+      ],
+      "status": 2,
+      "message": "`ftol` termination condition is satisfied.",
+      "converged": true,
+      "finite": true,
+      "nfev": 16,
+      "njev": 14,
+      "cost": 144561.9209681113,
+      "optimality": 0.06222328625111364,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "sigma_floor_arcsec": 1.5,
+      "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+      "centroid_radius_arcsec": 8.483023967476978
+    },
+    "optimizer_calls": 1,
+    "amplitude_sensitivity": {
+      "rank": 7,
+      "rank_tolerance": 1.2913566554976114e-10,
+      "singular_values": [
+        462.669320008071,
+        344.67580920623055,
+        319.31858169871845,
+        303.01967705864473,
+        220.6308109345897,
+        34.18678697549639,
+        2.3420510475081087
+      ],
+      "amplitude_null_projection": 3.4362021654800516e-18,
+      "identifiability_tolerance": 2.7911006839076435e-11
+    },
+    "message": "Expected POINT source accepted."
+  },
+  "seconds": 35.130906208010856,
+  "initial_physical_inputs": 1,
+  "parent": {
+    "map_request": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank15-N3-rep1/inputs/map-request.json",
+      "sha256": "0a928cb148b2f2f5889ef7bce9e8b331b80080dbd88ddc435855ad489803b264"
+    },
+    "parent_plan": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank15-N3-rep1/M0/products/a2000/plan.yaml",
+      "sha256": "b26670e21538e563ba3452c732c5eb721942c979e5d57dd8e8524ef858b964da"
+    }
+  }
+}

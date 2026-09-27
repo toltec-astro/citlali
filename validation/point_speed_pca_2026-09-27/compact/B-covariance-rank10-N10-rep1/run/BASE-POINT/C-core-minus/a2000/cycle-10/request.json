@@ -1,0 +1,32 @@
+{
+  "schema": "citlali-point-speed-pca-v1",
+  "method": "point-speed-pca-v1",
+  "mode": "reference",
+  "array": "a2000",
+  "branch": "C-core-minus",
+  "cycle_index": 10,
+  "candidate": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep1/run/BASE-POINT/C-core-minus/a2000/cycle-09/candidate.fits",
+    "sha256": "74424e3024623a0498fdc145c31d51dbb34360ee2ba25bc78ff55936e6c0644b"
+  },
+  "owner_binding": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep1/run/BASE-POINT/C-core-minus/a2000/owner.json",
+    "sha256": "e5a2f8e12ea47988ade49fb06ac364252e338137c3dad95113cbad6baafd7a0d"
+  },
+  "map_request": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep1/inputs/map-request.json",
+    "sha256": "b8f2bc0b93819820f309ef6c05f784425521c0760484049cf0ed6bf86c8fe76c"
+  },
+  "parent_plan": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep1/M0/products/a2000/plan.yaml",
+    "sha256": "549260a19232e51b265756c345312224e86cacc8d7c8f91841c8e5c4ec396251"
+  },
+  "previous_state": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep1/run/BASE-POINT/C-core-minus/a2000/cycle-09/state.json",
+    "sha256": "187864fbeb2a2b1d78603bb8f7ab6fceb48c4bb0e6db38cbe9c67b3438734307"
+  },
+  "injection": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep1/freeze/shapes/C-core-minus.fits",
+    "sha256": "978b48e01117b466cd54638b997896860447aa8819de0a3784e5d6a60debfb66"
+  }
+}

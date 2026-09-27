@@ -1,0 +1,117 @@
+{
+  "status": "completed",
+  "matrix": [
+    {
+      "name": "B-warm-rank10-N10-rep1",
+      "method": "warm-observed-als",
+      "rank": 10,
+      "branch": "REF",
+      "rep": 1,
+      "status": "completed"
+    },
+    {
+      "name": "B-warm-rank10-N10-rep2",
+      "method": "warm-observed-als",
+      "rank": 10,
+      "branch": "REF",
+      "rep": 2,
+      "status": "completed"
+    },
+    {
+      "name": "B-warm-rank10-N10-rep3",
+      "method": "warm-observed-als",
+      "rank": 10,
+      "branch": "REF",
+      "rep": 3,
+      "status": "completed"
+    },
+    {
+      "name": "B-warm-rank10-N10-rep1",
+      "method": "warm-observed-als",
+      "rank": 10,
+      "branch": "C-core-plus",
+      "status": "completed",
+      "completed_cycle": 10,
+      "reason": null,
+      "control_seconds": 134.73949291699682
+    },
+    {
+      "name": "B-warm-rank10-N10-rep1",
+      "method": "warm-observed-als",
+      "rank": 10,
+      "branch": "C-core-minus",
+      "status": "completed",
+      "completed_cycle": 10,
+      "reason": null,
+      "control_seconds": 133.1962863340159
+    },
+    {
+      "name": "B-warm-rank10-N10-rep1",
+      "method": "warm-observed-als",
+      "rank": 10,
+      "branch": "C-shoulder",
+      "status": "completed",
+      "completed_cycle": 10,
+      "reason": null,
+      "control_seconds": 134.0850177500106
+    },
+    {
+      "name": "B-covariance-rank10-N10-rep1",
+      "method": "masked-covariance-count-v1",
+      "rank": 10,
+      "branch": "REF",
+      "rep": 1,
+      "status": "completed"
+    },
+    {
+      "name": "B-covariance-rank10-N10-rep2",
+      "method": "masked-covariance-count-v1",
+      "rank": 10,
+      "branch": "REF",
+      "rep": 2,
+      "status": "completed"
+    },
+    {
+      "name": "B-covariance-rank10-N10-rep3",
+      "method": "masked-covariance-count-v1",
+      "rank": 10,
+      "branch": "REF",
+      "rep": 3,
+      "status": "completed"
+    },
+    {
+      "name": "B-covariance-rank10-N10-rep1",
+      "method": "masked-covariance-count-v1",
+      "rank": 10,
+      "branch": "C-core-plus",
+      "status": "completed",
+      "completed_cycle": 10,
+      "reason": null,
+      "control_seconds": 148.49151937500574
+    },
+    {
+      "name": "B-covariance-rank10-N10-rep1",
+      "method": "masked-covariance-count-v1",
+      "rank": 10,
+      "branch": "C-core-minus",
+      "status": "completed",
+      "completed_cycle": 10,
+      "reason": null,
+      "control_seconds": 152.1353700410109
+    },
+    {
+      "name": "B-covariance-rank10-N10-rep1",
+      "method": "masked-covariance-count-v1",
+      "rank": 10,
+      "branch": "C-shoulder",
+      "status": "completed",
+      "completed_cycle": 10,
+      "reason": null,
+      "control_seconds": 150.7100932500034
+    }
+  ],
+  "phase_a_report": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/report/PHASE-A.md",
+    "sha256": "d0962c3e33601ce4da484f701526a217045eea825ed5f4cad70414f0154b438f"
+  }
+}

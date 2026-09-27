@@ -1,0 +1,8 @@
+{
+  "status": "deliberately_unselected",
+  "phase": "C",
+  "reason": "No demonstrated useful end-to-end speed/quality advantage at rank10. Recorded wall ranges do not overlap the faster control, but growing campaign-wide storage-accounting scans confound method attribution; no adjusted raw-to-result latency is asserted. Warm native fitting is faster with near-control response; covariance changes shape/extended brightness and offers mixed conditional uncertainties. Additional rank15 science would not resolve the timing confound.",
+  "additional_trajectories": 0,
+  "additional_feedback": 0,
+  "next_bounded_action": "Repair and independently validate constant-cost storage accounting/provenance overhead without changing scientific operators, then design a fresh matched timing comparison before independent-observation qualification."
+}

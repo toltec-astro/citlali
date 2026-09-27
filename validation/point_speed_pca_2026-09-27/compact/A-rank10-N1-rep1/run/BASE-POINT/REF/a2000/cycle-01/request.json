@@ -1,0 +1,28 @@
+{
+  "schema": "citlali-point-speed-pca-v1",
+  "method": "point-speed-pca-v1",
+  "mode": "reference",
+  "array": "a2000",
+  "branch": "REF",
+  "cycle_index": 1,
+  "candidate": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank10-N1-rep1/run/BASE-POINT/REF/a2000/initial/candidate.fits",
+    "sha256": "91c10d8d3321534cafc8605d5a32928cc23e18e6dfc028f044ee5279899ae115"
+  },
+  "owner_binding": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank10-N1-rep1/run/BASE-POINT/REF/a2000/owner.json",
+    "sha256": "fdb02f4d75efe0291dfb5bda6e03032922f63af0c51e69dfec8d005b613014a8"
+  },
+  "map_request": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank10-N1-rep1/inputs/map-request.json",
+    "sha256": "1ada8131380970f6847a44c2be185cb57c2fc6ee1823ca9d6dc57028177dd615"
+  },
+  "parent_plan": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank10-N1-rep1/M0/products/a2000/plan.yaml",
+    "sha256": "337d89b7677c214d67837420a804b21d1100e657abc8e717fc7c6a851097f134"
+  },
+  "previous_state": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank10-N1-rep1/run/BASE-POINT/REF/a2000/initial/state.json",
+    "sha256": "caefd8b34820cddc133c535d8944b3a852922588d6e189b3cbc9fc75837374d5"
+  }
+}

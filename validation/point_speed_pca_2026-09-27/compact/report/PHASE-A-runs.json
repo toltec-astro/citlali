@@ -1,0 +1,1488 @@
+[
+  {
+    "name": "A-rank10-N10-rep1",
+    "rank": 10,
+    "N": 10,
+    "rep": 1,
+    "status": "completed",
+    "launch": {
+      "command": [
+        "/Users/gwilson/tolteca/bin/python",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_pipeline.py",
+        "speed-once",
+        "--output",
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank10-N10-rep1",
+        "--binary",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali"
+      ],
+      "cache": "first measured use; cache not flushed; preflight hashing may warm inputs",
+      "policy": {
+        "independent_workloads": 1,
+        "network_workers": 2,
+        "feedback_segment_workers": 1,
+        "numeric_threads": 1
+      },
+      "preflight_review": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/PHASE-A-REVIEW.json",
+        "sha256": "8e4e9ac18c58d4297ca41ec563504cbb33de3c249ba12d60bfeea7202b026c60"
+      },
+      "scope": "POINT152430 a2000 networks11/12 on local Mac; not full instrument or Unity",
+      "process_startup_attempts": {
+        "outer_python": 1,
+        "git_revision": 1,
+        "git_status": 1,
+        "validation_version": 1,
+        "native_version": 12,
+        "native_processing": 12,
+        "scope": "instrumented explicit attempts, including failures; no inference from planned N"
+      },
+      "status": "completed",
+      "exit_code": 0,
+      "start_monotonic_ns": 256446630557416,
+      "exit_seconds": 119.454311167,
+      "analysis_complete_seconds": 119.341732834,
+      "readiness": [
+        {
+          "cycle": 0,
+          "status": "accepted",
+          "published_seconds": 31.783592667,
+          "caller_observed_seconds": 31.799882042
+        },
+        {
+          "cycle": 1,
+          "status": "accepted",
+          "published_seconds": 40.359220625,
+          "caller_observed_seconds": 40.39940375
+        },
+        {
+          "cycle": 2,
+          "status": "accepted",
+          "published_seconds": 48.960025459,
+          "caller_observed_seconds": 49.0267315
+        },
+        {
+          "cycle": 3,
+          "status": "accepted",
+          "published_seconds": 57.735090792,
+          "caller_observed_seconds": 57.737668292
+        },
+        {
+          "cycle": 4,
+          "status": "accepted",
+          "published_seconds": 66.355210375,
+          "caller_observed_seconds": 66.42293675
+        },
+        {
+          "cycle": 5,
+          "status": "accepted",
+          "published_seconds": 75.475455459,
+          "caller_observed_seconds": 75.533807792
+        },
+        {
+          "cycle": 6,
+          "status": "accepted",
+          "published_seconds": 84.077856042,
+          "caller_observed_seconds": 84.118599167
+        },
+        {
+          "cycle": 7,
+          "status": "accepted",
+          "published_seconds": 92.753358709,
+          "caller_observed_seconds": 92.787339709
+        },
+        {
+          "cycle": 8,
+          "status": "accepted",
+          "published_seconds": 101.45381725,
+          "caller_observed_seconds": 101.469248334
+        },
+        {
+          "cycle": 9,
+          "status": "accepted",
+          "published_seconds": 110.061176917,
+          "caller_observed_seconds": 110.115597834
+        },
+        {
+          "cycle": 10,
+          "status": "accepted",
+          "published_seconds": 119.237218,
+          "caller_observed_seconds": 119.268261292
+        }
+      ],
+      "aggregate_tree_sampled_RSS": 1702248448,
+      "sampling_interval_seconds": 0.05,
+      "sampled_process_count": 15,
+      "cpu_seconds": {
+        "user": 104.204569,
+        "system": 8.153647999999999
+      }
+    },
+    "python_inclusive_spans": {
+      "source_fit_measurement": 0.167519167,
+      "source_measurements": 0.003290083,
+      "load_noise_context": 0.05015425,
+      "trajectory_including_endpoint": 87.622503791,
+      "raw_parent_PTC_MAP_initial_guard_noise": 30.099620334,
+      "feedback_candidate_publication": 0.129764709,
+      "conditional_endpoint_including_io": 0.058923125,
+      "cycle_cleanup": 0.577118416,
+      "environment_input_verification": 0.538493542,
+      "initial_noise_guard_context_publication": 0.116451167,
+      "native_invocation_including_reservation_hashing_publication": 114.729172667
+    },
+    "regression": true
+  },
+  {
+    "name": "A-rank10-N10-rep2",
+    "rank": 10,
+    "N": 10,
+    "rep": 2,
+    "status": "completed",
+    "launch": {
+      "command": [
+        "/Users/gwilson/tolteca/bin/python",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_pipeline.py",
+        "speed-once",
+        "--output",
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank10-N10-rep2",
+        "--binary",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali"
+      ],
+      "cache": "warm OS cache permitted; fresh scientific state",
+      "policy": {
+        "independent_workloads": 1,
+        "network_workers": 2,
+        "feedback_segment_workers": 1,
+        "numeric_threads": 1
+      },
+      "preflight_review": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/PHASE-A-REVIEW.json",
+        "sha256": "8e4e9ac18c58d4297ca41ec563504cbb33de3c249ba12d60bfeea7202b026c60"
+      },
+      "scope": "POINT152430 a2000 networks11/12 on local Mac; not full instrument or Unity",
+      "process_startup_attempts": {
+        "outer_python": 1,
+        "git_revision": 1,
+        "git_status": 1,
+        "validation_version": 1,
+        "native_version": 12,
+        "native_processing": 12,
+        "scope": "instrumented explicit attempts, including failures; no inference from planned N"
+      },
+      "status": "completed",
+      "exit_code": 0,
+      "start_monotonic_ns": 256567066466208,
+      "exit_seconds": 123.751234917,
+      "analysis_complete_seconds": 123.644914,
+      "readiness": [
+        {
+          "cycle": 0,
+          "status": "accepted",
+          "published_seconds": 33.067987042,
+          "caller_observed_seconds": 33.06791625
+        },
+        {
+          "cycle": 1,
+          "status": "accepted",
+          "published_seconds": 42.27027825,
+          "caller_observed_seconds": 42.281815333
+        },
+        {
+          "cycle": 2,
+          "status": "accepted",
+          "published_seconds": 51.01445175,
+          "caller_observed_seconds": 51.035559292
+        },
+        {
+          "cycle": 3,
+          "status": "accepted",
+          "published_seconds": 59.757512583,
+          "caller_observed_seconds": 59.812671542
+        },
+        {
+          "cycle": 4,
+          "status": "accepted",
+          "published_seconds": 69.046233667,
+          "caller_observed_seconds": 69.079954333
+        },
+        {
+          "cycle": 5,
+          "status": "accepted",
+          "published_seconds": 77.834682292,
+          "caller_observed_seconds": 77.874676542
+        },
+        {
+          "cycle": 6,
+          "status": "accepted",
+          "published_seconds": 86.63580925,
+          "caller_observed_seconds": 86.695872625
+        },
+        {
+          "cycle": 7,
+          "status": "accepted",
+          "published_seconds": 96.447127583,
+          "caller_observed_seconds": 96.483490208
+        },
+        {
+          "cycle": 8,
+          "status": "accepted",
+          "published_seconds": 105.171142542,
+          "caller_observed_seconds": 105.199632458
+        },
+        {
+          "cycle": 9,
+          "status": "accepted",
+          "published_seconds": 114.359037542,
+          "caller_observed_seconds": 114.42097775
+        },
+        {
+          "cycle": 10,
+          "status": "accepted",
+          "published_seconds": 123.577157917,
+          "caller_observed_seconds": 123.617795417
+        }
+      ],
+      "aggregate_tree_sampled_RSS": 1701494784,
+      "sampling_interval_seconds": 0.05,
+      "sampled_process_count": 15,
+      "cpu_seconds": {
+        "user": 107.61515000000001,
+        "system": 9.369764
+      }
+    },
+    "python_inclusive_spans": {
+      "source_fit_measurement": 0.117297543,
+      "source_measurements": 0.003657748,
+      "load_noise_context": 0.052711416999999997,
+      "trajectory_including_endpoint": 90.653011458,
+      "raw_parent_PTC_MAP_initial_guard_noise": 31.45550575,
+      "feedback_candidate_publication": 0.134925043,
+      "conditional_endpoint_including_io": 0.047272916,
+      "cycle_cleanup": 0.537156793,
+      "environment_input_verification": 0.400036917,
+      "initial_noise_guard_context_publication": 0.116437417,
+      "native_invocation_including_reservation_hashing_publication": 119.598892167
+    },
+    "regression": true
+  },
+  {
+    "name": "A-rank10-N10-rep3",
+    "rank": 10,
+    "N": 10,
+    "rep": 3,
+    "status": "completed",
+    "launch": {
+      "command": [
+        "/Users/gwilson/tolteca/bin/python",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_pipeline.py",
+        "speed-once",
+        "--output",
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank10-N10-rep3",
+        "--binary",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali"
+      ],
+      "cache": "warm OS cache permitted; fresh scientific state",
+      "policy": {
+        "independent_workloads": 1,
+        "network_workers": 2,
+        "feedback_segment_workers": 1,
+        "numeric_threads": 1
+      },
+      "preflight_review": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/PHASE-A-REVIEW.json",
+        "sha256": "8e4e9ac18c58d4297ca41ec563504cbb33de3c249ba12d60bfeea7202b026c60"
+      },
+      "scope": "POINT152430 a2000 networks11/12 on local Mac; not full instrument or Unity",
+      "process_startup_attempts": {
+        "outer_python": 1,
+        "git_revision": 1,
+        "git_status": 1,
+        "validation_version": 1,
+        "native_version": 12,
+        "native_processing": 12,
+        "scope": "instrumented explicit attempts, including failures; no inference from planned N"
+      },
+      "status": "completed",
+      "exit_code": 0,
+      "start_monotonic_ns": 256691623883625,
+      "exit_seconds": 129.2076975,
+      "analysis_complete_seconds": 129.065602291,
+      "readiness": [
+        {
+          "cycle": 0,
+          "status": "accepted",
+          "published_seconds": 36.890644291,
+          "caller_observed_seconds": 36.93185725
+        },
+        {
+          "cycle": 1,
+          "status": "accepted",
+          "published_seconds": 46.349778875,
+          "caller_observed_seconds": 46.402013791
+        },
+        {
+          "cycle": 2,
+          "status": "accepted",
+          "published_seconds": 55.317887958,
+          "caller_observed_seconds": 55.312016958
+        },
+        {
+          "cycle": 3,
+          "status": "accepted",
+          "published_seconds": 64.354607083,
+          "caller_observed_seconds": 64.391209458
+        },
+        {
+          "cycle": 4,
+          "status": "accepted",
+          "published_seconds": 73.335668333,
+          "caller_observed_seconds": 73.384396833
+        },
+        {
+          "cycle": 5,
+          "status": "accepted",
+          "published_seconds": 82.826914625,
+          "caller_observed_seconds": 82.88873475
+        },
+        {
+          "cycle": 6,
+          "status": "accepted",
+          "published_seconds": 92.339101625,
+          "caller_observed_seconds": 92.349183666
+        },
+        {
+          "cycle": 7,
+          "status": "accepted",
+          "published_seconds": 101.375994625,
+          "caller_observed_seconds": 101.399415416
+        },
+        {
+          "cycle": 8,
+          "status": "accepted",
+          "published_seconds": 110.909958208,
+          "caller_observed_seconds": 110.917136875
+        },
+        {
+          "cycle": 9,
+          "status": "accepted",
+          "published_seconds": 119.926036625,
+          "caller_observed_seconds": 119.954728375
+        },
+        {
+          "cycle": 10,
+          "status": "accepted",
+          "published_seconds": 128.9635585,
+          "caller_observed_seconds": 128.997884666
+        }
+      ],
+      "aggregate_tree_sampled_RSS": 1700511744,
+      "sampling_interval_seconds": 0.05,
+      "sampled_process_count": 14,
+      "cpu_seconds": {
+        "user": 107.27084299999999,
+        "system": 10.674485
+      }
+    },
+    "python_inclusive_spans": {
+      "source_fit_measurement": 0.173298834,
+      "source_measurements": 0.003321957,
+      "load_noise_context": 0.056780792,
+      "trajectory_including_endpoint": 92.245131459,
+      "raw_parent_PTC_MAP_initial_guard_noise": 32.329236125,
+      "feedback_candidate_publication": 0.131172044,
+      "conditional_endpoint_including_io": 0.047778541,
+      "cycle_cleanup": 0.57788125,
+      "environment_input_verification": 0.390852333,
+      "initial_noise_guard_context_publication": 0.154793458,
+      "native_invocation_including_reservation_hashing_publication": 121.690643999
+    },
+    "regression": true
+  },
+  {
+    "name": "A-rank10-N0-rep1",
+    "rank": 10,
+    "N": 0,
+    "rep": 1,
+    "status": "completed",
+    "launch": {
+      "command": [
+        "/Users/gwilson/tolteca/bin/python",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_pipeline.py",
+        "speed-once",
+        "--output",
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank10-N0-rep1",
+        "--binary",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali"
+      ],
+      "cache": "warm OS cache permitted; fresh scientific state",
+      "policy": {
+        "independent_workloads": 1,
+        "network_workers": 2,
+        "feedback_segment_workers": 1,
+        "numeric_threads": 1
+      },
+      "preflight_review": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/PHASE-A-REVIEW.json",
+        "sha256": "8e4e9ac18c58d4297ca41ec563504cbb33de3c249ba12d60bfeea7202b026c60"
+      },
+      "scope": "POINT152430 a2000 networks11/12 on local Mac; not full instrument or Unity",
+      "process_startup_attempts": {
+        "outer_python": 1,
+        "git_revision": 1,
+        "git_status": 1,
+        "validation_version": 1,
+        "native_version": 2,
+        "native_processing": 2,
+        "scope": "instrumented explicit attempts, including failures; no inference from planned N"
+      },
+      "status": "completed",
+      "exit_code": 0,
+      "start_monotonic_ns": 256821546390291,
+      "exit_seconds": 34.116503875,
+      "analysis_complete_seconds": 33.975350834,
+      "readiness": [
+        {
+          "cycle": 0,
+          "status": "accepted",
+          "published_seconds": 33.899016667,
+          "caller_observed_seconds": 33.905889709
+        }
+      ],
+      "aggregate_tree_sampled_RSS": 1701150720,
+      "sampling_interval_seconds": 0.05,
+      "sampled_process_count": 4,
+      "cpu_seconds": {
+        "user": 34.530208000000016,
+        "system": 3.9544020000000017
+      }
+    },
+    "python_inclusive_spans": {
+      "source_measurements": 0.000559583,
+      "load_noise_context": 0.063582584,
+      "trajectory_including_endpoint": 0.152778708,
+      "raw_parent_PTC_MAP_initial_guard_noise": 32.231757708,
+      "feedback_candidate_publication": 0.024678791,
+      "conditional_endpoint_including_io": 0.0425655,
+      "environment_input_verification": 0.401355916,
+      "initial_noise_guard_context_publication": 0.12922425,
+      "native_invocation_including_reservation_hashing_publication": 31.974554333999997
+    },
+    "regression": true
+  },
+  {
+    "name": "A-rank10-N1-rep1",
+    "rank": 10,
+    "N": 1,
+    "rep": 1,
+    "status": "completed",
+    "launch": {
+      "command": [
+        "/Users/gwilson/tolteca/bin/python",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_pipeline.py",
+        "speed-once",
+        "--output",
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank10-N1-rep1",
+        "--binary",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali"
+      ],
+      "cache": "warm OS cache permitted; fresh scientific state",
+      "policy": {
+        "independent_workloads": 1,
+        "network_workers": 2,
+        "feedback_segment_workers": 1,
+        "numeric_threads": 1
+      },
+      "preflight_review": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/PHASE-A-REVIEW.json",
+        "sha256": "8e4e9ac18c58d4297ca41ec563504cbb33de3c249ba12d60bfeea7202b026c60"
+      },
+      "scope": "POINT152430 a2000 networks11/12 on local Mac; not full instrument or Unity",
+      "process_startup_attempts": {
+        "outer_python": 1,
+        "git_revision": 1,
+        "git_status": 1,
+        "validation_version": 1,
+        "native_version": 3,
+        "native_processing": 3,
+        "scope": "instrumented explicit attempts, including failures; no inference from planned N"
+      },
+      "status": "completed",
+      "exit_code": 0,
+      "start_monotonic_ns": 256856253123791,
+      "exit_seconds": 41.675996,
+      "analysis_complete_seconds": 41.568174292,
+      "readiness": [
+        {
+          "cycle": 0,
+          "status": "accepted",
+          "published_seconds": 32.19164825,
+          "caller_observed_seconds": 32.207739834
+        },
+        {
+          "cycle": 1,
+          "status": "accepted",
+          "published_seconds": 41.488770209,
+          "caller_observed_seconds": 41.543006
+        }
+      ],
+      "aggregate_tree_sampled_RSS": 1700495360,
+      "sampling_interval_seconds": 0.05,
+      "sampled_process_count": 5,
+      "cpu_seconds": {
+        "user": 41.69663200000002,
+        "system": 4.811931000000001
+      }
+    },
+    "python_inclusive_spans": {
+      "source_fit_measurement": 0.013649833,
+      "source_measurements": 0.0006809159999999999,
+      "load_noise_context": 0.048275417,
+      "trajectory_including_endpoint": 9.450222167,
+      "raw_parent_PTC_MAP_initial_guard_noise": 30.47157725,
+      "feedback_candidate_publication": 0.030610834,
+      "conditional_endpoint_including_io": 0.043630542,
+      "cycle_cleanup": 0.053781542,
+      "environment_input_verification": 0.402040417,
+      "initial_noise_guard_context_publication": 0.112672708,
+      "native_invocation_including_reservation_hashing_publication": 39.295224667
+    },
+    "regression": true
+  },
+  {
+    "name": "A-rank10-N3-rep1",
+    "rank": 10,
+    "N": 3,
+    "rep": 1,
+    "status": "completed",
+    "launch": {
+      "command": [
+        "/Users/gwilson/tolteca/bin/python",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_pipeline.py",
+        "speed-once",
+        "--output",
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank10-N3-rep1",
+        "--binary",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali"
+      ],
+      "cache": "warm OS cache permitted; fresh scientific state",
+      "policy": {
+        "independent_workloads": 1,
+        "network_workers": 2,
+        "feedback_segment_workers": 1,
+        "numeric_threads": 1
+      },
+      "preflight_review": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/PHASE-A-REVIEW.json",
+        "sha256": "8e4e9ac18c58d4297ca41ec563504cbb33de3c249ba12d60bfeea7202b026c60"
+      },
+      "scope": "POINT152430 a2000 networks11/12 on local Mac; not full instrument or Unity",
+      "process_startup_attempts": {
+        "outer_python": 1,
+        "git_revision": 1,
+        "git_status": 1,
+        "validation_version": 1,
+        "native_version": 5,
+        "native_processing": 5,
+        "scope": "instrumented explicit attempts, including failures; no inference from planned N"
+      },
+      "status": "completed",
+      "exit_code": 0,
+      "start_monotonic_ns": 256898500673333,
+      "exit_seconds": 64.416958333,
+      "analysis_complete_seconds": 64.284529125,
+      "readiness": [
+        {
+          "cycle": 0,
+          "status": "accepted",
+          "published_seconds": 35.9098655,
+          "caller_observed_seconds": 35.967622042
+        },
+        {
+          "cycle": 1,
+          "status": "accepted",
+          "published_seconds": 45.31343325,
+          "caller_observed_seconds": 45.350544708
+        },
+        {
+          "cycle": 2,
+          "status": "accepted",
+          "published_seconds": 54.75166275,
+          "caller_observed_seconds": 54.769566
+        },
+        {
+          "cycle": 3,
+          "status": "accepted",
+          "published_seconds": 64.202948542,
+          "caller_observed_seconds": 64.21073825
+        }
+      ],
+      "aggregate_tree_sampled_RSS": 1700560896,
+      "sampling_interval_seconds": 0.05,
+      "sampled_process_count": 7,
+      "cpu_seconds": {
+        "user": 56.33453700000001,
+        "system": 6.863842999999996
+      }
+    },
+    "python_inclusive_spans": {
+      "source_fit_measurement": 0.050115209,
+      "source_measurements": 0.001212335,
+      "load_noise_context": 0.056397208000000004,
+      "trajectory_including_endpoint": 28.449590167,
+      "raw_parent_PTC_MAP_initial_guard_noise": 34.280093792,
+      "feedback_candidate_publication": 0.058541332,
+      "conditional_endpoint_including_io": 0.042102666,
+      "cycle_cleanup": 0.174746001,
+      "environment_input_verification": 0.413820959,
+      "initial_noise_guard_context_publication": 0.115856125,
+      "native_invocation_including_reservation_hashing_publication": 61.619103167
+    },
+    "regression": true
+  },
+  {
+    "name": "A-rank10-N5-rep1",
+    "rank": 10,
+    "N": 5,
+    "rep": 1,
+    "status": "completed",
+    "launch": {
+      "command": [
+        "/Users/gwilson/tolteca/bin/python",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_pipeline.py",
+        "speed-once",
+        "--output",
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank10-N5-rep1",
+        "--binary",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali"
+      ],
+      "cache": "warm OS cache permitted; fresh scientific state",
+      "policy": {
+        "independent_workloads": 1,
+        "network_workers": 2,
+        "feedback_segment_workers": 1,
+        "numeric_threads": 1
+      },
+      "preflight_review": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/PHASE-A-REVIEW.json",
+        "sha256": "8e4e9ac18c58d4297ca41ec563504cbb33de3c249ba12d60bfeea7202b026c60"
+      },
+      "scope": "POINT152430 a2000 networks11/12 on local Mac; not full instrument or Unity",
+      "process_startup_attempts": {
+        "outer_python": 1,
+        "git_revision": 1,
+        "git_status": 1,
+        "validation_version": 1,
+        "native_version": 7,
+        "native_processing": 7,
+        "scope": "instrumented explicit attempts, including failures; no inference from planned N"
+      },
+      "status": "completed",
+      "exit_code": 0,
+      "start_monotonic_ns": 256963478505458,
+      "exit_seconds": 84.459122625,
+      "analysis_complete_seconds": 84.360934667,
+      "readiness": [
+        {
+          "cycle": 0,
+          "status": "accepted",
+          "published_seconds": 36.264765833,
+          "caller_observed_seconds": 36.288360875
+        },
+        {
+          "cycle": 1,
+          "status": "accepted",
+          "published_seconds": 45.832584125,
+          "caller_observed_seconds": 45.84473075
+        },
+        {
+          "cycle": 2,
+          "status": "accepted",
+          "published_seconds": 55.408006792,
+          "caller_observed_seconds": 55.437888542
+        },
+        {
+          "cycle": 3,
+          "status": "accepted",
+          "published_seconds": 65.000024,
+          "caller_observed_seconds": 65.036678875
+        },
+        {
+          "cycle": 4,
+          "status": "accepted",
+          "published_seconds": 74.683536833,
+          "caller_observed_seconds": 74.741670125
+        },
+        {
+          "cycle": 5,
+          "status": "accepted",
+          "published_seconds": 84.273053292,
+          "caller_observed_seconds": 84.321658292
+        }
+      ],
+      "aggregate_tree_sampled_RSS": 1699692544,
+      "sampling_interval_seconds": 0.05,
+      "sampled_process_count": 9,
+      "cpu_seconds": {
+        "user": 71.08539599999995,
+        "system": 9.308550000000004
+      }
+    },
+    "python_inclusive_spans": {
+      "source_fit_measurement": 0.089631209,
+      "source_measurements": 0.001810209,
+      "load_noise_context": 0.055698167,
+      "trajectory_including_endpoint": 48.174225083,
+      "raw_parent_PTC_MAP_initial_guard_noise": 34.619549875,
+      "feedback_candidate_publication": 0.0774625,
+      "conditional_endpoint_including_io": 0.043663542,
+      "cycle_cleanup": 0.287612959,
+      "environment_input_verification": 0.403628166,
+      "initial_noise_guard_context_publication": 0.119434375,
+      "native_invocation_including_reservation_hashing_publication": 81.159870375
+    },
+    "regression": true
+  },
+  {
+    "name": "A-rank15-N10-rep1",
+    "rank": 15,
+    "N": 10,
+    "rep": 1,
+    "status": "completed",
+    "launch": {
+      "command": [
+        "/Users/gwilson/tolteca/bin/python",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_pipeline.py",
+        "speed-once",
+        "--output",
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank15-N10-rep1",
+        "--binary",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali"
+      ],
+      "cache": "warm OS cache permitted; fresh scientific state",
+      "policy": {
+        "independent_workloads": 1,
+        "network_workers": 2,
+        "feedback_segment_workers": 1,
+        "numeric_threads": 1
+      },
+      "preflight_review": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/PHASE-A-REVIEW.json",
+        "sha256": "8e4e9ac18c58d4297ca41ec563504cbb33de3c249ba12d60bfeea7202b026c60"
+      },
+      "scope": "POINT152430 a2000 networks11/12 on local Mac; not full instrument or Unity",
+      "process_startup_attempts": {
+        "outer_python": 1,
+        "git_revision": 1,
+        "git_status": 1,
+        "validation_version": 1,
+        "native_version": 12,
+        "native_processing": 12,
+        "scope": "instrumented explicit attempts, including failures; no inference from planned N"
+      },
+      "status": "completed",
+      "exit_code": 0,
+      "start_monotonic_ns": 257048516442291,
+      "exit_seconds": 135.226638,
+      "analysis_complete_seconds": 135.094382042,
+      "readiness": [
+        {
+          "cycle": 0,
+          "status": "accepted",
+          "published_seconds": 35.113425,
+          "caller_observed_seconds": 35.124792917
+        },
+        {
+          "cycle": 1,
+          "status": "accepted",
+          "published_seconds": 44.829764167,
+          "caller_observed_seconds": 44.879403542
+        },
+        {
+          "cycle": 2,
+          "status": "accepted",
+          "published_seconds": 54.586996959,
+          "caller_observed_seconds": 54.6164075
+        },
+        {
+          "cycle": 3,
+          "status": "accepted",
+          "published_seconds": 64.873793292,
+          "caller_observed_seconds": 64.887908959
+        },
+        {
+          "cycle": 4,
+          "status": "accepted",
+          "published_seconds": 74.666390709,
+          "caller_observed_seconds": 74.715128417
+        },
+        {
+          "cycle": 5,
+          "status": "accepted",
+          "published_seconds": 84.876698292,
+          "caller_observed_seconds": 84.896770584
+        },
+        {
+          "cycle": 6,
+          "status": "accepted",
+          "published_seconds": 95.32870375,
+          "caller_observed_seconds": 95.379502625
+        },
+        {
+          "cycle": 7,
+          "status": "accepted",
+          "published_seconds": 105.632382834,
+          "caller_observed_seconds": 105.658445667
+        },
+        {
+          "cycle": 8,
+          "status": "accepted",
+          "published_seconds": 115.414203042,
+          "caller_observed_seconds": 115.433050584
+        },
+        {
+          "cycle": 9,
+          "status": "accepted",
+          "published_seconds": 125.196979209,
+          "caller_observed_seconds": 125.237786084
+        },
+        {
+          "cycle": 10,
+          "status": "accepted",
+          "published_seconds": 134.997191459,
+          "caller_observed_seconds": 135.016691125
+        }
+      ],
+      "aggregate_tree_sampled_RSS": 1703788544,
+      "sampling_interval_seconds": 0.05,
+      "sampled_process_count": 14,
+      "cpu_seconds": {
+        "user": 109.31692299999997,
+        "system": 15.497605
+      }
+    },
+    "python_inclusive_spans": {
+      "source_fit_measurement": 0.176871834,
+      "source_measurements": 0.003304834,
+      "load_noise_context": 0.065360166,
+      "trajectory_including_endpoint": 100.06415725,
+      "raw_parent_PTC_MAP_initial_guard_noise": 33.43965225,
+      "feedback_candidate_publication": 0.13714146,
+      "conditional_endpoint_including_io": 0.043553041,
+      "cycle_cleanup": 0.584082793,
+      "environment_input_verification": 0.409541584,
+      "initial_noise_guard_context_publication": 0.130484333,
+      "native_invocation_including_reservation_hashing_publication": 130.582358084
+    },
+    "regression": true
+  },
+  {
+    "name": "A-rank15-N10-rep2",
+    "rank": 15,
+    "N": 10,
+    "rep": 2,
+    "status": "completed",
+    "launch": {
+      "command": [
+        "/Users/gwilson/tolteca/bin/python",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_pipeline.py",
+        "speed-once",
+        "--output",
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank15-N10-rep2",
+        "--binary",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali"
+      ],
+      "cache": "warm OS cache permitted; fresh scientific state",
+      "policy": {
+        "independent_workloads": 1,
+        "network_workers": 2,
+        "feedback_segment_workers": 1,
+        "numeric_threads": 1
+      },
+      "preflight_review": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/PHASE-A-REVIEW.json",
+        "sha256": "8e4e9ac18c58d4297ca41ec563504cbb33de3c249ba12d60bfeea7202b026c60"
+      },
+      "scope": "POINT152430 a2000 networks11/12 on local Mac; not full instrument or Unity",
+      "process_startup_attempts": {
+        "outer_python": 1,
+        "git_revision": 1,
+        "git_status": 1,
+        "validation_version": 1,
+        "native_version": 12,
+        "native_processing": 12,
+        "scope": "instrumented explicit attempts, including failures; no inference from planned N"
+      },
+      "status": "completed",
+      "exit_code": 0,
+      "start_monotonic_ns": 257184714756125,
+      "exit_seconds": 141.259714791,
+      "analysis_complete_seconds": 141.141943166,
+      "readiness": [
+        {
+          "cycle": 0,
+          "status": "accepted",
+          "published_seconds": 36.891534041,
+          "caller_observed_seconds": 36.936056583
+        },
+        {
+          "cycle": 1,
+          "status": "accepted",
+          "published_seconds": 47.345791041,
+          "caller_observed_seconds": 47.380044333
+        },
+        {
+          "cycle": 2,
+          "status": "accepted",
+          "published_seconds": 57.280769958,
+          "caller_observed_seconds": 57.316033083
+        },
+        {
+          "cycle": 3,
+          "status": "accepted",
+          "published_seconds": 67.742688375,
+          "caller_observed_seconds": 67.7388605
+        },
+        {
+          "cycle": 4,
+          "status": "accepted",
+          "published_seconds": 78.199553333,
+          "caller_observed_seconds": 78.1966875
+        },
+        {
+          "cycle": 5,
+          "status": "accepted",
+          "published_seconds": 88.658691291,
+          "caller_observed_seconds": 88.655926625
+        },
+        {
+          "cycle": 6,
+          "status": "accepted",
+          "published_seconds": 99.146507541,
+          "caller_observed_seconds": 99.148945
+        },
+        {
+          "cycle": 7,
+          "status": "accepted",
+          "published_seconds": 109.63071475,
+          "caller_observed_seconds": 109.636714625
+        },
+        {
+          "cycle": 8,
+          "status": "accepted",
+          "published_seconds": 120.117441833,
+          "caller_observed_seconds": 120.150947958
+        },
+        {
+          "cycle": 9,
+          "status": "accepted",
+          "published_seconds": 130.579527208,
+          "caller_observed_seconds": 130.60706425
+        },
+        {
+          "cycle": 10,
+          "status": "accepted",
+          "published_seconds": 141.054472208,
+          "caller_observed_seconds": 141.051773041
+        }
+      ],
+      "aggregate_tree_sampled_RSS": 1701904384,
+      "sampling_interval_seconds": 0.05,
+      "sampled_process_count": 14,
+      "cpu_seconds": {
+        "user": 111.42654499999992,
+        "system": 16.822843000000006
+      }
+    },
+    "python_inclusive_spans": {
+      "source_fit_measurement": 0.18334,
+      "source_measurements": 0.0033727519999999997,
+      "load_noise_context": 0.055847167999999996,
+      "trajectory_including_endpoint": 104.338936375,
+      "raw_parent_PTC_MAP_initial_guard_noise": 35.250579875,
+      "feedback_candidate_publication": 0.139744626,
+      "conditional_endpoint_including_io": 0.042914791,
+      "cycle_cleanup": 0.586811374,
+      "environment_input_verification": 0.393163334,
+      "initial_noise_guard_context_publication": 0.124578709,
+      "native_invocation_including_reservation_hashing_publication": 136.690386419
+    },
+    "regression": true
+  },
+  {
+    "name": "A-rank15-N10-rep3",
+    "rank": 15,
+    "N": 10,
+    "rep": 3,
+    "status": "completed",
+    "launch": {
+      "command": [
+        "/Users/gwilson/tolteca/bin/python",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_pipeline.py",
+        "speed-once",
+        "--output",
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank15-N10-rep3",
+        "--binary",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali"
+      ],
+      "cache": "warm OS cache permitted; fresh scientific state",
+      "policy": {
+        "independent_workloads": 1,
+        "network_workers": 2,
+        "feedback_segment_workers": 1,
+        "numeric_threads": 1
+      },
+      "preflight_review": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/PHASE-A-REVIEW.json",
+        "sha256": "8e4e9ac18c58d4297ca41ec563504cbb33de3c249ba12d60bfeea7202b026c60"
+      },
+      "scope": "POINT152430 a2000 networks11/12 on local Mac; not full instrument or Unity",
+      "process_startup_attempts": {
+        "outer_python": 1,
+        "git_revision": 1,
+        "git_status": 1,
+        "validation_version": 1,
+        "native_version": 12,
+        "native_processing": 12,
+        "scope": "instrumented explicit attempts, including failures; no inference from planned N"
+      },
+      "status": "completed",
+      "exit_code": 0,
+      "start_monotonic_ns": 257326689852625,
+      "exit_seconds": 140.589280666,
+      "analysis_complete_seconds": 140.461647333,
+      "readiness": [
+        {
+          "cycle": 0,
+          "status": "accepted",
+          "published_seconds": 35.921514458,
+          "caller_observed_seconds": 35.931061291
+        },
+        {
+          "cycle": 1,
+          "status": "accepted",
+          "published_seconds": 46.530769583,
+          "caller_observed_seconds": 46.5646075
+        },
+        {
+          "cycle": 2,
+          "status": "accepted",
+          "published_seconds": 57.179721291,
+          "caller_observed_seconds": 57.193835541
+        },
+        {
+          "cycle": 3,
+          "status": "accepted",
+          "published_seconds": 67.325531583,
+          "caller_observed_seconds": 67.372023458
+        },
+        {
+          "cycle": 4,
+          "status": "accepted",
+          "published_seconds": 77.9525315,
+          "caller_observed_seconds": 77.993680916
+        },
+        {
+          "cycle": 5,
+          "status": "accepted",
+          "published_seconds": 88.115713208,
+          "caller_observed_seconds": 88.171008708
+        },
+        {
+          "cycle": 6,
+          "status": "accepted",
+          "published_seconds": 98.246344791,
+          "caller_observed_seconds": 98.239501083
+        },
+        {
+          "cycle": 7,
+          "status": "accepted",
+          "published_seconds": 108.911293625,
+          "caller_observed_seconds": 108.932508458
+        },
+        {
+          "cycle": 8,
+          "status": "accepted",
+          "published_seconds": 119.557977833,
+          "caller_observed_seconds": 119.619968833
+        },
+        {
+          "cycle": 9,
+          "status": "accepted",
+          "published_seconds": 130.208498708,
+          "caller_observed_seconds": 130.256487916
+        },
+        {
+          "cycle": 10,
+          "status": "accepted",
+          "published_seconds": 140.370363458,
+          "caller_observed_seconds": 140.385628333
+        }
+      ],
+      "aggregate_tree_sampled_RSS": 1705050112,
+      "sampling_interval_seconds": 0.05,
+      "sampled_process_count": 14,
+      "cpu_seconds": {
+        "user": 111.64871900000003,
+        "system": 17.955810999999997
+      }
+    },
+    "python_inclusive_spans": {
+      "source_fit_measurement": 0.168905875,
+      "source_measurements": 0.003338542,
+      "load_noise_context": 0.058828709,
+      "trajectory_including_endpoint": 104.628965292,
+      "raw_parent_PTC_MAP_initial_guard_noise": 34.143866667,
+      "feedback_candidate_publication": 0.135785751,
+      "conditional_endpoint_including_io": 0.044473583,
+      "cycle_cleanup": 0.578115084,
+      "environment_input_verification": 0.4046285,
+      "initial_noise_guard_context_publication": 0.124212083,
+      "native_invocation_including_reservation_hashing_publication": 135.826869
+    },
+    "regression": true
+  },
+  {
+    "name": "A-rank15-N0-rep1",
+    "rank": 15,
+    "N": 0,
+    "rep": 1,
+    "status": "completed",
+    "launch": {
+      "command": [
+        "/Users/gwilson/tolteca/bin/python",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_pipeline.py",
+        "speed-once",
+        "--output",
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank15-N0-rep1",
+        "--binary",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali"
+      ],
+      "cache": "warm OS cache permitted; fresh scientific state",
+      "policy": {
+        "independent_workloads": 1,
+        "network_workers": 2,
+        "feedback_segment_workers": 1,
+        "numeric_threads": 1
+      },
+      "preflight_review": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/PHASE-A-REVIEW.json",
+        "sha256": "8e4e9ac18c58d4297ca41ec563504cbb33de3c249ba12d60bfeea7202b026c60"
+      },
+      "scope": "POINT152430 a2000 networks11/12 on local Mac; not full instrument or Unity",
+      "process_startup_attempts": {
+        "outer_python": 1,
+        "git_revision": 1,
+        "git_status": 1,
+        "validation_version": 1,
+        "native_version": 2,
+        "native_processing": 2,
+        "scope": "instrumented explicit attempts, including failures; no inference from planned N"
+      },
+      "status": "completed",
+      "exit_code": 0,
+      "start_monotonic_ns": 257467978499791,
+      "exit_seconds": 36.2701905,
+      "analysis_complete_seconds": 36.193892209,
+      "readiness": [
+        {
+          "cycle": 0,
+          "status": "accepted",
+          "published_seconds": 36.113024042,
+          "caller_observed_seconds": 36.132261
+        }
+      ],
+      "aggregate_tree_sampled_RSS": 1704001536,
+      "sampling_interval_seconds": 0.05,
+      "sampled_process_count": 4,
+      "cpu_seconds": {
+        "user": 35.09976199999994,
+        "system": 5.082940999999991
+      }
+    },
+    "python_inclusive_spans": {
+      "source_measurements": 0.00037075,
+      "load_noise_context": 0.057750499999999996,
+      "trajectory_including_endpoint": 0.170115625,
+      "raw_parent_PTC_MAP_initial_guard_noise": 34.464126042,
+      "feedback_candidate_publication": 0.02201975,
+      "conditional_endpoint_including_io": 0.045112917,
+      "environment_input_verification": 0.391547917,
+      "initial_noise_guard_context_publication": 0.119864209,
+      "native_invocation_including_reservation_hashing_publication": 34.179229874
+    },
+    "regression": true
+  },
+  {
+    "name": "A-rank15-N1-rep1",
+    "rank": 15,
+    "N": 1,
+    "rep": 1,
+    "status": "completed",
+    "launch": {
+      "command": [
+        "/Users/gwilson/tolteca/bin/python",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_pipeline.py",
+        "speed-once",
+        "--output",
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank15-N1-rep1",
+        "--binary",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali"
+      ],
+      "cache": "warm OS cache permitted; fresh scientific state",
+      "policy": {
+        "independent_workloads": 1,
+        "network_workers": 2,
+        "feedback_segment_workers": 1,
+        "numeric_threads": 1
+      },
+      "preflight_review": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/PHASE-A-REVIEW.json",
+        "sha256": "8e4e9ac18c58d4297ca41ec563504cbb33de3c249ba12d60bfeea7202b026c60"
+      },
+      "scope": "POINT152430 a2000 networks11/12 on local Mac; not full instrument or Unity",
+      "process_startup_attempts": {
+        "outer_python": 1,
+        "git_revision": 1,
+        "git_status": 1,
+        "validation_version": 1,
+        "native_version": 3,
+        "native_processing": 3,
+        "scope": "instrumented explicit attempts, including failures; no inference from planned N"
+      },
+      "status": "completed",
+      "exit_code": 0,
+      "start_monotonic_ns": 257504812981208,
+      "exit_seconds": 47.588762833,
+      "analysis_complete_seconds": 47.443731167,
+      "readiness": [
+        {
+          "cycle": 0,
+          "status": "accepted",
+          "published_seconds": 36.40812375,
+          "caller_observed_seconds": 36.434971958
+        },
+        {
+          "cycle": 1,
+          "status": "accepted",
+          "published_seconds": 47.353074208,
+          "caller_observed_seconds": 47.383834208
+        }
+      ],
+      "aggregate_tree_sampled_RSS": 1705771008,
+      "sampling_interval_seconds": 0.05,
+      "sampled_process_count": 5,
+      "cpu_seconds": {
+        "user": 43.09825699999999,
+        "system": 6.785350000000008
+      }
+    },
+    "python_inclusive_spans": {
+      "source_fit_measurement": 0.017923375,
+      "source_measurements": 0.000711709,
+      "load_noise_context": 0.056754709,
+      "trajectory_including_endpoint": 11.117324167,
+      "raw_parent_PTC_MAP_initial_guard_noise": 34.6558465,
+      "feedback_candidate_publication": 0.033359833,
+      "conditional_endpoint_including_io": 0.047439125,
+      "cycle_cleanup": 0.055791458,
+      "environment_input_verification": 0.404922916,
+      "initial_noise_guard_context_publication": 0.115420292,
+      "native_invocation_including_reservation_hashing_publication": 45.100163957999996
+    },
+    "regression": true
+  },
+  {
+    "name": "A-rank15-N3-rep1",
+    "rank": 15,
+    "N": 3,
+    "rep": 1,
+    "status": "completed",
+    "launch": {
+      "command": [
+        "/Users/gwilson/tolteca/bin/python",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_pipeline.py",
+        "speed-once",
+        "--output",
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank15-N3-rep1",
+        "--binary",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali"
+      ],
+      "cache": "warm OS cache permitted; fresh scientific state",
+      "policy": {
+        "independent_workloads": 1,
+        "network_workers": 2,
+        "feedback_segment_workers": 1,
+        "numeric_threads": 1
+      },
+      "preflight_review": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/PHASE-A-REVIEW.json",
+        "sha256": "8e4e9ac18c58d4297ca41ec563504cbb33de3c249ba12d60bfeea7202b026c60"
+      },
+      "scope": "POINT152430 a2000 networks11/12 on local Mac; not full instrument or Unity",
+      "process_startup_attempts": {
+        "outer_python": 1,
+        "git_revision": 1,
+        "git_status": 1,
+        "validation_version": 1,
+        "native_version": 5,
+        "native_processing": 5,
+        "scope": "instrumented explicit attempts, including failures; no inference from planned N"
+      },
+      "status": "completed",
+      "exit_code": 0,
+      "start_monotonic_ns": 257553019238875,
+      "exit_seconds": 69.693687583,
+      "analysis_complete_seconds": 69.550629791,
+      "readiness": [
+        {
+          "cycle": 0,
+          "status": "accepted",
+          "published_seconds": 36.861636791,
+          "caller_observed_seconds": 36.925918791
+        },
+        {
+          "cycle": 1,
+          "status": "accepted",
+          "published_seconds": 47.364481291,
+          "caller_observed_seconds": 47.360828083
+        },
+        {
+          "cycle": 2,
+          "status": "accepted",
+          "published_seconds": 58.441724625,
+          "caller_observed_seconds": 58.438681875
+        },
+        {
+          "cycle": 3,
+          "status": "accepted",
+          "published_seconds": 69.4723395,
+          "caller_observed_seconds": 69.493604583
+        }
+      ],
+      "aggregate_tree_sampled_RSS": 1873821696,
+      "sampling_interval_seconds": 0.05,
+      "sampled_process_count": 8,
+      "cpu_seconds": {
+        "user": 58.915051999999946,
+        "system": 9.940038000000001
+      }
+    },
+    "python_inclusive_spans": {
+      "source_fit_measurement": 0.047771332,
+      "source_measurements": 0.001360083,
+      "load_noise_context": 0.0691565,
+      "trajectory_including_endpoint": 32.761220667,
+      "raw_parent_PTC_MAP_initial_guard_noise": 35.175050333,
+      "feedback_candidate_publication": 0.055505625,
+      "conditional_endpoint_including_io": 0.048886458,
+      "cycle_cleanup": 0.15330370799999998,
+      "environment_input_verification": 0.418263417,
+      "initial_noise_guard_context_publication": 0.162795,
+      "native_invocation_including_reservation_hashing_publication": 66.788504666
+    },
+    "regression": true
+  },
+  {
+    "name": "A-rank15-N5-rep1",
+    "rank": 15,
+    "N": 5,
+    "rep": 1,
+    "status": "completed",
+    "launch": {
+      "command": [
+        "/Users/gwilson/tolteca/bin/python",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_pipeline.py",
+        "speed-once",
+        "--output",
+        "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank15-N5-rep1",
+        "--binary",
+        "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali"
+      ],
+      "cache": "warm OS cache permitted; fresh scientific state",
+      "policy": {
+        "independent_workloads": 1,
+        "network_workers": 2,
+        "feedback_segment_workers": 1,
+        "numeric_threads": 1
+      },
+      "preflight_review": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/PHASE-A-REVIEW.json",
+        "sha256": "8e4e9ac18c58d4297ca41ec563504cbb33de3c249ba12d60bfeea7202b026c60"
+      },
+      "scope": "POINT152430 a2000 networks11/12 on local Mac; not full instrument or Unity",
+      "process_startup_attempts": {
+        "outer_python": 1,
+        "git_revision": 1,
+        "git_status": 1,
+        "validation_version": 1,
+        "native_version": 7,
+        "native_processing": 7,
+        "scope": "instrumented explicit attempts, including failures; no inference from planned N"
+      },
+      "status": "completed",
+      "exit_code": 0,
+      "start_monotonic_ns": 257623455569250,
+      "exit_seconds": 96.099474666,
+      "analysis_complete_seconds": 95.979769166,
+      "readiness": [
+        {
+          "cycle": 0,
+          "status": "accepted",
+          "published_seconds": 41.30779275,
+          "caller_observed_seconds": 41.319534
+        },
+        {
+          "cycle": 1,
+          "status": "accepted",
+          "published_seconds": 52.50683225,
+          "caller_observed_seconds": 52.517329708
+        },
+        {
+          "cycle": 2,
+          "status": "accepted",
+          "published_seconds": 63.230007166,
+          "caller_observed_seconds": 63.289094833
+        },
+        {
+          "cycle": 3,
+          "status": "accepted",
+          "published_seconds": 73.956917833,
+          "caller_observed_seconds": 73.973171041
+        },
+        {
+          "cycle": 4,
+          "status": "accepted",
+          "published_seconds": 85.187402583,
+          "caller_observed_seconds": 85.237754166
+        },
+        {
+          "cycle": 5,
+          "status": "accepted",
+          "published_seconds": 95.891376125,
+          "caller_observed_seconds": 95.901743958
+        }
+      ],
+      "aggregate_tree_sampled_RSS": 1707163648,
+      "sampling_interval_seconds": 0.05,
+      "sampled_process_count": 9,
+      "cpu_seconds": {
+        "user": 74.35328699999991,
+        "system": 13.72891100000001
+      }
+    },
+    "python_inclusive_spans": {
+      "source_fit_measurement": 0.090874709,
+      "source_measurements": 0.001830416,
+      "load_noise_context": 0.055030208,
+      "trajectory_including_endpoint": 54.755336667,
+      "raw_parent_PTC_MAP_initial_guard_noise": 34.810934958,
+      "feedback_candidate_publication": 0.079472916,
+      "conditional_endpoint_including_io": 0.041601875,
+      "cycle_cleanup": 0.282173708,
+      "environment_input_verification": 0.404467458,
+      "initial_noise_guard_context_publication": 0.120837667,
+      "native_invocation_including_reservation_hashing_publication": 87.914693459
+    },
+    "regression": true
+  }
+]

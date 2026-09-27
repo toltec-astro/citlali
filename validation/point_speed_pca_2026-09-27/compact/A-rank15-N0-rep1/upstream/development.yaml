@@ -1,0 +1,10 @@
+input:
+  path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank15-N0-rep1/inputs/observation.json
+  sha256: dc0818d9e68683abde96d5e8bb7956d3b252a779480080e37255018a85d40335
+network_workers: 2
+output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank15-N0-rep1/upstream/products
+ptc:
+  method: observed-als
+  rank: 15
+schema: citlali-development-v1
+terminal: ptc

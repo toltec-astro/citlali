@@ -1,0 +1,5 @@
+{"epoch": 1790521409.964491, "stage": "upstream", "bytes": 10330720200, "reserved": 0, "ceiling": 93443011968}
+{"epoch": 1790521420.366366, "stage": "M0", "bytes": 10394314065, "reserved": 0, "ceiling": 93443011968}
+{"epoch": 1790521430.9516869, "stage": "run/BASE-POINT/REF/a2000/cycle-01/native", "bytes": 10471219123, "reserved": 0, "ceiling": 93443011968}
+{"epoch": 1790521441.969002, "stage": "run/BASE-POINT/REF/a2000/cycle-02/native", "bytes": 10492445014, "reserved": 0, "ceiling": 93443011968}
+{"epoch": 1790521453.0286038, "stage": "run/BASE-POINT/REF/a2000/cycle-03/native", "bytes": 10513671264, "reserved": 0, "ceiling": 93443011968}

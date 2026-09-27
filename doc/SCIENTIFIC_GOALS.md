@@ -1,5 +1,15 @@
 # Scientific goals
 
+## POINT latency/PCA comparison measured — 2026-09-27
+
+The [bounded comparison](../validation/point_speed_pca_2026-09-27/ASSESSMENT.md) keeps
+current rank10 as reference. Warm ALS strongly reduces native fit work, but the
+unchanged campaign-wide storage scans confound later raw timing. Covariance has
+mixed compact scales and changed extended measurements. No rank15 method extension
+was selected. N5 is a useful observed checkpoint, not an automatic stopping rule.
+Resolve accounting/provenance overhead before a fresh timing comparison; RTC and
+independent-observation science remain unexecuted.
+
 ## Bounded PTC rank comparison completed — 2026-09-26
 
 The [rank-response/noise assessment](../validation/ptc_rank_response_2026-09-26/ASSESSMENT.md)

@@ -1,0 +1,134 @@
+[
+  {
+    "cycle": 0,
+    "fields": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "wcs_equal": true,
+    "actual_science_pixels": 10513,
+    "reference_science_pixels": 10513
+  },
+  {
+    "cycle": 1,
+    "fields": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "wcs_equal": true,
+    "actual_science_pixels": 10513,
+    "reference_science_pixels": 10513
+  },
+  {
+    "cycle": 2,
+    "fields": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "wcs_equal": true,
+    "actual_science_pixels": 10513,
+    "reference_science_pixels": 10513
+  },
+  {
+    "cycle": 3,
+    "fields": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "wcs_equal": true,
+    "actual_science_pixels": 10513,
+    "reference_science_pixels": 10513
+  },
+  {
+    "cycle": 4,
+    "fields": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "wcs_equal": true,
+    "actual_science_pixels": 10513,
+    "reference_science_pixels": 10513
+  },
+  {
+    "cycle": 5,
+    "fields": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "wcs_equal": true,
+    "actual_science_pixels": 10513,
+    "reference_science_pixels": 10513
+  },
+  {
+    "cycle": 6,
+    "fields": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "wcs_equal": true,
+    "actual_science_pixels": 10513,
+    "reference_science_pixels": 10513
+  },
+  {
+    "cycle": 7,
+    "fields": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "wcs_equal": true,
+    "actual_science_pixels": 10513,
+    "reference_science_pixels": 10513
+  },
+  {
+    "cycle": 8,
+    "fields": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "wcs_equal": true,
+    "actual_science_pixels": 10513,
+    "reference_science_pixels": 10513
+  },
+  {
+    "cycle": 9,
+    "fields": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "wcs_equal": true,
+    "actual_science_pixels": 10513,
+    "reference_science_pixels": 10513
+  },
+  {
+    "cycle": 10,
+    "fields": {
+      "HITS": true,
+      "NORMALIZATION": true,
+      "SCI_SUPPORT": true,
+      "NORM_SUPPORT": true
+    },
+    "wcs_equal": true,
+    "actual_science_pixels": 10513,
+    "reference_science_pixels": 10513
+  }
+]

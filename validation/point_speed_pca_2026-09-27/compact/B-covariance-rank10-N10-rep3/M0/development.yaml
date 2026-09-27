@@ -1,0 +1,7 @@
+input:
+  path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep3/inputs/map-request.json
+  sha256: 8d7897459439b80501eaab69e50f40a3d8bd684cf879cfcda961eb9c53fed5d6
+network_workers: 1
+output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-covariance-rank10-N10-rep3/M0/products
+schema: citlali-development-v1
+terminal: map

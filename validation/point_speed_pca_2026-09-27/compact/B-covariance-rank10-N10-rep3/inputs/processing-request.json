@@ -1,0 +1,82 @@
+{
+  "schema": "citlali-native-processing-request-v1",
+  "observation": 152430,
+  "subobservation": 0,
+  "scan": 2,
+  "realized": false,
+  "method": "preserved-gap-grid-forced-10s-context32",
+  "effective_config_sha256": "b9e7889825fde0cebe9e65b79db04574db4bfc366f0968b577e771bcbb85cfa2",
+  "timing_inputs": [
+    {
+      "network": 0,
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec0_152430_000_0002_2026_02_19_10_07_51.nc",
+      "sha256": "23fdea79ba77a16be582f1e5c71bf77172cc1496be97898ec955f89148e3fc76"
+    },
+    {
+      "network": 1,
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec1_152430_000_0002_2026_02_19_10_07_51.nc",
+      "sha256": "3e4f1848fc3c998eba60ba802443840615b347958383414e2cb31f9838252c67"
+    },
+    {
+      "network": 2,
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec2_152430_000_0002_2026_02_19_10_07_51.nc",
+      "sha256": "3e5cb06261306e59cfd474f42dc4278866f1abf379549ede83029d1dee51cd84"
+    },
+    {
+      "network": 3,
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec3_152430_000_0002_2026_02_19_10_07_51.nc",
+      "sha256": "af7cef4a93e6fdbdf1e97b3aa1d13c6a4e35c303efa5e3949a42a72f2619d537"
+    },
+    {
+      "network": 4,
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec4_152430_000_0002_2026_02_19_10_07_51.nc",
+      "sha256": "75b45cdc440b9c6ec92f5874603421735b6d8b872c8f4807469fa25401ec7c37"
+    },
+    {
+      "network": 5,
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec5_152430_000_0002_2026_02_19_10_07_51.nc",
+      "sha256": "ff0c86e7d2acb18a6888f2533f6bbf10c388bdf7f2ebdc8baf970464834b6f32"
+    },
+    {
+      "network": 7,
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec7_152430_000_0002_2026_02_19_10_07_51.nc",
+      "sha256": "45ae0e8aef261d68a6068490912fc7515b9cde56bb60b5eba93a07c81b9e82e6"
+    },
+    {
+      "network": 8,
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec8_152430_000_0002_2026_02_19_10_07_51.nc",
+      "sha256": "042e4e450210cb921212a2d5942a7e0f01d84dc358ed4468da089bbf75cc99d4"
+    },
+    {
+      "network": 9,
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec9_152430_000_0002_2026_02_19_10_07_51.nc",
+      "sha256": "dc680015f96ee362be50f13b6b465a12cfcfe6f0f72c71e8288e0ee03f1c5142"
+    },
+    {
+      "network": 11,
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec11_152430_000_0002_2026_02_19_10_07_51.nc",
+      "sha256": "5536f00a12395909e9e1495e308fe04892411a5b44d73a97bac9d495c3bacde6"
+    },
+    {
+      "network": 12,
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec12_152430_000_0002_2026_02_19_10_07_51.nc",
+      "sha256": "1289ac9fd40fdc1579387b0ac718099564f7a3da9938928989c05d78a60bfc41"
+    }
+  ],
+  "manifest": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152430_matched.apt-v2/manifest.ecsv",
+    "sha256": "dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd"
+  },
+  "telescope": {
+    "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/tel_toltec_2026-02-19_152430_00_0002.nc",
+    "sha256": "f6ac27248692af558a16af94f267a84b344e93f30d2248516d4388b9b25e5f19"
+  },
+  "selected_point_config": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/data/development/bright_point_base_v1/point_152430.yaml",
+    "sha256": "c5b07ccbbd73509337ae4c48ac322890e52b2c3ec24d8281d197a2bcdd3e021d"
+  },
+  "reference_config": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/data/development/bright_point_base_v1/reference.json",
+    "sha256": "098a180d6c176cb3ceb06392d369780f37efbf5b11a275d7b51ea1236f3d061a"
+  }
+}

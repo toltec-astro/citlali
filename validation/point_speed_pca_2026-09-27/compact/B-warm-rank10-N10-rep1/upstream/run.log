@@ -1,0 +1,16 @@
+** logging ** Configured with level=trace; available levels: ["trace", "debug", "info", "warning", "error", "critical", "off"].
+[2026-09-27 11:30:25.435] [info] [argument_parsing.h:64] reconfigure logger to level=info
+[2026-09-27 11:30:25.436] [info] [main.cpp:65] rc config_file:
+  - /Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-warm-rank10-N10-rep1/upstream/development.yaml
+grppiex: omp
+[2026-09-27 11:30:25.436] [info] [logging.h:96] **timeit** Citlali Process
+[2026-09-27 11:30:25.437] [citlali_logger] [info] use KIDs data spec: toltec.1
+[2026-09-27 11:30:25.437] [citlali_logger] [info] development route: Timestream Successor; legacy fallback disabled
+[2026-09-27 11:30:25.437] [citlali_logger] [info] load config from file /Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-warm-rank10-N10-rep1/upstream/development.yaml
+RTC reassessment plan=1001 disposition=retain qualification=unresolved revision_executed=0
+RTC reassessment plan=1001 disposition=retain qualification=unresolved revision_executed=0
+Timestream Successor: RTC complete; CAL and PTC executed (see availability); MAP not implemented. No legacy fallback.
+Timestream Successor: RTC complete; CAL and PTC executed (see availability); MAP not implemented. No legacy fallback.
+PASS-runtime-decision-Apply;natural-isolated-policy-unavailable detectors=491 events=32 jumps=0
+PASS-runtime-decision-Apply;natural-isolated-policy-unavailable detectors=486 events=77 jumps=9
+[2026-09-27 11:30:46.449] [console] [info] [logging.h:107] **timeit** Citlali Process finished in 21.012761375s

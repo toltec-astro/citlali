@@ -1,0 +1,7 @@
+input:
+  path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-warm-rank10-N10-rep1/run/BASE-POINT/C-core-minus/a2000/cycle-05/request.json
+  sha256: 1429096ec28cc3c486c75d17cc3674e3c9c3ebb2c1ac154f8ebba4a4918bf8ef
+network_workers: 1
+output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-warm-rank10-N10-rep1/run/BASE-POINT/C-core-minus/a2000/cycle-05/native/products
+schema: citlali-development-v1
+terminal: point-fruit

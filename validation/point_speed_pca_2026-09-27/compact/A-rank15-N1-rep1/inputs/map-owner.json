@@ -1,0 +1,24 @@
+{
+  "schema": "citlali-map-first-forward-owner-binding-v1",
+  "identity": "SCI-MAP-FIRST-FORWARD-OWNER-2026-09-22",
+  "owner": "Grant Wilson",
+  "scope": "first ordinary forward MAP pass from current observed-entry PTC",
+  "frame": {
+    "reference_system": "FK5",
+    "equinox": 2000.0,
+    "source_fields": [
+      "SourceRaAct",
+      "SourceDecAct"
+    ],
+    "source_already_in_frame": true,
+    "transformation": "identity"
+  },
+  "nominal_beam_fwhm_arcsec": {
+    "a1100": 5.0,
+    "a1400": 7.5,
+    "a2000": 10.0
+  },
+  "coefficient_family": "SCI-PTC:uniform_constant@draft-0.1",
+  "measured_beams_are_separate": true,
+  "realized_response_inferred": false
+}

@@ -1,0 +1,3 @@
+{"epoch": 1790520710.5082119, "stage": "upstream", "bytes": 3995893395, "reserved": 0, "ceiling": 93443011968}
+{"epoch": 1790520719.609853, "stage": "M0", "bytes": 4059486577, "reserved": 0, "ceiling": 93443011968}
+{"epoch": 1790520728.911957, "stage": "run/BASE-POINT/REF/a2000/cycle-01/native", "bytes": 4136193670, "reserved": 0, "ceiling": 93443011968}

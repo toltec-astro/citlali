@@ -1,0 +1,29 @@
+{
+  "schema": "citlali-map-saved-ptc-v1",
+  "owner_binding": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank10-N10-rep2/inputs/map-owner.json",
+    "sha256": "219f6641b40a1cfc049eae24e320a14fe06f014bf804a87223a4b8772ea932aa"
+  },
+  "pixel_size_arcsec": 2.0,
+  "coverage_cut": 0.5,
+  "networks": [
+    {
+      "root": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank10-N10-rep2/upstream/products/network11",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank10-N10-rep2/inputs/network11-input.json",
+        "sha256": "85abbe620ba578760b42ab4418a5ba30bc37fec80731b0c2c6faa209444851dc"
+      },
+      "receipt_sha256": "279e62164fb63a3328711ba1eebeb22053f96d3f5dcab9b336c77153e3399f80",
+      "ptc_receipt_sha256": "3f3c18f6d7205a2a517b3c8ec47233b5cafc27f4cd92ee6f1dd425ef9b9c31e1"
+    },
+    {
+      "root": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank10-N10-rep2/upstream/products/network12",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/A-rank10-N10-rep2/inputs/network12-input.json",
+        "sha256": "5cd40038e20ed5174c34a2ccb1cd871f6fa096682411e0bf894c24d10af4f77f"
+      },
+      "receipt_sha256": "11c63e3795dde122b67461578f5648c7c9c076ebc009fee03368a511a988c01d",
+      "ptc_receipt_sha256": "44fe6e499fd2128fa843989d869682c3cdc1836a3839286f0328114dd1e0da2d"
+    }
+  ]
+}

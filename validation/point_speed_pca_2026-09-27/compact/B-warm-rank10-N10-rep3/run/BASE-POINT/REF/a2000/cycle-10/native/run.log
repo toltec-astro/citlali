@@ -1,0 +1,10 @@
+** logging ** Configured with level=trace; available levels: ["trace", "debug", "info", "warning", "error", "critical", "off"].
+[2026-09-27 11:37:33.138] [info] [argument_parsing.h:64] reconfigure logger to level=info
+[2026-09-27 11:37:33.138] [info] [main.cpp:65] rc config_file:
+  - /Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-warm-rank10-N10-rep3/run/BASE-POINT/REF/a2000/cycle-10/native/development.yaml
+grppiex: omp
+[2026-09-27 11:37:33.138] [info] [logging.h:96] **timeit** Citlali Process
+[2026-09-27 11:37:33.139] [citlali_logger] [info] use KIDs data spec: toltec.1
+[2026-09-27 11:37:33.139] [citlali_logger] [info] development route: Timestream Successor; legacy fallback disabled
+[2026-09-27 11:37:33.139] [citlali_logger] [info] load config from file /Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-speed-pca-20260927/B-warm-rank10-N10-rep3/run/BASE-POINT/REF/a2000/cycle-10/native/development.yaml
+[2026-09-27 11:37:40.508] [console] [info] [logging.h:107] **timeit** Citlali Process finished in 7.369896375s

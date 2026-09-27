@@ -214,3 +214,18 @@ precede dependent work. See [experiment record](../validation/ptc_rank_response_
 
 The completed [rank assessment](../validation/ptc_rank_response_2026-09-26/ASSESSMENT.md)
 and [handoff](../handoff/PTC_RANK_RESPONSE_NOISE_2026-09-26.md) keep rank10 as the reference.
+
+## Bounded latency/PCA experiment (2026-09-27)
+
+The shared entry point exposes `speed-run` for the unchanged Phase A matrix and
+`speed-candidates` for the authorized two-method rank10 matrix. Both require a
+fresh bounded root and independent exact-source review; counters forbid implicit
+retries. These are experimental routes, not defaults or a new production stop rule.
+`speed-once` is the timed child, not an invitation to bypass campaign gates.
+
+See the [measured comparison](../validation/point_speed_pca_2026-09-27/ASSESSMENT.md)
+and [saved-only reproduction](../validation/point_speed_pca_2026-09-27/REPRODUCTION.md).
+No additional campaign is authorized by these commands. Whole-campaign storage
+accounting currently causes run-order-dependent overhead; preserve the published
+measurement limitation rather than interpreting recorded wall differences as
+intrinsic method performance. The original frozen profile/tag remain unchanged.

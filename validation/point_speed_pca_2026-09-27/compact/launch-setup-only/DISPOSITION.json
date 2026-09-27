@@ -1,0 +1,8 @@
+{
+  "reason": "external process guard matched its own shell source; follow-on preparation then lacked review file",
+  "repair": "guard matches exact executable/script arguments, never shell source text; review persisted before launch",
+  "raw_parent_attempts": 0,
+  "trajectory_attempts": 0,
+  "feedback_attempts": 0,
+  "rerun": false
+}

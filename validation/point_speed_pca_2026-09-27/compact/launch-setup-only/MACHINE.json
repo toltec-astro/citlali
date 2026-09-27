@@ -1,0 +1,16 @@
+{
+  "platform": "macOS-26.7-arm64-arm-64bit-Mach-O",
+  "machine": "arm64",
+  "cpu": "Apple M4 Pro",
+  "logical_cores": 14,
+  "physical_cores": 14,
+  "memory_total_bytes": 51539607552,
+  "memory_available_bytes": 21475393536,
+  "disk_free_bytes": 647992762368,
+  "python": "3.13.2 (main, Feb  4 2025, 14:51:09) [Clang 16.0.0 (clang-1600.0.26.6)]",
+  "build_type": "Release",
+  "compiler": "AppleClang/Homebrew; exact build cache retained",
+  "library_threads": 1,
+  "network_workers": 2,
+  "feedback_workers": 1
+}

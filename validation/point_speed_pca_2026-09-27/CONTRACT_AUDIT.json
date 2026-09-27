@@ -1,0 +1,15 @@
+{
+  "pass_": true,
+  "checks": [
+    "Warm M0 all MAP planes exactly equal control",
+    "Warm M0 context/C0/BASE numerical fields exactly equal own control",
+    "B-warm-rank10-N10-rep1 network11: all original post-CAL input and binary eligibility payload hashes equal control",
+    "B-warm-rank10-N10-rep1 network12: all original post-CAL input and binary eligibility payload hashes equal control",
+    "B-covariance-rank10-N10-rep1 network11: all original post-CAL input and binary eligibility payload hashes equal control",
+    "B-covariance-rank10-N10-rep1 network12: all original post-CAL input and binary eligibility payload hashes equal control"
+  ],
+  "frozen_tag_peels_to": "5435bdbdb4e6708e884ae4cb2b0fd93e74102ce5",
+  "frozen_profile_unchanged": true,
+  "science_A": "e28f6630fffaba77f78fc2c2cb883c7345ad92f4",
+  "science_B": "08f81382d96afb0aad6bc1ed40543322887729b9"
+}

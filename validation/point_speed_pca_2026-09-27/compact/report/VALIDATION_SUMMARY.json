@@ -1,0 +1,81 @@
+{
+  "status": "completed",
+  "counts": {
+    "parent": 20,
+    "trajectory": 26,
+    "feedback": 198,
+    "endpoint": 26
+  },
+  "scientific_replacements": 0,
+  "native_error_lines": [],
+  "logged_runtime_warnings": {
+    "divide by zero encountered in matmul": 22,
+    "overflow encountered in matmul": 22,
+    "invalid value encountered in matmul": 22
+  },
+  "warning_scope": "Existing NumPy matmul warning sites retained verbatim, also present in Phase A. Saved accepted measurements and supported conditional scales checked finite; no warning suppression or numerical change. Log count includes nested/duplicate log captures.",
+  "native_segment_records": 1320,
+  "all_native_converged": true,
+  "all_application_failed_times_zero": true,
+  "eligibility_and_retained_entries_equal": true,
+  "full_support_audits": [
+    "B-covariance-rank10-N10-rep1/SUPPORT-C-core-plus.json",
+    "B-covariance-rank10-N10-rep1/SUPPORT-REF.json",
+    "B-covariance-rank10-N10-rep1/SUPPORT-C-shoulder.json",
+    "B-covariance-rank10-N10-rep1/SUPPORT-C-core-minus.json",
+    "B-warm-rank10-N10-rep1/SUPPORT-C-core-plus.json",
+    "B-warm-rank10-N10-rep1/SUPPORT-REF.json",
+    "B-warm-rank10-N10-rep1/SUPPORT-C-shoulder.json",
+    "B-warm-rank10-N10-rep1/SUPPORT-C-core-minus.json",
+    "B-covariance-rank10-N10-rep3/SUPPORT-REF.json",
+    "B-covariance-rank10-N10-rep2/SUPPORT-REF.json",
+    "B-warm-rank10-N10-rep2/SUPPORT-REF.json",
+    "B-warm-rank10-N10-rep3/SUPPORT-REF.json"
+  ],
+  "constrained_REF_fits": [
+    {
+      "family": "covariance10",
+      "cycle": 7,
+      "diagnostic": {
+        "initial": [
+          704.707926991649,
+          4.0,
+          8.0,
+          4.2466090014400955,
+          4.2466090014400955,
+          0.0,
+          -0.4605204276023662
+        ],
+        "parameters": [
+          748.4535801803323,
+          4.041157010704838,
+          7.387863368513132,
+          4.119222335116576,
+          4.042466213825505,
+          -3.1415926535897927,
+          -2.6178973859256005
+        ],
+        "status": 2,
+        "message": "`ftol` termination condition is satisfied.",
+        "converged": true,
+        "finite": true,
+        "nfev": 8,
+        "njev": 8,
+        "cost": 166600.86830966553,
+        "optimality": 0.131665302122666,
+        "active_mask": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          -1,
+          0
+        ],
+        "sigma_floor_arcsec": 1.5,
+        "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+        "centroid_radius_arcsec": 8.420895150575564
+      }
+    }
+  ]
+}
