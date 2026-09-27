@@ -1,0 +1,3642 @@
+{
+  "10": {
+    "networks": [
+      {
+        "network": 11,
+        "stage_intervals": [
+          {
+            "stage": "input_digests_verified",
+            "seconds": 0.117824125
+          },
+          {
+            "stage": "APT_verified_and_bound",
+            "seconds": 0.00012908400000000153
+          },
+          {
+            "stage": "native_samples_loaded",
+            "seconds": 0.673499375
+          },
+          {
+            "stage": "processing_scan_native_projection_complete",
+            "seconds": 0.23431945799999998
+          },
+          {
+            "stage": "ingress_complete",
+            "seconds": 0.0010904579999999608
+          },
+          {
+            "stage": "initial_learn_complete",
+            "seconds": 2.6337625000000005
+          },
+          {
+            "stage": "detector_plans_complete",
+            "seconds": 0.4090677089999999
+          },
+          {
+            "stage": "RTC_apply_complete",
+            "seconds": 1.5781757909999996
+          },
+          {
+            "stage": "output_grid_inspection_complete",
+            "seconds": 0.06024379200000052
+          },
+          {
+            "stage": "RTC_arrays_exported",
+            "seconds": 1.354911167
+          },
+          {
+            "stage": "post_notch_learned",
+            "seconds": 1.0842450000000001
+          },
+          {
+            "stage": "post_notch_matched_outcome",
+            "seconds": 1.0223994999999988
+          },
+          {
+            "stage": "post_notch_outcome_exported",
+            "seconds": 0.7550796250000005
+          },
+          {
+            "stage": "post_lowpass_learned",
+            "seconds": 0.7157837909999998
+          },
+          {
+            "stage": "post_lowpass_matched_outcome",
+            "seconds": 0.6684647090000002
+          },
+          {
+            "stage": "post_lowpass_outcome_exported",
+            "seconds": 0.7480744999999995
+          },
+          {
+            "stage": "relearning_complete",
+            "seconds": 0.02418770800000125
+          },
+          {
+            "stage": "RTC_finalized",
+            "seconds": 0.01675112499999898
+          },
+          {
+            "stage": "CAL_start",
+            "seconds": 0.0005389999999998452
+          },
+          {
+            "stage": "CAL_AST_start",
+            "seconds": 0.012950792000001599
+          },
+          {
+            "stage": "CAL_AST_complete",
+            "seconds": 0.02998737499999926
+          },
+          {
+            "stage": "CAL_learn_complete",
+            "seconds": 0.002190208000000027
+          },
+          {
+            "stage": "CAL_plan_complete",
+            "seconds": 0.025935291999999777
+          },
+          {
+            "stage": "CAL_apply_complete",
+            "seconds": 0.007399082999999251
+          },
+          {
+            "stage": "CAL_publication_complete",
+            "seconds": 4.360047249999999
+          },
+          {
+            "stage": "PTC_start",
+            "seconds": 0.0012672920000014187
+          },
+          {
+            "stage": "downstream_complete",
+            "seconds": 0.865168624999999
+          },
+          {
+            "stage": "arm_receipts_written",
+            "seconds": 0.3470283330000008
+          },
+          {
+            "stage": "original_pair_verified_unchanged",
+            "seconds": 0.22324204199999897
+          },
+          {
+            "stage": "root_receipt_written",
+            "seconds": 0.09289308299999988
+          }
+        ],
+        "scope": "per-network wall intervals; two networks overlap, do not sum as critical-path wall",
+        "ptc": [
+          {
+            "scan": 0,
+            "native_interval": [
+              33,
+              1221
+            ],
+            "scheduled_times": 594,
+            "detectors": 417,
+            "eligible": 215737,
+            "converged": true,
+            "iterations": 3,
+            "preparation_seconds": 0.02721125,
+            "fit_seconds": 0.043161375,
+            "initialization_seconds": 0.038726,
+            "covariance_seconds": 0.0103315,
+            "decomposition_seconds": 0.0283935,
+            "coefficient_seconds": 0.001014626,
+            "basis_seconds": 0.00090325,
+            "check_seconds": 0.0024709579999999997,
+            "apply_seconds": 0.000753166,
+            "application_failed_times": 0,
+            "retained": 215737,
+            "output_seconds": 0.07922125
+          },
+          {
+            "scan": 1,
+            "native_interval": [
+              1221,
+              2441
+            ],
+            "scheduled_times": 610,
+            "detectors": 417,
+            "eligible": 253892,
+            "converged": true,
+            "iterations": 5,
+            "preparation_seconds": 0.02724975,
+            "fit_seconds": 0.046352417,
+            "initialization_seconds": 0.038474458,
+            "covariance_seconds": 0.010128791,
+            "decomposition_seconds": 0.028344584,
+            "coefficient_seconds": 0.001884998,
+            "basis_seconds": 0.0017598330000000001,
+            "check_seconds": 0.004101249,
+            "apply_seconds": 0.000927125,
+            "application_failed_times": 0,
+            "retained": 253892,
+            "output_seconds": 0.07620775
+          },
+          {
+            "scan": 2,
+            "native_interval": [
+              2441,
+              3661
+            ],
+            "scheduled_times": 610,
+            "detectors": 417,
+            "eligible": 253014,
+            "converged": true,
+            "iterations": 28,
+            "preparation_seconds": 0.022779375,
+            "fit_seconds": 0.084375625,
+            "initialization_seconds": 0.037022375,
+            "covariance_seconds": 0.00942525,
+            "decomposition_seconds": 0.027595291,
+            "coefficient_seconds": 0.011679456999999997,
+            "basis_seconds": 0.011541168999999999,
+            "check_seconds": 0.022981332,
+            "apply_seconds": 0.001046625,
+            "application_failed_times": 0,
+            "retained": 253014,
+            "output_seconds": 0.056329125
+          },
+          {
+            "scan": 3,
+            "native_interval": [
+              3661,
+              4881
+            ],
+            "scheduled_times": 610,
+            "detectors": 417,
+            "eligible": 254370,
+            "converged": true,
+            "iterations": 2,
+            "preparation_seconds": 0.026197917,
+            "fit_seconds": 0.041196,
+            "initialization_seconds": 0.037216125,
+            "covariance_seconds": 0.009596041,
+            "decomposition_seconds": 0.027618917,
+            "coefficient_seconds": 0.00081,
+            "basis_seconds": 0.0006694170000000001,
+            "check_seconds": 0.002499459,
+            "apply_seconds": 0.000884625,
+            "application_failed_times": 0,
+            "retained": 254370,
+            "output_seconds": 0.058062
+          },
+          {
+            "scan": 4,
+            "native_interval": [
+              4881,
+              6101
+            ],
+            "scheduled_times": 610,
+            "detectors": 417,
+            "eligible": 254370,
+            "converged": true,
+            "iterations": 2,
+            "preparation_seconds": 0.025175208,
+            "fit_seconds": 0.041724291,
+            "initialization_seconds": 0.037881666,
+            "covariance_seconds": 0.009923834,
+            "decomposition_seconds": 0.027956541,
+            "coefficient_seconds": 0.000772125,
+            "basis_seconds": 0.0006915409999999999,
+            "check_seconds": 0.0023776659999999996,
+            "apply_seconds": 0.000885792,
+            "application_failed_times": 0,
+            "retained": 254370,
+            "output_seconds": 0.05991075
+          },
+          {
+            "scan": 5,
+            "native_interval": [
+              6101,
+              7289
+            ],
+            "scheduled_times": 594,
+            "detectors": 417,
+            "eligible": 215429,
+            "converged": true,
+            "iterations": 3,
+            "preparation_seconds": 0.026349125,
+            "fit_seconds": 0.041447833,
+            "initialization_seconds": 0.037257959,
+            "covariance_seconds": 0.009704834,
+            "decomposition_seconds": 0.027552417,
+            "coefficient_seconds": 0.000932333,
+            "basis_seconds": 0.0008280830000000001,
+            "check_seconds": 0.002380999,
+            "apply_seconds": 0.000753291,
+            "application_failed_times": 0,
+            "retained": 215429,
+            "output_seconds": 0.055725375
+          }
+        ]
+      },
+      {
+        "network": 12,
+        "stage_intervals": [
+          {
+            "stage": "input_digests_verified",
+            "seconds": 0.118399666
+          },
+          {
+            "stage": "APT_verified_and_bound",
+            "seconds": 8.912500000000934e-05
+          },
+          {
+            "stage": "native_samples_loaded",
+            "seconds": 0.8191286249999999
+          },
+          {
+            "stage": "processing_scan_native_projection_complete",
+            "seconds": 0.2395394999999999
+          },
+          {
+            "stage": "ingress_complete",
+            "seconds": 0.000535667000000073
+          },
+          {
+            "stage": "initial_learn_complete",
+            "seconds": 1.538813458
+          },
+          {
+            "stage": "detector_plans_complete",
+            "seconds": 0.38900112500000006
+          },
+          {
+            "stage": "RTC_apply_complete",
+            "seconds": 1.524613375
+          },
+          {
+            "stage": "output_grid_inspection_complete",
+            "seconds": 0.05964479200000028
+          },
+          {
+            "stage": "RTC_arrays_exported",
+            "seconds": 1.6238038330000002
+          },
+          {
+            "stage": "post_notch_learned",
+            "seconds": 1.1151652499999996
+          },
+          {
+            "stage": "post_notch_matched_outcome",
+            "seconds": 1.1064742920000006
+          },
+          {
+            "stage": "post_notch_outcome_exported",
+            "seconds": 0.7579701669999999
+          },
+          {
+            "stage": "post_lowpass_learned",
+            "seconds": 0.7170469159999993
+          },
+          {
+            "stage": "post_lowpass_matched_outcome",
+            "seconds": 0.6834035840000006
+          },
+          {
+            "stage": "post_lowpass_outcome_exported",
+            "seconds": 0.7197495410000005
+          },
+          {
+            "stage": "relearning_complete",
+            "seconds": 0.028131000000000128
+          },
+          {
+            "stage": "RTC_finalized",
+            "seconds": 0.0165315839999991
+          },
+          {
+            "stage": "CAL_start",
+            "seconds": 0.000720416000000057
+          },
+          {
+            "stage": "CAL_AST_start",
+            "seconds": 0.01360729199999966
+          },
+          {
+            "stage": "CAL_AST_complete",
+            "seconds": 0.029772125000000926
+          },
+          {
+            "stage": "CAL_learn_complete",
+            "seconds": 0.0022255829999995314
+          },
+          {
+            "stage": "CAL_plan_complete",
+            "seconds": 0.024321084000000326
+          },
+          {
+            "stage": "CAL_apply_complete",
+            "seconds": 0.006207915999999258
+          },
+          {
+            "stage": "CAL_publication_complete",
+            "seconds": 5.263755874999999
+          },
+          {
+            "stage": "PTC_start",
+            "seconds": 0.0013600420000017266
+          },
+          {
+            "stage": "downstream_complete",
+            "seconds": 1.3381439999999998
+          },
+          {
+            "stage": "arm_receipts_written",
+            "seconds": 0.3401212919999992
+          },
+          {
+            "stage": "original_pair_verified_unchanged",
+            "seconds": 0.2175810829999989
+          },
+          {
+            "stage": "root_receipt_written",
+            "seconds": 0.09964587500000022
+          }
+        ],
+        "scope": "per-network wall intervals; two networks overlap, do not sum as critical-path wall",
+        "ptc": [
+          {
+            "scan": 0,
+            "native_interval": [
+              32,
+              1220
+            ],
+            "scheduled_times": 594,
+            "detectors": 411,
+            "eligible": 212167,
+            "converged": true,
+            "iterations": 36,
+            "preparation_seconds": 0.025852458,
+            "fit_seconds": 0.079812875,
+            "initialization_seconds": 0.033546875,
+            "covariance_seconds": 0.009322875,
+            "decomposition_seconds": 0.024223041,
+            "coefficient_seconds": 0.009033375,
+            "basis_seconds": 0.010150627000000002,
+            "check_seconds": 0.025672167000000003,
+            "apply_seconds": 0.000738375,
+            "application_failed_times": 0,
+            "retained": 212167,
+            "output_seconds": 0.075751125
+          },
+          {
+            "scan": 1,
+            "native_interval": [
+              1220,
+              2440
+            ],
+            "scheduled_times": 610,
+            "detectors": 411,
+            "eligible": 249842,
+            "converged": true,
+            "iterations": 86,
+            "preparation_seconds": 0.027049833,
+            "fit_seconds": 0.168670833,
+            "initialization_seconds": 0.0346885,
+            "covariance_seconds": 0.009960833,
+            "decomposition_seconds": 0.0247265,
+            "coefficient_seconds": 0.029404838,
+            "basis_seconds": 0.032578168000000005,
+            "check_seconds": 0.06845508200000003,
+            "apply_seconds": 0.000916958,
+            "application_failed_times": 0,
+            "retained": 249842,
+            "output_seconds": 0.317066458
+          },
+          {
+            "scan": 2,
+            "native_interval": [
+              2440,
+              3660
+            ],
+            "scheduled_times": 610,
+            "detectors": 411,
+            "eligible": 250298,
+            "converged": true,
+            "iterations": 50,
+            "preparation_seconds": 0.024023709,
+            "fit_seconds": 0.111214416,
+            "initialization_seconds": 0.035895167,
+            "covariance_seconds": 0.010087375,
+            "decomposition_seconds": 0.025806542,
+            "coefficient_seconds": 0.015391124,
+            "basis_seconds": 0.01796404,
+            "check_seconds": 0.039918999999999996,
+            "apply_seconds": 0.000881291,
+            "application_failed_times": 0,
+            "retained": 250298,
+            "output_seconds": 0.082220792
+          },
+          {
+            "scan": 3,
+            "native_interval": [
+              3660,
+              4880
+            ],
+            "scheduled_times": 610,
+            "detectors": 411,
+            "eligible": 249368,
+            "converged": true,
+            "iterations": 3,
+            "preparation_seconds": 0.025502834,
+            "fit_seconds": 0.039890791,
+            "initialization_seconds": 0.034197083,
+            "covariance_seconds": 0.00910075,
+            "decomposition_seconds": 0.025094833,
+            "coefficient_seconds": 0.001404207,
+            "basis_seconds": 0.001155416,
+            "check_seconds": 0.0030886670000000002,
+            "apply_seconds": 0.000932208,
+            "application_failed_times": 0,
+            "retained": 249368,
+            "output_seconds": 0.057623291
+          },
+          {
+            "scan": 4,
+            "native_interval": [
+              4880,
+              6100
+            ],
+            "scheduled_times": 610,
+            "detectors": 411,
+            "eligible": 250320,
+            "converged": true,
+            "iterations": 3,
+            "preparation_seconds": 0.02691375,
+            "fit_seconds": 0.040907542,
+            "initialization_seconds": 0.035013,
+            "covariance_seconds": 0.00946275,
+            "decomposition_seconds": 0.025548916,
+            "coefficient_seconds": 0.001176542,
+            "basis_seconds": 0.001080125,
+            "check_seconds": 0.003592499,
+            "apply_seconds": 0.00086225,
+            "application_failed_times": 0,
+            "retained": 250320,
+            "output_seconds": 0.058818584
+          },
+          {
+            "scan": 5,
+            "native_interval": [
+              6100,
+              7288
+            ],
+            "scheduled_times": 594,
+            "detectors": 411,
+            "eligible": 212126,
+            "converged": true,
+            "iterations": 22,
+            "preparation_seconds": 0.024396625,
+            "fit_seconds": 0.065360417,
+            "initialization_seconds": 0.033504084,
+            "covariance_seconds": 0.009137084,
+            "decomposition_seconds": 0.024365959,
+            "coefficient_seconds": 0.007035374,
+            "basis_seconds": 0.0074738750000000005,
+            "check_seconds": 0.016490789999999998,
+            "apply_seconds": 0.000808791,
+            "application_failed_times": 0,
+            "retained": 212126,
+            "output_seconds": 0.059545959
+          }
+        ]
+      }
+    ],
+    "feedback": [
+      {
+        "cycle": 1,
+        "native_inclusive": {
+          "MAP_seconds": 0.084044459,
+          "serialization_seconds": 0.0358025,
+          "verification_seconds": 0.715457583,
+          "serialization_verification_seconds": 0.87094075,
+          "wall_seconds": 7.741356334,
+          "cpu_seconds": 7.086477
+        },
+        "sequential_segment_totals": {
+          "wall_seconds": 2.15019146,
+          "loading_seconds": 0.351887127,
+          "projection_seconds": 0.063878584,
+          "input_serialization_and_injection_seconds": 0.234400207,
+          "subtraction_seconds": 0.003743872,
+          "preparation_seconds": 0.016309125,
+          "learning_seconds": 0.8081660820000001,
+          "application_seconds": 0.010539501,
+          "apply_restore_seconds": 0.012361503,
+          "initialization_seconds": 0.418166875,
+          "covariance_seconds": 0.109012584,
+          "decomposition_seconds": 0.309142541,
+          "coefficient_seconds": 0.085366831,
+          "basis_seconds": 0.089052371,
+          "check_seconds": 0.205755373
+        },
+        "native_adapter_unattributed_seconds": 4.636179665,
+        "solver_J": [
+          {
+            "network": 11,
+            "segment": 0,
+            "J": 3,
+            "converged": true,
+            "eligible": 215737,
+            "retained": 215737
+          },
+          {
+            "network": 11,
+            "segment": 1,
+            "J": 5,
+            "converged": true,
+            "eligible": 253892,
+            "retained": 253892
+          },
+          {
+            "network": 11,
+            "segment": 2,
+            "J": 39,
+            "converged": true,
+            "eligible": 253014,
+            "retained": 253014
+          },
+          {
+            "network": 11,
+            "segment": 3,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 4,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 5,
+            "J": 3,
+            "converged": true,
+            "eligible": 215429,
+            "retained": 215429
+          },
+          {
+            "network": 12,
+            "segment": 0,
+            "J": 58,
+            "converged": true,
+            "eligible": 212167,
+            "retained": 212167
+          },
+          {
+            "network": 12,
+            "segment": 1,
+            "J": 85,
+            "converged": true,
+            "eligible": 249842,
+            "retained": 249842
+          },
+          {
+            "network": 12,
+            "segment": 2,
+            "J": 41,
+            "converged": true,
+            "eligible": 250298,
+            "retained": 250298
+          },
+          {
+            "network": 12,
+            "segment": 3,
+            "J": 3,
+            "converged": true,
+            "eligible": 249368,
+            "retained": 249368
+          },
+          {
+            "network": 12,
+            "segment": 4,
+            "J": 3,
+            "converged": true,
+            "eligible": 250320,
+            "retained": 250320
+          },
+          {
+            "network": 12,
+            "segment": 5,
+            "J": 21,
+            "converged": true,
+            "eligible": 212126,
+            "retained": 212126
+          }
+        ]
+      },
+      {
+        "cycle": 2,
+        "native_inclusive": {
+          "MAP_seconds": 0.084353625,
+          "serialization_seconds": 0.062520625,
+          "verification_seconds": 0.694053208,
+          "serialization_verification_seconds": 0.863433042,
+          "wall_seconds": 7.901591416,
+          "cpu_seconds": 7.116859
+        },
+        "sequential_segment_totals": {
+          "wall_seconds": 2.34084171,
+          "loading_seconds": 0.40984787500000003,
+          "projection_seconds": 0.065244419,
+          "input_serialization_and_injection_seconds": 0.282263043,
+          "subtraction_seconds": 0.003961624,
+          "preparation_seconds": 0.017006164,
+          "learning_seconds": 0.838898624,
+          "application_seconds": 0.01069125,
+          "apply_restore_seconds": 0.012561333000000001,
+          "initialization_seconds": 0.422251209,
+          "covariance_seconds": 0.113093291,
+          "decomposition_seconds": 0.309143543,
+          "coefficient_seconds": 0.092241973,
+          "basis_seconds": 0.096072929,
+          "check_seconds": 0.21759957400000002
+        },
+        "native_adapter_unattributed_seconds": 4.6129630389999985,
+        "solver_J": [
+          {
+            "network": 11,
+            "segment": 0,
+            "J": 3,
+            "converged": true,
+            "eligible": 215737,
+            "retained": 215737
+          },
+          {
+            "network": 11,
+            "segment": 1,
+            "J": 5,
+            "converged": true,
+            "eligible": 253892,
+            "retained": 253892
+          },
+          {
+            "network": 11,
+            "segment": 2,
+            "J": 52,
+            "converged": true,
+            "eligible": 253014,
+            "retained": 253014
+          },
+          {
+            "network": 11,
+            "segment": 3,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 4,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 5,
+            "J": 3,
+            "converged": true,
+            "eligible": 215429,
+            "retained": 215429
+          },
+          {
+            "network": 12,
+            "segment": 0,
+            "J": 59,
+            "converged": true,
+            "eligible": 212167,
+            "retained": 212167
+          },
+          {
+            "network": 12,
+            "segment": 1,
+            "J": 84,
+            "converged": true,
+            "eligible": 249842,
+            "retained": 249842
+          },
+          {
+            "network": 12,
+            "segment": 2,
+            "J": 44,
+            "converged": true,
+            "eligible": 250298,
+            "retained": 250298
+          },
+          {
+            "network": 12,
+            "segment": 3,
+            "J": 3,
+            "converged": true,
+            "eligible": 249368,
+            "retained": 249368
+          },
+          {
+            "network": 12,
+            "segment": 4,
+            "J": 3,
+            "converged": true,
+            "eligible": 250320,
+            "retained": 250320
+          },
+          {
+            "network": 12,
+            "segment": 5,
+            "J": 21,
+            "converged": true,
+            "eligible": 212126,
+            "retained": 212126
+          }
+        ]
+      },
+      {
+        "cycle": 3,
+        "native_inclusive": {
+          "MAP_seconds": 0.082716958,
+          "serialization_seconds": 0.029083625,
+          "verification_seconds": 0.723266292,
+          "serialization_verification_seconds": 0.867233708,
+          "wall_seconds": 7.93786025,
+          "cpu_seconds": 7.197934
+        },
+        "sequential_segment_totals": {
+          "wall_seconds": 2.345237001,
+          "loading_seconds": 0.381175125,
+          "projection_seconds": 0.065689207,
+          "input_serialization_and_injection_seconds": 0.211530415,
+          "subtraction_seconds": 0.003825915,
+          "preparation_seconds": 0.016115626,
+          "learning_seconds": 0.872919417,
+          "application_seconds": 0.010483833,
+          "apply_restore_seconds": 0.012336376,
+          "initialization_seconds": 0.418495166,
+          "covariance_seconds": 0.108985626,
+          "decomposition_seconds": 0.309496584,
+          "coefficient_seconds": 0.10068092199999999,
+          "basis_seconds": 0.105869827,
+          "check_seconds": 0.236142874
+        },
+        "native_adapter_unattributed_seconds": 4.642672583,
+        "solver_J": [
+          {
+            "network": 11,
+            "segment": 0,
+            "J": 3,
+            "converged": true,
+            "eligible": 215737,
+            "retained": 215737
+          },
+          {
+            "network": 11,
+            "segment": 1,
+            "J": 5,
+            "converged": true,
+            "eligible": 253892,
+            "retained": 253892
+          },
+          {
+            "network": 11,
+            "segment": 2,
+            "J": 69,
+            "converged": true,
+            "eligible": 253014,
+            "retained": 253014
+          },
+          {
+            "network": 11,
+            "segment": 3,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 4,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 5,
+            "J": 3,
+            "converged": true,
+            "eligible": 215429,
+            "retained": 215429
+          },
+          {
+            "network": 12,
+            "segment": 0,
+            "J": 60,
+            "converged": true,
+            "eligible": 212167,
+            "retained": 212167
+          },
+          {
+            "network": 12,
+            "segment": 1,
+            "J": 84,
+            "converged": true,
+            "eligible": 249842,
+            "retained": 249842
+          },
+          {
+            "network": 12,
+            "segment": 2,
+            "J": 51,
+            "converged": true,
+            "eligible": 250298,
+            "retained": 250298
+          },
+          {
+            "network": 12,
+            "segment": 3,
+            "J": 3,
+            "converged": true,
+            "eligible": 249368,
+            "retained": 249368
+          },
+          {
+            "network": 12,
+            "segment": 4,
+            "J": 3,
+            "converged": true,
+            "eligible": 250320,
+            "retained": 250320
+          },
+          {
+            "network": 12,
+            "segment": 5,
+            "J": 21,
+            "converged": true,
+            "eligible": 212126,
+            "retained": 212126
+          }
+        ]
+      },
+      {
+        "cycle": 4,
+        "native_inclusive": {
+          "MAP_seconds": 0.085211542,
+          "serialization_seconds": 0.025363959,
+          "verification_seconds": 0.703129834,
+          "serialization_verification_seconds": 0.847783542,
+          "wall_seconds": 7.807510417,
+          "cpu_seconds": 7.17201
+        },
+        "sequential_segment_totals": {
+          "wall_seconds": 2.252813711,
+          "loading_seconds": 0.356727878,
+          "projection_seconds": 0.06483625,
+          "input_serialization_and_injection_seconds": 0.267943918,
+          "subtraction_seconds": 0.003885625,
+          "preparation_seconds": 0.016529458,
+          "learning_seconds": 0.877032375,
+          "application_seconds": 0.010582666,
+          "apply_restore_seconds": 0.012483459,
+          "initialization_seconds": 0.419883417,
+          "covariance_seconds": 0.109824623,
+          "decomposition_seconds": 0.31004429099999997,
+          "coefficient_seconds": 0.10192667400000002,
+          "basis_seconds": 0.10665816499999999,
+          "check_seconds": 0.236707628
+        },
+        "native_adapter_unattributed_seconds": 4.621701622,
+        "solver_J": [
+          {
+            "network": 11,
+            "segment": 0,
+            "J": 3,
+            "converged": true,
+            "eligible": 215737,
+            "retained": 215737
+          },
+          {
+            "network": 11,
+            "segment": 1,
+            "J": 5,
+            "converged": true,
+            "eligible": 253892,
+            "retained": 253892
+          },
+          {
+            "network": 11,
+            "segment": 2,
+            "J": 76,
+            "converged": true,
+            "eligible": 253014,
+            "retained": 253014
+          },
+          {
+            "network": 11,
+            "segment": 3,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 4,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 5,
+            "J": 3,
+            "converged": true,
+            "eligible": 215429,
+            "retained": 215429
+          },
+          {
+            "network": 12,
+            "segment": 0,
+            "J": 60,
+            "converged": true,
+            "eligible": 212167,
+            "retained": 212167
+          },
+          {
+            "network": 12,
+            "segment": 1,
+            "J": 83,
+            "converged": true,
+            "eligible": 249842,
+            "retained": 249842
+          },
+          {
+            "network": 12,
+            "segment": 2,
+            "J": 48,
+            "converged": true,
+            "eligible": 250298,
+            "retained": 250298
+          },
+          {
+            "network": 12,
+            "segment": 3,
+            "J": 3,
+            "converged": true,
+            "eligible": 249368,
+            "retained": 249368
+          },
+          {
+            "network": 12,
+            "segment": 4,
+            "J": 3,
+            "converged": true,
+            "eligible": 250320,
+            "retained": 250320
+          },
+          {
+            "network": 12,
+            "segment": 5,
+            "J": 21,
+            "converged": true,
+            "eligible": 212126,
+            "retained": 212126
+          }
+        ]
+      },
+      {
+        "cycle": 5,
+        "native_inclusive": {
+          "MAP_seconds": 0.081957917,
+          "serialization_seconds": 0.058771042,
+          "verification_seconds": 0.731573792,
+          "serialization_verification_seconds": 0.902345167,
+          "wall_seconds": 8.26828325,
+          "cpu_seconds": 7.219026
+        },
+        "sequential_segment_totals": {
+          "wall_seconds": 2.638524083,
+          "loading_seconds": 0.36662633299999997,
+          "projection_seconds": 0.065268669,
+          "input_serialization_and_injection_seconds": 0.547503167,
+          "subtraction_seconds": 0.003864876,
+          "preparation_seconds": 0.017226587,
+          "learning_seconds": 0.896055959,
+          "application_seconds": 0.010445874,
+          "apply_restore_seconds": 0.012327709000000001,
+          "initialization_seconds": 0.429442376,
+          "covariance_seconds": 0.11511821,
+          "decomposition_seconds": 0.314311541,
+          "coefficient_seconds": 0.10414408400000001,
+          "basis_seconds": 0.10826508700000002,
+          "check_seconds": 0.24210654700000003
+        },
+        "native_adapter_unattributed_seconds": 4.645456082999999,
+        "solver_J": [
+          {
+            "network": 11,
+            "segment": 0,
+            "J": 3,
+            "converged": true,
+            "eligible": 215737,
+            "retained": 215737
+          },
+          {
+            "network": 11,
+            "segment": 1,
+            "J": 5,
+            "converged": true,
+            "eligible": 253892,
+            "retained": 253892
+          },
+          {
+            "network": 11,
+            "segment": 2,
+            "J": 79,
+            "converged": true,
+            "eligible": 253014,
+            "retained": 253014
+          },
+          {
+            "network": 11,
+            "segment": 3,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 4,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 5,
+            "J": 3,
+            "converged": true,
+            "eligible": 215429,
+            "retained": 215429
+          },
+          {
+            "network": 12,
+            "segment": 0,
+            "J": 60,
+            "converged": true,
+            "eligible": 212167,
+            "retained": 212167
+          },
+          {
+            "network": 12,
+            "segment": 1,
+            "J": 83,
+            "converged": true,
+            "eligible": 249842,
+            "retained": 249842
+          },
+          {
+            "network": 12,
+            "segment": 2,
+            "J": 48,
+            "converged": true,
+            "eligible": 250298,
+            "retained": 250298
+          },
+          {
+            "network": 12,
+            "segment": 3,
+            "J": 3,
+            "converged": true,
+            "eligible": 249368,
+            "retained": 249368
+          },
+          {
+            "network": 12,
+            "segment": 4,
+            "J": 3,
+            "converged": true,
+            "eligible": 250320,
+            "retained": 250320
+          },
+          {
+            "network": 12,
+            "segment": 5,
+            "J": 21,
+            "converged": true,
+            "eligible": 212126,
+            "retained": 212126
+          }
+        ]
+      },
+      {
+        "cycle": 6,
+        "native_inclusive": {
+          "MAP_seconds": 0.083902292,
+          "serialization_seconds": 0.035971791,
+          "verification_seconds": 0.702472875,
+          "serialization_verification_seconds": 0.852280125,
+          "wall_seconds": 7.848229,
+          "cpu_seconds": 7.234366
+        },
+        "sequential_segment_totals": {
+          "wall_seconds": 2.238953877,
+          "loading_seconds": 0.355240125,
+          "projection_seconds": 0.065840834,
+          "input_serialization_and_injection_seconds": 0.289776082,
+          "subtraction_seconds": 0.004131707,
+          "preparation_seconds": 0.017088666,
+          "learning_seconds": 0.89281204,
+          "application_seconds": 0.010617332,
+          "apply_restore_seconds": 0.012475165,
+          "initialization_seconds": 0.431083001,
+          "covariance_seconds": 0.115698376,
+          "decomposition_seconds": 0.315369288,
+          "coefficient_seconds": 0.10422754599999998,
+          "basis_seconds": 0.108868417,
+          "check_seconds": 0.236340835
+        },
+        "native_adapter_unattributed_seconds": 4.673092705999999,
+        "solver_J": [
+          {
+            "network": 11,
+            "segment": 0,
+            "J": 3,
+            "converged": true,
+            "eligible": 215737,
+            "retained": 215737
+          },
+          {
+            "network": 11,
+            "segment": 1,
+            "J": 5,
+            "converged": true,
+            "eligible": 253892,
+            "retained": 253892
+          },
+          {
+            "network": 11,
+            "segment": 2,
+            "J": 80,
+            "converged": true,
+            "eligible": 253014,
+            "retained": 253014
+          },
+          {
+            "network": 11,
+            "segment": 3,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 4,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 5,
+            "J": 3,
+            "converged": true,
+            "eligible": 215429,
+            "retained": 215429
+          },
+          {
+            "network": 12,
+            "segment": 0,
+            "J": 60,
+            "converged": true,
+            "eligible": 212167,
+            "retained": 212167
+          },
+          {
+            "network": 12,
+            "segment": 1,
+            "J": 83,
+            "converged": true,
+            "eligible": 249842,
+            "retained": 249842
+          },
+          {
+            "network": 12,
+            "segment": 2,
+            "J": 47,
+            "converged": true,
+            "eligible": 250298,
+            "retained": 250298
+          },
+          {
+            "network": 12,
+            "segment": 3,
+            "J": 3,
+            "converged": true,
+            "eligible": 249368,
+            "retained": 249368
+          },
+          {
+            "network": 12,
+            "segment": 4,
+            "J": 3,
+            "converged": true,
+            "eligible": 250320,
+            "retained": 250320
+          },
+          {
+            "network": 12,
+            "segment": 5,
+            "J": 21,
+            "converged": true,
+            "eligible": 212126,
+            "retained": 212126
+          }
+        ]
+      },
+      {
+        "cycle": 7,
+        "native_inclusive": {
+          "MAP_seconds": 0.085079667,
+          "serialization_seconds": 0.044759875,
+          "verification_seconds": 0.707646,
+          "serialization_verification_seconds": 0.874076666,
+          "wall_seconds": 7.877367458,
+          "cpu_seconds": 7.225388
+        },
+        "sequential_segment_totals": {
+          "wall_seconds": 2.257736625,
+          "loading_seconds": 0.371331708,
+          "projection_seconds": 0.066192001,
+          "input_serialization_and_injection_seconds": 0.23265470900000002,
+          "subtraction_seconds": 0.003798792,
+          "preparation_seconds": 0.016292959,
+          "learning_seconds": 0.8857329580000001,
+          "application_seconds": 0.010489793,
+          "apply_restore_seconds": 0.012483541,
+          "initialization_seconds": 0.420532167,
+          "covariance_seconds": 0.110444542,
+          "decomposition_seconds": 0.310074625,
+          "coefficient_seconds": 0.10517070399999999,
+          "basis_seconds": 0.10979896,
+          "check_seconds": 0.238051792
+        },
+        "native_adapter_unattributed_seconds": 4.660474500000001,
+        "solver_J": [
+          {
+            "network": 11,
+            "segment": 0,
+            "J": 3,
+            "converged": true,
+            "eligible": 215737,
+            "retained": 215737
+          },
+          {
+            "network": 11,
+            "segment": 1,
+            "J": 5,
+            "converged": true,
+            "eligible": 253892,
+            "retained": 253892
+          },
+          {
+            "network": 11,
+            "segment": 2,
+            "J": 81,
+            "converged": true,
+            "eligible": 253014,
+            "retained": 253014
+          },
+          {
+            "network": 11,
+            "segment": 3,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 4,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 5,
+            "J": 3,
+            "converged": true,
+            "eligible": 215429,
+            "retained": 215429
+          },
+          {
+            "network": 12,
+            "segment": 0,
+            "J": 60,
+            "converged": true,
+            "eligible": 212167,
+            "retained": 212167
+          },
+          {
+            "network": 12,
+            "segment": 1,
+            "J": 83,
+            "converged": true,
+            "eligible": 249842,
+            "retained": 249842
+          },
+          {
+            "network": 12,
+            "segment": 2,
+            "J": 47,
+            "converged": true,
+            "eligible": 250298,
+            "retained": 250298
+          },
+          {
+            "network": 12,
+            "segment": 3,
+            "J": 3,
+            "converged": true,
+            "eligible": 249368,
+            "retained": 249368
+          },
+          {
+            "network": 12,
+            "segment": 4,
+            "J": 3,
+            "converged": true,
+            "eligible": 250320,
+            "retained": 250320
+          },
+          {
+            "network": 12,
+            "segment": 5,
+            "J": 21,
+            "converged": true,
+            "eligible": 212126,
+            "retained": 212126
+          }
+        ]
+      },
+      {
+        "cycle": 8,
+        "native_inclusive": {
+          "MAP_seconds": 0.080436666,
+          "serialization_seconds": 0.045870792,
+          "verification_seconds": 0.711900125,
+          "serialization_verification_seconds": 0.876999292,
+          "wall_seconds": 7.97722675,
+          "cpu_seconds": 7.251187
+        },
+        "sequential_segment_totals": {
+          "wall_seconds": 2.354040832,
+          "loading_seconds": 0.424674749,
+          "projection_seconds": 0.065849874,
+          "input_serialization_and_injection_seconds": 0.236377834,
+          "subtraction_seconds": 0.004055293,
+          "preparation_seconds": 0.016858625,
+          "learning_seconds": 0.900052165,
+          "application_seconds": 0.010549417,
+          "apply_restore_seconds": 0.012503542,
+          "initialization_seconds": 0.429572834,
+          "covariance_seconds": 0.115567626,
+          "decomposition_seconds": 0.313990291,
+          "coefficient_seconds": 0.10585304699999998,
+          "basis_seconds": 0.109540929,
+          "check_seconds": 0.24287411
+        },
+        "native_adapter_unattributed_seconds": 4.66574996,
+        "solver_J": [
+          {
+            "network": 11,
+            "segment": 0,
+            "J": 3,
+            "converged": true,
+            "eligible": 215737,
+            "retained": 215737
+          },
+          {
+            "network": 11,
+            "segment": 1,
+            "J": 5,
+            "converged": true,
+            "eligible": 253892,
+            "retained": 253892
+          },
+          {
+            "network": 11,
+            "segment": 2,
+            "J": 81,
+            "converged": true,
+            "eligible": 253014,
+            "retained": 253014
+          },
+          {
+            "network": 11,
+            "segment": 3,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 4,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 5,
+            "J": 3,
+            "converged": true,
+            "eligible": 215429,
+            "retained": 215429
+          },
+          {
+            "network": 12,
+            "segment": 0,
+            "J": 60,
+            "converged": true,
+            "eligible": 212167,
+            "retained": 212167
+          },
+          {
+            "network": 12,
+            "segment": 1,
+            "J": 83,
+            "converged": true,
+            "eligible": 249842,
+            "retained": 249842
+          },
+          {
+            "network": 12,
+            "segment": 2,
+            "J": 47,
+            "converged": true,
+            "eligible": 250298,
+            "retained": 250298
+          },
+          {
+            "network": 12,
+            "segment": 3,
+            "J": 3,
+            "converged": true,
+            "eligible": 249368,
+            "retained": 249368
+          },
+          {
+            "network": 12,
+            "segment": 4,
+            "J": 3,
+            "converged": true,
+            "eligible": 250320,
+            "retained": 250320
+          },
+          {
+            "network": 12,
+            "segment": 5,
+            "J": 21,
+            "converged": true,
+            "eligible": 212126,
+            "retained": 212126
+          }
+        ]
+      },
+      {
+        "cycle": 9,
+        "native_inclusive": {
+          "MAP_seconds": 0.087525875,
+          "serialization_seconds": 0.026098375,
+          "verification_seconds": 0.714350459,
+          "serialization_verification_seconds": 0.849198,
+          "wall_seconds": 7.859362959,
+          "cpu_seconds": 7.217367
+        },
+        "sequential_segment_totals": {
+          "wall_seconds": 2.264811999,
+          "loading_seconds": 0.354782291,
+          "projection_seconds": 0.065128126,
+          "input_serialization_and_injection_seconds": 0.29535733200000003,
+          "subtraction_seconds": 0.0038410420000000002,
+          "preparation_seconds": 0.016709624,
+          "learning_seconds": 0.886944667,
+          "application_seconds": 0.010573167,
+          "apply_restore_seconds": 0.012539336,
+          "initialization_seconds": 0.423176918,
+          "covariance_seconds": 0.112530874,
+          "decomposition_seconds": 0.310631376,
+          "coefficient_seconds": 0.104354503,
+          "basis_seconds": 0.10865761099999999,
+          "check_seconds": 0.23859562099999998
+        },
+        "native_adapter_unattributed_seconds": 4.657827085,
+        "solver_J": [
+          {
+            "network": 11,
+            "segment": 0,
+            "J": 3,
+            "converged": true,
+            "eligible": 215737,
+            "retained": 215737
+          },
+          {
+            "network": 11,
+            "segment": 1,
+            "J": 5,
+            "converged": true,
+            "eligible": 253892,
+            "retained": 253892
+          },
+          {
+            "network": 11,
+            "segment": 2,
+            "J": 81,
+            "converged": true,
+            "eligible": 253014,
+            "retained": 253014
+          },
+          {
+            "network": 11,
+            "segment": 3,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 4,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 5,
+            "J": 3,
+            "converged": true,
+            "eligible": 215429,
+            "retained": 215429
+          },
+          {
+            "network": 12,
+            "segment": 0,
+            "J": 60,
+            "converged": true,
+            "eligible": 212167,
+            "retained": 212167
+          },
+          {
+            "network": 12,
+            "segment": 1,
+            "J": 83,
+            "converged": true,
+            "eligible": 249842,
+            "retained": 249842
+          },
+          {
+            "network": 12,
+            "segment": 2,
+            "J": 47,
+            "converged": true,
+            "eligible": 250298,
+            "retained": 250298
+          },
+          {
+            "network": 12,
+            "segment": 3,
+            "J": 3,
+            "converged": true,
+            "eligible": 249368,
+            "retained": 249368
+          },
+          {
+            "network": 12,
+            "segment": 4,
+            "J": 3,
+            "converged": true,
+            "eligible": 250320,
+            "retained": 250320
+          },
+          {
+            "network": 12,
+            "segment": 5,
+            "J": 21,
+            "converged": true,
+            "eligible": 212126,
+            "retained": 212126
+          }
+        ]
+      },
+      {
+        "cycle": 10,
+        "native_inclusive": {
+          "MAP_seconds": 0.08569275,
+          "serialization_seconds": 0.048989917,
+          "verification_seconds": 0.715594666,
+          "serialization_verification_seconds": 0.886022125,
+          "wall_seconds": 8.329411542,
+          "cpu_seconds": 7.250942
+        },
+        "sequential_segment_totals": {
+          "wall_seconds": 2.6805798750000003,
+          "loading_seconds": 0.37923429,
+          "projection_seconds": 0.065704374,
+          "input_serialization_and_injection_seconds": 0.368721208,
+          "subtraction_seconds": 0.003974461,
+          "preparation_seconds": 0.017162915,
+          "learning_seconds": 0.892505583,
+          "application_seconds": 0.010616667,
+          "apply_restore_seconds": 0.012528417,
+          "initialization_seconds": 0.429132667,
+          "covariance_seconds": 0.116546292,
+          "decomposition_seconds": 0.312571125,
+          "coefficient_seconds": 0.104109166,
+          "basis_seconds": 0.108298538,
+          "check_seconds": 0.238816496
+        },
+        "native_adapter_unattributed_seconds": 4.6771167920000005,
+        "solver_J": [
+          {
+            "network": 11,
+            "segment": 0,
+            "J": 3,
+            "converged": true,
+            "eligible": 215737,
+            "retained": 215737
+          },
+          {
+            "network": 11,
+            "segment": 1,
+            "J": 5,
+            "converged": true,
+            "eligible": 253892,
+            "retained": 253892
+          },
+          {
+            "network": 11,
+            "segment": 2,
+            "J": 81,
+            "converged": true,
+            "eligible": 253014,
+            "retained": 253014
+          },
+          {
+            "network": 11,
+            "segment": 3,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 4,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 5,
+            "J": 3,
+            "converged": true,
+            "eligible": 215429,
+            "retained": 215429
+          },
+          {
+            "network": 12,
+            "segment": 0,
+            "J": 60,
+            "converged": true,
+            "eligible": 212167,
+            "retained": 212167
+          },
+          {
+            "network": 12,
+            "segment": 1,
+            "J": 83,
+            "converged": true,
+            "eligible": 249842,
+            "retained": 249842
+          },
+          {
+            "network": 12,
+            "segment": 2,
+            "J": 47,
+            "converged": true,
+            "eligible": 250298,
+            "retained": 250298
+          },
+          {
+            "network": 12,
+            "segment": 3,
+            "J": 3,
+            "converged": true,
+            "eligible": 249368,
+            "retained": 249368
+          },
+          {
+            "network": 12,
+            "segment": 4,
+            "J": 3,
+            "converged": true,
+            "eligible": 250320,
+            "retained": 250320
+          },
+          {
+            "network": 12,
+            "segment": 5,
+            "J": 21,
+            "converged": true,
+            "eligible": 212126,
+            "retained": 212126
+          }
+        ]
+      }
+    ]
+  },
+  "15": {
+    "networks": [
+      {
+        "network": 11,
+        "stage_intervals": [
+          {
+            "stage": "input_digests_verified",
+            "seconds": 0.119426625
+          },
+          {
+            "stage": "APT_verified_and_bound",
+            "seconds": 0.00015058400000000915
+          },
+          {
+            "stage": "native_samples_loaded",
+            "seconds": 0.6831145
+          },
+          {
+            "stage": "processing_scan_native_projection_complete",
+            "seconds": 0.23529737500000003
+          },
+          {
+            "stage": "ingress_complete",
+            "seconds": 0.0008157079999999706
+          },
+          {
+            "stage": "initial_learn_complete",
+            "seconds": 2.680802333
+          },
+          {
+            "stage": "detector_plans_complete",
+            "seconds": 0.4268077090000002
+          },
+          {
+            "stage": "RTC_apply_complete",
+            "seconds": 1.5719639579999996
+          },
+          {
+            "stage": "output_grid_inspection_complete",
+            "seconds": 0.057482916999999745
+          },
+          {
+            "stage": "RTC_arrays_exported",
+            "seconds": 1.3852063330000002
+          },
+          {
+            "stage": "post_notch_learned",
+            "seconds": 1.0011126670000001
+          },
+          {
+            "stage": "post_notch_matched_outcome",
+            "seconds": 1.0769274160000002
+          },
+          {
+            "stage": "post_notch_outcome_exported",
+            "seconds": 0.7756753750000005
+          },
+          {
+            "stage": "post_lowpass_learned",
+            "seconds": 0.7038158750000001
+          },
+          {
+            "stage": "post_lowpass_matched_outcome",
+            "seconds": 0.6823170419999993
+          },
+          {
+            "stage": "post_lowpass_outcome_exported",
+            "seconds": 0.7782932920000007
+          },
+          {
+            "stage": "relearning_complete",
+            "seconds": 0.028867290999999184
+          },
+          {
+            "stage": "RTC_finalized",
+            "seconds": 0.01807866699999927
+          },
+          {
+            "stage": "CAL_start",
+            "seconds": 0.0008069170000002401
+          },
+          {
+            "stage": "CAL_AST_start",
+            "seconds": 0.014496582999999674
+          },
+          {
+            "stage": "CAL_AST_complete",
+            "seconds": 0.030564458000000627
+          },
+          {
+            "stage": "CAL_learn_complete",
+            "seconds": 0.0022345420000000615
+          },
+          {
+            "stage": "CAL_plan_complete",
+            "seconds": 0.025905082999999607
+          },
+          {
+            "stage": "CAL_apply_complete",
+            "seconds": 0.007245917000000546
+          },
+          {
+            "stage": "CAL_publication_complete",
+            "seconds": 5.9147575419999985
+          },
+          {
+            "stage": "PTC_start",
+            "seconds": 0.0016181660000000875
+          },
+          {
+            "stage": "downstream_complete",
+            "seconds": 1.3114605000000026
+          },
+          {
+            "stage": "arm_receipts_written",
+            "seconds": 0.34178045899999887
+          },
+          {
+            "stage": "original_pair_verified_unchanged",
+            "seconds": 0.22010241599999958
+          },
+          {
+            "stage": "root_receipt_written",
+            "seconds": 0.10365179200000085
+          }
+        ],
+        "scope": "per-network wall intervals; two networks overlap, do not sum as critical-path wall",
+        "ptc": [
+          {
+            "scan": 0,
+            "native_interval": [
+              33,
+              1221
+            ],
+            "scheduled_times": 594,
+            "detectors": 417,
+            "eligible": 215737,
+            "converged": true,
+            "iterations": 4,
+            "preparation_seconds": 0.024200916,
+            "fit_seconds": 0.04587975,
+            "initialization_seconds": 0.036690458,
+            "covariance_seconds": 0.009321,
+            "decomposition_seconds": 0.027368166,
+            "coefficient_seconds": 0.001935875,
+            "basis_seconds": 0.0020421249999999997,
+            "check_seconds": 0.0051213759999999995,
+            "apply_seconds": 0.007555333,
+            "application_failed_times": 0,
+            "retained": 215737,
+            "output_seconds": 0.071077375
+          },
+          {
+            "scan": 1,
+            "native_interval": [
+              1221,
+              2441
+            ],
+            "scheduled_times": 610,
+            "detectors": 417,
+            "eligible": 253892,
+            "converged": true,
+            "iterations": 12,
+            "preparation_seconds": 0.0245595,
+            "fit_seconds": 0.066619167,
+            "initialization_seconds": 0.03720725,
+            "covariance_seconds": 0.009758875,
+            "decomposition_seconds": 0.027446166,
+            "coefficient_seconds": 0.006618084,
+            "basis_seconds": 0.0072207489999999985,
+            "check_seconds": 0.015136543999999998,
+            "apply_seconds": 0.001335875,
+            "application_failed_times": 0,
+            "retained": 253892,
+            "output_seconds": 0.302078666
+          },
+          {
+            "scan": 2,
+            "native_interval": [
+              2441,
+              3661
+            ],
+            "scheduled_times": 610,
+            "detectors": 417,
+            "eligible": 253014,
+            "converged": true,
+            "iterations": 61,
+            "preparation_seconds": 0.023712166,
+            "fit_seconds": 0.1973825,
+            "initialization_seconds": 0.036949583,
+            "covariance_seconds": 0.009696,
+            "decomposition_seconds": 0.027251917,
+            "coefficient_seconds": 0.04142279199999999,
+            "basis_seconds": 0.04213587500000002,
+            "check_seconds": 0.07427958999999999,
+            "apply_seconds": 0.001508792,
+            "application_failed_times": 0,
+            "retained": 253014,
+            "output_seconds": 0.106102
+          },
+          {
+            "scan": 3,
+            "native_interval": [
+              3661,
+              4881
+            ],
+            "scheduled_times": 610,
+            "detectors": 417,
+            "eligible": 254370,
+            "converged": true,
+            "iterations": 2,
+            "preparation_seconds": 0.024184042,
+            "fit_seconds": 0.043320542,
+            "initialization_seconds": 0.037345666,
+            "covariance_seconds": 0.009426375,
+            "decomposition_seconds": 0.027918167,
+            "coefficient_seconds": 0.001200291,
+            "basis_seconds": 0.001065668,
+            "check_seconds": 0.003707917,
+            "apply_seconds": 0.001196083,
+            "application_failed_times": 0,
+            "retained": 254370,
+            "output_seconds": 0.078580959
+          },
+          {
+            "scan": 4,
+            "native_interval": [
+              4881,
+              6101
+            ],
+            "scheduled_times": 610,
+            "detectors": 417,
+            "eligible": 254370,
+            "converged": true,
+            "iterations": 2,
+            "preparation_seconds": 0.024339625,
+            "fit_seconds": 0.043163792,
+            "initialization_seconds": 0.037289208,
+            "covariance_seconds": 0.009498708,
+            "decomposition_seconds": 0.027789375,
+            "coefficient_seconds": 0.001188459,
+            "basis_seconds": 0.001110916,
+            "check_seconds": 0.00357425,
+            "apply_seconds": 0.001143167,
+            "application_failed_times": 0,
+            "retained": 254370,
+            "output_seconds": 0.05796675
+          },
+          {
+            "scan": 5,
+            "native_interval": [
+              6101,
+              7289
+            ],
+            "scheduled_times": 594,
+            "detectors": 417,
+            "eligible": 215429,
+            "converged": true,
+            "iterations": 3,
+            "preparation_seconds": 0.024650167,
+            "fit_seconds": 0.044259458,
+            "initialization_seconds": 0.036637958,
+            "covariance_seconds": 0.009411792,
+            "decomposition_seconds": 0.027224333,
+            "coefficient_seconds": 0.001406417,
+            "basis_seconds": 0.001318458,
+            "check_seconds": 0.004851999,
+            "apply_seconds": 0.001072542,
+            "application_failed_times": 0,
+            "retained": 215429,
+            "output_seconds": 0.058589417
+          }
+        ]
+      },
+      {
+        "network": 12,
+        "stage_intervals": [
+          {
+            "stage": "input_digests_verified",
+            "seconds": 0.119899291
+          },
+          {
+            "stage": "APT_verified_and_bound",
+            "seconds": 0.00010020900000000388
+          },
+          {
+            "stage": "native_samples_loaded",
+            "seconds": 0.8232776660000001
+          },
+          {
+            "stage": "processing_scan_native_projection_complete",
+            "seconds": 0.2369603749999999
+          },
+          {
+            "stage": "ingress_complete",
+            "seconds": 0.0005399590000001453
+          },
+          {
+            "stage": "initial_learn_complete",
+            "seconds": 1.5731683749999998
+          },
+          {
+            "stage": "detector_plans_complete",
+            "seconds": 0.39335200000000015
+          },
+          {
+            "stage": "RTC_apply_complete",
+            "seconds": 1.5612535000000003
+          },
+          {
+            "stage": "output_grid_inspection_complete",
+            "seconds": 0.055332665999999975
+          },
+          {
+            "stage": "RTC_arrays_exported",
+            "seconds": 1.548961792
+          },
+          {
+            "stage": "post_notch_learned",
+            "seconds": 1.0727652499999998
+          },
+          {
+            "stage": "post_notch_matched_outcome",
+            "seconds": 1.0698564170000004
+          },
+          {
+            "stage": "post_notch_outcome_exported",
+            "seconds": 0.8067406249999998
+          },
+          {
+            "stage": "post_lowpass_learned",
+            "seconds": 0.7216520830000004
+          },
+          {
+            "stage": "post_lowpass_matched_outcome",
+            "seconds": 0.693735083
+          },
+          {
+            "stage": "post_lowpass_outcome_exported",
+            "seconds": 0.7442301669999996
+          },
+          {
+            "stage": "relearning_complete",
+            "seconds": 0.02999529199999884
+          },
+          {
+            "stage": "RTC_finalized",
+            "seconds": 0.016257291000000507
+          },
+          {
+            "stage": "CAL_start",
+            "seconds": 0.0006444590000000971
+          },
+          {
+            "stage": "CAL_AST_start",
+            "seconds": 0.013840915999999481
+          },
+          {
+            "stage": "CAL_AST_complete",
+            "seconds": 0.03041516700000102
+          },
+          {
+            "stage": "CAL_learn_complete",
+            "seconds": 0.0023655419999997207
+          },
+          {
+            "stage": "CAL_plan_complete",
+            "seconds": 0.025173625000000754
+          },
+          {
+            "stage": "CAL_apply_complete",
+            "seconds": 0.0073161249999991185
+          },
+          {
+            "stage": "CAL_publication_complete",
+            "seconds": 5.0427820830000005
+          },
+          {
+            "stage": "PTC_start",
+            "seconds": 0.001603667000001252
+          },
+          {
+            "stage": "downstream_complete",
+            "seconds": 1.5193980409999988
+          },
+          {
+            "stage": "arm_receipts_written",
+            "seconds": 0.3548963339999993
+          },
+          {
+            "stage": "original_pair_verified_unchanged",
+            "seconds": 0.23671812499999945
+          },
+          {
+            "stage": "root_receipt_written",
+            "seconds": 0.10227800000000187
+          }
+        ],
+        "scope": "per-network wall intervals; two networks overlap, do not sum as critical-path wall",
+        "ptc": [
+          {
+            "scan": 0,
+            "native_interval": [
+              32,
+              1220
+            ],
+            "scheduled_times": 594,
+            "detectors": 411,
+            "eligible": 212167,
+            "converged": true,
+            "iterations": 25,
+            "preparation_seconds": 0.025535625,
+            "fit_seconds": 0.081010667,
+            "initialization_seconds": 0.033137375,
+            "covariance_seconds": 0.009477875,
+            "decomposition_seconds": 0.023657959,
+            "coefficient_seconds": 0.009843211999999999,
+            "basis_seconds": 0.010983209,
+            "check_seconds": 0.026117164000000002,
+            "apply_seconds": 0.0010115,
+            "application_failed_times": 0,
+            "retained": 212167,
+            "output_seconds": 0.428379708
+          },
+          {
+            "scan": 1,
+            "native_interval": [
+              1220,
+              2440
+            ],
+            "scheduled_times": 610,
+            "detectors": 411,
+            "eligible": 249842,
+            "converged": true,
+            "iterations": 87,
+            "preparation_seconds": 0.023682375,
+            "fit_seconds": 0.249675833,
+            "initialization_seconds": 0.034139083,
+            "covariance_seconds": 0.009190834,
+            "decomposition_seconds": 0.024946916,
+            "coefficient_seconds": 0.05011045299999999,
+            "basis_seconds": 0.057419124999999994,
+            "check_seconds": 0.10424466100000004,
+            "apply_seconds": 0.001294958,
+            "application_failed_times": 0,
+            "retained": 249842,
+            "output_seconds": 0.056814875
+          },
+          {
+            "scan": 2,
+            "native_interval": [
+              2440,
+              3660
+            ],
+            "scheduled_times": 610,
+            "detectors": 411,
+            "eligible": 250298,
+            "converged": true,
+            "iterations": 37,
+            "preparation_seconds": 0.025144959,
+            "fit_seconds": 0.1242145,
+            "initialization_seconds": 0.0351665,
+            "covariance_seconds": 0.009659417,
+            "decomposition_seconds": 0.025502916,
+            "coefficient_seconds": 0.018695247000000005,
+            "basis_seconds": 0.023308294000000004,
+            "check_seconds": 0.045489545,
+            "apply_seconds": 0.001207667,
+            "application_failed_times": 0,
+            "retained": 250298,
+            "output_seconds": 0.052196208
+          },
+          {
+            "scan": 3,
+            "native_interval": [
+              3660,
+              4880
+            ],
+            "scheduled_times": 610,
+            "detectors": 411,
+            "eligible": 249368,
+            "converged": true,
+            "iterations": 3,
+            "preparation_seconds": 0.02700475,
+            "fit_seconds": 0.045283792,
+            "initialization_seconds": 0.035907958,
+            "covariance_seconds": 0.010366208,
+            "decomposition_seconds": 0.02554025,
+            "coefficient_seconds": 0.002349,
+            "basis_seconds": 0.002088084,
+            "check_seconds": 0.004893292,
+            "apply_seconds": 0.001300292,
+            "application_failed_times": 0,
+            "retained": 249368,
+            "output_seconds": 0.054967833
+          },
+          {
+            "scan": 4,
+            "native_interval": [
+              4880,
+              6100
+            ],
+            "scheduled_times": 610,
+            "detectors": 411,
+            "eligible": 250320,
+            "converged": true,
+            "iterations": 3,
+            "preparation_seconds": 0.025638916,
+            "fit_seconds": 0.044367167,
+            "initialization_seconds": 0.035646458,
+            "covariance_seconds": 0.010164542,
+            "decomposition_seconds": 0.025480125,
+            "coefficient_seconds": 0.001874042,
+            "basis_seconds": 0.0019090420000000001,
+            "check_seconds": 0.0048923740000000005,
+            "apply_seconds": 0.001313958,
+            "application_failed_times": 0,
+            "retained": 250320,
+            "output_seconds": 0.058549666
+          },
+          {
+            "scan": 5,
+            "native_interval": [
+              6100,
+              7288
+            ],
+            "scheduled_times": 594,
+            "detectors": 411,
+            "eligible": 212126,
+            "converged": true,
+            "iterations": 28,
+            "preparation_seconds": 0.024973083,
+            "fit_seconds": 0.096154041,
+            "initialization_seconds": 0.035924834,
+            "covariance_seconds": 0.010116875,
+            "decomposition_seconds": 0.025806458,
+            "coefficient_seconds": 0.014736542000000002,
+            "basis_seconds": 0.015539791999999998,
+            "check_seconds": 0.028858083,
+            "apply_seconds": 0.00120575,
+            "application_failed_times": 0,
+            "retained": 212126,
+            "output_seconds": 0.046138
+          }
+        ]
+      }
+    ],
+    "feedback": [
+      {
+        "cycle": 1,
+        "native_inclusive": {
+          "MAP_seconds": 0.08461575,
+          "serialization_seconds": 0.044386125,
+          "verification_seconds": 0.70885875,
+          "serialization_verification_seconds": 0.871700167,
+          "wall_seconds": 8.076944833,
+          "cpu_seconds": 7.336119
+        },
+        "sequential_segment_totals": {
+          "wall_seconds": 2.434066749,
+          "loading_seconds": 0.37391916599999997,
+          "projection_seconds": 0.065404623,
+          "input_serialization_and_injection_seconds": 0.224561125,
+          "subtraction_seconds": 0.003730251,
+          "preparation_seconds": 0.01654121,
+          "learning_seconds": 0.946456086,
+          "application_seconds": 0.014233790999999999,
+          "apply_restore_seconds": 0.016108666,
+          "initialization_seconds": 0.421090999,
+          "covariance_seconds": 0.112728332,
+          "decomposition_seconds": 0.308347957,
+          "coefficient_seconds": 0.12076416600000002,
+          "basis_seconds": 0.13279888,
+          "check_seconds": 0.263449918
+        },
+        "native_adapter_unattributed_seconds": 4.686562167000001,
+        "solver_J": [
+          {
+            "network": 11,
+            "segment": 0,
+            "J": 4,
+            "converged": true,
+            "eligible": 215737,
+            "retained": 215737
+          },
+          {
+            "network": 11,
+            "segment": 1,
+            "J": 10,
+            "converged": true,
+            "eligible": 253892,
+            "retained": 253892
+          },
+          {
+            "network": 11,
+            "segment": 2,
+            "J": 32,
+            "converged": true,
+            "eligible": 253014,
+            "retained": 253014
+          },
+          {
+            "network": 11,
+            "segment": 3,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 4,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 5,
+            "J": 3,
+            "converged": true,
+            "eligible": 215429,
+            "retained": 215429
+          },
+          {
+            "network": 12,
+            "segment": 0,
+            "J": 24,
+            "converged": true,
+            "eligible": 212167,
+            "retained": 212167
+          },
+          {
+            "network": 12,
+            "segment": 1,
+            "J": 75,
+            "converged": true,
+            "eligible": 249842,
+            "retained": 249842
+          },
+          {
+            "network": 12,
+            "segment": 2,
+            "J": 39,
+            "converged": true,
+            "eligible": 250298,
+            "retained": 250298
+          },
+          {
+            "network": 12,
+            "segment": 3,
+            "J": 3,
+            "converged": true,
+            "eligible": 249368,
+            "retained": 249368
+          },
+          {
+            "network": 12,
+            "segment": 4,
+            "J": 3,
+            "converged": true,
+            "eligible": 250320,
+            "retained": 250320
+          },
+          {
+            "network": 12,
+            "segment": 5,
+            "J": 28,
+            "converged": true,
+            "eligible": 212126,
+            "retained": 212126
+          }
+        ]
+      },
+      {
+        "cycle": 2,
+        "native_inclusive": {
+          "MAP_seconds": 0.085083542,
+          "serialization_seconds": 0.047905,
+          "verification_seconds": 0.719139959,
+          "serialization_verification_seconds": 0.88890075,
+          "wall_seconds": 8.095993959,
+          "cpu_seconds": 7.312917
+        },
+        "sequential_segment_totals": {
+          "wall_seconds": 2.472853377,
+          "loading_seconds": 0.38479446100000003,
+          "projection_seconds": 0.066110876,
+          "input_serialization_and_injection_seconds": 0.271893083,
+          "subtraction_seconds": 0.00376296,
+          "preparation_seconds": 0.016574625,
+          "learning_seconds": 0.9720856240000001,
+          "application_seconds": 0.014081541,
+          "apply_restore_seconds": 0.01599546,
+          "initialization_seconds": 0.424772335,
+          "covariance_seconds": 0.114572499,
+          "decomposition_seconds": 0.310178667,
+          "coefficient_seconds": 0.127951212,
+          "basis_seconds": 0.138029123,
+          "check_seconds": 0.27254013000000005
+        },
+        "native_adapter_unattributed_seconds": 4.64915629,
+        "solver_J": [
+          {
+            "network": 11,
+            "segment": 0,
+            "J": 4,
+            "converged": true,
+            "eligible": 215737,
+            "retained": 215737
+          },
+          {
+            "network": 11,
+            "segment": 1,
+            "J": 11,
+            "converged": true,
+            "eligible": 253892,
+            "retained": 253892
+          },
+          {
+            "network": 11,
+            "segment": 2,
+            "J": 36,
+            "converged": true,
+            "eligible": 253014,
+            "retained": 253014
+          },
+          {
+            "network": 11,
+            "segment": 3,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 4,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 5,
+            "J": 3,
+            "converged": true,
+            "eligible": 215429,
+            "retained": 215429
+          },
+          {
+            "network": 12,
+            "segment": 0,
+            "J": 23,
+            "converged": true,
+            "eligible": 212167,
+            "retained": 212167
+          },
+          {
+            "network": 12,
+            "segment": 1,
+            "J": 78,
+            "converged": true,
+            "eligible": 249842,
+            "retained": 249842
+          },
+          {
+            "network": 12,
+            "segment": 2,
+            "J": 40,
+            "converged": true,
+            "eligible": 250298,
+            "retained": 250298
+          },
+          {
+            "network": 12,
+            "segment": 3,
+            "J": 3,
+            "converged": true,
+            "eligible": 249368,
+            "retained": 249368
+          },
+          {
+            "network": 12,
+            "segment": 4,
+            "J": 3,
+            "converged": true,
+            "eligible": 250320,
+            "retained": 250320
+          },
+          {
+            "network": 12,
+            "segment": 5,
+            "J": 28,
+            "converged": true,
+            "eligible": 212126,
+            "retained": 212126
+          }
+        ]
+      },
+      {
+        "cycle": 3,
+        "native_inclusive": {
+          "MAP_seconds": 0.082770542,
+          "serialization_seconds": 0.042090542,
+          "verification_seconds": 0.708462208,
+          "serialization_verification_seconds": 0.866422834,
+          "wall_seconds": 8.150368083,
+          "cpu_seconds": 7.326885
+        },
+        "sequential_segment_totals": {
+          "wall_seconds": 2.5334085,
+          "loading_seconds": 0.371389666,
+          "projection_seconds": 0.065307832,
+          "input_serialization_and_injection_seconds": 0.328924999,
+          "subtraction_seconds": 0.003978459,
+          "preparation_seconds": 0.017589418,
+          "learning_seconds": 0.978751917,
+          "application_seconds": 0.013950374,
+          "apply_restore_seconds": 0.015847167,
+          "initialization_seconds": 0.423999916,
+          "covariance_seconds": 0.11556912700000001,
+          "decomposition_seconds": 0.308416084,
+          "coefficient_seconds": 0.12968637600000002,
+          "basis_seconds": 0.14077746200000002,
+          "check_seconds": 0.275378628
+        },
+        "native_adapter_unattributed_seconds": 4.667766207,
+        "solver_J": [
+          {
+            "network": 11,
+            "segment": 0,
+            "J": 4,
+            "converged": true,
+            "eligible": 215737,
+            "retained": 215737
+          },
+          {
+            "network": 11,
+            "segment": 1,
+            "J": 11,
+            "converged": true,
+            "eligible": 253892,
+            "retained": 253892
+          },
+          {
+            "network": 11,
+            "segment": 2,
+            "J": 40,
+            "converged": true,
+            "eligible": 253014,
+            "retained": 253014
+          },
+          {
+            "network": 11,
+            "segment": 3,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 4,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 5,
+            "J": 3,
+            "converged": true,
+            "eligible": 215429,
+            "retained": 215429
+          },
+          {
+            "network": 12,
+            "segment": 0,
+            "J": 23,
+            "converged": true,
+            "eligible": 212167,
+            "retained": 212167
+          },
+          {
+            "network": 12,
+            "segment": 1,
+            "J": 79,
+            "converged": true,
+            "eligible": 249842,
+            "retained": 249842
+          },
+          {
+            "network": 12,
+            "segment": 2,
+            "J": 41,
+            "converged": true,
+            "eligible": 250298,
+            "retained": 250298
+          },
+          {
+            "network": 12,
+            "segment": 3,
+            "J": 3,
+            "converged": true,
+            "eligible": 249368,
+            "retained": 249368
+          },
+          {
+            "network": 12,
+            "segment": 4,
+            "J": 3,
+            "converged": true,
+            "eligible": 250320,
+            "retained": 250320
+          },
+          {
+            "network": 12,
+            "segment": 5,
+            "J": 28,
+            "converged": true,
+            "eligible": 212126,
+            "retained": 212126
+          }
+        ]
+      },
+      {
+        "cycle": 4,
+        "native_inclusive": {
+          "MAP_seconds": 0.086378125,
+          "serialization_seconds": 0.030780416,
+          "verification_seconds": 0.714479583,
+          "serialization_verification_seconds": 0.87195475,
+          "wall_seconds": 8.032532291,
+          "cpu_seconds": 7.313271
+        },
+        "sequential_segment_totals": {
+          "wall_seconds": 2.414151041,
+          "loading_seconds": 0.371148623,
+          "projection_seconds": 0.06597421,
+          "input_serialization_and_injection_seconds": 0.246400624,
+          "subtraction_seconds": 0.003858168,
+          "preparation_seconds": 0.016431792,
+          "learning_seconds": 0.986573751,
+          "application_seconds": 0.013824042,
+          "apply_restore_seconds": 0.015675458,
+          "initialization_seconds": 0.41842371,
+          "covariance_seconds": 0.110875374,
+          "decomposition_seconds": 0.307534877,
+          "coefficient_seconds": 0.131575368,
+          "basis_seconds": 0.142873077,
+          "check_seconds": 0.284626282
+        },
+        "native_adapter_unattributed_seconds": 4.660048375000001,
+        "solver_J": [
+          {
+            "network": 11,
+            "segment": 0,
+            "J": 4,
+            "converged": true,
+            "eligible": 215737,
+            "retained": 215737
+          },
+          {
+            "network": 11,
+            "segment": 1,
+            "J": 11,
+            "converged": true,
+            "eligible": 253892,
+            "retained": 253892
+          },
+          {
+            "network": 11,
+            "segment": 2,
+            "J": 42,
+            "converged": true,
+            "eligible": 253014,
+            "retained": 253014
+          },
+          {
+            "network": 11,
+            "segment": 3,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 4,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 5,
+            "J": 3,
+            "converged": true,
+            "eligible": 215429,
+            "retained": 215429
+          },
+          {
+            "network": 12,
+            "segment": 0,
+            "J": 23,
+            "converged": true,
+            "eligible": 212167,
+            "retained": 212167
+          },
+          {
+            "network": 12,
+            "segment": 1,
+            "J": 80,
+            "converged": true,
+            "eligible": 249842,
+            "retained": 249842
+          },
+          {
+            "network": 12,
+            "segment": 2,
+            "J": 41,
+            "converged": true,
+            "eligible": 250298,
+            "retained": 250298
+          },
+          {
+            "network": 12,
+            "segment": 3,
+            "J": 3,
+            "converged": true,
+            "eligible": 249368,
+            "retained": 249368
+          },
+          {
+            "network": 12,
+            "segment": 4,
+            "J": 3,
+            "converged": true,
+            "eligible": 250320,
+            "retained": 250320
+          },
+          {
+            "network": 12,
+            "segment": 5,
+            "J": 28,
+            "converged": true,
+            "eligible": 212126,
+            "retained": 212126
+          }
+        ]
+      },
+      {
+        "cycle": 5,
+        "native_inclusive": {
+          "MAP_seconds": 0.08429975,
+          "serialization_seconds": 0.056489792,
+          "verification_seconds": 0.707772667,
+          "serialization_verification_seconds": 0.878705375,
+          "wall_seconds": 8.3390985,
+          "cpu_seconds": 7.307105
+        },
+        "sequential_segment_totals": {
+          "wall_seconds": 2.7600018349999997,
+          "loading_seconds": 0.430779417,
+          "projection_seconds": 0.065944998,
+          "input_serialization_and_injection_seconds": 0.257707001,
+          "subtraction_seconds": 0.003973375,
+          "preparation_seconds": 0.017144041,
+          "learning_seconds": 0.990407585,
+          "application_seconds": 0.014092919,
+          "apply_restore_seconds": 0.015966918,
+          "initialization_seconds": 0.424262042,
+          "covariance_seconds": 0.115340585,
+          "decomposition_seconds": 0.308904668,
+          "coefficient_seconds": 0.13204241400000002,
+          "basis_seconds": 0.14363586999999997,
+          "check_seconds": 0.28139837100000004
+        },
+        "native_adapter_unattributed_seconds": 4.61609154,
+        "solver_J": [
+          {
+            "network": 11,
+            "segment": 0,
+            "J": 4,
+            "converged": true,
+            "eligible": 215737,
+            "retained": 215737
+          },
+          {
+            "network": 11,
+            "segment": 1,
+            "J": 11,
+            "converged": true,
+            "eligible": 253892,
+            "retained": 253892
+          },
+          {
+            "network": 11,
+            "segment": 2,
+            "J": 43,
+            "converged": true,
+            "eligible": 253014,
+            "retained": 253014
+          },
+          {
+            "network": 11,
+            "segment": 3,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 4,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 5,
+            "J": 3,
+            "converged": true,
+            "eligible": 215429,
+            "retained": 215429
+          },
+          {
+            "network": 12,
+            "segment": 0,
+            "J": 23,
+            "converged": true,
+            "eligible": 212167,
+            "retained": 212167
+          },
+          {
+            "network": 12,
+            "segment": 1,
+            "J": 80,
+            "converged": true,
+            "eligible": 249842,
+            "retained": 249842
+          },
+          {
+            "network": 12,
+            "segment": 2,
+            "J": 41,
+            "converged": true,
+            "eligible": 250298,
+            "retained": 250298
+          },
+          {
+            "network": 12,
+            "segment": 3,
+            "J": 3,
+            "converged": true,
+            "eligible": 249368,
+            "retained": 249368
+          },
+          {
+            "network": 12,
+            "segment": 4,
+            "J": 3,
+            "converged": true,
+            "eligible": 250320,
+            "retained": 250320
+          },
+          {
+            "network": 12,
+            "segment": 5,
+            "J": 28,
+            "converged": true,
+            "eligible": 212126,
+            "retained": 212126
+          }
+        ]
+      },
+      {
+        "cycle": 6,
+        "native_inclusive": {
+          "MAP_seconds": 0.082346334,
+          "serialization_seconds": 0.055581875,
+          "verification_seconds": 0.698981209,
+          "serialization_verification_seconds": 0.875490292,
+          "wall_seconds": 8.096764625,
+          "cpu_seconds": 7.359905
+        },
+        "sequential_segment_totals": {
+          "wall_seconds": 2.4571903749999997,
+          "loading_seconds": 0.41472829,
+          "projection_seconds": 0.066084042,
+          "input_serialization_and_injection_seconds": 0.255231165,
+          "subtraction_seconds": 0.003958625,
+          "preparation_seconds": 0.017112874,
+          "learning_seconds": 0.996897959,
+          "application_seconds": 0.013893957,
+          "apply_restore_seconds": 0.015784458,
+          "initialization_seconds": 0.423285124,
+          "covariance_seconds": 0.113913999,
+          "decomposition_seconds": 0.30935487500000003,
+          "coefficient_seconds": 0.133083927,
+          "basis_seconds": 0.14528787700000004,
+          "check_seconds": 0.286003244
+        },
+        "native_adapter_unattributed_seconds": 4.681737624,
+        "solver_J": [
+          {
+            "network": 11,
+            "segment": 0,
+            "J": 4,
+            "converged": true,
+            "eligible": 215737,
+            "retained": 215737
+          },
+          {
+            "network": 11,
+            "segment": 1,
+            "J": 11,
+            "converged": true,
+            "eligible": 253892,
+            "retained": 253892
+          },
+          {
+            "network": 11,
+            "segment": 2,
+            "J": 43,
+            "converged": true,
+            "eligible": 253014,
+            "retained": 253014
+          },
+          {
+            "network": 11,
+            "segment": 3,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 4,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 5,
+            "J": 3,
+            "converged": true,
+            "eligible": 215429,
+            "retained": 215429
+          },
+          {
+            "network": 12,
+            "segment": 0,
+            "J": 23,
+            "converged": true,
+            "eligible": 212167,
+            "retained": 212167
+          },
+          {
+            "network": 12,
+            "segment": 1,
+            "J": 80,
+            "converged": true,
+            "eligible": 249842,
+            "retained": 249842
+          },
+          {
+            "network": 12,
+            "segment": 2,
+            "J": 41,
+            "converged": true,
+            "eligible": 250298,
+            "retained": 250298
+          },
+          {
+            "network": 12,
+            "segment": 3,
+            "J": 3,
+            "converged": true,
+            "eligible": 249368,
+            "retained": 249368
+          },
+          {
+            "network": 12,
+            "segment": 4,
+            "J": 3,
+            "converged": true,
+            "eligible": 250320,
+            "retained": 250320
+          },
+          {
+            "network": 12,
+            "segment": 5,
+            "J": 28,
+            "converged": true,
+            "eligible": 212126,
+            "retained": 212126
+          }
+        ]
+      },
+      {
+        "cycle": 7,
+        "native_inclusive": {
+          "MAP_seconds": 0.083785625,
+          "serialization_seconds": 0.050408625,
+          "verification_seconds": 0.704032958,
+          "serialization_verification_seconds": 0.873715542,
+          "wall_seconds": 8.116662583,
+          "cpu_seconds": 7.343224
+        },
+        "sequential_segment_totals": {
+          "wall_seconds": 2.4957978769999998,
+          "loading_seconds": 0.427728878,
+          "projection_seconds": 0.065042543,
+          "input_serialization_and_injection_seconds": 0.264284586,
+          "subtraction_seconds": 0.003866082,
+          "preparation_seconds": 0.017140836,
+          "learning_seconds": 0.992112501,
+          "application_seconds": 0.014150625,
+          "apply_restore_seconds": 0.016058083,
+          "initialization_seconds": 0.424218041,
+          "covariance_seconds": 0.11589275,
+          "decomposition_seconds": 0.308309665,
+          "coefficient_seconds": 0.13231775599999998,
+          "basis_seconds": 0.14210762999999998,
+          "check_seconds": 0.284321133
+        },
+        "native_adapter_unattributed_seconds": 4.663363539000001,
+        "solver_J": [
+          {
+            "network": 11,
+            "segment": 0,
+            "J": 4,
+            "converged": true,
+            "eligible": 215737,
+            "retained": 215737
+          },
+          {
+            "network": 11,
+            "segment": 1,
+            "J": 11,
+            "converged": true,
+            "eligible": 253892,
+            "retained": 253892
+          },
+          {
+            "network": 11,
+            "segment": 2,
+            "J": 43,
+            "converged": true,
+            "eligible": 253014,
+            "retained": 253014
+          },
+          {
+            "network": 11,
+            "segment": 3,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 4,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 5,
+            "J": 3,
+            "converged": true,
+            "eligible": 215429,
+            "retained": 215429
+          },
+          {
+            "network": 12,
+            "segment": 0,
+            "J": 23,
+            "converged": true,
+            "eligible": 212167,
+            "retained": 212167
+          },
+          {
+            "network": 12,
+            "segment": 1,
+            "J": 80,
+            "converged": true,
+            "eligible": 249842,
+            "retained": 249842
+          },
+          {
+            "network": 12,
+            "segment": 2,
+            "J": 41,
+            "converged": true,
+            "eligible": 250298,
+            "retained": 250298
+          },
+          {
+            "network": 12,
+            "segment": 3,
+            "J": 3,
+            "converged": true,
+            "eligible": 249368,
+            "retained": 249368
+          },
+          {
+            "network": 12,
+            "segment": 4,
+            "J": 3,
+            "converged": true,
+            "eligible": 250320,
+            "retained": 250320
+          },
+          {
+            "network": 12,
+            "segment": 5,
+            "J": 28,
+            "converged": true,
+            "eligible": 212126,
+            "retained": 212126
+          }
+        ]
+      },
+      {
+        "cycle": 8,
+        "native_inclusive": {
+          "MAP_seconds": 0.083442792,
+          "serialization_seconds": 0.0404795,
+          "verification_seconds": 0.703911333,
+          "serialization_verification_seconds": 0.863331125,
+          "wall_seconds": 7.965675375,
+          "cpu_seconds": 7.32418
+        },
+        "sequential_segment_totals": {
+          "wall_seconds": 2.365285709,
+          "loading_seconds": 0.367693541,
+          "projection_seconds": 0.066174253,
+          "input_serialization_and_injection_seconds": 0.223239747,
+          "subtraction_seconds": 0.0037024609999999998,
+          "preparation_seconds": 0.016420459,
+          "learning_seconds": 0.99190875,
+          "application_seconds": 0.014084,
+          "apply_restore_seconds": 0.015911250000000002,
+          "initialization_seconds": 0.422676874,
+          "covariance_seconds": 0.111468957,
+          "decomposition_seconds": 0.311195791,
+          "coefficient_seconds": 0.13310166800000003,
+          "basis_seconds": 0.14422433399999998,
+          "check_seconds": 0.282806377
+        },
+        "native_adapter_unattributed_seconds": 4.653615749,
+        "solver_J": [
+          {
+            "network": 11,
+            "segment": 0,
+            "J": 4,
+            "converged": true,
+            "eligible": 215737,
+            "retained": 215737
+          },
+          {
+            "network": 11,
+            "segment": 1,
+            "J": 11,
+            "converged": true,
+            "eligible": 253892,
+            "retained": 253892
+          },
+          {
+            "network": 11,
+            "segment": 2,
+            "J": 43,
+            "converged": true,
+            "eligible": 253014,
+            "retained": 253014
+          },
+          {
+            "network": 11,
+            "segment": 3,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 4,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 5,
+            "J": 3,
+            "converged": true,
+            "eligible": 215429,
+            "retained": 215429
+          },
+          {
+            "network": 12,
+            "segment": 0,
+            "J": 23,
+            "converged": true,
+            "eligible": 212167,
+            "retained": 212167
+          },
+          {
+            "network": 12,
+            "segment": 1,
+            "J": 79,
+            "converged": true,
+            "eligible": 249842,
+            "retained": 249842
+          },
+          {
+            "network": 12,
+            "segment": 2,
+            "J": 41,
+            "converged": true,
+            "eligible": 250298,
+            "retained": 250298
+          },
+          {
+            "network": 12,
+            "segment": 3,
+            "J": 3,
+            "converged": true,
+            "eligible": 249368,
+            "retained": 249368
+          },
+          {
+            "network": 12,
+            "segment": 4,
+            "J": 3,
+            "converged": true,
+            "eligible": 250320,
+            "retained": 250320
+          },
+          {
+            "network": 12,
+            "segment": 5,
+            "J": 28,
+            "converged": true,
+            "eligible": 212126,
+            "retained": 212126
+          }
+        ]
+      },
+      {
+        "cycle": 9,
+        "native_inclusive": {
+          "MAP_seconds": 0.083439375,
+          "serialization_seconds": 0.053675834,
+          "verification_seconds": 0.710057583,
+          "serialization_verification_seconds": 0.886365459,
+          "wall_seconds": 7.9733725,
+          "cpu_seconds": 7.305716
+        },
+        "sequential_segment_totals": {
+          "wall_seconds": 2.366109874,
+          "loading_seconds": 0.369243623,
+          "projection_seconds": 0.065268875,
+          "input_serialization_and_injection_seconds": 0.29116079100000003,
+          "subtraction_seconds": 0.004125416,
+          "preparation_seconds": 0.016668957,
+          "learning_seconds": 0.986217293,
+          "application_seconds": 0.014109337,
+          "apply_restore_seconds": 0.016048127,
+          "initialization_seconds": 0.423244752,
+          "covariance_seconds": 0.11228020799999999,
+          "decomposition_seconds": 0.310948251,
+          "coefficient_seconds": 0.13160532399999997,
+          "basis_seconds": 0.14207408400000002,
+          "check_seconds": 0.280261916
+        },
+        "native_adapter_unattributed_seconds": 4.637457791999999,
+        "solver_J": [
+          {
+            "network": 11,
+            "segment": 0,
+            "J": 4,
+            "converged": true,
+            "eligible": 215737,
+            "retained": 215737
+          },
+          {
+            "network": 11,
+            "segment": 1,
+            "J": 11,
+            "converged": true,
+            "eligible": 253892,
+            "retained": 253892
+          },
+          {
+            "network": 11,
+            "segment": 2,
+            "J": 43,
+            "converged": true,
+            "eligible": 253014,
+            "retained": 253014
+          },
+          {
+            "network": 11,
+            "segment": 3,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 4,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 5,
+            "J": 3,
+            "converged": true,
+            "eligible": 215429,
+            "retained": 215429
+          },
+          {
+            "network": 12,
+            "segment": 0,
+            "J": 23,
+            "converged": true,
+            "eligible": 212167,
+            "retained": 212167
+          },
+          {
+            "network": 12,
+            "segment": 1,
+            "J": 79,
+            "converged": true,
+            "eligible": 249842,
+            "retained": 249842
+          },
+          {
+            "network": 12,
+            "segment": 2,
+            "J": 41,
+            "converged": true,
+            "eligible": 250298,
+            "retained": 250298
+          },
+          {
+            "network": 12,
+            "segment": 3,
+            "J": 3,
+            "converged": true,
+            "eligible": 249368,
+            "retained": 249368
+          },
+          {
+            "network": 12,
+            "segment": 4,
+            "J": 3,
+            "converged": true,
+            "eligible": 250320,
+            "retained": 250320
+          },
+          {
+            "network": 12,
+            "segment": 5,
+            "J": 28,
+            "converged": true,
+            "eligible": 212126,
+            "retained": 212126
+          }
+        ]
+      },
+      {
+        "cycle": 10,
+        "native_inclusive": {
+          "MAP_seconds": 0.083045459,
+          "serialization_seconds": 0.02870725,
+          "verification_seconds": 0.720385708,
+          "serialization_verification_seconds": 0.872862917,
+          "wall_seconds": 8.099248584,
+          "cpu_seconds": 7.327875
+        },
+        "sequential_segment_totals": {
+          "wall_seconds": 2.490992333,
+          "loading_seconds": 0.40899716399999997,
+          "projection_seconds": 0.066474416,
+          "input_serialization_and_injection_seconds": 0.2665855,
+          "subtraction_seconds": 0.004051209,
+          "preparation_seconds": 0.016935125,
+          "learning_seconds": 0.983796208,
+          "application_seconds": 0.014079877,
+          "apply_restore_seconds": 0.015914539,
+          "initialization_seconds": 0.42420499899999997,
+          "covariance_seconds": 0.113334542,
+          "decomposition_seconds": 0.310855292,
+          "coefficient_seconds": 0.131558837,
+          "basis_seconds": 0.142435494,
+          "check_seconds": 0.276503007
+        },
+        "native_adapter_unattributed_seconds": 4.652347875,
+        "solver_J": [
+          {
+            "network": 11,
+            "segment": 0,
+            "J": 4,
+            "converged": true,
+            "eligible": 215737,
+            "retained": 215737
+          },
+          {
+            "network": 11,
+            "segment": 1,
+            "J": 11,
+            "converged": true,
+            "eligible": 253892,
+            "retained": 253892
+          },
+          {
+            "network": 11,
+            "segment": 2,
+            "J": 43,
+            "converged": true,
+            "eligible": 253014,
+            "retained": 253014
+          },
+          {
+            "network": 11,
+            "segment": 3,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 4,
+            "J": 2,
+            "converged": true,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "network": 11,
+            "segment": 5,
+            "J": 3,
+            "converged": true,
+            "eligible": 215429,
+            "retained": 215429
+          },
+          {
+            "network": 12,
+            "segment": 0,
+            "J": 23,
+            "converged": true,
+            "eligible": 212167,
+            "retained": 212167
+          },
+          {
+            "network": 12,
+            "segment": 1,
+            "J": 79,
+            "converged": true,
+            "eligible": 249842,
+            "retained": 249842
+          },
+          {
+            "network": 12,
+            "segment": 2,
+            "J": 41,
+            "converged": true,
+            "eligible": 250298,
+            "retained": 250298
+          },
+          {
+            "network": 12,
+            "segment": 3,
+            "J": 3,
+            "converged": true,
+            "eligible": 249368,
+            "retained": 249368
+          },
+          {
+            "network": 12,
+            "segment": 4,
+            "J": 3,
+            "converged": true,
+            "eligible": 250320,
+            "retained": 250320
+          },
+          {
+            "network": 12,
+            "segment": 5,
+            "J": 28,
+            "converged": true,
+            "eligible": 212126,
+            "retained": 212126
+          }
+        ]
+      }
+    ]
+  }
+}

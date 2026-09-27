@@ -18,3 +18,5 @@ exception could retain ready=true. All caught cycle exceptions now force
 ready=false and overwrite the current failed state before READY publication.
 Added mocked cleanup failures at every positive N. All57 focused tests pass;
 no real-data attempt consumed. Ownership and bounded scope passed both reviews.
+
+Final preflight passes exact e28f6630fffaba77f78fc2c2cb883c7345ad92f4, tree a4ede0dabf25b69f61a0a0e52e00424511963297. All three dispositions pass,35 independently reproduced tests. Matching binary verified before14 successful original-input trajectories.
