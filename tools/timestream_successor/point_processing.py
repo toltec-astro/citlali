@@ -17,6 +17,7 @@ from point_additive_diagnostics import save_json
 from point_fruit_trajectory import ready_state
 from run_successor_observation import run as invoke
 from inspect_forward_map import require,read_yaml,digest
+from point_timing import timed,span,ready,emit
 
 REPO=Path(__file__).resolve().parents[2]
 _LOCK=threading.Lock();_RESERVED=0
@@ -33,6 +34,7 @@ def size(root):
     return total
 
 
+@timed("native_invocation_including_reservation_hashing_publication")
 def call(out,binary,request,dest,terminal='point-fruit',workers=1,allowance=None):
     global _RESERVED
     budget=read(out/'freeze/budget.json');scope=Path(budget.get('campaign_root',out));allowance=allowance or 48*budget['native_cells']
@@ -51,7 +53,10 @@ def call(out,binary,request,dest,terminal='point-fruit',workers=1,allowance=None
 def record_attempt(out,request):
     """Called under the reservation lock before invocation; failures still count."""
     q=read(request);owner_record=read(verified(q['owner_binding']));k=q['cycle_index']
-    if rank_experiment(out):
+    if speed_experiment(out):
+        from point_speed_experiment import consume
+        consume(Path(read(out/'freeze/budget.json')['campaign_root']),'feedback' if k else 'trajectory',dict(run=out.name,branch=q['branch'],cycle=k))
+    elif rank_experiment(out):
         from point_rank_experiment import consume
         consume(Path(read(out/'freeze/budget.json')['campaign_root']),'feedback' if k else 'trajectory',dict(rank=expected_rank(out),branch=q['branch'],cycle=k))
     kind='feedback' if k else 'injected_initial'
@@ -64,9 +69,16 @@ def record_attempt(out,request):
 
 def parents(out):return read(out/'freeze/parents.json')
 
+def speed_experiment(out):
+    p=out/'freeze/prospective.json'
+    return p.exists() and read(p).get('schema')=='citlali-point-speed-pca-v1'
+
+def feedback_count(out):
+    return read(out/'freeze/prospective.json').get('feedback_count',10) if speed_experiment(out) else 10
+
 def rank_experiment(out):
     p=out/'freeze/prospective.json'
-    return p.exists() and read(p).get('schema')=='citlali-point-ptc-rank-v1'
+    return p.exists() and read(p).get('schema') in ('citlali-point-ptc-rank-v1','citlali-point-speed-pca-v1')
 
 def expected_rank(out):return read(out/'freeze/prospective.json').get('ptc',{}).get('rank',10)
 
@@ -79,6 +91,7 @@ def reference(out):
 def selected_array(out):return read(out/'freeze/prospective.json')['array']
 
 
+@timed("raw_parent_PTC_MAP_initial_guard_noise")
 def upstream(out,binary):
     require(not (out/'UPSTREAM.json').exists() and not (out/'upstream').exists(),'no upstream retry')
     t=time.perf_counter();rc=call(out,binary,out/'inputs/observation.json',out/'upstream','ptc',read(out/'freeze/budget.json').get('network_workers',2),read(out/'freeze/budget.json')['shared_upstream_allowance'])
@@ -92,12 +105,15 @@ def upstream(out,binary):
     q=out/'inputs/map-request.json';save_json(q,dict(schema='citlali-map-saved-ptc-v1',owner_binding=bound(out/'inputs/map-owner.json'),pixel_size_arcsec=2.,coverage_cut=.5,networks=networks))
     require(call(out,binary,q,out/'M0','map')==0,'ordinary initial MAP failed')
     p=dict(map_request=bound(q),parent_plan=bound(out/f'M0/products/{selected_array(out)}/plan.yaml'));save_json(out/'freeze/parents.json',p)
-    if rank_experiment(out):
+    if rank_experiment(out) and not speed_experiment(out):
         from point_rank_experiment import consume
         consume(Path(read(out/'freeze/budget.json')['campaign_root']),'noise',dict(rank=expected_rank(out)))
     c,g=initialize(out/f'M0/products/{selected_array(out)}/map.fits',out/f'freeze/{selected_array(out)}',beam={'a1100':5.,'a1400':7.5,'a2000':10.}[selected_array(out)])
     save_json(out/'UPSTREAM.json',dict(status='accepted' if g['accepted'] else 'source_or_covariance_failed',guard=g,seconds=time.perf_counter()-t,initial_physical_inputs=1,parent=p))
     if c is not None:
+        if speed_experiment(out):
+            shutil.copyfile(out/'freeze/measurement-geometry.json',out/f'freeze/{selected_array(out)}/measurement-geometry.json')
+            c=context(out/f'freeze/{selected_array(out)}')
         m=measurement(c,c['original'],c['support'],g);save_json(out/'freeze/M0-measurement.json',m)
         save_json(out/'freeze/realized.json',[bound(p) for p in sorted((out/f'freeze/{selected_array(out)}').iterdir()) if p.is_file()]+[bound(out/'freeze/M0-measurement.json'),bound(out/'freeze/parents.json'),bound(out/'inputs/map-request.json')])
 
@@ -105,7 +121,7 @@ def upstream(out,binary):
 def owner(out,pol,branch,initial=None):
     if base_route(out):
         p=read(out/'freeze/prospective.json')
-        o=dict(identity='POINT-PTC-RANK-v1' if rank_experiment(out) else 'BRIGHT-POINT-BASE-v1',observation=p['observation'],outside_disk_no_feedback=True,direct_identical_operand_rejoin=True,gain=1,nonzero_cycles=10,policy='BASE-POINT',source_method='POINT-EXPECTED-v1',threshold=3.,prospective=bound(out/'freeze/prospective.json'),parents={selected_array(out):parents(out)},injections={})
+        o=dict(identity='POINT-SPEED-PCA-v1' if speed_experiment(out) else 'POINT-PTC-RANK-v1' if rank_experiment(out) else 'BRIGHT-POINT-BASE-v1',observation=p['observation'],outside_disk_no_feedback=True,direct_identical_operand_rejoin=True,gain=1,nonzero_cycles=feedback_count(out),policy='BASE-POINT',source_method='POINT-EXPECTED-v1',threshold=3.,prospective=bound(out/'freeze/prospective.json'),parents={selected_array(out):parents(out)},injections={})
         if rank_experiment(out):
             o['injections']={selected_array(out):{b:bound(out/f'freeze/shapes/{b}.fits') for b in BRANCHES[1:4]}}
             if branch.startswith('C-') and initial:
@@ -125,8 +141,8 @@ def owner(out,pol,branch,initial=None):
 
 def request(out,op,pol,branch,k,cp,previous=None):
     if rank_experiment(out):
-        require(pol=='BASE-POINT' and branch in BRANCHES[:4] and 0<=k<=10,'bounded rank matrix')
-        q=dict(schema='citlali-point-ptc-rank-v1',method='point-ptc-rank-v1',mode='zero' if k==0 else 'reference',array=selected_array(out),branch=branch,cycle_index=k,candidate=bound(cp),owner_binding=bound(op),**parents(out))
+        require(pol=='BASE-POINT' and branch in BRANCHES[:4] and 0<=k<=feedback_count(out),'bounded rank matrix')
+        q=dict(schema='citlali-point-speed-pca-v1' if speed_experiment(out) else 'citlali-point-ptc-rank-v1',method='point-speed-pca-v1' if speed_experiment(out) else 'point-ptc-rank-v1',mode='zero' if k==0 else 'reference',array=selected_array(out),branch=branch,cycle_index=k,candidate=bound(cp),owner_binding=bound(op),**parents(out))
         if k:q['previous_state']=bound(previous)
         if branch.startswith('C-'):q['injection']=bound(out/f'freeze/shapes/{branch}.fits')
         return q
@@ -140,6 +156,7 @@ def request(out,op,pol,branch,k,cp,previous=None):
     return q
 
 
+@timed("cycle_cleanup")
 def cleanup_cycle(out,products,keep_projection=False,keep_injected=False):
     # Only exact native producer payload names, never broad directory removal.
     targets=[]
@@ -156,6 +173,7 @@ def cleanup_cycle(out,products,keep_projection=False,keep_injected=False):
                 require(p.resolve().is_relative_to(out.resolve()) and not p.is_symlink(),'unsafe temporary target');ref=bound(p);ref['bytes']=p.stat().st_size;log.write(json.dumps(ref)+'\n');log.flush();p.unlink()
 
 
+@timed("trajectory_including_endpoint")
 def execute_branch(out,binary,pol,branch):
     array=selected_array(out);infer_stage=infer_base if base_route(out) else infer
     start=time.perf_counter();c=context(out/f'freeze/{array}');dest=out/'run'/pol/branch/array;dest.mkdir(parents=True);init=dest/'initial';init.mkdir()
@@ -174,7 +192,8 @@ def execute_branch(out,binary,pol,branch):
     prior=ready_state(array,0,cp,total,receipt,parents(out),cause is None,reason);prior.update(branch=branch,policy=pol,owner_sha256=digest(op),measurement=m,admission=summary,stop_kind=cause);sp=init/'state.json';save_json(sp,prior);prior['state_path']=str(sp)
     if physical:prior['response']=r['response']
     history=[prior]
-    for k in range(1,11):
+    ready(out,0,total,m,sp)
+    for k in range(1,feedback_count(out)+1):
         if not prior['ready']:break
         d=dest/f'cycle-{k:02d}';d.mkdir();q=d/'request.json';save_json(q,request(out,op,pol,branch,k,verified(prior['candidate']),Path(prior['state_path'])))
         rec=dict(array=array,policy=pol,branch=branch,cycle_index=k,ready=False);tic=time.perf_counter()
@@ -200,11 +219,15 @@ def execute_branch(out,binary,pol,branch):
             cleanup_cycle(out,products,keep_projection=branch=='REF' and not reference(out))
         except (ValueError,RuntimeError,KeyError,OSError) as e:rec.update(stop_kind='computation_or_processing',stop_reason=str(e))
         rec['wall_seconds']=time.perf_counter()-tic;save_json(d/'cycle.json',rec);history.append(rec);prior=rec
+        if 'measurement' in rec:ready(out,k,products/'total.fits',m,sp)
         print(json.dumps(dict(policy=pol,branch=branch,cycle=k,ready=rec['ready'],reason=rec.get('stop_reason'))),flush=True)
     result=dict(array=array,policy=pol,branch=branch,ready=history[-1]['ready'],completed_cycle=history[-1]['cycle_index'],stop_reason=history[-1].get('stop_reason'),histories=history,actual_feedback_applications=len(history)-1,wall_seconds=time.perf_counter()-start,m10_applied=False)
     save_json(dest/'SUMMARY.json',result)
-    if branch=='REF' and result['ready'] and result['completed_cycle']==10:
-        if rank_experiment(out):
+    if branch=='REF' and result['ready'] and result['completed_cycle']==feedback_count(out):
+        if speed_experiment(out):
+            from point_speed_experiment import consume
+            consume(Path(read(out/'freeze/budget.json')['campaign_root']),'endpoint',dict(run=out.name,cycle=result['completed_cycle']))
+        elif rank_experiment(out):
             from point_rank_experiment import consume
             consume(Path(read(out/'freeze/budget.json')['campaign_root']),'endpoint',dict(rank=expected_rank(out)))
         save_json(dest/'ENDPOINT-ATTEMPT.json',dict(status='started',diagnostic_only=True,maximum_attempts=1))
@@ -215,5 +238,6 @@ def execute_branch(out,binary,pol,branch):
             result['endpoint_status']='unavailable';result['endpoint_reason']=str(exc)
         save_json(dest/'ENDPOINT-ATTEMPT.json',dict(status=result['endpoint_status'],reason=result.get('endpoint_reason'),diagnostic_only=True,maximum_attempts=1))
         save_json(dest/'SUMMARY.json',result)
+        emit('analysis_complete',cycle=result['completed_cycle'],status=result['endpoint_status'])
     return result
 

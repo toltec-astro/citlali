@@ -1,3 +1,4 @@
+from point_timing import timed
 """Fixed guarded measurement/admission boundary for the bounded POINT campaign.
 
 No PTC, noise learning or historical fitter. Brightness mJy/nominal beam;
@@ -19,6 +20,7 @@ POLICIES=('BASE-POINT','CORR','DIAG')
 BRANCHES=('REF','C-core-plus','C-core-minus','C-shoulder','D-seed-shoulder')
 
 
+@timed("source_measurements")
 def measurement(c,signal,support,guard):
     """Describe the already executed guard fit; never fit a second time."""
     f=c['fixed'];p=guard['accepted_parameters'];good=guard['accepted']
@@ -41,6 +43,7 @@ def infer(c,signal,support):
     return measurement(c,signal,support,prepared[0]),prepared
 
 
+@timed("feedback_candidate_publication")
 def publish(dest,c,signal,prepared,policy,tau):
     dest.mkdir(exist_ok=True,parents=True);guard,base,fields=prepared
     require(policy in POLICIES,'unknown guarded policy')
@@ -99,6 +102,7 @@ def ideal_comparison(c,reference,actual,ideal):
                 raw_aperture_and_background_increments=raw,ratio_floor_native_units=RATIO_FLOOR)
 
 
+@timed("source_fit_measurement")
 def infer_base(c, signal, support):
     """Same accepted fit and BASE candidate; no parked supplemental scores."""
     from point_expected import measure_expected, candidate

@@ -1,0 +1,616 @@
+Test project /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build
+      Start  1: citlali_test_NOT_BUILT
+Could not find executable citlali_test_NOT_BUILT
+Looked in the following places:
+citlali_test_NOT_BUILT
+citlali_test_NOT_BUILT
+Release/citlali_test_NOT_BUILT
+Release/citlali_test_NOT_BUILT
+Debug/citlali_test_NOT_BUILT
+Debug/citlali_test_NOT_BUILT
+MinSizeRel/citlali_test_NOT_BUILT
+MinSizeRel/citlali_test_NOT_BUILT
+RelWithDebInfo/citlali_test_NOT_BUILT
+RelWithDebInfo/citlali_test_NOT_BUILT
+Deployment/citlali_test_NOT_BUILT
+Deployment/citlali_test_NOT_BUILT
+Development/citlali_test_NOT_BUILT
+Development/citlali_test_NOT_BUILT
+Unable to find executable: citlali_test_NOT_BUILT
+ 1/61 Test  #1: citlali_test_NOT_BUILT .....................................................................***Not Run   0.00 sec
+      Start  2: citlali_jinc_map_contract_test_NOT_BUILT
+Could not find executable citlali_jinc_map_contract_test_NOT_BUILT
+Looked in the following places:
+citlali_jinc_map_contract_test_NOT_BUILT
+citlali_jinc_map_contract_test_NOT_BUILT
+Release/citlali_jinc_map_contract_test_NOT_BUILT
+Release/citlali_jinc_map_contract_test_NOT_BUILT
+Debug/citlali_jinc_map_contract_test_NOT_BUILT
+Debug/citlali_jinc_map_contract_test_NOT_BUILT
+MinSizeRel/citlali_jinc_map_contract_test_NOT_BUILT
+MinSizeRel/citlali_jinc_map_contract_test_NOT_BUILT
+RelWithDebInfo/citlali_jinc_map_contract_test_NOT_BUILT
+RelWithDebInfo/citlali_jinc_map_contract_test_NOT_BUILT
+Deployment/citlali_jinc_map_contract_test_NOT_BUILT
+Deployment/citlali_jinc_map_contract_test_NOT_BUILT
+Development/citlali_jinc_map_contract_test_NOT_BUILT
+Development/citlali_jinc_map_contract_test_NOT_BUILT
+Unable to find executable: citlali_jinc_map_contract_test_NOT_BUILT
+ 2/61 Test  #2: citlali_jinc_map_contract_test_NOT_BUILT ...................................................***Not Run   0.00 sec
+      Start  3: citlali_sci_align_test_NOT_BUILT
+Could not find executable citlali_sci_align_test_NOT_BUILT
+Looked in the following places:
+citlali_sci_align_test_NOT_BUILT
+citlali_sci_align_test_NOT_BUILT
+Release/citlali_sci_align_test_NOT_BUILT
+Release/citlali_sci_align_test_NOT_BUILT
+Debug/citlali_sci_align_test_NOT_BUILT
+Debug/citlali_sci_align_test_NOT_BUILT
+MinSizeRel/citlali_sci_align_test_NOT_BUILT
+MinSizeRel/citlali_sci_align_test_NOT_BUILT
+RelWithDebInfo/citlali_sci_align_test_NOT_BUILT
+RelWithDebInfo/citlali_sci_align_test_NOT_BUILT
+Deployment/citlali_sci_align_test_NOT_BUILT
+Deployment/citlali_sci_align_test_NOT_BUILT
+Development/citlali_sci_align_test_NOT_BUILT
+Development/citlali_sci_align_test_NOT_BUILT
+Unable to find executable: citlali_sci_align_test_NOT_BUILT
+ 3/61 Test  #3: citlali_sci_align_test_NOT_BUILT ...........................................................***Not Run   0.00 sec
+      Start  4: citlali_timestream_successor_native_paired_readout_test_NOT_BUILT
+Could not find executable citlali_timestream_successor_native_paired_readout_test_NOT_BUILT
+Looked in the following places:
+citlali_timestream_successor_native_paired_readout_test_NOT_BUILT
+citlali_timestream_successor_native_paired_readout_test_NOT_BUILT
+Release/citlali_timestream_successor_native_paired_readout_test_NOT_BUILT
+Release/citlali_timestream_successor_native_paired_readout_test_NOT_BUILT
+Debug/citlali_timestream_successor_native_paired_readout_test_NOT_BUILT
+Debug/citlali_timestream_successor_native_paired_readout_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_native_paired_readout_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_native_paired_readout_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_native_paired_readout_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_native_paired_readout_test_NOT_BUILT
+Deployment/citlali_timestream_successor_native_paired_readout_test_NOT_BUILT
+Deployment/citlali_timestream_successor_native_paired_readout_test_NOT_BUILT
+Development/citlali_timestream_successor_native_paired_readout_test_NOT_BUILT
+Development/citlali_timestream_successor_native_paired_readout_test_NOT_BUILT
+Unable to find executable: citlali_timestream_successor_native_paired_readout_test_NOT_BUILT
+ 4/61 Test  #4: citlali_timestream_successor_native_paired_readout_test_NOT_BUILT ..........................***Not Run   0.00 sec
+      Start  5: citlali_timestream_successor_ast_scan_motion_test_NOT_BUILT
+Could not find executable citlali_timestream_successor_ast_scan_motion_test_NOT_BUILT
+Looked in the following places:
+citlali_timestream_successor_ast_scan_motion_test_NOT_BUILT
+citlali_timestream_successor_ast_scan_motion_test_NOT_BUILT
+Release/citlali_timestream_successor_ast_scan_motion_test_NOT_BUILT
+Release/citlali_timestream_successor_ast_scan_motion_test_NOT_BUILT
+Debug/citlali_timestream_successor_ast_scan_motion_test_NOT_BUILT
+Debug/citlali_timestream_successor_ast_scan_motion_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_ast_scan_motion_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_ast_scan_motion_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_ast_scan_motion_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_ast_scan_motion_test_NOT_BUILT
+Deployment/citlali_timestream_successor_ast_scan_motion_test_NOT_BUILT
+Deployment/citlali_timestream_successor_ast_scan_motion_test_NOT_BUILT
+Development/citlali_timestream_successor_ast_scan_motion_test_NOT_BUILT
+Development/citlali_timestream_successor_ast_scan_motion_test_NOT_BUILT
+Unable to find executable: citlali_timestream_successor_ast_scan_motion_test_NOT_BUILT
+ 5/61 Test  #5: citlali_timestream_successor_ast_scan_motion_test_NOT_BUILT ................................***Not Run   0.00 sec
+      Start  6: citlali_timestream_successor_identity_test_NOT_BUILT
+Could not find executable citlali_timestream_successor_identity_test_NOT_BUILT
+Looked in the following places:
+citlali_timestream_successor_identity_test_NOT_BUILT
+citlali_timestream_successor_identity_test_NOT_BUILT
+Release/citlali_timestream_successor_identity_test_NOT_BUILT
+Release/citlali_timestream_successor_identity_test_NOT_BUILT
+Debug/citlali_timestream_successor_identity_test_NOT_BUILT
+Debug/citlali_timestream_successor_identity_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_identity_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_identity_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_identity_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_identity_test_NOT_BUILT
+Deployment/citlali_timestream_successor_identity_test_NOT_BUILT
+Deployment/citlali_timestream_successor_identity_test_NOT_BUILT
+Development/citlali_timestream_successor_identity_test_NOT_BUILT
+Development/citlali_timestream_successor_identity_test_NOT_BUILT
+Unable to find executable: citlali_timestream_successor_identity_test_NOT_BUILT
+ 6/61 Test  #6: citlali_timestream_successor_identity_test_NOT_BUILT .......................................***Not Run   0.00 sec
+      Start  7: citlali_timestream_successor_identity_route_context_test_NOT_BUILT
+Could not find executable citlali_timestream_successor_identity_route_context_test_NOT_BUILT
+Looked in the following places:
+citlali_timestream_successor_identity_route_context_test_NOT_BUILT
+citlali_timestream_successor_identity_route_context_test_NOT_BUILT
+Release/citlali_timestream_successor_identity_route_context_test_NOT_BUILT
+Release/citlali_timestream_successor_identity_route_context_test_NOT_BUILT
+Debug/citlali_timestream_successor_identity_route_context_test_NOT_BUILT
+Debug/citlali_timestream_successor_identity_route_context_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_identity_route_context_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_identity_route_context_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_identity_route_context_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_identity_route_context_test_NOT_BUILT
+Deployment/citlali_timestream_successor_identity_route_context_test_NOT_BUILT
+Deployment/citlali_timestream_successor_identity_route_context_test_NOT_BUILT
+Development/citlali_timestream_successor_identity_route_context_test_NOT_BUILT
+Development/citlali_timestream_successor_identity_route_context_test_NOT_BUILT
+Unable to find executable: citlali_timestream_successor_identity_route_context_test_NOT_BUILT
+ 7/61 Test  #7: citlali_timestream_successor_identity_route_context_test_NOT_BUILT .........................***Not Run   0.00 sec
+      Start  8: citlali_timestream_successor_d2_native_measurement_test_NOT_BUILT
+Could not find executable citlali_timestream_successor_d2_native_measurement_test_NOT_BUILT
+Looked in the following places:
+citlali_timestream_successor_d2_native_measurement_test_NOT_BUILT
+citlali_timestream_successor_d2_native_measurement_test_NOT_BUILT
+Release/citlali_timestream_successor_d2_native_measurement_test_NOT_BUILT
+Release/citlali_timestream_successor_d2_native_measurement_test_NOT_BUILT
+Debug/citlali_timestream_successor_d2_native_measurement_test_NOT_BUILT
+Debug/citlali_timestream_successor_d2_native_measurement_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_d2_native_measurement_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_d2_native_measurement_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_d2_native_measurement_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_d2_native_measurement_test_NOT_BUILT
+Deployment/citlali_timestream_successor_d2_native_measurement_test_NOT_BUILT
+Deployment/citlali_timestream_successor_d2_native_measurement_test_NOT_BUILT
+Development/citlali_timestream_successor_d2_native_measurement_test_NOT_BUILT
+Development/citlali_timestream_successor_d2_native_measurement_test_NOT_BUILT
+Unable to find executable: citlali_timestream_successor_d2_native_measurement_test_NOT_BUILT
+ 8/61 Test  #8: citlali_timestream_successor_d2_native_measurement_test_NOT_BUILT ..........................***Not Run   0.00 sec
+      Start  9: citlali_timestream_successor_rtc_spike_learn_test_NOT_BUILT
+Could not find executable citlali_timestream_successor_rtc_spike_learn_test_NOT_BUILT
+Looked in the following places:
+citlali_timestream_successor_rtc_spike_learn_test_NOT_BUILT
+citlali_timestream_successor_rtc_spike_learn_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_spike_learn_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_spike_learn_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_spike_learn_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_spike_learn_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_spike_learn_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_spike_learn_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_spike_learn_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_spike_learn_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_spike_learn_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_spike_learn_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_spike_learn_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_spike_learn_test_NOT_BUILT
+Unable to find executable: citlali_timestream_successor_rtc_spike_learn_test_NOT_BUILT
+ 9/61 Test  #9: citlali_timestream_successor_rtc_spike_learn_test_NOT_BUILT ................................***Not Run   0.00 sec
+      Start 10: citlali_timestream_successor_rtc_event_background_test_NOT_BUILT
+Could not find executable citlali_timestream_successor_rtc_event_background_test_NOT_BUILT
+Looked in the following places:
+citlali_timestream_successor_rtc_event_background_test_NOT_BUILT
+citlali_timestream_successor_rtc_event_background_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_event_background_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_event_background_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_event_background_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_event_background_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_event_background_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_event_background_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_event_background_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_event_background_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_event_background_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_event_background_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_event_background_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_event_background_test_NOT_BUILT
+Unable to find executable: citlali_timestream_successor_rtc_event_background_test_NOT_BUILT
+10/61 Test #10: citlali_timestream_successor_rtc_event_background_test_NOT_BUILT ...........................***Not Run   0.00 sec
+      Start 11: citlali_timestream_successor_rtc_event_assessment_test_NOT_BUILT
+Could not find executable citlali_timestream_successor_rtc_event_assessment_test_NOT_BUILT
+Looked in the following places:
+citlali_timestream_successor_rtc_event_assessment_test_NOT_BUILT
+citlali_timestream_successor_rtc_event_assessment_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_event_assessment_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_event_assessment_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_event_assessment_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_event_assessment_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_event_assessment_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_event_assessment_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_event_assessment_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_event_assessment_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_event_assessment_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_event_assessment_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_event_assessment_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_event_assessment_test_NOT_BUILT
+Unable to find executable: citlali_timestream_successor_rtc_event_assessment_test_NOT_BUILT
+11/61 Test #11: citlali_timestream_successor_rtc_event_assessment_test_NOT_BUILT ...........................***Not Run   0.00 sec
+      Start 12: citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+Could not find executable citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+Looked in the following places:
+citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+Unable to find executable: citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+12/61 Test #12: citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT ...........................***Not Run   0.00 sec
+      Start 13: citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+Could not find executable citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+Looked in the following places:
+citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+Unable to find executable: citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+13/61 Test #13: citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT ............................***Not Run   0.00 sec
+      Start 14: citlali_science_map_fits_products_test_NOT_BUILT
+Could not find executable citlali_science_map_fits_products_test_NOT_BUILT
+Looked in the following places:
+citlali_science_map_fits_products_test_NOT_BUILT
+citlali_science_map_fits_products_test_NOT_BUILT
+Release/citlali_science_map_fits_products_test_NOT_BUILT
+Release/citlali_science_map_fits_products_test_NOT_BUILT
+Debug/citlali_science_map_fits_products_test_NOT_BUILT
+Debug/citlali_science_map_fits_products_test_NOT_BUILT
+MinSizeRel/citlali_science_map_fits_products_test_NOT_BUILT
+MinSizeRel/citlali_science_map_fits_products_test_NOT_BUILT
+RelWithDebInfo/citlali_science_map_fits_products_test_NOT_BUILT
+RelWithDebInfo/citlali_science_map_fits_products_test_NOT_BUILT
+Deployment/citlali_science_map_fits_products_test_NOT_BUILT
+Deployment/citlali_science_map_fits_products_test_NOT_BUILT
+Development/citlali_science_map_fits_products_test_NOT_BUILT
+Development/citlali_science_map_fits_products_test_NOT_BUILT
+Unable to find executable: citlali_science_map_fits_products_test_NOT_BUILT
+14/61 Test #14: citlali_science_map_fits_products_test_NOT_BUILT ...........................................***Not Run   0.00 sec
+      Start 15: citlali_jinc_parallel_ownership_test_NOT_BUILT
+Could not find executable citlali_jinc_parallel_ownership_test_NOT_BUILT
+Looked in the following places:
+citlali_jinc_parallel_ownership_test_NOT_BUILT
+citlali_jinc_parallel_ownership_test_NOT_BUILT
+Release/citlali_jinc_parallel_ownership_test_NOT_BUILT
+Release/citlali_jinc_parallel_ownership_test_NOT_BUILT
+Debug/citlali_jinc_parallel_ownership_test_NOT_BUILT
+Debug/citlali_jinc_parallel_ownership_test_NOT_BUILT
+MinSizeRel/citlali_jinc_parallel_ownership_test_NOT_BUILT
+MinSizeRel/citlali_jinc_parallel_ownership_test_NOT_BUILT
+RelWithDebInfo/citlali_jinc_parallel_ownership_test_NOT_BUILT
+RelWithDebInfo/citlali_jinc_parallel_ownership_test_NOT_BUILT
+Deployment/citlali_jinc_parallel_ownership_test_NOT_BUILT
+Deployment/citlali_jinc_parallel_ownership_test_NOT_BUILT
+Development/citlali_jinc_parallel_ownership_test_NOT_BUILT
+Development/citlali_jinc_parallel_ownership_test_NOT_BUILT
+Unable to find executable: citlali_jinc_parallel_ownership_test_NOT_BUILT
+15/61 Test #15: citlali_jinc_parallel_ownership_test_NOT_BUILT .............................................***Not Run   0.00 sec
+      Start 16: citlali_safety_test_NOT_BUILT
+Could not find executable citlali_safety_test_NOT_BUILT
+Looked in the following places:
+citlali_safety_test_NOT_BUILT
+citlali_safety_test_NOT_BUILT
+Release/citlali_safety_test_NOT_BUILT
+Release/citlali_safety_test_NOT_BUILT
+Debug/citlali_safety_test_NOT_BUILT
+Debug/citlali_safety_test_NOT_BUILT
+MinSizeRel/citlali_safety_test_NOT_BUILT
+MinSizeRel/citlali_safety_test_NOT_BUILT
+RelWithDebInfo/citlali_safety_test_NOT_BUILT
+RelWithDebInfo/citlali_safety_test_NOT_BUILT
+Deployment/citlali_safety_test_NOT_BUILT
+Deployment/citlali_safety_test_NOT_BUILT
+Development/citlali_safety_test_NOT_BUILT
+Development/citlali_safety_test_NOT_BUILT
+Unable to find executable: citlali_safety_test_NOT_BUILT
+16/61 Test #16: citlali_safety_test_NOT_BUILT ..............................................................***Not Run   0.00 sec
+      Start 17: citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+Could not find executable citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+Looked in the following places:
+citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+Unable to find executable: citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+17/61 Test #17: citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT ..........................***Not Run   0.00 sec
+      Start 18: citlali_timestream_successor_rtc_jump_exclusion_test_NOT_BUILT
+Could not find executable citlali_timestream_successor_rtc_jump_exclusion_test_NOT_BUILT
+Looked in the following places:
+citlali_timestream_successor_rtc_jump_exclusion_test_NOT_BUILT
+citlali_timestream_successor_rtc_jump_exclusion_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_jump_exclusion_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_jump_exclusion_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_jump_exclusion_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_jump_exclusion_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_jump_exclusion_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_jump_exclusion_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_jump_exclusion_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_jump_exclusion_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_jump_exclusion_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_jump_exclusion_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_jump_exclusion_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_jump_exclusion_test_NOT_BUILT
+Unable to find executable: citlali_timestream_successor_rtc_jump_exclusion_test_NOT_BUILT
+18/61 Test #18: citlali_timestream_successor_rtc_jump_exclusion_test_NOT_BUILT .............................***Not Run   0.00 sec
+      Start 19: citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+Could not find executable citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+Looked in the following places:
+citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+Unable to find executable: citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+19/61 Test #19: citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT ........................***Not Run   0.00 sec
+      Start 20: citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+Could not find executable citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+Looked in the following places:
+citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+Unable to find executable: citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+20/61 Test #20: citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT .................................***Not Run   0.00 sec
+      Start 21: citlali_timestream_successor_rtc_native_spectral_learn_test_NOT_BUILT
+Could not find executable citlali_timestream_successor_rtc_native_spectral_learn_test_NOT_BUILT
+Looked in the following places:
+citlali_timestream_successor_rtc_native_spectral_learn_test_NOT_BUILT
+citlali_timestream_successor_rtc_native_spectral_learn_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_native_spectral_learn_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_native_spectral_learn_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_native_spectral_learn_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_native_spectral_learn_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_native_spectral_learn_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_native_spectral_learn_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_native_spectral_learn_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_native_spectral_learn_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_native_spectral_learn_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_native_spectral_learn_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_native_spectral_learn_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_native_spectral_learn_test_NOT_BUILT
+Unable to find executable: citlali_timestream_successor_rtc_native_spectral_learn_test_NOT_BUILT
+21/61 Test #21: citlali_timestream_successor_rtc_native_spectral_learn_test_NOT_BUILT ......................***Not Run   0.00 sec
+      Start 22: citlali_timestream_successor_rtc_line_power_test_NOT_BUILT
+Could not find executable citlali_timestream_successor_rtc_line_power_test_NOT_BUILT
+Looked in the following places:
+citlali_timestream_successor_rtc_line_power_test_NOT_BUILT
+citlali_timestream_successor_rtc_line_power_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_line_power_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_line_power_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_line_power_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_line_power_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_line_power_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_line_power_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_line_power_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_line_power_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_line_power_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_line_power_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_line_power_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_line_power_test_NOT_BUILT
+Unable to find executable: citlali_timestream_successor_rtc_line_power_test_NOT_BUILT
+22/61 Test #22: citlali_timestream_successor_rtc_line_power_test_NOT_BUILT .................................***Not Run   0.00 sec
+      Start 23: citlali_rtc_line_transfer_test_NOT_BUILT
+Could not find executable citlali_rtc_line_transfer_test_NOT_BUILT
+Looked in the following places:
+citlali_rtc_line_transfer_test_NOT_BUILT
+citlali_rtc_line_transfer_test_NOT_BUILT
+Release/citlali_rtc_line_transfer_test_NOT_BUILT
+Release/citlali_rtc_line_transfer_test_NOT_BUILT
+Debug/citlali_rtc_line_transfer_test_NOT_BUILT
+Debug/citlali_rtc_line_transfer_test_NOT_BUILT
+MinSizeRel/citlali_rtc_line_transfer_test_NOT_BUILT
+MinSizeRel/citlali_rtc_line_transfer_test_NOT_BUILT
+RelWithDebInfo/citlali_rtc_line_transfer_test_NOT_BUILT
+RelWithDebInfo/citlali_rtc_line_transfer_test_NOT_BUILT
+Deployment/citlali_rtc_line_transfer_test_NOT_BUILT
+Deployment/citlali_rtc_line_transfer_test_NOT_BUILT
+Development/citlali_rtc_line_transfer_test_NOT_BUILT
+Development/citlali_rtc_line_transfer_test_NOT_BUILT
+Unable to find executable: citlali_rtc_line_transfer_test_NOT_BUILT
+23/61 Test #23: citlali_rtc_line_transfer_test_NOT_BUILT ...................................................***Not Run   0.00 sec
+      Start 24: citlali_rtc_notch_recovery_test_NOT_BUILT
+Could not find executable citlali_rtc_notch_recovery_test_NOT_BUILT
+Looked in the following places:
+citlali_rtc_notch_recovery_test_NOT_BUILT
+citlali_rtc_notch_recovery_test_NOT_BUILT
+Release/citlali_rtc_notch_recovery_test_NOT_BUILT
+Release/citlali_rtc_notch_recovery_test_NOT_BUILT
+Debug/citlali_rtc_notch_recovery_test_NOT_BUILT
+Debug/citlali_rtc_notch_recovery_test_NOT_BUILT
+MinSizeRel/citlali_rtc_notch_recovery_test_NOT_BUILT
+MinSizeRel/citlali_rtc_notch_recovery_test_NOT_BUILT
+RelWithDebInfo/citlali_rtc_notch_recovery_test_NOT_BUILT
+RelWithDebInfo/citlali_rtc_notch_recovery_test_NOT_BUILT
+Deployment/citlali_rtc_notch_recovery_test_NOT_BUILT
+Deployment/citlali_rtc_notch_recovery_test_NOT_BUILT
+Development/citlali_rtc_notch_recovery_test_NOT_BUILT
+Development/citlali_rtc_notch_recovery_test_NOT_BUILT
+Unable to find executable: citlali_rtc_notch_recovery_test_NOT_BUILT
+24/61 Test #24: citlali_rtc_notch_recovery_test_NOT_BUILT ..................................................***Not Run   0.00 sec
+      Start 25: citlali_rtc_common_mode_test_NOT_BUILT
+Could not find executable citlali_rtc_common_mode_test_NOT_BUILT
+Looked in the following places:
+citlali_rtc_common_mode_test_NOT_BUILT
+citlali_rtc_common_mode_test_NOT_BUILT
+Release/citlali_rtc_common_mode_test_NOT_BUILT
+Release/citlali_rtc_common_mode_test_NOT_BUILT
+Debug/citlali_rtc_common_mode_test_NOT_BUILT
+Debug/citlali_rtc_common_mode_test_NOT_BUILT
+MinSizeRel/citlali_rtc_common_mode_test_NOT_BUILT
+MinSizeRel/citlali_rtc_common_mode_test_NOT_BUILT
+RelWithDebInfo/citlali_rtc_common_mode_test_NOT_BUILT
+RelWithDebInfo/citlali_rtc_common_mode_test_NOT_BUILT
+Deployment/citlali_rtc_common_mode_test_NOT_BUILT
+Deployment/citlali_rtc_common_mode_test_NOT_BUILT
+Development/citlali_rtc_common_mode_test_NOT_BUILT
+Development/citlali_rtc_common_mode_test_NOT_BUILT
+Unable to find executable: citlali_rtc_common_mode_test_NOT_BUILT
+25/61 Test #25: citlali_rtc_common_mode_test_NOT_BUILT .....................................................***Not Run   0.00 sec
+      Start 26: citlali_cal_numerics_test_NOT_BUILT
+Could not find executable citlali_cal_numerics_test_NOT_BUILT
+Looked in the following places:
+citlali_cal_numerics_test_NOT_BUILT
+citlali_cal_numerics_test_NOT_BUILT
+Release/citlali_cal_numerics_test_NOT_BUILT
+Release/citlali_cal_numerics_test_NOT_BUILT
+Debug/citlali_cal_numerics_test_NOT_BUILT
+Debug/citlali_cal_numerics_test_NOT_BUILT
+MinSizeRel/citlali_cal_numerics_test_NOT_BUILT
+MinSizeRel/citlali_cal_numerics_test_NOT_BUILT
+RelWithDebInfo/citlali_cal_numerics_test_NOT_BUILT
+RelWithDebInfo/citlali_cal_numerics_test_NOT_BUILT
+Deployment/citlali_cal_numerics_test_NOT_BUILT
+Deployment/citlali_cal_numerics_test_NOT_BUILT
+Development/citlali_cal_numerics_test_NOT_BUILT
+Development/citlali_cal_numerics_test_NOT_BUILT
+Unable to find executable: citlali_cal_numerics_test_NOT_BUILT
+26/61 Test #26: citlali_cal_numerics_test_NOT_BUILT ........................................................***Not Run   0.00 sec
+      Start 27: citlali::PtcNumerics.CompleteDataMatchesSvdAndDoesNotRestoreMean
+27/61 Test #27: citlali::PtcNumerics.CompleteDataMatchesSvdAndDoesNotRestoreMean ...........................   Passed    0.27 sec
+      Start 28: citlali::PtcNumerics.IncompleteRowsAndGoodPartsOfFlaggedDetectorsContribute
+28/61 Test #28: citlali::PtcNumerics.IncompleteRowsAndGoodPartsOfFlaggedDetectorsContribute ................   Passed    0.01 sec
+      Start 29: citlali::PtcNumerics.ExcludedDonorValuesIncludingNonfiniteNeverEnterArithmetic
+29/61 Test #29: citlali::PtcNumerics.ExcludedDonorValuesIncludingNonfiniteNeverEnterArithmetic .............   Passed    0.01 sec
+      Start 30: citlali::PtcNumerics.NonconvergenceAndDeficiencyDoNotSwitchMethodsOrReduceRank
+30/61 Test #30: citlali::PtcNumerics.NonconvergenceAndDeficiencyDoNotSwitchMethodsOrReduceRank .............   Passed    0.01 sec
+      Start 31: citlali::PtcNumerics.FrozenMaskedResponseIsSameLocalLinearOperator
+31/61 Test #31: citlali::PtcNumerics.FrozenMaskedResponseIsSameLocalLinearOperator .........................   Passed    0.01 sec
+      Start 32: citlali::PtcNumerics.PairwiseUsesDetectorMeansAndOverlapMinusOne
+32/61 Test #32: citlali::PtcNumerics.PairwiseUsesDetectorMeansAndOverlapMinusOne ...........................   Passed    0.01 sec
+      Start 33: citlali::PtcNumerics.UnsupportedLargeRankAndOneTimeRemainBoundedFailures
+33/61 Test #33: citlali::PtcNumerics.UnsupportedLargeRankAndOneTimeRemainBoundedFailures ...................   Passed    0.01 sec
+      Start 34: citlali::PtcNumerics.UnresolvedCutoffDegeneracyDoesNotChooseArbitrarySubspace
+34/61 Test #34: citlali::PtcNumerics.UnresolvedCutoffDegeneracyDoesNotChooseArbitrarySubspace ..............   Passed    0.01 sec
+      Start 35: citlali::forward_map::ForwardMap.HalfOpenCentersEdgesAndOrientation
+35/61 Test #35: citlali::forward_map::ForwardMap.HalfOpenCentersEdgesAndOrientation ........................   Passed    0.03 sec
+      Start 36: citlali::forward_map::ForwardMap.IndependentUnequalCoefficientCalculation
+36/61 Test #36: citlali::forward_map::ForwardMap.IndependentUnequalCoefficientCalculation ..................   Passed    0.01 sec
+      Start 37: citlali::forward_map::ForwardMap.ConstantAndDeltaSameLinearCompanionOperator
+37/61 Test #37: citlali::forward_map::ForwardMap.ConstantAndDeltaSameLinearCompanionOperator ...............   Passed    0.01 sec
+      Start 38: citlali::forward_map::ForwardMap.ExplicitSupportSeparatesNormalizationAndScience
+38/61 Test #38: citlali::forward_map::ForwardMap.ExplicitSupportSeparatesNormalizationAndScience ...........   Passed    0.01 sec
+      Start 39: citlali::forward_map::ForwardMap.SmallPopulationSelectorAndEmptySupport
+39/61 Test #39: citlali::forward_map::ForwardMap.SmallPopulationSelectorAndEmptySupport ....................   Passed    0.01 sec
+      Start 40: citlali::forward_map::ForwardMap.BadPlanAndPayloadNeverMutateResolvedOperator
+40/61 Test #40: citlali::forward_map::ForwardMap.BadPlanAndPayloadNeverMutateResolvedOperator ..............   Passed    0.01 sec
+      Start 41: citlali::forward_map::ForwardMap.OverflowIsFailureNotSanitizedZero
+41/61 Test #41: citlali::forward_map::ForwardMap.OverflowIsFailureNotSanitizedZero .........................   Passed    0.01 sec
+      Start 42: citlali::forward_map::ForwardMap.NonzeroSubnormalRoundingCannotChangeConstantOrSupport
+42/61 Test #42: citlali::forward_map::ForwardMap.NonzeroSubnormalRoundingCannotChangeConstantOrSupport .....   Passed    0.01 sec
+      Start 43: citlali::forward_map::ForwardMap.NormalizationRejectsInexactSubnormalButPreservesExact
+43/61 Test #43: citlali::forward_map::ForwardMap.NormalizationRejectsInexactSubnormalButPreservesExact .....   Passed    0.01 sec
+      Start 44: citlali::forward_map::ForwardMap.OrderBlockAssemblyAndConcurrentReadOnlyApplication
+44/61 Test #44: citlali::forward_map::ForwardMap.OrderBlockAssemblyAndConcurrentReadOnlyApplication ........   Passed    0.01 sec
+      Start 45: citlali::forward_map::ForwardMap.OriginalFootprintsUnionAndDoNotFollowDescendantPixels
+45/61 Test #45: citlali::forward_map::ForwardMap.OriginalFootprintsUnionAndDoNotFollowDescendantPixels .....   Passed    0.01 sec
+      Start 46: citlali::forward_map::ForwardMap.AstCenteredTanGridPreservesOrientationAndMargin
+46/61 Test #46: citlali::forward_map::ForwardMap.AstCenteredTanGridPreservesOrientationAndMargin ...........   Passed    0.01 sec
+      Start 47: citlali::forward_map::PtcMapHandoff.ExplicitUniformSelectionExactSupportAndRequest
+47/61 Test #47: citlali::forward_map::PtcMapHandoff.ExplicitUniformSelectionExactSupportAndRequest .........   Passed    0.01 sec
+      Start 48: citlali::forward_map::PtcMapHandoff.FourValuedFidelityAndStructuralFailures
+48/61 Test #48: citlali::forward_map::PtcMapHandoff.FourValuedFidelityAndStructuralFailures ................   Passed    0.01 sec
+      Start 49: citlali::forward_map::ForwardMapAdmission.ExactParentsAndSeparateProducerAndMapDecisions
+49/61 Test #49: citlali::forward_map::ForwardMapAdmission.ExactParentsAndSeparateProducerAndMapDecisions ...   Passed    0.01 sec
+      Start 50: citlali::fruit::FruitCycle.PixelProjectionSupportAndExactBrightness
+50/61 Test #50: citlali::fruit::FruitCycle.PixelProjectionSupportAndExactBrightness ........................   Passed    0.03 sec
+      Start 51: citlali::fruit::FruitCycle.BypassAccountingMissingnessAndStaleState
+51/61 Test #51: citlali::fruit::FruitCycle.BypassAccountingMissingnessAndStaleState ........................   Passed    0.01 sec
+      Start 52: citlali::fruit::FruitCycle.NumericalKnownSourceProjectionCleaningRejoinMap
+52/61 Test #52: citlali::fruit::FruitCycle.NumericalKnownSourceProjectionCleaningRejoinMap .................   Passed    0.01 sec
+      Start 53: citlali::fruit::FruitCycle.SignedInjectionPreservesParentAndInvalidEntries
+53/61 Test #53: citlali::fruit::FruitCycle.SignedInjectionPreservesParentAndInvalidEntries .................   Passed    0.01 sec
+      Start 54: citlali::fruit::FruitCycle.ReferenceSequenceFreshMeansMaskedApplyAndRankFailure
+54/61 Test #54: citlali::fruit::FruitCycle.ReferenceSequenceFreshMeansMaskedApplyAndRankFailure ............   Passed    0.01 sec
+      Start 55: citlali::fruit::FruitCycle.GuardedFrozenInterventionSignedZeroMaskedAndTamper
+55/61 Test #55: citlali::fruit::FruitCycle.GuardedFrozenInterventionSignedZeroMaskedAndTamper ..............   Passed    0.01 sec
+      Start 56: citlali::fruit::FruitCycle.ReferenceSequenceStageOrderingAndAutonomousReplacement
+56/61 Test #56: citlali::fruit::FruitCycle.ReferenceSequenceStageOrderingAndAutonomousReplacement ..........   Passed    0.01 sec
+      Start 57: citlali::fruit::FruitCycle.ExperimentalRanksLearnIndependentlyOnEachResidual
+57/61 Test #57: citlali::fruit::FruitCycle.ExperimentalRanksLearnIndependentlyOnEachResidual ...............   Passed    0.01 sec
+      Start 58: citlali_jinc_discrete_test_NOT_BUILT
+Could not find executable citlali_jinc_discrete_test_NOT_BUILT
+Looked in the following places:
+citlali_jinc_discrete_test_NOT_BUILT
+citlali_jinc_discrete_test_NOT_BUILT
+Release/citlali_jinc_discrete_test_NOT_BUILT
+Release/citlali_jinc_discrete_test_NOT_BUILT
+Debug/citlali_jinc_discrete_test_NOT_BUILT
+Debug/citlali_jinc_discrete_test_NOT_BUILT
+MinSizeRel/citlali_jinc_discrete_test_NOT_BUILT
+MinSizeRel/citlali_jinc_discrete_test_NOT_BUILT
+RelWithDebInfo/citlali_jinc_discrete_test_NOT_BUILT
+RelWithDebInfo/citlali_jinc_discrete_test_NOT_BUILT
+Deployment/citlali_jinc_discrete_test_NOT_BUILT
+Deployment/citlali_jinc_discrete_test_NOT_BUILT
+Development/citlali_jinc_discrete_test_NOT_BUILT
+Development/citlali_jinc_discrete_test_NOT_BUILT
+Unable to find executable: citlali_jinc_discrete_test_NOT_BUILT
+58/61 Test #58: citlali_jinc_discrete_test_NOT_BUILT .......................................................***Not Run   0.00 sec
+      Start 59: citlali::build_gitversion_refresh
+59/61 Test #59: citlali::build_gitversion_refresh ..........................................................   Passed    6.06 sec
+      Start 60: citlali::successor_default_cli
+60/61 Test #60: citlali::successor_default_cli .............................................................   Passed    1.66 sec
+      Start 61: citlali::forward_map_reload
+61/61 Test #61: citlali::forward_map_reload ................................................................   Passed    1.44 sec
+
+56% tests passed, 27 tests failed out of 61
+
+Total Test time (real) =   9.92 sec
+
+The following tests FAILED:
+	  1 - citlali_test_NOT_BUILT (Not Run)
+	  2 - citlali_jinc_map_contract_test_NOT_BUILT (Not Run)
+	  3 - citlali_sci_align_test_NOT_BUILT (Not Run)
+	  4 - citlali_timestream_successor_native_paired_readout_test_NOT_BUILT (Not Run)
+	  5 - citlali_timestream_successor_ast_scan_motion_test_NOT_BUILT (Not Run)
+	  6 - citlali_timestream_successor_identity_test_NOT_BUILT (Not Run)
+	  7 - citlali_timestream_successor_identity_route_context_test_NOT_BUILT (Not Run)
+	  8 - citlali_timestream_successor_d2_native_measurement_test_NOT_BUILT (Not Run)
+	  9 - citlali_timestream_successor_rtc_spike_learn_test_NOT_BUILT (Not Run)
+	 10 - citlali_timestream_successor_rtc_event_background_test_NOT_BUILT (Not Run)
+	 11 - citlali_timestream_successor_rtc_event_assessment_test_NOT_BUILT (Not Run)
+	 12 - citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT (Not Run)
+	 13 - citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT (Not Run)
+	 14 - citlali_science_map_fits_products_test_NOT_BUILT (Not Run)
+	 15 - citlali_jinc_parallel_ownership_test_NOT_BUILT (Not Run)
+	 16 - citlali_safety_test_NOT_BUILT (Not Run)
+	 17 - citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT (Not Run)
+	 18 - citlali_timestream_successor_rtc_jump_exclusion_test_NOT_BUILT (Not Run)
+	 19 - citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT (Not Run)
+	 20 - citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT (Not Run)
+	 21 - citlali_timestream_successor_rtc_native_spectral_learn_test_NOT_BUILT (Not Run)
+	 22 - citlali_timestream_successor_rtc_line_power_test_NOT_BUILT (Not Run)
+	 23 - citlali_rtc_line_transfer_test_NOT_BUILT (Not Run)
+	 24 - citlali_rtc_notch_recovery_test_NOT_BUILT (Not Run)
+	 25 - citlali_rtc_common_mode_test_NOT_BUILT (Not Run)
+	 26 - citlali_cal_numerics_test_NOT_BUILT (Not Run)
+	 58 - citlali_jinc_discrete_test_NOT_BUILT (Not Run)
+Errors while running CTest

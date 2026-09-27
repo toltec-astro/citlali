@@ -16,12 +16,13 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     const bool refseq=request["schema"].as<std::string>()=="citlali-point-fruit-refseq-v1";
     const bool corr=request["schema"].as<std::string>()=="citlali-point-fruit-corr-neighbor-v1";
     const bool reference=request["schema"].as<std::string>()=="citlali-bright-point-reference-v1";
-    const bool rank_experiment=request["schema"].as<std::string>()=="citlali-point-ptc-rank-v1";
+    const bool speed_experiment=request["schema"].as<std::string>()=="citlali-point-speed-pca-v1";
+    const bool rank_experiment=speed_experiment || request["schema"].as<std::string>()=="citlali-point-ptc-rank-v1";
     const bool independent=rank_experiment || reference || request["schema"].as<std::string>()=="citlali-point-fruit-independent-v1";
     const bool guarded=independent || request["schema"].as<std::string>()=="citlali-point-fruit-guarded-v1";
     const bool campaign=guarded || corr || refseq || request["schema"].as<std::string>()=="citlali-point-fruit-cd-v1";
     const bool continuation=request["schema"].as<std::string>()=="citlali-point-fruit-continuation-v1";
-    require((guarded && request["method"].as<std::string>()==(rank_experiment?"point-ptc-rank-v1":reference?"bright-point-base-v1":independent?"point-152430-no-upper-coverage-veto-v1":"point-152389-guarded-feedback-v1")) || (corr && request["method"].as<std::string>()=="point-152389-corr-neighbor-v1") || (refseq && request["method"].as<std::string>()=="point-152389-a2000-ref-basis-sequence-v1") || (campaign && !refseq && !corr && !guarded && request["method"].as<std::string>()=="point-152389-response-robustness-cd-v1") || (continuation && request["method"].as<std::string>()=="point-152389-direct-ten-cycle-v1") ||
+    require((guarded && request["method"].as<std::string>()==(speed_experiment?"point-speed-pca-v1":rank_experiment?"point-ptc-rank-v1":reference?"bright-point-base-v1":independent?"point-152430-no-upper-coverage-veto-v1":"point-152389-guarded-feedback-v1")) || (corr && request["method"].as<std::string>()=="point-152389-corr-neighbor-v1") || (refseq && request["method"].as<std::string>()=="point-152389-a2000-ref-basis-sequence-v1") || (campaign && !refseq && !corr && !guarded && request["method"].as<std::string>()=="point-152389-response-robustness-cd-v1") || (continuation && request["method"].as<std::string>()=="point-152389-direct-ten-cycle-v1") ||
         (!continuation && request["schema"].as<std::string>()=="citlali-point-fruit-cycle-v1" && request["method"].as<std::string>()=="point-152389-direct-one-cycle-v1"),"FRUIT unsupported method");
     const auto mode=request["mode"].as<std::string>();require(mode=="zero" || mode=="reference","FRUIT unknown mode");
     const int cycle=(continuation || campaign)?request["cycle_index"].as<int>():(mode=="zero"?0:1);
@@ -33,9 +34,9 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     require(campaign || (!request["branch"] && !request["injection"]),"FRUIT foreign campaign fields");
     const auto owner_path=checked_file(request["owner_binding"]);const auto owner_sha=ledger.bind(owner_path);
     const auto owner=YAML::LoadFile(owner_path.string());
-    require(owner["identity"].as<std::string>()==(rank_experiment?"POINT-PTC-RANK-v1":reference?"BRIGHT-POINT-BASE-v1":independent?"POINT-152430-NO-UPPER-COVERAGE-VETO-2026-09-26":guarded?"POINT-152389-GUARDED-OWNER-2026-09-25":corr?"POINT-152389-CORR-NEIGHBOR-OWNER-2026-09-24":refseq?"POINT-152389-A2000-REFSEQ-OWNER-2026-09-24":campaign?"POINT-152389-CD-OWNER-2026-09-23":continuation?"POINT-152389-TEN-FRUIT-OWNER-2026-09-23":"POINT-152389-FIRST-FRUIT-OWNER-2026-09-23") &&
+    require(owner["identity"].as<std::string>()==(speed_experiment?"POINT-SPEED-PCA-v1":rank_experiment?"POINT-PTC-RANK-v1":reference?"BRIGHT-POINT-BASE-v1":independent?"POINT-152430-NO-UPPER-COVERAGE-VETO-2026-09-26":guarded?"POINT-152389-GUARDED-OWNER-2026-09-25":corr?"POINT-152389-CORR-NEIGHBOR-OWNER-2026-09-24":refseq?"POINT-152389-A2000-REFSEQ-OWNER-2026-09-24":campaign?"POINT-152389-CD-OWNER-2026-09-23":continuation?"POINT-152389-TEN-FRUIT-OWNER-2026-09-23":"POINT-152389-FIRST-FRUIT-OWNER-2026-09-23") &&
         owner["outside_disk_no_feedback"].as<bool>() && owner["direct_identical_operand_rejoin"].as<bool>() &&
-        owner["gain"].as<double>()==1 && owner["nonzero_cycles"].as<int>()==((continuation || campaign)?10:1),"FRUIT owner choices absent");
+        owner["gain"].as<double>()==1 && (speed_experiment?(owner["nonzero_cycles"].as<int>()>=0 && owner["nonzero_cycles"].as<int>()<=10 && cycle<=owner["nonzero_cycles"].as<int>()):owner["nonzero_cycles"].as<int>()==((continuation || campaign)?10:1)),"FRUIT owner choices absent");
     const auto map_path=checked_file(request["map_request"]);ledger.bind(map_path);const auto mr=YAML::LoadFile(map_path.string());
     const auto pp=checked_file(request["parent_plan"]);ledger.bind(pp);const auto parent=YAML::LoadFile(pp.string());
     const auto array=request["array"].as<std::string>();const std::array<std::string,3> arrays{"a1100","a1400","a2000"};
@@ -78,9 +79,9 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
             const auto prospective=YAML::LoadFile(checked_file(owner["prospective"]).string());
             if(rank_experiment) {
                 const int rank=prospective["ptc"]["rank"].as<int>();
-                require(prospective["schema"].as<std::string>()=="citlali-point-ptc-rank-v1" &&
-                    prospective["profile"].as<std::string>()=="point-152430-ptc-rank-"+std::to_string(rank) &&
-                    (rank==5 || rank==10 || rank==15) && prospective["ptc"]["method"].as<std::string>()=="observed-als" &&
+                require(prospective["schema"].as<std::string>()==(speed_experiment?"citlali-point-speed-pca-v1":"citlali-point-ptc-rank-v1") &&
+                    prospective["profile"].as<std::string>()==(speed_experiment?"POINT-SPEED-PCA-v1":"point-152430-ptc-rank-"+std::to_string(rank)) &&
+                    (speed_experiment?(rank==10 || rank==15):(rank==5 || rank==10 || rank==15)) && (!speed_experiment || (prospective["feedback_count"].as<int>()==owner["nonzero_cycles"].as<int>() && prospective["experimental_method"].as<std::string>()=="observed-als")) && prospective["ptc"]["method"].as<std::string>()=="observed-als" &&
                     prospective["observation"].as<int>()==152430 && prospective["subobservation"].as<int>()==0 && prospective["scan"].as<int>()==2 &&
                     prospective["array"].as<std::string>()=="a2000" && prospective["networks"].as<std::vector<int>>()==std::vector<int>({11,12}) &&
                     prospective["coverage_policy"].as<std::string>()=="high-coverage-informational" && prospective["cycles"].as<int>()==10 &&
@@ -173,7 +174,7 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
         // is diagnostic only: every experiment M0/residual learns from original y.
         if(rank_experiment) {
             const auto config=YAML::LoadFile(checked_file(owner["prospective"]).string());
-            require(solver.rank==10 && solver.iteration_limit==100 && solver.relative_objective_tolerance==1e-5 && solver.relative_rank_tolerance==1e-10,
+            require((speed_experiment?solver.rank==config["ptc"]["rank"].as<int>():solver.rank==10) && solver.iteration_limit==100 && solver.relative_objective_tolerance==1e-5 && solver.relative_rank_tolerance==1e-10,
                 "FRUIT rank experiment changed parent solver recipe");
             solver.rank=config["ptc"]["rank"].as<int>();
         }
@@ -188,6 +189,8 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
             const auto dir=output/name;fs::create_directory(dir);
             const auto data=map_read_array<double>(n.ptcroot/(stem+"-input.f64"),nt*nd);const auto mask=map_read_array<std::uint8_t>(n.ptcroot/(stem+"-eligible.u8"),nt*nd);
             const PtcMatrix y=Eigen::Map<const PtcMatrix>(data.data(),nt,nd);const PtcMask eligible=Eigen::Map<const PtcMask>(mask.data(),nt,nd);
+            const auto projection_started=std::chrono::steady_clock::now();
+            const double loading_seconds=elapsed(ts);
             Eigen::VectorXd times(nt);for(std::size_t t=0;t<nt;++t)times[t]=n.native_times[n.first+old->identity().slots[t]*n.factor];
             const auto schedule=evaluate_ast_rtc_schedule(*n.observation.trajectory,*n.observation.offsets,n.observation.ra0,n.observation.dec0,times);
             PtcMatrix xy(nt,2*no);for(std::size_t d=0;d<no;++d){const auto [x,z]=n.geometry[detectors[d]];const auto v=schedule.detector_tangent_deg(x,z);xy.col(2*d)=v.col(0);xy.col(2*d+1)=v.col(1);}
@@ -196,6 +199,8 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
                 const auto v=model.at(xy(t,2*columns[d]),xy(t,2*columns[d]+1));classes(t,d)=std::uint8_t(v.support);++counts[classes(t,d)];
                 if(mode!="zero"){operand(t,d)=v.value;supported(t,d)=v.support!=FruitModelSupport::unavailable;}
             }
+            const double projection_seconds=elapsed(projection_started);
+            const auto input_serialization_started=std::chrono::steady_clock::now();
             write_matrix(dir/"operand.f64",operand);map_write_array<std::uint8_t>(dir/"model-support.u8",{classes.data(),std::size_t(classes.size())});
             const auto residual_id="sha256:"+request_sha+":"+name+":y="+s["files"][stem+"-input.f64"].as<std::string>()+":operand="+citlali::utils::sha256_file(dir/"operand.f64")+":support="+citlali::utils::sha256_file(dir/"model-support.u8");
             PtcMatrix branch_y=y;double injection_error=0;std::array<std::size_t,4> injection_counts{};
@@ -227,15 +232,18 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
                 write_matrix(dir/"injection.f64",pi);
                 if(independent && cycle==0)write_matrix(dir/"injected-parent.f64",branch_y);
             }
+            const double input_serialization_seconds=elapsed(input_serialization_started);
+            const auto subtraction_started=std::chrono::steady_clock::now();
             const auto residual=FruitResidual::subtract(residual_id,branch_y,eligible,std::move(operand),std::move(supported));
-            YAML::Node seg;seg["source_root"]=n.ptcroot.string();seg["source_receipt_sha256"]=n.ptc_sha;seg["source_segment"]=s;seg["residual_identity"]=residual_id;
+            const double subtraction_seconds=elapsed(subtraction_started);
+            YAML::Node seg;seg["loading_seconds"]=loading_seconds;seg["projection_seconds"]=projection_seconds;seg["input_serialization_and_injection_seconds"]=input_serialization_seconds;seg["subtraction_seconds"]=subtraction_seconds;seg["source_root"]=n.ptcroot.string();seg["source_receipt_sha256"]=n.ptc_sha;seg["source_segment"]=s;seg["residual_identity"]=residual_id;
             if(campaign){seg["injection_identity_max_abs"]=injection_error;seg["injection_projection_support_counts"]=injection_counts;
                 seg["immutable_parent_reloaded"]=true;seg["invalid_parent_entries_unchanged"]=true;
                 if(injection)seg["files"]["injection.f64"]=citlali::utils::sha256_file(dir/"injection.f64");}
             seg["loading_projection_serialization_seconds"]=elapsed(ts);seg["projection_support_counts"]=counts;
             // Only preparation/Apply runs concurrently; all ledger, publication and MAP
             // accumulation remain in original segment order on the calling thread.
-            struct Stage {PtcPrepared prepared;PtcFit fit;FruitLearned::Result applied;};
+            struct Stage {PtcPrepared prepared;PtcFit fit;FruitLearned::Result applied;double apply_restore_seconds=0;};
             Eigen::MatrixXd imported_basis;
             if(refseq){
                 const auto binding=owner["basis_schedule"][cycle][name];
@@ -258,7 +266,7 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
                     v.fit.request=solver;v.fit.basis=imported_basis;
                 }else{
                     const auto learned=FruitLearned::learn(residual,solver);
-                    v.prepared=learned.prepared();v.fit=learned.fit();v.applied=learned.apply(residual);
+                    v.prepared=learned.prepared();v.fit=learned.fit();const auto at=std::chrono::steady_clock::now();v.applied=learned.apply(residual);v.apply_restore_seconds=std::chrono::duration<double>(std::chrono::steady_clock::now()-at).count();
                 }return v;
             };
             auto future=std::make_shared<std::future<Stage>>(std::async(refseq?std::launch::async:std::launch::deferred,std::move(task)));
@@ -272,7 +280,11 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
             else {seg["application_outcome"]=applied.cleaned.failed_times?"failed-times":"success";seg["application_factorizations"]=applied.cleaned.factorizations;seg["application_factor_reuses"]=applied.cleaned.factor_reuses;}
             seg["rank"]=solver.rank;
             seg["realized_rank"]=fit.basis.cols();seg["learning_performed"]=!refseq;
+            seg["apply_restore_seconds"]=stage.apply_restore_seconds;
             seg["preparation_seconds"]=stage.prepared.preparation_seconds;seg["learning_seconds"]=fit.fit_seconds;seg["application_seconds"]=applied.cleaned.seconds;
+            seg["initialization_seconds"]=fit.initialization_seconds;seg["covariance_seconds"]=fit.covariance_seconds;
+            seg["decomposition_seconds"]=fit.decomposition_seconds;seg["coefficient_seconds"]=fit.coefficient_seconds;
+            seg["basis_seconds"]=fit.basis_seconds;seg["check_seconds"]=fit.check_seconds;
             seg["retained"]=applied.cleaned.retained;seg["application_failed_times"]=applied.cleaned.failed_times;
             seg["input_eligibility_changed"]=std::size_t((residual->eligible()!=eligible).count());seg["output_cause_changed"]=std::size_t((causes!=old->causes()).count());
             seg["zero_replay_maximum_cleaned_difference"]=(clean-old->values()).cwiseAbs().maxCoeff();

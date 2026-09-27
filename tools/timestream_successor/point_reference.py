@@ -13,8 +13,10 @@ from point_guarded_feedback import measurement
 from point_additive_diagnostics import save_json
 from point_fruit_diagnostics import load,patch_map
 from inspect_forward_map import require
+from point_timing import timed
 
 
+@timed("initial_noise_guard_context_publication")
 def initialize(path,dest,beam=10.):
     full,h=load(path);signal=full['PRIMARY'];support=full['SCI_SUPPORT'].astype(bool);coverage=full['NORMALIZATION']
     s,v,_,ph=patch_map(path);f=SimpleNamespace(header=ph,beam=beam)
@@ -54,6 +56,7 @@ def initialize(path,dest,beam=10.):
     c=context(dest);return c,guard
 
 
+@timed("load_noise_context")
 def context(dest, measurement_geometry=None):
     import json
     g=json.loads((dest/'geometry.json').read_text());beam=g['beam'];c=dict(np.load(dest/'context.npz'));p=c['parameters'];h=g['header']
@@ -74,6 +77,7 @@ def context(dest, measurement_geometry=None):
     require(c['neighborhood'].lags_supported,'required covariance lags unavailable');return c
 
 
+@timed("conditional_endpoint_including_io")
 def endpoint(path,c,record,dest):
     """One endpoint covariance; conditional local estimator sensitivities, no refit.
 

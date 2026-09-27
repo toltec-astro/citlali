@@ -11,7 +11,7 @@ def available(path):
     gz=Path(str(path)+'.gz');require(gz.is_file(),'missing saved comparison product: '+str(path));return gz
 
 
-def compare(actual,reference,array,tolerances):
+def compare(actual,reference,array,tolerances,cycles=10,compare_endpoint=True):
     rows=[];failures=[]
     def planes(rel,kind):
         with fits.open(available(actual/rel),memmap=False) as a,fits.open(available(reference/rel),memmap=False) as b:
@@ -30,7 +30,7 @@ def compare(actual,reference,array,tolerances):
     planes(Path(f'M0/products/{array}/map.fits'),'map')
     route=Path(f'run/BASE-POINT/REF/{array}')
     a=json.loads((actual/route/'SUMMARY.json').read_text());b=json.loads((reference/route/'SUMMARY.json').read_text())
-    require(a['completed_cycle']==b['completed_cycle']==10 and a['ready'] and b['ready'] and not a['m10_applied'],'trajectory did not complete frozen endpoint')
+    require(a['completed_cycle']==cycles and b['completed_cycle']>=cycles and a['ready'] and b['ready'] and not a['m10_applied'],'trajectory did not complete frozen endpoint')
     decisions=[]
     for k,(x,y) in enumerate(zip(a['histories'],b['histories'])):
         rel=route/('initial' if k==0 else f'cycle-{k:02d}')
@@ -42,7 +42,7 @@ def compare(actual,reference,array,tolerances):
             if not same:failures.append(dict(cycle=k,field=key,reason='deterministic record differs'))
         require(x['ready']==y['ready'] and x.get('stop_reason')==y.get('stop_reason'),'discrete continuation differs')
     endpoint=a.get('endpoint_uncertainty')==b.get('endpoint_uncertainty')
-    if not endpoint:failures.append(dict(field='endpoint_uncertainty',reason='conditional uncertainties differ'))
+    if compare_endpoint and not endpoint:failures.append(dict(field='endpoint_uncertainty',reason='conditional uncertainties differ'))
     # Observation-local numerical state and high-coverage metadata must also agree.
     for name in ('context','C0','BASE'):
         with np.load(actual/f'freeze/{array}/{name}.npz') as x,np.load(reference/f'freeze/{array}/{name}.npz') as y:

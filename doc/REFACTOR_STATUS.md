@@ -1,5 +1,16 @@
 # Citlali Refactor Status
 
+## Bounded POINT latency/PCA comparison — active 2026-09-27
+
+Owner authorized the [speed/PCA work order](../validation/point_speed_pca_2026-09-27/OWNER_DIRECTIVE.md)
+from completed 11b0c313c, on codex/point-speed-pca-20260927. Phase A adds monotonic
+timing and explicit N=0/1/3/5/10 limits under a new experimental identity. It must
+reproduce both retained control ranks and publish timing findings before warm-start
+or masked-covariance implementation. Maximum32 trajectories/258 feedback; two
+documented defect replacements only. No automatic stopping, RTC change, other
+observation/array, push, integration or production promotion. See the
+[preflight](../validation/point_speed_pca_2026-09-27/PREFLIGHT.md).
+
 ## Bounded PTC rank-response/noise comparison — completed 2026-09-26
 
 POINT152430/a2000 ranks 5/10/15 completed all 12 trajectories and 120 applications
