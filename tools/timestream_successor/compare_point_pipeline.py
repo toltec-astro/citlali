@@ -11,18 +11,25 @@ def available(path):
     gz=Path(str(path)+'.gz');require(gz.is_file(),'missing saved comparison product: '+str(path));return gz
 
 
-def compare(actual,reference,array,tolerances,cycles=10,compare_endpoint=True,retained_hashes=None):
+def compare(actual,reference,array,tolerances,cycles=10,compare_endpoint=True,retained_hashes=None,retained_products=None):
     rows=[];failures=[]
     def planes(rel,kind):
+        reference_file=reference/rel
         if retained_hashes is not None and not (reference/rel).exists() and not Path(str(reference/rel)+'.gz').exists():
             from inspect_forward_map import digest
             expected=retained_hashes.get(str(rel));require(expected is not None,'missing sealed intermediate hash '+str(rel))
-            same=digest(actual/rel)==expected
-            row=dict(path=str(rel),plane='whole-file SHA256',exact=same,max_abs=0.,pass_=same)
-            rows.append(row)
-            if not same:failures.append(row)
-            return
-        with fits.open(available(actual/rel),memmap=False) as a,fits.open(available(reference/rel),memmap=False) as b:
+            recovered=Path(str(retained_products/rel)+'.gz') if retained_products is not None else None
+            if recovered is not None and recovered.is_file():
+                import gzip,hashlib
+                require(hashlib.sha256(gzip.decompress(recovered.read_bytes())).hexdigest()==expected,'recovered reference differs from sealed bytes')
+                reference_file=recovered
+            else:
+                same=digest(actual/rel)==expected
+                row=dict(path=str(rel),plane='whole-file SHA256',exact=same,max_abs=0.,pass_=same)
+                rows.append(row)
+                if not same:failures.append(row)
+                return
+        with fits.open(available(actual/rel),memmap=False) as a,fits.open(available(reference_file),memmap=False) as b:
             require([h.name for h in a]==[h.name for h in b],'plane identities differ '+str(rel))
             for aa,bb in zip(a,b):
                 x,y=aa.data,bb.data

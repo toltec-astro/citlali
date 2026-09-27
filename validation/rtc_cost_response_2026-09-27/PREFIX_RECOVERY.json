@@ -1,0 +1,26 @@
+[
+  {
+    "path": "run/BASE-POINT/REF/a2000/cycle-02/native/products/total.fits",
+    "sha256": "3fb472084904fa0162cc51a919da89e78e16fafeb0929fdc2bd586b297e8855a",
+    "authority": "prior committed HASH_ONLY ledger",
+    "archive": "prior-prefix/run/BASE-POINT/REF/a2000/cycle-02/native/products/total.fits.gz"
+  },
+  {
+    "path": "run/BASE-POINT/REF/a2000/cycle-02/candidate.fits",
+    "sha256": "72b93109315b9126d500bc527795db6c9dc012594bfa9c6d94f7c0c8fe200ec2",
+    "authority": "prior committed HASH_ONLY ledger",
+    "archive": "prior-prefix/run/BASE-POINT/REF/a2000/cycle-02/candidate.fits.gz"
+  },
+  {
+    "path": "run/BASE-POINT/REF/a2000/cycle-04/native/products/total.fits",
+    "sha256": "b7f2d3224103dd1e603782b4b98e061fb36f719ac6299c6a9fd8fe15c4e67755",
+    "authority": "prior committed HASH_ONLY ledger",
+    "archive": "prior-prefix/run/BASE-POINT/REF/a2000/cycle-04/native/products/total.fits.gz"
+  },
+  {
+    "path": "run/BASE-POINT/REF/a2000/cycle-04/candidate.fits",
+    "sha256": "03704ebf5b53acecca315f27d92925a92d9700f3052438caa46b66eb262b21d6",
+    "authority": "prior committed HASH_ONLY ledger",
+    "archive": "prior-prefix/run/BASE-POINT/REF/a2000/cycle-04/candidate.fits.gz"
+  }
+]

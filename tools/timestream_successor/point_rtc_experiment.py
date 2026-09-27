@@ -88,16 +88,30 @@ def run_family(root,binary,review,input_root,selection):
     if family!='A':
         require(read(root/'FAMILY-A.json')['status']=='completed' and spec.get('measured_rationale'),'candidate lacks completed baseline/rationale')
         require(spec.get('changes') and len(spec['changes'])<=(2 if family=='B' else 1),'too many RTC changes')
-    dest=root/f'FAMILY-{family}.json';require(not dest.exists(),'family already attempted; no implicit retry')
+    dest=root/f'FAMILY-{family}.json'
+    resumed=None
+    if dest.exists():
+        repair=root/'COMPARISON_REPAIR.json'
+        require(family=='A' and repair.is_file(),'family already attempted; no implicit retry')
+        resumed=read(dest);fix=read(repair)
+        require(resumed['status']=='failed' and resumed.get('reason')=='warmN5 numerical regression failed' and
+                resumed['cells']==[dict(name='A-REF-rep1',branch='REF',rep=1,status='completed')] and
+                fix['no_science_reexecution'] and fix['verdict']=='sealed-reference byte recovery',
+                'only explicit completed-first-run comparison repair can resume')
+        save_json(root/'FAMILY-A-original-failed.json',resumed)
     record=dict(status='running',selection=bound(selection),cells=[],peak_disk_ceiling_bytes=CEILING,
         resource_policy=dict(workloads=1,network_workers=2,feedback_workers=1,numerical_threads=1),
         cache='not flushed; first-use retained; preflight hashing can warm files')
+    if resumed:record['comparison_repair']=bound(root/'COMPARISON_REPAIR.json')
     save_json(dest,record)
     try:
         ref=None
         for rep in (1,2,3):
-            out=prepare_run(root,f'{family}-REF-rep{rep}',input_root,family)
-            result=launch(root,out,binary,review,'first-use recorded; OS cache not flushed; original input/fresh state',attempt_consumer=consume,child_mode='rtc-once')
+            if resumed and rep==1:
+                out=root/'A-REF-rep1';result=read(out/'LAUNCH.json')
+            else:
+                out=prepare_run(root,f'{family}-REF-rep{rep}',input_root,family)
+                result=launch(root,out,binary,review,'first-use recorded; OS cache not flushed; original input/fresh state',attempt_consumer=consume,child_mode='rtc-once')
             record['cells'].append(dict(name=out.name,branch='REF',rep=rep,status=result['status']));save_json(dest,record)
             require(result['status']=='completed','required REF failed; no scientific replacement')
             reference=PRIOR if family=='A' and rep==1 else root/'A-REF-rep1' if family=='B' else ref
@@ -105,8 +119,10 @@ def run_family(root,binary,review,input_root,selection):
                 if reference==PRIOR:
                     from compare_point_pipeline import compare
                     sealed=read_hashes()
-                    comparison=compare(out,reference,'a2000',read(REFERENCE)['reference_tolerances'],cycles=5,compare_endpoint=False,retained_hashes=sealed)
+                    comparison=compare(out,reference,'a2000',read(REFERENCE)['reference_tolerances'],cycles=5,compare_endpoint=False,retained_hashes=sealed,retained_products=RECORD/'prior-prefix')
                 else:comparison=compare_prefix(out,reference,5)
+                if resumed and rep==1:shutil.copyfile(out/'REGRESSION.json',out/'REGRESSION-original-failed.json')
+                if reference!=PRIOR:require(comparison['endpoint_exact'],'own N5 endpoint uncertainty regression failed')
                 save_json(out/'REGRESSION.json',comparison)
                 require(comparison['pass_'],'warmN5 numerical regression failed')
             if rep==1:ref=out
