@@ -1,6 +1,6 @@
 # Citlali Refactor Status
 
-## Bounded RTC cost/source response — measured 2026-09-27
+## Bounded RTC cost/source response — completed 2026-09-27
 
 The [assessment](../validation/rtc_cost_response_2026-09-27/ASSESSMENT.md) completes
 A (three REF and three pre-RTC responses) and B (three exact-equivalent REF runs):
@@ -20,8 +20,10 @@ C is deliberately unselected: the historical fixed-notch coefficients do not
 supply detector admission for this new population. The single next action is an
 owner decision on that exact applicability before one fixed-design proposal.
 No new numerical threshold, observation, Unity access, push or promotion.
-Compact evidence is 90.6 MB; saved-only reporting and independent final review
-are required before guarded native cleanup. See [reproduction](../validation/rtc_cost_response_2026-09-27/REPRODUCTION.md)
+Compact evidence is 90.6 MB. Saved-only reporting passed with original inputs
+denied; independent final review passed at ed388e84d. Guarded cleanup removed
+117,673 enumerated native files (7.908 GB), with all 31 protected inputs unchanged.
+Remaining campaign metadata/FITS were outside that deletion plan. See [reproduction](../validation/rtc_cost_response_2026-09-27/REPRODUCTION.md)
 and [handoff](../handoff/RTC_COST_RESPONSE_2026-09-27.md).
 
 ## Bounded POINT latency/PCA comparison — completed 2026-09-27

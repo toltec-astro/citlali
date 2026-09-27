@@ -1,0 +1,19 @@
+{
+  "completed": true,
+  "reviewed_candidate": "ed388e84d0bea5e31c00234754852c2a17ae8be5",
+  "reviewed_tree": "219cfaac61c190b22344e22be4b3fb6fb58e34b4",
+  "scientific_source_B": "a0f7345fc0c0501e34e877f91104c4a78e61daf3",
+  "original_checkout_head": "353b11887ff04dfd7bca12915917495f81a587fa",
+  "frozen_reference_commit": "5435bdbdb4e6708e884ae4cb2b0fd93e74102ce5",
+  "final_figures_visually_inspected": true,
+  "saved_only_report_after_cleanup": true,
+  "protected_inputs": 31,
+  "native_files_removed": 117673,
+  "native_bytes_removed": 7907658328,
+  "remaining_metadata_FITS": "outside enumerated deletion plan; not claimed removed",
+  "final_metadata_only_commit": true,
+  "push": false,
+  "Unity": false,
+  "production_activation": false,
+  "automatic_followon": false
+}

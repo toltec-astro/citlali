@@ -1,0 +1,29 @@
+{
+  "source_revision": "ed388e84d0bea5e31c00234754852c2a17ae8be5",
+  "tree": "219cfaac61c190b22344e22be4b3fb6fb58e34b4",
+  "verdict": "pass",
+  "reviewer": "fresh-context /root/rtc_final_review",
+  "scientific_behavioral": "pass with recorded scientific and local-environment limitations",
+  "architecture": "pass",
+  "hygiene": "pass",
+  "independent_verification": {
+    "diagnostic_cleanup_fixtures": 8,
+    "saved_only_artifacts_byte_exact": 5,
+    "ideal_records_full_mapping_zero_loss": 6,
+    "B_native_exact_checks_per_repeat": 11856
+  },
+  "initial_review": {
+    "source_revision": "eafd243b88be6a634b89789dac3d67997f6fb0b5",
+    "verdict": "repair_required",
+    "finding": "Report conditional RTC-only physical measurements and mapping-unavailable native counts explicitly. No scientific/native or cleanup-safety blocker.",
+    "closure": "Three-file report-only repair; retained measurements, native implementation and cleanup plan unchanged."
+  },
+  "cleanup_scope": "117673 enumerated native payloads /7907658328 bytes only; remaining metadata/FITS outside deletion plan",
+  "review_exclusions": [
+    "no science",
+    "no builds",
+    "no remote access",
+    "no exhaustive scratch rehash"
+  ],
+  "next_decision": "Owner determination of detector applicability/admission for historical fixed11.0062558446Hz notch; no automatic followon"
+}

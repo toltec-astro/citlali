@@ -78,3 +78,14 @@ as the original plan, with actual execution recorded separately.
 
 The old cold-rank10/T10 profile and tag are unchanged. No push, merge, Unity,
 input transfer, new observation, production activation or automatic follow-on.
+
+## Completed closeout
+
+Final independent review passed exact candidate `ed388e84d0bea5e31c00234754852c2a17ae8be5`,
+tree `219cfaac61c190b22344e22be4b3fb6fb58e34b4`; its initial report-only finding and
+repair are retained in `FINAL-REVIEW.json`. `CLEANUP.json` confirms all enumerated
+native files removed and protected inputs unchanged. Remaining campaign metadata
+and FITS were not part of the native deletion plan. `REPORT_ISOLATION.json` was
+reproduced after cleanup, with the original input/campaign paths still denied.
+Final focused Python/cleanup gate: 45 passed; reviewer independently ran eight
+small fixtures and reproduced all five report artifacts byte-exact.

@@ -23,3 +23,9 @@ fixed-design proposal. No threshold sweep or automatic execution. Keep PTC/FRUIT
 optimization parked. Reproduction, exact source bindings, warnings, comparator
 incident, reviews and cleanup are in the [record](../validation/rtc_cost_response_2026-09-27/REPRODUCTION.md).
 All work stays local; no push, merge, Unity or production activation.
+
+Final review passed at `ed388e84d0bea5e31c00234754852c2a17ae8be5`. The report-only
+finding was repaired from saved measurements. Compact evidence 90.6 MB remains
+committed; guarded cleanup removed exactly 117,673 native files / 7,907,658,328
+bytes and verified all 31 protected dependencies unchanged. Remaining metadata
+and FITS are outside that plan. Post-cleanup saved-only reporting passed.
