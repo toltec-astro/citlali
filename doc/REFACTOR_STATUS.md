@@ -1,5 +1,16 @@
 # Citlali Refactor Status
 
+## Fixed 11 Hz notch comparison — active 2026-09-27
+
+The owner [work order](../validation/rtc_fixed11_2026-09-27/OWNER_DIRECTIVE.md)
+authorizes one evidence-supported fixed population in POINT152430/a2000 nw11/12.
+The one-time set and exact historical coefficient hashes are frozen before C;
+independent preflight precedes execution. Both arms retain B implementation,
+warm rank10/cold M0/five applications. Planned B1,C1,B2,C2,B3,C3 then three C
+pre-RTC sources:9 trajectories/45 applications, up to2 RTC-only captures.
+B remains the development reference. No production admission law, design search,
+new observation, Unity, push or follow-on. See [preflight](../validation/rtc_fixed11_2026-09-27/PREFLIGHT.md).
+
 ## Bounded RTC cost/source response — completed 2026-09-27
 
 The [assessment](../validation/rtc_cost_response_2026-09-27/ASSESSMENT.md) completes

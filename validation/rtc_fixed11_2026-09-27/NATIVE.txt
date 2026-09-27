@@ -1,0 +1,273 @@
+Test project /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build
+        Start 125: citlali::point_rtc_source_probe.native_midpoints_AST_pixels_and_signed_CAL_preserve_original_pair
+        Start  40: citlali::rtc_notch_recovery.inclusive_minimum_and_sampling_ceiling_use_existing_authority
+        Start  62: citlali::rtc_pipeline.numerical_speed_support_does_not_expand_existing_spectral_use
+        Start  48: citlali::rtc_pipeline.conditioned_learning_measures_actual_stage_and_preserves_source_and_original
+        Start  54: citlali::rtc_pipeline.unexpected_nonfinite_conditioned_payload_is_a_run_failure_not_silent_sample_removal
+        Start  53: citlali::rtc_pipeline.declared_gaps_do_not_join_native_time_or_manufacture_spectral_support
+        Start  50: citlali::rtc_pipeline.failed_donor_remains_unavailable_through_both_finite_stages
+        Start  24: citlali::rtc_array_lowpass.explicit_binding_rejects_wrong_array_cadence_and_changed_coefficients
+  1/134 Test  #50: citlali::rtc_pipeline.failed_donor_remains_unavailable_through_both_finite_stages .........................................   Passed    0.03 sec
+        Start  56: citlali::rtc_pipeline.donor_replay_is_partition_invariant_and_retains_exact_stage_owners
+  2/134 Test  #24: citlali::rtc_array_lowpass.explicit_binding_rejects_wrong_array_cadence_and_changed_coefficients ..........................   Passed    0.03 sec
+        Start  59: citlali::rtc_pipeline.complete_plan_cannot_reuse_a_rejected_donors_original_median
+  3/134 Test  #53: citlali::rtc_pipeline.declared_gaps_do_not_join_native_time_or_manufacture_spectral_support ...............................   Passed    0.04 sec
+        Start 164: citlali::PtcNumerics.MaskedCountUnsupportedPairsAndNoPositivePowerFailWithoutFallback
+  4/134 Test  #54: citlali::rtc_pipeline.unexpected_nonfinite_conditioned_payload_is_a_run_failure_not_silent_sample_removal .................   Passed    0.04 sec
+        Start 162: citlali::PtcNumerics.MaskedCountCovarianceMatchesCompletePcaAndKeepsSignedSpectrum
+  5/134 Test  #59: citlali::rtc_pipeline.complete_plan_cannot_reuse_a_rejected_donors_original_median ........................................   Passed    0.02 sec
+  6/134 Test  #48: citlali::rtc_pipeline.conditioned_learning_measures_actual_stage_and_preserves_source_and_original ........................   Passed    0.05 sec
+  7/134 Test  #56: citlali::rtc_pipeline.donor_replay_is_partition_invariant_and_retains_exact_stage_owners ..................................   Passed    0.03 sec
+        Start 156: citlali::PtcNumerics.ExcludedDonorValuesIncludingNonfiniteNeverEnterArithmetic
+        Start  35: citlali::rtc_notch_recovery.unexpected_nonfinite_rejected_at_ingress_and_declared_invalid_splits_support
+        Start  34: citlali::rtc_notch_recovery.stale_parent_val_and_injection_fail_closed
+  8/134 Test  #62: citlali::rtc_pipeline.numerical_speed_support_does_not_expand_existing_spectral_use .......................................   Passed    0.06 sec
+        Start  25: citlali::rtc_array_lowpass.actual_short_array_filters_preserve_native_phase_and_physical_support
+  9/134 Test  #40: citlali::rtc_notch_recovery.inclusive_minimum_and_sampling_ceiling_use_existing_authority .................................   Passed    0.06 sec
+        Start 112: citlali::rtc_output_grid.foreign_parent_snapshot_and_motion_cannot_be_relabelled
+ 10/134 Test #164: citlali::PtcNumerics.MaskedCountUnsupportedPairsAndNoPositivePowerFailWithoutFallback .....................................   Passed    0.02 sec
+ 11/134 Test #162: citlali::PtcNumerics.MaskedCountCovarianceMatchesCompletePcaAndKeepsSignedSpectrum ........................................   Passed    0.02 sec
+        Start 154: citlali::PtcNumerics.CompleteDataMatchesSvdAndDoesNotRestoreMean
+        Start  57: citlali::rtc_pipeline.finite_support_limit_includes_donor_background_not_only_filter_taps
+ 12/134 Test #156: citlali::PtcNumerics.ExcludedDonorValuesIncludingNonfiniteNeverEnterArithmetic ............................................   Passed    0.01 sec
+        Start  32: citlali::rtc_notch_recovery.paired_injection_same_plan_linear_response_and_flags
+ 13/134 Test #154: citlali::PtcNumerics.CompleteDataMatchesSvdAndDoesNotRestoreMean ..........................................................   Passed    0.01 sec
+        Start  43: citlali::rtc_notch_recovery.finite_chain_never_bridges_exclusions_or_uses_padding
+ 14/134 Test  #34: citlali::rtc_notch_recovery.stale_parent_val_and_injection_fail_closed ....................................................   Passed    0.02 sec
+ 15/134 Test  #35: citlali::rtc_notch_recovery.unexpected_nonfinite_rejected_at_ingress_and_declared_invalid_splits_support ..................   Passed    0.03 sec
+        Start  51: citlali::rtc_pipeline.relearning_then_reconsidering_replays_original_instead_of_accumulating_filters
+        Start  47: citlali::rtc_pipeline.complete_plan_rejects_missing_duplicate_foreign_or_unbound_inputs
+ 16/134 Test  #25: citlali::rtc_array_lowpass.actual_short_array_filters_preserve_native_phase_and_physical_support ..........................   Passed    0.03 sec
+        Start  44: citlali::rtc_notch_recovery.finite_trials_reject_mixed_invalid_or_overlong_operators
+ 17/134 Test  #57: citlali::rtc_pipeline.finite_support_limit_includes_donor_background_not_only_filter_taps .................................   Passed    0.02 sec
+        Start  41: citlali::rtc_notch_recovery.finite_two_stage_impulse_has_exact_support_and_phase
+ 18/134 Test  #32: citlali::rtc_notch_recovery.paired_injection_same_plan_linear_response_and_flags ..........................................   Passed    0.02 sec
+        Start 111: citlali::rtc_output_grid.exact_output_slots_keep_unavailable_positions_and_original_parent
+ 19/134 Test #112: citlali::rtc_output_grid.foreign_parent_snapshot_and_motion_cannot_be_relabelled ..........................................   Passed    0.03 sec
+        Start  33: citlali::rtc_notch_recovery.rejection_retains_original_and_gives_no_outputs
+ 20/134 Test  #43: citlali::rtc_notch_recovery.finite_chain_never_bridges_exclusions_or_uses_padding .........................................   Passed    0.02 sec
+        Start  42: citlali::rtc_notch_recovery.finite_notch_dc_and_tone_follow_frozen_response
+ 21/134 Test  #47: citlali::rtc_pipeline.complete_plan_rejects_missing_duplicate_foreign_or_unbound_inputs ...................................   Passed    0.02 sec
+        Start  60: citlali::rtc_pipeline.donor_background_cannot_bridge_a_new_ast_speed_boundary
+ 22/134 Test  #44: citlali::rtc_notch_recovery.finite_trials_reject_mixed_invalid_or_overlong_operators ......................................   Passed    0.02 sec
+        Start 115: citlali::rtc_output_grid.chunking_does_not_change_grid_and_physical_gap_has_no_footprint
+ 23/134 Test  #51: citlali::rtc_pipeline.relearning_then_reconsidering_replays_original_instead_of_accumulating_filters ......................   Passed    0.03 sec
+        Start 114: citlali::rtc_output_grid.different_factors_keep_distinct_shared_time_axes
+ 24/134 Test  #41: citlali::rtc_notch_recovery.finite_two_stage_impulse_has_exact_support_and_phase ..........................................   Passed    0.02 sec
+        Start 117: citlali::rtc_output_grid.injected_diagnostic_cannot_become_original_conditioned_output
+ 25/134 Test  #33: citlali::rtc_notch_recovery.rejection_retains_original_and_gives_no_outputs ...............................................   Passed    0.02 sec
+        Start  38: citlali::rtc_notch_recovery.mismatched_motion_and_unsupported_optical_domain_fail_closed
+ 26/134 Test #111: citlali::rtc_output_grid.exact_output_slots_keep_unavailable_positions_and_original_parent ................................   Passed    0.03 sec
+        Start  36: citlali::rtc_notch_recovery.finite_sine_transfer_matches_explicit_notch_and_preserves_coordinate_pairing
+ 27/134 Test  #42: citlali::rtc_notch_recovery.finite_notch_dc_and_tone_follow_frozen_response ...............................................   Passed    0.02 sec
+        Start 116: citlali::rtc_output_grid.donor_numerical_support_is_distinct_from_replacement_and_r_availability
+ 28/134 Test #115: citlali::rtc_output_grid.chunking_does_not_change_grid_and_physical_gap_has_no_footprint ..................................   Passed    0.02 sec
+        Start  55: citlali::rtc_pipeline.frozen_complete_plan_source_pair_has_identical_support_and_diagonal_response
+ 29/134 Test #114: citlali::rtc_output_grid.different_factors_keep_distinct_shared_time_axes .................................................   Passed    0.02 sec
+        Start  30: citlali::rtc_notch_recovery.centered_fir_exact_native_phase_and_original_replay
+ 30/134 Test  #60: citlali::rtc_pipeline.donor_background_cannot_bridge_a_new_ast_speed_boundary .............................................   Passed    0.02 sec
+ 31/134 Test #117: citlali::rtc_output_grid.injected_diagnostic_cannot_become_original_conditioned_output ....................................   Passed    0.02 sec
+        Start  49: citlali::rtc_pipeline.donor_exception_propagates_exact_nonzero_support_without_erasing_x_or_grid
+        Start  37: citlali::rtc_notch_recovery.engineering_partition_does_not_reset_filter_state
+ 32/134 Test  #38: citlali::rtc_notch_recovery.mismatched_motion_and_unsupported_optical_domain_fail_closed ..................................   Passed    0.02 sec
+        Start  45: citlali::rtc_notch_recovery.speed_support_is_separate_from_centers_and_all_nonspeed_blockers
+ 33/134 Test #116: citlali::rtc_output_grid.donor_numerical_support_is_distinct_from_replacement_and_r_availability ..........................   Passed    0.02 sec
+ 34/134 Test  #36: citlali::rtc_notch_recovery.finite_sine_transfer_matches_explicit_notch_and_preserves_coordinate_pairing ..................   Passed    0.02 sec
+        Start  46: citlali::rtc_notch_recovery.speed_permission_preserves_coincident_optical_domain_restriction
+        Start 113: citlali::rtc_output_grid.bound_array_facts_match_full_occurrences_with_gaps_and_odd_origin
+ 35/134 Test  #55: citlali::rtc_pipeline.frozen_complete_plan_source_pair_has_identical_support_and_diagonal_response ........................   Passed    0.02 sec
+        Start  31: citlali::rtc_notch_recovery.physical_gap_and_declared_invalid_pair_split_support_without_compression
+ 36/134 Test  #30: citlali::rtc_notch_recovery.centered_fir_exact_native_phase_and_original_replay ...........................................   Passed    0.02 sec
+        Start  58: citlali::rtc_pipeline.donor_background_cannot_bypass_a_resolved_pair_invalid_boundary
+ 37/134 Test  #49: citlali::rtc_pipeline.donor_exception_propagates_exact_nonzero_support_without_erasing_x_or_grid ..........................   Passed    0.02 sec
+        Start  39: citlali::rtc_notch_recovery.short_finite_record_retains_unavailable_boundary_disposition
+ 38/134 Test  #37: citlali::rtc_notch_recovery.engineering_partition_does_not_reset_filter_state .............................................   Passed    0.02 sec
+        Start 118: citlali::rtc_output_grid.val_outputs_are_disjoint_from_native_coordinates_and_other_realizations
+ 39/134 Test  #46: citlali::rtc_notch_recovery.speed_permission_preserves_coincident_optical_domain_restriction ..............................   Passed    0.02 sec
+        Start  61: citlali::rtc_pipeline.unadmitted_selected_support_is_not_a_realized_replacement
+ 40/134 Test #113: citlali::rtc_output_grid.bound_array_facts_match_full_occurrences_with_gaps_and_odd_origin ................................   Passed    0.02 sec
+        Start 165: citlali::PtcNumerics.WarmInitializerResolvesCurrentObjectiveAndRejectsForeignState
+ 41/134 Test  #45: citlali::rtc_notch_recovery.speed_support_is_separate_from_centers_and_all_nonspeed_blockers ..............................   Passed    0.03 sec
+        Start 157: citlali::PtcNumerics.NonconvergenceAndDeficiencyDoNotSwitchMethodsOrReduceRank
+ 42/134 Test  #31: citlali::rtc_notch_recovery.physical_gap_and_declared_invalid_pair_split_support_without_compression ......................   Passed    0.02 sec
+        Start 185: citlali::fruit::FruitCycle.ReferenceSequenceFreshMeansMaskedApplyAndRankFailure
+ 43/134 Test  #58: citlali::rtc_pipeline.donor_background_cannot_bypass_a_resolved_pair_invalid_boundary .....................................   Passed    0.02 sec
+ 44/134 Test  #39: citlali::rtc_notch_recovery.short_finite_record_retains_unavailable_boundary_disposition ..................................   Passed    0.02 sec
+ 45/134 Test #118: citlali::rtc_output_grid.val_outputs_are_disjoint_from_native_coordinates_and_other_realizations ..........................   Passed    0.02 sec
+        Start  52: citlali::rtc_pipeline.later_snapshot_is_a_new_exact_evidence_binding_and_cannot_rebind_old_evidence
+        Start 149: citlali::rtc_binary_output.contiguous_column_major_strided_and_nonfinite_bits_match_scalar_order
+        Start 163: citlali::PtcNumerics.MaskedCountUsesEveryEligiblePairAndDoesNotRepairIndefiniteness
+ 46/134 Test #165: citlali::PtcNumerics.WarmInitializerResolvesCurrentObjectiveAndRejectsForeignState ........................................   Passed    0.02 sec
+ 47/134 Test #157: citlali::PtcNumerics.NonconvergenceAndDeficiencyDoNotSwitchMethodsOrReduceRank ............................................   Passed    0.02 sec
+        Start 187: citlali::fruit::FruitCycle.ReferenceSequenceStageOrderingAndAutonomousReplacement
+        Start 183: citlali::fruit::FruitCycle.NumericalKnownSourceProjectionCleaningRejoinMap
+ 48/134 Test  #61: citlali::rtc_pipeline.unadmitted_selected_support_is_not_a_realized_replacement ...........................................   Passed    0.02 sec
+        Start 188: citlali::fruit::FruitCycle.ExperimentalRanksLearnIndependentlyOnEachResidual
+ 49/134 Test #185: citlali::fruit::FruitCycle.ReferenceSequenceFreshMeansMaskedApplyAndRankFailure ...........................................   Passed    0.02 sec
+        Start 161: citlali::PtcNumerics.UnresolvedCutoffDegeneracyDoesNotChooseArbitrarySubspace
+ 50/134 Test #163: citlali::PtcNumerics.MaskedCountUsesEveryEligiblePairAndDoesNotRepairIndefiniteness .......................................   Passed    0.01 sec
+        Start 159: citlali::PtcNumerics.PairwiseUsesDetectorMeansAndOverlapMinusOne
+ 51/134 Test #187: citlali::fruit::FruitCycle.ReferenceSequenceStageOrderingAndAutonomousReplacement .........................................   Passed    0.01 sec
+        Start 155: citlali::PtcNumerics.IncompleteRowsAndGoodPartsOfFlaggedDetectorsContribute
+ 52/134 Test #149: citlali::rtc_binary_output.contiguous_column_major_strided_and_nonfinite_bits_match_scalar_order ..........................   Passed    0.02 sec
+ 53/134 Test #183: citlali::fruit::FruitCycle.NumericalKnownSourceProjectionCleaningRejoinMap ................................................   Passed    0.01 sec
+        Start 184: citlali::fruit::FruitCycle.SignedInjectionPreservesParentAndInvalidEntries
+        Start 158: citlali::PtcNumerics.FrozenMaskedResponseIsSameLocalLinearOperator
+ 54/134 Test  #52: citlali::rtc_pipeline.later_snapshot_is_a_new_exact_evidence_binding_and_cannot_rebind_old_evidence .......................   Passed    0.02 sec
+ 55/134 Test #188: citlali::fruit::FruitCycle.ExperimentalRanksLearnIndependentlyOnEachResidual ..............................................   Passed    0.02 sec
+        Start 182: citlali::fruit::FruitCycle.BypassAccountingMissingnessAndStaleState
+        Start 160: citlali::PtcNumerics.UnsupportedLargeRankAndOneTimeRemainBoundedFailures
+ 56/134 Test #161: citlali::PtcNumerics.UnresolvedCutoffDegeneracyDoesNotChooseArbitrarySubspace .............................................   Passed    0.02 sec
+ 57/134 Test #159: citlali::PtcNumerics.PairwiseUsesDetectorMeansAndOverlapMinusOne ..........................................................   Passed    0.02 sec
+        Start 186: citlali::fruit::FruitCycle.GuardedFrozenInterventionSignedZeroMaskedAndTamper
+        Start 181: citlali::fruit::FruitCycle.PixelProjectionSupportAndExactBrightness
+ 58/134 Test #155: citlali::PtcNumerics.IncompleteRowsAndGoodPartsOfFlaggedDetectorsContribute ...............................................   Passed    0.02 sec
+        Start  26: citlali::rtc_line_population.learn_preserves_overlapping_causes_and_exact_original_context
+ 59/134 Test #184: citlali::fruit::FruitCycle.SignedInjectionPreservesParentAndInvalidEntries ................................................   Passed    0.01 sec
+ 60/134 Test #158: citlali::PtcNumerics.FrozenMaskedResponseIsSameLocalLinearOperator ........................................................   Passed    0.02 sec
+        Start  27: citlali::rtc_line_population.incomplete_duplicate_foreign_or_unbound_weight_inputs_fail
+        Start  28: citlali::rtc_line_population.consider_requires_complete_denominator_and_retains_missing_recovery
+ 61/134 Test #160: citlali::PtcNumerics.UnsupportedLargeRankAndOneTimeRemainBoundedFailures ..................................................   Passed    0.01 sec
+ 62/134 Test #182: citlali::fruit::FruitCycle.BypassAccountingMissingnessAndStaleState .......................................................   Passed    0.02 sec
+        Start  29: citlali::rtc_line_population.rejection_zero_is_distinct_from_unavailable_and_iir_is_not_finite
+        Start  63: citlali::rtc_multidetector_caller.no_mask_authority_is_scoped_not_a_missing_metadata_fallback
+ 63/134 Test #186: citlali::fruit::FruitCycle.GuardedFrozenInterventionSignedZeroMaskedAndTamper .............................................   Passed    0.01 sec
+ 64/134 Test #181: citlali::fruit::FruitCycle.PixelProjectionSupportAndExactBrightness .......................................................   Passed    0.02 sec
+        Start  64: citlali::rtc_multidetector_caller.point_no_mask_requires_its_own_owner_selection
+        Start  65: citlali::rtc_multidetector_caller.explicit_review_connects_factors_donors_and_complete_apply
+ 65/134 Test  #63: citlali::rtc_multidetector_caller.no_mask_authority_is_scoped_not_a_missing_metadata_fallback .............................   Passed    0.01 sec
+        Start  66: citlali::rtc_multidetector_caller.unapproved_stale_or_foreign_review_cannot_authorize_apply
+ 66/134 Test  #26: citlali::rtc_line_population.learn_preserves_overlapping_causes_and_exact_original_context ................................   Passed    0.05 sec
+ 67/134 Test  #64: citlali::rtc_multidetector_caller.point_no_mask_requires_its_own_owner_selection ..........................................   Passed    0.19 sec
+ 68/134 Test  #65: citlali::rtc_multidetector_caller.explicit_review_connects_factors_donors_and_complete_apply ..............................   Passed    0.24 sec
+ 69/134 Test  #28: citlali::rtc_line_population.consider_requires_complete_denominator_and_retains_missing_recovery ..........................   Passed    0.25 sec
+ 70/134 Test  #29: citlali::rtc_line_population.rejection_zero_is_distinct_from_unavailable_and_iir_is_not_finite ............................   Passed    0.25 sec
+ 71/134 Test  #27: citlali::rtc_line_population.incomplete_duplicate_foreign_or_unbound_weight_inputs_fail ...................................   Passed    0.25 sec
+        Start  67: citlali::rtc_multidetector_caller.candidates_and_event_ordinals_are_not_acceptance
+        Start  68: citlali::rtc_multidetector_caller.missing_stable_support_and_factor_stay_unavailable
+        Start  69: citlali::rtc_multidetector_caller.actual_static_factor_ratio_and_contamination_reach_donor_owner
+        Start  70: citlali::rtc_multidetector_caller.scan_binding_is_explicit_native_support_not_acquisition_scan_number
+        Start  71: citlali::rtc_treatment_outcome.identity_stage_is_exact_on_same_windows_and_keeps_source
+        Start  72: citlali::rtc_treatment_outcome.analytic_line_power_uses_matched_footprints_and_preserves_inputs
+ 72/134 Test  #66: citlali::rtc_multidetector_caller.unapproved_stale_or_foreign_review_cannot_authorize_apply ...............................   Passed    0.21 sec
+        Start  73: citlali::rtc_treatment_outcome.unequal_masks_gaps_and_window_overlap_keep_exact_native_support
+ 73/134 Test  #68: citlali::rtc_multidetector_caller.missing_stable_support_and_factor_stay_unavailable ......................................   Passed    0.06 sec
+ 74/134 Test  #67: citlali::rtc_multidetector_caller.candidates_and_event_ordinals_are_not_acceptance ........................................   Passed    0.07 sec
+ 75/134 Test  #69: citlali::rtc_multidetector_caller.actual_static_factor_ratio_and_contamination_reach_donor_owner ..........................   Passed    0.08 sec
+ 76/134 Test  #71: citlali::rtc_treatment_outcome.identity_stage_is_exact_on_same_windows_and_keeps_source ...................................   Passed    0.09 sec
+ 77/134 Test  #70: citlali::rtc_multidetector_caller.scan_binding_is_explicit_native_support_not_acquisition_scan_number .....................   Passed    0.10 sec
+ 78/134 Test  #72: citlali::rtc_treatment_outcome.analytic_line_power_uses_matched_footprints_and_preserves_inputs ...........................   Passed    0.10 sec
+        Start  74: citlali::rtc_treatment_outcome.unexpected_nonfinite_outside_shared_support_is_not_hidden
+        Start  75: citlali::rtc_treatment_outcome.unavailable_support_is_not_zero_residual_power
+        Start  76: citlali::rtc_treatment_outcome.donor_history_and_local_r_unavailability_survive_comparison
+        Start  77: citlali::rtc_treatment_outcome.reassessment_rejects_foreign_apply_stage_and_cadence_binding
+        Start  78: citlali::rtc_treatment_outcome.too_few_shared_windows_is_unavailable_not_suppression
+        Start  79: citlali::rtc_treatment_outcome.later_VAL_is_explicit_and_cannot_rebind_original_or_select_old_plan
+ 79/134 Test  #73: citlali::rtc_treatment_outcome.unequal_masks_gaps_and_window_overlap_keep_exact_native_support ............................   Passed    0.04 sec
+        Start  80: citlali::rtc_reassessment_decision.authorized_retain_keeps_exact_candidate_without_qualification
+ 80/134 Test  #78: citlali::rtc_treatment_outcome.too_few_shared_windows_is_unavailable_not_suppression ......................................   Passed    0.02 sec
+        Start  81: citlali::rtc_reassessment_decision.prescribed_revision_executes_complete_plan_afresh_and_differs_from_cumulative
+ 81/134 Test  #75: citlali::rtc_treatment_outcome.unavailable_support_is_not_zero_residual_power .............................................   Passed    0.03 sec
+        Start  82: citlali::rtc_reassessment_decision.missing_authority_rationale_and_required_qualification_never_pass
+ 82/134 Test  #74: citlali::rtc_treatment_outcome.unexpected_nonfinite_outside_shared_support_is_not_hidden ..................................   Passed    0.03 sec
+        Start  83: citlali::rtc_reassessment_decision.missing_or_insufficient_outcome_names_affected_scope_and_preserves_product
+ 83/134 Test  #76: citlali::rtc_treatment_outcome.donor_history_and_local_r_unavailability_survive_comparison ................................   Passed    0.06 sec
+ 84/134 Test  #79: citlali::rtc_treatment_outcome.later_VAL_is_explicit_and_cannot_rebind_original_or_select_old_plan ........................   Passed    0.06 sec
+ 85/134 Test  #80: citlali::rtc_reassessment_decision.authorized_retain_keeps_exact_candidate_without_qualification ..........................   Passed    0.06 sec
+ 86/134 Test  #77: citlali::rtc_treatment_outcome.reassessment_rejects_foreign_apply_stage_and_cadence_binding ...............................   Passed    0.07 sec
+ 87/134 Test  #81: citlali::rtc_reassessment_decision.prescribed_revision_executes_complete_plan_afresh_and_differs_from_cumulative ..........   Passed    0.05 sec
+        Start  84: citlali::rtc_reassessment_decision.foreign_stage_apply_parent_and_stale_attempt_are_rejected
+        Start  85: citlali::rtc_reassessment_decision.changed_VAL_invalidates_old_decision_and_later_bound_evidence_cannot_select_old_plan
+        Start  86: citlali::rtc_reassessment_decision.no_op_repeated_plan_and_second_revision_terminate_without_false_success
+        Start  87: citlali::rtc_reassessment_decision.partial_plan_or_unapproved_control_change_cannot_be_revised
+        Start  88: citlali::rtc_reassessment_decision.retained_donor_support_keeps_original_r_absence_and_history
+ 88/134 Test  #82: citlali::rtc_reassessment_decision.missing_authority_rationale_and_required_qualification_never_pass ......................   Passed    0.04 sec
+        Start  89: citlali::rtc_reassessment_decision.diagnostic_overlay_is_preserved_but_not_silently_replayed_as_original
+ 89/134 Test  #83: citlali::rtc_reassessment_decision.missing_or_insufficient_outcome_names_affected_scope_and_preserves_product .............   Passed    0.04 sec
+        Start  90: citlali::rtc_event_treatment.recovered_natural_candidate_is_unavailable_not_accepted
+ 90/134 Test  #88: citlali::rtc_reassessment_decision.retained_donor_support_keeps_original_r_absence_and_history ............................   Passed    0.03 sec
+        Start  91: citlali::rtc_event_treatment.indexed_intervals_equal_record_scan_for_every_detector_and_boundary
+ 91/134 Test  #87: citlali::rtc_reassessment_decision.partial_plan_or_unapproved_control_change_cannot_be_revised ............................   Passed    0.04 sec
+        Start  92: citlali::rtc_event_treatment.declared_pair_disturbance_exercises_genuine_exclusion_and_donor_paths
+ 92/134 Test  #89: citlali::rtc_reassessment_decision.diagnostic_overlay_is_preserved_but_not_silently_replayed_as_original ..................   Passed    0.03 sec
+        Start  93: citlali::rtc_event_treatment.shared_or_protected_disturbance_is_not_admitted_by_test_truth
+ 93/134 Test  #90: citlali::rtc_event_treatment.recovered_natural_candidate_is_unavailable_not_accepted ......................................   Passed    0.02 sec
+        Start  94: citlali::rtc_event_treatment.undeclared_parent_and_manual_support_are_refused
+ 94/134 Test  #91: citlali::rtc_event_treatment.indexed_intervals_equal_record_scan_for_every_detector_and_boundary ..........................   Passed    0.02 sec
+ 95/134 Test  #85: citlali::rtc_reassessment_decision.changed_VAL_invalidates_old_decision_and_later_bound_evidence_cannot_select_old_plan ...   Passed    0.06 sec
+ 96/134 Test  #86: citlali::rtc_reassessment_decision.no_op_repeated_plan_and_second_revision_terminate_without_false_success ................   Passed    0.06 sec
+        Start  95: citlali::rtc_event_treatment.later_excluded_fit_support_cannot_supply_continuity
+        Start  96: citlali::rtc_event_treatment.unavailable_paired_donor_support_remains_an_exclusion
+        Start  97: citlali::rtc_event_treatment.decided_ready_donor_cannot_be_omitted_from_continuity_arm
+ 97/134 Test  #92: citlali::rtc_event_treatment.declared_pair_disturbance_exercises_genuine_exclusion_and_donor_paths ........................   Passed    0.02 sec
+ 98/134 Test  #84: citlali::rtc_reassessment_decision.foreign_stage_apply_parent_and_stale_attempt_are_rejected ..............................   Passed    0.06 sec
+        Start  98: citlali::rtc_event_treatment.admitted_shift_excludes_its_existing_scan_and_never_fills
+        Start  99: citlali::rtc_event_treatment.same_spikes_do_not_authorize_mixing_event_generations
+ 99/134 Test  #93: citlali::rtc_event_treatment.shared_or_protected_disturbance_is_not_admitted_by_test_truth ................................   Passed    0.03 sec
+        Start 100: citlali::rtc_event_treatment.context_only_jump_keeps_full_filter_footprints_inside_science
+100/134 Test  #94: citlali::rtc_event_treatment.undeclared_parent_and_manual_support_are_refused .............................................   Passed    0.03 sec
+101/134 Test  #95: citlali::rtc_event_treatment.later_excluded_fit_support_cannot_supply_continuity ..........................................   Passed    0.03 sec
+102/134 Test  #96: citlali::rtc_event_treatment.unavailable_paired_donor_support_remains_an_exclusion ........................................   Passed    0.03 sec
+103/134 Test  #97: citlali::rtc_event_treatment.decided_ready_donor_cannot_be_omitted_from_continuity_arm ....................................   Passed    0.03 sec
+104/134 Test  #99: citlali::rtc_event_treatment.same_spikes_do_not_authorize_mixing_event_generations ........................................   Passed    0.03 sec
+105/134 Test  #98: citlali::rtc_event_treatment.admitted_shift_excludes_its_existing_scan_and_never_fills ....................................   Passed    0.03 sec
+        Start 104: citlali::rtc_common_mode.diagnostic_does_not_change_frozen_plan_flags_or_science_output
+        Start 105: citlali::rtc_purpose_consequence.final_scheduled_unit_response_keeps_purpose_and_missing_requirements
+        Start 106: citlali::rtc_purpose_consequence.line_parameter_error_does_not_cancel_like_paired_source_transfer
+        Start 107: citlali::rtc_purpose_consequence.incomplete_crossing_and_absent_model_remain_unavailable
+        Start 108: citlali::rtc_purpose_consequence.foreign_plan_VAL_geometry_and_overlay_cannot_bind
+        Start 109: citlali::rtc_purpose_consequence.foreign_Apply_cannot_reuse_consequences_in_reassessment
+106/134 Test #104: citlali::rtc_common_mode.diagnostic_does_not_change_frozen_plan_flags_or_science_output ...................................   Passed    0.02 sec
+        Start 110: citlali::rtc_purpose_consequence.declared_window_counts_schedule_relative_to_odd_native_origin
+107/134 Test #100: citlali::rtc_event_treatment.context_only_jump_keeps_full_filter_footprints_inside_science ................................   Passed    0.03 sec
+        Start 119: citlali::rtc_terminal.complete_without_unrequested_detector_pointing_or_calibration
+108/134 Test #106: citlali::rtc_purpose_consequence.line_parameter_error_does_not_cancel_like_paired_source_transfer .........................   Passed    0.02 sec
+109/134 Test #107: citlali::rtc_purpose_consequence.incomplete_crossing_and_absent_model_remain_unavailable ..................................   Passed    0.04 sec
+        Start 120: citlali::rtc_terminal.val_publishes_all_slots_without_aliasing_or_stale_generation
+        Start 121: citlali::rtc_terminal.donor_support_and_coordinate_local_facts_survive_publication
+110/134 Test #108: citlali::rtc_purpose_consequence.foreign_plan_VAL_geometry_and_overlay_cannot_bind ........................................   Passed    0.04 sec
+        Start 122: citlali::rtc_terminal.failure_is_atomic_and_occupied_slot_preserves_prior_completion
+111/134 Test #110: citlali::rtc_purpose_consequence.declared_window_counts_schedule_relative_to_odd_native_origin ............................   Passed    0.03 sec
+112/134 Test #109: citlali::rtc_purpose_consequence.foreign_Apply_cannot_reuse_consequences_in_reassessment ..................................   Passed    0.05 sec
+113/134 Test #119: citlali::rtc_terminal.complete_without_unrequested_detector_pointing_or_calibration .......................................   Passed    0.03 sec
+114/134 Test #105: citlali::rtc_purpose_consequence.final_scheduled_unit_response_keeps_purpose_and_missing_requirements .....................   Passed    0.05 sec
+        Start 123: citlali::rtc_terminal.unavailable_values_are_complete_facts_and_do_not_compress_schedule
+        Start 124: citlali::rtc_terminal.unresolved_or_foreign_final_decision_cannot_publish
+        Start 126: citlali::ptc_cal_source.exact_cal_and_VAL_binding_preserves_values_occurrences_and_lineage
+        Start 127: citlali::ptc_cal_source.foreign_replay_or_pre_CAL_snapshot_cannot_impersonate_exact_parent
+115/134 Test #121: citlali::rtc_terminal.donor_support_and_coordinate_local_facts_survive_publication ........................................   Passed    0.02 sec
+        Start 128: citlali::ptc_cal_source.donor_replacements_and_missing_CAL_remain_unavailable_without_time_collapse
+116/134 Test #120: citlali::rtc_terminal.val_publishes_all_slots_without_aliasing_or_stale_generation ........................................   Passed    0.02 sec
+        Start 140: citlali::ptc_pipeline.exact_CAL_to_PTC_VAL_and_frozen_response_preserve_parents
+117/134 Test #122: citlali::rtc_terminal.failure_is_atomic_and_occupied_slot_preserves_prior_completion ......................................   Passed    0.02 sec
+        Start 141: citlali::ptc_pipeline.donor_centers_excluded_original_neighbors_retained_and_rank_failure_published
+118/134 Test #123: citlali::rtc_terminal.unavailable_values_are_complete_facts_and_do_not_compress_schedule ..................................   Passed    0.02 sec
+        Start 142: citlali::rtc_partial_completion.empty_detector_stays_unavailable_without_blocking_terminal
+119/134 Test #126: citlali::ptc_cal_source.exact_cal_and_VAL_binding_preserves_values_occurrences_and_lineage ................................   Passed    0.02 sec
+        Start 143: citlali::rtc_partial_completion.usable_but_unassessed_intermediate_missing_and_all_empty_still_stop
+120/134 Test #124: citlali::rtc_terminal.unresolved_or_foreign_final_decision_cannot_publish .................................................   Passed    0.02 sec
+        Start 144: citlali::rtc_partial_completion.declared_invalid_original_pair_stays_unavailable_without_blocking_good_detectors
+121/134 Test #128: citlali::ptc_cal_source.donor_replacements_and_missing_CAL_remain_unavailable_without_time_collapse .......................   Passed    0.02 sec
+        Start 145: citlali::rtc_partial_completion.nonempty_inconsistent_asymmetric_and_all_invalid_originals_still_stop
+122/134 Test #127: citlali::ptc_cal_source.foreign_replay_or_pre_CAL_snapshot_cannot_impersonate_exact_parent ................................   Passed    0.03 sec
+        Start 146: citlali::rtc_partial_completion.an_active_donor_dependency_prevents_empty_detector_bypass
+123/134 Test #141: citlali::ptc_pipeline.donor_centers_excluded_original_neighbors_retained_and_rank_failure_published .......................   Passed    0.02 sec
+        Start 147: citlali::ptc_partial_completion.zero_support_omission_is_prefit_shared_and_output_identity_is_complete
+124/134 Test #142: citlali::rtc_partial_completion.empty_detector_stays_unavailable_without_blocking_terminal ................................   Passed    0.02 sec
+        Start 148: citlali::ptc_partial_completion.no_or_single_admitted_detector_publishes_unavailable_full_domain
+125/134 Test #140: citlali::ptc_pipeline.exact_CAL_to_PTC_VAL_and_frozen_response_preserve_parents ...........................................   Passed    0.03 sec
+        Start 150: citlali::point_fixed11.exact_membership_identity_cadence_and_coefficients_fail_closed
+126/134 Test #144: citlali::rtc_partial_completion.declared_invalid_original_pair_stays_unavailable_without_blocking_good_detectors ..........   Passed    0.03 sec
+        Start 151: citlali::point_fixed11.historical_coefficients_preserve_unselected_pair_and_physical_gap_support
+127/134 Test #146: citlali::rtc_partial_completion.an_active_donor_dependency_prevents_empty_detector_bypass .................................   Passed    0.02 sec
+128/134 Test #147: citlali::ptc_partial_completion.zero_support_omission_is_prefit_shared_and_output_identity_is_complete ....................   Passed    0.02 sec
+129/134 Test #143: citlali::rtc_partial_completion.usable_but_unassessed_intermediate_missing_and_all_empty_still_stop .......................   Passed    0.04 sec
+130/134 Test #145: citlali::rtc_partial_completion.nonempty_inconsistent_asymmetric_and_all_invalid_originals_still_stop .....................   Passed    0.04 sec
+131/134 Test #148: citlali::ptc_partial_completion.no_or_single_admitted_detector_publishes_unavailable_full_domain ..........................   Passed    0.03 sec
+132/134 Test #151: citlali::point_fixed11.historical_coefficients_preserve_unselected_pair_and_physical_gap_support ..........................   Passed    0.07 sec
+133/134 Test #150: citlali::point_fixed11.exact_membership_identity_cadence_and_coefficients_fail_closed .....................................   Passed    0.09 sec
+134/134 Test #125: citlali::point_rtc_source_probe.native_midpoints_AST_pixels_and_signed_CAL_preserve_original_pair .........................   Passed    6.85 sec
+
+100% tests passed, 0 tests failed out of 134
+
+Total Test time (real) =   7.48 sec

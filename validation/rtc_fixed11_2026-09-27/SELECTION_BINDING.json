@@ -1,0 +1,19 @@
+{
+  "applicability_sha256": "8c41c3946e87dc22a2baaaa6411122c14af47d32611f17a167ba644365962150",
+  "design_sha256": "32f786ab1081f6cd852e221e509fa2f8057ddc207b948f3705e490ecfc3689a3",
+  "selected_counts": {
+    "11": {
+      "uncertain": 155,
+      "selected": 331,
+      "total": 486
+    },
+    "12": {
+      "uncertain": 339,
+      "selected": 151,
+      "unselected": 1,
+      "total": 491
+    }
+  },
+  "frozen_before_candidate": true,
+  "science_started": false
+}

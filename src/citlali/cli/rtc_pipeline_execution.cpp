@@ -56,6 +56,7 @@ std::string native_plane_digest(const NativePairedReadoutMatrix &m) {
 #include "fruit_saved_execution.h"
 #include "jinc_ast_execution.h"
 #include "point_rtc_probe_execution.h"
+#include "point_fixed11_input.h"
 namespace {
 // One observation lifetime, prepared before workers start; only the I/O mutex
 // is mutable. Numerical work and detector populations remain network-owned.
@@ -537,6 +538,15 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     const std::vector<RtcSpectralCadenceDomain> cadence{{nw,"audit-four-epoch-ULP-arithmetic-envelope",
         duration,prior["roundoff_bound_fraction"].as<double>()}};
     auto spectral=measure(learn_seconds,[&]{return RtcNativeSpectralEvidence::learn_initial(spikes,{identity},cadence,18);});
+    if(cfg["fixed11"]) {
+      const auto selection=YAML::LoadFile(checked_file(cfg["fixed11"]["applicability"]).string());
+      const auto design=YAML::LoadFile(checked_file(selection["design"]).string());
+      std::vector<std::pair<std::int64_t,std::int64_t>> physical;
+      for(const auto &run:runs)physical.emplace_back(run.first_native_row,run.past_last_native_row);
+      citlali::cli::detail::validate_point_fixed11(cfg,selection,design,nw,
+        spectral->network(nw).interval_seconds,physical,detectors,channels);
+    }
+
     performance.mark("initial_spectra_complete");
     auto lines=measure(learn_seconds,[&]{return RtcLinePowerEvidence::learn(spectral,val,RtcLinePowerProfile::initial_2_hz,19);});
     auto joint=measure(consider_seconds,[&]{return RtcLinePowerConsideration::rank(lines,
@@ -595,6 +605,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     receipt["native_integration_seconds"]=duration;
     receipt["cadence_interval_seconds"]=spectral->network(nw).interval_seconds;
     receipt["physical_runs"]=runs.size();
+    if(cfg["fixed11"])receipt["fixed11_applicability"]=cfg["fixed11"];
     receipt["native_time_sha256"]=citlali::utils::sha256_file(output/"native-time.f64");
     for(const auto &run:runs)receipt["native_runs"].push_back(range({run.first_native_row,run.past_last_native_row}));
     for(std::size_t d=0;d<channels.size();++d){

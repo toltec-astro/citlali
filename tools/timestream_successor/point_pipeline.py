@@ -78,11 +78,15 @@ def inspect_saved(out):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('mode',choices=['preflight','forward','feedback','report','rank-preflight','rank-run','rank-report','speed-once','speed-run','speed-candidates','rtc-run','rtc-once'])
+    p.add_argument('mode',choices=['preflight','forward','feedback','report','rank-preflight','rank-run','rank-report','speed-once','speed-run','speed-candidates','rtc-run','rtc-once','fixed11-run'])
     p.add_argument('--output',type=Path,required=True,help='explicit run root, fresh for preflight')
     p.add_argument('--config',type=Path);p.add_argument('--input-root',type=Path);p.add_argument('--binary',type=Path)
     p.add_argument('--review',type=Path)
     a=p.parse_args();out=a.output.resolve()
+    if a.mode=='fixed11-run':
+        from point_fixed11_experiment import run
+        require(a.binary and a.review and a.input_root,'fixed11 run requires binary, exact review and originals')
+        return run(out,a.binary.resolve(),a.review.resolve(),a.input_root.resolve())
     if a.mode=='rtc-run':
         from point_rtc_experiment import run_family
         require(a.binary and a.review and a.input_root and a.config,'RTC run requires binary, review, original root and exact family config')

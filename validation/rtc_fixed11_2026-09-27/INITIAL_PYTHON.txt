@@ -1,0 +1,67 @@
+.FF.......................................                               [100%]
+=================================== FAILURES ===================================
+____________ test_frozen_set_configuration_and_unselected_identity _____________
+
+    def test_frozen_set_configuration_and_unselected_identity():
+        m=json.loads((e.RECORD/'APPLICABILITY.json').read_text());d=json.loads((e.RECORD/'DESIGN.json').read_text())
+        assert s.coeff_sha(d['finite_notch'])==s.NOTCH_SHA
+        for n in m['networks']:
+            cfg=json.loads((s.PRIOR/f"A-REF-rep1/inputs/network{n['network']}-input.json").read_text())
+            b=e.configure(copy.deepcopy(cfg),m,d,'B');c=e.configure(copy.deepcopy(cfg),m,d,'C')
+            assert all(x['filter']=='lowpass' for x in b['detectors'])
+            assert sum(x['filter']=='w1-t3' for x in c['detectors'])==n['counts']['selected']
+            for i,x in enumerate(c['detectors']):
+                if n['detectors'][i]['disposition']!='selected':assert x==cfg['detectors'][i]
+            cfg['tune']['sha256']='wrong'
+>           with pytest.raises(RuntimeError):e.configure(cfg,m,d,'C')
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tools/timestream_successor/test_point_fixed11.py:30: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/timestream_successor/point_fixed11_experiment.py:34: in configure
+    for key,b in net['input_bindings'].items():require(cfg[key]['sha256']==b['sha256'],'fixed input differs '+key)
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+ok = False, why = 'fixed input differs tune'
+
+    def require(ok, why):
+>       if not ok:raise ValueError(why)
+                  ^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: fixed input differs tune
+
+tools/timestream_successor/inspect_forward_map.py:25: ValueError
+_________________ test_new_scope_limits_and_duplicate_failure __________________
+
+tmp_path = PosixPath('/private/var/folders/2l/xp67t_wn6cjf0436lr4q5z340000gq/T/pytest-of-gwilson/pytest-106/test_new_scope_limits_and_dupl0')
+
+    def test_new_scope_limits_and_duplicate_failure(tmp_path):
+        out=tmp_path/'run';(out/'freeze').mkdir(parents=True)
+        (out/'freeze/prospective.json').write_text(json.dumps(dict(campaign_scope='rtc-fixed11-v1')))
+        (out/'freeze/budget.json').write_text(json.dumps(dict(campaign_root=str(tmp_path))))
+        assert rtc_experiment(out)
+        for k in range(45):experiment_consume(out,'feedback',dict(cycle=k))
+>       with pytest.raises(RuntimeError):experiment_consume(out,'feedback',dict(cycle=45))
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tools/timestream_successor/test_point_fixed11.py:38: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/timestream_successor/point_processing.py:87: in experiment_consume
+    return consume(Path(read(out/'freeze/budget.json')['campaign_root']),kind,identity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tools/timestream_successor/point_fixed11_experiment.py:26: in consume
+    require(sum(r['kind']==kind for r in rows)<limits[kind],'fixed11 absolute attempt ceiling')
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+ok = False, why = 'fixed11 absolute attempt ceiling'
+
+    def require(ok, why):
+>       if not ok:raise ValueError(why)
+                  ^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: fixed11 absolute attempt ceiling
+
+tools/timestream_successor/inspect_forward_map.py:25: ValueError
+=========================== short test summary info ============================
+FAILED tools/timestream_successor/test_point_fixed11.py::test_frozen_set_configuration_and_unselected_identity
+FAILED tools/timestream_successor/test_point_fixed11.py::test_new_scope_limits_and_duplicate_failure
+2 failed, 40 passed in 3.92s

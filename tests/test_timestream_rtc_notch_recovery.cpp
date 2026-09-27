@@ -2559,3 +2559,61 @@ TEST(rtc_binary_output, contiguous_column_major_strided_and_nonfinite_bits_match
   EXPECT_THROW(citlali::cli::detail::write_row_major_binary(dir/"absent/file",row),std::runtime_error);
   std::filesystem::remove(dir);
 }
+
+#include "../src/citlali/cli/point_fixed11_input.h"
+#include <cstring>
+TEST(point_fixed11, exact_membership_identity_cadence_and_coefficients_fail_closed) {
+  const auto root=std::filesystem::path(__FILE__).parent_path().parent_path();
+  auto manifest=YAML::LoadFile((root/"validation/rtc_fixed11_2026-09-27/APPLICABILITY.json").string());
+  auto design=YAML::LoadFile((root/"validation/rtc_fixed11_2026-09-27/DESIGN.json").string());
+  auto cfg=YAML::LoadFile((root/"validation/rtc_cost_response_2026-09-27/compact/A-REF-rep1/inputs/network11-input.json").string());
+  std::vector<NativeReadoutDetectorBinding> detectors;std::vector<int> channels;
+  for(const auto &d:manifest["networks"][0]["detectors"]){
+    NativeReadoutDetectorBinding b;b.detector_occurrence_id=d["occurrence"].as<std::string>();
+    b.detector_association_record_id=d["array_association"].as<std::string>();detectors.push_back(b);channels.push_back(d["channel"].as<int>());
+  }
+  auto run=[&](const YAML::Node &c,const YAML::Node &m,const YAML::Node &h,double dt=.008192062377929688){
+    citlali::cli::detail::validate_point_fixed11(c,m,h,11,dt,{{0,7821}},detectors,channels);
+  };
+  cfg["fixed11"]["arm"]="B-control";EXPECT_NO_THROW(run(cfg,manifest,design));
+  cfg["fixed11"]["arm"]="C-fixed11";cfg["finite_notch"]=design["finite_notch"];cfg["finite_notch_identity"]=design["finite_notch_identity"];
+  for(std::size_t d=0;d<detectors.size();++d)cfg["detectors"][d]["filter"]=manifest["networks"][0]["detectors"][d]["disposition"].as<std::string>()=="selected"?"w1-t3":"lowpass";
+  EXPECT_NO_THROW(run(cfg,manifest,design));
+  auto wrong=YAML::Clone(cfg);wrong["detectors"][0]["filter"]="w1-t3";EXPECT_THROW(run(wrong,manifest,design),std::invalid_argument);
+  wrong=YAML::Clone(manifest);wrong["networks"][0]["detectors"][0]["occurrence"]="foreign";EXPECT_THROW(run(cfg,wrong,design),std::invalid_argument);
+  wrong=YAML::Clone(manifest);wrong["networks"][0]["native_runs"][0][1]=7820;EXPECT_THROW(run(cfg,wrong,design),std::invalid_argument);
+  EXPECT_THROW(run(cfg,manifest,design,.016384),std::invalid_argument);
+  wrong=YAML::Clone(design);wrong["finite_notch"][0]=1.;EXPECT_THROW(run(cfg,manifest,wrong),std::invalid_argument);
+  wrong=YAML::Clone(design);wrong["phase"]=1;EXPECT_THROW(run(cfg,manifest,wrong),std::invalid_argument);
+  wrong=YAML::Clone(cfg);wrong["tune"]["sha256"]="foreign";EXPECT_THROW(run(wrong,manifest,design),std::invalid_argument);
+}
+TEST(point_fixed11, historical_coefficients_preserve_unselected_pair_and_physical_gap_support) {
+  const auto root=std::filesystem::path(__FILE__).parent_path().parent_path();
+  const auto design=YAML::LoadFile((root/"validation/rtc_fixed11_2026-09-27/DESIGN.json").string());
+  const auto h=design["finite_notch"].as<std::vector<double>>();
+  auto lp=citlali::cli::detail::read_rtc_array_filter(fixed_array_lowpass(2),2);
+  for(bool gap:{false,true}) {
+    Input in(6000,.008192062377929688);
+    if(gap)for(std::size_t i=3000;i<in.times.size();++i){in.times[i]+=1;in.counters[i]+=122;}
+    Trial t(in);auto base=t.apply(t.plan(false,false,{},1,{},&lp));
+    auto selected=t.plan(false,false,h,0,{},&lp);
+    auto a=t.apply(selected);RtcRecoveryInjection inj{selected,"fixed11-paired-tone",Eigen::Matrix<double,Eigen::Dynamic,2>::Zero(6000,2)};
+    const double f=design["historical_center_hz"].as<double>(),dt=selected->assessment_handle()->candidate_handle()->specification().input_interval_seconds;
+    for(int i=0;i<6000;++i){const double v=std::sin(2*std::numbers::pi*f*dt*i);inj.delta(i,0)=v;inj.delta(i,1)=-2*v;}
+    auto b=t.apply(selected,&inj);
+    auto unchanged=t.apply(t.plan(false,false,{},1,{},&lp));
+    EXPECT_EQ(base->output_native_rows(),unchanged->output_native_rows());
+    EXPECT_EQ(std::memcmp(base->filtered_native_pair().data(),unchanged->filtered_native_pair().data(),base->filtered_native_pair().size()*sizeof(double)),0);
+    const double gain=selected->assessment_handle()->candidate_handle()->combined_response(f).real();
+    for(auto row:a->output_native_rows()){
+      auto i=row-100;EXPECT_GE(i,336);EXPECT_LT(i,6000-336);
+      if(gap)EXPECT_TRUE(i<3000-336 || i>=3000+336);
+      const double v=gain*std::sin(2*std::numbers::pi*f*dt*i);
+      EXPECT_NEAR(b->filtered_native_pair()(i,0)-a->filtered_native_pair()(i,0),v,1e-9);
+      EXPECT_NEAR(b->filtered_native_pair()(i,1)-a->filtered_native_pair()(i,1),-2*v,1e-9);
+    }
+    EXPECT_EQ(a->causes(),b->causes());EXPECT_EQ(a->output_native_rows(),b->output_native_rows());
+    EXPECT_TRUE((t.parent->network(0).values(NativeReadoutCoordinate::x).array()==in.x.array()).all());
+    EXPECT_TRUE((t.parent->network(0).values(NativeReadoutCoordinate::r).array()==in.r.array()).all());
+  }
+}

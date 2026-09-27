@@ -72,7 +72,7 @@ def prepare_run(root,name,input_root,family,branch='REF',noise_ref=None):
 
 def once(out,binary,entry_ns):
     p=read(out/'freeze/prospective.json')
-    require(p['campaign_scope']=='rtc-cost-response-v1' and p['feedback_count']==5 and
+    require(p['campaign_scope'] in ('rtc-cost-response-v1','rtc-fixed11-v1') and p['feedback_count']==5 and
             p['cycles']==5 and p['ptc']==dict(method='observed-als',rank=10) and
             p['experimental_method']=='warm-observed-als','fixed RTC endpoint differs')
     code=speed_once(out,binary,entry_ns)
@@ -145,7 +145,7 @@ def read_hashes():
     return {r['path'][len(prefix):]:r['sha256'] for r in rows if r['path'].startswith(prefix)}
 
 
-def capture_reference(root,ref,binary,family):
+def capture_reference(root,ref,binary,family,*,attempt_consumer=None):
     """One separately counted RTC-only capture, outside REF timings."""
     from run_successor_observation import run
     dest=root/f'{family}-RTC-diagnostic';require(not dest.exists(),'no diagnostic retry')
@@ -158,7 +158,7 @@ def capture_reference(root,ref,binary,family):
         path=dest/f"network{e['network']}.json";save_json(path,cfg);e['input']=bound(path)
     path=dest/'observation.json';save_json(path,obs)
     def invoke():
-        consume(root,'rtc_only',dict(family=family,purpose='original-input native coordinate/calibration capture'))
+        (attempt_consumer or consume)(root,'rtc_only',dict(family=family,purpose='original-input native coordinate/calibration capture'))
         return run(binary,path,dest/'native',2,'rtc-only')
     try:code=accounted_capture(dest,budget,invoke)
     except Exception as exc:

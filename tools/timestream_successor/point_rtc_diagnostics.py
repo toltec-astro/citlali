@@ -48,14 +48,18 @@ def load_network(root,family,nw):
         for key,file in [('state','state'),('center','map-center'),('speed','speed-evidence'),('causes','causes')]:a[key][:,j]=arr(q/f'{c}-{file}.u8','u1')
     return a
 
-def population(root,family,dest):
+def population(root,family,dest,*,match_family=None,background_family=None):
     started=time.monotonic();dest.mkdir(parents=True,exist_ok=True);ref=root/f'{family}-REF-rep1'
-    summary=read(ref/'run/BASE-POINT/REF/a2000/SUMMARY.json');params=np.asarray(summary['histories'][0]['measurement']['guard']['accepted_parameters']);radius=4*max(params[3:5])*np.sqrt(8*np.log(2))
+    summary=read(root/f'{background_family or family}-REF-rep1/run/BASE-POINT/REF/a2000/SUMMARY.json');params=np.asarray(summary['histories'][0]['measurement']['guard']['accepted_parameters']);radius=4*max(params[3:5])*np.sqrt(8*np.log(2))
     output=[];allbands=[];psds={};rowids=[];freqs={};coherences=[];eventrows=[]
     for nw in (11,12):
         a=load_network(root,family,nw);n,d=a['shape'];dt=a['dt'];nfft=2*int(round(4/(2*dt)));freq=np.fft.rfftfreq(nfft,dt);freqs['native']=freq;freqs['output']=np.fft.rfftfreq(nfft//2,2*dt)
         bg=np.hypot(a['lon']*3600-params[1],a['lat']*3600-params[2])>radius
         filtered_good=(a['state']&1)!=0;paired=bg&a['valid']&a['mapping']&filtered_good
+        other=load_network(root,match_family,nw) if match_family else None
+        if other is not None:
+            require(a['channels']==other['channels'] and np.array_equal(a['times'],other['times']),'cross-arm native identity/time differs')
+            paired &= other['valid']&other['mapping']&((other['state']&1)!=0)
         raw=a['raw']*a['mult'];filtered=a['filtered']*a['mult'];windows=[];totals=np.zeros((2,len(freq),d));counts=np.zeros(d,int);z=[[],[]]
         for lo in range(0,n-nfft+1,nfft//2):
             hi=lo+nfft;good=paired[lo:hi].all(axis=0)
@@ -105,6 +109,19 @@ def population(root,family,dest):
             directory=last/f'network-{nw}-segment-{sid}';operand=arr(directory/'operand.f64','<f8',(nt,nd));lastclean=arr(directory/'cleaned.f64','<f8',(nt,no))[:,cols]
             calc=filtered[rows[:,None],ids];require(np.allclose(cal[elig],calc[elig],rtol=1e-12,atol=1e-9),'native RTC/CAL schedule mismatch')
             common=elig&bg[rows[:,None],ids]&np.isfinite(clean)&np.isfinite(lastclean)
+            if other is not None:
+                # Match genuine all-stage support by native detector identity,
+                # including detectors absent from the other arm's fit.
+                op=other['base']/'donor-continuity/ptc';orp=yread(op/'receipt.yaml')
+                os=next(q for q in orp['segments'] if q['scan']==sid)
+                oids=np.asarray(os['detector_indices']);oc=np.asarray(os['fit_columns_in_output']);ont=os['scheduled_times'];ond=os['detectors'];ono=os['output_detectors']
+                require(np.array_equal(slots,arr(op/f'{stem}-slots.i64','<i8')),'cross-arm physical slots differ')
+                oe=arr(op/f'{stem}-eligible.u8','u1',(ont,ond)).astype(bool)
+                om=arr(op/f'{stem}-cleaned.f64','<f8',(ont,ono))[:,oc]
+                ol=root/f'{match_family}-REF-rep1/run/BASE-POINT/REF/a2000/cycle-05/native/products'/f'network-{nw}-segment-{sid}'
+                ot=arr(ol/'cleaned.f64','<f8',(ont,ono))[:,oc]
+                full=np.zeros((nt,d),bool);full[:,oids]=oe&np.isfinite(om)&np.isfinite(ot)
+                common &= full[:,ids]
             segcount=np.zeros(d,int);sums={key:np.zeros((len(freqs['output']),d)) for key in ('raw_native','RTC_native','CAL','PTC_M0','T5_input','T5_residual','T5_total')}
             for lo in range(0,nt-nfft//2+1,nfft//4):
                 hi=lo+nfft//2;first=rows[lo];past=first+nfft
@@ -139,7 +156,7 @@ def population(root,family,dest):
                     rows=[r for r in subset if r['stage']==stage and r['metric']==metric and r['value'] is not None];detectors=sorted({r['detector'] for r in rows});means=[np.mean([r['value'] for r in rows if r['detector']==d]) for d in detectors]
                     grouped.append(dict(network=nw,domain=domain,stage=stage,metric=metric,window_count=len(rows),detector_mean=distribution(means),window_population=distribution([r['value'] for r in rows]),detector_prominent_window_fraction=distribution([np.mean([r['value']>5 for r in rows if r['detector']==d]) for d in detectors]) if metric=='line_prominence' else None,prominent_gt5_fraction=float(np.mean([r['value']>5 for r in rows])) if metric=='line_prominence' and rows else None))
     save_json(dest/'population-band-summary.json',grouped)
-    save_json(dest/'diagnostic-recipe.json',dict(seconds=time.monotonic()-started,source_exclusion='own REF M0 centroid, radius4*majorFWHM, actual native detector pointing',spectra='4s rounded to even native N;50% overlap; median centering; Hann; one-sided PSD dt*absFFT²/sumh²; complete contiguous matched windows only; no zero fill',native_units='native x times accepted sample CAL multiplier; mJy²/nominalbeam²/Hz',cadence='native full band; all-stage matched uses identical physical length and common bins up to output Nyquist; absent higher output frequencies not measured suppression',population='all detectors included in support denominator; mapping-unavailable/source-overlap/incomplete-window detectors explicitly lack spectral estimate',line_recipe='9.75–12.25Hz band, median continuum7–9.5/12.5–15Hz; nonnegative excess above continuum; maxbin/continuum>5 descriptive prominence only, not cleaning threshold',coherence='all pairs with >=3 genuine common windows; bin nearest11Hz; not attribution',event_recipe='adjacent absolute differences >8 raw matched-support MAD; retained edge within0.25s of unavailable sample; descriptive, not an independent event completeness claim'))
+    save_json(dest/'diagnostic-recipe.json',dict(seconds=time.monotonic()-started,source_exclusion=f'{background_family or family} REF M0 centroid, radius4*majorFWHM, actual native detector pointing',matched_other_arm=match_family,full_support_counts='own-arm full domain before intersection; spectral windows only require both arms when matched_other_arm is set',spectra='4s rounded to even native N;50% overlap; median centering; Hann; one-sided PSD dt*absFFT²/sumh²; complete contiguous matched windows only; no zero fill',native_units='native x times accepted sample CAL multiplier; mJy²/nominalbeam²/Hz',cadence='native full band; all-stage matched uses identical physical length and common bins up to output Nyquist; absent higher output frequencies not measured suppression',population='all detectors included in support denominator; mapping-unavailable/source-overlap/incomplete-window detectors explicitly lack spectral estimate',line_recipe='9.75–12.25Hz band, median continuum7–9.5/12.5–15Hz; nonnegative excess above continuum; maxbin/continuum>5 descriptive prominence only, not cleaning threshold',coherence='all pairs with >=3 genuine common windows; bin nearest11Hz; not attribution',event_recipe='adjacent absolute differences >8 raw matched-support MAD; retained edge within0.25s of unavailable sample; descriptive, not an independent event completeness claim'))
     print(json.dumps(dict(networks=[dict(network=r['network'],detectors=r['detectors'],native_rows=r['native_rows'],spectral_detectors=sum(n>0 for n in r['complete_spectral_windows_per_detector'])) for r in output],seconds=time.monotonic()-started)))
 
 if __name__=='__main__':
