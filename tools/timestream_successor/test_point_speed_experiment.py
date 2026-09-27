@@ -99,3 +99,35 @@ def test_initial_source_rejection_has_diagnostic_milestone(tmp_path,monkeypatch)
     assert experiment.once(out,Path('binary'),0)==1
     assert json.loads((out/'EXECUTION.json').read_text())['status']=='source_rejected'
     assert json.loads((out/'READY-00.json').read_text())['status']=='source_rejected'
+
+
+def test_invalid_first_candidate_blocks_repeats_and_injections(tmp_path,monkeypatch):
+    calls=[]
+    monkeypatch.setattr(experiment,'prepare_run',lambda root,name,*a:root/name)
+    def launch(root,out,*a):calls.append(out);return {'status':'failed'}
+    monkeypatch.setattr(experiment,'launch',launch)
+    monkeypatch.setattr(experiment,'failure_details',lambda *a:dict(status='unsupported',native_reasons=['masked-covariance-unsupported-pair-overlap']))
+    rows=experiment.run_candidate_family(tmp_path,Path('binary'),Path('review'),tmp_path,'B','masked-covariance-count-v1',10)
+    assert len(calls)==1 and len(rows)==6 and rows[0]['status']=='unsupported'
+    assert all(r['status']=='blocked' for r in rows[1:])
+
+
+def test_candidate_failure_returns_nonzero_and_preserves_other_family(tmp_path,monkeypatch):
+    save_json(tmp_path/'PHASE-A.json',dict(status='completed'));(tmp_path/'report').mkdir();(tmp_path/'report/PHASE-A.md').write_text('measured')
+    def family(root,binary,review,input_root,phase,method,rank):
+        if method=='warm-observed-als':raise RuntimeError('native route failed')
+        return [dict(method=method,status='completed',cell=i) for i in range(6)]
+    monkeypatch.setattr(experiment,'run_candidate_family',family)
+    assert experiment.candidates(tmp_path,Path('binary'),Path('review'),tmp_path)==1
+    record=json.loads((tmp_path/'PHASE-B.json').read_text());assert record['status']=='completed_with_failures'
+    assert sum(x['status']=='completed' for x in record['matrix'])==6
+
+
+def test_partial_native_receipt_retains_unsupported_reason(tmp_path):
+    p=tmp_path/'run/BASE-POINT/REF/a2000/cycle-01/native/products/network11-segment0/receipt.yaml'
+    p.parent.mkdir(parents=True);p.write_text('converged: false\nstopping_reason: masked-covariance-unsupported-pair-overlap\n')
+    assert experiment.failure_details(tmp_path)['status']=='unsupported'
+    p.write_text('converged: false\nstopping_reason: internal-normal-matrix-failure\n')
+    assert experiment.failure_details(tmp_path)['status']=='solver_failed'
+    p.unlink()
+    assert experiment.failure_details(tmp_path)['status']=='processing_failed'

@@ -172,8 +172,8 @@ def run_ref(root,binary,rank):
     return result
 
 
-def run_injection(root,binary,rank,branch):
-    out=root/f'rank-{rank}';dest=out/'initial'/branch;dest.mkdir(parents=True)
+def run_injection(root,binary,rank,branch,out=None):
+    out=out or root/f'rank-{rank}';dest=out/'initial'/branch;dest.mkdir(parents=True)
     c=context(out/'freeze/a2000');op=dest/'owner.json';save_json(op,owner(out,'BASE-POINT',branch))
     q=dest/'request.json';save_json(q,request(out,op,'BASE-POINT',branch,0,out/'run/BASE-POINT/REF/a2000/initial/candidate.fits'))
     require(call(out,binary,q,dest/'native')==0,'injected M0 native failure')

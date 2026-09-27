@@ -1,0 +1,23 @@
+[  0%] Built target config_header_kidscpp
+[  0%] Refresh Citlali Git-version provenance
+[  0%] Built target gitversion_header_kidscpp
+[  0%] Built target default_config_header_citlali
+[  0%] Built target config_header_citlali
+[  0%] Built target gtest
+[  1%] Built target gramsavgol
+[  1%] Built target config_header_tula
+[  1%] Built target gitversion_header_tula
+[ 11%] Built target re2
+[ 11%] Built target fmt
+[ 15%] Built target glog
+[ 25%] Built target netcdf-cxx4
+[ 25%] Built target gitversion_header_citlali_buildtime_refresh
+[ 26%] Built target gtest_main
+[ 30%] Built target spdlog
+[ 40%] Built target yaml-cpp
+[ 40%] Built target gitversion_header_citlali
+[ 88%] Built target ceres
+[ 90%] Built target kids
+[100%] Built target citlali
+[100%] Linking CXX executable ../bin/citlali_ptc_numerics_test
+[100%] Built target citlali_ptc_numerics_test

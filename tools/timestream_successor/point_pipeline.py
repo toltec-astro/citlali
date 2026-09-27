@@ -78,11 +78,15 @@ def inspect_saved(out):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('mode',choices=['preflight','forward','feedback','report','rank-preflight','rank-run','rank-report','speed-once','speed-run'])
+    p.add_argument('mode',choices=['preflight','forward','feedback','report','rank-preflight','rank-run','rank-report','speed-once','speed-run','speed-candidates'])
     p.add_argument('--output',type=Path,required=True,help='explicit run root, fresh for preflight')
     p.add_argument('--config',type=Path);p.add_argument('--input-root',type=Path);p.add_argument('--binary',type=Path)
     p.add_argument('--review',type=Path)
     a=p.parse_args();out=a.output.resolve()
+    if a.mode=='speed-candidates':
+        from point_speed_experiment import candidates
+        require(a.binary and a.review and a.input_root,'candidate run requires binary, review and original input root')
+        return candidates(out,a.binary.resolve(),a.review.resolve(),a.input_root.resolve())
     if a.mode=='speed-run':
         from point_speed_experiment import phase_a
         require(a.binary and a.review and a.input_root,'speed run requires binary, review and original input root')

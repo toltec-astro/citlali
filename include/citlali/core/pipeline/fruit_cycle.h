@@ -49,10 +49,11 @@ private:
     std::string identity_;PtcMatrix values_,operand_;PtcMask eligible_;
 };
 // Learned state is bound by ownership to exactly one current residual. The
-// interface cannot import a stale first-pass PTC basis/centering state.
+// optional initializer never replaces current-residual learning or centering.
 class FruitLearned {
 public:
-    static FruitLearned learn(std::shared_ptr<const FruitResidual>,PtcSolverRequest);
+    static FruitLearned learn(std::shared_ptr<const FruitResidual>,PtcSolverRequest,
+        const PtcWarmStart *initializer=nullptr,const std::string &expected_scope="");
     struct Result { PtcApplied cleaned; PtcMatrix total; };
     Result apply(const std::shared_ptr<const FruitResidual> &exact) const;
     const auto &prepared() const {return prepared_;}

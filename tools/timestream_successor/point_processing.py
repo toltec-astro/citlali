@@ -209,8 +209,8 @@ def execute_branch(out,binary,pol,branch):
                 refdata,_=load(ref['total']['path']);actual,ah=load(products/'total.fits');common=kv&actual['SCI_SUPPORT'].astype(bool);delta=actual['PRIMARY']-refdata['PRIMARY'];ks,vs,_,_,_=source_patch(known,kv,refdata['NORMALIZATION'],kh);ds,_,_,_,_=source_patch(delta,common,refdata['NORMALIZATION'],kh)
                 rec['response']=dict(audit=audit,full=response_metrics(delta,known,common),source_disk=response_metrics(ds,ks,c['fixed'].disk&v&vs))
                 write_fits(d/'response.fits',kh,[('DELTA',delta,'mJy/nominal beam'),('CONTROL',known,'mJy/nominal beam'),('RESIDUAL',delta-known,'mJy/nominal beam'),('VALID',common.astype('u1'),'1')],companion='POINT-INDEPENDENT-RESPONSE')
-                if k==10:
-                    if rank_experiment(out):
+                if k in ((1,3,5,10) if speed_experiment(out) else (10,)):
+                    if rank_experiment(out) and not speed_experiment(out):
                         from point_rank_experiment import consume
                         consume(Path(read(out/'freeze/budget.json')['campaign_root']),'ideal',dict(rank=expected_rank(out),branch=branch))
                     rs,rsv,_,_=patch_map(ref['total']['path']);ideal,_=infer_stage(c,rs+ks,rsv&vs);rec['ideal']=ideal_comparison(c,ref['measurement'],m,ideal)

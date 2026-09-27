@@ -43,7 +43,7 @@ int load_and_run_successor_development(const RuntimeConfig &runtime,
         }
         if(p["method"])ptc.method=p["method"].as<std::string>();
         if(p["rank"]){ptc.rank=p["rank"].as<int>();if(ptc.rank<=0)throw std::invalid_argument("successor.PTC_rank_must_be_positive");}
-        if(ptc.method!="observed-als" && ptc.method!="pairwise-covariance")throw std::invalid_argument("successor.PTC_method_unknown");
+        if(ptc.method!="observed-als" && ptc.method!="pairwise-covariance" && ptc.method!="masked-covariance-count-v1")throw std::invalid_argument("successor.PTC_method_unknown");
     }
     const YAML::Node input = config["input"];
     if (!input || !input.IsMap() || input.size() != 2 ||

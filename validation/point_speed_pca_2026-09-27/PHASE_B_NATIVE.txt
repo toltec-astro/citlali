@@ -1,0 +1,79 @@
+Test project /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build
+      Start 27: citlali::PtcNumerics.CompleteDataMatchesSvdAndDoesNotRestoreMean
+ 1/37 Test #27: citlali::PtcNumerics.CompleteDataMatchesSvdAndDoesNotRestoreMean ...........................   Passed    0.01 sec
+      Start 28: citlali::PtcNumerics.IncompleteRowsAndGoodPartsOfFlaggedDetectorsContribute
+ 2/37 Test #28: citlali::PtcNumerics.IncompleteRowsAndGoodPartsOfFlaggedDetectorsContribute ................   Passed    0.01 sec
+      Start 29: citlali::PtcNumerics.ExcludedDonorValuesIncludingNonfiniteNeverEnterArithmetic
+ 3/37 Test #29: citlali::PtcNumerics.ExcludedDonorValuesIncludingNonfiniteNeverEnterArithmetic .............   Passed    0.01 sec
+      Start 30: citlali::PtcNumerics.NonconvergenceAndDeficiencyDoNotSwitchMethodsOrReduceRank
+ 4/37 Test #30: citlali::PtcNumerics.NonconvergenceAndDeficiencyDoNotSwitchMethodsOrReduceRank .............   Passed    0.01 sec
+      Start 31: citlali::PtcNumerics.FrozenMaskedResponseIsSameLocalLinearOperator
+ 5/37 Test #31: citlali::PtcNumerics.FrozenMaskedResponseIsSameLocalLinearOperator .........................   Passed    0.01 sec
+      Start 32: citlali::PtcNumerics.PairwiseUsesDetectorMeansAndOverlapMinusOne
+ 6/37 Test #32: citlali::PtcNumerics.PairwiseUsesDetectorMeansAndOverlapMinusOne ...........................   Passed    0.01 sec
+      Start 33: citlali::PtcNumerics.UnsupportedLargeRankAndOneTimeRemainBoundedFailures
+ 7/37 Test #33: citlali::PtcNumerics.UnsupportedLargeRankAndOneTimeRemainBoundedFailures ...................   Passed    0.01 sec
+      Start 34: citlali::PtcNumerics.UnresolvedCutoffDegeneracyDoesNotChooseArbitrarySubspace
+ 8/37 Test #34: citlali::PtcNumerics.UnresolvedCutoffDegeneracyDoesNotChooseArbitrarySubspace ..............   Passed    0.01 sec
+      Start 35: citlali::PtcNumerics.MaskedCountCovarianceMatchesCompletePcaAndKeepsSignedSpectrum
+ 9/37 Test #35: citlali::PtcNumerics.MaskedCountCovarianceMatchesCompletePcaAndKeepsSignedSpectrum .........   Passed    0.01 sec
+      Start 36: citlali::PtcNumerics.MaskedCountUsesEveryEligiblePairAndDoesNotRepairIndefiniteness
+10/37 Test #36: citlali::PtcNumerics.MaskedCountUsesEveryEligiblePairAndDoesNotRepairIndefiniteness ........   Passed    0.01 sec
+      Start 37: citlali::PtcNumerics.MaskedCountUnsupportedPairsAndNoPositivePowerFailWithoutFallback
+11/37 Test #37: citlali::PtcNumerics.MaskedCountUnsupportedPairsAndNoPositivePowerFailWithoutFallback ......   Passed    0.01 sec
+      Start 38: citlali::PtcNumerics.WarmInitializerResolvesCurrentObjectiveAndRejectsForeignState
+12/37 Test #38: citlali::PtcNumerics.WarmInitializerResolvesCurrentObjectiveAndRejectsForeignState .........   Passed    0.01 sec
+      Start 39: citlali::forward_map::ForwardMap.HalfOpenCentersEdgesAndOrientation
+13/37 Test #39: citlali::forward_map::ForwardMap.HalfOpenCentersEdgesAndOrientation ........................   Passed    0.01 sec
+      Start 40: citlali::forward_map::ForwardMap.IndependentUnequalCoefficientCalculation
+14/37 Test #40: citlali::forward_map::ForwardMap.IndependentUnequalCoefficientCalculation ..................   Passed    0.01 sec
+      Start 41: citlali::forward_map::ForwardMap.ConstantAndDeltaSameLinearCompanionOperator
+15/37 Test #41: citlali::forward_map::ForwardMap.ConstantAndDeltaSameLinearCompanionOperator ...............   Passed    0.01 sec
+      Start 42: citlali::forward_map::ForwardMap.ExplicitSupportSeparatesNormalizationAndScience
+16/37 Test #42: citlali::forward_map::ForwardMap.ExplicitSupportSeparatesNormalizationAndScience ...........   Passed    0.01 sec
+      Start 43: citlali::forward_map::ForwardMap.SmallPopulationSelectorAndEmptySupport
+17/37 Test #43: citlali::forward_map::ForwardMap.SmallPopulationSelectorAndEmptySupport ....................   Passed    0.01 sec
+      Start 44: citlali::forward_map::ForwardMap.BadPlanAndPayloadNeverMutateResolvedOperator
+18/37 Test #44: citlali::forward_map::ForwardMap.BadPlanAndPayloadNeverMutateResolvedOperator ..............   Passed    0.01 sec
+      Start 45: citlali::forward_map::ForwardMap.OverflowIsFailureNotSanitizedZero
+19/37 Test #45: citlali::forward_map::ForwardMap.OverflowIsFailureNotSanitizedZero .........................   Passed    0.01 sec
+      Start 46: citlali::forward_map::ForwardMap.NonzeroSubnormalRoundingCannotChangeConstantOrSupport
+20/37 Test #46: citlali::forward_map::ForwardMap.NonzeroSubnormalRoundingCannotChangeConstantOrSupport .....   Passed    0.01 sec
+      Start 47: citlali::forward_map::ForwardMap.NormalizationRejectsInexactSubnormalButPreservesExact
+21/37 Test #47: citlali::forward_map::ForwardMap.NormalizationRejectsInexactSubnormalButPreservesExact .....   Passed    0.01 sec
+      Start 48: citlali::forward_map::ForwardMap.OrderBlockAssemblyAndConcurrentReadOnlyApplication
+22/37 Test #48: citlali::forward_map::ForwardMap.OrderBlockAssemblyAndConcurrentReadOnlyApplication ........   Passed    0.01 sec
+      Start 49: citlali::forward_map::ForwardMap.OriginalFootprintsUnionAndDoNotFollowDescendantPixels
+23/37 Test #49: citlali::forward_map::ForwardMap.OriginalFootprintsUnionAndDoNotFollowDescendantPixels .....   Passed    0.01 sec
+      Start 50: citlali::forward_map::ForwardMap.AstCenteredTanGridPreservesOrientationAndMargin
+24/37 Test #50: citlali::forward_map::ForwardMap.AstCenteredTanGridPreservesOrientationAndMargin ...........   Passed    0.01 sec
+      Start 51: citlali::forward_map::PtcMapHandoff.ExplicitUniformSelectionExactSupportAndRequest
+25/37 Test #51: citlali::forward_map::PtcMapHandoff.ExplicitUniformSelectionExactSupportAndRequest .........   Passed    0.01 sec
+      Start 52: citlali::forward_map::PtcMapHandoff.FourValuedFidelityAndStructuralFailures
+26/37 Test #52: citlali::forward_map::PtcMapHandoff.FourValuedFidelityAndStructuralFailures ................   Passed    0.01 sec
+      Start 53: citlali::forward_map::ForwardMapAdmission.ExactParentsAndSeparateProducerAndMapDecisions
+27/37 Test #53: citlali::forward_map::ForwardMapAdmission.ExactParentsAndSeparateProducerAndMapDecisions ...   Passed    0.01 sec
+      Start 54: citlali::fruit::FruitCycle.PixelProjectionSupportAndExactBrightness
+28/37 Test #54: citlali::fruit::FruitCycle.PixelProjectionSupportAndExactBrightness ........................   Passed    0.01 sec
+      Start 55: citlali::fruit::FruitCycle.BypassAccountingMissingnessAndStaleState
+29/37 Test #55: citlali::fruit::FruitCycle.BypassAccountingMissingnessAndStaleState ........................   Passed    0.01 sec
+      Start 56: citlali::fruit::FruitCycle.NumericalKnownSourceProjectionCleaningRejoinMap
+30/37 Test #56: citlali::fruit::FruitCycle.NumericalKnownSourceProjectionCleaningRejoinMap .................   Passed    0.01 sec
+      Start 57: citlali::fruit::FruitCycle.SignedInjectionPreservesParentAndInvalidEntries
+31/37 Test #57: citlali::fruit::FruitCycle.SignedInjectionPreservesParentAndInvalidEntries .................   Passed    0.01 sec
+      Start 58: citlali::fruit::FruitCycle.ReferenceSequenceFreshMeansMaskedApplyAndRankFailure
+32/37 Test #58: citlali::fruit::FruitCycle.ReferenceSequenceFreshMeansMaskedApplyAndRankFailure ............   Passed    0.01 sec
+      Start 59: citlali::fruit::FruitCycle.GuardedFrozenInterventionSignedZeroMaskedAndTamper
+33/37 Test #59: citlali::fruit::FruitCycle.GuardedFrozenInterventionSignedZeroMaskedAndTamper ..............   Passed    0.01 sec
+      Start 60: citlali::fruit::FruitCycle.ReferenceSequenceStageOrderingAndAutonomousReplacement
+34/37 Test #60: citlali::fruit::FruitCycle.ReferenceSequenceStageOrderingAndAutonomousReplacement ..........   Passed    0.01 sec
+      Start 61: citlali::fruit::FruitCycle.ExperimentalRanksLearnIndependentlyOnEachResidual
+35/37 Test #61: citlali::fruit::FruitCycle.ExperimentalRanksLearnIndependentlyOnEachResidual ...............   Passed    0.01 sec
+      Start 64: citlali::successor_default_cli
+36/37 Test #64: citlali::successor_default_cli .............................................................   Passed    1.82 sec
+      Start 65: citlali::forward_map_reload
+37/37 Test #65: citlali::forward_map_reload ................................................................   Passed    1.26 sec
+
+100% tests passed, 0 tests failed out of 37
+
+Total Test time (real) =   3.76 sec

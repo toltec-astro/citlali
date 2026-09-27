@@ -83,6 +83,37 @@ void initialize(const PtcPrepared &p,PtcFit &out) {
     out.basis=eig.eigenvectors().rightCols(out.request.rank).rowwise().reverse();
     out.decomposition_seconds=seconds(eig_at);
 }
+void initialize_masked_count(const PtcPrepared &p,PtcFit &out) {
+    const auto started=Clock::now();
+    const Eigen::MatrixXd mask=p.eligible.cast<double>().matrix();
+    const Eigen::MatrixXd counts=mask.transpose()*mask;
+    // Never multiply excluded NaN/Inf placeholders by zero.
+    Eigen::MatrixXd safe=Eigen::MatrixXd::Zero(p.centered.rows(),p.centered.cols());
+    for(Eigen::Index t=0;t<safe.rows();++t)for(Eigen::Index d=0;d<safe.cols();++d)
+        if(p.eligible(t,d))safe(t,d)=p.centered(t,d);
+    if(!safe.allFinite())throw std::runtime_error("masked-covariance-nonfinite-eligible-value");
+    const Eigen::MatrixXd numerator=safe.transpose()*safe;
+    std::map<std::size_t,std::size_t> histogram;
+    for(Eigen::Index i=0;i<counts.size();++i)++histogram[std::size_t(counts.data()[i])];
+    for(auto [count,frequency]:histogram){out.overlap_counts.push_back(count);out.overlap_frequencies.push_back(frequency);}
+    if(counts.minCoeff()<std::max(out.request.rank+1,2))throw std::runtime_error("masked-covariance-unsupported-pair-overlap");
+    const Eigen::MatrixXd covariance=numerator.array()/counts.array();
+    out.covariance_seconds=seconds(started);const auto eig_at=Clock::now();
+    if(!covariance.allFinite())throw std::runtime_error("masked-covariance-nonfinite");
+    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eig(covariance);
+    if(eig.info()!=Eigen::Success || !eig.eigenvalues().allFinite())throw std::runtime_error("masked-covariance-eigensolver-failed");
+    const auto &values=eig.eigenvalues();out.signed_spectrum.assign(values.data(),values.data()+values.size());
+    const double positive=values.cwiseMax(0.).sum(),negative=-values.cwiseMin(0.).sum();
+    out.negative_to_positive_power=positive>0?negative/positive:std::numeric_limits<double>::quiet_NaN();
+    out.most_negative_to_largest_positive=values.maxCoeff()>0?std::max(0.,-values.minCoeff())/values.maxCoeff():std::numeric_limits<double>::quiet_NaN();
+    if(positive<=0 || (values.array()>0).count()<out.request.rank)throw std::runtime_error("masked-covariance-too-few-positive-eigenvalues");
+    out.eigen_relative_residual=(covariance*eig.eigenvectors()-eig.eigenvectors()*values.asDiagonal()).norm()/std::max(covariance.norm(),1e-300);
+    out.eigen_residual_tolerance=100*std::numeric_limits<double>::epsilon()*covariance.rows();
+    if(!std::isfinite(out.eigen_relative_residual) || out.eigen_relative_residual>out.eigen_residual_tolerance)
+        throw std::runtime_error("masked-covariance-eigen-residual-failed");
+    out.basis=eig.eigenvectors().rightCols(out.request.rank).rowwise().reverse();
+    out.decomposition_seconds=seconds(eig_at);out.initialization="masked-pair-overlap-count-eigenspace-v1";
+}
 PtcApplied apply(const PtcPrepared &p,const PtcFit &fit,const PtcMatrix &values) {
     const auto start=Clock::now();PtcApplied out;
     out.values=PtcMatrix::Zero(values.rows(),values.cols());out.causes=PtcMask::Ones(values.rows(),values.cols());
@@ -134,8 +165,13 @@ PtcPrepared PtcPrepared::prepare(const PtcMatrix &values,const PtcMask &mask) {
     for(Eigen::Index t=0;t<values.rows();++t)if(values.cols()>0 && mask.row(t).all())++p.complete_times;
     p.time_patterns=patterns(mask,false);p.detector_patterns=patterns(mask,true);p.preparation_seconds=seconds(start);return p;
 }
-PtcFit ptc_learn(const PtcPrepared &p,PtcSolverRequest request) {
-    if((request.method!=PtcMethod::observed_als && request.method!=PtcMethod::pairwise_covariance) || request.rank<=0 || request.iteration_limit<1 || !std::isfinite(request.relative_objective_tolerance) ||
+PtcWarmStart PtcWarmStart::from_converged(const PtcFit &fit,const PtcMask &eligible,std::string scope) {
+    if(!fit.converged || fit.request.method!=PtcMethod::observed_als || scope.empty())
+        throw std::invalid_argument("PTC warm initializer requires converged same-method provenance");
+    return {fit.basis,eligible,fit.request,std::move(scope)};
+}
+PtcFit ptc_learn(const PtcPrepared &p,PtcSolverRequest request,const PtcWarmStart *warm,const std::string &scope) {
+    if((request.method!=PtcMethod::observed_als && request.method!=PtcMethod::pairwise_covariance && request.method!=PtcMethod::masked_covariance_count) || request.rank<=0 || request.iteration_limit<1 || !std::isfinite(request.relative_objective_tolerance) ||
        request.relative_objective_tolerance<=0 || request.relative_objective_tolerance>=1 ||
        !std::isfinite(request.relative_rank_tolerance) || request.relative_rank_tolerance<=0 || request.relative_rank_tolerance>=1)
         throw std::invalid_argument("PTC numerical request is invalid");
@@ -143,10 +179,25 @@ PtcFit ptc_learn(const PtcPrepared &p,PtcSolverRequest request) {
     try {
         if(p.centered.cols()<2)throw std::runtime_error("fewer-than-two-admitted-detectors");
         if(request.rank>std::min(p.centered.cols(),p.centered.rows()-1))throw std::runtime_error("requested-rank-exceeds-shape");
-        auto at=Clock::now();initialize(p,out);out.initialization_seconds=seconds(at);
+        auto at=Clock::now();
+        if(warm) {
+            if(request.method!=PtcMethod::observed_als || warm->request.method!=request.method ||
+               scope.empty() || warm->scope!=scope || warm->request.rank!=request.rank ||
+               warm->request.iteration_limit!=request.iteration_limit ||
+               warm->request.relative_objective_tolerance!=request.relative_objective_tolerance ||
+               warm->request.relative_rank_tolerance!=request.relative_rank_tolerance ||
+               warm->eligible.rows()!=p.eligible.rows() || warm->eligible.cols()!=p.eligible.cols() ||
+               (warm->eligible!=p.eligible).any() || warm->basis.rows()!=p.centered.cols() ||
+               warm->basis.cols()!=request.rank || !warm->basis.allFinite() ||
+               (warm->basis.transpose()*warm->basis-Eigen::MatrixXd::Identity(request.rank,request.rank)).norm()>1e-8)
+                throw std::runtime_error("incompatible-warm-initializer-no-cold-retry");
+            out.basis=warm->basis;out.initialization="previous-converged-same-trajectory-basis;full-current-resolve";
+        } else if(request.method==PtcMethod::masked_covariance_count)initialize_masked_count(p,out);
+        else initialize(p,out);
+        out.initialization_seconds=seconds(at);
         at=Clock::now();auto a=coefficients(p,out.basis,out);out.coefficient_seconds+=seconds(at);
         at=Clock::now();out.objective.push_back(objective(p,out.basis,a));out.check_seconds+=seconds(at);
-        if(request.method==PtcMethod::pairwise_covariance){out.converged=true;out.stopping_reason="noniterative-complete";}
+        if(request.method==PtcMethod::pairwise_covariance || request.method==PtcMethod::masked_covariance_count){out.converged=true;out.stopping_reason="noniterative-complete";}
         int small=0;
         for(int iteration=0;request.method==PtcMethod::observed_als && iteration<request.iteration_limit;++iteration) {
             at=Clock::now();Eigen::MatrixXd next=Eigen::MatrixXd::Zero(out.basis.rows(),out.basis.cols());

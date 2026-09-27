@@ -95,7 +95,7 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
     out.cal_sha=ledger.bind(out.root/"donor-continuity/cal/receipt.yaml",out.ptc["source_CAL_receipt_sha256"].as<std::string>());
     out.cal=YAML::LoadFile((out.root/"donor-continuity/cal/receipt.yaml").string());
     require(out.ptc["schema"].as<std::string>()=="citlali-ptc-output-v2" && out.cal["schema"].as<std::string>()=="citlali-cal-output-v1" &&
-        out.ptc["rank"].as<int>()>0 && out.ptc["method"].as<std::string>()=="observed-als" &&
+        out.ptc["rank"].as<int>()>0 && (out.ptc["method"].as<std::string>()=="observed-als" || (out.ptc["method"].as<std::string>()=="masked-covariance-count-v1" && out.input["observation"].as<int>()==152430 && (out.input["network"].as<int>()==11 || out.input["network"].as<int>()==12))) &&
         out.ptc["unit"].as<std::string>()=="mJy/nominal-beam" && out.cal["unit"].as<std::string>()=="mJy/nominal-beam" &&
         out.ptc["centering"].as<std::string>()=="per-detector-eligible-arithmetic-mean-not-restored" &&
         out.ptc["use_policy"].as<std::string>()=="ptc-cal-observed-entry-use-2026-09-18-v2" &&

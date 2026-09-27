@@ -5,6 +5,7 @@
 #include <cstring>
 #include <deque>
 #include <functional>
+#include <optional>
 namespace {
 int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     const auto began=std::chrono::steady_clock::now();const auto cpu=std::clock();
@@ -81,7 +82,7 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
                 const int rank=prospective["ptc"]["rank"].as<int>();
                 require(prospective["schema"].as<std::string>()==(speed_experiment?"citlali-point-speed-pca-v1":"citlali-point-ptc-rank-v1") &&
                     prospective["profile"].as<std::string>()==(speed_experiment?"POINT-SPEED-PCA-v1":"point-152430-ptc-rank-"+std::to_string(rank)) &&
-                    (speed_experiment?(rank==10 || rank==15):(rank==5 || rank==10 || rank==15)) && (!speed_experiment || (prospective["feedback_count"].as<int>()==owner["nonzero_cycles"].as<int>() && prospective["experimental_method"].as<std::string>()=="observed-als")) && prospective["ptc"]["method"].as<std::string>()=="observed-als" &&
+                    (speed_experiment?(rank==10 || rank==15):(rank==5 || rank==10 || rank==15)) && (!speed_experiment || (prospective["feedback_count"].as<int>()==owner["nonzero_cycles"].as<int>() && (prospective["experimental_method"].as<std::string>()=="observed-als" || prospective["experimental_method"].as<std::string>()=="warm-observed-als" || prospective["experimental_method"].as<std::string>()=="masked-covariance-count-v1"))) && (prospective["ptc"]["method"].as<std::string>()=="observed-als" || (speed_experiment && prospective["experimental_method"].as<std::string>()=="masked-covariance-count-v1" && prospective["ptc"]["method"].as<std::string>()=="masked-covariance-count-v1")) &&
                     prospective["observation"].as<int>()==152430 && prospective["subobservation"].as<int>()==0 && prospective["scan"].as<int>()==2 &&
                     prospective["array"].as<std::string>()=="a2000" && prospective["networks"].as<std::vector<int>>()==std::vector<int>({11,12}) &&
                     prospective["coverage_policy"].as<std::string>()=="high-coverage-informational" && prospective["cycles"].as<int>()==10 &&
@@ -168,6 +169,8 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
         else {ra0=n.observation.ra0;dec0=n.observation.dec0;}
         bool bound=false;for(const auto &p:parent["sources"])if(p["network"].as<int>()==n.network && p["PTC_receipt_sha256"].as<std::string>()==n.ptc_sha)bound=true;
         require(bound,"FRUIT foreign network parent");
+        const auto speed_config=speed_experiment?YAML::LoadFile(checked_file(owner["prospective"]).string()):YAML::Node();
+        const auto experimental_method=speed_experiment?speed_config["experimental_method"].as<std::string>():"observed-als";
         PtcSolverRequest solver;solver.rank=n.ptc["rank"].as<int>();solver.iteration_limit=n.ptc["iteration_limit"].as<int>();
         solver.relative_objective_tolerance=n.ptc["relative_objective_tolerance"].as<double>();solver.relative_rank_tolerance=n.ptc["relative_rank_tolerance"].as<double>();
         // The shared post-CAL carrier was produced with rank 10. Its saved basis
@@ -178,7 +181,8 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
                 "FRUIT rank experiment changed parent solver recipe");
             solver.rank=config["ptc"]["rank"].as<int>();
         }
-        require((rank_experiment || (reference?solver.rank==YAML::LoadFile(checked_file(owner["prospective"]).string())["ptc"]["rank"].as<int>():solver.rank==10)) && n.ptc["method"].as<std::string>()=="observed-als","FRUIT changed PTC recipe");
+        if(experimental_method=="masked-covariance-count-v1")solver.method=PtcMethod::masked_covariance_count;
+        require((rank_experiment || (reference?solver.rank==YAML::LoadFile(checked_file(owner["prospective"]).string())["ptc"]["rank"].as<int>():solver.rank==10)) && n.ptc["method"].as<std::string>()==(experimental_method=="masked-covariance-count-v1"?"masked-covariance-count-v1":"observed-als"),"FRUIT changed PTC recipe");
         std::deque<std::function<void()>> pending;
         for(std::size_t si=0;si<n.ptc["segments"].size();++si) {
             const auto ts=std::chrono::steady_clock::now();const auto old=load_map_segment(n,si,ledger);const auto s=n.ptc["segments"][si];
@@ -241,6 +245,40 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
                 seg["immutable_parent_reloaded"]=true;seg["invalid_parent_entries_unchanged"]=true;
                 if(injection)seg["files"]["injection.f64"]=citlali::utils::sha256_file(dir/"injection.f64");}
             seg["loading_projection_serialization_seconds"]=elapsed(ts);seg["projection_support_counts"]=counts;
+            // Scope includes immutable source/detector/support identities, not residual
+            // values or means. A predecessor only initializes a fully new solve.
+            const std::string warm_scope=speed_experiment?(citlali::utils::sha256_file(checked_file(owner["prospective"]))+":"+branch+":"+name+":"+n.ptc_sha+":"+s["files"][stem+"-eligible.u8"].as<std::string>()):"";
+            std::optional<PtcWarmStart> warm;
+            const auto warm_at=std::chrono::steady_clock::now();
+            if(experimental_method=="warm-observed-als" && cycle>0) {
+                PtcFit previous_fit;previous_fit.request=solver;fs::path basis_path;std::string basis_hash;
+                if(cycle==1 && branch=="REF") {
+                    // The branch's own freshly generated cold M0, never another run.
+                    previous_fit.converged=s["converged"].as<bool>();
+                    require(s["application_failed_times"].as<std::size_t>()==0,"warm M0 application failed");
+                    basis_path=n.ptcroot/(stem+"-basis.f64");basis_hash=s["files"][stem+"-basis.f64"].as<std::string>();
+                    seg["warm_predecessor"]="own-raw-derived-cold-M0";
+                } else {
+                    const auto prior=YAML::LoadFile(checked_file(request["previous_state"]).string());
+                    const auto receipt_path=checked_file(prior["receipt"]);ledger.bind(receipt_path);
+                    const auto receipt=YAML::LoadFile(receipt_path.string());
+                    require(receipt["cycle_index"].as<int>()==cycle-1 && receipt["branch"].as<std::string>()==branch,"warm predecessor trajectory/cycle mismatch");
+                    YAML::Node previous(YAML::NodeType::Undefined);
+                    for(const auto &entry:receipt["segments"])if(entry["warm_scope"] && entry["warm_scope"].as<std::string>()==warm_scope){require(!previous.IsDefined(),"duplicate warm scope");previous=YAML::Clone(entry);}
+                    require(previous.IsDefined() && previous["source_receipt_sha256"].as<std::string>()==n.ptc_sha &&
+                        previous["ptc_method"].as<std::string>()==experimental_method && previous["rank"].as<int>()==solver.rank &&
+                        previous["realized_rank"].as<int>()==solver.rank && previous["input_eligibility_changed"].as<std::size_t>()==0 &&
+                        previous["application_failed_times"].as<std::size_t>()==0,"warm predecessor identity/support mismatch");
+                    previous_fit.converged=previous["converged"].as<bool>();
+                    basis_path=receipt_path.parent_path()/name/"basis.f64";basis_hash=previous["files"]["basis.f64"].as<std::string>();
+                    seg["warm_predecessor"]=prior["receipt"];
+                }
+                ledger.bind(basis_path,basis_hash);const auto values=map_read_array<double>(basis_path,nd*solver.rank);
+                previous_fit.basis=Eigen::Map<const PtcMatrix>(values.data(),nd,solver.rank);
+                warm=PtcWarmStart::from_converged(previous_fit,eligible,warm_scope);
+            }
+            seg["warm_scope"]=warm_scope;seg["ptc_method"]=experimental_method;
+            seg["warm_initializer_used"]=bool(warm);seg["warm_validation_loading_seconds"]=elapsed(warm_at);
             // Only preparation/Apply runs concurrently; all ledger, publication and MAP
             // accumulation remain in original segment order on the calling thread.
             struct Stage {PtcPrepared prepared;PtcFit fit;FruitLearned::Result applied;double apply_restore_seconds=0;};
@@ -258,14 +296,14 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
                 seg["learning_performed"]=false;seg["basis_available"]=true;
             }
             const std::string basis_identity=refseq?seg["basis_identity"].as<std::string>():"";
-            auto task=[residual,solver,imported_basis,refseq,basis_identity]() {
+            auto task=[residual,solver,imported_basis,refseq,basis_identity,warm,warm_scope]() {
                 Stage v;
                 if(refseq){
                     auto x=fruit_apply_reference_basis(residual,solver,imported_basis,basis_identity);
                     v.prepared=std::move(x.prepared);v.applied={std::move(x.cleaned),std::move(x.total)};
                     v.fit.request=solver;v.fit.basis=imported_basis;
                 }else{
-                    const auto learned=FruitLearned::learn(residual,solver);
+                    const auto learned=FruitLearned::learn(residual,solver,warm?&*warm:nullptr,warm_scope);
                     v.prepared=learned.prepared();v.fit=learned.fit();const auto at=std::chrono::steady_clock::now();v.applied=learned.apply(residual);v.apply_restore_seconds=std::chrono::duration<double>(std::chrono::steady_clock::now()-at).count();
                 }return v;
             };
@@ -285,6 +323,10 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
             seg["initialization_seconds"]=fit.initialization_seconds;seg["covariance_seconds"]=fit.covariance_seconds;
             seg["decomposition_seconds"]=fit.decomposition_seconds;seg["coefficient_seconds"]=fit.coefficient_seconds;
             seg["basis_seconds"]=fit.basis_seconds;seg["check_seconds"]=fit.check_seconds;
+            seg["initialization"]=fit.initialization;
+            seg["signed_spectrum"]=fit.signed_spectrum;seg["overlap_counts"]=fit.overlap_counts;seg["overlap_frequencies"]=fit.overlap_frequencies;
+            seg["eigen_relative_residual"]=fit.eigen_relative_residual;seg["eigen_residual_tolerance"]=fit.eigen_residual_tolerance;
+            if(std::isfinite(fit.negative_to_positive_power))seg["negative_to_positive_power"]=fit.negative_to_positive_power;else seg["negative_to_positive_power"]=YAML::Null;if(std::isfinite(fit.most_negative_to_largest_positive))seg["most_negative_to_largest_positive"]=fit.most_negative_to_largest_positive;else seg["most_negative_to_largest_positive"]=YAML::Null;
             seg["retained"]=applied.cleaned.retained;seg["application_failed_times"]=applied.cleaned.failed_times;
             seg["input_eligibility_changed"]=std::size_t((residual->eligible()!=eligible).count());seg["output_cause_changed"]=std::size_t((causes!=old->causes()).count());
             seg["zero_replay_maximum_cleaned_difference"]=(clean-old->values()).cwiseAbs().maxCoeff();

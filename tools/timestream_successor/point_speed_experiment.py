@@ -30,9 +30,13 @@ def consume(root,kind,identity):
 
 def prepare_run(root,name,rank,N,input_root,method='observed-als'):
     require(rank in (10,15) and N in (0,1,3,5,10),'outside predeclared experiment')
+    require(method in ('observed-als','warm-observed-als','masked-covariance-count-v1'),'unapproved method')
     out=root/name;prepare(out,REFERENCE,input_root)
     p=read(out/'freeze/prospective.json');p.update(schema='citlali-point-speed-pca-v1',profile='POINT-SPEED-PCA-v1',feedback_count=N,experimental_method=method,trajectory_identity=name)
     p['ptc']['rank']=rank;p['scientific_recipe']['PTC']['rank']=rank
+    p['ptc']['method']='masked-covariance-count-v1' if method=='masked-covariance-count-v1' else 'observed-als'
+    p['scientific_recipe']['PTC']['experimental_method']=method
+    p['scientific_recipe']['PTC']['method']=('binary pair-overlap count covariance; positive algebraic eigenspace; validity-aware coefficients' if method=='masked-covariance-count-v1' else 'observed-entry ALS; previous own converged basis initializer; full current-residual solve' if method=='warm-observed-als' else p['scientific_recipe']['PTC']['method'])
     budget=read(out/'freeze/budget.json');cells=budget['native_cells']
     budget.update(campaign_root=str(root),peak_ceiling_bytes=(26*256+9*16+320*16+48)*cells+2_000_000_000,maximum_branch_workers=1)
     require(shutil.disk_usage(root).free>budget['peak_ceiling_bytes']+budget['free_space_reserve_bytes'],'insufficient bounded campaign space')
@@ -145,6 +149,99 @@ def phase_a(root,binary,review,input_root):
         record=read(root/'PHASE-A.json') if (root/'PHASE-A.json').exists() else {}
         record.update(status='blocked_gate',reason=str(exc));save_json(root/'PHASE-A.json',record)
         raise
+
+
+
+def support_audit(out,reference,branch='REF'):
+    from astropy.io import fits
+    from compare_point_pipeline import available
+    import numpy as np
+    rows=[]
+    for k in range(11):
+        actual=out/f'run/BASE-POINT/{branch}/a2000/cycle-{k:02d}/native/products/total.fits' if k else out/'M0/products/a2000/map.fits' if branch=='REF' else out/f'initial/{branch}/native/products/total.fits'
+        control=reference/f'run/BASE-POINT/REF/a2000/cycle-{k:02d}/native/products/total.fits' if k else reference/'M0/products/a2000/map.fits'
+        with fits.open(available(actual),memmap=False) as a,fits.open(available(control),memmap=False) as b:
+            fields={name:bool(np.array_equal(a[name].data,b[name].data,equal_nan=True)) for name in ('HITS','NORMALIZATION','SCI_SUPPORT','NORM_SUPPORT')}
+            wcs=all(a[0].header.get(key)==b[0].header.get(key) for key in ('CRPIX1','CRPIX2','CDELT1','CDELT2','CRVAL1','CRVAL2','RADESYS','EQUINOX'))
+            rows.append(dict(cycle=k,fields=fields,wcs_equal=wcs,actual_science_pixels=int(a['SCI_SUPPORT'].data.sum()),reference_science_pixels=int(b['SCI_SUPPORT'].data.sum())))
+            require(all(fields.values()) and wcs,'method changed complete map support or normalization')
+    save_json(out/f'SUPPORT-{branch}.json',rows);return rows
+
+
+def checkpoint_analysis(root,out):
+    from point_reference import context,endpoint
+    summary=read(out/'run/BASE-POINT/REF/a2000/SUMMARY.json');c=context(out/'freeze/a2000');rows=[]
+    for k in (1,3,5):
+        consume(root,'endpoint',dict(run=out.name,cycle=k,offline=True))
+        row=summary['histories'][k];dest=out/f'checkpoint-{k:02d}';started=time.perf_counter()
+        sigma=endpoint(verified(row['total']),c,row['measurement'],dest)
+        rows.append(dict(cycle=k,seconds=time.perf_counter()-started,uncertainties=sigma,scope='offline saved REF map companion after timing; not an early-terminating invocation; never fed back'))
+    save_json(out/'CHECKPOINTS.json',rows)
+
+
+def failure_details(out):
+    """Inspect actual native failures; a crash is not an unsupported covariance."""
+    reasons=[]
+    paths=list(out.glob('upstream/products/network*/donor-continuity/ptc/receipt.yaml'))+list(out.glob('run/BASE-POINT/*/a2000/cycle-*/native/products/**/receipt.yaml'))
+    from inspect_forward_map import read_yaml
+    for p in paths:
+        record=read_yaml(p)
+        for s in record.get('segments',[record]):
+            if s.get('converged') is False:reasons.append(s.get('stopping_reason','unknown'))
+    reasons=sorted(set(reasons))
+    execution=read(out/'EXECUTION.json') if (out/'EXECUTION.json').exists() else {}
+    if execution.get('status')=='source_rejected':return dict(status='source_rejected',native_reasons=reasons,reason=execution.get('reason'))
+    return dict(status='unsupported' if reasons and all('unsupported' in x or 'too-few-positive' in x for x in reasons) else 'solver_failed' if reasons else 'processing_failed',native_reasons=reasons)
+
+
+def run_candidate_family(root,binary,review,input_root,phase,method,rank):
+    from point_rank_experiment import run_injection
+    tag='warm' if method=='warm-observed-als' else 'covariance';cells=[];representative=None
+    control=root/f'A-rank{rank}-N10-rep1'
+    for rep in (1,2,3):
+        name=f'{phase}-{tag}-rank{rank}-N10-rep{rep}';out=prepare_run(root,name,rank,10,input_root,method)
+        launched=launch(root,out,binary,review,'warm OS cache allowed; fresh process/raw parent/scientific state')
+        row=dict(name=name,method=method,rank=rank,branch='REF',rep=rep,status=launched['status']);cells.append(row)
+        if launched['status']=='completed':
+            try:support_audit(out,control)
+            except Exception as exc:row.update(status='support_failed',reason=str(exc))
+        else:row.update(failure_details(out))
+        if rep==1:
+            if row['status']!='completed':
+                for other in (2,3):cells.append(dict(method=method,rank=rank,branch='REF',rep=other,status='blocked',reason='predetermined first REF invalid; no repeat to rescue scientific failure'))
+                break
+            representative=out
+        save_json(root/f'{phase}-{tag}-rank{rank}-progress.json',cells)
+    if representative is not None:
+        # These are controls, never raw-to-result latency. Own first REF supplies
+        # immutable original-derived parent and method/rank-local noise package.
+        for branch in ('C-core-plus','C-core-minus','C-shoulder'):
+            started=time.perf_counter();row=dict(name=representative.name,method=method,rank=rank,branch=branch,status='running')
+            try:
+                r=run_injection(root,binary,rank,branch,out=representative)
+                row.update(status='completed' if r['ready'] and r['completed_cycle']==10 else 'processing_failed',completed_cycle=r['completed_cycle'],reason=r.get('stop_reason'))
+                if row['status']=='completed':support_audit(representative,control,branch)
+            except Exception as exc:row.update(status='processing_failed',reason=str(exc))
+            row['control_seconds']=time.perf_counter()-started;cells.append(row);save_json(root/f'{phase}-{tag}-rank{rank}-progress.json',cells)
+        checkpoint_analysis(root,representative)
+    else:
+        for branch in ('C-core-plus','C-core-minus','C-shoulder'):cells.append(dict(method=method,rank=rank,branch=branch,status='blocked',reason='predetermined first REF invalid'))
+    save_json(root/f'{phase}-{tag}-rank{rank}-progress.json',cells)
+    return cells
+
+
+def candidates(root,binary,review,input_root):
+    require(read(root/'PHASE-A.json')['status']=='completed' and (root/'report/PHASE-A.md').is_file(),'Phase A report/regression gate absent')
+    require(not (root/'PHASE-B.json').exists(),'no implicit candidate campaign retry')
+    record=dict(status='running',matrix=[],phase_a_report=bound(root/'report/PHASE-A.md'));save_json(root/'PHASE-B.json',record)
+    for method in ('warm-observed-als','masked-covariance-count-v1'):
+        try:record['matrix']+=run_candidate_family(root,binary,review,input_root,'B',method,10)
+        except Exception as exc:record['matrix'].append(dict(method=method,rank=10,status='processing_failed',reason=str(exc)))
+        save_json(root/'PHASE-B.json',record)
+    record['status']='completed' if len(record['matrix'])==12 and all(r['status']=='completed' for r in record['matrix']) else 'completed_with_failures'
+    save_json(root/'PHASE-B.json',record)
+    return 0 if record['status']=='completed' else 1
+
 
 if __name__=='__main__':
     import argparse

@@ -17,11 +17,13 @@ YAML::Node execute_connected_ptc(const PtcCalSource &source,const ProcessingScan
             "successor.PTC_selection_unavailable: alternate cleaning selector requested");
     require(!cleaning["tau"] || cleaning["tau"].as<double>()==0,"successor.PTC_tau_selection_unavailable");
     PtcSolverRequest request;
-    request.method=requested.method=="observed-als"?PtcMethod::observed_als:PtcMethod::pairwise_covariance;
+    request.method=requested.method=="observed-als"?PtcMethod::observed_als:requested.method=="masked-covariance-count-v1"?PtcMethod::masked_covariance_count:PtcMethod::pairwise_covariance;
     const std::array<std::string,3> arrays{"a1100","a1400","a2000"};
     const auto ranks=pca["n_eig_to_cut"][arrays.at(source.detector_factors().front().array)].as<std::vector<int>>();
     require(ranks.size()==1 && ranks.front()>0,"successor.PTC_explicit_rank_unavailable");
     request.rank=requested.rank?requested.rank:ranks.front();
+    if(request.method==PtcMethod::masked_covariance_count)
+        require(cfg["observation"].as<int>()==152430 && (cfg["network"].as<int>()==11 || cfg["network"].as<int>()==12) && (request.rank==10 || request.rank==15),"experimental masked covariance scope");
     const auto evidence=PtcEvidence::learn(source,scans,request);
     const auto plan=PtcPlan::consider(evidence,source.val_snapshot_handle(),1);
     const auto signal=PtcAppliedSignal::apply(plan,source,source.val_snapshot_handle());
@@ -61,6 +63,9 @@ YAML::Node execute_connected_ptc(const PtcCalSource &source,const ProcessingScan
         r["fit_seconds"]=fit.fit_seconds;r["initialization_seconds"]=fit.initialization_seconds;r["covariance_seconds"]=fit.covariance_seconds;
         r["decomposition_seconds"]=fit.decomposition_seconds;r["coefficient_seconds"]=fit.coefficient_seconds;r["basis_seconds"]=fit.basis_seconds;r["check_seconds"]=fit.check_seconds;
         r["coefficient_factorizations"]=fit.coefficient_factorizations;r["coefficient_factor_reuses"]=fit.coefficient_factor_reuses;
+        r["signed_spectrum"]=fit.signed_spectrum;r["overlap_counts"]=fit.overlap_counts;r["overlap_frequencies"]=fit.overlap_frequencies;
+        r["eigen_relative_residual"]=fit.eigen_relative_residual;r["eigen_residual_tolerance"]=fit.eigen_residual_tolerance;
+        if(std::isfinite(fit.negative_to_positive_power))r["negative_to_positive_power"]=fit.negative_to_positive_power;else r["negative_to_positive_power"]=YAML::Null;if(std::isfinite(fit.most_negative_to_largest_positive))r["most_negative_to_largest_positive"]=fit.most_negative_to_largest_positive;else r["most_negative_to_largest_positive"]=YAML::Null;
         r["apply_seconds"]=applied.seconds;r["application_failed_times"]=applied.failed_times;r["retained"]=applied.retained;
         r["apply_factorizations"]=applied.factorizations;r["apply_factor_reuses"]=applied.factor_reuses;
         r["working_matrix_bytes"]=p.centered.size()*sizeof(double)+p.eligible.size()+p.mean.size()*sizeof(double)+fit.basis.size()*sizeof(double)+applied.values.size()*sizeof(double)+applied.causes.size();

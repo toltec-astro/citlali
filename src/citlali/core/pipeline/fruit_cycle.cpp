@@ -59,10 +59,10 @@ std::shared_ptr<const FruitResidual> FruitResidual::subtract(std::string id,cons
         r->values_.data()[i]=value;r->eligible_.data()[i]=1;
     }return r;
 }
-FruitLearned FruitLearned::learn(std::shared_ptr<const FruitResidual> r,PtcSolverRequest request) {
+FruitLearned FruitLearned::learn(std::shared_ptr<const FruitResidual> r,PtcSolverRequest request,const PtcWarmStart *initializer,const std::string &expected_scope) {
     if(!r)throw std::invalid_argument("FRUIT missing residual");
     FruitLearned l;l.residual_=std::move(r);l.prepared_=PtcPrepared::prepare(l.residual_->values(),l.residual_->eligible());
-    l.fit_=ptc_learn(l.prepared_,request);return l;
+    l.fit_=ptc_learn(l.prepared_,request,initializer,expected_scope);return l;
 }
 FruitLearned::Result FruitLearned::apply(const std::shared_ptr<const FruitResidual> &exact) const {
     if(exact.get()!=residual_.get())throw std::invalid_argument("FRUIT stale residual/learned state");

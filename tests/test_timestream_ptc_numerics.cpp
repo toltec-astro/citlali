@@ -86,3 +86,52 @@ TEST(PtcNumerics, UnresolvedCutoffDegeneracyDoesNotChooseArbitrarySubspace) {
     }
     r.rank=3;EXPECT_TRUE(ptc_learn(p,r).converged);
 }
+
+TEST(PtcNumerics, MaskedCountCovarianceMatchesCompletePcaAndKeepsSignedSpectrum) {
+    auto x=fixture();auto p=PtcPrepared::prepare(x,PtcMask::Ones(x.rows(),x.cols()));
+    auto r=request();r.method=PtcMethod::masked_covariance_count;auto f=ptc_learn(p,r);
+    ASSERT_TRUE(f.converged)<<f.stopping_reason;
+    Eigen::JacobiSVD<Eigen::MatrixXd> svd(p.centered,Eigen::ComputeThinV);
+    Eigen::MatrixXd b=svd.matrixV().leftCols(r.rank);
+    EXPECT_LT((b*b.transpose()-f.basis*f.basis.transpose()).norm(),1e-10);
+    EXPECT_LT((ptc_apply(p,f).values-(p.centered-p.centered*b*b.transpose())).norm(),1e-9);
+    EXPECT_EQ(f.signed_spectrum.size(),12);EXPECT_EQ(f.overlap_counts,std::vector<std::size_t>{120});
+    EXPECT_LE(f.eigen_relative_residual,f.eigen_residual_tolerance);
+    EXPECT_EQ(f.iterations,0);
+}
+TEST(PtcNumerics, MaskedCountUsesEveryEligiblePairAndDoesNotRepairIndefiniteness) {
+    auto x=fixture();auto mask=PtcMask::Ones(x.rows(),x.cols()).eval();
+    for(int t=0;t<120;++t)mask(t,t%12)=0;
+    for(int t=0;t<120;++t)x(t,t%12)=NAN;
+    const auto p=PtcPrepared::prepare(x,mask);auto r=request();r.method=PtcMethod::masked_covariance_count;
+    auto f=ptc_learn(p,r);ASSERT_TRUE(f.converged)<<f.stopping_reason;EXPECT_EQ(p.complete_times,0);
+    Eigen::MatrixXd c(12,12);
+    for(int d=0;d<12;++d)for(int e=0;e<12;++e){double sum=0;int n=0;
+        for(int t=0;t<120;++t)if(mask(t,d)&&mask(t,e)){sum+=p.centered(t,d)*p.centered(t,e);++n;}
+        c(d,e)=sum/n;}
+    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eig(c);Eigen::MatrixXd b=eig.eigenvectors().rightCols(2);
+    EXPECT_LT((b*b.transpose()-f.basis*f.basis.transpose()).norm(),1e-10);
+    EXPECT_LT(f.signed_spectrum.front(),0);EXPECT_GT(f.negative_to_positive_power,0);
+    EXPECT_EQ(ptc_apply(p,f).retained,p.eligible_count);
+}
+TEST(PtcNumerics, MaskedCountUnsupportedPairsAndNoPositivePowerFailWithoutFallback) {
+    auto x=fixture();auto m=PtcMask::Ones(x.rows(),x.cols()).eval();m.col(0).setZero();m(0,0)=m(1,0)=1;
+    auto r=request();r.method=PtcMethod::masked_covariance_count;
+    auto p=PtcPrepared::prepare(x,m);auto f=ptc_learn(p,r);
+    EXPECT_FALSE(f.converged);EXPECT_EQ(f.stopping_reason,"masked-covariance-unsupported-pair-overlap");EXPECT_EQ(ptc_apply(p,f).retained,0);
+    x.setConstant(7);p=PtcPrepared::prepare(x,PtcMask::Ones(x.rows(),x.cols()));f=ptc_learn(p,r);
+    EXPECT_FALSE(f.converged);EXPECT_EQ(f.stopping_reason,"masked-covariance-too-few-positive-eigenvalues");
+}
+TEST(PtcNumerics, WarmInitializerResolvesCurrentObjectiveAndRejectsForeignState) {
+    auto x=fixture();auto m=PtcMask::Ones(x.rows(),x.cols()).eval();m.block(20,2,15,2).setZero();
+    auto p=PtcPrepared::prepare(x,m);auto r=request();auto f=ptc_learn(p,r);ASSERT_TRUE(f.converged);
+    auto warm=PtcWarmStart::from_converged(f,m,"run/REF/rank2/nw11/segment0/ordered-detectors");
+    x(5,4)+=.2;auto q=PtcPrepared::prepare(x,m);auto g=ptc_learn(q,r,&warm,warm.scope);
+    ASSERT_TRUE(g.converged)<<g.stopping_reason;EXPECT_GE(g.iterations,2);EXPECT_GT(g.objective.size(),2);
+    EXPECT_EQ(g.covariance_seconds,0);EXPECT_EQ(g.decomposition_seconds,0);EXPECT_NE(q.mean[4],p.mean[4]);
+    EXPECT_LE(g.objective.back(),g.objective.front());EXPECT_EQ(ptc_apply(q,g).retained,q.eligible_count);
+    auto wrong=ptc_learn(q,r,&warm,"run/C-core-plus/rank2/nw11/segment0/ordered-detectors");EXPECT_FALSE(wrong.converged);
+    auto altered=m;altered(0,0)=0;auto other=PtcPrepared::prepare(x,altered);EXPECT_FALSE(ptc_learn(other,r,&warm,warm.scope).converged);
+    r.relative_objective_tolerance*=2;EXPECT_FALSE(ptc_learn(q,r,&warm,warm.scope).converged);
+    f.converged=false;EXPECT_THROW(PtcWarmStart::from_converged(f,m,"scope"),std::invalid_argument);
+}
