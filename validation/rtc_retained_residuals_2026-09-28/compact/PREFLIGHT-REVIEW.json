@@ -1,0 +1,19 @@
+{
+  "source_revision": "c517444861022f70c95dde95ed13e6a6a259249b",
+  "tree": "6e43ba687ace1aae9ec57e0e24a56fb9c3ae1544",
+  "reviewer": "/root/retained_preflight",
+  "fresh_context": true,
+  "verdict": "pass",
+  "scientific_behavioral": "pass for B replay only; four requests equivalent and original hashes verified",
+  "architectural_ownership": "pass; existing preparation/routing/counters only",
+  "repository_hygiene": "pass; clean exact source; previous evidence preserved",
+  "independent_checks": [
+    "3 budget tests",
+    "preparation in /private/tmp",
+    "original dependency digests",
+    "four prior requests equivalent after run-local path normalization",
+    "byte-identical frozen geometry"
+  ],
+  "parent_native_version": "** logging ** Configured with level=trace; available levels: [\"trace\", \"debug\", \"info\", \"warning\", \"error\", \"critical\", \"off\"].\nv2-ngc4449-memory-repair-187df04b-619-gc51744486 (2026-09-28T11:31:36)\nkids 04088da-dirty (2026-09-26T16:14:08)\n",
+  "limits": "Q requires B equivalence and evidence-supported frozen selection; no replacement"
+}

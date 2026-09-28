@@ -1,0 +1,1302 @@
+[
+  {
+    "key": "n1_new0",
+    "network": 1,
+    "detector": 451,
+    "channel": 451,
+    "physical_run": 0,
+    "first": 0,
+    "past_last": 338,
+    "center": 154,
+    "selection": "largest absolute retained off-source M0 sample",
+    "T5": "unavailable after failed replay; no post-PTC T5 class established",
+    "peer_channels": [
+      450,
+      452
+    ],
+    "MAP_contributions": 272,
+    "source_contributions": 0,
+    "min_distance_arcsec": 34.116646914567525,
+    "max_distance_arcsec": 43.40995780447712,
+    "overlapping_event_trials": [],
+    "stages": {
+      "CAL": {
+        "retained": 272,
+        "background": 272,
+        "median": 91426.5167811815,
+        "background_std": 6123.33100742302,
+        "adjacent_difference_MAD": 1650.4407114642502,
+        "q01_q05_q50_q95_q99": [
+          82322.97877942843,
+          83357.28805402538,
+          91426.5167811815,
+          104293.68705241804,
+          109250.09728856043
+        ],
+        "minimum": 82146.84554930964,
+        "maximum": 111763.16105309909,
+        "maximum_abs_row": 154,
+        "maximum_abs_value": 111763.16105309909,
+        "all_min": 82146.84554930964,
+        "all_max": 111763.16105309909,
+        "tail_6MAD_count": 23,
+        "tail_6MAD_longest_rows": 20,
+        "tail_12MAD_count": 1,
+        "tail_12MAD_longest_rows": 1,
+        "max_half_second_mean": 7313.177248163346,
+        "max_half_second_mean_row": 176,
+        "max_half_second_contrast": 14413.197958190136,
+        "max_half_second_contrast_row": 141
+      },
+      "M0": {
+        "retained": 272,
+        "background": 272,
+        "median": -201.16206216116777,
+        "background_std": 1171.5426312162194,
+        "adjacent_difference_MAD": 1095.2066610799961,
+        "q01_q05_q50_q95_q99": [
+          -2644.69099827544,
+          -1942.26776898594,
+          -201.16206216116777,
+          1734.8753900474526,
+          3188.0954964584616
+        ],
+        "minimum": -2978.7059932642633,
+        "maximum": 5126.431854417668,
+        "maximum_abs_row": 154,
+        "maximum_abs_value": 5126.431854417668,
+        "all_min": -2978.7059932642633,
+        "all_max": 5126.431854417668,
+        "tail_6MAD_count": 0,
+        "tail_6MAD_longest_rows": 0,
+        "tail_12MAD_count": 0,
+        "tail_12MAD_longest_rows": 0,
+        "max_half_second_mean": 897.7379725012012,
+        "max_half_second_mean_row": 150,
+        "max_half_second_contrast": -1693.980030014724,
+        "max_half_second_contrast_row": 182
+      }
+    },
+    "raw_x_mad": 6.20635576262055e-06,
+    "raw_r_mad": 9.287893507132148e-06,
+    "interpretation": "M0-only outcome-targeted diagnostic, not a proven non-astronomical T5 class; neighboring detector indices are context, not guaranteed physical neighbors",
+    "learn_trace": []
+  },
+  {
+    "key": "n1_new1",
+    "network": 1,
+    "detector": 346,
+    "channel": 346,
+    "physical_run": 0,
+    "first": 1504,
+    "past_last": 1871,
+    "center": 1687,
+    "selection": "largest absolute fully supported 0.5-second mean departure",
+    "T5": "unavailable after failed replay; no post-PTC T5 class established",
+    "peer_channels": [
+      345,
+      347
+    ],
+    "MAP_contributions": 287,
+    "source_contributions": 73,
+    "min_distance_arcsec": 13.237817884113214,
+    "max_distance_arcsec": 98.7749434754946,
+    "overlapping_event_trials": [
+      {
+        "event": {
+          "event": 251,
+          "channel": 346,
+          "detector": 346,
+          "seed_earlier_row": 1757,
+          "trial_exclusion": [
+            1751,
+            1765
+          ],
+          "origin_unix_seconds": 1771495696.6295633,
+          "time_scale_seconds": 2.0573441982269287,
+          "review_disposition": 0,
+          "health_concern": false,
+          "refinement_limited": false,
+          "hard_spike_accepted": false,
+          "jump_admitted": false,
+          "neighbor_exclusions": [
+            [
+              1751,
+              1765
+            ]
+          ],
+          "coordinates": [
+            {
+              "seeded": false,
+              "background_available": true,
+              "background_cause": 0,
+              "recovery_cause": 0,
+              "affected": [
+                -1,
+                -1
+              ],
+              "confirmation": [
+                1758,
+                1765
+              ],
+              "examined": [
+                1514,
+                2002
+              ],
+              "scale": 1.600849851051841e-07,
+              "cubic": [
+                2.4191963462789004e-05,
+                -1.2016495902272513e-06,
+                -6.238797257337677e-06,
+                -2.5750953435504997e-06
+              ],
+              "cubic_with_offset": [
+                2.429812984217314e-05,
+                -8.503394355258607e-07,
+                -6.195652704788422e-06,
+                -2.8504497164107595e-06
+              ],
+              "offset": -2.4078671174838305e-07,
+              "fit_support": [
+                {
+                  "usable": 243,
+                  "rows": [
+                    1507,
+                    1750
+                  ]
+                },
+                {
+                  "usable": 244,
+                  "rows": [
+                    1765,
+                    2009
+                  ]
+                }
+              ],
+              "usable_peers": 410,
+              "strongest_peer_channel": 347,
+              "strongest_level_correlation": 0.9916733417257558,
+              "strongest_difference_correlation": 0.22752816691410477
+            },
+            {
+              "seeded": true,
+              "background_available": true,
+              "background_cause": 0,
+              "recovery_cause": 0,
+              "affected": [
+                1751,
+                1759
+              ],
+              "confirmation": [
+                1759,
+                1766
+              ],
+              "examined": [
+                1514,
+                2002
+              ],
+              "scale": 6.924008844895993e-08,
+              "cubic": [
+                2.5798463021661762e-05,
+                3.363330242600717e-07,
+                6.780418716328947e-07,
+                1.4984641320131218e-08
+              ],
+              "cubic_with_offset": [
+                2.5844233295009503e-05,
+                4.6880232142280207e-07,
+                6.826037178083215e-07,
+                -8.792137537774327e-08
+              ],
+              "offset": -9.213768288835222e-08,
+              "fit_support": [
+                {
+                  "usable": 243,
+                  "rows": [
+                    1507,
+                    1750
+                  ]
+                },
+                {
+                  "usable": 244,
+                  "rows": [
+                    1765,
+                    2009
+                  ]
+                }
+              ],
+              "usable_peers": 410,
+              "strongest_peer_channel": 347,
+              "strongest_level_correlation": -0.9532109922783844,
+              "strongest_difference_correlation": 0.10304085975193862
+            }
+          ]
+        },
+        "consider": {
+          "event": 251,
+          "channel": 346,
+          "network": 1,
+          "seed_earlier_row": 1757,
+          "origin_unix_seconds": 1771495696.6295633,
+          "class": "isolated-admission-unavailable",
+          "affected": [
+            1751,
+            1759
+          ],
+          "operation_unavailable": [
+            1751,
+            1765
+          ],
+          "seeded_excursion": true,
+          "recovered": true,
+          "background_available": true,
+          "source_outside": true,
+          "target_domain_available": true,
+          "cohort_coincident_events": [
+            5,
+            28,
+            286,
+            287,
+            329,
+            393,
+            402
+          ],
+          "proposed_isolation_prerequisites": false,
+          "donor_admission_available": false
+        },
+        "step": {
+          "event": 251,
+          "network": 1,
+          "detector": 346,
+          "candidate_indices": [
+            434
+          ],
+          "candidates": [
+            {
+              "index": 434,
+              "earlier_row": 1757,
+              "later_row": 1758,
+              "coordinate": "r",
+              "noise_block": 840,
+              "difference": -5.795798961462075e-07,
+              "centered_difference": -5.75907230549173e-07,
+              "absolute_score": 6.32591468557466
+            }
+          ],
+          "coordinates": [
+            {
+              "amplitude_cause": 0,
+              "sigma_delta": null,
+              "offset_sigma": null,
+              "primary_pre_scale": 1.600849851051841e-07,
+              "short_fit_cause": 0,
+              "short_offset": null,
+              "consistency_cause": 0,
+              "transition_request_cause": 0,
+              "original_transition": {
+                "available": false,
+                "cause": 0,
+                "affected": [
+                  -1,
+                  -1
+                ],
+                "examined": [
+                  -1,
+                  -1
+                ],
+                "frozen_residual_scale": null,
+                "invalid_rows": 0,
+                "excluded_rows": 0,
+                "observation_truncated": false,
+                "acquisition_truncated": false,
+                "confirmations": [
+                  {
+                    "rows": [
+                      -1,
+                      -1
+                    ],
+                    "also_matches_other_reference": false
+                  },
+                  {
+                    "rows": [
+                      -1,
+                      -1
+                    ],
+                    "also_matches_other_reference": false
+                  }
+                ]
+              },
+              "admission_cause": 0,
+              "admitted": false,
+              "reassessed": false,
+              "admitted_affected": [
+                -1,
+                -1
+              ],
+              "reassessment_available": false
+            },
+            {
+              "amplitude_cause": 4,
+              "sigma_delta": 9.103936097374926e-08,
+              "offset_sigma": -1.0120642533389448,
+              "primary_pre_scale": 6.924008844895993e-08,
+              "short_fit_cause": 0,
+              "short_offset": null,
+              "consistency_cause": 0,
+              "transition_request_cause": 0,
+              "original_transition": {
+                "available": false,
+                "cause": 0,
+                "affected": [
+                  -1,
+                  -1
+                ],
+                "examined": [
+                  -1,
+                  -1
+                ],
+                "frozen_residual_scale": null,
+                "invalid_rows": 0,
+                "excluded_rows": 0,
+                "observation_truncated": false,
+                "acquisition_truncated": false,
+                "confirmations": [
+                  {
+                    "rows": [
+                      -1,
+                      -1
+                    ],
+                    "also_matches_other_reference": false
+                  },
+                  {
+                    "rows": [
+                      -1,
+                      -1
+                    ],
+                    "also_matches_other_reference": false
+                  }
+                ]
+              },
+              "admission_cause": 0,
+              "admitted": false,
+              "reassessed": false,
+              "admitted_affected": [
+                -1,
+                -1
+              ],
+              "reassessment_available": false
+            }
+          ]
+        }
+      }
+    ],
+    "stages": {
+      "CAL": {
+        "retained": 287,
+        "background": 214,
+        "median": 41836.14585066635,
+        "background_std": 1448.8768729754636,
+        "adjacent_difference_MAD": 239.01111144103578,
+        "q01_q05_q50_q95_q99": [
+          39933.09816574911,
+          40212.428128577136,
+          41836.14585066635,
+          44590.803973946604,
+          44705.24109415965
+        ],
+        "minimum": 39739.90880314878,
+        "maximum": 44907.752731700944,
+        "maximum_abs_row": 1685,
+        "maximum_abs_value": 44907.752731700944,
+        "all_min": 32947.885043083355,
+        "all_max": 45019.74634797737,
+        "tail_6MAD_count": 79,
+        "tail_6MAD_longest_rows": 54,
+        "tail_12MAD_count": 3,
+        "tail_12MAD_longest_rows": 1,
+        "max_half_second_mean": 2238.9990590598604,
+        "max_half_second_mean_row": 1687,
+        "max_half_second_contrast": 2014.5979559342136,
+        "max_half_second_contrast_row": 1629
+      },
+      "M0": {
+        "retained": 287,
+        "background": 214,
+        "median": 634.0627778822368,
+        "background_std": 705.8080080081191,
+        "adjacent_difference_MAD": 241.08584067058885,
+        "q01_q05_q50_q95_q99": [
+          -443.33364276288495,
+          -202.25372470412242,
+          634.0627778822368,
+          2269.5468653537755,
+          2954.184742428343
+        ],
+        "minimum": -585.8640058223991,
+        "maximum": 3165.8258194925247,
+        "maximum_abs_row": 1698,
+        "maximum_abs_value": 3165.8258194925247,
+        "all_min": -1649.5003910150917,
+        "all_max": 3165.8258194925247,
+        "tail_6MAD_count": 13,
+        "tail_6MAD_longest_rows": 13,
+        "tail_12MAD_count": 0,
+        "tail_12MAD_longest_rows": 0,
+        "max_half_second_mean": 678.6014868231435,
+        "max_half_second_mean_row": 1687,
+        "max_half_second_contrast": 694.2609340430163,
+        "max_half_second_contrast_row": 1652
+      }
+    },
+    "raw_x_mad": 1.2225008654370336e-06,
+    "raw_r_mad": 1.742957584359627e-07,
+    "interpretation": "M0-only outcome-targeted diagnostic, not a proven non-astronomical T5 class; neighboring detector indices are context, not guaranteed physical neighbors",
+    "learn_trace": [
+      {
+        "event": 251,
+        "seed": 1757,
+        "raw_candidates_in_window": [
+          {
+            "index": 434,
+            "earlier_row": 1757,
+            "later_row": 1758,
+            "coordinate": "r",
+            "noise_block": 840,
+            "difference": -5.795798961462075e-07,
+            "centered_difference": -5.75907230549173e-07,
+            "absolute_score": 6.32591468557466
+          }
+        ],
+        "trial_overlap": true,
+        "consider_class": "isolated-admission-unavailable",
+        "jump_admitted": false
+      }
+    ]
+  },
+  {
+    "key": "n1_new2",
+    "network": 1,
+    "detector": 83,
+    "channel": 83,
+    "physical_run": 0,
+    "first": 3727,
+    "past_last": 4094,
+    "center": 3910,
+    "selection": "median off-source M0 adjacent-difference MAD detector; middle physical time",
+    "T5": "unavailable after failed replay; no post-PTC T5 class established",
+    "peer_channels": [
+      82,
+      84
+    ],
+    "MAP_contributions": 367,
+    "source_contributions": 178,
+    "min_distance_arcsec": 1.333550450397435,
+    "max_distance_arcsec": 51.03614819861556,
+    "overlapping_event_trials": [],
+    "stages": {
+      "CAL": {
+        "retained": 367,
+        "background": 189,
+        "median": 18439.86365681461,
+        "background_std": 578.4617323100822,
+        "adjacent_difference_MAD": 180.02235672178327,
+        "q01_q05_q50_q95_q99": [
+          17204.549159112205,
+          17348.656112045068,
+          18439.86365681461,
+          18982.257009952526,
+          19107.665234401327
+        ],
+        "minimum": 17040.53272519672,
+        "maximum": 19171.1461803681,
+        "maximum_abs_row": 4062,
+        "maximum_abs_value": 17040.53272519672,
+        "all_min": 17040.53272519672,
+        "all_max": 19171.1461803681,
+        "tail_6MAD_count": 10,
+        "tail_6MAD_longest_rows": 4,
+        "tail_12MAD_count": 0,
+        "tail_12MAD_longest_rows": 0,
+        "max_half_second_mean": -856.2513240240249,
+        "max_half_second_mean_row": 4063
+      },
+      "M0": {
+        "retained": 367,
+        "background": 189,
+        "median": -39.6019427820554,
+        "background_std": 117.75785923320527,
+        "adjacent_difference_MAD": 126.56968341374636,
+        "q01_q05_q50_q95_q99": [
+          -264.11720754058297,
+          -235.54219408786923,
+          -39.6019427820554,
+          150.67627668995894,
+          230.56114885172627
+        ],
+        "minimum": -321.6654866792459,
+        "maximum": 322.4493705056319,
+        "maximum_abs_row": 4055,
+        "maximum_abs_value": 322.4493705056319,
+        "all_min": -321.6654866792459,
+        "all_max": 536.4940877409791,
+        "tail_6MAD_count": 0,
+        "tail_6MAD_longest_rows": 0,
+        "tail_12MAD_count": 0,
+        "tail_12MAD_longest_rows": 0,
+        "max_half_second_mean": -60.5046093718255,
+        "max_half_second_mean_row": 3810
+      }
+    },
+    "raw_x_mad": 3.401583652222356e-07,
+    "raw_r_mad": 8.046386602871618e-08,
+    "interpretation": "M0-only outcome-targeted diagnostic, not a proven non-astronomical T5 class; neighboring detector indices are context, not guaranteed physical neighbors",
+    "learn_trace": []
+  },
+  {
+    "key": "n2_new0",
+    "network": 2,
+    "detector": 79,
+    "channel": 79,
+    "physical_run": 0,
+    "first": 2204,
+    "past_last": 2571,
+    "center": 2387,
+    "selection": "largest absolute retained off-source M0 sample",
+    "T5": "unavailable after failed replay; no post-PTC T5 class established",
+    "peer_channels": [
+      78,
+      80
+    ],
+    "MAP_contributions": 367,
+    "source_contributions": 0,
+    "min_distance_arcsec": 107.81459416749166,
+    "max_distance_arcsec": 186.23065526864602,
+    "overlapping_event_trials": [],
+    "stages": {
+      "CAL": {
+        "retained": 367,
+        "background": 367,
+        "median": 34713.24289259945,
+        "background_std": 4145.773703824746,
+        "adjacent_difference_MAD": 5335.784793687925,
+        "q01_q05_q50_q95_q99": [
+          26252.95058802357,
+          28900.54864312709,
+          34713.24289259945,
+          42287.987174736765,
+          45066.953122931496
+        ],
+        "minimum": 25104.738060091295,
+        "maximum": 50958.89863485774,
+        "maximum_abs_row": 2387,
+        "maximum_abs_value": 50958.89863485774,
+        "all_min": 25104.738060091295,
+        "all_max": 50958.89863485774,
+        "tail_6MAD_count": 0,
+        "tail_6MAD_longest_rows": 0,
+        "tail_12MAD_count": 0,
+        "tail_12MAD_longest_rows": 0,
+        "max_half_second_mean": 2307.50815057315,
+        "max_half_second_mean_row": 2510,
+        "max_half_second_contrast": 2914.529040199888,
+        "max_half_second_contrast_row": 2327
+      },
+      "M0": {
+        "retained": 367,
+        "background": 367,
+        "median": -35.89128069107301,
+        "background_std": 3002.1194646202007,
+        "adjacent_difference_MAD": 2001.2707362927194,
+        "q01_q05_q50_q95_q99": [
+          -7430.369798142358,
+          -4909.048723945594,
+          -35.89128069107301,
+          5415.549616935333,
+          7947.018298322271
+        ],
+        "minimum": -9203.606588465896,
+        "maximum": 14081.145501680629,
+        "maximum_abs_row": 2387,
+        "maximum_abs_value": 14081.145501680629,
+        "all_min": -9203.606588465896,
+        "all_max": 14081.145501680629,
+        "tail_6MAD_count": 2,
+        "tail_6MAD_longest_rows": 1,
+        "tail_12MAD_count": 0,
+        "tail_12MAD_longest_rows": 0,
+        "max_half_second_mean": -986.1953271958719,
+        "max_half_second_mean_row": 2249,
+        "max_half_second_contrast": 1214.833573164635,
+        "max_half_second_contrast_row": 2327
+      }
+    },
+    "raw_x_mad": 7.082968751945244e-06,
+    "raw_r_mad": 6.980287388282666e-06,
+    "interpretation": "M0-only outcome-targeted diagnostic, not a proven non-astronomical T5 class; neighboring detector indices are context, not guaranteed physical neighbors",
+    "learn_trace": []
+  },
+  {
+    "key": "n2_new1",
+    "network": 2,
+    "detector": 88,
+    "channel": 88,
+    "physical_run": 0,
+    "first": 4423,
+    "past_last": 4790,
+    "center": 4606,
+    "selection": "largest absolute fully supported 0.5-second mean departure",
+    "T5": "unavailable after failed replay; no post-PTC T5 class established",
+    "peer_channels": [
+      87,
+      89
+    ],
+    "MAP_contributions": 367,
+    "source_contributions": 0,
+    "min_distance_arcsec": 62.69249027933987,
+    "max_distance_arcsec": 88.69891323091404,
+    "overlapping_event_trials": [],
+    "stages": {
+      "CAL": {
+        "retained": 367,
+        "background": 367,
+        "median": 32240.671067849216,
+        "background_std": 5023.208772770616,
+        "adjacent_difference_MAD": 2675.893910736336,
+        "q01_q05_q50_q95_q99": [
+          26464.00227543661,
+          27674.840921284223,
+          32240.671067849216,
+          44817.48691870504,
+          46773.42286302187
+        ],
+        "minimum": 25764.913100776484,
+        "maximum": 49268.40707927421,
+        "maximum_abs_row": 4563,
+        "maximum_abs_value": 49268.40707927421,
+        "all_min": 25764.913100776484,
+        "all_max": 49268.40707927421,
+        "tail_6MAD_count": 1,
+        "tail_6MAD_longest_rows": 1,
+        "tail_12MAD_count": 0,
+        "tail_12MAD_longest_rows": 0,
+        "max_half_second_mean": 7221.299213375832,
+        "max_half_second_mean_row": 4541,
+        "max_half_second_contrast": -9217.891210030735,
+        "max_half_second_contrast_row": 4576
+      },
+      "M0": {
+        "retained": 367,
+        "background": 367,
+        "median": -132.00941103554942,
+        "background_std": 2130.8042642166865,
+        "adjacent_difference_MAD": 1569.1660511723317,
+        "q01_q05_q50_q95_q99": [
+          -3847.3380869875405,
+          -2504.4777372921776,
+          -132.00941103554942,
+          4841.214149796178,
+          6408.906638816772
+        ],
+        "minimum": -4274.568141572755,
+        "maximum": 6979.179333836944,
+        "maximum_abs_row": 4616,
+        "maximum_abs_value": 6979.179333836944,
+        "all_min": -4274.568141572755,
+        "all_max": 6979.179333836944,
+        "tail_6MAD_count": 0,
+        "tail_6MAD_longest_rows": 0,
+        "tail_12MAD_count": 0,
+        "tail_12MAD_longest_rows": 0,
+        "max_half_second_mean": 3397.504401621379,
+        "max_half_second_mean_row": 4606,
+        "max_half_second_contrast": -4306.6583098074925,
+        "max_half_second_contrast_row": 4640
+      }
+    },
+    "raw_x_mad": 3.7035419664897652e-06,
+    "raw_r_mad": 1.871256814699673e-06,
+    "interpretation": "M0-only outcome-targeted diagnostic, not a proven non-astronomical T5 class; neighboring detector indices are context, not guaranteed physical neighbors",
+    "learn_trace": []
+  },
+  {
+    "key": "n2_new2",
+    "network": 2,
+    "detector": 246,
+    "channel": 246,
+    "physical_run": 0,
+    "first": 3727,
+    "past_last": 4094,
+    "center": 3910,
+    "selection": "median off-source M0 adjacent-difference MAD detector; middle physical time",
+    "T5": "unavailable after failed replay; no post-PTC T5 class established",
+    "peer_channels": [
+      245,
+      247
+    ],
+    "MAP_contributions": 367,
+    "source_contributions": 0,
+    "min_distance_arcsec": 50.88853842898885,
+    "max_distance_arcsec": 130.25360714242166,
+    "overlapping_event_trials": [],
+    "stages": {
+      "CAL": {
+        "retained": 367,
+        "background": 367,
+        "median": 11303.28508066563,
+        "background_std": 802.1738481627601,
+        "adjacent_difference_MAD": 362.63178358291043,
+        "q01_q05_q50_q95_q99": [
+          9876.039867426745,
+          10267.793204224932,
+          11303.28508066563,
+          12943.87574507765,
+          13477.644038702972
+        ],
+        "minimum": 9822.527263131704,
+        "maximum": 14014.265855356249,
+        "maximum_abs_row": 3771,
+        "maximum_abs_value": 14014.265855356249,
+        "all_min": 9822.527263131704,
+        "all_max": 14014.265855356249,
+        "tail_6MAD_count": 4,
+        "tail_6MAD_longest_rows": 3,
+        "tail_12MAD_count": 0,
+        "tail_12MAD_longest_rows": 0,
+        "max_half_second_mean": 1392.1674363393302,
+        "max_half_second_mean_row": 3786,
+        "max_half_second_contrast": -1122.5553687798422,
+        "max_half_second_contrast_row": 3891
+      },
+      "M0": {
+        "retained": 367,
+        "background": 367,
+        "median": -32.082200360430306,
+        "background_std": 436.41647834454284,
+        "adjacent_difference_MAD": 546.057651533971,
+        "q01_q05_q50_q95_q99": [
+          -898.3568167959096,
+          -707.8177272941173,
+          -32.082200360430306,
+          700.1495166107193,
+          1080.652716177235
+        ],
+        "minimum": -1272.8702967136685,
+        "maximum": 1390.9153590490364,
+        "maximum_abs_row": 3967,
+        "maximum_abs_value": 1390.9153590490364,
+        "all_min": -1272.8702967136685,
+        "all_max": 1390.9153590490364,
+        "tail_6MAD_count": 0,
+        "tail_6MAD_longest_rows": 0,
+        "tail_12MAD_count": 0,
+        "tail_12MAD_longest_rows": 0,
+        "max_half_second_mean": -275.9677594326487,
+        "max_half_second_mean_row": 3892,
+        "max_half_second_contrast": 422.9962460510087,
+        "max_half_second_contrast_row": 3927
+      }
+    },
+    "raw_x_mad": 9.40671662643796e-07,
+    "raw_r_mad": 3.3462486263897754e-07,
+    "interpretation": "M0-only outcome-targeted diagnostic, not a proven non-astronomical T5 class; neighboring detector indices are context, not guaranteed physical neighbors",
+    "learn_trace": []
+  },
+  {
+    "key": "n3_new0",
+    "network": 3,
+    "detector": 104,
+    "channel": 104,
+    "physical_run": 0,
+    "first": 2088,
+    "past_last": 2455,
+    "center": 2271,
+    "selection": "largest absolute retained off-source M0 sample",
+    "T5": "unavailable after failed replay; no post-PTC T5 class established",
+    "peer_channels": [
+      103,
+      105
+    ],
+    "MAP_contributions": 367,
+    "source_contributions": 0,
+    "min_distance_arcsec": 28.323955697820253,
+    "max_distance_arcsec": 86.94959719068466,
+    "overlapping_event_trials": [],
+    "stages": {
+      "CAL": {
+        "retained": 367,
+        "background": 367,
+        "median": -157896.06290085116,
+        "background_std": 1668.936028196636,
+        "adjacent_difference_MAD": 2340.8825036203284,
+        "q01_q05_q50_q95_q99": [
+          -162325.16431131994,
+          -160928.54892081072,
+          -157896.06290085116,
+          -155728.95049950905,
+          -154472.4563042345
+        ],
+        "minimum": -163439.95680973388,
+        "maximum": -153850.4043195029,
+        "maximum_abs_row": 2271,
+        "maximum_abs_value": -163439.95680973388,
+        "all_min": -163439.95680973388,
+        "all_max": -153850.4043195029,
+        "tail_6MAD_count": 0,
+        "tail_6MAD_longest_rows": 0,
+        "tail_12MAD_count": 0,
+        "tail_12MAD_longest_rows": 0,
+        "max_half_second_mean": -881.6597407608857,
+        "max_half_second_mean_row": 2128,
+        "max_half_second_contrast": 974.6901226555538,
+        "max_half_second_contrast_row": 2261
+      },
+      "M0": {
+        "retained": 367,
+        "background": 367,
+        "median": -48.55964059904318,
+        "background_std": 1046.7145510371222,
+        "adjacent_difference_MAD": 1333.497862621552,
+        "q01_q05_q50_q95_q99": [
+          -2608.3052139493293,
+          -1756.462960418844,
+          -48.55964059904318,
+          1653.870307619001,
+          2080.956124495711
+        ],
+        "minimum": -5201.636496665574,
+        "maximum": 2471.546709338003,
+        "maximum_abs_row": 2271,
+        "maximum_abs_value": -5201.636496665574,
+        "all_min": -5201.636496665574,
+        "all_max": 2471.546709338003,
+        "tail_6MAD_count": 0,
+        "tail_6MAD_longest_rows": 0,
+        "tail_12MAD_count": 0,
+        "tail_12MAD_longest_rows": 0,
+        "max_half_second_mean": -399.74247374874557,
+        "max_half_second_mean_row": 2282,
+        "max_half_second_contrast": -494.4475101001396,
+        "max_half_second_contrast_row": 2177
+      }
+    },
+    "raw_x_mad": 2.1705174649897686e-06,
+    "raw_r_mad": 2.4734072255403784e-06,
+    "interpretation": "M0-only outcome-targeted diagnostic, not a proven non-astronomical T5 class; neighboring detector indices are context, not guaranteed physical neighbors",
+    "learn_trace": []
+  },
+  {
+    "key": "n3_new1",
+    "network": 3,
+    "detector": 64,
+    "channel": 64,
+    "physical_run": 0,
+    "first": 1772,
+    "past_last": 2139,
+    "center": 1955,
+    "selection": "largest absolute fully supported 0.5-second mean departure",
+    "T5": "unavailable after failed replay; no post-PTC T5 class established",
+    "peer_channels": [
+      63,
+      65
+    ],
+    "MAP_contributions": 367,
+    "source_contributions": 0,
+    "min_distance_arcsec": 39.40773887215304,
+    "max_distance_arcsec": 63.14468925665292,
+    "overlapping_event_trials": [],
+    "stages": {
+      "CAL": {
+        "retained": 367,
+        "background": 367,
+        "median": 51341.40600863958,
+        "background_std": 4205.531747361945,
+        "adjacent_difference_MAD": 2167.924291522579,
+        "q01_q05_q50_q95_q99": [
+          38486.560404267555,
+          40605.49865751702,
+          51341.40600863958,
+          55699.43533371824,
+          56827.73735474428
+        ],
+        "minimum": 36881.58606274424,
+        "maximum": 58430.445165396995,
+        "maximum_abs_row": 1785,
+        "maximum_abs_value": 36881.58606274424,
+        "all_min": 36881.58606274424,
+        "all_max": 58430.445165396995,
+        "tail_6MAD_count": 4,
+        "tail_6MAD_longest_rows": 2,
+        "tail_12MAD_count": 0,
+        "tail_12MAD_longest_rows": 0,
+        "max_half_second_mean": -8630.439639763896,
+        "max_half_second_mean_row": 1802,
+        "max_half_second_contrast": 11018.639451522142,
+        "max_half_second_contrast_row": 1843
+      },
+      "M0": {
+        "retained": 367,
+        "background": 367,
+        "median": -47.44420219534368,
+        "background_std": 951.3044065215513,
+        "adjacent_difference_MAD": 623.6211647411019,
+        "q01_q05_q50_q95_q99": [
+          -2167.4855657989638,
+          -1531.1716875960035,
+          -47.44420219534368,
+          1515.1692143655562,
+          2406.624442470253
+        ],
+        "minimum": -2741.3736855077177,
+        "maximum": 3674.5792969801296,
+        "maximum_abs_row": 1990,
+        "maximum_abs_value": 3674.5792969801296,
+        "all_min": -2741.3736855077177,
+        "all_max": 3674.5792969801296,
+        "tail_6MAD_count": 0,
+        "tail_6MAD_longest_rows": 0,
+        "tail_12MAD_count": 0,
+        "tail_12MAD_longest_rows": 0,
+        "max_half_second_mean": -1145.5507366509305,
+        "max_half_second_mean_row": 1955,
+        "max_half_second_contrast": -1934.5411018597079,
+        "max_half_second_contrast_row": 1916
+      }
+    },
+    "raw_x_mad": 1.2861717471581306e-06,
+    "raw_r_mad": 3.1392772213836754e-06,
+    "interpretation": "M0-only outcome-targeted diagnostic, not a proven non-astronomical T5 class; neighboring detector indices are context, not guaranteed physical neighbors",
+    "learn_trace": []
+  },
+  {
+    "key": "n3_new2",
+    "network": 3,
+    "detector": 225,
+    "channel": 225,
+    "physical_run": 0,
+    "first": 3727,
+    "past_last": 4094,
+    "center": 3910,
+    "selection": "median off-source M0 adjacent-difference MAD detector; middle physical time",
+    "T5": "unavailable after failed replay; no post-PTC T5 class established",
+    "peer_channels": [
+      224,
+      226
+    ],
+    "MAP_contributions": 367,
+    "source_contributions": 0,
+    "min_distance_arcsec": 53.29865570866592,
+    "max_distance_arcsec": 69.70286571552316,
+    "overlapping_event_trials": [],
+    "stages": {
+      "CAL": {
+        "retained": 367,
+        "background": 367,
+        "median": 32846.20203612254,
+        "background_std": 512.858932001644,
+        "adjacent_difference_MAD": 662.4703583275781,
+        "q01_q05_q50_q95_q99": [
+          31827.37464779556,
+          32074.746047089306,
+          32846.20203612254,
+          33705.64643349293,
+          34017.445868305374
+        ],
+        "minimum": 31587.156193597413,
+        "maximum": 34105.62876119233,
+        "maximum_abs_row": 3728,
+        "maximum_abs_value": 34105.62876119233,
+        "all_min": 31587.156193597413,
+        "all_max": 34105.62876119233,
+        "tail_6MAD_count": 0,
+        "tail_6MAD_longest_rows": 0,
+        "tail_12MAD_count": 0,
+        "tail_12MAD_longest_rows": 0,
+        "max_half_second_mean": 288.56976889554596,
+        "max_half_second_mean_row": 3830,
+        "max_half_second_contrast": -462.292232285165,
+        "max_half_second_contrast_row": 3919
+      },
+      "M0": {
+        "retained": 367,
+        "background": 367,
+        "median": -11.508778739178751,
+        "background_std": 143.81756447867434,
+        "adjacent_difference_MAD": 156.81676408592426,
+        "q01_q05_q50_q95_q99": [
+          -405.29413585580016,
+          -240.1842629250306,
+          -11.508778739178751,
+          210.51055465202282,
+          307.8737056117145
+        ],
+        "minimum": -466.84673099286556,
+        "maximum": 378.80922986272304,
+        "maximum_abs_row": 3764,
+        "maximum_abs_value": -466.84673099286556,
+        "all_min": -466.84673099286556,
+        "all_max": 378.80922986272304,
+        "tail_6MAD_count": 0,
+        "tail_6MAD_longest_rows": 0,
+        "tail_12MAD_count": 0,
+        "tail_12MAD_longest_rows": 0,
+        "max_half_second_mean": -107.7860073798808,
+        "max_half_second_mean_row": 3761,
+        "max_half_second_contrast": 185.14374969879833,
+        "max_half_second_contrast_row": 3802
+      }
+    },
+    "raw_x_mad": 6.437439379702428e-07,
+    "raw_r_mad": 1.7534074085830086e-07,
+    "interpretation": "M0-only outcome-targeted diagnostic, not a proven non-astronomical T5 class; neighboring detector indices are context, not guaranteed physical neighbors",
+    "learn_trace": []
+  },
+  {
+    "key": "n4_new0",
+    "network": 4,
+    "detector": 262,
+    "channel": 262,
+    "physical_run": 0,
+    "first": 4279,
+    "past_last": 4646,
+    "center": 4462,
+    "selection": "largest absolute retained off-source M0 sample",
+    "T5": "unavailable after failed replay; no post-PTC T5 class established",
+    "peer_channels": [
+      261,
+      263
+    ],
+    "MAP_contributions": 367,
+    "source_contributions": 0,
+    "min_distance_arcsec": 53.516064439921124,
+    "max_distance_arcsec": 106.05389970236378,
+    "overlapping_event_trials": [],
+    "stages": {
+      "CAL": {
+        "retained": 367,
+        "background": 367,
+        "median": -240171.33363914656,
+        "background_std": 1274.671711106154,
+        "adjacent_difference_MAD": 1642.365625758079,
+        "q01_q05_q50_q95_q99": [
+          -242873.85318692046,
+          -242226.64093735223,
+          -240171.33363914656,
+          -238060.68792062107,
+          -237316.65768203276
+        ],
+        "minimum": -243142.4391477692,
+        "maximum": -235091.95736839264,
+        "maximum_abs_row": 4462,
+        "maximum_abs_value": -235091.95736839264,
+        "all_min": -243142.4391477692,
+        "all_max": -235091.95736839264,
+        "tail_6MAD_count": 0,
+        "tail_6MAD_longest_rows": 0,
+        "tail_12MAD_count": 0,
+        "tail_12MAD_longest_rows": 0,
+        "max_half_second_mean": 828.812795434954,
+        "max_half_second_mean_row": 4436,
+        "max_half_second_contrast": -876.1003701226145,
+        "max_half_second_contrast_row": 4462
+      },
+      "M0": {
+        "retained": 367,
+        "background": 367,
+        "median": -18.258240032961453,
+        "background_std": 1114.4722125688984,
+        "adjacent_difference_MAD": 1634.695287018439,
+        "q01_q05_q50_q95_q99": [
+          -2396.561828365134,
+          -1863.6692866341855,
+          -18.258240032961453,
+          1785.774910140147,
+          2326.9993495679514
+        ],
+        "minimum": -2861.1974881053943,
+        "maximum": 4364.161435229736,
+        "maximum_abs_row": 4462,
+        "maximum_abs_value": 4364.161435229736,
+        "all_min": -2861.1974881053943,
+        "all_max": 4364.161435229736,
+        "tail_6MAD_count": 0,
+        "tail_6MAD_longest_rows": 0,
+        "tail_12MAD_count": 0,
+        "tail_12MAD_longest_rows": 0,
+        "max_half_second_mean": 257.9556078105503,
+        "max_half_second_mean_row": 4321,
+        "max_half_second_contrast": -318.31264322172285,
+        "max_half_second_contrast_row": 4356
+      }
+    },
+    "raw_x_mad": 5.220669460042845e-07,
+    "raw_r_mad": 7.267052296201486e-07,
+    "interpretation": "M0-only outcome-targeted diagnostic, not a proven non-astronomical T5 class; neighboring detector indices are context, not guaranteed physical neighbors",
+    "learn_trace": []
+  },
+  {
+    "key": "n4_new1",
+    "network": 4,
+    "detector": 179,
+    "channel": 179,
+    "physical_run": 0,
+    "first": 2233,
+    "past_last": 2600,
+    "center": 2416,
+    "selection": "largest absolute fully supported 0.5-second mean departure",
+    "T5": "unavailable after failed replay; no post-PTC T5 class established",
+    "peer_channels": [
+      178,
+      180
+    ],
+    "MAP_contributions": 367,
+    "source_contributions": 0,
+    "min_distance_arcsec": 34.93199254837383,
+    "max_distance_arcsec": 116.21311213454264,
+    "overlapping_event_trials": [],
+    "stages": {
+      "CAL": {
+        "retained": 367,
+        "background": 367,
+        "median": 157355.3932108493,
+        "background_std": 2336.959217159634,
+        "adjacent_difference_MAD": 2872.7247933029676,
+        "q01_q05_q50_q95_q99": [
+          152553.22826628713,
+          153434.50956286467,
+          157355.3932108493,
+          161178.4019037762,
+          162546.55003196868
+        ],
+        "minimum": 152327.8299517689,
+        "maximum": 164926.0737032473,
+        "maximum_abs_row": 2416,
+        "maximum_abs_value": 164926.0737032473,
+        "all_min": 152327.8299517689,
+        "all_max": 164926.0737032473,
+        "tail_6MAD_count": 0,
+        "tail_6MAD_longest_rows": 0,
+        "tail_12MAD_count": 0,
+        "tail_12MAD_longest_rows": 0,
+        "max_half_second_mean": 2072.285699824082,
+        "max_half_second_mean_row": 2415,
+        "max_half_second_contrast": 3022.353955795149,
+        "max_half_second_contrast_row": 2378
+      },
+      "M0": {
+        "retained": 367,
+        "background": 367,
+        "median": 99.93858187939759,
+        "background_std": 1035.6070059360877,
+        "adjacent_difference_MAD": 436.25304230420437,
+        "q01_q05_q50_q95_q99": [
+          -2236.145233515295,
+          -1466.8448437097195,
+          99.93858187939759,
+          2179.733157378893,
+          2865.2088204588877
+        ],
+        "minimum": -2511.1843943752915,
+        "maximum": 3492.0235759400357,
+        "maximum_abs_row": 2416,
+        "maximum_abs_value": 3492.0235759400357,
+        "all_min": -2511.1843943752915,
+        "all_max": 3492.0235759400357,
+        "tail_6MAD_count": 6,
+        "tail_6MAD_longest_rows": 3,
+        "tail_12MAD_count": 0,
+        "tail_12MAD_longest_rows": 0,
+        "max_half_second_mean": 1375.2734508051376,
+        "max_half_second_mean_row": 2416,
+        "max_half_second_contrast": 2292.468762423192,
+        "max_half_second_contrast_row": 2381
+      }
+    },
+    "raw_x_mad": 1.2413977884049954e-06,
+    "raw_r_mad": 1.3406826604347739e-06,
+    "interpretation": "M0-only outcome-targeted diagnostic, not a proven non-astronomical T5 class; neighboring detector indices are context, not guaranteed physical neighbors",
+    "learn_trace": []
+  },
+  {
+    "key": "n4_new2",
+    "network": 4,
+    "detector": 165,
+    "channel": 165,
+    "physical_run": 0,
+    "first": 3727,
+    "past_last": 4094,
+    "center": 3910,
+    "selection": "median off-source M0 adjacent-difference MAD detector; middle physical time",
+    "T5": "unavailable after failed replay; no post-PTC T5 class established",
+    "peer_channels": [
+      164,
+      166
+    ],
+    "MAP_contributions": 367,
+    "source_contributions": 0,
+    "min_distance_arcsec": 69.1698660791106,
+    "max_distance_arcsec": 102.67655780053698,
+    "overlapping_event_trials": [],
+    "stages": {
+      "CAL": {
+        "retained": 367,
+        "background": 367,
+        "median": 39223.80588314047,
+        "background_std": 471.797357796478,
+        "adjacent_difference_MAD": 650.0412909922981,
+        "q01_q05_q50_q95_q99": [
+          38359.81973155259,
+          38502.52834010294,
+          39223.80588314047,
+          40034.32049399597,
+          40243.833456661305
+        ],
+        "minimum": 38261.886268738635,
+        "maximum": 40394.347976310986,
+        "maximum_abs_row": 3802,
+        "maximum_abs_value": 40394.347976310986,
+        "all_min": 38261.886268738635,
+        "all_max": 40394.347976310986,
+        "tail_6MAD_count": 0,
+        "tail_6MAD_longest_rows": 0,
+        "tail_12MAD_count": 0,
+        "tail_12MAD_longest_rows": 0,
+        "max_half_second_mean": 251.26452585638629,
+        "max_half_second_mean_row": 3757,
+        "max_half_second_contrast": -179.5138111132303,
+        "max_half_second_contrast_row": 3921
+      },
+      "M0": {
+        "retained": 367,
+        "background": 367,
+        "median": 12.056973021817612,
+        "background_std": 91.09211750462622,
+        "adjacent_difference_MAD": 104.0585954590015,
+        "q01_q05_q50_q95_q99": [
+          -178.1710290881704,
+          -144.16493109032496,
+          12.056973021817612,
+          159.32172385271213,
+          229.1289546776813
+        ],
+        "minimum": -242.31766529816736,
+        "maximum": 267.0405629085981,
+        "maximum_abs_row": 3916,
+        "maximum_abs_value": 267.0405629085981,
+        "all_min": -242.31766529816736,
+        "all_max": 267.0405629085981,
+        "tail_6MAD_count": 0,
+        "tail_6MAD_longest_rows": 0,
+        "tail_12MAD_count": 0,
+        "tail_12MAD_longest_rows": 0,
+        "max_half_second_mean": 50.73458338681308,
+        "max_half_second_mean_row": 3960,
+        "max_half_second_contrast": -82.30246314271264,
+        "max_half_second_contrast_row": 3978
+      }
+    },
+    "raw_x_mad": 4.864856319308133e-07,
+    "raw_r_mad": 5.274399121847747e-07,
+    "interpretation": "M0-only outcome-targeted diagnostic, not a proven non-astronomical T5 class; neighboring detector indices are context, not guaranteed physical neighbors",
+    "learn_trace": []
+  }
+]

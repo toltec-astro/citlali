@@ -1,5 +1,23 @@
 # Citlali Refactor Status
 
+## 2026-09-28 — contamination-first residual audit stopped at failed replay gate
+
+The owner prioritizes trustworthy accepted streams, maps and POINT measurements;
+large rejection is acceptable. The earlier exposure-recovery/processing-scan
+containment proposal is explicitly deferred. No unmasking or releveling is allowed.
+The [new partial assessment](../validation/rtc_retained_residuals_2026-09-28/ASSESSMENT.md)
+at science c51744486 completes an exact B RTC/M0 replay and a full CAL/M0
+population audit, then stops at a native FRUIT campaign-scope rejection beforeT1.
+One parent/trajectory and one attempted feedback are charged; zero completed
+feedback/endpoints, zero replacement and zero Q trajectories. Full T5 population
+equivalence and quarantine benefit remain untested. SavedT5 n1_w5 maps outside
+final science support; direct final-map residual scatter is comparable to the
+saved local noise, which is not proof of cleanliness. B remains baseline; fixed11
+parked. The no-replacement order blocks further science. Compact preservation,
+saved-only reproduction and independent review govern closeout; new scratch
+cleanup needs new exact-scope approval. No production change, Unity, push or merge.
+
+
 ## 2026-09-28 — step-rich networks 1–4 consequence assessment
 
 The [four-network assessment](../validation/rtc_step_consequences_2026-09-28/ASSESSMENT.md)

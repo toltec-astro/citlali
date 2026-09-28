@@ -1,0 +1,67 @@
+{
+  "command": [
+    "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-retained-residuals-20260928/B-REF-rep1/upstream/development.yaml"
+  ],
+  "executable_sha256": "8528e3fdee451cf5772432cd583001013c05b72ca6f3c2e28127ef78b2d66c85",
+  "input_sha256": "89d471a7c2bc80ed26119614b81b76c5f93f477602966373792e1fd994dbe43d",
+  "workers": 2,
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "BLIS_NUM_THREADS": "1",
+    "OMP_DYNAMIC": "FALSE"
+  },
+  "measurement": "fresh process; whole-invocation CPU and sampled RSS; no concurrent diagnostic",
+  "exit_code": 0,
+  "wall_seconds": 50.581909790984355,
+  "polled_peak_rss_bytes": 2503819264,
+  "output_bytes": 2343215730
+}
+{
+  "command": [
+    "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-retained-residuals-20260928/B-REF-rep1/M0/development.yaml"
+  ],
+  "executable_sha256": "8528e3fdee451cf5772432cd583001013c05b72ca6f3c2e28127ef78b2d66c85",
+  "input_sha256": "a52417a4a0ecea5ca8199b264836907be6c335362414c6f3cac188beb2f33227",
+  "workers": 1,
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "BLIS_NUM_THREADS": "1",
+    "OMP_DYNAMIC": "FALSE"
+  },
+  "measurement": "fresh process; whole-invocation CPU and sampled RSS; no concurrent diagnostic",
+  "exit_code": 0,
+  "wall_seconds": 16.772689540986903,
+  "polled_peak_rss_bytes": 785678336,
+  "output_bytes": 207451861
+}
+{
+  "command": [
+    "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-retained-residuals-20260928/B-REF-rep1/run/BASE-POINT/REF/a1100/cycle-01/native/development.yaml"
+  ],
+  "executable_sha256": "8528e3fdee451cf5772432cd583001013c05b72ca6f3c2e28127ef78b2d66c85",
+  "input_sha256": "566e4e7813be2703ec671507ab4a624eb4e59ceb4ff8b4c960667d3b618b2376",
+  "workers": 1,
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "BLIS_NUM_THREADS": "1",
+    "OMP_DYNAMIC": "FALSE"
+  },
+  "measurement": "fresh process; whole-invocation CPU and sampled RSS; no concurrent diagnostic",
+  "exit_code": 1,
+  "wall_seconds": 0.5133401249768212,
+  "polled_peak_rss_bytes": 32768,
+  "output_bytes": 0
+}
+{"policy": "BASE-POINT", "branch": "REF", "cycle": 1, "ready": false, "reason": "native cycle failed"}

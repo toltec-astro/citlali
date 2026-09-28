@@ -1,0 +1,182 @@
+{
+  "original_parents": 1,
+  "charged_trajectories": 1,
+  "completed_M0_T5_trajectories": 0,
+  "completed_M0": 1,
+  "initial_network_Apply_starts": 4,
+  "initial_network_Apply_completions": 4,
+  "feedback_attempts": 1,
+  "feedback_completed": 0,
+  "endpoints": 0,
+  "Q_trajectories": 0,
+  "RTC_only": 0,
+  "replacements": 0,
+  "attempts": [
+    {
+      "kind": "parent",
+      "identity": {
+        "run": "B-REF-rep1"
+      },
+      "epoch": 1790609721.458334
+    },
+    {
+      "kind": "trajectory",
+      "identity": {
+        "run": "B-REF-rep1",
+        "branch": "REF",
+        "cycle": 0
+      },
+      "epoch": 1790609721.461159
+    },
+    {
+      "kind": "feedback",
+      "identity": {
+        "run": "B-REF-rep1",
+        "branch": "REF",
+        "cycle": 1
+      },
+      "epoch": 1790609791.124619
+    }
+  ],
+  "network_execution": [
+    {
+      "network": 1,
+      "initial_Apply_started": 1,
+      "initial_Apply_completed": 1,
+      "candidate_count": 879,
+      "event_count": 504,
+      "admitted_jump_groups": 51,
+      "internal_coordinate_requests": {
+        "refit_requested": {
+          "true": 46,
+          "false": 76,
+          "absent": 886
+        },
+        "remeasure_requested": {
+          "true": 18,
+          "false": 104,
+          "absent": 886
+        },
+        "reassessed": {
+          "true": 13,
+          "false": 995,
+          "absent": 0
+        },
+        "admitted": {
+          "true": 51,
+          "false": 957,
+          "absent": 0
+        }
+      }
+    },
+    {
+      "network": 2,
+      "initial_Apply_started": 1,
+      "initial_Apply_completed": 1,
+      "candidate_count": 889,
+      "event_count": 344,
+      "admitted_jump_groups": 25,
+      "internal_coordinate_requests": {
+        "refit_requested": {
+          "true": 10,
+          "false": 46,
+          "absent": 632
+        },
+        "remeasure_requested": {
+          "true": 4,
+          "false": 52,
+          "absent": 632
+        },
+        "reassessed": {
+          "true": 4,
+          "false": 684,
+          "absent": 0
+        },
+        "admitted": {
+          "true": 26,
+          "false": 662,
+          "absent": 0
+        }
+      }
+    },
+    {
+      "network": 3,
+      "initial_Apply_started": 1,
+      "initial_Apply_completed": 1,
+      "candidate_count": 5180,
+      "event_count": 1083,
+      "admitted_jump_groups": 72,
+      "internal_coordinate_requests": {
+        "refit_requested": {
+          "true": 42,
+          "false": 124,
+          "absent": 2000
+        },
+        "remeasure_requested": {
+          "true": 17,
+          "false": 149,
+          "absent": 2000
+        },
+        "reassessed": {
+          "true": 14,
+          "false": 2152,
+          "absent": 0
+        },
+        "admitted": {
+          "true": 79,
+          "false": 2087,
+          "absent": 0
+        }
+      }
+    },
+    {
+      "network": 4,
+      "initial_Apply_started": 1,
+      "initial_Apply_completed": 1,
+      "candidate_count": 2230,
+      "event_count": 597,
+      "admitted_jump_groups": 11,
+      "internal_coordinate_requests": {
+        "refit_requested": {
+          "true": 24,
+          "false": 8,
+          "absent": 1162
+        },
+        "remeasure_requested": {
+          "true": 11,
+          "false": 21,
+          "absent": 1162
+        },
+        "reassessed": {
+          "true": 8,
+          "false": 1186,
+          "absent": 0
+        },
+        "admitted": {
+          "true": 11,
+          "false": 1183,
+          "absent": 0
+        }
+      }
+    }
+  ],
+  "wall_seconds": 70.487578916,
+  "cpu_seconds": {
+    "user": 82.855929,
+    "system": 7.622872
+  },
+  "aggregate_sampled_RSS_bytes": 2644443136,
+  "policy": {
+    "independent_workloads": 1,
+    "network_workers": 2,
+    "feedback_segment_workers": 1,
+    "numeric_threads": 1
+  },
+  "diagnostic_population_seconds": 10.804623083968181,
+  "timing_scope": "local cached process timings; no speedup or successful-trajectory comparison; original protection/preparation outside launch time",
+  "unexpected_errors": [
+    "one native T1 critical exception FRUIT foreign array/observation",
+    "outer wrapper failure propagated; no silent success"
+  ],
+  "continuation": "blocked: unmodified replay failed; zero replacement allowance; no candidate or automatic follow-on"
+}

@@ -1,0 +1,10 @@
+{
+  "array": "a1100",
+  "policy": "BASE-POINT",
+  "branch": "REF",
+  "cycle_index": 1,
+  "ready": false,
+  "stop_kind": "computation_or_processing",
+  "stop_reason": "native cycle failed",
+  "wall_seconds": 0.576571041950956
+}

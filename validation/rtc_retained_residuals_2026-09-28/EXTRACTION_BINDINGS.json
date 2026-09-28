@@ -1,0 +1,52 @@
+{
+  "prior_record_commit": "17f0b9b9bcfdc605161b2c67dba7ccdf52ffdf72",
+  "prior_science": "839f31b28b52de6a46bc9c2dc623673378839cfa",
+  "files": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_consequences_2026-09-28/compact/N14-REF-rep2/run/BASE-POINT/REF/a1100/cycle-05/native/products/total.fits.gz",
+      "bytes": 323449,
+      "sha256": "aa71362a28d43e042d1b7cb2ed4c3322d426383bcc599a326b78d3fdba65a3b8"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_consequences_2026-09-28/compact/N14-REF-rep2/run/BASE-POINT/REF/a1100/SUMMARY.json",
+      "bytes": 171977,
+      "sha256": "312b289099cc5577430414e9883144cb8bbd0ebe47d30a91ddaa73bdfa6cd75d"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_consequences_2026-09-28/compact/N14-REF-rep2/run/BASE-POINT/REF/a1100/endpoint/model.npz",
+      "bytes": 130679,
+      "sha256": "1ea4e17d830af67ca87a5ddb91313e2a719e38a7d3ee361d6130e22c2ea29e29"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_consequences_2026-09-28/compact/N14-REF-rep2/run/BASE-POINT/REF/a1100/endpoint/model.json",
+      "bytes": 5357,
+      "sha256": "785ad16570c5f73867815dc4a489d2dc79bfd84900f6f3c84cbe8c7908573a2c"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_consequences_2026-09-28/compact/N14-REF-rep2/freeze/measurement-geometry.json",
+      "bytes": 24040,
+      "sha256": "a6293579fd6d0b4eda0528f0f78b873374e914c87d576513d77bc36aa888af98"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_consequences_2026-09-28/compact/report/N14-REF-rep2/windows.npz",
+      "bytes": 1245491,
+      "sha256": "ff3bb15e86e6e8fd3d8c9ae62b34365e4c6c5dac2daa1f3131fc6e4d2cd7b747"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_consequences_2026-09-28/compact/report/N14-REF-rep2/windows.json",
+      "bytes": 87874,
+      "sha256": "2bfc2c6e7b6cb63dab363cb9324030daca5089c15cc25d0cc78f3064aa738ba4"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_consequences_2026-09-28/NATIVE_REMOVALS.json.gz",
+      "bytes": 1681539,
+      "sha256": "8864902b20776d6f020adc7423641715b32f7edd56f404ffce76505b5404f8b5"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_consequences_2026-09-28/COMPACT_MANIFEST.json",
+      "bytes": 766705,
+      "sha256": "bd8d818ee35095eb0bb6df2638bf4afca4366db1dd9c92c0f4bf77d49f90d2f8"
+    }
+  ],
+  "scope": "read-only prior final-map/noise/geometry and32 T5 excerpts; gzip hashes bind stored compressed source bytes"
+}

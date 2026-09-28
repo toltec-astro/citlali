@@ -1,0 +1,193 @@
+{
+  "completed_M0_exact": true,
+  "planes": [
+    {
+      "path": "M0/products/a1100/map.fits",
+      "plane": "PRIMARY",
+      "exact": true
+    },
+    {
+      "path": "M0/products/a1100/map.fits",
+      "plane": "NUMERATOR",
+      "exact": true
+    },
+    {
+      "path": "M0/products/a1100/map.fits",
+      "plane": "NORMALIZATION",
+      "exact": true
+    },
+    {
+      "path": "M0/products/a1100/map.fits",
+      "plane": "HITS",
+      "exact": true
+    },
+    {
+      "path": "M0/products/a1100/map.fits",
+      "plane": "NORM_SUPPORT",
+      "exact": true
+    },
+    {
+      "path": "M0/products/a1100/map.fits",
+      "plane": "SCI_SUPPORT",
+      "exact": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a1100/initial/candidate.fits",
+      "plane": "CANDIDATE",
+      "exact": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a1100/initial/candidate.fits",
+      "plane": "ADMITTED",
+      "exact": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a1100/initial/candidate.fits",
+      "plane": "VALID",
+      "exact": true
+    },
+    {
+      "path": "run/BASE-POINT/REF/a1100/initial/candidate.fits",
+      "plane": "RATIO",
+      "exact": true
+    },
+    {
+      "path": "context",
+      "field": "original",
+      "exact": true
+    },
+    {
+      "path": "context",
+      "field": "support",
+      "exact": true
+    },
+    {
+      "path": "context",
+      "field": "full_support",
+      "exact": true
+    },
+    {
+      "path": "context",
+      "field": "scale",
+      "exact": true
+    },
+    {
+      "path": "context",
+      "field": "psd",
+      "exact": true
+    },
+    {
+      "path": "context",
+      "field": "empirical",
+      "exact": true
+    },
+    {
+      "path": "context",
+      "field": "pairs",
+      "exact": true
+    },
+    {
+      "path": "context",
+      "field": "base_scale",
+      "exact": true
+    },
+    {
+      "path": "context",
+      "field": "noise_valid",
+      "exact": true
+    },
+    {
+      "path": "context",
+      "field": "parameters",
+      "exact": true
+    },
+    {
+      "path": "context",
+      "field": "q",
+      "exact": true
+    },
+    {
+      "path": "context",
+      "field": "k0",
+      "exact": true
+    },
+    {
+      "path": "C0",
+      "field": "scale",
+      "exact": true
+    },
+    {
+      "path": "C0",
+      "field": "valid",
+      "exact": true
+    },
+    {
+      "path": "C0",
+      "field": "coverage_extrapolated",
+      "exact": true
+    },
+    {
+      "path": "C0",
+      "field": "source_mask",
+      "exact": true
+    },
+    {
+      "path": "C0",
+      "field": "background_mask",
+      "exact": true
+    },
+    {
+      "path": "C0",
+      "field": "psd",
+      "exact": true
+    },
+    {
+      "path": "C0",
+      "field": "empirical",
+      "exact": true
+    },
+    {
+      "path": "C0",
+      "field": "pairs",
+      "exact": true
+    },
+    {
+      "path": "BASE",
+      "field": "scale",
+      "exact": true
+    },
+    {
+      "path": "BASE",
+      "field": "valid",
+      "exact": true
+    },
+    {
+      "path": "BASE",
+      "field": "coverage_extrapolated",
+      "exact": true
+    },
+    {
+      "path": "BASE",
+      "field": "source_mask",
+      "exact": true
+    },
+    {
+      "path": "BASE",
+      "field": "background_mask",
+      "exact": true
+    },
+    {
+      "path": "initial/state.json",
+      "field": "measurement",
+      "exact": true
+    },
+    {
+      "path": "initial/state.json",
+      "field": "admission",
+      "exact": true
+    }
+  ],
+  "full_M0_T5_equivalence": "unavailable: T1 native request rejected",
+  "endpoint": "not executed",
+  "candidate_blocked": true
+}

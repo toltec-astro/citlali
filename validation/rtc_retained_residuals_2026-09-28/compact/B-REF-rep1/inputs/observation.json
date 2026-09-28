@@ -1,0 +1,37 @@
+{
+  "schema": "citlali-observation-networks-v1",
+  "development_reference": "bright-point-base-v1",
+  "observation": 152430,
+  "subobservation": 0,
+  "scan": 2,
+  "networks": [
+    {
+      "network": 1,
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-retained-residuals-20260928/B-REF-rep1/inputs/network1-input.json",
+        "sha256": "bb8a81ddb511c2eabb4fcb13c7b6a2ff1520bbde6f1c5d21f40ccfa3dd2c2898"
+      }
+    },
+    {
+      "network": 2,
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-retained-residuals-20260928/B-REF-rep1/inputs/network2-input.json",
+        "sha256": "03701c690a5df1e453c3d66c0c2831e5c7fddb733ea7df1f6f95aeeffa6a0ff9"
+      }
+    },
+    {
+      "network": 3,
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-retained-residuals-20260928/B-REF-rep1/inputs/network3-input.json",
+        "sha256": "6734fe8cae0027da1f1cba5d389004d92ce88aa6710c227a73bcac8b3d139996"
+      }
+    },
+    {
+      "network": 4,
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-retained-residuals-20260928/B-REF-rep1/inputs/network4-input.json",
+        "sha256": "4528005d7a3aee8cc5ce2ec6a261ab689717c2f508d0a6073582f3ee69f1cb62"
+      }
+    }
+  ]
+}

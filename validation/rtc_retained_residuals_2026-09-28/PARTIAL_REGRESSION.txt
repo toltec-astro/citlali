@@ -1,0 +1,2 @@
+dict
+{"M0_exact": true, "native": true, "hashes": 25142, "failures": []}
