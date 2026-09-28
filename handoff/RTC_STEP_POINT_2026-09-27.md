@@ -29,3 +29,11 @@ missing-target CTest attempt explicitly superseded by152/152 pass.
 
 Review and cleanup receipts close the local evidence lane. B remains retained,
 fixed11 parked; no defaults, automatic revision or next observational campaign.
+
+## Owner-approved cleanup completed2026-09-28
+
+The prior approval block is resolved. Enumerated native scratch was deleted
+through the reviewed guard; originals/prior evidence were verified unchanged.
+Post-cleanup isolated saved-only regeneration passed. Exact deletion and
+remaining metadata/FITS/log counts are in
+[closeout](../validation/rtc_step_point_2026-09-27/CLOSEOUT.md).

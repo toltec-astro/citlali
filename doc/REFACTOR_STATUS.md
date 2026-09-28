@@ -1,5 +1,16 @@
 # Citlali Refactor Status
 
+## 2026-09-28 — POINT step cleanup completed after owner approval
+
+The owner explicitly approved the pending native scratch deletion. The unchanged
+reviewed procedure removed60,540 enumerated files (5,235,017,122bytes), verified
+all3,632 protected paths unchanged, and completed its one exhaustive native
+scratch check. All17 saved-report artifacts (11figures) regenerated exactly
+under OS read denial after deletion. Scientific results and the B/fixed11
+choices are unchanged. See [closeout](../validation/rtc_step_point_2026-09-27/CLOSEOUT.md).
+No new scientific execution, push, merge, or follow-on.
+
+
 ## 2026-09-27 — bounded POINT step assessment completed
 
 The [assessment](../validation/rtc_step_point_2026-09-27/ASSESSMENT.md) at science

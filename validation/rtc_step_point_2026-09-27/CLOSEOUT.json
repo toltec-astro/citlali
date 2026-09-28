@@ -15,11 +15,11 @@
   "compact_bytes": 53322568,
   "saved_only_artifacts": 17,
   "saved_only_figures": 11,
-  "cleanup_status": "blocked_pending_explicit_owner_approval",
-  "deleted_files": 0,
+  "cleanup_status": "complete",
+  "deleted_files": 60540,
   "planned_native_removal_files": 60540,
   "planned_native_removal_bytes": 5235017122,
-  "original_and_prior_data": "untouched; compaction verified protected hashes; post-deletion check not yet applicable",
+  "original_and_prior_data": "All3632 protected paths rehashed unchanged before and after deletion; prior compact evidence unchanged.",
   "recommendation": "Retain B; fixed11 parked; single next issue Learn coverage of retained finite-transition examples, no automatic follow-on.",
   "coordinate_admissions": {
     "152430_nw11": {
@@ -45,5 +45,11 @@
   },
   "pushed": false,
   "merged": false,
-  "production_defaults_changed": false
+  "production_defaults_changed": false,
+  "cleanup_approval_date": "2026-09-28",
+  "cleanup_reviewed_head": "218a1b0fa2a9b2165d635dba4d11daa5233ddd38",
+  "deleted_bytes": 5235017122,
+  "remaining_campaign_files": 1531,
+  "remaining_campaign_bytes": 872099613,
+  "post_cleanup_saved_only_regeneration": "pass:17 artifacts including11figures exact with original/scratch/prior reads denied by OS"
 }

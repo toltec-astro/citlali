@@ -1,0 +1,27 @@
+{
+  "pass_": true,
+  "seconds": 9.120563875010703,
+  "denied_original_run_tree": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927",
+  "denied_protected_files": 3632,
+  "positive_denial_control": true,
+  "exact_artifacts": 17,
+  "figure_count": 11,
+  "commands": [
+    {
+      "script": "report_step_campaign.py",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "script": "report_step_windows.py",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "script": "report_step_windows.py",
+      "returncode": 0,
+      "stderr": ""
+    }
+  ],
+  "scope": "saved evidence summaries/plots only; no scientific fit, original input, learning, reduction or uncertainty ensemble"
+}

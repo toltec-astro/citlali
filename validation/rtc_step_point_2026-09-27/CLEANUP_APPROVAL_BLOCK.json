@@ -3,5 +3,10 @@
   "result": "rejected_before_process_creation",
   "deleted_files": 0,
   "reason": "Automatic approval review classified deletion of60540native scratch files (~5.235GB) as irreversible and interpreted trusted user messages as authorizing tests/reporting but not destructive cleanup.",
-  "pending": "Explicit user approval requested asynchronously; no workaround attempted."
+  "pending": "resolved by explicit owner approval",
+  "resolution": {
+    "date": "2026-09-28",
+    "authorization": "I approve deleting the scratch files",
+    "cleanup": "completed through the unchanged reviewed guarded procedure; see CLEANUP.json"
+  }
 }
