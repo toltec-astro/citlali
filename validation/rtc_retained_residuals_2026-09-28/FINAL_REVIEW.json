@@ -1,0 +1,26 @@
+{
+  "source_revision": "be5993971f17c00c309598630d19a17e8c3c7a7d",
+  "tree": "b5ce73f5a9e3ca13eaff7423a8cbee25373506c4",
+  "science_source": "c517444861022f70c95dde95ed13e6a6a259249b",
+  "reviewer": "/root/final_review",
+  "verdict": "pass",
+  "qualification": "trustworthy partial-evidence closeout, not experimental success",
+  "scientific_behavioral_conformance": "pass for partial claims; full comparison failed, T5 population and Q untested",
+  "architectural_ownership_conformance": "pass; known native FRUIT scope mismatch remains failed execution gate; no native repair or policy change",
+  "repository_evidence_hygiene": "pass; original inputs, prior evidence and native owners unchanged",
+  "findings": [],
+  "independent_checks": [
+    "10 reporting/budget tests passed",
+    "7 artifacts including6figures independently byte-exact regenerated",
+    "283 compact files20853819bytes verified",
+    "33 original dependency hashes verified",
+    "25142 upstream/M0 sealed payload identities agree",
+    "historical T5 operator and24cause-mask identities agree",
+    "M0 projection maximum difference7.96e-13mJy/beam",
+    "all2069 CAL/M0 detector/runs and12new/32old window identities distinguished",
+    "one parent/four initialApply/one attempted zero completedfeedback/zeroendpoint/zeroQ/zeroreplacement verified"
+  ],
+  "reviewer_context": "reused completed reviewer with freshly read current-work-order context, not a newly spawned blank-context agent; prior conclusions not used as current authority; new agent creation hit session thread limit",
+  "cleanup": "unapplied proposal25142files2270275802bytes; new exact-manifest owner approval and guarded checks required",
+  "scope": "no integration, push, activation, production, cleanup or further science approval"
+}

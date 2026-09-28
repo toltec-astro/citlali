@@ -38,3 +38,14 @@ Next authority: B remains baseline and fixed11 parked. Exposure recovery is
 deferred. This order has stopped; a future science execution requires a separate
 owner decision and a complete native FRUIT scope fixture before launch. No
 automatic repair/retry, Q substitution, treatment promotion or follow-on campaign.
+
+Independent exact-candidate review: **qualified pass** at
+be5993971f17c00c309598630d19a17e8c3c7a7d/tree
+b5ce73f5a9e3ca13eaff7423a8cbee25373506c4. Reviewer independently reproduced10tests,
+7 byte-identical artifacts, all283 compact digests and33 original dependency
+hashes. No remaining findings; successful partial-evidence preservation does
+not change the failed scientific gate. Reviewer reuse is explicitly disclosed:
+a newly spawned blank-context reviewer was unavailable at the session thread
+limit; the independent completed reviewer read this new work order afresh and
+did not use its older conclusions as current authority. FINAL_REVIEW.json binds
+the precise qualified verdict. This added review receipt is reporting-only.
