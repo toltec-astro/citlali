@@ -1,0 +1,10 @@
+input:
+  path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/inputs/observation.json
+  sha256: 44e4b11c69738e925364b0f2e6475d47c90a74c69db36cf253680d0fc93043a1
+network_workers: 2
+output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/upstream/products
+ptc:
+  method: observed-als
+  rank: 10
+schema: citlali-development-v1
+terminal: ptc

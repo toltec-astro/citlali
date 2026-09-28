@@ -1,0 +1,112 @@
+[
+  {
+    "name": "peak",
+    "conditional_sigma": 14.891532298801076,
+    "source_transfer_supported": true,
+    "source_transfer_empirically_calibrated": false,
+    "high_coverage_operator_pixels": 0,
+    "identifiable": true,
+    "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+    "qualification": null
+  },
+  {
+    "name": "cx",
+    "conditional_sigma": 0.117719061129113,
+    "source_transfer_supported": true,
+    "source_transfer_empirically_calibrated": false,
+    "high_coverage_operator_pixels": 0,
+    "identifiable": true,
+    "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+    "qualification": null
+  },
+  {
+    "name": "cy",
+    "conditional_sigma": 0.0671601524214396,
+    "source_transfer_supported": true,
+    "source_transfer_empirically_calibrated": false,
+    "high_coverage_operator_pixels": 0,
+    "identifiable": true,
+    "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+    "qualification": null
+  },
+  {
+    "name": "sx",
+    "conditional_sigma": 0.11911093590499038,
+    "source_transfer_supported": true,
+    "source_transfer_empirically_calibrated": false,
+    "high_coverage_operator_pixels": 0,
+    "identifiable": true,
+    "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+    "qualification": null
+  },
+  {
+    "name": "sy",
+    "conditional_sigma": 0.08431615141875737,
+    "source_transfer_supported": true,
+    "source_transfer_empirically_calibrated": false,
+    "high_coverage_operator_pixels": 0,
+    "identifiable": true,
+    "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+    "qualification": null
+  },
+  {
+    "name": "angle",
+    "conditional_sigma": 0.07032167180473903,
+    "source_transfer_supported": true,
+    "source_transfer_empirically_calibrated": false,
+    "high_coverage_operator_pixels": 0,
+    "identifiable": true,
+    "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+    "qualification": null
+  },
+  {
+    "name": "constant",
+    "conditional_sigma": 2.1859884743833162,
+    "source_transfer_supported": true,
+    "source_transfer_empirically_calibrated": false,
+    "high_coverage_operator_pixels": 0,
+    "identifiable": true,
+    "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+    "qualification": null
+  },
+  {
+    "name": "template",
+    "conditional_sigma": 17.789446882150912,
+    "source_transfer_supported": true,
+    "source_transfer_empirically_calibrated": false,
+    "high_coverage_operator_pixels": 0,
+    "identifiable": true,
+    "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+    "qualification": null
+  },
+  {
+    "name": "aperture1",
+    "conditional_sigma": 804.1862316362719,
+    "source_transfer_supported": true,
+    "source_transfer_empirically_calibrated": false,
+    "high_coverage_operator_pixels": 0,
+    "identifiable": true,
+    "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+    "qualification": null
+  },
+  {
+    "name": "aperture1.5",
+    "conditional_sigma": 1466.1860222433481,
+    "source_transfer_supported": true,
+    "source_transfer_empirically_calibrated": false,
+    "high_coverage_operator_pixels": 0,
+    "identifiable": true,
+    "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+    "qualification": null
+  },
+  {
+    "name": "aperture2",
+    "conditional_sigma": 2197.5151556571436,
+    "source_transfer_supported": true,
+    "source_transfer_empirically_calibrated": false,
+    "high_coverage_operator_pixels": 0,
+    "identifiable": true,
+    "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+    "qualification": null
+  }
+]

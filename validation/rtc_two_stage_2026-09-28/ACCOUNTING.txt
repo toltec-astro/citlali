@@ -1,0 +1,17 @@
+{
+  "original_parents": 5,
+  "charged_trajectories": 5,
+  "feedback_attempts": 25,
+  "feedback_completed": 25,
+  "endpoints": 5,
+  "Q_trajectories": 4,
+  "replacements": 0,
+  "failed_launches": 0,
+  "initial_network_Apply_completions": 20,
+  "initial_PTC_segment_solves": 120,
+  "feedback_PTC_segment_solves": 600,
+  "unexpected_error_messages": [],
+  "scope": "fresh local original-input active RTC per trajectory; one cold M0 and fully resolved own-basis warm ALS per feedback; segment solves are not additional trajectory launches; Stage1 validation-only calls are not observations",
+  "prior_failed_campaign": "da94a43795cde31c80b0f642ddde258d65905d3a retained separately, unchanged",
+  "cleanup_applied": false
+}

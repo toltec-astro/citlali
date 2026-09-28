@@ -1,0 +1,3391 @@
+{
+  "operator_sha256": "b40553342e1b335924b066c57594ae79de918e825f2fd4f071dba194090ae480",
+  "support_verified_against_old_T5": true,
+  "records": [
+    {
+      "key": "n1_w0",
+      "network": 1,
+      "detector": 285,
+      "original_window": {
+        "kind": "event",
+        "event": 179,
+        "detector": 285,
+        "first": 2522,
+        "past_last": 3133,
+        "center": 2827,
+        "rule": "accepted median original offset/sigma",
+        "network": 1,
+        "key": "n1_w0",
+        "channel": 285,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 611,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          332,
+          397
+        ],
+        "original_x_pre_post_median": [
+          1.2858004220113487e-05,
+          1.3138734418161882e-05
+        ],
+        "original_r_pre_post_median": [
+          2.482836090885952e-05,
+          2.4833392572915572e-05
+        ],
+        "original_x_difference_scale": 6.510412251696232e-08,
+        "adjudication": {
+          "label": "plausible step",
+          "reason": "Abrupt x fall amid oscillatory baseline; r has little persistent change; post-x level initially lower.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 611,
+          "RTC_x": 0,
+          "CAL": 0,
+          "M0": 0,
+          "T5_residual": 0,
+          "T5_total": 0
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": [
+          {
+            "event": 179,
+            "seed_native_row": 2827,
+            "raw_candidates_in_window": [
+              {
+                "index": 607,
+                "earlier_row": 2827,
+                "later_row": 2828,
+                "coordinate": "x",
+                "noise_block": 1273,
+                "difference": -3.9962663714625497e-07,
+                "centered_difference": -4.001131391541525e-07,
+                "absolute_score": 6.472442551004231
+              },
+              {
+                "index": 608,
+                "earlier_row": 2829,
+                "later_row": 2830,
+                "coordinate": "x",
+                "noise_block": 1273,
+                "difference": -3.3301079164218724e-07,
+                "centered_difference": -3.3349729365008475e-07,
+                "absolute_score": 5.394829269113143
+              }
+            ],
+            "trial_overlap": true,
+            "consider_class": "admitted-level-shift",
+            "admitted": true
+          }
+        ]
+      },
+      "actual_MAP_contributions": 0,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 0,
+      "max_abs_projection_any_mapped_mJy_beam": 0.0,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
+      "T5_residual_min": null,
+      "T5_residual_max": null,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
+      "max_abs_projection_science_mJy_beam": 0.0,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
+    },
+    {
+      "key": "n1_w1",
+      "network": 1,
+      "detector": 335,
+      "original_window": {
+        "kind": "event",
+        "event": 220,
+        "detector": 335,
+        "first": 0,
+        "past_last": 442,
+        "center": 136,
+        "rule": "accepted largest original offset/sigma",
+        "network": 1,
+        "key": "n1_w1",
+        "channel": 335,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 442,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [
+          33
+        ],
+        "peer_channels": [
+          347,
+          470
+        ],
+        "original_x_pre_post_median": [
+          1.0399193043866547e-05,
+          1.9158648167394914e-05
+        ],
+        "original_r_pre_post_median": [
+          3.035621523034674e-05,
+          3.0536695388226094e-05
+        ],
+        "original_x_difference_scale": 1.0787674772733347e-07,
+        "adjudication": {
+          "label": "plausible step",
+          "reason": "Large finite x rise to a supported plateau, followed by smaller later decrease; weak r change and shared peer transition.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 442,
+          "RTC_x": 0,
+          "CAL": 0,
+          "M0": 0,
+          "T5_residual": 0,
+          "T5_total": 0
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": [
+          {
+            "event": 220,
+            "seed_native_row": 136,
+            "raw_candidates_in_window": [
+              {
+                "index": 121,
+                "earlier_row": 136,
+                "later_row": 137,
+                "coordinate": "x",
+                "noise_block": 335,
+                "difference": 7.241955316959e-07,
+                "centered_difference": 7.229047099396606e-07,
+                "absolute_score": 6.936529489615433
+              },
+              {
+                "index": 122,
+                "earlier_row": 137,
+                "later_row": 138,
+                "coordinate": "x",
+                "noise_block": 335,
+                "difference": 7.517536130369327e-07,
+                "centered_difference": 7.504627912806932e-07,
+                "absolute_score": 7.200959145794115
+              },
+              {
+                "index": 123,
+                "earlier_row": 138,
+                "later_row": 139,
+                "coordinate": "x",
+                "noise_block": 335,
+                "difference": 1.038233565545132e-06,
+                "centered_difference": 1.0369427437888925e-06,
+                "absolute_score": 9.949836849084523
+              },
+              {
+                "index": 124,
+                "earlier_row": 139,
+                "later_row": 140,
+                "coordinate": "x",
+                "noise_block": 335,
+                "difference": 5.456772499953006e-07,
+                "centered_difference": 5.443864282390612e-07,
+                "absolute_score": 5.223582667682234
+              }
+            ],
+            "trial_overlap": true,
+            "consider_class": "admitted-level-shift",
+            "admitted": true
+          }
+        ]
+      },
+      "actual_MAP_contributions": 0,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 0,
+      "max_abs_projection_any_mapped_mJy_beam": 0.0,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
+      "T5_residual_min": null,
+      "T5_residual_max": null,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
+      "max_abs_projection_science_mJy_beam": 0.0,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
+    },
+    {
+      "key": "n1_w2",
+      "network": 1,
+      "detector": 436,
+      "original_window": {
+        "kind": "event",
+        "event": 438,
+        "detector": 436,
+        "first": 0,
+        "past_last": 439,
+        "center": 133,
+        "rule": "nearest original AST pointing to nominal (0,0); independent of fitted source",
+        "network": 1,
+        "key": "n1_w2",
+        "channel": 436,
+        "source_context_available": true,
+        "geometric_source_cells": 416,
+        "mapping_available_cells": 439,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [
+          33
+        ],
+        "peer_channels": [
+          325,
+          347
+        ],
+        "original_x_pre_post_median": [
+          1.541183802279019e-05,
+          2.7772535077583364e-05
+        ],
+        "original_r_pre_post_median": [
+          4.588678473625542e-05,
+          4.7450605744208016e-05
+        ],
+        "original_x_difference_scale": 2.527124545122693e-07,
+        "adjudication": {
+          "label": "plausible step",
+          "reason": "Source-adjacent finite x rise to a long plateau; peer and small persistent r response support a physical disturbance; optical attribution not established.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 439,
+          "RTC_x": 0,
+          "CAL": 0,
+          "M0": 0,
+          "T5_residual": 0,
+          "T5_total": 0
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": [
+          {
+            "event": 438,
+            "seed_native_row": 133,
+            "raw_candidates_in_window": [
+              {
+                "index": 196,
+                "earlier_row": 133,
+                "later_row": 134,
+                "coordinate": "x",
+                "noise_block": 436,
+                "difference": 1.7301737835865596e-06,
+                "centered_difference": 1.7187736683530808e-06,
+                "absolute_score": 6.029654432036298
+              }
+            ],
+            "trial_overlap": true,
+            "consider_class": "unresolved-extent",
+            "admitted": false
+          }
+        ]
+      },
+      "actual_MAP_contributions": 0,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 0,
+      "max_abs_projection_any_mapped_mJy_beam": 0.0,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
+      "T5_residual_min": null,
+      "T5_residual_max": null,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
+      "max_abs_projection_science_mJy_beam": 0.0,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
+    },
+    {
+      "key": "n1_w3",
+      "network": 1,
+      "detector": 1,
+      "original_window": {
+        "kind": "event",
+        "event": 0,
+        "detector": 1,
+        "first": 1600,
+        "past_last": 2211,
+        "center": 1905,
+        "rule": "original event identity fill",
+        "network": 1,
+        "key": "n1_w3",
+        "channel": 1,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 611,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          2,
+          21
+        ],
+        "original_x_pre_post_median": [
+          1.540213825913961e-05,
+          1.5540111979257847e-05
+        ],
+        "original_r_pre_post_median": [
+          3.243541580164882e-05,
+          3.246214859337361e-05
+        ],
+        "original_x_difference_scale": 1.4762913881937012e-07,
+        "adjudication": {
+          "label": "plausible non-step",
+          "reason": "Oscillatory x bursts without a supported persistent changed level; r remains near baseline.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 611,
+          "RTC_x": 471,
+          "CAL": 471,
+          "M0": 471,
+          "T5_residual": 471,
+          "T5_total": 471
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": [
+          {
+            "event": 0,
+            "seed_native_row": 1905,
+            "raw_candidates_in_window": [
+              {
+                "index": 273,
+                "earlier_row": 1905,
+                "later_row": 1906,
+                "coordinate": "x",
+                "noise_block": 495,
+                "difference": -7.615625923732564e-07,
+                "centered_difference": -7.580310488013526e-07,
+                "absolute_score": 5.407188515934693
+              }
+            ],
+            "trial_overlap": true,
+            "consider_class": "isolated-admission-unavailable",
+            "admitted": false
+          }
+        ]
+      },
+      "actual_MAP_contributions": 471,
+      "source_disk_MAP_contributions": 4,
+      "science_supported_MAP_contributions": 317,
+      "max_abs_projection_any_mapped_mJy_beam": 4.984817341428972,
+      "peak_pixel": 15243,
+      "peak_pixel_hits": 1072.0,
+      "peak_pixel_science_supported": true,
+      "T5_residual_min": -549.5008551084954,
+      "T5_residual_max": 887.3293818653051,
+      "peak_native_row": 1682,
+      "peak_distance_arcsec": 45.13815545036445,
+      "max_abs_projection_science_mJy_beam": 3.782055604129527,
+      "max_abs_projection_40arcsec_mJy_beam": 0.8829348739412747,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
+    },
+    {
+      "key": "n1_w4",
+      "network": 1,
+      "detector": 224,
+      "original_window": {
+        "kind": "unflagged",
+        "event": null,
+        "detector": 224,
+        "first": 1658,
+        "past_last": 2025,
+        "center": 1841,
+        "rule": "largest supported original x pre/post contrast in separate time half; candidate-free central 0.58s; not truth",
+        "original_selection_score": 61.76622154268148,
+        "network": 1,
+        "key": "n1_w4",
+        "channel": 224,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 367,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          223,
+          225
+        ],
+        "original_x_pre_post_median": [
+          2.0167036747897028e-05,
+          1.4426590629906584e-05
+        ],
+        "original_r_pre_post_median": [
+          2.6273252952709174e-05,
+          2.6022025786721265e-05
+        ],
+        "original_x_difference_scale": 1.0631193210861195e-07,
+        "adjudication": {
+          "label": "plausible step",
+          "reason": "After smooth excursions, x falls finitely to a persistent lower level; little r corroboration and weak peer support do not rule out a detector-local transition.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 367,
+          "RTC_x": 367,
+          "CAL": 367,
+          "M0": 367,
+          "T5_residual": 367,
+          "T5_total": 367
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": []
+      },
+      "actual_MAP_contributions": 367,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 264,
+      "max_abs_projection_any_mapped_mJy_beam": 61.87246811117443,
+      "peak_pixel": 27626,
+      "peak_pixel_hits": 200.0,
+      "peak_pixel_science_supported": false,
+      "T5_residual_min": -459.68531253576657,
+      "T5_residual_max": 1395.6958418741879,
+      "peak_native_row": 1676,
+      "peak_distance_arcsec": 154.2714254672912,
+      "max_abs_projection_science_mJy_beam": 3.97899434496691,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
+    },
+    {
+      "key": "n1_w5",
+      "network": 1,
+      "detector": 220,
+      "original_window": {
+        "kind": "unflagged",
+        "event": null,
+        "detector": 220,
+        "first": 6877,
+        "past_last": 7244,
+        "center": 7060,
+        "rule": "largest supported original x pre/post contrast in separate time half; candidate-free central 0.58s; not truth",
+        "original_selection_score": 9.491565748753901,
+        "network": 1,
+        "key": "n1_w5",
+        "channel": 220,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 367,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          219,
+          221
+        ],
+        "original_x_pre_post_median": [
+          1.8618133497593182e-05,
+          1.8885787733674978e-05
+        ],
+        "original_r_pre_post_median": [
+          3.396897347452451e-05,
+          3.399509887068955e-05
+        ],
+        "original_x_difference_scale": 1.1416856197113635e-07,
+        "adjudication": {
+          "label": "plausible finite excursion",
+          "reason": "Off-center x depression with two finite edges returns before the declared center; central pre/post contrast is not a complete event measure.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 367,
+          "RTC_x": 367,
+          "CAL": 367,
+          "M0": 367,
+          "T5_residual": 367,
+          "T5_total": 367
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": []
+      },
+      "actual_MAP_contributions": 367,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 0,
+      "max_abs_projection_any_mapped_mJy_beam": 18.541279038600614,
+      "peak_pixel": 4520,
+      "peak_pixel_hits": 255.0,
+      "peak_pixel_science_supported": false,
+      "T5_residual_min": -366.07426872691696,
+      "T5_residual_max": 743.3609220429614,
+      "peak_native_row": 6965,
+      "peak_distance_arcsec": 150.11161267837866,
+      "max_abs_projection_science_mJy_beam": 0.0,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
+    },
+    {
+      "key": "n1_w6",
+      "network": 1,
+      "detector": 123,
+      "original_window": {
+        "kind": "unflagged",
+        "event": null,
+        "detector": 123,
+        "first": 1771,
+        "past_last": 2138,
+        "center": 1954,
+        "rule": "time fraction0.25, detector quantile0.25; first covered candidate-free identity; no cleaned selection",
+        "network": 1,
+        "key": "n1_w6",
+        "channel": 123,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 367,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          122,
+          124
+        ],
+        "original_x_pre_post_median": [
+          2.354449144436504e-05,
+          2.335649327730918e-05
+        ],
+        "original_r_pre_post_median": [
+          3.554975653424589e-05,
+          3.554278369223826e-05
+        ],
+        "original_x_difference_scale": 2.290068298407516e-07,
+        "adjudication": {
+          "label": "plausible non-step",
+          "reason": "Local x/r noise and smooth baseline variation; peer structure is not proof of a local step.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 367,
+          "RTC_x": 367,
+          "CAL": 367,
+          "M0": 367,
+          "T5_residual": 367,
+          "T5_total": 367
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": []
+      },
+      "actual_MAP_contributions": 367,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 245,
+      "max_abs_projection_any_mapped_mJy_beam": 3.099762612129759,
+      "peak_pixel": 9115,
+      "peak_pixel_hits": 863.0,
+      "peak_pixel_science_supported": true,
+      "T5_residual_min": -446.37185952434197,
+      "T5_residual_max": 490.1740959413395,
+      "peak_native_row": 1883,
+      "peak_distance_arcsec": 94.23019809596717,
+      "max_abs_projection_science_mJy_beam": 3.099762612129759,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
+    },
+    {
+      "key": "n1_w7",
+      "network": 1,
+      "detector": 369,
+      "original_window": {
+        "kind": "unflagged",
+        "event": null,
+        "detector": 369,
+        "first": 5681,
+        "past_last": 6048,
+        "center": 5864,
+        "rule": "time fraction0.75, detector quantile0.75; first covered candidate-free identity; no cleaned selection",
+        "network": 1,
+        "key": "n1_w7",
+        "channel": 369,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 367,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          368,
+          370
+        ],
+        "original_x_pre_post_median": [
+          1.1982936084094768e-05,
+          1.1925127893940328e-05
+        ],
+        "original_r_pre_post_median": [
+          2.6342623382308335e-05,
+          2.634890939238605e-05
+        ],
+        "original_x_difference_scale": 1.0720761594397762e-07,
+        "adjudication": {
+          "label": "plausible non-step",
+          "reason": "Quiet x/r control without a supported abrupt level transition.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 367,
+          "RTC_x": 367,
+          "CAL": 367,
+          "M0": 367,
+          "T5_residual": 367,
+          "T5_total": 367
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": []
+      },
+      "actual_MAP_contributions": 367,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 186,
+      "max_abs_projection_any_mapped_mJy_beam": 7.333718140827578,
+      "peak_pixel": 20947,
+      "peak_pixel_hits": 135.0,
+      "peak_pixel_science_supported": false,
+      "T5_residual_min": -335.3265862874739,
+      "T5_residual_max": 482.8659750702158,
+      "peak_native_row": 5926,
+      "peak_distance_arcsec": 145.45847160803842,
+      "max_abs_projection_science_mJy_beam": 2.7291994555681054,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
+    },
+    {
+      "key": "n2_w0",
+      "network": 2,
+      "detector": 212,
+      "original_window": {
+        "kind": "event",
+        "event": 204,
+        "detector": 212,
+        "first": 1685,
+        "past_last": 2296,
+        "center": 1990,
+        "rule": "accepted median original offset/sigma",
+        "network": 2,
+        "key": "n2_w0",
+        "channel": 212,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 611,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          222,
+          230
+        ],
+        "original_x_pre_post_median": [
+          2.2742304130164852e-05,
+          1.587903593284422e-05
+        ],
+        "original_r_pre_post_median": [
+          3.120477965725428e-05,
+          3.0558494511141204e-05
+        ],
+        "original_x_difference_scale": 2.034638281270916e-07,
+        "adjudication": {
+          "label": "plausible step",
+          "reason": "Finite shared x decrease reaches a supported lower plateau with weaker r decrease.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 611,
+          "RTC_x": 0,
+          "CAL": 0,
+          "M0": 0,
+          "T5_residual": 0,
+          "T5_total": 0
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": [
+          {
+            "event": 204,
+            "seed_native_row": 1990,
+            "raw_candidates_in_window": [
+              {
+                "index": 202,
+                "earlier_row": 1990,
+                "later_row": 1991,
+                "coordinate": "x",
+                "noise_block": 722,
+                "difference": -1.1369325574533383e-06,
+                "centered_difference": -1.1355204723657083e-06,
+                "absolute_score": 5.6488403714656155
+              }
+            ],
+            "trial_overlap": true,
+            "consider_class": "admitted-level-shift",
+            "admitted": true
+          }
+        ]
+      },
+      "actual_MAP_contributions": 0,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 0,
+      "max_abs_projection_any_mapped_mJy_beam": 0.0,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
+      "T5_residual_min": null,
+      "T5_residual_max": null,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
+      "max_abs_projection_science_mJy_beam": 0.0,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
+    },
+    {
+      "key": "n2_w1",
+      "network": 2,
+      "detector": 298,
+      "original_window": {
+        "kind": "event",
+        "event": 272,
+        "detector": 298,
+        "first": 1687,
+        "past_last": 2298,
+        "center": 1992,
+        "rule": "accepted largest original offset/sigma",
+        "network": 2,
+        "key": "n2_w1",
+        "channel": 298,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 0,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          107,
+          395
+        ],
+        "original_x_pre_post_median": [
+          -5.494137391838038e-07,
+          -2.4770495516015323e-05
+        ],
+        "original_r_pre_post_median": [
+          2.1687536619890594e-05,
+          9.117185921981902e-06
+        ],
+        "original_x_difference_scale": 4.1892260059093063e-07,
+        "adjudication": {
+          "label": "plausible step",
+          "reason": "Large coincident x/r decrease with supported post levels and peer context.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 611,
+          "RTC_x": 0,
+          "CAL": 0,
+          "M0": 0,
+          "T5_residual": 0,
+          "T5_total": 0
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": [
+          {
+            "event": 272,
+            "seed_native_row": 1992,
+            "raw_candidates_in_window": [
+              {
+                "index": 352,
+                "earlier_row": 1992,
+                "later_row": 1993,
+                "coordinate": "x",
+                "noise_block": 808,
+                "difference": -2.352453986085377e-06,
+                "centered_difference": -2.3377064572214776e-06,
+                "absolute_score": 5.457083072231959
+              },
+              {
+                "index": 353,
+                "earlier_row": 1993,
+                "later_row": 1994,
+                "coordinate": "x",
+                "noise_block": 808,
+                "difference": -2.7942589137611675e-06,
+                "centered_difference": -2.779511384897268e-06,
+                "absolute_score": 6.488421367337589
+              },
+              {
+                "index": 354,
+                "earlier_row": 1994,
+                "later_row": 1995,
+                "coordinate": "x",
+                "noise_block": 808,
+                "difference": -8.519245040707498e-06,
+                "centered_difference": -8.504497511843599e-06,
+                "absolute_score": 19.85268478270862
+              },
+              {
+                "index": 376,
+                "earlier_row": 1994,
+                "later_row": 1995,
+                "coordinate": "r",
+                "noise_block": 808,
+                "difference": -5.136856854537303e-06,
+                "centered_difference": -5.130943360730795e-06,
+                "absolute_score": 11.633269171843809
+              },
+              {
+                "index": 377,
+                "earlier_row": 2159,
+                "later_row": 2160,
+                "coordinate": "r",
+                "noise_block": 808,
+                "difference": 2.267539789054499e-06,
+                "centered_difference": 2.2734532828610074e-06,
+                "absolute_score": 5.154548029422633
+              }
+            ],
+            "trial_overlap": true,
+            "consider_class": "admitted-level-shift",
+            "admitted": true
+          }
+        ]
+      },
+      "actual_MAP_contributions": 0,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 0,
+      "max_abs_projection_any_mapped_mJy_beam": 0.0,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
+      "T5_residual_min": null,
+      "T5_residual_max": null,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
+      "max_abs_projection_science_mJy_beam": 0.0,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
+    },
+    {
+      "key": "n2_w2",
+      "network": 2,
+      "detector": 256,
+      "original_window": {
+        "kind": "event",
+        "event": 241,
+        "detector": 256,
+        "first": 1688,
+        "past_last": 2299,
+        "center": 1993,
+        "rule": "r-only admission with largest original offset/sigma",
+        "network": 2,
+        "key": "n2_w2",
+        "channel": 256,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 0,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          222,
+          231
+        ],
+        "original_x_pre_post_median": [
+          3.7723133030010196e-05,
+          2.6637365110004346e-05
+        ],
+        "original_r_pre_post_median": [
+          8.380108526984356e-05,
+          7.646304641845783e-05
+        ],
+        "original_x_difference_scale": 4.004323410588196e-07,
+        "adjudication": {
+          "label": "plausible step",
+          "reason": "Both original x and r change substantially, despite r-only production admission; post structure varies and extent is complicated.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 611,
+          "RTC_x": 0,
+          "CAL": 0,
+          "M0": 0,
+          "T5_residual": 0,
+          "T5_total": 0
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": [
+          {
+            "event": 241,
+            "seed_native_row": 1993,
+            "raw_candidates_in_window": [
+              {
+                "index": 296,
+                "earlier_row": 1993,
+                "later_row": 1994,
+                "coordinate": "r",
+                "noise_block": 766,
+                "difference": -1.9621333992118217e-06,
+                "centered_difference": -1.957864259518493e-06,
+                "absolute_score": 6.249261995676877
+              },
+              {
+                "index": 293,
+                "earlier_row": 1994,
+                "later_row": 1995,
+                "coordinate": "x",
+                "noise_block": 766,
+                "difference": -2.608717008067881e-06,
+                "centered_difference": -2.6097382064756925e-06,
+                "absolute_score": 6.979864456858171
+              },
+              {
+                "index": 297,
+                "earlier_row": 1994,
+                "later_row": 1995,
+                "coordinate": "r",
+                "noise_block": 766,
+                "difference": -1.8376633433348405e-06,
+                "centered_difference": -1.8333942036415118e-06,
+                "absolute_score": 5.85196888099328
+              },
+              {
+                "index": 294,
+                "earlier_row": 1995,
+                "later_row": 1996,
+                "coordinate": "x",
+                "noise_block": 766,
+                "difference": -2.048346661365227e-06,
+                "centered_difference": -2.0493678597730385e-06,
+                "absolute_score": 5.481128278676853
+              },
+              {
+                "index": 298,
+                "earlier_row": 1995,
+                "later_row": 1996,
+                "coordinate": "r",
+                "noise_block": 766,
+                "difference": -2.2020765937445476e-06,
+                "centered_difference": -2.197807454051219e-06,
+                "absolute_score": 7.015131171450809
+              },
+              {
+                "index": 295,
+                "earlier_row": 1996,
+                "later_row": 1997,
+                "coordinate": "x",
+                "noise_block": 766,
+                "difference": -2.4676084481219186e-06,
+                "centered_difference": -2.46862964652973e-06,
+                "absolute_score": 6.602463145231844
+              }
+            ],
+            "trial_overlap": true,
+            "consider_class": "admitted-level-shift",
+            "admitted": true
+          }
+        ]
+      },
+      "actual_MAP_contributions": 0,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 0,
+      "max_abs_projection_any_mapped_mJy_beam": 0.0,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
+      "T5_residual_min": null,
+      "T5_residual_max": null,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
+      "max_abs_projection_science_mJy_beam": 0.0,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
+    },
+    {
+      "key": "n2_w3",
+      "network": 2,
+      "detector": 329,
+      "original_window": {
+        "kind": "event",
+        "event": 288,
+        "detector": 329,
+        "first": 1378,
+        "past_last": 1989,
+        "center": 1683,
+        "rule": "closest repeated original candidate",
+        "network": 2,
+        "key": "n2_w3",
+        "channel": 329,
+        "source_context_available": true,
+        "geometric_source_cells": 109,
+        "mapping_available_cells": 611,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          413
+        ],
+        "original_x_pre_post_median": [
+          8.249012639342438e-06,
+          6.312253850487881e-06
+        ],
+        "original_r_pre_post_median": [
+          3.134160075181792e-05,
+          2.971662405615342e-05
+        ],
+        "original_x_difference_scale": 1.24159544906821e-06,
+        "adjudication": {
+          "label": "plausible finite excursion",
+          "reason": "Two finite edges bound a roughly1.2-second lower plateau; later recovery, not an isolated spike or indefinitely persistent offset.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 611,
+          "RTC_x": 0,
+          "CAL": 0,
+          "M0": 0,
+          "T5_residual": 0,
+          "T5_total": 0
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": [
+          {
+            "event": 288,
+            "seed_native_row": 1683,
+            "raw_candidates_in_window": [
+              {
+                "index": 386,
+                "earlier_row": 1683,
+                "later_row": 1684,
+                "coordinate": "x",
+                "noise_block": 839,
+                "difference": -1.4950502521901858e-05,
+                "centered_difference": -1.4915795092510482e-05,
+                "absolute_score": 11.65919710061671
+              },
+              {
+                "index": 387,
+                "earlier_row": 1684,
+                "later_row": 1685,
+                "coordinate": "x",
+                "noise_block": 839,
+                "difference": -1.0539397094469262e-05,
+                "centered_difference": -1.0504689665077886e-05,
+                "absolute_score": 8.211177917525307
+              },
+              {
+                "index": 388,
+                "earlier_row": 1833,
+                "later_row": 1834,
+                "coordinate": "x",
+                "noise_block": 839,
+                "difference": 2.1312887433540466e-05,
+                "centered_difference": 2.1347594862931843e-05,
+                "absolute_score": 16.68672803476703
+              }
+            ],
+            "trial_overlap": true,
+            "consider_class": "admitted-level-shift",
+            "admitted": true
+          },
+          {
+            "event": 289,
+            "seed_native_row": 1994,
+            "raw_candidates_in_window": [],
+            "trial_overlap": true,
+            "consider_class": "unresolved-extent",
+            "admitted": false
+          }
+        ]
+      },
+      "actual_MAP_contributions": 0,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 0,
+      "max_abs_projection_any_mapped_mJy_beam": 0.0,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
+      "T5_residual_min": null,
+      "T5_residual_max": null,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
+      "max_abs_projection_science_mJy_beam": 0.0,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
+    },
+    {
+      "key": "n2_w4",
+      "network": 2,
+      "detector": 385,
+      "original_window": {
+        "kind": "unflagged",
+        "event": null,
+        "detector": 385,
+        "first": 0,
+        "past_last": 285,
+        "center": 101,
+        "rule": "largest supported original x pre/post contrast in separate time half; candidate-free central 0.58s; not truth",
+        "original_selection_score": 56.804100721900895,
+        "network": 2,
+        "key": "n2_w4",
+        "channel": 385,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 285,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [
+          33
+        ],
+        "peer_channels": [
+          384,
+          386
+        ],
+        "original_x_pre_post_median": [
+          1.9726755524637255e-05,
+          2.7531515265973597e-05
+        ],
+        "original_r_pre_post_median": [
+          4.051172256574389e-05,
+          4.085699718431465e-05
+        ],
+        "original_x_difference_scale": 1.6381611003511274e-07,
+        "adjudication": {
+          "label": "plausible step",
+          "reason": "x rises in stages to a persistent plateau; small r change; strongest edge precedes nominal window center.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 285,
+          "RTC_x": 219,
+          "CAL": 219,
+          "M0": 219,
+          "T5_residual": 219,
+          "T5_total": 219
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": []
+      },
+      "actual_MAP_contributions": 219,
+      "source_disk_MAP_contributions": 219,
+      "science_supported_MAP_contributions": 219,
+      "max_abs_projection_any_mapped_mJy_beam": 4.823448335622378,
+      "peak_pixel": 12933,
+      "peak_pixel_hits": 1314.0,
+      "peak_pixel_science_supported": true,
+      "T5_residual_min": -1475.7178069005713,
+      "T5_residual_max": 977.9391486167867,
+      "peak_native_row": 124,
+      "peak_distance_arcsec": 41.01582840314852,
+      "max_abs_projection_science_mJy_beam": 4.823448335622378,
+      "max_abs_projection_40arcsec_mJy_beam": 4.823448335622378,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
+    },
+    {
+      "key": "n2_w5",
+      "network": 2,
+      "detector": 292,
+      "original_window": {
+        "kind": "unflagged",
+        "event": null,
+        "detector": 292,
+        "first": 7327,
+        "past_last": 7694,
+        "center": 7510,
+        "rule": "largest supported original x pre/post contrast in separate time half; candidate-free central 0.58s; not truth",
+        "original_selection_score": 51.0465862368268,
+        "network": 2,
+        "key": "n2_w5",
+        "channel": 292,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 367,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          291,
+          293
+        ],
+        "original_x_pre_post_median": [
+          2.667110950265268e-05,
+          1.7663509772583202e-05
+        ],
+        "original_r_pre_post_median": [
+          6.432766908376365e-05,
+          6.383092399940481e-05
+        ],
+        "original_x_difference_scale": 1.8523145592344809e-07,
+        "adjudication": {
+          "label": "plausible step",
+          "reason": "Large finite x drop and smaller r drop reach supported lower levels; peer context agrees.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 367,
+          "RTC_x": 0,
+          "CAL": 0,
+          "M0": 0,
+          "T5_residual": 0,
+          "T5_total": 0
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": []
+      },
+      "actual_MAP_contributions": 0,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 0,
+      "max_abs_projection_any_mapped_mJy_beam": 0.0,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
+      "T5_residual_min": null,
+      "T5_residual_max": null,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
+      "max_abs_projection_science_mJy_beam": 0.0,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
+    },
+    {
+      "key": "n2_w6",
+      "network": 2,
+      "detector": 127,
+      "original_window": {
+        "kind": "unflagged",
+        "event": null,
+        "detector": 127,
+        "first": 1772,
+        "past_last": 2139,
+        "center": 1955,
+        "rule": "time fraction0.25, detector quantile0.25; first covered candidate-free identity; no cleaned selection",
+        "network": 2,
+        "key": "n2_w6",
+        "channel": 127,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 367,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          126,
+          128
+        ],
+        "original_x_pre_post_median": [
+          2.5735658227035774e-05,
+          1.9120713828721955e-05
+        ],
+        "original_r_pre_post_median": [
+          4.199839601101667e-05,
+          4.254194732908398e-05
+        ],
+        "original_x_difference_scale": 1.700225080958927e-06,
+        "adjudication": {
+          "label": "plausible step",
+          "reason": "Small abrupt x decrease near1.65s persists, with little r change; lower confidence than largest cases.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 367,
+          "RTC_x": 367,
+          "CAL": 367,
+          "M0": 367,
+          "T5_residual": 367,
+          "T5_total": 367
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": []
+      },
+      "actual_MAP_contributions": 367,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 278,
+      "max_abs_projection_any_mapped_mJy_beam": 14.60649684602653,
+      "peak_pixel": 9258,
+      "peak_pixel_hits": 847.0,
+      "peak_pixel_science_supported": true,
+      "T5_residual_min": -2249.9967376484274,
+      "T5_residual_max": 2148.1814882697495,
+      "peak_native_row": 1902,
+      "peak_distance_arcsec": 87.71019056639925,
+      "max_abs_projection_science_mJy_beam": 8.001784746014955,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
+    },
+    {
+      "key": "n2_w7",
+      "network": 2,
+      "detector": 381,
+      "original_window": {
+        "kind": "unflagged",
+        "event": null,
+        "detector": 381,
+        "first": 5682,
+        "past_last": 6049,
+        "center": 5865,
+        "rule": "time fraction0.75, detector quantile0.75; first covered candidate-free identity; no cleaned selection",
+        "network": 2,
+        "key": "n2_w7",
+        "channel": 381,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 367,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          380,
+          382
+        ],
+        "original_x_pre_post_median": [
+          1.3963502671731266e-05,
+          1.4031894361690211e-05
+        ],
+        "original_r_pre_post_median": [
+          3.817805840307213e-05,
+          3.8181989617015206e-05
+        ],
+        "original_x_difference_scale": 2.2107239449656752e-07,
+        "adjudication": {
+          "label": "plausible non-step",
+          "reason": "Noise and smooth common variation; no supported abrupt persistent local offset.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 367,
+          "RTC_x": 367,
+          "CAL": 367,
+          "M0": 367,
+          "T5_residual": 367,
+          "T5_total": 367
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": []
+      },
+      "actual_MAP_contributions": 367,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 256,
+      "max_abs_projection_any_mapped_mJy_beam": 5.391179590796633,
+      "peak_pixel": 21800,
+      "peak_pixel_hits": 824.0,
+      "peak_pixel_science_supported": true,
+      "T5_residual_min": -486.52912591746747,
+      "T5_residual_max": 514.872272182731,
+      "peak_native_row": 5770,
+      "peak_distance_arcsec": 77.36981792225876,
+      "max_abs_projection_science_mJy_beam": 5.391179590796633,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
+    },
+    {
+      "key": "n3_w0",
+      "network": 3,
+      "detector": 168,
+      "original_window": {
+        "kind": "event",
+        "event": 63,
+        "detector": 168,
+        "first": 1678,
+        "past_last": 2289,
+        "center": 1983,
+        "rule": "accepted median original offset/sigma",
+        "network": 3,
+        "key": "n3_w0",
+        "channel": 168,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 611,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          157,
+          158
+        ],
+        "original_x_pre_post_median": [
+          -4.73450207476522e-06,
+          7.954580716130702e-06
+        ],
+        "original_r_pre_post_median": [
+          4.8258351881166326e-05,
+          4.739673970974076e-05
+        ],
+        "original_x_difference_scale": 2.6405246457245084e-07,
+        "adjudication": {
+          "label": "plausible step",
+          "reason": "Large finite x increase to supported higher plateau; small opposite r change, shared peers.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 611,
+          "RTC_x": 0,
+          "CAL": 0,
+          "M0": 0,
+          "T5_residual": 0,
+          "T5_total": 0
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": [
+          {
+            "event": 63,
+            "seed_native_row": 1983,
+            "raw_candidates_in_window": [
+              {
+                "index": 1406,
+                "earlier_row": 1983,
+                "later_row": 1984,
+                "coordinate": "x",
+                "noise_block": 701,
+                "difference": 1.3199335513311495e-06,
+                "centered_difference": 1.3181337226014362e-06,
+                "absolute_score": 5.153266004291029
+              }
+            ],
+            "trial_overlap": true,
+            "consider_class": "admitted-level-shift",
+            "admitted": true
+          }
+        ]
+      },
+      "actual_MAP_contributions": 0,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 0,
+      "max_abs_projection_any_mapped_mJy_beam": 0.0,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
+      "T5_residual_min": null,
+      "T5_residual_max": null,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
+      "max_abs_projection_science_mJy_beam": 0.0,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
+    },
+    {
+      "key": "n3_w1",
+      "network": 3,
+      "detector": 295,
+      "original_window": {
+        "kind": "event",
+        "event": 416,
+        "detector": 295,
+        "first": 1685,
+        "past_last": 2296,
+        "center": 1990,
+        "rule": "accepted largest original offset/sigma",
+        "network": 3,
+        "key": "n3_w1",
+        "channel": 295,
+        "source_context_available": true,
+        "geometric_source_cells": 22,
+        "mapping_available_cells": 611,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          294,
+          328
+        ],
+        "original_x_pre_post_median": [
+          -3.214390363286967e-05,
+          9.358905699576874e-06
+        ],
+        "original_r_pre_post_median": [
+          1.7038766720676544e-05,
+          2.3310805208731284e-05
+        ],
+        "original_x_difference_scale": 8.948967495783303e-08,
+        "adjudication": {
+          "label": "plausible step",
+          "reason": "Very large two-stage x/r rise; nearby transitions complicate onset, but high post plateau is supported.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 611,
+          "RTC_x": 0,
+          "CAL": 0,
+          "M0": 0,
+          "T5_residual": 0,
+          "T5_total": 0
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": [
+          {
+            "event": 416,
+            "seed_native_row": 1990,
+            "raw_candidates_in_window": [
+              {
+                "index": 2640,
+                "earlier_row": 1990,
+                "later_row": 1991,
+                "coordinate": "x",
+                "noise_block": 828,
+                "difference": 4.948801308655125e-07,
+                "centered_difference": 4.89854100298841e-07,
+                "absolute_score": 5.617920790730253
+              },
+              {
+                "index": 2641,
+                "earlier_row": 1991,
+                "later_row": 1992,
+                "coordinate": "x",
+                "noise_block": 828,
+                "difference": 9.22547409203052e-07,
+                "centered_difference": 9.175213786363805e-07,
+                "absolute_score": 10.522648326994116
+              },
+              {
+                "index": 2652,
+                "earlier_row": 1991,
+                "later_row": 1992,
+                "coordinate": "r",
+                "noise_block": 828,
+                "difference": 4.5449298357061826e-07,
+                "centered_difference": 4.5265303542519266e-07,
+                "absolute_score": 7.428769171018269
+              },
+              {
+                "index": 2642,
+                "earlier_row": 1992,
+                "later_row": 1993,
+                "coordinate": "x",
+                "noise_block": 828,
+                "difference": 9.242578310736874e-07,
+                "centered_difference": 9.192318005070159e-07,
+                "absolute_score": 10.542264401621438
+              },
+              {
+                "index": 2643,
+                "earlier_row": 1993,
+                "later_row": 1994,
+                "coordinate": "x",
+                "noise_block": 828,
+                "difference": 1.0475281013586218e-06,
+                "centered_difference": 1.0425020707919503e-06,
+                "absolute_score": 11.955996804576092
+              },
+              {
+                "index": 2644,
+                "earlier_row": 1994,
+                "later_row": 1995,
+                "coordinate": "x",
+                "noise_block": 828,
+                "difference": 1.6754641728830153e-06,
+                "centered_difference": 1.6704381423163437e-06,
+                "absolute_score": 19.157518868623857
+              },
+              {
+                "index": 2653,
+                "earlier_row": 1994,
+                "later_row": 1995,
+                "coordinate": "r",
+                "noise_block": 828,
+                "difference": 4.95655569558333e-07,
+                "centered_difference": 4.938156214129074e-07,
+                "absolute_score": 8.104313850615275
+              },
+              {
+                "index": 2645,
+                "earlier_row": 1995,
+                "later_row": 1996,
+                "coordinate": "x",
+                "noise_block": 828,
+                "difference": 2.3834424151012926e-06,
+                "centered_difference": 2.378416384534621e-06,
+                "absolute_score": 27.27700931264848
+              },
+              {
+                "index": 2654,
+                "earlier_row": 1995,
+                "later_row": 1996,
+                "coordinate": "r",
+                "noise_block": 828,
+                "difference": 6.566085868120981e-07,
+                "centered_difference": 6.547686386666725e-07,
+                "absolute_score": 10.745813451814227
+              },
+              {
+                "index": 2646,
+                "earlier_row": 1996,
+                "later_row": 1997,
+                "coordinate": "x",
+                "noise_block": 828,
+                "difference": 1.5027204474680545e-06,
+                "centered_difference": 1.497694416901383e-06,
+                "absolute_score": 17.176397212430988
+              },
+              {
+                "index": 2655,
+                "earlier_row": 1996,
+                "later_row": 1997,
+                "coordinate": "r",
+                "noise_block": 828,
+                "difference": 4.263860852260681e-07,
+                "centered_difference": 4.245461370806425e-07,
+                "absolute_score": 6.9674894632199855
+              },
+              {
+                "index": 2647,
+                "earlier_row": 1998,
+                "later_row": 1999,
+                "coordinate": "x",
+                "noise_block": 828,
+                "difference": -1.4798072282132255e-06,
+                "centered_difference": -1.484833258779897e-06,
+                "absolute_score": 17.028898258029084
+              },
+              {
+                "index": 2656,
+                "earlier_row": 1998,
+                "later_row": 1999,
+                "coordinate": "r",
+                "noise_block": 828,
+                "difference": -3.913806645529087e-07,
+                "centered_difference": -3.932206126983343e-07,
+                "absolute_score": 6.453386891083958
+              },
+              {
+                "index": 2648,
+                "earlier_row": 1999,
+                "later_row": 2000,
+                "coordinate": "x",
+                "noise_block": 828,
+                "difference": -6.552423978003043e-07,
+                "centered_difference": -6.602684283669758e-07,
+                "absolute_score": 7.572327615350572
+              },
+              {
+                "index": 2649,
+                "earlier_row": 2007,
+                "later_row": 2008,
+                "coordinate": "x",
+                "noise_block": 828,
+                "difference": 7.74935689553399e-07,
+                "centered_difference": 7.699096589867274e-07,
+                "absolute_score": 8.829754568894867
+              },
+              {
+                "index": 2650,
+                "earlier_row": 2013,
+                "later_row": 2014,
+                "coordinate": "x",
+                "noise_block": 828,
+                "difference": 1.924474969726951e-05,
+                "centered_difference": 1.923972366670284e-05,
+                "absolute_score": 220.6519115163779
+              },
+              {
+                "index": 2657,
+                "earlier_row": 2013,
+                "later_row": 2014,
+                "coordinate": "r",
+                "noise_block": 828,
+                "difference": 1.2770724123140432e-05,
+                "centered_difference": 1.2768884174995006e-05,
+                "absolute_score": 209.55806254210444
+              },
+              {
+                "index": 2651,
+                "earlier_row": 2014,
+                "later_row": 2015,
+                "coordinate": "x",
+                "noise_block": 828,
+                "difference": 1.2710532309699156e-05,
+                "centered_difference": 1.2705506279132485e-05,
+                "absolute_score": 145.71385201991143
+              },
+              {
+                "index": 2658,
+                "earlier_row": 2014,
+                "later_row": 2015,
+                "coordinate": "r",
+                "noise_block": 828,
+                "difference": -9.539198818406967e-06,
+                "centered_difference": -9.541038766552393e-06,
+                "absolute_score": 156.58389340497024
+              }
+            ],
+            "trial_overlap": true,
+            "consider_class": "admitted-level-shift",
+            "admitted": true
+          }
+        ]
+      },
+      "actual_MAP_contributions": 0,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 0,
+      "max_abs_projection_any_mapped_mJy_beam": 0.0,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
+      "T5_residual_min": null,
+      "T5_residual_max": null,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
+      "max_abs_projection_science_mJy_beam": 0.0,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
+    },
+    {
+      "key": "n3_w2",
+      "network": 3,
+      "detector": 380,
+      "original_window": {
+        "kind": "event",
+        "event": 716,
+        "detector": 380,
+        "first": 1676,
+        "past_last": 2287,
+        "center": 1981,
+        "rule": "r-only admission with largest original offset/sigma",
+        "network": 3,
+        "key": "n3_w2",
+        "channel": 380,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 611,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          388
+        ],
+        "original_x_pre_post_median": [
+          -2.8313111310661163e-05,
+          1.2760765799649254e-05
+        ],
+        "original_r_pre_post_median": [
+          2.3726080086158865e-05,
+          2.746325191925194e-05
+        ],
+        "original_x_difference_scale": 9.445193577391272e-08,
+        "adjudication": {
+          "label": "plausible step",
+          "reason": "Large persistent changes in both original x and r; r-only admission must not be read as absent x evidence.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 611,
+          "RTC_x": 0,
+          "CAL": 0,
+          "M0": 0,
+          "T5_residual": 0,
+          "T5_total": 0
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": [
+          {
+            "event": 716,
+            "seed_native_row": 1981,
+            "raw_candidates_in_window": [
+              {
+                "index": 3637,
+                "earlier_row": 1981,
+                "later_row": 1982,
+                "coordinate": "x",
+                "noise_block": 913,
+                "difference": 5.690375304148051e-07,
+                "centered_difference": 5.633742999387417e-07,
+                "absolute_score": 6.130045274066207
+              },
+              {
+                "index": 3638,
+                "earlier_row": 1983,
+                "later_row": 1984,
+                "coordinate": "x",
+                "noise_block": 913,
+                "difference": 4.913120238751815e-07,
+                "centered_difference": 4.85648793399118e-07,
+                "absolute_score": 5.284318243050717
+              },
+              {
+                "index": 3639,
+                "earlier_row": 1984,
+                "later_row": 1985,
+                "coordinate": "x",
+                "noise_block": 913,
+                "difference": 6.424897849596887e-07,
+                "centered_difference": 6.368265544836253e-07,
+                "absolute_score": 6.929275281347922
+              },
+              {
+                "index": 3640,
+                "earlier_row": 1986,
+                "later_row": 1987,
+                "coordinate": "x",
+                "noise_block": 913,
+                "difference": 1.1917013451786181e-06,
+                "centered_difference": 1.1860381147025547e-06,
+                "absolute_score": 12.90521655085321
+              },
+              {
+                "index": 3641,
+                "earlier_row": 1987,
+                "later_row": 1988,
+                "coordinate": "x",
+                "noise_block": 913,
+                "difference": 1.477804241159265e-05,
+                "centered_difference": 1.4772379181116586e-05,
+                "absolute_score": 160.73745855244775
+              },
+              {
+                "index": 3648,
+                "earlier_row": 1987,
+                "later_row": 1988,
+                "coordinate": "r",
+                "noise_block": 913,
+                "difference": 9.866068687644494e-06,
+                "centered_difference": 9.8643627612638e-06,
+                "absolute_score": 191.75489253894798
+              },
+              {
+                "index": 3642,
+                "earlier_row": 1988,
+                "later_row": 1989,
+                "coordinate": "x",
+                "noise_block": 913,
+                "difference": 1.8541550359699828e-05,
+                "centered_difference": 1.8535887129223764e-05,
+                "absolute_score": 201.6879848965028
+              },
+              {
+                "index": 3649,
+                "earlier_row": 1988,
+                "later_row": 1989,
+                "coordinate": "r",
+                "noise_block": 913,
+                "difference": -7.072208277206489e-06,
+                "centered_difference": -7.073914203587183e-06,
+                "absolute_score": 137.5109260240559
+              },
+              {
+                "index": 3643,
+                "earlier_row": 1989,
+                "later_row": 1990,
+                "coordinate": "x",
+                "noise_block": 913,
+                "difference": 8.227684428980316e-07,
+                "centered_difference": 8.171052124219681e-07,
+                "absolute_score": 8.89087760369401
+              },
+              {
+                "index": 3644,
+                "earlier_row": 1990,
+                "later_row": 1991,
+                "coordinate": "x",
+                "noise_block": 913,
+                "difference": 7.971213280969673e-07,
+                "centered_difference": 7.914580976209038e-07,
+                "absolute_score": 8.611812735280962
+              },
+              {
+                "index": 3645,
+                "earlier_row": 1991,
+                "later_row": 1992,
+                "coordinate": "x",
+                "noise_block": 913,
+                "difference": 8.256176744325972e-07,
+                "centered_difference": 8.199544439565338e-07,
+                "absolute_score": 8.921879937852816
+              },
+              {
+                "index": 3646,
+                "earlier_row": 1992,
+                "later_row": 1993,
+                "coordinate": "x",
+                "noise_block": 913,
+                "difference": 9.327941636469069e-07,
+                "centered_difference": 9.271309331708434e-07,
+                "absolute_score": 10.0880615177911
+              },
+              {
+                "index": 3647,
+                "earlier_row": 1993,
+                "later_row": 1994,
+                "coordinate": "x",
+                "noise_block": 913,
+                "difference": 8.025260392465641e-07,
+                "centered_difference": 7.968628087705007e-07,
+                "absolute_score": 8.670621104856716
+              }
+            ],
+            "trial_overlap": true,
+            "consider_class": "admitted-level-shift",
+            "admitted": true
+          }
+        ]
+      },
+      "actual_MAP_contributions": 0,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 0,
+      "max_abs_projection_any_mapped_mJy_beam": 0.0,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
+      "T5_residual_min": null,
+      "T5_residual_max": null,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
+      "max_abs_projection_science_mJy_beam": 0.0,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
+    },
+    {
+      "key": "n3_w3",
+      "network": 3,
+      "detector": 91,
+      "original_window": {
+        "kind": "event",
+        "event": 2,
+        "detector": 91,
+        "first": 0,
+        "past_last": 437,
+        "center": 131,
+        "rule": "unresolved original extent",
+        "network": 3,
+        "key": "n3_w3",
+        "channel": 91,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 437,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [
+          33
+        ],
+        "peer_channels": [
+          188,
+          258
+        ],
+        "original_x_pre_post_median": [
+          8.869014923430153e-06,
+          -1.7791873654055034e-05
+        ],
+        "original_r_pre_post_median": [
+          3.408882667187597e-05,
+          3.3065761929707955e-05
+        ],
+        "original_x_difference_scale": 4.899048398890237e-07,
+        "adjudication": {
+          "label": "plausible step",
+          "reason": "Two-stage x decline with persistent post offset and smaller r decline; onset/extent not a single sharp edge.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 437,
+          "RTC_x": 0,
+          "CAL": 0,
+          "M0": 0,
+          "T5_residual": 0,
+          "T5_total": 0
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": [
+          {
+            "event": 2,
+            "seed_native_row": 131,
+            "raw_candidates_in_window": [
+              {
+                "index": 0,
+                "earlier_row": 131,
+                "later_row": 132,
+                "coordinate": "x",
+                "noise_block": 91,
+                "difference": -3.3519607789755474e-06,
+                "centered_difference": -3.332011346292995e-06,
+                "absolute_score": 5.735159447134796
+              }
+            ],
+            "trial_overlap": true,
+            "consider_class": "unresolved-extent",
+            "admitted": false
+          }
+        ]
+      },
+      "actual_MAP_contributions": 0,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 0,
+      "max_abs_projection_any_mapped_mJy_beam": 0.0,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
+      "T5_residual_min": null,
+      "T5_residual_max": null,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
+      "max_abs_projection_science_mJy_beam": 0.0,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
+    },
+    {
+      "key": "n3_w4",
+      "network": 3,
+      "detector": 360,
+      "original_window": {
+        "kind": "unflagged",
+        "event": null,
+        "detector": 360,
+        "first": 1808,
+        "past_last": 2175,
+        "center": 1991,
+        "rule": "largest supported original x pre/post contrast in separate time half; candidate-free central 0.58s; not truth",
+        "original_selection_score": 413.5801823898554,
+        "network": 3,
+        "key": "n3_w4",
+        "channel": 360,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 367,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          359,
+          361
+        ],
+        "original_x_pre_post_median": [
+          -2.6445717907614393e-05,
+          1.2607892418885397e-05
+        ],
+        "original_r_pre_post_median": [
+          2.196311483159226e-05,
+          2.6737142633006156e-05
+        ],
+        "original_x_difference_scale": 1.1830536948397868e-07,
+        "adjudication": {
+          "label": "plausible step",
+          "reason": "Very large abrupt x/r increases to supported plateaus. No nearby event-group seed does not mean no raw Learn candidate or existing grouped event.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 367,
+          "RTC_x": 0,
+          "CAL": 0,
+          "M0": 0,
+          "T5_residual": 0,
+          "T5_total": 0
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": [
+          {
+            "event": 642,
+            "seed_native_row": 1909,
+            "raw_candidates_in_window": [
+              {
+                "index": 3364,
+                "earlier_row": 1909,
+                "later_row": 1910,
+                "coordinate": "x",
+                "noise_block": 893,
+                "difference": -5.505689019439861e-07,
+                "centered_difference": -5.554714908745011e-07,
+                "absolute_score": 5.437438875486858
+              },
+              {
+                "index": 3365,
+                "earlier_row": 1980,
+                "later_row": 1981,
+                "coordinate": "x",
+                "noise_block": 893,
+                "difference": 7.860517755981442e-07,
+                "centered_difference": 7.811491866676292e-07,
+                "absolute_score": 7.6465687707114816
+              },
+              {
+                "index": 3366,
+                "earlier_row": 1981,
+                "later_row": 1982,
+                "coordinate": "x",
+                "noise_block": 893,
+                "difference": 1.5464001242662684e-06,
+                "centered_difference": 1.5414975353357533e-06,
+                "absolute_score": 15.08952081754187
+              },
+              {
+                "index": 3376,
+                "earlier_row": 1981,
+                "later_row": 1982,
+                "coordinate": "r",
+                "noise_block": 893,
+                "difference": 5.263173372561242e-07,
+                "centered_difference": 5.26265328847697e-07,
+                "absolute_score": 6.975146355492994
+              },
+              {
+                "index": 3367,
+                "earlier_row": 1982,
+                "later_row": 1983,
+                "coordinate": "x",
+                "noise_block": 893,
+                "difference": 1.024063731484633e-05,
+                "centered_difference": 1.0235734725915815e-05,
+                "absolute_score": 100.19628879646679
+              },
+              {
+                "index": 3377,
+                "earlier_row": 1982,
+                "later_row": 1983,
+                "coordinate": "r",
+                "noise_block": 893,
+                "difference": 8.409768482492533e-06,
+                "centered_difference": 8.409716474084106e-06,
+                "absolute_score": 111.4627926247318
+              },
+              {
+                "index": 3368,
+                "earlier_row": 1983,
+                "later_row": 1984,
+                "coordinate": "x",
+                "noise_block": 893,
+                "difference": 2.1490214290152665e-05,
+                "centered_difference": 2.148531170122215e-05,
+                "absolute_score": 210.3169487821159
+              },
+              {
+                "index": 3378,
+                "earlier_row": 1983,
+                "later_row": 1984,
+                "coordinate": "r",
+                "noise_block": 893,
+                "difference": -4.831944324826985e-06,
+                "centered_difference": -4.831996333235412e-06,
+                "absolute_score": 64.04351524984561
+              },
+              {
+                "index": 3369,
+                "earlier_row": 1984,
+                "later_row": 1985,
+                "coordinate": "x",
+                "noise_block": 893,
+                "difference": 8.076873191212402e-07,
+                "centered_difference": 8.027847301907252e-07,
+                "absolute_score": 7.858356319446992
+              },
+              {
+                "index": 3370,
+                "earlier_row": 1985,
+                "later_row": 1986,
+                "coordinate": "x",
+                "noise_block": 893,
+                "difference": 9.395390636900354e-07,
+                "centered_difference": 9.346364747595203e-07,
+                "absolute_score": 9.149036063587289
+              },
+              {
+                "index": 3371,
+                "earlier_row": 1986,
+                "later_row": 1987,
+                "coordinate": "x",
+                "noise_block": 893,
+                "difference": 7.221119779722938e-07,
+                "centered_difference": 7.172093890417788e-07,
+                "absolute_score": 7.020670327653293
+              },
+              {
+                "index": 3372,
+                "earlier_row": 1987,
+                "later_row": 1988,
+                "coordinate": "x",
+                "noise_block": 893,
+                "difference": 9.334014396291541e-07,
+                "centered_difference": 9.284988506986391e-07,
+                "absolute_score": 9.088955652225009
+              },
+              {
+                "index": 3373,
+                "earlier_row": 1990,
+                "later_row": 1991,
+                "coordinate": "x",
+                "noise_block": 893,
+                "difference": -6.831520648813084e-07,
+                "centered_difference": -6.880546538118234e-07,
+                "absolute_score": 6.7352783798247735
+              },
+              {
+                "index": 3374,
+                "earlier_row": 1991,
+                "later_row": 1992,
+                "coordinate": "x",
+                "noise_block": 893,
+                "difference": -8.09892074236021e-07,
+                "centered_difference": -8.14794663166536e-07,
+                "absolute_score": 7.975920006382312
+              },
+              {
+                "index": 3375,
+                "earlier_row": 1992,
+                "later_row": 1993,
+                "coordinate": "x",
+                "noise_block": 893,
+                "difference": -5.872108782320344e-07,
+                "centered_difference": -5.921134671625495e-07,
+                "absolute_score": 5.796122461623084
+              }
+            ],
+            "trial_overlap": true,
+            "consider_class": "unresolved-extent",
+            "admitted": false
+          }
+        ]
+      },
+      "actual_MAP_contributions": 0,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 0,
+      "max_abs_projection_any_mapped_mJy_beam": 0.0,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
+      "T5_residual_min": null,
+      "T5_residual_max": null,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
+      "max_abs_projection_science_mJy_beam": 0.0,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
+    },
+    {
+      "key": "n3_w5",
+      "network": 3,
+      "detector": 272,
+      "original_window": {
+        "kind": "unflagged",
+        "event": null,
+        "detector": 272,
+        "first": 5257,
+        "past_last": 5624,
+        "center": 5440,
+        "rule": "largest supported original x pre/post contrast in separate time half; candidate-free central 0.58s; not truth",
+        "original_selection_score": 47.2001595487416,
+        "network": 3,
+        "key": "n3_w5",
+        "channel": 272,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 367,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          271,
+          273
+        ],
+        "original_x_pre_post_median": [
+          6.276992074169294e-06,
+          1.0991026917136038e-05
+        ],
+        "original_r_pre_post_median": [
+          2.9288163010466235e-05,
+          2.9384858808244553e-05
+        ],
+        "original_x_difference_scale": 1.3545211365714142e-07,
+        "adjudication": {
+          "label": "unresolved",
+          "reason": "Large smoothly evolving common x structure; no unique sharp transition boundary, persistence versus atmospheric/common-mode change unresolved.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 367,
+          "RTC_x": 0,
+          "CAL": 0,
+          "M0": 0,
+          "T5_residual": 0,
+          "T5_total": 0
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": []
+      },
+      "actual_MAP_contributions": 0,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 0,
+      "max_abs_projection_any_mapped_mJy_beam": 0.0,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
+      "T5_residual_min": null,
+      "T5_residual_max": null,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
+      "max_abs_projection_science_mJy_beam": 0.0,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
+    },
+    {
+      "key": "n3_w6",
+      "network": 3,
+      "detector": 133,
+      "original_window": {
+        "kind": "unflagged",
+        "event": null,
+        "detector": 133,
+        "first": 1772,
+        "past_last": 2139,
+        "center": 1955,
+        "rule": "time fraction0.25, detector quantile0.25; first covered candidate-free identity; no cleaned selection",
+        "network": 3,
+        "key": "n3_w6",
+        "channel": 133,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 367,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          132,
+          134
+        ],
+        "original_x_pre_post_median": [
+          8.734915169862642e-06,
+          1.2744186785880053e-05
+        ],
+        "original_r_pre_post_median": [
+          3.1521443115267764e-05,
+          3.132172161213708e-05
+        ],
+        "original_x_difference_scale": 3.4817552016576206e-07,
+        "adjudication": {
+          "label": "plausible step",
+          "reason": "Multiple smaller x transitions, including a sustained rise after2s; r nearly unchanged; central point precedes the strongest transition.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 367,
+          "RTC_x": 367,
+          "CAL": 367,
+          "M0": 367,
+          "T5_residual": 367,
+          "T5_total": 367
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": []
+      },
+      "actual_MAP_contributions": 367,
+      "source_disk_MAP_contributions": 109,
+      "science_supported_MAP_contributions": 359,
+      "max_abs_projection_any_mapped_mJy_beam": 6.735405827848492,
+      "peak_pixel": 18113,
+      "peak_pixel_hits": 972.0,
+      "peak_pixel_science_supported": true,
+      "T5_residual_min": -676.8744823515835,
+      "T5_residual_max": 1658.2926438801192,
+      "peak_native_row": 1994,
+      "peak_distance_arcsec": 41.95348970541479,
+      "max_abs_projection_science_mJy_beam": 6.735405827848492,
+      "max_abs_projection_40arcsec_mJy_beam": 3.0803948390442466,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
+    },
+    {
+      "key": "n3_w7",
+      "network": 3,
+      "detector": 399,
+      "original_window": {
+        "kind": "unflagged",
+        "event": null,
+        "detector": 399,
+        "first": 5682,
+        "past_last": 6049,
+        "center": 5865,
+        "rule": "time fraction0.75, detector quantile0.75; first covered candidate-free identity; no cleaned selection",
+        "network": 3,
+        "key": "n3_w7",
+        "channel": 399,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 367,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          398,
+          400
+        ],
+        "original_x_pre_post_median": [
+          1.3601577157177093e-05,
+          1.3644998022734019e-05
+        ],
+        "original_r_pre_post_median": [
+          2.442539660558474e-05,
+          2.440368784773973e-05
+        ],
+        "original_x_difference_scale": 1.343790194772884e-07,
+        "adjudication": {
+          "label": "plausible non-step",
+          "reason": "Quiet local x/r with mild oscillation, no supported persistent jump.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 367,
+          "RTC_x": 367,
+          "CAL": 367,
+          "M0": 367,
+          "T5_residual": 367,
+          "T5_total": 367
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": []
+      },
+      "actual_MAP_contributions": 367,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 218,
+      "max_abs_projection_any_mapped_mJy_beam": 16.615353152476985,
+      "peak_pixel": 7763,
+      "peak_pixel_hits": 413.0,
+      "peak_pixel_science_supported": false,
+      "T5_residual_min": -384.1814287066169,
+      "T5_residual_max": 619.8157416255875,
+      "peak_native_row": 6000,
+      "peak_distance_arcsec": 132.3928799604949,
+      "max_abs_projection_science_mJy_beam": 6.300012349424994,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
+    },
+    {
+      "key": "n4_w0",
+      "network": 4,
+      "detector": 466,
+      "original_window": {
+        "kind": "event",
+        "event": 492,
+        "detector": 466,
+        "first": 7216,
+        "past_last": 7821,
+        "center": 7521,
+        "rule": "accepted median original offset/sigma",
+        "network": 4,
+        "key": "n4_w0",
+        "channel": 466,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 605,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [
+          7289
+        ],
+        "peer_channels": [
+          75,
+          347
+        ],
+        "original_x_pre_post_median": [
+          1.0443893535389644e-05,
+          1.3116781730738716e-05
+        ],
+        "original_r_pre_post_median": [
+          3.149854438461137e-05,
+          3.147580916946608e-05
+        ],
+        "original_x_difference_scale": 9.690356421601582e-08,
+        "adjudication": {
+          "label": "plausible step",
+          "reason": "Finite x rise to supported plateau, little r change, shared peer response.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 605,
+          "RTC_x": 0,
+          "CAL": 0,
+          "M0": 0,
+          "T5_residual": 0,
+          "T5_total": 0
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": [
+          {
+            "event": 492,
+            "seed_native_row": 7521,
+            "raw_candidates_in_window": [
+              {
+                "index": 2211,
+                "earlier_row": 7521,
+                "later_row": 7522,
+                "coordinate": "x",
+                "noise_block": 3658,
+                "difference": 4.879135584124215e-07,
+                "centered_difference": 4.899119503636589e-07,
+                "absolute_score": 5.221516766885556
+              }
+            ],
+            "trial_overlap": true,
+            "consider_class": "admitted-level-shift",
+            "admitted": true
+          }
+        ]
+      },
+      "actual_MAP_contributions": 0,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 0,
+      "max_abs_projection_any_mapped_mJy_beam": 0.0,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
+      "T5_residual_min": null,
+      "T5_residual_max": null,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
+      "max_abs_projection_science_mJy_beam": 0.0,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
+    },
+    {
+      "key": "n4_w1",
+      "network": 4,
+      "detector": 271,
+      "original_window": {
+        "kind": "event",
+        "event": 113,
+        "detector": 271,
+        "first": 1672,
+        "past_last": 2283,
+        "center": 1977,
+        "rule": "accepted largest original offset/sigma",
+        "network": 4,
+        "key": "n4_w1",
+        "channel": 271,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 611,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          424,
+          425
+        ],
+        "original_x_pre_post_median": [
+          -2.2747578801489136e-05,
+          1.051495509635391e-05
+        ],
+        "original_r_pre_post_median": [
+          2.0264963440107344e-05,
+          2.3464142576548347e-05
+        ],
+        "original_x_difference_scale": 1.4546280271865545e-07,
+        "adjudication": {
+          "label": "plausible step",
+          "reason": "Large coincident x/r increase followed by persistent, slowly varying plateau.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 611,
+          "RTC_x": 0,
+          "CAL": 0,
+          "M0": 0,
+          "T5_residual": 0,
+          "T5_total": 0
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": [
+          {
+            "event": 113,
+            "seed_native_row": 1977,
+            "raw_candidates_in_window": [
+              {
+                "index": 490,
+                "earlier_row": 1977,
+                "later_row": 1978,
+                "coordinate": "x",
+                "noise_block": 803,
+                "difference": 9.26556832552101e-07,
+                "centered_difference": 9.261900485843486e-07,
+                "absolute_score": 6.899839076128238
+              },
+              {
+                "index": 491,
+                "earlier_row": 1978,
+                "later_row": 1979,
+                "coordinate": "x",
+                "noise_block": 803,
+                "difference": 8.84163648418459e-07,
+                "centered_difference": 8.837968644507066e-07,
+                "absolute_score": 6.584022523257811
+              },
+              {
+                "index": 492,
+                "earlier_row": 1979,
+                "later_row": 1980,
+                "coordinate": "x",
+                "noise_block": 803,
+                "difference": 1.5083599881662632e-06,
+                "centered_difference": 1.5079932041985108e-06,
+                "absolute_score": 11.234098717394213
+              },
+              {
+                "index": 501,
+                "earlier_row": 1979,
+                "later_row": 1980,
+                "coordinate": "r",
+                "noise_block": 803,
+                "difference": 3.8958172704564993e-07,
+                "centered_difference": 3.8918473600344416e-07,
+                "absolute_score": 6.064186575906398
+              },
+              {
+                "index": 493,
+                "earlier_row": 1980,
+                "later_row": 1981,
+                "coordinate": "x",
+                "noise_block": 803,
+                "difference": 1.4291354442789032e-05,
+                "centered_difference": 1.429098765882128e-05,
+                "absolute_score": 106.46358729022926
+              },
+              {
+                "index": 502,
+                "earlier_row": 1980,
+                "later_row": 1981,
+                "coordinate": "r",
+                "noise_block": 803,
+                "difference": 5.653407942711473e-06,
+                "centered_difference": 5.653010951669267e-06,
+                "absolute_score": 88.08390965842311
+              },
+              {
+                "index": 494,
+                "earlier_row": 1981,
+                "later_row": 1982,
+                "coordinate": "x",
+                "noise_block": 803,
+                "difference": 8.749739079237786e-06,
+                "centered_difference": 8.749372295270034e-06,
+                "absolute_score": 65.18020890720047
+              },
+              {
+                "index": 503,
+                "earlier_row": 1981,
+                "later_row": 1982,
+                "coordinate": "r",
+                "noise_block": 803,
+                "difference": -3.3938771478458387e-06,
+                "centered_difference": -3.3942741388880444e-06,
+                "absolute_score": 52.8887948673531
+              },
+              {
+                "index": 495,
+                "earlier_row": 1983,
+                "later_row": 1984,
+                "coordinate": "x",
+                "noise_block": 803,
+                "difference": 6.722787090953514e-07,
+                "centered_difference": 6.71911925127599e-07,
+                "absolute_score": 5.005543045725942
+              },
+              {
+                "index": 496,
+                "earlier_row": 1984,
+                "later_row": 1985,
+                "coordinate": "x",
+                "noise_block": 803,
+                "difference": 1.105651637686384e-06,
+                "centered_difference": 1.1052848537186315e-06,
+                "absolute_score": 8.234041853070037
+              },
+              {
+                "index": 497,
+                "earlier_row": 1985,
+                "later_row": 1986,
+                "coordinate": "x",
+                "noise_block": 803,
+                "difference": 1.1639266689758596e-06,
+                "centered_difference": 1.1635598850081072e-06,
+                "absolute_score": 8.668173421065504
+              },
+              {
+                "index": 498,
+                "earlier_row": 1986,
+                "later_row": 1987,
+                "coordinate": "x",
+                "noise_block": 803,
+                "difference": 9.0978867150276e-07,
+                "centered_difference": 9.094218875350076e-07,
+                "absolute_score": 6.774921287365668
+              },
+              {
+                "index": 499,
+                "earlier_row": 2172,
+                "later_row": 2173,
+                "coordinate": "x",
+                "noise_block": 803,
+                "difference": -7.177745371681314e-07,
+                "centered_difference": -7.181413211358838e-07,
+                "absolute_score": 5.349938230635685
+              },
+              {
+                "index": 500,
+                "earlier_row": 2184,
+                "later_row": 2185,
+                "coordinate": "x",
+                "noise_block": 803,
+                "difference": 7.396344777369518e-07,
+                "centered_difference": 7.392676937691994e-07,
+                "absolute_score": 5.507323393275901
+              }
+            ],
+            "trial_overlap": true,
+            "consider_class": "admitted-level-shift",
+            "admitted": true
+          }
+        ]
+      },
+      "actual_MAP_contributions": 0,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 0,
+      "max_abs_projection_any_mapped_mJy_beam": 0.0,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
+      "T5_residual_min": null,
+      "T5_residual_max": null,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
+      "max_abs_projection_science_mJy_beam": 0.0,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
+    },
+    {
+      "key": "n4_w2",
+      "network": 4,
+      "detector": 425,
+      "original_window": {
+        "kind": "event",
+        "event": 479,
+        "detector": 425,
+        "first": 1674,
+        "past_last": 2285,
+        "center": 1979,
+        "rule": "r-only admission with largest original offset/sigma",
+        "network": 4,
+        "key": "n4_w2",
+        "channel": 425,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 611,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          271
+        ],
+        "original_x_pre_post_median": [
+          -1.4710177178704798e-05,
+          9.3645372948716e-06
+        ],
+        "original_r_pre_post_median": [
+          1.901870042439364e-05,
+          2.035736027754925e-05
+        ],
+        "original_x_difference_scale": 1.1330180670907002e-07,
+        "adjudication": {
+          "label": "plausible step",
+          "reason": "Large x and r increases with supported plateau despite r-only admission.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 611,
+          "RTC_x": 0,
+          "CAL": 0,
+          "M0": 0,
+          "T5_residual": 0,
+          "T5_total": 0
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": [
+          {
+            "event": 479,
+            "seed_native_row": 1979,
+            "raw_candidates_in_window": [
+              {
+                "index": 598,
+                "earlier_row": 1979,
+                "later_row": 1980,
+                "coordinate": "x",
+                "noise_block": 957,
+                "difference": 5.541583335688056e-07,
+                "centered_difference": 5.559421728071853e-07,
+                "absolute_score": 5.1216228836719715
+              },
+              {
+                "index": 599,
+                "earlier_row": 1980,
+                "later_row": 1981,
+                "coordinate": "x",
+                "noise_block": 957,
+                "difference": 6.563557876581395e-07,
+                "centered_difference": 6.581396268965192e-07,
+                "absolute_score": 6.063117961971208
+              },
+              {
+                "index": 600,
+                "earlier_row": 1981,
+                "later_row": 1982,
+                "coordinate": "x",
+                "noise_block": 957,
+                "difference": 8.491205042428349e-07,
+                "centered_difference": 8.509043434812146e-07,
+                "absolute_score": 7.838964861010341
+              },
+              {
+                "index": 601,
+                "earlier_row": 1983,
+                "later_row": 1984,
+                "coordinate": "x",
+                "noise_block": 957,
+                "difference": 6.931889599092329e-06,
+                "centered_difference": 6.9336734383307085e-06,
+                "absolute_score": 63.87653660154941
+              },
+              {
+                "index": 605,
+                "earlier_row": 1983,
+                "later_row": 1984,
+                "coordinate": "r",
+                "noise_block": 957,
+                "difference": 4.002698809425812e-06,
+                "centered_difference": 4.003627491082307e-06,
+                "absolute_score": 88.8857147774849
+              },
+              {
+                "index": 602,
+                "earlier_row": 1984,
+                "later_row": 1985,
+                "coordinate": "x",
+                "noise_block": 957,
+                "difference": 1.1865371279555432e-05,
+                "centered_difference": 1.1867155118793812e-05,
+                "absolute_score": 109.32628642579895
+              },
+              {
+                "index": 606,
+                "earlier_row": 1984,
+                "later_row": 1985,
+                "coordinate": "r",
+                "noise_block": 957,
+                "difference": -3.1233978833979078e-06,
+                "centered_difference": -3.1224692017414128e-06,
+                "absolute_score": 69.32285970302387
+              },
+              {
+                "index": 603,
+                "earlier_row": 1985,
+                "later_row": 1986,
+                "coordinate": "x",
+                "noise_block": 957,
+                "difference": 8.069204875758292e-07,
+                "centered_difference": 8.087043268142089e-07,
+                "absolute_score": 7.45019678111863
+              },
+              {
+                "index": 604,
+                "earlier_row": 1986,
+                "later_row": 1987,
+                "coordinate": "x",
+                "noise_block": 957,
+                "difference": 6.823677132628569e-07,
+                "centered_difference": 6.841515525012366e-07,
+                "absolute_score": 6.302753089403245
+              }
+            ],
+            "trial_overlap": true,
+            "consider_class": "admitted-level-shift",
+            "admitted": true
+          }
+        ]
+      },
+      "actual_MAP_contributions": 0,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 0,
+      "max_abs_projection_any_mapped_mJy_beam": 0.0,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
+      "T5_residual_min": null,
+      "T5_residual_max": null,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
+      "max_abs_projection_science_mJy_beam": 0.0,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
+    },
+    {
+      "key": "n4_w3",
+      "network": 4,
+      "detector": 1,
+      "original_window": {
+        "kind": "event",
+        "event": 0,
+        "detector": 1,
+        "first": 1562,
+        "past_last": 2173,
+        "center": 1867,
+        "rule": "first non-admitted original group",
+        "network": 4,
+        "key": "n4_w3",
+        "channel": 1,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 611,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          113,
+          515
+        ],
+        "original_x_pre_post_median": [
+          1.0964543519266132e-05,
+          1.1444913016376975e-05
+        ],
+        "original_r_pre_post_median": [
+          4.46710450513703e-05,
+          4.466400591029985e-05
+        ],
+        "original_x_difference_scale": 1.0818491820754237e-07,
+        "adjudication": {
+          "label": "plausible step",
+          "reason": "Small abrupt x rise to a noisy supported higher level; r remains near its baseline; amplitude and interpretation less decisive.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 611,
+          "RTC_x": 483,
+          "CAL": 483,
+          "M0": 483,
+          "T5_residual": 483,
+          "T5_total": 483
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": [
+          {
+            "event": 0,
+            "seed_native_row": 1867,
+            "raw_candidates_in_window": [
+              {
+                "index": 380,
+                "earlier_row": 1867,
+                "later_row": 1868,
+                "coordinate": "x",
+                "noise_block": 533,
+                "difference": -5.484285331407089e-07,
+                "centered_difference": -5.479699015861117e-07,
+                "absolute_score": 5.30134824119594
+              }
+            ],
+            "trial_overlap": true,
+            "consider_class": "isolated-admission-unavailable",
+            "admitted": false
+          }
+        ]
+      },
+      "actual_MAP_contributions": 483,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 267,
+      "max_abs_projection_any_mapped_mJy_beam": 5.632356404657526,
+      "peak_pixel": 22076,
+      "peak_pixel_hits": 436.0,
+      "peak_pixel_science_supported": false,
+      "T5_residual_min": -291.11020531440005,
+      "T5_residual_max": 232.63645813296114,
+      "peak_native_row": 1785,
+      "peak_distance_arcsec": 99.39652817957732,
+      "max_abs_projection_science_mJy_beam": 1.1751187631529183,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
+    },
+    {
+      "key": "n4_w4",
+      "network": 4,
+      "detector": 477,
+      "original_window": {
+        "kind": "unflagged",
+        "event": null,
+        "detector": 477,
+        "first": 998,
+        "past_last": 1365,
+        "center": 1181,
+        "rule": "largest supported original x pre/post contrast in separate time half; candidate-free central 0.58s; not truth",
+        "original_selection_score": 134.89094353598801,
+        "network": 4,
+        "key": "n4_w4",
+        "channel": 477,
+        "source_context_available": true,
+        "geometric_source_cells": 22,
+        "mapping_available_cells": 367,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [
+          1221
+        ],
+        "peer_channels": [
+          476,
+          478
+        ],
+        "original_x_pre_post_median": [
+          -8.622227313999528e-05,
+          -8.652525727069806e-05
+        ],
+        "original_r_pre_post_median": [
+          2.901779863917981e-05,
+          2.8471240228133524e-05
+        ],
+        "original_x_difference_scale": 4.389213131015801e-07,
+        "adjudication": {
+          "label": "plausible finite excursion",
+          "reason": "Finite x/r rise, short high plateau with a brief interruption, and return; multiple edges rather than a single persistent step.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 367,
+          "RTC_x": 0,
+          "CAL": 0,
+          "M0": 0,
+          "T5_residual": 0,
+          "T5_total": 0
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": [
+          {
+            "event": 535,
+            "seed_native_row": 946,
+            "raw_candidates_in_window": [
+              {
+                "index": 155,
+                "earlier_row": 1083,
+                "later_row": 1084,
+                "coordinate": "x",
+                "noise_block": 477,
+                "difference": 3.8569472253256096e-05,
+                "centered_difference": 3.857473029731297e-05,
+                "absolute_score": 98.01308755584533
+              },
+              {
+                "index": 214,
+                "earlier_row": 1083,
+                "later_row": 1084,
+                "coordinate": "r",
+                "noise_block": 477,
+                "difference": 1.3737559870715836e-05,
+                "centered_difference": 1.3737982041024491e-05,
+                "absolute_score": 37.089561696519894
+              },
+              {
+                "index": 156,
+                "earlier_row": 1084,
+                "later_row": 1085,
+                "coordinate": "x",
+                "noise_block": 477,
+                "difference": 5.144264396680741e-06,
+                "centered_difference": 5.149522440737618e-06,
+                "absolute_score": 13.084228715656481
+              },
+              {
+                "index": 157,
+                "earlier_row": 1097,
+                "later_row": 1098,
+                "coordinate": "x",
+                "noise_block": 477,
+                "difference": -3.864264661472617e-06,
+                "centered_difference": -3.85900661741574e-06,
+                "absolute_score": 9.805205391097767
+              },
+              {
+                "index": 158,
+                "earlier_row": 1098,
+                "later_row": 1099,
+                "coordinate": "x",
+                "noise_block": 477,
+                "difference": -4.0781392731335484e-05,
+                "centered_difference": -4.077613468727861e-05,
+                "absolute_score": 103.60655352583434
+              },
+              {
+                "index": 215,
+                "earlier_row": 1098,
+                "later_row": 1099,
+                "coordinate": "r",
+                "noise_block": 477,
+                "difference": -1.2831649798117918e-05,
+                "centered_difference": -1.2831227627809262e-05,
+                "absolute_score": 34.64152211893796
+              },
+              {
+                "index": 159,
+                "earlier_row": 1099,
+                "later_row": 1100,
+                "coordinate": "x",
+                "noise_block": 477,
+                "difference": 3.219394839957338e-05,
+                "centered_difference": 3.219920644363026e-05,
+                "absolute_score": 81.81375776483672
+              },
+              {
+                "index": 216,
+                "earlier_row": 1099,
+                "later_row": 1100,
+                "coordinate": "r",
+                "noise_block": 477,
+                "difference": 1.2928789376631923e-05,
+                "centered_difference": 1.2929211546940578e-05,
+                "absolute_score": 34.906057376229406
+              },
+              {
+                "index": 160,
+                "earlier_row": 1100,
+                "later_row": 1101,
+                "coordinate": "x",
+                "noise_block": 477,
+                "difference": 1.2125736515753879e-05,
+                "centered_difference": 1.2130994559810756e-05,
+                "absolute_score": 30.823189760915522
+              },
+              {
+                "index": 161,
+                "earlier_row": 1173,
+                "later_row": 1174,
+                "coordinate": "x",
+                "noise_block": 477,
+                "difference": -3.754538416397391e-05,
+                "centered_difference": -3.754012611991703e-05,
+                "absolute_score": 95.38430054831011
+              },
+              {
+                "index": 217,
+                "earlier_row": 1173,
+                "later_row": 1174,
+                "coordinate": "r",
+                "noise_block": 477,
+                "difference": -7.489449404687037e-06,
+                "centered_difference": -7.489027234378382e-06,
+                "absolute_score": 20.218743686440344
+              },
+              {
+                "index": 162,
+                "earlier_row": 1174,
+                "later_row": 1175,
+                "coordinate": "x",
+                "noise_block": 477,
+                "difference": -5.781971315562477e-06,
+                "centered_difference": -5.7767132715056e-06,
+                "absolute_score": 14.677834408722537
+              },
+              {
+                "index": 218,
+                "earlier_row": 1174,
+                "later_row": 1175,
+                "coordinate": "r",
+                "noise_block": 477,
+                "difference": -5.03334595050815e-06,
+                "centered_difference": -5.032923780199495e-06,
+                "absolute_score": 13.58779888502975
+              }
+            ],
+            "trial_overlap": false,
+            "consider_class": "unresolved-extent",
+            "admitted": false
+          }
+        ]
+      },
+      "actual_MAP_contributions": 0,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 0,
+      "max_abs_projection_any_mapped_mJy_beam": 0.0,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
+      "T5_residual_min": null,
+      "T5_residual_max": null,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
+      "max_abs_projection_science_mJy_beam": 0.0,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
+    },
+    {
+      "key": "n4_w5",
+      "network": 4,
+      "detector": 271,
+      "original_window": {
+        "kind": "unflagged",
+        "event": null,
+        "detector": 271,
+        "first": 7327,
+        "past_last": 7694,
+        "center": 7510,
+        "rule": "largest supported original x pre/post contrast in separate time half; candidate-free central 0.58s; not truth",
+        "original_selection_score": 49.36841201469024,
+        "network": 4,
+        "key": "n4_w5",
+        "channel": 271,
+        "source_context_available": true,
+        "geometric_source_cells": 38,
+        "mapping_available_cells": 367,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          270,
+          272
+        ],
+        "original_x_pre_post_median": [
+          5.870313454484488e-06,
+          1.1000665877749549e-05
+        ],
+        "original_r_pre_post_median": [
+          2.3468248130580176e-05,
+          2.347822951304883e-05
+        ],
+        "original_x_difference_scale": 1.1871297621449195e-07,
+        "adjudication": {
+          "label": "plausible step",
+          "reason": "Finite x rise to persistent curved higher level with peer response; r near baseline; source context enters near excerpt end.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 367,
+          "RTC_x": 0,
+          "CAL": 0,
+          "M0": 0,
+          "T5_residual": 0,
+          "T5_total": 0
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": []
+      },
+      "actual_MAP_contributions": 0,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 0,
+      "max_abs_projection_any_mapped_mJy_beam": 0.0,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
+      "T5_residual_min": null,
+      "T5_residual_max": null,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
+      "max_abs_projection_science_mJy_beam": 0.0,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
+    },
+    {
+      "key": "n4_w6",
+      "network": 4,
+      "detector": 131,
+      "original_window": {
+        "kind": "unflagged",
+        "event": null,
+        "detector": 131,
+        "first": 1772,
+        "past_last": 2139,
+        "center": 1955,
+        "rule": "time fraction0.25, detector quantile0.25; first covered candidate-free identity; no cleaned selection",
+        "network": 4,
+        "key": "n4_w6",
+        "channel": 131,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 367,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          130,
+          132
+        ],
+        "original_x_pre_post_median": [
+          2.0322970490192108e-05,
+          2.052355222536363e-05
+        ],
+        "original_r_pre_post_median": [
+          2.5595690211478467e-05,
+          2.5563612407067114e-05
+        ],
+        "original_x_difference_scale": 8.627904228566986e-08,
+        "adjudication": {
+          "label": "plausible non-step",
+          "reason": "Local x/r largely stable while peers show broad structure; peer variation alone is not local step evidence.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 367,
+          "RTC_x": 367,
+          "CAL": 367,
+          "M0": 367,
+          "T5_residual": 367,
+          "T5_total": 367
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": []
+      },
+      "actual_MAP_contributions": 367,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 356,
+      "max_abs_projection_any_mapped_mJy_beam": 1.5499277460072762,
+      "peak_pixel": 16876,
+      "peak_pixel_hits": 875.0,
+      "peak_pixel_science_supported": true,
+      "T5_residual_min": -195.55989403452074,
+      "T5_residual_max": 256.2327336590367,
+      "peak_native_row": 1981,
+      "peak_distance_arcsec": 57.12572175556982,
+      "max_abs_projection_science_mJy_beam": 1.5499277460072762,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
+    },
+    {
+      "key": "n4_w7",
+      "network": 4,
+      "detector": 398,
+      "original_window": {
+        "kind": "unflagged",
+        "event": null,
+        "detector": 398,
+        "first": 5682,
+        "past_last": 6049,
+        "center": 5865,
+        "rule": "time fraction0.75, detector quantile0.75; first covered candidate-free identity; no cleaned selection",
+        "network": 4,
+        "key": "n4_w7",
+        "channel": 398,
+        "source_context_available": true,
+        "geometric_source_cells": 0,
+        "mapping_available_cells": 367,
+        "physical_run_boundaries": [],
+        "processing_boundaries": [],
+        "peer_channels": [
+          397,
+          399
+        ],
+        "original_x_pre_post_median": [
+          1.4215337956796683e-05,
+          1.3651797326615041e-05
+        ],
+        "original_r_pre_post_median": [
+          5.0586391708104815e-05,
+          5.052652896195183e-05
+        ],
+        "original_x_difference_scale": 9.211524365386061e-08,
+        "adjudication": {
+          "label": "plausible non-step",
+          "reason": "Smooth x decline/recovery with nearly stationary r; finite step not established.",
+          "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+        },
+        "stage_finite_counts": {
+          "raw_x": 367,
+          "RTC_x": 0,
+          "CAL": 0,
+          "M0": 0,
+          "T5_residual": 0,
+          "T5_total": 0
+        },
+        "selection_semantics": "unflagged selection tests proximity of event-group seeds only; raw candidates or existing groups may overlap. Frozen identities unchanged.",
+        "learn_trace": []
+      },
+      "actual_MAP_contributions": 0,
+      "source_disk_MAP_contributions": 0,
+      "science_supported_MAP_contributions": 0,
+      "max_abs_projection_any_mapped_mJy_beam": 0.0,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
+      "T5_residual_min": null,
+      "T5_residual_max": null,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
+      "max_abs_projection_science_mJy_beam": 0.0,
+      "max_abs_projection_40arcsec_mJy_beam": 0.0,
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
+    }
+  ]
+}

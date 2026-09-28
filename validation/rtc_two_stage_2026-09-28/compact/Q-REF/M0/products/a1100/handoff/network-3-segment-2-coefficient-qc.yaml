@@ -1,0 +1,30 @@
+schema: citlali-ptc-uniform-handoff-evaluation-v1
+identity: sha256:2b14f1e7ee3a1c87433773b2b560675cac188582d7de4e03b721ab593ca528c4:segment-2:uniform:selection=219f6641b40a1cfc049eae24e320a14fe06f014bf804a87223a4b8772ea932aa:QC:SCI-MAP
+profile: SCI-PTC:uniform_coefficient_handoff@draft-0.1
+payload_sha256: a0bb13f73c22813d8a4d5fa036bc8a9c1ad8d3cc9703f756b59acc2d04eb18a3
+PTC_publication_sha256: 627bcaa35df591b1469b9dedb96b7b98aaa3feb2c07aacc924d537e2b4ce1a72
+VAL_registry_sha256: a8fdf512507c877c22aa5457566f66782f89a466504115812b5dc7b5d46dfb5f
+VAL_registry: SCI-VAL_PROFILE_REGISTRY v0.1/r0.3-map-r0.7.1-jinc-stage-a-q002-noi-stage-a-r0.18-ptc-uniform-r0.4-2026-09-06
+source_register_sha256: fb13be222a9a8bb928fa172253f65aaf6ede081a88e901cdf6eb3799fad35f6e
+common_named_use_sha256: c1fc8370007b65307769fb966c8523251695924aaff84f3e5b4c89b6d3380b8c
+consumer_composition: PTC-UNIFORM-CONSUMER-COMPOSITION r0.4/2026-09-06
+requested: requested
+realization: realized
+logical_occurrence_domain: sha256:2b14f1e7ee3a1c87433773b2b560675cac188582d7de4e03b721ab593ca528c4:segment-2:complete-retained-support:causes=170a11259075f272e11f194deadd47d93c37ad818adc2a858460aabb2265ebc0
+applicability_rule: applicable exactly on q retained support; outside is inapplicable and has no coefficient
+eligibility_rule: eligible exactly when applicable and all immutable UQ restrictions are T
+restrictions:
+  UQ-01: T
+  UQ-02: T
+  UQ-03: T
+  UQ-04: T
+  UQ-05: T
+  UQ-06: T
+  UQ-07: T
+payload_facts:
+  scalar: T
+  unit: T
+  integrity: T
+  member: T
+integrity_evidence: required payload write closed, digest bound, decoder reloaded, scalar/unit/support independently compared
+lifecycle_evidence: new write-once q and g links; exact immutable input generation; source nonmutation checked before final product publication

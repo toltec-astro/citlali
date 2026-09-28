@@ -1,0 +1,22 @@
+Running main() from /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = rtc_quarantine.*:rtc_notch_recovery.rejection_retains_original_and_gives_no_outputs:rtc_pipeline.complete_plan_cannot_reuse_a_rejected_donors_original_median
+[==========] Running 3 tests from 3 test suites.
+[----------] Global test environment set-up.
+[----------] 1 test from rtc_notch_recovery
+[ RUN      ] rtc_notch_recovery.rejection_retains_original_and_gives_no_outputs
+[       OK ] rtc_notch_recovery.rejection_retains_original_and_gives_no_outputs (23 ms)
+[----------] 1 test from rtc_notch_recovery (23 ms total)
+
+[----------] 1 test from rtc_pipeline
+[ RUN      ] rtc_pipeline.complete_plan_cannot_reuse_a_rejected_donors_original_median
+[       OK ] rtc_pipeline.complete_plan_cannot_reuse_a_rejected_donors_original_median (11 ms)
+[----------] 1 test from rtc_pipeline (11 ms total)
+
+[----------] 1 test from rtc_quarantine
+[ RUN      ] rtc_quarantine.exact_frozen_physical_run_and_foreign_bindings
+[       OK ] rtc_quarantine.exact_frozen_physical_run_and_foreign_bindings (1 ms)
+[----------] 1 test from rtc_quarantine (1 ms total)
+
+[----------] Global test environment tear-down
+[==========] 3 tests from 3 test suites ran. (35 ms total)
+[  PASSED  ] 3 tests.

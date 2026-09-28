@@ -1,0 +1,181 @@
+{
+  "schema": "citlali-point-speed-pca-v1",
+  "mode": "POINT",
+  "observation": 152430,
+  "subobservation": 0,
+  "scan": 2,
+  "tune": [
+    152430,
+    0,
+    1
+  ],
+  "array": "a1100",
+  "networks": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "effective_config": "point_152430.yaml",
+  "input_manifest": "point_152430_inputs.json",
+  "map_owner": "map-owner.json",
+  "rtc_plans": {
+    "a1100": "a1100-rtc.json",
+    "a1400": "a1400-rtc.json",
+    "a2000": "a2000-rtc.json"
+  },
+  "ptc": {
+    "method": "observed-als",
+    "rank": 10
+  },
+  "cycles": 5,
+  "threshold": 3,
+  "coverage_policy": "high-coverage-informational",
+  "reference_tolerances": {
+    "signal_atol": 1e-09,
+    "signal_rtol": 1e-11,
+    "numerator_atol": 1e-07,
+    "fit_atol_rtol": 1e-08,
+    "deterministic_measurements_candidates": "exact",
+    "support_normalization": "exact"
+  },
+  "scientific_recipe": {
+    "guard": {
+      "method": "POINT-EXPECTED-v1",
+      "optimizer_calls": 1,
+      "sigma_floor_arcsec": 1.5,
+      "centroid_radius_arcsec": 20,
+      "strict_amplitude_snr": 10,
+      "weights": "identity",
+      "bootstrap": "one geometry-valid attempt, then C0, then complete same fit acceptance"
+    },
+    "C0": {
+      "request": {
+        "mask_fwhm": 4.0,
+        "lag_pixels": 32,
+        "taper_power": 1.0,
+        "bins": 5,
+        "minimum_pixels": 100,
+        "minimum_pairs": 200,
+        "region": "all",
+        "domain_factor": 1,
+        "seed": 23152389,
+        "high_coverage_usable": true
+      },
+      "stamp_size": 49,
+      "geometry": "singleton available M0 fit; freeze full mask/support and WCS"
+    },
+    "BASE_amplitude": {
+      "request": {
+        "mask_fwhm": 3.0,
+        "lag_pixels": 32,
+        "taper_power": 1.0,
+        "bins": 5,
+        "minimum_pixels": 100,
+        "minimum_pairs": 200,
+        "region": "all",
+        "domain_factor": 1,
+        "seed": 23152389,
+        "high_coverage_usable": true
+      },
+      "zero_lag_normalization": "mean squared standardized background; no second spatial covariance"
+    },
+    "PTC": {
+      "rank": 10,
+      "max_iterations": 100,
+      "relative_objective_tolerance": 1e-05,
+      "relative_rank_tolerance": 1e-10,
+      "method": "observed-entry ALS; own preceding converged basis initializer; fully resolved current residual"
+    },
+    "MAP": {
+      "pixel_arcsec": 2,
+      "nominal_beam_arcsec": 5.0,
+      "frame": "FK5 J2000",
+      "uniform_gamma": 1,
+      "coverage_cut": 0.5,
+      "projection": "native containing pixel"
+    },
+    "feedback": {
+      "radius_arcsec": 40,
+      "gain": 1,
+      "replacement": true,
+      "brightness": "measured minus own fitted constant",
+      "boundary": "inherited candidate_guard"
+    },
+    "endpoint": {
+      "maximum": 1,
+      "source_mask": "frozen M0 full mask and support intersect actual support",
+      "propagation": "seven-parameter local sensitivity with fitted-constant response for template/apertures",
+      "unsupported": "unresolved"
+    },
+    "stops": [
+      "missing dependency",
+      "unsupported required covariance or projection",
+      "new PTC failure",
+      "accounting mismatch",
+      "nonfinite required operand",
+      "expected-source rejection",
+      "inherited feedback boundary"
+    ]
+  },
+  "resource_limits": {
+    "network_workers": 2,
+    "free_space_reserve_bytes": 2000000000,
+    "maximum_retained_bytes": 2000000000
+  },
+  "source_revision": "a7351335f791c995e39d7cda4546412e3f4a5638",
+  "reference": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_consequences_2026-09-28/inputs/reference.json",
+    "sha256": "7fe20b7ec330db42a52ee3927e08615ec8ba91f9f95d4dc1d231abf0d36af08f"
+  },
+  "input_root": "/Users/gwilson/work_toltec/local_data",
+  "dependencies": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/freeze/dependencies.json",
+    "sha256": "9df84ed14690ee14d57f6b41156b3820a128adafd533eb22e65fa9741e76b92c"
+  },
+  "budget": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/freeze/budget.json",
+    "sha256": "72422dd7d5c186b064a1959ca249941a87cc37545b97ee4171166e155fb570a6"
+  },
+  "environment": {
+    "python": "/Users/gwilson/tolteca/bin/python",
+    "platform": "macOS-26.7-arm64-arm-64bit-Mach-O"
+  },
+  "generated_inputs": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/freeze/generated-inputs.json",
+    "sha256": "ce21d09bb63df90db23cebb4d0ea93b93ca5e519f52ae47c744f482acbb5838d"
+  },
+  "profile": "POINT-SPEED-PCA-v1",
+  "campaign_scope": "rtc-retained-residuals-v1",
+  "rtc_family": "Q",
+  "signal_branch": "REF",
+  "feedback_count": 5,
+  "experimental_method": "warm-observed-als",
+  "trajectory_identity": "Q-REF",
+  "experiment_operands": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_two_stage_2026-09-28/QUARANTINE.json",
+      "sha256": "a8edbfecdc297e06fd8625fbd1b435ff1b43bae60de852043cac0fcda995f1c5"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/freeze/measurement-geometry.json",
+      "sha256": "a6293579fd6d0b4eda0528f0f78b873374e914c87d576513d77bc36aa888af98"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/SHAPES.json",
+      "sha256": "379117aa08b587c141cccf5b9462010d26cca9882c0d806f7cfa5945783c966a"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/freeze/shapes/C-core-minus.fits",
+      "sha256": "847bc89510d1db06b7ca32ccc01d14464a41348b313be6e667d4db7f390e4d01"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/freeze/shapes/C-core-plus.fits",
+      "sha256": "2395402b0a9908703d3055e7f4843c47c2f14c3ac57513c45a5e4abaaf24cf69"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/freeze/shapes/C-shoulder.fits",
+      "sha256": "e00ea47b767c7591f401940195d096f3b8f7c1265e13828813fb040a57329ffa"
+    }
+  ]
+}

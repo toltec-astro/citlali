@@ -1,0 +1,299 @@
+{
+  "original_parents": 5,
+  "charged_trajectories": 5,
+  "feedback_attempts": 25,
+  "feedback_completed": 25,
+  "endpoints": 5,
+  "Q_trajectories": 4,
+  "replacements": 0,
+  "failed_launches": 0,
+  "initial_network_Apply_completions": 20,
+  "initial_PTC_segment_solves": 120,
+  "feedback_PTC_segment_solves": 600,
+  "unexpected_error_messages": [],
+  "runs": [
+    {
+      "name": "B-REF-rep1",
+      "role": "B",
+      "source": "9d28b2c6e134375b6f377ae59acc4e9f967ac3d4",
+      "binary": {
+        "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali",
+        "sha256": "d3bae801a8631c2303b819c66b6d6fc8dbb3ac4a86338c49abf3c05fddf994d8"
+      },
+      "seconds": 165.4348215,
+      "peak_sampled_tree_RSS": 2781560832,
+      "cpu_seconds": {
+        "user": 161.602336,
+        "system": 12.580767999999999
+      },
+      "readiness": [
+        {
+          "cycle": 0,
+          "status": "accepted",
+          "published_seconds": 71.383489833,
+          "caller_observed_seconds": 71.404228917
+        },
+        {
+          "cycle": 1,
+          "status": "accepted",
+          "published_seconds": 89.090313917,
+          "caller_observed_seconds": 89.092279458
+        },
+        {
+          "cycle": 2,
+          "status": "accepted",
+          "published_seconds": 107.835958708,
+          "caller_observed_seconds": 107.830064875
+        },
+        {
+          "cycle": 3,
+          "status": "accepted",
+          "published_seconds": 126.609689083,
+          "caller_observed_seconds": 126.651362167
+        },
+        {
+          "cycle": 4,
+          "status": "accepted",
+          "published_seconds": 145.872399667,
+          "caller_observed_seconds": 145.883319292
+        },
+        {
+          "cycle": 5,
+          "status": "accepted",
+          "published_seconds": 165.008524625,
+          "caller_observed_seconds": 165.016075
+        }
+      ],
+      "shared_retained_before_launch": 2561869621,
+      "single_trajectory_reservation": 6919071120,
+      "conservative_peak_reservation": 9480940741
+    },
+    {
+      "name": "Q-REF",
+      "role": "Q",
+      "source": "a7351335f791c995e39d7cda4546412e3f4a5638",
+      "binary": {
+        "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali",
+        "sha256": "a93254bcccfabb24fc2dbefa2a4baa74ff448ceeb21d7df948a803d58dae7cc9"
+      },
+      "seconds": 162.877656292,
+      "peak_sampled_tree_RSS": 3104866304,
+      "cpu_seconds": {
+        "user": 159.829445,
+        "system": 12.282191000000001
+      },
+      "readiness": [
+        {
+          "cycle": 0,
+          "status": "accepted",
+          "published_seconds": 71.0501835,
+          "caller_observed_seconds": 71.059591375
+        },
+        {
+          "cycle": 1,
+          "status": "accepted",
+          "published_seconds": 88.671256292,
+          "caller_observed_seconds": 88.684212209
+        },
+        {
+          "cycle": 2,
+          "status": "accepted",
+          "published_seconds": 107.303106,
+          "caller_observed_seconds": 107.353198334
+        },
+        {
+          "cycle": 3,
+          "status": "accepted",
+          "published_seconds": 125.922584375,
+          "caller_observed_seconds": 125.960164834
+        },
+        {
+          "cycle": 4,
+          "status": "accepted",
+          "published_seconds": 144.549417125,
+          "caller_observed_seconds": 144.566758167
+        },
+        {
+          "cycle": 5,
+          "status": "accepted",
+          "published_seconds": 162.525822667,
+          "caller_observed_seconds": 162.542852875
+        }
+      ],
+      "shared_retained_before_launch": 5637341469,
+      "single_trajectory_reservation": 6919071120,
+      "conservative_peak_reservation": 12556412589
+    },
+    {
+      "name": "Q-C-core-plus",
+      "role": "Q",
+      "source": "a7351335f791c995e39d7cda4546412e3f4a5638",
+      "binary": {
+        "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali",
+        "sha256": "a93254bcccfabb24fc2dbefa2a4baa74ff448ceeb21d7df948a803d58dae7cc9"
+      },
+      "seconds": 162.644442417,
+      "peak_sampled_tree_RSS": 2923921408,
+      "cpu_seconds": {
+        "user": 161.074471,
+        "system": 11.945435999999999
+      },
+      "readiness": [
+        {
+          "cycle": 0,
+          "status": "accepted",
+          "published_seconds": 70.808195792,
+          "caller_observed_seconds": 70.818354959
+        },
+        {
+          "cycle": 1,
+          "status": "accepted",
+          "published_seconds": 87.901324459,
+          "caller_observed_seconds": 87.9453885
+        },
+        {
+          "cycle": 2,
+          "status": "accepted",
+          "published_seconds": 106.553829542,
+          "caller_observed_seconds": 106.605992334
+        },
+        {
+          "cycle": 3,
+          "status": "accepted",
+          "published_seconds": 125.189644084,
+          "caller_observed_seconds": 125.193183875
+        },
+        {
+          "cycle": 4,
+          "status": "accepted",
+          "published_seconds": 143.816544584,
+          "caller_observed_seconds": 143.844302292
+        },
+        {
+          "cycle": 5,
+          "status": "accepted",
+          "published_seconds": 162.3017615,
+          "caller_observed_seconds": 162.31433975
+        }
+      ],
+      "shared_retained_before_launch": 8699592746,
+      "single_trajectory_reservation": 6919071120,
+      "conservative_peak_reservation": 15618663866
+    },
+    {
+      "name": "Q-C-core-minus",
+      "role": "Q",
+      "source": "a7351335f791c995e39d7cda4546412e3f4a5638",
+      "binary": {
+        "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali",
+        "sha256": "a93254bcccfabb24fc2dbefa2a4baa74ff448ceeb21d7df948a803d58dae7cc9"
+      },
+      "seconds": 162.709472292,
+      "peak_sampled_tree_RSS": 2900230144,
+      "cpu_seconds": {
+        "user": 160.224742,
+        "system": 11.647135
+      },
+      "readiness": [
+        {
+          "cycle": 0,
+          "status": "accepted",
+          "published_seconds": 71.339138959,
+          "caller_observed_seconds": 71.34769725
+        },
+        {
+          "cycle": 1,
+          "status": "accepted",
+          "published_seconds": 88.423575292,
+          "caller_observed_seconds": 88.463505667
+        },
+        {
+          "cycle": 2,
+          "status": "accepted",
+          "published_seconds": 107.047912584,
+          "caller_observed_seconds": 107.085369375
+        },
+        {
+          "cycle": 3,
+          "status": "accepted",
+          "published_seconds": 125.705304667,
+          "caller_observed_seconds": 125.747771542
+        },
+        {
+          "cycle": 4,
+          "status": "accepted",
+          "published_seconds": 143.844146667,
+          "caller_observed_seconds": 143.839843667
+        },
+        {
+          "cycle": 5,
+          "status": "accepted",
+          "published_seconds": 162.314057417,
+          "caller_observed_seconds": 162.305458459
+        }
+      ],
+      "shared_retained_before_launch": 11761856689,
+      "single_trajectory_reservation": 6919071120,
+      "conservative_peak_reservation": 18680927809
+    },
+    {
+      "name": "Q-C-shoulder",
+      "role": "Q",
+      "source": "a7351335f791c995e39d7cda4546412e3f4a5638",
+      "binary": {
+        "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali",
+        "sha256": "a93254bcccfabb24fc2dbefa2a4baa74ff448ceeb21d7df948a803d58dae7cc9"
+      },
+      "seconds": 177.064814583,
+      "peak_sampled_tree_RSS": 2579939328,
+      "cpu_seconds": {
+        "user": 160.481534,
+        "system": 11.915161
+      },
+      "readiness": [
+        {
+          "cycle": 0,
+          "status": "accepted",
+          "published_seconds": 78.567627416,
+          "caller_observed_seconds": 78.614423458
+        },
+        {
+          "cycle": 1,
+          "status": "accepted",
+          "published_seconds": 95.648130125,
+          "caller_observed_seconds": 95.675228708
+        },
+        {
+          "cycle": 2,
+          "status": "accepted",
+          "published_seconds": 114.79890525,
+          "caller_observed_seconds": 114.835664583
+        },
+        {
+          "cycle": 3,
+          "status": "accepted",
+          "published_seconds": 132.935536791,
+          "caller_observed_seconds": 132.992665958
+        },
+        {
+          "cycle": 4,
+          "status": "accepted",
+          "published_seconds": 151.560795708,
+          "caller_observed_seconds": 151.584251416
+        },
+        {
+          "cycle": 5,
+          "status": "accepted",
+          "published_seconds": 176.696343833,
+          "caller_observed_seconds": 176.728697666
+        }
+      ],
+      "shared_retained_before_launch": 14824250461,
+      "single_trajectory_reservation": 6919071120,
+      "conservative_peak_reservation": 21743321581
+    }
+  ],
+  "scope": "fresh local original-input active RTC per trajectory; one cold M0 and fully resolved own-basis warm ALS per feedback; segment solves are not additional trajectory launches; Stage1 validation-only calls are not observations",
+  "prior_failed_campaign": "da94a43795cde31c80b0f642ddde258d65905d3a retained separately, unchanged",
+  "cleanup_applied": false
+}

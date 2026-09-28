@@ -1,0 +1,178 @@
+[
+  {
+    "key": "n1_new0",
+    "network": 1,
+    "detector": 451,
+    "channel": 451,
+    "physical_run": 0,
+    "first": 0,
+    "past_last": 338,
+    "center": 154,
+    "selection": "largest absolute retained off-source M0 sample"
+  },
+  {
+    "key": "n1_new1",
+    "network": 1,
+    "detector": 346,
+    "channel": 346,
+    "physical_run": 0,
+    "first": 1504,
+    "past_last": 1871,
+    "center": 1687,
+    "selection": "largest absolute fully supported 0.5-second mean departure"
+  },
+  {
+    "key": "n1_new2",
+    "network": 1,
+    "detector": 83,
+    "channel": 83,
+    "physical_run": 0,
+    "first": 3727,
+    "past_last": 4094,
+    "center": 3910,
+    "selection": "median off-source M0 adjacent-difference MAD detector; middle physical time"
+  },
+  {
+    "key": "n2_new0",
+    "network": 2,
+    "detector": 79,
+    "channel": 79,
+    "physical_run": 0,
+    "first": 2204,
+    "past_last": 2571,
+    "center": 2387,
+    "selection": "largest absolute retained off-source M0 sample"
+  },
+  {
+    "key": "n2_new1",
+    "network": 2,
+    "detector": 88,
+    "channel": 88,
+    "physical_run": 0,
+    "first": 4423,
+    "past_last": 4790,
+    "center": 4606,
+    "selection": "largest absolute fully supported 0.5-second mean departure"
+  },
+  {
+    "key": "n2_new2",
+    "network": 2,
+    "detector": 246,
+    "channel": 246,
+    "physical_run": 0,
+    "first": 3727,
+    "past_last": 4094,
+    "center": 3910,
+    "selection": "median off-source M0 adjacent-difference MAD detector; middle physical time"
+  },
+  {
+    "key": "n3_new0",
+    "network": 3,
+    "detector": 104,
+    "channel": 104,
+    "physical_run": 0,
+    "first": 2088,
+    "past_last": 2455,
+    "center": 2271,
+    "selection": "largest absolute retained off-source M0 sample"
+  },
+  {
+    "key": "n3_new1",
+    "network": 3,
+    "detector": 64,
+    "channel": 64,
+    "physical_run": 0,
+    "first": 1772,
+    "past_last": 2139,
+    "center": 1955,
+    "selection": "largest absolute fully supported 0.5-second mean departure"
+  },
+  {
+    "key": "n3_new2",
+    "network": 3,
+    "detector": 225,
+    "channel": 225,
+    "physical_run": 0,
+    "first": 3727,
+    "past_last": 4094,
+    "center": 3910,
+    "selection": "median off-source M0 adjacent-difference MAD detector; middle physical time"
+  },
+  {
+    "key": "n4_new0",
+    "network": 4,
+    "detector": 262,
+    "channel": 262,
+    "physical_run": 0,
+    "first": 4279,
+    "past_last": 4646,
+    "center": 4462,
+    "selection": "largest absolute retained off-source M0 sample"
+  },
+  {
+    "key": "n4_new1",
+    "network": 4,
+    "detector": 179,
+    "channel": 179,
+    "physical_run": 0,
+    "first": 2233,
+    "past_last": 2600,
+    "center": 2416,
+    "selection": "largest absolute fully supported 0.5-second mean departure"
+  },
+  {
+    "key": "n4_new2",
+    "network": 4,
+    "detector": 165,
+    "channel": 165,
+    "physical_run": 0,
+    "first": 3727,
+    "past_last": 4094,
+    "center": 3910,
+    "selection": "median off-source M0 adjacent-difference MAD detector; middle physical time"
+  },
+  {
+    "key": "n1_t5",
+    "network": 1,
+    "detector": 206,
+    "channel": 206,
+    "physical_run": 0,
+    "first": 1733,
+    "past_last": 2100,
+    "center": 1916,
+    "selection": "largest absolute fully supported 61-row background T5 mean departure on a detector not in previous 12 windows"
+  },
+  {
+    "key": "n2_t5",
+    "network": 2,
+    "detector": 309,
+    "channel": 309,
+    "physical_run": 0,
+    "first": 1562,
+    "past_last": 1929,
+    "center": 1745,
+    "selection": "largest absolute fully supported 61-row background T5 mean departure on a detector not in previous 12 windows"
+  },
+  {
+    "key": "n3_t5",
+    "network": 3,
+    "detector": 196,
+    "channel": 196,
+    "physical_run": 0,
+    "first": 4951,
+    "past_last": 5318,
+    "center": 5134,
+    "selection": "largest absolute fully supported 61-row background T5 mean departure on a detector not in previous 12 windows"
+  },
+  {
+    "key": "n4_t5",
+    "network": 4,
+    "detector": 372,
+    "channel": 372,
+    "physical_run": 0,
+    "first": 2852,
+    "past_last": 3219,
+    "center": 3035,
+    "selection": "largest absolute fully supported 61-row background T5 mean departure on a detector not in previous 12 windows"
+  }
+]

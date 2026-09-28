@@ -1,0 +1,165 @@
+{
+  "command": [
+    "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/upstream/development.yaml"
+  ],
+  "executable_sha256": "d3bae801a8631c2303b819c66b6d6fc8dbb3ac4a86338c49abf3c05fddf994d8",
+  "input_sha256": "b9e583d9ef5fd7ffd3f42ccabf867aad6ae43411af0f0065db3c084a59ed9868",
+  "workers": 2,
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "BLIS_NUM_THREADS": "1",
+    "OMP_DYNAMIC": "FALSE"
+  },
+  "measurement": "fresh process; whole-invocation CPU and sampled RSS; no concurrent diagnostic",
+  "exit_code": 0,
+  "wall_seconds": 52.3641489999718,
+  "polled_peak_rss_bytes": 2640609280,
+  "output_bytes": 2343215595
+}
+{
+  "command": [
+    "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/M0/development.yaml"
+  ],
+  "executable_sha256": "d3bae801a8631c2303b819c66b6d6fc8dbb3ac4a86338c49abf3c05fddf994d8",
+  "input_sha256": "6c18d58cefe9debcb20658706294a4b9bf7fc8f8fbbbb557f3cc3e14ea4e4c9e",
+  "workers": 1,
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "BLIS_NUM_THREADS": "1",
+    "OMP_DYNAMIC": "FALSE"
+  },
+  "measurement": "fresh process; whole-invocation CPU and sampled RSS; no concurrent diagnostic",
+  "exit_code": 0,
+  "wall_seconds": 16.788141458993778,
+  "polled_peak_rss_bytes": 787120128,
+  "output_bytes": 207430773
+}
+{
+  "command": [
+    "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/run/BASE-POINT/REF/a1100/cycle-01/native/development.yaml"
+  ],
+  "executable_sha256": "d3bae801a8631c2303b819c66b6d6fc8dbb3ac4a86338c49abf3c05fddf994d8",
+  "input_sha256": "8d5fffe500f472324f5aa2d00edfe676442d74dd37ed72f70d80eba972b3bf05",
+  "workers": 1,
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "BLIS_NUM_THREADS": "1",
+    "OMP_DYNAMIC": "FALSE"
+  },
+  "measurement": "fresh process; whole-invocation CPU and sampled RSS; no concurrent diagnostic",
+  "exit_code": 0,
+  "wall_seconds": 17.306998250016477,
+  "polled_peak_rss_bytes": 2077982720,
+  "output_bytes": 269652342
+}
+{"policy": "BASE-POINT", "branch": "REF", "cycle": 1, "ready": true, "reason": null}
+{
+  "command": [
+    "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/run/BASE-POINT/REF/a1100/cycle-02/native/development.yaml"
+  ],
+  "executable_sha256": "d3bae801a8631c2303b819c66b6d6fc8dbb3ac4a86338c49abf3c05fddf994d8",
+  "input_sha256": "661e2475a486782dc74294d673e392ad18241b372dfc1449c01fee3a257d1b25",
+  "workers": 1,
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "BLIS_NUM_THREADS": "1",
+    "OMP_DYNAMIC": "FALSE"
+  },
+  "measurement": "fresh process; whole-invocation CPU and sampled RSS; no concurrent diagnostic",
+  "exit_code": 0,
+  "wall_seconds": 18.318159874994308,
+  "polled_peak_rss_bytes": 2076786688,
+  "output_bytes": 269668112
+}
+{"policy": "BASE-POINT", "branch": "REF", "cycle": 2, "ready": true, "reason": null}
+{
+  "command": [
+    "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/run/BASE-POINT/REF/a1100/cycle-03/native/development.yaml"
+  ],
+  "executable_sha256": "d3bae801a8631c2303b819c66b6d6fc8dbb3ac4a86338c49abf3c05fddf994d8",
+  "input_sha256": "3bc749a411ae91ed74782ccbd02dc040db294bc15a455ebd33fb15fa0342c2b0",
+  "workers": 1,
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "BLIS_NUM_THREADS": "1",
+    "OMP_DYNAMIC": "FALSE"
+  },
+  "measurement": "fresh process; whole-invocation CPU and sampled RSS; no concurrent diagnostic",
+  "exit_code": 0,
+  "wall_seconds": 18.307408541964833,
+  "polled_peak_rss_bytes": 2074869760,
+  "output_bytes": 269667764
+}
+{"policy": "BASE-POINT", "branch": "REF", "cycle": 3, "ready": true, "reason": null}
+{
+  "command": [
+    "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/run/BASE-POINT/REF/a1100/cycle-04/native/development.yaml"
+  ],
+  "executable_sha256": "d3bae801a8631c2303b819c66b6d6fc8dbb3ac4a86338c49abf3c05fddf994d8",
+  "input_sha256": "62b864dfe656436edb7e02f26db08a8d22c0f30e28ce76bc646639b13b61991a",
+  "workers": 1,
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "BLIS_NUM_THREADS": "1",
+    "OMP_DYNAMIC": "FALSE"
+  },
+  "measurement": "fresh process; whole-invocation CPU and sampled RSS; no concurrent diagnostic",
+  "exit_code": 0,
+  "wall_seconds": 18.816207083000336,
+  "polled_peak_rss_bytes": 2075017216,
+  "output_bytes": 269667930
+}
+{"policy": "BASE-POINT", "branch": "REF", "cycle": 4, "ready": true, "reason": null}
+{
+  "command": [
+    "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/run/BASE-POINT/REF/a1100/cycle-05/native/development.yaml"
+  ],
+  "executable_sha256": "d3bae801a8631c2303b819c66b6d6fc8dbb3ac4a86338c49abf3c05fddf994d8",
+  "input_sha256": "38a4ef70f9431199794362fd6510c7fd1352a2c0ae6d70278668c4cec289a2b5",
+  "workers": 1,
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "BLIS_NUM_THREADS": "1",
+    "OMP_DYNAMIC": "FALSE"
+  },
+  "measurement": "fresh process; whole-invocation CPU and sampled RSS; no concurrent diagnostic",
+  "exit_code": 0,
+  "wall_seconds": 18.841705333034042,
+  "polled_peak_rss_bytes": 2074738688,
+  "output_bytes": 269667610
+}
+{"policy": "BASE-POINT", "branch": "REF", "cycle": 5, "ready": true, "reason": null}
+/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_reference.py:92: RuntimeWarning: divide by zero encountered in matmul
+  roi=f.disk;J=jacobian(p,f.x[roi],f.y[roi]);U,sigma,Vt=np.linalg.svd(J,full_matrices=False);rank=int(np.sum(sigma>np.finfo(float).eps*max(J.shape)*sigma[0]));pinv=(Vt[:rank].T/sigma[:rank])@U[:,:rank].T
+/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_reference.py:92: RuntimeWarning: overflow encountered in matmul
+  roi=f.disk;J=jacobian(p,f.x[roi],f.y[roi]);U,sigma,Vt=np.linalg.svd(J,full_matrices=False);rank=int(np.sum(sigma>np.finfo(float).eps*max(J.shape)*sigma[0]));pinv=(Vt[:rank].T/sigma[:rank])@U[:,:rank].T
+/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_reference.py:92: RuntimeWarning: invalid value encountered in matmul
+  roi=f.disk;J=jacobian(p,f.x[roi],f.y[roi]);U,sigma,Vt=np.linalg.svd(J,full_matrices=False);rank=int(np.sum(sigma>np.finfo(float).eps*max(J.shape)*sigma[0]));pinv=(Vt[:rank].T/sigma[:rank])@U[:,:rank].T

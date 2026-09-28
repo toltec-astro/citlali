@@ -1,0 +1,206 @@
+[
+  {
+    "branch": "C-core-plus",
+    "cycle": 0,
+    "spatial": {
+      "pixels": 1257,
+      "g": 0.7534558639274208,
+      "eta": 0.2970846156132382,
+      "difference_rms": 1.438725338576238,
+      "residual_rms": 0.554034966945588,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "RTC_spatial": {
+      "pixels": 1205,
+      "g": 0.998390124077413,
+      "eta": 0.0022150283662181604,
+      "difference_rms": 1.6981439546755688,
+      "residual_rms": 0.003767497866383761,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "support": {
+      "HITS": {
+        "equal": false,
+        "changed": 185
+      },
+      "NORMALIZATION": {
+        "equal": false,
+        "changed": 185
+      },
+      "SCI_SUPPORT": {
+        "equal": false,
+        "changed": 22
+      }
+    }
+  },
+  {
+    "branch": "C-core-plus",
+    "cycle": 5,
+    "spatial": {
+      "pixels": 1257,
+      "g": 0.9909611868112168,
+      "eta": 0.08318193396127264,
+      "difference_rms": 1.854472419521275,
+      "residual_rms": 0.1551265114740939,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "RTC_spatial": {
+      "pixels": 1205,
+      "g": 0.998390124077413,
+      "eta": 0.0022150283662181604,
+      "difference_rms": 1.6981439546755688,
+      "residual_rms": 0.003767497866383761,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "support": {
+      "HITS": {
+        "equal": false,
+        "changed": 185
+      },
+      "NORMALIZATION": {
+        "equal": false,
+        "changed": 185
+      },
+      "SCI_SUPPORT": {
+        "equal": false,
+        "changed": 22
+      }
+    }
+  },
+  {
+    "branch": "C-core-minus",
+    "cycle": 0,
+    "spatial": {
+      "pixels": 1257,
+      "g": 0.7525537488868658,
+      "eta": 0.28614001436387804,
+      "difference_rms": 1.4287952524227987,
+      "residual_rms": 0.5336243112847241,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "RTC_spatial": {
+      "pixels": 1257,
+      "g": 0.9985252738353809,
+      "eta": 0.0021446596770786407,
+      "difference_rms": 1.8621583235838377,
+      "residual_rms": 0.003999589311776038,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "support": {
+      "HITS": {
+        "equal": true,
+        "changed": 0
+      },
+      "NORMALIZATION": {
+        "equal": true,
+        "changed": 0
+      },
+      "SCI_SUPPORT": {
+        "equal": true,
+        "changed": 0
+      }
+    }
+  },
+  {
+    "branch": "C-core-minus",
+    "cycle": 5,
+    "spatial": {
+      "pixels": 1257,
+      "g": 0.9895301180275385,
+      "eta": 0.02143369359886972,
+      "difference_rms": 1.845710516142806,
+      "residual_rms": 0.03997182991135166,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "RTC_spatial": {
+      "pixels": 1257,
+      "g": 0.9985252738353809,
+      "eta": 0.0021446596770786407,
+      "difference_rms": 1.8621583235838377,
+      "residual_rms": 0.003999589311776038,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "support": {
+      "HITS": {
+        "equal": true,
+        "changed": 0
+      },
+      "NORMALIZATION": {
+        "equal": true,
+        "changed": 0
+      },
+      "SCI_SUPPORT": {
+        "equal": true,
+        "changed": 0
+      }
+    }
+  },
+  {
+    "branch": "C-shoulder",
+    "cycle": 0,
+    "spatial": {
+      "pixels": 1257,
+      "g": 0.6301343056044045,
+      "eta": 0.4167940155912187,
+      "difference_rms": 1.2287604008105835,
+      "residual_rms": 0.7774113741496607,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "RTC_spatial": {
+      "pixels": 1205,
+      "g": 0.999584971231289,
+      "eta": 0.0006073396765456067,
+      "difference_rms": 1.790003885600606,
+      "residual_rms": 0.0010875916557603015,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "support": {
+      "HITS": {
+        "equal": false,
+        "changed": 197
+      },
+      "NORMALIZATION": {
+        "equal": false,
+        "changed": 197
+      },
+      "SCI_SUPPORT": {
+        "equal": false,
+        "changed": 1
+      }
+    }
+  },
+  {
+    "branch": "C-shoulder",
+    "cycle": 5,
+    "spatial": {
+      "pixels": 1257,
+      "g": 0.8755473050437741,
+      "eta": 0.2749943967165847,
+      "difference_rms": 1.6959292319821258,
+      "residual_rms": 0.5129242835496249,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "RTC_spatial": {
+      "pixels": 1205,
+      "g": 0.999584971231289,
+      "eta": 0.0006073396765456067,
+      "difference_rms": 1.790003885600606,
+      "residual_rms": 0.0010875916557603015,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "support": {
+      "HITS": {
+        "equal": false,
+        "changed": 197
+      },
+      "NORMALIZATION": {
+        "equal": false,
+        "changed": 197
+      },
+      "SCI_SUPPORT": {
+        "equal": false,
+        "changed": 1
+      }
+    }
+  }
+]

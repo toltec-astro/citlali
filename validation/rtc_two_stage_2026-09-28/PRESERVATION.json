@@ -1,0 +1,12 @@
+{
+  "compact_files": 2336,
+  "compact_bytes": 113373454,
+  "native_scratch_files": 127920,
+  "native_scratch_bytes": 13771984323,
+  "deleted": 0,
+  "protected_unchanged": 7347,
+  "previous_failed_campaign_scratch": "retained; earlier 2.27 GB proposal unapproved",
+  "new_cleanup": "enumerated proposal only; no approval or removal",
+  "isolation": "REPORT_ISOLATION.json",
+  "saved_tests": "SAVED_TESTS.txt"
+}

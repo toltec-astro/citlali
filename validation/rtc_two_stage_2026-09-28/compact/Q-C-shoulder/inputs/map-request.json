@@ -1,0 +1,47 @@
+{
+  "schema": "citlali-map-saved-ptc-v1",
+  "owner_binding": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-shoulder/inputs/map-owner.json",
+    "sha256": "219f6641b40a1cfc049eae24e320a14fe06f014bf804a87223a4b8772ea932aa"
+  },
+  "pixel_size_arcsec": 2.0,
+  "coverage_cut": 0.5,
+  "networks": [
+    {
+      "root": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-shoulder/upstream/products/network1",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-shoulder/inputs/network1-input.json",
+        "sha256": "bec3bddf4d9a991371c9cea0055855b2f042d4fb2d759af3342d9819bd5e9c89"
+      },
+      "receipt_sha256": "e0d8d9127c3f915495ff0cfada62c0b5ccc1e919c83c0955f2f28cbc9fbc9ddf",
+      "ptc_receipt_sha256": "f802b781f2692d428e0a93e663e840d0fd86a4bf58fd6e8cc433bb82e166d85f"
+    },
+    {
+      "root": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-shoulder/upstream/products/network2",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-shoulder/inputs/network2-input.json",
+        "sha256": "e7ef76bbbead8fbe8b4d43d36da9fa87388e219bc159d05a286113b7e3c9703a"
+      },
+      "receipt_sha256": "69d737d89a00936e2f0e3f9add438d7ab1f728c51a577a1382a9f24335e2591e",
+      "ptc_receipt_sha256": "1f624e7fd2a1c3498dce763a5c209f8155bbfa4314d321de6adf4433c09191fc"
+    },
+    {
+      "root": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-shoulder/upstream/products/network3",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-shoulder/inputs/network3-input.json",
+        "sha256": "3d1e31d0a6f7eabf551ece95c19e806f587a063e346c187e32c406b02b493a97"
+      },
+      "receipt_sha256": "b207f28ad00973e72232fa279f0f6f7d6b88476816a6fe9e57a282913715cbb7",
+      "ptc_receipt_sha256": "fccf535fc84ef9ec26b8d92c2d539bfd09288cb8eacf420244f262ba93891d51"
+    },
+    {
+      "root": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-shoulder/upstream/products/network4",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-shoulder/inputs/network4-input.json",
+        "sha256": "7d65c33114ca43dd56258d75da668ece1fa6a8a4a9a11599c7ab40e921b73e45"
+      },
+      "receipt_sha256": "373ac5cc5339525e2d7314583d8c0f09f7a8072507f8156d56f161c3c453bb77",
+      "ptc_receipt_sha256": "0f3342b1ecc8e4e1986b7e077e8221ab4355ab0df0a645938d7a27ac05e6eabb"
+    }
+  ]
+}

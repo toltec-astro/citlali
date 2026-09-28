@@ -1,0 +1,23 @@
+{
+  "source_revision": "a7351335f791c995e39d7cda4546412e3f4a5638",
+  "tree": "cae9ecbc5b568cacd2225a4b91d32596d1a6bf4b",
+  "parent": "9d28b2c6e134375b6f377ae59acc4e9f967ac3d4",
+  "verdict": "pass",
+  "scope": "four fixed sequential Q roles; existing stop gates; frozenD88 manifest only",
+  "reviewer": "/root/retained_preflight",
+  "context": "fresh work-order read/review in existing reviewer context; fresh blank-agent unavailable due threadlimit",
+  "science": "pass bounded experimental hypothesis, not proof of nonastronomical origin or benefit",
+  "architecture": "pass existing RTC rejection owner; donor reuse fails closed",
+  "hygiene": "pass clean branch, protected inputs and immutable selection",
+  "independently_reproduced": {
+    "native_fruit_contract": 6,
+    "quarantine_rejection": 5,
+    "exact_version": "ga7351335f"
+  },
+  "limitations": [
+    "supplemental localAppleClang/Homebrew; KIDs dependency dirty longstanding",
+    "one existing disabledtest",
+    "all full-run support/uncertainty and source-response effects must be reported",
+    "no expansion promotion cleanup push or automatic science-failure retry"
+  ]
+}

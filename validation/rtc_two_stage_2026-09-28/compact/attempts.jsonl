@@ -1,0 +1,40 @@
+{"kind": "parent", "identity": {"run": "B-REF-rep1"}, "epoch": 1790620069.157521}
+{"kind": "trajectory", "identity": {"run": "B-REF-rep1", "branch": "REF", "cycle": 0}, "epoch": 1790620069.1617768}
+{"kind": "feedback", "identity": {"run": "B-REF-rep1", "branch": "REF", "cycle": 1}, "epoch": 1790620140.556802}
+{"kind": "feedback", "identity": {"run": "B-REF-rep1", "branch": "REF", "cycle": 2}, "epoch": 1790620158.269831}
+{"kind": "feedback", "identity": {"run": "B-REF-rep1", "branch": "REF", "cycle": 3}, "epoch": 1790620177.014512}
+{"kind": "feedback", "identity": {"run": "B-REF-rep1", "branch": "REF", "cycle": 4}, "epoch": 1790620195.79471}
+{"kind": "feedback", "identity": {"run": "B-REF-rep1", "branch": "REF", "cycle": 5}, "epoch": 1790620215.049958}
+{"kind": "endpoint", "identity": {"run": "B-REF-rep1", "cycle": 5}, "epoch": 1790620234.180661}
+{"kind": "parent", "identity": {"run": "Q-REF"}, "epoch": 1790621414.00273}
+{"kind": "trajectory", "identity": {"run": "Q-REF", "branch": "REF", "cycle": 0}, "epoch": 1790621414.007901}
+{"kind": "feedback", "identity": {"run": "Q-REF", "branch": "REF", "cycle": 1}, "epoch": 1790621485.069243}
+{"kind": "feedback", "identity": {"run": "Q-REF", "branch": "REF", "cycle": 2}, "epoch": 1790621502.6937642}
+{"kind": "feedback", "identity": {"run": "Q-REF", "branch": "REF", "cycle": 3}, "epoch": 1790621521.330243}
+{"kind": "feedback", "identity": {"run": "Q-REF", "branch": "REF", "cycle": 4}, "epoch": 1790621539.941576}
+{"kind": "feedback", "identity": {"run": "Q-REF", "branch": "REF", "cycle": 5}, "epoch": 1790621558.575818}
+{"kind": "endpoint", "identity": {"run": "Q-REF", "cycle": 5}, "epoch": 1790621576.540149}
+{"kind": "parent", "identity": {"run": "Q-C-core-plus"}, "epoch": 1790621620.041107}
+{"kind": "trajectory", "identity": {"run": "Q-C-core-plus", "branch": "REF", "cycle": 0}, "epoch": 1790621620.0462358}
+{"kind": "feedback", "identity": {"run": "Q-C-core-plus", "branch": "REF", "cycle": 1}, "epoch": 1790621690.8692758}
+{"kind": "feedback", "identity": {"run": "Q-C-core-plus", "branch": "REF", "cycle": 2}, "epoch": 1790621707.9697878}
+{"kind": "feedback", "identity": {"run": "Q-C-core-plus", "branch": "REF", "cycle": 3}, "epoch": 1790621726.6210308}
+{"kind": "feedback", "identity": {"run": "Q-C-core-plus", "branch": "REF", "cycle": 4}, "epoch": 1790621745.2500339}
+{"kind": "feedback", "identity": {"run": "Q-C-core-plus", "branch": "REF", "cycle": 5}, "epoch": 1790621763.8796601}
+{"kind": "endpoint", "identity": {"run": "Q-C-core-plus", "cycle": 5}, "epoch": 1790621782.357515}
+{"kind": "parent", "identity": {"run": "Q-C-core-minus"}, "epoch": 1790621815.588361}
+{"kind": "trajectory", "identity": {"run": "Q-C-core-minus", "branch": "REF", "cycle": 0}, "epoch": 1790621815.5920498}
+{"kind": "feedback", "identity": {"run": "Q-C-core-minus", "branch": "REF", "cycle": 1}, "epoch": 1790621886.9442089}
+{"kind": "feedback", "identity": {"run": "Q-C-core-minus", "branch": "REF", "cycle": 2}, "epoch": 1790621904.036127}
+{"kind": "feedback", "identity": {"run": "Q-C-core-minus", "branch": "REF", "cycle": 3}, "epoch": 1790621922.660251}
+{"kind": "feedback", "identity": {"run": "Q-C-core-minus", "branch": "REF", "cycle": 4}, "epoch": 1790621941.3256562}
+{"kind": "feedback", "identity": {"run": "Q-C-core-minus", "branch": "REF", "cycle": 5}, "epoch": 1790621959.456684}
+{"kind": "endpoint", "identity": {"run": "Q-C-core-minus", "cycle": 5}, "epoch": 1790621977.9187279}
+{"kind": "parent", "identity": {"run": "Q-C-shoulder"}, "epoch": 1790622042.064268}
+{"kind": "trajectory", "identity": {"run": "Q-C-shoulder", "branch": "REF", "cycle": 0}, "epoch": 1790622042.069798}
+{"kind": "feedback", "identity": {"run": "Q-C-shoulder", "branch": "REF", "cycle": 1}, "epoch": 1790622120.655145}
+{"kind": "feedback", "identity": {"run": "Q-C-shoulder", "branch": "REF", "cycle": 2}, "epoch": 1790622137.732803}
+{"kind": "feedback", "identity": {"run": "Q-C-shoulder", "branch": "REF", "cycle": 3}, "epoch": 1790622156.8854039}
+{"kind": "feedback", "identity": {"run": "Q-C-shoulder", "branch": "REF", "cycle": 4}, "epoch": 1790622175.026655}
+{"kind": "feedback", "identity": {"run": "Q-C-shoulder", "branch": "REF", "cycle": 5}, "epoch": 1790622193.6551108}
+{"kind": "endpoint", "identity": {"run": "Q-C-shoulder", "cycle": 5}, "epoch": 1790622218.775147}

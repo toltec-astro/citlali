@@ -1,0 +1,286 @@
+[
+  {
+    "branch": "REF",
+    "cycle": 0,
+    "B": {
+      "reference": 980.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 490.0,
+      "science_pixels": 8345,
+      "normalization_sum": 9805999.0
+    },
+    "Q": {
+      "reference": 979.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 489.5,
+      "science_pixels": 8341,
+      "normalization_sum": 9799155.0
+    },
+    "Q_REF": {
+      "reference": 979.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 489.5,
+      "science_pixels": 8341,
+      "normalization_sum": 9799155.0
+    },
+    "B_domain_lost_pixels": 4,
+    "B_domain_gained_pixels": 0,
+    "B_domain_retained_fraction": 0.9995206710605152,
+    "Q_REF_lost_pixels": 0,
+    "Q_REF_gained_pixels": 0,
+    "Q_REF_gained_with_unchanged_normalization": 0,
+    "Q_REF_gained_normalizations": [],
+    "Q_REF_normalization_lost": 0.0,
+    "Q_REF_normalization_gained": 0.0,
+    "explanation": "Existing sorted-positive-normalization reference and fixed coverage cut reproduced exactly. Science support can gain threshold-edge pixels without any new native exposure when the reference normalization falls. No exposure-recovery policy applied."
+  },
+  {
+    "branch": "REF",
+    "cycle": 5,
+    "B": {
+      "reference": 980.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 490.0,
+      "science_pixels": 8345,
+      "normalization_sum": 9805999.0
+    },
+    "Q": {
+      "reference": 979.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 489.5,
+      "science_pixels": 8341,
+      "normalization_sum": 9799155.0
+    },
+    "Q_REF": {
+      "reference": 979.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 489.5,
+      "science_pixels": 8341,
+      "normalization_sum": 9799155.0
+    },
+    "B_domain_lost_pixels": 4,
+    "B_domain_gained_pixels": 0,
+    "B_domain_retained_fraction": 0.9995206710605152,
+    "Q_REF_lost_pixels": 0,
+    "Q_REF_gained_pixels": 0,
+    "Q_REF_gained_with_unchanged_normalization": 0,
+    "Q_REF_gained_normalizations": [],
+    "Q_REF_normalization_lost": 0.0,
+    "Q_REF_normalization_gained": 0.0,
+    "explanation": "Existing sorted-positive-normalization reference and fixed coverage cut reproduced exactly. Science support can gain threshold-edge pixels without any new native exposure when the reference normalization falls. No exposure-recovery policy applied."
+  },
+  {
+    "branch": "C-core-plus",
+    "cycle": 0,
+    "B": {
+      "reference": 979.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 489.5,
+      "science_pixels": 8344,
+      "normalization_sum": 9804811.0
+    },
+    "Q": {
+      "reference": 978.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 489.0,
+      "science_pixels": 8361,
+      "normalization_sum": 9797967.0
+    },
+    "Q_REF": {
+      "reference": 979.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 489.5,
+      "science_pixels": 8341,
+      "normalization_sum": 9799155.0
+    },
+    "B_domain_lost_pixels": 4,
+    "B_domain_gained_pixels": 21,
+    "B_domain_retained_fraction": 0.9995206136145733,
+    "Q_REF_lost_pixels": 1,
+    "Q_REF_gained_pixels": 21,
+    "Q_REF_gained_with_unchanged_normalization": 21,
+    "Q_REF_gained_normalizations": [
+      489.0
+    ],
+    "Q_REF_normalization_lost": 1188.0,
+    "Q_REF_normalization_gained": 0.0,
+    "explanation": "Existing sorted-positive-normalization reference and fixed coverage cut reproduced exactly. Science support can gain threshold-edge pixels without any new native exposure when the reference normalization falls. No exposure-recovery policy applied."
+  },
+  {
+    "branch": "C-core-plus",
+    "cycle": 5,
+    "B": {
+      "reference": 979.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 489.5,
+      "science_pixels": 8344,
+      "normalization_sum": 9804811.0
+    },
+    "Q": {
+      "reference": 978.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 489.0,
+      "science_pixels": 8361,
+      "normalization_sum": 9797967.0
+    },
+    "Q_REF": {
+      "reference": 979.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 489.5,
+      "science_pixels": 8341,
+      "normalization_sum": 9799155.0
+    },
+    "B_domain_lost_pixels": 4,
+    "B_domain_gained_pixels": 21,
+    "B_domain_retained_fraction": 0.9995206136145733,
+    "Q_REF_lost_pixels": 1,
+    "Q_REF_gained_pixels": 21,
+    "Q_REF_gained_with_unchanged_normalization": 21,
+    "Q_REF_gained_normalizations": [
+      489.0
+    ],
+    "Q_REF_normalization_lost": 1188.0,
+    "Q_REF_normalization_gained": 0.0,
+    "explanation": "Existing sorted-positive-normalization reference and fixed coverage cut reproduced exactly. Science support can gain threshold-edge pixels without any new native exposure when the reference normalization falls. No exposure-recovery policy applied."
+  },
+  {
+    "branch": "C-core-minus",
+    "cycle": 0,
+    "B": {
+      "reference": 980.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 490.0,
+      "science_pixels": 8345,
+      "normalization_sum": 9805999.0
+    },
+    "Q": {
+      "reference": 979.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 489.5,
+      "science_pixels": 8341,
+      "normalization_sum": 9799155.0
+    },
+    "Q_REF": {
+      "reference": 979.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 489.5,
+      "science_pixels": 8341,
+      "normalization_sum": 9799155.0
+    },
+    "B_domain_lost_pixels": 4,
+    "B_domain_gained_pixels": 0,
+    "B_domain_retained_fraction": 0.9995206710605152,
+    "Q_REF_lost_pixels": 0,
+    "Q_REF_gained_pixels": 0,
+    "Q_REF_gained_with_unchanged_normalization": 0,
+    "Q_REF_gained_normalizations": [],
+    "Q_REF_normalization_lost": 0.0,
+    "Q_REF_normalization_gained": 0.0,
+    "explanation": "Existing sorted-positive-normalization reference and fixed coverage cut reproduced exactly. Science support can gain threshold-edge pixels without any new native exposure when the reference normalization falls. No exposure-recovery policy applied."
+  },
+  {
+    "branch": "C-core-minus",
+    "cycle": 5,
+    "B": {
+      "reference": 980.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 490.0,
+      "science_pixels": 8345,
+      "normalization_sum": 9805999.0
+    },
+    "Q": {
+      "reference": 979.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 489.5,
+      "science_pixels": 8341,
+      "normalization_sum": 9799155.0
+    },
+    "Q_REF": {
+      "reference": 979.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 489.5,
+      "science_pixels": 8341,
+      "normalization_sum": 9799155.0
+    },
+    "B_domain_lost_pixels": 4,
+    "B_domain_gained_pixels": 0,
+    "B_domain_retained_fraction": 0.9995206710605152,
+    "Q_REF_lost_pixels": 0,
+    "Q_REF_gained_pixels": 0,
+    "Q_REF_gained_with_unchanged_normalization": 0,
+    "Q_REF_gained_normalizations": [],
+    "Q_REF_normalization_lost": 0.0,
+    "Q_REF_normalization_gained": 0.0,
+    "explanation": "Existing sorted-positive-normalization reference and fixed coverage cut reproduced exactly. Science support can gain threshold-edge pixels without any new native exposure when the reference normalization falls. No exposure-recovery policy applied."
+  },
+  {
+    "branch": "C-shoulder",
+    "cycle": 0,
+    "B": {
+      "reference": 980.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 490.0,
+      "science_pixels": 8344,
+      "normalization_sum": 9804905.0
+    },
+    "Q": {
+      "reference": 979.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 489.5,
+      "science_pixels": 8340,
+      "normalization_sum": 9798061.0
+    },
+    "Q_REF": {
+      "reference": 979.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 489.5,
+      "science_pixels": 8341,
+      "normalization_sum": 9799155.0
+    },
+    "B_domain_lost_pixels": 4,
+    "B_domain_gained_pixels": 0,
+    "B_domain_retained_fraction": 0.9995206136145733,
+    "Q_REF_lost_pixels": 1,
+    "Q_REF_gained_pixels": 0,
+    "Q_REF_gained_with_unchanged_normalization": 0,
+    "Q_REF_gained_normalizations": [],
+    "Q_REF_normalization_lost": 1188.0,
+    "Q_REF_normalization_gained": 94.0,
+    "explanation": "Existing sorted-positive-normalization reference and fixed coverage cut reproduced exactly. Science support can gain threshold-edge pixels without any new native exposure when the reference normalization falls. No exposure-recovery policy applied."
+  },
+  {
+    "branch": "C-shoulder",
+    "cycle": 5,
+    "B": {
+      "reference": 980.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 490.0,
+      "science_pixels": 8344,
+      "normalization_sum": 9804905.0
+    },
+    "Q": {
+      "reference": 979.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 489.5,
+      "science_pixels": 8340,
+      "normalization_sum": 9798061.0
+    },
+    "Q_REF": {
+      "reference": 979.0,
+      "coverage_cut": 0.5,
+      "science_threshold": 489.5,
+      "science_pixels": 8341,
+      "normalization_sum": 9799155.0
+    },
+    "B_domain_lost_pixels": 4,
+    "B_domain_gained_pixels": 0,
+    "B_domain_retained_fraction": 0.9995206136145733,
+    "Q_REF_lost_pixels": 1,
+    "Q_REF_gained_pixels": 0,
+    "Q_REF_gained_with_unchanged_normalization": 0,
+    "Q_REF_gained_normalizations": [],
+    "Q_REF_normalization_lost": 1188.0,
+    "Q_REF_normalization_gained": 94.0,
+    "explanation": "Existing sorted-positive-normalization reference and fixed coverage cut reproduced exactly. Science support can gain threshold-edge pixels without any new native exposure when the reference normalization falls. No exposure-recovery policy applied."
+  }
+]

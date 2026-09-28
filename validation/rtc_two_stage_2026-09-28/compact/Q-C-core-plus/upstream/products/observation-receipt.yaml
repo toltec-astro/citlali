@@ -1,0 +1,47 @@
+schema: citlali-observation-networks-result-v1
+source_revision: a7351335f
+observation: 152430
+subobservation: 0
+scan: 2
+requested_network_workers: 2
+observed_Eigen_threads: 1
+started_network_workers: 2
+requested_internal_threads: 1
+numerical_backend_observation: Eigen reports its setting; other backend counts not asserted
+shared_preparation_count: 1
+shared_preparation_seconds: 2.069505584
+assignment: sorted-network round-robin by worker index
+shared_state: read-only APT, native clocks, processing-slot grid, TEL trajectory, AST motion, CAL headers; per-network numerical ownership
+NetCDF_IO: serialized; numerical work concurrent; no shared open handles
+timing_scope: per-network wall intervals overlap; process CPU and memory reported only as aggregate
+networks:
+  - network: 1
+    worker_index: 0
+    exit_code: 0
+    wall_seconds: 22.285864167
+    output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-core-plus/upstream/products/network1
+    input: {path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-core-plus/inputs/network1-input.json, sha256: d7d8076758d780213d948ea7673149360bb75d4d39ed55e56e212c102e48f554}
+    state: completed
+  - network: 2
+    worker_index: 1
+    exit_code: 0
+    wall_seconds: 24.031965
+    output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-core-plus/upstream/products/network2
+    input: {path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-core-plus/inputs/network2-input.json, sha256: 92eb560b1f7c8a80c7de76c2a4f736b779eafe74fc889fc36e7d082f323471fb}
+    state: completed
+  - network: 3
+    worker_index: 0
+    exit_code: 0
+    wall_seconds: 28.075442542
+    output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-core-plus/upstream/products/network3
+    input: {path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-core-plus/inputs/network3-input.json, sha256: 6c5fed9a2b7dee10d555af9f51198c08ecb153893cea515c7efb397ccb95cdff}
+    state: completed
+  - network: 4
+    worker_index: 1
+    exit_code: 0
+    wall_seconds: 23.964534834
+    output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-core-plus/upstream/products/network4
+    input: {path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-core-plus/inputs/network4-input.json, sha256: 1263d1c0f3f1e16b9e3c85356875dc573ec14e913f53a5090d55f285d873b35e}
+    state: completed
+wall_seconds: 52.432237959
+exit_code: 0

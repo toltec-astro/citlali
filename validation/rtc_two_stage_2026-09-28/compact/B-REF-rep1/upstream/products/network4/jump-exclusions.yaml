@@ -1,0 +1,254 @@
+schema: rtc-jump-processing-support-v1
+method: rtc-jump-processing-support-2026-09-22-v1
+exclusion_policy: rtc-jump-exclusion-2026-09-13-v1
+original_parent: sha256:75b45cdc440b9c6ec92f5874603421735b6d8b872c8f4807469fa25401ec7c37:network=4:tune=sha256:d8951bbfb3d28bb361164cc6c8086c3a6f5a7cd130c015d62f3d55f876b19ae8:paired-xr:exact-simultaneous-column-projection:sha256:2d2af6145d9b6b9b709264a7f73d2e235fc70626561132c81afda4629a731dc9
+VAL_generation: 0
+native_rows: zero-based-half-open;exact-original-parent
+complete_processing_domain: true
+processing_generation: native-processing-request:sha256:df7dbad26f30724dc559324f99537fb73e90f4f53ac2a2bd18b47415be9955f4
+coordinates:
+  - group: 113
+    coordinate: 1
+    channel: 271
+    affected:
+      - 1977
+      - 1988
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 415
+    coordinate: 0
+    channel: 346
+    affected:
+      - 2824
+      - 2830
+    science_scans:
+      - 2
+    context_scans:
+      - 2
+    outside_science:
+      []
+  - group: 418
+    coordinate: 0
+    channel: 351
+    affected:
+      - 1978
+      - 1996
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 428
+    coordinate: 1
+    channel: 364
+    affected:
+      - 1977
+      - 1996
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 450
+    coordinate: 0
+    channel: 389
+    affected:
+      - 1977
+      - 1998
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 479
+    coordinate: 1
+    channel: 425
+    affected:
+      - 1979
+      - 1988
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 485
+    coordinate: 0
+    channel: 430
+    affected:
+      - 3573
+      - 3605
+    science_scans:
+      - 2
+    context_scans:
+      - 2
+    outside_science:
+      []
+  - group: 492
+    coordinate: 0
+    channel: 466
+    affected:
+      - 7514
+      - 7524
+    science_scans:
+      []
+    context_scans:
+      []
+    outside_science:
+      -
+        - 7514
+        - 7524
+  - group: 538
+    coordinate: 1
+    channel: 477
+    affected:
+      - 1540
+      - 1564
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 593
+    coordinate: 0
+    channel: 493
+    affected:
+      - 1988
+      - 1999
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 594
+    coordinate: 0
+    channel: 497
+    affected:
+      - 1987
+      - 1998
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+detectors:
+  - channel: 271
+    whole_observation: false
+    admitted_groups:
+      - 113
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 346
+    whole_observation: false
+    admitted_groups:
+      - 415
+    science_scans:
+      - 2
+    paired_exclusions:
+      -
+        - 2441
+        - 3661
+  - channel: 351
+    whole_observation: false
+    admitted_groups:
+      - 418
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 364
+    whole_observation: false
+    admitted_groups:
+      - 428
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 389
+    whole_observation: false
+    admitted_groups:
+      - 450
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 425
+    whole_observation: false
+    admitted_groups:
+      - 479
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 430
+    whole_observation: false
+    admitted_groups:
+      - 485
+    science_scans:
+      - 2
+    paired_exclusions:
+      -
+        - 2441
+        - 3661
+  - channel: 466
+    whole_observation: false
+    admitted_groups:
+      - 492
+    science_scans:
+      []
+    paired_exclusions:
+      -
+        - 7514
+        - 7524
+  - channel: 477
+    whole_observation: false
+    admitted_groups:
+      - 538
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 493
+    whole_observation: false
+    admitted_groups:
+      - 593
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 497
+    whole_observation: false
+    admitted_groups:
+      - 594
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441

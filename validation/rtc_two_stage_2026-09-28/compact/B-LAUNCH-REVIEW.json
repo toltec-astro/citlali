@@ -1,0 +1,27 @@
+{
+  "source_revision": "9d28b2c6e134375b6f377ae59acc4e9f967ac3d4",
+  "tree": "35066fb1ca49d10a8f5fbe5efe3db082f84b5c4f",
+  "verdict": "pass",
+  "scope": "single initial B launch only; Q/retry not reviewed",
+  "reviewer": "/root/two_stage_review",
+  "fresh_context": true,
+  "stage1_source": "ff92aa69d73aee9441e3269adf4ff4b9892ae509",
+  "science": "pass infrastructure scope; science unchanged",
+  "architecture": "pass existing native CLI owner",
+  "hygiene": "pass clean bounded preserved ancestry",
+  "independent_checks": {
+    "native_fixtures": 6,
+    "bindings": 121,
+    "binding_bytes": 389424510,
+    "sealed_native_fingerprints": 25584,
+    "B_self_compare_planes": 60,
+    "B_self_compare_decisions": 37,
+    "endpoint_exact": true
+  },
+  "limitations": [
+    "AppleClang/Homebrew supplemental, no Unity/Spack",
+    "KIDs04088da-dirty longstanding",
+    "numerical B gate required before Q",
+    "no cleanup push merge or promotion"
+  ]
+}

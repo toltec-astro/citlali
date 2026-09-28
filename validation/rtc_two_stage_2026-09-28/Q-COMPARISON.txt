@@ -1,0 +1,312 @@
+{
+  "final": {
+    "cycle": 5,
+    "B_science_pixels": 8345,
+    "Q_science_pixels": 8341,
+    "lost_B_science_pixels": 4,
+    "gained_science_pixels": 0,
+    "B_domain_retained_fraction": 0.9995206710605152,
+    "B_contributions": 9805999,
+    "Q_contributions": 9799155,
+    "lost_normalization": 6844.0,
+    "gained_normalization": 0.0,
+    "changed_normalization_pixels": 1060,
+    "relative_normalization_on_B_domain": {
+      "n": 8345,
+      "median": 0.0,
+      "mean": -0.0008776817510999101,
+      "std": 0.004148548342934032,
+      "robust_scale": 0.0
+    },
+    "delta_on_common_science": {
+      "n": 8341,
+      "median": 0.036326735207815375,
+      "mean": 0.09045246235235603,
+      "std": 5.84684513558105,
+      "robust_scale": 2.5221536163250096
+    },
+    "delta_on_B_fit_disk": {
+      "n": 1257,
+      "median": -0.4572623853955555,
+      "mean": -0.7454021650880195,
+      "std": 4.10810849525581,
+      "robust_scale": 2.175834312357793
+    },
+    "measurements": [
+      {
+        "name": "peak",
+        "B": 429.4505143543425,
+        "Q": 430.5808276182898,
+        "delta": 1.1303132639473006,
+        "B_conditional_sigma": 15.329103209089014,
+        "Q_conditional_sigma": 15.228121518529521,
+        "delta_over_B_sigma": 0.07373642466423666,
+        "qualification": null
+      },
+      {
+        "name": "cx",
+        "B": 4.148068330268084,
+        "Q": 4.140379656859691,
+        "delta": -0.007688673408392965,
+        "B_conditional_sigma": 0.11521992829786988,
+        "Q_conditional_sigma": 0.11746425060591122,
+        "delta_over_B_sigma": -0.066730413062886,
+        "qualification": null
+      },
+      {
+        "name": "cy",
+        "B": 7.25366195587248,
+        "Q": 7.26883311038875,
+        "delta": 0.015171154516269603,
+        "B_conditional_sigma": 0.06930788795521152,
+        "Q_conditional_sigma": 0.0681222906768361,
+        "delta_over_B_sigma": 0.21889506322965113,
+        "qualification": null
+      },
+      {
+        "name": "FWHM_major",
+        "B": 6.202766699890452,
+        "Q": 6.290828134201273,
+        "delta": 0.08806143431082081,
+        "B_conditional_sigma": 0.27615201282757507,
+        "Q_conditional_sigma": 0.28075367501635734,
+        "delta_over_B_sigma": 0.3188875337504962,
+        "qualification": "canonical major/minor width and major-axis angle modulo pi; B angle fit constrained, its local conditional scale is not a reliable boundary-aware interval"
+      },
+      {
+        "name": "FWHM_minor",
+        "B": 4.663777129573756,
+        "Q": 4.641391735653882,
+        "delta": -0.022385393919873486,
+        "B_conditional_sigma": 0.20336177615380002,
+        "Q_conditional_sigma": 0.20132484249862137,
+        "delta_over_B_sigma": -0.11007670341619993,
+        "qualification": "canonical major/minor width and major-axis angle modulo pi; B angle fit constrained, its local conditional scale is not a reliable boundary-aware interval"
+      },
+      {
+        "name": "major_angle",
+        "B": 5.66553889764798e-16,
+        "Q": -0.1400946307286263,
+        "delta": -0.14009463072862685,
+        "B_conditional_sigma": 0.0811798127325979,
+        "Q_conditional_sigma": 0.07572442016237431,
+        "delta_over_B_sigma": -1.7257323712989006,
+        "qualification": "canonical major/minor width and major-axis angle modulo pi; B angle fit constrained, its local conditional scale is not a reliable boundary-aware interval"
+      },
+      {
+        "name": "constant",
+        "B": -0.6459092184198083,
+        "Q": -1.4248672739671813,
+        "delta": -0.778958055547373,
+        "B_conditional_sigma": 2.1619442291026507,
+        "Q_conditional_sigma": 2.182022210543344,
+        "delta_over_B_sigma": -0.360304417228511,
+        "qualification": null
+      },
+      {
+        "name": "template",
+        "B": 471.0507879614849,
+        "Q": 473.866915860346,
+        "delta": 2.8161278988611116,
+        "B_conditional_sigma": 17.51105777687652,
+        "Q_conditional_sigma": 17.736629118754614,
+        "delta_over_B_sigma": 0.16081997642540072,
+        "qualification": null
+      },
+      {
+        "name": "aperture1",
+        "B": 13104.927031952513,
+        "Q": 13254.469850671196,
+        "delta": 149.5428187186826,
+        "B_conditional_sigma": 785.0948872068436,
+        "Q_conditional_sigma": 801.3028035681325,
+        "delta_over_B_sigma": 0.19047738197699354,
+        "qualification": null
+      },
+      {
+        "name": "aperture1.5",
+        "B": 14481.733939598287,
+        "Q": 14738.189795,
+        "delta": 256.45585540171305,
+        "B_conditional_sigma": 1426.537948469429,
+        "Q_conditional_sigma": 1459.8118660435025,
+        "delta_over_B_sigma": 0.17977499699665994,
+        "qualification": null
+      },
+      {
+        "name": "aperture2",
+        "B": 15276.779509760574,
+        "Q": 15796.234261545878,
+        "delta": 519.4547517853043,
+        "B_conditional_sigma": 2132.0584929315137,
+        "Q_conditional_sigma": 2187.4502254355643,
+        "delta_over_B_sigma": 0.24364000964676644,
+        "qualification": null
+      }
+    ],
+    "qualifier": "Q unavailable on lost B-supported pixels, never zero; same-domain deltas explicitly conditional. Conditional uncertainties are single-map scales, not exact paired significance; selected on B in-sample."
+  },
+  "residuals": {
+    "B_background_pixels": 7923,
+    "Q_available_on_B_background": 7919,
+    "B_background": {
+      "n": 7923,
+      "median": -0.040876094193981416,
+      "mean": 0.225251339726765,
+      "std": 24.503240937192775,
+      "robust_scale": 22.308014284749472
+    },
+    "B_on_common_background": {
+      "n": 7919,
+      "median": -0.04385849027847177,
+      "mean": 0.1925170320158432,
+      "std": 24.34889846418465,
+      "robust_scale": 22.306619980177892
+    },
+    "B_lost_background": {
+      "n": 4,
+      "median": 11.42704907896139,
+      "mean": 65.03099703042422,
+      "std": 122.87583762714004,
+      "robust_scale": 23.80403475812857
+    },
+    "Q_on_B_background": {
+      "n": 7919,
+      "median": 0.6767425940537971,
+      "mean": 1.08929643835937,
+      "std": 24.23974429457818,
+      "robust_scale": 22.582866096174715
+    },
+    "B_fit_disk": {
+      "n": 1257,
+      "median": -0.07546637630955066,
+      "mean": 7.336735303084719e-13,
+      "std": 19.979620024450814,
+      "robust_scale": 19.849526300975896
+    },
+    "Q_on_B_fit_disk": {
+      "n": 1257,
+      "median": -0.3145503443165294,
+      "mean": 1.732614440286971e-08,
+      "std": 19.875761354894593,
+      "robust_scale": 19.787020631601322
+    },
+    "selected_B_event_footprint_pixels": 59,
+    "Q_available_on_B_event_footprint": 58,
+    "B_event_footprint": {
+      "n": 59,
+      "median": 2.469512274633004,
+      "mean": 5.959490910532131,
+      "std": 50.72073541416144,
+      "robust_scale": 30.142427095566873
+    },
+    "B_on_common_event_footprint": {
+      "n": 58,
+      "median": 1.6682279377087161,
+      "mean": 1.7815860033772941,
+      "std": 39.620959029818934,
+      "robust_scale": 29.188007409703268
+    },
+    "B_lost_event_footprint": {
+      "n": 1,
+      "median": 248.27797552551266,
+      "mean": 248.27797552551266,
+      "std": null,
+      "robust_scale": 0.0
+    },
+    "lost_event_pixels": [
+      {
+        "row": 104,
+        "column": 115,
+        "B_residual": 248.27797552551266,
+        "Q_science_available": false,
+        "B_hits": 522.0,
+        "Q_hits": 462.0
+      }
+    ],
+    "Q_event_footprint": {
+      "n": 58,
+      "median": 4.1662689466459,
+      "mean": 2.1101723698955492,
+      "std": 30.459684185313886,
+      "robust_scale": 22.624399719930338
+    },
+    "event_footprint_delta": {
+      "n": 58,
+      "median": 2.1326306372323014,
+      "mean": -0.4503716890291173,
+      "std": 23.047243687147148,
+      "robust_scale": 9.77817946661057
+    },
+    "B_peak_fit_constrained": true,
+    "Q_peak_fit_constrained": false
+  },
+  "native_support": [
+    {
+      "network": 1,
+      "RTC_paired_lost": 0,
+      "RTC_paired_gained": 0,
+      "MAP_centers_lost": 0,
+      "MAP_centers_gained": 0,
+      "changed": [],
+      "events_exact": true,
+      "decisions_exact": true,
+      "support_decisions_exact": true,
+      "manifest": {
+        "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_two_stage_2026-09-28/QUARANTINE.json",
+        "sha256": "a8edbfecdc297e06fd8625fbd1b435ff1b43bae60de852043cac0fcda995f1c5"
+      }
+    },
+    {
+      "network": 2,
+      "RTC_paired_lost": 6844,
+      "RTC_paired_gained": 0,
+      "MAP_centers_lost": 6765,
+      "MAP_centers_gained": 0,
+      "changed": [
+        {
+          "channel": 88,
+          "lost": 6844,
+          "gained": 0
+        }
+      ],
+      "events_exact": true,
+      "decisions_exact": true,
+      "support_decisions_exact": true,
+      "manifest": {
+        "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_two_stage_2026-09-28/QUARANTINE.json",
+        "sha256": "a8edbfecdc297e06fd8625fbd1b435ff1b43bae60de852043cac0fcda995f1c5"
+      }
+    },
+    {
+      "network": 3,
+      "RTC_paired_lost": 0,
+      "RTC_paired_gained": 0,
+      "MAP_centers_lost": 0,
+      "MAP_centers_gained": 0,
+      "changed": [],
+      "events_exact": true,
+      "decisions_exact": true,
+      "support_decisions_exact": true,
+      "manifest": {
+        "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_two_stage_2026-09-28/QUARANTINE.json",
+        "sha256": "a8edbfecdc297e06fd8625fbd1b435ff1b43bae60de852043cac0fcda995f1c5"
+      }
+    },
+    {
+      "network": 4,
+      "RTC_paired_lost": 0,
+      "RTC_paired_gained": 0,
+      "MAP_centers_lost": 0,
+      "MAP_centers_gained": 0,
+      "changed": [],
+      "events_exact": true,
+      "decisions_exact": true,
+      "support_decisions_exact": true,
+      "manifest": {
+        "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_two_stage_2026-09-28/QUARANTINE.json",
+        "sha256": "a8edbfecdc297e06fd8625fbd1b435ff1b43bae60de852043cac0fcda995f1c5"
+      }
+    }
+  ]
+}

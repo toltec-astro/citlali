@@ -1,0 +1,51 @@
+{
+  "identity": "POINT-SPEED-PCA-v1",
+  "observation": 152430,
+  "outside_disk_no_feedback": true,
+  "direct_identical_operand_rejoin": true,
+  "gain": 1,
+  "nonzero_cycles": 5,
+  "policy": "BASE-POINT",
+  "source_method": "POINT-EXPECTED-v1",
+  "threshold": 3.0,
+  "prospective": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/freeze/prospective.json",
+    "sha256": "693583c8bd17cc1575b4f2c5123792f7cb53c56ce572a4fd636d200d2902b4e1"
+  },
+  "parents": {
+    "a1100": {
+      "map_request": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/inputs/map-request.json",
+        "sha256": "428ffbe562f489bf3325a57575e1ce33400adc23754c4b197cd4e2289264230d"
+      },
+      "parent_plan": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/M0/products/a1100/plan.yaml",
+        "sha256": "c94de04ce8fe7254deae69069958b478229ea7f732f673571a2156a576f31aa9"
+      }
+    }
+  },
+  "injections": {
+    "a1100": {
+      "C-core-plus": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/freeze/shapes/C-core-plus.fits",
+        "sha256": "2395402b0a9908703d3055e7f4843c47c2f14c3ac57513c45a5e4abaaf24cf69"
+      },
+      "C-core-minus": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/freeze/shapes/C-core-minus.fits",
+        "sha256": "847bc89510d1db06b7ca32ccc01d14464a41348b313be6e667d4db7f390e4d01"
+      },
+      "C-shoulder": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/freeze/shapes/C-shoulder.fits",
+        "sha256": "e00ea47b767c7591f401940195d096f3b8f7c1265e13828813fb040a57329ffa"
+      }
+    }
+  },
+  "seeds": {
+    "a1100": {
+      "REF": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/run/BASE-POINT/REF/a1100/initial/candidate.fits",
+        "sha256": "af579fd20e8e12c72dd793258f63442f84557e202f3a691fcff69ad66d790f26"
+      }
+    }
+  }
+}

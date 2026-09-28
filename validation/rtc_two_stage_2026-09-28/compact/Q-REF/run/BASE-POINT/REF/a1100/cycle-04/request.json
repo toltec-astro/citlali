@@ -1,0 +1,28 @@
+{
+  "schema": "citlali-point-speed-pca-v1",
+  "method": "point-speed-pca-v1",
+  "mode": "reference",
+  "array": "a1100",
+  "branch": "REF",
+  "cycle_index": 4,
+  "candidate": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/run/BASE-POINT/REF/a1100/cycle-03/candidate.fits",
+    "sha256": "6ecdb1982e6b67dc42d6a6abf757b8fcaf436680c9d7f31c72898dcc5e9a72a9"
+  },
+  "owner_binding": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/run/BASE-POINT/REF/a1100/owner.json",
+    "sha256": "6dd08259866261a481c72ee2d9fc85c59e65d869fb9ff4bc0b33dbd168775a3e"
+  },
+  "map_request": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/inputs/map-request.json",
+    "sha256": "428ffbe562f489bf3325a57575e1ce33400adc23754c4b197cd4e2289264230d"
+  },
+  "parent_plan": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/M0/products/a1100/plan.yaml",
+    "sha256": "c94de04ce8fe7254deae69069958b478229ea7f732f673571a2156a576f31aa9"
+  },
+  "previous_state": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/run/BASE-POINT/REF/a1100/cycle-03/state.json",
+    "sha256": "ef66dae79ddb1b52b274c4bf1fa125dcd37980651308833263c89ffadb9dead2"
+  }
+}

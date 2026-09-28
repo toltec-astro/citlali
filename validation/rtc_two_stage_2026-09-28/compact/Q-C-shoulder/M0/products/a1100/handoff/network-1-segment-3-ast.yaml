@@ -1,0 +1,23 @@
+schema: citlali-ast-saved-rtc-map-coordinates-v1
+PTC_publication: sha256:f802b781f2692d428e0a93e663e840d0fd86a4bf58fd6e8cc433bb82e166d85f:segment-3
+CAL_parent: sha256:3da09264c97291bce138adc7607b33226413e02dad5bffe2fa54ff766dfeedd1
+RTC_grid: sha256:90fab182f5b1eb1336ca18a9216df0c5e3ab37f572cafd53ac4250d7fb8368c1:attempt=1001
+AST_telescope: sha256:f6ac27248692af558a16af94f267a84b344e93f30d2248516d4388b9b25e5f19
+AST_pointing_offset: sha256:cf2283b162df81005f2c3bc073a37d9adb464b3aaa976c88f0f6b8e1c83e2bc7:inputs:152430_0_2:astrometry
+owner_frame_binding: sha256:219f6641b40a1cfc049eae24e320a14fe06f014bf804a87223a4b8772ea932aa
+coordinates_file: network-1-segment-3-ast.f64
+sha256: fb689534d2ea8698d5da17f386517f76018ec27ea77bbe442acfc3d24d69ed7f
+layout: little-endian f64 pairs tangent_lon_deg,tangent_lat_deg in exact PTC retained-support order
+MAP_admitted: 438339
+MAP_profile: SCI-MAP:map_upstream_admission@2
+MAP_profile_binding: SCI-MAP-v0.2-r0.4-2026-09-08
+coefficient_QC: SCI-PTC:uniform_coefficient_handoff@draft-0.1
+coefficient_QC_evaluation_sha256: 8f082eb81173751dd96d5e577de37f0fdb0e0da9fa3d013142dcfdc65195cdfe
+MAP_decision_request: requested
+MAP_decision_applicability: "applicable: ordinary positive-rank PTC route"
+MAP_decision_realization: realized
+MAP_eligibility_rule: PTC retained support AND zero inherited CAL cause AND passing exact uniform QC; independent of pixel placement
+MAP_ineligible_count: 0
+coefficient_payload_sha256: 1cf87ecc0f13083def908cf83b25873f742e824b8bf6ef084b584d2e646344d9
+decision_representation: shared immutable uniform facts; occurrence membership and MAP CAL/PTC causes resolved from exact parents; requested/applicable/eligible/realized required
+unavailable_coordinates: NaN denotes AST coordinate unavailability; MAP admission is evaluated separately; never sky zero

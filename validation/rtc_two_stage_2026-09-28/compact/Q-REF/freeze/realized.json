@@ -1,0 +1,50 @@
+[
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/freeze/a1100/BASE.json",
+    "sha256": "789f3e95b653d255c5ce27d93f0b569e85fcf37506e930bc0213dae52e8f8870"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/freeze/a1100/BASE.npz",
+    "sha256": "b429c94f43394f2dfed1112ed07946da854ba9521a60c3d548a1aa8fde1bde22"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/freeze/a1100/C0.json",
+    "sha256": "4452f16b0cb7a1d9af699385e5c1881c897e1e74b186cfa9324aed86569dfe71"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/freeze/a1100/C0.npz",
+    "sha256": "646264a6e9f421b5736a7261a5043264562fdbd90003d6a46964d2f0c3008d78"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/freeze/a1100/context.npz",
+    "sha256": "19e81ab5ae7d4e128a89df8510ad6f86f49e4942dcaa8e5c966fa3b5dc4506c7"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/freeze/a1100/continuation-sanity.json",
+    "sha256": "f129a6d1379a6eaa08d50eb4634c218907b3e9bd6a78c8014f8ba32016bc5a3d"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/freeze/a1100/geometry.json",
+    "sha256": "17a7b5b65c564239d499ee1460e5ec9cc7939ab64fa340a84d864f8ba6e34cb0"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/freeze/a1100/guard.json",
+    "sha256": "88e6a8a2f54408622faaecc0b8189e3ad47703517eed64a789007df9136dd202"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/freeze/a1100/measurement-geometry.json",
+    "sha256": "a6293579fd6d0b4eda0528f0f78b873374e914c87d576513d77bc36aa888af98"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/freeze/M0-measurement.json",
+    "sha256": "1e215219e00f606e279f2d212a4fa9ec188eac37f3756dfd91899ed28035adfd"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/freeze/parents.json",
+    "sha256": "851b91912fdb851197170b70a30b95304f13e05d168329d80adb67f0ec90a370"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/inputs/map-request.json",
+    "sha256": "428ffbe562f489bf3325a57575e1ce33400adc23754c4b197cd4e2289264230d"
+  }
+]

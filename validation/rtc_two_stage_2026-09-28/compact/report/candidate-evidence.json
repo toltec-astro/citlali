@@ -1,0 +1,167 @@
+{
+  "annotations": [
+    {
+      "key": "n1_new0",
+      "network": 1,
+      "detector": 451,
+      "before": [
+        0.4,
+        0.9
+      ],
+      "during": [
+        1.2,
+        1.45
+      ],
+      "after": [
+        2.65,
+        2.75
+      ],
+      "channel": 451,
+      "occurrence": "citlali-observation-target-manifest-v2:apt-v2-occurrence:entropy/a107d18e8f1f9531bfb53ba6af86c40961d8167e884bf1f449b873785e0b9be2:semantic=sha256:13e1237e5164649ef49913f3ae60a7c3705948faf8b916292dd232996250a311:envelope=sha256:42d03f77b7370b7ba2dd149af551078eb5e7f0b39eeedf91438b3f23f0f8694b:row=1081",
+      "physical_run": 0,
+      "native_interval": [
+        0,
+        7820
+      ],
+      "all_three_intervals_paired_valid": true,
+      "all_three_intervals_background": true,
+      "during_min_source_distance": 42.305524311507945,
+      "contrasts": {
+        "x": {
+          "before": 8.882873772985157e-05,
+          "during": 0.00010885370697410364,
+          "after": 9.149831473035107e-05,
+          "delta": 2.0024969244252075e-05,
+          "recovery_delta": 2.6695770004995015e-06,
+          "cohort_n": 334,
+          "cohort_median_delta": 1.2238608878586605e-06,
+          "cohort_MAD": 1.58802345819832e-06,
+          "target_to_cohort_MAD": 11.83931399711442,
+          "cohort_same_sign_at_least_half_target": 15
+        },
+        "r": {
+          "before": -1.686641596017019e-05,
+          "during": -3.8685710055827e-05,
+          "after": -2.5064342393222155e-05,
+          "delta": -2.1819294095656813e-05,
+          "recovery_delta": -8.197926433051967e-06,
+          "cohort_n": 334,
+          "cohort_median_delta": -3.111393376955743e-08,
+          "cohort_MAD": 1.2302472347125957e-07,
+          "target_to_cohort_MAD": 177.10407751477126,
+          "cohort_same_sign_at_least_half_target": 0
+        }
+      },
+      "interpretation": "Descriptive original-coordinate contrast and all-network off-source cohort; MAD is cohort scale, not uncertainty on the target step. Selected from baseline windows, no Q data."
+    },
+    {
+      "key": "n2_new1",
+      "network": 2,
+      "detector": 88,
+      "before": [
+        36.8,
+        37.0
+      ],
+      "during": [
+        37.2,
+        37.45
+      ],
+      "after": [
+        37.7,
+        38.0
+      ],
+      "channel": 88,
+      "occurrence": "citlali-observation-target-manifest-v2:apt-v2-occurrence:entropy/a107d18e8f1f9531bfb53ba6af86c40961d8167e884bf1f449b873785e0b9be2:semantic=sha256:13e1237e5164649ef49913f3ae60a7c3705948faf8b916292dd232996250a311:envelope=sha256:42d03f77b7370b7ba2dd149af551078eb5e7f0b39eeedf91438b3f23f0f8694b:row=1212",
+      "physical_run": 0,
+      "native_interval": [
+        0,
+        7821
+      ],
+      "all_three_intervals_paired_valid": true,
+      "all_three_intervals_background": true,
+      "during_min_source_distance": 87.34695157993008,
+      "contrasts": {
+        "x": {
+          "before": 3.342449648363383e-05,
+          "during": 3.947077130524706e-05,
+          "after": 2.9620141267695154e-05,
+          "delta": 6.04627482161323e-06,
+          "recovery_delta": -3.804355215938677e-06,
+          "cohort_n": 439,
+          "cohort_median_delta": -1.495793573954134e-08,
+          "cohort_MAD": 2.0790318287585992e-07,
+          "target_to_cohort_MAD": 29.154112378221573,
+          "cohort_same_sign_at_least_half_target": 0
+        },
+        "r": {
+          "before": 6.507756634072738e-05,
+          "during": 6.042905444779324e-05,
+          "after": 6.461254201313779e-05,
+          "delta": -4.648511892934142e-06,
+          "recovery_delta": -4.650243275895879e-07,
+          "cohort_n": 439,
+          "cohort_median_delta": 2.0071082694007923e-08,
+          "cohort_MAD": 9.44104638503527e-08,
+          "target_to_cohort_MAD": 49.44984682024427,
+          "cohort_same_sign_at_least_half_target": 1
+        }
+      },
+      "interpretation": "Descriptive original-coordinate contrast and all-network off-source cohort; MAD is cohort scale, not uncertainty on the target step. Selected from baseline windows, no Q data."
+    },
+    {
+      "key": "n2_t5",
+      "network": 2,
+      "detector": 309,
+      "before": [
+        13.2,
+        13.6
+      ],
+      "during": [
+        13.9,
+        14.3
+      ],
+      "after": [
+        14.65,
+        14.85
+      ],
+      "channel": 309,
+      "occurrence": "citlali-observation-target-manifest-v2:apt-v2-occurrence:entropy/a107d18e8f1f9531bfb53ba6af86c40961d8167e884bf1f449b873785e0b9be2:semantic=sha256:13e1237e5164649ef49913f3ae60a7c3705948faf8b916292dd232996250a311:envelope=sha256:42d03f77b7370b7ba2dd149af551078eb5e7f0b39eeedf91438b3f23f0f8694b:row=1433",
+      "physical_run": 0,
+      "native_interval": [
+        0,
+        7821
+      ],
+      "all_three_intervals_paired_valid": true,
+      "all_three_intervals_background": true,
+      "during_min_source_distance": 57.59326010871466,
+      "contrasts": {
+        "x": {
+          "before": -6.937034540482144e-05,
+          "during": -7.956333028602032e-05,
+          "after": -7.381626064370924e-05,
+          "delta": -1.019298488119888e-05,
+          "recovery_delta": -4.4459152388877995e-06,
+          "cohort_n": 249,
+          "cohort_median_delta": -9.252093051672045e-08,
+          "cohort_MAD": 8.771648548363142e-07,
+          "target_to_cohort_MAD": 11.514898134589519,
+          "cohort_same_sign_at_least_half_target": 4
+        },
+        "r": {
+          "before": 9.082405575310628e-05,
+          "during": 9.387049349669699e-05,
+          "after": 9.329969310809027e-05,
+          "delta": 3.0464377435907085e-06,
+          "recovery_delta": 2.4756373549839815e-06,
+          "cohort_n": 249,
+          "cohort_median_delta": -7.0483506522259014e-09,
+          "cohort_MAD": 1.0277441875140657e-07,
+          "target_to_cohort_MAD": 29.71056544361283,
+          "cohort_same_sign_at_least_half_target": 3
+        }
+      },
+      "interpretation": "Descriptive original-coordinate contrast and all-network off-source cohort; MAD is cohort scale, not uncertainty on the target step. Selected from baseline windows, no Q data."
+    }
+  ],
+  "scope": "three displayed paired opposite-coordinate event examples; no complete classifier/catalogue claim"
+}

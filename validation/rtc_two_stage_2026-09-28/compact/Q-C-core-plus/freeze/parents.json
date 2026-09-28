@@ -1,0 +1,10 @@
+{
+  "map_request": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-core-plus/inputs/map-request.json",
+    "sha256": "07595a34cc0a961f709c105df1ac32af651c63901ffb4d408d47f1beeff72528"
+  },
+  "parent_plan": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-core-plus/M0/products/a1100/plan.yaml",
+    "sha256": "8a689a96e3169227d44b9a4e63f752bcf6e7865ac54b1103fc4d237ed7fc1b92"
+  }
+}

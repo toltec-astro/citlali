@@ -1,0 +1,42 @@
+[
+  {
+    "network": 1,
+    "B_retained_detectors": 361,
+    "Q_retained_detectors": 361,
+    "B_retained_cells": 2526957,
+    "Q_retained_cells": 2526957,
+    "B_on_common_detector_median_difference_MAD": 131.46904092387365,
+    "Q_on_common_detector_median_difference_MAD": 131.47114125738707,
+    "unchanged_retained_counts_except_selection": true
+  },
+  {
+    "network": 2,
+    "B_retained_detectors": 399,
+    "Q_retained_detectors": 398,
+    "B_retained_cells": 2846710,
+    "Q_retained_cells": 2839866,
+    "B_on_common_detector_median_difference_MAD": 453.4670758590313,
+    "Q_on_common_detector_median_difference_MAD": 447.5161117520396,
+    "unchanged_retained_counts_except_selection": true
+  },
+  {
+    "network": 3,
+    "B_retained_detectors": 249,
+    "Q_retained_detectors": 249,
+    "B_retained_cells": 1733290,
+    "Q_retained_cells": 1733290,
+    "B_on_common_detector_median_difference_MAD": 167.57226329416935,
+    "Q_on_common_detector_median_difference_MAD": 167.57788279494903,
+    "unchanged_retained_counts_except_selection": true
+  },
+  {
+    "network": 4,
+    "B_retained_detectors": 377,
+    "Q_retained_detectors": 377,
+    "B_retained_cells": 2699042,
+    "Q_retained_cells": 2699042,
+    "B_on_common_detector_median_difference_MAD": 109.0663065359856,
+    "Q_on_common_detector_median_difference_MAD": 109.07247528356459,
+    "unchanged_retained_counts_except_selection": true
+  }
+]

@@ -1,0 +1,1050 @@
+{
+  "cycles": [
+    {
+      "cycle": 0,
+      "B_science_pixels": 8345,
+      "Q_science_pixels": 8341,
+      "lost_B_science_pixels": 4,
+      "gained_science_pixels": 0,
+      "B_domain_retained_fraction": 0.9995206710605152,
+      "B_contributions": 9805999,
+      "Q_contributions": 9799155,
+      "lost_normalization": 6844.0,
+      "gained_normalization": 0.0,
+      "changed_normalization_pixels": 1060,
+      "relative_normalization_on_B_domain": {
+        "n": 8345,
+        "median": 0.0,
+        "mean": -0.0008776817510999101,
+        "std": 0.004148548342934032,
+        "robust_scale": 0.0
+      },
+      "delta_on_common_science": {
+        "n": 8341,
+        "median": 0.03257828027514664,
+        "mean": 0.08782282988949199,
+        "std": 5.849645698247537,
+        "robust_scale": 2.517192836234947
+      },
+      "delta_on_B_fit_disk": {
+        "n": 1257,
+        "median": -0.4744203805779108,
+        "mean": -0.75604191208306,
+        "std": 4.102724758820901,
+        "robust_scale": 2.1719146696161684
+      },
+      "measurements": [
+        {
+          "name": "peak",
+          "B": 359.7981726440579,
+          "Q": 358.64604325338405,
+          "delta": -1.1521293906738492,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "cx",
+          "B": 4.10695865054711,
+          "Q": 4.09466737167834,
+          "delta": -0.012291278868770128,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "cy",
+          "B": 7.323022188692336,
+          "Q": 7.331727156236328,
+          "delta": 0.008704967543991415,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "FWHM_major",
+          "B": 5.796007979536616,
+          "Q": 5.8860140034943305,
+          "delta": 0.09000602395771473,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": "canonical major/minor width and major-axis angle modulo pi; B angle fit constrained, its local conditional scale is not a reliable boundary-aware interval"
+        },
+        {
+          "name": "FWHM_minor",
+          "B": 4.115027999352908,
+          "Q": 4.132155487552,
+          "delta": 0.017127488199091268,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": "canonical major/minor width and major-axis angle modulo pi; B angle fit constrained, its local conditional scale is not a reliable boundary-aware interval"
+        },
+        {
+          "name": "major_angle",
+          "B": -0.2687073579790923,
+          "Q": -0.26490533715555575,
+          "delta": 0.003802020823536534,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": "canonical major/minor width and major-axis angle modulo pi; B angle fit constrained, its local conditional scale is not a reliable boundary-aware interval"
+        },
+        {
+          "name": "constant",
+          "B": -1.9916025686073504,
+          "Q": -2.7795349317201747,
+          "delta": -0.7879323631128243,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "template",
+          "B": 359.79817273457445,
+          "Q": 362.15382700770397,
+          "delta": 2.3556542731295167,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "aperture1",
+          "B": 9312.046713285148,
+          "Q": 9444.613465156455,
+          "delta": 132.56675187130713,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "aperture1.5",
+          "B": 9499.674134675146,
+          "Q": 9736.106703649926,
+          "delta": 236.43256897478022,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "aperture2",
+          "B": 9579.419861783244,
+          "Q": 10076.84392227327,
+          "delta": 497.424060490026,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        }
+      ],
+      "qualifier": "Q unavailable on lost B-supported pixels, never zero; same-domain deltas explicitly conditional. Conditional uncertainties are single-map scales, not exact paired significance; selected on B in-sample."
+    },
+    {
+      "cycle": 1,
+      "B_science_pixels": 8345,
+      "Q_science_pixels": 8341,
+      "lost_B_science_pixels": 4,
+      "gained_science_pixels": 0,
+      "B_domain_retained_fraction": 0.9995206710605152,
+      "B_contributions": 9805999,
+      "Q_contributions": 9799155,
+      "lost_normalization": 6844.0,
+      "gained_normalization": 0.0,
+      "changed_normalization_pixels": 1060,
+      "relative_normalization_on_B_domain": {
+        "n": 8345,
+        "median": 0.0,
+        "mean": -0.0008776817510999101,
+        "std": 0.004148548342934032,
+        "robust_scale": 0.0
+      },
+      "delta_on_common_science": {
+        "n": 8341,
+        "median": 0.03425169489612756,
+        "mean": 0.09005414966469,
+        "std": 5.846959167697071,
+        "robust_scale": 2.517913219866645
+      },
+      "delta_on_B_fit_disk": {
+        "n": 1257,
+        "median": -0.4591052261051942,
+        "mean": -0.7464668134781728,
+        "std": 4.1068811418214635,
+        "robust_scale": 2.1933360653848375
+      },
+      "measurements": [
+        {
+          "name": "peak",
+          "B": 414.78549616851984,
+          "Q": 414.0188340551876,
+          "delta": -0.7666621133322451,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "cx",
+          "B": 4.15284035051259,
+          "Q": 4.14339413896942,
+          "delta": -0.009446211543170158,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "cy",
+          "B": 7.283284889249871,
+          "Q": 7.291966495202205,
+          "delta": 0.008681605952333804,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "FWHM_major",
+          "B": 6.052161761591998,
+          "Q": 6.1336825839154,
+          "delta": 0.08152082232340163,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": "canonical major/minor width and major-axis angle modulo pi; B angle fit constrained, its local conditional scale is not a reliable boundary-aware interval"
+        },
+        {
+          "name": "FWHM_minor",
+          "B": 4.482238359260716,
+          "Q": 4.4982791034086045,
+          "delta": 0.016040744147888475,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": "canonical major/minor width and major-axis angle modulo pi; B angle fit constrained, its local conditional scale is not a reliable boundary-aware interval"
+        },
+        {
+          "name": "major_angle",
+          "B": -0.1936830874108343,
+          "Q": -0.19373824352214453,
+          "delta": -5.5156111310239446e-05,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": "canonical major/minor width and major-axis angle modulo pi; B angle fit constrained, its local conditional scale is not a reliable boundary-aware interval"
+        },
+        {
+          "name": "constant",
+          "B": -1.0314000278058677,
+          "Q": -1.8164517392362434,
+          "delta": -0.7850517114303757,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "template",
+          "B": 441.3633927795215,
+          "Q": 444.1317824502985,
+          "delta": 2.768389670776969,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "aperture1",
+          "B": 12042.244614624986,
+          "Q": 12190.505904791687,
+          "delta": 148.26129016670166,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "aperture1.5",
+          "B": 13042.278868191075,
+          "Q": 13300.138537526203,
+          "delta": 257.8596693351283,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "aperture2",
+          "B": 13620.518000486212,
+          "Q": 14142.883435182366,
+          "delta": 522.3654346961539,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        }
+      ],
+      "qualifier": "Q unavailable on lost B-supported pixels, never zero; same-domain deltas explicitly conditional. Conditional uncertainties are single-map scales, not exact paired significance; selected on B in-sample."
+    },
+    {
+      "cycle": 2,
+      "B_science_pixels": 8345,
+      "Q_science_pixels": 8341,
+      "lost_B_science_pixels": 4,
+      "gained_science_pixels": 0,
+      "B_domain_retained_fraction": 0.9995206710605152,
+      "B_contributions": 9805999,
+      "Q_contributions": 9799155,
+      "lost_normalization": 6844.0,
+      "gained_normalization": 0.0,
+      "changed_normalization_pixels": 1060,
+      "relative_normalization_on_B_domain": {
+        "n": 8345,
+        "median": 0.0,
+        "mean": -0.0008776817510999101,
+        "std": 0.004148548342934032,
+        "robust_scale": 0.0
+      },
+      "delta_on_common_science": {
+        "n": 8341,
+        "median": 0.034110326044618944,
+        "mean": 0.09032406123614804,
+        "std": 5.846702035240384,
+        "robust_scale": 2.521915283213385
+      },
+      "delta_on_B_fit_disk": {
+        "n": 1257,
+        "median": -0.46010757165885785,
+        "mean": -0.7454326562742107,
+        "std": 4.10770434625363,
+        "robust_scale": 2.17456544325391
+      },
+      "measurements": [
+        {
+          "name": "peak",
+          "B": 426.72964490282266,
+          "Q": 426.07910673489465,
+          "delta": -0.6505381679280049,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "cx",
+          "B": 4.149663501770607,
+          "Q": 4.140776411163204,
+          "delta": -0.008887090607403003,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "cy",
+          "B": 7.266455241386058,
+          "Q": 7.275248297439482,
+          "delta": 0.008793056053423953,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "FWHM_major",
+          "B": 6.17235557369358,
+          "Q": 6.251171123765017,
+          "delta": 0.07881555007143692,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": "canonical major/minor width and major-axis angle modulo pi; B angle fit constrained, its local conditional scale is not a reliable boundary-aware interval"
+        },
+        {
+          "name": "FWHM_minor",
+          "B": 4.591333749902219,
+          "Q": 4.607483253940161,
+          "delta": 0.016149504037941576,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": "canonical major/minor width and major-axis angle modulo pi; B angle fit constrained, its local conditional scale is not a reliable boundary-aware interval"
+        },
+        {
+          "name": "major_angle",
+          "B": -0.15276224985647538,
+          "Q": -0.15469793475701488,
+          "delta": -0.001935684900539497,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": "canonical major/minor width and major-axis angle modulo pi; B angle fit constrained, its local conditional scale is not a reliable boundary-aware interval"
+        },
+        {
+          "name": "constant",
+          "B": -0.7365147507754213,
+          "Q": -1.5222326079719632,
+          "delta": -0.785717857196542,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "template",
+          "B": 463.25125595641236,
+          "Q": 466.08828261014014,
+          "delta": 2.8370266537277757,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "aperture1",
+          "B": 12828.114257500885,
+          "Q": 12978.899764047894,
+          "delta": 150.78550654700848,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "aperture1.5",
+          "B": 14113.7599856493,
+          "Q": 14372.985076509916,
+          "delta": 259.22509086061655,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "aperture2",
+          "B": 14855.102096694194,
+          "Q": 15378.789265170433,
+          "delta": 523.6871684762391,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        }
+      ],
+      "qualifier": "Q unavailable on lost B-supported pixels, never zero; same-domain deltas explicitly conditional. Conditional uncertainties are single-map scales, not exact paired significance; selected on B in-sample."
+    },
+    {
+      "cycle": 3,
+      "B_science_pixels": 8345,
+      "Q_science_pixels": 8341,
+      "lost_B_science_pixels": 4,
+      "gained_science_pixels": 0,
+      "B_domain_retained_fraction": 0.9995206710605152,
+      "B_contributions": 9805999,
+      "Q_contributions": 9799155,
+      "lost_normalization": 6844.0,
+      "gained_normalization": 0.0,
+      "changed_normalization_pixels": 1060,
+      "relative_normalization_on_B_domain": {
+        "n": 8345,
+        "median": 0.0,
+        "mean": -0.0008776817510999101,
+        "std": 0.004148548342934032,
+        "robust_scale": 0.0
+      },
+      "delta_on_common_science": {
+        "n": 8341,
+        "median": 0.03445894120515547,
+        "mean": 0.09039672595955976,
+        "std": 5.846755207207499,
+        "robust_scale": 2.5200393439119955
+      },
+      "delta_on_B_fit_disk": {
+        "n": 1257,
+        "median": -0.4584927549136708,
+        "mean": -0.7452613203019188,
+        "std": 4.107951565113505,
+        "robust_scale": 2.173443134765515
+      },
+      "measurements": [
+        {
+          "name": "peak",
+          "B": 430.09166685100996,
+          "Q": 429.47038951373275,
+          "delta": -0.6212773372772062,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "cx",
+          "B": 4.149469936796944,
+          "Q": 4.14082084979537,
+          "delta": -0.008649087001574074,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "cy",
+          "B": 7.261574979840945,
+          "Q": 7.2704046973247305,
+          "delta": 0.008829717483785693,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "FWHM_major",
+          "B": 6.201934691421141,
+          "Q": 6.2796825104554586,
+          "delta": 0.07774781903431727,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": "canonical major/minor width and major-axis angle modulo pi; B angle fit constrained, its local conditional scale is not a reliable boundary-aware interval"
+        },
+        {
+          "name": "FWHM_minor",
+          "B": 4.617961918403715,
+          "Q": 4.634073538114906,
+          "delta": 0.01611161971119124,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": "canonical major/minor width and major-axis angle modulo pi; B angle fit constrained, its local conditional scale is not a reliable boundary-aware interval"
+        },
+        {
+          "name": "major_angle",
+          "B": -0.14173953641291936,
+          "Q": -0.14418330495464116,
+          "delta": -0.0024437685417217914,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": "canonical major/minor width and major-axis angle modulo pi; B angle fit constrained, its local conditional scale is not a reliable boundary-aware interval"
+        },
+        {
+          "name": "constant",
+          "B": -0.6645222118762958,
+          "Q": -1.4503146738370365,
+          "delta": -0.7857924619607407,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "template",
+          "B": 469.1075645088532,
+          "Q": 471.94949355392214,
+          "delta": 2.841929045068923,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "aperture1",
+          "B": 13036.734959506566,
+          "Q": 13187.57529653976,
+          "delta": 150.84033703319437,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "aperture1.5",
+          "B": 14390.481487673413,
+          "Q": 14649.453651110603,
+          "delta": 258.97216343719083,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "aperture2",
+          "B": 15171.585518025606,
+          "Q": 15694.951255569453,
+          "delta": 523.365737543847,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        }
+      ],
+      "qualifier": "Q unavailable on lost B-supported pixels, never zero; same-domain deltas explicitly conditional. Conditional uncertainties are single-map scales, not exact paired significance; selected on B in-sample."
+    },
+    {
+      "cycle": 4,
+      "B_science_pixels": 8345,
+      "Q_science_pixels": 8341,
+      "lost_B_science_pixels": 4,
+      "gained_science_pixels": 0,
+      "B_domain_retained_fraction": 0.9995206710605152,
+      "B_contributions": 9805999,
+      "Q_contributions": 9799155,
+      "lost_normalization": 6844.0,
+      "gained_normalization": 0.0,
+      "changed_normalization_pixels": 1060,
+      "relative_normalization_on_B_domain": {
+        "n": 8345,
+        "median": 0.0,
+        "mean": -0.0008776817510999101,
+        "std": 0.004148548342934032,
+        "robust_scale": 0.0
+      },
+      "delta_on_common_science": {
+        "n": 8341,
+        "median": 0.036326186717261066,
+        "mean": 0.09042810071531272,
+        "std": 5.846816438945624,
+        "robust_scale": 2.5219781218601836
+      },
+      "delta_on_B_fit_disk": {
+        "n": 1257,
+        "median": -0.45797354490380116,
+        "mean": -0.7453043449645624,
+        "std": 4.108049799428791,
+        "robust_scale": 2.174772458020486
+      },
+      "measurements": [
+        {
+          "name": "peak",
+          "B": 430.99557612487837,
+          "Q": 430.3787869129115,
+          "delta": -0.616789211966875,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "cx",
+          "B": 4.149220356247717,
+          "Q": 4.140639735141841,
+          "delta": -0.008580621105876318,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "cy",
+          "B": 7.260242310666767,
+          "Q": 7.269088459966043,
+          "delta": 0.008846149299276185,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "FWHM_major",
+          "B": 6.210431600317033,
+          "Q": 6.287881082658997,
+          "delta": 0.07744948234196336,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": "canonical major/minor width and major-axis angle modulo pi; B angle fit constrained, its local conditional scale is not a reliable boundary-aware interval"
+        },
+        {
+          "name": "FWHM_minor",
+          "B": 4.624323664659079,
+          "Q": 4.640375591942612,
+          "delta": 0.016051927283532663,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": "canonical major/minor width and major-axis angle modulo pi; B angle fit constrained, its local conditional scale is not a reliable boundary-aware interval"
+        },
+        {
+          "name": "major_angle",
+          "B": -0.13848808634787624,
+          "Q": -0.14107160971974622,
+          "delta": -0.0025835233718699835,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": "canonical major/minor width and major-axis angle modulo pi; B angle fit constrained, its local conditional scale is not a reliable boundary-aware interval"
+        },
+        {
+          "name": "constant",
+          "B": -0.6448111293154696,
+          "Q": -1.4306495158433803,
+          "delta": -0.7858383865279107,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "template",
+          "B": 470.6650435974838,
+          "Q": 473.5015761527935,
+          "delta": 2.8365325553097023,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "aperture1",
+          "B": 13091.492604646613,
+          "Q": 13242.052879802344,
+          "delta": 150.56027515573078,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "aperture1.5",
+          "B": 14462.874678474458,
+          "Q": 14721.39963676662,
+          "delta": 258.5249582921624,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        },
+        {
+          "name": "aperture2",
+          "B": 15254.22468274989,
+          "Q": 15777.07713603456,
+          "delta": 522.8524532846714,
+          "B_conditional_sigma": null,
+          "Q_conditional_sigma": null,
+          "delta_over_B_sigma": null,
+          "qualification": null
+        }
+      ],
+      "qualifier": "Q unavailable on lost B-supported pixels, never zero; same-domain deltas explicitly conditional. Conditional uncertainties are single-map scales, not exact paired significance; selected on B in-sample."
+    },
+    {
+      "cycle": 5,
+      "B_science_pixels": 8345,
+      "Q_science_pixels": 8341,
+      "lost_B_science_pixels": 4,
+      "gained_science_pixels": 0,
+      "B_domain_retained_fraction": 0.9995206710605152,
+      "B_contributions": 9805999,
+      "Q_contributions": 9799155,
+      "lost_normalization": 6844.0,
+      "gained_normalization": 0.0,
+      "changed_normalization_pixels": 1060,
+      "relative_normalization_on_B_domain": {
+        "n": 8345,
+        "median": 0.0,
+        "mean": -0.0008776817510999101,
+        "std": 0.004148548342934032,
+        "robust_scale": 0.0
+      },
+      "delta_on_common_science": {
+        "n": 8341,
+        "median": 0.036326735207815375,
+        "mean": 0.09045246235235603,
+        "std": 5.84684513558105,
+        "robust_scale": 2.5221536163250096
+      },
+      "delta_on_B_fit_disk": {
+        "n": 1257,
+        "median": -0.4572623853955555,
+        "mean": -0.7454021650880195,
+        "std": 4.10810849525581,
+        "robust_scale": 2.175834312357793
+      },
+      "measurements": [
+        {
+          "name": "peak",
+          "B": 429.4505143543425,
+          "Q": 430.5808276182898,
+          "delta": 1.1303132639473006,
+          "B_conditional_sigma": 15.329103209089014,
+          "Q_conditional_sigma": 15.228121518529521,
+          "delta_over_B_sigma": 0.07373642466423666,
+          "qualification": null
+        },
+        {
+          "name": "cx",
+          "B": 4.148068330268084,
+          "Q": 4.140379656859691,
+          "delta": -0.007688673408392965,
+          "B_conditional_sigma": 0.11521992829786988,
+          "Q_conditional_sigma": 0.11746425060591122,
+          "delta_over_B_sigma": -0.066730413062886,
+          "qualification": null
+        },
+        {
+          "name": "cy",
+          "B": 7.25366195587248,
+          "Q": 7.26883311038875,
+          "delta": 0.015171154516269603,
+          "B_conditional_sigma": 0.06930788795521152,
+          "Q_conditional_sigma": 0.0681222906768361,
+          "delta_over_B_sigma": 0.21889506322965113,
+          "qualification": null
+        },
+        {
+          "name": "FWHM_major",
+          "B": 6.202766699890452,
+          "Q": 6.290828134201273,
+          "delta": 0.08806143431082081,
+          "B_conditional_sigma": 0.27615201282757507,
+          "Q_conditional_sigma": 0.28075367501635734,
+          "delta_over_B_sigma": 0.3188875337504962,
+          "qualification": "canonical major/minor width and major-axis angle modulo pi; B angle fit constrained, its local conditional scale is not a reliable boundary-aware interval"
+        },
+        {
+          "name": "FWHM_minor",
+          "B": 4.663777129573756,
+          "Q": 4.641391735653882,
+          "delta": -0.022385393919873486,
+          "B_conditional_sigma": 0.20336177615380002,
+          "Q_conditional_sigma": 0.20132484249862137,
+          "delta_over_B_sigma": -0.11007670341619993,
+          "qualification": "canonical major/minor width and major-axis angle modulo pi; B angle fit constrained, its local conditional scale is not a reliable boundary-aware interval"
+        },
+        {
+          "name": "major_angle",
+          "B": 5.66553889764798e-16,
+          "Q": -0.1400946307286263,
+          "delta": -0.14009463072862685,
+          "B_conditional_sigma": 0.0811798127325979,
+          "Q_conditional_sigma": 0.07572442016237431,
+          "delta_over_B_sigma": -1.7257323712989006,
+          "qualification": "canonical major/minor width and major-axis angle modulo pi; B angle fit constrained, its local conditional scale is not a reliable boundary-aware interval"
+        },
+        {
+          "name": "constant",
+          "B": -0.6459092184198083,
+          "Q": -1.4248672739671813,
+          "delta": -0.778958055547373,
+          "B_conditional_sigma": 2.1619442291026507,
+          "Q_conditional_sigma": 2.182022210543344,
+          "delta_over_B_sigma": -0.360304417228511,
+          "qualification": null
+        },
+        {
+          "name": "template",
+          "B": 471.0507879614849,
+          "Q": 473.866915860346,
+          "delta": 2.8161278988611116,
+          "B_conditional_sigma": 17.51105777687652,
+          "Q_conditional_sigma": 17.736629118754614,
+          "delta_over_B_sigma": 0.16081997642540072,
+          "qualification": null
+        },
+        {
+          "name": "aperture1",
+          "B": 13104.927031952513,
+          "Q": 13254.469850671196,
+          "delta": 149.5428187186826,
+          "B_conditional_sigma": 785.0948872068436,
+          "Q_conditional_sigma": 801.3028035681325,
+          "delta_over_B_sigma": 0.19047738197699354,
+          "qualification": null
+        },
+        {
+          "name": "aperture1.5",
+          "B": 14481.733939598287,
+          "Q": 14738.189795,
+          "delta": 256.45585540171305,
+          "B_conditional_sigma": 1426.537948469429,
+          "Q_conditional_sigma": 1459.8118660435025,
+          "delta_over_B_sigma": 0.17977499699665994,
+          "qualification": null
+        },
+        {
+          "name": "aperture2",
+          "B": 15276.779509760574,
+          "Q": 15796.234261545878,
+          "delta": 519.4547517853043,
+          "B_conditional_sigma": 2132.0584929315137,
+          "Q_conditional_sigma": 2187.4502254355643,
+          "delta_over_B_sigma": 0.24364000964676644,
+          "qualification": null
+        }
+      ],
+      "qualifier": "Q unavailable on lost B-supported pixels, never zero; same-domain deltas explicitly conditional. Conditional uncertainties are single-map scales, not exact paired significance; selected on B in-sample."
+    }
+  ],
+  "final_residuals": {
+    "B_background_pixels": 7923,
+    "Q_available_on_B_background": 7919,
+    "B_background": {
+      "n": 7923,
+      "median": -0.040876094193981416,
+      "mean": 0.225251339726765,
+      "std": 24.503240937192775,
+      "robust_scale": 22.308014284749472
+    },
+    "B_on_common_background": {
+      "n": 7919,
+      "median": -0.04385849027847177,
+      "mean": 0.1925170320158432,
+      "std": 24.34889846418465,
+      "robust_scale": 22.306619980177892
+    },
+    "B_lost_background": {
+      "n": 4,
+      "median": 11.42704907896139,
+      "mean": 65.03099703042422,
+      "std": 122.87583762714004,
+      "robust_scale": 23.80403475812857
+    },
+    "Q_on_B_background": {
+      "n": 7919,
+      "median": 0.6767425940537971,
+      "mean": 1.08929643835937,
+      "std": 24.23974429457818,
+      "robust_scale": 22.582866096174715
+    },
+    "B_fit_disk": {
+      "n": 1257,
+      "median": -0.07546637630955066,
+      "mean": 7.336735303084719e-13,
+      "std": 19.979620024450814,
+      "robust_scale": 19.849526300975896
+    },
+    "Q_on_B_fit_disk": {
+      "n": 1257,
+      "median": -0.3145503443165294,
+      "mean": 1.732614440286971e-08,
+      "std": 19.875761354894593,
+      "robust_scale": 19.787020631601322
+    },
+    "selected_B_event_footprint_pixels": 59,
+    "Q_available_on_B_event_footprint": 58,
+    "B_event_footprint": {
+      "n": 59,
+      "median": 2.469512274633004,
+      "mean": 5.959490910532131,
+      "std": 50.72073541416144,
+      "robust_scale": 30.142427095566873
+    },
+    "B_on_common_event_footprint": {
+      "n": 58,
+      "median": 1.6682279377087161,
+      "mean": 1.7815860033772941,
+      "std": 39.620959029818934,
+      "robust_scale": 29.188007409703268
+    },
+    "B_lost_event_footprint": {
+      "n": 1,
+      "median": 248.27797552551266,
+      "mean": 248.27797552551266,
+      "std": null,
+      "robust_scale": 0.0
+    },
+    "lost_event_pixels": [
+      {
+        "row": 104,
+        "column": 115,
+        "B_residual": 248.27797552551266,
+        "Q_science_available": false,
+        "B_hits": 522.0,
+        "Q_hits": 462.0
+      }
+    ],
+    "Q_event_footprint": {
+      "n": 58,
+      "median": 4.1662689466459,
+      "mean": 2.1101723698955492,
+      "std": 30.459684185313886,
+      "robust_scale": 22.624399719930338
+    },
+    "event_footprint_delta": {
+      "n": 58,
+      "median": 2.1326306372323014,
+      "mean": -0.4503716890291173,
+      "std": 23.047243687147148,
+      "robust_scale": 9.77817946661057
+    },
+    "B_peak_fit_constrained": true,
+    "Q_peak_fit_constrained": false
+  },
+  "native_support": [
+    {
+      "network": 1,
+      "RTC_paired_lost": 0,
+      "RTC_paired_gained": 0,
+      "MAP_centers_lost": 0,
+      "MAP_centers_gained": 0,
+      "changed": [],
+      "events_exact": true,
+      "decisions_exact": true,
+      "support_decisions_exact": true,
+      "manifest": {
+        "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_two_stage_2026-09-28/QUARANTINE.json",
+        "sha256": "a8edbfecdc297e06fd8625fbd1b435ff1b43bae60de852043cac0fcda995f1c5"
+      }
+    },
+    {
+      "network": 2,
+      "RTC_paired_lost": 6844,
+      "RTC_paired_gained": 0,
+      "MAP_centers_lost": 6765,
+      "MAP_centers_gained": 0,
+      "changed": [
+        {
+          "channel": 88,
+          "lost": 6844,
+          "gained": 0
+        }
+      ],
+      "events_exact": true,
+      "decisions_exact": true,
+      "support_decisions_exact": true,
+      "manifest": {
+        "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_two_stage_2026-09-28/QUARANTINE.json",
+        "sha256": "a8edbfecdc297e06fd8625fbd1b435ff1b43bae60de852043cac0fcda995f1c5"
+      }
+    },
+    {
+      "network": 3,
+      "RTC_paired_lost": 0,
+      "RTC_paired_gained": 0,
+      "MAP_centers_lost": 0,
+      "MAP_centers_gained": 0,
+      "changed": [],
+      "events_exact": true,
+      "decisions_exact": true,
+      "support_decisions_exact": true,
+      "manifest": {
+        "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_two_stage_2026-09-28/QUARANTINE.json",
+        "sha256": "a8edbfecdc297e06fd8625fbd1b435ff1b43bae60de852043cac0fcda995f1c5"
+      }
+    },
+    {
+      "network": 4,
+      "RTC_paired_lost": 0,
+      "RTC_paired_gained": 0,
+      "MAP_centers_lost": 0,
+      "MAP_centers_gained": 0,
+      "changed": [],
+      "events_exact": true,
+      "decisions_exact": true,
+      "support_decisions_exact": true,
+      "manifest": {
+        "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_two_stage_2026-09-28/QUARANTINE.json",
+        "sha256": "a8edbfecdc297e06fd8625fbd1b435ff1b43bae60de852043cac0fcda995f1c5"
+      }
+    }
+  ],
+  "uncertainty": "Existing conditional uncertainty only, no new ensembles or paired-test significance; baseline-selected in-sample policy test."
+}

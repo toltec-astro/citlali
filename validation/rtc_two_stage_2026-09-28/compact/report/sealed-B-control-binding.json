@@ -1,0 +1,5 @@
+{
+  "source": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_consequences_2026-09-28/compact/report/response/source-responses.json",
+  "sha256": "f86d145f1ac33013ec28cd2bd33ade4502e6ebac6c1fc68e5922f0a95dfef940",
+  "compatibility": "Stage1 bindings and new exact full B replay; no new B injection trajectories"
+}

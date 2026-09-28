@@ -1,17 +1,19 @@
 # Scientific goals
 
-## 2026-09-28 — routing repaired; complete B reproduced; one quarantine frozen
+## 2026-09-28 — routing repaired; bounded quarantine comparison completed
 
-The owner-authorized [two-stage work order](../validation/rtc_two_stage_2026-09-28/OWNER_DIRECTIVE.md)
-repairs native retained-residual routing without changing Stage1 science.
-Infrastructureff92aa69d and exact launch9d28b2c6e passed independent review.
-The new B replay completed allfive FRUIT applications and endpoint; all25,584
-native fingerprints,60 planes,37 records and endpoint agree with sealedB.
-The full CAL/M0/T5 audit supports one bounded experimental quarantine: network2
-D88 wholephysicalrun, frozen beforeQ. See [preflight](../validation/rtc_two_stage_2026-09-28/Q_PREFLIGHT.md).
-Q execution remains gated on exact native-binding tests/review. Prior failed
-campaignda94a4379 remains failed evidence. B stays default, fixed11 parked;
-no exposure recovery, cleanup, Unity, push or merge is authorized.
+The [two-stage assessment](../validation/rtc_two_stage_2026-09-28/ASSESSMENT.md)
+completes unchanged B and four frozen Q roles: 5 trajectories, 25 feedback
+applications and 5 endpoints, with no failed launch or retry. B agrees exactly
+with the sealed full M0–T5 reference. Quarantining network 2 D88's whole physical
+run reduces residual scatter 39.62→30.46 mJy/beam on 58 shared event-footprint
+pixels; one additional footprint pixel becomes unavailable, not clean. Overall
+four science pixels and 0.069794% of MAP contributions are lost. Global/POINT
+changes are small; compact response is unchanged, while broad gain improves and
+morphology mismatch worsens. Keep B as the development reference; Q remains
+experimental. Earlier failed campaign `da94a4379` remains failed evidence.
+All scratch is retained; no production promotion, fixed11 revival, exposure
+recovery, Unity execution, push, merge or automatic follow-on.
 
 
 ## 2026-09-28 — contamination-first residual audit stopped at failed replay gate

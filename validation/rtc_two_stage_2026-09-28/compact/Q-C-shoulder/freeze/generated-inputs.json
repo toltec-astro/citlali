@@ -1,0 +1,38 @@
+[
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-shoulder/inputs/ast-source-binding.json",
+    "sha256": "a8aacdd5c0a31daf634c73257261ca563d2041ea1b9e9137889dac911e0a05e1"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-shoulder/inputs/effective-point.yaml",
+    "sha256": "cf2283b162df81005f2c3bc073a37d9adb464b3aaa976c88f0f6b8e1c83e2bc7"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-shoulder/inputs/map-owner.json",
+    "sha256": "219f6641b40a1cfc049eae24e320a14fe06f014bf804a87223a4b8772ea932aa"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-shoulder/inputs/network1-input.json",
+    "sha256": "bec3bddf4d9a991371c9cea0055855b2f042d4fb2d759af3342d9819bd5e9c89"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-shoulder/inputs/network2-input.json",
+    "sha256": "e7ef76bbbead8fbe8b4d43d36da9fa87388e219bc159d05a286113b7e3c9703a"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-shoulder/inputs/network3-input.json",
+    "sha256": "3d1e31d0a6f7eabf551ece95c19e806f587a063e346c187e32c406b02b493a97"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-shoulder/inputs/network4-input.json",
+    "sha256": "7d65c33114ca43dd56258d75da668ece1fa6a8a4a9a11599c7ab40e921b73e45"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-shoulder/inputs/observation.json",
+    "sha256": "292810d7c5eeed5144d7797967d0e4e3b6e93ceddc982b3668f7bc6166ea1e00"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-shoulder/inputs/processing-request.json",
+    "sha256": "79e1f3ddc98aca2d265d50bd2dc748518c56854826f84c716263694416dc2473"
+  }
+]

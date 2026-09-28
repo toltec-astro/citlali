@@ -1,0 +1,116 @@
+generation: native-processing-request:sha256:df7dbad26f30724dc559324f99537fb73e90f4f53ac2a2bd18b47415be9955f4
+generation_kind: fresh-realization-from-explicit-request
+grid_rows: 7819
+grid_first_unix_seconds: 1771495682.2377295
+grid_last_unix_seconds: 1771495746.2827857
+association_tolerance_seconds: 0.004096
+maximum_association_residual_seconds: 0.0023040771484375
+absolute_epoch_uncertainty: unquantified;not-required-for-existing-relative-slot-membership
+readout_integration_assumption: preserved-provisional-uniform-average
+inner_context_samples: 32
+outer_context_samples: 32
+timing_inputs: [{network: 0, path: /Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec0_152430_000_0002_2026_02_19_10_07_51.nc, sha256: 23fdea79ba77a16be582f1e5c71bf77172cc1496be97898ec955f89148e3fc76}, {network: 1, path: /Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec1_152430_000_0002_2026_02_19_10_07_51.nc, sha256: 3e4f1848fc3c998eba60ba802443840615b347958383414e2cb31f9838252c67}, {network: 2, path: /Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec2_152430_000_0002_2026_02_19_10_07_51.nc, sha256: 3e5cb06261306e59cfd474f42dc4278866f1abf379549ede83029d1dee51cd84}, {network: 3, path: /Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec3_152430_000_0002_2026_02_19_10_07_51.nc, sha256: af7cef4a93e6fdbdf1e97b3aa1d13c6a4e35c303efa5e3949a42a72f2619d537}, {network: 4, path: /Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec4_152430_000_0002_2026_02_19_10_07_51.nc, sha256: 75b45cdc440b9c6ec92f5874603421735b6d8b872c8f4807469fa25401ec7c37}, {network: 5, path: /Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec5_152430_000_0002_2026_02_19_10_07_51.nc, sha256: ff0c86e7d2acb18a6888f2533f6bbf10c388bdf7f2ebdc8baf970464834b6f32}, {network: 7, path: /Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec7_152430_000_0002_2026_02_19_10_07_51.nc, sha256: 45ae0e8aef261d68a6068490912fc7515b9cde56bb60b5eba93a07c81b9e82e6}, {network: 8, path: /Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec8_152430_000_0002_2026_02_19_10_07_51.nc, sha256: 042e4e450210cb921212a2d5942a7e0f01d84dc358ed4468da089bbf75cc99d4}, {network: 9, path: /Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec9_152430_000_0002_2026_02_19_10_07_51.nc, sha256: dc680015f96ee362be50f13b6b465a12cfcfe6f0f72c71e8288e0ee03f1c5142}, {network: 11, path: /Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec11_152430_000_0002_2026_02_19_10_07_51.nc, sha256: 5536f00a12395909e9e1495e308fe04892411a5b44d73a97bac9d495c3bacde6}, {network: 12, path: /Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec12_152430_000_0002_2026_02_19_10_07_51.nc, sha256: 1289ac9fd40fdc1579387b0ac718099564f7a3da9938928989c05d78a60bfc41}]
+scans:
+  - scan: 0
+    science_slots:
+      - 32
+      - 1220
+    context_slots:
+      - 0
+      - 1252
+    unmapped_science_slots: 0
+    science_native:
+      -
+        - 33
+        - 1221
+    context_native:
+      -
+        - 1
+        - 1253
+  - scan: 1
+    science_slots:
+      - 1220
+      - 2440
+    context_slots:
+      - 1188
+      - 2472
+    unmapped_science_slots: 0
+    science_native:
+      -
+        - 1221
+        - 2441
+    context_native:
+      -
+        - 1189
+        - 2473
+  - scan: 2
+    science_slots:
+      - 2440
+      - 3660
+    context_slots:
+      - 2408
+      - 3692
+    unmapped_science_slots: 0
+    science_native:
+      -
+        - 2441
+        - 3661
+    context_native:
+      -
+        - 2409
+        - 3693
+  - scan: 3
+    science_slots:
+      - 3660
+      - 4880
+    context_slots:
+      - 3628
+      - 4912
+    unmapped_science_slots: 0
+    science_native:
+      -
+        - 3661
+        - 4881
+    context_native:
+      -
+        - 3629
+        - 4913
+  - scan: 4
+    science_slots:
+      - 4880
+      - 6100
+    context_slots:
+      - 4848
+      - 6132
+    unmapped_science_slots: 0
+    science_native:
+      -
+        - 4881
+        - 6101
+    context_native:
+      -
+        - 4849
+        - 6133
+  - scan: 5
+    science_slots:
+      - 6100
+      - 7288
+    context_slots:
+      - 6068
+      - 7352
+    unmapped_science_slots: 0
+    science_native:
+      -
+        - 6101
+        - 7289
+    context_native:
+      -
+        - 6069
+        - 7353
+native_outside_processing:
+  -
+    - 0
+    - 33
+  -
+    - 7289
+    - 7821

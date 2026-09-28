@@ -1,0 +1,13 @@
+{
+  "native_cells": 16181155,
+  "shared_upstream_allowance": 4142375680,
+  "peak_ceiling_bytes": 30000000000,
+  "free_space_reserve_bytes": 2000000000,
+  "network_workers": 2,
+  "library_threads": 1,
+  "campaign_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928",
+  "campaign_retained_bytes": 8699592746,
+  "metadata_reserve_bytes": 100000000,
+  "maximum_branch_workers": 1,
+  "single_trajectory_reservation_bytes": 6919071120
+}

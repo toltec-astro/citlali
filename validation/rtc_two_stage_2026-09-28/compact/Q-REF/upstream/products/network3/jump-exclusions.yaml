@@ -1,0 +1,1641 @@
+schema: rtc-jump-processing-support-v1
+method: rtc-jump-processing-support-2026-09-22-v1
+exclusion_policy: rtc-jump-exclusion-2026-09-13-v1
+original_parent: sha256:af7cef4a93e6fdbdf1e97b3aa1d13c6a4e35c303efa5e3949a42a72f2619d537:network=3:tune=sha256:90adcffb614dc2943ff7335f00ceaa86223620c982a593aaed88c1be19c12afa:paired-xr:exact-simultaneous-column-projection:sha256:6fff4e8f03ee1bec3152b45037252c5bb2d3d3c5218a55910850926810cd3907
+VAL_generation: 0
+native_rows: zero-based-half-open;exact-original-parent
+complete_processing_domain: true
+processing_generation: native-processing-request:sha256:827e7bc67a38fe97ab252f8829eeae69f88ffb336964326931c2285b2dc790c3
+coordinates:
+  - group: 11
+    coordinate: 0
+    channel: 99
+    affected:
+      - 1972
+      - 1985
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 39
+    coordinate: 0
+    channel: 136
+    affected:
+      - 1834
+      - 1844
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 40
+    coordinate: 0
+    channel: 137
+    affected:
+      - 1989
+      - 1998
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 45
+    coordinate: 0
+    channel: 145
+    affected:
+      - 1975
+      - 1989
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 61
+    coordinate: 0
+    channel: 162
+    affected:
+      - 1989
+      - 1996
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 63
+    coordinate: 0
+    channel: 168
+    affected:
+      - 1977
+      - 1993
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 66
+    coordinate: 0
+    channel: 171
+    affected:
+      - 1988
+      - 1999
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 70
+    coordinate: 0
+    channel: 229
+    affected:
+      - 128
+      - 139
+    science_scans:
+      - 0
+    context_scans:
+      - 0
+    outside_science:
+      []
+  - group: 84
+    coordinate: 0
+    channel: 236
+    affected:
+      - 1632
+      - 1641
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 84
+    coordinate: 1
+    channel: 236
+    affected:
+      - 1637
+      - 1641
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 96
+    coordinate: 1
+    channel: 241
+    affected:
+      - 1987
+      - 2000
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 130
+    coordinate: 1
+    channel: 249
+    affected:
+      - 1833
+      - 1846
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 164
+    coordinate: 0
+    channel: 263
+    affected:
+      - 1972
+      - 1986
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 197
+    coordinate: 1
+    channel: 272
+    affected:
+      - 1974
+      - 1987
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 389
+    coordinate: 0
+    channel: 286
+    affected:
+      - 129
+      - 145
+    science_scans:
+      - 0
+    context_scans:
+      - 0
+    outside_science:
+      []
+  - group: 394
+    coordinate: 0
+    channel: 287
+    affected:
+      - 1967
+      - 1988
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 394
+    coordinate: 1
+    channel: 287
+    affected:
+      - 1974
+      - 1988
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 411
+    coordinate: 0
+    channel: 293
+    affected:
+      - 1831
+      - 1845
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 411
+    coordinate: 1
+    channel: 293
+    affected:
+      - 1831
+      - 1845
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 416
+    coordinate: 1
+    channel: 295
+    affected:
+      - 1989
+      - 2016
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 420
+    coordinate: 0
+    channel: 296
+    affected:
+      - 1831
+      - 1843
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 420
+    coordinate: 1
+    channel: 296
+    affected:
+      - 1831
+      - 1843
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 431
+    coordinate: 0
+    channel: 300
+    affected:
+      - 1972
+      - 1990
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 441
+    coordinate: 0
+    channel: 304
+    affected:
+      - 5495
+      - 5503
+    science_scans:
+      - 4
+    context_scans:
+      - 4
+    outside_science:
+      []
+  - group: 444
+    coordinate: 1
+    channel: 307
+    affected:
+      - 130
+      - 144
+    science_scans:
+      - 0
+    context_scans:
+      - 0
+    outside_science:
+      []
+  - group: 446
+    coordinate: 0
+    channel: 307
+    affected:
+      - 1831
+      - 1845
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 446
+    coordinate: 1
+    channel: 307
+    affected:
+      - 1832
+      - 1843
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 467
+    coordinate: 0
+    channel: 311
+    affected:
+      - 129
+      - 141
+    science_scans:
+      - 0
+    context_scans:
+      - 0
+    outside_science:
+      []
+  - group: 469
+    coordinate: 0
+    channel: 311
+    affected:
+      - 2825
+      - 2831
+    science_scans:
+      - 2
+    context_scans:
+      - 2
+    outside_science:
+      []
+  - group: 473
+    coordinate: 0
+    channel: 313
+    affected:
+      - 1973
+      - 1991
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 480
+    coordinate: 1
+    channel: 314
+    affected:
+      - 1987
+      - 1997
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 520
+    coordinate: 1
+    channel: 319
+    affected:
+      - 129
+      - 148
+    science_scans:
+      - 0
+    context_scans:
+      - 0
+    outside_science:
+      []
+  - group: 521
+    coordinate: 1
+    channel: 319
+    affected:
+      - 1830
+      - 1844
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 525
+    coordinate: 1
+    channel: 320
+    affected:
+      - 131
+      - 141
+    science_scans:
+      - 0
+    context_scans:
+      - 0
+    outside_science:
+      []
+  - group: 526
+    coordinate: 1
+    channel: 320
+    affected:
+      - 1975
+      - 1983
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 533
+    coordinate: 0
+    channel: 322
+    affected:
+      - 1986
+      - 1994
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 536
+    coordinate: 0
+    channel: 322
+    affected:
+      - 4571
+      - 4574
+    science_scans:
+      - 3
+    context_scans:
+      - 3
+    outside_science:
+      []
+  - group: 539
+    coordinate: 0
+    channel: 324
+    affected:
+      - 1972
+      - 1994
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 563
+    coordinate: 1
+    channel: 331
+    affected:
+      - 1828
+      - 1833
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 566
+    coordinate: 0
+    channel: 336
+    affected:
+      - 1981
+      - 1996
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 611
+    coordinate: 0
+    channel: 351
+    affected:
+      - 2825
+      - 2841
+    science_scans:
+      - 2
+    context_scans:
+      - 2
+    outside_science:
+      []
+  - group: 621
+    coordinate: 1
+    channel: 353
+    affected:
+      - 131
+      - 142
+    science_scans:
+      - 0
+    context_scans:
+      - 0
+    outside_science:
+      []
+  - group: 653
+    coordinate: 0
+    channel: 362
+    affected:
+      - 1979
+      - 1993
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 673
+    coordinate: 1
+    channel: 368
+    affected:
+      - 129
+      - 141
+    science_scans:
+      - 0
+    context_scans:
+      - 0
+    outside_science:
+      []
+  - group: 679
+    coordinate: 0
+    channel: 369
+    affected:
+      - 1975
+      - 1986
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 700
+    coordinate: 1
+    channel: 377
+    affected:
+      - 1981
+      - 1997
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 716
+    coordinate: 1
+    channel: 380
+    affected:
+      - 1981
+      - 1995
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 717
+    coordinate: 0
+    channel: 380
+    affected:
+      - 2825
+      - 2827
+    science_scans:
+      - 2
+    context_scans:
+      - 2
+    outside_science:
+      []
+  - group: 744
+    coordinate: 0
+    channel: 385
+    affected:
+      - 126
+      - 146
+    science_scans:
+      - 0
+    context_scans:
+      - 0
+    outside_science:
+      []
+  - group: 744
+    coordinate: 1
+    channel: 385
+    affected:
+      - 130
+      - 146
+    science_scans:
+      - 0
+    context_scans:
+      - 0
+    outside_science:
+      []
+  - group: 755
+    coordinate: 1
+    channel: 387
+    affected:
+      - 1979
+      - 1992
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 757
+    coordinate: 0
+    channel: 388
+    affected:
+      - 1974
+      - 1998
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 757
+    coordinate: 1
+    channel: 388
+    affected:
+      - 1979
+      - 1991
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 780
+    coordinate: 0
+    channel: 404
+    affected:
+      - 1991
+      - 1996
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 784
+    coordinate: 0
+    channel: 406
+    affected:
+      - 7515
+      - 7523
+    science_scans:
+      []
+    context_scans:
+      []
+    outside_science:
+      -
+        - 7515
+        - 7523
+  - group: 804
+    coordinate: 0
+    channel: 420
+    affected:
+      - 1975
+      - 1989
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 820
+    coordinate: 0
+    channel: 428
+    affected:
+      - 1989
+      - 1997
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 830
+    coordinate: 0
+    channel: 434
+    affected:
+      - 1975
+      - 1984
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 834
+    coordinate: 0
+    channel: 436
+    affected:
+      - 3588
+      - 3702
+    science_scans:
+      - 2
+      - 3
+    context_scans:
+      - 2
+      - 3
+    outside_science:
+      []
+  - group: 839
+    coordinate: 0
+    channel: 438
+    affected:
+      - 1830
+      - 1844
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 841
+    coordinate: 0
+    channel: 439
+    affected:
+      - 1988
+      - 1997
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 856
+    coordinate: 0
+    channel: 449
+    affected:
+      - 114
+      - 141
+    science_scans:
+      - 0
+    context_scans:
+      - 0
+    outside_science:
+      []
+  - group: 858
+    coordinate: 0
+    channel: 450
+    affected:
+      - 1987
+      - 1997
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 868
+    coordinate: 0
+    channel: 451
+    affected:
+      - 1987
+      - 1993
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 872
+    coordinate: 0
+    channel: 453
+    affected:
+      - 135
+      - 142
+    science_scans:
+      - 0
+    context_scans:
+      - 0
+    outside_science:
+      []
+  - group: 877
+    coordinate: 0
+    channel: 455
+    affected:
+      - 1985
+      - 1995
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 880
+    coordinate: 0
+    channel: 456
+    affected:
+      - 2827
+      - 2829
+    science_scans:
+      - 2
+    context_scans:
+      - 2
+    outside_science:
+      []
+  - group: 887
+    coordinate: 0
+    channel: 459
+    affected:
+      - 1976
+      - 1997
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 899
+    coordinate: 0
+    channel: 463
+    affected:
+      - 1986
+      - 1996
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 917
+    coordinate: 0
+    channel: 467
+    affected:
+      - 1987
+      - 1999
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 983
+    coordinate: 0
+    channel: 469
+    affected:
+      - 1985
+      - 1998
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 1011
+    coordinate: 0
+    channel: 479
+    affected:
+      - 1988
+      - 1998
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 1014
+    coordinate: 0
+    channel: 481
+    affected:
+      - 1977
+      - 1992
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 1031
+    coordinate: 0
+    channel: 488
+    affected:
+      - 134
+      - 142
+    science_scans:
+      - 0
+    context_scans:
+      - 0
+    outside_science:
+      []
+  - group: 1035
+    coordinate: 0
+    channel: 490
+    affected:
+      - 1979
+      - 1996
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 1036
+    coordinate: 0
+    channel: 491
+    affected:
+      - 1980
+      - 1995
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+  - group: 1039
+    coordinate: 0
+    channel: 494
+    affected:
+      - 135
+      - 138
+    science_scans:
+      - 0
+    context_scans:
+      - 0
+    outside_science:
+      []
+  - group: 1076
+    coordinate: 0
+    channel: 507
+    affected:
+      - 128
+      - 139
+    science_scans:
+      - 0
+    context_scans:
+      - 0
+    outside_science:
+      []
+  - group: 1081
+    coordinate: 0
+    channel: 529
+    affected:
+      - 1993
+      - 1995
+    science_scans:
+      - 1
+    context_scans:
+      - 1
+    outside_science:
+      []
+detectors:
+  - channel: 99
+    whole_observation: false
+    admitted_groups:
+      - 11
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 136
+    whole_observation: false
+    admitted_groups:
+      - 39
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 137
+    whole_observation: false
+    admitted_groups:
+      - 40
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 145
+    whole_observation: false
+    admitted_groups:
+      - 45
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 162
+    whole_observation: false
+    admitted_groups:
+      - 61
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 168
+    whole_observation: false
+    admitted_groups:
+      - 63
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 171
+    whole_observation: false
+    admitted_groups:
+      - 66
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 229
+    whole_observation: false
+    admitted_groups:
+      - 70
+    science_scans:
+      - 0
+    paired_exclusions:
+      -
+        - 33
+        - 1221
+  - channel: 236
+    whole_observation: false
+    admitted_groups:
+      - 84
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 241
+    whole_observation: false
+    admitted_groups:
+      - 96
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 249
+    whole_observation: false
+    admitted_groups:
+      - 130
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 263
+    whole_observation: false
+    admitted_groups:
+      - 164
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 272
+    whole_observation: false
+    admitted_groups:
+      - 197
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 286
+    whole_observation: false
+    admitted_groups:
+      - 389
+    science_scans:
+      - 0
+    paired_exclusions:
+      -
+        - 33
+        - 1221
+  - channel: 287
+    whole_observation: false
+    admitted_groups:
+      - 394
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 293
+    whole_observation: false
+    admitted_groups:
+      - 411
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 295
+    whole_observation: false
+    admitted_groups:
+      - 416
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 296
+    whole_observation: false
+    admitted_groups:
+      - 420
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 300
+    whole_observation: false
+    admitted_groups:
+      - 431
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 304
+    whole_observation: false
+    admitted_groups:
+      - 441
+    science_scans:
+      - 4
+    paired_exclusions:
+      -
+        - 4881
+        - 6101
+  - channel: 307
+    whole_observation: false
+    admitted_groups:
+      - 444
+      - 446
+    science_scans:
+      - 0
+      - 1
+    paired_exclusions:
+      -
+        - 33
+        - 2441
+  - channel: 311
+    whole_observation: false
+    admitted_groups:
+      - 467
+      - 469
+    science_scans:
+      - 0
+      - 2
+    paired_exclusions:
+      -
+        - 33
+        - 1221
+      -
+        - 2441
+        - 3661
+  - channel: 313
+    whole_observation: false
+    admitted_groups:
+      - 473
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 314
+    whole_observation: false
+    admitted_groups:
+      - 480
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 319
+    whole_observation: false
+    admitted_groups:
+      - 520
+      - 521
+    science_scans:
+      - 0
+      - 1
+    paired_exclusions:
+      -
+        - 33
+        - 2441
+  - channel: 320
+    whole_observation: false
+    admitted_groups:
+      - 525
+      - 526
+    science_scans:
+      - 0
+      - 1
+    paired_exclusions:
+      -
+        - 33
+        - 2441
+  - channel: 322
+    whole_observation: false
+    admitted_groups:
+      - 533
+      - 536
+    science_scans:
+      - 1
+      - 3
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+      -
+        - 3661
+        - 4881
+  - channel: 324
+    whole_observation: false
+    admitted_groups:
+      - 539
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 331
+    whole_observation: false
+    admitted_groups:
+      - 563
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 336
+    whole_observation: false
+    admitted_groups:
+      - 566
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 351
+    whole_observation: false
+    admitted_groups:
+      - 611
+    science_scans:
+      - 2
+    paired_exclusions:
+      -
+        - 2441
+        - 3661
+  - channel: 353
+    whole_observation: false
+    admitted_groups:
+      - 621
+    science_scans:
+      - 0
+    paired_exclusions:
+      -
+        - 33
+        - 1221
+  - channel: 362
+    whole_observation: false
+    admitted_groups:
+      - 653
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 368
+    whole_observation: false
+    admitted_groups:
+      - 673
+    science_scans:
+      - 0
+    paired_exclusions:
+      -
+        - 33
+        - 1221
+  - channel: 369
+    whole_observation: false
+    admitted_groups:
+      - 679
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 377
+    whole_observation: false
+    admitted_groups:
+      - 700
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 380
+    whole_observation: false
+    admitted_groups:
+      - 716
+      - 717
+    science_scans:
+      - 1
+      - 2
+    paired_exclusions:
+      -
+        - 1221
+        - 3661
+  - channel: 385
+    whole_observation: false
+    admitted_groups:
+      - 744
+    science_scans:
+      - 0
+    paired_exclusions:
+      -
+        - 33
+        - 1221
+  - channel: 387
+    whole_observation: false
+    admitted_groups:
+      - 755
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 388
+    whole_observation: false
+    admitted_groups:
+      - 757
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 404
+    whole_observation: false
+    admitted_groups:
+      - 780
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 406
+    whole_observation: false
+    admitted_groups:
+      - 784
+    science_scans:
+      []
+    paired_exclusions:
+      -
+        - 7515
+        - 7523
+  - channel: 420
+    whole_observation: false
+    admitted_groups:
+      - 804
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 428
+    whole_observation: false
+    admitted_groups:
+      - 820
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 434
+    whole_observation: false
+    admitted_groups:
+      - 830
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 436
+    whole_observation: false
+    admitted_groups:
+      - 834
+    science_scans:
+      - 2
+      - 3
+    paired_exclusions:
+      -
+        - 2441
+        - 4881
+  - channel: 438
+    whole_observation: false
+    admitted_groups:
+      - 839
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 439
+    whole_observation: false
+    admitted_groups:
+      - 841
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 449
+    whole_observation: false
+    admitted_groups:
+      - 856
+    science_scans:
+      - 0
+    paired_exclusions:
+      -
+        - 33
+        - 1221
+  - channel: 450
+    whole_observation: false
+    admitted_groups:
+      - 858
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 451
+    whole_observation: false
+    admitted_groups:
+      - 868
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 453
+    whole_observation: false
+    admitted_groups:
+      - 872
+    science_scans:
+      - 0
+    paired_exclusions:
+      -
+        - 33
+        - 1221
+  - channel: 455
+    whole_observation: false
+    admitted_groups:
+      - 877
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 456
+    whole_observation: false
+    admitted_groups:
+      - 880
+    science_scans:
+      - 2
+    paired_exclusions:
+      -
+        - 2441
+        - 3661
+  - channel: 459
+    whole_observation: false
+    admitted_groups:
+      - 887
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 463
+    whole_observation: false
+    admitted_groups:
+      - 899
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 467
+    whole_observation: false
+    admitted_groups:
+      - 917
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 469
+    whole_observation: false
+    admitted_groups:
+      - 983
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 479
+    whole_observation: false
+    admitted_groups:
+      - 1011
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 481
+    whole_observation: false
+    admitted_groups:
+      - 1014
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 488
+    whole_observation: false
+    admitted_groups:
+      - 1031
+    science_scans:
+      - 0
+    paired_exclusions:
+      -
+        - 33
+        - 1221
+  - channel: 490
+    whole_observation: false
+    admitted_groups:
+      - 1035
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 491
+    whole_observation: false
+    admitted_groups:
+      - 1036
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
+  - channel: 494
+    whole_observation: false
+    admitted_groups:
+      - 1039
+    science_scans:
+      - 0
+    paired_exclusions:
+      -
+        - 33
+        - 1221
+  - channel: 507
+    whole_observation: false
+    admitted_groups:
+      - 1076
+    science_scans:
+      - 0
+    paired_exclusions:
+      -
+        - 33
+        - 1221
+  - channel: 529
+    whole_observation: false
+    admitted_groups:
+      - 1081
+    science_scans:
+      - 1
+    paired_exclusions:
+      -
+        - 1221
+        - 2441
