@@ -1,0 +1,98 @@
+{
+  "schema": "citlali-independent-final-review-v1",
+  "candidate_sha": "f7dc690f6c837cdb3eefe7560a0cc4852508e48b",
+  "source_revision": "f7dc690f6c837cdb3eefe7560a0cc4852508e48b",
+  "tree": "5e5688986c6bea5880a782da9a757cfee2cfe4ef",
+  "parent": "a7351335f791c995e39d7cda4546412e3f4a5638",
+  "reviewer": "/root/step_preflight",
+  "verdict": "pass with recorded limitations",
+  "science": "pass",
+  "architecture": "pass",
+  "hygiene": "pass",
+  "findings": [],
+  "review_context": "Independent read-only reviewer using an existing reviewer context after agent creation limit; applicable AGENTS, all three effective governance documents and current OWNER_DIRECTIVE were reread. This is not a blank fresh-agent review and does not claim the governance fresh-context requirement was reproduced without limitation.",
+  "scope": "Completed two-stage POINT152430/0/2 a1100 networks1-4 baseline and one frozen D88 whole-physical-run quarantine; exact final evidence and conclusions, native routing/rejection ownership, preservation; no observational runs or cleanup.",
+  "dispositions": {
+    "scientific_and_behavioral": {
+      "verdict": "pass",
+      "basis": [
+        "Full B T5 equivalence retained:25584 native fingerprints,60 map/candidate planes,37 discrete/frozen records,exact endpoint.",
+        "Quarantine manifest frozen before Q; exact detector occurrence,physical run,coordinates and independent normal Learn/Consider/Apply preserved.",
+        "Same58 event pixels recomputed:39.620959029818934 to30.459684185313886 mJy/beam; lost extreme248.27797552551266 explicitly unavailable,4totalSCI losses.",
+        "Canonical major/minor beam axes and modulo-pi angle avoid raw axis permutation; conditional scale and B angle-bound caveats retained.",
+        "Broad-source gain improves0.8485982115963147 to0.8755473050437741 while mismatch worsens0.24002345155770138 to0.2749943967165847; report states mixed result and retains B.",
+        "21compact-plus SCI gains are explicitly normalization-threshold effects rather than recovered native exposure."
+      ]
+    },
+    "architecture_and_ownership": {
+      "verdict": "pass",
+      "basis": [
+        "One scope interpretation feeds native FRUIT prospective,array,network,cycle and realized checks.",
+        "Validation-only request route shares actual checks and exits before numerical execution.",
+        "Frozen quarantine binds exact manifest digest/occurrence/full physical run and delegates paired/filter/downstream rejection to existing RTC owner; no Engine growth,scientific threshold change or alternate pipeline."
+      ]
+    },
+    "repository_and_evidence": {
+      "verdict": "pass",
+      "basis": [
+        "Exact candidate and tree verified; clean worktree; failed campaign ancestry preserved.",
+        "No app/test/tool source changes after Q source a7351335f.",
+        "2336 compact files113373454bytes verified against compressed and source hashes.",
+        "No scratch deletion authority or operation:127920 native files13771984323bytes enumerated as unapproved; parent exhaustive verification retained,3representative sizes independently checked.",
+        "7347protected-input unchanged record and preservation implementation reviewed; exhaustive protected rehash not redundantly repeated.",
+        "5parents/5trajectories/25completed feedback/5endpoints,0failures or replacements; no push,merge,promotion or follow-on authorized."
+      ]
+    }
+  },
+  "independently_reproduced": {
+    "saved_evidence_tests": {
+      "passed": 11,
+      "seconds": 3.889
+    },
+    "native_fruit_contract_tests": {
+      "passed": 6,
+      "seconds": 4.738,
+      "binary_source": "a7351335f791c995e39d7cda4546412e3f4a5638",
+      "note": "Existing scientific executable; final f7dc commit changes diagnostics/docs/evidence only."
+    },
+    "report_isolation": {
+      "pass_": true,
+      "seconds": 3.9062015839735977,
+      "denied_original_run_tree": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928",
+      "denied_protected_files": 7347,
+      "positive_denial_control": true,
+      "exact_artifacts": 10,
+      "figure_count": 8,
+      "commands": [
+        {
+          "script": "two_stage_report.py",
+          "returncode": 0,
+          "stderr": ""
+        },
+        {
+          "script": "two_stage_comparison_report.py",
+          "returncode": 0,
+          "stderr": ""
+        }
+      ],
+      "scope": "saved evidence summaries/plots only; no scientific fit, original input, learning, reduction or uncertainty ensemble"
+    },
+    "report_isolation_receipt": "/private/tmp/two-stage-review-isolation.json",
+    "plot_visual_review": [
+      "generated/B-Q-maps.png",
+      "generated/B-Q-response-and-measurements.png"
+    ]
+  },
+  "execution_notes": [
+    "Initial nested Seatbelt attempt failed sandbox_apply before report execution; identical read-only isolation verification passed with sandbox permission, writing only temporary review receipt.",
+    "One reviewer summary command referenced nonexistent spatial key e; corrected read used eta. No artifact or science change."
+  ],
+  "limitations": [
+    "Reused reviewer context; not a blank fresh-agent final review.",
+    "Local AppleClang/Homebrew supplemental evidence with recorded longstanding dirty KIDs dependency; no Unity/Spack reproduction or production qualification.",
+    "One pre-existing disabled MapFitterLifecycle test remains disclosed.",
+    "In-sample single partial-array observation and conditional uncertainties do not establish general detector-veto validity or paired significance.",
+    "No new observational computation,full-suite rerun,repeated exhaustive scratch scan,cleanup,push or repository edits during this review."
+  ],
+  "next_action": "Append review receipt and documentary closeout only; B remains reference, Q experimental; no automatic follow-on."
+}
