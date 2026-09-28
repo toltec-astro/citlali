@@ -1,5 +1,22 @@
 # Citlali Refactor Status
 
+## 2026-09-28 — step-rich networks 1–4 consequence assessment
+
+The [four-network assessment](../validation/rtc_step_consequences_2026-09-28/ASSESSMENT.md)
+uses POINT152430/0/2 **a1100 partial array**, source839f31b28: four completed
+M0–T5 branches /20 feedback; five conservatively charged launches include the
+single repaired CLI-routing replacement. No extra RTC-only capture. Network3
+loses50.27% of valid x detector-time; unresolved-extent run exclusions dominate.
+Recoverable information is not demonstrated. Several retained transitions are
+largely removed by PTC with no measured consequential penalty. Compact T5 gain
+0.9895–0.9909; broad0.8486. Positive injections change one event/support decision;
+full REF ideal normalization and unavailable support remain explicit. One
+unimplemented containment comparison is proposed, pending separate approval.
+B retained; fixed11 parked. New scratch deletion awaits exact-scope owner
+approval after compact preservation, saved-only verification and final review.
+No production/default change, Unity execution, push or automatic follow-on.
+
+
 ## 2026-09-28 — POINT step cleanup completed after owner approval
 
 The owner explicitly approved the pending native scratch deletion. The unchanged

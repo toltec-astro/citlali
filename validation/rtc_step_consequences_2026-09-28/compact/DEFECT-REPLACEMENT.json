@@ -1,0 +1,26 @@
+{
+  "implementation_defect": "Older outer pre-RTC source-probe caller gate still restricted networks11/12; exact scoped repair only",
+  "corrected_source": "839f31b28b52de6a46bc9c2dc623673378839cfa",
+  "maximum_replacements": 1,
+  "failed_run": "N14-REF-rep1",
+  "replacement_run": "N14-REF-rep2",
+  "evidence": {
+    "native_samples_loaded": 4,
+    "spike_screen_start": 0,
+    "RTC_apply_start": 0,
+    "RTC_apply_complete": 0
+  },
+  "failed_parent_charged": true,
+  "failed_trajectory_charged": true,
+  "failed_feedback": 0,
+  "failed_endpoints": 0,
+  "remaining_planned_trajectories": 4,
+  "absolute": {
+    "parent": 5,
+    "trajectory": 5,
+    "feedback": 25,
+    "endpoint": 5,
+    "rtc_only": 1
+  },
+  "authority": "OWNER_DIRECTIVE section8 single documented build/routing/instrumentation defect replacement; no extra scientific treatment"
+}

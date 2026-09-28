@@ -1,0 +1,15 @@
+{
+  "original_images": [
+    {
+      "path": "original-review/unflagged-original.png",
+      "sha256": "0af09db80a3b36740a27eb97f7062fa0b84a5fc25e99b5d7d1ebfdbddf78d03a"
+    },
+    {
+      "path": "original-review/event-original.png",
+      "sha256": "11b724e3122ad06043a68fd6f9c99c1f09af7236911f12a205770b0933789257"
+    }
+  ],
+  "windows": 32,
+  "stage_images_viewed_before_adjudication": false,
+  "selection_correction": "candidate-free wording in inherited selector means no nearby event-group seed; raw Learn candidates traced independently; no window identity changed"
+}

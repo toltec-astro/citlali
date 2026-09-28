@@ -1,0 +1,17 @@
+{
+  "status": "completed",
+  "rank": 10,
+  "method": "warm-observed-als",
+  "feedback_count": 5,
+  "identity": {
+    "source_revision": "839f31b28b52de6a46bc9c2dc623673378839cfa",
+    "binary": {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali",
+      "sha256": "03de902e992a8f0e34b4e30cbdad19cc0558fab8c87d84f9f77f6eca727fa20f"
+    },
+    "version": "** logging ** Configured with level=trace; available levels: [\"trace\", \"debug\", \"info\", \"warning\", \"error\", \"critical\", \"off\"].\nv2-ngc4449-memory-repair-187df04b-615-g839f31b28 (2026-09-28T09:43:53)\nkids 04088da-dirty (2026-09-26T16:14:08)\n",
+    "python": "/Users/gwilson/tolteca/bin/python"
+  },
+  "completed_cycle": 5,
+  "reason": null
+}

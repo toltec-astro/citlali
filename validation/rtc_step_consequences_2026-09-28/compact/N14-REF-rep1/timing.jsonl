@@ -1,0 +1,10 @@
+{"event": "python_entry", "monotonic_ns": 326994242867375, "pid": 6722, "entry_ns": 326993313045875}
+{"event": "process_start", "monotonic_ns": 326994250343416, "pid": 6722, "kind": "git_revision"}
+{"event": "process_start", "monotonic_ns": 326994275573000, "pid": 6722, "kind": "git_status"}
+{"event": "process_start", "monotonic_ns": 326994600716333, "pid": 6722, "kind": "validation_version"}
+{"event": "span", "monotonic_ns": 326994768673958, "pid": 6722, "name": "environment_input_verification", "start_ns": 326994243770000, "seconds": 0.514161958, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "process_start", "monotonic_ns": 326994779985916, "pid": 6722, "kind": "native_version"}
+{"event": "process_start", "monotonic_ns": 326994804722375, "pid": 6722, "kind": "native_processing"}
+{"event": "span", "monotonic_ns": 326999377350583, "pid": 6722, "name": "native_invocation_including_reservation_hashing_publication", "start_ns": 326994769260291, "seconds": 4.601608875, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 326999381929166, "pid": 6722, "name": "raw_parent_PTC_MAP_initial_guard_noise", "start_ns": 326994768843708, "seconds": 4.608896625, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "finalized", "monotonic_ns": 326999395160791, "pid": 6722, "status": "processing_failed"}

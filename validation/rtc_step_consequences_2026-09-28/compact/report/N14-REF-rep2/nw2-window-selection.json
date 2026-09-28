@@ -1,0 +1,76 @@
+[
+  {
+    "kind": "event",
+    "event": 204,
+    "detector": 212,
+    "first": 1685,
+    "past_last": 2296,
+    "center": 1990,
+    "rule": "accepted median original offset/sigma"
+  },
+  {
+    "kind": "event",
+    "event": 272,
+    "detector": 298,
+    "first": 1687,
+    "past_last": 2298,
+    "center": 1992,
+    "rule": "accepted largest original offset/sigma"
+  },
+  {
+    "kind": "event",
+    "event": 241,
+    "detector": 256,
+    "first": 1688,
+    "past_last": 2299,
+    "center": 1993,
+    "rule": "r-only admission with largest original offset/sigma"
+  },
+  {
+    "kind": "event",
+    "event": 288,
+    "detector": 329,
+    "first": 1378,
+    "past_last": 1989,
+    "center": 1683,
+    "rule": "closest repeated original candidate"
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 385,
+    "first": 0,
+    "past_last": 285,
+    "center": 101,
+    "rule": "largest supported original x pre/post contrast in separate time half; candidate-free central 0.58s; not truth",
+    "original_selection_score": 56.804100721900895
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 292,
+    "first": 7327,
+    "past_last": 7694,
+    "center": 7510,
+    "rule": "largest supported original x pre/post contrast in separate time half; candidate-free central 0.58s; not truth",
+    "original_selection_score": 51.0465862368268
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 127,
+    "first": 1772,
+    "past_last": 2139,
+    "center": 1955,
+    "rule": "time fraction0.25, detector quantile0.25; first covered candidate-free identity; no cleaned selection"
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 381,
+    "first": 5682,
+    "past_last": 6049,
+    "center": 5865,
+    "rule": "time fraction0.75, detector quantile0.75; first covered candidate-free identity; no cleaned selection"
+  }
+]

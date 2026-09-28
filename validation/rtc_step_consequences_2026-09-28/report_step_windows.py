@@ -16,7 +16,7 @@ for kind in ('event','unflagged'):
     for k,color in [('raw_x','C0'),('raw_r','C1')]:
      v=np.where(get('valid_x' if k=='raw_x' else 'valid_r'),get(k),np.nan);base=np.nanmedian(v[t<ct]);scale=1.4826*np.nanmedian(abs(np.diff(v)-np.nanmedian(np.diff(v))));scale=scale if scale>0 else 1
      ax.plot(t,(v-base)/scale,lw=.7,color=color,label=k+' / own diff MAD')
-    peer=get('peer_x');base=np.nanmedian(peer[t<ct],axis=0);sc=1.4826*np.nanmedian(abs(np.diff(peer,axis=0)-np.nanmedian(np.diff(peer,axis=0),axis=0)),axis=0);sc=np.where(sc>0,sc,1);ax.plot(t,(peer-base)/sc,color='gray',lw=.4,alpha=.4)
+    peer=get('peer_x');peer=peer[:,np.any(np.isfinite(peer[t<ct]),axis=0)&np.any(np.isfinite(np.diff(peer,axis=0)),axis=0)];base=np.nanmedian(peer[t<ct],axis=0);sc=1.4826*np.nanmedian(abs(np.diff(peer,axis=0)-np.nanmedian(np.diff(peer,axis=0),axis=0)),axis=0);sc=np.where(sc>0,sc,1);ax.plot(t,(peer-base)/sc,color='gray',lw=.4,alpha=.4)
     ax.set_ylabel('own pre-median removed; diff-MAD units')
    else:
     # Same physical window; each stage has a labelled display-only median offset.
@@ -31,6 +31,6 @@ for kind in ('event','unflagged'):
      ax.plot(t,raw-np.nanmedian(raw),color='C0',lw=.6,label='raw x only; no downstream support');ax.set_ylabel('raw Δf/f; median removed')
     else:ax.set_ylabel('mJy/beam; own-stage median removed')
     ax.fill_between(t,0,1,where=~valid,color='red',alpha=.1,transform=ax.get_xaxis_transform())
-   ax.fill_between(t,0,1,where=get('transition'),color='purple',alpha=.2,transform=ax.get_xaxis_transform());ax.fill_between(t,.94,1,where=get('fitting_guard'),color='gray',alpha=.3,transform=ax.get_xaxis_transform());ax.axvline(ct,color='k',ls=':',lw=.7);ax.fill_between(t,0,1,where=get('source'),color='gold',alpha=.15,transform=ax.get_xaxis_transform());ax.set_title(f"{key}: channel{q['channel']} event{q['event']}\n{textwrap.fill(q['rule'],65)}",fontsize=8);ax.set_xlabel('seconds from excerpt start');ax.legend(fontsize=6,loc='best')
+   ax.fill_between(t,0,1,where=get('transition'),color='purple',alpha=.2,transform=ax.get_xaxis_transform());ax.fill_between(t,.94,1,where=get('fitting_guard'),color='gray',alpha=.3,transform=ax.get_xaxis_transform());ax.axvline(ct,color='k',ls=':',lw=.7);ax.fill_between(t,0,1,where=get('source'),color='gold',alpha=.15,transform=ax.get_xaxis_transform());ax.set_title(f"{key}: channel{q['channel']} event{q['event']}\n{textwrap.fill(q['rule'].replace('candidate-free','event-group-seed-free'),65)}",fontsize=8);ax.set_xlabel('seconds from excerpt start');ax.legend(fontsize=6,loc='best')
   fig.suptitle(root.name+' '+kind+' '+stage+'; full samples, no decimation. Gold=geometric source context. Gray=original x peers; purple=accepted transition; top gray=fit guard.',fontsize=11)
   fig.savefig(out/f'{kind}-{stage}.png',dpi=110);plt.close(fig)

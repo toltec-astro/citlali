@@ -1,0 +1,12 @@
+[
+  {
+    "run": "N14-REF-rep1",
+    "wall_seconds": 6.194529292,
+    "CPU_seconds": 7.966191,
+    "sampled_RSS": 1626357760,
+    "reason": "upstream processing failed",
+    "RTC_Apply": 0,
+    "feedback": 0,
+    "endpoint": 0
+  }
+]

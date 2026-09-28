@@ -1,0 +1,22 @@
+{
+  "command": [
+    "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-REF-rep1/upstream/development.yaml"
+  ],
+  "executable_sha256": "3ddde76aadb49ebaa1452a24c4eb752200cbd029b271762ab3a16d2e5e881d61",
+  "input_sha256": "332e110477a7758e56a8e3a41eabd5bdb64f14a7cba49d42db7d794472274ead",
+  "workers": 2,
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "BLIS_NUM_THREADS": "1",
+    "OMP_DYNAMIC": "FALSE"
+  },
+  "measurement": "fresh process; whole-invocation CPU and sampled RSS; no concurrent diagnostic",
+  "exit_code": 1,
+  "wall_seconds": 4.554074041021522,
+  "polled_peak_rss_bytes": 1485668352,
+  "output_bytes": 10079
+}

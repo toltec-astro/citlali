@@ -1,0 +1,37 @@
+[
+  {
+    "run": "N14-C-core-minus",
+    "expected_routing_failure_messages": 0,
+    "native_error_level_messages": 0,
+    "python_RuntimeWarnings": 3,
+    "uncertainty": "saved endpoint operators/scales independently verified finite within recorded tolerance"
+  },
+  {
+    "run": "N14-C-core-plus",
+    "expected_routing_failure_messages": 0,
+    "native_error_level_messages": 0,
+    "python_RuntimeWarnings": 3,
+    "uncertainty": "saved endpoint operators/scales independently verified finite within recorded tolerance"
+  },
+  {
+    "run": "N14-C-shoulder",
+    "expected_routing_failure_messages": 0,
+    "native_error_level_messages": 0,
+    "python_RuntimeWarnings": 3,
+    "uncertainty": "saved endpoint operators/scales independently verified finite within recorded tolerance"
+  },
+  {
+    "run": "N14-REF-rep1",
+    "expected_routing_failure_messages": 4,
+    "native_error_level_messages": 0,
+    "python_RuntimeWarnings": 0,
+    "uncertainty": "unavailable: no independently verified endpoint for this run"
+  },
+  {
+    "run": "N14-REF-rep2",
+    "expected_routing_failure_messages": 0,
+    "native_error_level_messages": 0,
+    "python_RuntimeWarnings": 3,
+    "uncertainty": "saved endpoint operators/scales independently verified finite within recorded tolerance"
+  }
+]

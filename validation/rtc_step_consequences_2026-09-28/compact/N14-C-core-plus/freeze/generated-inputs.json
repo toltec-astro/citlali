@@ -1,0 +1,38 @@
+[
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-C-core-plus/inputs/ast-source-binding.json",
+    "sha256": "a8aacdd5c0a31daf634c73257261ca563d2041ea1b9e9137889dac911e0a05e1"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-C-core-plus/inputs/effective-point.yaml",
+    "sha256": "4dda69d965266b5d87b1b21396c836ed46710954d9f8bbee396bbfebbfd20cd7"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-C-core-plus/inputs/map-owner.json",
+    "sha256": "219f6641b40a1cfc049eae24e320a14fe06f014bf804a87223a4b8772ea932aa"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-C-core-plus/inputs/network1-input.json",
+    "sha256": "366168284b4ffe05ca365421839a68bfd65a082c6687a7712f17ac0bfb49832e"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-C-core-plus/inputs/network2-input.json",
+    "sha256": "3d3a33298e1b06345384b00379ff3777e54a0289a82283b48f4036486f03ac75"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-C-core-plus/inputs/network3-input.json",
+    "sha256": "b0beeff86cc376cfd8b2766bb5f30a58cb7c48ae8cc285b6e116790961bfff31"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-C-core-plus/inputs/network4-input.json",
+    "sha256": "c472865e1591c9426616492ea7d47d9ebe20df201529af0d12c3fb18b8a8d96a"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-C-core-plus/inputs/observation.json",
+    "sha256": "5b83e1069fc2658e15ef84f6957e4e977033e66298e40d9bb57e49d15772d026"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-C-core-plus/inputs/processing-request.json",
+    "sha256": "464a8af71657f867b70e7d3df2ddf1cdfe297b49f0d85c7759d43204b4553cf8"
+  }
+]

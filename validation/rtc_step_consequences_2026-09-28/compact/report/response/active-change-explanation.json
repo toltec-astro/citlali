@@ -1,0 +1,167 @@
+{
+  "scope": "scalar audit of all changed decisions; no extra review windows; original native values and stored fit/noise evidence, no new scientific fitting",
+  "records": [
+    {
+      "branch": "C-core-plus",
+      "network": 1,
+      "channel": 446,
+      "new_event": true,
+      "seed": 137,
+      "original_difference": 4.188193613007081e-07,
+      "injection_difference": 0.0,
+      "injection_max_abs_on_event_fit_support": 0.0,
+      "injection_max_abs_entire_detector": 9.616537740097202e-09,
+      "injection_nonzero_entire_detector": 1141,
+      "original_fit_offset": 3.55426080889043e-06,
+      "original_fit_scale": 7.428617065633968e-08,
+      "source_probe_original_x_hash": "9680d5cc2a3fcd56bd49d83020634243c1dde0f40e79dd7c99c07e9cfdb1a878",
+      "branch_candidate": {
+        "index": 200,
+        "earlier_row": 137,
+        "later_row": 138,
+        "coordinate": "x",
+        "noise_block": 446,
+        "difference": 4.188193613007081e-07,
+        "centered_difference": 4.161910285502398e-07,
+        "absolute_score": 5.017297057290485
+      },
+      "branch_sigma_delta": 8.295124322875899e-08,
+      "admission": "x amplitude and short-fit consistency pass, finite transition available, support-overlap refit/reassessment measured; r not seeded; original peers support an existing disturbance"
+    },
+    {
+      "branch": "C-core-minus",
+      "network": 3,
+      "channel": 381,
+      "new_event": false,
+      "seed": 2825,
+      "original_difference": -1.1278879113718836e-06,
+      "injection_difference": 0.0,
+      "injection_max_abs_on_event_fit_support": 3.367111372158326e-08,
+      "injection_max_abs_entire_detector": 3.367111372158326e-08,
+      "injection_nonzero_entire_detector": 1055,
+      "original_fit_offset": 4.2182431707896125e-07,
+      "original_fit_scale": 2.6490885392756575e-07,
+      "source_probe_original_x_hash": "7854de9798260ccb6c1050e25ea31daa3a3ecf6e86fccc52ed23fb230dc4197f",
+      "matched_change": {
+        "reference_event": 724,
+        "injected_event": 724,
+        "detector": 381,
+        "physical_seed_shift_seconds": 0.0,
+        "matching": "same detector/native seed",
+        "original_class": "isolated-admission-unavailable",
+        "injected_class": "isolated-admission-unavailable",
+        "admission_changed": false,
+        "original_transition": [
+          [
+            -1,
+            -1
+          ],
+          [
+            -1,
+            -1
+          ]
+        ],
+        "injected_transition": [
+          [
+            -1,
+            -1
+          ],
+          [
+            -1,
+            -1
+          ]
+        ],
+        "original_support": [
+          2819,
+          2898
+        ],
+        "injected_support": [
+          2819,
+          2897
+        ]
+      },
+      "reference_original_fit_offset": 4.4710362476630805e-07
+    },
+    {
+      "branch": "C-shoulder",
+      "network": 1,
+      "channel": 446,
+      "new_event": true,
+      "seed": 137,
+      "original_difference": 4.188193613007081e-07,
+      "injection_difference": 0.0,
+      "injection_max_abs_on_event_fit_support": 0.0,
+      "injection_max_abs_entire_detector": 6.877688853041896e-09,
+      "injection_nonzero_entire_detector": 1141,
+      "original_fit_offset": 3.55426080889043e-06,
+      "original_fit_scale": 7.428617065633968e-08,
+      "source_probe_original_x_hash": "9680d5cc2a3fcd56bd49d83020634243c1dde0f40e79dd7c99c07e9cfdb1a878",
+      "branch_candidate": {
+        "index": 200,
+        "earlier_row": 137,
+        "later_row": 138,
+        "coordinate": "x",
+        "noise_block": 446,
+        "difference": 4.188193613007081e-07,
+        "centered_difference": 4.161910285502398e-07,
+        "absolute_score": 5.005568289677298
+      },
+      "branch_sigma_delta": 8.314560994173771e-08,
+      "admission": "x amplitude and short-fit consistency pass, finite transition available, support-overlap refit/reassessment measured; r not seeded; original peers support an existing disturbance"
+    },
+    {
+      "branch": "C-shoulder",
+      "network": 2,
+      "channel": 202,
+      "new_event": false,
+      "seed": 1989,
+      "original_difference": -1.8739116598297476e-06,
+      "injection_difference": 0.0,
+      "injection_max_abs_on_event_fit_support": 1.18509715713099e-08,
+      "injection_max_abs_entire_detector": 1.18509715713099e-08,
+      "injection_nonzero_entire_detector": 1292,
+      "original_fit_offset": -1.5497232917802264e-05,
+      "original_fit_scale": 3.292986678027447e-06,
+      "source_probe_original_x_hash": "7aafaf9075d7efb1ee5d6c5b056909a0c6de4385bfac299fec5666d5fd017d07",
+      "matched_change": {
+        "reference_event": 202,
+        "injected_event": 202,
+        "detector": 202,
+        "physical_seed_shift_seconds": 0.0,
+        "matching": "same detector/native seed",
+        "original_class": "no-resolved-excursion",
+        "injected_class": "no-resolved-excursion",
+        "admission_changed": false,
+        "original_transition": [
+          [
+            -1,
+            -1
+          ],
+          [
+            -1,
+            -1
+          ]
+        ],
+        "injected_transition": [
+          [
+            -1,
+            -1
+          ],
+          [
+            -1,
+            -1
+          ]
+        ],
+        "original_support": [
+          1983,
+          2091
+        ],
+        "injected_support": [
+          1983,
+          1997
+        ]
+      },
+      "reference_original_fit_offset": -2.4092621377933113e-06
+    }
+  ]
+}

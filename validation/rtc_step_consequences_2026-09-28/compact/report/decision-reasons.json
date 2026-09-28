@@ -1,0 +1,171 @@
+[
+  {
+    "network": 1,
+    "classes": {
+      "isolated-admission-unavailable": 263,
+      "no-resolved-excursion": 81,
+      "admitted-level-shift": 51,
+      "unresolved-extent": 109
+    },
+    "coordinate_admission": {
+      "neither": 453,
+      "x-only": 51
+    },
+    "coordinate_causes": {
+      "amplitude_cause": {
+        "4": 295,
+        "0": 498,
+        "5": 176,
+        "1": 39
+      },
+      "consistency_cause": {
+        "0": 832,
+        "6": 70,
+        "3": 13,
+        "5": 87,
+        "1": 4,
+        "4": 2
+      },
+      "admission_cause": {
+        "0": 957,
+        "6": 51
+      },
+      "transition_request_cause": {
+        "0": 938,
+        "2": 62,
+        "1": 8
+      }
+    },
+    "unresolved_groups": 109,
+    "unresolved_detectors": 59,
+    "unresolved_not_recovered": 109
+  },
+  {
+    "network": 2,
+    "classes": {
+      "isolated-admission-unavailable": 231,
+      "no-resolved-excursion": 19,
+      "unresolved-extent": 69,
+      "admitted-level-shift": 25
+    },
+    "coordinate_admission": {
+      "neither": 319,
+      "x-only": 23,
+      "r-only": 1,
+      "joint": 1
+    },
+    "coordinate_causes": {
+      "amplitude_cause": {
+        "4": 285,
+        "0": 282,
+        "1": 5,
+        "5": 116
+      },
+      "consistency_cause": {
+        "0": 572,
+        "6": 31,
+        "5": 58,
+        "3": 14,
+        "4": 3,
+        "1": 10
+      },
+      "admission_cause": {
+        "0": 662,
+        "6": 26
+      },
+      "transition_request_cause": {
+        "0": 657,
+        "2": 30,
+        "1": 1
+      }
+    },
+    "unresolved_groups": 69,
+    "unresolved_detectors": 48,
+    "unresolved_not_recovered": 69
+  },
+  {
+    "network": 3,
+    "classes": {
+      "isolated-admission-unavailable": 219,
+      "unresolved-extent": 608,
+      "no-resolved-excursion": 184,
+      "admitted-level-shift": 72
+    },
+    "coordinate_admission": {
+      "neither": 1011,
+      "x-only": 49,
+      "joint": 7,
+      "r-only": 16
+    },
+    "coordinate_causes": {
+      "amplitude_cause": {
+        "4": 286,
+        "0": 819,
+        "5": 671,
+        "1": 390
+      },
+      "consistency_cause": {
+        "0": 1495,
+        "5": 371,
+        "6": 96,
+        "1": 115,
+        "3": 46,
+        "4": 43
+      },
+      "admission_cause": {
+        "0": 2087,
+        "6": 79
+      },
+      "transition_request_cause": {
+        "0": 2070,
+        "2": 90,
+        "1": 6
+      }
+    },
+    "unresolved_groups": 608,
+    "unresolved_detectors": 233,
+    "unresolved_not_recovered": 608
+  },
+  {
+    "network": 4,
+    "classes": {
+      "isolated-admission-unavailable": 176,
+      "unresolved-extent": 341,
+      "no-resolved-excursion": 69,
+      "admitted-level-shift": 11
+    },
+    "coordinate_admission": {
+      "neither": 586,
+      "r-only": 4,
+      "x-only": 7
+    },
+    "coordinate_causes": {
+      "amplitude_cause": {
+        "4": 211,
+        "0": 398,
+        "1": 411,
+        "5": 174
+      },
+      "consistency_cause": {
+        "0": 1020,
+        "5": 77,
+        "3": 32,
+        "4": 12,
+        "6": 19,
+        "1": 34
+      },
+      "admission_cause": {
+        "0": 1183,
+        "6": 11
+      },
+      "transition_request_cause": {
+        "0": 1175,
+        "2": 17,
+        "1": 2
+      }
+    },
+    "unresolved_groups": 341,
+    "unresolved_detectors": 58,
+    "unresolved_not_recovered": 341
+  }
+]

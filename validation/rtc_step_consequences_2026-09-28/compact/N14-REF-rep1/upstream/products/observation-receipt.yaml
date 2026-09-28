@@ -1,0 +1,47 @@
+schema: citlali-observation-networks-result-v1
+source_revision: 9178a92db
+observation: 152430
+subobservation: 0
+scan: 2
+requested_network_workers: 2
+observed_Eigen_threads: 1
+started_network_workers: 2
+requested_internal_threads: 1
+numerical_backend_observation: Eigen reports its setting; other backend counts not asserted
+shared_preparation_count: 1
+shared_preparation_seconds: 2.124284209
+assignment: sorted-network round-robin by worker index
+shared_state: read-only APT, native clocks, processing-slot grid, TEL trajectory, AST motion, CAL headers; per-network numerical ownership
+NetCDF_IO: serialized; numerical work concurrent; no shared open handles
+timing_scope: per-network wall intervals overlap; process CPU and memory reported only as aggregate
+networks:
+  - network: 1
+    worker_index: 0
+    exit_code: 1
+    wall_seconds: 1.032041
+    output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-REF-rep1/upstream/products/network1
+    input: {path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-REF-rep1/inputs/network1-input.json, sha256: d036194715895323f684159699f5d117f818968c2e0a0a7dc138f806089411cb}
+    state: failed-preserved
+  - network: 2
+    worker_index: 1
+    exit_code: 1
+    wall_seconds: 1.199390958
+    output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-REF-rep1/upstream/products/network2
+    input: {path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-REF-rep1/inputs/network2-input.json, sha256: 5d97b53bd6a6558df9aea52c8753f2d88e8a8f7b9700eb98d25a405578d08e9e}
+    state: failed-preserved
+  - network: 3
+    worker_index: 0
+    exit_code: 1
+    wall_seconds: 1.135156
+    output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-REF-rep1/upstream/products/network3
+    input: {path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-REF-rep1/inputs/network3-input.json, sha256: d02757472de685d6b4117ba69b4e13d63baa98bfb87bc2a7d6a01f9a3de73185}
+    state: failed-preserved
+  - network: 4
+    worker_index: 1
+    exit_code: 1
+    wall_seconds: 1.113147042
+    output: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-REF-rep1/upstream/products/network4
+    input: {path: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-REF-rep1/inputs/network4-input.json, sha256: d7313ef672fd4e6478841233e3f9773355459c3e8d96804b4534a9bf175afc16}
+    state: failed-preserved
+wall_seconds: 4.437074625
+exit_code: 1

@@ -1,0 +1,22 @@
+{
+  "source_revision": "839f31b28b52de6a46bc9c2dc623673378839cfa",
+  "tree": "591de3682d5626fe494a61388c66800b5c95f99d",
+  "verdict": "pass",
+  "reviewer": "/root/consequences_exact_preflight",
+  "scientific_behavioral": "pass for replacement preflight; actual outer gate exact authority/development/shared/reference/152430/0/2/nw1\u20134/APTarray0; effective old gates retained; no numerical owner change",
+  "architectural": "pass; private CLI request admission only",
+  "repository_evidence": "pass; failed rep1 preserved/charged; distinct rep2 resolved throughout; one replacement only",
+  "binary_version_verified": "g839f31b28",
+  "gates": {
+    "native": 22,
+    "enabled_ctest": 1314,
+    "POINT_python": 204,
+    "focused": 38,
+    "independent_actual_scope_fixture": "pass"
+  },
+  "limitations": [
+    "observational/final review prospective",
+    "supplemental local AppleClang/Homebrew, not Spack",
+    "no second replacement, no push/integration/default change/deletion authorization"
+  ]
+}

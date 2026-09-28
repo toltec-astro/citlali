@@ -1,0 +1,97 @@
+{
+  "observation": 152430,
+  "array": "a1100",
+  "networks": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "available": true,
+  "reference_M0": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-REF-rep2/M0/products/a1100/map.fits",
+    "sha256": "bf252cf0550b3133176904edd54c56da8b8cf100c038a1355d46fdebfe5f588a"
+  },
+  "geometry": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-REF-rep2/freeze/measurement-geometry.json",
+    "sha256": "a6293579fd6d0b4eda0528f0f78b873374e914c87d576513d77bc36aa888af98"
+  },
+  "rasters": {
+    "C-core-plus": {
+      "analytic_peak": 35.97981726440579,
+      "discrete_signed_peak": 33.53340387042512,
+      "area_sum_arcsec2": 972.355548865907,
+      "taper_loss_area_sum_arcsec2": 5.0296089634647815e-25,
+      "untapered_raster_area_sum_arcsec2": 972.355548865907,
+      "parameters": [
+        35.97981726440579,
+        4.10695865054711,
+        7.323022188692336,
+        2.461337965831881,
+        1.7474914943230089,
+        2.872885295610701,
+        0.0
+      ],
+      "positive_first_axis": "tangent east; decreasing FITS column, CDELT1<0",
+      "radius_origin": "AST analysis center",
+      "taper_radii_arcsec": [
+        30,
+        36
+      ],
+      "renormalized": false,
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-REF-rep2/freeze/shapes/C-core-plus.fits",
+      "sha256": "2395402b0a9908703d3055e7f4843c47c2f14c3ac57513c45a5e4abaaf24cf69"
+    },
+    "C-core-minus": {
+      "analytic_peak": -35.97981726440579,
+      "discrete_signed_peak": -33.53340387042512,
+      "area_sum_arcsec2": -972.355548865907,
+      "taper_loss_area_sum_arcsec2": -5.0296089634647815e-25,
+      "untapered_raster_area_sum_arcsec2": -972.355548865907,
+      "parameters": [
+        -35.97981726440579,
+        4.10695865054711,
+        7.323022188692336,
+        2.461337965831881,
+        1.7474914943230089,
+        2.872885295610701,
+        0.0
+      ],
+      "positive_first_axis": "tangent east; decreasing FITS column, CDELT1<0",
+      "radius_origin": "AST analysis center",
+      "taper_radii_arcsec": [
+        30,
+        36
+      ],
+      "renormalized": false,
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-REF-rep2/freeze/shapes/C-core-minus.fits",
+      "sha256": "847bc89510d1db06b7ca32ccc01d14464a41348b313be6e667d4db7f390e4d01"
+    },
+    "C-shoulder": {
+      "analytic_peak": 17.989908632202894,
+      "discrete_signed_peak": 17.400403900889952,
+      "area_sum_arcsec2": 1944.7108659147584,
+      "taper_loss_area_sum_arcsec2": 0.0004378244405312119,
+      "untapered_raster_area_sum_arcsec2": 1944.7113037391985,
+      "parameters": [
+        17.989908632202894,
+        7.0049626403154175,
+        7.323022188692336,
+        4.922675931663762,
+        3.4949829886460178,
+        2.872885295610701,
+        0.0
+      ],
+      "positive_first_axis": "tangent east; decreasing FITS column, CDELT1<0",
+      "radius_origin": "AST analysis center",
+      "taper_radii_arcsec": [
+        30,
+        36
+      ],
+      "renormalized": false,
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-REF-rep2/freeze/shapes/C-shoulder.fits",
+      "sha256": "e00ea47b767c7591f401940195d096f3b8f7c1265e13828813fb040a57329ffa"
+    }
+  },
+  "recipe": "existing point_response_cd.shapes; own unmodified M0 parameters/support; no relocation or normalization change"
+}

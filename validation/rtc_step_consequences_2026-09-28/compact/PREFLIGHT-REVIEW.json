@@ -1,0 +1,25 @@
+{
+  "source_revision": "9178a92db69cf7f27557c01cea30ff1bf7c4872a",
+  "tree": "1eaf88ab9f9abe444f64c3d36cad8840ab5b86b5",
+  "verdict": "pass",
+  "reviewer": "/root/consequences_exact_preflight",
+  "scientific_behavioral": "pass for preflight; original-AST selection, null source availability, physical-time/gap plots, actual endpoint verification; no numerical owner change",
+  "architectural": "pass; bounded routing/diagnostics, existing native owners",
+  "repository_evidence": "pass; exact ancestry, clean tree, original input/selection/resources/counters recorded",
+  "binary_version_verified": "g9178a92db",
+  "gates": {
+    "enabled_ctest": 1313,
+    "POINT_python": 204,
+    "baseline": 207,
+    "config": "complete",
+    "independent_focused": 29,
+    "report_fixtures": 2,
+    "synthetic_gap_unavailable_report": "pass"
+  },
+  "limitations": [
+    "observational conformance/final evidence review prospective",
+    "local AppleClang/Homebrew supplemental; not Spack reproduction",
+    "one preexisting source-disabled legacy lifecycle replay outside scope",
+    "no push/integration/activation/deletion approval"
+  ]
+}

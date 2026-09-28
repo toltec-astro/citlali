@@ -1,0 +1,8 @@
+{
+  "historical_bytes": 3061,
+  "charged_bytes": 207832,
+  "native_written_bytes": 14661,
+  "completed_stages": 1,
+  "last_stage_bytes": 14661,
+  "reconciled_actual_bytes": 210653
+}

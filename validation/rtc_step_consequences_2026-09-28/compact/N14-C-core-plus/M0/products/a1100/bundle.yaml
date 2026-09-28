@@ -1,0 +1,97 @@
+schema: citlali-forward-map-bundle-v1
+role: SCI-MAP:base_observation_map@1
+product_identity: SCI-MAP-base:0d6afe2143dab943f6fdce26afd4a3c3ccaff445690e54d362199c17caf40c72:fb97e1df3ca10e77bb6ed481bb2896c6d8161a16ff99faae67c819eb104e6f8f
+base_parent: SCI-MAP-base:0d6afe2143dab943f6fdce26afd4a3c3ccaff445690e54d362199c17caf40c72:fb97e1df3ca10e77bb6ed481bb2896c6d8161a16ff99faae67c819eb104e6f8f
+plan_sha256: 0d6afe2143dab943f6fdce26afd4a3c3ccaff445690e54d362199c17caf40c72
+input_domain: sha256:0d6afe2143dab943f6fdce26afd4a3c3ccaff445690e54d362199c17caf40c72:ordered-PTC-support
+grid_identity: sha256:0d6afe2143dab943f6fdce26afd4a3c3ccaff445690e54d362199c17caf40c72:WCS
+MAP_authority: SCI-MAP-v0.2-r0.4
+MAP_shared_source_sha256: 3b81ea8180dcc3f5f37964ac1177feb417fef6a1cdcc590b33f9431b54bc1e31
+reached_stages:
+  - requested
+  - effective
+  - observation_resolved
+  - applied
+  - realized
+outcome: success
+WCS:
+  RADESYS: FK5
+  EQUINOX: 2000
+  CTYPE1: RA---TAN
+  CTYPE2: DEC--TAN
+  CUNIT1: deg
+  CUNIT2: deg
+  CRPIX1: 77
+  CRPIX2: 101
+  CRVAL1: 176.74290791666667
+  CRVAL2: 39.976195555555556
+  CDELT1: -0.0005555555555555556
+  CDELT2: 0.0005555555555555556
+  rows: 201
+  columns: 153
+  axis_order: x=RA,y=Dec;storage(y,x)
+  source_to_target_frame: identity;owner-declared source FK5/J2000.0
+  time_scale: UNIX UTC assigned RTC times; zero verified interface offset
+  site_model_state: no new celestial frame, EOP or refraction transform; existing telescope/pointing-offset realization retained
+observation: obs:152430_0_2
+array: a1100
+sources:
+  - network: 1
+    root: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-C-core-plus/upstream/products/network1
+    PTC_receipt_sha256: d401d1a7a573fc8b30c4d9f0049e8a19539d1e2a7faa5903e33892b63bff4ea7
+    upstream_build: v2-ngc4449-memory-repair-187df04b-615-g839f31b28
+    failed_fits: 0
+    detectors: 494
+  - network: 2
+    root: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-C-core-plus/upstream/products/network2
+    PTC_receipt_sha256: 0562b2a8298ccfed4739cd2578322601c2c4a68b5f0dd104d029afcc02307f70
+    upstream_build: v2-ngc4449-memory-repair-187df04b-615-g839f31b28
+    failed_fits: 0
+    detectors: 510
+  - network: 3
+    root: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-C-core-plus/upstream/products/network3
+    PTC_receipt_sha256: 30eab8879b10243dd21cb0132e95b5c9cf204f4868056538704636283c7c131a
+    upstream_build: v2-ngc4449-memory-repair-187df04b-615-g839f31b28
+    failed_fits: 0
+    detectors: 533
+  - network: 4
+    root: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-C-core-plus/upstream/products/network4
+    PTC_receipt_sha256: 0022e938ad4f05148c85bf03c7be80788827c660dd6f2f7f9ef83f46c62b6d12
+    upstream_build: v2-ngc4449-memory-repair-187df04b-615-g839f31b28
+    failed_fits: 0
+    detectors: 532
+signal_unit: mJy/beam
+quantity: nonpolarimetric total-intensity-equivalent calibrated x; no Stokes-I claim
+nominal_beam_parent: sha256:219f6641b40a1cfc049eae24e320a14fe06f014bf804a87223a4b8772ea932aa:a1100
+nominal_beam_fwhm_arcsec: 5
+measured_beam_or_full_response_inferred: false
+coefficient_family: SCI-PTC:uniform_constant@draft-0.1
+normalization_interpretation: sum of dimensionless gridding coefficients; not precision or significance
+PTC_additive_reference: per-detector eligible arithmetic means removed and not restored; source segment means/bases retained by exact parent links
+upstream_conditioned_response: "unavailable: complete RTC/CAL/PTC astronomical response not supplied"
+full_procedure_response: "unavailable: not measured"
+covariance: "unavailable: not zero and not independent"
+MAP_local_operator: "exact sparse one-hot operator: input columns from plan; pixel.i32=-1 means no contribution; coefficient=1; output rows from output-rows.u64; divide by NORMALIZATION"
+upstream_eligible_original_footprint_exposure: "unavailable: original ALIGN-grid coordinate/exposure carrier not published"
+retained_original_footprint_exposure: "unavailable: original ALIGN-grid coordinate/exposure carrier not published"
+NOI: not requested; unavailable
+FLT: not requested; unavailable
+FRUIT: deferred; not executed
+PTC_retained: 9804811
+MAP_route_admitted: 9804811
+AST_invalid_coordinates: 0
+contributing_occurrences: 9804811
+scientific_rows: 8344
+coverage_cut: 0.5
+reference_normalization: 979
+reference_index: 18333
+pixels_outside_science_support: unavailable (FITS NaN), distinct from measured zero
+files:
+  plan.yaml: 0d6afe2143dab943f6fdce26afd4a3c3ccaff445690e54d362199c17caf40c72
+  map.fits: fb97e1df3ca10e77bb6ed481bb2896c6d8161a16ff99faae67c819eb104e6f8f
+  operator-pixel.i32: 5b85bb1b1683e83a98079ac8a0388638be5f1b5afa583dc788b1e08d01e113da
+  output-rows.u64: 04f08e9dcac59bb94137dcecffc32940e1712c36a44d5117a118eeabe7f7f083
+AST_and_handoff_seconds: 3.937643584
+projection_and_resolution_seconds: 3.230557375
+accumulation_seconds: 0.025553583
+serialization_seconds: 0.225385125

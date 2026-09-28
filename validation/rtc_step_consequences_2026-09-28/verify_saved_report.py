@@ -15,6 +15,7 @@ with tempfile.TemporaryDirectory(prefix='step-saved-only-',dir='/private/tmp') a
  assert denial.returncode and 'Operation not permitted' in denial.stderr,(denial.returncode,denial.stderr[:2000])
  cmds=[['/Users/gwilson/tolteca/bin/python',str(D/'report_step_campaign.py'),'--root',str(D/'compact'),'--output',str(out)]]
  for name in ('N14-REF-rep2',):cmds.append(['/Users/gwilson/tolteca/bin/python',str(D/'report_step_windows.py'),str(D/'compact/report'/name),str(out/name)])
+ cmds.append(['/Users/gwilson/tolteca/bin/python',str(D/'report_consequences.py'),'--root',str(D/'compact'),'--output',str(out)])
  results=[]
  for cmd in cmds:
   r=subprocess.run(['/usr/bin/sandbox-exec','-f',str(sb),*cmd],env=env,capture_output=True,text=True);assert r.returncode==0,r.stderr;results.append(dict(script=Path(cmd[1]).name,returncode=r.returncode,stderr=r.stderr))

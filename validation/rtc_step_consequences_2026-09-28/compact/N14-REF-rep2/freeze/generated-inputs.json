@@ -1,0 +1,38 @@
+[
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-REF-rep2/inputs/ast-source-binding.json",
+    "sha256": "a8aacdd5c0a31daf634c73257261ca563d2041ea1b9e9137889dac911e0a05e1"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-REF-rep2/inputs/effective-point.yaml",
+    "sha256": "857e42ea1cf93d093f62cb50090babda004f5f12cc113ff8e75aa009708ff524"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-REF-rep2/inputs/map-owner.json",
+    "sha256": "219f6641b40a1cfc049eae24e320a14fe06f014bf804a87223a4b8772ea932aa"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-REF-rep2/inputs/network1-input.json",
+    "sha256": "93d4f8814de6d9a8f7b65734a39af21a6efeb4170903043acb0eb0d590fd4539"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-REF-rep2/inputs/network2-input.json",
+    "sha256": "e0c7e365cdf516e56cab900d69178dbcc26bf8ae6191ccccf9cb9095730c4175"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-REF-rep2/inputs/network3-input.json",
+    "sha256": "c5c7270cccef104f91d476de1d7f5bdc83d976142ac89d7217cba9eb382ad4ec"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-REF-rep2/inputs/network4-input.json",
+    "sha256": "bffb2255ff7430987df2e4182eb4c2e0155ab02f8ef72a23c914085802502e72"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-REF-rep2/inputs/observation.json",
+    "sha256": "000aec4b0ffce44a3265e60f1f19b19463e9f9be14b8c8e19092d2b96dcff90f"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928/N14-REF-rep2/inputs/processing-request.json",
+    "sha256": "951f02b9002300ed69cfc0f5d6d2164323a2dad78dfbe1a2461d19e9fb215a76"
+  }
+]

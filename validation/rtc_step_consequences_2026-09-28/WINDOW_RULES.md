@@ -22,3 +22,13 @@ Source-adjacent selection uses original AST distance to the predeclared
 nominal center(0,0), never the cleaned M0 fit. Measured M0 geometry is used
 only for later contextual source-crossing/exposure accounting. Population
 figures use retained assigned times, drawing physical runs separately.
+
+Observed selection-label correction after original review: the inherited
+"candidate-free" wording refers to distance from an event-group seed, exactly
+as the frozen code predicate states. It does not test every raw Learn candidate.
+All32 window identities/rules remain frozen; none were replaced after inspection.
+Raw candidate/event-group membership is now independently traced for each
+window in windows.json. In particular n3_w4 and n4_w4 contain15 and13 raw
+candidates in unresolved groups642 and535. They are not Learn omissions.
+Final plot labels say event-group-seed-free. ORIGINAL_REVIEW.json preserves the
+actual original panels viewed and confirms original-before-stage adjudication.

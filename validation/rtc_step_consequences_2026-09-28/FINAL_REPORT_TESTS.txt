@@ -1,0 +1,11 @@
+test_active_changes_preserve_unavailable_support (test_saved_report.Reporting.test_active_changes_preserve_unavailable_support) ... ok
+test_ambiguous_physical_event_matches_stay_unmatched (test_saved_report.Reporting.test_ambiguous_physical_event_matches_stay_unmatched) ... ok
+test_exposure_union_and_valid_denominators (test_saved_report.Reporting.test_exposure_union_and_valid_denominators) ... ok
+test_ideal_retains_complete_reference_domain (test_saved_report.Reporting.test_ideal_retains_complete_reference_domain) ... ok
+test_missing_centers_not_zero_or_adjacent (test_saved_report.Reporting.test_missing_centers_not_zero_or_adjacent) ... ok
+test_seed_free_controls_do_not_imply_no_candidates (test_saved_report.Reporting.test_seed_free_controls_do_not_imply_no_candidates) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.092s
+
+OK

@@ -1,0 +1,326 @@
+{
+  "pass_": true,
+  "checks": [
+    {
+      "run": "N14-C-core-minus",
+      "network": 1,
+      "physical_runs": [
+        [
+          0,
+          7820
+        ]
+      ],
+      "planned_vs_realized_mismatches": 0,
+      "admitted_run_physical_gap_crossings": 0,
+      "replacement_or_influence_cells": 0,
+      "events": 504,
+      "candidate_count": 879,
+      "admitted_groups": 51,
+      "array": "a1100",
+      "factor": 1,
+      "phase": 0,
+      "taps": 67
+    },
+    {
+      "run": "N14-C-core-minus",
+      "network": 2,
+      "physical_runs": [
+        [
+          0,
+          7821
+        ]
+      ],
+      "planned_vs_realized_mismatches": 0,
+      "admitted_run_physical_gap_crossings": 0,
+      "replacement_or_influence_cells": 0,
+      "events": 344,
+      "candidate_count": 889,
+      "admitted_groups": 25,
+      "array": "a1100",
+      "factor": 1,
+      "phase": 0,
+      "taps": 67
+    },
+    {
+      "run": "N14-C-core-minus",
+      "network": 3,
+      "physical_runs": [
+        [
+          0,
+          7821
+        ]
+      ],
+      "planned_vs_realized_mismatches": 0,
+      "admitted_run_physical_gap_crossings": 0,
+      "replacement_or_influence_cells": 0,
+      "events": 1083,
+      "candidate_count": 5180,
+      "admitted_groups": 72,
+      "array": "a1100",
+      "factor": 1,
+      "phase": 0,
+      "taps": 67
+    },
+    {
+      "run": "N14-C-core-minus",
+      "network": 4,
+      "physical_runs": [
+        [
+          0,
+          7821
+        ]
+      ],
+      "planned_vs_realized_mismatches": 0,
+      "admitted_run_physical_gap_crossings": 0,
+      "replacement_or_influence_cells": 0,
+      "events": 597,
+      "candidate_count": 2230,
+      "admitted_groups": 11,
+      "array": "a1100",
+      "factor": 1,
+      "phase": 0,
+      "taps": 67
+    },
+    {
+      "run": "N14-C-core-plus",
+      "network": 1,
+      "physical_runs": [
+        [
+          0,
+          7820
+        ]
+      ],
+      "planned_vs_realized_mismatches": 0,
+      "admitted_run_physical_gap_crossings": 0,
+      "replacement_or_influence_cells": 0,
+      "events": 505,
+      "candidate_count": 880,
+      "admitted_groups": 52,
+      "array": "a1100",
+      "factor": 1,
+      "phase": 0,
+      "taps": 67
+    },
+    {
+      "run": "N14-C-core-plus",
+      "network": 2,
+      "physical_runs": [
+        [
+          0,
+          7821
+        ]
+      ],
+      "planned_vs_realized_mismatches": 0,
+      "admitted_run_physical_gap_crossings": 0,
+      "replacement_or_influence_cells": 0,
+      "events": 344,
+      "candidate_count": 889,
+      "admitted_groups": 25,
+      "array": "a1100",
+      "factor": 1,
+      "phase": 0,
+      "taps": 67
+    },
+    {
+      "run": "N14-C-core-plus",
+      "network": 3,
+      "physical_runs": [
+        [
+          0,
+          7821
+        ]
+      ],
+      "planned_vs_realized_mismatches": 0,
+      "admitted_run_physical_gap_crossings": 0,
+      "replacement_or_influence_cells": 0,
+      "events": 1083,
+      "candidate_count": 5180,
+      "admitted_groups": 72,
+      "array": "a1100",
+      "factor": 1,
+      "phase": 0,
+      "taps": 67
+    },
+    {
+      "run": "N14-C-core-plus",
+      "network": 4,
+      "physical_runs": [
+        [
+          0,
+          7821
+        ]
+      ],
+      "planned_vs_realized_mismatches": 0,
+      "admitted_run_physical_gap_crossings": 0,
+      "replacement_or_influence_cells": 0,
+      "events": 597,
+      "candidate_count": 2229,
+      "admitted_groups": 11,
+      "array": "a1100",
+      "factor": 1,
+      "phase": 0,
+      "taps": 67
+    },
+    {
+      "run": "N14-C-shoulder",
+      "network": 1,
+      "physical_runs": [
+        [
+          0,
+          7820
+        ]
+      ],
+      "planned_vs_realized_mismatches": 0,
+      "admitted_run_physical_gap_crossings": 0,
+      "replacement_or_influence_cells": 0,
+      "events": 505,
+      "candidate_count": 880,
+      "admitted_groups": 52,
+      "array": "a1100",
+      "factor": 1,
+      "phase": 0,
+      "taps": 67
+    },
+    {
+      "run": "N14-C-shoulder",
+      "network": 2,
+      "physical_runs": [
+        [
+          0,
+          7821
+        ]
+      ],
+      "planned_vs_realized_mismatches": 0,
+      "admitted_run_physical_gap_crossings": 0,
+      "replacement_or_influence_cells": 0,
+      "events": 344,
+      "candidate_count": 889,
+      "admitted_groups": 25,
+      "array": "a1100",
+      "factor": 1,
+      "phase": 0,
+      "taps": 67
+    },
+    {
+      "run": "N14-C-shoulder",
+      "network": 3,
+      "physical_runs": [
+        [
+          0,
+          7821
+        ]
+      ],
+      "planned_vs_realized_mismatches": 0,
+      "admitted_run_physical_gap_crossings": 0,
+      "replacement_or_influence_cells": 0,
+      "events": 1083,
+      "candidate_count": 5180,
+      "admitted_groups": 72,
+      "array": "a1100",
+      "factor": 1,
+      "phase": 0,
+      "taps": 67
+    },
+    {
+      "run": "N14-C-shoulder",
+      "network": 4,
+      "physical_runs": [
+        [
+          0,
+          7821
+        ]
+      ],
+      "planned_vs_realized_mismatches": 0,
+      "admitted_run_physical_gap_crossings": 0,
+      "replacement_or_influence_cells": 0,
+      "events": 597,
+      "candidate_count": 2230,
+      "admitted_groups": 11,
+      "array": "a1100",
+      "factor": 1,
+      "phase": 0,
+      "taps": 67
+    },
+    {
+      "run": "N14-REF-rep2",
+      "network": 1,
+      "physical_runs": [
+        [
+          0,
+          7820
+        ]
+      ],
+      "planned_vs_realized_mismatches": 0,
+      "admitted_run_physical_gap_crossings": 0,
+      "replacement_or_influence_cells": 0,
+      "events": 504,
+      "candidate_count": 879,
+      "admitted_groups": 51,
+      "array": "a1100",
+      "factor": 1,
+      "phase": 0,
+      "taps": 67
+    },
+    {
+      "run": "N14-REF-rep2",
+      "network": 2,
+      "physical_runs": [
+        [
+          0,
+          7821
+        ]
+      ],
+      "planned_vs_realized_mismatches": 0,
+      "admitted_run_physical_gap_crossings": 0,
+      "replacement_or_influence_cells": 0,
+      "events": 344,
+      "candidate_count": 889,
+      "admitted_groups": 25,
+      "array": "a1100",
+      "factor": 1,
+      "phase": 0,
+      "taps": 67
+    },
+    {
+      "run": "N14-REF-rep2",
+      "network": 3,
+      "physical_runs": [
+        [
+          0,
+          7821
+        ]
+      ],
+      "planned_vs_realized_mismatches": 0,
+      "admitted_run_physical_gap_crossings": 0,
+      "replacement_or_influence_cells": 0,
+      "events": 1083,
+      "candidate_count": 5180,
+      "admitted_groups": 72,
+      "array": "a1100",
+      "factor": 1,
+      "phase": 0,
+      "taps": 67
+    },
+    {
+      "run": "N14-REF-rep2",
+      "network": 4,
+      "physical_runs": [
+        [
+          0,
+          7821
+        ]
+      ],
+      "planned_vs_realized_mismatches": 0,
+      "admitted_run_physical_gap_crossings": 0,
+      "replacement_or_influence_cells": 0,
+      "events": 597,
+      "candidate_count": 2230,
+      "admitted_groups": 11,
+      "array": "a1100",
+      "factor": 1,
+      "phase": 0,
+      "taps": 67
+    }
+  ],
+  "scope": "all16 successful network applications independently eroded complete67-tap plan support; actual x-state equal; runs stay within physical runs; no donor synthesis"
+}

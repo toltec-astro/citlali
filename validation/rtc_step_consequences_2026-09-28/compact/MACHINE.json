@@ -1,0 +1,15 @@
+{
+  "platform": "macOS-26.7-arm64-arm-64bit-Mach-O",
+  "python": "3.13.2",
+  "cpu": "Apple M4 Pro",
+  "logical_cores": 14,
+  "physical_cores": 14,
+  "memory_total": 51539607552,
+  "memory_available": 21339963392,
+  "disk_free": 632028794880,
+  "cmake_cache_sha256": "4eff0fbac1e819df86b7a9453bbc71e79579a86aef277a1e5fb6ccf8cdd35778",
+  "environment": "cached local AppleClang/Homebrew supplemental",
+  "network_workers": 2,
+  "numeric_threads": 1,
+  "feedback_workers": 1
+}

@@ -1,0 +1,926 @@
+[
+  {
+    "branch": "C-core-plus",
+    "cycle": 0,
+    "measurements": {
+      "peak": {
+        "name": "peak",
+        "actual_increment": 30.599655927117567,
+        "ideal_increment": 35.979804026746365,
+        "absolute_discrepancy": -5.380148099628798,
+        "ratio": 0.8504675540859159
+      },
+      "east": {
+        "name": "east",
+        "actual_increment": -0.003931945452831265,
+        "ideal_increment": -4.555698929209484e-09,
+        "absolute_discrepancy": -0.0039319408971323355,
+        "ratio": null
+      },
+      "north": {
+        "name": "north",
+        "actual_increment": 0.0055885359741001395,
+        "ideal_increment": -2.154240341667446e-08,
+        "absolute_discrepancy": 0.005588557516503556,
+        "ratio": -259420.2636542609
+      },
+      "FWHM_major": {
+        "name": "FWHM_major",
+        "actual_increment": -0.03255014689032176,
+        "ideal_increment": 8.433892606518612e-08,
+        "absolute_discrepancy": -0.03255023122924783,
+        "ratio": -385944.5265542454
+      },
+      "FWHM_minor": {
+        "name": "FWHM_minor",
+        "actual_increment": -0.04541887035745518,
+        "ideal_increment": 2.1829126151118317e-07,
+        "absolute_discrepancy": -0.04541908864871669,
+        "ratio": -208065.45366511773
+      },
+      "ellipse_xx": {
+        "name": "ellipse_xx",
+        "actual_increment": -0.08291458608219582,
+        "ideal_increment": 1.7087342030208674e-07,
+        "absolute_discrepancy": -0.08291475695561612,
+        "ratio": -485239.810472637
+      },
+      "ellipse_xy": {
+        "name": "ellipse_xy",
+        "actual_increment": -0.02461119507156173,
+        "ideal_increment": 1.1213243666929884e-08,
+        "absolute_discrepancy": -0.024611206284805398,
+        "ratio": -2194832.806866144
+      },
+      "ellipse_yy": {
+        "name": "ellipse_yy",
+        "actual_increment": -0.05197727090610149,
+        "ideal_increment": 3.29418512023949e-07,
+        "absolute_discrepancy": -0.051977600324613515,
+        "ratio": -157784.91192481222
+      },
+      "background": {
+        "name": "background",
+        "actual_increment": -0.11447735500032552,
+        "ideal_increment": -8.157200670488862e-08,
+        "absolute_discrepancy": -0.11447727342831882,
+        "ratio": 1403390.2024070823
+      },
+      "fixed_template": {
+        "name": "fixed_template",
+        "actual_increment": 27.32573466635273,
+        "ideal_increment": 35.97981742760402,
+        "absolute_discrepancy": -8.654082761251289,
+        "ratio": 0.7594739667964017
+      },
+      "aperture_1": {
+        "name": "aperture_1",
+        "actual_increment": 645.0930381329799,
+        "ideal_increment": 935.2829044551017,
+        "absolute_discrepancy": -290.1898663221218,
+        "ratio": 0.6897303853841024
+      },
+      "aperture_1p5": {
+        "name": "aperture_1p5",
+        "actual_increment": 586.9212713704146,
+        "ideal_increment": 972.0480739529921,
+        "absolute_discrepancy": -385.1268025825775,
+        "ratio": 0.603798605333997
+      },
+      "aperture_2": {
+        "name": "aperture_2",
+        "actual_increment": 528.4487195933234,
+        "ideal_increment": 972.352165804763,
+        "absolute_discrepancy": -443.9034462114396,
+        "ratio": 0.5434746156563092
+      }
+    },
+    "spatial": {
+      "pixels": 1257,
+      "g": 0.7531084282258607,
+      "eta": 0.2973391380118113,
+      "difference_rms": 1.4380681854171353,
+      "residual_rms": 0.5545096273664558,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "RTC_spatial": {
+      "pixels": 1205,
+      "g": 0.9983900238178441,
+      "eta": 0.002214919580686746,
+      "difference_rms": 1.69814378346077,
+      "residual_rms": 0.0037673128352285193,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "unsupported": {
+      "RTC_reference_contributions_unavailable": 1188,
+      "RTC_science_pixels_unavailable": 160,
+      "ideal_reference_contributions_unmapped": 0,
+      "actual_science_support_changed_pixels": 1,
+      "actual_lost_science_pixels": 1,
+      "actual_gained_science_pixels": 0,
+      "reference_MAP_contributions": 9805999,
+      "injected_MAP_contributions": 9804811,
+      "reference_supported_comparison_fraction": 0.9998801677651288
+    },
+    "scales": {},
+    "raw_aperture_background": [
+      {
+        "factor": 1.0,
+        "actual_raw_increment": 633.1873932129402,
+        "ideal_raw_increment": 935.2828959716117,
+        "actual_background_increment": -11.905644920039776,
+        "ideal_background_increment": -8.483490091748536e-06
+      },
+      {
+        "factor": 1.5,
+        "actual_raw_increment": 559.4467061703363,
+        "ideal_raw_increment": 972.0480543757112,
+        "actual_background_increment": -27.47456520007836,
+        "ideal_background_increment": -1.9577280909288675e-05
+      },
+      {
+        "factor": 2.0,
+        "actual_raw_increment": 479.9103210731864,
+        "ideal_raw_increment": 972.3521312182329,
+        "actual_background_increment": -48.53839852013698,
+        "ideal_background_increment": -3.458653009147383e-05
+      }
+    ]
+  },
+  {
+    "branch": "C-core-plus",
+    "cycle": 5,
+    "measurements": {
+      "peak": {
+        "name": "peak",
+        "actual_increment": 37.80949503642199,
+        "ideal_increment": 37.82355411083029,
+        "absolute_discrepancy": -0.014059074408294236,
+        "ratio": 0.9996282984309962
+      },
+      "east": {
+        "name": "east",
+        "actual_increment": -0.0014442161556242894,
+        "ideal_increment": -0.00038657523171892194,
+        "absolute_discrepancy": -0.0010576409239053675,
+        "ratio": 3.7359252148735074
+      },
+      "north": {
+        "name": "north",
+        "actual_increment": 0.013989181464244993,
+        "ideal_increment": 0.013573814417400243,
+        "absolute_discrepancy": 0.0004153670468447501,
+        "ratio": 1.030600613362762
+      },
+      "FWHM_major": {
+        "name": "FWHM_major",
+        "actual_increment": -0.03207611770943419,
+        "ideal_increment": -0.027953760134288963,
+        "absolute_discrepancy": -0.00412235757514523,
+        "ratio": 1.14747059269814
+      },
+      "FWHM_minor": {
+        "name": "FWHM_minor",
+        "actual_increment": -0.08085950935720909,
+        "ideal_increment": -0.07857243712964035,
+        "absolute_discrepancy": -0.0022870722275687427,
+        "ratio": 1.0291078183535938
+      },
+      "ellipse_xx": {
+        "name": "ellipse_xx",
+        "actual_increment": -0.13991999540212685,
+        "ideal_increment": -0.13129098998786315,
+        "absolute_discrepancy": -0.008629005414263702,
+        "ratio": 1.0657242771576434
+      },
+      "ellipse_xy": {
+        "name": "ellipse_xy",
+        "actual_increment": -0.45362273068019704,
+        "ideal_increment": -0.4558068513497008,
+        "absolute_discrepancy": 0.002184120669503742,
+        "ratio": 0.9952082320328528
+      },
+      "ellipse_yy": {
+        "name": "ellipse_yy",
+        "actual_increment": -0.06648921049907841,
+        "ideal_increment": -0.06215907464106207,
+        "absolute_discrepancy": -0.004330135858016337,
+        "ratio": 1.0696621673186213
+      },
+      "background": {
+        "name": "background",
+        "actual_increment": -0.006432756044949972,
+        "ideal_increment": 0.011628161024492156,
+        "absolute_discrepancy": -0.01806091706944213,
+        "ratio": -0.5532049333854933
+      },
+      "fixed_template": {
+        "name": "fixed_template",
+        "actual_increment": 35.66540422234635,
+        "ideal_increment": 35.956553189206545,
+        "absolute_discrepancy": -0.29114896686019165,
+        "ratio": 0.9919027564925887
+      },
+      "aperture_1": {
+        "name": "aperture_1",
+        "actual_increment": 919.9471432582523,
+        "ideal_increment": 934.0735672250685,
+        "absolute_discrepancy": -14.126423966816219,
+        "ratio": 0.9848765402828144
+      },
+      "aperture_1p5": {
+        "name": "aperture_1p5",
+        "actual_increment": 941.7275973097785,
+        "ideal_increment": 969.2572957298307,
+        "absolute_discrepancy": -27.529698420052227,
+        "ratio": 0.971597120247289
+      },
+      "aperture_2": {
+        "name": "aperture_2",
+        "actual_increment": 930.4034346062908,
+        "ideal_increment": 967.4217909438485,
+        "absolute_discrepancy": -37.018356337557634,
+        "ratio": 0.9617350397891686
+      }
+    },
+    "spatial": {
+      "pixels": 1257,
+      "g": 0.9909037102432942,
+      "eta": 0.08299385944966088,
+      "difference_rms": 1.8543353166389585,
+      "residual_rms": 0.15477577013527014,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "RTC_spatial": {
+      "pixels": 1205,
+      "g": 0.9983900238178441,
+      "eta": 0.002214919580686746,
+      "difference_rms": 1.69814378346077,
+      "residual_rms": 0.0037673128352285193,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "unsupported": {
+      "RTC_reference_contributions_unavailable": 1188,
+      "RTC_science_pixels_unavailable": 160,
+      "ideal_reference_contributions_unmapped": 0,
+      "actual_science_support_changed_pixels": 1,
+      "actual_lost_science_pixels": 1,
+      "actual_gained_science_pixels": 0,
+      "reference_MAP_contributions": 9805999,
+      "injected_MAP_contributions": 9804811,
+      "reference_supported_comparison_fraction": 0.9998801677651288
+    },
+    "scales": {
+      "peak": 15.329103209089014,
+      "cx": 0.11521992829786988,
+      "cy": 0.06930788795521152,
+      "sx": 0.11727096234393809,
+      "sy": 0.08635979491635729,
+      "angle": 0.0811798127325979,
+      "constant": 2.1619442291026507,
+      "template": 17.51105777687652,
+      "aperture1": 785.0948872068436,
+      "aperture1.5": 1426.537948469429,
+      "aperture2": 2132.0584929315137
+    },
+    "raw_aperture_background": [
+      {
+        "factor": 1.0,
+        "actual_raw_increment": 919.278136629573,
+        "ideal_raw_increment": 935.2828959716117,
+        "actual_background_increment": -0.6690066286791989,
+        "ideal_background_increment": 1.2093287465431786
+      },
+      {
+        "factor": 1.5,
+        "actual_raw_increment": 940.1837358589892,
+        "ideal_raw_increment": 972.0480543757112,
+        "actual_background_increment": -1.5438614507893362,
+        "ideal_background_increment": 2.790758645880487
+      },
+      {
+        "factor": 2.0,
+        "actual_raw_increment": 927.6759460432313,
+        "ideal_raw_increment": 972.3521312182329,
+        "actual_background_increment": -2.7274885630595236,
+        "ideal_background_increment": 4.9303402743844345
+      }
+    ]
+  },
+  {
+    "branch": "C-core-minus",
+    "cycle": 0,
+    "measurements": {
+      "peak": {
+        "name": "peak",
+        "actual_increment": -30.685524443495297,
+        "ideal_increment": -35.979834980105295,
+        "absolute_discrepancy": 5.2943105366099985,
+        "ratio": 0.852853395810808
+      },
+      "east": {
+        "name": "east",
+        "actual_increment": 0.0031739761394034005,
+        "ideal_increment": -2.9769084974873294e-08,
+        "absolute_discrepancy": 0.0031740059084883754,
+        "ratio": -106619.87568923958
+      },
+      "north": {
+        "name": "north",
+        "actual_increment": -0.007003738825637207,
+        "ideal_increment": -1.3170939627826783e-07,
+        "absolute_discrepancy": -0.007003607116240929,
+        "ratio": 53175.696066817596
+      },
+      "FWHM_major": {
+        "name": "FWHM_major",
+        "actual_increment": 0.041928678003773534,
+        "ideal_increment": 7.212716113258466e-08,
+        "absolute_discrepancy": 0.0419286058766124,
+        "ratio": 581316.0721340459
+      },
+      "FWHM_minor": {
+        "name": "FWHM_minor",
+        "actual_increment": 0.055729159832813124,
+        "ideal_increment": 4.051234476776244e-07,
+        "absolute_discrepancy": 0.05572875470936545,
+        "ratio": 137560.93396292237
+      },
+      "ellipse_xx": {
+        "name": "ellipse_xx",
+        "actual_increment": 0.10699614388708412,
+        "ideal_increment": 2.8537907592607326e-07,
+        "absolute_discrepancy": 0.10699585850800819,
+        "ratio": 374926.3800784091
+      },
+      "ellipse_xy": {
+        "name": "ellipse_xy",
+        "actual_increment": 0.032254820385920535,
+        "ideal_increment": 2.8789429629139107e-07,
+        "absolute_discrepancy": 0.032254532491624244,
+        "ratio": 112037.0247046296
+      },
+      "ellipse_yy": {
+        "name": "ellipse_yy",
+        "actual_increment": 0.06424378009183096,
+        "ideal_increment": 4.6667765873920075e-07,
+        "absolute_discrepancy": 0.06424331341417222,
+        "ratio": 137662.00050243482
+      },
+      "background": {
+        "name": "background",
+        "actual_increment": 0.10767616094160237,
+        "ideal_increment": -9.139259926627119e-08,
+        "absolute_discrepancy": 0.10767625233420164,
+        "ratio": -1178171.5566255997
+      },
+      "fixed_template": {
+        "name": "fixed_template",
+        "actual_increment": -27.280538414788737,
+        "ideal_increment": -35.97981708155942,
+        "absolute_discrepancy": 8.699278666770681,
+        "ratio": 0.758217818421615
+      },
+      "aperture_1": {
+        "name": "aperture_1",
+        "actual_increment": -642.0429904626635,
+        "ideal_increment": -935.2828864667808,
+        "absolute_discrepancy": 293.2398960041173,
+        "ratio": 0.6864693022323011
+      },
+      "aperture_1p5": {
+        "name": "aperture_1p5",
+        "actual_increment": -581.8173044688174,
+        "ideal_increment": -972.0480324414857,
+        "absolute_discrepancy": 390.2307279726683,
+        "ratio": 0.5985478958354262
+      },
+      "aperture_2": {
+        "name": "aperture_2",
+        "actual_increment": -525.5403272179756,
+        "ideal_increment": -972.3520924677723,
+        "absolute_discrepancy": 446.81176524979674,
+        "ratio": 0.5404835668982675
+      }
+    },
+    "spatial": {
+      "pixels": 1257,
+      "g": 0.7522304546532107,
+      "eta": 0.2864715505924083,
+      "difference_rms": 1.4282392531385484,
+      "residual_rms": 0.5342425952811399,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "RTC_spatial": {
+      "pixels": 1257,
+      "g": 0.9985250959722501,
+      "eta": 0.0021444099143696797,
+      "difference_rms": 1.8621579903958903,
+      "residual_rms": 0.003999123527730244,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "unsupported": {
+      "RTC_reference_contributions_unavailable": 0,
+      "RTC_science_pixels_unavailable": 0,
+      "ideal_reference_contributions_unmapped": 0,
+      "actual_science_support_changed_pixels": 0,
+      "actual_lost_science_pixels": 0,
+      "actual_gained_science_pixels": 0,
+      "reference_MAP_contributions": 9805999,
+      "injected_MAP_contributions": 9805999,
+      "reference_supported_comparison_fraction": 1.0
+    },
+    "scales": {},
+    "raw_aperture_background": [
+      {
+        "factor": 1.0,
+        "actual_raw_increment": -630.84466972474,
+        "ideal_raw_increment": -935.2828959716144,
+        "actual_background_increment": 11.198320737923495,
+        "ideal_background_increment": -9.504833542450797e-06
+      },
+      {
+        "factor": 1.5,
+        "actual_raw_increment": -555.9750258428339,
+        "ideal_raw_increment": -972.0480543757085,
+        "actual_background_increment": 25.842278625983454,
+        "ideal_background_increment": -2.193422278651269e-05
+      },
+      {
+        "factor": 2.0,
+        "actual_raw_increment": -479.8856349787384,
+        "ideal_raw_increment": -972.3521312182356,
+        "actual_background_increment": 45.65469223923719,
+        "ideal_background_increment": -3.875046331813792e-05
+      }
+    ]
+  },
+  {
+    "branch": "C-core-minus",
+    "cycle": 5,
+    "measurements": {
+      "peak": {
+        "name": "peak",
+        "actual_increment": -34.3518603568163,
+        "ideal_increment": -34.33909840277505,
+        "absolute_discrepancy": -0.012761954041252466,
+        "ratio": 1.000371644994623
+      },
+      "east": {
+        "name": "east",
+        "actual_increment": 0.0019256961878930667,
+        "ideal_increment": 0.0018624833882583403,
+        "absolute_discrepancy": 6.321279963472648e-05,
+        "ratio": 1.033940060906443
+      },
+      "north": {
+        "name": "north",
+        "actual_increment": -0.0027213253285731653,
+        "ideal_increment": -0.002768867351601756,
+        "absolute_discrepancy": 4.754202302859056e-05,
+        "ratio": 0.982829793922382
+      },
+      "FWHM_major": {
+        "name": "FWHM_major",
+        "actual_increment": 0.0651989980330212,
+        "ideal_increment": 0.05823639705030903,
+        "absolute_discrepancy": 0.006962600982712175,
+        "ratio": 1.119557550524586
+      },
+      "FWHM_minor": {
+        "name": "FWHM_minor",
+        "actual_increment": 0.012235159240093552,
+        "ideal_increment": 0.008905989467080211,
+        "absolute_discrepancy": 0.0033291697730133407,
+        "ratio": 1.3738124534414922
+      },
+      "ellipse_xx": {
+        "name": "ellipse_xx",
+        "actual_increment": 0.09964698822228613,
+        "ideal_increment": 0.08433175556449335,
+        "absolute_discrepancy": 0.015315232657792777,
+        "ratio": 1.1816069469356694
+      },
+      "ellipse_xy": {
+        "name": "ellipse_xy",
+        "actual_increment": -0.38131640580277165,
+        "ideal_increment": -0.3790276463294433,
+        "absolute_discrepancy": -0.00228875947332835,
+        "ratio": 1.0060385027200338
+      },
+      "ellipse_yy": {
+        "name": "ellipse_yy",
+        "actual_increment": 0.06758897080036474,
+        "ideal_increment": 0.06155996230492633,
+        "absolute_discrepancy": 0.006029008495438415,
+        "ratio": 1.0979371700322815
+      },
+      "background": {
+        "name": "background",
+        "actual_increment": 0.013030235025735082,
+        "ideal_increment": 0.0013257674983493395,
+        "absolute_discrepancy": 0.011704467527385742,
+        "ratio": 9.828446572991501
+      },
+      "fixed_template": {
+        "name": "fixed_template",
+        "actual_increment": -35.628385253284875,
+        "ideal_increment": -35.98246968336622,
+        "absolute_discrepancy": 0.35408443008134327,
+        "ratio": 0.9901595295376563
+      },
+      "aperture_1": {
+        "name": "aperture_1",
+        "actual_increment": -917.5458032372535,
+        "ideal_increment": -935.4207757914428,
+        "absolute_discrepancy": 17.8749725541893,
+        "ratio": 0.98089098188025
+      },
+      "aperture_1p5": {
+        "name": "aperture_1p5",
+        "actual_increment": -939.1940963992638,
+        "ideal_increment": -972.3662385753141,
+        "absolute_discrepancy": 33.17214217605033,
+        "ratio": 0.9658851358057707
+      },
+      "aperture_2": {
+        "name": "aperture_2",
+        "actual_increment": -933.0864680438972,
+        "ideal_increment": -972.9142566375358,
+        "absolute_discrepancy": 39.827788593638616,
+        "ratio": 0.9590634135311302
+      }
+    },
+    "spatial": {
+      "pixels": 1257,
+      "g": 0.9895079742515145,
+      "eta": 0.021492076165402354,
+      "difference_rms": 1.8456711513082242,
+      "residual_rms": 0.04008070792663474,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "RTC_spatial": {
+      "pixels": 1257,
+      "g": 0.9985250959722501,
+      "eta": 0.0021444099143696797,
+      "difference_rms": 1.8621579903958903,
+      "residual_rms": 0.003999123527730244,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "unsupported": {
+      "RTC_reference_contributions_unavailable": 0,
+      "RTC_science_pixels_unavailable": 0,
+      "ideal_reference_contributions_unmapped": 0,
+      "actual_science_support_changed_pixels": 0,
+      "actual_lost_science_pixels": 0,
+      "actual_gained_science_pixels": 0,
+      "reference_MAP_contributions": 9805999,
+      "injected_MAP_contributions": 9805999,
+      "reference_supported_comparison_fraction": 1.0
+    },
+    "scales": {
+      "peak": 15.329103209089014,
+      "cx": 0.11521992829786988,
+      "cy": 0.06930788795521152,
+      "sx": 0.11727096234393809,
+      "sy": 0.08635979491635729,
+      "angle": 0.0811798127325979,
+      "constant": 2.1619442291026507,
+      "template": 17.51105777687652,
+      "aperture1": 785.0948872068436,
+      "aperture1.5": 1426.537948469429,
+      "aperture2": 2132.0584929315137
+    },
+    "raw_aperture_background": [
+      {
+        "factor": 1.0,
+        "actual_raw_increment": -916.1906587945778,
+        "ideal_raw_increment": -935.2828959716153,
+        "actual_background_increment": 1.355144442675737,
+        "ideal_background_increment": 0.13787981982750352
+      },
+      {
+        "factor": 1.5,
+        "actual_raw_increment": -936.0668399930892,
+        "ideal_raw_increment": -972.0480543757094,
+        "actual_background_increment": 3.127256406174638,
+        "ideal_background_increment": 0.31818419960472966
+      },
+      {
+        "factor": 2.0,
+        "actual_raw_increment": -927.5616483929862,
+        "ideal_raw_increment": -972.3521312182347,
+        "actual_background_increment": 5.524819650911013,
+        "ideal_background_increment": 0.5621254193010827
+      }
+    ]
+  },
+  {
+    "branch": "C-shoulder",
+    "cycle": 0,
+    "measurements": {
+      "peak": {
+        "name": "peak",
+        "actual_increment": 5.596561640483856,
+        "ideal_increment": 7.041652284606869,
+        "absolute_discrepancy": -1.4450906441230131,
+        "ratio": 0.7947796077233183
+      },
+      "east": {
+        "name": "east",
+        "actual_increment": 0.05214242641173783,
+        "ideal_increment": 0.07412079321239062,
+        "absolute_discrepancy": -0.021978366800652793,
+        "ratio": 0.7034790664250647
+      },
+      "north": {
+        "name": "north",
+        "actual_increment": -0.005085528480854862,
+        "ideal_increment": -0.0120043141053916,
+        "absolute_discrepancy": 0.0069187856245367385,
+        "ratio": 0.4236417371460444
+      },
+      "FWHM_major": {
+        "name": "FWHM_major",
+        "actual_increment": 0.19605937503892967,
+        "ideal_increment": 0.29605053994897634,
+        "absolute_discrepancy": -0.09999116491004667,
+        "ratio": 0.6622496789660308
+      },
+      "FWHM_minor": {
+        "name": "FWHM_minor",
+        "actual_increment": 0.11282925114751308,
+        "ideal_increment": 0.19205731605745768,
+        "absolute_discrepancy": -0.0792280649099446,
+        "ratio": 0.5874769754345521
+      },
+      "ellipse_xx": {
+        "name": "ellipse_xx",
+        "actual_increment": 0.4218945499851836,
+        "ideal_increment": 0.6522607130424589,
+        "absolute_discrepancy": -0.2303661630572753,
+        "ratio": 0.6468188893629109
+      },
+      "ellipse_xy": {
+        "name": "ellipse_xy",
+        "actual_increment": -0.024224246126156812,
+        "ideal_increment": -0.013501396485349648,
+        "absolute_discrepancy": -0.010722849640807164,
+        "ratio": 1.794203003551708
+      },
+      "ellipse_yy": {
+        "name": "ellipse_yy",
+        "actual_increment": 0.16464829929846037,
+        "ideal_increment": 0.2741292963276032,
+        "absolute_discrepancy": -0.10948099702914282,
+        "ratio": 0.6006227772959167
+      },
+      "background": {
+        "name": "background",
+        "actual_increment": -0.09407972843340184,
+        "ideal_increment": 0.15148982199323813,
+        "absolute_discrepancy": -0.24556955042663997,
+        "ratio": -0.6210300282589359
+      },
+      "fixed_template": {
+        "name": "fixed_template",
+        "actual_increment": 16.601463258108083,
+        "ideal_increment": 24.523195782464484,
+        "absolute_discrepancy": -7.9217325243564005,
+        "ratio": 0.6769698127998105
+      },
+      "aperture_1": {
+        "name": "aperture_1",
+        "actual_increment": 655.109269335886,
+        "ideal_increment": 993.142564055077,
+        "absolute_discrepancy": -338.03329471919096,
+        "ratio": 0.659632658035544
+      },
+      "aperture_1p5": {
+        "name": "aperture_1p5",
+        "actual_increment": 978.573238519928,
+        "ideal_increment": 1576.2569999769075,
+        "absolute_discrepancy": -597.6837614569795,
+        "ratio": 0.620820867748257
+      },
+      "aperture_2": {
+        "name": "aperture_2",
+        "actual_increment": 1011.468132157037,
+        "ideal_increment": 1763.7167252417676,
+        "absolute_discrepancy": -752.2485930847306,
+        "ratio": 0.5734867270243675
+      }
+    },
+    "spatial": {
+      "pixels": 1257,
+      "g": 0.6323235500507457,
+      "eta": 0.41348921194504135,
+      "difference_rms": 1.2310722297493097,
+      "residual_rms": 0.7712471974874187,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "RTC_spatial": {
+      "pixels": 1205,
+      "g": 0.9995849568237309,
+      "eta": 0.000607289047831872,
+      "difference_rms": 1.790003859734522,
+      "residual_rms": 0.0010875009925470681,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "unsupported": {
+      "RTC_reference_contributions_unavailable": 1188,
+      "RTC_science_pixels_unavailable": 160,
+      "ideal_reference_contributions_unmapped": 0,
+      "actual_science_support_changed_pixels": 1,
+      "actual_lost_science_pixels": 1,
+      "actual_gained_science_pixels": 0,
+      "reference_MAP_contributions": 9805999,
+      "injected_MAP_contributions": 9804905,
+      "reference_supported_comparison_fraction": 0.9998801677651288
+    },
+    "scales": {},
+    "raw_aperture_background": [
+      {
+        "factor": 1.0,
+        "actual_raw_increment": 645.3249775788117,
+        "ideal_raw_increment": 1008.8975055423725,
+        "actual_background_increment": -9.784291757074243,
+        "ideal_background_increment": 15.754941487295582
+      },
+      {
+        "factor": 1.5,
+        "actual_raw_increment": 955.994103695908,
+        "ideal_raw_increment": 1612.6145572552869,
+        "actual_background_increment": -22.579134824020002,
+        "ideal_background_increment": 36.35755727837932
+      },
+      {
+        "factor": 2.0,
+        "actual_raw_increment": 971.5783273012748,
+        "ideal_raw_increment": 1827.948409766901,
+        "actual_background_increment": -39.88980485576212,
+        "ideal_background_increment": 64.23168452513346
+      }
+    ]
+  },
+  {
+    "branch": "C-shoulder",
+    "cycle": 5,
+    "measurements": {
+      "peak": {
+        "name": "peak",
+        "actual_increment": 11.196129527033747,
+        "ideal_increment": 10.48894634761649,
+        "absolute_discrepancy": 0.7071831794172567,
+        "ratio": 1.0674217558161079
+      },
+      "east": {
+        "name": "east",
+        "actual_increment": 0.0589827110264034,
+        "ideal_increment": 0.06707509514931065,
+        "absolute_discrepancy": -0.008092384122907248,
+        "ratio": 0.8793533709509703
+      },
+      "north": {
+        "name": "north",
+        "actual_increment": 6.892386228507519e-05,
+        "ideal_increment": 0.004361817886048058,
+        "absolute_discrepancy": -0.004292894023762983,
+        "ratio": 0.015801636860066696
+      },
+      "FWHM_major": {
+        "name": "FWHM_major",
+        "actual_increment": 0.20538607592617897,
+        "ideal_increment": 0.26059212749407656,
+        "absolute_discrepancy": -0.055206051567897596,
+        "ratio": 0.7881514990541973
+      },
+      "FWHM_minor": {
+        "name": "FWHM_minor",
+        "actual_increment": 0.08600414497084952,
+        "ideal_increment": 0.09857092992536653,
+        "absolute_discrepancy": -0.012566784954517018,
+        "ratio": 0.8725102323369373
+      },
+      "ellipse_xx": {
+        "name": "ellipse_xx",
+        "actual_increment": 0.40750463405095605,
+        "ideal_increment": 0.5392848496865943,
+        "absolute_discrepancy": -0.13178021563563824,
+        "ratio": 0.7556389434781593
+      },
+      "ellipse_xy": {
+        "name": "ellipse_xy",
+        "actual_increment": -0.4419153554376665,
+        "ideal_increment": -0.43536374456852706,
+        "absolute_discrepancy": -0.006551610869139468,
+        "ratio": 1.0150485908642497
+      },
+      "ellipse_yy": {
+        "name": "ellipse_yy",
+        "actual_increment": 0.20558887659952907,
+        "ideal_increment": 0.2235103117108843,
+        "absolute_discrepancy": -0.017921435111355244,
+        "ratio": 0.9198183073784219
+      },
+      "background": {
+        "name": "background",
+        "actual_increment": 0.0019318086847209814,
+        "ideal_increment": 0.13474022801490126,
+        "absolute_discrepancy": -0.13280841933018028,
+        "ratio": 0.014337282288904378
+      },
+      "fixed_template": {
+        "name": "fixed_template",
+        "actual_increment": 22.869728970946028,
+        "ideal_increment": 24.556706138318816,
+        "absolute_discrepancy": -1.6869771673727882,
+        "ratio": 0.9313027912672541
+      },
+      "aperture_1": {
+        "name": "aperture_1",
+        "actual_increment": 928.4126555591902,
+        "ideal_increment": 994.8845218288225,
+        "absolute_discrepancy": -66.4718662696323,
+        "ratio": 0.933186349962062
+      },
+      "aperture_1p5": {
+        "name": "aperture_1p5",
+        "actual_increment": 1353.1042768827447,
+        "ideal_increment": 1580.2769025317084,
+        "absolute_discrepancy": -227.17262564896373,
+        "ratio": 0.8562450509242917
+      },
+      "aperture_2": {
+        "name": "aperture_2",
+        "actual_increment": 1445.929003946403,
+        "ideal_increment": 1770.8185530885858,
+        "absolute_discrepancy": -324.88954914218266,
+        "ratio": 0.8165314291656114
+      }
+    },
+    "spatial": {
+      "pixels": 1257,
+      "g": 0.8485982115963147,
+      "eta": 0.24002345155770138,
+      "difference_rms": 1.620494536283894,
+      "residual_rms": 0.4476958745171304,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "RTC_spatial": {
+      "pixels": 1205,
+      "g": 0.9995849568237309,
+      "eta": 0.000607289047831872,
+      "difference_rms": 1.790003859734522,
+      "residual_rms": 0.0010875009925470681,
+      "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+    },
+    "unsupported": {
+      "RTC_reference_contributions_unavailable": 1188,
+      "RTC_science_pixels_unavailable": 160,
+      "ideal_reference_contributions_unmapped": 0,
+      "actual_science_support_changed_pixels": 1,
+      "actual_lost_science_pixels": 1,
+      "actual_gained_science_pixels": 0,
+      "reference_MAP_contributions": 9805999,
+      "injected_MAP_contributions": 9804905,
+      "reference_supported_comparison_fraction": 0.9998801677651288
+    },
+    "scales": {
+      "peak": 15.329103209089014,
+      "cx": 0.11521992829786988,
+      "cy": 0.06930788795521152,
+      "sx": 0.11727096234393809,
+      "sy": 0.08635979491635729,
+      "angle": 0.0811798127325979,
+      "constant": 2.1619442291026507,
+      "template": 17.51105777687652,
+      "aperture1": 785.0948872068436,
+      "aperture1.5": 1426.537948469429,
+      "aperture2": 2132.0584929315137
+    },
+    "raw_aperture_background": [
+      {
+        "factor": 1.0,
+        "actual_raw_increment": 928.6135636624003,
+        "ideal_raw_increment": 1008.8975055423725,
+        "actual_background_increment": 0.2009081032101676,
+        "ideal_background_increment": 14.012983713550057
+      },
+      {
+        "factor": 1.5,
+        "actual_raw_increment": 1353.5679109670746,
+        "ideal_raw_increment": 1612.614557255285,
+        "actual_background_increment": 0.4636340843298967,
+        "ideal_background_increment": 32.337654723576634
+      },
+      {
+        "factor": 2.0,
+        "actual_raw_increment": 1446.7480908287234,
+        "ideal_raw_increment": 1827.9484097668992,
+        "actual_background_increment": 0.8190868823203346,
+        "ideal_background_increment": 57.129856678313445
+      }
+    ]
+  }
+]

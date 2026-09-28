@@ -1,0 +1,405 @@
+{
+  "scope": "coordinate requests in existing one support-overlap reassessment, not new observational parents",
+  "records": [
+    {
+      "run": "N14-C-core-minus",
+      "network": 1,
+      "coordinate_records": 1008,
+      "refit_requested": {
+        "true": 46,
+        "false": 76,
+        "absent": 886
+      },
+      "remeasure_requested": {
+        "true": 18,
+        "false": 104,
+        "absent": 886
+      },
+      "reassessed": {
+        "true": 13,
+        "false": 995,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 51,
+        "false": 957,
+        "absent": 0
+      }
+    },
+    {
+      "run": "N14-C-core-minus",
+      "network": 2,
+      "coordinate_records": 688,
+      "refit_requested": {
+        "true": 10,
+        "false": 46,
+        "absent": 632
+      },
+      "remeasure_requested": {
+        "true": 4,
+        "false": 52,
+        "absent": 632
+      },
+      "reassessed": {
+        "true": 4,
+        "false": 684,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 26,
+        "false": 662,
+        "absent": 0
+      }
+    },
+    {
+      "run": "N14-C-core-minus",
+      "network": 3,
+      "coordinate_records": 2166,
+      "refit_requested": {
+        "true": 42,
+        "false": 124,
+        "absent": 2000
+      },
+      "remeasure_requested": {
+        "true": 17,
+        "false": 149,
+        "absent": 2000
+      },
+      "reassessed": {
+        "true": 14,
+        "false": 2152,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 79,
+        "false": 2087,
+        "absent": 0
+      }
+    },
+    {
+      "run": "N14-C-core-minus",
+      "network": 4,
+      "coordinate_records": 1194,
+      "refit_requested": {
+        "true": 24,
+        "false": 8,
+        "absent": 1162
+      },
+      "remeasure_requested": {
+        "true": 11,
+        "false": 21,
+        "absent": 1162
+      },
+      "reassessed": {
+        "true": 8,
+        "false": 1186,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 11,
+        "false": 1183,
+        "absent": 0
+      }
+    },
+    {
+      "run": "N14-C-core-plus",
+      "network": 1,
+      "coordinate_records": 1010,
+      "refit_requested": {
+        "true": 48,
+        "false": 76,
+        "absent": 886
+      },
+      "remeasure_requested": {
+        "true": 19,
+        "false": 105,
+        "absent": 886
+      },
+      "reassessed": {
+        "true": 14,
+        "false": 996,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 52,
+        "false": 958,
+        "absent": 0
+      }
+    },
+    {
+      "run": "N14-C-core-plus",
+      "network": 2,
+      "coordinate_records": 688,
+      "refit_requested": {
+        "true": 10,
+        "false": 46,
+        "absent": 632
+      },
+      "remeasure_requested": {
+        "true": 4,
+        "false": 52,
+        "absent": 632
+      },
+      "reassessed": {
+        "true": 4,
+        "false": 684,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 26,
+        "false": 662,
+        "absent": 0
+      }
+    },
+    {
+      "run": "N14-C-core-plus",
+      "network": 3,
+      "coordinate_records": 2166,
+      "refit_requested": {
+        "true": 42,
+        "false": 124,
+        "absent": 2000
+      },
+      "remeasure_requested": {
+        "true": 17,
+        "false": 149,
+        "absent": 2000
+      },
+      "reassessed": {
+        "true": 14,
+        "false": 2152,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 79,
+        "false": 2087,
+        "absent": 0
+      }
+    },
+    {
+      "run": "N14-C-core-plus",
+      "network": 4,
+      "coordinate_records": 1194,
+      "refit_requested": {
+        "true": 24,
+        "false": 8,
+        "absent": 1162
+      },
+      "remeasure_requested": {
+        "true": 11,
+        "false": 21,
+        "absent": 1162
+      },
+      "reassessed": {
+        "true": 8,
+        "false": 1186,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 11,
+        "false": 1183,
+        "absent": 0
+      }
+    },
+    {
+      "run": "N14-C-shoulder",
+      "network": 1,
+      "coordinate_records": 1010,
+      "refit_requested": {
+        "true": 48,
+        "false": 76,
+        "absent": 886
+      },
+      "remeasure_requested": {
+        "true": 19,
+        "false": 105,
+        "absent": 886
+      },
+      "reassessed": {
+        "true": 14,
+        "false": 996,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 52,
+        "false": 958,
+        "absent": 0
+      }
+    },
+    {
+      "run": "N14-C-shoulder",
+      "network": 2,
+      "coordinate_records": 688,
+      "refit_requested": {
+        "true": 10,
+        "false": 46,
+        "absent": 632
+      },
+      "remeasure_requested": {
+        "true": 4,
+        "false": 52,
+        "absent": 632
+      },
+      "reassessed": {
+        "true": 4,
+        "false": 684,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 26,
+        "false": 662,
+        "absent": 0
+      }
+    },
+    {
+      "run": "N14-C-shoulder",
+      "network": 3,
+      "coordinate_records": 2166,
+      "refit_requested": {
+        "true": 42,
+        "false": 124,
+        "absent": 2000
+      },
+      "remeasure_requested": {
+        "true": 17,
+        "false": 149,
+        "absent": 2000
+      },
+      "reassessed": {
+        "true": 14,
+        "false": 2152,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 79,
+        "false": 2087,
+        "absent": 0
+      }
+    },
+    {
+      "run": "N14-C-shoulder",
+      "network": 4,
+      "coordinate_records": 1194,
+      "refit_requested": {
+        "true": 24,
+        "false": 8,
+        "absent": 1162
+      },
+      "remeasure_requested": {
+        "true": 11,
+        "false": 21,
+        "absent": 1162
+      },
+      "reassessed": {
+        "true": 8,
+        "false": 1186,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 11,
+        "false": 1183,
+        "absent": 0
+      }
+    },
+    {
+      "run": "N14-REF-rep2",
+      "network": 1,
+      "coordinate_records": 1008,
+      "refit_requested": {
+        "true": 46,
+        "false": 76,
+        "absent": 886
+      },
+      "remeasure_requested": {
+        "true": 18,
+        "false": 104,
+        "absent": 886
+      },
+      "reassessed": {
+        "true": 13,
+        "false": 995,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 51,
+        "false": 957,
+        "absent": 0
+      }
+    },
+    {
+      "run": "N14-REF-rep2",
+      "network": 2,
+      "coordinate_records": 688,
+      "refit_requested": {
+        "true": 10,
+        "false": 46,
+        "absent": 632
+      },
+      "remeasure_requested": {
+        "true": 4,
+        "false": 52,
+        "absent": 632
+      },
+      "reassessed": {
+        "true": 4,
+        "false": 684,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 26,
+        "false": 662,
+        "absent": 0
+      }
+    },
+    {
+      "run": "N14-REF-rep2",
+      "network": 3,
+      "coordinate_records": 2166,
+      "refit_requested": {
+        "true": 42,
+        "false": 124,
+        "absent": 2000
+      },
+      "remeasure_requested": {
+        "true": 17,
+        "false": 149,
+        "absent": 2000
+      },
+      "reassessed": {
+        "true": 14,
+        "false": 2152,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 79,
+        "false": 2087,
+        "absent": 0
+      }
+    },
+    {
+      "run": "N14-REF-rep2",
+      "network": 4,
+      "coordinate_records": 1194,
+      "refit_requested": {
+        "true": 24,
+        "false": 8,
+        "absent": 1162
+      },
+      "remeasure_requested": {
+        "true": 11,
+        "false": 21,
+        "absent": 1162
+      },
+      "reassessed": {
+        "true": 8,
+        "false": 1186,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 11,
+        "false": 1183,
+        "absent": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,1858 @@
+[
+  {
+    "key": "n1_w0",
+    "network": 1,
+    "channel": 285,
+    "event": 179,
+    "evidence": {
+      "label": "plausible step",
+      "reason": "Abrupt x fall amid oscillatory baseline; r has little persistent change; post-x level initially lower.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 2,
+    "reason": "admitted-level-shift; x/r amplitude [5, 0], consistency [6, 0], admission [6, 0]",
+    "valid_detector_seconds": 5.005312,
+    "RTC_retained_detector_seconds": 0.0,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 9,
+      "fitting_guard": 14,
+      "jump_scan": 611,
+      "operation_unavailable": 611
+    },
+    "stage": {
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    },
+    "T5_p05": null,
+    "T5_p50": null,
+    "T5_p95": null,
+    "disposition": "potentially costly treatment requiring a comparison",
+    "attribution_limit": "RTC withholds this excerpt; residual unavailable, no demonstrated recoverable scientific information",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n1_w1",
+    "network": 1,
+    "channel": 335,
+    "event": 220,
+    "evidence": {
+      "label": "plausible step",
+      "reason": "Large finite x rise to a supported plateau, followed by smaller later decrease; weak r change and shared peer transition.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 4,
+    "reason": "admitted-level-shift; x/r amplitude [5, 0], consistency [6, 0], admission [6, 0]",
+    "valid_detector_seconds": 3.6208639999999996,
+    "RTC_retained_detector_seconds": 0.0,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 20,
+      "fitting_guard": 14,
+      "jump_scan": 409,
+      "operation_unavailable": 442
+    },
+    "stage": {
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    },
+    "T5_p05": null,
+    "T5_p50": null,
+    "T5_p95": null,
+    "disposition": "potentially costly treatment requiring a comparison",
+    "attribution_limit": "RTC withholds this excerpt; residual unavailable, no demonstrated recoverable scientific information",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n1_w2",
+    "network": 1,
+    "channel": 436,
+    "event": 438,
+    "evidence": {
+      "label": "plausible step",
+      "reason": "Source-adjacent finite x rise to a long plateau; peer and small persistent r response support a physical disturbance; optical attribution not established.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 1,
+    "reason": "unresolved-extent; x/r amplitude [5, 0], consistency [5, 0], admission [0, 0]",
+    "valid_detector_seconds": 3.596288,
+    "RTC_retained_detector_seconds": 0.0,
+    "source_cells": 416,
+    "source_RTC_lost_cells": 416,
+    "overlapping_exclusions": {
+      "transition": 0,
+      "fitting_guard": 14,
+      "jump_scan": 0,
+      "operation_unavailable": 439
+    },
+    "stage": {
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    },
+    "T5_p05": null,
+    "T5_p50": null,
+    "T5_p95": null,
+    "disposition": "potentially costly treatment requiring a comparison",
+    "attribution_limit": "RTC withholds this excerpt; residual unavailable, no demonstrated recoverable scientific information",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n1_w3",
+    "network": 1,
+    "channel": 1,
+    "event": 0,
+    "evidence": {
+      "label": "plausible non-step",
+      "reason": "Oscillatory x bursts without a supported persistent changed level; r remains near baseline.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 1,
+    "reason": "isolated-admission-unavailable; x/r amplitude [4, 0], consistency [0, 0], admission [0, 0]",
+    "valid_detector_seconds": 5.005312,
+    "RTC_retained_detector_seconds": 3.8584319999999996,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 0,
+      "fitting_guard": 74,
+      "jump_scan": 0,
+      "operation_unavailable": 74
+    },
+    "stage": {
+      "CAL": {
+        "n": 471,
+        "pre_n": 231,
+        "post_n": 240,
+        "pre_median": 21761.81518649762,
+        "post_median": 22003.55945120709,
+        "post_minus_pre": 241.74426470946855,
+        "adjacent_difference_MAD": 194.39766398211182
+      },
+      "M0": {
+        "n": 471,
+        "pre_n": 231,
+        "post_n": 240,
+        "pre_median": -11.984535657737354,
+        "post_median": 13.507371586259818,
+        "post_minus_pre": 25.491907243997172,
+        "adjacent_difference_MAD": 176.56958056496322
+      },
+      "T5_residual": {
+        "n": 471,
+        "pre_n": 231,
+        "post_n": 240,
+        "pre_median": -11.726822957119452,
+        "post_median": 13.465789270260633,
+        "post_minus_pre": 25.192612227380085,
+        "adjacent_difference_MAD": 177.15778163078113
+      }
+    },
+    "T5_p05": -255.02971182787593,
+    "T5_p50": 3.9706191002942717,
+    "T5_p95": 286.3974793429687,
+    "disposition": "adequate at the measured scale",
+    "attribution_limit": "PTC/local-noise comparison is descriptive; no RTC benefit or PTC penalty established without intervention",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n1_w4",
+    "network": 1,
+    "channel": 224,
+    "event": null,
+    "evidence": {
+      "label": "plausible step",
+      "reason": "After smooth excursions, x falls finitely to a persistent lower level; little r corroboration and weak peer support do not rule out a detector-local transition.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 0,
+    "reason": "no raw candidate or trial overlap in this excerpt; other detector events may still exclude it",
+    "valid_detector_seconds": 3.006464,
+    "RTC_retained_detector_seconds": 3.006464,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 0,
+      "fitting_guard": 0,
+      "jump_scan": 0,
+      "operation_unavailable": 0
+    },
+    "stage": {
+      "CAL": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 28847.864355784255,
+        "post_median": 20501.57050407617,
+        "post_minus_pre": -8346.293851708084,
+        "adjacent_difference_MAD": 153.52180404761054
+      },
+      "M0": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 91.61094403264087,
+        "post_median": 135.95886687414486,
+        "post_minus_pre": 44.34792284150399,
+        "adjacent_difference_MAD": 131.713225359994
+      },
+      "T5_residual": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 86.31188206778734,
+        "post_median": 136.49986693264213,
+        "post_minus_pre": 50.1879848648548,
+        "adjacent_difference_MAD": 132.90290158118972
+      }
+    },
+    "T5_p05": -198.3712864010477,
+    "T5_p50": 111.32291951157231,
+    "T5_p95": 917.1642617694104,
+    "disposition": "adequate at the measured scale",
+    "attribution_limit": "PTC/local-noise comparison is descriptive; no RTC benefit or PTC penalty established without intervention",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n1_w5",
+    "network": 1,
+    "channel": 220,
+    "event": null,
+    "evidence": {
+      "label": "plausible finite excursion",
+      "reason": "Off-center x depression with two finite edges returns before the declared center; central pre/post contrast is not a complete event measure.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 0,
+    "reason": "no raw candidate or trial overlap in this excerpt; other detector events may still exclude it",
+    "valid_detector_seconds": 3.006464,
+    "RTC_retained_detector_seconds": 3.006464,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 0,
+      "fitting_guard": 0,
+      "jump_scan": 0,
+      "operation_unavailable": 0
+    },
+    "stage": {
+      "CAL": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 20176.87580123109,
+        "post_median": 20481.970401791645,
+        "post_minus_pre": 305.0946005605547,
+        "adjacent_difference_MAD": 122.6209350337008
+      },
+      "M0": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -66.21419029177014,
+        "post_median": -46.950781000047726,
+        "post_minus_pre": 19.26340929172241,
+        "adjacent_difference_MAD": 104.7934052237862
+      },
+      "T5_residual": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -65.78545458986957,
+        "post_median": -45.26273091519669,
+        "post_minus_pre": 20.522723674672882,
+        "adjacent_difference_MAD": 104.54401036766166
+      }
+    },
+    "T5_p05": -235.16514998334802,
+    "T5_p50": -53.102489463596385,
+    "T5_p95": 187.11303613301365,
+    "disposition": "not established",
+    "attribution_limit": "off-center excursion is strongly suppressed by PTC; local outliers remain, but source/map harm and benefit of another RTC operation are not established",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n1_w6",
+    "network": 1,
+    "channel": 123,
+    "event": null,
+    "evidence": {
+      "label": "plausible non-step",
+      "reason": "Local x/r noise and smooth baseline variation; peer structure is not proof of a local step.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 0,
+    "reason": "no raw candidate or trial overlap in this excerpt; other detector events may still exclude it",
+    "valid_detector_seconds": 3.006464,
+    "RTC_retained_detector_seconds": 3.006464,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 0,
+      "fitting_guard": 0,
+      "jump_scan": 0,
+      "operation_unavailable": 0
+    },
+    "stage": {
+      "CAL": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 19340.37648508262,
+        "post_median": 19162.401799160463,
+        "post_minus_pre": -177.9746859221559,
+        "adjacent_difference_MAD": 182.2327225393971
+      },
+      "M0": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 40.541397918106824,
+        "post_median": -35.91209891862769,
+        "post_minus_pre": -76.45349683673452,
+        "adjacent_difference_MAD": 114.75029692876456
+      },
+      "T5_residual": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 40.27566877218057,
+        "post_median": -36.36653899768035,
+        "post_minus_pre": -76.64220776986093,
+        "adjacent_difference_MAD": 114.74918484541533
+      }
+    },
+    "T5_p05": -253.7294031390479,
+    "T5_p50": -15.200585466497362,
+    "T5_p95": 290.380369951903,
+    "disposition": "adequate at the measured scale",
+    "attribution_limit": "PTC/local-noise comparison is descriptive; no RTC benefit or PTC penalty established without intervention",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n1_w7",
+    "network": 1,
+    "channel": 369,
+    "event": null,
+    "evidence": {
+      "label": "plausible non-step",
+      "reason": "Quiet x/r control without a supported abrupt level transition.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 0,
+    "reason": "no raw candidate or trial overlap in this excerpt; other detector events may still exclude it",
+    "valid_detector_seconds": 3.006464,
+    "RTC_retained_detector_seconds": 3.006464,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 0,
+      "fitting_guard": 0,
+      "jump_scan": 0,
+      "operation_unavailable": 0
+    },
+    "stage": {
+      "CAL": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 20171.32566836545,
+        "post_median": 20060.259955335485,
+        "post_minus_pre": -111.06571302996599,
+        "adjacent_difference_MAD": 172.44535470537286
+      },
+      "M0": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -26.019184179632475,
+        "post_median": 56.21344308388237,
+        "post_minus_pre": 82.23262726351484,
+        "adjacent_difference_MAD": 161.78337026442836
+      },
+      "T5_residual": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -26.412308262380748,
+        "post_median": 55.54854855563303,
+        "post_minus_pre": 81.96085681801378,
+        "adjacent_difference_MAD": 162.2945758262872
+      }
+    },
+    "T5_p05": -200.48903594560767,
+    "T5_p50": 15.699867073662546,
+    "T5_p95": 215.19850465039545,
+    "disposition": "adequate at the measured scale",
+    "attribution_limit": "PTC/local-noise comparison is descriptive; no RTC benefit or PTC penalty established without intervention",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n2_w0",
+    "network": 2,
+    "channel": 212,
+    "event": 204,
+    "evidence": {
+      "label": "plausible step",
+      "reason": "Finite shared x decrease reaches a supported lower plateau with weaker r decrease.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 1,
+    "reason": "admitted-level-shift; x/r amplitude [5, 0], consistency [6, 0], admission [6, 0]",
+    "valid_detector_seconds": 5.005312,
+    "RTC_retained_detector_seconds": 0.0,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 2,
+      "fitting_guard": 14,
+      "jump_scan": 611,
+      "operation_unavailable": 0
+    },
+    "stage": {
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    },
+    "T5_p05": null,
+    "T5_p50": null,
+    "T5_p95": null,
+    "disposition": "potentially costly treatment requiring a comparison",
+    "attribution_limit": "RTC withholds this excerpt; residual unavailable, no demonstrated recoverable scientific information",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n2_w1",
+    "network": 2,
+    "channel": 298,
+    "event": 272,
+    "evidence": {
+      "label": "plausible step",
+      "reason": "Large coincident x/r decrease with supported post levels and peer context.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 5,
+    "reason": "admitted-level-shift; x/r amplitude [5, 5], consistency [6, 6], admission [6, 6]",
+    "valid_detector_seconds": 5.005312,
+    "RTC_retained_detector_seconds": 0.0,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 13,
+      "fitting_guard": 14,
+      "jump_scan": 611,
+      "operation_unavailable": 611
+    },
+    "stage": {
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    },
+    "T5_p05": null,
+    "T5_p50": null,
+    "T5_p95": null,
+    "disposition": "potentially costly treatment requiring a comparison",
+    "attribution_limit": "RTC withholds this excerpt; residual unavailable, no demonstrated recoverable scientific information",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n2_w2",
+    "network": 2,
+    "channel": 256,
+    "event": 241,
+    "evidence": {
+      "label": "plausible step",
+      "reason": "Both original x and r change substantially, despite r-only production admission; post structure varies and extent is complicated.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 6,
+    "reason": "admitted-level-shift; x/r amplitude [5, 5], consistency [5, 6], admission [0, 6]",
+    "valid_detector_seconds": 5.005312,
+    "RTC_retained_detector_seconds": 0.0,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 5,
+      "fitting_guard": 14,
+      "jump_scan": 611,
+      "operation_unavailable": 0
+    },
+    "stage": {
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    },
+    "T5_p05": null,
+    "T5_p50": null,
+    "T5_p95": null,
+    "disposition": "potentially costly treatment requiring a comparison",
+    "attribution_limit": "RTC withholds this excerpt; residual unavailable, no demonstrated recoverable scientific information",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n2_w3",
+    "network": 2,
+    "channel": 329,
+    "event": 288,
+    "evidence": {
+      "label": "plausible finite excursion",
+      "reason": "Two finite edges bound a roughly1.2-second lower plateau; later recovery, not an isolated spike or indefinitely persistent offset.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 3,
+    "reason": "admitted-level-shift; unresolved-extent; x/r amplitude [5, 0], consistency [6, 0], admission [6, 0]",
+    "valid_detector_seconds": 5.005312,
+    "RTC_retained_detector_seconds": 0.0,
+    "source_cells": 109,
+    "source_RTC_lost_cells": 109,
+    "overlapping_exclusions": {
+      "transition": 3,
+      "fitting_guard": 15,
+      "jump_scan": 611,
+      "operation_unavailable": 611
+    },
+    "stage": {
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    },
+    "T5_p05": null,
+    "T5_p50": null,
+    "T5_p95": null,
+    "disposition": "potentially costly treatment requiring a comparison",
+    "attribution_limit": "RTC withholds this excerpt; residual unavailable, no demonstrated recoverable scientific information",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n2_w4",
+    "network": 2,
+    "channel": 385,
+    "event": null,
+    "evidence": {
+      "label": "plausible step",
+      "reason": "x rises in stages to a persistent plateau; small r change; strongest edge precedes nominal window center.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 0,
+    "reason": "no raw candidate or trial overlap in this excerpt; other detector events may still exclude it",
+    "valid_detector_seconds": 2.33472,
+    "RTC_retained_detector_seconds": 1.7940479999999999,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 0,
+      "fitting_guard": 0,
+      "jump_scan": 0,
+      "operation_unavailable": 0
+    },
+    "stage": {
+      "CAL": {
+        "n": 219,
+        "pre_n": 23,
+        "post_n": 171,
+        "pre_median": 18913.15542597663,
+        "post_median": 25278.10271559607,
+        "post_minus_pre": 6364.947289619438,
+        "adjacent_difference_MAD": 126.67974434909188
+      },
+      "M0": {
+        "n": 219,
+        "pre_n": 23,
+        "post_n": 171,
+        "pre_median": -38.068629809087724,
+        "post_median": 0.7925260965162124,
+        "post_minus_pre": 38.86115590560394,
+        "adjacent_difference_MAD": 220.49661831413815
+      },
+      "T5_residual": {
+        "n": 219,
+        "pre_n": 23,
+        "post_n": 171,
+        "pre_median": -30.799141178737045,
+        "post_median": -2.935116251410591,
+        "post_minus_pre": 27.864024927326454,
+        "adjacent_difference_MAD": 224.3379254050208
+      }
+    },
+    "T5_p05": -494.49306381709715,
+    "T5_p50": 25.70610976394721,
+    "T5_p95": 571.8374382988281,
+    "disposition": "adequate at the measured scale",
+    "attribution_limit": "PTC/local-noise comparison is descriptive; no RTC benefit or PTC penalty established without intervention",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n2_w5",
+    "network": 2,
+    "channel": 292,
+    "event": null,
+    "evidence": {
+      "label": "plausible step",
+      "reason": "Large finite x drop and smaller r drop reach supported lower levels; peer context agrees.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 0,
+    "reason": "no raw candidate or trial overlap in this excerpt; other detector events may still exclude it",
+    "valid_detector_seconds": 3.006464,
+    "RTC_retained_detector_seconds": 0.0,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 0,
+      "fitting_guard": 0,
+      "jump_scan": 0,
+      "operation_unavailable": 367
+    },
+    "stage": {
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    },
+    "T5_p05": null,
+    "T5_p50": null,
+    "T5_p95": null,
+    "disposition": "potentially costly treatment requiring a comparison",
+    "attribution_limit": "RTC withholds this excerpt; residual unavailable, no demonstrated recoverable scientific information",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n2_w6",
+    "network": 2,
+    "channel": 127,
+    "event": null,
+    "evidence": {
+      "label": "plausible step",
+      "reason": "Small abrupt x decrease near1.65s persists, with little r change; lower confidence than largest cases.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 0,
+    "reason": "no raw candidate or trial overlap in this excerpt; other detector events may still exclude it",
+    "valid_detector_seconds": 3.006464,
+    "RTC_retained_detector_seconds": 3.006464,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 0,
+      "fitting_guard": 0,
+      "jump_scan": 0,
+      "operation_unavailable": 0
+    },
+    "stage": {
+      "CAL": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 16647.79736361039,
+        "post_median": 12399.590295785272,
+        "post_minus_pre": -4248.207067825117,
+        "adjacent_difference_MAD": 939.4925351757682
+      },
+      "M0": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -15.699610764368572,
+        "post_median": 36.86614304670002,
+        "post_minus_pre": 52.56575381106859,
+        "adjacent_difference_MAD": 951.8277588422253
+      },
+      "T5_residual": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -15.6655747729435,
+        "post_median": 38.533324896194245,
+        "post_minus_pre": 54.198899669137745,
+        "adjacent_difference_MAD": 955.2276331467834
+      }
+    },
+    "T5_p05": -1505.82615890738,
+    "T5_p50": 38.533324896194245,
+    "T5_p95": 1235.2898411822591,
+    "disposition": "adequate at the measured scale",
+    "attribution_limit": "PTC/local-noise comparison is descriptive; no RTC benefit or PTC penalty established without intervention",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n2_w7",
+    "network": 2,
+    "channel": 381,
+    "event": null,
+    "evidence": {
+      "label": "plausible non-step",
+      "reason": "Noise and smooth common variation; no supported abrupt persistent local offset.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 0,
+    "reason": "no raw candidate or trial overlap in this excerpt; other detector events may still exclude it",
+    "valid_detector_seconds": 3.006464,
+    "RTC_retained_detector_seconds": 3.006464,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 0,
+      "fitting_guard": 0,
+      "jump_scan": 0,
+      "operation_unavailable": 0
+    },
+    "stage": {
+      "CAL": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 21481.5852510458,
+        "post_median": 21614.608798169484,
+        "post_minus_pre": 133.0235471236847,
+        "adjacent_difference_MAD": 178.21108056886825
+      },
+      "M0": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 1.3202854283696297,
+        "post_median": 6.834891627919472,
+        "post_minus_pre": 5.514606199549842,
+        "adjacent_difference_MAD": 213.8649880139725
+      },
+      "T5_residual": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 1.7164766980459376,
+        "post_median": 5.7001422874566,
+        "post_minus_pre": 3.9836655894106627,
+        "adjacent_difference_MAD": 212.60754079497303
+      }
+    },
+    "T5_p05": -271.27701788074614,
+    "T5_p50": -3.3858075693169667,
+    "T5_p95": 335.67283651656203,
+    "disposition": "adequate at the measured scale",
+    "attribution_limit": "PTC/local-noise comparison is descriptive; no RTC benefit or PTC penalty established without intervention",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n3_w0",
+    "network": 3,
+    "channel": 168,
+    "event": 63,
+    "evidence": {
+      "label": "plausible step",
+      "reason": "Large finite x increase to supported higher plateau; small opposite r change, shared peers.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 1,
+    "reason": "admitted-level-shift; x/r amplitude [5, 0], consistency [6, 0], admission [6, 0]",
+    "valid_detector_seconds": 5.005312,
+    "RTC_retained_detector_seconds": 0.0,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 16,
+      "fitting_guard": 14,
+      "jump_scan": 611,
+      "operation_unavailable": 0
+    },
+    "stage": {
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    },
+    "T5_p05": null,
+    "T5_p50": null,
+    "T5_p95": null,
+    "disposition": "potentially costly treatment requiring a comparison",
+    "attribution_limit": "RTC withholds this excerpt; residual unavailable, no demonstrated recoverable scientific information",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n3_w1",
+    "network": 3,
+    "channel": 295,
+    "event": 416,
+    "evidence": {
+      "label": "plausible step",
+      "reason": "Very large two-stage x/r rise; nearby transitions complicate onset, but high post plateau is supported.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 19,
+    "reason": "admitted-level-shift; x/r amplitude [5, 5], consistency [5, 6], admission [0, 6]",
+    "valid_detector_seconds": 5.005312,
+    "RTC_retained_detector_seconds": 0.0,
+    "source_cells": 22,
+    "source_RTC_lost_cells": 22,
+    "overlapping_exclusions": {
+      "transition": 27,
+      "fitting_guard": 14,
+      "jump_scan": 611,
+      "operation_unavailable": 0
+    },
+    "stage": {
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    },
+    "T5_p05": null,
+    "T5_p50": null,
+    "T5_p95": null,
+    "disposition": "potentially costly treatment requiring a comparison",
+    "attribution_limit": "RTC withholds this excerpt; residual unavailable, no demonstrated recoverable scientific information",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n3_w2",
+    "network": 3,
+    "channel": 380,
+    "event": 716,
+    "evidence": {
+      "label": "plausible step",
+      "reason": "Large persistent changes in both original x and r; r-only admission must not be read as absent x evidence.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 13,
+    "reason": "admitted-level-shift; x/r amplitude [5, 5], consistency [5, 6], admission [0, 6]",
+    "valid_detector_seconds": 5.005312,
+    "RTC_retained_detector_seconds": 0.0,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 14,
+      "fitting_guard": 14,
+      "jump_scan": 611,
+      "operation_unavailable": 611
+    },
+    "stage": {
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    },
+    "T5_p05": null,
+    "T5_p50": null,
+    "T5_p95": null,
+    "disposition": "potentially costly treatment requiring a comparison",
+    "attribution_limit": "RTC withholds this excerpt; residual unavailable, no demonstrated recoverable scientific information",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n3_w3",
+    "network": 3,
+    "channel": 91,
+    "event": 2,
+    "evidence": {
+      "label": "plausible step",
+      "reason": "Two-stage x decline with persistent post offset and smaller r decline; onset/extent not a single sharp edge.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 1,
+    "reason": "unresolved-extent; x/r amplitude [5, 0], consistency [5, 0], admission [0, 0]",
+    "valid_detector_seconds": 3.579904,
+    "RTC_retained_detector_seconds": 0.0,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 0,
+      "fitting_guard": 14,
+      "jump_scan": 0,
+      "operation_unavailable": 437
+    },
+    "stage": {
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    },
+    "T5_p05": null,
+    "T5_p50": null,
+    "T5_p95": null,
+    "disposition": "potentially costly treatment requiring a comparison",
+    "attribution_limit": "RTC withholds this excerpt; residual unavailable, no demonstrated recoverable scientific information",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n3_w4",
+    "network": 3,
+    "channel": 360,
+    "event": null,
+    "evidence": {
+      "label": "plausible step",
+      "reason": "Very large abrupt x/r increases to supported plateaus. No nearby event-group seed does not mean no raw Learn candidate or existing grouped event.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 15,
+    "reason": "unresolved-extent",
+    "valid_detector_seconds": 3.006464,
+    "RTC_retained_detector_seconds": 0.0,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 0,
+      "fitting_guard": 14,
+      "jump_scan": 0,
+      "operation_unavailable": 367
+    },
+    "stage": {
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    },
+    "T5_p05": null,
+    "T5_p50": null,
+    "T5_p95": null,
+    "disposition": "potentially costly treatment requiring a comparison",
+    "attribution_limit": "RTC withholds this excerpt; residual unavailable, no demonstrated recoverable scientific information",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n3_w5",
+    "network": 3,
+    "channel": 272,
+    "event": null,
+    "evidence": {
+      "label": "unresolved",
+      "reason": "Large smoothly evolving common x structure; no unique sharp transition boundary, persistence versus atmospheric/common-mode change unresolved.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 0,
+    "reason": "no raw candidate or trial overlap in this excerpt; other detector events may still exclude it",
+    "valid_detector_seconds": 3.006464,
+    "RTC_retained_detector_seconds": 0.0,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 0,
+      "fitting_guard": 0,
+      "jump_scan": 0,
+      "operation_unavailable": 367
+    },
+    "stage": {
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    },
+    "T5_p05": null,
+    "T5_p50": null,
+    "T5_p95": null,
+    "disposition": "potentially costly treatment requiring a comparison",
+    "attribution_limit": "RTC withholds this excerpt; residual unavailable, no demonstrated recoverable scientific information",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n3_w6",
+    "network": 3,
+    "channel": 133,
+    "event": null,
+    "evidence": {
+      "label": "plausible step",
+      "reason": "Multiple smaller x transitions, including a sustained rise after2s; r nearly unchanged; central point precedes the strongest transition.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 0,
+    "reason": "no raw candidate or trial overlap in this excerpt; other detector events may still exclude it",
+    "valid_detector_seconds": 3.006464,
+    "RTC_retained_detector_seconds": 3.006464,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 0,
+      "fitting_guard": 0,
+      "jump_scan": 0,
+      "operation_unavailable": 0
+    },
+    "stage": {
+      "CAL": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 9320.056352607626,
+        "post_median": 13509.35774891756,
+        "post_minus_pre": 4189.301396309935,
+        "adjacent_difference_MAD": 367.2553151268321
+      },
+      "M0": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 30.581465714953538,
+        "post_median": -107.35280212918087,
+        "post_minus_pre": -137.9342678441344,
+        "adjacent_difference_MAD": 159.37389792440467
+      },
+      "T5_residual": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 32.142283607012814,
+        "post_median": -108.9452860538463,
+        "post_minus_pre": -141.08756966085912,
+        "adjacent_difference_MAD": 158.8629953879102
+      }
+    },
+    "T5_p05": -403.6928594464564,
+    "T5_p50": -61.111635043235765,
+    "T5_p95": 489.033781728605,
+    "disposition": "adequate at the measured scale",
+    "attribution_limit": "PTC/local-noise comparison is descriptive; no RTC benefit or PTC penalty established without intervention",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n3_w7",
+    "network": 3,
+    "channel": 399,
+    "event": null,
+    "evidence": {
+      "label": "plausible non-step",
+      "reason": "Quiet local x/r with mild oscillation, no supported persistent jump.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 0,
+    "reason": "no raw candidate or trial overlap in this excerpt; other detector events may still exclude it",
+    "valid_detector_seconds": 3.006464,
+    "RTC_retained_detector_seconds": 3.006464,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 0,
+      "fitting_guard": 0,
+      "jump_scan": 0,
+      "operation_unavailable": 0
+    },
+    "stage": {
+      "CAL": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 15087.700977162385,
+        "post_median": 15137.608532000027,
+        "post_minus_pre": 49.90755483764224,
+        "adjacent_difference_MAD": 136.69730380610997
+      },
+      "M0": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -39.87324162562791,
+        "post_median": 36.64463589791205,
+        "post_minus_pre": 76.51787752353997,
+        "adjacent_difference_MAD": 126.94421134084966
+      },
+      "T5_residual": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -39.92137560523952,
+        "post_median": 36.6976220381581,
+        "post_minus_pre": 76.61899764339762,
+        "adjacent_difference_MAD": 127.33771743016875
+      }
+    },
+    "T5_p05": -256.3914322489505,
+    "T5_p50": 6.525750735192929,
+    "T5_p95": 358.7037123337134,
+    "disposition": "adequate at the measured scale",
+    "attribution_limit": "PTC/local-noise comparison is descriptive; no RTC benefit or PTC penalty established without intervention",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n4_w0",
+    "network": 4,
+    "channel": 466,
+    "event": 492,
+    "evidence": {
+      "label": "plausible step",
+      "reason": "Finite x rise to supported plateau, little r change, shared peer response.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 1,
+    "reason": "admitted-level-shift; x/r amplitude [5, 0], consistency [6, 0], admission [6, 0]",
+    "valid_detector_seconds": 4.95616,
+    "RTC_retained_detector_seconds": 0.0,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 10,
+      "fitting_guard": 14,
+      "jump_scan": 10,
+      "operation_unavailable": 605
+    },
+    "stage": {
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    },
+    "T5_p05": null,
+    "T5_p50": null,
+    "T5_p95": null,
+    "disposition": "potentially costly treatment requiring a comparison",
+    "attribution_limit": "RTC withholds this excerpt; residual unavailable, no demonstrated recoverable scientific information",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n4_w1",
+    "network": 4,
+    "channel": 271,
+    "event": 113,
+    "evidence": {
+      "label": "plausible step",
+      "reason": "Large coincident x/r increase followed by persistent, slowly varying plateau.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 14,
+    "reason": "admitted-level-shift; x/r amplitude [5, 5], consistency [5, 6], admission [0, 6]",
+    "valid_detector_seconds": 5.005312,
+    "RTC_retained_detector_seconds": 0.0,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 11,
+      "fitting_guard": 14,
+      "jump_scan": 611,
+      "operation_unavailable": 611
+    },
+    "stage": {
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    },
+    "T5_p05": null,
+    "T5_p50": null,
+    "T5_p95": null,
+    "disposition": "potentially costly treatment requiring a comparison",
+    "attribution_limit": "RTC withholds this excerpt; residual unavailable, no demonstrated recoverable scientific information",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n4_w2",
+    "network": 4,
+    "channel": 425,
+    "event": 479,
+    "evidence": {
+      "label": "plausible step",
+      "reason": "Large x and r increases with supported plateau despite r-only admission.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 9,
+    "reason": "admitted-level-shift; x/r amplitude [5, 5], consistency [6, 6], admission [0, 6]",
+    "valid_detector_seconds": 5.005312,
+    "RTC_retained_detector_seconds": 0.0,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 9,
+      "fitting_guard": 14,
+      "jump_scan": 611,
+      "operation_unavailable": 611
+    },
+    "stage": {
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    },
+    "T5_p05": null,
+    "T5_p50": null,
+    "T5_p95": null,
+    "disposition": "potentially costly treatment requiring a comparison",
+    "attribution_limit": "RTC withholds this excerpt; residual unavailable, no demonstrated recoverable scientific information",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n4_w3",
+    "network": 4,
+    "channel": 1,
+    "event": 0,
+    "evidence": {
+      "label": "plausible step",
+      "reason": "Small abrupt x rise to a noisy supported higher level; r remains near its baseline; amplitude and interpretation less decisive.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 1,
+    "reason": "isolated-admission-unavailable; x/r amplitude [4, 0], consistency [0, 0], admission [0, 0]",
+    "valid_detector_seconds": 5.005312,
+    "RTC_retained_detector_seconds": 3.956736,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 0,
+      "fitting_guard": 62,
+      "jump_scan": 0,
+      "operation_unavailable": 62
+    },
+    "stage": {
+      "CAL": {
+        "n": 483,
+        "pre_n": 266,
+        "post_n": 217,
+        "pre_median": 11431.93185889952,
+        "post_median": 11965.172577472826,
+        "post_minus_pre": 533.2407185733064,
+        "adjacent_difference_MAD": 101.02732157245872
+      },
+      "M0": {
+        "n": 483,
+        "pre_n": 266,
+        "post_n": 217,
+        "pre_median": -31.690079446671618,
+        "post_median": 3.586504426924897,
+        "post_minus_pre": 35.276583873596515,
+        "adjacent_difference_MAD": 85.73862413219973
+      },
+      "T5_residual": {
+        "n": 483,
+        "pre_n": 266,
+        "post_n": 217,
+        "pre_median": -31.886768355397443,
+        "post_median": 3.4961670793415642,
+        "post_minus_pre": 35.38293543473901,
+        "adjacent_difference_MAD": 85.6615861197425
+      }
+    },
+    "T5_p05": -135.6656386865771,
+    "T5_p50": -13.346632416737634,
+    "T5_p95": 137.44939950147153,
+    "disposition": "adequate at the measured scale",
+    "attribution_limit": "PTC/local-noise comparison is descriptive; no RTC benefit or PTC penalty established without intervention",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n4_w4",
+    "network": 4,
+    "channel": 477,
+    "event": null,
+    "evidence": {
+      "label": "plausible finite excursion",
+      "reason": "Finite x/r rise, short high plateau with a brief interruption, and return; multiple edges rather than a single persistent step.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 13,
+    "reason": "unresolved-extent",
+    "valid_detector_seconds": 3.006464,
+    "RTC_retained_detector_seconds": 0.0,
+    "source_cells": 22,
+    "source_RTC_lost_cells": 22,
+    "overlapping_exclusions": {
+      "transition": 0,
+      "fitting_guard": 0,
+      "jump_scan": 144,
+      "operation_unavailable": 367
+    },
+    "stage": {
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    },
+    "T5_p05": null,
+    "T5_p50": null,
+    "T5_p95": null,
+    "disposition": "potentially costly treatment requiring a comparison",
+    "attribution_limit": "RTC withholds this excerpt; residual unavailable, no demonstrated recoverable scientific information",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n4_w5",
+    "network": 4,
+    "channel": 271,
+    "event": null,
+    "evidence": {
+      "label": "plausible step",
+      "reason": "Finite x rise to persistent curved higher level with peer response; r near baseline; source context enters near excerpt end.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 0,
+    "reason": "no raw candidate or trial overlap in this excerpt; other detector events may still exclude it",
+    "valid_detector_seconds": 3.006464,
+    "RTC_retained_detector_seconds": 0.0,
+    "source_cells": 38,
+    "source_RTC_lost_cells": 38,
+    "overlapping_exclusions": {
+      "transition": 0,
+      "fitting_guard": 0,
+      "jump_scan": 0,
+      "operation_unavailable": 367
+    },
+    "stage": {
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    },
+    "T5_p05": null,
+    "T5_p50": null,
+    "T5_p95": null,
+    "disposition": "potentially costly treatment requiring a comparison",
+    "attribution_limit": "RTC withholds this excerpt; residual unavailable, no demonstrated recoverable scientific information",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n4_w6",
+    "network": 4,
+    "channel": 131,
+    "event": null,
+    "evidence": {
+      "label": "plausible non-step",
+      "reason": "Local x/r largely stable while peers show broad structure; peer variation alone is not local step evidence.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 0,
+    "reason": "no raw candidate or trial overlap in this excerpt; other detector events may still exclude it",
+    "valid_detector_seconds": 3.006464,
+    "RTC_retained_detector_seconds": 3.006464,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 0,
+      "fitting_guard": 0,
+      "jump_scan": 0,
+      "operation_unavailable": 0
+    },
+    "stage": {
+      "CAL": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 27072.76756260369,
+        "post_median": 27354.786895306464,
+        "post_minus_pre": 282.0193327027737,
+        "adjacent_difference_MAD": 98.75081295622753
+      },
+      "M0": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -20.91851302330882,
+        "post_median": 3.6465538491566463,
+        "post_minus_pre": 24.565066872465465,
+        "adjacent_difference_MAD": 79.07868536203965
+      },
+      "T5_residual": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -21.276560223967493,
+        "post_median": 2.320915335094014,
+        "post_minus_pre": 23.597475559061508,
+        "adjacent_difference_MAD": 78.9695190240376
+      }
+    },
+    "T5_p05": -123.63470224389951,
+    "T5_p50": -7.5615478565321155,
+    "T5_p95": 143.40303747680076,
+    "disposition": "adequate at the measured scale",
+    "attribution_limit": "PTC/local-noise comparison is descriptive; no RTC benefit or PTC penalty established without intervention",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  },
+  {
+    "key": "n4_w7",
+    "network": 4,
+    "channel": 398,
+    "event": null,
+    "evidence": {
+      "label": "plausible non-step",
+      "reason": "Smooth x decline/recovery with nearly stationary r; finite step not established.",
+      "scope": "original x/r and original peers viewed before cleaned stage plots; targeted observational interpretation, not independent truth"
+    },
+    "raw_candidates_in_excerpt": 0,
+    "reason": "no raw candidate or trial overlap in this excerpt; other detector events may still exclude it",
+    "valid_detector_seconds": 3.006464,
+    "RTC_retained_detector_seconds": 0.0,
+    "source_cells": 0,
+    "source_RTC_lost_cells": 0,
+    "overlapping_exclusions": {
+      "transition": 0,
+      "fitting_guard": 0,
+      "jump_scan": 0,
+      "operation_unavailable": 367
+    },
+    "stage": {
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    },
+    "T5_p05": null,
+    "T5_p50": null,
+    "T5_p95": null,
+    "disposition": "potentially costly treatment requiring a comparison",
+    "attribution_limit": "RTC withholds this excerpt; residual unavailable, no demonstrated recoverable scientific information",
+    "source_noise_cost_context": "No per-event map transfer, estimator uncertainty or CPU attribution; use branch response and network union/timing tables."
+  }
+]

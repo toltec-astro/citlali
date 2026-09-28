@@ -22,6 +22,20 @@ class Reporting(unittest.TestCase):
     self.assertTrue(np.array_equal(rtc,get('planned_filtered')));self.assertFalse(np.any(rtc&get('jump_scan')))
     self.assertEqual(int((vx&~rtc).sum()),sum(q['incremental_preceding_eligible_cells'] for q in n['exposure_ledger']))
     self.assertEqual(int(get('CAL_eligible').sum()),n['CAL_eligible_scheduled_cells'])
+ def test_seed_free_controls_do_not_imply_no_candidates(self):
+  w={q['key']:q for q in json.loads((D/'report/N14-REF-rep2/windows.json').read_text())}
+  for key,count in [('n3_w4',15),('n4_w4',13)]:
+   self.assertEqual(w[key]['kind'],'unflagged');self.assertEqual(sum(len(t['raw_candidates_in_window']) for t in w[key]['learn_trace']),count)
+   self.assertTrue(any(t['consider_class']=='unresolved-extent' for t in w[key]['learn_trace']))
+ def test_active_changes_preserve_unavailable_support(self):
+  a=json.loads((D/'report/response/active-selection-summary.json').read_text())
+  for branch in ('C-core-plus','C-shoulder'):
+   n=next(q for q in a if q['branch']==branch and q['network']==1)
+   self.assertEqual(n['appeared'],1);self.assertEqual(n['RTC_lost_cells'],1188)
+  for q in json.loads((D/'report/response/source-responses.json').read_text()):
+   if q['branch']!='C-core-minus':
+    self.assertEqual(q['unsupported_regions']['RTC_reference_contributions_unavailable'],1188)
+    self.assertEqual(q['unsupported_regions']['actual_lost_science_pixels'],1)
  def test_ideal_retains_complete_reference_domain(self):
   for r in json.loads((D/'report/response/source-responses.json').read_text()):
    self.assertEqual(r['ideal_accounting']['reference_contributions'],r['ideal_accounting']['available_contributions']);self.assertEqual(r['ideal_accounting']['lost_contributions'],0)

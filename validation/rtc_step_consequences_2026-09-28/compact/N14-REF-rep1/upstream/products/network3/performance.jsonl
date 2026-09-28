@@ -1,0 +1,7 @@
+{"stage":"start","seconds":0.00097837500000000008,"process_user_seconds":3.879867,"process_system_seconds":0.15310499999999999,"rss_bytes":885047296,"allocator_live_bytes":171475632,"allocator_live_blocks":792791,"peak_rss_bytes":885047296}
+{"stage":"input_digests_verified","seconds":0.135140125,"process_user_seconds":4.139068,"process_system_seconds":0.15731200000000001,"rss_bytes":885047296,"allocator_live_bytes":171476064,"allocator_live_blocks":792795,"peak_rss_bytes":885047296}
+{"stage":"APT_verified_and_bound","seconds":0.13528175000000001,"process_user_seconds":4.1391850000000003,"process_system_seconds":0.15733800000000001,"rss_bytes":885047296,"allocator_live_bytes":171476064,"allocator_live_blocks":792795,"peak_rss_bytes":885047296}
+{"stage":"native_samples_loaded","seconds":0.87413574999999999,"process_user_seconds":5.530265,"process_system_seconds":0.214916,"rss_bytes":1485668352,"allocator_live_bytes":392209856,"allocator_live_blocks":793797,"peak_rss_bytes":1485668352}
+{"array":"original_xr_values","elements":8337186,"element_bytes":8,"payload_bytes":66697488,"payload_allocations":2}
+{"array":"original_coordinate_states","elements":8337186,"element_bytes":2,"payload_bytes":16674372,"payload_allocations":2}
+{"array":"verification_xr_digests","elements":128,"element_bytes":1,"payload_bytes":128,"payload_allocations":2}

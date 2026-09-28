@@ -1,5 +1,19 @@
 # Bright-POINT downstream development reference
 
+## 2026-09-28 networks 1–4 step-consequence assessment
+
+The [bounded a1100 partial-array assessment](../validation/rtc_step_consequences_2026-09-28/ASSESSMENT.md)
+preserves the existing B method with the verified array profile:67 taps,
+factor1, nominal5-arcsec beam, cold M0 and rank10 fully re-solved warm ALS
+through exactly five feedback applications. The nw1–4 experimental entry is
+exactly bound to152430/0/2 and its dedicated authority; legacy nw11/12 gates
+remain restricted. Positive source probes changed one event admission and
+support, so response reporting preserves full REF ideal normalization and
+explicit unavailable/lost/gained domains. Whole-run unresolved extent is the
+strongest measured exposure concern; its avoidable cost remains untested.
+No scientific policy, default or production authorization changes.
+
+
 ## 2026-09-27 — bounded POINT step assessment completed
 
 The [assessment](../validation/rtc_step_point_2026-09-27/ASSESSMENT.md) at science

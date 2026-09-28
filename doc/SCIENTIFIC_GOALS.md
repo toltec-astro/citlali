@@ -1,5 +1,16 @@
 # Scientific goals
 
+## 2026-09-28 consequence-first RTC assessment
+
+The [step-rich four-network result](../validation/rtc_step_consequences_2026-09-28/ASSESSMENT.md)
+judges treatment and non-treatment by source response, uncertainty, usable
+exposure and cost. More events or smoother streams are not the objective.
+Run-wide unresolved exclusions are potentially costly, not proven avoidable;
+PTC removal of retained transitions does not itself prove a downstream penalty.
+Retained samples are not independent information. A bounded containment
+comparison is proposed only; B remains the development reference.
+
+
 ## 2026-09-27 — bounded POINT step assessment completed
 
 The [assessment](../validation/rtc_step_point_2026-09-27/ASSESSMENT.md) at science
