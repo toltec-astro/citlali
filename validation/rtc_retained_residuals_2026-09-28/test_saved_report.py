@@ -25,7 +25,11 @@ class Saved(unittest.TestCase):
   self.assertFalse(any(k.endswith('_T5') for k in z.files));self.assertEqual(sum(bool(q['learn_trace']) for q in rows),1)
  def test_actual_map_and_old_window_identity(self):
   p=read(R/'projection-verification.json');self.assertTrue(p['old_T5_pixel_and_causes_authenticated']);self.assertTrue(p['old_T5_unit_normalization_equals_hits']);self.assertLess(p['M0_signal_max_absolute_difference'],1e-9)
-  q=read(R/'old-window-projections.json');self.assertEqual(len(q['records']),32);w=next(w for w in q['records'] if w['key']=='n1_w5');self.assertEqual((w['actual_MAP_contributions'],w['science_supported_MAP_contributions'],w['source_disk_MAP_contributions']),(367,0,0));self.assertFalse(w['peak_pixel_science_supported']);self.assertGreater(w['max_abs_projection_any_mapped_mJy_beam'],0)
+  q=read(R/'old-window-projections.json');self.assertEqual(len(q['records']),32)
+  for row in q['records']:
+   if not row['actual_MAP_contributions']:
+    self.assertFalse(row['residual_excerpt_available']);self.assertIsNone(row['peak_native_row']);self.assertIsNone(row['peak_pixel']);self.assertIsNone(row['peak_distance_arcsec']);self.assertIsNone(row['T5_residual_max'])
+  w=next(w for w in q['records'] if w['key']=='n1_w5');self.assertEqual((w['actual_MAP_contributions'],w['science_supported_MAP_contributions'],w['source_disk_MAP_contributions']),(367,0,0));self.assertFalse(w['peak_pixel_science_supported']);self.assertGreater(w['max_abs_projection_any_mapped_mJy_beam'],0)
  def test_cleanup_proposal_does_not_remove_originals(self):
   p=json.loads(gzip.decompress((D/'NATIVE_REMOVALS.json.gz').read_bytes()));self.assertFalse(p['applied']);root=Path(p['root']);self.assertEqual(len(p['files']),25142);self.assertEqual(sum(q['bytes'] for q in p['files']),p['bytes']);protected={q['path'] for q in read(D/'PROTECTED_INPUTS.json')}
   for q in p['files']:self.assertTrue(Path(q['path']).is_relative_to(root));self.assertNotIn(q['path'],protected)

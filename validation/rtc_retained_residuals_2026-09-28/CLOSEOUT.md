@@ -25,7 +25,7 @@ error is preserved, not counted as a successful run. No Unity/Spack result.
 All six figures were visually inspected. Report extraction did not perform a
 new fit, uncertainty ensemble, RTC Apply, feedback step or scientific masking.
 
-Preservation:283 files,20,852,647bytes in compact, plus generated figures and
+Preservation:283 files,20,853,819bytes in compact, plus generated figures and
 narrative evidence. Manifest covers all compact bytes. Proposed cleanup is
 exactly25,142 native files /2,270,275,802bytes under
 /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-retained-residuals-20260928.

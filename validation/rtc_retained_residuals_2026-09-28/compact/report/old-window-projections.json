@@ -85,16 +85,17 @@
       "source_disk_MAP_contributions": 0,
       "science_supported_MAP_contributions": 0,
       "max_abs_projection_any_mapped_mJy_beam": 0.0,
-      "peak_pixel": -2,
-      "peak_pixel_hits": 0.0,
-      "peak_pixel_science_supported": false,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
       "T5_residual_min": null,
       "T5_residual_max": null,
-      "peak_native_row": 2522,
-      "peak_distance_arcsec": 69.52771953861384,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
       "max_abs_projection_science_mJy_beam": 0.0,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
     },
     {
       "key": "n1_w1",
@@ -201,16 +202,17 @@
       "source_disk_MAP_contributions": 0,
       "science_supported_MAP_contributions": 0,
       "max_abs_projection_any_mapped_mJy_beam": 0.0,
-      "peak_pixel": -2,
-      "peak_pixel_hits": 0.0,
-      "peak_pixel_science_supported": false,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
       "T5_residual_min": null,
       "T5_residual_max": null,
-      "peak_native_row": 0,
-      "peak_distance_arcsec": 65.1329975831353,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
       "max_abs_projection_science_mJy_beam": 0.0,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
     },
     {
       "key": "n1_w2",
@@ -287,16 +289,17 @@
       "source_disk_MAP_contributions": 0,
       "science_supported_MAP_contributions": 0,
       "max_abs_projection_any_mapped_mJy_beam": 0.0,
-      "peak_pixel": -2,
-      "peak_pixel_hits": 0.0,
-      "peak_pixel_science_supported": false,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
       "T5_residual_min": null,
       "T5_residual_max": null,
-      "peak_native_row": 0,
-      "peak_distance_arcsec": 20.422031205247308,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
       "max_abs_projection_science_mJy_beam": 0.0,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
     },
     {
       "key": "n1_w3",
@@ -380,7 +383,8 @@
       "peak_distance_arcsec": 45.13815545036445,
       "max_abs_projection_science_mJy_beam": 3.782055604129527,
       "max_abs_projection_40arcsec_mJy_beam": 0.8829348739412747,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
     },
     {
       "key": "n1_w4",
@@ -445,7 +449,8 @@
       "peak_distance_arcsec": 154.2714254672912,
       "max_abs_projection_science_mJy_beam": 3.97899434496691,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
     },
     {
       "key": "n1_w5",
@@ -510,7 +515,8 @@
       "peak_distance_arcsec": 150.11161267837866,
       "max_abs_projection_science_mJy_beam": 0.0,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
     },
     {
       "key": "n1_w6",
@@ -574,7 +580,8 @@
       "peak_distance_arcsec": 94.23019809596717,
       "max_abs_projection_science_mJy_beam": 3.099762612129759,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
     },
     {
       "key": "n1_w7",
@@ -638,7 +645,8 @@
       "peak_distance_arcsec": 145.45847160803842,
       "max_abs_projection_science_mJy_beam": 2.7291994555681054,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
     },
     {
       "key": "n2_w0",
@@ -713,16 +721,17 @@
       "source_disk_MAP_contributions": 0,
       "science_supported_MAP_contributions": 0,
       "max_abs_projection_any_mapped_mJy_beam": 0.0,
-      "peak_pixel": -2,
-      "peak_pixel_hits": 0.0,
-      "peak_pixel_science_supported": false,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
       "T5_residual_min": null,
       "T5_residual_max": null,
-      "peak_native_row": 1685,
-      "peak_distance_arcsec": 162.31645684570796,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
       "max_abs_projection_science_mJy_beam": 0.0,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
     },
     {
       "key": "n2_w1",
@@ -837,16 +846,17 @@
       "source_disk_MAP_contributions": 0,
       "science_supported_MAP_contributions": 0,
       "max_abs_projection_any_mapped_mJy_beam": 0.0,
-      "peak_pixel": -2,
-      "peak_pixel_hits": 0.0,
-      "peak_pixel_science_supported": false,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
       "T5_residual_min": null,
       "T5_residual_max": null,
-      "peak_native_row": 1687,
+      "peak_native_row": null,
       "peak_distance_arcsec": null,
       "max_abs_projection_science_mJy_beam": 0.0,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
     },
     {
       "key": "n2_w2",
@@ -971,16 +981,17 @@
       "source_disk_MAP_contributions": 0,
       "science_supported_MAP_contributions": 0,
       "max_abs_projection_any_mapped_mJy_beam": 0.0,
-      "peak_pixel": -2,
-      "peak_pixel_hits": 0.0,
-      "peak_pixel_science_supported": false,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
       "T5_residual_min": null,
       "T5_residual_max": null,
-      "peak_native_row": 1688,
+      "peak_native_row": null,
       "peak_distance_arcsec": null,
       "max_abs_projection_science_mJy_beam": 0.0,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
     },
     {
       "key": "n2_w3",
@@ -1082,16 +1093,17 @@
       "source_disk_MAP_contributions": 0,
       "science_supported_MAP_contributions": 0,
       "max_abs_projection_any_mapped_mJy_beam": 0.0,
-      "peak_pixel": -2,
-      "peak_pixel_hits": 0.0,
-      "peak_pixel_science_supported": false,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
       "T5_residual_min": null,
       "T5_residual_max": null,
-      "peak_native_row": 1378,
-      "peak_distance_arcsec": 97.78980503065368,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
       "max_abs_projection_science_mJy_beam": 0.0,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
     },
     {
       "key": "n2_w4",
@@ -1158,7 +1170,8 @@
       "peak_distance_arcsec": 41.01582840314852,
       "max_abs_projection_science_mJy_beam": 4.823448335622378,
       "max_abs_projection_40arcsec_mJy_beam": 4.823448335622378,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
     },
     {
       "key": "n2_w5",
@@ -1214,16 +1227,17 @@
       "source_disk_MAP_contributions": 0,
       "science_supported_MAP_contributions": 0,
       "max_abs_projection_any_mapped_mJy_beam": 0.0,
-      "peak_pixel": -2,
-      "peak_pixel_hits": 0.0,
-      "peak_pixel_science_supported": false,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
       "T5_residual_min": null,
       "T5_residual_max": null,
-      "peak_native_row": 7327,
-      "peak_distance_arcsec": 67.2359278822303,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
       "max_abs_projection_science_mJy_beam": 0.0,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
     },
     {
       "key": "n2_w6",
@@ -1287,7 +1301,8 @@
       "peak_distance_arcsec": 87.71019056639925,
       "max_abs_projection_science_mJy_beam": 8.001784746014955,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
     },
     {
       "key": "n2_w7",
@@ -1351,7 +1366,8 @@
       "peak_distance_arcsec": 77.36981792225876,
       "max_abs_projection_science_mJy_beam": 5.391179590796633,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
     },
     {
       "key": "n3_w0",
@@ -1426,16 +1442,17 @@
       "source_disk_MAP_contributions": 0,
       "science_supported_MAP_contributions": 0,
       "max_abs_projection_any_mapped_mJy_beam": 0.0,
-      "peak_pixel": -2,
-      "peak_pixel_hits": 0.0,
-      "peak_pixel_science_supported": false,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
       "T5_residual_min": null,
       "T5_residual_max": null,
-      "peak_native_row": 1678,
-      "peak_distance_arcsec": 27.095185719085205,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
       "max_abs_projection_science_mJy_beam": 0.0,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
     },
     {
       "key": "n3_w1",
@@ -1690,16 +1707,17 @@
       "source_disk_MAP_contributions": 0,
       "science_supported_MAP_contributions": 0,
       "max_abs_projection_any_mapped_mJy_beam": 0.0,
-      "peak_pixel": -2,
-      "peak_pixel_hits": 0.0,
-      "peak_pixel_science_supported": false,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
       "T5_residual_min": null,
       "T5_residual_max": null,
-      "peak_native_row": 1685,
-      "peak_distance_arcsec": 117.79549526792019,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
       "max_abs_projection_science_mJy_beam": 0.0,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
     },
     {
       "key": "n3_w2",
@@ -1893,16 +1911,17 @@
       "source_disk_MAP_contributions": 0,
       "science_supported_MAP_contributions": 0,
       "max_abs_projection_any_mapped_mJy_beam": 0.0,
-      "peak_pixel": -2,
-      "peak_pixel_hits": 0.0,
-      "peak_pixel_science_supported": false,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
       "T5_residual_min": null,
       "T5_residual_max": null,
-      "peak_native_row": 1676,
-      "peak_distance_arcsec": 65.18387544931298,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
       "max_abs_projection_science_mJy_beam": 0.0,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
     },
     {
       "key": "n3_w3",
@@ -1979,16 +1998,17 @@
       "source_disk_MAP_contributions": 0,
       "science_supported_MAP_contributions": 0,
       "max_abs_projection_any_mapped_mJy_beam": 0.0,
-      "peak_pixel": -2,
-      "peak_pixel_hits": 0.0,
-      "peak_pixel_science_supported": false,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
       "T5_residual_min": null,
       "T5_residual_max": null,
-      "peak_native_row": 0,
-      "peak_distance_arcsec": 75.22885995318929,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
       "max_abs_projection_science_mJy_beam": 0.0,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
     },
     {
       "key": "n3_w4",
@@ -2204,16 +2224,17 @@
       "source_disk_MAP_contributions": 0,
       "science_supported_MAP_contributions": 0,
       "max_abs_projection_any_mapped_mJy_beam": 0.0,
-      "peak_pixel": -2,
-      "peak_pixel_hits": 0.0,
-      "peak_pixel_science_supported": false,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
       "T5_residual_min": null,
       "T5_residual_max": null,
-      "peak_native_row": 1808,
-      "peak_distance_arcsec": 37.05974641082567,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
       "max_abs_projection_science_mJy_beam": 0.0,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
     },
     {
       "key": "n3_w5",
@@ -2269,16 +2290,17 @@
       "source_disk_MAP_contributions": 0,
       "science_supported_MAP_contributions": 0,
       "max_abs_projection_any_mapped_mJy_beam": 0.0,
-      "peak_pixel": -2,
-      "peak_pixel_hits": 0.0,
-      "peak_pixel_science_supported": false,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
       "T5_residual_min": null,
       "T5_residual_max": null,
-      "peak_native_row": 5257,
-      "peak_distance_arcsec": 105.94240820087927,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
       "max_abs_projection_science_mJy_beam": 0.0,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
     },
     {
       "key": "n3_w6",
@@ -2342,7 +2364,8 @@
       "peak_distance_arcsec": 41.95348970541479,
       "max_abs_projection_science_mJy_beam": 6.735405827848492,
       "max_abs_projection_40arcsec_mJy_beam": 3.0803948390442466,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
     },
     {
       "key": "n3_w7",
@@ -2406,7 +2429,8 @@
       "peak_distance_arcsec": 132.3928799604949,
       "max_abs_projection_science_mJy_beam": 6.300012349424994,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
     },
     {
       "key": "n4_w0",
@@ -2483,16 +2507,17 @@
       "source_disk_MAP_contributions": 0,
       "science_supported_MAP_contributions": 0,
       "max_abs_projection_any_mapped_mJy_beam": 0.0,
-      "peak_pixel": -2,
-      "peak_pixel_hits": 0.0,
-      "peak_pixel_science_supported": false,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
       "T5_residual_min": null,
       "T5_residual_max": null,
-      "peak_native_row": 7216,
-      "peak_distance_arcsec": 31.254674992729523,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
       "max_abs_projection_science_mJy_beam": 0.0,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
     },
     {
       "key": "n4_w1",
@@ -2697,16 +2722,17 @@
       "source_disk_MAP_contributions": 0,
       "science_supported_MAP_contributions": 0,
       "max_abs_projection_any_mapped_mJy_beam": 0.0,
-      "peak_pixel": -2,
-      "peak_pixel_hits": 0.0,
-      "peak_pixel_science_supported": false,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
       "T5_residual_min": null,
       "T5_residual_max": null,
-      "peak_native_row": 1672,
-      "peak_distance_arcsec": 30.261195389651217,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
       "max_abs_projection_science_mJy_beam": 0.0,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
     },
     {
       "key": "n4_w2",
@@ -2860,16 +2886,17 @@
       "source_disk_MAP_contributions": 0,
       "science_supported_MAP_contributions": 0,
       "max_abs_projection_any_mapped_mJy_beam": 0.0,
-      "peak_pixel": -2,
-      "peak_pixel_hits": 0.0,
-      "peak_pixel_science_supported": false,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
       "T5_residual_min": null,
       "T5_residual_max": null,
-      "peak_native_row": 1674,
-      "peak_distance_arcsec": 30.232400359990418,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
       "max_abs_projection_science_mJy_beam": 0.0,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
     },
     {
       "key": "n4_w3",
@@ -2953,7 +2980,8 @@
       "peak_distance_arcsec": 99.39652817957732,
       "max_abs_projection_science_mJy_beam": 1.1751187631529183,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
     },
     {
       "key": "n4_w4",
@@ -3151,16 +3179,17 @@
       "source_disk_MAP_contributions": 0,
       "science_supported_MAP_contributions": 0,
       "max_abs_projection_any_mapped_mJy_beam": 0.0,
-      "peak_pixel": -2,
-      "peak_pixel_hits": 0.0,
-      "peak_pixel_science_supported": false,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
       "T5_residual_min": null,
       "T5_residual_max": null,
-      "peak_native_row": 998,
-      "peak_distance_arcsec": 53.106113015542114,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
       "max_abs_projection_science_mJy_beam": 0.0,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
     },
     {
       "key": "n4_w5",
@@ -3216,16 +3245,17 @@
       "source_disk_MAP_contributions": 0,
       "science_supported_MAP_contributions": 0,
       "max_abs_projection_any_mapped_mJy_beam": 0.0,
-      "peak_pixel": -2,
-      "peak_pixel_hits": 0.0,
-      "peak_pixel_science_supported": false,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
       "T5_residual_min": null,
       "T5_residual_max": null,
-      "peak_native_row": 7327,
-      "peak_distance_arcsec": 102.50444489181109,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
       "max_abs_projection_science_mJy_beam": 0.0,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
     },
     {
       "key": "n4_w6",
@@ -3289,7 +3319,8 @@
       "peak_distance_arcsec": 57.12572175556982,
       "max_abs_projection_science_mJy_beam": 1.5499277460072762,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": true
     },
     {
       "key": "n4_w7",
@@ -3344,16 +3375,17 @@
       "source_disk_MAP_contributions": 0,
       "science_supported_MAP_contributions": 0,
       "max_abs_projection_any_mapped_mJy_beam": 0.0,
-      "peak_pixel": -2,
-      "peak_pixel_hits": 0.0,
-      "peak_pixel_science_supported": false,
+      "peak_pixel": null,
+      "peak_pixel_hits": null,
+      "peak_pixel_science_supported": null,
       "T5_residual_min": null,
       "T5_residual_max": null,
-      "peak_native_row": 5682,
-      "peak_distance_arcsec": 85.71145600270923,
+      "peak_native_row": null,
+      "peak_distance_arcsec": null,
       "max_abs_projection_science_mJy_beam": 0.0,
       "max_abs_projection_40arcsec_mJy_beam": 0.0,
-      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support"
+      "projection_description": "sum of saved residual excerpt through actual T5 unit coefficients divided by full T5 normalization; no counterfactual removal/refit; zero outside excerpt is zero selected contribution, not missing sky support",
+      "residual_excerpt_available": false
     }
   ]
 }

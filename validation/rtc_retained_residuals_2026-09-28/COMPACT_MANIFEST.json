@@ -2218,10 +2218,10 @@
     },
     {
       "source": "report/old-window-projections.json",
-      "source_sha256": "a0f8435cd4d7991229ff2c206988a0d379366d85fbc0bc9376ea44153c91a63c",
+      "source_sha256": "6a186b37aba540f5d632025e73d6d71a44183cef50bed6e7b65b291e3d477ed4",
       "path": "report/old-window-projections.json",
-      "sha256": "a0f8435cd4d7991229ff2c206988a0d379366d85fbc0bc9376ea44153c91a63c",
-      "bytes": 127364,
+      "sha256": "6a186b37aba540f5d632025e73d6d71a44183cef50bed6e7b65b291e3d477ed4",
+      "bytes": 128536,
       "encoding": "identity"
     },
     {
@@ -2265,7 +2265,7 @@
       "encoding": "identity"
     }
   ],
-  "bytes": 20852647,
+  "bytes": 20853819,
   "old_reference_controls_referenced_in_place": true,
   "scope": "failed B trajectory; complete CAL/M0 population,12 new excerpts, prior32 T5 contribution traces and final map/noise; complete configs/receipts/logs, no native scratch in durable evidence"
 }
