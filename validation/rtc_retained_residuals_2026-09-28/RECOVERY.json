@@ -1,0 +1,54 @@
+{
+  "base": "17f0b9b9bcfdc605161b2c67dba7ccdf52ffdf72",
+  "science_source": "839f31b28b52de6a46bc9c2dc623673378839cfa",
+  "science_tree": "591de3682d5626fe494a61388c66800b5c95f99d",
+  "old_cleanup": {
+    "applied": true,
+    "files": 102336,
+    "bytes": 11019638906,
+    "compact_commit": "e74d8d799d04ca1f11241600e0e1482fc787d256",
+    "plan_sha256": "8864902b20776d6f020adc7423641715b32f7edd56f404ffce76505b5404f8b5",
+    "manifest_sha256": "bd8d818ee35095eb0bb6df2638bf4afca4366db1dd9c92c0f4bf77d49f90d2f8",
+    "all_removed": true,
+    "protected_inputs_unchanged": true,
+    "prior_compact_unchanged": true,
+    "free_space_delta_bytes": 11210682368,
+    "remaining_files": 1910,
+    "remaining_bytes": 1262101637,
+    "remaining_metadata_FITS_logs": true,
+    "exhaustive_remaining_native_verification_count": 1
+  },
+  "old_isolation": {
+    "pass_": true,
+    "seconds": 15.772194500023033,
+    "denied_original_run_tree": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928",
+    "denied_protected_files": 5130,
+    "positive_denial_control": true,
+    "exact_artifacts": 13,
+    "figure_count": 6,
+    "commands": [
+      {
+        "script": "report_step_campaign.py",
+        "returncode": 0,
+        "stderr": ""
+      },
+      {
+        "script": "report_step_windows.py",
+        "returncode": 0,
+        "stderr": ""
+      },
+      {
+        "script": "report_consequences.py",
+        "returncode": 0,
+        "stderr": ""
+      }
+    ],
+    "scope": "saved evidence summaries/plots only; no scientific fit, original input, learning, reduction or uncertainty ensemble"
+  },
+  "governance": {
+    "REVIEW_AND_CONFORMANCE.md": "691e6d6250102ef2f4a504397581ee67c5707d898ab20fb8dd9e874c47f99bb1",
+    "TIMESTREAM_SUCCESSOR_GOVERNANCE.md": "29fae6f789bb6133c1f5bcdaf0f15437f2eb8c4110f338d3a8de9a4d98ba88dc",
+    "ENGINEERING_GOVERNANCE.md": "70769787ce2ef4b7323cd2a38e221ade4af3310e0ad6b7b682e08cb4e4d61e76"
+  },
+  "scope": "prior compact adopted as immutable B control; old proposed containment comparison deferred; full native arrays deleted, population replay required"
+}

@@ -75,10 +75,12 @@ def speed_experiment(out):
 
 def rtc_experiment(out):
     p=out/'freeze/prospective.json'
-    return p.exists() and read(p).get('campaign_scope') in ('rtc-cost-response-v1','rtc-fixed11-v1','rtc-step-point-v1','rtc-step-consequences-v1')
+    return p.exists() and read(p).get('campaign_scope') in ('rtc-cost-response-v1','rtc-fixed11-v1','rtc-step-point-v1','rtc-step-consequences-v1','rtc-retained-residuals-v1')
 
 def experiment_consume(out,kind,identity):
-    if read(out/'freeze/prospective.json').get('campaign_scope')=='rtc-step-consequences-v1':
+    if read(out/'freeze/prospective.json').get('campaign_scope')=='rtc-retained-residuals-v1':
+        from point_step_experiment import consume_retained as consume
+    elif read(out/'freeze/prospective.json').get('campaign_scope')=='rtc-step-consequences-v1':
         from point_step_experiment import consume_consequences as consume
     elif read(out/'freeze/prospective.json').get('campaign_scope')=='rtc-step-point-v1':
         from point_step_experiment import consume

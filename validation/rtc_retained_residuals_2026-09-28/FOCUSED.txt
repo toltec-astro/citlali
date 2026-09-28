@@ -1,0 +1,8 @@
+test_exact_feedback_cap (test_retained_budget.Budget.test_exact_feedback_cap) ... ok
+test_no_replacement_or_rtc_only (test_retained_budget.Budget.test_no_replacement_or_rtc_only) ... ok
+test_no_sixth_parent_or_duplicate (test_retained_budget.Budget.test_no_sixth_parent_or_duplicate) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.093s
+
+OK

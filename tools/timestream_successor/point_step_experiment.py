@@ -136,3 +136,46 @@ def freeze_own_geometry(out,c):
     for branch,raster in rasters.items():
         path=dest/f'{branch}.fits';write_fits(path,exact_header(c['header']),[('PRIMARY',raster,'mJy/nominal beam'),('VALID',c['support'].astype('u1'),'1')]);metadata[branch].update(bound(path))
     save_json(out/'SHAPES.json',dict(observation=p['observation'],array=p['array'],networks=p['networks'],available=True,reference_M0=bound(out/f"M0/products/{p['array']}/map.fits"),geometry=bound(out/'freeze/measurement-geometry.json'),rasters=metadata,recipe='existing point_response_cd.shapes; own unmodified M0 parameters/support; no relocation or normalization change'))
+
+
+RETAINED_LIMITS=dict(parent=5,trajectory=5,feedback=25,endpoint=5)
+def consume_retained(root,kind,identity):
+    """New owner budget: no replacement, RTC-only or duplicate run identities."""
+    require(kind in RETAINED_LIMITS,'operation outside retained-residual budget')
+    require(not (root/'DEFECT-REPLACEMENT.json').exists() and not (root/'DEFECT-REPLACEMENTS.json').exists(),'no replacement allowance')
+    path=root/'attempts.jsonl';rows=[json.loads(s) for s in path.read_text().splitlines()] if path.exists() else []
+    require(sum(r['kind']==kind for r in rows)<RETAINED_LIMITS[kind],'retained-residual absolute ceiling')
+    require(not any(r['kind']==kind and r['identity']==identity for r in rows),'duplicate retained-residual attempt')
+    with path.open('a') as f:f.write(json.dumps(dict(kind=kind,identity=identity,epoch=time.time()))+'\n');f.flush()
+
+
+def prepare_retained_baseline(root,input_root):
+    """One unchanged B replay. Original route, frozen old physical operands."""
+    import gzip,shutil
+    from point_pipeline_inputs import prepare
+    from point_storage import tree_bytes
+    repo=Path(__file__).resolve().parents[2];old=repo/'validation/rtc_step_consequences_2026-09-28';ref=old/'compact/N14-REF-rep2'
+    require(not any(root.glob('*/LAUNCH.json')),'single B replay only')
+    out=root/'B-REF-rep1';prepare(out,old/'inputs/reference.json',input_root)
+    p=read(out/'freeze/prospective.json')
+    require((p['observation'],p['subobservation'],p['scan'],p['array'],p['networks'])==(152430,0,2,'a1100',[1,2,3,4]),'foreign retained-residual target')
+    p.update(schema='citlali-point-speed-pca-v1',profile='POINT-SPEED-PCA-v1',campaign_scope='rtc-retained-residuals-v1',rtc_family='B',signal_branch='REF',cycles=5,feedback_count=5,experimental_method='warm-observed-als',trajectory_identity=out.name)
+    p['scientific_recipe']['PTC']['method']='observed-entry ALS; own preceding converged basis initializer; fully resolved current residual'
+    shutil.copyfile(ref/'freeze/measurement-geometry.json',out/'freeze/measurement-geometry.json');shutil.copyfile(ref/'SHAPES.json',out/'SHAPES.json');shapes=out/'freeze/shapes';shapes.mkdir()
+    for branch in ('C-core-plus','C-core-minus','C-shoulder'):
+        dest=shapes/f'{branch}.fits';dest.write_bytes(gzip.decompress((ref/f'freeze/shapes/{branch}.fits.gz').read_bytes()))
+        require(digest(dest)==read(ref/'SHAPES.json')['rasters'][branch]['sha256'],'prior raster identity changed')
+    p['experiment_operands']=[bound(out/'freeze/measurement-geometry.json'),bound(out/'SHAPES.json')]+[bound(x) for x in sorted(shapes.iterdir())]
+    obs=read(out/'inputs/observation.json')
+    for entry in obs['networks']:
+        q=Path(entry['input']['path']);cfg=read(q)
+        # Preserve the accepted exact acquisition/array probe authority and gate.
+        cfg['rtc_source_probe']=dict(schema='point-rtc-source-probe-v1',authority='owner-RTC-step-consequences-2026-09-28',branch='REF')
+        save_json(q,cfg);entry['input']=bound(q)
+    save_json(out/'inputs/observation.json',obs);save_json(out/'freeze/generated-inputs.json',[bound(x) for x in sorted((out/'inputs').iterdir()) if x.is_file()]);p['generated_inputs']=bound(out/'freeze/generated-inputs.json')
+    budget=read(out/'freeze/budget.json');retained=tree_bytes(root)-tree_bytes(out);single=304*budget['native_cells']+2_000_000_000
+    require(retained+single<=30_000_000_000,'next trajectory exceeds campaign peak ceiling')
+    require(shutil.disk_usage(root).free>single+budget['free_space_reserve_bytes'],'next trajectory exceeds free-space reserve')
+    budget.update(campaign_root=str(root),campaign_retained_bytes=retained,peak_ceiling_bytes=30_000_000_000,metadata_reserve_bytes=100_000_000,maximum_branch_workers=1,single_trajectory_reservation_bytes=single)
+    save_json(out/'freeze/budget.json',budget);p['budget']=bound(out/'freeze/budget.json');save_json(out/'freeze/prospective.json',p)
+    return out
