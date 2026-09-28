@@ -29,7 +29,7 @@ int load_and_run_successor_development(const RuntimeConfig &runtime,
             throw std::invalid_argument("successor.unsupported_configuration: unknown development request field");
     }
     const auto terminal = config["terminal"] ? config["terminal"].as<std::string>() : "ptc";
-    if (terminal != "rtc-only" && terminal != "cal" && terminal != "ptc" && terminal != "map" && terminal != "point-fruit")
+    if (terminal != "rtc-only" && terminal != "cal" && terminal != "ptc" && terminal != "map" && terminal != "point-fruit" && terminal != "point-fruit-validate")
         throw std::invalid_argument(
             "successor.endpoint_not_implemented: supported terminals are RTC, CAL, PTC and saved MAP; "
             "only the explicitly bound POINT first FRUIT cycle is available; no legacy substitution");
@@ -61,9 +61,9 @@ int load_and_run_successor_development(const RuntimeConfig &runtime,
         if(n<1 || n>12)throw std::invalid_argument("successor.network_workers_must_be_1_to_12");
         workers=static_cast<unsigned>(n);
     }
-    if(terminal=="point-fruit") {
+    if(terminal=="point-fruit" || terminal=="point-fruit-validate") {
         if(workers!=1 || config["ptc"])throw std::invalid_argument("successor.saved_FRUIT_requires_serial_array_execution_and_no_PTC_override");
-        return run_successor_saved_fruit(path,output);
+        return run_successor_saved_fruit(path,output,terminal=="point-fruit-validate");
     }
     if(terminal=="map") {
         if(workers!=1 || config["ptc"])throw std::invalid_argument("successor.saved_MAP_requires_serial_execution_and_no_PTC_override");

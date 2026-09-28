@@ -7,7 +7,7 @@
 #include <functional>
 #include <optional>
 namespace {
-int execute_saved_fruit(const fs::path &input,const fs::path &output) {
+int execute_saved_fruit(const fs::path &input,const fs::path &output,bool validate_only) {
     const auto began=std::chrono::steady_clock::now();const auto cpu=std::clock();
     auto elapsed=[](auto t){return std::chrono::duration<double>(std::chrono::steady_clock::now()-t).count();};
     require(output.is_absolute() && !fs::exists(output),"FRUIT requires a fresh absolute output");
@@ -35,12 +35,14 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     require(campaign || (!request["branch"] && !request["injection"]),"FRUIT foreign campaign fields");
     const auto owner_path=checked_file(request["owner_binding"]);const auto owner_sha=ledger.bind(owner_path);
     const auto owner=YAML::LoadFile(owner_path.string());
-    bool step_experiment=false,step_consequences=false;
+    bool step_experiment=false,four_network_rtc=false;
     if(speed_experiment){
       const auto p=YAML::LoadFile(checked_file(owner["prospective"]).string());
       step_experiment=p["campaign_scope"] && p["campaign_scope"].as<std::string>()=="rtc-step-point-v1";
-      step_consequences=p["campaign_scope"] && p["campaign_scope"].as<std::string>()=="rtc-step-consequences-v1";
-      if(step_consequences)require(p["observation"].as<int>()==152430 && owner["observation"].as<int>()==152430 &&
+      // One interpretation feeds every array/network/cycle gate below.
+      const auto scope=p["campaign_scope"]?p["campaign_scope"].as<std::string>():"";
+      four_network_rtc=scope=="rtc-step-consequences-v1" || scope=="rtc-retained-residuals-v1";
+      if(four_network_rtc)require(p["observation"].as<int>()==152430 && owner["observation"].as<int>()==152430 &&
         p["array"].as<std::string>()=="a1100" && p["networks"].as<std::vector<int>>()==std::vector<int>({1,2,3,4}) &&
         p["ptc"]["rank"].as<int>()==10 && p["experimental_method"].as<std::string>()=="warm-observed-als" &&
         p["feedback_count"].as<int>()==5,"FRUIT four-network step consequence scope");
@@ -55,8 +57,8 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     const auto map_path=checked_file(request["map_request"]);ledger.bind(map_path);const auto mr=YAML::LoadFile(map_path.string());
     const auto pp=checked_file(request["parent_plan"]);ledger.bind(pp);const auto parent=YAML::LoadFile(pp.string());
     const auto array=request["array"].as<std::string>();const std::array<std::string,3> arrays{"a1100","a1400","a2000"};
-    require(!step_consequences || array=="a1100","FRUIT step consequence request array");
-    const auto ai=std::find(arrays.begin(),arrays.end(),array)-arrays.begin();require(ai<3 && parent["array"].as<std::string>()==array && parent["observation"].as<std::string>()==((reference || step_experiment)?("obs:"+std::to_string(owner["observation"].as<int>())+"_0_2"):independent?"obs:152430_0_2":"obs:152389_0_2") && (reference || step_consequences || !independent || array=="a2000"),"FRUIT foreign array/observation");
+    require(!four_network_rtc || array=="a1100","FRUIT step consequence request array");
+    const auto ai=std::find(arrays.begin(),arrays.end(),array)-arrays.begin();require(ai<3 && parent["array"].as<std::string>()==array && parent["observation"].as<std::string>()==((reference || step_experiment)?("obs:"+std::to_string(owner["observation"].as<int>())+"_0_2"):independent?"obs:152430_0_2":"obs:152389_0_2") && (reference || four_network_rtc || !independent || array=="a2000"),"FRUIT foreign array/observation");
     require(!refseq || (array=="a2000" && owner["workers"].as<int>()==3 && owner["basis_schedule"].size()==11),"FRUIT reference sequence scope/resources");
     require(mr["schema"].as<std::string>()=="citlali-map-saved-ptc-v1" && mr["coverage_cut"].as<double>()==parent["coverage_cut"].as<double>() && mr["pixel_size_arcsec"].as<double>()==2,"FRUIT MAP policy differs");
     const auto mo=checked_file(mr["owner_binding"]);ledger.bind(mo);require(parent["owner_binding"].as<std::string>()=="sha256:"+citlali::utils::sha256_file(mo),"FRUIT MAP owner differs");
@@ -99,8 +101,8 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
                     prospective["profile"].as<std::string>()==(speed_experiment?"POINT-SPEED-PCA-v1":"point-152430-ptc-rank-"+std::to_string(rank)) &&
                     (speed_experiment?(rank==10 || rank==15):(rank==5 || rank==10 || rank==15)) && (!speed_experiment || (prospective["feedback_count"].as<int>()==owner["nonzero_cycles"].as<int>() && (prospective["experimental_method"].as<std::string>()=="observed-als" || prospective["experimental_method"].as<std::string>()=="warm-observed-als" || prospective["experimental_method"].as<std::string>()=="masked-covariance-count-v1"))) && (prospective["ptc"]["method"].as<std::string>()=="observed-als" || (speed_experiment && prospective["experimental_method"].as<std::string>()=="masked-covariance-count-v1" && prospective["ptc"]["method"].as<std::string>()=="masked-covariance-count-v1")) &&
                     (step_experiment || prospective["observation"].as<int>()==152430) && prospective["subobservation"].as<int>()==0 && prospective["scan"].as<int>()==2 &&
-                    (step_consequences?(prospective["array"].as<std::string>()=="a1100" && prospective["networks"].as<std::vector<int>>()==std::vector<int>({1,2,3,4})):(prospective["array"].as<std::string>()=="a2000" && prospective["networks"].as<std::vector<int>>()==std::vector<int>({11,12}))) &&
-                    prospective["coverage_policy"].as<std::string>()=="high-coverage-informational" && prospective["cycles"].as<int>()==((prospective["campaign_scope"] && (prospective["campaign_scope"].as<std::string>()=="rtc-cost-response-v1" || prospective["campaign_scope"].as<std::string>()=="rtc-fixed11-v1" || prospective["campaign_scope"].as<std::string>()=="rtc-step-point-v1" || step_consequences))?5:10) &&
+                    (four_network_rtc?(prospective["array"].as<std::string>()=="a1100" && prospective["networks"].as<std::vector<int>>()==std::vector<int>({1,2,3,4})):(prospective["array"].as<std::string>()=="a2000" && prospective["networks"].as<std::vector<int>>()==std::vector<int>({11,12}))) &&
+                    prospective["coverage_policy"].as<std::string>()=="high-coverage-informational" && prospective["cycles"].as<int>()==((prospective["campaign_scope"] && (prospective["campaign_scope"].as<std::string>()=="rtc-cost-response-v1" || prospective["campaign_scope"].as<std::string>()=="rtc-fixed11-v1" || prospective["campaign_scope"].as<std::string>()=="rtc-step-point-v1" || four_network_rtc))?5:10) &&
                     policy=="BASE-POINT" && owner["threshold"].as<double>()==3 && branch.rfind("D-",0)!=0,
                     "FRUIT bounded rank experiment scope");
             } else if(reference) {
@@ -112,6 +114,31 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
                 require(owner["threshold"].as<double>()==thresholds["thresholds"][array][policy].as<double>(),"FRUIT independent frozen threshold differs");
             }
         }
+    }
+    // Resolve the declared four-network domain before loading detector arrays.
+    // These checks run identically in execution and contract-only validation.
+    if(four_network_rtc) {
+        std::set<int> declared,parents;
+        for(const auto &source:parent["sources"])
+            require(parents.insert(source["network"].as<int>()).second,"FRUIT duplicate parent network");
+        for(const auto &nr:mr["networks"]) {
+            const auto cfg_path=checked_file(nr["input"]);ledger.bind(cfg_path);
+            const auto cfg=YAML::LoadFile(cfg_path.string());const int nw=cfg["network"].as<int>();
+            require(cfg["observation"].as<int>()==152430 && declared.insert(nw).second,"FRUIT four-network input identity");
+            const auto root=fs::path(nr["root"].as<std::string>());
+            const auto rtc_path=root/"receipt.yaml",ptc_path=root/"donor-continuity/ptc/receipt.yaml";
+            ledger.bind(rtc_path,nr["receipt_sha256"].as<std::string>());
+            ledger.bind(ptc_path,nr["ptc_receipt_sha256"].as<std::string>());
+            const auto rtc=YAML::LoadFile(rtc_path.string()),ptc=YAML::LoadFile(ptc_path.string());
+            require(rtc["observation"].as<int>()==152430 && rtc["network"].as<int>()==nw,"FRUIT four-network receipt identity");
+            bool linked=false;
+            for(const auto &source:parent["sources"])if(source["network"].as<int>()==nw)
+                linked=source["PTC_receipt_sha256"].as<std::string>()==nr["ptc_receipt_sha256"].as<std::string>();
+            require(linked && ptc["segments"].size()>0,"FRUIT four-network parent relation");
+            for(const auto &segment:ptc["segments"])
+                require(segment["network"].as<int>()==nw,"FRUIT four-network segment identity");
+        }
+        require(declared==std::set<int>({1,2,3,4}) && parents==declared,"FRUIT four-network declared networks");
     }
     const auto candidate=checked_file(request["candidate"]);const auto candidate_sha=ledger.bind(candidate);
     const std::array<std::string,3> selected_hashes{
@@ -160,6 +187,18 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
         require(ih==owner["injections"][array][refseq?"C-shoulder":branch]["sha256"].as<std::string>(),"FRUIT C+D foreign injection");
         injection=std::make_unique<FruitPointModel>(read_model(ip,ih));
     }else require(!request["injection"],"FRUIT injection forbidden on REF/D");
+    if(validate_only) {
+        ledger.verify();fs::create_directories(output);YAML::Node validation;
+        validation["schema"]="citlali-point-fruit-contract-validation-v1";
+        validation["outcome"]="request-contract-accepted";
+        validation["request_sha256"]=request_sha;validation["source_revision"]=std::string(CITLALI_GIT_VERSION);
+        validation["cycle_index"]=cycle;validation["array"]=array;
+        validation["four_network_rtc"]=four_network_rtc;
+        validation["detector_arrays_loaded"]=false;validation["scientific_processing_executed"]=false;
+        validation["scope"]="native request, owner, prospective scope, bound parent/predecessor, candidate model and declared network metadata; not numerical processing or realized-output validation";
+        YAML::Node inputs;for(const auto &[p,h]:ledger.files)inputs[p]=h;validation["input_manifest"]=inputs;
+        write_yaml(output/"validation.yaml",validation);return 0;
+    }
     fs::create_directories(output);YAML::Node record;record["schema"]="citlali-point-fruit-cycle-output-v1";record["outcome"]="incomplete";
     record["request_sha256"]=request_sha;record["owner_sha256"]=owner_sha;record["source_revision"]=std::string(CITLALI_GIT_VERSION);record["mode"]=mode;record["array"]=array;
     record["cycle_index"]=cycle;if(continuation || (campaign && cycle>0))record["previous_state"]=request["previous_state"];
@@ -377,7 +416,7 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
         }
         while(!pending.empty()){pending.front()();pending.pop_front();}
     }
-    require(!step_consequences || seen==std::set<int>({1,2,3,4}),"FRUIT step consequence realized networks");
+    require(!four_network_rtc || seen==std::set<int>({1,2,3,4}),"FRUIT step consequence realized networks");
     require(seen.size()==expected_networks && !totals.empty(),"FRUIT incomplete requested observation array");
     const auto mapping=std::chrono::steady_clock::now();const auto wcs=AstRtcTanGrid::centered(ra0,dec0,2,extent_x,extent_y);
     const std::string domain="sha256:"+request_sha+":new-ordered-PTC-retained";mapmaking::ForwardMapGrid grid{wcs.rows,wcs.columns,domain+":grid"};

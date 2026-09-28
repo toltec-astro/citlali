@@ -1,0 +1,11 @@
+test_every_retained_and_previous_four_network_cycle (__main__.Contract.test_every_retained_and_previous_four_network_cycle) ... ok
+test_foreign_bound_identifiers_and_recipes (__main__.Contract.test_foreign_bound_identifiers_and_recipes) ... ok
+test_native_domain_and_binding_checks (__main__.Contract.test_native_domain_and_binding_checks) ... ok
+test_previous_a2000_routes (__main__.Contract.test_previous_a2000_routes) ... ok
+test_same_guards_in_processing_route (__main__.Contract.test_same_guards_in_processing_route) ... ok
+test_unsupported_cycles_and_predecessor (__main__.Contract.test_unsupported_cycles_and_predecessor) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 5.061s
+
+OK

@@ -1287,8 +1287,8 @@ int citlali::cli::run_successor_rtc(const fs::path &input,const fs::path &output
 }
 
 namespace citlali::cli {
-int run_successor_saved_fruit(const std::filesystem::path &input,const std::filesystem::path &output) {
-    return execute_saved_fruit(input,output);
+int run_successor_saved_fruit(const std::filesystem::path &input,const std::filesystem::path &output,bool validate_only) {
+    return execute_saved_fruit(input,output,validate_only);
 }
 int run_successor_saved_map(const std::filesystem::path &input,const std::filesystem::path &output) {
     const auto request=YAML::LoadFile(input.string());

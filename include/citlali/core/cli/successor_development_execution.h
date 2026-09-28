@@ -17,7 +17,8 @@ struct DevelopmentPtcRequest {
     int rank=0; // zero means recover the explicitly configured effective rank
 };
 int run_successor_saved_map(const std::filesystem::path &input,const std::filesystem::path &output);
-int run_successor_saved_fruit(const std::filesystem::path &input,const std::filesystem::path &output);
+// Contract-only mode shares native admission and returns before detector processing.
+int run_successor_saved_fruit(const std::filesystem::path &input,const std::filesystem::path &output,bool validate_only=false);
 int run_successor_rtc(const std::filesystem::path &input,
                       const std::filesystem::path &output,
                       RtcInvocation invocation,

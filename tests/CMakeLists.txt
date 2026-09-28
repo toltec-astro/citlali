@@ -644,6 +644,10 @@ gtest_discover_tests(citlali_cal_numerics_test WORKING_DIRECTORY ${CMAKE_CURRENT
 if(TARGET citlali_cli)
     find_package(Python3 REQUIRED COMPONENTS Interpreter)
     add_dependencies(check citlali_cli)
+    add_test(NAME citlali::point_fruit_contract_cli
+        COMMAND "${Python3_EXECUTABLE}"
+            "${CMAKE_CURRENT_LIST_DIR}/test_point_fruit_contract_cli.py"
+            --binary "$<TARGET_FILE:citlali_cli>")
     add_test(NAME citlali::successor_default_cli
         COMMAND "${Python3_EXECUTABLE}"
             "${CMAKE_CURRENT_LIST_DIR}/test_successor_default_cli.py"
