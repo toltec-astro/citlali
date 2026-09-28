@@ -1,0 +1,10 @@
+{
+  "map_request": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/B-REF-rep1/inputs/map-request.json",
+    "sha256": "fbb5c6e76fff30f263f325d397afff260ef0ee32d71810046459f71a60317045"
+  },
+  "parent_plan": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/B-REF-rep1/M0/products/a2000/plan.yaml",
+    "sha256": "d7ff0389cdb620f47fbc29a0f75b391bfb533520cdfb8f72a788c2b7f349dbd3"
+  }
+}

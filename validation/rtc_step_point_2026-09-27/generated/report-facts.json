@@ -1,0 +1,2993 @@
+{
+  "B-REF-rep1": {
+    "population": [
+      {
+        "network": 11,
+        "observation": 152430,
+        "shape": [
+          7821,
+          486
+        ],
+        "integration_seconds": 0.008192,
+        "cadence_seconds": 0.008192062377929688,
+        "physical_runs": [
+          [
+            0,
+            7821
+          ]
+        ],
+        "input_valid_x_cells": 3746259,
+        "input_valid_r_cells": 3746259,
+        "paired_valid_cells": 3746259,
+        "input_valid_detector_seconds": 30689.353728,
+        "candidate_count": 721,
+        "event_groups": 77,
+        "admitted_jump_groups": 9,
+        "admitted_detector_count": 7,
+        "admitted_detector_fraction": 0.01440329218106996,
+        "admitted_groups_per_detector_second": 0.0002932613074803424,
+        "admitted_groups_per_detector": {
+          "n": 486,
+          "median": 0.0,
+          "p95": 0.0,
+          "maximum": 3.0
+        },
+        "descriptive_50ms_shared_clusters": [
+          {
+            "first_unix": 1771495694.9466794,
+            "last_unix": 1771495694.9466794,
+            "instances": 1
+          },
+          {
+            "first_unix": 1771495695.6266153,
+            "last_unix": 1771495695.6921513,
+            "instances": 3
+          },
+          {
+            "first_unix": 1771495698.3873193,
+            "last_unix": 1771495698.3873193,
+            "instances": 1
+          },
+          {
+            "first_unix": 1771495698.5429673,
+            "last_unix": 1771495698.5429673,
+            "instances": 1
+          },
+          {
+            "first_unix": 1771495723.3237674,
+            "last_unix": 1771495723.3237674,
+            "instances": 3
+          }
+        ],
+        "cluster_caveat": "temporal descriptive grouping only; physical event identity remains unresolved",
+        "classes": {
+          "isolated-admission-unavailable": 20,
+          "no-resolved-excursion": 11,
+          "admitted-level-shift": 9,
+          "unresolved-extent": 37
+        },
+        "exposure_ledger": [
+          {
+            "cause": "outside_science",
+            "gross_cells": 274590,
+            "gross_input_valid_cells": 270635,
+            "incremental_preceding_eligible_cells": 270635,
+            "incremental_seconds": 2217.04192,
+            "source_crossing_incremental_cells": 52784
+          },
+          {
+            "cause": "transition",
+            "gross_cells": 510,
+            "gross_input_valid_cells": 510,
+            "incremental_preceding_eligible_cells": 510,
+            "incremental_seconds": 4.177919999999999,
+            "source_crossing_incremental_cells": 0
+          },
+          {
+            "cause": "jump_scan",
+            "gross_cells": 15141,
+            "gross_input_valid_cells": 15141,
+            "incremental_preceding_eligible_cells": 14066,
+            "incremental_seconds": 115.22867199999999,
+            "source_crossing_incremental_cells": 16
+          },
+          {
+            "cause": "transient",
+            "gross_cells": 69888,
+            "gross_input_valid_cells": 15141,
+            "incremental_preceding_eligible_cells": 0,
+            "incremental_seconds": 0.0,
+            "source_crossing_incremental_cells": 0
+          },
+          {
+            "cause": "unresolved_extent",
+            "gross_cells": 93852,
+            "gross_input_valid_cells": 93852,
+            "incremental_preceding_eligible_cells": 72496,
+            "incremental_seconds": 593.8872319999999,
+            "source_crossing_incremental_cells": 2052
+          },
+          {
+            "cause": "operation_unavailable",
+            "gross_cells": 94339,
+            "gross_input_valid_cells": 94339,
+            "incremental_preceding_eligible_cells": 473,
+            "incremental_seconds": 3.874816,
+            "source_crossing_incremental_cells": 75
+          },
+          {
+            "cause": "outside_resolved_domain",
+            "gross_cells": 412454,
+            "gross_input_valid_cells": 357707,
+            "incremental_preceding_eligible_cells": 0,
+            "incremental_seconds": 0.0,
+            "source_crossing_incremental_cells": 0
+          },
+          {
+            "cause": "donor_contaminated",
+            "gross_cells": 412927,
+            "gross_input_valid_cells": 358180,
+            "incremental_preceding_eligible_cells": 0,
+            "incremental_seconds": 0.0,
+            "source_crossing_incremental_cells": 0
+          },
+          {
+            "cause": "complete_filter_support_expansion",
+            "gross_cells": 559879,
+            "gross_input_valid_cells": 505132,
+            "incremental_preceding_eligible_cells": 146952,
+            "incremental_seconds": 1203.830784,
+            "source_crossing_incremental_cells": 19876
+          }
+        ],
+        "fitting_guard_cells": 4050,
+        "fitting_guards_are_not_output_exclusions": true,
+        "mask_intersections": {
+          "outside_science & transition": 0,
+          "outside_science & transient": 565,
+          "outside_science & unresolved_extent": 6780,
+          "transition & unresolved_extent": 510,
+          "jump_scan & outside_science": 565,
+          "jump_scan & transition": 510,
+          "jump_scan & transient": 15141,
+          "jump_scan & unresolved_extent": 15141,
+          "jump_scan & operation_unavailable": 15141,
+          "jump_scan & outside_resolved_domain": 15141,
+          "transient & transition": 510,
+          "transient & unresolved_extent": 15141,
+          "operation_unavailable & outside_science": 6794,
+          "operation_unavailable & transition": 510,
+          "operation_unavailable & transient": 15141,
+          "operation_unavailable & unresolved_extent": 93852,
+          "operation_unavailable & outside_resolved_domain": 93866,
+          "outside_resolved_domain & outside_science": 270635,
+          "outside_resolved_domain & transition": 510,
+          "outside_resolved_domain & transient": 15141,
+          "outside_resolved_domain & unresolved_extent": 93852,
+          "donor_contaminated & outside_science": 270635,
+          "donor_contaminated & transition": 510,
+          "donor_contaminated & jump_scan": 15141,
+          "donor_contaminated & transient": 15141,
+          "donor_contaminated & unresolved_extent": 93852,
+          "donor_contaminated & operation_unavailable": 94339,
+          "donor_contaminated & outside_resolved_domain": 357707
+        },
+        "RTC_retained_x_cells": 3241127,
+        "RTC_retained_r_cells": 3241127,
+        "RTC_scheduled_x_cells": 1620562,
+        "RTC_map_center_cells": 1597680,
+        "CAL_eligible_scheduled_cells": 1446812,
+        "mapping_unavailable_cells": 453618,
+        "donor_replacement_cells": 0,
+        "donor_influence_cells": 0,
+        "plan_apply_equal": true,
+        "finite_support_crossings": 0,
+        "segments": [
+          {
+            "scan": 0,
+            "scheduled_times": 594,
+            "fit_detectors": 417,
+            "eligible": 215737,
+            "retained": 215737
+          },
+          {
+            "scan": 1,
+            "scheduled_times": 610,
+            "fit_detectors": 417,
+            "eligible": 253892,
+            "retained": 253892
+          },
+          {
+            "scan": 2,
+            "scheduled_times": 610,
+            "fit_detectors": 417,
+            "eligible": 253014,
+            "retained": 253014
+          },
+          {
+            "scan": 3,
+            "scheduled_times": 610,
+            "fit_detectors": 417,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "scan": 4,
+            "scheduled_times": 610,
+            "fit_detectors": 417,
+            "eligible": 254370,
+            "retained": 254370
+          },
+          {
+            "scan": 5,
+            "scheduled_times": 594,
+            "fit_detectors": 417,
+            "eligible": 215429,
+            "retained": 215429
+          }
+        ],
+        "source_crossing": {
+          "input_valid_scheduled": 195065,
+          "RTC_scheduled": 157632,
+          "CAL_eligible": 157632
+        },
+        "union_loss_cells": 505132,
+        "short_stable_runs": 2,
+        "unassessed": "only selected review windows adjudicated; full flags are not completeness truth"
+      },
+      {
+        "network": 12,
+        "observation": 152430,
+        "shape": [
+          7820,
+          491
+        ],
+        "integration_seconds": 0.008192,
+        "cadence_seconds": 0.008192062377929688,
+        "physical_runs": [
+          [
+            0,
+            7820
+          ]
+        ],
+        "input_valid_x_cells": 3745780,
+        "input_valid_r_cells": 3745780,
+        "paired_valid_cells": 3745780,
+        "input_valid_detector_seconds": 30685.42976,
+        "candidate_count": 33,
+        "event_groups": 32,
+        "admitted_jump_groups": 0,
+        "admitted_detector_count": 0,
+        "admitted_detector_fraction": 0.0,
+        "admitted_groups_per_detector_second": 0.0,
+        "admitted_groups_per_detector": {
+          "n": 491,
+          "median": 0.0,
+          "p95": 0.0,
+          "maximum": 0.0
+        },
+        "descriptive_50ms_shared_clusters": [],
+        "cluster_caveat": "temporal descriptive grouping only; physical event identity remains unresolved",
+        "classes": {
+          "isolated-admission-unavailable": 23,
+          "no-resolved-excursion": 8,
+          "unresolved-extent": 1
+        },
+        "exposure_ledger": [
+          {
+            "cause": "outside_science",
+            "gross_cells": 276924,
+            "gross_input_valid_cells": 270156,
+            "incremental_preceding_eligible_cells": 270156,
+            "incremental_seconds": 2213.117952,
+            "source_crossing_incremental_cells": 9543
+          },
+          {
+            "cause": "transition",
+            "gross_cells": 0,
+            "gross_input_valid_cells": 0,
+            "incremental_preceding_eligible_cells": 0,
+            "incremental_seconds": 0.0,
+            "source_crossing_incremental_cells": 0
+          },
+          {
+            "cause": "jump_scan",
+            "gross_cells": 0,
+            "gross_input_valid_cells": 0,
+            "incremental_preceding_eligible_cells": 0,
+            "incremental_seconds": 0.0,
+            "source_crossing_incremental_cells": 0
+          },
+          {
+            "cause": "transient",
+            "gross_cells": 93840,
+            "gross_input_valid_cells": 0,
+            "incremental_preceding_eligible_cells": 0,
+            "incremental_seconds": 0.0,
+            "source_crossing_incremental_cells": 0
+          },
+          {
+            "cause": "unresolved_extent",
+            "gross_cells": 7820,
+            "gross_input_valid_cells": 7820,
+            "incremental_preceding_eligible_cells": 7256,
+            "incremental_seconds": 59.441151999999995,
+            "source_crossing_incremental_cells": 0
+          },
+          {
+            "cause": "operation_unavailable",
+            "gross_cells": 8254,
+            "gross_input_valid_cells": 8254,
+            "incremental_preceding_eligible_cells": 434,
+            "incremental_seconds": 3.555328,
+            "source_crossing_incremental_cells": 66
+          },
+          {
+            "cause": "outside_resolved_domain",
+            "gross_cells": 371252,
+            "gross_input_valid_cells": 277412,
+            "incremental_preceding_eligible_cells": 0,
+            "incremental_seconds": 0.0,
+            "source_crossing_incremental_cells": 0
+          },
+          {
+            "cause": "donor_contaminated",
+            "gross_cells": 371686,
+            "gross_input_valid_cells": 277846,
+            "incremental_preceding_eligible_cells": 0,
+            "incremental_seconds": 0.0,
+            "source_crossing_incremental_cells": 0
+          },
+          {
+            "cause": "complete_filter_support_expansion",
+            "gross_cells": 527006,
+            "gross_input_valid_cells": 433166,
+            "incremental_preceding_eligible_cells": 155320,
+            "incremental_seconds": 1272.3814399999999,
+            "source_crossing_incremental_cells": 12985
+          }
+        ],
+        "fitting_guard_cells": 448,
+        "fitting_guards_are_not_output_exclusions": true,
+        "mask_intersections": {
+          "outside_science & transition": 0,
+          "outside_science & transient": 0,
+          "outside_science & unresolved_extent": 564,
+          "transition & unresolved_extent": 0,
+          "jump_scan & outside_science": 0,
+          "jump_scan & transition": 0,
+          "jump_scan & transient": 0,
+          "jump_scan & unresolved_extent": 0,
+          "jump_scan & operation_unavailable": 0,
+          "jump_scan & outside_resolved_domain": 0,
+          "transient & transition": 0,
+          "transient & unresolved_extent": 0,
+          "operation_unavailable & outside_science": 564,
+          "operation_unavailable & transition": 0,
+          "operation_unavailable & transient": 0,
+          "operation_unavailable & unresolved_extent": 7820,
+          "operation_unavailable & outside_resolved_domain": 7820,
+          "outside_resolved_domain & outside_science": 270156,
+          "outside_resolved_domain & transition": 0,
+          "outside_resolved_domain & transient": 0,
+          "outside_resolved_domain & unresolved_extent": 7820,
+          "donor_contaminated & outside_science": 270156,
+          "donor_contaminated & transition": 0,
+          "donor_contaminated & jump_scan": 0,
+          "donor_contaminated & transient": 0,
+          "donor_contaminated & unresolved_extent": 7820,
+          "donor_contaminated & operation_unavailable": 8254,
+          "donor_contaminated & outside_resolved_domain": 277412
+        },
+        "RTC_retained_x_cells": 3312614,
+        "RTC_retained_r_cells": 3312614,
+        "RTC_scheduled_x_cells": 1656306,
+        "RTC_map_center_cells": 1632941,
+        "CAL_eligible_scheduled_cells": 1424121,
+        "mapping_unavailable_cells": 586500,
+        "donor_replacement_cells": 0,
+        "donor_influence_cells": 0,
+        "plan_apply_equal": true,
+        "finite_support_crossings": 0,
+        "segments": [
+          {
+            "scan": 0,
+            "scheduled_times": 594,
+            "fit_detectors": 411,
+            "eligible": 212167,
+            "retained": 212167
+          },
+          {
+            "scan": 1,
+            "scheduled_times": 610,
+            "fit_detectors": 411,
+            "eligible": 249842,
+            "retained": 249842
+          },
+          {
+            "scan": 2,
+            "scheduled_times": 610,
+            "fit_detectors": 411,
+            "eligible": 250298,
+            "retained": 250298
+          },
+          {
+            "scan": 3,
+            "scheduled_times": 610,
+            "fit_detectors": 411,
+            "eligible": 249368,
+            "retained": 249368
+          },
+          {
+            "scan": 4,
+            "scheduled_times": 610,
+            "fit_detectors": 411,
+            "eligible": 250320,
+            "retained": 250320
+          },
+          {
+            "scan": 5,
+            "scheduled_times": 594,
+            "fit_detectors": 411,
+            "eligible": 212126,
+            "retained": 212126
+          }
+        ],
+        "source_crossing": {
+          "input_valid_scheduled": 180353,
+          "RTC_scheduled": 169037,
+          "CAL_eligible": 169037
+        },
+        "union_loss_cells": 433166,
+        "short_stable_runs": 4,
+        "unassessed": "only selected review windows adjudicated; full flags are not completeness truth"
+      }
+    ],
+    "map_support": {
+      "0": {
+        "MAP_contributions": 2870933,
+        "normalization_sum": 2870933.0,
+        "supported_pixels": 10513
+      },
+      "5": {
+        "MAP_contributions": 2870933,
+        "normalization_sum": 2870933.0,
+        "supported_pixels": 10513
+      }
+    },
+    "review": {
+      "event": {
+        "plausible step": 2,
+        "unresolved": 2,
+        "plausible non-step": 8
+      },
+      "unflagged": {
+        "plausible non-step": 11,
+        "unresolved": 1
+      }
+    }
+  },
+  "S-REF-rep1": {
+    "population": [
+      {
+        "network": 11,
+        "observation": 152420,
+        "shape": [
+          7690,
+          486
+        ],
+        "integration_seconds": 0.008192,
+        "cadence_seconds": 0.008192062377929688,
+        "physical_runs": [
+          [
+            0,
+            7690
+          ]
+        ],
+        "input_valid_x_cells": 3683510,
+        "input_valid_r_cells": 3683510,
+        "paired_valid_cells": 3683510,
+        "input_valid_detector_seconds": 30175.313919999997,
+        "candidate_count": 212,
+        "event_groups": 130,
+        "admitted_jump_groups": 64,
+        "admitted_detector_count": 26,
+        "admitted_detector_fraction": 0.053497942386831275,
+        "admitted_groups_per_detector_second": 0.00212093899568618,
+        "admitted_groups_per_detector": {
+          "n": 486,
+          "median": 0.0,
+          "p95": 1.0,
+          "maximum": 6.0
+        },
+        "descriptive_50ms_shared_clusters": [
+          {
+            "first_unix": 1771493652.0943284,
+            "last_unix": 1771493652.0943284,
+            "instances": 6
+          },
+          {
+            "first_unix": 1771493655.7561524,
+            "last_unix": 1771493655.7643445,
+            "instances": 16
+          },
+          {
+            "first_unix": 1771493673.0412724,
+            "last_unix": 1771493673.0412724,
+            "instances": 15
+          },
+          {
+            "first_unix": 1771493675.1548085,
+            "last_unix": 1771493675.1630006,
+            "instances": 2
+          },
+          {
+            "first_unix": 1771493684.3790004,
+            "last_unix": 1771493684.3790004,
+            "instances": 13
+          },
+          {
+            "first_unix": 1771493684.4936886,
+            "last_unix": 1771493684.4936886,
+            "instances": 10
+          },
+          {
+            "first_unix": 1771493692.1450164,
+            "last_unix": 1771493692.1450164,
+            "instances": 2
+          }
+        ],
+        "cluster_caveat": "temporal descriptive grouping only; physical event identity remains unresolved",
+        "classes": {
+          "admitted-level-shift": 64,
+          "unresolved-extent": 22,
+          "isolated-admission-unavailable": 36,
+          "no-resolved-excursion": 8
+        },
+        "exposure_ledger": [
+          {
+            "cause": "outside_science",
+            "gross_cells": 210924,
+            "gross_input_valid_cells": 207886,
+            "incremental_preceding_eligible_cells": 207886,
+            "incremental_seconds": 1703.002112,
+            "source_crossing_incremental_cells": 31543
+          },
+          {
+            "cause": "transition",
+            "gross_cells": 532,
+            "gross_input_valid_cells": 532,
+            "incremental_preceding_eligible_cells": 532,
+            "incremental_seconds": 4.358144,
+            "source_crossing_incremental_cells": 48
+          },
+          {
+            "cause": "jump_scan",
+            "gross_cells": 111430,
+            "gross_input_valid_cells": 111430,
+            "incremental_preceding_eligible_cells": 106124,
+            "incremental_seconds": 869.367808,
+            "source_crossing_incremental_cells": 3275
+          },
+          {
+            "cause": "transient",
+            "gross_cells": 165260,
+            "gross_input_valid_cells": 111430,
+            "incremental_preceding_eligible_cells": 0,
+            "incremental_seconds": 0.0,
+            "source_crossing_incremental_cells": 0
+          },
+          {
+            "cause": "unresolved_extent",
+            "gross_cells": 153800,
+            "gross_input_valid_cells": 153800,
+            "incremental_preceding_eligible_cells": 90668,
+            "incremental_seconds": 742.752256,
+            "source_crossing_incremental_cells": 5895
+          },
+          {
+            "cause": "operation_unavailable",
+            "gross_cells": 154946,
+            "gross_input_valid_cells": 154946,
+            "incremental_preceding_eligible_cells": 870,
+            "incremental_seconds": 7.12704,
+            "source_crossing_incremental_cells": 338
+          },
+          {
+            "cause": "outside_resolved_domain",
+            "gross_cells": 459040,
+            "gross_input_valid_cells": 405210,
+            "incremental_preceding_eligible_cells": 0,
+            "incremental_seconds": 0.0,
+            "source_crossing_incremental_cells": 0
+          },
+          {
+            "cause": "donor_contaminated",
+            "gross_cells": 459910,
+            "gross_input_valid_cells": 406080,
+            "incremental_preceding_eligible_cells": 0,
+            "incremental_seconds": 0.0,
+            "source_crossing_incremental_cells": 0
+          },
+          {
+            "cause": "complete_filter_support_expansion",
+            "gross_cells": 606615,
+            "gross_input_valid_cells": 552785,
+            "incremental_preceding_eligible_cells": 146705,
+            "incremental_seconds": 1201.80736,
+            "source_crossing_incremental_cells": 20623
+          }
+        ],
+        "fitting_guard_cells": 2752,
+        "fitting_guards_are_not_output_exclusions": true,
+        "mask_intersections": {
+          "outside_science & transition": 0,
+          "outside_science & transient": 4774,
+          "outside_science & unresolved_extent": 8680,
+          "transition & unresolved_extent": 175,
+          "jump_scan & outside_science": 4774,
+          "jump_scan & transition": 532,
+          "jump_scan & transient": 111430,
+          "jump_scan & unresolved_extent": 57490,
+          "jump_scan & operation_unavailable": 57490,
+          "jump_scan & outside_resolved_domain": 111430,
+          "transient & transition": 532,
+          "transient & unresolved_extent": 57490,
+          "operation_unavailable & outside_science": 8956,
+          "operation_unavailable & transition": 175,
+          "operation_unavailable & transient": 57490,
+          "operation_unavailable & unresolved_extent": 153800,
+          "operation_unavailable & outside_resolved_domain": 154076,
+          "outside_resolved_domain & outside_science": 207886,
+          "outside_resolved_domain & transition": 532,
+          "outside_resolved_domain & transient": 111430,
+          "outside_resolved_domain & unresolved_extent": 153800,
+          "donor_contaminated & outside_science": 207886,
+          "donor_contaminated & transition": 532,
+          "donor_contaminated & jump_scan": 111430,
+          "donor_contaminated & transient": 111430,
+          "donor_contaminated & unresolved_extent": 153800,
+          "donor_contaminated & operation_unavailable": 154946,
+          "donor_contaminated & outside_resolved_domain": 405210
+        },
+        "RTC_retained_x_cells": 3130725,
+        "RTC_retained_r_cells": 3130725,
+        "RTC_scheduled_x_cells": 1565359,
+        "RTC_map_center_cells": 1497857,
+        "CAL_eligible_scheduled_cells": 1414012,
+        "mapping_unavailable_cells": 430640,
+        "donor_replacement_cells": 0,
+        "donor_influence_cells": 0,
+        "plan_apply_equal": true,
+        "finite_support_crossings": 0,
+        "segments": [
+          {
+            "scan": 0,
+            "scheduled_times": 594,
+            "fit_detectors": 411,
+            "eligible": 212294,
+            "retained": 212294
+          },
+          {
+            "scan": 1,
+            "scheduled_times": 610,
+            "fit_detectors": 411,
+            "eligible": 250195,
+            "retained": 250195
+          },
+          {
+            "scan": 2,
+            "scheduled_times": 610,
+            "fit_detectors": 408,
+            "eligible": 248492,
+            "retained": 248492
+          },
+          {
+            "scan": 3,
+            "scheduled_times": 610,
+            "fit_detectors": 408,
+            "eligible": 248041,
+            "retained": 248041
+          },
+          {
+            "scan": 4,
+            "scheduled_times": 610,
+            "fit_detectors": 400,
+            "eligible": 243480,
+            "retained": 243480
+          },
+          {
+            "scan": 5,
+            "scheduled_times": 594,
+            "fit_detectors": 411,
+            "eligible": 211510,
+            "retained": 211510
+          }
+        ],
+        "source_crossing": {
+          "input_valid_scheduled": 212241,
+          "RTC_scheduled": 181422,
+          "CAL_eligible": 181422
+        },
+        "union_loss_cells": 552785,
+        "short_stable_runs": 13,
+        "unassessed": "only selected review windows adjudicated; full flags are not completeness truth"
+      },
+      {
+        "network": 12,
+        "observation": 152420,
+        "shape": [
+          7691,
+          491
+        ],
+        "integration_seconds": 0.008192,
+        "cadence_seconds": 0.008192062377929688,
+        "physical_runs": [
+          [
+            0,
+            7691
+          ]
+        ],
+        "input_valid_x_cells": 3683989,
+        "input_valid_r_cells": 3683989,
+        "paired_valid_cells": 3683989,
+        "input_valid_detector_seconds": 30179.237888,
+        "candidate_count": 121,
+        "event_groups": 118,
+        "admitted_jump_groups": 25,
+        "admitted_detector_count": 25,
+        "admitted_detector_fraction": 0.05091649694501019,
+        "admitted_groups_per_detector_second": 0.0008283840729437574,
+        "admitted_groups_per_detector": {
+          "n": 491,
+          "median": 0.0,
+          "p95": 0.5,
+          "maximum": 1.0
+        },
+        "descriptive_50ms_shared_clusters": [
+          {
+            "first_unix": 1771493648.7811766,
+            "last_unix": 1771493648.7893684,
+            "instances": 25
+          }
+        ],
+        "cluster_caveat": "temporal descriptive grouping only; physical event identity remains unresolved",
+        "classes": {
+          "isolated-admission-unavailable": 65,
+          "admitted-level-shift": 25,
+          "no-resolved-excursion": 26,
+          "unresolved-extent": 2
+        },
+        "exposure_ledger": [
+          {
+            "cause": "outside_science",
+            "gross_cells": 213585,
+            "gross_input_valid_cells": 208365,
+            "incremental_preceding_eligible_cells": 208365,
+            "incremental_seconds": 1706.92608,
+            "source_crossing_incremental_cells": 16863
+          },
+          {
+            "cause": "transition",
+            "gross_cells": 50,
+            "gross_input_valid_cells": 50,
+            "incremental_preceding_eligible_cells": 50,
+            "incremental_seconds": 0.40959999999999996,
+            "source_crossing_incremental_cells": 14
+          },
+          {
+            "cause": "jump_scan",
+            "gross_cells": 30500,
+            "gross_input_valid_cells": 30500,
+            "incremental_preceding_eligible_cells": 30450,
+            "incremental_seconds": 249.44639999999998,
+            "source_crossing_incremental_cells": 4539
+          },
+          {
+            "cause": "transient",
+            "gross_cells": 122792,
+            "gross_input_valid_cells": 30500,
+            "incremental_preceding_eligible_cells": 0,
+            "incremental_seconds": 0.0,
+            "source_crossing_incremental_cells": 0
+          },
+          {
+            "cause": "unresolved_extent",
+            "gross_cells": 15382,
+            "gross_input_valid_cells": 15382,
+            "incremental_preceding_eligible_cells": 14512,
+            "incremental_seconds": 118.88230399999999,
+            "source_crossing_incremental_cells": 753
+          },
+          {
+            "cause": "operation_unavailable",
+            "gross_cells": 16740,
+            "gross_input_valid_cells": 16740,
+            "incremental_preceding_eligible_cells": 963,
+            "incremental_seconds": 7.888896,
+            "source_crossing_incremental_cells": 126
+          },
+          {
+            "cause": "outside_resolved_domain",
+            "gross_cells": 345669,
+            "gross_input_valid_cells": 253377,
+            "incremental_preceding_eligible_cells": 0,
+            "incremental_seconds": 0.0,
+            "source_crossing_incremental_cells": 0
+          },
+          {
+            "cause": "donor_contaminated",
+            "gross_cells": 346632,
+            "gross_input_valid_cells": 254340,
+            "incremental_preceding_eligible_cells": 0,
+            "incremental_seconds": 0.0,
+            "source_crossing_incremental_cells": 0
+          },
+          {
+            "cause": "complete_filter_support_expansion",
+            "gross_cells": 519331,
+            "gross_input_valid_cells": 427039,
+            "incremental_preceding_eligible_cells": 172699,
+            "incremental_seconds": 1414.750208,
+            "source_crossing_incremental_cells": 16106
+          }
+        ],
+        "fitting_guard_cells": 1736,
+        "fitting_guards_are_not_output_exclusions": true,
+        "mask_intersections": {
+          "outside_science & transition": 0,
+          "outside_science & transient": 0,
+          "outside_science & unresolved_extent": 870,
+          "transition & unresolved_extent": 0,
+          "jump_scan & outside_science": 0,
+          "jump_scan & transition": 50,
+          "jump_scan & transient": 30500,
+          "jump_scan & unresolved_extent": 0,
+          "jump_scan & operation_unavailable": 283,
+          "jump_scan & outside_resolved_domain": 30500,
+          "transient & transition": 50,
+          "transient & unresolved_extent": 0,
+          "operation_unavailable & outside_science": 982,
+          "operation_unavailable & transition": 0,
+          "operation_unavailable & transient": 283,
+          "operation_unavailable & unresolved_extent": 15382,
+          "operation_unavailable & outside_resolved_domain": 15777,
+          "outside_resolved_domain & outside_science": 208365,
+          "outside_resolved_domain & transition": 50,
+          "outside_resolved_domain & transient": 30500,
+          "outside_resolved_domain & unresolved_extent": 15382,
+          "donor_contaminated & outside_science": 208365,
+          "donor_contaminated & transition": 50,
+          "donor_contaminated & jump_scan": 30500,
+          "donor_contaminated & transient": 30500,
+          "donor_contaminated & unresolved_extent": 15382,
+          "donor_contaminated & operation_unavailable": 16740,
+          "donor_contaminated & outside_resolved_domain": 253377
+        },
+        "RTC_retained_x_cells": 3256950,
+        "RTC_retained_r_cells": 3256950,
+        "RTC_scheduled_x_cells": 1628477,
+        "RTC_map_center_cells": 1558754,
+        "CAL_eligible_scheduled_cells": 1400208,
+        "mapping_unavailable_cells": 576825,
+        "donor_replacement_cells": 0,
+        "donor_influence_cells": 0,
+        "plan_apply_equal": true,
+        "finite_support_crossings": 0,
+        "segments": [
+          {
+            "scan": 0,
+            "scheduled_times": 594,
+            "fit_detectors": 410,
+            "eligible": 210603,
+            "retained": 210603
+          },
+          {
+            "scan": 1,
+            "scheduled_times": 610,
+            "fit_detectors": 389,
+            "eligible": 229930,
+            "retained": 229930
+          },
+          {
+            "scan": 2,
+            "scheduled_times": 610,
+            "fit_detectors": 410,
+            "eligible": 248504,
+            "retained": 248504
+          },
+          {
+            "scan": 3,
+            "scheduled_times": 610,
+            "fit_detectors": 410,
+            "eligible": 249919,
+            "retained": 249919
+          },
+          {
+            "scan": 4,
+            "scheduled_times": 610,
+            "fit_detectors": 410,
+            "eligible": 249386,
+            "retained": 249386
+          },
+          {
+            "scan": 5,
+            "scheduled_times": 594,
+            "fit_detectors": 410,
+            "eligible": 211866,
+            "retained": 211866
+          }
+        ],
+        "source_crossing": {
+          "input_valid_scheduled": 198322,
+          "RTC_scheduled": 179100,
+          "CAL_eligible": 179100
+        },
+        "union_loss_cells": 427039,
+        "short_stable_runs": 7,
+        "unassessed": "only selected review windows adjudicated; full flags are not completeness truth"
+      }
+    ],
+    "map_support": {
+      "0": {
+        "MAP_contributions": 2814220,
+        "normalization_sum": 2814220.0,
+        "supported_pixels": 10857
+      },
+      "5": {
+        "MAP_contributions": 2814220,
+        "normalization_sum": 2814220.0,
+        "supported_pixels": 10857
+      }
+    },
+    "review": {
+      "event": {
+        "plausible step": 9,
+        "plausible non-step": 1,
+        "unresolved": 2
+      },
+      "unflagged": {
+        "plausible non-step": 9,
+        "unresolved": 1,
+        "plausible step": 2
+      }
+    }
+  },
+  "active_selection": [
+    {
+      "branch": "C-core-plus",
+      "network": 11,
+      "reference_events": 130,
+      "injected_events": 130,
+      "RTC_lost_cells": 0,
+      "RTC_gained_cells": 0,
+      "map_center_lost_cells": 0,
+      "map_center_gained_cells": 0,
+      "shifted_matches": 0,
+      "decision_changes": 0,
+      "method": "independent full active Learn/Consider/Apply in each branch; branch-local numeric IDs are not global identities; physical native time matched from same original acquisition",
+      "appeared": 0,
+      "disappeared": 0,
+      "ambiguous": 0
+    },
+    {
+      "branch": "C-core-plus",
+      "network": 12,
+      "reference_events": 118,
+      "injected_events": 118,
+      "RTC_lost_cells": 0,
+      "RTC_gained_cells": 0,
+      "map_center_lost_cells": 0,
+      "map_center_gained_cells": 0,
+      "shifted_matches": 0,
+      "decision_changes": 0,
+      "method": "independent full active Learn/Consider/Apply in each branch; branch-local numeric IDs are not global identities; physical native time matched from same original acquisition",
+      "appeared": 0,
+      "disappeared": 0,
+      "ambiguous": 0
+    },
+    {
+      "branch": "C-core-minus",
+      "network": 11,
+      "reference_events": 130,
+      "injected_events": 130,
+      "RTC_lost_cells": 0,
+      "RTC_gained_cells": 0,
+      "map_center_lost_cells": 0,
+      "map_center_gained_cells": 0,
+      "shifted_matches": 0,
+      "decision_changes": 0,
+      "method": "independent full active Learn/Consider/Apply in each branch; branch-local numeric IDs are not global identities; physical native time matched from same original acquisition",
+      "appeared": 0,
+      "disappeared": 0,
+      "ambiguous": 0
+    },
+    {
+      "branch": "C-core-minus",
+      "network": 12,
+      "reference_events": 118,
+      "injected_events": 118,
+      "RTC_lost_cells": 0,
+      "RTC_gained_cells": 0,
+      "map_center_lost_cells": 0,
+      "map_center_gained_cells": 0,
+      "shifted_matches": 0,
+      "decision_changes": 0,
+      "method": "independent full active Learn/Consider/Apply in each branch; branch-local numeric IDs are not global identities; physical native time matched from same original acquisition",
+      "appeared": 0,
+      "disappeared": 0,
+      "ambiguous": 0
+    },
+    {
+      "branch": "C-shoulder",
+      "network": 11,
+      "reference_events": 130,
+      "injected_events": 130,
+      "RTC_lost_cells": 0,
+      "RTC_gained_cells": 0,
+      "map_center_lost_cells": 0,
+      "map_center_gained_cells": 0,
+      "shifted_matches": 0,
+      "decision_changes": 0,
+      "method": "independent full active Learn/Consider/Apply in each branch; branch-local numeric IDs are not global identities; physical native time matched from same original acquisition",
+      "appeared": 0,
+      "disappeared": 0,
+      "ambiguous": 0
+    },
+    {
+      "branch": "C-shoulder",
+      "network": 12,
+      "reference_events": 118,
+      "injected_events": 118,
+      "RTC_lost_cells": 0,
+      "RTC_gained_cells": 0,
+      "map_center_lost_cells": 0,
+      "map_center_gained_cells": 0,
+      "shifted_matches": 0,
+      "decision_changes": 0,
+      "method": "independent full active Learn/Consider/Apply in each branch; branch-local numeric IDs are not global identities; physical native time matched from same original acquisition",
+      "appeared": 0,
+      "disappeared": 0,
+      "ambiguous": 0
+    }
+  ],
+  "timing": [
+    {
+      "family": "B-REF-rep1",
+      "rep": 1,
+      "ready": 74.839132541,
+      "caller_ready": 74.900615833,
+      "analysis": 74.935064,
+      "exit": 75.185930791,
+      "CPU": 74.100529,
+      "sampled_tree_RSS": 1730625536,
+      "RTC_wall_occupancy_bounds": [
+        10.905909208999999,
+        10.986086583000002
+      ],
+      "RTC_fraction_of_exit_bounds": [
+        0.14505252637379693,
+        0.14611891436895094
+      ],
+      "RTC_CPU_bounds": [
+        18.846643999999998,
+        20.101748
+      ],
+      "networks": [
+        {
+          "network": 11,
+          "RTC_seconds": 10.905909208999999,
+          "process_CPU_envelope": 20.101748,
+          "intervals": [
+            {
+              "stage": "input_digests_verified",
+              "seconds": 0.11749925
+            },
+            {
+              "stage": "APT_verified_and_bound",
+              "seconds": 0.00014158300000000068
+            },
+            {
+              "stage": "native_samples_loaded",
+              "seconds": 0.66991825
+            },
+            {
+              "stage": "source_probe_start",
+              "seconds": 0.22757033400000004
+            },
+            {
+              "stage": "source_probe_complete",
+              "seconds": 1.73335625
+            },
+            {
+              "stage": "processing_scan_native_projection_complete",
+              "seconds": 0.0008362910000001555
+            },
+            {
+              "stage": "ingress_complete",
+              "seconds": 0.0009977089999999578
+            },
+            {
+              "stage": "spike_screen_start",
+              "seconds": 8.066600000011803e-05
+            },
+            {
+              "stage": "spike_screen_complete",
+              "seconds": 0.13933529199999972
+            },
+            {
+              "stage": "transient_assessment_complete",
+              "seconds": 1.193822125
+            },
+            {
+              "stage": "initial_spectra_complete",
+              "seconds": 1.2695532500000004
+            },
+            {
+              "stage": "initial_learn_complete",
+              "seconds": 0.035935291999999563
+            },
+            {
+              "stage": "initial_evidence_publication_complete",
+              "seconds": 0.13635691600000044
+            },
+            {
+              "stage": "transient_support_decisions_complete",
+              "seconds": 0.05161004199999919
+            },
+            {
+              "stage": "detector_plans_complete",
+              "seconds": 0.23951320799999998
+            },
+            {
+              "stage": "RTC_apply_start",
+              "seconds": 0.0003918750000000415
+            },
+            {
+              "stage": "RTC_apply_complete",
+              "seconds": 1.5682220420000004
+            },
+            {
+              "stage": "output_grid_inspection_complete",
+              "seconds": 0.06194845799999982
+            },
+            {
+              "stage": "RTC_arrays_exported",
+              "seconds": 1.1588481249999996
+            },
+            {
+              "stage": "post_notch_learned",
+              "seconds": 1.0798903750000015
+            },
+            {
+              "stage": "post_notch_matched_outcome",
+              "seconds": 1.0114252089999987
+            },
+            {
+              "stage": "post_notch_outcome_exported",
+              "seconds": 0.7774994160000013
+            },
+            {
+              "stage": "post_lowpass_learned",
+              "seconds": 0.7208077089999989
+            },
+            {
+              "stage": "post_lowpass_matched_outcome",
+              "seconds": 0.664401916000001
+            },
+            {
+              "stage": "post_lowpass_outcome_exported",
+              "seconds": 0.755739792
+            },
+            {
+              "stage": "relearning_complete",
+              "seconds": 0.023723083000000145
+            },
+            {
+              "stage": "RTC_finalized",
+              "seconds": 0.01688508399999833
+            },
+            {
+              "stage": "CAL_start",
+              "seconds": 0.0005755830000016005
+            },
+            {
+              "stage": "CAL_AST_start",
+              "seconds": 0.013249000000000066
+            },
+            {
+              "stage": "CAL_AST_complete",
+              "seconds": 0.030190249999998642
+            },
+            {
+              "stage": "CAL_learn_complete",
+              "seconds": 0.0022132500000004995
+            },
+            {
+              "stage": "CAL_plan_complete",
+              "seconds": 0.026440416999999883
+            },
+            {
+              "stage": "CAL_apply_complete",
+              "seconds": 0.007338791000000455
+            },
+            {
+              "stage": "CAL_publication_complete",
+              "seconds": 7.712438417000001
+            },
+            {
+              "stage": "PTC_start",
+              "seconds": 0.0014487499999980002
+            },
+            {
+              "stage": "downstream_complete",
+              "seconds": 0.8549473330000019
+            },
+            {
+              "stage": "arm_receipts_written",
+              "seconds": 0.3341746669999992
+            },
+            {
+              "stage": "original_pair_verified_unchanged",
+              "seconds": 0.2154678749999981
+            },
+            {
+              "stage": "root_receipt_written",
+              "seconds": 0.09908925000000224
+            }
+          ],
+          "apply_operations": {
+            "transient_partition_validation": 3.817399999999996e-05,
+            "allocation_and_donors": 0.005505162999999997,
+            "gather_and_notch": 0.022661121999999992,
+            "lowpass_support_output": 1.5395809160000022,
+            "scope": "sum over sequential detector applications within network; network intervals overlap"
+          },
+          "plan_identity_not_attempt_count": 1001,
+          "actual_apply_starts": 1,
+          "actual_apply_completes": 1
+        },
+        {
+          "network": 12,
+          "RTC_seconds": 9.986949875,
+          "process_CPU_envelope": 18.846643999999998,
+          "intervals": [
+            {
+              "stage": "input_digests_verified",
+              "seconds": 0.11889258300000001
+            },
+            {
+              "stage": "APT_verified_and_bound",
+              "seconds": 0.00010308400000000328
+            },
+            {
+              "stage": "native_samples_loaded",
+              "seconds": 0.819245416
+            },
+            {
+              "stage": "source_probe_start",
+              "seconds": 0.23157075000000005
+            },
+            {
+              "stage": "source_probe_complete",
+              "seconds": 1.763022375
+            },
+            {
+              "stage": "processing_scan_native_projection_complete",
+              "seconds": 0.0008009169999998456
+            },
+            {
+              "stage": "ingress_complete",
+              "seconds": 0.0005209580000000713
+            },
+            {
+              "stage": "spike_screen_start",
+              "seconds": 8.679199999983567e-05
+            },
+            {
+              "stage": "spike_screen_complete",
+              "seconds": 0.14072525000000002
+            },
+            {
+              "stage": "transient_assessment_complete",
+              "seconds": 0.08663266700000039
+            },
+            {
+              "stage": "initial_spectra_complete",
+              "seconds": 1.2741299999999995
+            },
+            {
+              "stage": "initial_learn_complete",
+              "seconds": 0.03464829099999989
+            },
+            {
+              "stage": "initial_evidence_publication_complete",
+              "seconds": 0.11388870900000025
+            },
+            {
+              "stage": "transient_support_decisions_complete",
+              "seconds": 0.06094766599999968
+            },
+            {
+              "stage": "detector_plans_complete",
+              "seconds": 0.229471459
+            },
+            {
+              "stage": "RTC_apply_start",
+              "seconds": 0.0002932500000003557
+            },
+            {
+              "stage": "RTC_apply_complete",
+              "seconds": 1.5317244160000003
+            },
+            {
+              "stage": "output_grid_inspection_complete",
+              "seconds": 0.051621916999999407
+            },
+            {
+              "stage": "RTC_arrays_exported",
+              "seconds": 1.2580792080000007
+            },
+            {
+              "stage": "post_notch_learned",
+              "seconds": 1.1148080839999999
+            },
+            {
+              "stage": "post_notch_matched_outcome",
+              "seconds": 1.1028319159999995
+            },
+            {
+              "stage": "post_notch_outcome_exported",
+              "seconds": 0.7869744999999995
+            },
+            {
+              "stage": "post_lowpass_learned",
+              "seconds": 0.7089128340000013
+            },
+            {
+              "stage": "post_lowpass_matched_outcome",
+              "seconds": 0.6879874580000003
+            },
+            {
+              "stage": "post_lowpass_outcome_exported",
+              "seconds": 0.7444305829999998
+            },
+            {
+              "stage": "relearning_complete",
+              "seconds": 0.04251404199999875
+            },
+            {
+              "stage": "RTC_finalized",
+              "seconds": 0.016327625000000623
+            },
+            {
+              "stage": "CAL_start",
+              "seconds": 0.000643166999999778
+            },
+            {
+              "stage": "CAL_AST_start",
+              "seconds": 0.014132958000001139
+            },
+            {
+              "stage": "CAL_AST_complete",
+              "seconds": 0.02901745799999844
+            },
+            {
+              "stage": "CAL_learn_complete",
+              "seconds": 0.0021304589999999735
+            },
+            {
+              "stage": "CAL_plan_complete",
+              "seconds": 0.025305000000001243
+            },
+            {
+              "stage": "CAL_apply_complete",
+              "seconds": 0.007538582999998766
+            },
+            {
+              "stage": "CAL_publication_complete",
+              "seconds": 7.24652425
+            },
+            {
+              "stage": "PTC_start",
+              "seconds": 0.002828083000000703
+            },
+            {
+              "stage": "downstream_complete",
+              "seconds": 1.2489827499999997
+            },
+            {
+              "stage": "arm_receipts_written",
+              "seconds": 0.3469931250000009
+            },
+            {
+              "stage": "original_pair_verified_unchanged",
+              "seconds": 0.2319578749999991
+            },
+            {
+              "stage": "root_receipt_written",
+              "seconds": 0.09714604199999854
+            }
+          ],
+          "apply_operations": {
+            "transient_partition_validation": 3.0002999999999984e-05,
+            "allocation_and_donors": 0.0066045500000000016,
+            "gather_and_notch": 0.024572221999999994,
+            "lowpass_support_output": 1.5001130049999987,
+            "scope": "sum over sequential detector applications within network; network intervals overlap"
+          },
+          "plan_identity_not_attempt_count": 1001,
+          "actual_apply_starts": 1,
+          "actual_apply_completes": 1
+        }
+      ],
+      "python_inclusive_spans": {
+        "raw_parent_PTC_MAP_initial_guard_noise": 34.108196708,
+        "feedback_candidate_publication": 0.079611333,
+        "trajectory_including_endpoint": 39.397782292,
+        "cycle_cleanup": 0.233599751,
+        "load_noise_context": 0.059888833,
+        "source_fit_measurement": 0.095923124,
+        "source_measurements": 0.002022793,
+        "conditional_endpoint_including_io": 0.045052,
+        "native_invocation_including_reservation_hashing_publication": 71.834432666,
+        "initial_noise_guard_context_publication": 0.13923525,
+        "environment_input_verification": 0.50024625
+      },
+      "launch_source": "43b510b3d01323c2de9cc41b2dfdb8d316b9ca4d"
+    },
+    {
+      "family": "S-C-core-minus",
+      "rep": 1,
+      "ready": 74.262080792,
+      "caller_ready": 74.291783208,
+      "analysis": 74.34386575,
+      "exit": 74.56771075,
+      "CPU": 74.226222,
+      "sampled_tree_RSS": 1772404736,
+      "RTC_wall_occupancy_bounds": [
+        10.561905625000001,
+        10.789903291000002
+      ],
+      "RTC_fraction_of_exit_bounds": [
+        0.14164181143243695,
+        0.14469940383680077
+      ],
+      "RTC_CPU_bounds": [
+        18.549795,
+        19.279529
+      ],
+      "networks": [
+        {
+          "network": 11,
+          "RTC_seconds": 9.96294525,
+          "process_CPU_envelope": 18.947557,
+          "intervals": [
+            {
+              "stage": "input_digests_verified",
+              "seconds": 0.116606708
+            },
+            {
+              "stage": "APT_verified_and_bound",
+              "seconds": 0.00012745899999999644
+            },
+            {
+              "stage": "native_samples_loaded",
+              "seconds": 0.657326916
+            },
+            {
+              "stage": "source_probe_start",
+              "seconds": 0.2308393339999999
+            },
+            {
+              "stage": "source_probe_complete",
+              "seconds": 1.798182583
+            },
+            {
+              "stage": "processing_scan_native_projection_complete",
+              "seconds": 0.000769041999999942
+            },
+            {
+              "stage": "ingress_complete",
+              "seconds": 0.0011977910000000591
+            },
+            {
+              "stage": "spike_screen_start",
+              "seconds": 8.5874999999902e-05
+            },
+            {
+              "stage": "spike_screen_complete",
+              "seconds": 0.13677212500000024
+            },
+            {
+              "stage": "transient_assessment_complete",
+              "seconds": 0.469011584
+            },
+            {
+              "stage": "initial_spectra_complete",
+              "seconds": 1.23194925
+            },
+            {
+              "stage": "initial_learn_complete",
+              "seconds": 0.035401207999999684
+            },
+            {
+              "stage": "initial_evidence_publication_complete",
+              "seconds": 0.17378533300000054
+            },
+            {
+              "stage": "transient_support_decisions_complete",
+              "seconds": 0.06201991699999976
+            },
+            {
+              "stage": "detector_plans_complete",
+              "seconds": 0.27827241700000016
+            },
+            {
+              "stage": "RTC_apply_start",
+              "seconds": 0.00040112499999978013
+            },
+            {
+              "stage": "RTC_apply_complete",
+              "seconds": 1.465184958
+            },
+            {
+              "stage": "output_grid_inspection_complete",
+              "seconds": 0.055848583000000396
+            },
+            {
+              "stage": "RTC_arrays_exported",
+              "seconds": 1.229895
+            },
+            {
+              "stage": "post_notch_learned",
+              "seconds": 0.9600344169999993
+            },
+            {
+              "stage": "post_notch_matched_outcome",
+              "seconds": 0.9274626250000004
+            },
+            {
+              "stage": "post_notch_outcome_exported",
+              "seconds": 0.8127640419999995
+            },
+            {
+              "stage": "post_lowpass_learned",
+              "seconds": 0.6873285000000013
+            },
+            {
+              "stage": "post_lowpass_matched_outcome",
+              "seconds": 0.6397055829999996
+            },
+            {
+              "stage": "post_lowpass_outcome_exported",
+              "seconds": 0.7549696669999992
+            },
+            {
+              "stage": "relearning_complete",
+              "seconds": 0.0238892909999997
+            },
+            {
+              "stage": "RTC_finalized",
+              "seconds": 0.018249625000001046
+            },
+            {
+              "stage": "CAL_start",
+              "seconds": 0.0005082919999992441
+            },
+            {
+              "stage": "CAL_AST_start",
+              "seconds": 0.014067667000000839
+            },
+            {
+              "stage": "CAL_AST_complete",
+              "seconds": 0.02970008299999982
+            },
+            {
+              "stage": "CAL_learn_complete",
+              "seconds": 0.0022232080000001986
+            },
+            {
+              "stage": "CAL_plan_complete",
+              "seconds": 0.027719583999999742
+            },
+            {
+              "stage": "CAL_apply_complete",
+              "seconds": 0.007039665999998945
+            },
+            {
+              "stage": "CAL_publication_complete",
+              "seconds": 6.6902936250000025
+            },
+            {
+              "stage": "PTC_start",
+              "seconds": 0.001010291999996582
+            },
+            {
+              "stage": "downstream_complete",
+              "seconds": 1.387217083000003
+            },
+            {
+              "stage": "arm_receipts_written",
+              "seconds": 0.38603945899999914
+            },
+            {
+              "stage": "original_pair_verified_unchanged",
+              "seconds": 0.22319616600000103
+            },
+            {
+              "stage": "root_receipt_written",
+              "seconds": 0.09409404199999827
+            }
+          ],
+          "apply_operations": {
+            "transient_partition_validation": 3.336799999999996e-05,
+            "allocation_and_donors": 0.007047055999999997,
+            "gather_and_notch": 0.019986176000000005,
+            "lowpass_support_output": 1.437730278,
+            "scope": "sum over sequential detector applications within network; network intervals overlap"
+          },
+          "plan_identity_not_attempt_count": 1001,
+          "actual_apply_starts": 1,
+          "actual_apply_completes": 1
+        },
+        {
+          "network": 12,
+          "RTC_seconds": 10.561905625000001,
+          "process_CPU_envelope": 18.881767000000004,
+          "intervals": [
+            {
+              "stage": "input_digests_verified",
+              "seconds": 0.117742792
+            },
+            {
+              "stage": "APT_verified_and_bound",
+              "seconds": 8.895800000000009e-05
+            },
+            {
+              "stage": "native_samples_loaded",
+              "seconds": 0.798570667
+            },
+            {
+              "stage": "source_probe_start",
+              "seconds": 0.23245487500000006
+            },
+            {
+              "stage": "source_probe_complete",
+              "seconds": 1.8503736659999999
+            },
+            {
+              "stage": "processing_scan_native_projection_complete",
+              "seconds": 0.0008070839999998469
+            },
+            {
+              "stage": "ingress_complete",
+              "seconds": 0.0005739580000003741
+            },
+            {
+              "stage": "spike_screen_start",
+              "seconds": 8.295799999968878e-05
+            },
+            {
+              "stage": "spike_screen_complete",
+              "seconds": 0.13995745900000012
+            },
+            {
+              "stage": "transient_assessment_complete",
+              "seconds": 0.299304625
+            },
+            {
+              "stage": "initial_spectra_complete",
+              "seconds": 1.2385868330000003
+            },
+            {
+              "stage": "initial_learn_complete",
+              "seconds": 0.03439945799999933
+            },
+            {
+              "stage": "initial_evidence_publication_complete",
+              "seconds": 0.153375209
+            },
+            {
+              "stage": "transient_support_decisions_complete",
+              "seconds": 0.06905841600000073
+            },
+            {
+              "stage": "detector_plans_complete",
+              "seconds": 0.27921158399999957
+            },
+            {
+              "stage": "RTC_apply_start",
+              "seconds": 0.0003499580000001501
+            },
+            {
+              "stage": "RTC_apply_complete",
+              "seconds": 1.52733675
+            },
+            {
+              "stage": "output_grid_inspection_complete",
+              "seconds": 0.0628519169999997
+            },
+            {
+              "stage": "RTC_arrays_exported",
+              "seconds": 1.1992613749999999
+            },
+            {
+              "stage": "post_notch_learned",
+              "seconds": 0.9955482080000007
+            },
+            {
+              "stage": "post_notch_matched_outcome",
+              "seconds": 0.9728468750000001
+            },
+            {
+              "stage": "post_notch_outcome_exported",
+              "seconds": 0.8162390419999994
+            },
+            {
+              "stage": "post_lowpass_learned",
+              "seconds": 0.7138212910000004
+            },
+            {
+              "stage": "post_lowpass_matched_outcome",
+              "seconds": 0.6784025420000006
+            },
+            {
+              "stage": "post_lowpass_outcome_exported",
+              "seconds": 1.3382947919999992
+            },
+            {
+              "stage": "relearning_complete",
+              "seconds": 0.024166166000000544
+            },
+            {
+              "stage": "RTC_finalized",
+              "seconds": 0.018893124999999955
+            },
+            {
+              "stage": "CAL_start",
+              "seconds": 0.0007206669999995086
+            },
+            {
+              "stage": "CAL_AST_start",
+              "seconds": 0.014671375000000708
+            },
+            {
+              "stage": "CAL_AST_complete",
+              "seconds": 0.030328250000000168
+            },
+            {
+              "stage": "CAL_learn_complete",
+              "seconds": 0.002376707999999894
+            },
+            {
+              "stage": "CAL_plan_complete",
+              "seconds": 0.027298624999998466
+            },
+            {
+              "stage": "CAL_apply_complete",
+              "seconds": 0.007173584000000233
+            },
+            {
+              "stage": "CAL_publication_complete",
+              "seconds": 5.746428541000002
+            },
+            {
+              "stage": "PTC_start",
+              "seconds": 0.0010972919999971964
+            },
+            {
+              "stage": "downstream_complete",
+              "seconds": 1.5230396250000027
+            },
+            {
+              "stage": "arm_receipts_written",
+              "seconds": 0.3992287499999989
+            },
+            {
+              "stage": "original_pair_verified_unchanged",
+              "seconds": 0.22613416700000144
+            },
+            {
+              "stage": "root_receipt_written",
+              "seconds": 0.09902812499999669
+            }
+          ],
+          "apply_operations": {
+            "transient_partition_validation": 3.7448999999999966e-05,
+            "allocation_and_donors": 0.007905928000000005,
+            "gather_and_notch": 0.023572556000000005,
+            "lowpass_support_output": 1.4954023329999997,
+            "scope": "sum over sequential detector applications within network; network intervals overlap"
+          },
+          "plan_identity_not_attempt_count": 1001,
+          "actual_apply_starts": 1,
+          "actual_apply_completes": 1
+        }
+      ],
+      "python_inclusive_spans": {
+        "raw_parent_PTC_MAP_initial_guard_noise": 32.564076583,
+        "feedback_candidate_publication": 0.076683999,
+        "trajectory_including_endpoint": 40.036497417,
+        "cycle_cleanup": 0.22508545800000002,
+        "source_fit_measurement": 0.100276417,
+        "load_noise_context": 0.043665833,
+        "source_measurements": 0.002024,
+        "conditional_endpoint_including_io": 0.041014625,
+        "native_invocation_including_reservation_hashing_publication": 71.065291292,
+        "environment_input_verification": 0.522598583
+      },
+      "launch_source": "43b510b3d01323c2de9cc41b2dfdb8d316b9ca4d"
+    },
+    {
+      "family": "S-C-core-plus",
+      "rep": 1,
+      "ready": 75.567413958,
+      "caller_ready": 75.620576458,
+      "analysis": 75.654078917,
+      "exit": 75.898967167,
+      "CPU": 73.130985,
+      "sampled_tree_RSS": 1774223360,
+      "RTC_wall_occupancy_bounds": [
+        10.052559875,
+        11.116104667
+      ],
+      "RTC_fraction_of_exit_bounds": [
+        0.13244659644552764,
+        0.1464592349793286
+      ],
+      "RTC_CPU_bounds": [
+        18.44393,
+        18.998873
+      ],
+      "networks": [
+        {
+          "network": 11,
+          "RTC_seconds": 10.021106708,
+          "process_CPU_envelope": 18.740094,
+          "intervals": [
+            {
+              "stage": "input_digests_verified",
+              "seconds": 0.115051667
+            },
+            {
+              "stage": "APT_verified_and_bound",
+              "seconds": 0.00014904100000000253
+            },
+            {
+              "stage": "native_samples_loaded",
+              "seconds": 0.652274917
+            },
+            {
+              "stage": "source_probe_start",
+              "seconds": 0.23896312500000005
+            },
+            {
+              "stage": "source_probe_complete",
+              "seconds": 1.7652203329999998
+            },
+            {
+              "stage": "processing_scan_native_projection_complete",
+              "seconds": 0.0009882089999999621
+            },
+            {
+              "stage": "ingress_complete",
+              "seconds": 0.0008567500000000727
+            },
+            {
+              "stage": "spike_screen_start",
+              "seconds": 8.208300000012159e-05
+            },
+            {
+              "stage": "spike_screen_complete",
+              "seconds": 0.138381458
+            },
+            {
+              "stage": "transient_assessment_complete",
+              "seconds": 0.46500283399999987
+            },
+            {
+              "stage": "initial_spectra_complete",
+              "seconds": 1.228184916
+            },
+            {
+              "stage": "initial_learn_complete",
+              "seconds": 0.03565925000000014
+            },
+            {
+              "stage": "initial_evidence_publication_complete",
+              "seconds": 0.1717092090000003
+            },
+            {
+              "stage": "transient_support_decisions_complete",
+              "seconds": 0.07300833299999976
+            },
+            {
+              "stage": "detector_plans_complete",
+              "seconds": 0.2769034999999995
+            },
+            {
+              "stage": "RTC_apply_start",
+              "seconds": 0.0003571250000007353
+            },
+            {
+              "stage": "RTC_apply_complete",
+              "seconds": 1.43535375
+            },
+            {
+              "stage": "output_grid_inspection_complete",
+              "seconds": 0.056211457999999936
+            },
+            {
+              "stage": "RTC_arrays_exported",
+              "seconds": 1.3486086670000006
+            },
+            {
+              "stage": "post_notch_learned",
+              "seconds": 0.9806790419999984
+            },
+            {
+              "stage": "post_notch_matched_outcome",
+              "seconds": 0.929504166000001
+            },
+            {
+              "stage": "post_notch_outcome_exported",
+              "seconds": 0.7850334589999992
+            },
+            {
+              "stage": "post_lowpass_learned",
+              "seconds": 0.6859825830000013
+            },
+            {
+              "stage": "post_lowpass_matched_outcome",
+              "seconds": 0.6373261669999994
+            },
+            {
+              "stage": "post_lowpass_outcome_exported",
+              "seconds": 0.725961625
+            },
+            {
+              "stage": "relearning_complete",
+              "seconds": 0.029495250000000084
+            },
+            {
+              "stage": "RTC_finalized",
+              "seconds": 0.017743915999998805
+            },
+            {
+              "stage": "CAL_start",
+              "seconds": 0.0005509590000016829
+            },
+            {
+              "stage": "CAL_AST_start",
+              "seconds": 0.013183124999999407
+            },
+            {
+              "stage": "CAL_AST_complete",
+              "seconds": 0.029693541000000323
+            },
+            {
+              "stage": "CAL_learn_complete",
+              "seconds": 0.002199250000000319
+            },
+            {
+              "stage": "CAL_plan_complete",
+              "seconds": 0.026589499999998267
+            },
+            {
+              "stage": "CAL_apply_complete",
+              "seconds": 0.0065493750000005235
+            },
+            {
+              "stage": "CAL_publication_complete",
+              "seconds": 6.343493959
+            },
+            {
+              "stage": "PTC_start",
+              "seconds": 0.0014446250000013094
+            },
+            {
+              "stage": "downstream_complete",
+              "seconds": 1.5082904999999975
+            },
+            {
+              "stage": "arm_receipts_written",
+              "seconds": 0.35463641600000173
+            },
+            {
+              "stage": "original_pair_verified_unchanged",
+              "seconds": 0.2233686249999991
+            },
+            {
+              "stage": "root_receipt_written",
+              "seconds": 0.09435520899999972
+            }
+          ],
+          "apply_operations": {
+            "transient_partition_validation": 3.0756000000000015e-05,
+            "allocation_and_donors": 0.007045683999999996,
+            "gather_and_notch": 0.019062095999999997,
+            "lowpass_support_output": 1.4088677090000006,
+            "scope": "sum over sequential detector applications within network; network intervals overlap"
+          },
+          "plan_identity_not_attempt_count": 1001,
+          "actual_apply_starts": 1,
+          "actual_apply_completes": 1
+        },
+        {
+          "network": 12,
+          "RTC_seconds": 10.052559875,
+          "process_CPU_envelope": 18.702709000000002,
+          "intervals": [
+            {
+              "stage": "input_digests_verified",
+              "seconds": 0.116221167
+            },
+            {
+              "stage": "APT_verified_and_bound",
+              "seconds": 0.00010391600000000945
+            },
+            {
+              "stage": "native_samples_loaded",
+              "seconds": 0.795276917
+            },
+            {
+              "stage": "source_probe_start",
+              "seconds": 0.23343716700000006
+            },
+            {
+              "stage": "source_probe_complete",
+              "seconds": 1.7750061659999998
+            },
+            {
+              "stage": "processing_scan_native_projection_complete",
+              "seconds": 0.0007081250000000594
+            },
+            {
+              "stage": "ingress_complete",
+              "seconds": 0.0004836250000002096
+            },
+            {
+              "stage": "spike_screen_start",
+              "seconds": 8.449999999982083e-05
+            },
+            {
+              "stage": "spike_screen_complete",
+              "seconds": 0.1420711250000002
+            },
+            {
+              "stage": "transient_assessment_complete",
+              "seconds": 0.292885042
+            },
+            {
+              "stage": "initial_spectra_complete",
+              "seconds": 1.2349885830000003
+            },
+            {
+              "stage": "initial_learn_complete",
+              "seconds": 0.03616504199999948
+            },
+            {
+              "stage": "initial_evidence_publication_complete",
+              "seconds": 0.15771316699999982
+            },
+            {
+              "stage": "transient_support_decisions_complete",
+              "seconds": 0.07061683299999988
+            },
+            {
+              "stage": "detector_plans_complete",
+              "seconds": 0.279158958
+            },
+            {
+              "stage": "RTC_apply_start",
+              "seconds": 0.0004423340000005993
+            },
+            {
+              "stage": "RTC_apply_complete",
+              "seconds": 1.4995212909999998
+            },
+            {
+              "stage": "output_grid_inspection_complete",
+              "seconds": 0.062242958999999765
+            },
+            {
+              "stage": "RTC_arrays_exported",
+              "seconds": 1.3250578329999998
+            },
+            {
+              "stage": "post_notch_learned",
+              "seconds": 1.0212743750000008
+            },
+            {
+              "stage": "post_notch_matched_outcome",
+              "seconds": 0.9710962080000005
+            },
+            {
+              "stage": "post_notch_outcome_exported",
+              "seconds": 0.7949274589999984
+            },
+            {
+              "stage": "post_lowpass_learned",
+              "seconds": 0.7142107910000011
+            },
+            {
+              "stage": "post_lowpass_matched_outcome",
+              "seconds": 0.6709778750000002
+            },
+            {
+              "stage": "post_lowpass_outcome_exported",
+              "seconds": 0.7323843749999988
+            },
+            {
+              "stage": "relearning_complete",
+              "seconds": 0.0278047920000013
+            },
+            {
+              "stage": "RTC_finalized",
+              "seconds": 0.019020832999999016
+            },
+            {
+              "stage": "CAL_start",
+              "seconds": 0.0007611670000002846
+            },
+            {
+              "stage": "CAL_AST_start",
+              "seconds": 0.01475254200000009
+            },
+            {
+              "stage": "CAL_AST_complete",
+              "seconds": 0.029722582999999858
+            },
+            {
+              "stage": "CAL_learn_complete",
+              "seconds": 0.0023092919999996298
+            },
+            {
+              "stage": "CAL_plan_complete",
+              "seconds": 0.02765270799999975
+            },
+            {
+              "stage": "CAL_apply_complete",
+              "seconds": 0.007912208000000476
+            },
+            {
+              "stage": "CAL_publication_complete",
+              "seconds": 7.463116584
+            },
+            {
+              "stage": "PTC_start",
+              "seconds": 0.0018974580000019614
+            },
+            {
+              "stage": "downstream_complete",
+              "seconds": 1.2767616669999988
+            },
+            {
+              "stage": "arm_receipts_written",
+              "seconds": 0.3334595829999998
+            },
+            {
+              "stage": "original_pair_verified_unchanged",
+              "seconds": 0.21202216700000065
+            },
+            {
+              "stage": "root_receipt_written",
+              "seconds": 0.11207920800000082
+            }
+          ],
+          "apply_operations": {
+            "transient_partition_validation": 3.661699999999998e-05,
+            "allocation_and_donors": 0.008132719000000002,
+            "gather_and_notch": 0.023067907,
+            "lowpass_support_output": 1.4678970490000012,
+            "scope": "sum over sequential detector applications within network; network intervals overlap"
+          },
+          "plan_identity_not_attempt_count": 1001,
+          "actual_apply_starts": 1,
+          "actual_apply_completes": 1
+        }
+      ],
+      "python_inclusive_spans": {
+        "raw_parent_PTC_MAP_initial_guard_noise": 33.533315166,
+        "feedback_candidate_publication": 0.075360083,
+        "trajectory_including_endpoint": 40.573681792,
+        "cycle_cleanup": 0.220311835,
+        "source_fit_measurement": 0.09787541799999999,
+        "load_noise_context": 0.042272625,
+        "source_measurements": 0.0019475010000000001,
+        "conditional_endpoint_including_io": 0.042270584,
+        "native_invocation_including_reservation_hashing_publication": 72.356099416,
+        "environment_input_verification": 0.533015625
+      },
+      "launch_source": "43b510b3d01323c2de9cc41b2dfdb8d316b9ca4d"
+    },
+    {
+      "family": "S-C-shoulder",
+      "rep": 1,
+      "ready": 73.531016084,
+      "caller_ready": 73.530131042,
+      "analysis": 73.617909209,
+      "exit": 73.800961667,
+      "CPU": 74.86396200000001,
+      "sampled_tree_RSS": 1624735744,
+      "RTC_wall_occupancy_bounds": [
+        10.248969875,
+        10.657659000999999
+      ],
+      "RTC_fraction_of_exit_bounds": [
+        0.13887312093905702,
+        0.1444108418138074
+      ],
+      "RTC_CPU_bounds": [
+        19.061189,
+        19.346508
+      ],
+      "networks": [
+        {
+          "network": 11,
+          "RTC_seconds": 10.129319125,
+          "process_CPU_envelope": 19.083747999999996,
+          "intervals": [
+            {
+              "stage": "input_digests_verified",
+              "seconds": 0.125665792
+            },
+            {
+              "stage": "APT_verified_and_bound",
+              "seconds": 9.095800000000209e-05
+            },
+            {
+              "stage": "native_samples_loaded",
+              "seconds": 0.793843375
+            },
+            {
+              "stage": "source_probe_start",
+              "seconds": 0.236540333
+            },
+            {
+              "stage": "source_probe_complete",
+              "seconds": 1.874388834
+            },
+            {
+              "stage": "processing_scan_native_projection_complete",
+              "seconds": 0.0008354580000000666
+            },
+            {
+              "stage": "ingress_complete",
+              "seconds": 0.0005809580000000203
+            },
+            {
+              "stage": "spike_screen_start",
+              "seconds": 9.220899999995424e-05
+            },
+            {
+              "stage": "spike_screen_complete",
+              "seconds": 0.14192508300000028
+            },
+            {
+              "stage": "transient_assessment_complete",
+              "seconds": 0.48358766699999967
+            },
+            {
+              "stage": "initial_spectra_complete",
+              "seconds": 1.2507544580000003
+            },
+            {
+              "stage": "initial_learn_complete",
+              "seconds": 0.03757354199999963
+            },
+            {
+              "stage": "initial_evidence_publication_complete",
+              "seconds": 0.17879550000000055
+            },
+            {
+              "stage": "transient_support_decisions_complete",
+              "seconds": 0.07957708299999933
+            },
+            {
+              "stage": "detector_plans_complete",
+              "seconds": 0.27136712500000026
+            },
+            {
+              "stage": "RTC_apply_start",
+              "seconds": 0.0004332500000003847
+            },
+            {
+              "stage": "RTC_apply_complete",
+              "seconds": 1.502700292
+            },
+            {
+              "stage": "output_grid_inspection_complete",
+              "seconds": 0.06056245799999971
+            },
+            {
+              "stage": "RTC_arrays_exported",
+              "seconds": 1.2107483749999997
+            },
+            {
+              "stage": "post_notch_learned",
+              "seconds": 0.9762100829999998
+            },
+            {
+              "stage": "post_notch_matched_outcome",
+              "seconds": 0.9310440419999999
+            },
+            {
+              "stage": "post_notch_outcome_exported",
+              "seconds": 0.8507272920000002
+            },
+            {
+              "stage": "post_lowpass_learned",
+              "seconds": 0.6852327080000009
+            },
+            {
+              "stage": "post_lowpass_matched_outcome",
+              "seconds": 0.6446529170000002
+            },
+            {
+              "stage": "post_lowpass_outcome_exported",
+              "seconds": 0.7816175409999992
+            },
+            {
+              "stage": "relearning_complete",
+              "seconds": 0.02372545899999956
+            },
+            {
+              "stage": "RTC_finalized",
+              "seconds": 0.018084250000001134
+            },
+            {
+              "stage": "CAL_start",
+              "seconds": 0.0005811250000000712
+            },
+            {
+              "stage": "CAL_AST_start",
+              "seconds": 0.01399512499999922
+            },
+            {
+              "stage": "CAL_AST_complete",
+              "seconds": 0.03159508300000091
+            },
+            {
+              "stage": "CAL_learn_complete",
+              "seconds": 0.002157207999999855
+            },
+            {
+              "stage": "CAL_plan_complete",
+              "seconds": 0.02882845899999964
+            },
+            {
+              "stage": "CAL_apply_complete",
+              "seconds": 0.0068185829999993786
+            },
+            {
+              "stage": "CAL_publication_complete",
+              "seconds": 6.03099375
+            },
+            {
+              "stage": "PTC_start",
+              "seconds": 0.001425457999999935
+            },
+            {
+              "stage": "downstream_complete",
+              "seconds": 0.8587230000000012
+            },
+            {
+              "stage": "arm_receipts_written",
+              "seconds": 0.36246512499999994
+            },
+            {
+              "stage": "original_pair_verified_unchanged",
+              "seconds": 0.22794041699999923
+            },
+            {
+              "stage": "root_receipt_written",
+              "seconds": 0.10783270800000011
+            }
+          ],
+          "apply_operations": {
+            "transient_partition_validation": 2.9204999999999982e-05,
+            "allocation_and_donors": 0.007106010000000002,
+            "gather_and_notch": 0.020593545999999994,
+            "lowpass_support_output": 1.47460607,
+            "scope": "sum over sequential detector applications within network; network intervals overlap"
+          },
+          "plan_identity_not_attempt_count": 1001,
+          "actual_apply_starts": 1,
+          "actual_apply_completes": 1
+        },
+        {
+          "network": 12,
+          "RTC_seconds": 10.248969875,
+          "process_CPU_envelope": 19.323949000000002,
+          "intervals": [
+            {
+              "stage": "input_digests_verified",
+              "seconds": 0.119089125
+            },
+            {
+              "stage": "APT_verified_and_bound",
+              "seconds": 0.00012595799999999546
+            },
+            {
+              "stage": "native_samples_loaded",
+              "seconds": 0.680929
+            },
+            {
+              "stage": "source_probe_start",
+              "seconds": 0.24079120900000006
+            },
+            {
+              "stage": "source_probe_complete",
+              "seconds": 1.858307708
+            },
+            {
+              "stage": "processing_scan_native_projection_complete",
+              "seconds": 0.0007881250000001394
+            },
+            {
+              "stage": "ingress_complete",
+              "seconds": 0.0009464580000000389
+            },
+            {
+              "stage": "spike_screen_start",
+              "seconds": 8.654200000002277e-05
+            },
+            {
+              "stage": "spike_screen_complete",
+              "seconds": 0.14718099999999978
+            },
+            {
+              "stage": "transient_assessment_complete",
+              "seconds": 0.3100079170000001
+            },
+            {
+              "stage": "initial_spectra_complete",
+              "seconds": 1.2671191250000002
+            },
+            {
+              "stage": "initial_learn_complete",
+              "seconds": 0.03638529100000021
+            },
+            {
+              "stage": "initial_evidence_publication_complete",
+              "seconds": 0.1601424999999992
+            },
+            {
+              "stage": "transient_support_decisions_complete",
+              "seconds": 0.0859113340000004
+            },
+            {
+              "stage": "detector_plans_complete",
+              "seconds": 0.2764309579999997
+            },
+            {
+              "stage": "RTC_apply_start",
+              "seconds": 0.00040525000000002365
+            },
+            {
+              "stage": "RTC_apply_complete",
+              "seconds": 1.5597132079999998
+            },
+            {
+              "stage": "output_grid_inspection_complete",
+              "seconds": 0.05746345900000005
+            },
+            {
+              "stage": "RTC_arrays_exported",
+              "seconds": 1.266289833000001
+            },
+            {
+              "stage": "post_notch_learned",
+              "seconds": 1.0172054579999994
+            },
+            {
+              "stage": "post_notch_matched_outcome",
+              "seconds": 0.9814060839999996
+            },
+            {
+              "stage": "post_notch_outcome_exported",
+              "seconds": 0.8402554159999998
+            },
+            {
+              "stage": "post_lowpass_learned",
+              "seconds": 0.7171230420000008
+            },
+            {
+              "stage": "post_lowpass_matched_outcome",
+              "seconds": 0.678856583
+            },
+            {
+              "stage": "post_lowpass_outcome_exported",
+              "seconds": 0.7984069169999994
+            },
+            {
+              "stage": "relearning_complete",
+              "seconds": 0.030067332999999863
+            },
+            {
+              "stage": "RTC_finalized",
+              "seconds": 0.018599167000001415
+            },
+            {
+              "stage": "CAL_start",
+              "seconds": 0.0005566249999997552
+            },
+            {
+              "stage": "CAL_AST_start",
+              "seconds": 0.014734875000000258
+            },
+            {
+              "stage": "CAL_AST_complete",
+              "seconds": 0.03012666699999933
+            },
+            {
+              "stage": "CAL_learn_complete",
+              "seconds": 0.002325540999999376
+            },
+            {
+              "stage": "CAL_plan_complete",
+              "seconds": 0.027914416999999858
+            },
+            {
+              "stage": "CAL_apply_complete",
+              "seconds": 0.007435750000000851
+            },
+            {
+              "stage": "CAL_publication_complete",
+              "seconds": 6.298106708000001
+            },
+            {
+              "stage": "PTC_start",
+              "seconds": 0.0013043750000001353
+            },
+            {
+              "stage": "downstream_complete",
+              "seconds": 0.9771260419999983
+            },
+            {
+              "stage": "arm_receipts_written",
+              "seconds": 0.36795550000000077
+            },
+            {
+              "stage": "original_pair_verified_unchanged",
+              "seconds": 0.22166091700000123
+            },
+            {
+              "stage": "root_receipt_written",
+              "seconds": 0.09578404099999815
+            }
+          ],
+          "apply_operations": {
+            "transient_partition_validation": 3.3499999999999994e-05,
+            "allocation_and_donors": 0.007753877000000008,
+            "gather_and_notch": 0.023953259,
+            "lowpass_support_output": 1.5276076570000006,
+            "scope": "sum over sequential detector applications within network; network intervals overlap"
+          },
+          "plan_identity_not_attempt_count": 1001,
+          "actual_apply_starts": 1,
+          "actual_apply_completes": 1
+        }
+      ],
+      "python_inclusive_spans": {
+        "raw_parent_PTC_MAP_initial_guard_noise": 32.01371775,
+        "feedback_candidate_publication": 0.098489458,
+        "trajectory_including_endpoint": 39.920162209,
+        "cycle_cleanup": 0.231002708,
+        "source_fit_measurement": 0.099208832,
+        "load_noise_context": 0.032827375,
+        "source_measurements": 0.00192904,
+        "conditional_endpoint_including_io": 0.041964458,
+        "native_invocation_including_reservation_hashing_publication": 70.361599666,
+        "environment_input_verification": 0.504548542
+      },
+      "launch_source": "43b510b3d01323c2de9cc41b2dfdb8d316b9ca4d"
+    },
+    {
+      "family": "S-REF-rep1",
+      "rep": 1,
+      "ready": 75.162972208,
+      "caller_ready": 75.157719541,
+      "analysis": 75.270830375,
+      "exit": 75.515846166,
+      "CPU": 72.708583,
+      "sampled_tree_RSS": 1740931072,
+      "RTC_wall_occupancy_bounds": [
+        9.992856875,
+        12.922559623999998
+      ],
+      "RTC_fraction_of_exit_bounds": [
+        0.13232794681309085,
+        0.1711238141408552
+      ],
+      "RTC_CPU_bounds": [
+        18.303444,
+        19.069187
+      ],
+      "networks": [
+        {
+          "network": 11,
+          "RTC_seconds": 9.874161625,
+          "process_CPU_envelope": 18.700397,
+          "intervals": [
+            {
+              "stage": "input_digests_verified",
+              "seconds": 0.117427417
+            },
+            {
+              "stage": "APT_verified_and_bound",
+              "seconds": 0.0001980419999999955
+            },
+            {
+              "stage": "native_samples_loaded",
+              "seconds": 0.684296958
+            },
+            {
+              "stage": "source_probe_start",
+              "seconds": 0.226150917
+            },
+            {
+              "stage": "source_probe_complete",
+              "seconds": 1.696335416
+            },
+            {
+              "stage": "processing_scan_native_projection_complete",
+              "seconds": 0.0008021249999998759
+            },
+            {
+              "stage": "ingress_complete",
+              "seconds": 0.0007685420000003162
+            },
+            {
+              "stage": "spike_screen_start",
+              "seconds": 7.96669999996169e-05
+            },
+            {
+              "stage": "spike_screen_complete",
+              "seconds": 0.1354042910000004
+            },
+            {
+              "stage": "transient_assessment_complete",
+              "seconds": 0.4591772089999999
+            },
+            {
+              "stage": "initial_spectra_complete",
+              "seconds": 1.238907458
+            },
+            {
+              "stage": "initial_learn_complete",
+              "seconds": 0.034144624999999706
+            },
+            {
+              "stage": "initial_evidence_publication_complete",
+              "seconds": 0.16599612500000038
+            },
+            {
+              "stage": "transient_support_decisions_complete",
+              "seconds": 0.05865991699999995
+            },
+            {
+              "stage": "detector_plans_complete",
+              "seconds": 0.271751375
+            },
+            {
+              "stage": "RTC_apply_start",
+              "seconds": 0.00038033299999984393
+            },
+            {
+              "stage": "RTC_apply_complete",
+              "seconds": 1.4352782079999997
+            },
+            {
+              "stage": "output_grid_inspection_complete",
+              "seconds": 0.05353083400000003
+            },
+            {
+              "stage": "RTC_arrays_exported",
+              "seconds": 1.21765175
+            },
+            {
+              "stage": "post_notch_learned",
+              "seconds": 0.9730162910000004
+            },
+            {
+              "stage": "post_notch_matched_outcome",
+              "seconds": 0.9316081670000003
+            },
+            {
+              "stage": "post_notch_outcome_exported",
+              "seconds": 0.7756416250000004
+            },
+            {
+              "stage": "post_lowpass_learned",
+              "seconds": 0.6753073329999992
+            },
+            {
+              "stage": "post_lowpass_matched_outcome",
+              "seconds": 0.6481200000000005
+            },
+            {
+              "stage": "post_lowpass_outcome_exported",
+              "seconds": 0.7435160839999995
+            },
+            {
+              "stage": "relearning_complete",
+              "seconds": 0.0386952909999998
+            },
+            {
+              "stage": "RTC_finalized",
+              "seconds": 0.017374709000000266
+            },
+            {
+              "stage": "CAL_start",
+              "seconds": 0.0004420829999993714
+            },
+            {
+              "stage": "CAL_AST_start",
+              "seconds": 0.014089166999999847
+            },
+            {
+              "stage": "CAL_AST_complete",
+              "seconds": 0.02974804100000128
+            },
+            {
+              "stage": "CAL_learn_complete",
+              "seconds": 0.002281625000000176
+            },
+            {
+              "stage": "CAL_plan_complete",
+              "seconds": 0.02670595899999917
+            },
+            {
+              "stage": "CAL_apply_complete",
+              "seconds": 0.006916583000000642
+            },
+            {
+              "stage": "CAL_publication_complete",
+              "seconds": 8.576262499999999
+            },
+            {
+              "stage": "PTC_start",
+              "seconds": 0.0015224580000001708
+            },
+            {
+              "stage": "downstream_complete",
+              "seconds": 0.7525069590000015
+            },
+            {
+              "stage": "arm_receipts_written",
+              "seconds": 0.3242538330000002
+            },
+            {
+              "stage": "original_pair_verified_unchanged",
+              "seconds": 0.20801987499999797
+            },
+            {
+              "stage": "root_receipt_written",
+              "seconds": 0.09014224999999954
+            }
+          ],
+          "apply_operations": {
+            "transient_partition_validation": 3.837799999999994e-05,
+            "allocation_and_donors": 0.006850407999999995,
+            "gather_and_notch": 0.019284846999999994,
+            "lowpass_support_output": 1.4087551649999994,
+            "scope": "sum over sequential detector applications within network; network intervals overlap"
+          },
+          "plan_identity_not_attempt_count": 1001,
+          "actual_apply_starts": 1,
+          "actual_apply_completes": 1
+        },
+        {
+          "network": 12,
+          "RTC_seconds": 9.992856875,
+          "process_CPU_envelope": 18.672234000000003,
+          "intervals": [
+            {
+              "stage": "input_digests_verified",
+              "seconds": 0.117626459
+            },
+            {
+              "stage": "APT_verified_and_bound",
+              "seconds": 8.566599999999813e-05
+            },
+            {
+              "stage": "native_samples_loaded",
+              "seconds": 0.840964917
+            },
+            {
+              "stage": "source_probe_start",
+              "seconds": 0.23031475
+            },
+            {
+              "stage": "source_probe_complete",
+              "seconds": 1.732833833
+            },
+            {
+              "stage": "processing_scan_native_projection_complete",
+              "seconds": 0.0007364590000000781
+            },
+            {
+              "stage": "ingress_complete",
+              "seconds": 0.0004949579999999898
+            },
+            {
+              "stage": "spike_screen_start",
+              "seconds": 8.408299999995705e-05
+            },
+            {
+              "stage": "spike_screen_complete",
+              "seconds": 0.13880145900000018
+            },
+            {
+              "stage": "transient_assessment_complete",
+              "seconds": 0.2907726249999998
+            },
+            {
+              "stage": "initial_spectra_complete",
+              "seconds": 1.2462407500000001
+            },
+            {
+              "stage": "initial_learn_complete",
+              "seconds": 0.03602933300000011
+            },
+            {
+              "stage": "initial_evidence_publication_complete",
+              "seconds": 0.15272420799999953
+            },
+            {
+              "stage": "transient_support_decisions_complete",
+              "seconds": 0.06762170899999997
+            },
+            {
+              "stage": "detector_plans_complete",
+              "seconds": 0.26935704100000013
+            },
+            {
+              "stage": "RTC_apply_start",
+              "seconds": 0.0003515420000006486
+            },
+            {
+              "stage": "RTC_apply_complete",
+              "seconds": 1.4991537919999995
+            },
+            {
+              "stage": "output_grid_inspection_complete",
+              "seconds": 0.05946712500000029
+            },
+            {
+              "stage": "RTC_arrays_exported",
+              "seconds": 1.2757187499999993
+            },
+            {
+              "stage": "post_notch_learned",
+              "seconds": 1.0208663329999998
+            },
+            {
+              "stage": "post_notch_matched_outcome",
+              "seconds": 0.9573164170000013
+            },
+            {
+              "stage": "post_notch_outcome_exported",
+              "seconds": 0.7893627079999987
+            },
+            {
+              "stage": "post_lowpass_learned",
+              "seconds": 0.7126379170000003
+            },
+            {
+              "stage": "post_lowpass_matched_outcome",
+              "seconds": 0.6762298330000007
+            },
+            {
+              "stage": "post_lowpass_outcome_exported",
+              "seconds": 0.7582636669999996
+            },
+            {
+              "stage": "relearning_complete",
+              "seconds": 0.024108666000000056
+            },
+            {
+              "stage": "RTC_finalized",
+              "seconds": 0.017832999999999544
+            },
+            {
+              "stage": "CAL_start",
+              "seconds": 0.0007037089999997193
+            },
+            {
+              "stage": "CAL_AST_start",
+              "seconds": 0.01334341600000144
+            },
+            {
+              "stage": "CAL_AST_complete",
+              "seconds": 0.02826737499999865
+            },
+            {
+              "stage": "CAL_learn_complete",
+              "seconds": 0.0021720839999996855
+            },
+            {
+              "stage": "CAL_plan_complete",
+              "seconds": 0.02571779100000171
+            },
+            {
+              "stage": "CAL_apply_complete",
+              "seconds": 0.00681687499999839
+            },
+            {
+              "stage": "CAL_publication_complete",
+              "seconds": 5.246354834
+            },
+            {
+              "stage": "PTC_start",
+              "seconds": 0.001510791000001177
+            },
+            {
+              "stage": "downstream_complete",
+              "seconds": 1.010094333999998
+            },
+            {
+              "stage": "arm_receipts_written",
+              "seconds": 0.36111454100000273
+            },
+            {
+              "stage": "original_pair_verified_unchanged",
+              "seconds": 0.22960454200000058
+            },
+            {
+              "stage": "root_receipt_written",
+              "seconds": 0.09900087499999799
+            }
+          ],
+          "apply_operations": {
+            "transient_partition_validation": 3.0132000000000016e-05,
+            "allocation_and_donors": 0.007510789000000001,
+            "gather_and_notch": 0.023376552999999998,
+            "lowpass_support_output": 1.4678753329999996,
+            "scope": "sum over sequential detector applications within network; network intervals overlap"
+          },
+          "plan_identity_not_attempt_count": 1001,
+          "actual_apply_starts": 1,
+          "actual_apply_completes": 1
+        }
+      ],
+      "python_inclusive_spans": {
+        "raw_parent_PTC_MAP_initial_guard_noise": 33.655270709,
+        "feedback_candidate_publication": 0.067507666,
+        "trajectory_including_endpoint": 40.0905205,
+        "cycle_cleanup": 0.223415041,
+        "load_noise_context": 0.062986166,
+        "source_fit_measurement": 0.078722958,
+        "source_measurements": 0.001988084,
+        "conditional_endpoint_including_io": 0.052999667,
+        "native_invocation_including_reservation_hashing_publication": 71.849832918,
+        "initial_noise_guard_context_publication": 0.138173958,
+        "environment_input_verification": 0.517189208
+      },
+      "launch_source": "43b510b3d01323c2de9cc41b2dfdb8d316b9ca4d"
+    }
+  ],
+  "resources": {
+    "attempts": {
+      "parent": 5,
+      "endpoint": 5,
+      "trajectory": 5,
+      "feedback": 25
+    },
+    "maximum": {
+      "trajectory": 6,
+      "feedback": 30,
+      "rtc_only": 2
+    },
+    "replacement_trajectories": 0,
+    "actual_campaign_bytes_before_compaction": 6108099246,
+    "peak_ceiling_bytes": 20000000000,
+    "conservative_max_reserved_bound": 6418515097,
+    "cumulative_native_write_bytes": 7182861893,
+    "free_space_reserve_bytes": 2000000000,
+    "storage_scope": "actual reconciled footprint vs conservative charged-stage upper bound; write volume not retained footprint; all planned reservation/free-space gates passed"
+  }
+}

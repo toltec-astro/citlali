@@ -1,0 +1,986 @@
+[
+  {
+    "kind": "event",
+    "event": 36,
+    "detector": 5,
+    "first": 4711,
+    "past_last": 5322,
+    "center": 5016,
+    "rule": "accepted median original offset/sigma",
+    "network": 11,
+    "key": "n11_w0",
+    "channel": 5,
+    "geometric_source_cells": 126,
+    "mapping_available_cells": 611,
+    "peer_channels": [
+      3,
+      8
+    ],
+    "original_x_pre_post_median": [
+      -2.645895886193827e-05,
+      -3.966390686065412e-05
+    ],
+    "original_r_pre_post_median": [
+      9.240174712896804e-05,
+      9.554584436279901e-05
+    ],
+    "original_x_difference_scale": 1.0084548628460603e-06,
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "finite abrupt x transition with supported post-level; original r and peers show related detector-dependent change",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 611,
+      "RTC_x": 0,
+      "CAL": 0,
+      "M0": 0,
+      "T5_residual": 0,
+      "T5_total": 0
+    }
+  },
+  {
+    "kind": "event",
+    "event": 51,
+    "detector": 7,
+    "first": 4711,
+    "past_last": 5322,
+    "center": 5016,
+    "rule": "accepted largest original offset/sigma",
+    "network": 11,
+    "key": "n11_w1",
+    "channel": 7,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 0,
+    "peer_channels": [
+      5,
+      8
+    ],
+    "original_x_pre_post_median": [
+      3.630410748620033e-06,
+      -8.26323007042993e-06
+    ],
+    "original_r_pre_post_median": [
+      8.546812271846887e-05,
+      8.202818767395573e-05
+    ],
+    "original_x_difference_scale": 8.285129607097475e-07,
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "finite abrupt x transition with supported post-level; original r and peers show related detector-dependent change",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 611,
+      "RTC_x": 0,
+      "CAL": 0,
+      "M0": 0,
+      "T5_residual": 0,
+      "T5_total": 0
+    }
+  },
+  {
+    "kind": "event",
+    "event": 37,
+    "detector": 6,
+    "first": 1338,
+    "past_last": 1949,
+    "center": 1643,
+    "rule": "closest original neighboring candidate",
+    "network": 11,
+    "key": "n11_w2",
+    "channel": 6,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 611,
+    "peer_channels": [
+      1,
+      5
+    ],
+    "original_x_pre_post_median": [
+      -2.1703759623579534e-06,
+      1.4934193717667322e-05
+    ],
+    "original_r_pre_post_median": [
+      0.00013153685991441812,
+      0.00013979574277243488
+    ],
+    "original_x_difference_scale": 3.159244350395096e-06,
+    "adjudication": {
+      "label": "unresolved",
+      "reason": "curved/neighboring transition and nonflat post behavior",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 611,
+      "RTC_x": 0,
+      "CAL": 0,
+      "M0": 0,
+      "T5_residual": 0,
+      "T5_total": 0
+    }
+  },
+  {
+    "kind": "event",
+    "event": 68,
+    "detector": 72,
+    "first": 2081,
+    "past_last": 2692,
+    "center": 2386,
+    "rule": "nearest original geometric source context",
+    "network": 11,
+    "key": "n11_w3",
+    "channel": 72,
+    "geometric_source_cells": 236,
+    "mapping_available_cells": 611,
+    "peer_channels": [
+      88,
+      158
+    ],
+    "original_x_pre_post_median": [
+      -2.3652366369955075e-05,
+      -2.2240309171421165e-05
+    ],
+    "original_r_pre_post_median": [
+      0.00010340682757314857,
+      0.0001037175059128954
+    ],
+    "original_x_difference_scale": 1.4211263624981938e-06,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "isolated excursion/noise or smooth returning variation; no sustained discontinuity supported in the reviewed original window",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 611,
+      "RTC_x": 291,
+      "CAL": 145,
+      "M0": 145,
+      "T5_residual": 145,
+      "T5_total": 145
+    }
+  },
+  {
+    "kind": "event",
+    "event": 5,
+    "detector": 1,
+    "first": 2728,
+    "past_last": 3339,
+    "center": 3033,
+    "rule": "unresolved-extent",
+    "network": 11,
+    "key": "n11_w4",
+    "channel": 1,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 611,
+    "peer_channels": [
+      5,
+      6
+    ],
+    "original_x_pre_post_median": [
+      9.613328696181151e-06,
+      1.6330118537199324e-05
+    ],
+    "original_r_pre_post_median": [
+      8.996244680424974e-05,
+      9.541182276337761e-05
+    ],
+    "original_x_difference_scale": 1.5141725181458598e-06,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "isolated excursion/noise or smooth returning variation; no sustained discontinuity supported in the reviewed original window",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 611,
+      "RTC_x": 0,
+      "CAL": 0,
+      "M0": 0,
+      "T5_residual": 0,
+      "T5_total": 0
+    }
+  },
+  {
+    "kind": "event",
+    "event": 0,
+    "detector": 0,
+    "first": 2804,
+    "past_last": 3415,
+    "center": 3109,
+    "rule": "isolated-admission-unavailable",
+    "network": 11,
+    "key": "n11_w5",
+    "channel": 0,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 611,
+    "peer_channels": [
+      3,
+      5
+    ],
+    "original_x_pre_post_median": [
+      4.2109369578651285e-05,
+      3.8418145600901e-05
+    ],
+    "original_r_pre_post_median": [
+      9.621389811335076e-05,
+      9.673401015201116e-05
+    ],
+    "original_x_difference_scale": 2.8668823190508905e-06,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "isolated excursion/noise or smooth returning variation; no sustained discontinuity supported in the reviewed original window",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 611,
+      "RTC_x": 230,
+      "CAL": 115,
+      "M0": 115,
+      "T5_residual": 115,
+      "T5_total": 115
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 120,
+    "first": 1381,
+    "past_last": 1748,
+    "center": 1564,
+    "rule": "time fraction0.2, detector quantile0.25; first covered candidate-free identity; no cleaned selection",
+    "network": 11,
+    "key": "n11_w6",
+    "channel": 120,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      119,
+      121
+    ],
+    "original_x_pre_post_median": [
+      -4.931484629226771e-06,
+      -5.109226687427458e-06
+    ],
+    "original_r_pre_post_median": [
+      0.00010922910557410669,
+      0.00010896813054729748
+    ],
+    "original_x_difference_scale": 2.7259584553997043e-06,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "no persistent abrupt transition visible in original x/r and peer context; oscillation/noise or smooth variation",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 183,
+      "M0": 183,
+      "T5_residual": 183,
+      "T5_total": 183
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 363,
+    "first": 1381,
+    "past_last": 1748,
+    "center": 1564,
+    "rule": "time fraction0.2, detector quantile0.75; first covered candidate-free identity; no cleaned selection",
+    "network": 11,
+    "key": "n11_w7",
+    "channel": 363,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      362,
+      364
+    ],
+    "original_x_pre_post_median": [
+      -2.326375388440543e-05,
+      -2.24686429226968e-05
+    ],
+    "original_r_pre_post_median": [
+      3.4042160399102824e-05,
+      3.4209667322628475e-05
+    ],
+    "original_x_difference_scale": 1.677352777442003e-06,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "no persistent abrupt transition visible in original x/r and peer context; oscillation/noise or smooth variation",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 183,
+      "M0": 183,
+      "T5_residual": 183,
+      "T5_total": 183
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 120,
+    "first": 3727,
+    "past_last": 4094,
+    "center": 3910,
+    "rule": "time fraction0.5, detector quantile0.25; first covered candidate-free identity; no cleaned selection",
+    "network": 11,
+    "key": "n11_w8",
+    "channel": 120,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      119,
+      121
+    ],
+    "original_x_pre_post_median": [
+      9.930577321248682e-07,
+      8.705131074701433e-08
+    ],
+    "original_r_pre_post_median": [
+      0.00011042832355952675,
+      0.00011043811041082728
+    ],
+    "original_x_difference_scale": 2.1441884806791776e-06,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "no persistent abrupt transition visible in original x/r and peer context; oscillation/noise or smooth variation",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 183,
+      "M0": 183,
+      "T5_residual": 183,
+      "T5_total": 183
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 363,
+    "first": 3727,
+    "past_last": 4094,
+    "center": 3910,
+    "rule": "time fraction0.5, detector quantile0.75; first covered candidate-free identity; no cleaned selection",
+    "network": 11,
+    "key": "n11_w9",
+    "channel": 363,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      362,
+      364
+    ],
+    "original_x_pre_post_median": [
+      -2.1056114869526895e-05,
+      -2.1318984391939926e-05
+    ],
+    "original_r_pre_post_median": [
+      3.537365461160284e-05,
+      3.528266668186465e-05
+    ],
+    "original_x_difference_scale": 1.6737052485683362e-06,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "no persistent abrupt transition visible in original x/r and peer context; oscillation/noise or smooth variation",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 183,
+      "M0": 183,
+      "T5_residual": 183,
+      "T5_total": 183
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 120,
+    "first": 6073,
+    "past_last": 6440,
+    "center": 6256,
+    "rule": "time fraction0.8, detector quantile0.25; first covered candidate-free identity; no cleaned selection",
+    "network": 11,
+    "key": "n11_w10",
+    "channel": 120,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      119,
+      121
+    ],
+    "original_x_pre_post_median": [
+      9.401552179251198e-07,
+      3.204817307341501e-07
+    ],
+    "original_r_pre_post_median": [
+      0.00011070264443888741,
+      0.00011044440562905502
+    ],
+    "original_x_difference_scale": 1.3681560506885805e-06,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "no persistent abrupt transition visible in original x/r and peer context; oscillation/noise or smooth variation",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 183,
+      "M0": 183,
+      "T5_residual": 183,
+      "T5_total": 183
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 363,
+    "first": 6073,
+    "past_last": 6440,
+    "center": 6256,
+    "rule": "time fraction0.8, detector quantile0.75; first covered candidate-free identity; no cleaned selection",
+    "network": 11,
+    "key": "n11_w11",
+    "channel": 363,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      362,
+      364
+    ],
+    "original_x_pre_post_median": [
+      -2.255421339991507e-05,
+      -2.2959778516362082e-05
+    ],
+    "original_r_pre_post_median": [
+      3.515853457197459e-05,
+      3.5199638588228296e-05
+    ],
+    "original_x_difference_scale": 1.3446992562222823e-06,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "no persistent abrupt transition visible in original x/r and peer context; oscillation/noise or smooth variation",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 183,
+      "M0": 183,
+      "T5_residual": 183,
+      "T5_total": 183
+    }
+  },
+  {
+    "kind": "event",
+    "event": 25,
+    "detector": 414,
+    "first": 3690,
+    "past_last": 4301,
+    "center": 3995,
+    "rule": "nearest original geometric source context",
+    "network": 12,
+    "key": "n12_w0",
+    "channel": 414,
+    "geometric_source_cells": 309,
+    "mapping_available_cells": 611,
+    "peer_channels": [
+      395,
+      440
+    ],
+    "original_x_pre_post_median": [
+      -1.1423312600905995e-05,
+      -1.183715720434326e-05
+    ],
+    "original_r_pre_post_median": [
+      9.385375699773351e-05,
+      9.38404933979703e-05
+    ],
+    "original_x_difference_scale": 4.597189849409594e-07,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "isolated excursion/noise or smooth returning variation; no sustained discontinuity supported in the reviewed original window",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 611,
+      "RTC_x": 291,
+      "CAL": 146,
+      "M0": 146,
+      "T5_residual": 146,
+      "T5_total": 146
+    }
+  },
+  {
+    "kind": "event",
+    "event": 11,
+    "detector": 168,
+    "first": 7483,
+    "past_last": 7820,
+    "center": 7788,
+    "rule": "unresolved-extent",
+    "network": 12,
+    "key": "n12_w1",
+    "channel": 168,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 0,
+    "peer_channels": [
+      265,
+      406
+    ],
+    "original_x_pre_post_median": [
+      2.0245472946733158e-05,
+      2.0790449665824723e-05
+    ],
+    "original_r_pre_post_median": [
+      0.00010896081664495268,
+      0.00010942940377117668
+    ],
+    "original_x_difference_scale": 3.0295271065905813e-06,
+    "adjudication": {
+      "label": "unresolved",
+      "reason": "near acquisition end, too little post support to judge persistence",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 337,
+      "RTC_x": 0,
+      "CAL": 0,
+      "M0": 0,
+      "T5_residual": 0,
+      "T5_total": 0
+    }
+  },
+  {
+    "kind": "event",
+    "event": 0,
+    "detector": 47,
+    "first": 3672,
+    "past_last": 4283,
+    "center": 3977,
+    "rule": "isolated-admission-unavailable",
+    "network": 12,
+    "key": "n12_w2",
+    "channel": 47,
+    "geometric_source_cells": 130,
+    "mapping_available_cells": 611,
+    "peer_channels": [
+      305,
+      446
+    ],
+    "original_x_pre_post_median": [
+      -7.4188073234059384e-06,
+      -7.963968565781027e-06
+    ],
+    "original_r_pre_post_median": [
+      0.00011432380043103002,
+      0.00011422502982657021
+    ],
+    "original_x_difference_scale": 2.7926006382854926e-06,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "isolated excursion/noise or smooth returning variation; no sustained discontinuity supported in the reviewed original window",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 611,
+      "RTC_x": 291,
+      "CAL": 146,
+      "M0": 146,
+      "T5_residual": 146,
+      "T5_total": 146
+    }
+  },
+  {
+    "kind": "event",
+    "event": 1,
+    "detector": 49,
+    "first": 1320,
+    "past_last": 1931,
+    "center": 1625,
+    "rule": "no-resolved-excursion",
+    "network": 12,
+    "key": "n12_w3",
+    "channel": 49,
+    "geometric_source_cells": 62,
+    "mapping_available_cells": 611,
+    "peer_channels": [
+      354,
+      400
+    ],
+    "original_x_pre_post_median": [
+      4.7209334655391955e-05,
+      4.75580709253286e-05
+    ],
+    "original_r_pre_post_median": [
+      0.00011013079242913908,
+      0.00011114216490367356
+    ],
+    "original_x_difference_scale": 8.100793974193055e-06,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "isolated excursion/noise or smooth returning variation; no sustained discontinuity supported in the reviewed original window",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 611,
+      "RTC_x": 291,
+      "CAL": 146,
+      "M0": 146,
+      "T5_residual": 146,
+      "T5_total": 146
+    }
+  },
+  {
+    "kind": "event",
+    "event": 2,
+    "detector": 49,
+    "first": 4653,
+    "past_last": 5264,
+    "center": 4958,
+    "rule": "original event identity fill",
+    "network": 12,
+    "key": "n12_w4",
+    "channel": 49,
+    "geometric_source_cells": 228,
+    "mapping_available_cells": 611,
+    "peer_channels": [
+      173,
+      416
+    ],
+    "original_x_pre_post_median": [
+      4.877494442886126e-05,
+      4.8538453796575744e-05
+    ],
+    "original_r_pre_post_median": [
+      0.00011319401905400862,
+      0.00011384735043634193
+    ],
+    "original_x_difference_scale": 7.2371075855628996e-06,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "isolated excursion/noise or smooth returning variation; no sustained discontinuity supported in the reviewed original window",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 611,
+      "RTC_x": 291,
+      "CAL": 145,
+      "M0": 145,
+      "T5_residual": 145,
+      "T5_total": 145
+    }
+  },
+  {
+    "kind": "event",
+    "event": 3,
+    "detector": 49,
+    "first": 6430,
+    "past_last": 7041,
+    "center": 6735,
+    "rule": "original event identity fill",
+    "network": 12,
+    "key": "n12_w5",
+    "channel": 49,
+    "geometric_source_cells": 228,
+    "mapping_available_cells": 611,
+    "peer_channels": [
+      314,
+      414
+    ],
+    "original_x_pre_post_median": [
+      4.755815511461755e-05,
+      4.8281931682616765e-05
+    ],
+    "original_r_pre_post_median": [
+      0.00011201113812806149,
+      0.00011168025089369188
+    ],
+    "original_x_difference_scale": 8.024677403049544e-06,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "isolated excursion/noise or smooth returning variation; no sustained discontinuity supported in the reviewed original window",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 611,
+      "RTC_x": 291,
+      "CAL": 146,
+      "M0": 146,
+      "T5_residual": 146,
+      "T5_total": 146
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 122,
+    "first": 1380,
+    "past_last": 1747,
+    "center": 1563,
+    "rule": "time fraction0.2, detector quantile0.25; first covered candidate-free identity; no cleaned selection",
+    "network": 12,
+    "key": "n12_w6",
+    "channel": 122,
+    "geometric_source_cells": 57,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      121,
+      123
+    ],
+    "original_x_pre_post_median": [
+      8.168473170068912e-05,
+      8.362338589285712e-05
+    ],
+    "original_r_pre_post_median": [
+      0.00010972648848066416,
+      0.00011025440941433786
+    ],
+    "original_x_difference_scale": 4.987387462712311e-06,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "no persistent abrupt transition visible in original x/r and peer context; oscillation/noise or smooth variation",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 184,
+      "M0": 184,
+      "T5_residual": 184,
+      "T5_total": 184
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 367,
+    "first": 1380,
+    "past_last": 1747,
+    "center": 1563,
+    "rule": "time fraction0.2, detector quantile0.75; first covered candidate-free identity; no cleaned selection",
+    "network": 12,
+    "key": "n12_w7",
+    "channel": 367,
+    "geometric_source_cells": 54,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      366,
+      368
+    ],
+    "original_x_pre_post_median": [
+      9.145943703370619e-06,
+      1.1676283461812285e-05
+    ],
+    "original_r_pre_post_median": [
+      9.872158651164783e-05,
+      9.877482197960407e-05
+    ],
+    "original_x_difference_scale": 4.661243564301743e-07,
+    "adjudication": {
+      "label": "unresolved",
+      "reason": "smooth rise near geometric source crossing; no resolved finite discontinuity in this short window",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 184,
+      "M0": 184,
+      "T5_residual": 184,
+      "T5_total": 184
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 122,
+    "first": 3726,
+    "past_last": 4093,
+    "center": 3909,
+    "rule": "time fraction0.5, detector quantile0.25; first covered candidate-free identity; no cleaned selection",
+    "network": 12,
+    "key": "n12_w8",
+    "channel": 122,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      121,
+      123
+    ],
+    "original_x_pre_post_median": [
+      8.3189068991703e-05,
+      8.262323059250467e-05
+    ],
+    "original_r_pre_post_median": [
+      0.00011401827749767854,
+      0.0001129606574742268
+    ],
+    "original_x_difference_scale": 5.081060014731304e-06,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "no persistent abrupt transition visible in original x/r and peer context; oscillation/noise or smooth variation",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 184,
+      "M0": 184,
+      "T5_residual": 184,
+      "T5_total": 184
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 367,
+    "first": 3726,
+    "past_last": 4093,
+    "center": 3909,
+    "rule": "time fraction0.5, detector quantile0.75; first covered candidate-free identity; no cleaned selection",
+    "network": 12,
+    "key": "n12_w9",
+    "channel": 367,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      366,
+      368
+    ],
+    "original_x_pre_post_median": [
+      8.568605195274444e-06,
+      7.72056492374935e-06
+    ],
+    "original_r_pre_post_median": [
+      9.971740390822393e-05,
+      9.970786687911556e-05
+    ],
+    "original_x_difference_scale": 4.6838687768893396e-07,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "no persistent abrupt transition visible in original x/r and peer context; oscillation/noise or smooth variation",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 184,
+      "M0": 184,
+      "T5_residual": 184,
+      "T5_total": 184
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 122,
+    "first": 6072,
+    "past_last": 6439,
+    "center": 6255,
+    "rule": "time fraction0.8, detector quantile0.25; first covered candidate-free identity; no cleaned selection",
+    "network": 12,
+    "key": "n12_w10",
+    "channel": 122,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      121,
+      123
+    ],
+    "original_x_pre_post_median": [
+      8.108849258542406e-05,
+      8.102265312534303e-05
+    ],
+    "original_r_pre_post_median": [
+      0.00011425298930166224,
+      0.00011314594300187914
+    ],
+    "original_x_difference_scale": 3.926219107225238e-06,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "no persistent abrupt transition visible in original x/r and peer context; oscillation/noise or smooth variation",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 184,
+      "M0": 184,
+      "T5_residual": 184,
+      "T5_total": 184
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 367,
+    "first": 6072,
+    "past_last": 6439,
+    "center": 6255,
+    "rule": "time fraction0.8, detector quantile0.75; first covered candidate-free identity; no cleaned selection",
+    "network": 12,
+    "key": "n12_w11",
+    "channel": 367,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      366,
+      368
+    ],
+    "original_x_pre_post_median": [
+      6.851434446451815e-06,
+      6.441928706449632e-06
+    ],
+    "original_r_pre_post_median": [
+      9.96201257013453e-05,
+      9.939884552203609e-05
+    ],
+    "original_x_difference_scale": 4.2253313716587987e-07,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "no persistent abrupt transition visible in original x/r and peer context; oscillation/noise or smooth variation",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 184,
+      "M0": 184,
+      "T5_residual": 184,
+      "T5_total": 184
+    }
+  }
+]

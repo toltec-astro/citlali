@@ -1,0 +1,2064 @@
+{
+  "schema": "rtc-multidetector-experiment-v1",
+  "development_reference": "bright-point-base-v1",
+  "observation": 152420,
+  "network": 11,
+  "raw": {
+    "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec11_152420_000_0002_2026_02_19_09_33_45.nc",
+    "sha256": "b27306805b73b3c6192e3ec34a8c449c0a133fa43de7ced68cfa71e44bd8cef5"
+  },
+  "tune": {
+    "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec11_152420_000_0001_2026_02_19_09_32_42_tune.txt",
+    "sha256": "37902e4b5414516d5a7a5ab4bb75dae4f9ab55fec5b88c1704da4c6780cc0fc8"
+  },
+  "manifest": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/manifest.ecsv",
+    "sha256": "3861c9d10e70b04dacac4d35cb74cbf2b782fb3a77758d5f9315ccfdf59a5d3c"
+  },
+  "telescope": {
+    "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/tel_toltec_2026-02-19_152420_00_0002.nc",
+    "sha256": "1b6af4897285516acc45ba6b50b380cc97048254c8c8970f8061e83d9720b568"
+  },
+  "effective_config": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/inputs/effective-point.yaml",
+    "sha256": "2c80e946cdad40bc77dc7a84b7bed90d4d43cf27f80baff2874c441f70ea9580"
+  },
+  "ast_acceptance": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/inputs/ast-source-binding.json",
+    "sha256": "c16dfa3f328e1f3079e6c8ce40effddbea174d47b1f57215b05149c2c1c597a7"
+  },
+  "native_source": "exact-raw-kids-v1",
+  "terminal_request": "rtc-only",
+  "prepare_output_grid": true,
+  "speed_support_comparison": "both",
+  "reassessment_selection": {
+    "intent": "retain-development-candidate",
+    "authority": "owner-bright-point-reference-2026-09-26",
+    "purpose": "frozen bright POINT downstream reference",
+    "positive_rationale": "accepted reference treatment on explicitly configured acquisition"
+  },
+  "decision_apply": {
+    "policy": "existing-authorities-with-unavailable-isolated-admission-v1",
+    "timing_inputs": [
+      {
+        "network": 0,
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec0_152420_000_0002_2026_02_19_09_33_45.nc",
+        "sha256": "b318c753979360c67433eadcf35ecae0698a54a3cd8b3a8143f01d0e46cea1cc"
+      },
+      {
+        "network": 1,
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec1_152420_000_0002_2026_02_19_09_33_45.nc",
+        "sha256": "31e72ad01cc5fb318c0372d92dcf97d28ce77d538b8b42e7b366209a97c48abf"
+      },
+      {
+        "network": 2,
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec2_152420_000_0002_2026_02_19_09_33_45.nc",
+        "sha256": "dc521d4256a7e75110b17006b8a64d449434767545b104886af47971cb32e2a6"
+      },
+      {
+        "network": 3,
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec3_152420_000_0002_2026_02_19_09_33_45.nc",
+        "sha256": "e2c4a75d3d4de784dd9f100da661325957be64c5ccd2fe7ce25d2ae677a63c0f"
+      },
+      {
+        "network": 4,
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec4_152420_000_0002_2026_02_19_09_33_45.nc",
+        "sha256": "5b1efdfaf1c6af136f929734156e81a28ff3c6ffdb424e9b33985b746baa684a"
+      },
+      {
+        "network": 5,
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec5_152420_000_0002_2026_02_19_09_33_45.nc",
+        "sha256": "dd1f4a829da6b26ad5a55dc8109bf3cd53dde64b62fe4c38872aff2e117440e8"
+      },
+      {
+        "network": 7,
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec7_152420_000_0002_2026_02_19_09_33_45.nc",
+        "sha256": "edbf5bc191c552d5bd810837304e116fd193570b3d60e8526073ae2441e9b2ad"
+      },
+      {
+        "network": 8,
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec8_152420_000_0002_2026_02_19_09_33_45.nc",
+        "sha256": "34d55ae3c5886c0798a3abcf6be175a5b9d489278bd690233967b85ce3614c5f"
+      },
+      {
+        "network": 9,
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec9_152420_000_0002_2026_02_19_09_33_45.nc",
+        "sha256": "2f62ffe447ceeda1e7c79a603130af5e649a118255f03e9b5ddf9d4b0bbc2f57"
+      },
+      {
+        "network": 11,
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec11_152420_000_0002_2026_02_19_09_33_45.nc",
+        "sha256": "b27306805b73b3c6192e3ec34a8c449c0a133fa43de7ced68cfa71e44bd8cef5"
+      },
+      {
+        "network": 12,
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec12_152420_000_0002_2026_02_19_09_33_45.nc",
+        "sha256": "007c8296bfd150e68ef8c9e68ad343bff0c47abcc5bce55b5158352c0749c14a"
+      }
+    ],
+    "processing_request": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/inputs/processing-request.json",
+      "sha256": "54877cae5ea1f38f516210040aa1d1486faee4bf91e4ccd83660208243430b6c"
+    }
+  },
+  "filter_plan": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_point_2026-09-27/selected-inputs/a2000-rtc.json",
+    "sha256": "d1e9dbefaaaa8832b4876ac34f23a604270b3bf35bc5d79125c37cddd3a32cab"
+  },
+  "detectors": [
+    {
+      "channel": 0,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 1,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 2,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 3,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 4,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 5,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 6,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 7,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 8,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 9,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 10,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 11,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 12,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 13,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 14,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 15,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 16,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 17,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 18,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 19,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 20,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 21,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 22,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 23,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 24,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 25,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 26,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 27,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 28,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 29,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 30,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 31,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 32,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 33,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 34,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 35,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 36,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 37,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 38,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 39,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 40,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 41,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 42,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 43,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 44,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 45,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 46,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 47,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 48,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 49,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 50,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 51,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 52,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 53,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 54,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 55,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 56,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 57,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 58,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 59,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 60,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 61,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 62,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 63,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 64,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 65,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 66,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 67,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 68,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 69,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 70,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 71,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 72,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 73,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 74,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 75,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 76,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 77,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 78,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 79,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 80,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 81,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 82,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 83,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 84,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 85,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 86,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 87,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 88,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 89,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 90,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 91,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 92,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 93,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 94,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 95,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 96,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 97,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 98,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 99,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 100,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 101,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 102,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 103,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 104,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 105,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 106,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 107,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 108,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 109,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 110,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 111,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 112,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 113,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 114,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 115,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 116,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 117,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 118,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 119,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 120,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 121,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 122,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 123,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 124,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 125,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 126,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 127,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 128,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 129,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 130,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 131,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 132,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 133,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 134,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 135,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 136,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 137,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 138,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 139,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 140,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 141,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 142,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 143,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 144,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 145,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 146,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 147,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 148,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 149,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 150,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 151,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 152,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 153,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 154,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 155,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 156,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 157,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 158,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 159,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 160,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 161,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 162,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 163,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 164,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 165,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 166,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 167,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 168,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 169,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 170,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 171,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 172,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 173,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 174,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 175,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 176,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 177,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 178,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 179,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 180,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 181,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 182,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 183,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 184,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 185,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 186,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 187,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 188,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 189,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 190,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 191,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 192,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 193,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 194,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 195,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 196,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 197,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 198,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 199,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 200,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 201,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 202,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 203,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 204,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 205,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 206,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 207,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 208,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 209,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 210,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 211,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 212,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 213,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 214,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 215,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 216,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 217,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 218,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 219,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 220,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 221,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 222,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 223,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 224,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 225,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 226,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 227,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 228,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 229,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 230,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 231,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 232,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 233,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 234,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 235,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 236,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 237,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 238,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 239,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 240,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 241,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 242,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 243,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 244,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 245,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 246,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 247,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 248,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 249,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 250,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 251,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 252,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 253,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 254,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 255,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 256,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 257,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 258,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 259,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 260,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 261,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 262,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 263,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 264,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 265,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 266,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 267,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 268,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 269,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 270,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 271,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 272,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 273,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 274,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 275,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 276,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 277,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 278,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 279,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 280,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 281,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 282,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 283,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 284,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 285,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 286,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 287,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 288,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 289,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 290,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 291,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 292,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 293,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 294,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 295,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 296,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 297,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 298,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 299,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 300,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 301,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 302,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 303,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 304,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 305,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 306,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 307,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 308,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 309,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 310,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 311,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 312,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 313,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 314,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 315,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 316,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 317,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 318,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 319,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 320,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 321,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 322,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 323,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 324,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 325,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 326,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 327,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 328,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 329,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 330,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 331,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 332,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 333,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 334,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 335,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 336,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 337,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 338,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 339,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 340,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 341,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 342,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 343,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 344,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 345,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 346,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 347,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 348,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 349,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 350,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 351,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 352,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 353,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 354,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 355,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 356,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 357,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 358,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 359,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 360,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 361,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 362,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 363,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 364,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 365,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 366,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 367,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 368,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 369,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 370,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 371,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 372,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 373,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 374,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 375,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 376,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 377,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 378,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 379,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 380,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 381,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 382,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 383,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 384,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 385,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 386,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 387,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 388,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 389,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 390,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 391,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 392,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 393,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 394,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 395,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 396,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 397,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 398,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 399,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 400,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 401,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 402,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 403,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 404,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 405,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 406,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 407,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 408,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 409,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 410,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 411,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 412,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 413,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 414,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 415,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 416,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 417,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 418,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 419,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 420,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 421,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 422,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 423,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 424,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 425,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 426,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 427,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 428,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 429,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 430,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 431,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 432,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 433,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 434,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 435,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 436,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 437,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 438,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 439,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 440,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 441,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 442,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 443,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 444,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 445,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 446,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 447,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 448,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 449,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 450,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 451,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 452,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 453,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 454,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 455,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 456,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 457,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 458,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 459,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 460,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 461,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 462,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 463,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 464,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 465,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 466,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 467,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 468,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 469,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 470,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 471,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 472,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 473,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 474,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 475,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 476,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 477,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 478,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 479,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 480,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 481,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 482,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 483,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 484,
+      "filter": "lowpass"
+    },
+    {
+      "channel": 485,
+      "filter": "lowpass"
+    }
+  ],
+  "source_protection_authority": "owner-bright-POINT-no-spatial-mask-2026-09-26",
+  "rtc_source_probe": {
+    "schema": "point-rtc-source-probe-v1",
+    "authority": "owner-RTC-step-POINT-2026-09-27",
+    "branch": "C-shoulder",
+    "raster": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/freeze/shapes/C-shoulder.fits",
+      "sha256": "1c00ca3313c637a8ddb1bc799d4b100f554dd4e44e9843754456ac4214b61860"
+    }
+  }
+}

@@ -1,0 +1,281 @@
+{
+  "inputs": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/manifest.ecsv",
+      "sha256": "3861c9d10e70b04dacac4d35cb74cbf2b782fb3a77758d5f9315ccfdf59a5d3c",
+      "bytes": 7657,
+      "role": "canonical APT-v2 component/receipt",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/sha256-8dd226355eafbbf9b803d1a8001a31a9e852b956040d64e0495d7db2da5974d4.apt.ecsv",
+      "sha256": "8dd226355eafbbf9b803d1a8001a31a9e852b956040d64e0495d7db2da5974d4",
+      "bytes": 3276105,
+      "role": "canonical APT-v2 component/receipt",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/sha256-a90f2ac296f66a121351c4bd07f43f6de4cf3ca1dd9e80743b102c0eea20d15c.baseline-apt.ecsv",
+      "sha256": "a90f2ac296f66a121351c4bd07f43f6de4cf3ca1dd9e80743b102c0eea20d15c",
+      "bytes": 3150931,
+      "role": "canonical APT-v2 component/receipt",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/sha256-4c0addc459aeb97658048a58d3fcf64682efcb02c9e605f5e2eb7a51abd12002.baseline-fields.ecsv",
+      "sha256": "4c0addc459aeb97658048a58d3fcf64682efcb02c9e605f5e2eb7a51abd12002",
+      "bytes": 10478,
+      "role": "canonical APT-v2 component/receipt",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/sha256-0d3d7a0b28302a27f152fd221bb0ec431df8994fa88b586a322f0b44228930de.baseline-manifest.ecsv",
+      "sha256": "0d3d7a0b28302a27f152fd221bb0ec431df8994fa88b586a322f0b44228930de",
+      "bytes": 3373,
+      "role": "canonical APT-v2 component/receipt",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/sha256-8b21c8135375876fa28459efcd075db132ad40aa4e7dfaa05061eaaaa60c0344.baseline-receipt.txt",
+      "sha256": "8b21c8135375876fa28459efcd075db132ad40aa4e7dfaa05061eaaaa60c0344",
+      "bytes": 283,
+      "role": "canonical APT-v2 component/receipt",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/sha256-4ad9b421100523cfdb9cbc3d06e1da55b77f518c82f6f5f2004a62866c6bd77d.baseline-sources.ecsv",
+      "sha256": "4ad9b421100523cfdb9cbc3d06e1da55b77f518c82f6f5f2004a62866c6bd77d",
+      "bytes": 3425,
+      "role": "canonical APT-v2 component/receipt",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/sha256-d02dc1a9cdbf9d0cf1fd15420f56cf5cf72f979bcbbba836d6b17a58df955b3b.exceptions.ecsv",
+      "sha256": "d02dc1a9cdbf9d0cf1fd15420f56cf5cf72f979bcbbba836d6b17a58df955b3b",
+      "bytes": 3274,
+      "role": "canonical APT-v2 component/receipt",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/sha256-4b20cc8b2410124cc1151cb170806e7047e87ea80603e352a3c16f5c1084c154.fields.ecsv",
+      "sha256": "4b20cc8b2410124cc1151cb170806e7047e87ea80603e352a3c16f5c1084c154",
+      "bytes": 11158,
+      "role": "canonical APT-v2 component/receipt",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/sha256-5fccd008cdef072985e4ad3beb6dc4e994e791c3da645c60cd6d84bed0e10419.relation.ecsv",
+      "sha256": "5fccd008cdef072985e4ad3beb6dc4e994e791c3da645c60cd6d84bed0e10419",
+      "bytes": 1587346,
+      "role": "canonical APT-v2 component/receipt",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/sha256-7a7e1ee193a156a154d3009d73cb136a43a1656bd82c077b74f6e4dc1e66e47e.sources.ecsv",
+      "sha256": "7a7e1ee193a156a154d3009d73cb136a43a1656bd82c077b74f6e4dc1e66e47e",
+      "bytes": 4755,
+      "role": "canonical APT-v2 component/receipt",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/manifest.ecsv.sha256",
+      "sha256": "44628beca28a4e30a313575d6b238b8403be56e32f003bac4a02374120e239e9",
+      "bytes": 283,
+      "role": "canonical APT-v2 component/receipt",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/tel_toltec_2026-02-19_152420_00_0002.nc",
+      "sha256": "1b6af4897285516acc45ba6b50b380cc97048254c8c8970f8061e83d9720b568",
+      "bytes": 1323296,
+      "role": "original telescope",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/hwpr_152420_000_0002_2026_02_19_09_33_45.nc",
+      "sha256": "d9577f4e35140d538ebf937ac317b0a3d9b42fe8a144fb456e88d42f32ed2f8d",
+      "bytes": 850072,
+      "role": "auxiliary listed in config; HWPR inert with polarimetry disabled",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec0_152420_000_0002_2026_02_19_09_33_45.nc",
+      "sha256": "b318c753979360c67433eadcf35ecae0698a54a3cd8b3a8143f01d0e46cea1cc",
+      "bytes": 39198600,
+      "role": "native timestamp-only segmentation input",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec1_152420_000_0002_2026_02_19_09_33_45.nc",
+      "sha256": "31e72ad01cc5fb318c0372d92dcf97d28ce77d538b8b42e7b366209a97c48abf",
+      "bytes": 30807528,
+      "role": "native timestamp-only segmentation input",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec2_152420_000_0002_2026_02_19_09_33_45.nc",
+      "sha256": "dc521d4256a7e75110b17006b8a64d449434767545b104886af47971cb32e2a6",
+      "bytes": 31794984,
+      "role": "native timestamp-only segmentation input",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec3_152420_000_0002_2026_02_19_09_33_45.nc",
+      "sha256": "e2c4a75d3d4de784dd9f100da661325957be64c5ccd2fe7ce25d2ae677a63c0f",
+      "bytes": 33213720,
+      "role": "native timestamp-only segmentation input",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec4_152420_000_0002_2026_02_19_09_33_45.nc",
+      "sha256": "5b1efdfaf1c6af136f929734156e81a28ff3c6ffdb424e9b33985b746baa684a",
+      "bytes": 33151912,
+      "role": "native timestamp-only segmentation input",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec5_152420_000_0002_2026_02_19_09_33_45.nc",
+      "sha256": "dd1f4a829da6b26ad5a55dc8109bf3cd53dde64b62fe4c38872aff2e117440e8",
+      "bytes": 29573736,
+      "role": "native timestamp-only segmentation input",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec7_152420_000_0002_2026_02_19_09_33_45.nc",
+      "sha256": "edbf5bc191c552d5bd810837304e116fd193570b3d60e8526073ae2441e9b2ad",
+      "bytes": 26245672,
+      "role": "native timestamp-only segmentation input",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec8_152420_000_0002_2026_02_19_09_33_45.nc",
+      "sha256": "34d55ae3c5886c0798a3abcf6be175a5b9d489278bd690233967b85ce3614c5f",
+      "bytes": 28711464,
+      "role": "native timestamp-only segmentation input",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec9_152420_000_0002_2026_02_19_09_33_45.nc",
+      "sha256": "2f62ffe447ceeda1e7c79a603130af5e649a118255f03e9b5ddf9d4b0bbc2f57",
+      "bytes": 30438536,
+      "role": "native timestamp-only segmentation input",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec11_152420_000_0002_2026_02_19_09_33_45.nc",
+      "sha256": "b27306805b73b3c6192e3ec34a8c449c0a133fa43de7ced68cfa71e44bd8cef5",
+      "bytes": 30310512,
+      "role": "detector raw",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec11_152420_000_0001_2026_02_19_09_32_42_tune.txt",
+      "sha256": "37902e4b5414516d5a7a5ab4bb75dae4f9ab55fec5b88c1704da4c6780cc0fc8",
+      "bytes": 100674,
+      "role": "consumed processed KMP text; associated raw/processed NC already available but not required",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec12_152420_000_0002_2026_02_19_09_33_45.nc",
+      "sha256": "007c8296bfd150e68ef8c9e68ad343bff0c47abcc5bce55b5158352c0749c14a",
+      "bytes": 30624184,
+      "role": "detector raw",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec12_152420_000_0001_2026_02_19_09_32_42_tune.txt",
+      "sha256": "103d63d1a63906cb9edf94acb1cddd894e404c1ba52341b27522128446d634fe",
+      "bytes": 102126,
+      "role": "consumed processed KMP text; associated raw/processed NC already available but not required",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_point_2026-09-27/selected-inputs/point_152420.yaml",
+      "sha256": "f1a2366a002aeaeaba16d1c372511738df6130be015b189300202d2850165ab7",
+      "bytes": 13282,
+      "role": "explicit original acquisition configuration",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_point_2026-09-27/selected-inputs/reference.json",
+      "sha256": "318a328a1c947fdb0b961edb3a32f372d0c994d1e1d31e61243ee55bbf0b9bb5",
+      "bytes": 3388,
+      "role": "versioned bright-POINT recipe",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_point_2026-09-27/selected-inputs/a2000-rtc.json",
+      "sha256": "d1e9dbefaaaa8832b4876ac34f23a604270b3bf35bc5d79125c37cddd3a32cab",
+      "bytes": 9096,
+      "role": "RTC owner filter plan",
+      "local": true,
+      "download_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_point_2026-09-27/selected-inputs/map-owner.json",
+      "sha256": "219f6641b40a1cfc049eae24e320a14fe06f014bf804a87223a4b8772ea932aa",
+      "bytes": 667,
+      "role": "MAP frame/beam/coefficient authority",
+      "local": true,
+      "download_bytes": 0
+    }
+  ],
+  "native_inventory": [
+    {
+      "network": 11,
+      "raw": {
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec11_152420_000_0002_2026_02_19_09_33_45.nc",
+        "sha256": "b27306805b73b3c6192e3ec34a8c449c0a133fa43de7ced68cfa71e44bd8cef5"
+      },
+      "tune": {
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec11_152420_000_0001_2026_02_19_09_32_42_tune.txt",
+        "sha256": "37902e4b5414516d5a7a5ab4bb75dae4f9ab55fec5b88c1704da4c6780cc0fc8"
+      },
+      "rows": 7690,
+      "channels": 486
+    },
+    {
+      "network": 12,
+      "raw": {
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec12_152420_000_0002_2026_02_19_09_33_45.nc",
+        "sha256": "007c8296bfd150e68ef8c9e68ad343bff0c47abcc5bce55b5158352c0749c14a"
+      },
+      "tune": {
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec12_152420_000_0001_2026_02_19_09_32_42_tune.txt",
+        "sha256": "103d63d1a63906cb9edf94acb1cddd894e404c1ba52341b27522128446d634fe"
+      },
+      "rows": 7691,
+      "channels": 491
+    }
+  ],
+  "download_bytes": 0
+}

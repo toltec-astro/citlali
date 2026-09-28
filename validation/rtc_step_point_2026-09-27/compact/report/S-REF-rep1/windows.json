@@ -1,0 +1,992 @@
+[
+  {
+    "kind": "event",
+    "event": 29,
+    "detector": 7,
+    "first": 5740,
+    "past_last": 6351,
+    "center": 6045,
+    "rule": "accepted median original offset/sigma",
+    "network": 11,
+    "key": "n11_w0",
+    "channel": 7,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 611,
+    "peer_channels": [
+      2,
+      357
+    ],
+    "original_x_pre_post_median": [
+      2.9437496177424694e-06,
+      -2.2787231668831316e-05
+    ],
+    "original_r_pre_post_median": [
+      0.00011396925655205786,
+      0.00011222722708387523
+    ],
+    "original_x_difference_scale": 1.828580765675966e-06,
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "Finite overshoot then persistent lower x plateau; weak r response and peer discontinuity.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 611,
+      "RTC_x": 0,
+      "CAL": 0,
+      "M0": 0,
+      "T5_residual": 0,
+      "T5_total": 0
+    }
+  },
+  {
+    "kind": "event",
+    "event": 16,
+    "detector": 5,
+    "first": 2246,
+    "past_last": 2857,
+    "center": 2551,
+    "rule": "accepted largest original offset/sigma",
+    "network": 11,
+    "key": "n11_w1",
+    "channel": 5,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 0,
+    "peer_channels": [
+      6
+    ],
+    "original_x_pre_post_median": [
+      2.029344994491009e-05,
+      8.9872521268086e-06
+    ],
+    "original_r_pre_post_median": [
+      9.294496770469541e-05,
+      9.379891511303992e-05
+    ],
+    "original_x_difference_scale": 5.85710100380793e-07,
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "Abrupt large x decrease with supported sloping post plateau; r changes sign at same time, peers respond.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 611,
+      "RTC_x": 0,
+      "CAL": 0,
+      "M0": 0,
+      "T5_residual": 0,
+      "T5_total": 0
+    }
+  },
+  {
+    "kind": "event",
+    "event": 12,
+    "detector": 3,
+    "first": 6688,
+    "past_last": 7299,
+    "center": 6993,
+    "rule": "unresolved-extent",
+    "network": 11,
+    "key": "n11_w2",
+    "channel": 3,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 0,
+    "peer_channels": [
+      9
+    ],
+    "original_x_pre_post_median": [
+      -3.331759412608718e-05,
+      -3.510975521726394e-06
+    ],
+    "original_r_pre_post_median": [
+      6.371048109602429e-05,
+      7.308881870075747e-05
+    ],
+    "original_x_difference_scale": 2.2025115469143562e-06,
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "Two-stage finite rise with supported post level in x and r; neighboring transition complicates extent.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 611,
+      "RTC_x": 0,
+      "CAL": 0,
+      "M0": 0,
+      "T5_residual": 0,
+      "T5_total": 0
+    }
+  },
+  {
+    "kind": "event",
+    "event": 100,
+    "detector": 300,
+    "first": 6971,
+    "past_last": 7582,
+    "center": 7276,
+    "rule": "nearest original geometric source context",
+    "network": 11,
+    "key": "n11_w3",
+    "channel": 300,
+    "geometric_source_cells": 335,
+    "mapping_available_cells": 611,
+    "peer_channels": [
+      166,
+      373
+    ],
+    "original_x_pre_post_median": [
+      5.727480119577175e-06,
+      5.12580929492278e-06
+    ],
+    "original_r_pre_post_median": [
+      8.074508770018614e-05,
+      8.063145210804666e-05
+    ],
+    "original_x_difference_scale": 1.0042714217242448e-06,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "Source-adjacent ringing/pulse returns to previous level; no supported persistent offset in this window.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 611,
+      "RTC_x": 123,
+      "CAL": 61,
+      "M0": 61,
+      "T5_residual": 61,
+      "T5_total": 61
+    }
+  },
+  {
+    "kind": "event",
+    "event": null,
+    "detector": 462,
+    "first": 2105,
+    "past_last": 2472,
+    "center": 2288,
+    "rule": "retained original-IQ discovery maximum, first ranked tone; acquisition receiver-time anchor, nearest ALIGN sample; not selected on cleaned result",
+    "discovery_key": "o152420_n11_s4",
+    "discovery_peers": [
+      215,
+      274,
+      308
+    ],
+    "anchor_residual_seconds": -0.00032782554626464844,
+    "network": 11,
+    "key": "n11_w4",
+    "channel": 462,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      215,
+      274,
+      308
+    ],
+    "original_x_pre_post_median": [
+      1.9896615182319622e-06,
+      6.670172978374303e-06
+    ],
+    "original_r_pre_post_median": [
+      0.00010879407416516423,
+      0.00010902922964826239
+    ],
+    "original_x_difference_scale": 5.40845137236586e-07,
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "Original discovery x rise reaches supported changed level, coherent peers, little r change; no nearby production event.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 183,
+      "M0": 183,
+      "T5_residual": 183,
+      "T5_total": 183
+    }
+  },
+  {
+    "kind": "event",
+    "event": null,
+    "detector": 462,
+    "first": 5846,
+    "past_last": 6213,
+    "center": 6029,
+    "rule": "retained original-IQ discovery maximum, first ranked tone; acquisition receiver-time anchor, nearest ALIGN sample; not selected on cleaned result",
+    "discovery_key": "o152420_n11_s10",
+    "discovery_peers": [
+      215,
+      308,
+      287
+    ],
+    "anchor_residual_seconds": -0.00030493736267089844,
+    "network": 11,
+    "key": "n11_w5",
+    "channel": 462,
+    "geometric_source_cells": 66,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      215,
+      287,
+      308
+    ],
+    "original_x_pre_post_median": [
+      2.995717486508902e-06,
+      7.77955932081327e-06
+    ],
+    "original_r_pre_post_median": [
+      0.00010889227581644259,
+      0.00010899154900763383
+    ],
+    "original_x_difference_scale": 5.101616785295057e-07,
+    "adjudication": {
+      "label": "unresolved",
+      "reason": "Source-adjacent x rise followed by curved decay and oscillation; persistence beyond excerpt not established.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 184,
+      "M0": 184,
+      "T5_residual": 184,
+      "T5_total": 184
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 119,
+    "first": 1354,
+    "past_last": 1721,
+    "center": 1537,
+    "rule": "time fraction0.2, detector quantile0.25; first covered candidate-free identity; no cleaned selection",
+    "network": 11,
+    "key": "n11_w6",
+    "channel": 119,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      118,
+      120
+    ],
+    "original_x_pre_post_median": [
+      -1.1792711959123419e-05,
+      -1.2706394557341517e-05
+    ],
+    "original_r_pre_post_median": [
+      0.00010265366831600098,
+      0.0001025035393359492
+    ],
+    "original_x_difference_scale": 7.031708373406897e-07,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "Noise or smoothly changing baseline/oscillation; no supported abrupt persistent offset in reviewed original x/r.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 184,
+      "M0": 184,
+      "T5_residual": 184,
+      "T5_total": 184
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 363,
+    "first": 1354,
+    "past_last": 1721,
+    "center": 1537,
+    "rule": "time fraction0.2, detector quantile0.75; first covered candidate-free identity; no cleaned selection",
+    "network": 11,
+    "key": "n11_w7",
+    "channel": 363,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      362,
+      364
+    ],
+    "original_x_pre_post_median": [
+      9.970607423540236e-06,
+      9.346171698031791e-06
+    ],
+    "original_r_pre_post_median": [
+      6.182624422496176e-05,
+      6.184000169612462e-05
+    ],
+    "original_x_difference_scale": 1.0556381835957422e-06,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "Noise or smoothly changing baseline/oscillation; no supported abrupt persistent offset in reviewed original x/r.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 184,
+      "M0": 184,
+      "T5_residual": 184,
+      "T5_total": 184
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 119,
+    "first": 3661,
+    "past_last": 4028,
+    "center": 3844,
+    "rule": "time fraction0.5, detector quantile0.25; first covered candidate-free identity; no cleaned selection",
+    "network": 11,
+    "key": "n11_w8",
+    "channel": 119,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      118,
+      120
+    ],
+    "original_x_pre_post_median": [
+      -1.2093910858227118e-05,
+      -1.1508875599433491e-05
+    ],
+    "original_r_pre_post_median": [
+      0.000102907171806042,
+      0.00010271943940134855
+    ],
+    "original_x_difference_scale": 6.85120337253505e-07,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "Noise or smoothly changing baseline/oscillation; no supported abrupt persistent offset in reviewed original x/r.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 183,
+      "M0": 183,
+      "T5_residual": 183,
+      "T5_total": 183
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 363,
+    "first": 3661,
+    "past_last": 4028,
+    "center": 3844,
+    "rule": "time fraction0.5, detector quantile0.75; first covered candidate-free identity; no cleaned selection",
+    "network": 11,
+    "key": "n11_w9",
+    "channel": 363,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      362,
+      364
+    ],
+    "original_x_pre_post_median": [
+      1.6298742335354664e-05,
+      1.6517942296616157e-05
+    ],
+    "original_r_pre_post_median": [
+      6.182133304823834e-05,
+      6.18038827234375e-05
+    ],
+    "original_x_difference_scale": 1.2758636052807348e-06,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "Noise or smoothly changing baseline/oscillation; no supported abrupt persistent offset in reviewed original x/r.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 183,
+      "M0": 183,
+      "T5_residual": 183,
+      "T5_total": 183
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 119,
+    "first": 5968,
+    "past_last": 6335,
+    "center": 6151,
+    "rule": "time fraction0.8, detector quantile0.25; first covered candidate-free identity; no cleaned selection",
+    "network": 11,
+    "key": "n11_w10",
+    "channel": 119,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      118,
+      120
+    ],
+    "original_x_pre_post_median": [
+      -1.1826960090619504e-05,
+      -1.1860366692461174e-05
+    ],
+    "original_r_pre_post_median": [
+      0.0001027570258948341,
+      0.00010290653733594492
+    ],
+    "original_x_difference_scale": 6.975560220474116e-07,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "Noise or smoothly changing baseline/oscillation; no supported abrupt persistent offset in reviewed original x/r.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 184,
+      "M0": 184,
+      "T5_residual": 184,
+      "T5_total": 184
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 363,
+    "first": 5968,
+    "past_last": 6335,
+    "center": 6151,
+    "rule": "time fraction0.8, detector quantile0.75; first covered candidate-free identity; no cleaned selection",
+    "network": 11,
+    "key": "n11_w11",
+    "channel": 363,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      362,
+      364
+    ],
+    "original_x_pre_post_median": [
+      1.5296897914641322e-05,
+      1.5703617747229006e-05
+    ],
+    "original_r_pre_post_median": [
+      6.1795125701282e-05,
+      6.196382388901965e-05
+    ],
+    "original_x_difference_scale": 1.3484039428923208e-06,
+    "adjudication": {
+      "label": "unresolved",
+      "reason": "Broad x rise from initial low level, with only short pre-support; finite step versus smooth/common change uncertain.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 184,
+      "M0": 184,
+      "T5_residual": 184,
+      "T5_total": 184
+    }
+  },
+  {
+    "kind": "event",
+    "event": 20,
+    "detector": 135,
+    "first": 1396,
+    "past_last": 2007,
+    "center": 1701,
+    "rule": "accepted median original offset/sigma",
+    "network": 12,
+    "key": "n12_w0",
+    "channel": 135,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 0,
+    "peer_channels": [
+      134,
+      400
+    ],
+    "original_x_pre_post_median": [
+      1.2017073590177543e-05,
+      1.5316290710337957e-05
+    ],
+    "original_r_pre_post_median": [
+      0.0001053194992594259,
+      0.00010964915076824781
+    ],
+    "original_x_difference_scale": 6.001616838251523e-07,
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "Repeated finite transitions; center raises x and r to supported changed levels.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 611,
+      "RTC_x": 0,
+      "CAL": 0,
+      "M0": 0,
+      "T5_residual": 0,
+      "T5_total": 0
+    }
+  },
+  {
+    "kind": "event",
+    "event": 57,
+    "detector": 335,
+    "first": 1395,
+    "past_last": 2006,
+    "center": 1700,
+    "rule": "closest original neighboring candidate",
+    "network": 12,
+    "key": "n12_w1",
+    "channel": 335,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 0,
+    "peer_channels": [
+      402,
+      405
+    ],
+    "original_x_pre_post_median": [
+      -1.9702244940573855e-06,
+      -2.8130638623048414e-06
+    ],
+    "original_r_pre_post_median": [
+      8.833340759649256e-05,
+      9.480983923084204e-05
+    ],
+    "original_x_difference_scale": 8.011175650282152e-07,
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "Persistent r-dominated upward transition; x remains near its prior level; nearby earlier transition.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 611,
+      "RTC_x": 0,
+      "CAL": 0,
+      "M0": 0,
+      "T5_residual": 0,
+      "T5_total": 0
+    }
+  },
+  {
+    "kind": "event",
+    "event": 0,
+    "detector": 7,
+    "first": 1157,
+    "past_last": 1768,
+    "center": 1462,
+    "rule": "isolated-admission-unavailable",
+    "network": 12,
+    "key": "n12_w2",
+    "channel": 7,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 611,
+    "peer_channels": [
+      18,
+      274
+    ],
+    "original_x_pre_post_median": [
+      5.02622947528723e-05,
+      5.00295654777384e-05
+    ],
+    "original_r_pre_post_median": [
+      8.957435521255919e-05,
+      7.893514113552144e-05
+    ],
+    "original_x_difference_scale": 2.618913866650093e-06,
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "r-dominated lower plateau for about two seconds followed by return; finite discontinuities, not isolated impulse.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 611,
+      "RTC_x": 291,
+      "CAL": 145,
+      "M0": 145,
+      "T5_residual": 145,
+      "T5_total": 145
+    }
+  },
+  {
+    "kind": "event",
+    "event": 41,
+    "detector": 303,
+    "first": 1396,
+    "past_last": 2007,
+    "center": 1701,
+    "rule": "nearest original geometric source context",
+    "network": 12,
+    "key": "n12_w3",
+    "channel": 303,
+    "geometric_source_cells": 423,
+    "mapping_available_cells": 611,
+    "peer_channels": [
+      370,
+      402
+    ],
+    "original_x_pre_post_median": [
+      -4.278672007812481e-05,
+      -4.1891993478538005e-05
+    ],
+    "original_r_pre_post_median": [
+      7.475499593639814e-05,
+      7.987718398069087e-05
+    ],
+    "original_x_difference_scale": 8.381283491978579e-07,
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "Abrupt persistent r rise coincident with source context; x contains smooth source/common variation.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 611,
+      "RTC_x": 0,
+      "CAL": 0,
+      "M0": 0,
+      "T5_residual": 0,
+      "T5_total": 0
+    }
+  },
+  {
+    "kind": "event",
+    "event": null,
+    "detector": 206,
+    "first": 510,
+    "past_last": 877,
+    "center": 693,
+    "rule": "retained original-IQ discovery maximum, first ranked tone; acquisition receiver-time anchor, nearest ALIGN sample; not selected on cleaned result",
+    "discovery_key": "o152420_n12_s2",
+    "discovery_peers": [
+      239,
+      234,
+      271
+    ],
+    "anchor_residual_seconds": -0.00032520294189453125,
+    "network": 12,
+    "key": "n12_w4",
+    "channel": 206,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      234,
+      239,
+      271
+    ],
+    "original_x_pre_post_median": [
+      1.6150428368306428e-06,
+      -3.2028697666929217e-06
+    ],
+    "original_r_pre_post_median": [
+      8.032993147350866e-05,
+      8.02271009624751e-05
+    ],
+    "original_x_difference_scale": 1.3284825526584782e-06,
+    "adjudication": {
+      "label": "unresolved",
+      "reason": "Original discovery x dip has a short low plateau then substantial recovery; peer behavior similar; step versus finite excursion uncertain.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 184,
+      "M0": 184,
+      "T5_residual": 184,
+      "T5_total": 184
+    }
+  },
+  {
+    "kind": "event",
+    "event": null,
+    "detector": 206,
+    "first": 5099,
+    "past_last": 5466,
+    "center": 5282,
+    "rule": "retained original-IQ discovery maximum, first ranked tone; acquisition receiver-time anchor, nearest ALIGN sample; not selected on cleaned result",
+    "discovery_key": "o152420_n12_s9",
+    "discovery_peers": [
+      239,
+      295,
+      274
+    ],
+    "anchor_residual_seconds": -0.00029540061950683594,
+    "network": 12,
+    "key": "n12_w5",
+    "channel": 206,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      239,
+      274,
+      295
+    ],
+    "original_x_pre_post_median": [
+      -7.17926564274913e-08,
+      -9.01927369767602e-06
+    ],
+    "original_r_pre_post_median": [
+      8.063258793758842e-05,
+      8.04569979168443e-05
+    ],
+    "original_x_difference_scale": 1.6136135358790715e-06,
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "Original discovery x decline reaches supported lower level with peer response and little r change; no nearby production event.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 183,
+      "M0": 183,
+      "T5_residual": 183,
+      "T5_total": 183
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 122,
+    "first": 1355,
+    "past_last": 1722,
+    "center": 1538,
+    "rule": "time fraction0.2, detector quantile0.25; first covered candidate-free identity; no cleaned selection",
+    "network": 12,
+    "key": "n12_w6",
+    "channel": 122,
+    "geometric_source_cells": 16,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      121,
+      123
+    ],
+    "original_x_pre_post_median": [
+      7.92691097650446e-05,
+      7.800207432771282e-05
+    ],
+    "original_r_pre_post_median": [
+      9.707406499414413e-05,
+      9.357728180889445e-05
+    ],
+    "original_x_difference_scale": 2.3510865281302017e-06,
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "Candidate-free window contains small r decrease near 1 s, a supported low plateau, and abrupt return near 2.85 s; weak x corroboration.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 183,
+      "M0": 183,
+      "T5_residual": 183,
+      "T5_total": 183
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 367,
+    "first": 1355,
+    "past_last": 1722,
+    "center": 1538,
+    "rule": "time fraction0.2, detector quantile0.75; first covered candidate-free identity; no cleaned selection",
+    "network": 12,
+    "key": "n12_w7",
+    "channel": 367,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      366,
+      368
+    ],
+    "original_x_pre_post_median": [
+      4.2715073007402605e-06,
+      3.6481888392192264e-06
+    ],
+    "original_r_pre_post_median": [
+      9.736225713705821e-05,
+      9.643975500079386e-05
+    ],
+    "original_x_difference_scale": 5.751789293798235e-07,
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "Same physical epoch as n12_w6: small r decrease then plateau and return; shared occurrence, not independent event epoch.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 183,
+      "M0": 183,
+      "T5_residual": 183,
+      "T5_total": 183
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 122,
+    "first": 3662,
+    "past_last": 4029,
+    "center": 3845,
+    "rule": "time fraction0.5, detector quantile0.25; first covered candidate-free identity; no cleaned selection",
+    "network": 12,
+    "key": "n12_w8",
+    "channel": 122,
+    "geometric_source_cells": 111,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      121,
+      123
+    ],
+    "original_x_pre_post_median": [
+      7.793106324807111e-05,
+      7.843537853399143e-05
+    ],
+    "original_r_pre_post_median": [
+      0.00010532258419589783,
+      0.00010525724102990228
+    ],
+    "original_x_difference_scale": 2.5768124043129657e-06,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "Noise or smoothly changing baseline/oscillation; no supported abrupt persistent offset in reviewed original x/r.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 184,
+      "M0": 184,
+      "T5_residual": 184,
+      "T5_total": 184
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 367,
+    "first": 3662,
+    "past_last": 4029,
+    "center": 3845,
+    "rule": "time fraction0.5, detector quantile0.75; first covered candidate-free identity; no cleaned selection",
+    "network": 12,
+    "key": "n12_w9",
+    "channel": 367,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      366,
+      368
+    ],
+    "original_x_pre_post_median": [
+      4.032394279341461e-06,
+      4.282347648634019e-06
+    ],
+    "original_r_pre_post_median": [
+      9.929216031562683e-05,
+      9.934436107748648e-05
+    ],
+    "original_x_difference_scale": 5.486656226765604e-07,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "Noise or smoothly changing baseline/oscillation; no supported abrupt persistent offset in reviewed original x/r.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 184,
+      "M0": 184,
+      "T5_residual": 184,
+      "T5_total": 184
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 122,
+    "first": 5969,
+    "past_last": 6336,
+    "center": 6152,
+    "rule": "time fraction0.8, detector quantile0.25; first covered candidate-free identity; no cleaned selection",
+    "network": 12,
+    "key": "n12_w10",
+    "channel": 122,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      121,
+      123
+    ],
+    "original_x_pre_post_median": [
+      7.830904099446101e-05,
+      7.774327742815772e-05
+    ],
+    "original_r_pre_post_median": [
+      0.000105256488068645,
+      0.00010542354463351241
+    ],
+    "original_x_difference_scale": 2.581999239355329e-06,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "Noise or smoothly changing baseline/oscillation; no supported abrupt persistent offset in reviewed original x/r.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 183,
+      "M0": 183,
+      "T5_residual": 183,
+      "T5_total": 183
+    }
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 367,
+    "first": 5969,
+    "past_last": 6336,
+    "center": 6152,
+    "rule": "time fraction0.8, detector quantile0.75; first covered candidate-free identity; no cleaned selection",
+    "network": 12,
+    "key": "n12_w11",
+    "channel": 367,
+    "geometric_source_cells": 0,
+    "mapping_available_cells": 367,
+    "peer_channels": [
+      366,
+      368
+    ],
+    "original_x_pre_post_median": [
+      4.0768282018518295e-06,
+      3.6542675779105133e-06
+    ],
+    "original_r_pre_post_median": [
+      9.923058533569061e-05,
+      9.938975828373443e-05
+    ],
+    "original_x_difference_scale": 6.686770110859369e-07,
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "Noise or smoothly changing baseline/oscillation; no supported abrupt persistent offset in reviewed original x/r.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage_finite_counts": {
+      "raw_x": 367,
+      "RTC_x": 367,
+      "CAL": 183,
+      "M0": 183,
+      "T5_residual": 183,
+      "T5_total": 183
+    }
+  }
+]

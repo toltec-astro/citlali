@@ -1,0 +1,19 @@
+# Reproduction and evidence ownership
+
+Run locally with `/Users/gwilson/tolteca/bin/python`, `MPLBACKEND=Agg`, and writable task-specific `MPLCONFIGDIR`/`XDG_CACHE_HOME`.
+
+```
+/Users/gwilson/tolteca/bin/python validation/rtc_step_point_2026-09-27/report_step_campaign.py --root validation/rtc_step_point_2026-09-27/compact --output /private/tmp/step-saved-report
+/Users/gwilson/tolteca/bin/python validation/rtc_step_point_2026-09-27/report_step_windows.py validation/rtc_step_point_2026-09-27/compact/report/B-REF-rep1 /private/tmp/step-saved-report/B-REF-rep1
+/Users/gwilson/tolteca/bin/python validation/rtc_step_point_2026-09-27/report_step_windows.py validation/rtc_step_point_2026-09-27/compact/report/S-REF-rep1 /private/tmp/step-saved-report/S-REF-rep1
+```
+
+The report reads compact JSON, packed masks, bounded NPZ excerpts and YAML only. It recomputes descriptive summaries and plots, not scientific fits, learning, uncertainty ensembles, or reductions. `verify_saved_report.py` runs this under OS denial of the campaign scratch tree and all protected inputs/prior evidence, checks positive denial, then compares every generated artifact byte-for-byte. `generated/` is the reference output. `ASSESSMENT.md` is the reviewed narrative diagnosis; its numbers link to `generated/METRICS.md`, `effects.json`, and `window-statistics.json`.
+
+One-time extractors are retained for provenance, not post-cleanup execution. `extract_step_campaign.py` reads original-derived native scratch, preserving actual event chains, declared windows, masks and stages; `extract_step_response.py` uses the existing ideal-addition estimators and active event matching; `extract_step_timing.py` preserves actual markers and resource counts. `adjudicate_step_windows.py` records selected original-domain visual labels before cleaned-window inspection. Baseline labels and pre-selected-run assessment remain saved separately. `verify_step_uncertainty.py` checks saved endpoint operators independently without BLAS contraction. Their campaign root is explicit and they must not be mistaken for permission to rerun reductions.
+
+Source/build identity and exact replay comparator are in ASSESSMENT and compact run receipts. Original configuration/input hashes, prospective profiles, original source-probe receipts, own-reference shapes/noise/endpoint products, M0/T1/T5 FITS, and full-cycle summaries are compactly retained. Large FITS/YAML use deterministic gzip. Intermediate non-checkpoint FITS have hashes in `HASH_ONLY.json.gz`; native arrays planned for removal have exact size/hash/path in `NATIVE_REMOVALS.json.gz`. No original input is in that removal set. Prior RTC/fixed11 evidence remains protected in place and is not duplicated wholesale.
+
+`compact_record.py compact` is a one-time preservation step and refuses an existing compact directory. `compact_record.py clean --expected-head <reviewed-commit>` requires an inactive campaign, clean exact committed head, passing exact-head final review, saved-only pass, committed manifests, verified compact and protected objects, and exact predeclared native paths/hashes. It deletes only enumerated native payload suffixes under this campaign, then makes one exhaustive check for remaining native scratch. Remaining metadata/FITS/log files are counted, not described as zero disk usage. Review authorization is supplied only after independent review; do not fabricate it to run cleanup.
+
+The original launches use exact source43b510b3d, five sequential trajectories, two native network workers and one numerical thread; no extra RTC-only captures or replacement. The old `LAUNCH.scope` description remains 152430 for selected runs, an inherited descriptive defect; authoritative prospective/native observations are 152420. No scientific rerun is necessary or authorized by that label. No Unity transfer was needed or performed.

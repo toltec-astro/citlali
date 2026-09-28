@@ -1,0 +1,85 @@
+{
+  "request": {
+    "mask_fwhm": 3.0,
+    "lag_pixels": 32,
+    "taper_power": 1.0,
+    "bins": 5,
+    "minimum_pixels": 100,
+    "minimum_pairs": 200,
+    "region": "all",
+    "domain_factor": 1,
+    "seed": 23152389,
+    "high_coverage_usable": true
+  },
+  "bins": [
+    {
+      "bin": 0,
+      "coverage_min": 109.0,
+      "coverage_max_exclusive": 129.0,
+      "n": 1971,
+      "second_moment_about_global_mean": 399.9265439524126,
+      "median": 0.10391543325453131,
+      "mean": -0.10350706612331487,
+      "std": 19.99422848237098,
+      "robust_scale": 16.470512368300387
+    },
+    {
+      "bin": 1,
+      "coverage_min": 129.0,
+      "coverage_max_exclusive": 152.0,
+      "n": 2025,
+      "second_moment_about_global_mean": 295.94271280751303,
+      "median": -0.24637733523290725,
+      "mean": 0.23639990163983637,
+      "std": 17.187204612538267,
+      "robust_scale": 14.396389953735488
+    },
+    {
+      "bin": 2,
+      "coverage_min": 152.0,
+      "coverage_max_exclusive": 185.0,
+      "n": 2045,
+      "second_moment_about_global_mean": 261.72119618832374,
+      "median": 0.15940423053021852,
+      "mean": -0.17438510229770818,
+      "std": 16.174518525487642,
+      "robust_scale": 13.990168320790499
+    },
+    {
+      "bin": 3,
+      "coverage_min": 185.0,
+      "coverage_max_exclusive": 233.0,
+      "n": 2044,
+      "second_moment_about_global_mean": 229.89862618907816,
+      "median": -0.3403281673539586,
+      "mean": -0.2393210762163985,
+      "std": 15.160164366015135,
+      "robust_scale": 13.254242073417423
+    },
+    {
+      "bin": 4,
+      "coverage_min": 233.0,
+      "coverage_max_exclusive": 546.0000000000001,
+      "n": 2059,
+      "second_moment_about_global_mean": 171.89688266037058,
+      "median": -2.3486246909894186,
+      "mean": -2.186494861077304,
+      "std": 13.001984338887365,
+      "robust_scale": 11.182086053676604
+    }
+  ],
+  "mean_removed": -0.5001069952140856,
+  "zero_lag_before_normalization": 0.9995070977917981,
+  "spatial_covariance_learned": false,
+  "coverage_transfer": {
+    "training_coverage_range": [
+      109.0,
+      546.0
+    ],
+    "maximum_applied_coverage": 546.0,
+    "high_coverage_pixels": 0,
+    "high_coverage_usable": true,
+    "continuation": "unchanged clipped coverage-bin index and bin scale times sqrt(zero-lag moment); high tail is the existing last-bin prediction",
+    "interpretation": "model-based conditional transfer; extrapolation metadata is not empirical calibration"
+  }
+}

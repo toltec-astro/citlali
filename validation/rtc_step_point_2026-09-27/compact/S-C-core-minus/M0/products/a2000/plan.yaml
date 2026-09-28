@@ -1,0 +1,275 @@
+schema: citlali-forward-map-plan-v1
+role: SCI-MAP:base_observation_map@1
+observation: obs:152420_0_2
+array: a2000
+sources:
+  - network: 11
+    root: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-core-minus/upstream/products/network11
+    PTC_receipt_sha256: 326dd6de44455cbbb913738519d4cbd337108788d72086ce7253642e1898a80f
+    upstream_build: v2-ngc4449-memory-repair-187df04b-608-g43b510b3d
+    failed_fits: 0
+    detectors: 486
+  - network: 12
+    root: /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-core-minus/upstream/products/network12
+    PTC_receipt_sha256: 6e2e978e3bff46144925bd1a1557597929927ec206604925cdf09a4c99368265
+    upstream_build: v2-ngc4449-memory-repair-187df04b-608-g43b510b3d
+    failed_fits: 0
+    detectors: 491
+request_identity: sha256:e4a68edf596a9d71f05dd66f6336689131e4d09dec483f96b370782c6e80a141
+owner_binding: sha256:219f6641b40a1cfc049eae24e320a14fe06f014bf804a87223a4b8772ea932aa
+coverage_cut: 0.5
+pixel_size_arcsec: 2
+projection: SCI-MAP:one_hot_containing_pixel@1
+target_grid_policy: pre-accumulation centered odd grid enclosing all MAP-admitted valid AST coordinates with half-pixel margin
+WCS:
+  RADESYS: FK5
+  EQUINOX: 2000
+  CTYPE1: RA---TAN
+  CTYPE2: DEC--TAN
+  CUNIT1: deg
+  CUNIT2: deg
+  CRPIX1: 103
+  CRPIX2: 100
+  CRVAL1: 176.74290791666667
+  CRVAL2: 39.976195555555556
+  CDELT1: -0.0005555555555555556
+  CDELT2: 0.0005555555555555556
+  rows: 199
+  columns: 205
+  axis_order: x=RA,y=Dec;storage(y,x)
+  source_to_target_frame: identity;owner-declared source FK5/J2000.0
+  time_scale: UNIX UTC assigned RTC times; zero verified interface offset
+  site_model_state: no new celestial frame, EOP or refraction transform; existing telescope/pointing-offset realization retained
+ordered_column_domain:
+  - PTC_publication: sha256:326dd6de44455cbbb913738519d4cbd337108788d72086ce7253642e1898a80f:segment-0
+    support_reference: sha256:326dd6de44455cbbb913738519d4cbd337108788d72086ce7253642e1898a80f:segment-0:complete-retained-support:causes=b0f007ed3831824d41974714275fbb67c08ba36f935aa5924d2b4d968e0954b9
+    first_input_row: 0
+    input_rows: 212294
+    publication_file: handoff/network-11-segment-0-ptc.yaml
+    publication_sha256: 4161804f80c2ac5600814b0e875df7b9a30b58ef1c3f873876094491b976d253
+    coefficient_file: handoff/network-11-segment-0-coefficient.yaml
+    coefficient_sha256: 128afeab4f728f00d7a5820e38ffedd3c7c1de0ece1674b8f4d8a8ed13e726ca
+    AST_coordinate_sha256: 647478187292cc60b0b40e1b01010646a4529d34143a9835f622476301197cb0
+    AST_coordinate_file: handoff/network-11-segment-0-ast.f64
+    AST_binding_file: handoff/network-11-segment-0-ast.yaml
+    AST_binding_sha256: 4ebf856e69ac600333cba81521e354309236cecb591c490013dcb05dff5698d1
+    coefficient_QC_file: handoff/network-11-segment-0-coefficient-qc.yaml
+    coefficient_QC_sha256: 0749e4daa788e02dc4d205056bbbe0b55b81a18e32f327aa7bf63ea65949d8ee
+    MAP_evaluation_file: handoff/network-11-segment-0-map-evaluation.yaml
+    MAP_evaluation_sha256: 02eab7f5b4f4ca928f0530604b8aacf4c0962f7fe0e8e126307b06473a42b8b9
+    MAP_eligibility_file: handoff/network-11-segment-0-map-eligible.bits
+    MAP_eligibility_sha256: 71c70a3de8717c79811ab90be62fcd27b70c772dace951110ddc5e5a86f2d2ac
+    MAP_evaluation_identity: sha256:02eab7f5b4f4ca928f0530604b8aacf4c0962f7fe0e8e126307b06473a42b8b9
+  - PTC_publication: sha256:326dd6de44455cbbb913738519d4cbd337108788d72086ce7253642e1898a80f:segment-1
+    support_reference: sha256:326dd6de44455cbbb913738519d4cbd337108788d72086ce7253642e1898a80f:segment-1:complete-retained-support:causes=8c2dd6d5fff9967c1072c122df651878394012acf22d0e5d65c1ae42c2714356
+    first_input_row: 212294
+    input_rows: 250195
+    publication_file: handoff/network-11-segment-1-ptc.yaml
+    publication_sha256: 6afbe67d483a1c6637c454778e333589d03543e0a3663e63797f2fed7fc7047e
+    coefficient_file: handoff/network-11-segment-1-coefficient.yaml
+    coefficient_sha256: 4901771aeaffcc113cbc92381fe1feccf9e1bc332c3897dd9207b2799f43c459
+    AST_coordinate_sha256: eed47e3b0ccc02c5b35135322a466657cae956a46429fc627817e070c56bde8b
+    AST_coordinate_file: handoff/network-11-segment-1-ast.f64
+    AST_binding_file: handoff/network-11-segment-1-ast.yaml
+    AST_binding_sha256: fd053c55522ded5526388727cc5e365e7b5115060554c3d784e3aba7d270bbbc
+    coefficient_QC_file: handoff/network-11-segment-1-coefficient-qc.yaml
+    coefficient_QC_sha256: d93689cb79d4d296dc63178c393ad86ca8a7d28bb8782297bc5d3e6cc965beb3
+    MAP_evaluation_file: handoff/network-11-segment-1-map-evaluation.yaml
+    MAP_evaluation_sha256: be058cede91c7cc877e0483e257c9c733b9ab4e82f01aa2d3c3c48a6146dafd8
+    MAP_eligibility_file: handoff/network-11-segment-1-map-eligible.bits
+    MAP_eligibility_sha256: d9de87916e398ca2b9c35584a7c8872b35bcb9efd7c991043f1dcea16934382b
+    MAP_evaluation_identity: sha256:be058cede91c7cc877e0483e257c9c733b9ab4e82f01aa2d3c3c48a6146dafd8
+  - PTC_publication: sha256:326dd6de44455cbbb913738519d4cbd337108788d72086ce7253642e1898a80f:segment-2
+    support_reference: sha256:326dd6de44455cbbb913738519d4cbd337108788d72086ce7253642e1898a80f:segment-2:complete-retained-support:causes=84fb874d27832aa786a24c4615bda65cdda231b1e794ae66f66651204e32143c
+    first_input_row: 462489
+    input_rows: 248492
+    publication_file: handoff/network-11-segment-2-ptc.yaml
+    publication_sha256: 1a911534f02eb6c66b050f244fcdee89f6ae451278c70972b5a9791a38d69609
+    coefficient_file: handoff/network-11-segment-2-coefficient.yaml
+    coefficient_sha256: 120cd4a485c4f445cb8f24369d52c3c2515a45c5d83e98bd4cd8eb8797288ff4
+    AST_coordinate_sha256: 1fc186734d4963dcc85ebe4aaddb4803080c56b55d792eefe04bada7c49a714e
+    AST_coordinate_file: handoff/network-11-segment-2-ast.f64
+    AST_binding_file: handoff/network-11-segment-2-ast.yaml
+    AST_binding_sha256: ea51667fc7d4d3c534832ac52d437cfcb94d485d593a04b89eaddd30eeef4b53
+    coefficient_QC_file: handoff/network-11-segment-2-coefficient-qc.yaml
+    coefficient_QC_sha256: 9d9f892b92cf563f56d70bfd4b6bf5a5135f7e2ed5a72e517ffff13fe72493db
+    MAP_evaluation_file: handoff/network-11-segment-2-map-evaluation.yaml
+    MAP_evaluation_sha256: 6efd2dfb453682e23e03b63d016aa0896519b134b1827095c12d0f9fd0302c53
+    MAP_eligibility_file: handoff/network-11-segment-2-map-eligible.bits
+    MAP_eligibility_sha256: f7691b46c023a5b6fc319322b2b8a8a0dcc6ea82f89fa7728aed047c9903b084
+    MAP_evaluation_identity: sha256:6efd2dfb453682e23e03b63d016aa0896519b134b1827095c12d0f9fd0302c53
+  - PTC_publication: sha256:326dd6de44455cbbb913738519d4cbd337108788d72086ce7253642e1898a80f:segment-3
+    support_reference: sha256:326dd6de44455cbbb913738519d4cbd337108788d72086ce7253642e1898a80f:segment-3:complete-retained-support:causes=09205f15a0a024f5d77883f9fbf7ae63bb70a5019ad875b67a03e261d57d04cd
+    first_input_row: 710981
+    input_rows: 248041
+    publication_file: handoff/network-11-segment-3-ptc.yaml
+    publication_sha256: 5fbdf69018bd738ad024a4306e95e3d79b8bd84baf5e8badddc7b1019d1cfda1
+    coefficient_file: handoff/network-11-segment-3-coefficient.yaml
+    coefficient_sha256: 5b1c83cb8d30404e8f2ed8f8fc2ed70a3a1154d2bd528219ff97bb750586febb
+    AST_coordinate_sha256: a8ed483a58617689f5c0076f87d4c00c09fce10e84528fa57a559f3dc7478add
+    AST_coordinate_file: handoff/network-11-segment-3-ast.f64
+    AST_binding_file: handoff/network-11-segment-3-ast.yaml
+    AST_binding_sha256: d46077507bde0738b6084ae59ba3bcfb3a6190917e8431c381b80dd929935695
+    coefficient_QC_file: handoff/network-11-segment-3-coefficient-qc.yaml
+    coefficient_QC_sha256: 920eced4e07a23173a109d9a826050d622d39574fd8589db8f97c7cdac11f0fd
+    MAP_evaluation_file: handoff/network-11-segment-3-map-evaluation.yaml
+    MAP_evaluation_sha256: 0b587a4807d5a1d02af85a5d6750e1aa6bb6c35ddd4ca8a9a9969bc263522ea1
+    MAP_eligibility_file: handoff/network-11-segment-3-map-eligible.bits
+    MAP_eligibility_sha256: d18d0b07aaa2c915ac091f7b171de00a14d1b07e3f06379a4613a8edadfadae9
+    MAP_evaluation_identity: sha256:0b587a4807d5a1d02af85a5d6750e1aa6bb6c35ddd4ca8a9a9969bc263522ea1
+  - PTC_publication: sha256:326dd6de44455cbbb913738519d4cbd337108788d72086ce7253642e1898a80f:segment-4
+    support_reference: sha256:326dd6de44455cbbb913738519d4cbd337108788d72086ce7253642e1898a80f:segment-4:complete-retained-support:causes=546558b6b22e29a0bf312d37b62dd0f8ef38ab1cb2c7ef79cbbb1ab2e45b6cb4
+    first_input_row: 959022
+    input_rows: 243480
+    publication_file: handoff/network-11-segment-4-ptc.yaml
+    publication_sha256: 6b6af52f3bc665164c3c1de9d268c111fdbfc79a638c5308863d9d26264534d3
+    coefficient_file: handoff/network-11-segment-4-coefficient.yaml
+    coefficient_sha256: d84fbddad7c5e8a8ecdc36fad06bdf67592bdf4f0186bc1ee1c342b5313080b4
+    AST_coordinate_sha256: 7657bf6e175d5221115d2da25f6ea776495a51fa8aec4bc6e918e15fe2207a60
+    AST_coordinate_file: handoff/network-11-segment-4-ast.f64
+    AST_binding_file: handoff/network-11-segment-4-ast.yaml
+    AST_binding_sha256: 057e8091f6ad0f3412399685dc59e7d8e9879770e9be4507203ef80d2219619c
+    coefficient_QC_file: handoff/network-11-segment-4-coefficient-qc.yaml
+    coefficient_QC_sha256: 09144932fc73de1f2a716b300cedae4232c1adb75de80453117d58a7427e495d
+    MAP_evaluation_file: handoff/network-11-segment-4-map-evaluation.yaml
+    MAP_evaluation_sha256: 560fcd767cd34c3355e7269d283787e7562356a8df1df93391251aa59fe8c02e
+    MAP_eligibility_file: handoff/network-11-segment-4-map-eligible.bits
+    MAP_eligibility_sha256: bcf1ebaae04e91dac014b2ea34dae1ce611b4b63bf314ff8615dc8d37eafe0c0
+    MAP_evaluation_identity: sha256:560fcd767cd34c3355e7269d283787e7562356a8df1df93391251aa59fe8c02e
+  - PTC_publication: sha256:326dd6de44455cbbb913738519d4cbd337108788d72086ce7253642e1898a80f:segment-5
+    support_reference: sha256:326dd6de44455cbbb913738519d4cbd337108788d72086ce7253642e1898a80f:segment-5:complete-retained-support:causes=c9b539451f7fcbc1d5472fdca60e3594967541224fdd808fc1f365c0500512bc
+    first_input_row: 1202502
+    input_rows: 211510
+    publication_file: handoff/network-11-segment-5-ptc.yaml
+    publication_sha256: bf38705eb5a4e23b2c50e2bbf71dfa1daf59fa02a07b6ee8a59b59fe3fd966a9
+    coefficient_file: handoff/network-11-segment-5-coefficient.yaml
+    coefficient_sha256: 9c605666e1dc929405aab9ef9ac0784a808fd47e1fc08826a05b99c5cd7dd180
+    AST_coordinate_sha256: de59bf3dcca029e8a375df24cfb170ad1f42f5a54aafaa845c130b811e1f4a0a
+    AST_coordinate_file: handoff/network-11-segment-5-ast.f64
+    AST_binding_file: handoff/network-11-segment-5-ast.yaml
+    AST_binding_sha256: 22a074991a61bc38d38030db79fc93c18c8b868f60b0c4888dff4e8f2eb97ded
+    coefficient_QC_file: handoff/network-11-segment-5-coefficient-qc.yaml
+    coefficient_QC_sha256: 8200c9281aed8e07188288966cfeafd43a65a5e7ba555c2cb91cc641fc2fa9f0
+    MAP_evaluation_file: handoff/network-11-segment-5-map-evaluation.yaml
+    MAP_evaluation_sha256: 501420c712a68ac17acfbd907cb52a59aca7306a0209ab2c1a9be1a9eb935995
+    MAP_eligibility_file: handoff/network-11-segment-5-map-eligible.bits
+    MAP_eligibility_sha256: a47ae6763497e7771224fffdd240d415c56d6abddbdb5c449edeee835d4dd0f2
+    MAP_evaluation_identity: sha256:501420c712a68ac17acfbd907cb52a59aca7306a0209ab2c1a9be1a9eb935995
+  - PTC_publication: sha256:6e2e978e3bff46144925bd1a1557597929927ec206604925cdf09a4c99368265:segment-0
+    support_reference: sha256:6e2e978e3bff46144925bd1a1557597929927ec206604925cdf09a4c99368265:segment-0:complete-retained-support:causes=59d031c5e7c75442e31d15eb75215dada1e8641bd9fc9cccc336272f10cff8ac
+    first_input_row: 1414012
+    input_rows: 210603
+    publication_file: handoff/network-12-segment-0-ptc.yaml
+    publication_sha256: e17232aa778c1cb5d23261f5fcb641a74fb9783201531213761f8c323263bf2f
+    coefficient_file: handoff/network-12-segment-0-coefficient.yaml
+    coefficient_sha256: 76694a08dc9f2bfc97f0320ad17a9ee186a320c87590e05e81ede5e8540a9712
+    AST_coordinate_sha256: 5a37ae3f692dc18f2e63a87bc6799c131af9eb8615227d7043d8cad88b4535f7
+    AST_coordinate_file: handoff/network-12-segment-0-ast.f64
+    AST_binding_file: handoff/network-12-segment-0-ast.yaml
+    AST_binding_sha256: 6f59bfe1c53ade4a11dcfd070ac8e726a35a952d4a180a8401ff633dc5f31ab3
+    coefficient_QC_file: handoff/network-12-segment-0-coefficient-qc.yaml
+    coefficient_QC_sha256: ef1ce77a4525f21d24aa176f87ee63ec89cab2e00e8f9c3b9fb976238e9cfcd7
+    MAP_evaluation_file: handoff/network-12-segment-0-map-evaluation.yaml
+    MAP_evaluation_sha256: 1e76db3443e222d834a8aaad65c6ad8b8023c298532209ae3a164b4d7b0fb07d
+    MAP_eligibility_file: handoff/network-12-segment-0-map-eligible.bits
+    MAP_eligibility_sha256: bbe85abd6f0a8037384f0206ae7b19d6e74d84d4d6ae3a548aa879c373d51a08
+    MAP_evaluation_identity: sha256:1e76db3443e222d834a8aaad65c6ad8b8023c298532209ae3a164b4d7b0fb07d
+  - PTC_publication: sha256:6e2e978e3bff46144925bd1a1557597929927ec206604925cdf09a4c99368265:segment-1
+    support_reference: sha256:6e2e978e3bff46144925bd1a1557597929927ec206604925cdf09a4c99368265:segment-1:complete-retained-support:causes=1b2d08e464ebba3f67a23841aa30fbae8e040ae1242454a2e6730c9087a4d1e6
+    first_input_row: 1624615
+    input_rows: 229930
+    publication_file: handoff/network-12-segment-1-ptc.yaml
+    publication_sha256: c8d8a3bd88a1d36819f65956ba996902d643f36cd479672611e99c9a47614e31
+    coefficient_file: handoff/network-12-segment-1-coefficient.yaml
+    coefficient_sha256: 8d1fa17e29f46a0f7ca63105b524087f3050b894508972cfd1749ef98bfc8354
+    AST_coordinate_sha256: bf9c7be2baef0b14204b7ea11e3a23c058cc1fc62bf655fb3f1f040ab0d551f2
+    AST_coordinate_file: handoff/network-12-segment-1-ast.f64
+    AST_binding_file: handoff/network-12-segment-1-ast.yaml
+    AST_binding_sha256: 5f7bb284f27c801cd1c62b1a42f48e5afafd15a8a162e0cf83271166022ed615
+    coefficient_QC_file: handoff/network-12-segment-1-coefficient-qc.yaml
+    coefficient_QC_sha256: dd3d4772cd49a79172ed7b8903fe967b204bb1473f4d12e25a2dc9d4fd029fa9
+    MAP_evaluation_file: handoff/network-12-segment-1-map-evaluation.yaml
+    MAP_evaluation_sha256: f4d97cb5a0c7d051f25564c0bbf63d1f4588493d37b3f5f4827b6a28bcb03137
+    MAP_eligibility_file: handoff/network-12-segment-1-map-eligible.bits
+    MAP_eligibility_sha256: c20f015500244f374875b58ea4aca8bb4cc5b41eb6c28fa33b7137f2c88d2f58
+    MAP_evaluation_identity: sha256:f4d97cb5a0c7d051f25564c0bbf63d1f4588493d37b3f5f4827b6a28bcb03137
+  - PTC_publication: sha256:6e2e978e3bff46144925bd1a1557597929927ec206604925cdf09a4c99368265:segment-2
+    support_reference: sha256:6e2e978e3bff46144925bd1a1557597929927ec206604925cdf09a4c99368265:segment-2:complete-retained-support:causes=bf195452dd85ea35e33392a5a0882f3b9fb6d7da83c9f9c2709bbad26bb5b52a
+    first_input_row: 1854545
+    input_rows: 248504
+    publication_file: handoff/network-12-segment-2-ptc.yaml
+    publication_sha256: 1829a003087cf8e0fc8d38e94889fe7e8835b1d9a41457bca8194af4d666ccca
+    coefficient_file: handoff/network-12-segment-2-coefficient.yaml
+    coefficient_sha256: 64174299fe944985859ee23c66779f28548886320ef447170a710016667cf85d
+    AST_coordinate_sha256: 9c057528c2145443d0826df9a627fefd482f095fe7977ac32a343165c74fb150
+    AST_coordinate_file: handoff/network-12-segment-2-ast.f64
+    AST_binding_file: handoff/network-12-segment-2-ast.yaml
+    AST_binding_sha256: fbaed74e7866ae89ba363b04443c796b695c5713c0aaae3c1b6b75893a534585
+    coefficient_QC_file: handoff/network-12-segment-2-coefficient-qc.yaml
+    coefficient_QC_sha256: 414b064568ce34a71e88235dece4ddeaadb08199431cef35cc276c563c7b0d7f
+    MAP_evaluation_file: handoff/network-12-segment-2-map-evaluation.yaml
+    MAP_evaluation_sha256: cf3b15979103d2830f6c3662c987c6d7cfbb8ce83c9abe8f9e8327c0d19a33b1
+    MAP_eligibility_file: handoff/network-12-segment-2-map-eligible.bits
+    MAP_eligibility_sha256: c6806346df0a9b4cf97d7ecd8282707d05fc058b1483fe3abb61b5b79ebdd471
+    MAP_evaluation_identity: sha256:cf3b15979103d2830f6c3662c987c6d7cfbb8ce83c9abe8f9e8327c0d19a33b1
+  - PTC_publication: sha256:6e2e978e3bff46144925bd1a1557597929927ec206604925cdf09a4c99368265:segment-3
+    support_reference: sha256:6e2e978e3bff46144925bd1a1557597929927ec206604925cdf09a4c99368265:segment-3:complete-retained-support:causes=e16dd02cf27202965fbb3844ae1b1069831b9318e1fdc5405c8a60e5958e4535
+    first_input_row: 2103049
+    input_rows: 249919
+    publication_file: handoff/network-12-segment-3-ptc.yaml
+    publication_sha256: 3dcd6c15a7fe2e992f2784dd49218f91c2aae8aa4ce38bea358f03f70d692997
+    coefficient_file: handoff/network-12-segment-3-coefficient.yaml
+    coefficient_sha256: 4a21084de6405831a6f21ea9a5f4c0997282579c1507381bae21062523f0ac8c
+    AST_coordinate_sha256: 56243db31efd0322c4f4c95a5923103e236a75d752dc6c551c19e5e49e99a2b1
+    AST_coordinate_file: handoff/network-12-segment-3-ast.f64
+    AST_binding_file: handoff/network-12-segment-3-ast.yaml
+    AST_binding_sha256: cdcaf9beb70c5204748ee96220abb1250a702435fe7c070e89cdf31c19295bd2
+    coefficient_QC_file: handoff/network-12-segment-3-coefficient-qc.yaml
+    coefficient_QC_sha256: add33c1503d4f6e4b42ca6bdfc696072b193610d32b22b9ca5d873239f9ac975
+    MAP_evaluation_file: handoff/network-12-segment-3-map-evaluation.yaml
+    MAP_evaluation_sha256: 93e5ee07fedd0ada45ea8b3a9be17de37b8775d55d5ff37d325b99f2aad23bb4
+    MAP_eligibility_file: handoff/network-12-segment-3-map-eligible.bits
+    MAP_eligibility_sha256: a6e23745786ccc9fce462dc5b28a33d792e3a2f52d6ac693016f01392d1d9fb0
+    MAP_evaluation_identity: sha256:93e5ee07fedd0ada45ea8b3a9be17de37b8775d55d5ff37d325b99f2aad23bb4
+  - PTC_publication: sha256:6e2e978e3bff46144925bd1a1557597929927ec206604925cdf09a4c99368265:segment-4
+    support_reference: sha256:6e2e978e3bff46144925bd1a1557597929927ec206604925cdf09a4c99368265:segment-4:complete-retained-support:causes=6049d04b084fbe456502793dca8f2726bd013de4a5e1febcd073a9963993fe06
+    first_input_row: 2352968
+    input_rows: 249386
+    publication_file: handoff/network-12-segment-4-ptc.yaml
+    publication_sha256: bb93fa3862037de92d9a16cdd1c74c6255019013566c0d02ae1694b5aa671230
+    coefficient_file: handoff/network-12-segment-4-coefficient.yaml
+    coefficient_sha256: 05fab2c64f2af7a9a1801e265752d8c34b4261adcecec68561dd9dd3f93f8347
+    AST_coordinate_sha256: 00c650a9d2f6ec84e6c4801ac90d567c2a69e19856037805c4c2af72fad91f22
+    AST_coordinate_file: handoff/network-12-segment-4-ast.f64
+    AST_binding_file: handoff/network-12-segment-4-ast.yaml
+    AST_binding_sha256: ebec98160f01ffa18960c81ea92373842bca8c739151f70ec1b42ab7bebe9ca6
+    coefficient_QC_file: handoff/network-12-segment-4-coefficient-qc.yaml
+    coefficient_QC_sha256: 6c392c4c2fbea00a6fc76ae2da51280a5c203a795a52e15a2055d6e7e7c298b0
+    MAP_evaluation_file: handoff/network-12-segment-4-map-evaluation.yaml
+    MAP_evaluation_sha256: b6509ac1294fd9c4e57ec7dc61884cc480b84ea185605a20fa0e4a0e2f11fa7b
+    MAP_eligibility_file: handoff/network-12-segment-4-map-eligible.bits
+    MAP_eligibility_sha256: 25c95bb8abbe3850c6d58648221780206edceb038eef3c403e768d4ad9f8e2a0
+    MAP_evaluation_identity: sha256:b6509ac1294fd9c4e57ec7dc61884cc480b84ea185605a20fa0e4a0e2f11fa7b
+  - PTC_publication: sha256:6e2e978e3bff46144925bd1a1557597929927ec206604925cdf09a4c99368265:segment-5
+    support_reference: sha256:6e2e978e3bff46144925bd1a1557597929927ec206604925cdf09a4c99368265:segment-5:complete-retained-support:causes=d7b9653e98ee9af9a1566e1217164b8a26743dc61b3d073a8eec16eb19967510
+    first_input_row: 2602354
+    input_rows: 211866
+    publication_file: handoff/network-12-segment-5-ptc.yaml
+    publication_sha256: f27c7cfa6141a8987f629d1af21ca29fe2158fb3fd255aca0fb96dd7581784c2
+    coefficient_file: handoff/network-12-segment-5-coefficient.yaml
+    coefficient_sha256: de943cf55de314bc8399c04e0b1eecbdfe278a6095c3a9e3f08ee64e82c050b3
+    AST_coordinate_sha256: a6ccfe466372d87b3eb68d4d8235c1aaab0ee4b52196157e1010d80c43f448bd
+    AST_coordinate_file: handoff/network-12-segment-5-ast.f64
+    AST_binding_file: handoff/network-12-segment-5-ast.yaml
+    AST_binding_sha256: bef52e9dd3e1ee9cda6b8e89b8445aa2d3b8651fc3cf047126f6d73478312fda
+    coefficient_QC_file: handoff/network-12-segment-5-coefficient-qc.yaml
+    coefficient_QC_sha256: 66dc61fe588ffe33a5d2f21c8f5db7c6d1259bbfbcb16d415b9d874019fe222b
+    MAP_evaluation_file: handoff/network-12-segment-5-map-evaluation.yaml
+    MAP_evaluation_sha256: 11d5944cd79899ec2c4ab3f536c57559ad9a53b4ad779a025b036667d3599b37
+    MAP_eligibility_file: handoff/network-12-segment-5-map-eligible.bits
+    MAP_eligibility_sha256: f54107d34244d6aa52c7368885694f87490e75cfd39a7c79981b2b1850db0839
+    MAP_evaluation_identity: sha256:11d5944cd79899ec2c4ab3f536c57559ad9a53b4ad779a025b036667d3599b37
+reached_stages:
+  - requested
+  - effective
+  - observation_resolved

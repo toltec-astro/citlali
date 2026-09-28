@@ -1,0 +1,443 @@
+[
+  {
+    "network": 11,
+    "observation": 152430,
+    "shape": [
+      7821,
+      486
+    ],
+    "integration_seconds": 0.008192,
+    "cadence_seconds": 0.008192062377929688,
+    "physical_runs": [
+      [
+        0,
+        7821
+      ]
+    ],
+    "input_valid_x_cells": 3746259,
+    "input_valid_r_cells": 3746259,
+    "paired_valid_cells": 3746259,
+    "input_valid_detector_seconds": 30689.353728,
+    "candidate_count": 721,
+    "event_groups": 77,
+    "admitted_jump_groups": 9,
+    "admitted_detector_count": 7,
+    "admitted_detector_fraction": 0.01440329218106996,
+    "admitted_groups_per_detector_second": 0.0002932613074803424,
+    "admitted_groups_per_detector": {
+      "n": 486,
+      "median": 0.0,
+      "p95": 0.0,
+      "maximum": 3.0
+    },
+    "descriptive_50ms_shared_clusters": [
+      {
+        "first_unix": 1771495694.9466794,
+        "last_unix": 1771495694.9466794,
+        "instances": 1
+      },
+      {
+        "first_unix": 1771495695.6266153,
+        "last_unix": 1771495695.6921513,
+        "instances": 3
+      },
+      {
+        "first_unix": 1771495698.3873193,
+        "last_unix": 1771495698.3873193,
+        "instances": 1
+      },
+      {
+        "first_unix": 1771495698.5429673,
+        "last_unix": 1771495698.5429673,
+        "instances": 1
+      },
+      {
+        "first_unix": 1771495723.3237674,
+        "last_unix": 1771495723.3237674,
+        "instances": 3
+      }
+    ],
+    "cluster_caveat": "temporal descriptive grouping only; physical event identity remains unresolved",
+    "classes": {
+      "isolated-admission-unavailable": 20,
+      "no-resolved-excursion": 11,
+      "admitted-level-shift": 9,
+      "unresolved-extent": 37
+    },
+    "exposure_ledger": [
+      {
+        "cause": "outside_science",
+        "gross_cells": 274590,
+        "gross_input_valid_cells": 270635,
+        "incremental_preceding_eligible_cells": 270635,
+        "incremental_seconds": 2217.04192,
+        "source_crossing_incremental_cells": 52784
+      },
+      {
+        "cause": "transition",
+        "gross_cells": 510,
+        "gross_input_valid_cells": 510,
+        "incremental_preceding_eligible_cells": 510,
+        "incremental_seconds": 4.177919999999999,
+        "source_crossing_incremental_cells": 0
+      },
+      {
+        "cause": "jump_scan",
+        "gross_cells": 15141,
+        "gross_input_valid_cells": 15141,
+        "incremental_preceding_eligible_cells": 14066,
+        "incremental_seconds": 115.22867199999999,
+        "source_crossing_incremental_cells": 16
+      },
+      {
+        "cause": "transient",
+        "gross_cells": 69888,
+        "gross_input_valid_cells": 15141,
+        "incremental_preceding_eligible_cells": 0,
+        "incremental_seconds": 0.0,
+        "source_crossing_incremental_cells": 0
+      },
+      {
+        "cause": "unresolved_extent",
+        "gross_cells": 93852,
+        "gross_input_valid_cells": 93852,
+        "incremental_preceding_eligible_cells": 72496,
+        "incremental_seconds": 593.8872319999999,
+        "source_crossing_incremental_cells": 2052
+      },
+      {
+        "cause": "operation_unavailable",
+        "gross_cells": 94339,
+        "gross_input_valid_cells": 94339,
+        "incremental_preceding_eligible_cells": 473,
+        "incremental_seconds": 3.874816,
+        "source_crossing_incremental_cells": 75
+      },
+      {
+        "cause": "outside_resolved_domain",
+        "gross_cells": 412454,
+        "gross_input_valid_cells": 357707,
+        "incremental_preceding_eligible_cells": 0,
+        "incremental_seconds": 0.0,
+        "source_crossing_incremental_cells": 0
+      },
+      {
+        "cause": "donor_contaminated",
+        "gross_cells": 412927,
+        "gross_input_valid_cells": 358180,
+        "incremental_preceding_eligible_cells": 0,
+        "incremental_seconds": 0.0,
+        "source_crossing_incremental_cells": 0
+      },
+      {
+        "cause": "complete_filter_support_expansion",
+        "gross_cells": 559879,
+        "gross_input_valid_cells": 505132,
+        "incremental_preceding_eligible_cells": 146952,
+        "incremental_seconds": 1203.830784,
+        "source_crossing_incremental_cells": 19876
+      }
+    ],
+    "fitting_guard_cells": 4050,
+    "fitting_guards_are_not_output_exclusions": true,
+    "mask_intersections": {
+      "outside_science & transition": 0,
+      "outside_science & transient": 565,
+      "outside_science & unresolved_extent": 6780,
+      "transition & unresolved_extent": 510,
+      "jump_scan & outside_science": 565,
+      "jump_scan & transition": 510,
+      "jump_scan & transient": 15141,
+      "jump_scan & unresolved_extent": 15141,
+      "jump_scan & operation_unavailable": 15141,
+      "jump_scan & outside_resolved_domain": 15141,
+      "transient & transition": 510,
+      "transient & unresolved_extent": 15141,
+      "operation_unavailable & outside_science": 6794,
+      "operation_unavailable & transition": 510,
+      "operation_unavailable & transient": 15141,
+      "operation_unavailable & unresolved_extent": 93852,
+      "operation_unavailable & outside_resolved_domain": 93866,
+      "outside_resolved_domain & outside_science": 270635,
+      "outside_resolved_domain & transition": 510,
+      "outside_resolved_domain & transient": 15141,
+      "outside_resolved_domain & unresolved_extent": 93852,
+      "donor_contaminated & outside_science": 270635,
+      "donor_contaminated & transition": 510,
+      "donor_contaminated & jump_scan": 15141,
+      "donor_contaminated & transient": 15141,
+      "donor_contaminated & unresolved_extent": 93852,
+      "donor_contaminated & operation_unavailable": 94339,
+      "donor_contaminated & outside_resolved_domain": 357707
+    },
+    "RTC_retained_x_cells": 3241127,
+    "RTC_retained_r_cells": 3241127,
+    "RTC_scheduled_x_cells": 1620562,
+    "RTC_map_center_cells": 1597680,
+    "CAL_eligible_scheduled_cells": 1446812,
+    "mapping_unavailable_cells": 453618,
+    "donor_replacement_cells": 0,
+    "donor_influence_cells": 0,
+    "plan_apply_equal": true,
+    "finite_support_crossings": 0,
+    "segments": [
+      {
+        "scan": 0,
+        "scheduled_times": 594,
+        "fit_detectors": 417,
+        "eligible": 215737,
+        "retained": 215737
+      },
+      {
+        "scan": 1,
+        "scheduled_times": 610,
+        "fit_detectors": 417,
+        "eligible": 253892,
+        "retained": 253892
+      },
+      {
+        "scan": 2,
+        "scheduled_times": 610,
+        "fit_detectors": 417,
+        "eligible": 253014,
+        "retained": 253014
+      },
+      {
+        "scan": 3,
+        "scheduled_times": 610,
+        "fit_detectors": 417,
+        "eligible": 254370,
+        "retained": 254370
+      },
+      {
+        "scan": 4,
+        "scheduled_times": 610,
+        "fit_detectors": 417,
+        "eligible": 254370,
+        "retained": 254370
+      },
+      {
+        "scan": 5,
+        "scheduled_times": 594,
+        "fit_detectors": 417,
+        "eligible": 215429,
+        "retained": 215429
+      }
+    ],
+    "source_crossing": {
+      "input_valid_scheduled": 195065,
+      "RTC_scheduled": 157632,
+      "CAL_eligible": 157632
+    },
+    "union_loss_cells": 505132,
+    "short_stable_runs": 2,
+    "unassessed": "only selected review windows adjudicated; full flags are not completeness truth"
+  },
+  {
+    "network": 12,
+    "observation": 152430,
+    "shape": [
+      7820,
+      491
+    ],
+    "integration_seconds": 0.008192,
+    "cadence_seconds": 0.008192062377929688,
+    "physical_runs": [
+      [
+        0,
+        7820
+      ]
+    ],
+    "input_valid_x_cells": 3745780,
+    "input_valid_r_cells": 3745780,
+    "paired_valid_cells": 3745780,
+    "input_valid_detector_seconds": 30685.42976,
+    "candidate_count": 33,
+    "event_groups": 32,
+    "admitted_jump_groups": 0,
+    "admitted_detector_count": 0,
+    "admitted_detector_fraction": 0.0,
+    "admitted_groups_per_detector_second": 0.0,
+    "admitted_groups_per_detector": {
+      "n": 491,
+      "median": 0.0,
+      "p95": 0.0,
+      "maximum": 0.0
+    },
+    "descriptive_50ms_shared_clusters": [],
+    "cluster_caveat": "temporal descriptive grouping only; physical event identity remains unresolved",
+    "classes": {
+      "isolated-admission-unavailable": 23,
+      "no-resolved-excursion": 8,
+      "unresolved-extent": 1
+    },
+    "exposure_ledger": [
+      {
+        "cause": "outside_science",
+        "gross_cells": 276924,
+        "gross_input_valid_cells": 270156,
+        "incremental_preceding_eligible_cells": 270156,
+        "incremental_seconds": 2213.117952,
+        "source_crossing_incremental_cells": 9543
+      },
+      {
+        "cause": "transition",
+        "gross_cells": 0,
+        "gross_input_valid_cells": 0,
+        "incremental_preceding_eligible_cells": 0,
+        "incremental_seconds": 0.0,
+        "source_crossing_incremental_cells": 0
+      },
+      {
+        "cause": "jump_scan",
+        "gross_cells": 0,
+        "gross_input_valid_cells": 0,
+        "incremental_preceding_eligible_cells": 0,
+        "incremental_seconds": 0.0,
+        "source_crossing_incremental_cells": 0
+      },
+      {
+        "cause": "transient",
+        "gross_cells": 93840,
+        "gross_input_valid_cells": 0,
+        "incremental_preceding_eligible_cells": 0,
+        "incremental_seconds": 0.0,
+        "source_crossing_incremental_cells": 0
+      },
+      {
+        "cause": "unresolved_extent",
+        "gross_cells": 7820,
+        "gross_input_valid_cells": 7820,
+        "incremental_preceding_eligible_cells": 7256,
+        "incremental_seconds": 59.441151999999995,
+        "source_crossing_incremental_cells": 0
+      },
+      {
+        "cause": "operation_unavailable",
+        "gross_cells": 8254,
+        "gross_input_valid_cells": 8254,
+        "incremental_preceding_eligible_cells": 434,
+        "incremental_seconds": 3.555328,
+        "source_crossing_incremental_cells": 66
+      },
+      {
+        "cause": "outside_resolved_domain",
+        "gross_cells": 371252,
+        "gross_input_valid_cells": 277412,
+        "incremental_preceding_eligible_cells": 0,
+        "incremental_seconds": 0.0,
+        "source_crossing_incremental_cells": 0
+      },
+      {
+        "cause": "donor_contaminated",
+        "gross_cells": 371686,
+        "gross_input_valid_cells": 277846,
+        "incremental_preceding_eligible_cells": 0,
+        "incremental_seconds": 0.0,
+        "source_crossing_incremental_cells": 0
+      },
+      {
+        "cause": "complete_filter_support_expansion",
+        "gross_cells": 527006,
+        "gross_input_valid_cells": 433166,
+        "incremental_preceding_eligible_cells": 155320,
+        "incremental_seconds": 1272.3814399999999,
+        "source_crossing_incremental_cells": 12985
+      }
+    ],
+    "fitting_guard_cells": 448,
+    "fitting_guards_are_not_output_exclusions": true,
+    "mask_intersections": {
+      "outside_science & transition": 0,
+      "outside_science & transient": 0,
+      "outside_science & unresolved_extent": 564,
+      "transition & unresolved_extent": 0,
+      "jump_scan & outside_science": 0,
+      "jump_scan & transition": 0,
+      "jump_scan & transient": 0,
+      "jump_scan & unresolved_extent": 0,
+      "jump_scan & operation_unavailable": 0,
+      "jump_scan & outside_resolved_domain": 0,
+      "transient & transition": 0,
+      "transient & unresolved_extent": 0,
+      "operation_unavailable & outside_science": 564,
+      "operation_unavailable & transition": 0,
+      "operation_unavailable & transient": 0,
+      "operation_unavailable & unresolved_extent": 7820,
+      "operation_unavailable & outside_resolved_domain": 7820,
+      "outside_resolved_domain & outside_science": 270156,
+      "outside_resolved_domain & transition": 0,
+      "outside_resolved_domain & transient": 0,
+      "outside_resolved_domain & unresolved_extent": 7820,
+      "donor_contaminated & outside_science": 270156,
+      "donor_contaminated & transition": 0,
+      "donor_contaminated & jump_scan": 0,
+      "donor_contaminated & transient": 0,
+      "donor_contaminated & unresolved_extent": 7820,
+      "donor_contaminated & operation_unavailable": 8254,
+      "donor_contaminated & outside_resolved_domain": 277412
+    },
+    "RTC_retained_x_cells": 3312614,
+    "RTC_retained_r_cells": 3312614,
+    "RTC_scheduled_x_cells": 1656306,
+    "RTC_map_center_cells": 1632941,
+    "CAL_eligible_scheduled_cells": 1424121,
+    "mapping_unavailable_cells": 586500,
+    "donor_replacement_cells": 0,
+    "donor_influence_cells": 0,
+    "plan_apply_equal": true,
+    "finite_support_crossings": 0,
+    "segments": [
+      {
+        "scan": 0,
+        "scheduled_times": 594,
+        "fit_detectors": 411,
+        "eligible": 212167,
+        "retained": 212167
+      },
+      {
+        "scan": 1,
+        "scheduled_times": 610,
+        "fit_detectors": 411,
+        "eligible": 249842,
+        "retained": 249842
+      },
+      {
+        "scan": 2,
+        "scheduled_times": 610,
+        "fit_detectors": 411,
+        "eligible": 250298,
+        "retained": 250298
+      },
+      {
+        "scan": 3,
+        "scheduled_times": 610,
+        "fit_detectors": 411,
+        "eligible": 249368,
+        "retained": 249368
+      },
+      {
+        "scan": 4,
+        "scheduled_times": 610,
+        "fit_detectors": 411,
+        "eligible": 250320,
+        "retained": 250320
+      },
+      {
+        "scan": 5,
+        "scheduled_times": 594,
+        "fit_detectors": 411,
+        "eligible": 212126,
+        "retained": 212126
+      }
+    ],
+    "source_crossing": {
+      "input_valid_scheduled": 180353,
+      "RTC_scheduled": 169037,
+      "CAL_eligible": 169037
+    },
+    "union_loss_cells": 433166,
+    "short_stable_runs": 4,
+    "unassessed": "only selected review windows adjudicated; full flags are not completeness truth"
+  }
+]

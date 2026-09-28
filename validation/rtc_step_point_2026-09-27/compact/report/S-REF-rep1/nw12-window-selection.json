@@ -1,0 +1,124 @@
+[
+  {
+    "kind": "event",
+    "event": 20,
+    "detector": 135,
+    "first": 1396,
+    "past_last": 2007,
+    "center": 1701,
+    "rule": "accepted median original offset/sigma"
+  },
+  {
+    "kind": "event",
+    "event": 57,
+    "detector": 335,
+    "first": 1395,
+    "past_last": 2006,
+    "center": 1700,
+    "rule": "closest original neighboring candidate"
+  },
+  {
+    "kind": "event",
+    "event": 0,
+    "detector": 7,
+    "first": 1157,
+    "past_last": 1768,
+    "center": 1462,
+    "rule": "isolated-admission-unavailable"
+  },
+  {
+    "kind": "event",
+    "event": 41,
+    "detector": 303,
+    "first": 1396,
+    "past_last": 2007,
+    "center": 1701,
+    "rule": "nearest original geometric source context"
+  },
+  {
+    "kind": "event",
+    "event": null,
+    "detector": 206,
+    "first": 510,
+    "past_last": 877,
+    "center": 693,
+    "rule": "retained original-IQ discovery maximum, first ranked tone; acquisition receiver-time anchor, nearest ALIGN sample; not selected on cleaned result",
+    "discovery_key": "o152420_n12_s2",
+    "discovery_peers": [
+      239,
+      234,
+      271
+    ],
+    "anchor_residual_seconds": -0.00032520294189453125
+  },
+  {
+    "kind": "event",
+    "event": null,
+    "detector": 206,
+    "first": 5099,
+    "past_last": 5466,
+    "center": 5282,
+    "rule": "retained original-IQ discovery maximum, first ranked tone; acquisition receiver-time anchor, nearest ALIGN sample; not selected on cleaned result",
+    "discovery_key": "o152420_n12_s9",
+    "discovery_peers": [
+      239,
+      295,
+      274
+    ],
+    "anchor_residual_seconds": -0.00029540061950683594
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 122,
+    "first": 1355,
+    "past_last": 1722,
+    "center": 1538,
+    "rule": "time fraction0.2, detector quantile0.25; first covered candidate-free identity; no cleaned selection"
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 367,
+    "first": 1355,
+    "past_last": 1722,
+    "center": 1538,
+    "rule": "time fraction0.2, detector quantile0.75; first covered candidate-free identity; no cleaned selection"
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 122,
+    "first": 3662,
+    "past_last": 4029,
+    "center": 3845,
+    "rule": "time fraction0.5, detector quantile0.25; first covered candidate-free identity; no cleaned selection"
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 367,
+    "first": 3662,
+    "past_last": 4029,
+    "center": 3845,
+    "rule": "time fraction0.5, detector quantile0.75; first covered candidate-free identity; no cleaned selection"
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 122,
+    "first": 5969,
+    "past_last": 6336,
+    "center": 6152,
+    "rule": "time fraction0.8, detector quantile0.25; first covered candidate-free identity; no cleaned selection"
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 367,
+    "first": 5969,
+    "past_last": 6336,
+    "center": 6152,
+    "rule": "time fraction0.8, detector quantile0.75; first covered candidate-free identity; no cleaned selection"
+  }
+]

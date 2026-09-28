@@ -1,0 +1,2921 @@
+- event: 0
+  network: 12
+  detector: 47
+  candidate_indices:
+    - 13
+  candidates:
+    - index: 13
+      earlier_row: 3977
+      later_row: 3978
+      coordinate: r
+      noise_block: 1520
+      difference: 1.4913635319045064e-05
+      centered_difference: 1.491039911250195e-05
+      absolute_score: 5.340082166171282
+  coordinates:
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 2.2478796945330797e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 4
+      sigma_delta: 2.792166608775679e-06
+      offset_sigma: -0.393502183055241
+      primary_pre_scale: 1.9959753960772504e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 1
+  network: 12
+  detector: 49
+  candidate_indices:
+    - 2
+    - 3
+  candidates:
+    - index: 2
+      earlier_row: 1625
+      later_row: 1626
+      coordinate: r
+      noise_block: 540
+      difference: 3.8918193148152795e-05
+      centered_difference: 3.8930950641742255e-05
+      absolute_score: 5.809672425204131
+    - index: 3
+      earlier_row: 1626
+      later_row: 1627
+      coordinate: r
+      noise_block: 540
+      difference: -3.477840872658831e-05
+      centered_difference: -3.476565123299885e-05
+      absolute_score: 5.188084081770536
+  coordinates:
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 5.811958331747805e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 4
+      sigma_delta: 6.701057786467945e-06
+      offset_sigma: -0.38277684301669507
+      primary_pre_scale: 6.104382096217154e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 2
+  network: 12
+  detector: 49
+  candidate_indices:
+    - 22
+  candidates:
+    - index: 22
+      earlier_row: 4958
+      later_row: 4959
+      coordinate: x
+      noise_block: 2013
+      difference: -3.6199673956816465e-05
+      centered_difference: -3.617976937092321e-05
+      absolute_score: 5.056206185691893
+  coordinates:
+    - amplitude_cause: 4
+      sigma_delta: 7.155517010620555e-06
+      offset_sigma: -0.3265216497379995
+      primary_pre_scale: 4.9004603870448516e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 5.114691336803836e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 3
+  network: 12
+  detector: 49
+  candidate_indices:
+    - 25
+  candidates:
+    - index: 25
+      earlier_row: 6735
+      later_row: 6736
+      coordinate: r
+      noise_block: 2504
+      difference: 3.828179414185165e-05
+      centered_difference: 3.840676769718909e-05
+      absolute_score: 5.1526823603720375
+  coordinates:
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 5.058946629749718e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 4
+      sigma_delta: 7.453742538559279e-06
+      offset_sigma: -0.17830186350025912
+      primary_pre_scale: 4.561886936529979e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 4
+  network: 12
+  detector: 50
+  candidate_indices:
+    - 26
+  candidates:
+    - index: 26
+      earlier_row: 6757
+      later_row: 6758
+      coordinate: r
+      noise_block: 2505
+      difference: -1.470846093933055e-05
+      centered_difference: -1.4751327162019367e-05
+      absolute_score: 5.645058094863153
+  coordinates:
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 1.9966978210330223e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 4
+      sigma_delta: 2.6131400092131328e-06
+      offset_sigma: -0.29585091672548447
+      primary_pre_scale: 2.0188654531794395e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 5
+  network: 12
+  detector: 54
+  candidate_indices:
+    - 27
+  candidates:
+    - index: 27
+      earlier_row: 6378
+      later_row: 6379
+      coordinate: r
+      noise_block: 2509
+      difference: -2.464837785948243e-06
+      centered_difference: -2.4615412661628027e-06
+      absolute_score: 5.091765106245281
+  coordinates:
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 3.5377361109780154e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 4
+      sigma_delta: 4.834357467008073e-07
+      offset_sigma: 0.0722348240146014
+      primary_pre_scale: 3.2967171857608203e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 6
+  network: 12
+  detector: 55
+  candidate_indices:
+    - 10
+  candidates:
+    - index: 10
+      earlier_row: 3289
+      later_row: 3290
+      coordinate: r
+      noise_block: 1037
+      difference: 2.8474285186932702e-05
+      centered_difference: 2.85198616445441e-05
+      absolute_score: 5.012348032792547
+  coordinates:
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 4.873004877442202e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 4
+      sigma_delta: 5.689920464013496e-06
+      offset_sigma: -0.12808604441292476
+      primary_pre_scale: 4.229832002649893e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 7
+  network: 12
+  detector: 60
+  candidate_indices:
+    - 4
+  candidates:
+    - index: 4
+      earlier_row: 2396
+      later_row: 2397
+      coordinate: r
+      noise_block: 551
+      difference: -6.877289560987363e-05
+      centered_difference: -6.946943357094551e-05
+      absolute_score: 5.162723787857861
+  coordinates:
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 1.1643093878591446e-05
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 4
+      sigma_delta: 1.3455965576607005e-05
+      offset_sigma: 0.21867513362098898
+      primary_pre_scale: 1.164543040812214e-05
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 8
+  network: 12
+  detector: 87
+  candidate_indices:
+    - 5
+  candidates:
+    - index: 5
+      earlier_row: 2310
+      later_row: 2311
+      coordinate: r
+      noise_block: 578
+      difference: -8.394532567604357e-06
+      centered_difference: -8.392155256492636e-06
+      absolute_score: 5.343798008984348
+  coordinates:
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 1.154839340066173e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 4
+      sigma_delta: 1.5704476932666967e-06
+      offset_sigma: -0.20371857375203822
+      primary_pre_scale: 1.1298754399666843e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 9
+  network: 12
+  detector: 123
+  candidate_indices:
+    - 23
+  candidates:
+    - index: 23
+      earlier_row: 6027
+      later_row: 6028
+      coordinate: x
+      noise_block: 2087
+      difference: -9.883931137679138e-06
+      centered_difference: -9.892357118601539e-06
+      absolute_score: 5.153891953747932
+  coordinates:
+    - amplitude_cause: 4
+      sigma_delta: 1.9193955184504354e-06
+      offset_sigma: -0.03154822675253226
+      primary_pre_scale: 1.3180693836639952e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 1.2348427699469945e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 10
+  network: 12
+  detector: 163
+  candidate_indices:
+    - 28
+  candidates:
+    - index: 28
+      earlier_row: 6613
+      later_row: 6614
+      coordinate: r
+      noise_block: 2618
+      difference: 1.3542703514928313e-06
+      centered_difference: 1.3603203268829765e-06
+      absolute_score: 5.349034490234891
+  coordinates:
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 1.9863984639764468e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 4
+      sigma_delta: 2.5431137700950606e-07
+      offset_sigma: 0.13996816705341938
+      primary_pre_scale: 1.9783871335737598e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 11
+  network: 12
+  detector: 168
+  candidate_indices:
+    - 32
+  candidates:
+    - index: 32
+      earlier_row: 7788
+      later_row: 7789
+      coordinate: x
+      noise_block: 3114
+      difference: -1.6002781994927756e-05
+      centered_difference: -1.5968062466982057e-05
+      absolute_score: 5.0425868715388065
+  coordinates:
+    - amplitude_cause: 1
+      sigma_delta: 3.1666410264756055e-06
+      offset_sigma: .nan
+      primary_pre_scale: .nan
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: .nan
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 12
+  network: 12
+  detector: 181
+  candidate_indices:
+    - 6
+  candidates:
+    - index: 6
+      earlier_row: 2173
+      later_row: 2174
+      coordinate: r
+      noise_block: 672
+      difference: 2.7832190047784178e-05
+      centered_difference: 2.7641824104951464e-05
+      absolute_score: 5.352881545493684
+  coordinates:
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 4.643830363436486e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 4
+      sigma_delta: 5.163914775626166e-06
+      offset_sigma: 0.02216420083947084
+      primary_pre_scale: 3.977173758432515e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 13
+  network: 12
+  detector: 182
+  candidate_indices:
+    - 29
+  candidates:
+    - index: 29
+      earlier_row: 6467
+      later_row: 6468
+      coordinate: r
+      noise_block: 2637
+      difference: 6.866468444027393e-05
+      centered_difference: 6.89312115689172e-05
+      absolute_score: 5.398153685593071
+  coordinates:
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 8.612291983246292e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 4
+      sigma_delta: 1.2769405167712272e-05
+      offset_sigma: 0.2658951762250235
+      primary_pre_scale: 9.698649891050086e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 14
+  network: 12
+  detector: 194
+  candidate_indices:
+    - 11
+  candidates:
+    - index: 11
+      earlier_row: 3059
+      later_row: 3060
+      coordinate: r
+      noise_block: 1176
+      difference: 6.373492594230445e-05
+      centered_difference: 6.375166883959094e-05
+      absolute_score: 5.070547571735317
+  coordinates:
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 8.332476632899808e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 4
+      sigma_delta: 1.2572935750560941e-05
+      offset_sigma: 0.16552675837813305
+      primary_pre_scale: 8.285756854446108e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 15
+  network: 12
+  detector: 208
+  candidate_indices:
+    - 0
+  candidates:
+    - index: 0
+      earlier_row: 761
+      later_row: 762
+      coordinate: x
+      noise_block: 208
+      difference: 0.00016261756720696178
+      centered_difference: 0.0001618896893904538
+      absolute_score: 5.049958535645942
+  coordinates:
+    - amplitude_cause: 4
+      sigma_delta: 3.205762745332055e-05
+      offset_sigma: 0.02773132257729717
+      primary_pre_scale: 2.1086158432602416e-05
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 2.0563403071503755e-05
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 16
+  network: 12
+  detector: 208
+  candidate_indices:
+    - 7
+  candidates:
+    - index: 7
+      earlier_row: 2344
+      later_row: 2345
+      coordinate: x
+      noise_block: 699
+      difference: 0.00016418364168213796
+      centered_difference: 0.00016383188405531002
+      absolute_score: 5.146782973697643
+  coordinates:
+    - amplitude_cause: 4
+      sigma_delta: 3.183190060520601e-05
+      offset_sigma: 0.27416414883896867
+      primary_pre_scale: 2.1394744077089557e-05
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 2.121433142383982e-05
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 17
+  network: 12
+  detector: 318
+  candidate_indices:
+    - 8
+  candidates:
+    - index: 8
+      earlier_row: 1649
+      later_row: 1650
+      coordinate: x
+      noise_block: 809
+      difference: 0.00045204200829955586
+      centered_difference: 0.00045303167220716987
+      absolute_score: 5.505964534083019
+  coordinates:
+    - amplitude_cause: 4
+      sigma_delta: 8.228016533757408e-05
+      offset_sigma: -0.10764848800626697
+      primary_pre_scale: 5.801008191062677e-05
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 6.52830306728279e-05
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 18
+  network: 12
+  detector: 318
+  candidate_indices:
+    - 12
+  candidates:
+    - index: 12
+      earlier_row: 3449
+      later_row: 3450
+      coordinate: x
+      noise_block: 1300
+      difference: 0.0004087904521504198
+      centered_difference: 0.0004063449040561056
+      absolute_score: 5.072654621538097
+  coordinates:
+    - amplitude_cause: 4
+      sigma_delta: 8.010498138998005e-05
+      offset_sigma: 1.122092787580146
+      primary_pre_scale: 6.279525855429904e-05
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 6.287496628462082e-05
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 19
+  network: 12
+  detector: 353
+  candidate_indices:
+    - 9
+  candidates:
+    - index: 9
+      earlier_row: 1995
+      later_row: 1996
+      coordinate: r
+      noise_block: 844
+      difference: 1.0733598147503106e-05
+      centered_difference: 1.0804303223570547e-05
+      absolute_score: 5.027768444233392
+  coordinates:
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 1.6231209457960952e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 4
+      sigma_delta: 2.1489261773705115e-06
+      offset_sigma: -0.08579093314894254
+      primary_pre_scale: 1.4958416184765421e-06
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 20
+  network: 12
+  detector: 371
+  candidate_indices:
+    - 14
+  candidates:
+    - index: 14
+      earlier_row: 4179
+      later_row: 4180
+      coordinate: x
+      noise_block: 1844
+      difference: 3.5953407144220733e-06
+      centered_difference: 3.6037635682541473e-06
+      absolute_score: 5.163845267438342
+  coordinates:
+    - amplitude_cause: 4
+      sigma_delta: 6.978837245527859e-07
+      offset_sigma: -1.7579254087694527
+      primary_pre_scale: 7.214257223772806e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 4.5669373563848236e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 21
+  network: 12
+  detector: 394
+  candidate_indices:
+    - 15
+  candidates:
+    - index: 15
+      earlier_row: 3997
+      later_row: 3998
+      coordinate: x
+      noise_block: 1867
+      difference: -3.6854520975135322e-06
+      centered_difference: -3.7104938789659245e-06
+      absolute_score: 5.149967228597908
+  coordinates:
+    - amplitude_cause: 4
+      sigma_delta: 7.20488833086442e-07
+      offset_sigma: 0.20961043073876492
+      primary_pre_scale: 5.712401145612992e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 4.5073097488125197e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 22
+  network: 12
+  detector: 394
+  candidate_indices:
+    - 16
+  candidates:
+    - index: 16
+      earlier_row: 4179
+      later_row: 4180
+      coordinate: x
+      noise_block: 1867
+      difference: 3.689041978006303e-06
+      centered_difference: 3.6640001965539107e-06
+      absolute_score: 5.085436481864689
+  coordinates:
+    - amplitude_cause: 4
+      sigma_delta: 7.20488833086442e-07
+      offset_sigma: -1.9950886744127108
+      primary_pre_scale: 7.178901725087148e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 5.245602095062438e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 23
+  network: 12
+  detector: 394
+  candidate_indices:
+    - 24
+  candidates:
+    - index: 24
+      earlier_row: 5951
+      later_row: 5952
+      coordinate: x
+      noise_block: 2358
+      difference: -3.5532008114110767e-06
+      centered_difference: -3.5741282492108202e-06
+      absolute_score: 5.14761251820902
+  coordinates:
+    - amplitude_cause: 4
+      sigma_delta: 6.943273676034859e-07
+      offset_sigma: -0.6669588288224585
+      primary_pre_scale: 6.389374433305758e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 4.10733904672042e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 24
+  network: 12
+  detector: 400
+  candidate_indices:
+    - 17
+  candidates:
+    - index: 17
+      earlier_row: 4200
+      later_row: 4201
+      coordinate: x
+      noise_block: 1873
+      difference: -3.1429492324927825e-06
+      centered_difference: -3.1480717062664673e-06
+      absolute_score: 5.007711684387727
+  coordinates:
+    - amplitude_cause: 4
+      sigma_delta: 6.286447592582138e-07
+      offset_sigma: -2.812028035454236
+      primary_pre_scale: 7.061113782244028e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 3.6888444617883575e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 25
+  network: 12
+  detector: 414
+  candidate_indices:
+    - 18
+  candidates:
+    - index: 18
+      earlier_row: 3995
+      later_row: 3996
+      coordinate: x
+      noise_block: 1887
+      difference: -2.512866137516754e-06
+      centered_difference: -2.514457675149238e-06
+      absolute_score: 5.759424772540058
+  coordinates:
+    - amplitude_cause: 4
+      sigma_delta: 4.365813904085939e-07
+      offset_sigma: -0.5837473571507266
+      primary_pre_scale: 3.0806732733309917e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 2.854584533657514e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 26
+  network: 12
+  detector: 416
+  candidate_indices:
+    - 19
+  candidates:
+    - index: 19
+      earlier_row: 3997
+      later_row: 3998
+      coordinate: x
+      noise_block: 1889
+      difference: -2.4677004176852935e-06
+      centered_difference: -2.4735543203026883e-06
+      absolute_score: 5.509686278054215
+  coordinates:
+    - amplitude_cause: 4
+      sigma_delta: 4.489464908655819e-07
+      offset_sigma: -3.2779967483782344
+      primary_pre_scale: 6.116046231499295e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 2.9130456999064556e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 27
+  network: 12
+  detector: 416
+  candidate_indices:
+    - 20
+  candidates:
+    - index: 20
+      earlier_row: 4179
+      later_row: 4180
+      coordinate: x
+      noise_block: 1889
+      difference: 2.4100717853757816e-06
+      centered_difference: 2.4042178827583868e-06
+      absolute_score: 5.355243735446033
+  coordinates:
+    - amplitude_cause: 4
+      sigma_delta: 4.489464908655819e-07
+      offset_sigma: -2.5648718046157586
+      primary_pre_scale: 7.405206861862418e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 2.8236892757821103e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 28
+  network: 12
+  detector: 416
+  candidate_indices:
+    - 30
+  candidates:
+    - index: 30
+      earlier_row: 7053
+      later_row: 7054
+      coordinate: x
+      noise_block: 2871
+      difference: 2.7868360045218336e-06
+      centered_difference: 2.786983614908807e-06
+      absolute_score: 5.9127314195428475
+  coordinates:
+    - amplitude_cause: 4
+      sigma_delta: 4.713529868272432e-07
+      offset_sigma: 0.16461675276840823
+      primary_pre_scale: 5.272035628141341e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 2.625925519538184e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 29
+  network: 12
+  detector: 439
+  candidate_indices:
+    - 21
+  candidates:
+    - index: 21
+      earlier_row: 3995
+      later_row: 3996
+      coordinate: x
+      noise_block: 1912
+      difference: -3.008662171337197e-06
+      centered_difference: -3.0056500496838493e-06
+      absolute_score: 5.592958215995096
+  coordinates:
+    - amplitude_cause: 4
+      sigma_delta: 5.373989816494786e-07
+      offset_sigma: -0.5449982845841868
+      primary_pre_scale: 4.3701647895497106e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 2.872494997596521e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 30
+  network: 12
+  detector: 439
+  candidate_indices:
+    - 31
+  candidates:
+    - index: 31
+      earlier_row: 7053
+      later_row: 7054
+      coordinate: x
+      noise_block: 2894
+      difference: 3.0340047990109994e-06
+      centered_difference: 3.0445136857942584e-06
+      absolute_score: 5.872119945025679
+  coordinates:
+    - amplitude_cause: 4
+      sigma_delta: 5.184692605561116e-07
+      offset_sigma: -0.1287325951324242
+      primary_pre_scale: 4.786329699675719e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 3.416162475378271e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+- event: 31
+  network: 12
+  detector: 440
+  candidate_indices:
+    - 1
+  candidates:
+    - index: 1
+      earlier_row: 716
+      later_row: 717
+      coordinate: x
+      noise_block: 440
+      difference: 2.61645691090694e-06
+      centered_difference: 2.6008480418818556e-06
+      absolute_score: 5.082267948318907
+  coordinates:
+    - amplitude_cause: 4
+      sigma_delta: 5.117494922207229e-07
+      offset_sigma: -0.5550889285586313
+      primary_pre_scale: 5.187299234609086e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false
+    - amplitude_cause: 0
+      sigma_delta: .nan
+      offset_sigma: .nan
+      primary_pre_scale: 2.485006013547886e-07
+      short_fit_cause: 0
+      short_offset: .nan
+      consistency_cause: 0
+      transition_request_cause: 0
+      original_transition:
+        available: false
+        cause: 0
+        affected:
+          - -1
+          - -1
+        examined:
+          - -1
+          - -1
+        frozen_residual_scale: .nan
+        invalid_rows: 0
+        excluded_rows: 0
+        observation_truncated: false
+        acquisition_truncated: false
+        confirmations:
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+          - rows:
+              - -1
+              - -1
+            also_matches_other_reference: false
+      admission_cause: 0
+      admitted: false
+      reassessed: false
+      admitted_affected:
+        - -1
+        - -1
+      reassessment_available: false

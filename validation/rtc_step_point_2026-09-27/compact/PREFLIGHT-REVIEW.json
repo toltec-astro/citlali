@@ -1,0 +1,22 @@
+{
+  "verdict": "pass",
+  "source_revision": "43b510b3d01323c2de9cc41b2dfdb8d316b9ca4d",
+  "tree": "7394c516a91913cbfc9b028a55aa2b0a246f074b",
+  "reviewer": "/root/step_preflight",
+  "selection": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_point_2026-09-27/SELECTION.json",
+    "sha256": "099399c631b81f63f7de7d5b19010bf217b212d2801cb61fbf2ebf02afa34953"
+  },
+  "findings": [],
+  "required_gate": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/CTEST_COMPLETE.txt",
+    "sha256": "42ef659c48e3df965b06243a1ae111eb51d0c99dcf6385b71eb062910be51bb1"
+  },
+  "checks": [
+    "immutable original/reassessed evidence chain",
+    "bounded152430/152420 route",
+    "own selected M0 rasters/noise",
+    "active x-only source fixture",
+    "152native fixtures;207baseline;36Python;fullconfig"
+  ]
+}

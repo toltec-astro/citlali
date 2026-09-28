@@ -1,8 +1,21 @@
 # Citlali Refactor Status
 
-## 2026-09-27 — bounded RTC step POINT assessment authorized
+## 2026-09-27 — bounded POINT step assessment completed
 
-The owner's [new order](../validation/rtc_step_point_2026-09-27/OWNER_DIRECTIVE.md) retains B and parks fixed11. One diagnostic-only152430 replay and one evidence-selected POINT plus three active source-response branches are bounded to5 trajectories/25feedback and2extraRTC captures, with one documented implementation-defect replacement only. [Retained baseline inventory](../validation/rtc_step_point_2026-09-27/BASELINE_BEFORE_REPLAY.md) precedes execution. Local original-I/Q discovery is limited to152420/152432/152434; the frozen selection record binds152420 inputs before new maps. No thresholds, numerical policies or production defaults change. Local independent preflight and final review govern this module probe.
+The [assessment](../validation/rtc_step_point_2026-09-27/ASSESSMENT.md) at science
+source `43b510b3d` completes five trajectories / 25 feedback applications, no
+extra RTC-only captures or replacement. Frozen original-domain selection152420
+exercises 89 admitted detector-event groups versus152430's9. B replay is exact;
+planned/realized filter support agrees, with no donor crossing. Broader scan/run
+exclusions carry measured cost; their avoidable fraction is not established.
+Two retained unflagged x-transition examples survive RTC/CAL and are largely
+removed by PTC. Best-supported next issue is Learn coverage, pending a separate
+owner decision; no tuning or follow-on is authorized here. Active injections
+change no event decisions or support; compact T5 spatial gain0.990–0.993, broad
+0.873. Compact-minus fit-angle-bound width discrepancy remains explicit.
+B stays development reference, fixed11 stays parked. Compact preservation,
+saved-only isolation, independent final review and guarded cleanup govern the
+local closeout. See [handoff](../handoff/RTC_STEP_POINT_2026-09-27.md).
 
 ## 2026-09-27 — fixed 11 Hz comparison completed (local experimental evidence)
 

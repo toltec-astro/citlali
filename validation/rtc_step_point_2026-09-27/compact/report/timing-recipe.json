@@ -1,0 +1,7 @@
+{
+  "wall": "network clocks relative, never sum worker durations as latency; union lower=max duration; upper uses enclosing wrapper span and each worker duration minus last trace to bound its unknown start offset; first two worker intervals overlap",
+  "CPU": "process CPU counters: common RTC intersection gives lower bound, union envelope gives upper (may include CAL on early finisher); no exclusive per-thread CPU attribution claimed",
+  "readiness": "published READY contains map/guard/measurements. Parent50ms poll gives caller-detected readiness; poll timestamp sampled before path check may precede publication by a few ms. Analysis and command exit separate.",
+  "memory": "sampled aggregate process-tree RSS50ms, not OS pressure or continuous high-water",
+  "phase": "all five runs diagnostic-heavy with source probes and step chain serialization; normal required spectra/output/endpoint included, no overhead subtraction, no repeats or speedup inference"
+}

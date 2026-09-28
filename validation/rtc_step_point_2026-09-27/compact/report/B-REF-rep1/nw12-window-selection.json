@@ -1,0 +1,110 @@
+[
+  {
+    "kind": "event",
+    "event": 25,
+    "detector": 414,
+    "first": 3690,
+    "past_last": 4301,
+    "center": 3995,
+    "rule": "nearest original geometric source context"
+  },
+  {
+    "kind": "event",
+    "event": 11,
+    "detector": 168,
+    "first": 7483,
+    "past_last": 7820,
+    "center": 7788,
+    "rule": "unresolved-extent"
+  },
+  {
+    "kind": "event",
+    "event": 0,
+    "detector": 47,
+    "first": 3672,
+    "past_last": 4283,
+    "center": 3977,
+    "rule": "isolated-admission-unavailable"
+  },
+  {
+    "kind": "event",
+    "event": 1,
+    "detector": 49,
+    "first": 1320,
+    "past_last": 1931,
+    "center": 1625,
+    "rule": "no-resolved-excursion"
+  },
+  {
+    "kind": "event",
+    "event": 2,
+    "detector": 49,
+    "first": 4653,
+    "past_last": 5264,
+    "center": 4958,
+    "rule": "original event identity fill"
+  },
+  {
+    "kind": "event",
+    "event": 3,
+    "detector": 49,
+    "first": 6430,
+    "past_last": 7041,
+    "center": 6735,
+    "rule": "original event identity fill"
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 122,
+    "first": 1380,
+    "past_last": 1747,
+    "center": 1563,
+    "rule": "time fraction0.2, detector quantile0.25; first covered candidate-free identity; no cleaned selection"
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 367,
+    "first": 1380,
+    "past_last": 1747,
+    "center": 1563,
+    "rule": "time fraction0.2, detector quantile0.75; first covered candidate-free identity; no cleaned selection"
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 122,
+    "first": 3726,
+    "past_last": 4093,
+    "center": 3909,
+    "rule": "time fraction0.5, detector quantile0.25; first covered candidate-free identity; no cleaned selection"
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 367,
+    "first": 3726,
+    "past_last": 4093,
+    "center": 3909,
+    "rule": "time fraction0.5, detector quantile0.75; first covered candidate-free identity; no cleaned selection"
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 122,
+    "first": 6072,
+    "past_last": 6439,
+    "center": 6255,
+    "rule": "time fraction0.8, detector quantile0.25; first covered candidate-free identity; no cleaned selection"
+  },
+  {
+    "kind": "unflagged",
+    "event": null,
+    "detector": 367,
+    "first": 6072,
+    "past_last": 6439,
+    "center": 6255,
+    "rule": "time fraction0.8, detector quantile0.75; first covered candidate-free identity; no cleaned selection"
+  }
+]

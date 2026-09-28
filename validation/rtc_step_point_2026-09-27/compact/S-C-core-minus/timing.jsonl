@@ -1,0 +1,62 @@
+{"event": "python_entry", "monotonic_ns": 290171546978208, "pid": 57311, "entry_ns": 290170392412916}
+{"event": "process_start", "monotonic_ns": 290171556891583, "pid": 57311, "kind": "git_revision"}
+{"event": "process_start", "monotonic_ns": 290171582291166, "pid": 57311, "kind": "git_status"}
+{"event": "process_start", "monotonic_ns": 290171904529541, "pid": 57311, "kind": "validation_version"}
+{"event": "span", "monotonic_ns": 290172079737291, "pid": 57311, "name": "environment_input_verification", "start_ns": 290171547480083, "seconds": 0.522598583, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "process_start", "monotonic_ns": 290172090205125, "pid": 57311, "kind": "native_version"}
+{"event": "process_start", "monotonic_ns": 290172112698083, "pid": 57311, "kind": "native_processing"}
+{"event": "span", "monotonic_ns": 290196207669208, "pid": 57311, "name": "native_invocation_including_reservation_hashing_publication", "start_ns": 290172080364833, "seconds": 24.122104208, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "process_start", "monotonic_ns": 290196310735625, "pid": 57311, "kind": "native_version"}
+{"event": "process_start", "monotonic_ns": 290196342051583, "pid": 57311, "kind": "native_processing"}
+{"event": "span", "monotonic_ns": 290204519920833, "pid": 57311, "name": "native_invocation_including_reservation_hashing_publication", "start_ns": 290196274424916, "seconds": 8.236774834, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290204571392333, "pid": 57311, "name": "load_noise_context", "start_ns": 290204540310458, "seconds": 0.027302375, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290204603946333, "pid": 57311, "name": "source_measurements", "start_ns": 290204595606500, "seconds": 0.000406833, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290204610027166, "pid": 57311, "name": "source_fit_measurement", "start_ns": 290204588737125, "seconds": 0.015321541, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290204628541041, "pid": 57311, "name": "load_noise_context", "start_ns": 290204611046708, "seconds": 0.012547792, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290204647020208, "pid": 57311, "name": "raw_parent_PTC_MAP_initial_guard_noise", "start_ns": 290172079883333, "seconds": 32.564076583, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290204659414791, "pid": 57311, "name": "load_noise_context", "start_ns": 290204652342125, "seconds": 0.003815666, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290204696281541, "pid": 57311, "name": "feedback_candidate_publication", "start_ns": 290204667387000, "seconds": 0.0207865, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "ready", "monotonic_ns": 290204730565625, "pid": 57311, "cycle": 0, "ready_file": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-core-minus/READY-00.json", "status": "accepted", "source_accepted": true}
+{"event": "process_start", "monotonic_ns": 290204749815125, "pid": 57311, "kind": "native_version"}
+{"event": "process_start", "monotonic_ns": 290204927908541, "pid": 57311, "kind": "native_processing"}
+{"event": "span", "monotonic_ns": 290212572284166, "pid": 57311, "name": "native_invocation_including_reservation_hashing_publication", "start_ns": 290204732143250, "seconds": 7.8310655, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290212645349541, "pid": 57311, "name": "source_measurements", "start_ns": 290212631360291, "seconds": 0.000338709, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290212655770625, "pid": 57311, "name": "source_fit_measurement", "start_ns": 290212626362791, "seconds": 0.019114584, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290212677700666, "pid": 57311, "name": "feedback_candidate_publication", "start_ns": 290212655921958, "seconds": 0.012020542, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290212791511583, "pid": 57311, "name": "cycle_cleanup", "start_ns": 290212726760583, "seconds": 0.051506917, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "ready", "monotonic_ns": 290212812375541, "pid": 57311, "cycle": 1, "ready_file": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-core-minus/READY-01.json", "status": "accepted", "source_accepted": true}
+{"event": "process_start", "monotonic_ns": 290212840065708, "pid": 57311, "kind": "native_version"}
+{"event": "process_start", "monotonic_ns": 290212870400750, "pid": 57311, "kind": "native_processing"}
+{"event": "span", "monotonic_ns": 290220552750125, "pid": 57311, "name": "native_invocation_including_reservation_hashing_publication", "start_ns": 290212813643041, "seconds": 7.735122834, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290220624065250, "pid": 57311, "name": "source_measurements", "start_ns": 290220610668833, "seconds": 0.000313833, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290220633616208, "pid": 57311, "name": "source_fit_measurement", "start_ns": 290220605596291, "seconds": 0.018612, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290220658723041, "pid": 57311, "name": "feedback_candidate_publication", "start_ns": 290220633666750, "seconds": 0.010888166, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290220775553041, "pid": 57311, "name": "cycle_cleanup", "start_ns": 290220711226333, "seconds": 0.055746833, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "ready", "monotonic_ns": 290220791595875, "pid": 57311, "cycle": 2, "ready_file": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-core-minus/READY-02.json", "status": "accepted", "source_accepted": true}
+{"event": "process_start", "monotonic_ns": 290220813465500, "pid": 57311, "kind": "native_version"}
+{"event": "process_start", "monotonic_ns": 290220836908500, "pid": 57311, "kind": "native_processing"}
+{"event": "span", "monotonic_ns": 290228505630875, "pid": 57311, "name": "native_invocation_including_reservation_hashing_publication", "start_ns": 290220792698083, "seconds": 7.702201625, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290228578204333, "pid": 57311, "name": "source_measurements", "start_ns": 290228564694750, "seconds": 0.00035125, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290228586780875, "pid": 57311, "name": "source_fit_measurement", "start_ns": 290228560886083, "seconds": 0.0174645, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290228606872916, "pid": 57311, "name": "feedback_candidate_publication", "start_ns": 290228586876875, "seconds": 0.011789875, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290228727853500, "pid": 57311, "name": "cycle_cleanup", "start_ns": 290228654376791, "seconds": 0.060119125, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "ready", "monotonic_ns": 290228747701583, "pid": 57311, "cycle": 3, "ready_file": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-core-minus/READY-03.json", "status": "accepted", "source_accepted": true}
+{"event": "process_start", "monotonic_ns": 290228769395958, "pid": 57311, "kind": "native_version"}
+{"event": "process_start", "monotonic_ns": 290228796181375, "pid": 57311, "kind": "native_processing"}
+{"event": "span", "monotonic_ns": 290236463174375, "pid": 57311, "name": "native_invocation_including_reservation_hashing_publication", "start_ns": 290228749208500, "seconds": 7.710484291, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290236543653416, "pid": 57311, "name": "source_measurements", "start_ns": 290236533247708, "seconds": 0.00029025, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290236555117250, "pid": 57311, "name": "source_fit_measurement", "start_ns": 290236529621541, "seconds": 0.014187792, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290236575103375, "pid": 57311, "name": "feedback_candidate_publication", "start_ns": 290236555210208, "seconds": 0.010230583, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290236693778666, "pid": 57311, "name": "cycle_cleanup", "start_ns": 290236623447250, "seconds": 0.057712583, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "ready", "monotonic_ns": 290236713941750, "pid": 57311, "cycle": 4, "ready_file": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-core-minus/READY-04.json", "status": "accepted", "source_accepted": true}
+{"event": "process_start", "monotonic_ns": 290236745874125, "pid": 57311, "kind": "native_version"}
+{"event": "process_start", "monotonic_ns": 290236774322625, "pid": 57311, "kind": "native_processing"}
+{"event": "span", "monotonic_ns": 290244447964208, "pid": 57311, "name": "native_invocation_including_reservation_hashing_publication", "start_ns": 290236715641333, "seconds": 7.727538, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290244516141708, "pid": 57311, "name": "source_measurements", "start_ns": 290244504527291, "seconds": 0.000323125, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290244525039791, "pid": 57311, "name": "source_fit_measurement", "start_ns": 290244500724958, "seconds": 0.015576, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "span", "monotonic_ns": 290244543466958, "pid": 57311, "name": "feedback_candidate_publication", "start_ns": 290244525135583, "seconds": 0.010968333, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "ready", "monotonic_ns": 290244606571750, "pid": 57311, "cycle": 5, "ready_file": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-core-minus/READY-05.json", "status": "accepted", "source_accepted": true}
+{"event": "span", "monotonic_ns": 290244664689041, "pid": 57311, "name": "conditional_endpoint_including_io", "start_ns": 290244614191000, "seconds": 0.041014625, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "analysis_complete", "monotonic_ns": 290244688356708, "pid": 57311, "cycle": 5, "status": "completed"}
+{"event": "span", "monotonic_ns": 290244694400666, "pid": 57311, "name": "trajectory_including_endpoint", "start_ns": 290204652096958, "seconds": 40.036497417, "scope": "inclusive wall; nested spans are not additive"}
+{"event": "finalized", "monotonic_ns": 290244697545708, "pid": 57311, "status": "completed"}

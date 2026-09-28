@@ -1,0 +1,228 @@
+{
+  "schema": "citlali-point-speed-pca-v1",
+  "mode": "POINT",
+  "observation": 152420,
+  "subobservation": 0,
+  "scan": 2,
+  "tune": [
+    152420,
+    0,
+    1
+  ],
+  "array": "a2000",
+  "networks": [
+    11,
+    12
+  ],
+  "effective_config": "point_152420.yaml",
+  "input_manifest": "inputs.json",
+  "map_owner": "map-owner.json",
+  "rtc_plans": {
+    "a1100": "a1100-rtc.json",
+    "a1400": "a1400-rtc.json",
+    "a2000": "a2000-rtc.json"
+  },
+  "ptc": {
+    "method": "observed-als",
+    "rank": 10
+  },
+  "cycles": 5,
+  "threshold": 3,
+  "coverage_policy": "high-coverage-informational",
+  "reference_tolerances": {
+    "signal_atol": 1e-09,
+    "signal_rtol": 1e-11,
+    "numerator_atol": 1e-07,
+    "fit_atol_rtol": 1e-08,
+    "deterministic_measurements_candidates": "exact",
+    "support_normalization": "exact"
+  },
+  "scientific_recipe": {
+    "guard": {
+      "method": "POINT-EXPECTED-v1",
+      "optimizer_calls": 1,
+      "sigma_floor_arcsec": 1.5,
+      "centroid_radius_arcsec": 20,
+      "strict_amplitude_snr": 10,
+      "weights": "identity",
+      "bootstrap": "one geometry-valid attempt, then C0, then complete same fit acceptance"
+    },
+    "C0": {
+      "request": {
+        "mask_fwhm": 4.0,
+        "lag_pixels": 32,
+        "taper_power": 1.0,
+        "bins": 5,
+        "minimum_pixels": 100,
+        "minimum_pairs": 200,
+        "region": "all",
+        "domain_factor": 1,
+        "seed": 23152389,
+        "high_coverage_usable": true
+      },
+      "stamp_size": 49,
+      "geometry": "singleton available M0 fit; freeze full mask/support and WCS"
+    },
+    "BASE_amplitude": {
+      "request": {
+        "mask_fwhm": 3.0,
+        "lag_pixels": 32,
+        "taper_power": 1.0,
+        "bins": 5,
+        "minimum_pixels": 100,
+        "minimum_pairs": 200,
+        "region": "all",
+        "domain_factor": 1,
+        "seed": 23152389,
+        "high_coverage_usable": true
+      },
+      "zero_lag_normalization": "mean squared standardized background; no second spatial covariance"
+    },
+    "PTC": {
+      "rank": 10,
+      "max_iterations": 100,
+      "relative_objective_tolerance": 1e-05,
+      "relative_rank_tolerance": 1e-10,
+      "method": "observed-entry ALS; own preceding converged basis initializer; fully resolved current residual"
+    },
+    "MAP": {
+      "pixel_arcsec": 2,
+      "nominal_beam_arcsec": 10,
+      "frame": "FK5 J2000",
+      "uniform_gamma": 1,
+      "coverage_cut": 0.5,
+      "projection": "native containing pixel"
+    },
+    "feedback": {
+      "radius_arcsec": 40,
+      "gain": 1,
+      "replacement": true,
+      "brightness": "measured minus own fitted constant",
+      "boundary": "inherited candidate_guard"
+    },
+    "endpoint": {
+      "maximum": 1,
+      "source_mask": "frozen M0 full mask and support intersect actual support",
+      "propagation": "seven-parameter local sensitivity with fitted-constant response for template/apertures",
+      "unsupported": "unresolved"
+    },
+    "stops": [
+      "missing dependency",
+      "unsupported required covariance or projection",
+      "new PTC failure",
+      "accounting mismatch",
+      "nonfinite required operand",
+      "expected-source rejection",
+      "inherited feedback boundary"
+    ]
+  },
+  "resource_limits": {
+    "network_workers": 2,
+    "free_space_reserve_bytes": 2000000000,
+    "maximum_retained_bytes": 1000000000
+  },
+  "source_revision": "43b510b3d01323c2de9cc41b2dfdb8d316b9ca4d",
+  "reference": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_point_2026-09-27/selected-inputs/reference.json",
+    "sha256": "318a328a1c947fdb0b961edb3a32f372d0c994d1e1d31e61243ee55bbf0b9bb5"
+  },
+  "input_root": "/Users/gwilson/work_toltec/local_data",
+  "dependencies": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/freeze/dependencies.json",
+    "sha256": "218482cd00827d202f36c2ea706d5eb1219aa5a88d57df858ec807800723ac11"
+  },
+  "budget": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/freeze/budget.json",
+    "sha256": "18851b3ff75838023c93e46530a77f76c82e6cdae566b92ee8676b3fd789e16d"
+  },
+  "environment": {
+    "python": "/Users/gwilson/tolteca/bin/python",
+    "platform": "macOS-26.7-arm64-arm-64bit-Mach-O"
+  },
+  "generated_inputs": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/freeze/generated-inputs.json",
+    "sha256": "daf48d6c62945f78dc8ce80a772fb18950630390c369719b0400ea99fa370442"
+  },
+  "profile": "POINT-SPEED-PCA-v1",
+  "campaign_scope": "rtc-step-point-v1",
+  "rtc_family": "S",
+  "signal_branch": "C-shoulder",
+  "feedback_count": 5,
+  "experimental_method": "warm-observed-als",
+  "trajectory_identity": "S-C-shoulder",
+  "step_selection": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_point_2026-09-27/SELECTION.json",
+    "sha256": "099399c631b81f63f7de7d5b19010bf217b212d2801cb61fbf2ebf02afa34953"
+  },
+  "experiment_operands": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_point_2026-09-27/SELECTION.json",
+      "sha256": "099399c631b81f63f7de7d5b19010bf217b212d2801cb61fbf2ebf02afa34953"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/freeze/measurement-geometry.json",
+      "sha256": "df52b7c4dddf41e88dad8dfaee2c76f17df63a83ccdb4c837b5de0a3069a0642"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/SHAPES.json",
+      "sha256": "f913906084cb572fcd829e590afbaab75bf659f97cdea1f4d972cddd1fd5e92a"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/freeze/shapes/C-core-minus.fits",
+      "sha256": "25940672956272c1f0725eace374df59691f57b944f06a4629f04b83cc802c2b"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/freeze/shapes/C-core-plus.fits",
+      "sha256": "1a90b7c3bd2d7954bca211296aa23f91d079ea17f0768137ae929f04b1af643d"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/freeze/shapes/C-shoulder.fits",
+      "sha256": "1c00ca3313c637a8ddb1bc799d4b100f554dd4e44e9843754456ac4214b61860"
+    }
+  ],
+  "noise_reference": {
+    "root": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-REF-rep1",
+    "binding": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-REF-rep1/freeze/prospective.json",
+      "sha256": "60390e52f7cb2c31c03420ba015f6add35cdf3786998e209eb8999209f8de09a"
+    },
+    "files": [
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-REF-rep1/freeze/a2000/BASE.json",
+        "sha256": "de9e9ba3638ce772014d2b964b8b898e820bfb596eee99915c221f5b05f084fb"
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-REF-rep1/freeze/a2000/BASE.npz",
+        "sha256": "6e68e6d5a82be199e98e91d01880237715134566163df32d70a53fbc8545189e"
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-REF-rep1/freeze/a2000/C0.json",
+        "sha256": "7880d4baf90a65fcbc2bd68eaee2a6640c7d7af8e838a0d5d50d4f79cfcf3389"
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-REF-rep1/freeze/a2000/C0.npz",
+        "sha256": "f853f7b3c355a483371371304368b98e1f6c76fbfdd927a20987e508e3c12014"
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-REF-rep1/freeze/a2000/context.npz",
+        "sha256": "ebd74cf35f49d67b1e3c6f8165c5de91715ea973ef148245ee052062ceb81d06"
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-REF-rep1/freeze/a2000/continuation-sanity.json",
+        "sha256": "cd5bc1028dacaf8bc4d73dd1396c197607378dad63a551114e003ab47afc9df5"
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-REF-rep1/freeze/a2000/geometry.json",
+        "sha256": "aecb884cfcbdae46e1d7de6e5403370589abf3fb1571423013eb2a87cf191908"
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-REF-rep1/freeze/a2000/guard.json",
+        "sha256": "8a91653d029d2fdb31a1134991028bd6c1af2735fbd3e66b8961e0df6d2fda15"
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-REF-rep1/freeze/a2000/measurement-geometry.json",
+        "sha256": "df52b7c4dddf41e88dad8dfaee2c76f17df63a83ccdb4c837b5de0a3069a0642"
+      }
+    ]
+  }
+}

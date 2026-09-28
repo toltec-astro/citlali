@@ -1,0 +1,50 @@
+[
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/freeze/a2000/BASE.json",
+    "sha256": "de9e9ba3638ce772014d2b964b8b898e820bfb596eee99915c221f5b05f084fb"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/freeze/a2000/BASE.npz",
+    "sha256": "6e68e6d5a82be199e98e91d01880237715134566163df32d70a53fbc8545189e"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/freeze/a2000/C0.json",
+    "sha256": "7880d4baf90a65fcbc2bd68eaee2a6640c7d7af8e838a0d5d50d4f79cfcf3389"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/freeze/a2000/C0.npz",
+    "sha256": "f853f7b3c355a483371371304368b98e1f6c76fbfdd927a20987e508e3c12014"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/freeze/a2000/context.npz",
+    "sha256": "ebd74cf35f49d67b1e3c6f8165c5de91715ea973ef148245ee052062ceb81d06"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/freeze/a2000/continuation-sanity.json",
+    "sha256": "cd5bc1028dacaf8bc4d73dd1396c197607378dad63a551114e003ab47afc9df5"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/freeze/a2000/geometry.json",
+    "sha256": "aecb884cfcbdae46e1d7de6e5403370589abf3fb1571423013eb2a87cf191908"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/freeze/a2000/guard.json",
+    "sha256": "8a91653d029d2fdb31a1134991028bd6c1af2735fbd3e66b8961e0df6d2fda15"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/freeze/a2000/measurement-geometry.json",
+    "sha256": "df52b7c4dddf41e88dad8dfaee2c76f17df63a83ccdb4c837b5de0a3069a0642"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/freeze/M0-measurement.json",
+    "sha256": "a465f953d1f191edbd7201c9352a5b2c9eaff458c8f936eeb271e3af4724a52e"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/freeze/parents.json",
+    "sha256": "094d3819ff69ecb0db4c0598a5e6e0e871a866f3a0689d7941912fd6805f0900"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-shoulder/inputs/map-request.json",
+    "sha256": "5bd97503e060a88a3842fa76289a9ae4085086417c447d13b69088f3d5dabebe"
+  }
+]

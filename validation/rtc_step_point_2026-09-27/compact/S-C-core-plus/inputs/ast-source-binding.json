@@ -1,0 +1,11 @@
+{
+  "schema": "citlali-ast-motion-source-binding-v1",
+  "authority_policy_id": "wp7-ast-scan-motion-v2",
+  "observation": 152420,
+  "subobservation": 0,
+  "scan": 2,
+  "telescope": {
+    "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/tel_toltec_2026-02-19_152420_00_0002.nc",
+    "sha256": "1b6af4897285516acc45ba6b50b380cc97048254c8c8970f8061e83d9720b568"
+  }
+}

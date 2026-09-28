@@ -1,0 +1,84 @@
+[
+  {
+    "network": 11,
+    "stage": "ingress_seconds",
+    "seconds": 2.729002
+  },
+  {
+    "network": 11,
+    "stage": "Learn_seconds",
+    "seconds": 1.866086498
+  },
+  {
+    "network": 11,
+    "stage": "Consider_evidence_seconds",
+    "seconds": 0.000773334
+  },
+  {
+    "network": 11,
+    "stage": "transient_seconds",
+    "seconds": 0.594729834
+  },
+  {
+    "network": 11,
+    "stage": "spectral_seconds",
+    "seconds": 1.273096666
+  },
+  {
+    "network": 11,
+    "stage": "total_seconds",
+    "seconds": 22.54657
+  },
+  {
+    "network": 11,
+    "stage": "Apply_operation_seconds",
+    "seconds": {
+      "transient_partition_validation": 3.837799999999994e-05,
+      "allocation_and_donors": 0.006850407999999995,
+      "gather_and_notch": 0.019284846999999994,
+      "lowpass_support_output": 1.4087551649999994,
+      "scope": "sum over sequential detector applications within network; network intervals overlap"
+    }
+  },
+  {
+    "network": 12,
+    "stage": "ingress_seconds",
+    "seconds": 2.925997417
+  },
+  {
+    "network": 12,
+    "stage": "Learn_seconds",
+    "seconds": 1.7104292090000002
+  },
+  {
+    "network": 12,
+    "stage": "Consider_evidence_seconds",
+    "seconds": 0.000708041
+  },
+  {
+    "network": 12,
+    "stage": "transient_seconds",
+    "seconds": 0.429729791
+  },
+  {
+    "network": 12,
+    "stage": "spectral_seconds",
+    "seconds": 1.282327292
+  },
+  {
+    "network": 12,
+    "stage": "total_seconds",
+    "seconds": 19.845272292
+  },
+  {
+    "network": 12,
+    "stage": "Apply_operation_seconds",
+    "seconds": {
+      "transient_partition_validation": 3.0132000000000016e-05,
+      "allocation_and_donors": 0.007510789000000001,
+      "gather_and_notch": 0.023376552999999998,
+      "lowpass_support_output": 1.4678753329999996,
+      "scope": "sum over sequential detector applications within network; network intervals overlap"
+    }
+  }
+]

@@ -1,5 +1,23 @@
 # Scientific goals
 
+## 2026-09-27 — bounded POINT step assessment completed
+
+The [assessment](../validation/rtc_step_point_2026-09-27/ASSESSMENT.md) at science
+source `43b510b3d` completes five trajectories / 25 feedback applications, no
+extra RTC-only captures or replacement. Frozen original-domain selection152420
+exercises 89 admitted detector-event groups versus152430's9. B replay is exact;
+planned/realized filter support agrees, with no donor crossing. Broader scan/run
+exclusions carry measured cost; their avoidable fraction is not established.
+Two retained unflagged x-transition examples survive RTC/CAL and are largely
+removed by PTC. Best-supported next issue is Learn coverage, pending a separate
+owner decision; no tuning or follow-on is authorized here. Active injections
+change no event decisions or support; compact T5 spatial gain0.990–0.993, broad
+0.873. Compact-minus fit-angle-bound width discrepancy remains explicit.
+B stays development reference, fixed11 stays parked. Compact preservation,
+saved-only isolation, independent final review and guarded cleanup govern the
+local closeout. See [handoff](../handoff/RTC_STEP_POINT_2026-09-27.md).
+
+
 ## Fixed-notch final-map tradeoff measured — 2026-09-27
 
 The [fixed11 assessment](../validation/rtc_fixed11_2026-09-27/ASSESSMENT.md)

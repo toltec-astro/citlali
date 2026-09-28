@@ -1,0 +1,23 @@
+{
+  "schema": "citlali-observation-networks-v1",
+  "development_reference": "bright-point-base-v1",
+  "observation": 152420,
+  "subobservation": 0,
+  "scan": 2,
+  "networks": [
+    {
+      "network": 11,
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-core-minus/inputs/network11-input.json",
+        "sha256": "265cfcfb0772731f3488c042d215610584655693dee44f0f79267840e537679c"
+      }
+    },
+    {
+      "network": 12,
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-C-core-minus/inputs/network12-input.json",
+        "sha256": "4fe86f9d792f443962f61fb094ee6150cc6e916fce6e2f8d96e2ff041d4467f6"
+      }
+    }
+  ]
+}

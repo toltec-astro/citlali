@@ -1,0 +1,32 @@
+[
+  {
+    "run": "B-REF-rep1",
+    "native_error_level_messages": 0,
+    "python_RuntimeWarnings": 3,
+    "uncertainty": "all five saved endpoint operators and scales verified finite and exactly equal without BLAS contraction"
+  },
+  {
+    "run": "S-C-core-minus",
+    "native_error_level_messages": 0,
+    "python_RuntimeWarnings": 3,
+    "uncertainty": "all five saved endpoint operators and scales verified finite and exactly equal without BLAS contraction"
+  },
+  {
+    "run": "S-C-core-plus",
+    "native_error_level_messages": 0,
+    "python_RuntimeWarnings": 3,
+    "uncertainty": "all five saved endpoint operators and scales verified finite and exactly equal without BLAS contraction"
+  },
+  {
+    "run": "S-C-shoulder",
+    "native_error_level_messages": 0,
+    "python_RuntimeWarnings": 3,
+    "uncertainty": "all five saved endpoint operators and scales verified finite and exactly equal without BLAS contraction"
+  },
+  {
+    "run": "S-REF-rep1",
+    "native_error_level_messages": 0,
+    "python_RuntimeWarnings": 3,
+    "uncertainty": "all five saved endpoint operators and scales verified finite and exactly equal without BLAS contraction"
+  }
+]

@@ -1,0 +1,4058 @@
+[
+  {
+    "run": "B-REF-rep1",
+    "key": "n11_w0",
+    "kind": "event",
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "finite abrupt x transition with supported post-level; original r and peers show related detector-dependent change",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": -2.6426725720310226e-05,
+        "post_median": -3.9666445015313604e-05,
+        "post_minus_pre": -1.3239719295003378e-05,
+        "adjacent_difference_MAD": 1.0084548628460603e-06
+      },
+      "raw_r": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 9.245100155945284e-05,
+        "post_median": 9.55778904387329e-05,
+        "post_minus_pre": 3.12688887928006e-06,
+        "adjacent_difference_MAD": 1.0485865093912607e-06
+      },
+      "RTC_x": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "RTC_r": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_total": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    }
+  },
+  {
+    "run": "B-REF-rep1",
+    "key": "n11_w1",
+    "kind": "event",
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "finite abrupt x transition with supported post-level; original r and peers show related detector-dependent change",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 3.6238268367478605e-06,
+        "post_median": -8.286483934746237e-06,
+        "post_minus_pre": -1.1910310771494098e-05,
+        "adjacent_difference_MAD": 8.285129607097475e-07
+      },
+      "raw_r": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 8.548072604811077e-05,
+        "post_median": 8.204634440372779e-05,
+        "post_minus_pre": -3.4343816443829745e-06,
+        "adjacent_difference_MAD": 8.163480502844166e-07
+      },
+      "RTC_x": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "RTC_r": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_total": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    }
+  },
+  {
+    "run": "B-REF-rep1",
+    "key": "n11_w2",
+    "kind": "event",
+    "adjudication": {
+      "label": "unresolved",
+      "reason": "curved/neighboring transition and nonflat post behavior",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": -2.487136352520112e-06,
+        "post_median": 1.4830915574307258e-05,
+        "post_minus_pre": 1.731805192682737e-05,
+        "adjacent_difference_MAD": 3.159244350395096e-06
+      },
+      "raw_r": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 0.00013114285018508745,
+        "post_median": 0.00013953305869923472,
+        "post_minus_pre": 8.390208514147266e-06,
+        "adjacent_difference_MAD": 3.3168775973569214e-06
+      },
+      "RTC_x": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "RTC_r": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_total": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    }
+  },
+  {
+    "run": "B-REF-rep1",
+    "key": "n11_w3",
+    "kind": "event",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "isolated excursion/noise or smooth returning variation; no sustained discontinuity supported in the reviewed original window",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": -2.3718211546797002e-05,
+        "post_median": -2.2161017882305564e-05,
+        "post_minus_pre": 1.5571936644914383e-06,
+        "adjacent_difference_MAD": 1.4211263624981938e-06
+      },
+      "raw_r": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 0.00010339200117629321,
+        "post_median": 0.0001036838510031075,
+        "post_minus_pre": 2.918498268142947e-07,
+        "adjacent_difference_MAD": 1.4574972964658655e-06
+      },
+      "RTC_x": {
+        "n": 291,
+        "pre_n": 146,
+        "post_n": 145,
+        "pre_median": -2.42314687234119e-05,
+        "post_median": -2.1954473559370232e-05,
+        "post_minus_pre": 2.2769951640416675e-06,
+        "adjacent_difference_MAD": 8.235658262658199e-07
+      },
+      "RTC_r": {
+        "n": 291,
+        "pre_n": 146,
+        "post_n": 145,
+        "pre_median": 0.00010317249610020663,
+        "post_median": 0.00010367794447115483,
+        "post_minus_pre": 5.054483709481943e-07,
+        "adjacent_difference_MAD": 7.592477561905485e-07
+      },
+      "CAL": {
+        "n": 145,
+        "pre_n": 73,
+        "post_n": 72,
+        "pre_median": -4067.3828078344004,
+        "post_median": -3689.1435443933124,
+        "post_minus_pre": 378.23926344108804,
+        "adjacent_difference_MAD": 222.90035013417392
+      },
+      "M0": {
+        "n": 145,
+        "pre_n": 73,
+        "post_n": 72,
+        "pre_median": 158.4211613046833,
+        "post_median": 2.8045051938990397,
+        "post_minus_pre": -155.61665611078425,
+        "adjacent_difference_MAD": 250.41602927543263
+      },
+      "T5_residual": {
+        "n": 145,
+        "pre_n": 73,
+        "post_n": 72,
+        "pre_median": 159.01422698784455,
+        "post_median": 5.841201113969267,
+        "post_minus_pre": -153.17302587387528,
+        "adjacent_difference_MAD": 258.04464265469653
+      },
+      "T5_total": {
+        "n": 145,
+        "pre_n": 73,
+        "post_n": 72,
+        "pre_median": 159.01422698784455,
+        "post_median": 5.841201113969267,
+        "post_minus_pre": -153.17302587387528,
+        "adjacent_difference_MAD": 258.04464265469653
+      }
+    }
+  },
+  {
+    "run": "B-REF-rep1",
+    "key": "n11_w4",
+    "kind": "event",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "isolated excursion/noise or smooth returning variation; no sustained discontinuity supported in the reviewed original window",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 9.239127476364333e-06,
+        "post_median": 1.6120198819461726e-05,
+        "post_minus_pre": 6.8810713430973935e-06,
+        "adjacent_difference_MAD": 1.5141725181458598e-06
+      },
+      "raw_r": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 8.969602862761442e-05,
+        "post_median": 9.527997503456513e-05,
+        "post_minus_pre": 5.58394640695071e-06,
+        "adjacent_difference_MAD": 1.1599084079357872e-06
+      },
+      "RTC_x": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "RTC_r": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_total": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    }
+  },
+  {
+    "run": "B-REF-rep1",
+    "key": "n11_w5",
+    "kind": "event",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "isolated excursion/noise or smooth returning variation; no sustained discontinuity supported in the reviewed original window",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 4.132811581967325e-05,
+        "post_median": 3.7184944793946374e-05,
+        "post_minus_pre": -4.143171025726876e-06,
+        "adjacent_difference_MAD": 2.8668823190508905e-06
+      },
+      "raw_r": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 9.619373589098319e-05,
+        "post_median": 9.673401015201116e-05,
+        "post_minus_pre": 5.402742610279693e-07,
+        "adjacent_difference_MAD": 2.506873101053969e-06
+      },
+      "RTC_x": {
+        "n": 230,
+        "pre_n": 146,
+        "post_n": 84,
+        "pre_median": 3.468084544810409e-05,
+        "post_median": 3.157051250149453e-05,
+        "post_minus_pre": -3.1103329466095617e-06,
+        "adjacent_difference_MAD": 6.100313697049226e-07
+      },
+      "RTC_r": {
+        "n": 230,
+        "pre_n": 146,
+        "post_n": 84,
+        "pre_median": 9.394766742210425e-05,
+        "post_median": 9.286847833115046e-05,
+        "post_minus_pre": -1.079189090953786e-06,
+        "adjacent_difference_MAD": 7.701448929122071e-07
+      },
+      "CAL": {
+        "n": 115,
+        "pre_n": 73,
+        "post_n": 42,
+        "pre_median": 6826.37142106896,
+        "post_median": 6226.393074888698,
+        "post_minus_pre": -599.9783461802626,
+        "adjacent_difference_MAD": 221.52690737597877
+      },
+      "M0": {
+        "n": 115,
+        "pre_n": 73,
+        "post_n": 42,
+        "pre_median": 22.374802138455607,
+        "post_median": 12.471961464914585,
+        "post_minus_pre": -9.902840673541021,
+        "adjacent_difference_MAD": 215.096052369847
+      },
+      "T5_residual": {
+        "n": 115,
+        "pre_n": 73,
+        "post_n": 42,
+        "pre_median": 27.043785783438125,
+        "post_median": 3.76740693081706,
+        "post_minus_pre": -23.276378852621065,
+        "adjacent_difference_MAD": 191.34729574261743
+      },
+      "T5_total": {
+        "n": 115,
+        "pre_n": 73,
+        "post_n": 42,
+        "pre_median": 27.043785783438125,
+        "post_median": 3.76740693081706,
+        "post_minus_pre": -23.276378852621065,
+        "adjacent_difference_MAD": 191.34729574261743
+      }
+    }
+  },
+  {
+    "run": "B-REF-rep1",
+    "key": "n11_w6",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "no persistent abrupt transition visible in original x/r and peer context; oscillation/noise or smooth variation",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -5.040485710989816e-06,
+        "post_median": -5.110754178638278e-06,
+        "post_minus_pre": -7.026846764846222e-08,
+        "adjacent_difference_MAD": 2.7259584553997043e-06
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00010922910557410669,
+        "post_median": 0.00010895709967344214,
+        "post_minus_pre": -2.720059006645464e-07,
+        "adjacent_difference_MAD": 2.807347785175941e-06
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -4.883773996162167e-06,
+        "post_median": -5.118161509771379e-06,
+        "post_minus_pre": -2.343875136092121e-07,
+        "adjacent_difference_MAD": 2.9736132829848267e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00010943542471801916,
+        "post_median": 0.00010883909522848438,
+        "post_minus_pre": -5.96329489534783e-07,
+        "adjacent_difference_MAD": 2.862115358908625e-07
+      },
+      "CAL": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": -848.5881768357118,
+        "post_median": -884.3206215946713,
+        "post_minus_pre": -35.732444758959446,
+        "adjacent_difference_MAD": 87.6561030995204
+      },
+      "M0": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": -12.389099596837525,
+        "post_median": -5.194985694855518,
+        "post_minus_pre": 7.194113901982007,
+        "adjacent_difference_MAD": 84.50790225938647
+      },
+      "T5_residual": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": -14.524849533150359,
+        "post_median": -3.0863484272135793,
+        "post_minus_pre": 11.43850110593678,
+        "adjacent_difference_MAD": 84.07168838934395
+      },
+      "T5_total": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": -14.524849533150359,
+        "post_median": -3.0863484272135793,
+        "post_minus_pre": 11.43850110593678,
+        "adjacent_difference_MAD": 84.07168838934395
+      }
+    }
+  },
+  {
+    "run": "B-REF-rep1",
+    "key": "n11_w7",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "no persistent abrupt transition visible in original x/r and peer context; oscillation/noise or smooth variation",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -2.328010878233658e-05,
+        "post_median": -2.2439655586756675e-05,
+        "post_minus_pre": 8.404531955799054e-07,
+        "adjacent_difference_MAD": 1.677352777442003e-06
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 3.403633774389708e-05,
+        "post_median": 3.418415237434716e-05,
+        "post_minus_pre": 1.4781463045007563e-07,
+        "adjacent_difference_MAD": 1.5963616590579822e-06
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -2.343542040129157e-05,
+        "post_median": -2.2508468224272812e-05,
+        "post_minus_pre": 9.269521770187578e-07,
+        "adjacent_difference_MAD": 6.075904751440124e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 3.405459862459317e-05,
+        "post_median": 3.427545159728199e-05,
+        "post_minus_pre": 2.2085297268881985e-07,
+        "adjacent_difference_MAD": 5.797438181605957e-07
+      },
+      "CAL": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": -1088.0292478520562,
+        "post_median": -1044.9217061505144,
+        "post_minus_pre": 43.10754170154178,
+        "adjacent_difference_MAD": 49.798323998791304
+      },
+      "M0": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": -9.228796788116133,
+        "post_median": 4.192458879831767,
+        "post_minus_pre": 13.4212556679479,
+        "adjacent_difference_MAD": 43.805363749153784
+      },
+      "T5_residual": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": -11.489964697741172,
+        "post_median": 4.4331638127018085,
+        "post_minus_pre": 15.92312851044298,
+        "adjacent_difference_MAD": 42.88844082576223
+      },
+      "T5_total": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": -11.489964697741172,
+        "post_median": 4.4331638127018085,
+        "post_minus_pre": 15.92312851044298,
+        "adjacent_difference_MAD": 42.88844082576223
+      }
+    }
+  },
+  {
+    "run": "B-REF-rep1",
+    "key": "n11_w8",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "no persistent abrupt transition visible in original x/r and peer context; oscillation/noise or smooth variation",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 1.0398713384180366e-06,
+        "post_median": 6.19624991179758e-08,
+        "post_minus_pre": -9.779088393000608e-07,
+        "adjacent_difference_MAD": 2.1441884806791776e-06
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00011045348593978077,
+        "post_median": 0.00011042295881489031,
+        "post_minus_pre": -3.052712489046085e-08,
+        "adjacent_difference_MAD": 2.022224603956127e-06
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 9.139866970227996e-07,
+        "post_median": 1.33673931789654e-07,
+        "post_minus_pre": -7.803127652331456e-07,
+        "adjacent_difference_MAD": 3.009893585807493e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00011049937717127941,
+        "post_median": 0.0001104068940981132,
+        "post_minus_pre": -9.248307316621102e-08,
+        "adjacent_difference_MAD": 2.951589483417431e-07
+      },
+      "CAL": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 155.42389061532378,
+        "post_median": 17.919383048537654,
+        "post_minus_pre": -137.50450756678612,
+        "adjacent_difference_MAD": 94.5767487666527
+      },
+      "M0": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 25.86027111935322,
+        "post_median": -45.37761549842092,
+        "post_minus_pre": -71.23788661777414,
+        "adjacent_difference_MAD": 91.05242008131265
+      },
+      "T5_residual": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 26.996815494026343,
+        "post_median": -40.14034900302458,
+        "post_minus_pre": -67.13716449705092,
+        "adjacent_difference_MAD": 94.98542273011454
+      },
+      "T5_total": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 26.996815494026343,
+        "post_median": -40.14034900302458,
+        "post_minus_pre": -67.13716449705092,
+        "adjacent_difference_MAD": 94.98542273011454
+      }
+    }
+  },
+  {
+    "run": "B-REF-rep1",
+    "key": "n11_w9",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "no persistent abrupt transition visible in original x/r and peer context; oscillation/noise or smooth variation",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -2.1001157370513465e-05,
+        "post_median": -2.1397087062249088e-05,
+        "post_minus_pre": -3.959296917356228e-07,
+        "adjacent_difference_MAD": 1.6737052485683362e-06
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 3.540128277385568e-05,
+        "post_median": 3.531288369587546e-05,
+        "post_minus_pre": -8.839907798021936e-08,
+        "adjacent_difference_MAD": 1.5560905838934898e-06
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -2.0964493887905397e-05,
+        "post_median": -2.140593250092158e-05,
+        "post_minus_pre": -4.414386130161816e-07,
+        "adjacent_difference_MAD": 6.230766290792873e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 3.5431681455175654e-05,
+        "post_median": 3.5320422089846535e-05,
+        "post_minus_pre": -1.1125936532911971e-07,
+        "adjacent_difference_MAD": 5.758298830915739e-07
+      },
+      "CAL": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": -978.4158748106579,
+        "post_median": -992.3675152589138,
+        "post_minus_pre": -13.951640448255944,
+        "adjacent_difference_MAD": 49.598836663292325
+      },
+      "M0": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": -0.9918049506556557,
+        "post_median": 3.923418986147233,
+        "post_minus_pre": 4.915223936802889,
+        "adjacent_difference_MAD": 47.01391690162531
+      },
+      "T5_residual": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": -0.9659966691401181,
+        "post_median": 3.9743111463777794,
+        "post_minus_pre": 4.940307815517897,
+        "adjacent_difference_MAD": 47.382722017095325
+      },
+      "T5_total": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": -0.9659966691401181,
+        "post_median": 3.9743111463777794,
+        "post_minus_pre": 4.940307815517897,
+        "adjacent_difference_MAD": 47.382722017095325
+      }
+    }
+  },
+  {
+    "run": "B-REF-rep1",
+    "key": "n11_w10",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "no persistent abrupt transition visible in original x/r and peer context; oscillation/noise or smooth variation",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 1.0451830795337975e-06,
+        "post_median": 2.969420451508249e-07,
+        "post_minus_pre": -7.482410343829727e-07,
+        "adjacent_difference_MAD": 1.3681560506885805e-06
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00011070812806870272,
+        "post_median": 0.00011044440562905502,
+        "post_minus_pre": -2.6372243964770353e-07,
+        "adjacent_difference_MAD": 1.3570621686548574e-06
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 1.125296035655757e-06,
+        "post_median": 2.3910109774634257e-07,
+        "post_minus_pre": -8.861949379094144e-07,
+        "adjacent_difference_MAD": 3.0750045185911853e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00011077047610731824,
+        "post_median": 0.00011054457319179477,
+        "post_minus_pre": -2.259029155234684e-07,
+        "adjacent_difference_MAD": 3.1471206803590676e-07
+      },
+      "CAL": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 194.2546741091839,
+        "post_median": 40.83808340731753,
+        "post_minus_pre": -153.41659070186637,
+        "adjacent_difference_MAD": 83.91825082992905
+      },
+      "M0": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 14.138614726064873,
+        "post_median": 7.38724478346451,
+        "post_minus_pre": -6.751369942600363,
+        "adjacent_difference_MAD": 97.20271217406501
+      },
+      "T5_residual": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 13.816567163878346,
+        "post_median": 3.8685067619249267,
+        "post_minus_pre": -9.94806040195342,
+        "adjacent_difference_MAD": 98.02806038499874
+      },
+      "T5_total": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 13.816567163878346,
+        "post_median": 3.8685067619249267,
+        "post_minus_pre": -9.94806040195342,
+        "adjacent_difference_MAD": 98.02806038499874
+      }
+    }
+  },
+  {
+    "run": "B-REF-rep1",
+    "key": "n11_w11",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "no persistent abrupt transition visible in original x/r and peer context; oscillation/noise or smooth variation",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -2.257085909004545e-05,
+        "post_median": -2.2975603720789302e-05,
+        "post_minus_pre": -4.0474463074385335e-07,
+        "adjacent_difference_MAD": 1.3446992562222823e-06
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 3.514169985704048e-05,
+        "post_median": 3.515648399330606e-05,
+        "post_minus_pre": 1.4784136265579874e-08,
+        "adjacent_difference_MAD": 1.2203777956873569e-06
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -2.2546621375706003e-05,
+        "post_median": -2.3031880024408275e-05,
+        "post_minus_pre": -4.852586487022718e-07,
+        "adjacent_difference_MAD": 6.723319481413881e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 3.5116693805483504e-05,
+        "post_median": 3.5147019718058296e-05,
+        "post_minus_pre": 3.032591257479182e-08,
+        "adjacent_difference_MAD": 5.719103612080781e-07
+      },
+      "CAL": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": -1047.1519108296857,
+        "post_median": -1070.2728989901977,
+        "post_minus_pre": -23.12098816051207,
+        "adjacent_difference_MAD": 54.20781377280517
+      },
+      "M0": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 2.3997455056259227,
+        "post_median": 5.229060674816937,
+        "post_minus_pre": 2.8293151691910143,
+        "adjacent_difference_MAD": 47.25400750401426
+      },
+      "T5_residual": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 3.6836718528822914,
+        "post_median": 5.108297028532444,
+        "post_minus_pre": 1.424625175650153,
+        "adjacent_difference_MAD": 47.67916917442687
+      },
+      "T5_total": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 3.6836718528822914,
+        "post_median": 5.108297028532444,
+        "post_minus_pre": 1.424625175650153,
+        "adjacent_difference_MAD": 47.67916917442687
+      }
+    }
+  },
+  {
+    "run": "B-REF-rep1",
+    "key": "n12_w0",
+    "kind": "event",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "isolated excursion/noise or smooth returning variation; no sustained discontinuity supported in the reviewed original window",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": -1.1414127344085587e-05,
+        "post_median": -1.1845278950791818e-05,
+        "post_minus_pre": -4.311516067062317e-07,
+        "adjacent_difference_MAD": 4.597189849409594e-07
+      },
+      "raw_r": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 9.385375699773351e-05,
+        "post_median": 9.384053200479458e-05,
+        "post_minus_pre": -1.3224992938926875e-08,
+        "adjacent_difference_MAD": 4.265894499995768e-07
+      },
+      "RTC_x": {
+        "n": 291,
+        "pre_n": 146,
+        "post_n": 145,
+        "pre_median": -1.1192366242898358e-05,
+        "post_median": -1.1989407043256234e-05,
+        "post_minus_pre": -7.970408003578764e-07,
+        "adjacent_difference_MAD": 1.8040659315012234e-07
+      },
+      "RTC_r": {
+        "n": 291,
+        "pre_n": 146,
+        "post_n": 145,
+        "pre_median": 9.387078887513321e-05,
+        "post_median": 9.39393748158061e-05,
+        "post_minus_pre": 6.858594067289388e-08,
+        "adjacent_difference_MAD": 1.5840254470046012e-07
+      },
+      "CAL": {
+        "n": 146,
+        "pre_n": 73,
+        "post_n": 73,
+        "pre_median": -2465.0113921881193,
+        "post_median": -2635.5046073919702,
+        "post_minus_pre": -170.49321520385092,
+        "adjacent_difference_MAD": 77.01888263822548
+      },
+      "M0": {
+        "n": 146,
+        "pre_n": 73,
+        "post_n": 73,
+        "pre_median": 8.212527199717783,
+        "post_median": 17.68284656698866,
+        "post_minus_pre": 9.470319367270875,
+        "adjacent_difference_MAD": 71.65547562392699
+      },
+      "T5_residual": {
+        "n": 146,
+        "pre_n": 73,
+        "post_n": 73,
+        "pre_median": 10.861233600600883,
+        "post_median": 17.810897674117037,
+        "post_minus_pre": 6.9496640735161535,
+        "adjacent_difference_MAD": 70.28869050857018
+      },
+      "T5_total": {
+        "n": 146,
+        "pre_n": 73,
+        "post_n": 73,
+        "pre_median": 10.861233600600883,
+        "post_median": 17.810897674117037,
+        "post_minus_pre": 6.9496640735161535,
+        "adjacent_difference_MAD": 70.28869050857018
+      }
+    }
+  },
+  {
+    "run": "B-REF-rep1",
+    "key": "n12_w1",
+    "kind": "event",
+    "adjudication": {
+      "label": "unresolved",
+      "reason": "near acquisition end, too little post support to judge persistence",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 337,
+        "pre_n": 293,
+        "post_n": 19,
+        "pre_median": 2.0251565383310302e-05,
+        "post_median": 2.0764060391140154e-05,
+        "post_minus_pre": 5.124950078298525e-07,
+        "adjacent_difference_MAD": 3.0295271065905813e-06
+      },
+      "raw_r": {
+        "n": 337,
+        "pre_n": 293,
+        "post_n": 19,
+        "pre_median": 0.00010892959025523209,
+        "post_median": 0.00010949585954459869,
+        "post_minus_pre": 5.662692893665974e-07,
+        "adjacent_difference_MAD": 3.2037139798204136e-06
+      },
+      "RTC_x": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "RTC_r": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_total": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    }
+  },
+  {
+    "run": "B-REF-rep1",
+    "key": "n12_w2",
+    "kind": "event",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "isolated excursion/noise or smooth returning variation; no sustained discontinuity supported in the reviewed original window",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": -7.420162100420593e-06,
+        "post_median": -8.011835703188568e-06,
+        "post_minus_pre": -5.916736027679746e-07,
+        "adjacent_difference_MAD": 2.7926006382854926e-06
+      },
+      "raw_r": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 0.00011431989767044594,
+        "post_median": 0.00011424366167278354,
+        "post_minus_pre": -7.623599766240204e-08,
+        "adjacent_difference_MAD": 2.7597933247137347e-06
+      },
+      "RTC_x": {
+        "n": 291,
+        "pre_n": 146,
+        "post_n": 145,
+        "pre_median": -7.26956282840024e-06,
+        "post_median": -8.216287496343229e-06,
+        "post_minus_pre": -9.467246679429886e-07,
+        "adjacent_difference_MAD": 1.0765848921598445e-06
+      },
+      "RTC_r": {
+        "n": 291,
+        "pre_n": 146,
+        "post_n": 145,
+        "pre_median": 0.00011441328763575552,
+        "post_median": 0.00011436740938105206,
+        "post_minus_pre": -4.5878254703463355e-08,
+        "adjacent_difference_MAD": 8.807564618460717e-07
+      },
+      "CAL": {
+        "n": 146,
+        "pre_n": 73,
+        "post_n": 73,
+        "pre_median": -1409.6968879245383,
+        "post_median": -1595.7525310114418,
+        "post_minus_pre": -186.0556430869035,
+        "adjacent_difference_MAD": 401.22139148821
+      },
+      "M0": {
+        "n": 146,
+        "pre_n": 73,
+        "post_n": 73,
+        "pre_median": 9.05979149485529,
+        "post_median": 5.856723062774485,
+        "post_minus_pre": -3.203068432080805,
+        "adjacent_difference_MAD": 358.98155035851715
+      },
+      "T5_residual": {
+        "n": 146,
+        "pre_n": 73,
+        "post_n": 73,
+        "pre_median": 22.482623704544352,
+        "post_median": 1.423291882431652,
+        "post_minus_pre": -21.0593318221127,
+        "adjacent_difference_MAD": 361.8552437304075
+      },
+      "T5_total": {
+        "n": 146,
+        "pre_n": 73,
+        "post_n": 73,
+        "pre_median": 22.482623704544352,
+        "post_median": 1.423291882431652,
+        "post_minus_pre": -21.0593318221127,
+        "adjacent_difference_MAD": 361.8552437304075
+      }
+    }
+  },
+  {
+    "run": "B-REF-rep1",
+    "key": "n12_w3",
+    "kind": "event",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "isolated excursion/noise or smooth returning variation; no sustained discontinuity supported in the reviewed original window",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 4.7209334655391955e-05,
+        "post_median": 4.75580709253286e-05,
+        "post_minus_pre": 3.487362699366447e-07,
+        "adjacent_difference_MAD": 8.100793974193055e-06
+      },
+      "raw_r": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 0.00011036530425027609,
+        "post_median": 0.00011129178116074468,
+        "post_minus_pre": 9.264769104685929e-07,
+        "adjacent_difference_MAD": 7.209681741437397e-06
+      },
+      "RTC_x": {
+        "n": 291,
+        "pre_n": 146,
+        "post_n": 145,
+        "pre_median": 4.798839221746359e-05,
+        "post_median": 4.622878668785472e-05,
+        "post_minus_pre": -1.7596055296088643e-06,
+        "adjacent_difference_MAD": 2.946199813126952e-06
+      },
+      "RTC_r": {
+        "n": 291,
+        "pre_n": 146,
+        "post_n": 145,
+        "pre_median": 0.00011062820679703174,
+        "post_median": 0.0001116460600493509,
+        "post_minus_pre": 1.0178532523191623e-06,
+        "adjacent_difference_MAD": 2.296003484357326e-06
+      },
+      "CAL": {
+        "n": 146,
+        "pre_n": 73,
+        "post_n": 73,
+        "pre_median": 9129.890472386476,
+        "post_median": 8785.328440719777,
+        "post_minus_pre": -344.5620316666991,
+        "adjacent_difference_MAD": 979.0430926900532
+      },
+      "M0": {
+        "n": 146,
+        "pre_n": 73,
+        "post_n": 73,
+        "pre_median": 46.054094279888226,
+        "post_median": -139.54145925065822,
+        "post_minus_pre": -185.59555353054645,
+        "adjacent_difference_MAD": 940.7809915140423
+      },
+      "T5_residual": {
+        "n": 146,
+        "pre_n": 73,
+        "post_n": 73,
+        "pre_median": 47.932071714907295,
+        "post_median": -140.24007844772527,
+        "post_minus_pre": -188.17215016263256,
+        "adjacent_difference_MAD": 952.8674602735692
+      },
+      "T5_total": {
+        "n": 146,
+        "pre_n": 73,
+        "post_n": 73,
+        "pre_median": 47.932071714907295,
+        "post_median": -140.24007844772527,
+        "post_minus_pre": -188.17215016263256,
+        "adjacent_difference_MAD": 952.8674602735692
+      }
+    }
+  },
+  {
+    "run": "B-REF-rep1",
+    "key": "n12_w4",
+    "kind": "event",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "isolated excursion/noise or smooth returning variation; no sustained discontinuity supported in the reviewed original window",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 4.894462628437883e-05,
+        "post_median": 4.8538453796575744e-05,
+        "post_minus_pre": -4.061724878030824e-07,
+        "adjacent_difference_MAD": 7.2371075855628996e-06
+      },
+      "raw_r": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 0.00011309319640383876,
+        "post_median": 0.00011386541980417197,
+        "post_minus_pre": 7.722234003332111e-07,
+        "adjacent_difference_MAD": 8.136482927649347e-06
+      },
+      "RTC_x": {
+        "n": 291,
+        "pre_n": 146,
+        "post_n": 145,
+        "pre_median": 4.951394232224638e-05,
+        "post_median": 4.903368040278277e-05,
+        "post_minus_pre": -4.802619194636115e-07,
+        "adjacent_difference_MAD": 2.3032273412763722e-06
+      },
+      "RTC_r": {
+        "n": 291,
+        "pre_n": 146,
+        "post_n": 145,
+        "pre_median": 0.00011284560372742967,
+        "post_median": 0.00011439789648172479,
+        "post_minus_pre": 1.5522927542951183e-06,
+        "adjacent_difference_MAD": 2.3659127491326247e-06
+      },
+      "CAL": {
+        "n": 145,
+        "pre_n": 73,
+        "post_n": 72,
+        "pre_median": 9378.98258644014,
+        "post_median": 9273.632700264647,
+        "post_minus_pre": -105.34988617549243,
+        "adjacent_difference_MAD": 767.3769786841635
+      },
+      "M0": {
+        "n": 145,
+        "pre_n": 73,
+        "post_n": 72,
+        "pre_median": -36.85405066097327,
+        "post_median": 52.79476847146202,
+        "post_minus_pre": 89.64881913243529,
+        "adjacent_difference_MAD": 759.6386644436
+      },
+      "T5_residual": {
+        "n": 145,
+        "pre_n": 73,
+        "post_n": 72,
+        "pre_median": -48.82031806008376,
+        "post_median": 51.31262845273352,
+        "post_minus_pre": 100.13294651281728,
+        "adjacent_difference_MAD": 760.6605818580194
+      },
+      "T5_total": {
+        "n": 145,
+        "pre_n": 73,
+        "post_n": 72,
+        "pre_median": -48.82031806008376,
+        "post_median": 51.31262845273352,
+        "post_minus_pre": 100.13294651281728,
+        "adjacent_difference_MAD": 760.6605818580194
+      }
+    }
+  },
+  {
+    "run": "B-REF-rep1",
+    "key": "n12_w5",
+    "kind": "event",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "isolated excursion/noise or smooth returning variation; no sustained discontinuity supported in the reviewed original window",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 4.761831312279304e-05,
+        "post_median": 4.832515362497428e-05,
+        "post_minus_pre": 7.068405021812442e-07,
+        "adjacent_difference_MAD": 8.024677403049544e-06
+      },
+      "raw_r": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 0.0001120271772414939,
+        "post_median": 0.0001117328589357068,
+        "post_minus_pre": -2.943183057871042e-07,
+        "adjacent_difference_MAD": 7.67112936521416e-06
+      },
+      "RTC_x": {
+        "n": 291,
+        "pre_n": 146,
+        "post_n": 145,
+        "pre_median": 4.761458447701969e-05,
+        "post_median": 4.817554353608333e-05,
+        "post_minus_pre": 5.609590590636393e-07,
+        "adjacent_difference_MAD": 2.1049053644225046e-06
+      },
+      "RTC_r": {
+        "n": 291,
+        "pre_n": 146,
+        "post_n": 145,
+        "pre_median": 0.00011246025794542785,
+        "post_median": 0.00011216104171861672,
+        "post_minus_pre": -2.9921622681113296e-07,
+        "adjacent_difference_MAD": 1.9319739462459767e-06
+      },
+      "CAL": {
+        "n": 146,
+        "pre_n": 73,
+        "post_n": 73,
+        "pre_median": 9043.354995120691,
+        "post_median": 9167.969173167552,
+        "post_minus_pre": 124.61417804686062,
+        "adjacent_difference_MAD": 665.3896561145291
+      },
+      "M0": {
+        "n": 146,
+        "pre_n": 73,
+        "post_n": 73,
+        "pre_median": -76.24968656079807,
+        "post_median": -31.000205462395716,
+        "post_minus_pre": 45.249481098402356,
+        "adjacent_difference_MAD": 669.9066507380752
+      },
+      "T5_residual": {
+        "n": 146,
+        "pre_n": 73,
+        "post_n": 73,
+        "pre_median": -71.40141091570585,
+        "post_median": -29.064392131742846,
+        "post_minus_pre": 42.337018783963,
+        "adjacent_difference_MAD": 674.8895250655393
+      },
+      "T5_total": {
+        "n": 146,
+        "pre_n": 73,
+        "post_n": 73,
+        "pre_median": -71.40141091570585,
+        "post_median": -29.064392131742846,
+        "post_minus_pre": 42.337018783963,
+        "adjacent_difference_MAD": 674.8895250655393
+      }
+    }
+  },
+  {
+    "run": "B-REF-rep1",
+    "key": "n12_w6",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "no persistent abrupt transition visible in original x/r and peer context; oscillation/noise or smooth variation",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 8.155372420067936e-05,
+        "post_median": 8.362266856630455e-05,
+        "post_minus_pre": 2.0689443656251905e-06,
+        "adjacent_difference_MAD": 4.987387462712311e-06
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00011007730270797401,
+        "post_median": 0.00011025529381975904,
+        "post_minus_pre": 1.7799111178503127e-07,
+        "adjacent_difference_MAD": 4.866073271396806e-06
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 8.189135036109691e-05,
+        "post_median": 8.336284454253087e-05,
+        "post_minus_pre": 1.4714941814339606e-06,
+        "adjacent_difference_MAD": 1.760548595669216e-06
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00011007278621295223,
+        "post_median": 0.00011052121590598945,
+        "post_minus_pre": 4.48429693037221e-07,
+        "adjacent_difference_MAD": 1.6842917531904587e-06
+      },
+      "CAL": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 13591.540471237107,
+        "post_median": 13783.689231112292,
+        "post_minus_pre": 192.14875987518462,
+        "adjacent_difference_MAD": 526.925980487381
+      },
+      "M0": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -36.22043727882082,
+        "post_median": -124.47643266069784,
+        "post_minus_pre": -88.25599538187703,
+        "adjacent_difference_MAD": 507.66287744411017
+      },
+      "T5_residual": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -34.666698791921085,
+        "post_median": -123.89925510751965,
+        "post_minus_pre": -89.23255631559857,
+        "adjacent_difference_MAD": 511.87444910540296
+      },
+      "T5_total": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -34.666698791921085,
+        "post_median": -123.89925510751965,
+        "post_minus_pre": -89.23255631559857,
+        "adjacent_difference_MAD": 511.87444910540296
+      }
+    }
+  },
+  {
+    "run": "B-REF-rep1",
+    "key": "n12_w7",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "unresolved",
+      "reason": "smooth rise near geometric source crossing; no resolved finite discontinuity in this short window",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 9.126239689985406e-06,
+        "post_median": 1.17102342953859e-05,
+        "post_minus_pre": 2.5839946054004932e-06,
+        "adjacent_difference_MAD": 4.661243564301743e-07
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 9.872158651164783e-05,
+        "post_median": 9.875451823656474e-05,
+        "post_minus_pre": 3.2931724916907684e-08,
+        "adjacent_difference_MAD": 4.5058106182332575e-07
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 9.088153611747656e-06,
+        "post_median": 1.1752122031460702e-05,
+        "post_minus_pre": 2.663968419713046e-06,
+        "adjacent_difference_MAD": 2.0389186875570512e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 9.874839280350908e-05,
+        "post_median": 9.874439443827844e-05,
+        "post_minus_pre": -3.998365230635406e-09,
+        "adjacent_difference_MAD": 1.9294729794409036e-07
+      },
+      "CAL": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 1410.714948666051,
+        "post_median": 1819.254210289539,
+        "post_minus_pre": 408.5392616234881,
+        "adjacent_difference_MAD": 49.68398811307069
+      },
+      "M0": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -82.41837716025125,
+        "post_median": -12.648557036679364,
+        "post_minus_pre": 69.76982012357189,
+        "adjacent_difference_MAD": 91.71184258264812
+      },
+      "T5_residual": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -85.9366235578019,
+        "post_median": -20.56372447899355,
+        "post_minus_pre": 65.37289907880835,
+        "adjacent_difference_MAD": 85.70475986789536
+      },
+      "T5_total": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -85.9366235578019,
+        "post_median": -20.56372447899355,
+        "post_minus_pre": 65.37289907880835,
+        "adjacent_difference_MAD": 85.70475986789536
+      }
+    }
+  },
+  {
+    "run": "B-REF-rep1",
+    "key": "n12_w8",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "no persistent abrupt transition visible in original x/r and peer context; oscillation/noise or smooth variation",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 8.345106921074746e-05,
+        "post_median": 8.291259710057261e-05,
+        "post_minus_pre": -5.384721101748478e-07,
+        "adjacent_difference_MAD": 5.081060014731304e-06
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00011394004730208878,
+        "post_median": 0.00011291164243993287,
+        "post_minus_pre": -1.028404862155917e-06,
+        "adjacent_difference_MAD": 5.0634109212239485e-06
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 8.351400185993979e-05,
+        "post_median": 8.260613063707397e-05,
+        "post_minus_pre": -9.078712228658195e-07,
+        "adjacent_difference_MAD": 1.8184298716932582e-06
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00011377589223482972,
+        "post_median": 0.00011321511929222552,
+        "post_minus_pre": -5.607729426042031e-07,
+        "adjacent_difference_MAD": 1.6281281335155667e-06
+      },
+      "CAL": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 13764.174427241556,
+        "post_median": 13710.079236793794,
+        "post_minus_pre": -54.095190447762434,
+        "adjacent_difference_MAD": 550.4489283723326
+      },
+      "M0": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -23.346007726972715,
+        "post_median": 24.62575389675303,
+        "post_minus_pre": 47.97176162372574,
+        "adjacent_difference_MAD": 538.9295495373174
+      },
+      "T5_residual": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -23.938480892051786,
+        "post_median": 25.625001876875892,
+        "post_minus_pre": 49.56348276892768,
+        "adjacent_difference_MAD": 540.9595426957036
+      },
+      "T5_total": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -23.938480892051786,
+        "post_median": 25.625001876875892,
+        "post_minus_pre": 49.56348276892768,
+        "adjacent_difference_MAD": 540.9595426957036
+      }
+    }
+  },
+  {
+    "run": "B-REF-rep1",
+    "key": "n12_w9",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "no persistent abrupt transition visible in original x/r and peer context; oscillation/noise or smooth variation",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 8.583259986361328e-06,
+        "post_median": 7.709601694127394e-06,
+        "post_minus_pre": -8.736582922339341e-07,
+        "adjacent_difference_MAD": 4.6838687768893396e-07
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 9.971740390822393e-05,
+        "post_median": 9.968602289778876e-05,
+        "post_minus_pre": -3.138101043517055e-08,
+        "adjacent_difference_MAD": 4.5748231230981385e-07
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 8.623226632372218e-06,
+        "post_median": 7.734384054024345e-06,
+        "post_minus_pre": -8.88842578347873e-07,
+        "adjacent_difference_MAD": 2.0285014552655387e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 9.971764368868105e-05,
+        "post_median": 9.965459077375117e-05,
+        "post_minus_pre": -6.305291492987315e-08,
+        "adjacent_difference_MAD": 1.7143823138299534e-07
+      },
+      "CAL": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 1343.5103452368544,
+        "post_median": 1196.308471584103,
+        "post_minus_pre": -147.20187365275137,
+        "adjacent_difference_MAD": 46.89063189622847
+      },
+      "M0": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 22.68089583788553,
+        "post_median": -29.09178788343259,
+        "post_minus_pre": -51.77268372131812,
+        "adjacent_difference_MAD": 50.459360665604656
+      },
+      "T5_residual": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 23.86181747628357,
+        "post_median": -29.634110708203995,
+        "post_minus_pre": -53.49592818448757,
+        "adjacent_difference_MAD": 48.992092984529705
+      },
+      "T5_total": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 23.86181747628357,
+        "post_median": -29.634110708203995,
+        "post_minus_pre": -53.49592818448757,
+        "adjacent_difference_MAD": 48.992092984529705
+      }
+    }
+  },
+  {
+    "run": "B-REF-rep1",
+    "key": "n12_w10",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "no persistent abrupt transition visible in original x/r and peer context; oscillation/noise or smooth variation",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 8.118253826403034e-05,
+        "post_median": 8.102265312534303e-05,
+        "post_minus_pre": -1.5988513868730374e-07,
+        "adjacent_difference_MAD": 3.926219107225238e-06
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00011429265148512374,
+        "post_median": 0.00011312199123861356,
+        "post_minus_pre": -1.1706602465101786e-06,
+        "adjacent_difference_MAD": 3.723705946850124e-06
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 8.151439576906313e-05,
+        "post_median": 8.078586924661041e-05,
+        "post_minus_pre": -7.285265224527232e-07,
+        "adjacent_difference_MAD": 1.5032070464590197e-06
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.0001144781679107447,
+        "post_median": 0.00011316843973132688,
+        "post_minus_pre": -1.3097281794178161e-06,
+        "adjacent_difference_MAD": 1.5355774073912992e-06
+      },
+      "CAL": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 13498.290697413151,
+        "post_median": 13390.75734608715,
+        "post_minus_pre": -107.53335132600114,
+        "adjacent_difference_MAD": 397.22321596410154
+      },
+      "M0": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 39.15611929109845,
+        "post_median": -0.018759488109528988,
+        "post_minus_pre": -39.17487877920798,
+        "adjacent_difference_MAD": 371.44039065726906
+      },
+      "T5_residual": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 40.48252610718734,
+        "post_median": 2.6118571903577434,
+        "post_minus_pre": -37.870668916829594,
+        "adjacent_difference_MAD": 369.4458540455467
+      },
+      "T5_total": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 40.48252610718734,
+        "post_median": 2.6118571903577434,
+        "post_minus_pre": -37.870668916829594,
+        "adjacent_difference_MAD": 369.4458540455467
+      }
+    }
+  },
+  {
+    "run": "B-REF-rep1",
+    "key": "n12_w11",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "no persistent abrupt transition visible in original x/r and peer context; oscillation/noise or smooth variation",
+      "source": "bounded visual review of saved original paired/peer traces before cleaned-stage inspection",
+      "production_unchanged": true
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 6.84825661219841e-06,
+        "post_median": 6.42616539348836e-06,
+        "post_minus_pre": -4.220912187100498e-07,
+        "adjacent_difference_MAD": 4.2253313716587987e-07
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 9.963193078802639e-05,
+        "post_median": 9.940509927753678e-05,
+        "post_minus_pre": -2.2683151048960733e-07,
+        "adjacent_difference_MAD": 3.864890618741947e-07
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 6.818832368876682e-06,
+        "post_median": 6.3713623524602e-06,
+        "post_minus_pre": -4.474700164164819e-07,
+        "adjacent_difference_MAD": 1.73233364500766e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 9.969391276960482e-05,
+        "post_median": 9.940128309384965e-05,
+        "post_minus_pre": -2.926296757551711e-07,
+        "adjacent_difference_MAD": 1.3497767465064705e-07
+      },
+      "CAL": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 1056.7508327688101,
+        "post_median": 985.2777309845958,
+        "post_minus_pre": -71.47310178421435,
+        "adjacent_difference_MAD": 43.9344610159746
+      },
+      "M0": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 8.000375522961729,
+        "post_median": 13.942140484956665,
+        "post_minus_pre": 5.941764961994936,
+        "adjacent_difference_MAD": 51.33195438428001
+      },
+      "T5_residual": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 6.866228034976799,
+        "post_median": 15.55318136645574,
+        "post_minus_pre": 8.686953331478943,
+        "adjacent_difference_MAD": 50.891626978907716
+      },
+      "T5_total": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 6.866228034976799,
+        "post_median": 15.55318136645574,
+        "post_minus_pre": 8.686953331478943,
+        "adjacent_difference_MAD": 50.891626978907716
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n11_w0",
+    "kind": "event",
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "Finite overshoot then persistent lower x plateau; weak r response and peer discontinuity.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 3.03308212587985e-06,
+        "post_median": -2.2916568185790764e-05,
+        "post_minus_pre": -2.5949650311670614e-05,
+        "adjacent_difference_MAD": 1.828580765675966e-06
+      },
+      "raw_r": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 0.00011396161030976306,
+        "post_median": 0.00011230091169115686,
+        "post_minus_pre": -1.6606986186061968e-06,
+        "adjacent_difference_MAD": 1.649926533560617e-06
+      },
+      "RTC_x": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "RTC_r": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_total": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n11_w1",
+    "kind": "event",
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "Abrupt large x decrease with supported sloping post plateau; r changes sign at same time, peers respond.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 2.0234900992435146e-05,
+        "post_median": 9.149879307822762e-06,
+        "post_minus_pre": -1.1085021684612385e-05,
+        "adjacent_difference_MAD": 5.85710100380793e-07
+      },
+      "raw_r": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 9.295372301707816e-05,
+        "post_median": 9.378281424739776e-05,
+        "post_minus_pre": 8.290912303195923e-07,
+        "adjacent_difference_MAD": 5.005584650979553e-07
+      },
+      "RTC_x": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "RTC_r": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_total": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n11_w2",
+    "kind": "event",
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "Two-stage finite rise with supported post level in x and r; neighboring transition complicates extent.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": -3.328774071983535e-05,
+        "post_median": -3.241304148200833e-06,
+        "post_minus_pre": 3.004643657163452e-05,
+        "adjacent_difference_MAD": 2.2025115469143562e-06
+      },
+      "raw_r": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 6.376962130075294e-05,
+        "post_median": 7.308881870075747e-05,
+        "post_minus_pre": 9.319197400004529e-06,
+        "adjacent_difference_MAD": 2.002438941388619e-06
+      },
+      "RTC_x": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "RTC_r": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_total": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n11_w3",
+    "kind": "event",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "Source-adjacent ringing/pulse returns to previous level; no supported persistent offset in this window.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 5.688135806708359e-06,
+        "post_median": 5.064032632916329e-06,
+        "post_minus_pre": -6.241031737920301e-07,
+        "adjacent_difference_MAD": 1.0042714217242448e-06
+      },
+      "raw_r": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 8.072941740526976e-05,
+        "post_median": 8.062956195052477e-05,
+        "post_minus_pre": -9.985545474499181e-08,
+        "adjacent_difference_MAD": 6.324004366200397e-07
+      },
+      "RTC_x": {
+        "n": 123,
+        "pre_n": 123,
+        "post_n": 0,
+        "pre_median": 5.751327110477201e-06,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": 2.8574495244723835e-07
+      },
+      "RTC_r": {
+        "n": 123,
+        "pre_n": 123,
+        "post_n": 0,
+        "pre_median": 8.07035771831909e-05,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": 3.379066875475386e-07
+      },
+      "CAL": {
+        "n": 61,
+        "pre_n": 61,
+        "post_n": 0,
+        "pre_median": 997.3762690128087,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": 92.0990587971821
+      },
+      "M0": {
+        "n": 61,
+        "pre_n": 61,
+        "post_n": 0,
+        "pre_median": -6.239516263065514,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": 67.1146298006473
+      },
+      "T5_residual": {
+        "n": 61,
+        "pre_n": 61,
+        "post_n": 0,
+        "pre_median": -7.813701946223148,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": 65.90865867900598
+      },
+      "T5_total": {
+        "n": 61,
+        "pre_n": 61,
+        "post_n": 0,
+        "pre_median": -7.813701946223148,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": 65.90865867900598
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n11_w4",
+    "kind": "event",
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "Original discovery x rise reaches supported changed level, coherent peers, little r change; no nearby production event.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 1.92233506275956e-06,
+        "post_median": 6.670172978374303e-06,
+        "post_minus_pre": 4.7478379156147436e-06,
+        "adjacent_difference_MAD": 5.40845137236586e-07
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00010879369073248496,
+        "post_median": 0.0001090376151938116,
+        "post_minus_pre": 2.439244613266405e-07,
+        "adjacent_difference_MAD": 4.363125027403185e-07
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 1.8392520474459528e-06,
+        "post_median": 6.687387773167718e-06,
+        "post_minus_pre": 4.848135725721765e-06,
+        "adjacent_difference_MAD": 3.6469327911004515e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.0001087757335164215,
+        "post_median": 0.00010904301440015841,
+        "post_minus_pre": 2.672808837369129e-07,
+        "adjacent_difference_MAD": 1.4235925018598868e-07
+      },
+      "CAL": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 757.5639680557334,
+        "post_median": 2723.2623758065024,
+        "post_minus_pre": 1965.698407750769,
+        "adjacent_difference_MAD": 268.49110041657514
+      },
+      "M0": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 13.077526989870762,
+        "post_median": -20.156933122585087,
+        "post_minus_pre": -33.23446011245585,
+        "adjacent_difference_MAD": 126.29863030051932
+      },
+      "T5_residual": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 15.792760395799178,
+        "post_median": -19.30881667496692,
+        "post_minus_pre": -35.1015770707661,
+        "adjacent_difference_MAD": 124.6041765342142
+      },
+      "T5_total": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 15.792760395799178,
+        "post_median": -19.30881667496692,
+        "post_minus_pre": -35.1015770707661,
+        "adjacent_difference_MAD": 124.6041765342142
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n11_w5",
+    "kind": "event",
+    "adjudication": {
+      "label": "unresolved",
+      "reason": "Source-adjacent x rise followed by curved decay and oscillation; persistence beyond excerpt not established.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 2.9498382860481092e-06,
+        "post_median": 7.858107485355297e-06,
+        "post_minus_pre": 4.908269199307188e-06,
+        "adjacent_difference_MAD": 5.101616785295057e-07
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00010889780605056935,
+        "post_median": 0.00010899210239785726,
+        "post_minus_pre": 9.429634728791208e-08,
+        "adjacent_difference_MAD": 4.3463981430003944e-07
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 2.9657556842022933e-06,
+        "post_median": 7.869433464486388e-06,
+        "post_minus_pre": 4.903677780284095e-06,
+        "adjacent_difference_MAD": 2.264992868580402e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00010888657999934051,
+        "post_median": 0.00010900398928072467,
+        "post_minus_pre": 1.1740928138415996e-07,
+        "adjacent_difference_MAD": 1.5290929751533315e-07
+      },
+      "CAL": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 1208.5269975443098,
+        "post_median": 3175.4478945596684,
+        "post_minus_pre": 1966.9208970153586,
+        "adjacent_difference_MAD": 168.27194120671223
+      },
+      "M0": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -20.120716765119425,
+        "post_median": -11.28339738862303,
+        "post_minus_pre": 8.837319376496396,
+        "adjacent_difference_MAD": 107.80882549769598
+      },
+      "T5_residual": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 0.9380752067584979,
+        "post_median": -14.123349195411947,
+        "post_minus_pre": -15.061424402170445,
+        "adjacent_difference_MAD": 96.48062642784939
+      },
+      "T5_total": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 0.9380752067584979,
+        "post_median": -4.9447835029502585,
+        "post_minus_pre": -5.882858709708756,
+        "adjacent_difference_MAD": 105.73435013005995
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n11_w6",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "Noise or smoothly changing baseline/oscillation; no supported abrupt persistent offset in reviewed original x/r.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -1.1781987708316294e-05,
+        "post_median": -1.2732192269385383e-05,
+        "post_minus_pre": -9.502045610690888e-07,
+        "adjacent_difference_MAD": 7.031708373406897e-07
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00010265081024297795,
+        "post_median": 0.00010251401058783766,
+        "post_minus_pre": -1.3679965514029515e-07,
+        "adjacent_difference_MAD": 6.029081843109707e-07
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -1.177827562851414e-05,
+        "post_median": -1.2724766746014701e-05,
+        "post_minus_pre": -9.464911175005618e-07,
+        "adjacent_difference_MAD": 2.992793245750973e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00010262540947435968,
+        "post_median": 0.0001025457428954258,
+        "post_minus_pre": -7.966657893387918e-08,
+        "adjacent_difference_MAD": 2.884444641290321e-07
+      },
+      "CAL": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -3146.6180655794096,
+        "post_median": -3391.760283756842,
+        "post_minus_pre": -245.14221817743237,
+        "adjacent_difference_MAD": 137.87110806537768
+      },
+      "M0": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -4.260083916407801,
+        "post_median": 16.86549941767538,
+        "post_minus_pre": 21.12558333408318,
+        "adjacent_difference_MAD": 97.38580979527994
+      },
+      "T5_residual": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -3.368113738891111,
+        "post_median": 16.185383342390786,
+        "post_minus_pre": 19.553497081281897,
+        "adjacent_difference_MAD": 98.20217736669505
+      },
+      "T5_total": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -3.368113738891111,
+        "post_median": 16.185383342390786,
+        "post_minus_pre": 19.553497081281897,
+        "adjacent_difference_MAD": 98.20217736669505
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n11_w7",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "Noise or smoothly changing baseline/oscillation; no supported abrupt persistent offset in reviewed original x/r.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 9.991058596784747e-06,
+        "post_median": 9.346171698031791e-06,
+        "post_minus_pre": -6.448868987529565e-07,
+        "adjacent_difference_MAD": 1.0556381835957422e-06
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 6.188128841345135e-05,
+        "post_median": 6.19382410458796e-05,
+        "post_minus_pre": 5.695263242825113e-08,
+        "adjacent_difference_MAD": 1.0589801349541073e-06
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 9.94774439388304e-06,
+        "post_median": 9.304759796401352e-06,
+        "post_minus_pre": -6.429845974816877e-07,
+        "adjacent_difference_MAD": 3.909759984594456e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 6.178757005526556e-05,
+        "post_median": 6.189865612500465e-05,
+        "post_minus_pre": 1.110860697390903e-07,
+        "adjacent_difference_MAD": 4.4108054309641854e-07
+      },
+      "CAL": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 1734.0014406846472,
+        "post_median": 1625.7855602514844,
+        "post_minus_pre": -108.21588043316274,
+        "adjacent_difference_MAD": 115.7482588699425
+      },
+      "M0": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 0.2999260615046868,
+        "post_median": -26.459146778855747,
+        "post_minus_pre": -26.75907284036043,
+        "adjacent_difference_MAD": 112.3809050313557
+      },
+      "T5_residual": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 2.68026848739634,
+        "post_median": -26.04910183902841,
+        "post_minus_pre": -28.72937032642475,
+        "adjacent_difference_MAD": 112.85752595111623
+      },
+      "T5_total": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 2.68026848739634,
+        "post_median": -26.04910183902841,
+        "post_minus_pre": -28.72937032642475,
+        "adjacent_difference_MAD": 112.85752595111623
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n11_w8",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "Noise or smoothly changing baseline/oscillation; no supported abrupt persistent offset in reviewed original x/r.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -1.2151578311428813e-05,
+        "post_median": -1.148097506509888e-05,
+        "post_minus_pre": 6.706032463299321e-07,
+        "adjacent_difference_MAD": 6.85120337253505e-07
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00010291446376087158,
+        "post_median": 0.0001027183764987256,
+        "post_minus_pre": -1.9608726214597795e-07,
+        "adjacent_difference_MAD": 5.677874975446129e-07
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -1.2090637445909242e-05,
+        "post_median": -1.1439032350472033e-05,
+        "post_minus_pre": 6.51605095437209e-07,
+        "adjacent_difference_MAD": 3.2448526641806825e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00010282042990379957,
+        "post_median": 0.00010271500278192142,
+        "post_minus_pre": -1.0542712187814902e-07,
+        "adjacent_difference_MAD": 2.2856053992758207e-07
+      },
+      "CAL": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": -3242.3633649583267,
+        "post_median": -3061.293640833064,
+        "post_minus_pre": 181.06972412526284,
+        "adjacent_difference_MAD": 147.15303560750613
+      },
+      "M0": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": -3.7028586945449575,
+        "post_median": 4.58328402885914,
+        "post_minus_pre": 8.286142723404097,
+        "adjacent_difference_MAD": 132.73108749657956
+      },
+      "T5_residual": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 1.9161732377107938,
+        "post_median": 12.185062293120723,
+        "post_minus_pre": 10.268889055409929,
+        "adjacent_difference_MAD": 135.8739747578299
+      },
+      "T5_total": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 1.9161732377107938,
+        "post_median": 12.185062293120723,
+        "post_minus_pre": 10.268889055409929,
+        "adjacent_difference_MAD": 135.8739747578299
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n11_w9",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "Noise or smoothly changing baseline/oscillation; no supported abrupt persistent offset in reviewed original x/r.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 1.6240863736493275e-05,
+        "post_median": 1.6530084312259156e-05,
+        "post_minus_pre": 2.8922057576588075e-07,
+        "adjacent_difference_MAD": 1.2758636052807348e-06
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 6.183602061756012e-05,
+        "post_median": 6.178718061026143e-05,
+        "post_minus_pre": -4.884000729868778e-08,
+        "adjacent_difference_MAD": 1.1537467186032223e-06
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 1.6302570145346476e-05,
+        "post_median": 1.659834547476635e-05,
+        "post_minus_pre": 2.957753294198746e-07,
+        "adjacent_difference_MAD": 4.4149723485852766e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 6.185500930860301e-05,
+        "post_median": 6.175057968395531e-05,
+        "post_minus_pre": -1.0442962464770418e-07,
+        "adjacent_difference_MAD": 5.004631863449673e-07
+      },
+      "CAL": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 2841.60177964848,
+        "post_median": 2903.100384202957,
+        "post_minus_pre": 61.49860455447697,
+        "adjacent_difference_MAD": 126.89967660144181
+      },
+      "M0": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 4.049475769232508,
+        "post_median": -3.2378605135394665,
+        "post_minus_pre": -7.2873362827719745,
+        "adjacent_difference_MAD": 119.84301986921471
+      },
+      "T5_residual": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 3.2009310726397757,
+        "post_median": -0.536589462679629,
+        "post_minus_pre": -3.7375205353194048,
+        "adjacent_difference_MAD": 110.89064750056774
+      },
+      "T5_total": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 3.2009310726397757,
+        "post_median": -0.536589462679629,
+        "post_minus_pre": -3.7375205353194048,
+        "adjacent_difference_MAD": 110.89064750056774
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n11_w10",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "Noise or smoothly changing baseline/oscillation; no supported abrupt persistent offset in reviewed original x/r.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -1.1902850700351734e-05,
+        "post_median": -1.1908503154214657e-05,
+        "post_minus_pre": -5.652453862922444e-09,
+        "adjacent_difference_MAD": 6.975560220474116e-07
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00010272046745635766,
+        "post_median": 0.00010290653733594492,
+        "post_minus_pre": 1.8606987958726606e-07,
+        "adjacent_difference_MAD": 6.732893358762349e-07
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -1.1979787870026337e-05,
+        "post_median": -1.1844999420420597e-05,
+        "post_minus_pre": 1.3478844960574025e-07,
+        "adjacent_difference_MAD": 3.965265721086827e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00010276069082605761,
+        "post_median": 0.0001029601795200084,
+        "post_minus_pre": 1.9948869395078762e-07,
+        "adjacent_difference_MAD": 2.655494307216058e-07
+      },
+      "CAL": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -3213.7025690007476,
+        "post_median": -3147.6369280326226,
+        "post_minus_pre": 66.06564096812508,
+        "adjacent_difference_MAD": 214.13650542469497
+      },
+      "M0": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 1.4825374523701171,
+        "post_median": -6.330556991904288,
+        "post_minus_pre": -7.813094444274405,
+        "adjacent_difference_MAD": 121.46835336180999
+      },
+      "T5_residual": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -0.7019423069662949,
+        "post_median": -7.197539997396177,
+        "post_minus_pre": -6.495597690429882,
+        "adjacent_difference_MAD": 127.47700128180432
+      },
+      "T5_total": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -0.7019423069662949,
+        "post_median": -7.197539997396177,
+        "post_minus_pre": -6.495597690429882,
+        "adjacent_difference_MAD": 127.47700128180432
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n11_w11",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "unresolved",
+      "reason": "Broad x rise from initial low level, with only short pre-support; finite step versus smooth/common change uncertain.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 1.5082269837044696e-05,
+        "post_median": 1.5703617747229006e-05,
+        "post_minus_pre": 6.213479101843108e-07,
+        "adjacent_difference_MAD": 1.3484039428923208e-06
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 6.183246147500141e-05,
+        "post_median": 6.197108255546077e-05,
+        "post_minus_pre": 1.386210804593511e-07,
+        "adjacent_difference_MAD": 1.4292995649957047e-06
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 1.5283586051807526e-05,
+        "post_median": 1.571141311963805e-05,
+        "post_minus_pre": 4.2782706783052384e-07,
+        "adjacent_difference_MAD": 5.792704274145019e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 6.190823345985195e-05,
+        "post_median": 6.198281768158884e-05,
+        "post_minus_pre": 7.458422173689191e-08,
+        "adjacent_difference_MAD": 4.332957995997405e-07
+      },
+      "CAL": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 2671.230387810997,
+        "post_median": 2743.627454035957,
+        "post_minus_pre": 72.39706622495987,
+        "adjacent_difference_MAD": 173.02413204933703
+      },
+      "M0": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 2.279396542937036,
+        "post_median": -17.302825950574174,
+        "post_minus_pre": -19.58222249351121,
+        "adjacent_difference_MAD": 159.82008092203395
+      },
+      "T5_residual": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 5.603424758757583,
+        "post_median": -15.458539759231357,
+        "post_minus_pre": -21.06196451798894,
+        "adjacent_difference_MAD": 156.9424688528176
+      },
+      "T5_total": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 5.603424758757583,
+        "post_median": -15.458539759231357,
+        "post_minus_pre": -21.06196451798894,
+        "adjacent_difference_MAD": 156.9424688528176
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n12_w0",
+    "kind": "event",
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "Repeated finite transitions; center raises x and r to supported changed levels.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 1.2045954304218041e-05,
+        "post_median": 1.5340161949295688e-05,
+        "post_minus_pre": 3.294207645077647e-06,
+        "adjacent_difference_MAD": 6.001616838251523e-07
+      },
+      "raw_r": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 0.00010533472298680373,
+        "post_median": 0.00010965398498399003,
+        "post_minus_pre": 4.319261997186299e-06,
+        "adjacent_difference_MAD": 5.248410240397109e-07
+      },
+      "RTC_x": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "RTC_r": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_total": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n12_w1",
+    "kind": "event",
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "Persistent r-dominated upward transition; x remains near its prior level; nearby earlier transition.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": -1.9357600463882315e-06,
+        "post_median": -2.834330569484905e-06,
+        "post_minus_pre": -8.985705230966736e-07,
+        "adjacent_difference_MAD": 8.011175650282152e-07
+      },
+      "raw_r": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 8.834646054504016e-05,
+        "post_median": 9.48373533938425e-05,
+        "post_minus_pre": 6.490892848802339e-06,
+        "adjacent_difference_MAD": 7.223522655378033e-07
+      },
+      "RTC_x": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "RTC_r": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_total": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n12_w2",
+    "kind": "event",
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "r-dominated lower plateau for about two seconds followed by return; finite discontinuities, not isolated impulse.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 5.0222296739919184e-05,
+        "post_median": 5.002073856908121e-05,
+        "post_minus_pre": -2.015581708379735e-07,
+        "adjacent_difference_MAD": 2.618913866650093e-06
+      },
+      "raw_r": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 8.989395606435502e-05,
+        "post_median": 7.888707890611819e-05,
+        "post_minus_pre": -1.1006877158236829e-05,
+        "adjacent_difference_MAD": 2.8849505202074333e-06
+      },
+      "RTC_x": {
+        "n": 291,
+        "pre_n": 146,
+        "post_n": 145,
+        "pre_median": 4.967407160874726e-05,
+        "post_median": 4.960998141926796e-05,
+        "post_minus_pre": -6.409018947929596e-08,
+        "adjacent_difference_MAD": 1.0894705246191027e-06
+      },
+      "RTC_r": {
+        "n": 291,
+        "pre_n": 146,
+        "post_n": 145,
+        "pre_median": 9.258069584851012e-05,
+        "post_median": 7.977134322095604e-05,
+        "post_minus_pre": -1.2809352627554075e-05,
+        "adjacent_difference_MAD": 9.01494363515544e-07
+      },
+      "CAL": {
+        "n": 145,
+        "pre_n": 73,
+        "post_n": 72,
+        "pre_median": 8347.019700696033,
+        "post_median": 8346.88387410319,
+        "post_minus_pre": -0.13582659284293186,
+        "adjacent_difference_MAD": 285.53877428296533
+      },
+      "M0": {
+        "n": 145,
+        "pre_n": 73,
+        "post_n": 72,
+        "pre_median": 63.11668275377811,
+        "post_median": 148.85978794837717,
+        "post_minus_pre": 85.74310519459907,
+        "adjacent_difference_MAD": 319.40686360165387
+      },
+      "T5_residual": {
+        "n": 145,
+        "pre_n": 73,
+        "post_n": 72,
+        "pre_median": 57.42346585293137,
+        "post_median": 151.99581361072327,
+        "post_minus_pre": 94.5723477577919,
+        "adjacent_difference_MAD": 320.8520231056983
+      },
+      "T5_total": {
+        "n": 145,
+        "pre_n": 73,
+        "post_n": 72,
+        "pre_median": 57.42346585293137,
+        "post_median": 151.99581361072327,
+        "post_minus_pre": 94.5723477577919,
+        "adjacent_difference_MAD": 320.8520231056983
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n12_w3",
+    "kind": "event",
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "Abrupt persistent r rise coincident with source context; x contains smooth source/common variation.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": -4.290065080641415e-05,
+        "post_median": -4.193708365436468e-05,
+        "post_minus_pre": 9.6356715204947e-07,
+        "adjacent_difference_MAD": 8.381283491978579e-07
+      },
+      "raw_r": {
+        "n": 611,
+        "pre_n": 293,
+        "post_n": 293,
+        "pre_median": 7.476552042309727e-05,
+        "post_median": 7.988524364167877e-05,
+        "post_minus_pre": 5.119723218581501e-06,
+        "adjacent_difference_MAD": 7.894898250308589e-07
+      },
+      "RTC_x": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "RTC_r": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "CAL": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "M0": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_residual": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      },
+      "T5_total": {
+        "n": 0,
+        "pre_n": 0,
+        "post_n": 0,
+        "pre_median": null,
+        "post_median": null,
+        "post_minus_pre": null,
+        "adjacent_difference_MAD": null
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n12_w4",
+    "kind": "event",
+    "adjudication": {
+      "label": "unresolved",
+      "reason": "Original discovery x dip has a short low plateau then substantial recovery; peer behavior similar; step versus finite excursion uncertain.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 1.6667856576237358e-06,
+        "post_median": -2.6187428407444454e-06,
+        "post_minus_pre": -4.285528498368181e-06,
+        "adjacent_difference_MAD": 1.3284825526584782e-06
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 8.034181909159789e-05,
+        "post_median": 8.022601359365119e-05,
+        "post_minus_pre": -1.1580549794669881e-07,
+        "adjacent_difference_MAD": 1.4281423045443903e-06
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 1.7244109142464027e-06,
+        "post_median": -2.5894085586365856e-06,
+        "post_minus_pre": -4.313819472882988e-06,
+        "adjacent_difference_MAD": 6.802805785948271e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 8.033533862404899e-05,
+        "post_median": 8.023291976636077e-05,
+        "post_minus_pre": -1.0241885768821869e-07,
+        "adjacent_difference_MAD": 5.248466136960854e-07
+      },
+      "CAL": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 356.6945089495317,
+        "post_median": -476.4372144796746,
+        "post_minus_pre": -833.1317234292063,
+        "adjacent_difference_MAD": 239.19841199044632
+      },
+      "M0": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -20.317712715442696,
+        "post_median": -30.937771391772117,
+        "post_minus_pre": -10.620058676329421,
+        "adjacent_difference_MAD": 221.9832771421034
+      },
+      "T5_residual": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -26.965088791640085,
+        "post_median": -22.369419112018136,
+        "post_minus_pre": 4.595669679621949,
+        "adjacent_difference_MAD": 213.01412838436647
+      },
+      "T5_total": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -26.965088791640085,
+        "post_median": -22.369419112018136,
+        "post_minus_pre": 4.595669679621949,
+        "adjacent_difference_MAD": 213.01412838436647
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n12_w5",
+    "kind": "event",
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "Original discovery x decline reaches supported lower level with peer response and little r change; no nearby production event.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -2.7881798906970964e-08,
+        "post_median": -9.070879804476214e-06,
+        "post_minus_pre": -9.042998005569242e-06,
+        "adjacent_difference_MAD": 1.6136135358790715e-06
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 8.063888728204032e-05,
+        "post_median": 8.045101131562908e-05,
+        "post_minus_pre": -1.878759664112402e-07,
+        "adjacent_difference_MAD": 1.3892120733149813e-06
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": -7.336114153479978e-08,
+        "post_median": -9.052211004744578e-06,
+        "post_minus_pre": -8.97884986320978e-06,
+        "adjacent_difference_MAD": 5.490046377397333e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 8.065362635360294e-05,
+        "post_median": 8.05002186204501e-05,
+        "post_minus_pre": -1.5340773315283363e-07,
+        "adjacent_difference_MAD": 6.035433950863638e-07
+      },
+      "CAL": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": -15.475853300621868,
+        "post_median": -1891.312354423453,
+        "post_minus_pre": -1875.8365011228311,
+        "adjacent_difference_MAD": 182.03383018120581
+      },
+      "M0": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 10.972149828288593,
+        "post_median": -87.18165107486493,
+        "post_minus_pre": -98.15380090315352,
+        "adjacent_difference_MAD": 205.44732592267815
+      },
+      "T5_residual": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 9.674895401381264,
+        "post_median": -77.11351575140304,
+        "post_minus_pre": -86.7884111527843,
+        "adjacent_difference_MAD": 208.33577221612174
+      },
+      "T5_total": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 9.674895401381264,
+        "post_median": -77.11351575140304,
+        "post_minus_pre": -86.7884111527843,
+        "adjacent_difference_MAD": 208.33577221612174
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n12_w6",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "Candidate-free window contains small r decrease near 1 s, a supported low plateau, and abrupt return near 2.85 s; weak x corroboration.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 7.933381506420143e-05,
+        "post_median": 7.798269889531651e-05,
+        "post_minus_pre": -1.3511161688849172e-06,
+        "adjacent_difference_MAD": 2.3510865281302017e-06
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 9.746181040868084e-05,
+        "post_median": 9.37386909336743e-05,
+        "post_minus_pre": -3.7231194750065395e-06,
+        "adjacent_difference_MAD": 2.5313387305532962e-06
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 7.937686660969894e-05,
+        "post_median": 7.790809426344038e-05,
+        "post_minus_pre": -1.4687723462585565e-06,
+        "adjacent_difference_MAD": 8.737953952967175e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 9.746710472091376e-05,
+        "post_median": 9.36262891219462e-05,
+        "post_minus_pre": -3.8408155989675714e-06,
+        "adjacent_difference_MAD": 9.580427704825063e-07
+      },
+      "CAL": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 13116.07790764086,
+        "post_median": 12905.50213756978,
+        "post_minus_pre": -210.57577007108011,
+        "adjacent_difference_MAD": 240.0474557858148
+      },
+      "M0": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 29.819188991928087,
+        "post_median": -52.302607682873465,
+        "post_minus_pre": -82.12179667480154,
+        "adjacent_difference_MAD": 216.33894146606315
+      },
+      "T5_residual": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 29.038116611747483,
+        "post_median": -50.55744994042885,
+        "post_minus_pre": -79.59556655217634,
+        "adjacent_difference_MAD": 214.4086732793411
+      },
+      "T5_total": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 29.038116611747483,
+        "post_median": -50.55744994042885,
+        "post_minus_pre": -79.59556655217634,
+        "adjacent_difference_MAD": 214.4086732793411
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n12_w7",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "plausible step",
+      "reason": "Same physical epoch as n12_w6: small r decrease then plateau and return; shared occurrence, not independent event epoch.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 4.314544360405406e-06,
+        "post_median": 3.648634635073773e-06,
+        "post_minus_pre": -6.659097253316332e-07,
+        "adjacent_difference_MAD": 5.751789293798235e-07
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 9.744344004737123e-05,
+        "post_median": 9.644194587239188e-05,
+        "post_minus_pre": -1.001494174979352e-06,
+        "adjacent_difference_MAD": 5.210676445642211e-07
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 4.310515856163572e-06,
+        "post_median": 3.6675786649292925e-06,
+        "post_minus_pre": -6.429371912342793e-07,
+        "adjacent_difference_MAD": 2.482313161650919e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 9.749906603020475e-05,
+        "post_median": 9.640470499271768e-05,
+        "post_minus_pre": -1.0943610374870703e-06,
+        "adjacent_difference_MAD": 2.443208967991021e-07
+      },
+      "CAL": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 824.4206966632138,
+        "post_median": 700.5504370067712,
+        "post_minus_pre": -123.87025965644261,
+        "adjacent_difference_MAD": 79.12631263473583
+      },
+      "M0": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": -16.252763539089372,
+        "post_median": 4.8681724893803136,
+        "post_minus_pre": 21.120936028469686,
+        "adjacent_difference_MAD": 69.6872161534545
+      },
+      "T5_residual": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": -15.671068734199991,
+        "post_median": 6.519724054275203,
+        "post_minus_pre": 22.190792788475193,
+        "adjacent_difference_MAD": 67.4551660881127
+      },
+      "T5_total": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": -15.671068734199991,
+        "post_median": 6.519724054275203,
+        "post_minus_pre": 22.190792788475193,
+        "adjacent_difference_MAD": 67.4551660881127
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n12_w8",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "Noise or smoothly changing baseline/oscillation; no supported abrupt persistent offset in reviewed original x/r.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 7.793106324807111e-05,
+        "post_median": 7.846061518066591e-05,
+        "post_minus_pre": 5.295519325947964e-07,
+        "adjacent_difference_MAD": 2.5768124043129657e-06
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00010531419384846042,
+        "post_median": 0.00010530302677598542,
+        "post_minus_pre": -1.1167072475005892e-08,
+        "adjacent_difference_MAD": 2.621108629288375e-06
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 7.798089858505754e-05,
+        "post_median": 7.837033357587762e-05,
+        "post_minus_pre": 3.89434990820083e-07,
+        "adjacent_difference_MAD": 1.1507509449571466e-06
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00010544999299933737,
+        "post_median": 0.00010523239382018196,
+        "post_minus_pre": -2.1759917915540336e-07,
+        "adjacent_difference_MAD": 1.0960324475540974e-06
+      },
+      "CAL": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 12883.408288420194,
+        "post_median": 12991.747991696242,
+        "post_minus_pre": 108.33970327604766,
+        "adjacent_difference_MAD": 271.69611611810495
+      },
+      "M0": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -55.01453313610814,
+        "post_median": 42.943653398506314,
+        "post_minus_pre": 97.95818653461446,
+        "adjacent_difference_MAD": 324.6695324067775
+      },
+      "T5_residual": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -55.114424005031815,
+        "post_median": 44.7927716804463,
+        "post_minus_pre": 99.90719568547811,
+        "adjacent_difference_MAD": 325.9300454899244
+      },
+      "T5_total": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -55.114424005031815,
+        "post_median": 44.7927716804463,
+        "post_minus_pre": 99.90719568547811,
+        "adjacent_difference_MAD": 325.9300454899244
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n12_w9",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "Noise or smoothly changing baseline/oscillation; no supported abrupt persistent offset in reviewed original x/r.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 4.024394762819731e-06,
+        "post_median": 4.282347648634019e-06,
+        "post_minus_pre": 2.5795288581428833e-07,
+        "adjacent_difference_MAD": 5.486656226765604e-07
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 9.929216031562683e-05,
+        "post_median": 9.933821893552787e-05,
+        "post_minus_pre": 4.6058619901039976e-08,
+        "adjacent_difference_MAD": 5.465081232989804e-07
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 4.0184438618917335e-06,
+        "post_median": 4.2743003243976055e-06,
+        "post_minus_pre": 2.55856462505872e-07,
+        "adjacent_difference_MAD": 2.8060756369947877e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 9.932901642850456e-05,
+        "post_median": 9.931183244043403e-05,
+        "post_minus_pre": -1.7183988070530276e-08,
+        "adjacent_difference_MAD": 2.281439806764169e-07
+      },
+      "CAL": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": 773.3434265397145,
+        "post_median": 813.8581039390566,
+        "post_minus_pre": 40.51467739934208,
+        "adjacent_difference_MAD": 90.16333056941626
+      },
+      "M0": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -7.189754287420229,
+        "post_median": -5.441526564623688,
+        "post_minus_pre": 1.7482277227965408,
+        "adjacent_difference_MAD": 72.8999432467431
+      },
+      "T5_residual": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -6.973911725061555,
+        "post_median": -3.4681136170524827,
+        "post_minus_pre": 3.5057981080090723,
+        "adjacent_difference_MAD": 73.27493642279859
+      },
+      "T5_total": {
+        "n": 184,
+        "pre_n": 86,
+        "post_n": 86,
+        "pre_median": -6.973911725061555,
+        "post_median": -3.4681136170524827,
+        "post_minus_pre": 3.5057981080090723,
+        "adjacent_difference_MAD": 73.27493642279859
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n12_w10",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "Noise or smoothly changing baseline/oscillation; no supported abrupt persistent offset in reviewed original x/r.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 7.82699157970453e-05,
+        "post_median": 7.777397845690392e-05,
+        "post_minus_pre": -4.959373401413784e-07,
+        "adjacent_difference_MAD": 2.581999239355329e-06
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00010515587699365414,
+        "post_median": 0.00010542354463351241,
+        "post_minus_pre": 2.6766763985827734e-07,
+        "adjacent_difference_MAD": 2.7360956089964543e-06
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 7.837816076206208e-05,
+        "post_median": 7.770558216479245e-05,
+        "post_minus_pre": -6.725785972696338e-07,
+        "adjacent_difference_MAD": 9.588720815540016e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 0.00010530092594386612,
+        "post_median": 0.00010543603597728841,
+        "post_minus_pre": 1.351100334222858e-07,
+        "adjacent_difference_MAD": 8.836856725281979e-07
+      },
+      "CAL": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 12973.769492459724,
+        "post_median": 12890.190556706317,
+        "post_minus_pre": -83.57893575340677,
+        "adjacent_difference_MAD": 260.03546482455874
+      },
+      "M0": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 41.65404044257998,
+        "post_median": 27.35367849150464,
+        "post_minus_pre": -14.300361951075345,
+        "adjacent_difference_MAD": 236.61411894842303
+      },
+      "T5_residual": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 43.19671371691288,
+        "post_median": 27.15044978076284,
+        "post_minus_pre": -16.04626393615004,
+        "adjacent_difference_MAD": 235.87788623151238
+      },
+      "T5_total": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 43.19671371691288,
+        "post_median": 27.15044978076284,
+        "post_minus_pre": -16.04626393615004,
+        "adjacent_difference_MAD": 235.87788623151238
+      }
+    }
+  },
+  {
+    "run": "S-REF-rep1",
+    "key": "n12_w11",
+    "kind": "unflagged",
+    "adjudication": {
+      "label": "plausible non-step",
+      "reason": "Noise or smoothly changing baseline/oscillation; no supported abrupt persistent offset in reviewed original x/r.",
+      "scope": "original-domain observational assessment only; not independent truth or production reclassification"
+    },
+    "stage": {
+      "raw_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 4.083945413672569e-06,
+        "post_median": 3.6247181616665293e-06,
+        "post_minus_pre": -4.592272520060397e-07,
+        "adjacent_difference_MAD": 6.686770110859369e-07
+      },
+      "raw_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 9.92278649138881e-05,
+        "post_median": 9.940270586484678e-05,
+        "post_minus_pre": 1.7484095095867877e-07,
+        "adjacent_difference_MAD": 5.047311659734668e-07
+      },
+      "RTC_x": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 4.079008419106985e-06,
+        "post_median": 3.6301903736862137e-06,
+        "post_minus_pre": -4.488180454207712e-07,
+        "adjacent_difference_MAD": 3.4012241402450273e-07
+      },
+      "RTC_r": {
+        "n": 367,
+        "pre_n": 171,
+        "post_n": 171,
+        "pre_median": 9.924257197287244e-05,
+        "post_median": 9.942107815408116e-05,
+        "post_minus_pre": 1.7850618120872114e-07,
+        "adjacent_difference_MAD": 2.614806401681997e-07
+      },
+      "CAL": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 776.0655287272522,
+        "post_median": 702.1598520557837,
+        "post_minus_pre": -73.90567667146843,
+        "adjacent_difference_MAD": 117.86258960651685
+      },
+      "M0": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 10.578005731825414,
+        "post_median": 2.1647366812301243,
+        "post_minus_pre": -8.41326905059529,
+        "adjacent_difference_MAD": 72.39672653680377
+      },
+      "T5_residual": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 11.011343088457068,
+        "post_median": 1.421326605733384,
+        "post_minus_pre": -9.590016482723684,
+        "adjacent_difference_MAD": 72.77719067655293
+      },
+      "T5_total": {
+        "n": 183,
+        "pre_n": 85,
+        "post_n": 85,
+        "pre_median": 11.011343088457068,
+        "post_median": 1.421326605733384,
+        "post_minus_pre": -9.590016482723684,
+        "adjacent_difference_MAD": 72.77719067655293
+      }
+    }
+  }
+]

@@ -1,0 +1,51 @@
+{
+  "identity": "POINT-SPEED-PCA-v1",
+  "observation": 152420,
+  "outside_disk_no_feedback": true,
+  "direct_identical_operand_rejoin": true,
+  "gain": 1,
+  "nonzero_cycles": 5,
+  "policy": "BASE-POINT",
+  "source_method": "POINT-EXPECTED-v1",
+  "threshold": 3.0,
+  "prospective": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-REF-rep1/freeze/prospective.json",
+    "sha256": "60390e52f7cb2c31c03420ba015f6add35cdf3786998e209eb8999209f8de09a"
+  },
+  "parents": {
+    "a2000": {
+      "map_request": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-REF-rep1/inputs/map-request.json",
+        "sha256": "212cca95095a529bd7efc918d7270395439d6cf15d19c40543747db311aed602"
+      },
+      "parent_plan": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-REF-rep1/M0/products/a2000/plan.yaml",
+        "sha256": "0bc1a580f4ac14c0a5d67abf5cfe74fecf8d57f68bcda098d837e58eb3682d95"
+      }
+    }
+  },
+  "injections": {
+    "a2000": {
+      "C-core-plus": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-REF-rep1/freeze/shapes/C-core-plus.fits",
+        "sha256": "1a90b7c3bd2d7954bca211296aa23f91d079ea17f0768137ae929f04b1af643d"
+      },
+      "C-core-minus": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-REF-rep1/freeze/shapes/C-core-minus.fits",
+        "sha256": "25940672956272c1f0725eace374df59691f57b944f06a4629f04b83cc802c2b"
+      },
+      "C-shoulder": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-REF-rep1/freeze/shapes/C-shoulder.fits",
+        "sha256": "1c00ca3313c637a8ddb1bc799d4b100f554dd4e44e9843754456ac4214b61860"
+      }
+    }
+  },
+  "seeds": {
+    "a2000": {
+      "REF": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-REF-rep1/run/BASE-POINT/REF/a2000/initial/candidate.fits",
+        "sha256": "f718c6aaceefcaedde4d55d850c25fe3b69b3e487ab913048cd274652ecea1cf"
+      }
+    }
+  }
+}

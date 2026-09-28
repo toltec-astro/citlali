@@ -1,0 +1,91 @@
+{
+  "method": "POINT-EXPECTED-v1",
+  "status": "accepted",
+  "accepted": true,
+  "complete": true,
+  "cause": null,
+  "accepted_parameters": [
+    449.64081220414334,
+    4.191906705067554,
+    7.808343243130207,
+    3.611717273448956,
+    4.263206801825688,
+    -2.1838187493470897,
+    -4.953062417561797
+  ],
+  "pointing_correction": null,
+  "accepted_centroid_tangent_arcsec": [
+    4.191906705067554,
+    7.808343243130207
+  ],
+  "expected_origin_tangent_arcsec": [
+    0.0,
+    0.0
+  ],
+  "fit_pixels": 1257,
+  "expected_origin_sky": {
+    "ra_deg": 176.7429079166667,
+    "dec_deg": 39.97619555555556,
+    "frame": "FK5",
+    "equinox": 2000.0
+  },
+  "sigma_A": 5.7965963161372605,
+  "SNR_A": 77.56979918583933,
+  "diagnostic": {
+    "initial": [
+      456.9148805449692,
+      4.0,
+      8.0,
+      4.2466090014400955,
+      4.2466090014400955,
+      0.0,
+      -3.4875473117322002
+    ],
+    "parameters": [
+      449.64081220414334,
+      4.191906705067554,
+      7.808343243130207,
+      3.611717273448956,
+      4.263206801825688,
+      -2.1838187493470897,
+      -4.953062417561797
+    ],
+    "status": 2,
+    "message": "`ftol` termination condition is satisfied.",
+    "converged": true,
+    "finite": true,
+    "nfev": 14,
+    "njev": 13,
+    "cost": 132940.18085541457,
+    "optimality": 0.09116553685247579,
+    "active_mask": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "sigma_floor_arcsec": 1.5,
+    "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+    "centroid_radius_arcsec": 8.862409718949326
+  },
+  "optimizer_calls": 1,
+  "amplitude_sensitivity": {
+    "rank": 7,
+    "rank_tolerance": 1.1344767326029073e-10,
+    "singular_values": [
+      406.4621312816986,
+      306.1307767428977,
+      276.3310939833688,
+      260.50100930135153,
+      259.34885772446717,
+      34.051914143351986,
+      2.458932646899852
+    ],
+    "amplitude_null_projection": 1.1105849667900876e-16,
+    "identifiability_tolerance": 2.7911006839076435e-11
+  },
+  "message": "Expected POINT source accepted."
+}

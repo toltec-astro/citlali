@@ -1,0 +1,30 @@
+{
+  "status": "pass",
+  "reference": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-REF-rep1/EXECUTION.json",
+    "sha256": "c23be589aec1d14a38313dfce51ccb7eca359e3b558c96a314aada3a72cb2755"
+  },
+  "shapes": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-point-20260927/S-REF-rep1/SHAPES.json",
+    "sha256": "f913906084cb572fcd829e590afbaab75bf659f97cdea1f4d972cddd1fd5e92a"
+  },
+  "checks": [
+    {
+      "cycle": 0,
+      "reference_contributions": 2814220,
+      "available_contributions": 2814220,
+      "lost_contributions": 0,
+      "lost_science_pixels": 0
+    },
+    {
+      "cycle": 5,
+      "reference_contributions": 2814220,
+      "available_contributions": 2814220,
+      "lost_contributions": 0,
+      "lost_science_pixels": 0
+    }
+  ],
+  "active_learning": true,
+  "ideal_support": "unmodified selected REF",
+  "no_frozen_plan_arm": true
+}
