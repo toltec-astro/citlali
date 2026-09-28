@@ -9,6 +9,7 @@
 #include <citlali/core/pipeline/timestream_ptc_pipeline.h>
 #include "../tools/timestream_successor/rtc_multidetector_bindings.h"
 #include "../src/citlali/cli/rtc_array_filter_input.h"
+#include "../src/citlali/cli/rtc_quarantine_input.h"
 #include <filesystem>
 #include "../src/citlali/cli/rtc_binary_output.h"
 #include <bit>
@@ -2616,4 +2617,31 @@ TEST(point_fixed11, historical_coefficients_preserve_unselected_pair_and_physica
     EXPECT_TRUE((t.parent->network(0).values(NativeReadoutCoordinate::x).array()==in.x.array()).all());
     EXPECT_TRUE((t.parent->network(0).values(NativeReadoutCoordinate::r).array()==in.r.array()).all());
   }
+}
+
+TEST(rtc_quarantine, exact_frozen_physical_run_and_foreign_bindings) {
+  const auto path=std::filesystem::path(__FILE__).parent_path().parent_path()/
+      "validation/rtc_two_stage_2026-09-28/QUARANTINE.json";
+  const auto n=YAML::LoadFile(path.string());
+  EXPECT_EQ(citlali::utils::sha256_file(path),citlali::cli::detail::rtc_quarantine_digest);
+  std::vector<std::uint32_t> channels(100);std::iota(channels.begin(),channels.end(),0);
+  std::vector<std::string> occurrences(100,"other");occurrences[88]=n["members"][0]["occurrence"].as<std::string>();
+  const std::vector<std::pair<std::int64_t,std::int64_t>> runs{{0,7821}};
+  auto call=[&](const YAML::Node &q,int obs=152430,int sub=0,int scan=2,int nw=2,int array=0) {
+    return citlali::cli::detail::read_rtc_quarantine(q,obs,sub,scan,nw,array,channels,occurrences,runs);
+  };
+  EXPECT_EQ(call(n),std::vector<std::uint32_t>({88}));
+  EXPECT_TRUE(call(n,152430,0,2,1).empty());
+  EXPECT_THROW(call(n,152420),std::invalid_argument);
+  EXPECT_THROW(call(n,152430,1),std::invalid_argument);
+  EXPECT_THROW(call(n,152430,0,3),std::invalid_argument);
+  EXPECT_THROW(call(n,152430,0,2,11),std::invalid_argument);
+  EXPECT_THROW(call(n,152430,0,2,2,2),std::invalid_argument);
+  occurrences[88]="foreign";EXPECT_THROW(call(n),std::invalid_argument);
+  occurrences[88]=n["members"][0]["occurrence"].as<std::string>();
+  channels[88]=89;EXPECT_THROW(call(n),std::invalid_argument);channels[88]=88;
+  EXPECT_THROW(citlali::cli::detail::read_rtc_quarantine(n,152430,0,2,2,0,channels,occurrences,{{0,3900},{3900,7821}}),std::invalid_argument);
+  auto foreign=YAML::Clone(n);foreign["members"][0]["native_interval"][1]=7820;EXPECT_THROW(call(foreign),std::invalid_argument);
+  foreign=YAML::Clone(n);foreign["members"][0]["detector"]=89;EXPECT_THROW(call(foreign),std::invalid_argument);
+  foreign=YAML::Clone(n);foreign["members"].push_back(YAML::Clone(n["members"][0]));EXPECT_THROW(call(foreign),std::invalid_argument);
 }

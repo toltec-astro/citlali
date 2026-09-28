@@ -1,0 +1,81 @@
+{
+  "networks": [
+    {
+      "network": 1,
+      "detectors": 494,
+      "physical_runs": [
+        [
+          0,
+          7820
+        ]
+      ],
+      "fully_unavailable": 133,
+      "retained_detectors": 361,
+      "retained_cells": 2526957,
+      "MAP_contributions": 2526957,
+      "source_contributions": 130262,
+      "taps": 67,
+      "factor": 1,
+      "native_dt": 0.008192
+    },
+    {
+      "network": 2,
+      "detectors": 510,
+      "physical_runs": [
+        [
+          0,
+          7821
+        ]
+      ],
+      "fully_unavailable": 111,
+      "retained_detectors": 399,
+      "retained_cells": 2846710,
+      "MAP_contributions": 2846710,
+      "source_contributions": 175802,
+      "taps": 67,
+      "factor": 1,
+      "native_dt": 0.008192
+    },
+    {
+      "network": 3,
+      "detectors": 533,
+      "physical_runs": [
+        [
+          0,
+          7821
+        ]
+      ],
+      "fully_unavailable": 284,
+      "retained_detectors": 249,
+      "retained_cells": 1733290,
+      "MAP_contributions": 1733290,
+      "source_contributions": 91950,
+      "taps": 67,
+      "factor": 1,
+      "native_dt": 0.008192
+    },
+    {
+      "network": 4,
+      "detectors": 532,
+      "physical_runs": [
+        [
+          0,
+          7821
+        ]
+      ],
+      "fully_unavailable": 155,
+      "retained_detectors": 377,
+      "retained_cells": 2699042,
+      "MAP_contributions": 2699042,
+      "source_contributions": 153602,
+      "taps": 67,
+      "factor": 1,
+      "native_dt": 0.008192
+    }
+  ],
+  "units": "mJy/nominal beam for CAL/M0/T5; original x/r dimensionless retained in excerpts",
+  "background": "outside 4 major FWHM of fixed previous B M0 fit; descriptive only, no scientific support change",
+  "rules": "same rule on every detector/physical run, unavailable is absent not zero; adjacent difference MAD descriptive only; 61-row local means/contrasts require complete accepted background support",
+  "diagnostic_projection": "actual T5 cleaned PTC residual, no restored operand; native ordered operator-pixel and uniform coefficients/HITS verified, contribution diagnostic not independent astronomical map",
+  "seconds": 12.740226082969457
+}

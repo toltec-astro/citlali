@@ -1,0 +1,40 @@
+{
+  "scope": "unmodified final total map against its accepted saved elliptical Gaussian plus constant; no fresh fit; spatial residuals descriptive, single-map uncertainty not paired-difference significance",
+  "background_raw": {
+    "n": 7923,
+    "median": -0.6867853126137897,
+    "mean": -0.4206578786930436,
+    "std": 24.50324093719278,
+    "robust_scale": 22.308014284749472
+  },
+  "background_fit_residual": {
+    "n": 7923,
+    "median": -0.040876094193981416,
+    "mean": 0.225251339726765,
+    "std": 24.503240937192775,
+    "robust_scale": 22.308014284749472
+  },
+  "source_disk_fit_residual": {
+    "n": 1257,
+    "median": -0.07546637630955066,
+    "mean": 7.336735303084719e-13,
+    "std": 19.979620024450814,
+    "robust_scale": 19.849526300975896
+  },
+  "source_disk_residual_over_local_noise": {
+    "n": 1257,
+    "median": -0.003606779909071613,
+    "mean": 0.00026168787084489314,
+    "std": 0.9468024574355932,
+    "robust_scale": 0.948020071180815
+  },
+  "background_pixels": 7923,
+  "science_pixels": 8345,
+  "source_noise_scale": {
+    "n": 1257,
+    "median": 20.92347695509254,
+    "mean": 21.105645520477733,
+    "std": 0.5430779833122557,
+    "robust_scale": 0.0
+  }
+}

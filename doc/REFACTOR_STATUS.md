@@ -1,5 +1,19 @@
 # Citlali Refactor Status
 
+## 2026-09-28 — routing repaired; complete B reproduced; one quarantine frozen
+
+The owner-authorized [two-stage work order](../validation/rtc_two_stage_2026-09-28/OWNER_DIRECTIVE.md)
+repairs native retained-residual routing without changing Stage1 science.
+Infrastructureff92aa69d and exact launch9d28b2c6e passed independent review.
+The new B replay completed allfive FRUIT applications and endpoint; all25,584
+native fingerprints,60 planes,37 records and endpoint agree with sealedB.
+The full CAL/M0/T5 audit supports one bounded experimental quarantine: network2
+D88 wholephysicalrun, frozen beforeQ. See [preflight](../validation/rtc_two_stage_2026-09-28/Q_PREFLIGHT.md).
+Q execution remains gated on exact native-binding tests/review. Prior failed
+campaignda94a4379 remains failed evidence. B stays default, fixed11 parked;
+no exposure recovery, cleanup, Unity, push or merge is authorized.
+
+
 ## 2026-09-28 — contamination-first residual audit stopped at failed replay gate
 
 The owner prioritizes trustworthy accepted streams, maps and POINT measurements;

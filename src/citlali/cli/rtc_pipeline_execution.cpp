@@ -58,6 +58,7 @@ std::string native_plane_digest(const NativePairedReadoutMatrix &m) {
 #include "point_rtc_probe_execution.h"
 #include "point_rtc_probe_scope.h"
 #include "point_fixed11_input.h"
+#include "rtc_quarantine_input.h"
 namespace {
 // One observation lifetime, prepared before workers start; only the I/O mutex
 // is mutable. Numerical work and detector populations remain network-owned.
@@ -369,6 +370,21 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
       factors.push_back(field(*aptrow,"flxscale"));
       peer_good.push_back(field(*aptrow,"flag")==0 && field(*aptrow,"flag2")==0);
     }
+    std::vector<std::uint32_t> quarantine;
+    std::optional<fs::path> quarantine_path;
+    if(cfg["rtc_whole_run_quarantine"]) {
+      require(development && common && reference && cfg["rtc_source_probe"],
+              "RTC quarantine requires bounded original-input POINT route");
+      quarantine_path=checked_file(cfg["rtc_whole_run_quarantine"]);
+      require(citlali::utils::sha256_file(*quarantine_path)==citlali::cli::detail::rtc_quarantine_digest,
+              "RTC quarantine differs from frozen pre-Q manifest");
+      std::vector<std::uint32_t> bound_channels(channels.begin(),channels.end());
+      std::vector<std::string> occurrences;for(const auto &d:detectors)occurrences.push_back(d.detector_occurrence_id);
+      std::vector<std::pair<std::int64_t,std::int64_t>> physical_runs;
+      for(const auto &r:runs)physical_runs.emplace_back(r.first_native_row,r.past_last_native_row);
+      quarantine=citlali::cli::detail::read_rtc_quarantine(YAML::LoadFile(quarantine_path->string()),
+          obs,sub,scan,nw,health_array,bound_channels,occurrences,physical_runs);
+    }
     std::vector<NativePairedReadoutNetwork> networks;
     networks.push_back(NativePairedReadoutNetwork::admit(axis,detectors,mapping,
         std::move(x),std::move(r),std::move(xs),std::move(rs)));
@@ -576,6 +592,11 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     native_times.close();require(bool(native_times),"native time export failed");
     YAML::Node receipt;
     if(source_probe_record)receipt["rtc_source_probe"]=source_probe_record;
+    if(quarantine_path) {
+      receipt["whole_run_quarantine"]["manifest"]=cfg["rtc_whole_run_quarantine"];
+      receipt["whole_run_quarantine"]["detectors"]=quarantine;
+      receipt["whole_run_quarantine"]["owner"]="RtcNotchRecoveryDomain.reject; paired rejection; complete plan rejects donor reuse";
+    }
     if(declared_contaminant)receipt["declared_contaminant"]=contaminant_record;
     receipt["schema"]="rtc-multidetector-learning-v1";
     receipt["source_revision"]=std::string(CITLALI_GIT_REVISION);
@@ -853,6 +874,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
           s.centered_notch=cfg["finite_notch"].as<std::vector<double>>();
         }
         RtcNotchRecoveryDomain domain;domain.identity=filter_input ? filter_input->identity : "152390-a2000-235arcsec-s-experiment-only";
+        domain.reject=std::find(quarantine.begin(),quarantine.end(),d)!=quarantine.end();
         domain.detector_array_association=detectors[d].detector_association_record_id;
         domain.motion=motion;domain.array=filter_input ? filter_input->array : RtcOpticalArray::a2000;
         domain.speed_ceiling_arcsec_per_sec=filter_input ? filter_input->speed_ceiling : 235;domain.nominal_interval_seconds=duration;
@@ -869,6 +891,8 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
         plans.push_back(RtcNotchRecoveryPlan::consider(assessment,transient,val,domain,200+d,continuity ? donors[d] : std::vector<std::shared_ptr<const RtcDonorFillPlan>>{},decision,continuity));
       }
       performance.mark("detector_plans_complete");
+      if(quarantine_path)require(citlali::utils::sha256_file(*quarantine_path)==citlali::cli::detail::rtc_quarantine_digest,
+          "RTC frozen quarantine changed during processing");
       const auto complete=RtcPipelinePlan::consider(plans,joint->joint_handle(),1000+continuity);
       arm["Consider_plan_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-planning_at).count();
       const std::array partitions{view};

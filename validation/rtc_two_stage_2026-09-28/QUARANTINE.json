@@ -1,0 +1,78 @@
+{
+  "schema": "citlali-rtc-whole-run-quarantine-v1",
+  "authority": "owner-RTC-two-stage-2026-09-28",
+  "observation": 152430,
+  "subobservation": 0,
+  "scan": 2,
+  "array": "a1100",
+  "networks": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "policy": "whole-physical-run-paired-rejection",
+  "automatic_selection": false,
+  "production_certified": false,
+  "baseline_source": "9d28b2c6e134375b6f377ae59acc4e9f967ac3d4",
+  "baseline": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/freeze/prospective.json",
+    "sha256": "3ab88e6f7aec635fa812d18dcd80c0a823f05995e8b4ab3da5b770f8836d1d8f"
+  },
+  "full_baseline_gate": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/REGRESSION.json",
+      "sha256": "d60ccfb112fa8c85c5b0cf2216ad6fe74183d7116de505cde8fdeaef715c3616"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/NATIVE_REGRESSION.json",
+      "sha256": "ecbdd5927b30332acc091b8e8495124f3c1e65750b491400ce9ba0658af02b55"
+    }
+  ],
+  "selection_evidence": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_two_stage_2026-09-28/selection/candidate-cohort.json",
+      "sha256": "02541f63d870e0fa72605962626aec3d78aacfd973513f683b71e3c8d405234f"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_two_stage_2026-09-28/selection/candidate-evidence.json",
+      "sha256": "f561bab2f9e08e3f3d92baf55930e7aea648c1e606e866a03a90561a765efc65"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_two_stage_2026-09-28/selection/population-summary.json",
+      "sha256": "ffbd8ff7d34d78376462d187ff4d6538a00f5ea2a15fcbf7abcb3999e152fede"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_two_stage_2026-09-28/selection/window-projections.json",
+      "sha256": "829f8d621d143f9232ecb52971af3a0d6b3e256e69f40f01670c75466bc53f01"
+    }
+  ],
+  "members": [
+    {
+      "network": 2,
+      "detector": 88,
+      "channel": 88,
+      "occurrence": "citlali-observation-target-manifest-v2:apt-v2-occurrence:entropy/a107d18e8f1f9531bfb53ba6af86c40961d8167e884bf1f449b873785e0b9be2:semantic=sha256:13e1237e5164649ef49913f3ae60a7c3705948faf8b916292dd232996250a311:envelope=sha256:42d03f77b7370b7ba2dd149af551078eb5e7f0b39eeedf91438b3f23f0f8694b:row=1212",
+      "physical_run": 0,
+      "native_interval": [
+        0,
+        7821
+      ]
+    }
+  ],
+  "class_description": "one bounded high-confidence example of a detector-dominated finite opposite-coordinate excursion outside the source; not an exhaustive classifier or demonstrated causal mechanism",
+  "frozen_rules": [
+    "paired original x/r valid throughout the inspected window",
+    "entire inspected window outside 4 major B M0 FWHM",
+    "opposite during-minus-before medians in original x/r, each >10 cohort MAD from its same-network background cohort median; descriptive contrast, not event significance",
+    "few paired coherent off-source peers (<1 percent with absolute waveform correlation >=0.5 in both x and r) and weak displayed adjacent readout correlations (<0.3)",
+    "retained T5 disturbance reaches actual B science-supported pixels; no required fit-direction or candidate result",
+    "explicit reviewed membership only; no expansion or retuning on Q outputs"
+  ],
+  "exclusions": {
+    "n1D451": "118/331 full-window background peers paired-coherent; shared structure, origin unresolved despite anomalous target amplitude",
+    "n2D309": "whole saved window approaches source to0.77arcsec and includes existing unavailable support; plateau itself offsource, origin not asserted astronomical, excluded from this high-confidence whole-window selection",
+    "other_detectors": "noise/large residual/r variation alone does not qualify"
+  },
+  "limits": "Whole run0 for selected detector only. No relevel, unmask, donor reuse, exposure recovery, alternate map route or map editing. Membership identical in four Q branches."
+}
