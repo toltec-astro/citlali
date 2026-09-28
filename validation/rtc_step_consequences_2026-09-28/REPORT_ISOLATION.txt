@@ -1,6 +1,6 @@
 {
   "pass_": true,
-  "seconds": 14.627826209005434,
+  "seconds": 15.772194500023033,
   "denied_original_run_tree": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928",
   "denied_protected_files": 5130,
   "positive_denial_control": true,

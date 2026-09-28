@@ -1,0 +1,16 @@
+{
+  "applied": true,
+  "files": 102336,
+  "bytes": 11019638906,
+  "compact_commit": "e74d8d799d04ca1f11241600e0e1482fc787d256",
+  "plan_sha256": "8864902b20776d6f020adc7423641715b32f7edd56f404ffce76505b5404f8b5",
+  "manifest_sha256": "bd8d818ee35095eb0bb6df2638bf4afca4366db1dd9c92c0f4bf77d49f90d2f8",
+  "all_removed": true,
+  "protected_inputs_unchanged": true,
+  "prior_compact_unchanged": true,
+  "free_space_delta_bytes": 11210682368,
+  "remaining_files": 1910,
+  "remaining_bytes": 1262101637,
+  "remaining_metadata_FITS_logs": true,
+  "exhaustive_remaining_native_verification_count": 1
+}

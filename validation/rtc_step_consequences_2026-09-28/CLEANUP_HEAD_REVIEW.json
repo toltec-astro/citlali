@@ -1,0 +1,11 @@
+{
+  "source_revision": "e74d8d799d04ca1f11241600e0e1482fc787d256",
+  "tree": "dadcea92616001f140f52f36a53ac3a3bcebc197",
+  "verdict": "pass",
+  "reviewer": "/root/consequences_final_review",
+  "reviewed_scientific_record": "702d6f46728cd2fddb1540aa9fa4fec09ba93d27",
+  "durable_review": "validation/rtc_step_consequences_2026-09-28/FINAL_REVIEW.json",
+  "final_followup": "Only review JSON and closeout added; accurate review, limitations and pending scope; no scientific/report/existing evidence changed.",
+  "cleanup_authorized": false,
+  "scope": "exact-HEAD review binding only; new exact-scope owner approval still required"
+}

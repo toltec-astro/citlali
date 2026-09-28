@@ -12,8 +12,11 @@ largely removed by PTC with no measured consequential penalty. Compact T5 gain
 0.9895–0.9909; broad0.8486. Positive injections change one event/support decision;
 full REF ideal normalization and unavailable support remain explicit. One
 unimplemented containment comparison is proposed, pending separate approval.
-B retained; fixed11 parked. New scratch deletion awaits exact-scope owner
-approval after compact preservation, saved-only verification and final review.
+B retained; fixed11 parked. After independent review and new exact-scope owner
+approval, the guarded procedure removed 102,336 native files (11,019,638,906 bytes),
+verified all 5,130 protected paths unchanged and completed its one exhaustive
+check. All 13 artifacts (six figures) regenerated exactly under OS read denial
+after deletion. See the [closeout](../validation/rtc_step_consequences_2026-09-28/CLOSEOUT.md).
 No production/default change, Unity execution, push or automatic follow-on.
 
 

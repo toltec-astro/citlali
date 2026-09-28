@@ -17,7 +17,9 @@ positive probes alter one near-threshold original-event admission and support.
 Broad morphology remains limited. One containment comparison proposed only.
 
 B retained; fixed11 parked; no defaults, push, merge or production promotion.
-Native scratch under the single new campaign ROOT remains pending a new
-exact-scope deletion approval; prior approval is not valid for these paths.
-Use the committed guarded manifest/procedure only after completed independent
-review and approval. No original/prior compact files may be deleted.
+Native scratch cleanup is complete after new explicit owner approval. The
+reviewed guarded procedure removed 102,336 files (11,019,638,906 bytes), verified
+all 5,130 protected paths unchanged, and passed post-cleanup exact regeneration
+of all 13 artifacts. See the committed CLEANUP.json and CLOSEOUT.md. The immutable
+prospective manifest is historical; do not rerun cleanup or infer another
+campaign authorization. No original/prior compact files were removed.

@@ -35,28 +35,24 @@ saved evidence and small fixtures only, without rehashing all native scratch or
 launching observations. Its receipt is recorded separately to avoid a self-SHA
 cycle. Any changed interpretation must be committed and reviewed again.
 
-## Exact pending deletion scope
+## Exact approved deletion scope — completed
 
 Only the102,336 files enumerated in `NATIVE_REMOVALS.json.gz`, totalling
 11,019,638,906 bytes (11.02GB decimal), under:
 
 `/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928`
 
-These are inactive native stream/operator payloads of the five charged launches.
-The plan is prospective (`applied: false`); **nothing has been deleted**. Files
+These were inactive native stream/operator payloads of the five charged launches.
+The immutable plan remains prospective (`applied: false`); [CLEANUP.json](CLEANUP.json) records successful deletion after explicit owner approval. Files
 are individually bound by absolute path, size and SHA256. It excludes original
 acquisitions, tunes, APT/calibration/team files, prior compact evidence, the new
 committed compact record, and campaign metadata/FITS/logs. This does not remove
 the entire ROOT or promise zero residual disk use.
 
 The owner directive §9 says: “do not reuse the previous campaign's deletion
-approval as authorization for new paths.” New exact-scope approval remains
-required after committed preservation, saved-only regeneration and independent
-review. The guarded `compact_record.py clean --expected-head ...` additionally
+approval as authorization for new paths.” The owner supplied new exact-scope approval after committed preservation, saved-only regeneration and independent review; `OWNER_CLEANUP_APPROVAL.json` records it. The guarded `compact_record.py clean --expected-head ...` additionally
 requires the exact reviewed clean HEAD, committed manifests, inactivity,
-protected hashes and passing isolation. Do not execute it before approval.
-Its exhaustive native verification occurs once in that guarded procedure;
-record actual deletion/protection and re-run saved-only verification afterward.
+protected hashes and passing isolation. It completed at reviewed HEAD e74d8d799 after approval. Its one exhaustive native verification passed; all protected paths remained unchanged. Post-cleanup saved-only regeneration reproduced all 13 artifacts exactly. Do not rerun the completed cleanup.
 
 Automatic review initially rejected **preservation** because the same script
 contains a separate cleanup mode. AST/dispatch inspection established that

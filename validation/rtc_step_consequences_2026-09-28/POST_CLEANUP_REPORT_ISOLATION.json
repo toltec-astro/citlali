@@ -1,0 +1,27 @@
+{
+  "pass_": true,
+  "seconds": 15.772194500023033,
+  "denied_original_run_tree": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928",
+  "denied_protected_files": 5130,
+  "positive_denial_control": true,
+  "exact_artifacts": 13,
+  "figure_count": 6,
+  "commands": [
+    {
+      "script": "report_step_campaign.py",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "script": "report_step_windows.py",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "script": "report_consequences.py",
+      "returncode": 0,
+      "stderr": ""
+    }
+  ],
+  "scope": "saved evidence summaries/plots only; no scientific fit, original input, learning, reduction or uncertainty ensemble"
+}
