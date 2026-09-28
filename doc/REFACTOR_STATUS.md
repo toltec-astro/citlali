@@ -1,5 +1,9 @@
 # Citlali Refactor Status
 
+## 2026-09-27 — bounded RTC step POINT assessment authorized
+
+The owner's [new order](../validation/rtc_step_point_2026-09-27/OWNER_DIRECTIVE.md) retains B and parks fixed11. One diagnostic-only152430 replay and one evidence-selected POINT plus three active source-response branches are bounded to5 trajectories/25feedback and2extraRTC captures, with one documented implementation-defect replacement only. [Retained baseline inventory](../validation/rtc_step_point_2026-09-27/BASELINE_BEFORE_REPLAY.md) precedes execution. Local original-I/Q discovery is limited to152420/152432/152434; the frozen selection record binds152420 inputs before new maps. No thresholds, numerical policies or production defaults change. Local independent preflight and final review govern this module probe.
+
 ## 2026-09-27 — fixed 11 Hz comparison completed (local experimental evidence)
 
 The owner-authorized fixed population comparison completed at science source

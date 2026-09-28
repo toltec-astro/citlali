@@ -316,3 +316,22 @@ TEST(rtc_jump_exclusion, asserted_complete_domain_rejects_unknown_rows_overlaps_
     EXPECT_THROW(t.plan(t.scans({{1,{0,100,550}}})),RtcJumpScanBindingUnavailable);
 }
 } // namespace
+
+TEST(rtc_jump_exclusion, active_x_only_source_perturbation_preserves_r_and_relearns_candidates) {
+    auto reference=repeated(0), injected=reference;
+    for(std::size_t i=0;i<injected.times.size();++i){
+        const double t=(static_cast<double>(i)-3100)*.008192;
+        injected.x(i,0)+=30.*std::exp(-.5*t*t/(.2*.2));
+    }
+    Trial a(reference),b(injected); // explicit-empty protection in both branches
+    const auto &ae=a.admission->assessment(),&be=b.admission->assessment();
+    EXPECT_NE(ae.spike_handle()->candidates().size(),be.spike_handle()->candidates().size());
+    EXPECT_NE(ae.events().size(),be.events().size());
+    const auto ap=a.plan(a.scans()),bp=b.plan(b.scans());
+    EXPECT_NE(ap->admission_handle().get(),bp->admission_handle().get());
+    EXPECT_EQ(a.apply(ap)->realized_excluded_pair_cells(),0);
+    EXPECT_EQ(b.apply(bp)->realized_excluded_pair_cells(),0); // finite recovered pulse
+    for(std::size_t i=0;i<injected.times.size();++i)
+        EXPECT_EQ(std::bit_cast<std::uint64_t>(a.parent->network(0).value(NativeReadoutCoordinate::r,100+i,0)),
+                  std::bit_cast<std::uint64_t>(b.parent->network(0).value(NativeReadoutCoordinate::r,100+i,0)));
+}

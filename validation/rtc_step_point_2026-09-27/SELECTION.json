@@ -1,0 +1,251 @@
+{
+  "schema": "rtc-step-point-selection-v1",
+  "selected": [
+    152420,
+    0,
+    2
+  ],
+  "array": "a2000",
+  "networks": [
+    11,
+    12
+  ],
+  "selection": "development challenge; frozen before new final maps or full reductions",
+  "rationale": "Twelve reviewed detector responses at three separated epochs show finite transitions and sustained post levels through the retained 1.5s window (nw11 survey scans4/10 and nw12scan9); fourth nw12scan2 has a return/short plateau. More original-domain step instances than the nine current admitted groups is plausible, not established by directly comparable production counts yet.",
+  "candidate_dispositions": {
+    "152420": "selected: clearest sustained original pre/post levels in both networks; multiple separated epochs",
+    "152432": "not selected: substantial transitions but closer returns and overlapping context in reviewed examples",
+    "152434": "not selected: more recovery/drift and shorter plateaus in reviewed examples"
+  },
+  "original_evidence": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_point_2026-09-27/candidate-original-excerpts.npz",
+    "sha256": "7b4cf4706694f030758a22ee94273f85c84a089ad342d3fbe30c07b3f40a1bcf"
+  },
+  "discovery": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_point_2026-09-27/CANDIDATE_DISCOVERY.json",
+    "sha256": "3cbf97aeb1983795f3d2436f4439db36d81924544ddf6cb80d259ffcf96fedf4"
+  },
+  "reviewed_lower_bound": {
+    "persistent_detector_instances": 12,
+    "distinct_times": 3,
+    "detector_seconds_original_APT_usable": 53858.39055967331,
+    "caveat": "purposive original-IQ sample, not total burden or comparison of identical detectors/production detection rates; four simultaneous detectors do not count as four time events"
+  },
+  "headers": [
+    {
+      "network": 0,
+      "identity": [
+        152420,
+        0,
+        2,
+        0
+      ],
+      "tune": [
+        152420,
+        0,
+        1
+      ],
+      "shape": [
+        7691,
+        630
+      ]
+    },
+    {
+      "network": 1,
+      "identity": [
+        152420,
+        0,
+        2,
+        1
+      ],
+      "tune": [
+        152420,
+        0,
+        1
+      ],
+      "shape": [
+        7691,
+        494
+      ]
+    },
+    {
+      "network": 2,
+      "identity": [
+        152420,
+        0,
+        2,
+        2
+      ],
+      "tune": [
+        152420,
+        0,
+        1
+      ],
+      "shape": [
+        7691,
+        510
+      ]
+    },
+    {
+      "network": 3,
+      "identity": [
+        152420,
+        0,
+        2,
+        3
+      ],
+      "tune": [
+        152420,
+        0,
+        1
+      ],
+      "shape": [
+        7691,
+        533
+      ]
+    },
+    {
+      "network": 4,
+      "identity": [
+        152420,
+        0,
+        2,
+        4
+      ],
+      "tune": [
+        152420,
+        0,
+        1
+      ],
+      "shape": [
+        7691,
+        532
+      ]
+    },
+    {
+      "network": 5,
+      "identity": [
+        152420,
+        0,
+        2,
+        5
+      ],
+      "tune": [
+        152420,
+        0,
+        1
+      ],
+      "shape": [
+        7691,
+        474
+      ]
+    },
+    {
+      "network": 7,
+      "identity": [
+        152420,
+        0,
+        2,
+        7
+      ],
+      "tune": [
+        152420,
+        0,
+        1
+      ],
+      "shape": [
+        7691,
+        420
+      ]
+    },
+    {
+      "network": 8,
+      "identity": [
+        152420,
+        0,
+        2,
+        8
+      ],
+      "tune": [
+        152420,
+        0,
+        1
+      ],
+      "shape": [
+        7691,
+        460
+      ]
+    },
+    {
+      "network": 9,
+      "identity": [
+        152420,
+        0,
+        2,
+        9
+      ],
+      "tune": [
+        152420,
+        0,
+        1
+      ],
+      "shape": [
+        7691,
+        488
+      ]
+    },
+    {
+      "network": 11,
+      "identity": [
+        152420,
+        0,
+        2,
+        11
+      ],
+      "tune": [
+        152420,
+        0,
+        1
+      ],
+      "shape": [
+        7690,
+        486
+      ]
+    },
+    {
+      "network": 12,
+      "identity": [
+        152420,
+        0,
+        2,
+        12
+      ],
+      "tune": [
+        152420,
+        0,
+        1
+      ],
+      "shape": [
+        7691,
+        491
+      ]
+    }
+  ],
+  "reference": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_point_2026-09-27/selected-inputs/reference.json",
+    "sha256": "318a328a1c947fdb0b961edb3a32f372d0c994d1e1d31e61243ee55bbf0b9bb5"
+  },
+  "input_manifest": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_point_2026-09-27/selected-inputs/inputs.json",
+    "sha256": "ccfe35c0d875768e2a0703b3b7c0e1af768cc8917858c058e09754ac5561cc14"
+  },
+  "input_bytes": 354506084,
+  "config_parent": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/pointings/reduced/citlali_o152389_0_2_c8.yaml",
+    "sha256": "acf93c30b130abb00477162673fd6bded25e3645579fd7c669907c8cd6965893"
+  },
+  "calibration": "own152420 canonical APT/tune; CAL atmosphere from own original TEL; same accepted CAL-after-RTC method",
+  "readiness": "all declared original dependencies local; no Unity recovery",
+  "acquisition_parts": "one raw scan2 part per available interface; selected nw11/12 complete; original dataset has nw0-5,7-9,11-12 timing inputs",
+  "full_reduction_started": false
+}

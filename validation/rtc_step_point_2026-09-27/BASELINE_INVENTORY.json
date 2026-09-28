@@ -1,0 +1,183 @@
+{
+  "baseline_commit": "38e917f4c731228ab827587df889c98b9489d1b1",
+  "networks": [
+    {
+      "network": 11,
+      "candidates": 721,
+      "events": 77,
+      "admitted_groups": 9,
+      "detectors": 486,
+      "native_runs": [
+        [
+          0,
+          7821
+        ]
+      ],
+      "cadence": 0.008192062377929688,
+      "classes": {
+        "isolated-admission-unavailable": 20,
+        "no-resolved-excursion": 11,
+        "admitted-level-shift": 9,
+        "unresolved-extent": 37
+      },
+      "admitted_detectors": [
+        {
+          "channel": 1,
+          "whole_observation": false,
+          "admitted_groups": [
+            3
+          ],
+          "science_scans": [
+            1
+          ],
+          "paired_exclusions": [
+            [
+              1221,
+              2441
+            ]
+          ]
+        },
+        {
+          "channel": 2,
+          "whole_observation": false,
+          "admitted_groups": [
+            8
+          ],
+          "science_scans": [
+            1
+          ],
+          "paired_exclusions": [
+            [
+              1221,
+              2441
+            ]
+          ]
+        },
+        {
+          "channel": 4,
+          "whole_observation": true,
+          "admitted_groups": [
+            25,
+            26,
+            32
+          ],
+          "science_scans": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "paired_exclusions": [
+            [
+              0,
+              7821
+            ]
+          ]
+        },
+        {
+          "channel": 5,
+          "whole_observation": false,
+          "admitted_groups": [
+            36
+          ],
+          "science_scans": [
+            4
+          ],
+          "paired_exclusions": [
+            [
+              4881,
+              6101
+            ]
+          ]
+        },
+        {
+          "channel": 6,
+          "whole_observation": false,
+          "admitted_groups": [
+            37
+          ],
+          "science_scans": [
+            1
+          ],
+          "paired_exclusions": [
+            [
+              1221,
+              2441
+            ]
+          ]
+        },
+        {
+          "channel": 7,
+          "whole_observation": false,
+          "admitted_groups": [
+            51
+          ],
+          "science_scans": [
+            4
+          ],
+          "paired_exclusions": [
+            [
+              4881,
+              6101
+            ]
+          ]
+        },
+        {
+          "channel": 10,
+          "whole_observation": false,
+          "admitted_groups": [
+            57
+          ],
+          "science_scans": [
+            1
+          ],
+          "paired_exclusions": [
+            [
+              1221,
+              2441
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "network": 12,
+      "candidates": 33,
+      "events": 32,
+      "admitted_groups": 0,
+      "detectors": 491,
+      "native_runs": [
+        [
+          0,
+          7820
+        ]
+      ],
+      "cadence": 0.008192062377929688,
+      "classes": {
+        "isolated-admission-unavailable": 23,
+        "no-resolved-excursion": 8,
+        "unresolved-extent": 1
+      },
+      "admitted_detectors": []
+    }
+  ],
+  "present": [
+    "original event fit coefficients, paired candidate grouping, source/peer summaries",
+    "Consider event class, jump full-scan/whole-observation plan, support decisions",
+    "Apply realized operator/receipt, timings, support totals",
+    "M0/T5 maps, noise models, old response measurements"
+  ],
+  "regenerable_not_retained": [
+    "same physical windows original x/r, RTC, CAL, M0/T5 residual and restored total",
+    "per-coordinate jump amplitude/consistency/transition/reassessment/admission cause chain",
+    "explicit exposure-mask overlap/union audit"
+  ],
+  "unmeasured": [
+    "independent missed-event truth catalogue",
+    "new step-rich POINT active source-response decisions",
+    "step-off counterfactual (not authorized)"
+  ],
+  "replay_justification": "one B REF M0-T5 replay to capture missing stage excerpts and verify diagnostics neutrality; original probe in same trajectory; no extra RTC execution planned"
+}

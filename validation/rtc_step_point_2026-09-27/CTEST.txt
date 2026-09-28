@@ -1,0 +1,240 @@
+Test project /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build
+      Start  12: citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+Could not find executable citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+Looked in the following places:
+citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+Unable to find executable: citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT
+ 1/71 Test  #12: citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT .......................................................................................***Not Run   0.00 sec
+      Start  13: citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+Could not find executable citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+Looked in the following places:
+citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+Unable to find executable: citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT
+ 2/71 Test  #13: citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT ........................................................................................***Not Run   0.00 sec
+      Start  17: citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+Could not find executable citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+Looked in the following places:
+citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+Unable to find executable: citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT
+ 3/71 Test  #17: citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT ......................................................................................***Not Run   0.00 sec
+      Start  18: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.x_origin_selects_paired_scan_and_preserves_original_payload
+ 4/71 Test  #18: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.x_origin_selects_paired_scan_and_preserves_original_payload ......................   Passed    0.01 sec
+      Start  19: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.r_origin_can_exclude_x_without_cross_coordinate_correction
+ 5/71 Test  #19: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.r_origin_can_exclude_x_without_cross_coordinate_correction .......................   Passed    0.01 sec
+      Start  20: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.protected_and_unknown_source_measurements_cannot_authorize_rejection
+ 6/71 Test  #20: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.protected_and_unknown_source_measurements_cannot_authorize_rejection .............   Passed    0.01 sec
+      Start  21: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.source_in_fit_flank_is_not_cleared_by_outside_source_seed
+ 7/71 Test  #21: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.source_in_fit_flank_is_not_cleared_by_outside_source_seed ........................   Passed    0.01 sec
+      Start  22: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.isolated_spike_and_no_jump_controls_do_not_become_persistent_jumps
+ 8/71 Test  #22: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.isolated_spike_and_no_jump_controls_do_not_become_persistent_jumps ...............   Passed    0.01 sec
+      Start  23: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.unavailable_recovery_never_substitutes_for_no_return
+ 9/71 Test  #23: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.unavailable_recovery_never_substitutes_for_no_return .............................   Passed    0.01 sec
+      Start  24: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.three_original_groups_count_xr_once_and_exclude_only_that_detector_observation
+10/71 Test  #24: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.three_original_groups_count_xr_once_and_exclude_only_that_detector_observation ...   Passed    0.01 sec
+      Start  25: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.every_intersected_scan_is_selected_and_endpoint_contact_is_not_overlap
+11/71 Test  #25: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.every_intersected_scan_is_selected_and_endpoint_contact_is_not_overlap ...........   Passed    0.01 sec
+      Start  26: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.selecting_scan_includes_its_disjoint_support_and_unions_overlapping_scans
+12/71 Test  #26: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.selecting_scan_includes_its_disjoint_support_and_unions_overlapping_scans ........   Passed    0.01 sec
+      Start  27: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.missing_scan_relation_cannot_publish_a_partial_plan
+13/71 Test  #27: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.missing_scan_relation_cannot_publish_a_partial_plan ..............................   Passed    0.01 sec
+      Start  28: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.exact_parent_snapshot_and_nonzero_decision_identity_are_required
+14/71 Test  #28: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.exact_parent_snapshot_and_nonzero_decision_identity_are_required .................   Passed    0.01 sec
+      Start  29: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.scan_binding_rejects_missing_identity_duplicates_and_out_of_parent_support
+15/71 Test  #29: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.scan_binding_rejects_missing_identity_duplicates_and_out_of_parent_support .......   Passed    0.01 sec
+      Start  30: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.apply_schedule_and_partition_independence
+16/71 Test  #30: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.apply_schedule_and_partition_independence ........................................   Passed    0.01 sec
+      Start  31: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.invalid_producer_payload_remains_separate_and_unread
+17/71 Test  #31: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.invalid_producer_payload_remains_separate_and_unread .............................   Passed    0.01 sec
+      Start  32: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.plan_and_apply_are_deterministic_and_sparse
+18/71 Test  #32: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.plan_and_apply_are_deterministic_and_sparse ......................................   Passed    0.01 sec
+      Start  33: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.source_brightness_does_not_select_a_clean_scan_for_rejection
+19/71 Test  #33: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.source_brightness_does_not_select_a_clean_scan_for_rejection .....................   Passed    0.02 sec
+      Start  34: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.known_tail_preserves_transition_and_other_detectors_without_inventing_scan
+20/71 Test  #34: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.known_tail_preserves_transition_and_other_detectors_without_inventing_scan .......   Passed    0.01 sec
+      Start  35: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.complete_relation_preserves_science_scan_rule_and_half_open_boundaries
+21/71 Test  #35: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.complete_relation_preserves_science_scan_rule_and_half_open_boundaries ...........   Passed    0.01 sec
+      Start  36: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.tail_groups_still_count_once_toward_detector_observation_rule
+22/71 Test  #36: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.tail_groups_still_count_once_toward_detector_observation_rule ....................   Passed    0.01 sec
+      Start  37: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.asserted_complete_domain_rejects_unknown_rows_overlaps_and_missing_context
+23/71 Test  #37: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.asserted_complete_domain_rejects_unknown_rows_overlaps_and_missing_context .......   Passed    0.01 sec
+      Start  38: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.active_x_only_source_perturbation_preserves_r_and_relearns_candidates
+24/71 Test  #38: citlali::timestream_successor::rtc_jump_exclusion::rtc_jump_exclusion.active_x_only_source_perturbation_preserves_r_and_relearns_candidates ............   Passed    0.01 sec
+      Start  39: citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+Could not find executable citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+Looked in the following places:
+citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+Unable to find executable: citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT
+25/71 Test  #39: citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT ....................................................................................***Not Run   0.00 sec
+      Start  40: citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+Could not find executable citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+Looked in the following places:
+citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+Release/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+Debug/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+MinSizeRel/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+RelWithDebInfo/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+Deployment/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+Development/citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+Unable to find executable: citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT
+26/71 Test  #40: citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT .............................................................................................***Not Run   0.00 sec
+      Start  50: citlali::rtc_notch_recovery.centered_fir_exact_native_phase_and_original_replay
+27/71 Test  #50: citlali::rtc_notch_recovery.centered_fir_exact_native_phase_and_original_replay ........................................................................   Passed    0.02 sec
+      Start  51: citlali::rtc_notch_recovery.physical_gap_and_declared_invalid_pair_split_support_without_compression
+28/71 Test  #51: citlali::rtc_notch_recovery.physical_gap_and_declared_invalid_pair_split_support_without_compression ...................................................   Passed    0.02 sec
+      Start  52: citlali::rtc_notch_recovery.paired_injection_same_plan_linear_response_and_flags
+29/71 Test  #52: citlali::rtc_notch_recovery.paired_injection_same_plan_linear_response_and_flags .......................................................................   Passed    0.02 sec
+      Start  53: citlali::rtc_notch_recovery.rejection_retains_original_and_gives_no_outputs
+30/71 Test  #53: citlali::rtc_notch_recovery.rejection_retains_original_and_gives_no_outputs ............................................................................   Passed    0.02 sec
+      Start  54: citlali::rtc_notch_recovery.stale_parent_val_and_injection_fail_closed
+31/71 Test  #54: citlali::rtc_notch_recovery.stale_parent_val_and_injection_fail_closed .................................................................................   Passed    0.02 sec
+      Start  55: citlali::rtc_notch_recovery.unexpected_nonfinite_rejected_at_ingress_and_declared_invalid_splits_support
+32/71 Test  #55: citlali::rtc_notch_recovery.unexpected_nonfinite_rejected_at_ingress_and_declared_invalid_splits_support ...............................................   Passed    0.02 sec
+      Start  56: citlali::rtc_notch_recovery.finite_sine_transfer_matches_explicit_notch_and_preserves_coordinate_pairing
+33/71 Test  #56: citlali::rtc_notch_recovery.finite_sine_transfer_matches_explicit_notch_and_preserves_coordinate_pairing ...............................................   Passed    0.02 sec
+      Start  57: citlali::rtc_notch_recovery.engineering_partition_does_not_reset_filter_state
+34/71 Test  #57: citlali::rtc_notch_recovery.engineering_partition_does_not_reset_filter_state ..........................................................................   Passed    0.02 sec
+      Start  58: citlali::rtc_notch_recovery.mismatched_motion_and_unsupported_optical_domain_fail_closed
+35/71 Test  #58: citlali::rtc_notch_recovery.mismatched_motion_and_unsupported_optical_domain_fail_closed ...............................................................   Passed    0.02 sec
+      Start  59: citlali::rtc_notch_recovery.short_finite_record_retains_unavailable_boundary_disposition
+36/71 Test  #59: citlali::rtc_notch_recovery.short_finite_record_retains_unavailable_boundary_disposition ...............................................................   Passed    0.01 sec
+      Start  60: citlali::rtc_notch_recovery.inclusive_minimum_and_sampling_ceiling_use_existing_authority
+37/71 Test  #60: citlali::rtc_notch_recovery.inclusive_minimum_and_sampling_ceiling_use_existing_authority ..............................................................   Passed    0.04 sec
+      Start  61: citlali::rtc_notch_recovery.finite_two_stage_impulse_has_exact_support_and_phase
+38/71 Test  #61: citlali::rtc_notch_recovery.finite_two_stage_impulse_has_exact_support_and_phase .......................................................................   Passed    0.02 sec
+      Start  62: citlali::rtc_notch_recovery.finite_notch_dc_and_tone_follow_frozen_response
+39/71 Test  #62: citlali::rtc_notch_recovery.finite_notch_dc_and_tone_follow_frozen_response ............................................................................   Passed    0.02 sec
+      Start  63: citlali::rtc_notch_recovery.finite_chain_never_bridges_exclusions_or_uses_padding
+40/71 Test  #63: citlali::rtc_notch_recovery.finite_chain_never_bridges_exclusions_or_uses_padding ......................................................................   Passed    0.02 sec
+      Start  64: citlali::rtc_notch_recovery.finite_trials_reject_mixed_invalid_or_overlong_operators
+41/71 Test  #64: citlali::rtc_notch_recovery.finite_trials_reject_mixed_invalid_or_overlong_operators ...................................................................   Passed    0.02 sec
+      Start  65: citlali::rtc_notch_recovery.speed_support_is_separate_from_centers_and_all_nonspeed_blockers
+42/71 Test  #65: citlali::rtc_notch_recovery.speed_support_is_separate_from_centers_and_all_nonspeed_blockers ...........................................................   Passed    0.02 sec
+      Start  66: citlali::rtc_notch_recovery.speed_permission_preserves_coincident_optical_domain_restriction
+43/71 Test  #66: citlali::rtc_notch_recovery.speed_permission_preserves_coincident_optical_domain_restriction ...........................................................   Passed    0.02 sec
+      Start  67: citlali::rtc_pipeline.complete_plan_rejects_missing_duplicate_foreign_or_unbound_inputs
+44/71 Test  #67: citlali::rtc_pipeline.complete_plan_rejects_missing_duplicate_foreign_or_unbound_inputs ................................................................   Passed    0.02 sec
+      Start  68: citlali::rtc_pipeline.conditioned_learning_measures_actual_stage_and_preserves_source_and_original
+45/71 Test  #68: citlali::rtc_pipeline.conditioned_learning_measures_actual_stage_and_preserves_source_and_original .....................................................   Passed    0.03 sec
+      Start  69: citlali::rtc_pipeline.donor_exception_propagates_exact_nonzero_support_without_erasing_x_or_grid
+46/71 Test  #69: citlali::rtc_pipeline.donor_exception_propagates_exact_nonzero_support_without_erasing_x_or_grid .......................................................   Passed    0.02 sec
+      Start  70: citlali::rtc_pipeline.failed_donor_remains_unavailable_through_both_finite_stages
+47/71 Test  #70: citlali::rtc_pipeline.failed_donor_remains_unavailable_through_both_finite_stages ......................................................................   Passed    0.02 sec
+      Start  71: citlali::rtc_pipeline.relearning_then_reconsidering_replays_original_instead_of_accumulating_filters
+48/71 Test  #71: citlali::rtc_pipeline.relearning_then_reconsidering_replays_original_instead_of_accumulating_filters ...................................................   Passed    0.03 sec
+      Start  72: citlali::rtc_pipeline.later_snapshot_is_a_new_exact_evidence_binding_and_cannot_rebind_old_evidence
+49/71 Test  #72: citlali::rtc_pipeline.later_snapshot_is_a_new_exact_evidence_binding_and_cannot_rebind_old_evidence ....................................................   Passed    0.02 sec
+      Start  73: citlali::rtc_pipeline.declared_gaps_do_not_join_native_time_or_manufacture_spectral_support
+50/71 Test  #73: citlali::rtc_pipeline.declared_gaps_do_not_join_native_time_or_manufacture_spectral_support ............................................................   Passed    0.02 sec
+      Start  74: citlali::rtc_pipeline.unexpected_nonfinite_conditioned_payload_is_a_run_failure_not_silent_sample_removal
+51/71 Test  #74: citlali::rtc_pipeline.unexpected_nonfinite_conditioned_payload_is_a_run_failure_not_silent_sample_removal ..............................................   Passed    0.03 sec
+      Start  75: citlali::rtc_pipeline.frozen_complete_plan_source_pair_has_identical_support_and_diagonal_response
+52/71 Test  #75: citlali::rtc_pipeline.frozen_complete_plan_source_pair_has_identical_support_and_diagonal_response .....................................................   Passed    0.02 sec
+      Start  76: citlali::rtc_pipeline.donor_replay_is_partition_invariant_and_retains_exact_stage_owners
+53/71 Test  #76: citlali::rtc_pipeline.donor_replay_is_partition_invariant_and_retains_exact_stage_owners ...............................................................   Passed    0.02 sec
+      Start  77: citlali::rtc_pipeline.finite_support_limit_includes_donor_background_not_only_filter_taps
+54/71 Test  #77: citlali::rtc_pipeline.finite_support_limit_includes_donor_background_not_only_filter_taps ..............................................................   Passed    0.02 sec
+      Start  78: citlali::rtc_pipeline.donor_background_cannot_bypass_a_resolved_pair_invalid_boundary
+55/71 Test  #78: citlali::rtc_pipeline.donor_background_cannot_bypass_a_resolved_pair_invalid_boundary ..................................................................   Passed    0.02 sec
+      Start  79: citlali::rtc_pipeline.complete_plan_cannot_reuse_a_rejected_donors_original_median
+56/71 Test  #79: citlali::rtc_pipeline.complete_plan_cannot_reuse_a_rejected_donors_original_median .....................................................................   Passed    0.02 sec
+      Start  80: citlali::rtc_pipeline.donor_background_cannot_bridge_a_new_ast_speed_boundary
+57/71 Test  #80: citlali::rtc_pipeline.donor_background_cannot_bridge_a_new_ast_speed_boundary ..........................................................................   Passed    0.02 sec
+      Start  81: citlali::rtc_pipeline.unadmitted_selected_support_is_not_a_realized_replacement
+58/71 Test  #81: citlali::rtc_pipeline.unadmitted_selected_support_is_not_a_realized_replacement ........................................................................   Passed    0.02 sec
+      Start  82: citlali::rtc_pipeline.numerical_speed_support_does_not_expand_existing_spectral_use
+59/71 Test  #82: citlali::rtc_pipeline.numerical_speed_support_does_not_expand_existing_spectral_use ....................................................................   Passed    0.04 sec
+      Start 110: citlali::rtc_event_treatment.recovered_natural_candidate_is_unavailable_not_accepted
+60/71 Test #110: citlali::rtc_event_treatment.recovered_natural_candidate_is_unavailable_not_accepted ...................................................................   Passed    0.02 sec
+      Start 111: citlali::rtc_event_treatment.indexed_intervals_equal_record_scan_for_every_detector_and_boundary
+61/71 Test #111: citlali::rtc_event_treatment.indexed_intervals_equal_record_scan_for_every_detector_and_boundary .......................................................   Passed    0.02 sec
+      Start 112: citlali::rtc_event_treatment.declared_pair_disturbance_exercises_genuine_exclusion_and_donor_paths
+62/71 Test #112: citlali::rtc_event_treatment.declared_pair_disturbance_exercises_genuine_exclusion_and_donor_paths .....................................................   Passed    0.02 sec
+      Start 113: citlali::rtc_event_treatment.shared_or_protected_disturbance_is_not_admitted_by_test_truth
+63/71 Test #113: citlali::rtc_event_treatment.shared_or_protected_disturbance_is_not_admitted_by_test_truth .............................................................   Passed    0.02 sec
+      Start 114: citlali::rtc_event_treatment.undeclared_parent_and_manual_support_are_refused
+64/71 Test #114: citlali::rtc_event_treatment.undeclared_parent_and_manual_support_are_refused ..........................................................................   Passed    0.02 sec
+      Start 115: citlali::rtc_event_treatment.later_excluded_fit_support_cannot_supply_continuity
+65/71 Test #115: citlali::rtc_event_treatment.later_excluded_fit_support_cannot_supply_continuity .......................................................................   Passed    0.02 sec
+      Start 116: citlali::rtc_event_treatment.unavailable_paired_donor_support_remains_an_exclusion
+66/71 Test #116: citlali::rtc_event_treatment.unavailable_paired_donor_support_remains_an_exclusion .....................................................................   Passed    0.02 sec
+      Start 117: citlali::rtc_event_treatment.decided_ready_donor_cannot_be_omitted_from_continuity_arm
+67/71 Test #117: citlali::rtc_event_treatment.decided_ready_donor_cannot_be_omitted_from_continuity_arm .................................................................   Passed    0.02 sec
+      Start 118: citlali::rtc_event_treatment.admitted_shift_excludes_its_existing_scan_and_never_fills
+68/71 Test #118: citlali::rtc_event_treatment.admitted_shift_excludes_its_existing_scan_and_never_fills .................................................................   Passed    0.01 sec
+      Start 119: citlali::rtc_event_treatment.same_spikes_do_not_authorize_mixing_event_generations
+69/71 Test #119: citlali::rtc_event_treatment.same_spikes_do_not_authorize_mixing_event_generations .....................................................................   Passed    0.01 sec
+      Start 120: citlali::rtc_event_treatment.context_only_jump_keeps_full_filter_footprints_inside_science
+70/71 Test #120: citlali::rtc_event_treatment.context_only_jump_keeps_full_filter_footprints_inside_science .............................................................   Passed    0.03 sec
+      Start 145: citlali::point_rtc_source_probe.native_midpoints_AST_pixels_and_signed_CAL_preserve_original_pair
+71/71 Test #145: citlali::point_rtc_source_probe.native_midpoints_AST_pixels_and_signed_CAL_preserve_original_pair ......................................................   Passed    6.73 sec
+
+93% tests passed, 5 tests failed out of 71
+
+Total Test time (real) =   9.44 sec
+
+The following tests FAILED:
+	 12 - citlali_timestream_successor_rtc_jump_consistency_test_NOT_BUILT (Not Run)
+	 13 - citlali_timestream_successor_rtc_jump_transition_test_NOT_BUILT (Not Run)
+	 17 - citlali_timestream_successor_rtc_jump_reassessment_test_NOT_BUILT (Not Run)
+	 39 - citlali_timestream_successor_rtc_transient_exclusion_test_NOT_BUILT (Not Run)
+	 40 - citlali_timestream_successor_rtc_donor_fill_test_NOT_BUILT (Not Run)
+Errors while running CTest

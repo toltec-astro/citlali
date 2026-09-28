@@ -16,7 +16,7 @@ PointRtcProbeExecution execute_point_rtc_probe(
   require(request["schema"].as<std::string>()=="point-rtc-source-probe-v1","unknown RTC source probe");
   const auto branch=request["branch"].as<std::string>();
   require(branch=="REF" || branch=="C-core-plus" || branch=="C-core-minus" || branch=="C-shoulder","unknown source branch");
-  require(request["authority"].as<std::string>()=="owner-RTC-cost-response-2026-09-27","probe authority absent");
+  require(request["authority"].as<std::string>()=="owner-RTC-cost-response-2026-09-27" || (request["authority"].as<std::string>()=="owner-RTC-step-POINT-2026-09-27" && (cfg["observation"].as<int>()==152420 || cfg["observation"].as<int>()==152430)),"probe authority absent");
   const int nw=cfg["network"].as<int>();const auto &network=original->network(nw);
   require(network.mapping_authority().x.meaning_id=="kidscpp:gainlintrend:x:meaning" &&
       network.mapping_authority().x.unit_or_scale_id=="dimensionless","probe raw x convention differs");
@@ -54,7 +54,7 @@ PointRtcProbeExecution execute_point_rtc_probe(
   NativePairedReadoutMatrix injected=network.values(NativeReadoutCoordinate::x);
   PtcMatrix lon(rows,nd),lat(rows,nd),multiplier(rows,nd),increment=PtcMatrix::Zero(rows,nd);
   lon.setConstant(NAN);lat.setConstant(NAN);multiplier.setConstant(NAN);
-  PtcMask valid=PtcMask::Zero(rows,nd),mapping_available=valid;
+  PtcMask valid=PtcMask::Zero(rows,nd),mapping_available=valid,valid_r=valid;
   auto atmosphere=CalAtmosphereSurface::frozen();
   require(observation.opacity.tau225.has_value(),"RTC source probe lacks accepted opacity mapping");
   YAML::Node record;record["schema"]="point-rtc-source-probe-v1";record["branch"]=branch;
@@ -75,6 +75,7 @@ PointRtcProbeExecution execute_point_rtc_probe(
     const bool usable=edge->disposition==apt::RelationDisposition::matched && std::isfinite(scale) && scale!=0 && std::isfinite(xt) && std::isfinite(yt);
     if(usable) {const auto xy=schedule.detector_tangent_deg(xt,yt);lon.col(d)=xy.col(0);lat.col(d)=xy.col(1);}
     for(Eigen::Index t=0;t<rows;++t) {
+      valid_r(t,d)=network.state(NativeReadoutCoordinate::r,first+t,d).valid();
       valid(t,d)=network.state(NativeReadoutCoordinate::x,first+t,d).valid();
       const auto correction=usable?atmosphere->correction(row->array,*observation.opacity.tau225,schedule.elevation_deg[t]):std::nullopt;
       if(!correction){++unavailable;continue;}
@@ -88,6 +89,7 @@ PointRtcProbeExecution execute_point_rtc_probe(
   }
   write_matrix(directory/"longitude-deg.f64",lon);write_matrix(directory/"latitude-deg.f64",lat);
   write_matrix(directory/"cal-multiplier.f64",multiplier);write_matrix(directory/"increment-x.f64",increment);
+  map_write_array<std::uint8_t>(directory/"input-r-valid.u8",{valid_r.data(),std::size_t(valid_r.size())});
   map_write_array<std::uint8_t>(directory/"input-valid.u8",{valid.data(),std::size_t(valid.size())});
   map_write_array<std::uint8_t>(directory/"mapping-available.u8",{mapping_available.data(),std::size_t(mapping_available.size())});
   record["mapping_unavailable_cells"]=unavailable;record["changed_cells"]=changed;

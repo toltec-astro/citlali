@@ -35,13 +35,22 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     require(campaign || (!request["branch"] && !request["injection"]),"FRUIT foreign campaign fields");
     const auto owner_path=checked_file(request["owner_binding"]);const auto owner_sha=ledger.bind(owner_path);
     const auto owner=YAML::LoadFile(owner_path.string());
+    bool step_experiment=false;
+    if(speed_experiment){
+      const auto p=YAML::LoadFile(checked_file(owner["prospective"]).string());
+      step_experiment=p["campaign_scope"] && p["campaign_scope"].as<std::string>()=="rtc-step-point-v1";
+      if(step_experiment)require((p["observation"].as<int>()==152430 || p["observation"].as<int>()==152420) &&
+        p["observation"].as<int>()==owner["observation"].as<int>() && p["ptc"]["rank"].as<int>()==10 &&
+        p["experimental_method"].as<std::string>()=="warm-observed-als" && p["feedback_count"].as<int>()==5,
+        "FRUIT step campaign scope");
+    }
     require(owner["identity"].as<std::string>()==(speed_experiment?"POINT-SPEED-PCA-v1":rank_experiment?"POINT-PTC-RANK-v1":reference?"BRIGHT-POINT-BASE-v1":independent?"POINT-152430-NO-UPPER-COVERAGE-VETO-2026-09-26":guarded?"POINT-152389-GUARDED-OWNER-2026-09-25":corr?"POINT-152389-CORR-NEIGHBOR-OWNER-2026-09-24":refseq?"POINT-152389-A2000-REFSEQ-OWNER-2026-09-24":campaign?"POINT-152389-CD-OWNER-2026-09-23":continuation?"POINT-152389-TEN-FRUIT-OWNER-2026-09-23":"POINT-152389-FIRST-FRUIT-OWNER-2026-09-23") &&
         owner["outside_disk_no_feedback"].as<bool>() && owner["direct_identical_operand_rejoin"].as<bool>() &&
         owner["gain"].as<double>()==1 && (speed_experiment?(owner["nonzero_cycles"].as<int>()>=0 && owner["nonzero_cycles"].as<int>()<=10 && cycle<=owner["nonzero_cycles"].as<int>()):owner["nonzero_cycles"].as<int>()==((continuation || campaign)?10:1)),"FRUIT owner choices absent");
     const auto map_path=checked_file(request["map_request"]);ledger.bind(map_path);const auto mr=YAML::LoadFile(map_path.string());
     const auto pp=checked_file(request["parent_plan"]);ledger.bind(pp);const auto parent=YAML::LoadFile(pp.string());
     const auto array=request["array"].as<std::string>();const std::array<std::string,3> arrays{"a1100","a1400","a2000"};
-    const auto ai=std::find(arrays.begin(),arrays.end(),array)-arrays.begin();require(ai<3 && parent["array"].as<std::string>()==array && parent["observation"].as<std::string>()==(reference?("obs:"+std::to_string(owner["observation"].as<int>())+"_0_2"):independent?"obs:152430_0_2":"obs:152389_0_2") && (reference || !independent || array=="a2000"),"FRUIT foreign array/observation");
+    const auto ai=std::find(arrays.begin(),arrays.end(),array)-arrays.begin();require(ai<3 && parent["array"].as<std::string>()==array && parent["observation"].as<std::string>()==((reference || step_experiment)?("obs:"+std::to_string(owner["observation"].as<int>())+"_0_2"):independent?"obs:152430_0_2":"obs:152389_0_2") && (reference || !independent || array=="a2000"),"FRUIT foreign array/observation");
     require(!refseq || (array=="a2000" && owner["workers"].as<int>()==3 && owner["basis_schedule"].size()==11),"FRUIT reference sequence scope/resources");
     require(mr["schema"].as<std::string>()=="citlali-map-saved-ptc-v1" && mr["coverage_cut"].as<double>()==parent["coverage_cut"].as<double>() && mr["pixel_size_arcsec"].as<double>()==2,"FRUIT MAP policy differs");
     const auto mo=checked_file(mr["owner_binding"]);ledger.bind(mo);require(parent["owner_binding"].as<std::string>()=="sha256:"+citlali::utils::sha256_file(mo),"FRUIT MAP owner differs");
@@ -83,9 +92,9 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
                 require(prospective["schema"].as<std::string>()==(speed_experiment?"citlali-point-speed-pca-v1":"citlali-point-ptc-rank-v1") &&
                     prospective["profile"].as<std::string>()==(speed_experiment?"POINT-SPEED-PCA-v1":"point-152430-ptc-rank-"+std::to_string(rank)) &&
                     (speed_experiment?(rank==10 || rank==15):(rank==5 || rank==10 || rank==15)) && (!speed_experiment || (prospective["feedback_count"].as<int>()==owner["nonzero_cycles"].as<int>() && (prospective["experimental_method"].as<std::string>()=="observed-als" || prospective["experimental_method"].as<std::string>()=="warm-observed-als" || prospective["experimental_method"].as<std::string>()=="masked-covariance-count-v1"))) && (prospective["ptc"]["method"].as<std::string>()=="observed-als" || (speed_experiment && prospective["experimental_method"].as<std::string>()=="masked-covariance-count-v1" && prospective["ptc"]["method"].as<std::string>()=="masked-covariance-count-v1")) &&
-                    prospective["observation"].as<int>()==152430 && prospective["subobservation"].as<int>()==0 && prospective["scan"].as<int>()==2 &&
+                    (step_experiment || prospective["observation"].as<int>()==152430) && prospective["subobservation"].as<int>()==0 && prospective["scan"].as<int>()==2 &&
                     prospective["array"].as<std::string>()=="a2000" && prospective["networks"].as<std::vector<int>>()==std::vector<int>({11,12}) &&
-                    prospective["coverage_policy"].as<std::string>()=="high-coverage-informational" && prospective["cycles"].as<int>()==((prospective["campaign_scope"] && (prospective["campaign_scope"].as<std::string>()=="rtc-cost-response-v1" || prospective["campaign_scope"].as<std::string>()=="rtc-fixed11-v1"))?5:10) &&
+                    prospective["coverage_policy"].as<std::string>()=="high-coverage-informational" && prospective["cycles"].as<int>()==((prospective["campaign_scope"] && (prospective["campaign_scope"].as<std::string>()=="rtc-cost-response-v1" || prospective["campaign_scope"].as<std::string>()=="rtc-fixed11-v1" || prospective["campaign_scope"].as<std::string>()=="rtc-step-point-v1"))?5:10) &&
                     policy=="BASE-POINT" && owner["threshold"].as<double>()==3 && branch.rfind("D-",0)!=0,
                     "FRUIT bounded rank experiment scope");
             } else if(reference) {
@@ -164,7 +173,7 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
         ledger.bind(fs::path(nr["root"].as<std::string>())/"donor-continuity/ptc/receipt.yaml",nr["ptc_receipt_sha256"].as<std::string>());
         const auto cal=YAML::LoadFile((fs::path(nr["root"].as<std::string>())/"donor-continuity/cal/receipt.yaml").string());
         if(cal["detectors"][0]["array"].as<int>()!=int(ai))continue;
-        auto n=load_saved_map_network(nr,ledger);require(n.obsnum==(reference?owner["observation"].as<int>():independent?152430:152389) && seen.insert(n.network).second,"FRUIT network selection");
+        auto n=load_saved_map_network(nr,ledger);require(n.obsnum==((reference || step_experiment)?owner["observation"].as<int>():independent?152430:152389) && seen.insert(n.network).second,"FRUIT network selection");
         if(std::isfinite(ra0))require(ra0==n.observation.ra0 && dec0==n.observation.dec0,"FRUIT AST center changed");
         else {ra0=n.observation.ra0;dec0=n.observation.dec0;}
         bool bound=false;for(const auto &p:parent["sources"])if(p["network"].as<int>()==n.network && p["PTC_receipt_sha256"].as<std::string>()==n.ptc_sha)bound=true;

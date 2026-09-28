@@ -376,7 +376,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
             NativeObservationScope{obs, sub, scan}, {nw}, std::move(networks)));
     YAML::Node source_probe_record;
     if(cfg["rtc_source_probe"]) {
-      require(development && common && obs==152430 && sub==0 && scan==2 && (nw==11 || nw==12),
+      require(development && common && (obs==152430 || (obs==152420 && cfg["rtc_source_probe"]["authority"].as<std::string>()=="owner-RTC-step-POINT-2026-09-27")) && sub==0 && scan==2 && (nw==11 || nw==12),
           "pre-RTC source probe outside bounded original POINT route");
       performance.mark("source_probe_start");
       auto probe=execute_point_rtc_probe(parent,cfg,verified,relation,channels,common->cal,
@@ -650,6 +650,67 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     }
     write_yaml(output/"events.yaml",event_table);
     receipt["events_sha256"]=citlali::utils::sha256_file(output/"events.yaml");
+    // Diagnostic-only publication of the immutable Learn/Consider chain.
+    // Original and reassessed facts remain separate, with explicit causes.
+    YAML::Node step_chain(YAML::NodeType::Sequence);
+    auto step_transition = [&](const RtcJumpTransition &t) {
+      YAML::Node n; n["available"]=t.available(); n["cause"]=static_cast<int>(t.cause);
+      n["affected"]=range(t.affected); n["examined"]=range(t.examined);
+      if(t.affected.present()){n["physical_begin_unix"]=t.physical_bound.begin_unix_sec;n["physical_end_unix"]=t.physical_bound.end_unix_sec;}
+      n["frozen_residual_scale"]=t.frozen_residual_scale;
+      n["invalid_rows"]=t.invalid_rows; n["excluded_rows"]=t.excluded_rows;
+      n["observation_truncated"]=t.observation_truncated;
+      n["acquisition_truncated"]=t.acquisition_truncated;
+      for(const auto &q:t.confirmations){YAML::Node x;x["rows"]=range(q.rows);
+        if(q.rows.present()){x["physical_begin_unix"]=q.physical.begin_unix_sec;x["physical_end_unix"]=q.physical.end_unix_sec;}
+        x["also_matches_other_reference"]=q.also_matches_other_reference;n["confirmations"].push_back(x);}
+      return n;
+    };
+    for(std::size_t i=0;i<event_evidence->events().size();++i){
+      const auto &e=event_evidence->events()[i];YAML::Node row;
+      row["event"]=i;row["network"]=nw;row["detector"]=e.detector;
+      row["candidate_indices"]=e.candidates;
+      for(auto j:e.candidates){const auto &v=spikes->candidates()[j];YAML::Node q;
+        q["index"]=j;q["earlier_row"]=v.earlier_row;q["later_row"]=v.later_row;
+        q["coordinate"]=v.coordinate==NativeReadoutCoordinate::x?"x":"r";
+        q["noise_block"]=v.noise_block_index;q["difference"]=v.difference;q["centered_difference"]=v.centered_difference;
+        q["absolute_score"]=v.absolute_score;row["candidates"].push_back(q);
+      }
+      for(std::size_t c=0;c<2;++c){YAML::Node n;
+        const auto &amp=amplitude->coordinates()[i][c];
+        const auto &shortfit=short_evidence->coordinates()[i][c];
+        const auto &ad=admitted->groups()[i].coordinates[c];
+        n["amplitude_cause"]=static_cast<int>(amp.cause);n["sigma_delta"]=amp.sigma_delta;
+        n["offset_sigma"]=amp.offset_sigma;n["primary_pre_scale"]=e.background[c].pre_scale_fit.scale;
+        n["short_fit_cause"]=static_cast<int>(shortfit.cause);n["short_offset"]=shortfit.cubic_with_offset.offset;
+        n["consistency_cause"]=static_cast<int>(consistency->coordinates()[i][c].cause);
+        n["transition_request_cause"]=static_cast<int>(transition_request->coordinates()[i][c]);
+        n["original_transition"]=step_transition(transition->coordinates()[i][c]);
+        n["admission_cause"]=static_cast<int>(ad.cause);n["admitted"]=ad.admitted();
+        n["reassessed"]=ad.reassessed;n["admitted_affected"]=range(ad.affected);
+        n["reassessment_available"]=false;
+        for(std::size_t j=0;j<support->audits().size();++j)if(support->audits()[j].event==i){
+          n["reassessment_available"]=true;
+          n["reassessment_cause"]=static_cast<int>(reassessment->coordinates()[j][c]);
+          n["refit_requested"]=refit_request->selections()[j].requested;
+          n["remeasure_requested"]=remeasure_request->selections()[j][c].requested;
+          for(auto r:refit_request->selections()[j].paired_mask)n["paired_refit_mask"].push_back(range(r));
+          n["refit_primary_available"]=refit->coordinates()[j][c].primary.available();
+          n["refit_short_available"]=refit->coordinates()[j][c].shorter.available();
+          for(const auto &side:refit->coordinates()[j][c].shorter.support){YAML::Node q;q["usable"]=side.usable;q["rows"]=range({side.first_used,side.last_used+1});n["refit_short_support"].push_back(q);}
+          n["refit_primary_offset"]=refit->coordinates()[j][c].primary.cubic_with_offset.offset;
+          n["refit_short_offset"]=refit->coordinates()[j][c].shorter.cubic_with_offset.offset;
+          n["refit_consistency_cause"]=static_cast<int>(remeasure_request->selections()[j][c].consistency);
+          for(const auto &side:refit->coordinates()[j][c].primary.support){YAML::Node q;q["usable"]=side.usable;q["rows"]=range({side.first_used,side.last_used+1});n["refit_support"].push_back(q);}
+          n["refit_recovery_cause"]=static_cast<int>(refit->coordinates()[j][c].recovery.cause);
+          n["reassessed_transition"]=step_transition(remeasurement->coordinates()[j][c].transition);
+        }
+        row["coordinates"].push_back(n);
+      }
+      step_chain.push_back(row);
+    }
+    write_yaml(output/"step-evidence.yaml",step_chain);
+
     std::vector<std::pair<std::string,fs::path>> receipt_sections{{"spectra",output/"original-spectra.yaml"}};
     std::ofstream original_spectra(receipt_sections.front().second);
     std::ofstream psd(output/"original-psd.f64",std::ios::binary);

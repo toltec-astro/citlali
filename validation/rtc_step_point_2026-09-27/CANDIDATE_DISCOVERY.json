@@ -1,0 +1,519 @@
+{
+  "candidate_pool": [
+    152420,
+    152432,
+    152434
+  ],
+  "survey_binding": {
+    "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/docs/pointing-iq-event-survey-20260729/pointing_raw_iq_event_survey.json",
+    "sha256": "6921bb886753eee395f9bf6924f747e9a88a29381e98ed90dba7914063b051c5"
+  },
+  "records": [
+    {
+      "obsnum": 152420,
+      "network": 11,
+      "scan": 4,
+      "raw": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec11_152420_000_0002_2026_02_19_09_33_45.nc",
+      "raw_bytes": 30310512,
+      "raw_sha256": "b27306805b73b3c6192e3ec34a8c449c0a133fa43de7ced68cfa71e44bd8cef5",
+      "header_identity": [
+        152420,
+        0,
+        2,
+        11
+      ],
+      "tune": [
+        152420,
+        0,
+        1
+      ],
+      "native_rows": 7690,
+      "tones": 486,
+      "usable_tones": 443,
+      "duration_recv_seconds": 62.98834753036499,
+      "detector_seconds_recv": 27903.83795595169,
+      "survey_strong_tones": 17,
+      "survey_max_fraction": 0.03837471783295711,
+      "center_unix": 1771493653.6019843,
+      "excerpt_key": "o152420_n11_s4",
+      "review_tones": [
+        462,
+        215,
+        274,
+        308
+      ],
+      "pre_post_phase_mrad": [
+        13.900431120667855,
+        12.607300637792695,
+        12.376065163776872,
+        11.808809748460103
+      ],
+      "review_selection": "two survey maxima per network ranked by strong-tone count; four largest APT-usable absolute raw phase shifts; full 3s original window, no cleaned outputs",
+      "limitation": "survey maxima/phase shifts are not step identifications; descriptive receiver time, not reconstructed ALIGN timing"
+    },
+    {
+      "obsnum": 152420,
+      "network": 11,
+      "scan": 10,
+      "raw": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec11_152420_000_0002_2026_02_19_09_33_45.nc",
+      "raw_bytes": 30310512,
+      "raw_sha256": "b27306805b73b3c6192e3ec34a8c449c0a133fa43de7ced68cfa71e44bd8cef5",
+      "header_identity": [
+        152420,
+        0,
+        2,
+        11
+      ],
+      "tune": [
+        152420,
+        0,
+        1
+      ],
+      "native_rows": 7690,
+      "tones": 486,
+      "usable_tones": 443,
+      "duration_recv_seconds": 62.98834753036499,
+      "detector_seconds_recv": 27903.83795595169,
+      "survey_strong_tones": 17,
+      "survey_max_fraction": 0.03837471783295711,
+      "center_unix": 1771493684.2482333,
+      "excerpt_key": "o152420_n11_s10",
+      "review_tones": [
+        462,
+        215,
+        308,
+        287
+      ],
+      "pre_post_phase_mrad": [
+        11.780684213129167,
+        11.277076915601647,
+        11.08576759182478,
+        9.828461611270267
+      ],
+      "review_selection": "two survey maxima per network ranked by strong-tone count; four largest APT-usable absolute raw phase shifts; full 3s original window, no cleaned outputs",
+      "limitation": "survey maxima/phase shifts are not step identifications; descriptive receiver time, not reconstructed ALIGN timing"
+    },
+    {
+      "obsnum": 152420,
+      "network": 12,
+      "scan": 2,
+      "raw": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec12_152420_000_0002_2026_02_19_09_33_45.nc",
+      "raw_bytes": 30624184,
+      "raw_sha256": "007c8296bfd150e68ef8c9e68ad343bff0c47abcc5bce55b5158352c0749c14a",
+      "header_identity": [
+        152420,
+        0,
+        2,
+        12
+      ],
+      "tune": [
+        152420,
+        0,
+        1
+      ],
+      "native_rows": 7691,
+      "tones": 491,
+      "usable_tones": 412,
+      "duration_recv_seconds": 62.99648690223694,
+      "detector_seconds_recv": 25954.55260372162,
+      "survey_strong_tones": 36,
+      "survey_max_fraction": 0.04611650485436893,
+      "center_unix": 1771493640.5321577,
+      "excerpt_key": "o152420_n12_s2",
+      "review_tones": [
+        206,
+        239,
+        234,
+        271
+      ],
+      "pre_post_phase_mrad": [
+        -21.92739138986477,
+        -20.313426224503328,
+        -19.168301828887902,
+        -17.334713744365793
+      ],
+      "review_selection": "two survey maxima per network ranked by strong-tone count; four largest APT-usable absolute raw phase shifts; full 3s original window, no cleaned outputs",
+      "limitation": "survey maxima/phase shifts are not step identifications; descriptive receiver time, not reconstructed ALIGN timing"
+    },
+    {
+      "obsnum": 152420,
+      "network": 12,
+      "scan": 9,
+      "raw": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec12_152420_000_0002_2026_02_19_09_33_45.nc",
+      "raw_bytes": 30624184,
+      "raw_sha256": "007c8296bfd150e68ef8c9e68ad343bff0c47abcc5bce55b5158352c0749c14a",
+      "header_identity": [
+        152420,
+        0,
+        2,
+        12
+      ],
+      "tune": [
+        152420,
+        0,
+        1
+      ],
+      "native_rows": 7691,
+      "tones": 491,
+      "usable_tones": 412,
+      "duration_recv_seconds": 62.99648690223694,
+      "detector_seconds_recv": 25954.55260372162,
+      "survey_strong_tones": 32,
+      "survey_max_fraction": 0.043689320388349516,
+      "center_unix": 1771493678.1252158,
+      "excerpt_key": "o152420_n12_s9",
+      "review_tones": [
+        206,
+        239,
+        295,
+        274
+      ],
+      "pre_post_phase_mrad": [
+        -18.747708471974267,
+        -18.549121432201943,
+        -17.848251824363448,
+        -17.46210500755585
+      ],
+      "review_selection": "two survey maxima per network ranked by strong-tone count; four largest APT-usable absolute raw phase shifts; full 3s original window, no cleaned outputs",
+      "limitation": "survey maxima/phase shifts are not step identifications; descriptive receiver time, not reconstructed ALIGN timing"
+    },
+    {
+      "obsnum": 152432,
+      "network": 11,
+      "scan": 9,
+      "raw": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec11_152432_000_0002_2026_02_19_10_37_54.nc",
+      "raw_bytes": 30734736,
+      "raw_sha256": "5b45d450baa388680a4804b03e80f0e0a234df49c99e5f20a24d7c65ca3530c6",
+      "header_identity": [
+        152432,
+        0,
+        2,
+        11
+      ],
+      "tune": [
+        152432,
+        0,
+        1
+      ],
+      "native_rows": 7798,
+      "tones": 486,
+      "usable_tones": 440,
+      "duration_recv_seconds": 63.87304091453552,
+      "detector_seconds_recv": 28104.13800239563,
+      "survey_strong_tones": 16,
+      "survey_max_fraction": 0.03636363636363636,
+      "center_unix": 1771497525.2216072,
+      "excerpt_key": "o152432_n11_s9",
+      "review_tones": [
+        275,
+        217,
+        462,
+        309
+      ],
+      "pre_post_phase_mrad": [
+        12.976492905503958,
+        12.177195993285261,
+        11.496547685754033,
+        10.48966113954286
+      ],
+      "review_selection": "two survey maxima per network ranked by strong-tone count; four largest APT-usable absolute raw phase shifts; full 3s original window, no cleaned outputs",
+      "limitation": "survey maxima/phase shifts are not step identifications; descriptive receiver time, not reconstructed ALIGN timing"
+    },
+    {
+      "obsnum": 152432,
+      "network": 11,
+      "scan": 10,
+      "raw": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec11_152432_000_0002_2026_02_19_10_37_54.nc",
+      "raw_bytes": 30734736,
+      "raw_sha256": "5b45d450baa388680a4804b03e80f0e0a234df49c99e5f20a24d7c65ca3530c6",
+      "header_identity": [
+        152432,
+        0,
+        2,
+        11
+      ],
+      "tune": [
+        152432,
+        0,
+        1
+      ],
+      "native_rows": 7798,
+      "tones": 486,
+      "usable_tones": 440,
+      "duration_recv_seconds": 63.87304091453552,
+      "detector_seconds_recv": 28104.13800239563,
+      "survey_strong_tones": 13,
+      "survey_max_fraction": 0.029545454545454545,
+      "center_unix": 1771497527.6546164,
+      "excerpt_key": "o152432_n11_s10",
+      "review_tones": [
+        275,
+        462,
+        240,
+        211
+      ],
+      "pre_post_phase_mrad": [
+        -14.299792554095106,
+        -10.020968913622585,
+        -9.967373496609255,
+        -9.62391497183901
+      ],
+      "review_selection": "two survey maxima per network ranked by strong-tone count; four largest APT-usable absolute raw phase shifts; full 3s original window, no cleaned outputs",
+      "limitation": "survey maxima/phase shifts are not step identifications; descriptive receiver time, not reconstructed ALIGN timing"
+    },
+    {
+      "obsnum": 152432,
+      "network": 12,
+      "scan": 10,
+      "raw": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec12_152432_000_0002_2026_02_19_10_37_54.nc",
+      "raw_bytes": 31048760,
+      "raw_sha256": "f0de5d2dbb1fb8fe08e62c77bcd77fa6c01efc3048398e67ff03a2b66c9fa5ff",
+      "header_identity": [
+        152432,
+        0,
+        2,
+        12
+      ],
+      "tune": [
+        152432,
+        0,
+        1
+      ],
+      "native_rows": 7798,
+      "tones": 491,
+      "usable_tones": 417,
+      "duration_recv_seconds": 63.87305688858032,
+      "detector_seconds_recv": 26635.064722537994,
+      "survey_strong_tones": 46,
+      "survey_max_fraction": 0.07673860911270983,
+      "center_unix": 1771497528.8756926,
+      "excerpt_key": "o152432_n12_s10",
+      "review_tones": [
+        200,
+        222,
+        235,
+        230
+      ],
+      "pre_post_phase_mrad": [
+        18.148423773356015,
+        -16.490393316597853,
+        16.215298957222124,
+        14.68546440880214
+      ],
+      "review_selection": "two survey maxima per network ranked by strong-tone count; four largest APT-usable absolute raw phase shifts; full 3s original window, no cleaned outputs",
+      "limitation": "survey maxima/phase shifts are not step identifications; descriptive receiver time, not reconstructed ALIGN timing"
+    },
+    {
+      "obsnum": 152432,
+      "network": 12,
+      "scan": 9,
+      "raw": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec12_152432_000_0002_2026_02_19_10_37_54.nc",
+      "raw_bytes": 31048760,
+      "raw_sha256": "f0de5d2dbb1fb8fe08e62c77bcd77fa6c01efc3048398e67ff03a2b66c9fa5ff",
+      "header_identity": [
+        152432,
+        0,
+        2,
+        12
+      ],
+      "tune": [
+        152432,
+        0,
+        1
+      ],
+      "native_rows": 7798,
+      "tones": 491,
+      "usable_tones": 417,
+      "duration_recv_seconds": 63.87305688858032,
+      "detector_seconds_recv": 26635.064722537994,
+      "survey_strong_tones": 42,
+      "survey_max_fraction": 0.0815347721822542,
+      "center_unix": 1771497525.189243,
+      "excerpt_key": "o152432_n12_s9",
+      "review_tones": [
+        222,
+        292,
+        257,
+        236
+      ],
+      "pre_post_phase_mrad": [
+        -20.10870033952461,
+        -16.086945877431646,
+        -14.94077774401048,
+        -13.715851475865293
+      ],
+      "review_selection": "two survey maxima per network ranked by strong-tone count; four largest APT-usable absolute raw phase shifts; full 3s original window, no cleaned outputs",
+      "limitation": "survey maxima/phase shifts are not step identifications; descriptive receiver time, not reconstructed ALIGN timing"
+    },
+    {
+      "obsnum": 152434,
+      "network": 11,
+      "scan": 2,
+      "raw": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec11_152434_000_0002_2026_02_19_11_09_29.nc",
+      "raw_bytes": 30993984,
+      "raw_sha256": "5e208f9e0360acbccc8aea00fe4fa10cde725d8809fbee384850ed9cd132cec5",
+      "header_identity": [
+        152434,
+        0,
+        2,
+        11
+      ],
+      "tune": [
+        152434,
+        0,
+        1
+      ],
+      "native_rows": 7864,
+      "tones": 486,
+      "usable_tones": 443,
+      "duration_recv_seconds": 64.413738489151,
+      "detector_seconds_recv": 28535.286150693893,
+      "survey_strong_tones": 16,
+      "survey_max_fraction": 0.03611738148984198,
+      "center_unix": 1771499390.55292,
+      "excerpt_key": "o152434_n11_s2",
+      "review_tones": [
+        215,
+        273,
+        307,
+        286
+      ],
+      "pre_post_phase_mrad": [
+        12.681185375009285,
+        12.240893336457614,
+        10.932066186863931,
+        9.892556828069887
+      ],
+      "review_selection": "two survey maxima per network ranked by strong-tone count; four largest APT-usable absolute raw phase shifts; full 3s original window, no cleaned outputs",
+      "limitation": "survey maxima/phase shifts are not step identifications; descriptive receiver time, not reconstructed ALIGN timing"
+    },
+    {
+      "obsnum": 152434,
+      "network": 11,
+      "scan": 4,
+      "raw": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec11_152434_000_0002_2026_02_19_11_09_29.nc",
+      "raw_bytes": 30993984,
+      "raw_sha256": "5e208f9e0360acbccc8aea00fe4fa10cde725d8809fbee384850ed9cd132cec5",
+      "header_identity": [
+        152434,
+        0,
+        2,
+        11
+      ],
+      "tune": [
+        152434,
+        0,
+        1
+      ],
+      "native_rows": 7864,
+      "tones": 486,
+      "usable_tones": 443,
+      "duration_recv_seconds": 64.413738489151,
+      "detector_seconds_recv": 28535.286150693893,
+      "survey_strong_tones": 12,
+      "survey_max_fraction": 0.02708803611738149,
+      "center_unix": 1771499398.6630058,
+      "excerpt_key": "o152434_n11_s4",
+      "review_tones": [
+        215,
+        307,
+        286,
+        333
+      ],
+      "pre_post_phase_mrad": [
+        10.345144673816531,
+        10.116875279511106,
+        8.988106554970399,
+        7.910581858594501
+      ],
+      "review_selection": "two survey maxima per network ranked by strong-tone count; four largest APT-usable absolute raw phase shifts; full 3s original window, no cleaned outputs",
+      "limitation": "survey maxima/phase shifts are not step identifications; descriptive receiver time, not reconstructed ALIGN timing"
+    },
+    {
+      "obsnum": 152434,
+      "network": 12,
+      "scan": 2,
+      "raw": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec12_152434_000_0002_2026_02_19_11_09_29.nc",
+      "raw_bytes": 31310648,
+      "raw_sha256": "9eab4cc3995793f2092437fd37ffdfe768ccb2a67efca7493748a38605318cc0",
+      "header_identity": [
+        152434,
+        0,
+        2,
+        12
+      ],
+      "tune": [
+        152434,
+        0,
+        1
+      ],
+      "native_rows": 7864,
+      "tones": 491,
+      "usable_tones": 417,
+      "duration_recv_seconds": 64.41370677947998,
+      "detector_seconds_recv": 26860.515727043152,
+      "survey_strong_tones": 14,
+      "survey_max_fraction": 0.02877697841726619,
+      "center_unix": 1771499390.551545,
+      "excerpt_key": "o152434_n12_s2",
+      "review_tones": [
+        226,
+        240,
+        294,
+        205
+      ],
+      "pre_post_phase_mrad": [
+        -15.5193978580499,
+        -15.16087317251591,
+        -14.174535962383716,
+        13.057803472148688
+      ],
+      "review_selection": "two survey maxima per network ranked by strong-tone count; four largest APT-usable absolute raw phase shifts; full 3s original window, no cleaned outputs",
+      "limitation": "survey maxima/phase shifts are not step identifications; descriptive receiver time, not reconstructed ALIGN timing"
+    },
+    {
+      "obsnum": 152434,
+      "network": 12,
+      "scan": 3,
+      "raw": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec12_152434_000_0002_2026_02_19_11_09_29.nc",
+      "raw_bytes": 31310648,
+      "raw_sha256": "9eab4cc3995793f2092437fd37ffdfe768ccb2a67efca7493748a38605318cc0",
+      "header_identity": [
+        152434,
+        0,
+        2,
+        12
+      ],
+      "tune": [
+        152434,
+        0,
+        1
+      ],
+      "native_rows": 7864,
+      "tones": 491,
+      "usable_tones": 417,
+      "duration_recv_seconds": 64.41370677947998,
+      "detector_seconds_recv": 26860.515727043152,
+      "survey_strong_tones": 14,
+      "survey_max_fraction": 0.019184652278177457,
+      "center_unix": 1771499391.9032178,
+      "excerpt_key": "o152434_n12_s3",
+      "review_tones": [
+        239,
+        205,
+        298,
+        234
+      ],
+      "pre_post_phase_mrad": [
+        -12.151669337182147,
+        -11.681652832926659,
+        11.026503279449429,
+        -10.820951117977206
+      ],
+      "review_selection": "two survey maxima per network ranked by strong-tone count; four largest APT-usable absolute raw phase shifts; full 3s original window, no cleaned outputs",
+      "limitation": "survey maxima/phase shifts are not step identifications; descriptive receiver time, not reconstructed ALIGN timing"
+    }
+  ],
+  "RTC_executions": 0,
+  "new_maps_inspected": false
+}
