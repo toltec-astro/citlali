@@ -17,8 +17,9 @@ def save(p,o):
  b=(json.dumps(o,indent=2)+'\n').encode();p.write_bytes(gzip.compress(b,compresslevel=6,mtime=0) if p.suffix=='.gz' else b)
 def inactive():
  assert ROOT.resolve()==ROOT and ROOT.is_dir()
- assert len(list(ROOT.glob('*/LAUNCH.json')))==4
- for p in ROOT.glob('*/LAUNCH.json'):assert read(p)['status']=='completed'
+ launches=list(ROOT.glob('*/LAUNCH.json'));assert len(launches) in (1,4)
+ for p in launches:
+  status=read(p.parent/'EXECUTION.json')['status'];assert status=='completed' or len(launches)==1 and p.parent.name=='N14-REF-rep1' and status=='source_rejected'
  for p in psutil.process_iter(['pid','cmdline']):
   if p.pid==psutil.Process().pid:continue
   a=p.info['cmdline'] or []
@@ -47,8 +48,10 @@ def necessary_fits(rel):
 def compact():
  inactive();assert not DEST.exists();protected=protect()
  for name in ('N14-REF-rep1','N14-C-core-plus','N14-C-core-minus','N14-C-shoulder'):
-  out=ROOT/name;summary=read(out/'run/BASE-POINT/REF/a1100/SUMMARY.json')
-  assert len(summary['histories'])==6
+  out=ROOT/name
+  if not out.exists():continue
+  if read(out/'EXECUTION.json')['status']=='source_rejected':continue
+  summary=read(out/'run/BASE-POINT/REF/a1100/SUMMARY.json');assert len(summary['histories'])==6
  DEST.mkdir();kept=[];removed=[];hash_only=[]
  for p in sorted(ROOT.rglob('*')):
   assert not p.is_symlink(),str(p)

@@ -85,3 +85,14 @@ pre-existing fixture with a1MB ceiling and implicit100MB metadata reserve;
 its intended native-failure branch was unreachable. The fixture now specifies
 1KB metadata, with production storage rules unchanged. Source-rejection
 fixture now binds and tests both actuala1100 anda2000 profiles.
+
+Exact-SHA review482fa206d required bounded diagnostic repairs before launch:
+nominal original-AST source ranking; assigned-time population axes; explicit
+null source-crossing/loss accounting when M0 geometry unavailable. No native
+numerical defect was found. Guard-failure path: driver stops after REF,
+dependent injections remain unlaunched; extract complete REF original/RTC/M0
+population diagnostics, report response unavailable, retain guard/READY receipt
+and actual zero feedback/endpoint counts, compact one failed-guard trajectory.
+The full-success response/uncertainty extractors are not invoked on that path.
+No source guard or support rule is weakened. Native processing failure instead
+stops for separate bounded defect assessment; no automatic replacement.

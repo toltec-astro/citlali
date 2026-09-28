@@ -17,3 +17,8 @@ before stage plots. Targeted windows do not estimate population completeness.
 Original contrast/control eligibility requires all pre/post samples within one
 physical native run. Event excerpts may cross boundaries, explicitly retained
 and marked separately from processing-science/numerical segment boundaries.
+
+Source-adjacent selection uses original AST distance to the predeclared
+nominal center(0,0), never the cleaned M0 fit. Measured M0 geometry is used
+only for later contextual source-crossing/exposure accounting. Population
+figures use retained assigned times, drawing physical runs separately.
