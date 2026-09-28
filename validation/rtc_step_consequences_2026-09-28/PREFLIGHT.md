@@ -96,3 +96,9 @@ and actual zero feedback/endpoint counts, compact one failed-guard trajectory.
 The full-success response/uncertainty extractors are not invoked on that path.
 No source guard or support rule is weakened. Native processing failure instead
 stops for separate bounded defect assessment; no automatic replacement.
+
+Follow-up review25f01f1ce confirmed the three repairs and caught an inherited
+log-audit claim of verified endpoints on the new failed-guard path. The claim
+now requires that run in the actual independent uncertainty-check receipt;
+otherwise it says unavailable. A completed REF with unavailable prescribed
+injection support also records only its actual1trajectory/5feedback endpoint.

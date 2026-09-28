@@ -20,6 +20,7 @@ def inactive():
  launches=list(ROOT.glob('*/LAUNCH.json'));assert len(launches) in (1,4)
  for p in launches:
   status=read(p.parent/'EXECUTION.json')['status'];assert status=='completed' or len(launches)==1 and p.parent.name=='N14-REF-rep1' and status=='source_rejected'
+ if len(launches)==1 and read(launches[0].parent/'EXECUTION.json')['status']=='completed':assert read(launches[0].parent/'SHAPES.json')['available'] is False
  for p in psutil.process_iter(['pid','cmdline']):
   if p.pid==psutil.Process().pid:continue
   a=p.info['cmdline'] or []

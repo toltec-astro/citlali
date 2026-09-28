@@ -17,17 +17,22 @@ for run in sorted(root.glob('*-*')):
 save_json(dest/'timing.json',rows)
 save_json(dest/'timing-recipe.json',dict(wall='network clocks relative, never sum worker durations as latency; union lower=max duration; upper uses enclosing wrapper span and each worker duration minus last trace to bound its unknown start offset; no overlap inferred from network list order',CPU='process CPU counters: common RTC intersection gives lower bound, zero if no four-way intersection, union envelope gives upper (may include CAL on early finisher); no exclusive per-thread CPU attribution claimed',readiness='published READY contains map/guard/measurements. Parent50ms poll gives caller-detected readiness; poll timestamp sampled before path check may precede publication by a few ms. Analysis and command exit separate.',memory='sampled aggregate process-tree RSS50ms, not OS pressure or continuous high-water',phase='all four runs diagnostic-heavy with source probes and step chain serialization; normal required spectra/output/endpoint included, no overhead subtraction, no repeats or speedup inference'))
 logs=[]
+check=read(root/'UNCERTAINTY_WARNING_CHECK.json') if (root/'UNCERTAINTY_WARNING_CHECK.json').exists() else {}
+verified_endpoints={r['run'] for r in check.get('records',[]) if r.get('operators_finite') and r.get('sigmas_finite')} if check.get('pass_') else set()
 for out in sorted(root.glob('*-*/')):
  if not (out/'LAUNCH.json').exists():continue
  errors=[];warnings=0
  for f in out.rglob('*.log'):
   text=f.read_text(errors='replace');errors.extend(dict(file=str(f.relative_to(out)),line=line) for line in text.splitlines() if re.search(r'\[(?:error|critical)\]',line,re.I));warnings+=text.count('RuntimeWarning:')
  assert not errors,errors
- logs.append(dict(run=out.name,native_error_level_messages=0,python_RuntimeWarnings=warnings,uncertainty='all four saved endpoint operators and scales verified finite and exactly equal without BLAS contraction'))
+ logs.append(dict(run=out.name,native_error_level_messages=0,python_RuntimeWarnings=warnings,uncertainty='saved endpoint operators/scales independently verified finite within recorded tolerance' if out.name in verified_endpoints else 'unavailable: no independently verified endpoint for this run'))
 save_json(dest/'log-audit.json',logs)
 att=[json.loads(s) for s in (root/'attempts.jsonl').read_text().splitlines()];counts={k:sum(x['kind']==k for x in att) for k in {x['kind'] for x in att}};assert all(counts.get(k,0)<=v for k,v in dict(parent=4,trajectory=4,feedback=20,endpoint=4,rtc_only=1).items()),counts
 completed=[read(p).get('status') for p in root.glob('*/EXECUTION.json')];assert all(s in ('completed','source_rejected') for s in completed),completed
 if completed==['source_rejected']:assert counts==dict(parent=1,trajectory=1),counts
+elif len(completed)==1:
+ assert read(root/'N14-REF-rep1/SHAPES.json')['available'] is False
+ assert counts==dict(parent=1,trajectory=1,feedback=5,endpoint=1),counts
 else:assert counts==dict(parent=4,trajectory=4,feedback=20,endpoint=4),counts
 ledgers=[read(p) for p in root.glob('*/storage-ledger.json')];actual=tree_bytes(root)
 save_json(dest/'resources.json',dict(attempts=counts,maximum= dict(trajectory=5,feedback=25,rtc_only=1),replacement_trajectories=0,execution_statuses=completed,actual_campaign_bytes_before_compaction=actual,peak_ceiling_bytes=30_000_000_000,conservative_max_reserved_bound=max(x['historical_bytes']+x['charged_bytes']+100_000_000 for x in ledgers),cumulative_native_write_bytes=sum(x['native_written_bytes'] for x in ledgers),free_space_reserve_bytes=2_000_000_000,storage_scope='actual reconciled footprint vs conservative charged-stage upper bound; write volume not retained footprint; all planned reservation/free-space gates passed'))
