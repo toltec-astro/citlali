@@ -1,0 +1,49 @@
+{
+  "scientific_status": "complete",
+  "independent_final_review": "pass",
+  "source_revision": "43b510b3d01323c2de9cc41b2dfdb8d316b9ca4d",
+  "compact_commit": "15223b675b60e5a004324c2d45cf104dcf2938f8",
+  "planned_trajectories": 5,
+  "executed_trajectories": 5,
+  "feedback_applications": 25,
+  "parents": 5,
+  "endpoints": 5,
+  "extra_RTC_only": 0,
+  "replacement_trajectories": 0,
+  "actual_network_Apply_calls": 10,
+  "compact_files": 1420,
+  "compact_bytes": 53322568,
+  "saved_only_artifacts": 17,
+  "saved_only_figures": 11,
+  "cleanup_status": "blocked_pending_explicit_owner_approval",
+  "deleted_files": 0,
+  "planned_native_removal_files": 60540,
+  "planned_native_removal_bytes": 5235017122,
+  "original_and_prior_data": "untouched; compaction verified protected hashes; post-deletion check not yet applicable",
+  "recommendation": "Retain B; fixed11 parked; single next issue Learn coverage of retained finite-transition examples, no automatic follow-on.",
+  "coordinate_admissions": {
+    "152430_nw11": {
+      "x_only": 8,
+      "r_only": 1,
+      "joint": 0
+    },
+    "152430_nw12": {
+      "x_only": 0,
+      "r_only": 0,
+      "joint": 0
+    },
+    "152420_nw11": {
+      "x_only": 24,
+      "r_only": 24,
+      "joint": 16
+    },
+    "152420_nw12": {
+      "x_only": 4,
+      "r_only": 21,
+      "joint": 0
+    }
+  },
+  "pushed": false,
+  "merged": false,
+  "production_defaults_changed": false
+}

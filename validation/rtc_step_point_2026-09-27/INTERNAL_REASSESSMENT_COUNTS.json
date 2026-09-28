@@ -1,0 +1,215 @@
+{
+  "scope": "Counts of coordinate requests in the one existing support-overlap reassessment, not additional observational launches; absent fields remain unavailable",
+  "records": [
+    {
+      "run": "B-REF-rep1",
+      "network": 11,
+      "coordinate_records": 154,
+      "refit_requested": {
+        "true": 14,
+        "absent": 130
+      },
+      "remeasure_requested": {
+        "true": 6,
+        "absent": 130
+      },
+      "reassessed": {
+        "true": 4,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 9,
+        "absent": 0
+      }
+    },
+    {
+      "run": "B-REF-rep1",
+      "network": 12,
+      "coordinate_records": 64,
+      "refit_requested": {
+        "true": 0,
+        "absent": 64
+      },
+      "remeasure_requested": {
+        "true": 0,
+        "absent": 64
+      },
+      "reassessed": {
+        "true": 0,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 0,
+        "absent": 0
+      }
+    },
+    {
+      "run": "S-REF-rep1",
+      "network": 11,
+      "coordinate_records": 260,
+      "refit_requested": {
+        "true": 30,
+        "absent": 126
+      },
+      "remeasure_requested": {
+        "true": 16,
+        "absent": 126
+      },
+      "reassessed": {
+        "true": 15,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 80,
+        "absent": 0
+      }
+    },
+    {
+      "run": "S-REF-rep1",
+      "network": 12,
+      "coordinate_records": 236,
+      "refit_requested": {
+        "true": 0,
+        "absent": 186
+      },
+      "remeasure_requested": {
+        "true": 0,
+        "absent": 186
+      },
+      "reassessed": {
+        "true": 0,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 25,
+        "absent": 0
+      }
+    },
+    {
+      "run": "S-C-core-plus",
+      "network": 11,
+      "coordinate_records": 260,
+      "refit_requested": {
+        "true": 30,
+        "absent": 126
+      },
+      "remeasure_requested": {
+        "true": 16,
+        "absent": 126
+      },
+      "reassessed": {
+        "true": 15,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 80,
+        "absent": 0
+      }
+    },
+    {
+      "run": "S-C-core-plus",
+      "network": 12,
+      "coordinate_records": 236,
+      "refit_requested": {
+        "true": 0,
+        "absent": 186
+      },
+      "remeasure_requested": {
+        "true": 0,
+        "absent": 186
+      },
+      "reassessed": {
+        "true": 0,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 25,
+        "absent": 0
+      }
+    },
+    {
+      "run": "S-C-core-minus",
+      "network": 11,
+      "coordinate_records": 260,
+      "refit_requested": {
+        "true": 30,
+        "absent": 126
+      },
+      "remeasure_requested": {
+        "true": 16,
+        "absent": 126
+      },
+      "reassessed": {
+        "true": 15,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 80,
+        "absent": 0
+      }
+    },
+    {
+      "run": "S-C-core-minus",
+      "network": 12,
+      "coordinate_records": 236,
+      "refit_requested": {
+        "true": 0,
+        "absent": 186
+      },
+      "remeasure_requested": {
+        "true": 0,
+        "absent": 186
+      },
+      "reassessed": {
+        "true": 0,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 25,
+        "absent": 0
+      }
+    },
+    {
+      "run": "S-C-shoulder",
+      "network": 11,
+      "coordinate_records": 260,
+      "refit_requested": {
+        "true": 30,
+        "absent": 126
+      },
+      "remeasure_requested": {
+        "true": 16,
+        "absent": 126
+      },
+      "reassessed": {
+        "true": 15,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 80,
+        "absent": 0
+      }
+    },
+    {
+      "run": "S-C-shoulder",
+      "network": 12,
+      "coordinate_records": 236,
+      "refit_requested": {
+        "true": 0,
+        "absent": 186
+      },
+      "remeasure_requested": {
+        "true": 0,
+        "absent": 186
+      },
+      "reassessed": {
+        "true": 0,
+        "absent": 0
+      },
+      "admitted": {
+        "true": 25,
+        "absent": 0
+      }
+    }
+  ]
+}

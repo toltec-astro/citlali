@@ -1,0 +1,7 @@
+{
+  "action": "compact_record.py clean --expected-head 15223b675b60e5a004324c2d45cf104dcf2938f8",
+  "result": "rejected_before_process_creation",
+  "deleted_files": 0,
+  "reason": "Automatic approval review classified deletion of60540native scratch files (~5.235GB) as irreversible and interpreted trusted user messages as authorizing tests/reporting but not destructive cleanup.",
+  "pending": "Explicit user approval requested asynchronously; no workaround attempted."
+}
