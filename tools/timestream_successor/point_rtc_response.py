@@ -12,10 +12,21 @@ from point_additive_diagnostics import save_json
 from inspect_forward_map import require
 
 BRANCHES=('C-core-plus','C-core-minus','C-shoulder')
-def map_path(out,k):return out/'M0/products/a2000/map.fits' if k==0 else out/f'run/BASE-POINT/REF/a2000/cycle-{k:02d}/native/products/total.fits'
+def selected_array(out):return read(out/'freeze/prospective.json')['array']
+
+def map_path(out,k):
+    array=selected_array(out)
+    return out/f'M0/products/{array}/map.fits' if k==0 else out/f'run/BASE-POINT/REF/{array}/cycle-{k:02d}/native/products/total.fits'
+
+def native_rows(receipt,slots):
+    grids={(r['factor'],r['phase_native_rows']) for r in receipt['donor_continuity']['realized_detectors']}
+    require(len(grids)==1,'nonuniform RTC scheduling grid')
+    factor,phase=next(iter(grids));require(factor>0 and 0<=phase<factor,'invalid RTC scheduling grid')
+    return np.asarray(slots)*factor+phase
 
 def map_values(ref,k,values,valid):
-    product=ref/'M0/products/a2000' if k==0 else ref/f'run/BASE-POINT/REF/a2000/cycle-{k:02d}/native/products'
+    array=selected_array(ref);product=ref/f'M0/products/{array}' if k==0 else ref/f'run/BASE-POINT/REF/{array}/cycle-{k:02d}/native/products'
+    grids={}
     if k==0:
         groups=[]
         for col in yread(product/'plan.yaml')['ordered_column_domain']:
@@ -24,7 +35,7 @@ def map_values(ref,k,values,valid):
     else:groups=[(r['source_segment'],product/f"network-{r['source_segment']['network']}-segment-{r['source_segment']['scan']}/causes.u8",r['MAP_first_input_row']) for r in yread(product/'receipt.yaml')['segments']]
     pixels=arr(product/'operator-pixel.i32','<i4');v=np.full(len(pixels),np.nan);okay=np.zeros(len(pixels),bool)
     for s,causes,first in groups:
-        nw=s['network'];nt=s['scheduled_times'];no=s['output_detectors'];p=ref/f'upstream/products/network{nw}/donor-continuity/ptc';rows=arr(p/f"segment-{s['scan']}-slots.i64",'<i8')*2;ids=np.asarray(s['output_detector_indices']);keep=arr(causes,'u1',(nt,no))==0
+        nw=s['network'];nt=s['scheduled_times'];no=s['output_detectors'];p=ref/f'upstream/products/network{nw}/donor-continuity/ptc';rows=native_rows(grids[nw] if nw in grids else grids.setdefault(nw,yread(p.parent.parent/'receipt.yaml')),arr(p/f"segment-{s['scan']}-slots.i64",'<i8'));ids=np.asarray(s['output_detector_indices']);keep=arr(causes,'u1',(nt,no))==0
         require(int(keep.sum())==s['retained'],'MAP source support changed')
         x=values[nw][rows[:,None],ids][keep];good=valid[nw][rows[:,None],ids][keep]
         v[first:first+len(x)]=x;okay[first:first+len(x)]=good
@@ -35,10 +46,10 @@ def map_values(ref,k,values,valid):
     return result,support,dict(reference_contributions=int(count.sum()),available_contributions=int(actualcount.sum()),lost_contributions=int((count-actualcount).sum()),lost_science_pixels=int((im['SCI_SUPPORT'].astype(bool)&~support).sum()))
 
 def response(root,family,dest):
-    start=time.monotonic();dest.mkdir(parents=True,exist_ok=True);ref=root/f'{family}-REF-rep1';ctx=context(ref/'freeze/a2000');rs=read(ref/'run/BASE-POINT/REF/a2000/SUMMARY.json');networks={nw:load_network(root,family,nw) for nw in (11,12)};records=[];maps={};native=[]
+    start=time.monotonic();dest.mkdir(parents=True,exist_ok=True);ref=root/f'{family}-REF-rep1';prospective=read(ref/'freeze/prospective.json');array=prospective['array'];ctx=context(ref/f'freeze/{array}');rs=read(ref/f'run/BASE-POINT/REF/{array}/SUMMARY.json');networks={nw:load_network(root,family,nw) for nw in prospective['networks']};records=[];maps={};native=[]
     sigmas={x['name']:x['conditional_sigma'] for x in rs['endpoint_uncertainty']};require(all(x is not None and np.isfinite(x) for x in sigmas.values()),'nonfinite REF endpoint')
     for branch in BRANCHES:
-        out=root/f'{family}-{branch}';bs=read(out/'run/BASE-POINT/REF/a2000/SUMMARY.json');known={};delta={};valid={};idealvalid={}
+        out=root/f'{family}-{branch}';bs=read(out/f'run/BASE-POINT/REF/{array}/SUMMARY.json');known={};delta={};valid={};idealvalid={}
         for nw,a in networks.items():
             p=out/f'upstream/products/network{nw}';probe=p/'source-probe';pr=yread(probe/'receipt.yaml');increment=arr(probe/'increment-x.f64','<f8',a['shape']);known[nw]=increment*a['mult'];idealvalid[nw]=a['valid']&a['mapping'];delta[nw]=np.zeros(a['shape']);valid[nw]=np.zeros(a['shape'],bool);statechanges=0;centerchanges=0
             require(pr['original_x_sha256']==a['probe_receipt']['original_x_sha256'] and pr['original_r_sha256']==a['probe_receipt']['original_r_sha256'] and pr['r_unchanged'] and pr['input_validity_unchanged'],'raw parent changed')

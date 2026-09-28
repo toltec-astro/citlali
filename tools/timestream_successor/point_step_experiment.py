@@ -8,10 +8,10 @@ from point_processing import read
 from point_rtc_experiment import prepare_run as rtc_prepare
 LIMITS=dict(parent=5,trajectory=5,feedback=25,endpoint=5,rtc_only=2)
 
-def consume(root,kind,identity):
-    require(kind in LIMITS,'unknown step campaign operation')
+def consume(root,kind,identity,*,limits=LIMITS):
+    require(kind in limits,'unknown step campaign operation')
     p=root/'attempts.jsonl';rows=[json.loads(s) for s in p.read_text().splitlines()] if p.exists() else []
-    limits=dict(LIMITS);repair=root/'DEFECT-REPLACEMENT.json'
+    limits=dict(limits);repair=root/'DEFECT-REPLACEMENT.json'
     if repair.exists():
         r=read(repair)
         require(r.get('implementation_defect') and r.get('corrected_source') and r.get('maximum_replacements')==1,'one documented corrected implementation defect only')
@@ -65,38 +65,52 @@ def compare_baseline(out):
     save_json(out/'NATIVE_REGRESSION.json',dict(pass_=all(q['exact'] for q in checks),checks=checks,prior_removal_binding=bound(record/'NATIVE_REMOVALS.json.gz')))
     require(all(q['exact'] for q in checks),'B exact discrete/native regression')
 
+def consume_consequences(root,kind,identity):
+    return consume(root,kind,identity,limits=dict(parent=4,trajectory=4,feedback=20,endpoint=4,rtc_only=1))
+
 def prepare_selected(root,input_root,branch='REF',noise_ref=None):
+    return _prepare_selected(root,input_root,branch,noise_ref,False)
+
+def prepare_consequences(root,input_root,branch='REF',noise_ref=None):
+    return _prepare_selected(root,input_root,branch,noise_ref,True)
+
+def _prepare_selected(root,input_root,branch,noise_ref,consequences):
     import shutil
     from point_pipeline_inputs import prepare
     from point_storage import tree_bytes
     from point_fruit_trajectory import verified
-    repo=Path(__file__).resolve().parents[2];record=repo/'validation/rtc_step_point_2026-09-27'
-    selection=read(record/'SELECTION.json');require(selection['selected']==[152420,0,2],'frozen selected POINT changed')
+    repo=Path(__file__).resolve().parents[2];record=repo/('validation/rtc_step_consequences_2026-09-28' if consequences else 'validation/rtc_step_point_2026-09-27')
+    observation=152430 if consequences else 152420;array='a1100' if consequences else 'a2000';family='N14' if consequences else 'S'
+    scope='rtc-step-consequences-v1' if consequences else 'rtc-step-point-v1'
+    selection=read(record/'SELECTION.json');require(selection['selected']==[observation,0,2],'frozen selected POINT changed')
     require(branch in ('REF','C-core-plus','C-core-minus','C-shoulder'),'undeclared step response')
-    out=root/('S-REF-rep1' if branch=='REF' else 'S-'+branch)
+    if consequences:require(selection['array']=='a1100' and selection['networks']==[1,2,3,4],'foreign four-network selection')
+    out=root/(family+'-REF-rep1' if branch=='REF' else family+'-'+branch)
     prepare(out,verified(selection['reference']),input_root)
-    p=read(out/'freeze/prospective.json');p.update(schema='citlali-point-speed-pca-v1',profile='POINT-SPEED-PCA-v1',campaign_scope='rtc-step-point-v1',rtc_family='S',signal_branch=branch,cycles=5,feedback_count=5,experimental_method='warm-observed-als',trajectory_identity=out.name,step_selection=bound(record/'SELECTION.json'),experiment_operands=[bound(record/'SELECTION.json')])
+    p=read(out/'freeze/prospective.json');p.update(schema='citlali-point-speed-pca-v1',profile='POINT-SPEED-PCA-v1',campaign_scope=scope,rtc_family=family,signal_branch=branch,cycles=5,feedback_count=5,experimental_method='warm-observed-als',trajectory_identity=out.name,step_selection=bound(record/'SELECTION.json'),experiment_operands=[bound(record/'SELECTION.json')])
     p['scientific_recipe']['PTC']['method']='observed-entry ALS; own preceding converged basis initializer; fully resolved current residual'
     if branch!='REF':
         require(noise_ref is not None,'own selected REF required')
         rp=read(noise_ref/'freeze/prospective.json')
-        require(rp['observation']==152420 and rp['signal_branch']=='REF' and rp['rtc_family']=='S','foreign noise/reference')
+        require(rp['observation']==observation and rp['array']==array and rp['networks']==p['networks'] and rp['signal_branch']=='REF' and rp['rtc_family']==family,'foreign noise/reference')
         require(read(noise_ref/'EXECUTION.json')['status']=='completed','selected reference not completed')
         require(read(noise_ref/'SHAPES.json').get('available',False),'own prescribed injection support unavailable')
         shutil.copyfile(noise_ref/'freeze/measurement-geometry.json',out/'freeze/measurement-geometry.json')
         shutil.copytree(noise_ref/'freeze/shapes',out/'freeze/shapes')
         shutil.copyfile(noise_ref/'SHAPES.json',out/'SHAPES.json')
         p['experiment_operands'] += [bound(out/'freeze/measurement-geometry.json'),bound(out/'SHAPES.json')]+[bound(x) for x in sorted((out/'freeze/shapes').iterdir())]
-        p['noise_reference']=dict(root=str(noise_ref),binding=bound(noise_ref/'freeze/prospective.json'),files=[bound(x) for x in sorted((noise_ref/'freeze/a2000').iterdir()) if x.is_file()])
+        p['noise_reference']=dict(root=str(noise_ref),binding=bound(noise_ref/'freeze/prospective.json'),files=[bound(x) for x in sorted((noise_ref/f'freeze/{array}').iterdir()) if x.is_file()])
     obs=read(out/'inputs/observation.json')
     for e in obs['networks']:
         q=Path(e['input']['path']);cfg=read(q)
-        cfg['rtc_source_probe']=dict(schema='point-rtc-source-probe-v1',authority='owner-RTC-step-POINT-2026-09-27',branch=branch)
+        cfg['rtc_source_probe']=dict(schema='point-rtc-source-probe-v1',authority='owner-RTC-step-consequences-2026-09-28' if consequences else 'owner-RTC-step-POINT-2026-09-27',branch=branch)
         if branch!='REF':cfg['rtc_source_probe']['raster']=bound(out/f'freeze/shapes/{branch}.fits')
         save_json(q,cfg);e['input']=bound(q)
     save_json(out/'inputs/observation.json',obs)
     save_json(out/'freeze/generated-inputs.json',[bound(x) for x in sorted((out/'inputs').iterdir()) if x.is_file()]);p['generated_inputs']=bound(out/'freeze/generated-inputs.json')
-    budget=read(out/'freeze/budget.json');budget.update(campaign_root=str(root),campaign_retained_bytes=tree_bytes(root)-tree_bytes(out),peak_ceiling_bytes=20_000_000_000,metadata_reserve_bytes=100_000_000,maximum_branch_workers=1)
+    budget=read(out/'freeze/budget.json');budget.update(campaign_root=str(root),campaign_retained_bytes=tree_bytes(root)-tree_bytes(out),peak_ceiling_bytes=30_000_000_000 if consequences else 20_000_000_000,metadata_reserve_bytes=100_000_000,maximum_branch_workers=1)
+    if consequences:
+        require(shutil.disk_usage(root).free>budget['peak_ceiling_bytes']+budget['free_space_reserve_bytes'],'four-network campaign free-space bound')
     save_json(out/'freeze/budget.json',budget);p['budget']=bound(out/'freeze/budget.json');save_json(out/'freeze/prospective.json',p)
     return out
 
@@ -107,17 +121,17 @@ def freeze_own_geometry(out,c):
     from point_empirical_io import write_fits
     from point_empirical_io import exact_header
     p=read(out/'freeze/prospective.json')
-    require(p['campaign_scope']=='rtc-step-point-v1' and p['observation']==152420 and p['signal_branch']=='REF','own selected M0 only')
+    require((p['campaign_scope']=='rtc-step-point-v1' and p['observation']==152420 or p['campaign_scope']=='rtc-step-consequences-v1' and p['observation']==152430 and p['array']=='a1100' and p['networks']==[1,2,3,4]) and p['signal_branch']=='REF','own selected M0 only')
     require(not (out/'freeze/measurement-geometry.json').exists(),'geometry already frozen')
     f=c['fixed'];geometry=dict(header=c['header'],parameters=c['parameters'].tolist(),major=c['major'],weights=np.asarray(f.weights).tolist())
     save_json(out/'freeze/measurement-geometry.json',geometry)
     from point_empirical import coordinates
     x,y=coordinates(c['support'].shape,c['header'])
     if not np.all(c['support'][np.hypot(x,y)<36]):
-        save_json(out/'SHAPES.json',dict(observation=152420,available=False,reason='prescribed injection overlaps unavailable support; reference trajectory still valid'))
+        save_json(out/'SHAPES.json',dict(observation=p['observation'],array=p['array'],networks=p['networks'],available=False,reason='prescribed injection overlaps unavailable support; reference trajectory still valid'))
         return
     rasters,metadata=shapes(c['parameters'],c['major'],c['header'],c['support'])
     dest=out/'freeze/shapes';dest.mkdir()
     for branch,raster in rasters.items():
         path=dest/f'{branch}.fits';write_fits(path,exact_header(c['header']),[('PRIMARY',raster,'mJy/nominal beam'),('VALID',c['support'].astype('u1'),'1')]);metadata[branch].update(bound(path))
-    save_json(out/'SHAPES.json',dict(observation=152420,available=True,reference_M0=bound(out/'M0/products/a2000/map.fits'),geometry=bound(out/'freeze/measurement-geometry.json'),rasters=metadata,recipe='existing point_response_cd.shapes; own unmodified M0 parameters/support; no relocation or normalization change'))
+    save_json(out/'SHAPES.json',dict(observation=p['observation'],array=p['array'],networks=p['networks'],available=True,reference_M0=bound(out/f"M0/products/{p['array']}/map.fits"),geometry=bound(out/'freeze/measurement-geometry.json'),rasters=metadata,recipe='existing point_response_cd.shapes; own unmodified M0 parameters/support; no relocation or normalization change'))

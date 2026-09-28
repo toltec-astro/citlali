@@ -1,0 +1,14 @@
+..........s..........F..............................
+======================================================================
+FAIL: test_exact_rational_targets_signed_and_parallel (test_point_jinc_certificate.NativeCertificate.test_exact_rational_targets_signed_and_parallel)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/test_point_jinc_certificate.py", line 15, in test_exact_rational_targets_signed_and_parallel
+    self.assertTrue(BINARY.is_file(),'required native fixture missing')
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : required native fixture missing
+
+----------------------------------------------------------------------
+Ran 52 tests in 0.419s
+
+FAILED (failures=1, skipped=1)

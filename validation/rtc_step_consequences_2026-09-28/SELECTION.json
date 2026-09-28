@@ -1,0 +1,45 @@
+{
+  "selected": [
+    152430,
+    0,
+    2
+  ],
+  "array": "a1100",
+  "networks": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "partial_array": true,
+  "reference": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_consequences_2026-09-28/inputs/reference.json",
+    "sha256": "7fe20b7ec330db42a52ee3927e08615ec8ba91f9f95d4dc1d231abf0d36af08f"
+  },
+  "selection": "exact owner target; all four networks; APT array0 and raw headers independently verified",
+  "tune": [
+    152430,
+    0,
+    1
+  ],
+  "timing_only_other_networks": "Existing full acquisition native timing inputs preserve processing segmentation; no scientific trajectory on other networks",
+  "profile": {
+    "nominal_beam_arcsec": 5,
+    "filter_taps": 67,
+    "cadence_factor": 1,
+    "pixel_arcsec": 2,
+    "feedback_radius_arcsec": 40,
+    "threshold": 3,
+    "rank": 10,
+    "feedback_count": 5
+  },
+  "limits": {
+    "trajectories": 4,
+    "feedback": 20,
+    "RTC_only": 1,
+    "replacement": 1,
+    "absolute_trajectories": 5,
+    "absolute_feedback": 25
+  },
+  "window_selection": "Four evidence-domain event windows and four time/coverage-selected unflagged/control windows per network; freeze before viewing cleaned outcomes; no additional exemplar windows"
+}

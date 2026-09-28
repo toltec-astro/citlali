@@ -87,11 +87,12 @@ def test_ready_status_is_atomic_current_failure(tmp_path,monkeypatch):
     assert not list(tmp_path.glob('*.pending'))
 
 
-def test_initial_source_rejection_has_diagnostic_milestone(tmp_path,monkeypatch):
+@pytest.mark.parametrize('array',['a1100','a2000'])
+def test_initial_source_rejection_has_diagnostic_milestone(tmp_path,monkeypatch,array):
     import point_pipeline
-    out=tmp_path/'rejected';(out/'freeze').mkdir(parents=True);(out/'M0/products/a2000').mkdir(parents=True)
-    (out/'M0/products/a2000/map.fits').write_bytes(b'fits')
-    save_json(out/'freeze/prospective.json',dict(schema='citlali-point-speed-pca-v1',feedback_count=0,experimental_method='observed-als',ptc=dict(rank=10),experiment_operands=[]))
+    out=tmp_path/'rejected';(out/'freeze').mkdir(parents=True);(out/f'M0/products/{array}').mkdir(parents=True)
+    (out/f'M0/products/{array}/map.fits').write_bytes(b'fits')
+    save_json(out/'freeze/prospective.json',dict(array=array,schema='citlali-point-speed-pca-v1',feedback_count=0,experimental_method='observed-als',ptc=dict(rank=10),experiment_operands=[]))
     save_json(out/'UPSTREAM.json',dict(status='source_or_covariance_failed',guard=dict(complete=True,accepted=False,message='source rejected')))
     monkeypatch.setenv('CITLALI_POINT_TIMING',str(out/'timing.jsonl'))
     monkeypatch.setattr(point_pipeline,'validate_environment',lambda *a:{})

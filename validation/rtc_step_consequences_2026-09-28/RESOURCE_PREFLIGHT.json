@@ -1,0 +1,10 @@
+{
+  "native_cells": 16181155,
+  "per_trajectory_bound": 6919071120,
+  "four_trajectory_bound": 27676284480,
+  "campaign_ceiling": 30000000000,
+  "free_bytes_before_preparation": 633790623744,
+  "reserve": 2000000000,
+  "policy": "one workload, two network workers, one numeric thread, one feedback worker",
+  "retained_bound_note": "four complete per-run conservative allocations; actual RunStorage stage reservations also enforced; no repeat"
+}

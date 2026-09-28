@@ -16,7 +16,7 @@ PointRtcProbeExecution execute_point_rtc_probe(
   require(request["schema"].as<std::string>()=="point-rtc-source-probe-v1","unknown RTC source probe");
   const auto branch=request["branch"].as<std::string>();
   require(branch=="REF" || branch=="C-core-plus" || branch=="C-core-minus" || branch=="C-shoulder","unknown source branch");
-  require(request["authority"].as<std::string>()=="owner-RTC-cost-response-2026-09-27" || (request["authority"].as<std::string>()=="owner-RTC-step-POINT-2026-09-27" && (cfg["observation"].as<int>()==152420 || cfg["observation"].as<int>()==152430)),"probe authority absent");
+  require(request["authority"].as<std::string>()=="owner-RTC-cost-response-2026-09-27" || (request["authority"].as<std::string>()=="owner-RTC-step-POINT-2026-09-27" && (cfg["observation"].as<int>()==152420 || cfg["observation"].as<int>()==152430)) || (request["authority"].as<std::string>()=="owner-RTC-step-consequences-2026-09-28" && cfg["observation"].as<int>()==152430 && cfg["network"].as<int>()>=1 && cfg["network"].as<int>()<=4),"probe authority absent");
   const int nw=cfg["network"].as<int>();const auto &network=original->network(nw);
   require(network.mapping_authority().x.meaning_id=="kidscpp:gainlintrend:x:meaning" &&
       network.mapping_authority().x.unit_or_scale_id=="dimensionless","probe raw x convention differs");

@@ -1,0 +1,6 @@
+Matplotlib is building the font cache; this may take a moment.
+....
+----------------------------------------------------------------------
+Ran 4 tests in 0.144s
+
+OK

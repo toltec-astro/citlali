@@ -58,7 +58,7 @@ def test_failed_native_attempt_is_counted_and_cannot_be_retried(tmp_path,monkeyp
     import json
     import point_processing as run
     from point_fruit_trajectory import bound
-    (tmp_path/'freeze').mkdir();(tmp_path/'freeze/budget.json').write_text(json.dumps(dict(native_cells=1,peak_ceiling_bytes=1000000,free_space_reserve_bytes=0)))
+    (tmp_path/'freeze').mkdir();(tmp_path/'freeze/budget.json').write_text(json.dumps(dict(native_cells=1,peak_ceiling_bytes=1000000,metadata_reserve_bytes=1000,free_space_reserve_bytes=0)))
     own=tmp_path/'owner.json';own.write_text(json.dumps(dict(policy='BASE-POINT')))
     req=tmp_path/'request.json';req.write_text(json.dumps(dict(owner_binding=bound(own),cycle_index=1,branch='REF')))
     calls=[]

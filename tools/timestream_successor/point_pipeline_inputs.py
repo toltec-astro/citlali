@@ -59,7 +59,7 @@ def prepare(out, reference_path, input_root):
         s=next(r for r in sources if r['role']=='kmp' and int(r['nw'])==nw)
         require(s['content_sha256']=='sha256:'+tune['sha256'] and int(s['byte_count'])==tunes[0].stat().st_size,'KMP not exact canonical APT source')
         members=sorted([r for r in apt if int(r['nw'])==nw],key=lambda r:int(r['kids_tone']))
-        require([int(r['kids_tone']) for r in members]==list(range(channels)) and all(int(r['array'])=={'a1100':0,'a1400':1,'a2000':2}[array] for r in members),'APT a2000 detector correspondence')
+        require([int(r['kids_tone']) for r in members]==list(range(channels)) and all(int(r['array'])=={'a1100':0,'a1400':1,'a2000':2}[array] for r in members),'APT selected-array detector correspondence')
         native_cells+=rows*channels;inventory.append(dict(network=nw,raw=raw,tune=tune,rows=rows,channels=channels))
     require(set(r['networks']) <= {x['network'] for x in timing},'selected network missing timing')
     for item in config['inputs'][0]['cal_items']:

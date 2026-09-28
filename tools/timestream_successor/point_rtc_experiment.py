@@ -72,7 +72,7 @@ def prepare_run(root,name,input_root,family,branch='REF',noise_ref=None):
 
 def once(out,binary,entry_ns):
     p=read(out/'freeze/prospective.json')
-    require(p['campaign_scope'] in ('rtc-cost-response-v1','rtc-fixed11-v1','rtc-step-point-v1') and p['feedback_count']==5 and
+    require(p['campaign_scope'] in ('rtc-cost-response-v1','rtc-fixed11-v1','rtc-step-point-v1','rtc-step-consequences-v1') and p['feedback_count']==5 and
             p['cycles']==5 and p['ptc']==dict(method='observed-als',rank=10) and
             p['experimental_method']=='warm-observed-als','fixed RTC endpoint differs')
     code=speed_once(out,binary,entry_ns)

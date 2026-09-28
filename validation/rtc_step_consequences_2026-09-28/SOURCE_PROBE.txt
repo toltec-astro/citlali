@@ -1,0 +1,12 @@
+Running main() from /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = point_rtc_source_probe.*
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from point_rtc_source_probe
+[ RUN      ] point_rtc_source_probe.native_midpoints_AST_pixels_and_signed_CAL_preserve_original_pair
+[       OK ] point_rtc_source_probe.native_midpoints_AST_pixels_and_signed_CAL_preserve_original_pair (7361 ms)
+[----------] 1 test from point_rtc_source_probe (7362 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (7362 ms total)
+[  PASSED  ] 1 test.

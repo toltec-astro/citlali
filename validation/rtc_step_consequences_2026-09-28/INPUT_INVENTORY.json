@@ -1,0 +1,153 @@
+{
+  "manifest": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152430_matched.apt-v2/manifest.ecsv",
+  "roles": {
+    "apt": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152430_matched.apt-v2/sha256-a34b26e0f9bdf1c2e8bd56173dbb9b96bc851d4e81790b114ac4dcde64b1e717.apt.ecsv",
+    "baseline-apt": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152430_matched.apt-v2/sha256-a90f2ac296f66a121351c4bd07f43f6de4cf3ca1dd9e80743b102c0eea20d15c.baseline-apt.ecsv",
+    "baseline-fields": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152430_matched.apt-v2/sha256-4c0addc459aeb97658048a58d3fcf64682efcb02c9e605f5e2eb7a51abd12002.baseline-fields.ecsv",
+    "baseline-manifest": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152430_matched.apt-v2/sha256-0d3d7a0b28302a27f152fd221bb0ec431df8994fa88b586a322f0b44228930de.baseline-manifest.ecsv",
+    "baseline-receipt": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152430_matched.apt-v2/sha256-8b21c8135375876fa28459efcd075db132ad40aa4e7dfaa05061eaaaa60c0344.baseline-receipt.txt",
+    "baseline-sources": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152430_matched.apt-v2/sha256-4ad9b421100523cfdb9cbc3d06e1da55b77f518c82f6f5f2004a62866c6bd77d.baseline-sources.ecsv",
+    "exceptions": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152430_matched.apt-v2/sha256-2cb2f24acb181a5804962b47823433fa5117db426a26ca1f03bfeb5cdc22fae0.exceptions.ecsv",
+    "fields": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152430_matched.apt-v2/sha256-609465ce8f02c72bd28686f7bd96d4744cb606269f002800f004a09de59758b2.fields.ecsv",
+    "relation": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152430_matched.apt-v2/sha256-912738a47a601505b7d6cf2d0ede0a9341eea39d1b164fc85fc40c9421e5383e.relation.ecsv",
+    "sources": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152430_matched.apt-v2/sha256-c11651d2063f10ba6485006c884ea5663bdf065f49e4e38117a7cdfdade7def7.sources.ecsv"
+  },
+  "records": [
+    {
+      "network": 1,
+      "raw": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec1_152430_000_0002_2026_02_19_10_07_51.nc",
+      "bytes": 31322496,
+      "identity": {
+        "ObsNum": 152430,
+        "SubObsNum": 0,
+        "ScanNum": 2,
+        "RoachIndex": 1,
+        "TargSweepObsNum": 152430,
+        "TargSweepSubObsNum": 0,
+        "TargSweepScanNum": 1
+      },
+      "shape": [
+        7820,
+        494
+      ],
+      "IQ_shapes_match": true,
+      "APT_array_values": [
+        0
+      ],
+      "APT_rows": 494,
+      "APT_flag_strings": {
+        "0": 415,
+        "": 59,
+        "1": 20
+      },
+      "tunes": [
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec1_152430_000_0001_2026_02_19_10_06_46_tune.txt",
+          "bytes": 102374
+        }
+      ]
+    },
+    {
+      "network": 2,
+      "raw": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec2_152430_000_0002_2026_02_19_10_07_51.nc",
+      "bytes": 32330584,
+      "identity": {
+        "ObsNum": 152430,
+        "SubObsNum": 0,
+        "ScanNum": 2,
+        "RoachIndex": 2,
+        "TargSweepObsNum": 152430,
+        "TargSweepSubObsNum": 0,
+        "TargSweepScanNum": 1
+      },
+      "shape": [
+        7821,
+        510
+      ],
+      "IQ_shapes_match": true,
+      "APT_array_values": [
+        0
+      ],
+      "APT_rows": 510,
+      "APT_flag_strings": {
+        "0": 445,
+        "": 38,
+        "1": 27
+      },
+      "tunes": [
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec2_152430_000_0001_2026_02_19_10_06_46_tune.txt",
+          "bytes": 105640
+        }
+      ]
+    },
+    {
+      "network": 3,
+      "raw": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec3_152430_000_0002_2026_02_19_10_07_51.nc",
+      "bytes": 33773240,
+      "identity": {
+        "ObsNum": 152430,
+        "SubObsNum": 0,
+        "ScanNum": 2,
+        "RoachIndex": 3,
+        "TargSweepObsNum": 152430,
+        "TargSweepSubObsNum": 0,
+        "TargSweepScanNum": 1
+      },
+      "shape": [
+        7821,
+        533
+      ],
+      "IQ_shapes_match": true,
+      "APT_array_values": [
+        0
+      ],
+      "APT_rows": 533,
+      "APT_flag_strings": {
+        "0": 468,
+        "": 47,
+        "1": 18
+      },
+      "tunes": [
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec3_152430_000_0001_2026_02_19_10_06_46_tune.txt",
+          "bytes": 109997
+        }
+      ]
+    },
+    {
+      "network": 4,
+      "raw": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec4_152430_000_0002_2026_02_19_10_07_51.nc",
+      "bytes": 33710392,
+      "identity": {
+        "ObsNum": 152430,
+        "SubObsNum": 0,
+        "ScanNum": 2,
+        "RoachIndex": 4,
+        "TargSweepObsNum": 152430,
+        "TargSweepSubObsNum": 0,
+        "TargSweepScanNum": 1
+      },
+      "shape": [
+        7821,
+        532
+      ],
+      "IQ_shapes_match": true,
+      "APT_array_values": [
+        0
+      ],
+      "APT_rows": 532,
+      "APT_flag_strings": {
+        "0": 433,
+        "": 81,
+        "1": 18
+      },
+      "tunes": [
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec4_152430_000_0001_2026_02_19_10_06_46_tune.txt",
+          "bytes": 109800
+        }
+      ]
+    }
+  ]
+}

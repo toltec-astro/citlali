@@ -35,10 +35,15 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     require(campaign || (!request["branch"] && !request["injection"]),"FRUIT foreign campaign fields");
     const auto owner_path=checked_file(request["owner_binding"]);const auto owner_sha=ledger.bind(owner_path);
     const auto owner=YAML::LoadFile(owner_path.string());
-    bool step_experiment=false;
+    bool step_experiment=false,step_consequences=false;
     if(speed_experiment){
       const auto p=YAML::LoadFile(checked_file(owner["prospective"]).string());
       step_experiment=p["campaign_scope"] && p["campaign_scope"].as<std::string>()=="rtc-step-point-v1";
+      step_consequences=p["campaign_scope"] && p["campaign_scope"].as<std::string>()=="rtc-step-consequences-v1";
+      if(step_consequences)require(p["observation"].as<int>()==152430 && owner["observation"].as<int>()==152430 &&
+        p["array"].as<std::string>()=="a1100" && p["networks"].as<std::vector<int>>()==std::vector<int>({1,2,3,4}) &&
+        p["ptc"]["rank"].as<int>()==10 && p["experimental_method"].as<std::string>()=="warm-observed-als" &&
+        p["feedback_count"].as<int>()==5,"FRUIT four-network step consequence scope");
       if(step_experiment)require((p["observation"].as<int>()==152430 || p["observation"].as<int>()==152420) &&
         p["observation"].as<int>()==owner["observation"].as<int>() && p["ptc"]["rank"].as<int>()==10 &&
         p["experimental_method"].as<std::string>()=="warm-observed-als" && p["feedback_count"].as<int>()==5,
@@ -50,7 +55,8 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
     const auto map_path=checked_file(request["map_request"]);ledger.bind(map_path);const auto mr=YAML::LoadFile(map_path.string());
     const auto pp=checked_file(request["parent_plan"]);ledger.bind(pp);const auto parent=YAML::LoadFile(pp.string());
     const auto array=request["array"].as<std::string>();const std::array<std::string,3> arrays{"a1100","a1400","a2000"};
-    const auto ai=std::find(arrays.begin(),arrays.end(),array)-arrays.begin();require(ai<3 && parent["array"].as<std::string>()==array && parent["observation"].as<std::string>()==((reference || step_experiment)?("obs:"+std::to_string(owner["observation"].as<int>())+"_0_2"):independent?"obs:152430_0_2":"obs:152389_0_2") && (reference || !independent || array=="a2000"),"FRUIT foreign array/observation");
+    require(!step_consequences || array=="a1100","FRUIT step consequence request array");
+    const auto ai=std::find(arrays.begin(),arrays.end(),array)-arrays.begin();require(ai<3 && parent["array"].as<std::string>()==array && parent["observation"].as<std::string>()==((reference || step_experiment)?("obs:"+std::to_string(owner["observation"].as<int>())+"_0_2"):independent?"obs:152430_0_2":"obs:152389_0_2") && (reference || step_consequences || !independent || array=="a2000"),"FRUIT foreign array/observation");
     require(!refseq || (array=="a2000" && owner["workers"].as<int>()==3 && owner["basis_schedule"].size()==11),"FRUIT reference sequence scope/resources");
     require(mr["schema"].as<std::string>()=="citlali-map-saved-ptc-v1" && mr["coverage_cut"].as<double>()==parent["coverage_cut"].as<double>() && mr["pixel_size_arcsec"].as<double>()==2,"FRUIT MAP policy differs");
     const auto mo=checked_file(mr["owner_binding"]);ledger.bind(mo);require(parent["owner_binding"].as<std::string>()=="sha256:"+citlali::utils::sha256_file(mo),"FRUIT MAP owner differs");
@@ -93,8 +99,8 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
                     prospective["profile"].as<std::string>()==(speed_experiment?"POINT-SPEED-PCA-v1":"point-152430-ptc-rank-"+std::to_string(rank)) &&
                     (speed_experiment?(rank==10 || rank==15):(rank==5 || rank==10 || rank==15)) && (!speed_experiment || (prospective["feedback_count"].as<int>()==owner["nonzero_cycles"].as<int>() && (prospective["experimental_method"].as<std::string>()=="observed-als" || prospective["experimental_method"].as<std::string>()=="warm-observed-als" || prospective["experimental_method"].as<std::string>()=="masked-covariance-count-v1"))) && (prospective["ptc"]["method"].as<std::string>()=="observed-als" || (speed_experiment && prospective["experimental_method"].as<std::string>()=="masked-covariance-count-v1" && prospective["ptc"]["method"].as<std::string>()=="masked-covariance-count-v1")) &&
                     (step_experiment || prospective["observation"].as<int>()==152430) && prospective["subobservation"].as<int>()==0 && prospective["scan"].as<int>()==2 &&
-                    prospective["array"].as<std::string>()=="a2000" && prospective["networks"].as<std::vector<int>>()==std::vector<int>({11,12}) &&
-                    prospective["coverage_policy"].as<std::string>()=="high-coverage-informational" && prospective["cycles"].as<int>()==((prospective["campaign_scope"] && (prospective["campaign_scope"].as<std::string>()=="rtc-cost-response-v1" || prospective["campaign_scope"].as<std::string>()=="rtc-fixed11-v1" || prospective["campaign_scope"].as<std::string>()=="rtc-step-point-v1"))?5:10) &&
+                    (step_consequences?(prospective["array"].as<std::string>()=="a1100" && prospective["networks"].as<std::vector<int>>()==std::vector<int>({1,2,3,4})):(prospective["array"].as<std::string>()=="a2000" && prospective["networks"].as<std::vector<int>>()==std::vector<int>({11,12}))) &&
+                    prospective["coverage_policy"].as<std::string>()=="high-coverage-informational" && prospective["cycles"].as<int>()==((prospective["campaign_scope"] && (prospective["campaign_scope"].as<std::string>()=="rtc-cost-response-v1" || prospective["campaign_scope"].as<std::string>()=="rtc-fixed11-v1" || prospective["campaign_scope"].as<std::string>()=="rtc-step-point-v1" || step_consequences))?5:10) &&
                     policy=="BASE-POINT" && owner["threshold"].as<double>()==3 && branch.rfind("D-",0)!=0,
                     "FRUIT bounded rank experiment scope");
             } else if(reference) {
@@ -371,6 +377,7 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output) {
         }
         while(!pending.empty()){pending.front()();pending.pop_front();}
     }
+    require(!step_consequences || seen==std::set<int>({1,2,3,4}),"FRUIT step consequence realized networks");
     require(seen.size()==expected_networks && !totals.empty(),"FRUIT incomplete requested observation array");
     const auto mapping=std::chrono::steady_clock::now();const auto wcs=AstRtcTanGrid::centered(ra0,dec0,2,extent_x,extent_y);
     const std::string domain="sha256:"+request_sha+":new-ordered-PTC-retained";mapmaking::ForwardMapGrid grid{wcs.rows,wcs.columns,domain+":grid"};
