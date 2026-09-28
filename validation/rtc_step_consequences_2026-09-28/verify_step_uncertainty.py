@@ -6,6 +6,7 @@ from point_additive import variance
 root=Path('/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928');records=[]
 for out in sorted(root.glob('*-*')):
  if not (out/'LAUNCH.json').exists():continue
+ if json.loads((out/'EXECUTION.json').read_text())['status']!='completed':continue
  base=out/'run/BASE-POINT/REF/a1100';s=json.loads((base/'SUMMARY.json').read_text());c=context(out/'freeze/a1100');f=c['fixed'];p=np.asarray(s['histories'][-1]['measurement']['guard']['accepted_parameters']);roi=f.disk;J=jacobian(p,f.x[roi],f.y[roi]);U,sv,Vt=np.linalg.svd(J,full_matrices=False);rank=int(np.sum(sv>np.finfo(float).eps*max(J.shape)*sv[0]));pinv=np.einsum('ik,kj->ij',Vt[:rank].T/sv[:rank],U[:,:rank].T,optimize=False)
  W=[]
  for row in pinv:

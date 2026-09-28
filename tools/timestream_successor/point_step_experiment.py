@@ -85,7 +85,8 @@ def _prepare_selected(root,input_root,branch,noise_ref,consequences):
     selection=read(record/'SELECTION.json');require(selection['selected']==[observation,0,2],'frozen selected POINT changed')
     require(branch in ('REF','C-core-plus','C-core-minus','C-shoulder'),'undeclared step response')
     if consequences:require(selection['array']=='a1100' and selection['networks']==[1,2,3,4],'foreign four-network selection')
-    out=root/(family+'-REF-rep1' if branch=='REF' else family+'-'+branch)
+    refname=family+('-REF-rep2' if consequences and (root/'DEFECT-REPLACEMENT.json').exists() else '-REF-rep1')
+    out=root/(refname if branch=='REF' else family+'-'+branch)
     prepare(out,verified(selection['reference']),input_root)
     p=read(out/'freeze/prospective.json');p.update(schema='citlali-point-speed-pca-v1',profile='POINT-SPEED-PCA-v1',campaign_scope=scope,rtc_family=family,signal_branch=branch,cycles=5,feedback_count=5,experimental_method='warm-observed-als',trajectory_identity=out.name,step_selection=bound(record/'SELECTION.json'),experiment_operands=[bound(record/'SELECTION.json')])
     p['scientific_recipe']['PTC']['method']='observed-entry ALS; own preceding converged basis initializer; fully resolved current residual'

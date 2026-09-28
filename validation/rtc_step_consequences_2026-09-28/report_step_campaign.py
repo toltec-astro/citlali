@@ -13,7 +13,7 @@ def stats(v,rows,center):
  return dict(n=int(good.sum()),pre_n=int(pre.sum()),post_n=int(post.sum()),pre_median=a,post_median=b,post_minus_pre=b-a if a is not None and b is not None else None,adjacent_difference_MAD=mad)
 def main(root,out):
  out.mkdir(parents=True,exist_ok=True);report=root/'report';facts={};table=['# Saved POINT step metrics','', '| Observation | nw | events / admitted | affected D / all D | valid detector-s | RTC retained detector-s | CAL/MAP contributions |','|---|---:|---:|---:|---:|---:|---:|'];wstats=[]
- for name in ('N14-REF-rep1',):
+ for name in ('N14-REF-rep2',):
   p=report/name;pop=read(p/'population.json');win=read(p/'windows.json');z=np.load(p/'windows.npz');mask=np.load(p/'population-masks.npz');ep=p/'event-chain.yaml';ev=yaml.load(ep.read_bytes() if ep.exists() else gzip.decompress(Path(str(ep)+'.gz').read_bytes()),Loader=yaml.CSafeLoader)
   facts[name]=dict(population=pop,map_support=read(p/'map-support.json'),review={kind:dict(collections.Counter((q['adjudication']['label'] if isinstance(q['adjudication'],dict) else q['adjudication'].split(':')[0]) for q in win if q['kind']==kind)) for kind in ('event','unflagged')})
   fig,ax=plt.subplots(4,3,figsize=(16,14),layout='constrained')

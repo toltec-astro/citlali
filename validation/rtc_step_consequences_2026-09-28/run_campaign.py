@@ -9,7 +9,7 @@ ROOT=Path('/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rt
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('branch',choices=['REF','C-core-plus','C-core-minus','C-shoulder']);p.add_argument('--review',required=True,type=Path);a=p.parse_args()
  ROOT.mkdir(parents=True,exist_ok=True)
- out=prepare_consequences(ROOT,Path('/Users/gwilson/work_toltec/local_data'),a.branch,None if a.branch=='REF' else ROOT/'N14-REF-rep1')
+ out=prepare_consequences(ROOT,Path('/Users/gwilson/work_toltec/local_data'),a.branch,None if a.branch=='REF' else ROOT/'N14-REF-rep2')
  # Preserve original and earlier compact identities before entering science.
  protection=ROOT/'PROTECTED_INPUTS.json'
  if not protection.exists():

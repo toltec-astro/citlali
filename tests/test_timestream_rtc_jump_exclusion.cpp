@@ -1,6 +1,7 @@
 #include <citlali/core/pipeline/timestream_rtc_jump_exclusion.h>
 #include "timestream_rtc_reassessment_test_support.h"
 #include <gtest/gtest.h>
+#include "../src/citlali/cli/point_rtc_probe_scope.h"
 #include <bit>
 #include <chrono>
 #include <iostream>
@@ -334,4 +335,25 @@ TEST(rtc_jump_exclusion, active_x_only_source_perturbation_preserves_r_and_relea
     for(std::size_t i=0;i<injected.times.size();++i)
         EXPECT_EQ(std::bit_cast<std::uint64_t>(a.parent->network(0).value(NativeReadoutCoordinate::r,100+i,0)),
                   std::bit_cast<std::uint64_t>(b.parent->network(0).value(NativeReadoutCoordinate::r,100+i,0)));
+}
+
+TEST(point_rtc_probe_scope, exact_four_network_route_and_legacy_routes) {
+    using citlali::cli::detail::point_rtc_probe_route_allowed;
+    constexpr auto authority="owner-RTC-step-consequences-2026-09-28";
+    for(int nw=1;nw<=4;++nw) {
+        EXPECT_TRUE(point_rtc_probe_route_allowed(true,true,true,152430,0,2,nw,0,authority));
+        EXPECT_FALSE(point_rtc_probe_route_allowed(true,true,true,152420,0,2,nw,0,authority));
+        EXPECT_FALSE(point_rtc_probe_route_allowed(true,true,true,152430,1,2,nw,0,authority));
+        EXPECT_FALSE(point_rtc_probe_route_allowed(true,true,true,152430,0,1,nw,0,authority));
+        EXPECT_FALSE(point_rtc_probe_route_allowed(true,true,true,152430,0,2,nw,2,authority));
+        EXPECT_FALSE(point_rtc_probe_route_allowed(true,true,true,152430,0,2,nw,0,"foreign"));
+        EXPECT_FALSE(point_rtc_probe_route_allowed(true,true,false,152430,0,2,nw,0,authority));
+        EXPECT_FALSE(point_rtc_probe_route_allowed(false,true,true,152430,0,2,nw,0,authority));
+        EXPECT_FALSE(point_rtc_probe_route_allowed(true,false,true,152430,0,2,nw,0,authority));
+    }
+    for(int nw: {0,5,11,12}) EXPECT_FALSE(point_rtc_probe_route_allowed(true,true,true,152430,0,2,nw,0,authority));
+    for(int nw: {11,12}) {
+        EXPECT_TRUE(point_rtc_probe_route_allowed(true,true,true,152430,0,2,nw,2,"owner-RTC-cost-response-2026-09-27"));
+        for(int obs: {152420,152430}) EXPECT_TRUE(point_rtc_probe_route_allowed(true,true,true,obs,0,2,nw,2,"owner-RTC-step-POINT-2026-09-27"));
+    }
 }

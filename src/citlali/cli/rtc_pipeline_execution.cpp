@@ -56,6 +56,7 @@ std::string native_plane_digest(const NativePairedReadoutMatrix &m) {
 #include "fruit_saved_execution.h"
 #include "jinc_ast_execution.h"
 #include "point_rtc_probe_execution.h"
+#include "point_rtc_probe_scope.h"
 #include "point_fixed11_input.h"
 namespace {
 // One observation lifetime, prepared before workers start; only the I/O mutex
@@ -376,7 +377,8 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
             NativeObservationScope{obs, sub, scan}, {nw}, std::move(networks)));
     YAML::Node source_probe_record;
     if(cfg["rtc_source_probe"]) {
-      require(development && common && (obs==152430 || (obs==152420 && cfg["rtc_source_probe"]["authority"].as<std::string>()=="owner-RTC-step-POINT-2026-09-27")) && sub==0 && scan==2 && (nw==11 || nw==12),
+      require(citlali::cli::detail::point_rtc_probe_route_allowed(development,common!=nullptr,
+          reference,obs,sub,scan,nw,health_array,cfg["rtc_source_probe"]["authority"].as<std::string>()),
           "pre-RTC source probe outside bounded original POINT route");
       performance.mark("source_probe_start");
       auto probe=execute_point_rtc_probe(parent,cfg,verified,relation,channels,common->cal,

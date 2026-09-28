@@ -7,9 +7,9 @@ import point_rtc_response as response
 from point_rtc_diagnostics import yread,arr,read
 from point_additive_diagnostics import save_json
 from inspect_forward_map import require
-ROOT=Path('/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928');DEST=ROOT/'report/response';REF=ROOT/'N14-REF-rep1'
+ROOT=Path('/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-step-consequences-20260928');DEST=ROOT/'report/response';REF=ROOT/'N14-REF-rep2'
 def load_network(root,family,nw):
- base=root/f'{family}-REF-rep1/upstream/products/network{nw}';probe=base/'source-probe';pr=yread(probe/'receipt.yaml');n,d=pr['native_rows'],pr['detectors'];shape=n,d
+ base=root/f'{family}-REF-rep2/upstream/products/network{nw}';probe=base/'source-probe';pr=yread(probe/'receipt.yaml');n,d=pr['native_rows'],pr['detectors'];shape=n,d
  a=dict(shape=shape,channels=pr['channels'],probe_receipt=pr,mult=arr(probe/'cal-multiplier.f64','<f8',shape),valid=arr(probe/'input-valid.u8','u1',shape).astype(bool),mapping=arr(probe/'mapping-available.u8','u1',shape).astype(bool),filtered=np.full(shape,np.nan),state=np.zeros(shape,'u1'),center=np.zeros(shape,'u1'))
  for j,c in enumerate(a['channels']):
   q=base/'donor-continuity';a['filtered'][:,j]=arr(q/f'{c}-filtered.f64','<f8',(n,2))[:,0];a['state'][:,j]=arr(q/f'{c}-state.u8','u1');a['center'][:,j]=arr(q/f'{c}-map-center.u8','u1')
@@ -40,7 +40,7 @@ def match_events(a,b):
  return pairs,sorted(left),sorted(right),ambiguous
 
 def active():
- records=[];packed={};refwindows=read(ROOT/'report/N14-REF-rep1/windows.json')
+ records=[];packed={};refwindows=read(ROOT/'report/N14-REF-rep2/windows.json')
  for branch in response.BRANCHES:
   out=ROOT/('N14-'+branch)
   for nw in (1,2,3,4):
@@ -62,7 +62,7 @@ def active():
  save_json(DEST/'active-selection-summary.json',[{k:v for k,v in r.items() if k not in ('matches','appeared','disappeared','ambiguous')}|dict(appeared=len(r['appeared']),disappeared=len(r['disappeared']),ambiguous=len(r['ambiguous'])) for r in records])
 
 if __name__=='__main__':
- response.response(ROOT,'N14',DEST)
+ response.response(ROOT,'N14',DEST,reference_name='N14-REF-rep2')
  records=read(DEST/'source-responses.json')
  for r in records:
   r['spatial_scope']='conditional common supported pixels; ideal unchanged on complete unmodified REF support, excluded comparison regions enumerated below'

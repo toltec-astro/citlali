@@ -14,7 +14,7 @@ class Reporting(unittest.TestCase):
   a=[dict(detector=3,seed_earlier_row=4,trial_exclusion=[2,9])];b=[dict(detector=3,seed_earlier_row=k,trial_exclusion=[3,8]) for k in (5,6)]
   pairs,left,right,amb=match_events(a,b);self.assertEqual(pairs,[]);self.assertEqual(left,[0]);self.assertEqual(right,[0,1]);self.assertEqual(len(amb),1)
  def test_exposure_union_and_valid_denominators(self):
-  for name in ('N14-REF-rep1',):
+  for name in ('N14-REF-rep2',):
    p=D/'report'/name;z=np.load(p/'population-masks.npz')
    for n in json.loads((p/'population.json').read_text()):
     nt,nd=n['shape'];get=lambda k:np.unpackbits(z[f"n{n['network']}_{k}"],axis=1)[:,:nt].astype(bool)

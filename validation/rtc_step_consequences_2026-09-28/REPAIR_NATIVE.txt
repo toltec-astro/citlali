@@ -1,0 +1,57 @@
+Running main() from /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/googletest-src/googletest/src/gtest_main.cc
+[==========] Running 22 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 21 tests from rtc_jump_exclusion
+[ RUN      ] rtc_jump_exclusion.x_origin_selects_paired_scan_and_preserves_original_payload
+[       OK ] rtc_jump_exclusion.x_origin_selects_paired_scan_and_preserves_original_payload (0 ms)
+[ RUN      ] rtc_jump_exclusion.r_origin_can_exclude_x_without_cross_coordinate_correction
+[       OK ] rtc_jump_exclusion.r_origin_can_exclude_x_without_cross_coordinate_correction (0 ms)
+[ RUN      ] rtc_jump_exclusion.protected_and_unknown_source_measurements_cannot_authorize_rejection
+[       OK ] rtc_jump_exclusion.protected_and_unknown_source_measurements_cannot_authorize_rejection (1 ms)
+[ RUN      ] rtc_jump_exclusion.source_in_fit_flank_is_not_cleared_by_outside_source_seed
+[       OK ] rtc_jump_exclusion.source_in_fit_flank_is_not_cleared_by_outside_source_seed (0 ms)
+[ RUN      ] rtc_jump_exclusion.isolated_spike_and_no_jump_controls_do_not_become_persistent_jumps
+[       OK ] rtc_jump_exclusion.isolated_spike_and_no_jump_controls_do_not_become_persistent_jumps (0 ms)
+[ RUN      ] rtc_jump_exclusion.unavailable_recovery_never_substitutes_for_no_return
+[       OK ] rtc_jump_exclusion.unavailable_recovery_never_substitutes_for_no_return (0 ms)
+[ RUN      ] rtc_jump_exclusion.three_original_groups_count_xr_once_and_exclude_only_that_detector_observation
+[       OK ] rtc_jump_exclusion.three_original_groups_count_xr_once_and_exclude_only_that_detector_observation (3 ms)
+[ RUN      ] rtc_jump_exclusion.every_intersected_scan_is_selected_and_endpoint_contact_is_not_overlap
+[       OK ] rtc_jump_exclusion.every_intersected_scan_is_selected_and_endpoint_contact_is_not_overlap (0 ms)
+[ RUN      ] rtc_jump_exclusion.selecting_scan_includes_its_disjoint_support_and_unions_overlapping_scans
+[       OK ] rtc_jump_exclusion.selecting_scan_includes_its_disjoint_support_and_unions_overlapping_scans (0 ms)
+[ RUN      ] rtc_jump_exclusion.missing_scan_relation_cannot_publish_a_partial_plan
+[       OK ] rtc_jump_exclusion.missing_scan_relation_cannot_publish_a_partial_plan (0 ms)
+[ RUN      ] rtc_jump_exclusion.exact_parent_snapshot_and_nonzero_decision_identity_are_required
+[       OK ] rtc_jump_exclusion.exact_parent_snapshot_and_nonzero_decision_identity_are_required (1 ms)
+[ RUN      ] rtc_jump_exclusion.scan_binding_rejects_missing_identity_duplicates_and_out_of_parent_support
+[       OK ] rtc_jump_exclusion.scan_binding_rejects_missing_identity_duplicates_and_out_of_parent_support (0 ms)
+[ RUN      ] rtc_jump_exclusion.apply_schedule_and_partition_independence
+[       OK ] rtc_jump_exclusion.apply_schedule_and_partition_independence (0 ms)
+[ RUN      ] rtc_jump_exclusion.invalid_producer_payload_remains_separate_and_unread
+[       OK ] rtc_jump_exclusion.invalid_producer_payload_remains_separate_and_unread (0 ms)
+[ RUN      ] rtc_jump_exclusion.plan_and_apply_are_deterministic_and_sparse
+jump_plan_apply_1000_seconds=0.00135867 admission_owned_bytes=288
+[       OK ] rtc_jump_exclusion.plan_and_apply_are_deterministic_and_sparse (3 ms)
+[ RUN      ] rtc_jump_exclusion.source_brightness_does_not_select_a_clean_scan_for_rejection
+[       OK ] rtc_jump_exclusion.source_brightness_does_not_select_a_clean_scan_for_rejection (18 ms)
+[ RUN      ] rtc_jump_exclusion.known_tail_preserves_transition_and_other_detectors_without_inventing_scan
+[       OK ] rtc_jump_exclusion.known_tail_preserves_transition_and_other_detectors_without_inventing_scan (0 ms)
+[ RUN      ] rtc_jump_exclusion.complete_relation_preserves_science_scan_rule_and_half_open_boundaries
+[       OK ] rtc_jump_exclusion.complete_relation_preserves_science_scan_rule_and_half_open_boundaries (0 ms)
+[ RUN      ] rtc_jump_exclusion.tail_groups_still_count_once_toward_detector_observation_rule
+[       OK ] rtc_jump_exclusion.tail_groups_still_count_once_toward_detector_observation_rule (2 ms)
+[ RUN      ] rtc_jump_exclusion.asserted_complete_domain_rejects_unknown_rows_overlaps_and_missing_context
+[       OK ] rtc_jump_exclusion.asserted_complete_domain_rejects_unknown_rows_overlaps_and_missing_context (0 ms)
+[ RUN      ] rtc_jump_exclusion.active_x_only_source_perturbation_preserves_r_and_relearns_candidates
+[       OK ] rtc_jump_exclusion.active_x_only_source_perturbation_preserves_r_and_relearns_candidates (3 ms)
+[----------] 21 tests from rtc_jump_exclusion (39 ms total)
+
+[----------] 1 test from point_rtc_probe_scope
+[ RUN      ] point_rtc_probe_scope.exact_four_network_route_and_legacy_routes
+[       OK ] point_rtc_probe_scope.exact_four_network_route_and_legacy_routes (0 ms)
+[----------] 1 test from point_rtc_probe_scope (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 22 tests from 2 test suites ran. (39 ms total)
+[  PASSED  ] 22 tests.
