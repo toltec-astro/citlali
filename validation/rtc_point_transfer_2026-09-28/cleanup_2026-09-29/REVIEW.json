@@ -1,0 +1,57 @@
+{
+  "candidate_sha": "e7fbc4e3156bf4c6b1f2267acd793af89912fead",
+  "tree": "afba94f26e949390098e02e60b5749c6ded2309d",
+  "parent": "6c26c628ac9df374e0bc8bc5888ba5270a8d9daf",
+  "verdict": "pass",
+  "script_sha256": "83b01e66929c5fa699e764617fbe7b7793f5bfee068aad681762aa1c4f6337e9",
+  "approval_sha256": "5d5e0d6737dd5a98595b52e3b88475069af8adb088b8f27b34a343e99c4dcf2f",
+  "findings": [],
+  "scientific_and_behavioral_conformance": {
+    "disposition": "pass",
+    "basis": "No science or application source changes. Only exact native scratch manifests are eligible. Protected original/dependency inputs and all non-target campaign files are hash-checked before and after deletion. Compact artifacts are checked in encoded and decoded form and both reports must regenerate exactly under OS-enforced original/scratch read denial before any deletion and after completion. Historical failure/success assessments remain immutable."
+  },
+  "architectural_conformity_and_ownership": {
+    "disposition": "pass",
+    "basis": "Standalone foreground cleanup owner; no Engine, stage, scientific ownership, persistent application schema or numerical changes. One explicit unlink operation handles exact validated files, with no recursive deletion. Immutable approval, historical manifests, review binding and new execution receipts have separate roles. Failure/interruption propagates, partial removal is explicit, and exclusive launch/log files prohibit automatic retry."
+  },
+  "repository_branch_and_evidence_hygiene": {
+    "disposition": "pass",
+    "basis": "Candidate and tree verified; parent equals approved base; clean worktree before and after review. Six additions confined to cleanup directory. Accepted governance ancestor verified in candidate and canonical ref; all three normative document digests match integration ledger. Both approved manifest digests, counts and logical byte totals verified. 153062 unique targets across distinct roots; zero target/protected overlap. 283 plus 2336 compact files exist and are Git-tracked. No ref, worktree, branch, evidence, original, FITS, log or metadata removal is requested."
+  },
+  "context": {
+    "review_date": "2026-09-29",
+    "reviewer": "independent cleanup_review agent; fresh task context; read-only exact-SHA review",
+    "worktree": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor",
+    "branch": "codex/rtc-point-transfer-20260928",
+    "risk_tier": 2,
+    "owner_authority": "Recorded owner instruction: Let's carry out a cleanup. Exact scope bound by OWNER_APPROVAL.json.",
+    "authority_sources": [
+      "AGENTS.md",
+      "doc/governance/ENGINEERING_GOVERNANCE.md",
+      "doc/governance/TIMESTREAM_SUCCESSOR_GOVERNANCE.md",
+      "doc/governance/REVIEW_AND_CONFORMANCE.md",
+      "doc/INTEGRATION_LEDGER.md",
+      "doc/REFACTOR_STATUS.md",
+      "validation/rtc_point_transfer_2026-09-28/OWNER_DIRECTIVE.md",
+      "validation/rtc_point_transfer_2026-09-28/STORAGE_GATE.json",
+      "validation/rtc_point_transfer_2026-09-28/cleanup_2026-09-29/PLAN.md",
+      "validation/rtc_point_transfer_2026-09-28/cleanup_2026-09-29/OWNER_APPROVAL.json"
+    ],
+    "focused_validation": {
+      "command": "PYTHONDONTWRITEBYTECODE=1 /Users/gwilson/tolteca/bin/python validation/rtc_point_transfer_2026-09-28/cleanup_2026-09-29/test_cleanup.py",
+      "result": "5 tests passed in 0.016 seconds",
+      "scope": "Temporary fixtures only: canonical native entry/hash, protected/foreign stage, symlink/outside root, duplicate/missing, bad hash with contents unchanged."
+    },
+    "broader_validation": "No compilation, CTest, config preflight, Spack/Unity or observational validation triggered: this candidate changes cleanup tooling and records only.",
+    "limitations": [
+      "This is a source/metadata/fixture review, not a claim that actual cleanup or full native/protected hashes and report-isolation gates have run. Those gates execute before unlink in the owner foreground run.",
+      "Sealed campaigns must remain inactive throughout the foreground batch. Process checks and immediate canonical-path/size checks reduce accidental concurrency risk but are not a filesystem locking protocol.",
+      "Interruption can occur between unlink and journal write; the runner explicitly requires inspection and refuses automatic retry.",
+      "The owner must keep the foreground terminal open and Mac awake. No Codex monitor, scheduling, automatic retry, science launch, push or integration is authorized.",
+      "Logical removal is 16042260125 bytes, not a promise of equal physical free-space recovery. Full transfer capacity preflight is still required after owner completion review."
+    ],
+    "launch_binding": "Only REVIEW.json and HANDOFF.md may differ in a clean descendant; runner checks ancestry and exact script/approval hashes.",
+    "actions_performed": "Read-only repository/metadata inspection and five temporary fixture tests. No real campaign native-hash batch, report regeneration, removal, science, monitoring, network or Unity action.",
+    "reviewer_of_reviewer": "None commissioned."
+  }
+}
