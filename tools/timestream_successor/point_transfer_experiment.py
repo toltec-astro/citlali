@@ -7,8 +7,9 @@ from point_fruit_trajectory import bound,verified
 from point_storage import tree_bytes
 REPO=Path(__file__).resolve().parents[2]
 D=REPO/'validation/rtc_point_transfer_2026-09-28'
-ROOT=Path('/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-20260928')
-PRIOR=[ROOT.parent/'successor-rtc-retained-residuals-20260928',ROOT.parent/'successor-rtc-two-stage-20260928']
+FAILED_ROOT=Path('/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-20260928')
+ROOT=FAILED_ROOT.with_name('successor-rtc-point-transfer-build-repair-20260929')
+PRIOR=[ROOT.parent/'successor-rtc-retained-residuals-20260928',ROOT.parent/'successor-rtc-two-stage-20260928',FAILED_ROOT]
 BRANCHES=('REF','C-core-plus','C-core-minus','C-shoulder')
 ROLES=tuple(f'{f}-{b}' for f in ('B','Q') for b in BRANCHES)
 LIMITS=dict(parent=8,trajectory=8,feedback=40,endpoint=8)

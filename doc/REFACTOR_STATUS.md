@@ -1,5 +1,16 @@
 # Citlali Refactor Status
 
+## 2026-09-29 — owner-authorized transfer build repair
+
+The first transfer attempt stopped at build exit 2 before any scientific work.
+The owner authorized repairing and exercising preflight, then stopping for a new
+owner launch. [Repair scope](../validation/rtc_point_transfer_2026-09-28/BUILD_REPAIR.md)
+records explicit configure-before-build, a preflight-only stop before B, preserved
+failed evidence and a fresh launch root included in the shared storage budget.
+Scientific policy and the eight-trajectory ceiling are unchanged. Exact-source
+build/test evidence and independent review must pass before the new ready handoff.
+
+
 ## 2026-09-29 — independent POINT transfer preparation
 
 The owner resumed preparation for POINT152420/0/2, a1100 networks1–4. The frozen

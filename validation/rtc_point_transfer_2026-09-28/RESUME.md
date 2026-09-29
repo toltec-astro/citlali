@@ -6,14 +6,14 @@ are published under the campaign root. No152420 scientific launch has occurred
 while preparing this handoff. Cleanup completed previously; no further cleanup.
 
 Campaign/status:
-`/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-20260928/STATUS.json`
+`/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-build-repair-20260929/STATUS.json`
 Review prerequisite: same directory/PREFLIGHT_REVIEW.json.
 Worktree: `/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor`.
 
 Owner-terminal launch (foreground; keep terminal open and Mac awake):
 
 ```sh
-/Users/gwilson/tolteca/bin/python /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_point_transfer_2026-09-28/run_campaign.py --review /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-20260928/PREFLIGHT_REVIEW.json
+/Users/gwilson/tolteca/bin/python /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_point_transfer_2026-09-28/run_campaign.py --review /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-build-repair-20260929/PREFLIGHT_REVIEW.json
 ```
 
 Ctrl-C safely interrupts the campaign; files remain and no automatic resume or
@@ -39,3 +39,15 @@ provisional development adoption or parking. No production change, push or merge
 
 No agent monitoring, schedule, automatic continuation, background agent, or reviewer
 watching numerical jobs. Numerical code may execute its frozen ordinary stages.
+
+## Owner-authorized build repair
+
+The first attempt stopped at the build gate with zero scientific attempts. Its
+original directory successor-rtc-point-transfer-20260928 remains intact and is
+included in the shared storage accounting. On 2026-09-29 the owner authorized
+repair, testing that the process builds/runs, stopping, and a new launch command.
+Explicit configure now precedes build. `--preflight-only` runs the same build and
+validation gates in the new root's preflight-only directory and returns before
+observation preparation. It neither consumes science slots nor launches B.
+Its successful status does not claim an observation result. The owner command
+above uses a separate exclusive launch marker and rechecks the gates.

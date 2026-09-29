@@ -90,32 +90,47 @@ def verify_role(role,revision):
     counts=accounting();save_json(ROOT/'ACCOUNTING.json',counts)
     require(sum(tree_bytes(x) for x in PRIOR)+tree_bytes(ROOT)<=CAP,'shared actual cap')
 
+def run_preflight(revision):
+    command('configure',['cmake','-S','.', '-B','build'])
+    command('build',['cmake','--build','build','--target','citlali_cli','citlali_rtc_point_select','-j','8'])
+    require(revision[:9] in subprocess.check_output([str(BINARY),'--version'],text=True),'built native source mismatch')
+    save_json(ROOT/'BINARY.json',dict(source_revision=revision,binary=bound(BINARY),selector=bound(SELECTOR)))
+    command('ctest',['cmake','--build','build','--target','check','-j','8'])
+    command('baseline-tools',[PYTHON,'-m','unittest','discover','-s','tools/baseline','-p','test_*.py'])
+    command('point-tools',[PYTHON,'-m','pytest','-q',*sorted((REPO/'tools/timestream_successor').glob('test_point_*.py'))])
+    command('config',[PYTHON,'tools/config/run_config_preflight.py','--require-all'])
+    command('native-five-cycle-requests',[PYTHON,'tests/test_point_fruit_contract_cli.py','--binary',BINARY])
+    command('historical-checks',[PYTHON,D/'historical_checks.py','--output',ROOT/'HISTORICAL_AT_LAUNCH.json'])
+    command('runner-fixtures',[PYTHON,D/'test_transfer_preparation.py'])
+
 def main():
-    global STATE
-    a=argparse.ArgumentParser();a.add_argument('--review',type=Path,required=True);args=a.parse_args()
-    review=read(args.review);revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()
-    require(review['source_revision']==revision and review['verdict']=='pass','exact-source independent preparation review required')
+    global STATE,ROOT
+    a=argparse.ArgumentParser();mode=a.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--review',type=Path)
+    mode.add_argument('--preflight-only',action='store_true',help='Run build and validation gates only; stop before observation preparation')
+    args=a.parse_args()
+    review=read(args.review) if args.review else None
+    revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()
+    if not args.preflight_only:
+        require(review['source_revision']==revision and review['verdict']=='pass','exact-source independent preparation review required')
+    else:
+        ROOT=ROOT/'preflight-only'
     require(not subprocess.check_output(['git','status','--porcelain'],cwd=REPO,text=True).strip(),'clean exact source required')
     require(Path(sys.executable).resolve()==PYTHON.resolve(),'required local venv')
     ROOT.mkdir(parents=True,exist_ok=True)
-    allowed={'STATUS.json','PREFLIGHT_REVIEW.json','READY.json','preflight-inputs','STORAGE_PREFLIGHT.json','HISTORICAL_CHECKS.json'}
+    allowed={'STATUS.json','PREFLIGHT_REVIEW.json','READY.json','preflight-inputs','STORAGE_PREFLIGHT.json','HISTORICAL_CHECKS.json','preflight-only'}
     require(all(x.name in allowed for x in ROOT.iterdir()),'existing incompatible campaign files; no implicit resume')
-    with (ROOT/'LAUNCHED.json').open('x') as f:json.dump(dict(source_revision=revision,started_utc=now(),review=bound(args.review)),f)
-    (ROOT/'logs').mkdir();STATE=dict(campaign='rtc-point-transfer-20260928',source_revision=revision,pid=os.getpid(),started_utc=now(),completed_roles=[],current_role=None,status_file=str(ROOT/'STATUS.json'),resume=str(D/'RESUME.md'),summary=str(ROOT/'report/metrics.json'),model_monitoring_calls_after_handoff=0,token_credit_usage='unavailable; no measured savings claim')
+    with (ROOT/'LAUNCHED.json').open('x') as f:json.dump(dict(source_revision=revision,started_utc=now(),review=bound(args.review) if args.review else None),f)
+    (ROOT/'logs').mkdir();STATE=dict(campaign='rtc-point-transfer-build-repair-20260929',preflight_only=args.preflight_only,source_revision=revision,pid=os.getpid(),started_utc=now(),completed_roles=[],current_role=None,status_file=str(ROOT/'STATUS.json'),resume=str(D/'RESUME.md'),summary=str(ROOT/'report/metrics.json'),model_monitoring_calls_after_handoff=0,token_credit_usage='unavailable; no measured savings claim')
     try:
         status('RUNNING',phase='storage and frozen source preflight')
         save_json(ROOT/'STORAGE_AT_LAUNCH.json',capacity())
-        save_json(ROOT/'FREEZE.json',dict(source_revision=revision,policy=bound(D/'SELECTOR_POLICY.md'),target=bound(D/'TARGET.json'),inputs=[bound(x) for x in sorted((D/'inputs').iterdir()) if x.is_file()],roles=ROLES,limits=LIMITS,review=bound(args.review),environment='local AppleClang/Homebrew fallback; supplemental development evidence, not accepted Unity Spack reproduction'))
-        command('build',['cmake','--build','build','--target','citlali_cli','citlali_rtc_point_select','-j','8'])
-        require(revision[:9] in subprocess.check_output([str(BINARY),'--version'],text=True),'built native source mismatch')
-        save_json(ROOT/'BINARY.json',dict(source_revision=revision,binary=bound(BINARY),selector=bound(SELECTOR)))
-        command('ctest',['cmake','--build','build','--target','check','-j','8'])
-        command('baseline-tools',[PYTHON,'-m','unittest','discover','-s','tools/baseline','-p','test_*.py'])
-        command('point-tools',[PYTHON,'-m','pytest','-q',*sorted((REPO/'tools/timestream_successor').glob('test_point_*.py'))])
-        command('config',[PYTHON,'tools/config/run_config_preflight.py','--require-all'])
-        command('native-five-cycle-requests',[PYTHON,'tests/test_point_fruit_contract_cli.py','--binary',BINARY])
-        command('historical-checks',[PYTHON,D/'historical_checks.py','--output',ROOT/'HISTORICAL_AT_LAUNCH.json'])
-        command('runner-fixtures',[PYTHON,D/'test_transfer_preparation.py'])
+        save_json(ROOT/'FREEZE.json',dict(source_revision=revision,policy=bound(D/'SELECTOR_POLICY.md'),target=bound(D/'TARGET.json'),inputs=[bound(x) for x in sorted((D/'inputs').iterdir()) if x.is_file()],roles=ROLES,limits=LIMITS,review=bound(args.review) if args.review else None,environment='local AppleClang/Homebrew fallback; supplemental development evidence, not accepted Unity Spack reproduction'))
+        run_preflight(revision)
+        if args.preflight_only:
+            save_json(ROOT/'ACCOUNTING.json',accounting())
+            status('PREFLIGHT_PASSED_NO_SCIENCE',phase='all preflight gates passed; stopped before B',exit_code=0,completed_utc=now())
+            return 0
         for role in ROLES:
             status('RUNNING',phase='prepare role',current_role=role,child_pid=None)
             require(subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()==revision,'bound source moved')
