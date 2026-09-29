@@ -1,0 +1,27 @@
+{
+  "owner_message": "Let's carry out a cleanup.",
+  "authorized": true,
+  "scope": "Only the two previously proposed native scratch manifests that block the independent POINT transfer; no worktree, original, compact evidence, FITS, logs or metadata deletion.",
+  "plans": [
+    {
+      "evidence_directory": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_retained_residuals_2026-09-28",
+      "manifest": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_retained_residuals_2026-09-28/NATIVE_REMOVALS.json.gz",
+      "manifest_sha256": "cd7d0ebfcd8ae3e9de21c083428559b080cae83b1a57e713508001439a1096fa",
+      "root": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-retained-residuals-20260928",
+      "files": 25142,
+      "bytes": 2270275802
+    },
+    {
+      "evidence_directory": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_two_stage_2026-09-28",
+      "manifest": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_two_stage_2026-09-28/NATIVE_SCRATCH_PROPOSAL.json.gz",
+      "manifest_sha256": "d56ac8e04db84e43112f34e754d23b5f6fbf1f8ab4f82e9a693efe531d91fa9d",
+      "root": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928",
+      "files": 127920,
+      "bytes": 13771984323
+    }
+  ],
+  "files": 153062,
+  "bytes": 16042260125,
+  "scientific_launch_authorized_by_cleanup": false,
+  "base": "6c26c628ac9df374e0bc8bc5888ba5270a8d9daf"
+}
