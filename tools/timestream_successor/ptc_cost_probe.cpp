@@ -14,7 +14,7 @@ using namespace citlali::pipeline;
 namespace fs=std::filesystem;
 int main(int argc,char **argv) {
  try {
-    if(argc!=7)throw std::invalid_argument("input-ptc-dir|synthetic-overlap|synthetic-staggered segment rank observed-als|pairwise-covariance tolerance NEW-output-dir");
+    if(argc!=7 && argc!=8)throw std::invalid_argument("input-ptc-dir|synthetic-overlap|synthetic-staggered segment rank observed-als|pairwise-covariance tolerance NEW-output-dir [iteration-limit]");
     const auto began=std::chrono::steady_clock::now();const std::string input=argv[1],method=argv[4];const int segment=std::stoi(argv[2]);
     const fs::path output=argv[6];if(fs::exists(output))throw std::invalid_argument("output exists");
     PtcMatrix values;PtcMask mask;YAML::Node record;
@@ -51,14 +51,14 @@ int main(int argc,char **argv) {
         record["source_receipt_sha256"]=citlali::utils::sha256_file(root/"receipt.yaml");record["source_CAL_receipt_sha256"]=receipt["source_CAL_receipt_sha256"];
         record["source"]=root.string();record["segment"]=segment;record["network"]=g["network"];record["scan"]=g["scan"];
     }
-    PtcSolverRequest request;request.rank=std::stoi(argv[3]);request.relative_objective_tolerance=std::stod(argv[5]);
+    PtcSolverRequest request;if(argc==8)request.iteration_limit=std::stoi(argv[7]);request.rank=std::stoi(argv[3]);request.relative_objective_tolerance=std::stod(argv[5]);
     if(method!="observed-als" && method!="pairwise-covariance")throw std::invalid_argument("unknown method");
     request.method=method=="observed-als"?PtcMethod::observed_als:PtcMethod::pairwise_covariance;
     const auto prepared=PtcPrepared::prepare(values,mask);const auto fit=ptc_learn(prepared,request);const auto applied=ptc_apply(prepared,fit);
     PtcMatrix response(values.rows(),values.cols());
     for(int t=0;t<response.rows();++t)for(int d=0;d<response.cols();++d)response(t,d)=std::exp(-.5*std::pow((t-280.-d*.05)/2.,2));
     const auto propagated=ptc_response(prepared,fit,response);
-    record["schema"]="ptc-cost-probe-v1";record["method"]=method;record["rank"]=request.rank;record["relative_objective_tolerance"]=request.relative_objective_tolerance;
+    record["schema"]="ptc-cost-probe-v1";record["iteration_limit"]=request.iteration_limit;record["method"]=method;record["rank"]=request.rank;record["relative_objective_tolerance"]=request.relative_objective_tolerance;
     record["times"]=values.rows();record["detectors"]=values.cols();record["eligible"]=prepared.eligible_count;record["complete_time_fraction"]=double(prepared.complete_times)/values.rows();
     record["time_mask_patterns"]=prepared.time_patterns.size();record["detector_mask_patterns"]=prepared.detector_patterns.size();
     record["converged"]=fit.converged;record["stopping_reason"]=fit.stopping_reason;record["iterations"]=fit.iterations;record["objective"]=fit.objective;

@@ -3,6 +3,7 @@
 void write_treatment_outcome(const fs::path &output, const std::string &name,
     const citlali::pipeline::RtcTreatmentOutcomeEvidence &e, const std::vector<int> &channels) {
   YAML::Node out;out["schema"]="rtc-treatment-outcome-v1";out["use_policy"]=e.use_policy;
+  out["conditioned_grid_policy"]=e.conditioned_handle()->grid_policy_identity();
   out["attempt"]=e.attempt();out["original_evidence_attempt"]=e.original_handle()->attempt();
   out["conditioned_evidence_attempt"]=e.conditioned_handle()->attempt();
   out["producer_attempt"]=e.conditioned_handle()->conditioned_handle()->producer_attempt();
@@ -92,6 +93,7 @@ YAML::Node write_reassessment_decision(const fs::path &output,
     out["completion_policy_authority"]="doc/SCI_RTC_PTC_PARTIAL_COMPLETION_OWNER_BINDING_2026-09-18.md";
   }
   if(e.outcome_handle()) {
+    out["conditioned_grid_policy"]=e.outcome_handle()->conditioned_handle()->grid_policy_identity();
     out["outcome_attempt"]=e.outcome_handle()->attempt();
     out["coordinate_outcomes"]=e.outcome_handle()->records().size();
     std::size_t available=0;for(const auto &r:e.outcome_handle()->records())available+=r.available();

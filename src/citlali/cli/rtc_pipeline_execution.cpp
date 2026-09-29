@@ -393,6 +393,13 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
             NativeObservationScope{obs, sub, scan}, {nw}, std::move(networks)));
     YAML::Node source_probe_record;
     std::shared_ptr<const RtcPointRunSelectionPlan> point_rejection;
+    if(cfg["point_transfer_runtime_profile"]) {
+      require(cfg["point_transfer_runtime_profile"].as<std::string>()=="point-transfer-runtime-2026-09-29-v1" &&
+          cfg["rtc_source_probe"] && cfg["rtc_source_probe"]["authority"].as<std::string>()=="owner-RTC-point-transfer-2026-09-28" &&
+          citlali::cli::detail::point_rtc_probe_route_allowed(development,common!=nullptr,
+              reference,obs,sub,scan,nw,health_array,"owner-RTC-point-transfer-2026-09-28"),
+          "RTC transfer runtime profile outside approved scope");
+    }
     require(!cfg["rtc_point_run_selection"] || (cfg["rtc_source_probe"] && !cfg["rtc_whole_run_quarantine"]),"RTC point rejection requires original-domain probe and no manual list");
     if(cfg["rtc_source_probe"]) {
       require(citlali::cli::detail::point_rtc_probe_route_allowed(development,common!=nullptr,
@@ -1053,7 +1060,8 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
       std::ofstream relearned_stream(relearned_path);
       const auto relearn_at=std::chrono::steady_clock::now();
       for(bool lowpass:{false,true}){
-        auto conditioned=RtcNativeSpectralEvidence::learn_conditioned(result->native_product(lowpass,val),val,cadence,1100+lowpass);
+        auto conditioned=RtcNativeSpectralEvidence::learn_conditioned(result->native_product(lowpass,val),val,cadence,1100+lowpass,
+            cfg["point_transfer_runtime_profile"] ? RtcConditionedSpectralGrid::padded_short_stretches : RtcConditionedSpectralGrid::require_full_stretch);
         performance.mark(lowpass?"post_lowpass_learned":"post_notch_learned");
         performance.array(lowpass?"post_lowpass_spectral_evidence":"post_notch_spectral_evidence",conditioned->logical_owned_bytes(),1,0);
         performance.array("conditioned_review_state_and_speed",2*rows*channels.size(),sizeof(std::uint8_t),2*channels.size());
@@ -1066,7 +1074,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
         const auto outcome_seconds=std::chrono::duration<double>(std::chrono::steady_clock::now()-outcome_started).count();
         const auto reassessment=RtcPipelineReassessment::consider(result,considered,(consequences.empty()?1300:9000)+lowpass,outcome,
             lowpass?consequences:std::vector<std::shared_ptr<const RtcConsequenceEvidence>>{});
-        YAML::Node stage;stage["after_lowpass"]=lowpass;stage["producer_attempt"]=complete->attempt();
+        YAML::Node stage;stage["conditioned_grid_policy"]=conditioned->grid_policy_identity();stage["after_lowpass"]=lowpass;stage["producer_attempt"]=complete->attempt();
         const auto stage_path=output/(lowpass ? "post-lowpass-psd.f64" : "post-notch-psd.f64");
         std::ofstream stage_psd(stage_path,std::ios::binary);
         stage["classification_authorized"]=reassessment->classification_authorized;

@@ -64,6 +64,7 @@ public:
     RtcNativeSpectralEvidence after{out->original_->original_spike_handle(),
                                     attempt};
     after.conditioned_ = out->conditioned_->conditioned_handle();
+    before.grid_policy_ = after.grid_policy_ = out->conditioned_->grid_policy();
     for (const auto &n : out->original_->networks()) {
       const auto id = n.input->support().network_id;
       const auto &m = out->conditioned_->network(id);

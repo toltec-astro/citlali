@@ -193,6 +193,10 @@ inline std::size_t source_index(RtcSpikeProtection p) {
 }
 } // namespace rtc_native_spectral_detail
 
+// Owner-approved development diagnostic alternative. It changes only conditioned
+// and matched evidence windows, never initial evidence, filtering or admission.
+enum class RtcConditionedSpectralGrid { require_full_stretch, padded_short_stretches };
+
 class RtcNativeSpectralEvidence {
 public:
     static std::shared_ptr<const RtcNativeSpectralEvidence> learn_initial(
@@ -204,21 +208,26 @@ public:
     static std::shared_ptr<const RtcNativeSpectralEvidence> learn_conditioned(
         std::shared_ptr<const RtcConditionedNativeProduct> product,
         std::shared_ptr<const ValSnapshot> snapshot,
-        std::vector<RtcSpectralCadenceDomain> cadence, std::uint64_t attempt) {
+        std::vector<RtcSpectralCadenceDomain> cadence, std::uint64_t attempt,
+        RtcConditionedSpectralGrid grid = RtcConditionedSpectralGrid::require_full_stretch) {
+        if (grid != RtcConditionedSpectralGrid::require_full_stretch && grid != RtcConditionedSpectralGrid::padded_short_stretches)
+            throw std::invalid_argument("unknown conditioned spectral grid policy");
         if (!product || !snapshot || product->snapshot_handle().get() != snapshot.get())
             throw std::invalid_argument("RTC conditioned Learn requires exact numerical product and VAL snapshot");
-        return learn(product->original_spike_handle(), product->identities(), std::move(cadence), attempt, product);
+        return learn(product->original_spike_handle(), product->identities(), std::move(cadence), attempt, product, grid);
     }
 private:
     static std::shared_ptr<const RtcNativeSpectralEvidence> learn(
         std::shared_ptr<const RtcSpikeEvidence> original,
         std::vector<std::shared_ptr<const RtcSpectralInputIdentity>> inputs,
         std::vector<RtcSpectralCadenceDomain> cadence, std::uint64_t attempt,
-        std::shared_ptr<const RtcConditionedNativeProduct> conditioned) {
+        std::shared_ptr<const RtcConditionedNativeProduct> conditioned,
+        RtcConditionedSpectralGrid grid = RtcConditionedSpectralGrid::require_full_stretch) {
         if (!original || !attempt || inputs.size() != original->input_handle()->network_count() || cadence.size() != inputs.size())
             throw std::invalid_argument("RTC spectral Learn requires complete original references and attempt");
         auto out = std::shared_ptr<RtcNativeSpectralEvidence>(new RtcNativeSpectralEvidence{original, attempt});
         out->conditioned_ = std::move(conditioned);
+        out->grid_policy_ = grid;
         for (std::size_t ni = 0; ni < inputs.size(); ++ni) {
             const auto &binding = inputs[ni]; const auto span = original->input_handle()->spans()[ni];
             if (!out->conditioned_ && (!binding || binding->subject_handle()->paired_handle().get() != original->input_handle()->parent_handle().get() ||
@@ -279,6 +288,11 @@ private:
         return out;
     }
 public:
+    auto grid_policy() const noexcept { return grid_policy_; }
+    const char *grid_policy_identity() const noexcept {
+        return grid_policy_ == RtcConditionedSpectralGrid::padded_short_stretches ?
+            "rtc-conditioned-padded-2s-fixed-4s-v1" : "d2-require-full-grid-stretch-v1";
+    }
     const auto &original_spike_handle() const noexcept { return original_; }
     const auto &conditioned_handle() const noexcept { return conditioned_; }
     std::uint64_t attempt() const noexcept { return attempt_; }
@@ -368,7 +382,8 @@ private:
             for (auto &r : s.runs) if (r.cause != RtcSpectralRunCause::input_consistency_failure) r.cause = RtcSpectralRunCause::arithmetic_nonfinite;
             return s;
         }
-        if (longest < n.fft_samples) { s.cause = RtcSpectralCause::fixed_grid_unavailable; return s; }
+        if ((longest < n.fft_samples && !(grid_policy_ == RtcConditionedSpectralGrid::padded_short_stretches &&
+            (derived || comparison_support))) || window.size() != n.fft_samples || n.frequency_hz.empty()) { s.cause = RtcSpectralCause::fixed_grid_unavailable; return s; }
         std::vector<double> total(n.frequency_hz.size(), 0.);
         Eigen::FFT<double> fft; fft.SetFlag(Eigen::FFT<double>::HalfSpectrum);
         for (std::size_t ri = 0; ri < s.runs.size(); ++ri) {
@@ -431,6 +446,7 @@ private:
             RtcSpectralCause::available_with_unavailable_runs : RtcSpectralCause::available;
         return s;
     }
+    RtcConditionedSpectralGrid grid_policy_ = RtcConditionedSpectralGrid::require_full_stretch;
     std::shared_ptr<const RtcSpikeEvidence> original_;
     std::shared_ptr<const RtcConditionedNativeProduct> conditioned_;
     std::uint64_t attempt_;

@@ -85,6 +85,9 @@ def verify_role(role,revision):
         require(not re.search(r'\[(?:error|critical)\]',f.read_text(),re.I),'unexpected scientific error-level log: '+str(f))
     for nw in range(1,5):
         r=yread(out/f'upstream/products/network{nw}/receipt.yaml');require(r['Apply_performed'] and r['original_pair_unchanged'],'native RTC endpoint/original pair failed')
+        require(r['PTC']['iteration_limit']==500,'transfer PTC cap not realized')
+        decision=yread(out/f'upstream/products/network{nw}/donor-continuity/reassessment-decision.yaml')
+        require(decision['conditioned_grid_policy']=='rtc-conditioned-padded-2s-fixed-4s-v1','transfer diagnostic profile not realized')
         require(revision.startswith(r['source_revision']) or r['source_revision'].startswith(revision),'native source mismatch')
     require(tree_bytes(out)<=ROLE_CAP,'completed role exceeds frozen retention cap; stop and preserve')
     counts=accounting();save_json(ROOT/'ACCOUNTING.json',counts)
@@ -92,7 +95,7 @@ def verify_role(role,revision):
 
 def run_preflight(revision):
     command('configure',['cmake','-S','.', '-B','build'])
-    command('build',['cmake','--build','build','--target','citlali_cli','citlali_rtc_point_select','citlali_point_frozen_apply','-j','8'])
+    command('build',['cmake','--build','build','--target','citlali_cli','citlali_rtc_point_select','citlali_point_frozen_apply','citlali_ptc_cost','-j','8'])
     require(revision[:9] in subprocess.check_output([str(BINARY),'--version'],text=True),'built native source mismatch')
     save_json(ROOT/'BINARY.json',dict(source_revision=revision,binary=bound(BINARY),selector=bound(SELECTOR)))
     command('ctest',['cmake','--build','build','--target','check','-j','8'])
@@ -122,11 +125,11 @@ def main():
     allowed={'STATUS.json','PREFLIGHT_REVIEW.json','READY.json','preflight-inputs','STORAGE_PREFLIGHT.json','HISTORICAL_CHECKS.json','preflight-only'}
     require(all(x.name in allowed for x in ROOT.iterdir()),'existing incompatible campaign files; no implicit resume')
     with (ROOT/'LAUNCHED.json').open('x') as f:json.dump(dict(source_revision=revision,started_utc=now(),review=bound(args.review) if args.review else None),f)
-    (ROOT/'logs').mkdir();STATE=dict(campaign='rtc-point-transfer-build-repair-20260929',preflight_only=args.preflight_only,source_revision=revision,pid=os.getpid(),started_utc=now(),completed_roles=[],current_role=None,status_file=str(ROOT/'STATUS.json'),resume=str(D/'RESUME.md'),summary=str(ROOT/'report/metrics.json'),model_monitoring_calls_after_handoff=0,token_credit_usage='unavailable; no measured savings claim')
+    (ROOT/'logs').mkdir();STATE=dict(campaign='rtc-point-transfer-runtime-repair-20260929',preflight_only=args.preflight_only,source_revision=revision,pid=os.getpid(),started_utc=now(),completed_roles=[],current_role=None,status_file=str(ROOT/'STATUS.json'),resume=str(D/'RESUME.md'),summary=str(ROOT/'report/metrics.json'),model_monitoring_calls_after_handoff=0,token_credit_usage='unavailable; no measured savings claim')
     try:
         status('RUNNING',phase='storage and frozen source preflight')
         save_json(ROOT/'STORAGE_AT_LAUNCH.json',capacity())
-        save_json(ROOT/'FREEZE.json',dict(source_revision=revision,policy=bound(D/'SELECTOR_POLICY.md'),target=bound(D/'TARGET.json'),inputs=[bound(x) for x in sorted((D/'inputs').iterdir()) if x.is_file()],roles=ROLES,limits=LIMITS,review=bound(args.review) if args.review else None,environment='local AppleClang/Homebrew fallback; supplemental development evidence, not accepted Unity Spack reproduction'))
+        save_json(ROOT/'FREEZE.json',dict(source_revision=revision,runtime_authority=bound(D/'RUNTIME_REPAIR.md'),preserved_failed_accounting=bound(FAILED_SCIENCE_ROOT/'ACCOUNTING.json'),maximum_historical_parent_attempts=9,policy=bound(D/'SELECTOR_POLICY.md'),target=bound(D/'TARGET.json'),inputs=[bound(x) for x in sorted((D/'inputs').iterdir()) if x.is_file()],roles=ROLES,limits=LIMITS,review=bound(args.review) if args.review else None,environment='local AppleClang/Homebrew fallback; supplemental development evidence, not accepted Unity Spack reproduction'))
         run_preflight(revision)
         if args.preflight_only:
             save_json(ROOT/'ACCOUNTING.json',accounting())

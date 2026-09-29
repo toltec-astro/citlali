@@ -1,0 +1,65 @@
+{
+  "source_revision": "6eb15ca337604298074f574152a01a8a7f697647",
+  "campaign_state": "PROCESS_FAILED",
+  "diagnosis": "Two existing scientific acceptance limits; no confirmed implementation deviation",
+  "RTC": {
+    "network": 4,
+    "channel": 155,
+    "coordinate_scope": "both x and r",
+    "conditioned_review_samples": 4146,
+    "stretch_count": 25,
+    "longest_stretch_samples": 481,
+    "fixed_grid_samples": 488,
+    "minimum_padded_chunk_samples": 244,
+    "eligible_short_chunks": 7,
+    "cause": "fixed_grid_unavailable",
+    "other_unavailable_detectors": 83,
+    "other_unavailable_support": "zero conditioned review support; no proof that all other completion checks pass"
+  },
+  "PTC": {
+    "network": 1,
+    "scan": 4,
+    "native_interval": [
+      4881,
+      6101
+    ],
+    "fit_detectors": 260,
+    "iterations": 100,
+    "iteration_limit": 100,
+    "tolerance": "1e-05",
+    "last_relative_decreases": [
+      1.5984800750935975e-05,
+      1.5637552054437547e-05,
+      1.5300950206746585e-05
+    ],
+    "state": "iteration-limit-not-converged; no output from this segment"
+  },
+  "proposal_state": "Owner decision pending; not implemented",
+  "proposed_scope": {
+    "RTC": "Explicit opt-in conditioned/matched diagnostic profile: fixed 4s grid, existing >=2s chunk padding, no requirement for one full 4s stretch; minimum windows and all exclusions preserved; original-domain selector unchanged",
+    "PTC": "Explicit transfer-only cap 500, rank10/tolerance1e-5 unchanged, all five FRUIT cycles use same controls; unconverged fits remain unavailable"
+  },
+  "preservation": "Failed attempt and charged science slot retained; no retry or new numerical fit performed",
+  "evidence": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-build-repair-20260929/STATUS.json",
+      "sha256": "21793c193aca01c3ecce1ec0f7752250eda14f1894733599c6fcfbcb44c7140e"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-build-repair-20260929/ACCOUNTING.json",
+      "sha256": "16ef115379517012fdc32d0b0ae6f04bb40d62c1f981e45b9a916d4bc9096b19"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-build-repair-20260929/B-REF/upstream/products/network4/donor-continuity/post-lowpass-outcome.yaml",
+      "sha256": "02ab717640594ceef4c27b3f7039c4b0c0599c2e60014b319e3fa22ace1433e2"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-build-repair-20260929/B-REF/upstream/products/network1/donor-continuity/ptc/receipt.yaml",
+      "sha256": "a3fb31015992b61e21cdd55ae0f93392a7e6b7d387740bacd3101e7147beb65d"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-build-repair-20260929/B-REF/upstream/products/network4/donor-continuity/reassessment-decision.yaml",
+      "sha256": "5eb60aadb8cbd54e0f9ae2aaa28dd96de88cd77d182559767b97106632362060"
+    }
+  ]
+}

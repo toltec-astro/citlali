@@ -82,7 +82,7 @@
     },
     "PTC": {
       "rank": 10,
-      "max_iterations": 100,
+      "max_iterations": 500,
       "relative_objective_tolerance": 1e-05,
       "relative_rank_tolerance": 1e-10,
       "method": "observed-entry ALS, fresh residual-specific per-network segment; no historical failure exceptions"
@@ -122,5 +122,6 @@
     "network_workers": 2,
     "free_space_reserve_bytes": 2000000000,
     "maximum_retained_bytes": 2000000000
-  }
+  },
+  "runtime_profile": "point-transfer-runtime-2026-09-29-v1"
 }

@@ -1022,6 +1022,60 @@ TEST(rtc_treatment_outcome, identity_stage_is_exact_on_same_windows_and_keeps_so
   EXPECT_FALSE(e->independent_noise_estimate);
   EXPECT_EQ(e->original_handle(),t.lines->spectral_handle());
 }
+TEST(rtc_treatment_outcome, approved_short_conditioned_windows_keep_fixed_grid_and_original_policy) {
+  Input in(1500);
+  for(int row:{489,979,1469}) {
+    in.xs[row*3]=NativeReadoutCoordinateState::measured(true,false,true,true);
+    in.rs[row*3]=NativeReadoutCoordinateState::measured(true,false,true,true);
+  }
+  Trial t(in);auto original=t.lines->spectral_handle();
+  ASSERT_TRUE(original->spectrum(0,0,NativeReadoutCoordinate::x).available());
+  const auto saved=original->spectrum(0,0,NativeReadoutCoordinate::x).psd;
+  auto p=RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31);
+  auto result=complete_apply(t,p);auto product=result->native_product(true,t.val);
+  auto old=conditioned_learn(t,result,true);
+  ASSERT_EQ(old->spectrum(0,0,NativeReadoutCoordinate::x).cause,RtcSpectralCause::fixed_grid_unavailable);
+  auto padded=RtcNativeSpectralEvidence::learn_conditioned(product,t.val,{{0,"control-cadence",.008192,1e-7}},42,
+      RtcConditionedSpectralGrid::padded_short_stretches);
+  ASSERT_EQ(padded->network(0).frequency_hz,old->network(0).frequency_hz);
+  auto comparison=RtcTreatmentOutcomeEvidence::learn(original,padded,43);
+  for(auto coordinate:{NativeReadoutCoordinate::x,NativeReadoutCoordinate::r}) {
+    const auto &a=padded->spectrum(0,0,coordinate);ASSERT_TRUE(a.available());
+    ASSERT_EQ(a.windows.size(),3);EXPECT_EQ(a.psd.size(),245);
+    const auto &b=comparison->record(0,0,coordinate);ASSERT_TRUE(b.available());
+    ASSERT_EQ(b.original_matched.windows.size(),b.conditioned_matched.windows.size());
+    for(std::size_t i=0;i<a.windows.size();++i) {
+      const auto &win=a.windows[i];EXPECT_GT(win.padded_samples,0);EXPECT_GE(win.rows.past_last-win.rows.first,244);
+      for(int excluded:{589,1079,1569})EXPECT_TRUE(win.rows.past_last<=excluded || win.rows.first>excluded);
+      EXPECT_EQ(b.original_matched.windows[i].rows,b.conditioned_matched.windows[i].rows);
+    }
+  }
+  EXPECT_EQ(saved,original->spectrum(0,0,NativeReadoutCoordinate::x).psd);
+  EXPECT_EQ(original->grid_policy(),RtcConditionedSpectralGrid::require_full_stretch);
+  EXPECT_EQ(old->spectrum(0,1,NativeReadoutCoordinate::x).psd,padded->spectrum(0,1,NativeReadoutCoordinate::x).psd);
+  // The profile cannot synthesize a diagnostic for an empty output detector.
+  auto plans=complete_plans(t);plans[0]=t.plan(false,true,{},0);
+  auto rejected=complete_apply(t,RtcPipelinePlan::consider(plans,t.joint->joint_handle(),44));
+  auto empty=RtcNativeSpectralEvidence::learn_conditioned(rejected->native_product(true,t.val),t.val,{{0,"control-cadence",.008192,1e-7}},45,
+      RtcConditionedSpectralGrid::padded_short_stretches);
+  EXPECT_FALSE(empty->spectrum(0,0,NativeReadoutCoordinate::x).available());
+  EXPECT_TRUE(empty->spectrum(0,0,NativeReadoutCoordinate::x).psd.empty());
+}
+TEST(rtc_treatment_outcome, padded_profile_preserves_minimum_duration_and_window_count) {
+  for(bool too_short:{false,true}) {
+    Input in(too_short?1500:489);
+    if(too_short)for(int row=239;row<1500;row+=240) {
+      in.xs[row*3]=NativeReadoutCoordinateState::measured(true,false,true,true);
+      in.rs[row*3]=NativeReadoutCoordinateState::measured(true,false,true,true);
+    }
+    Trial t(in);auto result=complete_apply(t,RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31));
+    auto padded=RtcNativeSpectralEvidence::learn_conditioned(result->native_product(true,t.val),t.val,
+        {{0,"control-cadence",.008192,1e-7}},42,RtcConditionedSpectralGrid::padded_short_stretches);
+    const auto &s=padded->spectrum(0,0,NativeReadoutCoordinate::x);
+    EXPECT_EQ(s.cause,RtcSpectralCause::insufficient_windows);EXPECT_TRUE(s.psd.empty());
+    EXPECT_EQ(s.windows.size(),too_short?0:1);
+  }
+}
 TEST(rtc_treatment_outcome, analytic_line_power_uses_matched_footprints_and_preserves_inputs) {
   Input in(6000);const double f=44./(488*.008192);
   for(Eigen::Index i=0;i<in.x.rows();++i)for(int d=0;d<3;++d) {
@@ -1062,8 +1116,9 @@ TEST(rtc_treatment_outcome, unequal_masks_gaps_and_window_overlap_keep_exact_nat
   EXPECT_EQ(r.original_matched.runs[0].unexpected_nonfinite_samples,0);
 }
 TEST(rtc_treatment_outcome, unexpected_nonfinite_outside_shared_support_is_not_hidden) {
+  for(auto grid:{RtcConditionedSpectralGrid::require_full_stretch,RtcConditionedSpectralGrid::padded_short_stretches}) {
   Input in(6000);Trial t(in);auto p=RtcPipelinePlan::consider(complete_plans(t),t.joint->joint_handle(),31);
-  auto result=complete_apply(t,p);auto conditioned=conditioned_learn(t,result,true);
+  auto result=complete_apply(t,p);auto conditioned=RtcNativeSpectralEvidence::learn_conditioned(result->native_product(true,t.val),t.val,{{0,"control-cadence",.008192,1e-7}},40,grid);
   // First row is outside the finite filtered footprint, but was admitted raw.
   auto *cell=const_cast<double*>(t.parent->network(0).values(NativeReadoutCoordinate::x).data());
   const double saved=*cell;*cell=NAN;
@@ -1072,6 +1127,7 @@ TEST(rtc_treatment_outcome, unexpected_nonfinite_outside_shared_support_is_not_h
   EXPECT_FALSE(r.available());EXPECT_EQ(r.original_matched.cause,RtcSpectralCause::input_consistency_failure);
   EXPECT_EQ(r.original_matched.runs[0].first_unexpected_nonfinite,100);
   EXPECT_TRUE(e->record(0,0,NativeReadoutCoordinate::r).available());
+  }
 }
 TEST(rtc_treatment_outcome, unavailable_support_is_not_zero_residual_power) {
   Input in(6000);Trial t(in);

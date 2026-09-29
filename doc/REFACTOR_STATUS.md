@@ -1,5 +1,17 @@
 # Citlali Refactor Status
 
+## 2026-09-29 — approved transfer runtime-policy repair
+
+B-REF at6eb15ca33 stopped before FRUIT: network4 channel155 lacked a full diagnostic
+window, and network1 scan4 exhausted100 PTC iterations. One trajectory is charged.
+After independent diagnosis, the owner explicitly approved conditioned diagnostic
+padding and cap500 with unchanged convergence tolerance/rank.
+[Runtime repair](../validation/rtc_point_transfer_2026-09-28/RUNTIME_REPAIR.md)
+binds this intentional development profile, preserved failed attempts, fresh root
+and tightened per-role storage admission. Exact-source tests/review must pass
+before owner relaunch; no new trajectory or adoption is implied by repair.
+
+
 ## 2026-09-29 — owner-authorized transfer build repair
 
 The first transfer attempt stopped at build exit 2 before any scientific work.

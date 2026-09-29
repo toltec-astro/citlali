@@ -40,6 +40,13 @@ class Contract(unittest.TestCase):
     with self.subTest(scope=scope,cycle=cycle):self.accept(self.fixture(scope,cycle))
  def test_transfer_all_five_native_cycles(self):
   for cycle in range(1,6):self.accept(self.fixture('rtc-point-transfer-v1',cycle,'a1100',152420))
+ def test_approved_runtime_profile_all_cycles_and_rejects_unbound_caps(self):
+  for cycle in range(1,6):
+   f=self.fixture('rtc-point-transfer-v1',cycle,'a1100',152420);f['p']['runtime_profile']='point-transfer-runtime-2026-09-29-v1';f['p']['scientific_recipe']={'PTC':{'max_iterations':500}};self.accept(f)
+  for scope,obs,profile,cap in [('rtc-point-transfer-v1',152420,'foreign',500),('rtc-retained-residuals-v1',152430,'point-transfer-runtime-2026-09-29-v1',500),('rtc-point-transfer-v1',152420,'point-transfer-runtime-2026-09-29-v1',100),('rtc-point-transfer-v1',152420,None,500)]:
+   f=self.fixture(scope,1,'a1100',obs);f['p']['scientific_recipe']={'PTC':{'max_iterations':cap}}
+   if profile:f['p']['runtime_profile']=profile
+   self.reject(f,'FRUIT')
  def test_transfer_rejects_foreign_identity_and_cycles(self):
   for obs in (152430,152389):self.reject(self.fixture('rtc-point-transfer-v1',1,'a1100',obs),'FRUIT')
   for cycle in (0,6):self.reject(self.fixture('rtc-point-transfer-v1',cycle,'a1100',152420),'FRUIT')

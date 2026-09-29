@@ -35,13 +35,18 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output,bool valida
     require(campaign || (!request["branch"] && !request["injection"]),"FRUIT foreign campaign fields");
     const auto owner_path=checked_file(request["owner_binding"]);const auto owner_sha=ledger.bind(owner_path);
     const auto owner=YAML::LoadFile(owner_path.string());
-    bool step_experiment=false,four_network_rtc=false,point_transfer=false;
+    bool step_experiment=false,four_network_rtc=false,point_transfer=false,transfer_runtime=false;
     if(speed_experiment){
       const auto p=YAML::LoadFile(checked_file(owner["prospective"]).string());
       step_experiment=p["campaign_scope"] && p["campaign_scope"].as<std::string>()=="rtc-step-point-v1";
       // One interpretation feeds every array/network/cycle gate below.
       const auto scope=p["campaign_scope"]?p["campaign_scope"].as<std::string>():"";
       point_transfer=scope=="rtc-point-transfer-v1";
+      if(p["runtime_profile"]) {
+        require(point_transfer && p["runtime_profile"].as<std::string>()=="point-transfer-runtime-2026-09-29-v1" &&
+            p["scientific_recipe"]["PTC"]["max_iterations"].as<int>()==500,"FRUIT transfer runtime profile");
+        transfer_runtime=true;
+      } else require(!p["scientific_recipe"] || !p["scientific_recipe"]["PTC"]["max_iterations"] || p["scientific_recipe"]["PTC"]["max_iterations"].as<int>()==100,"FRUIT unapproved solver cap");
       four_network_rtc=point_transfer || scope=="rtc-step-consequences-v1" || scope=="rtc-retained-residuals-v1";
       if(four_network_rtc)require(p["observation"].as<int>()==(point_transfer?152420:152430) && owner["observation"].as<int>()==(point_transfer?152420:152430) &&
         p["array"].as<std::string>()=="a1100" && p["networks"].as<std::vector<int>>()==std::vector<int>({1,2,3,4}) &&
@@ -232,7 +237,7 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output,bool valida
         // is diagnostic only: every experiment M0/residual learns from original y.
         if(rank_experiment) {
             const auto config=YAML::LoadFile(checked_file(owner["prospective"]).string());
-            require((speed_experiment?solver.rank==config["ptc"]["rank"].as<int>():solver.rank==10) && solver.iteration_limit==100 && solver.relative_objective_tolerance==1e-5 && solver.relative_rank_tolerance==1e-10,
+            require((speed_experiment?solver.rank==config["ptc"]["rank"].as<int>():solver.rank==10) && solver.iteration_limit==(transfer_runtime?500:100) && solver.relative_objective_tolerance==1e-5 && solver.relative_rank_tolerance==1e-10,
                 "FRUIT rank experiment changed parent solver recipe");
             solver.rank=config["ptc"]["rank"].as<int>();
         }

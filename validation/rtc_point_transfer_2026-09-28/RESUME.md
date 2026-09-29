@@ -2,18 +2,18 @@
 
 Prepared foreground runner for POINT152420/0/2 a1100 networks1–4. Rule/configuration:
 SELECTOR_POLICY.md and inputs/reference.json; exact source/review/binary bindings
-are published under the campaign root. No152420 scientific launch has occurred
-while preparing this handoff. Cleanup completed previously; no further cleanup.
+are published under the campaign root. The prior152420 B-REF attempt failed; no new scientific launch has occurred
+while preparing this runtime-repair handoff. Cleanup completed previously; no further cleanup.
 
 Campaign/status:
-`/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-build-repair-20260929/STATUS.json`
+`/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-runtime-repair-20260929/STATUS.json`
 Review prerequisite: same directory/PREFLIGHT_REVIEW.json.
 Worktree: `/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor`.
 
 Owner-terminal launch (foreground; keep terminal open and Mac awake):
 
 ```sh
-/Users/gwilson/tolteca/bin/python /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_point_transfer_2026-09-28/run_campaign.py --review /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-build-repair-20260929/PREFLIGHT_REVIEW.json
+/Users/gwilson/tolteca/bin/python /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_point_transfer_2026-09-28/run_campaign.py --review /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-runtime-repair-20260929/PREFLIGHT_REVIEW.json
 ```
 
 Ctrl-C safely interrupts the campaign; files remain and no automatic resume or
@@ -51,3 +51,18 @@ validation gates in the new root's preflight-only/<source-SHA> directory and ret
 observation preparation. It neither consumes science slots nor launches B.
 Its successful status does not claim an observation result. The owner command
 above uses a separate exclusive launch marker and rechecks the gates.
+
+## Approved runtime policy repair
+
+On 2026-09-29 the owner requested investigation, repair and relaunch, and explicitly
+approved both bounded changes: conditioned/matched diagnostic padding of eligible
+2–4s stretches onto the fixed 4s grid, and PTC cap500 with rank10 and tolerance1e-5.
+RUNTIME_REPAIR.md records the exact scope and prior attempt. Original selector and
+filter/sample masks stay frozen. This is an intentionally revised B/Q development
+profile, not a claim of equivalence to the failed profile. No nonconverged fit is
+accepted. The prior build-only failure and failed B trajectory remain preserved.
+The new campaign allows the requested replacement B plus its original seven roles;
+aggregate history can therefore be9 parents/trajectories including the failed one,
+while feedback stays at most40. No unattended further retry or replacement.
+Per-role retained allowance is now2.7GB to preserve the prior failed science under
+the same shared30GB ceiling. This is an admission bound, not a promise of fit.

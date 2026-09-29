@@ -22,6 +22,13 @@ YAML::Node execute_connected_ptc(const PtcCalSource &source,const ProcessingScan
     const auto ranks=pca["n_eig_to_cut"][arrays.at(source.detector_factors().front().array)].as<std::vector<int>>();
     require(ranks.size()==1 && ranks.front()>0,"successor.PTC_explicit_rank_unavailable");
     request.rank=requested.rank?requested.rank:ranks.front();
+    if(cfg["point_transfer_runtime_profile"]) {
+        require(cfg["point_transfer_runtime_profile"].as<std::string>()=="point-transfer-runtime-2026-09-29-v1" &&
+            cfg["observation"].as<int>()==152420 && cfg["network"].as<int>()>=1 && cfg["network"].as<int>()<=4 &&
+            source.detector_factors().front().array==0 && request.rank==10 && request.method==PtcMethod::observed_als,
+            "PTC transfer runtime profile outside approved scope");
+        request.iteration_limit=500;
+    }
     if(request.method==PtcMethod::masked_covariance_count)
         require(cfg["observation"].as<int>()==152430 && (cfg["network"].as<int>()==11 || cfg["network"].as<int>()==12) && (request.rank==10 || request.rank==15),"experimental masked covariance scope");
     const auto evidence=PtcEvidence::learn(source,scans,request);

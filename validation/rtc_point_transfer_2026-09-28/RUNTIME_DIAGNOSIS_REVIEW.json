@@ -1,0 +1,83 @@
+{
+  "schema": "rtc-runtime-diagnosis-independent-review-v1",
+  "date": "2026-09-29",
+  "reviewed_sha": "6eb15ca337604298074f574152a01a8a7f697647",
+  "tree_sha": "b8bf7e3860a6e10dffde567b56c543d8cccf3e01",
+  "worktree": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor",
+  "review_kind": "fresh-context independent read-only diagnosis; no candidate implementation exists",
+  "verdict": "Diagnosis corroborated with recorded limits. Both proposals cross existing explicit policy boundaries; parent now reports explicit bounded owner approval. No within-current-policy implementation defect established.",
+  "governance": [
+    "AGENTS.md",
+    "doc/governance/ENGINEERING_GOVERNANCE.md",
+    "doc/governance/TIMESTREAM_SUCCESSOR_GOVERNANCE.md",
+    "doc/governance/REVIEW_AND_CONFORMANCE.md",
+    "doc/INTEGRATION_LEDGER.md effectiveness record 2026-08-31"
+  ],
+  "governance_effectiveness": "All three normative document digests match the accepted 06a3ade51c1b3f38887295433d913811bf25cd14 record.",
+  "scientific_authority": [
+    "doc/SCI_RTC_PTC_PARTIAL_COMPLETION_OWNER_BINDING_2026-09-18.md",
+    "doc/SCI_PTC_OBSERVED_ENTRY_OWNER_BINDING_2026-09-18.md",
+    "validation/rtc_point_transfer_2026-09-28/OWNER_DIRECTIVE.md"
+  ],
+  "rtc": {
+    "missing_coordinates": 168,
+    "missing_detectors": 84,
+    "zero_support_missing_coordinates": 166,
+    "short_nonempty_coordinates": 2,
+    "channel": 155,
+    "common_samples": 4146,
+    "stretches": 25,
+    "maximum_stretch": 481,
+    "stretches_at_least_244": 7,
+    "fixed_fft_samples": 488,
+    "paired_native_samples": 5035,
+    "map_centers": 4823,
+    "finding": "Explicit longest < fft_samples guard yields fixed_grid_unavailable; original and matched outcome histories remain distinct. Existing v2 partial-completion rule excludes short nonempty support, so channel 155 cannot be treated as fully empty. Rejection is deliberate under current policy.",
+    "sources": [
+      "include/citlali/core/pipeline/timestream_rtc_native_spectral_learn.h:371",
+      "include/citlali/core/pipeline/timestream_rtc_pipeline.h:575",
+      "tests/test_timestream_rtc_native_spectral_learn.cpp:132",
+      "tools/wp7/rtc_filter_psd_line_evidence.py:385"
+    ],
+    "proposed_change_boundary": "Allowing >=2-second conditioned and matched windows padded to the fixed 4-second grid changes diagnostic support admission even if Hann, median, normalization, thresholds and filtering are preserved. Requires named owner binding and evidence identity; preserve original-reference estimator behavior, gap boundaries and actual support. This review does not select this option."
+  },
+  "ptc": {
+    "network": 1,
+    "scan": 4,
+    "native_interval": [
+      4881,
+      6101
+    ],
+    "detectors": 260,
+    "iterations": 100,
+    "stopping_reason": "iteration-limit-not-converged",
+    "last_relative_objective_decrease": 1.5300950206746585e-05,
+    "tolerance": "1e-05",
+    "finding": "100-iteration cap and two-successive-small-decrease criterion are expressly owner-bound. Observed nonconvergence and output gate rejection match the implementation; zero-support omission cannot discard partially supported columns or failed fits.",
+    "sources": [
+      "doc/SCI_PTC_OBSERVED_ENTRY_OWNER_BINDING_2026-09-18.md",
+      "src/citlali/core/pipeline/timestream_ptc_numerics.cpp:202",
+      "tools/timestream_successor/point_processing.py:125",
+      "src/citlali/cli/fruit_saved_execution.h:235"
+    ],
+    "proposed_change_boundary": "500 is an engineering numerical setting change requiring explicit bounded authority under the frozen experiment, although it retains rank, objective and convergence tolerance. Change must propagate exact solver recipe through initial PTC and FRUIT; never accept a capped/unconverged fit. Saved trajectory does not prove 500 will converge."
+  },
+  "alternatives": "Preserve and stop under unchanged policy. Broader RTC completion waiver, omission of nonempty detectors, altered filtering/support, acceptance of unconverged PTC, changed method/rank/tolerance or observation replacement are separate policy choices, not authorized repairs.",
+  "three_axes": {
+    "scientific_behavioral": "Current terminal failures conform to explicit rules within inspected scope. Parent reports subsequent owner approval for both bounded changes; implementation conformance remains unreviewed.",
+    "architectural": "No edits; RTC diagnostic admission belongs to RTC, solver recipe to PTC; orchestration must only propagate and enforce exact identity.",
+    "repository_evidence": "Exact clean source SHA confirmed; saved receipts inspected; no observation, replay, build, test run, Unity, monitoring, or repository mutation."
+  },
+  "limitations": [
+    "Read-only focused diagnosis, not full correctness proof or implementation approval.",
+    "No numerical run or convergence prediction performed.",
+    "Durably bind the approved changes; follow-up implementation needs focused gates and exact-SHA independent review."
+  ],
+  "evidence_sha256": {
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-build-repair-20260929/B-REF/upstream/products/network4/donor-continuity/reassessment-decision.yaml": "5eb60aadb8cbd54e0f9ae2aaa28dd96de88cd77d182559767b97106632362060",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-build-repair-20260929/B-REF/upstream/products/network4/donor-continuity/post-lowpass-outcome.yaml": "02ab717640594ceef4c27b3f7039c4b0c0599c2e60014b319e3fa22ace1433e2",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-build-repair-20260929/B-REF/upstream/products/network4/donor-continuity/post-lowpass-spectra.yaml": "465e9988e2c2cad17841609188ee1c833a4101f27b5f23bddb72cd1bf2d03c03",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-build-repair-20260929/B-REF/upstream/products/network1/donor-continuity/ptc/receipt.yaml": "a3fb31015992b61e21cdd55ae0f93392a7e6b7d387740bacd3101e7147beb65d"
+  },
+  "owner_update": "Parent reports explicit owner response: Approve both bounded changes, received after read-only diagnosis. This authorizes the scoped proposals; no implementation has been reviewed here."
+}

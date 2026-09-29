@@ -8,12 +8,13 @@ from point_storage import tree_bytes
 REPO=Path(__file__).resolve().parents[2]
 D=REPO/'validation/rtc_point_transfer_2026-09-28'
 FAILED_ROOT=Path('/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-20260928')
-ROOT=FAILED_ROOT.with_name('successor-rtc-point-transfer-build-repair-20260929')
-PRIOR=[ROOT.parent/'successor-rtc-retained-residuals-20260928',ROOT.parent/'successor-rtc-two-stage-20260928',FAILED_ROOT]
+FAILED_SCIENCE_ROOT=FAILED_ROOT.with_name('successor-rtc-point-transfer-build-repair-20260929')
+ROOT=FAILED_ROOT.with_name('successor-rtc-point-transfer-runtime-repair-20260929')
+PRIOR=[ROOT.parent/'successor-rtc-retained-residuals-20260928',ROOT.parent/'successor-rtc-two-stage-20260928',FAILED_ROOT,FAILED_SCIENCE_ROOT]
 BRANCHES=('REF','C-core-plus','C-core-minus','C-shoulder')
 ROLES=tuple(f'{f}-{b}' for f in ('B','Q') for b in BRANCHES)
 LIMITS=dict(parent=8,trajectory=8,feedback=40,endpoint=8)
-CAP=30_000_000_000;ROLE_CAP=3_025_000_000;CAMPAIGN_METADATA=100_000_000;REPORT_CAP=1_000_000_000
+CAP=30_000_000_000;ROLE_CAP=2_700_000_000;CAMPAIGN_METADATA=100_000_000;REPORT_CAP=1_000_000_000
 CELLS=15_912_679;ACTIVE=304*CELLS+2_000_000_000
 
 def read(p):return json.loads(Path(p).read_text())
@@ -60,6 +61,7 @@ def prepare_role(name):
     obs=read(out/'inputs/observation.json')
     for e in obs['networks']:
         path=Path(e['input']['path']);cfg=read(path)
+        cfg['point_transfer_runtime_profile']='point-transfer-runtime-2026-09-29-v1'
         cfg['rtc_source_probe']=dict(schema='point-rtc-source-probe-v1',authority='owner-RTC-point-transfer-2026-09-28',branch=branch)
         if branch!='REF':cfg['rtc_source_probe']['raster']=bound(out/f'freeze/shapes/{branch}.fits')
         if family=='Q':cfg['rtc_point_run_selection']='rtc-point-physical-run-quarantine-v1'

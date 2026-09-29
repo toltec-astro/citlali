@@ -25,9 +25,17 @@ class Preparation(unittest.TestCase):
    with self.assertRaises(Exception):consume(root,'parent',dict(run='B-REF'))
    with self.assertRaises(Exception):consume(root,'feedback',dict(run='B-REF',branch='REF',cycle=6))
  def test_full_capacity_arithmetic(self):
-  prior=1_856_251_212
-  self.assertEqual(prior+7*ROLE_CAP+ACTIVE+CAMPAIGN_METADATA,29_968_705_628)
+  prior=1_856_251_212+284_278+2_092_905_987
+  self.assertEqual(prior+7*ROLE_CAP+ACTIVE+CAMPAIGN_METADATA,29_786_895_893)
   self.assertLessEqual(prior+8*ROLE_CAP+REPORT_CAP+CAMPAIGN_METADATA,CAP)
+ def test_runtime_recipe_frozen_and_prior_failure_retained(self):
+  from point_transfer_experiment import PRIOR,FAILED_SCIENCE_ROOT
+  recipe=json.loads((Path(__file__).parent/'inputs/reference.json').read_text())
+  self.assertEqual(recipe['runtime_profile'],'point-transfer-runtime-2026-09-29-v1')
+  self.assertEqual(set(recipe['ptc']),{'method','rank'})
+  self.assertEqual(recipe['scientific_recipe']['PTC']['max_iterations'],500)
+  self.assertEqual(recipe['scientific_recipe']['PTC']['relative_objective_tolerance'],1e-5)
+  self.assertIn(FAILED_SCIENCE_ROOT,PRIOR)
  def test_new_route_is_rtc_and_five_cycles(self):
   with tempfile.TemporaryDirectory() as d:
    root=Path(d);(root/'freeze').mkdir();(root/'freeze/prospective.json').write_text(json.dumps(dict(schema='citlali-point-speed-pca-v1',campaign_scope='rtc-point-transfer-v1',feedback_count=5)))
