@@ -691,3 +691,12 @@ add_dependencies(check citlali_jinc_discrete_test)
 gtest_discover_tests(citlali_jinc_discrete_test TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
 
 set_source_files_properties(jinc_discrete_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+
+add_executable(citlali_rtc_point_selection_test EXCLUDE_FROM_ALL test_rtc_point_selection.cpp)
+target_include_directories(citlali_rtc_point_selection_test PRIVATE ../include)
+target_compile_features(citlali_rtc_point_selection_test PRIVATE cxx_std_20)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  target_compile_options(citlali_rtc_point_selection_test PRIVATE -UNDEBUG -fno-fast-math -ffp-contract=off)
+endif()
+add_dependencies(check citlali_rtc_point_selection_test)
+add_test(NAME citlali::rtc_point_selection COMMAND citlali_rtc_point_selection_test)

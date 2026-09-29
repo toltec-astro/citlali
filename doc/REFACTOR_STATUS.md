@@ -1,5 +1,21 @@
 # Citlali Refactor Status
 
+## 2026-09-29 — independent POINT transfer preparation
+
+The owner resumed preparation for POINT152420/0/2, a1100 networks1–4. The frozen
+portable rule and bounded foreground runner are recorded in
+[preflight](../validation/rtc_point_transfer_2026-09-28/PREFLIGHT.md) and
+[resume](../validation/rtc_point_transfer_2026-09-28/RESUME.md). Local original
+input bindings and short selector/runner fixtures pass. Full native build,
+CTest/baseline/POINT/config/native-request gates are mandatory runner prerequisites;
+no transfer trajectory or scientific result is claimed here. The 30GB bound now
+includes prior retention, seven completed-role caps, active reservation and metadata;
+an output exceeding its allowance stops without deletion. Historical excerpts do
+not establish complete portable D88 recovery. Exact-source independent preparation
+review must pass before owner launch. B remains rollback; adoption awaits measured
+independent evidence and final scientific review. No production activation/push.
+
+
 ## 2026-09-29 — approved scratch cleanup verified; transfer preflight pending
 
 The [cleanup closeout](../validation/rtc_point_transfer_2026-09-28/cleanup_2026-09-29/CLOSEOUT.md)

@@ -1,37 +1,41 @@
 # Resume independent POINT transfer
 
-State: **PREFLIGHT_REQUIRED** after verified cleanup. No scientific process launched.
+Prepared foreground runner for POINT152420/0/2 a1100 networks1–4. Rule/configuration:
+SELECTOR_POLICY.md and inputs/reference.json; exact source/review/binary bindings
+are published under the campaign root. No152420 scientific launch has occurred
+while preparing this handoff. Cleanup completed previously; no further cleanup.
 
-Status: `/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-20260928/STATUS.json`.
-Cleanup closeout: [cleanup_2026-09-29/CLOSEOUT.md](cleanup_2026-09-29/CLOSEOUT.md).
-Campaign root: `/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-20260928`.
-Branch: `codex/rtc-point-transfer-20260928` in `/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor`.
-Chosen observation:152420/0/2, a1100 networks1–4; no outcome-based target replacement.
+Campaign/status:
+`/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-20260928/STATUS.json`
+Review prerequisite: same directory/PREFLIGHT_REVIEW.json.
+Worktree: `/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor`.
 
-The authorized cleanup completed:153,062 files /16,042,260,125 bytes removed;
-originals and compact evidence remain verified. Prior shared retained bytes are
-now1,856,251,212, leaving28,143,748,788 under30GB. The earlier failing partial
-lower bound now fits, but does not include all required products. **Recompute and
-prove the complete planned eight-role storage budget before expensive work.**
-No cap increase or further cleanup is authorized by this completion assessment.
-The original STORAGE_GATE.json and STATUS_AT_HANDOFF.json preserve the historical
-blocked state; do not overwrite them as if they had passed initially.
+Owner-terminal launch (foreground; keep terminal open and Mac awake):
 
-Still pending: portable deterministic selector/window formalization from saved
-D88 evidence and controls; original-domain stage-available source guard; complete
-raw/tune/APT/calibration/physical-run bindings; actual native requests for allfive
-cycles; B-disabled neutrality tests; exact source/configuration freeze; gated
-runner. No algorithm, thresholds or detector membership have been tuned on new
-152420 residuals. The earlier a2000 evidence supplies no transferable a1100
-geometry, noise, absolute source amplitudes or response controls.
+```sh
+/Users/gwilson/tolteca/bin/python /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_point_transfer_2026-09-28/run_campaign.py --review /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-20260928/PREFLIGHT_REVIEW.json
+```
 
-The owner's current message authorized cleanup completion verification/assessment,
-not automatic science execution. Await an explicit continuation of preparation.
-The original independent-transfer work order governs any resumed preparation and
-eight-role test. No reduction or retry has been charged.
+Ctrl-C safely interrupts the campaign; files remain and no automatic resume or
+retry is allowed. An exclusive LAUNCHED.json prevents replay. A RUNNING status
+alone is not proof of liveness after terminal/computer interruption.
 
-When a scientific batch is ready, respect the original foreground/established
-persistence handoff: one bounded startup check, report exact STATUS location and
-end the turn; no polling, monitoring agents, scheduling or automatic continuation.
-The completed cleanup command must not be reused. On a future owner completion
-message, read the relevant STATUS once and inspect only needed evidence.
+The runner builds the exact source, tests all required contracts, verifies inputs
+and storage, runs B throughT5, then saved-input selection. No newly retained case
+ends COMPLETE_NO_APPLICABLE_CASE and skips7 roles. Otherwise it executes B controls
+and active Q roles, at most8 parents/trajectories,32 native network RTC Applies,
+40feedback applications and8 endpoints. B/M0 owns fixed physical source rasters;
+Q never redraws them. Existing30GB ceiling includes prior roots. Per-role retention
+caps are stopping gates, not predictions that unknown outputs will fit. All outputs
+are preserved on a failure. See PREFLIGHT.md for the historical-D88 replay limitation.
+
+On “Check completion and assess the results,” read this and STATUS once. If running,
+make one bounded completion/process check and end the turn. If failed, inspect only
+the failed gate and relevant bounded log; no retry or other experiment. If complete,
+verify ACCOUNTING, per-role exits/source/binary/product bindings and report/MANIFEST
+(or selection/MANIFEST for no-case), then read metrics/figures first. One focused
+independent implementation/comparison/conclusion review is required before deciding
+provisional development adoption or parking. No production change, push or merge.
+
+No agent monitoring, schedule, automatic continuation, background agent, or reviewer
+watching numerical jobs. Numerical code may execute its frozen ordinary stages.

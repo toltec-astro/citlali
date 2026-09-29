@@ -1,10 +1,12 @@
 // Private adapter: exact files/identities only; AST, CAL and model owners supply
 // all coordinate, calibration and containing-pixel numerical operations.
 #include <citlali/core/pipeline/point_rtc_source_probe.h>
+#include "rtc_point_selection_record.h"
 namespace {
 struct PointRtcProbeExecution {
   std::shared_ptr<const NativePairedReadoutObservation> parent;
   YAML::Node receipt;
+  std::shared_ptr<const RtcPointRunSelectionPlan> rejection;
 };
 PointRtcProbeExecution execute_point_rtc_probe(
     std::shared_ptr<const NativePairedReadoutObservation> original,
@@ -16,7 +18,7 @@ PointRtcProbeExecution execute_point_rtc_probe(
   require(request["schema"].as<std::string>()=="point-rtc-source-probe-v1","unknown RTC source probe");
   const auto branch=request["branch"].as<std::string>();
   require(branch=="REF" || branch=="C-core-plus" || branch=="C-core-minus" || branch=="C-shoulder","unknown source branch");
-  require(request["authority"].as<std::string>()=="owner-RTC-cost-response-2026-09-27" || (request["authority"].as<std::string>()=="owner-RTC-step-POINT-2026-09-27" && (cfg["observation"].as<int>()==152420 || cfg["observation"].as<int>()==152430)) || (request["authority"].as<std::string>()=="owner-RTC-step-consequences-2026-09-28" && cfg["observation"].as<int>()==152430 && cfg["network"].as<int>()>=1 && cfg["network"].as<int>()<=4),"probe authority absent");
+  require((request["authority"].as<std::string>()=="owner-RTC-point-transfer-2026-09-28" && cfg["observation"].as<int>()==152420 && cfg["network"].as<int>()>=1 && cfg["network"].as<int>()<=4) || request["authority"].as<std::string>()=="owner-RTC-cost-response-2026-09-27" || (request["authority"].as<std::string>()=="owner-RTC-step-POINT-2026-09-27" && (cfg["observation"].as<int>()==152420 || cfg["observation"].as<int>()==152430)) || (request["authority"].as<std::string>()=="owner-RTC-step-consequences-2026-09-28" && cfg["observation"].as<int>()==152430 && cfg["network"].as<int>()>=1 && cfg["network"].as<int>()<=4),"probe authority absent");
   const int nw=cfg["network"].as<int>();const auto &network=original->network(nw);
   require(network.mapping_authority().x.meaning_id=="kidscpp:gainlintrend:x:meaning" &&
       network.mapping_authority().x.unit_or_scale_id=="dimensionless","probe raw x convention differs");
@@ -105,10 +107,31 @@ PointRtcProbeExecution execute_point_rtc_probe(
         std::move(injected),network.values(NativeReadoutCoordinate::r),{xs.begin(),xs.end()},{rs.begin(),rs.end()}));
     parent=std::make_shared<const NativePairedReadoutObservation>(NativePairedReadoutObservation::admit(original->scope(),{nw},std::move(nets)));
   }
+  std::shared_ptr<const RtcPointRunSelectionPlan> rejection;
+  if(cfg["rtc_point_run_selection"]) {
+    require(request["authority"].as<std::string>()=="owner-RTC-point-transfer-2026-09-28" &&
+      cfg["rtc_point_run_selection"].as<std::string>()==RtcPointRunSelectionPlan::identity,
+      "RTC point selector outside bounded policy route");
+    const auto &selected=parent->network(nw);
+    std::vector<RtcPointRun> runs;
+    require(first==0,"RTC point selector requires complete native row origin");
+    for(auto r:network.occurrence_axis().contiguous_runs())runs.push_back({r.first_native_row,r.past_last_native_row});
+    auto doubles=[](const auto &m){return std::span<const double>(m.data(),m.size());};
+    auto bytes=[](const auto &m){return std::span<const std::uint8_t>(m.data(),m.size());};
+    const auto pointing=cfg["ast_acceptance"]["sha256"].as<std::string>();
+    rejection=std::make_shared<const RtcPointRunSelectionPlan>(RtcPointRunSelectionPlan::consider(RtcPointRunSelectionEvidence::learn({
+      std::size_t(rows),std::size_t(nd),doubles(selected.values(NativeReadoutCoordinate::x)),
+      doubles(selected.values(NativeReadoutCoordinate::r)),doubles(times),doubles(lon),doubles(lat),
+      bytes(valid),bytes(valid_r),bytes(mapping_available),channels,runs,
+      times.size()>1 ? (times[1]-times[0]) : 0.,
+      selected.mapping_authority().paired_xr_record_id,pointing})));
+    write_yaml(directory/"run-selection.yaml",citlali::cli::detail::rtc_point_selection_record(*rejection));
+    record["run_selection_sha256"]=citlali::utils::sha256_file(directory/"run-selection.yaml");
+  }
   record["injected_x_sha256"]=native_plane_digest(parent->network(nw).values(NativeReadoutCoordinate::x));
   record["r_unchanged"]=record["original_r_sha256"].as<std::string>()==native_plane_digest(parent->network(nw).values(NativeReadoutCoordinate::r));
   record["input_validity_unchanged"]=true;record["learning_plan_frozen"]=false;
   for(const auto &p:fs::directory_iterator(directory))record["files"][p.path().filename().string()]=citlali::utils::sha256_file(p.path());
-  write_yaml(directory/"receipt.yaml",record);return {parent,record};
+  write_yaml(directory/"receipt.yaml",record);return {parent,record,rejection};
 }
 }

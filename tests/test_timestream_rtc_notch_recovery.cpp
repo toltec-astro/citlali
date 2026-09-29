@@ -2645,3 +2645,27 @@ TEST(rtc_quarantine, exact_frozen_physical_run_and_foreign_bindings) {
   foreign=YAML::Clone(n);foreign["members"][0]["detector"]=89;EXPECT_THROW(call(foreign),std::invalid_argument);
   foreign=YAML::Clone(n);foreign["members"].push_back(YAML::Clone(n["members"][0]));EXPECT_THROW(call(foreign),std::invalid_argument);
 }
+
+TEST(rtc_pipeline, physical_run_rejection_preserves_other_run_and_original_validity) {
+  Input in(2200);for(std::size_t i=1100;i<in.times.size();++i){in.times[i]+=1;in.counters[i]+=100;}
+  Trial t(in);const auto runs=t.parent->network(0).occurrence_axis().contiguous_runs();ASSERT_EQ(runs.size(),2u);
+  auto base=t.plan();auto b=t.apply(base);
+  t.domain.rejected_physical_runs={{runs[0].first_native_row,runs[0].past_last_native_row}};
+  auto p=t.plan();auto q=t.apply(p);
+  for(auto row=runs[0].first_native_row;row<runs[0].past_last_native_row;++row){
+    EXPECT_EQ(p->input_causes()[row-p->first_native_row()],RtcNotchRecoveryCause::rejection);
+    EXPECT_FALSE(p->center_admitted(row));EXPECT_FALSE(q->coordinate_stage_available(NativeReadoutCoordinate::x,row,true));EXPECT_FALSE(q->coordinate_stage_available(NativeReadoutCoordinate::r,row,true));EXPECT_TRUE(t.parent->network(0).state(NativeReadoutCoordinate::x,row,0).valid());
+  }
+  for(auto row=runs[1].first_native_row;row<runs[1].past_last_native_row;++row){
+    EXPECT_EQ(base->input_causes()[row-p->first_native_row()],p->input_causes()[row-p->first_native_row()]);
+    for(auto c:{NativeReadoutCoordinate::x,NativeReadoutCoordinate::r}) {
+      EXPECT_EQ(b->coordinate_stage_available(c,row,true),q->coordinate_stage_available(c,row,true));
+      if(b->coordinate_stage_available(c,row,true))EXPECT_EQ(b->filtered_native_pair()(row-p->first_native_row(),int(c)),q->filtered_native_pair()(row-p->first_native_row(),int(c)));
+    }
+  }
+  // Half a physical run is never a legal quarantine, including across a gap.
+  t.domain.rejected_physical_runs={{runs[0].first_native_row,runs[0].past_last_native_row-1}};
+  EXPECT_THROW(t.plan(),std::invalid_argument);
+  t.domain.rejected_physical_runs.clear();auto neutral=t.plan();
+  EXPECT_EQ(base->input_causes(),neutral->input_causes());EXPECT_EQ(base->support_causes(),neutral->support_causes());
+}

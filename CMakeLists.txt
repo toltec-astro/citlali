@@ -262,3 +262,11 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 endif()
 
 add_dependencies(check citlali_jinc_diagnostic)
+
+# Saved original-domain selector; same header owner as active RTC, no reduction.
+add_executable(citlali_rtc_point_select EXCLUDE_FROM_ALL tools/timestream_successor/rtc_point_select.cpp)
+target_include_directories(citlali_rtc_point_select PRIVATE include)
+target_link_libraries(citlali_rtc_point_select PRIVATE ${dep_libs})
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  target_compile_options(citlali_rtc_point_select PRIVATE -fno-fast-math -ffp-contract=off)
+endif()

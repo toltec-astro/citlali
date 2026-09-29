@@ -33,6 +33,8 @@ struct RtcNotchRecoveryDomain {
   double nominal_interval_seconds = NAN;
   std::size_t notch_guard_samples = 0;
   bool reject = false;
+  // Explicit RTC rejection, separate from original acquisition validity.
+  std::vector<RtcEventRange> rejected_physical_runs;
   RtcSpeedSupportTreatment speed_support =
       RtcSpeedSupportTreatment::original_paired_measurements;
 };
@@ -85,6 +87,20 @@ public:
     const auto &net = transients->input_handle()->network(candidate.network());
     const auto &axis = net.occurrence_axis();
     const auto &s = candidate.specification();
+    if(event_decisions && event_decisions->point_rejection_handle()) {
+      std::vector<RtcEventRange> expected;
+      for(auto r:event_decisions->point_rejection_handle()->rejected_runs(candidate.detector()))expected.push_back({r.first,r.past_last});
+      if(domain.rejected_physical_runs!=expected)
+        throw std::invalid_argument("RTC filtering must apply its exact considered point rejection");
+    }
+    const auto physical_runs=axis.contiguous_runs();
+    TimestreamNativeRow previous_rejection=-1;
+    for(const auto &r:domain.rejected_physical_runs) {
+      if(r.first<previous_rejection || !std::any_of(physical_runs.begin(),physical_runs.end(),
+          [&](const auto &p){return p.first_native_row==r.first && p.past_last_native_row==r.past_last;}))
+        throw std::invalid_argument("RTC rejection must bind disjoint exact physical runs");
+      previous_rejection=r.past_last;
+    }
     if (domain.speed_support != RtcSpeedSupportTreatment::original_paired_measurements &&
         domain.speed_support != RtcSpeedSupportTreatment::comparison_reject_both &&
         domain.speed_support != RtcSpeedSupportTreatment::comparison_low_only &&
@@ -214,7 +230,9 @@ public:
           else if (*v > out->sampling_speed_limit_)
             out->speed_restrictions_[row-out->first_] = RtcSpeedRestriction::above_output_sampling_limit;
         }
-        if (!net.state(NativeReadoutCoordinate::x, row, candidate.detector())
+        if (rtc_event_assessment_detail::contains(d.rejected_physical_runs,row))
+          cause=RtcNotchRecoveryCause::rejection;
+        else if (!net.state(NativeReadoutCoordinate::x, row, candidate.detector())
                  .valid() ||
             !net.state(NativeReadoutCoordinate::r, row, candidate.detector())
                  .valid())

@@ -38,6 +38,16 @@ class Contract(unittest.TestCase):
   for scope in ('rtc-retained-residuals-v1','rtc-step-consequences-v1'):
    for cycle in range(1,6):
     with self.subTest(scope=scope,cycle=cycle):self.accept(self.fixture(scope,cycle))
+ def test_transfer_all_five_native_cycles(self):
+  for cycle in range(1,6):self.accept(self.fixture('rtc-point-transfer-v1',cycle,'a1100',152420))
+ def test_transfer_rejects_foreign_identity_and_cycles(self):
+  for obs in (152430,152389):self.reject(self.fixture('rtc-point-transfer-v1',1,'a1100',obs),'FRUIT')
+  for cycle in (0,6):self.reject(self.fixture('rtc-point-transfer-v1',cycle,'a1100',152420),'FRUIT')
+  for key,value in [('subobservation',1),('scan',3),('networks',[1,2,3,5]),('cycles',10),('feedback_count',6)]:
+   f=self.fixture('rtc-point-transfer-v1',1,'a1100',152420);f['p'][key]=value;self.reject(f,'FRUIT')
+  f=self.fixture('rtc-point-transfer-v1',1,'a1100',152420);f['owner']['observation']=152430;self.reject(f,'FRUIT')
+  f=self.fixture('rtc-point-transfer-v1',1,'a1100',152420);f['parent']['observation']='obs:152430_0_2';self.reject(f,'FRUIT')
+  self.reject(self.fixture('rtc-point-transfer-v1',1,'a2000',152420),'FRUIT')
  def test_previous_a2000_routes(self):
   for scope,obs in [('rtc-cost-response-v1',152430),('rtc-fixed11-v1',152430),('rtc-step-point-v1',152420),('rtc-step-point-v1',152430)]:
    for cycle in (1,5):

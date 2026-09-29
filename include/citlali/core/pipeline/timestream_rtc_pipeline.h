@@ -649,7 +649,7 @@ private:
          x.identity!=y.identity || x.motion!=y.motion || x.detector_array_association!=y.detector_array_association || x.array!=y.array ||
          x.speed_ceiling_arcsec_per_sec!=y.speed_ceiling_arcsec_per_sec || x.speed_margin_fraction!=y.speed_margin_fraction ||
          x.cadence_margin_fraction!=y.cadence_margin_fraction || x.nominal_interval_seconds!=y.nominal_interval_seconds ||
-         x.notch_guard_samples!=y.notch_guard_samples || x.reject!=y.reject || x.speed_support!=y.speed_support ||
+         x.notch_guard_samples!=y.notch_guard_samples || x.reject!=y.reject || x.rejected_physical_runs!=y.rejected_physical_runs || x.speed_support!=y.speed_support ||
          s.input_interval_seconds!=t.input_interval_seconds || s.factor!=t.factor ||
          s.state_support_identity!=t.state_support_identity || !s.notches.empty() || !t.notches.empty())return false;
     }

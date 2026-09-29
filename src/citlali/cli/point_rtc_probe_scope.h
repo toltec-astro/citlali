@@ -7,6 +7,8 @@ inline bool point_rtc_probe_route_allowed(bool development, bool common,
     bool reference, int obs, int sub, int scan, int network, int array,
     std::string_view authority) {
   if (!development || !common || sub != 0 || scan != 2) return false;
+  if (authority == "owner-RTC-point-transfer-2026-09-28")
+    return reference && obs == 152420 && network >= 1 && network <= 4 && array == 0;
   if (authority == "owner-RTC-step-consequences-2026-09-28")
     return reference && obs == 152430 && network >= 1 && network <= 4 && array == 0;
   if (network != 11 && network != 12) return false;

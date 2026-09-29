@@ -1,0 +1,23 @@
+{
+  "prior": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-retained-residuals-20260928",
+      "bytes": 291593819
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928",
+      "bytes": 1564657393
+    }
+  ],
+  "prior_bytes": 1856251212,
+  "native_cells": 15912679,
+  "ceiling_bytes": 30000000000,
+  "completed_role_maximum_bytes": 3025000000,
+  "active_reservation_bytes": 6837454416,
+  "campaign_metadata_maximum_bytes": 100000000,
+  "compact_report_maximum_bytes": 1000000000,
+  "peak_bound_bytes": 29968705628,
+  "final_bound_bytes": 27156251212,
+  "free_space_reserve_bytes": 2000000000,
+  "qualification": "Enforced admission budget, not a prediction or promise that every role will fit. Existing native reservation checks run before every stage. A completed role exceeding its cap ends the batch and preserves files; never delete to continue. No-applicable early exit is not assumed."
+}

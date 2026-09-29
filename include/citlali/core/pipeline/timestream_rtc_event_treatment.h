@@ -1,5 +1,6 @@
 #pragma once
 #include <citlali/core/pipeline/timestream_rtc_donor_fill.h>
+#include <citlali/core/pipeline/rtc_point_run_selection.h>
 
 namespace citlali::pipeline {
 
@@ -43,7 +44,8 @@ public:
         std::string factor_authority, std::string convention,
         std::map<TimestreamNetworkId,std::vector<RtcEventRange>> timing_unavailable,
         std::shared_ptr<const ValSnapshot> snapshot, std::uint64_t id,
-        std::optional<RtcDeclaredContaminant> truth=std::nullopt) {
+        std::optional<RtcDeclaredContaminant> truth=std::nullopt,
+        std::shared_ptr<const RtcPointRunSelectionPlan> point_rejection={}) {
         if(!events || !transients || !snapshot || !id ||
             events->original_screening_handle()->evidence_handle().get()!=transients->screening_handle()->evidence_handle().get() ||
             events->evidence_handle().get()!=&transients->jump_plan_handle()->admission_handle()->assessment() ||
@@ -80,6 +82,7 @@ public:
         auto out=std::shared_ptr<RtcEventTreatmentDecision>(new RtcEventTreatmentDecision);
         out->events_=std::move(events);out->transients_=std::move(transients);out->id_=id;
         out->timing_unavailable_=std::move(timing_unavailable);
+        out->point_rejection_=point_rejection;
         // Physical runs and resolved boundaries own segmentation. Candidate
         // masks are donor contamination, not claims of a constant plateau.
         std::map<std::pair<TimestreamNetworkId,std::uint32_t>,std::vector<RtcEventRange>> boundaries;
@@ -134,6 +137,17 @@ public:
             if(!f.stable_segments.empty() || !f.contaminated.empty())
                 throw std::invalid_argument("RTC resolver owns support; hand-drawn support is not an input");
             std::vector<RtcEventRange> excluded=out->timing_unavailable_[f.network];
+            const auto physical_runs=axis.contiguous_runs();
+            if(point_rejection) {
+                if(point_rejection->parent_identity()!=net.mapping_authority().paired_xr_record_id)
+                    throw std::invalid_argument("RTC point rejection has foreign parent");
+                for(auto r:point_rejection->rejected_runs(f.detector)) {
+                    if(!std::any_of(physical_runs.begin(),physical_runs.end(),[&](auto p){
+                        return p.first_native_row==r.first && p.past_last_native_row==r.past_last;}))
+                        throw std::invalid_argument("RTC point rejection has foreign physical run");
+                    excluded.push_back({r.first,r.past_last});
+                }
+            }
             for(const auto &d:out->transients_->detectors())if(d.network==f.network && d.detector==f.detector)
                     excluded.insert(excluded.end(),d.rows.begin(),d.rows.end());
             for(auto b:boundaries[{f.network,f.detector}])excluded.push_back(b);
@@ -166,7 +180,8 @@ public:
         }
         out->facts_=RtcDonorFillFacts::bind(evidence,std::move(factor_authority),std::move(convention),
             "rtc-original-evidence-boundary-screening-support-v1:signal-plus-background;per-operation-fit-and-boundary-check-required",
-            "rtc-all-candidate-guards+pair-extent+unresolved-domain+selected-exclusions-v1",std::move(factors));
+            std::string("rtc-all-candidate-guards+pair-extent+unresolved-domain+selected-exclusions-v1")+
+            (point_rejection?std::string(":")+RtcPointRunSelectionPlan::identity:std::string{}),std::move(factors));
         for(auto &r:out->records_) {
             const auto &e=evidence->events()[r.event];const auto *f=out->facts_->find(e.network,e.detector);
             auto context=hull(e.trial_exclusion,r.affected);
@@ -195,6 +210,7 @@ public:
     }
     const auto &records()const noexcept{return records_;}
     const auto &facts_handle()const noexcept{return facts_;}
+    const auto &point_rejection_handle()const noexcept{return point_rejection_;}
     const auto &transient_handle()const noexcept{return transients_;}
     const auto &events_handle()const noexcept{return events_;}
     const auto &timing_unavailable()const noexcept{return timing_unavailable_;}
@@ -214,6 +230,7 @@ public:
     static bool covers(RtcEventRange a,RtcEventRange b){return a.present()&&b.present()&&a.first<=b.first&&a.past_last>=b.past_last;}
     static RtcEventRange hull(RtcEventRange a,RtcEventRange b){if(!a.present())return b;if(!b.present())return a;return {std::min(a.first,b.first),std::max(a.past_last,b.past_last)};}
 private:
+    std::shared_ptr<const RtcPointRunSelectionPlan> point_rejection_;
     static bool inside(RtcEventRange a,TimestreamNativeRow row){return a.present()&&row>=a.first&&row<a.past_last;}
     std::shared_ptr<const RtcEventAssessmentDecision> events_;
     std::shared_ptr<const RtcTransientExclusionPlan> transients_;

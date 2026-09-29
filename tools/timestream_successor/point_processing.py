@@ -75,9 +75,12 @@ def speed_experiment(out):
 
 def rtc_experiment(out):
     p=out/'freeze/prospective.json'
-    return p.exists() and read(p).get('campaign_scope') in ('rtc-cost-response-v1','rtc-fixed11-v1','rtc-step-point-v1','rtc-step-consequences-v1','rtc-retained-residuals-v1')
+    return p.exists() and read(p).get('campaign_scope') in ('rtc-cost-response-v1','rtc-fixed11-v1','rtc-step-point-v1','rtc-step-consequences-v1','rtc-retained-residuals-v1','rtc-point-transfer-v1')
 
 def experiment_consume(out,kind,identity):
+    if read(out/'freeze/prospective.json').get('campaign_scope')=='rtc-point-transfer-v1':
+        from point_transfer_experiment import consume
+        return consume(Path(read(out/'freeze/budget.json')['campaign_root']),kind,identity)
     if read(out/'freeze/prospective.json').get('campaign_scope')=='rtc-retained-residuals-v1':
         from point_step_experiment import consume_retained as consume
     elif read(out/'freeze/prospective.json').get('campaign_scope')=='rtc-step-consequences-v1':
@@ -146,7 +149,7 @@ def upstream(out,binary):
     save_json(out/'UPSTREAM.json',dict(status='accepted' if g['accepted'] else 'source_or_covariance_failed',guard=g,seconds=time.perf_counter()-t,initial_physical_inputs=1,parent=p))
     if c is not None:
         if speed_experiment(out):
-            if read(out/'freeze/prospective.json').get('campaign_scope') in ('rtc-step-point-v1','rtc-step-consequences-v1') and not (out/'freeze/measurement-geometry.json').exists():
+            if read(out/'freeze/prospective.json').get('campaign_scope') in ('rtc-step-point-v1','rtc-step-consequences-v1','rtc-point-transfer-v1') and not (out/'freeze/measurement-geometry.json').exists():
                 from point_step_experiment import freeze_own_geometry
                 freeze_own_geometry(out,c)
             shutil.copyfile(out/'freeze/measurement-geometry.json',out/f'freeze/{selected_array(out)}/measurement-geometry.json')
@@ -159,7 +162,7 @@ def owner(out,pol,branch,initial=None):
     if base_route(out):
         p=read(out/'freeze/prospective.json')
         o=dict(identity='POINT-SPEED-PCA-v1' if speed_experiment(out) else 'POINT-PTC-RANK-v1' if rank_experiment(out) else 'BRIGHT-POINT-BASE-v1',observation=p['observation'],outside_disk_no_feedback=True,direct_identical_operand_rejoin=True,gain=1,nonzero_cycles=feedback_count(out),policy='BASE-POINT',source_method='POINT-EXPECTED-v1',threshold=3.,prospective=bound(out/'freeze/prospective.json'),parents={selected_array(out):parents(out)},injections={})
-        if rank_experiment(out) and not (p.get('campaign_scope') in ('rtc-step-point-v1','rtc-step-consequences-v1') and not (out/'freeze/shapes').exists()):
+        if rank_experiment(out) and not (p.get('campaign_scope') in ('rtc-step-point-v1','rtc-step-consequences-v1','rtc-point-transfer-v1') and not (out/'freeze/shapes').exists()):
             o['injections']={selected_array(out):{b:bound(out/f'freeze/shapes/{b}.fits') for b in BRANCHES[1:4]}}
             if branch.startswith('C-') and initial:
                 o['injected_parents']={};o['injection_operands']={}

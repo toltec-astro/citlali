@@ -1,0 +1,86 @@
+{
+  "pass_": true,
+  "checks": [
+    {
+      "key": "n1_new0",
+      "contrast": {
+        "x": 2.0024969244252075e-05,
+        "r": -2.1819294095656813e-05
+      },
+      "historical_coherent_fraction": 0.3564954682779456,
+      "adjacent_correlations": {
+        "x": [
+          0.8646177920147482,
+          -0.7845357806311983
+        ],
+        "r": [
+          -0.9739767589890098,
+          0.962084870560457
+        ]
+      },
+      "nominal_source_min_arcsec": 39.844297276614306,
+      "old_full_window_passes_new_source_guard": false,
+      "complete_new_grid_windows_in_excerpt": 0,
+      "full_new_selector_replay": "unavailable: complete historical peer waveforms and grid-aligned window margins not retained"
+    },
+    {
+      "key": "n2_new1",
+      "contrast": {
+        "x": 6.04627482161323e-06,
+        "r": -4.648511892934142e-06
+      },
+      "historical_coherent_fraction": 0.004555808656036446,
+      "adjacent_correlations": {
+        "x": [
+          0.055582649239173255,
+          0.06989329848659387
+        ],
+        "r": [
+          -0.06987929064357563,
+          0.016251443531960355
+        ]
+      },
+      "nominal_source_min_arcsec": 56.97423141942308,
+      "old_full_window_passes_new_source_guard": false,
+      "complete_new_grid_windows_in_excerpt": 0,
+      "full_new_selector_replay": "unavailable: complete historical peer waveforms and grid-aligned window margins not retained"
+    },
+    {
+      "key": "n2_t5",
+      "contrast": {
+        "x": -1.019298488119888e-05,
+        "r": 3.0464377435907085e-06
+      },
+      "historical_coherent_fraction": 0.0,
+      "adjacent_correlations": {
+        "x": [
+          0.3707495899818658,
+          0.7815482017366356
+        ],
+        "r": [
+          -0.054176325843093016,
+          0.06421808473201451
+        ]
+      },
+      "nominal_source_min_arcsec": 3.9531560072466156,
+      "old_full_window_passes_new_source_guard": false,
+      "complete_new_grid_windows_in_excerpt": 0,
+      "full_new_selector_replay": "unavailable: complete historical peer waveforms and grid-aligned window margins not retained"
+    }
+  ],
+  "interpretation": "Checks recover historical arithmetic and rejected controls. They do not certify that the portable rule recovers D88. The fixed nominal-center guard and fixed grid intentionally differ from manual fitted-center selection; no threshold or window was tuned after these checks.",
+  "bindings": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_two_stage_2026-09-28/selection/candidate-evidence.json",
+      "sha256": "f561bab2f9e08e3f3d92baf55930e7aea648c1e606e866a03a90561a765efc65"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_two_stage_2026-09-28/selection/candidate-cohort.json",
+      "sha256": "02541f63d870e0fa72605962626aec3d78aacfd973513f683b71e3c8d405234f"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_two_stage_2026-09-28/compact/report/new-windows.npz",
+      "sha256": "4f9daf0e859bcb51246287e0b025362cd59007092a8c2c822431c626788089f6"
+    }
+  ]
+}

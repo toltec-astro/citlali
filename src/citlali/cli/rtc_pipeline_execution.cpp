@@ -392,6 +392,8 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
         NativePairedReadoutObservation::admit(
             NativeObservationScope{obs, sub, scan}, {nw}, std::move(networks)));
     YAML::Node source_probe_record;
+    std::shared_ptr<const RtcPointRunSelectionPlan> point_rejection;
+    require(!cfg["rtc_point_run_selection"] || (cfg["rtc_source_probe"] && !cfg["rtc_whole_run_quarantine"]),"RTC point rejection requires original-domain probe and no manual list");
     if(cfg["rtc_source_probe"]) {
       require(citlali::cli::detail::point_rtc_probe_route_allowed(development,common!=nullptr,
           reference,obs,sub,scan,nw,health_array,cfg["rtc_source_probe"]["authority"].as<std::string>()),
@@ -399,7 +401,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
       performance.mark("source_probe_start");
       auto probe=execute_point_rtc_probe(parent,cfg,verified,relation,channels,common->cal,
           common->motion,output);
-      parent=std::move(probe.parent);source_probe_record=probe.receipt;
+      parent=std::move(probe.parent);source_probe_record=probe.receipt;point_rejection=std::move(probe.rejection);
       mapping=std::make_shared<NativeReadoutMappingAuthority>(parent->network(nw).mapping_authority());
       original_x_digest=native_plane_digest(parent->network(nw).values(NativeReadoutCoordinate::x));
       require(original_r_digest==native_plane_digest(parent->network(nw).values(NativeReadoutCoordinate::r)),
@@ -810,7 +812,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
           factor_facts.push_back(std::move(f));
         }
         decision=RtcEventTreatmentDecision::consider(events,transient,std::move(factor_facts),authority,
-          "mJy/beam/xs",{{nw,recovered_scans->projection.native_outside_processing}},val,2000,declared_contaminant);
+          "mJy/beam/xs",{{nw,recovered_scans->projection.native_outside_processing}},val,2000,declared_contaminant,point_rejection);
         selected.facts=decision->facts_handle();
         YAML::Node decisions(YAML::NodeType::Sequence);
         for(const auto &r:decision->records()){
@@ -875,6 +877,8 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
         }
         RtcNotchRecoveryDomain domain;domain.identity=filter_input ? filter_input->identity : "152390-a2000-235arcsec-s-experiment-only";
         domain.reject=std::find(quarantine.begin(),quarantine.end(),d)!=quarantine.end();
+        if(point_rejection)for(auto r:point_rejection->rejected_runs(d))
+          domain.rejected_physical_runs.push_back({r.first,r.past_last});
         domain.detector_array_association=detectors[d].detector_association_record_id;
         domain.motion=motion;domain.array=filter_input ? filter_input->array : RtcOpticalArray::a2000;
         domain.speed_ceiling_arcsec_per_sec=filter_input ? filter_input->speed_ceiling : 235;domain.nominal_interval_seconds=duration;

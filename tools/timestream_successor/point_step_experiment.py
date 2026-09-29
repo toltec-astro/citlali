@@ -122,7 +122,7 @@ def freeze_own_geometry(out,c):
     from point_empirical_io import write_fits
     from point_empirical_io import exact_header
     p=read(out/'freeze/prospective.json')
-    require((p['campaign_scope']=='rtc-step-point-v1' and p['observation']==152420 or p['campaign_scope']=='rtc-step-consequences-v1' and p['observation']==152430 and p['array']=='a1100' and p['networks']==[1,2,3,4]) and p['signal_branch']=='REF','own selected M0 only')
+    require((p['campaign_scope']=='rtc-step-point-v1' and p['observation']==152420 or p['campaign_scope']=='rtc-point-transfer-v1' and p['observation']==152420 and p['array']=='a1100' and p['networks']==[1,2,3,4] or p['campaign_scope']=='rtc-step-consequences-v1' and p['observation']==152430 and p['array']=='a1100' and p['networks']==[1,2,3,4]) and p['signal_branch']=='REF','own selected M0 only')
     require(not (out/'freeze/measurement-geometry.json').exists(),'geometry already frozen')
     f=c['fixed'];geometry=dict(header=c['header'],parameters=c['parameters'].tolist(),major=c['major'],weights=np.asarray(f.weights).tolist())
     save_json(out/'freeze/measurement-geometry.json',geometry)
