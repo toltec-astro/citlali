@@ -16,3 +16,21 @@
 
 Integrated native tests, baseline207/POINT suite, CTest and config checks remain
 foreground runner prerequisites. They are not claimed passed for this candidate.
+
+## Independent preparation review corrections
+
+Review of c3a8a55291fec786d532972d814b6dd5204d9f76 required two bounded
+execution-safeguard repairs. Terminal accounting now treats partial receipts and
+attempt records as unknown on failure, while successful accounting stays strict.
+Logging/accounting failures cannot suppress the independent terminal-status write
+attempt. Numerical thread and headless limits now precede scientific imports.
+Saved selector YAML also uses 17-digit precision and checks publication close.
+
+Eight short preparation fixtures passed (0.548s), including actual main-handler
+paths for interruption/process/gate failure with truncated receipts and attempts,
+independent status publication after accounting/logging failure, and a fresh
+process verifying environment setup before scientific imports. No observation was
+opened or trajectory launched. A NumPy ndarray-size RuntimeWarning appeared during
+helper import; these fixtures passed, but they do not establish native/scientific
+runtime compatibility. Full runner gates remain mandatory. Standalone selector
+C++ syntax check also passed after the YAML emission change.

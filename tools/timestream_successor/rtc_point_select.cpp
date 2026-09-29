@@ -21,5 +21,7 @@ int main(int argc,char **argv)try {
  auto vx=plane<std::uint8_t>(p/"input-valid.u8",cells),vr=plane<std::uint8_t>(p/"input-r-valid.u8",cells),map=plane<std::uint8_t>(p/"mapping-available.u8",cells);
  auto channels=s["channels"].as<std::vector<int>>();std::vector<RtcPointRun> runs;for(auto q:r["native_runs"])runs.push_back({q[0].as<std::int64_t>(),q[1].as<std::int64_t>()});
  const auto plan=RtcPointRunSelectionPlan::consider(RtcPointRunSelectionEvidence::learn({rows,nd,x,v,t,lon,lat,vx,vr,map,channels,runs,t.size()>1?t[1]-t[0]:0.,r["original_parent"].as<std::string>(),"saved-original-AST-probe:"+citlali::utils::sha256_file(p/"receipt.yaml")}));
- std::ofstream f(argv[2]);f<<citlali::cli::detail::rtc_point_selection_record(plan)<<'\n';if(!f)throw std::runtime_error("selection publication");return 0;
+ YAML::Emitter serialized;serialized.SetDoublePrecision(17);serialized<<citlali::cli::detail::rtc_point_selection_record(plan);
+ if(!serialized.good())throw std::runtime_error("selection serialization");
+ std::ofstream f(argv[2]);f<<serialized.c_str()<<'\n';f.close();if(!f)throw std::runtime_error("selection publication");return 0;
 }catch(const std::exception &e){std::cerr<<e.what()<<'\n';return 1;}

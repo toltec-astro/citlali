@@ -2,6 +2,9 @@
 """One foreground, sequential batch; no retries, cleanup, adoption or agent calls."""
 import argparse,contextlib,datetime,json,os,re,signal,subprocess,sys,time,traceback
 from pathlib import Path
+# Establish limits before any helper can initialize NumPy/BLAS or plotting.
+for k in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','VECLIB_MAXIMUM_THREADS','MKL_NUM_THREADS','BLIS_NUM_THREADS'):os.environ[k]='1'
+os.environ.update(MPLBACKEND='Agg',MPLCONFIGDIR='/private/tmp/point-transfer-mpl',XDG_CACHE_HOME='/private/tmp/point-transfer-cache',PYTHONDONTWRITEBYTECODE='1')
 REPO=Path(__file__).resolve().parents[2];sys.path.insert(0,str(REPO/'tools/timestream_successor'))
 from point_transfer_experiment import *
 from point_speed_experiment import launch
@@ -28,15 +31,51 @@ def command(name,args):
     STATE.setdefault('gates',[]).append(dict(name=name,exit_code=code,log=str(path)))
     if code:raise ProcessFailure(f'{name} process failed with exit code {code}; see {path}')
 
-def accounting():
-    attempts=[json.loads(s) for s in (ROOT/'attempts.jsonl').read_text().splitlines()] if (ROOT/'attempts.jsonl').exists() else []
-    counts={k:sum(r['kind']==k for r in attempts) for k in LIMITS};native=0;receipts=[]
+def accounting(strict=True):
+    counts={k:0 for k in LIMITS};native=0;receipts=[];unknown=[]
+    p=ROOT/'attempts.jsonl'
+    try:
+        lines=p.read_text().splitlines() if p.exists() else []
+    except Exception as exc:
+        if strict:raise
+        lines=[];unknown.append(dict(path=str(p),reason=str(exc)))
+    for line_number,line in enumerate(lines,1):
+        try:
+            r=json.loads(line)
+            require(isinstance(r,dict) and r.get('kind') in LIMITS,'invalid attempt record')
+            counts[r['kind']]+=1
+        except Exception as exc:
+            if strict:raise
+            unknown.append(dict(path=str(p),line=line_number,reason=str(exc)))
     for role in ROLES:
         for n in range(1,5):
             p=ROOT/role/f'upstream/products/network{n}/receipt.yaml'
-            if p.exists():
-                r=yread(p);native+=bool(r.get('Apply_performed'));receipts.append(dict(role=role,network=n,Apply_performed=r.get('Apply_performed'),binding=bound(p)))
-    return dict(charged_attempts=counts,completed_native_RTC_Apply_receipts=native,native_receipts=receipts,qualification='Missing failed/interrupted receipt is unknown application completion, never proof of no work. Parent/trajectory slot is charged before numerical child starts.')
+            try:
+                if not p.exists():
+                    if (ROOT/role).exists():unknown.append(dict(path=str(p),reason='Receipt absent; application completion unknown'))
+                    continue
+                r=yread(p)
+                require(isinstance(r,dict) and isinstance(r.get('Apply_performed'),bool),'invalid or partial native receipt')
+                binding=bound(p);native+=r['Apply_performed']
+                receipts.append(dict(role=role,network=n,Apply_performed=r['Apply_performed'],binding=binding))
+            except Exception as exc:
+                if strict:raise
+                unknown.append(dict(path=str(p),reason=str(exc)))
+    return dict(charged_attempts=counts,completed_native_RTC_Apply_receipts=native,native_receipts=receipts,unknown_evidence=unknown,accounting_complete=not unknown,qualification='Missing failed/interrupted receipt is unknown application completion, never proof of no work. Partial attempts are unknown additional charges; known counts are lower bounds. Parent/trajectory slot is charged before numerical child starts.')
+
+def terminal_failure(state,exit_code,reason,exc=None):
+    # Diagnostics must never prevent an independent attempt to publish status.
+    errors=[]
+    try:
+        if exc is not None:
+            try:
+                with (ROOT/'failure.log').open('w') as f:traceback.print_exception(type(exc),exc,exc.__traceback__,file=f)
+            except Exception as failure:errors.append('failure log: '+str(failure))
+        try:save_json(ROOT/'ACCOUNTING.json',accounting(strict=False))
+        except Exception as failure:errors.append('accounting unknown: '+str(failure))
+    finally:
+        status(state,exit_code=exit_code,reason=reason,completed_utc=now(),terminal_evidence_errors=errors)
+    return exit_code
 
 def verify_role(role,revision):
     out=ROOT/role;require(read(out/'EXECUTION.json')['status']=='completed','role endpoint failed')
@@ -63,8 +102,6 @@ def main():
     require(all(x.name in allowed for x in ROOT.iterdir()),'existing incompatible campaign files; no implicit resume')
     with (ROOT/'LAUNCHED.json').open('x') as f:json.dump(dict(source_revision=revision,started_utc=now(),review=bound(args.review)),f)
     (ROOT/'logs').mkdir();STATE=dict(campaign='rtc-point-transfer-20260928',source_revision=revision,pid=os.getpid(),started_utc=now(),completed_roles=[],current_role=None,status_file=str(ROOT/'STATUS.json'),resume=str(D/'RESUME.md'),summary=str(ROOT/'report/metrics.json'),model_monitoring_calls_after_handoff=0,token_credit_usage='unavailable; no measured savings claim')
-    for k in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','VECLIB_MAXIMUM_THREADS','MKL_NUM_THREADS','BLIS_NUM_THREADS'):os.environ[k]='1'
-    os.environ.update(MPLBACKEND='Agg',MPLCONFIGDIR='/private/tmp/point-transfer-mpl',XDG_CACHE_HOME='/private/tmp/point-transfer-cache',PYTHONDONTWRITEBYTECODE='1')
     try:
         status('RUNNING',phase='storage and frozen source preflight')
         save_json(ROOT/'STORAGE_AT_LAUNCH.json',capacity())
@@ -123,17 +160,21 @@ def main():
     except KeyboardInterrupt:
         # Foreground Ctrl-C normally reaches the whole terminal process group.
         # Explicitly terminate any remaining descendants before publishing stop.
-        import psutil
-        children=psutil.Process().children(recursive=True)
-        for p in children:
-            try:p.terminate()
-            except psutil.Error:pass
-        _,live=psutil.wait_procs(children,timeout=5)
-        for p in live:
-            try:p.kill()
-            except psutil.Error:pass
-        save_json(ROOT/'ACCOUNTING.json',accounting());status('INTERRUPTED',exit_code=130,reason='Owner interruption; all outputs retained; no automatic resume');return 130
+        try:
+            import psutil
+            children=psutil.Process().children(recursive=True)
+            for p in children:
+                try:p.terminate()
+                except psutil.Error:pass
+            _,live=psutil.wait_procs(children,timeout=5)
+            for p in live:
+                try:p.kill()
+                except psutil.Error:pass
+        except Exception as failure:
+            STATE['descendant_stop_error']=str(failure)
+        finally:
+            terminal_failure('INTERRUPTED',130,'Owner interruption; all outputs retained; no automatic resume')
+        return 130
     except Exception as exc:
-        traceback.print_exc(file=(ROOT/'failure.log').open('w'))
-        save_json(ROOT/'ACCOUNTING.json',accounting());status('PROCESS_FAILED' if isinstance(exc,ProcessFailure) else 'REQUIRED_GATE_FAILED',exit_code=1,reason=str(exc),failure_log=str(ROOT/'failure.log'));return 1
+        return terminal_failure('PROCESS_FAILED' if isinstance(exc,ProcessFailure) else 'REQUIRED_GATE_FAILED',1,str(exc),exc)
 if __name__=='__main__':raise SystemExit(main())

@@ -12,7 +12,9 @@ no transfer trajectory or scientific result is claimed here. The 30GB bound now
 includes prior retention, seven completed-role caps, active reservation and metadata;
 an output exceeding its allowance stops without deletion. Historical excerpts do
 not establish complete portable D88 recovery. Exact-source independent preparation
-review must pass before owner launch. B remains rollback; adoption awaits measured
+review must pass before owner launch. Its initial execution-safeguard findings
+(partial terminal evidence and pre-import thread limits) are repaired and covered
+by eight short fixtures; corrected-source review remains required. B remains rollback; adoption awaits measured
 independent evidence and final scientific review. No production activation/push.
 
 
