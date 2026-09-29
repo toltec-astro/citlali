@@ -1,2 +1,3 @@
-PASS: raw target dimensions and identity; capacity arithmetic; source and effective governance hashes; zero-launch status; exact live/hand-off STATUS equality and RESUME linkage; git diff --check.
+PASS: raw target dimensions and identity; capacity arithmetic; source and effective governance hashes; zero-launch status; exact live/hand-off STATUS equality and RESUME linkage.
+Whitespace: changed authored files pass git diff --check. The byte-preserved OWNER_DIRECTIVE.md has three intentional Markdown hard-line-break trailing-space notices inherited from the supplied document.
 Evidence-only preflight. No build, native science gate, observational execution or independent scientific review claimed.
