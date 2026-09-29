@@ -32,7 +32,7 @@ New root:
 The failed root remains untouched and is added to PRIOR, retaining all 284278
 bytes measured at repair start. The prior scientific retention/caps stay unchanged;
 capacity is recomputed at execution including failed evidence. Preflight output
-lives in the new root/preflight-only; logs/evidence count toward shared bytes.
+lives in the new root/preflight-only/<source-SHA>; logs/evidence count toward shared bytes.
 
 Gates: short runner fixtures; actual configure and both native executables;
 CTest/check; baseline tools; POINT tools; config require-all; native all-five-cycle
@@ -48,3 +48,16 @@ within this authorized execution-preflight scope, never change scientific policy
 to make tests pass. No Unity, push, merge, production activation or deletion.
 Completion is READY_FOR_OWNER_LAUNCH with zero science and a new exact command;
 actual observation and final scientific assessment remain pending.
+
+## Required POINT native fixture
+
+The first repair preflight at b317e7041f118fce075320d595948d15d4da3c21
+exited 0 with zero science: 1318 CTests passed (one previously disabled lifecycle
+test), 207 baseline tests passed, config/native request/history/runner gates passed.
+POINT reported 203 passed and one skipped: the frozen saved-apply fixture requires
+POINT_FROZEN_APPLY_BINARY. This is a gate-wiring omission, not accepted coverage.
+The bounded follow-up adds its existing target to the build and supplies that
+explicit binary to the POINT suite. No test/scientific semantics change. Preflight
+records are now keyed by exact source SHA so each corrected source is tested once
+without overwriting earlier evidence or allowing same-source replay. The first
+record remains at preflight-only/STATUS.json; final evidence is in the SHA child.

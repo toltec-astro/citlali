@@ -47,7 +47,7 @@ original directory successor-rtc-point-transfer-20260928 remains intact and is
 included in the shared storage accounting. On 2026-09-29 the owner authorized
 repair, testing that the process builds/runs, stopping, and a new launch command.
 Explicit configure now precedes build. `--preflight-only` runs the same build and
-validation gates in the new root's preflight-only directory and returns before
+validation gates in the new root's preflight-only/<source-SHA> directory and returns before
 observation preparation. It neither consumes science slots nor launches B.
 Its successful status does not claim an observation result. The owner command
 above uses a separate exclusive launch marker and rechecks the gates.

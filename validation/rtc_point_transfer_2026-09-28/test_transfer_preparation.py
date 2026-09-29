@@ -79,7 +79,7 @@ class TerminalEvidence(unittest.TestCase):
   r=self.runner
   with tempfile.TemporaryDirectory() as d,patch.object(r,'ROOT',Path(d)),patch.object(r,'STATE',{}),patch.object(r.subprocess,'check_output',side_effect=lambda args,**kw:'fixture' if args[1]=='rev-parse' else ''),patch.object(r,'capacity',return_value={}),patch.object(r,'bound',side_effect=lambda p:dict(path=str(p))),patch.object(r,'run_preflight') as gates,patch.object(r,'prepare_role') as prepare,patch.object(r,'launch') as launch,patch.object(sys,'argv',['run_campaign.py','--preflight-only']):
    self.assertEqual(r.main(),0);gates.assert_called_once_with('fixture');prepare.assert_not_called();launch.assert_not_called()
-   root=Path(d)/'preflight-only';self.assertEqual(json.loads((root/'STATUS.json').read_text())['state'],'PREFLIGHT_PASSED_NO_SCIENCE')
+   root=Path(d)/'preflight-only/fixture';self.assertEqual(json.loads((root/'STATUS.json').read_text())['state'],'PREFLIGHT_PASSED_NO_SCIENCE')
    self.assertEqual(json.loads((root/'ACCOUNTING.json').read_text())['charged_attempts'],dict.fromkeys(LIMITS,0))
    self.assertFalse((Path(d)/'LAUNCHED.json').exists())
  def test_configure_precedes_requested_build_targets(self):

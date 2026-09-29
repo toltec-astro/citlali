@@ -92,11 +92,12 @@ def verify_role(role,revision):
 
 def run_preflight(revision):
     command('configure',['cmake','-S','.', '-B','build'])
-    command('build',['cmake','--build','build','--target','citlali_cli','citlali_rtc_point_select','-j','8'])
+    command('build',['cmake','--build','build','--target','citlali_cli','citlali_rtc_point_select','citlali_point_frozen_apply','-j','8'])
     require(revision[:9] in subprocess.check_output([str(BINARY),'--version'],text=True),'built native source mismatch')
     save_json(ROOT/'BINARY.json',dict(source_revision=revision,binary=bound(BINARY),selector=bound(SELECTOR)))
     command('ctest',['cmake','--build','build','--target','check','-j','8'])
     command('baseline-tools',[PYTHON,'-m','unittest','discover','-s','tools/baseline','-p','test_*.py'])
+    os.environ['POINT_FROZEN_APPLY_BINARY']=str(REPO/'build/bin/citlali_point_frozen_apply')
     command('point-tools',[PYTHON,'-m','pytest','-q',*sorted((REPO/'tools/timestream_successor').glob('test_point_*.py'))])
     command('config',[PYTHON,'tools/config/run_config_preflight.py','--require-all'])
     command('native-five-cycle-requests',[PYTHON,'tests/test_point_fruit_contract_cli.py','--binary',BINARY])
@@ -114,7 +115,7 @@ def main():
     if not args.preflight_only:
         require(review['source_revision']==revision and review['verdict']=='pass','exact-source independent preparation review required')
     else:
-        ROOT=ROOT/'preflight-only'
+        ROOT=ROOT/'preflight-only'/revision
     require(not subprocess.check_output(['git','status','--porcelain'],cwd=REPO,text=True).strip(),'clean exact source required')
     require(Path(sys.executable).resolve()==PYTHON.resolve(),'required local venv')
     ROOT.mkdir(parents=True,exist_ok=True)
