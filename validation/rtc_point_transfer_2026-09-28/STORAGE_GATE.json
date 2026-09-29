@@ -1,0 +1,71 @@
+{
+  "state": "BLOCKED_STORAGE",
+  "time_utc": "2026-09-29T01:13:51.757346+00:00",
+  "accounting": "logical file sizes; decimal bytes; unchanged two-stage shared scope extended by this new campaign",
+  "retained_roots": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-retained-residuals-20260928",
+      "files": 25426,
+      "bytes": 2561869621
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928",
+      "files": 130256,
+      "bytes": 15336641716
+    }
+  ],
+  "retained_bytes": 17898511337,
+  "ceiling_bytes": 30000000000,
+  "remaining_headroom_bytes": 12101488663,
+  "free_filesystem_bytes": 608347312128,
+  "free_space_reserve_bytes": 2000000000,
+  "native_cells": 15912679,
+  "single_trajectory_reservation_bytes": 6837454416,
+  "reservation_formula": "304*native_cells+2000000000; inherited bound, not measured new-run usage",
+  "minimum_dense_retained_bytes_per_completed_role": 1416228431,
+  "minimum_dense_derivation": {
+    "source_probe": {
+      "float64_planes": 6,
+      "uint8_planes": 3,
+      "bytes_per_native_cell": 51
+    },
+    "rtc_conditioned_and_filtered_pairs": {
+      "float64_planes": 4,
+      "bytes_per_native_cell": 32
+    },
+    "rtc_cause_state_center_speed_planes": {
+      "uint8_planes": 6,
+      "bytes_per_native_cell": 6
+    }
+  },
+  "eighth_role_reservation_lower_bound_bytes": 34649564770,
+  "deficit_even_at_lower_bound_bytes": 4649564770,
+  "excluded_from_lower_bound": [
+    "native times and retained-row lists",
+    "CAL and M0 native products",
+    "five FRUIT native products",
+    "FITS, YAML, JSON, logs, source rasters and packed reports",
+    "new selector outputs"
+  ],
+  "sources": [
+    {
+      "path": "tools/timestream_successor/point_step_experiment.py",
+      "lines": "177-179",
+      "sha256": "07b2e70cabd7076ce282b512ce86c5813ba8bdb9fe22125473f37051d08e860c"
+    },
+    {
+      "path": "src/citlali/cli/point_rtc_probe_execution.h",
+      "lines": "51-94",
+      "sha256": "60aa67f452983f15c66b23aeb135df07b67496730fb91843441dc9a09b706c58"
+    },
+    {
+      "path": "src/citlali/cli/rtc_pipeline_execution.cpp",
+      "lines": "989-1042",
+      "sha256": "8cfdd0e097b83ec554d8e2010a5c3bd05f332e5ef644d6dc202dd998a9f6fa96"
+    }
+  ],
+  "interpretation": "Existing capture/retention layout cannot reserve the possible eight-role branch. This is a lower bound, not a recommended replacement ceiling. A no-applicable-case early exit cannot be presumed before the authorized B run.",
+  "required_owner_decision": "Approve an exact preserved-scratch cleanup scope or a revised campaign storage ceiling/retention policy; then rerun the capacity preflight before implementation or science.",
+  "cleanup_performed": false,
+  "scientific_launches": 0
+}

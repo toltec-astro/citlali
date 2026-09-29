@@ -1,0 +1,44 @@
+{
+  "schema": "citlali-point-transfer-status-v1",
+  "campaign": "rtc-point-transfer-2026-09-28",
+  "state": "BLOCKED_STORAGE",
+  "phase": "pre-science-capacity-preflight",
+  "observation": 152420,
+  "source_base": "105df3663f916e63ca6b62d5fb227c5d59e5ddd1",
+  "rule_identity": null,
+  "configuration_identity": null,
+  "rule_state": "not implemented or frozen; stopped at mandatory resource prerequisite",
+  "current_role": null,
+  "completed_roles": [],
+  "roles_started": 0,
+  "parent_reductions": 0,
+  "native_RTC_applications": 0,
+  "feedback_applications": 0,
+  "endpoints": 0,
+  "created_at": "2026-09-29T01:13:51.757346+00:00",
+  "updated_at": "2026-09-29T01:13:51.757346+00:00",
+  "process": null,
+  "exit_status": null,
+  "launched": false,
+  "status_path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-20260928/STATUS.json",
+  "resume_path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_point_transfer_2026-09-28/RESUME.md",
+  "log_paths": [],
+  "summary_paths": [
+    "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_point_transfer_2026-09-28/STORAGE_GATE.json",
+    "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_point_transfer_2026-09-28/TARGET.json",
+    "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_point_transfer_2026-09-28/INVENTORY.json"
+  ],
+  "blocker": "At least 34649564770 bytes needed for final-role reservation under existing capture/retention layout, exceeding 30000000000 by at least 4649564770; omitted products increase need.",
+  "next_authority": "Owner storage/retention decision required; a completion-check message alone authorizes inspection, not cleanup or science restart.",
+  "monitoring": {
+    "numerical_batch_checks": 0,
+    "polls_after_handoff": 0,
+    "background_agents": 0,
+    "scheduled_continuations": 0
+  },
+  "usage": {
+    "token_credit_usage": "unavailable; no usage analysis attempted",
+    "numerical_seconds": 0,
+    "saved_inventory_only": true
+  }
+}

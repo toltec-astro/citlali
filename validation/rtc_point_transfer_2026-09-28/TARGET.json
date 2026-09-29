@@ -1,0 +1,160 @@
+{
+  "observation": 152420,
+  "subobservation": 0,
+  "scan": 2,
+  "array": "a1100",
+  "networks": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "choice_state": "selected before any new reduction; no substitution based on future outcomes",
+  "rationale": "Already local, distinct from152430; existing July survey shows repeated original-IQ disturbances across all four requested networks. Earlier a2000 POINT assessment establishes a usable bright POINT source, not transferable a1100 geometry/noise/response.",
+  "existing_summary": [
+    {
+      "network": 1,
+      "survey_windows": 12,
+      "max_strong_phase_tones": 255,
+      "strong_phase_fraction": 0.6204379562043796,
+      "numerical_scan": 2
+    },
+    {
+      "network": 2,
+      "survey_windows": 12,
+      "max_strong_phase_tones": 262,
+      "strong_phase_fraction": 0.645320197044335,
+      "numerical_scan": 4
+    },
+    {
+      "network": 3,
+      "survey_windows": 12,
+      "max_strong_phase_tones": 411,
+      "strong_phase_fraction": 0.874468085106383,
+      "numerical_scan": 2
+    },
+    {
+      "network": 4,
+      "survey_windows": 12,
+      "max_strong_phase_tones": 139,
+      "strong_phase_fraction": 0.31235955056179776,
+      "numerical_scan": 4
+    }
+  ],
+  "source_survey": {
+    "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/docs/pointing-iq-event-survey-20260729/pointing_raw_iq_event_survey.json",
+    "sha256": "6921bb886753eee395f9bf6924f747e9a88a29381e98ed90dba7914063b051c5"
+  },
+  "historical_point_assessment": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_step_point_2026-09-27/ASSESSMENT.md",
+    "sha256": "15c71fe3d2bc185c137c58852df75bd6da84d70c7324b65575a03b3a6bcf1926"
+  },
+  "raw_header_checks": [
+    {
+      "ObsNum": 152420,
+      "SubObsNum": 0,
+      "ScanNum": 2,
+      "RoachIndex": 1,
+      "TargSweepObsNum": 152420,
+      "TargSweepSubObsNum": 0,
+      "TargSweepScanNum": 1,
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec1_152420_000_0002_2026_02_19_09_33_45.nc",
+      "shape": [
+        7691,
+        494
+      ],
+      "timing_variables": [
+        "Header.Toltec.CompileTime",
+        "Header.Toltec.ObsStartTime",
+        "Header.Toltec.ObsEndTime",
+        "Header.Toltec.SampleFreq",
+        "Data.Toltec.SampleType",
+        "Data.Toltec.RecvTime"
+      ],
+      "sample_freq": 122.0703125
+    },
+    {
+      "ObsNum": 152420,
+      "SubObsNum": 0,
+      "ScanNum": 2,
+      "RoachIndex": 2,
+      "TargSweepObsNum": 152420,
+      "TargSweepSubObsNum": 0,
+      "TargSweepScanNum": 1,
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec2_152420_000_0002_2026_02_19_09_33_45.nc",
+      "shape": [
+        7691,
+        510
+      ],
+      "timing_variables": [
+        "Header.Toltec.CompileTime",
+        "Header.Toltec.ObsStartTime",
+        "Header.Toltec.ObsEndTime",
+        "Header.Toltec.SampleFreq",
+        "Data.Toltec.SampleType",
+        "Data.Toltec.RecvTime"
+      ],
+      "sample_freq": 122.0703125
+    },
+    {
+      "ObsNum": 152420,
+      "SubObsNum": 0,
+      "ScanNum": 2,
+      "RoachIndex": 3,
+      "TargSweepObsNum": 152420,
+      "TargSweepSubObsNum": 0,
+      "TargSweepScanNum": 1,
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec3_152420_000_0002_2026_02_19_09_33_45.nc",
+      "shape": [
+        7691,
+        533
+      ],
+      "timing_variables": [
+        "Header.Toltec.CompileTime",
+        "Header.Toltec.ObsStartTime",
+        "Header.Toltec.ObsEndTime",
+        "Header.Toltec.SampleFreq",
+        "Data.Toltec.SampleType",
+        "Data.Toltec.RecvTime"
+      ],
+      "sample_freq": 122.0703125
+    },
+    {
+      "ObsNum": 152420,
+      "SubObsNum": 0,
+      "ScanNum": 2,
+      "RoachIndex": 4,
+      "TargSweepObsNum": 152420,
+      "TargSweepSubObsNum": 0,
+      "TargSweepScanNum": 1,
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec4_152420_000_0002_2026_02_19_09_33_45.nc",
+      "shape": [
+        7691,
+        532
+      ],
+      "timing_variables": [
+        "Header.Toltec.CompileTime",
+        "Header.Toltec.ObsStartTime",
+        "Header.Toltec.ObsEndTime",
+        "Header.Toltec.SampleFreq",
+        "Data.Toltec.SampleType",
+        "Data.Toltec.RecvTime"
+      ],
+      "sample_freq": 122.0703125
+    }
+  ],
+  "checks_complete": [
+    "raw observation/subobservation/scan/network identities",
+    "header tune association152420/0/1",
+    "native dimensions and122.0703125Hz header cadence",
+    "local raw and exact tune-file existence",
+    "existing same-observation step/source metadata"
+  ],
+  "checks_pending": [
+    "complete frozen original/tune/APT/calibration dependency hashes",
+    "native physical-run admission and telescope/auxiliary completeness",
+    "own a1100 geometry/noise/source admission",
+    "all five actual native FRUIT request gates"
+  ],
+  "no_new_outcomes_examined": true
+}
