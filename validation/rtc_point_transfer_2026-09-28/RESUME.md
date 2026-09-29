@@ -1,41 +1,37 @@
 # Resume independent POINT transfer
 
-State: **BLOCKED_STORAGE**; no numerical process was launched.
+State: **PREFLIGHT_REQUIRED** after verified cleanup. No scientific process launched.
 
 Status: `/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-20260928/STATUS.json`.
-Durable record: `/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_point_transfer_2026-09-28`.
-Base: `105df3663f916e63ca6b62d5fb227c5d59e5ddd1`; branch `codex/rtc-point-transfer-20260928`.
-Chosen observation:152420/0/2, a1100 networks1–4; no replacement target.
+Cleanup closeout: [cleanup_2026-09-29/CLOSEOUT.md](cleanup_2026-09-29/CLOSEOUT.md).
+Campaign root: `/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-20260928`.
+Branch: `codex/rtc-point-transfer-20260928` in `/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor`.
+Chosen observation:152420/0/2, a1100 networks1–4; no outcome-based target replacement.
 
-Read STATUS.json and STORAGE_GATE.json first. The existing shared cap30GB cannot
-reserve the full possible eight-role batch while preserving prior scratch.
-Even the documented lower bound is34,649,564,770 bytes; additional required products
-are excluded, so this is not a sufficient replacement ceiling. Free physical
-space was about608GB. Resolve the owner's storage/retention decision before work.
-No cleanup is authorized by the current directive.
+The authorized cleanup completed:153,062 files /16,042,260,125 bytes removed;
+originals and compact evidence remain verified. Prior shared retained bytes are
+now1,856,251,212, leaving28,143,748,788 under30GB. The earlier failing partial
+lower bound now fits, but does not include all required products. **Recompute and
+prove the complete planned eight-role storage budget before expensive work.**
+No cap increase or further cleanup is authorized by this completion assessment.
+The original STORAGE_GATE.json and STATUS_AT_HANDOFF.json preserve the historical
+blocked state; do not overwrite them as if they had passed initially.
 
-No selector algorithm/configuration, full input manifest, native extension or
-runner has yet been frozen. Recover the saved D88 definitions and formalize one
-portable original-domain rule before inspecting new residuals. Verify all target
-bindings/native cycles, B-disabled neutrality and historical selector controls.
-Use the current owner work order for the eight-role gated experiment and final
-adoption/parking authority. Existing a2000 controls are not valid a1100 controls.
-No scientific trajectory has been charged or run.
+Still pending: portable deterministic selector/window formalization from saved
+D88 evidence and controls; original-domain stage-available source guard; complete
+raw/tune/APT/calibration/physical-run bindings; actual native requests for allfive
+cycles; B-disabled neutrality tests; exact source/configuration freeze; gated
+runner. No algorithm, thresholds or detector membership have been tuned on new
+152420 residuals. The earlier a2000 evidence supplies no transferable a1100
+geometry, noise, absolute source amplitudes or response controls.
 
-Execution persistence across the turn boundary is not established. When a runner
-is ready, use an already established durable execution mechanism or supply one
-exact user-terminal command and READY_FOR_OWNER_LAUNCH, then end the turn. Do not
-infer persistence from detachment/PID. No launch command or stop command applies
-now because there is no process. No terminal/app/power condition applies yet.
+The owner's current message authorized cleanup completion verification/assessment,
+not automatic science execution. Await an explicit continuation of preparation.
+The original independent-transfer work order governs any resumed preparation and
+eight-role test. No reduction or retry has been charged.
 
-Read-only current status command:
-
-```sh
-cat /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-20260928/STATUS.json
-```
-
-An owner message “Check completion and assess the results” authorizes a bounded
-status inspection. In this blocked state it does not imply cleanup, a higher cap,
-automatic restart or permission to call the unimplemented runner ready. Resume
-preparation only after the actual resource decision is supplied. Once launched,
-one bounded startup check and end of turn are mandatory; no model monitoring.
+When a scientific batch is ready, respect the original foreground/established
+persistence handoff: one bounded startup check, report exact STATUS location and
+end the turn; no polling, monitoring agents, scheduling or automatic continuation.
+The completed cleanup command must not be reused. On a future owner completion
+message, read the relevant STATUS once and inspect only needed evidence.

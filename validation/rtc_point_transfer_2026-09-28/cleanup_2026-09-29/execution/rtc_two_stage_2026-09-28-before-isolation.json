@@ -1,0 +1,22 @@
+{
+  "pass_": true,
+  "seconds": 4.116531750012655,
+  "denied_original_run_tree": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928",
+  "denied_protected_files": 7347,
+  "positive_denial_control": true,
+  "exact_artifacts": 10,
+  "figure_count": 8,
+  "commands": [
+    {
+      "script": "two_stage_report.py",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "script": "two_stage_comparison_report.py",
+      "returncode": 0,
+      "stderr": ""
+    }
+  ],
+  "scope": "saved evidence summaries/plots only; no scientific fit, original input, learning, reduction or uncertainty ensemble"
+}

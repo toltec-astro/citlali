@@ -1,0 +1,60 @@
+{
+  "files": [
+    {
+      "source": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-scratch-cleanup-20260929/STATUS.json",
+      "path": "STATUS.json",
+      "sha256": "b61dc013126fdd78b8ff0cf14114acb2fe69635cd0a4a451dc78925f4756d555",
+      "bytes": 543
+    },
+    {
+      "source": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-scratch-cleanup-20260929/LAUNCH.json",
+      "path": "LAUNCH.json",
+      "sha256": "3d0268ba5a3088a72ce55a33f61346b360d4c8c0507af275435ecd43b6b8d98a",
+      "bytes": 127
+    },
+    {
+      "source": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-scratch-cleanup-20260929/CLEANUP.json",
+      "path": "CLEANUP.json",
+      "sha256": "9d8cf6aacff2a3f1a9f539384931f817ca4405e87c7229f37378fd39e495ce6c",
+      "bytes": 2192
+    },
+    {
+      "source": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-scratch-cleanup-20260929/cleanup.log",
+      "path": "cleanup.log",
+      "sha256": "c92b741d3631e7670048504104ddf3e563abfe520ba7b90f7ecc931373ac1cbb",
+      "bytes": 2361
+    },
+    {
+      "source": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-scratch-cleanup-20260929/rtc_retained_residuals_2026-09-28-after-isolation.json",
+      "path": "rtc_retained_residuals_2026-09-28-after-isolation.json",
+      "sha256": "ada758ffc77cf5c9880721e80893c0ca7676bc0c0a3f1e2be0d154bd97f1120c",
+      "bytes": 542
+    },
+    {
+      "source": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-scratch-cleanup-20260929/rtc_retained_residuals_2026-09-28-before-isolation.json",
+      "path": "rtc_retained_residuals_2026-09-28-before-isolation.json",
+      "sha256": "4c8605f7b6c2aa28d3543f4910d5d36867c84311165c68a8bd6dccda8448f068",
+      "bytes": 541
+    },
+    {
+      "source": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-scratch-cleanup-20260929/rtc_two_stage_2026-09-28-after-isolation.json",
+      "path": "rtc_two_stage_2026-09-28-after-isolation.json",
+      "sha256": "405108dd3e16348958725f7ca2c3cdd79584b21abf6f1d84c359c0ac8b890c1a",
+      "bytes": 639
+    },
+    {
+      "source": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-scratch-cleanup-20260929/rtc_two_stage_2026-09-28-before-isolation.json",
+      "path": "rtc_two_stage_2026-09-28-before-isolation.json",
+      "sha256": "f06b5419ad7e4a2247fae079bdf070e7c343d453bf06005ed4aea9f967660f96",
+      "bytes": 639
+    },
+    {
+      "source": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-scratch-cleanup-20260929/DELETED.jsonl",
+      "path": "DELETED.jsonl.gz",
+      "encoding": "gzip",
+      "source_sha256": "6cc7c0dc26889a1e47bdda6c7f0d80d0c4e6f13e78509f71f41afb40137ce344",
+      "sha256": "593a631c60242ad1c900da50561b38316b552a021b77d55f5da7ce545c8ac951",
+      "bytes": 490001
+    }
+  ]
+}

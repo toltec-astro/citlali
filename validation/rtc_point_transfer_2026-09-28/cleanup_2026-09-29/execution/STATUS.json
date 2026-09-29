@@ -1,0 +1,13 @@
+{
+  "state": "COMPLETE_PENDING_OWNER_REVIEW",
+  "phase": "complete",
+  "pid": 12889,
+  "started_at": "2026-09-29T12:17:55.044286+00:00",
+  "deleted_files": 153062,
+  "deleted_bytes": 16042260125,
+  "log": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-scratch-cleanup-20260929/cleanup.log",
+  "receipt": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-scratch-cleanup-20260929/CLEANUP.json",
+  "exit_status": 0,
+  "science_launched": false,
+  "updated_at": "2026-09-29T12:36:45.939446+00:00"
+}

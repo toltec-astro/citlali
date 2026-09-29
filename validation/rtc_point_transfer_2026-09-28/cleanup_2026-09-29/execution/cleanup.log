@@ -1,0 +1,78 @@
+{
+  "pass_": true,
+  "seconds": 5.882688625017181,
+  "denied_original_run_tree": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-retained-residuals-20260928",
+  "denied_protected_files": 7018,
+  "positive_denial_control": true,
+  "exact_artifacts": 7,
+  "figure_count": 6,
+  "commands": [
+    {
+      "script": "retained_report.py",
+      "returncode": 0,
+      "stderr": ""
+    }
+  ],
+  "scope": "saved evidence summaries/plots only; no scientific fit, original input, learning, reduction or uncertainty ensemble"
+}
+{
+  "pass_": true,
+  "seconds": 4.116531750012655,
+  "denied_original_run_tree": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928",
+  "denied_protected_files": 7347,
+  "positive_denial_control": true,
+  "exact_artifacts": 10,
+  "figure_count": 8,
+  "commands": [
+    {
+      "script": "two_stage_report.py",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "script": "two_stage_comparison_report.py",
+      "returncode": 0,
+      "stderr": ""
+    }
+  ],
+  "scope": "saved evidence summaries/plots only; no scientific fit, original input, learning, reduction or uncertainty ensemble"
+}
+{
+  "pass_": true,
+  "seconds": 2.5926372090470977,
+  "denied_original_run_tree": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-retained-residuals-20260928",
+  "denied_protected_files": 7018,
+  "positive_denial_control": true,
+  "exact_artifacts": 7,
+  "figure_count": 6,
+  "commands": [
+    {
+      "script": "retained_report.py",
+      "returncode": 0,
+      "stderr": ""
+    }
+  ],
+  "scope": "saved evidence summaries/plots only; no scientific fit, original input, learning, reduction or uncertainty ensemble"
+}
+{
+  "pass_": true,
+  "seconds": 3.832814958994277,
+  "denied_original_run_tree": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928",
+  "denied_protected_files": 7347,
+  "positive_denial_control": true,
+  "exact_artifacts": 10,
+  "figure_count": 8,
+  "commands": [
+    {
+      "script": "two_stage_report.py",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "script": "two_stage_comparison_report.py",
+      "returncode": 0,
+      "stderr": ""
+    }
+  ],
+  "scope": "saved evidence summaries/plots only; no scientific fit, original input, learning, reduction or uncertainty ensemble"
+}

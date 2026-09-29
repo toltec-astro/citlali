@@ -1,0 +1,60 @@
+{
+  "pass_": true,
+  "review_time_utc": "2026-09-29T14:22:15.207939+00:00",
+  "reviewed_procedure": "e7fbc4e3156bf4c6b1f2267acd793af89912fead",
+  "counts_exact": true,
+  "journal_paths_and_bytes_match_approved_manifests": true,
+  "journal_files": 153062,
+  "journal_bytes": 16042260125,
+  "journal_sha256": "6cc7c0dc26889a1e47bdda6c7f0d80d0c4e6f13e78509f71f41afb40137ce344",
+  "representative_targets_absent": [
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-retained-residuals-20260928/B-REF-rep1/M0/products/a1100/handoff/network-1-segment-0-ast.f64",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-retained-residuals-20260928/B-REF-rep1/upstream/products/network3/donor-continuity/131-support-causes.u8",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-retained-residuals-20260928/B-REF-rep1/upstream/products/network4/source-probe/original-x.f64",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/M0/products/a1100/handoff/network-1-segment-0-ast.f64",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-C-core-plus/upstream/products/network3/donor-continuity/11-input-causes.u8",
+    "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/Q-REF/upstream/products/network4/source-probe/original-x.f64"
+  ],
+  "runner_preservation_checks_pass": true,
+  "report_receipts": [
+    {
+      "file": "rtc_retained_residuals_2026-09-28-before-isolation.json",
+      "artifacts": 7,
+      "figures": 6,
+      "sha256": "4c8605f7b6c2aa28d3543f4910d5d36867c84311165c68a8bd6dccda8448f068"
+    },
+    {
+      "file": "rtc_retained_residuals_2026-09-28-after-isolation.json",
+      "artifacts": 7,
+      "figures": 6,
+      "sha256": "ada758ffc77cf5c9880721e80893c0ca7676bc0c0a3f1e2be0d154bd97f1120c"
+    },
+    {
+      "file": "rtc_two_stage_2026-09-28-before-isolation.json",
+      "artifacts": 10,
+      "figures": 8,
+      "sha256": "f06b5419ad7e4a2247fae079bdf070e7c343d453bf06005ed4aea9f967660f96"
+    },
+    {
+      "file": "rtc_two_stage_2026-09-28-after-isolation.json",
+      "artifacts": 10,
+      "figures": 8,
+      "sha256": "405108dd3e16348958725f7ca2c3cdd79584b21abf6f1d84c359c0ac8b890c1a"
+    }
+  ],
+  "shared_retained_bytes": 1856251212,
+  "cap_headroom_bytes": 28143748788,
+  "updated_partial_eighth_role_reservation_lower_bound": 18607304645,
+  "full_eight_role_budget_proven": false,
+  "no_additional_exhaustive_native_scan": true,
+  "no_rerun_or_science_launched": true,
+  "monitoring_during_batch": 0,
+  "completion_status_reads": 1,
+  "token_credit_usage": "unavailable",
+  "timing": {
+    "runner_monotonic_seconds": 581.7842438750085,
+    "timestamp_span_seconds": 1130.89516,
+    "interpretation": "Different clock spans retained as reported; no performance/savings inference."
+  },
+  "assessment_checkout": "78c9aa2b4d8d29b2444d1a040605cfc5c485b38f"
+}

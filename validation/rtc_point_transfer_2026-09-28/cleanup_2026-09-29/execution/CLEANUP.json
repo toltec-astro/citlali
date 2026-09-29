@@ -1,0 +1,47 @@
+{
+  "applied": true,
+  "files": 153062,
+  "bytes": 16042260125,
+  "protected_files_unchanged": 7347,
+  "non_native_files_unchanged": 2620,
+  "remaining": [
+    {
+      "root": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-retained-residuals-20260928",
+      "files": 284,
+      "bytes": 291593819
+    },
+    {
+      "root": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928",
+      "files": 2336,
+      "bytes": 1564657393
+    }
+  ],
+  "retained_shared_bytes": 1856251212,
+  "cap_bytes": 30000000000,
+  "remaining_cap_headroom": 28143748788,
+  "free_space_delta_bytes": 16254414848,
+  "reviewed_candidate": "e7fbc4e3156bf4c6b1f2267acd793af89912fead",
+  "approval_sha256": "5d5e0d6737dd5a98595b52e3b88475069af8adb088b8f27b34a343e99c4dcf2f",
+  "manifest_bindings": [
+    {
+      "evidence_directory": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_retained_residuals_2026-09-28",
+      "manifest": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_retained_residuals_2026-09-28/NATIVE_REMOVALS.json.gz",
+      "manifest_sha256": "cd7d0ebfcd8ae3e9de21c083428559b080cae83b1a57e713508001439a1096fa",
+      "root": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-retained-residuals-20260928",
+      "files": 25142,
+      "bytes": 2270275802
+    },
+    {
+      "evidence_directory": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_two_stage_2026-09-28",
+      "manifest": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_two_stage_2026-09-28/NATIVE_SCRATCH_PROPOSAL.json.gz",
+      "manifest_sha256": "d56ac8e04db84e43112f34e754d23b5f6fbf1f8ab4f82e9a693efe531d91fa9d",
+      "root": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928",
+      "files": 127920,
+      "bytes": 13771984323
+    }
+  ],
+  "post_cleanup_exact_report_artifacts": 17,
+  "seconds": 581.7842438750085,
+  "exhaustive_post_inventory_per_campaign": 1,
+  "next": "Owner completion check; full transfer capacity preflight still required. No scientific launch."
+}

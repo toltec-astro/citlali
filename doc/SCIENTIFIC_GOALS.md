@@ -1,15 +1,16 @@
 # Scientific goals
 
-## 2026-09-28 — independent POINT transfer blocked before launch
+## 2026-09-29 — approved scratch cleanup verified; transfer preflight pending
 
-The owner-authorized transfer test selects local POINT152420/a1100 networks1–4
-from existing step/source evidence. [Capacity preflight](../validation/rtc_point_transfer_2026-09-28/PREFLIGHT.md)
-stops before implementation or science:17.90GB of retained prior campaigns plus
-the full possible batch cannot fit the unchanged30GB ceiling (a partial lower
-bound already requires34.65GB). Selector/configuration and runner are not frozen;
-zero trajectories launched. An owner storage/retention decision is required.
-This is a resource blocker, not a scientific result. B remains reference; no
-cleanup, cap increase, push, or automatic continuation occurred.
+The [cleanup closeout](../validation/rtc_point_transfer_2026-09-28/cleanup_2026-09-29/CLOSEOUT.md)
+verifies153,062 native files /16.04GB removed, all7,347 protected files and2,620
+retained campaign files unchanged, and17 byte-identical report artifacts after
+removal. Remaining shared campaign bytes1.86GB leave28.14GB under30GB. The earlier
+partial storage obstruction is removed; the full eight-role transfer budget and
+portable-selector/native preflight remain unproven. POINT152420/a1100 networks1–4
+remain selected; zero transfer trajectories launched. B remains reference.
+Owner foreground execution avoided model monitoring. No additional cleanup,
+cap increase, scientific launch, push or automatic follow-on.
 
 
 ## 2026-09-28 — routing repaired; bounded quarantine comparison completed
