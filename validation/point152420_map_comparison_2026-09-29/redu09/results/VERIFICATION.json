@@ -1,0 +1,18 @@
+{
+  "source_map_hash_unchanged": true,
+  "all_bound_evidence_hashes_match": true,
+  "all_fits_converged_without_active_bounds": true,
+  "actual_unchanged_linear_weights_rejects_redu09": true,
+  "rejection": "fixed-template footprint exceeds source stamp",
+  "metrics": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/point152420_map_comparison_2026-09-29/redu09/results/metrics.json",
+    "sha256": "17b666d8dade6db2f0f5618360d879c6e81ca6f6e5562b4e71c3d2fd0c509b0f",
+    "bytes": 7495
+  },
+  "figure": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/point152420_map_comparison_2026-09-29/redu09/results/contrast.png",
+    "sha256": "5418ab6c61b1c00926962f9ab4691c5ab7107eb51292cb704742344e69f36d46",
+    "bytes": 346115
+  },
+  "producer_checksum_limitation": "No historical SHA256 binding in redu09 index and no internal FITS checksums. Exact present-day input SHA256 was recorded before fitting and checked afterward; historical content authenticity is not independently established."
+}

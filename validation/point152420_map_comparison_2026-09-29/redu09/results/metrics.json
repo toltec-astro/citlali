@@ -1,0 +1,266 @@
+{
+  "schema": "point152420-redu09-contrast-v1",
+  "inputs": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/pointings/reduced/redu09/152420/raw/toltec_commissioning_a1100_pointing_152420_citlali.fits",
+      "sha256": "816b029974ff6e5dfe92dbffe75aeb62bba5f4ef02ccf3305b7d5262654c4dd0",
+      "bytes": 7208640
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/pointings/reduced/redu09/152420/raw/index.yaml",
+      "sha256": "9e6c9ba0c8565eea59ab43f1d0a6da0e67abbe44dc314b3fb41a897ba4b2c205",
+      "bytes": 723
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/point152420_map_comparison_2026-09-29/results/metrics.json",
+      "sha256": "165ab841513504ad13cd43fe9ed632c67192ac49148b0e8a6d49a8e158dde0a1",
+      "bytes": 10006
+    }
+  ],
+  "script": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/point152420_map_comparison_2026-09-29/redu09/contrast.py",
+    "sha256": "bd29fc69abe10016dad44c6c18e56d1c6df04ec06427e4771a796f7018741447",
+    "bytes": 4614
+  },
+  "helper": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/point152420_map_comparison_2026-09-29/compare.py",
+    "sha256": "e7c93bb2a02eaf6730bd7522e468359a87e9fc9cec9ae3d94004d2844d142069",
+    "bytes": 9583
+  },
+  "solver": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/inspect_point_source.py",
+    "sha256": "d2234c5937e13f8afd237b4bc79f0a80b0133401e5f53f6e3d3784069f7fff4c",
+    "bytes": 7074
+  },
+  "recipe": {
+    "FRUITLOOPS_ITER": 4,
+    "CONFIG.FRUITLOOPS": true,
+    "CONFIG.CLEANED.NEIG": 5,
+    "CONFIG.CLEANED.MODESEL": "standard_pca",
+    "CONFIG.WEIGHT.TYPE": "validated",
+    "CONFIG.DOWNSAMPLED": true,
+    "GROUPING": "array",
+    "JINC_R": 1.5,
+    "JINC_A": 1.1,
+    "JINC_B": 1.67,
+    "JINC_C": 2.0
+  },
+  "producer_index": {
+    "description": [
+      "citlali data products"
+    ],
+    "date": [
+      "2026-07-19.13:32:39"
+    ],
+    "citlali_version": [
+      "v4.0.0-423-gffc6b907"
+    ],
+    "kids_version": [
+      "04088da"
+    ],
+    "tula_version": [
+      "f30f81d"
+    ]
+  },
+  "producer_index_sha256_binding_available": false,
+  "map_header": {
+    "CTYPE1": "AZOFFSET",
+    "CTYPE2": "ELOFFSET",
+    "CUNIT1": "arcsec",
+    "CUNIT2": "arcsec",
+    "CRPIX1": 176.0,
+    "CRPIX2": 182.0,
+    "CRVAL1": 0.0,
+    "CRVAL2": 0.0,
+    "CDELT1": -1.0,
+    "CDELT2": 1.0,
+    "BUNIT": "mJy/beam"
+  },
+  "fits_checksums": [
+    {
+      "hdu": "signal_I",
+      "checksum": 2,
+      "datasum": 2
+    },
+    {
+      "hdu": "weight_I",
+      "checksum": 2,
+      "datasum": 2
+    },
+    {
+      "hdu": "kernel_I",
+      "checksum": 2,
+      "datasum": 2
+    },
+    {
+      "hdu": "coverage_I",
+      "checksum": 2,
+      "datasum": 2
+    },
+    {
+      "hdu": "coverage_bool_I",
+      "checksum": 2,
+      "datasum": 2
+    },
+    {
+      "hdu": "sig2noise_I",
+      "checksum": 2,
+      "datasum": 2
+    },
+    {
+      "hdu": "sig2noise_pixel_I",
+      "checksum": 2,
+      "datasum": 2
+    }
+  ],
+  "fits": {
+    "redu09_native": {
+      "parameters": [
+        574.5880541898401,
+        7.352552940084996,
+        -4.943216054436245,
+        5.3366218415537965,
+        3.1049281553952746,
+        1.0009863882219963,
+        32.592450661496
+      ],
+      "fwhm_major_minor_arcsec": [
+        12.566784085240858,
+        7.311547058705763
+      ],
+      "axis_ratio": 1.7187585588029217,
+      "centroid_radial_offset_arcsec": 8.85976408814528,
+      "aperture_outer_extent_arcsec": 46.56011634386786,
+      "constant": 32.592450661496,
+      "amplitude": 574.5880541898401,
+      "fit_radius_arcsec": 40.0,
+      "fit_center_arcsec": [
+        0.0,
+        0.0
+      ],
+      "fit_pixels": 5025,
+      "residual_rms": 50.41978041132647,
+      "residual_rms_over_peak": 0.08774944074049285,
+      "cost": 6387162.5700250305,
+      "nfev": 19,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "major_angle_native_radians": 1.0009863882219963,
+      "converged": true
+    },
+    "redu09_bin2": {
+      "parameters": [
+        559.8889186084626,
+        7.323220026858702,
+        -4.990481794107261,
+        5.375230758179101,
+        3.1926527673964076,
+        1.001597554768886,
+        32.552604790794554
+      ],
+      "fwhm_major_minor_arcsec": [
+        12.657701136027054,
+        7.518122733488593
+      ],
+      "axis_ratio": 1.683625232618884,
+      "centroid_radial_offset_arcsec": 8.861967055857315,
+      "aperture_outer_extent_arcsec": 46.83507046393847,
+      "constant": 32.552604790794554,
+      "amplitude": 559.8889186084626,
+      "fit_radius_arcsec": 40.0,
+      "fit_center_arcsec": [
+        0.0,
+        0.0
+      ],
+      "fit_pixels": 1256,
+      "residual_rms": 48.688031272625864,
+      "residual_rms_over_peak": 0.08696016237226874,
+      "cost": 1488689.3164202338,
+      "nfev": 19,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "major_angle_native_radians": 1.001597554768886,
+      "converged": true
+    },
+    "redu09_core15": {
+      "parameters": [
+        586.2134080216505,
+        7.490668156800093,
+        -4.745858085924642,
+        4.829574969132149,
+        2.721912108801262,
+        1.0063652043022615,
+        60.47990781772241
+      ],
+      "fwhm_major_minor_arcsec": [
+        11.372779946292113,
+        6.409613194617674
+      ],
+      "axis_ratio": 1.774331710974719,
+      "centroid_radial_offset_arcsec": 8.86754071922059,
+      "aperture_outer_extent_arcsec": 42.98588055809693,
+      "constant": 60.47990781772241,
+      "amplitude": 586.2134080216505,
+      "fit_radius_arcsec": 15.0,
+      "fit_center_arcsec": [
+        7.352552940084996,
+        -4.943216054436245
+      ],
+      "fit_pixels": 705,
+      "residual_rms": 58.04273039959732,
+      "residual_rms_over_peak": 0.09901296968876842,
+      "cost": 1187557.889664719,
+      "nfev": 15,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "major_angle_native_radians": 1.0063652043022615,
+      "converged": true
+    }
+  },
+  "ratios": {
+    "old_native": {
+      "redu09_over_amplitude": 2.282813034664526,
+      "redu09_over_major": 1.5408587282400554
+    },
+    "old_bin2": {
+      "redu09_over_amplitude": 2.366657884541462,
+      "redu09_over_major": 1.5147313757790446
+    },
+    "new_native": {
+      "redu09_over_amplitude": 2.5734211511663845,
+      "redu09_over_major": 1.1620944135910907
+    }
+  },
+  "inputs_unchanged": true,
+  "previous_fits_not_rerun": true,
+  "limitations": [
+    "Descriptive fits only; no noise-calibrated uncertainty or recovered PSF claim.",
+    "Different detector populations, reductions, weights, and native map frames; no single upstream cause identified.",
+    "No guessed Alt-Az-to-FK5 rotation, reprojection, or pixelwise subtraction. Widths and radial offsets are rotation invariant.",
+    "2x2 averaging is a sampling sensitivity check, not a rerun with the new mapmaker.",
+    "Core15 fits are diagnostic; never substitute for original campaign guard.",
+    "redu09 is FRUIT-enabled iteration index4, unlike prior V2 and successor M0; not a controlled FRUIT or RTC/PTC recovery experiment.",
+    "Fitted amplitude is peak above the fitted constant, not integrated flux."
+  ]
+}

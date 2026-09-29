@@ -1,5 +1,17 @@
 # Citlali Refactor Status
 
+## 2026-09-29 — redu09 saved-map contrast qualifies footprint diagnosis
+
+[Owner-selected redu09 comparison](../validation/point152420_map_comparison_2026-09-29/redu09/ASSESSMENT.md)
+finds574.59mJy/beam and12.57×7.31arcsec under the same free-ellipse fit,
+versus223.28mJy/beam and10.81×4.84arcsec in successor M0. redu09 records
+FRUIT enabled at iteration index4; current M0 precedes FRUIT, so no controlled
+recovery or treatment improvement is inferred. Its46.56arcsec template extent
+also fails the unchanged40arcsec helper, showing containment failure alone does
+not establish a faulty reduction. Pipeline policies remain unchanged; all input
+maps and original comparison evidence are preserved. No reduction or launch.
+
+
 ## 2026-09-29 — transfer reaches M0; saved-map elongation comparison
 
 The runtime-repaired152420 B-REF completed RTC on four networks, all24 PTC fits
