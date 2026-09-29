@@ -1,0 +1,367 @@
+{
+  "schema": "point152420-saved-map-comparison-v1",
+  "inputs": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/pointings/reduced/redu00/152420/raw/toltec_commissioning_a1100_pointing_152420_citlali.fits",
+      "sha256": "603724c8ce3f8a957efec2b21e5b4a227bbc2e1feb97f12fd79b7585d12c927d",
+      "bytes": 7776000
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-runtime-repair-20260929/B-REF/M0/products/a1100/map.fits",
+      "sha256": "4f0810c6049a8756ca8ca9b32320d9ce13a2181df8fcbea8d32f72b946a48dde",
+      "bytes": 1209600
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-runtime-repair-20260929/B-REF/freeze/a1100/guard.json",
+      "sha256": "47e25e157bbd5ef571bf77b9283c06d4c62439e03fce805de156d2b3cf48a88a",
+      "bytes": 2042
+    }
+  ],
+  "script": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/point152420_map_comparison_2026-09-29/compare.py",
+    "sha256": "e7c93bb2a02eaf6730bd7522e468359a87e9fc9cec9ae3d94004d2844d142069",
+    "bytes": 9583
+  },
+  "solver": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/inspect_point_source.py",
+    "sha256": "d2234c5937e13f8afd237b4bc79f0a80b0133401e5f53f6e3d3784069f7fff4c",
+    "bytes": 7074
+  },
+  "self_checks": {
+    "rotated_gaussian_recovery": true,
+    "orthogonal_coordinate_invariance": true,
+    "invalid_support_rejected": true,
+    "block_center_and_mean_checked": true
+  },
+  "current_saved_parameter_max_abs_difference": 0.0,
+  "inputs_unchanged": true,
+  "environment": {
+    "python": "3.13.2 (main, Feb  4 2025, 14:51:09) [Clang 16.0.0 (clang-1600.0.26.6)]",
+    "platform": "macOS-26.7-arm64-arm-64bit-Mach-O",
+    "numpy": "2.2.3",
+    "scipy": "1.15.2",
+    "astropy": "7.0.1",
+    "backend": "Agg"
+  },
+  "maps": {
+    "old": {
+      "header": {
+        "CTYPE1": "AZOFFSET",
+        "CTYPE2": "ELOFFSET",
+        "CUNIT1": "arcsec",
+        "CUNIT2": "arcsec",
+        "CRPIX1": 182.0,
+        "CRPIX2": 186.0,
+        "CRVAL1": 0.0,
+        "CRVAL2": 0.0,
+        "CDELT1": -1.0,
+        "CDELT2": 1.0,
+        "BUNIT": "mJy/beam"
+      },
+      "fits_checksums": [
+        {
+          "hdu": "signal_I",
+          "checksum": 2,
+          "datasum": 2
+        },
+        {
+          "hdu": "weight_I",
+          "checksum": 2,
+          "datasum": 2
+        },
+        {
+          "hdu": "weight_formal_I",
+          "checksum": 2,
+          "datasum": 2
+        },
+        {
+          "hdu": "noise_variance_I",
+          "checksum": 2,
+          "datasum": 2
+        },
+        {
+          "hdu": "kernel_I",
+          "checksum": 2,
+          "datasum": 2
+        },
+        {
+          "hdu": "coverage_I",
+          "checksum": 2,
+          "datasum": 2
+        },
+        {
+          "hdu": "coverage_bool_I",
+          "checksum": 2,
+          "datasum": 2
+        },
+        {
+          "hdu": "sig2noise_I",
+          "checksum": 2,
+          "datasum": 2
+        }
+      ]
+    },
+    "new": {
+      "header": {
+        "CTYPE1": "RA---TAN",
+        "CTYPE2": "DEC--TAN",
+        "CUNIT1": "deg",
+        "CUNIT2": "deg",
+        "CRPIX1": 87.0,
+        "CRPIX2": 101.0,
+        "CRVAL1": 176.7429079166667,
+        "CRVAL2": 39.97619555555556,
+        "CDELT1": -0.0005555555555555556,
+        "CDELT2": 0.0005555555555555556,
+        "BUNIT": "mJy/beam"
+      },
+      "fits_checksums": [
+        {
+          "hdu": "PRIMARY",
+          "checksum": 1,
+          "datasum": 1
+        },
+        {
+          "hdu": "NUMERATOR",
+          "checksum": 1,
+          "datasum": 1
+        },
+        {
+          "hdu": "NORMALIZATION",
+          "checksum": 1,
+          "datasum": 1
+        },
+        {
+          "hdu": "HITS",
+          "checksum": 1,
+          "datasum": 1
+        },
+        {
+          "hdu": "NORM_SUPPORT",
+          "checksum": 1,
+          "datasum": 1
+        },
+        {
+          "hdu": "SCI_SUPPORT",
+          "checksum": 1,
+          "datasum": 1
+        }
+      ]
+    }
+  },
+  "fits": {
+    "old_native": {
+      "parameters": [
+        251.7017580786153,
+        8.461390599054242,
+        -2.785641088957187,
+        2.520823276428929,
+        3.463407607554783,
+        -0.45349118897364393,
+        -1.607990917403493
+      ],
+      "fwhm_major_minor_arcsec": [
+        8.155701658382688,
+        5.936085181315436
+      ],
+      "axis_ratio": 1.373919242947148,
+      "centroid_radial_offset_arcsec": 8.908138253656041,
+      "aperture_outer_extent_arcsec": 33.3752432288041,
+      "constant": -1.607990917403493,
+      "amplitude": 251.7017580786153,
+      "fit_radius_arcsec": 40.0,
+      "fit_center_arcsec": [
+        0.0,
+        0.0
+      ],
+      "fit_pixels": 5025,
+      "residual_rms": 20.665451784548367,
+      "residual_rms_over_peak": 0.08210292984164941,
+      "cost": 1072990.5048669768,
+      "nfev": 21,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "major_angle_native_radians": 1.1173051378212526,
+      "converged": true
+    },
+    "old_bin2": {
+      "parameters": [
+        242.784585783579,
+        8.43683650466963,
+        -2.813612854196794,
+        3.523147355952211,
+        2.584113846507508,
+        1.0952283615454061,
+        -1.5793707327547495
+      ],
+      "fwhm_major_minor_arcsec": [
+        8.296378015394057,
+        6.085123084397909
+      ],
+      "axis_ratio": 1.3633870507345602,
+      "centroid_radial_offset_arcsec": 8.893628477726484,
+      "aperture_outer_extent_arcsec": 33.78276252390866,
+      "constant": -1.5793707327547495,
+      "amplitude": 242.784585783579,
+      "fit_radius_arcsec": 40.0,
+      "fit_center_arcsec": [
+        0.0,
+        0.0
+      ],
+      "fit_pixels": 1256,
+      "residual_rms": 19.253410163132735,
+      "residual_rms_over_peak": 0.0793024404782248,
+      "cost": 232795.70822736874,
+      "nfev": 16,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "major_angle_native_radians": 1.0952283615454061,
+      "converged": true
+    },
+    "new_native": {
+      "parameters": [
+        223.27789368227283,
+        4.722198421697576,
+        7.463589564301884,
+        4.59224463962668,
+        2.0560160376864194,
+        -0.2336457506476845,
+        -2.0350242773637173
+      ],
+      "fwhm_major_minor_arcsec": [
+        10.813909729078834,
+        4.841547778449088
+      ],
+      "axis_ratio": 2.2335646003978704,
+      "centroid_radial_offset_arcsec": 8.832005837760699,
+      "aperture_outer_extent_arcsec": 41.2737350249972,
+      "constant": -2.0350242773637173,
+      "amplitude": 223.27789368227283,
+      "fit_radius_arcsec": 40.0,
+      "fit_center_arcsec": [
+        0.0,
+        0.0
+      ],
+      "fit_pixels": 1257,
+      "residual_rms": 22.973977389554705,
+      "residual_rms_over_peak": 0.10289409762278999,
+      "cost": 331724.585914692,
+      "nfev": 12,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "major_angle_native_radians": -0.2336457506476845,
+      "converged": true
+    },
+    "old_native_core15": {
+      "parameters": [
+        251.61396702465441,
+        8.45980182964807,
+        -2.787794615320037,
+        2.5260439888218706,
+        3.4708994789300713,
+        -0.4546960867638619,
+        -1.8304669054198777
+      ],
+      "fwhm_major_minor_arcsec": [
+        8.17334366727201,
+        5.9483790195076764
+      ],
+      "axis_ratio": 1.3740455408889671,
+      "centroid_radial_offset_arcsec": 8.907302948374678,
+      "aperture_outer_extent_arcsec": 33.42733395019071,
+      "constant": -1.8304669054198777,
+      "amplitude": 251.61396702465441,
+      "fit_radius_arcsec": 15.0,
+      "fit_center_arcsec": [
+        8.461390599054242,
+        -2.785641088957187
+      ],
+      "fit_pixels": 708,
+      "residual_rms": 23.66572073681498,
+      "residual_rms_over_peak": 0.09405567193531865,
+      "cost": 198263.4836494918,
+      "nfev": 12,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "major_angle_native_radians": 1.1161002400310347,
+      "converged": true
+    },
+    "new_native_core15": {
+      "parameters": [
+        223.72752429615335,
+        4.724216514812811,
+        7.464642100819651,
+        4.5141744083031226,
+        2.01894117082684,
+        -0.23478151472507833,
+        -0.28522175948362505
+      ],
+      "fwhm_major_minor_arcsec": [
+        10.630068383437917,
+        4.754243138801297
+      ],
+      "axis_ratio": 2.2359118103745343,
+      "centroid_radial_offset_arcsec": 8.833974381452514,
+      "aperture_outer_extent_arcsec": 40.72417953176627,
+      "constant": -0.28522175948362505,
+      "amplitude": 223.72752429615335,
+      "fit_radius_arcsec": 15.0,
+      "fit_center_arcsec": [
+        4.722198421697576,
+        7.463589564301884
+      ],
+      "fit_pixels": 176,
+      "residual_rms": 21.84399630715655,
+      "residual_rms_over_peak": 0.09763660674241022,
+      "cost": 41990.095370702074,
+      "nfev": 8,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "major_angle_native_radians": -0.23478151472507833,
+      "converged": true
+    }
+  },
+  "seconds": 14.358469082973897,
+  "limitations": [
+    "Descriptive fits only; no noise-calibrated uncertainty or recovered PSF claim.",
+    "Different detector populations, reductions, weights, and native map frames; no single upstream cause identified.",
+    "No guessed Alt-Az-to-FK5 rotation, reprojection, or pixelwise subtraction. Widths and radial offsets are rotation invariant.",
+    "2x2 averaging is a sampling sensitivity check, not a rerun with the new mapmaker.",
+    "Core15 fits are diagnostic; never substitute for original campaign guard."
+  ]
+}

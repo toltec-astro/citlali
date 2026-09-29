@@ -1,0 +1,38 @@
+{
+  "checks_passed": true,
+  "metrics": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/point152420_map_comparison_2026-09-29/results/metrics.json",
+    "sha256": "165ab841513504ad13cd43fe9ed632c67192ac49148b0e8a6d49a8e158dde0a1"
+  },
+  "figure": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/point152420_map_comparison_2026-09-29/results/comparison.png",
+    "sha256": "0ddaadf8008b45f699c3f5be217ae4e6dda303d42f0baec488def6e2d4ad6fff"
+  },
+  "old_product_index": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/pointings/reduced/redu00/152420/raw/index.yaml",
+    "sha256": "8daa04cdd15383f897182e0c930d0f9a9c4cb69e9121f9bab4da0457a6c50055"
+  },
+  "new_map_bundle": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-runtime-repair-20260929/B-REF/M0/products/a1100/bundle.yaml",
+    "sha256": "53638e8811a90a20fd7a612072b87232c728321d9ce55920d86806fbc05ea86f"
+  },
+  "old_product_sha256_matches_index": true,
+  "new_product_sha256_matches_bundle": true,
+  "source_guard_reproduced_exactly": true,
+  "original_maps_unchanged": true,
+  "legacy_recipe": {
+    "CONFIG.CLEANED.NEIG": 5,
+    "CONFIG.CLEANED.MODESEL": "standard_pca",
+    "CONFIG.WEIGHT.TYPE": "validated",
+    "CONFIG.FRUITLOOPS": false,
+    "CONFIG.DOWNSAMPLED": true
+  },
+  "ratios": {
+    "new_over_old_major": 1.3259324803726673,
+    "new_over_binned_old_major": 1.303449494347227,
+    "new_over_old_minor": 0.8156129217431818,
+    "new_over_old_geometric_mean": 1.039926759128226
+  },
+  "fits_checksum_qualification": "Old FITS has no internal CHECKSUM/DATASUM (status2); its recorded SHA256 matches retained product index. New FITS internal checksums all pass (status1).",
+  "frame_qualification": "Major/minor lengths and radial offsets are compared in arcsec; native orientation differs and no sky registration or pixelwise subtraction is claimed."
+}

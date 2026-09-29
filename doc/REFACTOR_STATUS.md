@@ -1,5 +1,18 @@
 # Citlali Refactor Status
 
+## 2026-09-29 — transfer reaches M0; saved-map elongation comparison
+
+The runtime-repaired152420 B-REF completed RTC on four networks, all24 PTC fits
+and M0, then stopped at the fixed-template40arcsec boundary before any FRUIT.
+[Saved-map comparison](../validation/point152420_map_comparison_2026-09-29/ASSESSMENT.md)
+uses the same freely rotated descriptive fit: earlier a1100 map8.16×5.94arcsec,
+current10.81×4.84arcsec. Pixel averaging and a core-only check preserve the
+elongation difference; the current fitted center plus3major FWHM reaches41.27arcsec.
+The upstream cause is unresolved. Production policies and campaign inputs remain
+unchanged; no new reduction, gate relaxation, launch or adoption is authorized
+by this evidence follow-up. Original maps and failed attempts are preserved.
+
+
 ## 2026-09-29 — approved transfer runtime-policy repair
 
 B-REF at6eb15ca33 stopped before FRUIT: network4 channel155 lacked a full diagnostic
