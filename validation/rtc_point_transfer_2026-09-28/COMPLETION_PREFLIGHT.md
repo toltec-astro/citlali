@@ -89,3 +89,30 @@ path/size/SHA. Source-bound deleted payloads are intentionally unavailable,
 not claimed preserved; authoritative inputs plus recorded recipe permit rerun.
 Updated full campaign peak admission bound: 28460015015 bytes,
 within unchanged 30000000000 bytes. No trajectory launched.
+
+## Same-milestone review repairs
+
+The independent review identified a duplicated report byte charge and a concrete
+retention lower bound: the saved B dimensions imply at least 2,745,549,670 bytes
+even without cycle operators/maps/metadata, exceeding the 2.7 GB per-role cap.
+The estimate with the same retained support is 2,908,823,970 bytes before
+ancillary products. Within the new
+scratch authority, the runner now releases only enumerated dead derivatives
+after its sole numerical child exits successfully through T5, before retention
+verification. Intermediate T1–T4 operator/output rows and causes are unused by
+the M0/T5 report; T5 operand/model-support and output-row duplicates are no longer
+needed. Upstream conditioned and PTC-centered duplicates are no longer consumed.
+Preserve M0/T5 operator/causes, T5 cleaned residuals, PTC input/eligibility/slots,
+source probes/filtered RTC, all maps/receipts/bases/fits/logs. A per-file SHA/size
+manifest precedes each removal; the resulting products are not advertised as
+complete replay checkpoints. Original inputs are untouched. No cap increase,
+extra role, hidden native work or active-child cleanup. Focused fixtures cover
+retained/deleted roles, refusal of running/failed work and single-counted report
+budget at its exact boundary.
+
+All nine exact-source preflight gates passed at initial candidate 59b03a0fd3e5d25481b9215994b61462d02446b3
+before these review repairs: 1320 enabled CTest, 207 baseline tests, 210 POINT
+tests, full configuration preflight, nine native FRUIT cases, historical input
+checks and eleven runner fixtures. One longstanding disabled MapFitterLifecycle
+case remains explicitly disabled; this is not claimed as a pass. Corrected
+candidate keeps the same milestone review and receives its applicable checks.

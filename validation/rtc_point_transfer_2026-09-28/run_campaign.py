@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""One foreground, sequential batch; no retries, cleanup, adoption or agent calls."""
+"""One foreground, sequential batch; no retries, adoption or agent calls; bounded post-child cleanup."""
 import argparse,contextlib,datetime,json,os,re,signal,subprocess,sys,time,traceback
 from pathlib import Path
 # Establish limits before any helper can initialize NumPy/BLAS or plotting.
@@ -147,6 +147,8 @@ def main():
                 er=read(out/'EXECUTION.json') if (out/'EXECUTION.json').exists() else {}
                 if er.get('status')=='source_rejected':raise RuntimeError(role+' scientific source gate rejected; no retry')
                 raise ProcessFailure(role+' numerical process failed; no retry; '+str(er.get('reason')))
+            status('RUNNING',phase='completed-role scratch release',child_pid=None)
+            compact_completed_role(out)
             verify_role(role,revision);STATE['completed_roles'].append(role)
             if role=='B-REF':
                 from point_source_evolution import compare_saved
@@ -159,7 +161,7 @@ def main():
                 if not n:
                     from point_transfer_report import no_applicable_report
                     no_applicable_report()
-                    require(tree_bytes(ROOT/'selection')+tree_bytes(ROOT/'report')<=REPORT_CAP,'no-case compact allowance')
+                    require(report_bytes(ROOT)<=REPORT_CAP,'no-case compact allowance')
                     status('COMPLETE_NO_APPLICABLE_CASE',phase='complete; seven remaining roles skipped',current_role=None,exit_code=0,completed_utc=now(),summary=str(ROOT/'selection/SELECTION.json'));return 0
             if role=='Q-REF':
                 # Fail immediately if offline B and in-pass Q membership differ;
@@ -173,7 +175,7 @@ def main():
         with (ROOT/'logs/report.log').open('x') as f,contextlib.redirect_stdout(f),contextlib.redirect_stderr(f):
             from point_transfer_report import compare
             compare()
-        require(tree_bytes(ROOT/'report')+tree_bytes(ROOT/'selection')+tree_bytes(ROOT/'report')<=REPORT_CAP,'compact evidence allowance exceeded')
+        require(report_bytes(ROOT)<=REPORT_CAP,'compact evidence allowance exceeded')
         require(sum(tree_bytes(x) for x in PRIOR)+tree_bytes(ROOT)<=CAP,'final shared cap')
         counts=accounting();require(counts['charged_attempts']==LIMITS and counts['completed_native_RTC_Apply_receipts']==32,'final exact execution accounting')
         save_json(ROOT/'ACCOUNTING.json',counts)

@@ -40,6 +40,48 @@ class Preparation(unittest.TestCase):
   with tempfile.TemporaryDirectory() as d:
    root=Path(d);(root/'freeze').mkdir();(root/'freeze/prospective.json').write_text(json.dumps(dict(schema='citlali-point-speed-pca-v1',campaign_scope='rtc-point-transfer-v1',feedback_count=5)))
    self.assertTrue(rtc_experiment(root));self.assertEqual(feedback_count(root),5)
+class CompletionLifecycle(unittest.TestCase):
+ def test_report_allowance_counts_each_directory_once(self):
+  from point_transfer_experiment import report_bytes
+  with tempfile.TemporaryDirectory() as d:
+   root=Path(d)
+   with patch('point_transfer_experiment.tree_bytes',side_effect=lambda p:600_000_000 if p.name=='report' else 400_000_000) as sizes:
+    self.assertEqual(report_bytes(root),REPORT_CAP);self.assertEqual(sizes.call_count,2)
+ def test_cleanup_preserves_comparison_and_warm_products(self):
+  import point_transfer_experiment as e
+  with tempfile.TemporaryDirectory() as d,patch.object(e,'ROOT',Path(d)):
+   out=Path(d)/'B-REF';(out/'freeze').mkdir(parents=True)
+   def put(name,data=b'fixture'):
+    p=out/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(data);return p
+   put('freeze/prospective.json',json.dumps(dict(campaign_scope='rtc-point-transfer-v1',source_revision='fixture')).encode())
+   put('LAUNCH.json',json.dumps(dict(status='completed',exit_code=0)).encode())
+   put('EXECUTION.json',json.dumps(dict(status='completed',completed_cycle=5)).encode())
+   kept=[];removed=[]
+   for k in range(1,6):
+    base=f'run/BASE-POINT/REF/a1100/cycle-{k:02d}/native/products/'
+    for name in ('total.fits','residual.fits','receipt.yaml','network-1-segment-0/basis.f64'):kept.append(put(base+name))
+    for name in ('output-rows.u64','network-1-segment-0/operand.f64','network-1-segment-0/model-support.u8'):removed.append(put(base+name))
+    for name in ('operator-pixel.i32','network-1-segment-0/causes.u8','network-1-segment-0/cleaned.f64'):
+     (kept if k==5 else removed).append(put(base+name))
+   donor='upstream/products/network1/donor-continuity/'
+   for name in ('abc-conditioned.f64','ptc/segment-0-centered.f64'):removed.append(put(donor+name))
+   for name in ('abc-filtered.f64','ptc/segment-0-input.f64','ptc/segment-0-eligible.u8','ptc/segment-0-slots.i64','ptc/segment-0-cleaned.f64','ptc/segment-0-causes.u8','ptc/receipt.yaml'):kept.append(put(donor+name))
+   kept.append(put('M0/products/a1100/operator-pixel.i32'));removed.append(put('M0/products/a1100/output-rows.u64'))
+   kept.append(put('upstream/products/network1/source-probe/original-x.f64'))
+   r=e.compact_completed_role(out)
+   self.assertTrue(all(p.exists() for p in kept));self.assertFalse(any(p.exists() for p in removed))
+   self.assertEqual(r['removed_bytes'],7*len(removed))
+   manifest=json.loads((out/'COMPLETED-SCRATCH-REMOVALS.json').read_text());self.assertEqual(len(manifest['files']),len(removed))
+   with self.assertRaisesRegex(ValueError,'already recorded'):e.compact_completed_role(out)
+ def test_cleanup_refuses_live_or_failed_role(self):
+  import point_transfer_experiment as e
+  with tempfile.TemporaryDirectory() as d,patch.object(e,'ROOT',Path(d)):
+   out=Path(d)/'B-REF';(out/'freeze').mkdir(parents=True)
+   (out/'freeze/prospective.json').write_text(json.dumps(dict(campaign_scope='rtc-point-transfer-v1')))
+   (out/'LAUNCH.json').write_text(json.dumps(dict(status='starting',exit_code=None)))
+   (out/'EXECUTION.json').write_text(json.dumps(dict(status='running',completed_cycle=4)))
+   with self.assertRaisesRegex(ValueError,'completed exited'):e.compact_completed_role(out)
+
 class TerminalEvidence(unittest.TestCase):
  @classmethod
  def setUpClass(cls):

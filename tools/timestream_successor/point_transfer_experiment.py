@@ -76,3 +76,53 @@ def prepare_role(name):
     budget.update(campaign_root=str(ROOT),campaign_retained_bytes=retained,peak_ceiling_bytes=min(CAP,retained+ACTIVE),metadata_reserve_bytes=100_000_000,maximum_branch_workers=1,single_trajectory_reservation_bytes=ACTIVE)
     save_json(out/'freeze/budget.json',budget);p['budget']=bound(out/'freeze/budget.json');save_json(out/'freeze/prospective.json',p)
     return out
+
+
+def compact_completed_role(out):
+    """Release explicitly dead payloads only after the sole numerical child exits.
+
+    M0/T5 native comparison inputs, source probes, filtered RTC, maps, receipts,
+    fit/feedback products and warm bases remain. Removed derivatives are logged
+    by exact digest; this compacted role is evidence, not a replay checkpoint.
+    """
+    require(out.parent==ROOT and out.name in ROLES,'foreign cleanup role')
+    require(read(out/'freeze/prospective.json')['campaign_scope']=='rtc-point-transfer-v1','foreign cleanup scope')
+    launch=read(out/'LAUNCH.json');execution=read(out/'EXECUTION.json')
+    require(launch['status']=='completed' and launch['exit_code']==0 and execution['status']=='completed' and execution['completed_cycle']==5,
+            'cleanup requires completed exited five-cycle child')
+    targets=[];run=out/'run/BASE-POINT/REF/a1100'
+    for k in range(1,6):
+        products=run/f'cycle-{k:02d}/native/products'
+        targets.append(products/'output-rows.u64')
+        if k<5:targets.append(products/'operator-pixel.i32')
+        for segment in products.glob('network-*-segment-*'):
+            names=('operand.f64','model-support.u8') if k==5 else ('cleaned.f64','operand.f64','model-support.u8','causes.u8','injection.f64')
+            targets.extend(segment/name for name in names)
+    targets.append(out/'M0/products/a1100/output-rows.u64')
+    for nw in range(1,5):
+        donor=out/f'upstream/products/network{nw}/donor-continuity'
+        targets.extend(donor.glob('*-conditioned.f64'))
+        targets.extend((donor/'ptc').glob('segment-*-centered.f64'))
+    files=[]
+    for p in targets:
+        require(not p.is_symlink() and p.resolve().is_relative_to(out.resolve()),'unsafe completed-role scratch path')
+        if p.exists():
+            require(p.is_file(),'scratch payload is not a file')
+            files.append(dict(**bound(p),bytes=p.stat().st_size))
+    manifest=out/'COMPLETED-SCRATCH-REMOVALS.json'
+    require(not manifest.exists(),'completed cleanup already recorded')
+    before=tree_bytes(out)
+    save_json(manifest,dict(schema='point-transfer-completed-scratch-v1',source_revision=read(out/'freeze/prospective.json')['source_revision'],
+        authority=bound(D/'COMPLETION_AUTHORITY.md'),exited_launch=bound(out/'LAUNCH.json'),completed_execution=bound(out/'EXECUTION.json'),
+        reason='completed sole child; intermediate projection unused by M0/T5 response; conditioned/centered duplicates no longer consumed',
+        removed_bytes=sum(r['bytes'] for r in files),before_bytes=before,files=files,
+        preserved='M0/T5 operator and causes; T5 cleaned residual; original PTC input/eligibility/slots/cleaned; source-probe arrays; filtered RTC; all maps, receipts, bases, fits and logs',
+        resumable_checkpoint=False))
+    for r in files:
+        p=Path(r['path']);require(p.stat().st_size==r['bytes'],'scratch changed after exited-child inventory');p.unlink()
+    return dict(manifest=bound(manifest),removed_bytes=sum(r['bytes'] for r in files),after_bytes=tree_bytes(out))
+
+
+def report_bytes(root):
+    """Count each compact evidence directory once, including B's early export."""
+    return tree_bytes(root/'report')+tree_bytes(root/'selection')
