@@ -1,0 +1,31 @@
+{
+  "domain": "B M0 and T5 genuine residual on common science support outside frozen B/M0 four-major-FWHM source mask; descriptive, not independent-pixel significance",
+  "M0": {
+    "n": 7882,
+    "mean": 0.020219000074576925,
+    "median": 0.3575430756105713,
+    "std": 29.340316505033396,
+    "robust_scale": 24.242630492004007
+  },
+  "T5_residual": {
+    "n": 7882,
+    "mean": 0.12378427952382934,
+    "median": 0.49912447181770986,
+    "std": 29.315181544178223,
+    "robust_scale": 24.10030338954821
+  },
+  "bindings": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/M0/products/a1100/map.fits",
+      "sha256": "2b3d95996a837593e7b572b325524f10145fe4c2af95f37a61ac73034c04e525"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/run/BASE-POINT/REF/a1100/cycle-05/native/products/residual.fits",
+      "sha256": "51329c036198f46c57074ca1b678d4dd3a581d9c7a63ebd5ed80057a3a850fdd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/freeze/a1100/C0.npz",
+      "sha256": "916bde145e90a022df21458fd094b05faac66b1d4e2695cce4e83b30c0ec0287"
+    }
+  ]
+}

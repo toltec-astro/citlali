@@ -1,0 +1,41 @@
+Traceback (most recent call last):
+  File "/private/tmp/point_completion_assess.py", line 6, in <module>
+    from point_transfer_experiment import ROOT as r,ROLES,PRIOR,tree_bytes
+  File "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_transfer_experiment.py", line 5, in <module>
+    from point_additive_diagnostics import save_json
+  File "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_additive_diagnostics.py", line 6, in <module>
+    from point_additive import learn,NoiseRequest,make_context,variance,experiment,draw_noise,influence,projected_ranges,broad_mode_response
+  File "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_additive.py", line 11, in <module>
+    from scipy.signal import fftconvolve
+  File "/Users/gwilson/tolteca/lib/python3.13/site-packages/scipy/signal/__init__.py", line 293, in <module>
+    from . import _sigtools, windows
+  File "/Users/gwilson/tolteca/lib/python3.13/site-packages/scipy/signal/windows/__init__.py", line 42, in <module>
+    from ._windows import *
+  File "/Users/gwilson/tolteca/lib/python3.13/site-packages/scipy/signal/windows/_windows.py", line 7, in <module>
+    from scipy import linalg, special, fft as sp_fft
+  File "/Users/gwilson/tolteca/lib/python3.13/site-packages/scipy/__init__.py", line 134, in __getattr__
+    return _importlib.import_module(f'scipy.{name}')
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gwilson/tolteca/lib/python3.13/site-packages/scipy/linalg/__init__.py", line 222, in <module>
+    from ._sketches import *
+  File "/Users/gwilson/tolteca/lib/python3.13/site-packages/scipy/linalg/_sketches.py", line 10, in <module>
+    from scipy.sparse import csc_matrix
+  File "/Users/gwilson/tolteca/lib/python3.13/site-packages/scipy/sparse/__init__.py", line 315, in <module>
+    from . import csgraph
+  File "/Users/gwilson/tolteca/lib/python3.13/site-packages/scipy/sparse/csgraph/__init__.py", line 187, in <module>
+    from ._laplacian import laplacian
+  File "/Users/gwilson/tolteca/lib/python3.13/site-packages/scipy/sparse/csgraph/_laplacian.py", line 7, in <module>
+    from scipy.sparse.linalg import LinearOperator
+  File "/Users/gwilson/tolteca/lib/python3.13/site-packages/scipy/sparse/linalg/__init__.py", line 134, in <module>
+    from ._eigen import *
+  File "/Users/gwilson/tolteca/lib/python3.13/site-packages/scipy/sparse/linalg/_eigen/__init__.py", line 11, in <module>
+    from ._svds import svds
+  File "/Users/gwilson/tolteca/lib/python3.13/site-packages/scipy/sparse/linalg/_eigen/_svds.py", line 10, in <module>
+    from scipy.sparse.linalg._svdp import _svdp
+  File "/Users/gwilson/tolteca/lib/python3.13/site-packages/scipy/sparse/linalg/_svdp.py", line 23, in <module>
+    from ._propack import _spropack  # type: ignore[attr-defined]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ImportError: dlopen(/Users/gwilson/tolteca/lib/python3.13/site-packages/scipy/sparse/linalg/_propack/_spropack.cpython-313-darwin.so, 0x0002): tried: '/Users/gwilson/tolteca/lib/python3.13/site-packages/scipy/sparse/linalg/_propack/_spropack.cpython-313-darwin.so' (section '__DATA/__thread_bss' has a zero-fill section type, but offset field is not zero), '/System/Volumes/Preboot/Cryptexes/OS/Users/gwilson/tolteca/lib/python3.13/site-packages/scipy/sparse/linalg/_propack/_spropack.cpython-313-darwin.so' (no such file), '/Users/gwilson/tolteca/lib/python3.13/site-packages/scipy/sparse/linalg/_propack/_spropack.cpython-313-darwin.so' (section '__DATA/__thread_bss' has a zero-fill section type, but offset field is not zero)

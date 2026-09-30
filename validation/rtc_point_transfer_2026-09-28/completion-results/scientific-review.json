@@ -1,0 +1,212 @@
+{
+  "schema": "point152420-independent-milestone-conclusion-review-v1",
+  "source_revision": "518e05891cf8eb2e84621cdcfcea83525f3d1c49",
+  "tree": "26c77a9890beb3a9087ada142d71b6f56d0a9ab0",
+  "stage": "scientific conclusion review of completed frozen campaign; continuation of the same owner-requested milestone review",
+  "verdict": "pass",
+  "verdict_scope": "Truthful run completion and conservative parking of Q in the tested POINT152420 a1100 networks1-4 development profile, with the explicit limitations below; not unrestricted solver or production validation.",
+  "findings": [],
+  "observed_completion": {
+    "roles": 8,
+    "parent_starts": 8,
+    "trajectories": 8,
+    "feedback_applications": 40,
+    "endpoints": 8,
+    "completed_native_RTC_apply_receipts": 32,
+    "all_role_exit_codes": 0,
+    "unknown_accounting": [],
+    "campaign_status": "COMPLETE_PENDING_OWNER_REVIEW",
+    "replacement_starts": 0,
+    "raw_to_final_B_seconds": 174.507868417,
+    "all_role_child_seconds": 1507.679470334,
+    "qualification": "Role timing includes actual computation; sum is not total campaign elapsed time. Nested stage spans are not additive."
+  },
+  "reviewed_evidence": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/PREFLIGHT_REVIEW.json",
+      "sha256": "7f123b066bd03e0759d2ae4694c49d188aab81646d28de143616ac0af46a7ea2"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/STATUS.json",
+      "sha256": "15d2993d25456e9980876718ed90a9b08f23ca1bb69f1bcffd933db7a9dbdb08"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/ACCOUNTING.json",
+      "sha256": "4ad3bc1bae2400cd1a50f23795a46976da617675857a17af48705d755229c57f"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/report/MANIFEST.json",
+      "sha256": "07e179200d208d1fba25fc92d7d0df91544406becaeb2f0e9c76087118686aad"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/report/SOURCE-MANIFEST.json",
+      "sha256": "d5a9d8ba2fa99e3888e3ccc18564ac75a16601770e3bd2cdf1ae7161dc8646b4"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/report/metrics.json",
+      "sha256": "f9275602cfe684c0caea6489fc56232fd67d56146a0046f2a09c23a632aea19c"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/report/source-evolution.json",
+      "sha256": "83d73557943b9f9693ace3724474b530c50c369f0de9cfe29d2072375d26d28c"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/report/response-B/source-responses.json",
+      "sha256": "d03b7fbcde055ffccbeebb8467d092e7469a229de990efbb7d75303555d211b0"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/report/response-Q/source-responses.json",
+      "sha256": "98fc24ffe2113dd1782330789193928b308a682c9f5f655a9c17b9633f1c8f11"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/selection/SELECTION.json",
+      "sha256": "a22a387a4a3646994b4ea9561bcf0151d1ce6aba2142f0e7be9f8246390bc4b8"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/selection/B-population/population.json",
+      "sha256": "a3c5f746bd58ed2a4601e47dbe1f5f5b52dfd8f8b9e60c0f28f401862b405c39"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/report/Q-population/population.json",
+      "sha256": "a5fb60c6e5cadb484254621932bb80ccc99bd5d293ea14b25b26bbd0e6b84a76"
+    }
+  ],
+  "verification": [
+    "All36 report manifest hashes and both source manifest hashes match.",
+    "All8 role prospective source identities match the reviewed runnable SHA; all executed5 feedback applications with completed endpoint and exit0.",
+    "All8 measurement geometry files have identical SHA256 c0061af2a41f6480e53d0ad48273d3fdcee1243fd52b943719b4084026f8ebf9.",
+    "All three injection rasters hash-identical across all8 roles.",
+    "Common-support standard deviations reproduced directly from saved maps using ddof1; all six T5 pixel-space gains independently reproduced from response arrays.",
+    "Inspected maps.png, excerpts.png and source-evolution.png; compared selected and quiet population entries. No new science, trajectory, solver fit or monitoring performed."
+  ],
+  "scientific_evidence": {
+    "source_evolution": {
+      "B_M0_peak": 223.27789368227283,
+      "B_T5_peak": 291.81030113464976,
+      "peak_change_percent": 30.693771927954216,
+      "B_M0_FWHM": [
+        10.813909729078834,
+        4.841547778449088
+      ],
+      "B_T5_FWHM": [
+        10.980182471249396,
+        5.192742454582905
+      ],
+      "axis_ratio": [
+        2.2335646003978704,
+        2.114524755904027
+      ],
+      "geometric_mean_FWHM": [
+        7.235748795057122,
+        7.550977398822207
+      ],
+      "qualification": "M0 and T5 fits are unconstrained; endpoints describe brighter and slightly rounder but larger effective-width source in this executed sequence. No monotonic convergence or correctness inference."
+    },
+    "historical": {
+      "redu09_peak": 574.5880541898401,
+      "redu09_constant": 32.592450661496,
+      "redu09_FWHM": [
+        12.566784085240858,
+        7.311547058705763
+      ],
+      "qualification": "Historical native AltAz1 arcsec vs successor FK5 tangent2 arcsec grids; no registered pixel/angle comparison, exact five-application equivalence, absolute-flux inference or unique FRUIT attribution."
+    },
+    "contamination": {
+      "background_common_pixels": 7875,
+      "background_std_B": 29.30982368488738,
+      "background_std_Q": 29.29469285338644,
+      "background_std_change_percent": -0.05162375476431835,
+      "background_fixed_tail6_counts": [
+        9,
+        9
+      ],
+      "selected_common_pixels": 29,
+      "selected_std": [
+        57.76850549146906,
+        56.5916387829057
+      ],
+      "selected_std_change_percent": -2.037211623446189,
+      "quiet_common_pixels": 68,
+      "quiet_std": [
+        26.658454505772553,
+        26.329649861000703
+      ],
+      "quiet_std_change_percent": -1.233397250019319,
+      "qualification": "Descriptive common-support changes, not paired-estimator significance. Quiet controls are little changed, not exactly unchanged. Q selected native trace is unavailable by exclusion, not cleaned to zero."
+    },
+    "support": {
+      "selected_run": [
+        2,
+        175,
+        0
+      ],
+      "selection_identical_all_Q_inputs": true,
+      "removed_native_contributions": 7190,
+      "removed_population_source_region_contributions": 1303,
+      "removed_fit_disk_contributions": 1585,
+      "B_supported_lost_pixels": 7,
+      "Q_only_supported_pixels": 26,
+      "qualification": "Entire physical run excluded despite an off-source triggering window. Q-only pixel support is not recovered exposure; normalize/support changes remain explicit."
+    },
+    "response": {
+      "compact_plus_pixel_gain_BQ": [
+        1.028101815742994,
+        1.026214467088466
+      ],
+      "compact_minus_pixel_gain_BQ": [
+        1.0231556572421434,
+        1.0235596159863036
+      ],
+      "broad_pixel_gain_BQ": [
+        0.8607646468050348,
+        0.7797402110244632
+      ],
+      "broad_shape_error_eta_BQ": [
+        0.3140360883368852,
+        0.3363830146154568
+      ],
+      "B_Q_REF_T5_peak": [
+        291.81030113464976,
+        291.8681147716873
+      ],
+      "B_Q_REF_T5_conditional_peak_sigma": [
+        14.109375086485484,
+        14.23978205869545
+      ],
+      "qualification": "Pixel-space metrics describe actual frozen maps and own-reference injections. Broad response is weaker for realized Q; no paired uncertainty establishes significance or attribution uniquely to quarantine instead of downstream learning/numerical path."
+    }
+  },
+  "retained_implementation_limitation": {
+    "name": "Periodic angle solver boundary accepted in some free Gaussian fits",
+    "observed": "B-REF T1,T2,T4 angle active_mask[5]=-1 at -pi; B compact-plus T5 ideal and Q compact-minus T5 actual are bound, with additional M0 bound fits in injected roles.",
+    "consequence": "Intermediate fitted peaks/widths and affected peak-response ratios are not reliable free-fit/convergence evidence. Raw source-evolution export/plot omits this qualifier and must not be presented without the explicit assessment caveat.",
+    "coupling": "Fixed-template/aperture measurements subtract fitted constant; feedback admission uses fitted constant and centroid. These are not entirely independent of fit ambiguity. Raw pixel response remains descriptive of the actual frozen implementation.",
+    "disposition": "Record as real unresolved implementation/estimator limitation before renewed quantitative peak-response or unrestricted Gaussian-fit validation. It does not require relabeling completed frozen executions as absent, nor block conservative parking that avoids the invalid inference. No claim is made that a corrected solver would reproduce these trajectories."
+  },
+  "adoption_disposition": {
+    "policy": "Q",
+    "decision": "park",
+    "scope": "tested POINT152420 a1100 networks1-4 development profile",
+    "reason": "No demonstrated consequential common-support contamination benefit; broad response tradeoff and unresolved estimator sensitivity do not meet evidence for provisional adoption.",
+    "retain": "B as comparator/rollback and all frozen campaign evidence",
+    "not_established": [
+      "Q is universally ineffective",
+      "Q broad-response difference is statistically significant",
+      "B is scientifically correct or production-ready",
+      "Exposure recovery",
+      "All arrays/modes or accepted Unity Spack operational validation"
+    ]
+  },
+  "dispositions": {
+    "scientific_and_behavioral_conformance": "Pass with recorded limitations for observed frozen-run completion and conservative Q parking; unrestricted fit-response conformance is not established.",
+    "architectural_conformity_and_ownership": "Prior exact-source preparation pass remains applicable; no source changes in this review. B geometry, Q own learned state, source/feedback support boundaries preserved.",
+    "repository_branch_and_evidence_hygiene": "Pass for reviewed completed campaign evidence: exact source and manifest bindings verified, accounting complete, earlier preflight receipt preserved, no mutation/push/integration/production claim."
+  },
+  "limitations": [
+    "Single target, partial array/network cohort, one frozen eight-role experiment.",
+    "Single-map endpoint covariance is conditional; not paired B-Q, injection-difference, optimizer-boundary or historical-map significance.",
+    "No claim that narrower/brighter output is more correct, nor that historical contrast is uniquely FRUIT.",
+    "Equivalent-angle refit diagnostic being prepared by parent was not available during this receipt; no diagnostic outcome is assumed.",
+    "Final assessment must prominently preserve fit-bound, support-loss and uncertainty qualifications; raw automated peak-response fields alone do not support adoption."
+  ]
+}

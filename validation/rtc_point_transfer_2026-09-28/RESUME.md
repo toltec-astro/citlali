@@ -1,33 +1,28 @@
-# Active completion handoff — 2026-09-30
+# Completed POINT152420 handoff — 2026-09-30
 
-This section supersedes conflicting historical restrictions below, under
-COMPLETION_AUTHORITY.md and the standing successor governance amendment.
-Current root: `/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930`.
-Current worktree: `/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor`.
-Status: root/STATUS.json; compact fits: root/<role>/SOURCE-EVOLUTION.json;
-accounting: root/ACCOUNTING.json plus RECOVERY_ACCOUNTING.json and historical
-accounting in prior roots. No role completed yet; two replacement starts remain.
+All eight roles completed with five feedback applications each (40 total), eight
+endpoints, 32 RTC Apply receipts and exit 0 at runnable source
+`518e05891cf8eb2e84621cdcfcea83525f3d1c49`. No replacement starts were used;
+two remain within COMPLETION_AUTHORITY.md for diagnosed replacements only.
+Two prior failed trajectories remain in history. Do not replay the old launch.
 
-Owner-terminal foreground launch (keep terminal open and Mac awake):
+[ASSESSMENT.md](ASSESSMENT.md) is the active scientific disposition: park Q in
+this tested POINT152420 a1100 networks 1–4 profile, retain B and frozen evidence.
+The same milestone review supports this disposition with angle-bound fitter and
+uncertainty limitations; D20 must precede stronger fit-response claims. A later
+supplemental refit could not import local SciPy; no package changes or diagnostic
+fit result occurred. No further observation run is pending or scheduled.
 
-```sh
-/Users/gwilson/tolteca/bin/python /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_point_transfer_2026-09-28/run_campaign.py --review /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/PREFLIGHT_REVIEW.json
-```
+Campaign root:
+`/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930`.
+Original STATUS/accounting/report bindings remain unchanged. Its terminal
+COMPLETE_PENDING_OWNER_REVIEW records execution; the dated assessment and
+completion-results/scientific-review.json supply the reviewed parking decision.
+The post-run reporting commit is distinct from numerical source 518e05891.
 
-No persistent runner has been established; READY is not a launched reduction.
-The exact-source runner enforces exclusive single start, preflight, existing
-worker/storage limits, B through T5, frozen original selection, then seven
-remaining roles or no-applicable exit. All scientific rules remain unchanged.
-On a later owner check, make one liveness check. If running, report and end turn.
-If failed, diagnose and repair in scope, validate and prepare a bounded
-replacement without asking routine permission. Record the replacement against
-the two-start allowance before execution; do not rerun successful unaffected
-roles. No blind retry or checkpoint framework. If complete, assess source
-evolution, historical contrast, matched B/Q response and actual residuals,
-support loss and conditional uncertainties. Continue the single milestone
-review for scientific conclusions before provisional profile adoption/parking.
-Do not change production or push. Campaign-owned reproducible scratch cleanup is
-authorized after preserving diagnosis/reproduction and checking no process use.
+Current worktree:
+`/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor`.
+No push, production promotion, merge, Unity work or automatic launch.
 
 ---
 

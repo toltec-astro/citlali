@@ -1,0 +1,220 @@
+{
+  "source_revision": "518e05891cf8eb2e84621cdcfcea83525f3d1c49",
+  "campaign_status": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/STATUS.json",
+    "sha256": "15d2993d25456e9980876718ed90a9b08f23ca1bb69f1bcffd933db7a9dbdb08"
+  },
+  "manifest": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/report/MANIFEST.json",
+    "sha256": "07e179200d208d1fba25fc92d7d0df91544406becaeb2f0e9c76087118686aad"
+  },
+  "verified_compact_bindings": 36,
+  "accounting": {
+    "parent": 8,
+    "trajectory": 8,
+    "feedback": 40,
+    "endpoint": 8
+  },
+  "RTC_Apply": 32,
+  "unexpected_error_logs": 0,
+  "all_five_applications_verified": true,
+  "fixed_B_geometry_and_rasters_verified": true,
+  "constrained_executed_fits": [
+    {
+      "role": "B-REF",
+      "cycle": 1,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "role": "B-REF",
+      "cycle": 2,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "role": "B-REF",
+      "cycle": 4,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "role": "B-C-core-plus",
+      "cycle": 0,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "role": "B-C-core-plus",
+      "cycle": 2,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "role": "B-C-shoulder",
+      "cycle": 0,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "role": "Q-C-core-plus",
+      "cycle": 0,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "role": "Q-C-core-plus",
+      "cycle": 4,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "role": "Q-C-core-minus",
+      "cycle": 5,
+      "active_mask": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        -1,
+        0
+      ]
+    }
+  ],
+  "roles": [
+    {
+      "role": "B-REF",
+      "raw_to_final_seconds": 174.507868417,
+      "initial_upstream_map_guard_seconds": 90.107450334,
+      "five_cycles_endpoint_seconds": 82.538622084,
+      "peak_sampled_RSS_bytes": 3257073664,
+      "retained_bytes": 2295481049,
+      "scratch_removed_bytes": 586604548
+    },
+    {
+      "role": "B-C-core-plus",
+      "raw_to_final_seconds": 177.66690875,
+      "initial_upstream_map_guard_seconds": 89.962794959,
+      "five_cycles_endpoint_seconds": 82.258502875,
+      "peak_sampled_RSS_bytes": 3335127040,
+      "retained_bytes": 2294957209,
+      "scratch_removed_bytes": 586367916
+    },
+    {
+      "role": "B-C-core-minus",
+      "raw_to_final_seconds": 179.736026167,
+      "initial_upstream_map_guard_seconds": 90.214212791,
+      "five_cycles_endpoint_seconds": 84.536864459,
+      "peak_sampled_RSS_bytes": 3425697792,
+      "retained_bytes": 2295632625,
+      "scratch_removed_bytes": 586605012
+    },
+    {
+      "role": "B-C-shoulder",
+      "raw_to_final_seconds": 181.807837917,
+      "initial_upstream_map_guard_seconds": 91.27924675,
+      "five_cycles_endpoint_seconds": 87.8140065,
+      "peak_sampled_RSS_bytes": 2860023808,
+      "retained_bytes": 2295072477,
+      "scratch_removed_bytes": 586367916
+    },
+    {
+      "role": "Q-REF",
+      "raw_to_final_seconds": 182.107104208,
+      "initial_upstream_map_guard_seconds": 92.002474291,
+      "five_cycles_endpoint_seconds": 83.674458084,
+      "peak_sampled_RSS_bytes": 2879553536,
+      "retained_bytes": 2295290273,
+      "scratch_removed_bytes": 586367068
+    },
+    {
+      "role": "Q-C-core-plus",
+      "raw_to_final_seconds": 235.301670125,
+      "initial_upstream_map_guard_seconds": 110.790671333,
+      "five_cycles_endpoint_seconds": 122.297679167,
+      "peak_sampled_RSS_bytes": 2960490496,
+      "retained_bytes": 2294855895,
+      "scratch_removed_bytes": 586129092
+    },
+    {
+      "role": "Q-C-core-minus",
+      "raw_to_final_seconds": 188.749549625,
+      "initial_upstream_map_guard_seconds": 96.6295335,
+      "five_cycles_endpoint_seconds": 89.051278459,
+      "peak_sampled_RSS_bytes": 2997534720,
+      "retained_bytes": 2295459859,
+      "scratch_removed_bytes": 586367532
+    },
+    {
+      "role": "Q-C-shoulder",
+      "raw_to_final_seconds": 187.802505125,
+      "initial_upstream_map_guard_seconds": 93.506310458,
+      "five_cycles_endpoint_seconds": 88.343224958,
+      "peak_sampled_RSS_bytes": 2987114496,
+      "retained_bytes": 2294885988,
+      "scratch_removed_bytes": 586129092
+    }
+  ],
+  "prior_roots_bytes": 2622560599,
+  "campaign_bytes": 18377997229,
+  "run_wall_seconds": 2821.910755,
+  "replacement_starts_used": 0,
+  "remaining_replacement_starts": 2
+}

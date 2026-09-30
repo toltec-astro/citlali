@@ -1,5 +1,19 @@
 # Citlali Refactor Status
 
+## 2026-09-30 — POINT152420 completed; Q parked with fit limitation
+
+The [completion assessment](../validation/rtc_point_transfer_2026-09-28/ASSESSMENT.md)
+binds runnable source `518e05891`: eight roles completed all 40 feedback
+applications and eight endpoints, with zero replacement starts. B peak rises
+223.28→291.81 mJy/beam; Q ends at 291.87. Common-background scatter improves
+only 0.052% with Q, while broad pixel response is 0.861 B / 0.780 Q. Independent
+review supports parking Q in the tested a1100 networks 1–4 profile and retaining
+B. This is no production or unrestricted-fit acceptance. Intermediate angle-bound
+fits and fitted-constant coupling are recorded as D20; a supplemental refit was
+unavailable because local SciPy failed to load. Two diagnosed replacement starts
+remain unused, with no further numerical work scheduled. Frozen evidence is
+preserved and the handoff now points to completion rather than relaunch.
+
 ## 2026-09-30 — authorized POINT152420 completion and bounded development autonomy
 
 The owner authorized the [completion directive](../validation/rtc_point_transfer_2026-09-28/COMPLETION_AUTHORITY.md)
@@ -8,8 +22,8 @@ existing successor governance and AGENTS routing. [Completion preflight](../vali
 separates auxiliary template support from unchanged 40 arcsec source/feedback
 policy. The fresh eight-role completion batch retains the two historical failed
 trajectories and permits two further diagnosed replacement starts, never blind
-retries. B five-application completion and B/Q scientific assessment remain
-pending execution. No production/default change, Unity access or push.
+retries. B five-application completion and B/Q scientific assessment are now complete
+as recorded above; this paragraph preserves the preparation history. No production/default change, Unity access or push.
 
 ## 2026-09-29 — redu09 saved-map contrast qualifies footprint diagnosis
 
