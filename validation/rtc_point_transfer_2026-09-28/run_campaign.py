@@ -125,11 +125,11 @@ def main():
     allowed={'STATUS.json','PREFLIGHT_REVIEW.json','READY.json','preflight-inputs','STORAGE_PREFLIGHT.json','HISTORICAL_CHECKS.json','preflight-only'}
     require(all(x.name in allowed for x in ROOT.iterdir()),'existing incompatible campaign files; no implicit resume')
     with (ROOT/'LAUNCHED.json').open('x') as f:json.dump(dict(source_revision=revision,started_utc=now(),review=bound(args.review) if args.review else None),f)
-    (ROOT/'logs').mkdir();STATE=dict(campaign='rtc-point-transfer-runtime-repair-20260929',preflight_only=args.preflight_only,source_revision=revision,pid=os.getpid(),started_utc=now(),completed_roles=[],current_role=None,status_file=str(ROOT/'STATUS.json'),resume=str(D/'RESUME.md'),summary=str(ROOT/'report/metrics.json'),model_monitoring_calls_after_handoff=0,token_credit_usage='unavailable; no measured savings claim')
+    (ROOT/'logs').mkdir();STATE=dict(campaign='rtc-point-transfer-completion-20260930',preflight_only=args.preflight_only,source_revision=revision,pid=os.getpid(),started_utc=now(),completed_roles=[],current_role=None,status_file=str(ROOT/'STATUS.json'),resume=str(D/'RESUME.md'),summary=str(ROOT/'report/metrics.json'),model_monitoring_calls_after_handoff=0,token_credit_usage='unavailable; no measured savings claim')
     try:
         status('RUNNING',phase='storage and frozen source preflight')
         save_json(ROOT/'STORAGE_AT_LAUNCH.json',capacity())
-        save_json(ROOT/'FREEZE.json',dict(source_revision=revision,runtime_authority=bound(D/'RUNTIME_REPAIR.md'),preserved_failed_accounting=bound(FAILED_SCIENCE_ROOT/'ACCOUNTING.json'),maximum_historical_parent_attempts=9,policy=bound(D/'SELECTOR_POLICY.md'),target=bound(D/'TARGET.json'),inputs=[bound(x) for x in sorted((D/'inputs').iterdir()) if x.is_file()],roles=ROLES,limits=LIMITS,review=bound(args.review) if args.review else None,environment='local AppleClang/Homebrew fallback; supplemental development evidence, not accepted Unity Spack reproduction'))
+        save_json(ROOT/'FREEZE.json',dict(source_revision=revision,runtime_authority=bound(D/'RUNTIME_REPAIR.md'),completion_authority=bound(D/'COMPLETION_AUTHORITY.md'),recovery_budget=bound(D/'RECOVERY_ACCOUNTING.json'),preserved_failed_accounting=[bound(p/'ACCOUNTING.json') for p in (FAILED_SCIENCE_ROOT,FAILED_RUNTIME_ROOT)],maximum_historical_parent_attempts=12,policy=bound(D/'SELECTOR_POLICY.md'),target=bound(D/'TARGET.json'),inputs=[bound(x) for x in sorted((D/'inputs').iterdir()) if x.is_file()],roles=ROLES,limits=LIMITS,review=bound(args.review) if args.review else None,environment='local AppleClang/Homebrew fallback; supplemental development evidence, not accepted Unity Spack reproduction'))
         run_preflight(revision)
         if args.preflight_only:
             save_json(ROOT/'ACCOUNTING.json',accounting())
@@ -149,6 +149,8 @@ def main():
                 raise ProcessFailure(role+' numerical process failed; no retry; '+str(er.get('reason')))
             verify_role(role,revision);STATE['completed_roles'].append(role)
             if role=='B-REF':
+                from point_source_evolution import compare_saved
+                compare_saved(ROOT,REPO)
                 (ROOT/'selection').mkdir()
                 for nw in range(1,5):command(f'original-selection-network{nw}',[SELECTOR,out/f'upstream/products/network{nw}',ROOT/f'selection/network{nw}.yaml'])
                 with (ROOT/'logs/B-selection-summary.log').open('x') as f,contextlib.redirect_stdout(f),contextlib.redirect_stderr(f):
@@ -157,7 +159,7 @@ def main():
                 if not n:
                     from point_transfer_report import no_applicable_report
                     no_applicable_report()
-                    require(tree_bytes(ROOT/'selection')<=REPORT_CAP,'no-case compact allowance')
+                    require(tree_bytes(ROOT/'selection')+tree_bytes(ROOT/'report')<=REPORT_CAP,'no-case compact allowance')
                     status('COMPLETE_NO_APPLICABLE_CASE',phase='complete; seven remaining roles skipped',current_role=None,exit_code=0,completed_utc=now(),summary=str(ROOT/'selection/SELECTION.json'));return 0
             if role=='Q-REF':
                 # Fail immediately if offline B and in-pass Q membership differ;
@@ -171,7 +173,7 @@ def main():
         with (ROOT/'logs/report.log').open('x') as f,contextlib.redirect_stdout(f),contextlib.redirect_stderr(f):
             from point_transfer_report import compare
             compare()
-        require(tree_bytes(ROOT/'report')+tree_bytes(ROOT/'selection')<=REPORT_CAP,'compact evidence allowance exceeded')
+        require(tree_bytes(ROOT/'report')+tree_bytes(ROOT/'selection')+tree_bytes(ROOT/'report')<=REPORT_CAP,'compact evidence allowance exceeded')
         require(sum(tree_bytes(x) for x in PRIOR)+tree_bytes(ROOT)<=CAP,'final shared cap')
         counts=accounting();require(counts['charged_attempts']==LIMITS and counts['completed_native_RTC_Apply_receipts']==32,'final exact execution accounting')
         save_json(ROOT/'ACCOUNTING.json',counts)

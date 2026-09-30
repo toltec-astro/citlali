@@ -21,7 +21,7 @@ BRANCHES=('REF','C-core-plus','C-core-minus','C-shoulder','D-seed-shoulder')
 
 
 @timed("source_measurements")
-def measurement(c,signal,support,guard):
+def measurement(c,signal,support,guard,auxiliary=None):
     """Describe the already executed guard fit; never fit a second time."""
     f=c['fixed'];p=guard['accepted_parameters'];good=guard['accepted']
     fit=dict(status='success' if good else guard['status'],method=METHOD,
@@ -30,7 +30,11 @@ def measurement(c,signal,support,guard):
     relative=signal-p[6] if good else None
     aperture=aperture_measurements(relative,support,f.x,f.y,f.parameters[1:3],f.major,f.beam,4.) if good else [dict(value_mJy_per_beam_arcsec2=None) for _ in range(3)]
     raw=aperture_measurements(signal,support,f.x,f.y,f.parameters[1:3],f.major,f.beam,4.)
-    return dict(fit=fit,guard=guard,frozen_template_projection=projection(relative,support,f.weights) if good else None,
+    if 'auxiliary' in c:
+        from point_auxiliary import projection as auxiliary_projection
+        value,availability=auxiliary_projection(c,auxiliary,p[6]) if good else (None,dict(available=False,reason='source guard rejected'))
+    else:value,availability=(projection(relative,support,f.weights) if good else None),None
+    return dict(fit=fit,guard=guard,frozen_template_projection=value,auxiliary_support=availability,
         apertures=aperture,raw_apertures=raw,
         aperture_background_terms=[r['value_mJy_per_beam_arcsec2']-v['value_mJy_per_beam_arcsec2'] if good and r['value_mJy_per_beam_arcsec2'] is not None and v['value_mJy_per_beam_arcsec2'] is not None else None for r,v in zip(raw,aperture)],
         background=stats(signal[support&f.background]),
@@ -103,9 +107,9 @@ def ideal_comparison(c,reference,actual,ideal):
 
 
 @timed("source_fit_measurement")
-def infer_base(c, signal, support):
+def infer_base(c, signal, support, auxiliary=None):
     """Same accepted fit and BASE candidate; no parked supplemental scores."""
     from point_expected import measure_expected, candidate
     guard = measure_expected(signal, support, c['fixed'], c['scale'], c['psd'])
     prepared = (guard, candidate(signal, support, c['fixed'], guard), None)
-    return measurement(c, signal, support, guard), prepared
+    return measurement(c, signal, support, guard, auxiliary), prepared

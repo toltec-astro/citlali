@@ -6,6 +6,7 @@ from point_rtc_diagnostics import read,yread,arr,load_network
 from point_fruit_diagnostics import load,patch_map
 from point_empirical import source_patch,coordinates
 from point_reference import context
+from point_auxiliary import sample as auxiliary_sample
 from point_guarded_feedback import infer_base,ideal_comparison
 from point_response_cd import direct_raster,response_metrics,vector_measurement,MEASUREMENT_NAMES
 from point_additive_diagnostics import save_json
@@ -61,13 +62,15 @@ def response(root,family,dest,reference_name=None):
             raster,sh=load(out/f'freeze/shapes/{branch}.fits');direct=direct_raster(raster['INJECTION'],sh,knownmap.shape,rh)
             require(np.allclose(knownmap[iv],direct[iv],atol=1e-10,rtol=1e-12),'native sky/control projection mismatch')
             source,sv,norm,ph,_=source_patch(rim['PRIMARY'],rim['SCI_SUPPORT'].astype(bool),rim['NORMALIZATION'],rh);injected,bv,_,_,_=source_patch(bim['PRIMARY'],bim['SCI_SUPPORT'].astype(bool),bim['NORMALIZATION'],bh);ideal,ivs,_,_,_=source_patch(knownmap,iv,rim['NORMALIZATION'],rh);rtc,rvs,_,_,_=source_patch(rtcdelta,rv,rim['NORMALIZATION'],rh)
-            idealmeasurement,_=infer_base(ctx,source+ideal,sv&ivs)
+            idealaux=auxiliary_sample(rim['PRIMARY']+knownmap,rim['SCI_SUPPORT'].astype(bool)&iv,rh,ctx['auxiliary']) if 'auxiliary' in ctx else None
+            idealmeasurement,_=infer_base(ctx,source+ideal,sv&ivs,idealaux)
             actualmeasurement=bs['histories'][k]['measurement'];refmeasurement=rs['histories'][k]['measurement']
             comparison=ideal_comparison(ctx,refmeasurement,actualmeasurement,idealmeasurement)
             x,y=coordinates(source.shape,ph);disk=np.hypot(x,y)<=40
             rec=dict(family=family,branch=branch,cycle=k,ideal_scope='same exact retained physical raster projected at native occurrences, own unperturbed REF operator/coefficients/support; calibration-only roundtrip and direct raster agree',ideal_accounting=ic,RTC_delta_accounting=rc,measurement=comparison,spatial=response_metrics(injected-source,ideal,sv&bv&ivs&disk),RTC_spatial=response_metrics(rtc,ideal,sv&rvs&ivs&disk),endpoint_conditional_sigmas=sigmas if k==5 else {},M0_guard_sigma_A=refmeasurement['guard'].get('sigma_A'),support={name:dict(equal=bool(np.array_equal(rim[name],bim[name])),changed=int(np.count_nonzero(rim[name]!=bim[name]))) for name in ('HITS','NORMALIZATION','SCI_SUPPORT')})
             if k==0:
-                rm,_=infer_base(ctx,source+rtc,sv&rvs);rec['conditional_RTC_only_measurement']=ideal_comparison(ctx,refmeasurement,rm,idealmeasurement);rec['conditional_RTC_only_scope']='RTC injected-minus-REF projected through fixed REF M0 MAP, added to REF M0 for common measurement; diagnostic only, not an independently reduced RTC sky map'
+                rtcaux=auxiliary_sample(rim['PRIMARY']+rtcdelta,rim['SCI_SUPPORT'].astype(bool)&rv,rh,ctx['auxiliary']) if 'auxiliary' in ctx else None
+                rm,_=infer_base(ctx,source+rtc,sv&rvs,rtcaux);rec['conditional_RTC_only_measurement']=ideal_comparison(ctx,refmeasurement,rm,idealmeasurement);rec['conditional_RTC_only_scope']='RTC injected-minus-REF projected through fixed REF M0 MAP, added to REF M0 for common measurement; diagnostic only, not an independently reduced RTC sky map'
             records.append(rec)
             for name,value in [('REF',source),('injected',injected),('ideal',ideal),('RTC_delta',rtc),('residual',injected-source-ideal),('support',sv&bv&ivs)]:maps[f'{branch}_T{k}_{name}']=value
     np.savez_compressed(dest/'response-maps.npz',**maps);save_json(dest/'source-responses.json',records);save_json(dest/'native-source-accounting.json',native)

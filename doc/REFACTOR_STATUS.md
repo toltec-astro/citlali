@@ -1,5 +1,16 @@
 # Citlali Refactor Status
 
+## 2026-09-30 — authorized POINT152420 completion and bounded development autonomy
+
+The owner authorized the [completion directive](../validation/rtc_point_transfer_2026-09-28/COMPLETION_AUTHORITY.md)
+and standing in-scope successor implementation/repair authority, recorded in the
+existing successor governance and AGENTS routing. [Completion preflight](../validation/rtc_point_transfer_2026-09-28/COMPLETION_PREFLIGHT.md)
+separates auxiliary template support from unchanged 40 arcsec source/feedback
+policy. The fresh eight-role completion batch retains the two historical failed
+trajectories and permits two further diagnosed replacement starts, never blind
+retries. B five-application completion and B/Q scientific assessment remain
+pending execution. No production/default change, Unity access or push.
+
 ## 2026-09-29 — redu09 saved-map contrast qualifies footprint diagnosis
 
 [Owner-selected redu09 comparison](../validation/point152420_map_comparison_2026-09-29/redu09/ASSESSMENT.md)

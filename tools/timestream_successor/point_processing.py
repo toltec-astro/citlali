@@ -5,6 +5,7 @@ from concurrent.futures import ThreadPoolExecutor,as_completed
 import numpy as np
 import psutil
 from point_reference import initialize,context,endpoint
+from point_auxiliary import from_map as auxiliary_sample
 from point_guarded_feedback import infer_base, POLICIES,BRANCHES,infer,publish,measurement,continuation_reason,ideal_comparison
 from point_expected import candidate
 from point_response_cd import shapes,seed_candidate,processing_guard,injection_reference,response_metrics,direct_raster
@@ -139,13 +140,13 @@ def upstream(out,binary):
         for b in noise_reference['files']:verified(b)
         shutil.copytree(ref/f'freeze/{selected_array(out)}',out/f'freeze/{selected_array(out)}')
         c=context(out/f'freeze/{selected_array(out)}');signal,valid,_,_=patch_map(out/f'M0/products/{selected_array(out)}/map.fits')
-        injected_measurement,_=infer_base(c,signal,valid);g=injected_measurement['guard']
+        injected_measurement,_=infer_base(c,signal,valid,auxiliary_sample(out/f'M0/products/{selected_array(out)}/map.fits',c));g=injected_measurement['guard']
         if not g['accepted']:
             from point_response_cd import save_candidate
             save_candidate(out/f'freeze/{selected_array(out)}/candidate.fits',exact_header(c['header']),candidate(signal,valid,c['fixed'],g))
             save_json(out/f'freeze/{selected_array(out)}/injected-guard.json',g)
     else:
-        c,g=initialize(out/f'M0/products/{selected_array(out)}/map.fits',out/f'freeze/{selected_array(out)}',beam={'a1100':5.,'a1400':7.5,'a2000':10.}[selected_array(out)])
+        c,g=initialize(out/f'M0/products/{selected_array(out)}/map.fits',out/f'freeze/{selected_array(out)}',beam={'a1100':5.,'a1400':7.5,'a2000':10.}[selected_array(out)],auxiliary=read(out/'freeze/prospective.json').get('campaign_scope')=='rtc-point-transfer-v1')
     save_json(out/'UPSTREAM.json',dict(status='accepted' if g['accepted'] else 'source_or_covariance_failed',guard=g,seconds=time.perf_counter()-t,initial_physical_inputs=1,parent=p))
     if c is not None:
         if speed_experiment(out):
@@ -154,7 +155,7 @@ def upstream(out,binary):
                 freeze_own_geometry(out,c)
             shutil.copyfile(out/'freeze/measurement-geometry.json',out/f'freeze/{selected_array(out)}/measurement-geometry.json')
             c=context(out/f'freeze/{selected_array(out)}')
-        m=injected_measurement if noise_reference else measurement(c,c['original'],c['support'],g);save_json(out/'freeze/M0-measurement.json',m)
+        m=injected_measurement if noise_reference else measurement(c,c['original'],c['support'],g,auxiliary_sample(out/f'M0/products/{selected_array(out)}/map.fits',c));save_json(out/'freeze/M0-measurement.json',m)
         save_json(out/'freeze/realized.json',[bound(p) for p in sorted((out/f'freeze/{selected_array(out)}').iterdir()) if p.is_file()]+[bound(out/'freeze/M0-measurement.json'),bound(out/'freeze/parents.json'),bound(out/'inputs/map-request.json')])
 
 
@@ -239,7 +240,7 @@ def execute_branch(out,binary,pol,branch):
         rec=dict(array=array,policy=pol,branch=branch,cycle_index=k,ready=False);tic=time.perf_counter()
         try:
             require(call(out,binary,q,d/'native')==0,'native cycle failed')
-            products=d/'native/products';rr=read_yaml(products/'receipt.yaml');s,v,_,_=patch_map(products/'total.fits');m,prepared=infer_stage(c,s,v);cp,summary=publish(d,c,s,prepared,pol,tau)
+            products=d/'native/products';rr=read_yaml(products/'receipt.yaml');s,v,_,_=patch_map(products/'total.fits');m,prepared=infer_stage(c,s,v,auxiliary=auxiliary_sample(products/'total.fits',c)) if 'auxiliary' in c else infer_stage(c,s,v);cp,summary=publish(d,c,s,prepared,pol,tau)
             rec.update(total=bound(products/'total.fits'),receipt=bound(products/'receipt.yaml'),candidate=bound(cp),measurement=m,admission=summary)
             rec['guards']=processing_guard(products,rr,allow_historical_failure=False,expected_rank=expected_rank(out));rec['PTC_segments']=learned_state(products,rr)
             old,_=load(verified(prior['candidate']));new,_=load(cp);rec['candidate_turnover']=selection_difference(new,old)

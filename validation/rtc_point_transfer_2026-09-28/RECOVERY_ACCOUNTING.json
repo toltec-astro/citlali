@@ -1,0 +1,38 @@
+{
+  "schema": "point152420-bounded-recovery-v1",
+  "authority_sha256": "a7fd87b864513becc6df89f1b96aab2695d26d27244d2ad22cde675dac0c883d",
+  "historical": [
+    {
+      "root": "successor-rtc-point-transfer-20260928",
+      "parent": 0,
+      "trajectory": 0,
+      "feedback": 0,
+      "endpoint": 0,
+      "cause": "configure/build failure"
+    },
+    {
+      "root": "successor-rtc-point-transfer-build-repair-20260929",
+      "parent": 1,
+      "trajectory": 1,
+      "feedback": 0,
+      "endpoint": 0,
+      "cause": "short diagnostic stretch and PTC cap100"
+    },
+    {
+      "root": "successor-rtc-point-transfer-runtime-repair-20260929",
+      "parent": 1,
+      "trajectory": 1,
+      "feedback": 0,
+      "endpoint": 0,
+      "cause": "auxiliary template incorrectly restricted to feedback disk"
+    }
+  ],
+  "forward_initial_roles": 8,
+  "forward_additional_full_starts_allowed": 2,
+  "replacements": [],
+  "remaining_replacements": 2,
+  "initial_completion_root": "successor-rtc-point-transfer-completion-20260930",
+  "maximum_total_historical_parent_trajectory_starts": 12,
+  "automatic_retry": false,
+  "replacement_rule": "Only owner-resumed diagnosis and repair; record exact failure, regression, invalidation, source and consumed work before a separately frozen remaining-role batch. Preserve completed unaffected roles. No checkpoint framework."
+}

@@ -1,3 +1,38 @@
+# Active completion handoff — 2026-09-30
+
+This section supersedes conflicting historical restrictions below, under
+COMPLETION_AUTHORITY.md and the standing successor governance amendment.
+Current root: `/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930`.
+Current worktree: `/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor`.
+Status: root/STATUS.json; compact fits: root/<role>/SOURCE-EVOLUTION.json;
+accounting: root/ACCOUNTING.json plus RECOVERY_ACCOUNTING.json and historical
+accounting in prior roots. No role completed yet; two replacement starts remain.
+
+Owner-terminal foreground launch (keep terminal open and Mac awake):
+
+```sh
+/Users/gwilson/tolteca/bin/python /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_point_transfer_2026-09-28/run_campaign.py --review /Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/PREFLIGHT_REVIEW.json
+```
+
+No persistent runner has been established; READY is not a launched reduction.
+The exact-source runner enforces exclusive single start, preflight, existing
+worker/storage limits, B through T5, frozen original selection, then seven
+remaining roles or no-applicable exit. All scientific rules remain unchanged.
+On a later owner check, make one liveness check. If running, report and end turn.
+If failed, diagnose and repair in scope, validate and prepare a bounded
+replacement without asking routine permission. Record the replacement against
+the two-start allowance before execution; do not rerun successful unaffected
+roles. No blind retry or checkpoint framework. If complete, assess source
+evolution, historical contrast, matched B/Q response and actual residuals,
+support loss and conditional uncertainties. Continue the single milestone
+review for scientific conclusions before provisional profile adoption/parking.
+Do not change production or push. Campaign-owned reproducible scratch cleanup is
+authorized after preserving diagnosis/reproduction and checking no process use.
+
+---
+
+## Historical handoff (superseded where conflicting)
+
 # Resume independent POINT transfer
 
 Prepared foreground runner for POINT152420/0/2 a1100 networks1–4. Rule/configuration:

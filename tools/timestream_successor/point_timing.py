@@ -25,6 +25,10 @@ def timed(name):
     return decorate
 
 def ready(out,k,map_path,measurement,state_path):
+    prospective=out/'freeze/prospective.json'
+    if prospective.exists() and json.loads(prospective.read_text()).get('campaign_scope')=='rtc-point-transfer-v1':
+        from point_source_evolution import export
+        export(out,k,map_path,measurement)
     if not os.environ.get('CITLALI_POINT_TIMING'):return
     # Caller-visible file milestone after required synchronous publications.
     state=json.loads(Path(state_path).read_text())

@@ -30,6 +30,46 @@ The contract name is not erased or generalized. Contract closure does not
 establish implementation conformance, executable acceptance, integration,
 readiness, release, or production authorization.
 
+## Standing owner development authority — 2026-09-30
+
+The project owner expressly authorized this amendment in
+[`COMPLETION_AUTHORITY.md`](../../validation/rtc_point_transfer_2026-09-28/COMPLETION_AUTHORITY.md)
+(on 2026-09-30, directive dated September 29). Within each owner-approved
+successor development objective, the responsible agent may diagnose, implement,
+refactor, test, regenerate directly dependent metadata, and commit locally.
+This includes scientific-module correctness repairs restoring accepted contracts:
+demonstrate and report changed faulty outputs. Routine implementation choices,
+ordinary Learn–Consider–Apply decisions, and in-scope repairs after an owner
+resume require no new approval. This standing authority continues until changed
+by the owner; it is recorded here under that explicit amendment work order.
+Canonical integration remains separately controlled and is not claimed here.
+
+Ask at substantive boundaries: scientific models, thresholds, feedback or source
+policy, calibration, experiment changes, extra targets/treatments, recovery or
+resource budget increases, authoritative input or unrelated-work changes,
+production activation, remote writes/pushes, destructive history operations,
+or unresolved scientific intent. Continue independent authorized work.
+
+Use risk-proportionate tests and one focused independent milestone review of
+substantive implementation and conclusions, with an exact source binding. Review
+may follow repairs within that same milestone; do not require new owner approval
+or an independent review for each helper edit, plot, commit or corrected test.
+Essential scientific, security, environment and external permission gates remain.
+This supersedes contrary task-specific evidence-only, no-implementation,
+no-repair-after-resume and blanket scratch-preservation restrictions within scope.
+
+Preserve launch/manual resume: freeze and preflight, use established persistent
+execution and one bounded startup check, then end the agent turn. If persistence
+is not established, provide an exact owner-terminal command and readiness. No
+agent monitoring or automatic model continuation. A later owner check authorizes
+assessment and in-scope repair/replacement within the stated objective budget;
+the ordinary numerical runner still stops on failure and never blindly retries.
+Campaign-owned reproducible scratch may be deleted after compact diagnosis,
+reproduction and necessary continuation inputs are preserved and no active
+process needs it. Protect original inputs, historical maps, unrelated work and
+authoritative archives. No broader cleanup, push, integration or production
+activation follows from this standing amendment.
+
 ## Program shape and WIP budget
 
 The program uses two conceptual queues, not permanent Git branches:

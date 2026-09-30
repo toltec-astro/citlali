@@ -17,7 +17,7 @@ from point_timing import timed
 
 
 @timed("initial_noise_guard_context_publication")
-def initialize(path,dest,beam=10.):
+def initialize(path,dest,beam=10.,*,auxiliary=False):
     full,h=load(path);signal=full['PRIMARY'];support=full['SCI_SUPPORT'].astype(bool);coverage=full['NORMALIZATION']
     s,v,_,ph=patch_map(path);f=SimpleNamespace(header=ph,beam=beam)
     models={}
@@ -39,7 +39,12 @@ def initialize(path,dest,beam=10.):
         f.scale=np.full(s.shape,np.nan);f.noise_valid=np.zeros(s.shape,bool)
         save_candidate(dest/'candidate.fits',exact_header(ph),candidate(s,v,f,guard))
         return None,guard
-    p=np.asarray(guard['accepted_parameters']);x,y=coordinates(s.shape,ph);major=max(p[3:5])*np.sqrt(8*np.log(2));q,_=linear_weights(ph,s.shape,p)
+    p=np.asarray(guard['accepted_parameters']);x,y=coordinates(s.shape,ph);major=max(p[3:5])*np.sqrt(8*np.log(2))
+    if auxiliary:
+        from point_auxiliary import geometry,weights
+        aux=geometry(ph,s.shape,p);q,_=weights(aux)
+        save_json(dest/'auxiliary-geometry.json',aux)
+    else:q,_=linear_weights(ph,s.shape,p)
     radius=np.hypot(x-p[1],y-p[2]);f=SimpleNamespace(header=ph,beam=beam,parameters=p,x=x,y=y,major=major,radius=radius,weights=q,disk=np.hypot(x,y)<=40,background=(np.hypot(x,y)<=40)&(radius>3*major),edges=np.arange(0,42,2),scale=models['base_scale'],noise_valid=models['noise_valid'])
     base=candidate(s,v,f,guard);k0=base['selected'].copy()
     np.savez_compressed(dest/'context.npz',original=s,support=v,full_support=support,scale=models['scale'],psd=models['C0']['psd'],empirical=models['C0']['empirical'],pairs=models['C0']['pairs'],base_scale=models['base_scale'],noise_valid=models['noise_valid'],parameters=p,q=q,k0=k0)
@@ -66,7 +71,16 @@ def context(dest, measurement_geometry=None):
     if mg is not None:
         require(all(h[k]==mg['header'][k] for k in ('CRPIX1','CRPIX2','CRVAL1','CRVAL2','CDELT1','CDELT2')),'measurement geometry WCS differs')
         p=np.asarray(mg['parameters']);major=mg['major'];q=np.asarray(mg['weights'])
-        require(q.shape==c['original'].shape,'measurement template shape differs')
+        require('auxiliary' in mg or q.shape==c['original'].shape,'measurement template shape differs')
+    auxpath=dest/'auxiliary-geometry.json'
+    aux=mg.get('auxiliary') if mg is not None else None
+    if aux is None and auxpath.exists():aux=json.loads(auxpath.read_text())
+    if aux is not None:
+        from point_auxiliary import weights
+        rebuilt,_=weights(aux)
+        require(np.array_equal(q,rebuilt),'saved auxiliary weights differ from frozen template')
+        q=rebuilt;c['auxiliary']=aux
+        require(np.array_equal(np.asarray(aux['parameters']),p),'auxiliary template parameter mismatch')
     x,y=coordinates(c['original'].shape,h);r=np.hypot(x-p[1],y-p[2])
     f=SimpleNamespace(header=h,beam=beam,parameters=p,x=x,y=y,radius=r,major=major,weights=q,scale=c['base_scale'],noise_valid=c['noise_valid'],disk=np.hypot(x,y)<=40,background=(np.hypot(x,y)<=40)&(r>3*major),edges=np.arange(0,42,2))
     require(json.loads((dest/'BASE.json').read_text())['request']['high_coverage_usable'] and json.loads((dest/'C0.json').read_text())['request']['high_coverage_usable'],'wrong saved high-coverage semantics')
@@ -89,16 +103,25 @@ def endpoint(path,c,record,dest):
     require(full['PRIMARY'].shape==c['full_source_mask'].shape,'endpoint frozen source-mask geometry differs')
     model=learn(full['PRIMARY'],full['NORMALIZATION'],full['SCI_SUPPORT'].astype(bool)&c['full_support'],h,c['parameters'],NoiseRequest(mask_fwhm=4.,high_coverage_usable=True),stamp_size=49,source_mask=c['full_source_mask'])
     cy,cx=int(round(h['CRPIX2']-1)),int(round(h['CRPIX1']-1));scale=patch(model['scale'],cy,cx,20);valid=patch(model['valid'],cy,cx,20);extrapolated=patch(model['coverage_extrapolated'],cy,cx,20)
-    roi=f.disk;J=jacobian(p,f.x[roi],f.y[roi]);U,sigma,Vt=np.linalg.svd(J,full_matrices=False);rank=int(np.sum(sigma>np.finfo(float).eps*max(J.shape)*sigma[0]));pinv=(Vt[:rank].T/sigma[:rank])@U[:,:rank].T
-    projector=Vt[:rank].T@Vt[:rank];tol=100*np.finfo(float).eps*max(J.shape)
+    roi=f.disk;J=jacobian(p,f.x[roi],f.y[roi]);U,sigma,Vt=np.linalg.svd(J,full_matrices=False);rank=int(np.sum(sigma>np.finfo(float).eps*max(J.shape)*sigma[0]));pinv=np.einsum('ij,kj->ik',Vt[:rank].T/sigma[:rank],U[:,:rank],optimize=False)
+    projector=np.einsum('ji,jk->ik',Vt[:rank],Vt[:rank],optimize=False);tol=100*np.finfo(float).eps*max(J.shape)
     def response(row):
         z=np.zeros(roi.shape);z[roi]=row;return z
     W=[response(pinv[i]) for i in range(7)];identifiable=[bool(np.linalg.norm(np.eye(7)[i]-projector[i])<=tol) for i in range(7)]
     linear=[f.weights,*[4.*(f.radius<=a*f.major) for a in (1.,1.5,2.)]]
+    psd=model['psd']
+    if 'auxiliary' in c:
+        from point_auxiliary import embed,slices,covariance_spectrum
+        aux=c['auxiliary'];sl=slices(model['scale'].shape,h,aux)
+        scale=model['scale'][sl];valid=model['valid'][sl];extrapolated=model['coverage_extrapolated'][sl]
+        W=[embed(q,ph,aux) for q in W]
+        linear=[f.weights,*[embed(q,ph,aux) for q in linear[1:]]]
+        psd=covariance_spectrum(model,aux)
+        model['summary']['auxiliary']=dict(geometry=aux,domain_pixels=int(psd.shape[0]),operator_header=aux['header'],guard_covariance_unchanged=True)
     ops=W+[q-np.sum(q)*W[6] for q in linear]
     names=['peak','cx','cy','sx','sy','angle','constant','template','aperture1','aperture1.5','aperture2'];rows=[]
     for i,(name,q) in enumerate(zip(names,ops)):
         usable=identifiable[i] if i<7 else identifiable[6]
-        domain=q!=0;transfer=bool(np.all(valid[domain]));vv=variance(model['psd'],scale,q) if usable else None
+        domain=q!=0;transfer=bool(np.all(valid[domain]));vv=variance(psd,scale,q) if usable and transfer else None
         rows.append(dict(name=name,conditional_sigma=float(np.sqrt(vv)) if transfer and vv is not None and vv>=0 else None,source_transfer_supported=transfer,source_transfer_empirically_calibrated=False,high_coverage_operator_pixels=int(np.sum(extrapolated&domain)),identifiable=usable,scope='conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error',qualification='conditional model-based high-coverage continuation' if transfer and np.any(extrapolated&domain) else None if transfer else 'low coverage or independent unusable input; measurement uncertainty unresolved'))
-    dest.mkdir();save_json(dest/'uncertainties.json',rows);save_json(dest/'model.json',model['summary']);np.savez_compressed(dest/'model.npz',psd=model['psd'],source_scale=scale,source_valid=valid,coverage_extrapolated=extrapolated,source_mask=model['source_mask'],background_mask=model['background_mask'],empirical=model['empirical'],pairs=model['pairs'],operators=np.asarray(ops));return rows
+    dest.mkdir();save_json(dest/'uncertainties.json',rows);save_json(dest/'model.json',model['summary']);np.savez_compressed(dest/'model.npz',psd=psd,source_scale=scale,source_valid=valid,coverage_extrapolated=extrapolated,source_mask=model['source_mask'],background_mask=model['background_mask'],empirical=model['empirical'],pairs=model['pairs'],operators=np.asarray(ops));return rows

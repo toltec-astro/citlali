@@ -9,8 +9,9 @@ REPO=Path(__file__).resolve().parents[2]
 D=REPO/'validation/rtc_point_transfer_2026-09-28'
 FAILED_ROOT=Path('/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-20260928')
 FAILED_SCIENCE_ROOT=FAILED_ROOT.with_name('successor-rtc-point-transfer-build-repair-20260929')
-ROOT=FAILED_ROOT.with_name('successor-rtc-point-transfer-runtime-repair-20260929')
-PRIOR=[ROOT.parent/'successor-rtc-retained-residuals-20260928',ROOT.parent/'successor-rtc-two-stage-20260928',FAILED_ROOT,FAILED_SCIENCE_ROOT]
+FAILED_RUNTIME_ROOT=FAILED_ROOT.with_name('successor-rtc-point-transfer-runtime-repair-20260929')
+ROOT=FAILED_ROOT.with_name('successor-rtc-point-transfer-completion-20260930')
+PRIOR=[ROOT.parent/'successor-rtc-retained-residuals-20260928',ROOT.parent/'successor-rtc-two-stage-20260928',FAILED_ROOT,FAILED_SCIENCE_ROOT,FAILED_RUNTIME_ROOT]
 BRANCHES=('REF','C-core-plus','C-core-minus','C-shoulder')
 ROLES=tuple(f'{f}-{b}' for f in ('B','Q') for b in BRANCHES)
 LIMITS=dict(parent=8,trajectory=8,feedback=40,endpoint=8)
@@ -19,8 +20,8 @@ CELLS=15_912_679;ACTIVE=304*CELLS+2_000_000_000
 
 def read(p):return json.loads(Path(p).read_text())
 def consume(root,kind,identity):
-    require(kind in LIMITS,'foreign transfer operation; no RTC-only or replacement')
-    require(not any(root.glob('DEFECT-REPLACEMENT*')),'no replacement allowance')
+    require(kind in LIMITS,'foreign transfer operation; no RTC-only or automatic replacement')
+    require(not any(root.glob('DEFECT-REPLACEMENT*')),'replacement requires diagnosed owner-resumed repair and a separately frozen batch')
     require(identity.get('run') in ROLES,'foreign transfer role')
     path=root/'attempts.jsonl';rows=[json.loads(s) for s in path.read_text().splitlines()] if path.exists() else []
     require(sum(r['kind']==kind for r in rows)<LIMITS[kind],'transfer absolute attempt ceiling')
@@ -49,7 +50,7 @@ def prepare_role(name):
     out=ROOT/name;prepare(out,D/'inputs/reference.json',Path('/Users/gwilson/work_toltec/local_data'))
     p=read(out/'freeze/prospective.json');p.update(schema='citlali-point-speed-pca-v1',profile='POINT-SPEED-PCA-v1',campaign_scope='rtc-point-transfer-v1',rtc_family=family,signal_branch=branch,cycles=5,feedback_count=5,experimental_method='warm-observed-als',trajectory_identity=name)
     p['scientific_recipe']['PTC']['method']='observed-entry ALS; own preceding converged basis initializer; fully resolved current residual'
-    p['experiment_operands']=[bound(D/'SELECTOR_POLICY.md'),bound(D/'TARGET.json')]
+    p['experiment_operands']=[bound(D/'SELECTOR_POLICY.md'),bound(D/'TARGET.json'),bound(D/'COMPLETION_AUTHORITY.md'),bound(D/'RECOVERY_ACCOUNTING.json')]
     if name!='B-REF':
         base=ROOT/'B-REF';require(read(base/'SHAPES.json')['available'],'own B prescribed injection support unavailable')
         for f in ('freeze/measurement-geometry.json','SHAPES.json'):shutil.copyfile(base/f,out/f)

@@ -50,6 +50,14 @@ Read these documents before making architectural changes:
 The living status document governs sequencing when these documents differ.
 Durable architecture decisions are indexed in `doc/adr/README.md`.
 
+## Active successor development authority
+
+For authorized successor objectives, follow the standing owner amendment in
+`doc/governance/TIMESTREAM_SUCCESSOR_GOVERNANCE.md` (2026-09-30).
+It supersedes conflicting historical task-specific evidence-only/no-repair and
+blanket scratch-preservation language within its stated scope. It does not
+change scientific contracts or authorize production, pushes, or unrelated work.
+
 ## Scientific Contract Packages
 
 Before beginning any new scientific-contract package, read and follow

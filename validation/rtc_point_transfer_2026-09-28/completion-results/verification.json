@@ -1,0 +1,59 @@
+{
+  "storage": {
+    "prior": [
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-retained-residuals-20260928",
+        "bytes": 291593819
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928",
+        "bytes": 1564657393
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-20260928",
+        "bytes": 284278
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-build-repair-20260929",
+        "bytes": 274383180
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-runtime-repair-20260929",
+        "bytes": 491641929
+      }
+    ],
+    "prior_bytes": 2622560599,
+    "native_cells": 15912679,
+    "ceiling_bytes": 30000000000,
+    "completed_role_maximum_bytes": 2700000000,
+    "active_reservation_bytes": 6837454416,
+    "campaign_metadata_maximum_bytes": 100000000,
+    "compact_report_maximum_bytes": 1000000000,
+    "peak_bound_bytes": 28460015015,
+    "final_bound_bytes": 25322560599,
+    "free_space_reserve_bytes": 2000000000,
+    "qualification": "Enforced admission budget, not a prediction or promise that every role will fit. Existing native reservation checks run before every stage. A completed role exceeding its cap ends the batch and preserves files; never delete to continue. No-applicable early exit is not assumed."
+  },
+  "cleanup": {
+    "manifest": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-runtime-repair-20260929/AUTHORIZED_SCRATCH_REMOVALS_20260930.json",
+      "sha256": "80d5c096239b8e546e373ab9c417abed2a4615bf779ea27b7dd947e12cfd3fc1"
+    },
+    "removed_files": 44934,
+    "removed_bytes": 3760231210,
+    "remaining_maps_preserved": true
+  },
+  "source_evolution_fixture": "six repetitions of saved M0 in temporary fixture; export/plot/manifest exercised, no trajectory or scientific comparison result claimed",
+  "saved_map_validation": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_point_transfer_2026-09-28/completion-results/saved-map-support.json",
+    "sha256": "fc89f6349a5f4c9d4e0e259bec4c225a1adba065246a2e8b915c762a2d89d425"
+  },
+  "focused_tests": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_point_transfer_2026-09-28/completion-results/focused.log",
+    "sha256": "cd313f0df9c28a248e486310772d3a03f4cdf3cffc1330cb9a8adbee0c486abf"
+  },
+  "runner_tests": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_point_transfer_2026-09-28/completion-results/runner.log",
+    "sha256": "34a43cbbe28d3f9277e943b29a94df0a198901d83fba4e3df8d3b299d0c8367e"
+  }
+}
