@@ -1,0 +1,19 @@
+{
+  "status": "DEFERRED_LINEAGE_FIRST",
+  "starts": 0,
+  "utc": "2026-09-30T20:32:27.862539+00:00",
+  "authority": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/point152420_amplitude_investigation_2026-09-30/APT_LINEAGE_DIRECTIVE.md",
+  "authority_sha256": "35ad8b3acf43f32464aa7436f2f9116addf7f9ac836d9955035497aabc2abeaf",
+  "freeze_sha256": "cbda6ed4e75cdadd6620e0877fc7f5841bfa261c1f672bc899aa668002c6ea67",
+  "previous_status": {
+    "status": "READY",
+    "starts": 0,
+    "roles": [
+      "M0-replay",
+      "common-current",
+      "common-historical-conversion"
+    ]
+  },
+  "process_check": "ps snapshot: no frozen_calibration/point_transfer/citlali process; exclusive lock acquired",
+  "reason": "Owner orders calibration origin and integration audit before map controls. Original freeze/readiness/review preserved. No additional numerical allowance."
+}

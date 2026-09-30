@@ -1,5 +1,22 @@
 # Citlali Refactor Status
 
+## 2026-09-30 — POINT152420 APT lineage reconstructed; absolute selection open
+
+The [lineage audit](../validation/point152420_amplitude_investigation_2026-09-30/APT_LINEAGE_ASSESSMENT.md)
+traces explicit canonical baseline148670 versus historical152307. Their recorded
+source fluxes divided by associated calibration amplitudes reproduce all1,342
+common valid network1–4 factor ratios to6.66e-16 relative. Hero geometry preserves
+historical factors. Ordinary matched POINT state is permitted; successor canonical
+admission executes and no missing/doubled correction is demonstrated. The guard
+verifies declared lineage, not scientific superiority of148670. That selection
+rationale and absolute calibration remain open, along with map-response attribution.
+A regression covers permitted alternative parents and rejection of copied factors
+from the wrong declared parent. All1,321 enabled CTests,207 baseline tests and full
+config gate pass. Three prepared M0 controls are deferred with their original
+freeze preserved; zero new starts. No production algorithm or authoritative input
+changed. The [resume record](../validation/point152420_amplitude_investigation_2026-09-30/RESUME.md)
+supersedes the earlier ready-to-launch instruction.
+
 ## 2026-09-30 — POINT152420 calibration discrepancy investigation
 
 The owner opened a separate [amplitude investigation](../validation/point152420_amplitude_investigation_2026-09-30/ASSESSMENT.md),

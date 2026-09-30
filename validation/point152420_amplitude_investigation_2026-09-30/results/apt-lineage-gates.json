@@ -1,0 +1,138 @@
+{
+  "base_source": "8fe1b89cdbbfc66056c7a69c759476ac00df5dbb",
+  "environment": "local AppleClang/Homebrew; Python /Users/gwilson/tolteca/bin/python; not accepted Unity Spack reproduction",
+  "tests": {
+    "focused_passed": 12,
+    "ctest_enabled_passed": 1321,
+    "ctest_failed": 0,
+    "ctest_disabled": [
+      "citlali::MapFitterLifecycle.ExactProductSequence (pre-existing)"
+    ],
+    "baseline_passed": 207,
+    "config_require_all": "passed",
+    "canonical_actual_bundles": 2,
+    "new_observation_starts": 0
+  },
+  "logs": {
+    "build": {
+      "sha256": "d31382aa8d4d16ac0ae50bd992a8dca24591fcf731b481a80b42bdab0d34ad92",
+      "bytes": 1459,
+      "tail": [
+        "[ 89%] Linking CXX static library lib/libcitlali.a",
+        "[ 97%] Built target citlali",
+        "[ 97%] Building CXX object CMakeFiles/citlali_rtc_execution.dir/src/citlali/cli/rtc_pipeline_execution.cpp.o",
+        "[ 97%] Linking CXX static library lib/libcitlali_rtc_execution.a",
+        "[ 97%] Built target citlali_rtc_execution",
+        "[100%] Building CXX object CMakeFiles/citlali_cli.dir/src/citlali/cli/canonical_apt_contract_protocol_v1.cpp.o",
+        "[100%] Building CXX object CMakeFiles/citlali_cli.dir/src/citlali/cli/main.cpp.o",
+        "Elapsed time (seconds): 3.69413",
+        "Elapsed time (seconds): 6.92744",
+        "[100%] Linking CXX executable bin/citlali",
+        "ld: warning: ignoring duplicate libraries: 'lib/libcitlali.a'",
+        "[100%] Built target citlali_cli"
+      ]
+    },
+    "test-build": {
+      "sha256": "5a31f1766fd96d7eb161287978273ef36c6987b64a4067e86fc0984f7745f0ac",
+      "bytes": 937,
+      "tail": [
+        "[ 18%] Built target gitversion_header_citlali_buildtime_refresh",
+        "[ 21%] Built target spdlog",
+        "[ 30%] Built target yaml-cpp",
+        "[ 30%] Built target gitversion_header_citlali",
+        "[ 32%] Built target gtest_main",
+        "[ 32%] Built target gmock",
+        "[ 78%] Built target ceres",
+        "[ 81%] Built target kids",
+        "[ 89%] Built target citlali",
+        "[ 89%] Building CXX object tests/CMakeFiles/citlali_test.dir/test_canonical_apt_v2.cpp.o",
+        "[ 89%] Linking CXX executable citlali_test",
+        "[100%] Built target citlali_test"
+      ]
+    },
+    "focused": {
+      "sha256": "256728a2abad2a0164178f6d740948f07d1b15c39e895b9e3a83725c06afb87a",
+      "bytes": 3478,
+      "tail": [
+        "      Start 683: citlali::sci_align::sci_align_canonical_apt_relation_v2.binds_exact_verified_identities_flags_and_distinct_ranks",
+        " 9/12 Test #683: citlali::sci_align::sci_align_canonical_apt_relation_v2.binds_exact_verified_identities_flags_and_distinct_ranks ..............   Passed    0.01 sec",
+        "      Start 684: citlali::sci_align::sci_align_canonical_apt_relation_v2.presentation_permutation_preserves_columns_and_large_int64_identity",
+        "10/12 Test #684: citlali::sci_align::sci_align_canonical_apt_relation_v2.presentation_permutation_preserves_columns_and_large_int64_identity ...   Passed    0.01 sec",
+        "      Start 685: citlali::sci_align::sci_align_canonical_apt_relation_v2.rejects_missing_or_substituted_flag_and_invalid_joins",
+        "11/12 Test #685: citlali::sci_align::sci_align_canonical_apt_relation_v2.rejects_missing_or_substituted_flag_and_invalid_joins .................   Passed    0.01 sec",
+        "      Start 686: citlali::sci_align::sci_align_canonical_apt_relation_v2.calib_publication_is_atomic_and_values_only_discards_relation",
+        "12/12 Test #686: citlali::sci_align::sci_align_canonical_apt_relation_v2.calib_publication_is_atomic_and_values_only_discards_relation .........   Passed    0.13 sec",
+        "",
+        "100% tests passed, 0 tests failed out of 12",
+        "",
+        "Total Test time (real) =   2.43 sec"
+      ]
+    },
+    "ctest": {
+      "sha256": "5ee0edb2b9d1504a2e49f39b499dabb9b59b4bba1110d6f5c5e1c994199b568d",
+      "bytes": 429219,
+      "tail": [
+        "1318/1322 Test  #685: citlali::sci_align::sci_align_canonical_apt_relation_v2.rejects_missing_or_substituted_flag_and_invalid_joins ..........................................................   Passed    0.02 sec",
+        "1319/1322 Test  #684: citlali::sci_align::sci_align_canonical_apt_relation_v2.presentation_permutation_preserves_columns_and_large_int64_identity ............................................   Passed    0.02 sec",
+        "1320/1322 Test   #71: citlali::canonical_apt_v2.publication_is_no_replace_receipt_last_relocatable_and_tamper_evident ........................................................................   Passed    0.08 sec",
+        "1321/1322 Test   #74: citlali::canonical_apt_v2.public_protocol_issues_and_rereads_tolproj_matched_bundle ....................................................................................   Passed    0.18 sec",
+        "1322/1322 Test  #686: citlali::sci_align::sci_align_canonical_apt_relation_v2.calib_publication_is_atomic_and_values_only_discards_relation ..................................................   Passed    0.19 sec",
+        "",
+        "100% tests passed, 0 tests failed out of 1321",
+        "",
+        "Total Test time (real) =  13.55 sec",
+        "",
+        "The following tests did not run:",
+        "\t554 - citlali::MapFitterLifecycle.ExactProductSequence (Disabled)"
+      ]
+    },
+    "baseline": {
+      "sha256": "6fc213925c8cfe2644019a1436f475e3875a279bd759745feda69bbf779dc3b5",
+      "bytes": 308,
+      "tail": [
+        "...............................................................................................................................................................................................................",
+        "----------------------------------------------------------------------",
+        "Ran 207 tests in 23.738s",
+        "",
+        "OK"
+      ]
+    },
+    "config": {
+      "sha256": "dac874dd8b9b082f20aa56a6a61b2093ba4e7919db5cb0d00c340e15b797fc1d",
+      "bytes": 12052,
+      "tail": [
+        "- Known typed gaps: `none`",
+        "+ /Users/gwilson/tolteca/bin/python tools/config/audit_beammap_boundary.py --json-out /private/tmp/citlali_config_preflight/beammap_boundary.json --markdown-out /private/tmp/citlali_config_preflight/beammap_boundary.md --fail-on-drift",
+        "beammap config boundary: paths=74 defaults=True typed_model=True readers=74/74 serializer=74/74 plan=wired-realized-provenance literal_boundary=True authority=True provenance=required-atomic-v2 drift=False",
+        "+ /Users/gwilson/tolteca/bin/python tools/config/audit_kids_external_boundary.py --json-out /private/tmp/citlali_config_preflight/kids_external_boundary.json --markdown-out /private/tmp/citlali_config_preflight/kids_external_boundary.md --fail-on-drift",
+        "KIDs external boundary: types=4 provenance=required-atomic-v1 drift=False",
+        "+ /Users/gwilson/tolteca/bin/python tools/config/audit_config_source_manifest.py --json-out /private/tmp/citlali_config_preflight/config_source_manifest.json --markdown-out /private/tmp/citlali_config_preflight/config_source_manifest.md --fail-on-drift",
+        "config source manifest: drift=False",
+        "+ /Users/gwilson/tolteca/bin/python tools/config/audit_raw_timestream_boundary.py --json-out /private/tmp/citlali_config_preflight/raw_timestream_boundary.json --markdown-out /private/tmp/citlali_config_preflight/raw_timestream_boundary.md --fail-on-drift",
+        "raw config boundary: paths=171 raw=169 polarimetry=2 parser_retired=True typed_request_reads=1 typed_authority_inits=1 legacy_parser_calls=0 legacy_oracle_mirrors=0 polarimetry_reads=1 polarimetry_adapters=1 typed_reader_coverage=169/169 serialized=169/169 adapted=169/169 drift=False",
+        "+ /Users/gwilson/tolteca/bin/python tools/config/audit_raw_timestream_execution_reads.py --json-out /private/tmp/citlali_config_preflight/raw_timestream_execution_reads.json --markdown-out /private/tmp/citlali_config_preflight/raw_timestream_execution_reads.md --fail-on-drift --fail-on-review",
+        "raw execution read census: records=48 digest=c9d5084148eec6a435c8228b1c74722e1181e83c59048083ebfb6aaf1dce0d6c review_required=0 drift=False classifications={'executor_operation': 25, 'observation_state': 7, 'output_or_realized_state': 9, 'raw_policy_read': 3, 'separate_polarimetry_domain': 4}",
+        "config preflight reports written under /private/tmp/citlali_config_preflight"
+      ]
+    },
+    "audit": {
+      "sha256": "c63855209fb8d139677474bdb1aaebe19c80efed5ba21f051147ee2593b05213",
+      "bytes": 4128,
+      "tail": [
+        "      \"successor_cal_amp_over_own_gaussian_amp_quantiles\": [",
+        "        0.2642718044158505,",
+        "        0.8855218493024178,",
+        "        0.9912291554240062,",
+        "        1.0693750066215169,",
+        "        1.2109436403614013",
+        "      ],",
+        "      \"empirical_template_rows\": 345,",
+        "      \"max_abs_relative_ratio_residual\": 6.661338147750939e-16",
+        "    }",
+        "  ]",
+        "}"
+      ]
+    }
+  },
+  "initial_fixture_failures": "Duplicate rule from selecting sorted fields.back(), then missing mandatory copied flag; fixture corrected, full final suite passes; no production code changed."
+}

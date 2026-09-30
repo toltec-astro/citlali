@@ -147,6 +147,75 @@ MatchedFixture matched_fixture(const apt::VerifiedBundle &baseline) {
     return result;
 }
 
+// POINT152420 lineage audit: alternative intact beammap calibrations are
+// permitted. The guardian enforces the declared parent, not equality between
+// independently selected parents or absolute photometric accuracy.
+TEST(canonical_apt_v2, matched_flux_follows_selected_parent_not_another_valid_parent) {
+    const auto make_parent = [](double factor, const std::string &name) {
+        auto parent = baseline_fixture();
+        parent.apt.issuance = issuance("urn:baseline:" + name, "urn:event:" + name);
+        parent.apt.field_rules.push_back(
+            {20, "flxscale", apt::ValueType::float64, "mJy/beam/xs", true,
+             "producer", std::string("citlali:beammap-fit-v1"),
+             apt::FieldOperation::preserve_target, std::nullopt, "nan-token",
+             "nonidentity", "flux conversion scale"});
+        parent.apt.field_rules.push_back(
+            {21, "flag", apt::ValueType::int64, "N/A", false,
+             "producer", std::string("citlali:beammap-fit-v1"),
+             apt::FieldOperation::preserve_target, std::nullopt, "reject",
+             "nonidentity", "beammap fit quality flag"});
+        parent.apt.rows[0].fields.emplace("flag", std::int64_t{0});
+        parent.apt.rows[1].fields.emplace("flag", std::int64_t{0});
+        parent.apt.rows[0].fields.emplace("flxscale", factor);
+        parent.apt.rows[1].fields.emplace("flxscale", factor * 2.0);
+        auto prepared = apt::prepare_baseline_bundle(parent.apt, parent.sources);
+        return apt::verify_bundle_payload(std::move(prepared.payload));
+    };
+    const auto first = make_parent(2.0, "first");
+    const auto second = make_parent(0.84, "second");
+    EXPECT_NE(first.identity.semantic_sha256, second.identity.semantic_sha256);
+    const auto make_child = [](const apt::VerifiedBundle &parent, double factor) {
+        auto child = matched_fixture(parent);
+        auto rule = *std::find_if(parent.apt.field_rules.begin(),
+                                 parent.apt.field_rules.end(),
+                                 [](const auto &field) { return field.name == "flxscale"; });
+        rule.operation = apt::FieldOperation::copy_seed_or_null;
+        rule.missing_policy = "typed-null";
+        child.apt.field_rules.push_back(rule);
+        auto flag = *std::find_if(parent.apt.field_rules.begin(), parent.apt.field_rules.end(),
+                                  [](const auto &field) { return field.name == "flag"; });
+        flag.operation = apt::FieldOperation::copy_seed_or_null;
+        flag.nullable = true;
+        flag.missing_policy = "typed-null";
+        child.apt.field_rules.push_back(flag);
+        child.apt.rows[0].fields.emplace("flag", std::int64_t{0});
+        child.apt.rows[1].fields.emplace("flag", apt::NullValue{});
+        child.apt.rows[0].fields.emplace("flxscale", factor);
+        child.apt.rows[1].fields.emplace("flxscale", apt::NullValue{});
+        return child;
+    };
+    TemporaryDirectory temporary;
+    for (const auto *parent : {&first, &second}) {
+        const double factor = parent == &first ? 2.0 : 0.84;
+        auto child = make_child(*parent, factor);
+        auto prepared = apt::prepare_matched_bundle(
+            child.apt, child.relation, child.sources, {}, *parent);
+        const auto folder = temporary.path / (parent == &first ? "first" : "second");
+        ASSERT_TRUE(std::filesystem::create_directory(folder));
+        const auto manifest = folder / apt::root_manifest_name_v2;
+        (void)apt::publish_prepared_bundle(manifest, prepared);
+        const auto verified = apt::verify_bundle_filesystem(manifest, true);
+        EXPECT_EQ(verified.manifest.baseline_parent, parent->identity);
+        EXPECT_NO_THROW(citlali::pipeline::admit_canonical_apt_detector_relation_v2(verified));
+    }
+    // Both parents above are fully verified. Copying the first parent's value
+    // while declaring the second is a contract error, not permitted variation.
+    auto stale = make_child(second, 2.0);
+    EXPECT_THROW(apt::prepare_matched_bundle(
+                     stale.apt, stale.relation, stale.sources, {}, second),
+                 std::exception);
+}
+
 TEST(canonical_apt_v2, private_lexical_vector_matches_python) {
     apt::detail::FlatComponent document;
     document.schema = "citlali-canonical-apt-v2-lexical-vector-v1";

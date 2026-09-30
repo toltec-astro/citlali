@@ -1,0 +1,1071 @@
+{
+  "schema": "point152420-apt-lineage-audit-v1",
+  "inputs": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/sha256-8dd226355eafbbf9b803d1a8001a31a9e852b956040d64e0495d7db2da5974d4.apt.ecsv",
+      "bytes": 3276105,
+      "sha256": "8dd226355eafbbf9b803d1a8001a31a9e852b956040d64e0495d7db2da5974d4"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/sha256-a90f2ac296f66a121351c4bd07f43f6de4cf3ca1dd9e80743b102c0eea20d15c.baseline-apt.ecsv",
+      "bytes": 3150931,
+      "sha256": "a90f2ac296f66a121351c4bd07f43f6de4cf3ca1dd9e80743b102c0eea20d15c"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/sha256-5fccd008cdef072985e4ad3beb6dc4e994e791c3da645c60cd6d84bed0e10419.relation.ecsv",
+      "bytes": 1587346,
+      "sha256": "5fccd008cdef072985e4ad3beb6dc4e994e791c3da645c60cd6d84bed0e10419"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/sha256-4b20cc8b2410124cc1151cb170806e7047e87ea80603e352a3c16f5c1084c154.fields.ecsv",
+      "bytes": 11158,
+      "sha256": "4b20cc8b2410124cc1151cb170806e7047e87ea80603e352a3c16f5c1084c154"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/sha256-d02dc1a9cdbf9d0cf1fd15420f56cf5cf72f979bcbbba836d6b17a58df955b3b.exceptions.ecsv",
+      "bytes": 3274,
+      "sha256": "d02dc1a9cdbf9d0cf1fd15420f56cf5cf72f979bcbbba836d6b17a58df955b3b"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/sha256-0d3d7a0b28302a27f152fd221bb0ec431df8994fa88b586a322f0b44228930de.baseline-manifest.ecsv",
+      "bytes": 3373,
+      "sha256": "0d3d7a0b28302a27f152fd221bb0ec431df8994fa88b586a322f0b44228930de"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/_apt_library/raw/3c273/152307/apt_commissioning_beammap_152307_citlali.ecsv",
+      "bytes": 5113159,
+      "sha256": "0f7bb194dc8a74046b70e0f738eb3b4d5f5f47e9b73d462c82a5b95afd640e0c"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/apts/apt_152420_matched.ecsv",
+      "bytes": 6794124,
+      "sha256": "54237e7b50776d642424f6967c1d94323c600c2d7e60a0759571eb3ec7a64988"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/apts/hero/apt_152420_matched.ecsv",
+      "bytes": 7928974,
+      "sha256": "5664ced88d12ad12f5e412d3ed41e6a50471f4a510ba58d6ce6ea70fe3affa44"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/requests/apt_152420_matched_match_request.json",
+      "bytes": 2356156,
+      "sha256": "8162aedef44f167c4afda86ef01ba476101688f5f23991769050402b14b50580"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/logs/matchapts-v2.log",
+      "bytes": 9950,
+      "sha256": "ecbbbb52d87769e671251766a5c4a983abc32775f55837301546356f0b8f54ae"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/logs/matchapts-v2-63731641.out",
+      "bytes": 3062,
+      "sha256": "6ccb1b5a477ab415cf8e5c21c5e001a7050d100212e222d2d0a657fa3f7a9fd6"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched_match_report.json",
+      "bytes": 3109,
+      "sha256": "71620e47be445e582753ec477de40c9d3e1495c34a2a2982323eb644840b6ea7"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/project.yaml",
+      "bytes": 14596,
+      "sha256": "c69ea10e940d7df0fde9897c5ce4c6b37d519817cf36a07e453a774d467b254f"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/_apt_library/library_manifest.json",
+      "bytes": 48996,
+      "sha256": "288798c1b21e11cd7211dbedea207a7b4d8fc1b3960797b4977481040d23f7a2"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/pointings/72_reduce.yaml",
+      "bytes": 2475,
+      "sha256": "4dd21853b57404acdd3bbb3222703e20f8ea86dd256818d976d63494644d438c"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/apts/hero/hero_apply_summary.yaml",
+      "bytes": 54694,
+      "sha256": "efe327f977facf0cf9927364b251a8548b732b3cac8dfb94aa27a1df7419496a"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/beammaps/3c273/reduced/redu00/beammap_provenance.yaml",
+      "bytes": 7664,
+      "sha256": "f9f39e9e1917a57a5014e701519791df546885f844b7ef6ff933ccf97b4cec45"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/beammaps/3c273/reduced/redu00/citlali_o148670_0_2_c1.yaml",
+      "bytes": 16666,
+      "sha256": "766defb39f872bd82db300066fce8744c0f70ac53b334df4c3d7b350668c023a"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/point152420_amplitude_investigation_2026-09-30/results/calibration-audit.json",
+      "bytes": 1105784,
+      "sha256": "b1e6cf84ad38e944760633584c63ad13faea7144580d6d1ef50671391623fccf"
+    }
+  ],
+  "producer_sources": [
+    {
+      "repository": "/Users/gwilson/GitHub/tolproj",
+      "revision": "5fc334cd3d9313106246b0de68b0f7a07ab86909",
+      "path": "tolproj/matched_apt_v2.py",
+      "sha256": "62e3ecb71196f206a7d969b0a5eee7f040bfd21af8dc07c0e3853061c6235e79"
+    },
+    {
+      "repository": "/Users/gwilson/GitHub/tolproj",
+      "revision": "5fc334cd3d9313106246b0de68b0f7a07ab86909",
+      "path": "tolproj/legacy_scripts/make_matched_apt.py",
+      "sha256": "9701592d54078cb413397181f95666caeed43931e298f0bb3ddbb50cef34087e"
+    }
+  ],
+  "runtime_inputs": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/freeze/prospective.json",
+      "bytes": 5941,
+      "sha256": "a223386c4c5a535853054b49e84f8a7bbfb81eefd5f8dd780d19d1a78b759494"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/freeze/generated-inputs.json",
+      "bytes": 2200,
+      "sha256": "aed5fd9d537102a6cd9344d9765efd7c2a7ae97da62e88170a5d45a20b4d824c"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/upstream/RUN.json",
+      "bytes": 26840,
+      "sha256": "9d41009da442130d76d656597a898b365ac7201d6cf91ea2b88bc41cf236d39d"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/upstream/development.yaml",
+      "bytes": 467,
+      "sha256": "b6a980b35ffef07da1a8ffbd2e6507519c74f16fbede966b5e10e4d1e5694012"
+    }
+  ],
+  "runtime": {
+    "command": [
+      "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali",
+      "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/upstream/development.yaml"
+    ],
+    "executable_sha256": "1d08e7fef43e9299c028b5de22d8b3b4338c586e67f784a015b65ca9b5a62a6d",
+    "version": "** logging ** Configured with level=trace; available levels: [\"trace\", \"debug\", \"info\", \"warning\", \"error\", \"critical\", \"off\"].\nv2-ngc4449-memory-repair-187df04b-641-g518e05891 (2026-09-30T08:49:14)\nkids 04088da-dirty (2026-09-30T08:49:09)\n",
+    "input_sha256": "8643c670796b23b9806d25730b69f1df1230ba2bb75fe9f518df9f44471a8e90",
+    "workers": 2,
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "VECLIB_MAXIMUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "BLIS_NUM_THREADS": "1",
+      "OMP_DYNAMIC": "FALSE"
+    }
+  },
+  "source_flux_ratio": 0.8025977394937792,
+  "counts": {
+    "target_rows": 5518,
+    "historical_recorded_matches": 5031,
+    "historical_no_recorded_match": 487,
+    "successor_recorded_matches": 4806,
+    "successor_unmatched": 712,
+    "representatives": 20
+  },
+  "identity_scope": "Same 152420/0/2 acquisition and 152420/0/1 Tune. Each target has its own recorded source association; no cross-observation channel identity assertion.",
+  "tolerance": "8 binary64 epsilons for reconstructed ratios; exact selected-parent factors and successor S/cal_amp; legacy source division up to 7e-16 relative.",
+  "historical_limit": "Recorded row association and copied fields verified; original matcher executable/ambiguity decision receipt unavailable. Do not promote it to a v2 verified relation.",
+  "per_network": [
+    {
+      "network": 0,
+      "supported_common_rows": 227,
+      "factor_ratio_quantiles": [
+        0.21638410991404675,
+        0.46055627328845633,
+        0.7431827751406311,
+        1.2507181751246714,
+        3.647406234023958
+      ],
+      "successor_cal_amp_over_historical_amp_quantiles": [
+        0.22004616102449404,
+        0.6417138805658016,
+        1.0799466380822744,
+        1.7431358968936708,
+        3.7091343713389664
+      ],
+      "successor_cal_amp_over_own_gaussian_amp_quantiles": [
+        0.6206433486212843,
+        0.8652686104075269,
+        0.9540669780502067,
+        1.025160210247327,
+        1.1535259767795571
+      ],
+      "empirical_template_rows": 227,
+      "max_abs_relative_ratio_residual": 6.661338147750939e-16
+    },
+    {
+      "network": 1,
+      "supported_common_rows": 310,
+      "factor_ratio_quantiles": [
+        0.0603024790199055,
+        0.25870233764415723,
+        0.4205351615916042,
+        0.6531441427099405,
+        1.413520242735725
+      ],
+      "successor_cal_amp_over_historical_amp_quantiles": [
+        0.5678006690165488,
+        1.2288262274960142,
+        1.9085166329404089,
+        3.102434366930034,
+        13.30953142455133
+      ],
+      "successor_cal_amp_over_own_gaussian_amp_quantiles": [
+        0.561362689537902,
+        0.8880770373660917,
+        0.9611191327065253,
+        1.0430902661592771,
+        1.169667965173405
+      ],
+      "empirical_template_rows": 310,
+      "max_abs_relative_ratio_residual": 6.661338147750939e-16
+    },
+    {
+      "network": 2,
+      "supported_common_rows": 327,
+      "factor_ratio_quantiles": [
+        0.04543933231175885,
+        0.27155494424121623,
+        0.44644891471741616,
+        0.6734158780239898,
+        1.5237260750145785
+      ],
+      "successor_cal_amp_over_historical_amp_quantiles": [
+        0.526733612198702,
+        1.1918412682758772,
+        1.7977370154473113,
+        2.9555654972535885,
+        17.66306190388457
+      ],
+      "successor_cal_amp_over_own_gaussian_amp_quantiles": [
+        0.7589553705592623,
+        0.9070258419976515,
+        0.9715908685694927,
+        1.044532752078678,
+        1.171900907079983
+      ],
+      "empirical_template_rows": 327,
+      "max_abs_relative_ratio_residual": 6.661338147750939e-16
+    },
+    {
+      "network": 3,
+      "supported_common_rows": 360,
+      "factor_ratio_quantiles": [
+        0.08411745698600516,
+        0.3110407741138946,
+        0.4471234313042643,
+        0.6482145833268483,
+        1.688830694754649
+      ],
+      "successor_cal_amp_over_historical_amp_quantiles": [
+        0.47523872107877546,
+        1.2381687228746119,
+        1.7950255019289265,
+        2.5803626229936882,
+        9.541393288046136
+      ],
+      "successor_cal_amp_over_own_gaussian_amp_quantiles": [
+        0.6394480322533274,
+        0.8826869551185126,
+        0.9922114066637919,
+        1.0569409790209094,
+        1.345092735662173
+      ],
+      "empirical_template_rows": 360,
+      "max_abs_relative_ratio_residual": 6.661338147750939e-16
+    },
+    {
+      "network": 4,
+      "supported_common_rows": 345,
+      "factor_ratio_quantiles": [
+        0.021906605961986538,
+        0.18898317701915615,
+        0.4003555273494637,
+        0.5848410110825734,
+        16.922288909851602
+      ],
+      "successor_cal_amp_over_historical_amp_quantiles": [
+        0.04742843853862658,
+        1.3723469221852664,
+        2.0047125234097365,
+        4.2469269287325,
+        36.63724727082266
+      ],
+      "successor_cal_amp_over_own_gaussian_amp_quantiles": [
+        0.2642718044158505,
+        0.8855218493024178,
+        0.9912291554240062,
+        1.0693750066215169,
+        1.2109436403614013
+      ],
+      "empirical_template_rows": 345,
+      "max_abs_relative_ratio_residual": 6.661338147750939e-16
+    }
+  ],
+  "representatives": [
+    {
+      "network": 1,
+      "channel": 113,
+      "historical_seed_uid": 742,
+      "historical_seed_row": 742,
+      "successor_seed_uid": 726,
+      "successor_output_uid": 743,
+      "historical_amp_x": 1.573351495411429e-06,
+      "successor_cal_amp_x": 2.9890487611932606e-06,
+      "successor_gaussian_amp_x": 3.240428901622912e-06,
+      "successor_cal_amp_method": 1,
+      "historical_factor": 2476476436.723783,
+      "successor_factor": 1046224509.096768,
+      "factor_ratio": 0.4224649560893278,
+      "reconstructed_ratio": 0.42246495608932766,
+      "relative_ratio_residual": -4.440892098500626e-16,
+      "native_sample": {
+        "network": 1,
+        "channel": 113,
+        "slot": 3661,
+        "historical_row": 743,
+        "successor_row": 743,
+        "native_filtered_x": 1.1856702498107145e-05,
+        "historical_factor": 2476476436.723783,
+        "successor_factor": 1046224509.096768,
+        "actual_successor_CAL": 12817.992751629508,
+        "historical_independent_mJy": 29362.84435380636,
+        "inferred_applied_atmosphere": 1.0333113721104912,
+        "probe_multiplier_error": 0.0
+      },
+      "independently_reconstructed_historical_sample": 29362.844353806373,
+      "successor_source_only_sample": 12404.77275058857,
+      "atmosphere_scope": "Target atmosphere retained from prior actual-CAL audit; not an independent passband calculation"
+    },
+    {
+      "network": 1,
+      "channel": 370,
+      "historical_seed_uid": 991,
+      "historical_seed_row": 991,
+      "successor_seed_uid": 976,
+      "successor_output_uid": 1000,
+      "historical_amp_x": 8.120408638676572e-07,
+      "successor_cal_amp_x": 1.92290529457695e-06,
+      "successor_gaussian_amp_x": 2.020518619411469e-06,
+      "successor_cal_amp_method": 1,
+      "historical_factor": 4798241170.416697,
+      "successor_factor": 1626297499.75998,
+      "factor_ratio": 0.3389361730683384,
+      "reconstructed_ratio": 0.3389361730683384,
+      "relative_ratio_residual": 0.0,
+      "native_sample": {
+        "network": 1,
+        "channel": 370,
+        "slot": 3661,
+        "historical_row": 1000,
+        "successor_row": 1000,
+        "native_filtered_x": 4.56881191714105e-06,
+        "historical_factor": 4798241170.416697,
+        "successor_factor": 1626297499.75998,
+        "actual_successor_CAL": 7677.759133658552,
+        "historical_independent_mJy": 21922.261440716622,
+        "inferred_applied_atmosphere": 1.0333113721104912,
+        "probe_multiplier_error": 0.0
+      },
+      "independently_reconstructed_historical_sample": 21922.261440716622,
+      "successor_source_only_sample": 7430.24739772009,
+      "atmosphere_scope": "Target atmosphere retained from prior actual-CAL audit; not an independent passband calculation"
+    },
+    {
+      "network": 1,
+      "channel": 388,
+      "historical_seed_uid": 1010,
+      "historical_seed_row": 1010,
+      "successor_seed_uid": 995,
+      "successor_output_uid": 1018,
+      "historical_amp_x": 1.806762783565749e-06,
+      "successor_cal_amp_x": 2.611209947807044e-06,
+      "successor_gaussian_amp_x": 2.614965384371366e-06,
+      "successor_cal_amp_method": 1,
+      "historical_factor": 2156546471.13155,
+      "successor_factor": 1197611886.961457,
+      "factor_ratio": 0.555337852901943,
+      "reconstructed_ratio": 0.5553378529019429,
+      "relative_ratio_residual": -2.220446049250313e-16,
+      "native_sample": {
+        "network": 1,
+        "channel": 388,
+        "slot": 3646,
+        "historical_row": 1018,
+        "successor_row": 1018,
+        "native_filtered_x": -4.561186353617436e-06,
+        "historical_factor": 2156546471.13155,
+        "successor_factor": 1197611886.961457,
+        "actual_successor_CAL": -5644.493692423938,
+        "historical_independent_mJy": -9836.410335067063,
+        "inferred_applied_atmosphere": 1.0333110598049264,
+        "probe_multiplier_error": 0.0
+      },
+      "independently_reconstructed_historical_sample": -9836.410335067065,
+      "successor_source_only_sample": -5462.530995738624,
+      "atmosphere_scope": "Target atmosphere retained from prior actual-CAL audit; not an independent passband calculation"
+    },
+    {
+      "network": 1,
+      "channel": 416,
+      "historical_seed_uid": 1042,
+      "historical_seed_row": 1042,
+      "successor_seed_uid": 1021,
+      "successor_output_uid": 1046,
+      "historical_amp_x": 1.349791378135102e-06,
+      "successor_cal_amp_x": 9.667354717331714e-07,
+      "successor_gaussian_amp_x": 9.318187942699822e-07,
+      "successor_cal_amp_method": 1,
+      "historical_factor": 2886644534.990162,
+      "successor_factor": 3234820862.877021,
+      "factor_ratio": 1.120616280829342,
+      "reconstructed_ratio": 1.1206162808293416,
+      "relative_ratio_residual": -4.440892098500626e-16,
+      "native_sample": {
+        "network": 1,
+        "channel": 416,
+        "slot": 3804,
+        "historical_row": 1046,
+        "successor_row": 1046,
+        "native_filtered_x": -1.3897262938503603e-05,
+        "historical_factor": 2886644534.990162,
+        "successor_factor": 3234820862.877021,
+        "actual_successor_CAL": -46452.79071267147,
+        "historical_independent_mJy": -40116.45811275274,
+        "inferred_applied_atmosphere": 1.0333139677972019,
+        "probe_multiplier_error": 0.0
+      },
+      "independently_reconstructed_historical_sample": -40116.458112752756,
+      "successor_source_only_sample": -44955.156090359065,
+      "atmosphere_scope": "Target atmosphere retained from prior actual-CAL audit; not an independent passband calculation"
+    },
+    {
+      "network": 1,
+      "channel": 465,
+      "historical_seed_uid": 1091,
+      "historical_seed_row": 1091,
+      "successor_seed_uid": 1071,
+      "successor_output_uid": 1095,
+      "historical_amp_x": 1.096413856234524e-06,
+      "successor_cal_amp_x": 1.4592754673866901e-05,
+      "successor_gaussian_amp_x": 1.4480200350508379e-05,
+      "successor_cal_amp_method": 1,
+      "historical_factor": 3553738292.264973,
+      "successor_factor": 214299228.81154335,
+      "factor_ratio": 0.0603024790199055,
+      "reconstructed_ratio": 0.06030247901990548,
+      "relative_ratio_residual": -3.3306690738754696e-16,
+      "native_sample": {
+        "network": 1,
+        "channel": 465,
+        "slot": 3661,
+        "historical_row": 1095,
+        "successor_row": 1095,
+        "native_filtered_x": -3.5996011563807304e-05,
+        "historical_factor": 3553738292.264973,
+        "successor_factor": 214299228.81154335,
+        "actual_successor_CAL": -7970.87869530087,
+        "historical_independent_mJy": -127920.4046631148,
+        "inferred_applied_atmosphere": 1.0333113721104912,
+        "probe_multiplier_error": 0.0
+      },
+      "independently_reconstructed_historical_sample": -127920.40466311485,
+      "successor_source_only_sample": -7713.917518415302,
+      "atmosphere_scope": "Target atmosphere retained from prior actual-CAL audit; not an independent passband calculation"
+    },
+    {
+      "network": 2,
+      "channel": 2,
+      "historical_seed_uid": 1122,
+      "historical_seed_row": 1122,
+      "successor_seed_uid": 1106,
+      "successor_output_uid": 1126,
+      "historical_amp_x": 1.310354591785821e-06,
+      "successor_cal_amp_x": 8.5183641014879e-06,
+      "successor_gaussian_amp_x": 8.735601882718699e-06,
+      "successor_cal_amp_method": 1,
+      "historical_factor": 2973521769.981632,
+      "successor_factor": 367114628.535248,
+      "factor_ratio": 0.12346122104816999,
+      "reconstructed_ratio": 0.12346122104817,
+      "relative_ratio_residual": 2.220446049250313e-16,
+      "native_sample": {
+        "network": 2,
+        "channel": 2,
+        "slot": 3661,
+        "historical_row": 1126,
+        "successor_row": 1126,
+        "native_filtered_x": 1.1733458010725935e-05,
+        "historical_factor": 2973521769.981632,
+        "successor_factor": 367114628.535248,
+        "actual_successor_CAL": 4451.01359294809,
+        "historical_independent_mJy": 34889.69283205894,
+        "inferred_applied_atmosphere": 1.0333113666397509,
+        "probe_multiplier_error": 0.0
+      },
+      "independently_reconstructed_historical_sample": 34889.692832058936,
+      "successor_source_only_sample": 4307.524079041581,
+      "atmosphere_scope": "Target atmosphere retained from prior actual-CAL audit; not an independent passband calculation"
+    },
+    {
+      "network": 2,
+      "channel": 127,
+      "historical_seed_uid": 1243,
+      "historical_seed_row": 1243,
+      "successor_seed_uid": 1219,
+      "successor_output_uid": 1251,
+      "historical_amp_x": 1.947528298752413e-06,
+      "successor_cal_amp_x": 3.5620422786371287e-06,
+      "successor_gaussian_amp_x": 3.888737781293714e-06,
+      "successor_cal_amp_method": 1,
+      "historical_factor": 2000673318.876315,
+      "successor_factor": 877927836.9604934,
+      "factor_ratio": 0.43881618686932083,
+      "reconstructed_ratio": 0.43881618686932095,
+      "relative_ratio_residual": 2.220446049250313e-16,
+      "native_sample": {
+        "network": 2,
+        "channel": 127,
+        "slot": 3661,
+        "historical_row": 1251,
+        "successor_row": 1251,
+        "native_filtered_x": 5.976575339941189e-06,
+        "historical_factor": 2000673318.876315,
+        "successor_factor": 877927836.9604934,
+        "actual_successor_CAL": 5421.786663364762,
+        "historical_independent_mJy": 11957.174820874481,
+        "inferred_applied_atmosphere": 1.0333113666397509,
+        "probe_multiplier_error": 0.0
+      },
+      "independently_reconstructed_historical_sample": 11957.174820874478,
+      "successor_source_only_sample": 5247.001860625994,
+      "atmosphere_scope": "Target atmosphere retained from prior actual-CAL audit; not an independent passband calculation"
+    },
+    {
+      "network": 2,
+      "channel": 153,
+      "historical_seed_uid": 1268,
+      "historical_seed_row": 1268,
+      "successor_seed_uid": 1245,
+      "successor_output_uid": 1277,
+      "historical_amp_x": 2.267306015315639e-06,
+      "successor_cal_amp_x": 3.5411906102984204e-06,
+      "successor_gaussian_amp_x": 3.652752303074781e-06,
+      "successor_cal_amp_method": 1,
+      "historical_factor": 1718501110.459104,
+      "successor_factor": 883097358.2024119,
+      "factor_ratio": 0.5138765129843234,
+      "reconstructed_ratio": 0.5138765129843232,
+      "relative_ratio_residual": -2.220446049250313e-16,
+      "native_sample": {
+        "network": 2,
+        "channel": 153,
+        "slot": 3661,
+        "historical_row": 1277,
+        "successor_row": 1277,
+        "native_filtered_x": 1.0160471039053387e-05,
+        "historical_factor": 1718501110.459104,
+        "successor_factor": 883097358.2024119,
+        "actual_successor_CAL": 9271.57753687791,
+        "historical_independent_mJy": 17460.780763400813,
+        "inferred_applied_atmosphere": 1.0333113666397509,
+        "probe_multiplier_error": 0.0
+      },
+      "independently_reconstructed_historical_sample": 17460.780763400813,
+      "successor_source_only_sample": 8972.68513268016,
+      "atmosphere_scope": "Target atmosphere retained from prior actual-CAL audit; not an independent passband calculation"
+    },
+    {
+      "network": 2,
+      "channel": 177,
+      "historical_seed_uid": 1295,
+      "historical_seed_row": 1295,
+      "successor_seed_uid": 1272,
+      "successor_output_uid": 1301,
+      "historical_amp_x": 5.096764233227896e-06,
+      "successor_cal_amp_x": 3.145965783085092e-06,
+      "successor_gaussian_amp_x": 3.065650802954509e-06,
+      "successor_cal_amp_method": 1,
+      "historical_factor": 764478741.1723918,
+      "successor_factor": 994040078.1406517,
+      "factor_ratio": 1.30028478832022,
+      "reconstructed_ratio": 1.30028478832022,
+      "relative_ratio_residual": 0.0,
+      "native_sample": {
+        "network": 2,
+        "channel": 177,
+        "slot": 3661,
+        "historical_row": 1301,
+        "successor_row": 1301,
+        "native_filtered_x": 2.741496864179881e-05,
+        "historical_factor": 764478741.1723918,
+        "successor_factor": 994040078.1406517,
+        "actual_successor_CAL": 28159.36486289364,
+        "historical_independent_mJy": 20958.16071656295,
+        "inferred_applied_atmosphere": 1.0333113666397509,
+        "probe_multiplier_error": 0.0
+      },
+      "independently_reconstructed_historical_sample": 20958.16071656295,
+      "successor_source_only_sample": 27251.577570917205,
+      "atmosphere_scope": "Target atmosphere retained from prior actual-CAL audit; not an independent passband calculation"
+    },
+    {
+      "network": 2,
+      "channel": 493,
+      "historical_seed_uid": 1613,
+      "historical_seed_row": 1613,
+      "successor_seed_uid": 1585,
+      "successor_output_uid": 1617,
+      "historical_amp_x": 2.059941463727459e-06,
+      "successor_cal_amp_x": 4.506080343213337e-06,
+      "successor_gaussian_amp_x": 4.844074808245108e-06,
+      "successor_cal_amp_method": 1,
+      "historical_factor": 1891494478.692644,
+      "successor_factor": 693999182.1396749,
+      "factor_ratio": 0.3669052117029444,
+      "reconstructed_ratio": 0.3669052117029443,
+      "relative_ratio_residual": -1.1102230246251565e-16,
+      "native_sample": {
+        "network": 2,
+        "channel": 493,
+        "slot": 3661,
+        "historical_row": 1617,
+        "successor_row": 1617,
+        "native_filtered_x": 5.511544709808531e-06,
+        "historical_factor": 1891494478.692644,
+        "successor_factor": 693999182.1396749,
+        "actual_successor_CAL": 3952.4237488629883,
+        "historical_independent_mJy": 10425.056387670487,
+        "inferred_applied_atmosphere": 1.0333113666397509,
+        "probe_multiplier_error": 0.0
+      },
+      "independently_reconstructed_historical_sample": 10425.056387670487,
+      "successor_source_only_sample": 3825.0075209333722,
+      "atmosphere_scope": "Target atmosphere retained from prior actual-CAL audit; not an independent passband calculation"
+    },
+    {
+      "network": 3,
+      "channel": 91,
+      "historical_seed_uid": 1722,
+      "historical_seed_row": 1722,
+      "successor_seed_uid": 1701,
+      "successor_output_uid": 1725,
+      "historical_amp_x": 1.726118520273083e-06,
+      "successor_cal_amp_x": 3.703555922149922e-06,
+      "successor_gaussian_amp_x": 3.797665607549122e-06,
+      "successor_cal_amp_method": 1,
+      "historical_factor": 2257300329.790855,
+      "successor_factor": 844382031.3722619,
+      "factor_ratio": 0.3740672077297292,
+      "reconstructed_ratio": 0.3740672077297292,
+      "relative_ratio_residual": 0.0,
+      "native_sample": {
+        "network": 3,
+        "channel": 91,
+        "slot": 3660,
+        "historical_row": 1725,
+        "successor_row": 1725,
+        "native_filtered_x": -2.2755457718602058e-06,
+        "historical_factor": 2257300329.790855,
+        "successor_factor": 844382031.3722619,
+        "actual_successor_CAL": -1985.4353996634782,
+        "historical_independent_mJy": -5136.590221274228,
+        "inferred_applied_atmosphere": 1.0333113564521996,
+        "probe_multiplier_error": 0.0
+      },
+      "independently_reconstructed_historical_sample": -5136.590221274228,
+      "successor_source_only_sample": -1921.4299613238823,
+      "atmosphere_scope": "Target atmosphere retained from prior actual-CAL audit; not an independent passband calculation"
+    },
+    {
+      "network": 3,
+      "channel": 92,
+      "historical_seed_uid": 1723,
+      "historical_seed_row": 1723,
+      "successor_seed_uid": 1702,
+      "successor_output_uid": 1726,
+      "historical_amp_x": 2.334134365003407e-06,
+      "successor_cal_amp_x": 3.5456455805036506e-06,
+      "successor_gaussian_amp_x": 3.6391779205616245e-06,
+      "successor_cal_amp_method": 1,
+      "historical_factor": 1669298890.196857,
+      "successor_factor": 881987779.6137503,
+      "factor_ratio": 0.5283582136149023,
+      "reconstructed_ratio": 0.5283582136149023,
+      "relative_ratio_residual": 0.0,
+      "native_sample": {
+        "network": 3,
+        "channel": 92,
+        "slot": 4254,
+        "historical_row": 1726,
+        "successor_row": 1726,
+        "native_filtered_x": -1.9222065118096553e-05,
+        "historical_factor": 1669298890.196857,
+        "successor_factor": 881987779.6137503,
+        "actual_successor_CAL": -17518.572639664708,
+        "historical_independent_mJy": -32087.371968930292,
+        "inferred_applied_atmosphere": 1.0333230241600984,
+        "probe_multiplier_error": 0.0
+      },
+      "independently_reconstructed_historical_sample": -32087.371968930292,
+      "successor_source_only_sample": -16953.6265331009,
+      "atmosphere_scope": "Target atmosphere retained from prior actual-CAL audit; not an independent passband calculation"
+    },
+    {
+      "network": 3,
+      "channel": 98,
+      "historical_seed_uid": 1729,
+      "historical_seed_row": 1729,
+      "successor_seed_uid": 1708,
+      "successor_output_uid": 1732,
+      "historical_amp_x": 1.203237382705583e-06,
+      "successor_cal_amp_x": 6.552451215594411e-06,
+      "successor_gaussian_amp_x": 6.796681767784382e-06,
+      "successor_cal_amp_method": 1,
+      "historical_factor": 3238237076.967484,
+      "successor_factor": 477258963.088981,
+      "factor_ratio": 0.14738234160913266,
+      "reconstructed_ratio": 0.14738234160913266,
+      "relative_ratio_residual": 0.0,
+      "native_sample": {
+        "network": 3,
+        "channel": 98,
+        "slot": 3660,
+        "historical_row": 1732,
+        "successor_row": 1732,
+        "native_filtered_x": 1.2281449438949842e-05,
+        "historical_factor": 3238237076.967484,
+        "successor_factor": 477258963.088981,
+        "actual_successor_CAL": 6056.6840692879005,
+        "historical_independent_mJy": 39770.244932108886,
+        "inferred_applied_atmosphere": 1.0333113564521996,
+        "probe_multiplier_error": 0.0
+      },
+      "independently_reconstructed_historical_sample": 39770.244932108886,
+      "successor_source_only_sample": 5861.4318244629485,
+      "atmosphere_scope": "Target atmosphere retained from prior actual-CAL audit; not an independent passband calculation"
+    },
+    {
+      "network": 3,
+      "channel": 129,
+      "historical_seed_uid": 1759,
+      "historical_seed_row": 1759,
+      "successor_seed_uid": 1738,
+      "successor_output_uid": 1763,
+      "historical_amp_x": 1.715255046966536e-06,
+      "successor_cal_amp_x": 3.0601676035110512e-06,
+      "successor_gaussian_amp_x": 2.996094832558485e-06,
+      "successor_cal_amp_method": 1,
+      "historical_factor": 2271596817.02225,
+      "successor_factor": 1021910064.4218777,
+      "factor_ratio": 0.4498641910237666,
+      "reconstructed_ratio": 0.4498641910237667,
+      "relative_ratio_residual": 2.220446049250313e-16,
+      "native_sample": {
+        "network": 3,
+        "channel": 129,
+        "slot": 3660,
+        "historical_row": 1763,
+        "successor_row": 1763,
+        "native_filtered_x": 1.062921225493317e-05,
+        "historical_factor": 2271596817.02225,
+        "successor_factor": 1021910064.4218777,
+        "actual_successor_CAL": 11223.930231140837,
+        "historical_independent_mJy": 24145.284725760084,
+        "inferred_applied_atmosphere": 1.0333113564521996,
+        "probe_multiplier_error": 0.0
+      },
+      "independently_reconstructed_historical_sample": 24145.28472576008,
+      "successor_source_only_sample": 10862.098980192568,
+      "atmosphere_scope": "Target atmosphere retained from prior actual-CAL audit; not an independent passband calculation"
+    },
+    {
+      "network": 3,
+      "channel": 221,
+      "historical_seed_uid": 1855,
+      "historical_seed_row": 1855,
+      "successor_seed_uid": 1833,
+      "successor_output_uid": 1855,
+      "historical_amp_x": 4.333711583857247e-06,
+      "successor_cal_amp_x": 2.0595475506365925e-06,
+      "successor_gaussian_amp_x": 2.110701144915076e-06,
+      "successor_cal_amp_method": 1,
+      "historical_factor": 899083344.5364045,
+      "successor_factor": 1518399549.3957493,
+      "factor_ratio": 1.688830694754649,
+      "reconstructed_ratio": 1.688830694754649,
+      "relative_ratio_residual": 0.0,
+      "native_sample": {
+        "network": 3,
+        "channel": 221,
+        "slot": 3660,
+        "historical_row": 1855,
+        "successor_row": 1855,
+        "native_filtered_x": 3.742319027913264e-05,
+        "historical_factor": 899083344.5364045,
+        "successor_factor": 1518399549.3957493,
+        "actual_successor_CAL": 58716.21829855516,
+        "historical_independent_mJy": 33646.56707938483,
+        "inferred_applied_atmosphere": 1.0333113564521996,
+        "probe_multiplier_error": 0.0
+      },
+      "independently_reconstructed_historical_sample": 33646.56707938483,
+      "successor_source_only_sample": 56823.35525678638,
+      "atmosphere_scope": "Target atmosphere retained from prior actual-CAL audit; not an independent passband calculation"
+    },
+    {
+      "network": 4,
+      "channel": 84,
+      "historical_seed_uid": 2244,
+      "historical_seed_row": 2244,
+      "successor_seed_uid": 2206,
+      "successor_output_uid": 2251,
+      "historical_amp_x": 1.922653140395833e-06,
+      "successor_cal_amp_x": 3.882789934449837e-06,
+      "successor_gaussian_amp_x": 3.822792476951618e-06,
+      "successor_cal_amp_method": 1,
+      "historical_factor": 2026557897.108968,
+      "successor_factor": 805404393.6551065,
+      "factor_ratio": 0.39742481317907297,
+      "reconstructed_ratio": 0.39742481317907297,
+      "relative_ratio_residual": 0.0,
+      "native_sample": {
+        "network": 4,
+        "channel": 84,
+        "slot": 3620,
+        "historical_row": 2251,
+        "successor_row": 2251,
+        "native_filtered_x": 1.6228681134346846e-05,
+        "historical_factor": 2026557897.108968,
+        "successor_factor": 805404393.6551065,
+        "actual_successor_CAL": 13506.040212034772,
+        "historical_independent_mJy": 32888.36191247393,
+        "inferred_applied_atmosphere": 1.033310438802558,
+        "probe_multiplier_error": 0.0
+      },
+      "independently_reconstructed_historical_sample": 32888.36191247393,
+      "successor_source_only_sample": 13070.651088830688,
+      "atmosphere_scope": "Target atmosphere retained from prior actual-CAL audit; not an independent passband calculation"
+    },
+    {
+      "network": 4,
+      "channel": 109,
+      "historical_seed_uid": 2271,
+      "historical_seed_row": 2271,
+      "successor_seed_uid": 2229,
+      "successor_output_uid": 2276,
+      "historical_amp_x": 1.546324375426348e-06,
+      "successor_cal_amp_x": 2.5412343388818546e-06,
+      "successor_gaussian_amp_x": 2.631686038926684e-06,
+      "successor_cal_amp_method": 1,
+      "historical_factor": 2519761032.672228,
+      "successor_factor": 1230589412.789731,
+      "factor_ratio": 0.4883754438748029,
+      "reconstructed_ratio": 0.4883754438748029,
+      "relative_ratio_residual": 0.0,
+      "native_sample": {
+        "network": 4,
+        "channel": 109,
+        "slot": 3660,
+        "historical_row": 2276,
+        "successor_row": 2276,
+        "native_filtered_x": -2.7722322095322754e-05,
+        "historical_factor": 2519761032.672228,
+        "successor_factor": 1230589412.789731,
+        "actual_successor_CAL": -35251.20617927593,
+        "historical_independent_mJy": -69853.62695098258,
+        "inferred_applied_atmosphere": 1.03331135582768,
+        "probe_multiplier_error": 0.0
+      },
+      "independently_reconstructed_historical_sample": -69853.62695098258,
+      "successor_source_only_sample": -34114.79606845101,
+      "atmosphere_scope": "Target atmosphere retained from prior actual-CAL audit; not an independent passband calculation"
+    },
+    {
+      "network": 4,
+      "channel": 175,
+      "historical_seed_uid": 2333,
+      "historical_seed_row": 2333,
+      "successor_seed_uid": 2290,
+      "successor_output_uid": 2342,
+      "historical_amp_x": 1.952983237446063e-06,
+      "successor_cal_amp_x": 9.262694544417856e-08,
+      "successor_gaussian_amp_x": 1.017319646645152e-07,
+      "successor_cal_amp_method": 1,
+      "historical_factor": 1995085175.521453,
+      "successor_factor": 33761407739.93602,
+      "factor_ratio": 16.922288909851602,
+      "reconstructed_ratio": 16.92228890985161,
+      "relative_ratio_residual": 4.440892098500626e-16,
+      "native_sample": {
+        "network": 4,
+        "channel": 175,
+        "slot": 3660,
+        "historical_row": 2342,
+        "successor_row": 2342,
+        "native_filtered_x": 1.5427482478997313e-05,
+        "historical_factor": 1995085175.521453,
+        "successor_factor": 33761407739.93602,
+        "actual_successor_CAL": 538203.8635252983,
+        "historical_independent_mJy": 30779.141589464492,
+        "inferred_applied_atmosphere": 1.03331135582768,
+        "probe_multiplier_error": 0.0
+      },
+      "independently_reconstructed_historical_sample": 30779.14158946448,
+      "successor_source_only_sample": 520853.5263741472,
+      "atmosphere_scope": "Target atmosphere retained from prior actual-CAL audit; not an independent passband calculation"
+    },
+    {
+      "network": 4,
+      "channel": 208,
+      "historical_seed_uid": 2368,
+      "historical_seed_row": 2368,
+      "successor_seed_uid": 2323,
+      "successor_output_uid": 2375,
+      "historical_amp_x": 1.531709787062641e-06,
+      "successor_cal_amp_x": 4.003717780695044e-06,
+      "successor_gaussian_amp_x": 3.532558066718316e-06,
+      "successor_cal_amp_method": 1,
+      "historical_factor": 2543802969.714384,
+      "successor_factor": 781078048.9884675,
+      "factor_ratio": 0.30705131580067546,
+      "reconstructed_ratio": 0.30705131580067546,
+      "relative_ratio_residual": 0.0,
+      "native_sample": {
+        "network": 4,
+        "channel": 208,
+        "slot": 3660,
+        "historical_row": 2375,
+        "successor_row": 2375,
+        "native_filtered_x": 8.247696769267382e-06,
+        "historical_factor": 2543802969.714384,
+        "successor_factor": 781078048.9884675,
+        "actual_successor_CAL": 6656.689816717005,
+        "historical_independent_mJy": 20980.5155349661,
+        "inferred_applied_atmosphere": 1.03331135582768,
+        "probe_multiplier_error": 0.0
+      },
+      "independently_reconstructed_historical_sample": 20980.5155349661,
+      "successor_source_only_sample": 6442.094901187853,
+      "atmosphere_scope": "Target atmosphere retained from prior actual-CAL audit; not an independent passband calculation"
+    },
+    {
+      "network": 4,
+      "channel": 223,
+      "historical_seed_uid": 2385,
+      "historical_seed_row": 2385,
+      "successor_seed_uid": 2338,
+      "successor_output_uid": 2390,
+      "historical_amp_x": 3.971039718510166e-07,
+      "successor_cal_amp_x": 1.2019124606444816e-05,
+      "successor_gaussian_amp_x": 1.3526855088147164e-05,
+      "successor_cal_amp_method": 1,
+      "historical_factor": 9811959036.592945,
+      "successor_factor": 260186675.42300594,
+      "factor_ratio": 0.02651730143314498,
+      "reconstructed_ratio": 0.02651730143314498,
+      "relative_ratio_residual": 0.0,
+      "native_sample": {
+        "network": 4,
+        "channel": 223,
+        "slot": 3640,
+        "historical_row": 2390,
+        "successor_row": 2390,
+        "native_filtered_x": -2.6092978618954048e-05,
+        "historical_factor": 9811959036.592945,
+        "successor_factor": 260186675.42300594,
+        "actual_successor_CAL": -7015.194709311379,
+        "historical_independent_mJy": -256023.23735187267,
+        "inferred_applied_atmosphere": 1.0333109205509583,
+        "probe_multiplier_error": 0.0
+      },
+      "independently_reconstructed_historical_sample": -256023.23735187267,
+      "successor_source_only_sample": -6789.04535874923,
+      "atmosphere_scope": "Target atmosphere retained from prior actual-CAL audit; not an independent passband calculation"
+    }
+  ],
+  "canonical_validation": [
+    {
+      "manifest": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/manifest.ecsv",
+        "bytes": 7657,
+        "sha256": "3861c9d10e70b04dacac4d35cb74cbf2b782fb3a77758d5f9315ccfdf59a5d3c"
+      },
+      "status": "ok",
+      "result": {
+        "product_kind": "observation-matched",
+        "profile": "citlali-observation-matched-apt-v2",
+        "artifact": {
+          "artifact_schema": "citlali-canonical-observation-apt-bundle-v2",
+          "occurrence": "apt-v2-occurrence:entropy/9129da950d4d6a9a241779d6b5f0745e281d0a6f3ef26ddf81f2172bb291b21a",
+          "semantic_sha256": "sha256:7ba4b56addd3e6ce5221682b3789e899f936b4a479ac291fb16b609ac2bb2768",
+          "envelope_sha256": "sha256:40b1f93b93d0e0e272d1fe6ebae391ed1f6a1b6d381461a21ef9814625f412e5"
+        },
+        "observation": {
+          "obsnum": "152420",
+          "subobsnum": "0",
+          "scannum": "2"
+        },
+        "transport": {
+          "scope": "citlali-canonical-apt-root-manifest-byte-sha256-v2",
+          "manifest_sha256": "sha256:3861c9d10e70b04dacac4d35cb74cbf2b782fb3a77758d5f9315ccfdf59a5d3c",
+          "manifest_byte_count": "7657",
+          "receipt_sha256": "sha256:44628beca28a4e30a313575d6b238b8403be56e32f003bac4a02374120e239e9",
+          "receipt_byte_count": "283",
+          "total_byte_count": "8059068",
+          "component_count": "10"
+        },
+        "parser_count": "12",
+        "issuance_class": "fresh"
+      },
+      "stdout_sha256": "cf5ba95b1f2c50b2fde9ed372581813c3627828634caa0b4bb6545905092460d",
+      "stderr": ""
+    },
+    {
+      "manifest": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/beammaps/3c273/reduced/redu00/148670/raw/apt_commissioning_beammap_148670_citlali.apt-v2/manifest.ecsv",
+        "bytes": 3373,
+        "sha256": "0d3d7a0b28302a27f152fd221bb0ec431df8994fa88b586a322f0b44228930de"
+      },
+      "status": "ok",
+      "result": {
+        "product_kind": "beammap-baseline",
+        "profile": "citlali-beammap-baseline-apt-v2",
+        "artifact": {
+          "artifact_schema": "citlali-canonical-baseline-apt-bundle-v2",
+          "occurrence": "apt-occurrence:entropy/2f407f35b2334ac7804cdd8356293054631bb551ae7cfc6d501e4b4bfbd14fca",
+          "semantic_sha256": "sha256:944a82d92231408d416012701d41a670b02b4e18c9fb59a4decb64d867641f51",
+          "envelope_sha256": "sha256:1451fb78135ee204b50b2c2b4002d84b4869d2bf2d50ae2cf48f5cb31f96d8d8"
+        },
+        "observation": {
+          "obsnum": "148670",
+          "subobsnum": "0",
+          "scannum": "2"
+        },
+        "transport": {
+          "scope": "citlali-canonical-apt-root-manifest-byte-sha256-v2",
+          "manifest_sha256": "sha256:0d3d7a0b28302a27f152fd221bb0ec431df8994fa88b586a322f0b44228930de",
+          "manifest_byte_count": "3373",
+          "receipt_sha256": "sha256:8b21c8135375876fa28459efcd075db132ad40aa4e7dfaa05061eaaaa60c0344",
+          "receipt_byte_count": "283",
+          "total_byte_count": "3168490",
+          "component_count": "3"
+        },
+        "parser_count": "5",
+        "issuance_class": "fresh"
+      },
+      "stdout_sha256": "29120b35b2d07431b0e28314b766bb77c7eaba2a3beba72aec170b2ce7fda0b6",
+      "stderr": ""
+    }
+  ],
+  "validation_cli": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin/citlali",
+    "bytes": 8502920,
+    "sha256": "178f23d75d43c9921137ab18add4549ee950989db61c8ba8755b2cf767605d79"
+  },
+  "validation_cli_version": "** logging ** Configured with level=trace; available levels: [\"trace\", \"debug\", \"info\", \"warning\", \"error\", \"critical\", \"off\"].\nv2-ngc4449-memory-repair-187df04b-644-g8fe1b89cd (2026-09-30T16:39:51)\nkids 04088da-dirty (2026-09-30T13:08:05)\n",
+  "new_observation_starts": 0
+}

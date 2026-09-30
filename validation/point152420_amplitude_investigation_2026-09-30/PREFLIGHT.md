@@ -50,3 +50,17 @@ rules for such recovery, not for remote computation or writes. No pushes,
 integration, production changes, other observation/array, input modification,
 radius/iteration sweep or resource expansion. Cleanup limited to inactive,
 reproducible campaign scratch with original evidence and regeneration preserved.
+
+## Lineage-first supplement — 2026-09-30
+
+Owner adopted APT_LINEAGE_DIRECTIVE.md. Recovered clean HEAD8fe1b89cdbbfc66056c7a69c759476ac00df5dbb; same worktree/branch and accepted authorities above.
+Batch/process check and lock establish zero starts; recorded deferral without
+editing its freeze. Scope is parent-selection/role/association/application audit,
+existing canonical integration regression and continuity evidence. No architectural
+or numerical algorithm change, sibling edit, canonical issuance, input mutation
+or observation start. Explicit source/module/history evidence supersedes inferred
+state from labels. Read accepted CANONICAL_APT_V2 and historical August24 producer
+changes; role and circularity are review triggers. Independent milestone reviewer
+continues, with exact final source review. Focused gates: both real bundle reads,
+full supported factor reconstruction, alternative-parent positive/negative canonical
+fixture; required CTest/baseline/config gates. Resource/runtime authority unchanged.
