@@ -57,3 +57,11 @@ ledger. A pre-existing ledger refuses a rerun. Failures preserve evidence.
 No persistent launcher is established for this worktree. After clean-source
 freeze and gates, use the owner foreground command in RESUME.md, then return
 for assessment. There is no model polling, background agent or automatic resume.
+
+Independent prelaunch review of4006f5941 required two safeguard repairs: the audit
+now binds every CAL/RTC/probe dependency and checks original payload receipts;
+prepare and launch reject drift. The shell no longer opens a log: Python owns
+the exclusive lock and checks both ledger and existing log before exclusive log
+creation. Eight focused tests include changed-input and duplicate/concurrent
+launch refusal without altering log/status/attempt evidence. No new numerical
+start was needed for these repairs. Exact repaired-source review follows.

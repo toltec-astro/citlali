@@ -1,6 +1,8 @@
-import unittest
+import unittest,json,tempfile
+from pathlib import Path
 import numpy as np
-from frozen_calibration import apply_basis,normalization,segments,checkpoint
+from frozen_calibration import apply_basis,normalization,segments,checkpoint,verify_audit,verify_probe,launch_guard
+from calibration_audit import bound
 class FrozenCalibrationTests(unittest.TestCase):
  def test_observed_projection_and_scale_linearity(self):
   rng=np.random.default_rng(159);b=rng.normal(size=(9,2));v=rng.normal(size=(30,9));eligible=np.ones_like(v,bool);eligible[:10,0]=False;v[~eligible]=np.nan
@@ -16,6 +18,37 @@ class FrozenCalibrationTests(unittest.TestCase):
  def test_exact_native_normalization_order_statistic(self):
   count=np.array([0,1,2,3,4,5,6,7,100]);support,ref=normalization(count)
   self.assertEqual(ref,100);np.testing.assert_array_equal(support,[False]*8+[True])
+ def test_pre_freeze_calibration_dependency_drift_rejected(self):
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);payload=root/'value';payload.write_bytes(b'original');audit=root/'audit.json';audit.write_text(json.dumps(dict(inputs=[],native_inputs=[bound(payload)])))
+   self.assertEqual(verify_audit(audit),[payload]);payload.write_bytes(b'modified')
+   with self.assertRaisesRegex(RuntimeError,'audit dependency drift'):verify_audit(audit)
+   self.assertFalse((root/'attempts.jsonl').exists())
+ def test_original_probe_receipt_checked_before_freeze(self):
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);p=root/'source-probe';p.mkdir();v=p/'cal-multiplier.f64';v.write_bytes(b'original')
+   (p/'receipt.yaml').write_text(json.dumps(dict(files={v.name:bound(v)['sha256']})))
+   verify_probe(root);v.write_bytes(b'changed')
+   with self.assertRaisesRegex(RuntimeError,'original receipt'):verify_probe(root)
+ def test_duplicate_launch_preserves_evidence(self):
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);names=('attempts.jsonl','STATUS.json','batch.log')
+   for name in names:(root/name).write_text('protected '+name)
+   before={name:(root/name).read_bytes() for name in names}
+   with self.assertRaisesRegex(RuntimeError,'already started'):
+    with launch_guard(root):self.fail('duplicate entered launch')
+   self.assertEqual(before,{name:(root/name).read_bytes() for name in names})
+   (root/'attempts.jsonl').unlink()
+   with self.assertRaisesRegex(RuntimeError,'log is protected'):
+    with launch_guard(root):self.fail('log reopened')
+   self.assertEqual((root/'batch.log').read_bytes(),before['batch.log'])
+ def test_concurrent_launch_cannot_enter_log_boundary(self):
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp)
+   with launch_guard(root):
+    with self.assertRaises(BlockingIOError):
+     with launch_guard(root):self.fail('second lock acquired')
+    self.assertFalse((root/'batch.log').exists())
  def test_one_local_native_segment_replay(self):
   nw,sid,p,s,col=next(segments());a=checkpoint(sid,p,s)
   clean,valid,d=apply_basis(a['y'],a['eligible'],a['basis']);native=a['native'][:,a['cols']];old=a['causes'][:,a['cols']]==0

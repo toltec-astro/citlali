@@ -8,7 +8,7 @@ import os
 for key in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','VECLIB_MAXIMUM_THREADS','MKL_NUM_THREADS'):os.environ[key]='1'
 os.environ.update(MPLBACKEND='Agg',MPLCONFIGDIR='/private/tmp/point-amplitude-mpl',XDG_CACHE_HOME='/private/tmp/point-amplitude-cache')
 from pathlib import Path
-import argparse,fcntl,json,re,shutil,subprocess,sys,time,resource
+import argparse,fcntl,json,re,shutil,subprocess,sys,time,resource,contextlib,traceback
 import numpy as np
 from astropy.io import fits
 import scipy,astropy
@@ -70,10 +70,27 @@ def capacity():
  require(used+RESERVATION<=30_000_000_000 and free>=RESERVATION+2_000_000_000,'shared storage reservation')
  return dict(holdings=holdings,used_bytes=used,reservation_bytes=RESERVATION,ceiling_bytes=30_000_000_000,free_bytes=free,free_reserve_bytes=2_000_000_000)
 
+def verify_audit(path):
+ audit=json.loads(Path(path).read_text());paths=[]
+ for rec in audit['inputs']+audit['native_inputs']:
+  require(digest(rec['path'])==rec['sha256'],'calibration audit dependency drift: '+rec['path'])
+  paths.append(Path(rec['path']))
+ return paths
+
+def verify_probe(root):
+ receipt=yread(root/'source-probe/receipt.yaml');p=root/'source-probe/cal-multiplier.f64'
+ require(digest(p)==receipt['files'][p.name],'probe multiplier differs from original receipt')
+
 def inputs():
+ audited=verify_audit(D/'results/calibration-audit.json')
  files={H,S,HST,D/'OWNER_DIRECTIVE.md',D/'BATCH1.md',D/'results/calibration-audit.json',R/'freeze/prospective.json',R/'M0/products/a1100/map.fits',R/'M0/products/a1100/plan.yaml',R/'M0/products/a1100/operator-pixel.i32'}
+ files.update(audited);verified_networks=set()
  for nw,sid,p,s,col in segments():
   files.add(p/'receipt.yaml')
+  if nw not in verified_networks:
+   verify_probe(p.parent.parent)
+   require(digest(p.parent/'cal/receipt.yaml')==yread(p/'receipt.yaml')['source_CAL_receipt_sha256'],'PTC/CAL receipt identity differs')
+   verified_networks.add(nw)
   for suffix in ('input.f64','eligible.u8','basis.f64','cleaned.f64','causes.u8','slots.i64'):
    f=p/f'segment-{sid}-{suffix}';require(digest(f)==s['files'][f.name],'checkpoint receipt hash '+str(f));files.add(f)
   up=p.parent.parent;files.update([up/'receipt.yaml',up/'source-probe/receipt.yaml',up/'source-probe/cal-multiplier.f64',p.parent/'cal/receipt.yaml'])
@@ -136,11 +153,15 @@ def run_role(role):
   inside=rr<radius;complete=bool(np.all(science[inside]));profile.append(dict(radius=radius,pixels=int(inside.sum()),supported=int(np.sum(inside&science)),integral_minus_annulus=float(np.sum(image[inside]-bg2)*4) if complete else None))
  return dict(role=role,map=bound(out/'map.fits'),parameters=fit.x.tolist(),peak=float(fit.x[0]),fwhm=np.sort(fit.x[3:5]*np.sqrt(8*np.log(2)))[::-1].tolist(),constant=float(fit.x[6]),angular_integral=float(2*np.pi*fit.x[0]*fit.x[3]*fit.x[4]),cost=float(fit.cost),active=fit.active_mask.tolist(),native_map_maxabs=err,normalization_reference=ref,science_pixels=int(science.sum()),native_science_pixels_lost=int(np.sum(support&~science)),native_science_pixels_gained=int(np.sum(science&~support)),contributions=int(count.sum()),background_annulus_median=bg2,background_annulus_supported=int(np.sum(ann&science)),profiles=profile,segments=details)
 
-def run():
+def verify_launch():
  require(not subprocess.check_output(['git','-C',str(W),'status','--porcelain'],text=True).strip(),'launch requires clean committed source')
  freeze=json.loads((ROOT/'FREEZE.json').read_text());require(revision()==freeze['source_revision'],'source HEAD changed');require(environment()==freeze['environment'],'environment changed')
  for r in freeze['inputs']+freeze['source']:require(digest(r['path'])==r['sha256'],'frozen input/source changed: '+r['path'])
+ verify_audit(D/'results/calibration-audit.json')
+ for nw in range(1,5):verify_probe(R/f'upstream/products/network{nw}')
  require(not (ROOT/'attempts.jsonl').exists(),'batch already started; resume assessment, never blind retry')
+
+def run():
  started=time.time();results=[]
  for role in ROLES:
   cap=capacity()
@@ -155,16 +176,32 @@ def run():
  save(ROOT/'STATUS.json',dict(status='COMPLETE_PENDING_ASSESSMENT',starts=len(results),seconds=time.time()-started,peak_rss_bytes=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,capacity=capacity(),interpretation='Frozen operator effects only; photometric acceptance open'))
  print(json.dumps([dict(role=r['role'],peak=r['peak'],fwhm=r['fwhm']) for r in results],indent=2))
 
+@contextlib.contextmanager
+def launch_guard(root):
+ """Own the full launch before checking ledger or opening any evidence log."""
+ with (root/'LOCK').open('a') as lock:
+  fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+  require(not (root/'attempts.jsonl').exists(),'batch already started; do not retry')
+  require(not (root/'batch.log').exists(),'existing batch log is protected')
+  yield
+
+class Tee:
+ def __init__(self,console,log):self.console=console;self.log=log
+ def write(self,text):self.log.write(text);self.console.write(text);return len(text)
+ def flush(self):self.log.flush();self.console.flush()
+
 if __name__=='__main__':
  parser=argparse.ArgumentParser();parser.add_argument('action',choices=['prepare','run']);args=parser.parse_args()
  if args.action=='prepare':prepare()
  else:
-  with (ROOT/'LOCK').open('a') as lock:
-   fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
-   try:run()
-   except Exception as e:
-    save(ROOT/'FAILURE.json',dict(error=repr(e),epoch=time.time()))
-    state=json.loads((ROOT/'STATUS.json').read_text())
-    if state.get('status')=='RUNNING' and state.get('pid')==os.getpid():
-     state.update(status='FAILED',error=repr(e));save(ROOT/'STATUS.json',state)
-    raise
+  with launch_guard(ROOT):
+   verify_launch()
+   with (ROOT/'batch.log').open('x') as log:
+    with contextlib.redirect_stdout(Tee(sys.stdout,log)),contextlib.redirect_stderr(Tee(sys.stderr,log)):
+     try:run()
+     except Exception as e:
+      save(ROOT/'FAILURE.json',dict(error=repr(e),epoch=time.time()))
+      state=json.loads((ROOT/'STATUS.json').read_text())
+      if state.get('status')=='RUNNING' and state.get('pid')==os.getpid():
+       state.update(status='FAILED',error=repr(e));save(ROOT/'STATUS.json',state)
+      traceback.print_exc();raise SystemExit(1)

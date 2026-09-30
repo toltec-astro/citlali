@@ -1,0 +1,51 @@
+{
+  "candidate": "4006f594154e7c4cd78d6ebf4d3e646af67bca17",
+  "tree": "0b51978d2fd5fe94a938d1c84035cfd0d34c0229",
+  "reviewer": "/root/amplitude_milestone_review",
+  "fresh_context": true,
+  "read_only": true,
+  "verdict": "repair required",
+  "stage": "prelaunch portion of one focused milestone; eventual causal assessment still required",
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "major",
+      "problem": "Calibration audit omitted native CAL/RTC/probe dependency bindings; prepare could newly hash a changed multiplier not used by M0 replay.",
+      "repair": "Bind every consumed native audit payload/receipt; verify original CAL slot/value and probe hashes, PTC-to-CAL receipt chain, audit bindings in prepare and launch; synthetic drift test."
+    },
+    {
+      "id": "F2",
+      "severity": "major",
+      "problem": "Shell tee truncated batch.log before Python lock/ledger refusal.",
+      "repair": "Move log creation behind lock and ledger checks, use exclusive open, hold lock for entire run; duplicate/concurrent launch preservation tests."
+    }
+  ],
+  "independent_checks": {
+    "fitter_tests": 6,
+    "control_tests": 4,
+    "saved_refits": [
+      "B M0",
+      "B T1",
+      "B T2",
+      "B T4",
+      "B T5",
+      "redu09"
+    ],
+    "T5": 291.8103139168,
+    "redu09": 574.5877126227,
+    "peak_ratio": 1.9690452504,
+    "area_ratio": 1.6114902076,
+    "integral_ratio": 3.1730971392,
+    "common_factor_medians": [
+      0.4205351616,
+      0.4464489147,
+      0.4471234313,
+      0.4003555273
+    ],
+    "representative_conversions": 20,
+    "probe_multiplier_original_hashes": 4,
+    "provenance_bindings": 18,
+    "gate_log_bindings": 8
+  },
+  "qualification": "Current native files matched original hashes; safeguard defect, not demonstrated corruption. Measurement repair supported; calibration a lead, not resolved full adaptive or absolute photometry. No observation start."
+}

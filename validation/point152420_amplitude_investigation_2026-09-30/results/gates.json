@@ -12,10 +12,16 @@
     "native_fixture": "build/bin/citlali_point_frozen_apply"
   },
   "diagnostic": {
-    "tests": 4,
+    "tests": 8,
     "skipped": 0,
     "warnings": "error",
-    "localized_native_segments": 1
+    "localized_native_segments": 1,
+    "review_repairs": [
+      "pre-freeze audit dependency drift rejection",
+      "original probe hash verification",
+      "duplicate launch evidence preservation",
+      "concurrent lock exclusion"
+    ]
   },
   "ctest": {
     "passed": 1320,
@@ -65,6 +71,11 @@
       "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/point152420_amplitude_investigation_2026-09-30/results/gates/point.log",
       "sha256": "4360b7a505842b51f435eb796eac151762ebc5a2e43b6ac313143078b8d5054e",
       "bytes": 155
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/point152420_amplitude_investigation_2026-09-30/results/gates/control-repaired.log",
+      "sha256": "58d85580edb84655508735b7ea3d69d25b2b41eff841c49261ef8485e3efa873",
+      "bytes": 106
     }
   ],
   "capacity": {

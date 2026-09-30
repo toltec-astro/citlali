@@ -32,7 +32,7 @@ def tables():
  return h,s,hd,sd
 
 def main():
- h,s,hd,sd=tables();rows=[];samples=[];native=[]
+ h,s,hd,sd=tables();rows=[];samples=[];native=[];native_inputs=set()
  with Dataset(HST) as ds:
   for field in ('nw','array','flxscale'):
    assert np.array_equal(ds['apt_'+field][:],np.asarray(h[field]),equal_nan=True),field
@@ -47,7 +47,9 @@ def main():
   ratio=sf[good]/hf[good];rec=dict(network=nw,historical_flag0=int(np.sum(h['flag'][ii]==0)),successor_flag0=int(np.sum(s['flag'][jj]==0)),common=int(good.sum()),ratio_successor_over_historical_quantiles=np.quantile(ratio,[0,.1,.5,.9,1]).tolist())
   rows.append(rec)
   if nw==0:continue
-  root=R/f'upstream/products/network{nw}';cal=root/'donor-continuity/cal';receipt=yread(cal/'receipt.yaml');pr=yread(root/'source-probe/receipt.yaml');shape=(pr['native_rows'],pr['detectors']);mult=array(root/'source-probe/cal-multiplier.f64','<f8',shape);channels=pr['channels'];errors=[];gains=[];ratios=[]
+  root=R/f'upstream/products/network{nw}';cal=root/'donor-continuity/cal';receipt=yread(cal/'receipt.yaml');pr=yread(root/'source-probe/receipt.yaml');shape=(pr['native_rows'],pr['detectors']);multpath=root/'source-probe/cal-multiplier.f64';assert digest(multpath)==pr['files'][multpath.name]
+  native_inputs.update([root/'receipt.yaml',cal/'receipt.yaml',root/'source-probe/receipt.yaml',multpath])
+  mult=array(multpath,'<f8',shape);channels=pr['channels'];errors=[];gains=[];ratios=[]
   # All available detector samples, independently evaluate actual CAL/RTC arithmetic.
   # Probe multipliers are a comparator, not an independent definition of truth.
   available_channels={d['channel'] for d in receipt['detectors'] if d['available']>0}
@@ -56,7 +58,10 @@ def main():
    channel=det['channel'];j=channels.index(channel);idx=int(det['selected_row'].split('row=')[1]);assert (int(s['nw'][idx]),int(s['kids_tone'][idx]))==(nw,channel)
    if det['available']==0:continue
    assert det['selected_flxscale']==float(s['flxscale'][idx])
-   slots=array(cal/f'channel-{channel}-slot.i64','<i8');cv=array(cal/f'channel-{channel}-value.f64','<f8');fv=array(root/f'donor-continuity/{channel}-filtered.f64','<f8',(shape[0],2))[slots,0]
+   slotpath=cal/f'channel-{channel}-slot.i64';valuepath=cal/f'channel-{channel}-value.f64';filteredpath=root/f'donor-continuity/{channel}-filtered.f64'
+   for payload in (slotpath,valuepath):assert digest(payload)==det['files'][payload.name]
+   native_inputs.update([slotpath,valuepath,filteredpath])
+   slots=array(slotpath,'<i8');cv=array(valuepath,'<f8');fv=array(filteredpath,'<f8',(shape[0],2))[slots,0]
    prediction=fv*mult[slots,j];err=float(np.max(abs(cv-prediction))/max(1.,np.max(abs(cv))));assert err<1e-12;errors.append(err)
    hi=hd[(nw,channel)];gooddet=h['flag'][hi]==0 and s['flag'][idx]==0 and np.isfinite(h['flxscale'][hi]) and h['flxscale'][hi]>0
    if not gooddet:continue
@@ -66,6 +71,6 @@ def main():
    if channel in representatives:
     k=int(np.flatnonzero(usable)[len(np.flatnonzero(usable))//2]);x=float(fv[k]);samples.append(dict(network=nw,channel=channel,slot=int(slots[k]),historical_row=hi,successor_row=idx,native_filtered_x=x,historical_factor=float(h['flxscale'][hi]),successor_factor=float(s['flxscale'][idx]),actual_successor_CAL=float(cv[k]),historical_independent_mJy=x*float(h['flxscale'][hi]),inferred_applied_atmosphere=float(cv[k]/x/float(s['flxscale'][idx])),probe_multiplier_error=float(cv[k]-prediction[k])))
   native.append(dict(network=nw,checked_available_detectors=len(errors),maximum_relative_CAL_vs_filtered_times_probe_error=max(errors),common_applied_atmosphere_detector_median_quantiles=np.quantile(gains,[0,.1,.5,.9,1]).tolist(),common_total_conversion_successor_over_historical_detector_median_quantiles=np.quantile(ratios,[0,.1,.5,.9,1]).tolist()))
- save(D/'results/calibration-audit.json',dict(inputs=[bound(p) for p in (H,S,HST)],identity='unique (nw,kids_tone), exact array/tone_freq/kids_f_out equality on all 5518 rows; selected CAL row and factor checked',historical_APT_snapshot_verified_fields=['nw','array','flxscale'],historical_population=actual,APT_factor_distribution=rows,native_CAL_arithmetic=native,representative_native_conversions=samples,scope='Same successor post-RTC native x samples; historical factor applied once, historical extinction disabled. Does not reproduce historical RTC or prove which APT absolute scale is correct. Atmosphere is inferred from actual CAL/filtered ratio, not independently reimplemented passband physics.'))
+ save(D/'results/calibration-audit.json',dict(inputs=[bound(p) for p in (H,S,HST)],native_inputs=[bound(p) for p in sorted(native_inputs)],native_integrity='CAL value/slot and probe multiplier verified against original receipt payload hashes; actual filtered x and all consumed receipts additionally SHA256-bound',identity='unique (nw,kids_tone), exact array/tone_freq/kids_f_out equality on all 5518 rows; selected CAL row and factor checked',historical_APT_snapshot_verified_fields=['nw','array','flxscale'],historical_population=actual,APT_factor_distribution=rows,native_CAL_arithmetic=native,representative_native_conversions=samples,scope='Same successor post-RTC native x samples; historical factor applied once, historical extinction disabled. Does not reproduce historical RTC or prove which APT absolute scale is correct. Atmosphere is inferred from actual CAL/filtered ratio, not independently reimplemented passband physics.'))
  print(json.dumps(dict(population=actual,factors=rows,arithmetic=native),indent=2))
 if __name__=='__main__':main()
