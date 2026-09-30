@@ -1,0 +1,106 @@
+{
+  "build": "pass after explicit local CMAKE_OSX_DEPLOYMENT_TARGET=26.0; no scientific source change",
+  "initial_build_failure": "stale PCH targeted macOS26 while host implicit target now27; repaired local cache, all current CLI objects rebuilt",
+  "config": "pass --require-all",
+  "baseline": {
+    "tests": 207,
+    "skipped": 0
+  },
+  "point": {
+    "tests": 56,
+    "skipped": 0,
+    "native_fixture": "build/bin/citlali_point_frozen_apply"
+  },
+  "diagnostic": {
+    "tests": 4,
+    "skipped": 0,
+    "warnings": "error",
+    "localized_native_segments": 1
+  },
+  "ctest": {
+    "passed": 1320,
+    "failed": 0,
+    "preexisting_disabled": [
+      "MapFitterLifecycle.ExactProductSequence"
+    ]
+  },
+  "environment": "AppleClang/Homebrew supplemental local validation, not accepted Unity Spack reproduction",
+  "logs": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/point152420_amplitude_investigation_2026-09-30/results/gates/baseline.log",
+      "sha256": "0f53fa7c479dc9903aaa7014aab312406421514488edc79fa7d605b50d4393e7",
+      "bytes": 308
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/point152420_amplitude_investigation_2026-09-30/results/gates/build-initial.log",
+      "sha256": "777012bfb0969e5dd070b3cce602a9a56062d1363d88e842604e7489b3c87bc6",
+      "bytes": 1319
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/point152420_amplitude_investigation_2026-09-30/results/gates/build.log",
+      "sha256": "f4310d34984a41e754c4661f5f51fb8510178f89a06e4db94a15af2f3dddbf02",
+      "bytes": 32226
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/point152420_amplitude_investigation_2026-09-30/results/gates/config.log",
+      "sha256": "41df916b220eada213781fae19d032cd00512d7c6c5d506855f26d8544bc30ef",
+      "bytes": 12052
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/point152420_amplitude_investigation_2026-09-30/results/gates/configure-repair.log",
+      "sha256": "b2937c63dfe881410aebf64707a7009215411a976347a26a330afcadf72404fa",
+      "bytes": 75322
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/point152420_amplitude_investigation_2026-09-30/results/gates/control.log",
+      "sha256": "78f35e52142c3e4fa827c4ad56d1d6af8e45f8a7adce62fe17ca219b87467cfb",
+      "bytes": 102
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/point152420_amplitude_investigation_2026-09-30/results/gates/ctest.log",
+      "sha256": "e21d667e55badb25df249dc199809a972316b10fc7eea77393983cacd69c13b2",
+      "bytes": 428897
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/point152420_amplitude_investigation_2026-09-30/results/gates/point.log",
+      "sha256": "4360b7a505842b51f435eb796eac151762ebc5a2e43b6ac313143078b8d5054e",
+      "bytes": 155
+    }
+  ],
+  "capacity": {
+    "holdings": [
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-retained-residuals-20260928",
+        "bytes": 291593819
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928",
+        "bytes": 1564657393
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-20260928",
+        "bytes": 284278
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-build-repair-20260929",
+        "bytes": 274383180
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-runtime-repair-20260929",
+        "bytes": 491641929
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930",
+        "bytes": 18377997229
+      }
+    ],
+    "used_bytes": 21000557828,
+    "reservation_bytes": 100000000,
+    "ceiling_bytes": 30000000000,
+    "free_bytes": 609241206784,
+    "free_reserve_bytes": 2000000000
+  },
+  "trajectory_starts": 0,
+  "remaining_planned": 6,
+  "replacements": 2
+}

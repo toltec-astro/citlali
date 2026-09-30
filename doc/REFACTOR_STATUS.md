@@ -1,5 +1,21 @@
 # Citlali Refactor Status
 
+## 2026-09-30 — POINT152420 calibration discrepancy investigation
+
+The owner opened a separate [amplitude investigation](../validation/point152420_amplitude_investigation_2026-09-30/ASSESSMENT.md),
+with six planned plus two diagnosed replacement starts, not additive to the prior
+allowance. SciPy loading and the periodic-angle fitter are repaired; remeasured
+B T5/redu09 peaks remain291.8103/574.5877mJy per nominal beam. Intermediate B
+angle-bound fit measurements are superseded; original executed trajectories remain
+unchanged. Common-detector successor/historical APT factors have medians0.40–0.45;
+actual atmospheric gain is about1.0333. Historical a1100 included network0 and its
+own initial plus four feedback applications. These establish a calibration lead,
+not a map-level causal allocation. Three frozen-M0 controls are prepared to
+separate native replay, common population and historical conversion before PTC.
+No observation-profile start during preparation. Q remains parked; B photometry
+and historical width/background differences remain unresolved. See the new
+[resume record](../validation/point152420_amplitude_investigation_2026-09-30/RESUME.md).
+
 ## 2026-09-30 — POINT152420 completed; Q parked with fit limitation
 
 The [completion assessment](../validation/rtc_point_transfer_2026-09-28/ASSESSMENT.md)

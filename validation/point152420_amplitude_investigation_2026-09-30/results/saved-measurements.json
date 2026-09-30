@@ -1,0 +1,3965 @@
+{
+  "schema": "point152420-saved-remeasurement-v1",
+  "environment": {
+    "python": "3.13.2 (main, Feb  4 2025, 14:51:09) [Clang 16.0.0 (clang-1600.0.26.6)]",
+    "numpy": "2.2.3",
+    "scipy": "1.17.1",
+    "astropy": "7.0.1",
+    "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O"
+  },
+  "fitter": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/inspect_point_source.py",
+    "sha256": "35259649e727068047d0956070b817678fb1309e67937af27303d923cc729032",
+    "bytes": 8495
+  },
+  "rows": [
+    {
+      "label": "B-0",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/M0/products/a1100/map.fits",
+        "sha256": "2b3d95996a837593e7b572b325524f10145fe4c2af95f37a61ac73034c04e525",
+        "bytes": 1209600
+      },
+      "frame": {
+        "CTYPE1": "RA---TAN",
+        "CTYPE2": "DEC--TAN",
+        "CUNIT1": "deg",
+        "CUNIT2": "deg",
+        "CRPIX1": 87.0,
+        "CRPIX2": 101.0,
+        "CRVAL1": 176.7429079166667,
+        "CRVAL2": 39.97619555555556,
+        "CDELT1": -0.0005555555555555556,
+        "CDELT2": 0.0005555555555555556,
+        "BUNIT": "mJy/beam"
+      },
+      "legacy_solver_current_environment": {
+        "parameters": [
+          223.27789364694593,
+          4.722198432668112,
+          7.463589563364167,
+          4.592244648312206,
+          2.056016044778638,
+          -0.23364575202925317,
+          -2.0350245082010123
+        ],
+        "peak": 223.27789364694593,
+        "constant": -2.0350245082010123,
+        "centroid": [
+          4.722198432668112,
+          7.463589563364167
+        ],
+        "fwhm": [
+          10.813909749531684,
+          4.841547795149987
+        ],
+        "angular_integral": 13245.766991349234,
+        "cost": 331724.585914692,
+        "rms": 22.973977389554708,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 12
+      },
+      "repaired": {
+        "parameters": [
+          223.27795359526573,
+          4.7221987560769865,
+          7.463589661259536,
+          4.592243647795891,
+          2.05601536216982,
+          -0.2336458666173562,
+          -2.0350237827599784
+        ],
+        "peak": 223.27795359526573,
+        "constant": -2.0350237827599784,
+        "centroid": [
+          4.7221987560769865,
+          7.463589661259536
+        ],
+        "fwhm": [
+          10.81390739349581,
+          4.841546187729059
+        ],
+        "angular_integral": 13245.763264194818,
+        "cost": 331724.58591469575,
+        "rms": 22.973977389554836,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 11
+      },
+      "profiles": {
+        "center": "same convention for every map: its newly fitted centroid in its own native frame, no rotation/registration",
+        "centroid": [
+          4.7221987560769865,
+          7.463589661259536
+        ],
+        "independent_background": {
+          "region": [
+            45,
+            60
+          ],
+          "median": -0.6686560331907984,
+          "pixels": 1239,
+          "supported": 1238
+        },
+        "rows": [
+          {
+            "inner": 0,
+            "outer": 4,
+            "pixels": 13,
+            "supported": 13,
+            "median": 124.57999153767912,
+            "mean": 138.27298822078026,
+            "annulus_subtracted_mean": 138.94164425397105,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 7224.965501206494,
+            "aperture_integral_minus_fit_constant": 7296.0166241840925
+          },
+          {
+            "inner": 4,
+            "outer": 8,
+            "pixels": 37,
+            "supported": 37,
+            "median": 29.363533286038805,
+            "mean": 28.772773263102366,
+            "annulus_subtracted_mean": 29.441429296293165,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 11582.29703705788,
+            "aperture_integral_minus_fit_constant": 11855.570586971717
+          },
+          {
+            "inner": 8,
+            "outer": 12,
+            "pixels": 65,
+            "supported": 65,
+            "median": 4.9990532640769425,
+            "mean": 5.136311853050383,
+            "annulus_subtracted_mean": 5.804967886241181,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 13091.588687480587,
+            "aperture_integral_minus_fit_constant": 13720.11785228241
+          },
+          {
+            "inner": 12,
+            "outer": 20,
+            "pixels": 200,
+            "supported": 200,
+            "median": -2.0474112722408884,
+            "mean": -2.7343019132082076,
+            "annulus_subtracted_mean": -2.065645880017409,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 11439.071983466663,
+            "aperture_integral_minus_fit_constant": 13160.69534792383
+          },
+          {
+            "inner": 20,
+            "outer": 30,
+            "pixels": 394,
+            "supported": 394,
+            "median": -3.2729302070477377,
+            "mean": -2.930370909454047,
+            "annulus_subtracted_mean": -2.2617148762632486,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 7874.609338475784,
+            "aperture_integral_minus_fit_constant": 11749.628276253978
+          },
+          {
+            "inner": 30,
+            "outer": 40,
+            "pixels": 547,
+            "supported": 547,
+            "median": -2.6121382484735465,
+            "mean": -3.0331059433263934,
+            "annulus_subtracted_mean": -2.364449910135595,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 2701.1929350991027,
+            "aperture_integral_minus_fit_constant": 9565.82450893466
+          },
+          {
+            "inner": 40,
+            "outer": 50,
+            "pixels": 707,
+            "supported": 707,
+            "median": -0.619833020701769,
+            "mean": -0.8753726387742202,
+            "annulus_subtracted_mean": -0.20671660558342186,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 2116.598374509186,
+            "aperture_integral_minus_fit_constant": 12845.317944126382
+          },
+          {
+            "inner": 50,
+            "outer": 60,
+            "pixels": 866,
+            "supported": 865,
+            "median": -1.0337518194321138,
+            "mean": -0.8672174028809612,
+            "annulus_subtracted_mean": -0.1985613696901628,
+            "aperture_full_support": false,
+            "aperture_integral_minus_annulus": null,
+            "aperture_integral_minus_fit_constant": null
+          }
+        ]
+      },
+      "executed": {
+        "parameters": [
+          223.27789368227283,
+          4.722198421697576,
+          7.463589564301884,
+          4.59224463962668,
+          2.0560160376864194,
+          -0.2336457506476845,
+          -2.0350242773637173
+        ],
+        "cost": 331724.585914692,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "legacy_reproduction_parameter_maxabs": 2.3083729505657402e-07,
+      "feedback_diagnostic": {
+        "accepted": true,
+        "parameters": [
+          223.27795359526573,
+          4.7221987560769865,
+          7.463589661259536,
+          4.592243647795891,
+          2.05601536216982,
+          -0.2336458666173562,
+          -2.0350237827599784
+        ],
+        "old_selected": 18,
+        "new_selected": 18,
+        "membership_changed": 0,
+        "candidate_maxabs_change": 4.946037392983271e-07,
+        "candidate_l2_change": 2.0984259282512394e-06,
+        "constant_change": 4.946037388542379e-07,
+        "scope": "same original saved map and frozen noise context; changes prove dependency, not a repaired executed trajectory"
+      }
+    },
+    {
+      "label": "B-1",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/run/BASE-POINT/REF/a1100/cycle-01/native/products/total.fits",
+        "sha256": "4ad1d1df919b5840477d53be2f4017386d6f8e33b283cd4668adf2e00b68a646",
+        "bytes": 1209600
+      },
+      "frame": {
+        "CTYPE1": "RA---TAN",
+        "CTYPE2": "DEC--TAN",
+        "CUNIT1": "deg",
+        "CUNIT2": "deg",
+        "CRPIX1": 87.0,
+        "CRPIX2": 101.0,
+        "CRVAL1": 176.7429079166667,
+        "CRVAL2": 39.97619555555556,
+        "CDELT1": -0.0005555555555555556,
+        "CDELT2": 0.0005555555555555556,
+        "BUNIT": "mJy/beam"
+      },
+      "legacy_solver_current_environment": {
+        "parameters": [
+          265.4188283069356,
+          4.821895530968676,
+          7.445096594303329,
+          4.381283099552753,
+          2.303615726934494,
+          -3.1415926535897927,
+          -1.2177943154297008
+        ],
+        "peak": 265.4188283069356,
+        "constant": -1.2177943154297008,
+        "centroid": [
+          4.821895530968676,
+          7.445096594303329
+        ],
+        "fwhm": [
+          10.317133265782152,
+          5.424600489833889
+        ],
+        "angular_integral": 16831.504872373385,
+        "cost": 343902.01196724165,
+        "rms": 23.391857913691304,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          -1,
+          0
+        ],
+        "success": true,
+        "nfev": 12
+      },
+      "repaired": {
+        "parameters": [
+          273.55849236100056,
+          4.756832927224872,
+          7.4538705589510235,
+          4.604279945734056,
+          2.1390050552085667,
+          -0.24563408850525592,
+          -1.2369699649452104
+        ],
+        "peak": 273.55849236100056,
+        "constant": -1.2369699649452104,
+        "centroid": [
+          4.756832927224872,
+          7.4538705589510235
+        ],
+        "fwhm": [
+          10.842250709148567,
+          5.036971980427666
+        ],
+        "angular_integral": 16927.920170080102,
+        "cost": 333771.70099975273,
+        "rms": 23.044756046110486,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 11
+      },
+      "profiles": {
+        "center": "same convention for every map: its newly fitted centroid in its own native frame, no rotation/registration",
+        "centroid": [
+          4.756832927224872,
+          7.4538705589510235
+        ],
+        "independent_background": {
+          "region": [
+            45,
+            60
+          ],
+          "median": -0.5773372490858539,
+          "pixels": 1242,
+          "supported": 1241
+        },
+        "rows": [
+          {
+            "inner": 0,
+            "outer": 4,
+            "pixels": 13,
+            "supported": 13,
+            "median": 154.4234750289518,
+            "mean": 174.71723898688805,
+            "annulus_subtracted_mean": 175.2945762359739,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 9115.317964270644,
+            "aperture_integral_minus_fit_constant": 9149.618865495331
+          },
+          {
+            "inner": 4,
+            "outer": 8,
+            "pixels": 37,
+            "supported": 37,
+            "median": 38.97992432119137,
+            "mean": 39.77943244953974,
+            "annulus_subtracted_mean": 40.35676969862559,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 15088.11987966723,
+            "aperture_integral_minus_fit_constant": 15220.046422839101
+          },
+          {
+            "inner": 8,
+            "outer": 12,
+            "pixels": 65,
+            "supported": 65,
+            "median": 7.8143871581979045,
+            "mean": 8.899583415751989,
+            "annulus_subtracted_mean": 9.476920664837843,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 17552.119252525066,
+            "aperture_integral_minus_fit_constant": 17855.550301820374
+          },
+          {
+            "inner": 12,
+            "outer": 20,
+            "pixels": 200,
+            "supported": 200,
+            "median": -0.516549067976867,
+            "mean": -1.0507295454011416,
+            "annulus_subtracted_mean": -0.4733922963152877,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 17173.40541547284,
+            "aperture_integral_minus_fit_constant": 18004.542637455626
+          },
+          {
+            "inner": 20,
+            "outer": 30,
+            "pixels": 396,
+            "supported": 396,
+            "median": -2.670606651848794,
+            "mean": -2.1968249279265932,
+            "annulus_subtracted_mean": -1.6194876788407393,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 14608.136932189107,
+            "aperture_integral_minus_fit_constant": 16484.13237609312
+          },
+          {
+            "inner": 30,
+            "outer": 40,
+            "pixels": 547,
+            "supported": 547,
+            "median": -2.079634047948091,
+            "mean": -2.697229367146815,
+            "annulus_subtracted_mean": -2.119892118060961,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 9969.812977871723,
+            "aperture_integral_minus_fit_constant": 13289.084804076007
+          },
+          {
+            "inner": 40,
+            "outer": 50,
+            "pixels": 707,
+            "supported": 707,
+            "median": -0.3685202683281515,
+            "mean": -0.6683744192299477,
+            "annulus_subtracted_mean": -0.09103717014409374,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 9712.359860704226,
+            "aperture_integral_minus_fit_constant": 14897.073007358771
+          },
+          {
+            "inner": 50,
+            "outer": 60,
+            "pixels": 867,
+            "supported": 866,
+            "median": -1.2314912050195175,
+            "mean": -0.8757704300019916,
+            "annulus_subtracted_mean": -0.2984331809161377,
+            "aperture_full_support": false,
+            "aperture_integral_minus_annulus": null,
+            "aperture_integral_minus_fit_constant": null
+          }
+        ]
+      },
+      "executed": {
+        "parameters": [
+          265.418828755189,
+          4.82189552668542,
+          7.445096594047427,
+          4.381283097682646,
+          2.303615724147716,
+          -3.1415926535897927,
+          -1.2177943474196722
+        ],
+        "cost": 343902.01196724165,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          -1,
+          0
+        ]
+      },
+      "legacy_reproduction_parameter_maxabs": 4.4825338818554883e-07,
+      "feedback_diagnostic": {
+        "accepted": true,
+        "parameters": [
+          273.55849236100056,
+          4.756832927224872,
+          7.4538705589510235,
+          4.604279945734056,
+          2.1390050552085667,
+          -0.24563408850525592,
+          -1.2369699649452104
+        ],
+        "old_selected": 20,
+        "new_selected": 20,
+        "membership_changed": 0,
+        "candidate_maxabs_change": 0.01917561752554775,
+        "candidate_l2_change": 0.08575596859532217,
+        "constant_change": -0.019175617525538202,
+        "scope": "same original saved map and frozen noise context; changes prove dependency, not a repaired executed trajectory"
+      }
+    },
+    {
+      "label": "B-2",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/run/BASE-POINT/REF/a1100/cycle-02/native/products/total.fits",
+        "sha256": "68b8476f63db69e95a30d47037385aead4a34987f3865869ea268bb8cbda5f23",
+        "bytes": 1209600
+      },
+      "frame": {
+        "CTYPE1": "RA---TAN",
+        "CTYPE2": "DEC--TAN",
+        "CUNIT1": "deg",
+        "CUNIT2": "deg",
+        "CRPIX1": 87.0,
+        "CRPIX2": 101.0,
+        "CRVAL1": 176.7429079166667,
+        "CRVAL2": 39.97619555555556,
+        "CDELT1": -0.0005555555555555556,
+        "CDELT2": 0.0005555555555555556,
+        "BUNIT": "mJy/beam"
+      },
+      "legacy_solver_current_environment": {
+        "parameters": [
+          278.7873828407458,
+          4.834525006522471,
+          7.410249448826199,
+          4.384943233829354,
+          2.353058162509386,
+          -3.1415926535897927,
+          -0.9596896553391462
+        ],
+        "peak": 278.7873828407458,
+        "constant": -0.9596896553391462,
+        "centroid": [
+          4.834525006522471,
+          7.410249448826199
+        ],
+        "fwhm": [
+          10.325752223344196,
+          5.541028528200795
+        ],
+        "angular_integral": 18073.806187561804,
+        "cost": 345337.3774786451,
+        "rms": 23.440623119222206,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          -1,
+          0
+        ],
+        "success": true,
+        "nfev": 12
+      },
+      "repaired": {
+        "parameters": [
+          287.03713740116916,
+          4.768555252753712,
+          7.416919636813075,
+          4.612702297589841,
+          2.1864200263998335,
+          -0.2514331499234972,
+          -0.9825847799855226
+        ],
+        "peak": 287.03713740116916,
+        "constant": -0.9825847799855226,
+        "centroid": [
+          4.768555252753712,
+          7.416919636813075
+        ],
+        "fwhm": [
+          10.862083832124874,
+          5.148625705023425
+        ],
+        "angular_integral": 18188.9228742652,
+        "cost": 334056.8534683987,
+        "rms": 23.05459790229691,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 11
+      },
+      "profiles": {
+        "center": "same convention for every map: its newly fitted centroid in its own native frame, no rotation/registration",
+        "centroid": [
+          4.768555252753712,
+          7.416919636813075
+        ],
+        "independent_background": {
+          "region": [
+            45,
+            60
+          ],
+          "median": -0.5311934206368099,
+          "pixels": 1244,
+          "supported": 1243
+        },
+        "rows": [
+          {
+            "inner": 0,
+            "outer": 4,
+            "pixels": 13,
+            "supported": 13,
+            "median": 164.82034542913547,
+            "mean": 185.90182207659743,
+            "annulus_subtracted_mean": 186.43301549723424,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 9694.516805856181,
+            "aperture_integral_minus_fit_constant": 9717.989156542313
+          },
+          {
+            "inner": 4,
+            "outer": 8,
+            "pixels": 38,
+            "supported": 38,
+            "median": 42.97162934311178,
+            "mean": 43.635094304640795,
+            "annulus_subtracted_mean": 44.166287725277606,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 16407.792540098377,
+            "aperture_integral_minus_fit_constant": 16499.87637740551
+          },
+          {
+            "inner": 8,
+            "outer": 12,
+            "pixels": 64,
+            "supported": 64,
+            "median": 8.957669208075954,
+            "mean": 9.602450319060413,
+            "annulus_subtracted_mean": 10.133643739697224,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 19002.00533746086,
+            "aperture_integral_minus_fit_constant": 19209.645362761272
+          },
+          {
+            "inner": 12,
+            "outer": 20,
+            "pixels": 202,
+            "supported": 202,
+            "median": -0.08598826775754707,
+            "mean": -0.5297392584821711,
+            "annulus_subtracted_mean": 0.0014541621546387828,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 19003.180300481814,
+            "aperture_integral_minus_fit_constant": 19575.544544135977
+          },
+          {
+            "inner": 20,
+            "outer": 30,
+            "pixels": 392,
+            "supported": 392,
+            "median": -2.2094936468260817,
+            "mean": -1.8734667446457725,
+            "annulus_subtracted_mean": -1.3422733240089626,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 16898.495728435762,
+            "aperture_integral_minus_fit_constant": 18178.64162354871
+          },
+          {
+            "inner": 30,
+            "outer": 40,
+            "pixels": 549,
+            "supported": 549,
+            "median": -2.070734731428744,
+            "mean": -2.6287383724867706,
+            "annulus_subtracted_mean": -2.0975449518499607,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 12292.28701417325,
+            "aperture_integral_minus_fit_constant": 14563.688334415969
+          },
+          {
+            "inner": 40,
+            "outer": 50,
+            "pixels": 707,
+            "supported": 707,
+            "median": -0.018235270591578374,
+            "mean": -0.5588618860731724,
+            "annulus_subtracted_mean": -0.027668465436362588,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 12214.040593919217,
+            "aperture_integral_minus_fit_constant": 15761.976678400097
+          },
+          {
+            "inner": 50,
+            "outer": 60,
+            "pixels": 867,
+            "supported": 866,
+            "median": -1.276926774318307,
+            "mean": -0.8828471238350366,
+            "annulus_subtracted_mean": -0.35165370319822675,
+            "aperture_full_support": false,
+            "aperture_integral_minus_annulus": null,
+            "aperture_integral_minus_fit_constant": null
+          }
+        ]
+      },
+      "executed": {
+        "parameters": [
+          278.7873831039652,
+          4.834525000877096,
+          7.4102494471998295,
+          4.384943232074179,
+          2.3530581580658265,
+          -3.1415926535897927,
+          -0.9596896505060439
+        ],
+        "cost": 345337.37747864507,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          -1,
+          0
+        ]
+      },
+      "legacy_reproduction_parameter_maxabs": 2.632194195939519e-07,
+      "feedback_diagnostic": {
+        "accepted": true,
+        "parameters": [
+          287.03713740116916,
+          4.768555252753712,
+          7.416919636813075,
+          4.612702297589841,
+          2.1864200263998335,
+          -0.2514331499234972,
+          -0.9825847799855226
+        ],
+        "old_selected": 20,
+        "new_selected": 20,
+        "membership_changed": 0,
+        "candidate_maxabs_change": 0.022895129479479692,
+        "candidate_l2_change": 0.10239013173955194,
+        "constant_change": -0.022895129479478693,
+        "scope": "same original saved map and frozen noise context; changes prove dependency, not a repaired executed trajectory"
+      }
+    },
+    {
+      "label": "B-3",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/run/BASE-POINT/REF/a1100/cycle-03/native/products/total.fits",
+        "sha256": "5e57b20bbbea242bed834dacd1c0f8b2817e7511078b1777ed37ad140e434515",
+        "bytes": 1209600
+      },
+      "frame": {
+        "CTYPE1": "RA---TAN",
+        "CTYPE2": "DEC--TAN",
+        "CUNIT1": "deg",
+        "CUNIT2": "deg",
+        "CRPIX1": 87.0,
+        "CRPIX2": 101.0,
+        "CRVAL1": 176.7429079166667,
+        "CRVAL2": 39.97619555555556,
+        "CDELT1": -0.0005555555555555556,
+        "CDELT2": 0.0005555555555555556,
+        "BUNIT": "mJy/beam"
+      },
+      "legacy_solver_current_environment": {
+        "parameters": [
+          290.7431337421646,
+          4.774036610624079,
+          7.407492821586763,
+          4.613397122444938,
+          2.1978461128880347,
+          2.8883502438852338,
+          -0.9158552469957858
+        ],
+        "peak": 290.7431337421646,
+        "constant": -0.9158552469957858,
+        "centroid": [
+          4.774036610624079,
+          7.407492821586763
+        ],
+        "fwhm": [
+          10.86372001962144,
+          5.175532082522099
+        ],
+        "angular_integral": 18522.834951014353,
+        "cost": 334242.4482520865,
+        "rms": 23.061001331724007,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 11
+      },
+      "repaired": {
+        "parameters": [
+          290.7431730351159,
+          4.774036800013911,
+          7.407492862964809,
+          4.613396588968077,
+          2.197845757670079,
+          -0.25324246535577144,
+          -0.9158547234698156
+        ],
+        "peak": 290.7431730351159,
+        "constant": -0.9158547234698156,
+        "centroid": [
+          4.774036800013911,
+          7.407492862964809
+        ],
+        "fwhm": [
+          10.863718763379435,
+          5.175531246047737
+        ],
+        "angular_integral": 18522.832318719647,
+        "cost": 334242.4482520898,
+        "rms": 23.061001331724125,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 11
+      },
+      "profiles": {
+        "center": "same convention for every map: its newly fitted centroid in its own native frame, no rotation/registration",
+        "centroid": [
+          4.774036800013911,
+          7.407492862964809
+        ],
+        "independent_background": {
+          "region": [
+            45,
+            60
+          ],
+          "median": -0.5376789965568664,
+          "pixels": 1245,
+          "supported": 1244
+        },
+        "rows": [
+          {
+            "inner": 0,
+            "outer": 4,
+            "pixels": 13,
+            "supported": 13,
+            "median": 167.7015485029185,
+            "mean": 188.933076243551,
+            "annulus_subtracted_mean": 189.47075524010788,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 9852.479272485612,
+            "aperture_integral_minus_fit_constant": 9872.144410285086
+          },
+          {
+            "inner": 4,
+            "outer": 8,
+            "pixels": 38,
+            "supported": 38,
+            "median": 43.686197250379735,
+            "mean": 44.63325943051275,
+            "annulus_subtracted_mean": 45.170938427069615,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 16718.461913400195,
+            "aperture_integral_minus_fit_constant": 16795.609761690434
+          },
+          {
+            "inner": 8,
+            "outer": 12,
+            "pixels": 64,
+            "supported": 64,
+            "median": 9.316885752524993,
+            "mean": 9.922825158792248,
+            "annulus_subtracted_mean": 10.460504155349115,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 19396.350977169568,
+            "aperture_integral_minus_fit_constant": 19570.311811549524
+          },
+          {
+            "inner": 12,
+            "outer": 20,
+            "pixels": 202,
+            "supported": 202,
+            "median": 0.0009601480365277922,
+            "mean": -0.38690649926053144,
+            "annulus_subtracted_mean": 0.1507724972963349,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 19518.175154985005,
+            "aperture_integral_minus_fit_constant": 19997.701976710625
+          },
+          {
+            "inner": 20,
+            "outer": 30,
+            "pixels": 392,
+            "supported": 392,
+            "median": -2.1620446224478624,
+            "mean": -1.8104359744503196,
+            "annulus_subtracted_mean": -1.272756977893453,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 17522.492213648067,
+            "aperture_integral_minus_fit_constant": 18594.998575173195
+          },
+          {
+            "inner": 30,
+            "outer": 40,
+            "pixels": 549,
+            "supported": 549,
+            "median": -2.0537045218257917,
+            "mean": -2.599403886449037,
+            "annulus_subtracted_mean": -2.0617248898921705,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 12994.94435544486,
+            "aperture_integral_minus_fit_constant": 14897.924613270825
+          },
+          {
+            "inner": 40,
+            "outer": 50,
+            "pixels": 708,
+            "supported": 708,
+            "median": 0.021249234906819382,
+            "mean": -0.5413294399827747,
+            "annulus_subtracted_mean": -0.0036504434259083673,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 12984.60629966269,
+            "aperture_integral_minus_fit_constant": 15958.580216106122
+          },
+          {
+            "inner": 50,
+            "outer": 60,
+            "pixels": 867,
+            "supported": 866,
+            "median": -1.2859474070388284,
+            "mean": -0.8685088338351916,
+            "annulus_subtracted_mean": -0.33082983727832527,
+            "aperture_full_support": false,
+            "aperture_integral_minus_annulus": null,
+            "aperture_integral_minus_fit_constant": null
+          }
+        ]
+      },
+      "executed": {
+        "parameters": [
+          290.7431337964834,
+          4.774036603697792,
+          7.407492823087696,
+          4.613397120497122,
+          2.197846114668479,
+          2.8883502440432047,
+          -0.9158552491129611
+        ],
+        "cost": 334242.4482520865,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "legacy_reproduction_parameter_maxabs": 5.431877525552409e-08,
+      "feedback_diagnostic": {
+        "accepted": true,
+        "parameters": [
+          290.7431730351159,
+          4.774036800013911,
+          7.407492862964809,
+          4.613396588968077,
+          2.197845757670079,
+          -0.25324246535577144,
+          -0.9158547234698156
+        ],
+        "old_selected": 21,
+        "new_selected": 21,
+        "membership_changed": 0,
+        "candidate_maxabs_change": 5.256431450106902e-07,
+        "candidate_l2_change": 2.408799500546137e-06,
+        "constant_change": 5.256431455658017e-07,
+        "scope": "same original saved map and frozen noise context; changes prove dependency, not a repaired executed trajectory"
+      }
+    },
+    {
+      "label": "B-4",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/run/BASE-POINT/REF/a1100/cycle-04/native/products/total.fits",
+        "sha256": "9344d8349de7846ff6f7c500218101da1907b86ced1f778eb414c6d31132eb6c",
+        "bytes": 1209600
+      },
+      "frame": {
+        "CTYPE1": "RA---TAN",
+        "CTYPE2": "DEC--TAN",
+        "CUNIT1": "deg",
+        "CUNIT2": "deg",
+        "CRPIX1": 87.0,
+        "CRPIX2": 101.0,
+        "CRVAL1": 176.7429079166667,
+        "CRVAL2": 39.97619555555556,
+        "CDELT1": -0.0005555555555555556,
+        "CDELT2": 0.0005555555555555556,
+        "BUNIT": "mJy/beam"
+      },
+      "legacy_solver_current_environment": {
+        "parameters": [
+          283.1222919076715,
+          4.799735750982271,
+          7.404070990907205,
+          4.430810170332867,
+          2.3685326918312426,
+          -3.1415926535897927,
+          -0.8557766007743681
+        ],
+        "peak": 283.1222919076715,
+        "constant": -0.8557766007743681,
+        "centroid": [
+          4.799735750982271,
+          7.404070990907205
+        ],
+        "fwhm": [
+          10.43376060482683,
+          5.577468260035323
+        ],
+        "angular_integral": 18668.802491074915,
+        "cost": 346017.3593683382,
+        "rms": 23.46368949104045,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          -1,
+          0
+        ],
+        "success": true,
+        "nfev": 12
+      },
+      "repaired": {
+        "parameters": [
+          291.44816584279295,
+          4.736501807361283,
+          7.408585839992763,
+          4.655315572165364,
+          2.203816693065798,
+          -0.24929175891187527,
+          -0.8793563327303104
+        ],
+        "peak": 291.44816584279295,
+        "constant": -0.8793563327303104,
+        "centroid": [
+          4.736501807361283,
+          7.408585839992763
+        ],
+        "fwhm": [
+          10.962430425279722,
+          5.18959172440516
+        ],
+        "angular_integral": 18787.361383344552,
+        "cost": 334253.42430811457,
+        "rms": 23.06137997418253,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 12
+      },
+      "profiles": {
+        "center": "same convention for every map: its newly fitted centroid in its own native frame, no rotation/registration",
+        "centroid": [
+          4.736501807361283,
+          7.408585839992763
+        ],
+        "independent_background": {
+          "region": [
+            45,
+            60
+          ],
+          "median": -0.5097016170394084,
+          "pixels": 1241,
+          "supported": 1240
+        },
+        "rows": [
+          {
+            "inner": 0,
+            "outer": 4,
+            "pixels": 13,
+            "supported": 13,
+            "median": 168.73511322464563,
+            "mean": 190.07912172121542,
+            "annulus_subtracted_mean": 190.58882333825483,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 9910.618813589253,
+            "aperture_integral_minus_fit_constant": 9929.840858805179
+          },
+          {
+            "inner": 4,
+            "outer": 8,
+            "pixels": 37,
+            "supported": 37,
+            "median": 42.709169152092876,
+            "mean": 45.541803972370616,
+            "annulus_subtracted_mean": 46.05150558941003,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 16726.241640821936,
+            "aperture_integral_minus_fit_constant": 16800.172583960117
+          },
+          {
+            "inner": 8,
+            "outer": 12,
+            "pixels": 65,
+            "supported": 65,
+            "median": 9.660171836223434,
+            "mean": 10.718198904097257,
+            "annulus_subtracted_mean": 11.227900521136664,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 19645.495776317468,
+            "aperture_integral_minus_fit_constant": 19815.536945535285
+          },
+          {
+            "inner": 12,
+            "outer": 20,
+            "pixels": 202,
+            "supported": 202,
+            "median": 0.0674113960022878,
+            "mean": -0.4901476046914894,
+            "annulus_subtracted_mean": 0.019554012347919036,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 19661.295418294583,
+            "aperture_integral_minus_fit_constant": 20130.01759779065
+          },
+          {
+            "inner": 20,
+            "outer": 30,
+            "pixels": 393,
+            "supported": 393,
+            "median": -2.132922440802239,
+            "mean": -1.7411777322140944,
+            "annulus_subtracted_mean": -1.231476115174686,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 17725.41496523998,
+            "aperture_integral_minus_fit_constant": 18775.23435780214
+          },
+          {
+            "inner": 30,
+            "outer": 40,
+            "pixels": 548,
+            "supported": 548,
+            "median": -2.0002352853830856,
+            "mean": -2.5153970334846942,
+            "annulus_subtracted_mean": -2.0056954164452856,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 13328.930612391914,
+            "aperture_integral_minus_fit_constant": 15189.033141748532
+          },
+          {
+            "inner": 40,
+            "outer": 50,
+            "pixels": 707,
+            "supported": 707,
+            "median": -0.007470414055832122,
+            "mean": -0.5644611156447875,
+            "annulus_subtracted_mean": -0.0547594986053791,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 13174.0707503359,
+            "aperture_integral_minus_fit_constant": 16079.55681566639
+          },
+          {
+            "inner": 50,
+            "outer": 60,
+            "pixels": 866,
+            "supported": 865,
+            "median": -1.0927931728238982,
+            "mean": -0.7658335897118875,
+            "annulus_subtracted_mean": -0.2561319726724791,
+            "aperture_full_support": false,
+            "aperture_integral_minus_annulus": null,
+            "aperture_integral_minus_fit_constant": null
+          }
+        ]
+      },
+      "executed": {
+        "parameters": [
+          283.12229175728913,
+          4.799735753963877,
+          7.404070991329633,
+          4.430810174861299,
+          2.36853269217371,
+          -3.1415926535897927,
+          -0.8557766031338283
+        ],
+        "cost": 346017.35936833813,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          -1,
+          0
+        ]
+      },
+      "legacy_reproduction_parameter_maxabs": 1.5038239098430495e-07,
+      "feedback_diagnostic": {
+        "accepted": true,
+        "parameters": [
+          291.44816584279295,
+          4.736501807361283,
+          7.408585839992763,
+          4.655315572165364,
+          2.203816693065798,
+          -0.24929175891187527,
+          -0.8793563327303104
+        ],
+        "old_selected": 21,
+        "new_selected": 21,
+        "membership_changed": 0,
+        "candidate_maxabs_change": 0.02357972959649146,
+        "candidate_l2_change": 0.10805589574246613,
+        "constant_change": -0.023579729596482135,
+        "scope": "same original saved map and frozen noise context; changes prove dependency, not a repaired executed trajectory"
+      }
+    },
+    {
+      "label": "B-5",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/run/BASE-POINT/REF/a1100/cycle-05/native/products/total.fits",
+        "sha256": "1f3a65e0adf496ea3e111ab748fccd00eb607a1a59661f4288d6a7d424b5fb23",
+        "bytes": 1209600
+      },
+      "frame": {
+        "CTYPE1": "RA---TAN",
+        "CTYPE2": "DEC--TAN",
+        "CUNIT1": "deg",
+        "CUNIT2": "deg",
+        "CRPIX1": 87.0,
+        "CRPIX2": 101.0,
+        "CRVAL1": 176.7429079166667,
+        "CRVAL2": 39.97619555555556,
+        "CDELT1": -0.0005555555555555556,
+        "CDELT2": 0.0005555555555555556,
+        "BUNIT": "mJy/beam"
+      },
+      "legacy_solver_current_environment": {
+        "parameters": [
+          291.81030156222425,
+          4.729004351124926,
+          7.408721561229733,
+          4.662854168690546,
+          2.2051546817775938,
+          2.8928082532890653,
+          -0.868453206686769
+        ],
+        "peak": 291.81030156222425,
+        "constant": -0.868453206686769,
+        "centroid": [
+          4.729004351124926,
+          7.408721561229733
+        ],
+        "fwhm": [
+          10.980182463488623,
+          5.192742447043722
+        ],
+        "angular_integral": 18852.6054876479,
+        "cost": 334267.7388057435,
+        "rms": 23.061873773962493,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 11
+      },
+      "repaired": {
+        "parameters": [
+          291.8103139168147,
+          4.729004208442198,
+          7.408721706750306,
+          4.662854288690922,
+          2.205154432073818,
+          -0.2487844100167369,
+          -0.8684530373449295
+        ],
+        "peak": 291.8103139168147,
+        "constant": -0.8684530373449295,
+        "centroid": [
+          4.729004208442198,
+          7.408721706750306
+        ],
+        "fwhm": [
+          10.980182746067912,
+          5.192741859036265
+        ],
+        "angular_integral": 18852.604636202617,
+        "cost": 334267.73880574125,
+        "rms": 23.061873773962418,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 12
+      },
+      "profiles": {
+        "center": "same convention for every map: its newly fitted centroid in its own native frame, no rotation/registration",
+        "centroid": [
+          4.729004208442198,
+          7.408721706750306
+        ],
+        "independent_background": {
+          "region": [
+            45,
+            60
+          ],
+          "median": -0.4710406352376494,
+          "pixels": 1242,
+          "supported": 1241
+        },
+        "rows": [
+          {
+            "inner": 0,
+            "outer": 4,
+            "pixels": 13,
+            "supported": 13,
+            "median": 169.09892882507688,
+            "mean": 190.45011057438165,
+            "annulus_subtracted_mean": 190.9211512096193,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 9927.899862900204,
+            "aperture_integral_minus_fit_constant": 9948.565307809782
+          },
+          {
+            "inner": 4,
+            "outer": 8,
+            "pixels": 37,
+            "supported": 37,
+            "median": 42.832070078318104,
+            "mean": 45.762198795025526,
+            "annulus_subtracted_mean": 46.233239430263176,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 16770.419298579152,
+            "aperture_integral_minus_fit_constant": 16849.901779000607
+          },
+          {
+            "inner": 8,
+            "outer": 12,
+            "pixels": 65,
+            "supported": 65,
+            "median": 9.722372820283562,
+            "mean": 10.782585846560721,
+            "annulus_subtracted_mean": 11.25362648179837,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 19696.36218384673,
+            "aperture_integral_minus_fit_constant": 19879.171888816076
+          },
+          {
+            "inner": 12,
+            "outer": 20,
+            "pixels": 202,
+            "supported": 202,
+            "median": 0.09021781829360284,
+            "mean": -0.46627185548186584,
+            "annulus_subtracted_mean": 0.004768779755783548,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 19700.2153578894,
+            "aperture_integral_minus_fit_constant": 20204.134283761432
+          },
+          {
+            "inner": 20,
+            "outer": 30,
+            "pixels": 392,
+            "supported": 392,
+            "median": -2.123325816406656,
+            "mean": -1.8581701467622458,
+            "annulus_subtracted_mean": -1.3871295115245963,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 17525.196283818834,
+            "aperture_integral_minus_fit_constant": 18652.25785619508
+          },
+          {
+            "inner": 30,
+            "outer": 40,
+            "pixels": 549,
+            "supported": 549,
+            "median": -1.9811633482849977,
+            "mean": -2.4165361505029344,
+            "annulus_subtracted_mean": -1.9454955152652849,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 13252.888132296272,
+            "aperture_integral_minus_fit_constant": 15252.6673397001
+          },
+          {
+            "inner": 40,
+            "outer": 50,
+            "pixels": 707,
+            "supported": 707,
+            "median": -0.027021860932298535,
+            "mean": -0.5620916792792572,
+            "annulus_subtracted_mean": -0.0910510440416078,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 12995.395779746603,
+            "aperture_integral_minus_fit_constant": 16119.057260309824
+          },
+          {
+            "inner": 50,
+            "outer": 60,
+            "pixels": 867,
+            "supported": 866,
+            "median": -1.0757379913590372,
+            "mean": -0.7158462921631513,
+            "annulus_subtracted_mean": -0.24480565692550194,
+            "aperture_full_support": false,
+            "aperture_integral_minus_annulus": null,
+            "aperture_integral_minus_fit_constant": null
+          }
+        ]
+      },
+      "executed": {
+        "parameters": [
+          291.81030113464976,
+          4.729004353346202,
+          7.408721560054988,
+          4.662854171986243,
+          2.2051546849791896,
+          2.8928082530257417,
+          -0.8684532092867723
+        ],
+        "cost": 334267.7388057436,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "legacy_reproduction_parameter_maxabs": 4.2757449136843206e-07,
+      "feedback_diagnostic": {
+        "accepted": true,
+        "parameters": [
+          291.8103139168147,
+          4.729004208442198,
+          7.408721706750306,
+          4.662854288690922,
+          2.205154432073818,
+          -0.2487844100167369,
+          -0.8684530373449295
+        ],
+        "old_selected": 21,
+        "new_selected": 21,
+        "membership_changed": 0,
+        "candidate_maxabs_change": 1.719418492029945e-07,
+        "candidate_l2_change": 7.879365111938407e-07,
+        "constant_change": 1.7194184276370095e-07,
+        "scope": "same original saved map and frozen noise context; changes prove dependency, not a repaired executed trajectory"
+      }
+    },
+    {
+      "label": "redu09",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/pointings/reduced/redu09/152420/raw/toltec_commissioning_a1100_pointing_152420_citlali.fits",
+        "sha256": "816b029974ff6e5dfe92dbffe75aeb62bba5f4ef02ccf3305b7d5262654c4dd0",
+        "bytes": 7208640
+      },
+      "frame": {
+        "CTYPE1": "AZOFFSET",
+        "CTYPE2": "ELOFFSET",
+        "CUNIT1": "arcsec",
+        "CUNIT2": "arcsec",
+        "CRPIX1": 176.0,
+        "CRPIX2": 182.0,
+        "CRVAL1": 0.0,
+        "CRVAL2": 0.0,
+        "CDELT1": -1.0,
+        "CDELT2": 1.0,
+        "BUNIT": "mJy/beam"
+      },
+      "legacy_solver_current_environment": {
+        "parameters": [
+          574.5880544726604,
+          7.35255293809606,
+          -4.943216062916156,
+          5.33662183872013,
+          3.1049281548973906,
+          1.0009863895098254,
+          32.59245067050156
+        ],
+        "peak": 574.5880544726604,
+        "constant": 32.59245067050156,
+        "centroid": [
+          7.35255293809606,
+          -4.943216062916156
+        ],
+        "fwhm": [
+          12.566784078568084,
+          7.3115470575333354
+        ],
+        "angular_integral": 59821.10704968343,
+        "cost": 6387162.570025029,
+        "rms": 50.419780411326464,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 19
+      },
+      "repaired": {
+        "parameters": [
+          574.5877126226618,
+          7.352551268519448,
+          -4.943218536730114,
+          3.104930954119984,
+          5.336623662800029,
+          -0.5698099819292106,
+          32.59244293750635
+        ],
+        "peak": 574.5877126226618,
+        "constant": 32.59244293750635,
+        "centroid": [
+          7.352551268519448,
+          -4.943218536730114
+        ],
+        "fwhm": [
+          12.566788373947995,
+          7.3115536491988085
+        ],
+        "angular_integral": 59821.14583754841,
+        "cost": 6387162.570025176,
+        "rms": 50.41978041132705,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 22
+      },
+      "profiles": {
+        "center": "same convention for every map: its newly fitted centroid in its own native frame, no rotation/registration",
+        "centroid": [
+          7.352551268519448,
+          -4.943218536730114
+        ],
+        "independent_background": {
+          "region": [
+            45,
+            60
+          ],
+          "median": 36.092441583656786,
+          "pixels": 4947,
+          "supported": 4947
+        },
+        "rows": [
+          {
+            "inner": 0,
+            "outer": 4,
+            "pixels": 51,
+            "supported": 51,
+            "median": 480.80478689318,
+            "mean": 473.4116471706408,
+            "annulus_subtracted_mean": 437.31920558698397,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 22303.27948493619,
+            "aperture_integral_minus_fit_constant": 22481.779415889854
+          },
+          {
+            "inner": 4,
+            "outer": 8,
+            "pixels": 150,
+            "supported": 150,
+            "median": 190.63824133701712,
+            "mean": 211.16185190652166,
+            "annulus_subtracted_mean": 175.06941032286488,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 48563.69103336592,
+            "aperture_integral_minus_fit_constant": 49267.19076124216
+          },
+          {
+            "inner": 8,
+            "outer": 12,
+            "pixels": 252,
+            "supported": 252,
+            "median": 90.11198609344885,
+            "mean": 84.37065533835252,
+            "annulus_subtracted_mean": 48.278213754695734,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 60729.80089954924,
+            "aperture_integral_minus_fit_constant": 62315.30028625539
+          },
+          {
+            "inner": 12,
+            "outer": 20,
+            "pixels": 801,
+            "supported": 801,
+            "median": 49.672274593566655,
+            "mean": 47.95755800265754,
+            "annulus_subtracted_mean": 11.865116419000756,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 70233.75915116885,
+            "aperture_integral_minus_fit_constant": 74622.7574534415
+          },
+          {
+            "inner": 20,
+            "outer": 30,
+            "pixels": 1570,
+            "supported": 1570,
+            "median": 38.478890431666926,
+            "mean": 34.25563288409423,
+            "annulus_subtracted_mean": -1.8368086995625532,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 67349.96949285564,
+            "aperture_integral_minus_fit_constant": 77233.96566958449
+          },
+          {
+            "inner": 30,
+            "outer": 40,
+            "pixels": 2199,
+            "supported": 2199,
+            "median": 24.62275458513809,
+            "mean": 23.165463195275844,
+            "annulus_subtracted_mean": -12.926978388380942,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 38923.54401680596,
+            "aperture_integral_minus_fit_constant": 56504.0372164196
+          },
+          {
+            "inner": 40,
+            "outer": 50,
+            "pixels": 2833,
+            "supported": 2833,
+            "median": 31.505818637549332,
+            "mean": 34.23348403568147,
+            "annulus_subtracted_mean": -1.858957547975315,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 33657.1172833919,
+            "aperture_integral_minus_fit_constant": 61153.10664754973
+          },
+          {
+            "inner": 50,
+            "outer": 60,
+            "pixels": 3453,
+            "supported": 3453,
+            "median": 37.34842885325478,
+            "mean": 39.21655854441878,
+            "annulus_subtracted_mean": 3.124116960761995,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 44444.693148903025,
+            "aperture_integral_minus_fit_constant": 84026.17783821833
+          }
+        ]
+      }
+    },
+    {
+      "label": "earlier-V2",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/pointings/reduced/redu00/152420/raw/toltec_commissioning_a1100_pointing_152420_citlali.fits",
+        "sha256": "603724c8ce3f8a957efec2b21e5b4a227bbc2e1feb97f12fd79b7585d12c927d",
+        "bytes": 7776000
+      },
+      "frame": {
+        "CTYPE1": "AZOFFSET",
+        "CTYPE2": "ELOFFSET",
+        "CUNIT1": "arcsec",
+        "CUNIT2": "arcsec",
+        "CRPIX1": 182.0,
+        "CRPIX2": 186.0,
+        "CRVAL1": 0.0,
+        "CRVAL2": 0.0,
+        "CDELT1": -1.0,
+        "CDELT2": 1.0,
+        "BUNIT": "mJy/beam"
+      },
+      "legacy_solver_current_environment": {
+        "parameters": [
+          251.70175809634108,
+          8.461390600099614,
+          -2.7856410793922426,
+          2.5208232752948585,
+          3.463407609113047,
+          -0.45349118532907406,
+          -1.6079909272364337
+        ],
+        "peak": 251.70175809634108,
+        "constant": -1.6079909272364337,
+        "centroid": [
+          8.461390600099614,
+          -2.7856410793922426
+        ],
+        "fwhm": [
+          8.155701662052117,
+          5.936085178644904
+        ],
+        "angular_integral": 13807.40692249857,
+        "cost": 1072990.504866977,
+        "rms": 20.66545178454837,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 21
+      },
+      "repaired": {
+        "parameters": [
+          251.70174879250592,
+          8.46139050351392,
+          -2.7856412253821157,
+          2.5208233296665243,
+          3.4634077910478918,
+          -0.4534912540210907,
+          -1.6079909300373574
+        ],
+        "peak": 251.70174879250592,
+        "constant": -1.6079909300373574,
+        "centroid": [
+          8.46139050351392,
+          -2.7856412253821157
+        ],
+        "fwhm": [
+          8.155702090475938,
+          5.9360853066803925
+        ],
+        "angular_integral": 13807.40743524867,
+        "cost": 1072990.5048669595,
+        "rms": 20.6654517845482,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 19
+      },
+      "profiles": {
+        "center": "same convention for every map: its newly fitted centroid in its own native frame, no rotation/registration",
+        "centroid": [
+          8.46139050351392,
+          -2.7856412253821157
+        ],
+        "independent_background": {
+          "region": [
+            45,
+            60
+          ],
+          "median": -0.6856864164794358,
+          "pixels": 4953,
+          "supported": 4953
+        },
+        "rows": [
+          {
+            "inner": 0,
+            "outer": 4,
+            "pixels": 50,
+            "supported": 50,
+            "median": 151.32737509204244,
+            "mean": 160.13056023988148,
+            "annulus_subtracted_mean": 160.8162466563609,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 8040.812332818045,
+            "aperture_integral_minus_fit_constant": 8086.927558495942
+          },
+          {
+            "inner": 4,
+            "outer": 8,
+            "pixels": 150,
+            "supported": 150,
+            "median": 26.980382885710693,
+            "mean": 34.52284359733634,
+            "annulus_subtracted_mean": 35.208530013815775,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 13322.091834890412,
+            "aperture_integral_minus_fit_constant": 13506.552737601996
+          },
+          {
+            "inner": 8,
+            "outer": 12,
+            "pixels": 253,
+            "supported": 253,
+            "median": 0.42990429629229227,
+            "mean": 1.4464260625585836,
+            "annulus_subtracted_mean": 2.1321124790380193,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 13861.516292087032,
+            "aperture_integral_minus_fit_constant": 14279.32023672877
+          },
+          {
+            "inner": 12,
+            "outer": 20,
+            "pixels": 805,
+            "supported": 805,
+            "median": -1.39769658708526,
+            "mean": -1.7521720680387471,
+            "annulus_subtracted_mean": -1.0664856515593113,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 13002.995342581784,
+            "aperture_integral_minus_fit_constant": 14163.254420637651
+          },
+          {
+            "inner": 20,
+            "outer": 30,
+            "pixels": 1573,
+            "supported": 1573,
+            "median": -2.1629968058169666,
+            "mean": -2.1855288782530966,
+            "annulus_subtracted_mean": -1.4998424617736608,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 10643.743150211816,
+            "aperture_integral_minus_fit_constant": 13254.78722809429
+          },
+          {
+            "inner": 30,
+            "outer": 40,
+            "pixels": 2202,
+            "supported": 2202,
+            "median": -2.4261760112796913,
+            "mean": -1.0431151850698428,
+            "annulus_subtracted_mean": -0.35742876859040695,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 9856.685001775739,
+            "aperture_integral_minus_fit_constant": 14498.643618512757
+          },
+          {
+            "inner": 40,
+            "outer": 50,
+            "pixels": 2822,
+            "supported": 2822,
+            "median": -1.315398141134152,
+            "mean": -1.241305325103901,
+            "annulus_subtracted_mean": -0.5556189086244652,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 8288.728441637495,
+            "aperture_integral_minus_fit_constant": 15533.430395634972
+          },
+          {
+            "inner": 50,
+            "outer": 60,
+            "pixels": 3462,
+            "supported": 3462,
+            "median": -0.6201212917732772,
+            "mean": 0.5620731143373557,
+            "annulus_subtracted_mean": 1.2477595308167917,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 12608.47193732523,
+            "aperture_integral_minus_fit_constant": 23046.192117260234
+          }
+        ]
+      }
+    },
+    {
+      "label": "redu00",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/pointings/reduced/redu00/152420/raw/toltec_commissioning_a1100_pointing_152420_citlali.fits",
+        "sha256": "3e116ea541c1545b9a4b814af5e4f7e7d80019db9aa080234252d49aa50ac836",
+        "bytes": 1391040
+      },
+      "frame": {
+        "CTYPE1": "AZOFFSET",
+        "CTYPE2": "ELOFFSET",
+        "CUNIT1": "arcsec",
+        "CUNIT2": "arcsec",
+        "CRPIX1": 91.0,
+        "CRPIX2": 93.0,
+        "CRVAL1": 0.0,
+        "CRVAL2": 0.0,
+        "CDELT1": 2.0,
+        "CDELT2": 2.0,
+        "BUNIT": null
+      },
+      "legacy_solver_current_environment": {
+        "parameters": [
+          380.46140968151735,
+          8.967473846949396,
+          -3.215005340932612,
+          3.072836893723205,
+          4.608336218114555,
+          -0.6748548762392416,
+          12.126586151583613
+        ],
+        "peak": 380.46140968151735,
+        "constant": 12.126586151583613,
+        "centroid": [
+          8.967473846949396,
+          -3.215005340932612
+        ],
+        "fwhm": [
+          10.851802500658271,
+          7.23597791245004
+        ],
+        "angular_integral": 33851.20607883249,
+        "cost": 468308.101737453,
+        "rms": 27.29689156590225,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 16
+      },
+      "repaired": {
+        "parameters": [
+          380.4614140642279,
+          8.9674738365838,
+          -3.2150053377415353,
+          4.60833620825064,
+          3.0728368259434937,
+          0.8959414608818674,
+          12.126586254019479
+        ],
+        "peak": 380.4614140642279,
+        "constant": 12.126586254019479,
+        "centroid": [
+          8.9674738365838,
+          -3.2150053377415353
+        ],
+        "fwhm": [
+          10.851802477430526,
+          7.235977752841017
+        ],
+        "angular_integral": 33851.2056496436,
+        "cost": 468308.101737451,
+        "rms": 27.29689156590219,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 18
+      },
+      "profiles": {
+        "center": "same convention for every map: its newly fitted centroid in its own native frame, no rotation/registration",
+        "centroid": [
+          8.9674738365838,
+          -3.2150053377415353
+        ],
+        "independent_background": {
+          "region": [
+            45,
+            60
+          ],
+          "median": 17.716183384305367,
+          "pixels": 1253,
+          "supported": 1253
+        },
+        "rows": [
+          {
+            "inner": 0,
+            "outer": 4,
+            "pixels": 12,
+            "supported": 12,
+            "median": 293.4096055524889,
+            "mean": 306.87910623363086,
+            "annulus_subtracted_mean": 289.16292284932547,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 13879.820296767622,
+            "aperture_integral_minus_fit_constant": 14148.120959021346
+          },
+          {
+            "inner": 4,
+            "outer": 8,
+            "pixels": 40,
+            "supported": 40,
+            "median": 103.47545064961554,
+            "mean": 109.59429194740001,
+            "annulus_subtracted_mean": 91.87810856309464,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 28580.317666862764,
+            "aperture_integral_minus_fit_constant": 29742.953869962224
+          },
+          {
+            "inner": 8,
+            "outer": 12,
+            "pixels": 63,
+            "supported": 63,
+            "median": 34.492069630214885,
+            "mean": 38.74189058524987,
+            "annulus_subtracted_mean": 21.025707200944503,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 33878.79588150078,
+            "aperture_integral_minus_fit_constant": 36450.01056143228
+          },
+          {
+            "inner": 12,
+            "outer": 20,
+            "pixels": 199,
+            "supported": 199,
+            "median": 10.773250282906703,
+            "mean": 12.075663254245642,
+            "annulus_subtracted_mean": -5.640520130059725,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 29388.941857973237,
+            "aperture_integral_minus_fit_constant": 36409.47585361231
+          },
+          {
+            "inner": 20,
+            "outer": 30,
+            "pixels": 395,
+            "supported": 395,
+            "median": 8.832102503894381,
+            "mean": 10.05153087855302,
+            "annulus_subtracted_mean": -7.664652505752347,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 17278.79089888453,
+            "aperture_integral_minus_fit_constant": 33130.888360375306
+          },
+          {
+            "inner": 30,
+            "outer": 40,
+            "pixels": 553,
+            "supported": 553,
+            "median": 12.303735242000071,
+            "mean": 17.752774111647845,
+            "annulus_subtracted_mean": 0.036590727342478147,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 17359.729587766094,
+            "aperture_integral_minus_fit_constant": 45576.01590144926
+          },
+          {
+            "inner": 40,
+            "outer": 50,
+            "pixels": 707,
+            "supported": 707,
+            "median": 18.583342614577745,
+            "mean": 19.052179859024818,
+            "annulus_subtracted_mean": 1.335996474719451,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 21137.92761827269,
+            "aperture_integral_minus_fit_constant": 65161.59461640434
+          },
+          {
+            "inner": 50,
+            "outer": 60,
+            "pixels": 864,
+            "supported": 864,
+            "median": 16.789077797992956,
+            "mean": 18.716506027343936,
+            "annulus_subtracted_mean": 1.0003226430385688,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 24595.042672613985,
+            "aperture_integral_minus_fit_constant": 87936.35735301368
+          }
+        ]
+      }
+    },
+    {
+      "label": "redu01",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/pointings/reduced/redu01/152420/raw/toltec_commissioning_a1100_pointing_152420_citlali.fits",
+        "sha256": "3273def84f189f8680da76e2687f983591a5ba3754f642afcb6bb4b7558299f9",
+        "bytes": 1304640
+      },
+      "frame": {
+        "CTYPE1": "AZOFFSET",
+        "CTYPE2": "ELOFFSET",
+        "CUNIT1": "arcsec",
+        "CUNIT2": "arcsec",
+        "CRPIX1": 88.0,
+        "CRPIX2": 91.0,
+        "CRVAL1": 0.0,
+        "CRVAL2": 0.0,
+        "CDELT1": 2.0,
+        "CDELT2": 2.0,
+        "BUNIT": null
+      },
+      "legacy_solver_current_environment": {
+        "parameters": [
+          627.1471380135819,
+          8.634220770847358,
+          -3.9337292547556313,
+          3.307670288742115,
+          4.669530876066357,
+          2.5837115134208237,
+          58.260522754021245
+        ],
+        "peak": 627.1471380135819,
+        "constant": 58.260522754021245,
+        "centroid": [
+          8.634220770847358,
+          -3.9337292547556313
+        ],
+        "fwhm": [
+          10.995904907851987,
+          7.78896829828324
+        ],
+        "angular_integral": 60861.79777543645,
+        "cost": 1491553.5067120795,
+        "rms": 48.71545663069167,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 15
+      },
+      "repaired": {
+        "parameters": [
+          627.1471458160613,
+          8.634220787013932,
+          -3.9337292429235715,
+          4.669530850686399,
+          3.3076702188337905,
+          1.012915203347792,
+          58.26052292151716
+        ],
+        "peak": 627.1471458160613,
+        "constant": 58.26052292151716,
+        "centroid": [
+          8.634220787013932,
+          -3.9337292429235715
+        ],
+        "fwhm": [
+          10.995904848086752,
+          7.788968133661717
+        ],
+        "angular_integral": 60861.79691550695,
+        "cost": 1491553.5067120702,
+        "rms": 48.71545663069152,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 13
+      },
+      "profiles": {
+        "center": "same convention for every map: its newly fitted centroid in its own native frame, no rotation/registration",
+        "centroid": [
+          8.634220787013932,
+          -3.9337292429235715
+        ],
+        "independent_background": {
+          "region": [
+            45,
+            60
+          ],
+          "median": 70.50078615202992,
+          "pixels": 1234,
+          "supported": 1234
+        },
+        "rows": [
+          {
+            "inner": 0,
+            "outer": 4,
+            "pixels": 13,
+            "supported": 13,
+            "median": 450.0896218970706,
+            "mean": 531.7781457242473,
+            "annulus_subtracted_mean": 461.2773595722174,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 23986.422697755304,
+            "aperture_integral_minus_fit_constant": 24622.916385741966
+          },
+          {
+            "inner": 4,
+            "outer": 8,
+            "pixels": 36,
+            "supported": 36,
+            "median": 216.4221871150081,
+            "mean": 246.93897653159235,
+            "annulus_subtracted_mean": 176.43819037956243,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 49393.52211241229,
+            "aperture_integral_minus_fit_constant": 51792.61370559279
+          },
+          {
+            "inner": 8,
+            "outer": 12,
+            "pixels": 61,
+            "supported": 61,
+            "median": 102.6920963537012,
+            "mean": 108.66313570396092,
+            "annulus_subtracted_mean": 38.162349551931,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 58705.135403083455,
+            "aperture_integral_minus_fit_constant": 64090.85122450907
+          },
+          {
+            "inner": 12,
+            "outer": 20,
+            "pixels": 201,
+            "supported": 201,
+            "median": 66.46255844229327,
+            "mean": 67.1096430479951,
+            "annulus_subtracted_mean": -3.3911431040348106,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 55978.656347439464,
+            "aperture_integral_minus_fit_constant": 71205.54380619734
+          },
+          {
+            "inner": 20,
+            "outer": 30,
+            "pixels": 393,
+            "supported": 393,
+            "median": 52.497313004752336,
+            "mean": 54.585272503222086,
+            "annulus_subtracted_mean": -15.915513648807831,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 30959.46889151355,
+            "aperture_integral_minus_fit_constant": 65428.050148637485
+          },
+          {
+            "inner": 30,
+            "outer": 40,
+            "pixels": 549,
+            "supported": 549,
+            "median": 52.76878625912625,
+            "mean": 59.38163457185345,
+            "annulus_subtracted_mean": -11.119151580176464,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 6541.812021446036,
+            "aperture_integral_minus_fit_constant": 67890.01133277599
+          },
+          {
+            "inner": 40,
+            "outer": 50,
+            "pixels": 708,
+            "supported": 708,
+            "median": 62.893318631703025,
+            "mean": 65.01354219352301,
+            "annulus_subtracted_mean": -5.487243958506909,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": -8998.062869045552,
+            "aperture_integral_minus_fit_constant": 87014.56191109655
+          },
+          {
+            "inner": 50,
+            "outer": 60,
+            "pixels": 865,
+            "supported": 865,
+            "median": 72.96721680051954,
+            "mean": 77.35480650446178,
+            "annulus_subtracted_mean": 6.85402035243186,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 14716.847550368631,
+            "aperture_integral_minus_fit_constant": 153080.78310808487
+          }
+        ]
+      }
+    },
+    {
+      "label": "redu02",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/pointings/reduced/redu02/152420/raw/toltec_commissioning_a1100_pointing_152420_citlali.fits",
+        "sha256": "86093dfde17903627fcccfa76985811dc8ff0b8821905f17bd1715bf058a42e6",
+        "bytes": 1319040
+      },
+      "frame": {
+        "CTYPE1": "AZOFFSET",
+        "CTYPE2": "ELOFFSET",
+        "CUNIT1": "arcsec",
+        "CUNIT2": "arcsec",
+        "CRPIX1": 89.0,
+        "CRPIX2": 91.0,
+        "CRVAL1": 0.0,
+        "CRVAL2": 0.0,
+        "CDELT1": 2.0,
+        "CDELT2": 2.0,
+        "BUNIT": null
+      },
+      "legacy_solver_current_environment": {
+        "parameters": [
+          605.956055793814,
+          5.57098632657615,
+          -3.109562805356819,
+          3.1804532312622973,
+          4.915525899687373,
+          -0.6828230686739162,
+          58.14784115662997
+        ],
+        "peak": 605.956055793814,
+        "constant": 58.14784115662997,
+        "centroid": [
+          5.57098632657615,
+          -3.109562805356819
+        ],
+        "fwhm": [
+          11.575178920452618,
+          7.489395021259911
+        ],
+        "angular_integral": 59522.34061855565,
+        "cost": 1594981.7114661082,
+        "rms": 50.37617776630395,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 24
+      },
+      "repaired": {
+        "parameters": [
+          605.9560491360686,
+          5.57098631944164,
+          -3.1095628212029847,
+          3.180453299816054,
+          4.915525907554024,
+          -0.6828230773918729,
+          58.147841000776836
+        ],
+        "peak": 605.9560491360686,
+        "constant": 58.147841000776836,
+        "centroid": [
+          5.57098631944164,
+          -3.1095628212029847
+        ],
+        "fwhm": [
+          11.575178938977164,
+          7.4893951826916725
+        ],
+        "angular_integral": 59522.341342817876,
+        "cost": 1594981.7114661164,
+        "rms": 50.37617776630408,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 15
+      },
+      "profiles": {
+        "center": "same convention for every map: its newly fitted centroid in its own native frame, no rotation/registration",
+        "centroid": [
+          5.57098631944164,
+          -3.1095628212029847
+        ],
+        "independent_background": {
+          "region": [
+            45,
+            60
+          ],
+          "median": 70.9666035120436,
+          "pixels": 1236,
+          "supported": 1236
+        },
+        "rows": [
+          {
+            "inner": 0,
+            "outer": 4,
+            "pixels": 14,
+            "supported": 14,
+            "median": 539.9909934746745,
+            "mean": 517.1317644726921,
+            "annulus_subtracted_mean": 446.1651609606485,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 24985.24901379632,
+            "aperture_integral_minus_fit_constant": 25703.099714427262
+          },
+          {
+            "inner": 4,
+            "outer": 8,
+            "pixels": 36,
+            "supported": 36,
+            "median": 197.2339577779959,
+            "mean": 223.796889770764,
+            "annulus_subtracted_mean": 152.8302862587204,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 46992.81023505205,
+            "aperture_integral_minus_fit_constant": 49556.562737305416
+          },
+          {
+            "inner": 8,
+            "outer": 12,
+            "pixels": 66,
+            "supported": 66,
+            "median": 110.42567491282517,
+            "mean": 110.57475851945291,
+            "annulus_subtracted_mean": 39.60815500740931,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 57449.36315700812,
+            "aperture_integral_minus_fit_constant": 63397.268962235896
+          },
+          {
+            "inner": 12,
+            "outer": 20,
+            "pixels": 200,
+            "supported": 200,
+            "median": 66.14618512072309,
+            "mean": 67.60439839806082,
+            "annulus_subtracted_mean": -3.3622051139827818,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 54759.599065821894,
+            "aperture_integral_minus_fit_constant": 70962.51488006309
+          },
+          {
+            "inner": 20,
+            "outer": 30,
+            "pixels": 391,
+            "supported": 391,
+            "median": 48.40478946169787,
+            "mean": 52.78202746857098,
+            "annulus_subtracted_mean": -18.184576043472624,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 26318.922133830718,
+            "aperture_integral_minus_fit_constant": 62570.38251569314
+          },
+          {
+            "inner": 30,
+            "outer": 40,
+            "pixels": 549,
+            "supported": 549,
+            "median": 55.2281989988169,
+            "mean": 58.785978850591356,
+            "annulus_subtracted_mean": -12.18062466145225,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": -429.7296227184179,
+            "aperture_integral_minus_fit_constant": 63971.73323388583
+          },
+          {
+            "inner": 40,
+            "outer": 50,
+            "pixels": 707,
+            "supported": 707,
+            "median": 62.54512457246355,
+            "mean": 63.73068170374051,
+            "annulus_subtracted_mean": -7.235921808303097,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": -20892.91649659956,
+            "aperture_integral_minus_fit_constant": 79760.00674186711
+          },
+          {
+            "inner": 50,
+            "outer": 60,
+            "pixels": 866,
+            "supported": 866,
+            "median": 72.55376525275328,
+            "mean": 77.70374905630877,
+            "annulus_subtracted_mean": 6.737145544265161,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 2444.555668734971,
+            "aperture_integral_minus_fit_constant": 147501.67224622972
+          }
+        ]
+      }
+    },
+    {
+      "label": "redu03",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/pointings/reduced/redu03/152420/raw/toltec_commissioning_a1100_pointing_152420_citlali.fits",
+        "sha256": "b441553c37d8f027e90cddcf82f3558a57431ae561cb79729a582cda31398753",
+        "bytes": 7107840
+      },
+      "frame": {
+        "CTYPE1": "AZOFFSET",
+        "CTYPE2": "ELOFFSET",
+        "CUNIT1": "arcsec",
+        "CUNIT2": "arcsec",
+        "CRPIX1": 175.0,
+        "CRPIX2": 180.0,
+        "CRVAL1": 0.0,
+        "CRVAL2": 0.0,
+        "CDELT1": -1.0,
+        "CDELT2": 1.0,
+        "BUNIT": "mJy/beam"
+      },
+      "legacy_solver_current_environment": {
+        "parameters": [
+          503.2619240452437,
+          7.421179811707468,
+          -5.072510241909114,
+          5.194732221591037,
+          3.170166713982268,
+          -2.250624018616657,
+          31.511584446293348
+        ],
+        "peak": 503.2619240452437,
+        "constant": 31.511584446293348,
+        "centroid": [
+          7.421179811707468,
+          -5.072510241909114
+        ],
+        "fwhm": [
+          12.23265956397073,
+          7.465172124175341
+        ],
+        "angular_integral": 52073.79260711836,
+        "cost": 4847600.356784373,
+        "rms": 43.92485830175894,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 22
+      },
+      "repaired": {
+        "parameters": [
+          503.2620407982074,
+          7.421181910706878,
+          -5.072508518674637,
+          5.1947317631829,
+          3.1701654565954462,
+          0.8909685173839179,
+          31.511587046868268
+        ],
+        "peak": 503.2620407982074,
+        "constant": 31.511587046868268,
+        "centroid": [
+          7.421181910706878,
+          -5.072508518674637
+        ],
+        "fwhm": [
+          12.232658484502059,
+          7.4651691632556485
+        ],
+        "angular_integral": 52073.77943851155,
+        "cost": 4847600.356784664,
+        "rms": 43.92485830176026,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 19
+      },
+      "profiles": {
+        "center": "same convention for every map: its newly fitted centroid in its own native frame, no rotation/registration",
+        "centroid": [
+          7.421181910706878,
+          -5.072508518674637
+        ],
+        "independent_background": {
+          "region": [
+            45,
+            60
+          ],
+          "median": 37.7099680341584,
+          "pixels": 4951,
+          "supported": 4951
+        },
+        "rows": [
+          {
+            "inner": 0,
+            "outer": 4,
+            "pixels": 51,
+            "supported": 51,
+            "median": 394.50272869672085,
+            "mean": 407.16877658275683,
+            "annulus_subtracted_mean": 369.4588085485984,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 18842.399235978522,
+            "aperture_integral_minus_fit_constant": 19158.516666330317
+          },
+          {
+            "inner": 4,
+            "outer": 8,
+            "pixels": 148,
+            "supported": 148,
+            "median": 182.74256553528028,
+            "mean": 193.7008330748299,
+            "annulus_subtracted_mean": 155.99086504067148,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 41929.0472619979,
+            "aperture_integral_minus_fit_constant": 43162.525078468636
+          },
+          {
+            "inner": 8,
+            "outer": 12,
+            "pixels": 255,
+            "supported": 255,
+            "median": 68.97190303313018,
+            "mean": 69.60646572727619,
+            "annulus_subtracted_mean": 31.896497693117787,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 50062.654173742936,
+            "aperture_integral_minus_fit_constant": 52876.71914197266
+          },
+          {
+            "inner": 12,
+            "outer": 20,
+            "pixels": 800,
+            "supported": 800,
+            "median": 46.479102772139,
+            "mean": 45.12835463955937,
+            "annulus_subtracted_mean": 7.418386605400968,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 55997.36345806371,
+            "aperture_integral_minus_fit_constant": 63770.13321612553
+          },
+          {
+            "inner": 20,
+            "outer": 30,
+            "pixels": 1570,
+            "supported": 1570,
+            "median": 34.325668516254055,
+            "mean": 30.09245319388837,
+            "annulus_subtracted_mean": -7.6175148402700295,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 44037.86515883975,
+            "aperture_integral_minus_fit_constant": 61542.09306694708
+          },
+          {
+            "inner": 30,
+            "outer": 40,
+            "pixels": 2201,
+            "supported": 2201,
+            "median": 23.556506939036538,
+            "mean": 24.277376399043014,
+            "annulus_subtracted_mean": -13.432591635115386,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 14472.73096995079,
+            "aperture_integral_minus_fit_constant": 45619.5954310837
+          },
+          {
+            "inner": 40,
+            "outer": 50,
+            "pixels": 2832,
+            "supported": 2832,
+            "median": 31.71575014819907,
+            "mean": 33.02482190973731,
+            "annulus_subtracted_mean": -4.685146124421088,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 1204.3971455902538,
+            "aperture_integral_minus_fit_constant": 49905.07656272882
+          },
+          {
+            "inner": 50,
+            "outer": 60,
+            "pixels": 3455,
+            "supported": 3455,
+            "median": 39.15896457274482,
+            "mean": 38.4959226712875,
+            "annulus_subtracted_mean": 0.7859546371291017,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 3919.870416871312,
+            "aperture_integral_minus_fit_constant": 74035.9561450973
+          }
+        ]
+      }
+    },
+    {
+      "label": "redu04",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/pointings/reduced/redu04/152420/raw/toltec_commissioning_a1100_pointing_152420_citlali.fits",
+        "sha256": "23ce4331e883bbd789b677e13d285cf27d06585eea1442bbc1499bf4facbecbd",
+        "bytes": 7107840
+      },
+      "frame": {
+        "CTYPE1": "AZOFFSET",
+        "CTYPE2": "ELOFFSET",
+        "CUNIT1": "arcsec",
+        "CUNIT2": "arcsec",
+        "CRPIX1": 175.0,
+        "CRPIX2": 180.0,
+        "CRVAL1": 0.0,
+        "CRVAL2": 0.0,
+        "CDELT1": -1.0,
+        "CDELT2": 1.0,
+        "BUNIT": "mJy/beam"
+      },
+      "legacy_solver_current_environment": {
+        "parameters": [
+          530.5824793530509,
+          7.315660319473786,
+          -5.11237969490314,
+          5.364962336919614,
+          3.369630870914065,
+          0.9985323868081778,
+          35.79097236454502
+        ],
+        "peak": 530.5824793530509,
+        "constant": 35.79097236454502,
+        "centroid": [
+          7.315660319473786,
+          -5.11237969490314
+        ],
+        "fwhm": [
+          12.633520851814392,
+          7.934874319183536
+        ],
+        "angular_integral": 60267.30605582278,
+        "cost": 7343964.319117674,
+        "rms": 54.06450659425892,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 23
+      },
+      "repaired": {
+        "parameters": [
+          530.5824464269181,
+          7.315660666006618,
+          -5.112380079025541,
+          3.3696311524940485,
+          5.364962588020318,
+          -0.5722638025859577,
+          35.79097154362545
+        ],
+        "peak": 530.5824464269181,
+        "constant": 35.79097154362545,
+        "centroid": [
+          7.315660666006618,
+          -5.112380079025541
+        ],
+        "fwhm": [
+          12.633521443111364,
+          7.934874982253725
+        ],
+        "angular_integral": 60267.31017275943,
+        "cost": 7343964.319117473,
+        "rms": 54.064506594258184,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 21
+      },
+      "profiles": {
+        "center": "same convention for every map: its newly fitted centroid in its own native frame, no rotation/registration",
+        "centroid": [
+          7.315660666006618,
+          -5.112380079025541
+        ],
+        "independent_background": {
+          "region": [
+            45,
+            60
+          ],
+          "median": 36.77546013850912,
+          "pixels": 4950,
+          "supported": 4950
+        },
+        "rows": [
+          {
+            "inner": 0,
+            "outer": 4,
+            "pixels": 51,
+            "supported": 51,
+            "median": 432.77045254432124,
+            "mean": 445.6264234038719,
+            "annulus_subtracted_mean": 408.8509632653628,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 20851.3991265335,
+            "aperture_integral_minus_fit_constant": 20901.60804487257
+          },
+          {
+            "inner": 4,
+            "outer": 8,
+            "pixels": 151,
+            "supported": 151,
+            "median": 209.0667910528795,
+            "mean": 217.2459941068746,
+            "annulus_subtracted_mean": 180.4705339683655,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 48102.44975575668,
+            "aperture_integral_minus_fit_constant": 48301.31645192319
+          },
+          {
+            "inner": 8,
+            "outer": 12,
+            "pixels": 251,
+            "supported": 251,
+            "median": 93.3798073466864,
+            "mean": 87.30951758090933,
+            "annulus_subtracted_mean": 50.53405744240021,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 60786.49817379914,
+            "aperture_integral_minus_fit_constant": 61232.471507281436
+          },
+          {
+            "inner": 12,
+            "outer": 20,
+            "pixels": 805,
+            "supported": 805,
+            "median": 59.03344910809492,
+            "mean": 56.75551383081672,
+            "annulus_subtracted_mean": 19.9800536923076,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 76870.44139610675,
+            "aperture_integral_minus_fit_constant": 78108.92804847039
+          },
+          {
+            "inner": 20,
+            "outer": 30,
+            "pixels": 1566,
+            "supported": 1566,
+            "median": 35.31509425592888,
+            "mean": 32.060719415416315,
+            "annulus_subtracted_mean": -4.7147407230928025,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 69487.15742374343,
+            "aperture_integral_minus_fit_constant": 72267.35321569488
+          },
+          {
+            "inner": 30,
+            "outer": 40,
+            "pixels": 2201,
+            "supported": 2201,
+            "median": 26.910948069242504,
+            "mean": 27.56255923108377,
+            "annulus_subtracted_mean": -9.212900907425347,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 49209.56252650023,
+            "aperture_integral_minus_fit_constant": 54156.61771579065
+          },
+          {
+            "inner": 40,
+            "outer": 50,
+            "pixels": 2835,
+            "supported": 2835,
+            "median": 32.3355399035718,
+            "mean": 37.07780780929734,
+            "annulus_subtracted_mean": 0.30234767078822244,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 50066.718173184854,
+            "aperture_integral_minus_fit_constant": 57804.79852897045
+          },
+          {
+            "inner": 50,
+            "outer": 60,
+            "pixels": 3454,
+            "supported": 3454,
+            "median": 38.311721877007756,
+            "mean": 40.85687051160878,
+            "annulus_subtracted_mean": 4.081410373099665,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 64163.909601871106,
+            "aperture_integral_minus_fit_constant": 75302.41356438487
+          }
+        ]
+      }
+    },
+    {
+      "label": "redu05",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/pointings/reduced/redu05/152420/raw/toltec_commissioning_a1100_pointing_152420_citlali.fits",
+        "sha256": "db6c0b217dee42171c09ab05c9115eb9e4ad7120591a1cd6774c7c71492e9046",
+        "bytes": 7168320
+      },
+      "frame": {
+        "CTYPE1": "AZOFFSET",
+        "CTYPE2": "ELOFFSET",
+        "CUNIT1": "arcsec",
+        "CUNIT2": "arcsec",
+        "CRPIX1": 176.0,
+        "CRPIX2": 181.0,
+        "CRVAL1": 0.0,
+        "CRVAL2": 0.0,
+        "CDELT1": -1.0,
+        "CDELT2": 1.0,
+        "BUNIT": "mJy/beam"
+      },
+      "legacy_solver_current_environment": {
+        "parameters": [
+          563.0288267187644,
+          4.447171921439995,
+          -4.040177576509447,
+          2.9993229652086963,
+          5.617126356480259,
+          2.5352584377232183,
+          28.7610518867228
+        ],
+        "peak": 563.0288267187644,
+        "constant": 28.7610518867228,
+        "centroid": [
+          4.447171921439995,
+          -4.040177576509447
+        ],
+        "fwhm": [
+          13.227321739711376,
+          7.062865839995103
+        ],
+        "angular_integral": 59600.228612455336,
+        "cost": 5005378.674504494,
+        "rms": 44.63396147795666,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 18
+      },
+      "repaired": {
+        "parameters": [
+          563.0288800908203,
+          4.447171923228461,
+          -4.040177508594607,
+          2.9993227333837926,
+          5.617125675410696,
+          -0.6063341941894,
+          28.761053138051818
+        ],
+        "peak": 563.0288800908203,
+        "constant": 28.761053138051818,
+        "centroid": [
+          4.447171923228461,
+          -4.040177508594607
+        ],
+        "fwhm": [
+          13.227320135915116,
+          7.062865294089173
+        ],
+        "angular_integral": 59600.22242913198,
+        "cost": 5005378.674504781,
+        "rms": 44.63396147795794,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 18
+      },
+      "profiles": {
+        "center": "same convention for every map: its newly fitted centroid in its own native frame, no rotation/registration",
+        "centroid": [
+          4.447171923228461,
+          -4.040177508594607
+        ],
+        "independent_background": {
+          "region": [
+            45,
+            60
+          ],
+          "median": 38.2323310846381,
+          "pixels": 4958,
+          "supported": 4958
+        },
+        "rows": [
+          {
+            "inner": 0,
+            "outer": 4,
+            "pixels": 51,
+            "supported": 51,
+            "median": 468.0745530942496,
+            "mean": 456.1479886319464,
+            "annulus_subtracted_mean": 417.91565754730834,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 21313.698534912724,
+            "aperture_integral_minus_fit_constant": 21796.733710188626
+          },
+          {
+            "inner": 4,
+            "outer": 8,
+            "pixels": 147,
+            "supported": 147,
+            "median": 179.16622902561278,
+            "mean": 207.06150065291735,
+            "annulus_subtracted_mean": 168.82916956827924,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 46131.586461449784,
+            "aperture_integral_minus_fit_constant": 48006.89949487386
+          },
+          {
+            "inner": 8,
+            "outer": 12,
+            "pixels": 256,
+            "supported": 256,
+            "median": 79.69243192078031,
+            "mean": 78.91357142207022,
+            "annulus_subtracted_mean": 40.68124033743212,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 56545.983987832406,
+            "aperture_integral_minus_fit_constant": 60845.94417558258
+          },
+          {
+            "inner": 12,
+            "outer": 20,
+            "pixels": 799,
+            "supported": 799,
+            "median": 34.12751986106225,
+            "mean": 38.59319259883684,
+            "annulus_subtracted_mean": 0.3608615141987457,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 56834.3123376772,
+            "aperture_integral_minus_fit_constant": 68701.8236047498
+          },
+          {
+            "inner": 20,
+            "outer": 30,
+            "pixels": 1570,
+            "supported": 1570,
+            "median": 26.621214592518168,
+            "mean": 23.90774573980706,
+            "annulus_subtracted_mean": -14.32458534483104,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 34344.71334629247,
+            "aperture_integral_minus_fit_constant": 61082.130989505546
+          },
+          {
+            "inner": 30,
+            "outer": 40,
+            "pixels": 2198,
+            "supported": 2198,
+            "median": 24.062089249731127,
+            "mean": 24.440359951851203,
+            "annulus_subtracted_mean": -13.791971132786895,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 4029.960796426876,
+            "aperture_integral_minus_fit_constant": 51585.24736623659
+          },
+          {
+            "inner": 40,
+            "outer": 50,
+            "pixels": 2835,
+            "supported": 2835,
+            "median": 32.88815051328984,
+            "mean": 34.31077142520941,
+            "annulus_subtracted_mean": -3.921559659428688,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": -7087.660838053467,
+            "aperture_integral_minus_fit_constant": 67318.69871032835
+          },
+          {
+            "inner": 50,
+            "outer": 60,
+            "pixels": 3461,
+            "supported": 3461,
+            "median": 39.634597177994515,
+            "mean": 40.0213885561793,
+            "annulus_subtracted_mean": 1.7890574715412058,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": -895.7329290493508,
+            "aperture_integral_minus_fit_constant": 106290.71959246758
+          }
+        ]
+      }
+    },
+    {
+      "label": "redu06",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/pointings/reduced/redu06/152420/raw/toltec_commissioning_a1100_pointing_152420_citlali.fits",
+        "sha256": "6387cc0a78238c1fc0d19def46b254dbc83722f686dc0891e0ad2d205432a80a",
+        "bytes": 7107840
+      },
+      "frame": {
+        "CTYPE1": "AZOFFSET",
+        "CTYPE2": "ELOFFSET",
+        "CUNIT1": "arcsec",
+        "CUNIT2": "arcsec",
+        "CRPIX1": 175.0,
+        "CRPIX2": 180.0,
+        "CRVAL1": 0.0,
+        "CRVAL2": 0.0,
+        "CDELT1": -1.0,
+        "CDELT2": 1.0,
+        "BUNIT": "mJy/beam"
+      },
+      "legacy_solver_current_environment": {
+        "parameters": [
+          530.5825148096402,
+          7.315660473303866,
+          -5.112379380754699,
+          3.3696305296325444,
+          5.364962129193588,
+          -0.5722639649226049,
+          35.7909732484801
+        ],
+        "peak": 530.5825148096402,
+        "constant": 35.7909732484801,
+        "centroid": [
+          7.315660473303866,
+          -5.112379380754699
+        ],
+        "fwhm": [
+          12.633520362656983,
+          7.93487351552697
+        ],
+        "angular_integral": 60267.301645774285,
+        "cost": 7343964.319117936,
+        "rms": 54.06450659425989,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 23
+      },
+      "repaired": {
+        "parameters": [
+          530.5824712839266,
+          7.315660259996594,
+          -5.112379763277781,
+          3.3696309477193878,
+          5.364962386386519,
+          -0.572263942461559,
+          35.790972161356564
+        ],
+        "peak": 530.5824712839266,
+        "constant": 35.790972161356564,
+        "centroid": [
+          7.315660259996594,
+          -5.112379763277781
+        ],
+        "fwhm": [
+          12.63352096830005,
+          7.9348745000462495
+        ],
+        "angular_integral": 60267.30706865752,
+        "cost": 7343964.319117501,
+        "rms": 54.06450659425828,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 24
+      },
+      "profiles": {
+        "center": "same convention for every map: its newly fitted centroid in its own native frame, no rotation/registration",
+        "centroid": [
+          7.315660259996594,
+          -5.112379763277781
+        ],
+        "independent_background": {
+          "region": [
+            45,
+            60
+          ],
+          "median": 36.77546013850693,
+          "pixels": 4950,
+          "supported": 4950
+        },
+        "rows": [
+          {
+            "inner": 0,
+            "outer": 4,
+            "pixels": 51,
+            "supported": 51,
+            "median": 432.7704525443193,
+            "mean": 445.6264234038694,
+            "annulus_subtracted_mean": 408.85096326536245,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 20851.399126533484,
+            "aperture_integral_minus_fit_constant": 20901.608013368153
+          },
+          {
+            "inner": 4,
+            "outer": 8,
+            "pixels": 151,
+            "supported": 151,
+            "median": 209.06679105287617,
+            "mean": 217.24599410687335,
+            "annulus_subtracted_mean": 180.47053396836642,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 48102.449755756825,
+            "aperture_integral_minus_fit_constant": 48301.31632714119
+          },
+          {
+            "inner": 8,
+            "outer": 12,
+            "pixels": 251,
+            "supported": 251,
+            "median": 93.37980734668318,
+            "mean": 87.30951758090845,
+            "annulus_subtracted_mean": 50.53405744240152,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 60786.498173799606,
+            "aperture_integral_minus_fit_constant": 61232.471227448725
+          },
+          {
+            "inner": 12,
+            "outer": 20,
+            "pixels": 805,
+            "supported": 805,
+            "median": 59.033449108093684,
+            "mean": 56.75551383081554,
+            "annulus_subtracted_mean": 19.98005369230861,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 76870.44139610804,
+            "aperture_integral_minus_fit_constant": 78108.92727136321
+          },
+          {
+            "inner": 20,
+            "outer": 30,
+            "pixels": 1566,
+            "supported": 1566,
+            "median": 35.31509425592752,
+            "mean": 32.06071941541586,
+            "annulus_subtracted_mean": -4.714740723091069,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 69487.15742374744,
+            "aperture_integral_minus_fit_constant": 72267.35147122007
+          },
+          {
+            "inner": 30,
+            "outer": 40,
+            "pixels": 2201,
+            "supported": 2201,
+            "median": 26.910948069241776,
+            "mean": 27.562559231083227,
+            "annulus_subtracted_mean": -9.212900907423702,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 49209.56252650787,
+            "aperture_integral_minus_fit_constant": 54156.61461168845
+          },
+          {
+            "inner": 40,
+            "outer": 50,
+            "pixels": 2835,
+            "supported": 2835,
+            "median": 32.33553990357182,
+            "mean": 37.07780780929643,
+            "annulus_subtracted_mean": 0.3023476707895014,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 50066.7181731961,
+            "aperture_integral_minus_fit_constant": 57804.79367359799
+          },
+          {
+            "inner": 50,
+            "outer": 60,
+            "pixels": 3454,
+            "supported": 3454,
+            "median": 38.31172187700709,
+            "mean": 40.85687051160778,
+            "annulus_subtracted_mean": 4.0814103731008515,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 64163.90960188643,
+            "aperture_integral_minus_fit_constant": 75302.40657536566
+          }
+        ]
+      }
+    },
+    {
+      "label": "redu07",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/pointings/reduced/redu07/152420/raw/toltec_commissioning_a1100_pointing_152420_citlali.fits",
+        "sha256": "1136316de838ed0931ab7fc2b54d9bf32b420fe3ca1479c7590c0af67751df51",
+        "bytes": 7208640
+      },
+      "frame": {
+        "CTYPE1": "AZOFFSET",
+        "CTYPE2": "ELOFFSET",
+        "CUNIT1": "arcsec",
+        "CUNIT2": "arcsec",
+        "CRPIX1": 176.0,
+        "CRPIX2": 182.0,
+        "CRVAL1": 0.0,
+        "CRVAL2": 0.0,
+        "CDELT1": -1.0,
+        "CDELT2": 1.0,
+        "BUNIT": "mJy/beam"
+      },
+      "legacy_solver_current_environment": {
+        "parameters": [
+          574.588079847419,
+          7.352553060380656,
+          -4.94321587917953,
+          5.336621700305698,
+          3.1049279488122465,
+          1.0009863972264519,
+          32.59245123395855
+        ],
+        "peak": 574.588079847419,
+        "constant": 32.59245123395855,
+        "centroid": [
+          7.352553060380656,
+          -4.94321587917953
+        ],
+        "fwhm": [
+          12.566783752627005,
+          7.311546572239908
+        ],
+        "angular_integral": 59821.10416937936,
+        "cost": 6387162.570025178,
+        "rms": 50.41978041132705,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 18
+      },
+      "repaired": {
+        "parameters": [
+          574.5877126226637,
+          7.352551268519461,
+          -4.943218536730118,
+          3.104930954119991,
+          5.336623662800033,
+          -0.5698099819292084,
+          32.59244293750621
+        ],
+        "peak": 574.5877126226637,
+        "constant": 32.59244293750621,
+        "centroid": [
+          7.352551268519461,
+          -4.943218536730118
+        ],
+        "fwhm": [
+          12.566788373948004,
+          7.311553649198825
+        ],
+        "angular_integral": 59821.145837548785,
+        "cost": 6387162.570025107,
+        "rms": 50.41978041132677,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 22
+      },
+      "profiles": {
+        "center": "same convention for every map: its newly fitted centroid in its own native frame, no rotation/registration",
+        "centroid": [
+          7.352551268519461,
+          -4.943218536730118
+        ],
+        "independent_background": {
+          "region": [
+            45,
+            60
+          ],
+          "median": 36.092441583654825,
+          "pixels": 4947,
+          "supported": 4947
+        },
+        "rows": [
+          {
+            "inner": 0,
+            "outer": 4,
+            "pixels": 51,
+            "supported": 51,
+            "median": 480.80478689318085,
+            "mean": 473.4116471706424,
+            "annulus_subtracted_mean": 437.3192055869876,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 22303.279484936367,
+            "aperture_integral_minus_fit_constant": 22481.779415889945
+          },
+          {
+            "inner": 4,
+            "outer": 8,
+            "pixels": 150,
+            "supported": 150,
+            "median": 190.63824133701894,
+            "mean": 211.16185190652268,
+            "annulus_subtracted_mean": 175.06941032286787,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 48563.69103336655,
+            "aperture_integral_minus_fit_constant": 49267.190761242426
+          },
+          {
+            "inner": 8,
+            "outer": 12,
+            "pixels": 252,
+            "supported": 252,
+            "median": 90.11198609344946,
+            "mean": 84.37065533835288,
+            "annulus_subtracted_mean": 48.27821375469805,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 60729.800899550464,
+            "aperture_integral_minus_fit_constant": 62315.300286255784
+          },
+          {
+            "inner": 12,
+            "outer": 20,
+            "pixels": 801,
+            "supported": 801,
+            "median": 49.67227459356613,
+            "mean": 47.95755800265768,
+            "annulus_subtracted_mean": 11.865116419002852,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 70233.75915117175,
+            "aperture_integral_minus_fit_constant": 74622.75745344211
+          },
+          {
+            "inner": 20,
+            "outer": 30,
+            "pixels": 1570,
+            "supported": 1570,
+            "median": 38.478890431667864,
+            "mean": 34.25563288409404,
+            "annulus_subtracted_mean": -1.836808699560784,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 67349.96949286133,
+            "aperture_integral_minus_fit_constant": 77233.96566958498
+          },
+          {
+            "inner": 30,
+            "outer": 40,
+            "pixels": 2199,
+            "supported": 2199,
+            "median": 24.622754585139152,
+            "mean": 23.165463195275677,
+            "annulus_subtracted_mean": -12.926978388379148,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 38923.54401681557,
+            "aperture_integral_minus_fit_constant": 56504.03721642004
+          },
+          {
+            "inner": 40,
+            "outer": 50,
+            "pixels": 2833,
+            "supported": 2833,
+            "median": 31.50581863754879,
+            "mean": 34.23348403568151,
+            "annulus_subtracted_mean": -1.8589575479733114,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 33657.11728340719,
+            "aperture_integral_minus_fit_constant": 61153.10664755067
+          },
+          {
+            "inner": 50,
+            "outer": 60,
+            "pixels": 3453,
+            "supported": 3453,
+            "median": 37.3484288532541,
+            "mean": 39.21655854441885,
+            "annulus_subtracted_mean": 3.1241169607640273,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 44444.69314892536,
+            "aperture_integral_minus_fit_constant": 84026.17783822001
+          }
+        ]
+      }
+    },
+    {
+      "label": "redu08",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/pointings/reduced/redu08/152420/raw/toltec_commissioning_a1100_pointing_152420_citlali.fits",
+        "sha256": "7cca665c983e6beccb4a066c5deb5139373262b95e95f6f3544106f1612b4fa4",
+        "bytes": 7208640
+      },
+      "frame": {
+        "CTYPE1": "AZOFFSET",
+        "CTYPE2": "ELOFFSET",
+        "CUNIT1": "arcsec",
+        "CUNIT2": "arcsec",
+        "CRPIX1": 176.0,
+        "CRPIX2": 182.0,
+        "CRVAL1": 0.0,
+        "CRVAL2": 0.0,
+        "CDELT1": -1.0,
+        "CDELT2": 1.0,
+        "BUNIT": "mJy/beam"
+      },
+      "legacy_solver_current_environment": {
+        "parameters": [
+          574.5877677718686,
+          7.352551545014654,
+          -4.943218128184126,
+          3.1049305035008246,
+          5.336623366676405,
+          2.571782678503004,
+          32.5924441710991
+        ],
+        "peak": 574.5877677718686,
+        "constant": 32.5924441710991,
+        "centroid": [
+          7.352551545014654,
+          -4.943218128184126
+        ],
+        "fwhm": [
+          12.566787676630149,
+          7.3115525880717795
+        ],
+        "angular_integral": 59821.139577944814,
+        "cost": 6387162.570024684,
+        "rms": 50.4197804113251,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 21
+      },
+      "repaired": {
+        "parameters": [
+          574.587712622664,
+          7.352551268519464,
+          -4.9432185367301225,
+          3.1049309541199848,
+          5.336623662800027,
+          -0.569809981929208,
+          32.59244293750627
+        ],
+        "peak": 574.587712622664,
+        "constant": 32.59244293750627,
+        "centroid": [
+          7.352551268519464,
+          -4.9432185367301225
+        ],
+        "fwhm": [
+          12.566788373947988,
+          7.311553649198811
+        ],
+        "angular_integral": 59821.14583754862,
+        "cost": 6387162.570025099,
+        "rms": 50.41978041132674,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 22
+      },
+      "profiles": {
+        "center": "same convention for every map: its newly fitted centroid in its own native frame, no rotation/registration",
+        "centroid": [
+          7.352551268519464,
+          -4.9432185367301225
+        ],
+        "independent_background": {
+          "region": [
+            45,
+            60
+          ],
+          "median": 36.09244158365661,
+          "pixels": 4947,
+          "supported": 4947
+        },
+        "rows": [
+          {
+            "inner": 0,
+            "outer": 4,
+            "pixels": 51,
+            "supported": 51,
+            "median": 480.80478689317965,
+            "mean": 473.4116471706422,
+            "annulus_subtracted_mean": 437.3192055869856,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 22303.279484936265,
+            "aperture_integral_minus_fit_constant": 22481.779415889927
+          },
+          {
+            "inner": 4,
+            "outer": 8,
+            "pixels": 150,
+            "supported": 150,
+            "median": 190.638241337019,
+            "mean": 211.1618519065224,
+            "annulus_subtracted_mean": 175.0694103228658,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 48563.691033366136,
+            "aperture_integral_minus_fit_constant": 49267.190761242346
+          },
+          {
+            "inner": 8,
+            "outer": 12,
+            "pixels": 252,
+            "supported": 252,
+            "median": 90.11198609344927,
+            "mean": 84.37065533835252,
+            "annulus_subtracted_mean": 48.27821375469591,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 60729.8008995495,
+            "aperture_integral_minus_fit_constant": 62315.3002862556
+          },
+          {
+            "inner": 12,
+            "outer": 20,
+            "pixels": 801,
+            "supported": 801,
+            "median": 49.672274593566506,
+            "mean": 47.957558002657585,
+            "annulus_subtracted_mean": 11.865116419000977,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 70233.7591511693,
+            "aperture_integral_minus_fit_constant": 74622.75745344182
+          },
+          {
+            "inner": 20,
+            "outer": 30,
+            "pixels": 1570,
+            "supported": 1570,
+            "median": 38.47889043166715,
+            "mean": 34.255632884094005,
+            "annulus_subtracted_mean": -1.836808699562603,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 67349.969492856,
+            "aperture_integral_minus_fit_constant": 77233.96566958456
+          },
+          {
+            "inner": 30,
+            "outer": 40,
+            "pixels": 2199,
+            "supported": 2199,
+            "median": 24.622754585137653,
+            "mean": 23.165463195275773,
+            "annulus_subtracted_mean": -12.926978388380835,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 38923.54401680654,
+            "aperture_integral_minus_fit_constant": 56504.03721641969
+          },
+          {
+            "inner": 40,
+            "outer": 50,
+            "pixels": 2833,
+            "supported": 2833,
+            "median": 31.505818637548593,
+            "mean": 34.23348403568161,
+            "annulus_subtracted_mean": -1.8589575479749954,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 33657.11728339338,
+            "aperture_integral_minus_fit_constant": 61153.10664755045
+          },
+          {
+            "inner": 50,
+            "outer": 60,
+            "pixels": 3453,
+            "supported": 3453,
+            "median": 37.34842885325345,
+            "mean": 39.21655854441879,
+            "annulus_subtracted_mean": 3.12411696076218,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 44444.69314890519,
+            "aperture_integral_minus_fit_constant": 84026.17783821936
+          }
+        ]
+      }
+    },
+    {
+      "label": "Q-core-minus-T5",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/Q-C-core-minus/run/BASE-POINT/REF/a1100/cycle-05/native/products/total.fits",
+        "sha256": "a4c0733a227e454fba45464159979374bebb0c2e6516f3f83a109d915aa91a47",
+        "bytes": 1209600
+      },
+      "frame": {
+        "CTYPE1": "RA---TAN",
+        "CTYPE2": "DEC--TAN",
+        "CUNIT1": "deg",
+        "CUNIT2": "deg",
+        "CRPIX1": 87.0,
+        "CRPIX2": 101.0,
+        "CRVAL1": 176.7429079166667,
+        "CRVAL2": 39.97619555555556,
+        "CDELT1": -0.0005555555555555556,
+        "CDELT2": 0.0005555555555555556,
+        "BUNIT": "mJy/beam"
+      },
+      "legacy_solver_current_environment": {
+        "parameters": [
+          261.63648412115833,
+          4.833351377743867,
+          7.387409005969313,
+          4.387048325182897,
+          2.3948429034216727,
+          -3.1415926535897927,
+          -0.8378352829434038
+        ],
+        "peak": 261.63648412115833,
+        "constant": -0.8378352829434038,
+        "centroid": [
+          4.833351377743867,
+          7.387409005969313
+        ],
+        "fwhm": [
+          10.33070933466014,
+          5.639424073677473
+        ],
+        "angular_integral": 17271.403127722162,
+        "cost": 343288.3327727299,
+        "rms": 23.3709776836185,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          -1,
+          0
+        ],
+        "success": true,
+        "nfev": 12
+      },
+      "repaired": {
+        "parameters": [
+          269.5305329315147,
+          4.769402227593895,
+          7.393642293395027,
+          4.636712677735264,
+          2.2160526068785913,
+          -0.26156939993109707,
+          -0.8636412534610097
+        ],
+        "peak": 269.5305329315147,
+        "constant": -0.8636412534610097,
+        "centroid": [
+          4.769402227593895,
+          7.393642293395027
+        ],
+        "fwhm": [
+          10.918623956580127,
+          5.218405099520797
+        ],
+        "angular_integral": 17401.15554748361,
+        "cost": 332693.00968744175,
+        "rms": 23.00748761547423,
+        "active": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "success": true,
+        "nfev": 12
+      },
+      "profiles": {
+        "center": "same convention for every map: its newly fitted centroid in its own native frame, no rotation/registration",
+        "centroid": [
+          4.769402227593895,
+          7.393642293395027
+        ],
+        "independent_background": {
+          "region": [
+            45,
+            60
+          ],
+          "median": -0.7665425627410805,
+          "pixels": 1247,
+          "supported": 1246
+        },
+        "rows": [
+          {
+            "inner": 0,
+            "outer": 4,
+            "pixels": 13,
+            "supported": 13,
+            "median": 153.88562560722573,
+            "mean": 176.2913047099861,
+            "annulus_subtracted_mean": 177.05784727272717,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 9207.008058181813,
+            "aperture_integral_minus_fit_constant": 9212.057190099249
+          },
+          {
+            "inner": 4,
+            "outer": 8,
+            "pixels": 38,
+            "supported": 38,
+            "median": 40.090280537429564,
+            "mean": 41.831000942393985,
+            "annulus_subtracted_mean": 42.597543505135064,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 15681.834670962342,
+            "aperture_integral_minus_fit_constant": 15701.642803869207
+          },
+          {
+            "inner": 8,
+            "outer": 12,
+            "pixels": 64,
+            "supported": 64,
+            "median": 10.067287475392135,
+            "mean": 9.605196308937677,
+            "annulus_subtracted_mean": 10.371738871678756,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 18336.999822112102,
+            "aperture_integral_minus_fit_constant": 18381.66521984327
+          },
+          {
+            "inner": 12,
+            "outer": 20,
+            "pixels": 202,
+            "supported": 202,
+            "median": -0.07611017106196583,
+            "mean": -0.6255553656333473,
+            "annulus_subtracted_mean": 0.1409871971077331,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 18450.91747737515,
+            "aperture_integral_minus_fit_constant": 18574.038617208025
+          },
+          {
+            "inner": 20,
+            "outer": 30,
+            "pixels": 392,
+            "supported": 392,
+            "median": -2.5406338615203823,
+            "mean": -1.902999907233265,
+            "annulus_subtracted_mean": -1.1364573444921846,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 16668.952361211406,
+            "aperture_integral_minus_fit_constant": 16944.324248093122
+          },
+          {
+            "inner": 30,
+            "outer": 40,
+            "pixels": 550,
+            "supported": 550,
+            "median": -1.326975799826791,
+            "mean": -2.1145196045215373,
+            "annulus_subtracted_mean": -1.3479770417804569,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 13703.402869294401,
+            "aperture_integral_minus_fit_constant": 14192.391875759964
+          },
+          {
+            "inner": 40,
+            "outer": 50,
+            "pixels": 707,
+            "supported": 707,
+            "median": -0.08405155194139528,
+            "mean": -0.5928877169934096,
+            "annulus_subtracted_mean": 0.17365484574767087,
+            "aperture_full_support": true,
+            "aperture_integral_minus_annulus": 14194.498773068812,
+            "aperture_integral_minus_fit_constant": 14958.082876890336
+          },
+          {
+            "inner": 50,
+            "outer": 60,
+            "pixels": 868,
+            "supported": 867,
+            "median": -1.2885327133035474,
+            "mean": -0.9509911287638333,
+            "annulus_subtracted_mean": -0.18444856602275284,
+            "aperture_full_support": false,
+            "aperture_integral_minus_annulus": null,
+            "aperture_integral_minus_fit_constant": null
+          }
+        ]
+      }
+    }
+  ],
+  "redu09_over_B_T5": {
+    "peak": 1.9690452503555353,
+    "difference": 282.7773987058471,
+    "gaussian_area": 1.6114902075633626,
+    "angular_integral": 3.1730971391970946
+  },
+  "limitations": [
+    "Unweighted same Gaussian+constant inside40arcsec; interior fit is not global-optimality proof.",
+    "Original executed trajectories are unchanged. Fixed-context feedback diagnostics do not re-execute adaptive feedback.",
+    "Angular integrals are brightness times arcsec squared, not absolute flux.",
+    "Other redu directories are separate contextual jobs, not presumed iterations of redu09."
+  ]
+}

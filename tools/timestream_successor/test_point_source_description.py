@@ -2,7 +2,7 @@
 import unittest
 import numpy as np
 from astropy.io import fits
-from inspect_point_source import measure
+from inspect_point_source import measure, solve_gaussian, gaussian, gaussian_jacobian
 
 
 class PointSourceDescription(unittest.TestCase):
@@ -19,6 +19,51 @@ class PointSourceDescription(unittest.TestCase):
         self.assertAlmostEqual(r['fitted_amplitude_above_constant_mJy_per_nominal_beam'],125,places=7)
         self.assertAlmostEqual(r['fitted_constant_mJy_per_nominal_beam'],-7,places=7)
         self.assertFalse(r['fit_constraint_active'])
+
+    def test_shared_analytic_jacobian_matches_finite_differences(self):
+        y,x=np.mgrid[-8:9:2.,-8:9:2.];x=x.ravel();y=y.ravel()
+        p=np.array([170.,2.,-3.,4.1,2.3,.71,-6.])
+        numerical=[]
+        for i in range(7):
+            h=1e-5;plus=p.copy();minus=p.copy();plus[i]+=h;minus[i]-=h
+            numerical.append((gaussian(plus,x,y)-gaussian(minus,x,y))/(2*h))
+        np.testing.assert_allclose(gaussian_jacobian(p,x,y),np.array(numerical).T,rtol=1e-6,atol=1e-7)
+        p[4]=p[3]
+        np.testing.assert_array_equal(gaussian_jacobian(p,x,y)[:,5],np.zeros_like(x))
+
+    def test_periodic_and_axis_swapped_initializations_have_same_image_objective(self):
+        y,x=np.mgrid[-40:41:2.,-40:41:2.];roi=np.hypot(x,y)<=40
+        truth=np.array([210.,4.,7.,4.6,2.1,-.25,-2.])
+        signal=gaussian(truth,x,y)
+        initial=np.array([180.,3.,6.,5.,2.5,-.4,-1.])
+        periodic=initial.copy();periodic[5]+=np.pi
+        swapped=initial.copy();swapped[3:5]=initial[[4,3]];swapped[5]+=np.pi/2
+        outputs=[solve_gaussian(signal,roi,x,y,p,sigma_floor=1.5) for p in (initial,periodic,swapped)]
+        for f in outputs:
+            self.assertTrue(f.success);self.assertEqual(f.active_mask[5],0)
+            np.testing.assert_allclose(gaussian(f.x,x,y),signal,atol=1e-7)
+            self.assertLess(f.cost,1e-12)
+        np.testing.assert_allclose(outputs[0].fun,outputs[1].fun,atol=1e-7)
+        np.testing.assert_allclose(outputs[0].fun,outputs[2].fun,atol=1e-7)
+
+    def test_angle_can_cross_old_boundary_without_restarting(self):
+        y,x=np.mgrid[-40:41:2.,-40:41:2.];roi=np.hypot(x,y)<=40
+        truth=np.array([230.,4.7,7.5,4.6,2.1,-.25,-2.])
+        initial=truth.copy();initial[5]=-np.pi
+        f=solve_gaussian(gaussian(truth,x,y),roi,x,y,initial,sigma_floor=1.5)
+        self.assertTrue(f.success);self.assertEqual(f.active_mask[5],0)
+        self.assertLess(f.cost,1e-12)
+        np.testing.assert_allclose(gaussian(f.x,x,y),gaussian(truth,x,y),atol=1e-7)
+
+    def test_near_circular_image_without_identified_angle(self):
+        y,x=np.mgrid[-40:41:2.,-40:41:2.];roi=np.hypot(x,y)<=40
+        for epsilon in (0.,1e-7):
+            truth=np.array([170.,2.,-3.,3.,3.+epsilon,.71,-6.])
+            initial=np.array([150.,1.,-2.,3.1,3.,-.62,-5.])
+            f=solve_gaussian(gaussian(truth,x,y),roi,x,y,initial,sigma_floor=1.5)
+            self.assertTrue(f.success);self.assertLess(f.cost,1e-12)
+            np.testing.assert_allclose(gaussian(f.x,x,y),gaussian(truth,x,y),atol=1e-7)
+            # No assertion on angle: it has no unique value for a circular source.
 
     def test_missing_central_support_is_not_a_source(self):
         h={'CRPIX1':4,'CRPIX2':4,'CDELT1':-2/3600,'CDELT2':2/3600}

@@ -1,0 +1,1147 @@
+-- (verbose) Generate gitversion header /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/config_header/tula_config/gitversion.h
+-- (verbose) GIT exec: /usr/bin/git
+-- (verbose) GIT dir: /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src
+-- (verbose) GIT revision: f30f81d
+-- (verbose) GIT version: f30f81d-dirty
+-- (verbose) Timestamp: 2026-09-30T13:08:03
+-- (verbose) Generate config header /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/config_header/tula_config/config.h
+-- (perflibs) OpenMP::OpenMP_CXX IMPORTED = TRUE
+-- (perflibs) OpenMP::OpenMP_CXX IMPORTED_GLOBAL = FALSE
+-- (perflibs) OpenMP::OpenMP_CXX INTERFACE_COMPILE_OPTIONS = $<$<COMPILE_LANGUAGE:CXX>:SHELL:-Xclang -fopenmp>
+-- (perflibs) OpenMP::OpenMP_CXX INTERFACE_CXX_MODULE_SETS = 
+-- (perflibs) OpenMP::OpenMP_CXX INTERFACE_HEADER_SETS = 
+-- (perflibs) OpenMP::OpenMP_CXX INTERFACE_INCLUDE_DIRECTORIES = $<BUILD_INTERFACE:/opt/homebrew/opt/libomp/include>
+-- (perflibs) OpenMP::OpenMP_CXX INTERFACE_LINK_LIBRARIES = /opt/homebrew/opt/libomp/lib/libomp.dylib
+-- (perflibs) OpenMP::OpenMP_CXX NAME = OpenMP::OpenMP_CXX
+-- (perflibs) OpenMP::OpenMP_CXX TYPE = INTERFACE_LIBRARY
+-- (perflibs) Threads::Threads IMPORTED = TRUE
+-- (perflibs) Threads::Threads IMPORTED_GLOBAL = FALSE
+-- (perflibs) Threads::Threads INTERFACE_CXX_MODULE_SETS = 
+-- (perflibs) Threads::Threads INTERFACE_HEADER_SETS = 
+-- (perflibs) Threads::Threads NAME = Threads::Threads
+-- (perflibs) Threads::Threads TYPE = INTERFACE_LIBRARY
+-- (perflibs) tula_perflibs IMPORTED = FALSE
+-- (perflibs) tula_perflibs IMPORTED_GLOBAL = FALSE
+-- (perflibs) tula_perflibs INTERFACE_COMPILE_DEFINITIONS = USE_OPENMP_LIB=gnuUSE_INTEL_ONEAPI=OFFUSE_MKL_THREAD=sequentialHAS_OPENMP=1HAS_MKL=0HAS_THREADS=1
+-- (perflibs) tula_perflibs INTERFACE_CXX_MODULE_SETS = 
+-- (perflibs) tula_perflibs INTERFACE_HEADER_SETS = 
+-- (perflibs) tula_perflibs INTERFACE_LINK_LIBRARIES = OpenMP::OpenMP_CXXThreads::Threads
+-- (perflibs) tula_perflibs NAME = tula_perflibs
+-- (perflibs) tula_perflibs TYPE = INTERFACE_LIBRARY
+-- (logging) Minimum log level enabled at compile-time: Debug
+-- (logging) Default conan instal logging_libs.
+-- (logging) Use user setting for LOGGING_LIBS:
+-- (logging)   USE_INSTALLED_LOGGING_LIBS: OFF
+-- (logging)   CONAN_INSTALL_LOGGING_LIBS: OFF
+-- (logging)   FETCH_LOGGING_LIBS: ON
+-- (logging) fetchcontent_helper: Use fmt from repo branch/tag master
+-- (logging) fetchcontent_helper: Setting up fmt from https://github.com/fmtlib/fmt.git
+CMake Warning (dev) at /opt/homebrew/share/cmake/Modules/FetchContent.cmake:1966 (message):
+  Calling FetchContent_Populate(fmt) is deprecated, call
+  FetchContent_MakeAvailable(fmt) instead.  Policy CMP0169 can be set to OLD
+  to allow FetchContent_Populate(fmt) to be called directly for now, but the
+  ability to call it with declared details will be removed completely in a
+  future version.
+Call Stack (most recent call first):
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/fetchcontent_helper.cmake:62 (FetchContent_Populate)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/logging.cmake:44 (FetchContentHelper)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/kidscpp-src/CMakeLists.txt:37 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- (logging) fetchcontent_helper: Set BUILD_SHARED_LIBS = OFF
+-- (logging) fetchcontent_helper: Set FMT_DOC = OFF
+-- (logging) fetchcontent_helper: Set FMT_INSTALL = OFF
+-- (logging) fetchcontent_helper: Set FMT_TEST = OFF
+-- (logging) fetchcontent_helper: Use fmt_SOURCE_DIR: /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/fmt-src
+-- (logging) fetchcontent_helper: Use fmt_BINARY_DIR: /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/fmt-build
+-- {fmt} version: 12.2.1
+-- Build type: Release
+-- (logging) fetchcontent_helper: Use spdlog from repo branch/tag v1.x
+-- (logging) fetchcontent_helper: Setting up spdlog from https://github.com/gabime/spdlog.git
+CMake Warning (dev) at /opt/homebrew/share/cmake/Modules/FetchContent.cmake:1966 (message):
+  Calling FetchContent_Populate(spdlog) is deprecated, call
+  FetchContent_MakeAvailable(spdlog) instead.  Policy CMP0169 can be set to
+  OLD to allow FetchContent_Populate(spdlog) to be called directly for now,
+  but the ability to call it with declared details will be removed completely
+  in a future version.
+Call Stack (most recent call first):
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/fetchcontent_helper.cmake:62 (FetchContent_Populate)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/logging.cmake:52 (FetchContentHelper)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/kidscpp-src/CMakeLists.txt:37 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- (logging) fetchcontent_helper: Set SPDLOG_BUILD_EXAMPLE = OFF
+-- (logging) fetchcontent_helper: Set SPDLOG_BUILD_EXAMPLE_HO = OFF
+-- (logging) fetchcontent_helper: Set SPDLOG_BUILD_TESTS = OFF
+-- (logging) fetchcontent_helper: Set SPDLOG_BUILD_TESTS_HO = OFF
+-- (logging) fetchcontent_helper: Set SPDLOG_BUILD_BENCH = OFF
+-- (logging) fetchcontent_helper: Set SPDLOG_FMT_EXTERNAL = ON
+-- (logging) fetchcontent_helper: Set SPDLOG_FMT_EXTERNAL_HO = OFF
+-- (logging) fetchcontent_helper: Set SPDLOG_BUILD_SHARED = OFF
+-- (logging) fetchcontent_helper: Set SPDLOG_INSTALL = OFF
+-- (logging) fetchcontent_helper: Use spdlog_SOURCE_DIR: /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/spdlog-src
+-- (logging) fetchcontent_helper: Use spdlog_BINARY_DIR: /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/spdlog-build
+-- Build spdlog: 1.17.0
+-- Build type: Release
+-- (logging) Use fetchcontent spdlog and fmtlib.
+-- (logging) spdlog::spdlog ALIASED_TARGET = spdlog
+-- (logging) spdlog::spdlog ALIAS_GLOBAL = TRUE
+-- (logging) spdlog::spdlog ARCHIVE_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/lib
+-- (logging) spdlog::spdlog AUTOGEN_ORIGIN_DEPENDS = ON
+-- (logging) spdlog::spdlog AUTOMOC_COMPILER_PREDEFINES = ON
+-- (logging) spdlog::spdlog AUTOMOC_MACRO_NAMES = Q_OBJECTQ_GADGETQ_NAMESPACEQ_NAMESPACE_EXPORT
+-- (logging) spdlog::spdlog AUTOMOC_PATH_PREFIX = OFF
+-- (logging) spdlog::spdlog BINARY_DIR = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/spdlog-build
+-- (logging) spdlog::spdlog BUILD_WITH_INSTALL_RPATH = FALSE
+-- (logging) spdlog::spdlog COMPILE_DEFINITIONS = SPDLOG_COMPILED_LIBSPDLOG_FMT_EXTERNAL
+-- (logging) spdlog::spdlog CXX_EXTENSIONS = OFF
+-- (logging) spdlog::spdlog CXX_MODULE_SETS = 
+-- (logging) spdlog::spdlog CXX_STANDARD = 20
+-- (logging) spdlog::spdlog CXX_STANDARD_REQUIRED = ON
+-- (logging) spdlog::spdlog DEBUG_POSTFIX = d
+-- (logging) spdlog::spdlog EXPORT_COMPILE_COMMANDS = 
+-- (logging) spdlog::spdlog EXPORT_FIND_PACKAGE_NAME = kidscpp
+-- (logging) spdlog::spdlog HEADER_SETS = 
+-- (logging) spdlog::spdlog IMPORTED = FALSE
+-- (logging) spdlog::spdlog IMPORTED_GLOBAL = FALSE
+-- (logging) spdlog::spdlog INCLUDE_DIRECTORIES = $<BUILD_INTERFACE:/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/spdlog-src/include>$<INSTALL_INTERFACE:include>
+-- (logging) spdlog::spdlog INSTALL_RPATH = 
+-- (logging) spdlog::spdlog INSTALL_RPATH_USE_LINK_PATH = TRUE
+-- (logging) spdlog::spdlog INTERFACE_COMPILE_DEFINITIONS = SPDLOG_COMPILED_LIBSPDLOG_FMT_EXTERNAL
+-- (logging) spdlog::spdlog INTERFACE_CXX_MODULE_SETS = 
+-- (logging) spdlog::spdlog INTERFACE_HEADER_SETS = 
+-- (logging) spdlog::spdlog INTERFACE_INCLUDE_DIRECTORIES = $<BUILD_INTERFACE:/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/spdlog-src/include>$<INSTALL_INTERFACE:include>
+-- (logging) spdlog::spdlog INTERFACE_LINK_LIBRARIES = Threads::Threadsfmt::fmt
+-- (logging) spdlog::spdlog ISPC_HEADER_SUFFIX = _ispc.h
+-- (logging) spdlog::spdlog LIBRARY_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/lib
+-- (logging) spdlog::spdlog LINK_LIBRARIES = Threads::Threadsfmt::fmt
+-- (logging) spdlog::spdlog MACOSX_RPATH = TRUE
+-- (logging) spdlog::spdlog NAME = spdlog
+-- (logging) spdlog::spdlog OSX_ARCHITECTURES = 
+-- (logging) spdlog::spdlog PCH_INSTANTIATE_TEMPLATES = ON
+-- (logging) spdlog::spdlog PCH_WARN_INVALID = ON
+-- (logging) spdlog::spdlog RUNTIME_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin
+-- (logging) spdlog::spdlog SKIP_BUILD_RPATH = FALSE
+-- (logging) spdlog::spdlog SOVERSION = 1.17
+-- (logging) spdlog::spdlog SYMBOLIC = FALSE
+-- (logging) spdlog::spdlog TYPE = STATIC_LIBRARY
+-- (logging) spdlog::spdlog UNITY_BUILD_BATCH_SIZE = 8
+-- (logging) spdlog::spdlog UNITY_BUILD_MODE = BATCH
+-- (logging) spdlog::spdlog VERIFY_INTERFACE_HEADER_SETS = FALSE
+-- (logging) spdlog::spdlog VERIFY_PRIVATE_HEADER_SETS = FALSE
+-- (logging) spdlog::spdlog VERSION = 1.17.0
+-- (logging) fmt::fmt ALIASED_TARGET = fmt
+-- (logging) fmt::fmt ALIAS_GLOBAL = TRUE
+-- (logging) fmt::fmt ARCHIVE_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/lib
+-- (logging) fmt::fmt AUTOGEN_ORIGIN_DEPENDS = ON
+-- (logging) fmt::fmt AUTOMOC_COMPILER_PREDEFINES = ON
+-- (logging) fmt::fmt AUTOMOC_MACRO_NAMES = Q_OBJECTQ_GADGETQ_NAMESPACEQ_NAMESPACE_EXPORT
+-- (logging) fmt::fmt AUTOMOC_PATH_PREFIX = OFF
+-- (logging) fmt::fmt BINARY_DIR = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/fmt-build
+-- (logging) fmt::fmt BUILD_WITH_INSTALL_RPATH = FALSE
+-- (logging) fmt::fmt COMPILE_FEATURES = cxx_std_11
+-- (logging) fmt::fmt CXX_EXTENSIONS = OFF
+-- (logging) fmt::fmt CXX_MODULE_SETS = 
+-- (logging) fmt::fmt CXX_STANDARD = 20
+-- (logging) fmt::fmt CXX_STANDARD_REQUIRED = ON
+-- (logging) fmt::fmt DEBUG_POSTFIX = d
+-- (logging) fmt::fmt EXPORT_COMPILE_COMMANDS = 
+-- (logging) fmt::fmt EXPORT_FIND_PACKAGE_NAME = kidscpp
+-- (logging) fmt::fmt HEADER_SETS = 
+-- (logging) fmt::fmt IMPORTED = FALSE
+-- (logging) fmt::fmt IMPORTED_GLOBAL = FALSE
+-- (logging) fmt::fmt INCLUDE_DIRECTORIES = $<BUILD_INTERFACE:/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/fmt-src/include>$<INSTALL_INTERFACE:include>
+-- (logging) fmt::fmt INSTALL_RPATH = 
+-- (logging) fmt::fmt INSTALL_RPATH_USE_LINK_PATH = TRUE
+-- (logging) fmt::fmt INTERFACE_COMPILE_FEATURES = cxx_std_11
+-- (logging) fmt::fmt INTERFACE_CXX_MODULE_SETS = 
+-- (logging) fmt::fmt INTERFACE_HEADER_SETS = 
+-- (logging) fmt::fmt INTERFACE_INCLUDE_DIRECTORIES = $<BUILD_INTERFACE:/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/fmt-src/include>$<INSTALL_INTERFACE:include>
+-- (logging) fmt::fmt ISPC_HEADER_SUFFIX = _ispc.h
+-- (logging) fmt::fmt LIBRARY_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/lib
+-- (logging) fmt::fmt MACOSX_RPATH = TRUE
+-- (logging) fmt::fmt NAME = fmt
+-- (logging) fmt::fmt OSX_ARCHITECTURES = 
+-- (logging) fmt::fmt PCH_INSTANTIATE_TEMPLATES = ON
+-- (logging) fmt::fmt PCH_WARN_INVALID = ON
+-- (logging) fmt::fmt PUBLIC_HEADER = include/fmt/args.hinclude/fmt/base.hinclude/fmt/chrono.hinclude/fmt/color.hinclude/fmt/compile.hinclude/fmt/core.hinclude/fmt/enum.hinclude/fmt/format.hinclude/fmt/format-inl.hinclude/fmt/os.hinclude/fmt/ostream.hinclude/fmt/printf.hinclude/fmt/ranges.hinclude/fmt/std.hinclude/fmt/xchar.h
+-- (logging) fmt::fmt RUNTIME_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin
+-- (logging) fmt::fmt SKIP_BUILD_RPATH = FALSE
+-- (logging) fmt::fmt SOVERSION = 12
+-- (logging) fmt::fmt SYMBOLIC = FALSE
+-- (logging) fmt::fmt TYPE = STATIC_LIBRARY
+-- (logging) fmt::fmt UNITY_BUILD_BATCH_SIZE = 8
+-- (logging) fmt::fmt UNITY_BUILD_MODE = BATCH
+-- (logging) fmt::fmt VERIFY_INTERFACE_HEADER_SETS = FALSE
+-- (logging) fmt::fmt VERIFY_PRIVATE_HEADER_SETS = FALSE
+-- (logging) fmt::fmt VERSION = 12.2.1
+-- (logging) tula_logging IMPORTED = FALSE
+-- (logging) tula_logging IMPORTED_GLOBAL = FALSE
+-- (logging) tula_logging INTERFACE_CXX_MODULE_SETS = 
+-- (logging) tula_logging INTERFACE_HEADER_SETS = 
+-- (logging) tula_logging INTERFACE_LINK_LIBRARIES = spdlog::spdlogfmt::fmt
+-- (logging) tula_logging NAME = tula_logging
+-- (logging) tula_logging TYPE = INTERFACE_LIBRARY
+-- (Enum) Default fetch Enum.
+-- (Enum) Use user setting for ENUM:
+-- (Enum)   USE_INSTALLED_ENUM: OFF
+-- (Enum)   CONAN_INSTALL_ENUM: OFF
+-- (Enum)   FETCH_ENUM: ON
+-- (Enum) fetchcontent_helper: Use meta_enum from repo branch/tag master
+-- (Enum) fetchcontent_helper: Setting up meta_enum from https://github.com/Jerry-Ma/meta_enum.git
+CMake Warning (dev) at /opt/homebrew/share/cmake/Modules/FetchContent.cmake:1966 (message):
+  Calling FetchContent_Populate(meta_enum) is deprecated, call
+  FetchContent_MakeAvailable(meta_enum) instead.  Policy CMP0169 can be set
+  to OLD to allow FetchContent_Populate(meta_enum) to be called directly for
+  now, but the ability to call it with declared details will be removed
+  completely in a future version.
+Call Stack (most recent call first):
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/fetchcontent_helper.cmake:62 (FetchContent_Populate)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/Enum.cmake:20 (FetchContentHelper)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/kidscpp-src/CMakeLists.txt:40 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- (Enum) fetchcontent_helper: Use bitmask from repo branch/tag master
+-- (Enum) fetchcontent_helper: Setting up bitmask from https://github.com/oliora/bitmask.git
+CMake Warning (dev) at /opt/homebrew/share/cmake/Modules/FetchContent.cmake:1966 (message):
+  Calling FetchContent_Populate(bitmask) is deprecated, call
+  FetchContent_MakeAvailable(bitmask) instead.  Policy CMP0169 can be set to
+  OLD to allow FetchContent_Populate(bitmask) to be called directly for now,
+  but the ability to call it with declared details will be removed completely
+  in a future version.
+Call Stack (most recent call first):
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/fetchcontent_helper.cmake:62 (FetchContent_Populate)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/Enum.cmake:26 (FetchContentHelper)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/kidscpp-src/CMakeLists.txt:40 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- (Enum) meta_enum::meta_enum IMPORTED = FALSE
+-- (Enum) meta_enum::meta_enum IMPORTED_GLOBAL = FALSE
+-- (Enum) meta_enum::meta_enum INTERFACE_CXX_MODULE_SETS = 
+-- (Enum) meta_enum::meta_enum INTERFACE_HEADER_SETS = 
+-- (Enum) meta_enum::meta_enum INTERFACE_INCLUDE_DIRECTORIES = /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/meta_enum-src/include
+-- (Enum) meta_enum::meta_enum NAME = meta_enum
+-- (Enum) meta_enum::meta_enum TYPE = INTERFACE_LIBRARY
+-- (Enum) bitmask::bitmask IMPORTED = FALSE
+-- (Enum) bitmask::bitmask IMPORTED_GLOBAL = FALSE
+-- (Enum) bitmask::bitmask INTERFACE_CXX_MODULE_SETS = 
+-- (Enum) bitmask::bitmask INTERFACE_HEADER_SETS = 
+-- (Enum) bitmask::bitmask INTERFACE_INCLUDE_DIRECTORIES = /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/bitmask-src/include
+-- (Enum) bitmask::bitmask NAME = bitmask
+-- (Enum) bitmask::bitmask TYPE = INTERFACE_LIBRARY
+-- (Enum) tula_Enum IMPORTED = FALSE
+-- (Enum) tula_Enum IMPORTED_GLOBAL = FALSE
+-- (Enum) tula_Enum INTERFACE_CXX_MODULE_SETS = 
+-- (Enum) tula_Enum INTERFACE_HEADER_SETS = 
+-- (Enum) tula_Enum INTERFACE_LINK_LIBRARIES = meta_enum::meta_enumbitmask::bitmask
+-- (Enum) tula_Enum NAME = tula_Enum
+-- (Enum) tula_Enum TYPE = INTERFACE_LIBRARY
+-- (Clipp) Default fetch Clipp.
+-- (Clipp) Use user setting for CLIPP:
+-- (Clipp)   USE_INSTALLED_CLIPP: OFF
+-- (Clipp)   CONAN_INSTALL_CLIPP: OFF
+-- (Clipp)   FETCH_CLIPP: ON
+-- (Clipp) fetchcontent_helper: Use clipp from repo branch/tag master
+-- (Clipp) fetchcontent_helper: Setting up clipp from https://github.com/GerHobbelt/clipp.git
+CMake Warning (dev) at /opt/homebrew/share/cmake/Modules/FetchContent.cmake:1966 (message):
+  Calling FetchContent_Populate(clipp) is deprecated, call
+  FetchContent_MakeAvailable(clipp) instead.  Policy CMP0169 can be set to
+  OLD to allow FetchContent_Populate(clipp) to be called directly for now,
+  but the ability to call it with declared details will be removed completely
+  in a future version.
+Call Stack (most recent call first):
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/fetchcontent_helper.cmake:62 (FetchContent_Populate)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/Clipp.cmake:27 (FetchContentHelper)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/kidscpp-src/CMakeLists.txt:43 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- (Clipp) Use fetchcontent Clipp.
+-- (Clipp) clipp::clipp IMPORTED = FALSE
+-- (Clipp) clipp::clipp IMPORTED_GLOBAL = FALSE
+-- (Clipp) clipp::clipp INTERFACE_CXX_MODULE_SETS = 
+-- (Clipp) clipp::clipp INTERFACE_HEADER_SETS = 
+-- (Clipp) clipp::clipp INTERFACE_INCLUDE_DIRECTORIES = /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/clipp-src/include
+-- (Clipp) clipp::clipp NAME = clipp
+-- (Clipp) clipp::clipp TYPE = INTERFACE_LIBRARY
+-- (Clipp) tula_Clipp IMPORTED = FALSE
+-- (Clipp) tula_Clipp IMPORTED_GLOBAL = FALSE
+-- (Clipp) tula_Clipp INTERFACE_CXX_MODULE_SETS = 
+-- (Clipp) tula_Clipp INTERFACE_HEADER_SETS = 
+-- (Clipp) tula_Clipp INTERFACE_LINK_LIBRARIES = clipp::clipp
+-- (Clipp) tula_Clipp NAME = tula_Clipp
+-- (Clipp) tula_Clipp TYPE = INTERFACE_LIBRARY
+-- (Yaml) Default conan instal Yaml.
+-- (Yaml) Use user setting for YAML:
+-- (Yaml)   USE_INSTALLED_YAML: OFF
+-- (Yaml)   CONAN_INSTALL_YAML: OFF
+-- (Yaml)   FETCH_YAML: ON
+-- (Yaml) fetchcontent_helper: Use yaml from repo branch/tag master
+-- (Yaml) fetchcontent_helper: Setting up yaml from https://github.com/jbeder/yaml-cpp.git
+CMake Warning (dev) at /opt/homebrew/share/cmake/Modules/FetchContent.cmake:1966 (message):
+  Calling FetchContent_Populate(yaml) is deprecated, call
+  FetchContent_MakeAvailable(yaml) instead.  Policy CMP0169 can be set to OLD
+  to allow FetchContent_Populate(yaml) to be called directly for now, but the
+  ability to call it with declared details will be removed completely in a
+  future version.
+Call Stack (most recent call first):
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/fetchcontent_helper.cmake:62 (FetchContent_Populate)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/Yaml.cmake:28 (FetchContentHelper)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/kidscpp-src/CMakeLists.txt:46 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- (Yaml) fetchcontent_helper: Set YAML_CPP_BULID_CONTRIB = OFF
+-- (Yaml) fetchcontent_helper: Set YAML_CPP_BUILD_TOOLS = OFF
+-- (Yaml) fetchcontent_helper: Set YAML_CPP_BUILD_TESTS = OFF
+-- (Yaml) fetchcontent_helper: Set YAML_CPP_INSTALL = OFF
+-- (Yaml) fetchcontent_helper: Set YAML_BUILD_SHARED_LIBS = OFF
+-- (Yaml) fetchcontent_helper: Set YAML_MSVC_SHARED_RT = OFF
+-- (Yaml) fetchcontent_helper: Use yaml_SOURCE_DIR: /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/yaml-src
+-- (Yaml) fetchcontent_helper: Use yaml_BINARY_DIR: /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/yaml-build
+-- (Yaml) Use fetchcontent Yaml.
+-- (Yaml) yaml-cpp::yaml-cpp ALIASED_TARGET = yaml-cpp
+-- (Yaml) yaml-cpp::yaml-cpp ALIAS_GLOBAL = TRUE
+-- (Yaml) yaml-cpp::yaml-cpp ARCHIVE_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/lib
+-- (Yaml) yaml-cpp::yaml-cpp AUTOGEN_ORIGIN_DEPENDS = ON
+-- (Yaml) yaml-cpp::yaml-cpp AUTOMOC_COMPILER_PREDEFINES = ON
+-- (Yaml) yaml-cpp::yaml-cpp AUTOMOC_MACRO_NAMES = Q_OBJECTQ_GADGETQ_NAMESPACEQ_NAMESPACE_EXPORT
+-- (Yaml) yaml-cpp::yaml-cpp AUTOMOC_PATH_PREFIX = OFF
+-- (Yaml) yaml-cpp::yaml-cpp BINARY_DIR = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/yaml-build
+-- (Yaml) yaml-cpp::yaml-cpp BUILD_WITH_INSTALL_RPATH = FALSE
+-- (Yaml) yaml-cpp::yaml-cpp COMPILE_DEFINITIONS = $<$<NOT:$<BOOL:OFF>>:YAML_CPP_STATIC_DEFINE>$<$<AND:$<BOOL:>,$<BOOL:OFF>>:YAML_CPP_DLL>$<$<NOT:$<BOOL:ON>>:YAML_CPP_NO_CONTRIB>
+-- (Yaml) yaml-cpp::yaml-cpp COMPILE_OPTIONS = $<$<CXX_COMPILER_ID:MSVC>:/W3/wd4127/wd4355>
+-- (Yaml) yaml-cpp::yaml-cpp CXX_EXTENSIONS = OFF
+-- (Yaml) yaml-cpp::yaml-cpp CXX_MODULE_SETS = 
+-- (Yaml) yaml-cpp::yaml-cpp CXX_STANDARD = 20
+-- (Yaml) yaml-cpp::yaml-cpp CXX_STANDARD_REQUIRED = ON
+-- (Yaml) yaml-cpp::yaml-cpp DEBUG_POSTFIX = d
+-- (Yaml) yaml-cpp::yaml-cpp EXPORT_COMPILE_COMMANDS = 
+-- (Yaml) yaml-cpp::yaml-cpp EXPORT_FIND_PACKAGE_NAME = kidscpp
+-- (Yaml) yaml-cpp::yaml-cpp HEADER_SETS = 
+-- (Yaml) yaml-cpp::yaml-cpp IMPORTED = FALSE
+-- (Yaml) yaml-cpp::yaml-cpp IMPORTED_GLOBAL = FALSE
+-- (Yaml) yaml-cpp::yaml-cpp INCLUDE_DIRECTORIES = $<BUILD_INTERFACE:/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/yaml-src/include>$<INSTALL_INTERFACE:include>$<BUILD_INTERFACE:/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/yaml-src/src>
+-- (Yaml) yaml-cpp::yaml-cpp INSTALL_RPATH = 
+-- (Yaml) yaml-cpp::yaml-cpp INSTALL_RPATH_USE_LINK_PATH = TRUE
+-- (Yaml) yaml-cpp::yaml-cpp INTERFACE_COMPILE_DEFINITIONS = $<$<NOT:$<BOOL:OFF>>:YAML_CPP_STATIC_DEFINE>
+-- (Yaml) yaml-cpp::yaml-cpp INTERFACE_CXX_MODULE_SETS = 
+-- (Yaml) yaml-cpp::yaml-cpp INTERFACE_HEADER_SETS = 
+-- (Yaml) yaml-cpp::yaml-cpp INTERFACE_INCLUDE_DIRECTORIES = $<BUILD_INTERFACE:/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/yaml-src/include>$<INSTALL_INTERFACE:include>
+-- (Yaml) yaml-cpp::yaml-cpp ISPC_HEADER_SUFFIX = _ispc.h
+-- (Yaml) yaml-cpp::yaml-cpp LIBRARY_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/lib
+-- (Yaml) yaml-cpp::yaml-cpp MACOSX_RPATH = TRUE
+-- (Yaml) yaml-cpp::yaml-cpp MSVC_RUNTIME_LIBRARY = MultiThreaded$<$<CONFIG:Debug>:Debug>$<$<BOOL:OFF>:DLL>
+-- (Yaml) yaml-cpp::yaml-cpp NAME = yaml-cpp
+-- (Yaml) yaml-cpp::yaml-cpp OSX_ARCHITECTURES = 
+-- (Yaml) yaml-cpp::yaml-cpp PCH_INSTANTIATE_TEMPLATES = ON
+-- (Yaml) yaml-cpp::yaml-cpp PCH_WARN_INVALID = ON
+-- (Yaml) yaml-cpp::yaml-cpp POSITION_INDEPENDENT_CODE = ON
+-- (Yaml) yaml-cpp::yaml-cpp PROJECT_LABEL = yaml-cpp static
+-- (Yaml) yaml-cpp::yaml-cpp RUNTIME_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin
+-- (Yaml) yaml-cpp::yaml-cpp SKIP_BUILD_RPATH = FALSE
+-- (Yaml) yaml-cpp::yaml-cpp SOVERSION = 0.9
+-- (Yaml) yaml-cpp::yaml-cpp SYMBOLIC = FALSE
+-- (Yaml) yaml-cpp::yaml-cpp TYPE = STATIC_LIBRARY
+-- (Yaml) yaml-cpp::yaml-cpp UNITY_BUILD_BATCH_SIZE = 8
+-- (Yaml) yaml-cpp::yaml-cpp UNITY_BUILD_MODE = BATCH
+-- (Yaml) yaml-cpp::yaml-cpp VERIFY_INTERFACE_HEADER_SETS = FALSE
+-- (Yaml) yaml-cpp::yaml-cpp VERIFY_PRIVATE_HEADER_SETS = FALSE
+-- (Yaml) yaml-cpp::yaml-cpp VERSION = 0.9.0
+-- (Yaml) tula_Yaml IMPORTED = FALSE
+-- (Yaml) tula_Yaml IMPORTED_GLOBAL = FALSE
+-- (Yaml) tula_Yaml INTERFACE_CXX_MODULE_SETS = 
+-- (Yaml) tula_Yaml INTERFACE_HEADER_SETS = 
+-- (Yaml) tula_Yaml INTERFACE_LINK_LIBRARIES = yaml-cpp::yaml-cpp
+-- (Yaml) tula_Yaml NAME = tula_Yaml
+-- (Yaml) tula_Yaml TYPE = INTERFACE_LIBRARY
+-- (NetCDFCXX4) Default fetch NetCDFCXX4.
+-- (NetCDFCXX4) Use user setting for NETCDFCXX4:
+-- (NetCDFCXX4)   USE_INSTALLED_NETCDFCXX4: OFF
+-- (NetCDFCXX4)   CONAN_INSTALL_NETCDFCXX4: OFF
+-- (NetCDFCXX4)   FETCH_NETCDFCXX4: ON
+-- (NetCDF) Default conan instal NetCDF.
+-- (NetCDF) Use user setting for NETCDF:
+-- (NetCDF)   USE_INSTALLED_NETCDF: ON
+-- (NetCDF)   CONAN_INSTALL_NETCDF: OFF
+-- (NetCDF)   FETCH_NETCDF: OFF
+-- (NetCDF) Use system installed NetCDF.
+-- Found HDF5: hdf5-shared (found version "2.1.0")
+-- (NetCDF) netCDF::netcdf BINARY_DIR = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/kidscpp-build
+-- (NetCDF) netCDF::netcdf CXX_MODULE_SETS = 
+-- (NetCDF) netCDF::netcdf EXPORT_FIND_PACKAGE_NAME = kidscpp
+-- (NetCDF) netCDF::netcdf HEADER_SETS = 
+-- (NetCDF) netCDF::netcdf IMPORTED = TRUE
+-- (NetCDF) netCDF::netcdf IMPORTED_CONFIGURATIONS = RELEASE
+-- (NetCDF) netCDF::netcdf IMPORTED_GLOBAL = FALSE
+-- (NetCDF) netCDF::netcdf INTERFACE_CXX_MODULE_SETS = 
+-- (NetCDF) netCDF::netcdf INTERFACE_HEADER_SETS = 
+-- (NetCDF) netCDF::netcdf INTERFACE_INCLUDE_DIRECTORIES = /opt/homebrew/include
+-- (NetCDF) netCDF::netcdf MACOSX_PACKAGE_LOCATION = /opt/homebrew/lib/libnetcdf.22.dylib
+-- (NetCDF) netCDF::netcdf NAME = netCDF::netcdf
+-- (NetCDF) netCDF::netcdf POSITION_INDEPENDENT_CODE = True
+-- (NetCDF) netCDF::netcdf SYMBOLIC = FALSE
+-- (NetCDF) netCDF::netcdf SYSTEM = ON
+-- (NetCDF) netCDF::netcdf TYPE = SHARED_LIBRARY
+-- (NetCDF) netCDF::netcdf VERIFY_INTERFACE_HEADER_SETS = FALSE
+-- (NetCDF) netCDF::netcdf VERIFY_PRIVATE_HEADER_SETS = FALSE
+-- (NetCDF) netCDF::netcdf VS_DEPLOYMENT_LOCATION = /opt/homebrew/lib/libnetcdf.22.dylib
+-- (NetCDF) tula_NetCDF IMPORTED = FALSE
+-- (NetCDF) tula_NetCDF IMPORTED_GLOBAL = FALSE
+-- (NetCDF) tula_NetCDF INTERFACE_CXX_MODULE_SETS = 
+-- (NetCDF) tula_NetCDF INTERFACE_HEADER_SETS = 
+-- (NetCDF) tula_NetCDF INTERFACE_LINK_LIBRARIES = netCDF::netcdf
+-- (NetCDF) tula_NetCDF NAME = tula_NetCDF
+-- (NetCDF) tula_NetCDF TYPE = INTERFACE_LIBRARY
+-- (NetCDFCXX4) fetchcontent_helper: Use netcdfcxx4 from repo branch/tag main
+-- (NetCDFCXX4) fetchcontent_helper: Setting up netcdfcxx4 from https://github.com/Unidata/netcdf-cxx4.git
+CMake Warning (dev) at /opt/homebrew/share/cmake/Modules/FetchContent.cmake:1966 (message):
+  Calling FetchContent_Populate(netcdfcxx4) is deprecated, call
+  FetchContent_MakeAvailable(netcdfcxx4) instead.  Policy CMP0169 can be set
+  to OLD to allow FetchContent_Populate(netcdfcxx4) to be called directly for
+  now, but the ability to call it with declared details will be removed
+  completely in a future version.
+Call Stack (most recent call first):
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/fetchcontent_helper.cmake:62 (FetchContent_Populate)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/NetCDFCXX4.cmake:26 (FetchContentHelper)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/kidscpp-src/CMakeLists.txt:49 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- (NetCDFCXX4) fetchcontent_helper: Set ENABLE_DOXYGEN = OFF
+-- (NetCDFCXX4) fetchcontent_helper: Set BUILD_SHARED_LIBS = OFF
+-- (NetCDFCXX4) fetchcontent_helper: Set NCXX_ENABLE_TESTS = OFF
+-- (NetCDFCXX4) fetchcontent_helper: Set ENABLE_COVERAGE_TESTS = OFF
+-- (NetCDFCXX4) fetchcontent_helper: Set ENABLE_LARGE_FILE_TESTS = OFF
+-- (NetCDFCXX4) fetchcontent_helper: Use netcdfcxx4_SOURCE_DIR: /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/netcdfcxx4-src
+-- (NetCDFCXX4) fetchcontent_helper: Use netcdfcxx4_BINARY_DIR: /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/netcdfcxx4-build
+-- Found bash: /bin/bash
+-- Found netCDF CMake package: netCDF::netcdf
+-- Found HDF5: hdf5-shared (found version "2.1.0") found components: C HL
+# NetCDF C Configuration Summary
+==============================
+
+# General
+-------
+NetCDF Version:		4.3.2-developer
+Configured On:		Wed Sep 30 13:08:04 EDT 2026
+Host System:		arm64-Darwin-27.0.0
+Build Directory: 	/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/netcdfcxx4-build
+Install Prefix:         
+
+# Compiling Options
+-----------------
+C Compiler:		/Library/Developer/CommandLineTools/usr/bin/clang
+CFLAGS:			 -Wall -Wno-unused-variable -Wno-unused-parameter -O3 -DNDEBUG
+CPPFLAGS:		 -Wall -Wno-unused-variable -Wno-unused-parameter -O3 -DNDEBUG
+LDFLAGS:		 
+AM_CFLAGS:		
+AM_CPPFLAGS:		
+AM_LDFLAGS:		
+Shared Library:		no
+Static Library:		yes
+Extra libraries:	
+
+-- (NetCDFCXX4) Use fetchcontent NetCDFCXX4.
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 ALIASED_TARGET = netcdf-cxx4
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 ALIAS_GLOBAL = TRUE
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 ARCHIVE_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/lib
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 AUTOGEN_ORIGIN_DEPENDS = ON
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 AUTOMOC_COMPILER_PREDEFINES = ON
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 AUTOMOC_MACRO_NAMES = Q_OBJECTQ_GADGETQ_NAMESPACEQ_NAMESPACE_EXPORT
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 AUTOMOC_PATH_PREFIX = OFF
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 BINARY_DIR = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/netcdfcxx4-build/cxx4
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 BUILD_WITH_INSTALL_RPATH = FALSE
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 COMPILE_OPTIONS = -Wno-sign-conversion-Wno-shorten-64-to-32-Wno-mismatched-new-delete-Wno-tautological-overlap-compare-Wno-unused-private-field
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 CXX_EXTENSIONS = OFF
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 CXX_MODULE_SETS = 
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 CXX_STANDARD = 11
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 CXX_STANDARD_REQUIRED = TRUE
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 EXPORT_COMPILE_COMMANDS = 
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 EXPORT_FIND_PACKAGE_NAME = kidscpp
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 HEADER_SETS = 
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 IMPORTED = FALSE
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 IMPORTED_GLOBAL = FALSE
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 INCLUDE_DIRECTORIES = $<BUILD_INTERFACE:/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/netcdfcxx4-src/cxx4>$<INSTALL_INTERFACE:include>/opt/homebrew/include
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 INSTALL_RPATH = /usr/local/lib
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 INSTALL_RPATH_USE_LINK_PATH = TRUE
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 INTERFACE_CXX_MODULE_SETS = 
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 INTERFACE_HEADER_SETS = 
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 INTERFACE_INCLUDE_DIRECTORIES = $<BUILD_INTERFACE:/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/netcdfcxx4-src/cxx4>$<INSTALL_INTERFACE:include>/opt/homebrew/include
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 INTERFACE_LINK_LIBRARIES = netCDF::netcdf
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 INTERFACE_SYSTEM_INCLUDE_DIRECTORIES = /opt/homebrew/include
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 ISPC_HEADER_SUFFIX = _ispc.h
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 LIBRARY_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/lib
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 LINK_LIBRARIES = netCDF::netcdf
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 MACOSX_RPATH = ON
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 NAME = netcdf-cxx4
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 OSX_ARCHITECTURES = 
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 PCH_INSTANTIATE_TEMPLATES = ON
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 PCH_WARN_INVALID = ON
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 RUNTIME_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 SKIP_BUILD_RPATH = FALSE
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 SOVERSION = 1
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 SYMBOLIC = FALSE
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 TYPE = STATIC_LIBRARY
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 UNITY_BUILD_BATCH_SIZE = 8
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 UNITY_BUILD_MODE = BATCH
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 VERIFY_INTERFACE_HEADER_SETS = FALSE
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 VERIFY_PRIVATE_HEADER_SETS = FALSE
+-- (NetCDFCXX4) netCDF::netcdf-cxx4 VERSION = 1.1.0
+-- (NetCDFCXX4) tula_NetCDFCXX4 IMPORTED = FALSE
+-- (NetCDFCXX4) tula_NetCDFCXX4 IMPORTED_GLOBAL = FALSE
+-- (NetCDFCXX4) tula_NetCDFCXX4 INTERFACE_CXX_MODULE_SETS = 
+-- (NetCDFCXX4) tula_NetCDFCXX4 INTERFACE_HEADER_SETS = 
+-- (NetCDFCXX4) tula_NetCDFCXX4 INTERFACE_LINK_LIBRARIES = netCDF::netcdf-cxx4
+-- (NetCDFCXX4) tula_NetCDFCXX4 NAME = tula_NetCDFCXX4
+-- (NetCDFCXX4) tula_NetCDFCXX4 TYPE = INTERFACE_LIBRARY
+-- (Eigen3) Default conan instal Eigen3.
+-- (Eigen3) Use user setting for EIGEN3:
+-- (Eigen3)   USE_INSTALLED_EIGEN3: ON
+-- (Eigen3)   CONAN_INSTALL_EIGEN3: OFF
+-- (Eigen3)   FETCH_EIGEN3: OFF
+-- (Eigen3) Use system installed Eigen3.
+-- (Eigen3) tula::perflibs IMPORTED = FALSE
+-- (Eigen3) tula::perflibs IMPORTED_GLOBAL = FALSE
+-- (Eigen3) tula::perflibs INTERFACE_COMPILE_DEFINITIONS = USE_OPENMP_LIB=gnuUSE_INTEL_ONEAPI=OFFUSE_MKL_THREAD=sequentialHAS_OPENMP=1HAS_MKL=0HAS_THREADS=1
+-- (Eigen3) tula::perflibs INTERFACE_CXX_MODULE_SETS = 
+-- (Eigen3) tula::perflibs INTERFACE_HEADER_SETS = 
+-- (Eigen3) tula::perflibs INTERFACE_LINK_LIBRARIES = OpenMP::OpenMP_CXXThreads::Threads
+-- (Eigen3) tula::perflibs NAME = tula_perflibs
+-- (Eigen3) tula::perflibs TYPE = INTERFACE_LIBRARY
+-- (Eigen3) Eigen3::Eigen IMPORTED = TRUE
+-- (Eigen3) Eigen3::Eigen IMPORTED_GLOBAL = FALSE
+-- (Eigen3) Eigen3::Eigen INTERFACE_CXX_MODULE_SETS = 
+-- (Eigen3) Eigen3::Eigen INTERFACE_HEADER_SETS = 
+-- (Eigen3) Eigen3::Eigen INTERFACE_INCLUDE_DIRECTORIES = /opt/homebrew/opt/eigen@3/include/eigen3
+-- (Eigen3) Eigen3::Eigen NAME = Eigen3::Eigen
+-- (Eigen3) Eigen3::Eigen TYPE = INTERFACE_LIBRARY
+-- (Eigen3) tula_Eigen3 IMPORTED = FALSE
+-- (Eigen3) tula_Eigen3 IMPORTED_GLOBAL = FALSE
+-- (Eigen3) tula_Eigen3 INTERFACE_CXX_MODULE_SETS = 
+-- (Eigen3) tula_Eigen3 INTERFACE_HEADER_SETS = 
+-- (Eigen3) tula_Eigen3 INTERFACE_LINK_LIBRARIES = tula::perflibsEigen3::Eigen
+-- (Eigen3) tula_Eigen3 NAME = tula_Eigen3
+-- (Eigen3) tula_Eigen3 TYPE = INTERFACE_LIBRARY
+-- (Ceres) Default conan instal Ceres.
+-- (Ceres) Use user setting for CERES:
+-- (Ceres)   USE_INSTALLED_CERES: OFF
+-- (Ceres)   CONAN_INSTALL_CERES: OFF
+-- (Ceres)   FETCH_CERES: ON
+-- (Ceres) fetchcontent_helper: Use glog from repo branch/tag v0.5.0
+-- (Ceres) fetchcontent_helper: Setting up glog from https://github.com/google/glog.git
+CMake Warning (dev) at /opt/homebrew/share/cmake/Modules/FetchContent.cmake:1966 (message):
+  Calling FetchContent_Populate(glog) is deprecated, call
+  FetchContent_MakeAvailable(glog) instead.  Policy CMP0169 can be set to OLD
+  to allow FetchContent_Populate(glog) to be called directly for now, but the
+  ability to call it with declared details will be removed completely in a
+  future version.
+Call Stack (most recent call first):
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/fetchcontent_helper.cmake:62 (FetchContent_Populate)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/Ceres.cmake:84 (FetchContentHelper)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/kidscpp-src/CMakeLists.txt:55 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- (Ceres) fetchcontent_helper: Set BUILD_SHARED_LIBS = OFF
+-- (Ceres) fetchcontent_helper: Set WITH_GFLAGS = OFF
+-- (Ceres) fetchcontent_helper: Set WITH_GTEST = OFF
+-- (Ceres) fetchcontent_helper: Set WITH_PKGCONFIG = OFF
+-- (Ceres) fetchcontent_helper: Set WITH_SYMBOLIZE = OFF
+-- (Ceres) fetchcontent_helper: Set WITH_UNWIND = OFF
+-- (Ceres) fetchcontent_helper: Set BUILD_TESTING = OFF
+-- (Ceres) fetchcontent_helper: Set WITH_THREADS = ON
+-- (Ceres) fetchcontent_helper: Set WITH_TLS = ON
+-- (Ceres) fetchcontent_helper: Use glog_SOURCE_DIR: /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/glog-src
+-- (Ceres) fetchcontent_helper: Use glog_BINARY_DIR: /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/glog-build
+CMake Deprecation Warning at /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/glog-src/CMakeLists.txt:1 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+
+
+CMake Deprecation Warning at /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/glog-src/cmake/GetCacheVariables.cmake:2 (cmake_policy):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+Call Stack (most recent call first):
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/glog-src/CMakeLists.txt:65 (include)
+
+
+-- (Ceres) fetchcontent_helper: Generate package file: GlogConfig.cmake
+-- (Ceres) fetchcontent_helper: Config Glog_DIR: /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_pkgs/Glog
+-- (Ceres) glog::glog ALIASED_TARGET = glog
+-- (Ceres) glog::glog ALIAS_GLOBAL = TRUE
+-- (Ceres) glog::glog ARCHIVE_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/lib
+-- (Ceres) glog::glog AUTOGEN_ORIGIN_DEPENDS = ON
+-- (Ceres) glog::glog AUTOMOC_COMPILER_PREDEFINES = ON
+-- (Ceres) glog::glog AUTOMOC_MACRO_NAMES = Q_OBJECTQ_GADGETQ_NAMESPACEQ_NAMESPACE_EXPORT
+-- (Ceres) glog::glog AUTOMOC_PATH_PREFIX = OFF
+-- (Ceres) glog::glog BINARY_DIR = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/glog-build
+-- (Ceres) glog::glog BUILD_WITH_INSTALL_RPATH = FALSE
+-- (Ceres) glog::glog COMPILE_OPTIONS = $<$<AND:$<BOOL:1>,$<NOT:$<CXX_COMPILER_ID:GNU>>>:-Wno-unnamed-type-template-args>
+-- (Ceres) glog::glog CXX_EXTENSIONS = OFF
+-- (Ceres) glog::glog CXX_MODULE_SETS = 
+-- (Ceres) glog::glog CXX_STANDARD = 20
+-- (Ceres) glog::glog CXX_STANDARD_REQUIRED = ON
+-- (Ceres) glog::glog DEFINE_SYMBOL = GOOGLE_GLOG_IS_A_DLL
+-- (Ceres) glog::glog EXPORT_COMPILE_COMMANDS = 
+-- (Ceres) glog::glog EXPORT_FIND_PACKAGE_NAME = kidscpp
+-- (Ceres) glog::glog HEADER_SETS = 
+-- (Ceres) glog::glog IMPORTED = FALSE
+-- (Ceres) glog::glog IMPORTED_GLOBAL = FALSE
+-- (Ceres) glog::glog INCLUDE_DIRECTORIES = /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/glog-src/src/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/glog-build$<BUILD_INTERFACE:/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/glog-build>$<BUILD_INTERFACE:/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/glog-src/src>$<INSTALL_INTERFACE:include>
+-- (Ceres) glog::glog INSTALL_RPATH = 
+-- (Ceres) glog::glog INSTALL_RPATH_USE_LINK_PATH = TRUE
+-- (Ceres) glog::glog INTERFACE_CXX_MODULE_SETS = 
+-- (Ceres) glog::glog INTERFACE_HEADER_SETS = 
+-- (Ceres) glog::glog INTERFACE_INCLUDE_DIRECTORIES = $<BUILD_INTERFACE:/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/glog-build>$<BUILD_INTERFACE:/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/glog-src/src>$<INSTALL_INTERFACE:include>
+-- (Ceres) glog::glog ISPC_HEADER_SUFFIX = _ispc.h
+-- (Ceres) glog::glog LIBRARY_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/lib
+-- (Ceres) glog::glog MACOSX_RPATH = TRUE
+-- (Ceres) glog::glog NAME = glog
+-- (Ceres) glog::glog OSX_ARCHITECTURES = 
+-- (Ceres) glog::glog PCH_INSTANTIATE_TEMPLATES = ON
+-- (Ceres) glog::glog PCH_WARN_INVALID = ON
+-- (Ceres) glog::glog POSITION_INDEPENDENT_CODE = ON
+-- (Ceres) glog::glog PUBLIC_HEADER = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/glog-build/glog/export.h/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/glog-build/glog/logging.h/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/glog-build/glog/raw_logging.h/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/glog-build/glog/stl_logging.h/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/glog-build/glog/vlog_is_on.hsrc/glog/log_severity.h
+-- (Ceres) glog::glog RUNTIME_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin
+-- (Ceres) glog::glog SKIP_BUILD_RPATH = FALSE
+-- (Ceres) glog::glog SOVERSION = 0
+-- (Ceres) glog::glog SYMBOLIC = FALSE
+-- (Ceres) glog::glog TYPE = STATIC_LIBRARY
+-- (Ceres) glog::glog UNITY_BUILD_BATCH_SIZE = 8
+-- (Ceres) glog::glog UNITY_BUILD_MODE = BATCH
+-- (Ceres) glog::glog VERIFY_INTERFACE_HEADER_SETS = FALSE
+-- (Ceres) glog::glog VERIFY_PRIVATE_HEADER_SETS = FALSE
+-- (Ceres) glog::glog VERSION = 0.5.0
+-- (Ceres) glog::glog VISIBILITY_INLINES_HIDDEN = 1
+-- (Ceres) fetchcontent_helper: Use ceres from repo branch/tag 2.0.0
+-- (Ceres) fetchcontent_helper: Use patch /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/patches/patch.sh ceres_*.patch
+-- (Ceres) fetchcontent_helper: Setting up ceres from https://github.com/ceres-solver/ceres-solver.git
+CMake Warning (dev) at /opt/homebrew/share/cmake/Modules/FetchContent.cmake:1966 (message):
+  Calling FetchContent_Populate(ceres) is deprecated, call
+  FetchContent_MakeAvailable(ceres) instead.  Policy CMP0169 can be set to
+  OLD to allow FetchContent_Populate(ceres) to be called directly for now,
+  but the ability to call it with declared details will be removed completely
+  in a future version.
+Call Stack (most recent call first):
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/fetchcontent_helper.cmake:62 (FetchContent_Populate)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/Ceres.cmake:116 (FetchContentHelper)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/kidscpp-src/CMakeLists.txt:55 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- (Ceres) fetchcontent_helper: Set GLOG_PREFER_EXPORTED_GLOG_CMAKE_CONFIGURATION = ON
+-- (Ceres) fetchcontent_helper: Set MINIGLOG = OFF
+-- (Ceres) fetchcontent_helper: Set GFLAGS = OFF
+-- (Ceres) fetchcontent_helper: Set EIGENSPARSE = ON
+-- (Ceres) fetchcontent_helper: Set SUITESPARSE = OFF
+-- (Ceres) fetchcontent_helper: Set CXSPARSE = OFF
+-- (Ceres) fetchcontent_helper: Set ACCELERATESPARSE = OFF
+-- (Ceres) fetchcontent_helper: Set SCHUR_SPECIALIZATIONS = ON
+-- (Ceres) fetchcontent_helper: Set BUILD_DOCUMENTATION = OFF
+-- (Ceres) fetchcontent_helper: Set BUILD_TESTING = OFF
+-- (Ceres) fetchcontent_helper: Set BUILD_EXAMPLES = OFF
+-- (Ceres) fetchcontent_helper: Set BUILD_BENCHMARKS = OFF
+-- (Ceres) fetchcontent_helper: Set BUILD_SHARED_LIBS = OFF
+-- (Ceres) fetchcontent_helper: Set CERES_THREADING_MODEL = CXX_THREADS
+-- (Ceres) fetchcontent_helper: Use ceres_SOURCE_DIR: /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/ceres-src
+-- (Ceres) fetchcontent_helper: Use ceres_BINARY_DIR: /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/ceres-build
+CMake Deprecation Warning at /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/ceres-src/CMakeLists.txt:32 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+
+
+CMake Deprecation Warning at /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/ceres-src/CMakeLists.txt:33 (cmake_policy):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+
+
+-- Detected Homebrew with install prefix: /opt/homebrew, adding to CMake search paths.
+-- Detected Ceres version: 2.0.0 from /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/ceres-src/include/ceres/version.h
+-- Detected available Ceres threading models: [CXX_THREADS, OPENMP, NO_THREADS]
+-- Building with C++20
+-- Found Eigen version 3.4.1: /opt/homebrew/opt/eigen@3/include/eigen3
+-- Enabling use of Eigen as a sparse linear algebra library.
+-- Found LAPACK library: /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Accelerate.framework;-lm;-ldl
+-- Building without SuiteSparse.
+-- Building without CXSparse.
+-- Building without Apple's Accelerate sparse support.
+-- Use of gflags disabled - no tests or tools will be built!
+-- Use fch glog
+-- Found Google Log (glog). Assuming glog was NOT built with gflags support as gflags was not found.  If glog was built with gflags, please set the gflags search locations such that it can be found by Ceres.  Otherwise, Ceres may fail to link due to missing gflags symbols.
+-- Using Ceres threading model: CXX_THREADS
+-- Building Ceres as a static library.
+-- Enabling CERES_USE_EIGEN_SPARSE in Ceres config.h
+-- Enabling CERES_NO_SUITESPARSE in Ceres config.h
+-- Enabling CERES_NO_CXSPARSE in Ceres config.h
+-- Enabling CERES_NO_ACCELERATE_SPARSE in Ceres config.h
+-- Enabling CERES_USE_CXX_THREADS in Ceres config.h
+-- Do not build any example.
+-- (Ceres) Use fetchcontent Ceres.
+-- (Ceres) tula::perflibs IMPORTED = FALSE
+-- (Ceres) tula::perflibs IMPORTED_GLOBAL = FALSE
+-- (Ceres) tula::perflibs INTERFACE_COMPILE_DEFINITIONS = USE_OPENMP_LIB=gnuUSE_INTEL_ONEAPI=OFFUSE_MKL_THREAD=sequentialHAS_OPENMP=1HAS_MKL=0HAS_THREADS=1
+-- (Ceres) tula::perflibs INTERFACE_CXX_MODULE_SETS = 
+-- (Ceres) tula::perflibs INTERFACE_HEADER_SETS = 
+-- (Ceres) tula::perflibs INTERFACE_LINK_LIBRARIES = OpenMP::OpenMP_CXXThreads::Threads
+-- (Ceres) tula::perflibs NAME = tula_perflibs
+-- (Ceres) tula::perflibs TYPE = INTERFACE_LIBRARY
+-- (Ceres) Ceres::ceres ALIASED_TARGET = ceres
+-- (Ceres) Ceres::ceres ALIAS_GLOBAL = TRUE
+-- (Ceres) Ceres::ceres ARCHIVE_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/ceres-build/lib
+-- (Ceres) Ceres::ceres AUTOGEN_ORIGIN_DEPENDS = ON
+-- (Ceres) Ceres::ceres AUTOMOC_COMPILER_PREDEFINES = ON
+-- (Ceres) Ceres::ceres AUTOMOC_MACRO_NAMES = Q_OBJECTQ_GADGETQ_NAMESPACEQ_NAMESPACE_EXPORT
+-- (Ceres) Ceres::ceres AUTOMOC_PATH_PREFIX = OFF
+-- (Ceres) Ceres::ceres BINARY_DIR = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/ceres-build/internal/ceres
+-- (Ceres) Ceres::ceres BUILD_WITH_INSTALL_RPATH = FALSE
+-- (Ceres) Ceres::ceres COMPILE_FEATURES = cxx_std_20
+-- (Ceres) Ceres::ceres CXX_EXTENSIONS = OFF
+-- (Ceres) Ceres::ceres CXX_MODULE_SETS = 
+-- (Ceres) Ceres::ceres CXX_STANDARD = 20
+-- (Ceres) Ceres::ceres CXX_STANDARD_REQUIRED = ON
+-- (Ceres) Ceres::ceres EXPORT_COMPILE_COMMANDS = 
+-- (Ceres) Ceres::ceres EXPORT_FIND_PACKAGE_NAME = kidscpp
+-- (Ceres) Ceres::ceres HEADER_SETS = 
+-- (Ceres) Ceres::ceres IMPORTED = FALSE
+-- (Ceres) Ceres::ceres IMPORTED_GLOBAL = FALSE
+-- (Ceres) Ceres::ceres INCLUDE_DIRECTORIES = $<BUILD_INTERFACE:/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/ceres-build/config>/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/ceres-src/internal$<BUILD_INTERFACE:/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/ceres-src/include>$<INSTALL_INTERFACE:include>
+-- (Ceres) Ceres::ceres INSTALL_RPATH = 
+-- (Ceres) Ceres::ceres INSTALL_RPATH_USE_LINK_PATH = TRUE
+-- (Ceres) Ceres::ceres INTERFACE_COMPILE_FEATURES = cxx_std_20
+-- (Ceres) Ceres::ceres INTERFACE_CXX_MODULE_SETS = 
+-- (Ceres) Ceres::ceres INTERFACE_HEADER_SETS = 
+-- (Ceres) Ceres::ceres INTERFACE_INCLUDE_DIRECTORIES = $<BUILD_INTERFACE:/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/ceres-build/config>$<BUILD_INTERFACE:/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/ceres-src/include>$<INSTALL_INTERFACE:include>
+-- (Ceres) Ceres::ceres INTERFACE_LINK_LIBRARIES = Threads::Threads/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Accelerate.framework-lm-ldlEigen3::Eigenglog::glog
+-- (Ceres) Ceres::ceres ISPC_HEADER_SUFFIX = _ispc.h
+-- (Ceres) Ceres::ceres LIBRARY_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/ceres-build/lib
+-- (Ceres) Ceres::ceres LINK_LIBRARIES = Threads::Threads/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Accelerate.framework-lm-ldlEigen3::Eigenglog::glog
+-- (Ceres) Ceres::ceres MACOSX_RPATH = TRUE
+-- (Ceres) Ceres::ceres NAME = ceres
+-- (Ceres) Ceres::ceres OSX_ARCHITECTURES = 
+-- (Ceres) Ceres::ceres PCH_INSTANTIATE_TEMPLATES = ON
+-- (Ceres) Ceres::ceres PCH_WARN_INVALID = ON
+-- (Ceres) Ceres::ceres POSITION_INDEPENDENT_CODE = ON
+-- (Ceres) Ceres::ceres RUNTIME_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/ceres-build/bin
+-- (Ceres) Ceres::ceres SKIP_BUILD_RPATH = FALSE
+-- (Ceres) Ceres::ceres SOVERSION = 2
+-- (Ceres) Ceres::ceres SYMBOLIC = FALSE
+-- (Ceres) Ceres::ceres TYPE = STATIC_LIBRARY
+-- (Ceres) Ceres::ceres UNITY_BUILD_BATCH_SIZE = 8
+-- (Ceres) Ceres::ceres UNITY_BUILD_MODE = BATCH
+-- (Ceres) Ceres::ceres VERIFY_INTERFACE_HEADER_SETS = FALSE
+-- (Ceres) Ceres::ceres VERIFY_PRIVATE_HEADER_SETS = FALSE
+-- (Ceres) Ceres::ceres VERSION = 2.0.0
+-- (Ceres) tula_Ceres IMPORTED = FALSE
+-- (Ceres) tula_Ceres IMPORTED_GLOBAL = FALSE
+-- (Ceres) tula_Ceres INTERFACE_CXX_MODULE_SETS = 
+-- (Ceres) tula_Ceres INTERFACE_HEADER_SETS = 
+-- (Ceres) tula_Ceres INTERFACE_LINK_LIBRARIES = tula::perflibsCeres::ceres
+-- (Ceres) tula_Ceres NAME = tula_Ceres
+-- (Ceres) tula_Ceres TYPE = INTERFACE_LIBRARY
+-- (Grppi) Default fetch Grppi.
+-- (Grppi) Use user setting for GRPPI:
+-- (Grppi)   USE_INSTALLED_GRPPI: OFF
+-- (Grppi)   CONAN_INSTALL_GRPPI: OFF
+-- (Grppi)   FETCH_GRPPI: ON
+-- (Grppi) fetchcontent_helper: Use grppi from repo branch/tag cpp20
+-- (Grppi) fetchcontent_helper: Setting up grppi from https://github.com/Jerry-Ma/grppi.git
+CMake Warning (dev) at /opt/homebrew/share/cmake/Modules/FetchContent.cmake:1966 (message):
+  Calling FetchContent_Populate(grppi) is deprecated, call
+  FetchContent_MakeAvailable(grppi) instead.  Policy CMP0169 can be set to
+  OLD to allow FetchContent_Populate(grppi) to be called directly for now,
+  but the ability to call it with declared details will be removed completely
+  in a future version.
+Call Stack (most recent call first):
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/fetchcontent_helper.cmake:62 (FetchContent_Populate)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/Grppi.cmake:29 (FetchContentHelper)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/kidscpp-src/CMakeLists.txt:58 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- (Grppi) Use fetchcontent Grppi.
+-- (Grppi) tula::perflibs IMPORTED = FALSE
+-- (Grppi) tula::perflibs IMPORTED_GLOBAL = FALSE
+-- (Grppi) tula::perflibs INTERFACE_COMPILE_DEFINITIONS = USE_OPENMP_LIB=gnuUSE_INTEL_ONEAPI=OFFUSE_MKL_THREAD=sequentialHAS_OPENMP=1HAS_MKL=0HAS_THREADS=1
+-- (Grppi) tula::perflibs INTERFACE_CXX_MODULE_SETS = 
+-- (Grppi) tula::perflibs INTERFACE_HEADER_SETS = 
+-- (Grppi) tula::perflibs INTERFACE_LINK_LIBRARIES = OpenMP::OpenMP_CXXThreads::Threads
+-- (Grppi) tula::perflibs NAME = tula_perflibs
+-- (Grppi) tula::perflibs TYPE = INTERFACE_LIBRARY
+-- (Grppi) tula::Enum IMPORTED = FALSE
+-- (Grppi) tula::Enum IMPORTED_GLOBAL = FALSE
+-- (Grppi) tula::Enum INTERFACE_CXX_MODULE_SETS = 
+-- (Grppi) tula::Enum INTERFACE_HEADER_SETS = 
+-- (Grppi) tula::Enum INTERFACE_LINK_LIBRARIES = meta_enum::meta_enumbitmask::bitmask
+-- (Grppi) tula::Enum NAME = tula_Enum
+-- (Grppi) tula::Enum TYPE = INTERFACE_LIBRARY
+-- (Grppi) grppi::grppi IMPORTED = FALSE
+-- (Grppi) grppi::grppi IMPORTED_GLOBAL = FALSE
+-- (Grppi) grppi::grppi INTERFACE_COMPILE_DEFINITIONS = GRPPI_OMP
+-- (Grppi) grppi::grppi INTERFACE_CXX_MODULE_SETS = 
+-- (Grppi) grppi::grppi INTERFACE_HEADER_SETS = 
+-- (Grppi) grppi::grppi INTERFACE_INCLUDE_DIRECTORIES = /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/grppi-src/include
+-- (Grppi) grppi::grppi INTERFACE_LINK_LIBRARIES = tula::perflibs
+-- (Grppi) grppi::grppi INTERFACE_SYSTEM_INCLUDE_DIRECTORIES = /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/grppi-src/include
+-- (Grppi) grppi::grppi NAME = grppi
+-- (Grppi) grppi::grppi TYPE = INTERFACE_LIBRARY
+-- (Grppi) tula_Grppi IMPORTED = FALSE
+-- (Grppi) tula_Grppi IMPORTED_GLOBAL = FALSE
+-- (Grppi) tula_Grppi INTERFACE_CXX_MODULE_SETS = 
+-- (Grppi) tula_Grppi INTERFACE_HEADER_SETS = 
+-- (Grppi) tula_Grppi INTERFACE_LINK_LIBRARIES = tula::perflibstula::Enumgrppi::grppi
+-- (Grppi) tula_Grppi NAME = tula_Grppi
+-- (Grppi) tula_Grppi TYPE = INTERFACE_LIBRARY
+-- (Csv) Default fetch Csv.
+-- (Csv) Use user setting for CSV:
+-- (Csv)   USE_INSTALLED_CSV: OFF
+-- (Csv)   CONAN_INSTALL_CSV: OFF
+-- (Csv)   FETCH_CSV: ON
+-- (Csv) fetchcontent_helper: Use csv_parser from repo branch/tag master
+-- (Csv) fetchcontent_helper: Setting up csv_parser from https://github.com/Jerry-Ma/csv-parser.git
+CMake Warning (dev) at /opt/homebrew/share/cmake/Modules/FetchContent.cmake:1966 (message):
+  Calling FetchContent_Populate(csv_parser) is deprecated, call
+  FetchContent_MakeAvailable(csv_parser) instead.  Policy CMP0169 can be set
+  to OLD to allow FetchContent_Populate(csv_parser) to be called directly for
+  now, but the ability to call it with declared details will be removed
+  completely in a future version.
+Call Stack (most recent call first):
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/fetchcontent_helper.cmake:62 (FetchContent_Populate)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/Csv.cmake:20 (FetchContentHelper)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/kidscpp-src/CMakeLists.txt:61 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- (Csv) csv_parser::csv_parser IMPORTED = FALSE
+-- (Csv) csv_parser::csv_parser IMPORTED_GLOBAL = FALSE
+-- (Csv) csv_parser::csv_parser INTERFACE_CXX_MODULE_SETS = 
+-- (Csv) csv_parser::csv_parser INTERFACE_HEADER_SETS = 
+-- (Csv) csv_parser::csv_parser INTERFACE_INCLUDE_DIRECTORIES = /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/csv_parser-src/include
+-- (Csv) csv_parser::csv_parser NAME = csv_parser
+-- (Csv) csv_parser::csv_parser TYPE = INTERFACE_LIBRARY
+-- (Csv) tula_Csv IMPORTED = FALSE
+-- (Csv) tula_Csv IMPORTED_GLOBAL = FALSE
+-- (Csv) tula_Csv INTERFACE_CXX_MODULE_SETS = 
+-- (Csv) tula_Csv INTERFACE_HEADER_SETS = 
+-- (Csv) tula_Csv INTERFACE_LINK_LIBRARIES = csv_parser::csv_parser
+-- (Csv) tula_Csv NAME = tula_Csv
+-- (Csv) tula_Csv TYPE = INTERFACE_LIBRARY
+-- (Re2) Default conan instal Re2.
+-- (Re2) Use user setting for RE2:
+-- (Re2)   USE_INSTALLED_RE2: OFF
+-- (Re2)   CONAN_INSTALL_RE2: OFF
+-- (Re2)   FETCH_RE2: ON
+-- (Re2) fetchcontent_helper: Use re2 from repo branch/tag 2021-09-01
+-- (Re2) fetchcontent_helper: Setting up re2 from https://github.com/google/re2.git
+CMake Warning (dev) at /opt/homebrew/share/cmake/Modules/FetchContent.cmake:1966 (message):
+  Calling FetchContent_Populate(re2) is deprecated, call
+  FetchContent_MakeAvailable(re2) instead.  Policy CMP0169 can be set to OLD
+  to allow FetchContent_Populate(re2) to be called directly for now, but the
+  ability to call it with declared details will be removed completely in a
+  future version.
+Call Stack (most recent call first):
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/fetchcontent_helper.cmake:62 (FetchContent_Populate)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/Re2.cmake:26 (FetchContentHelper)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/kidscpp-src/CMakeLists.txt:64 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- (Re2) fetchcontent_helper: Set RE2_BUILD_TESTING = OFF
+-- (Re2) fetchcontent_helper: Set BUILD_SHARED_LIBS = OFF
+-- (Re2) fetchcontent_helper: Set USEPCRE = OFF
+-- (Re2) fetchcontent_helper: Use re2_SOURCE_DIR: /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/re2-src
+-- (Re2) fetchcontent_helper: Use re2_BINARY_DIR: /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/re2-build
+CMake Deprecation Warning at /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/re2-src/CMakeLists.txt:6 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+
+
+-- (Re2) Use fetchcontent Re2.
+-- (Re2) re2::re2 ALIASED_TARGET = re2
+-- (Re2) re2::re2 ALIAS_GLOBAL = TRUE
+-- (Re2) re2::re2 ARCHIVE_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/lib
+-- (Re2) re2::re2 AUTOGEN_ORIGIN_DEPENDS = ON
+-- (Re2) re2::re2 AUTOMOC_COMPILER_PREDEFINES = ON
+-- (Re2) re2::re2 AUTOMOC_MACRO_NAMES = Q_OBJECTQ_GADGETQ_NAMESPACEQ_NAMESPACE_EXPORT
+-- (Re2) re2::re2 AUTOMOC_PATH_PREFIX = OFF
+-- (Re2) re2::re2 BINARY_DIR = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/re2-build
+-- (Re2) re2::re2 BUILD_WITH_INSTALL_RPATH = FALSE
+-- (Re2) re2::re2 CXX_EXTENSIONS = OFF
+-- (Re2) re2::re2 CXX_MODULE_SETS = 
+-- (Re2) re2::re2 CXX_STANDARD = 20
+-- (Re2) re2::re2 CXX_STANDARD_REQUIRED = ON
+-- (Re2) re2::re2 EXPORT_COMPILE_COMMANDS = 
+-- (Re2) re2::re2 EXPORT_FIND_PACKAGE_NAME = kidscpp
+-- (Re2) re2::re2 HEADER_SETS = 
+-- (Re2) re2::re2 IMPORTED = FALSE
+-- (Re2) re2::re2 IMPORTED_GLOBAL = FALSE
+-- (Re2) re2::re2 INCLUDE_DIRECTORIES = $<BUILD_INTERFACE:/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/re2-src>
+-- (Re2) re2::re2 INSTALL_RPATH = 
+-- (Re2) re2::re2 INSTALL_RPATH_USE_LINK_PATH = TRUE
+-- (Re2) re2::re2 INTERFACE_CXX_MODULE_SETS = 
+-- (Re2) re2::re2 INTERFACE_HEADER_SETS = 
+-- (Re2) re2::re2 INTERFACE_INCLUDE_DIRECTORIES = $<BUILD_INTERFACE:/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/re2-src>
+-- (Re2) re2::re2 INTERFACE_LINK_LIBRARIES = Threads::Threads
+-- (Re2) re2::re2 ISPC_HEADER_SUFFIX = _ispc.h
+-- (Re2) re2::re2 LIBRARY_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/lib
+-- (Re2) re2::re2 LINK_LIBRARIES = Threads::Threads
+-- (Re2) re2::re2 MACOSX_RPATH = TRUE
+-- (Re2) re2::re2 NAME = re2
+-- (Re2) re2::re2 OSX_ARCHITECTURES = 
+-- (Re2) re2::re2 PCH_INSTANTIATE_TEMPLATES = ON
+-- (Re2) re2::re2 PCH_WARN_INVALID = ON
+-- (Re2) re2::re2 RUNTIME_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin
+-- (Re2) re2::re2 SKIP_BUILD_RPATH = FALSE
+-- (Re2) re2::re2 SOVERSION = 9
+-- (Re2) re2::re2 SYMBOLIC = FALSE
+-- (Re2) re2::re2 TYPE = STATIC_LIBRARY
+-- (Re2) re2::re2 UNITY_BUILD_BATCH_SIZE = 8
+-- (Re2) re2::re2 UNITY_BUILD_MODE = BATCH
+-- (Re2) re2::re2 VERIFY_INTERFACE_HEADER_SETS = FALSE
+-- (Re2) re2::re2 VERIFY_PRIVATE_HEADER_SETS = FALSE
+-- (Re2) re2::re2 VERSION = 9.0.0
+-- (Re2) tula_Re2 IMPORTED = FALSE
+-- (Re2) tula_Re2 IMPORTED_GLOBAL = FALSE
+-- (Re2) tula_Re2 INTERFACE_CXX_MODULE_SETS = 
+-- (Re2) tula_Re2 INTERFACE_HEADER_SETS = 
+-- (Re2) tula_Re2 INTERFACE_LINK_LIBRARIES = re2::re2
+-- (Re2) tula_Re2 NAME = tula_Re2
+-- (Re2) tula_Re2 TYPE = INTERFACE_LIBRARY
+-- (GramSavgol) Default fetch GramSavgol.
+-- (GramSavgol) Use user setting for GRAMSAVGOL:
+-- (GramSavgol)   USE_INSTALLED_GRAMSAVGOL: OFF
+-- (GramSavgol)   CONAN_INSTALL_GRAMSAVGOL: OFF
+-- (GramSavgol)   FETCH_GRAMSAVGOL: ON
+-- (Boost) Default conan instal Boost.
+-- (Boost) Use user setting for BOOST:
+-- (Boost)   USE_INSTALLED_BOOST: ON
+-- (Boost)   CONAN_INSTALL_BOOST: OFF
+-- (Boost)   FETCH_BOOST: OFF
+-- (Boost) Use system installed Boost.
+-- (Boost) Boost::headers IMPORTED = TRUE
+-- (Boost) Boost::headers IMPORTED_GLOBAL = FALSE
+-- (Boost) Boost::headers INTERFACE_CXX_MODULE_SETS = 
+-- (Boost) Boost::headers INTERFACE_HEADER_SETS = 
+-- (Boost) Boost::headers INTERFACE_INCLUDE_DIRECTORIES = /opt/homebrew/include
+-- (Boost) Boost::headers NAME = Boost::headers
+-- (Boost) Boost::headers TYPE = INTERFACE_LIBRARY
+-- (Boost) tula_Boost IMPORTED = FALSE
+-- (Boost) tula_Boost IMPORTED_GLOBAL = FALSE
+-- (Boost) tula_Boost INTERFACE_CXX_MODULE_SETS = 
+-- (Boost) tula_Boost INTERFACE_HEADER_SETS = 
+-- (Boost) tula_Boost INTERFACE_LINK_LIBRARIES = Boost::headers
+-- (Boost) tula_Boost NAME = tula_Boost
+-- (Boost) tula_Boost TYPE = INTERFACE_LIBRARY
+-- (GramSavgol) fetchcontent_helper: Use gramsavgol from repo branch/tag master
+-- (GramSavgol) fetchcontent_helper: Setting up gramsavgol from https://github.com/arntanguy/gram_savitzky_golay.git
+CMake Warning (dev) at /opt/homebrew/share/cmake/Modules/FetchContent.cmake:1966 (message):
+  Calling FetchContent_Populate(gramsavgol) is deprecated, call
+  FetchContent_MakeAvailable(gramsavgol) instead.  Policy CMP0169 can be set
+  to OLD to allow FetchContent_Populate(gramsavgol) to be called directly for
+  now, but the ability to call it with declared details will be removed
+  completely in a future version.
+Call Stack (most recent call first):
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/fetchcontent_helper.cmake:62 (FetchContent_Populate)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/GramSavgol.cmake:30 (FetchContentHelper)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/kidscpp-src/CMakeLists.txt:67 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- (GramSavgol) Use fetchcontent Gramgramsavgol.
+-- (GramSavgol) tula::Eigen3 IMPORTED = FALSE
+-- (GramSavgol) tula::Eigen3 IMPORTED_GLOBAL = FALSE
+-- (GramSavgol) tula::Eigen3 INTERFACE_CXX_MODULE_SETS = 
+-- (GramSavgol) tula::Eigen3 INTERFACE_HEADER_SETS = 
+-- (GramSavgol) tula::Eigen3 INTERFACE_LINK_LIBRARIES = tula::perflibsEigen3::Eigen
+-- (GramSavgol) tula::Eigen3 NAME = tula_Eigen3
+-- (GramSavgol) tula::Eigen3 TYPE = INTERFACE_LIBRARY
+-- (GramSavgol) tula::Boost IMPORTED = FALSE
+-- (GramSavgol) tula::Boost IMPORTED_GLOBAL = FALSE
+-- (GramSavgol) tula::Boost INTERFACE_CXX_MODULE_SETS = 
+-- (GramSavgol) tula::Boost INTERFACE_HEADER_SETS = 
+-- (GramSavgol) tula::Boost INTERFACE_LINK_LIBRARIES = Boost::headers
+-- (GramSavgol) tula::Boost NAME = tula_Boost
+-- (GramSavgol) tula::Boost TYPE = INTERFACE_LIBRARY
+-- (GramSavgol) gramsavgol::gramsavgol ALIASED_TARGET = gramsavgol
+-- (GramSavgol) gramsavgol::gramsavgol ALIAS_GLOBAL = TRUE
+-- (GramSavgol) gramsavgol::gramsavgol ARCHIVE_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/lib
+-- (GramSavgol) gramsavgol::gramsavgol AUTOGEN_ORIGIN_DEPENDS = ON
+-- (GramSavgol) gramsavgol::gramsavgol AUTOMOC_COMPILER_PREDEFINES = ON
+-- (GramSavgol) gramsavgol::gramsavgol AUTOMOC_MACRO_NAMES = Q_OBJECTQ_GADGETQ_NAMESPACEQ_NAMESPACE_EXPORT
+-- (GramSavgol) gramsavgol::gramsavgol AUTOMOC_PATH_PREFIX = OFF
+-- (GramSavgol) gramsavgol::gramsavgol BINARY_DIR = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/kidscpp-build
+-- (GramSavgol) gramsavgol::gramsavgol BUILD_WITH_INSTALL_RPATH = FALSE
+-- (GramSavgol) gramsavgol::gramsavgol CXX_EXTENSIONS = OFF
+-- (GramSavgol) gramsavgol::gramsavgol CXX_MODULE_SETS = 
+-- (GramSavgol) gramsavgol::gramsavgol CXX_STANDARD = 20
+-- (GramSavgol) gramsavgol::gramsavgol CXX_STANDARD_REQUIRED = ON
+-- (GramSavgol) gramsavgol::gramsavgol EXPORT_COMPILE_COMMANDS = 
+-- (GramSavgol) gramsavgol::gramsavgol EXPORT_FIND_PACKAGE_NAME = kidscpp
+-- (GramSavgol) gramsavgol::gramsavgol HEADER_SETS = 
+-- (GramSavgol) gramsavgol::gramsavgol IMPORTED = FALSE
+-- (GramSavgol) gramsavgol::gramsavgol IMPORTED_GLOBAL = FALSE
+-- (GramSavgol) gramsavgol::gramsavgol INCLUDE_DIRECTORIES = /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/gramsavgol-src/include
+-- (GramSavgol) gramsavgol::gramsavgol INSTALL_RPATH = 
+-- (GramSavgol) gramsavgol::gramsavgol INSTALL_RPATH_USE_LINK_PATH = TRUE
+-- (GramSavgol) gramsavgol::gramsavgol INTERFACE_CXX_MODULE_SETS = 
+-- (GramSavgol) gramsavgol::gramsavgol INTERFACE_HEADER_SETS = 
+-- (GramSavgol) gramsavgol::gramsavgol INTERFACE_INCLUDE_DIRECTORIES = /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/gramsavgol-src/include
+-- (GramSavgol) gramsavgol::gramsavgol INTERFACE_LINK_LIBRARIES = tula::Eigen3tula::Boost
+-- (GramSavgol) gramsavgol::gramsavgol INTERFACE_SYSTEM_INCLUDE_DIRECTORIES = /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/gramsavgol-src/include
+-- (GramSavgol) gramsavgol::gramsavgol ISPC_HEADER_SUFFIX = _ispc.h
+-- (GramSavgol) gramsavgol::gramsavgol LIBRARY_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/lib
+-- (GramSavgol) gramsavgol::gramsavgol LINK_LIBRARIES = tula::Eigen3tula::Boost
+-- (GramSavgol) gramsavgol::gramsavgol MACOSX_RPATH = TRUE
+-- (GramSavgol) gramsavgol::gramsavgol NAME = gramsavgol
+-- (GramSavgol) gramsavgol::gramsavgol OSX_ARCHITECTURES = 
+-- (GramSavgol) gramsavgol::gramsavgol PCH_INSTANTIATE_TEMPLATES = ON
+-- (GramSavgol) gramsavgol::gramsavgol PCH_WARN_INVALID = ON
+-- (GramSavgol) gramsavgol::gramsavgol RUNTIME_OUTPUT_DIRECTORY = /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/bin
+-- (GramSavgol) gramsavgol::gramsavgol SKIP_BUILD_RPATH = FALSE
+-- (GramSavgol) gramsavgol::gramsavgol SYMBOLIC = FALSE
+-- (GramSavgol) gramsavgol::gramsavgol TYPE = STATIC_LIBRARY
+-- (GramSavgol) gramsavgol::gramsavgol UNITY_BUILD_BATCH_SIZE = 8
+-- (GramSavgol) gramsavgol::gramsavgol UNITY_BUILD_MODE = BATCH
+-- (GramSavgol) gramsavgol::gramsavgol VERIFY_INTERFACE_HEADER_SETS = FALSE
+-- (GramSavgol) gramsavgol::gramsavgol VERIFY_PRIVATE_HEADER_SETS = FALSE
+-- (GramSavgol) tula_GramSavgol IMPORTED = FALSE
+-- (GramSavgol) tula_GramSavgol IMPORTED_GLOBAL = FALSE
+-- (GramSavgol) tula_GramSavgol INTERFACE_CXX_MODULE_SETS = 
+-- (GramSavgol) tula_GramSavgol INTERFACE_HEADER_SETS = 
+-- (GramSavgol) tula_GramSavgol INTERFACE_LINK_LIBRARIES = tula::Eigen3tula::Boostgramsavgol::gramsavgol
+-- (GramSavgol) tula_GramSavgol NAME = tula_GramSavgol
+-- (GramSavgol) tula_GramSavgol TYPE = INTERFACE_LIBRARY
+-- (verbose) Generate gitversion header /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/config_header/kidscpp_config/gitversion.h
+-- (verbose) GIT exec: /usr/bin/git
+-- (verbose) GIT dir: /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/kidscpp-src
+-- (verbose) GIT revision: 04088da
+-- (verbose) GIT version: 04088da-dirty
+-- (verbose) Timestamp: 2026-09-30T13:08:05
+-- (verbose) Generate config header /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/config_header/kidscpp_config/config.h
+-- (Spectra) Default conan instal Spectra.
+-- (Spectra) Use user setting for SPECTRA:
+-- (Spectra)   USE_INSTALLED_SPECTRA: OFF
+-- (Spectra)   CONAN_INSTALL_SPECTRA: OFF
+-- (Spectra)   FETCH_SPECTRA: ON
+-- (Spectra) fetchcontent_helper: Use spectra from repo branch/tag master
+-- (Spectra) fetchcontent_helper: Setting up spectra from https://github.com/yixuan/spectra.git
+CMake Warning (dev) at /opt/homebrew/share/cmake/Modules/FetchContent.cmake:1966 (message):
+  Calling FetchContent_Populate(spectra) is deprecated, call
+  FetchContent_MakeAvailable(spectra) instead.  Policy CMP0169 can be set to
+  OLD to allow FetchContent_Populate(spectra) to be called directly for now,
+  but the ability to call it with declared details will be removed completely
+  in a future version.
+Call Stack (most recent call first):
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/fetchcontent_helper.cmake:62 (FetchContent_Populate)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/Spectra.cmake:37 (FetchContentHelper)
+  CMakeLists.txt:35 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- (Spectra) Use fetchcontent Spectra.
+-- (CCfits) Default conan instal CCfits.
+-- (CCfits) Use user setting for CCFITS:
+-- (CCfits)   USE_INSTALLED_CCFITS: ON
+-- (CCfits)   CONAN_INSTALL_CCFITS: OFF
+-- (CCfits)   FETCH_CCFITS: OFF
+-- (CCfits) Use system installed CCfits.
+-- search CCfits in 
+-- CCfits include: /opt/homebrew/include
+-- CCfits lib: /opt/homebrew/lib/libCCfits.dylib
+-- Found CCfits: /opt/homebrew/lib/libCCfits.dylib
+-- (FFTW) Default conan instal FFTW.
+-- (FFTW) Use user setting for FFTW:
+-- (FFTW)   USE_INSTALLED_FFTW: ON
+-- (FFTW)   CONAN_INSTALL_FFTW: OFF
+-- (FFTW)   FETCH_FFTW: OFF
+-- Found FFTW_DOUBLE_LIB: /opt/homebrew/lib/libfftw3.dylib
+-- Found FFTW_FLOAT_LIB: /opt/homebrew/lib/libfftw3f.dylib
+-- Found FFTW_LONGDOUBLE_LIB: /opt/homebrew/lib/libfftw3l.dylib
+-- Found FFTW_DOUBLE_THREADS_LIB: /opt/homebrew/lib/libfftw3_threads.dylib
+-- Found FFTW_FLOAT_THREADS_LIB: /opt/homebrew/lib/libfftw3f_threads.dylib
+-- Found FFTW_LONGDOUBLE_THREADS_LIB: /opt/homebrew/lib/libfftw3l_threads.dylib
+-- Found FFTW_DOUBLE_OPENMP_LIB: /opt/homebrew/lib/libfftw3_omp.dylib
+-- Found FFTW_FLOAT_OPENMP_LIB: /opt/homebrew/lib/libfftw3f_omp.dylib
+-- Found FFTW_LONGDOUBLE_OPENMP_LIB: /opt/homebrew/lib/libfftw3l_omp.dylib
+-- (testing) Default conan instal testing_libs.
+-- (testing) Use user setting for TESTING_LIBS:
+-- (testing)   USE_INSTALLED_TESTING_LIBS: OFF
+-- (testing)   CONAN_INSTALL_TESTING_LIBS: OFF
+-- (testing)   FETCH_TESTING_LIBS: ON
+-- (testing) fetchcontent_helper: Use benchmark from repo branch/tag v1.6.0
+-- (testing) fetchcontent_helper: Setting up benchmark from https://github.com/google/benchmark.git
+CMake Warning (dev) at /opt/homebrew/share/cmake/Modules/FetchContent.cmake:1966 (message):
+  Calling FetchContent_Populate(benchmark) is deprecated, call
+  FetchContent_MakeAvailable(benchmark) instead.  Policy CMP0169 can be set
+  to OLD to allow FetchContent_Populate(benchmark) to be called directly for
+  now, but the ability to call it with declared details will be removed
+  completely in a future version.
+Call Stack (most recent call first):
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/fetchcontent_helper.cmake:62 (FetchContent_Populate)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/testing.cmake:30 (FetchContentHelper)
+  tests/CMakeLists.txt:8 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- (testing) fetchcontent_helper: Set BENCHMARK_ENABLE_TESTING = OFF
+-- (testing) fetchcontent_helper: Set BENCHMARK_ENABLE_INSTALL = OFF
+-- (testing) fetchcontent_helper: Set BENCHMARK_INSTALL_DOCS = OFF
+-- (testing) fetchcontent_helper: Set BENCHMARK_ENABLE_GTEST_TESTS = OFF
+-- (testing) fetchcontent_helper: Set BENCHMARK_ENABLE_ASSEMBLY_TESTS = OFF
+-- (testing) fetchcontent_helper: Use benchmark_SOURCE_DIR: /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/benchmark-src
+-- (testing) fetchcontent_helper: Use benchmark_BINARY_DIR: /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/benchmark-build
+CMake Deprecation Warning at /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/benchmark-src/CMakeLists.txt:1 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+
+
+-- git version: v1.6.0 normalized to 1.6.0
+-- Version: 1.6.0
+-- Performing Test HAVE_THREAD_SAFETY_ATTRIBUTES -- failed to compile
+-- Performing Test HAVE_STD_REGEX -- success
+-- Performing Test HAVE_GNU_POSIX_REGEX -- failed to compile
+-- Performing Test HAVE_POSIX_REGEX -- success
+-- Performing Test HAVE_STEADY_CLOCK -- success
+-- (testing) fetchcontent_helper: Use googletest from repo branch/tag master
+-- (testing) fetchcontent_helper: Setting up googletest from https://github.com/google/googletest.git
+CMake Warning (dev) at /opt/homebrew/share/cmake/Modules/FetchContent.cmake:1966 (message):
+  Calling FetchContent_Populate(googletest) is deprecated, call
+  FetchContent_MakeAvailable(googletest) instead.  Policy CMP0169 can be set
+  to OLD to allow FetchContent_Populate(googletest) to be called directly for
+  now, but the ability to call it with declared details will be removed
+  completely in a future version.
+Call Stack (most recent call first):
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/fetchcontent_helper.cmake:62 (FetchContent_Populate)
+  /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/tula-src/tula_cmake/cmake/testing.cmake:38 (FetchContentHelper)
+  tests/CMakeLists.txt:8 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- (testing) fetchcontent_helper: Set BUILD_GMOCK = ON
+-- (testing) fetchcontent_helper: Set INSTALL_GTEST = OFF
+-- (testing) fetchcontent_helper: Use googletest_SOURCE_DIR: /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/googletest-src
+-- (testing) fetchcontent_helper: Use googletest_BINARY_DIR: /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/_deps/googletest-build
+-- (testing) Use fetchcontent gtest and gbench.
+-- (verbose) Generate gitversion header /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/config_header/citlali_config/gitversion.h
+-- (verbose) GIT exec: /usr/bin/git
+-- (verbose) GIT dir: /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor
+-- (verbose) GIT revision: c87c20d9a
+-- (verbose) GIT version: timestream-successor-bright-point-base-v1-20260926-58-gc87c20d9a-dirty
+-- (verbose) Timestamp: 2026-09-30T13:08:05
+-- (verbose) Generate config header /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/config_header/citlali_config/config.h
+-- (verbose) Generate default config header /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/config_header/citlali_config/default_config.h
+-- Configuring done (3.1s)
+-- Generating done (1.7s)
+-- Build files have been written to: /Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build

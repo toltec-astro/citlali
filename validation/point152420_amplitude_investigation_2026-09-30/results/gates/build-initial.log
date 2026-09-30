@@ -1,0 +1,25 @@
+[  0%] Built target default_config_header_citlali
+[  0%] Built target gitversion_header_tula
+[  2%] Refresh Citlali Git-version provenance
+[  2%] Built target gitversion_header_kidscpp
+[  2%] Built target config_header_citlali
+[  2%] Built target config_header_kidscpp
+[  2%] Built target config_header_tula
+[ 10%] Built target re2
+[ 10%] Built target gramsavgol
+[ 10%] Built target fmt
+[ 12%] Built target glog
+[ 12%] Built target gitversion_header_citlali_buildtime_refresh
+[ 20%] Built target netcdf-cxx4
+[ 32%] Built target yaml-cpp
+[ 32%] Built target gitversion_header_citlali
+[ 34%] Built target spdlog
+[ 85%] Built target ceres
+[ 89%] Built target kids
+[ 89%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/pipeline/reduction_restart_checkpoint.cpp.o
+error: precompiled file '/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/build/CMakeFiles/citlali.dir/cmake_pch.hxx.pch' was compiled for the target 'arm64-apple-macosx26.0.0' but the current translation unit is being compiled for target 'arm64-apple-macosx27.0.0'
+1 error generated.
+make[3]: *** [CMakeFiles/citlali.dir/src/citlali/core/pipeline/reduction_restart_checkpoint.cpp.o] Error 1
+make[2]: *** [CMakeFiles/citlali.dir/all] Error 2
+make[1]: *** [CMakeFiles/citlali_cli.dir/rule] Error 2
+make: *** [citlali_cli] Error 2

@@ -1,0 +1,342 @@
+[  0%] Built target config_header_citlali
+[  0%] Built target gitversion_header_tula
+[  2%] Refresh Citlali Git-version provenance
+[  2%] Built target default_config_header_citlali
+[  2%] Built target gitversion_header_kidscpp
+[  2%] Built target config_header_kidscpp
+[  2%] Built target config_header_tula
+[  2%] Building CXX object _deps/kidscpp-build/CMakeFiles/gramsavgol.dir/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/gramsavgol-src/src/gram_savitzky_golay.cpp.o
+[  2%] Building CXX object _deps/kidscpp-build/CMakeFiles/gramsavgol.dir/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/gramsavgol-src/src/spatial_filters.cpp.o
+[  2%] Building CXX object _deps/fmt-build/CMakeFiles/fmt.dir/src/format.cc.o
+[  2%] Built target gitversion_header_citlali_buildtime_refresh
+[  2%] Building CXX object _deps/fmt-build/CMakeFiles/fmt.dir/src/os.cc.o
+[  2%] Building CXX object _deps/glog-build/CMakeFiles/glog.dir/src/demangle.cc.o
+[  4%] Building CXX object _deps/re2-build/CMakeFiles/re2.dir/re2/bitstate.cc.o
+[  4%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncAtt.cpp.o
+[  4%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/contrib/graphbuilder.cpp.o
+[  4%] Building CXX object _deps/re2-build/CMakeFiles/re2.dir/re2/compile.cc.o
+[  4%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncByte.cpp.o
+[  4%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/contrib/graphbuilderadapter.cpp.o
+[  4%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncChar.cpp.o
+[  4%] Building CXX object _deps/glog-build/CMakeFiles/glog.dir/src/logging.cc.o
+[  4%] Built target gitversion_header_citlali
+[  4%] Building CXX object _deps/re2-build/CMakeFiles/re2.dir/re2/dfa.cc.o
+[  4%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncCheck.cpp.o
+[  4%] Building CXX object _deps/glog-build/CMakeFiles/glog.dir/src/raw_logging.cc.o
+[  4%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/binary.cpp.o
+[  4%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncCompoundType.cpp.o
+[  4%] Linking CXX static library ../../lib/libfmt.a
+[  4%] Building CXX object _deps/re2-build/CMakeFiles/re2.dir/re2/filtered_re2.cc.o
+/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/glog-src/src/raw_logging.cc:139:3: warning: 'syscall' is deprecated: first deprecated in macOS 10.12 - syscall(2) is unsupported; please switch to a supported interface. For SYS_kdebug_trace use kdebug_signpost(). [-Wdeprecated-declarations]
+  139 |   safe_write(STDERR_FILENO, buffer, strlen(buffer));
+      |   ^
+/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/glog-src/src/raw_logging.cc:63:34: note: expanded from macro 'safe_write'
+   63 | # define safe_write(fd, s, len)  syscall(SYS_write, fd, s, len)
+      |                                  ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/unistd.h:754:6: note: 'syscall' has been explicitly marked deprecated here
+  754 | int      syscall(int, ...);
+      |          ^
+1 warning generated.
+[  4%] Built target fmt
+[  6%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/convert.cpp.o
+[  6%] Building CXX object _deps/glog-build/CMakeFiles/glog.dir/src/symbolize.cc.o
+[  6%] Building CXX object _deps/re2-build/CMakeFiles/re2.dir/re2/mimics_pcre.cc.o
+[  8%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncDim.cpp.o
+[  8%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/depthguard.cpp.o
+[  8%] Building CXX object _deps/re2-build/CMakeFiles/re2.dir/re2/nfa.cc.o
+[  8%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncDouble.cpp.o
+[  8%] Linking CXX static library ../../lib/libgramsavgol.a
+[  8%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/directives.cpp.o
+[  8%] Building CXX object _deps/glog-build/CMakeFiles/glog.dir/src/utilities.cc.o
+[  8%] Built target gramsavgol
+[  8%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncEnumType.cpp.o
+[  8%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/emit.cpp.o
+[ 10%] Building CXX object _deps/re2-build/CMakeFiles/re2.dir/re2/onepass.cc.o
+[ 12%] Building CXX object _deps/glog-build/CMakeFiles/glog.dir/src/vlog_is_on.cc.o
+[ 12%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncException.cpp.o
+[ 12%] Building CXX object _deps/glog-build/CMakeFiles/glog.dir/src/signalhandler.cc.o
+[ 12%] Building CXX object _deps/re2-build/CMakeFiles/re2.dir/re2/parse.cc.o
+[ 12%] Building CXX object _deps/spdlog-build/CMakeFiles/spdlog.dir/src/spdlog.cpp.o
+/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/_deps/glog-src/src/utilities.cc:251:17: warning: 'syscall' is deprecated: first deprecated in macOS 10.12 - syscall(2) is unsupported; please switch to a supported interface. For SYS_kdebug_trace use kdebug_signpost(). [-Wdeprecated-declarations]
+  251 |     pid_t tid = syscall(__NR_gettid);
+      |                 ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/unistd.h:754:6: note: 'syscall' has been explicitly marked deprecated here
+  754 | int      syscall(int, ...);
+      |          ^
+1 warning generated.
+[ 12%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncFile.cpp.o
+[ 12%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/emitfromevents.cpp.o
+[ 12%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncFill.cpp.o
+[ 14%] Building CXX object _deps/spdlog-build/CMakeFiles/spdlog.dir/src/stdout_sinks.cpp.o
+[ 16%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncFilter.cpp.o
+[ 16%] Building CXX object _deps/spdlog-build/CMakeFiles/spdlog.dir/src/color_sinks.cpp.o
+[ 16%] Linking CXX static library ../../lib/libglog.a
+[ 16%] Built target glog
+[ 16%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncFloat.cpp.o
+[ 16%] Building CXX object _deps/re2-build/CMakeFiles/re2.dir/re2/perl_groups.cc.o
+[ 16%] Building CXX object _deps/spdlog-build/CMakeFiles/spdlog.dir/src/file_sinks.cpp.o
+[ 16%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/emitter.cpp.o
+[ 16%] Building CXX object _deps/re2-build/CMakeFiles/re2.dir/re2/prefilter.cc.o
+[ 16%] Building CXX object _deps/re2-build/CMakeFiles/re2.dir/re2/prefilter_tree.cc.o
+[ 16%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncGroup.cpp.o
+[ 18%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/emitterstate.cpp.o
+[ 18%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncGroupAtt.cpp.o
+[ 18%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/emitterutils.cpp.o
+[ 18%] Building CXX object _deps/re2-build/CMakeFiles/re2.dir/re2/prog.cc.o
+[ 18%] Building CXX object _deps/spdlog-build/CMakeFiles/spdlog.dir/src/async.cpp.o
+[ 20%] Building CXX object _deps/re2-build/CMakeFiles/re2.dir/re2/re2.cc.o
+[ 20%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncInt.cpp.o
+[ 20%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncInt64.cpp.o
+[ 20%] Building CXX object _deps/spdlog-build/CMakeFiles/spdlog.dir/src/cfg.cpp.o
+[ 20%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/exceptions.cpp.o
+[ 22%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncOpaqueType.cpp.o
+[ 22%] Building CXX object _deps/re2-build/CMakeFiles/re2.dir/re2/regexp.cc.o
+[ 22%] Building CXX object _deps/re2-build/CMakeFiles/re2.dir/re2/set.cc.o
+[ 22%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/exp.cpp.o
+[ 22%] Building CXX object _deps/re2-build/CMakeFiles/re2.dir/re2/simplify.cc.o
+[ 22%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncShort.cpp.o
+[ 22%] Building CXX object _deps/re2-build/CMakeFiles/re2.dir/re2/stringpiece.cc.o
+[ 22%] Linking CXX static library ../../lib/libspdlog.a
+[ 22%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/parallel_for_cxx.cc.o
+[ 22%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncString.cpp.o
+[ 22%] Built target spdlog
+[ 22%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/fptostring.cpp.o
+[ 22%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncType.cpp.o
+[ 22%] Building CXX object _deps/re2-build/CMakeFiles/re2.dir/re2/tostring.cc.o
+[ 24%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/thread_pool.cc.o
+[ 24%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/memory.cpp.o
+[ 24%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncUbyte.cpp.o
+[ 24%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/accelerate_sparse.cc.o
+[ 26%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/node.cpp.o
+[ 26%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncUint.cpp.o
+[ 26%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/array_utils.cc.o
+[ 26%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/node_data.cpp.o
+[ 28%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncUint64.cpp.o
+[ 28%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncUshort.cpp.o
+[ 30%] Building CXX object _deps/re2-build/CMakeFiles/re2.dir/re2/unicode_casefold.cc.o
+[ 30%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/blas.cc.o
+[ 30%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/nodebuilder.cpp.o
+[ 30%] Building CXX object _deps/re2-build/CMakeFiles/re2.dir/re2/unicode_groups.cc.o
+[ 30%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncVar.cpp.o
+[ 30%] Building CXX object _deps/re2-build/CMakeFiles/re2.dir/util/rune.cc.o
+[ 30%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/nodeevents.cpp.o
+[ 30%] Building CXX object _deps/re2-build/CMakeFiles/re2.dir/util/strutil.cc.o
+[ 30%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/block_evaluate_preparer.cc.o
+[ 30%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/block_jacobi_preconditioner.cc.o
+[ 30%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncVarAtt.cpp.o
+[ 30%] Linking CXX static library ../../lib/libre2.a
+[ 30%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/null.cpp.o
+[ 30%] Building CXX object _deps/netcdfcxx4-build/cxx4/CMakeFiles/netcdf-cxx4.dir/ncVlenType.cpp.o
+[ 32%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/block_jacobian_writer.cc.o
+[ 32%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/ostream_wrapper.cpp.o
+[ 32%] Built target re2
+[ 32%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/block_random_access_dense_matrix.cc.o
+[ 32%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/block_random_access_diagonal_matrix.cc.o
+[ 34%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/parse.cpp.o
+[ 34%] Linking CXX static library ../../../lib/libnetcdf-cxx4.a
+[ 34%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/parser.cpp.o
+[ 34%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/regex_yaml.cpp.o
+[ 34%] Built target netcdf-cxx4
+[ 34%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/scanner.cpp.o
+[ 34%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/block_random_access_matrix.cc.o
+[ 34%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/scanscalar.cpp.o
+[ 34%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/block_random_access_sparse_matrix.cc.o
+[ 34%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/block_sparse_matrix.cc.o
+[ 34%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/scantag.cpp.o
+[ 36%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/block_structure.cc.o
+[ 38%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/scantoken.cpp.o
+[ 38%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/simplekey.cpp.o
+[ 38%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/c_api.cc.o
+[ 38%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/canonical_views_clustering.cc.o
+[ 38%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/singledocparser.cpp.o
+[ 38%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/cgnr_solver.cc.o
+[ 38%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/callbacks.cc.o
+[ 38%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/compressed_col_sparse_matrix_utils.cc.o
+[ 40%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/compressed_row_jacobian_writer.cc.o
+[ 40%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/stream.cpp.o
+[ 40%] Building CXX object _deps/yaml-build/CMakeFiles/yaml-cpp.dir/src/tag.cpp.o
+[ 40%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/compressed_row_sparse_matrix.cc.o
+[ 40%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/conditioned_cost_function.cc.o
+[ 40%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/conjugate_gradients_solver.cc.o
+[ 40%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/context.cc.o
+[ 40%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/context_impl.cc.o
+[ 42%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/coordinate_descent_minimizer.cc.o
+[ 44%] Linking CXX static library ../../lib/libyaml-cpp.a
+[ 44%] Built target yaml-cpp
+[ 44%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/corrector.cc.o
+[ 44%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/covariance.cc.o
+[ 44%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/covariance_impl.cc.o
+[ 44%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/cxsparse.cc.o
+[ 44%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/dense_normal_cholesky_solver.cc.o
+[ 46%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/dense_qr_solver.cc.o
+[ 46%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/dense_sparse_matrix.cc.o
+[ 46%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/detect_structure.cc.o
+[ 46%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/dogleg_strategy.cc.o
+[ 46%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/dynamic_compressed_row_jacobian_writer.cc.o
+[ 46%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/dynamic_compressed_row_sparse_matrix.cc.o
+[ 48%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/dynamic_sparse_normal_cholesky_solver.cc.o
+[ 48%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/evaluator.cc.o
+[ 48%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/eigensparse.cc.o
+[ 48%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/file.cc.o
+[ 48%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/float_suitesparse.cc.o
+[ 48%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/float_cxsparse.cc.o
+[ 51%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/function_sample.cc.o
+[ 51%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/gradient_checker.cc.o
+[ 51%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/gradient_checking_cost_function.cc.o
+[ 51%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/gradient_problem.cc.o
+[ 51%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/gradient_problem_solver.cc.o
+[ 51%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/implicit_schur_complement.cc.o
+[ 53%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/inner_product_computer.cc.o
+[ 53%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/is_close.cc.o
+[ 53%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/iterative_refiner.cc.o
+[ 53%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/iterative_schur_complement_solver.cc.o
+[ 53%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/levenberg_marquardt_strategy.cc.o
+[ 53%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/lapack.cc.o
+[ 55%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/line_search.cc.o
+[ 55%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/line_search_direction.cc.o
+[ 55%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/line_search_minimizer.cc.o
+[ 55%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/line_search_preprocessor.cc.o
+[ 55%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/linear_least_squares_problems.cc.o
+[ 55%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/linear_operator.cc.o
+[ 57%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/linear_solver.cc.o
+[ 57%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/local_parameterization.cc.o
+[ 57%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/loss_function.cc.o
+[ 57%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/low_rank_inverse_hessian.cc.o
+[ 57%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/minimizer.cc.o
+[ 57%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/normal_prior.cc.o
+[ 59%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/parallel_utils.cc.o
+[ 59%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/parameter_block_ordering.cc.o
+[ 59%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/partitioned_matrix_view.cc.o
+[ 59%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/polynomial.cc.o
+[ 59%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/preconditioner.cc.o
+[ 59%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/preprocessor.cc.o
+[ 61%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/problem.cc.o
+[ 61%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/problem_impl.cc.o
+[ 61%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/program.cc.o
+[ 61%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/reorder_program.cc.o
+[ 61%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/residual_block.cc.o
+[ 61%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/residual_block_utils.cc.o
+[ 63%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/schur_complement_solver.cc.o
+[ 63%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/schur_eliminator.cc.o
+[ 63%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/schur_jacobi_preconditioner.cc.o
+[ 63%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/schur_templates.cc.o
+[ 63%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/scratch_evaluate_preparer.cc.o
+[ 63%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/single_linkage_clustering.cc.o
+[ 65%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/solver.cc.o
+[ 65%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/solver_utils.cc.o
+[ 65%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/sparse_matrix.cc.o
+[ 65%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/sparse_cholesky.cc.o
+[ 65%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/sparse_normal_cholesky_solver.cc.o
+[ 65%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/subset_preconditioner.cc.o
+[ 67%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/split.cc.o
+[ 67%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/stringprintf.cc.o
+[ 67%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/suitesparse.cc.o
+[ 67%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/thread_token_provider.cc.o
+[ 67%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/triplet_sparse_matrix.cc.o
+[ 67%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/trust_region_preprocessor.cc.o
+[ 69%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/trust_region_minimizer.cc.o
+[ 69%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/trust_region_step_evaluator.cc.o
+[ 69%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/trust_region_strategy.cc.o
+[ 69%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/types.cc.o
+[ 69%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/visibility.cc.o
+[ 69%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/visibility_based_preconditioner.cc.o
+[ 71%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/wall_time.cc.o
+[ 71%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/partitioned_matrix_view_2_2_2.cc.o
+[ 71%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/partitioned_matrix_view_2_2_3.cc.o
+[ 71%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/partitioned_matrix_view_2_2_4.cc.o
+[ 71%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/partitioned_matrix_view_2_2_d.cc.o
+[ 71%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/partitioned_matrix_view_2_3_3.cc.o
+[ 73%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/partitioned_matrix_view_2_3_4.cc.o
+[ 73%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/partitioned_matrix_view_2_3_6.cc.o
+[ 73%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/partitioned_matrix_view_2_3_9.cc.o
+[ 73%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/partitioned_matrix_view_2_3_d.cc.o
+[ 73%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/partitioned_matrix_view_2_4_3.cc.o
+[ 73%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/partitioned_matrix_view_2_4_4.cc.o
+[ 75%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/partitioned_matrix_view_2_4_6.cc.o
+[ 75%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/partitioned_matrix_view_2_4_8.cc.o
+[ 75%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/partitioned_matrix_view_2_4_9.cc.o
+[ 75%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/partitioned_matrix_view_2_4_d.cc.o
+[ 75%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/partitioned_matrix_view_2_d_d.cc.o
+[ 75%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/partitioned_matrix_view_3_3_3.cc.o
+[ 77%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/partitioned_matrix_view_4_4_2.cc.o
+[ 77%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/partitioned_matrix_view_4_4_3.cc.o
+[ 77%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/partitioned_matrix_view_4_4_4.cc.o
+[ 77%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/partitioned_matrix_view_4_4_d.cc.o
+[ 77%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/partitioned_matrix_view_d_d_d.cc.o
+[ 79%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/schur_eliminator_2_2_2.cc.o
+[ 79%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/schur_eliminator_2_2_3.cc.o
+[ 79%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/schur_eliminator_2_2_4.cc.o
+[ 79%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/schur_eliminator_2_2_d.cc.o
+[ 79%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/schur_eliminator_2_3_4.cc.o
+[ 79%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/schur_eliminator_2_3_3.cc.o
+[ 81%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/schur_eliminator_2_3_6.cc.o
+[ 81%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/schur_eliminator_2_3_9.cc.o
+[ 81%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/schur_eliminator_2_3_d.cc.o
+[ 81%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/schur_eliminator_2_4_3.cc.o
+[ 81%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/schur_eliminator_2_4_4.cc.o
+[ 81%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/schur_eliminator_2_4_6.cc.o
+[ 83%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/schur_eliminator_2_4_8.cc.o
+[ 83%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/schur_eliminator_2_4_9.cc.o
+[ 83%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/schur_eliminator_2_4_d.cc.o
+[ 83%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/schur_eliminator_2_d_d.cc.o
+[ 83%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/schur_eliminator_3_3_3.cc.o
+[ 83%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/schur_eliminator_4_4_2.cc.o
+[ 85%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/schur_eliminator_4_4_3.cc.o
+[ 85%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/schur_eliminator_4_4_4.cc.o
+[ 85%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/schur_eliminator_4_4_d.cc.o
+[ 85%] Building CXX object _deps/ceres-build/internal/ceres/CMakeFiles/ceres.dir/generated/schur_eliminator_d_d_d.cc.o
+[ 85%] Linking CXX static library ../../lib/libceres.a
+[ 85%] Built target ceres
+[ 85%] Building CXX object _deps/kidscpp-build/CMakeFiles/kids.dir/cmake_pch.hxx.pch
+[ 85%] Building CXX object _deps/kidscpp-build/CMakeFiles/kids.dir/src/kids/core/io.cpp.o
+[ 85%] Building CXX object _deps/kidscpp-build/CMakeFiles/kids.dir/src/kids/toltec/ncfile.cpp.o
+[ 87%] Building CXX object _deps/kidscpp-build/CMakeFiles/kids.dir/src/kids/timestream/solver.cpp.o
+[ 87%] Building CXX object _deps/kidscpp-build/CMakeFiles/kids.dir/src/kids/sweep/finderresult.cpp.o
+[ 87%] Building CXX object _deps/kidscpp-build/CMakeFiles/kids.dir/src/kids/sweep/fitter_tonelist.cpp.o
+[ 87%] Building CXX object _deps/kidscpp-build/CMakeFiles/kids.dir/src/kids/sweep/finder.cpp.o
+[ 87%] Building CXX object _deps/kidscpp-build/CMakeFiles/kids.dir/src/kids/sweep/fitter.cpp.o
+[ 87%] Building CXX object _deps/kidscpp-build/CMakeFiles/kids.dir/src/kids/sweep/fitresult.cpp.o
+[ 87%] Building CXX object _deps/kidscpp-build/CMakeFiles/kids.dir/src/kids/timestream/solverresult.cpp.o
+[ 89%] Linking CXX static library ../../lib/libkids.a
+[ 89%] Built target kids
+[ 89%] Building CXX object CMakeFiles/citlali.dir/cmake_pch.hxx.pch
+[ 91%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/pipeline/ast_scan_motion.cpp.o
+[ 91%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/config/timestream_enums.cpp.o
+[ 91%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/pipeline/ast_scan_motion_alignment.cpp.o
+[ 91%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/pipeline/timestream_cal_pipeline.cpp.o
+[ 91%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/pipeline/timestream_rtc_common_mode.cpp.o
+[ 91%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/pipeline/timestream_cal_wvr.cpp.o
+[ 91%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/pipeline/timestream_cal_atmosphere.cpp.o
+[ 93%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/pipeline/ast_rtc_coordinates.cpp.o
+[ 93%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/mapmaking/forward_map.cpp.o
+[ 93%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/mapmaking/jinc_discrete.cpp.o
+[ 93%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/mapmaking/jinc_certified.cpp.o
+[ 93%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/pipeline/timestream_ptc_numerics.cpp.o
+[ 95%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/pipeline/fruit_cycle.cpp.o
+[ 95%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/pipeline/timestream_ptc_pipeline.cpp.o
+[ 95%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/pipeline/ptc_map_handoff.cpp.o
+[ 95%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/pipeline/timestream_identity_route_context.cpp.o
+[ 95%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/pipeline/output_root_lease.cpp.o
+[ 95%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/pipeline/reduction_restart_checkpoint.cpp.o
+[ 97%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/engine/calib.cpp.o
+[ 97%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/engine/telescope.cpp.o
+[ 97%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/utils/gauss_models.cpp.o
+[ 97%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/timestream/ptc/sensitivity.cpp.o
+[ 97%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/mapmaking/map.cpp.o
+[ 97%] Linking CXX static library lib/libcitlali.a
+[ 97%] Built target citlali
+[ 97%] Building CXX object CMakeFiles/citlali_rtc_execution.dir/cmake_pch.hxx.pch
+[ 97%] Building CXX object CMakeFiles/citlali_rtc_execution.dir/src/citlali/cli/rtc_pipeline_execution.cpp.o
+[ 97%] Linking CXX static library lib/libcitlali_rtc_execution.a
+[ 97%] Built target citlali_rtc_execution
+[ 97%] Building CXX object CMakeFiles/citlali_cli.dir/cmake_pch.hxx.pch
+Elapsed time (seconds): 1.99627
+[100%] Building CXX object CMakeFiles/citlali_cli.dir/src/citlali/cli/canonical_apt_contract_protocol_v1.cpp.o
+[100%] Building CXX object CMakeFiles/citlali_cli.dir/src/citlali/cli/canonical_apt_contract_protocol_v2.cpp.o
+[100%] Building CXX object CMakeFiles/citlali_cli.dir/src/citlali/cli/main.cpp.o
+Elapsed time (seconds): 3.86112
+Elapsed time (seconds): 7.30748
+Elapsed time (seconds): 7.43814
+[100%] Linking CXX executable bin/citlali
+ld: warning: ignoring duplicate libraries: 'lib/libcitlali.a'
+[100%] Built target citlali_cli

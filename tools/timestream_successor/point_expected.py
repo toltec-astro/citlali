@@ -5,7 +5,7 @@ brightness and conditional amplitude uncertainty mJy/nominal beam. Fit weights
 remain identity. The PSD/scale are the frozen full original-M0 covariance.
 """
 import numpy as np
-from inspect_point_source import solve_gaussian
+from inspect_point_source import solve_gaussian, gaussian_jacobian as jacobian
 from point_empirical import coordinates
 from point_admission import admit
 from point_additive import variance
@@ -13,17 +13,6 @@ from point_additive import variance
 METHOD = 'POINT-EXPECTED-v1'
 SIGMA_FLOOR = 1.5
 FAILURE = 'POINT fit failed: no source satisfying the expected POINT criteria was found.'
-
-
-def jacobian(p, x, y):
-    """Analytic model derivatives of all seven free parameters, including B."""
-    A,cx,cy,sx,sy,t,B = p
-    c,s = np.cos(t),np.sin(t)
-    u = c*(x-cx)+s*(y-cy); v = -s*(x-cx)+c*(y-cy)
-    g = np.exp(-.5*((u/sx)**2+(v/sy)**2)); ag=A*g
-    return np.column_stack((g,ag*(c*u/sx**2-s*v/sy**2),
-        ag*(s*u/sx**2+c*v/sy**2),ag*u*u/sx**3,ag*v*v/sy**3,
-        ag*u*v*(1/sy**2-1/sx**2),np.ones_like(x)))
 
 
 def amplitude_sensitivity(J):

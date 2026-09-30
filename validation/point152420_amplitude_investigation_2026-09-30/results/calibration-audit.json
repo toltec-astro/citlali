@@ -1,0 +1,485 @@
+{
+  "inputs": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/apts/hero/apt_152420_matched.ecsv",
+      "sha256": "5664ced88d12ad12f5e412d3ed41e6a50471f4a510ba58d6ce6ea70fe3affa44",
+      "bytes": 7928974
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/sha256-8dd226355eafbbf9b803d1a8001a31a9e852b956040d64e0495d7db2da5974d4.apt.ecsv",
+      "sha256": "8dd226355eafbbf9b803d1a8001a31a9e852b956040d64e0495d7db2da5974d4",
+      "bytes": 3276105
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/pointings/reduced/redu09/152420/raw/toltec_commissioning_pointing_152420_stats.nc",
+      "sha256": "c2722a722309640990e8b9f4bdcf3a6214f113423c348fe0f8e6ddf2330aa712",
+      "bytes": 4819207
+    }
+  ],
+  "identity": "unique (nw,kids_tone), exact array/tone_freq/kids_f_out equality on all 5518 rows; selected CAL row and factor checked",
+  "historical_APT_snapshot_verified_fields": [
+    "nw",
+    "array",
+    "flxscale"
+  ],
+  "historical_population": [
+    {
+      "network": 0,
+      "detectors": 630,
+      "positive_weight_some_unflagged": 241,
+      "positive_weight_scan_detector_pairs": 2219
+    },
+    {
+      "network": 1,
+      "detectors": 494,
+      "positive_weight_some_unflagged": 315,
+      "positive_weight_scan_detector_pairs": 3604
+    },
+    {
+      "network": 2,
+      "detectors": 510,
+      "positive_weight_some_unflagged": 339,
+      "positive_weight_scan_detector_pairs": 4041
+    },
+    {
+      "network": 3,
+      "detectors": 533,
+      "positive_weight_some_unflagged": 364,
+      "positive_weight_scan_detector_pairs": 4326
+    },
+    {
+      "network": 4,
+      "detectors": 532,
+      "positive_weight_some_unflagged": 355,
+      "positive_weight_scan_detector_pairs": 3818
+    }
+  ],
+  "APT_factor_distribution": [
+    {
+      "network": 0,
+      "historical_flag0": 247,
+      "successor_flag0": 533,
+      "common": 227,
+      "ratio_successor_over_historical_quantiles": [
+        0.21638410991404675,
+        0.46055627328845633,
+        0.7431827751406311,
+        1.2507181751246714,
+        3.647406234023958
+      ]
+    },
+    {
+      "network": 1,
+      "historical_flag0": 325,
+      "successor_flag0": 416,
+      "common": 310,
+      "ratio_successor_over_historical_quantiles": [
+        0.0603024790199055,
+        0.25870233764415723,
+        0.4205351615916042,
+        0.6531441427099405,
+        1.413520242735725
+      ]
+    },
+    {
+      "network": 2,
+      "historical_flag0": 347,
+      "successor_flag0": 443,
+      "common": 327,
+      "ratio_successor_over_historical_quantiles": [
+        0.04543933231175885,
+        0.27155494424121623,
+        0.44644891471741616,
+        0.6734158780239898,
+        1.5237260750145785
+      ]
+    },
+    {
+      "network": 3,
+      "historical_flag0": 378,
+      "successor_flag0": 467,
+      "common": 360,
+      "ratio_successor_over_historical_quantiles": [
+        0.08411745698600516,
+        0.3110407741138946,
+        0.4471234313042643,
+        0.6482145833268483,
+        1.688830694754649
+      ]
+    },
+    {
+      "network": 4,
+      "historical_flag0": 369,
+      "successor_flag0": 440,
+      "common": 345,
+      "ratio_successor_over_historical_quantiles": [
+        0.021906605961986538,
+        0.18898317701915615,
+        0.4003555273494637,
+        0.5848410110825734,
+        16.922288909851602
+      ]
+    }
+  ],
+  "native_CAL_arithmetic": [
+    {
+      "network": 1,
+      "checked_available_detectors": 261,
+      "maximum_relative_CAL_vs_filtered_times_probe_error": 0.0,
+      "common_applied_atmosphere_detector_median_quantiles": [
+        1.0333155821774465,
+        1.0333156931958347,
+        1.033315769800375,
+        1.033316014381782,
+        1.0333212092164286
+      ],
+      "common_total_conversion_successor_over_historical_detector_median_quantiles": [
+        0.06231150252932462,
+        0.27759063503313813,
+        0.4387280977761422,
+        0.6854568112529182,
+        1.1579514150493722
+      ]
+    },
+    {
+      "network": 2,
+      "checked_available_detectors": 304,
+      "maximum_relative_CAL_vs_filtered_times_probe_error": 0.0,
+      "common_applied_atmosphere_detector_median_quantiles": [
+        1.0333156517734094,
+        1.0333157675805076,
+        1.0333157675805078,
+        1.033315767580508,
+        1.0333217055849004
+      ],
+      "common_total_conversion_successor_over_historical_detector_median_quantiles": [
+        0.12757442639381653,
+        0.28353039752096076,
+        0.45343568496162384,
+        0.6337142232223685,
+        1.3436047741163661
+      ]
+    },
+    {
+      "network": 3,
+      "checked_available_detectors": 212,
+      "maximum_relative_CAL_vs_filtered_times_probe_error": 0.0,
+      "common_applied_atmosphere_detector_median_quantiles": [
+        1.0333126874545413,
+        1.033315669539558,
+        1.0333157713947,
+        1.0333160381032853,
+        1.0333182962062402
+      ],
+      "common_total_conversion_successor_over_historical_detector_median_quantiles": [
+        0.15229249800979813,
+        0.32759524184239686,
+        0.4648517635705761,
+        0.667870789272323,
+        1.7450953921054473
+      ]
+    },
+    {
+      "network": 4,
+      "checked_available_detectors": 376,
+      "maximum_relative_CAL_vs_filtered_times_probe_error": 0.0,
+      "common_applied_atmosphere_detector_median_quantiles": [
+        1.033312076043888,
+        1.0333156521972842,
+        1.0333157708924512,
+        1.0333157775965032,
+        1.0333183950450762
+      ],
+      "common_total_conversion_successor_over_historical_detector_median_quantiles": [
+        0.027400743083570635,
+        0.19650230530805904,
+        0.41147354128993113,
+        0.6011423739550175,
+        17.486068010148088
+      ]
+    }
+  ],
+  "representative_native_conversions": [
+    {
+      "network": 1,
+      "channel": 113,
+      "slot": 3661,
+      "historical_row": 743,
+      "successor_row": 743,
+      "native_filtered_x": 1.1856702498107145e-05,
+      "historical_factor": 2476476436.723783,
+      "successor_factor": 1046224509.096768,
+      "actual_successor_CAL": 12817.992751629508,
+      "historical_independent_mJy": 29362.84435380636,
+      "inferred_applied_atmosphere": 1.0333113721104912,
+      "probe_multiplier_error": 0.0
+    },
+    {
+      "network": 1,
+      "channel": 370,
+      "slot": 3661,
+      "historical_row": 1000,
+      "successor_row": 1000,
+      "native_filtered_x": 4.56881191714105e-06,
+      "historical_factor": 4798241170.416697,
+      "successor_factor": 1626297499.75998,
+      "actual_successor_CAL": 7677.759133658552,
+      "historical_independent_mJy": 21922.261440716622,
+      "inferred_applied_atmosphere": 1.0333113721104912,
+      "probe_multiplier_error": 0.0
+    },
+    {
+      "network": 1,
+      "channel": 388,
+      "slot": 3646,
+      "historical_row": 1018,
+      "successor_row": 1018,
+      "native_filtered_x": -4.561186353617436e-06,
+      "historical_factor": 2156546471.13155,
+      "successor_factor": 1197611886.961457,
+      "actual_successor_CAL": -5644.493692423938,
+      "historical_independent_mJy": -9836.410335067063,
+      "inferred_applied_atmosphere": 1.0333110598049264,
+      "probe_multiplier_error": 0.0
+    },
+    {
+      "network": 1,
+      "channel": 416,
+      "slot": 3804,
+      "historical_row": 1046,
+      "successor_row": 1046,
+      "native_filtered_x": -1.3897262938503603e-05,
+      "historical_factor": 2886644534.990162,
+      "successor_factor": 3234820862.877021,
+      "actual_successor_CAL": -46452.79071267147,
+      "historical_independent_mJy": -40116.45811275274,
+      "inferred_applied_atmosphere": 1.0333139677972019,
+      "probe_multiplier_error": 0.0
+    },
+    {
+      "network": 1,
+      "channel": 465,
+      "slot": 3661,
+      "historical_row": 1095,
+      "successor_row": 1095,
+      "native_filtered_x": -3.5996011563807304e-05,
+      "historical_factor": 3553738292.264973,
+      "successor_factor": 214299228.81154335,
+      "actual_successor_CAL": -7970.87869530087,
+      "historical_independent_mJy": -127920.4046631148,
+      "inferred_applied_atmosphere": 1.0333113721104912,
+      "probe_multiplier_error": 0.0
+    },
+    {
+      "network": 2,
+      "channel": 2,
+      "slot": 3661,
+      "historical_row": 1126,
+      "successor_row": 1126,
+      "native_filtered_x": 1.1733458010725935e-05,
+      "historical_factor": 2973521769.981632,
+      "successor_factor": 367114628.535248,
+      "actual_successor_CAL": 4451.01359294809,
+      "historical_independent_mJy": 34889.69283205894,
+      "inferred_applied_atmosphere": 1.0333113666397509,
+      "probe_multiplier_error": 0.0
+    },
+    {
+      "network": 2,
+      "channel": 127,
+      "slot": 3661,
+      "historical_row": 1251,
+      "successor_row": 1251,
+      "native_filtered_x": 5.976575339941189e-06,
+      "historical_factor": 2000673318.876315,
+      "successor_factor": 877927836.9604934,
+      "actual_successor_CAL": 5421.786663364762,
+      "historical_independent_mJy": 11957.174820874481,
+      "inferred_applied_atmosphere": 1.0333113666397509,
+      "probe_multiplier_error": 0.0
+    },
+    {
+      "network": 2,
+      "channel": 153,
+      "slot": 3661,
+      "historical_row": 1277,
+      "successor_row": 1277,
+      "native_filtered_x": 1.0160471039053387e-05,
+      "historical_factor": 1718501110.459104,
+      "successor_factor": 883097358.2024119,
+      "actual_successor_CAL": 9271.57753687791,
+      "historical_independent_mJy": 17460.780763400813,
+      "inferred_applied_atmosphere": 1.0333113666397509,
+      "probe_multiplier_error": 0.0
+    },
+    {
+      "network": 2,
+      "channel": 177,
+      "slot": 3661,
+      "historical_row": 1301,
+      "successor_row": 1301,
+      "native_filtered_x": 2.741496864179881e-05,
+      "historical_factor": 764478741.1723918,
+      "successor_factor": 994040078.1406517,
+      "actual_successor_CAL": 28159.36486289364,
+      "historical_independent_mJy": 20958.16071656295,
+      "inferred_applied_atmosphere": 1.0333113666397509,
+      "probe_multiplier_error": 0.0
+    },
+    {
+      "network": 2,
+      "channel": 493,
+      "slot": 3661,
+      "historical_row": 1617,
+      "successor_row": 1617,
+      "native_filtered_x": 5.511544709808531e-06,
+      "historical_factor": 1891494478.692644,
+      "successor_factor": 693999182.1396749,
+      "actual_successor_CAL": 3952.4237488629883,
+      "historical_independent_mJy": 10425.056387670487,
+      "inferred_applied_atmosphere": 1.0333113666397509,
+      "probe_multiplier_error": 0.0
+    },
+    {
+      "network": 3,
+      "channel": 91,
+      "slot": 3660,
+      "historical_row": 1725,
+      "successor_row": 1725,
+      "native_filtered_x": -2.2755457718602058e-06,
+      "historical_factor": 2257300329.790855,
+      "successor_factor": 844382031.3722619,
+      "actual_successor_CAL": -1985.4353996634782,
+      "historical_independent_mJy": -5136.590221274228,
+      "inferred_applied_atmosphere": 1.0333113564521996,
+      "probe_multiplier_error": 0.0
+    },
+    {
+      "network": 3,
+      "channel": 92,
+      "slot": 4254,
+      "historical_row": 1726,
+      "successor_row": 1726,
+      "native_filtered_x": -1.9222065118096553e-05,
+      "historical_factor": 1669298890.196857,
+      "successor_factor": 881987779.6137503,
+      "actual_successor_CAL": -17518.572639664708,
+      "historical_independent_mJy": -32087.371968930292,
+      "inferred_applied_atmosphere": 1.0333230241600984,
+      "probe_multiplier_error": 0.0
+    },
+    {
+      "network": 3,
+      "channel": 98,
+      "slot": 3660,
+      "historical_row": 1732,
+      "successor_row": 1732,
+      "native_filtered_x": 1.2281449438949842e-05,
+      "historical_factor": 3238237076.967484,
+      "successor_factor": 477258963.088981,
+      "actual_successor_CAL": 6056.6840692879005,
+      "historical_independent_mJy": 39770.244932108886,
+      "inferred_applied_atmosphere": 1.0333113564521996,
+      "probe_multiplier_error": 0.0
+    },
+    {
+      "network": 3,
+      "channel": 129,
+      "slot": 3660,
+      "historical_row": 1763,
+      "successor_row": 1763,
+      "native_filtered_x": 1.062921225493317e-05,
+      "historical_factor": 2271596817.02225,
+      "successor_factor": 1021910064.4218777,
+      "actual_successor_CAL": 11223.930231140837,
+      "historical_independent_mJy": 24145.284725760084,
+      "inferred_applied_atmosphere": 1.0333113564521996,
+      "probe_multiplier_error": 0.0
+    },
+    {
+      "network": 3,
+      "channel": 221,
+      "slot": 3660,
+      "historical_row": 1855,
+      "successor_row": 1855,
+      "native_filtered_x": 3.742319027913264e-05,
+      "historical_factor": 899083344.5364045,
+      "successor_factor": 1518399549.3957493,
+      "actual_successor_CAL": 58716.21829855516,
+      "historical_independent_mJy": 33646.56707938483,
+      "inferred_applied_atmosphere": 1.0333113564521996,
+      "probe_multiplier_error": 0.0
+    },
+    {
+      "network": 4,
+      "channel": 84,
+      "slot": 3620,
+      "historical_row": 2251,
+      "successor_row": 2251,
+      "native_filtered_x": 1.6228681134346846e-05,
+      "historical_factor": 2026557897.108968,
+      "successor_factor": 805404393.6551065,
+      "actual_successor_CAL": 13506.040212034772,
+      "historical_independent_mJy": 32888.36191247393,
+      "inferred_applied_atmosphere": 1.033310438802558,
+      "probe_multiplier_error": 0.0
+    },
+    {
+      "network": 4,
+      "channel": 109,
+      "slot": 3660,
+      "historical_row": 2276,
+      "successor_row": 2276,
+      "native_filtered_x": -2.7722322095322754e-05,
+      "historical_factor": 2519761032.672228,
+      "successor_factor": 1230589412.789731,
+      "actual_successor_CAL": -35251.20617927593,
+      "historical_independent_mJy": -69853.62695098258,
+      "inferred_applied_atmosphere": 1.03331135582768,
+      "probe_multiplier_error": 0.0
+    },
+    {
+      "network": 4,
+      "channel": 175,
+      "slot": 3660,
+      "historical_row": 2342,
+      "successor_row": 2342,
+      "native_filtered_x": 1.5427482478997313e-05,
+      "historical_factor": 1995085175.521453,
+      "successor_factor": 33761407739.93602,
+      "actual_successor_CAL": 538203.8635252983,
+      "historical_independent_mJy": 30779.141589464492,
+      "inferred_applied_atmosphere": 1.03331135582768,
+      "probe_multiplier_error": 0.0
+    },
+    {
+      "network": 4,
+      "channel": 208,
+      "slot": 3660,
+      "historical_row": 2375,
+      "successor_row": 2375,
+      "native_filtered_x": 8.247696769267382e-06,
+      "historical_factor": 2543802969.714384,
+      "successor_factor": 781078048.9884675,
+      "actual_successor_CAL": 6656.689816717005,
+      "historical_independent_mJy": 20980.5155349661,
+      "inferred_applied_atmosphere": 1.03331135582768,
+      "probe_multiplier_error": 0.0
+    },
+    {
+      "network": 4,
+      "channel": 223,
+      "slot": 3640,
+      "historical_row": 2390,
+      "successor_row": 2390,
+      "native_filtered_x": -2.6092978618954048e-05,
+      "historical_factor": 9811959036.592945,
+      "successor_factor": 260186675.42300594,
+      "actual_successor_CAL": -7015.194709311379,
+      "historical_independent_mJy": -256023.23735187267,
+      "inferred_applied_atmosphere": 1.0333109205509583,
+      "probe_multiplier_error": 0.0
+    }
+  ],
+  "scope": "Same successor post-RTC native x samples; historical factor applied once, historical extinction disabled. Does not reproduce historical RTC or prove which APT absolute scale is correct. Atmosphere is inferred from actual CAL/filtered ratio, not independently reimplemented passband physics."
+}

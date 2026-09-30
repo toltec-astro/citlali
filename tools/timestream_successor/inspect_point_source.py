@@ -22,15 +22,45 @@ def gaussian(parameters, x, y):
     return background + amp*np.exp(-.5*((u/sx)**2+(v/sy)**2))
 
 
+def gaussian_jacobian(p, x, y):
+    """Analytic model derivatives of all seven free parameters, including B."""
+    A,cx,cy,sx,sy,t,B = p
+    c,s = np.cos(t),np.sin(t)
+    u = c*(x-cx)+s*(y-cy); v = -s*(x-cx)+c*(y-cy)
+    g = np.exp(-.5*((u/sx)**2+(v/sy)**2)); ag=A*g
+    return np.column_stack((g,ag*(c*u/sx**2-s*v/sy**2),
+        ag*(s*u/sx**2+c*v/sy**2),ag*u*u/sx**3,ag*v*v/sy**3,
+        ag*u*v*(1/sy**2-1/sx**2),np.ones_like(x)))
+
+
+
 def solve_gaussian(signal, roi, x, y, initial, *, sigma_floor=.5):
-    """Shared bounded numerical attempt; historical defaults remain unchanged."""
-    lower = [0, -20, -20, sigma_floor, sigma_floor, -np.pi, -np.inf]
-    upper = [np.inf, 20, 20, 20, 20, np.pi, np.inf]
-    return least_squares(lambda p: gaussian(p,x[roi],y[roi])-signal[roi],initial,
+    """One unweighted Gaussian+constant solve with a free periodic angle.
+
+    Orientation lives on the real line during optimization: +/-pi are the same
+    ellipse, not physical bounds. Equivalent initial ellipses share one canonical
+    representation. Amplitude, centroid and sigma constraints remain unchanged.
+    An analytic Jacobian makes the circular-source angle column exactly zero,
+    avoiding false finite-difference angle sensitivity and huge scaled steps.
+    Returned angle is reduced modulo pi for reporting; no fit is restarted and
+    no covariance/identifiability is inferred for a circular ellipse's angle.
+    """
+    initial = np.asarray(initial, dtype=float).copy()
+    if initial[4] > initial[3]:
+        initial[3], initial[4] = initial[4], initial[3]
+        initial[5] += np.pi/2
+    initial[5] = (initial[5]+np.pi/2) % np.pi - np.pi/2
+    lower = [0, -20, -20, sigma_floor, sigma_floor, -np.inf, -np.inf]
+    upper = [np.inf, 20, 20, 20, 20, np.inf, np.inf]
+    fit = least_squares(lambda p: gaussian(p,x[roi],y[roi])-signal[roi],initial,
                         bounds=(lower,upper),x_scale='jac',max_nfev=3000,
-                        method='trf',jac='2-point',loss='linear',f_scale=1.,
+                        method='trf',jac=lambda p: gaussian_jacobian(p,x[roi],y[roi]),
+                        loss='linear',f_scale=1.,
                         tr_solver='exact',tr_options={},diff_step=None,verbose=0,
                         ftol=1e-12,xtol=1e-12,gtol=1e-12)
+    # The local coordinate derivative is unchanged by a multiple of pi.
+    fit.x[5] = (fit.x[5]+np.pi/2) % np.pi - np.pi/2
+    return fit
 
 
 def measure(signal, support, header, nominal):

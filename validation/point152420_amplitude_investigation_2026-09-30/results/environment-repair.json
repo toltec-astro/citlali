@@ -1,0 +1,22 @@
+{
+  "python": "3.13.2 (main, Feb  4 2025, 14:51:09) [Clang 16.0.0 (clang-1600.0.26.6)]",
+  "executable": "/Users/gwilson/tolteca/bin/python",
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "numpy": "2.2.3",
+  "scipy": "1.17.1",
+  "astropy": "7.0.1",
+  "old_scipy": "1.15.2",
+  "failure": "dyld invalid __DATA/__thread_bss offset in _spropack; all four installed PROPACK module hashes matched wheel RECORD",
+  "wheel": {
+    "path": "/private/tmp/point-amplitude-environment/scipy-1.17.1-cp313-cp313-macosx_14_0_arm64.whl",
+    "sha256": "7ff200bf9d24f2e4d5dc6ee8c3ac64d739d3a89e2326ba68aaf6c4a2b838fd7d",
+    "bytes": 20325719
+  },
+  "installation": "isolated-target smoke, then /Users/gwilson/tolteca/bin/pip install --no-deps --force-reinstall pinned wheel; NumPy unchanged",
+  "smoke": [
+    "least_squares",
+    "fftconvolve",
+    "svds solver=propack"
+  ],
+  "machine_wide_packages_modified": false
+}
