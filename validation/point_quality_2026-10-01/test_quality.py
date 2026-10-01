@@ -26,6 +26,23 @@ class Quality(unittest.TestCase):
    with self.assertRaises(ValueError):consume(root,'feedback',dict(run='B-REF',branch='REF',cycle=6))
    consume(root,'parent',dict(run='B-REF'))
    with self.assertRaises(ValueError):consume(root,'parent',dict(run='B-REF'))
+ def test_asymmetry_even_image_and_missing_reflected_support(self):
+  import numpy as np
+  from saved_scorecard import asymmetry
+  x,y=np.meshgrid(np.arange(-50.,51.,2.),np.arange(-50.,51.,2.));signal=100*np.exp(-(x*x+y*y)/100)+3
+  d=dict(signal=signal,support=np.ones(x.shape,bool),x=x,y=y);p=np.array([100,0,0,5,5,0,3.])
+  r=asymmetry(d,p);self.assertAlmostEqual(r['half_absolute_odd_fraction'],0)
+  d['support'][x>10]=False;q=asymmetry(d,p);self.assertLess(q['paired_pixels'],r['paired_pixels']);self.assertAlmostEqual(q['half_absolute_odd_fraction'],0)
+ def test_actual_current_primary_shape_and_legacy_extension(self):
+  import numpy as np
+  from point_rtc_response import injection_plane,load
+  path=Path('/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/freeze/shapes/C-core-plus.fits')
+  self.assertTrue(path.is_file(), 'required real shape fixture absent')
+  data,_=load(path);self.assertIn('PRIMARY',data);self.assertNotIn('INJECTION',data)
+  self.assertTrue(np.array_equal(injection_plane(data),data['PRIMARY']))
+  image=np.array([[3.,0.],[0.,1.]])
+  self.assertTrue(np.array_equal(injection_plane({'PRIMARY':None,'INJECTION':image}),image))
+  with self.assertRaises(ValueError):injection_plane({'VALID':image})
  def test_missing_support_is_unavailable_and_common_is_fixed(self):
   import numpy as np
   from saved_scorecard import common_pair,finite_stats

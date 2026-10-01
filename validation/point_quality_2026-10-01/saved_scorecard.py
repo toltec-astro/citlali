@@ -5,7 +5,7 @@ for name in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','VECLIB_MAXIMUM_THREADS','
 from pathlib import Path
 import sys,json,importlib.util,time
 import numpy as np
-from scipy.ndimage import gaussian_filter,minimum_filter,maximum_filter,label
+from scipy.ndimage import gaussian_filter,minimum_filter,maximum_filter,map_coordinates
 from astropy.io import fits
 D=Path(__file__).resolve().parent; W=D.parents[1];L=Path('/Users/gwilson/work_toltec/local_data')
 sys.path.insert(0,str(W/'tools/timestream_successor'))
@@ -18,6 +18,16 @@ def finite_stats(values):
  med=float(np.median(a));mad=float(1.4826*np.median(abs(a-med)))
  return dict(n=len(a),available=True,median=med,std=float(np.std(a)),robust_scale=mad,
              quantiles=np.quantile(a,[.01,.1,.5,.9,.99]).tolist(),positive_5mad=int(np.sum(a>med+5*mad)),negative_5mad=int(np.sum(a<med-5*mad)))
+
+def asymmetry(d,p):
+ s,v,x,y=(d[k] for k in ('signal','support','x','y'));v=v&np.isfinite(s)
+ xx=2*p[1]-x;yy=2*p[2]-y
+ ij=[(yy-y[0,0])/(y[1,0]-y[0,0]),(xx-x[0,0])/(x[0,1]-x[0,0])]
+ reflected=map_coordinates(np.where(v,s,0.),ij,order=1,mode='constant',cval=0.)
+ available=map_coordinates(v.astype(float),ij,order=1,mode='constant',cval=0.)>=1.-1e-12
+ roi=v&available&(np.hypot(x,y)<=40)&(np.hypot(xx,yy)<=40)
+ denominator=float(np.sum(abs(s[roi]-p[6])));value=float(.5*np.sum(abs(s[roi]-reflected[roi]))/denominator) if denominator>0 else None
+ return dict(paired_pixels=int(roi.sum()),half_absolute_odd_fraction=value,qualification='Descriptive180degree asymmetry about free fitted center, paired within fixedcommanded40arcsec domain; bilinear reflection with complete interpolation support. Includes noise/grid/background effects, not intrinsic source fidelity or pointing agreement.')
 
 def metrics(d):
  s,v,x,y=(d[k] for k in ('signal','support','x','y'));v=v&np.isfinite(s);radius=np.hypot(x,y);area=abs((x[0,1]-x[0,0])*(y[1,0]-y[0,0]));pixel=np.sqrt(area)
@@ -51,7 +61,7 @@ def metrics(d):
  if background['available'] and background['robust_scale']>0:
   good=bg&minimum_filter(v.astype('u1'),size=max(3,2*round(5/pixel)+1),mode='constant',cval=0).astype(bool);z=(s-background['median'])/background['robust_scale'];size=max(3,2*round(5/pixel)+1)
   peaks=good&(z>5)&(z==maximum_filter(np.where(v,z,-np.inf),size=size));troughs=good&(z< -5)&(z==minimum_filter(np.where(v,z,np.inf),size=size));artifacts=dict(available=True,positive_local_extrema=int(peaks.sum()),negative_local_extrema=int(troughs.sum()),rule='5 descriptive background MAD; 5 arcsec isolation; not significance or source catalog')
- return dict(fit=fitted,background=background,spatial_scales_FWHM_arcsec=scales,native_axis_correlations=corr,apertures=apertures,radial_profiles=profiles,artifact_diagnostic=artifacts,support=dict(total_pixels=int(v.size),science_pixels=int(v.sum()),science_area_arcsec2=float(v.sum()*area),fit_expected=int((radius<=40).sum()),fit_supported=int(((radius<=40)&v).sum()),background_expected=int(bg.sum()),background_supported=int((bg&v).sum())),uncertainty='Descriptive spatial scatter only; no independent pixels, no paired-test significance; endpoint conditional uncertainty requires its own compatible estimator/operator binding.')
+ return dict(fit=fitted,asymmetry=asymmetry(d,p) if p is not None else None,background=background,spatial_scales_FWHM_arcsec=scales,native_axis_correlations=corr,apertures=apertures,radial_profiles=profiles,artifact_diagnostic=artifacts,support=dict(total_pixels=int(v.size),science_pixels=int(v.sum()),science_area_arcsec2=float(v.sum()*area),fit_expected=int((radius<=40).sum()),fit_supported=int(((radius<=40)&v).sum()),background_expected=int(bg.sum()),background_supported=int((bg&v).sum())),uncertainty='Descriptive spatial scatter only; no independent pixels, no paired-test significance; endpoint conditional uncertainty requires its own compatible estimator/operator binding.')
 
 def common_pair(a,b):
  assert a['signal'].shape==b['signal'].shape and np.array_equal(a['x'],b['x']) and np.array_equal(a['y'],b['y']), 'incompatible grids'

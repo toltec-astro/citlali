@@ -19,6 +19,11 @@ def map_path(out,k):
     array=selected_array(out)
     return out/f'M0/products/{array}/map.fits' if k==0 else out/f'run/BASE-POINT/REF/{array}/cycle-{k:02d}/native/products/total.fits'
 
+def injection_plane(raster):
+    """Read the two established physical-raster FITS layouts."""
+    require('INJECTION' in raster or 'PRIMARY' in raster,'physical raster image missing')
+    return raster['INJECTION'] if 'INJECTION' in raster else raster['PRIMARY']
+
 def native_rows(receipt,slots):
     grids={(r['factor'],r['phase_native_rows']) for r in receipt['donor_continuity']['realized_detectors']}
     require(len(grids)==1,'nonuniform RTC scheduling grid')
@@ -59,7 +64,7 @@ def response(root,family,dest,reference_name=None,*,branches=BRANCHES,network_lo
             native.append(dict(branch=branch,network=nw,state_changed_cells=statechanges,map_center_changed_cells=centerchanges,calibration_only_max_abs_error=pr['calibration_only_max_abs_error_mJy_beam'],changed_cells=pr['changed_cells'],mapping_unavailable_cells=pr['mapping_unavailable_cells'],input_r_unchanged=True,input_validity_unchanged=True,own_RTC_learning=True))
         for k in (0,5):
             rim,rh=load(map_path(ref,k));bim,bh=load(map_path(out,k));knownmap,iv,ic=map_values(ref,k,known,idealvalid);rtcdelta,rv,rc=map_values(ref,k,delta,valid)
-            raster,sh=load(out/f'freeze/shapes/{branch}.fits');direct=direct_raster(raster['INJECTION'],sh,knownmap.shape,rh)
+            raster,sh=load(out/f'freeze/shapes/{branch}.fits');direct=direct_raster(injection_plane(raster),sh,knownmap.shape,rh)
             require(np.allclose(knownmap[iv],direct[iv],atol=1e-10,rtol=1e-12),'native sky/control projection mismatch')
             source,sv,norm,ph,_=source_patch(rim['PRIMARY'],rim['SCI_SUPPORT'].astype(bool),rim['NORMALIZATION'],rh);injected,bv,_,_,_=source_patch(bim['PRIMARY'],bim['SCI_SUPPORT'].astype(bool),bim['NORMALIZATION'],bh);ideal,ivs,_,_,_=source_patch(knownmap,iv,rim['NORMALIZATION'],rh);rtc,rvs,_,_,_=source_patch(rtcdelta,rv,rim['NORMALIZATION'],rh)
             idealaux=auxiliary_sample(rim['PRIMARY']+knownmap,rim['SCI_SUPPORT'].astype(bool)&iv,rh,ctx['auxiliary']) if 'auxiliary' in ctx else None

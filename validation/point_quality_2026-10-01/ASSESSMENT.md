@@ -33,7 +33,7 @@ with freeze/deferral/retirement records preserved and zero starts.
 
 Machine-readable [saved-scorecard.json](results/saved-scorecard.json) binds seven
 original maps bySHA256, frame/units, free fits, apertures, radial residuals,
-background tails/scales/correlations/artifacts and original support. Figures use
+background tails/scales/correlations/artifacts, source asymmetry and original support. Figures use
 identical display scales, fixed commanded-origin40arcsec fit and60–100arcsec
 background regions, native/6/12arcsec scale summaries. No image registration,
 independent recentering, fitted scaling or cross-frame difference was performed.
@@ -142,3 +142,11 @@ obs/0/2 and each uses its ownobs/0/1processedTune. Networks1–4 are explicitly
 enumerated with canonicalAPTmanifest and immutabledependencyreceipt bindings.
 The new preparation rehashes152420originaldependencies before science; the saved
 152430 audit preserves executed input identities without pretending to rerunraw.
+
+Prelaunch review caught and repaired the existing physical-raster layout adapter:
+current shapes usePRIMARY whereas older response files useINJECTION. The shared
+response reader now accepts both explicit layouts, tested against an actual bound
+current shape. No reduction was spent on this reporting defect. The asymmetry
+descriptor measures180degree odd structure within paired40arcsec support, reflecting
+about the freefit center solely for shape diagnosis. It includes noise/interpolation
+and is not a registered pointingcomparison or truth-based fidelityscore.

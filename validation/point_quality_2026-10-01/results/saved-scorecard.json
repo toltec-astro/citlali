@@ -69,6 +69,11 @@
         ],
         "gaussian_angular_integral_mJy_arcsec2_per_beam": 13807.40743524867
       },
+      "asymmetry": {
+        "paired_pixels": 3615,
+        "half_absolute_odd_fraction": 0.6130400709217022,
+        "qualification": "Descriptive180degree asymmetry about free fitted center, paired within fixedcommanded40arcsec domain; bilinear reflection with complete interpolation support. Includes noise/grid/background effects, not intrinsic source fidelity or pointing agreement."
+      },
       "background": {
         "n": 20120,
         "available": true,
@@ -522,6 +527,11 @@
           7.463589661259536
         ],
         "gaussian_angular_integral_mJy_arcsec2_per_beam": 13245.763264194818
+      },
+      "asymmetry": {
+        "paired_pixels": 907,
+        "half_absolute_odd_fraction": 0.5237216777700805,
+        "qualification": "Descriptive180degree asymmetry about free fitted center, paired within fixedcommanded40arcsec domain; bilinear reflection with complete interpolation support. Includes noise/grid/background effects, not intrinsic source fidelity or pointing agreement."
       },
       "background": {
         "n": 4382,
@@ -977,6 +987,11 @@
         ],
         "gaussian_angular_integral_mJy_arcsec2_per_beam": 18852.604636202617
       },
+      "asymmetry": {
+        "paired_pixels": 910,
+        "half_absolute_odd_fraction": 0.49446590255463657,
+        "qualification": "Descriptive180degree asymmetry about free fitted center, paired within fixedcommanded40arcsec domain; bilinear reflection with complete interpolation support. Includes noise/grid/background effects, not intrinsic source fidelity or pointing agreement."
+      },
       "background": {
         "n": 4382,
         "available": true,
@@ -1430,6 +1445,11 @@
           -0.8520217459107442
         ],
         "gaussian_angular_integral_mJy_arcsec2_per_beam": 10888.954012292676
+      },
+      "asymmetry": {
+        "paired_pixels": 3609,
+        "half_absolute_odd_fraction": 0.5290948133394224,
+        "qualification": "Descriptive180degree asymmetry about free fitted center, paired within fixedcommanded40arcsec domain; bilinear reflection with complete interpolation support. Includes noise/grid/background effects, not intrinsic source fidelity or pointing agreement."
       },
       "background": {
         "n": 20120,
@@ -1885,6 +1905,11 @@
         ],
         "gaussian_angular_integral_mJy_arcsec2_per_beam": 9723.556412180982
       },
+      "asymmetry": {
+        "paired_pixels": 922,
+        "half_absolute_odd_fraction": 0.5446286469123577,
+        "qualification": "Descriptive180degree asymmetry about free fitted center, paired within fixedcommanded40arcsec domain; bilinear reflection with complete interpolation support. Includes noise/grid/background effects, not intrinsic source fidelity or pointing agreement."
+      },
       "background": {
         "n": 4017,
         "available": true,
@@ -2339,6 +2364,11 @@
         ],
         "gaussian_angular_integral_mJy_arcsec2_per_beam": 14041.803121511844
       },
+      "asymmetry": {
+        "paired_pixels": 924,
+        "half_absolute_odd_fraction": 0.5216301670962533,
+        "qualification": "Descriptive180degree asymmetry about free fitted center, paired within fixedcommanded40arcsec domain; bilinear reflection with complete interpolation support. Includes noise/grid/background effects, not intrinsic source fidelity or pointing agreement."
+      },
       "background": {
         "n": 4017,
         "available": true,
@@ -2792,6 +2822,11 @@
           -4.943218536730114
         ],
         "gaussian_angular_integral_mJy_arcsec2_per_beam": 59821.14583754841
+      },
+      "asymmetry": {
+        "paired_pixels": 3618,
+        "half_absolute_odd_fraction": 0.6561837632942983,
+        "qualification": "Descriptive180degree asymmetry about free fitted center, paired within fixedcommanded40arcsec domain; bilinear reflection with complete interpolation support. Includes noise/grid/background effects, not intrinsic source fidelity or pointing agreement."
       },
       "background": {
         "n": 20120,
@@ -3519,6 +3554,6 @@
     "apertures": "10/20/40arcsec around freely fitted centroid, complete support, fitted constant removed; brightness angular integral not flux density",
     "cross_frame": "no pixel differences or common-pixel claim across AltAz and FK5; same angular region does not prove identical measured sky support"
   },
-  "evaluation_wall_seconds": 2.3898541669987026,
+  "evaluation_wall_seconds": 1.739363125001546,
   "new_observation_starts": 0
 }

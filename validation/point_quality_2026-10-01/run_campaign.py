@@ -55,6 +55,7 @@ def main():
         status('RUNNING',phase='storage admission');save_json(ROOT/'STORAGE_AT_LAUNCH.json',capacity());(ROOT/'logs').mkdir()
         for name in ROLES:
             require(subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()==revision,'source moved during batch')
+            require(not subprocess.check_output(['git','status','--porcelain'],cwd=REPO,text=True).strip(),'source dirtied during batch')
             require(digest(BINARY)==freeze['binary']['sha256'],'native binary moved during batch')
             status('RUNNING',phase='prepare',current_role=name);out=prepare_role(name)
             status('RUNNING',phase='numerical trajectory',current_log=str(out/'outer.log'))
